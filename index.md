@@ -19,47 +19,46 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 **[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](https://community.oracle.com/tech/welcome/discussion/4474261/)**  
 まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。
 
-**[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](https://community.oracle.com/tech/welcome/discussion/4474255/)**
-
+**[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](https://community.oracle.com/tech/welcome/discussion/4474255/)**  
 クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!
 
-
-#### [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)
+**[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)**  
 ネットワークができたら、いよいよインスタンスを立ち上げましょう。OCIなら仮想マシンもベアメタルサーバーも同じように簡単に作成できます。
 
-#### [ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](https://community.oracle.com/tech/welcome/discussion/4474259/)
+**[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](https://community.oracle.com/tech/welcome/discussion/4474259/)**  
 ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。
 
-#### [インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](https://community.oracle.com/tech/welcome/discussion/4474283/)
+**[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](https://community.oracle.com/tech/welcome/discussion/4474283/)**  
 作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。
 
-#### [ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](https://community.oracle.com/tech/welcome/discussion/4474296/)
+**[ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](https://community.oracle.com/tech/welcome/discussion/4474296/)**  
 ファイルストレージサービス(FSS)を利用すると、複数のインスタンスから同時にネットワーク越しに利用できる共有ディスクを簡単に作成することができます。
 
-#### [オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](https://community.oracle.com/tech/welcome/discussion/4474260/)
+**[オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](https://community.oracle.com/tech/welcome/discussion/4474260/)**  
 オブジェクト・ストレージを使うと、とても堅牢なデータストアを信じられないくらい安価に利用できます。まずは簡単な使い方を学びましょう。
 
-#### [クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://community.oracle.com/tech/welcome/discussion/4474262/)
+**[クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://community.oracle.com/tech/welcome/discussion/4474262/)**  
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!! OCIでは仮想マシン、ベアメタルサーバーからExadataまで、様々なOracle Databaseを簡単に使うことができます。まずはインスタンスを作ってみましょう。
 
-#### [クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)](https://community.oracle.com/docs/DOC-1038411)
+**[クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)](https://community.oracle.com/docs/DOC-1038411)**  
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
-
+**[Autonomous Database ハンズオンラボ（ADB HOL）](https://community.oracle.com/tech/welcome/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol#latest)**  
 Autonomous Database は、最新のAI技術によって自律的に運用される、クラウド上のマネージドなデータベースサービスです。こちらのハンズオンラボでは、Autonomous Databaseに初めて触る方向けに、使い方や特徴を学んでいただける内容になっています。
 
-Oracle Container Engine for Kubernetes(OKE) ハンズオン（ビギナー向け）
-
+**[Oracle Container Engine for Kubernetes(OKE) ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/containers/handson/k8s-walkthrough/)**  
 Oracle Container Engine for Kubernetes(OKE)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドKubernetsサービスです。こちらのハンズオンでは、Kubernetes自体の特徴や使い方を含めて、OKEを触って頂けるコンテンツになっています。
 
-#### [Oracle Functions ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/containers/handson/k8s-walkthrough/)
+**[Oracle Functions ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)**  
 Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。
 まずはリンク先のビギナー向けチュートリアルからはじめてみてください。
 
-#### [Oracle Cloud Infrastructure API Gateway ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)
+**[Oracle Cloud Infrastructure API Gateway ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/api-management/handson/getting-started/)**  
 Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドAPI Gatewayサービスです。こちらのハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約/公開する方法を学んでいただけるコンテンツになっています。
 
+
 ### チュートリアル中級編 - Oracle Cloud Infrastructure アドバンスド
+
 モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
 
 OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
