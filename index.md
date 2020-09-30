@@ -55,6 +55,7 @@ Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマ�
 Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドAPI Gatewayサービスです。こちらのハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約/公開する方法を学んでいただけるコンテンツになっています。
 
 
+
 ## チュートリアル中級編 - Oracle Cloud Infrastructure アドバンスド
 - **[モニタリング機能でリソースを監視する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474301/%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E6%A9%9F%E8%83%BD%E3%81%A7%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
@@ -117,22 +118,25 @@ Oracle Content and Experience (OCE)は、API ファーストなアーキテク�
 Oracle Integration(OIC)は、アプリケーションの統合、プロセスの自動化およびビジュアル・アプリケーションの作成を可能にする完全に管理されたサービスです。この文書では、OIC が提供するプロセス機能（ワークフローの作成・テスト・公開）など、さまざまな機能の説明や使い方が、各文書ごとにステップ・バイ・ステップで紹介されています。利用する機能にあわせて、リンク先の各文書をご利用ください。
 
 
-### チュートリアル実践編
-- **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/)(外部リンク)**   
-さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。
 
-**シナリオの例**
+## チュートリアル実践編
+- **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/)(外部リンク)**   
+さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。  
+  
+*Tips : アーキテクチャ・センター内での検索がうまくヒットしないという不具合があるようですので、検索機能は利用せず、下にスクロールして閲覧するのが良いようです。左側のチェックボックスを使った絞り込みはうまく機能します。*  
+  
+**シナリオの例**  
     - **[仮想マシンDBシステムへのオンプレミスOracle Databaseデプロイメントの移行](https://docs.oracle.com/ja/solutions/migrate-to-vmdb/index.html)**
     - **[イベントトリガー・サーバー・レス・アプリケーションのデプロイ](https://docs.oracle.com/ja/solutions/event-triggered-serverless-app/index.html#GUID-9D5876DC-13C2-4770-AFF9-EC7330D94AD0)**  
     - **[ElasticsearchおよびKibanaのデプロイ](https://docs.oracle.com/ja/solutions/deploy-elk/index.html#GUID-B8EE86D2-5830-4B79-B679-6E9B624E0CF0)**  
     
-*Tips : アーキテクチャ・センター内での検索がうまくヒットしないという不具合があるようですので、検索機能は利用せず、下にスクロールして閲覧するのが良いようです。左側のチェックボックスを使った絞り込みはうまく機能します。*
 
 - **[Oracle Quick Start](https://github.com/oracle-quickstart)(GitHubリポジトリ)**  
 Oracle Cloud Infrastructure上で、様々なオープンソース・ソフトウェア、オラクル製品、サードパーティ製品を簡単にデプロイするためのスクリプトやガイドを集めたGitHubリポジトリです。使ってみたいソフトウェアがあればぜひ覗いてみてください。上の アーキテクチャ・センター とも連動しています。
 
 
-### その他のお役立ち情報
+
+## その他のお役立ち情報
 - **[オラクルエンジニア通信](https://blogs.oracle.com/oracle4engineer/)**  
 Oracle Cloud の新しいサービスのリリース情報などや技術情報を定期的に発信しているブログです
 
