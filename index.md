@@ -14,19 +14,19 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 
 
 ## チュートリアル初級編 - Oracle Cloud Infrastructure を使ってみよう
-**[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](https://community.oracle.com/tech/welcome/discussion/4474261/)**  
+- **[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](https://community.oracle.com/tech/welcome/discussion/4474261/)**  
 まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。
 
-**[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](https://community.oracle.com/tech/welcome/discussion/4474255/)**  
+- **[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](https://community.oracle.com/tech/welcome/discussion/4474255/)**  
 クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!
 
-**[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)**  
+- **[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)**  
 ネットワークができたら、いよいよインスタンスを立ち上げましょう。OCIなら仮想マシンもベアメタルサーバーも同じように簡単に作成できます。
 
-**[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](https://community.oracle.com/tech/welcome/discussion/4474259/)**  
+- **[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](https://community.oracle.com/tech/welcome/discussion/4474259/)**  
 ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。
 
-**[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](https://community.oracle.com/tech/welcome/discussion/4474283/)**  
+- **[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](https://community.oracle.com/tech/welcome/discussion/4474283/)**  
 作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。
 
 **[ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](https://community.oracle.com/tech/welcome/discussion/4474296/)**  
