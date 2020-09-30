@@ -7,11 +7,11 @@
 ## 準備 - Oracle Cloud の無料トライアルを申し込む
 - **[Oracle Cloud 無料トライアルを申し込む](https://cloud.oracle.com/ja_JP/tryit)**  
 Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。  
-※取得には認証用のSMSが受け取ることができる電話と、有効なクレジット・カードのご登録が必要です(希望しない限り課金はされませんのでご安心を!!)  
-  
+※取得には認証用のSMSが受け取ることができる電話と、有効なクレジット・カードのご登録が必要です(希望しない限り課金はされませんのでご安心を!!)
+
 **参考ページ**
-    - [Oracle Cloud 無料トライアル サインアップガイド](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
-    - [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
+- [Oracle Cloud 無料トライアル サインアップガイド](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
+- [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
 
 
 ## チュートリアル初級編 - Oracle Cloud Infrastructure を使ってみよう
@@ -104,10 +104,10 @@ Oracle Management Cloud (OMC) は、機械学習と大規模データ技術を�
 - **[Oracle Data Safe チュートリアルまとめ](https://qiita.com/western24/items/4824e4b3799b824197c6)**  
 Oracle Data Safeは、Oracle CloudのDatabase Serviceをよりセキュアに使うための付加的なサービスで、機密データの発見、(データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価などを、GUIツールから簡単に実施できます。このまとめページでは、Data Safeを有効化から、各種の使い方について説明しています。
 
-- **[Oracle Container Engine for Kubernetes(OKE) ハンズオン（ミドル向け）](https://oracle-japan.github.io/paasdocs/documents/microservices/tutorials/WorkshopGuide000InstallSoftware/)*  
+- **[Oracle Container Engine for Kubernetes(OKE) ハンズオン（ミドル向け）](https://oracle-japan.github.io/paasdocs/documents/microservices/tutorials/WorkshopGuide000InstallSoftware/)**  
 OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、チーム開発型プラットフォームであるOracle Cloud PaaSのDeveloper Cloud Serviceや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。
 
-- **[Oracle Functionsハンズオン（ミドル向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)*  
+- **[Oracle Functionsハンズオン（ミドル向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)**  
 Oracle FunctionsとOracle Cloud Infrastructure(OCI)上の様々なサービスを組み合わせたハンズオンコンテンツです。Oracle Functionsを利用してコンピュートインスタンスのシェイプを変更したり、NoSQL Database Cloud Serviceと連携したりとFaaSならではのハンズオンを体験して頂けるコンテンツになっています。リンク先のミドル向けチュートリアルからはじめてみてください。
 
 - **[Oracle Content and Experiece チュートリアル](https://community.oracle.com/tech/welcome/discussion/4474330/oracle-content-and-experiece-%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB)**  
