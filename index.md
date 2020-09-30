@@ -119,7 +119,7 @@ Oracle Integration(OIC)は、アプリケーションの統合、プロセスの
 
 
 ## チュートリアル実践編
-- **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/)(外部リンク)**   
+- **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/)**   
 さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。  
 シナリオの例
   - **[仮想マシンDBシステムへのオンプレミスOracle Databaseデプロイメントの移行](https://docs.oracle.com/ja/solutions/migrate-to-vmdb/index.html)**
@@ -128,7 +128,7 @@ Oracle Integration(OIC)は、アプリケーションの統合、プロセスの
 
 ``Tips : アーキテクチャ・センター内での検索がうまくヒットしないという不具合があるようですので、検索機能は利用せず、下にスクロールして閲覧するのが良いようです。左側のチェックボックスを使った絞り込みはうまく機能します。``
 
-- **[Oracle Quick Start](https://github.com/oracle-quickstart)(GitHubリポジトリ)**  
+- **[Oracle Quick Start](https://github.com/oracle-quickstart)**  
 Oracle Cloud Infrastructure上で、様々なオープンソース・ソフトウェア、オラクル製品、サードパーティ製品を簡単にデプロイするためのスクリプトやガイドを集めたGitHubリポジトリです。使ってみたいソフトウェアがあればぜひ覗いてみてください。上の アーキテクチャ・センター とも連動しています。
 
 
