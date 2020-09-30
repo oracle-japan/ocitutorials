@@ -4,9 +4,8 @@
 
 また、このページのチュートリアルのうち、初級編を元にしたウェビナーのハンズオンも定期開催しています。最新の予定は [こちら](https://go.oracle.com/LP=93447?elqCampaignId=248187#xd_co_f=OTIyMTZlYzQtNGMxMi00YzY2LTg1ZTQtNTVkMGJkOTUwMGY0~) のウェビナー案内ページ をご確認ください。(集合形式でのハンズオン・セミナーは、感染症予防のためしばらくお休み予定です)
 
-### 準備 - Oracle Cloud の無料トライアルを申し込む
-[Oracle Cloud 無料トライアルを申し込む](https://cloud.oracle.com/ja_JP/tryit)
-
+## 準備 - Oracle Cloud の無料トライアルを申し込む
+**[Oracle Cloud 無料トライアルを申し込む](https://cloud.oracle.com/ja_JP/tryit)**  
 Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。
 ※取得には認証用のSMSが受け取ることができる電話と、有効なクレジット・カードのご登録が必要です(希望しない限り課金はされませんのでご安心を!!)
 
@@ -14,8 +13,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
 
 
-### チュートリアル初級編 - Oracle Cloud Infrastructure を使ってみよう
-
+## チュートリアル初級編 - Oracle Cloud Infrastructure を使ってみよう
 **[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](https://community.oracle.com/tech/welcome/discussion/4474261/)**  
 まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。
 
@@ -57,41 +55,46 @@ Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマ�
 Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドAPI Gatewayサービスです。こちらのハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約/公開する方法を学んでいただけるコンテンツになっています。
 
 
-### チュートリアル中級編 - Oracle Cloud Infrastructure アドバンスド
-
+## チュートリアル中級編 - Oracle Cloud Infrastructure アドバンスド
+**[モニタリング機能でリソースを監視する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474301/%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E6%A9%9F%E8%83%BD%E3%81%A7%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
 
+**[ロードバランサーでWebサーバーを負荷分散する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474257/%E3%83%AD%E3%83%BC%E3%83%89%E3%83%90%E3%83%A9%E3%83%B3%E3%82%B5%E3%83%BC%E3%81%A7web%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%82%92%E8%B2%A0%E8%8D%B7%E5%88%86%E6%95%A3%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
 
 アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。オートスケーリング設定を行って、負荷に応じてインスタンス数を増減させてみましょう。
 
+**[ブロック・ボリュームをバックアップする - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474358/%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF-%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%82%92%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。
 
+**[DNSサービスを使う - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474264/dns%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%92%E4%BD%BF%E3%81%86-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 クラウド上でインターネット向けにサービスを構築したいのであれば、OCIのDNSサービスを使わない手はありません。Dyn.comにホストされた堅牢な権威DNSネットワークが、従量制で簡単に利用できます。マネージドサービスなのでDDoS対策もバッチリ。さあやってみましょう。
 
-
+**[Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編) - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474289/email-delivery%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E5%A4%96%E9%83%A8%E3%81%B8%E3%81%AE%E3%83%A1%E3%83%BC%E3%83%AB%E9%80%81%E4%BF%A1-%E3%81%9D%E3%81%AE1-%E9%85%8D%E4%BF%A1%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E7%B7%A8-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
 
-
-
+**[GPUインスタンスでディープラーニング - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474290/gpu%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%A7%E3%83%87%E3%82%A3%E3%83%BC%E3%83%97%E3%83%A9%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 クラウドを利用すると、最新のGPUで簡単にディープラーニングのトレーニング環境を構築することができます。OCIの事前セットアップ済イメージを使って環境を構築し、PyTorch や Tensorflow などの人気のフレームワークを動かしてみましょう。
 
-インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールを覗いてみましょう。何かトラブル解決のヒントが見つかるかもしれません。
+**[シリアル・コンソールでsshできないインスタンスのトラブルシュートをする - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474277/%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB-%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E3%81%A7ssh%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%88%E3%82%92%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールに接続してみましょう。何かトラブル解決のヒントが見つかるかもしれません。
 
 OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。
 
-クラウドの管理を簡単にしたいなら、まずはCLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトベースでクラウドのコンポーネントを操作できます。
+**[コマンドライン(CLI)でOCIを操作する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474263/%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3-cli-%E3%81%A7oci%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。
 
+**[TerraformでOCIの構築を自動化する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474281/terraform%E3%81%A7oci%E3%81%AE%E6%A7%8B%E7%AF%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
 
 OCI Valut (OCI Key Management) でBYOKをする
 
 Oracle Cloud Infrastructureには、OCI Valut (旧称 OCI Key Management) という暗号化マスター鍵を仮想化したHSMで管理する機能があり、ユーザーが管理する暗号鍵でブロック・ボリュームやオブジェクト・ストレージなどのデータを暗号化をできるようになっています。OCI Vaultを使って、ユーザーが作成した鍵をクラウドに持ち込むBYOK(Bring Your Own Key)を試してみましょう。
 
-
+**[Web Application Firewall(WAF)を使ってWebサーバを保護する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474298/web-application-firewall-waf-%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6web%E3%82%B5%E3%83%BC%E3%83%90%E3%82%92%E4%BF%9D%E8%AD%B7%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。
 
-
+**[Oracle CASBを使ってクラウドのセキュリティ・リスクを検知する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474285/oracle-casb%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3-%E3%83%AA%E3%82%B9%E3%82%AF%E3%82%92%E6%A4%9C%E7%9F%A5%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 せっかくクラウドを導入したのだから、セルフサービスで色々な人に使ってもらいたい。でも勝手に使われるとセキュリティが心配・・・。そんなときはCASB(キャスビー)が役に立つかもしれません。Oracle CASBを使うと、ユーザーが危険な使い方をしていたらアラートを受け取るなんてことが簡単に実現できるようになります。
 
 Oracle Management Cloud チュートリアルまとめ
@@ -118,7 +121,8 @@ Oracle Content and Experience (OCE)は、API ファーストなアーキテク�
 
 Oracle Integration(OIC)は、アプリケーションの統合、プロセスの自動化およびビジュアル・アプリケーションの作成を可能にする完全に管理されたサービスです。この文書では、OIC が提供するプロセス機能（ワークフローの作成・テスト・公開）など、さまざまな機能の説明や使い方が、各文書ごとにステップ・バイ・ステップで紹介されています。利用する機能にあわせて、リンク先の各文書をご利用ください。
 
-チュートリアル実践編
+
+### チュートリアル実践編
 Oracle アーキテクチャ・センター (外部リンク)
 
 さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。
