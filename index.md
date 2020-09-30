@@ -125,7 +125,7 @@ Oracle Integration(OIC)は、アプリケーションの統合、プロセスの
 
 
 ## チュートリアル実践編
-- **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/)**   
+- **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/){:target="_blank"}**   
 さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。  
 シナリオの例
   - **[仮想マシンDBシステムへのオンプレミスOracle Databaseデプロイメントの移行](https://docs.oracle.com/ja/solutions/migrate-to-vmdb/index.html)**
