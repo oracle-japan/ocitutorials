@@ -36,13 +36,13 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 #### [ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](https://community.oracle.com/tech/welcome/discussion/4474296/)
 ファイルストレージサービス(FSS)を利用すると、複数のインスタンスから同時にネットワーク越しに利用できる共有ディスクを簡単に作成することができます。
 
-#### [オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)(https://community.oracle.com/tech/welcome/discussion/4474260/)
+#### [オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](https://community.oracle.com/tech/welcome/discussion/4474260/)
 オブジェクト・ストレージを使うと、とても堅牢なデータストアを信じられないくらい安価に利用できます。まずは簡単な使い方を学びましょう。
 
 #### [クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://community.oracle.com/tech/welcome/discussion/4474262/)
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!! OCIでは仮想マシン、ベアメタルサーバーからExadataまで、様々なOracle Databaseを簡単に使うことができます。まずはインスタンスを作ってみましょう。
 
-クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)
+#### [クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)](https://community.oracle.com/docs/DOC-1038411)
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 
@@ -52,17 +52,14 @@ Oracle Container Engine for Kubernetes(OKE) ハンズオン（ビギナー向け
 
 Oracle Container Engine for Kubernetes(OKE)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドKubernetsサービスです。こちらのハンズオンでは、Kubernetes自体の特徴や使い方を含めて、OKEを触って頂けるコンテンツになっています。
 
-Oracle Functions ハンズオン（ビギナー向け）
-
+#### [Oracle Functions ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/containers/handson/k8s-walkthrough/)
 Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。
-
 まずはリンク先のビギナー向けチュートリアルからはじめてみてください。
 
-Oracle Cloud Infrastructure API Gateway ハンズオン（ビギナー向け）
-
+#### [Oracle Cloud Infrastructure API Gateway ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)
 Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドAPI Gatewayサービスです。こちらのハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約/公開する方法を学んでいただけるコンテンツになっています。
 
-チュートリアル中級編 - Oracle Cloud Infrastructure アドバンスド
+### チュートリアル中級編 - Oracle Cloud Infrastructure アドバンスド
 モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
 
 OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
