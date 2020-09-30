@@ -10,6 +10,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 ※取得には認証用のSMSが受け取ることができる電話と、有効なクレジット・カードのご登録が必要です(希望しない限り課金はされませんのでご安心を!!)  
   
 **参考ページ**
+
     - [Oracle Cloud 無料トライアル サインアップガイド](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
     - [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
 
