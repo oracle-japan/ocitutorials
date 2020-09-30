@@ -1,2 +1,1 @@
-# ocitutorials
-Oracle Cloud Infrastructure (OCI) tutrial pages
+# [ocitutorials](https://oracle-japan.github.io/ocitutorials/)
