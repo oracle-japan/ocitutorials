@@ -1,8 +1,6 @@
 # チュートリアル : Oracle Cloud Infrastructure を使ってみよう
 
-このドキュメントは Oracle Cloud Infrastructure (OCI) を使っていこう! という人のためのチュートリアル集です。各項ごとに画面ショットなどを交えながらステ
-
-ップ・バイ・ステップで作業を進めて、OCIの機能についてひととおり学習することができるようになっています。 [OCI活用資料集](https://community.oracle.com/tech/welcome/discussion/4474318/oracle-cloud-infrastructure-%E6%B4%BB%E7%94%A8%E8%B3%87%E6%96%99%E9%9B%86) とあわせてご活用ください。
+このドキュメントは Oracle Cloud Infrastructure (OCI) を使っていこう! という人のためのチュートリアル集です。各項ごとに画面ショットなどを交えながらステップ・バイ・ステップで作業を進めて、OCIの機能についてひととおり学習することができるようになっています。 [OCI活用資料集](https://community.oracle.com/tech/welcome/discussion/4474318/oracle-cloud-infrastructure-%E6%B4%BB%E7%94%A8%E8%B3%87%E6%96%99%E9%9B%86) とあわせてご活用ください。
 
 また、このページのチュートリアルのうち、初級編を元にしたウェビナーのハンズオンも定期開催しています。最新の予定は [こちら](https://go.oracle.com/LP=93447?elqCampaignId=248187#xd_co_f=OTIyMTZlYzQtNGMxMi00YzY2LTg1ZTQtNTVkMGJkOTUwMGY0~) のウェビナー案内ページ をご確認ください。(集合形式でのハンズオン・セミナーは、感染症予防のためしばらくお休み予定です)
 
@@ -18,10 +16,10 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 
 ### チュートリアル初級編 - Oracle Cloud Infrastructure を使ってみよう
 
-#### [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](https://community.oracle.com/tech/welcome/discussion/4474261/)
+*[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](https://community.oracle.com/tech/welcome/discussion/4474261/)*
 まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。
 
-#### [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](https://community.oracle.com/tech/welcome/discussion/4474255/)
+*[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](https://community.oracle.com/tech/welcome/discussion/4474255/)*
 クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!
 
 #### [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)
