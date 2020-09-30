@@ -118,24 +118,23 @@ Oracle Integration(OIC)は、アプリケーションの統合、プロセスの
 
 
 ### チュートリアル実践編
-Oracle アーキテクチャ・センター (外部リンク)
-
+- **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/)(外部リンク)**   
 さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。
 
-シナリオの例
+**シナリオの例**
+    - **[仮想マシンDBシステムへのオンプレミスOracle Databaseデプロイメントの移行](https://docs.oracle.com/ja/solutions/migrate-to-vmdb/index.html)**
+    - **[イベントトリガー・サーバー・レス・アプリケーションのデプロイ](https://docs.oracle.com/ja/solutions/event-triggered-serverless-app/index.html#GUID-9D5876DC-13C2-4770-AFF9-EC7330D94AD0)**  
+    - **[ElasticsearchおよびKibanaのデプロイ](https://docs.oracle.com/ja/solutions/deploy-elk/index.html#GUID-B8EE86D2-5830-4B79-B679-6E9B624E0CF0)**  
+    
+*Tips : アーキテクチャ・センター内での検索がうまくヒットしないという不具合があるようですので、検索機能は利用せず、下にスクロールして閲覧するのが良いようです。左側のチェックボックスを使った絞り込みはうまく機能します。*
 
-仮想マシンDBシステムへのオンプレミスOracle Databaseデプロイメントの移行
-イベントトリガー・サーバー・レス・アプリケーションのデプロイ
-ElasticsearchおよびKibanaのデプロイ
-Tips : アーキテクチャ・センター内での検索がうまくヒットしないという不具合があるようですので、検索機能は利用せず、下にスクロールして閲覧するのが良いようです。左側のチェックボックスを使った絞り込みはうまく機能します。
-Oracle Quick Start (GitHubリポジトリ)
-
+- **[Oracle Quick Start](https://github.com/oracle-quickstart)(GitHubリポジトリ)**  
 Oracle Cloud Infrastructure上で、様々なオープンソース・ソフトウェア、オラクル製品、サードパーティ製品を簡単にデプロイするためのスクリプトやガイドを集めたGitHubリポジトリです。使ってみたいソフトウェアがあればぜひ覗いてみてください。上の アーキテクチャ・センター とも連動しています。
 
-その他のお役立ち情報
-オラクルエンジニア通信
-Oracle Cloud の新しいサービスのリリース情報などや技術情報を定期的に発信しているブログです
-Oracle Cloud Infrastructure マニュアル (英語版)
 
-Oracle Cloud Infrastructure マニュアル (日本語版)
-上記英語版マニュアルの日本語訳です。翻訳まで少しタイムラグがあるので、最新情報は上記英語版で確認してください。
+### その他のお役立ち情報
+- **[オラクルエンジニア通信](https://blogs.oracle.com/oracle4engineer/)**  
+Oracle Cloud の新しいサービスのリリース情報などや技術情報を定期的に発信しているブログです
+
+- **[Oracle Cloud Infrastructure マニュアル](https://docs.cloud.oracle.com/ja-jp/iaas/Content/home.htm)**  
+マニュアルの日本語訳です。翻訳まで少しタイムラグがあるので、最新情報は右上の地球アイコンから英語版に切り替えて確認してください。
