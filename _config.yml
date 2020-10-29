@@ -1,0 +1,152 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+
+baseurl: "/ocitutorials"
+url: "https://oracle-japan.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+
+title: "Oracle Cloud Infrastructure チュートリアル"
+title_separator: "|"
+subtitle: "Oracle Cloud Infrastructure を使ってみよう"
+tagline: "Oracle Cloud Infrastructure を使ってみよう"
+email: masataka.marukawa@oracle.com
+description: >-  # this means to ignore newlines until "baseurl:"
+  Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。
+  初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。
+repository: "oracle-japan/ocitutorials"
+twitter_username: "Oracle_Japan"
+github_username: "oracle-japan"
+# teaser: "/assets/images/rh01-cloud-home-pine-background.jpg"
+logo: "/assets/images/social-og-oracle-badge.jpg"
+masthead_title: "OCI チュートリアル"
+
+# Build settings
+markdown: kramdown
+# remote_theme: mmistakes/minimal-mistakes
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: "contrast"
+locale: ja-JP
+search: true
+#breadcrumbs: true
+
+# Markdown Processing
+kramdown:
+  input : GFM
+  hard_wrap : false
+  auro_ids : true
+
+
+# Outputting
+permalink: /:categories/:title/
+paginate: 5  # amount of posts to show
+paginate_path: /page:num/
+timezone: Asia/Tokyo  # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+include:
+  - _pages
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# Plugins (previously gems:)
+plugins:
+  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
+  - jekyll-include-cache
+
+author:
+  name   : "Oracle Japan Solution Engineers"
+  avatar : "/assets/images/bio-photo.jpg"
+  bio    : "日本オラクル株式会社で、OCIに関する技術情報の発信や、お客様のクラウド活用の技術支援をしています"
+  links:
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/#ocijp"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/oracle-japan"
+    # - label: "Instagram"
+    #   icon: "fab fa-fw fa-instagram"
+    #   url: "https://instagram.com/"
+
+footer:
+  links:
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/#ocijp"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/oracle-japan"
+    # - label: "Instagram"
+    #   icon: "fab fa-fw fa-instagram"
+    #   url: "https://instagram.com/"
+
+defaults:
+  # _collections
+  - scope:
+      path: ""
+    values:
+      layout: single
+      author_profile: false
+      show_date: true
+      read_time: false
+      comments: false
+      share: true
+      related: true
+      toc: true
+      toc_sticky: true
+      sidebar:
+        nav: "docs"
+      header:
+        overlay_image: /assets/images/rh01-cloud-home-pine-background.jpg
+  - scope:
+      path: "_pages"
+      type: pages
+    values:
+      layout: single
+      author_profile: false
+      sidebar:
+        nav: "docs"
+      header:
+        overlay_image: /assets/images/rh01-cloud-home-pine-background.jpg
+
+
+category_archive:
+  type: liquid
+  path: /categories/
+tag_archive:
+  type: liquid
+  path: /tags/
+
+collections:
+  prerequisites:
+    output: true
+    permalink: /:collection/:path/
+  beginners:
+    output: true
+    permalink: /:collection/:path/
