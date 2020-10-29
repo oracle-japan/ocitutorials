@@ -1,0 +1,676 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.20.2 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCIコンソールにアクセスして基本を理解する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCIコンソールにアクセスして基本を理解する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/beginners/01-getting-started/">
+
+
+  <meta property="og:description" content="まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2020-10-29T12:31:47+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/beginners/01-getting-started/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/prerequisites/">事前準備</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/">初級編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/tags/">タグ</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCIコンソールにアクセスして基本を理解する
+
+        
+      </h1>
+      
+        <p class="page__lead">まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。
+</p>
+      
+      
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        <time datetime="2020-10-29T12:31:47+09:00">October 29, 2020</time>
+      </span>
+    
+
+    
+
+    
+  </p>
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    
+      <li>
+        
+          <a href="/ocitutorials/updates/"><span class="nav__sub-title">新機能</span></a>
+        
+
+        
+      </li>
+    
+      <li>
+        
+          <a href="/ocitutorials/services/"><span class="nav__sub-title">サービス別</span></a>
+        
+
+        
+        <ul>
+          
+            <li><a href="/ocitutorials/services/overall/">サービス全般</a></li>
+          
+            <li><a href="/ocitutorials/services/compute/">コンピュート</a></li>
+          
+            <li><a href="/ocitutorials/services/storage/">ストレージ</a></li>
+          
+            <li><a href="/ocitutorials/services/networking/">ネットワーク</a></li>
+          
+            <li><a href="/ocitutorials/services/database/">データベース</a></li>
+          
+            <li><a href="/ocitutorials/services/edge/">エッジ・サービス</a></li>
+          
+            <li><a href="/ocitutorials/services/security/">セキュリティ</a></li>
+          
+            <li><a href="/ocitutorials/services/governance-and-administration/">ガバナンスと管理</a></li>
+          
+            <li><a href="/ocitutorials/services/devtools/">開発ツール</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <a href="/ocitutorials/solutions/"><span class="nav__sub-title">ソリューション別</span></a>
+        
+
+        
+        <ul>
+          
+            <li><a href="/ocitutorials/solutions/ha/">HA・DR・高可用性システム</a></li>
+          
+            <li><a href="/ocitutorials/solutions/iam/">認証・認可・セキュリティ</a></li>
+          
+            <li><a href="/ocitutorials/solutions/manageability/">運用・管理</a></li>
+          
+        </ul>
+        
+      </li>
+    
+      <li>
+        
+          <a href="/ocitutorials/misc/"><span class="nav__sub-title">その他</span></a>
+        
+
+        
+      </li>
+    
+      <li>
+        
+          <a href="/ocitutorials/links/"><span class="nav__sub-title">外部リンク</span></a>
+        
+
+        
+      </li>
+    
+  </ul>
+</nav>
+
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCIコンソールにアクセスして基本を理解する">
+    <meta itemprop="description" content="まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。">
+    <meta itemprop="datePublished" content="2020-10-29T12:31:47+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure を使い始めるにあたって、コンソール画面にアクセスし、ログインを行います。</p>
+
+<p>また、Oracle Cloud Infrastructure のサービスを利用するのにあたって必要なサービス・リミット、コンパートメントやポリシーなどのIAMリソースおよびリージョンについて、コンセプトをコンソール画面の操作を通じて学習し、理解します。</p>
+
+<p>所要時間 : 約25分</p>
+
+<p>前提条件 : 有効な Oracle Cloud Infrastructure のテナントと、アクセスのための有効なユーザーIDとパスワードがあること</p>
+
+<p>無償トライアル環境のお申込みについては こちら の資料を参照してください。</p>
+
+<p>注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p>image</p>
+
+<ol>
+  <li>サポートされるブラウザの確認
+このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。</li>
+</ol>
+
+<p>サポートされるブラウザを確認し、いずれかのブラウザをローカル環境にインストールしてください。</p>
+
+<ol>
+  <li>ログイン情報の確認
+コンソールにアクセスするにあたり、ログイン情報の入力が必要になります。ログイン情報には以下のものが含まれます。</li>
+</ol>
+
+<p>テナント名(クラウド・アカウント名) - Oracle Cloud Infrastructure を契約したり、トライアル環境を申し込んだ際に払い出される一意のID
+ユーザー名 - ログインのためのユーザー名
+パスワード - ログインのためのパスワード
+ログイン情報の入手方法は、ユーザーが作られるタイミングによって異なります。</p>
+
+<p>テナントの最初のユーザーの場合
+テナントの最初の管理者ユーザーに対しては、テナントが作成された際にシステムから通知メールが送付されています。</p>
+
+<p>通知メールの中に、ランダムな一時パスワードを含む上記の内容が記入されていることを確認します。</p>
+
+<p>pastedImage_0.png</p>
+
+<p>通知メールには、上記のような内容が含まれています。</p>
+
+<p>Cloud Account という箇所がテナント名、Temporary Password (モザイク部分) が、初期ユーザーの一時パスワードです。</p>
+
+<p>テナントの管理者ユーザーによって作成された2人め以降のユーザーの場合
+テナントの管理者ユーザーによって作成された2人目以降のユーザーに対しても、同様にユーザー名と一時パスワード情報を使用してログインしてください。</p>
+
+<p>ログイン情報が不明な場合は環境の管理者に問い合わせてください。</p>
+
+<ol>
+  <li>コンソールへのログイン
+環境の管理者からコンソールへのログイン方法を指定されている場合は、管理者の指示に従ってください。以下は一般的にトライアルアカウントでログインする際の手順です。</li>
+</ol>
+
+<p>ブラウザから、https://www.oracle.com/jp/index.html にアクセス。右上の人のマークをクリックし、クラウド・アカウントの クラウドにサインイン を選択。（Oracleアカウントへのサインインではないので注意。）
+pastedImage_3.png
+Cloud Account Name にクラウド・アカウント名（テナンシー名）を入力し、Next をクリックします。これはユーザー名ではなく、クラウド環境の名前です。
+pastedImage_6.png
+Oracle Cloudアカウントへのサインイン 画面で、ユーザー名とパスワードを入力し、サイン・イン をクリックします。
+ユーザー名：トライアル環境の初期ユーザーの場合は登録したメールアドレス
+パスワード：初期パスワード、もしくはリセット済みの場合は設定したパスワード
+pastedImage_9.png
+作成されたユーザーが初回にコンソールにログインした場合には、パスワードの変更が要求されます。旧パスワードと新パスワードを入力し、Save New Password ボタンを押します。
+ログインが完了すると、Oracle Cloud Infrastructure のコンソール画面が表示されます。
+pastedImage_17.png
+コンソールの表示言語を日本語に変更する場合は、右上の地球儀マークのアイコンをクリックし、一番下の 日本語 を選択してください。
+pastedImage_20.png
+[参考] OCIのユーザー認証の仕組みについて</p>
+
+<p>Oracle Cloud Infrastructureには、Oracle Cloud Infrastructure Identity and Access Management (OCI IAM)というユーザー管理、認証の仕組みがあります。OCI IAMはデフォルトでOracle Identity Cloud Service (IDCS) とフェデレーション設定が行われており、IDCSユーザーを使用してOCIコンソールなどにログインを行うことが可能です。</p>
+
+<p>また、IDCSのOCI_AdministratorsグループとOCI IAMのAdministratorsグループではグループマッピングが構成済みなので、IDCSのOCI_Administratorsグループに所属しているユーザーはOCIの管理権限を持ちます。</p>
+
+<p>pastedImage_7.png</p>
+
+<p>一度コンソールからログアウトした場合や、コンソールのURLに直接アクセスした場合は、以下のようなログイン画面が表示されます。</p>
+
+<p>この場合、左側の Single Sign-On (SSO) から Continue をクリックすると先ほどと同様のIDCSでのログインになります。</p>
+
+<p>(注）環境によって、OCI IAMユーザーを利用する場合には、右側のOracle Cloud InfrastructureのUsername/Passwordを使用してください</p>
+
+<p>pastedImage_2.png</p>
+
+<ol>
+  <li>サービス制限の確認
+Oracle Cloud Infrastructureのすべての環境(テナント)には、初期状態でサービス制限というリソース制限がかけられています。</li>
+</ol>
+
+<p>このため、先ほどログインしたテナントでは、例えば可用性ドメインあたりに作成できるコンピュート・インスタンスの最大数が設定されており、それ以上の数のコンピュート・インスタンスを作成しようとすると、エラーメッセージと共に失敗します。</p>
+
+<p>サービス制限によるインスタンス作成失敗メッセージの例</p>
+
+<p>WS000040.JPG</p>
+
+<p>サービス制限は、例えば以下のようなリソースに対してかけられています。</p>
+
+<p>コンピュート・インスタンス - アベイラビリティ・ドメインあたりの仮想マシンやベアメタルインスタンスの数
+ブロック・ボリューム - アベイラビリティ・ドメインあたりのブロック・ボリュームの合計サイズや、バックアップの数
+データベース・サービス - アベイラビリティ・ドメインあたりのデータベース・インスタンスの数
+アイデンティティ &amp; アクセス管理 - テナントあたりのユーザ、グループ、ポリシーの数など
+ロードバランサー - リージョンあたりのロードバランサーの数
+ネットワーク・コンポーネント - テナントあたりのVCNの数や、VCNあたりのサブネットの数など
+オブジェクト・ストレージ - リージョンあたりのバケット数や、オブジェクトあたりの最大データサイズなど
+初期状態においてテナントにかけられているサービス制限の値は、契約の形態によって変わります。サービス制限がかけられているリソース・コンポーネントおよびその制限量については、Service Limits - Limits by Service を確認してください。</p>
+
+<p>サービス制限の確認と引上げリクエスト
+いくつかのリソースについてはOCIコンソールから現在の値と使用済みの値を確認できます。</p>
+
+<p>コンソール左上のメニューをクリックしてメニューを表示し、一番下までスクロールします。ガバナンス → 制限、割当ておよび使用状況 をクリックします。
+pastedImage_2.png
+サービスごとにサービス制限の値、使用量や使用可能量を確認することができます。サービスリミットの引き上げをリクエストする際は、サービス制限の引上げ リンクをクリックします。
+pastedImage_5.png
+サービス制限の更新のリクエスト画面で、必要事項を記入して リクエストの送信 ボタンをクリックすると必要なリソースに対するサービス制限の引上げリクエストをあげることができます。作業完了の連絡は連絡先に入力したメールアドレスにメールで通知されます。
+pastedImage_8.png</p>
+<ol>
+  <li>コンパートメントとポリシーの確認
+Oracle Cloud Infrastructure には、テナントの内部を仕切る コンパートメント という区画を作成し、その中にリソースを配置したり、コンパートメントにポリシーを割り当てることを通じて権限を設定したりすることができます。</li>
+</ol>
+
+<p>もし本番プロジェクトなどで本格的に Oracle Cloud Infrastructure を利用する場合には、コンパートメントやポリシーを管理者が利用計画にもとづいて適切に設計・設定する必要がありますが、チュートリアルの実行やアプリケーションの動作確認などの Proof-of-Concept を実施するような場合には、複雑なコンパートメントやポリシーの設定は不要で、初期状態で存在する管理者用のコンパートメントやポリシーをそのまま利用することも可能です。</p>
+
+<p>本チュートリアルでは、作業を進めるにあたり必要なコンパートメントとポリシーが予め設定され、作業ユーザーはそのポリシーを持つグループに所属していることを前提に話を進めていきます。コンパートメントやポリシーの設計や設定方法については、IAM - Getting Started with Policies などを参考にしてください。</p>
+
+<p>ここでは、よくあるケースにもとづいて、自身のユーザーに割り当てられているポリシーの内容と、そのポリシーが有効なコンパートメントを確認する作業を実施します。</p>
+
+<p>ケース1 : トライアル環境などでテナントすべての管理権限を持っている場合
+このケースにおいては、ログインしているユーザーが1つのテナントに対して全ての管理権限を持っているため、新しいコンパートメントやポリシーの作成を含む全ての作業を実施することができます。</p>
+
+<p>以下はルート・コンパートメントの下にチュートリアル実施用のコンパートメントを1つ作成してその中にリソースを作成していく前提です。</p>
+
+<p>コンソールメニューから アイデンティティ → コンパートメント を選択し、現在作成されているコンパートメントのリストを表示します。デフォルトでは、ルート・コンパートメント（「テナント名(ルート)」）と、ManagedCompartmentForPaaS というコンパートメントのみが存在します。
+pastedImage_10.png
+ManagedCompartmentForPaaS は、PaaSサービスが内部的に使用するためのコンパートメントです。このコンパートメントを変更、削除したりコンパートメント内のリソースを手動で変更、削除したりしないようにしてください。PaaSが正常に機能できなくなる可能性があります。
+コンパートメントの作成 のボタンをクリックし、コンパートメント作成ウィンドウを開きます。以下の項目を入力し、左下の コンパートメントの作成 ボタンをクリックします。
+名前 - 任意のコンパートメントの名前を入力します。ここでは「handson」としています。
+説明 - このコンパートメントの説明を入力します。ここでは「ハンズオン用」としています。
+親コンパートメント - ルートコンパートメント「テナント名(ルート)」が選択されていることを確認します。pastedImage_23.png
+コンパートメントができました。
+pastedImage_24.png
+ケース2 : 複数ユーザーで1つの環境を共有利用している場合
+この場合は、利用する環境のポリシーやルールに応じて、適切なユーザーとコンパートメントを使用するようにしてください。</p>
+
+<p>管理者の方は、各ユーザーごとにコンパートメントを分けて、コンパートメント内のみの権限を付与することも可能です。</p>
+
+<p>もしチュートリアルのためにコンパートメントとポリシーを作成し使用したい場合には IAM - Managing Compartments を参考に作業を実施してください。</p>
+
+<ol>
+  <li>リージョンの確認
+Oracle Cloud Infrastructure では、初めは指定したホームリージョンのみが有効になっていますが、同じテナントの中で世界中のリージョンのリソースを利用することができます。利用するリージョンは、コンソール画面から切り替えることができ、ホームリージョン以外のリージョンを使用したい場合はコンソール画面から有効化 (Subscribe) を行うことで、新しいリージョンの利用を開始することができるようになります。</li>
+</ol>
+
+<p>新しいリージョンの追加は無償で実施できます。課金対象となるコンポーネントを作成しない限り、リージョンの有効化で課金が発生することはありません。</p>
+
+<p>注）トライアル環境ではホームリージョン以外のリージョンをサブスクライブすることはできません。</p>
+
+<p>以下では、利用している環境で有効化されているリージョンを確認していきます。</p>
+
+<p>コンソール上部の リージョン名（ap-tokyo-1など）が記載されているメニューの▼をクリックし、リージョンの管理 を選択します
+pastedImage_14.png
+現在サブスクライブされている Oracle Cloud Infrastructure のリージョンが、下部に一覧で表示されます
+pastedImage_16.png
+この例では、ap-tokyo-1 (日本、東京) がホーム・リージョンで、ap-seoul-1 (韓国、ソウル) も有効化されていることがわかります。
+このリージョンのサブスクライブ をクリックすることで、新規のリージョンを有効化することができます。
+確認画面が出たら OK をクリックします
+pastedImage_28.png
+複数のリージョンを有効化すると、リージョン 選択メニューでリージョンを切り替えて利用することができます。
+Oracle Cloud Infrastructure のほとんどのリソースは、リージョン毎に独立して存在するため、それぞれのリソースを管理する場合には必ずリージョンを選択してから作業を行う必要があります。
+例えば、フェニックス・リージョンで作成した仮想クラウド・ネットワーク(VCN)やインスタンスは、アッシュバーン・リージョンでは利用することができないため、REGION メニューでリージョンをフェニックスからアッシュバーンに切り替えると閲覧できなくなります。
+pastedImage_30.png
+一部のIAMリソース(コンパートメント、ユーザー、グループ、ポリシー)については、すべてのリージョンに跨って有効なグローバル・リソースです。
+つまりユーザーを作成すると、そのユーザーはすべてのリージョンを利用することができるようになります。
+コンパートメントについても、ひとつのコンパートメントはすべてのリージョンのリソースを中に含むことができます。</p>
+
+<p>リージョンとコンパートメントの関係のイメージは以下のような形になります。</p>
+
+<p>pastedImage_32.png
+以上で、この章の作業は終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#%E3%82%B9%E3%83%A9%E3%82%A4%E3%83%89%E3%81%82%E3%82%8A" class="page__taxonomy-item" rel="tag">スライドあり</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/ocitutorials/tags/#%E3%83%AC%E3%83%99%E3%83%AB-%E5%BF%9C%E7%94%A8-200" class="page__taxonomy-item" rel="tag">レベル:応用(200)</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> カテゴリー: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/categories/#compute" class="page__taxonomy-item" rel="tag">Compute</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/ocitutorials/categories/#services" class="page__taxonomy-item" rel="tag">Services</a>
+    
+    </span>
+  </p>
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2020-10-29T12:31:47+09:00">October 29, 2020</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%97%E3%81%A6%E5%9F%BA%E6%9C%AC%E3%82%92%E7%90%86%E8%A7%A3%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2F01-getting-started%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2F01-getting-started%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2F01-getting-started%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/beginners/07-object-storage/" class="pagination--pager" title="チュートリアル - オブジェクト・ストレージを使う
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2020 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>
