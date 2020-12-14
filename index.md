@@ -3,19 +3,15 @@ title: チュートリアル : Oracle Cloud Infrastructure を使ってみよう
 description: Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。
 permalink: /
 lang: ja_JP
-layout: single
-author_profile: false
-sidebar:
-  nav: "docs"
-header:
-  overlay_image: /assets/images/rh01-cloud-home-pine-background.jpg
+layout: splash
+author_profile: true
 toc: true
 toc_label: "目次"
 ---
 
 このドキュメントは Oracle Cloud Infrastructure (OCI) を使っていこう! という人のためのチュートリアル集です。各項ごとに画面ショットなどを交えながらステップ・バイ・ステップで作業を進めて、OCIの機能についてひととおり学習することができるようになっています。 [OCI活用資料集](https://community.oracle.com/tech/welcome/discussion/4474318/oracle-cloud-infrastructure-%E6%B4%BB%E7%94%A8%E8%B3%87%E6%96%99%E9%9B%86) とあわせてご活用ください。
 
-また、このページのチュートリアルのうち、初級編を元にしたウェビナーのハンズオンも定期開催しています。最新の予定は [こちら](https://go.oracle.com/LP=93447?elqCampaignId=248187#xd_co_f=OTIyMTZlYzQtNGMxMi00YzY2LTg1ZTQtNTVkMGJkOTUwMGY0~) のウェビナー案内ページ をご確認ください。(集合形式でのハンズオン・セミナーは、感染症予防のためしばらくお休み予定です)
+また、このページのチュートリアルのうち、入門編を元にしたウェビナーのハンズオンも定期開催しています。最新の予定は [こちら](https://go.oracle.com/LP=93447?elqCampaignId=248187#xd_co_f=OTIyMTZlYzQtNGMxMi00YzY2LTg1ZTQtNTVkMGJkOTUwMGY0~) のウェビナー案内ページ をご確認ください。(集合形式でのハンズオン・セミナーは、感染症予防のためしばらくお休み予定です)
 
 ## 準備 - Oracle Cloud の無料トライアルを申し込む
 - **[Oracle Cloud 無料トライアルを申し込む](https://cloud.oracle.com/ja_JP/tryit)**  
@@ -26,11 +22,11 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
   - [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)  
 
 
-## チュートリアル初級編 - Oracle Cloud Infrastructure を使ってみよう
-- **[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](https://community.oracle.com/tech/welcome/discussion/4474261/)**  
+## チュートリアル入門編 - Oracle Cloud Infrastructure を使ってみよう
+- **[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](/ocitutorials/beginners/getting-started/)**  
 まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。
 
-- **[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](https://community.oracle.com/tech/welcome/discussion/4474255/)**  
+- **[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](/ocitutorials/beginners/creating-vcn/)**  
 クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!
 
 - **[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)**  
@@ -45,7 +41,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - **[ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](https://community.oracle.com/tech/welcome/discussion/4474296/)**  
 ファイルストレージサービス(FSS)を利用すると、複数のインスタンスから同時にネットワーク越しに利用できる共有ディスクを簡単に作成することができます。
 
-- **[オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](https://community.oracle.com/tech/welcome/discussion/4474260/)**  
+- **[オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](/ocitutorials/beginners/object-storage/)**  
 オブジェクト・ストレージを使うと、とても堅牢なデータストアを信じられないくらい安価に利用できます。まずは簡単な使い方を学びましょう。
 
 - **[クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://community.oracle.com/tech/welcome/discussion/4474262/)**  
@@ -68,7 +64,7 @@ Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infra
 
 
 
-## チュートリアル中級編 - Oracle Cloud Infrastructure アドバンスド
+## チュートリアル応用編 - Oracle Cloud Infrastructure アドバンスド
 - **[モニタリング機能でリソースを監視する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474301/%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E6%A9%9F%E8%83%BD%E3%81%A7%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
 

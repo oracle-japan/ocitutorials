@@ -33,19 +33,38 @@ logo: "/assets/images/social-og-oracle-badge.jpg"
 masthead_title: "OCI チュートリアル"
 
 # Build settings
-markdown: kramdown
 # remote_theme: mmistakes/minimal-mistakes
 theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: "contrast"
 locale: ja-JP
 search: true
-#breadcrumbs: true
+breadcrumbs: true
+
+
+# Conversion
+markdown: kramdown
+highlighter: rouge
+lsi: false
+excerpt_separator: "\n\n"
+incremental: false
+
 
 # Markdown Processing
 kramdown:
-  input : GFM
-  hard_wrap : false
-  auro_ids : true
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  smart_quotes: lsquo,rsquo,ldquo,rdquo
+  enable_coderay: false
+
+
+# Sass/SCSS
+sass:
+  sass_dir: _sass
+  style: compressed # https://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style
 
 
 # Outputting
@@ -61,9 +80,12 @@ include:
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
 exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
   - Gemfile
   - Gemfile.lock
-  - node_modules
+  - node_modules/
   - vendor/bundle/
   - vendor/cache/
   - vendor/gems/
@@ -71,12 +93,18 @@ exclude:
 
 # Plugins (previously gems:)
 plugins:
-  - jekyll-seo-tag
   - jekyll-paginate
   - jekyll-sitemap
   - jekyll-gist
   - jekyll-feed
-  - jemoji
+  - jekyll-include-cache
+
+# mimic GitHub Pages with --safe
+whitelist:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
   - jekyll-include-cache
 
 author:
@@ -106,47 +134,129 @@ footer:
     #   icon: "fab fa-fw fa-instagram"
     #   url: "https://instagram.com/"
 
-defaults:
-  # _collections
-  - scope:
-      path: ""
-    values:
-      layout: single
-      author_profile: false
-      show_date: true
-      read_time: false
-      comments: false
-      share: true
-      related: true
-      toc: true
-      toc_sticky: true
-      sidebar:
-        nav: "docs"
-      header:
-        overlay_image: /assets/images/rh01-cloud-home-pine-background.jpg
-  - scope:
-      path: "_pages"
-      type: pages
-    values:
-      layout: single
-      author_profile: false
-      sidebar:
-        nav: "docs"
-      header:
-        overlay_image: /assets/images/rh01-cloud-home-pine-background.jpg
 
-
+# Archives
+#  Type
+#  - GitHub Pages compatible archive pages built with Liquid ~> type: liquid (default)
+#  - Jekyll Archives plugin archive pages ~> type: jekyll-archives
+#  Path (examples)
+#  - Archive page should exist at path when using Liquid method or you can
+#    expect broken links (especially with breadcrumbs enabled)
+#  - <base_path>/tags/my-awesome-tag/index.html ~> path: /tags/
+#  - <base_path>/categories/my-awesome-category/index.html ~> path: /categories/
+#  - <base_path>/my-awesome-category/index.html ~> path: /
 category_archive:
   type: liquid
   path: /categories/
 tag_archive:
   type: liquid
   path: /tags/
+# https://github.com/jekyll/jekyll-archives
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+  layouts:
+    category: archive-taxonomy
+    tag: archive-taxonomy
+  permalinks:
+    category: /categories/:name/
+    tag: /tags/:name/
 
+
+# HTML Compression
+# - https://jch.penibelst.de/
+compress_html:
+  clippings: all
+  ignore:
+    envs: development
+
+
+# Collections
+collections_dir: tutorials
 collections:
   prerequisites:
     output: true
+    title: "準備"
     permalink: /:collection/:path/
+    sort_by: order
   beginners:
     output: true
+    title: "入門編"
     permalink: /:collection/:path/
+    sort_by: order
+  intermediates:
+    output: true
+    title: "応用編"
+    permalink: /:collection/:path/
+    sort_by: order
+  advanced-webapp:
+    output: true
+    title: "実践編(Webアプリ)"
+    permalink: /:collection/:path/
+    sort_by: order
+  advanced-cloudnative:
+    output: true
+    title: "実践編(Cloud Native)"
+    permalink: /:collection/:path/
+    sort_by: order
+  advanced-enterprise:
+    output: true
+    title: "実践編(エンタープライズ)"
+    permalink: /:collection/:path/
+    sort_by: order
+
+
+# Defaults
+defaults:
+  # _global
+  - scope:
+      path: ""
+    values:
+      layout: single
+      author_profile: false
+      show_date: false
+      read_time: false
+      comments: false
+      share: true
+      related: true
+      toc: true
+      toc_sticky: true
+      header:
+        overlay_image: /assets/images/rh01-cloud-home-pine-background.jpg
+  # _prerequisites
+  - scope:
+      type: prerequisites
+    values:
+      sidebar:
+        nav: "prerequisites"
+  # _beginners
+  - scope:
+      type: beginners
+    values:
+      sidebar:
+        nav: "beginners"
+  # _intermediates
+  - scope:
+      type: intermediates
+    values:
+      sidebar:
+        nav: "intermediates"
+  # _advanced-webapp
+  - scope:
+      type: advanced-webapp
+    values:
+      sidebar:
+        nav: "advanced-webapp"
+  # _advanced-enterprise
+  - scope:
+      type: advanced-enterprise
+    values:
+      sidebar:
+        nav: "advanced-enterprise"
+  # _advanced-cloudnative
+  - scope:
+      type: advanced-cloudnative
+    values:
+      sidebar:
+        nav: "advanced-cloudnative"

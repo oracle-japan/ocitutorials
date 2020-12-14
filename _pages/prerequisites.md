@@ -1,11 +1,10 @@
 ---
-title: "事前準備"
+title: "準備"
+excerpt: "このチュートリアルを実施するために必要な準備です。"
 permalink: /prerequisites/
 layout: collection
 collection: prerequisites
-entries_layout: list
+entries_layout: grid
 show_excerpts: true
-sort_by: date
-sort_order: forward
 classes: wide
 ---
