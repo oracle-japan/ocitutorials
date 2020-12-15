@@ -1,0 +1,681 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その2 - クラウドに仮想ネットワーク(VCN)を作る | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その2 - クラウドに仮想ネットワーク(VCN)を作る">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">
+
+
+  <meta property="og:description" content="クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/img4.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2020-12-15T09:46:41+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/prerequisites/" title="このチュートリアルを実施するに当たって必要な準備">準備</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-webapp/">実践編<br>(Webアプリ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-cloudnative/">実践編<br>(Cloud Native)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-enterprise/">実践編<br>(エンタープライズ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/creating-vcn/img4.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その2 - クラウドに仮想ネットワーク(VCN)を作る
+
+        
+      </h1>
+      
+        <p class="page__lead">クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/beginners" itemprop="item"><span itemprop="name">Beginners</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その2 - クラウドに仮想ネットワーク(VCN)を作る</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">入門編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-vcn/" class="active">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/attaching-block-volume/">その4 - ブロック・ボリュームをインスタンスにアタッチする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/managing-instance-lifecycle/">その5 - インスタンスのライフサイクルを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/object-storage/">その7 - オブジェクト・ストレージを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-oracle-database/">その8 - クラウドでOracle Databaseを使う</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その2 - クラウドに仮想ネットワーク(VCN)を作る">
+    <meta itemprop="description" content="クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!">
+    <meta itemprop="datePublished" content="2020-12-15T09:46:41+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</a></li>
+  <li><a href="#2-仮想クラウドネットワークの作成">2. 仮想クラウド・ネットワークの作成</a></li>
+  <li><a href="#3-作成した仮想クラウドネットワークの確認">3. 作成した仮想クラウド・ネットワークの確認</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure を利用するにあたっての最初のステップは、<strong>仮想クラウド・ネットワーク(Virtual Cloud Network : VCN)</strong> を作成することです。ネットワークの管理者が最初に仮想ネットワークを作ることで、その後インスタンスの管理者やストレージの管理者が、作成した仮想ネットワークの構成やルールに従ってコンポーネントを配置することができるようになります。</p>
+
+<p>このチュートリアルでは、コンソール画面から仮想クラウド・ネットワーク(VCN)を1つ作成し、その構成について確認してくことで、OCIのネットワークに対する理解を深めます。</p>
+
+<p><strong>所要時間 :</strong> 約15分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
+  <li><a href="../OCIConsole/OCIConsole.md">OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a>を完了していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</a></li>
+  <li><a href="#2-仮想クラウドネットワークの作成">2. 仮想クラウド・ネットワークの作成</a></li>
+  <li><a href="#3-作成した仮想クラウドネットワークの確認">3. 作成した仮想クラウド・ネットワークの確認</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</h1>
+
+<p>仮想クラウド・ネットワークの作成は、基本的にはオンプレミスでよく利用されるネットワークの各コンポーネントの仮想バージョンをクラウド上で構築していくようなものをイメージしていただくとわかりやすいと思います。</p>
+
+<p>仮想クラウド・ネットワークは以下のようなコンポーネントから構成されます。</p>
+
+<ul>
+  <li><strong>サブネット</strong> - 仮想ネットワークを構成するIPv4のサブネット</li>
+  <li><strong>仮想NIC</strong> - インスタンスにアタッチされ、サブネットに接続する仮想的なネットワーク・インターフェース・カード</li>
+  <li><strong>プライベートIPアドレス</strong> - 仮想NICにアサインされるIPアドレス</li>
+  <li><strong>インターネット・ゲートウェイ</strong> - VCNとインターネットとを接続するゲートウェイ</li>
+  <li><strong>動的ルーティング・ゲートウェイ(DRG)</strong> - VPNやFastConnect(閉域網/専用線接続サービス)によってオンプレミス・ネットワークなどと接続するゲートウェイ</li>
+  <li><strong>ローカル・ピアリング・ゲートウェイ(LPG)</strong> - 他のVCNと接続するゲートウェイ</li>
+  <li><strong>NATゲートウェイ</strong> - インターネットに到達する必要があるが、インターネットからは到達できないようにしたい場合</li>
+  <li><strong>サービス・ゲートウェイ</strong> - VCN外のOracle Cloudサービス(パブリックIPアドレスでアクセスするサービス)にプライベートに接続可能</li>
+  <li><strong>ルート表</strong> - VCN/サブネットのルーティングを行う仮想ルーターに設定するルーティング・テーブル</li>
+  <li><strong>セキュリティ・リスト</strong> - VCN/サブネットの仮想ファイアウォールに設定するルール</li>
+  <li><strong>ネットワーク・セキュリティ・グループ</strong> - 仮想ファイアウォールの役割を持つ新たな機能で、セキュリティ・リストよりもより細やかな設定が可能</li>
+  <li><strong>DHCPオプション</strong> - インスタンスがDHCPサーバーから取得する情報の設定</li>
+</ul>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-仮想クラウドネットワークの作成">2. 仮想クラウド・ネットワークの作成</h1>
+
+<p>仮想クラウド・ネットワークを作成します。今回は、予め設定されているテンプレート構成をもとに、付随するネットワーク・コンポーネントも一度に作成する <strong>VCNウィザード</strong> の方法を利用して作成していきます。（すべてカスタムで作成することも可能です。）</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> を選択し、<strong>VCNウィザード</strong> ボタンを押します。</p>
+
+    <p>※この際、左下の <strong>リスト範囲</strong> でリソースを <strong>作成したいコンパートメントを選択していること</strong> を確認してください。ここでは handson コンパートメントを作成して使用しています。</p>
+
+    <p><img width="700" alt="img1.png" src="img1.png" /></p>
+
+    <p><img width="700" alt="img2.png" src="img2.png" /></p>
+
+    <ul>
+      <li>
+        <p>画面左下のリスト範囲</p>
+
+        <p><img width="280" alt="img3.png" src="img3.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>立ち上がった ネットワーキングVCNウィザード ウィンドウで、デフォルトの <strong>インターネット接続性を持つVCN</strong> を選択した状態で <strong>VCNウィザードの起動</strong> をクリックします。このタイプを選択すると、以下のコンポーネントが作成されます。</p>
+
+    <ul>
+      <li>
+        <p>VCN、パブリック・サブネット、プライベート・サブネット、インターネット・ゲートウェイ(IG)、NATゲートウェイ(NAT)、サービス・ゲートウェイ(SG)</p>
+
+        <p><img width="600" alt="img4.png" src="img4.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>インターネット接続性を持つVCNの作成</strong> ウィンドウに以下の項目を入力し、<strong>次</strong> ボタンを押します</p>
+
+    <ul>
+      <li>
+        <p><strong>基本情報</strong></p>
+
+        <ul>
+          <li>
+            <p><strong>VCN名</strong> - 任意 (画面では TutorialVCN と入力しています)</p>
+          </li>
+          <li>
+            <p><strong>コンパートメント</strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します。</p>
+
+            <p><img width="650" alt="img5.png" src="img5.png" /></p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>VCNとサブネットの構成</strong></p>
+
+        <ul>
+          <li>
+            <p><strong>VCN CIDRブロック</strong> - デフォルトの <strong>10.0.0.0/16</strong> のまま。</p>
+          </li>
+          <li>
+            <p><strong>パブリック・サブネットCIDRブロック</strong> - デフォルトの <strong>10.0.0.0/24</strong> のまま。</p>
+          </li>
+          <li>
+            <p><strong>プライベート・サブネットCIDRブロック</strong> - デフォルトの <strong>10.0.1.0/24</strong> のまま。</p>
+
+            <p><img width="650" alt="img6.png" src="img6.png" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>次の <strong>確認および作成</strong> 画面で、これから作成されるリソースを確認し、<strong>作成</strong> ボタンをクリックします。</p>
+  </li>
+  <li>
+    <p>仮想クラウド・ネットワークが作成されます。</p>
+
+    <p><img width="600" alt="img7.png" src="img7.png" /></p>
+  </li>
+  <li>
+    <p>左下の、<strong>仮想クラウドネットワークの表示</strong> をクリックし、作成されたVCNのページを表示します。</p>
+
+    <p><img width="700" alt="img8.png" src="img8.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-作成した仮想クラウドネットワークの確認">3. 作成した仮想クラウド・ネットワークの確認</h1>
+
+<p>作成した仮想クラウド・ネットワーク(VCN)の詳細を確認し、どのようなコンポーネントが作成されているかを理解します。</p>
+
+<ol>
+  <li>
+    <p>コンソールで、先ほど作成した <strong>TutorialVCN</strong> のリンクをクリックし、詳細画面を表示します</p>
+  </li>
+  <li>
+    <p>上部に表示されている <strong>TutorialVCN</strong> 仮想クラウド・ネットワークの概要情報を確認します</p>
+
+    <p>アドレス空間が <strong>10.0.0.0/16</strong> で、ネットワークのDNSドメイン名が <strong>tutorialvcn.oraclevcn.com</strong> であることを確認します</p>
+
+    <p><img width="550" alt="img9.png" src="img9.png" /></p>
+
+    <p><code class="language-plaintext highlighter-rouge">[Note] これらの設定は、VCNウィザードでテンプレートに従って自動的に作成されたものです</code></p>
+  </li>
+  <li>
+    <p>下部に作成されたリソースが表示されています。
+パブリック・サブネットとプライベート・サブネットの2つが作成されていることを確認します。どちらもリージョナル・サブネットです。
+まず、**パブリック・サブネット-<VCN名>** のリンクをクリックし、サブネットの詳細画面を開きます。</VCN名></p>
+
+    <p><img width="700" alt="img10.png" src="img10.png" /></p>
+  </li>
+  <li>
+    <p>**パブリック・サブネット-<VCN名>** の画面で、このサブネットに設定されているセキュリティ・リスト、ルート表、DHCPオプションを確認できます。これらのコンポーネントは、VCN内に複数作成でき、各サブネット単位で割り当てます。
+セキュリティ・リストは **Default Security List for <VCN名>**、ルート表は **Default Route Table for VCN名**、DHCPオプションは **Default DHCP Options for <VCN名>** が設定されていることがわかったので、これらの中身を確認していきます。</VCN名></VCN名></VCN名></p>
+
+    <p><img width="700" alt="img11.png" src="img11.png" /></p>
+
+    <p><code class="language-plaintext highlighter-rouge">[Note] 作成されているサブネットはテンプレートに従って自動的に作成されたものです。もし異なる内容のサブネットを作成したい場合には、この画面から作成されたサブネットを終了(Terminate)し、新しいサブネットを作成することができます。</code></p>
+  </li>
+  <li>
+    <p>左側のサブメニューで <strong>インターネット・ゲートウェイ</strong> を選択し、作成済のインターネット・ゲートウェイを確認します
+インターネット・ゲートウェイが1つ作成されています。</p>
+
+    <p><img width="700" alt="img12.png" src="img12.png" /></p>
+  </li>
+  <li>
+    <p>左側のサブメニューで <strong>ルート表</strong> を選択し、作成済のルート表を確認します。Default Route Tableと、プライベート・サブネット用のルート表の2つが作成されていることを確認します。</p>
+
+    <p><img width="700" alt="img13.png" src="img13.png" /></p>
+  </li>
+  <li>
+    <p><strong>Default Route Table for TutorialVCN</strong> リンクをクリックし、作成されているルート表の詳細を確認します。</p>
+
+    <p>0.0.0.0/0 に対するルート(デフォルトルート)として、<strong>Internet Gateway TutorialVCN</strong> が定義されていることを確認します。</p>
+
+    <p><img width="700" alt="img14.png" src="img14.png" /></p>
+  </li>
+  <li>
+    <p>左側のサブメニューで <strong>インターネット・ゲートウェイ</strong> を選択し、作成済のインターネット・ゲートウェイを確認します。インターネット・ゲートウェイが1つ作成されています。</p>
+
+    <p><img width="700" alt="img15.png" src="img15.png" /></p>
+  </li>
+  <li>
+    <p>次に、ページ上部の <strong>VCN名</strong> のリンクを押して画面をもどり、次に左側サブメニューから <strong>セキュリティ・リスト</strong> を選択します
+下部に作成済セキュリティ・リストが表示されるので、<strong>Default Security List for TutorialVCN</strong> リンクをクリックし、詳細を表示します</p>
+
+    <p><img width="700" alt="img16.png" src="img16.png" /></p>
+  </li>
+  <li>
+    <p>**Default Security List for <VCN名>** の画面で、作成済みのセキュリティ・リストに設定されているルールの内容を確認します</VCN名></p>
+
+    <p><img width="700" alt="img17.png" src="img17.png" /></p>
+
+    <p><strong>イングレス・ルール</strong> (インバウンドのルール) として、以下のステートフル・ルールが定義され、またステートレス・ルールは定義されていないことがわかります</p>
+
+    <ul>
+      <li>
+        <p>パブリック・インターネット(0.0.0.0/0) からの ssh(TCP/22) に対する接続の許可</p>
+      </li>
+      <li>
+        <p>パブリック・インターネット(0.0.0.0/0) からのICMP通信に対してはタイプ3(Destination Unreachable)のコード4(Fragmentation Needed and Don’t Fragment was Set)を返答</p>
+      </li>
+      <li>
+        <p><strong>TestVCN</strong> 内(10.0.0.0/16) からのICMP通信に対してはタイプ3(Destination Unreachable)を返答</p>
+
+        <p><code class="language-plaintext highlighter-rouge">[Note] ICMPのコードおよびタイプの詳細については IANAのサイト をご覧ください</code></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>ページ左側のサブメニューから <strong>エグレス・ルール</strong> を選択し、定義済の Egress Rule (アウトバウンドのルール) の内容を確認します</p>
+
+    <p><img width="700" alt="img18.png" src="img18.png" /></p>
+
+    <p><strong>エグレス・ルール</strong> としては、パブリック・インターネット(0.0.0.0/0) に対する全てのステートフル通信が許可されていることがわかります</p>
+  </li>
+  <li>
+    <p>ページ上部の <strong>VCN名</strong> のリンクを押して画面をもどり、次にページ左側のサブメニューから <strong>DHCPオプション</strong> を選択します
+下部に作成済のDHCPオプションが表示されるので、 <strong>Default DHCP Options for TutorialVCN</strong> リンクをクリックし、詳細を表示します
+DHCPのオプションとして、リゾルバーの設定がインターネットおよびVNC内の名前解決に、検索ドメインがVCNのDNSドメイン名(tutorialvcn.oraclevcn.com)に設定されていることを確認します</p>
+
+    <p><img width="700" alt="img19.png" src="img19.png" /></p>
+  </li>
+  <li>
+    <p>次に、手順4以降と同様に、プライベート・サブネットに設定されているルート表、セキュリティ・リストもどのような設定になっているかを確認しましょう。プライベート・サブネットの場合は、インターネット・ゲートウェイ経由で外部アクセスをすることはできないので、NATゲートウェイおよびサービス・ゲートウェイが設定されていることがわかります。</p>
+  </li>
+</ol>
+
+<p>これで、この章の作業は終了です。</p>
+
+<p>この章では、<strong>TutorialVCN</strong> という仮想クラウド・ネットワークをひとつ作成し、デフォルトで作成されている付随コンポーネントの設定の詳細を確認しました。</p>
+
+<p>今回は <strong>VCNウィザード</strong> という方法で <strong>インターネット接続性を持つVCN</strong> を作成しましたが、作成されたコンポーネントは自由に変更、削除することができます。また今回は使わなかった <strong>仮想クラウド・ネットワークの作成</strong> の方法を使用すると、付随するコンポーネントを手動で作成することも可能です。</p>
+
+<p>用途に応じて適切なオプションで仮想クラウド・ネットワーク(VCN)を作成するようにしてください。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2020-12-15T09:46:41+09:00">December 15, 2020</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%81%9D%E3%81%AE2+-+%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%AB%E4%BB%AE%E6%83%B3%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%28VCN%29%E3%82%92%E4%BD%9C%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-vcn%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-vcn%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-vcn%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/beginners/getting-started/" class="pagination--pager" title="その1 - OCIコンソールにアクセスして基本を理解する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/beginners/creating-compute-instance/" class="pagination--pager" title="その3 - インスタンスを作成する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2020 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>
