@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/image-20210112132107310.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2021-01-12T14:33:38+09:00">
+  <meta property="article:published_time" content="2021-01-12T14:47:34+09:00">
 
 
 
@@ -177,7 +177,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/monitoring-resources/image-20210112132107310.png');"
 >
   
     <div class="wrapper">
@@ -309,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="モニタリング機能でOCIのリソースを監視する">
     <meta itemprop="description" content="モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。">
-    <meta itemprop="datePublished" content="2021-01-12T14:33:38+09:00">
+    <meta itemprop="datePublished" content="2021-01-12T14:47:34+09:00">
     
 
     <div class="page__inner-wrap">
@@ -320,14 +320,250 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#1-ベースになるインスタンスの作成">1. ベースになるインスタンスの作成</a></li>
+  <li><a href="#2-モニタリングメトリックの参照各リソースの詳細画面からの参照">2. モニタリング・メトリックの参照（各リソースの詳細画面からの参照）</a></li>
+  <li><a href="#3-モニタリングメトリックの参照サービスメトリック画面での参照">3. モニタリング・メトリックの参照（サービス・メトリック画面での参照）</a></li>
+  <li><a href="#4-アラームの通知先の作成">4. アラームの通知先の作成</a></li>
+  <li><a href="#6-アラーム定義の作成">6. アラーム定義の作成</a></li>
+  <li><a href="#6-メール通知されることを確認">6. メール通知されることを確認</a></li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p>システムを運用する際にはアプリケーションやシステムの状態に異常がないかを監視して問題がある場合には対処をすることでシステムの性能や可用性を高めることが可能です。</p>
 
-        <div><a href="https://community.oracle.com/tech/welcome/discussion/4474301/%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E6%A9%9F%E8%83%BD%E3%81%A7%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89" class="btn btn--primary">リンク</a></div>
+<p>OCIで提供されているモニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。また、アラームで事前定義した条件に合致した際には管理者に通知を行うことで管理者はタイムリーに適切な対処を行うことができます。</p>
+
+<p>コンピュートやブロックボリュームなどのOCIリソースに対してはモニタリングはデフォルトで有効になっています。</p>
+
+<p>この章では、コンピュート・インスタンスを対象にして性能メトリックの参照の方法を理解し、問題が発生した場合のアラーム通知設定を行って管理者へのメール通知を行います。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li><a href="https://community.oracle.com/docs/DOC-1019204">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を通じてコンピュート・インスタンスの作成が完了していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。</p>
+
+<h1 id="1-ベースになるインスタンスの作成">1. ベースになるインスタンスの作成</h1>
+
+<p>まずは、監視対象となるインスタンスを作成します。今回は、<a href="https://community.oracle.com/docs/DOC-1019204">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> で作成したコンピュート・インスタンスを使用します。</p>
+
+<p>ただし、Oracle提供イメージを使い、モニタリングの有効化を行っているインスタンスのみが対象です。（デフォルトは有効）</p>
+
+<p>インスタンス作成時にモニタリングを有効化するには、作成画面下部の <strong>拡張オプションの表示</strong> をクリックしてオプションを表示させ、<strong>モニタリングの有効化</strong> のチェックボックスにチェックが入っていることを確認してください。
+<img src="image-20210112131532597.png" alt="image-20210112131532597" /></p>
+
+<h1 id="2-モニタリングメトリックの参照各リソースの詳細画面からの参照">2. モニタリング・メトリックの参照（各リソースの詳細画面からの参照）</h1>
+
+<p>作成済みのコンピュート・インスタンスの詳細ページから、メトリックを参照することができます。</p>
+
+<ol>
+  <li>コンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し、作成したインスタンスのインスタンス名のリンクをクリックするか、右側の ・・・ メニューから <strong>インスタンスの詳細の表示</strong> を選択し、インスタンス詳細画面を開きます。</li>
+  <li>画面左下の <strong>リソース</strong> から <strong>メトリック</strong> を選択すると、このインスタンスのCPU使用率やメモリ使用率、Disk IO、ネットワーク転送量などの性能メトリックを参照することが可能です。
+<img src="image-20210112131845637.png" alt="image-20210112131845637" /></li>
+</ol>
+
+<h1 id="3-モニタリングメトリックの参照サービスメトリック画面での参照">3. モニタリング・メトリックの参照（サービス・メトリック画面での参照）</h1>
+
+<p>個別のリソースではなく複数のリソースにまたがってメトリックを一覧で参照したい場合は、サービス・メトリックのページからまとめて参照することができます。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>モニタリング</strong> → <strong>サービス・メトリック</strong> を選択します。</p>
+
+    <p><img src="image-20210112132011097.png" alt="image-20210112132011097" /></p>
+  </li>
+  <li>
+    <p>サービス・メトリック画面の上部で、表示させたい対象の <strong>コンパートメント</strong> と <strong>メトリック・ネームスペース</strong> を選択します。</p>
+
+    <ul>
+      <li>
+        <p><strong>コンパートメント</strong>：＜あらかじめ作成したインスタンスの存在するコンパートメント＞</p>
+      </li>
+      <li>
+        <p><strong>メトリック・ネームスペース</strong>：oci-computeagent</p>
+
+        <p><img src="image-20210112132037434.png" alt="image-20210112132037434" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>CPU使用率、メモリ使用率、ディスクI/Oなどのコンピュートインスタンスに定義されているメトリックのグラフを全て表示することができます。
+<img src="image-20210112132107310.png" alt="image-20210112132107310" /></p>
+  </li>
+  <li>
+    <p>開始時間、終了時間を変更することで表示する範囲を変更できます。
+<img src="image-20210112132140765.png" alt="image-20210112132140765" /></p>
+  </li>
+</ol>
+
+<h1 id="4-アラームの通知先の作成">4. アラームの通知先の作成</h1>
+
+<p>アラーム定義を作成し、メトリックの値がなんらかのしきい値に達したらアラームを発行して通知などを行うことが可能です。</p>
+
+<p>ここでは、インスタンスの死活監視目的で、インスタンスのメトリックが存在しない場合にアラームで検知してメール通知を行う設定を実行します。</p>
+
+<ol>
+  <li>コンソールメニューから <strong>アプリケーション統合</strong> → <strong>通知</strong> を選択し、通知画面を表示します。
+<img src="image-20210112132343278.png" alt="image-20210112132343278" /></li>
+  <li><strong>トピックの作成</strong> をクリックします。
+<img src="image-20210112132359984.png" alt="image-20210112132359984" /></li>
+  <li><strong>トピックの作成</strong> ウィンドウで必要事項を入力し、左下の <strong>作成</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>名前</strong> - 任意</li>
+      <li><strong>説明</strong>（オプション）
+<img src="image-20210112132415447.png" alt="image-20210112132415447" /></li>
+    </ul>
+  </li>
+  <li>作成したトピックの名前のリンクをクリックし、<strong>トピックの詳細</strong> 画面を表示します。<strong>サブスクリプションの作成</strong> ボタンをクリックします。
+<img src="image-20210112132442310.png" alt="image-20210112132442310" /></li>
+  <li><strong>サブスクリプションの作成</strong> 画面で以下の項目を入力し、左下の <strong>作成</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>プロトコル</strong> - 電子メール を選択(デフォルト)</li>
+      <li><strong>電子メール</strong> - 通知先となるメールアドレスを入力
+<img src="image-20210112132455070.png" alt="image-20210112132455070" /></li>
+    </ul>
+  </li>
+  <li>サブスクリプションを作成すると、<strong>PENDING</strong> ステータスとなっています。
+<img src="image-20210112132510617.png" alt="image-20210112132510617" /></li>
+  <li>設定したメールアドレスにOracle Cloudから確認メールが送信されます。メール内のリンクのURLをクリックします。
+<img src="image-20210112132535376.png" alt="image-20210112132535376" /></li>
+  <li><strong>Subscription confirmed</strong> のページが表示されます。
+<img src="image-20210112132554595.png" alt="image-20210112132554595" /></li>
+  <li>再度コンソール画面に戻ると、通知先の確認が完了したため <strong>Active</strong> のステータスに変わっています。これでメール通知の設定は完了です。</li>
+</ol>
+
+<h1 id="6-アラーム定義の作成">6. アラーム定義の作成</h1>
+
+<p>次に、アラームの定義を作成します。</p>
+
+<ol>
+  <li>コンソールメニューから <strong>モニタリング</strong> → <strong>アラーム定義</strong> を選択し、アラーム画面を表示します。<strong>アラームの作成</strong> ボタンをクリックします。
+<img src="70752854egami.png" alt="pastedImage_9.png" /></li>
+  <li><strong>アラームの作成</strong> ウィンドウで以下の項目を入力し、左下の <strong>作成</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>アラーム名</strong> - 任意の名前。ここではtest_alarmとしています。</li>
+      <li><strong>アラームの重大度</strong> - ここではデフォルトのクリティカルのままにしています。</li>
+      <li><strong>アラーム本体</strong> （オプション）- 任意</li>
+      <li>メトリックの説明
+        <ul>
+          <li><strong>コンパートメント</strong> - メトリックのあるコンパートメントを選択</li>
+          <li><strong>メトリック・ネームスペース</strong> - oci_computeagent を選択</li>
+          <li><strong>リソース・グループ</strong> - 空白のまま</li>
+          <li><strong>メトリック名</strong> - CpuUtilization を選択</li>
+          <li><strong>間隔</strong> - 1m （デフォルト）</li>
+          <li><strong>統計</strong> - Mean（デフォルト）</li>
+        </ul>
+      </li>
+      <li>メトリック・ディメンション
+        <ul>
+          <li><strong>ディメンション名</strong> - resourceDisplayName を選択</li>
+          <li><strong>ディメンション値</strong> - 監視対象とするインスタンスの表示名を選択</li>
+        </ul>
+      </li>
+      <li>トリガー・ルール
+        <ul>
+          <li><strong>演算子</strong> - 次より大きい を選択</li>
+          <li>値 - 40</li>
+          <li><strong>トリガー遅延分数</strong> - <strong>5</strong></li>
+        </ul>
+      </li>
+      <li>Notifications
+        <ul>
+          <li><strong>宛先サービス</strong> - Notification Service を選択</li>
+          <li><strong>コンパートメント</strong> - さきほど作成した通知トピックのあるコンパートメントを選択</li>
+          <li><strong>トピック</strong> - 先ほど作成したトピック名を選択</li>
+        </ul>
+      </li>
+      <li><strong>ENABLE THIS ALARM ?</strong> - チェックが入っていることを確認 （デフォルト）
+<img src="image-20210112134524003.png" alt="image-20210112134524003" /></li>
+    </ul>
+  </li>
+  <li>アラームが作成されました。このアラームが有効になっていることを確認してください。
+<img src="image-20210112134625834.png" alt="image-20210112134625834" /></li>
+</ol>
+
+<h1 id="6-メール通知されることを確認">6. メール通知されることを確認</h1>
+
+<p>アラームと通知の設定ができたので、これでコンピュートインスタンスのCPUメトリックが取得できない状況になればメールで通知されるはずです。</p>
+
+<p>ここでは、stressコマンドでCPU使用率を上げて通知されるかどうかを確認します。</p>
+
+<ol>
+  <li>
+    <p>インスタンスのパブリックIPアドレスを確認し、このアドレスを使用してteratermなどのターミナルからsshでログインします。</p>
+
+    <ul>
+      <li>ユーザー名 - <strong>opc</strong></li>
+      <li>RSA鍵 - インスタンス作成時に登録した公開鍵に対応する秘密鍵を指定（<a href="https://community.oracle.com/docs/DOC-1019204">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> で使用した秘密鍵と同じもの）</li>
+    </ul>
+  </li>
+  <li>
+    <p>インスタンスのCPU負荷をあげるために、Linuxのstressコマンドで負荷をかけます。</p>
+
+    <ul>
+      <li>
+        <p>以下のコマンドを入力し、stressをインストールします。</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum -y install stress
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>stressコマンドでCPUに負荷をかけます。VM.Standard2.1のシェイプであれば、下記コマンドでCPU負荷が100%になります。</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>stress -c 2 &amp;
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>topコマンドでCPU負荷が約100%になっていることを確認します。Ctrl + C で終了します。</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>top -c
+</code></pre></div>        </div>
+
+        <p><img src="image-20210112135119649.png" alt="image-20210112135119649" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>コンソール上からもCPU使用率の状況を確認します。コンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し、モニタリング対象のインスタンスの詳細画面を表示します。メトリックのCPU使用率のチャートを確認し、CPU使用率があがったことを確認します。</p>
+
+    <p><img src="image-20210112135311237.png" alt="image-20210112135311237" /></p>
+  </li>
+  <li>
+    <p>数分待ちます。</p>
+  </li>
+  <li>
+    <p>メールを受信したことを確認します。
+<img src="image-20210112135937431.png" alt="image-20210112135937431" /></p>
+  </li>
+  <li>
+    <p>メニューから、 <strong>モニタリング</strong> → <strong>アラームのステータス</strong> をクリックして、<strong>アラームのステータス</strong>の一覧画面を表示します。起動されているアラームの名前のリンクをクリックしてアラームの詳細画面を表示します。
+<img src="image-20210112140151650.png" alt="image-20210112140151650" /></p>
+  </li>
+  <li>
+    <p>アラームが起動された履歴を確認することができます。
+<img src="image-20210112140055632.png" alt="image-20210112140055632" /></p>
+  </li>
+</ol>
+
+<p>アラームと通知の設定が正しくできていることがわかりました。</p>
+
+<p>そのほか、様々なモニタリング・メトリックが事前定義されています。たとえばコンピュート・インスタンスが正しく起動しているかを監視したい場合は、oci_compute_infrastructure_healthメトリック・ネームスペースのインスタンス・ステータスのメトリックを監視します。</p>
+
+<p>用途に応じて適切に監視とアラームの設定をしていきましょう。</p>
+
+<p>以上がモニタリング機能によるリソース監視とアラーム通知による動作です。</p>
+
+<p>目次に戻る : <a href="https://oracle-japan.github.io/ocitutorials/">チュートリアル : Oracle Cloud Infrastructure を使ってみよう</a></p>
+
+
+        
       </section>
 
       <footer class="page__meta">
@@ -336,7 +572,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-12T14:33:38+09:00">January 12, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-12T14:47:34+09:00">January 12, 2021</time></p>
 
 
       </footer>
