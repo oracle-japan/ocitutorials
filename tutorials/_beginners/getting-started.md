@@ -3,6 +3,9 @@ title: "その1 - OCIコンソールにアクセスして基本を理解する"
 excerpt: "まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。"
 order: "010"
 layout: single
+tags:
+  - beginner
+  - network
 header:
   teaser: "/beginners/getting-started/img2.png"
   overlay_image: "/beginners/getting-started/img2.png"
