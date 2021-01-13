@@ -5,10 +5,15 @@ author_profile: true
 sidebar: false
 ---
 
-Oracle Cloud Infrastructure 活用資料集は、Oracle Cloud Infrastructure (OCI) を使っていこうという人のための便利リンク集です。  
-プレゼンテーションで利用したスライドや、セミナー動画などのコンテンツを中心に掲載しています。  
-技術資料については定期的にアップデートしていますので、最新のものをご利用ください。
-
-また、実際にOCIを触って学習したい! という方には Oracle Cloud Infrastructure チュートリアル も合わせてご活用ください。
+Oracle Cloud Infrastructure チュートリアルは、このドキュメントは Oracle Cloud Infrastructure (OCI) を使っていこう! という人のためのチュートリアル集です。各項ごとに画面ショットなどを交えながらステップ・バイ・ステップで作業を進めて、OCIの機能についてひととおり学習することができるようになっています。 [OCI活用資料集](https://oracle-japan.github.io/ocidocs/) とあわせてご活用ください。
 
 このページは、日本オラクル株式会社 ソリューション・エンジニア によってメンテナンスされています。
+
+
+{% for member in site.data.members %}
+  {{ member.name }}
+{% endfor %}
+
+
+---------------------
+  {% include author-profile.html %}
