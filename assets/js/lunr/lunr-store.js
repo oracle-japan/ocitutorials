@@ -11,16 +11,22 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/advanced-cloudnative/oke-for-intermediates/",
         "teaser": null
       },{
-        "title": "Oracle Functions ハンズオン（ビギナー向け）",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "title": "Oracle Functions ハンズオン",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。   ","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/advanced-cloudnative/functions-for-beginners/",
         "teaser": null
       },{
-        "title": "Oracle Cloud Infrastructure API Gateway ハンズオン（ビギナー向け）",
+        "title": "Oracle Cloud Infrastructure API Gateway ハンズオン",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/advanced-cloudnative/apigw-for-beginners/",
+        "teaser": null
+      },{
+        "title": "Oracle Cloud Infrastructure Data Science Service ハンズオン",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/advanced-cloudnative/datascience-beginners/",
         "teaser": null
       },{
         "title": "クラウドでOracle Exadata を使う",
