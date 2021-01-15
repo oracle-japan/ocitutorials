@@ -3,7 +3,7 @@ title: "その9 - クラウドでMySQL Databaseを使う"
 excerpt: "クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！"
 order: "090"
 header:
-  teaser: "/beginners/creating-vcn/img4.png"
+  teaser: "/beginners/creating-mds/MySQLLogo.jpg"
   overlay_image: "/beginners/creating-mds/MySQLLogo.jpg"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/
@@ -51,22 +51,19 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     <div align="center">
     <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;">
     </div>
-
+    <br>
 
 2. **MySQL DBシステムの作成** ボタンを押します。この際、左下の **リスト範囲** でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
     <div align="center">
     <img width="700" alt="img2.png" src="img2.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
     ※MySQL Database Serviceを利用するためにはOCIユーザーに適切なポリシーを設定する必要があります。詳細は **MySQLの前提条件** 部分の **詳細** をクリックすることで確認出来ます。Administratorsグループに所属するユーザーはこれらのポリシーも満たしているため、本チュートリアルでは、このポリシーの設定手順は割愛しています。
     <div align="center">
     <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;">
     </div>
-
-
-
+    <br>
 
 3. 立ち上がった **MySQL DBシステムの作成** ウィンドウの **① DBシステム情報** のステップで、以下の項目を入力し **次** ボタンを押します。
 
@@ -76,14 +73,12 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     <div align="center">
     <img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
     <div align="center">
     <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 4. **② データベース情報** のステップで、以下の項目を入力し **次** ボタンを押します
 
@@ -94,74 +89,62 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     <div align="center">
     <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 5. **③ バックアップ情報** のステップで、何も変更せずに **作成** ボタンを押します。
     <div align="center">
     <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 6. MDSが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
     <div align="center">
     <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;">
     <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 7. ページ左下の **リソース** → **エンドポイント** をクリックして、ホスト名、IPアドレスを確認しておきます。
     <div align="center">
     <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 <a id="anchor3"></a>
 
 # 3. セキュリティリストの修正(イングレス・ルールの追加)
 
 このチュートリアルで作成したMDSと通信するためには、TCP/IPによる3306ポートに対する通信を許可する必要があります。そのため、セキュリティリストのイングレス・ルールに設定を追加します。
-
-
+<br>
 
 1. コンソールメニューから **ネットワーキング** → **仮想クラウドネットワーク** を選択し、作成済みのVCNを選択します。本チュートリアルでは**TutorialVCN** です。またこれ以降はVCNが **TutorialVCN** である前提で説明を記述しています。
     <div align="center">
     <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
     <div align="center">
     <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 2. **プライベート・サブネット-TutorialVCN** をクリックします。
     <div align="center">
     <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 3. **プライベート・サブネット-TutorialVCNのセキュリティ・リスト** をクリックします。
     <div align="center">
     <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 4. **イングレス・ルールの追加** をクリックします。
     <div align="center">
     <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;">
     </div>
-
-
-
-
+    <br>
 
 5. 立ち上がった **イングレス・ルールの追加** ウィンドウで、以下の項目を入力し **イングレス・ルールの追加** ボタンを押します。
 
@@ -171,39 +154,34 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     <div align="center">
     <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 6. 3306ポートに対するイングレス・ルールが追加されたことを確認します。
     <div align="center">
     <img width="700" alt="img17.png" src="img17.png" style="border: 1px black solid;">
     </div>
-
-
+    <br>
 
 <a id="anchor4"></a>
 
 # 4. MySQLクライアントのインストール
 
 コンピュート・インスタンスにMySQLクライアントをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。
-
-
+<br>
 
 1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。
 
     ```
     sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
     ```
-
-
+    <br>
 
 2. 以下コマンドを実行し、MySQLクライアントをインストールします。
 
     ```
     sudo yum install mysql-community-client
     ```
-
-
+    <br>
 
 <a id="anchor5"></a>
 
@@ -237,16 +215,10 @@ mysql> SHOW DATABASES;
 +--------------------+
 4 rows in set (0.00 sec)
 ```
-
-
+<br>
 
 これで、この章の作業は終了です。
 
 この章では、**TestMDS** というMySQL Database Serviceを1つ作成し、コンピュート・インスタンスから接続確認をしました。MDSの構成は変更していませんが、用途に応じて構成を変更したり、シェイプやバックアップ設定なども変更できます。
 
 MDSの構成変更やシェイプの変更、バックアップ設定の変更なども是非試してみて下さい。
-
-
-```
-
-```
