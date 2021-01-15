@@ -1,0 +1,637 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その9 - クラウドでMySQL Databaseを使う | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その9 - クラウドでMySQL Databaseを使う">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/">
+
+
+  <meta property="og:description" content="クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/img4.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-01-15T12:10:09+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/prerequisites/" title="このチュートリアルを実施するに当たって必要な準備">準備</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-webapp/">実践編<br>(Webアプリ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-cloudnative/">実践編<br>(Cloud Native)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-enterprise/">実践編<br>(エンタープライズ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/creating-vcn/img4.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その9 - クラウドでMySQL Databaseを使う
+
+        
+      </h1>
+      
+        <p class="page__lead">クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/beginners" itemprop="item"><span itemprop="name">Beginners</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その9 - クラウドでMySQL Databaseを使う</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">入門編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/attaching-block-volume/">その4 - ブロック・ボリュームをインスタンスにアタッチする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/managing-instance-lifecycle/">その5 - インスタンスのライフサイクルを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/object-storage/">その7 - オブジェクト・ストレージを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-oracle-database/">その8 - クラウドでOracle Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds/" class="active">その9 - クラウドでMySQL Databaseを使う</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その9 - クラウドでMySQL Databaseを使う">
+    <meta itemprop="description" content="クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！">
+    <meta itemprop="datePublished" content="2021-01-15T12:10:09+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-mysql-database-servicemdsとは">1. MySQL Database Service(MDS)とは?</a></li>
+  <li><a href="#2-mdsの作成">2. MDSの作成</a></li>
+  <li><a href="#3-セキュリティリストの修正イングレスルールの追加">3. セキュリティリストの修正(イングレス・ルールの追加)</a></li>
+  <li><a href="#4-mysqlクライアントmysql-shellのインストール">4. MySQLクライアント、MySQL Shellのインストール</a></li>
+  <li><a href="#5-作成したmdsの確認">5. 作成したMDSの確認</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
+
+<p>このチュートリアルでは、コンソール画面からMDSのサービスを1つ作成し、コンピュート・インスタンスにMySQLクライアント、MySQL Shellをインストールして、クライアントからMDSへ接続する手順を説明します。</p>
+
+<p><strong>所要時間 :</strong> 約15分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
+  <li><a href="../getting-started/">OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a>を完了していること</li>
+  <li><a href="../creating-vcn/">クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a>を完了していること</li>
+  <li><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>を完了していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#1-MySQL Database Service(MDS)とは?">1. MySQL Database Service(MDS)とは?</a></li>
+  <li><a href="#2-MDSの作成">2. MDSの作成</a></li>
+  <li><a href="#3-セキュリティリストの修正(イングレス・ルールの追加)">3. セキュリティリストの修正(イングレス・ルールの追加)</a></li>
+  <li><a href="#4-MySQLクライアント、MySQL Shellのインストール">4. MySQLクライアント、MySQL Shellのインストール</a></li>
+  <li><a href="#5-作成したMDSの確認">5. 作成したMDSの確認</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-mysql-database-servicemdsとは">1. MySQL Database Service(MDS)とは?</h1>
+
+<p>MySQL Database Service(MDS)は、MySQL開発チームによるMySQLのマネージドサービスです。オンプレミスのMySQLと100%の互換性があり、MySQL開発ベンダーであるオラクル社からのサポートも受けられます。</p>
+
+<p>MDSではセキュリティの観点から、パブリックIPアドレスを持てない仕様になっています。そのため、このチュートリアルでは、別途コンピュート・インスタンスにMySQLクライアントをインストールして、コンピュート・インスタンス上のクライアントからMDSへ接続する手順まで説明します。</p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-mdsの作成">2. MDSの作成</h1>
+
+<p>MDSを作成します。本チュートリアルではデフォルトの構成でMDSを作成していますが、シェイプやストレージサイズ、バックアップ設定などをカスタマイズすることも可能です。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>データベース</strong> → <strong>MySQL</strong> → <strong>DBシステム</strong> を選択します。
+<img width="700" alt="img1.png" src="creating-mds/img1.png" style="border: 1px black solid;" /></p>
+  </li>
+  <li>
+    <p><strong>MySQL DBシステムの作成</strong> ボタンを押します。この際、左下の <strong>リスト範囲</strong> でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
+<img width="700" alt="img2.png" src="creating-mds/img2.png" style="border: 1px black solid;" /></p>
+  </li>
+</ol>
+
+<p>※MySQL Database Serviceを利用するためにはOCIユーザーに適切なポリシーを設定する必要があります。詳細は <strong>MySQLの前提条件</strong> 部分の <strong>詳細</strong> をクリックすることで確認出来ます。Administratorsグループに所属するユーザーはこれらのポリシーも満たしているため、本チュートリアルでは、このポリシーの設定手順は割愛しています。
+<img width="700" alt="img3.png" src="creating-mds/img3.png" style="border: 1px black solid;" /></p>
+
+<ol>
+  <li>立ち上がった <strong>MySQL DBシステムの作成</strong> ウィンドウの <strong>① DBシステム情報</strong> のステップで、以下の項目を入力し <strong>次</strong> ボタンを押します。</li>
+</ol>
+
+<ul>
+  <li><strong>名前</strong> - 任意の名前を入力します。ここでは「TestMDS」と入力しています。</li>
+  <li><strong>説明</strong> - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)</li>
+</ul>
+
+<p><img width="700" alt="img4.png" src="creating-mds/img4.png" style="border: 1px black solid;" /></p>
+
+<p><img width="700" alt="img5.png" src="creating-mds/img5.png" style="border: 1px black solid;" /></p>
+
+<ol>
+  <li><strong>② データベース情報</strong> のステップで、以下の項目を入力し <strong>次</strong> ボタンを押します</li>
+</ol>
+
+<ul>
+  <li><strong>ユーザー名</strong> - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)</li>
+  <li><strong>パスワード</strong> - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。</li>
+  <li><strong>パスワードの確認</strong> - パスワードを再入力します。</li>
+  <li><strong>ホスト名</strong> - 任意のホスト名を入力します。ここでは「TestMDS」と入力しています。
+<img width="700" alt="img6.png" src="creating-mds/img6.png" style="border: 1px black solid;" /></li>
+</ul>
+
+<ol>
+  <li>
+    <p><strong>③ バックアップ情報</strong> のステップで、何も変更せずに <strong>作成</strong> ボタンを押します。
+<img width="700" alt="img7.png" src="creating-mds/img7.png" style="border: 1px black solid;" /></p>
+  </li>
+  <li>
+    <p>MDSが<strong>作成中</strong>になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが<strong>アクティブ</strong>に変わります。
+<img width="700" alt="img8.png" src="creating-mds/img8.png" style="border: 1px black solid;" />
+<img width="700" alt="img9.png" src="creating-mds/img9.png" style="border: 1px black solid;" /></p>
+  </li>
+  <li>
+    <p>ページ左下の <strong>リソース</strong> → <strong>エンドポイント</strong> をクリックして、ホスト名、IPアドレスを確認しておきます。
+<img width="700" alt="img10.png" src="creating-mds/img10.png" style="border: 1px black solid;" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-セキュリティリストの修正イングレスルールの追加">3. セキュリティリストの修正(イングレス・ルールの追加)</h1>
+
+<p>このチュートリアルで作成したMDSと通信するためには、TCP/IPによる3306ポートに対する通信を許可する必要があります。そのため、セキュリティリストのイングレス・ルールに設定を追加します。</p>
+
+<ol>
+  <li>コンソールメニューから <strong>ネットワーキング</strong> → <strong>仮想クラウドネットワーク</strong> を選択し、作成済みのVCNを選択します。本チュートリアルでは<strong>TutorialVCN</strong> です。またこれ以降はVCNが <strong>TutorialVCN</strong> である前提で説明を記述しています。
+<img width="700" alt="img11.png" src="creating-mds/img11.png" style="border: 1px black solid;" /></li>
+</ol>
+
+<p><img width="700" alt="img12.png" src="creating-mds/img12.png" style="border: 1px black solid;" /></p>
+
+<ol>
+  <li>
+    <p><strong>プライベート・サブネット-TutorialVCN</strong> をクリックします。
+<img width="700" alt="img13.png" src="creating-mds/img13.png" style="border: 1px black solid;" /></p>
+  </li>
+  <li>
+    <p><strong>プライベート・サブネット-TutorialVCNのセキュリティ・リスト</strong> をクリックします。
+<img width="700" alt="img14.png" src="creating-mds/img14.png" style="border: 1px black solid;" /></p>
+  </li>
+  <li>
+    <p><strong>イングレス・ルールの追加</strong> をクリックします。
+<img width="700" alt="img15.png" src="creating-mds/img15.png" style="border: 1px black solid;" /></p>
+  </li>
+  <li>
+    <p>立ち上がった <strong>イングレス・ルールの追加</strong> ウィンドウで、以下の項目を入力し <strong>イングレス・ルールの追加</strong> ボタンを押します。</p>
+  </li>
+</ol>
+
+<ul>
+  <li><strong>ソースCIDR</strong> - 「10.0.0.0/16」と入力します。</li>
+  <li><strong>宛先ポート範囲</strong> - 「3306」と入力します。</li>
+</ul>
+
+<p><img width="700" alt="img16.png" src="creating-mds/img16.png" style="border: 1px black solid;" /></p>
+
+<ol>
+  <li>3306ポートに対するイングレス・ルールが追加されたことを確認します。
+<img width="700" alt="img17.png" src="creating-mds/img17.png" style="border: 1px black solid;" /></li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-mysqlクライアントmysql-shellのインストール">4. MySQLクライアント、MySQL Shellのインストール</h1>
+
+<p>コンピュート・インスタンスにMySQLクライアント、MySQL Shellをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。</p>
+
+<ol>
+  <li><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+</code></pre></div></div>
+
+<ol>
+  <li>以下コマンドを実行し、MySQLクライアントをインストールします。</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install mysql-community-client
+</code></pre></div></div>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-作成したmdsの確認">5. 作成したMDSの確認</h1>
+
+<p>mysqlコマンドラインクライアントを使ってMDSへの接続し、SHOW DATABASESコマンドを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[opc@testvm1 ~]$ mysql -u root -p -h TestMDS.sub01140222111.tutorialvcn.oraclevcn.com
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 31
+Server version: 8.0.22-u4-cloud MySQL Enterprise - Cloud
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql&gt; SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+</code></pre></div></div>
+
+<p>これで、この章の作業は終了です。</p>
+
+<p>この章では、<strong>TestMDS</strong> というMySQL Database Serviceをひとつ作成し、コンピュート・インスタンスから接続確認をしました。MDSの構成は変更していませんが、用途に応じて構成を変更したり、シェイプやバックアップ設定なども変更できます。</p>
+
+<p>MDSの構成変更やシェイプの変更、バックアップ設定の変更なども是非試してみて下さい。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-15T12:10:09+09:00">January 15, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%81%9D%E3%81%AE9+-+%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%A7MySQL+Database%E3%82%92%E4%BD%BF%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-mds%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-mds%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-mds%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/beginners/using-oracle-database/" class="pagination--pager" title="その8 - クラウドでOracle Databaseを使う
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>
