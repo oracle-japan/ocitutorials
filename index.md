@@ -47,6 +47,9 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - **[クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://community.oracle.com/tech/welcome/discussion/4474262/)**  
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!! OCIでは仮想マシン、ベアメタルサーバーからExadataまで、様々なOracle Databaseを簡単に使うことができます。まずはインスタンスを作ってみましょう。
 
+- **[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/)**  
+クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！ 
+
 - **[クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)](https://community.oracle.com/docs/DOC-1038411)**  
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
@@ -148,3 +151,4 @@ Oracle Cloud の新しいサービスのリリース情報などや技術情報�
 
 - **[Oracle Cloud Infrastructure マニュアル](https://docs.cloud.oracle.com/ja-jp/iaas/Content/home.htm)**  
 マニュアルの日本語訳です。翻訳まで少しタイムラグがあるので、最新情報は右上の地球アイコンから英語版に切り替えて確認してください。
+
