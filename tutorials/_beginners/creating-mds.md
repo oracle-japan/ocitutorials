@@ -48,17 +48,17 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 
 1. コンソールメニューから **データベース** → **MySQL** → **DBシステム** を選択します。
-<img width="700" alt="img1.png" src="creating-mds/img1.png" style="border: 1px black solid;">
+<img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;">
 
 
 
 2. **MySQL DBシステムの作成** ボタンを押します。この際、左下の **リスト範囲** でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
-<img width="700" alt="img2.png" src="creating-mds/img2.png" style="border: 1px black solid;">
+<img width="700" alt="img2.png" src="img2.png" style="border: 1px black solid;">
 
 
 
 ※MySQL Database Serviceを利用するためにはOCIユーザーに適切なポリシーを設定する必要があります。詳細は **MySQLの前提条件** 部分の **詳細** をクリックすることで確認出来ます。Administratorsグループに所属するユーザーはこれらのポリシーも満たしているため、本チュートリアルでは、このポリシーの設定手順は割愛しています。
-<img width="700" alt="img3.png" src="creating-mds/img3.png" style="border: 1px black solid;">
+<img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;">
 
 
 
@@ -67,11 +67,11 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 - **名前** - 任意の名前を入力します。ここでは「TestMDS」と入力しています。
 - **説明** - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
 
-<img width="700" alt="img4.png" src="creating-mds/img4.png" style="border: 1px black solid;">
+<img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;">
 
    
 
-<img width="700" alt="img5.png" src="creating-mds/img5.png" style="border: 1px black solid;">
+<img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;">
 
 
 
@@ -81,23 +81,23 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 - **パスワード** - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。
 - **パスワードの確認** - パスワードを再入力します。
 - **ホスト名** - 任意のホスト名を入力します。ここでは「TestMDS」と入力しています。
-<img width="700" alt="img6.png" src="creating-mds/img6.png" style="border: 1px black solid;">
+<img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;">
   
    
   
 5. **③ バックアップ情報** のステップで、何も変更せずに **作成** ボタンを押します。
-<img width="700" alt="img7.png" src="creating-mds/img7.png" style="border: 1px black solid;">
+<img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;">
 
 
 
 6. MDSが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
-<img width="700" alt="img8.png" src="creating-mds/img8.png" style="border: 1px black solid;">
-<img width="700" alt="img9.png" src="creating-mds/img9.png" style="border: 1px black solid;">
+<img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;">
+<img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;">
 
 
 
 7. ページ左下の **リソース** → **エンドポイント** をクリックして、ホスト名、IPアドレスを確認しておきます。
-<img width="700" alt="img10.png" src="creating-mds/img10.png" style="border: 1px black solid;">
+<img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;">
 
 
 
@@ -110,26 +110,26 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 
 1. コンソールメニューから **ネットワーキング** → **仮想クラウドネットワーク** を選択し、作成済みのVCNを選択します。本チュートリアルでは**TutorialVCN** です。またこれ以降はVCNが **TutorialVCN** である前提で説明を記述しています。
-<img width="700" alt="img11.png" src="creating-mds/img11.png" style="border: 1px black solid;">
+<img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;">
 
 
 
-<img width="700" alt="img12.png" src="creating-mds/img12.png" style="border: 1px black solid;">
+<img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;">
 
 
 
 2. **プライベート・サブネット-TutorialVCN** をクリックします。
-<img width="700" alt="img13.png" src="creating-mds/img13.png" style="border: 1px black solid;">
+<img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;">
 
 
 
 3. **プライベート・サブネット-TutorialVCNのセキュリティ・リスト** をクリックします。
-<img width="700" alt="img14.png" src="creating-mds/img14.png" style="border: 1px black solid;">
+<img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;">
 
 
 
 4. **イングレス・ルールの追加** をクリックします。
-<img width="700" alt="img15.png" src="creating-mds/img15.png" style="border: 1px black solid;">
+<img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;">
 
 
 
@@ -140,12 +140,12 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 - **ソースCIDR** - 「10.0.0.0/16」と入力します。
 - **宛先ポート範囲** - 「3306」と入力します。
 
-<img width="700" alt="img16.png" src="creating-mds/img16.png" style="border: 1px black solid;">
+<img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
 
 
 
 6. 3306ポートに対するイングレス・ルールが追加されたことを確認します。
-<img width="700" alt="img17.png" src="creating-mds/img17.png" style="border: 1px black solid;">
+<img width="700" alt="img17.png" src="img17.png" style="border: 1px black solid;">
 
 
 
