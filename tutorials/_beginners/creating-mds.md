@@ -3,8 +3,8 @@ title: "その9 - クラウドでMySQL Databaseを使う"
 excerpt: "クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！"
 order: "090"
 header:
-  teaser: "/beginners/creating-mds/MySQLLogo.jpg"
-  overlay_image: "/beginners/creating-mds/MySQLLogo.jpg"
+  teaser: "/beginners/creating-mds/MySQLLogo_teaser.png"
+  overlay_image: "/beginners/creating-mds/MySQLLogo_overlay_image.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/
 ---
