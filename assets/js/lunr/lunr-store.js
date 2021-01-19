@@ -185,6 +185,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/data-safe-tutorials/",
         "teaser": null
       },{
+        "title": "Oracle Content and Experience チュートリアル",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/oce-tutorial/",
+        "teaser": null
+      },{
         "title": "Oracle Cloud 無料トライアルを申し込む",
         "excerpt":"Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。 ※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)      Oracle Cloud 無料トライアル サインアップガイド   Oracle Cloud Free Tierに関するFAQ  ","categories": [],
         "tags": [],
