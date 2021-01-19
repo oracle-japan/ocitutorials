@@ -80,7 +80,7 @@ OCIのロードバランサーを使うと、冗長化したWebサーバーに�
 - **[ブロック・ボリュームをバックアップする - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474358/%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF-%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%82%92%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。
 
-- **[DNSサービスを使う - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474264/dns%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%92%E4%BD%BF%E3%81%86-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[DNSサービスを使う - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/interemediates/using-dns/)**  
 クラウド上でインターネット向けにサービスを構築したいのであれば、OCIのDNSサービスを使わない手はありません。Dyn.comにホストされた堅牢な権威DNSネットワークが、従量制で簡単に利用できます。マネージドサービスなのでDDoS対策もバッチリ。さあやってみましょう。
 
 - **[Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編) - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474289/email-delivery%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E5%A4%96%E9%83%A8%E3%81%B8%E3%81%AE%E3%83%A1%E3%83%BC%E3%83%AB%E9%80%81%E4%BF%A1-%E3%81%9D%E3%81%AE1-%E9%85%8D%E4%BF%A1%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E7%B7%A8-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
