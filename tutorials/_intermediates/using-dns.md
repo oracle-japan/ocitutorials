@@ -202,16 +202,16 @@ OCIコンソール上で名前解決を提供するネームサーバーを確�
 
 # 4. この後のお勧めステップ
 
-- **[OCI活用資料集 - ヘルスチェック & トラフィック管理](https://oracle-japan.github.io/ocidocs/services/edge%20service/health-check-and-traffic-management/)**  
+- **[OCI活用資料集 - ヘルスチェック & トラフィック管理](https://oracle-japan.github.io/ocidocs/services/edge%20service/health-check-and-traffic-management/){:target="_blank"}**  
     OCIのエンドポイントをOCIの外部(aws、GCPなどのクラウドサービス)から能動的に監視し、通知やアクションを行う機能(ヘルスチェック)や、複数のグローバルIPを持つサービスをロードバランシングしたり、ヘルスチェックの状態に応じてフェイルオーバーしたり、地理的な位置に応じてトラフィックを分散したりする機能(トラフィック管理)など、DNSを利用したさらに高度な機能についての説明スライド
 
-- **[アーキテクチャ・センター - VCNでのプライベートDNSの使用](**https://docs.oracle.com/ja/solutions/private-dns/index.html#GUID-A1669E7E-EF8B-4B0A-AA36-51D73D51ED46**)**  
+- **[アーキテクチャ・センター - VCNでのプライベートDNSの使用](**https://docs.oracle.com/ja/solutions/private-dns/index.html#GUID-A1669E7E-EF8B-4B0A-AA36-51D73D51ED46**){:target="_blank"}**  
     VCN(仮想クラウド・ネットワーク)の中のプライベートIPアドレスの名前解決を行うためのプライベートDNS機能についてのドキュメント
 
 
 # 参考情報
 
-- **[OCI活用資料集 - OCI DNSサービス概要 (PPTスライド / 動画)](https://oracle-japan.github.io/ocidocs/services/edge%20service/dns-100/)**
-- **[Oracle Cloud Infrastructure ドキュメント - DNSサービスの概要](https://docs.oracle.com/ja-jp/iaas/Content/DNS/Concepts/dnszonemanagement.htm)**
-- **[Oracle.com - 価格表 : DNS](https://www.oracle.com/jp/cloud/price-list.html#dns)**
-- **[Oracle.com - DNSに関するよくある質問](https://www.oracle.com/jp/cloud/networking/dns-faq.html)**
+- **[OCI活用資料集 - OCI DNSサービス概要 (PPTスライド / 動画)](https://oracle-japan.github.io/ocidocs/services/edge%20service/dns-100/){:target="_blank"}**
+- **[Oracle Cloud Infrastructure ドキュメント - DNSサービスの概要](https://docs.oracle.com/ja-jp/iaas/Content/DNS/Concepts/dnszonemanagement.htm){:target="_blank"}**
+- **[Oracle.com - 価格表 : DNS](https://www.oracle.com/jp/cloud/price-list.html#dns){:target="_blank"}**
+- **[Oracle.com - DNSに関するよくある質問](https://www.oracle.com/jp/cloud/networking/dns-faq.html){:target="_blank"}**
