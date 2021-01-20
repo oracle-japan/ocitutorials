@@ -7,8 +7,8 @@ tags:
   - beginner
   - network
 header:
-  teaser: "/beginners/using-file-system/image-20210118132254521.png"
-  overlay_image: "/beginners/using-file-system/image-20210118132254521.png"
+  teaser: "/beginners/using-file-storage/image-20210118132254521.png"
+  overlay_image: "/beginners/using-file-storage/image-20210118132254521.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 # link: https://community.oracle.com/tech/welcome/discussion/4474296/
 ---
