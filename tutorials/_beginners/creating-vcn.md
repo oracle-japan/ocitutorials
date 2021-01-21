@@ -19,7 +19,7 @@ Oracle Cloud Infrastructure を利用するにあたっての最初のステッ�
 **前提条件 :**
 
 1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること
-2. [その1 - OCIコンソールにアクセスして基本を理解する](./getting-started)を完了していること
+2. [その1 - OCIコンソールにアクセスして基本を理解する](../getting-started)を完了していること
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
 
