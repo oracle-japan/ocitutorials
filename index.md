@@ -29,7 +29,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - **[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](/ocitutorials/beginners/creating-vcn/)**  
 クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!
 
-- **[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)**  
+- **[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](/ocitutorials/beginners/creating-compute)**  
 ネットワークができたら、いよいよインスタンスを立ち上げましょう。OCIなら仮想マシンもベアメタルサーバーも同じように簡単に作成できます。
 
 - **[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](https://community.oracle.com/tech/welcome/discussion/4474259/)**  
@@ -38,7 +38,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - **[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](https://community.oracle.com/tech/welcome/discussion/4474283/)**  
 作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。
 
-- **[ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](https://community.oracle.com/tech/welcome/discussion/4474296/)**  
+- **[ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](/ocitutorials/beginners/using-file-storage)**  
 ファイルストレージサービス(FSS)を利用すると、複数のインスタンスから同時にネットワーク越しに利用できる共有ディスクを簡単に作成することができます。
 
 - **[オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](/ocitutorials/beginners/object-storage/)**  
@@ -68,7 +68,7 @@ Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infra
 
 
 ## チュートリアル応用編 - Oracle Cloud Infrastructure アドバンスド
-- **[モニタリング機能でリソースを監視する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474301/%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E6%A9%9F%E8%83%BD%E3%81%A7%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%92%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[モニタリング機能でリソースを監視する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/interemediates/using-dns/monitoring-resources)**  
 モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
 
 - **[ロードバランサーでWebサーバーを負荷分散する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474257/%E3%83%AD%E3%83%BC%E3%83%89%E3%83%90%E3%83%A9%E3%83%B3%E3%82%B5%E3%83%BC%E3%81%A7web%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%82%92%E8%B2%A0%E8%8D%B7%E5%88%86%E6%95%A3%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
@@ -126,7 +126,11 @@ Oracle FunctionsとOracle Cloud Infrastructure(OCI)上の様々なサービス�
 Oracle Content and Experience (OCE)は、API ファーストなアーキテクチャで、マルチチャネルでのコンテンツ配信を実現するインテリジェントなコンテンツ管理プラットフォームです。この文書では、OCEが提供するファイル共有、アセット管理、Webサイト管理などさまざまな機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせてリンク先の各文書をご利用ください。
 
 - **[Oracle Integration チュートリアル](https://community.oracle.com/docs/DOC-1037469)**  
-Oracle Integration(OIC)は、アプリケーションの統合、プロセスの自動化およびビジュアル・アプリケーションの作成を可能にする完全に管理されたサービスです。この文書では、OIC が提供するプロセス機能（ワークフローの作成・テスト・公開）など、さまざまな機能の説明や使い方が、各文書ごとにステップ・バイ・ステップで紹介されています。利用する機能にあわせて、リンク先の各文書をご利用ください。
+  Oracle Integration(OIC)は、アプリケーションの統合、プロセスの自動化およびビジュアル・アプリケーションの作成を可能にする完全に管理されたサービスです。この文書では、OIC が提供するプロセス機能（ワークフローの作成・テスト・公開）など、さまざまな機能の説明や使い方が、各文書ごとにステップ・バイ・ステップで紹介されています。利用する機能にあわせて、リンク先の各文書をご利用ください。
+
+- **[ストレージ・ゲートウェイを作成する](/ocitutorials/interemediates/storage-gateway/)**
+
+  ストレージ・ゲートウェイ とは、アプリケーションが 標準のNFSv4プロトコルを使用してOracle Cloud Infrastructure オブジェクト・ストレージと相互作用できるようになるサービスです。オンプレミスからのデータ転送、バックアップ、アーカイブ用途などに利用できます。
 
 
 
