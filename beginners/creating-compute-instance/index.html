@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/img11.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2021-01-21T15:01:18+09:00">
+  <meta property="article:published_time" content="2021-01-22T22:12:02+09:00">
 
 
 
@@ -177,7 +177,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/creating-compute-instance/img11.png');"
 >
   
     <div class="wrapper">
@@ -297,7 +297,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その3 - インスタンスを作成する">
     <meta itemprop="description" content="ネットワークができたら、いよいよインスタンスを立ち上げましょう。OCIなら仮想マシンもベアメタルサーバーも同じように簡単に作成できます。">
-    <meta itemprop="datePublished" content="2021-01-21T15:01:18+09:00">
+    <meta itemprop="datePublished" content="2021-01-22T22:12:02+09:00">
     
 
     <div class="page__inner-wrap">
@@ -308,14 +308,255 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#1-新規仮想マシンインスタンスの作成">1. 新規仮想マシンインスタンスの作成</a></li>
+  <li><a href="#2-作成したインスタンス詳細情報の確認">2. 作成したインスタンス詳細情報の確認</a></li>
+  <li><a href="#3-インスタンスへの接続">3. インスタンスへの接続</a>
+    <ul>
+      <li><a href="#os上のファイアウォールルールの設定">OS上のファイアウォール・ルールの設定</a></li>
+    </ul>
+  </li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
-        <div><a href="https://community.oracle.com/tech/welcome/discussion/4474256/" class="btn btn--primary">リンク</a></div>
+<p>この章では、作成済みの仮想クラウド・ネットワーク(VCN)の中にコンピュート・インスタンスを作成していきます。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li><a href="../creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること</li>
+</ul>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. 新規仮想マシンインスタンスの作成</a></li>
+  <li><a href="#anchor2">2. 作成したインスタンス詳細情報の確認</a></li>
+  <li><a href="#anchor3">3. インスタンスへの接続</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-新規仮想マシンインスタンスの作成">1. 新規仮想マシンインスタンスの作成</h1>
+
+<p>第2章で作成した仮想コンピュート・ネットワーク(VCN)に、新しくインスタンスを作成していきます。</p>
+
+<p>今回はコンソールから、一番小さなシェイプ(1 OCPU)の仮想マシン(VM)タイプの Oracle Linux 7 のインスタンスを1つ作成します。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">コンピュート</code></strong> → <strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">インスタンスの作成</code></strong> ボタンを押します</p>
+  </li>
+  <li>
+    <p>立ち上がった ”コンピュート・インスタンスの作成” ウィンドウに 以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタンを押下します</p>
+
+    <ul>
+      <li><strong>名前</strong> - 作成するインスタンスの名前として、任意の値を設定します。 (画面は TestVM1 として入力しています)</li>
+      <li><strong>コンパートメントに作成</strong> - デフォルトで現在のコンパートメントが選択されています。別のコンパートメントに作成したい場合はリストから選択します。</li>
+    </ul>
+
+    <p><img width="700" alt="img2.png" src="img2.png" /></p>
+
+    <ul>
+      <li>
+        <p><strong>配置とハードウェアの構成</strong></p>
+
+        <ul>
+          <li>
+            <p><strong>可用性ドメイン</strong> - 任意の可用性ドメインを選択できます。集合ハンズオン環境を利用している場合は、講師の指示に従って選択してください。</p>
+          </li>
+          <li>
+            <p><strong>このインスタンスのフォルト・ドメインの選択</strong> - チェックすると、任意のフォルト・ドメインを指定できます。集合ハンズオン環境を利用している場合は、講師の指示に従って選択してください。</p>
+          </li>
+          <li>
+            <p><strong>イメージ</strong> -  <strong><code class="language-plaintext highlighter-rouge">イメージの変更</code></strong> をクリックし、Oracle Linux 7 の最新のイメージを選択</p>
+          </li>
+          <li><strong>シェイプ</strong> - <strong><code class="language-plaintext highlighter-rouge">シェイプの変更</code></strong> をクリックし、以下のインスタンス・タイプ、シェイプ・シリーズ、シェイプを選択します。
+            <ul>
+              <li>インスタンス・タイプ - <strong>仮想マシン</strong></li>
+            </ul>
+          </li>
+          <li>シェイプ・タイプ - <strong>Intel Skylake</strong>
+            <ul>
+              <li>シェイプ - <strong>VM.Standard2.1</strong></li>
+            </ul>
+          </li>
+        </ul>
+
+        <p><img src="img4.png" alt="img4.png" /></p>
+      </li>
+      <li>
+        <p><strong>ネットワーキングの構成</strong></p>
+
+        <ul>
+          <li><strong>ネットワーク</strong> - ”既存の仮想クラウド・ネットワーク” を選択</li>
+          <li><strong><font color="darkgray">\[コンパートメント名\]</font> の仮想クラウド・ネットワーク</strong> - 第2章で作成した仮想クラウド・ネットワークを選択 (画面は TutorialVCN を選択しています)</li>
+          <li><strong>サブネット</strong> - ”既存のサブネット” を選択</li>
+          <li><strong><font color="darkgray">\[コンパートメント名\]</font> のサブネット</strong> - 第2章で作成した<strong>パブリック・サブネット</strong>を選択 (画面は パブリック・サブネット-TutorialVCN を選択しています)</li>
+          <li><strong>ネットワーク・セキュリティ・グループを使用してトラフィックを制御</strong> - チェックなし</li>
+          <li><strong>パブリックIPアドレス</strong> - ”パブリックIPv4アドレスの割当て” を選択</li>
+        </ul>
+
+        <blockquote>
+          <p><strong>Note</strong></p>
+
+          <p>2章でVCNウィザードで作成したVCNには、プライベート・サブネットとパブリック・サブネットがあります。本チュートリアルでは、このあとインターネット経由でssh接続を行うため、必ず <strong>パブリック・サブネットを選択</strong> するようにしてください。</p>
+        </blockquote>
+
+        <p><img width="700" alt="img5.png" src="img5.png" /></p>
+      </li>
+      <li>
+        <p><strong>SSHキーの追加</strong> - “SSHキー・ペアの生成” を選択し、<strong><code class="language-plaintext highlighter-rouge">秘密キーの保存</code></strong>、<strong><code class="language-plaintext highlighter-rouge">公開キーの保存</code></strong> ボタンをそれぞれ押下します。秘密キー ”ssh-key-yyyy-MM-dd.key”、公開キー ”ssh-key-yyyy-MM-dd.key.pub” というファイルがそれぞれダウンロードされます。</p>
+
+        <blockquote>
+          <p><strong>Note</strong></p>
+
+          <p>SSHキーの取得漏れや、設定したキー・ペアを紛失した場合は、<a href="https://community.oracle.com/tech/welcome/discussion/4474277/%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB-%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E3%81%A7ssh%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%88%E3%82%92%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89">こちらのチュートリアル</a> を参考にトラブルシュートを行うか、再作成を行う必要があります。</p>
+        </blockquote>
+
+        <blockquote>
+          <p><strong>Note</strong></p>
+
+          <p>ユーザーが作成したキー・ペアを登録することも可能です。その場合は、”公開キー・ファイルの選択” を選択し、「ここにファイルをドロップします選択されていません または場所を参照します。」から、ローカルPCにある生成済みのキー・ペアのうち公開鍵 を選択します。</p>
+        </blockquote>
+
+        <p><img width="700" alt="img6.png" src="img6.png" /></p>
+      </li>
+      <li>
+        <p><strong>ブート・ボリュームの構成</strong></p>
+
+        <ul>
+          <li><strong>カスタム・ブート・ボリューム・サイズを指定します</strong> - チェックなし</li>
+          <li><strong>転送中暗号化の使用</strong> - チェックなし</li>
+          <li><strong>自分が管理するキーでこのボリュームを暗号化</strong> - チェックなし</li>
+        </ul>
+
+        <p><img width="700" alt="img7.png" src="img7.png" /></p>
+      </li>
+      <li>
+        <p><strong>拡張オプションの表示</strong></p>
+
+        <p>拡張オプションでは、任意で Cloud-initスクリプトの設定 や、モニタリングの有効/無効化 などが行えます。本チュートリアルでは、特に設定を変更しませんが、一部の項目について説明します。</p>
+
+        <ul>
+          <li>
+            <p><strong>ネットワーキング</strong> - <strong>プライベートIPアドレス</strong> - コンピュート・インスタンスのプライベートIPアドレスに任意の固定IPアドレスを指定したい場合、ここで指定することが出来ます。特に指定しない場合は、DHCPによりアドレス番号の小さい空きアドレスから順番に振られます</p>
+          </li>
+          <li>
+            <p><strong>ネットワーキング</strong> - <strong>ホスト名</strong> - インスタンスのホスト名を指定できます。</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img width="700" alt="img8.png" src="img8.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタン押下後、インスタンスの作成が開始され、ステータスが <strong>プロビジョニング中</strong> になっていることを確認します</p>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>Linux系インスタンスの作成には約1～2分程、Windows系インスタンスの作成には約5～6分程かかります</p>
+    </blockquote>
+
+    <p><img width="700" alt="img10.png" src="img10.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスの作成が完了すると、アイコンが黄色から緑色にかわり、ステータス表示が RUNNING に変わります。</p>
+
+    <p><img width="700" alt="img11.png" src="img11.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-作成したインスタンス詳細情報の確認">2. 作成したインスタンス詳細情報の確認</h1>
+
+<p>作成したインスタンスの詳細情報を確認し、インスタンスに関する理解を深めます。</p>
+
+<ol>
+  <li>
+    <p>インスタンスの一覧画面から、<strong>TestVM1</strong> リンクをクリックするか、右側の トリコロン から <strong>インスタンスの詳細の表示</strong> を選択し、インスタンス詳細画面を開きます</p>
+
+    <p><img width="700" alt="img12.png" src="img12.png" /></p>
+  </li>
+  <li>
+    <p>上部の ”インスタンス情報” を確認します</p>
+
+    <p><img width="700" alt="img13.png" src="img13.png" /></p>
+
+    <p><strong>”一般情報”</strong> や <strong>”シェイプの詳細”</strong> にて、インスタンス作成時に入力した情報が表示されていることを確認します。</p>
+
+    <p>また、<strong>”プライマリVNIC”</strong> には、インスタンスにアタッチされた仮想ネットワーク・インタフェースの情報が表示されています。
+初期状態では、指定したサブネットの中からプライベートIPアドレスがひとつアサインされ (画面では 10.0.0.2)、グローバルIPアドレスもひとつアサインされている (画面では 158.101.152.98) ことがわかります。
+このグローバルIPアドレスは後ほどアクセスに使用しますので、手元にメモをしておいてください。</p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-インスタンスへの接続">3. インスタンスへの接続</h1>
+
+<p>作成したインスタンスに対し、sshで接続をします。</p>
+
+<ol>
+  <li>
+    <p>任意のターミナルソフトを起動し、以下の情報でssh接続します。</p>
+
+    <ul>
+      <li>
+        <p><strong>IPアドレス</strong> - 先程のステップで確認したインスタンスの <strong>パブリックIPアドレス</strong> (上記例だと 158.101.152.98)</p>
+      </li>
+      <li>
+        <p><strong>ポート</strong> - 22 (デフォルト)</p>
+      </li>
+      <li>
+        <p><strong>ユーザー</strong> - opc (Oracleが作成した Oracle Linux インスタンスは、接続用に予め opc というユーザーが用意されています)</p>
+      </li>
+      <li>
+        <p><strong>SSH鍵</strong> - インスタンスを作成する際に使用した公開鍵と対になる秘密鍵</p>
+
+        <p>※集合ハンズオン・セミナーの場合は講師から指示される鍵を使用してください</p>
+      </li>
+      <li>
+        <p><strong>パスフレーズ</strong> - 秘密鍵にパスフレーズを設定している場合は指定してください。</p>
+
+        <p>※集合ハンズオン・セミナーの場合は未設定です。</p>
+      </li>
+    </ul>
+
+    <p>下記は Tera Term を利用した場合の接続の設定例です。</p>
+
+    <p><img width="450" alt="img14.png" src="img14.png" /></p>
+  </li>
+  <li>
+    <p>接続が成功すると、以下のように opc ユーザーでインスタンスにログインできます。
+opc ユーザーは、sudo により root 権限を取得することが可能です。</p>
+
+    <p><img width="700" alt="img15.png" src="img15.png" /></p>
+  </li>
+</ol>
+
+<h2 id="os上のファイアウォールルールの設定">OS上のファイアウォール・ルールの設定</h2>
+
+<p>Oracle提供イメージの場合、デフォルトでOS上のファイアウォール・ルールが設定されています。LinuxではSSHアクセスのみを許可するファイアウォール・ルールが存在します。</p>
+
+<p>必要に応じて、利用するプロトコルの通信を許可するよう設定を行ってください。Oracle提供のLinuxイメージでのOSの設定については <a href="https://docs.oracle.com/cd/E97706_01/Content/Compute/References/images.htm#one">こちら</a> を参考にしてください。</p>
+
+<p>これで、この章の作業は完了です。</p>
+
+<p><strong>目次に戻る :</strong> <a href="https://oracle-japan.github.io/ocitutorials/">チュートリアル : Oracle Cloud Infrastructure を使ってみよう</a></p>
+
+        
       </section>
 
       <footer class="page__meta">
@@ -324,7 +565,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-21T15:01:18+09:00">January 21, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-22T22:12:02+09:00">January 22, 2021</time></p>
 
 
       </footer>

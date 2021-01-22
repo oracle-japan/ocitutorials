@@ -54,10 +54,10 @@ var store = [{
         "teaser": "https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/img4.png"
       },{
         "title": "その3 - インスタンスを作成する",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル この章では、作成済みの仮想クラウド・ネットワーク(VCN)の中にコンピュート・インスタンスを作成していきます。 所要時間 : 約20分 前提条件 : その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次： 1. 新規仮想マシンインスタンスの作成 2. 作成したインスタンス詳細情報の確認 3. インスタンスへの接続 1. 新規仮想マシンインスタンスの作成 第2章で作成した仮想コンピュート・ネットワーク(VCN)に、新しくインスタンスを作成していきます。 今回はコンソールから、一番小さなシェイプ(1 OCPU)の仮想マシン(VM)タイプの Oracle Linux 7 のインスタンスを1つ作成します。 コンソールメニューから コンピュート → インスタンス を選択し、インスタンスの作成 ボタンを押します 立ち上がった ”コンピュート・インスタンスの作成” ウィンドウに 以下の項目を入力し、作成 ボタンを押下します...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/",
-        "teaser": null
+        "teaser": "https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/img11.png"
       },{
         "title": "その4 - ブロック・ボリュームをインスタンスにアタッチする",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
@@ -184,6 +184,12 @@ var store = [{
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/data-safe-tutorials/",
         "teaser": null
+      },{
+        "title": "ストレージ・ゲートウェイを作成する",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracle Cloud Infrastructure ストレージ・ゲートウェイ とは、アプリケーションが 標準のNFSv4プロトコルを使用してOracle Cloud Infrastructure オブジェクト・ストレージと相互作用できるようになるサービスです。オンプレミスからのデータ転送、バックアップ、アーカイブ用途などに利用できます。 大容量ファイルについてはマルチパート・アップロードが自動的に適用され、スタンダードなオブジェクト・ストレージだけでなく、アーカイブ・ストレージへのアップロードも可能です。 この章では、Oracle Cloud Infrastructure 上の コンピュート・インスタンスに ストレージ・ゲートウェイを作成する手順について説明していきます。 所要時間 : 約40分 前提条件 : 本チュートリアルの 前提条件 を参照ください 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次： 1. ボリュームのフォーマットおよびマウント 2. ストレージ・ゲートウェイのインストール 3. ファイル・システムの作成 4. クライアントから動作確認 構成イメージ 本チュートリアルでは 以下の構成で構築していきます。 ブロック・ボリュームがアタッチされたコンピュート・インスタンス上に...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/storage-gateway/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/intermediates/storage-gateway/img01.png"
       },{
         "title": "Oracle Content and Experience チュートリアル",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
