@@ -39,7 +39,7 @@ Oracle Cloud Infrastructure **ストレージ・ゲートウェイ** とは、�
 
 本チュートリアルでは 以下の構成で構築していきます。
 
-<img width="634" alt="img01.png" src="img01.png">
+![img01.png](img01.png)
 
 ブロック・ボリュームがアタッチされたコンピュート・インスタンス上に ストレージ・ゲートウェイを構築していきます。また、クライアント・サーバーは、ストレージ・ゲートウェイの動作確認用として利用します。
 
@@ -187,7 +187,7 @@ Oracle Cloud Infrastructure **ストレージ・ゲートウェイ** とは、�
    $ sudo vi /etc/fstab
    ```
 
-   fstab ファイルの最後に以下の行を追記し、保存します。（`insert` で編集、`Esc` → `:wq` で保存して終了、編集をキャンセルする場合は `Esc` → `:q!`）
+   fstab ファイルの最後に以下の行を追記し、保存します。（**`insert`** で編集、**`Esc`** → **`:wq`** で保存して終了、編集をキャンセルする場合は **`Esc`** → **`:q!`**）
 
    ```shell
    UUID=<確認したUUID> /mnt/ocisg xfs defaults,_netdev,nofail 0 2
@@ -228,7 +228,7 @@ Oracle Cloud Infrastructure **ストレージ・ゲートウェイ** とは、�
 1. ストレージ・ゲートウェイのインストールファイルをダウンロードします。以下のURLにアクセスし、ライセンスに関する同意をチェックの上、インストールファイルをダウンロードしてください。  
    [https://www.oracle.com/downloads/cloud/oci-storage-gateway-downloads.html](https://www.oracle.com/downloads/cloud/oci-storage-gateway-downloads.html)
    
-   <img width="634" alt="img03.png" src="img03.png">
+   ![img03.png](img03.png)
 
 2. ストレージ・ゲートウェイ・サーバーへ インストールファイルをコピーするため、オブジェクト・ストレージにアップロードします。[オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](https://community.oracle.com/docs/DOC-1019520) を参考に、ファイルをアップロードしてください。
 
@@ -270,7 +270,7 @@ $ sudo ./ocisg-install.sh
      Docker does not appear to be installed. Do you want to install docker engine with yum? [y/N]
      ```
 
-     `y` を入力し、`Enter` を押します。インストール・スクリプトは、Dockerを自動的にインストールし、ストレージ・ゲートウェイで使用するストレージ・ドライバを構成します。
+     **`y`** を入力し、**`Enter`** を押します。インストール・スクリプトは、Dockerを自動的にインストールし、ストレージ・ゲートウェイで使用するストレージ・ドライバを構成します。
 
    - **NFS サーバーの有効化**
 
@@ -278,7 +278,7 @@ $ sudo ./ocisg-install.sh
      NFS server does not appear to be enabled. Do you want to enable NFS? [y/N]
      ```
 
-     `y` を入力し、`Enter` を押します。
+     **`y`** を入力し、**`Enter`** を押します。
 
    - **インストール先の確認**
 
@@ -286,11 +286,11 @@ $ sudo ./ocisg-install.sh
      Enter the install location press enter for default (/opt/ocisg/) :
      ```
 
-     `Enter` を押し、デフォルトのインストール・ロケーションを受け入れます。
+     **`Enter`** を押し、デフォルトのインストール・ロケーションを受け入れます。
 
    - **各種パスの指定**
 
-     同じボリューム上に存在するキャッシュ、メタデータおよびログ・ストレージに関する警告が表示された場合は、`y` を入力してインストールを続行します。
+     同じボリューム上に存在するキャッシュ、メタデータおよびログ・ストレージに関する警告が表示された場合は、**`y`** を入力してインストールを続行します。
 
      - **ファイル・システム・キャッシュのパス指定**
 
@@ -340,7 +340,7 @@ $ sudo ./ocisg-install.sh
 
 1. まず ローカルPCから ストレージ・ゲートウェイの管理コンソールへアクセスするため、VCNのセキュリティ・リストのイングレス・ルールに 下記のルールを追加します。
 
-<img width="634" alt="img04.png" src="img04.png">
+![img04.png](img04.png)
 
 
 
@@ -366,15 +366,15 @@ $ sudo ./ocisg-install.sh
 
 2. 初回ログイン時は、パスワードの変更を求められます。パスワードの要件を確認の上、新しいパスワードを設定します。
 
-<img width="634" alt="img06.png" src="img06.png">
+![img06.png](img06.png)
 
 3. 続いて、ログイン画面でパスワードを入力し、ログインします。
 
-<img width="634" alt="img07.png" src="img07.png">
+![img07.png](img07.png)
 
 4. ストレージ・ゲートウェイ管理コンソール画面が表示されます。
 
-<img width="634" alt="img08.png" src="img08.png">
+![img08.png](img08.png)
 
 
 
@@ -384,7 +384,7 @@ $ sudo ./ocisg-install.sh
 
 2. `File System Name` へ、任意の名称を入力します。この名称で オブジェクト・ストレージが生成されます。既に同盟の存在する場合は、そのオブジェクト・ストレージを利用します。また、オブジェクト・ストレージのタイプは `Standard` を選択します。
 
-<img width="634" alt="img10.png" src="img10.png">
+![img10.png](img10.png)
 
 3. 手順3-2で確認した情報を元に、下記を入力します。入力が完了したら `Save `で保存します。
    - Object Storage API Endpoint
@@ -397,7 +397,7 @@ $ sudo ./ocisg-install.sh
 
 4. ファイル・システムの作成完了後、`connect` ボタンを押し、接続します。接続が完了すると、下記のように表示されます。
 
-<img width="634" alt="img11.png" src="img11.png">
+![img11.png](img11.png)
 
 
 
@@ -430,7 +430,7 @@ $ sudo ./ocisg-install.sh
 
 2. オブジェクトストレージに、先ほど作成したファイル「file」がアップロードされていることを確認します。
 
-<img width="634" alt="img02.png" src="img02.png">
+![img02.png](img02.png)
 
 
 
