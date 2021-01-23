@@ -7,8 +7,8 @@ tags:
   - intermediate
   - compute
 header:
-  teaser: "/intermediates/autoscaling/image5.png"
-  overlay_image: "/intermediates/autoscaling/image5.png"
+  teaser: "/intermediates/autoscaling/img5.png"
+  overlay_image: "/intermediates/autoscaling/img5.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474297/%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E3%82%AA%E3%83%BC%E3%83%88%E3%82%B9%E3%82%B1%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%B0%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89
 ---
@@ -118,9 +118,9 @@ header:
           >
           >プール内のインスタンスを1つ以上のフォルト・ドメインに均等に分散する必要がある場合は、インスタンスを配置するフォルト・ドメインを選択します。ただし、選択したフォルト・ドメインに十分な容量がない場合、プールは正常に起動またはスケーリングされません。詳細は、[高可用性のためのフォルト・ドメイン間でのインスタンスの分散](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/creatinginstancepool.htm#faultdomains)を参照してください。
 
-        -  **<font color="darkgray">[コンパートメント名] </font> **の仮想クラウド・ネットワークの選択 - 任意のVCN名を選択
+        -  **<font color="darkgray">[コンパートメント名] </font>** の仮想クラウド・ネットワークの選択 - 任意のVCN名を選択
 
-        -  **<font color="darkgray">[コンパートメ **ント名] </font> **のサブネットの選択 - 任意のサブネット名を選択
+        -  **<font color="darkgray">[コンパートメント名] </font>** のサブネットの選択 - 任意のサブネット名を選択
 
         - ロード・バランサのアタッチ - 今回はチェックを入れない
 
@@ -156,7 +156,7 @@ header:
 
      - 名前 - 任意
      - コンパートメントに作成 - 任意
-     -  **<font color="darkgray">[コンパートメント名] </font> **のインスタンス・プール - 手順3で作成したインスタンス・プール
+     -  **<font color="darkgray">[コンパートメント名] </font>** のインスタンス・プール - 手順3で作成したインスタンス・プール
 
      ![img9.png](img9.png)
 
