@@ -3,6 +3,7 @@ title: "ストレージ・ゲートウェイを作成する"
 excerpt: "ストレージ・ゲートウェイを利用することで、アプリケーションが 標準の NFSv4 プロトコルを使用して オブジェクト・ストレージ と相互作用できるようになります。"
 order: "170"
 tags:
+  - intermediate
 header:
   teaser: "/intermediates/storage-gateway/img01.png"
   overlay_image: "/intermediates/storage-gateway/img01.png"
