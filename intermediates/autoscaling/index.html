@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-01-22T22:55:08+09:00">
+  <meta property="article:published_time" content="2021-01-23T18:43:42+09:00">
 
 
 
@@ -313,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="インスタンスのオートスケーリングを設定する">
     <meta itemprop="description" content="アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。オートスケーリング設定を行って、負荷に応じてインスタンス数を増減させてみましょう。">
-    <meta itemprop="datePublished" content="2021-01-22T22:55:08+09:00">
+    <meta itemprop="datePublished" content="2021-01-23T18:43:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -324,12 +324,371 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#1-ベースになるインスタンスの作成">1. ベースになるインスタンスの作成</a></li>
+  <li><a href="#2-インスタンスコンフィグレーションの作成">2. インスタンス・コンフィグレーションの作成</a></li>
+  <li><a href="#3-インスタンスプールの作成">3. インスタンス・プールの作成</a></li>
+  <li><a href="#4-オートスケーリングの設定">4. オートスケーリングの設定</a></li>
+  <li><a href="#5-cpu負荷をかけてインスタンス増減を確認">5. CPU負荷をかけてインスタンス増減を確認</a></li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p>アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。これを実現するための手法として、OCIではインスタンス・プールのオートスケーリング設定によって、負荷に応じてインスタンス・プール内のインスタンス数を増減させることが可能です。</p>
+
+<p>このチュートリアルでは、オートスケーリングの設定を行って、実際にインスタンス数がどのように変化するかを確認します。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li><a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> を通じてコンピュート・インスタンスの作成が完了していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p>今回の設定作業手順の流れは以下の図の1～4です。</p>
+
+<p><img src="img1.png" alt="img.png" /></p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. ベースになるインスタンスの作成</a></li>
+  <li><a href="#anchor2">2. インスタンス・コンフィグレーションの作成</a></li>
+  <li><a href="#anchor3">3. インスタンス・プールの作成</a></li>
+  <li><a href="#anchor4">4. オートスケーリングの設定</a></li>
+  <li><a href="#anchor5">5. CPU負荷をかけてインスタンス増減を確認</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-ベースになるインスタンスの作成">1. ベースになるインスタンスの作成</h1>
+
+<p>まずは、オートスケーリングの設定を行うインスタンス・プールのもとになるインスタンスを作成します。今回は、<a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a>  で作成したコンピュート・インスタンスを使用します。</p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-インスタンスコンフィグレーションの作成">2. インスタンス・コンフィグレーションの作成</h1>
+
+<p>ベースになるインスタンスからインスタンス構成 (=インスタンス・コンフィグレーション) を生成します。インスタンス構成とは、インスタンス起動を行うための「イメージ、シェイプ、メタデータ情報（sshキー、起動時スクリプトなど）、関連リソース（ブロック・ボリューム、ネットワーク構成）」をひとまとめにした構成情報の定義です。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">Compute</code></strong> → <strong><code class="language-plaintext highlighter-rouge">Instances</code></strong> を選択し、作成したインスタンスのインスタンス<strong>”TestVM1”</strong> リンクをクリックするか、右側の トリコロン から <strong>インスタンスの詳細の表示</strong> を選択し、インスタンス詳細画面を開きます。</p>
+
+    <p><img src="img2.png" alt="img2.png" /></p>
+  </li>
+  <li>
+    <p><strong>他のアクション</strong> から <strong>インスタンス構成の作成</strong> を選択します。</p>
+
+    <p><img src="img3.png" alt="img3.png" /></p>
+  </li>
+  <li>
+    <p><strong>名前</strong>に任意の名前を入力し、<strong>インスタンス構成の作成</strong> をクリックします。
+<img width="500" alt="img6.png" src="img4.png" />　</p>
+  </li>
+  <li>
+    <p>インスタンス構成ができました。
+<img src="img5.png" alt="img5.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-インスタンスプールの作成">3. インスタンス・プールの作成</h1>
+
+<p>作成したインスタンス構成をもとに、インスタンス・プールを作成します。インスタンス・プールを作成すると、インスタンス構成で定義された構成のインスタンスが、設定したインスタンス数で自動的に起動してくるようになります。今回はまずサイズを「0」で作成し、あとのステップでこの数を増やしていく(スケーリングしていく) ようにします。</p>
+
+<ol>
+  <li>
+    <p>作成されたインスタンス構成の画面から <strong>インスタンス・プールの作成</strong> をクリックします。</p>
+  </li>
+  <li>
+    <p><strong>”インスタンス・プールの作成”</strong> 画面にて、下記の情報を入力します。</p>
+
+    <ol>
+      <li>
+        <p><strong>基本的な詳細の追加</strong></p>
+
+        <ul>
+          <li>コンパートメントに作成 - 任意</li>
+          <li>名前 - 任意</li>
+          <li>
+            <font color="darkgray">**[コンパートメント名] **</font>
+            <p>のインスタンス構成 - 手順2で作成したインスタンス構成</p>
+          </li>
+          <li>インスタンス数 - 0</li>
+        </ul>
+
+        <p><img src="img7.png" alt="img7.png" /></p>
+      </li>
+      <li>
+        <p><strong>プール配置の構成</strong></p>
+
+        <ul>
+          <li>
+            <p>可用性ドメインの選択</p>
+
+            <ul>
+              <li>
+                <p>可用性ドメイン - 可用性ドメイン1</p>
+
+                <blockquote>
+                  <p><strong>Note</strong></p>
+
+                  <p>複数ドメインを持つリージョンの場合、複数指定することが可能です。</p>
+                </blockquote>
+              </li>
+              <li>
+                <p>フォルト・ドメイン - 任意のフォルト・ドメインを設定</p>
+
+                <blockquote>
+                  <p><strong>Note</strong></p>
+
+                  <p>容量に基づいてフォルト・ドメイン全体にインスタンスを分散するように最善を尽くす場合は、このボックスを空白のままにします。</p>
+
+                  <p>プール内のインスタンスを1つ以上のフォルト・ドメインに均等に分散する必要がある場合は、インスタンスを配置するフォルト・ドメインを選択します。ただし、選択したフォルト・ドメインに十分な容量がない場合、プールは正常に起動またはスケーリングされません。詳細は、<a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/creatinginstancepool.htm#faultdomains">高可用性のためのフォルト・ドメイン間でのインスタンスの分散</a>を参照してください。</p>
+                </blockquote>
+              </li>
+              <li>
+                <font color="darkgray">**[コンパートメント名] **</font>
+                <p>の仮想クラウド・ネットワークの選択 - 任意のVCN名を選択</p>
+              </li>
+              <li>
+                <font color="darkgray">**[コンパートメント名]** </font>
+                <p>のサブネットの選択 - 任意のサブネット名を選択</p>
+              </li>
+              <li>
+                <p>ロード・バランサのアタッチ - 今回はチェックを入れない</p>
+
+                <blockquote>
+                  <p><strong>TIPS</strong></p>
+
+                  <p>既存のロードバランサーがある場合は、ここでロードバランサーにアタッチすることも可能です。アタッチすると、作成されたインスタンスは自動的にロードバランサーのバックエンドに追加されます。</p>
+                </blockquote>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <p><img src="img6.png" alt="img6.png" /></p>
+      </li>
+      <li>
+        <p><strong>確認</strong><br />
+入力内容を確認し、<strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタンをクリックします。</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>インスタンス・プールができました。</p>
+
+    <p><img src="img8.png" alt="img8.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-オートスケーリングの設定">4. オートスケーリングの設定</h1>
+
+<p>作成したインスタンス・プールにオートスケーリングの設定を行います。今回は、インスタンス・プール内の平均CPU使用率が70%を上回ったら1インスタンス増やす、30%未満になったら1インスタンス減らす、というポリシーを設定します。スケーリングするインスタンス数は、最小1インスタンス、最大4インスタンスに設定します。</p>
+
+<ol>
+  <li>
+    <p>作成したインスタンス・プールの画面から、<strong>他のアクション</strong> → <strong>自動スケーリング構成の作成</strong> をクリックします。</p>
+  </li>
+  <li>自動スケーリング構成の作成 ウィンドウで、下記の情報を入力します。
+    <ul>
+      <li>
+        <p><strong>基本的な詳細の追加</strong></p>
+
+        <ul>
+          <li>名前 - 任意</li>
+          <li>コンパートメントに作成 - 任意</li>
+          <li>
+            <font color="darkgray">**[コンパートメント名] **</font>
+            <p>のインスタンス・プール - 手順3で作成したインスタンス・プール</p>
+          </li>
+        </ul>
+
+        <p><img src="img9.png" alt="img9.png" /></p>
+      </li>
+      <li>
+        <p><strong>自動スケーリング・ポリシーの構成</strong></p>
+
+        <ul>
+          <li>
+            <p>”メトリックベースの自動スケーリング” を選択</p>
+
+            <blockquote>
+              <p><strong>TIPS</strong></p>
+
+              <p>スケジュールベースの自動スケーリング を選択することで、特定の時間を契機にスケールアウト/スケールインさせることも可能です。</p>
+            </blockquote>
+
+            <p><img src="img10.png" alt="img10.png" /></p>
+          </li>
+          <li>
+            <p>自動スケーリング・ポリシー名 - 任意</p>
+          </li>
+          <li>
+            <p>クールダウン(秒) - 300 (初期値のまま)</p>
+          </li>
+          <li>
+            <p>パフォーマンス・メトリック - ”CPU使用率” を選択</p>
+
+            <p><img src="img11.png" alt="img11.png" /></p>
+          </li>
+          <li>
+            <p>スケールアウト・ルール</p>
+
+            <ul>
+              <li>スケールアウト演算子 - ”次より多い (&gt;) ” を選択 (初期値のまま)</li>
+              <li>しきい値パーセンテージ - 70</li>
+              <li>追加するインスタンスの数 - 1</li>
+            </ul>
+
+            <p><img src="img12.png" alt="img12.png" /></p>
+          </li>
+          <li>
+            <p>スケールイン・ルール</p>
+
+            <ul>
+              <li>スケールイン演算子 - ”次より小さい (&lt;) ” を選択 (初期値のまま)</li>
+              <li>しきい値パーセンテージ - 30</li>
+              <li>削除するインスタンスの数 - 1</li>
+            </ul>
+
+            <p><img src="img13.png" alt="img13.png" /></p>
+          </li>
+          <li>
+            <p>スケーリング制限</p>
+
+            <ul>
+              <li>インスタンスの最小数 - 1</li>
+              <li>インスタンスの最大数 - 4</li>
+              <li>インスタンスの初期数 - 1</li>
+            </ul>
+
+            <p><img src="img14.png" alt="img14.png" /></p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>確認</strong></p>
+
+        <p>入力内容を確認し、<strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタンをクリックします。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>自動スケーリング構成が作成できました
+<img src="img15.png" alt="img15.png" /></p>
+  </li>
+  <li>
+    <p>自動スケーリング構成 の画面から、インスタンス・プール: <strong>TestPool1</strong> のリンクをクリックし、インスタンス・プールの画面を表示します。初期インスタンス数 - 1、最小インスタンス数 - 1 に設定したため、自動的に1つめのインスタンスがプロビジョニングされていることがわかります。</p>
+
+    <p><img src="img16.png" alt="img16.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-cpu負荷をかけてインスタンス増減を確認">5. CPU負荷をかけてインスタンス増減を確認</h1>
+
+<p>起動してきたインスタンスにOS上からCPU負荷をかけてCPU使用率が閾値（ここでは70%）を上回るように設定し、実際にインスタンスが1つ増えるかどうかを確認します。</p>
+
+<p>また、インスタンスの増加が確認できたら、負荷を止めてCPU使用率を閾値（ここでは30%）未満にし、インスタンスが1つ減る様子を確認します。</p>
+
+<ol>
+  <li>インスタンス・プール画面の 作成済インスタンス のリスト上で、作成されたインスタンスのステータスが実行中 になったらインスタンスの起動が完了しています。インスタンスの名前のリンクをクリックして作成されたインスタンスの情報を表示します。</li>
+</ol>
+
+<p><img src="img17.png" alt="img17.png" /></p>
+
+<ol>
+  <li>
+    <p>インスタンスのパブリックIPアドレスを確認し、このアドレスを使用して Tera Term などのターミナルからsshでログインします。</p>
+
+    <ul>
+      <li>ユーザー名 - <strong>opc</strong></li>
+      <li>RSA鍵 - インスタンス構成の元となるインスタンスに設定された 公開鍵 に対応する 秘密鍵 を指定（<a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> ) で取得した秘密鍵と同じものを使用）</li>
+    </ul>
+  </li>
+  <li>
+    <p>インスタンスのCPU負荷をあげるために、Linuxのstressコマンドで負荷をかけます。</p>
+
+    <ul>
+      <li>
+        <p>以下のコマンドを入力し、stressをインストールします。</p>
+
+        <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>stress
+</code></pre></div>        </div>
+
+        <blockquote>
+          <p><strong>Note</strong></p>
+
+          <p>「No package stress available.」といったメッセージが表示されるなど、リポジトリに stress が含まれていない場合は、適宜 rpm パッケージ等からインストールを行ってください。</p>
+        </blockquote>
+      </li>
+      <li>
+        <p>stressコマンドでCPUに負荷をかけます。VM.Standard2.1のシェイプであれば、下記コマンドでCPU負荷が100%になります。</p>
+
+        <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>stress <span class="nt">-c</span> 2 &amp;
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>topコマンドでCPU負荷が約100%になっていることを確認します。Ctrl + C で終了します。</p>
+
+        <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>top <span class="nt">-c</span>
+</code></pre></div>        </div>
+
+        <p><img src="img18.png" alt="img18.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>OCIコンソール上からもCPU使用率の状況を確認します。コンピュート・インスタンスの画面左下にある <strong>リソース</strong> メニュー から、<strong>メトリック</strong> を選択します。<strong>クイック選択</strong> を<strong>過去1時間</strong> に設定すると、直近1時間のメトリックを表示できます。</p>
+
+    <p><img src="img19.png" alt="img19.png" /></p>
+  </li>
+  <li>
+    <p>この状態で、クールダウン期間で指定した300秒が過ぎると、スケーリング動作を確認することができます。再度、作成したインスタンス・プールの画面を表示します。ステータスが <strong>SCALING</strong> 中の状態となり、新規のインスタンスがプロビジョニングされていく様子が確認できます。</p>
+
+    <p><img src="img20.png" alt="img20.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスの起動が完了すると、再びインスタンス・プールのステータスは <strong>実行中</strong> 状態に戻ります。この時点で、インスタンス・プール内の平均CPU使用率は50%となっているため、これ以上のインスタンス数増加はありません。</p>
+
+    <p><img src="img21.png" alt="img21.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスのCPU負荷を下げます。ssh接続したターミナルから以下のコマンドを入力し、プロセスをkillします。CPU使用率は約0%に戻ります。</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pkill stress
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>300秒が経過すると、自動で1インスタンスが削除され、インスタンス・プール内には1インスタンスのみ残ります。</p>
+
+    <p><img src="img22.png" alt="img22.png" /></p>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>インスタンス・プールがスケール・インされるとき、インスタンスは次の順序で終了します。<br />
+インスタンス数のバランスが可用性ドメイン間で調整されてから、フォルト・ドメイン間で調整されます。最後に、フォルト・ドメイン内の一番古いインスタンスが最初に終了されます。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p>以上がインスタンス・プールのオートスケーリング設定による動作です。</p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
         <div><a href="https://community.oracle.com/tech/welcome/discussion/4474297/%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E3%82%AA%E3%83%BC%E3%83%88%E3%82%B9%E3%82%B1%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%B0%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89" class="btn btn--primary">リンク</a></div>
       </section>
@@ -340,7 +699,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-22T22:55:08+09:00">January 22, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-23T18:43:42+09:00">January 23, 2021</time></p>
 
 
       </footer>
