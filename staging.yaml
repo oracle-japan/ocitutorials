@@ -14,14 +14,16 @@ spec:
   rules:
   - http:
       paths:
-        - path: /paasdocs
-          backend:
-            serviceName: paasdocs-preview
-            servicePort: 80
-        - path: /ocitutorials
-          backend:
-            serviceName: ocitutorials-preview
-            servicePort: 4000
+      - backend:
+          serviceName: paasdocs-preview
+          servicePort: 80
+        path: /
+        pathType: Prefix
+      - backend:
+          serviceName: ocitutorials-preview
+          servicePort: 4000
+        path: /ocitutorials
+        pathType: Prefix
 ---
 apiVersion: v1
 kind: Service
