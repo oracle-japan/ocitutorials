@@ -2,9 +2,10 @@
 title: "ADB HOL #1 : ADBインスタンスを作成してみよう"
 excerpt: "この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。"
 order: "500"
+layout: single
 header:
-  teaser: "/adb-hol1-provisioning/img11.png"
-  overlay_image: "/adb-hol1-provisioning/img11.png"
+  teaser: "/intermediates/adb-hol1-provisioning/img11.png"
+  overlay_image: "/intermediates/adb-hol1-provisioning/img11.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474304
 ---
