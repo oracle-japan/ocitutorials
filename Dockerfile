@@ -1,13 +1,13 @@
-FROM jekyll/jekyll
+FROM ruby:latest
 
 WORKDIR /pages
 
-COPY . /pages
+COPY . /pages/
 
-RUN chmod 777 /pages/*
+COPY Gemfile Gemfile.* /pages/
 
-RUN mkdir _site && mkdir .jekyll-cache
+RUN bundle add webrick
 
-ENTRYPOINT ["jekyll", "serve", "-H", "0.0.0.0"]
+RUN bundle install
 
-EXPOSE 4000
+ENTRYPOINT ["bundle", "exec", "jekyll", "serve", "--host", "0.0.0.0"]
