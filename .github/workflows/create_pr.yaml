@@ -1,0 +1,24 @@
+name: create pull request
+
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create pull request
+        uses: actions/github-script@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Update the OCI tutorilas:${{ github.sha }}',
+              body: 'Update the OCI tutorilas',
+              head: 'dev',
+              base: 'master'
+            })
