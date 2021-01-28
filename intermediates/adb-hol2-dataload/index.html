@@ -1,0 +1,842 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>ADB HOL #2 : ADBにデータをアップロードしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="ADB HOL #2 : ADBにデータをアップロードしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol2-dataload/">
+
+
+  <meta property="og:description" content="SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol2-dataload/adb2-1_1.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-01-28T15:54:02+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol2-dataload/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/prerequisites/" title="このチュートリアルを実施するに当たって必要な準備">準備</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-webapp/">実践編<br>(Webアプリ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-cloudnative/">実践編<br>(Cloud Native)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-enterprise/">実践編<br>(エンタープライズ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/adb-hol2-dataload/adb2-1_1.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          ADB HOL #2 : ADBにデータをアップロードしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">ADB HOL #2 : ADBにデータをアップロードしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/deep-learning-with-gpu/">GPUインスタンスでディープラーニング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/adb-hol2-dataload/" class="active">ADB HOL #2 : ADBにデータをアップロードしてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="ADB HOL #2 : ADBにデータをアップロードしてみよう">
+    <meta itemprop="description" content="SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
+    <meta itemprop="datePublished" content="2021-01-28T15:54:02+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1手元のpcからcsvデータをアップロードしてみよう">1.手元のPCからCSVデータをアップロードしてみよう</a></li>
+  <li><a href="#2-オブジェクトストレージからcsvデータをロードしてみよう">2. オブジェクトストレージからCSVデータをロードしてみよう</a>
+    <ul>
+      <li><a href="#1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</a></li>
+      <li><a href="#2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</a></li>
+      <li><a href="#3dbms_cloudパッケージを利用したadbインスタンスへのデータロード">3.DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-note">3. Note</a>
+    <ul>
+      <li><a href="#1大量データのロード処理を高速化するには">1.大量データのロード処理を高速化するには？　　</a></li>
+      <li><a href="#2dbms_cloudcopy_dataによるロードが失敗する場合の確認ポイント">2.DBMS_CLOUD.COPY_DATAによるロードが失敗する場合の確認ポイント</a></li>
+      <li><a href="#3お問い合わせのあった例確認ポイント">3.お問い合わせのあった例・確認ポイント</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>この章ではSQL Developer Webを利用して、サンプルデータをADBインスタンスにデータをアップロードします。<br />
+事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。<br />
+（集合ハンズオンセミナーでは講師の指示に従ってください）</p>
+
+<p><strong>所要時間 :</strong> #1 約10分, #2 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>ADB HOL#1を終了していること</li>
+  <li>以下にリンクされているサンプルデータのzipファイルをダウンロードして解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています)<br />
+　	
+<a href="ADB-HOL2_sampledata.zip">サンプルデータファイルのダウンロードリンク</a></li>
+</ul>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。</p>
+
+<h1 id="1手元のpcからcsvデータをアップロードしてみよう">1.手元のPCからCSVデータをアップロードしてみよう</h1>
+
+<p>まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。</p>
+
+<ol>
+  <li>
+    <p><strong>SQL Developer Webを利用したインスタンスへの接続</strong> を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。<br />
+その後左ペインにある　<strong>ナビゲータ</strong>タブから　<strong>[…」(オブジェクトサブメニュー)→「データのロード」→「新規表へのデータのアップロード」</strong> を選択します。</p>
+
+    <p><img src="adb2-1_1.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ダウンロードして解凍した <strong>sales_channels.csv</strong> を選択して <strong>「次」</strong> をクリックします。</p>
+
+    <p><img src="adb2-1_2.png" alt="画面ショット1-2" /></p>
+  </li>
+  <li>
+    <p>sales_channels.csvのデータのプレビューを確認し <strong>「次」</strong> をクリックします</p>
+
+    <p><img src="adb2-1_3.png" alt="画面ショット1-3" /></p>
+  </li>
+  <li>
+    <p>表定義が表示されます。すべての列タイプが <strong>VARCHAR2型</strong> になっていることが確認できます。</p>
+
+    <p><img src="adb2-1_4.png" alt="画面ショット1-4" /></p>
+  </li>
+  <li>
+    <p>数字列である <strong>CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列</strong> の列タイプを <strong>NUMBER型</strong> に変更して <strong>「次」</strong> をクリックします。</p>
+
+    <p><img src="adb2-1_5.png" alt="画面ショット1-5" /></p>
+  </li>
+  <li>
+    <p>設定を確認し <strong>「終了」</strong> をクリックします</p>
+
+    <p><img src="adb2-1_6.png" alt="画面ショット1-6" /></p>
+  </li>
+  <li>
+    <p>「データをアップロードしています」の <strong>「OK」</strong> をクリックし、<strong>ナビゲータ</strong> で <strong>SALES_CHANNELS表</strong> が追加されていることを確認します</p>
+
+    <p><img src="adb2-1_7.png" alt="画面ショット1-7" />
+ <img src="adb2-1_8.png" alt="画面ショット1-8" /></p>
+  </li>
+  <li>
+    <p>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">sales_channels</span><span class="p">;</span> 
+</code></pre></div>    </div>
+
+    <p>結果が表示されます。</p>
+
+    <p><img src="adb2-1_9.png" alt="画面ショット1-9" /></p>
+  </li>
+</ol>
+
+<p>これで、手元のデータのロードは完了です。次は、オブジェクトストレージからデータをロードしてみましょう。</p>
+
+<h1 id="2-オブジェクトストレージからcsvデータをロードしてみよう">2. オブジェクトストレージからCSVデータをロードしてみよう</h1>
+<p>この章ではオブジェクトストレージからADBへのデータロード方法を記載します。<br />
+多少煩雑な手順となりますが、大量データをロードしたい場合はパフォーマンス性能の観点から本手順を推奨しています。<br />
+サンプルデータとしてcustomers.csvファイルを利用します。</p>
+
+<p>また、ここではコマンド実行に際してSQL Developer Webを利用していますが、SQL*Plus等、コマンドを発行できるツールであれば何でも構いません。</p>
+
+<p>作業の流れは以下の通りです。</p>
+<ol>
+  <li>OCIオブジェクトストレージへのアクセス情報を取得</li>
+  <li>オブジェクトストレージへのデータアップロード、アクセスURLの取得</li>
+  <li>DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード</li>
+</ol>
+
+<h2 id="1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</h2>
+<p>以下の手順で、ADBインスタンスからオブジェクトストレージ上のファイルにアクセスするための、ユーザ名、Auth Token（認証トークン）を取得します。<br />
+Auth TokenはAPIでオブジェクトストレージにアクセスする時のパスワードに相当します。</p>
+
+<ol>
+  <li>
+    <p>OCIサービス画面の右上にある <strong>ユーザ（人型アイコン）→「ユーザ設定」</strong> を選択します。<br />
+ <img src="adb2-2_1.png" alt="画面ショット2-1" /></p>
+  </li>
+  <li>
+    <p>表示されている名前部分を選択してクリップボードにコピーし、テキストファイルに保存しておきます。<br />
+ 注意）ユーザ名の前に <strong>oracleidentitycloudservice/</strong> のような接頭辞が付加されている場合は、これを含めてユーザ名とします<br />
+ <img src="adb2-2_2.png" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>オブジェクトストレージアクセス用のAuth Tokenを生成するために、<strong>「Auth Token」</strong> をクリックします。<br />
+ <img src="adb2-2_3.png" alt="画面ショット2-3" /></p>
+  </li>
+  <li>
+    <p><strong>「Generate Token」</strong> をクリックし、Auth Token を生成します<br />
+ <img src="adb2-2_4.png" alt="画面ショット2-4" /></p>
+  </li>
+  <li>
+    <p>用途に応じた概要をDescriptionに入力し、<strong>「Generate Token」</strong> をクリックします<br />
+ <img src="adb2-2_5.png" alt="画面ショット2-5" /></p>
+  </li>
+</ol>
+
+<p>1.<strong>「Copy」</strong> をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<br />
+	<strong>注意 : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。</strong> <br />
+	<img src="adb2-2_6.png" alt="画面ショット2-6" /></p>
+
+<h2 id="2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</h2>
+<p>ダウンロードしたcustomers.csvをオブジェクトストレージへアップロードします。</p>
+
+<ol>
+  <li>
+    <p>メニューから <strong>「オブジェクト・ストレージ」</strong> をクリックします。<br />
+ <img src="adb2-2_7.png" alt="画面ショット2-7" /></p>
+  </li>
+  <li>
+    <p><strong>「バケットの作成」</strong> をクリックします。<br />
+ <img src="adb2-2_8.png" alt="画面ショット2-8" /></p>
+  </li>
+  <li>
+    <p>バケット名に <strong>「adb-hol-bucket01」</strong> と入力し、他はそのままで <strong>「作成」</strong> をクリックし、バケットを作成してください。
+ <img src="adb2-2_9.png" alt="画面ショット2-9" /></p>
+  </li>
+  <li>
+    <p>作成されたバケット <strong>「adb-hol-bucket01」</strong> をクリックします。<br />
+ <img src="adb2-2_10.png" alt="画面ショット2-10" /></p>
+  </li>
+</ol>
+
+<p>1.<strong>「オブジェクトのアップロード」</strong> をクリックして、お手元のPCにある <strong>customers.csv</strong> をアップロードしてください。（アップロードが完了し終了済と表示されたらOKです。）</p>
+
+<ol>
+  <li>アップロードしたファイルにアクセスするためのURLを入手しておきます。
+アップロードしたファイルの右にあるメニューをクリックして、<strong>「オブジェクト詳細の表示」</strong> をクリックします。<br />
+ <img src="adb2-2_11.png" alt="画面ショット2-11" /></li>
+</ol>
+
+<p>オブジェクトへのURLをコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。</p>
+
+<p>なお、上記はWebブラウザ経由でアップロードしましたが、よりサイズの大きいデータをオブジェクト・ストレージにアップロードする場合はOCICLIをご利用ください。
+より高速にアップロードすることが可能です。OCICLIについては<a href="https://community.oracle.com/tech/welcome/discussion/4474315">こちら</a>を参考ください。</p>
+
+<h2 id="3dbms_cloudパッケージを利用したadbインスタンスへのデータロード">3.DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード</h2>
+<p>SQL Developer WebでAdminユーザーでADBに接続し、ワークシートで次のコマンドを順に実行してデータをロードします。</p>
+
+<ol>
+  <li>
+    <p>クレデンシャル情報の登録<br />
+ クレデンシャル情報とはユーザー名とToken、後続ステップのデータロード実行時にADBが特定のOracle Object 
+ Storageにアクセスするための認証情報です。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--クレデンシャル情報の登録</span>
+ <span class="k">BEGIN</span>  
+     <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span><span class="p">(</span><span class="err">　　</span>
+         <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'WORKSHOP_CREDENTIAL'</span><span class="p">,</span>
+         <span class="n">username</span> <span class="o">=&gt;</span> <span class="s1">'adb@handson.com'</span><span class="p">,</span>
+         <span class="n">password</span> <span class="o">=&gt;</span> <span class="s1">'xxxxxx'</span>
+         <span class="p">);</span>
+ <span class="k">END</span><span class="p">;</span>
+ <span class="o">/</span>
+</code></pre></div>    </div>
+    <ul>
+      <li>credential_name: 　　DBに保存した認証情報を識別するための名前、任意</li>
+      <li>username:　  　　上記で取得したOracle Object Storageにアクセスするための ユーザ名</li>
+      <li>password:　   　　上記で取得したAuth Token</li>
+    </ul>
+
+    <p>なお、作成済みのCredentialを削除する場合は以下を実行ください</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--クレデンシャル情報の削除</span>
+ <span class="k">BEGIN</span>
+     <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">DROP_CREDENTIAL</span><span class="p">(</span>
+         <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'WORKSHOP_CREDENTIAL'</span>
+     <span class="p">);</span>
+ <span class="k">END</span><span class="p">;</span>
+ <span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ADB上にロード先の表を作成</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--既に表がある場合は削除</span>
+ <span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">customers</span><span class="p">;</span>
+
+ <span class="c1">--customers表の作成</span>
+ <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">customers</span> <span class="p">(</span>
+     <span class="n">cust_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_first_name</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_last_name</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_gender</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_year_of_birth</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_marital_status</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+     <span class="n">cust_street_address</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_postal_code</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_city</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_city_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_state_province</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_state_province_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">country_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_main_phone_number</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_income_level</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+     <span class="n">cust_credit_limit</span> <span class="n">NUMBER</span><span class="p">,</span><span class="n">cust_email</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
+     <span class="n">cust_total</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_total_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+     <span class="n">cust_src_id</span> <span class="n">NUMBER</span><span class="p">,</span><span class="n">cust_eff_from</span> <span class="nb">DATE</span><span class="p">,</span>
+     <span class="n">cust_eff_to</span> <span class="nb">DATE</span><span class="p">,</span><span class="n">cust_valid</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+</code></pre></div>    </div>
+  </li>
+  <li>ADB上へのデータのロード
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--データロード</span>
+ <span class="k">BEGIN</span>
+     <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span><span class="p">(</span>
+         <span class="k">table_name</span><span class="o">=&gt;</span><span class="s1">'CUSTOMERS'</span><span class="p">,</span>
+         <span class="n">credential_name</span><span class="o">=&gt;</span><span class="s1">'WORKSHOP_CREDENTIAL'</span><span class="p">,</span>
+         <span class="n">file_uri_list</span><span class="o">=&gt;</span><span class="s1">'https://objectstorage.&lt;region&gt;.oraclecloud.com/n/&lt;namespace&gt;/b/&lt;bucket&gt;/o/customers.csv'</span><span class="p">,</span>
+         <span class="n">format</span><span class="o">=&gt;</span><span class="n">json_object</span><span class="p">(</span>
+         <span class="s1">'ignoremissingcolumns'</span> <span class="n">value</span> <span class="s1">'true'</span><span class="p">,</span>
+         <span class="s1">'removequotes'</span> <span class="n">value</span> <span class="s1">'true'</span><span class="p">,</span>
+         <span class="s1">'dateformat'</span> <span class="n">value</span> <span class="s1">'YYYY-MM-DD HH24:MI:SS'</span><span class="p">,</span>
+         <span class="s1">'blankasnull'</span> <span class="n">value</span> <span class="s1">'true'</span><span class="p">)</span>
+     <span class="p">);</span>
+ <span class="k">END</span><span class="p">;</span>
+ <span class="o">/</span>
+</code></pre></div>    </div>
+
+    <p>file_uri_listには、アップロードしたファイルのURLを記載します。先の手順で入手したURLで更新してください。</p>
+  </li>
+  <li>ロード結果の確認
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">from</span> <span class="n">CUSTOMERS</span><span class="p">;</span>
+ <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">CUSTOMERS</span> <span class="k">where</span> <span class="n">rownum</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>（必要に応じて）主キー（PK）など各種制約の作成</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">customers</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">customers_pk</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">cust_id</span><span class="p">);</span>
+</code></pre></div>    </div>
+    <p>ロード完了後に実行した方が、より高速にロードすることが可能なのでおススメです</p>
+  </li>
+</ol>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<h1 id="3-note">3. Note</h1>
+<p>よくある質問やTipsを記載します</p>
+
+<h2 id="1大量データのロード処理を高速化するには">1.大量データのロード処理を高速化するには？　　</h2>
+<p>次の二つの方法が考えられます。</p>
+
+<ul>
+  <li>
+    <p>ソースファイルを圧縮<br />
+  DBMS_CLOUDパッケージはgzip圧縮済みのファイルを展開せずにそのままロードできます。　　</p>
+  </li>
+  <li>
+    <p>ソースファイルを分割<br />
+  ソースファイルがSJIS等の場合はロード前にファイルを分割しロードすることを推奨します。複数のCPUコアが並列に処理し高速にロードできます。<br />
+  ソースファイルがUTF8の場合はDBMS_CLOUD内で自動的にファイルを分割するので不要ですが、もしgzipで圧縮する場合は、事前にファイルを分割した上で圧縮してください。<br />
+  ロードしたいソースファイルが固定長フォーマットの場合もUTF8の場合と同様です。ファイル分割は不要ですが、もし圧縮する場合は事前にファイルを分割した上で圧縮してください。<br />
+  なお、分割したCSVファイルの各ファイルの一行目に列名などのヘッダ情報がある場合はエラーとなるため、事前に削除しておくと良いです。</p>
+
+    <ul>
+      <li>具体的な実行例<br />
+  DBMS_CLOUDパッケージで、compressionオプションを付与しつつ、ファイル名にワイルドカードを記載することで、gzip圧縮済みの複数のファイルを纏めてロードすることができます。</li>
+    </ul>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">--複数ファイルのロード</span>
+  <span class="k">BEGIN</span>
+      <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span><span class="p">(</span>
+          <span class="k">schema_name</span> <span class="o">=&gt;</span> <span class="s1">'ADWC_USER'</span><span class="p">,</span>
+          <span class="k">table_name</span> <span class="o">=&gt;</span><span class="s1">'CHANNELS1'</span><span class="p">,</span>
+          <span class="n">credential_name</span> <span class="o">=&gt;</span><span class="s1">'TKY01_CRED_USER'</span><span class="p">,</span>
+          <span class="n">file_uri_list</span> <span class="o">=&gt;</span><span class="s1">'https://objectstorage.ap-tokyo-1.oraclecloud.com/n/tenancyxxxx/b/backetxxxx/o/channels_data_*.gz'</span><span class="p">,</span>
+          <span class="n">format</span> <span class="o">=&gt;</span> <span class="s1">'{
+              "type":"CSV",
+              "compression":"gzip",
+              "dateformat":"YYYY-MM-DD",
+              "timestampformat":"YYYY-MM-DD HH24:MI:SS.FF",
+              "ignoremissingcolumns":"true" 
+          }'</span>
+      <span class="p">);</span>
+  <span class="k">END</span><span class="p">;</span>
+  <span class="o">/</span>
+</code></pre></div>    </div>
+    <p>※ファイルの分割や圧縮の処理時間や、ネットワーク転送速度などとの兼ね合いから、そのままロードした方が高速なケースもあります。</p>
+  </li>
+</ul>
+
+<h2 id="2dbms_cloudcopy_dataによるロードが失敗する場合の確認ポイント">2.DBMS_CLOUD.COPY_DATAによるロードが失敗する場合の確認ポイント</h2>
+<p>まず最初にソースファイルにアクセスできているか確認してください。</p>
+
+<ul>
+  <li>
+    <p>認証系のエラー（ORA-20401: Authorization failed for URI）が出る場合<br />
+  ユーザ名、Auth Tokenに誤りがないか再度確認してください。特にIDCSと連携している場合、ユーザ名にはoracleidentitycloudservice/ の接頭辞が必要です。<br />
+  以下のSQL文でクレデンシャルが正しく登録されているか確認してください。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">user_credentials</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>オブジェクトが見つからないエラー（ORA-20404: Object not found）が出る場合<br />
+  オブジェクトストレージへのURLが正しいか、アップロード済みのファイル名が正しいか、再確認してください。<br />
+  事前認証済みリクエストを作成し、アクセスできるか試してください。<br />
+  オブジェクトストレージ上のバケットをPublic にして試してください。</p>
+  </li>
+</ul>
+
+<p>次にADBインスタンス内のログを確認してください。</p>
+<ul>
+  <li>
+    <p>ロードに失敗した場合は、まず最初にログファイル、バッドファイルの表からSQL文でエラー内容を確認します。<br />
+以下はSQL*Plusでエラーを確認するスクリプトです。なお、ログは 2日で自動的に削除されます。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">--ログファイルの確認　　</span>
+  <span class="c1">-- (logfile_table, badfile_table 列で、ログファイルとバッドファイルの表名を確認)　　</span>
+      <span class="k">set</span> <span class="n">lines</span> <span class="mi">200</span><span class="err">　　</span>
+      <span class="k">set</span> <span class="n">pages</span> <span class="mi">9999</span><span class="err">　　</span>
+      <span class="n">col</span> <span class="k">TABLE_NAME</span> <span class="k">for</span> <span class="n">a30</span><span class="err">　　</span>
+      <span class="n">col</span> <span class="n">LOGFILE_TABLE</span> <span class="k">for</span> <span class="n">a15</span><span class="err">　　</span>
+      <span class="n">col</span> <span class="n">BADFILE_TABLE</span> <span class="k">for</span> <span class="n">a15</span><span class="err">　　</span>
+      <span class="k">SELECT</span> <span class="k">table_name</span><span class="p">,</span> <span class="n">logfile_table</span><span class="p">,</span> <span class="n">badfile_table</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">update_time</span> <span class="k">FROM</span> <span class="n">user_load_operations</span> <span class="k">WHERE</span> <span class="k">type</span> <span class="o">=</span> <span class="s1">'COPY'</span> <span class="k">order</span> <span class="k">by</span> <span class="mi">5</span><span class="p">;</span><span class="err">　　</span>
+  <span class="c1">-- ログの確認　　</span>
+      <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="k">COPY</span><span class="err">$</span><span class="mi">1</span><span class="n">_LOG</span><span class="p">;</span>
+      <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="k">COPY</span><span class="err">$</span><span class="mi">1</span><span class="n">_BAD</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="3お問い合わせのあった例確認ポイント">3.お問い合わせのあった例・確認ポイント</h2>
+
+<ul>
+  <li>列定義の文字数に注意<br />
+  文字コード（CHARACTERSET パラメータ）は変更不可（AL32UTF8がデフォルト、2019/11現在）<br />
+  既存DBがSJIS等の場合、オブジェクト名、および列定義のバイト数について、定義を一律2倍にするといった変更が必要な場合があります。</li>
+  <li>ソースファイルについて<br />
+  ヘッダ情報（通常1行目）に注意
+  ソースファイルを圧縮する場合、もしくはワイルドカード指定で複数のファイルを一括ロードする場合は、ソースファイルからヘッダを削除してください</li>
+  <li>
+    <p>文字コードに注意、改行コードに注意<br />
+  文字コードがUTF-8の場合は指定は不要。その他SJIS等の場合は、format句のcharactersetを指定してください。<br />
+  改行コードがCR+LFの場合、recorddelimiterを指定してください。UNIX系で利用される 改行コード = LF の場合は recorddelimiter の指定は不要</p>
+
+    <ul>
+      <li>記載例<br />
+   「format =&gt; json_object(‘type’ value ’CSV’ , ‘characterset’ value ’JA16SJIS’, ‘recorddelimiter’ value ‘’’’’’) 」</li>
+    </ul>
+  </li>
+  <li>
+    <p>タイムスタンプのフォーマットが24時間表記の場合<br />
+  format句のTimestampformatオプションにYYY-MM-DD HH24:MI:SS.FFを指定してください。 （YYYY-MM-DD HH:MI:SS.FFと記載するとエラーになる ）</p>
+  </li>
+  <li>
+    <p>最後の列に空白がある場合<br />
+  Ignoremissingcolumnsを指定してください。</p>
+  </li>
+  <li>
+    <p>列のNULLを許可する（ファイルの一部列データがNULL）の場合<br />
+  ‘blankasnull’ VALUE ‘true’ を設定する</p>
+  </li>
+  <li>その他<br />
+  格納されているデータ固有のエラーに関する詳細は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/dbmscloud-reference.html#GUID-52C9974C-D95E-4E41-AFBD-0FC4065C029A">ドキュメントのパッケージ説明</a>もあわせて参照ください。</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-28T15:54:02+09:00">January 28, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=ADB+HOL+%232+%3A+ADB%E3%81%AB%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fadb-hol2-dataload%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fadb-hol2-dataload%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fadb-hol2-dataload%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/oce-tutorial/" class="pagination--pager" title="Oracle Content and Experience チュートリアル
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>

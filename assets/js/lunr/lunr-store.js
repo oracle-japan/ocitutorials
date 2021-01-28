@@ -197,6 +197,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/oce-tutorial/",
         "teaser": null
       },{
+        "title": "ADB HOL #2 : ADBにデータをアップロードしてみよう",
+        "excerpt":"この章ではSQL Developer Webを利用して、サンプルデータをADBインスタンスにデータをアップロードします。 事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。 （集合ハンズオンセミナーでは講師の指示に従ってください） 所要時間 : #1 約10分, #2 約30分 前提条件 : ADB HOL#1を終了していること 以下にリンクされているサンプルデータのzipファイルをダウンロードして解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています) 　 サンプルデータファイルのダウンロードリンク 注意 : チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 1.手元のPCからCSVデータをアップロードしてみよう まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。 SQL Developer Webを利用したインスタンスへの接続 を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。 その後左ペインにある　ナビゲータタブから　[…」(オブジェクトサブメニュー)→「データのロード」→「新規表へのデータのアップロード」 を選択します。 ダウンロードして解凍した sales_channels.csv を選択して 「次」 をクリックします。 sales_channels.csvのデータのプレビューを確認し 「次」 をクリックします 表定義が表示されます。すべての列タイプが VARCHAR2型 になっていることが確認できます。 数字列である CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列 の列タイプを NUMBER型 に変更して 「次」 をクリックします。 設定を確認し...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol2-dataload/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol2-dataload/adb2-1_1.png"
+      },{
         "title": "Oracle Cloud 無料トライアルを申し込む",
         "excerpt":"Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。 ※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)      Oracle Cloud 無料トライアル サインアップガイド   Oracle Cloud Free Tierに関するFAQ  ","categories": [],
         "tags": [],
