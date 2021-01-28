@@ -4,7 +4,7 @@ WORKDIR /pages
 
 COPY . /pages
 
-RUN rm -rf Gemfile.lock
+RUN rm -rf /pages/Gemfile.lock
 
 RUN mkdir _site && mkdir .jekyll-cache
 
