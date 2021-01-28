@@ -4,9 +4,9 @@ WORKDIR /pages
 
 COPY . /pages
 
-RUN rm -rf /pages/Gemfile.lock
-
 RUN chmod 777 /pages/Gemfile
+
+RUN chmod 777 /pages/Gemfile.lock
 
 RUN mkdir _site && mkdir .jekyll-cache
 
