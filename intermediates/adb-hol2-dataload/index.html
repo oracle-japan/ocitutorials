@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-01-28T23:45:17+09:00">
+  <meta property="article:published_time" content="2021-01-29T09:15:18+09:00">
 
 
 
@@ -317,7 +317,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ADB HOL #2 : ADBにデータをアップロードしてみよう">
     <meta itemprop="description" content="SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
-    <meta itemprop="datePublished" content="2021-01-28T23:45:17+09:00">
+    <meta itemprop="datePublished" content="2021-01-29T09:15:18+09:00">
     
 
     <div class="page__inner-wrap">
@@ -357,10 +357,12 @@
 
 <p><strong>前提条件 :</strong></p>
 <ul>
-  <li>ADB HOL#1を終了していること</li>
-  <li>以下にリンクされているサンプルデータのzipファイルをダウンロードして解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています)<br />
-　	
-<a href="ADB-HOL2_sampledata.zip">サンプルデータファイルのダウンロードリンク</a></li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol1-provisioning/">ADB HOL#1</a>を完了していること</li>
+  <li>以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています)
+    <ul>
+      <li><a href="https://github.com/oracle-japan/ocitutorials/raw/master/tutorials/_intermediates/adb-hol2-dataload/adb-hol2_sampledata.zip">サンプルデータファイルのダウンロードリンク</a></li>
+    </ul>
+  </li>
 </ul>
 
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。</p>
@@ -371,18 +373,18 @@
 
 <ol>
   <li>
-    <p><strong>SQL Developer Webを利用したインスタンスへの接続</strong> を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。<br />
-その後左ペインにある　<strong>ナビゲータ</strong>タブから　<strong>[…」(オブジェクトサブメニュー)→「データのロード」→「新規表へのデータのアップロード」</strong> を選択します。</p>
+    <p>ADB-HOL1で学習した<strong>SQL Developer Webを利用したインスタンスへの接続</strong> を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。<br />
+その後左ペインにある　<strong>ナビゲータ</strong>タブから　<strong>[…」(オブジェクトサブメニュー)→データのロード→新規表へのデータのアップロード</strong> を選択します。</p>
 
     <p><img src="adb2-1_1.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>ダウンロードして解凍した <strong>sales_channels.csv</strong> を選択して <strong>「次」</strong> をクリックします。</p>
+    <p>ダウンロードして解凍した <strong>sales_channels.csv</strong> を選択して <strong>次</strong> をクリックします。</p>
 
     <p><img src="adb2-1_2.png" alt="画面ショット1-2" /></p>
   </li>
   <li>
-    <p>sales_channels.csvのデータのプレビューを確認し <strong>「次」</strong> をクリックします</p>
+    <p>sales_channels.csvのデータのプレビューを確認し <strong>次</strong> をクリックします</p>
 
     <p><img src="adb2-1_3.png" alt="画面ショット1-3" /></p>
   </li>
@@ -392,17 +394,17 @@
     <p><img src="adb2-1_4.png" alt="画面ショット1-4" /></p>
   </li>
   <li>
-    <p>数字列である <strong>CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列</strong> の列タイプを <strong>NUMBER型</strong> に変更して <strong>「次」</strong> をクリックします。</p>
+    <p>数字列である <strong>CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列</strong> の列タイプを <strong>NUMBER型</strong> に変更して <strong>次</strong> をクリックします。</p>
 
     <p><img src="adb2-1_5.png" alt="画面ショット1-5" /></p>
   </li>
   <li>
-    <p>設定を確認し <strong>「終了」</strong> をクリックします</p>
+    <p>設定を確認し <strong>終了</strong> をクリックします</p>
 
     <p><img src="adb2-1_6.png" alt="画面ショット1-6" /></p>
   </li>
   <li>
-    <p>「データをアップロードしています」の <strong>「OK」</strong> をクリックし、<strong>ナビゲータ</strong> で <strong>SALES_CHANNELS表</strong> が追加されていることを確認します</p>
+    <p>「データをアップロードしています」の <strong>OK</strong> をクリックし、<strong>ナビゲータ</strong> で <strong>SALES_CHANNELS表</strong> が追加されていることを確認します</p>
 
     <p><img src="adb2-1_7.png" alt="画面ショット1-7" />
  <img src="adb2-1_8.png" alt="画面ショット1-8" /></p>
@@ -449,51 +451,54 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
  <img src="adb2-2_2.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>オブジェクトストレージアクセス用のAuth Tokenを生成するために、<strong>「Auth Token」</strong> をクリックします。<br />
+    <p>オブジェクトストレージアクセス用のAuth Tokenを生成するために、<strong>Auth Token</strong> をクリックします。<br />
  <img src="adb2-2_3.png" alt="画面ショット2-3" /></p>
   </li>
   <li>
-    <p><strong>「Generate Token」</strong> をクリックし、Auth Token を生成します<br />
+    <p><strong>Generate Token</strong> をクリックし、Auth Token を生成します<br />
  <img src="adb2-2_4.png" alt="画面ショット2-4" /></p>
   </li>
   <li>
-    <p>用途に応じた概要をDescriptionに入力し、<strong>「Generate Token」</strong> をクリックします<br />
+    <p>用途に応じた概要をDescriptionに入力し、<strong>Generate Token</strong> をクリックします<br />
  <img src="adb2-2_5.png" alt="画面ショット2-5" /></p>
   </li>
 </ol>
 
-<p>1.<strong>「Copy」</strong> をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<br />
-	<strong>注意 : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。</strong> <br />
-	<img src="adb2-2_6.png" alt="画面ショット2-6" /></p>
+<p>1.<strong>Copy</strong> をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。</p>
+<blockquote>
+  <p><strong>注意</strong> : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。</p>
+</blockquote>
+
+<p><img src="adb2-2_6.png" alt="画面ショット2-6" /></p>
 
 <h2 id="2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</h2>
 <p>ダウンロードしたcustomers.csvをオブジェクトストレージへアップロードします。</p>
 
 <ol>
   <li>
-    <p>メニューから <strong>「オブジェクト・ストレージ」</strong> をクリックします。<br />
+    <p>メニューから <strong>オブジェクト・ストレージ</strong> をクリックします。<br />
  <img src="adb2-2_7.png" alt="画面ショット2-7" /></p>
   </li>
   <li>
-    <p><strong>「バケットの作成」</strong> をクリックします。<br />
+    <p><strong>バケットの作成</strong> をクリックします。<br />
  <img src="adb2-2_8.png" alt="画面ショット2-8" /></p>
   </li>
   <li>
-    <p>バケット名に <strong>「adb-hol-bucket01」</strong> と入力し、他はそのままで <strong>「作成」</strong> をクリックし、バケットを作成してください。
+    <p>バケット名に <strong>adb-hol-bucket01</strong> と入力し、他はそのままで <strong>作成</strong> をクリックし、バケットを作成してください。
  <img src="adb2-2_9.png" alt="画面ショット2-9" /></p>
   </li>
   <li>
-    <p>作成されたバケット <strong>「adb-hol-bucket01」</strong> をクリックします。<br />
+    <p>作成されたバケット <strong>adb-hol-bucket01</strong> をクリックします。<br />
  <img src="adb2-2_10.png" alt="画面ショット2-10" /></p>
   </li>
-</ol>
-
-<p>1.<strong>「オブジェクトのアップロード」</strong> をクリックして、お手元のPCにある <strong>customers.csv</strong> をアップロードしてください。（アップロードが完了し終了済と表示されたらOKです。）</p>
-
-<ol>
-  <li>アップロードしたファイルにアクセスするためのURLを入手しておきます。
-アップロードしたファイルの右にあるメニューをクリックして、<strong>「オブジェクト詳細の表示」</strong> をクリックします。<br />
- <img src="adb2-2_11.png" alt="画面ショット2-11" /></li>
+  <li>
+    <p><strong>オブジェクトのアップロード</strong> をクリックして、お手元のPCにある <strong>customers.csv</strong> をアップロードしてください。（アップロードが完了し終了済と表示されたらOKです。）</p>
+  </li>
+  <li>
+    <p>アップロードしたファイルにアクセスするためのURLを入手しておきます。
+アップロードしたファイルの右にあるメニューをクリックして、<strong>オブジェクト詳細の表示</strong> をクリックします。<br />
+ <img src="adb2-2_11.png" alt="画面ショット2-11" /></p>
+  </li>
 </ol>
 
 <p>オブジェクトへのURLをコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。</p>
@@ -507,8 +512,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 <ol>
   <li>
     <p>クレデンシャル情報の登録<br />
- クレデンシャル情報とはユーザー名とToken、後続ステップのデータロード実行時にADBが特定のOracle Object 
- Storageにアクセスするための認証情報です。</p>
+ クレデンシャル情報とはユーザ名とTokenの組み合わせで登録する認証情報です。後続ステップのデータロード実行時にADBが特定のOracle Object Storageにアクセスするために必要です。</p>
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--クレデンシャル情報の登録</span>
  <span class="k">BEGIN</span>  
@@ -521,12 +525,12 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
  <span class="o">/</span>
 </code></pre></div>    </div>
     <ul>
-      <li>credential_name: 　　DBに保存した認証情報を識別するための名前、任意</li>
-      <li>username:　  　　上記で取得したOracle Object Storageにアクセスするための ユーザ名</li>
-      <li>password:　   　　上記で取得したAuth Token</li>
+      <li>credential_name: DBに保存した認証情報を識別するための任意の名前</li>
+      <li>username: 上記で取得したOracle Object Storageにアクセスするためのユーザ名</li>
+      <li>password: 上記で取得したAuth Token</li>
     </ul>
 
-    <p>なお、作成済みのCredentialを削除する場合は以下を実行ください</p>
+    <p>なお、作成済みのCredentialを削除する場合は以下を実行してください。</p>
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--クレデンシャル情報の削除</span>
  <span class="k">BEGIN</span>
@@ -596,14 +600,14 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">customers</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">customers_pk</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">cust_id</span><span class="p">);</span>
 </code></pre></div>    </div>
-    <p>ロード完了後に実行した方が、より高速にロードすることが可能なのでおススメです</p>
+    <p>ロード完了後に実行した方が、より高速にロードすることが可能なのでおススメです。</p>
   </li>
 </ol>
 
-<p>以上で、この章の作業は終了です。</p>
+<p>以上で、この章の作業は終了です。次にお進みください。</p>
 
 <h1 id="3-note">3. Note</h1>
-<p>よくある質問やTipsを記載します</p>
+<p>よくある質問やTipsを記載します。</p>
 
 <h2 id="1大量データのロード処理を高速化するには">1.大量データのロード処理を高速化するには？　　</h2>
 <p>次の二つの方法が考えられます。</p>
@@ -732,7 +736,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-28T23:45:17+09:00">January 28, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-01-29T09:15:18+09:00">January 29, 2021</time></p>
 
 
       </footer>
