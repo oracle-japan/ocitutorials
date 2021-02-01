@@ -24,8 +24,6 @@ Oracle Cloud Infrastructure(OCI) では、HeatWaveというデータ分析処理
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
 
-<br>
-
 **目次：**
 
 - [1. HeatWaveとは?](#anchor1)
@@ -43,6 +41,7 @@ Oracle Cloud Infrastructure(OCI) では、HeatWaveというデータ分析処理
 # 1. HeatWaveとは?
 
 HeatWaveとはOCIでのみ使えるデータウェアハウスサービスです。MySQL Database Serviceの拡張サービスとして提供されており、インメモリで並列処理することにより分析系のSQLも高速に実行できます。MySQL 8.0ベースのサービスとなっていますので、今までMySQLで実行していたSQLをそのまま使えます。また、レプリケーションを構成してオンプレミスのMySQL 5.7、8.0からETLを使わずにデータを連携することもできます。
+<br>
 
 
 
@@ -52,12 +51,10 @@ HeatWaveとはOCIでのみ使えるデータウェアハウスサービスです
 
 HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい[^1]。
 
-[^1]: HeatWaveのデフォルトサービスリミットは以前は0に設定されていました。新しくアカウントを作成した場合はデフォルトサービスリミットが変更されていて最初から使える状態になっていると思われますが、念のため使用している環境でサービスリミットが後述する最小構成を満たしていることを確認して下さい。
-
 本チュートリアルで構成するHeatWaveの構成図は以下のようになります。HeatWaveを構成する時は、HeatWave専用のMySQL Database Serviceを構成し、そこにHeatWaveのノードを追加します。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL Database Serviceになります。また、HeatWaveノードの最小台数は2台、最大台数は24台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約400GBのデータを保持できます。
 
 <div align="center">
-<img width="700" alt="img1.png" src="creating-HeatWave/img1.png" style="border: 1px black solid;">
+<img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;">
 </div>
 <br>
 
@@ -68,7 +65,7 @@ HeatWaveを構成する前に、使用する環境のサービスリミットを
 1. コンソール左上のメニューをクリックしてメニューを表示し、一番下までスクロールします。**ガバナンス** → **制限、割当ておよび使用状況** をクリックします。
 
     <div align="center">
-    <img width="700" alt="img2.png" src="creating-HeatWave/img2.png" style="border: 1px black solid;">
+    <img width="700" alt="img2.png" src="img2.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -77,7 +74,7 @@ HeatWaveを構成する前に、使用する環境のサービスリミットを
 2. サービスは **MySQL** 、スコープは **XXXX:AP-TOKYO-1-AD-1** を選択します(東京リージョンを使用している場合)。"XXXX"部分は固有の文字列になります。表示された画面で「MySQL Database for HeatWave VM.Standard.E3 Nodes Count」が1以上、「MySQL HeatWave VM.Standard.E3 Nodes Count」が2以上になっていることを確認します。
 
     <div align="center">
-    <img width="700" alt="img3.png" src="creating-HeatWave/img3.png" style="border: 1px black solid;">
+    <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -86,7 +83,7 @@ HeatWaveを構成する前に、使用する環境のサービスリミットを
 3. サービスリミットが最小構成を満たしていない場合は、右上の **サービス制限の引上げ** リンクをクリックし、必要事項を記入して **リクエストの送信** ボタンをクリックすることでサービス制限の引上げリクエストを登録できます。作業完了の連絡は連絡先に入力したメールアドレスにメールで通知されます。
 
     <div align="center">
-    <img width="700" alt="img4.png" src="creating-HeatWave/img4.png" style="border: 1px black solid;">
+    <img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -101,13 +98,13 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
 
 1. コンソールメニューから **データベース** → **MySQL** → **DBシステム** を選択します。
     <div align="center">
-    <img width="700" alt="img5.png" src="creating-HeatWave/img5.png" style="border: 1px black solid;">
+    <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;">
     </div>
     <br>
 
 2. **MySQL DBシステムの作成** ボタンを押します。この際、左下の **リスト範囲** でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
     <div align="center">
-    <img width="700" alt="img6.png" src="creating-HeatWave/img6.png" style="border: 1px black solid;">
+    <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -118,17 +115,17 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     - **データ・ストレージ・サイズ(GB)** - データ用のストレージサイズを入力します。ここでは1000GB確保するために「1000」と入力しています。
 
     <div align="center">
-    <img width="700" alt="img7.png" src="creating-HeatWave/img7.png" style="border: 1px black solid;">
+    <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;">
     </div>
     <br>
 
     <div align="center">
-    <img width="700" alt="img8.png" src="creating-HeatWave/img8.png" style="border: 1px black solid;">
+    <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;">
     </div>
     <br>
 
     <div align="center">
-    <img width="700" alt="img9.png" src="creating-HeatWave/img9.png" style="border: 1px black solid;">
+    <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -141,26 +138,26 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     - **パスワードの確認** - パスワードを再入力します。
     - **ホスト名** - 任意のホスト名を入力します。ここでは「HeatWave」と入力しています。
     <div align="center">
-    <img width="700" alt="img10.png" src="creating-HeatWave/img10.png" style="border: 1px black solid;">
+    <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;">
     </div>
     <br>
 
 5. **③ バックアップ情報** のステップで、何も変更せずに **作成** ボタンを押します。
     <div align="center">
-    <img width="700" alt="img11.png" src="creating-HeatWave/img11.png" style="border: 1px black solid;">
+    <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;">
     </div>
     <br>
 
 6. MDSが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
     <div align="center">
-    <img width="700" alt="img12.png" src="creating-HeatWave/img12.png" style="border: 1px black solid;">
-    <img width="700" alt="img13.png" src="creating-HeatWave/img13.png" style="border: 1px black solid;">
+    <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;">
+    <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;">
     </div>
     <br>
 
 7. ページ左下の **リソース** → **エンドポイント** をクリックして、ホスト名、IPアドレスを確認しておきます。
     <div align="center">
-    <img width="700" alt="img14.png" src="creating-HeatWave/img14.png" style="border: 1px black solid;">
+    <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -172,7 +169,7 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
 
 1. HeatWave用のMDSにHeatWaveノードを追加します。HeatWave用のMDSを選択した状態で左下のメニューより **HeatWave** をクックします。その後、**HeatWaveクラスタの追加** をボタンを押します。
     <div align="center">
-    <img width="700" alt="img15.png" src="creating-HeatWave/img15.png" style="border: 1px black solid;">
+    <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -180,20 +177,20 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
 (既にMDSにデータをロードしている状態であればここで**ノード数の見積もり** ボタンを押すことで必要なHeatWaveノード数を見積もることができますが、今回は最小構成で構成するためノード数は2から変更せずに次に進みます)
    
     <div align="center">
-    <img width="700" alt="img16.png" src="creating-HeatWave/img16.png" style="border: 1px black solid;">
+    <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
     <br>
     <br>
-    <img width="700" alt="img17.png" src="creating-HeatWave/img17.png" style="border: 1px black solid;">
+    <img width="700" alt="img17.png" src="img17.png" style="border: 1px black solid;">
     <br>
     <br>
-    <img width="700" alt="img18.png" src="creating-HeatWave/img18.png" style="border: 1px black solid;">
+    <img width="700" alt="img18.png" src="img18.png" style="border: 1px black solid;">
     </div>
 <br>
    
 3. HeatWaveノードが作成中になるのでしばらく待ちます。概ね10分程度でHeatWaveノードが追加されます。
     <div align="center">
-    <img width="700" alt="img19.png" src="creating-HeatWave/img19.png" style="border: 1px black solid;">
-    <img width="700" alt="img20.png" src="creating-HeatWave/img20.png" style="border: 1px black solid;">
+    <img width="700" alt="img19.png" src="img19.png" style="border: 1px black solid;">
+    <img width="700" alt="img20.png" src="img20.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -338,9 +335,9 @@ owners.
 HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時、HeatWaveノードの再起動時のみ行う必要があります。(HeatWaveノードの再起動時は以下のステップ2のみが必要になります)
 <br>
 
-1. ALTER TABLE文を使い、employeesデータベース内のテーブルに対して**SECONDARY_ENGINE=RAPID** を定義します[^2]。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。
 
-[^2]: HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。
+
+1. ALTER TABLE文を使い、employeesデータベース内のテーブルに対して**SECONDARY_ENGINE=RAPID** を定義します[^2]。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。
 
     ```
     mysql> ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
@@ -351,6 +348,9 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
     mysql> ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
     ```
 <br>
+
+
+
 2. **ALTER TABLE テーブル名 SECONDARY_LOAD;** を実行し、データをHeatWaveノードにロードします。
 
     ```
@@ -442,3 +442,7 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
 
 是非、分析業務で使用しているデータを対象にしてテストしてみて下さい。
 
+
+[^1]: HeatWaveのデフォルトサービスリミットは以前は0に設定されていました。新しくアカウントを作成した場合はデフォルトサービスリミットが変更されていて最初から使える状態になっていると思われますが、念のため使用している環境でサービスリミットが後述する最小構成を満たしていることを確認して下さい。
+
+[^2]: HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。
