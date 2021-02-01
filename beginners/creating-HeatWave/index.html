@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-02-01T11:46:27+09:00">
+  <meta property="article:published_time" content="2021-02-01T12:10:18+09:00">
 
 
 
@@ -299,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その10 - MySQLで高速分析を体験する">
     <meta itemprop="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
-    <meta itemprop="datePublished" content="2021-02-01T11:46:27+09:00">
+    <meta itemprop="datePublished" content="2021-02-01T12:10:18+09:00">
     
 
     <div class="page__inner-wrap">
@@ -391,7 +391,7 @@
     <p><br /></p>
   </li>
   <li>
-    <p>サービスは <strong>MySQL</strong> 、スコープは <strong>XXXX:AP-TOKYO-1-AD-1</strong> を選択します(東京リージョンを使用している場合)。”XXXX”部分は固有の文字列になります。表示された画面で「MySQL Database for HeatWave VM.Standard.E3 Nodes Count」が1以上、「MySQL HeatWave VM.Standard.E3 Nodes Count」が2以上になっていることを確認します。</p>
+    <p>サービスは <strong>MySQL</strong> 、スコープは <strong>XXXX:AP-TOKYO-1-AD-1</strong> を選択します(東京リージョンを使用している場合)。”XXXX”部分は固有の文字列になります。表示された画面で <strong>MySQL Database for HeatWave VM.Standard.E3 Nodes Count</strong> が1以上、 <strong>MySQL HeatWave VM.Standard.E3 Nodes Count</strong> が2以上になっていることを確認します。</p>
 
     <div align="center">
  <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;" />
@@ -429,7 +429,7 @@
     <p><br /></p>
   </li>
   <li>
-    <p>立ち上がった <strong>MySQL DBシステムの作成</strong> ウィンドウの <strong>① DBシステム情報</strong> のステップで、以下の項目を入力します。また、 <strong>シェイプの変更</strong> をクリックして表示されたウインドウから <strong>MySQL.HeatWave.VM.Standard.E3</strong> を選択し、<strong>シェイプの選択</strong> をクリックします。その後元のウインドウに戻って<strong>次</strong> ボタンを押します。</p>
+    <p>立ち上がった <strong>MySQL DBシステムの作成</strong> ウィンドウの <strong>① DBシステム情報</strong> のステップで、以下の項目を入力します。また、 <strong>シェイプの変更</strong> をクリックして表示されたウインドウから <strong>MySQL.HeatWave.VM.Standard.E3</strong> を選択し、<strong>シェイプの選択</strong> をクリックします。その後元のウインドウに戻って <strong>次</strong> ボタンを押します。</p>
 
     <ul>
       <li><strong>名前</strong> - 任意の名前を入力します。ここでは「HeatWave」と入力しています。</li>
@@ -500,7 +500,7 @@
   </li>
   <li>
     <p><strong>シェイプの変更</strong> ボタンを押します。表示されたウインドウでHeatWave用のシェイプである<strong>MySQL.HeatWave.VM.Standard.E3</strong> を選択し、<strong>シェイプの選択</strong> ボタンを押します。元のウインドに戻ってシェイプが変更されていることを確認し、<strong>HeatWaveクラスタの追加</strong> ボタンをクリックします。
-(既にMDSにデータをロードしている状態であればここで<strong>ノード数の見積もり</strong> ボタンを押すことで必要なHeatWaveノード数を見積もることができますが、今回は最小構成で構成するためノード数は2から変更せずに次に進みます)</p>
+(既にMDSにデータをロードしている状態であればここで <strong>ノード数の見積もり</strong> ボタンを押すことで必要なHeatWaveノード数を見積もることができますが、今回は最小構成で構成するためノード数は2から変更せずに次に進みます)</p>
 
     <div align="center">
  <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;" />
@@ -530,7 +530,6 @@
 
 <p>employeeデータベースはGitHubで公開されているため、リポジトリをクローンしてSQLスクリプトをダウンロードし、サンプルデータベースを構築します。</p>
 
-<p><br /></p>
 <ol>
   <li>
     <p><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してGitをインストールし、employeeデータベースのリポジトリをクローンします。</p>
@@ -538,14 +537,13 @@
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install git
  git clone https://github.com/datacharmer/test_db
 </code></pre></div>    </div>
-    <p><br /></p>
   </li>
   <li>
     <p>ダウンロードされた<strong>test_db</strong> フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ cd test_db
  [opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
-Enter password: 
+ Enter password: 
  Welcome to the MySQL monitor.  Commands end with ; or \g.
  Your MySQL connection id is 39
  Server version: 8.0.23-cloud MySQL Enterprise - Cloud
@@ -553,8 +551,8 @@ Enter password:
  Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
     
  Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
+ affiliates. Other names may be trademarks of their respective
+ owners.
     
  Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
     
@@ -586,7 +584,6 @@ owners.
     
  mysql&gt; 
 </code></pre></div>    </div>
-    <p><br /></p>
   </li>
   <li>employeesデータベース内にテーブルが作成されていることを確認します。
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW DATABASES;
@@ -668,7 +665,6 @@ owners.
  mysql&gt; ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
  mysql&gt; ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
 </code></pre></div>    </div>
-    <p><br /></p>
   </li>
   <li>
     <p><strong>ALTER TABLE テーブル名 SECONDARY_LOAD;</strong> を実行し、データをHeatWaveノードにロードします。</p>
@@ -690,8 +686,7 @@ owners.
 
 <p>先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
-mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
     -&gt;     ON employees.emp_no=salaries.emp_no
     -&gt;     AND employees.emp_no=dept_emp.emp_no
@@ -712,10 +707,11 @@ mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
 | Human Resources    |   9363811425 |
 +--------------------+--------------+
 9 rows in set (0.13 sec)
-``` &lt;br&gt; なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
+</code></pre></div></div>
 
-```
-mysql&gt; EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+<p>なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は <strong>Extra列</strong> に <strong>Using secondary engine RAPID</strong> と表示されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
     -&gt;   ON employees.emp_no=salaries.emp_no
     -&gt;   AND employees.emp_no=dept_emp.emp_no
@@ -731,26 +727,23 @@ mysql&gt; EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salar
 |  1 | SIMPLE      | salaries    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 2830954 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
 +----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
 4 rows in set, 1 warning (0.09 sec)
-``` &lt;br&gt; また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
 </code></pre></div></div>
+
+<p>また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。</p>
 
 <ul>
   <li>SET_VAR(use_secondary_engine=ON) : HeatWaveを使う。HeatWaveが使えない場合(HeatWaveノードの停止時、HeatWaveにデータをロードしていない場合など)や、オプティマイザがHeatWaveを使わない方が効率的と判断した場合はMDSで処理する。</li>
   <li>SET_VAR(use_secondary_engine=OFF) : HeatWaveを使わない。</li>
-  <li>SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。</li>
+  <li>SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。<br /></li>
 </ul>
 
-<p><br />
-ヒント句は以下のように、<strong>SELECT</strong> 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。(“Unresolved name ‘XXXXX’ for SET_VAR hint” という警告は発生します)</p>
+<p>ヒント句は以下のように、<strong>SELECT</strong> 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。(“Unresolved name ‘XXXXX’ for SET_VAR hint” という警告は発生します)</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
-SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) &lt;略&gt;
-
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) &lt;略&gt;
 SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) &lt;略&gt;
-
 SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries &lt;略&gt;
-``` &lt;br&gt;
 </code></pre></div></div>
+<p><br /></p>
 
 <p>これで、この章の作業は終了です。</p>
 
@@ -778,7 +771,7 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-01T11:46:27+09:00">February 1, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-01T12:10:18+09:00">February 1, 2021</time></p>
 
 
       </footer>
