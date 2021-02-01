@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-02-01T10:55:59+09:00">
+  <meta property="article:published_time" content="2021-02-01T11:21:05+09:00">
 
 
 
@@ -266,8 +266,6 @@
       <ul>
         
         
-          <p></p><li><a href="/ocitutorials/beginners/creating-HeatWave/" class="active">その10 - MySQLで高速分析を体験する</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li></p>
@@ -286,6 +284,8 @@
         
           <p></p><li><a href="/ocitutorials/beginners/creating-mds/">その9 - クラウドでMySQL Databaseを使う</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/beginners/creating-HeatWave/" class="active">その10 - MySQLで高速分析を体験する</a></li></p>
+        
       </ul>
     </li>
   </ul>
@@ -299,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その10 - MySQLで高速分析を体験する">
     <meta itemprop="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
-    <meta itemprop="datePublished" content="2021-02-01T10:55:59+09:00">
+    <meta itemprop="datePublished" content="2021-02-01T11:21:05+09:00">
     
 
     <div class="page__inner-wrap">
@@ -320,6 +320,8 @@
   <li><a href="#3-heatwaveの構成heatwave用mdsの構成">3. HeatWaveの構成(HeatWave用MDSの構成)</a></li>
   <li><a href="#4-heatwaveの構成heatwaveノードの追加">4. HeatWaveの構成(HeatWaveノードの追加)</a></li>
   <li><a href="#5-サンプルデータベースの構築">5. サンプルデータベースの構築</a></li>
+  <li><a href="#6-heatwaveへのデータロード">6. HeatWaveへのデータロード</a></li>
+  <li><a href="#7-heatwaveの確認">7. HeatWaveの確認</a></li>
 </ul>
 
             </nav>
@@ -343,17 +345,21 @@
 
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
 
+<p><br /></p>
+
 <p><strong>目次：</strong></p>
 
 <ul>
-  <li><a href="#1-HeatWaveとは">1. HeatWaveとは?</a></li>
-  <li><a href="#2-HeatWaveの最小構成">2. HeatWave構成時の注意事項</a></li>
-  <li><a href="#3-HeatWaveの構成(HeatWave用MDSの構成)">3. HeatWaveの構成(HeatWave用MDSの構成)</a></li>
-  <li><a href="#4-HeatWaveの構成(HeatWaveノードの追加)">4. HeatWaveの構成(HeatWaveノードの追加)</a></li>
-  <li><a href="#5-サンプルデータベースの構築">5. サンプルデータベースの構築</a></li>
-  <li><a href="#6-HeatWaveへのデータロード">6. HeatWaveへのデータロード</a></li>
-  <li><a href="#7-HeatWaveの確認">7. HeatWaveの確認</a></li>
+  <li><a href="#anchor1">1. HeatWaveとは?</a></li>
+  <li><a href="#anchor2">2. HeatWave構成時の注意事項</a></li>
+  <li><a href="#anchor3">3. HeatWaveの構成(HeatWave用MDSの構成)</a></li>
+  <li><a href="#anchor4">4. HeatWaveの構成(HeatWaveノードの追加)</a></li>
+  <li><a href="#anchor5">5. サンプルデータベースの構築</a></li>
+  <li><a href="#anchor6">6. HeatWaveへのデータロード</a></li>
+  <li><a href="#anchor7">7. HeatWaveの確認</a></li>
 </ul>
+
+<p><br /></p>
 
 <p><a id="anchor1"></a></p>
 
@@ -527,178 +533,152 @@
 
 <p><br /></p>
 <ol>
-  <li><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してGitをインストールし、employeeデータベースのリポジトリをクローンします。</li>
-</ol>
+  <li>
+    <p><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してGitをインストールし、employeeデータベースのリポジトリをクローンします。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install git
-git clone https://github.com/datacharmer/test_db
-</code></pre></div></div>
-<p><br /></p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install git
+ git clone https://github.com/datacharmer/test_db
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>ダウンロードされた<strong>test_db</strong> フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
 
-<ol>
-  <li>ダウンロードされた<strong>test_db</strong> フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</li>
-</ol>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[opc@testvm1 ~]$ cd test_db
-[opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ cd test_db
+ [opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
 Enter password: 
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 39
-Server version: 8.0.23-cloud MySQL Enterprise - Cloud
-
-Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
+ Welcome to the MySQL monitor.  Commands end with ; or \g.
+ Your MySQL connection id is 39
+ Server version: 8.0.23-cloud MySQL Enterprise - Cloud
+    
+ Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+    
+ Oracle is a registered trademark of Oracle Corporation and/or its
 affiliates. Other names may be trademarks of their respective
 owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql&gt; source employees.sql
-Query OK, 0 rows affected, 1 warning (0.08 sec)
-
-Query OK, 1 row affected (0.01 sec)
-
-Database changed
-+-----------------------------+
-| INFO                        |
-+-----------------------------+
-| CREATING DATABASE STRUCTURE |
-+-----------------------------+
-1 row in set (0.00 sec)
-
-Query OK, 0 rows affected, 6 warnings (0.01 sec)
-
-&lt;中略&gt;
-Query OK, 7671 rows affected (0.12 sec)
-Records: 7671  Duplicates: 0  Warnings: 0
-
-+---------------------+
-| data_load_time_diff |
-+---------------------+
-| 00:01:11            |
-+---------------------+
-1 row in set (0.00 sec)
-
-mysql&gt; 
-</code></pre></div></div>
-<p><br /></p>
-
-<ol>
+    
+ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+    
+ mysql&gt; source employees.sql
+ Query OK, 0 rows affected, 1 warning (0.08 sec)
+    
+ Query OK, 1 row affected (0.01 sec)
+    
+ Database changed
+ +-----------------------------+
+ | INFO                        |
+ +-----------------------------+
+ | CREATING DATABASE STRUCTURE |
+ +-----------------------------+
+ 1 row in set (0.00 sec)
+    
+ Query OK, 0 rows affected, 6 warnings (0.01 sec)
+    
+ &lt;中略&gt;
+ Query OK, 7671 rows affected (0.12 sec)
+ Records: 7671  Duplicates: 0  Warnings: 0
+    
+ +---------------------+
+ | data_load_time_diff |
+ +---------------------+
+ | 00:01:11            |
+ +---------------------+
+ 1 row in set (0.00 sec)
+    
+ mysql&gt; 
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
   <li>employeesデータベース内にテーブルが作成されていることを確認します。
-```
-mysql&gt; SHOW DATABASES;
-+——————–+
-| Database           |
-+——————–+
-| employees          |
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-+——————–+
-5 rows in set (0.00 sec)</li>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW DATABASES;
+ +--------------------+
+ | Database           |
+ +--------------------+
+ | employees          |
+ | information_schema |
+ | mysql              |
+ | performance_schema |
+ | sys                |
+ +--------------------+
+ 5 rows in set (0.00 sec)
+    
+ mysql&gt; USE employees;
+ Reading table information for completion of table and column names
+ You can turn off this feature to get a quicker startup with -A
+    
+ Database changed
+ mysql&gt; SHOW TABLES;
+ +----------------------+
+ | Tables_in_employees  |
+ +----------------------+
+ | current_dept_emp     |
+ | departments          |
+ | dept_emp             |
+ | dept_emp_latest_date |
+ | dept_manager         |
+ | employees            |
+ | salaries             |
+ | titles               |
+ +----------------------+
+ 8 rows in set (0.08 sec)
+</code></pre></div>    </div>
+  </li>
+  <li>部門毎の合計給与額を求める以下のSQLを実行して、MDSでの実行時間を確認しておきます。この例では、3.26秒かかりました。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+     -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+     -&gt;     ON employees.emp_no=salaries.emp_no
+     -&gt;     AND employees.emp_no=dept_emp.emp_no
+     -&gt;     AND dept_emp.dept_no=departments.dept_no
+     -&gt;   GROUP BY departments.dept_name
+     -&gt;   ORDER BY sum_salaries DESC;
+    
+ +--------------------+--------------+
+ | dept_name          | sum_salaries |
+ +--------------------+--------------+
+ | Development        |  48179456393 |
+ | Production         |  41554438942 |
+ | Sales              |  40030089342 |
+ | Marketing          |  13725425266 |
+ | Customer Service   |  13143639841 |
+ | Research           |  11969730427 |
+ | Finance            |  11650834677 |
+ | Quality Management |  10865203635 |
+ | Human Resources    |   9363811425 |
+ +--------------------+--------------+
+ 9 rows in set (3.26 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
 </ol>
 
-<p>mysql&gt; USE employees;
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A</p>
+<p><a id="anchor6"></a></p>
 
-<p>Database changed
-mysql&gt; SHOW TABLES;
-+———————-+
-| Tables_in_employees  |
-+———————-+
-| current_dept_emp     |
-| departments          |
-| dept_emp             |
-| dept_emp_latest_date |
-| dept_manager         |
-| employees            |
-| salaries             |
-| titles               |
-+———————-+
-8 rows in set (0.08 sec)</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<h1 id="6-heatwaveへのデータロード">6. HeatWaveへのデータロード</h1>
 
+<p>HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時、HeatWaveノードの再起動時のみ行う必要があります。(HeatWaveノードの再起動時は以下のステップ2のみが必要になります)
+<br /></p>
 
-4. 部門毎の合計給与額を求める以下のSQLを実行して、MDSでの実行時間を確認しておきます。この例では、3.26秒かかりました。
-</code></pre></div></div>
-<p>mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
-    -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
-    -&gt;     ON employees.emp_no=salaries.emp_no
-    -&gt;     AND employees.emp_no=dept_emp.emp_no
-    -&gt;     AND dept_emp.dept_no=departments.dept_no
-    -&gt;   GROUP BY departments.dept_name
-    -&gt;   ORDER BY sum_salaries DESC;</p>
+<ol>
+  <li>ALTER TABLE文を使い、employeesデータベース内のテーブルに対して<strong>SECONDARY_ENGINE=RAPID</strong> を定義します<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup>。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。</li>
+</ol>
 
-<p>+——————–+————–+
-| dept_name          | sum_salaries |
-+——————–+————–+
-| Development        |  48179456393 |
-| Production         |  41554438942 |
-| Sales              |  40030089342 |
-| Marketing          |  13725425266 |
-| Customer Service   |  13143639841 |
-| Research           |  11969730427 |
-| Finance            |  11650834677 |
-| Quality Management |  10865203635 |
-| Human Resources    |   9363811425 |
-+——————–+————–+
-9 rows in set (3.26 sec)</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
+<p><a id="anchor7"></a></p>
 
+<h1 id="7-heatwaveの確認">7. HeatWaveの確認</h1>
 
+<p>先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。</p>
 
-&lt;a id="anchor6"&gt;&lt;/a&gt;
-
-# 6. HeatWaveへのデータロード
-
-HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時、HeatWaveノードの再起動時のみ行う必要があります。(HeatWaveノードの再起動時は以下のステップ2のみが必要になります)
-&lt;br&gt;
-
-1. ALTER TABLE文を使い、employeesデータベース内のテーブルに対して**SECONDARY_ENGINE=RAPID** を定義します[^2]。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。
-
-[^2]: HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。
-
-</code></pre></div></div>
-<p>mysql&gt; ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
-mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
-mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
-mysql&gt; ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
-mysql&gt; ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
-mysql&gt; ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
-2. **ALTER TABLE テーブル名 SECONDARY_LOAD;** を実行し、データをHeatWaveノードにロードします。
-
-</code></pre></div></div>
-<p>mysql&gt; ALTER TABLE employees.departments SECONDARY_LOAD;
-mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_LOAD;
-mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_LOAD;
-mysql&gt; ALTER TABLE employees.employees SECONDARY_LOAD;
-mysql&gt; ALTER TABLE employees.salaries SECONDARY_LOAD;
-mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
-
-
-
-&lt;a id="anchor7"&gt;&lt;/a&gt;
-
-# 7. HeatWaveの確認
-
-先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。
-
-</code></pre></div></div>
-<p>mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
     -&gt;     ON employees.emp_no=salaries.emp_no
     -&gt;     AND employees.emp_no=dept_emp.emp_no
     -&gt;     AND dept_emp.dept_no=departments.dept_no
     -&gt;   GROUP BY departments.dept_name
     -&gt;   ORDER BY sum_salaries DESC;
-+——————–+————–+
++--------------------+--------------+
 | dept_name          | sum_salaries |
-+——————–+————–+
++--------------------+--------------+
 | Development        |  48179456393 |
 | Production         |  41554438942 |
 | Sales              |  40030089342 |
@@ -708,46 +688,47 @@ mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;</p>
 | Finance            |  11650834677 |
 | Quality Management |  10865203635 |
 | Human Resources    |   9363811425 |
-+——————–+————–+
-9 rows in set (0.13 sec)</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
-なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
++--------------------+--------------+
+9 rows in set (0.13 sec)
+``` &lt;br&gt; なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
 
-</code></pre></div></div>
-<p>mysql&gt; EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+```
+mysql&gt; EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
     -&gt;   ON employees.emp_no=salaries.emp_no
     -&gt;   AND employees.emp_no=dept_emp.emp_no
     -&gt;   AND dept_emp.dept_no=departments.dept_no
     -&gt;   GROUP BY departments.dept_name
     -&gt;   ORDER BY sum_salaries DESC;
-+—-+————-+————-+————+——+—————+——+———+——+———+———-+————————————————————————–+
++----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
 | id | select_type | table       | partitions | type | possible_keys | key  | key_len | ref  | rows    | filtered | Extra                                                                    |
-+—-+————-+————-+————+——+—————+——+———+——+———+———-+————————————————————————–+
++----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
 |  1 | SIMPLE      | departments | NULL       | ALL  | NULL          | NULL | NULL    | NULL |       9 |   100.00 | Using temporary; Using filesort; Using secondary engine RAPID            |
 |  1 | SIMPLE      | dept_emp    | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  331143 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
 |  1 | SIMPLE      | employees   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  299157 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
 |  1 | SIMPLE      | salaries    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 2830954 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
-+—-+————-+————-+————+——+—————+——+———+——+———+———-+————————————————————————–+
-4 rows in set, 1 warning (0.09 sec)</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
-また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
-
-* SET_VAR(use_secondary_engine=ON) : HeatWaveを使う。HeatWaveが使えない場合(HeatWaveノードの停止時、HeatWaveにデータをロードしていない場合など)や、オプティマイザがHeatWaveを使わない方が効率的と判断した場合はMDSで処理する。
-* SET_VAR(use_secondary_engine=OFF) : HeatWaveを使わない。
-* SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。
-
-&lt;br&gt;
-ヒント句は以下のように、**SELECT** 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。("Unresolved name 'XXXXX' for SET_VAR hint" という警告は発生します)
-
++----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
+4 rows in set, 1 warning (0.09 sec)
+``` &lt;br&gt; また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
 </code></pre></div></div>
-<p>SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) <略></略></p>
 
-<p>SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) <略></略></p>
+<ul>
+  <li>SET_VAR(use_secondary_engine=ON) : HeatWaveを使う。HeatWaveが使えない場合(HeatWaveノードの停止時、HeatWaveにデータをロードしていない場合など)や、オプティマイザがHeatWaveを使わない方が効率的と判断した場合はMDSで処理する。</li>
+  <li>SET_VAR(use_secondary_engine=OFF) : HeatWaveを使わない。</li>
+  <li>SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。</li>
+</ul>
 
-<p>SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries <略>
-```
-<br /></略></p>
+<p><br />
+ヒント句は以下のように、<strong>SELECT</strong> 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。(“Unresolved name ‘XXXXX’ for SET_VAR hint” という警告は発生します)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) &lt;略&gt;
+
+SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) &lt;略&gt;
+
+SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries &lt;略&gt;
+``` &lt;br&gt;
+</code></pre></div></div>
 
 <p>これで、この章の作業は終了です。</p>
 
@@ -759,6 +740,30 @@ mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;</p>
   <ol>
     <li id="fn:1" role="doc-endnote">
       <p>HeatWaveのデフォルトサービスリミットは以前は0に設定されていました。新しくアカウントを作成した場合はデフォルトサービスリミットが変更されていて最初から使える状態になっていると思われますが、念のため使用している環境でサービスリミットが後述する最小構成を満たしていることを確認して下さい。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。</p>
+
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
+</code></pre></div>      </div>
+      <p><br /></p>
+      <ol>
+        <li><strong>ALTER TABLE テーブル名 SECONDARY_LOAD;</strong> を実行し、データをHeatWaveノードにロードします。</li>
+      </ol>
+
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; ALTER TABLE employees.departments SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.employees SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.salaries SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;
+</code></pre></div>      </div>
+      <p><br /> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>
@@ -772,7 +777,7 @@ mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;</p>
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-01T10:55:59+09:00">February 1, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-01T11:21:05+09:00">February 1, 2021</time></p>
 
 
       </footer>
@@ -793,11 +798,11 @@ mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;</p>
       
   <nav class="pagination">
     
-      <a href="#" class="pagination--pager disabled">前へ</a>
+      <a href="/ocitutorials/beginners/creating-mds/" class="pagination--pager" title="その9 - クラウドでMySQL Databaseを使う
+">前へ</a>
     
     
-      <a href="/ocitutorials/beginners/getting-started/" class="pagination--pager" title="その1 - OCIコンソールにアクセスして基本を理解する
-">次へ</a>
+      <a href="#" class="pagination--pager disabled">次へ</a>
     
   </nav>
 
