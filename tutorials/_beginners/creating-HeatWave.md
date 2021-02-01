@@ -1,7 +1,7 @@
 ---
 title: "その10 - MySQLで高速分析を体験する"
 excerpt: "OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！"
-order: "010"
+order: "100"
 header:
   teaser: "/beginners/creating-mds/MySQLLogo_teaser.png"
   overlay_image: "/beginners/creating-mds/MySQLLogo_overlay_image.png"
@@ -22,18 +22,21 @@ Oracle Cloud Infrastructure(OCI) では、HeatWaveというデータ分析処理
 4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)を完了していること
 5. [クラウドでMySQL Databaseを使う(その9)](https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/)を完了していること
 
-
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
+
+<br>
 
 **目次：**
 
-- [1. HeatWaveとは?](#1-HeatWaveとは)
-- [2. HeatWave構成時の注意事項](#2-HeatWaveの最小構成)
-- [3. HeatWaveの構成(HeatWave用MDSの構成)](#3-HeatWaveの構成(HeatWave用MDSの構成))
-- [4. HeatWaveの構成(HeatWaveノードの追加)](#4-HeatWaveの構成(HeatWaveノードの追加))
-- [5. サンプルデータベースの構築](#5-サンプルデータベースの構築)
-- [6. HeatWaveへのデータロード](#6-HeatWaveへのデータロード)
-- [7. HeatWaveの確認](#7-HeatWaveの確認)
+- [1. HeatWaveとは?](#anchor1)
+- [2. HeatWave構成時の注意事項](#anchor2)
+- [3. HeatWaveの構成(HeatWave用MDSの構成)](#anchor3)
+- [4. HeatWaveの構成(HeatWaveノードの追加)](#anchor4)
+- [5. サンプルデータベースの構築](#anchor5)
+- [6. HeatWaveへのデータロード](#anchor6)
+- [7. HeatWaveの確認](#anchor7)
+
+<br>
 
 <a id="anchor1"></a>
 
@@ -207,126 +210,123 @@ employeeデータベースはGitHubで公開されているため、リポジト
 <br>
 1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してGitをインストールし、employeeデータベースのリポジトリをクローンします。
 
-```
-sudo yum install git
-git clone https://github.com/datacharmer/test_db
-```
+    ```
+    sudo yum install git
+    git clone https://github.com/datacharmer/test_db
+    ```
 <br>
-
-
-
 2. ダウンロードされた**test_db** フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)
 
-```
-[opc@testvm1 ~]$ cd test_db
-[opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
+    ```
+    [opc@testvm1 ~]$ cd test_db
+    [opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
 Enter password: 
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 39
-Server version: 8.0.23-cloud MySQL Enterprise - Cloud
-
-Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
+    Welcome to the MySQL monitor.  Commands end with ; or \g.
+    Your MySQL connection id is 39
+    Server version: 8.0.23-cloud MySQL Enterprise - Cloud
+    
+    Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+    
+    Oracle is a registered trademark of Oracle Corporation and/or its
 affiliates. Other names may be trademarks of their respective
 owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> source employees.sql
-Query OK, 0 rows affected, 1 warning (0.08 sec)
-
-Query OK, 1 row affected (0.01 sec)
-
-Database changed
-+-----------------------------+
-| INFO                        |
-+-----------------------------+
-| CREATING DATABASE STRUCTURE |
-+-----------------------------+
-1 row in set (0.00 sec)
-
-Query OK, 0 rows affected, 6 warnings (0.01 sec)
-
-<中略>
-Query OK, 7671 rows affected (0.12 sec)
-Records: 7671  Duplicates: 0  Warnings: 0
-
-+---------------------+
-| data_load_time_diff |
-+---------------------+
-| 00:01:11            |
-+---------------------+
-1 row in set (0.00 sec)
-
-mysql> 
-```
+    
+    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+    
+    mysql> source employees.sql
+    Query OK, 0 rows affected, 1 warning (0.08 sec)
+    
+    Query OK, 1 row affected (0.01 sec)
+    
+    Database changed
+    +-----------------------------+
+    | INFO                        |
+    +-----------------------------+
+    | CREATING DATABASE STRUCTURE |
+    +-----------------------------+
+    1 row in set (0.00 sec)
+    
+    Query OK, 0 rows affected, 6 warnings (0.01 sec)
+    
+    <中略>
+    Query OK, 7671 rows affected (0.12 sec)
+    Records: 7671  Duplicates: 0  Warnings: 0
+    
+    +---------------------+
+    | data_load_time_diff |
+    +---------------------+
+    | 00:01:11            |
+    +---------------------+
+    1 row in set (0.00 sec)
+    
+    mysql> 
+    ```
 <br>
 
 
 
 3. employeesデータベース内にテーブルが作成されていることを確認します。
-```
-mysql> SHOW DATABASES;
-+--------------------+
-| Database           |
-+--------------------+
-| employees          |
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-+--------------------+
-5 rows in set (0.00 sec)
-
-mysql> USE employees;
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
-
-Database changed
-mysql> SHOW TABLES;
-+----------------------+
-| Tables_in_employees  |
-+----------------------+
-| current_dept_emp     |
-| departments          |
-| dept_emp             |
-| dept_emp_latest_date |
-| dept_manager         |
-| employees            |
-| salaries             |
-| titles               |
-+----------------------+
-8 rows in set (0.08 sec)
-```
+    ```
+    mysql> SHOW DATABASES;
+    +--------------------+
+    | Database           |
+    +--------------------+
+    | employees          |
+    | information_schema |
+    | mysql              |
+    | performance_schema |
+    | sys                |
+    +--------------------+
+    5 rows in set (0.00 sec)
+    
+    mysql> USE employees;
+    Reading table information for completion of table and column names
+    You can turn off this feature to get a quicker startup with -A
+    
+    Database changed
+    mysql> SHOW TABLES;
+    +----------------------+
+    | Tables_in_employees  |
+    +----------------------+
+    | current_dept_emp     |
+    | departments          |
+    | dept_emp             |
+    | dept_emp_latest_date |
+    | dept_manager         |
+    | employees            |
+    | salaries             |
+    | titles               |
+    +----------------------+
+    8 rows in set (0.08 sec)
+    ```
 
 
 
 4. 部門毎の合計給与額を求める以下のSQLを実行して、MDSでの実行時間を確認しておきます。この例では、3.26秒かかりました。
-```
-mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
-    ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
-    ->     ON employees.emp_no=salaries.emp_no
-    ->     AND employees.emp_no=dept_emp.emp_no
-    ->     AND dept_emp.dept_no=departments.dept_no
-    ->   GROUP BY departments.dept_name
-    ->   ORDER BY sum_salaries DESC;
-
-+--------------------+--------------+
-| dept_name          | sum_salaries |
-+--------------------+--------------+
-| Development        |  48179456393 |
-| Production         |  41554438942 |
-| Sales              |  40030089342 |
-| Marketing          |  13725425266 |
-| Customer Service   |  13143639841 |
-| Research           |  11969730427 |
-| Finance            |  11650834677 |
-| Quality Management |  10865203635 |
-| Human Resources    |   9363811425 |
-+--------------------+--------------+
-9 rows in set (3.26 sec)
-```
+    ```
+    mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+        ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+        ->     ON employees.emp_no=salaries.emp_no
+        ->     AND employees.emp_no=dept_emp.emp_no
+        ->     AND dept_emp.dept_no=departments.dept_no
+        ->   GROUP BY departments.dept_name
+        ->   ORDER BY sum_salaries DESC;
+    
+    +--------------------+--------------+
+    | dept_name          | sum_salaries |
+    +--------------------+--------------+
+    | Development        |  48179456393 |
+    | Production         |  41554438942 |
+    | Sales              |  40030089342 |
+    | Marketing          |  13725425266 |
+    | Customer Service   |  13143639841 |
+    | Research           |  11969730427 |
+    | Finance            |  11650834677 |
+    | Quality Management |  10865203635 |
+    | Human Resources    |   9363811425 |
+    +--------------------+--------------+
+    9 rows in set (3.26 sec)
+    ```
 <br>
 
 
@@ -342,25 +342,25 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
 
 [^2]: HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。
 
-```
-mysql> ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
-mysql> ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
-mysql> ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
-mysql> ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
-mysql> ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
-mysql> ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
-```
+    ```
+    mysql> ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
+    mysql> ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
+    mysql> ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
+    mysql> ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
+    mysql> ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
+    mysql> ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
+    ```
 <br>
 2. **ALTER TABLE テーブル名 SECONDARY_LOAD;** を実行し、データをHeatWaveノードにロードします。
 
-```
-mysql> ALTER TABLE employees.departments SECONDARY_LOAD;
-mysql> ALTER TABLE employees.dept_emp SECONDARY_LOAD;
-mysql> ALTER TABLE employees.dept_manager SECONDARY_LOAD;
-mysql> ALTER TABLE employees.employees SECONDARY_LOAD;
-mysql> ALTER TABLE employees.salaries SECONDARY_LOAD;
-mysql> ALTER TABLE employees.titles SECONDARY_LOAD;
-```
+    ```
+    mysql> ALTER TABLE employees.departments SECONDARY_LOAD;
+    mysql> ALTER TABLE employees.dept_emp SECONDARY_LOAD;
+    mysql> ALTER TABLE employees.dept_manager SECONDARY_LOAD;
+    mysql> ALTER TABLE employees.employees SECONDARY_LOAD;
+    mysql> ALTER TABLE employees.salaries SECONDARY_LOAD;
+    mysql> ALTER TABLE employees.titles SECONDARY_LOAD;
+    ```
 <br>
 
 
@@ -371,50 +371,50 @@ mysql> ALTER TABLE employees.titles SECONDARY_LOAD;
 
 先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。
 
-```
-mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
-    ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
-    ->     ON employees.emp_no=salaries.emp_no
-    ->     AND employees.emp_no=dept_emp.emp_no
-    ->     AND dept_emp.dept_no=departments.dept_no
-    ->   GROUP BY departments.dept_name
-    ->   ORDER BY sum_salaries DESC;
-+--------------------+--------------+
-| dept_name          | sum_salaries |
-+--------------------+--------------+
-| Development        |  48179456393 |
-| Production         |  41554438942 |
-| Sales              |  40030089342 |
-| Marketing          |  13725425266 |
-| Customer Service   |  13143639841 |
-| Research           |  11969730427 |
-| Finance            |  11650834677 |
-| Quality Management |  10865203635 |
-| Human Resources    |   9363811425 |
-+--------------------+--------------+
-9 rows in set (0.13 sec)
-```
+    ```
+    mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+        ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+        ->     ON employees.emp_no=salaries.emp_no
+        ->     AND employees.emp_no=dept_emp.emp_no
+        ->     AND dept_emp.dept_no=departments.dept_no
+        ->   GROUP BY departments.dept_name
+        ->   ORDER BY sum_salaries DESC;
+    +--------------------+--------------+
+    | dept_name          | sum_salaries |
+    +--------------------+--------------+
+    | Development        |  48179456393 |
+    | Production         |  41554438942 |
+    | Sales              |  40030089342 |
+    | Marketing          |  13725425266 |
+    | Customer Service   |  13143639841 |
+    | Research           |  11969730427 |
+    | Finance            |  11650834677 |
+    | Quality Management |  10865203635 |
+    | Human Resources    |   9363811425 |
+    +--------------------+--------------+
+    9 rows in set (0.13 sec)
+    ```
 <br>
 なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
 
-```
-mysql> EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
-    ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
-    ->   ON employees.emp_no=salaries.emp_no
-    ->   AND employees.emp_no=dept_emp.emp_no
-    ->   AND dept_emp.dept_no=departments.dept_no
-    ->   GROUP BY departments.dept_name
-    ->   ORDER BY sum_salaries DESC;
-+----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
-| id | select_type | table       | partitions | type | possible_keys | key  | key_len | ref  | rows    | filtered | Extra                                                                    |
-+----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
-|  1 | SIMPLE      | departments | NULL       | ALL  | NULL          | NULL | NULL    | NULL |       9 |   100.00 | Using temporary; Using filesort; Using secondary engine RAPID            |
-|  1 | SIMPLE      | dept_emp    | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  331143 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
-|  1 | SIMPLE      | employees   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  299157 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
-|  1 | SIMPLE      | salaries    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 2830954 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
-+----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
-4 rows in set, 1 warning (0.09 sec)
-```
+    ```
+    mysql> EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+        ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+        ->   ON employees.emp_no=salaries.emp_no
+        ->   AND employees.emp_no=dept_emp.emp_no
+        ->   AND dept_emp.dept_no=departments.dept_no
+        ->   GROUP BY departments.dept_name
+        ->   ORDER BY sum_salaries DESC;
+    +----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
+    | id | select_type | table       | partitions | type | possible_keys | key  | key_len | ref  | rows    | filtered | Extra                                                                    |
+    +----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
+    |  1 | SIMPLE      | departments | NULL       | ALL  | NULL          | NULL | NULL    | NULL |       9 |   100.00 | Using temporary; Using filesort; Using secondary engine RAPID            |
+    |  1 | SIMPLE      | dept_emp    | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  331143 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
+    |  1 | SIMPLE      | employees   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  299157 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
+    |  1 | SIMPLE      | salaries    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 2830954 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
+    +----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
+    4 rows in set, 1 warning (0.09 sec)
+    ```
 <br>
 また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
 
@@ -425,13 +425,13 @@ mysql> EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
 <br>
 ヒント句は以下のように、**SELECT** 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。("Unresolved name 'XXXXX' for SET_VAR hint" という警告は発生します)
 
-```
-SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) <略>
-
-SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) <略>
-
-SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries <略>
-```
+    ```
+    SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) <略>
+    
+    SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) <略>
+    
+    SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries <略>
+    ```
 <br>
 
 
