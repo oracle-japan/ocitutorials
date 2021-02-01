@@ -1,0 +1,884 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その10 - MySQLで高速分析を体験する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その10 - MySQLで高速分析を体験する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/">
+
+
+  <meta property="og:description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/MySQLLogo_overlay_image.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-02-01T10:55:59+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/prerequisites/" title="このチュートリアルを実施するに当たって必要な準備">準備</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-webapp/">実践編<br>(Webアプリ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-cloudnative/">実践編<br>(Cloud Native)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/advanced-enterprise/">実践編<br>(エンタープライズ)</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/creating-mds/MySQLLogo_overlay_image.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その10 - MySQLで高速分析を体験する
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/beginners" itemprop="item"><span itemprop="name">Beginners</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その10 - MySQLで高速分析を体験する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">入門編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-HeatWave/" class="active">その10 - MySQLで高速分析を体験する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/attaching-block-volume/">その4 - ブロック・ボリュームをインスタンスにアタッチする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/managing-instance-lifecycle/">その5 - インスタンスのライフサイクルを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/object-storage/">その7 - オブジェクト・ストレージを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-oracle-database/">その8 - クラウドでOracle Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds/">その9 - クラウドでMySQL Databaseを使う</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その10 - MySQLで高速分析を体験する">
+    <meta itemprop="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
+    <meta itemprop="datePublished" content="2021-02-01T10:55:59+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-heatwaveとは">1. HeatWaveとは?</a></li>
+  <li><a href="#2-heatwave構成時の注意事項">2. HeatWave構成時の注意事項</a>
+    <ul>
+      <li><a href="#サービスリミットの確認引上げリクエスト送信方法">サービスリミットの確認＆引上げリクエスト送信方法</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-heatwaveの構成heatwave用mdsの構成">3. HeatWaveの構成(HeatWave用MDSの構成)</a></li>
+  <li><a href="#4-heatwaveの構成heatwaveノードの追加">4. HeatWaveの構成(HeatWaveノードの追加)</a></li>
+  <li><a href="#5-サンプルデータベースの構築">5. サンプルデータベースの構築</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure(OCI) では、HeatWaveというデータ分析処理を高速化できるMySQL Database Services(MDS)専用のクエリー・アクセラレーターが使用できます。HeatWaveもMDSと同じく、Always Freeの対象ではないため使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
+
+<p>このチュートリアルでは、コンソール画面からHeatWaveを構成し、MySQLクライアントからサンプルデータベースを構成してHeatWaveを利用する手順を説明します。</p>
+
+<p><strong>所要時間 :</strong> 約40分 (約25分の待ち時間含む)</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
+  <li><a href="../getting-started/">OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a>を完了していること</li>
+  <li><a href="../creating-vcn/">クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a>を完了していること</li>
+  <li><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>を完了していること</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/">クラウドでMySQL Databaseを使う(その9)</a>を完了していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#1-HeatWaveとは">1. HeatWaveとは?</a></li>
+  <li><a href="#2-HeatWaveの最小構成">2. HeatWave構成時の注意事項</a></li>
+  <li><a href="#3-HeatWaveの構成(HeatWave用MDSの構成)">3. HeatWaveの構成(HeatWave用MDSの構成)</a></li>
+  <li><a href="#4-HeatWaveの構成(HeatWaveノードの追加)">4. HeatWaveの構成(HeatWaveノードの追加)</a></li>
+  <li><a href="#5-サンプルデータベースの構築">5. サンプルデータベースの構築</a></li>
+  <li><a href="#6-HeatWaveへのデータロード">6. HeatWaveへのデータロード</a></li>
+  <li><a href="#7-HeatWaveの確認">7. HeatWaveの確認</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-heatwaveとは">1. HeatWaveとは?</h1>
+
+<p>HeatWaveとはOCIでのみ使えるデータウェアハウスサービスです。MySQL Database Serviceの拡張サービスとして提供されており、インメモリで並列処理することにより分析系のSQLも高速に実行できます。MySQL 8.0ベースのサービスとなっていますので、今までMySQLで実行していたSQLをそのまま使えます。また、レプリケーションを構成してオンプレミスのMySQL 5.7、8.0からETLを使わずにデータを連携することもできます。</p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-heatwave構成時の注意事項">2. HeatWave構成時の注意事項</h1>
+
+<p>HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>。</p>
+
+<p>本チュートリアルで構成するHeatWaveの構成図は以下のようになります。HeatWaveを構成する時は、HeatWave専用のMySQL Database Serviceを構成し、そこにHeatWaveのノードを追加します。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL Database Serviceになります。また、HeatWaveノードの最小台数は2台、最大台数は24台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約400GBのデータを保持できます。</p>
+
+<div align="center">
+<img width="700" alt="img1.png" src="creating-HeatWave/img1.png" style="border: 1px black solid;" />
+</div>
+<p><br /></p>
+
+<h2 id="サービスリミットの確認引上げリクエスト送信方法">サービスリミットの確認＆引上げリクエスト送信方法</h2>
+
+<ol>
+  <li>
+    <p>コンソール左上のメニューをクリックしてメニューを表示し、一番下までスクロールします。<strong>ガバナンス</strong> → <strong>制限、割当ておよび使用状況</strong> をクリックします。</p>
+
+    <div align="center">
+ <img width="700" alt="img2.png" src="creating-HeatWave/img2.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>サービスは <strong>MySQL</strong> 、スコープは <strong>XXXX:AP-TOKYO-1-AD-1</strong> を選択します(東京リージョンを使用している場合)。”XXXX”部分は固有の文字列になります。表示された画面で「MySQL Database for HeatWave VM.Standard.E3 Nodes Count」が1以上、「MySQL HeatWave VM.Standard.E3 Nodes Count」が2以上になっていることを確認します。</p>
+
+    <div align="center">
+ <img width="700" alt="img3.png" src="creating-HeatWave/img3.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>サービスリミットが最小構成を満たしていない場合は、右上の <strong>サービス制限の引上げ</strong> リンクをクリックし、必要事項を記入して <strong>リクエストの送信</strong> ボタンをクリックすることでサービス制限の引上げリクエストを登録できます。作業完了の連絡は連絡先に入力したメールアドレスにメールで通知されます。</p>
+
+    <div align="center">
+ <img width="700" alt="img4.png" src="creating-HeatWave/img4.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-heatwaveの構成heatwave用mdsの構成">3. HeatWaveの構成(HeatWave用MDSの構成)</h1>
+
+<p>HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を構成し、そこにHeatWaveのノードを追加します。そのため、まずはHeatWave専用のシェイプを選択してMDSを構成します。
+<br /></p>
+
+<ol>
+  <li>コンソールメニューから <strong>データベース</strong> → <strong>MySQL</strong> → <strong>DBシステム</strong> を選択します。
+    <div align="center">
+ <img width="700" alt="img5.png" src="creating-HeatWave/img5.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li><strong>MySQL DBシステムの作成</strong> ボタンを押します。この際、左下の <strong>リスト範囲</strong> でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
+    <div align="center">
+ <img width="700" alt="img6.png" src="creating-HeatWave/img6.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>立ち上がった <strong>MySQL DBシステムの作成</strong> ウィンドウの <strong>① DBシステム情報</strong> のステップで、以下の項目を入力します。また、 <strong>シェイプの変更</strong> をクリックして表示されたウインドウから <strong>MySQL.HeatWave.VM.Standard.E3</strong> を選択し、<strong>シェイプの選択</strong> をクリックします。その後元のウインドウに戻って<strong>次</strong> ボタンを押します。</p>
+
+    <ul>
+      <li><strong>名前</strong> - 任意の名前を入力します。ここでは「HeatWave」と入力しています。</li>
+      <li><strong>説明</strong> - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)</li>
+      <li><strong>データ・ストレージ・サイズ(GB)</strong> - データ用のストレージサイズを入力します。ここでは1000GB確保するために「1000」と入力しています。</li>
+    </ul>
+
+    <div align="center">
+ <img width="700" alt="img7.png" src="creating-HeatWave/img7.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img8.png" src="creating-HeatWave/img8.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img9.png" src="creating-HeatWave/img9.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p><strong>② データベース情報</strong> のステップで、以下の項目を入力し <strong>次</strong> ボタンを押します</p>
+
+    <ul>
+      <li><strong>ユーザー名</strong> - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)</li>
+      <li><strong>パスワード</strong> - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。</li>
+      <li><strong>パスワードの確認</strong> - パスワードを再入力します。</li>
+      <li><strong>ホスト名</strong> - 任意のホスト名を入力します。ここでは「HeatWave」と入力しています。</li>
+    </ul>
+    <div align="center">
+ <img width="700" alt="img10.png" src="creating-HeatWave/img10.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li><strong>③ バックアップ情報</strong> のステップで、何も変更せずに <strong>作成</strong> ボタンを押します。
+    <div align="center">
+ <img width="700" alt="img11.png" src="creating-HeatWave/img11.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>MDSが<strong>作成中</strong>になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが<strong>アクティブ</strong>に変わります。
+    <div align="center">
+ <img width="700" alt="img12.png" src="creating-HeatWave/img12.png" style="border: 1px black solid;" />
+ <img width="700" alt="img13.png" src="creating-HeatWave/img13.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>ページ左下の <strong>リソース</strong> → <strong>エンドポイント</strong> をクリックして、ホスト名、IPアドレスを確認しておきます。
+    <div align="center">
+ <img width="700" alt="img14.png" src="creating-HeatWave/img14.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-heatwaveの構成heatwaveノードの追加">4. HeatWaveの構成(HeatWaveノードの追加)</h1>
+
+<ol>
+  <li>HeatWave用のMDSにHeatWaveノードを追加します。HeatWave用のMDSを選択した状態で左下のメニューより <strong>HeatWave</strong> をクックします。その後、<strong>HeatWaveクラスタの追加</strong> をボタンを押します。
+    <div align="center">
+ <img width="700" alt="img15.png" src="creating-HeatWave/img15.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p><strong>シェイプの変更</strong> ボタンを押します。表示されたウインドウでHeatWave用のシェイプである<strong>MySQL.HeatWave.VM.Standard.E3</strong> を選択し、<strong>シェイプの選択</strong> ボタンを押します。元のウインドに戻ってシェイプが変更されていることを確認し、<strong>HeatWaveクラスタの追加</strong> ボタンをクリックします。
+(既にMDSにデータをロードしている状態であればここで<strong>ノード数の見積もり</strong> ボタンを押すことで必要なHeatWaveノード数を見積もることができますが、今回は最小構成で構成するためノード数は2から変更せずに次に進みます)</p>
+
+    <div align="center">
+ <img width="700" alt="img16.png" src="creating-HeatWave/img16.png" style="border: 1px black solid;" />
+ <br />
+ <br />
+ <img width="700" alt="img17.png" src="creating-HeatWave/img17.png" style="border: 1px black solid;" />
+ <br />
+ <br />
+ <img width="700" alt="img18.png" src="creating-HeatWave/img18.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>HeatWaveノードが作成中になるのでしばらく待ちます。概ね10分程度でHeatWaveノードが追加されます。
+    <div align="center">
+ <img width="700" alt="img19.png" src="creating-HeatWave/img19.png" style="border: 1px black solid;" />
+ <img width="700" alt="img20.png" src="creating-HeatWave/img20.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-サンプルデータベースの構築">5. サンプルデータベースの構築</h1>
+
+<p>MDSにサンプルデータベースを構築し、HeatWaveノードへデータをロードします。サンプルデータベースはMySQL Developer Zoneで公開されている<a href="https://dev.mysql.com/doc/index-other.html#rowid-5">Example Database</a>の中でデータ量が多いemployeeデータベースを利用します。</p>
+
+<p>employeeデータベースはGitHubで公開されているため、リポジトリをクローンしてSQLスクリプトをダウンロードし、サンプルデータベースを構築します。</p>
+
+<p><br /></p>
+<ol>
+  <li><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してGitをインストールし、employeeデータベースのリポジトリをクローンします。</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install git
+git clone https://github.com/datacharmer/test_db
+</code></pre></div></div>
+<p><br /></p>
+
+<ol>
+  <li>ダウンロードされた<strong>test_db</strong> フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[opc@testvm1 ~]$ cd test_db
+[opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 39
+Server version: 8.0.23-cloud MySQL Enterprise - Cloud
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql&gt; source employees.sql
+Query OK, 0 rows affected, 1 warning (0.08 sec)
+
+Query OK, 1 row affected (0.01 sec)
+
+Database changed
++-----------------------------+
+| INFO                        |
++-----------------------------+
+| CREATING DATABASE STRUCTURE |
++-----------------------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected, 6 warnings (0.01 sec)
+
+&lt;中略&gt;
+Query OK, 7671 rows affected (0.12 sec)
+Records: 7671  Duplicates: 0  Warnings: 0
+
++---------------------+
+| data_load_time_diff |
++---------------------+
+| 00:01:11            |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql&gt; 
+</code></pre></div></div>
+<p><br /></p>
+
+<ol>
+  <li>employeesデータベース内にテーブルが作成されていることを確認します。
+```
+mysql&gt; SHOW DATABASES;
++——————–+
+| Database           |
++——————–+
+| employees          |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++——————–+
+5 rows in set (0.00 sec)</li>
+</ol>
+
+<p>mysql&gt; USE employees;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A</p>
+
+<p>Database changed
+mysql&gt; SHOW TABLES;
++———————-+
+| Tables_in_employees  |
++———————-+
+| current_dept_emp     |
+| departments          |
+| dept_emp             |
+| dept_emp_latest_date |
+| dept_manager         |
+| employees            |
+| salaries             |
+| titles               |
++———————-+
+8 rows in set (0.08 sec)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+
+
+4. 部門毎の合計給与額を求める以下のSQLを実行して、MDSでの実行時間を確認しておきます。この例では、3.26秒かかりました。
+</code></pre></div></div>
+<p>mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+    -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    -&gt;     ON employees.emp_no=salaries.emp_no
+    -&gt;     AND employees.emp_no=dept_emp.emp_no
+    -&gt;     AND dept_emp.dept_no=departments.dept_no
+    -&gt;   GROUP BY departments.dept_name
+    -&gt;   ORDER BY sum_salaries DESC;</p>
+
+<p>+——————–+————–+
+| dept_name          | sum_salaries |
++——————–+————–+
+| Development        |  48179456393 |
+| Production         |  41554438942 |
+| Sales              |  40030089342 |
+| Marketing          |  13725425266 |
+| Customer Service   |  13143639841 |
+| Research           |  11969730427 |
+| Finance            |  11650834677 |
+| Quality Management |  10865203635 |
+| Human Resources    |   9363811425 |
++——————–+————–+
+9 rows in set (3.26 sec)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
+
+
+
+&lt;a id="anchor6"&gt;&lt;/a&gt;
+
+# 6. HeatWaveへのデータロード
+
+HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時、HeatWaveノードの再起動時のみ行う必要があります。(HeatWaveノードの再起動時は以下のステップ2のみが必要になります)
+&lt;br&gt;
+
+1. ALTER TABLE文を使い、employeesデータベース内のテーブルに対して**SECONDARY_ENGINE=RAPID** を定義します[^2]。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。
+
+[^2]: HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。
+
+</code></pre></div></div>
+<p>mysql&gt; ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
+mysql&gt; ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
+2. **ALTER TABLE テーブル名 SECONDARY_LOAD;** を実行し、データをHeatWaveノードにロードします。
+
+</code></pre></div></div>
+<p>mysql&gt; ALTER TABLE employees.departments SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.employees SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.salaries SECONDARY_LOAD;
+mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
+
+
+
+&lt;a id="anchor7"&gt;&lt;/a&gt;
+
+# 7. HeatWaveの確認
+
+先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。
+
+</code></pre></div></div>
+<p>mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+    -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    -&gt;     ON employees.emp_no=salaries.emp_no
+    -&gt;     AND employees.emp_no=dept_emp.emp_no
+    -&gt;     AND dept_emp.dept_no=departments.dept_no
+    -&gt;   GROUP BY departments.dept_name
+    -&gt;   ORDER BY sum_salaries DESC;
++——————–+————–+
+| dept_name          | sum_salaries |
++——————–+————–+
+| Development        |  48179456393 |
+| Production         |  41554438942 |
+| Sales              |  40030089342 |
+| Marketing          |  13725425266 |
+| Customer Service   |  13143639841 |
+| Research           |  11969730427 |
+| Finance            |  11650834677 |
+| Quality Management |  10865203635 |
+| Human Resources    |   9363811425 |
++——————–+————–+
+9 rows in set (0.13 sec)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
+なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
+
+</code></pre></div></div>
+<p>mysql&gt; EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+    -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    -&gt;   ON employees.emp_no=salaries.emp_no
+    -&gt;   AND employees.emp_no=dept_emp.emp_no
+    -&gt;   AND dept_emp.dept_no=departments.dept_no
+    -&gt;   GROUP BY departments.dept_name
+    -&gt;   ORDER BY sum_salaries DESC;
++—-+————-+————-+————+——+—————+——+———+——+———+———-+————————————————————————–+
+| id | select_type | table       | partitions | type | possible_keys | key  | key_len | ref  | rows    | filtered | Extra                                                                    |
++—-+————-+————-+————+——+—————+——+———+——+———+———-+————————————————————————–+
+|  1 | SIMPLE      | departments | NULL       | ALL  | NULL          | NULL | NULL    | NULL |       9 |   100.00 | Using temporary; Using filesort; Using secondary engine RAPID            |
+|  1 | SIMPLE      | dept_emp    | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  331143 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
+|  1 | SIMPLE      | employees   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  299157 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
+|  1 | SIMPLE      | salaries    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 2830954 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
++—-+————-+————-+————+——+—————+——+———+——+———+———-+————————————————————————–+
+4 rows in set, 1 warning (0.09 sec)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;br&gt;
+また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
+
+* SET_VAR(use_secondary_engine=ON) : HeatWaveを使う。HeatWaveが使えない場合(HeatWaveノードの停止時、HeatWaveにデータをロードしていない場合など)や、オプティマイザがHeatWaveを使わない方が効率的と判断した場合はMDSで処理する。
+* SET_VAR(use_secondary_engine=OFF) : HeatWaveを使わない。
+* SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。
+
+&lt;br&gt;
+ヒント句は以下のように、**SELECT** 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。("Unresolved name 'XXXXX' for SET_VAR hint" という警告は発生します)
+
+</code></pre></div></div>
+<p>SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) <略></略></p>
+
+<p>SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) <略></略></p>
+
+<p>SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries <略>
+```
+<br /></略></p>
+
+<p>これで、この章の作業は終了です。</p>
+
+<p>この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析対象データは約120MBと大きなサイズではありませんし、HeatWaveも最小構成の2ノードで構成していますが、それでも約25倍の性能向上が確認出来ています。分析対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります。また、HeatWaveノードの数を増やすことで性能を向上させることもできます。</p>
+
+<p>是非、分析業務で使用しているデータを対象にしてテストしてみて下さい。</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>HeatWaveのデフォルトサービスリミットは以前は0に設定されていました。新しくアカウントを作成した場合はデフォルトサービスリミットが変更されていて最初から使える状態になっていると思われますが、念のため使用している環境でサービスリミットが後述する最小構成を満たしていることを確認して下さい。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-01T10:55:59+09:00">February 1, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%81%9D%E3%81%AE10+-+MySQL%E3%81%A7%E9%AB%98%E9%80%9F%E5%88%86%E6%9E%90%E3%82%92%E4%BD%93%E9%A8%93%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-HeatWave%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-HeatWave%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-HeatWave%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/beginners/getting-started/" class="pagination--pager" title="その1 - OCIコンソールにアクセスして基本を理解する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+
+  </body>
+</html>
