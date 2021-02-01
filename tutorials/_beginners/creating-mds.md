@@ -12,7 +12,7 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 
 このチュートリアルでは、コンソール画面からMDSのサービスを1つ作成し、コンピュート・インスタンスにMySQLクライアント、MySQL Shellをインストールして、クライアントからMDSへ接続する手順を説明します。
 
-**所要時間 :** 約25分
+**所要時間 :** 約25分 (約15分の待ち時間含む)
 
 **前提条件 :**
 
@@ -25,12 +25,12 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 
 **目次：**
 
-- [1. MySQL Database Service(MDS)とは?](#1-mysql-database-servicemdsとは)
-- [2. MDSの作成](#2-mdsの作成)
-- [3. セキュリティリストの修正(イングレス・ルールの追加)](#3-セキュリティリストの修正イングレスルールの追加)
-- [4. MySQLクライアントのインストール](#4-mysqlクライアントのインストール)
-- [5. 作成したMDSの確認](#5-作成したmdsの確認)
-
+- [1. MySQL Database Service(MDS)とは?](#1-anchor1)
+- [2. MDSの作成](#2-anchor2)
+- [3. セキュリティリストの修正(イングレス・ルールの追加)](#3-anchor3)
+- [4. MySQLクライアントのインストール](#4-anchor4)
+- [5. 作成したMDSの確認](#5-anchor5)
+<br>
 <a id="anchor1"></a>
 
 # 1. MySQL Database Service(MDS)とは?
