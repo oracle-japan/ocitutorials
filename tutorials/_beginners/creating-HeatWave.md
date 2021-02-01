@@ -71,7 +71,7 @@ HeatWaveを構成する前に、使用する環境のサービスリミットを
 
 
 
-2. サービスは **MySQL** 、スコープは **XXXX:AP-TOKYO-1-AD-1** を選択します(東京リージョンを使用している場合)。"XXXX"部分は固有の文字列になります。表示された画面で「MySQL Database for HeatWave VM.Standard.E3 Nodes Count」が1以上、「MySQL HeatWave VM.Standard.E3 Nodes Count」が2以上になっていることを確認します。
+2. サービスは **MySQL** 、スコープは **XXXX:AP-TOKYO-1-AD-1** を選択します(東京リージョンを使用している場合)。"XXXX"部分は固有の文字列になります。表示された画面で **MySQL Database for HeatWave VM.Standard.E3 Nodes Count** が1以上、 **MySQL HeatWave VM.Standard.E3 Nodes Count** が2以上になっていることを確認します。
 
     <div align="center">
     <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;">
@@ -108,7 +108,7 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     </div>
     <br>
 
-3. 立ち上がった **MySQL DBシステムの作成** ウィンドウの **① DBシステム情報** のステップで、以下の項目を入力します。また、 **シェイプの変更** をクリックして表示されたウインドウから **MySQL.HeatWave.VM.Standard.E3** を選択し、**シェイプの選択** をクリックします。その後元のウインドウに戻って**次** ボタンを押します。
+3. 立ち上がった **MySQL DBシステムの作成** ウィンドウの **① DBシステム情報** のステップで、以下の項目を入力します。また、 **シェイプの変更** をクリックして表示されたウインドウから **MySQL.HeatWave.VM.Standard.E3** を選択し、**シェイプの選択** をクリックします。その後元のウインドウに戻って **次** ボタンを押します。
 
     - **名前** - 任意の名前を入力します。ここでは「HeatWave」と入力しています。
     - **説明** - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
@@ -174,7 +174,7 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     <br>
 
 2. **シェイプの変更** ボタンを押します。表示されたウインドウでHeatWave用のシェイプである**MySQL.HeatWave.VM.Standard.E3** を選択し、**シェイプの選択** ボタンを押します。元のウインドに戻ってシェイプが変更されていることを確認し、**HeatWaveクラスタの追加** ボタンをクリックします。
-(既にMDSにデータをロードしている状態であればここで**ノード数の見積もり** ボタンを押すことで必要なHeatWaveノード数を見積もることができますが、今回は最小構成で構成するためノード数は2から変更せずに次に進みます)
+(既にMDSにデータをロードしている状態であればここで **ノード数の見積もり** ボタンを押すことで必要なHeatWaveノード数を見積もることができますが、今回は最小構成で構成するためノード数は2から変更せずに次に進みます)
    
     <div align="center">
     <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
@@ -204,20 +204,23 @@ MDSにサンプルデータベースを構築し、HeatWaveノードへデータ
 
 employeeデータベースはGitHubで公開されているため、リポジトリをクローンしてSQLスクリプトをダウンロードし、サンプルデータベースを構築します。
 
-<br>
+
+
 1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してGitをインストールし、employeeデータベースのリポジトリをクローンします。
 
     ```
     sudo yum install git
     git clone https://github.com/datacharmer/test_db
     ```
-<br>
+
+
+
 2. ダウンロードされた**test_db** フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)
 
     ```
     [opc@testvm1 ~]$ cd test_db
     [opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
-Enter password: 
+    Enter password: 
     Welcome to the MySQL monitor.  Commands end with ; or \g.
     Your MySQL connection id is 39
     Server version: 8.0.23-cloud MySQL Enterprise - Cloud
@@ -225,8 +228,8 @@ Enter password:
     Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
     
     Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
+    affiliates. Other names may be trademarks of their respective
+    owners.
     
     Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
     
@@ -258,7 +261,6 @@ owners.
     
     mysql> 
     ```
-<br>
 
 
 
@@ -347,7 +349,6 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
     mysql> ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
     mysql> ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
     ```
-<br>
 
 
 
@@ -371,67 +372,69 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
 
 先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。
 
-    ```
-    mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
-        ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
-        ->     ON employees.emp_no=salaries.emp_no
-        ->     AND employees.emp_no=dept_emp.emp_no
-        ->     AND dept_emp.dept_no=departments.dept_no
-        ->   GROUP BY departments.dept_name
-        ->   ORDER BY sum_salaries DESC;
-    +--------------------+--------------+
-    | dept_name          | sum_salaries |
-    +--------------------+--------------+
-    | Development        |  48179456393 |
-    | Production         |  41554438942 |
-    | Sales              |  40030089342 |
-    | Marketing          |  13725425266 |
-    | Customer Service   |  13143639841 |
-    | Research           |  11969730427 |
-    | Finance            |  11650834677 |
-    | Quality Management |  10865203635 |
-    | Human Resources    |   9363811425 |
-    +--------------------+--------------+
-    9 rows in set (0.13 sec)
-    ```
-<br>
+
+```
+mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+    ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    ->     ON employees.emp_no=salaries.emp_no
+    ->     AND employees.emp_no=dept_emp.emp_no
+    ->     AND dept_emp.dept_no=departments.dept_no
+    ->   GROUP BY departments.dept_name
+    ->   ORDER BY sum_salaries DESC;
++--------------------+--------------+
+| dept_name          | sum_salaries |
++--------------------+--------------+
+| Development        |  48179456393 |
+| Production         |  41554438942 |
+| Sales              |  40030089342 |
+| Marketing          |  13725425266 |
+| Customer Service   |  13143639841 |
+| Research           |  11969730427 |
+| Finance            |  11650834677 |
+| Quality Management |  10865203635 |
+| Human Resources    |   9363811425 |
++--------------------+--------------+
+9 rows in set (0.13 sec)
+```
+
+
+
 なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
 
-    ```
-    mysql> EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
-        ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
-        ->   ON employees.emp_no=salaries.emp_no
-        ->   AND employees.emp_no=dept_emp.emp_no
-        ->   AND dept_emp.dept_no=departments.dept_no
-        ->   GROUP BY departments.dept_name
-        ->   ORDER BY sum_salaries DESC;
-    +----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
-    | id | select_type | table       | partitions | type | possible_keys | key  | key_len | ref  | rows    | filtered | Extra                                                                    |
-    +----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
-    |  1 | SIMPLE      | departments | NULL       | ALL  | NULL          | NULL | NULL    | NULL |       9 |   100.00 | Using temporary; Using filesort; Using secondary engine RAPID            |
-    |  1 | SIMPLE      | dept_emp    | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  331143 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
-    |  1 | SIMPLE      | employees   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  299157 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
-    |  1 | SIMPLE      | salaries    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 2830954 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
-    +----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
-    4 rows in set, 1 warning (0.09 sec)
-    ```
-<br>
+```
+mysql> EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+    ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    ->   ON employees.emp_no=salaries.emp_no
+    ->   AND employees.emp_no=dept_emp.emp_no
+    ->   AND dept_emp.dept_no=departments.dept_no
+    ->   GROUP BY departments.dept_name
+    ->   ORDER BY sum_salaries DESC;
++----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
+| id | select_type | table       | partitions | type | possible_keys | key  | key_len | ref  | rows    | filtered | Extra                                                                    |
++----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
+|  1 | SIMPLE      | departments | NULL       | ALL  | NULL          | NULL | NULL    | NULL |       9 |   100.00 | Using temporary; Using filesort; Using secondary engine RAPID            |
+|  1 | SIMPLE      | dept_emp    | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  331143 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
+|  1 | SIMPLE      | employees   | NULL       | ALL  | NULL          | NULL | NULL    | NULL |  299157 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
+|  1 | SIMPLE      | salaries    | NULL       | ALL  | NULL          | NULL | NULL    | NULL | 2830954 |    10.00 | Using where; Using join buffer (hash join); Using secondary engine RAPID |
++----+-------------+-------------+------------+------+---------------+------+---------+------+---------+----------+--------------------------------------------------------------------------+
+4 rows in set, 1 warning (0.09 sec)
+```
+
+
+
 また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
 
 * SET_VAR(use_secondary_engine=ON) : HeatWaveを使う。HeatWaveが使えない場合(HeatWaveノードの停止時、HeatWaveにデータをロードしていない場合など)や、オプティマイザがHeatWaveを使わない方が効率的と判断した場合はMDSで処理する。
 * SET_VAR(use_secondary_engine=OFF) : HeatWaveを使わない。
-* SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。
+* SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。<br>
 
-<br>
 ヒント句は以下のように、**SELECT** 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。("Unresolved name 'XXXXX' for SET_VAR hint" という警告は発生します)
 
-    ```
-    SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) <略>
-    
-    SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) <略>
-    
-    SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries <略>
-    ```
+```
+SELECT /*+ SET_VAR(use_secondary_engine=ON) */ departments.dept_name,SUM(salaries.salary) <略>
+SELECT /*+ SET_VAR(use_secondary_engine=OFF) */ departments.dept_name,SUM(salaries.salary) <略>
+SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(salaries.salary) AS sum_salaries <略>
+```
 <br>
 
 
