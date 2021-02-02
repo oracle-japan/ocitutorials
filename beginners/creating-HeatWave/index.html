@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-02-01T12:48:37+09:00">
+  <meta property="article:published_time" content="2021-02-02T19:44:12+09:00">
 
 
 
@@ -299,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その10 - MySQLで高速分析を体験する">
     <meta itemprop="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
-    <meta itemprop="datePublished" content="2021-02-01T12:48:37+09:00">
+    <meta itemprop="datePublished" content="2021-02-02T19:44:12+09:00">
     
 
     <div class="page__inner-wrap">
@@ -651,7 +651,7 @@
 
 <h1 id="6-heatwaveへのデータロード">6. HeatWaveへのデータロード</h1>
 
-<p>HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時、HeatWaveノードの再起動時のみ行う必要があります。(HeatWaveノードの再起動時は以下のステップ2のみが必要になります)
+<p>HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時、HeatWaveノードの再起動時に行う必要があります。(HeatWaveノードの再起動時は以下のステップ2のみが必要になります)
 <br /></p>
 
 <ol>
@@ -747,9 +747,7 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 
 <p>これで、この章の作業は終了です。</p>
 
-<p>この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析対象データは約120MBと大きなサイズではありませんし、HeatWaveも最小構成の2ノードで構成していますが、それでも約25倍の性能向上が確認出来ています。分析対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります。また、HeatWaveノードの数を増やすことで性能を向上させることもできます。</p>
-
-<p>是非、分析業務で使用しているデータを対象にしてテストしてみて下さい。</p>
+<p>この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析対象データは約120MBと大きなサイズではありません。また、HeatWaveも最小構成の2ノードで構成していますが、それでも約25倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">3</a></sup>。是非、分析業務で使用しているデータを対象にしてテストしてみて下さい。</p>
 
 <div class="footnotes" role="doc-endnotes">
   <ol>
@@ -758,6 +756,9 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
     </li>
     <li id="fn:2" role="doc-endnote">
       <p>HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>HeatWave(旧名称：MySQL Database Service Analytics Engine)リリース時の<a href="https://www.oracle.com/jp/corporate/pressrelease/jp20201203.html">プレスリリース</a>では、「分析クエリのためのMySQLのパフォーマンスを400倍向上させます」と案内されています。こちらはTPC-Hのベンチマークを用いて、400GBのデータを対象にしてテストを行った結果です。また、Amazon Redshift、Amazon Auroraとの比較も行っています。これらのベンチマークの結果や再現手順を<a href="https://www.oracle.com/mysql/heatwave/performance/">こちら</a>で案内しています。 <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>
@@ -771,7 +772,7 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-01T12:48:37+09:00">February 1, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-02T19:44:12+09:00">February 2, 2021</time></p>
 
 
       </footer>
