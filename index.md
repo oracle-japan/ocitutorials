@@ -138,3 +138,4 @@ Oracle Cloud の新しいサービスのリリース情報などや技術情報�
 - **[Oracle Cloud Infrastructure マニュアル](https://docs.cloud.oracle.com/ja-jp/iaas/Content/home.htm)**  
 マニュアルの日本語訳です。翻訳まで少しタイムラグがあるので、最新情報は右上の地球アイコンから英語版に切り替えて確認してください。
 
+
