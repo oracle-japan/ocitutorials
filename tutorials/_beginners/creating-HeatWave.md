@@ -450,3 +450,6 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 [^2]: HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。
 
 [^3]: HeatWave(旧名称：MySQL Database Service Analytics Engine)リリース時の[プレスリリース](https://www.oracle.com/jp/corporate/pressrelease/jp20201203.html)では、「分析クエリのためのMySQLのパフォーマンスを400倍向上させます」と案内されています。こちらはTPC-Hのベンチマークを用いて、400GBのデータを対象にしてテストを行った結果です。また、Amazon Redshift、Amazon Auroraとの比較も行っています。これらのベンチマークの結果や再現手順を[こちら](https://www.oracle.com/mysql/heatwave/performance/)で案内しています。
+
+
+

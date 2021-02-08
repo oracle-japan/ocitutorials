@@ -13,6 +13,8 @@ toc_label: "目次"
 
 また、このページのチュートリアルのうち、入門編を元にしたウェビナーのハンズオンも定期開催しています。最新の予定は [こちら](https://go.oracle.com/LP=93447?elqCampaignId=248187#xd_co_f=OTIyMTZlYzQtNGMxMi00YzY2LTg1ZTQtNTVkMGJkOTUwMGY0~) のウェビナー案内ページ をご確認ください。(集合形式でのハンズオン・セミナーは、感染症予防のためしばらくお休み予定です)
 
+> 本ドキュメントは日本オラクルのスタッフが丹精込めて作成していますが、もし不正確な記述など問題が見つかった場合には、[こちら](https://github.com/oracle-japan/paasdocs/issues)からIssue登録にてご報告ください。
+
 ## 準備 - Oracle Cloud の無料トライアルを申し込む
 - **[Oracle Cloud 無料トライアルを申し込む](https://cloud.oracle.com/ja_JP/tryit)**  
 Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。  
