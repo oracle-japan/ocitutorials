@@ -151,4 +151,4 @@ Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利�
 
 
 
-**目次に戻る :** [チュートリアル : Oracle Cloud Infrastructure を使ってみよう](https://oracle-japan.github.io/ocitutorials/)
+**目次に戻る :** [チュートリアル : Oracle Cloud Infrastructure を使ってみよう](https://oracle-japan.github.io/ocitutorials/)　
