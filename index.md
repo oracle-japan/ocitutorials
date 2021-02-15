@@ -9,7 +9,7 @@ toc: true
 toc_label: "目次"
 ---
 
-このドキュメントは Oracle Cloud Infrastructure (OCI) を使っていこう! という人のためのチュートリアル集です。各項ごとに画面ショットなどを交えながらステップ・バイ・ステップで作業を進めて、OCIの機能についてひととおり学習することができるようになっています。 [OCI活用資料集](https://community.oracle.com/tech/welcome/discussion/4474318/oracle-cloud-infrastructure-%E6%B4%BB%E7%94%A8%E8%B3%87%E6%96%99%E9%9B%86) とあわせてご活用ください。
+このドキュメントは Oracle Cloud Infrastructure (OCI) を使っていこう! という人のためのチュートリアル集です。各項ごとに画面ショットなどを交えながらステップ・バイ・ステップで作業を進めて、OCIの機能についてひととおり学習することができるようになっています。 [OCI活用資料集](https://oracle-japan.github.io/ocidocs/) とあわせてご活用ください。
 
 また、このページのチュートリアルのうち、入門編を元にしたウェビナーのハンズオンも定期開催しています。最新の予定は [こちら](https://go.oracle.com/LP=93447?elqCampaignId=248187#xd_co_f=OTIyMTZlYzQtNGMxMi00YzY2LTg1ZTQtNTVkMGJkOTUwMGY0~) のウェビナー案内ページ をご確認ください。(集合形式でのハンズオン・セミナーは、感染症予防のためしばらくお休み予定です)
 
