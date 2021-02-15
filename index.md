@@ -34,7 +34,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - **[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](/ocitutorials/beginners/creating-compute-instance)**  
 ネットワークができたら、いよいよインスタンスを立ち上げましょう。OCIなら仮想マシンもベアメタルサーバーも同じように簡単に作成できます。
 
-- **[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](https://community.oracle.com/tech/welcome/discussion/4474259/)**  
+- **[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](/ocitutorials/beginners/attaching-block-volume)**  
 ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。
 
 - **[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](https://community.oracle.com/tech/welcome/discussion/4474283/)**  
