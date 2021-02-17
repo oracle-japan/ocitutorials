@@ -23,7 +23,7 @@ Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利�
 - インスタンス間のデータの移動 : インスタンスにアタッチしたブロック・ボリュームをデタッチし、別のインスタンスにアタッチすることにより、1つのインスタンスから別のインスタンスにデータを簡単に移動させることができます。
 このチュートリアルでは、ブロック・ボリュームの基本的な使い方をご案内します。
 
-ブロック・ボリュームのバックアップについては応用編の[ブロック・ボリュームをバックアップする](http://ocitutorials/intermediates/taking-block-volume-backups/) をどうぞ。
+ブロック・ボリュームのバックアップについては応用編の[ブロック・ボリュームをバックアップする](../taking-block-volume-backups) をどうぞ。
 
 **所要時間 :** 約20分
 
@@ -151,4 +151,4 @@ Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利�
 
 
 
-**目次に戻る :** [チュートリアル : Oracle Cloud Infrastructure を使ってみよう](https://oracle-japan.github.io/ocitutorials/)　
+**チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)
