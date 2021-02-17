@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/img6.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2021-02-16T10:59:49+09:00">
+  <meta property="article:published_time" content="2021-02-17T16:51:03+09:00">
 
 
 
@@ -177,7 +177,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/attaching-block-volume/img6.png');"
 >
   
     <div class="wrapper">
@@ -299,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その4 - ブロック・ボリュームをインスタンスにアタッチする">
     <meta itemprop="description" content="ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。">
-    <meta itemprop="datePublished" content="2021-02-16T10:59:49+09:00">
+    <meta itemprop="datePublished" content="2021-02-17T16:51:03+09:00">
     
 
     <div class="page__inner-wrap">
@@ -310,14 +310,195 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#1-ブロックボリュームの作成">1. ブロック・ボリュームの作成</a></li>
+  <li><a href="#2-ボリュームのインスタンスへのアタッチ">2. ボリュームのインスタンスへのアタッチ</a></li>
+  <li><a href="#3-ボリュームのフォーマットおよびマウント">3. ボリュームのフォーマットおよびマウント</a></li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
-        <div><a href="https://community.oracle.com/tech/welcome/discussion/4474259/" class="btn btn--primary">リンク</a></div>
+<p>Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利用することにより、ベアメタル・インスタンスや仮想マシン・インスタンスからブロックデバイスとして利用することができるボリュームを、簡単に作成、管理することができます。用途に応じたサイズのボリュームを作成、インスタンスへのアタッチ、変更などが可能です。インスタンスからボリュームに対するアクセスは iSCSI もしくは準仮想化を通じて行われます。
+インスタンスにアタッチしたボリュームは、通常のディスク・ドライブと同じようにOSから利用することができ、またインスタンスからデタッチし、新しい別のインスタンスにアタッチすることで、データを失うことなく移行することが可能です。</p>
+
+<p>ブロック・ボリュームの典型的なユースケースとしては以下のようなものがあります。</p>
+
+<ul>
+  <li>インスタンスのストレージの拡張 : Oracle Cloud Infrastructure の ベアメタル・インスタンス、仮想マシン・インスタンスいずれに対しても、ブロック・ボリュームをアタッチすることでOSのストレージ領域を拡張することができます。</li>
+  <li>永続化されたストレージ領域の利用 : インスタンスを終了(Terminate)しても、ブロック・ボリュームとそこに格納されたデータは永続します。これらはボリュームを明示的に終了(Terminate)するまで存続します。</li>
+  <li>インスタンス間のデータの移動 : インスタンスにアタッチしたブロック・ボリュームをデタッチし、別のインスタンスにアタッチすることにより、1つのインスタンスから別のインスタンスにデータを簡単に移動させることができます。
+このチュートリアルでは、ブロック・ボリュームの基本的な使い方をご案内します。</li>
+</ul>
+
+<p>ブロック・ボリュームのバックアップについては応用編の<a href="../../intermediates/taking-block-volume-backups">ブロック・ボリュームをバックアップする</a> をどうぞ。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li><a href="../creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> と<a href="../creating-compute-instance">その3 - インスタンスを作成する</a> を完了し、仮想クラウド・ネットワーク(VCN)の中に任意のLinuxインスタンスの作成が完了していること</li>
+</ul>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. ブロック・ボリュームの作成</a></li>
+  <li><a href="#anchor2">2. ボリュームのインスタンスへのアタッチ</a></li>
+  <li><a href="#anchor3">3. ボリュームのフォーマットおよびマウント</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-ブロックボリュームの作成">1. ブロック・ボリュームの作成</h1>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>ブロック・ストレージ</strong> → <strong>ブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
+  </li>
+  <li>立ち上がった <strong>ブロック・ボリュームの作成</strong> ウィンドウに以下の項目を入力し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。
+    <ul>
+      <li><strong>名前</strong> - 任意 (集合ハンズオン研修の場合は、講師の指示に従ってください)</li>
+      <li><strong>コンパートメントに作成</strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します。</li>
+      <li><strong>可用性ドメイン</strong> - - 第3章でインスタンスを作成したものと同じアベイラビリティ・ドメインを選択。</li>
+    </ul>
+
+    <blockquote>
+      <p><strong>POINT</strong></p>
+
+      <p>ブロック・ボリュームは同じ可用性ドメイン(AD)にあるインスタンスからのみアクセスが可能です。別の可用性ドメインや、別のリージョンのインスタンスからアクセスすることはできません。</p>
+    </blockquote>
+
+    <ul>
+      <li><strong>サイズ(GB)</strong> - 50 を入力</li>
+      <li><strong>バックアップ・ポリシー</strong> - ここでは空欄のまま。（必要に応じてポリシーを選択することで自動的にバックアップ取得することも可能です）</li>
+      <li><strong>ボリューム・パフォーマンス</strong> - ここではデフォルトの<em>バランス</em>を選択します。</li>
+      <li>
+        <p><strong>暗号化</strong> - <em>ORACLE管理キーを使用した暗号化</em> が選択されていることを確認</p>
+
+        <p><img src="img1.png" alt="img1.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>ボリュームの作成中は プロビジョニング中 と表示されます。</p>
+
+    <p><img src="img2.png" alt="img2.png" /></p>
+  </li>
+  <li>
+    <p>ボリュームの作成が完了し、ステータスが 使用可能 になったことを確認します。</p>
+
+    <p><img src="img3.png" alt="img3.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-ボリュームのインスタンスへのアタッチ">2. ボリュームのインスタンスへのアタッチ</h1>
+
+<p>第3章で作成した仮想マシンに、先ほど作成したブロック・ボリュームをアタッチします。</p>
+
+<p>アタッチ方法はiSCSIと準仮想化が選べますが、ここではiSCSIでのアタッチを行い、iSCSIコマンドを利用してOSからアクセスできるようにします。どちらを選択するかは以下を参考にしてください。</p>
+
+<ul>
+  <li>準仮想化 - OSからのコマンド操作は不要なので利用は簡単。IO性能のオーバーヘッドが数パーセントある。IOPSのSLAは適用されない。</li>
+  <li>iSCSI - OSから利用するためのコマンド操作が必要。性能のオーバーヘッドはない。IOPSのSLAが適用される。</li>
+</ul>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択します。</p>
+  </li>
+  <li>
+    <p>第2章で作成したインスタンスの名称のリンク 下記の例では <strong>TestVM1</strong> をクリックし、インスタンスの詳細画面にナビゲートします。</p>
+
+    <p><img src="img4.png" alt="img4.png" /></p>
+  </li>
+  <li>
+    <p>画面下部の <strong>リソース</strong> から <strong>アタッチされたブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームのアタッチ</strong> ボタンを押します。
+  <img src="img5.png" alt="img5.png" /></p>
+  </li>
+  <li>立ち上がった <strong>ブロック・ボリュームのアタッチ</strong> ウィンドウに以下の項目を入力し、<strong>アタッチ</strong> ボタンを押します。
+    <ul>
+      <li><strong>ブロックボリュームのアタッチ方法を選択します</strong> - <em>iSCSI</em> を選択</li>
+      <li><strong>アクセス</strong> - <em>読取り/書込み</em> を選択</li>
+      <li><strong>ブロック・ボリューム・コンパートメント</strong>  - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したボリュームをアタッチする場合は選択します。</li>
+      <li><strong>ブロック・ボリューム</strong> - 先ほど作成したブロック・ボリュームを選択します</li>
+      <li>
+        <p><strong>デバイス・パス</strong> - 任意のパスを選択します</p>
+
+        <p><img src="img6.png" alt="img6.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>iSCSIタイプを選択した場合、<strong>ブロック・ボリュームのアタッチ</strong> のウィンドウが開きます。内容を確認したらウィンドウを閉じます。</p>
+
+    <p><img src="img7.png" alt="img7.png" /></p>
+  </li>
+  <li>
+    <p>アタッチ中は、ステータスが <strong>アタッチ中</strong> と表示されます。</p>
+
+    <p><img src="img8.png" alt="img8.png" /></p>
+  </li>
+  <li>
+    <p>アタッチが完了すると、ステータスが <strong>アタッチ済</strong> に変わります。</p>
+
+    <p><img src="img9.png" alt="img9.png" /></p>
+  </li>
+  <li>
+    <p>アタッチされたボリュームの右側の <strong>・・・</strong> メニューから <strong>iSCSIコマンドおよび情報</strong> を選択します。</p>
+
+    <p><img src="img10.png" alt="img10.png" /></p>
+  </li>
+  <li>
+    <p>立ち上がった <strong>iSCSIコマンドおよび情報</strong> ウィンドウの中に、インスタンスから iSCSI デバイスにアクセスするためのコマンドをコピーします。
+<strong>アタッチ・コマンド</strong> というコマンドブロックの左下にある コピー リンクをクリックし、表示が <strong>コピー済</strong> となったことを確認します。</p>
+
+    <p><img src="img11.png" alt="img11.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスに opcユーザーで sshアクセスし、先ほどコピーしたコマンドをペーストして実行します。</p>
+
+    <p><img src="img12.png" alt="img12.png" /></p>
+  </li>
+</ol>
+
+<p>実行結果が <strong>successful</strong> となっていることを確認します。</p>
+
+<ol>
+  <li>
+    <p>以下のコマンドを実行し、OSから新しくブロックデバイスが認識されていることを確認します。</p>
+
+    <blockquote>
+
+      <p>lsblk　　</p>
+    </blockquote>
+
+    <p><img src="img13.png" alt="img13.png" /></p>
+
+    <p>上記の例では、新しく /dev/sdb という50GBのボリュームが認識されています。</p>
+  </li>
+</ol>
+
+<p>実行した iSCSI コマンドによって、インスタンスを再ブートした後も、iSCSI ボリュームに再度ログインされます。</p>
+
+<p>コマンドは再起動の度に実行する必要はありません。</p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-ボリュームのフォーマットおよびマウント">3. ボリュームのフォーマットおよびマウント</h1>
+
+<p>その後、実際にボリューム上にデータを配置する際には、各OS上で適切なファイルシステムを構築して利用してください。</p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+        
       </section>
 
       <footer class="page__meta">
@@ -326,7 +507,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-16T10:59:49+09:00">February 16, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-17T16:51:03+09:00">February 17, 2021</time></p>
 
 
       </footer>
