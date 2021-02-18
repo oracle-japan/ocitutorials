@@ -37,7 +37,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - **[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](/ocitutorials/beginners/attaching-block-volume)**  
 ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。
 
-- **[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](ocitutorials/beginners/managing-instance-lifecycle)**  
+- **[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](/ocitutorials/beginners/managing-instance-lifecycle)**  
 作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。
 
 - **[ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](/ocitutorials/beginners/using-file-storage)**  
