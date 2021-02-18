@@ -2,7 +2,7 @@
 title: "その5 - インスタンスのライフサイクルを管理する"
 excerpt: "作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。"
 order: "050"
-link: https://community.oracle.com/tech/welcome/discussion/4474283/
+#link: https://community.oracle.com/tech/welcome/discussion/4474283/
 ---
 
 **チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)
