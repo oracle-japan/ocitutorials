@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-02-17T16:51:03+09:00">
+  <meta property="article:published_time" content="2021-02-18T18:21:21+09:00">
 
 
 
@@ -299,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その5 - インスタンスのライフサイクルを管理する">
     <meta itemprop="description" content="作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。">
-    <meta itemprop="datePublished" content="2021-02-17T16:51:03+09:00">
+    <meta itemprop="datePublished" content="2021-02-18T18:21:21+09:00">
     
 
     <div class="page__inner-wrap">
@@ -310,14 +310,343 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#1-インスタンスの停止再起動">1. インスタンスの停止、再起動</a>
+    <ul>
+      <li><a href="#1-1-ブートボリュームへのファイルの作成">1-1. ブートボリュームへのファイルの作成</a></li>
+      <li><a href="#1-2-インスタンスの停止">1-2. インスタンスの停止</a></li>
+      <li><a href="#1-3-インスタンスの起動">1-3. インスタンスの起動</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-インスタンスの終了terminate">2. インスタンスの終了(Terminate)</a></li>
+  <li><a href="#3-ブートボリュームからのインスタンスの再作成">3. ブート・ボリュームからのインスタンスの再作成</a></li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
-        <div><a href="https://community.oracle.com/tech/welcome/discussion/4474283/" class="btn btn--primary">リンク</a></div>
+<p><br /></p>
+
+<p>リソースを必要なときに必要なだけ使える、というのがクラウドのいいところですね。そのために作成したインスタンスはいつでも停止、再起動、終了、再作成といった処理が行えるようになっています。このチュートリアルでは、そのようなインスタンスのライフサイクル管理をどう行うかと、それぞれのステータスで実際にインスタンスがどのような状態になっているのかについて確認していきます。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li><a href="../creating-compute-instance">その3 - インスタンスを作成する</a> を通じてコンピュート・インスタンスの作成が完了していること</li>
+  <li><a href="../attaching-block-volume">その4 - ブロック・ボリュームをインスタンスにアタッチする</a> を通じてブロック・ボリュームのアタッチが完了していること</li>
+</ul>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<ol>
+  <li><a href="#anchor1">インスタンスの停止、再起動</a></li>
+  <li><a href="#anchor2">インスタンスの終了(Terminate)</a></li>
+  <li><a href="#anchor3">ブート・ボリュームからのインスタンスの再作成</a></li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-インスタンスの停止再起動">1. インスタンスの停止、再起動</h1>
+
+<p>まずは、インスタンスの停止、再起動処理と、その際に実行される動作について確認していきましょう。</p>
+
+<p><br /></p>
+
+<h2 id="1-1-ブートボリュームへのファイルの作成">1-1. ブートボリュームへのファイルの作成</h2>
+
+<p>OCIのインスタンスは、すべてブート・ボリュームと呼ばれる永続化されたiSCSIデバイスからネットワーク経由でブート(iPXEブート)されます。</p>
+
+<p>このブート・ボリュームの変更(OSのパラメーター変更など)が、インスタンスのライフサイクル操作によってどのような影響を受けるかを確認するために、予めファイルを1つ作成します。</p>
+
+<ol>
+  <li>
+    <p>SSHターミナルを開き、 で作成したインスタンスにsshでアクセスします</p>
+  </li>
+  <li>
+    <p>アクセスしたユーザーホームディレクトリに、任意のファイルを作成します。
+下記の例では、opcユーザーのホームディレクトリ(/home/opc)に、testfileというファイルを作成しています</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ pwd
+ /home/opc
+ [opc@testvm1 ~]$ touch testfile
+ [opc@testvm1 ~]$ ls -l
+ total 0
+ -rw-rw-r--. 1 opc opc 0 Feb 16 16:47 testfile
+ [opc@testvm1 ~]$
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="1-2-インスタンスの停止">1-2. インスタンスの停止</h2>
+
+<p>インスタンスを停止し、その際にどのようなことが起こるかをOCIコンソールから確認します。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから コンピュート → <strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong> を選択し、で作成したインスタンス名 (TestVM1など) のリンクをクリックします</p>
+  </li>
+  <li>
+    <p>インスタンスの詳細画面の上部にある <strong><code class="language-plaintext highlighter-rouge">停止</code></strong> ボタンを押します</p>
+
+    <p><img src="img1-2-2.png" alt="img1-2-2.png" /></p>
+  </li>
+  <li>
+    <p>確認を求めるメッセージ・ダイアログが立ち上がるので、<strong><code class="language-plaintext highlighter-rouge">インスタンスの停止</code></strong> ボタンを押します</p>
+
+    <p><img src="img1-2-3.png" alt="img1-2-3.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスのステータスが <strong><code class="language-plaintext highlighter-rouge">停止中</code></strong> となり、その後 <strong><code class="language-plaintext highlighter-rouge">停止済</code></strong> に変わります</p>
+
+    <p><img src="img1-2-4.png" alt="img1-2-4.png" /></p>
+
+    <p>sshでアクセスしていたターミナル・ウィンドウも接続が切断されています。(Tera Termの場合はウィンドウが閉じているはずです)</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">停止済</code></strong> になったインスタンスの状態を、OCIコンソールから確認します。
+主な確認ポイントは以下のとおりです。</p>
+
+    <ul>
+      <li>
+        <p>インスタンス概要画面の <strong><code class="language-plaintext highlighter-rouge">プライマリVNIC情報</code></strong> フィールドにおいて、<strong><code class="language-plaintext highlighter-rouge">プライベートIPアドレス</code></strong> と <strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレス</code></strong> に、インスタンス起動時と同じIPアドレスが引き続き確保されていること</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">アタッチされたブロック・ボリューム</code></strong> フィールドに、 でアタッチした追加ボリュームが引き続き表示され、アタッチ済 のステータスになっていること</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">ブート・ボリューム</code></strong>フィールドに、ブートボリュームが表示され、<strong><code class="language-plaintext highlighter-rouge">アタッチ済</code></strong> のステータスになっていること</p>
+
+        <blockquote>
+          <p><strong>Note</strong>
+      &gt;
+      &gt;インスタンスが 停止済 ステータスになると、一部の例外のインスタンスを除き、インスタンスへの課金が停止します。一方ブロック・ボリューム等の確保済のストレージ・リソースは存続しているため、課金は継続します。
+      &gt;インスタンスのシェイプ名称のうち、DenseIO / HighIO / HPC / GPU という名称がつくインスタンスに関しては、例外的に 停止済 ステータスになってもインスタンスへの課金が継続します。インスタンス停止時の課金に関する詳細についてはマニュアルの <a href="https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/restartinginstance.htm">こちら</a> で確認できます。</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="1-3-インスタンスの起動">1-3. インスタンスの起動</h2>
+
+<p>停止したインスタンスを再度起動し、挙動を確認します。</p>
+
+<ol>
+  <li>
+    <p>停止中のインスタンスの詳細画面上部の 開始 ボタンを押します</p>
+
+    <p><img src="img1-3-1.png" alt="img1-3-1.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスのステータスが <strong><code class="language-plaintext highlighter-rouge">実行中</code></strong> になるのを確認します
+ステータスが変わったらインスタンスの詳細情報を確認し、<strong><code class="language-plaintext highlighter-rouge">停止済</code></strong> のステータスの際と、表示されている情報を比較してください。</p>
+  </li>
+  <li>sshターミナルを起動し、opcユーザーでsshログインします
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>インスタンスがRUNNING ステートになった後、sshdが起動してsshアクセスできるようになるまで、さらに約3分程度かかります</p>
+    </blockquote>
+  </li>
+  <li>sshログインしたら、ステップ1-1で作成したブート・ボリュームのファイルを確認します
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ ls -l
+ total 0
+ -rw-rw-r--. 1 opc opc 0 Feb 16 16:47 testfile
+ [opc@testvm1 ~]$ pwd
+ /home/opc
+ [opc@testvm1 ~]$
+</code></pre></div>    </div>
+
+    <p>おそらくファイルが正しく表示されるはずです。
+ これは、ブート・ボリューム(OS領域)に対する変更が、インスタンスの停止、再起動処理を経ても永続化されていることを示します。</p>
+  </li>
+  <li>
+    <p>また、以下のコマンドを発行し、アタッチされているボリュームの情報を確認します</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ lsblk
+</code></pre></div>    </div>
+
+    <p>このインスタンスにアタッチされている、ブートボリュームを含むボリュームの一覧が表示されています。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ lsblk
+ NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+ sdb      8:16   0   50G  0 disk
+ sda      8:0    0 46.6G  0 disk
+ tqsda2   8:2    0    8G  0 part [SWAP]
+ tqsda3   8:3    0 38.4G  0 part /
+ mqsda1   8:1    0  200M  0 part /boot/efi
+ [opc@testvm1 ~]$
+</code></pre></div>    </div>
+
+    <p>/dev/sdb というボリュームが表示されていることがわかります。これは、 において追加でアタッチし、OSからiSCSIでログインしたボリュームです。
+ つまり、インスタンスの停止、再起動を経ても、ブロックボリュームへのiSCSIのログインが継続しており、再起動後に再びログイン処理を行う必要がないことがわかります。</p>
+  </li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-インスタンスの終了terminate">2. インスタンスの終了(Terminate)</h1>
+
+<p>ここでは、インスタンスの終了(Terminate)処理を行って、その際の挙動について確認します。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">コンピュート</code></strong> → <strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong> を選択し、先程起動処理を行ったインスタンス名 (TestVM1など) のリンクをクリックします</p>
+  </li>
+  <li>
+    <p>インスタンスの詳細画面の上部にある <strong><code class="language-plaintext highlighter-rouge">アクション▼</code></strong> メニューから <strong><code class="language-plaintext highlighter-rouge">終了</code></strong> を選択します</p>
+
+    <p><img src="img2-2.png" alt="img2-2.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスのブート・ボリュームをどうするかを選択するダイアログ・ボックスが起動します
+<strong><code class="language-plaintext highlighter-rouge">アタッチされたブート・ボリュームを完全に削除</code></strong> というチェックボックスにチェックをつけると、インスタンスのブート・ボリュームが削除されます。
+今回は、ブート・ボリュームを後ほど利用するので、チェックを外したまま <strong><code class="language-plaintext highlighter-rouge">インスタンスの終了</code></strong> ボタンを押します。</p>
+
+    <p><img src="img2-3.png" alt="img2-3.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスの終了処理がはじまります。終了処理中は <strong><code class="language-plaintext highlighter-rouge">終了中...</code></strong> というステータスになります。
+この処理の間に、インスタンス作成時に確保された各種のリソースが順にデタッチ、または削除されていきます。
+ OCIコンソール上では、リアルタイムで情報が変化し、削除されたリソースから表示が変化していきますので、リアルタイムで状況がどう変わるかを確認してみてください。</p>
+  </li>
+  <li>
+    <p>インスタンスの終了(Terminate)処理が完了すると、ステータスが 終了済 に変わります。
+画面上のステータスアイコンで、ステータスが 終了済 になったことを確認します。</p>
+
+    <p><img src="img2-5.png" alt="img2-5.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">プライマリVNIC情報</code></strong> 欄では、<strong><code class="language-plaintext highlighter-rouge">プライベートIPアドレス</code></strong> および <strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレス</code></strong> が <strong><code class="language-plaintext highlighter-rouge">「 - 」</code></strong> になっていることを確認します。
+これは、インスタンスの終了とともに、アタッチされていたインスタンスのプライベートIPアドレス、パブリックIPアドレスがデタッチされ、IPのプールに返還された状態であることを示しています。これらのIPアドレスは、他のインスタンスで再利用することができます。</p>
+
+    <p><img src="img2-6.png" alt="img2-6.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">アタッチされたブロック・ボリューム</code></strong> 欄には、<strong><code class="language-plaintext highlighter-rouge">このインスタンスにはアタッチされたブロック・ボリュームはありません。</code></strong> と表示されています。
+インスタンスの終了とともに、アタッチされていた追加ボリュームはデタッチされていることがわかります。</p>
+
+    <p><img src="img2-7.png" alt="img2-7.png" /></p>
+  </li>
+  <li>
+    <p>アタッチされたVNIC 欄には、何も表示されていません。インスタンスの終了とともに、アタッチされていた仮想NICはすべて削除されています。</p>
+
+    <p><img src="img2-8.png" alt="img2-8.png" /></p>
+
+    <blockquote>
+      <p><strong>Note</strong>
+     &gt;
+     &gt;現在の Oracle Cloud Infrastructure では、インスタンスの削除時に仮想NICを残しておいて、他のインスタンスにアタッチするような機能(いわいるElastic Network Interface)の機能はありません。この機能は将来の実装が予定されています。
+     &gt;また現在でも、予約IP機能をつかったグローバルIPアドレスの移動(いわいるElastic Global IP)は可能です。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>Boot Volume 欄には、<strong><code class="language-plaintext highlighter-rouge">デタッチ済</code></strong> というステータスのボリュームがひとつ表示されています。
+削除時のダイアログで、ブートボリュームを削除しないという選択をしたため、ボリュームは保全されています。</p>
+
+    <p><img src="img2-9.png" alt="img2-9.png" /></p>
+
+    <ul>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">終了済</code></strong> ステータスのインスタンスは、インスタンスのシェイプを問わず、すべて課金が停止しています。ただし、ブート・ボリュームを残す選択をした場合は、そのボリュームはインスタンス終了後も存続し、課金が継続します。</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">終了済</code></strong> ステータスのインスタンスは、暫くの間OCIコンソールに表示され続けますが、このインスタンスを復活させることはできません。しばらくすると終了済インスタンスはOCIコンソールから表示が消えます。</p>
+      </li>
+    </ul>
+
+    <blockquote>
+      <p><strong>Note</strong>
+     &gt;DenseIO、HighIO、HPCなどの、インスタンス内部にストレージが付属するインスタンスの場合、インスタンスを終了(terminate)すると内部ストレージのデータが消去され、損失します。もし内部ストレージのデータの保全が必要な場合は、予めブロック・ボリューム等の他の永続ストレージにデータを保管してからインスタンスを終了するようにしてください。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-ブートボリュームからのインスタンスの再作成">3. ブート・ボリュームからのインスタンスの再作成</h1>
+
+<p>終了したインスタンスを再度起動させることはできませんが、ブート・ボリュームが保管されている場合はそこから新しく別のインスタンスを作成することができます。ここではその手順について確認します。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから コンピュート → <strong><code class="language-plaintext highlighter-rouge">ブート・ボリューム</code></strong> を選択します</p>
+  </li>
+  <li>
+    <p>先程削除したインスタンスのブート・ボリュームが表示されています。TestVM1 (Boot Volume) のような名称のリンクをクリックします</p>
+  </li>
+  <li>
+    <p>ブート・ボリュームの詳細画面の上部にある <strong><code class="language-plaintext highlighter-rouge">インスタンスの作成</code></strong> というボタンを押します</p>
+
+    <p><img src="img3-3.png" alt="img3-3.png" /></p>
+  </li>
+  <li>
+    <p>コンピュート・インスタンスの作成 ウィザードが起動してきます。以下の内容を入力して下部の 作成 ボタンを押します。</p>
+
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">インスタンスの命名</code></strong> - 任意</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">可用性ドメイン</code></strong> - 先程削除したインスタンスが存在していたアベイラビリティ・ドメインと同じものを選択</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">オペレーティング・システムまたはイメージ・ソースを選択します</code></strong> - さきほど表示したブート・ボリューム（TestVM1 (Boot Volume)）が選択されていることを確認</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">インスタンス・タイプの選択</code></strong> - 任意</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">インスタンス・シェイプの選択 - 任意</code></strong></li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ブートボリュームの構成 - デフォルトのままチェック入れず</code></strong></li>
+      <li><strong><code class="language-plaintext highlighter-rouge">SSHキーの追加</code></strong> - 作成済みの鍵ペアのうち公開鍵 (id_rsa.pub)を選択</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキングの構成</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク・コンパートメント</code></strong> - VCNの存在するコンパートメントを選択</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong> - 任意のVCNを選択</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">サブネット・コンパートメント</code></strong> - サブネットの存在するコンパートメントを選択</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong> - 任意のパブリック・サブネットを選択</li>
+        </ul>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">拡張オプションの表示 - ネットワーキング</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> - チェックをつける (デフォルト)
+            <blockquote>
+              <p><strong>Note</strong></p>
+
+              <p>Oracle Cloud Infrastructure では、同一のイメージから仮想マシン、ベアメタルサーバーの両方のインスタンスを作成することができます。このため、仮想マシンのブート・ボリュームからベアメタルサーバーを立ち上げる、といったことや、その逆の操作も可能です。この手順の シェイプ・タイプ および シェイプ で、もとのインスタンスとは違うものを選択することで実現できます。</p>
+            </blockquote>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>インスタンスの作成が開始されます。2-3分ほどでインスタンス作成が完了し、ステータスが <strong><code class="language-plaintext highlighter-rouge">実行中</code></strong> に変わります。
+インスタンスに新しく割り振られたパブリックIPアドレスを確認します。</p>
+  </li>
+  <li>
+    <p>確認したパブリックIPアドレスに対してsshでアクセスし、ステップ1-1で作成したファイル(/home/opc/testfile) が存在することを確認します。
+これにより、インスタンス削除時のOS領域の情報がインスタンスの再作成後も保全されていることがわかります。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上がブート・ボリュームを利用したインスタンスの再作成の方法です。
+今回は、終了(Termitate)したインスタンスのブートボリュームからインスタンスを作成しましたが、必ずしもインスタンスを終了(Terminate)する必要があるわけではなく、インスタンスの停止→ブートボリュームのデタッチを行ったブートボリュームであれば、元のインスタンスを残したまま新しいインスタンスを作成することも可能です。この方法を使うと、一時的にインスタンスのタイプやシェイプを変更し、作業が終わったらまた元のインスタンスにアタッチして利用するようなことも可能になります。</p>
+
+<p><br /><br /></p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+
+        
       </section>
 
       <footer class="page__meta">
@@ -326,7 +655,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-17T16:51:03+09:00">February 17, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-18T18:21:21+09:00">February 18, 2021</time></p>
 
 
       </footer>
