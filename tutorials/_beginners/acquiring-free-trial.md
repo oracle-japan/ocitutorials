@@ -1,6 +1,7 @@
 ---
-title: "Oracle Cloud 無料トライアルを申し込む"
+title: "準備 - Oracle Cloud 無料トライアルを申し込む"
 excerpt: "Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。"
+order: "001"
 categories:
 tags:
 link: https://www.oracle.com/jp/cloud/free/
