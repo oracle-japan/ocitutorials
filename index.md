@@ -79,7 +79,7 @@ Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infra
 OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
 - **[インスタンスのオートスケーリングを設定する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/autoscaling/)**  
 アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。オートスケーリング設定を行って、負荷に応じてインスタンス数を増減させてみましょう。
-- **[ブロック・ボリュームをバックアップする - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474358/%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF-%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%82%92%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[ブロック・ボリュームをバックアップする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/taking-block-volume-backups/)**  
 運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。
 - **[DNSサービスを使う - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-dns/)**  
 クラウド上でインターネット向けにサービスを構築したいのであれば、OCIのDNSサービスを使わない手はありません。Dyn.comにホストされた堅牢な権威DNSネットワークが、従量制で簡単に利用できます。マネージドサービスなのでDDoS対策もバッチリ。さあやってみましょう。
