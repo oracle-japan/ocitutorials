@@ -8,37 +8,44 @@
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'bundle exec jekyll serve'. If you change this file, please restart the server process.
 
+# Build settings
+# remote_theme: mmistakes/minimal-mistakes
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: "contrast"
+
 # Site settings
 # These are used to personalize your new site. If you look in the HTML files,
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-
-baseurl: "/ocitutorials"
-url: "https://oracle-japan.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-
+locale: ja-JP
 title: "Oracle Cloud Infrastructure チュートリアル"
 title_separator: "|"
 subtitle: "Oracle Cloud Infrastructure を使ってみよう"
 tagline: "Oracle Cloud Infrastructure を使ってみよう"
+url: "https://oracle-japan.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/ocitutorials"
+repository: "oracle-japan/ocitutorials"
 email: masataka.marukawa@oracle.com
 description: >-  # this means to ignore newlines until "baseurl:"
   Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。
   初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。
-repository: "oracle-japan/ocitutorials"
 twitter_username: "Oracle_Japan"
 github_username: "oracle-japan"
 # teaser: "/assets/images/rh01-cloud-home-pine-background.jpg"
 logo: "/assets/images/social-og-oracle-badge.jpg"
 masthead_title: "OCI チュートリアル"
 
-# Build settings
-# remote_theme: mmistakes/minimal-mistakes
-theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: "contrast"
-locale: ja-JP
 search: true
 breadcrumbs: true
+
+
+# Analytics
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-6W7FEC5CEH"
+    anonymize_ip: false # default
 
 
 # Conversion
@@ -175,11 +182,6 @@ compress_html:
 # Collections
 collections_dir: tutorials
 collections:
-  prerequisites:
-    output: true
-    title: "準備"
-    permalink: /:collection/:path/
-    sort_by: order
   beginners:
     output: true
     title: "入門編"
@@ -190,19 +192,24 @@ collections:
     title: "応用編"
     permalink: /:collection/:path/
     sort_by: order
-  advanced-webapp:
+  webapp:
     output: true
     title: "実践編(Webアプリ)"
     permalink: /:collection/:path/
     sort_by: order
-  advanced-cloudnative:
+  cloud-native:
     output: true
     title: "実践編(Cloud Native)"
     permalink: /:collection/:path/
     sort_by: order
-  advanced-enterprise:
+  enterprise:
     output: true
     title: "実践編(エンタープライズ)"
+    permalink: /:collection/:path/
+    sort_by: order
+  content-management:
+    output: true
+    title: "実践編(コンテンツ管理)"
     permalink: /:collection/:path/
     sort_by: order
 
@@ -224,12 +231,6 @@ defaults:
       toc_sticky: true
       header:
         overlay_image: /assets/images/rh01-cloud-home-pine-background.jpg
-  # _prerequisites
-  - scope:
-      type: prerequisites
-    values:
-      sidebar:
-        nav: "prerequisites"
   # _beginners
   - scope:
       type: beginners
@@ -242,21 +243,27 @@ defaults:
     values:
       sidebar:
         nav: "intermediates"
-  # _advanced-webapp
+  # _webapp
   - scope:
-      type: advanced-webapp
+      type: webapp
     values:
       sidebar:
-        nav: "advanced-webapp"
-  # _advanced-enterprise
+        nav: "webapp"
+  # _enterprise
   - scope:
-      type: advanced-enterprise
+      type: enterprise
     values:
       sidebar:
-        nav: "advanced-enterprise"
-  # _advanced-cloudnative
+        nav: "enterprise"
+  # _cloud-native
   - scope:
-      type: advanced-cloudnative
+      type: cloud-native
     values:
       sidebar:
-        nav: "advanced-cloudnative"
+        nav: "cloud-native"
+  # _content-management
+  - scope:
+      type: content-management
+    values:
+      sidebar:
+        nav: "content-management"

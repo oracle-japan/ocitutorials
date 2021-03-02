@@ -1,5 +1,5 @@
 ---
-title: チュートリアル : Oracle Cloud Infrastructure を使ってみよう
+title: チュートリアル - Oracle Cloud Infrastructure を使ってみよう
 description: Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。
 permalink: /
 lang: ja_JP
@@ -75,7 +75,7 @@ Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infra
 ## チュートリアル応用編 - Oracle Cloud Infrastructure アドバンスド
 - **[モニタリング機能でリソースを監視する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/monitoring-resources/)**  
 モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
-- **[ロードバランサーでWebサーバーを負荷分散する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474257/%E3%83%AD%E3%83%BC%E3%83%89%E3%83%90%E3%83%A9%E3%83%B3%E3%82%B5%E3%83%BC%E3%81%A7web%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%82%92%E8%B2%A0%E8%8D%B7%E5%88%86%E6%95%A3%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[ロードバランサーでWebサーバーを負荷分散する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-load-balancer/)**  
 OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
 - **[インスタンスのオートスケーリングを設定する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/autoscaling/)**  
 アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。オートスケーリング設定を行って、負荷に応じてインスタンス数を増減させてみましょう。
