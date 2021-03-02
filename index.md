@@ -1,5 +1,5 @@
 ---
-title: チュートリアル : Oracle Cloud Infrastructure を使ってみよう
+title: チュートリアル - Oracle Cloud Infrastructure を使ってみよう
 description: Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。
 permalink: /
 lang: ja_JP
