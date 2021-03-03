@@ -1,8 +1,8 @@
 ---
-title: "実践編"
-permalink: /advanced-webapp/
+title: "Webアプリケーション編"
+permalink: /webapp/
 layout: collection
-collection: advanced-webapp
+collection: webapp
 entries_layout: grid
 show_excerpts: true
 classes: wide
