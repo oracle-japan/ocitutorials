@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/accessing-serial-console/img1-3.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2021-02-19T14:47:54+09:00">
+  <meta property="article:published_time" content="2021-03-03T14:22:44+09:00">
 
 
 
@@ -133,17 +133,13 @@
           <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
         </a>
         <ul class="visible-links"><li class="masthead__menu-item">
-              <a href="/ocitutorials/prerequisites/" title="このチュートリアルを実施するに当たって必要な準備">準備</a>
-            </li><li class="masthead__menu-item">
               <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
             </li><li class="masthead__menu-item">
-              <a href="/ocitutorials/advanced-webapp/">実践編<br>(Webアプリ)</a>
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
             </li><li class="masthead__menu-item">
-              <a href="/ocitutorials/advanced-cloudnative/">実践編<br>(Cloud Native)</a>
-            </li><li class="masthead__menu-item">
-              <a href="/ocitutorials/advanced-enterprise/">実践編<br>(エンタープライズ)</a>
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/about/">このサイトについて</a>
             </li></ul>
@@ -177,7 +173,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/accessing-serial-console/img1-3.png');"
 >
   
     <div class="wrapper">
@@ -317,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="シリアル・コンソールでsshできないインスタンスのトラブルシュートをする">
     <meta itemprop="description" content="インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールに接続してみましょう。何かトラブル解決のヒントが見つかるかもしれません。">
-    <meta itemprop="datePublished" content="2021-02-19T14:47:54+09:00">
+    <meta itemprop="datePublished" content="2021-03-03T14:22:44+09:00">
     
 
     <div class="page__inner-wrap">
@@ -328,24 +324,382 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#0-はじめに-シリアルコンソールが有効なケースの整理">0. はじめに シリアル・コンソールが有効なケースの整理</a></li>
+  <li><a href="#1-アクセス元クライアントの準備">1. アクセス元クライアントの準備</a></li>
+  <li><a href="#2-インスタンスでのコンソール接続許可の作成">2. インスタンスでのコンソール接続許可の作成</a></li>
+  <li><a href="#3-シリアルコンソール接続文字列の取得">3. シリアル・コンソール接続文字列の取得</a></li>
+  <li><a href="#4-インスタンスのシリアルコンソールに接続">4. インスタンスのシリアル・コンソールに接続</a></li>
+  <li><a href="#5-シリアルコンソールを使ってメンテナンスモードでブートする">5. シリアル・コンソールを使ってメンテナンス・モードでブートする</a></li>
+  <li><a href="#6-メンテナンスモードでシステム設定ファイルを編集する">6. メンテナンス・モードでシステム設定ファイルを編集する</a></li>
+  <li><a href="#7-インスタンスのssh鍵を再登録してアクセスを回復する">7. インスタンスのssh鍵を再登録してアクセスを回復する</a></li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
+<p><br /></p>
 
-        <div><a href="https://community.oracle.com/tech/welcome/discussion/4474277/%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB-%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E3%81%A7ssh%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%88%E3%82%92%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89" class="btn btn--primary">リンク</a></div>
+<p>Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフォルトで sshd が起動し外部からsshでアクセスできるようになります。普通はこのsshで大抵の処理を行うことができますが、ごくたまにsshできない環境からアクセスが必要だったり、あるいはできていたsshが突然できなくなってしまったといった場合があります。そんなアクセスできないトラブル発生時に、コンソール・アクセスが有効な手段になる場合があります。</p>
+
+<p>このチュートリアルでは、Oracle Cloud Infrastructure のインスタンスに対してシリアル・コンソールやVNCコンソールを通じてアクセスする方法を学習します。</p>
+
+<p>また、今回はクライアントにWindows PCを利用します。Mac OS または Linux クライアントからのアクセスについては、マニュアルなどの別ドキュメントを参照してください。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li>Oracle Cloud Infrastructure で、作成済みのLinuxインスタンスがあること</li>
+  <li>コンソール・アクセスの認証に使用するSSH鍵ペアを作成済なこと</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<ol>
+  <li><a href="#anchor0">はじめに シリアル・コンソールが有効なケースの整理</a></li>
+  <li><a href="#anchor1">アクセス元クライアントの準備</a></li>
+  <li><a href="#anchor2">インスタンスでのコンソール接続許可の作成</a></li>
+  <li><a href="#anchor3">シリアル・コンソール接続文字列の取得</a></li>
+  <li><a href="#anchor4">インスタンスのシリアル・コンソールに接続</a></li>
+  <li><a href="#anchor5">シリアル・コンソールを使ってメンテナンス・モードでブートする</a></li>
+  <li><a href="#anchor6">メンテナンス・モードでシステム設定ファイルを編集する</a></li>
+  <li><a href="#anchor7">インスタンスのssh鍵を再登録してアクセスを回復する</a></li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor0"></a></p>
+
+<h1 id="0-はじめに-シリアルコンソールが有効なケースの整理">0. はじめに シリアル・コンソールが有効なケースの整理</h1>
+
+<p>コンソール・アクセスの代表的なユースケースには、以下のようなものがあります。</p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">何らかの理由でOSがブートしないインスタンスにアクセスしてトラブル・シュートする</code></strong>
+    <ul>
+      <li>コンソールやAPI上ではインスタンスは起動しているのに、実際にはOSがブートしていないため、sshでログインしても応答が返ってこない、というケースが時々発生します</li>
+      <li>特にBYOI(Bring Your Own Image)でオンプレミスのマシンイメージを持ち込んだ場合、何らかの設定ミスでブートしてこないというケースはまま発生します</li>
+      <li>そのような場合に、このシリアル・コンソールへのアクセスを利用することで、ブートシーケンスを見ながら原因の追求することができるようになります</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">秘密鍵が失われるなどしてsshアクセスできなくなったインスタンスに再びsshできるようにする</code></strong>
+    <ul>
+      <li>インスタンスにアクセスするためのssh秘密鍵をなくしてしまったり、パスフレーズを忘れてしまった場合、基本的回復は不可能です</li>
+      <li>しかしそのような場合でも、シリアル・コンソールを利用し、メンテナンスモードでbash shellにログインすることで、opcユーザーのauthorized_keysに新たなssh公開鍵を登録して、再びsshでアクセスできるようにすることができるようになります</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ローカル環境から22番ポート以外でインスタンスにアクセスする</code></strong>
+    <ul>
+      <li>ちょっと例外的な使い方ですが、シリアル・コンソールを利用することで、ローカル側からhttps(tcp/443)でインスタンスにアクセスをすることができるようになります</li>
+      <li>このため、もしローカル側のファイアウォールでssh(tcp/22)が閉じられている場合にも、インスタンスに対してアクセスすることができるようになります</li>
+      <li>ただし、シリアル・コンソールからのユーザーのログインを許可するために、予めアクセスしたいユーザーに対してパスワードを設定しておく必要があります</li>
+    </ul>
+  </li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-アクセス元クライアントの準備">1. アクセス元クライアントの準備</h1>
+
+<p>クライアントが Mac OS や Linux の場合には、備わっているシェルとOpenSSHをそのまま使用することができますが、Windows OSの場合は追加で PuTTY(plink.exe) または OpenSSH をインストールする必要があります。</p>
+
+<p>今回は、Windows に Git for Windows をインストールし、そこに含まれる Git Bash シェルと、OpenSSHを利用します。</p>
+
+<p>また、適切なディレクトリにコンソール・アクセス用の秘密鍵を配置します。</p>
+
+<blockquote>
+  <p><strong><code class="language-plaintext highlighter-rouge">Git Bash</code></strong> 以外にも、<strong><code class="language-plaintext highlighter-rouge">OpenSSH</code></strong> が利用できるコマンドラインツール(シェル)であれば何でもOKです<br />
+(例)  <strong><code class="language-plaintext highlighter-rouge">Windows Subsystem for Linux、Cygwin、MobaXterm</code></strong> など</p>
+</blockquote>
+
+<blockquote>
+  <p><strong><code class="language-plaintext highlighter-rouge">PuTTY (plink.exe)</code></strong> を利用してもシリアル・コンソールにアクセスは可能ですが、筆者がためしたところGRUBブート画面でのキーアクセスがうまく受け付けてくれないなどの動きをします(原因は不明です)。OpenSSHの方が安定しているようですので、こちらを利用することをお勧めします</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>https://git-scm.com/download/win にアクセスし、GIt for Windows をダウンロードし、インストールを完了します。</p>
+  </li>
+  <li>Git Bash から ssh が実行できることを確認します。Windows 7 の場合は以下の方法で起動します
+    <ul>
+      <li>Windows キーを押して <strong><code class="language-plaintext highlighter-rouge">プログラムとファイルの検索</code></strong> ボックスに <strong><code class="language-plaintext highlighter-rouge">git</code></strong> とタイプし、検索されたプログラムから <strong><code class="language-plaintext highlighter-rouge">Git Bash</code></strong> を選択します</li>
+    </ul>
+  </li>
+  <li>立ち上がった Git Bash ウィンドウで、<strong><code class="language-plaintext highlighter-rouge">ssh</code></strong> と入力し、Enterキーを押します
+以下のようなヘルプ出力が返ってきたら、Git Bash のインストールは無事完了しています</li>
+</ol>
+
+<p><img src="img1-3.png" alt="img1-3.png" /></p>
+
+<ol>
+  <li>Windowsからエクスプローラーを開き、上のパス入力フィールドに <strong><code class="language-plaintext highlighter-rouge">%homedrive%%homepath%</code></strong> と入力し、<strong><code class="language-plaintext highlighter-rouge">Enter</code></strong> キーを押します</li>
+</ol>
+
+<p><img src="img1-4.png" alt="img1-4.png" /></p>
+
+<ol>
+  <li>「<strong><code class="language-plaintext highlighter-rouge">.ssh</code></strong>」 というフォルダを新しく作成し、予め作成しておいたssh鍵ペアのうち秘密鍵をコピーし、<strong><code class="language-plaintext highlighter-rouge">id_rsa</code></strong> という名前で保存します(拡張子なし)</li>
+</ol>
+
+<p><img src="img1-5.png" alt="img1-5.png" /></p>
+
+<p><br />
+以上で、ローカルPC側の準備は完了です。</p>
+
+<p><br /><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-インスタンスでのコンソール接続許可の作成">2. インスタンスでのコンソール接続許可の作成</h1>
+
+<p>インスタンスは、作成した初期状態ではシリアル・コンソール・アクセスが許可されていません。許可するには、OCIのコンソール画面またはAPIから <strong><code class="language-plaintext highlighter-rouge">Console Connection</code></strong> というオブジェクトをインスタンス毎に作成し、コンソール・アクセスを許可する必要があります。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">Compute → Instances</code></strong> を選択し、シリアル・コンソール接続を許可したいインスタンスの名称のリンクをクリックします</p>
+  </li>
+  <li>
+    <p>画面の左下の <strong><code class="language-plaintext highlighter-rouge">Resources</code></strong> メニューから <strong><code class="language-plaintext highlighter-rouge">Console Connections</code></strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">Create Console Connection</code></strong> ボタンを押します</p>
+  </li>
+  <li>立ち上がった **<code class="language-plaintext highlighter-rouge">Create Console Connection ウィンドウに以下の項目を入力し、**</code>Create Console Connection ボタンを押します
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">SSH KEY</code></strong> - 以下のいずれかを実行します
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">CHOSE SSH KEY FILES</code></strong> ラジオボタンを選択した上で、<strong><code class="language-plaintext highlighter-rouge">Browse</code></strong> ボタンを押し、ローカルにあるSSH公開鍵ファイル(console.pub)を選択</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">CHOSE SSH KEY FILES</code></strong> ラジオボタンを選択した上で、下部の <strong><code class="language-plaintext highlighter-rouge">Drop SSH key files here...</code></strong> フィールドにローカルにあるSSH公開鍵ファイルをドラッグ &amp; ドロップ</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">PASTE SSH KEYS</code></strong> ラジオボタンを選択した上で、下部のフィールドにローカルにあるSSH公開鍵の文字列をコピー &amp; ペースト</li>
+        </ul>
+
+        <p><img src="img2-4.png" alt="img2-4.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>コンソール上に作成したコンソール接続が表示され、ステータスが ACTIVE になっていることを確認します</li>
+</ol>
+
+<p><img src="img2-5.png" alt="img2-5.png" /></p>
+
+<p><br /><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-シリアルコンソール接続文字列の取得">3. シリアル・コンソール接続文字列の取得</h1>
+
+<p>コンソール接続の作成が完了すると、画面やAPIなどから接続に必要な情報を取得することができます。</p>
+
+<ol>
+  <li>
+    <p>作成したコンソール接続の右の・・・メニューを開き、 <strong><code class="language-plaintext highlighter-rouge">Connect with SSH</code></strong> を選択します</p>
+  </li>
+  <li>
+    <p>立ち上がった <strong><code class="language-plaintext highlighter-rouge">Connect With SSH</code></strong> ウィンドウで、<strong><code class="language-plaintext highlighter-rouge">PLATFORM</code></strong> に <strong><code class="language-plaintext highlighter-rouge">LINUX / MAC OS</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">CONNECTION STRING</code></strong> ボックス左下の <strong><code class="language-plaintext highlighter-rouge">Copy</code></strong> リンクをクリックし、接続文字列をクリップボードにコピーします</p>
+  </li>
+</ol>
+
+<blockquote>
+  <p><strong><code class="language-plaintext highlighter-rouge">Windows OS</code></strong> クライアントからアクセスをする場合でも、<strong><code class="language-plaintext highlighter-rouge">OpenSSH</code></strong> を利用する場合は <strong><code class="language-plaintext highlighter-rouge">PLATFORM</code></strong> に <strong><code class="language-plaintext highlighter-rouge">WINDOWS</code></strong> ではなく <strong><code class="language-plaintext highlighter-rouge">LINUX / MAC OS</code></strong> を選択してください
+(WINDOWSは PuTTY (plink.exe) 経由でアクセスをする場合にのみ使用します)</p>
+</blockquote>
+
+<p><img src="img3-2.png" alt="img3-2.png" /></p>
+
+<ol>
+  <li>【任意】コピーした文字列を、任意のテキストエディタに保存します</li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-インスタンスのシリアルコンソールに接続">4. インスタンスのシリアル・コンソールに接続</h1>
+
+<p>取得した接続文字列を利用して、インスタンスのシリアル・コンソールに接続します。</p>
+
+<ol>
+  <li>Windows プログラムから、Git Bash を起動します。Windows 7 の場合は以下の方法で起動します
+    <ul>
+      <li>Windows キーを押して <strong><code class="language-plaintext highlighter-rouge">プログラムとファイルの検索</code></strong> ボックスに <strong><code class="language-plaintext highlighter-rouge">git</code></strong> とタイプし、検索されたプログラムから <strong><code class="language-plaintext highlighter-rouge">Git Bash</code></strong> を選択します</li>
+    </ul>
+  </li>
+  <li>
+    <p>立ち上がった Git Bash ウィンドウに、先ほどコピーした接続文字列をペーストし、Enterキーを押します</p>
+  </li>
+  <li>
+    <p>はじめてアクセスしているため、既知のホストに登録するかどうかを聞かれます。 <strong><code class="language-plaintext highlighter-rouge">Are your sure you want to continue connecting (yes/no)?</code></strong> と質問されるので、<strong><code class="language-plaintext highlighter-rouge">yes</code></strong> と入力し Enterキーを押します</p>
+  </li>
+  <li>
+    <p>コンソール・アクセスは踏み台を経由して行うため、もう一度同じ質問をされます。再び yes と入力し、Enterキーを押します</p>
+  </li>
+  <li>これでコンソール・アクセスは完了しています。もういちど Enter キーを押すと、ログインプロンプトが表示されます。</li>
+</ol>
+
+<p><img src="img4-5.png" alt="img4-5.png" /></p>
+
+<p><br />
+以上で、シリアル・コンソールへのアクセスは完了です。</p>
+
+<p><br /><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-シリアルコンソールを使ってメンテナンスモードでブートする">5. シリアル・コンソールを使ってメンテナンス・モードでブートする</h1>
+
+<p>シリアル・コンソールを利用すると、インスタンスをメンテナンス・モードでブートを行うことができるようになります。</p>
+
+<p>これにより、ブートできなくなったインスタンスの設定情報を変更したり、ログインできなくなったssh鍵を入れ替えたりすることができるようになります。</p>
+
+<ol>
+  <li>
+    <p>ステップ4までを完了し、シリアル・コンソールに接続した状態にします</p>
+  </li>
+  <li>
+    <p>Oracle Cloud Infrastructure のコンソールメニューから、作業を行いたいインスタンスの詳細ページにアクセスし、<strong><code class="language-plaintext highlighter-rouge">Reboot</code></strong> ボタンを押します</p>
+  </li>
+  <li>
+    <p>リブートプロセスが開始されたら、シリアル・コンソールの端末ウィンドウに戻ります。端末ウィンドウにメッセージが表示されはじめます。
+GRUBブートメニューがウィンドウに現れたら、すぐにキーボードの「上(↑)」「下(↓)」キーを入力して、自動起動プロセスを停止します
+ブートしたいカーネルを選択した後、ブートメニューで、e とタイプし、ブート・エントリーの編集モードに入ります</p>
+  </li>
+</ol>
+
+<p><img src="img5-3.png" alt="img5-3.png" /></p>
+
+<ol>
+  <li>
+    <p>編集モード画面で、<strong><code class="language-plaintext highlighter-rouge">linuxefi (Oracle Linux 7.xの場合)</code></strong> または <strong><code class="language-plaintext highlighter-rouge">kernel (Oracle LInux 6.xの場合)</code></strong> で始まる行を探し、行の末尾に、以下の文字列を追記します</p>
+
+    <p><code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ init=/bin/bash
+</code></p>
+  </li>
+</ol>
+
+<p><img src="img5-4.png" alt="img5-4.png" /></p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">CTRL + x</code></strong> キーを押し、インスタンスを再度リブートします。ブートが完了すると、メンテナンスモード(bashコンソール)にアクセスできるようになります。</li>
+</ol>
+
+<p><img src="img5-5.png" alt="img5-5.png" /></p>
+
+<p><br /><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="6-メンテナンスモードでシステム設定ファイルを編集する">6. メンテナンス・モードでシステム設定ファイルを編集する</h1>
+
+<p>起動できなくなったインスタンスのシステム設定ファイルを編集するには、以下のステップを実行してSELinuxの設定を変更し、rootパーティションへの書込権限を取得する必要があります。</p>
+
+<ol>
+  <li>メンテナンス・モードのBashシェルにおいて、以下のコマンドを入力してSELinuxのポリシーをロードします。
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ /usr/sbin/load_policy -i
+</code></li>
+  <li>以下のコマンドを実行し、rootパーティションへの書込権限を取得します
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ /bin/mount -o remount, rw /
+</code></li>
+  <li>
+    <p>システム設定ファイルを変更し、再度ブートできるようにします。</p>
+  </li>
+  <li>システム設定ファイルの変更が完了したら、以下のコマンドでリブートをかけます
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ /usr/sbin/reboot -f
+</code>
+<br /><br /></li>
+</ol>
+
+<p><a id="anchor7"></a></p>
+
+<h1 id="7-インスタンスのssh鍵を再登録してアクセスを回復する">7. インスタンスのssh鍵を再登録してアクセスを回復する</h1>
+
+<p>秘密鍵を失うなどの理由でsshでリモートアクセスできなくなった場合に、シリアル・コンソールを利用してssh鍵を再登録することができます。</p>
+
+<ol>
+  <li>
+    <p>メンテナンス・モードのBashシェルにおいて、以下のコマンドを入力してSELinuxのポリシーをロードします。
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ /usr/sbin/load_policy -i
+</code></p>
+  </li>
+  <li>
+    <p>以下のコマンドを実行し、rootパーティションへの書込権限を取得します
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ /bin/mount -o remount, rw /
+</code></p>
+  </li>
+  <li>
+    <p>Bashシェル以下を実行し、ssh鍵を再登録したいユーザーのsshディレクトリに移動します
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ cd ~opc/.ssh
+</code></p>
+  </li>
+  <li>
+    <p>既存の認証済み鍵ファイルをリネームします
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ mv authorized_keys authorized_keys.old
+</code></p>
+  </li>
+  <li>
+    <p>新しいssh公開鍵を追加します
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ echo '&lt;再登録したい公開鍵の文字列&gt;' &gt;&gt; authorized_keys
+</code></p>
+  </li>
+  <li>
+    <p>変更が完了したら、以下のコマンドでリブートをかけます
+ <code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
+ /usrsbin/reboot -f
+</code>
+<br />
+これで、この章の作業は終了です。</p>
+  </li>
+</ol>
+
+<p>Oracle Cloud Infrastructure では、インスタンスへのアクセス方法として、このチュートリアルで紹介したシリアル・コンソールの他に、VNCによるコンソール・アクセスも用意しています。用途に合わせて適切なアクセス方法を利用してみてください。</p>
+
+<p><br /><br /></p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+        
       </section>
 
       <footer class="page__meta">
         
         
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-19T14:47:54+09:00">February 19, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-03T14:22:44+09:00">March 3, 2021</time></p>
 
 
       </footer>
@@ -447,6 +801,21 @@
 <script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
 <script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
 <script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
 
 
 

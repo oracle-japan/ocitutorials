@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/attaching-secondary-ips/img3.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2021-02-19T14:47:54+09:00">
+  <meta property="article:published_time" content="2021-03-03T14:22:44+09:00">
 
 
 
@@ -133,17 +133,13 @@
           <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
         </a>
         <ul class="visible-links"><li class="masthead__menu-item">
-              <a href="/ocitutorials/prerequisites/" title="このチュートリアルを実施するに当たって必要な準備">準備</a>
-            </li><li class="masthead__menu-item">
               <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
             </li><li class="masthead__menu-item">
-              <a href="/ocitutorials/advanced-webapp/">実践編<br>(Webアプリ)</a>
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
             </li><li class="masthead__menu-item">
-              <a href="/ocitutorials/advanced-cloudnative/">実践編<br>(Cloud Native)</a>
-            </li><li class="masthead__menu-item">
-              <a href="/ocitutorials/advanced-enterprise/">実践編<br>(エンタープライズ)</a>
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/about/">このサイトについて</a>
             </li></ul>
@@ -177,7 +173,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/attaching-secondary-ips/img3.png');"
 >
   
     <div class="wrapper">
@@ -317,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="インスタンスにセカンダリIPを付与する">
     <meta itemprop="description" content="OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。">
-    <meta itemprop="datePublished" content="2021-02-19T14:47:54+09:00">
+    <meta itemprop="datePublished" content="2021-03-03T14:22:44+09:00">
     
 
     <div class="page__inner-wrap">
@@ -328,23 +324,377 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#1-はじめに---セカンダリプライベートipアドレスに関する理解">1. はじめに - セカンダリ・プライベートIPアドレスに関する理解</a></li>
+  <li><a href="#2-セカンダリプライベートipアドレスのアサイン">2. セカンダリ・プライベートIPアドレスのアサイン</a></li>
+  <li><a href="#3-os上でセカンダリipアドレスを登録">3. OS上でセカンダリIPアドレスを登録</a></li>
+  <li><a href="#4-他インスタンスからセカンダリプライベートipアドレスにアクセス">4. 他インスタンスからセカンダリ・プライベートIPアドレスにアクセス</a></li>
+  <li><a href="#5-osのipアドレス登録の永続化">5. OSのIPアドレス登録の永続化</a></li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
-        <div><a href="https://community.oracle.com/tech/welcome/discussion/4474282/%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AB%E3%82%BB%E3%82%AB%E3%83%B3%E3%83%80%E3%83%AAip%E3%82%92%E4%BB%98%E4%B8%8E%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89" class="btn btn--primary">リンク</a></div>
+<p>Oracle Cloud Infrastrcuture では、インスタンスを作成すると、初期状態で所属するサブネットの中からプライベートIPアドレスが一つ(=プライマリ・プライベートIP)割り当てられています。(DHCPで自動割当したり、固定IPを割り振ることができます)</p>
+
+<p>もし、インスタンスに複数のIPアドレスをアサインしたいような場合には、セカンダリのプライベートIPアドレスをインスタンスに割り当てて利用することができるようになります。この項ではその手順について学習します。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li><a href="/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること</li>
+  <li><a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> を通じてインスタンスをひとつ作成していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. はじめに - セカンダリ・プライベートIPアドレスに関する理解</a></li>
+  <li><a href="#anchor2">2. セカンダリ・プライベートIPアドレスのアサイン</a></li>
+  <li><a href="#anchor3">3. OS上でセカンダリIPアドレスを登録</a></li>
+  <li><a href="#anchor4">4. 他インスタンスからセカンダリ・プライベートIPアドレスにアクセス</a></li>
+  <li><a href="#anchor5">5. OSのIPアドレス登録の永続化</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-はじめに---セカンダリプライベートipアドレスに関する理解">1. はじめに - セカンダリ・プライベートIPアドレスに関する理解</h1>
+<p>セカンダリ・プライベートIPアドレスは、インスタンスの仮想NICに対してプライマリのIPアドレスとは別のIPアドレスをアサインする機能です。この機能によって、複数のIPアドレスを単一のネットワーク・インタフェースに対して割り振る、いわいる<strong>IPエイリアス機能</strong>が使えるようになります。</p>
+
+<p>ネットワーク・インタフェース(仮想NIC)は同一ですので、セカンダリ・プライベートIPアドレスに割り振ることができるのは、プライマリのプライベート・IPアドレスと同じサブネットに属するIPアドレスであることにご注意ください。</p>
+
+<p>もし別のサブネット、あるいは別のVCNに所属するプライベートIPアドレスを振りたい場合には、セカンダリ・プライベートIPアドレスとは別の機能である 仮想NICの追加 によって実現できます。(この機能についてはまた別のチュートリアルを作成予定です)</p>
+
+<p>インスタンスにセカンダリのプライベートIPアドレスが必要になるケースとしては、以下のようなものが考えられます。</p>
+
+<p><strong>セカンダリ・プライベートIPアドレスのユースケース</strong>
+    1. インスタンスのフェイルオーバー : インスタンスにセカンダリIPアドレスをアサインします。もしそのインスタンスに障害が起きた場合、セカンダリIPアドレスを同じサブネットに存在する別のインスタンスに再アサインすることによって、IPアドレスのフェイルオーバー (いわいるVIPのフェイルオーバーのようなイメージです) を実現することができます。もしそのプライベートIPアドレスにパブリックIPアドレス(NAT IP)がアサインされていた場合には、そのパブリックIPアドレスも一緒にスタンバイ・インスタンスに移動します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2. インスタンス内でサービスやエンドポイントを複数実行する場合 : 例えばインスタンスの中に複数の仮想マシンやDockerコンテナを起動している場合、セカンダリ・プライベートIPアドレスを利用することでVCNのアドレス空間のIPアドレスをそれぞれの仮想マシン/コンテナに割り当てることができます。これにより仮想マシン/コンテナはVCNの他のインスタンスに対して直接接続できるようになります。またインスタンスの中に複数のウェブサイトをホストしている場合に、それぞれ別のIPアドレスを割り当てて処理を受け付けることができます。
+</code></pre></div></div>
+
+<p>セカンダリIPアドレスは以下のような特徴があります。</p>
+
+<ul>
+  <li>セカンダリIPアドレスは、OS問わず、またベアメタル、仮想マシンすべてのシェイプで作成可能</li>
+  <li>1つの仮想NICあたり31個のセカンダリIPアドレスをアサイン可能(プライマリと併せて仮想NICあたり32IP)</li>
+  <li>インスタンス作成後のみアサイン可能(正確には仮想NICが作成されてから)</li>
+  <li>セカンダリIPアドレスのアサインを解除すると、サブネットのIPプールに返還されて再度別インスタンス等にアサインできるようになる</li>
+  <li>インスタンスを終了(Terminate)するとアサインされていたセカンダリIPアドレスはアサイン解除される</li>
+  <li>インスタンスへの帯域については、いくつセカンダリIPアドレスがアサインされていても不変、また特定IPアドレスに対する帯域の割当は不可</li>
+  <li>セカンダリのプライベートIPアドレスには、予約パブリックIPを割り当てることが可能</li>
+  <li>セカンダリIPアドレスは無償で利用可能</li>
+</ul>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-セカンダリプライベートipアドレスのアサイン">2. セカンダリ・プライベートIPアドレスのアサイン</h1>
+<p>【チュートリアル入門編 : その3 - インスタンスを作成する】で作成した仮想マシンインスタンスにセカンダリIPアドレスをアサインしていきます。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから Compute → Instances を選択し、第3章その1で作成したインスタンスの名称のリンクを押します</p>
+  </li>
+  <li>
+    <p>左下の <strong>Resources</strong> メニューから <strong>Attached VNICs</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>インスタンス名称 (Primary VNIC)</strong> というリンクをクリックし、仮想NICの詳細画面にナビゲートします</p>
+  </li>
+  <li>
+    <p>このインスタンスにアタッチされているプライマリ仮想NIC (名前はインスタンス名と同じになります) の詳細情報が表示されます
+<img src="img1.png" alt="img1.png" />
+下部の <strong>IP Addresses</strong> フィールドにある <strong>Assign Private IP Address</strong> ボタンを押します</p>
+  </li>
+  <li>立ち上がってきた <strong>Assign Private IP Address</strong> ウィンドウに以下の項目を入力し、<strong>Assign</strong> ボタンを押します
+    <ul>
+      <li><strong>PRIVATE IP ADDRESS</strong> - アサインするセカンダリ・プライベートIPアドレス(任意)、空欄の場合はDHCPからアサインされます。今回は10.0.1.11と入力しています。</li>
+      <li><strong>UNASSIGN IF ALREADY ASSIGNED TO ANOTHER VNIC</strong> - チェックしない</li>
+      <li><strong>HOSTAME</strong> - セカンダリIPアドレスにアサインするホスト名(任意)、今回は secondaryip と入力しています。</li>
+      <li><strong>PUBLIC IP TYPE</strong> - NO PUBLIC IPを選択
+<img src="img2.png" alt="img2.png" /></li>
+    </ul>
+  </li>
+  <li><strong>IP Addresses</strong> フィールドに作成したセカンダリ・プライベートIPアドレスが追加されて表示されていることを確認します</li>
+</ol>
+
+<p><img src="img3.png" alt="img3.png" />
+必要に応じて、さらにセカンダリ・プライベートIPアドレスを追加することもできます</p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-os上でセカンダリipアドレスを登録">3. OS上でセカンダリIPアドレスを登録</h1>
+
+<p>追加したセカンダリ・プライベートIPアドレスは、そのままではインスタンスの中のOSには認識されていないため、OS上でそのIPアドレスを登録する作業を行う必要があります。</p>
+
+<blockquote>
+
+  <p>ここでは、Oracle Linux や CentOS などの、Red Hat系のLinuxディストリビューションでの手順を説明しています。
+ もしUbuntu など他 Linux ディストリビューションや、Windows を利用している場合は、Oracle Cloud Infrastructure ドキュメントの Private IP Addresses の項<a href="https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/managingIPaddresses.htm">Link</a> の記述を参考に作業を実施してください。</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>任意のターミナルソフトを起動し、先程セカンダリ・プライベートIPを追加したインスタンスにアクセスします
+もし方法が不明な場合は、 <a href="../creating-compute-instance">その3 - インスタンスを作成する</a>の <strong>3. インスタンスへの接続</strong> を参考にしてください</p>
+  </li>
+  <li>
+    <p>ターミナルで以下のコマンドを実行し、現在のIPアドレスの登録状況を確認します</p>
+
+    <blockquote>
+
+      <p>ip addr show</p>
+    </blockquote>
+
+    <p><img src="img4.png" alt="img4.png" /></p>
+
+    <p>先程登録したセカンダリのプライベートIPアドレス(上記例だと 10.0.1.11)がまだOSには登録されていないことがわかります。</p>
+
+    <p>後の作業で必要になるため、ここで以下の項目をメモしておきます。</p>
+    <ul>
+      <li>仮想NICのインタフェース名 - 上記の例では ens3</li>
+      <li>サブネットのサイズ - 上記の例では /24 (24-bit)</li>
+    </ul>
+  </li>
+  <li>
+    <p>Oracle Cloud Infrastructure コンソールの <strong>IP Addresses</strong> フィールドの任意のIPアドレス欄の <strong>・・・</strong>  メニューをマウスオーバーし、<strong>Edit</strong> を選択します
+ <img src="img5.png" alt="img5.png" /></p>
+  </li>
+  <li>
+    <p>立ち上がってきた <strong>Edit</strong> ウィンドウの右上にある <strong>help</strong> リンクをクリックします
+ <img src="img6.png" alt="img6.png" /></p>
+  </li>
+  <li>
+    <p>ブラウザの別ウィンドウ(タブ)に、Oracle Cloud Infrastructure のマニュアルの Private IP Address の項が立ち上がってきます。
+下にスクロールダウンして、<strong>Linux: Details about Secondary IP Addresses</strong> という箇所を探します。</p>
+  </li>
+  <li>
+    <p><strong>Basic Commands (Not Persistent Through a Reboot)</strong> という項目にあるコマンド欄の右上にある <strong>Copy</strong> ボタンをクリックします
+ <img src="img7.png" alt="img7.png" /></p>
+
+    <p>ボタンが <strong>Copied</strong> と変化したら、コマンドがクリップボードにコピーされています</p>
+  </li>
+  <li>
+    <p>任意のテキストエディタを開いて、コピーしたコマンドを貼り付けます
+<img src="img8.png" alt="img8.png" /></p>
+  </li>
+  <li>手元の環境に合わせて、コマンドの以下の項目を変更します。
+    <ul>
+      <li><strong>&lt; address &gt;</strong> - アサインしたセカンダリ・プライベートIPアドレス (上記例だと10.0.1.11)</li>
+      <li><strong>&lt; subnet_prefix_len &gt;</strong> - 先程メモしたサブネットのサイズ (上記例だと 24)</li>
+      <li><strong>&lt; phys_dev &gt;</strong> - セカンダリ・プライベートIPをアサインしたい仮想NIC (上記例だと ens3)</li>
+      <li><strong>&lt; addr_seq_num &gt;</strong> - 任意の番号、既にセカンダリIPをアサインしている場合はそれとの重複不可</li>
+    </ul>
+
+    <p><img src="img9.png" alt="img9.png" />
+ 変更が完了したら、すべてを選択してコピーします。</p>
+  </li>
+  <li>
+    <p>さきほど開いたsshのターミナルに戻り、以下のコマンドを実行します</p>
+
+    <blockquote>
+
+      <p>sudo -s</p>
+    </blockquote>
+  </li>
+  <li>続けて、先程コピーしたコマンドを貼り付けて実行します</li>
+  <li>以下のコマンドを実行し、セカンダリのIPアドレスがアサインされていることを確認します
+    <blockquote>
+
+      <p>ip addr show</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><img src="img10.png" alt="img10.png" /></p>
+
+<p>仮想NICに新しいセカンダリ・プライベートIPアドレス(上記例では10.0.1.11)がアサインされていることを確認します</p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-他インスタンスからセカンダリプライベートipアドレスにアクセス">4. 他インスタンスからセカンダリ・プライベートIPアドレスにアクセス</h1>
+
+<p>新しくもう一つ仮想マシンインスタンスを作成し、そのインスタンスから今アサインしたセカンダリ・プライベートIPアドレスで最初のインスタンスにアクセスできることを確認します。</p>
+
+<ol>
+  <li>
+    <p>先程作業したインスタンスと同じVCNの中に、もうひとつ仮想マシンインスタンスを作成します。
+作業の方法が不明な場合は、 を参考に実施してください。
+ここでは、インスタンスを TutorialVM2 という名前で作成しています。</p>
+  </li>
+  <li>
+    <p>VCNの2つのインスタンスの間で ping が通る設定になっているかを確認します。
+<strong>Oracle Cloud Infrastructureコンソール</strong>から <strong>Network</strong> <strong>→</strong> <strong>Virtual Cloud Networks</strong> にナビゲートし、2つのインスタンスが所属するVCN名のリンクをクリックします。</p>
+  </li>
+  <li>
+    <p>左下の <strong>Resources</strong> メニューから  <strong>Security Lists</strong> をクリックし、**Default Security List for <VCN名>**という名前のセキュリティ・リストの名称のリンクをクリックします。</VCN名></p>
+  </li>
+  <li>
+    <p>Ingress Rules に定義されているルールを確認し、VCNのインスタンスの間のpingが正しく疎通する設定になっていることを確認します。</p>
+
+    <p>例えば、以下の例であれば、VCNの中のインスタンス (10.0.0.0/16)からの ICMP通信をすべて許可設定になっているため、インスタンス間でpingが疎通することがわかります。(3行目の定義)</p>
+
+    <p><img src="img11.png" alt="img11.png" /></p>
+
+    <p>あるいは、以下の例であれば、VCNの中のインスタンス(10.0.0.0/16)からのすべての通信を許可する設定になっており、この場合もやはりインスタンス間でpingが疎通することがわかります。(3行目の定義)</p>
+
+    <p><img src="img12.png" alt="img12.png" /></p>
+
+    <p>もしインスタンス間でのpingが疎通しない設定担っている場合には、Edit All Rules ボタンを押し、上記例を参考にしながら適切にセキュリティ・リストの設定を行ってください。</p>
+
+    <blockquote>
+
+      <p>セキュリティ・リストやその設定方法について不明な方は、<a href="../creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> をご参照ください</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>sshのターミナル・ウィンドウをもう一つ開き、新しく作成した TutorialVM2 インスタンスにsshでアクセスします</p>
+  </li>
+  <li>セキュリティ・リストが正しく設定されていることを確認するために、まずは TurorialVM1 インスタンスのプライマリIPアドレス (上記例だと10.0.1.2)にpingを打って返答が帰ってくることを確認します
+    <blockquote>
+
+      <p>ping -c 3 10.0.1.2</p>
+    </blockquote>
+
+    <p><img src="img13.png" alt="img13.png" /></p>
+
+    <p>もし応答がない場合は、前のステップのセキュリティ・リストの設定がうまくいっていない可能性があるので、もう一度見直してください。</p>
+  </li>
+  <li>次に、TutorialVM1 にアサインしたセカンダリ・プライベートIPアドレス (今回の例では 10.0.1.11)にpingを打ちます。
+    <blockquote>
+
+      <p>ping -c 3 10.0.1.11</p>
+    </blockquote>
+
+    <p><img src="img14.png" alt="img14.png" /></p>
+
+    <p>上記のように応答が返ってきたら、セカンダリ・プライベートIPアドレスのアサインは無事に完了しています。</p>
+  </li>
+  <li>セカンダリ・プライベートIPアドレスには、secondaryip というホスト名も登録していますので、ホスト名を使ったアクセスもできるはずです。 ホスト名宛にもpingを打って、到達することを確認します。
+    <blockquote>
+
+      <p>ping -c 3 secondaryip</p>
+    </blockquote>
+
+    <p><img src="img15.png" alt="img15.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-osのipアドレス登録の永続化">5. OSのIPアドレス登録の永続化</h1>
+
+<p>ステップ3では、ipコマンドを使ってセカンダリIPアドレスをOSに登録しましたが、この方法だとインスタンス(正確にはネットワーク・インタフェース)が再起動すると変更が失われてしまいます。</p>
+
+<p>そこで、ネットワーク・インタフェースの起動スクリプトにセカンダリIPの情報を記述して、インタフェース実行時に毎回セカンダリIPが登録されるようにします。</p>
+
+<blockquote>
+
+  <p>ここでは、Oracle Linux や CentOS などの、Red Hat系のLinuxディストリビューションでの手順を説明しています。
+ もしUbuntu など他 Linux ディストリビューションや、Windows を利用している場合は、Oracle Cloud Infrastructure ドキュメントの Private IP Addresses の項<a href="https://docs.oracle.com/en-us/iaas/Content/Network/Tasks/managingIPaddresses.htm">Link</a> の記述を参考に作業を実施してください。</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>セカンダリ・プライベートIPアドレスを追加したインスタンスにssh接続します</p>
+  </li>
+  <li>vimなどの任意のテキストエディタで、/etc/sysconfig/network-scripts/ifcfg-*<phys_dev>*:*<addr_seq_num>* という名前のファイルを作成します。
+</addr_seq_num></phys_dev>    <phys_dev> および <addr_seq_num> には、ステップ3で入力した値と同じものを使用します。
+    
+ コマンド実行例
+  &gt;
+  &gt; sudo vim /etc/sysconfig/network-scripts/ifcfg-ens3:0
+
+</addr_seq_num></phys_dev>
+  </li>
+  <li>ファイルの中に以下を1行ずつ記述し、保存します。
+    <blockquote>
+
+      <ul>
+        <li>DEVICE=” &lt; phys_dev&gt;:&lt; addr_seq_num&gt;”　　</li>
+        <li>BOOTPROTO=static</li>
+        <li>IPADDR=<セカンダリIPアドレス></セカンダリIPアドレス></li>
+        <li>NETMASK=<サブネットの大きさをネットマスク形式で記述></サブネットの大きさをネットマスク形式で記述></li>
+        <li>ONBOOT=yes</li>
+      </ul>
+    </blockquote>
+
+    <p>記述例</p>
+
+    <p><img src="img16.png" alt="img16.png" /></p>
+  </li>
+  <li>インタフェース再起動後にもセカンダリIPの登録が永続化されることを確認するために、OSをリブートします。
+    <blockquote>
+
+      <p>sudo reboot</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>1-2分程度でOSが再起動してくるので、再度sshで接続します</p>
+  </li>
+  <li>ipコマンドで、セカンダリIPアドレスの登録が永続化されていることを確認します。
+    <blockquote>
+
+      <p>ip addr show</p>
+    </blockquote>
+
+    <p><img src="img17.png" alt="img17.png" /></p>
+
+    <p>登録したセカンダリIPアドレスが表示されていたら、無事に登録の永続化が完了しています。</p>
+  </li>
+  <li>別のインスタンスからpingを打って、無事にセカンダリIPでアクセスできることを確認します。
+    <blockquote>
+
+      <p>ping -c 3 10.0.1.11</p>
+    </blockquote>
+
+    <p><img src="img18.png" alt="img18.png" /></p>
+  </li>
+</ol>
+
+<p>以上で、この項の作業は終了です。</p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+        
       </section>
 
       <footer class="page__meta">
         
         
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a><span class="sep">, </span>
+    
+      
+      
+      <a href="/ocitutorials/tags/#networking" class="page__taxonomy-item" rel="tag">networking</a>
+    
+    </span>
+  </p>
+
+
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-02-19T14:47:54+09:00">February 19, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-03T14:22:44+09:00">March 3, 2021</time></p>
 
 
       </footer>
@@ -446,6 +796,21 @@
 <script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
 <script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
 <script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
 
 
 
