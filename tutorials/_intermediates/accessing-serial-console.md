@@ -12,7 +12,6 @@ header:
 ---
 
 **チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)
-
 <br>
 
 Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフォルトで sshd が起動し外部からsshでアクセスできるようになります。普通はこのsshで大抵の処理を行うことができますが、ごくたまにsshできない環境からアクセスが必要だったり、あるいはできていたsshが突然できなくなってしまったといった場合があります。そんなアクセスできないトラブル発生時に、コンソール・アクセスが有効な手段になる場合があります。
@@ -24,20 +23,20 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 **所要時間 :** 約20分
 
 **前提条件 :**
-
-1. Oracle Cloud Infrastructure で、作成済みのLinuxインスタンスがあること
-2. コンソール・アクセスの認証に使用するSSH鍵ペアを作成済なこと
+   1. Oracle Cloud Infrastructure で、作成済みのLinuxインスタンスがあること
+   2. コンソール・アクセスの認証に使用するSSH鍵ペアを作成済なこと
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
 
-0. [はじめに シリアル・コンソールが有効なケースの整理](#anchor0)
-1. [アクセス元クライアントの準備](#anchor1)
-2. [インスタンスでのコンソール接続許可の作成](#anchor2)
-3. [シリアル・コンソール接続文字列の取得](#anchor3)
-4. [インスタンスのシリアル・コンソールに接続](#anchor4)
-5. [シリアル・コンソールを使ってメンテナンス・モードでブートする](#anchor5)
-6. [メンテナンス・モードでシステム設定ファイルを編集する](#anchor6)
-7. [インスタンスのssh鍵を再登録してアクセスを回復する](#anchor7)
+**目次 :**
+   0. [はじめに シリアル・コンソールが有効なケースの整理](#anchor0)
+   1. [アクセス元クライアントの準備](#anchor1)
+   2. [インスタンスでのコンソール接続許可の作成](#anchor2)
+   3. [シリアル・コンソール接続文字列の取得](#anchor3)
+   4. [インスタンスのシリアル・コンソールに接続](#anchor4)
+   5. [シリアル・コンソールを使ってメンテナンス・モードでブートする](#anchor5)
+   6. [メンテナンス・モードでシステム設定ファイルを編集する](#anchor6)
+   7. [インスタンスのssh鍵を再登録してアクセスを回復する](#anchor7)
 
 <br><br>
 
@@ -62,7 +61,7 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
     - ただし、シリアル・コンソールからのユーザーのログインを許可するために、予めアクセスしたいユーザーに対してパスワードを設定しておく必要があります
 
 
-<br><br>
+<br>
 
 <a id="anchor1"></a>
 
@@ -79,7 +78,7 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 
 >**`PuTTY (plink.exe)`** を利用してもシリアル・コンソールにアクセスは可能ですが、筆者がためしたところGRUBブート画面でのキーアクセスがうまく受け付けてくれないなどの動きをします(原因は不明です)。OpenSSHの方が安定しているようですので、こちらを利用することをお勧めします
 
-1. https://git-scm.com/download/win にアクセスし、GIt for Windows をダウンロードし、インストールを完了します。
+1. [https://git-scm.com/download/win](https://git-scm.com/download/win) にアクセスし、Git for Windows をダウンロードし、インストールを完了します。
 
 2. Git Bash から ssh が実行できることを確認します。Windows 7 の場合は以下の方法で起動します
     - Windows キーを押して **`プログラムとファイルの検索`** ボックスに **`git`** とタイプし、検索されたプログラムから **`Git Bash`** を選択します
@@ -87,20 +86,20 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 3. 立ち上がった Git Bash ウィンドウで、**`ssh`** と入力し、Enterキーを押します
 以下のようなヘルプ出力が返ってきたら、Git Bash のインストールは無事完了しています
 
-![img1-3.png](img1-3.png)
+   ![img1-3.png](img1-3.png)
 
 4. Windowsからエクスプローラーを開き、上のパス入力フィールドに **`%homedrive%%homepath%`** と入力し、**`Enter`** キーを押します
 
-![img1-4.png](img1-4.png)
+   ![img1-4.png](img1-4.png)
 
 5. 「**`.ssh`**」 というフォルダを新しく作成し、予め作成しておいたssh鍵ペアのうち秘密鍵をコピーし、**`id_rsa`** という名前で保存します(拡張子なし)
 
-![img1-5.png](img1-5.png)
+   ![img1-5.png](img1-5.png)
 
 <br>
 以上で、ローカルPC側の準備は完了です。
 
-<br><br>
+<br>
 
 <a id="anchor2"></a>
 
@@ -124,7 +123,7 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 
 5. コンソール上に作成したコンソール接続が表示され、ステータスが ACTIVE になっていることを確認します
 
-![img2-5.png](img2-5.png)
+   ![img2-5.png](img2-5.png)
 
 <br><br>
 
@@ -141,11 +140,11 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 >**`Windows OS`** クライアントからアクセスをする場合でも、**`OpenSSH`** を利用する場合は **`PLATFORM`** に **`WINDOWS`** ではなく **`LINUX / MAC OS`** を選択してください
 >(WINDOWSは PuTTY (plink.exe) 経由でアクセスをする場合にのみ使用します)
 
-![img3-2.png](img3-2.png)
+   ![img3-2.png](img3-2.png)
 
 3. 【任意】コピーした文字列を、任意のテキストエディタに保存します
 
-<br><br>
+<br>
 
 <a id="anchor4"></a>
 
@@ -164,12 +163,12 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 
 5. これでコンソール・アクセスは完了しています。もういちど Enter キーを押すと、ログインプロンプトが表示されます。
 
-![img4-5.png](img4-5.png)
+   ![img4-5.png](img4-5.png)
 
 <br>
 以上で、シリアル・コンソールへのアクセスは完了です。
 
-<br><br>
+<br>
 
 <a id="anchor5"></a>
 
@@ -187,22 +186,22 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 GRUBブートメニューがウィンドウに現れたら、すぐにキーボードの「上(↑)」「下(↓)」キーを入力して、自動起動プロセスを停止します
 ブートしたいカーネルを選択した後、ブートメニューで、e とタイプし、ブート・エントリーの編集モードに入ります
 
-![img5-3.png](img5-3.png)
+   ![img5-3.png](img5-3.png)
 
 4. 編集モード画面で、**`linuxefi (Oracle Linux 7.xの場合)`** または **`kernel (Oracle LInux 6.xの場合)`** で始まる行を探し、行の末尾に、以下の文字列を追記します
 
-    ```sh {.light .copy .scroll}
+    ```sh
     init=/bin/bash
     ```
 
-![img5-4.png](img5-4.png)
+   ![img5-4.png](img5-4.png)
 
 5. **`CTRL + x`** キーを押し、インスタンスを再度リブートします。ブートが完了すると、メンテナンスモード(bashコンソール)にアクセスできるようになります。
 
-![img5-5.png](img5-5.png)
+   ![img5-5.png](img5-5.png)
 
 
-<br><br>
+<br>
 
 <a id="anchor6"></a>
 
@@ -211,20 +210,20 @@ GRUBブートメニューがウィンドウに現れたら、すぐにキーボ�
 起動できなくなったインスタンスのシステム設定ファイルを編集するには、以下のステップを実行してSELinuxの設定を変更し、rootパーティションへの書込権限を取得する必要があります。
 
 1. メンテナンス・モードのBashシェルにおいて、以下のコマンドを入力してSELinuxのポリシーをロードします。
-    ```sh {.light .copy .scroll}
+    ```sh
     /usr/sbin/load_policy -i
     ```
 2. 以下のコマンドを実行し、rootパーティションへの書込権限を取得します
-    ```sh {.light .copy .scroll}
+    ```sh
     /bin/mount -o remount, rw /
     ```
 3. システム設定ファイルを変更し、再度ブートできるようにします。
 
 4. システム設定ファイルの変更が完了したら、以下のコマンドでリブートをかけます
-    ```sh {.light .copy .scroll}
+    ```sh
     /usr/sbin/reboot -f
     ```
-<br><br>
+<br>
 
 <a id="anchor7"></a>
 
@@ -233,32 +232,32 @@ GRUBブートメニューがウィンドウに現れたら、すぐにキーボ�
 秘密鍵を失うなどの理由でsshでリモートアクセスできなくなった場合に、シリアル・コンソールを利用してssh鍵を再登録することができます。
 
 1. メンテナンス・モードのBashシェルにおいて、以下のコマンドを入力してSELinuxのポリシーをロードします。
-    ```sh {.light .copy .scroll}
+    ```sh
     /usr/sbin/load_policy -i
     ```
 
 2. 以下のコマンドを実行し、rootパーティションへの書込権限を取得します
-    ```sh {.light .copy .scroll}
+    ```sh
     /bin/mount -o remount, rw /
     ```
 
 3. Bashシェル以下を実行し、ssh鍵を再登録したいユーザーのsshディレクトリに移動します
-    ```sh {.light .copy .scroll}
+    ```sh
     cd ~opc/.ssh
     ```
 
 4. 既存の認証済み鍵ファイルをリネームします
-    ```sh {.light .copy .scroll}
+    ```sh
     mv authorized_keys authorized_keys.old
     ```
 
 5. 新しいssh公開鍵を追加します
-    ```sh {.light .copy .scroll}
+    ```sh
     echo '<再登録したい公開鍵の文字列>' >> authorized_keys
     ```
 
 6. 変更が完了したら、以下のコマンドでリブートをかけます
-    ```sh {.light .copy .scroll}
+    ```sh
     /usrsbin/reboot -f
     ```
 <br>
@@ -266,8 +265,6 @@ GRUBブートメニューがウィンドウに現れたら、すぐにキーボ�
 
 Oracle Cloud Infrastructure では、インスタンスへのアクセス方法として、このチュートリアルで紹介したシリアル・コンソールの他に、VNCによるコンソール・アクセスも用意しています。用途に合わせて適切なアクセス方法を利用してみてください。
 
-
-
-<br><br>
+<br>
 
 **チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)

@@ -12,9 +12,7 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474257/%E3%83%AD%E3%83%BC%E3%83%89%E3%83%90%E3%83%A9%E3%83%B3%E3%82%B5%E3%83%BC%E3%81%A7web%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%82%92%E8%B2%A0%E8%8D%B7%E5%88%86%E6%95%A3%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89
 ---
 
-
 **チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)
-
 <br>
 
 Oracle Cloud Infrastructure ロードバランサー・サービスを利用することにより、仮想クラウド・ネットワーク(VCN)内の複数のサーバーに対して一つのエントリーポイントからのネットワーク・トラフィックを分散させることができます。ロードバランサー・サービスは、パブリックIPアドレスの分散を行うパブリック・ロードバランサーと、プライベートIPアドレスの分散を行うプライベート・ロードバランサーの2種類が提供されます。双方のタイプのロードバランサーとも、一定の帯域(100MB/s~8000MB/s)の保証と、高可用性がデフォルトで提供されます。またパブリック・ロードバランサーについてはVCN内の2つの異なるサブネットに跨って構成されるため、アベイラビリティ・ドメイン全体の障害に対する耐障害性が提供されます。
@@ -24,19 +22,19 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
 **所要時間 :** 約50分
 
 **前提条件 :**
-
 1. [その2 - クラウドに仮想ネットワーク(VCN)を作る](/ocitutorials/beginners/creating-vcn) を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること
 2. 2048bit 以上のRSA鍵ペアを作成していること
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
 
-1. [仮想クラウド・ネットワークと2つのサブネットの作成](#anchor1)
-2. [2つのインスタンスの作成とWebサーバーの起動](#anchor2)
-3. [ロードバランサー用のサブネットの作成](#anchor3)
-4. [ロードバランサーの構成](#anchor4)
-5. [ロードバランサーへのhttp通信許可の設定](#anchor5)
-6. [ロードバランサーの動作の確認](#anchor6)
-7. [Webサーバーの保護](#anchor7)
+**目次 :**
+   1. [仮想クラウド・ネットワークと2つのサブネットの作成](#anchor1)
+   2. [2つのインスタンスの作成とWebサーバーの起動](#anchor2)
+   3. [ロードバランサー用のサブネットの作成](#anchor3)
+   4. [ロードバランサーの構成](#anchor4)
+   5. [ロードバランサーへのhttp通信許可の設定](#anchor5)
+   6. [ロードバランサーの動作の確認](#anchor6)
+   7. [Webサーバーの保護](#anchor7)
 
 <br><br>
 
@@ -50,51 +48,44 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
 
 この章では、Tokyoリージョン (可用性ドメインが1つの構成) を例として、最終的に下記のような構成を作成します。
 
+   ![img1.png](img1.png)
+
+
 <br>
-
-![img1.png](img1.png)
-
-
-<br><br>
 <a id="anchor2"></a>
 
 # 2.  2つのインスタンスの作成とWebサーバーの起動
 
 [その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance) を参考に、パブリック・サブネットに2つの仮想マシン・インスタンスを作成してください。その際、かならず **`パブリックIPアドレスの割当て`** を選択し、パブリックIPアドレスを割当ててください。
-
 インスタンスが2つ起動したら、以下の手順に従ってそれぞれにWebサーバーを起動します。
 
 1. sshで2つのインスタンスにアクセスします
 インスタンスへのsshでのアクセス方法が不明な場合は、 [その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance) を参考にしてください。
 
-<br>
-
 > 以下の手順は、2つのインスタンスに対してそれぞれsshセッションを起動することで、同時に作業を実行して時間を短縮することができます
-
-<br>
 
 2. Apache HTTPサーバーをインストールします
 
-    ```sh {.light .copy .scroll}
+    ```sh
     sudo yum -y install httpd
     ```
 
 3. TCPの80番(http)および443番(https)ポートをオープンします
 
-    ```sh {.light .copy .scroll}
+    ```sh
     sudo firewall-cmd --permanent --add-port=80/tcp
     sudo firewall-cmd --permanent --add-port=443/tcp
     ```
 
 4. ファイアウォールを再ロードします
 
-    ```sh {.light .copy .scroll}
+    ```sh
     sudo firewall-cmd --reload
     ```
 
 5. Webサーバーを起動します
 
-    ```sh {.light .copy .scroll}
+    ```sh
     sudo systemctl start httpd
     ```
 
@@ -102,22 +93,21 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
 
     1台目のWebサーバーで以下を実行します。
 
-    ```sh {.light .copy .scroll}
+    ```sh 
     sudo sh -c 'echo "Web Server 1 (host:`hostname`)" > /var/www/html/index.html'
     ```
+
     次に2台めのWebサーバーで以下を実行します。
 
-    ```sh {.light .copy .scroll}
+    ```sh
     sudo sh -c 'echo "Web Server 2 (host:`hostname`)" > /var/www/html/index.html'
     ```
 
 ここまでで、下記のような構成になっています。
 
+   ![img2.png](img2.png)
+
 <br>
-
-![img2.png](img2.png)
-
-<br><br>
 <a id="anchor3"></a>
 
 # 3. ロードバランサー用のサブネットの作成
@@ -125,8 +115,6 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
 ロードバランサーは、先ほど作成したWebサーバーと同じサブネットに配置することも可能ですが、別のサブネットに配置することでWebサーバーをプライベート・サブネット上に配置して外部から直接アクセスされることを防ぐことができるようになります。
 
 今回は、Webサーバーが配置されているサブネットとは別のパブリック・サブネットをリージョナル・サブネットとして作成し、そこにロードバランサーを配置していきます。
-
-<br>
 
 ## 3-1. ロードバランサー用のセキュリティ・リストの追加
 
@@ -143,7 +131,7 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
      >
      >この時点ではセキュリティリストにはルールを付与しないでください。後の作業ステップにおいてロードバランサーを作成した際に、適切なルールが自動的に付与されます
 
-![img3-1-3.png](img3-1-3.png)
+   ![img3-1-3.png](img3-1-3.png)
 
 <br>
 
@@ -160,7 +148,7 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
     - **`コンパートメント`** - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します
     - **`ターゲット・インターネット・ゲートウェイ`** - VCNのインターネットゲートウェイを選択
     
-![img3-2-2.png](img3-2-2.png)
+    ![img3-2-2.png](img3-2-2.png)
 
 <br>
 
@@ -179,14 +167,14 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
     - **`DHCPオプション`** - 入力なしのまま
     - **`セキュリティ・リスト`** - ステップ3-1で作成したセキュリティ・リストを選択 (画面では LB_Security_List を選択しています)
 
-![img3-3-2-1.png](img3-3-2-1.png)
+    ![img3-3-2-1.png](img3-3-2-1.png)
 
 ここまでの操作で、下記のような構成になりました。
 <br>
 
-![img3-3-2-2.png](img3-3-2-2.png)
+   ![img3-3-2-2.png](img3-3-2-2.png)
 
-<br><br>
+<br>
 <a id="anchor4"></a>
 
 # 4. ロードバランサーの構成
@@ -245,7 +233,7 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
         <br>
 
 3. ロードバランサーの作成が開始されます。作成はバックエンドで行われ、完了するとステータスが **`AVAILABLE`** になります
-![img4-3.png](img4-3.png)
+   ![img4-3.png](img4-3.png)
 
 <br>
 
@@ -266,7 +254,7 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
         ※赤枠の部分が追加されたルールです
 
 
-<br><br>
+<br>
 <a id="anchor5"></a>
 
 # 5. ロードバランサーへのhttp通信許可の設定
@@ -283,7 +271,7 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
     
 
 
-<br><br>
+<br>
 <a id="anchor6"></a>
 
 # 6. ロードバランサーの動作の確認
@@ -295,25 +283,23 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
 2. ブラウザの新しいタブを開き、IPアドレスを入力して **`ENTER`** キーを押します
 **`Web Server 1`** または **`Web Server 2`** と表示されることを確認します
 
-![img6-2.png](img6-2.png)
+   ![img6-2.png](img6-2.png)
 <br>
 
 3. ブラウザのウィンドウにフォーカスした状態で、F5キーを何度か押します
-すると、ウィンドウがリロードされ、**`Web Server 1`** という表示と **`Web Server 2`** という表示が切り替わることを確認します
+すると、ウィンドウがリロードされ、**`Web Server 1`** という表示と **`Web Server 2`** という表示が切り替わることを確認します。
 うまく切り替わるようであれば、無事にロードバランサーの構成が成功しています
 
-![img6-3.png](img6-3.png)
+   ![img6-3.png](img6-3.png)
+
+
 <br>
-
-
-<br><br>
 <a id="anchor7"></a>
 
 # 7. Webサーバーの保護
 
 最後に、Webサーバーのサブネットに設定されたルート・テーブルとセキュリティ・リストを更新し、Webサーバーを保護します。
 
-<br>
 
 1. コンソールメニューから **`ネットワーキング → 仮想クラウド・ネットワーク`** を選択し、チュートリアルで使用している仮想クラウド・ネットワークの名前のリンクをクリックします
 
@@ -321,7 +307,7 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
 
 3. 下部の **`ルート・ルール`** に表示されている **`CIDR Block: 0.0.0.0/0`** というルールの右端にカーソルをあて、 **`削除`** を押して削除します
 
-![img7-3.png](img7-3.png)
+    ![img7-3.png](img7-3.png)
 <br>
 
 4. 下部の **`ルート・ルール`** に表示されている **`CIDR Block: 0.0.0.0/0`** というルールの右端にカーソルをあて、 **`削除`** を押して削除します
@@ -343,7 +329,7 @@ Oracle Cloud Infrastructure ロードバランサー・サービスを利用す�
 
 以上で、この章の作業は終了です。
 
-<br><br>
+<br>
 
 **チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)
 
