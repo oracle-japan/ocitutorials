@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-03-03T14:22:44+09:00">
+  <meta property="article:published_time" content="2021-03-05T11:27:42+09:00">
 
 
 
@@ -297,7 +297,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その5 - インスタンスのライフサイクルを管理する">
     <meta itemprop="description" content="作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。">
-    <meta itemprop="datePublished" content="2021-03-03T14:22:44+09:00">
+    <meta itemprop="datePublished" content="2021-03-05T11:27:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -332,7 +332,6 @@
 <p><strong>所要時間 :</strong> 約20分</p>
 
 <p><strong>前提条件 :</strong></p>
-
 <ul>
   <li><a href="../creating-compute-instance">その3 - インスタンスを作成する</a> を通じてコンピュート・インスタンスの作成が完了していること</li>
   <li><a href="../attaching-block-volume">その4 - ブロック・ボリュームをインスタンスにアタッチする</a> を通じてブロック・ボリュームのアタッチが完了していること</li>
@@ -340,6 +339,7 @@
 
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
 
+<p><strong>目次 :</strong></p>
 <ol>
   <li><a href="#anchor1">インスタンスの停止、再起動</a></li>
   <li><a href="#anchor2">インスタンスの終了(Terminate)</a></li>
@@ -370,13 +370,13 @@
     <p>アクセスしたユーザーホームディレクトリに、任意のファイルを作成します。
 下記の例では、opcユーザーのホームディレクトリ(/home/opc)に、testfileというファイルを作成しています</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ pwd
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">[</span>opc@testvm1 ~]<span class="nv">$ </span><span class="nb">pwd</span>
  /home/opc
- [opc@testvm1 ~]$ touch testfile
- [opc@testvm1 ~]$ ls -l
+ <span class="o">[</span>opc@testvm1 ~]<span class="nv">$ </span><span class="nb">touch </span>testfile
+ <span class="o">[</span>opc@testvm1 ~]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
  total 0
- -rw-rw-r--. 1 opc opc 0 Feb 16 16:47 testfile
- [opc@testvm1 ~]$
+ <span class="nt">-rw-rw-r--</span><span class="nb">.</span> 1 opc opc 0 Feb 16 16:47 testfile
+ <span class="o">[</span>opc@testvm1 ~]<span class="err">$</span>
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -457,12 +457,12 @@
     </blockquote>
   </li>
   <li>sshログインしたら、ステップ1-1で作成したブート・ボリュームのファイルを確認します
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ ls -l
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">[</span>opc@testvm1 ~]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
  total 0
- -rw-rw-r--. 1 opc opc 0 Feb 16 16:47 testfile
- [opc@testvm1 ~]$ pwd
+ <span class="nt">-rw-rw-r--</span><span class="nb">.</span> 1 opc opc 0 Feb 16 16:47 testfile
+ <span class="o">[</span>opc@testvm1 ~]<span class="nv">$ </span><span class="nb">pwd</span>
  /home/opc
- [opc@testvm1 ~]$
+ <span class="o">[</span>opc@testvm1 ~]<span class="err">$</span>
 </code></pre></div>    </div>
 
     <p>おそらくファイルが正しく表示されるはずです。
@@ -471,19 +471,19 @@
   <li>
     <p>また、以下のコマンドを発行し、アタッチされているボリュームの情報を確認します</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ lsblk
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>lsblk
 </code></pre></div>    </div>
 
     <p>このインスタンスにアタッチされている、ブートボリュームを含むボリュームの一覧が表示されています。</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ lsblk
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">[</span>opc@testvm1 ~]<span class="nv">$ </span>lsblk
  NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
  sdb      8:16   0   50G  0 disk
  sda      8:0    0 46.6G  0 disk
- tqsda2   8:2    0    8G  0 part [SWAP]
+ tqsda2   8:2    0    8G  0 part <span class="o">[</span>SWAP]
  tqsda3   8:3    0 38.4G  0 part /
  mqsda1   8:1    0  200M  0 part /boot/efi
- [opc@testvm1 ~]$
+ <span class="o">[</span>opc@testvm1 ~]<span class="err">$</span>
 </code></pre></div>    </div>
 
     <p>/dev/sdb というボリュームが表示されていることがわかります。これは、 において追加でアタッチし、OSからiSCSIでログインしたボリュームです。
@@ -573,7 +573,7 @@
   </li>
 </ol>
 
-<p><br /><br /></p>
+<p><br /></p>
 
 <p><a id="anchor3"></a></p>
 
@@ -614,7 +614,9 @@
       </li>
       <li><strong><code class="language-plaintext highlighter-rouge">拡張オプションの表示 - ネットワーキング</code></strong>
         <ul>
-          <li><strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> - チェックをつける (デフォルト)
+          <li>
+            <p><strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> - チェックをつける (デフォルト)</p>
+
             <blockquote>
               <p><strong>Note</strong></p>
 
@@ -640,7 +642,7 @@
 <p>以上がブート・ボリュームを利用したインスタンスの再作成の方法です。
 今回は、終了(Termitate)したインスタンスのブートボリュームからインスタンスを作成しましたが、必ずしもインスタンスを終了(Terminate)する必要があるわけではなく、インスタンスの停止→ブートボリュームのデタッチを行ったブートボリュームであれば、元のインスタンスを残したまま新しいインスタンスを作成することも可能です。この方法を使うと、一時的にインスタンスのタイプやシェイプを変更し、作業が終わったらまた元のインスタンスにアタッチして利用するようなことも可能になります。</p>
 
-<p><br /><br /></p>
+<p><br /></p>
 
 <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
@@ -654,7 +656,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-03T14:22:44+09:00">March 3, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-05T11:27:42+09:00">March 5, 2021</time></p>
 
 
       </footer>

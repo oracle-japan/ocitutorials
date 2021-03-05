@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-03-03T14:22:44+09:00">
+  <meta property="article:published_time" content="2021-03-05T11:27:42+09:00">
 
 
 
@@ -313,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ロードバランサーでWebサーバーを負荷分散する">
     <meta itemprop="description" content="OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。">
-    <meta itemprop="datePublished" content="2021-03-03T14:22:44+09:00">
+    <meta itemprop="datePublished" content="2021-03-05T11:27:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -343,9 +343,8 @@
             </nav>
           </aside>
         
-        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
-
-<p><br /></p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a>
+<br /></p>
 
 <p>Oracle Cloud Infrastructure ロードバランサー・サービスを利用することにより、仮想クラウド・ネットワーク(VCN)内の複数のサーバーに対して一つのエントリーポイントからのネットワーク・トラフィックを分散させることができます。ロードバランサー・サービスは、パブリックIPアドレスの分散を行うパブリック・ロードバランサーと、プライベートIPアドレスの分散を行うプライベート・ロードバランサーの2種類が提供されます。双方のタイプのロードバランサーとも、一定の帯域(100MB/s~8000MB/s)の保証と、高可用性がデフォルトで提供されます。またパブリック・ロードバランサーについてはVCN内の2つの異なるサブネットに跨って構成されるため、アベイラビリティ・ドメイン全体の障害に対する耐障害性が提供されます。</p>
 
@@ -354,7 +353,6 @@
 <p><strong>所要時間 :</strong> 約50分</p>
 
 <p><strong>前提条件 :</strong></p>
-
 <ol>
   <li><a href="/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること</li>
   <li>2048bit 以上のRSA鍵ペアを作成していること</li>
@@ -362,6 +360,7 @@
 
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
 
+<p><strong>目次 :</strong></p>
 <ol>
   <li><a href="#anchor1">仮想クラウド・ネットワークと2つのサブネットの作成</a></li>
   <li><a href="#anchor2">2つのインスタンスの作成とWebサーバーの起動</a></li>
@@ -384,84 +383,71 @@
 
 <p>この章では、Tokyoリージョン (可用性ドメインが1つの構成) を例として、最終的に下記のような構成を作成します。</p>
 
-<p><br /></p>
-
 <p><img src="img1.png" alt="img1.png" /></p>
 
-<p><br /><br />
+<p><br />
 <a id="anchor2"></a></p>
 
 <h1 id="2--2つのインスタンスの作成とwebサーバーの起動">2.  2つのインスタンスの作成とWebサーバーの起動</h1>
 
-<p><a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> を参考に、パブリック・サブネットに2つの仮想マシン・インスタンスを作成してください。その際、かならず <strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> を選択し、パブリックIPアドレスを割当ててください。</p>
-
-<p>インスタンスが2つ起動したら、以下の手順に従ってそれぞれにWebサーバーを起動します。</p>
+<p><a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> を参考に、パブリック・サブネットに2つの仮想マシン・インスタンスを作成してください。その際、かならず <strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> を選択し、パブリックIPアドレスを割当ててください。
+インスタンスが2つ起動したら、以下の手順に従ってそれぞれにWebサーバーを起動します。</p>
 
 <ol>
   <li>sshで2つのインスタンスにアクセスします
 インスタンスへのsshでのアクセス方法が不明な場合は、 <a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> を参考にしてください。</li>
 </ol>
 
-<p><br /></p>
-
 <blockquote>
   <p>以下の手順は、2つのインスタンスに対してそれぞれsshセッションを起動することで、同時に作業を実行して時間を短縮することができます</p>
 </blockquote>
-
-<p><br /></p>
 
 <ol>
   <li>
     <p>Apache HTTPサーバーをインストールします</p>
 
-    <p><code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
- sudo yum -y install httpd
-</code></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>httpd
+</code></pre></div>    </div>
   </li>
   <li>
     <p>TCPの80番(http)および443番(https)ポートをオープンします</p>
 
-    <p><code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
- sudo firewall-cmd --permanent --add-port=80/tcp
- sudo firewall-cmd --permanent --add-port=443/tcp
-</code></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-port</span><span class="o">=</span>80/tcp
+ <span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-port</span><span class="o">=</span>443/tcp
+</code></pre></div>    </div>
   </li>
   <li>
     <p>ファイアウォールを再ロードします</p>
 
-    <p><code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
- sudo firewall-cmd --reload
-</code></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>Webサーバーを起動します</p>
 
-    <p><code class="language-plaintext highlighter-rouge">sh {.light .copy .scroll}
- sudo systemctl start httpd
-</code></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>systemctl start httpd
+</code></pre></div>    </div>
   </li>
   <li>
     <p>index.html ファイルを作成し、それぞれにどちらのWebサーバーかを示す文字列を記述します。</p>
 
     <p>1台目のWebサーバーで以下を実行します。</p>
 
-    <p>```sh {.light .copy .scroll}
- sudo sh -c ‘echo “Web Server 1 (host:<code class="language-plaintext highlighter-rouge">hostname</code>)” &gt; /var/www/html/index.html’</p>
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> 次に2台めのWebサーバーで以下を実行します。
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>sh <span class="nt">-c</span> <span class="s1">'echo "Web Server 1 (host:`hostname`)" &gt; /var/www/html/index.html'</span>
+</code></pre></div>    </div>
 
- ```sh {.light .copy .scroll}
- sudo sh -c 'echo "Web Server 2 (host:`hostname`)" &gt; /var/www/html/index.html'
+    <p>次に2台めのWebサーバーで以下を実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>sh <span class="nt">-c</span> <span class="s1">'echo "Web Server 2 (host:`hostname`)" &gt; /var/www/html/index.html'</span>
 </code></pre></div>    </div>
   </li>
 </ol>
 
 <p>ここまでで、下記のような構成になっています。</p>
 
-<p><br /></p>
-
 <p><img src="img2.png" alt="img2.png" /></p>
 
-<p><br /><br />
+<p><br />
 <a id="anchor3"></a></p>
 
 <h1 id="3-ロードバランサー用のサブネットの作成">3. ロードバランサー用のサブネットの作成</h1>
@@ -469,8 +455,6 @@
 <p>ロードバランサーは、先ほど作成したWebサーバーと同じサブネットに配置することも可能ですが、別のサブネットに配置することでWebサーバーをプライベート・サブネット上に配置して外部から直接アクセスされることを防ぐことができるようになります。</p>
 
 <p>今回は、Webサーバーが配置されているサブネットとは別のパブリック・サブネットをリージョナル・サブネットとして作成し、そこにロードバランサーを配置していきます。</p>
-
-<p><br /></p>
 
 <h2 id="3-1-ロードバランサー用のセキュリティリストの追加">3-1. ロードバランサー用のセキュリティ・リストの追加</h2>
 
@@ -495,10 +479,10 @@
         </blockquote>
       </li>
     </ul>
+
+    <p><img src="img3-1-3.png" alt="img3-1-3.png" /></p>
   </li>
 </ol>
-
-<p><img src="img3-1-3.png" alt="img3-1-3.png" /></p>
 
 <p><br /></p>
 
@@ -519,10 +503,10 @@
       <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します</li>
       <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・インターネット・ゲートウェイ</code></strong> - VCNのインターネットゲートウェイを選択</li>
     </ul>
+
+    <p><img src="img3-2-2.png" alt="img3-2-2.png" /></p>
   </li>
 </ol>
-
-<p><img src="img3-2-2.png" alt="img3-2-2.png" /></p>
 
 <p><br /></p>
 
@@ -545,17 +529,17 @@
       <li><strong><code class="language-plaintext highlighter-rouge">DHCPオプション</code></strong> - 入力なしのまま</li>
       <li><strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong> - ステップ3-1で作成したセキュリティ・リストを選択 (画面では LB_Security_List を選択しています)</li>
     </ul>
+
+    <p><img src="img3-3-2-1.png" alt="img3-3-2-1.png" /></p>
   </li>
 </ol>
-
-<p><img src="img3-3-2-1.png" alt="img3-3-2-1.png" /></p>
 
 <p>ここまでの操作で、下記のような構成になりました。
 <br /></p>
 
 <p><img src="img3-3-2-2.png" alt="img3-3-2-2.png" /></p>
 
-<p><br /><br />
+<p><br />
 <a id="anchor4"></a></p>
 
 <h1 id="4-ロードバランサーの構成">4. ロードバランサーの構成</h1>
@@ -660,7 +644,7 @@
   </li>
 </ol>
 
-<p><br /><br />
+<p><br />
 <a id="anchor5"></a></p>
 
 <h1 id="5-ロードバランサーへのhttp通信許可の設定">5. ロードバランサーへのhttp通信許可の設定</h1>
@@ -682,7 +666,7 @@
   </li>
 </ol>
 
-<p><br /><br />
+<p><br />
 <a id="anchor6"></a></p>
 
 <h1 id="6-ロードバランサーの動作の確認">6. ロードバランサーの動作の確認</h1>
@@ -696,29 +680,25 @@
   <li>
     <p>ブラウザの新しいタブを開き、IPアドレスを入力して <strong><code class="language-plaintext highlighter-rouge">ENTER</code></strong> キーを押します
 <strong><code class="language-plaintext highlighter-rouge">Web Server 1</code></strong> または <strong><code class="language-plaintext highlighter-rouge">Web Server 2</code></strong> と表示されることを確認します</p>
+
+    <p><img src="img6-2.png" alt="img6-2.png" />
+<br /></p>
+  </li>
+  <li>
+    <p>ブラウザのウィンドウにフォーカスした状態で、F5キーを何度か押します
+すると、ウィンドウがリロードされ、<strong><code class="language-plaintext highlighter-rouge">Web Server 1</code></strong> という表示と <strong><code class="language-plaintext highlighter-rouge">Web Server 2</code></strong> という表示が切り替わることを確認します。
+うまく切り替わるようであれば、無事にロードバランサーの構成が成功しています</p>
+
+    <p><img src="img6-3.png" alt="img6-3.png" /></p>
   </li>
 </ol>
 
-<p><img src="img6-2.png" alt="img6-2.png" />
-<br /></p>
-
-<ol>
-  <li>ブラウザのウィンドウにフォーカスした状態で、F5キーを何度か押します
-すると、ウィンドウがリロードされ、<strong><code class="language-plaintext highlighter-rouge">Web Server 1</code></strong> という表示と <strong><code class="language-plaintext highlighter-rouge">Web Server 2</code></strong> という表示が切り替わることを確認します
-うまく切り替わるようであれば、無事にロードバランサーの構成が成功しています</li>
-</ol>
-
-<p><img src="img6-3.png" alt="img6-3.png" />
-<br /></p>
-
-<p><br /><br />
+<p><br />
 <a id="anchor7"></a></p>
 
 <h1 id="7-webサーバーの保護">7. Webサーバーの保護</h1>
 
 <p>最後に、Webサーバーのサブネットに設定されたルート・テーブルとセキュリティ・リストを更新し、Webサーバーを保護します。</p>
-
-<p><br /></p>
 
 <ol>
   <li>
@@ -729,13 +709,10 @@
   </li>
   <li>
     <p>下部の <strong><code class="language-plaintext highlighter-rouge">ルート・ルール</code></strong> に表示されている <strong><code class="language-plaintext highlighter-rouge">CIDR Block: 0.0.0.0/0</code></strong> というルールの右端にカーソルをあて、 <strong><code class="language-plaintext highlighter-rouge">削除</code></strong> を押して削除します</p>
-  </li>
-</ol>
 
-<p><img src="img7-3.png" alt="img7-3.png" />
+    <p><img src="img7-3.png" alt="img7-3.png" />
 <br /></p>
-
-<ol>
+  </li>
   <li>
     <p>下部の <strong><code class="language-plaintext highlighter-rouge">ルート・ルール</code></strong> に表示されている <strong><code class="language-plaintext highlighter-rouge">CIDR Block: 0.0.0.0/0</code></strong> というルールの右端にカーソルをあて、 <strong><code class="language-plaintext highlighter-rouge">削除</code></strong> を押して削除します</p>
   </li>
@@ -780,7 +757,7 @@
 
 <p>以上で、この章の作業は終了です。</p>
 
-<p><br /><br /></p>
+<p><br /></p>
 
 <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
@@ -817,7 +794,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-03T14:22:44+09:00">March 3, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-05T11:27:42+09:00">March 5, 2021</time></p>
 
 
       </footer>
