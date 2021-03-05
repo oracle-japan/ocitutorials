@@ -78,7 +78,7 @@ Oracle Cloud Infrastructure でLinuxインスタンスを作成するとデフ�
 
 >**`PuTTY (plink.exe)`** を利用してもシリアル・コンソールにアクセスは可能ですが、筆者がためしたところGRUBブート画面でのキーアクセスがうまく受け付けてくれないなどの動きをします(原因は不明です)。OpenSSHの方が安定しているようですので、こちらを利用することをお勧めします
 
-1. [https://git-scm.com/download/win](https://git-scm.com/download/win) にアクセスし、GIt for Windows をダウンロードし、インストールを完了します。
+1. [https://git-scm.com/download/win](https://git-scm.com/download/win) にアクセスし、Git for Windows をダウンロードし、インストールを完了します。
 
 2. Git Bash から ssh が実行できることを確認します。Windows 7 の場合は以下の方法で起動します
     - Windows キーを押して **`プログラムとファイルの検索`** ボックスに **`git`** とタイプし、検索されたプログラムから **`Git Bash`** を選択します
