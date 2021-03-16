@@ -61,9 +61,9 @@ toc: true
 
 ## 多言語サイト（マルチリンガルサイト）
 
-    + **[Oracle Content and Experience で多言語サイトを作成しよう（前編）](https://community.oracle.com/tech/welcome/discussion/4474321/)** (※外部サイト)
-    + **[Oracle Content and Experience で多言語サイトを作成しよう（後編）](https://community.oracle.com/tech/welcome/discussion/4474319/)** (※外部サイト)  
-        OCE のサイト作成機能を利用し、多言語サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します。前編と後編にの2部構成となっています【所要時間:前編後編あわせて約60分】
++ **[Oracle Content and Experience で多言語サイトを作成しよう（前編）](https://community.oracle.com/tech/welcome/discussion/4474321/)** (※外部サイト)
++ **[Oracle Content and Experience で多言語サイトを作成しよう（後編）](https://community.oracle.com/tech/welcome/discussion/4474319/)** (※外部サイト)  
+    OCE のサイト作成機能を利用し、多言語サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します。前編と後編にの2部構成となっています【所要時間:前編後編あわせて約60分】
 
 
 
