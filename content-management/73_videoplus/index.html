@@ -1,0 +1,813 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Content and Experience のVideo Plus アセットを使ってみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCE の有償オプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Content and Experience のVideo Plus アセットを使ってみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/73_videoplus/">
+
+
+  <meta property="og:description" content="OCE の有償オプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/73_videoplus/video008.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/73_videoplus/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/73_videoplus/video008.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Content and Experience のVideo Plus アセットを使ってみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCE の有償オプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Content and Experience のVideo Plus アセットを使ってみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">実践編(コンテンツ管理)</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/" class="active">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Content and Experience のVideo Plus アセットを使ってみよう">
+    <meta itemprop="description" content="OCE の有償オプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです">
+    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-前提条件の確認">1. 前提条件の確認</a>
+    <ul>
+      <li><a href="#11-バージョン">1.1 バージョン</a></li>
+      <li><a href="#12-インスタンスの作成">1.2 インスタンスの作成</a></li>
+      <li><a href="#13-アセットリポジトリの作成">1.3 アセットリポジトリの作成</a></li>
+      <li><a href="#14-webサイトの作成">1.4 Webサイトの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-拡張ビデオ機能を有効化する">2. 拡張ビデオ機能を有効化する</a>
+    <ul>
+      <li><a href="#21-oceインスタンスの拡張ビデオ機能を有効化する">2.1 OCEインスタンスの拡張ビデオ機能を有効化する</a></li>
+      <li><a href="#22-リポジトリのアセットタイプに-video-plus-を追加する">2.2 リポジトリのアセット・タイプに Video Plus を追加する</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-動画ファイルを-video-plus-アセットとして登録する">3. 動画ファイルを Video Plus アセットとして登録する</a></li>
+  <li><a href="#4-webサイトにvideo-plusアセットを登録する">4. WebサイトにVideo Plusアセットを登録する</a></li>
+  <li><a href="#5-webサイトを公開する">5. Webサイトを公開する</a>
+    <ul>
+      <li><a href="#6-確認">6. 確認</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルは、Oracle Content and Experience (OCE)の有償オプション機能である <strong>拡張ビデオ機能（Video Plus アセット）</strong> を利用する手順について、ステップ・バイ・ステップで紹介します</p>
+
+<h1 id="1-前提条件の確認">1. 前提条件の確認</h1>
+
+<h2 id="11-バージョン">1.1 バージョン</h2>
+
+<p>このハンズオンの内容は、<strong>Oracle Content and Experience 21.1.2</strong> 時点の内容で作成されています。最新の UI とは異なっている場合があります。最新情報については、製品マニュアルをご参照ください</p>
+
+<ul>
+  <li>Oracle Content and Experience
+    <ul>
+      <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/books.html">https://docs.oracle.com/en/cloud/paas/content-cloud/books.html</a></li>
+      <li><a href="https://docs.oracle.com/cloud/help/ja/content-cloud/index.htm">https://docs.oracle.com/cloud/help/ja/content-cloud/index.htm</a>（※日本語翻訳版）</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="12-インスタンスの作成">1.2 インスタンスの作成</h2>
+
+<p>OCEインスタンスが作成済であること。インスタンスの作成方法は、以下のチュートリアルをご確認ください</p>
+
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+</ul>
+
+<h2 id="13-アセットリポジトリの作成">1.3 アセットリポジトリの作成</h2>
+
+<p>アセットリポジトリが作成済であること。リポジトリの作成方法は、以下のチュートリアルをご確認ください</p>
+
+<ul>
+  <li><a href="../41_asset_headless">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li>
+</ul>
+
+<h2 id="14-webサイトの作成">1.4 Webサイトの作成</h2>
+
+<p>アセットを公開できるエンタープライズサイトが作成済であること。サイトの作成方法は、以下のチュートリアルをご確認ください</p>
+
+<ul>
+  <li><a href="../62_webcms">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="2-拡張ビデオ機能を有効化する">2. 拡張ビデオ機能を有効化する</h1>
+
+<p>Video Plusアセットを利用するには、拡張ビデオ機能を有効化する必要があります。拡張ビデオ機能は有償オプション機能であるため、OCEインスタンス作成直後はデフォルトで「無効」となっています。利用する際は、OCEインスタンスのサービス管理者が有効化します。</p>
+
+<p>また、OCEインスタンスとして有効化した後、リポジトリ管理者はリポジトリ単位で拡張ビデオ機能を有効/無効に設定できます</p>
+
+<h2 id="21-oceインスタンスの拡張ビデオ機能を有効化する">2.1 OCEインスタンスの拡張ビデオ機能を有効化する</h2>
+
+<p>OCEインスタンスの拡張ビデオ機能を有効化します</p>
+
+<ol>
+  <li>
+    <p>OCEにサインインします</p>
+  </li>
+  <li>
+    <p><strong>ADMINISTRATION:システム→請求</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>請求オプション</strong> の <strong>ビデオ機能</strong> で <strong>「Video Plus - 拡張ビデオ管理」</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>「適用される条件」</strong> をクリックし、Oracle PaaS and IaaS Universal Credits Service Descriptions の課金条件を確認し、<strong>「Video Plus拡張ビデオ機能の追加コストに同意する」</strong> にチェックを入れます</p>
+
+    <p><img src="video001.jpg" alt="拡張ビデオ機能の有効化" /></p>
+  </li>
+  <li>
+    <p><strong>「保存」</strong> クリックします</p>
+  </li>
+  <li>
+    <p>しばらくすると、拡張ビデオ機能が有効化されます</p>
+  </li>
+</ol>
+
+<h2 id="22-リポジトリのアセットタイプに-video-plus-を追加する">2.2 リポジトリのアセット・タイプに Video Plus を追加する</h2>
+
+<p>リポジトリのアセット・タイプに「Video Plus」を追加します</p>
+
+<blockquote>
+  <p><strong>[Memo]</strong><br />
+OCE 21.1.1 より、アセット・リポジトリでVideo Plusアセットを利用する場合は、リポジトリ毎に事前定義済のデジタル・アセット・タイプの Video-Plus を指定します。</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p><strong>ADMINISTRATION:コンテンツ→リポジトリ</strong> を選択します</p>
+  </li>
+  <li>
+    <p>作成済みの <strong>Sample Content Repository</strong> をクリックします</p>
+
+    <p><img src="video002.jpg" alt="リポジトリの編集" /></p>
+  </li>
+  <li>
+    <p>アセット・タイプで、<strong>「Video-Plus」</strong> を選択します</p>
+
+    <p><img src="video003.jpg" alt="リポジトリの編集" /></p>
+  </li>
+  <li>
+    <p><strong>「保存」</strong> クリックします</p>
+  </li>
+</ol>
+
+<h1 id="3-動画ファイルを-video-plus-アセットとして登録する">3. 動画ファイルを Video Plus アセットとして登録する</h1>
+
+<p>拡張ビデオ機能を有効化したリポジトリにmp4の動画ファイルを登録します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションの <strong>「アセット」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「Sample Content Repository」</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>「追加」→「このコンピュータから追加」</strong> をクリックし、ローカル環境からmp4形式の動画ファイルをアップロードします。今回アップロードした動画ファイルは<a href="sample.mp4">こちら</a>から取得できます</p>
+
+    <p><img src="video004.jpg" alt="動画ファイルの登録" /></p>
+  </li>
+  <li>
+    <p>アセット・タイプに <strong>「Video-Plus」</strong> が選択されていることを確認し、<strong>「完了」</strong> をクリックします</p>
+
+    <p><img src="video005.jpg" alt="動画ファイルの登録" /></p>
+  </li>
+  <li>
+    <p>登録処理が完了するまでしばらく待ちます。登録処理が完了すると、アップロードした動画のサムネイルが表示されます</p>
+
+    <p><img src="video006.jpg" alt="動画ファイルの登録処理中" /></p>
+  </li>
+  <li>
+    <p>登録処理が完了したVideo Plusアセットをクリックします（もしくは、Video Plus アセットを選択し、<strong>「開く」</strong> をクリック）</p>
+
+    <p><img src="video007.jpg" alt="動画ファイルの登録処理中" /></p>
+  </li>
+  <li>
+    <p>動画の画面中央をクリックすると、動画の再生が始まります。動画の操作メニューに、10秒戻る、10秒進む、再生速度の変更などのメニューが表示されることを確認します</p>
+
+    <p><img src="video008.jpg" alt="Video Plusアセットの表示" /></p>
+  </li>
+  <li>
+    <p>「レンディション」でStripやThumbnailが作成されていることを確認します</p>
+
+    <p><img src="video009.jpg" alt="レンディションの確認" /></p>
+  </li>
+  <li>
+    <p><strong>「閉じる」</strong> をクリックします</p>
+  </li>
+</ol>
+
+<h1 id="4-webサイトにvideo-plusアセットを登録する">4. WebサイトにVideo Plusアセットを登録する</h1>
+<p>前の手順で登録したVideo Plusアセットを、作成済みのWebサイト <strong>firstSite</strong> の <strong>Home</strong> ページ上に配置します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションの <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「firstSite」</strong> を選択し、<strong>「開く」</strong> をクリックします</p>
+
+    <p><img src="video010.jpg" alt="サイトの編集" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+この場合、ベース・サイトは公開済（青色の上向き矢印）、かつ、サイトはオンライン状態（緑色の丸アイコン）であることを意味し、サイト訪問者はベース・サイトを閲覧可能な状態であることを意味します</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>サイトの編集画面（Site Builder）が表示されます。<strong>「ベース・サイト▼」</strong> をクリックし、<strong>「新規更新の作成」</strong> を選択します</p>
+
+    <p><img src="video011.jpg" alt="サイトの編集" /></p>
+  </li>
+  <li>
+    <p>「新規更新の名前の指定」に <strong>update</strong> と入力し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="video012.jpg" alt="サイトの編集" /></p>
+  </li>
+  <li>
+    <p>「update」に切り替わっていることを確認します。表示側にあるスイッチを <strong>「編集」</strong> モードに切り替えます</p>
+
+    <p><img src="video013.jpg" alt="サイトの編集" /></p>
+  </li>
+  <li>
+    <p>左サイドバーの <strong>「コンポーネント」→「シード」</strong> をクリックします</p>
+
+    <p><img src="video014.jpg" alt="ビデオコンポーネントの配置" /></p>
+  </li>
+  <li>
+    <p><strong>「ビデオ」</strong> コンポーネントを、Home ページ上にドラッグ&amp;ドロップで配置します。ここでは、 コンテンツ・リストコンポーネントの <strong>左隣</strong> に配置します</p>
+
+    <p><img src="video015.jpg" alt="ビデオコンポーネントの配置" /></p>
+  </li>
+  <li>
+    <p>ビデオコンポーネントの <strong>メニュ→「設定」</strong> をクリックします</p>
+
+    <p><img src="video016.jpg" alt="ビデオコンポーネントの配置" /></p>
+  </li>
+  <li>
+    <p>ビデオ設定のダイアログが表示されます。<strong>「選択」</strong> をクリックします</p>
+
+    <p><img src="video017.jpg" alt="ビデオコンポーネントの配置" /></p>
+  </li>
+  <li>
+    <p>ビデオの選択ダイアログが表示されます。検索ボックスのフィルタ（firstSite Site）を削除します</p>
+
+    <p><img src="video018.jpg" alt="Video Assetsの選択" /></p>
+  </li>
+  <li>
+    <p>アセット・リポジトリから、先ほどアップロードした <strong>sample</strong> を選択し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="video019.jpg" alt="Video Assetsの選択" /></p>
+  </li>
+  <li>
+    <p>必要に応じて、オプションや位置合わせ、幅、間隔を調整し、ビデオ設定を閉じます</p>
+
+    <p><img src="video020.jpg" alt="Video Assetsの選択" /></p>
+  </li>
+  <li>
+    <p>スイッチを編集→ <strong>表示</strong> に切り替え、<strong>「保存」</strong> をクリックします</p>
+
+    <p><img src="video022.jpg" alt="Video Assetsの選択" /></p>
+  </li>
+  <li>
+    <p><strong>「コミット」</strong> をクリックし、更新内容を適用します。確認のダイアログが表示されるので <strong>「コミット」</strong> をクリックします</p>
+
+    <p><img src="video023.jpg" alt="Video Assetsの選択" /></p>
+  </li>
+  <li>
+    <p><strong><em>‘update’はベース・サイトに正常にコミットされました</em></strong> のメッセージが表示されます。サイトの編集画面を閉じます</p>
+  </li>
+</ol>
+
+<h1 id="5-webサイトを公開する">5. Webサイトを公開する</h1>
+
+<p>サイトを公開します。オンライン状態のサイトを「公開」すると、ベース・サイトの内容がサイトにアクセス可能なユーザーすべてに表示されます</p>
+
+<ol>
+  <li>
+    <p>firstSite を選択し、<strong>「再公開」</strong> をクリックします</p>
+
+    <p><img src="video024.jpg" alt="サイトの公開" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+この場合、ベース・サイトはドラフト（灰色のアイコン）であることを意味します。つまり、ベース・サイトは更新済だが、その更新内容はサイト訪問者が閲覧できる場所に公開されていないことになります</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>「サイトと、サイトのページに追加されているすべてのアセットを公開」</strong> を選択し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="video025.jpg" alt="サイトの公開" /></p>
+  </li>
+  <li>
+    <p>サイトの公開検証が行われます。検証チェックに合格したことを確認し、<strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="video026.jpg" alt="サイトの公開" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+firstSite上に配置したVideo Plusアセット（sample.mp4）も検証され、公開準備が完了します。これは、Video Plusアセットがサイトのページ上で利用されているためです</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>確認のダイアログが表示されます。<strong>「確認して実行」</strong> にチェックを入れ、<strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="video027.jpg" alt="サイトの公開" /></p>
+  </li>
+  <li>
+    <p>しばらくすると、サイトのステータスが「公開」に遷移します</p>
+
+    <p><img src="video028.jpg" alt="サイトの公開" /></p>
+  </li>
+</ol>
+
+<h2 id="6-確認">6. 確認</h2>
+
+<p>公開されたオンライン状態のサイトを確認します</p>
+
+<ol>
+  <li>
+    <p>firstSite を選択し、<strong>「プロパティ」</strong> を開きます</p>
+
+    <p><img src="video029.jpg" alt="公開サイトの確認" /></p>
+  </li>
+  <li>
+    <p><strong>「サイトURL」</strong> をコピーし、別ブラウザで開きます</p>
+
+    <p><img src="video030.jpg" alt="公開サイトの確認" /></p>
+  </li>
+  <li>
+    <p>オンライン状態のサイトが表示されます。<strong>sample.mp4</strong> がHomeページ上に表示されていることを確認します</p>
+
+    <p><img src="video031.jpg" alt="公開サイトの確認" /></p>
+  </li>
+  <li>
+    <p>動画をクリックし、再生できることを確認します</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上で、このチュートリアルは終了です。お疲れさまでした</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Content+and+Experience+%E3%81%AEVideo+Plus+%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F73_videoplus%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F73_videoplus%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F73_videoplus%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/72_change_banner/" class="pagination--pager" title="Oracle Content and Experience で作成したサイトのバナー画像を変更しよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

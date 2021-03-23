@@ -1,0 +1,1114 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Content and Experience を Headless CMS として使ってみよう【初級編】 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCE のアセット管理機能を Headless CMS として利用する方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Content and Experience を Headless CMS として使ってみよう【初級編】">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/41_asset_headless/">
+
+
+  <meta property="og:description" content="OCE のアセット管理機能を Headless CMS として利用する方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/41_asset_headless/039.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/41_asset_headless/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/41_asset_headless/039.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Content and Experience を Headless CMS として使ってみよう【初級編】
+
+        
+      </h1>
+      
+        <p class="page__lead">OCE のアセット管理機能を Headless CMS として利用する方法をステップ・バイ・ステップで紹介するチュートリアルです。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">実践編(コンテンツ管理)</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/" class="active">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Content and Experience を Headless CMS として使ってみよう【初級編】">
+    <meta itemprop="description" content="OCE のアセット管理機能を Headless CMS として利用する方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-アセット機能の利用準備">1. アセット機能の利用準備</a>
+    <ul>
+      <li><a href="#11-アセットリポジトリを作成する">1.1 アセット・リポジトリを作成する</a></li>
+      <li><a href="#22-コンテンツタイプを作成する">2.2 コンテンツ・タイプを作成する</a></li>
+      <li><a href="#23-公開チャネルを作成する">2.3 公開チャネルを作成する</a></li>
+      <li><a href="#24-コンテンツタイプと公開チャネルをリポジトリに関連付けする">2.4 コンテンツ・タイプと公開チャネルをリポジトリに関連付けする</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-アセットを登録公開する">3. アセットを登録・公開する</a>
+    <ul>
+      <li><a href="#31-デジタルアセットをリポジトリに追加する">3.1 デジタルアセットをリポジトリに追加する</a></li>
+      <li><a href="#32-コンテンツアイテムを作成する">3.2 コンテンツ・アイテムを作成する</a></li>
+      <li><a href="#33-コンテンツアイテムを公開する">3.3 コンテンツ・アイテムを公開する</a></li>
+    </ul>
+  </li>
+  <li><a href="#4-確認">4. 確認</a>
+    <ul>
+      <li><a href="#41-rest-クライアントから公開されたコンテンツアイテムにアクセスする">4.1 REST クライアントから公開されたコンテンツ・アイテムにアクセスする</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書は Oracle Content and Experience (OCE) のアセット管理機能を Headless CMS として利用する基本的な方法をステップ・バイ・ステップで紹介するチュートリアルです。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2021年1月時点での最新バージョン(21.1.2)を元に作成されてます
+</code></pre></div></div>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+  <li>OCE の利用ユーザーに、少なくとも下記4つのOCEインスタンスのアプリケーション・ロールが付与されていること
+    <ul>
+      <li><strong>CECContentAdministrator</strong></li>
+      <li><strong>CECDeveloperUser</strong></li>
+      <li><strong>CECEnterpriseUser</strong></li>
+      <li><strong>CECRepositoryAdminisrrator</strong></li>
+    </ul>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ユーザーの作成とアプリケーションロールの付与手順は、<a href="../create_idcs_group_user">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a> をご確認ください。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-アセット機能の利用準備">1. アセット機能の利用準備</h1>
+
+<p>OCEのアセット管理機能を利用するための準備作業を行います。アセット・リポジトリ、公開チャネル、コンテンツ・タイプをそれぞれ作成し、関連付けを行います。</p>
+
+<p><img src="001.jpg" alt="画像" /></p>
+
+<h2 id="11-アセットリポジトリを作成する">1.1 アセット・リポジトリを作成する</h2>
+
+<p>アセット・リポジトリ（以降リポジトリ）を作成します。</p>
+
+<p>リポジトリとは <strong>「デジタル・アセット（画像）やコンテンツ・アイテム（ニュースやブログなどの構造化コンテンツ）を保管・管理する器」</strong> です。リポジトリは複数作成することができます。</p>
+
+<ol>
+  <li>
+    <p>OCE インスタンスのアクセスします。OCE インスタンスの URL は以下の通りです。</p>
+
+    <ul>
+      <li><em>https://&lt;OCEInstance&gt;-&lt;CloudAccount&gt;.cec.ocp.oraclecloud.com/documents/home</em>
+        <ul>
+          <li><em>&lt;OCEInstance&gt;</em>  OCEインスタンス名</li>
+          <li><em>&lt;CloudAccount&gt;</em> クラウドアカウント名（テナンシー名）</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>OCE のホーム画面が表示されます。左ナビゲーションのADMINISTRATIONの <strong>「コンテンツ」</strong> をクリックします</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>コンテンツの右隣のメニューで「リポジトリ」が選択されていることを確認し、<strong>「作成」</strong> をクリックします</p>
+
+    <p><img src="003.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>プロパティの「名前」に <strong>Sample Content Repository</strong> を入力します。その他の項目は未選択のまま、画面を下にスクロールします</p>
+
+    <p><img src="004.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>言語の「デフォルト言語」で <strong>日本語(ja)</strong> を選択します。スマート・コンテンツは <strong>「有効」</strong> を選択します（スイッチONの状態）。右上の <strong>「保存」</strong> をクリックします</p>
+
+    <p><img src="005.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+リポジトリ作成時に「スマート・コンテンツ」を有効（スイッチON）にすると、<strong>AI による画像認識技術を活用した画像の自動タグ付け機能</strong> が動作します。これら自動的に付加されたタグは、<strong>スマート・コンテンツ・タグ（スマート・タグ）</strong> として表示されます。なお、付加されたスマート・コンテンツ・タグの追加・変更・削除はできません</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>以上でリポジトリの作成は完了です</p>
+
+    <p><img src="006.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="22-コンテンツタイプを作成する">2.2 コンテンツ・タイプを作成する</h2>
+
+<p>コンテンツ・タイプを作成します。</p>
+
+<p>コンテンツ・タイプは <strong>「コンテンツ・アイテムに含まれる構造を定義するフレームワーク」</strong> です。具体的には、テキスト、大きいテキスト、メディア、日付などのデータフィールドを組み合わせになります。コンテンツ・タイプで定義した構造を利用して、コンテンツ・アイテムを作成します</p>
+
+<p>ここでは、下記の3つのデータ・フィールドを持つ <strong>sampleNewsType</strong> というコンテンツ・タイプを作成します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>フィールドの名前</th>
+      <th>表示名</th>
+      <th>データフィールド</th>
+      <th>単一/複数</th>
+      <th>必須</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>title</td>
+      <td>タイトル</td>
+      <td>テキスト</td>
+      <td>単一</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>image</td>
+      <td>メイン画像</td>
+      <td>メディア</td>
+      <td>単一</td>
+      <td>ー</td>
+    </tr>
+    <tr>
+      <td>body</td>
+      <td>ニュース本文</td>
+      <td>大きいテキスト</td>
+      <td>単一</td>
+      <td>ー</td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <li>
+    <p>コンテンツの右横の「リポジトリ▼」をクリックし、プルダウンメニューから <strong>「アセット・タイプ」</strong> を選択します</p>
+
+    <p><img src="007.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「アセット・タイプ」が選択されていることを確認し、<strong>「作成」</strong> をクリックします</p>
+
+    <p><img src="008.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>アセット・タイプを作成します</p>
+
+    <ol>
+      <li>
+        <p>「アセット・タイプの選択」で、<strong>コンテンツ・アイテム・タイプの作成</strong> を選択します</p>
+      </li>
+      <li>
+        <p>「名前」に <strong>sampleNewsType</strong> と入力し、<strong>「作成」</strong> をクリックします</p>
+
+        <p><img src="009.jpg" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>はじめに、title(タイトル)フィルードを作成します。</p>
+
+    <ol>
+      <li>
+        <p>「データ・フィールド」の <strong>「テキスト」</strong> を、「ここにデータ・フィールドをドロップして定義を追加」にドラッグ&amp;ドロップします</p>
+
+        <p><img src="010.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>「テキスト設定」ダイアログが表示されます。以下の通りに入力し、<strong>「次」</strong> をクリックします</p>
+
+        <ul>
+          <li>このフィールドの表示名の指定:　<strong>タイトル</strong></li>
+          <li>このデータ・フィールドの説明を指定して…:　<strong>ニュースのタイトルを30文字以内で入力します</strong></li>
+          <li>このフィールドの名前の指定:　<strong>title</strong></li>
+          <li>データ・フィールドの指定:　<strong>単一の値</strong></li>
+          <li>
+            <p>このフィールドにはコンテンツが必要です:　<strong>チェックを入れる</strong></p>
+
+            <p><img src="011.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>「②外観」を設定します。以下の通りに設定し、最後に <strong>「OK」</strong> をクリックします</p>
+        <ul>
+          <li>データ・フィールドの外観: <strong>「単一テキスト・ボックス」</strong></li>
+          <li>長さの検証: <strong>チェックを入れる</strong></li>
+          <li>最小: <strong>0</strong></li>
+          <li>
+            <p>最大: <strong>30</strong></p>
+
+            <p><img src="012.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>title(タイトル)フィールドが作成されました。</p>
+
+    <p><img src="013.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>同じ手順を繰り返し、image(メイン画像)を作成します。</p>
+
+    <ol>
+      <li>
+        <p>データ・フィールドの <strong>「メディア」</strong> を、先ほど作成した「タイトル」の下にドラッグ&amp;ドロップします</p>
+
+        <p><img src="014.jpg" alt="画像" /></p>
+      </li>
+      <li>「メディア設定」を入力し、<strong>「次」</strong> をクリックします
+        <ul>
+          <li>このフィールドの表示名の指定:　<strong>メイン画像</strong></li>
+          <li>このデータ・フィールドの説明を指定して…:　<strong>ニュースで利用するメイン画像を登録します</strong></li>
+          <li>このフィールドの名前の指定:　<strong>image</strong></li>
+          <li>データ・フィールドの指定:　<strong>単一の値</strong></li>
+          <li>
+            <p>このフィールドにはコンテンツが必要です:　<strong>チェックを外す</strong></p>
+
+            <p><img src="015.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+      <li>「②外観」を設定し、<strong>「OK」</strong> をクリックします
+        <ul>
+          <li>データ・フィールドの外観:　<strong>メディア・ピッカー</strong></li>
+          <li>メディアの選択:　<strong>イメージのみチェックを入れる</strong></li>
+        </ul>
+
+        <p><img src="016.jpg" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>「メイン画像」が作成されました。最後に「body(ニュース本文)」フィールドを作成します。</p>
+
+    <ol>
+      <li>
+        <p>データ・フィールドの <strong>「大きいテキスト」</strong> を「メイン画像」の下にドラッグ&amp;ドロップします</p>
+
+        <p><img src="017.jpg" alt="画像" /></p>
+      </li>
+      <li>「大きいテキスト設定」を入力し、<strong>「次」</strong> をクリックします
+        <ul>
+          <li>このフィールドの表示名の指定：　<strong>ニュース本文</strong></li>
+          <li>このデータ・フィールドの説明を指定して…：　<strong>ニュースの本文を入力します</strong></li>
+          <li>このフィールドの名前の指定：　<strong>body</strong></li>
+          <li>データ・フィールドの指定：　<strong>単一の値</strong></li>
+          <li>
+            <p>このフィールドにはコンテンツが必要です：　<strong>チェックを外す</strong></p>
+
+            <p><img src="018.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+      <li>「②外観」を設定し、<strong>「OK」</strong> をクリックします
+        <ul>
+          <li>データ・フィールドの外観：　<strong>リッチテキスト・エディタ</strong></li>
+          <li>
+            <p>リッチテキスト・エディタのツールバー・タイプを選択します：　<strong>標準</strong></p>
+
+            <p><img src="019.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>以上で sampleNewsType の作成が完了しました。右上の <strong>「保存」</strong> をクリックします</p>
+
+    <p><img src="020.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「アセット・タイプは正常に保存されました」が表示されることを確認し、右上の <strong>「×」</strong> をクリックします</p>
+
+    <p><img src="021.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>以上で、コンテンツ・タイプの作成は完了です</p>
+  </li>
+</ol>
+
+<h2 id="23-公開チャネルを作成する">2.3 公開チャネルを作成する</h2>
+
+<p>公開チャネルを作成します。</p>
+
+<p>公開チャネルとは <strong>「リポジトリで管理するアセットの公開先」</strong> です。アセット公開時の各種ポリシーを制御します</p>
+
+<ul>
+  <li>アクセス
+    <ul>
+      <li>パブリック（認証不要）</li>
+      <li>セキュア（認証必須）</li>
+    </ul>
+  </li>
+  <li>公開中
+    <ul>
+      <li>承認済みアイテムのみ公開できます（アセットの公開に承認が必要）</li>
+      <li>すべてを公開できます（アセットの公開に承認は不要）</li>
+    </ul>
+  </li>
+  <li>ローカリゼーション
+    <ul>
+      <li>作成済のローカリゼーションポリシーを選択</li>
+      <li>なし</li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li>
+    <p>「コンテンツ」の右隣の <strong>「アセット・タイプ▼」</strong> をクリックし、<strong>「チャネルのパブリッシュ」</strong> を選択します</p>
+  </li>
+  <li>
+    <p>「チャネルのパブリッシュ」が選択されていることを確認し、<strong>「作成」</strong> をクリックします</p>
+
+    <p><img src="022.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「名前」に <strong>sampleChannel</strong> を入力します</p>
+  </li>
+  <li>「公開チャネルのポリシー」を以下の通りに設定し、<strong>「保存」</strong> をクリックします
+    <ul>
+      <li>アクセス:　<strong>パブリック</strong></li>
+      <li>公開中:　<strong>すべてを公開できます</strong></li>
+      <li>
+        <p>ローカリゼーション：　未選択のまま（もしくは「なし」を選択）</p>
+
+        <p><img src="023.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ここで設定した公開チャネルのポリシーは、以下の通りとなります</p>
+
+      <ul>
+        <li><strong>「公開済アセットは認証なしに外部からアクセス可」</strong></li>
+        <li><strong>「アセットの公開は承認不要」</strong></li>
+        <li><strong>「アセット公開時にローカライズ言語の作成不要」</strong></li>
+      </ul>
+    </blockquote>
+  </li>
+  <li>
+    <p>sampleChannel が正しく作成されたことを確認します</p>
+
+    <p><img src="024.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="24-コンテンツタイプと公開チャネルをリポジトリに関連付けする">2.4 コンテンツ・タイプと公開チャネルをリポジトリに関連付けする</h2>
+
+<p>前の手順で作成したコンテンツ・タイプ(sampleNewsType)と公開チャネル(sampleChannel)を、リポジトリ(Sample Content Repository) で利用できるように、リポジトリの設定を変更します。</p>
+
+<ol>
+  <li>
+    <p>「コンテンツ」の右隣のプルダウンメニューで <strong>「リポジトリ」</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>Sample Content Repository</strong> のチェックボックスにチェックをいれ、<strong>「編集」</strong> をクリックします</p>
+
+    <p><img src="025.jpg" alt="画像" /></p>
+
+    <ol>
+      <li>
+        <p>「アセット・タイプ」で <strong>sampleNewsType</strong> と <strong>Image</strong> を選択します</p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+OCE 21.1.1 より、アセット・リポジトリで画像を利用する場合は、事前定義済のデジタル・アセット・タイプの Image を指定します。もしくは、自分で定義したカスタムのデジタル・アセット・タイプを指定します</p>
+        </blockquote>
+      </li>
+      <li>
+        <p>「チャネルのパブリッシュ」で <strong>sampleChannel</strong> を選択し、<strong>「保存」</strong> をクリックします</p>
+
+        <p><img src="026.jpg" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>以上で、リポジトリの設定は完了です</p>
+  </li>
+</ol>
+
+<h1 id="3-アセットを登録公開する">3. アセットを登録・公開する</h1>
+
+<p>前の手順で、OCE のアセット管理機能を利用する準備ができました。ここからは、作成したリポジトリにアセットを登録し、公開チャネルにを介して登録アセットを公開します。</p>
+
+<h2 id="31-デジタルアセットをリポジトリに追加する">3.1 デジタルアセットをリポジトリに追加する</h2>
+
+<p>リポジトリに画像ファイルをアップロードします。OCE のアセット管理では、画像や動画、PDF文書などのファイル形式のコンテンツ（非構造化データ）は、<strong>デジタルアセット</strong> と言います</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションより <strong>「アセット」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>フィルタパネルより、<strong>「Sample Content Repository」</strong> を選択します</p>
+
+    <p><img src="027.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>右上の <strong>「追加」→「このコンピュータから追加」</strong> をクリックします</p>
+
+    <p><img src="028.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ローカルPCから任意の画像ファイルを選択します。（ここでは、下記のコーヒーカップの画像を利用）</p>
+
+    <p><img src="SampleImage1.jpg" alt="SampleImage1.jpg" /></p>
+  </li>
+  <li>
+    <p>「リポジトリに追加」ダイアログが表示されます。先ほど選択した画像ファイルを選択します</p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+アセット・タイプで <strong>Image</strong> が自動選択されます。画像として登録可能なデジタル・アセット・タイプが複数存在する場合、この画面上で選択することができます</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>右パネルで <strong>「チャネル▼」</strong> が選択されていることを確認し、<strong>「追加」</strong> をクリックします</p>
+
+    <p><img src="029.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>sampleChannel</strong> を選択し、<strong>「追加」</strong> をクリックします</p>
+
+    <p><img src="030.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「チャネル」に <strong>sampleChannel</strong> が選択されていることを確認し、<strong>「完了」</strong> をクリックします</p>
+
+    <p><img src="031.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>リポジトリに、登録した画像アセット（デジタルアセット）が表示されることを確認します</p>
+
+    <p><img src="032.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>デジタルアセットを選択し、右クリック→ <strong>「タグとコレクション」</strong> をクリックします</p>
+
+    <p><img src="033.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>右パネルの「スマート・コンテント・タグ」にデジタルアセットに関するタグ（ここでは <code class="language-plaintext highlighter-rouge">コーヒー</code> や <code class="language-plaintext highlighter-rouge">カップ</code> など）が自動付加されていることを確認します</p>
+
+    <p><img src="034.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+リポジトリ作成時に「スマート・コンテンツ」を有効（スイッチON）にすると、<strong>AI による画像認識技術を活用した画像の自動タグ付け機能</strong> が動作します。これら自動的に付加されたタグは、<strong>スマート・コンテンツ・タグ（スマート・タグ）</strong> として表示されます。なお、付加されたスマート・コンテンツ・タグの追加・変更・削除はできません</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h2 id="32-コンテンツアイテムを作成する">3.2 コンテンツ・アイテムを作成する</h2>
+
+<p>コンテンツ・アイテムを作成します。作成時に、先ほど登録したデジタルアセット（画像ファイル）を利用します</p>
+
+<ol>
+  <li>
+    <p>Sample Content Repository を開き、右上の <strong>「作成」→「新規コンテンツ・アイテムを作成します」</strong> をクリックします</p>
+
+    <p><img src="035.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「コンテンツ・アイテムの作成」ダイアログが表示されます。コンテンツ・タイプで <strong>「SampleNewsType」</strong> を選択し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="036.jpg" alt="画像" /></p>
+
+    <ol>
+      <li>「コンテンツ・アイテム・プロパティ」に、下記の通りに入力します
+        <ul>
+          <li>名前:　<strong>sample news content 001</strong></li>
+          <li>説明:　（任意）</li>
+          <li>言語:　<strong>日本語 (ja)</strong></li>
+          <li>翻訳不可:　<strong>チェックしない</strong></li>
+        </ul>
+      </li>
+      <li>
+        <p>右パネルで「チャネル」を選択し、<strong>sampleChannel</strong> を追加します</p>
+
+        <p><img src="037.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>「コンテンツ・アイテム・データ・フィールド」に入力します。ここでは、下記の通りに入力し、<strong>「保存」</strong> をクリックします</p>
+
+        <ul>
+          <li>タイトル:　<strong>001ニュースのタイトル</strong></li>
+          <li>メイン画像:　<strong>先ほど登録したデジタルアセット</strong>（ここではコーヒーカップの画像）を選択</li>
+          <li>
+            <p>ニュース本文:　<strong>001ニュースの本文です</strong></p>
+
+            <p><img src="038.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>「コンテンツ・アイテムは正常に作成されました」を確認します</p>
+
+    <p><img src="039.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>以上で、コンテンツ・アイテムの作成は終了です</p>
+  </li>
+</ol>
+
+<h2 id="33-コンテンツアイテムを公開する">3.3 コンテンツ・アイテムを公開する</h2>
+
+<p>アセット登録時、ステータスは <strong>ドラフト</strong> に設定されます。ドラフト状態では外部からの利用はできません。ここでは、アセットの公開操作を実施し、アセットのステータスを「公開」にします。</p>
+
+<p>また、アセット公開時、OCEは他のアセットの依存関係を自動的に検証し、問題なければ公開が可能となります。ここでは、コンテンツ・アイテム (sample news content 001) 公開時に、メイン画像として選択したデジタルアセットの依存関係も自動的に検証されることを確認します</p>
+
+<ol>
+  <li>
+    <p>フィルタパネルで <strong>「Sample Content Repository」</strong> が選択されていることを確認します</p>
+  </li>
+  <li>
+    <p>コンテンツ・アイテム <strong>sample news content 001</strong> を選択し、<strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="040.jpg" alt="画像" /></p>
+  </li>
+  <li>検証結果が表示されます。以下を確認します
+    <ul>
+      <li>ターゲット対象のチャネルが <strong>sampleChannel</strong> であること</li>
+      <li>コンテンツアイテム <strong>sample news content 001</strong>、および <strong>依存関係にあるデジタルアセット（ここではコーヒーカップの画像ファイル）</strong> が検証されていること</li>
+      <li>問題数が <strong>0件</strong> であること</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="041.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「アセットが公開されました」を確認し、2つのアセットのステータスが「公開済」であることを確認します</p>
+
+    <p><img src="042.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+アセットステータスとアイコンは、こちらのドキュメントをご確認ください</p>
+      <ul>
+        <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/managing-assets/get-know-assets-page.html">Get to Know the Assets Page</a></li>
+      </ul>
+    </blockquote>
+  </li>
+</ol>
+
+<h1 id="4-確認">4. 確認</h1>
+
+<p>REST クライアント（ここでは Web ブラウザ）から公開済アセットにアクセスし、アセットの情報が取得できることを確認します</p>
+
+<h2 id="41-rest-クライアントから公開されたコンテンツアイテムにアクセスする">4.1 REST クライアントから公開されたコンテンツ・アイテムにアクセスする</h2>
+
+<p>公開済のコンテンツ・アイテム sample news content 001 に、<strong>OCE にサインしていない別ブラウザ</strong> からアクセスし、正しく情報を取得できるか？を確認します。</p>
+
+<p>公開済のREST API のエンドポイントは、アセットの <strong>プロパティ→API</strong> の <strong>配信URL</strong> より確認できます</p>
+
+<ol>
+  <li>
+    <p>コンテンツ・アイテム <strong>sample news content 001</strong> を選択し、右クリック→ <strong>「プロパティ」</strong> をクリックします</p>
+
+    <p><img src="043.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「API」</strong> タブをクリックします</p>
+  </li>
+  <li>
+    <p>配信URLの <strong>sampleChannel</strong> の <strong>「URLをクリップボードにコピー」</strong> をクリックします</p>
+
+    <p><img src="044.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>OCE インスタンスにサインインしていない別ブラウザ（ここではFireFox のプライベートウィンドウ）を起動し、クリップボードにコピーしたURLを貼り付け、実行します。</p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+貼り付けたURLは以下の形式です</p>
+
+      <p><em>https://&lt;OCE instance&gt;-&lt;Cloud account&gt;.ocecdn.oraclecloud.com/content/published/api/v1.1/items/&lt;Asset id&gt;?channelToken=&lt;Channel token&gt;</em></p>
+
+      <p><em>&lt;OCE Instance&gt;</em>: OCE インスタンス名<br />
+<em>&lt;Cloud account&gt;</em>: クラウド・アカウント名（テナント名）<br />
+<em>&lt;Asset id&gt;</em>: アセットID。アセットを一意に識別するID。公開済アセット &gt; プロパティ &gt; API より確認可<br />
+<em>&lt;Channel token&gt;</em>: チャネル・トークン。アセットが公開されている公開チャネルを一意に識別するID。ADMINISTRATION:コンテンツ &gt; チャネルのパブリッシュより確認可</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>応答を確認します。sample news content 001 で入力した内容 (title, image, body) が取得されていることを確認します</p>
+
+    <p><img src="045.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+公開済アセットにアクセスする REST API は 下記で公開されています</p>
+
+      <ul>
+        <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/rest-api-content-delivery/index.html">REST API for Content Delivery</a></li>
+      </ul>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Content+and+Experience+%E3%82%92+Headless+CMS+%E3%81%A8%E3%81%97%E3%81%A6%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%E3%80%90%E5%88%9D%E7%B4%9A%E7%B7%A8%E3%80%91%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F41_asset_headless%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F41_asset_headless%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F41_asset_headless%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/12_mobile_application/" class="pagination--pager" title="その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/61_create_site/" class="pagination--pager" title="サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

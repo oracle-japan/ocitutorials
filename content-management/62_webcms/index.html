@@ -1,0 +1,1200 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCE のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/62_webcms/">
+
+
+  <meta property="og:description" content="OCE のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/62_webcms/058.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/62_webcms/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/62_webcms/058.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】
+
+        
+      </h1>
+      
+        <p class="page__lead">OCE のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">実践編(コンテンツ管理)</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/" class="active">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】">
+    <meta itemprop="description" content="OCE のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します">
+    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#0-説明">0. 説明</a></li>
+  <li><a href="#1-サイト作成の準備">1. サイト作成の準備</a>
+    <ul>
+      <li><a href="#11-ローカリゼーションポリシーの作成">1.1 ローカリゼーションポリシーの作成</a></li>
+      <li><a href="#12-コンテンツレイアウトの作成">1.2 コンテンツ・レイアウトの作成</a></li>
+      <li><a href="#13-コンテンツレイアウトとコンテンツタイプを関連付け">1.3 コンテンツ・レイアウトとコンテンツ・タイプを関連付け</a></li>
+    </ul>
+  </li>
+  <li><a href="#2--サイトの作成">2.  サイトの作成</a>
+    <ul>
+      <li><a href="#21-サイトの作成">2.1 サイトの作成</a></li>
+      <li><a href="#22-作成された公開チャネルの確認">2.2 作成された公開チャネルの確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-サイト上で利用するアセットの作成と公開">3. サイト上で利用するアセットの作成と公開</a>
+    <ul>
+      <li><a href="#31-作成済コンテンツアイテムをチャネルに追加公開">3.1 作成済コンテンツ・アイテムをチャネルに追加・公開</a></li>
+    </ul>
+  </li>
+  <li><a href="#4-サイトの編集公開">4. サイトの編集・公開</a>
+    <ul>
+      <li><a href="#41-サイトの編集">4.1 サイトの編集</a>
+        <ul>
+          <li><a href="#411-編集モードへの切り替え">4.1.1 編集モードへの切り替え</a></li>
+          <li><a href="#412-不要ページの削除">4.1.2 不要ページの削除</a></li>
+          <li><a href="#413-homeページの編集">4.1.3 Homeページの編集</a></li>
+          <li><a href="#414-detailページの追加および編集">4.1.4 Detailページの追加および編集</a></li>
+          <li><a href="#415-サイト編集のコミット">4.1.5 サイト編集のコミット</a></li>
+        </ul>
+      </li>
+      <li><a href="#42-サイトの公開">4.2 サイトの公開</a></li>
+      <li><a href="#43-サイトのオンライン化">4.3 サイトのオンライン化</a></li>
+    </ul>
+  </li>
+  <li><a href="#5-公開サイトの確認">5. 公開サイトの確認</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書は Oracle Content and Experience (OCE) のサイト作成機能を利用し、Web サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアル【初級編】です。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2021年1月時点での最新バージョン(21.1.1)を元に作成されてます
+</code></pre></div></div>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+  <li><a href="../41_asset_headless">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a>が完了していること</li>
+  <li>OCE の利用ユーザーに、少なくとも下記4つのOCE インスタンスのアプリケーション・ロールが付与されていること
+    <ul>
+      <li><strong>CECContentAdministrator</strong></li>
+      <li><strong>CECDeveloperUser</strong></li>
+      <li><strong>CECEnterpriseUser</strong></li>
+      <li><strong>CECRepositoryAdminisrrator</strong></li>
+    </ul>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ユーザーの作成とアプリケーションロールの付与手順は、<a href="../create_idcs_group_user">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a> をご確認ください。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="0-説明">0. 説明</h1>
+
+<p>このチュートリアルでは、OCE のサイト機能を利用して Web サイトを作成・公開します。また、Web サイト上で公開するコンテンツは、以前のチュートリアルで作成したリポジトリ(<strong>Sample Content Repository</strong>) とコンテンツ・タイプ (<strong>sampleNewsType</strong>) を利用します。</p>
+
+<p>作成するWebサイトは以下の通りです</p>
+
+<ul>
+  <li>サイト名: <strong>firstSite</strong></li>
+  <li>対応言語: <strong>日本語(ja)</strong></li>
+  <li>
+    <p>サイトデザイン：OCE の事前定義済テンプレート(<strong>StarterTemplate</strong>)を利用</p>
+
+    <p><img src="001.jpg" alt="画像" /></p>
+  </li>
+</ul>
+
+<h1 id="1-サイト作成の準備">1. サイト作成の準備</h1>
+<h2 id="11-ローカリゼーションポリシーの作成">1.1 ローカリゼーションポリシーの作成</h2>
+
+<p>このチュートリアルでは、日本語のWebサイトを作成します。そのため、Web サイト上で公開するコンテンツ・アイテムも日本語が必要です。このように、コンテンツ・アイテムを公開する際に「どの言語が必要なのか？」を定義するのが <strong>ローカライゼーションポリシー</strong> です。</p>
+
+<p>ここでは、<strong>日本語(ja)が必須</strong>、というポリシーを作成します</p>
+
+<ol>
+  <li>
+    <p>OCE インスタンスにアクセスし、左ナビゲーションのADMINISTRATION の <strong>「コンテンツ」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>「コンテンツ」の右隣のメニューから <strong>「ローカライゼーション・ポリシー」</strong> を選択し、<strong>「作成」</strong> をクリックします</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>以下の通りに入力し、<strong>「保存」</strong> をクリックします</p>
+
+    <ul>
+      <li>プロパティ
+        <ul>
+          <li>名前: <strong>firstSite Localization Policy</strong></li>
+          <li>説明: <strong>（任意）</strong></li>
+        </ul>
+      </li>
+      <li>言語
+        <ul>
+          <li>必須: <strong>日本語(ja)</strong></li>
+          <li>デフォルト: <strong>日本語(ja)</strong></li>
+          <li>
+            <p>オプション: <strong>（未選択）</strong></p>
+
+            <p><img src="003.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>firstSite Localization Policy が作成されます</p>
+  </li>
+</ol>
+
+<h2 id="12-コンテンツレイアウトの作成">1.2 コンテンツ・レイアウトの作成</h2>
+
+<p>コンテンツ・レイアウトとは <strong>作成されたコンテンツ・アイテムの表示形式</strong> を定めたものです。具体的には、Webサイトのページにアイテムを配置した時のアイテムのレイアウト(=HTML)を定義したものになります。</p>
+
+<p>ここでは、sampleNewsType から作成されたコンテンツ・アイテムを表示する2つのコンテンツ・レイアウトを作成します。なお、作成される2つのコンテンツ・レイアウトは同じレイアウトになります</p>
+
+<ul>
+  <li><strong>sampleNewsType-overview</strong>: コンテンツ・アイテムを一覧表示（インデックス表示）するレイアウト</li>
+  <li><strong>sampleNewsType-detail</strong>: コンテンツ・アイテムを詳細表示（コンテンツそのものを表示）するレイアウト</li>
+</ul>
+
+<ol>
+  <li>
+    <p>左ナビゲーションの「開発者」をクリックします。続けて、コンポーネントの「すべてのコンポーネントの表示」をクリックします</p>
+
+    <p><img src="004.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+「開発者」メニューを利用するには、ユーザーに <strong>CECDeveloperUser</strong> ロールの付与が必要です</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>右上の <strong>「作成」→「コンテンツ・レイアウトの作成」</strong> をクリックします</p>
+
+    <p><img src="005.jpg" alt="画像" /></p>
+  </li>
+  <li>コンテンツ・レイアウトを作成します。ここでは以下の通りに入力し、「作成」をクリックしま
+    <ul>
+      <li>コンテンツ・タイプの選択: <strong>sampleNewsType</strong></li>
+      <li>表示するフィールドの選択: <strong>概要</strong></li>
+      <li>サイトで使用する時にカスタム設定のサポートを追加します: <strong>チェックしない</strong></li>
+      <li>コンテンツ・レイアウトの名前の指定: <strong>sampleNewsType-overview</strong> (※自動生成されます。変更しません)</li>
+      <li>
+        <p>コンテンツ・レイアウトの説明の指定: <strong>（任意）</strong></p>
+
+        <p><img src="006.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+コンテンツ・レイアウトの名前には、英数字、ハイフン”-“、アンダースコア”_“のみ入力できます</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>同じ手順を繰り返し、<strong>sampleNewsType-detail</strong> を作成します。この時、「表示するフィールドの選択」は <strong>「詳細」</strong> を選択します</p>
+
+    <p><img src="007.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>以上で、コンテンツ・レイアウトの作成は完了です</p>
+
+    <p><img src="008.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="13-コンテンツレイアウトとコンテンツタイプを関連付け">1.3 コンテンツ・レイアウトとコンテンツ・タイプを関連付け</h2>
+
+<p>前の手順で作成したコンテンツ・レイアウトを、sampleNewsType から作成されたコンテンツ・アイテムを表示する際に利用できるようにします</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションのADMINISTRATION の <strong>「コンテンツ」→「アセット・タイプ」</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>sampleNewsType</strong> をクリックします（もしくは、sampleNewsType を選択し、<strong>「編集」</strong> をクリック）</p>
+
+    <p><img src="009.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「コンテンツ・レイアウト」</strong> タブをクリックします</p>
+
+    <p><img src="010.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>デスクトップ・コンテンツ・レイアウト</strong> を下記の通りに設定し、<strong>「保存」</strong> をクリックします</p>
+
+    <ul>
+      <li>コンテンツ・アイテムのデフォルト: <strong>sampleNewsType-detail</strong></li>
+      <li>コンテンツ・リストのデフォルト: <strong>sampleNewsType-overview</strong></li>
+      <li>コンテンツ・リストのデフォルト: <strong>sampleNewsType-overview</strong></li>
+      <li>
+        <p>コンテンツ・プレースホルダーのデフォルト: <strong>sampleNewsType-detail</strong></p>
+
+        <p><img src="011.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<h1 id="2--サイトの作成">2.  サイトの作成</h1>
+
+<p>リポジトリ Sample Content Repository のアセットを利用する Web サイトを作成します。Web サイトは <strong>エンタープライズ・サイト</strong> を作成します。エンタープライズ・サイトは、以下の操作が可能となります</p>
+
+<ul>
+  <li>リポジトリ及びリポジトリ内のコンテンツ・アイテムやデジタル・アセット、ローカリゼーションポリシーなどを Web サイトで利用できる</li>
+  <li>
+    <p>Webサイトを作成すると、このWebサイト向けの「公開チャネル」も同じ名前で自動的に作成されます</p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+エンタープライズ・サイトを作成するには、ユーザーに <strong>CECEnterpriseUser</strong> ロールの付与が必要です。<br />
+サイトガバナンスが有効化されている場合、管理者がテンプレートを公開しないなぎり、サイトメニューからエンタープライズサイトを作成できません。<br />
+代替え手段として、開発者→テンプレートより、テンプレートを選択し「サイトの作成」を実行することができます</p>
+    </blockquote>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+<strong>StarterTemplate</strong> が表示されない場合、OCE インスタンスの管理者に連絡し、テンプレートへのアクセス権設定をお願いしてください。なお、テンプレートのアクセス権は、<strong>「開発者」→「テンプレート」→「StarterTemplate」→「メンバー」</strong> より設定します</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h2 id="21-サイトの作成">2.1 サイトの作成</h2>
+
+<ol>
+  <li>
+    <p>左ナビゲーションの <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>右上の <strong>「作成」</strong> をクリックします</p>
+
+    <p><img src="012.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>テンプレートを選択します。ここでは <strong>StarterTemplate</strong> を選択します</p>
+
+    <p><img src="013.jpg" alt="画像" /></p>
+  </li>
+  <li>「サイトの構成」を以下の通りに入力し、<strong>「次」</strong> をクリックします
+    <ul>
+      <li>タイプ: <strong>エンタープライズ</strong></li>
+      <li>アセット・リポジトリ: <strong>Sample Content Repository</strong></li>
+      <li>ローカリゼーション・ポリシー: <strong>firstSite Localization Policy</strong></li>
+      <li>
+        <p>デフォルト言語: 日本語(ja) （※自動設定されます。変更不可）</p>
+
+        <p><img src="014.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>「詳細の追加」を以下の通りに入力し、<strong>「終了」</strong> をクリックします
+    <ul>
+      <li>名前: <strong>firstSite</strong></li>
+      <li>簡易URL値の接頭辞: firstSite（※自動設定されます。変更しない）</li>
+      <li>
+        <p>説明: （任意）</p>
+
+        <p><img src="015.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>firstSite が正常に作成されることを確認します</p>
+
+    <p><img src="016.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="22-作成された公開チャネルの確認">2.2 作成された公開チャネルの確認</h2>
+
+<p>エンタープライズサイトを作成すると、同じ名前の公開チャネルが自動的に作成されます。ここでは、作成された公開チャネルを確認します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションのADMINISTRATION の <strong>「コンテンツ」→「チャネルのパブリッシュ」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>サイト名と同じ <strong>firstSite</strong> をクリックします</p>
+
+    <p><img src="017.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「公開チャネルのポリシー」が下記の通りであることを確認します。サイト作成時に指定したローカライゼーション・ポリシーが設定されていることを確認し、<strong>「閉じる」</strong> をクリックします</p>
+    <ul>
+      <li>アクセス: <strong>パブリック</strong></li>
+      <li>公開中: <strong>すべてを公開できます</strong></li>
+      <li>
+        <p>ローカリゼーション: <strong>firstSite Localization Policy</strong></p>
+
+        <p><img src="018.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<h1 id="3-サイト上で利用するアセットの作成と公開">3. サイト上で利用するアセットの作成と公開</h1>
+
+<p>前の手順で作成した firstSite サイトで公開するアセットを作成します。ここでは、<strong><a href="../41_asset_headless">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></strong> で登録したコンテンツ・アイテムをそのまま利用します。</p>
+
+<p>具体的には、既存のコンテンツ・アイテムに、前の手順で作成した firstSite の公開チャネル (firstSite) を追加します</p>
+
+<h2 id="31-作成済コンテンツアイテムをチャネルに追加公開">3.1 作成済コンテンツ・アイテムをチャネルに追加・公開</h2>
+
+<ol>
+  <li>
+    <p>左ナビゲーションの <strong>「アセット」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>リポジトリで <strong>Sample Content Repository</strong> が選択されていることを確認し、<strong>sample news content 001</strong> を選択し、<strong>「チャネル」</strong> をクリックします</p>
+
+    <p><img src="019.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>右サイドパネルに「チャネル」が表示されます。<strong>「追加」</strong> をクリックします</p>
+
+    <p><img src="020.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「firstSite」</strong> を選択し、<strong>「追加」</strong> クリックします</p>
+
+    <p><img src="021.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>sample news content 001 のチャネルに firstSite が追加されます。あわせて、sample news content 001 のイメージ画像として設定されているデジタルアセット（ここではコーヒーカップの画像）のチャネルにも、firstSite が自動的に追加されます</p>
+
+    <p><img src="022.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>続けて、sample news content 001 を firstSite チャネルに公開します。<strong>sample news content 001</strong> を選択し、<strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="059.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>検証結果が表示されます。<strong>firstSite</strong> チャネルへの公開検証結果の問題数が0件であることを確認し、右上の <strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="060.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>アセットが公開されます。sample news content 001 →「チャネル」を開き、firstSite チャネルに公開されたことを確認します</p>
+
+    <p><img src="061.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+コンテンツ・アイテム (sample news content 001) 公開時に、メイン画像として選択したデジタルアセットの依存関係も自動的に検証され、問題なければ firstSite チャネルに公開されます</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h1 id="4-サイトの編集公開">4. サイトの編集・公開</h1>
+
+<p>firstSite を編集し、公開します</p>
+
+<h2 id="41-サイトの編集">4.1 サイトの編集</h2>
+
+<h3 id="411-編集モードへの切り替え">4.1.1 編集モードへの切り替え</h3>
+
+<ol>
+  <li>
+    <p>左ナビゲーションの <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>firstSite</strong> を選択し、<strong>「開く」</strong> をクリックします</p>
+
+    <p><img src="023.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトの編集画面（Site Builder）が開きます。<strong>「ベース・サイト▼」</strong> をクリックし、<strong>「新規更新の作成」</strong> を選択します</p>
+
+    <p><img src="024.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「新規更新の名前の指定」に <strong>「update」</strong> と入力し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="025.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「update」に切り替わっていることを確認します。表示側にあるスイッチを <strong>「編集」</strong> モードに切り替えます</p>
+
+    <p><img src="026.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h3 id="412-不要ページの削除">4.1.2 不要ページの削除</h3>
+
+<ol>
+  <li>
+    <p>左サイドバーの <strong>「ページ」</strong> をクリックします。</p>
+
+    <p><img src="027.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>今回のチュートリアルで利用しないページ（Developing TemplatesとPrivate Policy）を削除します。<strong>Developing Template</strong> をクリックします</p>
+
+    <p><img src="028.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「ゴミ箱」</strong> アイコンをクリックします。続けて <strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="029.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>同じ手順で、<strong>Private Policy</strong> ページも削除します</p>
+  </li>
+  <li>
+    <p>最終的なページ階層は、<strong>Home</strong> のみとなります。<strong>「保存」</strong> をクリックします</p>
+
+    <p><img src="030.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h3 id="413-homeページの編集">4.1.3 Homeページの編集</h3>
+
+<ol>
+  <li>
+    <p>Home のページ設定を編集します。<strong>Home</strong> をクリックし、<strong>「ページ設定」</strong> アイコンをクリックします</p>
+
+    <p><img src="031.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「ページURL」の <strong>「オーバーライド」</strong> のスイッチを <strong>ON</strong> に設定します。続けて、「ページ名」を「Home」からカタカナの <strong>「ホーム」</strong> に変更します</p>
+  </li>
+  <li>
+    <p><strong>「閉じる」</strong> をクリックします。</p>
+
+    <p><img src="032.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイト上のナビゲーションが、英語の「Home」から「ホーム」に変更されます。右上の <strong>「保存」</strong> をクリックします。</p>
+
+    <p><img src="033.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>引き続き、ホームページを編集します。ホームページには「タイトル」と「段落」のコンポーネントが配置されており、それぞれ英語のダミーテキストが入力されています</p>
+
+    <p><img src="034.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ホームページの <strong>「タイトル」</strong> と <strong>「段落」</strong> のテキストをそれぞれ日本語で編集します。ここでは以下の通りに編集します</p>
+
+    <ul>
+      <li>タイトル:　<strong><em>ようこそ</em></strong></li>
+      <li>
+        <p>段落:　<strong><em>ここはファーストサイトのホームページです</em></strong></p>
+
+        <p><img src="035.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>段落コンポーネントの下にコンテンツ・アイテムを表示（タイプ=sampleNewsType）を一覧表示します</p>
+
+    <ol>
+      <li>
+        <p>左メニューの <strong>「コンポーネント」</strong> を選択します。続けて、<strong>「シード」</strong> を選択します</p>
+
+        <p><img src="036.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「コンテンツ・リスト」</strong> コンポーネントを、先ほど編集した <strong><em>「ここはサンプルサイトのホームページです」</em></strong> の直下にドラッグ&amp;ドロップで配置します</p>
+
+        <p><img src="037.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>配置した <strong>「コンテンツ・リスト」</strong> コンポーネントをクリックします</p>
+      </li>
+      <li>
+        <p><strong>「コンテンツ・リスト」のメニュー</strong> をクリックし、<strong>「設定」</strong> をクリックします</p>
+
+        <p><img src="038.jpg" alt="画像" /></p>
+      </li>
+      <li>一般タブで、以下の通りに設定します
+        <ul>
+          <li>コンテンツ・タイプ:　<strong>sampleNewsType</strong></li>
+          <li>最大アイテム数:　<strong>2</strong></li>
+          <li>日付:　<strong>すべての日付</strong></li>
+          <li>並替え基準:　<strong>日付(新しいものから)</strong></li>
+        </ul>
+
+        <p><img src="039.jpg" alt="画像" /></p>
+      </li>
+      <li>右上の <strong>「 X 」</strong> で、設定画面を閉じます</li>
+    </ol>
+  </li>
+  <li>
+    <p>コンテンツ・リストコンポーネント内には、<strong>前の手順で公開チャネル firstSite を追加した sample news content 001</strong> が表示されます</p>
+
+    <p><img src="040.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+1.2項で作成したデフォルトのコンテンツ・レイアウト(sampleNewsType-overview)では、画像ファイルは表示されません。画像を表示するには、コンテンツ・レイアウト内の layout.html および render.js の編集が必要です（別のチュートリアルで紹介します）</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>「保存」</strong> をクリックします</p>
+  </li>
+</ol>
+
+<h3 id="414-detailページの追加および編集">4.1.4 Detailページの追加および編集</h3>
+
+<p>コンテンツ・アイテムを詳細表示する Detail ページを作成します</p>
+
+<ol>
+  <li>
+    <p>左サイドバーの <strong>「ページ」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「Home」</strong> をクリックした状態で、<strong>「ページの追加」</strong> をクリックします</p>
+
+    <p><img src="041.jpg" alt="画像" /></p>
+  </li>
+  <li>以下の通りに入力し、<strong>「閉じる」</strong> をクリックします
+    <ul>
+      <li>ページ・タイプ: <strong>Webページ</strong></li>
+      <li>ページ名: <strong>Detail</strong></li>
+      <li>ページURL: <strong>detail.html</strong> (※自動入力されます。変更しない)</li>
+      <li>オーバーライド: <strong>選択しない</strong></li>
+      <li>ページ・レイアウト: <strong>index.html</strong> を選択</li>
+      <li>モバイル・ページ・レイアウト: <strong>「デスクトップと同じ」</strong> を選択</li>
+      <li>ページ・オプション
+        <ul>
+          <li>詳細ページ: <strong>選択する</strong></li>
+          <li>
+            <p>ナビゲーションからページを非表示: <strong>選択</strong> (※自動的に選択されます。変更しない）</p>
+
+            <p><img src="042.jpg" alt="画像" /></p>
+
+            <p><img src="043.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Detail</strong> ページが追加されます</p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ページ・オプションで「詳細ページ」を選択すると、ページ名の先頭に … アイコンが表示されます。これは、Webサイトのナビゲーション上に表示されないページを意味します</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>続けて、コンテンツ・プレースホルダーをスロットに配置します。左サイドバー→ <strong>「コンポーネント」→「シード」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「コンテンツ・プレースホルダー」</strong> を、<strong>slot-contentスロット</strong> の中にドラッグ&amp;ドロップで配置します</p>
+
+    <p><img src="044.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「コンテンツ・プレースホルダー」の <strong>メニュー→「設定」</strong> をクリックします</p>
+
+    <p><img src="045.jpg" alt="画像" /></p>
+  </li>
+  <li>以下の通りに選択し、設定画面を閉じます
+    <ul>
+      <li>コンテンツ・タイプ: <strong>sampleNewsType</strong></li>
+      <li>アイテムの表示: <strong>コンテンツ・プレースホルダーのデフォルト</strong></li>
+      <li>
+        <p>ここのアイテムを表示するページ: <strong>デフォルト</strong></p>
+
+        <p><img src="046.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li><strong>「保存」</strong> をクリックします</li>
+</ol>
+
+<h3 id="415-サイト編集のコミット">4.1.5 サイト編集のコミット</h3>
+
+<ol>
+  <li>
+    <p>スイッチを編集→ <strong>表示</strong> に切り替え、<strong>「保存」</strong> をクリックします</p>
+
+    <p><img src="047.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>更新内容を適用します。<strong>「コミット」</strong> をクリックします。確認のダイアログが表示されるので <strong>「コミット」</strong> をクリックします</p>
+
+    <p><img src="048.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+コミット操作により、更新内容がベース・サイトに反映され、更新（ここでは update）は削除されます</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>サイト編集画面を閉じます</p>
+  </li>
+</ol>
+
+<h2 id="42-サイトの公開">4.2 サイトの公開</h2>
+
+<p>サイトを公開します。オンライン状態のサイトを「公開」すると、ベース・サイトの内容がサイトにアクセス可能なユーザーすべてに表示されます</p>
+
+<ol>
+  <li>
+    <p><strong>firstSite</strong> を選択し、<strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="049.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「サイトと、サイトの公開チャネルのターゲット対象になっているすべてのアセットの公開」</strong> を選択し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="050.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトの公開検証が行われます。検証チェックに合格したことを確認し、<strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="051.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+サイトだけではなく、firstSite 上に配置したアセット（sample news content 001 と SampleImage1.jpg）も検証され、公開準備が完了されています。これは、2つのアセットが <strong>サイトの公開チャネル（firstSiteチャネル）</strong> のターゲット対象となっているためです</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>しばらくすると、サイトのステータスが <strong>「公開」</strong> に遷移します</p>
+
+    <p><img src="052.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="43-サイトのオンライン化">4.3 サイトのオンライン化</h2>
+
+<p>サイトを「オンラインにする」と、完全にレンダリングされたHTMLバージョンのサイトが作成され、Oracle Cloud のホスティング環境にコピーされます。さらに、オンライン・サイトの URL が払い出され、サイト訪問者は Web ブラウザでこの URL にアクセスし、サイトを表示できるようになります</p>
+
+<p>オンライン・サイトの URL は、サイトの「プロパティ」より確認できます。デフォルトのURLの形式は次のとおりです。</p>
+
+<p><code class="language-plaintext highlighter-rouge">https://&lt;OCE instance&gt;-&lt;Cloud account&gt;.ocecdn.oraclecloud.com/site/&lt;Site name&gt;</code></p>
+
+<ol>
+  <li>
+    <p>firstSite を選択し、<strong>「オンラインにする」</strong> をクリックします</p>
+
+    <p><img src="053.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「確認して続行」</strong> にチェックを入れ、<strong>「オンラインにする」</strong> をクリックします</p>
+
+    <p><img src="054.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトがオンライン状態に遷移します</p>
+
+    <p><img src="055.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+サイトを「オフラインに設定」すると、Oracle Cloud のホスティング環境にコピーされたすべてのファイルが削除され、サイト訪問者はサイトを表示できなくなります</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h1 id="5-公開サイトの確認">5. 公開サイトの確認</h1>
+
+<p>公開されたオンライン状態のサイトを確認します</p>
+
+<ol>
+  <li>
+    <p>firstSite を選択し、<strong>「プロパティ」</strong> を開きます</p>
+  </li>
+  <li>
+    <p><strong>「サイトURL」</strong>   をコピーし、別ブラウザで開きます</p>
+
+    <p><img src="056.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>firstSite が表示されます。「001ニュースの本文です」の下の <strong>Details</strong> をクリックします</p>
+
+    <p><img src="057.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>sample news content 001 の詳細表示ページが表示されます。</p>
+
+    <p><img src="058.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+1.2項で作成したデフォルトのコンテンツ・レイアウト(sampleNewsType-detail)では、画像ファイルは表示されません。画像を表示するには、コンテンツ・レイアウト内の layout.html および render.js の編集が必要です（別のチュートリアルで紹介します）</p>
+    </blockquote>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+1.2項で作成した2つのコンテンツ・レイアウト（sampleNewsType-overview と sampleNewsType-detail）は、ほぼ同じレイアウトになります。そのため、Web サイト上での表示イメーは、どちらもほぼ同じになります。それぞれのレイアウトを変更することで、Web サイト上での表示イメージを変えることができます</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>ブラウザの「戻る」をクリックし、firstSite の「ホーム」に戻ります</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Content+and+Experience+%E3%82%92+Web%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E7%AE%A1%E7%90%86%28Web+CMS%29+%E3%81%A8%E3%81%97%E3%81%A6%E5%88%A9%E7%94%A8%E3%81%97%E3%82%88%E3%81%86%E3%80%90%E5%88%9D%E7%B4%9A%E7%B7%A8%E3%80%91%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F62_webcms%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F62_webcms%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F62_webcms%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/61_create_site/" class="pagination--pager" title="サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/71_customize_contentlayout/" class="pagination--pager" title="Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

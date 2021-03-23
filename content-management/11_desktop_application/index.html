@@ -1,0 +1,928 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう） | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="デスクトップ・アプリケーションは、クラウド上の OCE とローカル環境のファイルやフォルダを同期します。ここでは、デスクトップ・アプリケーションのインストールやセットアップの方法、ローカル→クラウド、クラウド→ローカルにファイルやフォルダを同期する方法について習得します">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/11_desktop_application/">
+
+
+  <meta property="og:description" content="デスクトップ・アプリケーションは、クラウド上の OCE とローカル環境のファイルやフォルダを同期します。ここでは、デスクトップ・アプリケーションのインストールやセットアップの方法、ローカル→クラウド、クラウド→ローカルにファイルやフォルダを同期する方法について習得します">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/11_desktop_application/003.webp">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/11_desktop_application/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/11_desktop_application/003.webp');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）
+
+        
+      </h1>
+      
+        <p class="page__lead">デスクトップ・アプリケーションは、クラウド上の OCE とローカル環境のファイルやフォルダを同期します。ここでは、デスクトップ・アプリケーションのインストールやセットアップの方法、ローカル→クラウド、クラウド→ローカルにファイルやフォルダを同期する方法について習得します
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">実践編(コンテンツ管理)</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/" class="active">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）">
+    <meta itemprop="description" content="デスクトップ・アプリケーションは、クラウド上の OCE とローカル環境のファイルやフォルダを同期します。ここでは、デスクトップ・アプリケーションのインストールやセットアップの方法、ローカル→クラウド、クラウド→ローカルにファイルやフォルダを同期する方法について習得します">
+    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-デスクトップアプリケーションのインストールとセットアップ">1. デスクトップ・アプリケーションのインストールとセットアップ</a>
+    <ul>
+      <li><a href="#11-インストーラーのダウンロード">1.1 インストーラーのダウンロード</a></li>
+      <li><a href="#12-インストーラーの実行とセットアップ">1.2 インストーラーの実行とセットアップ</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-ファイルフォルダの同期">2. ファイル・フォルダの同期</a>
+    <ul>
+      <li><a href="#21-ローカルクラウドへの同期">2.1 ローカル→クラウドへの同期</a></li>
+      <li><a href="#22-クラウドローカルへの同期">2.2 クラウド→ローカルへの同期</a></li>
+      <li><a href="#23-同期したファイルフォルダの操作">2.3. 同期したファイル・フォルダの操作</a></li>
+      <li><a href="#24-同期した-office-ファイルの操作">2.4 同期した Office ファイルの操作</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-その他設定">3. その他設定</a>
+    <ul>
+      <li><a href="#31-oce-アカウントの追加">3.1. OCE アカウントの追加</a></li>
+      <li><a href="#32-通知プリファレンスの設定">3.2. 通知プリファレンスの設定</a></li>
+      <li><a href="#33-その他デスクトップアプリケーションのメニュー">3.3 その他デスクトップ・アプリケーションのメニュー</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>目次に戻る</strong>: <a href="../using_file_sharing">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></p>
+
+<p>OCE のデスクトップ・アプリケーションは、クラウド上のファイルやフォルダとローカル環境のファイルやフォルダを同期します。クラウド上で更新されたファイルやフォルダは、自動的にローカル環境に同期されるため、ユーザーは常に最新のファイルやフォルダをローカル環境で利用することができます</p>
+
+<p>また、ユーザーはネットワークに接続していないオフライン状態で、同期されたファイルやフォルダを操作できます。オフライン状態でローカル環境に同期されたファイルを編集・保存した場合、オンライン状態に復旧した時に自動的にクラウド上に反映されます。そのため、ユーザーが意識することなく、常に最新の状態がクラウド上で維持されます。</p>
+
+<p>デスクトップ・アプリケーションの利用には、ローカル環境へのインストールとOCEインスタンスの接続先情報の設定が必要です。デスクトップ・アプリケーションが対応するクライアント環境は、下記ドキュメントよりご確認ください</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/supported-software.html">Supported Software</a></li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2020年5月時点での最新バージョン(20.2.2)を元に作成されてます
+</code></pre></div></div>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+  <li>OCE の利用ユーザーに OCE インスタンスの <strong>CECStandardUser</strong> もしくは <strong>CECEnterpriseUser</strong> アプリケーション・ロールが付与されていること</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-デスクトップアプリケーションのインストールとセットアップ">1. デスクトップ・アプリケーションのインストールとセットアップ</h1>
+<h2 id="11-インストーラーのダウンロード">1.1 インストーラーのダウンロード</h2>
+<p>OCE インスタンスから、デスクトップ・アプリケーションのインストーラーをダウンロードします。</p>
+
+<ol>
+  <li>
+    <p>Web ブラウザを開き、OCE インスタンスにアクセスします</p>
+  </li>
+  <li>
+    <p>右上のユーザーアイコン→ <strong>「アプリケーションのダウンロード」</strong> をクリックします</p>
+
+    <p><img src="001.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「ユーザー名」</strong> と <strong>「サービスURL」</strong> をテキストファイルなどにメモします（インストール完了後のセットアップ作業で利用します）</p>
+  </li>
+  <li>
+    <p>ローカル環境のコンピュータと同じOSを選択し、<strong>「ダウンロード」</strong> をクリックします（ここでは Windows を選択）</p>
+
+    <p><img src="002.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ダウンロードが完了するまで待ちます</p>
+  </li>
+</ol>
+
+<h2 id="12-インストーラーの実行とセットアップ">1.2 インストーラーの実行とセットアップ</h2>
+<p>ダウンロードされたインストーラーを実行します。ここでは、<strong>Windows</strong> 環境へのインストール手順を紹介します</p>
+
+<ol>
+  <li>ダウンロードされたインストーラーを起動します
+    <ol>
+      <li>
+        <p>インストーラーのガイダンスに従い、<strong>「次へ」</strong> をクリックします</p>
+
+        <p><img src="003.webp" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「インストール」</strong> をクリックします</p>
+
+        <p><img src="004.webp" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「Oracle Content for Windowsの起動」</strong> を選択し、<strong>「完了」</strong> をクリックします</p>
+
+        <p><img src="005.webp" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>セットアップ画面が表示されます。前の手順でメモした <strong>「サービスURL」</strong> を入力し、<strong>「次」</strong> をクリックします</p>
+
+    <p><img src="006.webp" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+ここで指定するサービスURLの形式は以下の通りです。<em>/documents</em> はつけません<br />
+<em>https://&lt;OCE_Instance&gt;-&lt;Cloud_Account&gt;.cec.ocp.oraclecloud.com</em></p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>「ユーザーID」</strong> と <strong>「パスワード」</strong> を入力し、<strong>「サイン・イン」</strong> をクリックします</p>
+
+    <p><img src="007.webp" alt="画像" /></p>
+  </li>
+  <li><strong>「アカウントの設定」</strong> 画面が開きます
+    <ol>
+      <li>
+        <p><strong>「同期化するフォルダを選択」</strong> をクリックします</p>
+      </li>
+      <li>
+        <p><strong>「同期化するフォルダを選択」</strong> を選択し、ローカル環境に同期するフォルダを選択します（同期するフォルダを選択しないこともできます）</p>
+
+        <p><img src="008.webp" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+デフォルトは <strong>「すべてのフォルダを自動的に同期化」</strong> が選択されています。この設定の場合、クラウド上の自分が所有者のすべてのフォルダがローカル環境に同期されます</p>
+        </blockquote>
+      </li>
+      <li>
+        <p>必要に応じて <strong>「格納場所の変更」</strong> をクリックし、変更します</p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+格納場所のデフォルトは以下の通りです。また、格納場所として指定できるのはローカルドライブのみです<br />
+[Windows] C:¥Users¥USER_NAME¥Oracle Content-アカウント<br />
+[Mac] /Users/USER_NAME/Oracle Content-アカウント</p>
+        </blockquote>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>最後に <strong>「完了」</strong> をクリックします</p>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+デスクトップ・アプリケーションは、コンピュータの電源を入れると自動的に起動されるように構成されます。この構成はプリファレンスより変更できます</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h1 id="2-ファイルフォルダの同期">2. ファイル・フォルダの同期</h1>
+<h2 id="21-ローカルクラウドへの同期">2.1 ローカル→クラウドへの同期</h2>
+
+<p>ローカル環境の複数フォルダをOCEアカウントの同期フォルダ領域にコピーすると、自動的にクラウド上に反映されることを確認します</p>
+
+<ol>
+  <li>
+    <p>通知領域（もしくはタスクバー）の <strong>「OCE アイコン」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「Oracle Content フォルダに移動」</strong> をクリックします。複数アカウントが登録されている場合は、OCEアカウントも選択します</p>
+
+    <p><img src="009.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ローカル環境のフォルダを、アップロード先のフォルダにコピーします。ここでは、<strong>「ローカルフォルダ1」</strong> と <strong>「ローカルフォルダ2」</strong> を、snakaoce001 アカウントの直下にコピーします</p>
+
+    <p><img src="010.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>コピーしたフォルダおよびその配下の全てのフォルダ・ファイルが、自動的にクラウド上に同期されます。<br />
+Web ブラウザを開き、OCE インスタンスにアクセスし、アップロード先のフォルダを開きます。クラウド上にフォルダが反映されていることを確認します</p>
+
+    <p><img src="011.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>Web ブラウザで <strong>「ローカルフォルダ1」</strong> を開きます。中身はファイルが1件も登録されていません</p>
+
+    <p><img src="012.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ローカル環境で <strong>「ローカルフォルダ1」</strong> を開き、ファイルを1つ登録します。<strong>「進行中」</strong> のアイコンが表示され、その後 <strong>「完了」</strong> のアイコンに切り替わります</p>
+
+    <p><img src="013.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>Web ブラウザに戻り、<strong>「ローカルフォルダ1」</strong> をもう一度開きます（もしくはブラウザをリロードします）。ファイルが1件登録されていることを確認します</p>
+
+    <p><img src="014.webp" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="22-クラウドローカルへの同期">2.2 クラウド→ローカルへの同期</h2>
+
+<p>クラウド上にあるフォルダを、ローカル環境に同期します。ここでは、<strong>自分が所有者のフォルダ</strong> をローカル環境に同期する手順について紹介します</p>
+
+<ol>
+  <li>
+    <p>通知領域（もしくはタスクバー）の <strong>「OCE アイコン」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「同期化するフォルダを選択します」</strong> をクリックします</p>
+
+    <p><img src="015.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>（複数アカウントを登録している場合）<strong>アカウント</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>「自分で所有」</strong> タブを選択します</p>
+  </li>
+  <li>
+    <p>ローカルに同期するフォルダを選択し、<strong>「完了」</strong> をクリックします（ここでは「00_デモ」を選択）</p>
+
+    <p><img src="016.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>指定したフォルダ（ここでは「00_デモ」）およびその配下のフォルダ・ファイルのすべてが、ローカル環境に同期されます</p>
+
+    <p><img src="017.webp" alt="画像" /></p>
+  </li>
+</ol>
+
+<ul>
+  <li>「同期化するフォルダ」のタブ説明
+    <ul>
+      <li><strong>自分で所有:</strong> 自分が所有者のフォルダ（＝自分が作成したフォルダ、メンバー共有の有無は関係なし）</li>
+      <li><strong>自分と共有:</strong> 他ユーザーから共有されたフォルダ</li>
+      <li>
+        <p><strong>サイト・アセット:</strong> Web サイトで利用するテンプレート、テーマ、コンポーネントが保管されるフォルダ</p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+<strong>「自分と共有」タブ</strong> と <strong>「サイト・アセット」タブ</strong> で表示されるフォルダは、<strong>ダウンロード実行者</strong> 以上のアクセス権限が必要です。アクセス権限が参照者のフォルダは表示されません</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="23-同期したファイルフォルダの操作">2.3. 同期したファイル・フォルダの操作</h2>
+
+<p>ローカル環境に同期したファイル・フォルダは、通常のフォルダやファイルと同じ操作ができます。さらに、デスクトップ・アプリケーションのインストールにより、OCE 専用のメニューが追加されます。</p>
+
+<p>ここでは、OCE 専用メニューについて説明します</p>
+
+<p><img src="018.webp" alt="画像" /></p>
+
+<ul>
+  <li>
+    <p>OCE専用メニューの説明</p>
+
+    <ul>
+      <li>
+        <p><strong>Oracle Content</strong></p>
+
+        <ul>
+          <li>
+            <p><strong>会話:</strong> ファイル紐付けの会話をブラウザで表示</p>
+          </li>
+          <li>
+            <p><strong>プロパティ:</strong> ファイルのプロパティをダイアログ表示</p>
+          </li>
+          <li>
+            <p><strong>WebのOracle Contentでフォルダを開く:</strong> フォルダをWebブラウザで表示</p>
+          </li>
+          <li>
+            <p><strong>同期化の問題:</strong> ファイルやフォルダの同期処理に問題があった場合のみ表示</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>リンクのコピー:</strong> パブリックリンクを生成し、クリップボードにコピーします。作成されるパブリックリンクは、サービス管理者が設定したデフォルト条件となります</p>
+      </li>
+      <li>
+        <p><strong>リンクの共有:</strong> リンクの共有ダイアログを表示し、パブリックリンクの作成、もしくはメンバーリンク（オンライン・アクセス or ダイレクト・アクセスの取得、を実行します</p>
+      </li>
+      <li>
+        <p><strong>予約/予約のクリア:</strong> ファイルを予約/予約解除します</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="24-同期した-office-ファイルの操作">2.4 同期した Office ファイルの操作</h2>
+
+<p>デスクトップ・アプリケーションがインストールされた <strong>Windows OS</strong> のクライアント環境で、クラウドから同期された Office ファイルを開くと、OCE専用の円形メニュー（Radial Menu）が表示されます。</p>
+
+<p>この円形メニューより、以下の OCE が提供する機能にすばやくアクセスできます</p>
+
+<ul>
+  <li>
+    <p>ファイルのプロパティ表示</p>
+  </li>
+  <li>
+    <p>予約/予約解除</p>
+  </li>
+  <li>
+    <p>ファイルの共有リンクの操作（パブリックリンクなど）</p>
+  </li>
+  <li>
+    <p>ファイルに関連付けられている会話の表示</p>
+  </li>
+  <li>
+    <p>またはWebブラウザでのOracle Contentのファイルのオープン</p>
+  </li>
+  <li>
+    <p>中央のアイコンで同期ステータス（同期完了済、同期進行中）も確認できます</p>
+  </li>
+</ul>
+
+<p><img src="019.webp" alt="画像" /></p>
+
+<h1 id="3-その他設定">3. その他設定</h1>
+<h2 id="31-oce-アカウントの追加">3.1. OCE アカウントの追加</h2>
+
+<p>デスクトップ・アプリケーションには、複数のOCEアカウントを設定できます。登録可能なOCEアカウントは <strong>最大5個</strong> です</p>
+
+<ol>
+  <li>
+    <p>通知領域（もしくはタスクバー）の <strong>「OCE アイコン」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>メニューアイコン</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「プリファレンス」</strong> をクリックします</p>
+
+    <p><img src="020.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「追加」</strong> をクリックします</p>
+
+    <p><img src="021.webp" alt="画像" /></p>
+
+    <ol>
+      <li>初回セットアップ時と同じ手順で、<strong>サーバーURL、ユーザーID、パスワード</strong> を入力します</li>
+      <li><strong>「同期化するフォルダを選択」</strong> をクリックし、ローカル環境に同期化するクラウド上のフォルダを選択します</li>
+      <li><strong>「アカウント名」</strong> を入力します。必要に応じて、格納場所を選択します</li>
+      <li>
+        <p><strong>「完了」</strong> をクリクします</p>
+
+        <p><img src="022.webp" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>新しいOCEアカウントが作成されます</p>
+
+    <p><img src="023.webp" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="32-通知プリファレンスの設定">3.2. 通知プリファレンスの設定</h2>
+
+<p>ローカル環境への通知のON/OFFおよび通知の条件をカスタマイズできます</p>
+
+<ol>
+  <li>
+    <p>通知領域（もしくはタスクバー）の <strong>OCE アイコン→メニューアイコン→プリファレンス</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「アクティビティ通知の受信」</strong> を選択し、<strong>「通知の選択」</strong> をクリックします</p>
+
+    <p><img src="024.webp" alt="画像" /></p>
+  </li>
+  <li>
+    <p>通知プリファレンスが表示されます。通知設定をカスタマイズし、<strong>「完了」</strong> をクリックします</p>
+
+    <p><img src="025.webp" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+「アクティビティ通知の受信」の選択を外すと、デスクトップへの通知すべてが OFF になります</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h2 id="33-その他デスクトップアプリケーションのメニュー">3.3 その他デスクトップ・アプリケーションのメニュー</h2>
+
+<p>その他メニューについて紹介します</p>
+
+<p><img src="026.webp" alt="画像" /></p>
+
+<ul>
+  <li>
+    <p><strong>すべての同期の一時停止:</strong></p>
+
+    <ul>
+      <li>
+        <p>ネットワークの接続が遅く、他のオンライン・サービス（例：オンライントレーニングの動画視聴）のパフォーマンスの向上が必要な場合、デスクトップ・アプリケーションの同期処理を一時停止できます。</p>
+      </li>
+      <li>
+        <p>一時停止した同期処理を再開するには <strong>「すべての同期化の再開」</strong> をクリックします。一時停止中に行われた変更が適用され、ファイル内に競合する変更がある場合には修正が必要になる場合があります</p>
+      </li>
+      <li>
+        <p>同期処理を完全に停止させる場合は、<strong>「同期化するフォルダの選択」</strong> より、同期対象フォルダの選択を解除してください</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>同期化の問題:</strong></p>
+
+    <ul>
+      <li>同期処理に何らかの問題が発生した場合は、このメニューより問題内容を調査・確認します</li>
+    </ul>
+  </li>
+  <li>
+    <p>ヘルプ→<strong>トラブルシューティング→ログの保存:</strong></p>
+
+    <ul>
+      <li>デスクトップ・アプリケーションの同期処理のログ・ファイルを保存します。問題発生時の調査・解析などで利用します</li>
+    </ul>
+  </li>
+  <li>
+    <p>ヘルプ→<strong>更新:</strong></p>
+
+    <ul>
+      <li>
+        <p>デスクトップ・アプリケーションの更新（アップデート）の有無を手動で確認します。更新がある場合は、適用する／しないを選択します</p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+デスクトップ・アプリケーションに更新がある場合、更新がある旨のダイアログが自動的に表示されます</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>ヘルプ→<strong>バージョン:</strong></p>
+    <ul>
+      <li>デスクトップ・アプリケーションのバージョン情報を表示します</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+<p><strong>目次に戻る</strong>: <a href="../using_file_sharing">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%81%9D%E3%81%AE11%3A+%E3%83%87%E3%82%B9%E3%82%AF%E3%83%88%E3%83%83%E3%83%97%E3%83%BB%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%EF%BC%88Oracle+Content+and+Experience+%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E6%A9%9F%E8%83%BD%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%82%88%E3%81%86%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F11_desktop_application%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F11_desktop_application%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F11_desktop_application%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/10_group/" class="pagination--pager" title="その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/12_mobile_application/" class="pagination--pager" title="その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

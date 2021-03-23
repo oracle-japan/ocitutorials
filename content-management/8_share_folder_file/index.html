@@ -1,0 +1,1088 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう） | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="業務を効率的に進めるためには、ファイルの共有が必要不可欠です。OCE はファイルやフォルダは他のユーザーと簡単に共有できます。共有時には、ファイルやフォルダにアクセスするユーザーと実行可能な操作権限（アクセス権限）を簡単に制御できます。ここでは、共有方法とその使い方について習得します">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/8_share_folder_file/">
+
+
+  <meta property="og:description" content="業務を効率的に進めるためには、ファイルの共有が必要不可欠です。OCE はファイルやフォルダは他のユーザーと簡単に共有できます。共有時には、ファイルやフォルダにアクセスするユーザーと実行可能な操作権限（アクセス権限）を簡単に制御できます。ここでは、共有方法とその使い方について習得します">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/8_share_folder_file/005.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/8_share_folder_file/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/8_share_folder_file/005.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）
+
+        
+      </h1>
+      
+        <p class="page__lead">業務を効率的に進めるためには、ファイルの共有が必要不可欠です。OCE はファイルやフォルダは他のユーザーと簡単に共有できます。共有時には、ファイルやフォルダにアクセスするユーザーと実行可能な操作権限（アクセス権限）を簡単に制御できます。ここでは、共有方法とその使い方について習得します
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">実践編(コンテンツ管理)</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/" class="active">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）">
+    <meta itemprop="description" content="業務を効率的に進めるためには、ファイルの共有が必要不可欠です。OCE はファイルやフォルダは他のユーザーと簡単に共有できます。共有時には、ファイルやフォルダにアクセスするユーザーと実行可能な操作権限（アクセス権限）を簡単に制御できます。ここでは、共有方法とその使い方について習得します">
+    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#説明">説明</a>
+    <ul>
+      <li><a href="#アクセス権限">アクセス権限</a></li>
+      <li><a href="#共有の方法">共有の方法</a>
+        <ul>
+          <li><a href="#フォルダにメンバーを追加">フォルダにメンバーを追加</a></li>
+          <li><a href="#フォルダファイルのリンク共有">フォルダ・ファイルのリンク共有</a></li>
+        </ul>
+      </li>
+      <li><a href="#その他共有フォルダの使用容量について">（その他）共有フォルダの使用容量について</a></li>
+    </ul>
+  </li>
+  <li><a href="#1-フォルダにメンバーを追加する">1. フォルダにメンバーを追加する</a>
+    <ul>
+      <li><a href="#11-フォルダにユーザーを追加する">1.1 フォルダにユーザーを追加する</a></li>
+      <li><a href="#12-フォルダにグループを追加する">1.2 フォルダにグループを追加する</a></li>
+      <li><a href="#13-フォルダに追加されたメンバーのアクセス権限を変更する">1.3 フォルダに追加されたメンバーのアクセス権限を変更する</a></li>
+      <li><a href="#14-メンバー追加されたフォルダから退出する">1.4 メンバー追加されたフォルダから退出する</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-メンバーリンクを共有する">2. メンバー・リンクを共有する</a>
+    <ul>
+      <li><a href="#21-フォルダのメンバーリンクを共有する">2.1 フォルダのメンバー・リンクを共有する</a></li>
+      <li><a href="#22-ファイルのメンバーリンクを共有する">2.2 ファイルのメンバー・リンクを共有する</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-パブリックリンクの作成と共有">3. パブリック・リンクの作成と共有</a>
+    <ul>
+      <li><a href="#31-フォルダのパブリックリンク">3.1 フォルダのパブリック・リンク</a>
+        <ul>
+          <li><a href="#311-フォルダのパブリックリンクを作成する">3.1.1 フォルダのパブリック・リンクを作成する</a></li>
+          <li><a href="#312-パブリックリンクからフォルダにアクセスする">3.1.2 パブリック・リンクからフォルダにアクセスする</a></li>
+        </ul>
+      </li>
+      <li><a href="#32-ファイルのパブリックリンクを作成する">3.2 ファイルのパブリックリンクを作成する</a>
+        <ul>
+          <li><a href="#321-ファイルのパブリックリンクを作成する">3.2.1 ファイルのパブリック・リンクを作成する</a></li>
+          <li><a href="#322-パブリックリンクからファイルにアクセスする">3.2.2 パブリック・リンクからファイルにアクセスする</a></li>
+          <li><a href="#323-ファイルのアクセス履歴を確認する">3.2.3 ファイルのアクセス履歴を確認する</a></li>
+        </ul>
+      </li>
+      <li><a href="#33-作成済のパブリックリンクを編集する">3.3 作成済のパブリックリンクを編集する</a>
+        <ul>
+          <li><a href="#331-作成済のファイルへのパブリックリンクを編集する">3.3.1 作成済のファイルへのパブリック・リンクを編集する</a></li>
+          <li><a href="#332-編集後のパブリックリンクでファイルにアクセスする">3.3.2 編集後のパブリック・リンクでファイルにアクセスする</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>目次に戻る</strong>: <a href="../using_file_sharing">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></p>
+
+<p>ファイルやフォルダは他のユーザーと簡単に共有できます。共有時には、ファイルやフォルダにアクセスするユーザーと実行可能な操作権限（アクセス権限）を簡単に制御できます。</p>
+
+<h1 id="説明">説明</h1>
+<h2 id="アクセス権限">アクセス権限</h2>
+<p>OCE のアクセス権限は4種類です</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>アクセス権限</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>マネージャ</strong></td>
+      <td>コントリビュータ権限に加え、メンバー追加やアクセス権限設定などの管理作業が可能（フォルダ作成者=所有者とほぼ同様の権限）</td>
+    </tr>
+    <tr>
+      <td><strong>コントリビュータ</strong></td>
+      <td>子フォルダの作成と編集、登録済ファイルの編集や新規ファイルのアップロードが可能</td>
+    </tr>
+    <tr>
+      <td><strong>ダウンロード実行者</strong></td>
+      <td>フォルダの参照、ファイルの参照とダウンロードが可能（子フォルダの作成やファイルの編集はできない）</td>
+    </tr>
+    <tr>
+      <td><strong>参照者</strong></td>
+      <td>フォルダの参照、ファイルのプレビューが可能（ファイルのダウンロードはできない）</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="共有の方法">共有の方法</h2>
+<p>共有の目的や内容に応じて、その方法を使い分けることができます。OCEでは、「フォルダへのメンバー追加」による共有と、「リンク（URL）による共有」の2パターンです。それぞれについて説明します</p>
+
+<h3 id="フォルダにメンバーを追加">フォルダにメンバーを追加</h3>
+<ul>
+  <li>フォルダにメンバーを追加することで、そのフォルダおよび配下すべてのフォルダ・ファイルを複数ユーザーで共有できます</li>
+  <li>メンバーの追加は、個々のユーザーもしくはグループを指定できます</li>
+  <li>メンバーを追加する際に、そのフォルダに対する <strong>アクセス権限</strong> を設定します。アクセス権限は、<strong>マネージャ、コントリビュータ、ダウンロード実行者、参照者</strong> より選択できます</li>
+  <li>利用例
+    <ul>
+      <li>組織やグループ、大規模プロジェクトでファイルを共有する場合など、<strong>ユーザーが継続して情報にアクセスする必要がある</strong> 場合</li>
+    </ul>
+  </li>
+  <li>
+    <p>設定例</p>
+
+    <p><img src="001.jpg" alt="画像" /></p>
+  </li>
+</ul>
+
+<h3 id="フォルダファイルのリンク共有">フォルダ・ファイルのリンク共有</h3>
+<p>OCEのリンク共有には「メンバー・リンク」と「パブリック・リンク」の2種類があります。それぞれについて説明します</p>
+
+<ul>
+  <li><strong>メンバー・リンク</strong>
+    <ul>
+      <li>フォルダへのアクセス権限を有するユーザーに対して、フォルダ・ファイルを共有する際に利用します</li>
+      <li>メンバー・リンクのアクセス権限は、<strong>フォルダ・ファイルへのアクセス権限と同じ</strong> です</li>
+      <li>利用例
+        <ul>
+          <li>フォルダAに、Xさん、Yさんの2名を <strong>コントリビュータ権限</strong> でメンバー追加</li>
+          <li>Xさんが、フォルダAの中のファイルA-1のメンバー・リンクを作成し、YさんとZさんにチャットで送付</li>
+          <li>Yさんはメンバー・リンクをクリックすると、ファイルA-1に <strong>コントリビュータ権限</strong> でアクセスできます</li>
+          <li>ZさんはフォルダAにメンバー追加されていないため、<strong>メンバー・リンクをクリックしてもファイルA-1にアクセスできません</strong></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>パブリック・リンク</strong>
+    <ul>
+      <li>フォルダのアクセス権限の有無に関係なく、フォルダやファイルへのアクセスを許可するリンク</li>
+      <li>パブリック・リンク作成時に、そのリンク経由でアクセスするフォルダ・ファイルのアクセス権を設定します
+        <ul>
+          <li>パブリック・リンク作成時に指定できるアクセス権は、<strong>コントリビュータ、ダウンロード実行者、参照者</strong> の3つ</li>
+          <li>パブリック・リンク作成時にそのリンクの <strong>有効期限</strong> や <strong>パスコード</strong> を設定できます</li>
+          <li>サービス管理者により、パブリック・リンクの作成ポリシー（アクセス・オプション、最大権限の制限、有効期限の強制設定ほか）が設定されていることがあります</li>
+          <li>フォルダ所有者により、パブリック・リンクの作成が制限されていることがあります</li>
+        </ul>
+      </li>
+      <li>フォルダのパブリック・リンク
+        <ul>
+          <li>フォルダのパブリック・リンクを受け取ったユーザーは <strong>そのフォルダおよび配下すべてのフォルダとファイルに指定した権限</strong> でアクセスできます</li>
+          <li>上位フォルダや同一フォルダ階層にある別のフォルダにはアクセスできません</li>
+        </ul>
+      </li>
+      <li>ファイルのパブリック・リンク
+        <ul>
+          <li>そのリンクを受け取ったユーザーは、<strong>パブリック・リンクを作成したファイルのみに指定された権限</strong> でアクセスできます</li>
+          <li>上位フォルダや同一フォルダ階層にある別のファイルにはアクセスできません</li>
+        </ul>
+      </li>
+      <li>利用例
+        <ul>
+          <li>見込み顧客に対して、前回訪問時の提案書のパブリック・リンク（ダウンロード実行者権限、有効期限＋パスコード）で送付する</li>
+          <li>社外の制作会社に依頼したマーケティングアセット（画像や動画）の受け取りで、フォルダのパブリックリンク（コントリビュータ権限、有効期限＋パスコード）を利用</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="その他共有フォルダの使用容量について">（その他）共有フォルダの使用容量について</h2>
+<ul>
+  <li>フォルダにユーザーをコントリビュータ権限で追加した場合、ユーザーはフォルダの作成やファイルのアップロードができます</li>
+  <li>この場合、共有フォルダに追加されたファイルの使用容量は、<strong>フォルダの所有者（Owner）</strong> に加算されます。</li>
+  <li>利用例
+    <ul>
+      <li>ユーザーXさんが作成した個人フォルダAに、Yさんをコントリビュータ権限でメンバー追加</li>
+      <li>Yさんは共有されたフォルダAの中に、サブフォルダ（フォルダA-1）を作成し、そこに 100MB のファイルをアップロード</li>
+      <li>この +100MB は、<strong>Xさん使用容量としてカウント</strong> されます</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2020年5月時点での最新バージョン(20.2.2)を元に作成されてます
+</code></pre></div></div>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+  <li>OCE の利用ユーザーに OCE インスタンスの <strong>CECStandardUser</strong> もしくは <strong>CECEnterpriseUser</strong> アプリケーション・ロールが付与されていること</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-フォルダにメンバーを追加する">1. フォルダにメンバーを追加する</h1>
+<h2 id="11-フォルダにユーザーを追加する">1.1 フォルダにユーザーを追加する</h2>
+<p>フォルダにメンバーを追加し、そのフォルダおよび配下すべてのフォルダ・ファイルへのアクセス権限を付与します</p>
+
+<ol>
+  <li>
+    <p>メンバーを追加するフォルダを選択し、<strong>「メンバー」</strong> をクリックします</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「メンバーの追加」</strong> をクリックします</p>
+
+    <p><img src="003.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>追加するユーザーを入力し、候補が出てきたらユーザー名をクリックします</p>
+
+    <p><img src="004.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>アクセス権限を選択し、<strong>「追加」</strong> をクリックします</p>
+
+    <p><img src="005.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>メンバーを追加すると、共有されているメンバーが表示されます</p>
+
+    <p><img src="006.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>フォルダにメンバーを追加すると、フォルダのアイコンが変更されます</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>アイコン</th>
+          <th>説明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><img src="gray_folder.png" alt="画像" /></td>
+          <td>個人フォルダ（フォルダ共有なし）</td>
+        </tr>
+        <tr>
+          <td><img src="gray_shared_folder.png" alt="画像" /></td>
+          <td>共有フォルダ（フォルダ共有あり）</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ol>
+
+<h2 id="12-フォルダにグループを追加する">1.2 フォルダにグループを追加する</h2>
+
+<p>グループをメンバーとして追加すると、グルームに所属するユーザーすべてにフォルダのアクセス権限が付与されます。</p>
+
+<p>グループには、OCE インスタンスで作成・管理するグループと、Oracle Identity Cloud Service (IDCS) で管理するIDCSグループがあります。グループの作成・管理は、<a href="../10_create_group">10. グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a>をご確認ください</p>
+
+<ol>
+  <li>
+    <p>メンバーを追加するフォルダを選択し、<strong>「メンバー」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「メンバーの追加」</strong> を選択します</p>
+  </li>
+  <li>
+    <p>追加するグループを入力し、候補が出てきたらグループ名をクリックします。ここでは <strong>OCEローカルグループ1</strong> を選択してます</p>
+
+    <p><img src="007.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>アクセス権限を選択し、<strong>「追加」</strong> をクリックします</p>
+
+    <p><img src="008.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>グループを追加すると、共有されているグループが表示されます</p>
+
+    <p><img src="009.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="13-フォルダに追加されたメンバーのアクセス権限を変更する">1.3 フォルダに追加されたメンバーのアクセス権限を変更する</h2>
+
+<ol>
+  <li>
+    <p>メンバーのアクセス権限を変更するフォルダを選択し、<strong>「メンバー」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>メンバーに付与されているアクセス権限をクリックし、アクセス権限を変更します。ここでは、<strong>OCEローカルグループ1</strong> に付与した <strong>コントリビュータ権限</strong> を <strong>参照者</strong> に変更します</p>
+
+    <p><img src="010.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+フォルダに追加されているメンバーのアクセス権限を変更する場合は、そのフォルダの <strong>マネージャ権限</strong> が必要です。メンバーに付与したフォルダへのアクセス権限を解除する場合は、<strong>「削除」</strong> を選択します。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>「完了」</strong> をクリックします</p>
+  </li>
+</ol>
+
+<h2 id="14-メンバー追加されたフォルダから退出する">1.4 メンバー追加されたフォルダから退出する</h2>
+
+<ol>
+  <li>
+    <p>メンバー追加されているフォルダを選択し、<strong>「メンバー」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>自分に付与されているアクセス権限をクリックし、<strong>「移動」</strong> をクリックします。ここでは、コントリビュータ権限が付与されている <strong>01_デモコンテンツフォルダ</strong> から退出します</p>
+
+    <p><img src="011.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>確認画面が表示されます。<strong>「はい」</strong> をクリックします</p>
+  </li>
+</ol>
+
+<h1 id="2-メンバーリンクを共有する">2. メンバー・リンクを共有する</h1>
+<h2 id="21-フォルダのメンバーリンクを共有する">2.1 フォルダのメンバー・リンクを共有する</h2>
+
+<ol>
+  <li>
+    <p>フォルダを選択し、<strong>「リンクの共有」</strong> をクリックします</p>
+
+    <p><img src="012.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「このリンク」</strong> より <strong>「メンバーのみ」</strong> を選択します</p>
+
+    <p><img src="013.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「リンクのコピー」</strong> をクリックします。フォルダへのメンバー・リンクが、クリップボードにコピーされます</p>
+
+    <p><img src="014.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>OCE から直接電子メールを送信する場合は、「送信先」にメンバーを入力します。必要に応じて、リンク送付先のユーザーへのメッセージを入力します</p>
+  </li>
+  <li>
+    <p><strong>「リンクの送信」</strong> をクリックします。OCE からメンバー・リンクが記述された電子メールが送信されます</p>
+
+    <p><img src="015.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="22-ファイルのメンバーリンクを共有する">2.2 ファイルのメンバー・リンクを共有する</h2>
+
+<ol>
+  <li>
+    <p>ファイルを選択し、<strong>「リンクの共有」</strong> をクリックします</p>
+
+    <p><img src="016.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「このリンク」</strong> より <strong>「メンバーのみ」</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>「リンク・オプションの編集」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>オンライン・アクセスもしくはダイレクト・ダウンロードを選択します（デフォルトはオンライン・アクセス）</p>
+
+    <ul>
+      <li>
+        <p><strong>オンライン・アクセス:</strong> ファイルの <strong>プレビュー</strong> が表示されます</p>
+      </li>
+      <li>
+        <p><strong>ダイレクト・ダウンロード:</strong> ファイルの <strong>ダウンロード</strong> が実行されます</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>「リンクのコピー」</strong> をクリックします。メンバー・リンクが、クリップボードにコピーされます</p>
+
+    <p><img src="017.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>OCE から直接電子メールを送信する場合は、「送信先」にメンバーを入力します。必要に応じて、リンク送付先のユーザーへのメッセージを入力します</p>
+  </li>
+  <li>
+    <p><strong>「リンクの送信」</strong> をクリックします。OCE からメンバー・リンクが記述された電子メールが送信されます</p>
+  </li>
+</ol>
+
+<h1 id="3-パブリックリンクの作成と共有">3. パブリック・リンクの作成と共有</h1>
+<h2 id="31-フォルダのパブリックリンク">3.1 フォルダのパブリック・リンク</h2>
+<h3 id="311-フォルダのパブリックリンクを作成する">3.1.1 フォルダのパブリック・リンクを作成する</h3>
+
+<ol>
+  <li>
+    <p>フォルダを選択し、<strong>「リンクの共有」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「このリンク」</strong> より <strong>「パブリック」</strong> を選択します</p>
+
+    <p><img src="018.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「リンク・オプションの編集」</strong> をクリックします</p>
+
+    <ol>
+      <li>
+        <p>「送信先」を入力します（任意）</p>
+      </li>
+      <li>
+        <p>送信先へのメッセージを入力します（任意）</p>
+      </li>
+      <li>
+        <p>「既存のリンクの選択」よりリンク名を入力・編集します。リンク名のデフォルトは <code class="language-plaintext highlighter-rouge">Web-YYYY-MM-DD</code>で、リンク名は変更できます</p>
+      </li>
+      <li>
+        <p>「リンクの権限」を参照者、ダウンロード実行者、コントリビュータより選択します。ここでは <strong>「コントリビュータ」</strong> を選択します</p>
+      </li>
+      <li>
+        <p>「このリンクにアクセスできるユーザー」を選択します。ここでは <strong>「すべてのユーザー」</strong> を選択します</p>
+
+        <ul>
+          <li>
+            <p><strong>すべてのユーザー</strong> （リンクを知っているすべてのユーザーがアクセス可）</p>
+          </li>
+          <li>
+            <p><strong>すべての登録済みユーザー</strong> （リンクを知っている該当OCEインスタンスにサイン・インできるユーザーがアクセス可）</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>「リンクの有効期限」を設定します（任意）</p>
+      </li>
+      <li>
+        <p>「リンク・アクセス・コード」を設定します（任意）。アクセスコードは、<strong>8文字以上</strong> で設定します</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>すべての入力が完了したら <strong>「リンクのコピー」</strong> をクリックします。作成されたパブリック・リンクがクリップボードにコピーされます</p>
+
+    <p><img src="019.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong><em>”xxxフォルダへのリンクがクリップボードにコピーされました。”</em></strong> のメッセージの <strong>「リンクの表示」</strong> をクリックします。</p>
+
+    <p><img src="020.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>作成されたパブリック・リンクのURLと詳細を確認できます</p>
+
+    <p><img src="021.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h3 id="312-パブリックリンクからフォルダにアクセスする">3.1.2 パブリック・リンクからフォルダにアクセスする</h3>
+
+<ol>
+  <li>
+    <p>別ブラウザを起動し、前の手順で作成したパブリック・リンクをコピー＆ペーストしてアクセスします</p>
+  </li>
+  <li>
+    <p>アスセスコードを入力し、フォルダを開きます</p>
+
+    <p><img src="022.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>フォルダ内のファイルのプレビューやダウンロードができることを確認します</p>
+
+    <p><img src="023.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>フォルダ（ここでは孫フォルダ）の作成ができることを確認します。また、ファイルのアップロードができることを確認します</p>
+
+    <p><img src="024.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="32-ファイルのパブリックリンクを作成する">3.2 ファイルのパブリックリンクを作成する</h2>
+<h3 id="321-ファイルのパブリックリンクを作成する">3.2.1 ファイルのパブリック・リンクを作成する</h3>
+
+<ol>
+  <li>
+    <p>ファイルを選択し、<strong>「リンクの共有」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「このリンク」</strong> より <strong>「パブリック・リンク」</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>「リンク・オプションの編集」</strong> をクリックします</p>
+
+    <ol>
+      <li>
+        <p>「送信先」を入力します（任意）</p>
+      </li>
+      <li>
+        <p>送信先へのメッセージを入力します（任意）</p>
+      </li>
+      <li>
+        <p>「既存のリンクの選択」よりリンク名を入力・編集します。ここでは、<strong>デフォルトのリンク名（Web-YYYY-MM-DD）</strong> とします</p>
+      </li>
+      <li>
+        <p>「リンクの権限」を参照者、ダウンロード実行者、コントリビュータより選択します。ここでは <strong>「ダウンロード実行者」</strong> を選択します</p>
+      </li>
+      <li>
+        <p>「このリンクにアクセスできるユーザー」を選択します。ここでは <strong>「すべてのユーザー」</strong> を選択します</p>
+      </li>
+      <li>
+        <p>「リンクの有効期限」を設定します（任意）</p>
+      </li>
+      <li>
+        <p>「リンク・アクセス・コード」を設定します（任意）</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>すべての入力が完了したら <strong>「リンクのコピー」</strong> をクリックします。作成されたパブリック・リンクがクリップボードにコピーされます</p>
+
+    <p><img src="025.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>リンクの表示をクリックすると、作成されたパブリック・リンクのURLと詳細を確認できます</p>
+  </li>
+</ol>
+
+<h3 id="322-パブリックリンクからファイルにアクセスする">3.2.2 パブリック・リンクからファイルにアクセスする</h3>
+
+<ol>
+  <li>
+    <p>別ブラウザを起動し、前の手順で作成したパブリック・リンクをコピー＆ペーストしてアクセスします</p>
+  </li>
+  <li>
+    <p>アスセスコードを入力します</p>
+  </li>
+  <li>
+    <p>パブリックリンクで指定されたファイルがプレビュー表示されます</p>
+  </li>
+  <li>
+    <p><strong>「ダウンロード」</strong> をクリックすると、ファイルがダウンロードされます</p>
+
+    <p><img src="026.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>この Web ブラウザを閉じます</p>
+  </li>
+</ol>
+
+<h3 id="323-ファイルのアクセス履歴を確認する">3.2.3 ファイルのアクセス履歴を確認する</h3>
+
+<ol>
+  <li>
+    <p>ファイルのパブリック・リンクを作成した Web ブラウザに戻ります</p>
+  </li>
+  <li>
+    <p>パブリック・リンクを作成したファイルを選択し、<strong>「プロパティ」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「アクセス履歴」</strong> タブをクリックします</p>
+  </li>
+  <li>
+    <p>ファイルのアクセス履歴が表示されます。パブリック・リンクからのアクセスの場合、<strong>パブリック・リンク作成時に指定したリンク名</strong> が実行者として記録されます</p>
+
+    <p><img src="027.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="33-作成済のパブリックリンクを編集する">3.3 作成済のパブリックリンクを編集する</h2>
+<h3 id="331-作成済のファイルへのパブリックリンクを編集する">3.3.1 作成済のファイルへのパブリック・リンクを編集する</h3>
+
+<ol>
+  <li>
+    <p>3.2.1 でパブリックリンクを作成したファイルを選択し、<strong>「リンクの共有」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「このリンク」</strong> より <strong>「パブリック・リンク」</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong>「リンク・オプションの編集」</strong> をクリックします</p>
+
+    <ol>
+      <li>
+        <p><strong>「既存のリンクの選択」</strong> より、前の手順で作成したパブリックリンク名（この場合はWeb-2020-05-19）を選択します</p>
+
+        <p><img src="028.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「リンクの権限」</strong> を変更します。ここでは「ダウンロード実行者」を <strong>「参照者」</strong> に変更します</p>
+
+        <p><img src="029.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>すべての入力が完了したら <strong>「リンクのコピー」</strong> をクリックします。作成されたパブリック・リンクがクリップボードにコピーされます</p>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<h3 id="332-編集後のパブリックリンクでファイルにアクセスする">3.3.2 編集後のパブリック・リンクでファイルにアクセスする</h3>
+
+<ol>
+  <li>
+    <p>別ブラウザを起動し、前の手順で作成したパブリック・リンクをコピー＆ペーストしてアクセスします</p>
+  </li>
+  <li>
+    <p>アスセスコードを入力します</p>
+  </li>
+  <li>
+    <p>パブリックリンクで指定されたファイルがプレビュー表示されます。<strong>「ダウンロード」が表示されない</strong> ことを確認します</p>
+
+    <p><img src="030.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+<p><strong>目次に戻る</strong>: <a href="../using_file_sharing">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%81%9D%E3%81%AE8%3A+%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E3%83%BB%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E5%85%B1%E6%9C%89%EF%BC%88Oracle+Content+and+Experience+%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E6%A9%9F%E8%83%BD%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%82%88%E3%81%86%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F8_share_folder_file%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F8_share_folder_file%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F8_share_folder_file%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/7_search_file/" class="pagination--pager" title="その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/9_conversation/" class="pagination--pager" title="その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

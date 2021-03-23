@@ -1,0 +1,1104 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCE のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/71_customize_contentlayout/">
+
+
+  <meta property="og:description" content="OCE のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/71_customize_contentlayout/028.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/71_customize_contentlayout/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/71_customize_contentlayout/028.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCE のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">実践編(コンテンツ管理)</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/" class="active">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう">
+    <meta itemprop="description" content="OCE のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです">
+    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-説明">1. 説明</a>
+    <ul>
+      <li><a href="#11-コンテンツレイアウトとは">1.1 コンテンツ・レイアウトとは？</a></li>
+      <li><a href="#12-作成済サイトとコンテンツタイプの確認">1.2 作成済サイトとコンテンツ・タイプの確認</a></li>
+      <li><a href="#13-サイトページ上に配置されているコンポーネントの確認">1.3 サイト・ページ上に配置されているコンポーネントの確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-samplenewstype-overviewの編集">2. sampleNewsType-overviewの編集</a>
+    <ul>
+      <li><a href="#21-コンテンツレイアウトの確認">2.1 コンテンツ・レイアウトの確認</a></li>
+      <li><a href="#22-renderjs-の編集">2.2 render.js の編集</a></li>
+      <li><a href="#23-layouthtml-の編集">2.3 layout.html の編集</a></li>
+      <li><a href="#24-designcss-の編集">2.4 design.css の編集</a></li>
+      <li><a href="#25-編集ファイルのアップロード">2.5 編集ファイルのアップロード</a></li>
+      <li><a href="#26-確認">2.6 確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-samplenewstype-detailの編集">3. sampleNewsType-detailの編集</a>
+    <ul>
+      <li><a href="#31-renderjslayouthtml-designcss-の編集とアップロード">3.1 render.js、layout.html, design.css の編集とアップロード</a></li>
+      <li><a href="#32-確認">3.2 確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#4-変更内容を公開サイトに適用する">4. 変更内容を公開サイトに適用する</a>
+    <ul>
+      <li><a href="#41-コンテンツレイアウトの再公開">4.1 コンテンツ・レイアウトの再公開</a></li>
+      <li><a href="#42-公開サイトの確認">4.2 公開サイトの確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#5-発展課題">5. 発展課題</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書は Oracle Content and Experience (OCE) のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2021年1月時点での最新バージョン(21.1.1)を元に作成されてます
+</code></pre></div></div>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+  <li><a href="../41_asset_headless">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a>が完了していること</li>
+  <li><a href="../62_webcms">Oracle Content and Experience を WebCMS として使ってみよう【初級編】</a>が完了していること</li>
+  <li>OCE の利用ユーザーに、少なくとも下記4つのOCE インスタンスのアプリケーション・ロールが付与されていること
+    <ul>
+      <li><strong>CECContentAdministrator</strong></li>
+      <li><strong>CECDeveloperUser</strong></li>
+      <li><strong>CECEnterpriseUser</strong></li>
+      <li><strong>CECRepositoryAdminisrrator</strong></li>
+    </ul>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ユーザーの作成とアプリケーションロールの付与手順は、<a href="../create_idcs_group_user">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a> をご確認ください。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-説明">1. 説明</h1>
+
+<h2 id="11-コンテンツレイアウトとは">1.1 コンテンツ・レイアウトとは？</h2>
+
+<p>コンテンツ・レイアウトとは <strong>作成されたコンテンツ・アイテムの表示形式</strong> を定めたものです。具体的には、Web ページにコンテンツ・アイテムを配置した時のレイアウト(=HTML)を定義したものになります。詳細は、下記ドキュメントをご参照ください</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/develop-content-layouts.html">Develop Content Layout</a></li>
+</ul>
+
+<h2 id="12-作成済サイトとコンテンツタイプの確認">1.2 作成済サイトとコンテンツ・タイプの確認</h2>
+
+<p>前提条件にあるチュートリアルをすべて完了すると、<strong>firstSite</strong> というサイトが表示されます</p>
+
+<ul>
+  <li>
+    <p>firstSite: ホームページ</p>
+
+    <p><img src="001.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>firstSite: コンテンツ・アイテムの詳細表示ページ</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+  </li>
+</ul>
+
+<p>前提条件のチュートリアルでは、2種類のコンテンツ・レイアウトを作成し、それぞれをコンテンツ・タイプ <strong>sampleNewsType</strong> のレイアウトとして設定しました。設定内容は以下の通りです</p>
+
+<blockquote>
+  <p><strong>[Memo]</strong><br />
+コンテンツ・レイアウトの設定は、<strong>ADMINISTRATION:コンテンツ &gt; コンテンツ・タイプ &gt; sampleNewsType &gt; コンテンツ・レイアウト</strong> より確認できます</p>
+</blockquote>
+
+<p><img src="003.jpg" alt="画像" /></p>
+
+<ul>
+  <li>説明
+    <ul>
+      <li><strong>コンテンツ・アイテムのデフォルト:</strong>「コンテンツ・アイテム」コンポーネントで利用するデフォルトのコンテンツ・レイアウト (=sampleNewsType-detail)</li>
+      <li><strong>コンテンツ・リストのデフォルト:</strong>「コンテンツ・リスト」コンポーネントで利用するデフォルトのコンテンツ・レイアウト (=sampleNewsType-overview)</li>
+      <li><strong>空のコンテンツ・リストのデフォルト:</strong>「コンテンツ・リスト」コンポーネントで、表示するコンテンツ・アイテムが0件だった時に利用するコンテンツ・レイアウト (=sampleNewsType-overview)</li>
+      <li><strong>コンテンツ・プレースホルダーのデフォルト:</strong>「コンテンツ・プレースホルダー」コンポーネントで利用するデフォルトのコンテンツ・レイアウト (=sampleNewsType-detail)</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="13-サイトページ上に配置されているコンポーネントの確認">1.3 サイト・ページ上に配置されているコンポーネントの確認</h2>
+
+<p><strong>firstSite</strong> をサイト編集画面で開き、ホームページと詳細表示ページに配置されているコンポーネントと、表示レイアウトの設定を確認します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションの <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>firstSite</strong> を選択し、<strong>「開く」</strong> をクリックします</p>
+
+    <p><img src="004.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトの編集画面が表示されます。<strong>「ベース・サイト▼」</strong> をクリックし、<strong>「新規更新の作成」</strong> を選択します</p>
+
+    <p><img src="005.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「新規更新の名前の指定」に <strong>「update」</strong> と入力し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="006.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「update」に切り替わっていることを確認します。表示側にあるスイッチを <strong>「編集」</strong> モードに切り替えます</p>
+
+    <p><img src="007.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>左サイドバーの <strong>「ページ」→「ホーム」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>「段落」コンポーネントの下に <strong>「コンテンツ・リスト」</strong> コンポーネントが配置されていることを確認します</p>
+
+    <p><img src="008.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「コンテンツ・リスト」コンポーネントの <strong>「設定」</strong> をクリックします</p>
+
+    <p><img src="009.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「アイテムの表示」に <strong>「コンテンツ・リストのデフォルト」</strong> が設定されていることを確認します。</p>
+
+    <p><img src="010.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+「コンテンツ・リストのデフォルト」とは、コンテンツ・タイプの「コンテンツ・レイアウト」タブで設定した <strong>コンテンツ・リストのデフォルトレイアウト</strong> （ここでは sampleNewsType-overview）でコンテンツ・アイテムを表示する、という意味になります。詳細は書きドキュメントを参考にしてください</p>
+      <ul>
+        <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/content-list.html">Content List</a></li>
+      </ul>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>「…Detail Page」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>Detail Page の中央に <strong>「コンテンツ・プレースホルダー」</strong> が配置されていることを確認します</p>
+
+    <p><img src="011.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+「コンテンツ・プレースホルダー」コンポーネントは、指定されたコンテンツ・アイテムを動的に表示するコンポーネントです。具体的には、ニュース一覧を表示するページで1件のニュースでクリックした時に、そのニュースの全文を詳細表示する際に利用します。詳細は、下記ドキュメントを参考にしてください</p>
+      <ul>
+        <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/content-placeholder.html">Content Placeholder</a></li>
+      </ul>
+
+    </blockquote>
+  </li>
+  <li>
+    <p>「コンテンツ・プレースホルダー」コンポーネントの <strong>「設定」</strong> をクリックします</p>
+
+    <p><img src="012.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「アイテムの表示」に <strong>「コンテンツ・プレースホルダーのデフォルト」</strong> が設定されていることを確認します</p>
+
+    <p><img src="013.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+「コンテンツ・プレースホルダーのデフォルト」とは、コンテンツ・タイプの「コンテンツ・レイアウト」タブで設定した <strong>コンテンツ・プレースホルダーのデフォルト</strong> （ここでは sampleNewsType-detail）でコンテンツ・アイテムを表示する、という意味になります。詳細は書きドキュメントを参考にしてください</p>
+      <ul>
+        <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/content-placeholder.html">Content Placeholder</a></li>
+      </ul>
+    </blockquote>
+  </li>
+  <li>
+    <p>表示モードに切り替えます</p>
+  </li>
+  <li>
+    <p>以上で、配置されているコンポーネントと表示レイアウトの設定の確認は終了です。次項からそれぞれのコンポーネントが利用しているコンテンツレイアウトを編集し、表示形式を変更します</p>
+  </li>
+</ol>
+
+<h1 id="2-samplenewstype-overviewの編集">2. sampleNewsType-overviewの編集</h1>
+
+<p>「コンテンツ・リスト」コンポーネントのデフォルトとして設定されている <strong>sampleNewsType-overview</strong> コンテンツ・レイアウトを編集します。</p>
+
+<p>ここでは、sampleNewsType から作成されたコンテンツ・アイテムの <strong>タイトル(title)</strong> と <strong>メイン画像(image)</strong> のみを一覧表示するコンテンツ・レイアウトを作成します。さらに、表示されたタイトル or メイン画像をクリックすると、「コンテンツ・プレースホルダー」が配置された詳細表示ページ（Detail Page）に遷移するリンクも設定します</p>
+
+<h2 id="21-コンテンツレイアウトの確認">2.1 コンテンツ・レイアウトの確認</h2>
+
+<ol>
+  <li>
+    <p>sampleNewsType-overview コンテンツ・レイアウトを開きます。ここではWebブラウザを利用します</p>
+  </li>
+  <li>
+    <p>左ナビゲーションメニューの <strong>「開発者」→「すべてのコンポーネントを開く」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>sampleNewsType-overview</strong> をクリックします</p>
+
+    <p><img src="014.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+フィルタで <strong>「コンテンツ・レイアウト」</strong> を選択すると、コンテンツ・レイアウトのみを表示させることができます</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>assets</strong> フォルダをクリックします</p>
+
+    <p><img src="015.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>design.css</strong> と <strong>layout.html</strong> と <strong>render.js</strong> をローカルPCにダウンロードします</p>
+
+    <p><img src="016.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<ul>
+  <li>
+    <p><strong>[解説]コンテンツ・レイアウトの内容</strong></p>
+
+    <ul>
+      <li>
+        <p>コンテンツ・レイアウトは複数のフォルダおよびファイルで構成されます。コンテンツ・レイアウトのカスタマイズは、主に <strong>assets フォルダ配下の3つのファイル</strong> を編集します。なお、publish フォルダ配下には、公開サイトで利用されているコンテンツ・レイアウトファイル一式が格納されます。</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  sampleNewsType-overview
+    assets
+      design.css   # コンテンツ・レイアウト専用のスタイルシート (CSS)
+      layout.html  # HTML の表示形式を定義するHTMLファイル
+      render.js    # layout.html で利用するデータを取得・変更します。必要に応じて動的な動作を追加できます
+    publish        # 公開中のサイトで利用されているコンテンツ・レイアウトの構成ファイル一式
+    assetsappinfo.json
+    _folder_icon.png
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>コンテンツ・レイアウトの開発に関する情報は、下記マニュアルも参考にしてください</p>
+        <ul>
+          <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/develop-content-layouts.html">Develop Content Layouts</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="22-renderjs-の編集">2.2 render.js の編集</h2>
+
+<ol>
+  <li>
+    <p>ローカルPCにダウンロードした <strong>render.js</strong> をテキストエディタで開きます</p>
+  </li>
+  <li>
+    <p>88-90行目の <code class="language-plaintext highlighter-rouge">// Handle fields specific to this content type.</code> のコメント文の下に、以下のコードをコピー&amp;ペーストし、テキストエディタを <strong>「保存」</strong> します</p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">//</span>
+ <span class="c1">// Handle fields specific to this content type.</span>
+ <span class="c1">//</span>
+ <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">])</span> <span class="p">{</span>
+   <span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">][</span><span class="dl">"</span><span class="s2">url</span><span class="dl">"</span><span class="p">]</span> <span class="o">=</span> <span class="nx">contentClient</span><span class="p">.</span><span class="nx">getRenditionURL</span><span class="p">({</span><span class="dl">"</span><span class="s2">id</span><span class="dl">"</span><span class="p">:</span> <span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">].</span><span class="nx">id</span><span class="p">});</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="23-layouthtml-の編集">2.3 layout.html の編集</h2>
+
+<ol>
+  <li>
+    <p>ローカルPCにダウンロードした <strong>layout.html</strong> をテキストエディタで開きます</p>
+  </li>
+  <li>
+    <p><strong>layout.html</strong> に記述されるHTMLコードを <strong>すべて削除</strong> します</p>
+  </li>
+  <li>
+    <p>以下のHTMLをコピー&amp;ペーストし、テキストエディタを <strong>「保存」</strong> します</p>
+
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code> {{#fields}}
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"sampleNewsType"</span><span class="nt">&gt;</span>
+     <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"{{scsData.detailPageLink}}"</span> <span class="na">title=</span><span class="s">"{{title}}"</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"{{image.url}}"</span><span class="nt">&gt;&lt;/img&gt;</span>
+       <span class="nt">&lt;p&gt;</span>{{title}}<span class="nt">&lt;/p&gt;</span>
+     <span class="nt">&lt;/a&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ {{/fields}}
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="24-designcss-の編集">2.4 design.css の編集</h2>
+
+<ol>
+  <li>
+    <p>ローカルPCにダウンロードした design.css をテキストエディタで開きます</p>
+  </li>
+  <li>
+    <p>design.css に記述されるスタイルシートをすべて削除します</p>
+  </li>
+  <li>
+    <p>以下のスタイルシートをコピー＆ペーストし、テキストエディタを保存します</p>
+
+    <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nc">.sampleNewsType</span> <span class="p">{</span>
+   <span class="nl">font-family</span><span class="p">:</span> <span class="s2">'Helvetica Neue'</span><span class="p">,</span> <span class="s2">'Segoe UI'</span><span class="p">,</span> <span class="n">sans-serif-regular</span><span class="p">,</span> <span class="n">Helvetica</span><span class="p">,</span> <span class="n">Arial</span><span class="p">;</span>
+   <span class="nl">font-size</span><span class="p">:</span> <span class="m">16px</span><span class="p">;</span>
+   <span class="nl">margin</span><span class="p">:</span><span class="m">0px</span><span class="p">;</span>
+   <span class="nl">padding</span><span class="p">:</span><span class="m">0px</span><span class="p">;</span>
+   <span class="nl">font-style</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+   <span class="nl">color</span><span class="p">:</span> <span class="m">#333</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="nc">.sampleNewsType</span> <span class="nt">li</span> <span class="p">{</span>
+   <span class="nl">list-style</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+   <span class="nl">font-size</span><span class="p">:</span> <span class="m">14px</span><span class="p">;</span>
+   <span class="nl">font-style</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+   <span class="nl">font-variant-caps</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+   <span class="nl">color</span><span class="p">:</span> <span class="m">#333</span><span class="p">;</span>
+   <span class="nl">font-weight</span><span class="p">:</span> <span class="m">200</span><span class="p">;</span>
+   <span class="nl">margin</span><span class="p">:</span> <span class="m">0em</span> <span class="m">0em</span> <span class="m">1em</span> <span class="m">0em</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="nc">.sampleNewsType</span> <span class="nt">img</span> <span class="p">{</span>
+   <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+   <span class="nl">max-width</span><span class="p">:</span> <span class="m">190px</span><span class="p">;</span>
+   <span class="nl">margin</span><span class="p">:</span><span class="m">0</span> <span class="m">5px</span><span class="p">;</span>
+   <span class="nl">border-radius</span><span class="p">:</span> <span class="m">3px</span><span class="p">;</span>
+   <span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+   <span class="nl">vertical-align</span><span class="p">:</span> <span class="nb">middle</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="nc">.sampleNewsType</span> <span class="nt">h1</span> <span class="p">{</span>
+   <span class="nl">font-size</span><span class="p">:</span> <span class="m">24px</span><span class="p">;</span>
+   <span class="nl">color</span><span class="p">:</span> <span class="m">#333</span><span class="p">;</span>
+   <span class="nl">margin</span><span class="p">:</span><span class="m">0px</span><span class="p">;</span>
+   <span class="nl">font-weight</span><span class="p">:</span><span class="m">300</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="nc">.sampleNewsType</span> <span class="nt">h2</span> <span class="p">{</span>
+   <span class="nl">font-size</span><span class="p">:</span> <span class="m">18px</span><span class="p">;</span>
+   <span class="nl">color</span><span class="p">:</span> <span class="m">#767676</span><span class="p">;</span>
+   <span class="nl">margin</span><span class="p">:</span><span class="m">0px</span><span class="p">;</span>
+   <span class="nl">font-weight</span><span class="p">:</span><span class="m">300</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="nc">.sampleNewsType</span> <span class="nt">p</span> <span class="p">{</span>
+   <span class="nl">margin</span><span class="p">:</span><span class="m">0px</span><span class="p">;</span>
+   <span class="nl">vertical-align</span><span class="p">:</span> <span class="nb">middle</span><span class="p">;</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="25-編集ファイルのアップロード">2.5 編集ファイルのアップロード</h2>
+
+<ol>
+  <li>
+    <p><strong>開発者 &gt; コンポーネント &gt; sampleNewsType-overview &gt; assets</strong> を開きます</p>
+  </li>
+  <li>
+    <p><strong>layout.html</strong> を選択し、<strong>「新規バージョンのアップロード」</strong> をクリックします</p>
+
+    <p><img src="017.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ローカルPCで編集した <strong>layout.html</strong> を指定します。この時、同じファイル名でアップロードします</p>
+  </li>
+  <li>
+    <p>新規バージョンとして、<strong>layout.html</strong> が登録されたことを確認します</p>
+
+    <p><img src="018.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>同じ手順を繰り返し、ローカルPCで編集した <strong>design.css</strong> と <strong>render.js</strong> を新規バージョンとしてアップロードします</p>
+
+    <p><img src="019.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="26-確認">2.6 確認</h2>
+
+<p>sampleNewsType-overview レイアウトが更新されたことを、サイト編集画面より確認します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションから <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>firstSite</strong> を選択し、<strong>「開く」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>画面下のコンテンツ・アイテムの表示形式が変更されていることを確認します</p>
+
+    <p><img src="020.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>表示される <strong>画像 or タイトル</strong> をクリックすると、コンテンツ・アイテムの詳細表示ページに遷移することを確認します。なお、sampleNewsType-detail コンテンツ・レイアウトを編集していないため、表示形式に変更はありません</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイト編集ページを閉じます</p>
+  </li>
+</ol>
+
+<h1 id="3-samplenewstype-detailの編集">3. sampleNewsType-detailの編集</h1>
+
+<p>「コンテンツ・プレースホルダー」コンポーネントのデフォルトとして設定されている <strong>sampleNewsType-detail</strong> コンテンツ・レイアウトを編集します。</p>
+
+<p>編集手順は、前の手順と同じです。<strong>sampleNewsType-detail &gt; assets</strong> の render.js、layout.html、design.css をダウンロードし、編集します。最後に、新規バージョンとしてアップロードします</p>
+
+<h2 id="31-renderjslayouthtml-designcss-の編集とアップロード">3.1 render.js、layout.html, design.css の編集とアップロード</h2>
+
+<p>ファイルを編集し、新規バージョンとしてアップロードします。変更後のコードはそれぞれ以下の通りです</p>
+
+<p><img src="021.jpg" alt="画像" /></p>
+
+<ul>
+  <li>
+    <p>render.js（127行目の <code class="language-plaintext highlighter-rouge">// Retrieve the reference item from the query result.</code> の下のコードをコメントアウトし、以下のコードをコピー&amp;ペースト）</p>
+
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">// Retrieve the reference item from the query result.</span>
+  <span class="c1">//if (data["image"] &amp;&amp; data["image"].id === item.id) {</span>
+  <span class="c1">//	data["image"]["contentItem"] = item;</span>
+  <span class="c1">//}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">])</span> <span class="p">{</span>
+    <span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">][</span><span class="dl">"</span><span class="s2">url</span><span class="dl">"</span><span class="p">]</span> <span class="o">=</span> <span class="nx">contentClient</span><span class="p">.</span><span class="nx">getRenditionURL</span><span class="p">({</span><span class="dl">"</span><span class="s2">id</span><span class="dl">"</span><span class="p">:</span> <span class="nx">data</span><span class="p">[</span><span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">].</span><span class="nx">id</span><span class="p">});</span>
+  <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>layout.html（以下のHTMLコードにすべて差し替え）</p>
+
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  {{#fields}}
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"sampleNewsType"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;h1&gt;</span>{{title}}<span class="nt">&lt;/h1&gt;</span>
+      <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"{{image.url}}"</span><span class="nt">&gt;&lt;/img&gt;</span>
+      <span class="nt">&lt;p&gt;</span>{{{body}}}<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  {{/fields}}
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>design.css（以下のスタイルシートにすべて差し替え）</p>
+    <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nc">.sampleNewsType</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+    <span class="nl">font-family</span><span class="p">:</span> <span class="s2">'Helvetica Neue'</span><span class="p">,</span> <span class="s2">'Segoe UI'</span><span class="p">,</span> <span class="n">sans-serif-regular</span><span class="p">,</span> <span class="n">Helvetica</span><span class="p">,</span> <span class="n">Arial</span><span class="p">;</span>
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">18px</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span><span class="m">0</span><span class="p">;</span>
+    <span class="nl">padding</span><span class="p">:</span><span class="m">0</span><span class="p">;</span>
+    <span class="nl">font-style</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#333</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nc">.sampleNewsType</span> <span class="nt">li</span> <span class="p">{</span>      
+    <span class="nl">list-style</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">14px</span><span class="p">;</span>
+    <span class="nl">font-style</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+    <span class="nl">font-variant-caps</span><span class="p">:</span> <span class="nb">normal</span><span class="p">;</span>
+    <span class="nl">color</span><span class="p">:</span> <span class="m">#333</span><span class="p">;</span>
+    <span class="nl">font-weight</span><span class="p">:</span> <span class="m">200</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="m">0em</span> <span class="m">0em</span> <span class="m">1em</span> <span class="m">0em</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nc">.sampleNewsType</span> <span class="nt">img</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nc">.sampleNewsType</span> <span class="nt">h1</span> <span class="p">{</span>      
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">250%</span><span class="p">;</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span><span class="m">0</span><span class="p">;</span>
+    <span class="nl">padding</span><span class="p">:</span> <span class="m">1em</span> <span class="m">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nc">.sampleNewsType</span> <span class="nt">h2</span> <span class="p">{</span>
+    <span class="nl">font-size</span><span class="p">:</span> <span class="m">200%</span><span class="p">;</span>
+    <span class="nl">font-weight</span><span class="p">:</span> <span class="nb">bold</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span><span class="m">0px</span><span class="p">;</span>
+    <span class="nl">font-weight</span><span class="p">:</span><span class="m">300</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nc">.sampleNewsType</span> <span class="nt">p</span> <span class="p">{</span>
+    <span class="nl">margin</span><span class="p">:</span><span class="m">5px</span><span class="p">,</span> <span class="m">0px</span><span class="p">;</span>
+  <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="32-確認">3.2 確認</h2>
+
+<p>sampleNewsType-detail レイアウトが更新されたことを、サイト編集画面より確認します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションから <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>firstSite を選択し、<strong>「開く」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>ホームページ下部のコンテンツ・アイテムの <strong>タイトル or 画像</strong> をクリックします</p>
+
+    <p><img src="020.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>コンテンツ・アイテムの詳細表示ページが変更されていることを確認します</p>
+
+    <p><img src="022.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイト編集ページを閉じます</p>
+  </li>
+</ol>
+
+<h1 id="4-変更内容を公開サイトに適用する">4. 変更内容を公開サイトに適用する</h1>
+
+<p>コンテンツ・レイアウトの更新内容を、公開サイトに適用します。公開サイトに適用する際は、コンテンツ・レイアウトの再公開、もしくはサイトの再公開を実施します。</p>
+
+<p>今回は、コンテンツ・レイアウトの再公開を実施し、コンテンツ・レイアウトのみを公開サイトに適用します</p>
+
+<h2 id="41-コンテンツレイアウトの再公開">4.1 コンテンツ・レイアウトの再公開</h2>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>「開発者」→「すべてのコンポーネントを開く」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>sampleNewsType-overview</strong> を選択し、<strong>「再公開」</strong> をクリックします</p>
+
+    <p><img src="023.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>確認のダイアログが表示されます。<strong>「確認して続行」</strong> にチェックを入れ、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="024.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>コンポーネントの再公開が実行されます</p>
+  </li>
+  <li>
+    <p>同じ手順を繰り返し、<strong>sampleNewsType-detail</strong> を再公開します</p>
+
+    <p><img src="025.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="42-公開サイトの確認">4.2 公開サイトの確認</h2>
+
+<ol>
+  <li>
+    <p>左ナビゲーションから <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>firstSite を選択し、<strong>「表示」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>公開サイトのホームページおよび記事詳細ページのレイアウトが更新されていることを確認します</p>
+
+    <ul>
+      <li>
+        <p><strong>ホームページ</strong></p>
+
+        <p><img src="026.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>記事詳細ページ</strong></p>
+
+        <p><img src="027.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<h1 id="5-発展課題">5. 発展課題</h1>
+
+<p><strong>作業</strong></p>
+
+<ul>
+  <li>
+    <p>sampleNewsType の新規コンテンツ・アイテムを1件作成します</p>
+  </li>
+  <li>
+    <p>firstSite の公開チャネルに対して、作成したコンテンツ・アイテムを公開します</p>
+  </li>
+</ul>
+
+<p><strong>確認</strong></p>
+
+<ul>
+  <li>
+    <p>firstSite のホームページに、<strong>2件のコンテンツ・アイテム</strong> が表示されること</p>
+  </li>
+  <li>
+    <p>新規に作成・公開した2件目のコンテンツアイテムの画像（もしくはタイトル）をクリックすると、<strong>コンテンツ・アイテムの詳細表示ページ</strong> が表示されること</p>
+
+    <p><img src="028.jpg" alt="画像" /></p>
+
+    <p><img src="029.jpg" alt="画像" /></p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Content+and+Experiece+%E3%81%AE%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E3%83%BB%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E3%82%92%E7%B7%A8%E9%9B%86%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F71_customize_contentlayout%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F71_customize_contentlayout%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F71_customize_contentlayout%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/62_webcms/" class="pagination--pager" title="Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/72_change_banner/" class="pagination--pager" title="Oracle Content and Experience で作成したサイトのバナー画像を変更しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

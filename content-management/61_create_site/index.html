@@ -1,0 +1,1257 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう） | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="サイトを作成します。サイトは OCE に事前定義されたテンプレートを利用し、簡単に作成することができます。また、作成したサイトの公開範囲を限定することで、ログインが必要な会員サイトや社内サイトを簡単に構成できます">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/61_create_site/">
+
+
+  <meta property="og:description" content="サイトを作成します。サイトは OCE に事前定義されたテンプレートを利用し、簡単に作成することができます。また、作成したサイトの公開範囲を限定することで、ログインが必要な会員サイトや社内サイトを簡単に構成できます">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/61_create_site/1013.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/61_create_site/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/61_create_site/1013.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）
+
+        
+      </h1>
+      
+        <p class="page__lead">サイトを作成します。サイトは OCE に事前定義されたテンプレートを利用し、簡単に作成することができます。また、作成したサイトの公開範囲を限定することで、ログインが必要な会員サイトや社内サイトを簡単に構成できます
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">実践編(コンテンツ管理)</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/" class="active">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）">
+    <meta itemprop="description" content="サイトを作成します。サイトは OCE に事前定義されたテンプレートを利用し、簡単に作成することができます。また、作成したサイトの公開範囲を限定することで、ログインが必要な会員サイトや社内サイトを簡単に構成できます">
+    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#0-はじめに">0. はじめに</a></li>
+  <li><a href="#1-サイトの作成">1. サイトの作成</a>
+    <ul>
+      <li><a href="#11-新規サイトの作成">1.1 新規サイトの作成</a></li>
+      <li><a href="#12-サイトセキュリティの設定">1.2 サイト・セキュリティの設定</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-サイトの編集">2. サイトの編集</a>
+    <ul>
+      <li><a href="#21-サイト編集画面の起動">2.1 サイト編集画面の起動</a></li>
+      <li><a href="#22-サイトのページ構成の編集">2.2 サイトのページ構成の編集</a></li>
+      <li><a href="#23-home-ページの編集">2.3 Home ページの編集</a></li>
+      <li><a href="#24-製品資料ページの編集">2.4 製品資料ページの編集</a>
+        <ul>
+          <li><a href="#241-フォルダに製品資料を登録する">2.4.1 フォルダに製品資料を登録する</a></li>
+          <li><a href="#242-製品ページの編集">2.4.2 製品ページの編集</a></li>
+        </ul>
+      </li>
+      <li><a href="#25-編集内容のコミット">2.5 編集内容のコミット</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-サイトの公開">3. サイトの公開</a>
+    <ul>
+      <li><a href="#31-サイトの公開とオンライン化">3.1 サイトの公開とオンライン化</a></li>
+      <li><a href="#32-サイトの確認">3.2 サイトの確認</a></li>
+      <li><a href="#33-フォルダに資料を追加する">3.3 フォルダに資料を追加する</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>OCE のサイト作成機能を利用し、Web サイト（スタンダードサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。ここでは、Web サイトの作成〜編集〜公開までの基本的な手順をハンズオン形式で習得します。</p>
+
+<p>さらに、フォルダに登録される複数ドキュメントをWebページからダウンロードできる「資料ダウンロード」ページの作成方法も、あわせて習得します</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2020年6月時点での最新バージョン(20.2.3)を元に作成されてます
+</code></pre></div></div>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+  <li>
+    <p>OCE の利用ユーザーに OCE インスタンスの <strong>CECStandardUser</strong> もしくは <strong>CECEnterpriseUser</strong> アプリケーション・ロールが付与されていること</p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ユーザーの作成とアプリケーションロールの付与手順は、<a href="../create_idcs_group_user">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a> をご確認ください。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="0-はじめに">0. はじめに</h1>
+
+<p>OCE のサイト機能は、Web や HTML などの技術に詳しくないビジネスユーザーが、ドラッグ&amp;ドロップなどの直感的な操作で Web サイトを作成し、公開することができます。また、OCEは、レスポンシブ Web デザイン（Bootstrap）に対応した事前定義済のテンプレート（ひな型）を複数パターン提供します。これらを利用することで、パソコンやスマートフォン/タブレットに対応した Web サイトを、すばやく、簡単に、低コストで作成・公開できます</p>
+
+<p>また、OCE が提供する <strong>ファイル共有機能</strong> や <strong>アセット機能</strong> とシームレスな機能統合がされているため、ドラッグ&amp;ドロップなどのとても簡単な操作で、ドキュメントやアセットを Web サイト上に掲載し、公開することができます</p>
+
+<p>OCE は、以下の2種類のサイトを作成・公開できます。サイト作成時に選択することができます（※サイト・ガバナンス機能が無効化されている場合のみ）</p>
+
+<ul>
+  <li><strong>スタンダード（標準）サイト</strong>
+    <ul>
+      <li>OCE のドキュメントや会話で管理するファイル、フォルダ、会話をWebサイト上に掲載できるサイト</li>
+      <li>利用例: ランディングページ、イベントサイト、サービスサイト、社内サイト（資料の共有・ダウンロード）　など</li>
+    </ul>
+  </li>
+  <li><strong>エンタープライズサイト</strong>
+    <ul>
+      <li>スタンダードサイトで利用できるファイル、フォルダ、会話に加えて、アセット・リポジトリで管理するデジタル・アセットやコンテンツ・アイテムも掲載できるサイト</li>
+      <li>利用例: 企業サイト、製品・サービスの情報提供サイト、ニュースサイト、ブログサイト　など</li>
+      <li>エンタープライズサイトの作成方法は、こちらのチュートリアルで紹介
+        <ul>
+          <li><a href="../66_webcms">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="1-サイトの作成">1. サイトの作成</h1>
+
+<p>サイトを作成します。</p>
+
+<p>今回は、社内の営業部門に所属する営業および技術者を対象とした <strong>社内向け製品情報提供サイト</strong> を、OCE の <strong>スタンダードサイト</strong> で作成します。サイトの作成イメージは以下の通りです</p>
+
+<ul>
+  <li>
+    <p>ホームページ</p>
+
+    <p><img src="001.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>製品資料ページ</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+スタンダードサイトを作成するには、ユーザーに <strong>CECStandardUser</strong> もしくは <strong>CECEnterpriseUser</strong> ロールの付与が必要です。サイトガバナンスが有効化されている場合、管理者がテンプレートを公開しないなぎり、サイトメニューからサイトを作成できません。代替え手段として「開発者」→「テンプレート」より、テンプレートを選択し「サイトの作成」を実行することができます</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h2 id="11-新規サイトの作成">1.1 新規サイトの作成</h2>
+
+<ol>
+  <li>
+    <p>OCE にサインインします</p>
+  </li>
+  <li>
+    <p>左ナビゲーションの <strong>「サイト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「作成」</strong> をクリックします</p>
+
+    <p><img src="003.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>テンプレートを選択します。ここでは、<strong>StarterTemplate</strong> を選択します</p>
+
+    <p><img src="004.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+テンプレート選択時に StarterTemplate が表示されない場合、OCE インスタンスのサービス管理者に連絡し、デフォルト・サイト・テンプレートのインストールとテンプレートへのメンバー追加（アクセス権限の設定）を依頼してください</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>タイプで <strong>「標準」</strong> を選択し、<strong>「次」</strong> をクリックします</p>
+
+    <p><img src="005.jpg" alt="画像" /></p>
+  </li>
+  <li>以下を入力し、<strong>「終了」</strong> をクリックします
+    <ul>
+      <li>名前: <strong>sampleStandardSite</strong></li>
+      <li>
+        <p>説明: （任意）</p>
+
+        <p><img src="006.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+名前は、サイトにアクセスするURL（サイトURL）として利用されます。利用できるのは、アルファベット、数字、アンダースコア( _ )、ハイフン( - ) です。スペース( )を入力した場合は、自動的にハイフン( - )に置換されます</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>サイトが作成されます</p>
+
+    <p><img src="007.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="12-サイトセキュリティの設定">1.2 サイト・セキュリティの設定</h2>
+
+<p>サイト・セキュリティを設定し、サイトの公開範囲を設定します。サイトの公開範囲には、以下2パターンがあります</p>
+
+<ul>
+  <li><strong>パブリック</strong>
+    <ul>
+      <li>誰でも参照可能な Web サイト（公開範囲の制限なし）</li>
+    </ul>
+  </li>
+  <li><strong>セキュア</strong>
+    <ul>
+      <li>ユーザーIDおよびパスワードにより認証され、かつアクセス権限を持つユーザーのみが参照できるWebサイト（公開範囲の制限あり）</li>
+      <li>アクセスできるユーザーは、「クラウド・ユーザー」「訪問者」「サービス・ユーザー」「特定のユーザー」より選択</li>
+    </ul>
+  </li>
+</ul>
+
+<p>今回作成するサイトは社内向けの製品情報提供サイトなので、サイト・セキュリティは <strong>「セキュア」</strong> を、アクセスできるユーザーは <strong>「クラウド・ユーザー」</strong> をそれぞれ設定します</p>
+
+<ol>
+  <li>
+    <p><strong>sampleStandardSite</strong> を選択し、右クリック→ <strong>「プロパティ」</strong> をクリックします</p>
+
+    <p><img src="008.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「サイト・セキュリティ」</strong> タブをクリックします</p>
+  </li>
+  <li>
+    <p>「このサイトにアクセスするすべての人にサインインを要求します」で、<strong>「はい」</strong> を選択します</p>
+  </li>
+  <li>
+    <p>「オンラインのときにこのサイトにアクセスできるユーザー」で <strong>「クラウド・ユーザー」</strong> が選択されていることを確認し、<strong>「保存」</strong> をクリックします</p>
+
+    <p><img src="009.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+「クラウド・ユーザー」とは、OCE インスタンスが利用する IDCS にユーザー・アカウントを持つすべての IDCS ユーザーを意味します（OCE インスタンスへのアクセス権の有無は関係ありません）。その他のサイト・セキュリティは、下記ドキュメントをご確認ください</p>
+      <ul>
+        <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/understand-site-security.html">Understand Site Security</a></li>
+      </ul>
+    </blockquote>
+  </li>
+</ol>
+
+<h1 id="2-サイトの編集">2. サイトの編集</h1>
+
+<p>サイトを編集します。今回は、下記のようなページ構成のサイトを作成します</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ホーム
+  |
+  +--製品資料（製品資料のダウンロードページ：新規作成）
+  |
+  +--Private Policy（既存ページのまま）
+</code></pre></div></div>
+
+<h2 id="21-サイト編集画面の起動">2.1 サイト編集画面の起動</h2>
+
+<ol>
+  <li>
+    <p><strong>sampleStandardSite</strong> を選択し、<strong>「開く」</strong> をクリックします</p>
+
+    <p><img src="1001.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトの編集画面（Site Builder）が表示されます。<strong>「ベース・サイト▼」</strong> をクリックし、<strong>「新規更新の作成」</strong> を選択します</p>
+
+    <p><img src="1002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「新規更新の名前の指定」に <strong>update</strong> と入力し、<strong>「OK」</strong> をクリックします</p>
+
+    <p><img src="1003.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「update」に切り替わっていることを確認します。表示側にあるスイッチを <strong>「編集」</strong> モードに切り替えます</p>
+
+    <p><img src="1004.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトが編集モードに切り替わります。編集側にあるスイッチを <strong>「表示」</strong> モードに切り替えます。サイトの表示モードに戻ります</p>
+
+    <p><img src="1005.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイト編集のプロセスは、次の通りです。</p>
+
+    <p><img src="1006.jpg" alt="画像" /></p>
+
+    <ul>
+      <li><strong>新規更新の作成:</strong> ベースサイトのコピーが「更新」として作成されます。「更新」は複数作成できます</li>
+      <li><strong>サイトの編集:</strong> ベースサイトからコピーされた「更新」を編集します</li>
+      <li><strong>サイトの保存:</strong> ベースサイトからコピーされた「更新」の編集内容を保存します（「更新」の上書き保存）</li>
+      <li><strong>サイトのコミット:</strong> ベースサイトからコピーし、編集された更新を、ベースサイトにコピー（上書き保存）します</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="22-サイトのページ構成の編集">2.2 サイトのページ構成の編集</h2>
+
+<ol>
+  <li>
+    <p>サイトを <strong>「編集」</strong> モードに切り替えます</p>
+  </li>
+  <li>
+    <p>左サイドバーの <strong>「ページ」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>「Home」</strong> が選択されていることを確認し、<strong>「ページの追加」</strong> をクリックします</p>
+
+    <p><img src="1007.jpg" alt="画像" /></p>
+  </li>
+  <li>以下の通りに入力し、<strong>「閉じる」</strong> をクリックします
+    <ul>
+      <li>ページ・タイプ: <strong>Webページ</strong></li>
+      <li>ページ名: <strong>製品資料</strong></li>
+      <li>ページURL: <strong>product</strong></li>
+      <li>オーバーライド: <strong>選択する</strong></li>
+      <li>ページ・レイアウト: <strong>index.html</strong> を選択</li>
+      <li>
+        <p>モバイル・ページ・レイアウト: <strong>「デスクトップと同じ」</strong> を選択</p>
+
+        <p><img src="1008.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>「製品資料」</strong> ページを、Home ページと Developing Template の間にドラッグ&amp;ドロップで移動します</p>
+
+    <p><img src="1009.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>今回のチュートリアルで利用しないページ（Developing Templates、Detail Page）を削除します。</p>
+
+    <ol>
+      <li>
+        <p><strong>Developing Template</strong> をクリックします</p>
+      </li>
+      <li>
+        <p><strong>「ゴミ箱」</strong> アイコンをクリックします。続けて <strong>「OK」</strong> をクリックします</p>
+
+        <p><img src="1010.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>同じ手順で、<strong>Detail Page</strong> も削除します</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>最終的には、以下のページ構成となります。サイト上のナビゲーションメニューもページ構成の通りに表示されます</p>
+
+    <p><img src="1011.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「保存」</strong> をクリックします</p>
+
+    <p><img src="1012.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="23-home-ページの編集">2.3 Home ページの編集</h2>
+
+<ol>
+  <li>
+    <p>Home ページをクリックします</p>
+  </li>
+  <li>
+    <p>ページ上に「タイトル」コンポーネントと「段落」コンポーネントが配置され、それぞれにサンプルのテキストが入力されています。サンプルテキストを削除し、適切な文言に変更します。以下は変更例です</p>
+
+    <ul>
+      <li><strong>タイトル:</strong> <em>社内向け製品情報提供サイトへようこそ！</em></li>
+      <li>
+        <p><strong>段落:</strong> <em>この社内サイトは、営業部門の皆さまに対して、最新の製品情報を提供します…（以降省略）</em></p>
+
+        <p><img src="1013.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+タイトルも段落も WYSIWYG エディタで編集でき、文字の装飾やスタイルの変更、URLの挿入、画像や表の挿入などが可能です。それぞれのコンポーネントの利用方法は、下記ドキュメントもあわせてご確認ください</p>
+
+          <ul>
+            <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/titles.html">タイトル/Titles</a></li>
+            <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/paragraphs.html">段落/Paragraphs</a></li>
+          </ul>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>左サイドバーの <strong>「セクション・レイアウト」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>段落コンポーネントの下にセクション・レイアウトの <strong>「2列」</strong> を、ドラッグ&amp;ドロップで配置します</p>
+
+    <p><img src="1014.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+セクション・レイアウトは、コンポーネントの配置を自動的に調整します。「2列」以外にも、「3列」「スライダ」「タブ」などのパターンが提供されています。詳細は、下記ドキュメントのSection Layout を合わせてご確認ください</p>
+
+      <ul>
+        <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/understand-layouts.html">セクション・レイアウト/Section Layout</a></li>
+      </ul>
+    </blockquote>
+  </li>
+  <li>
+    <p>配置したセクション・レイアウト「2列」の <strong>メニュー</strong> をクリックし、<strong>「設定」</strong> をクリックします</p>
+
+    <p><img src="1015.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「カスタム設定」</strong> をクリックします</p>
+
+    <p><img src="1016.jpg" alt="画像" /></p>
+  </li>
+  <li>以下の通りに入力し、<strong>「&lt; 戻る」</strong> をクリックします
+    <ul>
+      <li>最初の列の幅(%): <strong>50</strong></li>
+      <li>2番目の列の幅(%): <strong>50</strong></li>
+      <li>レスポンシブ・ブレーク・ポイント: <strong>768</strong></li>
+      <li>
+        <p>レスポンシブ動作: <strong>2番目の列を最初の列の下に移動</strong></p>
+
+        <p><img src="1017.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>右上の <strong>「 X 」</strong> をクリックし、設定画面を閉じます</p>
+  </li>
+  <li>
+    <p>セクション・レイアウトの <strong>「最初の列」</strong> にコンポーネントを配置します。</p>
+
+    <ol>
+      <li>
+        <p>左サイドバーの <strong>「コンポーネント」→「シード」</strong> をクリックします</p>
+
+        <p><img src="1018.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「イメージ」</strong> コンポーネントを、セクション・レイアウトの <strong>「最初の列」</strong> にドラッグ＆ドロップします</p>
+
+        <p><img src="1019.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>「最初の列」に配置した「イメージ」コンポーネントの下に <strong>「タイトル」</strong> コンポーネントをドラッグ＆ドロップします。その下に <strong>「段落」</strong> コンポーネントを、さらにその下に <strong>「ボタン」</strong> コンポーネント配置します</p>
+
+        <p><img src="1020.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「イメージ」</strong> コンポーネントをクリックします</p>
+      </li>
+      <li>
+        <p><strong>メニュー</strong> をクリックし、<strong>「設定」</strong> をクリックします</p>
+
+        <p><img src="1021.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「選択」</strong> をクリックします</p>
+
+        <p><img src="1022.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>ドキュメント・フォルダが開きます。フォルダから任意の画像を選択し、<strong>「OK」</strong> をクリックします</p>
+
+        <p><img src="1023.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+フォルダに必要な画像がない場合、この画面上の <strong>「アップロード」</strong> をクリックし、ローカル環境の画像ファイルをフォルダにアップロードし、それを選択することができます</p>
+        </blockquote>
+      </li>
+      <li>
+        <p><strong>「タイトル」「代替テキスト」「キャプション」</strong> に <strong>「製品資料のダウンロード」</strong> と入力します</p>
+      </li>
+      <li>
+        <p>右上の <strong>「 X 」</strong> をクリックし、イメージ設定を閉じます</p>
+
+        <p><img src="1024.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+イメージコンポーネントは、画像をページ上に配置する場合に利用します。スタンダードサイトの場合、ドキュメント・フォルダから画像を選択します。下記ドキュメントも合わせてご確認ください</p>
+
+          <ul>
+            <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/images.html">イメージ/Images</a></li>
+          </ul>
+        </blockquote>
+      </li>
+      <li>
+        <p><strong>「タイトル」</strong> コンポーネントをクリックし、<strong>「製品資料のダウンロード」</strong> と入力します</p>
+      </li>
+      <li>
+        <p><strong>「段落」</strong> コンポーネントをクリックし、任意のテキストを入力します</p>
+
+        <p><img src="1025.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「ボタン」</strong> コンポーネントをクリックし、<strong>メニュー→「設定」</strong> 選択します</p>
+      </li>
+      <li>
+        <p>「ラベル」と「タイトル」に <strong>「製品資料ページへ」</strong> と入力します。さらに、「位置合わせ」で <strong>「中央」</strong> を選択します</p>
+      </li>
+      <li>
+        <p><strong>「リンク」</strong> タブをクリックします</p>
+
+        <p><img src="1026.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>「リンク・タイプの選択」から <strong>「サイト・ページ」</strong> を選択します。続けて「ページ」より <strong>「製品資料」</strong> を選択します</p>
+      </li>
+      <li>
+        <p>右上の <strong>「 X 」</strong> をクリックし、ボタン設定を閉じます</p>
+
+        <p><img src="1027.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+「ボタン」コンポーネントは、サイト・ページのリンクだけでなく、外部 Web サイトへのリンクや、ファイルのダウンロードやプレビューなども指定できます。詳しい利用方法は、下記ドキュメントを合わせてご確認ください</p>
+
+          <ul>
+            <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/buttons.html">ボタン/Button</a></li>
+          </ul>
+        </blockquote>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>同じ手順を繰り返し、「セクション・レイアウト」の <strong>「第2列」</strong> に Privacy Policy ページの紹介とリンクを作成します。作成イメージは以下の通りです</p>
+
+    <p><img src="1028.jpg" alt="画像" /></p>
+  </li>
+  <li><strong>「保存」</strong> をクリックします。以上で、Home ページの編集は終了です</li>
+</ol>
+
+<h2 id="24-製品資料ページの編集">2.4 製品資料ページの編集</h2>
+
+<h3 id="241-フォルダに製品資料を登録する">2.4.1 フォルダに製品資料を登録する</h3>
+
+<ol>
+  <li>
+    <p>左ナビゲーションより <strong>「ドキュメント」</strong> をクリックします。<strong>「作成」</strong> をクリックし、<strong>「サイト作成チュートリアル」</strong> フォルダを作成します</p>
+
+    <p><img src="1029.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「サイト作成チュートリアル」フォルダの下に、<strong>「製品カテゴリA」</strong> と <strong>「製品カテゴリB」</strong> のフォルダを作成します</p>
+
+    <p><img src="1030.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「製品カテゴリA」と「製品カテゴリB」のフォルダに、Web サイト上に掲載する資料をアップロードします。ここでは、それぞれのフォルダに、2つのPowerPoint資料をアップロードしてあります</p>
+
+    <p><img src="1031.png" alt="画像" /></p>
+  </li>
+</ol>
+
+<h3 id="242-製品ページの編集">2.4.2 製品ページの編集</h3>
+
+<ol>
+  <li>
+    <p>サイト編集画面を開き、<strong>「製品資料」</strong> ページを編集モードで開きます。ページには、ロゴもナビゲーションもありません</p>
+
+    <p><img src="1032.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ページ上の真ん中に「＋」がある点線の長方形は「スロット」です。サイト作成者は、スロットの領域内にコンポーネントを配置し、ページを編集します。なお、スロットは、テンプレートの開発時に、開発者が定義します</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>ページの左上の logocontainer スロットに、コンポーネント→<strong>シード→「タイトル」</strong> コンポーネントを配置します</p>
+
+    <p><img src="1033.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>タイトルコンポーネントに <strong>「Starter Template」</strong> と入力し、文字の色を <strong>白(White)</strong> にします</p>
+
+    <p><img src="1034.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトナビゲーションを表示するためのカスタムコンポーネントを配置します。左サイドバーの <strong>「シード」</strong> をクリックし、<strong>「カスタム」</strong> を選択します</p>
+
+    <p><img src="1035.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ページ右上の <strong>navMenu</strong> スロットに、<strong>「NavMenu」</strong> コンポーネントを配置します。この際、コンポーネントの検索ボックスに <code class="language-plaintext highlighter-rouge">nav</code> と入力すると、NavMenu コンポーネントが見つけやすくなります</p>
+
+    <p><img src="1036.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトナビゲーションが表示されます</p>
+
+    <p><img src="1037.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>slot-content スロットに、コンポーネントを配置します</p>
+
+    <ol>
+      <li>
+        <p>左サイドバーの「カスタム」を <strong>「シード」</strong> に切り替えます</p>
+      </li>
+      <li>
+        <p>ページ中央の slot-content スロットに <strong>「タイトル」</strong> コンポーネントを 配置し、<strong>「製品資料ページ」</strong> と入力します</p>
+
+        <p><img src="1038.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「セクション・レイアウト」</strong> より <strong>「2列」</strong> を、「タイトル」コンポーネントの下に配置します</p>
+
+        <p><img src="1039.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>「2列」のメニュー→ <strong>「設定」→「カスタム設定」</strong> を開き、以下の通りの設定します</p>
+
+        <ul>
+          <li>最初の列の幅(%): <strong>50</strong></li>
+          <li>2番目の列の幅(%): <strong>50</strong></li>
+          <li>レスポンシブ・ブレーク・ポイント: <strong>768</strong></li>
+          <li>
+            <p>レスポンシブ動作: <strong>2番目の列を最初の列の下に移動</strong></p>
+
+            <p><img src="1040.jpg" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>「2列」の設定メニューを閉じます</p>
+      </li>
+      <li>
+        <p>「セクション・レイアウト」の「最初の列」に <strong>「タイトル」</strong> コンポーネントを配置し、<strong>「製品カテゴリA」</strong> と入力します</p>
+
+        <p><img src="1041.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>タイトルコンポーネントの設定メニュー→ <strong>「設定」→「スタイル」</strong> を選択します</p>
+      </li>
+      <li>
+        <p><strong>「カスタマイズ」</strong> を選択し、背景色とフォントの色を、それぞれ以下の通りに変更します</p>
+
+        <p><img src="1042.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>「タイトル」コンポーネントの設定メニューを閉じます。背景色と文字の色が変更されていることを確認します</p>
+      </li>
+      <li>
+        <p>「最初の列」の「タイトル」コンポーネントの下に <strong>「ファイル・リスト」</strong> コンポーネントを配置します</p>
+
+        <p><img src="1043.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+ファイル・リストコンポーネントは、選択したフォルダに保管されるファイルを一覧表示します。フォルダ・リストコンポーネントと組み合わせて利用することで、複数フォルダに含まれるファイル一覧を表示できます。詳細は、下記ドキュメントをあわせてご確認ください</p>
+
+          <ul>
+            <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/file-lists.html">ファイル・リスト/File Lists</a></li>
+            <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/folder-lists.html">フォルダ・リスト/Folder Lists</a></li>
+          </ul>
+        </blockquote>
+      </li>
+      <li>
+        <p>「ファイル・リスト」の設定メニュー→ <strong>「設定」→「カスタム設定」</strong> をクリックします</p>
+
+        <p><img src="1044.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>「選択」</strong> をクリックします</p>
+
+        <p><img src="1045.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>フォルダの選択画面が表示されます。前の手順で作成した <strong>「製品カテゴリA」</strong> を選択し、<strong>「OK」</strong> をクリックします</p>
+
+        <p><img src="1046.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>フォルダ権限の選択で <strong>「サイト・ビジターのアクセス：ダウンロード実行者」</strong> を選択します</p>
+      </li>
+      <li>
+        <p><strong>表示オプション</strong> を以下の通りに選択します</p>
+
+        <p><img src="1047.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>「カスタム設定」を閉じます。続けて、「ファイル・リストの設定」を閉じます</p>
+      </li>
+      <li>
+        <p>表示モードに切り替えます</p>
+      </li>
+      <li>
+        <p>「製品カテゴリA」フォルダ内の資料が一覧表示されます。ダウンロード・アイコンをクリックすると、資料がダウンロードされることを確認します</p>
+
+        <p><img src="1048.jpg" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p><strong>編集モード</strong> に切り替えます。</p>
+  </li>
+  <li>
+    <p>同じ手順を繰り返し、セクション・レイアウトの <strong>「第2列」</strong> を編集します。今回は <strong>「ファイル・リスト」</strong> コンポーネントで <strong>「製品カテゴリB」</strong> フォルダを選択します</p>
+
+    <p><img src="1049.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>表示モードに切り替えます。それぞれのフォルダに格納された資料のダウンロードできることを確認します</p>
+  </li>
+  <li>
+    <p>編集内容を <strong>「保存」</strong> します</p>
+  </li>
+</ol>
+
+<h2 id="25-編集内容のコミット">2.5 編集内容のコミット</h2>
+
+<ol>
+  <li>
+    <p><strong>「コミット」</strong> をクリックします</p>
+
+    <p><img src="1050.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>確認のダイアログを確認し、<strong>「コミット」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>編集内容がベース・サイトに上書き保存されます</p>
+  </li>
+  <li>
+    <p>サイト編集画面を閉じます</p>
+  </li>
+</ol>
+
+<h1 id="3-サイトの公開">3. サイトの公開</h1>
+
+<h2 id="31-サイトの公開とオンライン化">3.1 サイトの公開とオンライン化</h2>
+
+<p>作成したサイトを公開します。</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションより <strong>「サイト」</strong> をクリックします。<strong>sampleStandardSite</strong> を選択し、<strong>「公開」</strong> をクリックします</p>
+
+    <p><img src="2001.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトが公開されるのを確認し、<strong>「オンラインにする」</strong> をクリックします</p>
+
+    <p><img src="2002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>確認のダイアログが表示されます。<strong>「確認して続行」</strong> にチェックを入れ、<strong>「オンラインにする」</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>サイトがオンライン状態に遷移し、サイトへのアクセスが可能になります</p>
+
+    <p><img src="2003.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="32-サイトの確認">3.2 サイトの確認</h2>
+
+<p>公開（オンライン化）されたサイトにアクセスし、動作を確認します</p>
+
+<ol>
+  <li>
+    <p>公開したサイト（ここでは sampleStandardSite）を選択し、<strong>「プロパティ」</strong> をクリックします</p>
+
+    <p><img src="2004.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>「サイトURL」</strong> をコピーします</p>
+
+    <p><img src="2005.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>別ブラウザを開き、先ほどコピーしたサイトURLを開きます。</p>
+  </li>
+  <li>
+    <p><strong>ユーザーIDとパスワードを入力するサイン・イン画面</strong> が表示されます。ID/パスワードを入力し、サイン・インをクリックすると、サイトが表示されます</p>
+
+    <p><img src="2006.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ブラウザの横幅を小さくすると、それに合わせてWebサイトの表示も変更されます（レスポンシブWebデザイン）。また、Home ページや製品情報ページでは、「2列」のセクション・レイアウトが縦表示（最初の列の下に2列目が表示）に切り替わることも確認します</p>
+
+    <p><img src="2007.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="33-フォルダに資料を追加する">3.3 フォルダに資料を追加する</h2>
+
+<p>ファイル・リストで作成した資料ダウンロードは、選択したフォルダのドキュメントをリアルタイムで参照します。そのため、フォルダにドキュメントを1件追加すると、Web サイト上の製品資料ページもドキュメントが1件追加されます。また、フォルダからドキュメントを削除すると、Web サイト上の製品資料ページからも削除されます</p>
+
+<ol>
+  <li>
+    <p>OCE のドキュメントを開き、「サイト作成チュートリアル」→ <strong>「製品カテゴリA」</strong> フォルダを開きます</p>
+  </li>
+  <li>
+    <p>新規ドキュメントを1件アップロードします（ここでは、サンプル資料A-3.pptx を追加）</p>
+
+    <p><img src="2008.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>3.2 項で開いた sampleStandardSite サイトをリロードします。製品カテゴリAに資料が1件追加されていることを確認します</p>
+
+    <p><img src="2009.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%B5%E3%82%A4%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90%EF%BC%88Oracle+Content+and+Experience+%E3%81%AE%E3%82%B5%E3%82%A4%E3%83%88%E6%A9%9F%E8%83%BD%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F61_create_site%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F61_create_site%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F61_create_site%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/41_asset_headless/" class="pagination--pager" title="Oracle Content and Experience を Headless CMS として使ってみよう【初級編】
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/62_webcms/" class="pagination--pager" title="Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
