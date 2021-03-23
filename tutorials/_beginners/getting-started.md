@@ -23,6 +23,11 @@ Oracle Cloud Infrastructure を使い始めるにあたって、コンソール�
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。
 
+**参考動画：**本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。
+
+- [Oracle Cloud Infrastructure ハンズオン - 1.コンソール](https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+1.%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB/1_fixo37o1)
+  　
+
 # 1. サポートされるブラウザの確認
 
 このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。
