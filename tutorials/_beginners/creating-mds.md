@@ -67,7 +67,7 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     </div>
     <br>
 
-3. 立ち上がった **MySQL DBシステムの作成** ウィンドウの **① DBシステム情報** のステップで、以下の項目を入力し **次** ボタンを押します。
+3. 立ち上がった **MySQL DBシステムの作成** ウィンドウで以下の項目を入力します。
 
     - **名前** - 任意の名前を入力します。ここでは「TestMDS」と入力しています。
     - **説明** - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
@@ -77,38 +77,47 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     </div>
     <br>
 
+    - **ユーザー名** - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)
+    - **パスワード** - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。
+    - **パスワードの確認** - パスワードを再入力します。
+
     <div align="center">
     <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;">
     </div>
     <br>
 
-4. **② データベース情報** のステップで、以下の項目を入力し **次** ボタンを押します
-
-    - **ユーザー名** - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)
-    - **パスワード** - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。
-    - **パスワードの確認** - パスワードを再入力します。
-    - **ホスト名** - 任意のホスト名を入力します。ここでは「TestMDS」と入力しています。
+    - **ホスト名** - 任意の名前を入力します。ここでは「TestMDS」と入力しています。<br>※「拡張オプションの表示」をクリック後、「Networking」タブをクリックして入力欄を表示します。
+    
     <div align="center">
     <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;">
     </div>
     <br>
+    
+    
+    
+    また、以下の項目は必要に応じて変更します。
+    
+    - **「スタンドアロン」、「高可用性」、「HeatWave」** - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループレプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br> 「HeatWave」については、「[その10 - MySQLで高速分析を体験する](https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/)」を参考にしてください。   
+    - **ネットワーキングの構成** - 本チュートリアルでは、「TutorialVCN」、「プライベート・サブネット-TutorialVCN（リージョナル）」を使用します。
+    - **配置の構成** - 可用性ドメイン(AD)、フォルト・ドメイン(FD)を指定できます。<br>(現時点で東京リージョン、大阪リージョンは、ADが1つだけであるため、AD2、AD3は選択できません)
+    - **ハードウェアの構成** - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。現時点では、ストレージサイズを後から拡張できないため、予め大きなサイズを確保することをお勧めします。<br>(ストレージサイズの拡張機能は、今後実装される予定です)
+    - **バックアップの構成** - 「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMDSのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されています。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。
+    - **構成の選択** - 「構成の選択」をクリックすることで、事前に作成した構成を適用することが出来ます。事前に構成を作成することで、MDSで変更可能なパラメータを変更できます。<br>※「拡張オプションの表示」をクリック後、「Configuration」タブをクリックして「構成の選択」画面を表示します。
+    - **メンテナンス・ウインドウの開始時間** - メンテナンス・ウインドウの開始時間を設定します。MDSでは、週に1回メンテナンス・ウインドウで設定された時間帯に[メンテナンスが行われる可能性があります](https://docs.oracle.com/en-us/iaas/mysql-database/doc/maintenance.html)。時間はUTCで指定することに注意して下さい。<br>※「拡張オプションの表示」をクリック後、「Management」タブをクリックして入力欄を表示します。
+    - **タグ** - 任意のタグを設定できます。タグをつけることで、コストトラッキング等に活用できます。<br>※「拡張オプションの表示」をクリック後、「タグ」タブをクリックして入力欄を表示します。
 
-5. **③ バックアップ情報** のステップで、何も変更せずに **作成** ボタンを押します。
+    <br>
+
+4. MDSが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
     <div align="center">
     <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;">
-    </div>
-    <br>
-
-6. MDSが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
-    <div align="center">
     <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;">
-    <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;">
     </div>
     <br>
 
-7. ページ左下の **リソース** → **エンドポイント** をクリックして、ホスト名、IPアドレスを確認しておきます。
+5. ページ左下の **リソース** → **エンドポイント** をクリックして、ホスト名、IPアドレスを確認しておきます。
     <div align="center">
-    <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;">
+    <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -121,30 +130,30 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 1. コンソールメニューから **ネットワーキング** → **仮想クラウドネットワーク** を選択し、作成済みのVCNを選択します。本チュートリアルでは**TutorialVCN** です。またこれ以降はVCNが **TutorialVCN** である前提で説明を記述しています。
     <div align="center">
-    <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;">
+    <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;">
     </div>
     <br>
 
     <div align="center">
-    <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;">
+    <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;">
     </div>
     <br>
 
 2. **プライベート・サブネット-TutorialVCN** をクリックします。
     <div align="center">
-    <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;">
+    <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;">
     </div>
     <br>
 
 3. **プライベート・サブネット-TutorialVCNのセキュリティ・リスト** をクリックします。
     <div align="center">
-    <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;">
+    <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;">
     </div>
     <br>
 
 4. **イングレス・ルールの追加** をクリックします。
     <div align="center">
-    <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;">
+    <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;">
     </div>
     <br>
 
@@ -154,13 +163,13 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     - **宛先ポート範囲** - 「3306」と入力します。
 
     <div align="center">
-    <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
+    <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;">
     </div>
     <br>
 
 6. 3306ポートに対するイングレス・ルールが追加されたことを確認します。
     <div align="center">
-    <img width="700" alt="img17.png" src="img17.png" style="border: 1px black solid;">
+    <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
     </div>
     <br>
 
