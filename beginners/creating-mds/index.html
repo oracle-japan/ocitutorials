@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-03-23T12:08:04+09:00">
+  <meta property="article:published_time" content="2021-04-15T14:06:18+09:00">
 
 
 
@@ -138,6 +138,8 @@
               <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
             </li><li class="masthead__menu-item">
@@ -297,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その9 - クラウドでMySQL Databaseを使う">
     <meta itemprop="description" content="クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！">
-    <meta itemprop="datePublished" content="2021-03-23T12:08:04+09:00">
+    <meta itemprop="datePublished" content="2021-04-15T14:06:18+09:00">
     
 
     <div class="page__inner-wrap">
@@ -382,7 +384,7 @@
     <p><br /></p>
   </li>
   <li>
-    <p>立ち上がった <strong>MySQL DBシステムの作成</strong> ウィンドウの <strong>① DBシステム情報</strong> のステップで、以下の項目を入力し <strong>次</strong> ボタンを押します。</p>
+    <p>立ち上がった <strong>MySQL DBシステムの作成</strong> ウィンドウで以下の項目を入力します。</p>
 
     <ul>
       <li><strong>名前</strong> - 任意の名前を入力します。ここでは「TestMDS」と入力しています。</li>
@@ -394,41 +396,51 @@
  </div>
     <p><br /></p>
 
-    <div align="center">
- <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;" />
- </div>
-    <p><br /></p>
-  </li>
-  <li>
-    <p><strong>② データベース情報</strong> のステップで、以下の項目を入力し <strong>次</strong> ボタンを押します</p>
-
     <ul>
       <li><strong>ユーザー名</strong> - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)</li>
       <li><strong>パスワード</strong> - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。</li>
       <li><strong>パスワードの確認</strong> - パスワードを再入力します。</li>
-      <li><strong>ホスト名</strong> - 任意のホスト名を入力します。ここでは「TestMDS」と入力しています。</li>
     </ul>
+
+    <div align="center">
+ <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <ul>
+      <li><strong>ホスト名</strong> - 任意の名前を入力します。ここでは「TestMDS」と入力しています。<br />※「拡張オプションの表示」をクリック後、「Networking」タブをクリックして入力欄を表示します。</li>
+    </ul>
+
     <div align="center">
  <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
-  </li>
-  <li><strong>③ バックアップ情報</strong> のステップで、何も変更せずに <strong>作成</strong> ボタンを押します。
-    <div align="center">
- <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;" />
- </div>
+
+    <p>また、以下の項目は必要に応じて変更します。</p>
+
+    <ul>
+      <li><strong>「スタンドアロン」、「高可用性」、「HeatWave」</strong> - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループレプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br /> 「HeatWave」については、「<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/">その10 - MySQLで高速分析を体験する</a>」を参考にしてください。</li>
+      <li><strong>ネットワーキングの構成</strong> - 本チュートリアルでは、「TutorialVCN」、「プライベート・サブネット-TutorialVCN（リージョナル）」を使用します。</li>
+      <li><strong>配置の構成</strong> - 可用性ドメイン(AD)、フォルト・ドメイン(FD)を指定できます。<br />(現時点で東京リージョン、大阪リージョンは、ADが1つだけであるため、AD2、AD3は選択できません)</li>
+      <li><strong>ハードウェアの構成</strong> - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。現時点では、ストレージサイズを後から拡張できないため、予め大きなサイズを確保することをお勧めします。<br />(ストレージサイズの拡張機能は、今後実装される予定です)</li>
+      <li><strong>バックアップの構成</strong> - 「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMDSのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されています。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。</li>
+      <li><strong>構成の選択</strong> - 「構成の選択」をクリックすることで、事前に作成した構成を適用することが出来ます。事前に構成を作成することで、MDSで変更可能なパラメータを変更できます。<br />※「拡張オプションの表示」をクリック後、「Configuration」タブをクリックして「構成の選択」画面を表示します。</li>
+      <li><strong>メンテナンス・ウインドウの開始時間</strong> - メンテナンス・ウインドウの開始時間を設定します。MDSでは、週に1回メンテナンス・ウインドウで設定された時間帯に<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/maintenance.html">メンテナンスが行われる可能性があります</a>。時間はUTCで指定することに注意して下さい。<br />※「拡張オプションの表示」をクリック後、「Management」タブをクリックして入力欄を表示します。</li>
+      <li><strong>タグ</strong> - 任意のタグを設定できます。タグをつけることで、コストトラッキング等に活用できます。<br />※「拡張オプションの表示」をクリック後、「タグ」タブをクリックして入力欄を表示します。</li>
+    </ul>
+
     <p><br /></p>
   </li>
   <li>MDSが<strong>作成中</strong>になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが<strong>アクティブ</strong>に変わります。
     <div align="center">
+ <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;" />
  <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;" />
- <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
   <li>ページ左下の <strong>リソース</strong> → <strong>エンドポイント</strong> をクリックして、ホスト名、IPアドレスを確認しておきます。
     <div align="center">
- <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;" />
+ <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
@@ -444,30 +456,30 @@
 <ol>
   <li>コンソールメニューから <strong>ネットワーキング</strong> → <strong>仮想クラウドネットワーク</strong> を選択し、作成済みのVCNを選択します。本チュートリアルでは<strong>TutorialVCN</strong> です。またこれ以降はVCNが <strong>TutorialVCN</strong> である前提で説明を記述しています。
     <div align="center">
- <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;" />
+ <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
 
     <div align="center">
- <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;" />
+ <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
   <li><strong>プライベート・サブネット-TutorialVCN</strong> をクリックします。
     <div align="center">
- <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;" />
+ <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
   <li><strong>プライベート・サブネット-TutorialVCNのセキュリティ・リスト</strong> をクリックします。
     <div align="center">
- <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;" />
+ <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
   <li><strong>イングレス・ルールの追加</strong> をクリックします。
     <div align="center">
- <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;" />
+ <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
@@ -480,13 +492,13 @@
     </ul>
 
     <div align="center">
- <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;" />
+ <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
   <li>3306ポートに対するイングレス・ルールが追加されたことを確認します。
     <div align="center">
- <img width="700" alt="img17.png" src="img17.png" style="border: 1px black solid;" />
+ <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
@@ -564,7 +576,7 @@ mysql&gt; SHOW DATABASES;
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-03-23T12:08:04+09:00">March 23, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-04-15T14:06:18+09:00">April 15, 2021</time></p>
 
 
       </footer>
