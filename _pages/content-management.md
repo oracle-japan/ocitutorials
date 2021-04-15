@@ -17,6 +17,7 @@ toc: true
 + **[Oracle Content and Experience インスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_idcs_group_user/)**  
     この文書は Oracle Content and Experience (OCE) を利用するユーザーをIDCSに作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
 
+<br />
 
 # チュートリアル初級編
 
@@ -40,6 +41,7 @@ toc: true
 + **[Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】](/ocitutorials/content-management/62_webcms/)**  
     OCE のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します【所要時間:約30分】
 
+<br />
 
 # チュートリアル中級編
 
@@ -61,21 +63,24 @@ toc: true
 
 ## 多言語サイト（マルチリンガルサイト）
 
-+ **[Oracle Content and Experience で多言語サイトを作成しよう（前編）](https://community.oracle.com/tech/welcome/discussion/4474321/)** (※外部サイト)
-+ **[Oracle Content and Experience で多言語サイトを作成しよう（後編）](https://community.oracle.com/tech/welcome/discussion/4474319/)** (※外部サイト)  
-    OCE のサイト作成機能を利用し、多言語サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します。前編と後編にの2部構成となっています【所要時間:前編後編あわせて約60分】
++ **[Oracle Content and Experience で多言語サイトを作成しよう](/ocitutorials/content-management/74_create_multilingual/)**  
+    OCE のサイト作成機能を利用し、多言語サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します【所要時間:約60分】
 
-
+<br />
 
 # チュートリアル上級編
 
 + **[[Oracle Cloud] Oracle Content and ExperienceのフォルダUIを、他のアプリケーションに埋め込み表示する方法](https://qiita.com/nakasato310/items/931604ee6c58e4cc9ee2)** (※外部サイト)  
     OCEのフォルダに保管される資料一式を、他のWebアプリケーションに埋め込み表示する方法について紹介します。【所要時間:30分】
 
++ **[[Oracle Cloud] Oracle Content and Experience を Headless CMS として利用する React サンプルを動かしてみた](https://qiita.com/nakasato310/items/abf9f3ea8b85b09bae3d)** (※外部サイト)  
+    サンプル公開されている React の Build a blog を動かすことで、OCEをヘッドレスCMSとして利用するイメージを理解します。【所要時間:30分】
+
 + **[React開発のためにOracle Content and ExperienceのStarter Site CLIを使ってみよう](https://community.oracle.com/tech/welcome/discussion/4474323/)** (※外部サイト)
 
     OCE のStarter Site CLI の使用方法をステップ・バイ・ステップで紹介するチュートリアルです。OCE のアセット機能を Headless CMS として利用し、フロントエンドは React で開発します【所要時間:30分】
 
+<br />
 
 # その他お役立ち情報
 
