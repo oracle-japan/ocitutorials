@@ -61,6 +61,12 @@ toc: true
     OCE の有償オプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです【所要時間:15分】
 
 
+## タクソノミ（Taxonomy）
+
++ **[Oracle Content and Experience のタクソノミを使ってみよう](/ocitutorials/content-management/75_taxonomy/)**  
+    OCE のタクソノミ機能を利用し、リポジトリ内のアセットを分類する方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
+
+
 ## 多言語サイト（マルチリンガルサイト）
 
 + **[Oracle Content and Experience で多言語サイトを作成しよう](/ocitutorials/content-management/74_create_multilingual/)**  
@@ -70,8 +76,13 @@ toc: true
 
 # チュートリアル上級編
 
+## Embedded UI（OCEのUIを他のアプリケーションに埋め込み表示）
+
 + **[[Oracle Cloud] Oracle Content and ExperienceのフォルダUIを、他のアプリケーションに埋め込み表示する方法](https://qiita.com/nakasato310/items/931604ee6c58e4cc9ee2)** (※外部サイト)  
     OCEのフォルダに保管される資料一式を、他のWebアプリケーションに埋め込み表示する方法について紹介します。【所要時間:30分】
+
+
+## フレームワークでUIを開発（OCEをHeadless CMSとして利用）
 
 + **[[Oracle Cloud] Oracle Content and Experience を Headless CMS として利用する React サンプルを動かしてみた](https://qiita.com/nakasato310/items/abf9f3ea8b85b09bae3d)** (※外部サイト)  
     サンプル公開されている React の Build a blog を動かすことで、OCEをヘッドレスCMSとして利用するイメージを理解します。【所要時間:30分】
