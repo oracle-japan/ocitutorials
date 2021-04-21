@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-04-15T14:06:18+09:00">
+  <meta property="article:published_time" content="2021-04-21T18:55:00+09:00">
 
 
 
@@ -308,6 +308,8 @@
         
           <p></p><li><a href="/ocitutorials/content-management/74_create_multilingual/">Oracle Content and Experience で多言語サイトを作成しよう</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/content-management/75_taxonomy/">Oracle Content and Experience のタクソノミを使ってみよう</a></li></p>
+        
       </ul>
     </li>
   </ul>
@@ -321,7 +323,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Content and Experience インスタンスの利用ユーザーを作成する">
     <meta itemprop="description" content="この文書は Oracle Content and Experience (OCE) を利用するユーザーをIDCSに作成する方法をステップ・バイ・ステップで紹介するチュートリアルです">
-    <meta itemprop="datePublished" content="2021-04-15T14:06:18+09:00">
+    <meta itemprop="datePublished" content="2021-04-21T18:55:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -338,6 +340,7 @@
       <li><a href="#11-idcs-グループの作成">1.1 IDCS グループの作成</a></li>
       <li><a href="#12-idcs-グループを-oce-インスタンスのアプリケーションロールに割り当て">1.2 IDCS グループを OCE インスタンスのアプリケーションロールに割り当て</a></li>
       <li><a href="#13-idcs-ユーザーの作成">1.3 IDCS ユーザーの作成</a></li>
+      <li><a href="#tips-通知メールを日本語で送信する方法">[TIPS] 通知メールを日本語で送信する方法</a></li>
     </ul>
   </li>
 </ul>
@@ -358,6 +361,7 @@
 <p><br /></p>
 
 <h1 id="1-ユーザーとグループの作成">1. ユーザーとグループの作成</h1>
+
 <p>OCE インスタンスを利用するユーザーは、<strong>IDCS ユーザー</strong> として登録します。ここでは、IDCS ユーザーに IDCS グループを利用し、OCE インスタンスのアプリケーションロール(CECEnterpriseUser)を割り当てる手順を説明します</p>
 
 <p><img src="user01.jpeg" alt="user01.jpeg" /></p>
@@ -380,6 +384,8 @@
 </ul>
 
 <h2 id="11-idcs-グループの作成">1.1 IDCS グループの作成</h2>
+
+<p>IDCS グループを作成します。ここでは <strong>OCEusers</strong> グループを作成します</p>
 
 <ol>
   <li>
@@ -414,7 +420,7 @@
 
 <h2 id="12-idcs-グループを-oce-インスタンスのアプリケーションロールに割り当て">1.2 IDCS グループを OCE インスタンスのアプリケーションロールに割り当て</h2>
 
-<p>IDCSグループにOCEインスタンスのアプリケーションロールを割り当てます。ここでは CECEnterpriseUser を割り当てます。</p>
+<p>IDCSグループにOCEインスタンスのアプリケーションロールを割り当てます。ここでは <strong>CECEnterpriseUser</strong> を割り当てます。</p>
 
 <p>CECEnterpriseUser ロールで利用できる機能については、以下のマニュアルの <strong>Enterprise User</strong> をご確認ください</p>
 
@@ -427,8 +433,7 @@
   </li>
 </ul>
 
-<p>IDCSグループ単位でアプリケーションロールを割り当てることで、ユーザーの追加/削除/
-割り当て権限の変更をより簡単にします</p>
+<p>IDCSグループ単位でアプリケーションロールを割り当てることで、ユーザーの追加/削除/割り当て権限の変更を簡単にします</p>
 
 <ol>
   <li>
@@ -462,6 +467,7 @@
 </ol>
 
 <h2 id="13-idcs-ユーザーの作成">1.3 IDCS ユーザーの作成</h2>
+
 <p>新規IDCSユーザーを作成します。IDCSユーザー作成時に、IDCSグループの割り当ても同時に実施することで、新規IDCSユーザーは登録直後からOCEインスタンスの利用が可能になります</p>
 
 <ol>
@@ -487,6 +493,34 @@
   </li>
   <li>
     <p>新規 IDCS ユーザーの作成が完了します。作成したIDCSユーザーに対してメールが送信されます。仮パスワードを利用し、OCEインスタンスにサインインします。この時にパスワードの再設定します</p>
+  </li>
+</ol>
+
+<h2 id="tips-通知メールを日本語で送信する方法">[TIPS] 通知メールを日本語で送信する方法</h2>
+
+<p>ユーザー作成時に通知されるメールは、通常は英語です。ここでは、その通知メールを <strong>日本語</strong> に変更する手順を紹介します</p>
+
+<ol>
+  <li>
+    <p>IDCSグループ（ここではOCEusers）を作成する</p>
+  </li>
+  <li>
+    <p>IDCSユーザーを作成する。ただし、ここでは <strong>IDCSグループを選択しない</strong></p>
+  </li>
+  <li>
+    <p>作成したIDCSユーザーの「詳細」を開き、<strong>優先言語（Preferred Language）</strong> で <strong>「日本語（Japanese）」</strong> を設定し、保存する</p>
+
+    <p><img src="user16.png" alt="user16.png" /></p>
+  </li>
+  <li>
+    <p>「グループ」メニューよりユーザーを追加するIDCSグループ（ここではOCEusers）を開き、IDCSユーザーを割り当てます</p>
+
+    <p><img src="user18.png" alt="user18.png" /></p>
+  </li>
+  <li>
+    <p>日本語の通知メールがユーザーに送信されます</p>
+
+    <p><img src="user17.png" alt="user17.png" /></p>
   </li>
 </ol>
 
@@ -522,7 +556,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-04-15T14:06:18+09:00">April 15, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-04-21T18:55:00+09:00">April 21, 2021</time></p>
 
 
       </footer>
