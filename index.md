@@ -113,6 +113,8 @@ Oracle FunctionsとOracle Cloud Infrastructure(OCI)上の様々なサービス�
 Oracle Content and Experience (OCE)は、API ファーストなアーキテクチャで、マルチチャネルでのコンテンツ配信を実現するインテリジェントなコンテンツ管理プラットフォームです。この文書では、OCEが提供するファイル共有、アセット管理、Webサイト管理などさまざまな機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせてリンク先の各文書をご利用ください。
 - **[Oracle Integration チュートリアル](https://community.oracle.com/docs/DOC-1037469)**  
   Oracle Integration(OIC)は、アプリケーションの統合、プロセスの自動化およびビジュアル・アプリケーションの作成を可能にする完全に管理されたサービスです。この文書では、OIC が提供するプロセス機能（ワークフローの作成・テスト・公開）など、さまざまな機能の説明や使い方が、各文書ごとにステップ・バイ・ステップで紹介されています。利用する機能にあわせて、リンク先の各文書をご利用ください。
+- **[Oracle Blockchain Platform チュートリアル](/ocitutorials/blockchain/)**  
+  Oracle Blockchain Platform（OBP）は、オープンソースのブロックチェーンプロトコル Hyperledger Fabric をベースとした、エンタープライズ向けブロックチェーン基盤です。この文書では、OBP の基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせてリンク先の各文書をご利用ください。
 - **[ストレージ・ゲートウェイを作成する](/ocitutorials/intermediates/storage-gateway/)**  
 ストレージ・ゲートウェイ とは、アプリケーションが 標準のNFSv4プロトコルを使用してOracle Cloud Infrastructure オブジェクト・ストレージと相互作用できるようになるサービスです。オンプレミスからのデータ転送、バックアップ、アーカイブ用途などに利用できます。
 
