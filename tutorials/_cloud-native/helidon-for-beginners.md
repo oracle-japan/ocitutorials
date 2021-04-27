@@ -255,8 +255,8 @@ metrics.rest-request.enabled=false
 `@Table(name = "PREFECTURE")`部分は、このEntityクラスを`PREFECTURE`テーブルと紐づけることを示します。  
 これらより、冒頭2行部分は、「`PREFECTURE`テーブルと紐づける`Prefecture`エンティティクラスを宣言する」ことになります。  
 
-3行目は、このEntityクラスに対するアクセスモードを指定します。この場合は、Property形式でアクセス可能になります。  
-(詳細は、[2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう](#2-4-サンプルアプリケーションのソースコードprefectureresourcejavaを確認しよう)で解説します)
+3行目は、各カラム(フィールド)に対するアクセス形式を指定します。  
+今回は、`Property`になるので、各カラム(フィールド)への属性はgetterに定義します。  
 
 ```java
 @NamedQueries({
@@ -309,13 +309,12 @@ public class Prefecture {
 }
 ```
 
-ここでは、アノテーションでカラムごとに属性を付与しています。
-
-変数`id`に対しては、PREFECTUREテーブルのIDカラムを`name = "ID"`で紐づけています。
-また、`@Id`によってこのカラムを主キーとして定義し、`nullable = false`と`updatable = false`により、NOT NULL制約と主キーの更新を禁止する定義を行っています。
-
-変数`name`に対しては、PREFECTUREテーブルのIDカラムを`name = "NAME"`で紐づけています。
-同じようにNOT NULL制約も付与しています。
+ここでは、アノテーションでカラムごとに属性を付与しています。  
+今回は、アクセス形式が`Property`なので、getterに対してカラム属性を定義します。  
+変数`id`に対しては、PREFECTUREテーブルのIDカラムを`name = "ID"`で紐づけています。  
+また、`@Id`によってこのカラムを主キーとして定義し、`nullable = false`と`updatable = false`により、NOT NULL制約と主キーの更新を禁止する定義を行っています。  
+変数`name`に対しては、PREFECTUREテーブルのIDカラムを`name = "NAME"`で紐づけています。  
+同じようにNOT NULL制約も付与しています。  
 なお、`@Basic(optional = false)`は、カラムを基本型として定義しています。  
 
 
@@ -358,7 +357,6 @@ public class PrefectureResource {
 また、`@Produces`アノテーションで、レスポンスの応答形式を指定しています。この場合は、`Content-type: application/json`になります。  
 クエリは、EntityManagerを利用して発行しています。その際に、`getPrefectures`という名前でクエリを取得しています。  
 この名前は、[2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう](#2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう)で定義したものです。  
-また同様に、クエリへのアクセス形式もPropety形式で指定したので、Propety形式でのアクセスになっています。
 
 ```java
     @GET
@@ -387,7 +385,6 @@ public class PrefectureResource {
 
 EntityManagerを利用して、クエリを発行しています。その際に、`getPrefectureById`という名前でクエリを取得しています。  
 この名前は、[2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう](#2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう)で定義したものです。  
-また同様に、クエリへのアクセス形式もPropety形式で指定したので、Propety形式でのアクセスになっています。
 
 ```java
     @GET
@@ -408,7 +405,6 @@ EntityManagerを利用して、クエリを発行しています。その際に�
 このメソッドで異なるのは、`@PathParam`で`name`というパラメータをURLから取得しています。  
 そのため、このメソッドにアクセスするためのURLは、`http://localhost:8080/prefecture/name/北海道`のようになります。("北海道"のデータを取得する場合)  
 このメソッドでも、EntityManagerを利用して、クエリを発行しています。その際に、`getPrefectureByName`という名前でクエリを取得しています。  
-また同様に、クエリへのアクセス形式もPropety形式で指定したので、Propety形式でのアクセスになっています。
 
 
 ```java
@@ -666,6 +662,7 @@ public class PrefectureArea {
 
 上記の`@Entity`と`@Table`の部分の`XXXXXX`に適切な名前を入れます。  
 なお、このEntityでは、`@NamedQuery`として、`getPrefectureAreas`と`getPrefectureAreaByArea`という2つのクエリを定義しました。  
+また、アクセス形式は`Field`とします。
 
 次にフィールドを作成していきます。  
 今回は、テーブルのカラムとして、主キーとなる`ID`カラムと地域区分を示す`AREA`カラムを作成します。
@@ -701,6 +698,7 @@ public class PrefectureArea {
 ```
 
 上記の`XXX`に適切な文字を入れてみましょう。  
+その際、アクセス形式が`Field`なので、カラム属性の定義はフィールド変数に対して付与している点にも注目します。  
 
 以上で、`PrefectureArea`エンティティは完成です！  
 
