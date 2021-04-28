@@ -39,8 +39,6 @@ Helidonは、MicroProfile準拠のフレームワークで、SEとMPという2�
 >このチュートリアルで動作させるサンプルアプリケーションには、Oracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します。  
 >ATPを予めプロビジョニングしておく必要があるので、[こちら](../../intermediates/adb-hol1-provisioning/)の手順を完了させてからこのチュートリアルを実施してください。
 
-<a id="anchor1"></a>
-
 # 1. Helidon CLIでベースプロジェクトを作成してみよう
 
 ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。  
@@ -364,8 +362,10 @@ public class PrefectureResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Prefecture getPrefectureById(@PathParam("id") String id) {
         TypedQuery<Prefecture> query = entityManager.createNamedQuery("getPrefectureById", Prefecture.class);
-        Prefecture prefecture = query.setParameter("id", Integer.valueOf(id)).getSingleResult();
-        if (prefecture == null) {
+        Prefecture prefecture = new Prefecture();
+        try {
+            prefecture = query.setParameter("id", Integer.valueOf(id)).getSingleResult();
+        } catch (NoResultException ne) {
             throw new NotFoundException("Unable to find prefecture with ID " + id);
         }
         return prefecture;
@@ -539,6 +539,19 @@ java -jar target/helidon-handson.jar
 
 それでは、アクセスしてみます。  
 
+まずはビルドします。  
+
+```sh
+mvn package
+```
+
+それでは、jarファイルを起動してみましょう。  
+実行場所はプロジェクト直下とします。  
+
+```sh
+java -jar target/helidon-handson.jar 
+```
+
 **INFO：**
 >起動後の初回起動は、初期データの登録(DDL実行)が走るため、少し時間がかかります。また、今回は自動生成スキーマの設定により、初めにDrop tableした後にCreate tableしているので、初回実行時にはExceptionが発生する可能性がありますが、アプリケーションの実行に問題はありません。
 
@@ -581,19 +594,28 @@ curl http://localhost:8080/prefecture/name/北海道
 次に北海道のデータを削除してみます。
 
 ```sh
-curl curl -X DELETE http://localhost:8080/prefecture/1
+curl -X DELETE http://localhost:8080/prefecture/1
 ```
 
 削除されたことを確認してみましょう
 
 ```sh
+curl -i -X GET http://localhost:8080/prefecture/1
+```
+
+以下のような結果が返却されます。
+
+```sh
+HTTP/1.1 404 Not Found
+Content-Type: text/plain
+Date: Wed, 28 Apr 2021 17:56:25 +0900
+transfer-encoding: chunked
+connection: keep-alive
+
 No handler found for path: /prefecture/1
 ```
 
 これは、`/prefecture/1`というリソースが存在しないことを示します。  
-
-**WARN：**
->実際のアプリケーション作成時には、適切なエラーハンドリングを実施してください。
 
 最後に北海道のデータを再登録します。
 
@@ -949,21 +971,31 @@ curl http://localhost:8080/prefecture/name/北海道
 次に北海道のデータを削除してみます。
 
 ```sh
-curl curl -X DELETE http://localhost:8080/prefecture/1
+curl -X DELETE http://localhost:8080/prefecture/1
 ```
 
 削除されたことを確認してみましょう
 
 ```sh
+curl -i -X GET http://localhost:8080/prefecture/1
+```
+
+以下のような結果が返却されます。
+
+```sh
+HTTP/1.1 404 Not Found
+Content-Type: text/plain
+Date: Wed, 28 Apr 2021 17:56:25 +0900
+transfer-encoding: chunked
+connection: keep-alive
+
 No handler found for path: /prefecture/1
 ```
 
 これは、`/prefecture/1`というリソースが存在しないことを示します。  
 
-**WARN：**
->実際のアプリケーション作成時には、適切なエラーハンドリングを実施してください。
-
-最後に北海道のデータを再登録します。
+最後に北海道のデータを再登録します。  
+POSTするデータは[2-5. サンプルアプリケーションの動作を確認しよう](#2-5-サンプルアプリケーションの動作を確認しよう)の時とは異なります。  
 
 ```sh
 curl -H "Content-Type: application/json" -X POST --data '{"id":1, "area":"北海道", "name":"北海道"}' http://localhost:8080/prefecture 
