@@ -905,7 +905,8 @@ git clone https://github.com/oracle-japan/helidon-handson-complete.git
 
 ## 3-6. 拡張したサンプルアプリケーションを動かしてみよう
 
-それでは、拡張したサンプルアプリケーションを動かしてみましょう。
+それでは、拡張したサンプルアプリケーションを動かしてみましょう。  
+プロジェクト直下で以下のコマンドを実行します。
 
 ```sh
 mvn package
