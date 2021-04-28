@@ -537,23 +537,10 @@ java -jar target/helidon-handson.jar
 2021.04.23 11:21:49 情報 io.helidon.common.HelidonFeatures Thread[features-thread,5,main]: Helidon MP 2.2.2 features: [CDI, Config, Fault Tolerance, Health, JAX-RS, JPA, JTA, Metrics, Open API, REST Client, Security, Server, Tracing]
 ```
 
-それでは、アクセスしてみます。  
-
-まずはビルドします。  
-
-```sh
-mvn package
-```
-
-それでは、jarファイルを起動してみましょう。  
-実行場所はプロジェクト直下とします。  
-
-```sh
-java -jar target/helidon-handson.jar 
-```
-
 **INFO：**
 >起動後の初回起動は、初期データの登録(DDL実行)が走るため、少し時間がかかります。また、今回は自動生成スキーマの設定により、初めにDrop tableした後にCreate tableしているので、初回実行時にはExceptionが発生する可能性がありますが、アプリケーションの実行に問題はありません。
+
+それでは、アクセスしてみます。  
 
 まずは、全都道府県情報を取得してみましょう。
 
@@ -919,6 +906,30 @@ git clone https://github.com/oracle-japan/helidon-handson-complete.git
 ## 3-6. 拡張したサンプルアプリケーションを動かしてみよう
 
 それでは、拡張したサンプルアプリケーションを動かしてみましょう。
+
+```sh
+mvn package
+```
+
+以下のようなメッセージが表示されればビルド完了です。(一部抜粋しています)
+
+```sh
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  41.637 s
+[INFO] Finished at: 2021-04-23T11:20:18+09:00
+[INFO] ------------------------------------------------------------------------
+```
+
+targetディレクトリが生成され、その直下に`helidon-handson.jar`が作成されています。
+
+それでは、jarファイルを起動してみましょう。  
+実行場所はプロジェクト直下とします。  
+
+```sh
+java -jar target/helidon-handson.jar 
+```
 
 まずは、都道府県エリア情報を取得してみます。
 
