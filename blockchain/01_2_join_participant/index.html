@@ -1,0 +1,651 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Participant インスタンスをブロックチェーン・ネットワークに参加させる | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="この文書は Oracle Blockchain Platform（OBP） のParticipantインスタンスをブロックチェーン・ネットワークに参加させ、ふたつの OBP インスタンスでブロックチェーン・ネットワークを構成する方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Participant インスタンスをブロックチェーン・ネットワークに参加させる">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/blockchain/01_2_join_participant/">
+
+
+  <meta property="og:description" content="この文書は Oracle Blockchain Platform（OBP） のParticipantインスタンスをブロックチェーン・ネットワークに参加させ、ふたつの OBP インスタンスでブロックチェーン・ネットワークを構成する方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/blockchain/01_2_join_participant/founder_step2.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-05-11T10:58:44+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/blockchain/01_2_join_participant/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/blockchain/01_2_join_participant/founder_step2.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Participant インスタンスをブロックチェーン・ネットワークに参加させる
+
+        
+      </h1>
+      
+        <p class="page__lead">この文書は Oracle Blockchain Platform（OBP） のParticipantインスタンスをブロックチェーン・ネットワークに参加させ、ふたつの OBP インスタンスでブロックチェーン・ネットワークを構成する方法をステップ・バイ・ステップで紹介するチュートリアルです。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/blockchain" itemprop="item"><span itemprop="name">Blockchain</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Participant インスタンスをブロックチェーン・ネットワークに参加させる</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Participant インスタンスをブロックチェーン・ネットワークに参加させる">
+    <meta itemprop="description" content="この文書は Oracle Blockchain Platform（OBP） のParticipantインスタンスをブロックチェーン・ネットワークに参加させ、ふたつの OBP インスタンスでブロックチェーン・ネットワークを構成する方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+    <meta itemprop="datePublished" content="2021-05-11T10:58:44+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#0-前提の理解">0. 前提の理解</a>
+    <ul>
+      <li><a href="#01-founder-インスタンスと-participant-インスタンス">0.1 Founder インスタンスと Participant インスタンス</a></li>
+      <li><a href="#02-このチュートリアルでの例となるインスタンス名とブロックチェーンネットワーク構成">0.2 このチュートリアルでの例となるインスタンス名とブロックチェーン・ネットワーク構成</a></li>
+    </ul>
+  </li>
+  <li><a href="#1-participant-インスタンスの証明書を-founder-インスタンスに取り込む">1 Participant インスタンスの証明書を Founder インスタンスに取り込む</a>
+    <ul>
+      <li><a href="#11-participant-インスタンスの証明書をダウンロード">1.1 Participant インスタンスの証明書をダウンロード</a></li>
+      <li><a href="#12-participant-インスタンスの証明書を-founder-インスタンスにアップロード">1.2 Participant インスタンスの証明書を Founder インスタンスにアップロード</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-founder-インスタンスの証明書を-founder-インスタンスに取り込む">2 Founder インスタンスの証明書を Founder インスタンスに取り込む</a>
+    <ul>
+      <li><a href="#21-founder-インスタンスの-orderer-設定ファイルをダウンロード">2.1 Founder インスタンスの Orderer 設定ファイルをダウンロード</a></li>
+      <li><a href="#22-orderer-設定ファイルを-participant-インスタンスにアップロード">2.2 Orderer 設定ファイルを Participant インスタンスにアップロード</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書は Oracle Blockchain Platform（OBP） の Participant インスタンスをブロックチェーン・ネットワークに参加させる方法をステップ・バイ・ステップで紹介するチュートリアルです。</p>
+
+<p>このチュートリアルではふたつの OBP インスタンスでブロックチェーン・ネットワークを構成していますが、3 以上のインスタンスから成るブロックチェーン・ネットワークを構成する場合にも、基本的に同一の手順で実施可能です。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2021年4月時点での最新バージョン(21.1.2)を元に作成されています。
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><strong>前提 :</strong></p>
+
+    <ul>
+      <li><a href="../01_01_create_instance/">Oracle Blockchain Platform のインスタンス作成</a>を完了</li>
+      <li>Founder インスタンスと Participant インスタンスそれぞれのインスタンスを所持</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="0-前提の理解">0. 前提の理解</h1>
+
+<h2 id="01-founder-インスタンスと-participant-インスタンス">0.1 Founder インスタンスと Participant インスタンス</h2>
+
+<p>OBP はパーミッション型のブロックチェーンプロトコルである Hyperledger Fabric をベースとしたブロックチェーンプラットフォームです。OBP はひとつ～複数のインスタンスでブロックチェーン・ネットワークを構成することができます。</p>
+
+<p>OBP インスタンス作成時に、「プラットフォーム・ロール」の項目で、インスタンス作成と同時にブロックチェーン・ネットワークを新たに作成する（→Founder インスタンス）か、既存のブロックチェーン・ネットワークに参加することを前提にインスタンスを作成する（→Participant インスタンス）かを選択します。</p>
+
+<p>Founder インスタンスの場合は、作成したブロックチェーン・ネットワークに参加した状態でインスタンスが作成されるため、そのままで各種のオペレーションが可能です。</p>
+
+<p>一方、Participant インスタンスの場合は、まずブロックチェーン・ネットワークへの参加が必要です。</p>
+
+<h2 id="02-このチュートリアルでの例となるインスタンス名とブロックチェーンネットワーク構成">0.2 このチュートリアルでの例となるインスタンス名とブロックチェーン・ネットワーク構成</h2>
+
+<p>このチュートリアルの例では、 <em>Founder2104</em> というインスタンス名の Founder インスタンスと、 <em>Member2104</em> というインスタンス名の Participant インスタンスを扱います。</p>
+
+<p>Founder2104 によって作成されたブロックチェーン・ネットワークに、Member2104 を参加させていきます。</p>
+
+<h1 id="1-participant-インスタンスの証明書を-founder-インスタンスに取り込む">1 Participant インスタンスの証明書を Founder インスタンスに取り込む</h1>
+
+<p>Founder インスタンスに Participant インスタンスをブロックチェーン・ネットワークのメンバーとして認識させるため、Participant インスタンスの Organization 証明書を Founder インスタンスにアップロードし取り込ませます。</p>
+
+<h2 id="11-participant-インスタンスの証明書をダウンロード">1.1 Participant インスタンスの証明書をダウンロード</h2>
+
+<p>Participant インスタンスの OBP サービス・コンソールから、Organization 証明書をダウンロードします。</p>
+
+<ol>
+  <li>
+    <p>OCI コンソールを開きます。</p>
+  </li>
+  <li>
+    <p>OBP インスタンスの存在するデータリージョンを選択します（ここでは <strong>Japan East(Tokyo)</strong> を選択）。</p>
+
+    <p><img src="select_region.png" alt="リージョンの選択" /></p>
+  </li>
+  <li>
+    <p>左上のメニューをクリックし、<strong>「Blockchain Platform」</strong> をクリックします。</p>
+
+    <p><img src="select_menu.png" alt="メニューの選択" /></p>
+  </li>
+  <li>
+    <p>画面左の「コンパートメント」で、<strong>OBP インスタンスの存在するコンパートメント</strong> （ここでは gaku.nakamura コンパートメント）を選択します。</p>
+
+    <p><img src="select_compartment.png" alt="コンパートメントの選択" /></p>
+  </li>
+  <li>
+    <p>選択したデータリージョン、コンパートメントに存在するインスタンスの一覧が表示されます。<strong>Participant インスタンス</strong> （ここでは member2104）をクリックします。</p>
+
+    <p><img src="select_participant_instance.png" alt="インスタンスの選択" /></p>
+  </li>
+  <li>
+    <p>インスタンス詳細画面が表示されます。<strong>サービス・コンソール</strong> をクリックします。</p>
+
+    <p><img src="open_participant_service_console.png" alt="サービス・コンソールを開く" /></p>
+  </li>
+  <li>
+    <p>サービス・コンソールが開き、ダッシュボードが表示されます。上部のメニューから<strong>Network</strong> をクリックします。</p>
+
+    <p><img src="participant_step1.png" alt="Networkページを開く" /></p>
+  </li>
+  <li>
+    <p>Network ページが表示されます。表示されている Organization の一覧から、<strong>自身の Organization の行の右側にあるメニューボタン</strong>から、<strong>Export Certificates</strong>をクリックします。</p>
+
+    <p><img src="participant_step2.png" alt="Export Certificates" /></p>
+  </li>
+  <li>
+    <p>Organization 証明書ファイルがダウンロードされます。このファイルは後続の手順で必要になります。</p>
+
+    <p><img src="participant_step3.png" alt="Organization証明書ファイルのダウンロード" /></p>
+  </li>
+</ol>
+
+<h2 id="12-participant-インスタンスの証明書を-founder-インスタンスにアップロード">1.2 Participant インスタンスの証明書を Founder インスタンスにアップロード</h2>
+
+<p>Founder インスタンスの OBP サービス・コンソールから、Participant インスタンスの Organization 証明書をアップロードし取り込みます。</p>
+
+<ol>
+  <li>
+    <p>先程の手順と同様に、OBP インスタンスの一覧を表示します。<strong>Founder インスタンス</strong> （ここでは founder2104）をクリックします。</p>
+
+    <p><img src="select_founder_instance.png" alt="インスタンスの選択" /></p>
+  </li>
+  <li>
+    <p>インスタンス詳細画面が表示されます。<strong>サービス・コンソール</strong> をクリックします。</p>
+
+    <p><img src="open_founder_service_console.png" alt="サービス・コンソールを開く" /></p>
+  </li>
+  <li>
+    <p>サービス・コンソールが開き、ダッシュボードが表示されます。上部のメニューから<strong>Network</strong> をクリックします。</p>
+
+    <p><img src="founder_step1.png" alt="Networkページを開く" /></p>
+  </li>
+  <li>
+    <p>Network ページが表示されます。<strong>Add Organizations</strong>をクリックします。</p>
+
+    <p><img src="founder_step2.png" alt="Add Organizations" /></p>
+  </li>
+  <li>
+    <p>開いたダイアログで、<strong>Upload Organization Certificates</strong>をクリックします。</p>
+
+    <p><img src="founder_step3.png" alt="Upload Organization Certificates" /></p>
+  </li>
+  <li>
+    <p>ファイル選択ダイアログで、Participant インスタンスの証明書を選択し、アップロードします。</p>
+  </li>
+  <li>
+    <p>アップロードしたファイルが表示に反映されていることを確認し、<strong>Add</strong>をクリックします。</p>
+
+    <p><img src="founder_step4.png" alt="証明書ファイルの追加反映" /></p>
+  </li>
+  <li>
+    <p>成功メッセージが表示されていることを確認し、<strong>Finish</strong>をクリックします。</p>
+
+    <p><img src="founder_step5.png" alt="証明書ファイルの追加完了" /></p>
+  </li>
+  <li>
+    <p>Network ページが表示されます。Founder インスタンスからは Participant インスタンスがブロックチェーン・ネットワークのメンバーとして認識され、Organization 一覧に表示されるようになっています。</p>
+
+    <p><img src="founder_step2.png" alt="Participantインスタンスの追加完了" /></p>
+  </li>
+</ol>
+
+<h1 id="2-founder-インスタンスの証明書を-founder-インスタンスに取り込む">2 Founder インスタンスの証明書を Founder インスタンスに取り込む</h1>
+
+<p>Participant インスタンスからも自身が参加したブロックチェーン・ネットワークを認識できるようにする必要があります。このために、Founder インスタンスの Orderer の設定ファイルを Participant インスタンスにアップロードし取り込ませます。</p>
+
+<h2 id="21-founder-インスタンスの-orderer-設定ファイルをダウンロード">2.1 Founder インスタンスの Orderer 設定ファイルをダウンロード</h2>
+
+<p>Founder インスタンスの OBP サービス・コンソールから、Ordering Service 設定ファイルをダウンロードします。</p>
+
+<ol>
+  <li>
+    <p>先程の手順と同様に、<strong>Founder</strong> のサービス・コンソールを開きます。上部のメニューから<strong>Network</strong> をクリックします。</p>
+
+    <p><img src="founder_step1.png" alt="Networkページを開く" /></p>
+  </li>
+  <li>
+    <p>Network ページが表示されます。表示されている Organization の一覧から、<strong>自身の Organization の行の右側にあるメニューボタン</strong>から、<strong>Export Orderer Settings</strong>をクリックします。</p>
+
+    <p><img src="founder_step7.png" alt="Export Orderer Settings" /></p>
+  </li>
+  <li>
+    <p>Orderer 設定ファイルがダウンロードされます。このファイルは後続の手順で必要になります。</p>
+
+    <p><img src="founder_step8.png" alt="Orderer設定ファイルのダウンロード" /></p>
+  </li>
+</ol>
+
+<h2 id="22-orderer-設定ファイルを-participant-インスタンスにアップロード">2.2 Orderer 設定ファイルを Participant インスタンスにアップロード</h2>
+
+<p>Participant インスタンスの OBP サービス・コンソールから、Orderer 設定ファイルをアップロードし取り込みます。</p>
+
+<ol>
+  <li>
+    <p>先程の手順と同様に、<strong>Participant</strong> のサービス・コンソールを開きます。上部のメニューから<strong>Network</strong> をクリックします。</p>
+
+    <p><img src="participant_step1.png" alt="Networkページを開く" /></p>
+  </li>
+  <li>
+    <p>Network ページが表示されます。<strong>Orderer Settings</strong>をクリックし、開いたメニューから<strong>Import</strong>を選択します。</p>
+
+    <p><img src="participant_step4.png" alt="Orderer Settings" /></p>
+  </li>
+  <li>
+    <p>開いたダイアログで、<strong>Upload Orderer Settings</strong>をクリックします。</p>
+
+    <p><img src="participant_step5.png" alt="Upload Orderer Settings" /></p>
+  </li>
+  <li>
+    <p>ファイル選択ダイアログで、Orderer 設定ファイルを選択し、アップロードします。</p>
+  </li>
+  <li>
+    <p>アップロードしたファイルが表示に反映されていることを確認し、<strong>Submit</strong>をクリックします。</p>
+
+    <p><img src="participant_step6.png" alt="設定ファイルの追加反映" /></p>
+  </li>
+  <li>
+    <p>Network ページが表示されます。Participant インスタンスが自身の参加したブロックチェーン・ネットワークを認識し、Founder インスタンスが Organization 一覧に表示されるようになっています（表示されていない場合は右上の更新ボタンをクリックすると表示がリフレッシュされて表示されるようになります）。</p>
+
+    <p><img src="participant_step7.png" alt="ブロックチェーン・ネットワークの認識完了" /></p>
+  </li>
+  <li>
+    <p>また、ブロックチェーン・ネットワークに参加したことで Participant インスタンスのコンソールでも Founder インスタンスと同様に様々な機能が使えるようになっています。Dashboard ページを開くと、リソースやトランザクション状況などが表示されるようになっています。</p>
+
+    <p><img src="participant_step8.png" alt="Dashboardページの機能解禁" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#blockchain" class="page__taxonomy-item" rel="tag">Blockchain</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-05-11T10:58:44+09:00">May 11, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Participant+%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3%E3%83%BB%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E3%81%AB%E5%8F%82%E5%8A%A0%E3%81%95%E3%81%9B%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F01_2_join_participant%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F01_2_join_participant%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F01_2_join_participant%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/blockchain/01_1_create_instance/" class="pagination--pager" title="Oracle Blockchain Platformのインスタンス作成
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/blockchain/02_1_create_channel/" class="pagination--pager" title="Channelを作成し、インスタンスおよびPeerノードを参加させる
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

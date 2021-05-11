@@ -1,0 +1,649 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Blockchain Platformのインスタンス作成 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="この文書は Oracle Blockchain Platform（OBP） のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Blockchain Platformのインスタンス作成">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/">
+
+
+  <meta property="og:description" content="この文書は Oracle Blockchain Platform（OBP） のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/create_compartment_form.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-05-11T10:58:44+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/blockchain/01_1_create_instance/create_compartment_form.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Blockchain Platformのインスタンス作成
+
+        
+      </h1>
+      
+        <p class="page__lead">この文書は Oracle Blockchain Platform（OBP） のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/blockchain" itemprop="item"><span itemprop="name">Blockchain</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Blockchain Platformのインスタンス作成</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Blockchain Platformのインスタンス作成">
+    <meta itemprop="description" content="この文書は Oracle Blockchain Platform（OBP） のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。">
+    <meta itemprop="datePublished" content="2021-05-11T10:58:44+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-準備">1. 準備</a>
+    <ul>
+      <li><a href="#11-oracle-cloud-の環境を準備する">1.1 Oracle Cloud の環境を準備する</a></li>
+      <li><a href="#12-oracle-cloud-にサインインする">1.2 Oracle Cloud にサイン・インする</a></li>
+      <li><a href="#13-コンパートメントの作成">1.3 コンパートメントの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-obp-インスタンスの作成">2. OBP インスタンスの作成</a>
+    <ul>
+      <li><a href="#21-obp-インスタンスのプラットフォームロールについて">2.1 OBP インスタンスのプラットフォーム・ロールについて</a></li>
+      <li><a href="#22-obp-インスタンスの作成">2.2 OBP インスタンスの作成</a></li>
+      <li><a href="#23-obp-インスタンス作成完了後のサービスコンソールの確認">2.3 OBP インスタンス作成完了後のサービス・コンソールの確認</a></li>
+      <li><a href="#24-obp-インスタンスの作成オプションについて">2.4 OBP インスタンスの作成オプションについて</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書は Oracle Blockchain Platform（OBP）のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2021年4月時点での最新バージョン(21.1.2)を元に作成されています。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h1 id="1-準備">1. 準備</h1>
+
+<h2 id="11-oracle-cloud-の環境を準備する">1.1 Oracle Cloud の環境を準備する</h2>
+
+<p>Oracle Cloud のアカウントを準備します。現在、OBP は無料トライアル期間（Free Trial Credit）および Always Free で利用できるサービスには含まれていないため、有償アカウントが必要です。</p>
+
+<h2 id="12-oracle-cloud-にサインインする">1.2 Oracle Cloud にサイン・インする</h2>
+
+<p>OBP インスタンスは、<strong>Oracle Cloud Infrastructure コンソール</strong>（以降 OCI コンソール）から作成します。ここでは、前の手順で作成した <strong>テナント管理ユーザー</strong> で OCI コンソールにアクセスします。</p>
+
+<p>こちらのチュートリアルもあわせてご確認ください。</p>
+
+<ul>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/getting-started/">その 1 - OCI コンソールにアクセスして基本を理解する</a></li>
+</ul>
+
+<ol>
+  <li>
+    <p>Web ブラウザで、以下の URL にアクセスします。</p>
+
+    <ul>
+      <li>https://cloud.oracle.com</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Cloud Account Name （クラウドアカウント名）</strong> を入力し、<strong>Next</strong> をクリックします。<br />
+<strong>Cloud Account Name</strong> には、Oracle Cloud 契約時、もしくはトライアル環境を申し込んだ際に払い出される一意の ID（クラウド・アカウント）を入力します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>![OCIコンソールにサインイン](002.jpg)
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>左側の <strong>Single Sign-On (SSO)</strong> の下の <strong>Continue</strong> をクリックします。<br />
+左側の Single Sign-On (SSO) は、IDCS で認証されます。ここでサイン・インできれば、条件の「1. IDCS ユーザーであること」は OK となります。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>![シングルサインオン](003.webp)
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>ユーザー名</strong> と <strong>パスワード</strong> を入力し、サイン・インをクリックします。</p>
+
+    <p><img src="004.webp" alt="サイン・オン" /></p>
+  </li>
+  <li>
+    <p>OCI コンソールが表示されます。</p>
+
+    <p><img src="005.png" alt="OCIコンソール" /></p>
+  </li>
+</ol>
+
+<h2 id="13-コンパートメントの作成">1.3 コンパートメントの作成</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この手順は必須ではありません。
+ただし、セキュリティ上の理由から、Oracleでは、既存のルート・コンパートメントを使用するのではなく、
+新規コンパートメントを作成して使用することを強くお薦めします。
+</code></pre></div></div>
+
+<p>OBP インスタンスを作成する際に、<strong>コンパートメント(Compartment)</strong> を指定します。必要に応じて OBP インスタンスが利用するコンパートメントを事前に作成します。
+ここでは、ルート・コンパートメント配下に <strong>OBP</strong> コンパートメントを作成します。</p>
+
+<ol>
+  <li>
+    <p>OCI コンソールを開き、左上のメニュー → <strong>「アイデンティティ」→「コンパートメント」</strong> を選択します。</p>
+
+    <p><img src="create_compartment_menu.webp" alt="コンパートメント" /></p>
+  </li>
+  <li>
+    <p><strong>「コンパートメントの作成」</strong> をクリックします。</p>
+
+    <p><img src="create_compartment.png" alt="コンパートメントの作成" /></p>
+  </li>
+  <li>
+    <p><strong>「名前」</strong> と <strong>「説明」</strong> を入力し、<strong>「コンパートメントの作成」</strong> をクリックします（ここでは OBP コンパートメントを作成）。</p>
+
+    <p><img src="create_compartment_form.png" alt="コンパートメントの作成" /></p>
+  </li>
+  <li>
+    <p><strong>OBP</strong> コンパートメントが作成されます。</p>
+
+    <p><img src="create_compartment_result.png" alt="コンパートメントの作成" /></p>
+  </li>
+</ol>
+
+<h1 id="2-obp-インスタンスの作成">2. OBP インスタンスの作成</h1>
+
+<p>OBP インスタンスを作成します。</p>
+
+<h2 id="21-obp-インスタンスのプラットフォームロールについて">2.1 OBP インスタンスのプラットフォーム・ロールについて</h2>
+
+<p>OBP はパーミッション型のブロックチェーンプロトコルである Hyperledger Fabric をベースとしたブロックチェーンプラットフォームです。OBP のひとつのインスタンスは、Hyperledger Fabric におけるひとつの Organization に対応しています。</p>
+
+<p>OBP はひとつ～複数のインスタンス（また、OBP 以外の Hyperledger Fabric の Organization）でブロックチェーン・ネットワークを構成することができます。OBP インスタンス作成時に、「プラットフォーム・ロール」の項目で、インスタンス作成と同時にブロックチェーン・ネットワークを新たに作成する（→Founder インスタンス）か、既存のブロックチェーン・ネットワークに参加することを前提にインスタンスを作成する（Participant インスタンス）かを選ぶことになります。</p>
+
+<p>プラットフォーム・ロールはインスタンス作成後には変更できないため、ブロックチェーン・ネットワークを作成するのか、既存のブロックチェーン・ネットワークに参加するのかを適切に判断してからインスタンス作成を始めてください。</p>
+
+<h2 id="22-obp-インスタンスの作成">2.2 OBP インスタンスの作成</h2>
+
+<ol>
+  <li>
+    <p>OCI コンソールを開きます。</p>
+  </li>
+  <li>
+    <p>OBP インスタンスを作成するデータリージョンを選択します（ここでは <strong>Japan East(Tokyo)</strong> を選択）。</p>
+
+    <p><img src="create_instance_region.png" alt="リージョンの選択" /></p>
+  </li>
+  <li>
+    <p>左上のメニューをクリックし、<strong>「Blockchain Platform」</strong> をクリックします。</p>
+
+    <p><img src="create_instance_menu.png" alt="メニューの選択" /></p>
+  </li>
+  <li>
+    <p>画面左の「コンパートメント」で、<strong>OBP インスタンスを作成するコンパートメント</strong> （ここでは OBP コンパートメント）を選択し、<strong>「ブロックチェーン・プラットフォームの作成」</strong> をクリックします。</p>
+
+    <p><img src="create_instance.png" alt="OBPインスタンスの作成" /></p>
+  </li>
+  <li>
+    <p><strong>「インスタンス名」</strong> と <strong>「説明」</strong> を入力し、<strong>「プラットフォーム・ロール」</strong>を適切に選択し、<strong>「作成」</strong> をクリックします。</p>
+
+    <p><img src="create_instance_form.png" alt="OBPインスタンスの作成フォーム" /></p>
+
+    <blockquote>
+      <p><strong>Memo</strong><br />
+インスタンス名は、Hyperledger Fabric における Organization 名として扱われます。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>OBP インスタンスの作成（プロビジョニング）が開始されます。プロビジョニング中のインスタンス名（ここでは gen2founder）をクリックします</p>
+
+    <p><img src="create_instance_wait_provisioning.png" alt="インスタンスのプロビジョニング" /></p>
+  </li>
+  <li>
+    <p>しばらく（15 分程度）待つと、OBP インスタンスの作成が完了します。OBP インスタンスがアクティブであることを確認します、</p>
+
+    <p><img src="create_instance_complete.png" alt="インスタンスの作成完了" /></p>
+  </li>
+</ol>
+
+<h2 id="23-obp-インスタンス作成完了後のサービスコンソールの確認">2.3 OBP インスタンス作成完了後のサービス・コンソールの確認</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この手順は必須ではありません。
+</code></pre></div></div>
+
+<ol>
+  <li>
+    <p>OBP インスタンスの詳細画面から、「サービス・コンソール」をクリックします。</p>
+
+    <p><img src="open_service_console.png" alt="サービス・コンソール" /></p>
+  </li>
+  <li>
+    <p>OBP のサービス・コンソールが開きます。以下の画面はそれぞれプラットフォーム・ロールで新規のネットワーク作成を選んだ場合（Founder インスタンス）の場合のもの、既存のネットワークに参加（Participant インスタンス）を選んだ場合のものです。</p>
+
+    <p><img src="service_console.png" alt="Founderインスタンスのサービス・コンソール" />
+<br />
+<img src="service_console_member.png" alt="Participantインスタンスのサービス・コンソール" /></p>
+  </li>
+</ol>
+
+<h2 id="24-obp-インスタンスの作成オプションについて">2.4 OBP インスタンスの作成オプションについて</h2>
+
+<p>OBP インスタンスを作成する際に、いくつかのオプションを選択することができます。ここでは、前述のインスタンス作成時に指定しなかったものも含め、そのオプションについて説明します（※ <strong><em>太字斜体</em></strong> がデフォルト設定）</p>
+
+<ol>
+  <li>
+    <p><strong>プラットフォーム・ロール</strong>
+ブロックチェーン・ネットワークを作成するのか、既存のブロックチェーン・ネットワークに参加するのかのオプションです。</p>
+
+    <ul>
+      <li>
+        <p><strong><em>新規のネットワークを作成します</em></strong> （インスタンス作成と同時にブロックチェーン・ネットワークを新たに作成します。）</p>
+      </li>
+      <li>
+        <p>既存のネットワークに参加します （既存のブロックチェーン・ネットワークに参加するためのインスタンスを作成します）</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>エディション</strong>
+インスタンスに割り当てられる CPU、メモリ、ストレージのリソースのサイズおよび利用料金に係わるオプションです。</p>
+
+    <ul>
+      <li>
+        <p><strong><em>標準</em></strong> （2 OCPU と 50GB のストレージ固定）</p>
+      </li>
+      <li>
+        <p>ENTERPRISE （さらに Small: 4 OCPU／Medium: 8 OCPU／Large: 16 OCPU／X-Large: 32 OCPU のいずれかのシェイプを選択する。OCPU 数はインスタンス作成後に変更可能。ストレージは 150GB が付属しており、インスタンス作成後に 1TB 単位で追加可能。）</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>サードパーティ CA 証明書アーカイブ</strong></p>
+
+    <ul>
+      <li>
+        <p><strong><em>なし</em></strong> （インスタンスに付随する Certificate Authority の発行する自己署名証明書をインスタンス内のノードの証明書として発行します。）</p>
+      </li>
+      <li>
+        <p>CA アーカイブをアップロード （アップロードした証明書の Certificate Authority を中間 CA としてノード用の証明書を発行します。）</p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#blockchain" class="page__taxonomy-item" rel="tag">Blockchain</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-05-11T10:58:44+09:00">May 11, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Blockchain+Platform%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E4%BD%9C%E6%88%90%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F01_1_create_instance%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F01_1_create_instance%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F01_1_create_instance%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/blockchain/01_2_join_participant/" class="pagination--pager" title="Participant インスタンスをブロックチェーン・ネットワークに参加させる
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

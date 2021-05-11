@@ -65,6 +65,24 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/MySQLLogo_teaser.png"
       },{
+        "title": "Oracle Blockchain Platformのインスタンス作成",
+        "excerpt":"この文書は Oracle Blockchain Platform（OBP）のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 この文書は、2021年4月時点での最新バージョン(21.1.2)を元に作成されています。 1. 準備 1.1 Oracle Cloud の環境を準備する Oracle Cloud のアカウントを準備します。現在、OBP は無料トライアル期間（Free Trial Credit）および Always Free で利用できるサービスには含まれていないため、有償アカウントが必要です。 1.2 Oracle Cloud にサイン・インする OBP インスタンスは、Oracle Cloud Infrastructure コンソール（以降 OCI コンソール）から作成します。ここでは、前の手順で作成した テナント管理ユーザー で OCI コンソールにアクセスします。 こちらのチュートリアルもあわせてご確認ください。 その 1 - OCI コンソールにアクセスして基本を理解する Web ブラウザで、以下の URL にアクセスします。 https://cloud.oracle.com Cloud Account Name （クラウドアカウント名）...","categories": [],
+        "tags": ["Blockchain"],
+        "url": "https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/create_compartment_form.png"
+      },{
+        "title": "Participant インスタンスをブロックチェーン・ネットワークに参加させる",
+        "excerpt":"この文書は Oracle Blockchain Platform（OBP） の Participant インスタンスをブロックチェーン・ネットワークに参加させる方法をステップ・バイ・ステップで紹介するチュートリアルです。 このチュートリアルではふたつの OBP インスタンスでブロックチェーン・ネットワークを構成していますが、3 以上のインスタンスから成るブロックチェーン・ネットワークを構成する場合にも、基本的に同一の手順で実施可能です。 この文書は、2021年4月時点での最新バージョン(21.1.2)を元に作成されています。 前提 : Oracle Blockchain Platform のインスタンス作成を完了 Founder インスタンスと Participant インスタンスそれぞれのインスタンスを所持 0. 前提の理解 0.1 Founder インスタンスと Participant インスタンス OBP はパーミッション型のブロックチェーンプロトコルである Hyperledger Fabric をベースとしたブロックチェーンプラットフォームです。OBP はひとつ～複数のインスタンスでブロックチェーン・ネットワークを構成することができます。 OBP インスタンス作成時に、「プラットフォーム・ロール」の項目で、インスタンス作成と同時にブロックチェーン・ネットワークを新たに作成する（→Founder インスタンス）か、既存のブロックチェーン・ネットワークに参加することを前提にインスタンスを作成する（→Participant インスタンス）かを選択します。 Founder インスタンスの場合は、作成したブロックチェーン・ネットワークに参加した状態でインスタンスが作成されるため、そのままで各種のオペレーションが可能です。 一方、Participant インスタンスの場合は、まずブロックチェーン・ネットワークへの参加が必要です。 0.2 このチュートリアルでの例となるインスタンス名とブロックチェーン・ネットワーク構成 このチュートリアルの例では、 Founder2104 というインスタンス名の Founder インスタンスと、...","categories": [],
+        "tags": ["Blockchain"],
+        "url": "https://oracle-japan.github.io/ocitutorials/blockchain/01_2_join_participant/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/01_2_join_participant/founder_step2.png"
+      },{
+        "title": "Channelを作成し、インスタンスおよびPeerノードを参加させる",
+        "excerpt":"この文書は Oracle Blockchain Platform（OBP）で Channel を作成する方法、および Channel への インスタンスとPeer ノードの追加をステップ・バイ・ステップで紹介するチュートリアルです。 この文書は、2021年4月時点での最新バージョン(21.1.2)を元に作成されています。 前提 : Oracle Blockchain Platform のインスタンス作成を完了 0. 前提の理解 0.1 Hyperledger Fabric における Channel OBP はパーミッション型のブロックチェーンプロトコルである Hyperledger Fabric をベースとしたブロックチェーンプラットフォームです。 Hyperledger Fabric では、ブロックチェーン・ネットワークの中でのデータとロジックの共有範囲の制御などのための機能として、Channel という仕組みを備えています。Channel はブロックチェーン・ネットワークに対してある種のサブネットワークとして機能し、Channel ごとに参加する Organization、Peer、Orderer を構成したり、動作させる Chaincode を定義したりすることなどができます。 Channel はまず Organization レベルで参加し、その後 Organization 内で配下の Peer や Orderer を追加する、という 2...","categories": [],
+        "tags": ["Blockchain"],
+        "url": "https://oracle-japan.github.io/ocitutorials/blockchain/02_1_create_channel/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/02_1_create_channel/founder_create_channel_result.png"
+      },{
         "title": "Oracle Container Engine for Kubernetes(OKE)でKubernetesを始めてみよう",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
@@ -93,6 +111,12 @@ var store = [{
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/datascience-beginners/",
+        "teaser": null
+      },{
+        "title": "Helidonを始めてみよう",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、MicroProfile準拠のフレームワークで、SEとMPという2つのエディションがあります。 このチュートリアルでは、主にMPの方を取り上げていきます。 Note： MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。 詳細はこちらをご確認ください。 目次： 1. Helidon CLIでベースプロジェクトを作成してみよう 2. サンプルアプリケーションを動かしてみよう 2-1. サンプルアプリケーションのディレクトリ構成を確認しよう 2-2. サンプルアプリケーションの設定ファイルを確認しよう 2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう 2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう 2-5. サンプルアプリケーションの動作を確認しよう 3. サンプルアプリケーションを拡張してみよう 3-1. 都道府県エリアを管理するEntityを作成しよう 3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう 3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう 3-4. persistence.xmlを変更しよう 3-5. DDLを編集しよう 3-6. 拡張したサンプルアプリケーションを動かしてみよう まとめ 前提条件： このチュートリアルで動作させるサンプルアプリケーションには、Oracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します。 ATPを予めプロビジョニングしておく必要があるので、こちらの手順を完了させてからこのチュートリアルを実施してください。...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-for-beginners/",
         "teaser": null
       },{
         "title": "Oracle Content and Experience インスタンスを作成する",
@@ -323,6 +347,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/management-cloud-tutorials/",
         "teaser": null
       },{
+        "title": "Cloud Guardを使ってみる",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/cloud-guard/",
+        "teaser": null
+      },{
         "title": "Oracle Data Safe チュートリアルまとめ",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
@@ -340,6 +370,12 @@ var store = [{
         "tags": ["OCE"],
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/oce-tutorial/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/create_oce_instance/024.jpg"
+      },{
+        "title": "Oracle Blockchain Platform チュートリアル",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": ["Blockchain"],
+        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/blockchain-tutorial/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/service_console.png"
       },{
         "title": "ADB HOL #1 : ADBインスタンスを作成してみよう",
         "excerpt":"この章ではまず最初のステップとして、メニュー画面を操作し、リージョンおよびコンパートメントを設定します。 そして、ADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。 ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。 所要時間 : #1 約5分, #2 約20分 1. リージョンを設定し、コンパートメントを用意しよう 作業の流れ : サービス画面へのアクセス リージョンの確認、設定 コンパートメントの確認、作成 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 （OCIのコンソールへのアクセスに関する詳細はを参照ください。） ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウント をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドアカウント名（テナント名）を入力し、 Next をクリックします。 クラウドユーザー名 と パスワード を入力し、 サイン・イン をクリックしてログインします。 以下のようなダッシュボード画面が表示されればOKです。 上手く表示されない場合は以下のURLをお試しください。尚、 &lt;クラウド・アカウント&gt; はご自身のクラウドアカウント名（テナント名）に置き換えてください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 補足）ダッシュボード画面の使い方...","categories": [],
