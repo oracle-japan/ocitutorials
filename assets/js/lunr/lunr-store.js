@@ -6,7 +6,7 @@ var store = [{
         "teaser": null
       },{
         "title": "その1 - OCIコンソールにアクセスして基本を理解する",
-        "excerpt":"Oracle Cloud Infrastructure を使い始めるにあたって、コンソール画面にアクセスし、ログインを行います。 また、Oracle Cloud Infrastructure のサービスを利用するのにあたって必要なサービス・リミット、コンパートメントやポリシーなどのIAMリソースおよびリージョンについて、コンセプトをコンソール画面の操作を通じて学習し、理解します。 所要時間 : 約25分 前提条件 : 有効な Oracle Cloud Infrastructure のテナントと、アクセスのための有効なユーザーIDとパスワードがあること 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。 参考動画：本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。 Oracle Cloud Infrastructure ハンズオン - 1.コンソール 　 1. サポートされるブラウザの確認 このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。 サポートされるブラウザを確認し、いずれかのブラウザをローカル環境にインストールしてください。 2. ログイン情報の確認 コンソールにアクセスするにあたり、ログイン情報の入力が必要になります。ログイン情報には以下のものが含まれます。 テナント名(クラウド・アカウント名) - Oracle Cloud Infrastructure を契約したり、トライアル環境を申し込んだ際に払い出される一意のID ユーザー名...","categories": [],
+        "excerpt":"Oracle Cloud Infrastructure を使い始めるにあたって、コンソール画面にアクセスし、ログインを行います。 また、Oracle Cloud Infrastructure のサービスを利用するのにあたって必要なサービス・リミット、コンパートメントやポリシーなどのIAMリソースおよびリージョンについて、コンセプトをコンソール画面の操作を通じて学習し、理解します。 所要時間 : 約25分 前提条件 : 有効な Oracle Cloud Infrastructure のテナントと、アクセスのための有効なユーザーIDとパスワードがあること 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。 参考動画： 本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。 Oracle Cloud Infrastructure ハンズオン - 1.コンソール 　 1. サポートされるブラウザの確認 このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。 サポートされるブラウザを確認し、いずれかのブラウザをローカル環境にインストールしてください。 2. ログイン情報の確認 コンソールにアクセスするにあたり、ログイン情報の入力が必要になります。ログイン情報には以下のものが含まれます。 テナント名(クラウド・アカウント名) - Oracle Cloud Infrastructure を契約したり、トライアル環境を申し込んだ際に払い出される一意のID...","categories": [],
         "tags": ["beginner","network"],
         "url": "https://oracle-japan.github.io/ocitutorials/beginners/getting-started/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/beginners/getting-started/img2.png"
@@ -24,7 +24,7 @@ var store = [{
         "teaser": "https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/img11.png"
       },{
         "title": "その4 - ブロック・ボリュームをインスタンスにアタッチする",
-        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利用することにより、ベアメタル・インスタンスや仮想マシン・インスタンスからブロックデバイスとして利用することができるボリュームを、簡単に作成、管理することができます。用途に応じたサイズのボリュームを作成、インスタンスへのアタッチ、変更などが可能です。インスタンスからボリュームに対するアクセスは iSCSI もしくは準仮想化を通じて行われます。 インスタンスにアタッチしたボリュームは、通常のディスク・ドライブと同じようにOSから利用することができ、またインスタンスからデタッチし、新しい別のインスタンスにアタッチすることで、データを失うことなく移行することが可能です。 ブロック・ボリュームの典型的なユースケースとしては以下のようなものがあります。 インスタンスのストレージの拡張 : Oracle Cloud Infrastructure の ベアメタル・インスタンス、仮想マシン・インスタンスいずれに対しても、ブロック・ボリュームをアタッチすることでOSのストレージ領域を拡張することができます。 永続化されたストレージ領域の利用 : インスタンスを終了(Terminate)しても、ブロック・ボリュームとそこに格納されたデータは永続します。これらはボリュームを明示的に終了(Terminate)するまで存続します。 インスタンス間のデータの移動 : インスタンスにアタッチしたブロック・ボリュームをデタッチし、別のインスタンスにアタッチすることにより、1つのインスタンスから別のインスタンスにデータを簡単に移動させることができます。 このチュートリアルでは、ブロック・ボリュームの基本的な使い方をご案内します。 ブロック・ボリュームのバックアップについては応用編のブロック・ボリュームをバックアップする をどうぞ。 所要時間 : 約20分 前提条件 : その2 - クラウドに仮想ネットワーク(VCN)を作る とその3 - インスタンスを作成する を完了し、仮想クラウド・ネットワーク(VCN)の中に任意のLinuxインスタンスの作成が完了していること 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次：...","categories": [],
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利用することにより、ベアメタル・インスタンスや仮想マシン・インスタンスからブロックデバイスとして利用することができるボリュームを、簡単に作成、管理することができます。用途に応じたサイズのボリュームを作成、インスタンスへのアタッチ、変更などが可能です。インスタンスからボリュームに対するアクセスは iSCSI もしくは準仮想化を通じて行われます。 インスタンスにアタッチしたボリュームは、通常のディスク・ドライブと同じようにOSから利用することができ、またインスタンスからデタッチし、新しい別のインスタンスにアタッチすることで、データを失うことなく移行することが可能です。 ブロック・ボリュームの典型的なユースケースとしては以下のようなものがあります。 インスタンスのストレージの拡張 : Oracle Cloud Infrastructure の ベアメタル・インスタンス、仮想マシン・インスタンスいずれに対しても、ブロック・ボリュームをアタッチすることでOSのストレージ領域を拡張することができます。 永続化されたストレージ領域の利用 : インスタンスを終了(Terminate)しても、ブロック・ボリュームとそこに格納されたデータは永続します。これらはボリュームを明示的に終了(Terminate)するまで存続します。 インスタンス間のデータの移動 : インスタンスにアタッチしたブロック・ボリュームをデタッチし、別のインスタンスにアタッチすることにより、1つのインスタンスから別のインスタンスにデータを簡単に移動させることができます。 このチュートリアルでは、ブロック・ボリュームの基本的な使い方をご案内します。 ブロック・ボリュームのバックアップについては応用編のブロック・ボリュームをバックアップする をどうぞ。 所要時間 : 約20分 前提条件 : その2 - クラウドに仮想ネットワーク(VCN)を作る とその3 - インスタンスを作成する を完了し、仮想クラウド・ネットワーク(VCN)の中に任意のLinuxインスタンスの作成が完了していること 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 参考動画：...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/img6.png"
@@ -113,10 +113,16 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/datascience-beginners/",
         "teaser": null
       },{
-        "title": "Helidonを始めてみよう",
-        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、MicroProfile準拠のフレームワークで、SEとMPという2つのエディションがあります。 このチュートリアルでは、主にMPの方を取り上げていきます。 Note： MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。 詳細はこちらをご確認ください。 目次： 1. Helidon CLIでベースプロジェクトを作成してみよう 2. サンプルアプリケーションを動かしてみよう 2-1. サンプルアプリケーションのディレクトリ構成を確認しよう 2-2. サンプルアプリケーションの設定ファイルを確認しよう 2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう 2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう 2-5. サンプルアプリケーションの動作を確認しよう 3. サンプルアプリケーションを拡張してみよう 3-1. 都道府県エリアを管理するEntityを作成しよう 3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう 3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう 3-4. persistence.xmlを変更しよう 3-5. DDLを編集しよう 3-6. 拡張したサンプルアプリケーションを動かしてみよう まとめ 前提条件： このチュートリアルで動作させるサンプルアプリケーションには、Oracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します。 ATPを予めプロビジョニングしておく必要があるので、こちらの手順を完了させてからこのチュートリアルを実施してください。...","categories": [],
+        "title": "Helidon(MP)を始めてみよう",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、SEとMPという2つのエディションがあります。 このチュートリアルでは、MicroProfile準拠のエディションであるMPの方を取り上げていきます。 Note： MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。 詳細はこちらをご確認ください。 目次： 1. Helidon CLIでベースプロジェクトを作成してみよう 2. サンプルアプリケーションを動かしてみよう 2-1. サンプルアプリケーションのディレクトリ構成を確認しよう 2-2. サンプルアプリケーションの設定ファイルを確認しよう 2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう 2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう 2-5. サンプルアプリケーションの動作を確認しよう 3. サンプルアプリケーションを拡張してみよう 3-1. 都道府県エリアを管理するEntityを作成しよう 3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう 3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう 3-4. persistence.xmlを変更しよう 3-5. DDLを編集しよう 3-6. 拡張したサンプルアプリケーションを動かしてみよう まとめ 前提条件： このチュートリアルで動作させるサンプルアプリケーションには、Oracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します。 ATPを予めプロビジョニングしておく必要があるので、こちらの手順を完了させてからこのチュートリアルを実施してください。...","categories": [],
         "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-for-beginners/",
+        "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-mp-for-beginners/",
+        "teaser": null
+      },{
+        "title": "Helidon(SE)を始めてみよう",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、SEとMPという2つのエディションがあります。 このチュートリアルでは、マイクロフレームワークのエディションであるSEの方を取り上げていきます。 目次： 1. Helidon CLIでベースプロジェクトを作成してみよう 2. サンプルアプリケーションをビルドしてみよう まとめ 1. Helidon CLIでベースプロジェクトを作成してみよう ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。 HelidonをセットアップするにはHelidon CLIが便利です。 このチュートリアルでは、Linux環境の前提で手順を進めますが、WindowsやMac OSでも同じようにインストールすることができます。 まずは、curlコマンドを利用してバイナリを取得し、実行可能な状態にします。 curl -O https://helidon.io/cli/latest/linux/helidon chmod +x ./helidon sudo mv ./helidon /usr/local/bin/ これで、Helidon CLIのインストールは完了です！ 上記が完了すると、helidonコマンドが利用可能になります。 まず初めに、initコマンドを叩いてみましょう。 helidon init ベースプロジェクトを構築するためのインタラクティブなプロンプトが表示されます。 以下のように入力していきます。 項目 入力パラメータ 備考 Helidon flavor 1...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-se-for-beginners/",
         "teaser": null
       },{
         "title": "Oracle Content and Experience インスタンスを作成する",
@@ -322,6 +328,12 @@ var store = [{
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/using-cli/",
         "teaser": null
+      },{
+        "title": "OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する",
+        "excerpt":"OCI Observability&amp;Managementのサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。 Logging AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit…)だけでなく、エージェントを使用することでOSやデータベース、Webサーバーなどのログを可視化、分析することが可能です。 この章では、エージェントは利用せず簡単な操作でOCIの監査ログをLogging Analyticsで分析する手順をご紹介します。 所要時間 : 約20分 前提条件 : Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Logging Analyticsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 ※この章では、ユーザーにLogging Analyticsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。ドキュメント を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。 ※OCIのテナンシ管理者がLogging Analyticsを利用する場合は、作成するポリシーは「1-2.Logging Analyticsサービスへのポリシー」のみになります。その他のポリシーは作成する必要はありません。 1-1. Loggingサービスを利用するためのポリシー allow group &lt;IAMグループ名&gt; to MANAGE logging-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to...","categories": [],
+        "tags": ["intermediate"],
+        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/audit-loganalytics16.png"
       },{
         "title": "TerraformでOCIの構築を自動化する",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
