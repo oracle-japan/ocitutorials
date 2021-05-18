@@ -1,17 +1,16 @@
 ---
-title: "Helidonを始めてみよう"
-excerpt: "Helidonは、Oracleが提供するMicroProfile準拠のマイクロサービスの開発に適したJavaアプリケーションフレームワークです。こちらのハンズオンは、サンプルアプリケーションの構築を通して、Helidonの特徴や使いやすさを学んでいただけるコンテンツになっています。"
+title: "Helidon(MP)を始めてみよう"
+excerpt: "Helidon MPは、Oracleが提供するMicroProfile準拠のマイクロサービスの開発に適したJavaアプリケーションフレームワークです。こちらのハンズオンは、サンプルアプリケーションの構築を通して、Helidonの特徴や使いやすさを学んでいただけるコンテンツになっています。"
 layout: single
 order: "060"
 tags:
-#link: https://oracle-japan.github.io/paasdocs/documents/containers/handson/k8s-walkthrough/
 ---
 
 **チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)
 
 Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとして`Helidon`を開発しています。  
-Helidonは、MicroProfile準拠のフレームワークで、SEとMPという2つのエディションがあります。  
-このチュートリアルでは、主にMPの方を取り上げていきます。
+Helidonは、SEとMPという2つのエディションがあります。  
+このチュートリアルでは、MicroProfile準拠のエディションであるMPの方を取り上げていきます。
 
 **Note：**
 >MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。  
