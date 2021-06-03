@@ -1,0 +1,1055 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCEのサイト・セキュリティとサイト・ガバナンスを理解する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCEのサイトセキュリティ、サイトガバナンスを利用し、公開するWebサイトのセキュリティとガバナンスを制御する方法をステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCEのサイト・セキュリティとサイト・ガバナンスを理解する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/77_sitesecuritygovernance/">
+
+
+  <meta property="og:description" content="OCEのサイトセキュリティ、サイトガバナンスを利用し、公開するWebサイトのセキュリティとガバナンスを制御する方法をステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/77_SiteSecurityGovernance/021.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-03T13:57:44+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/77_sitesecuritygovernance/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/77_SiteSecurityGovernance/021.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCEのサイト・セキュリティとサイト・ガバナンスを理解する
+
+        
+      </h1>
+      
+        <p class="page__lead">OCEのサイトセキュリティ、サイトガバナンスを利用し、公開するWebサイトのセキュリティとガバナンスを制御する方法をステップ・バイ・ステップで紹介するチュートリアルです
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCEのサイト・セキュリティとサイト・ガバナンスを理解する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">コンテンツ管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content and Experience インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content and Experience インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content and Experience のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content and Experience のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experience のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content and Experience のVideo Plus アセットを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/74_create_multilingual/">Oracle Content and Experience で多言語サイトを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/75_taxonomy/">Oracle Content and Experience のタクソノミを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/77_sitesecuritygovernance/" class="active">OCEのサイト・セキュリティとサイト・ガバナンスを理解する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCEのサイト・セキュリティとサイト・ガバナンスを理解する">
+    <meta itemprop="description" content="OCEのサイトセキュリティ、サイトガバナンスを利用し、公開するWebサイトのセキュリティとガバナンスを制御する方法をステップ・バイ・ステップで紹介するチュートリアルです">
+    <meta itemprop="datePublished" content="2021-06-03T13:57:44+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-サイトセキュリティ">1. サイト・セキュリティ</a>
+    <ul>
+      <li><a href="#11-説明">1.1 説明</a></li>
+      <li><a href="#111-インスタンス単位でのサイトセキュリティ設定">1.1.1 インスタンス単位でのサイト・セキュリティ設定</a>
+        <ul>
+          <li><a href="#112重要サイトセキュリティの設定">1.1.2【重要】サイト・セキュリティの設定</a></li>
+        </ul>
+      </li>
+      <li><a href="#12-サイトセキュリティを構成する">1.2. サイト・セキュリティを構成する</a></li>
+      <li><a href="#13-サイトを作成する">1.3 サイトを作成する</a>
+        <ul>
+          <li><a href="#説明サイト単位のサイトセキュリティの設定">【説明】サイト単位のサイトセキュリティの設定</a></li>
+        </ul>
+      </li>
+      <li><a href="#14-サイトを公開する">1.4 サイトを公開する</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-サイトガバナンス">2. サイト・ガバナンス</a>
+    <ul>
+      <li><a href="#21-説明">2.1 説明</a></li>
+      <li><a href="#22-サイトガバナンス機能の有効化">2.2 サイト・ガバナンス機能の有効化</a></li>
+      <li><a href="#23-テンプレートの構成と有効化">2.3 テンプレートの構成と有効化</a></li>
+      <li><a href="#24-サイト作成リクエストの送信">2.4 サイト作成リクエストの送信</a></li>
+      <li><a href="#25-サイト作成リクエストの承認">2.5 サイト作成リクエストの承認</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルはOracle Content and Experience(OCE)で作成するWebサイトの <strong>サイト・セキュリティ</strong> と <strong>サイト・ガバナンス</strong> の設定方法をステップ・バイ・ステップで紹介するチュートリアルです</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2021年5月時点での最新バージョン(21.2.2)を元に作成されてます
+</code></pre></div></div>
+
+<p><strong>前提条件</strong></p>
+
+<ul>
+  <li><a href="../create_oce_instance">Oracle Content and Experience インスタンスを作成する</a></li>
+</ul>
+
+<p>また、以下のチュートリアルを実施済みで、OCEのサイト作成と公開の手順について習得済みであることが望ましい</p>
+
+<ul>
+  <li><a href="../61_create_site">Oracle Content and Experience のサイト機能を使ってみよう【初級編】</a></li>
+</ul>
+
+<p><br />
+<br /></p>
+
+<h1 id="1-サイトセキュリティ">1. サイト・セキュリティ</h1>
+
+<h2 id="11-説明">1.1 説明</h2>
+
+<p>OCEのサービス管理者は、ユーザーが作成・公開するWebサイトの <strong>サイト・セキュリティ(=公開範囲)</strong> を制限できます。サイトの公開範囲は <strong>パブリック</strong> と <strong>セキュア</strong> の2パターンで、それぞれの特徴は以下の通りです。</p>
+
+<ul>
+  <li><strong>パブリック</strong>
+    <ul>
+      <li>公開範囲の制限なし</li>
+      <li>誰でも参照可能なWebサイト</li>
+      <li>主な利用例
+        <ul>
+          <li>コーポレートサイト、ブランドサイト、キャンペーンサイトなど</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>セキュア</strong>
+    <ul>
+      <li>公開範囲の制限あり</li>
+      <li>IDCSに登録されるユーザーIDおよびパスワードにより認証され、サイト管理者により設定されたアクセス権限を持つユーザーのみが参照できるWebサイト</li>
+      <li>公開範囲は「クラウド・ユーザー」「訪問者」「サービス・ユーザー」「特定のユーザー」より選択（以下の表を参照）</li>
+      <li>主な利用例
+        <ul>
+          <li>
+            <p>イントラサイト、代理店専用サイト、会員専用サイトなど</p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>公開範囲</th>
+                  <th>サイトにアクセスできるユーザー</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>クラウド・ユーザー</strong></td>
+                  <td>OCEインスタンスが利用するIDCSにユーザー登録されたIDCSユーザー。OCEインスタンスへのアクセス権の有無は関係ありません</td>
+                </tr>
+                <tr>
+                  <td><strong>訪問者</strong></td>
+                  <td>OCEインスタンスの<code class="language-plaintext highlighter-rouge">CECSitesVisitor</code>アプリケーションロールが付与されたユーザー</td>
+                </tr>
+                <tr>
+                  <td><strong>サービス・ユーザー</strong></td>
+                  <td>OCEインスタンスの<code class="language-plaintext highlighter-rouge">CECStandardUser</code>もしくは<code class="language-plaintext highlighter-rouge">CECEnterpriseUser</code>アプリケーションロールが付与されたユーザー</td>
+                </tr>
+                <tr>
+                  <td><strong>特定のユーザー</strong></td>
+                  <td>Webサイトの訪問者として個別に追加されたユーザー、もしくは追加されたグループに所属するユーザー</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p><img src="001.png" alt="画像" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>サイト・セキュリティは、<strong>(1)サービス管理者によるOCEインスタンス単位での設定</strong> が可能です。さらに、<strong>(2)サイト単位での設置</strong> できます。</p>
+
+<h2 id="111-インスタンス単位でのサイトセキュリティ設定">1.1.1 インスタンス単位でのサイト・セキュリティ設定</h2>
+
+<p>サービス管理者は、<strong>ADMINISTRATION:システム → サイト</strong> よりOCEインスタンス単位のサイト・セキュリティを構成できます。それぞれの項目は以下の通りです</p>
+
+<p><img src="002.png" alt="画像" /></p>
+
+<ul>
+  <li><strong>サイトの作成を許可</strong>
+    <ul>
+      <li><strong>有効</strong>: サイトの作成可【デフォルト】</li>
+      <li><strong>無効</strong>: サイトの作成不可</li>
+    </ul>
+  </li>
+  <li><strong>サイトのガバナンスの有効化</strong>
+    <ul>
+      <li><strong>有効</strong>: サイト・ガバナンス機能を有効化します</li>
+      <li>
+        <p><strong>無効</strong>: サイト・ガバナンス機能を無効化します【デフォルト】</p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+詳細は 2項にて説明</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li><strong>オンライン・サイトの最小限のセキュリティ</strong>
+    <ul>
+      <li><strong>全員</strong>: パブリックサイト。認証不要で誰でもアクセスできるサイト【デフォルト】</li>
+      <li><strong>クラウド・ユーザー</strong>: IDCSユーザーがアクセスできるセキュアサイト</li>
+      <li><strong>サービス・ユーザー</strong>: OCEインスタンスへのアクセス権(<code class="language-plaintext highlighter-rouge">CECStandardUser</code>もしくは<code class="language-plaintext highlighter-rouge">CECEnterpriseUser</code>のロール)を持つユーザーがアクセスできるセキュアサイト</li>
+      <li><strong>特定のクラウド・ユーザー</strong>: 指定されたクラウド・ユーザーのみアクセスできるセキュアサイト</li>
+      <li>
+        <p><strong>特定のサービス・ユーザー</strong>: 指定されたサービス・ユーザーのみアクセスできるセキュアサイト</p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+サイトガバナンスが無効の場合のみ設定できます</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li><strong>UIからのサイトおよびテーマの共有を許可</strong>
+    <ul>
+      <li><strong>有効</strong>: WebブラウザUIからサイトおよびテーマを共有できる【デフォルト】</li>
+      <li>
+        <p><strong>無効</strong>: WebブラウザUIからサイトおよびテーマを共有できない</p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+「無効」に設定した場合、REST API for Sites Management もしくは OCE Toolkit(CLIツール)を利用してサイトおよびテーマを共有できます<br />
+デフォルト設定は <strong>有効</strong> です</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li><strong>サイト管理者のみがサイトを作成できます</strong></li>
+  <li><strong>サイト管理者のみがテンプレートを作成できます</strong></li>
+  <li><strong>サイト管理者のみがコンポーネントを作成できます</strong>
+    <ul>
+      <li><strong>有効</strong>: サイト管理者ロール(<code class="language-plaintext highlighter-rouge">CECSitesAdministrator</code>)が付与されたユーザーのみが、サイト、テンプレート、コンポーネントを作成できる</li>
+      <li><strong>無効</strong>: だれでもサイト、テンプレート、コンポーネントを作成できる【デフォルト】</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="112重要サイトセキュリティの設定">1.1.2【重要】サイト・セキュリティの設定</h3>
+
+<p>OCEインスタンス作成直後のデフォルト設定は、<strong>ユーザーはファイルやアセットを利用して、公開範囲=パブリックのWebサイトを作成・公開できる</strong> です。OCEに登録・管理されるファイルやアセット次第では、デフォルト設定のままでは利用ポリシーとして適切ではないことも考えられます。</p>
+
+<p>そのため、OCEのサービス管理者は「OCEインスタンスの利用方法」や「登録されるアセットやファイルの種類」などを考慮し、<strong>ユーザーにOCEインスタンスへのアクセス権限を付与する前</strong> に、OCEインスタンスのサイト・セキュリティを構成することを推奨します</p>
+
+<ul>
+  <li>サイト・セキュリティの構成例
+    <ul>
+      <li>例1) OCEを社内外とのファイル共有でのみ利用（サイト機能は利用しない）
+        <ul>
+          <li><strong>サイトの作成を許可</strong> を <strong>無効</strong> に設定</li>
+          <li>サイト機能をユーザーに利用させない</li>
+        </ul>
+      </li>
+      <li>例2) OCEを社内のファイル共有と社内サイトの管理・公開で利用（サイトの公開範囲を制限して利用）
+        <ul>
+          <li><strong>サイトの作成を許可</strong> を <strong>有効</strong> に設定</li>
+          <li><strong>オンライン・サイトの最小限のセキュリティ</strong> を <strong>サービス・ユーザー</strong> に設定</li>
+          <li>サイト機能で作成できるWebサイトにアクセスできるユーザーは、OCEへのアクセス権限を持つユーザーのみ</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h2 id="12-サイトセキュリティを構成する">1.2. サイト・セキュリティを構成する</h2>
+
+<p>OCEインスタンスのサイト・セキュリティを構成します。ここでは「OCEを社内のファイル共有と社内サイトの管理・公開で利用」と想定し、サイト・セキュリティを構成します</p>
+
+<p>設定するサイト・セキュリティは以下の通りです</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>設定</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>サイトの作成を許可</td>
+      <td><strong>有効</strong></td>
+    </tr>
+    <tr>
+      <td>サイトのガバナンスの有効化</td>
+      <td><strong>無効</strong></td>
+    </tr>
+    <tr>
+      <td>オンライン・サイトの最小限のセキュリティ</td>
+      <td><strong>サービス・ユーザー</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <li>
+    <p>OCE インスタンスに、<code class="language-plaintext highlighter-rouge">CECServiceAdministrator</code>ロールが付与されたユーザーでサインインします</p>
+  </li>
+  <li>
+    <p><strong>ADMINISTRATION:システム → サイト</strong> を開きます</p>
+  </li>
+  <li>
+    <p>以下の通りに設定します。その他の項目はデフォルト設定のままとします</p>
+
+    <ul>
+      <li>サイトの作成を許可: <strong>有効</strong></li>
+      <li>サイトのガバナンスの有効化: <strong>無効</strong></li>
+      <li>
+        <p>オンライン・サイトの最小限のセキュリティ: <strong>サービス・ユーザー</strong></p>
+
+        <p><img src="003.png" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>画面を最下部までスクロールし、<strong>保存</strong> をクリックします</p>
+
+    <p><img src="024.png" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="13-サイトを作成する">1.3 サイトを作成する</h2>
+
+<p>先ほどの設定通りのサイト・セキュリティでWebサイトが作成されることを確認します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションで <strong>サイト</strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong>作成</strong> をクリックします</p>
+
+    <p><img src="004.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>任意のテンプレートを選択します（ここでは<code class="language-plaintext highlighter-rouge">Access</code>を選択）</p>
+
+    <p><img src="005.png" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+テンプレートが表示されない場合、OCEインスタンスのサービス管理者に連絡し、デフォルト・サイト・テンプレートのインストールとテンプレートへのメンバー追加（アクセス権限の設定）を依頼してください</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>アクセス・セキュリティの項目が <strong>サービス・ユーザー</strong> であることを確認します。タイプで <strong>標準</strong> を選択し、<strong>右矢印（→）</strong> をクリックします</p>
+
+    <p><img src="006.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>任意のサイト名（ここでは<code class="language-plaintext highlighter-rouge">DemoIntraSite</code>）を入力し、<strong>右矢印（→）</strong> をクリックします</p>
+
+    <p><img src="007.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトが作成されます。作成されたサイトを選択し、<strong>プロパティ</strong> をクリックします</p>
+
+    <p><img src="008.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>セキュリティ</strong> タブをクリックします</p>
+  </li>
+  <li>
+    <p>「オンラインのときにこのサイトにアクセスできるユーザー」で、<strong>サービス・ユーザー</strong> が選択されていることを確認します。また、「特定のユーザー」の選択項目のみが表示され、「訪問者」や「クラウドユーザー」を選択する項目が表示されないことを確認します</p>
+
+    <p><img src="009.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>閉じる</strong> をクリックします。</p>
+  </li>
+</ol>
+
+<h3 id="説明サイト単位のサイトセキュリティの設定">【説明】サイト単位のサイトセキュリティの設定</h3>
+
+<ul>
+  <li>サイト・セキュリティを変更できるのは、その <strong>サイトの所有者</strong>、もしくは <strong>マネージャ権限を付与されたユーザー</strong> です</li>
+  <li>パブリック→セキュア（もしくはその逆）のようなサインイン要件が異なるサイト・セキュリティ変更をする場合、サイトステータスを <strong>オフライン状態</strong> にする必要があります</li>
+  <li>サイト・セキュリティを変更する際、サービス管理者が設定した <strong>オンライン・サイトの最小限のセキュリティ</strong> を超えるようなアクセス権限を設定することはできません
+    <ul>
+      <li>例) オンライン・サイトの最小限のセキュリティが <strong>クラウド・ユーザー</strong> の場合
+        <ul>
+          <li>作成されるサイトの公開範囲は <strong>クラウド・ユーザー</strong></li>
+          <li>「クラウド・ユーザー」→「訪問者」「サービスユーザー」への変更可</li>
+          <li>「クラウド・ユーザー」→「公開」への変更不可</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h2 id="14-サイトを公開する">1.4 サイトを公開する</h2>
+
+<ol>
+  <li>
+    <p>サイトを公開します。作成されたサイトを選択し、<strong>公開</strong> をクリックします</p>
+  </li>
+  <li>
+    <p>作成されたサイトを選択し、<strong>オンラインにする</strong> をクリックします。サイトをオンライン状態（外部から閲覧可能な状態）にします</p>
+  </li>
+  <li>
+    <p>サイトの <strong>プロパティ</strong> を表示し、<strong>サイトURL</strong> をコピーします</p>
+
+    <p><img src="010.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>コピーしたサイトURLをOCEにサインインしていないブラウザを開きます</p>
+  </li>
+  <li>
+    <p>ユーザーIDとパスワードを入力すると、Webサイトにアクセスできます</p>
+
+    <p><img src="011.png" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br />
+<br /></p>
+
+<h1 id="2-サイトガバナンス">2. サイト・ガバナンス</h1>
+
+<h2 id="21-説明">2.1 説明</h2>
+
+<p>サイト・ガバナンスを使用すると、ユーザーは企業ポリシーやブランディングに準拠したサイトを簡単に作成できます。また、サイト管理者は、ユーザーによるサイトの作成や承認などのステータスを一元化的に管理できます。</p>
+
+<p>サイト・ガバナンスが提供する機能は以下の通りです</p>
+
+<ol>
+  <li><strong>サイト管理者が承認したテンプレートをユーザーに提供</strong>
+    <ul>
+      <li>サイト管理者は企業のポリシーやブランディング、ビジネス要件に応じたテンプレートを準備・有効化することで、エンドユーザーに利用させることができます</li>
+      <li>サイト管理者はテンプレートに対して、作成されるサイトのタイプ（標準/エンタープライズ）やセキュリティ（公開範囲）、有効期限、言語、サイト作成時の承認要否、テンプレートを利用できるユーザーの制限、などを設定できます</li>
+    </ul>
+  </li>
+  <li><strong>サイト作成のリクエストと承認</strong>
+    <ul>
+      <li>ユーザーは、管理者によって有効化されたテンプレートを選択し、サイト名などの必要最小限の項目入力をするだけで、サイト作成をリクエストできます</li>
+      <li>サイト・ガバナンスにより作成されたサイトは、必ずサイト管理者が設定したガイドラインに準拠し、サイト管理者が承認したサイトのみが作成されます</li>
+    </ul>
+  </li>
+  <li><strong>サイトの一元管理</strong>
+    <ul>
+      <li>サイト管理者は、どのユーザーがサイト作成をリクエストしたのか？作成途中や公開中のサイトなどを一元的に管理・監視できます</li>
+      <li>必要に応じてサイトのステータスを確認・変更できるため、サイト全体の管理・運用を効率化します</li>
+    </ul>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="22-サイトガバナンス機能の有効化">2.2 サイト・ガバナンス機能の有効化</h2>
+
+<p>サイト・ガバナンスを利用するためには、システム設定より機能を有効化します（デフォルトは無効）</p>
+
+<ol>
+  <li>
+    <p>OCEインスタンスにシステム管理者(<code class="language-plaintext highlighter-rouge">CECServiceAdministrator</code>)権限を持つユーザーでサインインします</p>
+  </li>
+  <li>
+    <p><strong>ADMINISTRATION:システム → サイト</strong> を開きます</p>
+  </li>
+  <li>
+    <p>「サイトのガバナンスの有効化」を <strong>有効</strong> を選択します</p>
+
+    <p><img src="012.png" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+サイトガバナンスを有効化すると、<strong>オンライン・サイトの最小限のセキュリティ</strong> の項目は非表示となります。サイト・ガバナンスを利用する場合、オンライン・サイトの最小限のセキュリティはテンプレート単位で設定します</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>画面を最下部までスクロールし、<strong>保存</strong> をクリックします</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="23-テンプレートの構成と有効化">2.3 テンプレートの構成と有効化</h2>
+
+<p>サイト管理者でテンプレートのポリシーとオーディエンスを構成し、有効化します</p>
+
+<ol>
+  <li>
+    <p>OCEインスタンスにサイト管理者(<code class="language-plaintext highlighter-rouge">CECSitesAdministrator</code>)権限を持つユーザーでサインインします</p>
+  </li>
+  <li>
+    <p><strong>開発 → テンプレート</strong> を開きます</p>
+  </li>
+  <li>
+    <p>テンプレートを開きます。今回は <code class="language-plaintext highlighter-rouge">Access</code> テンプレートをクリックしますします</p>
+
+    <p><img src="013.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>ポリシー</strong> タブをクリックし、以下の通りポリシーを設定します</p>
+
+    <ul>
+      <li>タイプ: 標準(設定済/変更不可)</li>
+      <li>承認: <strong>管理者</strong></li>
+      <li>最小セキュリティ: <strong>クラウド・ユーザー</strong></li>
+      <li>
+        <p>サイトの有効期限: <strong>なし</strong></p>
+
+        <p><img src="014.png" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>オーディエンス</strong> タブをクリックし、「このテンプレートを使用してサイトを作成できるユーザー」で <strong>全員</strong> を選択します</p>
+
+    <p><img src="015.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ステータスのスイッチをクリックし、<strong>アクティブ</strong> に切り替えます</p>
+
+    <p><img src="016.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>保存</strong> をクリックします</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="24-サイト作成リクエストの送信">2.4 サイト作成リクエストの送信</h2>
+
+<p>サイトを作成します。サイトガバナンスが有効化されている場合、サイト作成リクエストがサイト管理者に送信されます。サイト管理者による承認操作が行われるまで、サイト作成処理は実行されません</p>
+
+<ol>
+  <li>
+    <p>OCEインスタンスに一般ユーザー(<code class="language-plaintext highlighter-rouge">CECStandardUser</code> or <code class="language-plaintext highlighter-rouge">CECEnterpriseUser</code>)権限でサインインします</p>
+  </li>
+  <li>
+    <p><strong>サイト</strong> を開き、<strong>作成</strong> をクリックします</p>
+
+    <p><img src="017.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>テンプレートを選択します。ここでは、先ほど有効化した <strong>Access</strong> テンプレートを選択します</p>
+
+    <p><img src="018.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>タイプ、アクセス・セキュリティ、承認を確認します。2.3項で設定したテンプレートの構成通りであることを確認し、<strong>「次」</strong> をクリックします</p>
+
+    <p><img src="019.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>名前、説明、理由を入力します。ここでは以下の通りに入力し、<strong>終了</strong> をクリックします</p>
+
+    <ul>
+      <li>名前: <strong>governancesite1</strong></li>
+      <li>説明: (任意)</li>
+      <li>
+        <p>理由: (任意)</p>
+
+        <p><img src="020.png" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>サイト作成リクエストがサイト管理者に送信されます</p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+このタイミングではサイトは作成されません。サイト管理者の承認後に、サイトが作成されます<br />
+サイト管理者ロール(CECSitesAdministrator)が付与されたユーザーがサイト作成リクエストを送信すると、承認無しにサイトが作成されます</p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>サイト → リクエスト</strong> を選択します。承認待ちのサイト作成リクエストを確認できます</p>
+
+    <p><img src="021.png" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="25-サイト作成リクエストの承認">2.5 サイト作成リクエストの承認</h2>
+
+<p>サイト作成リクエストは、サイト管理者が承認します。承認後、サイト作成処理が実行されます。
+承認後に作成されたサイトは、サイト作成リクエストを送信したユーザーが編集・公開ができます。さらに、サイト管理者(<code class="language-plaintext highlighter-rouge">CECSitesAdministrator</code>)権限を持つユーザーもアクセスが可能です</p>
+
+<ol>
+  <li>
+    <p>OCEインスタンスにサイト管理者(<code class="language-plaintext highlighter-rouge">CECSitesAdministrator</code>)権限でサインインします</p>
+  </li>
+  <li>
+    <p><strong>サイト → リクエスト</strong> を開きます。先ほど送信されたサイト作成リクエストが確認できます</p>
+  </li>
+  <li>
+    <p>リクエストをクリックし、内容を確認します。問題がなければ、<strong>承認</strong> をクリックします</p>
+
+    <p><img src="022.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトが作成されます。作成されたサイトのプロパティを表示し、2.3項で設定したタイプ(=標準)およびサイト・セキュリティ(=クラウド・ユーザー)でサイトが作成されていることを確認します</p>
+
+    <p><img src="023.png" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+作成されたサイトは、サイト作成リクエストを送信したユーザーが編集・公開できます。また、サイト管理者(CECSitesAdministrator)権限を持つユーザーもアクセスが可能です</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-03T13:57:44+09:00">June 3, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCE%E3%81%AE%E3%82%B5%E3%82%A4%E3%83%88%E3%83%BB%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3%E3%81%A8%E3%82%B5%E3%82%A4%E3%83%88%E3%83%BB%E3%82%AC%E3%83%90%E3%83%8A%E3%83%B3%E3%82%B9%E3%82%92%E7%90%86%E8%A7%A3%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F77_sitesecuritygovernance%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F77_sitesecuritygovernance%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F77_sitesecuritygovernance%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/75_taxonomy/" class="pagination--pager" title="Oracle Content and Experience のタクソノミを使ってみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -233,7 +233,7 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/content-management/62_webcms/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/62_webcms/058.jpg"
       },{
-        "title": "Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう",
+        "title": "Oracle Content and Experience のコンテンツ・レイアウトを編集しよう",
         "excerpt":"この文書は Oracle Content and Experience (OCE) のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです この文書は、2021年1月時点での最新バージョン(21.1.1)を元に作成されてます 前提条件 Oracle Content and Experience インスタンスを作成する Oracle Content and Experience を Headless CMS として使ってみよう【初級編】が完了していること Oracle Content and Experience を WebCMS として使ってみよう【初級編】が完了していること OCE の利用ユーザーに、少なくとも下記4つのOCE インスタンスのアプリケーション・ロールが付与されていること CECContentAdministrator CECDeveloperUser CECEnterpriseUser CECRepositoryAdminisrrator [Memo] ユーザーの作成とアプリケーションロールの付与手順は、Oracle Content and Experience インスタンスの利用ユーザーを作成する をご確認ください。 1. 説明 1.1 コンテンツ・レイアウトとは？ コンテンツ・レイアウトとは 作成されたコンテンツ・アイテムの表示形式...","categories": [],
         "tags": ["OCE"],
         "url": "https://oracle-japan.github.io/ocitutorials/content-management/71_customize_contentlayout/",
@@ -262,6 +262,24 @@ var store = [{
         "tags": ["OCE"],
         "url": "https://oracle-japan.github.io/ocitutorials/content-management/75_taxonomy/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/75_taxonomy/023.png"
+      },{
+        "title": "OCEのサイト・セキュリティとサイト・ガバナンスを理解する",
+        "excerpt":"このチュートリアルはOracle Content and Experience(OCE)で作成するWebサイトの サイト・セキュリティ と サイト・ガバナンス の設定方法をステップ・バイ・ステップで紹介するチュートリアルです この文書は、2021年5月時点での最新バージョン(21.2.2)を元に作成されてます 前提条件 Oracle Content and Experience インスタンスを作成する また、以下のチュートリアルを実施済みで、OCEのサイト作成と公開の手順について習得済みであることが望ましい Oracle Content and Experience のサイト機能を使ってみよう【初級編】 1. サイト・セキュリティ 1.1 説明 OCEのサービス管理者は、ユーザーが作成・公開するWebサイトの サイト・セキュリティ(=公開範囲) を制限できます。サイトの公開範囲は パブリック と セキュア の2パターンで、それぞれの特徴は以下の通りです。 パブリック 公開範囲の制限なし 誰でも参照可能なWebサイト 主な利用例 コーポレートサイト、ブランドサイト、キャンペーンサイトなど セキュア 公開範囲の制限あり IDCSに登録されるユーザーIDおよびパスワードにより認証され、サイト管理者により設定されたアクセス権限を持つユーザーのみが参照できるWebサイト 公開範囲は「クラウド・ユーザー」「訪問者」「サービス・ユーザー」「特定のユーザー」より選択（以下の表を参照） 主な利用例 イントラサイト、代理店専用サイト、会員専用サイトなど 公開範囲 サイトにアクセスできるユーザー クラウド・ユーザー OCEインスタンスが利用するIDCSにユーザー登録されたIDCSユーザー。OCEインスタンスへのアクセス権の有無は関係ありません 訪問者 OCEインスタンスのCECSitesVisitorアプリケーションロールが付与されたユーザー サービス・ユーザー...","categories": [],
+        "tags": ["OCE"],
+        "url": "https://oracle-japan.github.io/ocitutorials/content-management/77_sitesecuritygovernance/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/77_SiteSecurityGovernance/021.png"
+      },{
+        "title": "ADBインスタンスを作成してみよう",
+        "excerpt":"この章ではまず最初のステップとして、メニュー画面を操作し、リージョンおよびコンパートメントを設定します。 そして、ADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。 ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。 所要時間 : #1 約5分, #2 約20分 1. リージョンを設定し、コンパートメントを用意しよう 作業の流れ : サービス画面へのアクセス リージョンの確認、設定 コンパートメントの確認、作成 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 （OCIのコンソールへのアクセスに関する詳細はを参照ください。） ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウント をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドアカウント名（テナント名）を入力し、 Next をクリックします。 クラウドユーザー名 と パスワード を入力し、 サイン・イン をクリックしてログインします。 以下のようなダッシュボード画面が表示されればOKです。 上手く表示されない場合は以下のURLをお試しください。尚、 &lt;クラウド・アカウント&gt; はご自身のクラウドアカウント名（テナント名）に置き換えてください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 補足）ダッシュボード画面の使い方...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/img11.png"
+      },{
+        "title": "ADBにデータをアップロードしてみよう",
+        "excerpt":"この章ではSQL Developer Webを利用して、サンプルデータをADBインスタンスにデータをアップロードします。 事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。 （集合ハンズオンセミナーでは講師の指示に従ってください） 所要時間 : #1 約10分, #2 約30分 前提条件 : ADB HOL#1を完了していること 以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています) サンプルデータファイルのダウンロードリンク 注意 : チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 1.手元のPCからCSVデータをアップロードしてみよう まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。 ADB-HOL1で学習したSQL Developer Webを利用したインスタンスへの接続 を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。 その後左ペインにある　ナビゲータタブから　[…」(オブジェクトサブメニュー)→データのロード→新規表へのデータのアップロード を選択します。 ダウンロードして解凍した sales_channels.csv を選択して 次 をクリックします。 sales_channels.csvのデータのプレビューを確認し 次 をクリックします 表定義が表示されます。すべての列タイプが VARCHAR2型 になっていることが確認できます。 数字列である CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列 の列タイプを NUMBER型 に変更して 次 をクリックします。 設定を確認し 終了...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb12-dataload/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb12-dataload/adb2-1_1.png"
       },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
@@ -366,7 +384,7 @@ var store = [{
         "teaser": null
       },{
         "title": "Oracle Data Safe チュートリアルまとめ",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。   1.Oracle Data Safeを有効化する  2.Oracle Data Safeのデータ・マスキングを試してみる  3.Oracle Data Safeのアクティビティ監査で操作ログを記録する  4.Oracle Data Safeにフェデレーッド・ユーザーでアクセスする  5.プライベートIPアドレスでData SafeにDBを登録する  6.Oracle Data SafeでオンプレミスのOracle DBを管理する  ","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/data-safe-tutorials/",
         "teaser": null
@@ -394,18 +412,6 @@ var store = [{
         "tags": ["Blockchain"],
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/blockchain-tutorial/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/service_console.png"
-      },{
-        "title": "ADB HOL #1 : ADBインスタンスを作成してみよう",
-        "excerpt":"この章ではまず最初のステップとして、メニュー画面を操作し、リージョンおよびコンパートメントを設定します。 そして、ADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。 ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。 所要時間 : #1 約5分, #2 約20分 1. リージョンを設定し、コンパートメントを用意しよう 作業の流れ : サービス画面へのアクセス リージョンの確認、設定 コンパートメントの確認、作成 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 （OCIのコンソールへのアクセスに関する詳細はを参照ください。） ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウント をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドアカウント名（テナント名）を入力し、 Next をクリックします。 クラウドユーザー名 と パスワード を入力し、 サイン・イン をクリックしてログインします。 以下のようなダッシュボード画面が表示されればOKです。 上手く表示されない場合は以下のURLをお試しください。尚、 &lt;クラウド・アカウント&gt; はご自身のクラウドアカウント名（テナント名）に置き換えてください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 補足）ダッシュボード画面の使い方...","categories": [],
-        "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol1-provisioning/",
-        "teaser": "https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol1-provisioning/img11.png"
-      },{
-        "title": "ADB HOL #2 : ADBにデータをアップロードしてみよう",
-        "excerpt":"この章ではSQL Developer Webを利用して、サンプルデータをADBインスタンスにデータをアップロードします。 事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。 （集合ハンズオンセミナーでは講師の指示に従ってください） 所要時間 : #1 約10分, #2 約30分 前提条件 : ADB HOL#1を完了していること 以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています) サンプルデータファイルのダウンロードリンク 注意 : チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 1.手元のPCからCSVデータをアップロードしてみよう まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。 ADB-HOL1で学習したSQL Developer Webを利用したインスタンスへの接続 を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。 その後左ペインにある　ナビゲータタブから　[…」(オブジェクトサブメニュー)→データのロード→新規表へのデータのアップロード を選択します。 ダウンロードして解凍した sales_channels.csv を選択して 次 をクリックします。 sales_channels.csvのデータのプレビューを確認し 次 をクリックします 表定義が表示されます。すべての列タイプが VARCHAR2型 になっていることが確認できます。 数字列である CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列 の列タイプを NUMBER型 に変更して 次 をクリックします。 設定を確認し 終了...","categories": [],
-        "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol2-dataload/",
-        "teaser": "https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol2-dataload/adb2-1_1.png"
       },{
         "title": "その1 - OCIコンソールにアクセスして基本を理解する",
         "excerpt":"Oracle Cloud Infrastructure を使い始めるにあたって、コンソール画面にアクセスし、ログインを行います。 また、Oracle Cloud Infrastructure のサービスを利用するのにあたって必要なサービス・リミット、コンパートメントやポリシーなどのIAMリソースおよびリージョンについて、コンセプトをコンソール画面の操作を通じて学習し、理解します。 所要時間 : 約25分 前提条件 : 有効な Oracle Cloud Infrastructure のテナントと、アクセスのための有効なユーザーIDとパスワードがあること 無償トライアル環境のお申込みについては こちら の資料を参照してください。 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります image サポートされるブラウザの確認 このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。 サポートされるブラウザを確認し、いずれかのブラウザをローカル環境にインストールしてください。 ログイン情報の確認 コンソールにアクセスするにあたり、ログイン情報の入力が必要になります。ログイン情報には以下のものが含まれます。 テナント名(クラウド・アカウント名) - Oracle Cloud Infrastructure を契約したり、トライアル環境を申し込んだ際に払い出される一意のID ユーザー名 - ログインのためのユーザー名 パスワード - ログインのためのパスワード ログイン情報の入手方法は、ユーザーが作られるタイミングによって異なります。...","categories": [],
