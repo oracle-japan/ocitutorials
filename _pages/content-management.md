@@ -41,13 +41,20 @@ toc: true
 + **[Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】](/ocitutorials/content-management/62_webcms/)**  
     OCE のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します【所要時間:約30分】
 
+
+## システム管理設定
+
++ **[Oracle Content and Experience のサイト・セキュリティとサイト・ガバナンスを設定する](/ocitutorials/content-management/77_sitesecuritygovernance/)**  
+    OCEで作成する Web サイトのサイト・セキュリティとサイト・ガバナンスの設定方法をステップ・バイ・ステップで紹介するチュートリアルです。サービス管理者は、ユーザーにサイト作成機能を利用させる前に、OCEインスタンスの利用目的にあわせたサイト・セキュリティを設定することを推奨します【所要時間:20分】
+
+
 <br />
 
 # チュートリアル中級編
 
 ## Webサイトのカスタマイズ
 
-+ **[Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう](/ocitutorials/content-management/71_customize_contentlayout/)**  
++ **[Oracle Content and Experience のコンテンツ・レイアウトを編集しよう](/ocitutorials/content-management/71_customize_contentlayout/)**  
     OCE のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
 
 

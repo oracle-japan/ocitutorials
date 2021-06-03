@@ -1,11 +1,11 @@
 ---
-title: "ADB HOL #2 : ADBにデータをアップロードしてみよう"
+title: "ADBにデータをアップロードしてみよう"
 excerpt: "SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。"
-order: "510"
+order: "012"
 layout: single
 header:
-  teaser: "/intermediates/adb-hol2-dataload/adb2-1_1.png"
-  overlay_image: "/intermediates/adb-hol2-dataload/adb2-1_1.png"
+  teaser: "/database/adb12-dataload/adb2-1_1.png"
+  overlay_image: "/database/adb12-dataload/adb2-1_1.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -17,10 +17,11 @@ header:
 **所要時間 :** #1 約10分, #2 約30分
 
 **前提条件 :**  
-+ [ADB HOL#1](https://oracle-japan.github.io/ocitutorials/intermediates/adb-hol1-provisioning/)を完了していること  
++ [ADB HOL#1](https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/)を完了していること  
 + 以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています)  
-	+ [サンプルデータファイルのダウンロードリンク](https://github.com/oracle-japan/ocitutorials/raw/master/tutorials/_intermediates/adb-hol2-dataload/adb-hol2_sampledata.zip) 
-
+<!--	+ [サンプルデータファイルのダウンロードリンク](https://github.com/oracle-japan/ocitutorials/raw/master/tutorials/_database/adb12-dataload/adb-hol2_sampledata.zip) -->
+	+ [サンプルデータファイルのダウンロードリンク](/ocitutorials/database/adb12-dataload/adb-hol2_sampledata.zip)
+	
 
 **注意 :** チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
 

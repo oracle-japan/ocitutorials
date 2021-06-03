@@ -1,5 +1,5 @@
 ---
-title: "Oracle Content and Experiece のコンテンツ・レイアウトを編集しよう"
+title: "Oracle Content and Experience のコンテンツ・レイアウトを編集しよう"
 excerpt: "OCE のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです"
 order: "071"
 layout: single
