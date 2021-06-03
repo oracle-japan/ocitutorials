@@ -4,8 +4,8 @@ excerpt: "この章ではADBインスタンスを作成します。またADBイ�
 order: "500"
 layout: single
 header:
-  teaser: "/intermediates/adb-hol1-provisioning/img11.png"
-  overlay_image: "/intermediates/adb-hol1-provisioning/img11.png"
+  teaser: "/database/adb-provisioning/img11.png"
+  overlay_image: "/database/adb-provisioning/img11.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474304
 ---

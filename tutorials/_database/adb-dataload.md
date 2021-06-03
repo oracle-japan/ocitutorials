@@ -4,8 +4,8 @@ excerpt: "SQL Developer Webを利用して作成したADBにデータをロー�
 order: "510"
 layout: single
 header:
-  teaser: "/intermediates/adb-hol2-dataload/adb2-1_1.png"
-  overlay_image: "/intermediates/adb-hol2-dataload/adb2-1_1.png"
+  teaser: "/database/adb-dataload/adb2-1_1.png"
+  overlay_image: "/database/adb-dataload/adb2-1_1.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
