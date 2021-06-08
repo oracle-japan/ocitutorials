@@ -2,7 +2,7 @@
 title: "Helidon(MP)を始めてみよう"
 excerpt: "Helidon MPは、Oracleが提供するMicroProfile準拠のマイクロサービスの開発に適したJavaアプリケーションフレームワークです。こちらのハンズオンは、サンプルアプリケーションの構築を通して、Helidonの特徴や使いやすさを学んでいただけるコンテンツになっています。"
 layout: single
-order: "060"
+order: "1000"
 tags:
 ---
 
@@ -12,34 +12,18 @@ Oracleでは、マイクロサービスの開発に適した軽量なJavaアプ�
 Helidonは、SEとMPという2つのエディションがあります。  
 このチュートリアルでは、MicroProfile準拠のエディションであるMPの方を取り上げていきます。
 
-**Note：**
->MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。  
->詳細は[こちら](https://microprofile.io/)をご確認ください。
+**MicroProfileについて**  
+MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。  
+詳細は[こちら](https://microprofile.io/)をご確認ください。
+{: .notice--info}
 
-**目次：**
+前提条件
+----
+* [こちら](/ocitutorials/database/adb11-provisioning/)の手順が完了していること
+  * このチュートリアルでは、データベースとしてOracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します
 
-- [1. Helidon CLIでベースプロジェクトを作成してみよう](#1-helidon-cliでベースプロジェクトを作成してみよう)
-- [2. サンプルアプリケーションを動かしてみよう](#2-サンプルアプリケーションを動かしてみよう)
-  - [2-1. サンプルアプリケーションのディレクトリ構成を確認しよう](#2-1-サンプルアプリケーションのディレクトリ構成を確認しよう)
-  - [2-2. サンプルアプリケーションの設定ファイルを確認しよう](#2-2-サンプルアプリケーションの設定ファイルを確認しよう)
-  - [2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう](#2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう)
-  - [2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう](#2-4-サンプルアプリケーションのソースコードprefectureresourcejavaを確認しよう)
-  - [2-5. サンプルアプリケーションの動作を確認しよう](#2-5-サンプルアプリケーションの動作を確認しよう)
-- [3. サンプルアプリケーションを拡張してみよう](#3-サンプルアプリケーションを拡張してみよう)
-  - [3-1. 都道府県エリアを管理するEntityを作成しよう](#3-1-都道府県エリアを管理するentityを作成しよう)
-  - [3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう](#3-2-都道府県エリアを取得するrestインタフェースを作成しよう)
-  - [3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう](#3-3-都道府県エリアの情報を元の都道府県情報に追加しよう)
-  - [3-4. persistence.xmlを変更しよう](#3-4-persistencexmlを変更しよう)
-  - [3-5. DDLを編集しよう](#3-5-ddlを編集しよう)
-  - [3-6. 拡張したサンプルアプリケーションを動かしてみよう](#3-6-拡張したサンプルアプリケーションを動かしてみよう)
-- [まとめ](#まとめ)
-
-**前提条件：**
->このチュートリアルで動作させるサンプルアプリケーションには、Oracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します。  
->ATPを予めプロビジョニングしておく必要があるので、[こちら](../../intermediates/adb-hol1-provisioning/)の手順を完了させてからこのチュートリアルを実施してください。
-
-# 1. Helidon CLIでベースプロジェクトを作成してみよう
-
+1.Helidon CLIでベースプロジェクトを作成してみよう
+----
 ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。  
 
 Helidonをセットアップするには`Helidon CLI`が便利です。  
@@ -104,8 +88,9 @@ Switch directory to /users/database-mp to use CLI
 Start development loop? (Default: n): n
 ```
 
-**Note：**
->Helidon CLIでは、今回作成するベースプロジェクト以外にも様々なタイプのベースプロジェクトの作成が可能です。ぜひ、遊んでみて頂ければと思います！ 
+**Helidon CLIについて**  
+Helidon CLIでは、今回作成するベースプロジェクト以外にも様々なタイプのベースプロジェクトの作成が可能です。ぜひ、遊んでみて頂ければと思います！ 
+{: .notice--info}
 
 これで、Helidon MPのベースプロジェクトが作成されます。  
 
@@ -114,11 +99,11 @@ Start development loop? (Default: n): n
 この後は、事前に用意したサンプルアプリケーションを元にチュートリアルを行っていきます。  
 (サンプルアプリケーションも、Helidon CLIをベースに作成したものです)
 
-# 2. サンプルアプリケーションを動かしてみよう
-
+2.サンプルアプリケーションを動かしてみよう
+----
 ここでは、事前に用意したサンプルアプリケーションを動かしてみます。
 
-## 2-1. サンプルアプリケーションのディレクトリ構成を確認しよう
+### 2-1. サンプルアプリケーションのディレクトリ構成を確認しよう
 
 GitHubから、サンプルアプリケーションをcloneします。
 
@@ -166,7 +151,7 @@ git clone https://github.com/oracle-japan/helidon-handson.git
 10 directories, 13 files
 ```
 
-## 2-2. サンプルアプリケーションの設定ファイルを確認しよう
+### 2-2. サンプルアプリケーションの設定ファイルを確認しよう
 
 このサンプルアプリケーションのソースコードについて少しみていきます。
 
@@ -186,7 +171,7 @@ javax.sql.DataSource.test.dataSource.password=
 ```
 
 冒頭の4行は、データベースの接続設定を定義する部分です。  
-この後、[2-5. サンプルアプリケーションの動作確認](#2-5-サンプルアプリケーションの動作確認)で詳しくみていきます。
+この後、[2-5. サンプルアプリケーションの動作を確認しよう](#2-5-サンプルアプリケーションの動作を確認しよう)で詳しくみていきます。
 
 ```yaml
 # Microprofile server properties
@@ -241,7 +226,7 @@ metrics.rest-request.enabled=false
 
 設定ファイルに関する確認は以上です。
 
-## 2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう
+### 2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう
 
 次に、ソースコードをみていきます。  
 まず初めに、`Prefecture.java`についてみていきます。  
@@ -322,7 +307,7 @@ public class Prefecture {
 なお、`@Basic(optional = false)`は、カラムを基本型として定義しています。  
 
 
-## 2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう
+### 2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう
 
 次に、`PrefectureResource.java`をみていきます。  
 このクラスは、サンプルアプリケーションのRESTインタフェースをJAX-RS/JTAで実装したものです。
@@ -385,8 +370,10 @@ public class PrefectureResource {
 なお、`@Produces`アノテーションで、レスポンスの応答形式を指定しています。この場合は、`Content-type: application/json`になります。  
 メソッドの引数として、`@PathParam`アノテーションで`id`を指定しています。これはURLからパラメータとして`id`を取得することを意味します。  
 
-**Note：**
->パラメータの取得には、さまざまなアノテーションを利用できます。詳細は[こちら](https://docs.oracle.com/cd/F32751_01/weblogic-server/14.1.1.0/restf/develop-restful-service.html#GUID-BD610888-0592-45E2-8235-716EE48B516B)をご確認ください。
+**パラメータについて**  
+パラメータの取得には、さまざまなアノテーションを利用できます。  
+詳細は[こちら](https://docs.oracle.com/cd/F32751_01/weblogic-server/14.1.1.0/restf/develop-restful-service.html#GUID-BD610888-0592-45E2-8235-716EE48B516B)をご確認ください。
+{: .notice--info}
 
 
 EntityManagerを利用して、クエリを発行しています。その際に、`getPrefectureById`という名前でクエリを取得しています。  
@@ -461,7 +448,7 @@ EntityManagerを利用して、クエリを発行しています。その際に�
 
 以上で、サンプルアプリケーションの中身に関する確認は完了です！
 
-## 2-5. サンプルアプリケーションの動作を確認しよう
+### 2-5. サンプルアプリケーションの動作を確認しよう
 
 ここまでアプリケーションの中身を確認してきたので、このアプリケーションを実際に動作させてみましょう。  
 
@@ -501,11 +488,12 @@ javax.sql.DataSource.test.dataSource.password=
 
 これでデータベースの接続設定は完了です。
 
-**WARN：**
->今回のチュートリアルでは、データベースパスワードをそのまま記載していますが、セキュリティ上は不適切です。
->Helidonでは、[プロパティの暗号化機構](https://helidon.io/docs/v2/apidocs/io.helidon.config.encryption/io/helidon/config/encryption/EncryptionUtil.html)が実装されています。
->また、Oracle Cloud Infrastructure上では、鍵管理サービスとして`OCI Vault`というサービスもあります。
->これらを利用することで、よりセキュリティを高めてアプリケーションを作成することができます。
+**データベースパスワードについて**  
+今回のチュートリアルでは、データベースパスワードをそのまま記載していますが、セキュリティ上は不適切です。  
+Helidonでは、[プロパティの暗号化機構](https://helidon.io/docs/v2/apidocs/io.helidon.config.encryption/io/helidon/config/encryption/EncryptionUtil.html)が実装されています。  ¥
+また、Oracle Cloud Infrastructure上では、鍵管理サービスとして`OCI Vault`というサービスもあります。  
+これらを利用することで、よりセキュリティを高めてアプリケーションを作成することができます。
+{: .notice--info}
 
 では、サンプルアプリケーションをビルドしてみましょう。  
 プロジェクト直下で以下のコマンドを実行します。
@@ -543,8 +531,10 @@ java -jar target/helidon-handson.jar
 2021.04.23 11:21:49 情報 io.helidon.common.HelidonFeatures Thread[features-thread,5,main]: Helidon MP 2.2.2 features: [CDI, Config, Fault Tolerance, Health, JAX-RS, JPA, JTA, Metrics, Open API, REST Client, Security, Server, Tracing]
 ```
 
-**INFO：**
->起動後の初回起動は、初期データの登録(DDL実行)が走るため、少し時間がかかります。また、今回は自動生成スキーマの設定により、初めにDrop tableした後にCreate tableしているので、初回実行時にはExceptionが発生する可能性がありますが、アプリケーションの実行に問題はありません。
+**アプリケーションの起動ついて**  
+起動後の初回起動は、初期データの登録(DDL実行)が走るため、少し時間がかかります。  
+また、今回は自動生成スキーマの設定により、初めにDrop tableした後にCreate tableしているので、初回実行時にはExceptionが発生する可能性がありますが、アプリケーションの実行に問題はありません。
+{: .notice--info}
 
 それでは、アクセスしてみます。  
 
@@ -633,8 +623,8 @@ curl http://localhost:8080/prefecture/1
 次に、このサンプルアプリケーションをベースに機能を拡張するチュートリアルを実施します。
 
 
-# 3. サンプルアプリケーションを拡張してみよう
-
+3.サンプルアプリケーションを拡張してみよう
+----
 ここでは、先程までみてきたサンプルアプリケーションを元に機能を拡張してみたいと思います。  
 今回は、都道府県情報にエリア(地域区分)を追加してみます。  
 区分については、[こちらのページ](https://www.stat.go.jp/data/shugyou/1997/3-1.html)を参考にします。  
@@ -656,7 +646,7 @@ curl http://localhost:8080/prefecture/1
 ![画面ショット](001.png)
 
 
-## 3-1. 都道府県エリアを管理するEntityを作成しよう
+### 3-1. 都道府県エリアを管理するEntityを作成しよう
 
 まずは、地域区分のテーブルを追加するためにこのテーブルに紐づく`PrefectureArea`というEntityを作成しましょう。(今回、ATPへのテーブルの追加自体はJPAの自動スキーマ生成機能を利用します)    
 ファイル名は`PrefectureArea.java`です。  
@@ -717,7 +707,7 @@ public class PrefectureArea {
 
 以上で、`PrefectureArea`エンティティは完成です！  
 
-## 3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう
+### 3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう
 
 ここでは、都道府県エリアを取得するリソースクラスを作成します。  
 まずは、`PrefectureResorce`というクラスを作成しましょう。  
@@ -746,7 +736,7 @@ public class PrefectureAreaResource {
 
 以上で、`PrefectureArea`エンティティは完成です！  
 
-## 3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう
+### 3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう
 
 ここでは、サンプルアプリケーションに元々実装されていた都道府県情報に都道府県エリアの情報を追加します。  
 `Prefecture.java`を開きます。
@@ -762,7 +752,7 @@ public class PrefectureAreaResource {
 これは、元々の都道府県情報にエリア情報を追加するための定義です。  
 まずは、Entityとして`PrefectureArea`を定義します。  
 これは、`Prefecture`に対して`PrefectureArea`への依存関係を定義するためです。  
-[3. サンプルアプリケーションを拡張してみよう](#3-サンプルアプリケーションを拡張してみよう)で示した通り、`Prefecture`情報は以下の3カラムがありますが、
+[3. サンプルアプリケーションを拡張してみよう](#3サンプルアプリケーションを拡張してみよう)で示した通り、`Prefecture`情報は以下の3カラムがありますが、
 
 * 都道府県ID
 * 都道府県名
@@ -805,7 +795,7 @@ public class PrefectureAreaResource {
 
 以上で、都道府県エリアの情報を元の都道府県情報に追加できました！
 
-## 3-4. persistence.xmlを変更しよう
+### 3-4. persistence.xmlを変更しよう
 
 次にJPAの設定を追加します。  
 ここまでで、`PrefectureArea`というEntityを作成してきたので、このEntityをJPAの管理下に含めます。 
@@ -822,7 +812,7 @@ public class PrefectureAreaResource {
 
 これで、`persistence.xml`の設定は完了です！
 
-## 3-5. DDLを編集しよう
+### 3-5. DDLを編集しよう
 
 最後にDDLを拡張した内容に合わせて編集します。
 
@@ -909,7 +899,7 @@ INSERT INTO PREFECTURE VALUES (3, '岩手');
 git clone https://github.com/oracle-japan/helidon-handson-complete.git
 ```
 
-## 3-6. 拡張したサンプルアプリケーションを動かしてみよう
+### 3-6. 拡張したサンプルアプリケーションを動かしてみよう
 
 それでは、拡張したサンプルアプリケーションを動かしてみましょう。  
 プロジェクト直下で以下のコマンドを実行します。
@@ -1033,8 +1023,8 @@ curl http://localhost:8080/prefecture/1
 
 以上で、サンプルアプリケーションの動作確認は完了です！  
 
-# まとめ
-
+まとめ
+-----
 いかがでしたでしょうか。  
 
 このようにHelidonでは、簡単にRESTfulアプリケーション、そしてデータベースとの接続を実現することができます。  
