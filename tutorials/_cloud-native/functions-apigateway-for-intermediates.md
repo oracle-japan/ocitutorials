@@ -156,6 +156,7 @@ Oracle OCIコンソールの左上にあるハンバーガーメニューをク�
     + 機能名：Authorizer Functionが属する機能の名前。今回は、`fn-authorizer`
     + 認証トークン：ヘッダー
     + ヘッダー名：今回使用するOracle Functionsでは、`token`という名前のヘッダー項目を使用します
+
   ![](create-apigateway-05.png)
 
 [次]をクリックします。

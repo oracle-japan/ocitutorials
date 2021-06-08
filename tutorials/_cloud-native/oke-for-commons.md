@@ -205,72 +205,14 @@ kubectl|Kubernetesの各種管理操作を行うためのCLIです。OKEはオ�
 
 以下、2つのCLIのセットアップを順次行っていきます。
 
-## 4-1. OCI CLIをセットアップする
+### 4-1. OCI CLIをセットアップする
 ここでは、OCI CLIのセットアップを行います。
 
-### 4-1-1. テナンシのOCIDの確認
-OCI CLIのセットアップでは、CLIをどのテナンシのユーザーアカウントとして実行するかを設定するために、テナンシ、ユーザーのOCID（識別子）が必要になります。はじめに、このテナンシのOCIDを取得しておきます。
-
-OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`テナンシ:<テナンシ名>`をクリックします。
-
-![](03-01-1.png)
-
-テナンシ情報`OCID`の右側にある`コピー`をクリックすると、テナンシOCIDがクリップボードにコピーされます。
-
-この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
-
-![](03-01-2.png)
-
-### 4-1-2. ユーザーのOCIDの確認
-次にテナンシのOCIDを取得しておきます。
 OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`ユーザ名`(oracleidentitycloudservice/<ユーザ名>)をクリックします。
 
 ![](03-02.png)
 
-ユーザ情報が表示されますので、`OCID`の右側にある`コピー`をクリックすると、ユーザOCIDがクリップボードにコピーされます。
-
-![](03-03.png)
-
-この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
-
-### 4-1-3. OCI CLIのセットアップ
-それでは、OCI CLIのセットアップを行います。
-[Cloud Shellを起動](#3-1-cloud-shellを起動する)し、以下
-のコマンドを実行してください。
-
-    oci setup config
-
-**Cloud Shell以外をご利用の方**  
-別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。
-{: .notice--info}
-
-セットアップをおこなうためのインタラクションが開始されますので、提示される質問に対して、下表のように入力してください。
-
-質問|応答操作
--|-
-Enter a location for your config [/home/opc/.oci/config]|なにも入力せず`[Return]`
-Enter a user OCID|先の手順で確認したユーザーのOCIDを入力
-Enter a tenancy OCID|先の手順で確認したテナンシのOCIDを入力
-Enter a region by index or name(e.g. 1: ap-chiyoda-1, 2: ap-chuncheon-1, 3: ap-hyderabad-1, 4: ap-melbourne-1, 5: ap-mumbai-1, 6: ap-osaka-1, 7: ap-seoul-1, 8: ap-sydney-1, 9: ap-tokyo-1, 10: ca-montreal-1, 11: ca-toronto-1, 12: eu-amsterdam-1, 13: eu-frankfurt-1, ...)|CLI実行環境の作成時に指定したリージョン(数字でもOK)を入力
-Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]|`Y + [Return]`
-Enter a directory for your keys to be created [/home/opc/.oci]|なにも入力せず`[Return]`
-Enter a name for your key [oci\_api\_key]|なにも入力せず`[Return]`
-Enter a passphrase for your private key (empty for no passphrase)|なにも入力せず`[Return]`
-
-CLIからOracle Cloud環境の操作をおこなう際は、コマンドの実行の度に認証が行われます。この認証のための鍵はあらかじめOracle Cloud上のユーザーアカウントに設定しておく必要があります。
-
-上記のOCI CLIのセットアップの中で鍵ペアが作成されていますので、公開鍵をユーザーアカウントに設定していきます。
-
-まず、Tera Termで以下のコマンドを実行し、公開鍵を表示しておきます。
-
-    cat ~/.oci/oci_api_key_public.pem
-
-続いてコンソールに移り、ユーザー詳細画面へ遷移します。
-
-![](03-02.png)
-
-
-ユーザーの詳細画面をスクロールして`APIキー`をクリックします。
+ユーザー詳細画面へ遷移するので、スクロールして`APIキー`をクリックします。
 
 ![](03-05-01.png)
 
@@ -279,15 +221,14 @@ CLIからOracle Cloud環境の操作をおこなう際は、コマンドの実�
 ![](03-05.png)
 
 「公開キーの追加」ダイアログの入力欄が表示されます。  
-今回は、`公開キーの貼付け`をクリックし、先ほとTera Termに表示した公開鍵をペーストし、`追加`ボタンをクリックします（`-----BEGIN PUBLIC KEY-----`と`-----END PUBLIC KEY-----`の行も含めてペーストします）。  
-公開キーをファイルで登録したい場合には、`公開キー・ファイルの選択`をクリックし、公開キーを登録します。
+今回は、`APIキー・ペアの生成`をクリックし、`秘密鍵のダウンロード`をクリックし、API秘密鍵をダウンロード後に`追加`ボタンをクリックします。  
+ダウンロードしたAPI秘密鍵は、[中級編 - KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう](../oke-for-intermediates/)で使用するので、保管しておいてください。
 
-![](03-06.png)
+![](03-05-02.png)
 
 以上でOCI CLIのセットアップは完了です。
 
-
-## 4-2. kubectlをセットアップする
+### 4-2. kubectlをセットアップする
 次に、kubectlのセットアップを行って実際にクラスターにアクセスしてみます。
 
 OCIコンソール画面左上のハンバーガーメニューを展開し、`開発者サービス`⇒`Kubernetes Clusters (OKE)`を選択します。
@@ -351,8 +292,6 @@ kubectlコマンドはデフォルトで`$HOME/.kube/config`というパスの�
 
 [中級編 - KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう](../oke-for-intermediates/)
 
-
-
 5.【オプション】CLI実行環境(VMインスタンス)の作成
 -----------------------------------
 ※この手順はオプションです。
@@ -363,7 +302,7 @@ kubectlコマンドはデフォルトで`$HOME/.kube/config`というパスの�
 OKEを操作するためのクライアントを、Cloud ShellではなくVMインスタンスで作成したい方やOracle Cloud Infrastructure上のマネージドTerraformサービスである`Resource Manager`に興味がある方は是非参考にしてください。
 {: .notice--info}
 
-## 5-1. OCIコンソールにアクセスする
+### 5-1. OCIコンソールにアクセスする
 OCIコンソールにブラウザからアクセスします。お持ちのクラウドアカウントを使って[サインイン](https://cloud.oracle.com/ja_JP/home)します。
 
 ![](01-01-1.png)
@@ -373,7 +312,7 @@ OCIコンソールにブラウザからアクセスします。お持ちのク�
 - 3．「Next」をクリックします
 - 4．クラウドユーザー名とパスワードを入力して「サイン・イン」をクリックします
 
-## 5-2. Resource Managerを利用して環境を構築する
+### 5-2. Resource Managerを利用して環境を構築する
 本節での作業は、OCIのResource Managerと呼ばれるサービスを使って実施します。手作業でVMインスタンスの作成、CLIのインストール、ポリシーの設定などを行うこともできますが、Resource Managerを利用することでこれらの手順を自動化・省力化することが可能です。
 
 **Resource Managerについて**  
@@ -383,7 +322,7 @@ Resource ManagerではTerraformの形式で構成情報を記述します。
 
 ![](01-21.png)
 
-### 5-2-1. スタックの作成
+#### 5-2-1. スタックの作成
 Resource Managerを利用するには、構成情報を記述したテキストファイルを作成し、それらをzipアーカイブにまとめておく必要があります。Resource Managerアーカイブは既に作成済みです。  
 [こちら](https://github.com/oracle-japan/oke-handson-prerequisites/releases/tag/v1.3)からダウンロードしてください。
 
@@ -426,7 +365,7 @@ Oracle Cloud Infrastructureは、北米、東京を含む多数のデータセ�
 ![](01-10.png)
 
 
-### 5-2-2. ジョブの実行
+#### 5-2-2. ジョブの実行
 それでは実際にスタックを実行して環境の構成を行っていきます。
 
 スタックの詳細画面で`Terraformアクション`メニューを展開し`適用`をクリックします。
@@ -447,7 +386,7 @@ Oracle Cloud Infrastructureは、北米、東京を含む多数のデータセ�
 
 ![](01-14.png)
 
-## 5-3. CLI実行環境にログインする
+### 5-3. CLI実行環境にログインする
 ジョブの実行が完了したら、実際にCLIの実行環境に接続してみましょう。画面左下にある`出力`をクリックしてください。
 
 ![](01-15.png)
@@ -499,3 +438,84 @@ Client Version: vX.XX.X
 上記は、kubectl（Kubernetesの管理用のコマンドラインツール）の、バージョン情報を表示するコマンドとその結果です。
 
 以上で、CLI実行環境の作成は完了です。
+
+### 5-4. OCI CLIのセットアップ
+OKEクラスターを利用するためのOCI CLI環境をセットアップします。  
+
+#### 5-4-1. テナンシのOCIDの確認
+OCI CLIのセットアップでは、CLIをどのテナンシのユーザーアカウントとして実行するかを設定するために、テナンシ、ユーザーのOCID（識別子）が必要になります。はじめに、このテナンシのOCIDを取得しておきます。
+
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`テナンシ:<テナンシ名>`をクリックします。
+
+![](03-01-1.png)
+
+テナンシ情報`OCID`の右側にある`コピー`をクリックすると、テナンシOCIDがクリップボードにコピーされます。
+
+この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
+
+![](03-01-2.png)
+
+#### 5-4-2. ユーザーのOCIDの確認
+次にテナンシのOCIDを取得しておきます。
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`ユーザ名`(oracleidentitycloudservice/<ユーザ名>)をクリックします。
+
+![](03-02.png)
+
+ユーザ情報が表示されますので、`OCID`の右側にある`コピー`をクリックすると、ユーザOCIDがクリップボードにコピーされます。
+
+![](03-03.png)
+
+この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
+
+#### 5-4-3. OCI CLIのセットアップ
+それでは、OCI CLIのセットアップを行います。
+[Cloud Shellを起動](#3-1-cloud-shellを起動する)し、以下
+のコマンドを実行してください。
+
+    oci setup config
+
+**Cloud Shell以外をご利用の方**  
+別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。
+{: .notice--info}
+
+セットアップをおこなうためのインタラクションが開始されますので、提示される質問に対して、下表のように入力してください。
+
+質問|応答操作
+-|-
+Enter a location for your config [/home/opc/.oci/config]|なにも入力せず`[Return]`
+Enter a user OCID|先の手順で確認したユーザーのOCIDを入力
+Enter a tenancy OCID|先の手順で確認したテナンシのOCIDを入力
+Enter a region by index or name(e.g. 1: ap-chiyoda-1, 2: ap-chuncheon-1, 3: ap-hyderabad-1, 4: ap-melbourne-1, 5: ap-mumbai-1, 6: ap-osaka-1, 7: ap-seoul-1, 8: ap-sydney-1, 9: ap-tokyo-1, 10: ca-montreal-1, 11: ca-toronto-1, 12: eu-amsterdam-1, 13: eu-frankfurt-1, ...)|CLI実行環境の作成時に指定したリージョン(数字でもOK)を入力
+Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]|`Y + [Return]`
+Enter a directory for your keys to be created [/home/opc/.oci]|なにも入力せず`[Return]`
+Enter a name for your key [oci\_api\_key]|なにも入力せず`[Return]`
+Enter a passphrase for your private key (empty for no passphrase)|なにも入力せず`[Return]`
+
+CLIからOracle Cloud環境の操作をおこなう際は、コマンドの実行の度に認証が行われます。この認証のための鍵はあらかじめOracle Cloud上のユーザーアカウントに設定しておく必要があります。
+
+上記のOCI CLIのセットアップの中で鍵ペアが作成されていますので、公開鍵をユーザーアカウントに設定していきます。
+
+まず、Tera Termで以下のコマンドを実行し、公開鍵を表示しておきます。
+
+    cat ~/.oci/oci_api_key_public.pem
+
+続いてコンソールに移り、ユーザー詳細画面へ遷移します。
+
+![](03-02.png)
+
+
+ユーザーの詳細画面をスクロールして`APIキー`をクリックします。
+
+![](03-05-01.png)
+
+`公開キーの追加`をクリックします。
+
+![](03-05.png)
+
+「公開キーの追加」ダイアログの入力欄が表示されます。  
+今回は、`公開キーの貼付け`をクリックし、先ほとTera Termに表示した公開鍵をペーストし、`追加`ボタンをクリックします（`-----BEGIN PUBLIC KEY-----`と`-----END PUBLIC KEY-----`の行も含めてペーストします）。  
+公開キーをファイルで登録したい場合には、`公開キー・ファイルの選択`をクリックし、公開キーを登録します。
+
+![](03-16.png)
+
+以上でOCI CLIのセットアップは完了です。

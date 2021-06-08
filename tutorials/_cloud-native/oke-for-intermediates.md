@@ -162,7 +162,7 @@ key|value
 Tenancy OCID|テナントOCID
 User OCID|ユーザーOCID
 Home Region|ホームリージョンを選択。今回は"us-ashburn-1"
-Private Key|API秘密鍵。
+Private Key|[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)でダウンロードしたAPI秘密鍵の内容を貼り付け
 Passphrase|パスフレーズ。今回は空文字("")を指定。
 Fingerprint|API Signingキーのフィンガープリント(Private Keyを入力すると自動的に設定される)
 Compartment OCID|コンパートメントOCID
@@ -182,8 +182,7 @@ Storage Namespace|オブジェクト・ストレージ・ネームスペース
 3. コンパートメントOCID
 4. API Signingキーのフィンガープリント
 5. 認証トークン
-6. API秘密鍵
-7. クラスターOCID
+6. クラスターOCID
 
 **1.オブジェクト・ストレージ・ネームスペース**
 
@@ -256,40 +255,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 ![](1066.jpg)
 
-
-**6.API秘密鍵**
-
-APIキー秘密鍵は[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)の手順により作成しています。  
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、ホームディレクトリ(`/home/opc`)から以下のコマンドを実行します。
-
-**受講者の方へ**  
-別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。
-{: .notice--info}
-
-    cat .oci/oci_api_key.pem
-
-以下のような内容が表示されます。
-
-    -----BEGIN RSA PRIVATE KEY-----
-    MIIEowIBAAKCAQEAtql2nZ3kmjXlE7MKgqWW6bCQCDPbcgF8h7jnpEgznRMXga1n
-    0yAPof1kEsQYSi08WMUqPiuuCQAXEF7TM6ZUzkkTwWNlkXcmldFcbh1sYCuGtY1/
-    2W2fhx5Iw48bBkNa40ZSXW824I7kx4ECeRT1CGpo9kEqOrKqtOw10Vzunw9KDlEs
-    VhqNRZwX5hMln8dQbd7WBH24V8FYqNYk9OaoNi9LjUQysXP9OfAv9sXZ+QHhqbHt
-    ATvNuSCVaOtgWNSQIeRcH92bjwnUy5udTxNi2f+gvRQ3PU8LVrpgbkSMI+s+WDZ/
-    xJEDUg36deAbxXdFWhh1OkKJFR1ElbymvqxuAQIDAQABAoIBACDf4QQ/DYyflIn2
-    (略)
-    8SonGpmOtq3NtzrGnfyai94GOlXNrG6hZk47Ka3x/NuB9rH869a6gQq0RNjkmIwr
-    cxUvpjEBTEEW1hmMnsMahLECgYB3DN0SInfB9HzdPtJjPB+c7YSFREbA2w7zx7Gm
-    6lhFlNNXQ094L53Ze9b4zDsbWp/p57+WB72QIQhmqnCtg3kK5QVbriHFOe7sC7jH
-    6GIUbZ6wJDUnT/qqWaC4gaA7qHWHhuzVlksjwNIFj1mYXaRIxbZSxBcAoso1sO0Q
-    TQGRmQKBgAYrDWTkgU10e8VT3yIVFZzNqfyqhIDPn5ozIbovxBO4BwBtlNtHfJwt
-    7wnM83Kx2uZhAhT8E+h5TKBQcxzdqnCyk2oGSzWvGofpdFBnjPnkn00yh7x67NCg
-    G4RtLUF9WFHyjKLk4d0/t3OHqECo9a0e6CIkC1KGQ3GsFMCcUu6O
-    -----END RSA PRIVATE KEY-----
-
-上記の内容をメモしておいてください。
-
-**7.OKEクラスターOCID**
+**6.OKEクラスターOCID**
 
 [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)の手順により作成したOKEクラスターのOCIDを取得します。
 OCIコンソールにログインします。  
@@ -1135,7 +1101,7 @@ Visual Builder Studioで、「ビルド」に遷移して、「＋ジョブの�
 + ユーザーOCID：ユーザーOCID
 + フィンガープリント：API Signingキーのフィンガープリント
 + テナンシ：テナントOCID
-+ 秘密キー：API秘密鍵
++ 秘密キー：[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)でダウンロードしたAPI秘密鍵の内容を貼り付け
 + リージョン：リージョン識別子。自身の環境に合わせて選択。今回は、"us-ashburn-1"
 
 ![](1770.jpg)

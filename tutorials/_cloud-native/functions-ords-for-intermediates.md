@@ -26,6 +26,8 @@ ORDS(Oracle REST Data Services)の詳細については[Autonomous Databaseを�
 - 事前環境構築
   - [Fn Projectハンズオン](/ocitutorials/cloud-native/fn-for-beginners/)が完了していること
   - [Oracle Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
+  - ローカル端末にSQL Developerがインストールされていること
+    - ダウンロードは[こちら](https://www.oracle.com/tools/downloads/sqldev-downloads.html)から
 
 1.事前準備
 -------------------
@@ -331,7 +333,7 @@ Fn Project CLIコンテキストで指定されたコンパートメントを選
 
 ![](create-function.png)
 
-[Oracle Functionsことはじめ](../oraclefunctions/handson/getting-started/README.md)で利用したCloud Shellにログインします。  
+[Oracle Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で利用したCloud Shellにログインします。  
 
 デプロイ前にFunctionsを実行するために環境変数をいくつか設定します。
 

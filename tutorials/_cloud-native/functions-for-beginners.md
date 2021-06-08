@@ -71,7 +71,7 @@ Oracle Cloudのダッシューボードにログインし、ダッシューボ�
 "ポリシーの作成"をクリックします。
 ![](00-01.png)
 
-"名前"に任意の名前(特にこだわりがなければ"Oracle-Functions-Policy")を入力、"説明"にも名前と同様の値を入力、"手動エディタ"の表示にチェックを入れてテキストボックスに以下に2つを入力し、"作成"をクリックします。  
+"名前"に任意の名前(特にこだわりがなければ"Oracle-Functions-Policy")を入力、"説明"にも名前と同様の値を入力、"手動エディタ"の表示にチェックを入れてテキストボックスに以下の2つを入力し、"作成"をクリックします。  
 以下の2つのポリシーによって、Oracle FunctionsからのVCN(ネットワーク)の使用およびファンクションを格納するレジストリの使用を許可します。
 
 * Allow service FaaS to use virtual-network-family in tenancy
@@ -195,7 +195,7 @@ contextはリージョンごとに作成されますので、この後の手順�
 
     fn use context ap-tokyo-1 
 
-以下のコマンドを実行し、コンパートメントIDを設定します。([compartment-ocid]は[2-1-2. コンパートメントOCIDとオブジェクト・ストレージ・ネームスペースの確認](#2-1-2-コンパートメントocidとオブジェクトストレージネームスペースの確認)の手順で確認したコンパートメントOCIDです。)
+以下のコマンドを実行し、コンパートメントIDを設定します。([compartment-ocid]は[2-1-2. コンパートメントOCIDの確認](#2-1-2-コンパートメントocidの確認)の手順で確認したコンパートメントOCIDです。)
 
     fn update context oracle.compartment-id [compartment-ocid]
 
@@ -204,10 +204,10 @@ contextはリージョンごとに作成されますので、この後の手順�
     fn update context registry [region-code].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[repo-name]
 
 今回は以下のコマンドを実行し、OCIRを設定します。(本ハンズオンではashburnリージョンを使用)  
-[region-code] (下記であれば"nrt"部分)については、自身のトライアル環境に対応した値を使用してください。  
+[region-code] (下記であれば"iad"部分)については、自身のトライアル環境に対応した値を使用してください。  
 [オブジェクト・ストレージ・ネームスペース]は、3-1-1で確認したオブジェクト・ストレージ・ネームスペースを設定します。
 
-    fn update context registry nrt.ocir.io/[オブジェクト・ストレージ・ネームスペース]/functions-handson
+    fn update context registry iad.ocir.io/[オブジェクト・ストレージ・ネームスペース]/functions-handson
 
 
 以下のコマンドを実行し、Oracle Functionsで使用するprofile名を設定します。  
@@ -215,11 +215,11 @@ profile名は、今回"DEFAULT"(OCI CLIセットアップ時に設定される�
 
     fn update context oracle.profile "DEFAULT"
  
-以下のコマンドを実行し、OCIRにログインできることを確認します。(本ハンズオンでは、ashburnを使用しているので、"nrt")  
+以下のコマンドを実行し、OCIRにログインできることを確認します。(本ハンズオンでは、ashburnを使用しているので、"iad")  
 ログインの際にユーザー名とパスワードを聞かれるので、下表のように応答します。  
-OCIRのURIにおけるリージョンコード(下記であれば"nrt"部分)については、自身のトライアル環境に対応した値を使用してください。
+OCIRのURIにおけるリージョンコード(下記であれば"iad"部分)については、自身のトライアル環境に対応した値を使用してください。
 
-    docker login nrt.ocir.io
+    docker login iad.ocir.io
 
 質問|応答操作|備考
 -|-|-

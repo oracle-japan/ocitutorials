@@ -76,7 +76,7 @@ OCIコンソールにログインし、[ネットワーキング]に移動して
 ![](image-add-security-rule-01.png)
 
 [コンパートメント]からOCI API Gatewayで利用するコンパートメント(今回はルートコンパートメント)を選択して、OCI API Gatewayで利用するVCNリンクをクリックします。  
-VCNは[Oracle Functionsことはじめ](../oraclefunctions/handson/getting-started/README.md)で作成したVCNを利用してください。
+VCNは[Oracle Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNを利用してください。
 
 ![](image-add-security-rule-02.png)
 
@@ -160,7 +160,7 @@ OCIコンソールにログインし、[アイデンティティ]をクリック
 
 以上で、OCI API Gatewayプロビジョニングの事前準備は完了です。  
 
-3.OCI API GatewayへのOracle Functionsへのデプロイと動作確認
+3.OCI API GatewayへのOracle Functionsデプロイと動作確認
 ------
 
 ### 3-1.OCI API Gatewayの作成
