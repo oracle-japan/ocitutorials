@@ -1,0 +1,920 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="このハンズオンでは、OCI API GatewayとOracle Functionsを組み合わせて、簡単なアプリケーションを開発する手順をご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-apigateway-for-beginners/">
+
+
+  <meta property="og:description" content="このハンズオンでは、OCI API GatewayとOracle Functionsを組み合わせて、簡単なアプリケーションを開発する手順をご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-08T16:01:11+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-apigateway-for-beginners/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン
+
+        
+      </h1>
+      
+        <p class="page__lead">このハンズオンでは、OCI API GatewayとOracle Functionsを組み合わせて、簡単なアプリケーションを開発する手順をご紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/" class="active">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン">
+    <meta itemprop="description" content="このハンズオンでは、OCI API GatewayとOracle Functionsを組み合わせて、簡単なアプリケーションを開発する手順をご紹介します。">
+    <meta itemprop="datePublished" content="2021-06-08T16:01:11+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#条件">条件</a></li>
+  <li><a href="#1サンプルアプリケーションのデプロイ">1.サンプルアプリケーションのデプロイ</a></li>
+  <li><a href="#2oci-api-gatewayプロビジョニングの事前準備">2.OCI API Gatewayプロビジョニングの事前準備</a>
+    <ul>
+      <li><a href="#2-1イングレスルールの追加">2-1.イングレス・ルールの追加</a></li>
+      <li><a href="#2-2動的ポリシーの作成">2-2.動的ポリシーの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#3oci-api-gatewayへのoracle-functionsデプロイと動作確認">3.OCI API GatewayへのOracle Functionsデプロイと動作確認</a>
+    <ul>
+      <li><a href="#3-1oci-api-gatewayの作成">3-1.OCI API Gatewayの作成</a></li>
+      <li><a href="#3-2oci-api-gatewayへのoracle-functionsへのデプロイ">3-2.OCI API GatewayへのOracle Functionsへのデプロイ</a></li>
+      <li><a href="#3-3動作確認">3-3.動作確認</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>このハンズオンでは、OCI API GatewayとOracle Functionsを組み合わせて、簡単なアプリケーションを開発する手順をご紹介します。</p>
+
+<h2 id="条件">条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>有効なOracle Cloudアカウントがあること</li>
+    </ul>
+  </li>
+  <li>事前環境構築
+    <ul>
+      <li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>が完了していること</li>
+      <li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>が完了していること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="1サンプルアプリケーションのデプロイ">1.サンプルアプリケーションのデプロイ</h2>
+
+<p>ここでは、サンプルアプリケーションのデプロイを行います。</p>
+
+<p>ここでデプロイするFunctionは、渡されたパラメータを使用して、QRコードの画像を作成するアプリケーションです。</p>
+
+<p>まずは、githubからハンズオン用の資材をcloneします。<br />
+<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsことはじめ</a>で利用したCloud Shellにログインします。<br />
+Gitコマンドは既にCloud Shellにインストールされています。</p>
+
+<p>以下のコマンドを実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/apigw-functions-handson.git
+</code></pre></div></div>
+
+<p>apigw-functions-handsonディレクトリに移動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>apigw-functions-handson
+</code></pre></div></div>
+
+<p>Oracle Functionsを使用してFunctionをデプロイします。<br />
+fn-generate-qrcodeディレクトリに移動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>fn-generate-qrcode
+</code></pre></div></div>
+
+<p>fn-generate-qrcodeをデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn <span class="nt">-v</span> deploy <span class="nt">--app</span> helloworld-app
+</code></pre></div></div>
+
+<p>最後に以下のような出力が得られます：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~略~~~
+Updating function fn-generate-qrcode using image nrt.ocir.io/xxxxxxxx/workshop/fn-generate-qrcode:0.0.2...
+Successfully created function: fn-generate-qrcode with nrt.ocir.io/xxxxxxxx/workshop/fn-generate-qrcode:0.0.2
+</code></pre></div></div>
+
+<p>これで、Functionsのデプロイは完了です。</p>
+
+<h2 id="2oci-api-gatewayプロビジョニングの事前準備">2.OCI API Gatewayプロビジョニングの事前準備</h2>
+
+<p>ここでは、OCI API Gatewayをプロビジョニングするための事前準備を行います。</p>
+
+<h3 id="2-1イングレスルールの追加">2-1.イングレス・ルールの追加</h3>
+
+<p>OCI API Gatewayは、デフォルトでは開いていないポート443で通信します。 ポート443のトラフィックを許可するには、サブネットに対してイングレス・ルールを追加する必要があります。</p>
+
+<p>OCIコンソールにログインし、[ネットワーキング]に移動して、[仮想クラウド・ネットワーク]をクリックします。</p>
+
+<p><img src="image-add-security-rule-01.png" alt="" /></p>
+
+<p>[コンパートメント]からOCI API Gatewayで利用するコンパートメント(今回はルートコンパートメント)を選択して、OCI API Gatewayで利用するVCNリンクをクリックします。<br />
+VCNは<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsことはじめ</a>で作成したVCNを利用してください。</p>
+
+<p><img src="image-add-security-rule-02.png" alt="" /></p>
+
+<p>OCI API Gatewayで利用するサブネットリンクをクリックします。<br />
+今回は、パブリックサブネット(“Oracle Functions Handson”で作成した場合は”パブリック・サブネット-Oracle Functions Handson(リージョナル)”)を選択してください。</p>
+
+<p><img src="image-add-security-rule-03.png" alt="" /></p>
+
+<p>[Default Security List for …]リンクをクリックします。</p>
+
+<p><img src="image-add-security-rule-04.png" alt="" /></p>
+
+<p>[イングレス・ルールの追加]をクリックします。</p>
+
+<p><img src="image-add-security-rule-05.png" alt="" /></p>
+
+<p>以下項目を入力して、[イングレース・ルールの追加]をクリックします。</p>
+
+<ul>
+  <li>ステートレス：チェックをオフにする（デフォルト値）</li>
+  <li>ソースCIDR：<code class="language-plaintext highlighter-rouge">0.0.0.0/0</code></li>
+  <li>IPプロトコル：<code class="language-plaintext highlighter-rouge">TCP</code>（デフォルト値）</li>
+  <li>宛先ポート範囲：<code class="language-plaintext highlighter-rouge">443</code></li>
+</ul>
+
+<p><img src="image-add-security-rule-06.png" alt="" /></p>
+
+<p>新しいイングレス・ルールが追加されます。</p>
+
+<p><img src="image-add-security-rule-07.png" alt="" /></p>
+
+<h3 id="2-2動的ポリシーの作成">2-2.動的ポリシーの作成</h3>
+
+<p>OCI API GatewayでOracle Functionsを利用するための動的ポリシーの作成を行います。</p>
+
+<p class="notice--info"><strong>動的グループおよびポリシーについて</strong><br />
+Visual Builder Studio上の仮想マシン・テンプレート名の重複は許容されていません。
+集合ハンズオンなど同一の環境でハンズオンを実施されている方は、仮想マシン・テンプレート名が重複しない様に語尾に任意の文字列(名前のイニシャル等)を追加してください。</p>
+
+<ul>
+  <li>動的グループを作成します。</li>
+</ul>
+
+<p>OCIコンソールにログインし、[アイデンティティ]をクリックして、[動的グループ]をクリックします。</p>
+
+<p><img src="image-add-dynamic-grp-01.png" alt="image-20200227100832312" /></p>
+
+<p>[動的グループの作成]をクリックします。</p>
+
+<p><img src="image-add-dynamic-grp-02.png" alt="" /></p>
+
+<p>以下項目を入力して、[動的グループの作成]をクリックします。</p>
+
+<ul>
+  <li>名前：任意。今回は<code class="language-plaintext highlighter-rouge">api_gw_grp</code></li>
+  <li>説明：任意。今回は<code class="language-plaintext highlighter-rouge">API Gateway Dynamic Group</code></li>
+  <li>ルール1：<code class="language-plaintext highlighter-rouge">&lt;compartment-ocid&gt;</code>は[アイデンティティ]⇒[コンパートメント]に移動して、OCI API Gatewayで使用するコンパートメント(今回はルートコンパートメント)を開いて、該当OCIDを記入します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ALL {resource.type = 'ApiGateway', resource.compartment.id = '&lt;compartment-ocid&gt;'}
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p><img src="image-add-dynamic-grp-03.png" alt="" /></p>
+
+<ul>
+  <li>ポリシーを作成します。</li>
+</ul>
+
+<p>OCIコンソールにログインし、[アイデンティティ]をクリックして、[ポリシー]をクリックします。</p>
+
+<p><img src="image-add-policy-01.png" alt="" /></p>
+
+<p>[コンパートメント]からOCI API Gatewayで利用するコンパートメント(今回はルートコンパートメント)を選択して、[ポリシーの作成]をクリックします。</p>
+
+<p><img src="image-add-policy-04.png" alt="" /></p>
+
+<p>以下項目を入力して、[作成]をクリックします。</p>
+
+<ul>
+  <li>名前：任意。今回は<code class="language-plaintext highlighter-rouge">APIGW_Policy</code></li>
+  <li>説明：任意。今回は<code class="language-plaintext highlighter-rouge">APIGW_Policy</code></li>
+  <li><code class="language-plaintext highlighter-rouge">手動エディタの表示</code>にチェック</li>
+  <li>ポリシー・ビルダー：以下のポリシーを入力します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Allow dynamic-group api_gw_grp to use functions-family in tenancy
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p><img src="image-add-policy-05.png" alt="" /></p>
+
+<p>以上で、OCI API Gatewayプロビジョニングの事前準備は完了です。</p>
+
+<h2 id="3oci-api-gatewayへのoracle-functionsデプロイと動作確認">3.OCI API GatewayへのOracle Functionsデプロイと動作確認</h2>
+
+<h3 id="3-1oci-api-gatewayの作成">3-1.OCI API Gatewayの作成</h3>
+
+<p>OCIコンソールにログインし、[開発者サービス]に移動して、[API管理] =&gt; [ゲートウェイ]をクリックしてから、次の操作を行います。</p>
+
+<p><img src="image-18.png" alt="" /></p>
+
+<p>[ゲートウェイの作成]をクリックして、次を指定します。</p>
+
+<ul>
+  <li>
+    <p>名前：新しいゲートウェイの名前。今回は、”workshop-api-gateway”</p>
+  </li>
+  <li>
+    <p>タイプ：パブリック</p>
+  </li>
+  <li>
+    <p>コンパートメント：OCI API Gatewayリソースを作成するコンパートメントの名前。今回はルートコンパートメントを指定。</p>
+  </li>
+  <li>
+    <p>仮想クラウド・ネットワーク：OCI API Gatewayで使用するVCNの名前。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsことはじめ</a>で作成したVCNを指定してください。</p>
+  </li>
+  <li>
+    <p>サブネット：VCNのサブネットの名前。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsことはじめ</a>で作成したVCNのパブリック・サブネットを指定してください。</p>
+  </li>
+</ul>
+
+<p>[作成]をクリックします。</p>
+
+<p><img src="image-06.png" alt="image-20200221160825018" /></p>
+
+<p>新しいAPIゲートウェイが作成されると、[ゲートウェイ]ページのリストに<code class="language-plaintext highlighter-rouge">アクティブ</code>と表示されます。<br />
+<code class="language-plaintext highlighter-rouge">アクティブ</code>になるまでには5-10分程度かかることがあります。</p>
+
+<p><img src="image-07.png" alt="" /></p>
+
+<h3 id="3-2oci-api-gatewayへのoracle-functionsへのデプロイ">3-2.OCI API GatewayへのOracle Functionsへのデプロイ</h3>
+
+<p>[ゲートウェイ]ページで、前に作成したAPIゲートウェイの名前をクリックします。</p>
+
+<p><img src="image-08.png" alt="" /></p>
+
+<p>画面左側にあるメニューの[リソース]で[デプロイメント]をクリックし、[デプロイメントの作成]をクリックします。</p>
+
+<p>[最初から]をクリックし、[APIリクエスト・ポリシー]内の[CORS]セクションの[追加]をクリックします。</p>
+
+<p><img src="image-17.png" alt="image-20200221160825018" /></p>
+
+<p>後続の手順で構築するWebサーバからOCI API Gatewayへのアクセスを許可するために以下の設定を行います。<br />
+[オリジン]内の[許可されるオリジン]に<code class="language-plaintext highlighter-rouge">*</code>と入力し、[変更の保存]をクリックします。</p>
+
+<p>[基本情報]については以下を入力します。</p>
+
+<ul>
+  <li>名前：新しいAPIデプロイメントの名前。今回は、workshop-api-deployment</li>
+  <li>パス接頭辞：APIデプロイメントに含まれるすべてのルートのパスに追加するパスプレフィックス。今回は<code class="language-plaintext highlighter-rouge">/v1</code></li>
+  <li>コンパートメント：新しいAPIデプロイメントを作成するコンパートメント(今回はルートコンパートメント)</li>
+</ul>
+
+<p>以下のような状態になっていれば問題ありません。[次]をクリックします。
+<img src="image-09.png" alt="" /></p>
+
+<p class="notice--info"><strong>CORSについて</strong><br />
+オリジン間リソース共有Cross-Origin Resource Sharing (CORS) は、追加の HTTP ヘッダーを使用して、あるオリジンで動作しているウェブアプリケーションに、異なるオリジンにある選択されたリソースへのアクセス権を与えるようブラウザーに指示するための仕組みです。<br />
+呼び出し元から異なるドメインへのリソースへアクセスを行うためにはCORSの設定が必要になります。
+今回はハンズオンをスムーズに体験頂くために<code class="language-plaintext highlighter-rouge">*</code>を指定しましたが、実際は適切なオリジン名を入力する必要があります。<br />
+詳細は<a href="https://developer.mozilla.org/ja/docs/Web/HTTP/CORS">オリジン間リソース共有 (CORS)</a>をご確認ください。</p>
+
+<p>[1のルーティング]セクションで次を指定して、[次]をクリックします。</p>
+
+<ul>
+  <li>パス：APIのパス。今回は、/fn-generate-qrcode</li>
+  <li>メソッド：APIのメソッドを指定します。今回は、<code class="language-plaintext highlighter-rouge">GET</code></li>
+  <li>タイプ：バックエンド・サービスのタイプを指定します。今回は、<code class="language-plaintext highlighter-rouge">Oracle Functions</code></li>
+  <li>アプリケーション：Oracle Functionsのアプリケーションを指定します。今回は、<code class="language-plaintext highlighter-rouge">helloworld-app</code></li>
+  <li>機能名：Oracle Functionsの機能名を指定します。今回は、<code class="language-plaintext highlighter-rouge">fn-generate-qrcode</code></li>
+</ul>
+
+<p><img src="image-10.png" alt="" /></p>
+
+<p>新しいAPIデプロイメント用に入力した詳細を確認し、[作成]をクリックして作成します。</p>
+
+<p><img src="image-11.png" alt="" /></p>
+
+<p>新しいAPIデプロイメントが作成されると、APIデプロイメントのリストにアクティブとして表示されます。</p>
+
+<p>APIデプロイメントのリストで、作成したばかりの新しいAPIデプロイメントのエンドポイントの横にある[コピー]をクリックして、エンドポイントをコピーし、テキストエディタ等に保持しておきます。</p>
+
+<p><img src="image-12.png" alt="" /></p>
+
+<p>エンドポイントは以下のようになります。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apigateway.ap-tokyo-1.oci.customer-oci.com/v1
+</code></pre></div></div>
+
+<h3 id="3-3動作確認">3-3.動作確認</h3>
+
+<p>今回のハンズオンでは、サンプルアプリケーションを利用して、OCI API Gateway経由でOracle Functionsを呼び出します。<br />
+今回は、<a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>で作成したコンピュートインスタンスを利用して、
+フロントエンドアプリを構築します。</p>
+
+<p>サンプルアプリケーションをpullするために、Gitコマンドをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>git-all
+</code></pre></div></div>
+
+<p>以下のコマンドを実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/apigw-functions-handson.git
+</code></pre></div></div>
+
+<p>apigw-functions-handsonディレクトリ(git cloneした資材ディレクトリ)に移動します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>apigw-functions-handson/front-app
+</code></pre></div></div>
+
+<p>サンプルアプリケーションの<code class="language-plaintext highlighter-rouge">main.js</code>にある<code class="language-plaintext highlighter-rouge">API_URL</code>を修正します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi js/main.js
+</code></pre></div></div>
+
+<p>3行目の<code class="language-plaintext highlighter-rouge">API_URL</code>を修正します。</p>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="code"><pre><span class="nx">$</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+
+    <span class="kd">const</span> <span class="nx">sampleURL</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">API_URL?contents=</span><span class="dl">"</span><span class="p">;</span>
+    <span class="kd">const</span> <span class="nx">qrName</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">qr.png</span><span class="dl">"</span><span class="p">;</span>
+
+    <span class="kd">function</span> <span class="nx">getDataUrl</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nx">image</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+        <span class="nx">image</span><span class="p">.</span><span class="nx">crossOrigin</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">anonymous</span><span class="dl">"</span><span class="p">;</span>
+        <span class="nx">image</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
+        <span class="nx">image</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="kd">let</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">'</span><span class="s1">canvas</span><span class="dl">'</span><span class="p">);</span>
+            <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">naturalWidth</span><span class="p">;</span>
+            <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">naturalHeight</span><span class="p">;</span>
+
+            <span class="nx">canvas</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="dl">'</span><span class="s1">2d</span><span class="dl">'</span><span class="p">).</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+            <span class="nx">callback</span><span class="p">(</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">toDataURL</span><span class="p">(</span><span class="dl">'</span><span class="s1">image/png</span><span class="dl">'</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#button1</span><span class="dl">"</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<span class="p">(</span><span class="nx">以下略</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p><code class="language-plaintext highlighter-rouge">API_URL</code>は<code class="language-plaintext highlighter-rouge">https://&lt;OCI API Gatewayのエンドポイント&gt;/&lt;パス接頭辞&gt;/&lt;APIのパス&gt;</code>の形式になります。<br />
+今回は以下の形式になります。<code class="language-plaintext highlighter-rouge">&lt;APIデプロイメントのエンドポイント&gt;</code>を手順3－2でコピーしたエンドポイントに修正してください。</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">sampleURL</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">&lt;APIデプロイメントのエンドポイント&gt;/fn-generate-qrcode?contents=</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>例えば以下のようになります。(XXXXの部分は各自のOCI API Gatewayのエンドポイントにより異なります)</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">sampleURL</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://XXXXXXXXXXXXXXXXXXXXXXXXX.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/fn-generate-qrcode?contents=</span><span class="dl">"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>サンプルアプリケーションをHTTPサーバーへデプロイします。</p>
+
+<p>HTTPサーバーをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> httpd
+</code></pre></div></div>
+
+<p>サンプルアプリケーションを<code class="language-plaintext highlighter-rouge">/var/www/html</code>へコピーします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo cp</span> <span class="nt">-r</span> ./<span class="k">*</span> /var/www/html/
+</code></pre></div></div>
+
+<p>HTTPサーバーを起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl start httpd
+</code></pre></div></div>
+
+<p>HTTPサーバーのデフォルトポート80で通信を行うようにするためにイングレスルールを追加します。</p>
+
+<p>OCIコンソールにログインし、[ネットワーキング]に移動して、[仮想クラウド・ネットワーク]をクリックします。</p>
+
+<p><img src="image-add-security-rule-01.png" alt="" /></p>
+
+<p>[コンパートメント]からOCI API Gatewayで利用するコンパートメント(今回はルートコンパートメント)を選択して、OCI API Gatewayで利用するVCNリンクをクリックします。<br />
+VCNは<a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>で作成したVCNを利用してください。</p>
+
+<p><img src="image-add-security-rule-02.png" alt="" /></p>
+
+<p>OCI API Gatewayで利用するサブネットリンクをクリックします。<br />
+今回は、パブリックサブネット(“Oracle Functions Handson”で作成した場合は”パブリック・サブネット-Oracle Functions Handson(リージョナル)”)を選択してください。</p>
+
+<p><img src="image-add-security-rule-03.png" alt="" /></p>
+
+<p>[Default Security List for …]リンクをクリックします。</p>
+
+<p><img src="image-add-security-rule-04.png" alt="" /></p>
+
+<p>[イングレス・ルールの追加]をクリックします。</p>
+
+<p><img src="image-add-security-rule-08.png" alt="" /></p>
+
+<p>以下項目を入力して、[イングレース・ルールの追加]をクリックします。</p>
+
+<ul>
+  <li>ステートレス：チェックをオフにする（デフォルト値）</li>
+  <li>ソースCIDR：<code class="language-plaintext highlighter-rouge">0.0.0.0/0</code></li>
+  <li>IPプロトコル：<code class="language-plaintext highlighter-rouge">TCP</code>（デフォルト値）</li>
+  <li>宛先ポート範囲：<code class="language-plaintext highlighter-rouge">80</code></li>
+</ul>
+
+<p><img src="image-add-security-rule-09.png" alt="" /></p>
+
+<p>新しいイングレス・ルールが追加されます。</p>
+
+<p><img src="image-add-security-rule-10.png" alt="" /></p>
+
+<p>また、コンピュートインスタンス側ののFirewallについてもポート80で通信できるように設定します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>firewall-cmd <span class="nt">--add-port</span><span class="o">=</span>80/tcp <span class="nt">--permanent</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+</code></pre></div></div>
+
+<p>ブラウザーを開き、コンピュートインスタンスのパブリックIPでアクセスします。サンプルアプリケーションが表示されます。</p>
+
+<p><img src="image-15.png" alt="" /></p>
+
+<p>QRコードを作成してみます。以下項目にそれぞれのテスト内容を入力して、それぞれの[QAコード生成]をクリックします。</p>
+
+<ul>
+  <li>
+    <p>メッセージ：oracle</p>
+  </li>
+  <li>
+    <p>電話番号：08012345678</p>
+  </li>
+  <li>
+    <p>Webページ：www.oracle.com</p>
+  </li>
+  <li>
+    <p>SMS通知番号を入力してください：08012345678</p>
+  </li>
+  <li>
+    <p>SMS通知内容を入力してください：oracle</p>
+  </li>
+</ul>
+
+<p>それぞれのQRコードが作成されます。QRコードをクリックして、ダウンロードできます。</p>
+
+<p>手元にあるスマートフォンでスキャンして、電話するとか、Webページに移動するとかの機能が実行されます。（以下の画像にあるQRコードをスキャンできます）</p>
+
+<p><img src="image-16.png" alt="" /></p>
+
+<p>これで、OCI API GatewayとOracle Functionsを利用した簡単なサーバレスアプリケーションが構築できました。<br />
+お疲れ様でした！</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-08T16:01:11+09:00">June 8, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Cloud+Infrasturcture+API+Gateway+%2B+Oracle+Functions%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-apigateway-for-beginners%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-apigateway-for-beginners%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-apigateway-for-beginners%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/functions-for-beginners/" class="pagination--pager" title="Oracle Functions ハンズオン
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/" class="pagination--pager" title="Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

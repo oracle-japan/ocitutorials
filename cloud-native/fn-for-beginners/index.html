@@ -1,0 +1,806 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Fn Project ハンズオン | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。このハンズオンでは、Fn Projectの環境構築から動作確認までの手順を記します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Fn Project ハンズオン">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/fn-for-beginners/">
+
+
+  <meta property="og:description" content="Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。このハンズオンでは、Fn Projectの環境構築から動作確認までの手順を記します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-08T16:01:11+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/fn-for-beginners/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Fn Project ハンズオン
+
+        
+      </h1>
+      
+        <p class="page__lead">Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。このハンズオンでは、Fn Projectの環境構築から動作確認までの手順を記します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Fn Project ハンズオン</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/" class="active">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Fn Project ハンズオン">
+    <meta itemprop="description" content="Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。このハンズオンでは、Fn Projectの環境構築から動作確認までの手順を記します。">
+    <meta itemprop="datePublished" content="2021-06-08T16:01:11+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#前提条件">前提条件</a></li>
+  <li><a href="#1fn-project実行環境の構築">1.Fn Project実行環境の構築</a>
+    <ul>
+      <li><a href="#1-1-dockerのインストール">1-1. Dockerのインストール</a></li>
+      <li><a href="#1-2-fn-cliとfn-serverのインストール">1-2. Fn CLIとFn Serverのインストール</a>
+        <ul>
+          <li><a href="#1-2-1-fn-cliのインストール">1-2-1. Fn CLIのインストール</a></li>
+          <li><a href="#1-2-2-fn-serverのインストール">1-2-2. Fn Serverのインストール</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#3fnの作成と実行">3.Fnの作成と実行</a>
+    <ul>
+      <li><a href="#3-1-fnの作成">3-1. Fnの作成</a></li>
+      <li><a href="#3-2-fnの実行">3-2. Fnの実行</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。<br />
+このハンズオンでは、Fn Projectの環境構築から動作確認までの手順を記します。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>有効なOracle Cloudアカウントがあること</li>
+      <li><a href="/ocitutorials/beginners/creating-vcn/">OCIチュートリアル その2 - クラウドに仮想ネットワーク(VCN)を作る</a> を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること</li>
+      <li><a href="/ocitutorials/beginners/creating-compute-instance/">OCIチュートリアル その3 - インスタンスを作成する</a> を通じてコンピュートインスタンスの構築が完了していること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="1fn-project実行環境の構築">1.Fn Project実行環境の構築</h2>
+<p>ここでは、前提条件のハンズオンで作成したコンピュートインスタンス上に、Fn Projectを実行するための環境構築を行います。<br />
+前提条件のハンズオンで作成したコンピュートインスタンス上に任意のターミナルソフトでSSHログインします。</p>
+
+<h3 id="1-1-dockerのインストール">1-1. Dockerのインストール</h3>
+
+<p>ログインしたら、以下のコマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install -y yum-utils
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum -y update
+</code></pre></div></div>
+
+<p>yumレポジトリをセットアップします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+</code></pre></div></div>
+
+<p>Dockerパッケージをインストールします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install -y docker-ce docker-ce-cli containerd.io
+</code></pre></div></div>
+
+<p>これでDockerのインストールは完了です。</p>
+
+<p>以下のコマンドでDocker Daemonを起動します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo systemctl start docker
+</code></pre></div></div>
+
+<p>以下のコマンドで動作確認してみます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo docker container run hello-world
+</code></pre></div></div>
+
+<p>以下のように表示されれば、問題なく起動できています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+1. The Docker client contacted the Docker daemon.
+2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+$ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+https://hub.docker.com/
+
+For more examples and ideas, visit:
+https://docs.docker.com/get-started/
+</code></pre></div></div>
+
+<p>Dockerは、rootユーザで利用することが奨励されていないので、opcユーザで利用できるように以下のコマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo usermod -aG docker opc
+</code></pre></div></div>
+
+<p>上記コマンドを実行したら<code class="language-plaintext highlighter-rouge">exit</code>コマンドでコンピュートインスタンスからログアウトし、ログインし直します。</p>
+
+<p>再ログイン後に、opcユーザでDockerを利用できるかどうかを以下のコマンドで確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker container run hello-world
+</code></pre></div></div>
+
+<p>先ほど実行した<code class="language-plaintext highlighter-rouge">sudo docker container run hello-world</code>の結果と同様になれば成功です。</p>
+
+<h3 id="1-2-fn-cliとfn-serverのインストール">1-2. Fn CLIとFn Serverのインストール</h3>
+
+<p>ここでは、Fn Projectを動作させるためにFn ServerとFn Clientをインストールします。<br />
+本ハンズオンでは、それぞれのバージョンを以下とします。</p>
+
+<ul>
+  <li>Fn CLI：0.6.6</li>
+  <li>Fn Server：0.3.749</li>
+</ul>
+
+<h4 id="1-2-1-fn-cliのインストール">1-2-1. Fn CLIのインストール</h4>
+
+<p>まず、Fn CLIのインストールを行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -LSs https://raw.githubusercontent.com/fnproject/cli/master/install | sh
+</code></pre></div></div>
+
+<p>インストールに成功すると以下のように表示されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn version 0.6.6
+
+        ______
+    / ____/___
+    / /_  / __ \
+    / __/ / / / /
+    /_/   /_/ /_/`
+</code></pre></div></div>
+
+<p>これで、Fn CLIのインストールは完了です。</p>
+
+<h4 id="1-2-2-fn-serverのインストール">1-2-2. Fn Serverのインストール</h4>
+
+<p>次にFn Serverのインストールを行います。
+Fn Serverのコンテナイメージをpullするために以下のコマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker image pull fnproject/fnserver
+</code></pre></div></div>
+
+<p>先ほどpullしたコンテナイメージを確認するために以下のコマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker image ls
+</code></pre></div></div>
+
+<p>以下のように、”fnproject/fnserver”というイメージが表示されていれば、Fn Serverのコンテナイメージをpullできています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE
+fnproject/fnserver   latest              2ea3b8195f21        17 months ago       162MB
+</code></pre></div></div>
+
+<p>Fn Serverを起動するために以下のコマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn start
+</code></pre></div></div>
+
+<p>以下のように表示されれば成功です。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>time="2021-06-01T02:07:24Z" level=info msg="Setting log level to" fields.level=info
+time="2021-06-01T02:07:24Z" level=info msg="Registering data store provider 'sql'"
+time="2021-06-01T02:07:24Z" level=info msg="Connecting to DB" url="sqlite3:///app/data/fn.db"
+time="2021-06-01T02:07:24Z" level=info msg="datastore dialed" datastore=sqlite3 max_idle_connections=256 url="sqlite3:///app/data/fn.db"
+time="2021-06-01T02:07:24Z" level=info msg="agent starting cfg={MinDockerVersion:17.10.0-ce ContainerLabelTag: DockerNetworks: DockerLoadFile: DisableUnprivilegedContainers:false FreezeIdle:50ms HotPoll:200ms HotLauncherTimeout:1h0m0s HotPullTimeout:10m0s HotStartTimeout:5s DetachedHeadRoom:6m0s MaxResponseSize:0 MaxHdrResponseSize:0 MaxLogSize:1048576 MaxTotalCPU:0 MaxTotalMemory:0 MaxFsSize:0 MaxPIDs:50 MaxOpenFiles:0xc420392d38 MaxLockedMemory:0xc420392d50 MaxPendingSignals:0xc420392d58 MaxMessageQueue:0xc420392d60 PreForkPoolSize:0 PreForkImage:busybox PreForkCmd:tail -f /dev/null PreForkUseOnce:0 PreForkNetworks: EnableNBResourceTracker:false MaxTmpFsInodes:0 DisableReadOnlyRootFs:false DisableDebugUserLogs:false IOFSEnableTmpfs:false EnableFDKDebugInfo:false IOFSAgentPath:/iofs IOFSMountRoot:/home/takuya_nii/.fn/iofs IOFSOpts: ImageCleanMaxSize:0 ImageCleanExemptTags: ImageEnableVolume:false}"
+time="2021-06-01T02:07:24Z" level=info msg="no docker auths from config files found (this is fine)" error="open /root/.dockercfg: no such file or directory"
+time="2021-06-01T02:07:24Z" level=info msg="available memory" cgroup_limit=9223372036854771712 head_room=695449190 total_memory=6954491904
+time="2021-06-01T02:07:24Z" level=info msg="ram reservations" avail_memory=6259042714
+time="2021-06-01T02:07:24Z" level=info msg="available cpu" avail_cpu=2000 total_cpu=2000
+time="2021-06-01T02:07:24Z" level=info msg="cpu reservations" cpu=2000
+time="2021-06-01T02:07:24Z" level=info msg="\n        ______\n       / ____/___\n      / /_  / __ \\\n     / __/ / / / /\n    /_/   /_/ /_/\n"
+time="2021-06-01T02:07:24Z" level=info msg="Fn serving on `:8080`" type=full version=0.3.749
+</code></pre></div></div>
+
+<p>これでFn Serverが起動したので、このままにしておきます。<br />
+以上で、Fn Project実行環境の構築は終わりです。</p>
+
+<h2 id="3fnの作成と実行">3.Fnの作成と実行</h2>
+<p>ここでは、Fn Projectで動作するFnを作成し、実際に動かしてみます。<br />
+<a href="#1fn-project実行環境の構築">1.Fn Project実行環境の構築</a>で利用したターミナルセッションとは別に、前提条件のハンズオンで作成したコンピュートインスタンス上に任意のターミナルソフトでSSHログインします。</p>
+
+<h3 id="3-1-fnの作成">3-1. Fnの作成</h3>
+
+<p><code class="language-plaintext highlighter-rouge">fn init</code>コマンドを使用してFnのひな形を作成します。今回は、以下のコマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn init --runtime java javafn
+</code></pre></div></div>
+
+<p>ここではFnをJavaで記述しますので、<code class="language-plaintext highlighter-rouge">--runtime java</code>というオプションを指定しています。</p>
+
+<p>ひな形の作成が成功すると以下のように表示されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Creating function at: ./javafn
+Function boilerplate generated.
+func.yaml created.
+</code></pre></div></div>
+
+<p>この時点で、”Hello World”と返すだけのシンプルなFnの作成が完了しています。</p>
+
+<div class="notice--info">
+  <p><strong><code class="language-plaintext highlighter-rouge">fn init</code>コマンド</strong><br />
+fn initコマンドはFnのひな形を生成するコマンドです。主要なオプションは以下のとおりです。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- --runtime: 
+    * 使用する言語を指定します。Java, Go, Node(JavaScript)などから選択することが可能です。
+</code></pre></div></div>
+<p>その他コマンドの詳細については、<a href="https://github.com/fnproject/docs/blob/master/cli/ref/fn-init.md">Fn CLIのリファレンス</a>を参照ください。</p>
+
+</div>
+
+<p>作成したディレクトリに移動します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd javafn
+</code></pre></div></div>
+
+<p>“javafn”ディレクトリ配下は以下のような構成になっています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── func.yaml
+├── pom.xml
+└── src
+    ├── main
+    │   └── java
+    │       └── com
+    │           └── example
+    │               └── fn
+    │                   └── HelloFunction.java
+    └── test
+        └── java
+            └── com
+                └── example
+                    └── fn
+                        └── HelloFunctionTest.java
+11 directories, 4 files
+</code></pre></div></div>
+
+<ul>
+  <li>ディレクトリ配下の各項目の説明
+    <ul>
+      <li>func.yaml - Fnを動作させる際の様々な定義を記載した設定ファイル。具体的な設定値は以降の手順で説明。</li>
+      <li>pom.xml - Fnをビルドする際の定義を記載した設定ファイル。(Java以外の場合はその言語に合わせたビルド設定ファイルが生成される)</li>
+      <li>src - Fnのソースコードとテストケース。</li>
+    </ul>
+  </li>
+</ul>
+
+<p>func.yamlを確認してみます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>schema_version: 20180708
+name: javafn
+version: 0.0.1
+runtime: java
+build_image: fnproject/fn-java-fdk-build:jdk11-1.0.130
+run_image: fnproject/fn-java-fdk:jre11-1.0.130
+cmd: com.example.fn.HelloFunction::handleRequest
+</code></pre></div></div>
+
+<ul>
+  <li>func.yamlの各項目の説明
+    <ul>
+      <li>schema_version - このFnファイルのスキーマのバージョン</li>
+      <li>runtime - このFnで使用する言語</li>
+      <li>build_image - このFnイメージをビルドするためのイメージ</li>
+      <li>cmd - このFnクラスの完全修飾名とこのFnの関数が呼び出されたときに呼び出されるメソッド名</li>
+    </ul>
+  </li>
+</ul>
+
+<p>以上で、Fnの作成は完了です。</p>
+
+<h3 id="3-2-fnの実行">3-2. Fnの実行</h3>
+
+<p>作成したプロジェクトをFn Serverにデプロイするためには、<code class="language-plaintext highlighter-rouge">Application</code>と呼ばれる区画を予め作成しておく必要があります。<br />
+<code class="language-plaintext highlighter-rouge">Application</code>は複数のプロジェクトをFnを内包する管理単位です。</p>
+
+<p>以下のように、fn create appコマンドを実行して<code class="language-plaintext highlighter-rouge">Application</code>を作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn create app hello-app
+</code></pre></div></div>
+
+<p>次に、<code class="language-plaintext highlighter-rouge">fn deploy</code>コマンドを使用してFnをデプロイします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn --verbose deploy --app hello-app --local
+</code></pre></div></div>
+
+<p>以下のように表示されることを確認します。(しばらく時間がかかります)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Deploying javafn to app: hello-app
+Bumped to version 0.0.2
+Building image javafn:0.0.2
+FN_REGISTRY:  FN_REGISTRY is not set.
+Current Context:  default
+Sending build context to Docker daemon  14.34kB
+Step 1/11 : FROM fnproject/fn-java-fdk-build:jdk11-1.0.98 as build-stage
+---&gt; d490a89232cf
+Step 2/11 : WORKDIR /function
+---&gt; Using cache
+---&gt; 931e8c2e85d5
+(中略)
+Step 11/11 : CMD ["com.example.fn.HelloFunction::handleRequest"]
+---&gt; Using cache
+---&gt; 5970d6bcd334
+Successfully built 5970d6bcd334
+Successfully tagged javafn:0.0.2
+
+Updating function javafn using image javafn:0.0.2...
+Successfully created function: javafn with javafn:0.0.2
+</code></pre></div></div>
+
+<div class="notice--info">
+  <p><strong><code class="language-plaintext highlighter-rouge">fn deploy</code>コマンド</strong><br />
+<code class="language-plaintext highlighter-rouge">fn deploy</code>コマンドはFnをFn Serverにデプロイするコマンドです。主要なオプションは以下のとおりです。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- --verbose:
+    * デプロイ時に詳細なログメッセージを出力します。
+- --app:
+    * functionをデプロイするapplicationを指定します。
+- --local:
+    * functionをコンテナレジストリにPushせず、直接Fn Serverにデプロイします（Fn ProjectではfunctionはすべてDockerコンテナとして動作します）。
+</code></pre></div></div>
+<p>その他コマンドの詳細については、<a href="https://github.com/fnproject/docs/blob/master/cli/ref/fn-deploy.md">Fn CLIのリファレンス</a>を参照ください。</p>
+
+</div>
+
+<p><code class="language-plaintext highlighter-rouge">fn invoke</code>コマンドを実行し、Fnを実行します。<br />
+引数は[Application名] [Fn名]の順に指定します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn invoke hello-app javafn
+</code></pre></div></div>
+
+<p>以下のように表示されたら成功です。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello, World!
+</code></pre></div></div>
+
+<p>以上で、Fn Projectのハンズオンは終了です。<br />
+Fn Projectの開発者エクスペリエンスをご体感頂けたでしょうか。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-08T16:01:11+09:00">June 8, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Fn+Project+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffn-for-beginners%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffn-for-beginners%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffn-for-beginners%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/oke-for-intermediates/" class="pagination--pager" title="KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/functions-for-beginners/" class="pagination--pager" title="Oracle Functions ハンズオン
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

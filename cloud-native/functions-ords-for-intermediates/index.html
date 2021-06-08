@@ -1,0 +1,862 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Functionsを利用したORDSでのデータベースアクセス | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsからORDS(Oracle REST Data Services)という仕組みを利用してATPに接続し、データを取得する方法について説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Functionsを利用したORDSでのデータベースアクセス">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-ords-for-intermediates/">
+
+
+  <meta property="og:description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsからORDS(Oracle REST Data Services)という仕組みを利用してATPに接続し、データを取得する方法について説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-08T16:01:11+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-ords-for-intermediates/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Functionsを利用したORDSでのデータベースアクセス
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsからORDS(Oracle REST Data Services)という仕組みを利用してATPに接続し、データを取得する方法について説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Functionsを利用したORDSでのデータベースアクセス</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/" class="active">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Functionsを利用したORDSでのデータベースアクセス">
+    <meta itemprop="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsからORDS(Oracle REST Data Services)という仕組みを利用してATPに接続し、データを取得する方法について説明します。">
+    <meta itemprop="datePublished" content="2021-06-08T16:01:11+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#条件">条件</a></li>
+  <li><a href="#1事前準備">1.事前準備</a>
+    <ul>
+      <li><a href="#1-1atpのプロビジョニング">1-1.ATPのプロビジョニング</a></li>
+      <li><a href="#2-2ordsサービスのベースurlの取得">2-2.ORDSサービスのベースURLの取得</a></li>
+      <li><a href="#2-3ordsサービスの有効化">2-3.ORDSサービスの有効化</a></li>
+    </ul>
+  </li>
+  <li><a href="#3oracle-functionsの作成">3.Oracle Functionsの作成</a></li>
+  <li><a href="#4atpへのアクセス確認">4.ATPへのアクセス確認</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>このセッションでは、Oracle FunctionsからORDS(Oracle REST Data Services)という仕組みを利用してATPに接続し、データを取得する方法について説明します。
+ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
+
+<p class="notice--info"><strong>ORDSについて</strong><br />
+ATPはORDSを利用してRESTfulインターフェースでのアクセスを行うことができます。<br />
+ORDS(Oracle REST Data Services)の詳細については<a href="https://docs.oracle.com/cd/E83857_01/paas/atp-cloud/atpug/ords-rest.html#GUID-3D237239-2239-45A1-A77D-1028CD18F83A">Autonomous Databaseを使用したOracle REST Data Servicesの開発</a>をご確認ください。</p>
+
+<p>このハンズオンが完了すると、以下のようなコンテンンツが出来上がります。</p>
+
+<p><img src="summary.jpg" alt="image-20200409151057057" /></p>
+
+<h2 id="条件">条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>有効なOracle Cloudアカウントがあること</li>
+    </ul>
+  </li>
+  <li>事前環境構築
+    <ul>
+      <li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>が完了していること</li>
+      <li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>が完了していること</li>
+      <li>ローカル端末にSQL Developerがインストールされていること
+        <ul>
+          <li>ダウンロードは<a href="https://www.oracle.com/tools/downloads/sqldev-downloads.html">こちら</a>から</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="1事前準備">1.事前準備</h2>
+<p>ここでは、ATPのプロビジョニングとORDSの設定を行います。</p>
+
+<h3 id="1-1atpのプロビジョニング">1-1.ATPのプロビジョニング</h3>
+
+<p>OCIコンソールのハンバーガーメニューから[データベース]で、[Autonomous Transaction Processing]をクリックします。</p>
+
+<p><img src="atp.png" alt="" /></p>
+
+<p>Autonomous Databaseの作成画面で、使用するコンパートメントを選択して、「Autonomous Databaseの作成」をクリックします。</p>
+
+<p><img src="create-atp-01.png" alt="image-20200409151057057" /></p>
+
+<p>以下項目を入力して、「Autonomous Databaseの作成」をクリックします。</p>
+
+<ul>
+  <li>コンパートメント：使用するコンパートメントを選択。</li>
+  <li>表示名：表示名を入力。今回は、<code class="language-plaintext highlighter-rouge">Workshop ATP</code>。</li>
+  <li>データベース名：今回は、<code class="language-plaintext highlighter-rouge">WORKSHOPATP</code>。</li>
+  <li>ワークロード・タイプの選択：トランザクション処理</li>
+  <li>デプロイメント・タイプ：共有インフラストラクチャ</li>
+  <li>データベース・バージョンの選択：<code class="language-plaintext highlighter-rouge">19c</code></li>
+  <li>OCPU数：<code class="language-plaintext highlighter-rouge">1</code></li>
+  <li>ストレージ(TB)：<code class="language-plaintext highlighter-rouge">1</code></li>
+  <li>自動スケーリング：チェックをオフ。</li>
+  <li>パスワード：パスワードを入力。</li>
+  <li>パスワードの確認：再度パスワードを入力。</li>
+  <li>ネットワーク・アクセスの選択：すべての場所からのセキュア・アクセス</li>
+  <li>ライセンス・タイプの選択：ライセンス込みを選択。</li>
+</ul>
+
+<p><img src="create-atp-02.png" alt="image-20200409152332743" /></p>
+
+<p><img src="create-atp-03.png" alt="image-20200409152430768" /></p>
+
+<p>しばらくすると、「利用可能」のステータスになります。</p>
+
+<p>次に、Autonomous Databaseの詳細の画面で、「DB接続」をクリックします。</p>
+
+<p><img src="download-wallet-01.png" alt="image-20200409153818272" /></p>
+
+<p>「ウォレットのダウンロード」をクリックします。</p>
+
+<p><img src="download-wallet-02.png" alt="image-20200409153920336" /></p>
+
+<p>（セキュリティルールに準拠する任意の）ウォレットのパスワードを入力して、「ダウンロード」をクリックします。後でローカルのOracle SQL Developerで接続するときに使用します。</p>
+
+<p><img src="download-wallet-03.png" alt="image-20200409154109123" /></p>
+
+<p>これで、ATPのプロビジョニングは完了です。</p>
+
+<h3 id="2-2ordsサービスのベースurlの取得">2-2.ORDSサービスのベースURLの取得</h3>
+
+<p>Autonomous Databaseの詳細の画面で、「サービス・コンソール」をクリックします。</p>
+
+<p><img src="active-ords-01.png" alt="image-20200409153534491" /></p>
+
+<p>「開発」をクリックします。</p>
+
+<p><img src="active-ords-02.png" alt="image-20200409153625460" /></p>
+
+<p>「RESTfulサービスとSODA」の枠にある「URLのコピー」をクリックして、コピーされたURLをメモ帳に書き留めてください。<br />
+これはORDSサービスのベースURL(<code class="language-plaintext highlighter-rouge">ords_base_url</code>)です。<br />
+この値は後続の手順で使用するので、テキストエディタなどに保存しておきます。</p>
+
+<p><img src="active-ords-03-01.png" alt="" /></p>
+
+<h3 id="2-3ordsサービスの有効化">2-3.ORDSサービスの有効化</h3>
+
+<p>Autonomous Databaseの詳細の画面で、「サービス・コンソール」をクリックします。</p>
+
+<p><img src="active-ords-01.png" alt="" /></p>
+
+<p>「開発」をクリックします。</p>
+
+<p><img src="active-ords-02.png" alt="" /></p>
+
+<p>「データベース・アクション」をクリックします。</p>
+
+<p><img src="active-ords-03-02.png" alt="" /></p>
+
+<p>ユーザー名とパスワードを入力して、「ログイン」をクリックします。<br />
+ユーザ名は<code class="language-plaintext highlighter-rouge">admin</code>、パスワードは<a href="#1-1atpのプロビジョニング">1-1.ATPのプロビジョニング</a>で設定したパスワードです。</p>
+
+<p>[開発]メニューの[SQL]をクリックします。</p>
+
+<p><img src="active-ords-03-03.png" alt="" /></p>
+
+<p>以下のコマンドを入力して、「スクリプトの実行」(またはF5)をクリックして、新しいユーザーを作成します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">USER</span> <span class="n">usersvc</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="p">[</span><span class="n">PASSWORD</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>今回は、</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">USER</span> <span class="n">usersvc</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="n">PasswOrd__8080</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>とします。</p>
+
+<p>ユーザー<code class="language-plaintext highlighter-rouge">usersvc</code>に対して、必要な権限を付与します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">GRANT</span> <span class="nv">"CONNECT"</span> <span class="k">TO</span> <span class="n">usersvc</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="nv">"RESOURCE"</span> <span class="k">TO</span> <span class="n">usersvc</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="n">UNLIMITED</span> <span class="n">TABLESPACE</span> <span class="k">TO</span> <span class="n">usersvc</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ローカルのOracle SQL Developerを開いて、ダウンロードしたWalletファイルを使用して、作成されたユーザー<code class="language-plaintext highlighter-rouge">usersvc</code>で接続します。</p>
+
+<p><img src="conn-atp.png" alt="" /></p>
+
+<p>検証用のテーブル<code class="language-plaintext highlighter-rouge">users</code>を作成します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">users</span> <span class="p">(</span> 
+<span class="nv">"ID"</span>  <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">32</span> <span class="nb">BYTE</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">ON</span> <span class="k">NULL</span> <span class="n">sys_guid</span><span class="p">(),</span> 
+<span class="nv">"FIRST_NAME"</span>  <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">50</span> <span class="nb">BYTE</span><span class="p">)</span> <span class="k">COLLATE</span> <span class="nv">"USING_NLS_COMP"</span>
+            <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">ENABLE</span><span class="p">,</span> 
+<span class="nv">"LAST_NAME"</span>  <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">50</span> <span class="nb">BYTE</span><span class="p">)</span> <span class="k">COLLATE</span> <span class="nv">"USING_NLS_COMP"</span>
+            <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">ENABLE</span><span class="p">,</span> 
+<span class="nv">"USERNAME"</span>  <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">50</span> <span class="nb">BYTE</span><span class="p">)</span> <span class="k">COLLATE</span> <span class="nv">"USING_NLS_COMP"</span>
+            <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">ENABLE</span><span class="p">,</span> 
+<span class="nv">"CREATED_ON"</span>  <span class="nb">TIMESTAMP</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">ON</span> <span class="k">NULL</span> <span class="k">current_timestamp</span><span class="p">,</span> 
+<span class="k">CONSTRAINT</span> <span class="nv">"USER_PK"</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span> <span class="nv">"ID"</span> <span class="p">)</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>サンプルデータを登録します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">users</span> <span class="k">VALUES</span> <span class="p">(</span>
+    <span class="s1">'8C561D58E856DD25E0532010000AF462'</span><span class="p">,</span>
+    <span class="s1">'todd'</span><span class="p">,</span>
+    <span class="s1">'sharp'</span><span class="p">,</span>
+    <span class="s1">'tsharp'</span><span class="p">,</span>
+    <span class="k">current_timestamp</span>
+<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">users</span> <span class="k">VALUES</span> <span class="p">(</span>
+    <span class="s1">'8C561D58E858DD25E0532010000AF462'</span><span class="p">,</span>
+    <span class="s1">'jeff'</span><span class="p">,</span>
+    <span class="s1">'smith'</span><span class="p">,</span>
+    <span class="s1">'thatjeff'</span><span class="p">,</span>
+    <span class="k">current_timestamp</span>
+<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ここからは、ORDSに関する設定を行っていきます。</p>
+
+<p>作業するスキーマに対してRESTアクセスを有効にします。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">ords</span><span class="p">.</span><span class="n">enable_schema</span><span class="p">(</span>
+        <span class="n">p_enabled</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span> 
+        <span class="n">p_schema</span> <span class="o">=&gt;</span> <span class="s1">'USERSVC'</span><span class="p">,</span> 
+        <span class="n">p_url_mapping_type</span> <span class="o">=&gt;</span> <span class="s1">'BASE_PATH'</span><span class="p">,</span> 
+        <span class="n">p_url_mapping_pattern</span> <span class="o">=&gt;</span> <span class="s1">'usersvc'</span><span class="p">,</span>
+        <span class="n">p_auto_rest_auth</span> <span class="o">=&gt;</span> <span class="k">true</span>
+    <span class="p">);</span>
+
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>呼び出しの認証トークンを生成できるように、必要な権限を作成します。<br />
+今回はRoleにSQL Developerを利用します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DECLARE</span>
+    <span class="n">l_roles</span>     <span class="n">owa</span><span class="p">.</span><span class="n">vc_arr</span><span class="p">;</span>
+    <span class="n">l_modules</span>   <span class="n">owa</span><span class="p">.</span><span class="n">vc_arr</span><span class="p">;</span>
+    <span class="n">l_patterns</span>  <span class="n">owa</span><span class="p">.</span><span class="n">vc_arr</span><span class="p">;</span>
+<span class="k">BEGIN</span>
+    <span class="n">l_roles</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'SQL Developer'</span><span class="p">;</span>
+    <span class="n">l_patterns</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'/users/*'</span><span class="p">;</span>
+    <span class="n">ords</span><span class="p">.</span><span class="n">define_privilege</span><span class="p">(</span>
+        <span class="n">p_privilege_name</span> <span class="o">=&gt;</span> <span class="s1">'rest_privilege'</span><span class="p">,</span>
+        <span class="n">p_roles</span> <span class="o">=&gt;</span> <span class="n">l_roles</span><span class="p">,</span> 
+        <span class="n">p_patterns</span> <span class="o">=&gt;</span> <span class="n">l_patterns</span><span class="p">,</span> 
+        <span class="n">p_modules</span> <span class="o">=&gt;</span> <span class="n">l_modules</span><span class="p">,</span>
+        <span class="n">p_label</span> <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="n">p_description</span> <span class="o">=&gt;</span> <span class="s1">''</span><span class="p">,</span> 
+        <span class="n">p_comments</span> <span class="o">=&gt;</span> <span class="k">NULL</span>
+    <span class="p">);</span>
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>権限に関連付けられたOAuthクライアントを作成します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">oauth</span><span class="p">.</span><span class="n">create_client</span><span class="p">(</span> 
+        <span class="n">p_name</span> <span class="o">=&gt;</span> <span class="s1">'[Descriptive Name For Client]'</span><span class="p">,</span> 
+        <span class="n">p_grant_type</span> <span class="o">=&gt;</span> <span class="s1">'client_credentials'</span><span class="p">,</span> 
+        <span class="n">p_owner</span> <span class="o">=&gt;</span> <span class="s1">'[Owner Name]'</span><span class="p">,</span> 
+        <span class="n">p_description</span> <span class="o">=&gt;</span> <span class="s1">'[Client Description]'</span><span class="p">,</span> 
+        <span class="n">p_support_email</span> <span class="o">=&gt;</span> <span class="s1">'[Email Address]'</span><span class="p">,</span><span class="err">　</span>
+        <span class="n">p_privilege_names</span> <span class="o">=&gt;</span> <span class="s1">'rest_privilege'</span>
+    <span class="p">);</span>
+
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>今回は、</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">oauth</span><span class="p">.</span><span class="n">create_client</span><span class="p">(</span>
+        <span class="n">p_name</span> <span class="o">=&gt;</span> <span class="s1">'Rest Client'</span><span class="p">,</span> 
+        <span class="n">p_grant_type</span> <span class="o">=&gt;</span> <span class="s1">'client_credentials'</span><span class="p">,</span> 
+        <span class="n">p_owner</span> <span class="o">=&gt;</span> <span class="s1">'USERSVC'</span><span class="p">,</span> 
+        <span class="n">p_description</span> <span class="o">=&gt;</span> <span class="s1">'Rest Client'</span><span class="p">,</span>
+        <span class="n">p_support_email</span> <span class="o">=&gt;</span> <span class="s1">'oracle@oracle.com'</span><span class="p">,</span>
+        <span class="n">p_privilege_names</span> <span class="o">=&gt;</span> <span class="s1">'rest_privilege'</span>
+    <span class="p">);</span>
+
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>とします。</p>
+
+<p>クライアントアプリケーション用にロールを作成し、権限を付与します。<br />
+今回はRoleにSQL Developerを利用します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">OAUTH</span><span class="p">.</span><span class="n">grant_client_role</span><span class="p">(</span>
+        <span class="n">p_client_name</span> <span class="o">=&gt;</span> <span class="s1">'Rest Client'</span><span class="p">,</span>
+        <span class="n">p_role_name</span> <span class="o">=&gt;</span> <span class="s1">'SQL Developer'</span>
+    <span class="p">);</span>
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>これで、次のものを取得できます：<code class="language-plaintext highlighter-rouge">client_id</code>　<code class="language-plaintext highlighter-rouge">client_secret</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">client_secret</span>
+<span class="k">FROM</span>   <span class="n">user_ords_clients</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">client_id</code>および<code class="language-plaintext highlighter-rouge">client_secret</code>は、REST呼び出し用の認証トークンを生成するために使用します。<br />
+これらの値については、後続の手順で使用するので、テキストエディタなどに保存しておいてください。</p>
+
+<p>次にテーブルへのORDSアクセスを有効にします。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">ords</span><span class="p">.</span><span class="n">enable_object</span><span class="p">(</span>
+        <span class="n">p_enabled</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span> 
+        <span class="n">p_schema</span> <span class="o">=&gt;</span> <span class="s1">'USERSVC'</span><span class="p">,</span> 
+        <span class="n">p_object</span> <span class="o">=&gt;</span> <span class="s1">'USERS'</span><span class="p">,</span> 
+        <span class="n">p_object_type</span> <span class="o">=&gt;</span> <span class="s1">'TABLE'</span><span class="p">,</span> 
+        <span class="n">p_object_alias</span> <span class="o">=&gt;</span> <span class="s1">'users'</span><span class="p">,</span> 
+        <span class="n">p_auto_rest_auth</span> <span class="o">=&gt;</span> <span class="k">false</span>
+    <span class="p">);</span>
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>今回は、以下のエンドポイントを作成して、<code class="language-plaintext highlighter-rouge">username</code>でユーザ情報を取得するよう定義します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">ords</span><span class="p">.</span><span class="n">define_service</span><span class="p">(</span>
+        <span class="n">p_module_name</span> <span class="o">=&gt;</span> <span class="s1">'users'</span><span class="p">,</span> 
+        <span class="n">p_base_path</span> <span class="o">=&gt;</span> <span class="s1">'users/'</span><span class="p">,</span> 
+        <span class="n">p_pattern</span> <span class="o">=&gt;</span> <span class="s1">'user/:username'</span><span class="p">,</span> 
+        <span class="n">p_method</span> <span class="o">=&gt;</span> <span class="s1">'GET'</span><span class="p">,</span> 
+        <span class="n">p_source_type</span> <span class="o">=&gt;</span> <span class="n">ords</span><span class="p">.</span><span class="n">source_type_collection_item</span><span class="p">,</span>
+        <span class="n">p_source</span> <span class="o">=&gt;</span> <span class="s1">'SELECT id, username, first_name, last_name, created_on FROM users WHERE username = :username OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY'</span><span class="p">);</span>
+
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>これで、ORDSサービスの設定は完了です。</p>
+
+<h2 id="3oracle-functionsの作成">3.Oracle Functionsの作成</h2>
+<p>ここでは、Oracle Functionsの作成とデプロイを行います。</p>
+
+<p>OCIコンソールのハンバーガーメニューをクリックして、「開発者サービス」に移動して、「ファンクション」をクリックします。</p>
+
+<p>Oracle Functionsに使用する予定のリージョンを選択します（Fn Project CLIコンテキストで指定されたDockerレジストリと同じリージョンを推奨します）。</p>
+
+<p>Fn Project CLIコンテキストで指定されたコンパートメントを選択します。</p>
+
+<p>「アプリケーションの作成」をクリックして、次を指定して、「作成」をクリックします。</p>
+
+<ul>
+  <li>名前：このアプリケーションに最初のFunctionをデプロイし、Functionを呼び出すときにこのアプリケーションを指定。今回は、<code class="language-plaintext highlighter-rouge">fn-connect-to-atp</code></li>
+  <li>VCN：Functionを実行するVCN。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>で作成したVCNを指定。</li>
+  <li>サブネット：Functionを実行するサブネット。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>で作成したVCNのパブリック・サブネットを指定。</li>
+</ul>
+
+<p><img src="create-function.png" alt="" /></p>
+
+<p><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>で利用したCloud Shellにログインします。</p>
+
+<p>デプロイ前にFunctionsを実行するために環境変数をいくつか設定します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn config app fn-connect-to-atp client_id [client_id]
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">client_id</code>：クライアントID。2-3で取得した値を使用します</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn config app fn-connect-to-atp client_secret [client_secret]
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">client_secret</code>：クライアントシークレット。<a href="#2-3ordsサービスの有効化">2-3.ORDSサービスの有効化</a>で取得した値を使用します</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn config app fn-connect-to-atp ords_base_url [ords_base_url][p_url_mapping_pattern]
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ords_base_url</code>：ORDSサービスのベースURL。<a href="#2-2ordsサービスのベースurlの取得">2-3.ORDSサービスの有効化</a>で取得した値を使用します</li>
+  <li><code class="language-plaintext highlighter-rouge">p_url_mapping_pattern</code>：今回は、<code class="language-plaintext highlighter-rouge">usersvc</code></li>
+</ul>
+
+<p class="notice--warning"><strong>機密情報を含む環境変数について</strong><br />
+機密情報を含む構成変数は、常に暗号化する必要があります。今回はシンプルな手順にするために特に暗号化は実施しませんが、実際に使用する場合は、<a href="https://blogs.oracle.com/developers/oracle-functions-using-key-management-to-encrypt-and-decrypt-configuration-variables">キー管理を使用する方法</a>を確認してください。</p>
+
+<p>ワークショップ用のコンテンツをcloneし、ディレクトリに移動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/connect-to-atp-with-functions.git
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>connect-to-atp-with-functions
+</code></pre></div></div>
+
+<p>以下のコマンドを実行して、<code class="language-plaintext highlighter-rouge">fn-connect-to-atp</code>というFunctionをデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn <span class="nt">-v</span> deploy <span class="nt">--app</span> fn-connect-to-atp
+</code></pre></div></div>
+
+<p>これで、Function作成とデプロイは完了です。</p>
+
+<h2 id="4atpへのアクセス確認">4.ATPへのアクセス確認</h2>
+<p>ここでは、デプロイしたFunctionsを利用してATPへのアクセス確認を行います。</p>
+
+<p>今回は、Functionsにデータ検索条件としてユーザー名を渡して実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo -n "tsharp" | fn invoke fn-connect-to-atp fn-connect-to-atp
+</code></pre></div></div>
+
+<p>以下のような出力を得られます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{"id":"8C561D58E856DD25E0532010000AF462","username":"tsharp","firstName":"todd","lastName":"sharp","createdOn":1586772847781}
+</code></pre></div></div>
+
+<p>これで、ORDSを利用してATPへのアクセスを行うことができました！<br />
+お疲れ様でした！</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-08T16:01:11+09:00">June 8, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Functions%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9FORDS%E3%81%A7%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-ords-for-intermediates%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-ords-for-intermediates%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-ords-for-intermediates%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/" class="pagination--pager" title="Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/" class="pagination--pager" title="Oracle Functionsを利用したNoSQLデータベースアクセス
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,819 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOracle Functionsを利用して動的に変更する手順を記載します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">
+
+
+  <meta property="og:description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOracle Functionsを利用して動的に変更する手順を記載します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-08T16:01:11+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOracle Functionsを利用して動的に変更する手順を記載します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/" class="active">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更">
+    <meta itemprop="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOracle Functionsを利用して動的に変更する手順を記載します。">
+    <meta itemprop="datePublished" content="2021-06-08T16:01:11+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#条件">条件</a></li>
+  <li><a href="#1事前準備">1.事前準備</a></li>
+  <li><a href="#2oracle-functionsの作成">2.Oracle Functionsの作成</a></li>
+  <li><a href="#3アラームの作成">3.アラームの作成</a></li>
+  <li><a href="#4仮想マシン-vm-のメモリ使用率の延伸">4.仮想マシン (VM) のメモリ使用率の延伸</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>このハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOracle Functionsを利用して動的に変更する手順を記載します。</p>
+
+<p class="notice--warning"><strong>ハンズオン環境について</strong><br />
+このハンズオンでは、動作確認のために意図的にVMのメモリ使用率を上昇させるコマンドを使用します。そのため、商用環境などでは絶対に行わないでください。
+また、使用する仮想マシン (VM) についてもテスト用として用意したものを使用するようにしてください。</p>
+
+<h2 id="条件">条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>有効なOracle Cloudアカウントがあること</li>
+    </ul>
+  </li>
+  <li>事前環境構築
+    <ul>
+      <li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>が完了していること</li>
+      <li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>が完了していること</li>
+    </ul>
+  </li>
+</ul>
+
+<p>このハンズオンが完了すると、以下のようなコンテンツが作成されます。</p>
+
+<p><img src="summary.jpg" alt="" /></p>
+
+<h2 id="1事前準備">1.事前準備</h2>
+
+<p>このステップでは、Oracle Functionsから仮想マシン (VM) を操作するための動的グループとポリシーの設定を行います。</p>
+
+<p class="notice--info"><strong>動的グループおよびポリシーについて</strong><br />
+動的グループを使用すると、Oracle Cloud Infrastructureコンピュータ・インスタンスを(ユーザー・グループと同様に)プリンシパルのアクターとしてグループ化し、ポリシーを作成できます。 
+そうすることで、インスタンスがOracle Cloud Infrastructureサービスに対してAPIコールを実行できるようにします。
+詳細は<a href="https://docs.cloud.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm">動的グループの管理</a>をご確認ください。</p>
+
+<p>OCIコンソールのハンバーガーメニューをクリックして、[アイデンティティとセキュリティ]⇒[動的グループ]に移動し、「動的グループの作成」をクリックします。</p>
+
+<p>以下項目を入力して、「作成」をクリックします。</p>
+
+<ul>
+  <li>名前：動的グループの名前。今回は、<code class="language-plaintext highlighter-rouge">func_dyn_grp</code></li>
+  <li>説明：動的グループの説明。今回は、<code class="language-plaintext highlighter-rouge">Function Dynamic Group</code></li>
+  <li>ルール1：<code class="language-plaintext highlighter-rouge">ALL {resource.type = 'fnfunc', resource.compartment.id = '&lt;compartment-ocid&gt;'}</code>(compartment.idは各自で使用するコンパートメントOCIDへ変更してください。)</li>
+</ul>
+
+<p class="notice--info"><strong>コンパートメントOCIDについて</strong><br />
+[アイデンティティ]⇒[コンパートメント]に移動して、使用するコンパートメント(今回はルートコンパートメント)を開いて、該当OCIDを確認します。</p>
+
+<p><img src="create-dyn-grp.png" alt="" /></p>
+
+<p>OCIコンソールのハンバーガーメニューをクリックして、[アイデンティティとセキュリティ]⇒[ポリシー]に移動し、「ポリシーの作成」をクリックします。</p>
+
+<p>以下項目を入力して、「作成」をクリックします。</p>
+
+<ul>
+  <li>
+    <p>名前：ポリシーの名前。今回は、<code class="language-plaintext highlighter-rouge">fn-policies</code></p>
+  </li>
+  <li>
+    <p>説明：ポリシーの説明。今回は、たとえば、<code class="language-plaintext highlighter-rouge">Function Policies</code></p>
+  </li>
+  <li>
+    <p>手動エディタの表示：チェックを入れる</p>
+  </li>
+  <li>
+    <p>ポリシー・ビルダー：<code class="language-plaintext highlighter-rouge">allow dynamic-group func_dyn_grp to use instances in compartment xxxxxx</code>(compartment名は各自で使用するコンパートメント名へ変更してください。)</p>
+  </li>
+</ul>
+
+<p class="notice--info"><strong>コンパートメントOCIDについて</strong><br />
+[アイデンティティ]⇒[コンパートメント]に移動して、使用するコンパートメント(今回はルートコンパートメント)を開いて、該当OCIDを確認します。</p>
+
+<p><img src="create-policy.png" alt="" /></p>
+
+<p>これで、動的グループの作成とポリシーの作成は完了しました。</p>
+
+<h2 id="2oracle-functionsの作成">2.Oracle Functionsの作成</h2>
+
+<p>このステップでは、仮想マシン (VM) のシェイプを変更するOracle Functionsのデプロイを行います。</p>
+
+<p>OCIコンソールのハンバーガーメニューをクリックして、[開発者サービス]の[ファンクション]をクリックします。</p>
+
+<p>[アプリケーションの作成]をクリックして、次を指定して、「作成」をクリックします。</p>
+
+<ul>
+  <li>名前：アプリケーション名を指定。今回は、<code class="language-plaintext highlighter-rouge">fn-resize-vm</code></li>
+  <li>VCN：Functionを実行するVCNを指定。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsことはじめ</a>で作成したVCNを指定。</li>
+  <li>サブネット：Functionを実行するサブネット。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsことはじめ</a>で作成したVCNのサブネットを指定。</li>
+</ul>
+
+<p><img src="create-function.png" alt="" /></p>
+
+<p><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsことはじめ</a>で利用したCloud Shellにログインします。</p>
+
+<p>ワークショップ用のコンテンツをクローニングします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/functions_resize_vmshape.git
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>functions_resize_vmshape/fn-resize-vm
+</code></pre></div></div>
+
+<p>次を入力して、<code class="language-plaintext highlighter-rouge">fn-resize-vm</code>というPython言語で作成されたFunctionをデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn <span class="nt">-v</span> deploy <span class="nt">--app</span> fn-resize-vm
+</code></pre></div></div>
+
+<p>これで、Function作成とデプロイは完了しました。</p>
+
+<h2 id="3アラームの作成">3.アラームの作成</h2>
+
+<p>このステップでは、OCIコンソールを使用してアラームを作成していきます。</p>
+
+<p>OCIコンソールハンバーガーメニューを開きます。[監視および管理]で、[アラーム定義] をクリックします。</p>
+
+<p><img src="alarm.png" alt="" /></p>
+
+<p>「アラームの作成」 をクリックします。</p>
+
+<p>「アラームの作成」 ページの 「アラームの定義」 で、しきい値を設定します。</p>
+
+<ul>
+  <li>
+    <p>アラーム名：アラーム名を指定。今回は<code class="language-plaintext highlighter-rouge">high-memory-utilization-alarm</code></p>
+  </li>
+  <li>
+    <p>メトリックの説明:</p>
+
+    <ul>
+      <li>
+        <p>コンパートメント: ご自身のコンパートメントを指定。今回はルートコンパートメントを指定。</p>
+      </li>
+      <li>
+        <p>メトリック・ネームスペース: <code class="language-plaintext highlighter-rouge">oci_computeagent</code></p>
+      </li>
+      <li>
+        <p>メトリック名:<code class="language-plaintext highlighter-rouge">MemoryUtilization</code>(メモリ使用率)</p>
+      </li>
+      <li>
+        <p>間隔:<code class="language-plaintext highlighter-rouge">1m</code></p>
+      </li>
+      <li>
+        <p>統計:<code class="language-plaintext highlighter-rouge">Max</code>(最大)</p>
+      </li>
+    </ul>
+
+    <p><img src="create-alarm-01.png" alt="image-20200327155409280" /></p>
+  </li>
+  <li>
+    <p>トリガールール:</p>
+
+    <ul>
+      <li>
+        <p>演算子:より大きい</p>
+      </li>
+      <li>
+        <p>値:<code class="language-plaintext highlighter-rouge">90</code></p>
+      </li>
+      <li>
+        <p>トリガー遅延分数 :<code class="language-plaintext highlighter-rouge">1</code></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="create-alarm-02.png" alt="image-20200327155521852" /></p>
+
+<p>「Notifications」の<strong>宛先</strong>にファンクションを選択します。</p>
+
+<ul>
+  <li>
+    <p>宛先サービス:「Notifications」</p>
+  </li>
+  <li>
+    <p>コンパートメント: ご自身のコンパートメントを指定。今回はルートコンパートメントを指定。</p>
+  </li>
+  <li>
+    <p>トピック: 「トピックの作成」 をクリック</p>
+
+    <p><img src="create-alarm-03.png" alt="" />
+トピックとファンクションを既に作成している場合は、新しいトピックを作成する代わりに、ここでそのトピックを選択できます。</p>
+  </li>
+  <li>
+    <p>トピック名: <code class="language-plaintext highlighter-rouge">high-memory-utilization-topic</code></p>
+
+    <ul>
+      <li>
+        <p>サブスクリプションプロトコル:ファンクション</p>
+      </li>
+      <li>
+        <p>ファンクション・コンパートメント: ルートコンパートメントを指定。</p>
+      </li>
+      <li>
+        <p>ファンクション・アプリケーション: <code class="language-plaintext highlighter-rouge">fn-resize-vm</code></p>
+      </li>
+      <li>
+        <p>ファンクション: <code class="language-plaintext highlighter-rouge">fn-resize-vm</code></p>
+
+        <p><img src="create-alarm-04.png" alt="" /></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>「トピックとサブスクリプションの作成」をクリックします。</p>
+
+<p><strong>トピック</strong>から作成されたトピックを選択して、「アラームの保存」をクリックします。</p>
+
+<p><img src="create-alarm-05.png" alt="" /></p>
+
+<p>次に、OCIコンソールを使用して、アラームの設定時に作成したトピックにオプションの電子メールサブスクリプションを追加します。</p>
+
+<p>OCIコンソールのハンバーガーメニューを開きます。「ソリューションおよびプラットフォーム」 で、「アプリケーション統合」に移動し、「通知」 をクリックします。</p>
+
+<p>サブスクリプションを追加するトピックの名前をクリックします。今回は先ほど作成した<code class="language-plaintext highlighter-rouge">high-memory-utilization-alarm-topic</code>を選択します。</p>
+
+<p>トピックの詳細ページで、「サブスクリプションの作成」 をクリックします。</p>
+
+<p>4「サブスクリプションの作成」 ダイアログ ボックスで、電子メール サブスクリプションを設定します。「作成」 をクリックします。</p>
+
+<ul>
+  <li>プロトコル: 「電子メール」 を選択します。</li>
+  <li>電子メール: 電子メール アドレスを入力します。</li>
+</ul>
+
+<p><img src="add-subscription.png" alt="image-20200327160656735" /></p>
+
+<p class="notice--info"><strong>Notificationについて</strong><br />
+Notificationサービスはファンクションや電子メールの他にもHTTPS(カスタムURL)/PagerDuty/Slackに対する通知を行うことができます。</p>
+
+<p>電子メール サブスクリプションが作成され、指定した電子メールアドレスにサブスクリプションの確認URLが送信されます。サブスクリプションは、確認されるまで 「保留中」になります。</p>
+
+<p>サブスクリプションをアクティブにするためには電子メールアドレスを承認する必要があるので、確認URLのリンクを開いてください。</p>
+
+<p>これで、アラームの作成は完了です。</p>
+
+<h2 id="4仮想マシン-vm-のメモリ使用率の延伸">4.仮想マシン (VM) のメモリ使用率の延伸</h2>
+
+<p>このステップでは、<a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>で作成したコンピュートインスタンスを利用して動作確認を行います。</p>
+
+<p>現在VMのシェイプを確認します。シェイプは<code class="language-plaintext highlighter-rouge">VM.Standard2.1</code>になっています。</p>
+
+<p><img src="instance-detail-01.png" alt="image-20200327161440948" /></p>
+
+<p>以下のコマンドをコンピュートインスタンス上で実行し、メモリ使用率を徐々にあげていきます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/dev/null &lt; $(yes) &amp;
+</code></pre></div></div>
+
+<p>以下のように10プロセス程度をバックグランド実行で起動します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[opc@instance]$ 
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[1] 2370
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[2] 2372
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[3] 2374
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[4] 2376
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[5] 2378
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[6] 2380
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[7] 2382
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[8] 2384
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[9] 2387
+[opc@instance]$ /dev/null &lt; $(yes) &amp;
+[10] 2389
+[opc@instance]$ 
+</code></pre></div></div>
+
+<p>以下のコマンドを実行し、メモリ使用率を確認しましょう。
+3秒間隔で表示されますが、徐々に空きメモリが減っていくことが確認できます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>free -h -s 3 
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>              total        used        free      shared  buff/cache   available
+Mem:            14G        5.5G        8.6G         16M        288M        8.7G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        5.6G        8.5G         16M        288M        8.5G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        5.7G        8.4G         16M        288M        8.5G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        5.8G        8.3G         16M        288M        8.3G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        5.9G        8.2G         16M        288M        8.2G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        6.0G        8.1G         16M        288M        8.1G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        6.1G        8.0G         16M        288M        8.0G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        6.3G        7.9G         16M        288M        7.9G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        6.4G        7.8G         16M        288M        7.8G
+Swap:          8.0G          0B        8.0G
+
+              total        used        free      shared  buff/cache   available
+Mem:            14G        6.5G        7.6G         16M        288M        7.7G
+Swap:          8.0G          0B        8.0G
+</code></pre></div></div>
+
+<p>5分～10分程度経つと、メモリ使用率が90%を超えて、アラームメールが送信されます。</p>
+
+<p><img src="alert-detail.png" alt="" /></p>
+
+<p>こちらは受信したアラームメールのサンプルです。</p>
+
+<p><img src="alart-mail.png" alt="" /></p>
+
+<p>同時にFunctionが呼び出されて、VMを停止させます。</p>
+
+<p><img src="instance-detail-02.png" alt="" /></p>
+
+<p>VMが停止になりましたら、同じFunctionにより<code class="language-plaintext highlighter-rouge">VM.Standard2.2</code>のVMが起動されます。(10-15分程度かかります)</p>
+
+<p><img src="instance-detail-03.png" alt="" /></p>
+
+<p>Oracle Notificationサービスを確認しますと、Notificationが実行されたことを確認できます。</p>
+
+<p><img src="notification-detail.png" alt="" /></p>
+
+<p>これで、Oracle Functionsを使用して、VMシェイプの変更に成功しました！</p>
+
+<p>お疲れ様でした！</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-08T16:01:11+09:00">June 8, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Functions%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3+%28VM%29+%E3%81%AE%E3%82%B7%E3%82%A7%E3%82%A4%E3%83%97%E5%A4%89%E6%9B%B4%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-vmshape-for-intermediates%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-vmshape-for-intermediates%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-vmshape-for-intermediates%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/" class="pagination--pager" title="Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/" class="pagination--pager" title="Oracle Functionsを利用したORDSでのデータベースアクセス
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

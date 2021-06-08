@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-06-03T13:57:44+09:00">
+  <meta property="article:published_time" content="2021-06-08T16:01:11+09:00">
 
 
 
@@ -145,7 +145,9 @@
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
             </li><li class="masthead__menu-item">
-              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+              <a href="" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/about/">このサイトについて</a>
             </li></ul>
@@ -268,15 +270,27 @@
       <ul>
         
         
-          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを始めてみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/cloud-native/apigw-for-beginners/">Oracle Cloud Infrastructure API Gateway ハンズオン</a></li></p>
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/cloud-native/datascience-beginners/">Oracle Cloud Infrastructure Data Science Service ハンズオン</a></li></p>
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
         
           <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/" class="active">Helidon(MP)を始めてみよう</a></li></p>
         
@@ -295,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Helidon(MP)を始めてみよう">
     <meta itemprop="description" content="Helidon MPは、Oracleが提供するMicroProfile準拠のマイクロサービスの開発に適したJavaアプリケーションフレームワークです。こちらのハンズオンは、サンプルアプリケーションの構築を通して、Helidonの特徴や使いやすさを学んでいただけるコンテンツになっています。">
-    <meta itemprop="datePublished" content="2021-06-03T13:57:44+09:00">
+    <meta itemprop="datePublished" content="2021-06-08T16:01:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -307,8 +321,9 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
-  <li><a href="#1-helidon-cliでベースプロジェクトを作成してみよう">1. Helidon CLIでベースプロジェクトを作成してみよう</a></li>
-  <li><a href="#2-サンプルアプリケーションを動かしてみよう">2. サンプルアプリケーションを動かしてみよう</a>
+  <li><a href="#前提条件">前提条件</a></li>
+  <li><a href="#1helidon-cliでベースプロジェクトを作成してみよう">1.Helidon CLIでベースプロジェクトを作成してみよう</a></li>
+  <li><a href="#2サンプルアプリケーションを動かしてみよう">2.サンプルアプリケーションを動かしてみよう</a>
     <ul>
       <li><a href="#2-1-サンプルアプリケーションのディレクトリ構成を確認しよう">2-1. サンプルアプリケーションのディレクトリ構成を確認しよう</a></li>
       <li><a href="#2-2-サンプルアプリケーションの設定ファイルを確認しよう">2-2. サンプルアプリケーションの設定ファイルを確認しよう</a></li>
@@ -317,7 +332,7 @@
       <li><a href="#2-5-サンプルアプリケーションの動作を確認しよう">2-5. サンプルアプリケーションの動作を確認しよう</a></li>
     </ul>
   </li>
-  <li><a href="#3-サンプルアプリケーションを拡張してみよう">3. サンプルアプリケーションを拡張してみよう</a>
+  <li><a href="#3サンプルアプリケーションを拡張してみよう">3.サンプルアプリケーションを拡張してみよう</a>
     <ul>
       <li><a href="#3-1-都道府県エリアを管理するentityを作成しよう">3-1. 都道府県エリアを管理するEntityを作成しよう</a></li>
       <li><a href="#3-2-都道府県エリアを取得するrestインタフェースを作成しよう">3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう</a></li>
@@ -339,46 +354,20 @@
 Helidonは、SEとMPという2つのエディションがあります。<br />
 このチュートリアルでは、MicroProfile準拠のエディションであるMPの方を取り上げていきます。</p>
 
-<p><strong>Note：</strong></p>
-<blockquote>
-  <p>MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。<br />
+<p class="notice--info"><strong>MicroProfileについて</strong><br />
+MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。<br />
 詳細は<a href="https://microprofile.io/">こちら</a>をご確認ください。</p>
-</blockquote>
 
-<p><strong>目次：</strong></p>
-
+<h2 id="前提条件">前提条件</h2>
 <ul>
-  <li><a href="#1-helidon-cliでベースプロジェクトを作成してみよう">1. Helidon CLIでベースプロジェクトを作成してみよう</a></li>
-  <li><a href="#2-サンプルアプリケーションを動かしてみよう">2. サンプルアプリケーションを動かしてみよう</a>
+  <li><a href="/ocitutorials/database/adb11-provisioning/">こちら</a>の手順が完了していること
     <ul>
-      <li><a href="#2-1-サンプルアプリケーションのディレクトリ構成を確認しよう">2-1. サンプルアプリケーションのディレクトリ構成を確認しよう</a></li>
-      <li><a href="#2-2-サンプルアプリケーションの設定ファイルを確認しよう">2-2. サンプルアプリケーションの設定ファイルを確認しよう</a></li>
-      <li><a href="#2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう">2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう</a></li>
-      <li><a href="#2-4-サンプルアプリケーションのソースコードprefectureresourcejavaを確認しよう">2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう</a></li>
-      <li><a href="#2-5-サンプルアプリケーションの動作を確認しよう">2-5. サンプルアプリケーションの動作を確認しよう</a></li>
+      <li>このチュートリアルでは、データベースとしてOracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します</li>
     </ul>
   </li>
-  <li><a href="#3-サンプルアプリケーションを拡張してみよう">3. サンプルアプリケーションを拡張してみよう</a>
-    <ul>
-      <li><a href="#3-1-都道府県エリアを管理するentityを作成しよう">3-1. 都道府県エリアを管理するEntityを作成しよう</a></li>
-      <li><a href="#3-2-都道府県エリアを取得するrestインタフェースを作成しよう">3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう</a></li>
-      <li><a href="#3-3-都道府県エリアの情報を元の都道府県情報に追加しよう">3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう</a></li>
-      <li><a href="#3-4-persistencexmlを変更しよう">3-4. persistence.xmlを変更しよう</a></li>
-      <li><a href="#3-5-ddlを編集しよう">3-5. DDLを編集しよう</a></li>
-      <li><a href="#3-6-拡張したサンプルアプリケーションを動かしてみよう">3-6. 拡張したサンプルアプリケーションを動かしてみよう</a></li>
-    </ul>
-  </li>
-  <li><a href="#まとめ">まとめ</a></li>
 </ul>
 
-<p><strong>前提条件：</strong></p>
-<blockquote>
-  <p>このチュートリアルで動作させるサンプルアプリケーションには、Oracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します。<br />
-ATPを予めプロビジョニングしておく必要があるので、<a href="../../intermediates/adb-hol1-provisioning/">こちら</a>の手順を完了させてからこのチュートリアルを実施してください。</p>
-</blockquote>
-
-<h1 id="1-helidon-cliでベースプロジェクトを作成してみよう">1. Helidon CLIでベースプロジェクトを作成してみよう</h1>
-
+<h2 id="1helidon-cliでベースプロジェクトを作成してみよう">1.Helidon CLIでベースプロジェクトを作成してみよう</h2>
 <p>ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。</p>
 
 <p>Helidonをセットアップするには<code class="language-plaintext highlighter-rouge">Helidon CLI</code>が便利です。<br />
@@ -474,10 +463,8 @@ Switch directory to /users/database-mp to use CLI
 Start development loop? <span class="o">(</span>Default: n<span class="o">)</span>: n
 </code></pre></div></div>
 
-<p><strong>Note：</strong></p>
-<blockquote>
-  <p>Helidon CLIでは、今回作成するベースプロジェクト以外にも様々なタイプのベースプロジェクトの作成が可能です。ぜひ、遊んでみて頂ければと思います！</p>
-</blockquote>
+<p class="notice--info"><strong>Helidon CLIについて</strong><br />
+Helidon CLIでは、今回作成するベースプロジェクト以外にも様々なタイプのベースプロジェクトの作成が可能です。ぜひ、遊んでみて頂ければと思います！</p>
 
 <p>これで、Helidon MPのベースプロジェクトが作成されます。</p>
 
@@ -486,11 +473,10 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 <p>この後は、事前に用意したサンプルアプリケーションを元にチュートリアルを行っていきます。<br />
 (サンプルアプリケーションも、Helidon CLIをベースに作成したものです)</p>
 
-<h1 id="2-サンプルアプリケーションを動かしてみよう">2. サンプルアプリケーションを動かしてみよう</h1>
-
+<h2 id="2サンプルアプリケーションを動かしてみよう">2.サンプルアプリケーションを動かしてみよう</h2>
 <p>ここでは、事前に用意したサンプルアプリケーションを動かしてみます。</p>
 
-<h2 id="2-1-サンプルアプリケーションのディレクトリ構成を確認しよう">2-1. サンプルアプリケーションのディレクトリ構成を確認しよう</h2>
+<h3 id="2-1-サンプルアプリケーションのディレクトリ構成を確認しよう">2-1. サンプルアプリケーションのディレクトリ構成を確認しよう</h3>
 
 <p>GitHubから、サンプルアプリケーションをcloneします。</p>
 
@@ -534,7 +520,7 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 10 directories, 13 files
 </code></pre></div></div>
 
-<h2 id="2-2-サンプルアプリケーションの設定ファイルを確認しよう">2-2. サンプルアプリケーションの設定ファイルを確認しよう</h2>
+<h3 id="2-2-サンプルアプリケーションの設定ファイルを確認しよう">2-2. サンプルアプリケーションの設定ファイルを確認しよう</h3>
 
 <p>このサンプルアプリケーションのソースコードについて少しみていきます。</p>
 
@@ -552,7 +538,7 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 </code></pre></div></div>
 
 <p>冒頭の4行は、データベースの接続設定を定義する部分です。<br />
-この後、<a href="#2-5-サンプルアプリケーションの動作確認">2-5. サンプルアプリケーションの動作確認</a>で詳しくみていきます。</p>
+この後、<a href="#2-5-サンプルアプリケーションの動作を確認しよう">2-5. サンプルアプリケーションの動作を確認しよう</a>で詳しくみていきます。</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Microprofile server properties</span>
 <span class="s">server.port=8080</span>
@@ -601,7 +587,7 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 
 <p>設定ファイルに関する確認は以上です。</p>
 
-<h2 id="2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう">2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう</h2>
+<h3 id="2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう">2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう</h3>
 
 <p>次に、ソースコードをみていきます。<br />
 まず初めに、<code class="language-plaintext highlighter-rouge">Prefecture.java</code>についてみていきます。<br />
@@ -677,7 +663,7 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 同じようにNOT NULL制約も付与しています。<br />
 なお、<code class="language-plaintext highlighter-rouge">@Basic(optional = false)</code>は、カラムを基本型として定義しています。</p>
 
-<h2 id="2-4-サンプルアプリケーションのソースコードprefectureresourcejavaを確認しよう">2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう</h2>
+<h3 id="2-4-サンプルアプリケーションのソースコードprefectureresourcejavaを確認しよう">2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう</h3>
 
 <p>次に、<code class="language-plaintext highlighter-rouge">PrefectureResource.java</code>をみていきます。<br />
 このクラスは、サンプルアプリケーションのRESTインタフェースをJAX-RS/JTAで実装したものです。</p>
@@ -736,10 +722,9 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 なお、<code class="language-plaintext highlighter-rouge">@Produces</code>アノテーションで、レスポンスの応答形式を指定しています。この場合は、<code class="language-plaintext highlighter-rouge">Content-type: application/json</code>になります。<br />
 メソッドの引数として、<code class="language-plaintext highlighter-rouge">@PathParam</code>アノテーションで<code class="language-plaintext highlighter-rouge">id</code>を指定しています。これはURLからパラメータとして<code class="language-plaintext highlighter-rouge">id</code>を取得することを意味します。</p>
 
-<p><strong>Note：</strong></p>
-<blockquote>
-  <p>パラメータの取得には、さまざまなアノテーションを利用できます。詳細は<a href="https://docs.oracle.com/cd/F32751_01/weblogic-server/14.1.1.0/restf/develop-restful-service.html#GUID-BD610888-0592-45E2-8235-716EE48B516B">こちら</a>をご確認ください。</p>
-</blockquote>
+<p class="notice--info"><strong>パラメータについて</strong><br />
+パラメータの取得には、さまざまなアノテーションを利用できます。<br />
+詳細は<a href="https://docs.oracle.com/cd/F32751_01/weblogic-server/14.1.1.0/restf/develop-restful-service.html#GUID-BD610888-0592-45E2-8235-716EE48B516B">こちら</a>をご確認ください。</p>
 
 <p>EntityManagerを利用して、クエリを発行しています。その際に、<code class="language-plaintext highlighter-rouge">getPrefectureById</code>という名前でクエリを取得しています。<br />
 この名前は、<a href="#2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう">2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう</a>で定義したものです。</p>
@@ -808,7 +793,7 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 
 <p>以上で、サンプルアプリケーションの中身に関する確認は完了です！</p>
 
-<h2 id="2-5-サンプルアプリケーションの動作を確認しよう">2-5. サンプルアプリケーションの動作を確認しよう</h2>
+<h3 id="2-5-サンプルアプリケーションの動作を確認しよう">2-5. サンプルアプリケーションの動作を確認しよう</h3>
 
 <p>ここまでアプリケーションの中身を確認してきたので、このアプリケーションを実際に動作させてみましょう。</p>
 
@@ -845,13 +830,11 @@ Start development loop? <span class="o">(</span>Default: n<span class="o">)</spa
 
 <p>これでデータベースの接続設定は完了です。</p>
 
-<p><strong>WARN：</strong></p>
-<blockquote>
-  <p>今回のチュートリアルでは、データベースパスワードをそのまま記載していますが、セキュリティ上は不適切です。
-Helidonでは、<a href="https://helidon.io/docs/v2/apidocs/io.helidon.config.encryption/io/helidon/config/encryption/EncryptionUtil.html">プロパティの暗号化機構</a>が実装されています。
-また、Oracle Cloud Infrastructure上では、鍵管理サービスとして<code class="language-plaintext highlighter-rouge">OCI Vault</code>というサービスもあります。
+<p class="notice--info"><strong>データベースパスワードについて</strong><br />
+今回のチュートリアルでは、データベースパスワードをそのまま記載していますが、セキュリティ上は不適切です。<br />
+Helidonでは、<a href="https://helidon.io/docs/v2/apidocs/io.helidon.config.encryption/io/helidon/config/encryption/EncryptionUtil.html">プロパティの暗号化機構</a>が実装されています。  ¥
+また、Oracle Cloud Infrastructure上では、鍵管理サービスとして<code class="language-plaintext highlighter-rouge">OCI Vault</code>というサービスもあります。<br />
 これらを利用することで、よりセキュリティを高めてアプリケーションを作成することができます。</p>
-</blockquote>
 
 <p>では、サンプルアプリケーションをビルドしてみましょう。<br />
 プロジェクト直下で以下のコマンドを実行します。</p>
@@ -885,10 +868,9 @@ Helidonでは、<a href="https://helidon.io/docs/v2/apidocs/io.helidon.config.en
 2021.04.23 11:21:49 情報 io.helidon.common.HelidonFeatures Thread[features-thread,5,main]: Helidon MP 2.2.2 features: <span class="o">[</span>CDI, Config, Fault Tolerance, Health, JAX-RS, JPA, JTA, Metrics, Open API, REST Client, Security, Server, Tracing]
 </code></pre></div></div>
 
-<p><strong>INFO：</strong></p>
-<blockquote>
-  <p>起動後の初回起動は、初期データの登録(DDL実行)が走るため、少し時間がかかります。また、今回は自動生成スキーマの設定により、初めにDrop tableした後にCreate tableしているので、初回実行時にはExceptionが発生する可能性がありますが、アプリケーションの実行に問題はありません。</p>
-</blockquote>
+<p class="notice--info"><strong>アプリケーションの起動ついて</strong><br />
+起動後の初回起動は、初期データの登録(DDL実行)が走るため、少し時間がかかります。<br />
+また、今回は自動生成スキーマの設定により、初めにDrop tableした後にCreate tableしているので、初回実行時にはExceptionが発生する可能性がありますが、アプリケーションの実行に問題はありません。</p>
 
 <p>それでは、アクセスしてみます。</p>
 
@@ -964,8 +946,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 
 <p>次に、このサンプルアプリケーションをベースに機能を拡張するチュートリアルを実施します。</p>
 
-<h1 id="3-サンプルアプリケーションを拡張してみよう">3. サンプルアプリケーションを拡張してみよう</h1>
-
+<h2 id="3サンプルアプリケーションを拡張してみよう">3.サンプルアプリケーションを拡張してみよう</h2>
 <p>ここでは、先程までみてきたサンプルアプリケーションを元に機能を拡張してみたいと思います。<br />
 今回は、都道府県情報にエリア(地域区分)を追加してみます。<br />
 区分については、<a href="https://www.stat.go.jp/data/shugyou/1997/3-1.html">こちらのページ</a>を参考にします。</p>
@@ -984,7 +965,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 
 <p><img src="001.png" alt="画面ショット" /></p>
 
-<h2 id="3-1-都道府県エリアを管理するentityを作成しよう">3-1. 都道府県エリアを管理するEntityを作成しよう</h2>
+<h3 id="3-1-都道府県エリアを管理するentityを作成しよう">3-1. 都道府県エリアを管理するEntityを作成しよう</h3>
 
 <p>まずは、地域区分のテーブルを追加するためにこのテーブルに紐づく<code class="language-plaintext highlighter-rouge">PrefectureArea</code>というEntityを作成しましょう。(今回、ATPへのテーブルの追加自体はJPAの自動スキーマ生成機能を利用します)  <br />
 ファイル名は<code class="language-plaintext highlighter-rouge">PrefectureArea.java</code>です。<br />
@@ -1043,7 +1024,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 
 <p>以上で、<code class="language-plaintext highlighter-rouge">PrefectureArea</code>エンティティは完成です！</p>
 
-<h2 id="3-2-都道府県エリアを取得するrestインタフェースを作成しよう">3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう</h2>
+<h3 id="3-2-都道府県エリアを取得するrestインタフェースを作成しよう">3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう</h3>
 
 <p>ここでは、都道府県エリアを取得するリソースクラスを作成します。<br />
 まずは、<code class="language-plaintext highlighter-rouge">PrefectureResorce</code>というクラスを作成しましょう。<br />
@@ -1071,7 +1052,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 
 <p>以上で、<code class="language-plaintext highlighter-rouge">PrefectureArea</code>エンティティは完成です！</p>
 
-<h2 id="3-3-都道府県エリアの情報を元の都道府県情報に追加しよう">3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう</h2>
+<h3 id="3-3-都道府県エリアの情報を元の都道府県情報に追加しよう">3-3. 都道府県エリアの情報を元の都道府県情報に追加しよう</h3>
 
 <p>ここでは、サンプルアプリケーションに元々実装されていた都道府県情報に都道府県エリアの情報を追加します。<br />
 <code class="language-plaintext highlighter-rouge">Prefecture.java</code>を開きます。</p>
@@ -1086,7 +1067,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 これは、元々の都道府県情報にエリア情報を追加するための定義です。<br />
 まずは、Entityとして<code class="language-plaintext highlighter-rouge">PrefectureArea</code>を定義します。<br />
 これは、<code class="language-plaintext highlighter-rouge">Prefecture</code>に対して<code class="language-plaintext highlighter-rouge">PrefectureArea</code>への依存関係を定義するためです。<br />
-<a href="#3-サンプルアプリケーションを拡張してみよう">3. サンプルアプリケーションを拡張してみよう</a>で示した通り、<code class="language-plaintext highlighter-rouge">Prefecture</code>情報は以下の3カラムがありますが、</p>
+<a href="#3サンプルアプリケーションを拡張してみよう">3. サンプルアプリケーションを拡張してみよう</a>で示した通り、<code class="language-plaintext highlighter-rouge">Prefecture</code>情報は以下の3カラムがありますが、</p>
 
 <ul>
   <li>都道府県ID</li>
@@ -1130,7 +1111,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 
 <p>以上で、都道府県エリアの情報を元の都道府県情報に追加できました！</p>
 
-<h2 id="3-4-persistencexmlを変更しよう">3-4. persistence.xmlを変更しよう</h2>
+<h3 id="3-4-persistencexmlを変更しよう">3-4. persistence.xmlを変更しよう</h3>
 
 <p>次にJPAの設定を追加します。<br />
 ここまでで、<code class="language-plaintext highlighter-rouge">PrefectureArea</code>というEntityを作成してきたので、このEntityをJPAの管理下に含めます。 
@@ -1146,7 +1127,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 
 <p>これで、<code class="language-plaintext highlighter-rouge">persistence.xml</code>の設定は完了です！</p>
 
-<h2 id="3-5-ddlを編集しよう">3-5. DDLを編集しよう</h2>
+<h3 id="3-5-ddlを編集しよう">3-5. DDLを編集しよう</h3>
 
 <p>最後にDDLを拡張した内容に合わせて編集します。</p>
 
@@ -1230,7 +1211,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/helidon-handson-complete.git
 </code></pre></div></div>
 
-<h2 id="3-6-拡張したサンプルアプリケーションを動かしてみよう">3-6. 拡張したサンプルアプリケーションを動かしてみよう</h2>
+<h3 id="3-6-拡張したサンプルアプリケーションを動かしてみよう">3-6. 拡張したサンプルアプリケーションを動かしてみよう</h3>
 
 <p>それでは、拡張したサンプルアプリケーションを動かしてみましょう。<br />
 プロジェクト直下で以下のコマンドを実行します。</p>
@@ -1337,8 +1318,7 @@ POSTするデータは<a href="#2-5-サンプルアプリケーションの動�
 
 <p>以上で、サンプルアプリケーションの動作確認は完了です！</p>
 
-<h1 id="まとめ">まとめ</h1>
-
+<h2 id="まとめ">まとめ</h2>
 <p>いかがでしたでしょうか。</p>
 
 <p>このようにHelidonでは、簡単にRESTfulアプリケーション、そしてデータベースとの接続を実現することができます。<br />
@@ -1353,7 +1333,7 @@ POSTするデータは<a href="#2-5-サンプルアプリケーションの動�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-03T13:57:44+09:00">June 3, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-08T16:01:11+09:00">June 8, 2021</time></p>
 
 
       </footer>
@@ -1374,7 +1354,7 @@ POSTするデータは<a href="#2-5-サンプルアプリケーションの動�
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/cloud-native/datascience-beginners/" class="pagination--pager" title="Oracle Cloud Infrastructure Data Science Service ハンズオン
+      <a href="/ocitutorials/cloud-native/apigateway-for-beginners/" class="pagination--pager" title="OCI API Gatewayハンズオン
 ">前へ</a>
     
     
@@ -1474,6 +1454,12 @@ POSTするデータは<a href="#2-5-サンプルアプリケーションの動�
 
 
 
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
 
 
 

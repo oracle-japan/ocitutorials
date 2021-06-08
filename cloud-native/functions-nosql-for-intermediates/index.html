@@ -1,0 +1,661 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Functionsを利用したNoSQLデータベースアクセス | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsをOracle NoSQL Database Cloud Serviceに接続して、テーブルを作成し、データを登録する方法について説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Functionsを利用したNoSQLデータベースアクセス">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-nosql-for-intermediates/">
+
+
+  <meta property="og:description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsをOracle NoSQL Database Cloud Serviceに接続して、テーブルを作成し、データを登録する方法について説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-08T16:01:11+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-nosql-for-intermediates/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Functionsを利用したNoSQLデータベースアクセス
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsをOracle NoSQL Database Cloud Serviceに接続して、テーブルを作成し、データを登録する方法について説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Functionsを利用したNoSQLデータベースアクセス</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/" class="active">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Functionsを利用したNoSQLデータベースアクセス">
+    <meta itemprop="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsをOracle NoSQL Database Cloud Serviceに接続して、テーブルを作成し、データを登録する方法について説明します。">
+    <meta itemprop="datePublished" content="2021-06-08T16:01:11+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#条件">条件</a></li>
+  <li><a href="#1事前準備">1.事前準備</a>
+    <ul>
+      <li><a href="#1-1-動的グループの作成">1-1. 動的グループの作成</a></li>
+      <li><a href="#1-2-ポリシーの作成">1-2. ポリシーの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#2oracle-functionsの作成とデプロイ">2.Oracle Functionsの作成とデプロイ</a>
+    <ul>
+      <li><a href="#2-1-functionの作成">2-1. Functionの作成</a></li>
+      <li><a href="#2-2-functionのデプロイ">2-2. Functionのデプロイ</a></li>
+    </ul>
+  </li>
+  <li><a href="#3動作確認">3.動作確認</a>
+    <ul>
+      <li><a href="#3-1-functionの呼び出す">3-1. Functionの呼び出す</a></li>
+      <li><a href="#3-2-oracle-nosql-database-cloud-serviceでの確認">3-2. Oracle NoSQL Database Cloud Serviceでの確認</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><a href="https://www.oracle.com/database/nosql-cloud.html">Oracle NoSQL Database Cloud Service</a>は、大容量データを高速に処理するフルマネージドデータベースクラウドサービスです。ドキュメント、カラムナー、キーと値のペアなどのデータ・モデルをサポートし、すべてのトランザクションはACIDに準拠しています。</p>
+
+<p>このハンズオンでは、Oracle FunctionsをOracle NoSQL Database Cloud Serviceに接続して、テーブルを作成し、データを登録する方法について説明します。</p>
+
+<p>今回は、<a href="https://docs.cloud.oracle.com/ja-jp/iaas/Content/API/Concepts/sdks.htm">Oracle OCI SDK</a>のリソースプリンシパルという仕組みを利用して、Oracle FunctionsからOracle NoSQL Database Cloud Serviceにアクセスしてみます。</p>
+
+<p class="notice--info"><strong>リソースプリンシパルについて</strong><br />
+Oracle Functionsでのリソースプリンシパルの利用については<a href="https://docs.oracle.com/cd/E97706_01/Content/Functions/Tasks/functionsaccessingociresources.htm">ファンクションの実行からのその他のOracle Cloud Infrastructureリソースへのアクセス</a>をご確認ください。</p>
+
+<h2 id="条件">条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>有効なOracle Cloudアカウントがあること</li>
+    </ul>
+  </li>
+  <li>事前環境構築
+    <ul>
+      <li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Projectハンズオン</a>が完了していること</li>
+      <li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>が完了していること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="1事前準備">1.事前準備</h2>
+<p>ここでは、リソースプリンシパルを利用するための動的グループおよびポリシーの作成を行います。</p>
+
+<h3 id="1-1-動的グループの作成">1-1. 動的グループの作成</h3>
+
+<p>OCIコンソールのハンバーガーメニューをクリックして、[アイデンティティとセキュリティ]から[動的グループ]に移動し、「動的グループの作成」をクリックします。</p>
+
+<p>以下項目を入力して、「作成」をクリックします。</p>
+
+<ul>
+  <li>名前：動的グループの名前。今回は、<code class="language-plaintext highlighter-rouge">func_dyn_grp</code></li>
+  <li>説明：動的グループの説明。今回は、<code class="language-plaintext highlighter-rouge">Function Dynamic Group</code></li>
+  <li>ルール1：<code class="language-plaintext highlighter-rouge">ALL {resource.type = 'fnfunc', resource.compartment.id = '&lt;compartment-ocid&gt;'}</code>(<code class="language-plaintext highlighter-rouge">compartment-ocid</code>はOracleFunctionsが利用するコンパートメントOCID。今回はルートコンパートメント。)</li>
+</ul>
+
+<h3 id="1-2-ポリシーの作成">1-2. ポリシーの作成</h3>
+
+<p>Oracle OCIコンソールの左上にあるハンバーガーメニューをクリックして、[アイデンティティとセキュリティ]⇒[ポリシー]に移動します。ご利用するコンパートメントを選択して、次のポリシー文を使用して新しいポリシーを作成します。（もしくは、既存のポリシーに追加します。）</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow dynamic-group &lt;dynamic-group-name&gt; to manage nosql-family in compartment &lt;compartment-name&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>dynamic-group-name：動的グループの名前。今回は、<code class="language-plaintext highlighter-rouge">func_dyn_grp</code></li>
+  <li>compartment-name：利用するコンパートメントを指定。今回は、ルートコンパートメント</li>
+</ul>
+
+<p>以上で、事前準備は完了です。</p>
+
+<h2 id="2oracle-functionsの作成とデプロイ">2.Oracle Functionsの作成とデプロイ</h2>
+<p>ここでは、Oracle Functionsの作成とデプロイを行います。</p>
+
+<h3 id="2-1-functionの作成">2-1. Functionの作成</h3>
+
+<p>Oracle OCIコンソールの左上にあるハンバーガーメニューをクリックして、[開発者サービス]⇒[ファンクション]に移動します。</p>
+
+<p>Oracle Functionsに使用する予定のリージョンを選択します。</p>
+
+<p>Fn Project CLIコンテキストで指定されたコンパートメントを選択します。</p>
+
+<p>[アプリケーションの作成]をクリックして、次を指定します。</p>
+
+<ul>
+  <li>名前：アプリケーションの名前。今回は、<code class="language-plaintext highlighter-rouge">fn-samples-app</code>。</li>
+  <li>VCN：Functionを実行するVCN。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>で作成したVCNを指定。</li>
+  <li>サブネット：Functionを実行するサブネット。今回は、<a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>で作成したVCNのパブリック・サブネットを指定。</li>
+</ul>
+
+<p><img src="create-function.png" alt="" /></p>
+
+<p>「作成」をクリックします。</p>
+
+<h3 id="2-2-functionのデプロイ">2-2. Functionのデプロイ</h3>
+
+<p><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functionsハンズオン</a>で利用したCloud Shellにログインします。</p>
+
+<p>ソースコードをcloneし、ディレクトリに移動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/connect-to-nosql-with-functions.git
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>connect-to-nosql-with-functions
+</code></pre></div></div>
+
+<p>今回のサンプルアプリケーションは、Oracle NoSQL Database Cloud Serviceに接続後、テーブル作成⇒データインサート⇒データ検索を行い、検索結果を応答として出力されます。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nc">String</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">String</span> <span class="n">input</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Inside Java HelloNosqlFunction.handleRequest()"</span><span class="o">);</span>
+    <span class="k">try</span> <span class="o">{</span>
+        <span class="nc">NosqlClient</span> <span class="n">nosqlClient</span> <span class="o">=</span> <span class="n">getNosqlClient</span><span class="o">();</span>
+        <span class="n">createHelloWorldTable</span><span class="o">(</span><span class="n">nosqlClient</span><span class="o">);</span>
+        <span class="n">writeOneRecord</span><span class="o">(</span><span class="n">nosqlClient</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="s">"{\"hello\":\"world\"}"</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">readResult</span> <span class="o">=</span> <span class="n">readOneRecord</span><span class="o">(</span><span class="n">nosqlClient</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">readResult</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">readResult</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>以下のコマンドを実行し、<code class="language-plaintext highlighter-rouge">fn-connect-to-nosql</code>というJava言語のFunctionをデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn <span class="nt">-v</span> deploy <span class="nt">--app</span> fn-samples-app
+</code></pre></div></div>
+
+<p>Functionsを実行するために環境変数を設定します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn config app fn-samples-app COMPARTMENT_ID [your_compartment_ocid]
+</code></pre></div></div>
+
+<ul>
+  <li>your_compartment_ocid：利用するコンパートメントのOCID。今回はルートコンパートメントのOCID。</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn config app fn-samples-app REGION_ID [region_id]
+</code></pre></div></div>
+
+<ul>
+  <li>region_id：Functionsをデプロイしたリージョンを指定。今回は、<code class="language-plaintext highlighter-rouge">us-ashburn-1</code></li>
+</ul>
+
+<p>以上ででOracle Functionsの作成とデプロイは完了です。</p>
+
+<h2 id="3動作確認">3.動作確認</h2>
+<p>ここでは、実際にデプロイしたFunctionsを動作させて、動作確認を行います。</p>
+
+<h3 id="3-1-functionの呼び出す">3-1. Functionの呼び出す</h3>
+
+<p>以下のコマンドを実行し、デプロイしたFunctionsを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn invoke fn-samples-app fn-connect-to-nosql
+</code></pre></div></div>
+
+<p>以下の出力が表示されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{id=1, content={"hello":"world"}}
+</code></pre></div></div>
+
+<h3 id="3-2-oracle-nosql-database-cloud-serviceでの確認">3-2. Oracle NoSQL Database Cloud Serviceでの確認</h3>
+
+<p>Oracle OCIコンソールの左上にあるハンバーガーメニューをクリックして、[NoSQLデータベース]に移動します。</p>
+
+<p>“hello_world”というテーブルが作成され、表示されます。</p>
+
+<p>“hello_world”のリンクをクリックします。</p>
+
+<p><img src="nosql-database-01.png" alt="image-20200422164625788" /></p>
+
+<p>[リソース]⇒[表]の情報が表示されます。</p>
+
+<p>[表の行]をクリックします。</p>
+
+<p><img src="nosql-database-02.png" alt="image-20200422165142504" /></p>
+
+<p>[表の行]の情報が表示され、[問合せの実行]をクリックして、検索が実行されます。</p>
+
+<p><img src="nosql-database-03.png" alt="image-20200422165548576" /></p>
+
+<p>[NoSQLデータベース]の画面で、右側の[削除]をクリックして、Oracle Functionsにより作成されたテーブルが削除されます。</p>
+
+<p><img src="nosql-database-04.png" alt="image-20200422165804835" /></p>
+
+<p>これで、Oracle Functionsを使用してOracle NoSQL Database Cloud Serviceにテーブルの作成およびデータのインサートができました。<br />
+お疲れ様でした！</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-08T16:01:11+09:00">June 8, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Functions%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9FNoSQL%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-nosql-for-intermediates%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-nosql-for-intermediates%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Ffunctions-nosql-for-intermediates%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/" class="pagination--pager" title="Oracle Functionsを利用したORDSでのデータベースアクセス
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/" class="pagination--pager" title="Oracle Functionsを利用したAPI Gatewayの認証
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
