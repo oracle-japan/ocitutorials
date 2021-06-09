@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-06-08T16:01:11+09:00">
+  <meta property="article:published_time" content="2021-06-09T17:06:39+09:00">
 
 
 
@@ -309,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、チーム開発型プラットフォームであるOracle Cloud PaaSのDeveloper Cloud Serviceや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。">
-    <meta itemprop="datePublished" content="2021-06-08T16:01:11+09:00">
+    <meta itemprop="datePublished" content="2021-06-09T17:06:39+09:00">
     
 
     <div class="page__inner-wrap">
@@ -472,11 +472,28 @@ Oracle Cloudにはコンパートメントという考え方があります。<b
 
 <p><img src="1880.jpg" alt="" /></p>
 
-<ul>
-  <li>名前：コンパートメント名を入力します。今回は”CTDOKE”とします。</li>
-  <li>説明：コンパートメントに対する説明を入力します。今回は”CTDOKE”とします。</li>
-  <li>親コンパートメント：作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>コンパートメント名を入力します。今回は”CTDOKE”とします。</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>コンパートメントに対する説明を入力します。今回は”CTDOKE”とします。</td>
+    </tr>
+    <tr>
+      <td>親コンパートメント</td>
+      <td>作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>“コンパートメントの作成”をクリックします。</p>
 
@@ -598,11 +615,11 @@ Validateに成功すると<img src="1990.jpg" alt="" />が表示されます。<
   <tbody>
     <tr>
       <td>Tenancy OCID</td>
-      <td>テナントOCID</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したテナンシOCID</td>
     </tr>
     <tr>
       <td>User OCID</td>
-      <td>ユーザーOCID</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したユーザーOCID</td>
     </tr>
     <tr>
       <td>Home Region</td>
@@ -618,15 +635,15 @@ Validateに成功すると<img src="1990.jpg" alt="" />が表示されます。<
     </tr>
     <tr>
       <td>Fingerprint</td>
-      <td>API Signingキーのフィンガープリント(Private Keyを入力すると自動的に設定される)</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したAPI Signingキーのフィンガープリント(Private Keyを入力すると自動的に設定される)</td>
     </tr>
     <tr>
       <td>Compartment OCID</td>
-      <td>コンパートメントOCID</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したコンパートメントOCID</td>
     </tr>
     <tr>
       <td>Storage Namespace</td>
-      <td>オブジェクト・ストレージ・ネームスペース</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したオブジェクト・ストレージ・ネームスペース</td>
     </tr>
   </tbody>
 </table>
@@ -642,7 +659,9 @@ Validateに成功すると<img src="1990.jpg" alt="" />が表示されます。<
 <ol>
   <li>オブジェクト・ストレージ・ネームスペース</li>
   <li>リージョン識別子</li>
+  <li>テナンシOCID</li>
   <li>コンパートメントOCID</li>
+  <li>ユーザOCID</li>
   <li>API Signingキーのフィンガープリント</li>
   <li>認証トークン</li>
   <li>クラスターOCID</li>
@@ -676,9 +695,21 @@ Validateに成功すると<img src="1990.jpg" alt="" />が表示されます。<
 
 <p><img src="1020.jpg" alt="" /></p>
 
-<p><strong>3.コンパートメントOCID</strong></p>
+<p><strong>3.テナンシOCID</strong></p>
 
-<p>OCIコンソール左上のハンバーガーメニューを展開し、「アイデンティティ」⇒「コンパートメント」に移動します。コンパートメント一覧から使用するコンパートメントに移動します。今回は”CTDOKE”</p>
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code class="language-plaintext highlighter-rouge">テナンシ:&lt;テナンシ名&gt;</code>をクリックします。</p>
+
+<p><img src="03-01-1.png" alt="" /></p>
+
+<p>テナンシ情報<code class="language-plaintext highlighter-rouge">OCID</code>の右側にある<code class="language-plaintext highlighter-rouge">コピー</code>をクリックすると、テナンシOCIDがクリップボードにコピーされます。</p>
+
+<p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
+
+<p><img src="03-01-2.png" alt="" /></p>
+
+<p><strong>4.コンパートメントOCID</strong></p>
+
+<p>OCIコンソール左上のハンバーガーメニューを展開し、「アイデンティティ」⇒「コンパートメント」に移動します。コンパートメント一覧から使用するコンパートメントに移動します。以下の例では”CTDOKE”となっています。</p>
 
 <p>以下をコピーしてメモしてください。</p>
 
@@ -688,7 +719,19 @@ Validateに成功すると<img src="1990.jpg" alt="" />が表示されます。<
 
 <p><img src="1030.jpg" alt="" /></p>
 
-<p><strong>4.API Signingキーのフィンガープリント</strong></p>
+<p><strong>5.ユーザOCID</strong></p>
+
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code class="language-plaintext highlighter-rouge">ユーザ名</code>(oracleidentitycloudservice/<ユーザ名>)をクリックします。</ユーザ名></p>
+
+<p><img src="03-02.png" alt="" /></p>
+
+<p>ユーザ情報が表示されますので、<code class="language-plaintext highlighter-rouge">OCID</code>の右側にある<code class="language-plaintext highlighter-rouge">コピー</code>をクリックすると、ユーザOCIDがクリップボードにコピーされます。</p>
+
+<p><img src="03-03.png" alt="" /></p>
+
+<p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
+
+<p><strong>6.API Signingキーのフィンガープリント</strong></p>
 
 <p>API Signingキーのフィンガープリントは<a href="/ocitutorials/cloud-native/oke-for-commons">OKEハンズオン事前準備</a>の手順により、<br />
 ユーザー詳細画面から確認できるようになっています。</p>
@@ -700,7 +743,7 @@ APIキーに表示されているフィンガープリントを確認します�
 
 <p>表示されている値をメモしてください。</p>
 
-<p><strong>5.認証トークン</strong></p>
+<p><strong>7.認証トークン</strong></p>
 
 <p>マシンもしくはOKEからOCIRを使用するために、認証トークンの収集を行います（ユーザー認証用のパスワードではなく、認証トークンが必要です）。</p>
 
@@ -726,7 +769,7 @@ APIキーに表示されているフィンガープリントを確認します�
 
 <p><img src="1066.jpg" alt="" /></p>
 
-<p><strong>6.OKEクラスターOCID</strong></p>
+<p><strong>8.OKEクラスターOCID</strong></p>
 
 <p><a href="/ocitutorials/cloud-native/oke-for-commons">OKEハンズオン事前準備</a>の手順により作成したOKEクラスターのOCIDを取得します。
 OCIコンソールにログインします。<br />
@@ -744,6 +787,10 @@ OCIコンソールにログインします。<br />
 <p><img src="2004.jpg" alt="" /></p>
 
 <p>これで、ワークショップで利用するアカウント情報の収集が完了しました。</p>
+
+<p class="notice--info"><strong>受講者の方へ</strong><br />
+ここから先の手順では、<a href="#2visual-builder-studioのセットアップ">Visual Builder Studioのセットアップ</a>までを完了している必要があります。<br />
+Visual Builder Studioインスタンス作成後のセットアップ手順を実施していない場合は、そちらを実施してください。</p>
 
 <h2 id="4プロジェクトとリポジトリの作成">4.プロジェクトとリポジトリの作成</h2>
 
@@ -790,11 +837,28 @@ Visual Builder Studio上のプロジェクト名の重複は許容されてい�
 
 <p>下記項目を入力して、「作成」をクリックします。</p>
 
-<ul>
-  <li>名前：oke_atp_workshop</li>
-  <li>説明：OKE ATP Workshop</li>
-  <li>既存のリポジトリのインポート(既存のリポジトリのインポート(Import existing repository)にチェック)：https://github.com/oracle-japan/oke-atp-helidon-handson</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>oke_atp_workshop</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>OKE ATP Workshop</td>
+    </tr>
+    <tr>
+      <td>既存のリポジトリのインポート(既存のリポジトリのインポート(Import existing repository)にチェック)</td>
+      <td>https://github.com/oracle-japan/oke-atp-helidon-handson</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1130.jpg" alt="" /></p>
 
@@ -830,10 +894,24 @@ git cloneコマンドや後続の手順で利用するgit pushなどの各種git
 
 <p>ダイアログボックスで、下記項目を入力して、「作成」ボタンをクリックします。</p>
 
-<ul>
-  <li>名前：OKE</li>
-  <li>プラットフォーム：Oracle Linux 7</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>OKE</td>
+    </tr>
+    <tr>
+      <td>プラットフォーム</td>
+      <td>Oracle Linux 7</td>
+    </tr>
+  </tbody>
+</table>
 
 <p class="notice--warning"><strong>受講者の方へ</strong><br />
 Visual Builder Studio上の仮想マシン・テンプレート名の重複は許容されていません。
@@ -865,13 +943,36 @@ Visual Builder Studio上の仮想マシン・テンプレート名の重複は�
 
 <p>表示されるダイアログで、下記項目を入力します。</p>
 
-<ul>
-  <li>数量：1</li>
-  <li>VMテンプレート：OKE</li>
-  <li>リージョン：us-ashburn-1</li>
-  <li>シェイプ：VM.Standard.E2.1</li>
-  <li>VCN選択：”デフォルト”を選択</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>数量</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>VMテンプレート</td>
+      <td>OKE</td>
+    </tr>
+    <tr>
+      <td>リージョン</td>
+      <td>us-ashburn-1</td>
+    </tr>
+    <tr>
+      <td>シェイプ</td>
+      <td>VM.Standard.E2.1</td>
+    </tr>
+    <tr>
+      <td>VCN選択</td>
+      <td>“デフォルト”を選択</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>「追加」ボタンをクリックします。</p>
 
@@ -916,54 +1017,83 @@ Visual Builder Studio上の仮想マシン・テンプレート名の重複は�
 
 <p>以下の情報を入力します。</p>
 
-<ul>
-  <li>
-    <p>コンパートメント：ルートコンパートメント</p>
-  </li>
-  <li>
-    <p>表示名：OCIコンソール上でATPを表示するための名前を入力します。今回は”tfOKEATPDB”</p>
-  </li>
-  <li>
-    <p>データベース名：データベース名を入力します。今回は”tfOKEATPDB”</p>
-  </li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>コンパートメント</td>
+      <td>ルートコンパートメント</td>
+    </tr>
+    <tr>
+      <td>表示名</td>
+      <td>OCIコンソール上でATPを表示するための名前を入力します。今回は”tfOKEATPDB”</td>
+    </tr>
+    <tr>
+      <td>データベース名</td>
+      <td>データベース名を入力します。今回は”tfOKEATPDB”</td>
+    </tr>
+  </tbody>
+</table>
 
 <p class="notice--warning"><strong>トライアル環境以外の環境をお使いの方へ</strong><br />
 Autonomous Databaseはデータベース名の重複が許容されていません。
 集合ハンズオンなど同一の環境でハンズオンを実施されている方は、データベース名が重複しない様に語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。</p>
 
-<ul>
-  <li>
-    <p>ワークロード・タイプの選択：ワークロードをデータウェアハウス、トランザクション処理、JSON、APEXの中から選択します。今回は”トランザクション処理”</p>
-  </li>
-  <li>
-    <p>デプロイメント・タイプの選択：データベースのインフラストラクチャを共有とするか専用とするかを選択します。今回は”共有インフラストラクチャ”</p>
-  </li>
-  <li>
-    <p>データベース・バージョンの選択：データベースのバージョンを選択します。今回は”19c”を選択</p>
-  </li>
-  <li>
-    <p>OCPU数：データベースのコア数を入力します。今回は”1”を入力</p>
-  </li>
-  <li>
-    <p>ストレージ(TB)：データベースのストレージ容量を入力します。今回は”1”を入力</p>
-  </li>
-  <li>
-    <p>自動スケーリング：ワークロードの負荷に応じて自動でスケールを行うかどうかを選択します。今回はチェックを入れます。</p>
-  </li>
-  <li>
-    <p>パスワード：データベースのパスワードを入力します。今回は”TFWorkshop__2000”</p>
-  </li>
-  <li>
-    <p>パスワードの確認：確認のためにパスワードを再度入力します。今回は”TFWorkshop__2000”</p>
-  </li>
-  <li>
-    <p>ネットワーク・アクセスの選択：データベースに対してどこからのアクセスを許可するかを選択します。今回は”すべての場所からのセキュア・アクセスを許可”を選択</p>
-  </li>
-  <li>
-    <p>ライセンス・タイプの選択：ライセンスのタイプを選択します。今回は”ライセンス込み”を選択</p>
-  </li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ワークロード・タイプの選択</td>
+      <td>ワークロードをデータウェアハウス、トランザクション処理、JSON、APEXの中から選択します。今回は”トランザクション処理”</td>
+    </tr>
+    <tr>
+      <td>デプロイメント・タイプの選択</td>
+      <td>データベースのインフラストラクチャを共有とするか専用とするかを選択します。今回は”共有インフラストラクチャ”</td>
+    </tr>
+    <tr>
+      <td>データベース・バージョンの選択</td>
+      <td>データベースのバージョンを選択します。今回は”19c”を選択</td>
+    </tr>
+    <tr>
+      <td>OCPU数</td>
+      <td>データベースのコア数を入力します。今回は”1”を入力</td>
+    </tr>
+    <tr>
+      <td>ストレージ(TB)</td>
+      <td>データベースのストレージ容量を入力します。今回は”1”を入力</td>
+    </tr>
+    <tr>
+      <td>自動スケーリング</td>
+      <td>ワークロードの負荷に応じて自動でスケールを行うかどうかを選択します。今回はチェックを入れます。</td>
+    </tr>
+    <tr>
+      <td>パスワード</td>
+      <td>データベースのパスワードを入力します。今回は”TFWorkshop__2000”</td>
+    </tr>
+    <tr>
+      <td>パスワードの確認</td>
+      <td>確認のためにパスワードを再度入力します。今回は”TFWorkshop__2000”</td>
+    </tr>
+    <tr>
+      <td>ネットワーク・アクセスの選択</td>
+      <td>データベースに対してどこからのアクセスを許可するかを選択します。今回は”すべての場所からのセキュア・アクセスを許可”を選択</td>
+    </tr>
+    <tr>
+      <td>ライセンス・タイプの選択</td>
+      <td>ライセンスのタイプを選択します。今回は”ライセンス込み”を選択</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>上記を入力し終えたら、”Autonomous Databaseの作成”をクリックします。</p>
 
@@ -1115,10 +1245,24 @@ Secretリソースについては<a href="https://kubernetes.io/docs/concepts/co
 
 <p>下記項目を入力し、「作成」ボタンをクリックします。</p>
 
-<ul>
-  <li>名前：CreateDBObjects</li>
-  <li>テンプレート：OKE</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>CreateDBObjects</td>
+    </tr>
+    <tr>
+      <td>テンプレート</td>
+      <td>OKE</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1310.jpg" alt="" /></p>
 
@@ -1140,12 +1284,32 @@ Secretリソースについては<a href="https://kubernetes.io/docs/concepts/co
 
 <p>下記項目を入力して、「保存」ボタンをクリックします。</p>
 
-<ul>
-  <li>ユーザー名：データベースユーザ名。今回は”admin”</li>
-  <li>パスワード：データベースパスワードを設定。今回は”TFWorkshop__2000”</li>
-  <li>資格証明ファイル：ウォレットファイルを指定。今回は”./Wallet_tfOKEATPDB.zip”</li>
-  <li>接続文字列：データベースの名前＆”_high”/”_low”などで構成される接続文字列。今回は”tfOKEATPDB_HIGH”</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ユーザー名</td>
+      <td>データベースユーザ名。今回は”admin”</td>
+    </tr>
+    <tr>
+      <td>パスワード</td>
+      <td>データベースパスワードを設定。今回は”TFWorkshop__2000”</td>
+    </tr>
+    <tr>
+      <td>資格証明ファイル</td>
+      <td>ウォレットファイルを指定。今回は”./Wallet_tfOKEATPDB.zip”</td>
+    </tr>
+    <tr>
+      <td>接続文字列</td>
+      <td>データベースの名前＆”_high”/”_low”などで構成される接続文字列。今回は”tfOKEATPDB_HIGH”</td>
+    </tr>
+  </tbody>
+</table>
 
 <p class="notice--warning"><strong>受講者の方へ</strong><br />
 トライアル環境以外の環境をお使いの方は、ATPプロビジョニング時にATPのデータベース名を変更している場合があります。<br />
@@ -1217,10 +1381,24 @@ Secretリソースについては<a href="https://kubernetes.io/docs/concepts/co
 
 <p>下記項目を入力し、「Sign in」をクリックします。</p>
 
-<ul>
-  <li>Username：ATPデータベースのユーザー名。今回は”admin”</li>
-  <li>Password：ATPデータベースのパスワード。今回は”TFWorkshop__2000”</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Username</td>
+      <td>ATPデータベースのユーザー名。今回は”admin”</td>
+    </tr>
+    <tr>
+      <td>Password</td>
+      <td>ATPデータベースのパスワード。今回は”TFWorkshop__2000”</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1440.jpg" alt="" /></p>
 
@@ -1266,14 +1444,40 @@ Helidonは、Oracleが提供するオープンソースのマイクロサービ�
 
 <p>下記項目を入力して、「作成」ボタンをクリックします。</p>
 
-<ul>
-  <li>レジストリ名：”WorkshopOCIR”</li>
-  <li>レジストリURL：<code class="language-plaintext highlighter-rouge">https://&lt;リージョンコード&gt;.ocir.io</code></li>
-  <li>説明：”OKE ATP”</li>
-  <li>認証：<code class="language-plaintext highlighter-rouge">基本</code>を選択</li>
-  <li>ユーザー名：<code class="language-plaintext highlighter-rouge">&lt;オブジェクト・ストレージ・ネームスペース&gt;/oracleidentitycloudservice/&lt;ユーザ名&gt;</code></li>
-  <li>パスワード：認証トークン</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>レジストリ名</td>
+      <td>“WorkshopOCIR”</td>
+    </tr>
+    <tr>
+      <td>レジストリURL</td>
+      <td><code class="language-plaintext highlighter-rouge">https://&lt;リージョンコード&gt;.ocir.io</code></td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>“OKE ATP”</td>
+    </tr>
+    <tr>
+      <td>認証</td>
+      <td><code class="language-plaintext highlighter-rouge">基本</code>を選択</td>
+    </tr>
+    <tr>
+      <td>ユーザー名</td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;オブジェクト・ストレージ・ネームスペース&gt;/oracleidentitycloudservice/&lt;ユーザ名&gt;</code></td>
+    </tr>
+    <tr>
+      <td>パスワード</td>
+      <td>認証トークン</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>リージョンコードについては、ご自身の環境に合わせて設定してください。今回は”iad”を設定します。</p>
 
@@ -1362,11 +1566,28 @@ Helidonは、Oracleが提供するオープンソースのマイクロサービ�
 
 <p>下記項目を入力して、「作成」ボタンをクリックします。</p>
 
-<ul>
-  <li>名前：ジョブ名。今回はJavaDockerOCIR</li>
-  <li>説明：ジョブの説明。”Build and push Docker image to OCIR”</li>
-  <li>テンプレート：OKE</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>ジョブ名。今回はJavaDockerOCIR</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>ジョブの説明。”Build and push Docker image to OCIR”</td>
+    </tr>
+    <tr>
+      <td>テンプレート</td>
+      <td>OKE</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1540.jpg" alt="" /></p>
 
@@ -1378,10 +1599,24 @@ Helidonは、Oracleが提供するオープンソースのマイクロサービ�
 
 <p>次のステップを追加します。</p>
 
-<ul>
-  <li>リポジトリ：oke_atp_workshopを選択する</li>
-  <li>SCMコミット時に自動的にビルドを実行：チェックオンにする</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>リポジトリ</td>
+      <td>oke_atp_workshopを選択する</td>
+    </tr>
+    <tr>
+      <td>SCMコミット時に自動的にビルドを実行</td>
+      <td>チェックオンにする</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1560.jpg" alt="" /></p>
 
@@ -1403,10 +1638,24 @@ Helidonは、Oracleが提供するオープンソースのマイクロサービ�
 
 <p>下記項目を入力します。</p>
 
-<ul>
-  <li>レジストリ・ホスト：”WorkshopOCIR”</li>
-  <li>イメージ名：<code class="language-plaintext highlighter-rouge">&lt;オブジェクト・ストレージ・ネームスペース&gt;/workshop/okeatpapp</code></li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>リポジトリ</td>
+      <td>oke_atp_workshopを選択する</td>
+    </tr>
+    <tr>
+      <td>SCMコミット時に自動的にビルドを実行</td>
+      <td>チェックオンにする</td>
+    </tr>
+  </tbody>
+</table>
 
 <p class="notice--warning"><strong>受講者の方へ</strong><br />
 トライアル環境以外の環境をお使いの方は、イメージが他のユーザの方と重複しないように、語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。</p>
@@ -1419,10 +1668,24 @@ Helidonは、Oracleが提供するオープンソースのマイクロサービ�
 
 <p>下記項目を入力します。</p>
 
-<ul>
-  <li>レジストリ・ホスト：”WorkshopOCIR”</li>
-  <li>イメージ名：<code class="language-plaintext highlighter-rouge">&lt;オブジェクト・ストレージ・ネームスペース&gt;/workshop/okeatpapp</code></li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>レジストリ・ホスト</td>
+      <td>“WorkshopOCIR”</td>
+    </tr>
+    <tr>
+      <td>イメージ名</td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;オブジェクト・ストレージ・ネームスペース&gt;/workshop/okeatpapp</code></td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1634.jpg" alt="" /></p>
 
@@ -1672,11 +1935,28 @@ Helidonは、Oracleが提供するオープンソースのマイクロサービ�
 
 <p>下記項目を入力して、「作成」ボタンをクリックします。</p>
 
-<ul>
-  <li>名前：ジョブの名前。今回は”OKEDeploy”</li>
-  <li>説明：ジョブの説明。今回は”Deploy application to OKE”</li>
-  <li>テンプレート：OKE</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>ジョブの名前。今回は”OKEDeploy”</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>ジョブの説明。今回は”Deploy application to OKE”</td>
+    </tr>
+    <tr>
+      <td>テンプレート</td>
+      <td>OKE</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1710.jpg" alt="" /></p>
 
@@ -1712,13 +1992,36 @@ Helidonは、Oracleが提供するオープンソースのマイクロサービ�
 
 <p>下記項目を入力します。</p>
 
-<ul>
-  <li>ユーザーOCID：ユーザーOCID</li>
-  <li>フィンガープリント：API Signingキーのフィンガープリント</li>
-  <li>テナンシ：テナントOCID</li>
-  <li>秘密キー：<a href="/ocitutorials/cloud-native/oke-for-commons">OKEハンズオン事前準備</a>でダウンロードしたAPI秘密鍵の内容を貼り付け</li>
-  <li>リージョン：リージョン識別子。自身の環境に合わせて選択。今回は、”us-ashburn-1”</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ユーザーOCID</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したユーザーOCID</td>
+    </tr>
+    <tr>
+      <td>フィンガープリント</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したAPI Signingキーのフィンガープリント</td>
+    </tr>
+    <tr>
+      <td>テナンシ</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したテナンシOCID</td>
+    </tr>
+    <tr>
+      <td>秘密キー</td>
+      <td><a href="/ocitutorials/cloud-native/oke-for-commons">OKEハンズオン事前準備</a>でダウンロードしたAPI秘密鍵の内容を貼り付け</td>
+    </tr>
+    <tr>
+      <td>リージョン</td>
+      <td>リージョン識別子。自身の環境に合わせて選択。今回は、”us-ashburn-1”</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="1770.jpg" alt="" /></p>
 
@@ -1764,10 +2067,24 @@ kubectl describe pods
 
 <p>以下の項目を入力し、「Create」ボタンをクリックします。</p>
 
-<ul>
-  <li>Name：DeployToOKE</li>
-  <li>Description：DeployToOKE</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Name</td>
+      <td>DeployToOKE</td>
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td>DeployToOKE</td>
+    </tr>
+  </tbody>
+</table>
 
 <p><img src="2008.jpg" alt="" /></p>
 
@@ -1966,19 +2283,19 @@ kubectl describe pods
         <span class="s">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8080</span>
         <span class="na">env</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax_sql_DataSource_workshopDataSource_dataSource_user</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax.sql.DataSource.workshopDataSource.dataSource.user</span>
         <span class="na">valueFrom</span><span class="pi">:</span>
             <span class="na">secretKeyRef</span><span class="pi">:</span>
             <span class="na">name</span><span class="pi">:</span> <span class="s">customized-db-cred</span>
             <span class="na">key</span><span class="pi">:</span> <span class="s">user_name</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax_sql_DataSource_workshopDataSource_dataSource_password</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax.sql.DataSource.workshopDataSource.dataSource.password</span>
         <span class="na">valueFrom</span><span class="pi">:</span>
             <span class="na">secretKeyRef</span><span class="pi">:</span>
             <span class="na">name</span><span class="pi">:</span> <span class="s">customized-db-cred</span>
             <span class="na">key</span><span class="pi">:</span> <span class="s">password</span>
         <span class="na">volumeMounts</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">handson</span>
-        <span class="na">mountPath</span><span class="pi">:</span> <span class="s">/db-demo/creds</span>              
+        <span class="na">mountPath</span><span class="pi">:</span> <span class="s">/db-demo/creds</span> 
     <span class="na">imagePullSecrets</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">workshop-ocirsecret</span>
     <span class="na">volumes</span><span class="pi">:</span>
@@ -2069,6 +2386,8 @@ kubectl describe pods
 54
 55
 56
+57
+58
 </pre></td><td class="code"><pre><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
 <span class="na">metadata</span><span class="pi">:</span>
@@ -2108,19 +2427,21 @@ kubectl describe pods
         <span class="s">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8080</span>
         <span class="na">env</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax_sql_DataSource_workshopDataSource_dataSource_user</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax.sql.DataSource.workshopDataSource.dataSource.user</span>
         <span class="na">valueFrom</span><span class="pi">:</span>
             <span class="na">secretKeyRef</span><span class="pi">:</span>
             <span class="na">name</span><span class="pi">:</span> <span class="s">customized-db-cred</span>
             <span class="na">key</span><span class="pi">:</span> <span class="s">user_name</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax_sql_DataSource_workshopDataSource_dataSource_password</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">javax.sql.DataSource.workshopDataSource.dataSource.password</span>
         <span class="na">valueFrom</span><span class="pi">:</span>
             <span class="na">secretKeyRef</span><span class="pi">:</span>
             <span class="na">name</span><span class="pi">:</span> <span class="s">customized-db-cred</span>
             <span class="na">key</span><span class="pi">:</span> <span class="s">password</span>
         <span class="na">volumeMounts</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">handson</span>
-        <span class="na">mountPath</span><span class="pi">:</span> <span class="s">/db-demo/creds</span>              
+        <span class="na">mountPath</span><span class="pi">:</span> <span class="s">/db-demo/creds</span> 
+    <span class="na">imagePullSecrets</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">workshop-ocirsecret</span>
     <span class="na">volumes</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">handson</span>
         <span class="s">configMap</span><span class="pi">:</span>
@@ -2176,9 +2497,6 @@ kubectl describe pods
 29
 30
 31
-32
-33
-34
 </pre></td><td class="code"><pre><span class="c1">#</span>
 <span class="c1"># Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.</span>
 <span class="c1">#</span>
@@ -2195,15 +2513,12 @@ kubectl describe pods
 <span class="c1"># limitations under the License.</span>
 <span class="c1">#</span>
 
-<span class="c1"># Application properties. This is the default greeting</span>
-<span class="s">app.greeting=Hello</span>
-
 <span class="c1"># Microprofile server properties</span>
 <span class="s">server.port=8080</span>
 <span class="s">server.host=0.0.0.0</span>
 
 <span class="s">javax.sql.DataSource.workshopDataSource.dataSourceClassName=oracle.jdbc.pool.OracleDataSource</span>
-<span class="s">javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds</span>
+<span class="s">javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@tfokeatpdb_high?TNS_ADMIN=/db-demo/creds</span>
 <span class="s">javax.sql.DataSource.workshopDataSource.maximumPoolSize=5</span>
 <span class="s">javax.sql.DataSource.workshopDataSource.minimumIdle=2</span>
 
@@ -2215,7 +2530,7 @@ kubectl describe pods
 <span class="c1"># server.static.classpath.context=/static-cp</span>
 </pre></td></tr></tbody></table></code></pre></figure>
 
-<p>25行目に注目してみましょう。</p>
+<p>22行目に注目してみましょう。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds
 </code></pre></div></div>
@@ -2348,15 +2663,15 @@ Service Catalogの詳細については<a href="https://kubernetes.io/docs/conce
   <tbody>
     <tr>
       <td>tenancy_ocid</td>
-      <td>テナントOCID</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したテナンシOCID</td>
     </tr>
     <tr>
       <td>user_ocid</td>
-      <td>ユーザーOCID</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したユーザーOCID</td>
     </tr>
     <tr>
       <td>fingerprint</td>
-      <td>API Signingキーのフィンガープリント</td>
+      <td><a href="#3ワークショップで利用するアカウント情報の収集">ワークショップで利用するアカウント情報の収集</a>で収集したAPI Signingキーのフィンガープリント</td>
     </tr>
     <tr>
       <td>region</td>
@@ -2535,7 +2850,7 @@ ATPはデフォルトで”Admin”ユーザが設定されます。OCIコンソ
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-08T16:01:11+09:00">June 8, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-09T17:06:39+09:00">June 9, 2021</time></p>
 
 
       </footer>
