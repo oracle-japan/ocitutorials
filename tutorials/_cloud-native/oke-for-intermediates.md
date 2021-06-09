@@ -66,9 +66,11 @@ OCIコンソールにログインします。
 
 ![](1880.jpg)
 
-+ 名前：コンパートメント名を入力します。今回は"CTDOKE"とします。
-+ 説明：コンパートメントに対する説明を入力します。今回は"CTDOKE"とします。
-+ 親コンパートメント：作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。
+key|value
+-|-
+名前|コンパートメント名を入力します。今回は"CTDOKE"とします。
+説明|コンパートメントに対する説明を入力します。今回は"CTDOKE"とします。
+親コンパートメント|作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。
 
 "コンパートメントの作成"をクリックします。  
 
@@ -211,6 +213,7 @@ USにあるデータセンター"US East (Ashburn)"を使用する場合"us-ashb
 ![](1020.jpg)
 
 **3.テナンシOCID**
+
 OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`テナンシ:<テナンシ名>`をクリックします。
 
 ![](03-01-1.png)
@@ -232,6 +235,7 @@ OCIコンソール左上のハンバーガーメニューを展開し、「ア�
 ![](1030.jpg)
 
 **5.ユーザOCID**
+
 OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`ユーザ名`(oracleidentitycloudservice/<ユーザ名>)をクリックします。
 
 ![](03-02.png)
@@ -767,9 +771,6 @@ OCIのATPインスタンスの詳細⇒「サービス・コンソール」ボ�
 
 下記項目を入力し、「Sign in」をクリックします。
 
-+ Username：ATPデータベースのユーザー名。今回は"admin"
-+ Password：ATPデータベースのパスワード。今回は"TFWorkshop__2000"
-
 key|value
 -|-
 Username|ATPデータベースのユーザー名。今回は"admin"
@@ -862,9 +863,11 @@ uk-london-1|lhr
 
 下記項目を入力して、「作成」ボタンをクリックします。
 
-+ 名前：ジョブ名。今回はJavaDockerOCIR
-+ 説明：ジョブの説明。"Build and push Docker image to OCIR"
-+ テンプレート：OKE
+key|value
+-|-
+名前|ジョブ名。今回はJavaDockerOCIR
+説明|ジョブの説明。"Build and push Docker image to OCIR"
+テンプレート|OKE
 
 ![](1540.jpg)
 
@@ -876,8 +879,10 @@ uk-london-1|lhr
 
 次のステップを追加します。
 
-+ リポジトリ：oke_atp_workshopを選択する
-+ SCMコミット時に自動的にビルドを実行：チェックオンにする
+key|value
+-|-
+リポジトリ|oke_atp_workshopを選択する
+SCMコミット時に自動的にビルドを実行|チェックオンにする
 
 ![](1560.jpg)
 
@@ -897,8 +902,10 @@ uk-london-1|lhr
 
 下記項目を入力します。
 
-+ レジストリ・ホスト："WorkshopOCIR"
-+ イメージ名：`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
+key|value
+-|-
+リポジトリ|oke_atp_workshopを選択する
+SCMコミット時に自動的にビルドを実行|チェックオンにする
 
 **受講者の方へ**  
 トライアル環境以外の環境をお使いの方は、イメージが他のユーザの方と重複しないように、語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。
@@ -912,9 +919,10 @@ uk-london-1|lhr
 
 下記項目を入力します。
 
-+ レジストリ・ホスト："WorkshopOCIR"
-+ イメージ名：`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
-
+key|value
+-|-
+レジストリ・ホスト|"WorkshopOCIR"
+イメージ名|`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
 
 ![](1634.jpg)
 
@@ -1103,9 +1111,11 @@ Visual Builder Studioで、「ビルド」に遷移して、「＋ジョブの�
 
 下記項目を入力して、「作成」ボタンをクリックします。
 
-+ 名前：ジョブの名前。今回は"OKEDeploy"
-+ 説明：ジョブの説明。今回は"Deploy application to OKE"
-+ テンプレート：OKE
+key|value
+-|-
+名前|ジョブの名前。今回は"OKEDeploy"
+説明|ジョブの説明。今回は"Deploy application to OKE"
+テンプレート|OKE
 
 ![](1710.jpg)
 
@@ -1191,8 +1201,11 @@ Visual Builder Studioで、「ビルド」に遷移して、「Pipelines」タ�
 
 以下の項目を入力し、「Create」ボタンをクリックします。
 
-+ Name：DeployToOKE
-+ Description：DeployToOKE
+key|value
+-|-
+Name|DeployToOKE
+Description|DeployToOKE
+
 
 ![](2008.jpg)
 
@@ -1391,59 +1404,61 @@ template:
 apiVersion: v1
 kind: Service
 metadata:
-  name: oke-atp-helidon
-  namespace: default
+name: oke-atp-helidon
+namespace: default
 spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
+type: LoadBalancer
+ports:
+- port: 80
     protocol: TCP
     targetPort: 8080
-  selector:
+selector:
     app: oke-atp-helidon
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: oke-atp-helidon
+name: oke-atp-helidon
 spec:
-  selector:
+selector:
     matchLabels:
-      app: oke-atp-helidon
-  replicas: 2
-  template:
+    app: oke-atp-helidon
+replicas: 2
+template:
     metadata:
-      labels:
+    labels:
         app: oke-atp-helidon
         version: v1
     spec:
-      # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
-      # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
-      # can read them and use it for connecting to ATP.
-      containers:
-      - name: oke-atp-helidon
+    # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
+    # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
+    # can read them and use it for connecting to ATP.
+    containers:
+    - name: oke-atp-helidon
         image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
         - name: javax.sql.DataSource.workshopDataSource.dataSource.user
-          valueFrom:
+        valueFrom:
             secretKeyRef:
-              name: customized-db-cred
-              key: user_name
+            name: customized-db-cred
+            key: user_name
         - name: javax.sql.DataSource.workshopDataSource.dataSource.password
-          valueFrom:
+        valueFrom:
             secretKeyRef:
-              name: customized-db-cred
-              key: password
+            name: customized-db-cred
+            key: password
         volumeMounts:
         - name: handson
-          mountPath: /db-demo/creds
-      volumes:
-      - name: handson
+        mountPath: /db-demo/creds 
+    imagePullSecrets:
+    - name: workshop-ocirsecret
+    volumes:
+    - name: handson
         configMap:
-          name: okeatp
+        name: okeatp
 {% endhighlight %}
 
 50-56行目に注目してみましょう。
