@@ -66,9 +66,11 @@ OCIコンソールにログインします。
 
 ![](1880.jpg)
 
-+ 名前：コンパートメント名を入力します。今回は"CTDOKE"とします。
-+ 説明：コンパートメントに対する説明を入力します。今回は"CTDOKE"とします。
-+ 親コンパートメント：作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。
+key|value
+-|-
+名前|コンパートメント名を入力します。今回は"CTDOKE"とします。
+説明|コンパートメントに対する説明を入力します。今回は"CTDOKE"とします。
+親コンパートメント|作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。
 
 "コンパートメントの作成"をクリックします。  
 
@@ -159,14 +161,14 @@ Validateが成功したら"Save"ボタンをクリックします。
 
 key|value
 -|-
-Tenancy OCID|テナントOCID
-User OCID|ユーザーOCID
+Tenancy OCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したテナンシOCID
+User OCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したユーザーOCID
 Home Region|ホームリージョンを選択。今回は"us-ashburn-1"
 Private Key|[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)でダウンロードしたAPI秘密鍵の内容を貼り付け
 Passphrase|パスフレーズ。今回は空文字("")を指定。
-Fingerprint|API Signingキーのフィンガープリント(Private Keyを入力すると自動的に設定される)
-Compartment OCID|コンパートメントOCID
-Storage Namespace|オブジェクト・ストレージ・ネームスペース
+Fingerprint|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したAPI Signingキーのフィンガープリント(Private Keyを入力すると自動的に設定される)
+Compartment OCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したコンパートメントOCID
+Storage Namespace|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したオブジェクト・ストレージ・ネームスペース
 
 以下のように画面が表示されれば、Visual Builder Studioのセットアップが完了です。
 
@@ -179,10 +181,12 @@ Storage Namespace|オブジェクト・ストレージ・ネームスペース
 
 1. オブジェクト・ストレージ・ネームスペース
 2. リージョン識別子
-3. コンパートメントOCID
-4. API Signingキーのフィンガープリント
-5. 認証トークン
-6. クラスターOCID
+3. テナンシOCID
+4. コンパートメントOCID
+5. ユーザOCID
+6. API Signingキーのフィンガープリント
+7. 認証トークン
+8. クラスターOCID
 
 **1.オブジェクト・ストレージ・ネームスペース**
 
@@ -208,9 +212,21 @@ USにあるデータセンター"US East (Ashburn)"を使用する場合"us-ashb
 
 ![](1020.jpg)
 
-**3.コンパートメントOCID**
+**3.テナンシOCID**
 
-OCIコンソール左上のハンバーガーメニューを展開し、「アイデンティティ」⇒「コンパートメント」に移動します。コンパートメント一覧から使用するコンパートメントに移動します。今回は"CTDOKE"
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`テナンシ:<テナンシ名>`をクリックします。
+
+![](03-01-1.png)
+
+テナンシ情報`OCID`の右側にある`コピー`をクリックすると、テナンシOCIDがクリップボードにコピーされます。
+
+この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
+
+![](03-01-2.png)
+
+**4.コンパートメントOCID**
+
+OCIコンソール左上のハンバーガーメニューを展開し、「アイデンティティ」⇒「コンパートメント」に移動します。コンパートメント一覧から使用するコンパートメントに移動します。以下の例では"CTDOKE"となっています。
 
 以下をコピーしてメモしてください。
 
@@ -218,7 +234,19 @@ OCIコンソール左上のハンバーガーメニューを展開し、「ア�
 
 ![](1030.jpg)
 
-**4.API Signingキーのフィンガープリント**
+**5.ユーザOCID**
+
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`ユーザ名`(oracleidentitycloudservice/<ユーザ名>)をクリックします。
+
+![](03-02.png)
+
+ユーザ情報が表示されますので、`OCID`の右側にある`コピー`をクリックすると、ユーザOCIDがクリップボードにコピーされます。
+
+![](03-03.png)
+
+この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
+
+**6.API Signingキーのフィンガープリント**
 
 API Signingキーのフィンガープリントは[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)の手順により、  
 ユーザー詳細画面から確認できるようになっています。
@@ -230,7 +258,7 @@ APIキーに表示されているフィンガープリントを確認します�
 
 表示されている値をメモしてください。
 
-**5.認証トークン**
+**7.認証トークン**
 
 マシンもしくはOKEからOCIRを使用するために、認証トークンの収集を行います（ユーザー認証用のパスワードではなく、認証トークンが必要です）。
 
@@ -255,7 +283,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 ![](1066.jpg)
 
-**6.OKEクラスターOCID**
+**8.OKEクラスターOCID**
 
 [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)の手順により作成したOKEクラスターのOCIDを取得します。
 OCIコンソールにログインします。  
@@ -273,6 +301,11 @@ OCIコンソールにログインします。
 ![](2004.jpg)
 
 これで、ワークショップで利用するアカウント情報の収集が完了しました。
+
+**受講者の方へ**  
+ここから先の手順では、[Visual Builder Studioのセットアップ](#2visual-builder-studioのセットアップ)までを完了している必要があります。  
+Visual Builder Studioインスタンス作成後のセットアップ手順を実施していない場合は、そちらを実施してください。
+{: .notice--info}
 
 4.プロジェクトとリポジトリの作成
 -------
@@ -320,9 +353,11 @@ Visual Builder Studio上のプロジェクト名の重複は許容されてい�
 
 下記項目を入力して、「作成」をクリックします。
 
-+ 名前：oke_atp_workshop
-+ 説明：OKE ATP Workshop
-+ 既存のリポジトリのインポート(既存のリポジトリのインポート(Import existing repository)にチェック)：https://github.com/oracle-japan/oke-atp-helidon-handson
+key|value
+-|-
+名前|oke_atp_workshop
+説明|OKE ATP Workshop
+既存のリポジトリのインポート(既存のリポジトリのインポート(Import existing repository)にチェック)|https://github.com/oracle-japan/oke-atp-helidon-handson
 
 ![](1130.jpg)
 
@@ -362,8 +397,10 @@ Visual Builder Studioで「組織」メニューを選択し、「仮想マシ�
 
 ダイアログボックスで、下記項目を入力して、「作成」ボタンをクリックします。
 
-+ 名前：OKE
-+ プラットフォーム：Oracle Linux 7
+key|value
+-|-
+名前|OKE
+プラットフォーム|Oracle Linux 7
 
 **受講者の方へ**  
 Visual Builder Studio上の仮想マシン・テンプレート名の重複は許容されていません。
@@ -394,11 +431,13 @@ Visual Builder Studio上の仮想マシン・テンプレート名の重複は�
 
 表示されるダイアログで、下記項目を入力します。
 
-+ 数量：1
-+ VMテンプレート：OKE
-+ リージョン：us-ashburn-1
-+ シェイプ：VM.Standard.E2.1
-+ VCN選択："デフォルト"を選択
+key|value
+-|-
+数量|1
+VMテンプレート|OKE
+リージョン|us-ashburn-1
+シェイプ|VM.Standard.E2.1
+VCN選択|"デフォルト"を選択
 
 「追加」ボタンをクリックします。
 
@@ -442,36 +481,29 @@ OCIコンソールにログインし、ハンバーガーメニューから"Orac
 
 以下の情報を入力します。
 
-+ コンパートメント：ルートコンパートメント
-
-+ 表示名：OCIコンソール上でATPを表示するための名前を入力します。今回は"tfOKEATPDB"
-
-+ データベース名：データベース名を入力します。今回は"tfOKEATPDB"
+key|value
+-|-
+コンパートメント|ルートコンパートメント
+表示名|OCIコンソール上でATPを表示するための名前を入力します。今回は"tfOKEATPDB"
+データベース名|データベース名を入力します。今回は"tfOKEATPDB"
 
 **トライアル環境以外の環境をお使いの方へ**  
 Autonomous Databaseはデータベース名の重複が許容されていません。
 集合ハンズオンなど同一の環境でハンズオンを実施されている方は、データベース名が重複しない様に語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。
 {: .notice--warning}
 
-+ ワークロード・タイプの選択：ワークロードをデータウェアハウス、トランザクション処理、JSON、APEXの中から選択します。今回は"トランザクション処理"
-
-+ デプロイメント・タイプの選択：データベースのインフラストラクチャを共有とするか専用とするかを選択します。今回は"共有インフラストラクチャ"
-
-+ データベース・バージョンの選択：データベースのバージョンを選択します。今回は"19c"を選択
-
-+ OCPU数：データベースのコア数を入力します。今回は"1"を入力
-
-+ ストレージ(TB)：データベースのストレージ容量を入力します。今回は"1"を入力
-
-+ 自動スケーリング：ワークロードの負荷に応じて自動でスケールを行うかどうかを選択します。今回はチェックを入れます。
-
-+ パスワード：データベースのパスワードを入力します。今回は"TFWorkshop__2000"
-
-+ パスワードの確認：確認のためにパスワードを再度入力します。今回は"TFWorkshop__2000"
-
-+ ネットワーク・アクセスの選択：データベースに対してどこからのアクセスを許可するかを選択します。今回は"すべての場所からのセキュア・アクセスを許可"を選択
-
-+ ライセンス・タイプの選択：ライセンスのタイプを選択します。今回は"ライセンス込み"を選択
+key|value
+-|-
+ワークロード・タイプの選択|ワークロードをデータウェアハウス、トランザクション処理、JSON、APEXの中から選択します。今回は"トランザクション処理"
+デプロイメント・タイプの選択|データベースのインフラストラクチャを共有とするか専用とするかを選択します。今回は"共有インフラストラクチャ"
+データベース・バージョンの選択|データベースのバージョンを選択します。今回は"19c"を選択
+OCPU数|データベースのコア数を入力します。今回は"1"を入力
+ストレージ(TB)|データベースのストレージ容量を入力します。今回は"1"を入力
+自動スケーリング|ワークロードの負荷に応じて自動でスケールを行うかどうかを選択します。今回はチェックを入れます。
+パスワード|データベースのパスワードを入力します。今回は"TFWorkshop__2000"
+パスワードの確認|確認のためにパスワードを再度入力します。今回は"TFWorkshop__2000"
+ネットワーク・アクセスの選択|データベースに対してどこからのアクセスを許可するかを選択します。今回は"すべての場所からのセキュア・アクセスを許可"を選択
+ライセンス・タイプの選択|ライセンスのタイプを選択します。今回は"ライセンス込み"を選択
 
 上記を入力し終えたら、"Autonomous Databaseの作成"をクリックします。
 
@@ -640,8 +672,10 @@ Visual Builder Studioで、「ビルド」に移動し、「＋ジョブを作�
 
 下記項目を入力し、「作成」ボタンをクリックします。
 
-+ 名前：CreateDBObjects
-+ テンプレート：OKE
+key|value
+-|-
+名前|CreateDBObjects
+テンプレート|OKE
 
 ![](1310.jpg)
 
@@ -660,11 +694,13 @@ gitソースリポジトリを追加します。「Git追加」から「git」�
 ![](1340.jpg)
 
 下記項目を入力して、「保存」ボタンをクリックします。
-    
-+ ユーザー名：データベースユーザ名。今回は"admin"
-+ パスワード：データベースパスワードを設定。今回は"TFWorkshop__2000"
-+ 資格証明ファイル：ウォレットファイルを指定。今回は"./Wallet_tfOKEATPDB.zip"
-+ 接続文字列：データベースの名前＆"_high"/"_low"などで構成される接続文字列。今回は"tfOKEATPDB_HIGH"
+
+key|value
+-|-
+ユーザー名|データベースユーザ名。今回は"admin"
+パスワード|データベースパスワードを設定。今回は"TFWorkshop__2000"
+資格証明ファイル|ウォレットファイルを指定。今回は"./Wallet_tfOKEATPDB.zip"
+接続文字列|データベースの名前＆"_high"/"_low"などで構成される接続文字列。今回は"tfOKEATPDB_HIGH"
 
 **受講者の方へ**  
 トライアル環境以外の環境をお使いの方は、ATPプロビジョニング時にATPのデータベース名を変更している場合があります。  
@@ -735,8 +771,10 @@ OCIのATPインスタンスの詳細⇒「サービス・コンソール」ボ�
 
 下記項目を入力し、「Sign in」をクリックします。
 
-+ Username：ATPデータベースのユーザー名。今回は"admin"
-+ Password：ATPデータベースのパスワード。今回は"TFWorkshop__2000"
+key|value
+-|-
+Username|ATPデータベースのユーザー名。今回は"admin"
+Password|ATPデータベースのパスワード。今回は"TFWorkshop__2000"
 
 ![](1440.jpg)
 
@@ -782,12 +820,14 @@ Visual Builder Studioで「Docker」に移動して、「外部レジストリ�
 
 下記項目を入力して、「作成」ボタンをクリックします。
 
-+ レジストリ名："WorkshopOCIR"
-+ レジストリURL：`https://<リージョンコード>.ocir.io`
-+ 説明："OKE ATP"
-+ 認証：`基本`を選択
-+ ユーザー名：`<オブジェクト・ストレージ・ネームスペース>/oracleidentitycloudservice/<ユーザ名>`
-+ パスワード：認証トークン
+key|value
+-|-
+レジストリ名|"WorkshopOCIR"
+レジストリURL|`https://<リージョンコード>.ocir.io`
+説明|"OKE ATP"
+認証|`基本`を選択
+ユーザー名|`<オブジェクト・ストレージ・ネームスペース>/oracleidentitycloudservice/<ユーザ名>`
+パスワード|認証トークン
 
 リージョンコードについては、ご自身の環境に合わせて設定してください。今回は"iad"を設定します。
 
@@ -823,9 +863,11 @@ uk-london-1|lhr
 
 下記項目を入力して、「作成」ボタンをクリックします。
 
-+ 名前：ジョブ名。今回はJavaDockerOCIR
-+ 説明：ジョブの説明。"Build and push Docker image to OCIR"
-+ テンプレート：OKE
+key|value
+-|-
+名前|ジョブ名。今回はJavaDockerOCIR
+説明|ジョブの説明。"Build and push Docker image to OCIR"
+テンプレート|OKE
 
 ![](1540.jpg)
 
@@ -837,8 +879,10 @@ uk-london-1|lhr
 
 次のステップを追加します。
 
-+ リポジトリ：oke_atp_workshopを選択する
-+ SCMコミット時に自動的にビルドを実行：チェックオンにする
+key|value
+-|-
+リポジトリ|oke_atp_workshopを選択する
+SCMコミット時に自動的にビルドを実行|チェックオンにする
 
 ![](1560.jpg)
 
@@ -858,8 +902,10 @@ uk-london-1|lhr
 
 下記項目を入力します。
 
-+ レジストリ・ホスト："WorkshopOCIR"
-+ イメージ名：`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
+key|value
+-|-
+リポジトリ|oke_atp_workshopを選択する
+SCMコミット時に自動的にビルドを実行|チェックオンにする
 
 **受講者の方へ**  
 トライアル環境以外の環境をお使いの方は、イメージが他のユーザの方と重複しないように、語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。
@@ -873,9 +919,10 @@ uk-london-1|lhr
 
 下記項目を入力します。
 
-+ レジストリ・ホスト："WorkshopOCIR"
-+ イメージ名：`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
-
+key|value
+-|-
+レジストリ・ホスト|"WorkshopOCIR"
+イメージ名|`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
 
 ![](1634.jpg)
 
@@ -1064,9 +1111,11 @@ Visual Builder Studioで、「ビルド」に遷移して、「＋ジョブの�
 
 下記項目を入力して、「作成」ボタンをクリックします。
 
-+ 名前：ジョブの名前。今回は"OKEDeploy"
-+ 説明：ジョブの説明。今回は"Deploy application to OKE"
-+ テンプレート：OKE
+key|value
+-|-
+名前|ジョブの名前。今回は"OKEDeploy"
+説明|ジョブの説明。今回は"Deploy application to OKE"
+テンプレート|OKE
 
 ![](1710.jpg)
 
@@ -1098,11 +1147,13 @@ Visual Builder Studioで、「ビルド」に遷移して、「＋ジョブの�
 
 下記項目を入力します。
 
-+ ユーザーOCID：ユーザーOCID
-+ フィンガープリント：API Signingキーのフィンガープリント
-+ テナンシ：テナントOCID
-+ 秘密キー：[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)でダウンロードしたAPI秘密鍵の内容を貼り付け
-+ リージョン：リージョン識別子。自身の環境に合わせて選択。今回は、"us-ashburn-1"
+key|value
+-|-
+ユーザーOCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したユーザーOCID
+フィンガープリント|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したAPI Signingキーのフィンガープリント
+テナンシ|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したテナンシOCID
+秘密キー|[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)でダウンロードしたAPI秘密鍵の内容を貼り付け
+リージョン|リージョン識別子。自身の環境に合わせて選択。今回は、"us-ashburn-1"
 
 ![](1770.jpg)
 
@@ -1150,8 +1201,11 @@ Visual Builder Studioで、「ビルド」に遷移して、「Pipelines」タ�
 
 以下の項目を入力し、「Create」ボタンをクリックします。
 
-+ Name：DeployToOKE
-+ Description：DeployToOKE
+key|value
+-|-
+Name|DeployToOKE
+Description|DeployToOKE
+
 
 ![](2008.jpg)
 
@@ -1300,19 +1354,19 @@ template:
         ports:
         - containerPort: 8080
         env:
-        - name: javax_sql_DataSource_workshopDataSource_dataSource_user
+        - name: javax.sql.DataSource.workshopDataSource.dataSource.user
         valueFrom:
             secretKeyRef:
             name: customized-db-cred
             key: user_name
-        - name: javax_sql_DataSource_workshopDataSource_dataSource_password
+        - name: javax.sql.DataSource.workshopDataSource.dataSource.password
         valueFrom:
             secretKeyRef:
             name: customized-db-cred
             key: password
         volumeMounts:
         - name: handson
-        mountPath: /db-demo/creds              
+        mountPath: /db-demo/creds 
     imagePullSecrets:
     - name: workshop-ocirsecret
     volumes:
@@ -1386,19 +1440,21 @@ template:
         ports:
         - containerPort: 8080
         env:
-        - name: javax_sql_DataSource_workshopDataSource_dataSource_user
+        - name: javax.sql.DataSource.workshopDataSource.dataSource.user
         valueFrom:
             secretKeyRef:
             name: customized-db-cred
             key: user_name
-        - name: javax_sql_DataSource_workshopDataSource_dataSource_password
+        - name: javax.sql.DataSource.workshopDataSource.dataSource.password
         valueFrom:
             secretKeyRef:
             name: customized-db-cred
             key: password
         volumeMounts:
         - name: handson
-        mountPath: /db-demo/creds              
+        mountPath: /db-demo/creds 
+    imagePullSecrets:
+    - name: workshop-ocirsecret
     volumes:
     - name: handson
         configMap:
@@ -1441,15 +1497,12 @@ template:
 # limitations under the License.
 #
 
-# Application properties. This is the default greeting
-app.greeting=Hello
-
 # Microprofile server properties
 server.port=8080
 server.host=0.0.0.0
 
 javax.sql.DataSource.workshopDataSource.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds
+javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@tfokeatpdb_high?TNS_ADMIN=/db-demo/creds
 javax.sql.DataSource.workshopDataSource.maximumPoolSize=5
 javax.sql.DataSource.workshopDataSource.minimumIdle=2
 
@@ -1461,7 +1514,7 @@ server.static.classpath.welcome=index.html
 # server.static.classpath.context=/static-cp
 {% endhighlight %}
 
-25行目に注目してみましょう。
+22行目に注目してみましょう。
 
 ```
 javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds
@@ -1596,9 +1649,9 @@ kubectl create secret generic ocicredentials \
 
 key|value
 -|-
-tenancy_ocid|テナントOCID
-user_ocid|ユーザーOCID
-fingerprint|API Signingキーのフィンガープリント
+tenancy_ocid|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したテナンシOCID
+user_ocid|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したユーザーOCID
+fingerprint|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したAPI Signingキーのフィンガープリント
 region|リージョン識別子。今回は"us-ashburn-1"
 passphrase| ""(空文字)
 private_key_path|`/home/opc/.oci/oci_api_key.pem`
