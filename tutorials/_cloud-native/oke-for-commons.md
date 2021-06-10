@@ -94,7 +94,6 @@ OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご
 
 ![](01-01-02.png)
 
-### 3-1. Cloud Shellを起動する
 本ハンズオンではOKEクラスターを操作するいくつかのCLIを実行するための環境としてCloud Shellと呼ばれるサービスを使用します。
 Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザベースのコンソールです。
 Cloud Shellには、OCI CLIをはじめとして、次のようないくつかの便利なツールおよびユーティリティの現在のバージョンがインストールされています。
@@ -155,8 +154,12 @@ kubectl|Kubernetesの各種管理操作を行うためのCLIです。OKEはオ�
 
 以下、2つのCLIのセットアップを順次行っていきます。
 
-### 3-1. OCI CLIをセットアップする
-ここでは、OCI CLIのセットアップを行います。
+### 3-1. APIキーの取得
+ここでは、[中級編 - KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう](../oke-for-intermediates/)で使用するAPIキーの取得を行います。  
+
+**APIキーついて**  
+[中級編 - KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう](../oke-for-intermediates/)を実施されない場合は、本手順はスキップして頂いて構いません。
+{: .notice--info}
 
 OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`ユーザ名`(oracleidentitycloudservice/<ユーザ名>)をクリックします。
 

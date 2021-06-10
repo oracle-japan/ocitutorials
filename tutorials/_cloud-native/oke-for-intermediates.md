@@ -1,6 +1,6 @@
 ---
 title: "KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう"
-excerpt: "OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、チーム開発型プラットフォームであるOracle Cloud PaaSのDeveloper Cloud Serviceや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。"
+excerpt: "OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、チーム開発型プラットフォームであるOracle Cloud PaaSのVisual Builder Studioや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。"
 order: "030"
 tags:
 ---
