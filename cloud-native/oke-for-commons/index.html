@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-06-09T17:06:39+09:00">
+  <meta property="article:published_time" content="2021-06-10T16:44:12+09:00">
 
 
 
@@ -145,7 +145,7 @@
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
             </li><li class="masthead__menu-item">
-              <a href="" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
             </li><li class="masthead__menu-item">
               <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
             </li><li class="masthead__menu-item">
@@ -309,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう">
     <meta itemprop="description" content="Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OKEクラスターを作成します。まずはここから始めましょう。">
-    <meta itemprop="datePublished" content="2021-06-09T17:06:39+09:00">
+    <meta itemprop="datePublished" content="2021-06-10T16:44:12+09:00">
     
 
     <div class="page__inner-wrap">
@@ -324,14 +324,10 @@
   <li><a href="#前提条件">前提条件</a></li>
   <li><a href="#ハンズオン環境のイメージ">ハンズオン環境のイメージ</a></li>
   <li><a href="#1okeクラスターのプロビジョニング">1.OKEクラスターのプロビジョニング</a></li>
-  <li><a href="#2cli実行環境cloud-shellの準備">2.CLI実行環境(Cloud Shell)の準備</a>
-    <ul>
-      <li><a href="#3-1-cloud-shellを起動する">3-1. Cloud Shellを起動する</a></li>
-    </ul>
-  </li>
+  <li><a href="#2cli実行環境cloud-shellの準備">2.CLI実行環境(Cloud Shell)の準備</a></li>
   <li><a href="#3cliのセットアップ">3.CLIのセットアップ</a>
     <ul>
-      <li><a href="#3-1-oci-cliをセットアップする">3-1. OCI CLIをセットアップする</a></li>
+      <li><a href="#3-1-apiキーの取得">3-1. APIキーの取得</a></li>
       <li><a href="#3-2-kubectlをセットアップする">3-2. kubectlをセットアップする</a></li>
     </ul>
   </li>
@@ -349,7 +345,7 @@
         <ul>
           <li><a href="#4-4-1-テナンシのocidの確認">4-4-1. テナンシのOCIDの確認</a></li>
           <li><a href="#4-4-2-ユーザーのocidの確認">4-4-2. ユーザーのOCIDの確認</a></li>
-          <li><a href="#5-4-3-oci-cliのセットアップ">5-4-3. OCI CLIのセットアップ</a></li>
+          <li><a href="#4-4-3-oci-cliのセットアップ">4-4-3. OCI CLIのセットアップ</a></li>
         </ul>
       </li>
     </ul>
@@ -443,7 +439,6 @@ OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご
 
 <p><img src="01-01-02.png" alt="" /></p>
 
-<h3 id="3-1-cloud-shellを起動する">3-1. Cloud Shellを起動する</h3>
 <p>本ハンズオンではOKEクラスターを操作するいくつかのCLIを実行するための環境としてCloud Shellと呼ばれるサービスを使用します。
 Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザベースのコンソールです。
 Cloud Shellには、OCI CLIをはじめとして、次のようないくつかの便利なツールおよびユーティリティの現在のバージョンがインストールされています。
@@ -514,33 +509,15 @@ Cloud Shellは開発専用ではなく、一時的にOCIコマンドを実行し
 <p>以上で、準備作業は完了です。</p>
 
 <h2 id="3cliのセットアップ">3.CLIのセットアップ</h2>
-<p>OKEクラスターを利用するには、以下の2つのCLIを、ご自身の環境に接続できるようにセットアップしておく必要があります。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>ツール</th>
-      <th>説明</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>OCI CLI</td>
-      <td>Oracle Cloud InfrastructureのCLIです。ここでは、OKEクラスタとの接続情報を取得するために利用します</td>
-    </tr>
-    <tr>
-      <td>kubectl</td>
-      <td>Kubernetesの各種管理操作を行うためのCLIです。OKEはオープンソースのKubernetesクラスターがそのまま動作しますので、一般的なCLIをそのまま利用することができます。</td>
-    </tr>
-  </tbody>
-</table>
-
 <p><img src="03-01-01.png" alt="" /></p>
 
-<p>以下、2つのCLIのセットアップを順次行っていきます。</p>
+<p>以下のセットアップを順次行っていきます。</p>
 
-<h3 id="3-1-oci-cliをセットアップする">3-1. OCI CLIをセットアップする</h3>
-<p>ここでは、OCI CLIのセットアップを行います。</p>
+<h3 id="3-1-apiキーの取得">3-1. APIキーの取得</h3>
+<p>ここでは、<a href="../oke-for-intermediates/">中級編 - KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a>で使用するAPIキーの取得を行います。</p>
+
+<p class="notice--info"><strong>APIキーついて</strong><br />
+<a href="../oke-for-intermediates/">中級編 - KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a>を実施されない場合は、本手順はスキップして頂いて構いません。</p>
 
 <p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code class="language-plaintext highlighter-rouge">ユーザ名</code>(oracleidentitycloudservice/<ユーザ名>)をクリックします。</ユーザ名></p>
 
@@ -560,7 +537,7 @@ Cloud Shellは開発専用ではなく、一時的にOCIコマンドを実行し
 
 <p><img src="03-05-02.png" alt="" /></p>
 
-<p>以上でOCI CLIのセットアップは完了です。</p>
+<p>以上でAPIキーの取得は完了です。</p>
 
 <h3 id="3-2-kubectlをセットアップする">3-2. kubectlをセットアップする</h3>
 <p>次に、kubectlのセットアップを行って実際にクラスターにアクセスしてみます。</p>
@@ -810,7 +787,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 <p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
 
-<h4 id="5-4-3-oci-cliのセットアップ">5-4-3. OCI CLIのセットアップ</h4>
+<h4 id="4-4-3-oci-cliのセットアップ">4-4-3. OCI CLIのセットアップ</h4>
 <p>それでは、OCI CLIのセットアップを行います。
 <a href="#3-1-cloud-shellを起動する">Cloud Shellを起動</a>し、以下
 のコマンドを実行してください。</p>
@@ -904,7 +881,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-09T17:06:39+09:00">June 9, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-10T16:44:12+09:00">June 10, 2021</time></p>
 
 
       </footer>
