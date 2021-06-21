@@ -34,16 +34,16 @@ header:
 
    本手順書ではFirefoxを前提に記載しています。英語表記の場合は **Sign in to Cloud** をクリックしてください。
 
-    ![img1.png](adb11-provisioning/img60.png)
+    ![img1.png](img60.png)
 
 1. お手持ちのクラウドアカウント名（テナント名）を入力し、 **Next** をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。）
 
-    ![img2.png](adb11-provisioning/img61.png)
+    ![img2.png](img61.png)
 
 1. **クラウドユーザー名** と **パスワード** を入力し、 **サイン・イン** をクリックしてログインします。  
 （以下のようなダッシュボード画面が表示されればOKです。）
 
-    ![img3.png](adb11-provisioning/img62.png)
+    ![img3.png](img62.png)
 
     > **補足）上手く表示されない場合は以下のURLをお試しください。**  
     https://console.ap-tokyo-1.oraclecloud.com/?tenant=**<クラウド・アカウント>**
@@ -60,7 +60,7 @@ header:
     > ② 表示言語の設定が可能です  
     > ③ リージョン（データセンター）の選択が可能です  
     > ④ 画面左上のメニューボタン（赤点線の枠内）を押すと任意のサービスを選択することが可能です  
-     ![img4.png](adb11-provisioning/img63.png)
+     ![img4.png](img63.png)
 
 <br>
 
@@ -73,11 +73,11 @@ header:
 
   ### **[リージョンの追加方法]**
   1. 画面右上にある、**リージョン選択から、**リージョンの管理** をクリックします。  
-    ![img5.png](adb11-provisioning/img65.png)
+    ![img5.png](img65.png)
 
   1. Regions選択画面より有効化したいリージョンの **サブスクライブ** をクリックします  
   （有効化されると緑色に表示が変わります）  
-     ![img6.png](adb11-provisioning/img66.png)
+     ![img6.png](img66.png)
 
   > 補足）
   > * 有効にしたリージョンが表示されない場合、一度ブラウザをリロード（F5）してください。それでも表示されてない場合は一旦ログアウトし再度ログインしてください。
@@ -92,11 +92,11 @@ header:
 以下の手順でコンパートメントの選択します。  
 
 1. 画面左上の **メニュー** をクリックし、サービスの一覧の中から、**Oracle Database**、**Autonomous Transaction Processing** の順で選択します。
-![img7.png](adb11-provisioning/img67.png)
+![img7.png](img67.png)
   
 1. 次に画面左の **コンパートメント** から適切なコンパートメントを選択します。  
 (本チュートリアルでは任意のコンパートメントを指定して実施いただけます。)  
-![img7.png](adb11-provisioning/img68.jpg)
+![img7.png](img68.jpg)
 
 <br>
 
@@ -106,13 +106,13 @@ header:
 この場合、rootコンパートメントの直下でADBインスタンスが構成されますが、新たにコンパートメントを追加したい場合は以下の手順で追加してください。
 
 1. 画面左上のボタンからメニュー画面を表示し、**アイデンティティとセキュリティ**、**コンパートメント** の順で選択します。
- ![img8.png](adb11-provisioning/img69.png)
+ ![img8.png](mg69.png)
 
 1. 次に **コンパートメントの作成** をクリックします。
- ![img8.png](adb11-provisioning/img70.jpg)
+ ![img8.png](img70.jpg)
 
 1. 作成したいコンパートメント名を入力し、**コンパートメントの作成** をクリックします。(例では、test-compartmentと入力しています)
- ![img8.png](adb11-provisioning/img71.jpg)
+ ![img8.png](img71.jpg)
 
 
 <br>
@@ -132,10 +132,10 @@ header:
 ## 1. ATPインスタンスの作成（プロビジョニング）
 
 1. サービス一覧から **Oracle Database**、**Autonomous Transaction Processing** を選択し、ADBのサービス画面を表示します。  
-![img9.png](adb11-provisioning/img72.png)
+![img9.png](img72.png)
 
 1. **Autonomous Database の作成** をクリックすると作成ウィンドウが立ち上がります。  
-![img10.png](adb11-provisioning/img73.jpg)
+![img10.png](img73.jpg)
 
 1. 以下の記載例を参考に各項目を入力します。
 
@@ -197,16 +197,16 @@ header:
   上記で作成したATPインスタンスにアクセスしてみましょう。
 
 1. メニュー画面から、インスタンスを選択してインスタンスのメニュー画面を表示します。
-    ![img74.png](adb11-provisioning/img74.png)
+    ![img74.png](img74.png)
 
 1. ツールタブを選択し、データベース・アクションを開く をクリックします。  
-    ![img50.png](adb11-provisioning/img50.png)
+    ![img50.png](img50.png)
 
 1. ユーザ名に **admin** 、パスワードは **インスタンス作成時に指定した値** （Welcome12345#）を入力し、 **サインイン** をクリックします。  
-    ![img51.png](adb11-provisioning/img51.png)
+    ![img51.png](img51.png)
 
 1. Database Actionsのランディングページで**SQL**をクリックします。  
-    ![img52.png](adb11-provisioning/img52.png)
+    ![img52.png](img52.png)
 
 1. ワークシートが起動します。ADBインスタンスを操作できるか確認するために、ワークシートに任意のSQLを貼り付け、 **緑色の実行** ボタンをクリックします。  
 以下は例として接続しているユーザーのユーザー名を確認するSQLです。ADMINが表示されたらOKです。
@@ -215,7 +215,7 @@ header:
     SELECT USERNAME FROM USER_USERS ;
     ```
 
-    ![img20.png](adb11-provisioning/img53.png)
+    ![img20.png](img53.png)
 
 
 
@@ -229,14 +229,14 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
 
 1. Database Actionsのランディングページで**データベース・ユーザー**をクリックします。
 
-   ![img80.png](adb11-provisioning/img80.png)
+   ![img80.png](img80.png)
 
 2. データベース・ユーザーの管理画面で、**ユーザーの作成**をクリックします。
-  ![img81.png](adb11-provisioning/img81.png)
+  ![img81.png](img81.png)
 
 3. ユーザーの作成にて、**ユーザー名(ADBUSER)**と**パスワード**を入力します。
 
-    ![img82.png](adb11-provisioning/img82.png)
+    ![img82.png](img82.png)
 
 4. ユーザに割り当てる**テーブルスペース**を設定し、**ユーザーの作成**をクリックします。
 
@@ -250,11 +250,11 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
 
     <br>
   
-    ![img83.png](adb11-provisioning/img83.png)
+    ![img83.png](img83.png)
 
 5. ADBUSERが作成されたことが確認できます。
 
-    ![img84.png](adb11-provisioning/img84.png)
+    ![img84.png](img84.png)
 
 <br>
 
@@ -263,11 +263,11 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
 ここからは、Database ActionsmのSQLワークシートからABDUSERを新規作成する同様のステップを紹介していきます。
 
 1. Database Actionsのランディングページで**SQL**をクリックします。  
-    ![img52.png](adb11-provisioning/img52.png)
+    ![img52.png](img52.png)
 
 1. Database Actionsにて、ADMINユーザーが選択されていることを確認します
 
-    ![img21.png](adb11-provisioning/img54.png)
+    ![img21.png](img54.png)
 
 1. 以下をワークシートに貼り付け、**緑色の実行ボタン** をクリックし、新規データベース・ユーザー（スキーマ）を作成します。
 
@@ -313,7 +313,7 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
 
 1. 新規ユーザ(ここではadbuser)が作成されたことを確認してください。表示されない場合はブラウザをリフレッシュ(F5)してください
 
-    ![img22.png](adb11-provisioning/img55.png)
+    ![img22.png](img55.png)
 
 以上で、この章の作業は終了です。
 
