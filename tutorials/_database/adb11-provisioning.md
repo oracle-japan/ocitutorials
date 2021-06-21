@@ -212,7 +212,7 @@ header:
 1. ワークシートが起動します。ADBインスタンスを操作できるか確認するために、ワークシートに任意のSQLを貼り付け、 **緑色の実行** ボタンをクリックします。  
 以下は例として接続しているユーザーのユーザー名を確認するSQLです。ADMINが表示されたらOKです。
 
-    ```SQL
+    ```
     SELECT USERNAME FROM USER_USERS ;
     ```
 
@@ -261,7 +261,7 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
 
 ## 4. データベース・ユーザーを作成してみよう（コマンドライン)
 
-ここからは、Database ActionsmのSQLワークシートからABDUSERを新規作成する同様のステップを紹介していきます。
+次にコマンドラインからABDUSERを新規作成するステップを紹介します。（SQLコマンドを実行するために、再びDatabase ActionsのSQLワークシートを利用しましょう）
 
 1. Database Actionsのランディングページで**SQL**をクリックします。  
     ![img52.png](img52.png)
@@ -275,7 +275,7 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
     ここでは、ユーザ名: **adbuser** 、パスワード : **Welcome12345#** で新規作成しています
 
     ```
-    SQL> CREATE USER adbuser IDENTIFIED BY Welcome12345#;
+    CREATE USER adbuser IDENTIFIED BY Welcome12345#;
     ```
 
 1.  以下をワークシートに貼り付け、 **緑色の実行ボタン** をクリックし、操作権限（ロール）をユーザーに付与します。
@@ -283,7 +283,7 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
     ここでは例としてAutonomous Databaseで事前定義されている **DWROLE** ロール を付与しています。（要件に応じて、従来の権限（Connect, Resource,等々）を個別に付与することも可能です）
 
     ```
-    SQL> GRANT DWROLE TO adbuser;
+    GRANT DWROLE TO adbuser;
     ```
 
 1. 以下をワークシートに貼り付け、 **緑色の実行ボタン** をクリックし、データ利用の上限を設定します。
