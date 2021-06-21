@@ -45,17 +45,17 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
 
 ## 基礎編
 
-+ **[ADBインスタンスを作成してみよう](/ocitutorials/database/adb11-provisioning/)**  
++ **[ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning/)**  
     * クラウド環境へのアクセス
     * リージョンの確認、設定
     * コンパートメントの確認
 
-+ **[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb12-dataload/)**  
++ **[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb102-dataload/)**  
     * 手元のPCからCSVデータをアップロード
     * オブジェクトストレージからCSVデータをアップロード
     * その他Tips
 
-+ **[ご参考）Database Actionsのさらなる活用に向けて（Oracle Livelabs）](/ocitutorials/database/adb22-databaseactions/)**  
++ **[ご参考）Database Actionsのさらなる活用に向けて（Oracle Livelabs）](/ocitutorials/database/adb103-livelabs/)**  
     * Oracle LiveLabsとは?
     * Database Actionsのワークショップご紹介
     * その他、お勧めワークショップの紹介

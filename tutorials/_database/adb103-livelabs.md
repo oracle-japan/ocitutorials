@@ -4,8 +4,8 @@ excerpt: "Autonomous DatabaseのツールDatabase Actionsはデータ活用の�
 order: "022"
 layout: single
 header:
-  teaser: "/database/adb22-databaseactions/labimage.png"
-  overlay_image: "/database/adb22-databaseactions/labimage.png"
+  teaser: "/database/adb103-livelabs/labimage.png"
+  overlay_image: "/database/adb103-livelabs/labimage.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
