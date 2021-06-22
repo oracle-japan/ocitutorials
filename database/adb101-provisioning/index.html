@@ -23,27 +23,27 @@
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
 <meta property="og:title" content="ADBインスタンスを作成してみよう">
-<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">
 
 
   <meta property="og:description" content="この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。">
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/img11.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/img11.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2021-06-10T16:44:12+09:00">
+  <meta property="article:published_time" content="2021-06-22T10:03:23+09:00">
 
 
 
 
 
 
-<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/">
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">
 
 
 
@@ -181,7 +181,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb11-provisioning/img11.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb101-provisioning/img11.png');"
 >
   
     <div class="wrapper">
@@ -270,9 +270,11 @@
       <ul>
         
         
-          <p></p><li><a href="/ocitutorials/database/adb11-provisioning/" class="active">ADBインスタンスを作成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/" class="active">ADBインスタンスを作成してみよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/database/adb12-dataload/">ADBにデータをアップロードしてみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">ADBにデータをアップロードしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">Oracle LiveLabsでDatabase Actions機能を試してみよう</a></li></p>
         
       </ul>
     </li>
@@ -287,7 +289,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ADBインスタンスを作成してみよう">
     <meta itemprop="description" content="この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。">
-    <meta itemprop="datePublished" content="2021-06-10T16:44:12+09:00">
+    <meta itemprop="datePublished" content="2021-06-22T10:03:23+09:00">
     
 
     <div class="page__inner-wrap">
@@ -299,20 +301,23 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
-  <li><a href="#1-リージョンを設定しコンパートメントを用意しよう">1. リージョンを設定し、コンパートメントを用意しよう</a>
+  <li><a href="#1-リージョンを設定しコンパートメントを用意しよう">#1. リージョンを設定し、コンパートメントを用意しよう</a>
     <ul>
       <li><a href="#1-サービス画面へのアクセス">1. サービス画面へのアクセス</a></li>
       <li><a href="#2-リージョンの確認設定">2. リージョンの確認、設定</a></li>
-      <li><a href="#3-コンパートメントの確認作成">3. コンパートメントの確認、作成</a></li>
+      <li><a href="#3-コンパートメントの確認作成">3. コンパートメントの確認、作成</a>
+        <ul>
+          <li><a href="#コンパートメントの追加方法">[コンパートメントの追加方法]</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
-  <li><a href="#2-adbインスタンスを作成してみよう">2. ADBインスタンスを作成してみよう</a>
+  <li><a href="#2-adbインスタンスを作成してみよう">#2. ADBインスタンスを作成してみよう</a>
     <ul>
       <li><a href="#1-atpインスタンスの作成プロビジョニング">1. ATPインスタンスの作成（プロビジョニング）</a></li>
-      <li><a href="#2-sql-developer-webでatpインスタンスにアクセスしてみよう">2. SQL Developer WebでATPインスタンスにアクセスしてみよう</a></li>
-      <li><a href="#3-データベースユーザーを作成してみよう">3. データベース・ユーザーを作成してみよう</a></li>
-      <li><a href="#4-クレデンシャルウォレットのダウンロード">4. クレデンシャル・ウォレットのダウンロード</a></li>
-      <li><a href="#5-atpインスタンスに接続してみようsql-developer">5. ATPインスタンスに接続してみよう（SQL Developer）</a></li>
+      <li><a href="#2-database-actionsでatpインスタンスにアクセスしてみよう">2. Database ActionsでATPインスタンスにアクセスしてみよう</a></li>
+      <li><a href="#3-データベースユーザーを作成してみようdatabase-actions">3. データベース・ユーザーを作成してみよう(Database Actions)</a></li>
+      <li><a href="#4-データベースユーザーを作成してみようコマンドライン">4. データベース・ユーザーを作成してみよう（コマンドライン)</a></li>
     </ul>
   </li>
   <li><a href="#note">NOTE</a></li>
@@ -321,14 +326,15 @@
             </nav>
           </aside>
         
-        <p>この章ではまず最初のステップとして、メニュー画面を操作し、リージョンおよびコンパートメントを設定します。
-そして、ADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。</p>
+        <p>この章は大きく2つの内容で構成されています。</p>
+<ul>
+  <li>#1 : メニュー画面を操作し、リージョンおよびコンパートメントを設定いただきます。 (所要時間：5分)</li>
+  <li>#2 : ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成します。 (所要時間：20分)</li>
+</ul>
 
-<p>ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。</p>
+<p><br /></p>
 
-<p><strong>所要時間 :</strong> #1 約5分, #2 約20分</p>
-
-<h1 id="1-リージョンを設定しコンパートメントを用意しよう">1. リージョンを設定し、コンパートメントを用意しよう</h1>
+<h1 id="1-リージョンを設定しコンパートメントを用意しよう">#1. リージョンを設定し、コンパートメントを用意しよう</h1>
 
 <p><strong>作業の流れ :</strong></p>
 
@@ -342,147 +348,154 @@
 
 <p>まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。</p>
 
-<p>（OCIのコンソールへのアクセスに関する詳細はを参照ください。）</p>
-
 <ol>
   <li>
-    <p>ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の <strong>アカウント</strong> をクリックし、<strong>クラウドにサインイン</strong> をクリックします。</p>
+    <p>ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の <strong>アカウントを表示</strong> をクリックし、<strong>クラウドにサインイン</strong> をクリックします。</p>
 
     <p>本手順書ではFirefoxを前提に記載しています。英語表記の場合は <strong>Sign in to Cloud</strong> をクリックしてください。</p>
 
-    <p><img src="img1.png" alt="img1.png" /></p>
+    <p><img src="img60.png" alt="img1.png" /></p>
   </li>
   <li>
-    <p>お手持ちのクラウドアカウント名（テナント名）を入力し、 <strong>Next</strong> をクリックします。</p>
+    <p>お手持ちのクラウドテナント名（アカウント名）を入力し、 <strong>Continue</strong> をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。）</p>
 
-    <p><img src="img2.png" alt="img2.png" /></p>
+    <p><img src="img61a.png" alt="img2a.png" /></p>
   </li>
   <li>
-    <p><strong>クラウドユーザー名</strong> と <strong>パスワード</strong> を入力し、 <strong>サイン・イン</strong> をクリックしてログインします。</p>
+    <p><strong>クラウドユーザー名</strong> と <strong>パスワード</strong> を入力し、 <strong>Sign In</strong> をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） <br />
+ <img src="img61b.png" alt="img2b.png" /><br />
+<br />
+以下のようなダッシュボード画面が表示されればOKです。<br />
+ <img src="img62.png" alt="img3.png" /></p>
 
-    <p>以下のようなダッシュボード画面が表示されればOKです。</p>
+    <blockquote>
+      <p><strong>補足）上手く表示されない場合は以下のURLをお試しください。</strong><br />
+ https://console.ap-tokyo-1.oraclecloud.com/?tenant=<strong>&lt;クラウド・アカウント&gt;</strong></p>
 
-    <p><img src="img3.png" alt="img3.png" /></p>
+      <p>尚、 <strong>&lt;クラウド・アカウント&gt;</strong> はご自身のクラウドアカウント名（テナント名）に置き換えてください。</p>
+    </blockquote>
 
-    <p>上手く表示されない場合は以下のURLをお試しください。尚、 <strong>&lt;クラウド・アカウント&gt;</strong> はご自身のクラウドアカウント名（テナント名）に置き換えてください。</p>
+    <p><br /></p>
 
-    <p>https://console.ap-tokyo-1.oraclecloud.com/?tenant=<strong>&lt;クラウド・アカウント&gt;</strong></p>
-
-    <p><strong>補足）ダッシュボード画面の使い方</strong></p>
-
-    <p>① ユーザー関連の確認/設定が可能です（ユーザ名の表示・パスワード変更 等）</p>
-
-    <p>② 表示言語の設定が可能です</p>
-
-    <p>③ リージョン（データセンター）の選択が可能です</p>
-
-    <p>④ 画面左上のメニューボタンを押すとメニューリストがスライドインしてきます（赤点線の枠内）</p>
-
-    <p>⑤ メニューリスト左端のスクロールバーを上下させることで、下方にある（見えない）サービスを表示させることが可能です</p>
-
-    <p><img src="img4.png" alt="img4.png" /></p>
+    <blockquote>
+      <p><strong>補足）ダッシュボード画面の使い方</strong><br />
+① ユーザー関連の確認/設定が可能です（ユーザ名の表示・パスワード変更 等）<br />
+② 表示言語の設定が可能です<br />
+③ リージョン（データセンター）の選択が可能です<br />
+④ 画面左上のメニューボタン（赤点線の枠内）を押すと任意のサービスを選択することが可能です<br />
+  <img src="img63.png" alt="img4.png" /></p>
+    </blockquote>
   </li>
 </ol>
 
+<p><br /></p>
+
 <h2 id="2-リージョンの確認設定">2. リージョンの確認、設定</h2>
 
-<p>デフォルトではクラウドアカウントの <strong>Home Region</strong> のみが利用可能です。</p>
+<p>クラウドアカウントを作成した直後のデフォルト設定では、クラウドアカウント作成時に指定した<strong>Home Region</strong>のみが利用可能になっていますので、<br />
+  他のリージョンでインスタンスを作成したい場合は、以下を参考にリージョンを追加してください。
+<br /></p>
 
-<p>他のリージョンでインスタンスを作成したい場合は、メニュー画面上部からリージョンを選択します。</p>
+<p>### <strong>[リージョンの追加方法]</strong></p>
+<ol>
+  <li>
+    <p>画面右上にある、<strong>リージョン選択から、</strong>リージョンの管理** をクリックします。<br />
+    <img src="img65.png" alt="img5.png" /></p>
+  </li>
+  <li>
+    <p>Regions選択画面より有効化したいリージョンの <strong>サブスクライブ</strong> をクリックします<br />
+  （有効化されると緑色に表示が変わります）<br />
+<img src="img66.png" alt="img6.png" /></p>
+  </li>
+</ol>
 
-<p><img src="img5.png" alt="img5.png" /></p>
+<blockquote>
+  <p>補足）</p>
+  <ul>
+    <li>有効にしたリージョンが表示されない場合、一度ブラウザをリロード（F5）してください。それでも表示されてない場合は一旦ログアウトし再度ログインしてください。</li>
+    <li>リージョンを追加しても課金には影響ありません。</li>
+  </ul>
+</blockquote>
 
-<p><strong>【リージョンの追加方法】</strong></p>
-
-<p>利用したいリージョンが有効化されていない場合は、以下の手順で追加してください。</p>
-
-<p>① <strong>リージョン選択メニュー</strong> を表示します</p>
-
-<p>② <strong>Manage Regions</strong> をクリックします</p>
-
-<p>③ Regions選択画面より有効化したいリージョンの <strong>Subscribe To This Region</strong> をクリックします</p>
-
-<p>④ 有効化されると緑色で表示されます</p>
-
-<p><img src="img6.png" alt="img6.png" /></p>
-
-<ul>
-  <li>有効にしたリージョンが表示されない場合、一度ブラウザをリロード（F5）してください。それでも表示されてない場合は一旦ログアウトし再度ログインしてください。</li>
-  <li>リージョンを追加しても課金には影響ありません。</li>
-</ul>
+<p><br /></p>
 
 <h2 id="3-コンパートメントの確認作成">3. コンパートメントの確認、作成</h2>
-
-<p>コンパートメントを利用することで、コンパートメント毎に権限やリソースの管理、課金状況の確認等が行えるようになります。</p>
-
-<p>コンパートメントに関する詳細は <a href="https://oracle-japan.github.io/ocitutorials/beginners/getting-started/">こちら</a>、もしくは <a href="https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcompartments.htm">マニュアル</a>を参照ください。</p>
+<p>コンパートメントはOracle Cloud Infrastructure独自の機能で、テナントの中で論理的な区画を設け、権限やリソースの管理、課金状況の確認等を実施いただくことができます。<br />
+（詳細は <a href="https://oracle-japan.github.io/ocitutorials/beginners/getting-started/">こちら</a>、もしくは <a href="https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcompartments.htm">マニュアル</a>を参照ください。）</p>
 
 <p>以下の手順でコンパートメントの選択します。</p>
 
-<p>① 画面左上の <strong>メニュー</strong> をクリックし、サービスの一覧を表示させます</p>
+<ol>
+  <li>
+    <p>画面左上の <strong>メニュー</strong> をクリックし、サービスの一覧の中から、<strong>Oracle Database</strong>、<strong>Autonomous Transaction Processing</strong> の順で選択します。
+<img src="img67.png" alt="img7.png" /></p>
+  </li>
+  <li>
+    <p>次に画面左の <strong>コンパートメント</strong> から適切なコンパートメントを選択します。<br />
+(本チュートリアルでは任意のコンパートメントを指定して実施いただけます。)<br />
+<img src="img68.jpg" alt="img7.png" /></p>
+  </li>
+</ol>
 
-<p>② サービス一覧から <strong>Autonomous Transaction Processing</strong> を選択し、ADBのサービス画面を表示します</p>
+<p><br /></p>
 
-<p>③ <strong>コンパートメント</strong> を選択します（ここでは <strong>adb-hol-01</strong> を選択しています）</p>
+<h3 id="コンパートメントの追加方法"><strong>[コンパートメントの追加方法]</strong></h3>
 
-<p><img src="img7.png" alt="img7.png" /></p>
+<p>クラウドアカウントを作成した直後のデフォルト設定ではrootコンパートメントのみが表示されます。<br />
+この場合、rootコンパートメントの直下でADBインスタンスが構成されますが、新たにコンパートメントを追加したい場合は以下の手順で追加してください。</p>
 
-<p><strong>【コンパートメントの追加方法】</strong></p>
+<ol>
+  <li>
+    <p>画面左上のボタンからメニュー画面を表示し、<strong>アイデンティティとセキュリティ</strong>、<strong>コンパートメント</strong> の順で選択します。
+ <img src="img69.png" alt="img8.png" /></p>
+  </li>
+  <li>
+    <p>次に <strong>コンパートメントの作成</strong> をクリックします。
+ <img src="img70.jpg" alt="img8.png" /></p>
+  </li>
+  <li>
+    <p>作成したいコンパートメント名を入力し、<strong>コンパートメントの作成</strong> をクリックします。(例では、test-compartmentと入力しています)
+ <img src="img71.jpg" alt="img8.png" /></p>
+  </li>
+</ol>
 
-<p>デフォルトではrootコンパートメント以外は存在せず、rootコンパートメントのみが表示されます。</p>
+<p><br />
+以上で、ADBインスタンスを作成する準備が整いました！<br />
+<br /></p>
 
-<p>この場合、rootコンパートメントの直下にインスタンスが構成されます。</p>
-
-<p>新たにコンパートメントを追加したい場合は以下の手順で追加してください。</p>
-
-<p>① メニューから <strong>Identity - Compartments</strong> を選択します</p>
-
-<p>②  <strong>Create Compartment</strong> をクリックします</p>
-
-<p>③  NAME（コンパートメント名）を入力して <strong>Create Compartment</strong> をクリックしてください（画面は <strong>adb-hol-01</strong> を作成しています）</p>
-
-<p><img src="img8.png" alt="img8.png" /></p>
-
-<h1 id="2-adbインスタンスを作成してみよう">2. ADBインスタンスを作成してみよう</h1>
+<h1 id="2-adbインスタンスを作成してみよう">#2. ADBインスタンスを作成してみよう</h1>
+<p>それではここからは実際にADBインスタンス（データベース）を1つ作成し、接続してみましょう！</p>
 
 <p><strong>作業の流れ :</strong></p>
 
 <ol>
   <li>ATPインスタンスの作成（プロビジョニング）</li>
-  <li>クレデンシャル・ウォレットのダウンロード</li>
-  <li>ATPインスタンスに接続してみよう（SQL Developer）</li>
-  <li>SQL Developer WebでATPインスタンスに接続してみよう</li>
+  <li>ATPインスタンスに接続してみよう（Database Actiona）</li>
   <li>データベース・ユーザーの作成（Oracle ML/ APEXの利用時は不要）</li>
+  <li>クレデンシャル・ウォレットのダウンロード</li>
 </ol>
 
 <h2 id="1-atpインスタンスの作成プロビジョニング">1. ATPインスタンスの作成（プロビジョニング）</h2>
 
-<p>ATPインスタンスを作成します。</p>
-
-<p>※ 事前にリージョン、コンパートメント（ <strong>adb-hol-01</strong> ）が選択されていることをご確認ください。</p>
-
 <ol>
   <li>
-    <p>左上のメニューからAutonomous Transaction Processingを選択します。</p>
-
-    <p><img src="img9.png" alt="img9.png" /></p>
+    <p>サービス一覧から <strong>Oracle Database</strong>、<strong>Autonomous Transaction Processing</strong> を選択し、ADBのサービス画面を表示します。<br />
+<img src="img72.png" alt="img9.png" /></p>
   </li>
   <li>
-    <p><strong>Autonomous Database の作成</strong> をクリックすると作成ウィンドウが立ち上がります。</p>
-
-    <p><img src="img10.png" alt="img10.png" /></p>
+    <p><strong>Autonomous Database の作成</strong> をクリックすると作成ウィンドウが立ち上がります。<br />
+<img src="img73.jpg" alt="img10.png" /></p>
   </li>
   <li>
-    <p>以下の記載例を参考に各項目を入力し、最後にAutonomous Databaseの作成 をクリックします。</p>
+    <p>以下の記載例を参考に各項目を入力します。</p>
 
     <blockquote>
-      <p>集合ハンズオンセミナーにおける注意事項全ての値は基本的に任意ですが、集合ハンズオンセミナー実施時に限り、記載されている通りにご入力ください。 <span style="color: red; "><strong>赤色</strong></span> の箇所は特に注意ください。</p>
+      <p><strong>集合ハンズオンセミナーにおける注意事項</strong><br />
+集合ハンズオンセミナー実施時に限り、記載されている通りにご入力ください。 <span style="color: red; "><strong>赤色</strong></span> の箇所は特に注意ください。</p>
     </blockquote>
 
     <ul>
-      <li>
-        <p>コンパートメントの選択：<span style="color: red; "><strong>adb-hol-01</strong></span></p>
-      </li>
+      <li>コンパートメントの選択：<span style="color: red; ">**<コンパートメントから選択>**&lt;/span&gt;</コンパートメントから選択></span></li>
       <li>表示名：<span style="color: red; "><strong>atp01</strong></span>
         <ul>
           <li>サービスメニュー画面での表示用です。</li>
@@ -501,15 +514,9 @@
           <li>それ以外はトランザクション処理（ATP）を選択する（本ハンズオンではこちらを選択ください。）</li>
         </ul>
       </li>
-      <li>
-        <p>デプロイメント・タイプの選択：<span style="color: red; "><strong>共有インフラストラクチャ</strong></span></p>
-      </li>
-      <li>
-        <p>Always Free：<span style="color: red; "><strong>なし</strong></span></p>
-      </li>
-      <li>
-        <p>データベース・バージョンの選択：19c</p>
-      </li>
+      <li>デプロイメント・タイプの選択：<span style="color: red; "><strong>共有インフラストラクチャ</strong></span></li>
+      <li>Always Free：<span style="color: red; "><strong>なし</strong></span></li>
+      <li>データベース・バージョンの選択：19c</li>
       <li>OCPU数：<span style="color: red; "><strong>2</strong></span>
         <ul>
           <li>インスタンスに割り当てるoCPU数です。インスタンス作成後でもオンラインで増減可能です。</li>
@@ -571,87 +578,128 @@
       </li>
       <li>ライセンスタイプの選択：<span style="color: red; "><strong>ライセンス込み</strong></span>
         <ul>
-          <li>Bring Your Own License： すでにお持ちのDBライセンスをCloudに持ち込んで利用する場合に選択します。有効なDBライセンスをお持ちでなくこちらのタイプを選択するとライセンス違反となりますのでご注意ください。</li>
-          <li>License Included： DBソフトウェアの利用料やサポート費用を含め全てサブスクリプション形式で利用する場合に選択します。</li>
+          <li>ライセンス持込み（BYOL)：すでにお持ちのDBライセンスをCloudに持ち込んで利用する場合に選択します(Bring Your Own License)。有効なDBライセンスをお持ちでなくこちらのタイプを選択するとライセンス違反となりますのでご注意ください。</li>
+          <li>ライセンス込み： DBソフトウェアの利用料やサポート費用を含め全てサブスクリプション形式で利用する場合に選択します。</li>
         </ul>
       </li>
       <li>拡張オプション（タグ）：<span style="color: red; "><strong>なし</strong></span>
         <ul>
-          <li>利用しているテナント内で各種リソースを管理する際に有用です。例えば、”Prod”、”Dev”といった形でタグ付けし、REST APIにてDev インスタンスは一括で停止する。といった用途に活用できます。</li>
+          <li>利用しているテナント内で各種リソースを管理する際に有用です。例えば、”Prod”、”Dev”といった形でタグ付けし、夜間利用しない開発用のインスタンス(Dev)はREST APIを使って夜間は一括で停止し、利用コストを抑えるといった使い方が可能です。</li>
         </ul>
       </li>
     </ul>
   </li>
   <li>
-    <p>インスタンスが無事作成できたことを確認します。</p>
-
-    <p>（しばらくするとオレンジ色のプロビジョニング中から緑色の使用可能に変わります。使用可能になればインスタンスの作成は完了です。）</p>
+    <p>全て入力できたことを確認し、<strong>Autonomous Databaseの作成</strong> をクリックします。<br />
+  （インスタンス作成が完了すると、オレンジ色のプロビジョニング中から緑色の使用可能に変わります。緑色になればOKです！）</p>
   </li>
 </ol>
 
-<h2 id="2-sql-developer-webでatpインスタンスにアクセスしてみよう">2. SQL Developer WebでATPインスタンスにアクセスしてみよう</h2>
-
-<p>Autonomous Databaseではいくつか開発ツールがビルトインされており、インスタンス作成直後から利用することが可能です。</p>
-
-<p>ここではデータベースオブジェクトの管理、SQL作成などが実施できるSQL Developer Webを利用し、上記で作成したATPインスタンスにアクセスしてみましょう。</p>
+<h2 id="2-database-actionsでatpインスタンスにアクセスしてみよう">2. Database ActionsでATPインスタンスにアクセスしてみよう</h2>
+<p>Autonomous Databaseではいくつか開発ツールがビルトインされており、インスタンス作成直後から利用することが可能です。<br />
+  ここではデータベースオブジェクトの管理、SQL作成など様々な操作を実行できるDatabase Actionsを利用し、<br />
+  上記で作成したATPインスタンスにアクセスしてみましょう。</p>
 
 <ol>
   <li>
-    <p>メニュー画面から、インスタンスを選択してインスタンスのメニュー画面を表示します。</p>
+    <p>メニュー画面から、インスタンスを選択してインスタンスのメニュー画面を表示します。
+ <img src="img74.png" alt="img74.png" /></p>
   </li>
   <li>
-    <p>ツールタブを選択し、SQL Developer Webを開く をクリックします。</p>
-
-    <p><img src="img17.png" alt="img17.png" /></p>
+    <p>ツールタブを選択し、データベース・アクションを開く をクリックします。<br />
+ <img src="img50.png" alt="img50.png" /></p>
   </li>
   <li>
-    <p>ユーザ名は <strong>admin</strong> 、パスワードは <strong>インスタンス作成時に指定した値</strong> （Welcome12345#）を入力し、 <strong>サインイン</strong> をクリックします。（初回は多少時間がかかります）</p>
-
-    <p><img src="img18.png" alt="img18.png" /></p>
+    <p>ユーザ名に <strong>admin</strong> 、パスワードは <strong>インスタンス作成時に指定した値</strong> （Welcome12345#）を入力し、 <strong>サインイン</strong> をクリックします。<br />
+ <img src="img51.png" alt="img51.png" /></p>
   </li>
   <li>
-    <p>ワークシートが起動します。</p>
-
-    <p>（起動には多少時間がかかります。初回は利用方法のガイダンスが表示されるので、内容を確認ください）</p>
-
-    <p><img src="img19.png" alt="img19.png" /></p>
+    <p>Database Actionsのランディングページで<strong>SQL</strong>をクリックします。<br />
+ <img src="img52.png" alt="img52.png" /></p>
   </li>
   <li>
-    <p>ADBインスタンスを操作できるか確認するために、ワークシートに任意のSQLを貼り付け、 <strong>緑色の実行</strong> ボタンをクリックします。</p>
+    <p>ワークシートが起動します。ADBインスタンスを操作できるか確認するために、ワークシートに任意のSQLを貼り付け、 <strong>緑色の実行</strong> ボタンをクリックします。<br />
+以下は例として接続しているユーザーのユーザー名を確認するSQLです。ADMINが表示されたらOKです。</p>
 
-    <p>ここでは例として接続しているユーザーのユーザー名を確認しています。ADMINが表示されたらOKです。</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL &gt; SELECT USERNAME FROM USER_USERS ;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT USERNAME FROM USER_USERS ;
 </code></pre></div>    </div>
 
-    <p><img src="img20.png" alt="img20.png" /></p>
+    <p><img src="img53.png" alt="img20.png" /></p>
   </li>
 </ol>
 
-<h2 id="3-データベースユーザーを作成してみよう">3. データベース・ユーザーを作成してみよう</h2>
+<h2 id="3-データベースユーザーを作成してみようdatabase-actions">3. データベース・ユーザーを作成してみよう(Database Actions)</h2>
 
-<p>ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、</p>
-
-<p>アプリケーションを構成する場合は、個別にデータベース・ユーザー（スキーマ）を作成することが多いかと思います。</p>
-
-<p>ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
+<p>ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、アプリケーションを構成する場合は、個別にデータベース・ユーザー（スキーマ）を作成することが多いかと思います。<br />
+ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
 
 <blockquote>
-  <p>Oracle ML(Notebook)やAPEX等、Autonomous Databaseに同梱される一部のアプリケーションを利用する際は、それぞれのアプリ内でユーザ作成を実施するため、本手順は不要です。また以下はSQL Developer Webを利用していますが、SQL Developerでも実施いただけます。</p>
+  <p>Oracle ML(Notebook)やAPEX等、Autonomous Databaseに同梱される一部のアプリケーションを利用する際は、それぞれのアプリ内でユーザ作成を実施するため、本手順は不要です。また以下はDatabase Actionsを利用していますが、SQL Developerでも実施いただけます。</p>
 </blockquote>
 
 <ol>
   <li>
-    <p>SQL Developer Webにて、ADMINユーザーが選択されていることを確認します</p>
+    <p>Database Actionsのランディングページで<strong>データベース・ユーザー</strong>をクリックします。</p>
 
-    <p><img src="img21.png" alt="img21.png" /></p>
+    <p><img src="img80.png" alt="img80.png" /></p>
+  </li>
+  <li>
+    <p>データベース・ユーザーの管理画面で、<strong>ユーザーの作成</strong>をクリックします。
+  <img src="img81.png" alt="img81.png" /></p>
+  </li>
+  <li>
+    <p>ユーザーの作成にて、<strong>ユーザー名(ADBUSER)</strong>と<strong>パスワード</strong>を入力します。</p>
+
+    <p><img src="img82.png" alt="img82.png" /></p>
+  </li>
+  <li>
+    <p>ユーザに割り当てる<strong>テーブルスペース</strong>を設定し、<strong>ユーザーの作成</strong>をクリックします。</p>
+
+    <blockquote>
+      <p>補足</p>
+      <ul>
+        <li>グラフ対応をONにした状態でユーザ作成するとGraph Studio用のロールが付与されたユーザが作成されます。</li>
+        <li>OMLをONにした状態でユーザ作成するとOML用のロール(OML_DEVELOPER, DWROLE, PYQADMIN)が付与されたユーザが作成されます。</li>
+        <li>REST対応をONにした状態でユーザ作成するとRESTが有効化された状態でユーザ作成されます。</li>
+      </ul>
+    </blockquote>
+
+    <p><!-- ドキュメントにグラフ対応についての記載無し(2021/06/17)
+ 説明が追加されたのを確認次第、グラフ対応の補足文章に説明を加える --></p>
+
+    <p><br /></p>
+
+    <p><img src="img83.png" alt="img83.png" /></p>
+  </li>
+  <li>
+    <p>ADBUSERが作成されたことが確認できます。</p>
+
+    <p><img src="img84.png" alt="img84.png" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="4-データベースユーザーを作成してみようコマンドライン">4. データベース・ユーザーを作成してみよう（コマンドライン)</h2>
+
+<p>次にコマンドラインからABDUSERを新規作成するステップを紹介します。（SQLコマンドを実行するために、再びDatabase ActionsのSQLワークシートを利用しましょう）</p>
+
+<ol>
+  <li>
+    <p>Database Actionsのランディングページで<strong>SQL</strong>をクリックします。<br />
+ <img src="img52.png" alt="img52.png" /></p>
+  </li>
+  <li>
+    <p>Database Actionsにて、ADMINユーザーが選択されていることを確認します</p>
+
+    <p><img src="img54.png" alt="img21.png" /></p>
   </li>
   <li>
     <p>以下をワークシートに貼り付け、<strong>緑色の実行ボタン</strong> をクリックし、新規データベース・ユーザー（スキーマ）を作成します。</p>
 
     <p>ここでは、ユーザ名: <strong>adbuser</strong> 、パスワード : <strong>Welcome12345#</strong> で新規作成しています</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; CREATE USER adbuser IDENTIFIED BY Welcome12345#;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE USER adbuser IDENTIFIED BY Welcome12345#;
 </code></pre></div>    </div>
   </li>
   <li>
@@ -659,7 +707,7 @@
 
     <p>ここでは例としてAutonomous Databaseで事前定義されている <strong>DWROLE</strong> ロール を付与しています。（要件に応じて、従来の権限（Connect, Resource,等々）を個別に付与することも可能です）</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SQL&gt; GRANT DWROLE TO adbuser;
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GRANT DWROLE TO adbuser;
 </code></pre></div>    </div>
   </li>
   <li>
@@ -690,108 +738,7 @@
   <li>
     <p>新規ユーザ(ここではadbuser)が作成されたことを確認してください。表示されない場合はブラウザをリフレッシュ(F5)してください</p>
 
-    <p><img src="img22.png" alt="img22.png" /></p>
-  </li>
-</ol>
-
-<h2 id="4-クレデンシャルウォレットのダウンロード">4. クレデンシャル・ウォレットのダウンロード</h2>
-
-<p>ADBインスタンスへの接続には、対象インスタンスへの接続情報が格納されたクレデンシャル・ウォレットを利用する必要があります。</p>
-
-<p>（より高いセキュリティを担保するために、ADBインスタンスはcredential.ssoファイルを利用した接続のみを受け入れます。）</p>
-
-<p>まず、ADBへの接続情報が格納されるCredential.zipファイルをお手元のPCにダウンロードしましょう。</p>
-
-<ol>
-  <li>
-    <p>先程のAutonomous Databaseの詳細画面に戻り、 <strong>DB接続</strong> をクリックします</p>
-
-    <p><img src="img11.png" alt="img11.png" /></p>
-  </li>
-  <li>
-    <p>ダウンロードウィザードが起動するので、ウォレットのダウンロード をクリックします。</p>
-
-    <p><img src="img12.png" alt="img12.png" /></p>
-
-    <p>【ウォレットの選択について】</p>
-
-    <ul>
-      <li>インスタンス・ウォレット
-        <ul>
-          <li>特定のインスタンスの資格証明のみが記載</li>
-          <li>アプリケーションからの接続はこちらの利用を推奨</li>
-        </ul>
-      </li>
-      <li>リージョナル・ウォレット
-        <ul>
-          <li>選択されたリージョン内の全てのインスタンスの資格証明が記載</li>
-          <li>他のインスタンスへの接続時も利用できるため、主に管理目的での利用に限定ください</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p>ウォレットファイルに付与するパスワードを入力し、ダウンロードをクリックして、お手元のPCの任意の場所に保存してください。</p>
-
-    <p>（本ハンズオンガイドでは便宜上、パスワードは <strong>Welcome12345#</strong> に統一ください）</p>
-
-    <p><img src="img13.png" alt="img13.png" /></p>
-  </li>
-</ol>
-
-<h2 id="5-atpインスタンスに接続してみようsql-developer">5. ATPインスタンスに接続してみよう（SQL Developer）</h2>
-
-<p>それでは接続してみましょう。手元のPCにインストールしたクライアントツールを利用したアクセスします。</p>
-
-<p>SQL Developerを起動し、管理者アカウント(ADMIN)でADBへ接続します。</p>
-
-<ol>
-  <li>
-    <p>SQL Developerを起動後、画面左上の接続アイコンをクリックします。</p>
-
-    <p><img src="img14.png" alt="img14.png" /></p>
-  </li>
-  <li>
-    <p>以下の記載例を参考に各項目を入力し、ADBインスタンスへの接続設定を行います。</p>
-
-    <p>① 各項目に接続情報を入力します。</p>
-
-    <ul>
-      <li>
-        <p>Name : <strong>atp01_high_admin</strong> （”high”は接続サービスの一つ。詳細は にて扱います）</p>
-      </li>
-      <li>ユーザー名 : <strong>admin</strong></li>
-      <li>パスワード : <strong>Welcome12345#</strong>（インスタンス作成時に設定したADMINユーザーのパスワード）</li>
-      <li>パスワードの保存：<strong>チェックあり</strong>（実際の運用に際しては、セキュリティ要件を踏まえ設定ください）</li>
-      <li>接続タイプ: <strong>クラウド・ウォレット</strong></li>
-      <li>構成ファイル:  （事前にダウンロードしておいたウォレットファイルを選択）</li>
-    </ul>
-
-    <p>② サービス：<strong>atp01_high</strong> を選択（接続サービスに相当。詳細は にて扱います）</p>
-
-    <p>③ <strong>テスト</strong> をクリックし、正しく接続できるか確認します。（正しく接続出来れば、左下のステータスに <strong>成功</strong> と表示されます。）</p>
-
-    <p>④ テストに成功したことを確認し、 <strong>保存</strong> をクリックします。（左上の接続リストに表示され、次回以降の登録作業をスキップできます。）</p>
-
-    <p>⑤ <strong>接続</strong> をクリックします。</p>
-
-    <p><img src="img15.png" alt="img15.png" /></p>
-  </li>
-  <li>
-    <p>ワークシートが起動しますので、サンプルクエリを実行してADBインスタンスに正しく接続できているか確認します。</p>
-
-    <p>① SQL Developerにてご自身で作成した接続を選択します。</p>
-
-    <p>② 以下のクエリをワークシートに貼り付けます。</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; SELECT USERNAME FROM USER_USERS;
-</code></pre></div>    </div>
-
-    <p>③ <strong>スクリプトの実行</strong> ボタンをクリックし実行します（左隣の <strong>文の実行</strong> ボタンで実行しても構いません）</p>
-
-    <p>④ エラーなく実行結果が返ってくれば確認完了です</p>
-
-    <p><img src="img16.png" alt="img16.png" /></p>
+    <p><img src="img55.png" alt="img22.png" /></p>
   </li>
 </ol>
 
@@ -826,7 +773,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-10T16:44:12+09:00">June 10, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-22T10:03:23+09:00">June 22, 2021</time></p>
 
 
       </footer>
@@ -836,11 +783,11 @@
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=ADB%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb11-provisioning%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=ADB%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb101-provisioning%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
-  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb11-provisioning%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb101-provisioning%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
-  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb11-provisioning%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb101-provisioning%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
 </section>
 
 
@@ -850,7 +797,7 @@
       <a href="#" class="pagination--pager disabled">前へ</a>
     
     
-      <a href="/ocitutorials/database/adb12-dataload/" class="pagination--pager" title="ADBにデータをアップロードしてみよう
+      <a href="/ocitutorials/database/adb102-dataload/" class="pagination--pager" title="ADBにデータをアップロードしてみよう
 ">次へ</a>
     
   </nav>

@@ -306,16 +306,22 @@ var store = [{
         "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/77_SiteSecurityGovernance/021.png"
       },{
         "title": "ADBインスタンスを作成してみよう",
-        "excerpt":"この章ではまず最初のステップとして、メニュー画面を操作し、リージョンおよびコンパートメントを設定します。 そして、ADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。 ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。 所要時間 : #1 約5分, #2 約20分 1. リージョンを設定し、コンパートメントを用意しよう 作業の流れ : サービス画面へのアクセス リージョンの確認、設定 コンパートメントの確認、作成 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 （OCIのコンソールへのアクセスに関する詳細はを参照ください。） ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウント をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドアカウント名（テナント名）を入力し、 Next をクリックします。 クラウドユーザー名 と パスワード を入力し、 サイン・イン をクリックしてログインします。 以下のようなダッシュボード画面が表示されればOKです。 上手く表示されない場合は以下のURLをお試しください。尚、 &lt;クラウド・アカウント&gt; はご自身のクラウドアカウント名（テナント名）に置き換えてください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 補足）ダッシュボード画面の使い方...","categories": [],
+        "excerpt":"この章は大きく2つの内容で構成されています。 #1 : メニュー画面を操作し、リージョンおよびコンパートメントを設定いただきます。 (所要時間：5分) #2 : ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成します。 (所要時間：20分) #1. リージョンを設定し、コンパートメントを用意しよう 作業の流れ : サービス画面へのアクセス リージョンの確認、設定 コンパートメントの確認、作成 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足）上手く表示されない場合は以下のURLをお試しください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 尚、 &lt;クラウド・アカウント&gt;...","categories": [],
         "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/",
-        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/img11.png"
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/img11.png"
       },{
         "title": "ADBにデータをアップロードしてみよう",
         "excerpt":"この章ではSQL Developer Webを利用して、サンプルデータをADBインスタンスにデータをアップロードします。 事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。 （集合ハンズオンセミナーでは講師の指示に従ってください） 所要時間 : #1 約10分, #2 約30分 前提条件 : ADB HOL#1を完了していること 以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています) サンプルデータファイルのダウンロードリンク 注意 : チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 1.手元のPCからCSVデータをアップロードしてみよう まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。 ADB-HOL1で学習したSQL Developer Webを利用したインスタンスへの接続 を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。 その後左ペインにある　ナビゲータタブから　[…」(オブジェクトサブメニュー)→データのロード→新規表へのデータのアップロード を選択します。 ダウンロードして解凍した sales_channels.csv を選択して 次 をクリックします。 sales_channels.csvのデータのプレビューを確認し 次 をクリックします 表定義が表示されます。すべての列タイプが VARCHAR2型 になっていることが確認できます。 数字列である CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列 の列タイプを NUMBER型 に変更して 次 をクリックします。 設定を確認し 終了...","categories": [],
         "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/database/adb12-dataload/",
-        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb12-dataload/adb2-1_1.png"
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/adb2-1_1.png"
+      },{
+        "title": "Oracle LiveLabsでDatabase Actions機能を試してみよう",
+        "excerpt":"Database Actionsで利用できる機能はユーザ作成やデータ・ロードだけではありません。 データベース管理者はもとより、Autonomous Databaseのデータを開発者やデータ分析者がすぐに利用できる機能群が提供されています。 詳細はこちらの資料をご確認ください。 　　 データ活用に関わる機能であるデータロード、カタログ、データインサイト、ビジネスモデルは、Oracle LiveLabs というサイトでイメージのようにシナリオに沿って実環境で体験することができます。この章ではその方法をご案内します。 1.Oracle LiveLabsとは? Oracle LiveLabs とはOracle Cloud Infrastructure上でお試しいただける様々なワークショップをまとめたサイトです。150種類を超える数のワークショップが登録されています。 　　 ワークショップの実行には、ご利用いただいているOracle Cloud環境およびAlways Free/トライアル環境をお使いいただけます。またワークショップによっては、Oracle LiveLabsで時間制限を設けた一時利用環境も提供しております。 (一時利用環境の利用手順についてはこちらが参考になります。) なお、英語での提供ではありますが、ブラウザの翻訳機能をご利用いただくことで十分に進めることができます。このチュートリアルでは、日本語表示の場合はGoogle Chromeの翻訳機能を利用しています。 2.Database Actionsのワークショップ Oracle LiveLabsのDatabase Actionsのワークショップはこちらです。 “Introduction to Autonomous Database Tools” 概要と開始手順 このワークショップでは、架空のオンライン映画ストリーミング会社”Oracle MovieStream”の社員になった想定で、顧客データ、視聴データをもとに顧客の傾向を分析していきます。 具体的には、分析するためのデータのロードとクレンジング、ビジネスに即した分析モデル作成とそこからの洞察を行います。それらすべてをDatabase Actionsで実施できるのです。 それでは、利用する環境に合わせて、以下のどちらかをクリックしてください。このチュートリアルではフリートライアルを想定してLaunch Free Trial Workshopを選択しています。 ワークショップのホーム画面が表示されました。 このDatabase Actionsのワークショップは大きく3つのラボで構成されています。 ラボ1:ADBインスタンスのプロビジョニング ラボ2:データベースユーザーの作成 ラボ3:自律型データベースツールの使用 既にADBインスタンス作成済みの場合はラボ2から進めてください。...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/labimage.png"
       },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],

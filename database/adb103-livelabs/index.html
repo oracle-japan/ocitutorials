@@ -1,0 +1,555 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle LiveLabsでDatabase Actions機能を試してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Autonomous DatabaseのツールDatabase Actionsはデータ活用のための機能を包括的に提供しています。ワークショップでそれらを体験してみましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle LiveLabsでDatabase Actions機能を試してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/">
+
+
+  <meta property="og:description" content="Autonomous DatabaseのツールDatabase Actionsはデータ活用のための機能を包括的に提供しています。ワークショップでそれらを体験してみましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/labimage.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-22T10:03:23+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb103-livelabs/labimage.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle LiveLabsでDatabase Actions機能を試してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Autonomous DatabaseのツールDatabase Actionsはデータ活用のための機能を包括的に提供しています。ワークショップでそれらを体験してみましょう。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle LiveLabsでDatabase Actions機能を試してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">ADBにデータをアップロードしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/" class="active">Oracle LiveLabsでDatabase Actions機能を試してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle LiveLabsでDatabase Actions機能を試してみよう">
+    <meta itemprop="description" content="Autonomous DatabaseのツールDatabase Actionsはデータ活用のための機能を包括的に提供しています。ワークショップでそれらを体験してみましょう。">
+    <meta itemprop="datePublished" content="2021-06-22T10:03:23+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1oracle-livelabsとは">1.Oracle LiveLabsとは?</a></li>
+  <li><a href="#2database-actionsのワークショップ">2.Database Actionsのワークショップ</a>
+    <ul>
+      <li><a href="#概要と開始手順">概要と開始手順</a></li>
+      <li><a href="#ブラウザ翻訳時の注意">ブラウザ翻訳時の注意</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-その他のワークショップの紹介">3. その他のワークショップの紹介</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Database Actionsで利用できる機能はユーザ作成やデータ・ロードだけではありません。<br />
+データベース管理者はもとより、Autonomous Databaseのデータを開発者やデータ分析者がすぐに利用できる機能群が提供されています。
+詳細は<a href="https://speakerdeck.com/oracle4engineer/autonomous-database-database-actions-ji-neng-gai-yao">こちら</a>の資料をご確認ください。  　　</p>
+
+<p><img src="DatabaseActions_component.png" alt="画面ショット0-1" /></p>
+
+<p>データ活用に関わる機能であるデータロード、カタログ、データインサイト、ビジネスモデルは、<strong><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home">Oracle LiveLabs</a></strong> というサイトでイメージのようにシナリオに沿って実環境で体験することができます。この章ではその方法をご案内します。</p>
+
+<p><img src="DatabaseActions_component2.png" alt="画面ショット0-2" /></p>
+
+<h1 id="1oracle-livelabsとは">1.Oracle LiveLabsとは?</h1>
+
+<p><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home">Oracle LiveLabs</a> とはOracle Cloud Infrastructure上でお試しいただける様々なワークショップをまとめたサイトです。150種類を超える数のワークショップが登録されています。</p>
+
+<p><img src="livelabs.png" alt="画面ショット1-1" /></p>
+
+<p>　　</p>
+
+<p>ワークショップの実行には、ご利用いただいているOracle Cloud環境およびAlways Free/トライアル環境をお使いいただけます。またワークショップによっては、Oracle LiveLabsで時間制限を設けた一時利用環境も提供しております。<br />
+(一時利用環境の利用手順については<a href="https://qiita.com/Skogkatter112/items/209ae71fc71c3572e52d">こちら</a>が参考になります。)</p>
+
+<p>なお、英語での提供ではありますが、ブラウザの翻訳機能をご利用いただくことで十分に進めることができます。このチュートリアルでは、日本語表示の場合はGoogle Chromeの翻訳機能を利用しています。</p>
+
+<h1 id="2database-actionsのワークショップ">2.Database Actionsのワークショップ</h1>
+
+<p>Oracle LiveLabsのDatabase Actionsのワークショップはこちらです。</p>
+
+<p><strong><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=789">“Introduction to Autonomous Database Tools”</a></strong></p>
+
+<p><img src="DatabaseActionslab.png" alt="画面ショット2-1" /></p>
+
+<h2 id="概要と開始手順">概要と開始手順</h2>
+<p>このワークショップでは、架空のオンライン映画ストリーミング会社”Oracle MovieStream”の社員になった想定で、顧客データ、視聴データをもとに顧客の傾向を分析していきます。<br />
+具体的には、分析するためのデータのロードとクレンジング、ビジネスに即した分析モデル作成とそこからの洞察を行います。それらすべてをDatabase Actionsで実施できるのです。</p>
+
+<p>それでは、利用する環境に合わせて、以下のどちらかをクリックしてください。このチュートリアルではフリートライアルを想定してLaunch Free Trial Workshopを選択しています。</p>
+
+<p><img src="Environment.png" alt="画面ショット2-2" /></p>
+
+<p>ワークショップのホーム画面が表示されました。</p>
+
+<p><img src="DatabaseActionsLab2.png" alt="画面ショット2-2" /></p>
+
+<p>このDatabase Actionsのワークショップは大きく3つのラボで構成されています。</p>
+
+<ul>
+  <li>ラボ1:ADBインスタンスのプロビジョニング</li>
+  <li>ラボ2:データベースユーザーの作成</li>
+  <li>ラボ3:自律型データベースツールの使用</li>
+</ul>
+
+<p>既にADBインスタンス作成済みの場合はラボ2から進めてください。
+ラボ3でOracle MovieStreamのシナリオに従ってデータの分析を行っていきます。実際にAutonomous DatabaseのデータをDatabase Actionsでどのように活用できるかをイメージいただけるはずです。</p>
+
+<h2 id="ブラウザ翻訳時の注意">ブラウザ翻訳時の注意</h2>
+<p>ワークショップのホームは、ブラウザの翻訳機能で日本語化すると上の部分しか翻訳がおこわなわれません。その場合は、<strong>これらのワークショップの説明を新しいタブで開きます</strong> をクリックして新しいタブで画面を開いて翻訳してください。</p>
+
+<p><img src="intro.png" alt="画面ショット2-3" /></p>
+
+<p><br /></p>
+
+<h1 id="3-その他のワークショップの紹介">3. その他のワークショップの紹介</h1>
+<p>Oracle LiveLabsのホーム画面の上部には検索ボックスがあります。<br />
+<strong>Autonomous Database</strong> と入力すると、Autonomous Database関連のワークショップが一覧で表示されます。それぞれのワークショップで完結してお試しいただけますので、ぜひアクセスいただき、気になるワークショップからお気軽にお試しください。</p>
+
+<p><img src="adbworkshops.png" alt="画面ショット3-1" /></p>
+
+<p>尚、Autonomous Databaseの機能に特化したものだけでなく、例えば、以下のようなAutonomous Databaseと他のサービスを組み合わせたワークショップやアプリケーション開発のワークショップもあります。</p>
+
+<p><br /></p>
+
+<ul>
+  <li><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=684"> Setting up a Departmental Data Warehouse with ADW and OAC Workshop</a>
+    <ul>
+      <li>すぐにデータ分析を始めたいんだけど、何から始めたら良いのか？という方にオススメ。</li>
+      <li>Autonomous Databaseのセットアップと、Oracleが提供するデータ分析ツール（OAC: Oracle Analytics Cloud）の利用方法、接続方法について解説しています。</li>
+    </ul>
+  </li>
+  <li><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=815">Modern App Dev with Oracle REST Data Services Workshop</a>
+    <ul>
+      <li>Autonomous Databaseではデータを参照・更新するREST APIを簡単に作成、公開することができます。</li>
+      <li>アプリケーションサーバを構成することなく、またGET/POSTメソッドで呼び出すだけなので、アプリケーション開発をより促進いただくことが可能です。</li>
+      <li>このワークショップではREST APIの作成方法についてご紹介しています。</li>
+    </ul>
+  </li>
+  <li><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=637">Building Microservices with Oracle Converged Database</a>
+    <ul>
+      <li>アプリケーションをマイクロサービス・アーキテクチャで構成する場合、RDB、JSON、Text、Spatial、Graphといった様々な形式のデータを扱えるConverged Databaseのメリットや、一方でサービス毎に迅速にDBを用意できるといったアジリティが活かせます。</li>
+      <li>このワークショップではマイクロサービスフレームワークであるHelidon、およびJavascriptを利用したサンプルアプリケーションをKubernetes上にセットアップしつつ、各種操作をご体験いただけます。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p>以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-22T10:03:23+09:00">June 22, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+LiveLabs%E3%81%A7Database+Actions%E6%A9%9F%E8%83%BD%E3%82%92%E8%A9%A6%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb103-livelabs%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb103-livelabs%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb103-livelabs%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb102-dataload/" class="pagination--pager" title="ADBにデータをアップロードしてみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
