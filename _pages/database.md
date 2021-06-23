@@ -49,6 +49,9 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * クラウド環境へのアクセス
     * リージョンの確認、設定
     * コンパートメントの確認
+    * ATPインスタンスの作成（プロビジョニング）
+    * ATPインスタンスに接続してみよう（Database Actiona）
+    * データベース・ユーザーの作成
 
 + **[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb102-dataload/)**  
     * 手元のPCからCSVデータをアップロード
@@ -59,6 +62,17 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * Oracle LiveLabsとは?
     * Database Actionsのワークショップご紹介
     * その他、お勧めワークショップの紹介
+
++ **[Walletを利用した接続](/ocitutorials/database/adb104-connect-using-wallet/)**  
+    * クレデンシャル・ウォレットのダウンロード
+    * ADBに接続（SQL*Plus、SQLcl、SQL Developer、Database Actions)
+
++ **[APEXを使った簡易アプリ作成](/ocitutorials/database/adb105-create-apex-app/)**  
+    * スプレッドシートのサンプルを用意
+    * APEXのワークスペースの作成
+    * スプレッドシートから簡易アプリケーションの作成、実行確認
+
+
 
 <br/>
 
