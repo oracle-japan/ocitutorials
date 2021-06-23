@@ -1,7 +1,7 @@
 ---
 title: "Oracle LiveLabsでDatabase Actions機能を試してみよう"
 excerpt: "Autonomous DatabaseのツールDatabase Actionsはデータ活用のための機能を包括的に提供しています。ワークショップでそれらを体験してみましょう。"
-order: "022"
+order: "103"
 layout: single
 header:
   teaser: "/database/adb103-livelabs/labimage.png"

@@ -1,7 +1,7 @@
 ---
 title: "ADBインスタンスを作成してみよう"
 excerpt: "この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。"
-order: "011"
+order: "101"
 layout: single
 header:
   teaser: "/database/adb101-provisioning/img11.png"
