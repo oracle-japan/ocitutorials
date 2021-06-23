@@ -323,6 +323,18 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/labimage.png"
       },{
+        "title": "ウォレットを利用してADBに接続してみよう",
+        "excerpt":"本章では、Autonomous Databaseへの接続方法のうち、クレデンシャル・ウォレットを使用した接続方法を確認しましょう クレデンシャル・ウォレット（Credential.zipファイル）の扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。 所要時間 : 約20分 前提条件 : Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること ADBインスタンスが構成済みであること SQL Developerを使用した接続を行いたい場合には、クライアントツールがインストール済みであること。 インストールはこちらから 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次： 1. クレデンシャル・ウォレットのダウンロード 2. 設定ファイルの編集 3. ADBに接続 3-1. SQL*Plus を使った接続 3-2. SQLcl を使った接続 3-3. SQL Developer を使った接続 3-4. Database Actions を使った接続 1. クレデンシャル・ウォレットのダウンロード ウォレットを利用したADBインスタンスへの接続には、対象インスタンスへの接続情報が格納された...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/img1_3.png"
+      },{
+        "title": "Oracle APEX on ADB！簡単すぐにアプリを作ってみよう",
+        "excerpt":"Autonomous Databaseはインスタンスを作成するとすぐにWebアプリ開発基盤であるOracle APEXを利用できるようになります。 追加コストは不要です。 Oracle APEXは分かりやすいインターフェースで、コーディングと言った専門的な知識専門的な知識がなくてもアプリケーションを開発できるため非常に人気があります。 Autonomous Database上でAPEXを利用すると、バックアップや可用性、セキュリティ等のインフラの面倒は全てオラクルに任せて、アプリケーションだけに集中できます。 この章ではADBインスタンスは作成済みであることを前提に、APEXコンソールの起動から簡単なアプリケーション作成までを体験いただきます。 サンプルとして、これまでExcelで管理していた受発注データを利用して、簡単なアプリケーションを作ってみましょう。 所要時間 : 約10分 前提条件 : Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること ADBインスタンスが構成済みであること 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次： 1. スプレッドシートのサンプルを用意 2. APEXのワークスペースの作成 3. APEXコンソールの起動 4. スプレッドシートから簡易アプリケーションの作成 5. アプリケーションの実行 6. 実行確認 1. スプレッドシートのサンプルを用意 サンプルとして受発注データ(orders.csv)を用意します。 下記のリンクをクリックし、サンプルファイル(orders.zip)を手元のPCにダウンロードして展開してください。 orders.csvをダウンロード 受発注データは次のような表になっており、ORDER_KEY(注文番号)、ORDER_STATUS(注文状況)、UNITS(個数) …etc などの列から構成される、5247行の表となっています。...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/img3_2.png"
+      },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
         "tags": ["https://community.oracle.com/docs/DOC-1038411"],

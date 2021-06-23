@@ -1,0 +1,755 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle APEX on ADB！簡単すぐにアプリを作ってみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle APEX on ADB！簡単すぐにアプリを作ってみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/">
+
+
+  <meta property="og:description" content="APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/img3_2.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-06-23T10:53:37+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb105-create-apex-app/img3_2.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle APEX on ADB！簡単すぐにアプリを作ってみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle APEX on ADB！簡単すぐにアプリを作ってみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">ADBにデータをアップロードしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">Oracle LiveLabsでDatabase Actions機能を試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">ウォレットを利用してADBに接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/" class="active">Oracle APEX on ADB！簡単すぐにアプリを作ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle APEX on ADB！簡単すぐにアプリを作ってみよう">
+    <meta itemprop="description" content="APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。">
+    <meta itemprop="datePublished" content="2021-06-23T10:53:37+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-スプレッドシートのサンプルを用意">1. スプレッドシートのサンプルを用意</a></li>
+  <li><a href="#2-apexのワークスペースの作成">2. APEXのワークスペースの作成</a></li>
+  <li><a href="#3-apexコンソールの起動">3. APEXコンソールの起動</a></li>
+  <li><a href="#4-スプレッドシートから簡易アプリケーションの作成">4. スプレッドシートから簡易アプリケーションの作成</a></li>
+  <li><a href="#5-アプリケーションの実行">5. アプリケーションの実行</a></li>
+  <li><a href="#6-実行確認">6. 実行確認</a>
+    <ul>
+      <li><a href="#--ダッシュボード">- ダッシュボード</a></li>
+      <li><a href="#--orders検索">- Orders検索</a></li>
+      <li><a href="#--ordersレポート">- Ordersレポート</a></li>
+    </ul>
+  </li>
+  <li><a href="#まとめ">まとめ</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Autonomous Databaseはインスタンスを作成するとすぐにWebアプリ開発基盤であるOracle APEXを利用できるようになります。</p>
+
+<p>追加コストは不要です。</p>
+
+<p>Oracle APEXは分かりやすいインターフェースで、コーディングと言った専門的な知識専門的な知識がなくてもアプリケーションを開発できるため非常に人気があります。</p>
+
+<p>Autonomous Database上でAPEXを利用すると、バックアップや可用性、セキュリティ等のインフラの面倒は全てオラクルに任せて、アプリケーションだけに集中できます。</p>
+
+<p>この章ではADBインスタンスは作成済みであることを前提に、APEXコンソールの起動から簡単なアプリケーション作成までを体験いただきます。</p>
+
+<p>サンプルとして、これまでExcelで管理していた受発注データを利用して、簡単なアプリケーションを作ってみましょう。</p>
+
+<p><strong>所要時間 :</strong> 約10分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること</li>
+  <li>適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること</li>
+  <li>ADBインスタンスが構成済みであること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. スプレッドシートのサンプルを用意</a></li>
+  <li><a href="#anchor2">2. APEXのワークスペースの作成</a></li>
+  <li><a href="#anchor3">3. APEXコンソールの起動</a></li>
+  <li><a href="#anchor4">4. スプレッドシートから簡易アプリケーションの作成</a></li>
+  <li><a href="#anchor5">5. アプリケーションの実行</a></li>
+  <li><a href="#anchor6">6. 実行確認</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-スプレッドシートのサンプルを用意">1. スプレッドシートのサンプルを用意</h1>
+
+<p>サンプルとして受発注データ(orders.csv)を用意します。
+下記のリンクをクリックし、サンプルファイル(orders.zip)を手元のPCにダウンロードして展開してください。</p>
+
+<ul>
+  <li><a href="/ocitutorials/database/adbxx-create-apex-app/orders.csv">orders.csvをダウンロード</a></li>
+</ul>
+
+<p>受発注データは次のような表になっており、ORDER_KEY(注文番号)、ORDER_STATUS(注文状況)、UNITS(個数) …etc などの列から構成される、5247行の表となっています。</p>
+
+<p><img src="img1.png" alt="img1.png" /></p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-apexのワークスペースの作成">2. APEXのワークスペースの作成</h1>
+
+<p>アプリケーションを作成するためには、ワークペースを作成する必要があります。
+最初にADMINユーザで管理画面にログインします。</p>
+
+<ol>
+  <li>
+    <p>ADBインスタンスの詳細画面を表示します。メニュー画面上部の <strong><code class="language-plaintext highlighter-rouge">ツール</code></strong> タブを選択し、<strong><code class="language-plaintext highlighter-rouge">APEXを開く</code></strong> をクリックします。</p>
+
+    <p><img src="img2_1.png" alt="img2_1.png" /></p>
+  </li>
+  <li>
+    <p>ログイン画面が表示されるので、下部の言語欄から <strong><code class="language-plaintext highlighter-rouge">日本語</code></strong> を選択しておきます。（初回は英語表示ですが、日本語を含めた他言語表示に変更することが可能です）</p>
+
+    <p><img src="img2_2.png" width="70%" /></p>
+  </li>
+  <li>
+    <p>ADBインスタンス作成時に指定したADMINユーザのパスワード（本ガイドを参考に作成した方のパスワードは「Welcome12345#」）を入力し、サインインします。</p>
+
+    <p><img src="img2_3.png" width="70%" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">ワークスペースの作成</code></strong> をクリックします。</p>
+
+    <p><img src="img2_4.png" alt="img2_4.png" /></p>
+  </li>
+  <li>
+    <p>以下の記載例を参考に各項目を入力し、最後に <strong><code class="language-plaintext highlighter-rouge">ワークスペースの作成</code></strong> をクリックします。</p>
+
+    <table>
+  <tr>
+   <td>データベース・ユーザー</td>
+   <td>APEX_01</td>
+  </tr>
+  <tr>
+   <td>パスワード</td>
+   <td>Welcome12345#</td>
+  </tr>
+  <tr>
+   <td>ワークスペース名</td>
+   <td>APEX_01</td>
+  </tr>
+ </table>
+
+    <p><img src="img2_5.png" width="90%" /></p>
+  </li>
+  <li>
+    <p>ワークスペースが作成されたことを確認します。ページ上部の注意書き通り、アプリケーションの構築を開始するには、管理サービスからサインアウトしてAPEX_01にサインインする必要があります。
+右上の <strong><code class="language-plaintext highlighter-rouge">ユーザボタン</code></strong> から <strong><code class="language-plaintext highlighter-rouge">サインアウト</code></strong> をクリックし、管理サービスからサインアウトします。
+ <img src="img2_6.png" alt="img2_6.png" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-apexコンソールの起動">3. APEXコンソールの起動</h1>
+
+<p>上記で作成したワークスペース、ユーザーを利用して、Oracle APEX のコンソール画面にログインしてみましょう</p>
+
+<ol>
+  <li>
+    <p>先程作成したワークスペース、ユーザー、パスワードを指定し、サインイン します。</p>
+
+    <table>
+  <tr>
+   <td>データベース・ユーザー</td>
+   <td>APEX_01</td>
+  </tr>
+  <tr>
+   <td>パスワード</td>
+   <td>Welcome12345#</td>
+  </tr>
+  <tr>
+   <td>ワークスペース名</td>
+   <td>APEX_01</td>
+  </tr>
+ </table>
+
+    <p><img src="img3_1.png" width="70%" /></p>
+  </li>
+  <li>
+    <p>APEXコンソールが起動したことを確認します。
+  ※ この画面のURLを記憶しておけば、次回よりAPEXコンソールに直接ログインできます</p>
+
+    <p><img src="img3_2.png" alt="img3_2.png" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-スプレッドシートから簡易アプリケーションの作成">4. スプレッドシートから簡易アプリケーションの作成</h1>
+
+<p>手元のスプレッドシート（Excelシート、CSVファイル）から簡易アプリケーションを作成してみましょう</p>
+
+<p>ここでは予めダウンロードして準備しておいたorders.csvファイルを利用して簡易アプリを作ります。</p>
+
+<p>最初にデータベース内にテーブルを作成し、データを入れます。</p>
+
+<ol>
+  <li>
+    <p>APEXコンソールから <strong><code class="language-plaintext highlighter-rouge">アプリケーション・ビルダー</code></strong> を起動します</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">新規アプリケーションの作成</code></strong> をクリックします</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">ファイルから</code></strong> をクリックします</p>
+  </li>
+  <li>
+    <p>事前に準備しておいた <strong><code class="language-plaintext highlighter-rouge">orders.csv</code></strong> をドラッグアンドドロップします</p>
+
+    <p><img src="img4_4.png" alt="img4_4.png" /></p>
+  </li>
+  <li>
+    <p>表の名前を入力します（ここでは「ORDERS」とします）。※エラー表名は自動的に入力されます。</p>
+  </li>
+  <li>
+    <p>データのプレビューで文字化け等が発生していないことを確認します。</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">データのロード</code></strong> をクリックします。</p>
+
+    <p><img src="img4_7.png" alt="img4_7.png" /></p>
+  </li>
+  <li>
+    <p>ロード完了のメッセージが表示されたら <strong><code class="language-plaintext highlighter-rouge">アプリケーションの作成</code></strong> をクリックします。
+ ※この時点でDB上にORDERS表が作成されています</p>
+
+    <p><img src="img4_8.png" alt="img4_8.png" /></p>
+
+    <p>次にCSVファイルから作成されたテーブルを元にしてアプリケーションを作成します。</p>
+  </li>
+  <li>
+    <p>アプリケーションに名前を付けます。今回はテーブル名と同じ <strong><code class="language-plaintext highlighter-rouge">Orders</code></strong> と入力します。</p>
+  </li>
+</ol>
+
+<p><a id="anchor4_10"></a></p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">アプリケーションの作成</code></strong> をクリックします。
+（ページの追加や外観の設定、セキュリティの設定等が実施できますが、このハンズオンでは全てデフォルトのまま進めます）</li>
+</ol>
+
+<p><img src="img4_10.png" alt="img4_10.png" /></p>
+
+<p>以上でアプリケーションの作成が完了しました。</p>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-アプリケーションの実行">5. アプリケーションの実行</h1>
+
+<p>実際にアプリケーションを起動してみます。</p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">アプリケーションの実行</code></strong> をクリックします。</li>
+  <li>
+    <p>ログイン画面に ユーザー名・パスワード を入力し <strong><code class="language-plaintext highlighter-rouge">サインイン</code></strong> します。</p>
+
+    <p><img src="img5_2.png" alt="img5_2.png" /></p>
+  </li>
+</ol>
+
+<ul>
+  <li>
+    <p>ログインが完了すると、画面下端に黒いメニューバーが表示され、ここからアプリケーションの改修作業を実施できます。尚、このメニューバーは、アプリケーション・ビルダーから「アプリケーションの実行」でアプリケーション実行した場合に表示されます。</p>
+  </li>
+  <li>
+    <p>ログイン画面のURLを記憶しておくと、作成したアプリケーションを直接呼び出すことができます。直接呼び出した場合は、画面下端のメニューバーは表示されないので、このURLをアプリ利用者にお渡しいただければ、そのままアプリケーションとしてご利用いただくことができますね。</p>
+
+    <p><img src="img5_3.png" alt="img5_3.png" /></p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="6-実行確認">6. 実行確認</h1>
+
+<p>作成されたアプリケーションの画面イメージをみていきましょう。</p>
+
+<p><img src="img6.png" alt="img6.png" /></p>
+
+<p>ログインするとトップ画面が表示され、デフォルトでホーム画面（トップ画面）、ダッシュボード画面、検索画面、管理画面（レポート）が表示されます。</p>
+
+<p>今回はすべてデフォルトの設定で作成しましたが、 <a href="#anchor4_10">アプリケーションの作成</a> の工程で、画面の構成を変えることができます。</p>
+
+<p>各画面のイメージを順に確認していきましょう。</p>
+
+<h2 id="--ダッシュボード">- ダッシュボード</h2>
+
+<p>はじめに、ダッシュボードをクリックします。
+ダッシュボードでは取り込んだデータをもとに、自動的にグラフとして出力されます。</p>
+
+<p><img src="img6_1.png" alt="img6_1.png" /></p>
+
+<h2 id="--orders検索">- Orders検索</h2>
+
+<p>次に、Orders検索をクリックします。
+こちらの機能では、取り込んだデータに対して、カテゴリ別に検索ができるようになっており、行単位でデータを絞り込むことができます。</p>
+
+<p><img src="img6_2.png" alt="img6_2.png" /></p>
+
+<h2 id="--ordersレポート">- Ordersレポート</h2>
+
+<p>Ordersレポートからは、データを昇順・降順に並び替えることや、特定の列を非表示にすることができます。Orders検索との違いとしては、行単位ではなく列単位で表示を変更することができます。</p>
+
+<p><img src="img6_3.png" alt="img6_3.png" /></p>
+
+<p><br /></p>
+
+<h1 id="まとめ">まとめ</h1>
+
+<p>たった10分で、データの検索や、レコードの修正＆削除、テーブル内の代表的な列についてダッシュボード的に傾向を確認するといった簡単なアプリケーションが作れます。</p>
+
+<p>はい、たったこれだけです！これだけのステップで従来Excelで管理していたデータを、複数のユーザ、複数の部門で活用することができるようになります。</p>
+
+<p>逆に、「え、これしか作れないの？」と思われた方。。。そんなことはありません。さらに作りこんでいくことはもちろん可能です！以下のまとめサイトから、チュートリアルやユーザ会の資料をご参照ください。</p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p>次の章にお進みください。</p>
+
+<p><br /></p>
+
+<p>APEX情報まとめサイトは <a href="https://apex.oracle.com/pls/apex/japancommunity/r/main/home?session=102826904704055">こちら</a> から</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-23T10:53:37+09:00">June 23, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+APEX+on+ADB%EF%BC%81%E7%B0%A1%E5%8D%98%E3%81%99%E3%81%90%E3%81%AB%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb105-create-apex-app%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb105-create-apex-app%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb105-create-apex-app%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb104-connect-using-wallet/" class="pagination--pager" title="ウォレットを利用してADBに接続してみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
