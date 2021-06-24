@@ -53,11 +53,6 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * ATPインスタンスに接続してみよう（Database Actiona）
     * データベース・ユーザーの作成
 
-+ **[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb102-dataload/)**  
-    * 手元のPCからCSVデータをアップロード
-    * オブジェクトストレージからCSVデータをアップロード
-    * その他Tips
-
 + **[ご参考）Database Actionsのさらなる活用に向けて（Oracle Livelabs）](/ocitutorials/database/adb103-livelabs/)**  
     * Oracle LiveLabsとは?
     * Database Actionsのワークショップご紹介
