@@ -261,4 +261,4 @@ Ordersレポートからは、データを昇順・降順に並び替えるこ�
 
 <br>
 
-APEX情報まとめサイトは [こちら](https://apex.oracle.com/pls/apex/japancommunity/r/main/home?session=102826904704055) から
+APEX情報まとめサイトは [こちら](https://apex.oracle.com/pls/apex/japancommunity/r/main/home) から

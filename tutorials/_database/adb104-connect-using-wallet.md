@@ -343,7 +343,7 @@ SQL Developerを起動し、管理者アカウント(ADMIN)でADBへ接続しま
 
 ## 3-4. Database Actions を使った接続
 
-Database Actionsを使った接続については、[こちら](/database/adb22-databaseactions.md)をご確認ください。
+Database Actionsを使った接続については、[こちら](/ocitutorials/database/adb101-provisioning/)をご確認ください。
 
 <br><br>
 
