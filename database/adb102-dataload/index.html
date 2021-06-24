@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>ADBにデータをアップロードしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
+<meta name="description" content="Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -26,7 +26,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/">
 
 
-  <meta property="og:description" content="SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
+  <meta property="og:description" content="Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-06-23T10:53:37+09:00">
+  <meta property="article:published_time" content="2021-06-24T14:03:23+09:00">
 
 
 
@@ -192,7 +192,7 @@
         
       </h1>
       
-        <p class="page__lead">SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。
+        <p class="page__lead">Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。
 </p>
       
       
@@ -270,9 +270,9 @@
       <ul>
         
         
-          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成してみよう</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/database/adb102-dataload/" class="active">ADBにデータをアップロードしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成してみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">Oracle LiveLabsでDatabase Actions機能を試してみよう</a></li></p>
         
@@ -292,8 +292,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ADBにデータをアップロードしてみよう">
-    <meta itemprop="description" content="SQL Developer Webを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
-    <meta itemprop="datePublished" content="2021-06-23T10:53:37+09:00">
+    <meta itemprop="description" content="Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
+    <meta itemprop="datePublished" content="2021-06-24T14:03:23+09:00">
     
 
     <div class="page__inner-wrap">
@@ -306,7 +306,7 @@
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
   <li><a href="#1手元のpcからcsvデータをアップロードしてみよう">1.手元のPCからCSVデータをアップロードしてみよう</a></li>
-  <li><a href="#2-オブジェクトストレージからcsvデータをロードしてみよう">2. オブジェクトストレージからCSVデータをロードしてみよう</a>
+  <li><a href="#2-クラウドストレージからのデータのロードしてみよう">2. クラウド・ストレージからのデータのロードしてみよう</a>
     <ul>
       <li><a href="#1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</a></li>
       <li><a href="#2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</a></li>
@@ -325,7 +325,7 @@
             </nav>
           </aside>
         
-        <p>この章ではSQL Developer Webを利用して、サンプルデータをADBインスタンスにデータをアップロードします。<br />
+        <p>この章ではSQL Developer Webの後継機能である、Database Actionsを利用して、サンプルデータをADBインスタンスにデータをアップロードします。<br />
 事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。<br />
 （集合ハンズオンセミナーでは講師の指示に従ってください）</p>
 
@@ -333,7 +333,7 @@
 
 <p><strong>前提条件 :</strong></p>
 <ul>
-  <li><a href="https://oracle-japan.github.io/ocitutorials/database/adb11-provisioning/">ADB HOL#1</a>を完了していること</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>を完了していること</li>
   <li>以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています)<br />
 <!--	+ [サンプルデータファイルのダウンロードリンク](https://github.com/oracle-japan/ocitutorials/raw/master/tutorials/_database/adb12-dataload/adb-hol2_sampledata.zip) -->
     <ul>
@@ -350,41 +350,53 @@
 
 <ol>
   <li>
-    <p>ADB-HOL1で学習した<strong>SQL Developer Webを利用したインスタンスへの接続</strong> を参照し、SQL Developer Webを起動し、Adminユーザーで接続してください。<br />
-その後左ペインにある　<strong>ナビゲータ</strong>タブから　<strong>[…」(オブジェクトサブメニュー)→データのロード→新規表へのデータのアップロード</strong> を選択します。</p>
-
-    <p><img src="adb2-1_1.png" alt="画面ショット1-1" /></p>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。
+<img src="img0.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>ダウンロードして解凍した <strong>sales_channels.csv</strong> を選択して <strong>次</strong> をクリックします。</p>
+    <p>Database Actionsのランディングページの<strong>データ・ツール</strong>から　<strong>データ・ロード</strong> を選択します。</p>
 
-    <p><img src="adb2-1_2.png" alt="画面ショット1-2" /></p>
+    <p><img src="img1.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>sales_channels.csvのデータのプレビューを確認し <strong>次</strong> をクリックします</p>
+    <p>データの処理には、<strong>データのロード</strong> を選択し、データの場所には、<strong>ローカル・ファイル</strong> を選択して <strong>次</strong> をクリックします。</p>
 
-    <p><img src="adb2-1_3.png" alt="画面ショット1-3" /></p>
+    <p><img src="img2.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>表定義が表示されます。すべての列タイプが <strong>VARCHAR2型</strong> になっていることが確認できます。</p>
+    <p><strong>ファイルの選択</strong>をクリックし、ダウンロードして解凍した <strong>sales_channels.csv</strong> を選択します。</p>
 
-    <p><img src="adb2-1_4.png" alt="画面ショット1-4" /></p>
+    <p><img src="img3.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>数字列である <strong>CHANNEL_ID列、CHANNEL_CLASS_ID列、CHANNEL_TOTAL_ID列</strong> の列タイプを <strong>NUMBER型</strong> に変更して <strong>次</strong> をクリックします。</p>
+    <p>sales_channels.csvがロードできる状態になりました。ロード前に<strong>ペンアイコン</strong>をクリックし、詳細設定を確認・変更できます。</p>
 
-    <p><img src="adb2-1_5.png" alt="画面ショット1-5" /></p>
+    <p><img src="img4.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>設定を確認し <strong>終了</strong> をクリックします</p>
+    <p>sales_channels.csvの表定義等のデータのプレビューを確認したら <strong>閉じる</strong> をクリックします。</p>
 
-    <p><img src="adb2-1_6.png" alt="画面ショット1-6" /></p>
+    <p><img src="img5.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>「データをアップロードしています」の <strong>OK</strong> をクリックし、<strong>ナビゲータ</strong> で <strong>SALES_CHANNELS表</strong> が追加されていることを確認します</p>
+    <p><strong>緑色の実行ボタン</strong>をクリックし、データのロードを開始します。</p>
 
-    <p><img src="adb2-1_7.png" alt="画面ショット1-7" />
- <img src="adb2-1_8.png" alt="画面ショット1-8" /></p>
+    <p><img src="img6.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>データ・ロード・ジョブの実行を確認するポップアップが表示されるので、<strong>実行</strong> をクリックします。</p>
+
+    <p><img src="img7.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>sales_channels.csvに<strong>緑色のチェックマーク</strong>が付き、ロードが完了しました。<strong>完了</strong>をクリックします。</p>
+
+    <p><img src="img8.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。</p>
+
+    <p><img src="img9.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。</p>
@@ -393,24 +405,26 @@
 
     <p>結果が表示されます。</p>
 
-    <p><img src="adb2-1_9.png" alt="画面ショット1-9" /></p>
+    <p><img src="img11.png" alt="画面ショット1-1" /></p>
   </li>
 </ol>
 
-<p>これで、手元のデータのロードは完了です。次は、オブジェクトストレージからデータをロードしてみましょう。</p>
+<p>これで、手元のPCからデータをADBにロードするチュートリアルが完了しました。</p>
 
-<h1 id="2-オブジェクトストレージからcsvデータをロードしてみよう">2. オブジェクトストレージからCSVデータをロードしてみよう</h1>
-<p>この章ではオブジェクトストレージからADBへのデータロード方法を記載します。<br />
+<p>次は、Database Actionsで、クラウド・ストレージからのデータのロードをしてみましょう。</p>
+
+<p><strong>«««««««««««««««««««««««««ここまで編集済»»»»»»»»»»»»»»»»»»»»»»»»»</strong></p>
+
+<h1 id="2-クラウドストレージからのデータのロードしてみよう">2. クラウド・ストレージからのデータのロードしてみよう</h1>
+<p>この章では、オブジェクトストレージからADBへのデータロード方法を記載します。<br />
 多少煩雑な手順となりますが、大量データをロードしたい場合はパフォーマンス性能の観点から本手順を推奨しています。<br />
 サンプルデータとしてcustomers.csvファイルを利用します。</p>
-
-<p>また、ここではコマンド実行に際してSQL Developer Webを利用していますが、SQL*Plus等、コマンドを発行できるツールであれば何でも構いません。</p>
 
 <p>作業の流れは以下の通りです。</p>
 <ol>
   <li>OCIオブジェクトストレージへのアクセス情報を取得</li>
   <li>オブジェクトストレージへのデータアップロード、アクセスURLの取得</li>
-  <li>DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード</li>
+  <li>Database Actionsを利用したオブジェクトストレージからのデータのロード</li>
 </ol>
 
 <h2 id="1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</h2>
@@ -484,7 +498,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 より高速にアップロードすることが可能です。OCICLIについては<a href="https://community.oracle.com/tech/welcome/discussion/4474315">こちら</a>を参考ください。</p>
 
 <h2 id="3dbms_cloudパッケージを利用したadbインスタンスへのデータロード">3.DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード</h2>
-<p>SQL Developer WebでAdminユーザーでADBに接続し、ワークシートで次のコマンドを順に実行してデータをロードします。</p>
+<p>Database ActionsでAdminユーザーでADBに接続し、ワークシートで次のコマンドを順に実行してデータをロードします。</p>
 
 <ol>
   <li>
@@ -713,7 +727,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-23T10:53:37+09:00">June 23, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-24T14:03:23+09:00">June 24, 2021</time></p>
 
 
       </footer>
@@ -734,11 +748,10 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
       
   <nav class="pagination">
     
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
       <a href="/ocitutorials/database/adb101-provisioning/" class="pagination--pager" title="ADBインスタンスを作成してみよう
-">前へ</a>
-    
-    
-      <a href="/ocitutorials/database/adb103-livelabs/" class="pagination--pager" title="Oracle LiveLabsでDatabase Actions機能を試してみよう
 ">次へ</a>
     
   </nav>
