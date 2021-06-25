@@ -11,16 +11,14 @@ header:
 ---
 
 この章ではSQL Developer Webの後継機能である、Database Actionsを利用して、サンプルデータをADBインスタンスにデータをアップロードします。  
-事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。  
+事前に前提条件にリンクされているサンプルデータのCSVファイルをお手元のPC上にダウンロードください。  
 （集合ハンズオンセミナーでは講師の指示に従ってください）
-
-**所要時間 :** #1 約10分, #2 約30分
 
 **前提条件 :**  
 + [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)を完了していること  
-+ 以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています)  
++ 以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること
 <!--	+ [サンプルデータファイルのダウンロードリンク](https://github.com/oracle-japan/ocitutorials/raw/master/tutorials/_database/adb12-dataload/adb-hol2_sampledata.zip) -->
-	+ [サンプルデータファイルのダウンロードリンク](/ocitutorials/database/adb12-dataload/adb-hol2_sampledata.zip)
+	+ [サンプルデータファイルのダウンロードリンク](/ocitutorials/database/adb102-dataload/sales_channels.csv)
 	
 
 **注意 :** チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
@@ -29,10 +27,10 @@ header:
 
 まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。
 
-1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。
+1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツール**タブから、**データベース・アクションを開く**をクリックしてください。
    ![画面ショット1-1](img0.png)
 	
-1. Database Actionsのランディングページの**データ・ツール**から　**データ・ロード** を選択します。
+1. Database Actionsのランディングページのデータ・ツールから　**データ・ロード** を選択します。
 
    ![画面ショット1-1](img1.png)
 
@@ -65,13 +63,16 @@ header:
 
 	![画面ショット1-1](img8.png)
 
+	> ロード完了後、*赤枠のマーク*をクリックすると、エラーログ等の詳細を見ることができます。
+	![画面ショット1-1](img8.5.png)
+
 1. ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。**SQL**をクリック。
 
 	![画面ショット1-1](img9.png)
 
 1. ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。  
 	```sql 
-	SQL> select * from sales_channels; 
+	select * from sales_channels; 
 	```  
 
 	結果が表示されます。  
@@ -102,245 +103,126 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 	![画面ショット2-1](img20.jpg)
 
 1. 画面上部に表示されている**ユーザ名**をクリップボードにコピーし、テキストファイルに保存しておきます。 次に、**認証トークンタブ**の**トークンの生成を**クリックします。
+<br>
 	**注意**）ユーザ名の前に **oracleidentitycloudservice/** のような接頭辞が付加されている場合は、これを含めてユーザ名とします  
 	![画面ショット2-2](img21.jpg)
 
-1. オブジェクトストレージアクセス用のAuth Tokenを生成するために、**Auth Token** をクリックします。  
-	![画面ショット2-2](img23.jpg)
+1. **説明**にトークンの名前(例:first_token)を入力し、**トークンの生成**をクリックします。  
+	![画面ショット2-2](img22.jpg)
 
-1. **Generate Token** をクリックし、Auth Token を生成します  
-	![画面ショット2-2](img24.jpg)
-
-1. 用途に応じた概要をDescriptionに入力し、**Generate Token** をクリックします  
-	![画面ショット2-2](img25.jpg)
-
-1.**Copy** をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。  
->**注意** : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。  
-  
-![画面ショット2-2](img21.jpg)
+1. **コピー** をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。**閉じる**をクリックします。
+>**注意** : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。   
+![画面ショット2-2](img23.jpg)
 
 ## 2.オブジェクトストレージへのデータアップロード
-ダウンロードしたcustomers.csvをオブジェクトストレージへアップロードします。  
+ダウンロードしたsales_channels.csvをオブジェクトストレージへアップロードします。 
+
+1. OCIのハンバーガメニュの**ストレージ > バゲット** をクリックします。
+	![画面ショット2-2](img24.jpg)
+
+1. **バゲットの作成** をクリックします。  
+  
+![画面ショット2-2](img25.jpg)
 	
-1. メニューから **オブジェクト・ストレージ** をクリックします。  
-	![画面ショット2-2](img21.jpg)
+1. **バゲット名**(例:first_backet)を入力し、**作成**をクリックします。  
+	![画面ショット2-2](img26.jpg)
 
-1. **バケットの作成** をクリックします。  
-	![画面ショット2-2](img21.jpg)
+1. 作成したバゲットの右側のオプションから、**バゲットの詳細の表示** をクリックします。  
+	![画面ショット2-2](img27.jpg)
 
-1. バケット名に **adb-hol-bucket01** と入力し、他はそのままで **作成** をクリックし、バケットを作成してください。
-	![画面ショット2-2](img21.jpg)
+1. **アップロード** をクリックし、sales_channels.csvをアップロードしていきましょう。
+	![画面ショット2-2](img28.jpg)
 
-1. 作成されたバケット **adb-hol-bucket01** をクリックします。  
-	![画面ショット2-2](img21.jpg)
+1.  **ファイルを選択**をクリックし、手元のPCからsales_channels.csvを選択します。  
+	![画面ショット2-2](img29.jpg)
 
-1. **オブジェクトのアップロード** をクリックして、お手元のPCにある **customers.csv** をアップロードしてください。（アップロードが完了し終了済と表示されたらOKです。）
+1.  **sales_channels.csv**がアップロードされたのを確認し、**アップロード**をクリックします。
+	![画面ショット2-2](img30.jpg)
 
-1. アップロードしたファイルにアクセスするためのURLを入手しておきます。
-アップロードしたファイルの右にあるメニューをクリックして、**オブジェクト詳細の表示** をクリックします。  
-	![画面ショット2-2](img21.jpg)
-オブジェクトへのURLをコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。
+1.  アップロードしたオブジェクトの右側のオプションから、**オブジェクト詳細の表示** をクリックします。  
+	![画面ショット2-2](img31.jpg)
 
-なお、上記はWebブラウザ経由でアップロードしましたが、よりサイズの大きいデータをオブジェクト・ストレージにアップロードする場合はOCICLIをご利用ください。
-より高速にアップロードすることが可能です。OCICLIについては[こちら](https://community.oracle.com/tech/welcome/discussion/4474315)を参考ください。
+1.  *ファイル名を除いた***URLパス(URI)**をコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。**取消**をクリックして戻ります。
+	**注意**）ファイル名は除いた/o/までのURLをコピーしてください。(例:https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/) 
+	![画面ショット2-2](img32.jpg)
 
-## 3.DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード
-Database ActionsでAdminユーザーでADBに接続し、ワークシートで次のコマンドを順に実行してデータをロードします。  
+## 3.Database Actionsを利用したクラウド・ストレージからのデータ・ロード
 
-1. クレデンシャル情報の登録  
-	クレデンシャル情報とはユーザ名とTokenの組み合わせで登録する認証情報です。後続ステップのデータロード実行時にADBが特定のOracle Object Storageにアクセスするために必要です。  
-	
-	```sql
-	--クレデンシャル情報の登録
-	BEGIN  
-		DBMS_CLOUD.CREATE_CREDENTIAL(　　
-			credential_name => 'WORKSHOP_CREDENTIAL',
-			username => 'adb@handson.com',
-			password => 'xxxxxx'
-			);
-	END;
-	/
-	```
-	+ credential_name: DBに保存した認証情報を識別するための任意の名前
-	+ username: 上記で取得したOracle Object Storageにアクセスするためのユーザ名
-	+ password: 上記で取得したAuth Token
+1.  Database Actionsに戻り、**データ・ロード**をクリックします。
+	![画面ショット2-2](img33.jpg)
 
-	
-	なお、作成済みのCredentialを削除する場合は以下を実行してください。
-	
-	```sql
-	--クレデンシャル情報の削除
-	BEGIN
-		DBMS_CLOUD.DROP_CREDENTIAL(
-			credential_name => 'WORKSHOP_CREDENTIAL'
-		);
-	END;
-	/
-	```
-1. ADB上にロード先の表を作成	
+1.  データの処理には、**データのロード** を選択し、データの場所には、**クラウド・ストレージ** を選択して **次** をクリックします。
+	![画面ショット2-2](img34.jpg)
 
-	```sql
-	--既に表がある場合は削除
-	DROP TABLE customers;
+1.  **+**ボタンをクリックし、クラウド・ストレージの追加を行っていきましょう。
+	![画面ショット2-2](img35.jpg)
 
-	--customers表の作成
-	CREATE TABLE customers (
-		cust_id NUMBER NOT NULL,
-		cust_first_name VARCHAR2(20) NOT NULL,
-		cust_last_name VARCHAR2(40) NOT NULL,
-		cust_gender CHAR(1) NOT NULL,
-		cust_year_of_birth NUMBER(4) NOT NULL,
-		cust_marital_status VARCHAR2(20),
-		cust_street_address VARCHAR2(40) NOT NULL,
-		cust_postal_code VARCHAR2(10) NOT NULL,
-		cust_city VARCHAR2(30) NOT NULL,
-		cust_city_id NUMBER NOT NULL,
-		cust_state_province VARCHAR2(40) NOT NULL,
-		cust_state_province_id NUMBER NOT NULL,
-		country_id NUMBER NOT NULL,
-		cust_main_phone_number VARCHAR2(25) NOT NULL,
-		cust_income_level VARCHAR2(30),
-		cust_credit_limit NUMBER,cust_email VARCHAR2(50),
-		cust_total VARCHAR2(14) NOT NULL,
-		cust_total_id NUMBER NOT NULL,
-		cust_src_id NUMBER,cust_eff_from DATE,
-		cust_eff_to DATE,cust_valid VARCHAR2(1));
-	```
+1.  **名前**には任意の名前を入力(例:*My_Cloud_Storage*)、**クラウド・ストア**には*Oracle*を選択、**URI+バケット**にはオブジェクト詳細からコピー済のURIを(例:*https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/*)、クレデンシャルを作成するために**資格証明の作成**を選択して下さい。**資格証明名**には任意の名前を(例:*USER_CRED*)、**Oracle Infrastractureユーザ名**には、ユーザ設定からコピー済のユーザ名(例:*myUsername*)を、最後に認証トークン生成時にコピー済の**認証トークン**を(例:*LPB>Ktk(1M1SD+a]+r*)を入力し、**テスト**をクリックします。
+	![画面ショット2-2](img36.jpg)
 
-1. ADB上へのデータのロード
-	```sql
-	--データロード
-	BEGIN
-		DBMS_CLOUD.COPY_DATA(
-			table_name=>'CUSTOMERS',
-			credential_name=>'WORKSHOP_CREDENTIAL',
-			file_uri_list=>'https://objectstorage.<region>.oraclecloud.com/n/<namespace>/b/<bucket>/o/customers.csv',
-			format=>json_object(
-			'ignoremissingcolumns' value 'true',
-			'removequotes' value 'true',
-			'dateformat' value 'YYYY-MM-DD HH24:MI:SS',
-			'blankasnull' value 'true')
-		);
-	END;
-	/
-	```
-	
-	file_uri_listには、アップロードしたファイルのURLを記載します。先の手順で入手したURLで更新してください。  
-	
-	
-1. ロード結果の確認
-	```sql
-	select count(1) from CUSTOMERS;
-	select * from CUSTOMERS where rownum <= 5;
-	```
-	
-1. （必要に応じて）主キー（PK）など各種制約の作成
-	
-	```sql
-	ALTER TABLE customers ADD CONSTRAINT customers_pk PRIMARY KEY (cust_id);
-	```
-	ロード完了後に実行した方が、より高速にロードすることが可能なのでおススメです。
-	
-以上で、この章の作業は終了です。次にお進みください。
+1.  **クラウド・ストレージURIは指定された資格証明で有効です**とテストの成功を示す表示を確認し、**作成**をクリックします。
+	![画面ショット2-2](img37.jpg)
 
-# 3. Note
-よくある質問やTipsを記載します。
+1.  **sales_channels.csv**が存在するクラウド・ストレージにアクセスできているのを確認し、画面左側の**sales_channels.csv**を画面左側へドラッグ＆ドロップします。
+	![画面ショット2-2](img38.jpg)
 
-## 1.大量データのロード処理を高速化するには？　　
-次の二つの方法が考えられます。  
+1.  **sales_channels.csv**がデータ・ロード・ジョブに追加されたのを確認し、**緑色の実行ボタン**をクリックします。
+	> 補足 すでにSALES_CHANNNEL表は作成済みのため、デフォルトだと表名が重複しないよう自動的に別名（SALES_CHANNEL_1表）で作成されロードされます。既存のSALES_CHANNEL表に追加ロードすることも可能です。 
 
-- ソースファイルを圧縮  
-	DBMS_CLOUDパッケージはgzip圧縮済みのファイルを展開せずにそのままロードできます。　　
-	
-- ソースファイルを分割  
-	ソースファイルがSJIS等の場合はロード前にファイルを分割しロードすることを推奨します。複数のCPUコアが並列に処理し高速にロードできます。  
-	ソースファイルがUTF8の場合はDBMS_CLOUD内で自動的にファイルを分割するので不要ですが、もしgzipで圧縮する場合は、事前にファイルを分割した上で圧縮してください。  
-	ロードしたいソースファイルが固定長フォーマットの場合もUTF8の場合と同様です。ファイル分割は不要ですが、もし圧縮する場合は事前にファイルを分割した上で圧縮してください。  
-	なお、分割したCSVファイルの各ファイルの一行目に列名などのヘッダ情報がある場合はエラーとなるため、事前に削除しておくと良いです。
+	![画面ショット2-2](img39.jpg)
 
-	+ 具体的な実行例  
-	DBMS_CLOUDパッケージで、compressionオプションを付与しつつ、ファイル名にワイルドカードを記載することで、gzip圧縮済みの複数のファイルを纏めてロードすることができます。
+1.  データ・ロード・ジョブの実行を確認するポップアップが表示されるので、**実行** をクリックします。
+	![画面ショット2-2](img40.jpg)
 
-	```sql
-	--複数ファイルのロード
-	BEGIN
-		DBMS_CLOUD.COPY_DATA(
-			schema_name => 'ADWC_USER',
-			table_name =>'CHANNELS1',
-			credential_name =>'TKY01_CRED_USER',
-			file_uri_list =>'https://objectstorage.ap-tokyo-1.oraclecloud.com/n/tenancyxxxx/b/backetxxxx/o/channels_data_*.gz',
-			format => '{
-				"type":"CSV",
-				"compression":"gzip",
-				"dateformat":"YYYY-MM-DD",
-				"timestampformat":"YYYY-MM-DD HH24:MI:SS.FF",
-				"ignoremissingcolumns":"true" 
-			}'
-		);
-	END;
-	/
-	```
-	※ファイルの分割や圧縮の処理時間や、ネットワーク転送速度などとの兼ね合いから、そのままロードした方が高速なケースもあります。
+1.  sales_channels.csvに**緑色のチェックマーク**が付き、ロードが完了しました。**完了**をクリックします。
+	![画面ショット2-2](img41.jpg)
 
-## 2.DBMS_CLOUD.COPY_DATAによるロードが失敗する場合の確認ポイント
-まず最初にソースファイルにアクセスできているか確認してください。  
+1.  ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。**SQL**をクリック。
+	![画面ショット2-2](img42.jpg)
 
-- 認証系のエラー（ORA-20401: Authorization failed for URI）が出る場合  
-	ユーザ名、Auth Tokenに誤りがないか再度確認してください。特にIDCSと連携している場合、ユーザ名にはoracleidentitycloudservice/ の接頭辞が必要です。  
-	以下のSQL文でクレデンシャルが正しく登録されているか確認してください。  
-	
-	```sql
-	select * from user_credentials;
+1. ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。  
+	```sql 
+	select * from sales_channels_1; 
 	```  
-	
-	
-- オブジェクトが見つからないエラー（ORA-20404: Object not found）が出る場合  
-	オブジェクトストレージへのURLが正しいか、アップロード済みのファイル名が正しいか、再確認してください。  
-	事前認証済みリクエストを作成し、アクセスできるか試してください。  
-	オブジェクトストレージ上のバケットをPublic にして試してください。
 
-次にADBインスタンス内のログを確認してください。  
-- ロードに失敗した場合は、まず最初にログファイル、バッドファイルの表からSQL文でエラー内容を確認します。  
-以下はSQL*Plusでエラーを確認するスクリプトです。なお、ログは 2日で自動的に削除されます。
+	結果が表示されます。  
 
-	```sql
-	--ログファイルの確認　　
-	-- (logfile_table, badfile_table 列で、ログファイルとバッドファイルの表名を確認)　　
-		set lines 200　　
-		set pages 9999　　
-		col TABLE_NAME for a30　　
-		col LOGFILE_TABLE for a15　　
-		col BADFILE_TABLE for a15　　
-		SELECT table_name, logfile_table, badfile_table, status, update_time FROM user_load_operations WHERE type = 'COPY' order by 5;　　
-	-- ログの確認　　
-		select * from COPY$1_LOG;
-		select * from COPY$1_BAD;
-	```
+	![画面ショット1-1](img43.jpg)
 
-## 3.お問い合わせのあった例・確認ポイント
+# 3. クラウド・ストレージのデータのフィードをしてみよう
 
-- 列定義の文字数に注意  
-	文字コード（CHARACTERSET パラメータ）は変更不可（AL32UTF8がデフォルト、2019/11現在）  
-    既存DBがSJIS等の場合、オブジェクト名、および列定義のバイト数について、定義を一律2倍にするといった変更が必要な場合があります。
-- ソースファイルについて  
-	ヘッダ情報（通常1行目）に注意
-	ソースファイルを圧縮する場合、もしくはワイルドカード指定で複数のファイルを一括ロードする場合は、ソースファイルからヘッダを削除してください
-- 文字コードに注意、改行コードに注意  
-	文字コードがUTF-8の場合は指定は不要。その他SJIS等の場合は、format句のcharactersetを指定してください。  
-    改行コードがCR+LFの場合、recorddelimiterを指定してください。UNIX系で利用される 改行コード = LF の場合は recorddelimiter の指定は不要
-	
-    + 記載例  
-     「format => json_object(‘type’ value ’CSV’ , ‘characterset’ value ’JA16SJIS’, 'recorddelimiter' value '''''') 」  
-	 
+クラウド・ストレージに入ってきた新しいデータを指定した頻度でポーリングすることで、ライブ表として設定したテーブルに最新のデータを自動フィードすることができます。
+従来はBucketにファイルを置いたことを定期的に監視してロードするといったスクリプトを作り込む必要がありましたが、Database Actionsのフィード機能を使えば、Bucketにファイルを置きさえすればデータベースに同期されるので、IoT用途やデータ分析に活用可能です。
 
-- タイムスタンプのフォーマットが24時間表記の場合  
-    format句のTimestampformatオプションにYYY-MM-DD HH24:MI:SS.FFを指定してください。 （YYYY-MM-DD HH:MI:SS.FFと記載するとエラーになる ）
+1.  Database Actionsのランディングページのデータ・ツールから　**データ・ロード** を選択します。
+	![画面ショット2-2](img50.png)
 
-- 最後の列に空白がある場合  
-	Ignoremissingcolumnsを指定してください。
+1.  データの処理には、**データのフィード** を選択し、データの場所には、**クラウド・ストレージ** を選択して **次** をクリックします。
+	![画面ショット2-2](img51.png)
 
-- 列のNULLを許可する（ファイルの一部列データがNULL）の場合  
-	'blankasnull' VALUE 'true' を設定する
-	
-- その他  
-	格納されているデータ固有のエラーに関する詳細は[ドキュメントのパッケージ説明](https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/dbmscloud-reference.html#GUID-52C9974C-D95E-4E41-AFBD-0FC4065C029A)もあわせて参照ください。
+1.  **ライブ表フィードの作成**をクリックします。
+	![画面ショット2-2](img52.png)
+
+1.  **ライブ表フィード名**に任意の名前を入力(例:*LIVE_TABLE_FEED*)、**ターゲット名**に任意の名前を入力(例:*LIVE_TABLE*)、**オブジェクト・フィルタ**は正規表現の設定をする場合に入力します。**スキーマ**はドロップダウンメニューから選択(例:*ADMIN*)、**クラウド・ストレージ**はドロップダウンメニューから選択(例:*MY_CLOUD_STORAGE*)、**ポーリング**にチェックを入れることで、設定したクラウドストレージから最新のデータを取りに行く頻度を設定できます(例:*月曜日、水曜日、金曜日の2時間おき*)。また、**ポーリングの開始日と終了日**を設定することも可能です。**作成**をクリックします。
+	![画面ショット2-2](img53.png)
+
+1.  **LIVE_TABLE_FEED**というライブ表フィードが作成されました。
+	![画面ショット2-2](img54.png)
+
+1.  前述のObject Storageにcsvファイルをアップロードする項を参照しながら、Object Sorageにファイルを新規でアップロードしましょう。アップロードが終了したら、**LIVE_TABLE_FEEDの赤枠のオプションボタン**の**ライブ表フィードの即時実行(1回)**をクリックします。
+	![画面ショット2-2](img55.png)
+
+1.  新規にObject Storageにアップロードされたファイルがライブ表にフィードされたのかワークシートで確認していきます。**SQL**をクリック。
+	![画面ショット2-2](img56.png)
+
+1. ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。  
+	```sql 
+	select * from LIVE_TABLE; 
+	```  
+
+	結果が表示されます。  
+	![画面ショット2-2](img57.png)
+
+
+
+以上で、この章の作業は終了です。
