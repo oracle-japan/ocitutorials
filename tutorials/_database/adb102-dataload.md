@@ -1,7 +1,7 @@
 ---
 title: "ADBにデータをアップロードしてみよう"
 excerpt: "Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。"
-order: "012"
+order: "102"
 layout: single
 header:
   teaser: "/database/adb102-dataload/adb2-1_1.png"
