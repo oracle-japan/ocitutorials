@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-06-24T14:47:44+09:00">
+  <meta property="article:published_time" content="2021-06-25T12:35:22+09:00">
 
 
 
@@ -293,7 +293,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ADBにデータをアップロードしてみよう">
     <meta itemprop="description" content="Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
-    <meta itemprop="datePublished" content="2021-06-24T14:47:44+09:00">
+    <meta itemprop="datePublished" content="2021-06-25T12:35:22+09:00">
     
 
     <div class="page__inner-wrap">
@@ -310,34 +310,26 @@
     <ul>
       <li><a href="#1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</a></li>
       <li><a href="#2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</a></li>
-      <li><a href="#3dbms_cloudパッケージを利用したadbインスタンスへのデータロード">3.DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード</a></li>
+      <li><a href="#3database-actionsを利用したクラウドストレージからのデータロード">3.Database Actionsを利用したクラウド・ストレージからのデータ・ロード</a></li>
     </ul>
   </li>
-  <li><a href="#3-note">3. Note</a>
-    <ul>
-      <li><a href="#1大量データのロード処理を高速化するには">1.大量データのロード処理を高速化するには？　　</a></li>
-      <li><a href="#2dbms_cloudcopy_dataによるロードが失敗する場合の確認ポイント">2.DBMS_CLOUD.COPY_DATAによるロードが失敗する場合の確認ポイント</a></li>
-      <li><a href="#3お問い合わせのあった例確認ポイント">3.お問い合わせのあった例・確認ポイント</a></li>
-    </ul>
-  </li>
+  <li><a href="#3-クラウドストレージのデータのフィードをしてみよう">3. クラウド・ストレージのデータのフィードをしてみよう</a></li>
 </ul>
 
             </nav>
           </aside>
         
         <p>この章ではSQL Developer Webの後継機能である、Database Actionsを利用して、サンプルデータをADBインスタンスにデータをアップロードします。<br />
-事前に前提条件にリンクされているサンプルデータのzipファイルをお手元のPC上にダウンロードし、解凍しておいてください。<br />
+事前に前提条件にリンクされているサンプルデータのCSVファイルをお手元のPC上にダウンロードください。<br />
 （集合ハンズオンセミナーでは講師の指示に従ってください）</p>
-
-<p><strong>所要時間 :</strong> #1 約10分, #2 約30分</p>
 
 <p><strong>前提条件 :</strong></p>
 <ul>
   <li><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>を完了していること</li>
-  <li>以下にリンクされているサンプルデータのzipファイルをダウンロードし、解凍していること(#1で使用するsales_channel.csvと#2で使用するcustomer.csvが含まれています)<br />
+  <li>以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること
 <!--	+ [サンプルデータファイルのダウンロードリンク](https://github.com/oracle-japan/ocitutorials/raw/master/tutorials/_database/adb12-dataload/adb-hol2_sampledata.zip) -->
     <ul>
-      <li><a href="/ocitutorials/database/adb12-dataload/adb-hol2_sampledata.zip">サンプルデータファイルのダウンロードリンク</a></li>
+      <li><a href="/ocitutorials/database/adb102-dataload/sales_channels.csv">サンプルデータファイルのダウンロードリンク</a></li>
     </ul>
   </li>
 </ul>
@@ -350,11 +342,11 @@
 
 <ol>
   <li>
-    <p><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。
+    <p><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。<strong>ツール</strong>タブから、<strong>データベース・アクションを開く</strong>をクリックしてください。
 <img src="img0.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>Database Actionsのランディングページの<strong>データ・ツール</strong>から　<strong>データ・ロード</strong> を選択します。</p>
+    <p>Database Actionsのランディングページのデータ・ツールから　<strong>データ・ロード</strong> を選択します。</p>
 
     <p><img src="img1.png" alt="画面ショット1-1" /></p>
   </li>
@@ -392,6 +384,11 @@
     <p>sales_channels.csvに<strong>緑色のチェックマーク</strong>が付き、ロードが完了しました。<strong>完了</strong>をクリックします。</p>
 
     <p><img src="img8.png" alt="画面ショット1-1" /></p>
+
+    <blockquote>
+      <p>ロード完了後、<em>赤枠のマーク</em>をクリックすると、エラーログ等の詳細を見ることができます。
+ <img src="img8.5.png" alt="画面ショット1-1" /></p>
+    </blockquote>
   </li>
   <li>
     <p>ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。</p>
@@ -400,7 +397,7 @@
   </li>
   <li>
     <p>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。</p>
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">sales_channels</span><span class="p">;</span> 
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">sales_channels</span><span class="p">;</span> 
 </code></pre></div>    </div>
 
     <p>結果が表示されます。</p>
@@ -437,284 +434,171 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
   </li>
   <li>
     <p>画面上部に表示されている<strong>ユーザ名</strong>をクリップボードにコピーし、テキストファイルに保存しておきます。 次に、<strong>認証トークンタブ</strong>の<strong>トークンの生成を</strong>クリックします。
+<br />
  <strong>注意</strong>）ユーザ名の前に <strong>oracleidentitycloudservice/</strong> のような接頭辞が付加されている場合は、これを含めてユーザ名とします<br />
  <img src="img21.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>オブジェクトストレージアクセス用のAuth Tokenを生成するために、<strong>Auth Token</strong> をクリックします。<br />
- <img src="img23.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>説明</strong>にトークンの名前(例:first_token)を入力し、<strong>トークンの生成</strong>をクリックします。<br />
+ <img src="img22.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>Generate Token</strong> をクリックし、Auth Token を生成します<br />
+    <p><strong>コピー</strong> をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<strong>閉じる</strong>をクリックします。</p>
+    <blockquote>
+      <p><strong>注意</strong> : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。 <br />
+<img src="img23.jpg" alt="画面ショット2-2" /></p>
+    </blockquote>
+  </li>
+</ol>
+
+<h2 id="2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</h2>
+<p>ダウンロードしたsales_channels.csvをオブジェクトストレージへアップロードします。</p>
+
+<ol>
+  <li>
+    <p>OCIのハンバーガメニュの<strong>ストレージ &gt; バゲット</strong> をクリックします。
  <img src="img24.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>用途に応じた概要をDescriptionに入力し、<strong>Generate Token</strong> をクリックします<br />
- <img src="img25.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>バゲットの作成</strong> をクリックします。</p>
   </li>
 </ol>
 
-<p>1.<strong>Copy</strong> をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。</p>
-<blockquote>
-  <p><strong>注意</strong> : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。</p>
-</blockquote>
-
-<p><img src="img21.jpg" alt="画面ショット2-2" /></p>
-
-<h2 id="2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</h2>
-<p>ダウンロードしたcustomers.csvをオブジェクトストレージへアップロードします。</p>
+<p><img src="img25.jpg" alt="画面ショット2-2" /></p>
 
 <ol>
   <li>
-    <p>メニューから <strong>オブジェクト・ストレージ</strong> をクリックします。<br />
- <img src="img21.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>バゲット名</strong>(例:first_backet)を入力し、<strong>作成</strong>をクリックします。<br />
+ <img src="img26.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>バケットの作成</strong> をクリックします。<br />
- <img src="img21.jpg" alt="画面ショット2-2" /></p>
+    <p>作成したバゲットの右側のオプションから、<strong>バゲットの詳細の表示</strong> をクリックします。<br />
+ <img src="img27.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>バケット名に <strong>adb-hol-bucket01</strong> と入力し、他はそのままで <strong>作成</strong> をクリックし、バケットを作成してください。
- <img src="img21.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>アップロード</strong> をクリックし、sales_channels.csvをアップロードしていきましょう。
+ <img src="img28.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>作成されたバケット <strong>adb-hol-bucket01</strong> をクリックします。<br />
- <img src="img21.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>ファイルを選択</strong>をクリックし、手元のPCからsales_channels.csvを選択します。<br />
+<img src="img29.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>オブジェクトのアップロード</strong> をクリックして、お手元のPCにある <strong>customers.csv</strong> をアップロードしてください。（アップロードが完了し終了済と表示されたらOKです。）</p>
+    <p><strong>sales_channels.csv</strong>がアップロードされたのを確認し、<strong>アップロード</strong>をクリックします。
+<img src="img30.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>アップロードしたファイルにアクセスするためのURLを入手しておきます。
-アップロードしたファイルの右にあるメニューをクリックして、<strong>オブジェクト詳細の表示</strong> をクリックします。<br />
- <img src="img21.jpg" alt="画面ショット2-2" />
-オブジェクトへのURLをコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。</p>
+    <p>アップロードしたオブジェクトの右側のオプションから、<strong>オブジェクト詳細の表示</strong> をクリックします。<br />
+<img src="img31.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><em>ファイル名を除いた</em><strong>URLパス(URI)</strong>をコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<strong>取消</strong>をクリックして戻ります。
+<strong>注意</strong>）ファイル名は除いた/o/までのURLをコピーしてください。(例:https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/) 
+<img src="img32.jpg" alt="画面ショット2-2" /></p>
   </li>
 </ol>
 
-<p>なお、上記はWebブラウザ経由でアップロードしましたが、よりサイズの大きいデータをオブジェクト・ストレージにアップロードする場合はOCICLIをご利用ください。
-より高速にアップロードすることが可能です。OCICLIについては<a href="https://community.oracle.com/tech/welcome/discussion/4474315">こちら</a>を参考ください。</p>
-
-<h2 id="3dbms_cloudパッケージを利用したadbインスタンスへのデータロード">3.DBMS_CLOUDパッケージを利用したADBインスタンスへのデータロード</h2>
-<p>Database ActionsでAdminユーザーでADBに接続し、ワークシートで次のコマンドを順に実行してデータをロードします。</p>
+<h2 id="3database-actionsを利用したクラウドストレージからのデータロード">3.Database Actionsを利用したクラウド・ストレージからのデータ・ロード</h2>
 
 <ol>
   <li>
-    <p>クレデンシャル情報の登録<br />
- クレデンシャル情報とはユーザ名とTokenの組み合わせで登録する認証情報です。後続ステップのデータロード実行時にADBが特定のOracle Object Storageにアクセスするために必要です。</p>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--クレデンシャル情報の登録</span>
- <span class="k">BEGIN</span>  
-     <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span><span class="p">(</span><span class="err">　　</span>
-         <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'WORKSHOP_CREDENTIAL'</span><span class="p">,</span>
-         <span class="n">username</span> <span class="o">=&gt;</span> <span class="s1">'adb@handson.com'</span><span class="p">,</span>
-         <span class="n">password</span> <span class="o">=&gt;</span> <span class="s1">'xxxxxx'</span>
-         <span class="p">);</span>
- <span class="k">END</span><span class="p">;</span>
- <span class="o">/</span>
-</code></pre></div>    </div>
-    <ul>
-      <li>credential_name: DBに保存した認証情報を識別するための任意の名前</li>
-      <li>username: 上記で取得したOracle Object Storageにアクセスするためのユーザ名</li>
-      <li>password: 上記で取得したAuth Token</li>
-    </ul>
-
-    <p>なお、作成済みのCredentialを削除する場合は以下を実行してください。</p>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--クレデンシャル情報の削除</span>
- <span class="k">BEGIN</span>
-     <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">DROP_CREDENTIAL</span><span class="p">(</span>
-         <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'WORKSHOP_CREDENTIAL'</span>
-     <span class="p">);</span>
- <span class="k">END</span><span class="p">;</span>
- <span class="o">/</span>
-</code></pre></div>    </div>
+    <p>Database Actionsに戻り、<strong>データ・ロード</strong>をクリックします。
+<img src="img33.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>ADB上にロード先の表を作成</p>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--既に表がある場合は削除</span>
- <span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">customers</span><span class="p">;</span>
-
- <span class="c1">--customers表の作成</span>
- <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">customers</span> <span class="p">(</span>
-     <span class="n">cust_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_first_name</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_last_name</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_gender</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_year_of_birth</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_marital_status</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
-     <span class="n">cust_street_address</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_postal_code</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_city</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_city_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_state_province</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_state_province_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">country_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_main_phone_number</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_income_level</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
-     <span class="n">cust_credit_limit</span> <span class="n">NUMBER</span><span class="p">,</span><span class="n">cust_email</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-     <span class="n">cust_total</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_total_id</span> <span class="n">NUMBER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-     <span class="n">cust_src_id</span> <span class="n">NUMBER</span><span class="p">,</span><span class="n">cust_eff_from</span> <span class="nb">DATE</span><span class="p">,</span>
-     <span class="n">cust_eff_to</span> <span class="nb">DATE</span><span class="p">,</span><span class="n">cust_valid</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
-</code></pre></div>    </div>
-  </li>
-  <li>ADB上へのデータのロード
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">--データロード</span>
- <span class="k">BEGIN</span>
-     <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span><span class="p">(</span>
-         <span class="k">table_name</span><span class="o">=&gt;</span><span class="s1">'CUSTOMERS'</span><span class="p">,</span>
-         <span class="n">credential_name</span><span class="o">=&gt;</span><span class="s1">'WORKSHOP_CREDENTIAL'</span><span class="p">,</span>
-         <span class="n">file_uri_list</span><span class="o">=&gt;</span><span class="s1">'https://objectstorage.&lt;region&gt;.oraclecloud.com/n/&lt;namespace&gt;/b/&lt;bucket&gt;/o/customers.csv'</span><span class="p">,</span>
-         <span class="n">format</span><span class="o">=&gt;</span><span class="n">json_object</span><span class="p">(</span>
-         <span class="s1">'ignoremissingcolumns'</span> <span class="n">value</span> <span class="s1">'true'</span><span class="p">,</span>
-         <span class="s1">'removequotes'</span> <span class="n">value</span> <span class="s1">'true'</span><span class="p">,</span>
-         <span class="s1">'dateformat'</span> <span class="n">value</span> <span class="s1">'YYYY-MM-DD HH24:MI:SS'</span><span class="p">,</span>
-         <span class="s1">'blankasnull'</span> <span class="n">value</span> <span class="s1">'true'</span><span class="p">)</span>
-     <span class="p">);</span>
- <span class="k">END</span><span class="p">;</span>
- <span class="o">/</span>
-</code></pre></div>    </div>
-
-    <p>file_uri_listには、アップロードしたファイルのURLを記載します。先の手順で入手したURLで更新してください。</p>
-  </li>
-  <li>ロード結果の確認
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">from</span> <span class="n">CUSTOMERS</span><span class="p">;</span>
- <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">CUSTOMERS</span> <span class="k">where</span> <span class="n">rownum</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">;</span>
-</code></pre></div>    </div>
+    <p>データの処理には、<strong>データのロード</strong> を選択し、データの場所には、<strong>クラウド・ストレージ</strong> を選択して <strong>次</strong> をクリックします。
+<img src="img34.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>（必要に応じて）主キー（PK）など各種制約の作成</p>
+    <p><strong>+</strong>ボタンをクリックし、クラウド・ストレージの追加を行っていきましょう。
+<img src="img35.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>名前</strong>には任意の名前を入力(例:<em>My_Cloud_Storage</em>)、<strong>クラウド・ストア</strong>には<em>Oracle</em>を選択、<strong>URI+バケット</strong>にはオブジェクト詳細からコピー済のURIを(例:<em>https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/</em>)、クレデンシャルを作成するために<strong>資格証明の作成</strong>を選択して下さい。<strong>資格証明名</strong>には任意の名前を(例:<em>USER_CRED</em>)、<strong>Oracle Infrastractureユーザ名</strong>には、ユーザ設定からコピー済のユーザ名(例:<em>myUsername</em>)を、最後に認証トークン生成時にコピー済の<strong>認証トークン</strong>を(例:<em>LPB&gt;Ktk(1M1SD+a]+r</em>)を入力し、<strong>テスト</strong>をクリックします。
+<img src="img36.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>クラウド・ストレージURIは指定された資格証明で有効です</strong>とテストの成功を示す表示を確認し、<strong>作成</strong>をクリックします。
+<img src="img37.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>sales_channels.csv</strong>が存在するクラウド・ストレージにアクセスできているのを確認し、画面左側の<strong>sales_channels.csv</strong>を画面左側へドラッグ＆ドロップします。
+<img src="img38.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li><strong>sales_channels.csv</strong>がデータ・ロード・ジョブに追加されたのを確認し、<strong>緑色の実行ボタン</strong>をクリックします。
+    <blockquote>
+      <p>補足 すでにSALES_CHANNNEL表は作成済みのため、デフォルトだと表名が重複しないよう自動的に別名（SALES_CHANNEL_1表）で作成されロードされます。既存のSALES_CHANNEL表に追加ロードすることも可能です。</p>
+    </blockquote>
 
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">customers</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">customers_pk</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">cust_id</span><span class="p">);</span>
+    <p><img src="img39.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>データ・ロード・ジョブの実行を確認するポップアップが表示されるので、<strong>実行</strong> をクリックします。
+<img src="img40.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>sales_channels.csvに<strong>緑色のチェックマーク</strong>が付き、ロードが完了しました。<strong>完了</strong>をクリックします。
+<img src="img41.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。
+<img src="img42.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">sales_channels_1</span><span class="p">;</span> 
 </code></pre></div>    </div>
-    <p>ロード完了後に実行した方が、より高速にロードすることが可能なのでおススメです。</p>
+
+    <p>結果が表示されます。</p>
+
+    <p><img src="img43.jpg" alt="画面ショット1-1" /></p>
   </li>
 </ol>
 
-<p>以上で、この章の作業は終了です。次にお進みください。</p>
+<h1 id="3-クラウドストレージのデータのフィードをしてみよう">3. クラウド・ストレージのデータのフィードをしてみよう</h1>
 
-<h1 id="3-note">3. Note</h1>
-<p>よくある質問やTipsを記載します。</p>
+<p>クラウド・ストレージに入ってきた新しいデータを指定した頻度でポーリングすることで、ライブ表として設定したテーブルに最新のデータを自動フィードすることができます。
+従来はBucketにファイルを置いたことを定期的に監視してロードするといったスクリプトを作り込む必要がありましたが、Database Actionsのフィード機能を使えば、Bucketにファイルを置きさえすればデータベースに指定した頻度で同期されるので、IoT用途やOracle Machine Learningのデータベース内機械学習、データ分析に活用可能です。</p>
 
-<h2 id="1大量データのロード処理を高速化するには">1.大量データのロード処理を高速化するには？　　</h2>
-<p>次の二つの方法が考えられます。</p>
-
-<ul>
+<ol>
   <li>
-    <p>ソースファイルを圧縮<br />
-  DBMS_CLOUDパッケージはgzip圧縮済みのファイルを展開せずにそのままロードできます。　　</p>
+    <p>Database Actionsのランディングページのデータ・ツールから　<strong>データ・ロード</strong> を選択します。
+<img src="img50.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>ソースファイルを分割<br />
-  ソースファイルがSJIS等の場合はロード前にファイルを分割しロードすることを推奨します。複数のCPUコアが並列に処理し高速にロードできます。<br />
-  ソースファイルがUTF8の場合はDBMS_CLOUD内で自動的にファイルを分割するので不要ですが、もしgzipで圧縮する場合は、事前にファイルを分割した上で圧縮してください。<br />
-  ロードしたいソースファイルが固定長フォーマットの場合もUTF8の場合と同様です。ファイル分割は不要ですが、もし圧縮する場合は事前にファイルを分割した上で圧縮してください。<br />
-  なお、分割したCSVファイルの各ファイルの一行目に列名などのヘッダ情報がある場合はエラーとなるため、事前に削除しておくと良いです。</p>
-
-    <ul>
-      <li>具体的な実行例<br />
-  DBMS_CLOUDパッケージで、compressionオプションを付与しつつ、ファイル名にワイルドカードを記載することで、gzip圧縮済みの複数のファイルを纏めてロードすることができます。</li>
-    </ul>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">--複数ファイルのロード</span>
-  <span class="k">BEGIN</span>
-      <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span><span class="p">(</span>
-          <span class="k">schema_name</span> <span class="o">=&gt;</span> <span class="s1">'ADWC_USER'</span><span class="p">,</span>
-          <span class="k">table_name</span> <span class="o">=&gt;</span><span class="s1">'CHANNELS1'</span><span class="p">,</span>
-          <span class="n">credential_name</span> <span class="o">=&gt;</span><span class="s1">'TKY01_CRED_USER'</span><span class="p">,</span>
-          <span class="n">file_uri_list</span> <span class="o">=&gt;</span><span class="s1">'https://objectstorage.ap-tokyo-1.oraclecloud.com/n/tenancyxxxx/b/backetxxxx/o/channels_data_*.gz'</span><span class="p">,</span>
-          <span class="n">format</span> <span class="o">=&gt;</span> <span class="s1">'{
-              "type":"CSV",
-              "compression":"gzip",
-              "dateformat":"YYYY-MM-DD",
-              "timestampformat":"YYYY-MM-DD HH24:MI:SS.FF",
-              "ignoremissingcolumns":"true" 
-          }'</span>
-      <span class="p">);</span>
-  <span class="k">END</span><span class="p">;</span>
-  <span class="o">/</span>
+    <p>データの処理には、<strong>データのフィード</strong> を選択し、データの場所には、<strong>クラウド・ストレージ</strong> を選択して <strong>次</strong> をクリックします。
+<img src="img51.png" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>ライブ表フィードの作成</strong>をクリックします。
+<img src="img52.png" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>ライブ表フィード名</strong>に任意の名前を入力(例:<em>LIVE_TABLE_FEED</em>)、<strong>ターゲット名</strong>に任意の名前を入力(例:<em>LIVE_TABLE</em>)、<strong>オブジェクト・フィルタ</strong>は正規表現の設定をする場合に入力します。<strong>スキーマ</strong>はドロップダウンメニューから選択(例:<em>ADMIN</em>)、<strong>クラウド・ストレージ</strong>はドロップダウンメニューから選択(例:<em>MY_CLOUD_STORAGE</em>)、<strong>ポーリング</strong>にチェックを入れることで、設定したクラウドストレージから最新のデータを取りに行く頻度を設定できます(例:<em>月曜日、水曜日、金曜日の2時間おき</em>)。また、<strong>ポーリングの開始日と終了日</strong>を設定することも可能です。<strong>作成</strong>をクリックします。
+<img src="img53.png" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>LIVE_TABLE_FEED</strong>というライブ表フィードが作成されました。
+<img src="img54.png" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>前述のObject Storageにcsvファイルをアップロードする項を参照しながら、Object Sorageにファイルを新規でアップロードしましょう。アップロードが終了したら、<strong>LIVE_TABLE_FEEDの赤枠のオプションボタン</strong>の<strong>ライブ表フィードの即時実行(1回)</strong>をクリックします。
+<img src="img55.png" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>新規にObject Storageにアップロードされたファイルがライブ表にフィードされたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。
+<img src="img56.png" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">LIVE_TABLE</span><span class="p">;</span> 
 </code></pre></div>    </div>
-    <p>※ファイルの分割や圧縮の処理時間や、ネットワーク転送速度などとの兼ね合いから、そのままロードした方が高速なケースもあります。</p>
-  </li>
-</ul>
 
-<h2 id="2dbms_cloudcopy_dataによるロードが失敗する場合の確認ポイント">2.DBMS_CLOUD.COPY_DATAによるロードが失敗する場合の確認ポイント</h2>
-<p>まず最初にソースファイルにアクセスできているか確認してください。</p>
-
-<ul>
-  <li>
-    <p>認証系のエラー（ORA-20401: Authorization failed for URI）が出る場合<br />
-  ユーザ名、Auth Tokenに誤りがないか再度確認してください。特にIDCSと連携している場合、ユーザ名にはoracleidentitycloudservice/ の接頭辞が必要です。<br />
-  以下のSQL文でクレデンシャルが正しく登録されているか確認してください。</p>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">user_credentials</span><span class="p">;</span>
-</code></pre></div>    </div>
+    <p>結果が表示されます。<br />
+ <img src="img57.png" alt="画面ショット2-2" /></p>
   </li>
-  <li>
-    <p>オブジェクトが見つからないエラー（ORA-20404: Object not found）が出る場合<br />
-  オブジェクトストレージへのURLが正しいか、アップロード済みのファイル名が正しいか、再確認してください。<br />
-  事前認証済みリクエストを作成し、アクセスできるか試してください。<br />
-  オブジェクトストレージ上のバケットをPublic にして試してください。</p>
-  </li>
-</ul>
+</ol>
 
-<p>次にADBインスタンス内のログを確認してください。</p>
-<ul>
-  <li>
-    <p>ロードに失敗した場合は、まず最初にログファイル、バッドファイルの表からSQL文でエラー内容を確認します。<br />
-以下はSQL*Plusでエラーを確認するスクリプトです。なお、ログは 2日で自動的に削除されます。</p>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">--ログファイルの確認　　</span>
-  <span class="c1">-- (logfile_table, badfile_table 列で、ログファイルとバッドファイルの表名を確認)　　</span>
-      <span class="k">set</span> <span class="n">lines</span> <span class="mi">200</span><span class="err">　　</span>
-      <span class="k">set</span> <span class="n">pages</span> <span class="mi">9999</span><span class="err">　　</span>
-      <span class="n">col</span> <span class="k">TABLE_NAME</span> <span class="k">for</span> <span class="n">a30</span><span class="err">　　</span>
-      <span class="n">col</span> <span class="n">LOGFILE_TABLE</span> <span class="k">for</span> <span class="n">a15</span><span class="err">　　</span>
-      <span class="n">col</span> <span class="n">BADFILE_TABLE</span> <span class="k">for</span> <span class="n">a15</span><span class="err">　　</span>
-      <span class="k">SELECT</span> <span class="k">table_name</span><span class="p">,</span> <span class="n">logfile_table</span><span class="p">,</span> <span class="n">badfile_table</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">update_time</span> <span class="k">FROM</span> <span class="n">user_load_operations</span> <span class="k">WHERE</span> <span class="k">type</span> <span class="o">=</span> <span class="s1">'COPY'</span> <span class="k">order</span> <span class="k">by</span> <span class="mi">5</span><span class="p">;</span><span class="err">　　</span>
-  <span class="c1">-- ログの確認　　</span>
-      <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="k">COPY</span><span class="err">$</span><span class="mi">1</span><span class="n">_LOG</span><span class="p">;</span>
-      <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="k">COPY</span><span class="err">$</span><span class="mi">1</span><span class="n">_BAD</span><span class="p">;</span>
-</code></pre></div>    </div>
-  </li>
-</ul>
-
-<h2 id="3お問い合わせのあった例確認ポイント">3.お問い合わせのあった例・確認ポイント</h2>
-
-<ul>
-  <li>列定義の文字数に注意<br />
-  文字コード（CHARACTERSET パラメータ）は変更不可（AL32UTF8がデフォルト、2019/11現在）<br />
-  既存DBがSJIS等の場合、オブジェクト名、および列定義のバイト数について、定義を一律2倍にするといった変更が必要な場合があります。</li>
-  <li>ソースファイルについて<br />
-  ヘッダ情報（通常1行目）に注意
-  ソースファイルを圧縮する場合、もしくはワイルドカード指定で複数のファイルを一括ロードする場合は、ソースファイルからヘッダを削除してください</li>
-  <li>
-    <p>文字コードに注意、改行コードに注意<br />
-  文字コードがUTF-8の場合は指定は不要。その他SJIS等の場合は、format句のcharactersetを指定してください。<br />
-  改行コードがCR+LFの場合、recorddelimiterを指定してください。UNIX系で利用される 改行コード = LF の場合は recorddelimiter の指定は不要</p>
-
-    <ul>
-      <li>記載例<br />
-   「format =&gt; json_object(‘type’ value ’CSV’ , ‘characterset’ value ’JA16SJIS’, ‘recorddelimiter’ value ‘’’’’’) 」</li>
-    </ul>
-  </li>
-  <li>
-    <p>タイムスタンプのフォーマットが24時間表記の場合<br />
-  format句のTimestampformatオプションにYYY-MM-DD HH24:MI:SS.FFを指定してください。 （YYYY-MM-DD HH:MI:SS.FFと記載するとエラーになる ）</p>
-  </li>
-  <li>
-    <p>最後の列に空白がある場合<br />
-  Ignoremissingcolumnsを指定してください。</p>
-  </li>
-  <li>
-    <p>列のNULLを許可する（ファイルの一部列データがNULL）の場合<br />
-  ‘blankasnull’ VALUE ‘true’ を設定する</p>
-  </li>
-  <li>その他<br />
-  格納されているデータ固有のエラーに関する詳細は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/dbmscloud-reference.html#GUID-52C9974C-D95E-4E41-AFBD-0FC4065C029A">ドキュメントのパッケージ説明</a>もあわせて参照ください。</li>
-</ul>
+<p>以上で、この章の作業は終了です。</p>
 
         
       </section>
@@ -725,7 +609,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-24T14:47:44+09:00">June 24, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-25T12:35:22+09:00">June 25, 2021</time></p>
 
 
       </footer>
