@@ -59,7 +59,7 @@ header:
     ![img1_2.png](img1_2.png)
 3. ダウンロードウィザードが起動するので、 **ウォレットのダウンロード** をクリックします。
 
-    ![img1_3.png](img1_3.png)
+    <img src="img1_3.png" width="80%">
 
     【ウォレットの選択について】
 
@@ -74,7 +74,7 @@ header:
 4. ウォレットファイルに付与するパスワードを入力し、ダウンロードをクリックして、お手元のPCの任意の場所に保存してください。
     （本ハンズオンガイドでは便宜上、パスワードは **Welcome12345#** に統一ください）
 
-    ![img1_4.png](img1_4.png)
+    <img src="img1_4.png" width="80%">
 
 <br>
 
@@ -110,11 +110,14 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
    
     Cloud Shellの画面に、直接ファイルを"Drag & Drop"してアップロードすることも可能です。<br>
     lsコマンドで、ファイルが正しくアップロードされていることを確認します。
+
     ```sh
     $ ls
     Wallet_atp01.zip
     ```
+
 3. 格納用のディレクトリを作成し、ウォレットファイルを移動します。$HOME/network/admin 配下に配置します。
+
     ```sh
     $ pwd
     /home/[username]
@@ -123,6 +126,7 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
     ```
 
 4. 作成したディレクトリに移動し、圧縮されたウォレットファイルを展開します。
+
     ```sh
     $ cd network/admin
     $ unzip Wallet_atp01.zip
@@ -136,13 +140,17 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
       inflating: ewallet.p12             
       inflating: keystore.jks            
     ```
+
 5. sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。
 
    編集前：
+
     ```sh
     WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY="?/network/admin")))
     ```
+
     編集後：
+
     ```sh
     WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=$/home/[username]/network/admin)))
 
@@ -150,6 +158,7 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
     ```
 
     操作方法は次の通りです。
+
     ```sh
     $ vi sqlnet.ora
     << viにて編集 >>
@@ -173,6 +182,7 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
 <br>
 
 6. 環境変数"ORACLE_HOME"を設定します。
+
     ```sh
     $ export ORACLE_HOME=/home/[username]
     $ echo $ORACLE_HOME
@@ -201,10 +211,13 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
 Cloud Shellには、SQL Plusのクライアントが実装されているため、OCI上のADBに簡単に接続することができます。
 
 1. 次のコマンドをCloud Shellのターミナルに入力し、ADBにSQL*Plusを起動します。
+
     ```sh
     $ sqlplus [username]/[password]@[接続サービス名]
     ```
+
     本ハンズオンガイドを参考にADBインスタンスをお作りいただいた方は、次のようなコマンドになります。
+
     ```sh
     $ sqlplus admin/Welcome12345#@atp01_low
     ```
@@ -231,12 +244,15 @@ Cloud Shellには、SQL Plusのクライアントが実装されているため�
     >**補足**
         >
         >SQL*Plusを起動した際に、次のエラーが出てしまった方向けのトラブルショートをご紹介します。
+        >
         >```sh
         >sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory
         >```
+        >
         >sqlplusの共有ライブラリを参照できるようにパスを設定します。<br>
         ><code>locate libsqlplus.so</code> で得られたパスを、環境変数LD_LIBRARY_PATHに格納します。
         >操作手順は次の通りです。
+        >
         >```sh
         >$ locate libsqlplus.so
         >/usr/lib/oracle/21/client64/lib/libsqlplus.so
@@ -256,16 +272,19 @@ SQLclは、無料のコマンドラインツールです。（SQLclについて�
 SQL＊Plusに似ていますがSQL*Plusよりも多くの機能が備わっており、Autonomous Databaseにも簡単に接続できるようになっています。
 
 1. SQLclを起動します。次のコマンドをCloud Shellのターミナルに入力してみましょう。
+
     ```sh
     $ sql /nolog
     ```
 
 2. ウォレットを指定します。
+
     ```sh
     SQL> set cloudconfig /home/oracle/labs/wallets/Wallet_atp01.zip
     ```
 
 3. 接続します。
+
     ```sh
     SQL> connect admin/Welcome12345#@atp01_low
     ```
@@ -328,6 +347,7 @@ SQL Developerを起動し、管理者アカウント(ADMIN)でADBへ接続しま
     1. SQL Developerにてご自身で作成した接続を選択します。
 
     2. 以下のクエリをワークシートに貼り付けます。
+
         ```sh
         SQL> SELECT USERNAME FROM USER_USERS;
         ```
