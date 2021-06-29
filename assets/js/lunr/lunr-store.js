@@ -335,6 +335,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/img3_2.png"
       },{
+        "title": "AutoML UIで機械学習を始める",
+        "excerpt":"Oracle AutoML UIを使った機械学習   Oracle AutoML UIを使えば、ビジネスユーザやBIベースで分析を行うユーザが機械学習モデルをビルド、デプロイすることが可能になります。 AutoML UIのチュートリアルは下記のリンクからアクセスすることができます。   OracleのAutoML UIで気軽に明日雨が降るか予測しよう  ","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb107-machine-learning/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb107-machine-learning/img1.png"
+      },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
         "tags": ["https://community.oracle.com/docs/DOC-1038411"],
