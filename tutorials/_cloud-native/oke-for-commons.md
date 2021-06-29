@@ -217,7 +217,7 @@ Cloud Shellの起動はダイアログに表示されている「Cloud Shellの�
 次に②のコマンドですが、こちらはOCI CLIの設定ファイル取得用のコマンドを実行しています（以下の例はダミーの値で埋めたものですので、実際のコマンドはダイアログからコピーしてください）。  
 右端の「コピー」をクリックしてコピーし、Cloud Shellにペースとして実行します。
 
-    oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1 --token-version 2.0.0
+    oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1  --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
 
 **kubectlコマンドについて**  
 kubectlコマンドはデフォルトで`$HOME/.kube/config`というパスのファイルを読み込む仕様になっています。  
