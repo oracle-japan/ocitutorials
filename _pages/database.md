@@ -73,7 +73,10 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * APEXのワークスペースの作成
     * スプレッドシートから簡易アプリケーションの作成、実行確認
 
-
++ **[AutoML UIで機械学習を始める](/ocitutorials/database/adb107-machine-learning/)**  
+    * 機械学習モデルのビルド
+    * 機械学習モデルのデプロイ
+    * デプロイした機械学習モデルをRESTで呼ぶ
 
 <br/>
 
