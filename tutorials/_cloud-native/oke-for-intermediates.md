@@ -701,6 +701,7 @@ key|value
 パスワード|データベースパスワードを設定。今回は"TFWorkshop__2000"
 資格証明ファイル|ウォレットファイルを指定。今回は"./Wallet_tfOKEATPDB.zip"
 接続文字列|データベースの名前＆"_high"/"_low"などで構成される接続文字列。今回は"tfOKEATPDB_HIGH"
+SQLファイル・パス|作成スクリプトを含むsqlファイルのパス。今回は"sql/create_schema.sql"
 
 **受講者の方へ**  
 トライアル環境以外の環境をお使いの方は、ATPプロビジョニング時にATPのデータベース名を変更している場合があります。  
@@ -708,8 +709,6 @@ key|value
 "_HIGH"以前の文字列がデータベース名になっておりますので、ご自身が変更したデータベース名に合わせてください。  
 例えば、ATPデータベース名が"tfOKEATPDB1234"の場合は、接続識別子は"tfOKEATPDB1234_HIGH"となります。
 {: .notice--warning}
-
-+ SQLファイル・パス：作成スクリプトを含むsqlファイルのパス。今回は"sql/create_schema.sql"
 
 **受講者の方へ**  
 "sql/create_schema.sql"では、ATPに対して"handson"という名前のスキーマ(ユーザ)を作成しています。  
@@ -904,8 +903,8 @@ SCMコミット時に自動的にビルドを実行|チェックオンにする
 
 key|value
 -|-
-リポジトリ|oke_atp_workshopを選択する
-SCMコミット時に自動的にビルドを実行|チェックオンにする
+レジストリ・ホスト|"WorkshopOCIR"
+イメージ名|`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
 
 **受講者の方へ**  
 トライアル環境以外の環境をお使いの方は、イメージが他のユーザの方と重複しないように、語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。
@@ -1017,8 +1016,8 @@ spec:
         # can read them and use it for connecting to ATP.
         containers:
         - name: oke-atp-helidon
-        image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
-        imagePullPolicy: Always
+          image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
+          imagePullPolicy: Always
 (以下略)
 {% endhighlight %}
 
