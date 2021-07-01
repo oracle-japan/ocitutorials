@@ -78,6 +78,10 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * 機械学習モデルのデプロイ
     * デプロイした機械学習モデルをRESTで呼ぶ
 
++ **[ADBにデータをロードしてみよう(DBMS_CLOUD)](/ocitutorials/database/adb202-dataload-dbms-cloud/)**  
+    * Database Actionsに接続
+    * Database ActionsでDBMS_CLOUDパッケージの実行
+
 <br/>
 
  + **[ADB ハンズオンラボ](https://community.oracle.com/tech/developers/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol)**  ※旧サイト（順次、こちらのサイトに移行予定です。）
