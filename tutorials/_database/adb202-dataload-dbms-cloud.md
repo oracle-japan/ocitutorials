@@ -1,6 +1,6 @@
 ---
-title: "ADBにデータをロードしてみよう(DBMS_CLOUD)"
-excerpt: "DBMS_CLOUDパッケージを使った大量のデータロード"
+title: "202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)"
+excerpt: "数100GB、数TB規模のデータをロードするにはどうしたら良いでしょうか？オブジェクトストレージからDBMS_CLOUDパッケージを使ったデータロード方法を説明します。"
 order: "202"
 layout: single
 header:
@@ -10,7 +10,7 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-Database Actionsのワークシート上でDBMS_CLOUDパッケージを活用したデータのロードをやっていきます。
+大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。
 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。
 
 + [サンプルデータファイル(customers.csv)のダウンロードリンク](/ocitutorials/database/adb203-dataload-dbms-cloud/customers.csv)

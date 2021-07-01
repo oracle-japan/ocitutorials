@@ -1,5 +1,5 @@
 ---
-title: "ウォレットを利用してADBに接続してみよう"
+title: "104: クレデンシャル・ウォレットを利用して接続してみよう"
 excerpt: "クレデンシャル・ウォレットを使ってADBに接続してみましょう。"
 
 order: "104"
@@ -12,9 +12,13 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474310
 ---
 
-本章では、Autonomous Databaseへの接続方法のうち、クレデンシャル・ウォレットを使用した接続方法を確認しましょう
+Autonomous Database にはさまざまなツールが同梱されており、簡単にご利用いただけますが、
+一方で、これまでお使いのアプリケーションからの接続するときはどのように接続するのでしょうか？
 
-クレデンシャル・ウォレット（Credential.zipファイル）の扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。
+Autonomous Databaseには暗号化およびSSL相互認証を利用した接続が前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。
+
+本章ではこのクレデンシャル・ウォレットを使用した接続方法について確認していきます。
+尚、クレデンシャル・ウォレットの扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。
 
 
 **所要時間 :** 約20分
@@ -167,18 +171,20 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
     SSL_SERVER_DN_MATCH=yes
     ```
 
-    >**【参考】viの使い方**
-        >
-        >
-        >|  キー入力  |  動作  |
-        >| ------ | ------ |
-        >|  上下左右キー  |  カーソルの場所を移動する  |
-        >|  i  |  カーソルの場所から編集する（InsertModeに入る）  |
-        >|  ESCキー  |  InsertModeを抜ける  |
-        >|  x  |  カーソルの場所を一文字消す  |
-        >|  :wq  |  ファイルを保存して閉じる  |
-        >|  :q  |  ファイルを閉じる（それまでの編集は破棄される）  |
-        >|  :q!  |  強制的に終了する  |
+<!-- TODO 直せるかな。。。一旦コメントアウトしておきます。
+    **【参考】viの使い方**
+
+    |  キー入力  |  動作  |
+    | ------ | ------ |
+    |  上下左右キー  |  カーソルの場所を移動する  |
+    |  i  |  カーソルの場所から編集する（InsertModeに入る）  |
+    |  ESCキー  |  InsertModeを抜ける  |
+    |  x  |  カーソルの場所を一文字消す  |
+    |  :wq  |  ファイルを保存して閉じる  |
+    |  :q  |  ファイルを閉じる（それまでの編集は破棄される）  |
+    |  :q!  |  強制的に終了する  |
+-->
+
 <br>
 
 6. 環境変数"ORACLE_HOME"を設定します。
@@ -194,9 +200,8 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
 
     <br>
 
-    >**Note**
-        >
-        >Cloud Shellから接続する場合、SQL*Plus ([3-1](#anchor3-1)) およびSQLcl ([3-2](#anchor3-1)) を使用して接続することができます。
+    >**Note**  
+    Cloud Shellから接続する場合、SQL*Plus ([3-1](#anchor3-1)) およびSQLcl ([3-2](#anchor3-1)) を使用して接続することができます。
 
 <br>
 
@@ -213,13 +218,13 @@ Cloud Shellには、SQL Plusのクライアントが実装されているため�
 1. 次のコマンドをCloud Shellのターミナルに入力し、ADBにSQL*Plusを起動します。
 
     ```sh
-    $ sqlplus [username]/[password]@[接続サービス名]
+    sqlplus [username]/[password]@[接続サービス名]
     ```
 
     本ハンズオンガイドを参考にADBインスタンスをお作りいただいた方は、次のようなコマンドになります。
 
     ```sh
-    $ sqlplus admin/Welcome12345#@atp01_low
+    sqlplus admin/Welcome12345#@atp01_low
     ```
 
     <table>
@@ -237,30 +242,27 @@ Cloud Shellには、SQL Plusのクライアントが実装されているため�
      </tr>
     </table>
 
-    ※ 接続サービスに関する詳細は [技術詳細](https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi) 、もしくはを参照ください。
+    ※ 接続サービスに関する詳細は [ADB-S技術詳細資料](https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi) を参照ください。
     
     <br>
+    <hr>
 
-    >**補足**
-        >
-        >SQL*Plusを起動した際に、次のエラーが出てしまった方向けのトラブルショートをご紹介します。
-        >
-        >```sh
-        >sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory
-        >```
-        >
-        >sqlplusの共有ライブラリを参照できるようにパスを設定します。<br>
-        ><code>locate libsqlplus.so</code> で得られたパスを、環境変数LD_LIBRARY_PATHに格納します。
-        >操作手順は次の通りです。
-        >
-        >```sh
-        >$ locate libsqlplus.so
-        >/usr/lib/oracle/21/client64/lib/libsqlplus.so
-        >$ export LD_LIBRARY_PATH=/usr/lib/oracle/21/client64/lib
-        >$ echo $LD_LIBRARY_PATH
-        >/usr/lib/oracle/21/client64/lib
-        >```
-        >
+    **補足**  
+    SQL*Plusを起動した際に、以下のエラーが出てしまった場合は、sqlplusの共有ライブラリを参照できるようにパスを設定してください。<br>
+    「sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory」
+     
+     <br>
+     以下のようにして、<code>locate libsqlplus.so</code> で得られたパスを、環境変数LD_LIBRARY_PATHに格納します。
+     
+     ```sh
+     $ locate libsqlplus.so
+     /usr/lib/oracle/21/client64/lib/libsqlplus.so
+     $ export LD_LIBRARY_PATH=/usr/lib/oracle/21/client64/lib
+     $ echo $LD_LIBRARY_PATH
+     /usr/lib/oracle/21/client64/lib
+     ```
+     <hr>
+
 
 <br>
 
@@ -274,19 +276,19 @@ SQL＊Plusに似ていますがSQL*Plusよりも多くの機能が備わって�
 1. SQLclを起動します。次のコマンドをCloud Shellのターミナルに入力してみましょう。
 
     ```sh
-    $ sql /nolog
+    sql /nolog
     ```
 
-2. ウォレットを指定します。
+2. クレデンシャル・ウォレットを指定します。
 
-    ```sh
-    SQL> set cloudconfig /home/oracle/labs/wallets/Wallet_atp01.zip
+    ```sql
+    set cloudconfig /home/oracle/labs/wallets/Wallet_atp01.zip
     ```
 
-3. 接続します。
+3. インスタンスに接続します。
 
-    ```sh
-    SQL> connect admin/Welcome12345#@atp01_low
+    ```sql
+    connect admin/Welcome12345#@atp01_low
     ```
 <br>
 
@@ -348,8 +350,8 @@ SQL Developerを起動し、管理者アカウント(ADMIN)でADBへ接続しま
 
     2. 以下のクエリをワークシートに貼り付けます。
 
-        ```sh
-        SQL> SELECT USERNAME FROM USER_USERS;
+        ```sql
+        SELECT USERNAME FROM USER_USERS;
         ```
     3.  スクリプトの実行 ボタンをクリックし実行します（左隣の 文の実行 ボタンで実行しても構いません）
 
