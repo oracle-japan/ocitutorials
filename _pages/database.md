@@ -58,7 +58,7 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * オブジェクトストレージを介したデータロード
     * オブジェクトストレージの更新データを都度データベースに自動登録するには？（フィード機能）
 
-+ **[103: Oracle LiveLabsでDatabase Actions機能を試してみよう](/ocitutorials/database/adb103-livelabs/)**  
++ **[103: Oracle LiveLabsのご紹介(Database Actions)](/ocitutorials/database/adb103-livelabs/)**  
     * Oracle LiveLabsとは?
     * お勧めワークショップの紹介
 
@@ -66,14 +66,14 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * クレデンシャル・ウォレット・ファイルのダウンロード
     * ADBインスタンスに接続（SQL*Plus、SQLcl、SQL Developer、Database Actions)
 
-+ **[105: APEXを使って簡易アプリを作成してみよう](/ocitutorials/database/adb105-create-apex-app/)**  
++ **[105: ADBの付属ツールで簡易アプリを作成しよう(APEX)](/ocitutorials/database/adb105-create-apex-app/)**  
     * スプレッドシートのサンプルを用意
     * APEXのワークスペースの作成
     * スプレッドシートから簡易アプリケーションの作成、実行確認
 
 + **[106: JSONデータを活用してみよう（公開準備中）]**  
 
-+ **[107: ADBに付属する機械学習を始めよう（AutoML UI）](/ocitutorials/database/adb107-machine-learning/)**  
++ **[107: ADBの付属ツールで機械学習を始めよう(AutoML UI)](/ocitutorials/database/adb107-machine-learning/)**  
     * 機械学習モデルのビルド
     * 機械学習モデルのデプロイ
     * デプロイした機械学習モデルをRESTで呼ぶ
