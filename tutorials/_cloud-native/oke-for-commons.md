@@ -200,7 +200,9 @@ OKEへのアクセス方法は「Cloud Shellアクセス」と「ローカル・
 ダイアログ上部の「Cloud Shellアクセス」をクリックします。
 ![](03-11-01.png)
 
-表示されたダイアログの中にkubetctlの設定ファイルを取得するためのコマンドが表示されますので、これらを順次実行していきます。
+表示されたダイアログの中にkubetctlの設定ファイルを取得するためのコマンドが表示されます。  
+コマンドは2種類あり、前者が`Kubernetes APIエンドポイント`に`パブリック・エンドポイント`を指定した場合、後者が`Kubernetes APIエンドポイント`に`プライベート・エンドポイント`を指定した場合です。  
+今回は、[1.OKEクラスターのプロビジョニング](#1okeクラスターのプロビジョニング)で`Kubernetes APIエンドポイント`に`パブリック・エンドポイント`を指定しているので、前者のコマンドを利用します。
 
 ![](03-12-01.png)
 
@@ -215,7 +217,7 @@ Cloud Shellの起動はダイアログに表示されている「Cloud Shellの�
 次に②のコマンドですが、こちらはOCI CLIの設定ファイル取得用のコマンドを実行しています（以下の例はダミーの値で埋めたものですので、実際のコマンドはダイアログからコピーしてください）。  
 右端の「コピー」をクリックしてコピーし、Cloud Shellにペースとして実行します。
 
-    oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1 --token-version 2.0.0
+    oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1  --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
 
 **kubectlコマンドについて**  
 kubectlコマンドはデフォルトで`$HOME/.kube/config`というパスのファイルを読み込む仕様になっています。  

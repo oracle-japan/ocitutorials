@@ -1,5 +1,5 @@
 ---
-title: "Oracle APEX on ADB！簡単すぐにアプリを作ってみよう"
+title: "105: ADBの付属ツールで簡易アプリを作成しよう(APEX)"
 excerpt: "APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。"
 
 
