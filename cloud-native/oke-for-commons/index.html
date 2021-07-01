@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-06-29T11:08:43+09:00">
+  <meta property="article:published_time" content="2021-07-01T16:45:01+09:00">
 
 
 
@@ -309,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう">
     <meta itemprop="description" content="Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OKEクラスターを作成します。まずはここから始めましょう。">
-    <meta itemprop="datePublished" content="2021-06-29T11:08:43+09:00">
+    <meta itemprop="datePublished" content="2021-07-01T16:45:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -564,7 +564,9 @@ OKEへのアクセス方法は「Cloud Shellアクセス」と「ローカル・
 ダイアログ上部の「Cloud Shellアクセス」をクリックします。
 <img src="03-11-01.png" alt="" /></p>
 
-<p>表示されたダイアログの中にkubetctlの設定ファイルを取得するためのコマンドが表示されますので、これらを順次実行していきます。</p>
+<p>表示されたダイアログの中にkubetctlの設定ファイルを取得するためのコマンドが表示されます。<br />
+コマンドは2種類あり、前者が<code class="language-plaintext highlighter-rouge">Kubernetes APIエンドポイント</code>に<code class="language-plaintext highlighter-rouge">パブリック・エンドポイント</code>を指定した場合、後者が<code class="language-plaintext highlighter-rouge">Kubernetes APIエンドポイント</code>に<code class="language-plaintext highlighter-rouge">プライベート・エンドポイント</code>を指定した場合です。<br />
+今回は、<a href="#1okeクラスターのプロビジョニング">1.OKEクラスターのプロビジョニング</a>で<code class="language-plaintext highlighter-rouge">Kubernetes APIエンドポイント</code>に<code class="language-plaintext highlighter-rouge">パブリック・エンドポイント</code>を指定しているので、前者のコマンドを利用します。</p>
 
 <p><img src="03-12-01.png" alt="" /></p>
 
@@ -578,7 +580,7 @@ Cloud Shellの起動はダイアログに表示されている「Cloud Shellの�
 <p>次に②のコマンドですが、こちらはOCI CLIの設定ファイル取得用のコマンドを実行しています（以下の例はダミーの値で埋めたものですので、実際のコマンドはダイアログからコピーしてください）。<br />
 右端の「コピー」をクリックしてコピーし、Cloud Shellにペースとして実行します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1 --token-version 2.0.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1  --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
 </code></pre></div></div>
 
 <p class="notice--info"><strong>kubectlコマンドについて</strong><br />
@@ -881,7 +883,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-06-29T11:08:43+09:00">June 29, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-01T16:45:01+09:00">July 1, 2021</time></p>
 
 
       </footer>

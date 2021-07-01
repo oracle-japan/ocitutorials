@@ -305,41 +305,47 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/content-management/77_sitesecuritygovernance/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/77_SiteSecurityGovernance/021.png"
       },{
-        "title": "ADBインスタンスを作成してみよう",
+        "title": "101: ADBインスタンスを作成してみよう",
         "excerpt":"この章は大きく2つの内容で構成されています。 #1 : メニュー画面を操作し、リージョンおよびコンパートメントを設定いただきます。 (所要時間：5分) #2 : ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成します。 (所要時間：20分) #1. リージョンを設定し、コンパートメントを用意しよう 作業の流れ : サービス画面へのアクセス リージョンの確認、設定 コンパートメントの確認、作成 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足）上手く表示されない場合は以下のURLをお試しください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 尚、 &lt;クラウド・アカウント&gt;...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/img11.png"
       },{
-        "title": "ADBにデータをアップロードしてみよう",
+        "title": "102: まずADBにデータをロードしよう(Database Actions)",
         "excerpt":"この章ではSQL Developer Webの後継機能である、Database Actionsを利用して、サンプルデータをADBインスタンスにデータをアップロードします。 事前に前提条件にリンクされているサンプルデータのCSVファイルをお手元のPC上にダウンロードください。 （集合ハンズオンセミナーでは講師の指示に従ってください） 前提条件 : ADBインスタンスを作成しようを完了していること 以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること サンプルデータファイルのダウンロードリンク 注意 : チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 1.手元のPCからCSVデータをアップロードしてみよう まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 Database Actionsのランディングページのデータ・ツールから　データ・ロード を選択します。 データの処理には、データのロード を選択し、データの場所には、ローカル・ファイル を選択して 次 をクリックします。 ファイルの選択をクリックし、ダウンロードして解凍した sales_channels.csv を選択します。 sales_channels.csvがロードできる状態になりました。ロード前にペンアイコンをクリックし、詳細設定を確認・変更できます。 sales_channels.csvの表定義等のデータのプレビューを確認したら 閉じる をクリックします。 緑色の実行ボタンをクリックし、データのロードを開始します。 データ・ロード・ジョブの実行を確認するポップアップが表示されるので、実行 をクリックします。 sales_channels.csvに緑色のチェックマークが付き、ロードが完了しました。完了をクリックします。 ロード完了後、赤枠のマークをクリックすると、エラーログ等の詳細を見ることができます。 ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。SQLをクリック。 ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。 select * from sales_channels; 結果が表示されます。 これで、手元のPCからデータをADBにロードするチュートリアルが完了しました。 次は、Database Actionsで、クラウド・ストレージからのデータのロードをしてみましょう。...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/adb2-1_1.png"
       },{
-        "title": "Oracle LiveLabsでDatabase Actions機能を試してみよう",
+        "title": "103: Oracle LiveLabsのご紹介(Database Actions)",
         "excerpt":"Database Actionsで利用できる機能はユーザ作成やデータ・ロードだけではありません。 データベース管理者はもとより、Autonomous Databaseのデータを開発者やデータ分析者がすぐに利用できる機能群が提供されています。 詳細はこちらの資料をご確認ください。 　　 データ活用に関わる機能であるデータロード、カタログ、データインサイト、ビジネスモデルは、Oracle LiveLabs というサイトでイメージのようにシナリオに沿って実環境で体験することができます。この章ではその方法をご案内します。 1.Oracle LiveLabsとは? Oracle LiveLabs とはOracle Cloud Infrastructure上でお試しいただける様々なワークショップをまとめたサイトです。150種類を超える数のワークショップが登録されています。 　　 ワークショップの実行には、ご利用いただいているOracle Cloud環境およびAlways Free/トライアル環境をお使いいただけます。またワークショップによっては、Oracle LiveLabsで時間制限を設けた一時利用環境も提供しております。 (一時利用環境の利用手順についてはこちらが参考になります。) なお、英語での提供ではありますが、ブラウザの翻訳機能をご利用いただくことで十分に進めることができます。このチュートリアルでは、日本語表示の場合はGoogle Chromeの翻訳機能を利用しています。 2.Database Actionsのワークショップ Oracle LiveLabsのDatabase Actionsのワークショップはこちらです。 “Introduction to Autonomous Database Tools” 概要と開始手順 このワークショップでは、架空のオンライン映画ストリーミング会社”Oracle MovieStream”の社員になった想定で、顧客データ、視聴データをもとに顧客の傾向を分析していきます。 具体的には、分析するためのデータのロードとクレンジング、ビジネスに即した分析モデル作成とそこからの洞察を行います。それらすべてをDatabase Actionsで実施できるのです。 それでは、利用する環境に合わせて、以下のどちらかをクリックしてください。このチュートリアルではフリートライアルを想定してLaunch Free Trial Workshopを選択しています。 ワークショップのホーム画面が表示されました。 このDatabase Actionsのワークショップは大きく3つのラボで構成されています。 ラボ1:ADBインスタンスのプロビジョニング ラボ2:データベースユーザーの作成 ラボ3:自律型データベースツールの使用 既にADBインスタンス作成済みの場合はラボ2から進めてください。...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb103-livelabs/labimage.png"
       },{
-        "title": "ウォレットを利用してADBに接続してみよう",
-        "excerpt":"本章では、Autonomous Databaseへの接続方法のうち、クレデンシャル・ウォレットを使用した接続方法を確認しましょう クレデンシャル・ウォレット（Credential.zipファイル）の扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。 所要時間 : 約20分 前提条件 : Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること ADBインスタンスが構成済みであること SQL Developerを使用した接続を行いたい場合には、クライアントツールがインストール済みであること。 インストールはこちらから 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次： 1. クレデンシャル・ウォレットのダウンロード 2. 設定ファイルの編集 3. ADBに接続 3-1. SQL*Plus を使った接続 3-2. SQLcl を使った接続 3-3. SQL Developer を使った接続 3-4. Database Actions を使った接続 1. クレデンシャル・ウォレットのダウンロード ウォレットを利用したADBインスタンスへの接続には、対象インスタンスへの接続情報が格納された...","categories": [],
+        "title": "104: クレデンシャル・ウォレットを利用して接続してみよう",
+        "excerpt":"Autonomous Database にはさまざまなツールが同梱されており、簡単にご利用いただけますが、 一方で、これまでお使いのアプリケーションからの接続するときはどのように接続するのでしょうか？ Autonomous Databaseには暗号化およびSSL相互認証を利用した接続が前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。 本章ではこのクレデンシャル・ウォレットを使用した接続方法について確認していきます。 尚、クレデンシャル・ウォレットの扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。 所要時間 : 約20分 前提条件 : Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること ADBインスタンスが構成済みであること SQL Developerを使用した接続を行いたい場合には、クライアントツールがインストール済みであること。 インストールはこちらから 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次： 1. クレデンシャル・ウォレットのダウンロード 2. 設定ファイルの編集 3. ADBに接続 3-1. SQL*Plus を使った接続 3-2. SQLcl を使った接続 3-3. SQL Developer を使った接続 3-4. Database...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/img1_3.png"
       },{
-        "title": "Oracle APEX on ADB！簡単すぐにアプリを作ってみよう",
+        "title": "105: ADBの付属ツールで簡易アプリを作成しよう(APEX)",
         "excerpt":"Autonomous Databaseはインスタンスを作成するとすぐにWebアプリ開発基盤であるOracle APEXを利用できるようになります。 追加コストは不要です。 Oracle APEXは分かりやすいインターフェースで、コーディングと言った専門的な知識専門的な知識がなくてもアプリケーションを開発できるため非常に人気があります。 Autonomous Database上でAPEXを利用すると、バックアップや可用性、セキュリティ等のインフラの面倒は全てオラクルに任せて、アプリケーションだけに集中できます。 この章ではADBインスタンスは作成済みであることを前提に、APEXコンソールの起動から簡単なアプリケーション作成までを体験いただきます。 サンプルとして、これまでExcelで管理していた受発注データを利用して、簡単なアプリケーションを作ってみましょう。 所要時間 : 約10分 前提条件 : Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること ADBインスタンスが構成済みであること 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次： 1. スプレッドシートのサンプルを用意 2. APEXのワークスペースの作成 3. APEXコンソールの起動 4. スプレッドシートから簡易アプリケーションの作成 5. アプリケーションの実行 6. 実行確認 1. スプレッドシートのサンプルを用意 サンプルとして受発注データ(orders.csv)を用意します。 下記のリンクをクリックし、サンプルファイル(orders.zip)を手元のPCにダウンロードして展開してください。 orders.csvをダウンロード 受発注データは次のような表になっており、ORDER_KEY(注文番号)、ORDER_STATUS(注文状況)、UNITS(個数) …etc などの列から構成される、5247行の表となっています。...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb105-create-apex-app/img3_2.png"
       },{
-        "title": "AutoML UIで機械学習を始める",
+        "title": "107: ADBの付属ツールで機械学習を始めよう(AutoML UI)",
         "excerpt":"Oracle AutoML UIを使った機械学習   Oracle AutoML UIを使えば、ビジネスユーザやBIベースで分析を行うユーザが機械学習モデルをビルド、デプロイすることが可能になります。 AutoML UIのチュートリアルは下記のリンクからアクセスすることができます。   OracleのAutoML UIで気軽に明日雨が降るか予測しよう  ","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb107-machine-learning/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb107-machine-learning/img1.png"
+      },{
+        "title": "202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)",
+        "excerpt":"大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。 サンプルデータファイル(customers.csv)のダウンロードリンク Database Actionsに接続 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 DBMS_CLOUDパッケージを使ったデータロードをワークシートで実行していきます。SQLをクリックしてください。 DBMS_CLOUDパッケージの実行 以下の1～5までの例を参考にコマンドを作成し、ワークシートに貼り付けスクリプトの実行をクリックし、データをロードします（集合ハンズオンセミナーでは講師の指示に従ってください) クレデンシャル情報の登録 クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、ADBにデータをロードしてみよう(Database Actions)の記事内のクラウド・ストレージからのデータのロードしてみようの項から、把握することができます。 credential_name: DBに保存した認証情報を識別するための名前、任意 username: 上記で取得したOracle Object Storageにアクセスするための ユーザ名 password: 取得したAuth Token BEGIN DBMS_CLOUD.CREATE_CREDENTIAL( CREDENTIAL_NAME =&gt; 'USER_CRED', USERNAME =&gt; 'myUsername', PASSWORD =&gt; 'LPB&gt;Ktk(1M1SD+a]+r' ); END; ※ 作成済みのCredentialを削除する場合は以下を実行ください BEGIN DBMS_CLOUD.DROP_CREDENTIAL(credential_name =&gt; 'USER_CRED'); END; ADB上にロード先の表作成 DROP TABLE customers;...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb202-dataload-dbms-cloud/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb202-dataload-dbms-cloud/img2.png"
       },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
