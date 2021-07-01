@@ -903,8 +903,8 @@ SCMコミット時に自動的にビルドを実行|チェックオンにする
 
 key|value
 -|-
-リポジトリ|oke_atp_workshopを選択する
-SCMコミット時に自動的にビルドを実行|チェックオンにする
+レジストリ・ホスト|"WorkshopOCIR"
+イメージ名|`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
 
 **受講者の方へ**  
 トライアル環境以外の環境をお使いの方は、イメージが他のユーザの方と重複しないように、語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。
@@ -1016,8 +1016,8 @@ spec:
         # can read them and use it for connecting to ATP.
         containers:
         - name: oke-atp-helidon
-        image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
-        imagePullPolicy: Always
+          image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
+          imagePullPolicy: Always
 (以下略)
 {% endhighlight %}
 

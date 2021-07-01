@@ -1,5 +1,5 @@
 ---
-title: "ADBにデータをアップロードしてみよう"
+title: "102: まずADBにデータをロードしよう(Database Actions)"
 excerpt: "Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。"
 order: "102"
 layout: single

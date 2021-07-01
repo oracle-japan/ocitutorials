@@ -45,7 +45,7 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
 
 ## 基礎編
 
-+ **[ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning/)**  
++ **[101: ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning/)**  
     * クラウド環境へのアクセス
     * リージョンの確認、設定
     * コンパートメントの確認
@@ -53,30 +53,39 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * ATPインスタンスに接続してみよう（Database Actiona）
     * データベース・ユーザーの作成
 
-+ **[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb102-dataload/)**  
-    * 手元のPCからCSVデータをアップロード
-    * オブジェクトストレージからCSVデータをロード
-    * オブジェクトストレージから新規データをデータベースにフィード
-    * その他Tips
++ **[102: まずADBにデータをロードしよう(Database Actions)](/ocitutorials/database/adb102-dataload/)**  
+    * 手元のPCから直接ADBにデータロード
+    * オブジェクトストレージを介したデータロード
+    * オブジェクトストレージの更新データを都度データベースに自動登録するには？（フィード機能）
 
-+ **[ご参考）Database Actionsのさらなる活用に向けて（Oracle Livelabs）](/ocitutorials/database/adb103-livelabs/)**  
++ **[103: Oracle LiveLabsでDatabase Actions機能を試してみよう](/ocitutorials/database/adb103-livelabs/)**  
     * Oracle LiveLabsとは?
-    * Database Actionsのワークショップご紹介
-    * その他、お勧めワークショップの紹介
+    * お勧めワークショップの紹介
 
-+ **[Walletを利用した接続](/ocitutorials/database/adb104-connect-using-wallet/)**  
-    * クレデンシャル・ウォレットのダウンロード
-    * ADBに接続（SQL*Plus、SQLcl、SQL Developer、Database Actions)
++ **[104: クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/)**  
+    * クレデンシャル・ウォレット・ファイルのダウンロード
+    * ADBインスタンスに接続（SQL*Plus、SQLcl、SQL Developer、Database Actions)
 
-+ **[APEXを使った簡易アプリ作成](/ocitutorials/database/adb105-create-apex-app/)**  
++ **[105: APEXを使って簡易アプリを作成してみよう](/ocitutorials/database/adb105-create-apex-app/)**  
     * スプレッドシートのサンプルを用意
     * APEXのワークスペースの作成
     * スプレッドシートから簡易アプリケーションの作成、実行確認
 
-+ **[AutoML UIで機械学習を始める](/ocitutorials/database/adb107-machine-learning/)**  
++ **[106: JSONデータを活用してみよう（作成中）]**  
+
++ **[107: ADBに付属する機械学習を始めよう（AutoML UI）](/ocitutorials/database/adb107-machine-learning/)**  
     * 機械学習モデルのビルド
     * 機械学習モデルのデプロイ
     * デプロイした機械学習モデルをRESTで呼ぶ
+
+## 実践編
+
++ **[201: 接続サービスの理解（作成中）]**  
+
++ **[202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)](/ocitutorials/database/adb202-dataload-dbms-cloud/)**  
+    * オブジェクト・ストレージにアクセスするためのクレデンシャル情報の登録
+    * DBMS_CLOUDパッケージを利用したオブジェクト・ストレージからのデータロード
+
 
 <br/>
 
