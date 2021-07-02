@@ -347,6 +347,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb202-dataload-dbms-cloud/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb202-dataload-dbms-cloud/img2.png"
       },{
+        "title": "204: マーケットプレイスからの仮想マシンのセットアップ方法",
+        "excerpt":"Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージをマーケットプレイスで公開しています。 この章では、その中の一つとして、開発者向けのLinux仮想マシンである Oracle Cloud Developer Image をセットアップする手順を記載しています。 Oracle Cloud Developer Image は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。 尚、マーケットプレイスの詳細については こちら を参照ください。 またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の その3 - インスタンスを作成する の手順も併せてご確認ください。 所要時間 : 約30分 前提条件 : Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること ※クレデンシャルウォレットのダウンロード方法については、本ハンズオンガイドの 104:...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/image_top.png"
+      },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
         "tags": ["https://community.oracle.com/docs/DOC-1038411"],
