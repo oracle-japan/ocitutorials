@@ -1,5 +1,5 @@
 ---
-title: "107: ADBに付属する機械学習を始めよう（AutoML UI）"
+title: "107: ADBの付属ツールで機械学習を始めよう(AutoML UI)"
 excerpt: "オーストラリアの明日の天気を予測するモデルを作ってみましょう。機械学習に関する深い知識がなくても大丈夫"
 order: "107"
 layout: single
