@@ -1,6 +1,6 @@
 ---
-title: "マーケットプレイスからの仮想マシンのセットアップ方法"
-excerpt: ""
+title: "204: マーケットプレイスからの仮想マシンのセットアップ方法"
+excerpt: "Oracle Cloud Developer Image から仮想マシンをセットアップする方法をご紹介します。"
 
 order: "204"
 layout: single
@@ -18,9 +18,9 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 
 **`Oracle Cloud Developer Image `**は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。
 
-尚、マーケットプレイスの詳細については[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm)を参照ください。
+尚、マーケットプレイスの詳細については [こちら](https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm){:target="_blank"} を参照ください。
 
-またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアルの[インスタンスを作成する](/beginners/creating-compute-instance/)の手順も併せてご確認ください。
+またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の [その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance/){:target="_blank"} の手順も併せてご確認ください。
 
 
 **所要時間 :** 約30分
@@ -30,9 +30,9 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること
 2. 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること
 3. ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [ADBインスタンスを作成してみよう](/database/adb101-provisioning)を参照ください。
+   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
 4. ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること
-   <br>※クレデンシャルウォレットのダウンロード方法については、本ハンズオンガイドの[ウォレットを利用してADBに接続してみよう](/database/adb104-connect-using-wallet)の、[1. クレデンシャル・ウォレットのダウンロード](/database/adb104-connect-using-wallet#anchor1)をご確認ください。
+   <br>※クレデンシャルウォレットのダウンロード方法については、本ハンズオンガイドの [104: ウォレットを利用してADBに接続してみよう](/ocitutorials/database/adb104-connect-using-wallet){:target="_blank"} の、[1. クレデンシャル・ウォレットのダウンロード](/ocitutorials/database/adb104-connect-using-wallet#anchor1){:target="_blank"} をご確認ください。
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
 
@@ -57,7 +57,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 
 3. 仮想マシンを配置するコンパートメントを指定します。
     <br>任意のコンパートメントを選んでいただいて構いません。
-<br>本ハンズオンガイドの [ADBインスタンスを作成してみよう](/database/adb101-provisioning) を行った方は、作成したコンパートメント（**`adb-hol-01`**）を選択してください。
+<br>本ハンズオンガイドの [101: ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning) を行った方は、作成したコンパートメント（**`adb-hol-01`**）を選択してください。
 <br>使用許諾条件に同意するチェックを入れて、**`インスタンスの起動`** をクリックします。
 <br>作成したコンパートメント表示されない場合は、ブラウザをリロード（F5）してください。
     ![img1_3.png](img1_3.png)
@@ -98,7 +98,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
   <br>SSHキーはこちらの画面で生成する・既存の公開キーを選択することが可能です。
   <br>生成する場合は **`秘密キーの保存`** と **`公開キーの保存`** を必ずクリックしてください。（後から生成することはできません）
   <br>お手持ちのSSHキーを使いたい場合は、**`公開キー・ファイル(.pub)のアップロード`** または **`公開キーの貼付け`** を選択し、アップロードまたは貼り付けしてください。
-  <br>※ SSHキーの作成方法の詳細は [こちら](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingkeypairs.htm) を参照ください
+  <br>※ SSHキーの作成方法の詳細は [こちら](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingkeypairs.htm){:target="_blank"} を参照ください
   <br>※ 集合ハンズオン・セミナーの場合は講師から指示される鍵を使用してください。
     ![img1_5_5.png](img1_5_5.png)
 
@@ -146,7 +146,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 ログインした仮想マシン上で次のコマンドを実行します。
 
     ```sh
-    wget https://oracle-japan.github.io/ocitutorials/database/adb201-setup-VM/labs.zip
+    wget https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/labs.zip
     ```
 
 2. labs.zip がダウンロードされたことを確認します。（ファイルが存在すればOKです。）
@@ -160,9 +160,16 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
     >上記の方法で上手くダウンロードできなかった方は、手元のPCにダウンロードしてからアップロードする方法をお試しください。
     >
     > <br>※ここではTera Termを前提に記載しています。
-    >下記のリンクよりlabs.zipをダウンロードし、Tera Termのウィンドウ画面上にドラッグ・アンド・ドロップしてください。
     >   
-    >  +  [labs.zip をダウンロード](/ocitutorials/database/adb201-setup-VM/labs.zip)
+    >    1. 下記のリンクより、labs.zipを手元のPCにダウンロードします。
+    >       +  [labs.zip をダウンロード](/ocitutorials/database/adb204-setup-VM/labs.zip)
+    >
+    >
+    >    2. labs.zipをTera Termのウィンドウ画面上にドラッグ・アンド・ドロップします。
+    >
+    >    3. Tera Termでは転送先に指定するディレクトリパスを指定できますが、特に指定せずそのまま **`OK`** をクリックします。
+    >     <br>
+    >     ![img3_2_3.png](img3_2_3.png)
     >
 
 <br>
@@ -202,7 +209,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 # 4. ADBに接続するための設定ファイルの編集
 
 ADBに接続するためには、クレデンシャル・ウォレット（Credential.zipファイル）を仮想マシン上に配置する必要があります。
-クレデンシャルウォレットのダウンロード方法については、[ウォレットを利用してADBに接続してみよう](/database/adb104-connect-using-wallet) の、[1. クレデンシャル・ウォレットのダウンロード](/database/adb104-connect-using-wallet#anchor1) をご確認ください。
+クレデンシャルウォレットのダウンロード方法については、[101: ウォレットを利用してADBに接続してみよう](/ocitutorials/database/adb104-connect-using-wallet){:target="_blank"} の、[1. クレデンシャル・ウォレットのダウンロード](/ocitutorials/database/adb104-connect-using-wallet#anchor1){:target="_blank"} をご確認ください。
 
 1. 仮想マシンにopcユーザでログインします。
 
@@ -326,8 +333,9 @@ ADBに接続するためには、クレデンシャル・ウォレット（Crede
 
   >**Note**
   >
-  >設定ファイルは OCI CLoud Shell を使用して編集することも可能です。
-  ><br>手順は、本ハンズオンガイドの[ウォレットを利用してADBに接続してみよう](/database/adb104-connect-using-wallet)の、[2. 設定ファイルの編集](/database/adb104-connect-using-wallet#anchor2) をご確認ください。
+  >上記は接続端末としてTeratermを利用しましたが、OCIに付属するCloud Shellを使用して設定ファイルの編集をすることも可能です。
+  >Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザ・ベースのターミナルです。こちらを利用すると、ブラウザだけで仮想マシンにアクセスできますので、是非お試しください。
+  ><br>手順は、本ハンズオンガイドの [104: ウォレットを利用してADBに接続してみよう](/ocitutorials/database/adb104-connect-using-wallet){:target="_blank"} の、[2. 設定ファイルの編集](/ocitutorials/database/adb104-connect-using-wallet#anchor2){:target="_blank"} をご確認ください。
 
 <br>
 
