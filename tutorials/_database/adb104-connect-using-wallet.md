@@ -12,6 +12,10 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474310
 ---
 
+<a id="anchor0"></a>
+
+# はじめに
+
 Autonomous Database にはさまざまなツールが同梱されており、簡単にご利用いただけますが、
 一方で、これまでお使いのアプリケーションからの接続するときはどのように接続するのでしょうか？
 
@@ -20,21 +24,16 @@ Autonomous Databaseには暗号化およびSSL相互認証を利用した接続�
 本章ではこのクレデンシャル・ウォレットを使用した接続方法について確認していきます。
 尚、クレデンシャル・ウォレットの扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。
 
+<br>
 
-**所要時間 :** 約20分
+**前提条件**
++ ADBインスタンスが構成済みであること
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
++ SQL Developerを使用した接続を行いたい場合には、当該クライアントツールがインストール済みであること。インストールは[こちら](https://www.oracle.com/jp/tools/downloads/sqldev-downloads.html){:target="_blank"}から<br>
 
-**前提条件 :**
+<br>
 
-1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること
-2. 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること
-3. ADBインスタンスが構成済みであること
-4. SQL Developerを使用した接続を行いたい場合には、クライアントツールがインストール済みであること。
-インストールは[こちら](https://www.oracle.com/jp/tools/downloads/sqldev-downloads.html)から<br>
-
-
-**注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
-
-**目次：**
+**目次**
 
 - [1. クレデンシャル・ウォレットのダウンロード](#anchor1)
 - [2. 設定ファイルの編集](#anchor2)
@@ -45,8 +44,10 @@ Autonomous Databaseには暗号化およびSSL相互認証を利用した接続�
     - [3-4. Database Actions を使った接続](#anchor3-4)
 
 <br>
+**所要時間 :** 約20分
 
 <a id="anchor1"></a>
+<br>
 
 # 1. クレデンシャル・ウォレットのダウンロード
 ウォレットを利用したADBインスタンスへの接続には、対象インスタンスへの接続情報が格納された **クレデンシャル・ウォレット** を利用する必要があります。
@@ -367,8 +368,13 @@ SQL Developerを起動し、管理者アカウント(ADMIN)でADBへ接続しま
 
 Database Actionsを使った接続については、[こちら](/ocitutorials/database/adb101-provisioning/)をご確認ください。
 
-<br><br>
+<br>
 
-以上で、この章の作業は終了です。
+<br>
+以上で、この章は終了です。  
+次の章にお進みください。
 
-次章へお進みください。
+<br>
+[ページトップへ戻る](#anchor0)
+
+

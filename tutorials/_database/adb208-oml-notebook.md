@@ -9,7 +9,10 @@ header:
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
+
 <a id="anchor0"></a>
+
+# はじめに
 
 この章ではOracle Machine Learning(OML)の製品群の1つである、OML Notebookを利用して、DB内でデータの移動が完結した機械学習を体験して頂きます。 
 事前に前提条件にリンクされているサンプルデータのCSVファイルをお手元のPC上にダウンロードください。  
@@ -17,21 +20,17 @@ header:
 
 <br>
 
-# 所要時間
+**前提条件** 
 
-**約40分**
-
-<br>
-
-# 前提条件
-+ [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)を完了していること  
-+ 以下にリンクされているファイルをダウンロードしていること
+* ADBインスタンスが構成済みであること
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+* 以下にリンクされているファイルをダウンロードしていること
 	+ [liquid.csv](/ocitutorials/database/adb208-oml-notebook/ADB-OML-Tutorial/liquid.csv)
 	+ [order_items.csv](/ocitutorials/database/adb208-oml-notebook/ADB-OML-Tutorial/order_items.csv)
 
 <br>
 
-# 目次
+**目次**
 
 - [準備編](#anchor1)
     - [OMLユーザを作成する](#anchor1-1)
@@ -44,12 +43,12 @@ header:
     - [機械学習モデルをビルド・評価する](#anchor2-2)
 
 <br>
+**所要時間 :** 約40分
 
 <a id="anchor1"></a>
+<br>
 
 # 準備編
-
-<a id="anchor1-1"></a>
 
 ## OMLユーザを作成する
 
@@ -264,6 +263,12 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
    ![image.png](img61.png)
 
 
-以上で、この章の作業は終了です。
 
+<br>
+以上で、この章は終了です。  
+次の章にお進みください。
+
+<br>
 [ページトップへ戻る](#anchor0)
+
+

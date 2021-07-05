@@ -10,11 +10,32 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
+<a id="anchor0"></a>
+
+# はじめに
+
 大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。
 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。
 
 + [サンプルデータファイル(customers.csv)のダウンロードリンク](/ocitutorials/database/adb203-dataload-dbms-cloud/customers.csv)
 
+<br>
+
+**前提条件**
++ ADBインスタンスが構成済みであること
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。 
+
+<br>
+
+**目次**
+
+- [1.Database Actionsに接続](#anchor1)
+- [2.DBMS_CLOUDパッケージの実行](#anchor2)
+
+<br>
+**所要時間 :** 約10分
+
+<a id="anchor1"></a>
 <br>
 
 # Database Actionsに接続
@@ -27,13 +48,17 @@ header:
 
     ![img1.png](img1.png)
 
+<br>
+<a id="anchor2"></a>
+<br>
+
 # DBMS_CLOUDパッケージの実行
 
 以下の1～5までの例を参考にコマンドを作成し、ワークシートに貼り付けスクリプトの実行をクリックし、データをロードします（集合ハンズオンセミナーでは講師の指示に従ってください)
 
 1. **クレデンシャル情報の登録**
 
-    クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb102-dataload)の記事内の*クラウド・ストレージからのデータのロードしてみよう*の項から、把握することができます。
+    クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb102-dataload)の記事内の*クラウド・ストレージからデータをロードしてみよう*を参照ください。
 
     ***credential_name***: DBに保存した認証情報を識別するための名前、任意
 
@@ -156,9 +181,7 @@ header:
 以上で、この章の作業は終了です
 
 
-# NOTE
- 
-  よくある質問やTipsを記載
+# よくある質問やTips
  
  1. **大量データのロード処理を高速化するには？**
     
@@ -341,7 +364,13 @@ header:
 
             'blankasnull' VALUE 'true' を設定する
 
+
+<br>
+以上で、この章は終了です。  
 次の章にお進みください。
+
+<br>
+[ページトップへ戻る](#anchor0)
 
 
 

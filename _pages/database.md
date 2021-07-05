@@ -12,6 +12,15 @@ toc: true
 それぞれステップ・バイ・ステップで学ぶことができ、各サービスの基本的な機能、操作やオペレーションについて学習することができます。  
 尚、より詳しく知りたい方は、[OCI活用資料集](https://oracle-japan.github.io/ocidocs/services/database/)も併せてご確認ください。それぞれのサービスに関する技術詳細資料をまとめ紹介しています。
 
+<br>
+
+**前提条件**
++ Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること
++ 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること
+
+<br>
+**注意 :** チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
+
 <br/>
 
 # <span style="color: brown; ">■ Database Cloud Service (DBCS) を使ってみよう</span>
@@ -46,59 +55,42 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
 ## 基礎編
 
 + **[101: ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning/)**  
-    * クラウド環境へのアクセス
-    * リージョンの確認、設定
-    * コンパートメントの確認
-    * ATPインスタンスの作成（プロビジョニング）
-    * ATPインスタンスに接続してみよう（Database Actiona）
-    * データベース・ユーザーの作成
-
+    * インスタンス作成から接続、データベース・ユーザーの作成まで実施します
+    
 + **[102: まずADBにデータをロードしよう(Database Actions)](/ocitutorials/database/adb102-dataload/)**  
-    * 手元のPCから直接ADBにデータロード
-    * オブジェクトストレージを介したデータロード
-    * オブジェクトストレージの更新データを都度データベースに自動登録するには？（フィード機能）
+    * CSVデータを手元のPCおよびオブジェクトストレージからADBにロードします
+    * またオブジェクトストレージ上で更新されたデータを自動的にDBに登録する方法も取り上げます（フィード機能）
 
 + **[103: Oracle LiveLabsのご紹介(Database Actions)](/ocitutorials/database/adb103-livelabs/)**  
-    * Oracle LiveLabsとは?
-    * お勧めワークショップの紹介
+    * さらなるDatabase Actionsの使い方を例に、Oracle LiveLabsの概要、始め方についてご紹介します
 
 + **[104: クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/)**  
-    * クレデンシャル・ウォレット・ファイルのダウンロード
-    * ADBインスタンスに接続（SQL*Plus、SQLcl、SQL Developer、Database Actions)
-
+    * SQL*Plus、SQLcl、SQL Developerからの接続方法についても確認しましょう
+    
 + **[105: ADBの付属ツールで簡易アプリを作成しよう(APEX)](/ocitutorials/database/adb105-create-apex-app/)**  
-    * スプレッドシートのサンプルを用意
-    * APEXのワークスペースの作成
-    * スプレッドシートから簡易アプリケーションの作成、実行確認
-
-+ **[106: JSONデータを活用してみよう（公開準備中）]**  
+    * 所要時間は約10分！スプレッドシート(Excelシート)から簡易アプリケーションを作ってみましょう
+    
++ **[106: ADBでコンバージド・データベースを体験しよう](/ocitutorials/database/adb106-json/)**  
+    * JSONデータをADBに登録し、APIおよびSQLで操作してみましょう
 
 + **[107: ADBの付属ツールで機械学習を始めよう(AutoML UI)](/ocitutorials/database/adb107-machine-learning/)**  
-    * 機械学習モデルのビルド
-    * 機械学習モデルのデプロイ
-    * デプロイした機械学習モデルをRESTで呼ぶ
-
+    * 機械学習モデルをビルドして、RESTでCallする手順をみてみましょう
+    
 ## 実践編
 
 + **[201: 接続サービスの理解（公開準備中）]**  
 
-+ **[202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)](/ocitutorials/database/adb202-dataload-dbms-cloud/)**  
-    * オブジェクト・ストレージにアクセスするためのクレデンシャル情報の登録
-    * DBMS_CLOUDパッケージを利用したオブジェクト・ストレージからのデータロード
-
++ **[202: コマンドラインから大量データをロードしてみよう](/ocitutorials/database/adb202-dataload-dbms-cloud/)**  
+    * 大規模なCSVデータを想定し、オブジェクト・ストレージからDBMS_CLOUDパッケージを利用してロードしてみましょう
+    
 + **[203: 大量データのクエリ（公開準備中）]**
 
 + **[204: マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/database/adb204-setup-VM/)**  
-    * マーケットプレイスへのアクセス・仮想マシンの作成
-    * 仮想マシンへのアクセス
-    * 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置
-    * ADBに接続するための設定ファイルの編集
+    * 開発用の仮想マシンイメージを利用して、開発環境を作成しましょう。後続のチュートリアルにて利用します。
 
 + **[208: Oracle Machine Learningで機械学習をしよう](/ocitutorials/database/adb208-oml-notebook/)**  
-    * OMLユーザの作成
-    * データセットのロード
-    * OML Notebookを作成
-    * OML Notebookで機械学習
+    * 機械学習のサンプルを2つほど取りあげ、OML Notebookの使い方をご紹介します。
+
 
 <br/>
 
@@ -106,7 +98,6 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
 
 <!-- 
 
-## 実践編
 ## 移行編
 ## データ連携編
 ## 運用管理編

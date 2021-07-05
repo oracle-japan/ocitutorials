@@ -10,6 +10,10 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
+<a id="anchor0"></a>
+
+# はじめに
+
 Database Actionsで利用できる機能はユーザ作成やデータ・ロードだけではありません。  
 データベース管理者はもとより、Autonomous Databaseのデータを開発者やデータ分析者がすぐに利用できる機能群が提供されています。
 詳細は[こちら](https://speakerdeck.com/oracle4engineer/autonomous-database-database-actions-ji-neng-gai-yao)の資料をご確認ください。  　　
@@ -26,8 +30,19 @@ Database Actionsで利用できる機能はユーザ作成やデータ・ロー�
 
    ![画面ショット0-2](DatabaseActions_component2.png)
 
+<br>
 
+**目次**
 
+- [1.Oracle LiveLabsとは? ](#anchor1)
+- [2.Database Actionsのワークショップのご紹介と開始手順](#anchor2)
+- [3.関連ワークショップのご紹介](#anchor3)
+
+<br>
+**所要時間 :** 約20分
+
+<a id="anchor1"></a>
+<br>
 
 # 1.Oracle LiveLabsとは?  
 
@@ -42,8 +57,11 @@ Database Actionsで利用できる機能はユーザ作成やデータ・ロー�
 
 なお、英語での提供ではありますが、ブラウザの翻訳機能をご利用いただくことで十分に進めることができます。このチュートリアルでは、日本語表示の場合はGoogle Chromeの翻訳機能を利用しています。
 
+<br>
+<a id="anchor2"></a>
+<br>
 
-# 2.Database Actionsのワークショップ
+# 2.Database Actionsのワークショップのご紹介
 
 Oracle LiveLabsのDatabase Actionsのワークショップはこちらです。
 
@@ -88,6 +106,11 @@ Oracle LiveLabsのDatabase Actionsのワークショップはこちらです。
 <br>
 
 
+<br>
+<a id="anchor3"></a>
+<br>
+
+
 # 3. その他のワークショップの紹介
 Oracle LiveLabsのホーム画面の上部には検索ボックスがあります。  
 **Autonomous Database** と入力すると、Autonomous Database関連のワークショップが一覧で表示されます。それぞれのワークショップで完結してお試しいただけますので、ぜひアクセスいただき、気になるワークショップからお気軽にお試しください。 
@@ -116,10 +139,11 @@ Oracle LiveLabsのホーム画面の上部には検索ボックスがありま�
 
 
 <br>
-
 以上で、この章は終了です。  
 次の章にお進みください。
 
+<br>
+[ページトップへ戻る](#anchor0)
 
 
 

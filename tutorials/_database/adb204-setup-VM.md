@@ -12,31 +12,31 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474310
 ---
 
-Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージをマーケットプレイスで公開しています。
+<a id="anchor0"></a>
 
-この章では、その中の一つとして、開発者向けのLinux仮想マシンである **`Oracle Cloud Developer Image`** をセットアップする手順を記載しています。
+# はじめに
+
+後続のチュートリアルで利用する開発環境をセットアップしましょう。
+
+Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージをマーケットプレイスで公開しています。  
+本ページではその中から、開発者向けのLinux仮想マシンである **`Oracle Cloud Developer Image`** をセットアップする手順を記載しています。
 
 **`Oracle Cloud Developer Image `**は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。
 
-尚、マーケットプレイスの詳細については [こちら](https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm){:target="_blank"} を参照ください。
-
+尚、マーケットプレイスの詳細については [こちら](https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm){:target="_blank"} を参照ください。  
 またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の [その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance/){:target="_blank"} の手順も併せてご確認ください。
 
+<br>
 
-**所要時間 :** 約30分
+**前提条件** 
+* ADBインスタンスが構成済みであること
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+* ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること
+    <br>※クレデンシャルウォレットのダウンロード方法については、[104: ウォレットを利用してADBに接続してみよう](/ocitutorials/database/adb104-connect-using-wallet){:target="_blank"} の、[1. クレデンシャル・ウォレットのダウンロード](/ocitutorials/database/adb104-connect-using-wallet#anchor1){:target="_blank"} をご確認ください。
 
-**前提条件 :**
+<br>
 
-1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること
-2. 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること
-3. ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
-4. ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること
-   <br>※クレデンシャルウォレットのダウンロード方法については、本ハンズオンガイドの [104: ウォレットを利用してADBに接続してみよう](/ocitutorials/database/adb104-connect-using-wallet){:target="_blank"} の、[1. クレデンシャル・ウォレットのダウンロード](/ocitutorials/database/adb104-connect-using-wallet#anchor1){:target="_blank"} をご確認ください。
-
-**注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
-
-**目次：**
+**目次**
 
 - [1. マーケットプレイスへのアクセス・仮想マシンの作成](#anchor1)
 - [2. 仮想マシンへのアクセス](#anchor2)
@@ -44,8 +44,10 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 - [4. ADBに接続するための設定ファイルの編集](#anchor4)
 
 <br>
+**所要時間 :** 約30分
 
 <a id="anchor1"></a>
+<br>
 
 # 1. マーケットプレイスへのアクセス・仮想マシンの作成
 
@@ -337,8 +339,11 @@ ADBに接続するためには、クレデンシャル・ウォレット（Crede
   >Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザ・ベースのターミナルです。こちらを利用すると、ブラウザだけで仮想マシンにアクセスできますので、是非お試しください。
   ><br>手順は、本ハンズオンガイドの [104: ウォレットを利用してADBに接続してみよう](/ocitutorials/database/adb104-connect-using-wallet){:target="_blank"} の、[2. 設定ファイルの編集](/ocitutorials/database/adb104-connect-using-wallet#anchor2){:target="_blank"} をご確認ください。
 
+
 <br>
-
-以上で、この章の作業は終了です。
-
+以上で、この章は終了です。  
 次の章にお進みください。
+
+<br>
+[ページトップへ戻る](#anchor0)
+
