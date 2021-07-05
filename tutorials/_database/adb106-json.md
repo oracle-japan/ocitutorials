@@ -19,7 +19,8 @@ header:
 
 ![コンバージドのイメージ](img01.png)
 
-Autonomous Databaseもコンバージド・データベースとして、RDBのフォーマットだけでなく、JSON、Text、Spatial、Graphといった様々なフォーマットを格納しご利用できます。格納されるデータの種類ごとにデータベースを用意するのではないため、データの重複や整合性に関する懸念は不要であり、またそのためのETLツールを検討する必要もなく、結果的にコストを抑えることが可能です。
+Autonomous Databaseもコンバージド・データベースとして、RDBのフォーマットだけでなく、JSON、Text、Spatial、Graphといった様々なフォーマットを格納しご利用いただけます。  
+格納されるデータの種類ごとにデータベースを用意するのではないため、データの重複や整合性に関する懸念は不要であり、またそのためのETLツールを検討する必要もなく、結果的にコストを抑えることが可能です。
   
 
 では、実際にどのように操作するのでしょうか？このページではJSONを例にその操作方法の一例を紹介します。  
@@ -35,7 +36,9 @@ Autonomous Databaseもコンバージド・データベースとして、RDBの�
 **目次**
 
 - [1.データを格納してみよう](#anchor1)
-- [2.SQLでアクセスしてみよう](#anchor2)
+- [2.SODA APIでアクセスしてみよう](#anchor2)
+- [3.SQLでアクセスしてみよう](#anchor3)
+
 
 <br>
 **所要時間 :** 約20分
@@ -50,60 +53,37 @@ Autonomous Databaseもコンバージド・データベースとして、RDBの�
 
 > SODA APIは、Simple Oracle Document Accessの略で、オラクルが用意するJSONデータにアクセスする際のAPIです。新たにJSONコレクションを作成する、挿入、検索、変更や削除にご利用いただけます。SQLで言えばDDL、DMLに当たります。  
 このSODA APIはJavaScriptはもちろん、JavaやPython, PL/SQLなどからCallして利用することが可能ですし、SQLclやDatabase Actionsではデフォルトでインストールされています。  
-（参考資料: [Autonomous JSON Database 技術概要](https://speakerdeck.com/oracle4engineer/autonomous-json-database-ji-shu-gai-yao)）
+（参考資料: [Autonomous JSON Database 技術概要](https://speakerdeck.com/oracle4engineer/autonomous-json-database-ji-shu-gai-yao){:target="_blank"} ）
 
 <br>
 
 1. Database Actionsにアクセスし、**SQL**を選択します
-
 ![img](img03.png)
 
-2. ドキュメントを格納するコレクションempを作成します。以下のスクリプトをワークシートに貼り付け、**緑色のボタン**で実行してください  
+1. ドキュメントを格納するコレクションempを作成します。以下のスクリプトをワークシートに貼り付け、**緑色のボタン**で実行してください  
 （コレクションとはRDBMSで言う表に相当し、内部的には一つの表を作成しています。）
 ```
 soda create emp
 ```
 ![img](img04.png)
 
-4. コレクションempが作成されたことを確認します
+1. コレクションempが作成されたことを確認します
 ```
 soda list
 ```
 ![img](img05.png)
 
-
-5. JSONのドキュメントをempコレクションに格納します。以下のSODAコマンドを貼り付け て、**緑色のスクリプト実行ボタン**をクリックしてください 
+1. JSONのドキュメントをempコレクションに格納します。以下のSODAコマンドを貼り付け て、**緑色のスクリプト実行ボタン**をクリックしてください
 (ドキュメントとはRDBMSで言う行に相当します。empコレクション（表）に3件のドキュメント（行）を格納しています。)
 ```
 soda insert emp {"name":"Blake", "job":"Intern", "salary":30000}
 soda insert emp {"name":"Smith", "job":"Programmer", "salary":80000}
 soda insert emp {"name":"Miller", "job":"Programmer", "salary":90000}
 ```
-
 ![img](img06.png)
 
-
-6. 格納されたデータを確認します。以下のSODAコマンドを貼り付けて、**緑色のスクリプト実行ボタン**をクリックしてください  
-
-```
--- 全ドキュメントの確認
-soda get emp
-
--- 名前で絞り込み（Millerさんのデータを確認）
-soda get emp -f {"name":"Miller"}
-
--- 給与で絞り込み（salaryが50000より大きい人のデータを確認）
-soda get emp -f {"salary": {"$gt" : 50000} }
-
-```
-
-![img](img07.png)
-
-
-
 <br>
-
-以上、SODA APIを利用したJSONデータのロード、および参照方法でした。
+以上、SODA APIを利用したJSONデータのロードでした。
 
 <br>
 
@@ -111,35 +91,45 @@ soda get emp -f {"salary": {"$gt" : 50000} }
 ![img](img02.png)
 
 <br>
-
 <a id="anchor2"></a>
 
-# 2. SQLでアクセスしてみよう
+# 2. SODA APIでアクセスしてみよう
 
-それでは次に格納したJSONデータをSQLで参照してみましょう。
-Autonomous Databaseを含むOracle Databaseは、前述したAPI経由だけでなくSQLからもJSONデータを操作することが可能です。 
-　
-ここではまず上記で作成したempコレクションの構成を確認してから、実際にSQLでアクセスしたいと思います。
+それでは次に、上記で格納したJSONデータをAPI経由で参照してみましょう。ここでは引き続き、Database Actionsを利用します。
 
+1. 以下のSODAコマンドを貼り付けて、**緑色のスクリプト実行ボタン**をクリックしてください。
+```
+-- 全ドキュメントの確認
+soda get emp
+-- 名前で絞り込み（Millerさんのデータを確認）
+soda get emp -f {"name":"Miller"}
+-- 給与で絞り込み（salaryが50000より大きい人のデータを確認）
+soda get emp -f {"salary": {"$gt" : 50000} }
+```
+![img](img07.png)
+
+まずはAPI経由でJSONデータを参照できることが確認できました。
+
+<br>
+<a id="anchor3"></a>
+
+
+# 3. SQLでアクセスしてみよう
+
+それでは次に、SQLで参照してみましょう。
 
 1. 左から**リロード**をクリックすると、EMP表として格納されていることがわかります。**EMP表**をクリックしますと、格納されているJSONドキュメントのID,作成日、更新日、バージョン、およびドキュメント列を確認できます。
-
 ![img](img08.png)
 
-2. Database ActionsのSQLワークシートに以下のSQLを貼り付けて、**緑色の実行ボタン**をクリックし実行してください。  
+1. Database ActionsのSQLワークシートに以下のSQLを貼り付けて、**緑色の実行ボタン**をクリックし実行してください。  
 json_serialize関数を利用してJSON_DOCUMENT列を参照することで、格納されているデータをJSON形式で出力します。
-
 ```
 select json_serialize(json_document) from emp ;
 ```
-
 ![img](img09.png)
 
-
-4. 次にRDBフォーマットで出力しましょう。Database ActionsのSQLワークシートに以下のSQLを貼り付けて、**緑色の実行ボタン**をクリックし実行してください。
+1. 次にRDBフォーマットで出力しましょう。Database ActionsのSQLワークシートに以下のSQLを貼り付けて、**緑色の実行ボタン**をクリックし実行してください。
 各キーに対してjson_document関数を使います。
-
-
 ```
 select e.json_document.name,
     e.json_document.job,
@@ -147,27 +137,22 @@ select e.json_document.name,
     e.json_document.email
 from emp e ;
 ```
-
 ![img](img10.png)
 
-
-
-4. 次に集計してみましょう。Database ActionsのSQLワークシートに以下のSQLを貼り付けて、**緑色の実行ボタン**をクリックし実行してください。  
+1. 次に集計してみましょう。Database ActionsのSQLワークシートに以下のSQLを貼り付けて、**緑色の実行ボタン**をクリックし実行してください。  
 ここでは簡単な例としてJOBごとの従業員数を表示しています。
-
 ```
 select e.json_document.job , count(*)
 from emp e
 group by e.json_document.job ;
 ```
-
 ![img](img11.png)
-
 
 <br>
 
-SQLを利用するので集計はもちろん、他のRDB形式で保存されている他の表とJOINすることも可能です。  
-
+JSONデータについても、SQLで参照できることがわかりました。
+SQLですので上記のように集計処理を簡単に実装できることは勿論、他のRDB形式で保存されている他の表とJOINすることも可能です。  
+JSON形式で生成されるIOT関連のログや販売履歴といったトランザクションデータと、RDMS形式で格納されているマスターデータとを付き合わせた分析など、様々な用途にご活用いただけるかと思います。
 
 <br>
 
