@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-07-02T12:41:38+09:00">
+  <meta property="article:published_time" content="2021-07-05T16:45:27+09:00">
 
 
 
@@ -280,11 +280,15 @@
         
           <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/" class="active">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
         
       </ul>
     </li>
@@ -299,7 +303,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="105: ADBの付属ツールで簡易アプリを作成しよう(APEX)">
     <meta itemprop="description" content="APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。">
-    <meta itemprop="datePublished" content="2021-07-02T12:41:38+09:00">
+    <meta itemprop="datePublished" content="2021-07-05T16:45:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -311,6 +315,7 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
   <li><a href="#1-スプレッドシートのサンプルを用意">1. スプレッドシートのサンプルを用意</a></li>
   <li><a href="#2-apexのワークスペースの作成">2. APEXのワークスペースの作成</a></li>
   <li><a href="#3-apexコンソールの起動">3. APEXコンソールの起動</a></li>
@@ -329,31 +334,30 @@
             </nav>
           </aside>
         
-        <p>Autonomous Databaseはインスタンスを作成するとすぐにWebアプリ開発基盤であるOracle APEXを利用できるようになります。</p>
+        <p><a id="anchor0"></a></p>
 
-<p>追加コストは不要です。</p>
+<h1 id="はじめに">はじめに</h1>
 
-<p>Oracle APEXは分かりやすいインターフェースで、コーディングと言った専門的な知識専門的な知識がなくてもアプリケーションを開発できるため非常に人気があります。</p>
+<p>この章ではADBインスタンスは作成済みであることを前提に、APEXコンソールの起動から簡単なアプリケーション作成までを体験いただきます。
+サンプルとして、これまでExcelで管理していた受発注データを利用して、簡単なアプリケーションを作ってみましょう。</p>
 
-<p>Autonomous Database上でAPEXを利用すると、バックアップや可用性、セキュリティ等のインフラの面倒は全てオラクルに任せて、アプリケーションだけに集中できます。</p>
+<blockquote>
+  <p>Autonomous Databaseはインスタンスを作成するとすぐにWebアプリ開発基盤であるOracle APEXを利用できるようになります。追加コストは不要です。<br />
+Oracle APEXは分かりやすいインターフェースで、コーディングと言った専門的な知識専門的な知識がなくてもアプリケーションを開発できるため非常に人気があります。
+Autonomous Database上でAPEXを利用すると、バックアップや可用性、セキュリティ等のインフラの面倒は全てオラクルに任せて、アプリケーションだけに集中できます。</p>
+</blockquote>
 
-<p>この章ではADBインスタンスは作成済みであることを前提に、APEXコンソールの起動から簡単なアプリケーション作成までを体験いただきます。</p>
+<p><br /></p>
 
-<p>サンプルとして、これまでExcelで管理していた受発注データを利用して、簡単なアプリケーションを作ってみましょう。</p>
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+</ul>
 
-<p><strong>所要時間 :</strong> 約10分</p>
+<p><br /></p>
 
-<p><strong>前提条件 :</strong></p>
-
-<ol>
-  <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること</li>
-  <li>適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること</li>
-  <li>ADBインスタンスが構成済みであること</li>
-</ol>
-
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
-
-<p><strong>目次：</strong></p>
+<p><strong>目次</strong></p>
 
 <ul>
   <li><a href="#anchor1">1. スプレッドシートのサンプルを用意</a></li>
@@ -364,9 +368,11 @@
   <li><a href="#anchor6">6. 実行確認</a></li>
 </ul>
 
-<p><br /></p>
+<p><br />
+<strong>所要時間 :</strong> 約10分</p>
 
-<p><a id="anchor1"></a></p>
+<p><a id="anchor1"></a>
+<br /></p>
 
 <h1 id="1-スプレッドシートのサンプルを用意">1. スプレッドシートのサンプルを用意</h1>
 
@@ -611,13 +617,17 @@
 
 <p>逆に、「え、これしか作れないの？」と思われた方。。。そんなことはありません。さらに作りこんでいくことはもちろん可能です！以下のまとめサイトから、チュートリアルやユーザ会の資料をご参照ください。</p>
 
-<p>以上で、この章の作業は終了です。</p>
-
-<p>次の章にお進みください。</p>
-
 <p><br /></p>
 
 <p>APEX情報まとめサイトは <a href="https://apex.oracle.com/pls/apex/japancommunity/r/main/home">こちら</a> から</p>
+
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
 
         
       </section>
@@ -628,7 +638,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-02T12:41:38+09:00">July 2, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-05T16:45:27+09:00">July 5, 2021</time></p>
 
 
       </footer>
@@ -653,7 +663,7 @@
 ">前へ</a>
     
     
-      <a href="/ocitutorials/database/adb107-machine-learning/" class="pagination--pager" title="107: ADBの付属ツールで機械学習を始めよう(AutoML UI)
+      <a href="/ocitutorials/database/adb106-json/" class="pagination--pager" title="106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）
 ">次へ</a>
     
   </nav>

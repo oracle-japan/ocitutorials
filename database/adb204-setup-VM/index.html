@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-07-02T12:41:38+09:00">
+  <meta property="article:published_time" content="2021-07-05T16:45:27+09:00">
 
 
 
@@ -280,11 +280,15 @@
         
           <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/" class="active">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
         
       </ul>
     </li>
@@ -299,7 +303,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="204: マーケットプレイスからの仮想マシンのセットアップ方法">
     <meta itemprop="description" content="Oracle Cloud Developer Image から仮想マシンをセットアップする方法をご紹介します。">
-    <meta itemprop="datePublished" content="2021-07-02T12:41:38+09:00">
+    <meta itemprop="datePublished" content="2021-07-05T16:45:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -311,6 +315,7 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
   <li><a href="#1-マーケットプレイスへのアクセス仮想マシンの作成">1. マーケットプレイスへのアクセス・仮想マシンの作成</a></li>
   <li><a href="#2-仮想マシンへのアクセス">2. 仮想マシンへのアクセス</a></li>
   <li><a href="#3-後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置">3. 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置</a></li>
@@ -320,32 +325,33 @@
             </nav>
           </aside>
         
-        <p>Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージをマーケットプレイスで公開しています。</p>
+        <p><a id="anchor0"></a></p>
 
-<p>この章では、その中の一つとして、開発者向けのLinux仮想マシンである <strong><code class="language-plaintext highlighter-rouge">Oracle Cloud Developer Image</code></strong> をセットアップする手順を記載しています。</p>
+<h1 id="はじめに">はじめに</h1>
+
+<p>後続のチュートリアルで利用する開発環境をセットアップしましょう。</p>
+
+<p>Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージをマーケットプレイスで公開しています。<br />
+本ページではその中から、開発者向けのLinux仮想マシンである <strong><code class="language-plaintext highlighter-rouge">Oracle Cloud Developer Image</code></strong> をセットアップする手順を記載しています。</p>
 
 <p><strong><code class="language-plaintext highlighter-rouge">Oracle Cloud Developer Image </code></strong>は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。</p>
 
-<p>尚、マーケットプレイスの詳細については <a href="https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm" target="_blank">こちら</a> を参照ください。</p>
+<p>尚、マーケットプレイスの詳細については <a href="https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm" target="_blank">こちら</a> を参照ください。<br />
+またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の <a href="/ocitutorials/beginners/creating-compute-instance/" target="_blank">その3 - インスタンスを作成する</a> の手順も併せてご確認ください。</p>
 
-<p>またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の <a href="/ocitutorials/beginners/creating-compute-instance/" target="_blank">その3 - インスタンスを作成する</a> の手順も併せてご確認ください。</p>
+<p><br /></p>
 
-<p><strong>所要時間 :</strong> 約30分</p>
-
-<p><strong>前提条件 :</strong></p>
-
-<ol>
-  <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、ユーザーアカウントがあること</li>
-  <li>適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切な権限がユーザーに付与されていること</li>
+<p><strong>前提条件</strong></p>
+<ul>
   <li>ADBインスタンスが構成済みであること
-<br />※ADBインタンスを作成方法については、本ハンズオンガイドの <a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
   <li>ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること
-<br />※クレデンシャルウォレットのダウンロード方法については、本ハンズオンガイドの <a href="/ocitutorials/database/adb104-connect-using-wallet" target="_blank">104: ウォレットを利用してADBに接続してみよう</a> の、<a href="/ocitutorials/database/adb104-connect-using-wallet#anchor1" target="_blank">1. クレデンシャル・ウォレットのダウンロード</a> をご確認ください。</li>
-</ol>
+  <br />※クレデンシャルウォレットのダウンロード方法については、<a href="/ocitutorials/database/adb104-connect-using-wallet" target="_blank">104: ウォレットを利用してADBに接続してみよう</a> の、<a href="/ocitutorials/database/adb104-connect-using-wallet#anchor1" target="_blank">1. クレデンシャル・ウォレットのダウンロード</a> をご確認ください。</li>
+</ul>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+<p><br /></p>
 
-<p><strong>目次：</strong></p>
+<p><strong>目次</strong></p>
 
 <ul>
   <li><a href="#anchor1">1. マーケットプレイスへのアクセス・仮想マシンの作成</a></li>
@@ -354,9 +360,11 @@
   <li><a href="#anchor4">4. ADBに接続するための設定ファイルの編集</a></li>
 </ul>
 
-<p><br /></p>
+<p><br />
+<strong>所要時間 :</strong> 約30分</p>
 
-<p><a id="anchor1"></a></p>
+<p><a id="anchor1"></a>
+<br /></p>
 
 <h1 id="1-マーケットプレイスへのアクセス仮想マシンの作成">1. マーケットプレイスへのアクセス・仮想マシンの作成</h1>
 
@@ -693,11 +701,13 @@ Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウ
 <br />手順は、本ハンズオンガイドの <a href="/ocitutorials/database/adb104-connect-using-wallet" target="_blank">104: ウォレットを利用してADBに接続してみよう</a> の、<a href="/ocitutorials/database/adb104-connect-using-wallet#anchor2" target="_blank">2. 設定ファイルの編集</a> をご確認ください。</p>
 </blockquote>
 
-<p><br /></p>
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
 
-<p>以上で、この章の作業は終了です。</p>
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
 
-<p>次の章にお進みください。</p>
 
         
       </section>
@@ -708,7 +718,7 @@ Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウ
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-02T12:41:38+09:00">July 2, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-05T16:45:27+09:00">July 5, 2021</time></p>
 
 
       </footer>
@@ -733,7 +743,8 @@ Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウ
 ">前へ</a>
     
     
-      <a href="#" class="pagination--pager disabled">次へ</a>
+      <a href="/ocitutorials/database/adb208-oml-notebook/" class="pagination--pager" title="208: Oracle Machine Learningで機械学習をしよう
+">次へ</a>
     
   </nav>
 

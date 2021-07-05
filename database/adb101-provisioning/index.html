@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>101: ADBインスタンスを作成してみよう | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。">
+<meta name="description" content="簡単すぐにハイエンドなデータベースを構成できることをご確認ください。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -26,7 +26,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">
 
 
-  <meta property="og:description" content="この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。">
+  <meta property="og:description" content="簡単すぐにハイエンドなデータベースを構成できることをご確認ください。">
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-07-02T12:41:38+09:00">
+  <meta property="article:published_time" content="2021-07-05T16:45:27+09:00">
 
 
 
@@ -192,7 +192,7 @@
         
       </h1>
       
-        <p class="page__lead">この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。
+        <p class="page__lead">簡単すぐにハイエンドなデータベースを構成できることをご確認ください。
 </p>
       
       
@@ -280,11 +280,15 @@
         
           <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
         
       </ul>
     </li>
@@ -298,8 +302,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="101: ADBインスタンスを作成してみよう">
-    <meta itemprop="description" content="この章ではADBインスタンスを作成します。またADBインスタンスにデータベース・ユーザー（スキーマ）を作成します。ハイエンドなデータベースを簡単すぐに構成できることをご確認ください。">
-    <meta itemprop="datePublished" content="2021-07-02T12:41:38+09:00">
+    <meta itemprop="description" content="簡単すぐにハイエンドなデータベースを構成できることをご確認ください。">
+    <meta itemprop="datePublished" content="2021-07-05T16:45:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -311,48 +315,55 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
-  <li><a href="#1-リージョンを設定しコンパートメントを用意しよう">#1. リージョンを設定し、コンパートメントを用意しよう</a>
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#リージョンを設定しコンパートメントを用意しよう">リージョンを設定し、コンパートメントを用意しよう</a>
     <ul>
       <li><a href="#1-サービス画面へのアクセス">1. サービス画面へのアクセス</a></li>
       <li><a href="#2-リージョンの確認設定">2. リージョンの確認、設定</a></li>
-      <li><a href="#3-コンパートメントの確認作成">3. コンパートメントの確認、作成</a>
-        <ul>
-          <li><a href="#コンパートメントの追加方法">[コンパートメントの追加方法]</a></li>
-        </ul>
-      </li>
+      <li><a href="#3-コンパートメントの確認作成">3. コンパートメントの確認、作成</a></li>
     </ul>
   </li>
-  <li><a href="#2-adbインスタンスを作成してみよう">#2. ADBインスタンスを作成してみよう</a>
+  <li><a href="#adbインスタンスを作成してみよう">ADBインスタンスを作成してみよう</a>
     <ul>
       <li><a href="#1-atpインスタンスの作成プロビジョニング">1. ATPインスタンスの作成（プロビジョニング）</a></li>
-      <li><a href="#2-database-actionsでatpインスタンスにアクセスしてみよう">2. Database ActionsでATPインスタンスにアクセスしてみよう</a></li>
-      <li><a href="#3-データベースユーザーを作成してみようdatabase-actions">3. データベース・ユーザーを作成してみよう(Database Actions)</a></li>
-      <li><a href="#4-データベースユーザーを作成してみようコマンドライン">4. データベース・ユーザーを作成してみよう（コマンドライン)</a></li>
     </ul>
   </li>
-  <li><a href="#note">NOTE</a></li>
+  <li><a href="#database-actionsで操作してみよう">Database Actionsで操作してみよう</a>
+    <ul>
+      <li><a href="#1インスタンスに接続してみよう">1.インスタンスに接続してみよう</a></li>
+      <li><a href="#2-データベースユーザーを作成してみようdatabase-actions">2. データベース・ユーザーを作成してみよう(Database Actions)</a></li>
+      <li><a href="#3-データベースユーザーを作成してみようコマンドライン">3. データベース・ユーザーを作成してみよう（コマンドライン)</a></li>
+    </ul>
+  </li>
+  <li><a href="#よくある質問やtips">よくある質問やTips</a></li>
 </ul>
 
             </nav>
           </aside>
         
-        <p>この章は大きく2つの内容で構成されています。</p>
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>この章はまずAutonomous Database を構成するために必要なリージョンおよびコンパートメントを設定いただきます。<br />
+その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、アクセスしてみます。</p>
+
+<p><br />
+<strong>目次</strong></p>
+
 <ul>
-  <li>#1 : メニュー画面を操作し、リージョンおよびコンパートメントを設定いただきます。 (所要時間：5分)</li>
-  <li>#2 : ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成します。 (所要時間：20分)</li>
+  <li><a href="#anchor1">1.リージョンを設定し、コンパートメントを用意しよう</a></li>
+  <li><a href="#anchor2">2.ADBインスタンスを作成してみよう</a></li>
+  <li><a href="#anchor3">3.Database Actionsで操作してみよう</a></li>
 </ul>
 
-<p><br /></p>
+<p><br />
+<strong>所要時間 :</strong> 約20分</p>
 
-<h1 id="1-リージョンを設定しコンパートメントを用意しよう">#1. リージョンを設定し、コンパートメントを用意しよう</h1>
+<p><a id="anchor1"></a>
+<br /></p>
 
-<p><strong>作業の流れ :</strong></p>
-
-<ol>
-  <li>サービス画面へのアクセス</li>
-  <li>リージョンの確認、設定</li>
-  <li>コンパートメントの確認、作成</li>
-</ol>
+<h1 id="リージョンを設定しコンパートメントを用意しよう">リージョンを設定し、コンパートメントを用意しよう</h1>
 
 <h2 id="1-サービス画面へのアクセス">1. サービス画面へのアクセス</h2>
 
@@ -449,7 +460,7 @@
 
 <p><br /></p>
 
-<h3 id="コンパートメントの追加方法"><strong>[コンパートメントの追加方法]</strong></h3>
+<p><strong>[コンパートメントの追加方法]</strong></p>
 
 <p>クラウドアカウントを作成した直後のデフォルト設定ではrootコンパートメントのみが表示されます。<br />
 この場合、rootコンパートメントの直下でADBインスタンスが構成されますが、新たにコンパートメントを追加したい場合は以下の手順で追加してください。</p>
@@ -473,17 +484,14 @@
 以上で、ADBインスタンスを作成する準備が整いました！<br />
 <br /></p>
 
-<h1 id="2-adbインスタンスを作成してみよう">#2. ADBインスタンスを作成してみよう</h1>
-<p>それではここからは実際にADBインスタンス（データベース）を1つ作成し、接続してみましょう！</p>
+<p><br /></p>
 
-<p><strong>作業の流れ :</strong></p>
+<p><a id="anchor2"></a></p>
 
-<ol>
-  <li>ATPインスタンスの作成（プロビジョニング）</li>
-  <li>ATPインスタンスに接続してみよう（Database Actiona）</li>
-  <li>データベース・ユーザーの作成（Oracle ML/ APEXの利用時は不要）</li>
-  <li>クレデンシャル・ウォレットのダウンロード</li>
-</ol>
+<p><br /></p>
+
+<h1 id="adbインスタンスを作成してみよう">ADBインスタンスを作成してみよう</h1>
+<p>それではここからは実際にADBインスタンス（データベース）を1つ作成してみましょう！</p>
 
 <h2 id="1-atpインスタンスの作成プロビジョニング">1. ATPインスタンスの作成（プロビジョニング）</h2>
 
@@ -605,7 +613,16 @@
   </li>
 </ol>
 
-<h2 id="2-database-actionsでatpインスタンスにアクセスしてみよう">2. Database ActionsでATPインスタンスにアクセスしてみよう</h2>
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<p><br /></p>
+
+<h1 id="database-actionsで操作してみよう">Database Actionsで操作してみよう</h1>
+<p>それでは作成したADBインスタンス（データベース）に接続してみましょう！</p>
+
+<h2 id="1インスタンスに接続してみよう">1.インスタンスに接続してみよう</h2>
 <p>Autonomous Databaseではいくつか開発ツールがビルトインされており、インスタンス作成直後から利用することが可能です。<br />
   ここではデータベースオブジェクトの管理、SQL作成など様々な操作を実行できるDatabase Actionsを利用し、<br />
   上記で作成したATPインスタンスにアクセスしてみましょう。</p>
@@ -638,7 +655,7 @@
   </li>
 </ol>
 
-<h2 id="3-データベースユーザーを作成してみようdatabase-actions">3. データベース・ユーザーを作成してみよう(Database Actions)</h2>
+<h2 id="2-データベースユーザーを作成してみようdatabase-actions">2. データベース・ユーザーを作成してみよう(Database Actions)</h2>
 
 <p>ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、アプリケーションを構成する場合は、個別にデータベース・ユーザー（スキーマ）を作成することが多いかと思います。<br />
 ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
@@ -690,7 +707,7 @@
 
 <p><br /></p>
 
-<h2 id="4-データベースユーザーを作成してみようコマンドライン">4. データベース・ユーザーを作成してみよう（コマンドライン)</h2>
+<h2 id="3-データベースユーザーを作成してみようコマンドライン">3. データベース・ユーザーを作成してみよう（コマンドライン)</h2>
 
 <p>次にコマンドラインからABDUSERを新規作成するステップを紹介します。（SQLコマンドを実行するために、再びDatabase ActionsのSQLワークシートを利用しましょう）</p>
 
@@ -754,9 +771,9 @@
 
 <p>以上で、この章の作業は終了です。</p>
 
-<h1 id="note">NOTE</h1>
+<p><br /></p>
 
-<p>よくある質問やTipsを記載</p>
+<h1 id="よくある質問やtips">よくある質問やTips</h1>
 
 <p><strong>1. OCPU=1でパラレル処理されるの？？</strong></p>
 
@@ -770,9 +787,13 @@
 
 <p>また、OCPU増はコストに跳ね返ってきますが、OCPUはオンラインでスケールアップ・ダウンが可能なので、週末・夜間など使わないタイミングはコア数を減らすことでコストを削減できます。</p>
 
-<p>以上</p>
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
 
-<p>次の章にお進みください。</p>
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
 
         
       </section>
@@ -783,7 +804,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-02T12:41:38+09:00">July 2, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-05T16:45:27+09:00">July 5, 2021</time></p>
 
 
       </footer>

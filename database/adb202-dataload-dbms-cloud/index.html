@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-07-02T12:41:38+09:00">
+  <meta property="article:published_time" content="2021-07-05T16:45:27+09:00">
 
 
 
@@ -280,11 +280,15 @@
         
           <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/" class="active">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
         
       </ul>
     </li>
@@ -299,7 +303,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)">
     <meta itemprop="description" content="数100GB、数TB規模のデータをロードするにはどうしたら良いでしょうか？オブジェクトストレージからDBMS_CLOUDパッケージを使ったデータロード方法を説明します。">
-    <meta itemprop="datePublished" content="2021-07-02T12:41:38+09:00">
+    <meta itemprop="datePublished" content="2021-07-05T16:45:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -311,15 +315,20 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
   <li><a href="#database-actionsに接続">Database Actionsに接続</a></li>
   <li><a href="#dbms_cloudパッケージの実行">DBMS_CLOUDパッケージの実行</a></li>
-  <li><a href="#note">NOTE</a></li>
+  <li><a href="#よくある質問やtips">よくある質問やTips</a></li>
 </ul>
 
             </nav>
           </aside>
         
-        <p>大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。
 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。</p>
 
 <ul>
@@ -327,6 +336,27 @@
 </ul>
 
 <p><br /></p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1.Database Actionsに接続</a></li>
+  <li><a href="#anchor2">2.DBMS_CLOUDパッケージの実行</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約10分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
 
 <h1 id="database-actionsに接続">Database Actionsに接続</h1>
 
@@ -343,6 +373,10 @@
   </li>
 </ol>
 
+<p><br />
+<a id="anchor2"></a>
+<br /></p>
+
 <h1 id="dbms_cloudパッケージの実行">DBMS_CLOUDパッケージの実行</h1>
 
 <p>以下の1～5までの例を参考にコマンドを作成し、ワークシートに貼り付けスクリプトの実行をクリックし、データをロードします（集合ハンズオンセミナーでは講師の指示に従ってください)</p>
@@ -351,7 +385,7 @@
   <li>
     <p><strong>クレデンシャル情報の登録</strong></p>
 
-    <p>クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、<a href="/ocitutorials/database/adb102-dataload">ADBにデータをロードしてみよう(Database Actions)</a>の記事内の<em>クラウド・ストレージからのデータのロードしてみよう</em>の項から、把握することができます。</p>
+    <p>クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、<a href="/ocitutorials/database/adb102-dataload">ADBにデータをロードしてみよう(Database Actions)</a>の記事内の<em>クラウド・ストレージからデータをロードしてみよう</em>を参照ください。</p>
 
     <p><strong><em>credential_name</em></strong>: DBに保存した認証情報を識別するための名前、任意</p>
 
@@ -472,9 +506,7 @@
 
 <p>以上で、この章の作業は終了です</p>
 
-<h1 id="note">NOTE</h1>
-
-<p>よくある質問やTipsを記載</p>
+<h1 id="よくある質問やtips">よくある質問やTips</h1>
 
 <ol>
   <li>
@@ -681,7 +713,12 @@ END;
   </li>
 </ol>
 
-<p>次の章にお進みください。</p>
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
 
 
         
@@ -693,7 +730,7 @@ END;
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-02T12:41:38+09:00">July 2, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-05T16:45:27+09:00">July 5, 2021</time></p>
 
 
       </footer>

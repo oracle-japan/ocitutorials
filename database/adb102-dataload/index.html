@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-07-02T12:41:38+09:00">
+  <meta property="article:published_time" content="2021-07-05T16:45:27+09:00">
 
 
 
@@ -280,11 +280,15 @@
         
           <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
         
       </ul>
     </li>
@@ -299,7 +303,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="102: まずADBにデータをロードしよう(Database Actions)">
     <meta itemprop="description" content="Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
-    <meta itemprop="datePublished" content="2021-07-02T12:41:38+09:00">
+    <meta itemprop="datePublished" content="2021-07-05T16:45:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -311,38 +315,57 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
-  <li><a href="#1手元のpcからcsvデータをアップロードしてみよう">1.手元のPCからCSVデータをアップロードしてみよう</a></li>
-  <li><a href="#2-クラウドストレージからのデータのロードしてみよう">2. クラウド・ストレージからのデータのロードしてみよう</a>
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1手元のpcからクラウドストレージにcsvデータをアップロードしてみよう">1.手元のPCからクラウド・ストレージにCSVデータをアップロードしてみよう</a></li>
+  <li><a href="#2-クラウドストレージからデータをロードしてみよう">2. クラウド・ストレージからデータをロードしてみよう</a>
     <ul>
       <li><a href="#1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</a></li>
-      <li><a href="#2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</a></li>
-      <li><a href="#3database-actionsを利用したクラウドストレージからのデータロード">3.Database Actionsを利用したクラウド・ストレージからのデータ・ロード</a></li>
+      <li><a href="#2ociオブジェクトストレージへのデータアップロード">2.OCIオブジェクトストレージへのデータアップロード</a></li>
+      <li><a href="#3ociオブジェクトストレージからadbインスタンスへのデータロード">3.OCIオブジェクトストレージからADBインスタンスへのデータ・ロード</a></li>
     </ul>
   </li>
-  <li><a href="#3-クラウドストレージのデータのフィードをしてみよう">3. クラウド・ストレージのデータのフィードをしてみよう</a></li>
+  <li><a href="#3-クラウドストレージのデータをフィードしてみよう">3. クラウド・ストレージのデータをフィードしてみよう</a></li>
 </ul>
 
             </nav>
           </aside>
         
-        <p>この章ではSQL Developer Webの後継機能である、Database Actionsを利用して、サンプルデータをADBインスタンスにデータをアップロードします。<br />
-事前に前提条件にリンクされているサンプルデータのCSVファイルをお手元のPC上にダウンロードください。<br />
-（集合ハンズオンセミナーでは講師の指示に従ってください）</p>
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>この章ではDatabase Actions（SQL Developer Webの後継機能）を利用して、サンプルデータをADBインスタンスにデータをアップロードします。</p>
+
+<p><br /></p>
 
 <p><strong>前提条件 :</strong></p>
 <ul>
-  <li><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>を完了していること</li>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
   <li>以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること
-<!--	+ [サンプルデータファイルのダウンロードリンク](https://github.com/oracle-japan/ocitutorials/raw/master/tutorials/_database/adb12-dataload/adb-hol2_sampledata.zip) -->
     <ul>
       <li><a href="/ocitutorials/database/adb102-dataload/sales_channels.csv">サンプルデータファイルのダウンロードリンク</a></li>
     </ul>
   </li>
 </ul>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。</p>
+<p><br /></p>
 
-<h1 id="1手元のpcからcsvデータをアップロードしてみよう">1.手元のPCからCSVデータをアップロードしてみよう</h1>
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1.手元のPCからクラウド・ストレージにCSVデータをアップロードしてみよう</a></li>
+  <li><a href="#anchor2">2.クラウド・ストレージからデータをロードしてみよう</a></li>
+  <li><a href="#anchor3">3.クラウド・ストレージのデータをフィードしてみよう</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約20分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1手元のpcからクラウドストレージにcsvデータをアップロードしてみよう">1.手元のPCからクラウド・ストレージにCSVデータをアップロードしてみよう</h1>
 
 <p>まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。</p>
 
@@ -416,18 +439,14 @@
 
 <p>次は、Database Actionsで、クラウド・ストレージからのデータのロードをしてみましょう。</p>
 
-<h1 id="2-クラウドストレージからのデータのロードしてみよう">2. クラウド・ストレージからのデータのロードしてみよう</h1>
+<p><br />
+<a id="anchor2"></a>
+<br /></p>
+
+<h1 id="2-クラウドストレージからデータをロードしてみよう">2. クラウド・ストレージからデータをロードしてみよう</h1>
 <p>この章では、オブジェクトストレージからADBへのデータロード方法を記載します。<br />
 大量データをロードしたい場合はパフォーマンス性能の観点から本手順を推奨しています。<br />
 サンプルデータとしてsales_channels.csvファイルを利用します。</p>
-
-<p>作業の流れは以下の通りです。</p>
-<ol>
-  <li>OCIオブジェクトストレージへのアクセス情報を取得</li>
-  <li>オブジェクトストレージへのデータアップロード、アクセスURLの取得</li>
-  <li>Database Actionsを利用したオブジェクトストレージからのデータのロード</li>
-  <li>Database Actionsのワークシートからロードしたデータをクエリ</li>
-</ol>
 
 <h2 id="1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</h2>
 <p>以下の手順で、ADBインスタンスからオブジェクトストレージ上のファイルにアクセスするための、ユーザ名、Auth Token（認証トークン）を取得します。<br />
@@ -457,7 +476,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
   </li>
 </ol>
 
-<h2 id="2オブジェクトストレージへのデータアップロード">2.オブジェクトストレージへのデータアップロード</h2>
+<h2 id="2ociオブジェクトストレージへのデータアップロード">2.OCIオブジェクトストレージへのデータアップロード</h2>
 <p>ダウンロードしたsales_channels.csvをオブジェクトストレージへアップロードします。</p>
 
 <ol>
@@ -504,7 +523,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
   </li>
 </ol>
 
-<h2 id="3database-actionsを利用したクラウドストレージからのデータロード">3.Database Actionsを利用したクラウド・ストレージからのデータ・ロード</h2>
+<h2 id="3ociオブジェクトストレージからadbインスタンスへのデータロード">3.OCIオブジェクトストレージからADBインスタンスへのデータ・ロード</h2>
 
 <ol>
   <li>
@@ -560,7 +579,11 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
   </li>
 </ol>
 
-<h1 id="3-クラウドストレージのデータのフィードをしてみよう">3. クラウド・ストレージのデータのフィードをしてみよう</h1>
+<p><br />
+<a id="anchor3"></a>
+<br /></p>
+
+<h1 id="3-クラウドストレージのデータをフィードしてみよう">3. クラウド・ストレージのデータをフィードしてみよう</h1>
 
 <p>クラウド・ストレージに入ってきた新しいデータを指定した頻度でポーリングすることで、ライブ表として設定したテーブルに最新のデータを自動フィードすることができます。
 従来はBucketにファイルを置いたことを定期的に監視してロードするといったスクリプトを作り込む必要がありましたが、Database Actionsのフィード機能を使えば、Bucketにファイルを置きさえすればデータベースに指定した頻度で同期されるので、IoT用途やOracle Machine Learningのデータベース内機械学習、データ分析に活用可能です。</p>
@@ -604,7 +627,13 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
   </li>
 </ol>
 
-<p>以上で、この章の作業は終了です。</p>
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
 
         
       </section>
@@ -615,7 +644,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-02T12:41:38+09:00">July 2, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-05T16:45:27+09:00">July 5, 2021</time></p>
 
 
       </footer>

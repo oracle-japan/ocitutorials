@@ -1,0 +1,740 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作） | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Autonomous Databaseはコンバージド・データベースとして様々なフォーマットのデータを扱うことができます。この章ではJSONを例にコンバージド・データベースの操作イメージをご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb106-json/">
+
+
+  <meta property="og:description" content="Autonomous Databaseはコンバージド・データベースとして様々なフォーマットのデータを扱うことができます。この章ではJSONを例にコンバージド・データベースの操作イメージをご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb106-json/img00.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-07-05T16:45:27+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb106-json/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb106-json/img00.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）
+
+        
+      </h1>
+      
+        <p class="page__lead">Autonomous Databaseはコンバージド・データベースとして様々なフォーマットのデータを扱うことができます。この章ではJSONを例にコンバージド・データベースの操作イメージをご紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: まずADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/" class="active">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）">
+    <meta itemprop="description" content="Autonomous Databaseはコンバージド・データベースとして様々なフォーマットのデータを扱うことができます。この章ではJSONを例にコンバージド・データベースの操作イメージをご紹介します。">
+    <meta itemprop="datePublished" content="2021-07-05T16:45:27+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-データを格納してみよう">1. データを格納してみよう</a></li>
+  <li><a href="#2-soda-apiでアクセスしてみよう">2. SODA APIでアクセスしてみよう</a></li>
+  <li><a href="#3-sqlでアクセスしてみよう">3. SQLでアクセスしてみよう</a></li>
+  <li><a href="#よくある質問やtips">よくある質問やTips</a></li>
+  <li><a href="#参考資料">参考資料</a>
+    <ul>
+      <li><a href="#oracle-livelabsのチュートリアル">Oracle LiveLabsのチュートリアル</a></li>
+      <li><a href="#その他">その他</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>コンバージド・データベースとは、あらゆるデータをサポートするマルチモデルを採用し、あらゆるワークロードをサポートしていくこと、また様々なツールをDBに統合し開発生産性に貢献していくという、Oracle Databaseのコンセプトの一つです。</p>
+
+<p><img src="img01.png" alt="コンバージドのイメージ" /></p>
+
+<p>Autonomous Databaseもコンバージド・データベースとして、RDBのフォーマットだけでなく、JSON、Text、Spatial、Graphといった様々なフォーマットを格納しご利用いただけます。<br />
+格納されるデータの種類ごとにデータベースを用意するのではないため、データの重複や整合性に関する懸念は不要であり、またそのためのETLツールを検討する必要もなく、結果的にコストを抑えることが可能です。</p>
+
+<p>では、実際にどのように操作するのでしょうか？このページではJSONを例にその操作方法の一例を紹介します。</p>
+
+<p><br /></p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1.データを格納してみよう</a></li>
+  <li><a href="#anchor2">2.SODA APIでアクセスしてみよう</a></li>
+  <li><a href="#anchor3">3.SQLでアクセスしてみよう</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約20分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-データを格納してみよう">1. データを格納してみよう</h1>
+
+<p>まずはJSONデータをADBインスタンスに登録し、登録したデータを確認しましょう。ここではSODA APIを実行できるDatabase Actionsを利用します。</p>
+
+<blockquote>
+  <p>SODA APIは、Simple Oracle Document Accessの略で、オラクルが用意するJSONデータにアクセスする際のAPIです。新たにJSONコレクションを作成する、挿入、検索、変更や削除にご利用いただけます。SQLで言えばDDL、DMLに当たります。<br />
+このSODA APIはJavaScriptはもちろん、JavaやPython, PL/SQLなどからCallして利用することが可能ですし、SQLclやDatabase Actionsではデフォルトでインストールされています。<br />
+（参考資料: <a href="https://speakerdeck.com/oracle4engineer/autonomous-json-database-ji-shu-gai-yao" target="_blank">Autonomous JSON Database 技術概要</a> ）</p>
+</blockquote>
+
+<p><br /></p>
+
+<ol>
+  <li>
+    <p>Database Actionsにアクセスし、<strong>SQL</strong>を選択します
+<img src="img03.png" alt="img" /></p>
+  </li>
+  <li>ドキュメントを格納するコレクションempを作成します。以下のスクリプトをワークシートに貼り付け、<strong>緑色のボタン</strong>で実行してください<br />
+（コレクションとはRDBMSで言う表に相当し、内部的には一つの表を作成しています。）
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>soda create emp
+</code></pre></div>    </div>
+    <p><img src="img04.png" alt="img" /></p>
+  </li>
+  <li>コレクションempが作成されたことを確認します
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>soda list
+</code></pre></div>    </div>
+    <p><img src="img05.png" alt="img" /></p>
+  </li>
+  <li>JSONのドキュメントをempコレクションに格納します。以下のSODAコマンドを貼り付け て、<strong>緑色のスクリプト実行ボタン</strong>をクリックしてください
+(ドキュメントとはRDBMSで言う行に相当します。empコレクション（表）に3件のドキュメント（行）を格納しています。)
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>soda insert emp {"name":"Blake", "job":"Intern", "salary":30000}
+soda insert emp {"name":"Smith", "job":"Programmer", "salary":80000}
+soda insert emp {"name":"Miller", "job":"Programmer", "salary":90000}
+</code></pre></div>    </div>
+    <p><img src="img06.png" alt="img" /></p>
+  </li>
+</ol>
+
+<p><br />
+以上、SODA APIを利用したJSONデータのロードでした。</p>
+
+<p><br /></p>
+
+<blockquote>
+  <p>参考）RDBMSとの用語比較
+<img src="img02.png" alt="img" /></p>
+</blockquote>
+
+<p><br />
+<a id="anchor2"></a></p>
+
+<h1 id="2-soda-apiでアクセスしてみよう">2. SODA APIでアクセスしてみよう</h1>
+
+<p>それでは次に、上記で格納したJSONデータをAPI経由で参照してみましょう。ここでは引き続き、Database Actionsを利用します。</p>
+
+<ol>
+  <li>以下のSODAコマンドを貼り付けて、<strong>緑色のスクリプト実行ボタン</strong>をクリックしてください。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- 全ドキュメントの確認
+soda get emp
+-- 名前で絞り込み（Millerさんのデータを確認）
+soda get emp -f {"name":"Miller"}
+-- 給与で絞り込み（salaryが50000より大きい人のデータを確認）
+soda get emp -f {"salary": {"$gt" : 50000} }
+</code></pre></div>    </div>
+    <p><img src="img07.png" alt="img" /></p>
+  </li>
+</ol>
+
+<p>まずはAPI経由でJSONデータを参照できることが確認できました。</p>
+
+<p><br />
+<a id="anchor3"></a></p>
+
+<h1 id="3-sqlでアクセスしてみよう">3. SQLでアクセスしてみよう</h1>
+
+<p>それでは次に、SQLで参照してみましょう。</p>
+
+<ol>
+  <li>
+    <p>左から<strong>リロード</strong>をクリックすると、EMP表として格納されていることがわかります。<strong>EMP表</strong>をクリックしますと、格納されているJSONドキュメントのID,作成日、更新日、バージョン、およびドキュメント列を確認できます。
+<img src="img08.png" alt="img" /></p>
+  </li>
+  <li>Database ActionsのSQLワークシートに以下のSQLを貼り付けて、<strong>緑色の実行ボタン</strong>をクリックし実行してください。<br />
+json_serialize関数を利用してJSON_DOCUMENT列を参照することで、格納されているデータをJSON形式で出力します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select json_serialize(json_document) from emp ;
+</code></pre></div>    </div>
+    <p><img src="img09.png" alt="img" /></p>
+  </li>
+  <li>次にRDBフォーマットで出力しましょう。Database ActionsのSQLワークシートに以下のSQLを貼り付けて、<strong>緑色の実行ボタン</strong>をクリックし実行してください。
+各キーに対してjson_document関数を使います。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select e.json_document.name,
+    e.json_document.job,
+    e.json_document.salary,
+    e.json_document.email
+from emp e ;
+</code></pre></div>    </div>
+    <p><img src="img10.png" alt="img" /></p>
+  </li>
+  <li>次に集計してみましょう。Database ActionsのSQLワークシートに以下のSQLを貼り付けて、<strong>緑色の実行ボタン</strong>をクリックし実行してください。<br />
+ここでは簡単な例としてJOBごとの従業員数を表示しています。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select e.json_document.job , count(*)
+from emp e
+group by e.json_document.job ;
+</code></pre></div>    </div>
+    <p><img src="img11.png" alt="img" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>JSONデータについても、SQLで参照できることがわかりました。
+SQLですので上記のように集計処理を簡単に実装できることは勿論、他のRDB形式で保存されている他の表とJOINすることも可能です。<br />
+JSON形式で生成されるIOT関連のログや販売履歴といったトランザクションデータと、RDMS形式で格納されているマスターデータとを付き合わせた分析など、様々な用途にご活用いただけるかと思います。</p>
+
+<p><br /></p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><a id="anchor3"></a></p>
+
+<!-- メモ）Qiitaに記事があったので、参考資料に提示しつつ、一旦記載は見送る。必要に応じて追記する。
+
+# 3. JSONファイルをアップロードしてみよう
+
+次に大量データを想定し、JSONファイルをDBMS_CLOUD.COLLECTIONにてロードする手順を見ていきます。
+より高速にADBインスタンスにロードすることが可能です。
+
+
+1.こちらを参考にオブジェクトストレージにJSONファイルをアップロードします。
+
+1.オブジェクトストレージからDBMS_CLOUD.パッケージを利用してロードします。ここで利用するクレデンシャルは上記1で作成したクレデンシャルを利用しています。
+
+
+1.ロードできたことを確認します。
+
+```
+select xxx
+```
+
+-->
+
+<!-- メモ）Database Actionsで記載しようとしたら、ファイルサイズが大きくなると画面がハングしてしまうので、一旦見送り。Oracle Livelabsにチュートリアルがあったので、参考資料で案内。。。
+
+次にGUIベースでコレクションの作成、データをロードする方法についてみていきましょう。ここではある程度大量のデータを想定し、Database ActionsはGUIベースでJSONデータを貼り付けるだけでロードすることも可能です。
+
+1. 左上の**メニュー**から**JSON**を選択します。
+
+![img2-01](img2-01.png)
+
+> 初回はDatabase ActionsにおけるJSONウィザードの利用方法がガイドされます。上記1で実施したコレクションの作成、登録作業も実施可能なので、是非ご確認ください。
+
+
+2. コレクション作成をクリックします。
+
+![img2-02](img2-02.png)
+
+3. 新規JSONドキュメントをクリックします。
+
+![img2-03](img2-03.png)
+
+
+4. 画面下で登録したドキュメントを確認できます。
+
+
+5. 
+
+参考）外部にAPIで公開されているデータがあれば、クライアントツールなしにADBインスタンスだけでJSONデータをロードすることも可能です。
+参考）Qiita 
+
+-->
+
+<p><br /></p>
+
+<h1 id="よくある質問やtips">よくある質問やTips</h1>
+
+<p><strong>1. JSONファイルを直接ロードしたい場合や、大量データをロードしたい場合はどうすれば良いですか？</strong></p>
+
+<p>・Database ActionsのJSONウィザード、もしくはDBMS_CLOUD.COPY_COLLECTION(<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/autonomous-json-load-files.html">マニュアル</a>)を利用しコマンドベースでロードしてください。特に大量データをロードする場合は、性能の観点から後者のDBMS_CLOUD.COPY_COLLECTIONの利用を推奨します。</p>
+
+<ul>
+  <li>
+    <p>Database ActionsのJSONウィザードの<a href="https://oracle.github.io/learning-library/data-management-library/database/json/json-soda-ajd/workshops/freetier/?lab=sql-json">参考手順(Oracle Livelabs)</a></p>
+  </li>
+  <li>
+    <p>DBMS_CLOUD.COPY_COLLECTIONに関する<a href="https://qiita.com/kenwatan/items/db9134e1c9bf49315a79">参考手順(Qiita)</a></p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<h2 id="oracle-livelabsのチュートリアル">Oracle LiveLabsのチュートリアル</h2>
+
+<p><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=831">JSON and SODA with the Autonomous JSON Database Workshop</a></p>
+<ul>
+  <li>Autonomous JSON Database(AJD)における各種JSONデータの取り扱いについてワークショップ形式で説明しています。</li>
+  <li>本ページでは扱っていない、Database ActionsにおけるJSONウィザードの利用方法や、その他JSONを利用する上でのSQL関数の使い方にも触れています。</li>
+  <li>ATP/ADWでも同様にお試しいただけますので、是非ご確認ください。</li>
+</ul>
+
+<p><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776">Converged Functionality of Oracle Autonomous Database Workshop</a></p>
+<ul>
+  <li>Autonomous Databaseの特徴であるコンバージド・データベースをご体験いただけます。</li>
+  <li>本ページはJSONのみを扱いましたが、このワークショップでは、JSON以外の例えばSpatialといったフォーマットの扱い方にも触れています。</li>
+</ul>
+
+<h2 id="その他">その他</h2>
+
+<p><a href="https://speakerdeck.com/oracle4engineer/autonomous-json-database-ji-shu-gai-yao">Autonomous JSON Database 技術概要</a>）</p>
+
+<p><a href="https://qiita.com/TakuyaAma/items/429d762f54a18b0785a5">Qiita: Autonomous Database でのJSONデータ操作</a></p>
+<ul>
+  <li>Database Actionsを利用したコレクションの作成から、JSONを扱う際のその他関数についてなど、このページでは触れていない内容が紹介されています。</li>
+</ul>
+
+<p><a href="https://qiita.com/kenwatan/items/db9134e1c9bf49315a79">Qiita: Autonomous DatabaseにJSONドキュメントを格納してみた。（ORDS+SODA)</a></p>
+<ul>
+  <li>SODA APIを利用したコレクションの作成から、DBMS_CLOUD.COPY_COLLECTIONを利用した大量データのロード方法などを紹介しています。</li>
+</ul>
+
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-05T16:45:27+09:00">July 5, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=106%3A+ADB%E3%81%A7%E3%82%B3%E3%83%B3%E3%83%90%E3%83%BC%E3%82%B8%E3%83%89%E3%83%BB%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%82%92%E4%BD%93%E9%A8%93%E3%81%97%E3%82%88%E3%81%86%EF%BC%88JSON%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%93%8D%E4%BD%9C%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb106-json%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb106-json%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb106-json%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb105-create-apex-app/" class="pagination--pager" title="105: ADBの付属ツールで簡易アプリを作成しよう(APEX)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb107-machine-learning/" class="pagination--pager" title="107: ADBの付属ツールで機械学習を始めよう(AutoML UI)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
