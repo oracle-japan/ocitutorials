@@ -94,6 +94,12 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
     * 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置
     * ADBに接続するための設定ファイルの編集
 
++ **[208: Oracle Machine Learningで機械学習をしよう](/ocitutorials/database/adb208-oml-notebook/)**  
+    * OMLユーザの作成
+    * データセットのロード
+    * OML Notebookを作成
+    * OML Notebookで機械学習
+
 <br/>
 
  + **[ADB ハンズオンラボ](https://community.oracle.com/tech/developers/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol)**  ※旧サイト（順次、こちらのサイトに移行予定です。）

@@ -1,0 +1,307 @@
+--------------------------------------------------------
+--  液体成分から品質調査
+--------------------------------------------------------
+
+-- ■データを確認する
+%sql
+select count(*) from liquid;
+
+-- ■データを確認する
+-- quality列ごとの件数
+%sql
+select quality, count(*) from liquid group by quality;
+
+-- ■データを確認する
+%sql
+select * from liquid;
+
+-- ■データを確認する
+-- alcohol列の　最大値、最小値、平均、標準偏差、NULLの個数
+-- PH列も同様に確認
+%script
+select min(alcohol), max(alcohol), avg(alcohol), stddev(alcohol), count(1) - count(alcohol) as nullcount 
+from liquid;
+select min(PH), max(PH), avg(PH), stddev(PH), count(1) - count(PH) as nullcount from liquid;
+
+
+-- ■データを準備する
+-- LQ_TRAIN表とLQ_TEST表に分割する
+%script
+create table lq_train as select * from liquid sample(70);
+create table lq_test as select * from (select * from liquid minus select * from lq_train);
+select count(*) from lq_train;
+select count(*) from lq_test;
+
+
+-- ■ランダムフォレスト：初期化
+-- ※初回実行時は実行しなくて良い
+%script
+drop table lq_model_rf_setting;
+drop table lq_model_rf_apply_result purge;
+drop table lq_model_rf_lift purge;
+drop table lq_model_rf_confusion_matrix purge;
+call dbms_data_mining.drop_model('LQ_MODEL_RF');
+
+-- ■ランダムフォレスト：モデル作成で使用するパラメータの設定
+%script
+create table lq_model_rf_setting (setting_name varchar2(30),setting_value varchar2(4000));
+insert into lq_model_rf_setting values ('ALGO_NAME', 'ALGO_RANDOM_FOREST'); -- ランダムフォレストを指定
+insert into lq_model_rf_setting values ('PREP_AUTO', 'ON'); --自動データ準備をONに
+
+
+-- ■ランダムフォレスト：モデル作成
+%script
+call dbms_data_mining.create_model('LQ_MODEL_RF', 'CLASSIFICATION', 'LQ_TRAIN', 'ID', 'QUALITY', 'LQ_MODEL_RF_SETTING');
+
+-- ■ランダムフォレスト：モデルを評価
+%script
+-- TEST表のデータにモデルを適用
+call dbms_data_mining.apply('LQ_MODEL_RF','LQ_TEST','ID','LQ_MODEL_RF_APPLY_RESULT');
+-- LIFTを計算
+call dbms_data_mining.compute_lift('LQ_MODEL_RF_APPLY_RESULT','LQ_TEST','ID','QUALITY','LQ_MODEL_RF_LIFT','1');
+-- 混同行列を計算
+declare
+	v_accuracy    number;
+	begin
+         dbms_data_mining.compute_confusion_matrix(v_accuracy,'LQ_MODEL_RF_APPLY_RESULT',
+             'LQ_TEST','ID','QUALITY','LQ_MODEL_RF_CONFUSION_MATRIX');
+         dbms_output.put_line('**** model accuracy ****: ' || round(v_accuracy,4));
+    end;
+/
+-- 混同行列を表示
+select * from lq_model_rf_confusion_matrix;
+
+-- ■ランダムフォレスト：モデルを評価
+-- 混同行列を表示（pivotを使って行列表示）
+%script
+select * from lq_model_rf_confusion_matrix
+pivot ( max(value) for PREDICTED_TARGET_VALUE in (
+      '1' as "予想=1",
+      '0' as "予想=0")
+      )
+order by ACTUAL_TARGET_VALUE desc
+;
+
+-- ■SVM：初期化
+-- ※初回実行時は実行しなくて良い
+%script
+drop table lq_model_svm_setting;
+drop table lq_model_svm_apply_result purge;
+drop table lq_model_svm_lift purge;
+drop table lq_model_svm_confusion_matrix purge;
+call dbms_data_mining.drop_model('LQ_MODEL_SVM');
+
+
+-- ■SVM：モデル作成で使用するパラメータの設定
+%script
+create table lq_model_svm_setting (setting_name varchar2(30),setting_value varchar2(4000));
+insert into lq_model_svm_setting values ('ALGO_NAME', 'ALGO_SUPPORT_VECTOR_MACHINES'); --SVM
+insert into lq_model_svm_setting values ('PREP_AUTO', 'ON'); --自動データ準備をONに
+
+-- ■SVM：モデル作成
+%script
+call dbms_data_mining.create_model('LQ_MODEL_SVM', 'CLASSIFICATION', 'LQ_TRAIN', 'ID', 'QUALITY', 'LQ_MODEL_SVM_SETTING');
+
+-- ■SVM：モデルを評価
+%script
+-- テスト表のデータにモデルを適用
+call dbms_data_mining.apply('LQ_MODEL_SVM','LQ_TEST','ID','LQ_MODEL_SVM_APPLY_RESULT');
+-- LIFTを計算
+call dbms_data_mining.compute_lift('LQ_MODEL_SVM_APPLY_RESULT','LQ_TEST','ID','QUALITY','LQ_MODEL_SVM_LIFT','1');
+-- 混同行列を計算
+declare
+	v_accuracy    number;
+	begin
+         dbms_data_mining.compute_confusion_matrix(v_accuracy,'LQ_MODEL_SVM_APPLY_RESULT','LQ_TEST',
+         	'ID','QUALITY','LQ_MODEL_SVM_CONFUSION_MATRIX');
+         dbms_output.put_line('**** model accuracy ****: ' || round(v_accuracy,4));
+    end;
+/
+-- 混同行列を表示
+select * from lq_model_svm_confusion_matrix;
+
+-- ■SVM：モデルを評価
+-- 混同行列を表示（pivotを使って行列表示）
+%script
+select * from lq_model_svm_confusion_matrix
+pivot ( max(value) for PREDICTED_TARGET_VALUE in (
+      '1' as "予想=1",
+      '0' as "予想=0")
+      )
+order by ACTUAL_TARGET_VALUE desc
+;
+
+
+-- ■作成したモデルを評価する（ランダムフォレスト）
+%sql
+select quantile_number, gain_cumulative from LQ_MODEL_RF_LIFT;
+
+-- ■作成したモデルを評価する（２つのモデルを比較する）
+%sql
+select 'RF' as modelname, quantile_number, gain_cumulative from LQ_MODEL_RF_LIFT
+union all 
+select 'SVM' as modelname, quantile_number, gain_cumulative from LQ_MODEL_SVM_LIFT;
+
+
+-- ■詳細確認：モデル作成時の各種パラメータ設定を確認する
+%sql
+SELECT model_name, setting_name, setting_value, setting_type
+FROM user_mining_model_settings
+where model_name like 'LQ_MODEL_%'
+order by model_name, setting_name;
+
+
+-- ■【ランダム・フォレスト】：作成したモデルの詳細を確認する
+-- 説明変数の重要度（予測結果への影響度）を確認する
+%sql
+select * from dm$VALQ_MODEL_RF
+order by attribute_importance desc;
+
+-- ■【SVM】：作成したモデルの詳細を確認する
+-- 欠損値補完や正規化を確認する
+%sql
+select * from dm$vnlq_model_svm; -- global view
+
+
+-- ■【ランダム・フォレスト】：新規データに予測モデルを適用する
+-- 新規データの代わりに、LQ_TEST表を使って実行しています
+%sql
+select 
+    id, -- レコードを一意に識別したいときに利用
+    prediction( LQ_MODEL_RF using *) as prediction, -- 予測
+    prediction_probability( LQ_MODEL_RF  , '1' using *) as probability -- 予測が '1' である確率
+from LQ_TEST;
+
+
+
+--------------------------------------------------------
+--  アソシエーション分析
+--------------------------------------------------------
+
+-- ■CSVファイルロード（ORDER_ITEMS表を作成）
+
+%script
+  CREATE TABLE ORDER_ITEMS
+   (	
+   ORDER_ID VARCHAR2(10) , 
+   CATEGORY VARCHAR2(256) , 
+   ITEM VARCHAR2(256) , 
+   CNT  NUMBER
+   );
+
+-- ここでは事前認証済みリクエストを使ってロードを実行する(クレデンシャルは不要)
+-- file_uri_list => で指定するURIは、事前準備で保存した「order_items.csvを指す事前認証済みリクエスト」
+-- に書き換えてください。
+%script
+begin
+dbms_cloud.copy_data(
+    table_name =>'ORDER_ITEMS',
+--    credential_name =>'OBJ_STORE_CRED',
+    file_uri_list =>'https://xxxxx.us-phoenix-1.oraclecloud.com/n/xxxxxxxxxxx/handson/o/order_items.csv',
+    format => json_object('type' value 'csv','ignoremissingcolumns' value 'true')
+);
+end;
+/
+
+-- ■ORDER_ITEMS表の件数確認
+%sql
+select count(*) from order_items;
+
+-- ■一度の買物で購入する商品個数は？
+%sql
+select order_id, count(*) from order_items group by order_id order by count(*) desc;
+
+-- ■最も多く買われたカテゴリは？
+%sql
+select category, count(*) from order_items group by category order by count(*) desc;
+
+-- ■一意なORDER_IDの数は？（何回分の購入か？）
+%sql
+select count(distinct order_id) from order_items;
+
+-- ■アソシエーション分析：初期化
+%script
+CALL DBMS_DATA_MINING.DROP_MODEL('AR_MODEL');
+DROP TABLE AR_MODEL_SETTING PURGE;
+DROP TABLE AR_MODEL_RESULT PURGE;
+
+-- ■使用するパラメータの設定
+%script
+CREATE TABLE ar_model_setting (
+  setting_name  VARCHAR2(30),
+  setting_value VARCHAR2(4000));
+  
+begin
+  INSERT INTO ar_model_setting VALUES (dbms_data_mining.asso_min_support,0.01);
+  INSERT INTO ar_model_setting VALUES (dbms_data_mining.asso_min_confidence,0.01);
+  INSERT INTO ar_model_setting VALUES (dbms_data_mining.asso_max_rule_length,3);
+  INSERT INTO ar_model_setting VALUES (dbms_data_mining.odms_item_id_column_name, 'CATEGORY');
+  commit;
+end;
+/
+
+-- ■アソシエーション分析を実行
+%script
+BEGIN
+  DBMS_DATA_MINING.CREATE_MODEL(
+    model_name          => 'AR_MODEL',
+    mining_function     => DBMS_DATA_MINING.ASSOCIATION,
+    data_table_name     => 'ORDER_ITEMS',
+    case_id_column_name => 'ORDER_ID',
+    settings_table_name => 'AR_MODEL_SETTING'
+    );
+END;
+/
+
+-- ■モデル生成時の各種パラメータ設定を確認
+%sql
+SELECT setting_name, setting_value, setting_type
+  FROM user_mining_model_settings
+WHERE model_name = 'AR_MODEL'
+ORDER BY setting_name;
+
+-- ■アソシエーション分析 結果を確認
+%sql
+SELECT RULE_ID, ANTECEDENT_PREDICATE, CONSEQUENT_PREDICATE, RULE_SUPPORT, RULE_CONFIDENCE, RULE_LIFT, NUMBER_OF_ITEMS  
+FROM DM$VAAR_MODEL ORDER BY RULE_LIFT desc, RULE_ID;
+
+
+-- ■アソシエーション分析 結果の確認（ルールを1行で表現）
+%script
+create or replace view ar_result_tmp as
+select rule_id, 
+ANTECEDENT_PREDICATE,CONSEQUENT_PREDICATE, RULE_SUPPORT, 
+RULE_CONFIDENCE,
+RULE_LIFT, 
+number_of_items,
+row_number() over (partition by rule_id order by ANTECEDENT_PREDICATE desc) piece
+from DM$VAAR_MODEL;
+
+create table AR_MODEL_RESULT as 
+select
+    r1.rule_id,
+    --r1.ANTECEDENT_PREDICATE,
+    --r2.ANTECEDENT_PREDICATE,
+    case
+        when r2.ANTECEDENT_PREDICATE is not null then r1.ANTECEDENT_PREDICATE || ', ' || r2.ANTECEDENT_PREDICATE
+        else r1.ANTECEDENT_PREDICATE
+    END as ANTECEDENT_PREDICATE_ALL,
+    r1.CONSEQUENT_PREDICATE,
+    r1.RULE_SUPPORT,
+    r1.RULE_CONFIDENCE,
+    r1.RULE_LIFT,
+    r1.number_of_items
+from
+    (
+        select * from ar_result_tmp where piece = 1
+    ) r1
+    left outer join
+        (
+            select * from ar_result_tmp where piece = 2
+        ) r2
+    on  r1.rule_id = r2.rule_id
+;
+
+-- ■アソシエーション分析 結果の確認（ルールを1行で表現）
+%sql
+SELECT * from  AR_MODEL_RESULT order by rule_lift desc, rule_confidence desc;
