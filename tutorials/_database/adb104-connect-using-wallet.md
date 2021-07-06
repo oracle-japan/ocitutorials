@@ -105,7 +105,7 @@ Cloud Shellは、Oracle CloudコンソールからアクセスできるWebブラ
     >
     >**Note**
     >
-    >以下のようにURLを作成してクラウド・シェルを直接開くという方法もあります。この場合、\<region\>と\<tenancy\>には実際の値を入れる必要があります。
+    >次のようにURLを作成してクラウド・シェルを直接開くという方法もあります。この場合、\<region\>と\<tenancy\>には実際の値を入れる必要があります。
     >
     >```sh
     >https://console.us-<region>-1.oraclecloud.com/a/<tenancy>?cloudshell=true
@@ -130,18 +130,18 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
 
     格納用のディレクトリを作成します。
     ```sh
-    mkdir -p /home/[username]/network/admin
+    mkdir -p ~/network/admin
     ```
     ウォレットファイル Wallet_atp01.zip を移動します。
     ```sh
-    mv Wallet_atp01.zip /home/[username]/network/admin
+    mv Wallet_atp01.zip ~/network/admin
     ```
 
 4. 作成したディレクトリに移動し、圧縮されたウォレットファイルを展開します。
 
     作成したディレクトリに移動します。
     ```sh
-    cd /home/[username]/network/admin
+    cd ~/network/admin
     ```
     ```sh
     unzip Wallet_atp01.zip
@@ -162,10 +162,8 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
     編集後：
 
     ```sh
-    WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=$/home/[username]/network/admin)))
+    WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY="~/network/admin")))
     ```
-
-    ※ [username]には、Cloud Shellのログインユーザ名を入れます。
 
     編集方法の一例として、viを使用した操作方法は次の通りです。
 
@@ -218,9 +216,10 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
 6. 環境変数"ORACLE_HOME"を設定します。
 
     ```sh
-    export ORACLE_HOME=/home/[username]
+    export ORACLE_HOME=~
     ```
-    echoコマンドで中身を確認し、指定した通りのパスが得られればOKです。
+
+    echoコマンドで中身を確認し、/home/[username] が出力されればOKです。
 
     ```sh
     echo $ORACLE_HOME
