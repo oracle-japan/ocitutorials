@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-07-05T16:45:27+09:00">
+  <meta property="article:published_time" content="2021-07-06T14:43:18+09:00">
 
 
 
@@ -303,7 +303,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="104: クレデンシャル・ウォレットを利用して接続してみよう">
     <meta itemprop="description" content="クレデンシャル・ウォレットを使ってADBに接続してみましょう。">
-    <meta itemprop="datePublished" content="2021-07-05T16:45:27+09:00">
+    <meta itemprop="datePublished" content="2021-07-06T14:43:18+09:00">
     
 
     <div class="page__inner-wrap">
@@ -445,52 +445,67 @@
 
     <p><img src="img3_5_2.png" alt="img3_5_2.png" /></p>
 
-    <p>また、以下のようにURLを作成してクラウド・シェルを直接開くという方法もあります。この場合、&lt;region&gt;と&lt;tenancy&gt;には実際の値を入れる必要があります。</p>
+    <blockquote>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> https://console.us-&lt;region&gt;-1.oraclecloud.com/a/&lt;tenancy&gt;?cloudshell<span class="o">=</span><span class="nb">true</span>
-</code></pre></div>    </div>
+      <p><strong>Note</strong></p>
+
+      <p>次のようにURLを作成してクラウド・シェルを直接開くという方法もあります。この場合、&lt;region&gt;と&lt;tenancy&gt;には実際の値を入れる必要があります。</p>
+
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://console.us-&lt;region&gt;-1.oraclecloud.com/a/&lt;tenancy&gt;?cloudshell<span class="o">=</span><span class="nb">true</span>
+</code></pre></div>      </div>
+    </blockquote>
   </li>
   <li>
     <p>ADB WalletをCloud Shell上にアップロードします。
 Cloud Shellの左上のメニューをクリックし、「アップロード」をクリックします。
-<a href="#1-クレデンシャル・ウォレットのダウンロード">1. クレデンシャル・ウォレットのダウンロード</a> でダウンロードしたファイルを”Drag &amp; Drop”します。</p>
+<a href="#1-クレデンシャル・ウォレットのダウンロード">1. クレデンシャル・ウォレットのダウンロード</a> でダウンロードしたファイルを”Drag &amp; Drop”します。
+<br />Cloud Shellの画面に、ファイルを直接”Drag &amp; Drop”してアップロードすることも可能です。</p>
 
     <p><img src="img3_5_2_1.png" alt="img3_5_2_1.png" /></p>
 
-    <p>Cloud Shellの画面に、直接ファイルを”Drag &amp; Drop”してアップロードすることも可能です。<br />
- lsコマンドで、ファイルが正しくアップロードされていることを確認します。</p>
+    <p>lsコマンドで、ファイルが正しくアップロードされていることを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls
- </span>Wallet_atp01.zip
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">ls</span>
 </code></pre></div>    </div>
+    <p>「Wallet_atp01.zip」が存在していればOKです。</p>
   </li>
   <li>
-    <p>格納用のディレクトリを作成し、ウォレットファイルを移動します。$HOME/network/admin 配下に配置します。</p>
+    <p>格納用のディレクトリを作成し、ウォレットファイルを$HOME/network/admin 配下に移動します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">pwd</span>
- /home/[username]
- <span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> network/admin
- <span class="nv">$ </span><span class="nb">mv </span>Wallet_atp01.zip network/admin
+    <p>格納用のディレクトリを作成します。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">mkdir</span> <span class="nt">-p</span> ~/network/admin
+</code></pre></div>    </div>
+    <p>ウォレットファイル Wallet_atp01.zip を移動します。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">mv </span>Wallet_atp01.zip ~/network/admin
 </code></pre></div>    </div>
   </li>
   <li>
     <p>作成したディレクトリに移動し、圧縮されたウォレットファイルを展開します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cd </span>network/admin
- <span class="nv">$ </span>unzip Wallet_atp01.zip
- Archive:  Wallet_atp01.zip
-   inflating: README                  
-   inflating: cwallet.sso             
-   inflating: tnsnames.ora            
-   inflating: truststore.jks          
-   inflating: ojdbc.properties        
-   inflating: sqlnet.ora              
-   inflating: ewallet.p12             
-   inflating: keystore.jks            
+    <p>作成したディレクトリに移動します。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd</span> ~/network/admin
 </code></pre></div>    </div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unzip Wallet_atp01.zip
+</code></pre></div>    </div>
+
+    <p>lsコマンドでadminディレクトリ内のファイルを一覧し、次のようなファイルが揃っていればOKです。</p>
+
+    <p><img src="img3_5_2_4.png" alt="img3_5_2_4.png" /></p>
   </li>
   <li>
-    <p>sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。</p>
+    <p>TNS_ADMIN 環境変数にウォレットの保存先を設定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>~/network/admin
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>アプリ毎に接続するインスタンスを切り替えたい場合は、インスタンス毎に　wallets_atp01　といったようにディレクトリを定義し、アプリ毎に環境変数TNS_ADMINのパスを切り替えると簡単です。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。前の手順で、保存先をTNS_ADMIN環境変数に格納しているため、こちらを使います。</p>
 
     <p>編集前：</p>
 
@@ -499,49 +514,71 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
 
     <p>編集後：</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> WALLET_LOCATION <span class="o">=</span> <span class="o">(</span>SOURCE <span class="o">=</span> <span class="o">(</span>METHOD <span class="o">=</span> file<span class="o">)</span> <span class="o">(</span>METHOD_DATA <span class="o">=</span> <span class="o">(</span><span class="nv">DIRECTORY</span><span class="o">=</span><span class="nv">$/</span>home/[username]/network/admin<span class="o">)))</span>
-
- ※ <span class="o">[</span>username]には、Cloud Shellのログインユーザ名を入れます。
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> WALLET_LOCATION <span class="o">=</span> <span class="o">(</span>SOURCE <span class="o">=</span> <span class="o">(</span>METHOD <span class="o">=</span> file<span class="o">)</span> <span class="o">(</span>METHOD_DATA <span class="o">=</span> <span class="o">(</span><span class="nv">DIRECTORY</span><span class="o">=</span><span class="nv">$TNS_ADMIN</span><span class="o">)))</span>
 </code></pre></div>    </div>
 
-    <p>操作方法は次の通りです。</p>
+    <p>編集方法の一例として、viを使用した操作方法は次の通りです。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>vi sqlnet.ora
- <span class="o">&lt;&lt;</span> <span class="no">vi</span><span class="sh">にて編集 &gt;&gt;
- </span><span class="nv">$ </span><span class="sh">cat sqlnet.ora
- WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=</span><span class="nv">$TNS_ADMIN</span><span class="sh">)))
- SSL_SERVER_DN_MATCH=yes
-</span></code></pre></div>    </div>
+    <p>5-1. sqlnet.ora をviで開く。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> vi sqlnet.ora
+</code></pre></div>    </div>
+    <p>5-2. 次の操作方法を参考に、WALLET_LOCATION の値を編集します。</p>
+
+    <blockquote>
+      <p><strong>【参考】 viの操作方法</strong></p>
+
+      <table>
+<tr>
+<th>キー入力</th>
+<th>動作</th>
+</tr>
+<tr>
+<td>上下左右キー</td>
+<td>カーソルの場所を移動する</td>
+</tr>
+<tr>
+<td>i</td>
+<td>カーソルの場所から編集する（InsertModeに入る）</td>
+</tr>
+<tr>
+<td>ESCキー</td>
+<td>InsertModeを抜ける</td>
+</tr>
+<tr>
+<td>x</td>
+<td>カーソルの場所を一文字消す</td>
+</tr>
+<tr>
+<td>:wq</td>
+<td>ファイルを保存して閉じる</td>
+</tr>
+<tr>
+<td>:q</td>
+<td>ファイルを閉じる（それまでの編集は破棄される）</td>
+</tr>
+<tr>
+<td>:q!</td>
+<td>強制的に終了する</td>
+</tr>
+</table>
+      <p><br /></p>
+    </blockquote>
   </li>
-</ol>
-
-<!-- TODO 直せるかな。。。一旦コメントアウトしておきます。
-    **【参考】viの使い方**
-
-    |  キー入力  |  動作  |
-    | ------ | ------ |
-    |  上下左右キー  |  カーソルの場所を移動する  |
-    |  i  |  カーソルの場所から編集する（InsertModeに入る）  |
-    |  ESCキー  |  InsertModeを抜ける  |
-    |  x  |  カーソルの場所を一文字消す  |
-    |  :wq  |  ファイルを保存して閉じる  |
-    |  :q  |  ファイルを閉じる（それまでの編集は破棄される）  |
-    |  :q!  |  強制的に終了する  |
--->
-
-<p><br /></p>
-
-<ol>
   <li>
     <p>環境変数”ORACLE_HOME”を設定します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">ORACLE_HOME</span><span class="o">=</span>/home/[username]
- <span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$ORACLE_HOME</span>
- /home/[username]
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">ORACLE_HOME</span><span class="o">=</span>~
+</code></pre></div>    </div>
+
+    <p>echoコマンドで中身を確認し、/home/[username] が出力されればOKです。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">echo</span> <span class="nv">$ORACLE_HOME</span>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>tnsnames.oraから、接続用のサービス情報を確認します。</p>
+    <p>tnsnames.oraから、接続用のサービス情報を確認します。
+ 次にように４つの接続サービスがあることが分かります。</p>
 
     <p><img src="img3_5_8.png" alt="img3_5_8.png" /></p>
 
@@ -596,22 +633,30 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
     <p>※ 接続サービスに関する詳細は <a href="https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi">ADB-S技術詳細資料</a> を参照ください。</p>
 
     <p><br /></p>
-    <hr />
 
-    <p><strong>補足</strong><br />
- SQL*Plusを起動した際に、以下のエラーが出てしまった場合は、sqlplusの共有ライブラリを参照できるようにパスを設定してください。<br />
- 「sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory」</p>
+    <blockquote>
+      <p><strong>補足</strong></p>
 
-    <p><br />
-  以下のようにして、<code>locate libsqlplus.so</code> で得られたパスを、環境変数LD_LIBRARY_PATHに格納します。</p>
+      <p>SQL*Plusを起動した際に以下のエラーが出てしまった場合は、sqlplusの共有ライブラリを参照できるようにパスを設定してください。<br />
+<code>sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory</code></p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span>locate libsqlplus.so
-  /usr/lib/oracle/21/client64/lib/libsqlplus.so
-  <span class="nv">$ </span><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/usr/lib/oracle/21/client64/lib
-  <span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$LD_LIBRARY_PATH</span>
-  /usr/lib/oracle/21/client64/lib
-</code></pre></div>    </div>
-    <hr />
+      <p><br />libsqlplus.soファイルが配置されているパスを環境変数LD_LIBRARY_PATHに格納します。
+次のようにして、locateコマンドで得られたパスを環境変数LD_LIBRARY_PATHに格納します。</p>
+
+      <p>locateコマンドで、libsqlplus.soファイルが配置されている場所を確認します。</p>
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>locate libsqlplus.so
+</code></pre></div>      </div>
+
+      <p>exportコマンドで、得られたパスを環境変数LD_LIBRARY_PATHに格納します。
+例えば、<code>locate libsqlplus.so</code> の出力結果が <code>/usr/lib/oracle/21/client64/lib/libsqlplus.so</code> だった場合は次のようになります。</p>
+
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/usr/lib/oracle/21/client64/lib
+</code></pre></div>      </div>
+      <p>正しく格納できているかをechoコマンドで確認します。指定した通りのパスが表示されればOKです。</p>
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$LD_LIBRARY_PATH</span>
+</code></pre></div>      </div>
+
+    </blockquote>
   </li>
 </ol>
 
@@ -760,7 +805,7 @@ SQL Developerを起動し、管理者アカウント(ADMIN)でADBへ接続しま
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-05T16:45:27+09:00">July 5, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-06T14:43:18+09:00">July 6, 2021</time></p>
 
 
       </footer>
