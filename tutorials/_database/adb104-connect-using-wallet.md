@@ -151,7 +151,17 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
 
     ![img3_5_2_4.png](img3_5_2_4.png)
 
-5. sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。
+5. TNS_ADMIN 環境変数にウォレットの保存先を設定します。
+
+    ```sh
+    export TNS_ADMIN=~/network/admin
+    ```
+
+    >**Note**
+    >
+    >アプリ毎に接続するインスタンスを切り替えたい場合は、インスタンス毎に　wallets_atp01　といったようにディレクトリを定義し、アプリ毎に環境変数TNS_ADMINのパスを切り替えると簡単です。
+
+5. sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。前の手順で、保存先をTNS_ADMIN環境変数に格納しているため、こちらを使います。
 
    編集前：
 
@@ -162,7 +172,7 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
     編集後：
 
     ```sh
-    WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY="~/network/admin")))
+    WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=$TNS_ADMIN)))
     ```
 
     編集方法の一例として、viを使用した操作方法は次の通りです。
