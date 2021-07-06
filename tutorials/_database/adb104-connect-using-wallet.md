@@ -101,52 +101,67 @@ Cloud Shellは、Oracle CloudコンソールからアクセスできるWebブラ
 
     ![img3_5_2.png](img3_5_2.png)
 
-    また、以下のようにURLを作成してクラウド・シェルを直接開くという方法もあります。この場合、\<region\>と\<tenancy\>には実際の値を入れる必要があります。
 
-    ```sh
-    https://console.us-<region>-1.oraclecloud.com/a/<tenancy>?cloudshell=true
-    ```
+    >
+    >**Note**
+    >
+    >次のようにURLを作成してクラウド・シェルを直接開くという方法もあります。この場合、\<region\>と\<tenancy\>には実際の値を入れる必要があります。
+    >
+    >```sh
+    >https://console.us-<region>-1.oraclecloud.com/a/<tenancy>?cloudshell=true
+    >```
+    
 
 2. ADB WalletをCloud Shell上にアップロードします。
 Cloud Shellの左上のメニューをクリックし、「アップロード」をクリックします。
 [1. クレデンシャル・ウォレットのダウンロード](#1-クレデンシャル・ウォレットのダウンロード) でダウンロードしたファイルを"Drag & Drop"します。
+<br>Cloud Shellの画面に、ファイルを直接"Drag & Drop"してアップロードすることも可能です。
 
    ![img3_5_2_1.png](img3_5_2_1.png)
    
-    Cloud Shellの画面に、直接ファイルを"Drag & Drop"してアップロードすることも可能です。<br>
     lsコマンドで、ファイルが正しくアップロードされていることを確認します。
 
     ```sh
-    $ ls
-    Wallet_atp01.zip
+    ls
     ```
+    「Wallet_atp01.zip」が存在していればOKです。
 
-3. 格納用のディレクトリを作成し、ウォレットファイルを移動します。$HOME/network/admin 配下に配置します。
+3. 格納用のディレクトリを作成し、ウォレットファイルを$HOME/network/admin 配下に移動します。
 
+    格納用のディレクトリを作成します。
     ```sh
-    $ pwd
-    /home/[username]
-    $ mkdir -p network/admin
-    $ mv Wallet_atp01.zip network/admin
+    mkdir -p ~/network/admin
+    ```
+    ウォレットファイル Wallet_atp01.zip を移動します。
+    ```sh
+    mv Wallet_atp01.zip ~/network/admin
     ```
 
 4. 作成したディレクトリに移動し、圧縮されたウォレットファイルを展開します。
 
+    作成したディレクトリに移動します。
     ```sh
-    $ cd network/admin
-    $ unzip Wallet_atp01.zip
-    Archive:  Wallet_atp01.zip
-      inflating: README                  
-      inflating: cwallet.sso             
-      inflating: tnsnames.ora            
-      inflating: truststore.jks          
-      inflating: ojdbc.properties        
-      inflating: sqlnet.ora              
-      inflating: ewallet.p12             
-      inflating: keystore.jks            
+    cd ~/network/admin
+    ```
+    ```sh
+    unzip Wallet_atp01.zip
     ```
 
-5. sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。
+    lsコマンドでadminディレクトリ内のファイルを一覧し、次のようなファイルが揃っていればOKです。
+
+    ![img3_5_2_4.png](img3_5_2_4.png)
+
+5. TNS_ADMIN 環境変数にウォレットの保存先を設定します。
+
+    ```sh
+    export TNS_ADMIN=~/network/admin
+    ```
+
+    >**Note**
+    >
+    >アプリ毎に接続するインスタンスを切り替えたい場合は、インスタンス毎に　wallets_atp01　といったようにディレクトリを定義し、アプリ毎に環境変数TNS_ADMINのパスを切り替えると簡単です。
+
+5. sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。前の手順で、保存先をTNS_ADMIN環境変数に格納しているため、こちらを使います。
 
    編集前：
 
@@ -157,45 +172,70 @@ Cloud Shellの左上のメニューをクリックし、「アップロード」
     編集後：
 
     ```sh
-    WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=$/home/[username]/network/admin)))
-
-    ※ [username]には、Cloud Shellのログインユーザ名を入れます。
+    WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=$TNS_ADMIN)))
     ```
 
-    操作方法は次の通りです。
+    編集方法の一例として、viを使用した操作方法は次の通りです。
+
+    5-1. sqlnet.ora をviで開く。
 
     ```sh
-    $ vi sqlnet.ora
-    << viにて編集 >>
-    $ cat sqlnet.ora
-    WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=$TNS_ADMIN)))
-    SSL_SERVER_DN_MATCH=yes
+    vi sqlnet.ora
     ```
+    5-2. 次の操作方法を参考に、WALLET_LOCATION の値を編集します。
 
-<!-- TODO 直せるかな。。。一旦コメントアウトしておきます。
-    **【参考】viの使い方**
 
-    |  キー入力  |  動作  |
-    | ------ | ------ |
-    |  上下左右キー  |  カーソルの場所を移動する  |
-    |  i  |  カーソルの場所から編集する（InsertModeに入る）  |
-    |  ESCキー  |  InsertModeを抜ける  |
-    |  x  |  カーソルの場所を一文字消す  |
-    |  :wq  |  ファイルを保存して閉じる  |
-    |  :q  |  ファイルを閉じる（それまでの編集は破棄される）  |
-    |  :q!  |  強制的に終了する  |
--->
-
+      >**【参考】 viの操作方法**
+      >
+      ><table>
+      ><tr>
+      ><th>キー入力</th>
+      ><th>動作</th>
+      ></tr>
+      ><tr>
+      ><td>上下左右キー</td>
+      ><td>カーソルの場所を移動する</td>
+      ></tr>
+      ><tr>
+      ><td>i</td>
+      ><td>カーソルの場所から編集する（InsertModeに入る）</td>
+      ></tr>
+      ><tr>
+      ><td>ESCキー</td>
+      ><td>InsertModeを抜ける</td>
+      ></tr>
+      ><tr>
+      ><td>x</td>
+      ><td>カーソルの場所を一文字消す</td>
+      ></tr>
+      ><tr>
+      ><td>:wq</td>
+      ><td>ファイルを保存して閉じる</td>
+      ></tr>
+      ><tr>
+      ><td>:q</td>
+      ><td>ファイルを閉じる（それまでの編集は破棄される）</td>
+      ></tr>
+      ><tr>
+      ><td>:q!</td>
+      ><td>強制的に終了する</td>
+      ></tr>
+      ></table>
 <br>
 
 6. 環境変数"ORACLE_HOME"を設定します。
 
     ```sh
-    $ export ORACLE_HOME=/home/[username]
-    $ echo $ORACLE_HOME
-    /home/[username]
+    export ORACLE_HOME=~
+    ```
+
+    echoコマンドで中身を確認し、/home/[username] が出力されればOKです。
+
+    ```sh
+    echo $ORACLE_HOME
     ```
 7. tnsnames.oraから、接続用のサービス情報を確認します。
+    次にように４つの接続サービスがあることが分かります。
 
     ![img3_5_8.png](img3_5_8.png)
 
@@ -246,23 +286,31 @@ Cloud Shellには、SQL Plusのクライアントが実装されているため�
     ※ 接続サービスに関する詳細は [ADB-S技術詳細資料](https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi) を参照ください。
     
     <br>
-    <hr>
 
-    **補足**  
-    SQL*Plusを起動した際に、以下のエラーが出てしまった場合は、sqlplusの共有ライブラリを参照できるようにパスを設定してください。<br>
-    「sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory」
-     
-     <br>
-     以下のようにして、<code>locate libsqlplus.so</code> で得られたパスを、環境変数LD_LIBRARY_PATHに格納します。
-     
-     ```sh
-     $ locate libsqlplus.so
-     /usr/lib/oracle/21/client64/lib/libsqlplus.so
-     $ export LD_LIBRARY_PATH=/usr/lib/oracle/21/client64/lib
-     $ echo $LD_LIBRARY_PATH
-     /usr/lib/oracle/21/client64/lib
-     ```
-     <hr>
+    >**補足**
+    >
+    >SQL*Plusを起動した際に以下のエラーが出てしまった場合は、sqlplusの共有ライブラリを参照できるようにパスを設定してください。<br>
+    ><code>sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory</code>
+    >
+    ><br>libsqlplus.soファイルが配置されているパスを環境変数LD_LIBRARY_PATHに格納します。
+    >次のようにして、locateコマンドで得られたパスを環境変数LD_LIBRARY_PATHに格納します。
+    >
+    >locateコマンドで、libsqlplus.soファイルが配置されている場所を確認します。
+    >```sh
+    >locate libsqlplus.so
+    >```
+    >
+    >exportコマンドで、得られたパスを環境変数LD_LIBRARY_PATHに格納します。
+    >例えば、<code>locate libsqlplus.so</code> の出力結果が <code>/usr/lib/oracle/21/client64/lib/libsqlplus.so</code> だった場合は次のようになります。
+    >
+    >```sh
+    >export LD_LIBRARY_PATH=/usr/lib/oracle/21/client64/lib
+    >```
+    >正しく格納できているかをechoコマンドで確認します。指定した通りのパスが表示されればOKです。
+    >```sh
+    >echo $LD_LIBRARY_PATH
+    >```
+    >
 
 
 <br>
