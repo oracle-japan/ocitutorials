@@ -83,7 +83,8 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
 + **[202: コマンドラインから大量データをロードしてみよう](/ocitutorials/database/adb202-dataload-dbms-cloud/)**  
     * 大規模なCSVデータを想定し、オブジェクト・ストレージからDBMS_CLOUDパッケージを利用してロードしてみましょう
     
-+ **[203: 大量データのクエリ（公開準備中）]**
++ **[203: 大量データのクエリ](/ocitutorials/database/adb203-bulk-query/)**
+    * SSBスキーマに対して、OCPU数をスケールしながら重い処理を実行していきます。
 
 + **[204: マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/database/adb204-setup-VM/)**  
     * 開発用の仮想マシンイメージを利用して、開発環境を作成しましょう。後続のチュートリアルにて利用します。
