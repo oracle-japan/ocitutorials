@@ -88,6 +88,9 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
 + **[204: マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/database/adb204-setup-VM/)**  
     * 開発用の仮想マシンイメージを利用して、開発環境を作成しましょう。後続のチュートリアルにて利用します。
 
++ **[206: Node.jsによるADB上でのアプリ開発](/ocitutorials/database/adb206-appdev-nodejs/)**  
+    * 開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法をご紹介します。
+
 + **[208: Oracle Machine Learningで機械学習をしよう](/ocitutorials/database/adb208-oml-notebook/)**  
     * 機械学習のサンプルを2つほど取りあげ、OML Notebookの使い方をご紹介します。
 
