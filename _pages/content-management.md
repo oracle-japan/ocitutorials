@@ -1,11 +1,16 @@
 ---
 title: "コンテンツ管理編"
-excerpt: "この文書は、Oracle Content and Experience (OCE) を使ってみよう！という人のためのチュートリアルです"
+excerpt: "この文書は Oracle Content Management (OCM) を使ってみよう！という人のためのチュートリアルです"
 permalink: /content-management/
 layout: single
 show_excerpts: true
 toc: true
 ---
+
+**【お知らせ】**  
+2021年6月リリースのバージョン21.6.1より、サービス名称が *Oracle Content and Experience(略称:OCE)* から **Oracle Content Management(略称:OCM)** に変更されました。本チュートリアルを利用する際は、旧サービス名称を新しいサービス名称である **Oracle Content Management(OCM)** に読み替えてご利用ください。  
+{: .notice--info}
+
 この文書は、Oracle Content and Experience (OCE) を使ってみよう！という人のためのチュートリアルです。各文書ごとにステップ・バイ・ステップで作業を進めて、OCE が提供する機能について学習することができます
 
 # 準備 - OCE インスタンスの作成
