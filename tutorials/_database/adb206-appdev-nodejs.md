@@ -131,9 +131,9 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
     次の２つのコマンドを順に実行します。
 
     ```sh
+    -- ポート番号3030を追加
     firewall-cmd --permanent --zone=public --add-port=3030/tcp
-    ```
-    ```sh
+    -- 設定を反映
     firewall-cmd --reload
     ```
 
@@ -162,10 +162,9 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
 2. （必要に応じて）nodeとnpm(Node Package Manager)のバージョンを確認します。
 
     ```sh
+    -- nodeのバージョンを確認
     node --version
-    ```
-
-    ```sh
+    -- npmのバージョンを確認
     npm --version
     ```
 
@@ -173,11 +172,7 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
 
     ```sh
     npm view oracledb
-    ```
-    ```sh
     npm view app
-    ```
-    ```sh
     npm view async
     ```
 
@@ -252,6 +247,8 @@ SQL*plusで接続できていることを前提に以下を記載しています
     ```
 
     ```sh
+    -- dbconfig.jsの中身
+    
     module.exports= {
         dbuser: 'admin',
         dbpassword: 'Welcome12345#',
