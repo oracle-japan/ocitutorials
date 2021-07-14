@@ -26,11 +26,11 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
    <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning) を参照ください。
 * 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること
 * 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること
-    +  [labs.zip を手元のPCにダウンロード](/ocitutorials/database/adb206-appdev-nodejs/labs.zip)
+    +  [labs.zip を手元のPCにダウンロード](/ocitutorials/database/adb-data/labs.zip)
     <br>アップロード方法については [こちら](/ocitutorials/database/adb204-setup-VM#anchor3) をご確認ください。
     + 仮想マシン上に直接ダウンロードする場合は、次のコマンドを実行します。
         ```sh
-        wget https://oracle-japan.github.io/ocitutorials/database/adb206-appdev-nodejs/labs.zip
+        wget https://oracle-japan.github.io/ocitutorials/database/adb-data/labs.zip
         ```
 
 <br>

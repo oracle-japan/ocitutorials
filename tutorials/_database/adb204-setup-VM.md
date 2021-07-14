@@ -149,7 +149,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 ログインした仮想マシン上で次のコマンドを実行します。
 
     ```sh
-    wget https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/labs.zip
+    wget https://oracle-japan.github.io/ocitutorials/database/adb-data/labs.zip
     ```
 
 2. labs.zip がダウンロードされたことを確認します。（ファイルが存在すればOKです。）
@@ -165,7 +165,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
     > <br>※ここではTera Termを前提に記載しています。
     >   
     >    1. 下記のリンクより、labs.zipを手元のPCにダウンロードします。
-    >       +  [labs.zip をダウンロード](/ocitutorials/database/adb204-setup-VM/labs.zip)
+    >       +  [labs.zip をダウンロード](/ocitutorials/database/adb-data/labs.zip)
     >
     >
     >    2. labs.zipをTera Termのウィンドウ画面上にドラッグ・アンド・ドロップします。
