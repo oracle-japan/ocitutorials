@@ -3,7 +3,9 @@ title: "Oracle Content and Experience を Webコンテンツ管理(Web CMS) と�
 excerpt: "OCE のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します"
 order: "062"
 layout: single
-tags: "OCE"
+tags:
+  - OCE
+  - OCM
 header:
   teaser: "/content-management/62_webcms/058.jpg"
   overlay_image: "/content-management/62_webcms/058.jpg"
@@ -13,9 +15,10 @@ header:
 この文書は Oracle Content and Experience (OCE) のサイト作成機能を利用し、Web サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアル【初級編】です。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します
 
 
-~~~
-この文書は、2021年1月時点での最新バージョン(21.1.1)を元に作成されてます
-~~~
+**【お知らせ】**   
+この文書は、2021年7月時点での最新バージョン(21.6.1)を元に作成されてます。  
+チュートリアル内の画面ショットについては Oracle Content and Experience の現在のコンソール画面と異なっている場合があります。  
+{: .notice--info}
 
 **前提条件**
 - [Oracle Content and Experience インスタンスを作成する](../create_oce_instance)
@@ -349,9 +352,6 @@ firstSite を編集し、公開します
 
     ![画像](040.jpg)
 
-    >**[Memo]**  
-    >1.2項で作成したデフォルトのコンテンツ・レイアウト(sampleNewsType-overview)では、画像ファイルは表示されません。画像を表示するには、コンテンツ・レイアウト内の layout.html および render.js の編集が必要です（別のチュートリアルで紹介します）
-
 1. **「保存」** をクリックします
 
 
@@ -486,9 +486,6 @@ firstSite を編集し、公開します
 1. sample news content 001 の詳細表示ページが表示されます。
 
     ![画像](058.jpg)
-
-    >**[Memo]**  
-    >1.2項で作成したデフォルトのコンテンツ・レイアウト(sampleNewsType-detail)では、画像ファイルは表示されません。画像を表示するには、コンテンツ・レイアウト内の layout.html および render.js の編集が必要です（別のチュートリアルで紹介します）
 
     >**[Memo]**  
     > 1.2項で作成した2つのコンテンツ・レイアウト（sampleNewsType-overview と sampleNewsType-detail）は、ほぼ同じレイアウトになります。そのため、Web サイト上での表示イメーは、どちらもほぼ同じになります。それぞれのレイアウトを変更することで、Web サイト上での表示イメージを変えることができます

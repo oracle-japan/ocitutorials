@@ -3,7 +3,9 @@ title: "Oracle Content and Experience を Headless CMS として使ってみよ�
 excerpt: "OCE のアセット管理機能を Headless CMS として利用する方法をステップ・バイ・ステップで紹介するチュートリアルです。"
 order: "041"
 layout: single
-tags: "OCE"
+tags:
+  - OCE
+  - OCM
 header:
   teaser: "/content-management/41_asset_headless/039.jpg"
   overlay_image: "/content-management/41_asset_headless/039.jpg"
@@ -12,9 +14,10 @@ header:
 
 この文書は Oracle Content and Experience (OCE) のアセット管理機能を Headless CMS として利用する基本的な方法をステップ・バイ・ステップで紹介するチュートリアルです。
 
-~~~
-この文書は、2021年1月時点での最新バージョン(21.1.2)を元に作成されてます
-~~~
+**【お知らせ】**   
+この文書は、2021年7月時点での最新バージョン(21.6.1)を元に作成されてます。  
+チュートリアル内の画面ショットについては Oracle Content and Experience の現在のコンソール画面と異なっている場合があります。  
+{: .notice--info}
 
 **前提条件**
 - [Oracle Content and Experience インスタンスを作成する](../create_oce_instance)
@@ -150,6 +153,8 @@ OCEのアセット管理機能を利用するための準備作業を行いま�
     1. 「②外観」を設定し、**「OK」** をクリックします
         - データ・フィールドの外観:　**メディア・ピッカー**
         - メディアの選択:　**イメージのみチェックを入れる**
+        - すべてのデジタル・アセット・タイプ: **チェックを外す**
+        - デジタル・アセット・タイプの選択: **Imageのみを選択**
 
         ![画像](016.jpg)
 
