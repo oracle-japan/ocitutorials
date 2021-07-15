@@ -92,6 +92,9 @@ Oracle Database、およびExadataをより身近にご利用いただくべく�
 + **[206: Node.jsによるADB上でのアプリ開発](/ocitutorials/database/adb206-appdev-nodejs/)**  
     * 開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法をご紹介します。
 
++ **[207: PythonによるADB上でのアプリ開発](/ocitutorials/database/adb207-appdev-python/)**  
+    * 開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法をご紹介します。
+
 + **[208: Oracle Machine Learningで機械学習をしよう](/ocitutorials/database/adb208-oml-notebook/)**  
     * 機械学習のサンプルを2つほど取りあげ、OML Notebookの使い方をご紹介します。
 
