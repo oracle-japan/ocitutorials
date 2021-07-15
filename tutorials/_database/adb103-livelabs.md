@@ -67,7 +67,7 @@ Oracle LiveLabsのDatabase Actionsのワークショップはこちらです。
 
 **["Introduction to Autonomous Database Tools"](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=789)**
 
-![画面ショット2-1](DatabaseActionslab.png)
+   ![画面ショット2-1](DatabaseActionslab.png)
 
 
 ## 概要と開始手順
@@ -83,7 +83,7 @@ Oracle LiveLabsのDatabase Actionsのワークショップはこちらです。
 
 ワークショップのホーム画面が表示されました。
 
-![画面ショット2-2](DatabaseActionsLab2.png)
+   ![画面ショット2-2](DatabaseActionsLab2.png)
 
 
 
@@ -116,7 +116,7 @@ Oracle LiveLabsのホーム画面の上部には検索ボックスがありま�
 **Autonomous Database** と入力すると、Autonomous Database関連のワークショップが一覧で表示されます。それぞれのワークショップで完結してお試しいただけますので、ぜひアクセスいただき、気になるワークショップからお気軽にお試しください。 
 
 
-![画面ショット3-1](adbworkshops.png)
+   ![画面ショット3-1](adbworkshops.png)
 
 
 尚、Autonomous Databaseの機能に特化したものだけでなく、例えば、以下のようなAutonomous Databaseと他のサービスを組み合わせたワークショップやアプリケーション開発のワークショップもあります。  
