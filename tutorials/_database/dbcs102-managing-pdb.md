@@ -93,7 +93,7 @@ Oracle Cloud Infrastructure データベース・サービスでは、Oracle Clo
 1. 立ち上がった **プラガブル・データベースの作成** ウィンドウに以下の項目を入力します
 - **PDBの名前入力** - 任意（例 :pdb1）
 - **PDB管理パスワード** - 任意（例 : WelCome123#123#)
-- **データベースのTDEウォレット・パスワード** - - 第8章でデータベース作成時に設定したパスワードを入力  
+- **データベースのTDEウォレット・パスワード** -  [101: Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db)で **データベース情報の入力欄** に設定したパスワードを入力  
     <div align="center">
     <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;">
     </div>
@@ -131,7 +131,7 @@ Oracle Cloud Infrastructure データベース・サービスでは、Oracle Clo
 
 1. **PDBのクローニング** ボタンを押します<br>（PDBのクローニングがバックエンドで開始します。作業が完了するとステータスが PROVISIONING... から AVAILABLE に変わります）
 
-1. 画面からPDBがクローニングされている(※このケースではPDB2_CLONE)事が確認できます
+1. 画面からPDBがクローニングされている事が確認できます(※このケースではPDB2_CLONEが作成されている事が分かります。)
     <div align="center">
     <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;">
     </div>

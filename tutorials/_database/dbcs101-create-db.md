@@ -43,8 +43,8 @@ Oracle Cloud Infrastructure データベース・サービスは、Oracle Cloud 
 <br>
 **所要時間 :** 約30分
 
-<a id="anchor1"></a>
 <br>
+<a id="anchor1"></a>
 
 # 1. DBシステムの作成
 
@@ -58,7 +58,7 @@ Oracle Cloud Infrastructure データベース・サービスは、Oracle Cloud 
    - **可用性ドメイン** - 任意 (集合ハンズオン環境を利用している場合は講師の指示に従って選択してください)
    - **シェイプ** - 任意 (集合ハンズオン環境を利用している場合は VM.Standard2.1 を選択してください)
       >**SHAPE**の選択時には、使用している環境のサービス・リミットに注意してください。初期状態ではサービス・リミットが0に設定されていて作成できないデータベース・サービスのシェイプも存在します。
-      サービス・リミットについて不明な方は [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../tutorials/getting-started) をご確認ください。<br>
+      サービス・リミットについて不明な方は [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../../beginners/getting-started) をご確認ください。<br>
 
       >**RAC** を利用したい場合は **VM.Standard2.2** 以上を選択ください 
    - **合計ノード数** - 1
@@ -87,6 +87,9 @@ Oracle Cloud Infrastructure データベース・サービスは、Oracle Cloud 
     - **拡張オプションの表示** - 任意（文字コードを選択できることを確認ください。）
 
 1. **DBシステムの作成** をクリックします（DBシステムの作成がバックエンドで開始します。作業が完了するとステータスが **PROVISIONING...** から **AVAILABLE** に変わります）
+
+<br>
+<a id="anchor2"></a>
 
 # 2. DBシステムへのアクセス
 
@@ -124,6 +127,9 @@ rootユーザーのPATH環境変数には dbcli のロケーションが登録�
     ![image.png](img04.webp)
 
     dbcli のその他のコマンドの詳細については、dbcli --help または [Oracle Database CLI Reference](https://docs.oracle.com/ja-jp/iaas/Content/Database/References/dbacli.htm) をご確認ください。
+
+<br>
+<a id="anchor3"></a>
 
 # 3. データベース（PDB）にアクセス
 作成したデータベースにログインしてみましょう。
@@ -164,6 +170,9 @@ rootユーザーのPATH環境変数には dbcli のロケーションが登録�
     ```
     ![image.png](img08.webp)
 
+<br>
+
+<a id="anchor4"></a>
 # 4. PDB上のスキーマにアクセスしましょう
 
 次に作成したスキーマにアクセスしてみましょう。
