@@ -27,7 +27,9 @@ toc: true
 
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!!  
 まずはベーシックなDatabase Cloud Service インスタンスを作ってみましょう。
-+ **[Oracle CloudでOracle Databaseを使おう](https://community.oracle.com/tech/welcome/discussion/4474262/)**　[所要時間:30分]  
++ **[101: Oracle Cloud で Oracle Database を使おう](/ocitutorials/database/dbcs101-create-db/)**
+
++ **[102: PDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/)**  
 
 <br/>
 
