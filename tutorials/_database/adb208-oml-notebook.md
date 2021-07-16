@@ -1,7 +1,7 @@
 ---
 title: "208: Oracle Machine Learningで機械学習をしよう"
 excerpt: "Oracle Machine Learningで液体の品質の予測や、同時購入商品の予測していきます。Autonomous Databaseで始める堅牢なデータの蓄積とその利活用の世界をご体感頂けます。"
-order: "208"
+order: "3_208"
 layout: single
 header:
   teaser: "/database/adb208-oml-notebook/img12.jpg"

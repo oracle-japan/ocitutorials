@@ -2,7 +2,7 @@
 title: "207: PythonによるADB上でのアプリ開発"
 excerpt: "この章では開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。"
 
-order: "207"
+order: "3_207"
 layout: single
 #header:
 #  teaser: "/database/adb207-appdev-python/image_top.png"

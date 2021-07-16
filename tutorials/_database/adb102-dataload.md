@@ -1,7 +1,7 @@
 ---
-title: "102: まずADBにデータをロードしよう(Database Actions)"
+title: "102: ADBにデータをロードしよう(Database Actions)"
 excerpt: "Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。"
-order: "102"
+order: "3_102"
 layout: single
 header:
   teaser: "/database/adb102-dataload/adb2-1_1.png"
