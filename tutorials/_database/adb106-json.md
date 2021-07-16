@@ -1,7 +1,7 @@
 ---
 title: "106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）"
 excerpt: "Autonomous Databaseはコンバージド・データベースとして様々なフォーマットのデータを扱うことができます。この章ではJSONを例にコンバージド・データベースの操作イメージをご紹介します。"
-order: "106"
+order: "3_106"
 layout: single
 header:
   teaser: "/database/adb106-json/img00.png"

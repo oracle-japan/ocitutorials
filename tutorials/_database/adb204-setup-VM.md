@@ -2,7 +2,7 @@
 title: "204: マーケットプレイスからの仮想マシンのセットアップ方法"
 excerpt: "Oracle Cloud Developer Image から仮想マシンをセットアップする方法をご紹介します。"
 
-order: "204"
+order: "3_204"
 layout: single
 header:
   teaser: "/database/adb204-setup-VM/image_top.png"

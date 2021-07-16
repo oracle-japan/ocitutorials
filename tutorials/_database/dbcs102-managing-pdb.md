@@ -1,7 +1,7 @@
 ---
-title: "102: PDBを管理しよう"
-excerpt: "Oracle Cloud Infrastructure データベース・サービスでは、OCI コンソールから Oracle Cloud Infrastructure 上の PDB を 起動・停止だけでなく、PDB のクローンを簡単に実施する事が可能です。"
-order: "102"
+title: "102: DBCS上のPDBを管理しよう"
+excerpt: "Oracle Cloud Infrastructure データベース・サービス(DBCS)では、OCI コンソールから Oracle Cloud Infrastructure 上の PDB を 起動・停止だけでなく、PDB のクローンを簡単に実施する事が可能です。"
+order: "1_102"
 header:
   teaser: "/database/dbcs102-managing-pdb/img13.png"
   overlay_image: "/database/dbcs102-managing-pdb/img13.png"

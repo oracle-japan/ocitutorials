@@ -1,7 +1,7 @@
 ---
 title: "209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装"
 excerpt: "データベースの特権ユーザはデフォルトではすべてのデータを参照できます。セキュリティのため、特権ユーザに対してもアクセス制御をかけたいという場合があります。Oracle DatabaseではDatabase Vaultというソリューションでそれを実現できます。"
-order: "510"
+order: "3_209"
 layout: single
 header:
   teaser: "/database/adb209-DV/DatabaseVault.png"

@@ -58,7 +58,7 @@ OCIではMySQLベースのデータウェアハウスサービスであるHeatWa
 - **[クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)](https://community.oracle.com/docs/DOC-1038411)**  
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
-- **[Autonomous Database ハンズオンラボ（ADB HOL）](https://community.oracle.com/tech/welcome/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol#latest)**  
+- **[Autonomous Database を使ってみよう（ADB HOL）](/ocitutorials/database/)**  
 Autonomous Database は、最新のAI技術によって自律的に運用される、クラウド上のマネージドなデータベースサービスです。こちらのハンズオンラボでは、Autonomous Databaseに初めて触る方向けに、使い方や特徴を学んでいただける内容になっています。
 
 - **[Oracle Container Engine for Kubernetes(OKE) ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/containers/handson/k8s-walkthrough/)**  

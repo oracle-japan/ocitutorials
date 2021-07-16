@@ -1,9 +1,8 @@
 ---
-title: "101: Oracle Cloud で Oracle Database を使おう　"
-excerpt: "Oracle Cloud Infrastructure データベース・サービスは、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。
-"
+title: "101: Oracle Cloud で Oracle Database を使おう(DBCS)"
+excerpt: "Oracle Cloud Infrastructure データベース・サービスは、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。"
 
-order: "101"
+order: "1_101"
 header:
   teaser: "/database/dbcs101-create-db/img11.png"
   overlay_image: "/database/dbcs101-create-db/img11.png"
@@ -15,7 +14,7 @@ header:
 <a id="anchor0"></a>
 
 # はじめに
-Oracle Cloud Infrastructure データベース・サービスは、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。
+Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。
 
 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。
 
