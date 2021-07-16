@@ -1,0 +1,830 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="データベースの特権ユーザはデフォルトではすべてのデータを参照できます。セキュリティのため、特権ユーザに対してもアクセス制御をかけたいという場合があります。Oracle DatabaseではDatabase Vaultというソリューションでそれを実現できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb209-DV/">
+
+
+  <meta property="og:description" content="データベースの特権ユーザはデフォルトではすべてのデータを参照できます。セキュリティのため、特権ユーザに対してもアクセス制御をかけたいという場合があります。Oracle DatabaseではDatabase Vaultというソリューションでそれを実現できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb209-DV/DatabaseVault.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-07-17T00:38:30+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb209-DV/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb209-DV/DatabaseVault.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装
+
+        
+      </h1>
+      
+        <p class="page__lead">データベースの特権ユーザはデフォルトではすべてのデータを参照できます。セキュリティのため、特権ユーザに対してもアクセス制御をかけたいという場合があります。Oracle DatabaseではDatabase Vaultというソリューションでそれを実現できます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/" class="active">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装">
+    <meta itemprop="description" content="データベースの特権ユーザはデフォルトではすべてのデータを参照できます。セキュリティのため、特権ユーザに対してもアクセス制御をかけたいという場合があります。Oracle DatabaseではDatabase Vaultというソリューションでそれを実現できます。">
+    <meta itemprop="datePublished" content="2021-07-17T00:38:30+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1テスト用の表を作成">1.テスト用の表を作成</a></li>
+  <li><a href="#2-oracle-database-vaultの有効化">2. Oracle Database Vaultの有効化</a>
+    <ul>
+      <li><a href="#構成に必要なスキーマの作成">構成に必要なスキーマの作成</a></li>
+      <li><a href="#oracle-database-vaultの構成と有効化">Oracle Database Vaultの構成と有効化</a></li>
+      <li><a href="#database-vaultの有効化の確認">Database Vaultの有効化の確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-特権ユーザーの権限はく奪">3. 特権ユーザーの権限はく奪</a></li>
+  <li><a href="#4-アクセス制御の設定">4. アクセス制御の設定</a>
+    <ul>
+      <li><a href="#レルムの作成">レルムの作成</a></li>
+      <li><a href="#オブジェクトの追加">オブジェクトの追加</a></li>
+      <li><a href="#アクセスを許可するユーザの設定">アクセスを許可するユーザの設定</a></li>
+    </ul>
+  </li>
+  <li><a href="#5-動作確認">5. 動作確認</a></li>
+  <li><a href="#6-oracle-database-vaultの無効化">6. Oracle Database Vaultの無効化</a></li>
+  <li><a href="#おわりに">おわりに</a></li>
+  <li><a href="#参考資料">参考資料</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>Autonomous Databaseの特権ユーザであるADMINユーザはデータベースの管理だけでなくデータベースの全データを参照することができます。しかし、セキュリティ面でそれを許可したくない場合もあります。</p>
+
+<p><strong>Oracle Database Vault</strong>は職務分掌と最小権限の原則を実施し、アクセスポリシーを作成する専用ユーザとアカウント管理専用ユーザを設け、特権ユーザからそれらの管理権限を分離します。<br />
+それにより、特権ユーザであってもアクセスポリシーの操作やアカウント管理操作ができず、許可された場合のみしか別アカウントのデータへのアクセスができなくなります。</p>
+
+<p><img src="DatabaseVault.png" alt="DatabaseVaultイメージ" /></p>
+
+<p>Oracle Database Vaultの詳細については、<a href="https://www.oracle.com/jp/database/technologies/security/db-vault.html">Oracle Database Vaultホームページ</a>や<a href="https://docs.oracle.com/cd/F19136_01/dvadm/index.html">ドキュメント</a>をご覧ください。</p>
+
+<p>本文書では、Autonomous DatabaseでOracle Database Vaultを有効化し、特権ユーザであるADMINユーザが他のユーザのデータにアクセスできないように設定をしてみます。</p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1.テスト用の表を作成</a></li>
+  <li><a href="#anchor2">2.Oracle Database Vaultの有効化</a></li>
+  <li><a href="#anchor3">3.特権ユーザーの権限はく奪</a></li>
+  <li><a href="#anchor4">4.アクセス制御の設定</a></li>
+  <li><a href="#anchor5">5.動作確認</a></li>
+  <li><a href="#anchor6">6.Oracle Database Vaultの無効化</a></li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、<a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a> で作成したユーザADBUSERを利用しています。</li>
+  <li>SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Databasee Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、<a href="https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/">「204:マーケットプレイスからの仮想マシンのセットアップ方法」</a>で作成できます。</li>
+  <li>チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。</li>
+  <li>使用パッケージの引数についての説明は記載していません。詳細はドキュメント<a href="https://docs.oracle.com/cd/F19136_01/dvadm/index.html">『Oracle Database Vault管理者ガイド』</a>（リンクは19c版です）をご参照くださいますようお願いいたします。</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1テスト用の表を作成">1.テスト用の表を作成</h1>
+
+<p>サンプルスキーマのSSBスキーマのSUPPLIER表の一部を利用して、<a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a> で作成したADBUSERスキーマにテスト用の表を作成します。</p>
+
+<p>SQL*Plusを起動して以下を実行してください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADBUSERで接続する</span>
+<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">-- SSB.SUPPLIER表から新しくDV_SUPPLIER表を作成する</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">dv_supplier</span> <span class="k">AS</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">ssb</span><span class="p">.</span><span class="n">supplier</span> <span class="k">WHERE</span> <span class="n">ROWNUM</span><span class="o">&lt;</span><span class="mi">10000</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Oracle Data Vaultを有効化する前にまず、特権ユーザであるADMINユーザでADBUSERのDV_SUPPLIER表にアクセスできることをSQLで確認します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADMINで接続する</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">--ADBUSERスキーマのDV_SUPPLIER表の件数を確認</span>
+<span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">dv_supplier</span><span class="p">;</span>
+</code></pre></div></div>
+<p>以下のような結果になり、特権ユーザであるADMINユーザが他スキーマADBUSERの持ち物であるDV_SUPPLIER表を参照できることが確認できました。</p>
+
+<p><img src="dv_supplier_count.png" alt="ADMINで件数を確認" /></p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-oracle-database-vaultの有効化">2. Oracle Database Vaultの有効化</h1>
+<p>続けて、ADMINユーザでOracle Database Vaultを有効化するためのSQLを実行していきます。</p>
+
+<h2 id="構成に必要なスキーマの作成">構成に必要なスキーマの作成</h2>
+<p>Oracle Database Vaultを利用するためにはOracle Database Vaultに関わる操作を行うスキーマ（DV所有者）とアカウントを管理する専用スキーマ（アカウント管理者）の2つを作成する必要があります。職務分掌の第一歩です。</p>
+
+<p>ではユーザを作成しましょう。<br />
+スキーマ名は任意ですが、<strong>Database Vault構成後は変更ができませんので</strong>ご注意ください。ここではDV所有者を「mydvowner」、アカウント管理者を「mydvacctmgr」とします。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--adminで接続</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">-- DV所有者スキーマ作成</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">mydvowner</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="nv">"Welcome12345#"</span><span class="p">;</span>
+<span class="c1">-- アカウント管理者スキーマ作成</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">mydvacctmgr</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="nv">"Welcome12345#"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="oracle-database-vaultの構成と有効化">Oracle Database Vaultの構成と有効化</h2>
+<p>2つのスキーマを作成した後に、Oracle Database Vaultの構成と有効化を行います。<br />
+Autonomous Databaseでは、提供されているDBMS_CLOUD_MACADMパッケージを利用します。
+まず構成コマンドを実行しますが、<strong><font color="RED">この構成コマンドが実行できるのは1回のみです。また設定したユーザは削除しないでください。</font></strong></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--adminで接続</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">--Database Vaultの構成（スキーマの設定：第1引数がDV所有者、第2引数がアカウント管理者を指定） </span>
+<span class="k">EXEC</span> <span class="n">DBMS_CLOUD_MACADM</span><span class="p">.</span><span class="n">CONFIGURE_DATABASE_VAULT</span><span class="p">(</span><span class="s1">'mydvowner'</span><span class="p">,</span><span class="s1">'mydvacctmgr'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>構成コマンドにより、先に作成した2つのスキーマに必要な権限がまとめられたロール（DV所有者にはDV_OWNERロール、アカウント管理者にはDV_ACCTMGRロール）が付与されます。<br />
+次に有効化のコマンドを実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--adminで接続</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">--Database Vaultの有効化</span>
+<span class="k">EXEC</span> <span class="n">DBMS_CLOUD_MACADM</span><span class="p">.</span><span class="n">ENABLE_DATABASE_VAULT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>有効化のコマンドが完了した後ログアウトし、Autonomous Databaseを再起動します。<br />
+Oracle Database Vaultの有効化、無効化を反映させるためにはAutonomous Databaseの再起動が必要なためです。<br />
+管理コンソールで、「他のアクション」プルダウンメニューから「再起動」を選択してください。　　</p>
+
+<p><img src="adb_console.png" alt="ADBコンソール画面" /></p>
+
+<h2 id="database-vaultの有効化の確認">Database Vaultの有効化の確認</h2>
+<p>再起動を完了後、設定が有効化されていることをデータベースのディクショナリビューで確認します。</p>
+
+<p>Database Vaultの構成や有効化の状態は「DBA_DV_STATUS」というディクショナリビューで確認します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- adminで接続</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">-- DBA_DV_STATUSディクショナリビューを検索する</span>
+<span class="n">col</span> <span class="n">status</span> <span class="k">for</span> <span class="n">a30</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">dba_dv_status</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>有効化されていると、NAME列で構成の状況を示す”DV_CONFIGURE_STATUS”と有効化の状況を示す”DV_ENABLE_STATUS”のSTATUS列の値がTRUEになります。</p>
+
+<p><img src="dba_dv_status.png" alt="DBA_DV_STATUSで有効化確認" /></p>
+
+<p>なお、Oracle Database Vaultのデータディクショナリ・ビューの情報は<a href="https://docs.oracle.com/cd/F19136_01/dvadm/oracle-database-vault-data-dictionary-views.html#GUID-C0CEF4FC-DB4C-4AD5-9671-C0861A647183">『Oracle Database Vault管理者ガイド』</a>でご確認いただけます。</p>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-特権ユーザーの権限はく奪">3. 特権ユーザーの権限はく奪</h1>
+<p>特権ユーザであるADMINユーザはDatabase Vault所有者のロール(DV_OWNER)もアカウント管理専用ユーザのロール(DV_ACCTMGR)もデフォルトで持っています。<br />
+ADMINユーザからそれらをはく奪します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADMINで接続する</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">--アカウント管理用の権限をはく奪</span>
+<span class="k">REVOKE</span> <span class="n">dv_acctmgr</span> <span class="k">FROM</span> <span class="k">admin</span><span class="p">;</span>
+<span class="c1">--DV所有者用の権限をはく奪</span>
+<span class="k">REVOKE</span>  <span class="n">dv_owner</span> <span class="k">FROM</span> <span class="k">admin</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>実際にADMINユーザでTESTUSERという名前のユーザ作成を試し、アカウント管理ができなくなっていることを確認してみましょう。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--アカウント管理が可能か確認するためにユーザを作成する</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">testuser</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span>  <span class="nv">"Welcome12345#"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>結果は次のようなORA-1031エラーになるはずです。</p>
+
+<p><img src="ora1031.png" alt="ORA-1031発生" /></p>
+
+<p>これはdc_acctmgrロールのはく奪によりアカウントを管理する権限がなくなったためです。作成だけでなく、ユーザの変更（ALTER USER文）や削除（DROP USER文）も同様のエラーになります。またDatabase Vaultの操作権限もはく奪していますので、手順4以降で実行するDatabase Vaultの操作もADMINユーザで実行すると次のエラーになります。</p>
+
+<p><img src="ora904.png" alt="ORA-904発生" /></p>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-アクセス制御の設定">4. アクセス制御の設定</h1>
+
+<p>スキーマのオブジェクト（データ）をOracle Database Vaultで保護するためには、次のステップが必要です。</p>
+
+<ul>
+  <li>「レルム」という論理的なグループを作成する</li>
+  <li>「レルム」に保護したいオブジェクトやスキーマを追加する</li>
+  <li>「レルム」に対してアクセスできるユーザを認可する</li>
+</ul>
+
+<p>上記の操作はOracle Database Vaultの所有者でDBMS_MACADMパッケージを利用して実行します。2で利用したDBMS_CLOUD_MACADMと名前が似ているので注意してください。</p>
+
+<h2 id="レルムの作成">レルムの作成</h2>
+<p>SQL*PlusでOracle Database Vaultの所有者であるmydvownerユーザで接続し、レルムを作成します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--MYDVOWNERユーザで接続する</span>
+<span class="k">CONNECT</span> <span class="n">mydvowner</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp1_low</span>
+<span class="c1">--レルムを作成する</span>
+<span class="k">BEGIN</span>
+   <span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">CREATE_REALM</span> <span class="p">(</span>
+	   <span class="n">realm_name</span> <span class="o">=&gt;</span> <span class="s1">'ADBUSER Realm'</span><span class="p">,</span>
+	   <span class="n">description</span> <span class="o">=&gt;</span> <span class="s1">'Realm for ADBUSER'</span><span class="p">,</span>
+	   <span class="n">enabled</span> <span class="o">=&gt;</span> <span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_YES</span><span class="p">,</span>
+	   <span class="n">audit_options</span> <span class="o">=&gt;</span> <span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_REALM_AUDIT_OFF</span><span class="p">,</span>
+	   <span class="n">realm_type</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<h2 id="オブジェクトの追加">オブジェクトの追加</h2>
+<p>レルムの作成が完了したあと、そのレルムにアクセスを制御したいオブジェクトを追加します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--MYDVOWNERユーザで接続する</span>
+<span class="k">CONNECT</span> <span class="n">mydvowner</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp1_low</span>
+<span class="c1">--レルムにADBUSERスキーマのオブジェクト（表）を追加する</span>
+<span class="k">BEGIN</span>
+   <span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_OBJECT_TO_REALM</span> <span class="p">(</span>
+	   <span class="n">realm_name</span> <span class="o">=&gt;</span> <span class="s1">'ADBUSER Realm'</span><span class="p">,</span>
+	   <span class="n">object_owner</span> <span class="o">=&gt;</span> <span class="s1">'ADBUSER'</span><span class="p">,</span>
+	   <span class="n">object_name</span> <span class="o">=&gt;</span> <span class="s1">'%'</span><span class="p">,</span>
+	   <span class="n">object_type</span> <span class="o">=&gt;</span> <span class="s1">'TABLE'</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<h2 id="アクセスを許可するユーザの設定">アクセスを許可するユーザの設定</h2>
+<p>これでADBUSERスキーマの表を保護するレルムが作成できました。しかし、このままだと所有者のADBUSERユーザもアクセスできません。</p>
+
+<p>ADBUSERユーザに対しアクセスの認可を与えます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--mydvownerユーザで接続する</span>
+<span class="k">CONNECT</span> <span class="n">mydvowner</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp1_low</span>
+<span class="c1">--レルムにアクセスできるユーザを指定して認可を与える</span>
+<span class="k">BEGIN</span>
+    <span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">ADD_AUTH_TO_REALM</span><span class="p">(</span>
+		<span class="n">realm_name</span><span class="o">=&gt;</span> <span class="s1">'ADBUSER Realm'</span><span class="p">,</span>
+		<span class="n">grantee</span> <span class="o">=&gt;</span> <span class="s1">'ADBUSER'</span><span class="p">,</span>
+		<span class="n">auth_options</span> <span class="o">=&gt;</span> <span class="n">DBMS_MACUTL</span><span class="p">.</span><span class="n">G_REALM_AUTH_OWNER</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-動作確認">5. 動作確認</h1>
+<p>では、設定が有効かADMINユーザとADBUSERユーザでADBUSERスキーマの表に再度アクセスしてみましょう。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADMINで接続</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+
+<span class="c1">--ADBUSERのDV_SUPPLIER表の件数を検索</span>
+<span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">dv_supplier</span><span class="p">;</span>
+
+<span class="c1">--ADBUSERで接続</span>
+<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+
+<span class="c1">--ADBUSERのDV_SUPPLIER表の件数を検索</span>
+<span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">dv_supplier</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>以下のような結果になります。</p>
+
+<p><img src="select_count.png" alt="ADMINとADBUSERで件数確認" /></p>
+
+<p>Oracle Database Vaultの設定を行う前はADMINユーザはADBUSERユーザの表を参照できていましたが、今回はORA-01031:insufficient privileges(権限が不足しています）のエラーとなりました。</p>
+
+<p>一方、認可を与えたADBUSERユーザではアクセスできることが確認できますね。</p>
+
+<p>設定をすぐに有効化せず、テストできるシミュレーション・モードも提供されています。シミュレーション・モードの場合は、違反するSQLはエラーにはならず、シミュレーション・ログに記録されます。</p>
+
+<p><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="6-oracle-database-vaultの無効化">6. Oracle Database Vaultの無効化</h1>
+
+<p>Oracle Database Vaultを無効にします。Oracle Database Vaultの所有者であるmydvownerユーザで実行することにご注意ください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--mvdvownerユーザで接続</span>
+<span class="k">CONNECT</span> <span class="n">mvdvowner</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+
+<span class="c1">--Database Vaultを無効化</span>
+<span class="k">EXECUTE</span> <span class="n">DBMS_CLOUD_MACADM</span><span class="p">.</span><span class="n">DISABLE_DATABASE_VAULT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>その後、Autonomous Databaseを再起動することで無効化の設定が反映されます。
+ADMINユーザで有効化のときと同じように確認しましょう。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--再度ADMINでログイン</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+<span class="c1">--Oracle Database Vaultの構成、設定の確認</span>
+<span class="c1">-- SQL*Plusのcolumnコマンドで表示を見やすく設定</span>
+<span class="k">column</span> <span class="n">status</span> <span class="k">for</span> <span class="n">a30</span>  
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">dba_dv_status</span><span class="p">;</span>
+</code></pre></div></div>
+<p><img src="dba_dv_status_disable.png" alt="DBA_DV_STATUSで無効化確認" /></p>
+
+<p>DV_ENABLE_STATUSの値がFALSEになっていることが確認できます。ADMINユーザでADBUSERのDV_SUPPLIER表にアクセスすることもできるようになります。</p>
+
+<p>次にADMINユーザにはく奪したロールを戻します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--MYDVOWNERで接続</span>
+<span class="k">CONNECT</span> <span class="n">mydvowner</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp1_low</span><span class="p">;</span>
+<span class="c1">--DV_OWNERをADMINに付与</span>
+<span class="k">GRANT</span> <span class="n">dv_owner</span> <span class="k">TO</span> <span class="k">admin</span> <span class="k">WITH</span> <span class="k">ADMIN</span> <span class="k">OPTION</span><span class="p">;</span>
+<span class="c1">--MVDVACCTMGRで接続</span>
+<span class="k">CONNECT</span> <span class="n">mydvacctmgr</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp1_low</span>
+<span class="c1">--DV_ACCTMGRをADMINに付与</span>
+<span class="k">GRANT</span> <span class="n">dv_acctmgr</span> <span class="k">TO</span> <span class="k">admin</span> <span class="k">WITH</span> <span class="k">ADMIN</span> <span class="k">OPTION</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ロールをADMINユーザに戻さない場合、ADMINユーザでDatabase Vaultの無効化/有効化の操作はできません。その場合、次にDatabase Vaultを有効化/無効化するときのコマンドはADMINユーザではなくDatabase Vault所有者であるmydvownerユーザで実行する必要があります。<br />
+<strong><font color="RED">もし、Database Vault所有者がパスワード忘れやパスワード有効切れでログインできなくなると、Database Vaultの無効化を含む操作ができなくなりますので、Database Vault所有者の取り扱いには十分に注意するようにしてください。</font></strong><br />
+なお、再有効化した場合、作成したレルム”ADBUSER Realm”を削除していないため、再有効化直後からADMINユーザはADBUSERのDV_SUPPLIER表にアクセスできなくなります。レルムを削除したい場合は以下で可能です。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--MYDVOWNERで接続</span>
+<span class="k">CONNECT</span> <span class="n">mydvowner</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp1_low</span><span class="p">;</span>
+<span class="c1">--作成したレルムを削除</span>
+<span class="k">EXECUTE</span> <span class="n">DBMS_MACADM</span><span class="p">.</span><span class="n">DELETE_REALM</span> <span class="p">(</span><span class="n">realm_name</span> <span class="o">=&gt;</span> <span class="s1">'ADBUSER Realm'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h1 id="おわりに">おわりに</h1>
+
+<p>Oracle Database Vault で特権ユーザーであっても機密データにアクセスすることが防止できることをご確認いただきました。<br />
+また、ここでは扱いませんでしたが、文レベルやユーザプロパティ（ロケーション、IPアドレスなど）別の制御や時間帯を指定するなどもできます。<br />
+詳細は『Oracle Database Vault管理者ガイド』の「6.コマンド・ルールの構成」、「7.ファクタの構成」の章でご確認ください。（チュートリアルもございます)</p>
+
+<p>要件にあわせてOracle Database Vaultの柔軟で強力なアクセス制御をご利用ください。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li>
+    <p>『Using Oracle Autonomous Database on Shared Exadata Infrastructureutonomous Data Warehouse』<br />
+ “<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/autonomous-database-vault.html">Oracle Database VaultとAutonomous Databaseの使用</a>”</p>
+  </li>
+  <li>
+    <p>Oracle Database 19c
+『<a href="https://docs.oracle.com/cd/F19136_01/dvadm/index.html">Oracle Database Vault管理者ガイド</a>』</p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-17T00:38:30+09:00">July 17, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=209+%3A+Database+Vault%E3%81%AB%E3%82%88%E3%82%8B%E8%81%B7%E5%8B%99%E5%88%86%E6%8E%8C%E3%81%AB%E5%9F%BA%E3%81%A5%E3%81%84%E3%81%9F%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E5%88%B6%E5%BE%A1%E3%81%AE%E5%AE%9F%E8%A3%85%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb209-DV%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb209-DV%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb209-DV%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb208-oml-notebook/" class="pagination--pager" title="208: Oracle Machine Learningで機械学習をしよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb210-VPD/" class="pagination--pager" title="210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

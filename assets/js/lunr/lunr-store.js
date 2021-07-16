@@ -305,13 +305,25 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/content-management/77_sitesecuritygovernance/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/77_SiteSecurityGovernance/021.png"
       },{
+        "title": "101: Oracle Cloud で Oracle Database を使おう(DBCS)",
+        "excerpt":"はじめに Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから データベース → ベア・メタル、VMおよびExadata を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった DBシステムの作成...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/img11.png"
+      },{
+        "title": "102: DBCS上のPDBを管理しよう",
+        "excerpt":"はじめに Oracle Cloud Infrastructure データベース・サービスでは、Oracle Cloud Infrastructure の上で稼働する Oracle Database の PDB を OCI コンソールから停止したり、起動したり、既存 PDB からクローンするなどの操作が簡単に行う事が可能です。この章では実際にどのように操作するのか確認していきます。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. PDB を起動・停止してみよう 2. PDB を新規作成してみよう 3. 既存 PDB からクローン PDB を作成してみよう 所要時間 : 約15分 1. PDB を起動・停止してみよう まずは、コンソール上で作成済みの PDB を確認する画面への遷移、および...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/dbcs102-managing-pdb/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/dbcs102-managing-pdb/img13.png"
+      },{
         "title": "101: ADBインスタンスを作成してみよう",
-        "excerpt":"はじめに この章はまずAutonomous Database を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、アクセスしてみます。 目次 1.リージョンを設定し、コンパートメントを用意しよう 2.ADBインスタンスを作成してみよう 3.Database Actionsで操作してみよう 所要時間 : 約20分 リージョンを設定し、コンパートメントを用意しよう 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足）上手く表示されない場合は以下のURLをお試しください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 尚、 &lt;クラウド・アカウント&gt; はご自身のクラウドアカウント名（テナント名）に置き換えてください。 補足）ダッシュボード画面の使い方...","categories": [],
+        "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、アクセスしてみます。 目次 1.リージョンを設定し、コンパートメントを用意しよう 2.ADBインスタンスを作成してみよう 3.Database Actionsで操作してみよう 所要時間 : 約20分 リージョンを設定し、コンパートメントを用意しよう 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足）上手く表示されない場合は以下のURLをお試しください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 尚、 &lt;クラウド・アカウント&gt; はご自身のクラウドアカウント名（テナント名）に置き換えてください。 補足）ダッシュボード画面の使い方...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/img11.png"
       },{
-        "title": "102: まずADBにデータをロードしよう(Database Actions)",
+        "title": "102: ADBにデータをロードしよう(Database Actions)",
         "excerpt":"はじめに この章ではDatabase Actions（SQL Developer Webの後継機能）を利用して、サンプルデータをADBインスタンスにデータをアップロードします。 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること サンプルデータファイルのダウンロードリンク 目次 1.手元のPCからクラウド・ストレージにCSVデータをアップロードしてみよう 2.クラウド・ストレージからデータをロードしてみよう 3.クラウド・ストレージのデータをフィードしてみよう 所要時間 : 約20分 1.手元のPCからクラウド・ストレージにCSVデータをアップロードしてみよう まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 Database Actionsのランディングページのデータ・ツールから　データ・ロード を選択します。 データの処理には、データのロード を選択し、データの場所には、ローカル・ファイル を選択して 次 をクリックします。 ファイルの選択をクリックし、ダウンロードして解凍した sales_channels.csv を選択します。 sales_channels.csvがロードできる状態になりました。ロード前にペンアイコンをクリックし、詳細設定を確認・変更できます。 sales_channels.csvの表定義等のデータのプレビューを確認したら 閉じる をクリックします。 緑色の実行ボタンをクリックし、データのロードを開始します。 データ・ロード・ジョブの実行を確認するポップアップが表示されるので、実行 をクリックします。 sales_channels.csvに緑色のチェックマークが付き、ロードが完了しました。完了をクリックします。 ロード完了後、赤枠のマークをクリックすると、エラーログ等の詳細を見ることができます。 ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。SQLをクリック。 ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。 select * from...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/",
@@ -382,6 +394,18 @@ var store = [{
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb208-oml-notebook/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb208-oml-notebook/img12.jpg"
+      },{
+        "title": "209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装",
+        "excerpt":"はじめに Autonomous Databaseの特権ユーザであるADMINユーザはデータベースの管理だけでなくデータベースの全データを参照することができます。しかし、セキュリティ面でそれを許可したくない場合もあります。 Oracle Database Vaultは職務分掌と最小権限の原則を実施し、アクセスポリシーを作成する専用ユーザとアカウント管理専用ユーザを設け、特権ユーザからそれらの管理権限を分離します。 それにより、特権ユーザであってもアクセスポリシーの操作やアカウント管理操作ができず、許可された場合のみしか別アカウントのデータへのアクセスができなくなります。 Oracle Database Vaultの詳細については、Oracle Database Vaultホームページやドキュメントをご覧ください。 本文書では、Autonomous DatabaseでOracle Database Vaultを有効化し、特権ユーザであるADMINユーザが他のユーザのデータにアクセスできないように設定をしてみます。 目次 : 1.テスト用の表を作成 2.Oracle Database Vaultの有効化 3.特権ユーザーの権限はく奪 4.アクセス制御の設定 5.動作確認 6.Oracle Database Vaultの無効化 前提条件 : テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、「101:ADBインスタンスを作成してみよう」 で作成したユーザADBUSERを利用しています。 SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Databasee Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、「204:マーケットプレイスからの仮想マシンのセットアップ方法」で作成できます。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。 使用パッケージの引数についての説明は記載していません。詳細はドキュメント『Oracle Database Vault管理者ガイド』（リンクは19c版です）をご参照くださいますようお願いいたします。 所要時間 : 約20分 1.テスト用の表を作成 サンプルスキーマのSSBスキーマのSUPPLIER表の一部を利用して、「101:ADBインスタンスを作成してみよう」 で作成したADBUSERスキーマにテスト用の表を作成します。 SQL*Plusを起動して以下を実行してください。 -- ADBUSERで接続する CONNECT...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb209-DV/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb209-DV/DatabaseVault.png"
+      },{
+        "title": "210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装",
+        "excerpt":"はじめに Oracle DatabaseのEnterprise Editionでは、表単位より細やかな行や列単位でのアクセス制御をおこなうために、仮想プライベートデータベース(VPD：Virtual Private Database)というソリューションを提供しています。 たとえばひとつの表に複数のユーザーのデータがまとめて入っているような場合でも、それぞれのユーザーが表に全件検索を実施した時に自分のデータしか結果としてもどらないようにすることが可能です。 では、どのような仕組みでそれを実現しているのでしょうか。 実は、内部でSQLに対して自動的に動的な条件を付加しています。イメージで示してみましょう。 部門(Group)が経理部(FIN)の人と営業部(SALES)の人が同じ人事データの表（HR_DETAIL表）に対して同じSQLで検索を行います。しかし、データベース内部では、そのSQLに自動的にユーザーの属性にあわせた条件(Where句(赤字))を付加して実行しています。その結果、それぞれの所属部門に適した異なる結果が表示されるというわけです。 VPDはAutonomous Databaseでも利用できる機能です。基本的な設定、動作を試してみましょう。　　 目次 : 1.テスト用の表を作成 2.ユーザーを作成 3.VPDファンクションの作成 4.VPDファンクションをVPDポリシーとして適用 5.動作確認 6.VPDポリシーの削除 前提条件 : テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、「101:ADBインスタンスを作成してみよう」 で作成したユーザADBUSERを利用しています。 SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、「204:マーケットプレイスからの仮想マシンのセットアップ方法」で作成できます。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。 使用パッケージの引数についての説明は記載していません。詳細はドキュメント『PL/SQLパッケージ及びタイプ・リファレンス』（リンクは19c版です）をご参照くださいますようお願いいたします。 所要時間 : 約20分 1. テスト用の表を作成 サンプルスキーマのSSBスキーマのCUSTOMER表の一部を利用して、「101:ADBインスタンスを作成してみよう」 で作成したADBUSERスキーマにテスト用の表を作成します。 SQL*Plusを起動して以下を実行してください。 -- ADBUSERで接続する CONNECT adbuser/Welcome12345##@atp01_low -- SSB.CUSTEOMER表から新しくVPD_CUSTOMER表を作成する CREATE TABLE adbuser.vpd_customer AS SELECT *...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb210-VPD/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb210-vpd/vpd.png"
       },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],

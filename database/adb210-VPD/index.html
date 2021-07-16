@@ -1,0 +1,773 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="表やビューといったオブジェクト単位ではなく、行や列の単位でアクセス制御をかけたい場合に利用できるのが仮想プライベートデータベース(VPD)です。基本的な設定の流れを学習しましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb210-VPD/">
+
+
+  <meta property="og:description" content="表やビューといったオブジェクト単位ではなく、行や列の単位でアクセス制御をかけたい場合に利用できるのが仮想プライベートデータベース(VPD)です。基本的な設定の流れを学習しましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb210-vpd/vpd.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-07-17T00:38:30+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb210-VPD/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb210-vpd/vpd.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装
+
+        
+      </h1>
+      
+        <p class="page__lead">表やビューといったオブジェクト単位ではなく、行や列の単位でアクセス制御をかけたい場合に利用できるのが仮想プライベートデータベース(VPD)です。基本的な設定の流れを学習しましょう。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/" class="active">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装">
+    <meta itemprop="description" content="表やビューといったオブジェクト単位ではなく、行や列の単位でアクセス制御をかけたい場合に利用できるのが仮想プライベートデータベース(VPD)です。基本的な設定の流れを学習しましょう。">
+    <meta itemprop="datePublished" content="2021-07-17T00:38:30+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-テスト用の表を作成">1. テスト用の表を作成</a></li>
+  <li><a href="#2-ユーザを作成">2. ユーザを作成</a></li>
+  <li><a href="#3-vpdファンクションの作成">3. VPDファンクションの作成</a></li>
+  <li><a href="#4-vpdファンクションをvpdポリシーとして適用">4. VPDファンクションをVPDポリシーとして適用</a></li>
+  <li><a href="#5-動作確認">5. 動作確認</a>
+    <ul>
+      <li><a href="#adbuserで実行">ADBUSERで実行</a></li>
+      <li><a href="#asiaで実行">ASIAで実行</a></li>
+      <li><a href="#adminで実行">ADMINで実行</a></li>
+    </ul>
+  </li>
+  <li><a href="#6-vpdポリシーの削除">6. VPDポリシーの削除</a></li>
+  <li><a href="#おわりに">おわりに</a></li>
+  <li><a href="#参考資料">参考資料</a></li>
+  <li><a href="#tips">Tips</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>Oracle DatabaseのEnterprise Editionでは、表単位より細やかな行や列単位でのアクセス制御をおこなうために、<strong>仮想プライベートデータベース(VPD：Virtual Private Database)</strong>というソリューションを提供しています。<br />
+たとえばひとつの表に複数のユーザーのデータがまとめて入っているような場合でも、それぞれのユーザーが表に全件検索を実施した時に自分のデータしか結果としてもどらないようにすることが可能です。</p>
+
+<p>では、どのような仕組みでそれを実現しているのでしょうか。<br />
+実は、内部でSQLに対して自動的に動的な条件を付加しています。イメージで示してみましょう。</p>
+
+<p><img src="VPD.png" alt="VPDの説明イメージ" /></p>
+
+<p>部門(Group)が経理部(FIN)の人と営業部(SALES)の人が同じ人事データの表（HR_DETAIL表）に対して同じSQLで検索を行います。しかし、データベース内部では、そのSQLに自動的にユーザーの属性にあわせた条件(Where句(赤字))を付加して実行しています。その結果、それぞれの所属部門に適した異なる結果が表示されるというわけです。</p>
+
+<p>VPDはAutonomous Databaseでも利用できる機能です。基本的な設定、動作を試してみましょう。　　</p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1.テスト用の表を作成</a></li>
+  <li><a href="#anchor2">2.ユーザーを作成</a></li>
+  <li><a href="#anchor3">3.VPDファンクションの作成</a></li>
+  <li><a href="#anchor4">4.VPDファンクションをVPDポリシーとして適用</a></li>
+  <li><a href="#anchor5">5.動作確認</a></li>
+  <li><a href="#anchor6">6.VPDポリシーの削除</a></li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、<a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a> で作成したユーザADBUSERを利用しています。</li>
+  <li>SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、<a href="https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/">「204:マーケットプレイスからの仮想マシンのセットアップ方法」</a>で作成できます。</li>
+  <li>チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。</li>
+  <li>使用パッケージの引数についての説明は記載していません。詳細はドキュメント<a href="https://docs.oracle.com/cd/F19136_01/arpls/DBMS_RLS.html#GUID-27507923-FF74-4193-B55D-6ECB11B58FCC">『PL/SQLパッケージ及びタイプ・リファレンス』</a>（リンクは19c版です）をご参照くださいますようお願いいたします。</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-テスト用の表を作成">1. テスト用の表を作成</h1>
+<p>サンプルスキーマのSSBスキーマのCUSTOMER表の一部を利用して、<a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a> で作成したADBUSERスキーマにテスト用の表を作成します。<br />
+SQL*Plusを起動して以下を実行してください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADBUSERで接続する</span>
+<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="c1">-- SSB.CUSTEOMER表から新しくVPD_CUSTOMER表を作成する</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">AS</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">ssb</span><span class="p">.</span><span class="n">customer</span> <span class="k">WHERE</span> <span class="n">ROWNUM</span><span class="o">&lt;</span><span class="mi">10000</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ADBUSER.VPD_CUSTOMER表は以下のような構成の顧客情報の表となります。</p>
+
+<p><img src="vpd_customer.png" alt="VPD_CUSTOMER表の構成" /></p>
+
+<p>リージョン（REGION)毎の件数を確認してみましょう。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果 :</strong><br />
+<img src="count_all.png" alt="リージョンごとの件数 by ADBUSER" /></p>
+
+<p>複数のリージョンのデータがあることがわかりますね。<br />
+それでは、この表に対し、各リージョン担当ユーザは自分の担当リージョンのデータしか参照できないようにVPDを設定していきます。
+代表としてASIAリージョンを対象にします。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-ユーザを作成">2. ユーザを作成</h1>
+<p>ADMINユーザで接続し、ASIA担当のユーザをわかりやすくASIAという名前で作成します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADMINで接続する</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="c1">-- ASIAユーザを作成する</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">asia</span> <span class="n">IDENTIFIED</span> <span class="k">by</span> <span class="nv">"Welcome12345##"</span><span class="p">;</span>
+<span class="c1">-- 接続するためのCONNECTロールとADBUSER.VPD_CUSTOMER表への参照権限を付与</span>
+<span class="k">GRANT</span> <span class="k">CONNECT</span> <span class="k">TO</span> <span class="n">asia</span><span class="p">;</span>
+<span class="k">GRANT</span> <span class="k">SELECT</span> <span class="k">ON</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">TO</span> <span class="n">asia</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ASIAユーザで接続してADBUSER.VPD_CUSTOMER表に対して、1と同じSQLを実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ASIAで接続する</span>
+<span class="k">CONNECT</span> <span class="n">asia</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="c1">-- リージョンごとの数を確認する</span>
+<span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果 :</strong><br />
+   <img src="count_all.png" alt="リージョンごとの件数 by ASIA" /></p>
+
+<p>VPDの設定前はADBUSERと同じように全てのリージョンの情報が結果として返されています。</p>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-vpdファンクションの作成">3. VPDファンクションの作成</h1>
+<p>SQLに付加する条件（Where句の内容）を戻すVPDファンクションを作成します。<br />
+言い換えると、このVPDファンクションでどのような場合にどのデータにアクセスさせるかというルールを記述するということになります。
+今回付加したい条件は「<strong>ログインしたユーザー名がC_REGION列の値と同じ</strong>」となりますので、ファンクションを以下のように作成します。
+ファンクションを作成するユーザはADMINユーザです。
+<strong><font color="RED">このチュートリアルではADMINユーザで行っていますが、VPDファンクションの作成および後に続くVPDポリシーの定義はセキュリティ管理者として信頼できるスキーマで実行する必要があります。</font></strong></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADMINで接続する</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+
+<span class="c1">--ファンクションを作成する</span>
+<span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">FUNCTION</span> <span class="n">vpdfunc</span>
+  <span class="p">(</span><span class="n">v_schema</span> <span class="n">VARCHAR2</span><span class="p">,</span> <span class="n">v_objname</span> <span class="n">VARCHAR2</span><span class="p">)</span>
+  <span class="k">RETURN</span> <span class="n">VARCHAR2</span>
+<span class="k">AS</span>
+  <span class="n">v_text</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">400</span><span class="p">);</span>
+<span class="k">BEGIN</span>
+<span class="c1">-- 条件となる文字列を変数v_textに代入し、RETURNで返すように設定</span>
+  <span class="n">v_text</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'c_region=</span><span class="se">''</span><span class="s1">'</span><span class="o">||</span><span class="k">UPPER</span><span class="p">(</span><span class="n">SYS_CONTEXT</span><span class="p">(</span><span class="s1">'USERENV'</span><span class="p">,</span><span class="s1">'SESSION_USER'</span><span class="p">)</span><span class="o">||</span><span class="s1">'</span><span class="se">''</span><span class="s1">'</span><span class="p">);</span>
+  <span class="n">RETRUN</span> <span class="n">v_text</span><span class="p">;</span>
+<span class="k">end</span><span class="p">;</span>
+<span class="o">/</span> 
+</code></pre></div></div>
+
+<ul>
+  <li><strong>Note :</strong>
+    <ul>
+      <li>VPDファンクションでは引数として対象の表の所有者と表の名前が必要です。ここでは引数名をv_schemaとv_objnameと定義しています。</li>
+      <li>ログインしたユーザ名の取得はSYS_CONTEXT関数で可能です。SYS_CONTEXT関数はクライアントからサーバへの接続で確立されるデータベースセッションの情報を取得ができる便利な関数です。詳細は<a href="https://docs.oracle.com/cd/F19136_01/sqlrf/SYS_CONTEXT.html#GUID-B9934A5D-D97B-4E51-B01B-80C76A5BD086">ドキュメント</a>をご確認ください。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-vpdファンクションをvpdポリシーとして適用">4. VPDファンクションをVPDポリシーとして適用</h1>
+<p>作成したファンクションををVPDポリシーとして対象のオブジェクト（表、ビューなど）に関連付けます。<br />
+ポリシーをオブジェクトに紐づけることで、ユーザがどのような方法でそのオブジェクトにアクセスしても同じポリシーが適用されます。<br />
+VPDポリシーの構成や管理にはDBMS_RLSパッケージを利用します。デフォルトではDBMS_RLSパッケージは管理者権限を持つユーザが利用可能です。</p>
+
+<p>ADMINユーザで接続し、以下を実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADMINで接続する</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+
+<span class="c1">-- VPDポリシーを対象のオブジェクトに追加する</span>
+<span class="k">BEGIN</span>
+  <span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">ADD_POLICY</span><span class="p">(</span>
+    <span class="n">object_schema</span> <span class="o">=&gt;</span> <span class="s1">'ADBUSER'</span><span class="p">,</span>
+    <span class="n">object_name</span> <span class="o">=&gt;</span> <span class="s1">'VPD_CUSTOMER'</span><span class="p">,</span>
+    <span class="n">policy_name</span> <span class="o">=&gt;</span> <span class="s1">'VPDPOL'</span><span class="p">,</span>
+    <span class="n">function_schema</span> <span class="o">=&gt;</span> <span class="s1">'ADMIN'</span><span class="p">,</span>
+    <span class="n">policy_function</span> <span class="o">=&gt;</span> <span class="s1">'VPDFUNC'</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span> 
+</code></pre></div></div>
+<p>　
+以上でVPDの設定は完了です。</p>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-動作確認">5. 動作確認</h1>
+<p>それでは実際にユーザー別に同じSQLで異なるデータが返ってくるかどうかを確認してみましょう。
+実行するSQLは1で利用したリージョンごとの数を表示させるものです。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="adbuserで実行">ADBUSERで実行</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADBUSERで接続する</span>
+<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="c1">--確認</span>
+<span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果 :</strong><br />
+   <img src="count_norows.png" alt="リージョンごとの件数2 by ADBUSER" /></p>
+
+<p>表の所有者であっても条件が有効となり、ADBUSERという値がC_REGION列にはないため、レコードがない（NO ROWS）となります。</p>
+
+<h2 id="asiaで実行">ASIAで実行</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ASIAで接続する</span>
+<span class="k">CONNECT</span> <span class="n">asia</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="c1">--確認</span>
+<span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
+</code></pre></div></div>
+<p><strong>結果 :</strong><br />
+   <img src="count_asia.png" alt="リージョンごとの件数2 by ASIA" /></p>
+
+<p>ASIAだけの値が返されました。VPDの設定どおりの動作をしたことが確認できました。</p>
+
+<h2 id="adminで実行">ADMINで実行</h2>
+<p>それでは、ADMINユーザではどうでしょうか。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADMINユーザで接続</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="c1">--確認</span>
+<span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果 :</strong><br />
+   <img src="count_all.png" alt="リージョンごとの件数 by ADMIN" /></p>
+
+<p>全てのデータが出力されました。これはADMINユーザは特権ユーザであるためです。
+もし特権ユーザのアクセスも制御したい場合はDatabase Vaultで可能です。<a href="../adb209-DV/">“209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装”</a>をご確認ください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="6-vpdポリシーの削除">6. VPDポリシーの削除</h1>
+<p>VPDポリシーの削除もDBMS_RLSパッケージを使用して行います。
+ADMINユーザで以下を実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADMINで接続</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="c1">-- ポリシーを削除する</span>
+<span class="k">BEGIN</span>
+  <span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">DROP_POLICY</span><span class="p">(</span>
+    <span class="n">object_schema</span> <span class="o">=&gt;</span> <span class="s1">'ADBUSER'</span><span class="p">,</span>
+    <span class="n">object_name</span> <span class="o">=&gt;</span> <span class="s1">'VPD_CUSTOMER'</span><span class="p">,</span>
+    <span class="n">policy_name</span> <span class="o">=&gt;</span> <span class="s1">'VPDPOL'</span>
+  <span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p>削除後、再度5の確認操作を行うと、どのユーザも全データを参照できるようになっていることをご覧いただけます。</p>
+
+<p><br /></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>このチュートリアルでは基本的な設定方法をお伝えするために簡単な例を用いましたが、VPDではファンクションでルールの記述を行うため、非常に柔軟で細やかなアクセス制御を実装させることが可能です。</p>
+
+<ul>
+  <li>例
+    <ul>
+      <li>人や時間、クライアント端末、アプリなどの様々なアクセス条件を設定</li>
+      <li>オブジェクトだけでなく特定のSQL文タイプの指定（SELECT、INSERT、UPDATE、INDEX、DELETE）</li>
+      <li>列の指定や列に対するマスク(NULL値として表示)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>そのため、VPDを構成するときに最も重要な作業はアクセスのルールの設計、明確化となります。実環境でのご利用を検討されるときは、その点で抜け漏れがないか十二分にお気を付けください。</p>
+
+<p>以上でこの章は終了です。次の章にお進みください。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li>Oracle Database 19c
+『Oracle Database セキュリティ・ガイド』<a href="https://docs.oracle.com/cd/F19136_01/dbseg/using-oracle-vpd-to-control-data-access.html#GUID-06022729-9210-4895-BF04-6177713C65A7">“12 Oracle Virtual Private Databaseを使用したデータ・アクセスの制御”</a></li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="tips">Tips</h1>
+<ul>
+  <li>1つのオブジェクトに作成できるVPDポリシーの最大数は255です</li>
+  <li>追加された条件はEXPLAIN PLANコマンドの結果から確認することができます。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- EXPLAIN PLAN文で実行計画を取得</span>
+  <span class="k">EXPLAIN</span> <span class="n">PLAN</span> <span class="k">FOR</span> <span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
+<span class="c1">-- 取得結果を表示</span>
+  <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="k">TABLE</span><span class="p">(</span><span class="n">DBMS_XPLAN</span><span class="p">.</span><span class="n">DISPLAY</span><span class="p">);</span>
+</code></pre></div>    </div>
+    <p><strong>結果 :</strong><br />
+   <img src="explain.png" alt="EXPLAN PLANの結果" /></p>
+  </li>
+  <li>述語が間違っているときは、SQL文実行時にORA-28113が出力されます。VPDファンクションで生成する条件の文字列が条件として正しい文法かどうかご確認ください。</li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-17T00:38:30+09:00">July 17, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=210+%3A+%E4%BB%AE%E6%83%B3%E3%83%97%E3%83%A9%E3%82%A4%E3%83%99%E3%83%BC%E3%83%88%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%28VPD%3AVirtual+Private+Database%29%E3%81%AB%E3%82%88%E3%82%8B%E6%9F%94%E8%BB%9F%E3%81%A7%E7%B4%B0%E3%82%84%E3%81%8B%E3%81%AA%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E5%88%B6%E5%BE%A1%E3%81%AE%E5%AE%9F%E8%A3%85%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb210-VPD%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb210-VPD%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb210-VPD%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb209-DV/" class="pagination--pager" title="209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
