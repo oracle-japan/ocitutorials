@@ -2,9 +2,9 @@
 title: "その8 - クラウドでOracle Databaseを使う"
 excerpt: "Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!! OCIでは仮想マシン、ベアメタルサーバーからExadataまで、様々なOracle Databaseを簡単に使うことができます。まずはインスタンスを作ってみましょう。"
 order: "080"
-link: https://community.oracle.com/tech/welcome/discussion/4474262/
+link: https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/ 
 ---
-このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。
+このチュートリアルは、[「101: Oracle Cloud で Oracle Database を使おう(DBCS)」](https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/ ) で紹介しています。リンク先のページをご覧ください。
 
 **参考動画：**本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。
 
