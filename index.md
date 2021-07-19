@@ -17,8 +17,8 @@ toc_label: "目次"
 
 ## 準備 - Oracle Cloud の無料トライアルを申し込む
 - **[Oracle Cloud 無料トライアルを申し込む](https://cloud.oracle.com/ja_JP/tryit)**  
-Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。  
-*※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)*
+  Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。  
+  *※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)*
 
   - [Oracle Cloud 無料トライアル サインアップガイド](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)  
   - [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)  
@@ -46,7 +46,7 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 - **[オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](/ocitutorials/beginners/object-storage/)**  
 オブジェクト・ストレージを使うと、とても堅牢なデータストアを信じられないくらい安価に利用できます。まずは簡単な使い方を学びましょう。
 
-- **[クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://community.oracle.com/tech/welcome/discussion/4474262/)**  
+- **[クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://oracle-japan.github.io/ocitutorials/beginners/using-oracle-database/)**  
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!! OCIでは仮想マシン、ベアメタルサーバーからExadataまで、様々なOracle Databaseを簡単に使うことができます。まずはインスタンスを作ってみましょう。
 
 - **[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/)**  
@@ -122,8 +122,8 @@ Oracle Content and Experience (OCE)は、API ファーストなアーキテク�
 
 ## チュートリアル実践編
 - **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/){:target="_blank"}**   
-さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。  
-シナリオの例
+  さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。  
+  シナリオの例
   - **[仮想マシンDBシステムへのオンプレミスOracle Databaseデプロイメントの移行](https://docs.oracle.com/ja/solutions/migrate-to-vmdb/index.html)**
   - **[イベントトリガー・サーバー・レス・アプリケーションのデプロイ](https://docs.oracle.com/ja/solutions/event-triggered-serverless-app/index.html#GUID-9D5876DC-13C2-4770-AFF9-EC7330D94AD0)**  
   - **[ElasticsearchおよびKibanaのデプロイ](https://docs.oracle.com/ja/solutions/deploy-elk/index.html#GUID-B8EE86D2-5830-4B79-B679-6E9B624E0CF0)**
