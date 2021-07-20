@@ -1,6 +1,6 @@
 ---
 title: "205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)"
-excerpt: "OCPU数と自動スケーリング設定に応じてADBのTPS(Transaction per second)が向上していく流れをSwingbenchを通して体験して頂きます。"
+excerpt: "OCPU数を増やす、もしくは自動スケーリングを設定することで、SwingbenchのTPS(Transaction per Second)が上がることを体験頂きます。"
 order: "3_205"
 layout: single
 header:
@@ -23,11 +23,12 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 **目次**
 
 - [1.Swingbenchをセットアップしよう](#anchor1)
-- [2.Swingbenchをセットアップしよう](#anchor2)
-- [3.Swingbenchを実行し、OCPUをスケールアップしてみよう](#anchor3)
-    - [OCPU=1 (自動スケーリング無効)](#anchor3-1)
-    - [OCPU=4 (自動スケーリング無効)](#anchor3-2)
-    - [OCPU=4 (自動スケーリング有効)](#anchor3-3)
+    - [Swingbenchをダウンロード、データ生成](#anchor1-1)
+    - [生成されたスキーマ・オブジェクトの確認](#anchor1-2)
+- [2.Swingbenchを実行し、OCPUをスケールアップしてみよう](#anchor2)
+    - [OCPU=1 (自動スケーリング無効)](#anchor2-1)
+    - [OCPU=4 (自動スケーリング無効)](#anchor2-2)
+    - [OCPU=4 (自動スケーリング有効)](#anchor2-3)
 
 <br>
 
@@ -39,7 +40,11 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
 # 1.Swingbenchをセットアップしよう
 
-まずはSwingbenchを仮想マシン上にダウンロードし、ベンチマーク・データをADBインスタンス内に生成しましょう。
+<a id="anchor1-1"></a>
+
+## Swingbenchをダウンロード、データ生成
+
+まずはSwingbenchを仮想マシン上にダウンロードしましょう、ベンチマーク・データをADBインスタンス内に生成しましょう。
 
 1. Terminalを起動し、仮想マシンに**opcユーザ**で**ログイン**後、**oracleユーザ**に切り替えます。
 
@@ -186,9 +191,9 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
    ![画面ショット1-1](img8.jpg)
 
-<a id="anchor2"></a>
+<a id="anchor1-2"></a>
 
-# 2.Swingbenchをセットアップしよう
+## 生成されたスキーマ・オブジェクトの確認
 
 次にセットアップしたデータに問題がないか確認します。
 
@@ -261,13 +266,13 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
    
    ![画面ショット1-1](img22.png)
 
-<a id="anchor3"></a>
+<a id="anchor2"></a>
 
-# 3. Swingbenchを実行し、OCPUをスケールアップしてみよう
+# 2. Swingbenchを実行し、OCPUをスケールアップしてみよう
 
 それではベンチマークツールを動かしてみましょう。**OCPUをオンラインでスケールアップできること**、スケールアップの前後で**TPS(秒間のトランザクション数)を比較**し、**TPSが向上**することを確認しましょう。
 
-<a id="anchor3-1"></a>
+<a id="anchor2-1"></a>
 
 ## OCPU=1 (自動スケーリング無効)
 
@@ -339,7 +344,7 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
    ![画面ショット1-1](img32.jpg)
 
-<a id="anchor3-2"></a>
+<a id="anchor2-2"></a>
 
 ## OCPU=4 (自動スケーリング無効)
 
@@ -357,7 +362,7 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
    ![画面ショット1-1](img35.jpg)
 
-<a id="anchor3-3"></a>
+<a id="anchor2-3"></a>
 
 ## OCPU=4 (自動スケーリング有効)
 
