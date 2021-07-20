@@ -87,7 +87,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[204: マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/database/adb204-setup-VM/)**  
     * 開発用の仮想マシンイメージを利用して、開発環境を作成しましょう。後続のチュートリアルにて利用します
 
-+ **205: オンライン・トランザクション系のアプリを実行してみよう（Swingbench)（公開準備中）**
++ **[205: オンライン・トランザクション系のアプリを実行してみよう（Swingbench)](/ocitutorials/database/adb205-swingbench/)**
+    * OCPU数と自動スケーリング設定に応じてADBのTPS(Transaction per second)が向上していく流れをSwingbenchを通して体験します
 
 + **[206: Node.jsによるADB上でのアプリ開発](/ocitutorials/database/adb206-appdev-nodejs/)**  
     * Node.jsにてADBに接続し、簡易アプリを実行してみます
