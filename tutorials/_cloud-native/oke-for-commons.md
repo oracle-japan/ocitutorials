@@ -203,7 +203,7 @@ OKEへのアクセス方法は「Cloud Shellアクセス」と「ローカル・
 
 ![](03-12-01.png)
 
-まずCloud Shellを起動します。
+まず![](03-17.png)Cloud Shellを起動します。
 既に起動している場合は本手順は必要ありません。
 Cloud Shellの起動はダイアログに表示されている「Cloud Shellの起動」をクリックするか、[3-1. Cloud Shellを起動する](#3-1-cloud-shellを起動する)を参照してください。
 
@@ -211,8 +211,9 @@ Cloud Shellの起動はダイアログに表示されている「Cloud Shellの�
 別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。また、コマンドは「ローカル・アクセス」のコマンドを実行してください。
 {: .notice--info}
 
-次に②のコマンドですが、こちらはOCI CLIの設定ファイル取得用のコマンドを実行しています（以下の例はダミーの値で埋めたものですので、実際のコマンドはダイアログからコピーしてください）。  
-右端の「コピー」をクリックしてコピーし、Cloud Shellにペースとして実行します。
+次に![](03-18.png)のコマンドですが、こちらはOCI CLIの設定ファイル取得用のコマンドを実行しています。  
+右端の「コピー」をクリックしてコピーし、Cloud Shellにペースとして実行します。  
+（以下の例はダミーの値で埋めたものですので、実際のコマンドはダイアログからコピーしてください）  
 
     oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1  --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
 
