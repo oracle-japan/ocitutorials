@@ -1,0 +1,782 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>213 : Application Continuityを設定しよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ネットワークの瞬断等の予期せぬエラーからアプリケーションを守るにはどうしたら良いでしょうか？ミッションクリティカルなシステムを支えるOracle Databaseの高可用性機能の一つであるApplication Continuityについて、Autonomous Databaseにおける利用方法をご紹介します">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="213 : Application Continuityを設定しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb213-tac/">
+
+
+  <meta property="og:description" content="ネットワークの瞬断等の予期せぬエラーからアプリケーションを守るにはどうしたら良いでしょうか？ミッションクリティカルなシステムを支えるOracle Databaseの高可用性機能の一つであるApplication Continuityについて、Autonomous Databaseにおける利用方法をご紹介します">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb213-tac/tac001.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-07-27T16:23:28+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb213-tac/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb213-tac/tac001.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          213 : Application Continuityを設定しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">ネットワークの瞬断等の予期せぬエラーからアプリケーションを守るにはどうしたら良いでしょうか？ミッションクリティカルなシステムを支えるOracle Databaseの高可用性機能の一つであるApplication Continuityについて、Autonomous Databaseにおける利用方法をご紹介します
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">213 : Application Continuityを設定しよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb213-tac/" class="active">213 : Application Continuityを設定しよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="213 : Application Continuityを設定しよう">
+    <meta itemprop="description" content="ネットワークの瞬断等の予期せぬエラーからアプリケーションを守るにはどうしたら良いでしょうか？ミッションクリティカルなシステムを支えるOracle Databaseの高可用性機能の一つであるApplication Continuityについて、Autonomous Databaseにおける利用方法をご紹介します">
+    <meta itemprop="datePublished" content="2021-07-27T16:23:28+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-事前準備">1. 事前準備</a></li>
+  <li><a href="#2-デフォルトの状態での動作確認">2. デフォルトの状態での動作確認</a></li>
+  <li><a href="#3-application-continuityの有効化">3. Application Continuityの有効化</a></li>
+  <li><a href="#4-有効化した状態での動作確認">4. 有効化した状態での動作確認</a></li>
+  <li><a href="#5-application-continuityの無効化">5. Application Continuityの無効化</a></li>
+  <li><a href="#おわりに">おわりに</a></li>
+  <li><a href="#参考資料">参考資料</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>Application ContinuityとはOracle Databaseの高可用性機能の一つであり、トランザクション実行中にエラーが発生した際に、そのエラーをアプリケーションに戻すことなく透過的にトランザクションを再実行する仕組みです。</p>
+
+<p><img src="tac001.png" alt="説明イメージ" /></p>
+
+<p>Autonomous Database では接続サービス毎にApplication Continuity(AC)、もしくはTransparent Application Continuity(TAC)を有効化することができます。
+クライアント側がAC/TACに対応していれば、障害発生時にクライアントとサーバーが独自にやり取りをしてCommit済みのトランザクションかどうかを判断し、もしCommitが完了していなければ自動的に再実行します。</p>
+
+<p>尚、AC/TACに関する技術詳細は<a href="https://speakerdeck.com/oracle4engineer/apurikesiyonkonteiniyuitei">「こちら」</a>をご参照ください。更新処理の途中で異常終了してしまったら何が起こるのか？と言った動作の詳細から対応可能なエラー、または対応するクライアントの種類やアプリケーションの実装方式について詳細に解説しています。</p>
+
+<p>それでは、Autonomous DatabaseにおけるApplication Continuityの設定方法と具体的にエラーを発生させながらその動作について見ていきましょう。</p>
+
+<p>尚、本チュートリアルで利用するSQL*PlusはAC/TACに対応しているクライアントの一つです。</p>
+
+<blockquote>
+  <p>本来であればRAC構成としてインスタンス障害やメンテナンスによる瞬断を想定したいところですが、ADBにおいてはそのような操作・設定はできないため、本チュートリアルでは接続中のセッションに対してAlter system kill session コマンドにて擬似的に障害を発生させ、動作確認を行います。</p>
+</blockquote>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1.事前準備</a></li>
+  <li><a href="#anchor2">2.デフォルトの状態での動作確認</a></li>
+  <li><a href="#anchor3">3.Application Continuityの有効化</a></li>
+  <li><a href="#anchor4">4.有効化した状態での動作確認</a></li>
+  <li><a href="#anchor5">5.Application Continuityの無効化</a></li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a> を参考に、ADBインスタンス、およびADBUSERが作成済みであること</li>
+  <li>SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、<a href="https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/">「204:マーケットプレイスからの仮想マシンのセットアップ方法」</a>で作成できます。</li>
+  <li>チュートリアルの便宜上、インスタンス名は「atp01」、各ユーザのパスワードはすべて「Welcome12345#」とします。</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-事前準備">1. 事前準備</h1>
+<p>動作確認のためTeraterm等の端末を2つ用意してください。それぞれADBUSERおよびADMINで作業します。</p>
+
+<p>まず端末1でADBUSERにログインし、動作確認用の表を一つ作成しておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus adbuser/Welcome12345##@atp01_tp
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--テスト表を削除（初回はエラーになります）</span>
+<span class="k">drop</span> <span class="k">table</span> <span class="n">test</span> <span class="p">;</span>
+
+<span class="c1">--テスト用に表を作成します。</span>
+<span class="k">create</span> <span class="k">table</span> <span class="n">test</span> <span class="p">(</span><span class="n">id</span> <span class="n">number</span><span class="p">)</span> <span class="p">;</span>
+
+<span class="c1">--SQL*Plusを終了します。</span>
+<span class="n">exit</span>
+</code></pre></div></div>
+<p><strong>結果 :</strong><br />
+<img src="tac002.png" alt="img" />
+<br /></p>
+
+<p>端末2でもADMINにてログインしておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus admin/Welcome12345##@atp01_low
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-デフォルトの状態での動作確認">2. デフォルトの状態での動作確認</h1>
+
+<p>端末1(ADBUSER)にて更新処理を実施し、TAC有効化前の動作を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#改めて端末1でADBUSERにログインします。このとき接続サービスTPを使ってログインしてください。</span>
+sqlplus adbuser/Welcome12345##@atp01_tp
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--トランザクションを開始します。</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">test</span> <span class="k">values</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">;</span>
+
+<span class="c1">--このままの状態でおいておきます。</span>
+</code></pre></div></div>
+<p><strong>結果 :</strong><br />
+<img src="tac003.png" alt="img" />
+<br /></p>
+
+<p>次に端末2(ADMINユーザ)から、端末1のセッションをKILLして擬似障害を発生させます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- セッションID、シリアル#を取得します。</span>
+<span class="k">set</span> <span class="n">lines</span> <span class="mi">200</span>
+<span class="k">set</span> <span class="n">pages</span> <span class="mi">9999</span>
+<span class="n">col</span> <span class="n">username</span> <span class="k">for</span> <span class="n">a10</span>
+<span class="n">col</span> <span class="n">failed_over</span> <span class="k">for</span> <span class="n">a12</span>
+
+<span class="k">select</span>
+ <span class="n">sid</span><span class="p">,</span> <span class="nb">serial</span><span class="o">#</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span><span class="n">service_name</span><span class="p">,</span><span class="n">failed_over</span>
+<span class="k">from</span> <span class="n">v</span><span class="err">$</span><span class="k">session</span>
+<span class="k">where</span> <span class="n">username</span> <span class="o">=</span> <span class="s1">'ADBUSER'</span>
+<span class="p">;</span>
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 取得したセッションID、シリアル#のセッションをKILLします。</span>
+<span class="k">alter</span> <span class="k">system</span> <span class="n">kill</span> <span class="k">session</span> <span class="s1">'&lt;sid&gt;, &lt;serial#&gt;'</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果 :</strong><br />
+<img src="tac004.png" alt="img" />
+<br /></p>
+
+<p>次に端末1(ADBUSER)に戻って、トランザクションの続きを実行します。セッションが切断されているのでエラーになることが確認できます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--トランザクションの続きを実行します。</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">test</span> <span class="k">values</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+<p>SQL*Plusをexitで終了させてください。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">exit</span>
+</code></pre></div></div>
+
+<p><strong>結果 :</strong><br />
+<img src="tac005.png" alt="img" />
+<br /></p>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-application-continuityの有効化">3. Application Continuityの有効化</h1>
+
+<p>それでは次にTACを有効化してみましょう。</p>
+
+<p>端末2（ADMINユーザ）にて以下を実施します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- デフォルト設定の確認します</span>
+<span class="c1">-- （FAILOVER_TYPE列がNULLもしくはNONEであればAC/TACが無効であることを意味します）</span>
+<span class="k">set</span> <span class="n">pages</span> <span class="mi">9999</span>
+<span class="k">set</span> <span class="n">lines</span> <span class="mi">200</span>
+<span class="n">col</span> <span class="n">NAME</span> <span class="k">for</span> <span class="n">a60</span>
+<span class="n">col</span> <span class="n">FAILOVER_TYPE</span> <span class="k">for</span> <span class="n">a16</span>
+	
+<span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">failover_type</span> <span class="k">FROM</span> <span class="n">DBA_SERVICES</span><span class="p">;</span>
+
+<span class="c1">-- 上記SQLで確認した接続サービスを指定し、TACを有効化します</span>
+<span class="c1">-- （ここでは接続サービスにTPを指定しています）</span>
+<span class="k">execute</span> <span class="n">DBMS_APP_CONT_ADMIN</span><span class="p">.</span><span class="n">ENABLE_TAC</span><span class="p">(</span><span class="s1">'ABCDEFXXX_ATP01_tp.adb.oraclecloud.com'</span><span class="p">,</span><span class="s1">'AUTO'</span><span class="p">,</span><span class="mi">1200</span><span class="p">)</span> <span class="p">;</span>
+
+<span class="c1">-- 改めて設定が有効化されたかを確認します。</span>
+<span class="c1">-- （FAILOVER_TYPE列がAUTOになればOKです）</span>
+<span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">failover_type</span> <span class="k">FROM</span> <span class="n">DBA_SERVICES</span><span class="p">;</span>
+</code></pre></div></div>
+<p><strong>結果 :</strong><br />
+<img src="tac006.png" alt="img" />
+<br /></p>
+
+<blockquote>
+  <p>DBMS_APP_CONT_ADMIN.ENABLE_TACにおける引数の1200は、REPLAY_INITIATION_TIMEOUTに相当します。トランザクション・リクエスト開始からリプレイ可能になるまでの時間がこの値（秒）を超えた場合は意図せぬ再実行を防ぐためにAC/TACによるリプレイは実施されません。
+(<a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/refrn/V-SERVICES.html#GUID-3A2A9DFF-EE5E-481B-AA44-6A4281502753">参考マニュアル</a>)</p>
+</blockquote>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-有効化した状態での動作確認">4. 有効化した状態での動作確認</h1>
+
+<p>それでは先ほどと同様の手順で、TACの動作を確認してみましょう。特にエラーが出ずにCOMMITが完了すればOKです。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#改めて端末1でADBUSERに接続サービスTPを使ってログインし直します</span>
+sqlplus adbuser/Welcome12345##@atp01_tp
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--テスト表のデータを確認します</span>
+<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">test</span> <span class="p">;</span>
+
+<span class="c1">--トランザクションを開始します。</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">test</span> <span class="k">values</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="p">;</span>
+
+<span class="c1">--このままの状態でおいておきます。</span>
+
+</code></pre></div></div>
+<p><strong>結果 :</strong><br />
+<img src="tac007.png" alt="img" />
+<br /></p>
+
+<p>次に端末2(ADMINユーザ)から、端末1のセッションをKILLして擬似障害を発生させます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- セッションID、シリアル#を取得します。</span>
+<span class="k">set</span> <span class="n">lines</span> <span class="mi">200</span>
+<span class="k">set</span> <span class="n">pages</span> <span class="mi">9999</span>
+<span class="n">col</span> <span class="n">username</span> <span class="k">for</span> <span class="n">a10</span>
+<span class="n">col</span> <span class="n">failed_over</span> <span class="k">for</span> <span class="n">a12</span>
+
+<span class="k">select</span>
+ <span class="n">sid</span><span class="p">,</span> <span class="nb">serial</span><span class="o">#</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span><span class="n">service_name</span><span class="p">,</span><span class="n">failed_over</span>
+<span class="k">from</span> <span class="n">v</span><span class="err">$</span><span class="k">session</span>
+<span class="k">where</span> <span class="n">username</span> <span class="o">=</span> <span class="s1">'ADBUSER'</span>
+<span class="p">;</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 取得したセッションID、シリアル#のセッションをKILLします。</span>
+<span class="k">alter</span> <span class="k">system</span> <span class="n">kill</span> <span class="k">session</span> <span class="s1">'&lt;sid&gt;, &lt;serial#&gt;'</span> <span class="p">;</span>
+
+</code></pre></div></div>
+<p><strong>結果 :</strong><br />
+<img src="tac008.png" alt="img" />
+<br /></p>
+
+<p>端末1で後続のInsertを実行しCOMMITを発行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--トランザクションを開始します。</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">test</span> <span class="k">values</span> <span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="p">;</span>
+
+<span class="c1">-- commitを発行します。</span>
+<span class="k">commit</span><span class="p">;</span>
+
+<span class="c1">-- データを確認します。</span>
+<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">test</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果 :</strong><br />
+<img src="tac009.png" alt="img" />
+<br /></p>
+
+<p>特にエラーは発生せずにトランザクションが完了したことが分かります。</p>
+
+<p>尚、当該セッションがAC/TACで再実行されたセッションかどうかを調べるにはどうしたら良いか見ていきましょう。
+端末2(ADMINユーザ)にてセッション情報を確認します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- セッション情報を確認します。</span>
+<span class="k">set</span> <span class="n">lines</span> <span class="mi">200</span>
+<span class="k">set</span> <span class="n">pages</span> <span class="mi">9999</span>
+<span class="n">col</span> <span class="n">username</span> <span class="k">for</span> <span class="n">a10</span>
+<span class="n">col</span> <span class="n">failed_over</span> <span class="k">for</span> <span class="n">a12</span>
+
+<span class="k">select</span>
+ <span class="n">sid</span><span class="p">,</span> <span class="nb">serial</span><span class="o">#</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span><span class="n">service_name</span><span class="p">,</span><span class="n">failed_over</span>
+<span class="k">from</span> <span class="n">v</span><span class="err">$</span><span class="k">session</span>
+<span class="k">where</span> <span class="n">username</span> <span class="o">=</span> <span class="s1">'ADBUSER'</span>
+<span class="p">;</span>
+</code></pre></div></div>
+<p><strong>結果 :</strong><br />
+<img src="tac010.png" alt="img" />
+<br /></p>
+
+<p>SID,Serial#は新しい値であること、またFAILED_OVER列がYESとなっていることからApplication Continuity にて再実行されたセッションであることが分かります。</p>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-application-continuityの無効化">5. Application Continuityの無効化</h1>
+
+<p>最後にTACの無効化方法をご紹介します</p>
+
+<p>端末2（ADMINユーザ）にて以下を実施します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 接続サービスTPを指定し、TACを無効化しています</span>
+<span class="k">execute</span> <span class="n">DBMS_APP_CONT_ADMIN</span><span class="p">.</span><span class="n">DISABLE_FAILOVER</span><span class="p">(</span><span class="s1">'ABCDEFXXX_ATP01_tp.adb.oraclecloud.com'</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>このチュートリアルではApplication Continuityの概要から有効化方法および簡易的な動作確認の方法についてご紹介しました。</p>
+
+<p>AC/TACにはアプリケーションの実装の仕方で多少制限がありますが、今回ご紹介した手法にてAC/TACが利用できるかをご確認いただくことができますので、是非ご利用ください。</p>
+
+<blockquote>
+  <p>Autonomous Databaseは週末にメンテナンス・ウィンドウが設定されており、セッションの瞬断が発生します（すぐに再接続可能）。この瞬断の影響を避けるための対策としても AC/TACをご利用いただけます。メンテナンス・ウィンドウに関しては<a href="https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi">「ADB-S技術詳細資料」</a>を参照ください。
+尚、Autonomous DatabaseではバックエンドでOracle Real Application Clusters(RAC)、およびExadataが利用されており、各種パッチ適用といったメンテナンス作業はサーバー1台ごとにRollingで自動適用されます。他のDBでは一定時間、断続的に接続できない状況になってしまう一方で、ADBであればセッションが切れたとしても隣のインスタンスに接続し直すだけですぐに利用可能です。またこのときにAC/TACを有効化していると接続エラーを自動検知し接続先を切り替えトランザクションを再実行し何事もなかったかのように振る舞います。つまり各種メンテナンス作業が行われようともアプリケーションに影響を与えずに業務を継続することができます。</p>
+</blockquote>
+
+<p>以上でこの章は終了です。次の章にお進みください。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li>
+    <p><a href="https://speakerdeck.com/oracle4engineer/apurikesiyonkonteiniyuitei">AC/TACに関する技術詳細</a></p>
+  </li>
+  <li>
+    <p><a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/application-continuity1.html#GUID-E7AA2543-2CF3-4A42-9440-BB238BA679AE">Application Continuity on Autonomous Database</a></p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-27T16:23:28+09:00">July 27, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=213+%3A+Application+Continuity%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb213-tac%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb213-tac%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb213-tac%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb212-audg/" class="pagination--pager" title="212: Autonomous Data Guardを構成してみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

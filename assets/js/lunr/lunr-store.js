@@ -413,6 +413,18 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb210-VPD/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb210-vpd/vpd.png"
       },{
+        "title": "212: Autonomous Data Guardを構成してみよう",
+        "excerpt":"はじめに Autonomous Databaseでは、Autonomous Data Guardと呼ばれる機能を使用して、スタンバイ・データベースを有効にする事ができます。これによって、Autonomous Databaseインスタンスにデータ保護およびディザスタ・リカバリを実現可能です。Autonomous Data Guardが有効になっている場合、フェイルオーバーやスイッチオーバーが可能なスタンバイ・データベースを提供します。 目次 Autonomous Data Guardの有効化 Autonomous Data Guardのスイッチオーバー 所要時間: 約30分 Autonomous Data Guardの有効化 Autonomous Databaseの詳細画面のAutonomous Data Guardのステータスが無効になっているのを確認後、有効化をクリックします。 Autonomous Data Guardの有効化をクリックします。 画面左上のATPマークが黄色に変化しました。Autonomous Data Guardにピアの状態が出現し、プロビジョニング中であることが確認できます。完了するまで待ってみましょう。 プロビジョニングが完了しました。ADB詳細画面のADB名の横にプライマリというステータスが確認できます。Autonomous Data Guardのところに記載されているピアの状態が、使用可能になりました。 ここで、ターミナルからADBにSQL Plusでログインしましょう。現在のプライマリDBの情報を下記のSQL文で確認します。 sqlplus admin/&lt;ADMINユーザのパスワード&gt;@&lt;ADBの接続サービス&gt; SELECT DBID, NAME, DB_UNIQUE_NAME FROM V$DATABASE; スイッチオーバーの前後でDBID、NAME、DB_UNIQUE_NAMEが変化することを確認したいと思うので、SQLの出力結果をメモ帳などにメモしておいてください。 Autonomous Data Guardのスイッチオーバー ADB詳細画面に戻り、スイッチオーバーをしていきます。Autonomous Data Guardからスイッチオーバーをクリックして下さい。...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb212-audg/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb212-audg/img1.jpg"
+      },{
+        "title": "213 : Application Continuityを設定しよう",
+        "excerpt":"はじめに Application ContinuityとはOracle Databaseの高可用性機能の一つであり、トランザクション実行中にエラーが発生した際に、そのエラーをアプリケーションに戻すことなく透過的にトランザクションを再実行する仕組みです。 Autonomous Database では接続サービス毎にApplication Continuity(AC)、もしくはTransparent Application Continuity(TAC)を有効化することができます。 クライアント側がAC/TACに対応していれば、障害発生時にクライアントとサーバーが独自にやり取りをしてCommit済みのトランザクションかどうかを判断し、もしCommitが完了していなければ自動的に再実行します。 尚、AC/TACに関する技術詳細は「こちら」をご参照ください。更新処理の途中で異常終了してしまったら何が起こるのか？と言った動作の詳細から対応可能なエラー、または対応するクライアントの種類やアプリケーションの実装方式について詳細に解説しています。 それでは、Autonomous DatabaseにおけるApplication Continuityの設定方法と具体的にエラーを発生させながらその動作について見ていきましょう。 尚、本チュートリアルで利用するSQL*PlusはAC/TACに対応しているクライアントの一つです。 本来であればRAC構成としてインスタンス障害やメンテナンスによる瞬断を想定したいところですが、ADBにおいてはそのような操作・設定はできないため、本チュートリアルでは接続中のセッションに対してAlter system kill session コマンドにて擬似的に障害を発生させ、動作確認を行います。 目次 : 1.事前準備 2.デフォルトの状態での動作確認 3.Application Continuityの有効化 4.有効化した状態での動作確認 5.Application Continuityの無効化 前提条件 : 「101:ADBインスタンスを作成してみよう」 を参考に、ADBインスタンス、およびADBUSERが作成済みであること SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、「204:マーケットプレイスからの仮想マシンのセットアップ方法」で作成できます。 チュートリアルの便宜上、インスタンス名は「atp01」、各ユーザのパスワードはすべて「Welcome12345#」とします。 所要時間 : 約30分 1. 事前準備 動作確認のためTeraterm等の端末を2つ用意してください。それぞれADBUSERおよびADMINで作業します。 まず端末1でADBUSERにログインし、動作確認用の表を一つ作成しておきます。 sqlplus adbuser/Welcome12345##@atp01_tp --テスト表を削除（初回はエラーになります） drop table...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb213-tac/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb213-tac/tac001.png"
+      },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
         "tags": ["https://community.oracle.com/docs/DOC-1038411"],
