@@ -105,6 +105,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[210 : 仮想プライベートデータベース(VPD)による細やかなアクセス制御](/ocitutorials/database/adb210-VPD/)**  
     * 同じ表のデータでも行や列の単位でアクセス制御をかけることができます。ADBでの設定方法を確認します
 
++ **[212: Autonomous Data Guardを構成してみよう](/ocitutorials/database/adb212-audg/)**  
+    * たった数クリックでスタンバイ・データベースをプロビジョニングしDR構成を実現します
+
 
 <br/>
 
