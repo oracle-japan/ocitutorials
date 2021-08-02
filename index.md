@@ -17,8 +17,8 @@ toc_label: "目次"
 
 ## 準備 - Oracle Cloud の無料トライアルを申し込む
 - **[Oracle Cloud 無料トライアルを申し込む](https://cloud.oracle.com/ja_JP/tryit)**  
-Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。  
-*※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)*
+  Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。  
+  *※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)*
 
   - [Oracle Cloud 無料トライアル サインアップガイド](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)  
   - [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)  
@@ -27,48 +27,36 @@ Oracle Cloud のほとんどのサービスが利用できるトライアル環�
 ## チュートリアル入門編 - Oracle Cloud Infrastructure を使ってみよう
 - **[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](/ocitutorials/beginners/getting-started/)**  
 まずはコンソールにアクセスしてみましょう。そしてリージョン、アベイラビリティ・ドメイン、コンパートメント、ポリシー(ACL)、サービス・リミットなどのOCIの基本的なコンセプトについて学びます。
-
 - **[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](/ocitutorials/beginners/creating-vcn/)**  
 クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!
-
 - **[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](/ocitutorials/beginners/creating-compute-instance)**  
 ネットワークができたら、いよいよインスタンスを立ち上げましょう。OCIなら仮想マシンもベアメタルサーバーも同じように簡単に作成できます。
-
 - **[ブロック・ボリュームをインスタンスにアタッチする - Oracle Cloud Infrastructureを使ってみよう(その4)](/ocitutorials/beginners/attaching-block-volume)**  
 ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。
-
 - **[インスタンスのライフサイクルを管理する - Oracle Cloud Infrastructureを使ってみよう(その5)](/ocitutorials/beginners/managing-instance-lifecycle)**  
 作ったインスタンスを必要なときに止めたり、削除したり、また再作成したりと、いつでも簡単にできてしまうところがクラウドのいいところです。実際にどのような動きになるのか試してみましょう。
-
 - **[ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する - Oracle Cloud Infrastructureを使ってみよう(その6)](/ocitutorials/beginners/using-file-storage)**  
 ファイルストレージサービス(FSS)を利用すると、複数のインスタンスから同時にネットワーク越しに利用できる共有ディスクを簡単に作成することができます。
-
 - **[オブジェクト・ストレージを使う - Oracle Cloud Infrastructureを使ってみよう(その7)](/ocitutorials/beginners/object-storage/)**  
 オブジェクト・ストレージを使うと、とても堅牢なデータストアを信じられないくらい安価に利用できます。まずは簡単な使い方を学びましょう。
-
-- **[クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://community.oracle.com/tech/welcome/discussion/4474262/)**  
+- **[クラウドでOracle Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その8)](https://oracle-japan.github.io/ocitutorials/beginners/using-oracle-database/)**  
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!! OCIでは仮想マシン、ベアメタルサーバーからExadataまで、様々なOracle Databaseを簡単に使うことができます。まずはインスタンスを作ってみましょう。
-
 - **[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/)**  
 クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！
-
 - **[MySQLで高速分析を体験する - Oracle Cloud Infrastructureを使ってみよう(その10)](https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/)**  
 OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！
-
 - **[クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)](https://community.oracle.com/docs/DOC-1038411)**  
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
-
-- **[Autonomous Database ハンズオンラボ（ADB HOL）](https://community.oracle.com/tech/welcome/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol#latest)**  
+- **[Autonomous Database を使ってみよう（ADB HOL）](/ocitutorials/database/)**  
 Autonomous Database は、最新のAI技術によって自律的に運用される、クラウド上のマネージドなデータベースサービスです。こちらのハンズオンラボでは、Autonomous Databaseに初めて触る方向けに、使い方や特徴を学んでいただける内容になっています。
-
 - **[Oracle Container Engine for Kubernetes(OKE) ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/containers/handson/k8s-walkthrough/)**  
 Oracle Container Engine for Kubernetes(OKE)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドKubernetsサービスです。こちらのハンズオンでは、Kubernetes自体の特徴や使い方を含めて、OKEを触って頂けるコンテンツになっています。
-
 - **[Oracle Functions ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)**  
 Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。まずはリンク先のビギナー向けチュートリアルからはじめてみてください。
-
 - **[Oracle Cloud Infrastructure API Gateway ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/api-management/handson/getting-started/)**  
-Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドAPI Gatewayサービスです。こちらのハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約/公開する方法を学んでいただけるコンテンツになっています。
+  Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドAPI Gatewayサービスです。こちらのハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約/公開する方法を学んでいただけるコンテンツになっています。
+- **[Oracle Cloud VMware Solution(OCVS) ハンズオン（ビギナー向け）](https://labs.hol.vmware.com/HOL/catalogs/lab/9582)** ※外部サイト  
+  Oracle Cloud VMWare Solution(OCVS)は、Oracle Cloud Infrastructure(OCI) のベアメタルインフラ上に「VMware Cloud Foundation（VCF）」を配置してご提供するサービスです。こちらのハンズオンでは、OCI上で VMware Solution を作成する手順や、その他のOCIサービスとの連携方法、オンプレミス環境への接続手順などをご確認いただけます。
 
 
 
@@ -122,8 +110,8 @@ Oracle Content and Experience (OCE)は、API ファーストなアーキテク�
 
 ## チュートリアル実践編
 - **[Oracle アーキテクチャ・センター](https://docs.oracle.com/ja/solutions/){:target="_blank"}**   
-さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。  
-シナリオの例
+  さまざまなシナリオ毎に、Oracle Cloud Infrastructureでの実装方法について解説したガイド集です。現時点で約200ほどのシナリオが掲載されています。  
+  シナリオの例
   - **[仮想マシンDBシステムへのオンプレミスOracle Databaseデプロイメントの移行](https://docs.oracle.com/ja/solutions/migrate-to-vmdb/index.html)**
   - **[イベントトリガー・サーバー・レス・アプリケーションのデプロイ](https://docs.oracle.com/ja/solutions/event-triggered-serverless-app/index.html#GUID-9D5876DC-13C2-4770-AFF9-EC7330D94AD0)**  
   - **[ElasticsearchおよびKibanaのデプロイ](https://docs.oracle.com/ja/solutions/deploy-elk/index.html#GUID-B8EE86D2-5830-4B79-B679-6E9B624E0CF0)**

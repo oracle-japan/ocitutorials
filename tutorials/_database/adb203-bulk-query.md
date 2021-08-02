@@ -1,7 +1,7 @@
 ---
 title: "203: 分析系クエリの実行(Star Schema Benchmark)"
 excerpt: "ADBインスタンスにデフォルトで入っているDWH系・分析系のサンプルスキーマ(SHやSSB)に対して、重いSQLを実行し、OCPU数別にその処理時間の違いを体感して頂きます。"
-order: "203"
+order: "3_203"
 layout: single
 header:
   teaser: "/database/adb203-bulk-query/img0.png"

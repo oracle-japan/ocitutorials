@@ -1,7 +1,7 @@
 ---
 title: "107: ADBの付属ツールで機械学習を始めよう(AutoML UI)"
 excerpt: "オーストラリアの明日の天気を予測するモデルを作ってみましょう。機械学習に関する深い知識がなくても大丈夫"
-order: "107"
+order: "3_107"
 layout: single
 header:
   teaser: "/database/adb107-machine-learning/img1.png"

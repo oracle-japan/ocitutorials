@@ -19,8 +19,11 @@ MicroProfileは、マイクロサービス環境下で複数言語との相互�
 
 前提条件
 ----
-* [こちら](/ocitutorials/database/adb11-provisioning/)の手順が完了していること
+* [こちら](/ocitutorials/database/adb101-provisioning/)の手順が完了していること
   * このチュートリアルでは、データベースとしてOracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します
+* [こちら](/ocitutorials/database/adb104-connect-using-wallet/)の`1. クレデンシャル・ウォレットのダウンロード`の手順が完了していること
+  * このチュートリアルでは、ATPに接続するためにクレデンシャル・ウォレットを利用します。事前にクレデンシャル・ウォレットをダウンロードしてください
+  * 実施する手順は`1. クレデンシャル・ウォレットのダウンロード`のみで問題ありません
 
 1.Helidon CLIでベースプロジェクトを作成してみよう
 ----

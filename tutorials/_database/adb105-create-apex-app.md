@@ -2,8 +2,7 @@
 title: "105: ADBの付属ツールで簡易アプリを作成しよう(APEX)"
 excerpt: "APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。"
 
-
-order: "105"
+order: "3_105"
 layout: single
 header:
   teaser: "/database/adb105-create-apex-app/img3_2.png"

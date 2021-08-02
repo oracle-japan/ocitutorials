@@ -1,7 +1,7 @@
 ---
 title: "202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)"
 excerpt: "数100GB、数TB規模のデータをロードするにはどうしたら良いでしょうか？オブジェクトストレージからDBMS_CLOUDパッケージを使ったデータロード方法を説明します。"
-order: "202"
+order: "3_202"
 layout: single
 header:
   teaser: "/database/adb202-dataload-dbms-cloud/img2.png"

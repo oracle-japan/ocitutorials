@@ -2,7 +2,7 @@
 title: "104: クレデンシャル・ウォレットを利用して接続してみよう"
 excerpt: "クレデンシャル・ウォレットを使ってADBに接続してみましょう。"
 
-order: "104"
+order: "3_104"
 layout: single
 header:
   teaser: "/database/adb104-connect-using-wallet/img1_3.png"

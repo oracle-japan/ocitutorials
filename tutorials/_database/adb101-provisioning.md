@@ -1,7 +1,7 @@
 ---
 title: "101: ADBインスタンスを作成してみよう"
 excerpt: "簡単すぐにハイエンドなデータベースを構成できることをご確認ください。"
-order: "101"
+order: "3_101"
 layout: single
 header:
   teaser: "/database/adb101-provisioning/img11.png"
@@ -14,7 +14,7 @@ header:
 
 # はじめに
 
-この章はまずAutonomous Database を構成するために必要なリージョンおよびコンパートメントを設定いただきます。  
+この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。  
 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、アクセスしてみます。
 
 
@@ -135,6 +135,13 @@ header:
 
 # ADBインスタンスを作成してみよう
 それではここからは実際にADBインスタンス（データベース）を1つ作成してみましょう！
+
+> Autonomous Database (ADB)は、対象システムの処理特性に応じて以下を選択できます。本チュートリアルでは、ATPを対象に記載していますが、その他に関しても基本的な操作は同じです。  
+> * 分析系システムを対象とするAutonmous Data Warehouse (ADW)
+> * 汎用的な用途で利用可能なAutonomous Transaction Processing (ATP)
+> * 主にJSONデータを扱うシステムに適したAutonomous JSON Database (AJD)
+> 
+
 
 ## 1. ATPインスタンスの作成（プロビジョニング）
 

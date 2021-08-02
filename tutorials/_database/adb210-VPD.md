@@ -1,7 +1,7 @@
 ---
 title: "210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装"
 excerpt: "表やビューといったオブジェクト単位ではなく、行や列の単位でアクセス制御をかけたい場合に利用できるのが仮想プライベートデータベース(VPD)です。基本的な設定の流れを学習しましょう。"
-order: "510"
+order: "3_210"
 layout: single
 header:
   teaser: "/database/adb210-vpd/vpd.png"
