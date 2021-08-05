@@ -2,7 +2,7 @@
 title: "207: PythonによるADB上でのアプリ開発"
 excerpt: "この章では開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。"
 
-order: "3_207"
+order: "207"
 layout: single
 #header:
 #  teaser: "/database/adb207-appdev-python/image_top.png"
@@ -29,7 +29,6 @@ PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジ�
     +  [labs.zip をダウンロード](/ocitutorials/database/adb-data/labs.zip)
     <br>アップロード方法については [こちら](/ocitutorials/database/adb204-setup-VM#anchor3) をご確認ください。
 
-<br>
 
 **目次**
 

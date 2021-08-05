@@ -28,6 +28,8 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[102: PDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/)**  
 
++ **[103: パッチを適用しよう](/ocitutorials/database/dbcs103-patch/)**  
+
 <br/>
 
 # <span style="color: brown; ">■ Exadata Cloud Service (ExaCS) を使ってみよう</span>
@@ -76,7 +78,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
     
 ## 実践編
 
-+ **201: 接続サービスの理解（公開準備中）**  
++ **[201: 接続サービスの理解](/ocitutorials/database/adb201-service-names/)**  
+    * インスタンスに接続する際の、CPUの割当や並列処理のコントロールを決定する「接続サービス」についてご紹介します。
 
 + **[202: コマンドラインから大量データをロードしてみよう](/ocitutorials/database/adb202-dataload-dbms-cloud/)**  
     * 大規模なCSVデータを想定し、オブジェクト・ストレージからDBMS_CLOUDパッケージを利用してロードします

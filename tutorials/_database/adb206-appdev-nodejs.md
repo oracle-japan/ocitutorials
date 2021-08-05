@@ -2,7 +2,7 @@
 title: "206: Node.jsによるADB上でのアプリ開発"
 excerpt: "この章では開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。"
 
-order: "3_206"
+order: "206"
 layout: single
 #header:
 #  teaser: "/database/adb206-appdev-nodejs/image_top.png"
@@ -187,13 +187,29 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
     ![img2_4_1.png](img2_4_1.png)
 
 
-    4-2. （必要に応じて）app.jsファイルの中身を確認します。アクセスしてきたクライアントに対して、Hello World を表示するという内容です。
+    4-2. （必要に応じて）app.jsファイルの中身を確認します。
 
     ```sh
     cat app.js
     ```
 
-    ![img2_4_2.png](img2_4_2.png)
+    アクセスしてきたクライアントに対して、Hello World を表示するという内容です。
+    <br>※app.jsの中身は次の通りです。
+
+    ```sh
+    const port = 3030;
+    const http = require('http');
+    var os = require('os');
+    var hostname = os.hostname();
+    const server = http.createServer((req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Hello World\n');
+    });
+    server.listen(port, hostname, () => {
+    console.log(`Server running at http://<Your Compute IP Address>:${port}/`);
+    });
+    ```
 
     4-3. app.jsを実行します。
 
@@ -247,8 +263,6 @@ SQL*plusで接続できていることを前提に以下を記載しています
     ```
 
     ```sh
-    -- dbconfig.jsの中身
-    
     module.exports= {
         dbuser: 'admin',
         dbpassword: 'Welcome12345#',
@@ -305,13 +319,67 @@ SQL*plusで接続できていることを前提に以下を記載しています
 
     ![img3_3.png](img3_3.png)
 
-4. （必要に応じて）connectadb.jsファイルの中身を確認します。ADBへの接続を生成し、接続の生成可否を画面に表示するという内容です。
+4. （必要に応じて）connectadb.jsファイルの中身を確認します。
 
     ```sh
     cat connectadb.js
     ```
+    ADBへの接続を生成し、接続の生成可否を画面に表示するという内容です。
+    <br>※connectadb.jsの中身は次の通りです。
 
-    ![img3_4.png](img3_4.png)
+    ```sh
+    const port=3030;
+    var http = require('http');
+    var os = require('os');
+    var hostname = os.hostname();
+    var oracledb = require('oracledb');
+    var dbConfig = require('./dbconfig.js');
+    let error;
+    let user;
+    oracledb.getConnection (
+        {
+        user: dbConfig.dbuser,
+        password: dbConfig.dbpassword,
+        connectString: dbConfig.connectString
+        },
+        function(err, connection)
+        {
+            if (err) { error = err; return; }
+            connection.execute (
+                'select user from dual', [],
+                function(err, result)
+                {
+                    if (err) {cerror = err; return; }
+                    user = result.rows[0][0];
+                    console.log(`Check to see if your database connection worked at  http://<Your Compute IP Address>:${port}/`);
+                    error = null;
+                    connection.close(
+                        function(err) {
+                            if (err) { console.log(err); }
+                        }
+                    );
+                }
+            )
+        }
+    );
+
+    http.createServer(function(request, response) {
+        response.writeHead(200, {'Content-Type': 'text plain' });
+        if (error === null)
+        {
+            response.end('Connection test succeeded. You connected to ADB as ' + user + '!');
+        }
+        else if (error instanceof Error)
+        {
+            response.write('Connection test failed. Check the settings and redeploy app!\n');
+            response.end(error.message);
+        }
+        else
+        {
+            response.end('Connection test pending. Refresh after a few seconds...');
+        }
+    }).listen(port);
+    ```
 
 5. connectadb.jsを実行します。
 
@@ -349,13 +417,66 @@ SQL*plusで接続できていることを前提に以下を記載しています
 
 最後に、上記で作成したADBへの接続を利用して、ADBの中に格納されているデータを見てみましょう。
 
-1. （必要に応じて）adbselect.jsの中身を確認します。ADBへの接続を作成して、簡単なSELECT文を実行するという内容です。
+1. （必要に応じて）adbselect.jsの中身を確認します。
 
     ```sh
     cat adbselect.js
     ```
 
-    ![img4_1.png](img4_1.png)
+    ADBへの接続を作成して、簡単なSELECT文を実行するという内容です。
+    <br>※adbselect.jsの中身は次の通りです。
+
+    ```sh
+    var oracledb = require('oracledb');
+    var dbConfig = require('./dbconfig.js');
+
+    oracledb.getConnection (
+        {
+            user: dbConfig.dbuser,
+            password: dbConfig.dbpassword,
+            connectString: dbConfig.connectString
+        },
+        function(err, connection)
+        {
+            if (err)
+            {
+                console.error(err.message);
+                return;
+            }
+
+            connection.execute (
+                'SELECT CUST_ID, CUST_FIRST_NAME, CUST_LAST_NAME FROM sh.customers WHERE CUST_ID = 5993',
+                {},
+                { outFormat: oracledb.OBJECT },
+                function(err, result)
+                {
+                    if (err)
+                    {
+                        console.error(err.message);
+                        doRelease(connection);
+                        return;
+                    }
+                    console.log('We are specifically looking for customer ID 5992');
+                    console.log(result.rows);
+                    doRelease(connection);
+                }
+            );
+        }
+    );
+
+    function doRelease (connection)
+    {
+        connection.close (
+            function(err)
+            {
+                if (err)
+                {
+                    console.error(err.message);
+                }
+            }
+        );
+    }
+    ```
 
 2. adbselect.jsを実行します。次のように、特定のCUSTOMER IDの情報が表示されればOKです。
 

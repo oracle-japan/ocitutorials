@@ -19,7 +19,7 @@ Oracle Cloud Infrastructure データベース・サービスでは、Oracle Clo
 <br>
 
 **前提条件 :**
-+ [Oracle CloudでOracle Databaseを使おう](../using-oracle-database) を通じて Oracle Database の作成が完了していること
++ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
 
 <br>
 
