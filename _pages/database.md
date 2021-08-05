@@ -28,6 +28,8 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[102: PDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/)**  
 
++ **[103: パッチを適用しよう](/ocitutorials/database/dbcs103-patch/)**  
+
 <br/>
 
 # <span style="color: brown; ">■ Exadata Cloud Service (ExaCS) を使ってみよう</span>
