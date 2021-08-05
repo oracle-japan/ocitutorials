@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-07-27T16:23:28+09:00">
+  <meta property="article:published_time" content="2021-08-05T17:56:08+09:00">
 
 
 
@@ -274,6 +274,12 @@
         
           <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/" class="active">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
@@ -288,6 +294,8 @@
         
           <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
@@ -295,10 +303,6 @@
           <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
-        
-          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/" class="active">206: Node.jsによるADB上でのアプリ開発</a></li></p>
-        
-          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
         
@@ -323,7 +327,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="206: Node.jsによるADB上でのアプリ開発">
     <meta itemprop="description" content="この章では開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。">
-    <meta itemprop="datePublished" content="2021-07-27T16:23:28+09:00">
+    <meta itemprop="datePublished" content="2021-08-05T17:56:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -536,12 +540,27 @@
 
     <p><img src="img2_4_1.png" alt="img2_4_1.png" /></p>
 
-    <p>4-2. （必要に応じて）app.jsファイルの中身を確認します。アクセスしてきたクライアントに対して、Hello World を表示するという内容です。</p>
+    <p>4-2. （必要に応じて）app.jsファイルの中身を確認します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cat </span>app.js
 </code></pre></div>    </div>
 
-    <p><img src="img2_4_2.png" alt="img2_4_2.png" /></p>
+    <p>アクセスしてきたクライアントに対して、Hello World を表示するという内容です。
+ <br />※app.jsの中身は次の通りです。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> const port <span class="o">=</span> 3030<span class="p">;</span>
+ const http <span class="o">=</span> require<span class="o">(</span><span class="s1">'http'</span><span class="o">)</span><span class="p">;</span>
+ var os <span class="o">=</span> require<span class="o">(</span><span class="s1">'os'</span><span class="o">)</span><span class="p">;</span>
+ var <span class="nb">hostname</span> <span class="o">=</span> os.hostname<span class="o">()</span><span class="p">;</span>
+ const server <span class="o">=</span> http.createServer<span class="o">((</span>req, res<span class="o">)</span> <span class="o">=&gt;</span> <span class="o">{</span>
+ res.statusCode <span class="o">=</span> 200<span class="p">;</span>
+ res.setHeader<span class="o">(</span><span class="s1">'Content-Type'</span>, <span class="s1">'text/plain'</span><span class="o">)</span><span class="p">;</span>
+ res.end<span class="o">(</span><span class="s1">'Hello World\n'</span><span class="o">)</span><span class="p">;</span>
+ <span class="o">})</span><span class="p">;</span>
+ server.listen<span class="o">(</span>port, <span class="nb">hostname</span>, <span class="o">()</span> <span class="o">=&gt;</span> <span class="o">{</span>
+ console.log<span class="o">(</span><span class="sb">`</span>Server running at http://&lt;Your Compute IP Address&gt;:<span class="k">${</span><span class="nv">port</span><span class="k">}</span>/<span class="sb">`</span><span class="o">)</span><span class="p">;</span>
+ <span class="o">})</span><span class="p">;</span>
+</code></pre></div>    </div>
 
     <p>4-3. app.jsを実行します。</p>
 
@@ -593,9 +612,7 @@
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> vi dbconfig.js
 </code></pre></div>    </div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nt">--</span> dbconfig.jsの中身
-    
- module.exports<span class="o">=</span> <span class="o">{</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> module.exports<span class="o">=</span> <span class="o">{</span>
      dbuser: <span class="s1">'admin'</span>,
      dbpassword: <span class="s1">'Welcome12345#'</span>,
      connectString: <span class="s1">'atp01_tp'</span>
@@ -654,12 +671,65 @@
     <p><img src="img3_3.png" alt="img3_3.png" /></p>
   </li>
   <li>
-    <p>（必要に応じて）connectadb.jsファイルの中身を確認します。ADBへの接続を生成し、接続の生成可否を画面に表示するという内容です。</p>
+    <p>（必要に応じて）connectadb.jsファイルの中身を確認します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cat </span>connectadb.js
 </code></pre></div>    </div>
+    <p>ADBへの接続を生成し、接続の生成可否を画面に表示するという内容です。
+ <br />※connectadb.jsの中身は次の通りです。</p>
 
-    <p><img src="img3_4.png" alt="img3_4.png" /></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> const <span class="nv">port</span><span class="o">=</span>3030<span class="p">;</span>
+ var http <span class="o">=</span> require<span class="o">(</span><span class="s1">'http'</span><span class="o">)</span><span class="p">;</span>
+ var os <span class="o">=</span> require<span class="o">(</span><span class="s1">'os'</span><span class="o">)</span><span class="p">;</span>
+ var <span class="nb">hostname</span> <span class="o">=</span> os.hostname<span class="o">()</span><span class="p">;</span>
+ var oracledb <span class="o">=</span> require<span class="o">(</span><span class="s1">'oracledb'</span><span class="o">)</span><span class="p">;</span>
+ var dbConfig <span class="o">=</span> require<span class="o">(</span><span class="s1">'./dbconfig.js'</span><span class="o">)</span><span class="p">;</span>
+ <span class="nb">let </span>error<span class="p">;</span>
+ <span class="nb">let </span>user<span class="p">;</span>
+ oracledb.getConnection <span class="o">(</span>
+     <span class="o">{</span>
+     user: dbConfig.dbuser,
+     password: dbConfig.dbpassword,
+     connectString: dbConfig.connectString
+     <span class="o">}</span>,
+     <span class="k">function</span><span class="o">(</span>err, connection<span class="o">)</span>
+     <span class="o">{</span>
+         <span class="k">if</span> <span class="o">(</span>err<span class="o">)</span> <span class="o">{</span> error <span class="o">=</span> err<span class="p">;</span> <span class="k">return</span><span class="p">;</span> <span class="o">}</span>
+         connection.execute <span class="o">(</span>
+             <span class="s1">'select user from dual'</span>, <span class="o">[]</span>,
+             <span class="k">function</span><span class="o">(</span>err, result<span class="o">)</span>
+             <span class="o">{</span>
+                 <span class="k">if</span> <span class="o">(</span>err<span class="o">)</span> <span class="o">{</span>cerror <span class="o">=</span> err<span class="p">;</span> <span class="k">return</span><span class="p">;</span> <span class="o">}</span>
+                 user <span class="o">=</span> result.rows[0][0]<span class="p">;</span>
+                 console.log<span class="o">(</span><span class="sb">`</span>Check to see <span class="k">if </span>your database connection worked at  http://&lt;Your Compute IP Address&gt;:<span class="k">${</span><span class="nv">port</span><span class="k">}</span>/<span class="sb">`</span><span class="o">)</span><span class="p">;</span>
+                 error <span class="o">=</span> null<span class="p">;</span>
+                 connection.close<span class="o">(</span>
+                     <span class="k">function</span><span class="o">(</span>err<span class="o">)</span> <span class="o">{</span>
+                         <span class="k">if</span> <span class="o">(</span>err<span class="o">)</span> <span class="o">{</span> console.log<span class="o">(</span>err<span class="o">)</span><span class="p">;</span> <span class="o">}</span>
+                     <span class="o">}</span>
+                 <span class="o">)</span><span class="p">;</span>
+             <span class="o">}</span>
+         <span class="o">)</span>
+     <span class="o">}</span>
+ <span class="o">)</span><span class="p">;</span>
+
+ http.createServer<span class="o">(</span><span class="k">function</span><span class="o">(</span>request, response<span class="o">)</span> <span class="o">{</span>
+     response.writeHead<span class="o">(</span>200, <span class="o">{</span><span class="s1">'Content-Type'</span>: <span class="s1">'text plain'</span> <span class="o">})</span><span class="p">;</span>
+     <span class="k">if</span> <span class="o">(</span>error <span class="o">===</span> null<span class="o">)</span>
+     <span class="o">{</span>
+         response.end<span class="o">(</span><span class="s1">'Connection test succeeded. You connected to ADB as '</span> + user + <span class="s1">'!'</span><span class="o">)</span><span class="p">;</span>
+     <span class="o">}</span>
+     <span class="k">else if</span> <span class="o">(</span>error instanceof Error<span class="o">)</span>
+     <span class="o">{</span>
+         response.write<span class="o">(</span><span class="s1">'Connection test failed. Check the settings and redeploy app!\n'</span><span class="o">)</span><span class="p">;</span>
+         response.end<span class="o">(</span>error.message<span class="o">)</span><span class="p">;</span>
+     <span class="o">}</span>
+     <span class="k">else</span>
+     <span class="o">{</span>
+         response.end<span class="o">(</span><span class="s1">'Connection test pending. Refresh after a few seconds...'</span><span class="o">)</span><span class="p">;</span>
+     <span class="o">}</span>
+ <span class="o">})</span>.listen<span class="o">(</span>port<span class="o">)</span><span class="p">;</span>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>connectadb.jsを実行します。</p>
@@ -703,12 +773,64 @@
 
 <ol>
   <li>
-    <p>（必要に応じて）adbselect.jsの中身を確認します。ADBへの接続を作成して、簡単なSELECT文を実行するという内容です。</p>
+    <p>（必要に応じて）adbselect.jsの中身を確認します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cat </span>adbselect.js
 </code></pre></div>    </div>
 
-    <p><img src="img4_1.png" alt="img4_1.png" /></p>
+    <p>ADBへの接続を作成して、簡単なSELECT文を実行するという内容です。
+ <br />※adbselect.jsの中身は次の通りです。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> var oracledb <span class="o">=</span> require<span class="o">(</span><span class="s1">'oracledb'</span><span class="o">)</span><span class="p">;</span>
+ var dbConfig <span class="o">=</span> require<span class="o">(</span><span class="s1">'./dbconfig.js'</span><span class="o">)</span><span class="p">;</span>
+
+ oracledb.getConnection <span class="o">(</span>
+     <span class="o">{</span>
+         user: dbConfig.dbuser,
+         password: dbConfig.dbpassword,
+         connectString: dbConfig.connectString
+     <span class="o">}</span>,
+     <span class="k">function</span><span class="o">(</span>err, connection<span class="o">)</span>
+     <span class="o">{</span>
+         <span class="k">if</span> <span class="o">(</span>err<span class="o">)</span>
+         <span class="o">{</span>
+             console.error<span class="o">(</span>err.message<span class="o">)</span><span class="p">;</span>
+             <span class="k">return</span><span class="p">;</span>
+         <span class="o">}</span>
+
+         connection.execute <span class="o">(</span>
+             <span class="s1">'SELECT CUST_ID, CUST_FIRST_NAME, CUST_LAST_NAME FROM sh.customers WHERE CUST_ID = 5993'</span>,
+             <span class="o">{}</span>,
+             <span class="o">{</span> outFormat: oracledb.OBJECT <span class="o">}</span>,
+             <span class="k">function</span><span class="o">(</span>err, result<span class="o">)</span>
+             <span class="o">{</span>
+                 <span class="k">if</span> <span class="o">(</span>err<span class="o">)</span>
+                 <span class="o">{</span>
+                     console.error<span class="o">(</span>err.message<span class="o">)</span><span class="p">;</span>
+                     doRelease<span class="o">(</span>connection<span class="o">)</span><span class="p">;</span>
+                     <span class="k">return</span><span class="p">;</span>
+                 <span class="o">}</span>
+                 console.log<span class="o">(</span><span class="s1">'We are specifically looking for customer ID 5992'</span><span class="o">)</span><span class="p">;</span>
+                 console.log<span class="o">(</span>result.rows<span class="o">)</span><span class="p">;</span>
+                 doRelease<span class="o">(</span>connection<span class="o">)</span><span class="p">;</span>
+             <span class="o">}</span>
+         <span class="o">)</span><span class="p">;</span>
+     <span class="o">}</span>
+ <span class="o">)</span><span class="p">;</span>
+
+ <span class="k">function </span>doRelease <span class="o">(</span>connection<span class="o">)</span>
+ <span class="o">{</span>
+     connection.close <span class="o">(</span>
+         <span class="k">function</span><span class="o">(</span>err<span class="o">)</span>
+         <span class="o">{</span>
+             <span class="k">if</span> <span class="o">(</span>err<span class="o">)</span>
+             <span class="o">{</span>
+                 console.error<span class="o">(</span>err.message<span class="o">)</span><span class="p">;</span>
+             <span class="o">}</span>
+         <span class="o">}</span>
+     <span class="o">)</span><span class="p">;</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
   </li>
   <li>
     <p>adbselect.jsを実行します。次のように、特定のCUSTOMER IDの情報が表示されればOKです。</p>
@@ -734,7 +856,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-07-27T16:23:28+09:00">July 27, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-05T17:56:08+09:00">August 5, 2021</time></p>
 
 
       </footer>
@@ -755,7 +877,7 @@
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/database/adb205-swingbench/" class="pagination--pager" title="205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)
+      <a href="/ocitutorials/database/dbcs103-patch/" class="pagination--pager" title="103: パッチを適用しよう
 ">前へ</a>
     
     

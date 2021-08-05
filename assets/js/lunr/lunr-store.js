@@ -317,6 +317,24 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/database/dbcs102-managing-pdb/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/dbcs102-managing-pdb/img13.png"
       },{
+        "title": "103: パッチを適用しよう",
+        "excerpt":"はじめに Oracle Cloud Infrastructure データベース・サービス(DBCS)では、OS以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。 ここでは、DatabaseとGrid Infrastructureに対するそれぞれのパッチ適用方法についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること パッチ適用対象の Oracle Database に対して最新RU/RURが適用されていないこと 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. 現在のバージョンを確認しよう 2. Grid Infrastructure にパッチを適用しよう 3. Database にパッチを適用しよう 所要時間 : 約15分 1. 現在のバージョンを確認しよう まずは、コンソール上で作成済みの Database と Grid Infrastructure のバージョンを確認していきましょう。 コンソールメニューから Oracle Database → ベア・メタル、VMおよびExadata を選択し、対象のDBシステムを選択します。 DBシステムの詳細...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/dbcs103-patch/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/dbcs103-patch/img11.png"
+      },{
+        "title": "206: Node.jsによるADB上でのアプリ開発",
+        "excerpt":"Node.jsはサーバサイドでJavaScript言語を実行するオープンソースの実行環境です。 node-oracledbドライバを利用することで、Autonomous Databaseに簡単に接続できます。 尚、JavaScriptのコーディングやNode.js自体の使い方を説明するものではありません。 所要時間 : 約20分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること labs.zip を手元のPCにダウンロード アップロード方法については こちら をご確認ください。 仮想マシン上に直接ダウンロードする場合は、次のコマンドを実行します。 wget https://oracle-japan.github.io/ocitutorials/database/adb-data/labs.zip 目次 1. 事前準備 2. Node.js環境の確認 3. ADBに接続してみよう 4. ADB上のデータを操作してみよう 1. 事前準備 ネットワークセキュリティの設定変更 本章ではお手元のPCからインターネットを介して、Node.jsのアプリにポート3030で接続します（3030は変更可能）。 OCIではセキュリティ・リストと呼ばれる仮想ファイアウォールの役割を担うリソースがありますが、このセキュリティ・リストのデフォルトの設定では、こちらの接続は拒否されます。 ポート3030からの接続を可能にするには、事前に外部インターネットからこの接続を受け入れるためのイングレス・ルール(インバウンド・ルール)の設定、およびNode.jsが配置される仮想マシンのOSのFirewallの設定を行う必要があります。 ※ セキュリティ・リストに関する詳細な情報はこちら - イングレス・ルールの設定 メニューから ネットワーキング、仮想クラウド・ネットワーク を選択します。 作成済みの仮想クラウド・ネットワーク（ vcn01 ）を選択します。 （こちらの画面では、ADB_HOL_DEV_VCNとなっています） ※該当するVCNが表示されない場合は、適切なリージョンおよびコンパートメントが選択されていることをご確認ください。...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb206-appdev-nodejs/",
+        "teaser": null
+      },{
+        "title": "207: PythonによるADB上でのアプリ開発",
+        "excerpt":"Pythonとは、汎用のプログラミング言語である。コードがシンプルで扱いやすく設計されており、C言語などに比べて、さまざまなプログラムを分かりやすく、少ないコード行数で書けるといった特徴がある。（ウィキペディアより引用） PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジュールを利用します。 尚、Python言語自体の使い方を説明するものではありません。 所要時間 : 約10分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること labs.zip をダウンロード アップロード方法については こちら をご確認ください。 目次 1. ADBに接続してみよう 2. ADB上のデータを操作してみよう 1. ADBに接続してみよう まずPythonでADBに接続し、ADBのバージョンを確認してみます。 尚、事前にこちらを実施し、SQL*plusで接続できていることを前提に記載しています。 Tera Termを利用してopcユーザで仮想マシンにログインします。 oracleユーザにスイッチします。一旦rootユーザに切り替えてから、oracleユーザに切り替えます。 -- rootユーザにスイッチ sudo -s -- oracleユーザにスイッチ sudo su - oracle ADBへの接続情報をOS環境変数として設定します。 export TNS_ADMIN=/home/oracle/labs/wallets export ORAUSER=admin export ORAPASS=Welcome12345# export...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb207-appdev-python/",
+        "teaser": null
+      },{
         "title": "101: ADBインスタンスを作成してみよう",
         "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、アクセスしてみます。 目次 1.リージョンを設定し、コンパートメントを用意しよう 2.ADBインスタンスを作成してみよう 3.Database Actionsで操作してみよう 所要時間 : 約20分 リージョンを設定し、コンパートメントを用意しよう 1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足）上手く表示されない場合は以下のURLをお試しください。 https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント&gt; 尚、 &lt;クラウド・アカウント&gt; はご自身のクラウドアカウント名（テナント名）に置き換えてください。 補足）ダッシュボード画面の使い方...","categories": [],
         "tags": [],
@@ -359,6 +377,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb107-machine-learning/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb107-machine-learning/img1.png"
       },{
+        "title": "201: 接続サービスの理解",
+        "excerpt":"Autonomous Database では、事前に定義済の接続サービスが用意されています。 本章では、接続サービスの概要をご紹介します。 所要時間 : 約10分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 目次： 1. 接続サービスとは？ 2. サービス・コンソールのResource Managerの設定画面にアクセスしよう 3. CPU/IOの優先度の変更しよう 4. 処理時間/利用IOの上限を設定しよう 5. 同時実行セッション数の制限が変更できることを確認しよう 1. 接続サービスとは？ 接続サービスの選択 インスタンスに接続する際、Autonomous Databaseはアプリケーションの特性に応じて適切な「接続サービス」を選択する必要があります。 この「接続サービス」は、パラレル実行・同時実行セッション数・リソース割り当てなどの制御について事前定義されたもので、ユーザーは接続サービスを選択するだけで、CPUの割当や並列処理をコントロールできます。 選択可能な接続サービスの種類は、次の通りです。 Autonomous Data Warehouse(ADW) では３種類、Autonomous Transaction Processing(ATP)では5種類あり、ワークロード適したものを選択します。 使い分けの指針、スタートポイント 代表的なワークロードを「OLTP系」と「バッチ系/DWH系」の２つのカテゴリに分類し、それぞれの処理の特性と適応する接続サービスについてまとめました。 OLTP系 バッチ系・DWH 特徴 少量の行しかアクセスしない 大量のユーザが同時に実行する 一般的なオーダーとしてはミリ秒レベル 大量の行にアクセスし、一括で処理する ユーザ数は少ない 一般的なオーダーとしては秒～分レベル 一般的なチューニング方針...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb201-service-names/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb201-service-names/image_top.png"
+      },{
         "title": "202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)",
         "excerpt":"はじめに 大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。 サンプルデータファイル(customers.csv)のダウンロードリンク 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 目次 1.Database Actionsに接続 2.DBMS_CLOUDパッケージの実行 所要時間 : 約10分 Database Actionsに接続 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 DBMS_CLOUDパッケージを使ったデータロードをワークシートで実行していきます。SQLをクリックしてください。 DBMS_CLOUDパッケージの実行 以下の1～5までの例を参考にコマンドを作成し、ワークシートに貼り付けスクリプトの実行をクリックし、データをロードします（集合ハンズオンセミナーでは講師の指示に従ってください) クレデンシャル情報の登録 クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、ADBにデータをロードしてみよう(Database Actions)の記事内のクラウド・ストレージからデータをロードしてみようを参照ください。 credential_name: DBに保存した認証情報を識別するための名前、任意 username: 上記で取得したOracle Object Storageにアクセスするための ユーザ名 password: 取得したAuth Token BEGIN DBMS_CLOUD.CREATE_CREDENTIAL( CREDENTIAL_NAME =&gt; 'USER_CRED', USERNAME =&gt; 'myUsername', PASSWORD =&gt; 'LPB&gt;Ktk(1M1SD+a]+r' );...","categories": [],
         "tags": [],
@@ -382,18 +406,6 @@ var store = [{
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb205-swingbench/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb205-swingbench/img0.jpg"
-      },{
-        "title": "206: Node.jsによるADB上でのアプリ開発",
-        "excerpt":"Node.jsはサーバサイドでJavaScript言語を実行するオープンソースの実行環境です。 node-oracledbドライバを利用することで、Autonomous Databaseに簡単に接続できます。 尚、JavaScriptのコーディングやNode.js自体の使い方を説明するものではありません。 所要時間 : 約20分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること labs.zip を手元のPCにダウンロード アップロード方法については こちら をご確認ください。 仮想マシン上に直接ダウンロードする場合は、次のコマンドを実行します。 wget https://oracle-japan.github.io/ocitutorials/database/adb-data/labs.zip 目次 1. 事前準備 2. Node.js環境の確認 3. ADBに接続してみよう 4. ADB上のデータを操作してみよう 1. 事前準備 ネットワークセキュリティの設定変更 本章ではお手元のPCからインターネットを介して、Node.jsのアプリにポート3030で接続します（3030は変更可能）。 OCIではセキュリティ・リストと呼ばれる仮想ファイアウォールの役割を担うリソースがありますが、このセキュリティ・リストのデフォルトの設定では、こちらの接続は拒否されます。 ポート3030からの接続を可能にするには、事前に外部インターネットからこの接続を受け入れるためのイングレス・ルール(インバウンド・ルール)の設定、およびNode.jsが配置される仮想マシンのOSのFirewallの設定を行う必要があります。 ※ セキュリティ・リストに関する詳細な情報はこちら - イングレス・ルールの設定 メニューから ネットワーキング、仮想クラウド・ネットワーク を選択します。 作成済みの仮想クラウド・ネットワーク（ vcn01 ）を選択します。 （こちらの画面では、ADB_HOL_DEV_VCNとなっています） ※該当するVCNが表示されない場合は、適切なリージョンおよびコンパートメントが選択されていることをご確認ください。...","categories": [],
-        "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/database/adb206-appdev-nodejs/",
-        "teaser": null
-      },{
-        "title": "207: PythonによるADB上でのアプリ開発",
-        "excerpt":"Pythonとは、汎用のプログラミング言語である。コードがシンプルで扱いやすく設計されており、C言語などに比べて、さまざまなプログラムを分かりやすく、少ないコード行数で書けるといった特徴がある。（ウィキペディアより引用） PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジュールを利用します。 尚、Python言語自体の使い方を説明するものではありません。 所要時間 : 約10分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること labs.zip をダウンロード アップロード方法については こちら をご確認ください。 目次 1. ADBに接続してみよう 2. ADB上のデータを操作してみよう 1. ADBに接続してみよう まずPythonでADBに接続し、ADBのバージョンを確認してみます。 尚、事前にこちらを実施し、SQL*plusで接続できていることを前提に記載しています。 Tera Termを利用してopcユーザで仮想マシンにログインします。 oracleユーザにスイッチします。一旦rootユーザに切り替えてから、oracleユーザに切り替えます。 -- rootユーザにスイッチ sudo -s -- oracleユーザにスイッチ sudo su - oracle ADBへの接続情報をOS環境変数として設定します。 export TNS_ADMIN=/home/oracle/labs/wallets export ORAUSER=admin export ORAPASS=Welcome12345# export...","categories": [],
-        "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/database/adb207-appdev-python/",
-        "teaser": null
       },{
         "title": "208: Oracle Machine Learningで機械学習をしよう",
         "excerpt":"はじめに この章ではOracle Machine Learning(OML)の製品群の1つである、OML Notebookを利用して、DB内でデータの移動が完結した機械学習を体験して頂きます。 事前に前提条件にリンクされているサンプルデータのCSVファイルをお手元のPC上にダウンロードください。 （集合ハンズオンセミナーでは講師の指示に従ってください） 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされているファイルをダウンロードしていること liquid.csv order_items.csv 目次 準備編 OMLユーザを作成する 作成したOMLユーザのRESTサービスを有効化する データセットをADBにロードする liquid.csvをDatabase Actionsからロード order_items.csvをObject Storageにアップロード 機械学習編 OML Notebookを使い始める 機械学習モデルをビルド・評価する 所要時間: 約40分 準備編 OMLユーザを作成する ツールタブのOracle MLユーザ管理で、MLユーザを作成していきましょう。 ADBのADMINユーザの情報を入力し、サインインをクリックして下さい。 。。 +作成ボタンをクリックし、機械学習用のユーザを作成します。 ユーザーの情報を入力し、画面右上作成ボタンをクリックして下さい。 ユーザOMLが作成されたことを確認し、ADW詳細画面へ戻ります。 作成したOMLユーザのRESTサービスを有効化する 後述のデータロードをステップで、OMLユーザでDatabase Actionsを活用していきます。 OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにログインできないので、OMLユーザのRESTを有効化していきましょう。 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 ADMINユーザでサインインして下さい。 Database Actionsのランディングページからデータベース・ユーザ...","categories": [],
@@ -556,6 +568,12 @@ var store = [{
         "tags": ["Blockchain"],
         "url": "https://oracle-japan.github.io/ocitutorials/intermediates/blockchain-tutorial/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/01_1_create_instance/service_console.png"
+      },{
+        "title": "OCI Data Integrationチュートリアル",
+        "excerpt":"はじめに OCI Data Integration はOCIで利用できるGUIベースのETLサービスです。 このチュートリアルではオブジェクト・ストレージ上のデータを変換し、Autonomous Databaseにロードを行っていきます。 OCI Data Integrationドキュメントに掲載されているチュートリアルの一部です。 目次 : 1.サンプルデータのロードとターゲット表の作成 2.Data Integrationを利用するための準備 3.ワークスペースの作成 4.データ・アセットの作成 5.プロジェクトとデータ・フローの作成 6.データ・フローの編集 7.タスクの作成 8.アプリケーションの作成とタスクの公開と実行 前提条件 : Data Integrationを利用するコンパートメントを準備してください。 Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。 1. サンプルデータのロードとターゲット表の作成 ソースとなるオブジェクト・ストレージにファイルをアップロードし、ターゲットとなるAutonomous Databaseにロード先の表を作成します。 ソース：オブジェクト・ストレージ オブジェクト・ストレージにサンプルデータをロードします。 バケットを作成し、次の2つのファイルをアップロードしてください。 ファイルへのリンク : CUSTOMERS.json / REVENUE.csv バケットの作成とファイルのアップロード手順は“その7 - オブジェクト・ストレージを使う”をご確認ください。 ターゲット：Autonomous Database Autonomous Databaseインスタンスを作成しユーザーを作成します。手順は“101:ADBインスタンスを作成してみよう”をご確認ください。ユーザー名は任意ですが、このチュートリアルでは、BETAとします。作成したユーザーBETAで以下のSQLでCUSTOMER_TARGET表を作成してください。 CUSTOMERS_TARGET表作成SQL CREATE TABLE \"BETA\".\"CUSTOMERS_TARGET\"...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/intermediates/ocidi-tutorials/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/intermediates/ocidi-tutorials/top.png"
       },{
         "title": "その1 - OCIコンソールにアクセスして基本を理解する",
         "excerpt":"Oracle Cloud Infrastructure を使い始めるにあたって、コンソール画面にアクセスし、ログインを行います。 また、Oracle Cloud Infrastructure のサービスを利用するのにあたって必要なサービス・リミット、コンパートメントやポリシーなどのIAMリソースおよびリージョンについて、コンセプトをコンソール画面の操作を通じて学習し、理解します。 所要時間 : 約25分 前提条件 : 有効な Oracle Cloud Infrastructure のテナントと、アクセスのための有効なユーザーIDとパスワードがあること 無償トライアル環境のお申込みについては こちら の資料を参照してください。 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります image サポートされるブラウザの確認 このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。 サポートされるブラウザを確認し、いずれかのブラウザをローカル環境にインストールしてください。 ログイン情報の確認 コンソールにアクセスするにあたり、ログイン情報の入力が必要になります。ログイン情報には以下のものが含まれます。 テナント名(クラウド・アカウント名) - Oracle Cloud Infrastructure を契約したり、トライアル環境を申し込んだ際に払い出される一意のID ユーザー名 - ログインのためのユーザー名 パスワード - ログインのためのパスワード ログイン情報の入手方法は、ユーザーが作られるタイミングによって異なります。...","categories": [],

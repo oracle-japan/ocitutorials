@@ -1,0 +1,1065 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Data Integrationチュートリアル | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Data IntegrationはグラフィカルなインタフェースでノーコーディングでETL処理を行うことができるフルマネージドのサービスです。様々なデータ変換機能を提供し、データの準備、統合、ロードを簡単に行うことができます。この文書では基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Data Integrationチュートリアル">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/ocidi-tutorials/">
+
+
+  <meta property="og:description" content="OCI Data IntegrationはグラフィカルなインタフェースでノーコーディングでETL処理を行うことができるフルマネージドのサービスです。様々なデータ変換機能を提供し、データの準備、統合、ロードを簡単に行うことができます。この文書では基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/ocidi-tutorials/top.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-08-05T17:56:08+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/ocidi-tutorials/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/ocidi-tutorials/top.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Data Integrationチュートリアル
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Data IntegrationはグラフィカルなインタフェースでノーコーディングでETL処理を行うことができるフルマネージドのサービスです。様々なデータ変換機能を提供し、データの準備、統合、ロードを簡単に行うことができます。この文書では基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Data Integrationチュートリアル</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/deep-learning-with-gpu/">GPUインスタンスでディープラーニング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/" class="active">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Data Integrationチュートリアル">
+    <meta itemprop="description" content="OCI Data IntegrationはグラフィカルなインタフェースでノーコーディングでETL処理を行うことができるフルマネージドのサービスです。様々なデータ変換機能を提供し、データの準備、統合、ロードを簡単に行うことができます。この文書では基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。">
+    <meta itemprop="datePublished" content="2021-08-05T17:56:08+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-サンプルデータのロードとターゲット表の作成">1. サンプルデータのロードとターゲット表の作成</a>
+    <ul>
+      <li><a href="#ソースオブジェクトストレージ">ソース：オブジェクト・ストレージ</a></li>
+      <li><a href="#ターゲットautonomous-database">ターゲット：Autonomous Database</a></li>
+    </ul>
+  </li>
+  <li><a href="#2data-integrationを利用するための準備">2.Data Integrationを利用するための準備</a>
+    <ul>
+      <li><a href="#vcnとサブネットの作成">VCNとサブネットの作成</a></li>
+      <li><a href="#必要なポリシーの作成">必要なポリシーの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-ワークスペースの作成">3. ワークスペースの作成</a></li>
+  <li><a href="#4-データアセットの作成">4. データ・アセットの作成</a></li>
+  <li><a href="#5-プロジェクトとデータフローの作成">5. プロジェクトとデータ・フローの作成</a>
+    <ul>
+      <li><a href="#プロジェクトの作成">プロジェクトの作成</a></li>
+      <li><a href="#データフローの作成">データ・フローの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#6データフローの編集">6.データ・フローの編集</a>
+    <ul>
+      <li><a href="#ソースの追加">ソースの追加</a></li>
+      <li><a href="#データのフィルタ">データのフィルタ</a>
+        <ul>
+          <li><a href="#customers_jsonのcountry_codeの値がusのフィルタを設定">CUSTOMERS_jsonのCOUNTRY_CODEの値が”US”のフィルタを設定</a></li>
+          <li><a href="#revenue_csvのorder_statusの値が1-bookedのフィルタを設定">REVENUE_csvのORDER_STATUSの値が”1-Booked”のフィルタを設定</a></li>
+        </ul>
+      </li>
+      <li><a href="#データの変換">データの変換</a>
+        <ul>
+          <li><a href="#state_provinceの値を大文字に変換">STATE_PROVINCEの値を大文字に変換</a></li>
+          <li><a href="#fullname属性の生成">FULLNAME属性の生成</a></li>
+        </ul>
+      </li>
+      <li><a href="#データの結合">データの結合</a></li>
+      <li><a href="#ターゲットの設定">ターゲットの設定</a></li>
+      <li><a href="#検証と保存">検証と保存</a></li>
+    </ul>
+  </li>
+  <li><a href="#7-タスクの作成">7. タスクの作成</a></li>
+  <li><a href="#8-アプリケーションの作成とタスクの公開と実行">8. アプリケーションの作成とタスクの公開と実行</a>
+    <ul>
+      <li><a href="#アプリケーションの作成">アプリケーションの作成</a></li>
+      <li><a href="#タスクをアプリケーションへ公開">タスクをアプリケーションへ公開</a></li>
+      <li><a href="#タスクの実行">タスクの実行</a></li>
+    </ul>
+  </li>
+  <li><a href="#おわりに">おわりに</a></li>
+  <li><a href="#参考資料">参考資料</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p><strong>OCI Data Integration</strong> はOCIで利用できるGUIベースのETLサービスです。</p>
+
+<p><img src="ocidi.png" alt="OCIDIの説明イメージ" /></p>
+
+<p>このチュートリアルではオブジェクト・ストレージ上のデータを変換し、Autonomous Databaseにロードを行っていきます。</p>
+<blockquote>
+  <p><a href="https://docs.oracle.com/en-us/iaas/data-integration/tutorial/tutorials/index.htm" target="_blank">OCI Data Integrationドキュメント</a>に掲載されているチュートリアルの一部です。</p>
+</blockquote>
+
+<p><img src="ociditutorial.png" alt="チュートリアル説明イメージ" /></p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1.サンプルデータのロードとターゲット表の作成</a></li>
+  <li><a href="#anchor2">2.Data Integrationを利用するための準備</a></li>
+  <li><a href="#anchor3">3.ワークスペースの作成</a></li>
+  <li><a href="#anchor4">4.データ・アセットの作成</a></li>
+  <li><a href="#anchor5">5.プロジェクトとデータ・フローの作成</a></li>
+  <li><a href="#anchor6">6.データ・フローの編集</a></li>
+  <li><a href="#anchor7">7.タスクの作成</a></li>
+  <li><a href="#anchor8">8.アプリケーションの作成とタスクの公開と実行</a></li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>Data Integrationを利用するコンパートメントを準備してください。</li>
+  <li>Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。
+<br /></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-サンプルデータのロードとターゲット表の作成">1. サンプルデータのロードとターゲット表の作成</h1>
+<p>ソースとなるオブジェクト・ストレージにファイルをアップロードし、ターゲットとなるAutonomous Databaseにロード先の表を作成します。</p>
+
+<h2 id="ソースオブジェクトストレージ">ソース：オブジェクト・ストレージ</h2>
+<p>オブジェクト・ストレージにサンプルデータをロードします。
+バケットを作成し、次の2つのファイルをアップロードしてください。</p>
+
+<ul>
+  <li><strong>ファイルへのリンク :</strong> <a href="https://bit.ly/2BaP1QP">CUSTOMERS.json</a> / <a href="https://bit.ly/2B9qVWL">REVENUE.csv</a></li>
+</ul>
+
+<p>バケットの作成とファイルのアップロード手順は<a href="../../beginners/object-storage/" target="_blank">“その7 - オブジェクト・ストレージを使う”</a>をご確認ください。</p>
+
+<p><img src="bucket.png" alt="バケット" /></p>
+
+<h2 id="ターゲットautonomous-database">ターゲット：Autonomous Database</h2>
+<p>Autonomous Databaseインスタンスを作成しユーザーを作成します。手順は<a href="../../database/adb101-provisioning/" target="_blank">“101:ADBインスタンスを作成してみよう”</a>をご確認ください。ユーザー名は任意ですが、このチュートリアルでは、<code class="language-plaintext highlighter-rouge">BETA</code>とします。作成したユーザーBETAで以下のSQLでCUSTOMER_TARGET表を作成してください。</p>
+
+<details>
+   <summary>CUSTOMERS_TARGET表作成SQL</summary>
+  <pre>
+  <code>
+  CREATE TABLE "BETA"."CUSTOMERS_TARGET"
+   ("CUST_ID" NUMBER,
+    "LAST_NAME" VARCHAR2(200 BYTE),
+    "FIRST_NAME" VARCHAR2(200 BYTE),
+    "FULL_NAME" VARCHAR2(200 BYTE),
+    "STREET_ADDRESS" VARCHAR2(400 BYTE),
+    "POSTAL_CODE" VARCHAR2(10 BYTE),
+    "CITY_ID" NUMBER,
+    "CITY" VARCHAR2(100 BYTE),
+    "STATE_PROVINCE_ID" NUMBER,
+    "STATE_PROVINCE" VARCHAR2(100 BYTE),
+    "COUNTRY_ID" NUMBER,
+    "COUNTRY" VARCHAR2(400 BYTE),
+    "CONTINENT_ID" NUMBER,
+    "CONTINENT" VARCHAR2(400 BYTE),
+    "AGE" NUMBER,
+    "COMMUTE_DISTANCE" NUMBER,
+    "CREDIT_BALANCE" NUMBER,
+    "EDUCATION" VARCHAR2(40 BYTE),
+    "EMAIL" VARCHAR2(416 BYTE),
+    "FULL_TIME" VARCHAR2(40 BYTE),
+    "GENDER" VARCHAR2(6 BYTE),
+    "HOUSEHOLD_SIZE" NUMBER,
+    "INCOME" NUMBER,
+    "INCOME_LEVEL" VARCHAR2(20 BYTE),
+    "INSUFF_FUNDS_INCIDENTS" NUMBER,
+    "JOB_TYPE" VARCHAR2(200 BYTE),
+    "LATE_MORT_RENT_PMTS" NUMBER,
+    "MARITAL_STATUS" VARCHAR2(8 BYTE),
+    "MORTGAGE_AMT" NUMBER,
+    "NUM_CARS" NUMBER,
+    "NUM_MORTGAGES" NUMBER,
+    "PET" VARCHAR2(40 BYTE),
+    "PROMOTION_RESPONSE" NUMBER,
+    "RENT_OWN" VARCHAR2(40 BYTE),
+    "SEG" NUMBER,
+    "WORK_EXPERIENCE" NUMBER,
+    "YRS_CURRENT_EMPLOYER" NUMBER,
+    "YRS_CUSTOMER" NUMBER,
+    "YRS_RESIDENCE" NUMBER,
+    "COUNTRY_CODE" VARCHAR2(2 BYTE),
+    "ORDER_NUMBER" NUMBER,
+    "REVENUE" NUMBER
+   ) ;
+  </code>
+  </pre>
+  </details>
+
+<p><a id="anchor2"></a></p>
+<h1 id="2data-integrationを利用するための準備">2.Data Integrationを利用するための準備</h1>
+<p>Data Integrationを利用するためには以下が必要です。</p>
+<ol>
+  <li>VCNとサブネットの作成</li>
+  <li>必要なポリシーの作成</li>
+</ol>
+
+<h2 id="vcnとサブネットの作成">VCNとサブネットの作成</h2>
+<p>Data Integrationで利用するコンパートメントでVCNとサブネットを作成します。手順は<a href="../../beginners/creating-vcn/" target="_blank">“その2-クラウドに仮想ネットワーク(VCN)を作る”</a>をご確認ください。作成したサブネットから利用するAutonomous Database、オブジェクト・ストレージへ接続可能である必要があるため、サービス・ゲートウェイをターゲット・タイプに含めるルート・ルールをルート表に追加します。</p>
+
+<p><img src="addroute.png" alt="ルート・ルールの追加イメージ" /></p>
+
+<h2 id="必要なポリシーの作成">必要なポリシーの作成</h2>
+<p>ポリシーを作成します。
+OCI管理者ユーザーでログイン後、OCIコンソールのナビゲーションメニューで<strong>アイデンティティとセキュリティ</strong>に移動し、<strong>ポリシー</strong>を選択します。次にコンパートメントを選択し、<strong>ポリシーの作成</strong>をクリックします。</p>
+
+<p><img src="addpolicy1.png" alt="ポリシー追加の説明1" /></p>
+
+<p>ポリシーの作成で名前と説明を入力し、ポリシー・ビルダーのポリシー・ユース・ケースから<strong>データ統合</strong>を選択します。</p>
+
+<p><img src="addpolicy2.png" alt="ポリシー追加の説明2" /></p>
+
+<p>共通ポリシー・テンプレートから以下を選択し、ポリシーを作成します。</p>
+
+<ul>
+  <li><strong>ユーザーがネットワーキングを含むワークスペースを作成および管理できるようにします</strong>
+    <ul>
+      <li>仮想ネットワーク内のワークスペースを作成、削除および変更する機能を許可</li>
+      <li>許可をするグループとコンパートメントの指定が必須。</li>
+    </ul>
+  </li>
+  <li><strong>ユーザーにワークスペース内のオブジェクトの検索を許可</strong>
+    <ul>
+      <li>指定ワークスペースでデータ統合のコンポーネント検索を許可</li>
+      <li>テナンシレベルでのみ定義可</li>
+    </ul>
+  </li>
+  <li><strong>ユーザーおよびリソース・プリンシパルに指定ワークスペースのオブジェクト・ストレージへのアクセスと使用を許可</strong>
+    <ul>
+      <li>Data Integrationがソース/ターゲットにオブジェクト・ストレージを利用することを許可</li>
+      <li>許可をするグループとコンパートメントの指定が必須</li>
+    </ul>
+  </li>
+  <li><strong>ユーザーおよびリソース・プリンシパルに指定ワークスペースのターゲットとしてAutonomous Databaseへのアクセスと使用を許可</strong>
+    <ul>
+      <li>Data Integrationがソース/ターゲットにAutonomous Databaseを利用することを許可</li>
+      <li>許可をするグループとコンパートメントの指定が必須</li>
+    </ul>
+  </li>
+</ul>
+
+<p>テンプレートごとにポリシーが作成されるため、ポリシーは4つ作成されます。</p>
+
+<p><a id="anchor3"></a></p>
+<h1 id="3-ワークスペースの作成">3. ワークスペースの作成</h1>
+<p><strong>ワークスペース</strong>はすべてのData Integrationリソースのコンテナです。Data Integrationの操作はワークスペースを作成し、起動して行います。</p>
+
+<p>OCIコンソールの<strong>アナリティクスとAI</strong>から<strong>データ統合</strong>を選択し、<strong>ワークスペースの作成</strong>を選択します。</p>
+
+<p><img src="createws1.png" alt="ワークスペース作成1" /></p>
+
+<p>名前に任意の<strong>名前</strong>を入力します。デフォルトでプライベート・ネットワークの有効化にチェックがされていますので、<strong>2で作成したVCNとサブネットを選択</strong>します。その後に<strong>作成</strong>をクリックします。</p>
+
+<p><img src="createws2.png" alt="ワークスペース作成2" /></p>
+
+<p>作成状況は<strong>ステータスの表示</strong>で確認することができます。作成完了まで10分～15分程度かかります。</p>
+
+<p><img src="status.png" alt="ステータス" /></p>
+
+<p>作成が完了したワークスペースのステータスは<strong>アクティブ</strong>です。ワークスペース名をクリックしホームを表示します。</p>
+
+<p><img src="home.png" alt="ホーム" /></p>
+
+<p>ワークスペースのホームを起点に、Data Integrationで必要なコンポーネントの作成、設定を行っていきます。</p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-データアセットの作成">4. データ・アセットの作成</h1>
+<p><strong>データ・アセット</strong>はData Integrationで利用するデータ・ソースを表します。1のオブジェクト・ストレージとAutonomous Databaseのためのデータ・アセットを作成します。</p>
+
+<p>ワークスペースのホームの<strong>クイック・アクション</strong>から<strong>データ・アセットの作成</strong>をクリックしましよう。
+データ・アセットの作成では、<strong>タイプ</strong>を選択し、タイプに合わせた項目を入力していきます。</p>
+
+<p><img src="createDataAsset.png" alt="データ・アセットの作成" /></p>
+
+<p>オブジェクト・ストレージ用、Autonomous Database用で以下のとおり入力し、作成します。 作成前に<strong>テスト接続</strong>で接続のテストを実行することが可能です。</p>
+
+<ul>
+  <li>オブジェクト・ストレージ
+    <ul>
+      <li>名前：Data_Lake</li>
+      <li>識別子：自動入力</li>
+      <li>タイプ：Oracle Object Storage</li>
+      <li>URL: https://objectstorage.<リージョン名>.oraclecloud.com
+</リージョン名>        <ul>
+          <li>利用するオブジェクト・ストレージのリージョン名(例：ap-tokyo-1)を<リージョン名>に入力したURL　</リージョン名></li>
+        </ul>
+      </li>
+      <li>テナントOCID : コンソールのガバナンスと管理からテナンシ詳細を選択し、テナンシ情報のOCIDを確認
+<img src="tenancyocid.png" alt="テナンシのOCID" /></li>
+      <li>ネームスペース：自動入力</li>
+    </ul>
+  </li>
+  <li>Autonomous Database
+    <ul>
+      <li>名前：Data_Warehouse</li>
+      <li>識別子：自動入力</li>
+      <li>タイプ：Oracle Autonomous Data Warehouse</li>
+      <li>資格証明の設定の選択 : ウォレットのアップロードを選択しウォレットファイルをアップロード</li>
+      <li>接続サービスの選択：ウォレットファイルのアップロードにより自動的に表示される接続サービスの中から選択</li>
+      <li>デフォルトの接続情報：　ユーザー名 BETA、パスワード BETAのパスワード</li>
+      <li>デフォルトのステージングの場所 :
+        <ul>
+          <li>データ・アセット : Data_Lake</li>
+          <li>接続 : デフォルトの接続</li>
+          <li>コンパートメント : &lt;1で作成したバケットのコンパートメント&gt;</li>
+          <li>スキーマ : &lt;1で作成したバケット&gt;</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>それぞれの入力イメージです。</p>
+
+<p><img src="createDataAsset2.png" alt="データ・アセットの作成2" /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-プロジェクトとデータフローの作成">5. プロジェクトとデータ・フローの作成</h1>
+<p><strong>プロジェクト</strong>は設計に関わるリソースのコンテナです。<strong>データ・フロー</strong>はプロジェクトの下で作成されるソース・システムとターゲット・システム間のデータの流れ/操作を定義するリソースです。プロジェクトを作成し、データ・フローを作成していきます。</p>
+
+<h2 id="プロジェクトの作成">プロジェクトの作成</h2>
+<p>ホーム画面から<strong>プロジェクト</strong>をクリックし<strong>プロジェクトの作成</strong>をクリックします。プロジェクトは<code class="language-plaintext highlighter-rouge">DI_Lab</code>という名前で作成します。</p>
+
+<p><img src="createproject.png" alt="プロジェクト作成" /></p>
+
+<h2 id="データフローの作成">データ・フローの作成</h2>
+<p>プロジェクトのメニューで<strong>データ・フロー</strong>を選択します。<strong>データ・フローの作成</strong>をクリックするとデータ・フロー・エディタというビジュアルエディタが起動します。<br />
+表示されるプロパティで名前を”新規データ・フロー”から<code class="language-plaintext highlighter-rouge">Load Customers and Revenue Data</code>に変更しましょう。</p>
+
+<p><img src="flowname.png" alt="flowの名前変更" /></p>
+
+<p>データ・フロー・エディタのレイアウトは以下の通りです。</p>
+
+<p><img src="floweditor.png" alt="floweditorイメージ" /></p>
+
+<p>基本的な使い方は演算子ペインから利用する演算子をキャンパスにドラッグアンドドロップし、プロパティを編集していくことで操作を定義していきます。 1つずつ設定していきましょう。</p>
+
+<p><a id="anchor6"></a></p>
+<h1 id="6データフローの編集">6.データ・フローの編集</h1>
+
+<p>データ・フロー・エディタで演算子を使って定義を行っていきます。</p>
+
+<h2 id="ソースの追加">ソースの追加</h2>
+<p>左から<strong>ソース演算子</strong>をキャンバスにドラッグアンドドロップし、選択します。下にプロパティが表示されますので、オブジェクト・ストレージ上のファイルにあわせて設定していきます。<br />
+プロパティではデータ・アセットの項目から順に、<strong>選択</strong>リンクをクリックし、該当する値を選択していきます。上の項目で指定した値に応じて、下の項目の選択リストが自動的に絞り込まれて表示されます。</p>
+
+<p><img src="source1.png" alt="ソース演算子" /></p>
+
+<p>CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、ソース演算子は2つ必要です。プロパティの項目に以下の値を入力し、他の値はデフォルトのままにします。</p>
+<blockquote>
+  <p>識別子の値はデータ・エンティティで選択した値で自動入力されます。任意に入力も可能です。</p>
+</blockquote>
+
+<ul>
+  <li>識別子 : CUSTEOMERS_JSON(以下を設定後自動入力されます)
+    <ul>
+      <li>データ・アセット : Data_Lake</li>
+      <li>接続 : Default Connection</li>
+      <li>スキーマ : <バケット名></バケット名></li>
+      <li>データ・エンティティ : CUSTOMERS.json 　
+        <ul>
+          <li>ファイル・タイプ : JSON</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>識別子 : REVENUE_CSV(以下を設定後自動入力されます)
+    <ul>
+      <li>データ・アセット : Data_Lake</li>
+      <li>接続 : Default Connection</li>
+      <li>スキーマ : <バケット名></バケット名></li>
+      <li>データ・エンティティ : REVENUE.csv
+        <ul>
+          <li>ファイル・タイプ : CSV</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>入力が完了するとCUSTOMERS_JSONとREVENUE_CSVというソースがキャンバス上に表示されます。それぞれプロパティの<strong>属性</strong>タブでデータの構成を確認することができます。</p>
+
+<p><img src="attribute.png" alt="属性" /></p>
+
+<p>また<strong>データ</strong>タブではデータのプレビューができます。属性（列）を選択するとその属性のプロファイルが自動的に行われ、右側に表示がされます。</p>
+
+<p><img src="data.png" alt="データ" /></p>
+
+<p>また、<strong>検証</strong>タブはすべての演算子に共通に存在し、演算子に関わる検証を行いその結果を表示します。</p>
+
+<h2 id="データのフィルタ">データのフィルタ</h2>
+<p>ソースから以下の条件でデータをフィルタ（絞り込み）します。</p>
+<ul>
+  <li>CUSTOMERS_jsonのCOUNTRY_CODEの値が”US”</li>
+  <li>REVENUE_csvのORDER_STATUSの値が”1-Booked”</li>
+</ul>
+
+<h3 id="customers_jsonのcountry_codeの値がusのフィルタを設定">CUSTOMERS_jsonのCOUNTRY_CODEの値が”US”のフィルタを設定</h3>
+
+<ol>
+  <li><strong>フィルタ演算子</strong>をキャンパスにドラッグアンドドロップします。</li>
+  <li>
+    <p>ソースのCUSTOMERS_JSONにカーソルをおき、表示される丸い形の<strong>コネクタ</strong>を追加したフィルタにドラッグアンドドロップします。</p>
+
+    <p><img src="filter1.png" alt="フィルタ1" /></p>
+  </li>
+  <li>フィルタのプロパティで<strong>フィルタ条件</strong>の<strong>作成</strong>をクリックします。</li>
+  <li>
+    <p><strong>条件ビルダー</strong>の<strong>受信</strong>から属性<strong>COUNTRY_CODE</strong>をエディタにドラッグアンドドロップします。<br />
+  <img src="filter2.png" alt="フィルタ1" /></p>
+  </li>
+  <li>
+    <p>条件を以下のように修正し、作成をクリックします。</p>
+
+    <p><code class="language-plaintext highlighter-rouge">フィルタ_1.CUSTOMERS_JSON.COUNTRY_CODE='US'</code></p>
+
+    <blockquote>
+      <p>現行リリースでは条件や式にマルチバイト文字が含まれていると保存できないという問題があるため、属性名を`で囲む必要があります。上の場合は、フィルタ_1.CUSTOMERS_JSON.COUNTRY_CODEを`で囲んでください。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h3 id="revenue_csvのorder_statusの値が1-bookedのフィルタを設定">REVENUE_csvのORDER_STATUSの値が”1-Booked”のフィルタを設定</h3>
+<p>CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、CUSTOMERS_jsonのフィルタ設定の1～4までの手順を行います。<br />
+5の条件を以下の記載にします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">フィルタ_2.REVENUE_CSV.ORDER_STATUS='1-Booked'</code></p>
+
+<p>設定後のキャンバスは各ソースにフィルタが続く形になります。</p>
+
+<p><img src="filter3.png" alt="フィルタ3" /></p>
+
+<h2 id="データの変換">データの変換</h2>
+<p>フィルタ後のCUSTOMERS_JSONデータに対して以下の変換を行います。</p>
+<ul>
+  <li>STATE_PROVINCEの値を大文字に変換</li>
+  <li>FIRST_NAMEとLAST_NAMEを連結させたFULLNAMEという属性を生成</li>
+</ul>
+
+<h3 id="state_provinceの値を大文字に変換">STATE_PROVINCEの値を大文字に変換</h3>
+<p>STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フィルタ_1のプロパティで<strong>データ</strong>タブを選択し、検索ボックスに<code class="language-plaintext highlighter-rouge">STATE*</code>と入力します。</p>
+<blockquote>
+  <p>フィルタ後なのでCOUNTRY_CODEがUSのデータのみが表示されます</p>
+</blockquote>
+
+<p><img src="afterfilterdata.png" alt="フィルタ後のデータ" /></p>
+
+<p>各属性には・が縦に3つ並んだメニューボタンがあります。STATE_PROVINCEのボタンをクリックし<strong>大/小文字の変更</strong>を選択し、設定を行います。
+大文字に変更するため、タイプには大文字を選択し、他はそのままにします。</p>
+
+<p><img src="changecase.png" alt="大文字小文字変換" /></p>
+
+<p>適用をクリックすると、キャンバスに大文字に変換するための式を持った<strong>式演算子</strong>が自動的に追加されます。</p>
+
+<p><img src="expression.png" alt="式演算子" /></p>
+
+<h3 id="fullname属性の生成">FULLNAME属性の生成</h3>
+<p>次にFIRST_NAMEとLAST_NAMEを連結させたFULLNAMEという属性を新しく生成します。
+左の演算子ペインから<strong>式演算子</strong>をキャンバスにドラッグアンドした後、式_1にカーソルを置き、表示された<strong>コネクタ</strong>を追加した式演算子(式_2)にドラッグアンドドロップします。</p>
+
+<p><img src="expression2.png" alt="式演算子2" /></p>
+
+<p>プロパティで、<strong>式の追加</strong>をクリックします。識別子に<code class="language-plaintext highlighter-rouge">FULLNAME</code>、長さに<code class="language-plaintext highlighter-rouge">200</code>と入力します。
+次に<strong>式ビルダー</strong>で<strong>ファンクション</strong>タブから<strong>CONCAT</strong>を右のエリアにドラッグアンドドロップします。</p>
+
+<p><img src="concat.png" alt="CONCAT関数" /></p>
+
+<p>結果が”FIRSTNAME LASTNAME”となるようにCONCAT式を以下のように編集し、追加をクリックします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">CONCAT(CONCAT(式_1.CUSTOMERS_JSON.FIRST_NAME, ' '),式_1.CUSTOMERS_JSON.LAST_NAME)</code></p>
+
+<blockquote>
+  <p>式の変数をダブルクリックで選択し、受信タブに表示されている属性をダブルクリックするとその変数に属性を代入することができます。</p>
+
+  <p><img src="parareplace.png" alt="変数への代入" /></p>
+</blockquote>
+
+<h2 id="データの結合">データの結合</h2>
+<p>変換をかけたCSVデータとJSONデータをキーで結合します。<strong>結合演算子</strong>をキャンバスにドラッグアンドドロップし、各ソースの終端の演算子の<strong>コネクタ</strong>を結合演算子にドラッグアンドドロップします。</p>
+
+<p><img src="join.png" alt="結合演算子" /></p>
+
+<p>追加した結合演算子（結合_1)のプロパティで<strong>結合条件</strong>の<strong>作成</strong>をクリックします。<strong>条件ビルダー</strong>で<strong>受信</strong>タブから属性をドラッグアンドドロップして、CUSTOMER_JSONのCUST_IDとREVENUE_CSVのCUST_KEYの結合になるよう編集し、作成をクリックします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">結合_1_1.CUSTOMERS_JSON.CUST_ID = 結合_1_2.REVENUE_CSV.CUST_KEY</code></p>
+
+<p><img src="join2.png" alt="結合演算子2" /></p>
+
+<h2 id="ターゲットの設定">ターゲットの設定</h2>
+<p><strong>ターゲット演算子</strong>をキャンバスにドラッグアンドドロップします。結合_1のコネクタをターゲットにドラッグします。</p>
+
+<p><img src="target.png" alt="ターゲット演算子" /></p>
+
+<p>ターゲットはAutonomous Databaseです。以下の値を設定します。</p>
+
+<ul>
+  <li>識別子 : CUSTEOMERS_TARGET(以下を設定すると自動入力されます)
+    <ul>
+      <li>データ・アセット : Data_Warehouse</li>
+      <li>接続 : Default Connection</li>
+      <li>スキーマ : BETA</li>
+      <li>データ・エンティティ : CUSTOMERS_TARGET</li>
+      <li>ステージングの場所 : データ・アセットを作成するときに指定したバケットが自動入力されるのでそのまま選択します</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="target2.png" alt="ターゲット" /></p>
+
+<p>次に入力属性とターゲットとのマッピングを確認します。プロパティの<strong>マップ</strong>タブをクリックします。</p>
+
+<p><img src="mapping.png" alt="マッピング" /></p>
+
+<p>デフォルトですべての属性は名前で自動的にマッピングされ、<strong>マップ済み</strong>に分類されます。例えばソース属性のCUST_IDはターゲット属性のCUST_IDにマップされます。<br />
+対して、マッピングされていない属性は<strong>未マップ</strong>に分類されます。それらに対しては手動でマッピングを行うことができます。　　</p>
+
+<p>ソース属性のFULLNAMEとターゲット属性のFULL_NAMEをマッピングしましょう。ソース属性、ターゲット属性ともに<strong>未マップ属性</strong>のみを表示させ、ソース属性のFULLNAMEをターゲット属性のFULL_NAMEにドラッグアンドドロップをしてマッピングします。</p>
+
+<p><img src="manualmapping.png" alt="手動マッピング" /></p>
+
+<blockquote>
+  <p>マッピング・ルールはマップタブの右上にあるプルダウン・メニュー<strong>ルールの表示</strong>で確認することができます。<strong>アクション</strong>ではマッピング・ルールの設定ができます。</p>
+
+  <p><img src="mappingrule.png" alt="マッピングルール" /></p>
+</blockquote>
+
+<h2 id="検証と保存">検証と保存</h2>
+<p>作成したフローに対して<strong>検証</strong>をクリックしてエラーや警告がないかを確認します。エラーや警告がある場合は、その要因となった演算子が表示されますので、確認し対処を行います。</p>
+
+<p><img src="validation.png" alt="検証" /></p>
+
+<p>検証で問題がないことを確認後<strong>保存</strong>します。</p>
+<blockquote>
+  <p>保存時に次のエラーが出力された場合は条件ビルダーや式ビルダ―でマルチバイトの属性名が`で囲まれているかどうかを確認してください</p>
+
+  <p><img src="null.png" alt="ＮULLエラー" /></p>
+</blockquote>
+
+<p><a id="anchor7"></a></p>
+
+<h1 id="7-タスクの作成">7. タスクの作成</h1>
+<p><strong>タスク</strong>はデータに対する一連のアクションを指定するリソースです。タスクには種類がありますが、データ・フローを呼び出す場合は統合タスクを利用します。</p>
+
+<p>プロジェクトDI_Labの<strong>詳細</strong>から<strong>タスク</strong>を選択後、<strong>タスクの作成</strong>をクリックし表示されるプルダウンメニューから<strong>統合</strong>を選択します。
+統合タスクの作成では以下を設定します。</p>
+
+<ul>
+  <li>名前：Load Customers lab</li>
+  <li>データ・フロー：選択リンクをクリックし、Load Customers and Revenue Dataを選択します</li>
+</ul>
+
+<p>データ・フローを選択をすると自動的に検証が行われます。検証の成功を確認し、<strong>Create and Close</strong>をクリックします。</p>
+
+<p><img src="task.png" alt="タスク" /></p>
+
+<p><a id="anchor8"></a></p>
+
+<h1 id="8-アプリケーションの作成とタスクの公開と実行">8. アプリケーションの作成とタスクの公開と実行</h1>
+<p><strong>アプリケーション</strong>はタスクを実行するコンテナです。タスクはアプリケーションに公開し、アプリケーションから実行します。</p>
+
+<h2 id="アプリケーションの作成">アプリケーションの作成</h2>
+<p><strong>ホーム</strong>タブを選択し、<strong>クイック・アクション</strong>から<strong>アプリケーションの作成</strong>をクリックします。<br />
+アプリケーションの作成では名前を<code class="language-plaintext highlighter-rouge">Lab Application</code>と入力し、<strong>作成</strong>をクリックします。</p>
+
+<p><img src="application.png" alt="アプリケーションの作成" /></p>
+
+<h2 id="タスクをアプリケーションへ公開">タスクをアプリケーションへ公開</h2>
+<p>アプリケーションが作成できたので、タスクを公開します。<br />
+プロジェクトDI_Labの<strong>詳細</strong>から<strong>タスク</strong>を選択し、作成済みのタスクLoad Customers labの右端の3つの点が縦に並ぶメニューボタンから<strong>アプリケーションに公開</strong>を選択します。公開する<strong>アプリケーション名</strong>にプルダウン・メニューから<strong>Lab Application</strong>を選択して、<strong>公開</strong>をクリックします。</p>
+
+<p><img src="taskpublsh.png" alt="タスクの公開" /></p>
+
+<p>タスクを公開するとアプリケーションLab Applicationに<strong>パッチ</strong>という形で更新が行われます。進行状況は<strong>アプリケーション</strong>の<strong>詳細</strong>にある<strong>パッチ</strong>から監視できます。<strong>リフレッシュ</strong>をクリックし、ステータスが成功になれば公開完了です。</p>
+
+<p><img src="patch.png" alt="パッチ" /></p>
+
+<h2 id="タスクの実行">タスクの実行</h2>
+<p>公開されたタスクは<strong>アプリケーション</strong>の<strong>詳細</strong>の<strong>タスク</strong>の下に表示され、右端のメニューボタンから<strong>実行</strong>を選択することができます。
+公開したLoad Customers Labを実行しましょう。</p>
+
+<p><img src="executetask.png" alt="実行" /></p>
+
+<p>実行すると自動的に<strong>アプリケーション</strong>の<strong>詳細</strong>の<strong>実行</strong>に遷移します。<strong>リフレッシュ</strong>をクリックすることで進捗ステータスを確認することができます。</p>
+
+<p><img src="execute.png" alt="実行" /></p>
+
+<p>また<strong>タスク名</strong>をクリックすると、タスクの過去5回の実行比較や平均実行時間や最大/最小ランタイムの確認が可能です。</p>
+
+<p><img src="executedetail.png" alt="実行詳細" /></p>
+
+<p>実行でエラーが生じた場合のログもこちらから確認ができます。以下の例ではデータベースの表領域を使用する権限がなかったためということがわかります。</p>
+
+<p><img src="executelog.png" alt="ログの表示" /></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>オブジェクト・ストレージからデータベースへデータをフィルタ、変換、結合してロードする統合タスクのチュートリアルを紹介しました。
+<a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=859" target="_blank"><strong>LiveLabsのワークショップ</strong></a>では複数のタスクの組み合わせおよび連携させるパイプライン機能やスケジュール機能を体験できます。そちらもぜひご活用ください。</p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li>マニュアル『<a href="https://docs.oracle.com/en-us/iaas/data-integration/home.htm" target="_blank">Data Integration</a>』</li>
+  <li>LiveLabs 『<a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=859" target="_blank">Introduction to Oracle Cloud Infrastructure (OCI) Data Integration Workshop</a>』</li>
+  <li>LiveLabsの使い方(参考）『<a href="../../database/adb103-livelabs/#anchor1" target="_blank">103: Oracle LiveLabsのご紹介(Database Actions)</a>』</li>
+  <li><a href="https://blogs.oracle.com/dataintegration/oracle-cloud-infrastructure-data-integration" target="_blank">Oracle Cloud Infrastructure Data Integration Blog（英語）</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-05T17:56:08+09:00">August 5, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Data+Integration%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Focidi-tutorials%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Focidi-tutorials%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Focidi-tutorials%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/blockchain-tutorial/" class="pagination--pager" title="Oracle Blockchain Platform チュートリアル
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
