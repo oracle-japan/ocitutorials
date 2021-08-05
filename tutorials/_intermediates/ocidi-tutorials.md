@@ -17,7 +17,7 @@ header:
 ![OCIDIの説明イメージ](ocidi.png)
 
 このチュートリアルではオブジェクト・ストレージ上のデータを変換し、Autonomous Databaseにロードを行っていきます。  
->[OCI Data Integrationドキュメント](https://docs.oracle.com/en-us/iaas/data-integration/tutorial/tutorials/index.htm)に掲載されている内容の一部です。
+>[OCI Data Integrationドキュメント](https://docs.oracle.com/en-us/iaas/data-integration/tutorial/tutorials/index.htm){:target="_blank"}に掲載されているチュートリアルの一部です。
 
 ![チュートリアル説明イメージ](ociditutorial.png)
 
@@ -27,7 +27,7 @@ header:
   + [2.Data Integrationを利用するための準備](#anchor2)
   + [3.ワークスペースの作成](#anchor3)
   + [4.データ・アセットの作成](#anchor4)
-  + [5.プロジェクトとデータフローの作成](#anchor5)
+  + [5.プロジェクトとデータ・フローの作成](#anchor5)
   + [6.データ・フローの編集](#anchor6)
   + [7.タスクの作成](#anchor7)
   + [8.アプリケーションの作成とタスクの公開と実行](#anchor8)
@@ -48,13 +48,13 @@ header:
 
   + **ファイルへのリンク :** [CUSTOMERS.json](https://bit.ly/2BaP1QP) / [REVENUE.csv](https://bit.ly/2B9qVWL)
 
-バケットの作成とファイルのアップロード手順は["その7 - オブジェクト・ストレージを使う"](../../beginners/object-storage/)をご確認ください。
+バケットの作成とファイルのアップロード手順は["その7 - オブジェクト・ストレージを使う"](../../beginners/object-storage/){:target="_blank"}をご確認ください。
 
 ![バケット](bucket.png)
 
 
 ## ターゲット：Autonomous Database
-Autonomous Databaseインスタンスを作成しユーザーを作成します。手順は["101:ADBインスタンスを作成してみよう"](../../database/adb101-provisioning/)をご確認ください。ユーザ名は任意ですが、このチュートリアルでは、``BETA``とします。作成したユーザBETAで以下のSQLでCUSTOMER_TARGET表を作成してください。  
+Autonomous Databaseインスタンスを作成しユーザーを作成します。手順は["101:ADBインスタンスを作成してみよう"](../../database/adb101-provisioning/){:target="_blank"}をご確認ください。ユーザー名は任意ですが、このチュートリアルでは、``BETA``とします。作成したユーザーBETAで以下のSQLでCUSTOMER_TARGET表を作成してください。  
 
    <details>
    <summary>CUSTOMERS_TARGET表作成SQL</summary>
@@ -117,13 +117,13 @@ Data Integrationを利用するためには以下が必要です。
 1. 必要なポリシーの作成
 
 ## VCNとサブネットの作成
-Data Integrationで利用するコンパートメントでVCNとサブネットを作成します。手順は["その2-クラウドに仮想ネットワーク(VCN)"](../../beginners/creating-vcn/)をご確認ください。作成したサブネットから利用するAutonomous Database、オブジェクト・ストレージへ接続可能である必要があるため、サービス・ゲートウェイをターゲット・タイプに含めるルート・ルールをルート表に追加します。
+Data Integrationで利用するコンパートメントでVCNとサブネットを作成します。手順は["その2-クラウドに仮想ネットワーク(VCN)を作る"](../../beginners/creating-vcn/){:target="_blank"}をご確認ください。作成したサブネットから利用するAutonomous Database、オブジェクト・ストレージへ接続可能である必要があるため、サービス・ゲートウェイをターゲット・タイプに含めるルート・ルールをルート表に追加します。
 
 ![ルート・ルールの追加イメージ](addroute.png)
 
 ## 必要なポリシーの作成
 ポリシーを作成します。
-OCI管理者ユーザでログインし、OCIコンソールのナビゲーションメニューで**アイデンティティとセキュリティ**に移動し、**ポリシー**を選択します。次にコンパートメントを選択し、**ポリシーの作成**をクリックします。
+OCI管理者ユーザーでログイン後、OCIコンソールのナビゲーションメニューで**アイデンティティとセキュリティ**に移動し、**ポリシー**を選択します。次にコンパートメントを選択し、**ポリシーの作成**をクリックします。
 
 ![ポリシー追加の説明1](addpolicy1.png)
 
@@ -139,7 +139,7 @@ OCI管理者ユーザでログインし、OCIコンソールのナビゲーシ�
   + 許可をするグループとコンパートメントの指定が必須。
 + **ユーザーにワークスペース内のオブジェクトの検索を許可**  
   + 指定ワークスペースでデータ統合のコンポーネント検索を許可 
-  + テナンシ・レベルでのみ定義可  
+  + テナンシレベルでのみ定義可  
 + **ユーザーおよびリソース・プリンシパルに指定ワークスペースのオブジェクト・ストレージへのアクセスと使用を許可**  
   + Data Integrationがソース/ターゲットにオブジェクト・ストレージを利用することを許可  
   + 許可をするグループとコンパートメントの指定が必須  
@@ -175,7 +175,7 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 <a id="anchor4"></a>
 
 # 4. データ・アセットの作成
-**データ・アセット**はData Integrationで利用するデータソースのことです。1のオブジェクト・ストレージとAutonomous Databaseのためのデータ・アセットを作成します。  
+**データ・アセット**はData Integrationで利用するデータ・ソースを表します。1のオブジェクト・ストレージとAutonomous Databaseのためのデータ・アセットを作成します。  
 
 ワークスペースのホームの**クイック・アクション**から**データ・アセットの作成**をクリックしましよう。
 データ・アセットの作成では、**タイプ**を選択し、タイプに合わせた項目を入力していきます。
@@ -190,7 +190,7 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
   + タイプ：Oracle Object Storage
   + URL: https://objectstorage.<リージョン名>.oraclecloud.com  
     + 利用するオブジェクト・ストレージのリージョン名(例：ap-tokyo-1)を<リージョン名>に入力したURL　
-  + テナントOCID : コンソールのガバナンスと管理からテナンシー詳細を選択し、テナンシ情報のOCIDを確認
+  + テナントOCID : コンソールのガバナンスと管理からテナンシ詳細を選択し、テナンシ情報のOCIDを確認
     ![テナンシのOCID](tenancyocid.png)
   + ネームスペース：自動入力
 
@@ -200,7 +200,7 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
   + タイプ：Oracle Autonomous Data Warehouse
   + 資格証明の設定の選択 : ウォレットのアップロードを選択しウォレットファイルをアップロード
   + 接続サービスの選択：ウォレットファイルのアップロードにより自動的に表示される接続サービスの中から選択
-  + デフォルトの接続情報：　ユーザ名 BETA、パスワード BETAのパスワード
+  + デフォルトの接続情報：　ユーザー名 BETA、パスワード BETAのパスワード
   + デフォルトのステージングの場所 :
     + データ・アセット : Data_Lake
     + 接続 : デフォルトの接続
@@ -213,8 +213,8 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 
 <a id="anchor5"></a>
 
-# 5. プロジェクトとデータフローの作成
-**プロジェクト**は設計に関わるリソースのコンテナです。**データ・フロー**はプロジェクトの下で作成されるソース・システムとターゲット・システム間のデータの流れ/操作を定義するリソースです。プロジェクトを作成し、データ・ソースの作成およびそのうえでフローを定義していきます。
+# 5. プロジェクトとデータ・フローの作成
+**プロジェクト**は設計に関わるリソースのコンテナです。**データ・フロー**はプロジェクトの下で作成されるソース・システムとターゲット・システム間のデータの流れ/操作を定義するリソースです。プロジェクトを作成し、データ・フローを作成していきます。
 
 ## プロジェクトの作成
 ホーム画面から**プロジェクト**をクリックし**プロジェクトの作成**をクリックします。プロジェクトは``DI_Lab``という名前で作成します。
@@ -222,7 +222,7 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 ![プロジェクト作成](createproject.png)
 
 ## データ・フローの作成 
-プロジェクトのメニューで**データ・フロー**を選択します。**データフローの作成**をクリックするとデータフロー・エディタというビジュアルエディタが起動します。  
+プロジェクトのメニューで**データ・フロー**を選択します。**データ・フローの作成**をクリックするとデータ・フロー・エディタというビジュアルエディタが起動します。  
 表示されるプロパティで名前を"新規データ・フロー"から``Load Customers and Revenue Data``に変更しましょう。  
 
 ![flowの名前変更](flowname.png)
@@ -256,7 +256,7 @@ CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、
 
 + 識別子 : REVENUE_CSV(以下を設定後自動入力されます)
   + データ・アセット : Data_Lake
-  + 接続 : Default Conection
+  + 接続 : Default Connection
   + スキーマ : <バケット名>
   + データ・エンティティ : REVENUE.csv
     + ファイル・タイプ : CSV
@@ -282,11 +282,11 @@ CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、
 ### CUSTOMERS_jsonのCOUNTRY_CODEの値が"US"のフィルタを設定
 
 1. **フィルタ演算子**をキャンパスにドラッグアンドドロップします。
-1. ソースのCUSTOMERS_JSONにカーソルをおき、表示される丸い形の**コネクタ**を追加したフィルターにドラッグアンドドロップします。 
+1. ソースのCUSTOMERS_JSONにカーソルをおき、表示される丸い形の**コネクタ**を追加したフィルタにドラッグアンドドロップします。 
 
    ![フィルタ1](filter1.png)
 
-1. フィルターのプロパティで**フィルター条件**の**作成**をクリックします。
+1. フィルタのプロパティで**フィルタ条件**の**作成**をクリックします。
 1. **条件ビルダー**の**受信**から属性**COUNTRY_CODE**をエディタにドラッグアンドドロップします。  
   ![フィルタ1](filter2.png)
 
@@ -318,7 +318,7 @@ CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、C
 STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フィルタ_1のプロパティで**データ**タブを選択し、検索ボックスに``STATE*``と入力します。
 > フィルタ後なのでCOUNTRY_CODEがUSのデータのみが表示されます
 
-![フィルター後のデータ](afterfilterdata.png)
+![フィルタ後のデータ](afterfilterdata.png)
 
 
 各属性には・が縦に3つ並んだメニューボタンがあります。STATE_PROVINCEのボタンをクリックし**大/小文字の変更**を選択し、設定を行います。
@@ -349,7 +349,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 ```CONCAT(CONCAT(式_1.CUSTOMERS_JSON.FIRST_NAME, ' '),式_1.CUSTOMERS_JSON.LAST_NAME)```
 
 
->式の変数をダブルクリックで選択し、受信タブに表示されている列をダブルクリックするとその変数に列が代入することができます。
+>式の変数をダブルクリックで選択し、受信タブに表示されている属性をダブルクリックするとその変数に属性を代入することができます。
 >
 >![変数への代入](parareplace.png)
 
@@ -359,7 +359,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 ![結合演算子](join.png)
 
-追加した結合演算子（結合_1)のプロパティで**結合条件**の**作成**をクリックします。**条件ビルダー**で**受信**タブから属性をドラッグアンドドロップして、CUSTOMER_JSONのCUST_IDとREVENUE_CSVのCUST_KEYの結合になるよう以下のとおり編集し、作成をクリックします。  
+追加した結合演算子（結合_1)のプロパティで**結合条件**の**作成**をクリックします。**条件ビルダー**で**受信**タブから属性をドラッグアンドドロップして、CUSTOMER_JSONのCUST_IDとREVENUE_CSVのCUST_KEYの結合になるよう編集し、作成をクリックします。  
 
 
 ``結合_1_1.CUSTOMERS_JSON.CUST_ID = 結合_1_2.REVENUE_CSV.CUST_KEY``
@@ -395,7 +395,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 ![手動マッピング](manualmapping.png)
 
->マッピング・ルールはルール・プルダウンで確認することができます。またアクション・プルダウンではマッピング・ルールの設定ができます。
+>マッピング・ルールはマップタブの右上にあるプルダウン・メニュー**ルールの表示**で確認することができます。**アクション**ではマッピング・ルールの設定ができます。
 >
 >![マッピングルール](mappingrule.png)
 
@@ -419,7 +419,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 統合タスクの作成では以下を設定します。
 
 + 名前：Load Customers lab  
-+ データ・フロー：選択リンクをクリックし、Load Customers and Revnue Dataを選択します
++ データ・フロー：選択リンクをクリックし、Load Customers and Revenue Dataを選択します
 
 データ・フローを選択をすると自動的に検証が行われます。検証の成功を確認し、**Create and Close**をクリックします。
 
@@ -468,14 +468,15 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 ![ログの表示](executelog.png)
 
 # おわりに
-オブジェクトストレージからデータベースへデータをフィルタ、変換、結合してロードする統合タスクのチュートリアルを紹介しました。
-[**LiveLabsのワークショップ**](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=859)では複数のタスクの組み合わせおよび連携させるパイプライン機能やスケジュール機能を体験できます。そちらもぜひご活用ください。
+オブジェクト・ストレージからデータベースへデータをフィルタ、変換、結合してロードする統合タスクのチュートリアルを紹介しました。
+[**LiveLabsのワークショップ**](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=859){:target="_blank"}では複数のタスクの組み合わせおよび連携させるパイプライン機能やスケジュール機能を体験できます。そちらもぜひご活用ください。
 
 
 # 参考資料
-+ マニュアル『[Data Integration](https://docs.oracle.com/en-us/iaas/data-integration/home.htm)』 
-+ LiveLabs 『[Introduction to Oracle Cloud Infrastructure (OCI) Data Integration Workshop](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=859)』  
-+ [Oracle Cloud Infrastructure Data Integration Blog（英語）](https://blogs.oracle.com/dataintegration/oracle-cloud-infrastructure-data-integration) 
++ マニュアル『[Data Integration](https://docs.oracle.com/en-us/iaas/data-integration/home.htm){:target="_blank"}』 
++ LiveLabs 『[Introduction to Oracle Cloud Infrastructure (OCI) Data Integration Workshop](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=859){:target="_blank"}』  
++ LiveLabsの使い方(参考）『[103: Oracle LiveLabsのご紹介(Database Actions)](../../database/adb103-livelabs/#anchor1){:target="_blank"}』  
++ [Oracle Cloud Infrastructure Data Integration Blog（英語）](https://blogs.oracle.com/dataintegration/oracle-cloud-infrastructure-data-integration){:target="_blank"}
 
 
 <BR>
