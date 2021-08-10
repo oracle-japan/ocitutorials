@@ -190,7 +190,7 @@ Storage Namespace|[ワークショップで利用するアカウント情報の�
 
 **1.オブジェクト・ストレージ・ネームスペース**
 
-OCIコンソール左上のハンバーガーメニューを展開し、「管理」⇒「テナンシ詳細」に移動します。
+OCIコンソール左上のハンバーガーメニューを展開し、「ガバナンスと管理」⇒「テナンシ詳細」に移動します。
 
 以下をコピーしてメモしてください。
 
@@ -524,7 +524,7 @@ ATPのプロビジョニングが開始されます。ステータスが"使用�
 ATPに接続するため資格情報となるWalletファイルを作成します。
 
 **受講者の方へ**  
-Walletファイルについては[マニュアル](https://docs.oracle.com/cd/E83857_01/paas/atp-cloud/atpug/connect-jdbc-thin-wallet.html#GUID-5ED3C08C-1A84-4E5A-B07A-A5114951AA9E)をご確認ください。
+Walletファイルについては[マニュアル](https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/connect-jdbc-thin-wallet.html#GUID-5ED3C08C-1A84-4E5A-B07A-A5114951AA9E)をご確認ください。
 なお、Walletファイルはzipファイルです。
 {: .notice--info}
 
