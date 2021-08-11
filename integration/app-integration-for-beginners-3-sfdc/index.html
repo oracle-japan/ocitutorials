@@ -1,0 +1,1074 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>SFDCからアウトバンドメッセージを受信する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="SFDCからアウトバンドメッセージを受信する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">
+
+
+  <meta property="og:description" content="このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-08-11T16:54:51+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          SFDCからアウトバンドメッセージを受信する
+
+        
+      </h1>
+      
+        <p class="page__lead">このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">SFDCからアウトバンドメッセージを受信する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/" class="active">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="SFDCからアウトバンドメッセージを受信する">
+    <meta itemprop="description" content="このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。">
+    <meta itemprop="datePublished" content="2021-08-11T16:54:51+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#前提条件">前提条件</a>
+    <ul>
+      <li><a href="#バージョン">バージョン</a></li>
+      <li><a href="#インスタンスの作成">インスタンスの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#事前準備">事前準備</a>
+    <ul>
+      <li><a href="#sfdcアカウントを取得する">SFDCアカウントを取得する</a></li>
+      <li><a href="#developer-edition-サインアップ手順">Developer Edition サインアップ手順</a></li>
+      <li><a href="#apiバージョンを確認する">APIバージョンを確認する</a></li>
+      <li><a href="#セキュリティトークンの取得">セキュリティトークンの取得</a></li>
+      <li><a href="#ワークフロールールの作成">ワークフロールールの作成</a></li>
+      <li><a href="#アウトバウンドメッセージの作成">アウトバウンドメッセージの作成</a></li>
+      <li><a href="#sfdc接続の作成">SFDC接続の作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#統合の作成">統合の作成</a>
+    <ul>
+      <li><a href="#アプリケーション主導のオーケストレーションの作成">アプリケーション主導のオーケストレーションの作成</a></li>
+      <li><a href="#sfdc-接続の構成">SFDC 接続の構成</a></li>
+      <li><a href="#ロガーの構成">ロガーの構成</a></li>
+      <li><a href="#トラッキングの構成">トラッキングの構成</a></li>
+    </ul>
+  </li>
+  <li><a href="#統合のアクティブ化">統合のアクティブ化</a></li>
+  <li><a href="#sfdc-アウトバウンドメッセージのエンドポイントurlの更新">SFDC アウトバウンドメッセージのエンドポイントURLの更新</a></li>
+  <li><a href="#動作確認">動作確認</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルは、Salesforce(SFDC)側で新規商談(Opportunity)が登録されたら、SFDCのアウトバウンドメッセージが送信され、OIC の統合が起動される一連の動作を確認します。</p>
+
+<p><img src="000.png" alt="" /></p>
+
+<p>このハンズオンを通じて、以下のポイントを理解することができます。</p>
+
+<ul>
+  <li>SFDC アダプターの実装方法</li>
+  <li>SFDC アダプター経由で SFDC アウトバンドメッセージを受信する方法</li>
+  <li>アプリケーション主導のオーケストレーションの実装</li>
+  <li>ロガーによるログ出力方法</li>
+</ul>
+
+<h2 id="前提条件">前提条件</h2>
+
+<h3 id="バージョン">バージョン</h3>
+<p>このハンズオンの内容は、Oracle Integration 21.2.3.0.0 (210505.1400.40951) 時点の内容で作成されています。最新の UI とは異なっている場合があります。最新情報については、製品マニュアルをご参照ください。</p>
+
+<ul>
+  <li>Oracle Integration <br />
+<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/books.html">https://docs.oracle.com/en/cloud/paas/integration-cloud/books.html</a> <br />
+<a href="https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/books.html">https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/books.html (日本語翻訳版)</a></li>
+</ul>
+
+<h3 id="インスタンスの作成">インスタンスの作成</h3>
+<p>Oracle Integration インスタンスの作成済であること。OIC インスタンスの作成方法は、以下の製品マニュアルや日本語チュートリアルをご確認ください。</p>
+
+<ul>
+  <li><a href="../integration-for-commons-1-instance/">OIC インスタンスを作成する(Oracle Integration チュートリアル)</a></li>
+  <li>Provisioning and Administering Oracle Integration and Oracle Integration for SaaS, Generation 2 <br />
+<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/index.html">https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/index.html</a> <br />
+<a href="https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/oracle-integration-oci/index.html">https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/oracle-integration-oci/index.html (日本語翻訳版)</a></li>
+</ul>
+
+<h2 id="事前準備">事前準備</h2>
+
+<h3 id="sfdcアカウントを取得する">SFDCアカウントを取得する</h3>
+<p>SFDC アカウントを取得します。無償の開発環境も提供されていますので、必要であれば取得します。</p>
+
+<h3 id="developer-edition-サインアップ手順">Developer Edition サインアップ手順</h3>
+<p><a href="https://developer.salesforce.com/jpblogs/2016/04/developer-edition-signup/">https://developer.salesforce.com/jpblogs/2016/04/developer-edition-signup/</a>
+<a href="https://login.salesforce.com">https://login.salesforce.com</a> にアクセスし、サイン・インできることを確認します。</p>
+
+<h3 id="apiバージョンを確認する">APIバージョンを確認する</h3>
+<p>以下のナレッジを参考に、SFDC の API バージョンを確認します。</p>
+
+<ul>
+  <li>Salesforce の Edition および API バージョンを確認する方法
+<a href="https://help.salesforce.com/articleView?id=000334996&amp;type=1&amp;mode=1">https://help.salesforce.com/articleView?id=000334996&amp;type=1&amp;mode=1</a></li>
+</ul>
+
+<h3 id="セキュリティトークンの取得">セキュリティトークンの取得</h3>
+<p>セキュリティ・トークンを取得します。セキュリティ・トークンは、OICのSalesforceアダプタ構成時に利用します。すでに取得済であれば、この作業はスキップすることができます。</p>
+
+<ol>
+  <li>Salesforce の 「設定」 画面を開きます。</li>
+  <li>右上のユーザーアイコン→ 「設定」 をクリックします。</li>
+  <li>左ナビゲーションの 「私の個人情報」→「私のセキュリティトークンのリセット」 をクリックします。</li>
+  <li>「セキュリティトークンのリセット」 をクリックします。 <br />
+<img src="001.png" alt="" /></li>
+  <li>新しいセキュリティトークンが電子メールで送付されるので、メモします。</li>
+</ol>
+
+<h3 id="ワークフロールールの作成">ワークフロールールの作成</h3>
+<p>ここでは、SFDCにて新規商談（Opportunity）が フェーズ=Prospecting で作成時に起動されるワークフロールールを作成します。</p>
+
+<ol>
+  <li>Salesforce の「ホーム」画面を開きます。</li>
+  <li>「プロセスの自動化」→「ワークフロールール」 をクリックします。</li>
+  <li>「新規ルール」 をクリックします。 <br />
+<img src="002.png" alt="" /></li>
+  <li>オブジェクトで 「商談」 を選択し、「次へ」 をクリックします。 <br />
+<img src="003.png" alt="" /></li>
+  <li>ワークフロールールを以下の通りの設定し、「保存&amp;次へ」 をクリックします。</li>
+</ol>
+
+<ul>
+  <li>ルールの編集</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ルール名</td>
+      <td>OpportunityRule</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>（任意）</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>評価条件</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>レコードが次の場合にルールを評価</td>
+      <td>作成されたとき、およびその後基準を満たすように編集されたとき</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>ルールの条件</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>次の場合にこのルールを実行</td>
+      <td>一致</td>
+    </tr>
+    <tr>
+      <td>項目</td>
+      <td>商談: フェーズ</td>
+    </tr>
+    <tr>
+      <td>演算子</td>
+      <td>次の文字列と一致する</td>
+    </tr>
+    <tr>
+      <td>値</td>
+      <td>Prospecting</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="004.png" alt="" /></p>
+
+<h3 id="アウトバウンドメッセージの作成">アウトバウンドメッセージの作成</h3>
+<p>続けて、ワークフローアクションを指定します。</p>
+
+<p>「ワークフローアクションの追加」 で 「新規アウトバウンドメッセージ」 を選択します。</p>
+
+<p><img src="005.png" alt="" /></p>
+
+<p>新規アウトバウンドメッセージの作成画面が開きます。以下を入力し、「保存」 をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>MyOpportunityOutbound</td>
+    </tr>
+    <tr>
+      <td>一意の名前</td>
+      <td>(入力不要)</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>(任意)</td>
+    </tr>
+    <tr>
+      <td>エンドポイントURL</td>
+      <td>www.oracle.com<br />※ここで設定したエンドポイントURLは、ダミーのURLです。<br />後の手順で、OIC で作成した統合のエンドポイントURLに書き換えます。</td>
+    </tr>
+    <tr>
+      <td>送信ユーザー</td>
+      <td>(入力不要)</td>
+    </tr>
+    <tr>
+      <td>保護コンポーネント</td>
+      <td>選択しない</td>
+    </tr>
+    <tr>
+      <td>送信セッションID</td>
+      <td>選択しない</td>
+    </tr>
+    <tr>
+      <td>送信する商談項目</td>
+      <td>すべての項目を「選択済の項目」に移動</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="006.png" alt="" /></p>
+
+<p>「完了」 をクリックします。</p>
+
+<p><img src="007.png" alt="" /></p>
+
+<p>「有効化」 をクリックし、ワークフロールールを有効化します。</p>
+
+<p><img src="008.png" alt="" /></p>
+
+<p>ワークフローアクションのアウトバウンドメッセージ( MyOpportunityOutbound )をクリックします。</p>
+
+<p><img src="009.png" alt="" /></p>
+
+<p>アウトバウンドメッセージの「エンドポイント WSDL」の 「WSDL はこちら」 クリックし、WSDL ファイル( wfoutbound.wsdl )をダウンロードします。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<h3 id="sfdc接続の作成">SFDC接続の作成</h3>
+
+<p>OICに事前定義されたSFDCアダプタを利用して、SFDC接続を作成します。</p>
+
+<p>OICインスタンスにサインインします。</p>
+
+<p>「統合」→「接続」 をクリックします。</p>
+
+<p>「作成」 をクリックします。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p>「Salesforce」 を選択し、「選択」 をクリックします。</p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+検索ボックスに salesforce と入力すると、Salesforce アダプタを素早く探すことができます。</p>
+
+<p><img src="012.png" alt="" /></p>
+
+<p>接続の作成画面で以下を入力し、「作成」 をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>SFDC Adapter Connection</td>
+    </tr>
+    <tr>
+      <td>識別子</td>
+      <td>(入力不要)</td>
+    </tr>
+    <tr>
+      <td>キーワード</td>
+      <td>(任意)</td>
+    </tr>
+    <tr>
+      <td>ロール</td>
+      <td>トリガーと呼出し</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>(任意)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="013.png" alt="" /></p>
+
+<p>続けて、「接続プロパティ」 と 「セキュリティ」 を以下の通りに入力し、「テスト」 をクリックします。</p>
+
+<ul>
+  <li>接続プロパティ</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Select Salesforce.com Instance Type</td>
+      <td>Production</td>
+    </tr>
+    <tr>
+      <td>API Version</td>
+      <td>「APIバージョンの確認」で確認したバージョンを入力(例:48.0)</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>セキュリティ</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>セキュリティ・ポリシー</td>
+      <td>Salesforce Username Password Policy</td>
+    </tr>
+    <tr>
+      <td>ユーザー名</td>
+      <td>salesforce ログイン時のユーザーID</td>
+    </tr>
+    <tr>
+      <td>パスワード</td>
+      <td>salesforce ログイン時のパスワートとセキュリティトークンをつなげた文字列<br />※パスワードの入力例：SFDCへのログインパスワードが「ABCDE」、<br />セキュリティトークンが「123456」の場合は「ABCDE123456」をパスワードに設定します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="014.png" alt="" /></p>
+
+<p>「検証とテスト」 をクリックします。</p>
+
+<p><img src="015.png" alt="" /></p>
+
+<p>「正常にテストされました」 のメッセージが表示され、進捗が 100％ になります。</p>
+
+<p><img src="016.png" alt="" /></p>
+
+<p>「保存」 をクリックします。</p>
+
+<p><img src="017.png" alt="" /></p>
+
+<p>画面左の 「 &lt; 」 をクリックします。</p>
+
+<p><img src="018.png" alt="" /></p>
+
+<p class="notice--info"><strong>Memo</strong> <br />
+以前の Salesforce アダプターは、SFDC の設定画面より取得した Enterprise WSDL のアップロードが必要でしたが、最新の OIC より、その必要がなくなりました。詳細は以下 What’s New をご確認ください。<br />
+Salesforce Adapter - Elimination of WSDL upload task on the Connections page <br />
+<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/whats-new/index.html#INTWN-GUID-FCFEAE6B-6A2B-411E-896E-1840BCB0AF0C">https://docs.oracle.com/en/cloud/paas/integration-cloud/whats-new/index.html#INTWN-GUID-FCFEAE6B-6A2B-411E-896E-1840BCB0AF0C</a></p>
+
+<h2 id="統合の作成">統合の作成</h2>
+
+<p>前の手順で作成した SFDC Adapter Connection 接続を利用した統合を作成します。今回は アプリケーション主導のオーケストレーション を利用します。</p>
+
+<h3 id="アプリケーション主導のオーケストレーションの作成">アプリケーション主導のオーケストレーションの作成</h3>
+
+<p>OICのコンソール画面を開いて、「統合」をクリックします。</p>
+
+<p>「作成」をクリックします。</p>
+
+<p><img src="019.png" alt="" /></p>
+
+<p>「統合スタイルの選択」より、「アプリケーション主導のオーケストレーション」 を選択し、「選択」 をクリックします。</p>
+
+<p><img src="020.png" alt="" /></p>
+
+<p>名前に 「Capture SDFC Events」 を入力します。その他の項目は未入力のままで、「作成」 をクリックします。</p>
+
+<p><img src="021.png" alt="" /></p>
+
+<p>統合の作成キャンバスが表示されます。</p>
+
+<h3 id="sfdc-接続の構成">SFDC 接続の構成</h3>
+
+<p>SFDC からのアウトバウンドメッセージを受信するように、SFDC接続を構成します。</p>
+
+<p>開始の 「＋」 をクリックし、前の手順で作成した 「SFDC Adapter Connection」 を選択します。</p>
+
+<p><img src="022.png" alt="" /></p>
+
+<p>エンドポイントの名前に GetOpportunity と入力し、「次 &gt;」 をクリックします。</p>
+
+<p><img src="023.png" alt="" /></p>
+
+<p>「Select Outbound Messaging WSDL」で、事前準備でSDFCよりダウンロードした アウトバウンドメッセージの WSDL ファイル（wfoutbound.wsdl） を選択し、「次 &gt;」 をクリックします。</p>
+
+<p><img src="024.png" alt="" /></p>
+
+<p>「Send a response」 のチェックを外し、「次 &gt;」 をクリックします。</p>
+
+<p><img src="025.png" alt="" /></p>
+
+<p>「完了」 をクリックします。</p>
+
+<p><img src="026.png" alt="" /></p>
+
+<h3 id="ロガーの構成">ロガーの構成</h3>
+<p>SFDC からのアウトバウンドメッセージで受信した内容をでログ出力するように構成します。</p>
+
+<p>GetOpportunity から伸びる矢印の上にマウスをあわせ、「＋」 をクリックし、追加するコンポーネントから 「ロガー」 を選択します。</p>
+
+<p><img src="027.png" alt="" /></p>
+
+<p>名前に LogOutboundMessages と入力し、「作成」 をクリックします。</p>
+
+<p><img src="028.png" alt="" /></p>
+
+<p>Logで 「常時」 を選択し、ロガー・メッセージの 編集アイコン をクリックします。</p>
+
+<p><img src="029.png" alt="" /></p>
+
+<p>コンポーネントの 「関数」→「文字列」→concat を選択し、「 &gt; 」 をクリックします。</p>
+
+<p><img src="030.png" alt="" /></p>
+
+<p>式に concat(string1, string2) が入力されることを確認します。</p>
+
+<p><img src="031.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+ロガーアクションの設定、concat 関数の利用方法は、下記マニュアルをご参照ください。
+Log Messages with a Logger Action
+https://docs.oracle.com/en/cloud/paas/integration-cloud/integrations-user/create-orchestrated-integrations.html#GUID-5E9AED28-B0C3-4A0B-9154-6D795BAB90B4</p>
+
+<p>式に入力された concat(string1, string2)の string1 を削除し、 “名前:” に変更します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>concat("名前:",string2)
+</code></pre></div></div>
+
+<p>string2 を削除します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>concat("名前:",)
+</code></pre></div></div>
+
+<p>ソースの notifications → Notification → Opportunity → Name を選択し、「 &gt; 」 をクリックします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>concat("名前:", /nssrcmpr:notifications/nssrcmpr:Notification/nssrcmpr:Opportunity/nssrcmpr:Name)
+</code></pre></div></div>
+
+<p><img src="030.png" alt="" /></p>
+
+<p>同じ手順で、concat 関数の第3引数に “金額:” を、第4引数に notifications → Notification → Opportunity → Amount を入力します。式の記述は以下の通りとなります。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>concat("名前:", /nssrcmpr:notifications/nssrcmpr:Notification/nssrcmpr:Opportunity/nssrcmpr:Name, 
+   "金額:", /nssrcmpr:notifications/nssrcmpr:Notification/nssrcmpr:Opportunity/nssrcmpr:Amount)
+</code></pre></div></div>
+
+<p><img src="031.png" alt="" /></p>
+
+<p>「検証」 をクリックします。 「式は有効で、利用する準備ができています。」 が表示されます。</p>
+
+<p><img src="032.png" alt="" /> <br />
+<img src="033.png" alt="" /></p>
+
+<p>「閉じる」 をクリックします。</p>
+
+<p><img src="034.png" alt="" /></p>
+
+<p>「検証」 をクリックします。 「ロガー・アクションLogOutboundMessagesは有効で、使用する準備ができています。」 が表示されます。</p>
+
+<p><img src="035.png" alt="" /> <br />
+<img src="036.png" alt="" /></p>
+
+<p>「閉じる」 をクリックします。</p>
+
+<p><img src="037.png" alt="" /></p>
+
+<h3 id="トラッキングの構成">トラッキングの構成</h3>
+
+<p>統合キャンバス右上にある アクションアイコン →「トラッキング」 をクリックします。</p>
+
+<p><img src="038.png" alt="" /></p>
+
+<p>ソースの notifications → Notification → Opportunity → id を、トラッキング・フィールドにドラッグし、「保存」をクリックします。</p>
+
+<p><img src="039.png" alt="" /></p>
+
+<p>「保存」 をクリックします。</p>
+
+<p><img src="040.png" alt="" /></p>
+
+<p>「閉じる」 をクリックします。</p>
+
+<h2 id="統合のアクティブ化">統合のアクティブ化</h2>
+
+<p>作成した統合をアクティブ化します。</p>
+
+<p>作成した Capture SFDC Events の上にマウスカーソルを合わせて、「アクティブ化」 をクリックします。</p>
+
+<p><img src="041.png" alt="" /></p>
+
+<p>確認画面が表示されます。「アクティブ化」 をクリックします。</p>
+
+<p><img src="042.png" alt="" /></p>
+
+<p>統合がアクティブ状態になります。</p>
+
+<p><img src="043.png" alt="" /></p>
+
+<h2 id="sfdc-アウトバウンドメッセージのエンドポイントurlの更新">SFDC アウトバウンドメッセージのエンドポイントURLの更新</h2>
+
+<p>事前準備でダミーのURLを設定したSFDCのアウトバウンドメッセージのエンドポイントURLを、前の手順でアクティブ化した Capture SFDC Events のエンドポイントURLに変更します。</p>
+
+<p>作成した Capture SFDC Events の上にマウスカーソルを合わせて、「実行」 をクリックします。</p>
+
+<p><img src="044.png" alt="" /></p>
+
+<p>エンドポイントURL をコピーします。</p>
+
+<p><img src="045.png" alt="" /></p>
+
+<p>SFDC の設定画面を開き、作成したワークフロールール（OpportunityRule）を開きます。</p>
+
+<p>ワークフローアクションの MyOpportunityOutbound を開きます。</p>
+
+<p><img src="046.png" alt="" /></p>
+
+<p>「編集」 をクリックします。</p>
+
+<p><img src="047.png" alt="" /></p>
+
+<p>エンドポイントURL に入力した www.oracle.com を削除し、前の手順でコピーした Capture SFDC Events のエンドポイントURL を入力し、「保存」 をクリックします。</p>
+
+<p><img src="048.png" alt="" /></p>
+
+<h2 id="動作確認">動作確認</h2>
+
+<p>SFDCに「ステージ=Prospecting」の新規商談を作成し、その内容がOICに連携されることを確認します。</p>
+
+<p>SFDC のセールス画面で右上にある「＋」から「新規商談」を開きます。</p>
+
+<p><img src="049.png" alt="" /></p>
+
+<p>新規商談を1件作成します。以下の通りに入力し、「保存」 をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>商談名</td>
+      <td>Capture SFDC Event Opportunity</td>
+    </tr>
+    <tr>
+      <td>金額</td>
+      <td>1,000,000</td>
+    </tr>
+    <tr>
+      <td>完了予定日</td>
+      <td>(任意の日付)</td>
+    </tr>
+    <tr>
+      <td>フェーズ</td>
+      <td>Prospecting</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="050.png" alt="" /></p>
+
+<p>OICの統合画面に戻ります。</p>
+
+<p>Capture SFDC Events の 「実行」→「インスタンスのトラッキング」 をクリックします。</p>
+
+<p><img src="051.png" alt="" /></p>
+
+<p>インスタンスのトラッキング画面が開きます。1件のインスタンスが実行されていることが確認できます。</p>
+
+<p><img src="052.png" alt="" /></p>
+
+<p>インスタンスの上ににマウスカーソルをあわせ、「詳細の表示」 をクリックします。
+統合の実行状況を確認します。ロガー(LogOutboundMessages)に、以下のように出力されていることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Log message is: 名前:Capture SFDC Event Opportunity金額:1000000.0 
+</code></pre></div></div>
+
+<p><img src="053.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+インスタンスのトラッキングは、OICホーム→モニタリング→統合→トラッキングよりアクセスできます。</p>
+
+<p>以上で、このハンズオンは終了です</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-11T16:54:51+09:00">August 11, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=SFDC%E3%81%8B%E3%82%89%E3%82%A2%E3%82%A6%E3%83%88%E3%83%90%E3%83%B3%E3%83%89%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E3%82%92%E5%8F%97%E4%BF%A1%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fapp-integration-for-beginners-3-sfdc%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fapp-integration-for-beginners-3-sfdc%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fapp-integration-for-beginners-3-sfdc%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/" class="pagination--pager" title="CSV ファイルから JSON ファイルへの変換
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/integration/process-for-beginners-1-wf/" class="pagination--pager" title="Oracle Integration - Process で簡単なワークフローを作成してみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

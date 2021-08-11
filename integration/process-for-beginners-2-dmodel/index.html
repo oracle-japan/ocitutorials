@@ -1,0 +1,1424 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Integration - Process でデシジョン・モデルを作成してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="デシジョン・モデルを利用すると、ビジネス・ルールと業務プロセス（ワークフロー）を分離して管理・更新できます。ここでは、簡単なデシジョン・モデルを作成・公開し、それをプロセス・アプリケーションから利用する方法について習得します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Integration - Process でデシジョン・モデルを作成してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/process-for-beginners-2-dmodel/">
+
+
+  <meta property="og:description" content="デシジョン・モデルを利用すると、ビジネス・ルールと業務プロセス（ワークフロー）を分離して管理・更新できます。ここでは、簡単なデシジョン・モデルを作成・公開し、それをプロセス・アプリケーションから利用する方法について習得します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-08-11T16:54:51+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/process-for-beginners-2-dmodel/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Integration - Process でデシジョン・モデルを作成してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">デシジョン・モデルを利用すると、ビジネス・ルールと業務プロセス（ワークフロー）を分離して管理・更新できます。ここでは、簡単なデシジョン・モデルを作成・公開し、それをプロセス・アプリケーションから利用する方法について習得します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Integration - Process でデシジョン・モデルを作成してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/" class="active">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Integration - Process でデシジョン・モデルを作成してみよう">
+    <meta itemprop="description" content="デシジョン・モデルを利用すると、ビジネス・ルールと業務プロセス（ワークフロー）を分離して管理・更新できます。ここでは、簡単なデシジョン・モデルを作成・公開し、それをプロセス・アプリケーションから利用する方法について習得します。">
+    <meta itemprop="datePublished" content="2021-08-11T16:54:51+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#前提条件">前提条件</a></li>
+  <li><a href="#process-automation-で簡単なデシジョンモデルを作成する">Process Automation で簡単なデシジョン・モデルを作成する</a>
+    <ul>
+      <li><a href="#説明">説明</a></li>
+      <li><a href="#oic-インスタンスにアクセスする">OIC インスタンスにアクセスする</a></li>
+      <li><a href="#デシジョンモデルの作成">デシジョン・モデルの作成</a></li>
+      <li><a href="#デシジョンの追加">デシジョンの追加</a></li>
+      <li><a href="#入力データの定義">入力データの定義</a>
+        <ul>
+          <li><a href="#入力タイプforecasttypeの定義">入力タイプ(ForecastType)の定義</a></li>
+          <li><a href="#入力データforecastの定義">入力データ(Forecast)の定義</a></li>
+        </ul>
+      </li>
+      <li><a href="#デシジョンロジックの編集">デシジョンロジックの編集</a>
+        <ul>
+          <li><a href="#rain-デシジョンロジックの編集">Rain デシジョン・ロジックの編集</a></li>
+          <li><a href="#temperature-デシジョンロジックの編集">Temperature デシジョン・ロジックの編集</a></li>
+          <li><a href="#what-to-bring-デシジョンロジックの編集">What to Bring デシジョン・ロジックの編集</a></li>
+        </ul>
+      </li>
+      <li><a href="#デシジョンモデルのテスト">デシジョン・モデルのテスト</a></li>
+      <li><a href="#デシジョンサービスの作成とアクティブ化">デシジョン・サービスの作成とアクティブ化</a></li>
+      <li><a href="#確認-プロセスアプリケーションからデシジョンモデルを利用する">[確認] プロセス・アプリケーションからデシジョン・モデルを利用する</a></li>
+      <li><a href="#発展課題-デシジョンロジックの変更">[発展課題] デシジョン・ロジックの変更</a></li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Integration(OIC) のプロセス自動化 (Process Automation) 機能を利用して、簡単なデシジョン・モデル(Decision Model)の作成方法をステップ・バイ・ステップで紹介するチュートリアルです。</p>
+
+<p>ここでは、気温と降水確率を入力パラメータとして、外出時の持ち物を判断するデシジョンモデル(What to Bring)を作成します。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>
+    <p><a href="../integration-for-commons-1-instance/">Oracle Integration Cloud インスタンスの作成</a><br />
+Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。</p>
+  </li>
+  <li>
+    <p>OIC インスタンス作成時のエディションが ENTERPRISE であること</p>
+  </li>
+  <li>
+    <p>OIC インスタンスの ServiceAdministrator ロールが付与されたユーザーが準備されていること <br />
+(参考) Oracle Integration Roles and Privileges <br />
+<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34">https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34</a></p>
+  </li>
+</ul>
+
+<h2 id="process-automation-で簡単なデシジョンモデルを作成する">Process Automation で簡単なデシジョン・モデルを作成する</h2>
+
+<h3 id="説明">説明</h3>
+<p>デシジョン・モデルとは、プロセスの中で利用するデシジョン（判断）を自動化する仕組み・ルールです。例えば、以下のようなものが考えられます。</p>
+
+<ul>
+  <li>購買稟議申請の合計金額が100万円未満の場合は部門長承認が必要、100万円を超える場合は部門長および担当役員の承認が必要</li>
+  <li>従業員の年次有給休暇の付与日数を、従業員の役職、勤務地、勤続年数から自動計算する</li>
+</ul>
+
+<p>このチュートリアルでは、気温と降水確率から外出時の持ち物をデシジョン（判断）するデシジョン・モデルを作成します。</p>
+
+<p>今回作成するデシジョンロジックは以下の通りです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>条件</th>
+      <th>アクション</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>暖かい、かつ、雨が降る</td>
+      <td>傘</td>
+    </tr>
+    <tr>
+      <td>暖かい、かつ、雨が降らない</td>
+      <td>何もいらない</td>
+    </tr>
+    <tr>
+      <td>寒い、かつ、雨が降る</td>
+      <td>レインコート</td>
+    </tr>
+    <tr>
+      <td>寒い、かつ、雨が降らない</td>
+      <td>オーバーコート</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>暖かい、寒いの判断は以下の通りとします。</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>条件</th>
+      <th>アクション</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>気温が18℃を超える</td>
+      <td>暖かい</td>
+    </tr>
+    <tr>
+      <td>気温が18℃以下</td>
+      <td>寒い</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>雨が降る、降らないの判断は以下の通りとします。</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>条件</th>
+      <th>アクション</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>降水確率が80%を超える</td>
+      <td>雨が降る</td>
+    </tr>
+    <tr>
+      <td>降水確率が80%以下</td>
+      <td>雨が降らない</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="oic-インスタンスにアクセスする">OIC インスタンスにアクセスする</h3>
+<p>Web ブラウザを開き、提供された OIC インスタンスのURLを入力します。もしくはOCIのコンソールから「開発者サービス」－「アプケーション統合」から作成済みのOICインスタンスを選択し、「サービス・コンソール」からOICコンソールを開きます。</p>
+
+<p><img src="001.png" alt="" /></p>
+
+<div class="notice--warning">
+  <p><strong>TIPS</strong> <br />
+OCIにログインしていない場合はユーザー名とパスワードを入力し、サイン・インをクリックします。
+<img src="002.png" alt="" /></p>
+
+</div>
+
+<p>OIC のホーム画面が開きます。
+<img src="003.png" alt="" /></p>
+
+<h3 id="デシジョンモデルの作成">デシジョン・モデルの作成</h3>
+<p>左ナビゲーションメニューのプロセス→デシジョン・モデルをクリックします。</p>
+
+<p><img src="004.png" alt="" /></p>
+
+<p>「作成」をクリックします。</p>
+
+<p><img src="005.png" alt="" /></p>
+
+<p>続けて、デシジョンモデルを作成しますの「作成」をクリックします。</p>
+
+<p><img src="006.png" alt="" /></p>
+
+<p>名前、スペース、説明を入力し、「作成」をクリックします。 <br />
+ここでは以下を入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>What to Bring Decision Model</td>
+    </tr>
+    <tr>
+      <td>スペース</td>
+      <td>Tutorial</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>外出時の持ち物を判断するデシジョン・モデル</td>
+    </tr>
+    <tr>
+      <td>すぐに開始</td>
+      <td>チェックを入れる</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="007.png" alt="" /></p>
+
+<p>デシジョン・モデルの編集画面が開きます。 <br />
+今回はリスト・モードでデシジョン・モデルを作成するので、画面右上のメニューからリスト・モードへ切り替えます。</p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+OIC Processでは、グラフまたはリスト・モードのいずれかを使用してデシジョン・モデルを作成することができます。グラフ・モードでは、<a href="https://www.omg.org/dmn/">DMN標準</a>に従って、デシジョン・モデル要件図(DRD)を作成して、デシジョン・モデルを視覚的に表すことができます。リスト・モードは、モデル内でデシジョンを追加および順序付けするためのシンプルなインターフェイスを提供します。</p>
+
+<p><img src="008.png" alt="" /></p>
+
+<h3 id="デシジョンの追加">デシジョンの追加</h3>
+<p>画面右上の＋ボタンをクリックします。</p>
+
+<p><img src="009.png" alt="" /></p>
+
+<p>名前に 「What to Bring」 と入力し、空のロジックを選択します。 <br />
+最後に「作成」をクリックします。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<p>同じ手順で、Temperature デシジョンと Rain デシジョンを空のロジックで作成します。 <br />
+最終的にデシジョンの並び順が以下の通りとなります。なお、各デシジョンのロジックは、後ほど編集します。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+デシジョンの順序には意味があります。一番上にあるデシジョンは最終結果を出すためのデシジョンで、その他は結果判定の支援をするデシジョンになります。（緑枠で囲んだ矢印がそれを意味します。）。最終結果を出すデシジョンが一番上にない場合は、ドラッグ&amp;ドロップでデシジョンを入れ替えることができます。今回の場合、最終結果を出す What to bring デシジョンが一番上になります。</p>
+
+<p>保存をクリックします。</p>
+
+<p><img src="012.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+編集中のデシジョン・モデルは、こまめに保存することを推奨します。</p>
+
+<h3 id="入力データの定義">入力データの定義</h3>
+
+<h4 id="入力タイプforecasttypeの定義">入力タイプ(ForecastType)の定義</h4>
+<p>右端の入力データをクリックし、入力データパネルを開きます。</p>
+
+<p><img src="013.png" alt="" /></p>
+
+<p>続けて、タイプ定義の「＋」をクリックします。</p>
+
+<p><img src="014.png" alt="" /></p>
+
+<p>データ型の追加で、名前、構成タイプを入力します。ここでは以下を入力します。 <br />
+タイプ属性の定義の「＋」をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>ForecastType</td>
+    </tr>
+    <tr>
+      <td>構成タイプ</td>
+      <td>Complex</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="015.png" alt="" /></p>
+
+<p>名前、構成タイプ、Allowed Valuesを入力し、閉じるをクリックします。 <br />
+ここでは以下を入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>temperature</td>
+    </tr>
+    <tr>
+      <td>構成タイプ</td>
+      <td>Number</td>
+    </tr>
+    <tr>
+      <td>Allowed Values</td>
+      <td>value</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="016.png" alt="" /></p>
+
+<p>同じ手順を繰り返し、percentage を作成します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>percentage</td>
+    </tr>
+    <tr>
+      <td>構成タイプ</td>
+      <td>Number</td>
+    </tr>
+    <tr>
+      <td>Allowed Values</td>
+      <td>value</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ForecastType のタイプ属性の定義に temperature と percentage が作成されていることを確認し、閉じるをクリックします。</p>
+
+<p><img src="017.png" alt="" /></p>
+
+<h4 id="入力データforecastの定義">入力データ(Forecast)の定義</h4>
+
+<p>入力データの「＋」をクリックします。</p>
+
+<p><img src="018.png" alt="" /></p>
+
+<p>名前、構成タイプを入力します。OtherTypes では、先ほど作成した ForecastType を選択します。 <br />
+最後に「閉じる」をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>Forecast</td>
+    </tr>
+    <tr>
+      <td>構成タイプ</td>
+      <td>Other Type</td>
+    </tr>
+    <tr>
+      <td>Other Types</td>
+      <td>ForecastType</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="019.png" alt="" /></p>
+
+<h3 id="デシジョンロジックの編集">デシジョンロジックの編集</h3>
+
+<h4 id="rain-デシジョンロジックの編集">Rain デシジョン・ロジックの編集</h4>
+
+<p>Rain デシジョンの下向き矢印をクリックします。</p>
+
+<p><img src="020.png" alt="" /></p>
+
+<p>デシジョン・ロジックの選択より、式を選択します。</p>
+
+<p><img src="021.png" alt="" /></p>
+
+<p>式の入力に、以下を入力します。検証エラー/警告のメッセージが消えることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Forecast.percentage&gt;80
+</code></pre></div></div>
+
+<p><img src="022.png" alt="" /></p>
+
+<p>この式は、降水確率が80%を超える場合は ture、超えない場合は false がそれぞれ返されます。</p>
+
+<h4 id="temperature-デシジョンロジックの編集">Temperature デシジョン・ロジックの編集</h4>
+<p>Temperature デシジョンの下向き矢印をクリックします。</p>
+
+<p><img src="023.png" alt="" /></p>
+
+<p>デシジョン・ロジックの選択より、If-Then-Else を選択します。</p>
+
+<p><img src="024.png" alt="" /></p>
+
+<p>If, Then, Else に、それぞれ以下を入力します。検証エラー/警告のメッセージが消えることを確認します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>If</td>
+      <td>Forecast.temperature&gt;18</td>
+    </tr>
+    <tr>
+      <td>Then</td>
+      <td>“暖かい”</td>
+    </tr>
+    <tr>
+      <td>Else</td>
+      <td>“寒い”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="025.png" alt="" /></p>
+
+<p>この式は、気温が18℃を超える場合は「暖かい」、超えない場合は「寒い」がそれぞれ返されます。</p>
+
+<h4 id="what-to-bring-デシジョンロジックの編集">What to Bring デシジョン・ロジックの編集</h4>
+<p>What to Bring デシジョンの下向き矢印をクリックします。</p>
+
+<p><img src="026.png" alt="" /></p>
+
+<p>デシジョン・ロジックの選択より、Decision Table を選択します。</p>
+
+<p><img src="027.png" alt="" /></p>
+
+<p>What to Bring の下の Enter Allowed Values をクリックします。</p>
+
+<p><img src="028.png" alt="" /></p>
+
+<p>構成タイプ、Allowed Values、値を入力し、閉じるをクリックします。ここでは以下の通りとします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>構成タイプ</td>
+      <td>Text</td>
+    </tr>
+    <tr>
+      <td>Allowed Values</td>
+      <td>list of values</td>
+    </tr>
+    <tr>
+      <td>値</td>
+      <td>傘<br />レインコート<br />オーバーコート<br />何もいらない</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="029.png" alt="" /></p>
+
+<p>式の入力をクリックし、Temperature を入力します。</p>
+
+<p><img src="030.png" alt="" /></p>
+
+<p>Temperature を選択したまま、後に列を追加ボタンをクリックします。</p>
+
+<p><img src="031.png" alt="" /></p>
+
+<p>追加された列の式の入力をクリックし、Rain を入力します。</p>
+
+<p><img src="032.png" alt="" /></p>
+
+<p>1行目に値を設定します。ここでは以下の通りとします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Temperature</td>
+      <td>暖かい</td>
+    </tr>
+    <tr>
+      <td>Rain</td>
+      <td>true</td>
+    </tr>
+    <tr>
+      <td>What to Bring</td>
+      <td>傘</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="033.png" alt="" /></p>
+
+<p>1行目を選択したまま、後に行を追加ボタンをクリックします。</p>
+
+<p><img src="034.png" alt="" /></p>
+
+<p>2行目に以下を入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Temperature</td>
+      <td>暖かい</td>
+    </tr>
+    <tr>
+      <td>Rain</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>What to Bring</td>
+      <td>何もいらない</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="035.png" alt="" /></p>
+
+<p>同じ手順を繰り返し、3行目と4行目を作成します。検証エラー/警告のメッセージが消えることを確認します。</p>
+
+<ul>
+  <li>3行目</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Temperature</td>
+      <td>寒い</td>
+    </tr>
+    <tr>
+      <td>Rain</td>
+      <td>true</td>
+    </tr>
+    <tr>
+      <td>What to Bring</td>
+      <td>レインコート</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>4行目</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Temperature</td>
+      <td>寒い</td>
+    </tr>
+    <tr>
+      <td>Rain</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>What to Bring</td>
+      <td>オーバーコート</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="036.png" alt="" /></p>
+
+<h3 id="デシジョンモデルのテスト">デシジョン・モデルのテスト</h3>
+
+<p>右上の 「▶︎」 をクリックします。</p>
+
+<p><img src="037.png" alt="" /></p>
+
+<p>temperature と percentage に以下を入力し、テストの開始をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>temperature</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <td>percentage</td>
+      <td>70</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="038.png" alt="" /></p>
+
+<p>出力にオーバーコートが返ってくることを確認します。</p>
+
+<p><img src="039.png" alt="" /></p>
+
+<p>「戻る」をクリックし、他の条件でのテストを繰り返します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>結果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>temperature=20, percentage=70</td>
+      <td>何もいらない</td>
+    </tr>
+    <tr>
+      <td>temperature=20, percentage=85</td>
+      <td>傘</td>
+    </tr>
+    <tr>
+      <td>temperature=18, percentage=85</td>
+      <td>レインコート</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="デシジョンサービスの作成とアクティブ化">デシジョン・サービスの作成とアクティブ化</h3>
+<p>左側のサービスをクリックし、サービス・パネルを展開します。</p>
+
+<p><img src="040.png" alt="" /></p>
+
+<p>サービスの 「＋」 をクリックします。</p>
+
+<p><img src="041.png" alt="" /></p>
+
+<p>名前に 「WhatToBringService」 を入力し、OKをクリックします。</p>
+
+<p><img src="042.png" alt="" /></p>
+
+<p>出力デシジョンで 「What to Bring」 を、入力データで 「Forecast」 をそれぞれ選択します。</p>
+
+<p><img src="043.png" alt="" /></p>
+
+<p>「保存」をクリックします。続けて、「アクティブ化」をクリックします。</p>
+
+<p><img src="044.png" alt="" /></p>
+
+<p>デフォルト設定のままアクティブ化をクリックします。
+今回は What to Bring Decision Model-s1 スナップショットをバージョン1.0としてアクティブ化します。</p>
+
+<p><img src="045.png" alt="" /></p>
+
+<h3 id="確認-プロセスアプリケーションからデシジョンモデルを利用する">[確認] プロセス・アプリケーションからデシジョン・モデルを利用する</h3>
+
+<p>確認のため、プロセス・アプリケーションを作成します。</p>
+
+<p>左ナビゲーションメニューのプロセス→プロセス・アプリケーションをクリックします。</p>
+
+<p><img src="046.png" alt="" /></p>
+
+<p>「作成」をクリックします。</p>
+
+<p><img src="047.png" alt="" /></p>
+
+<p>「アプリケーションの作成」－「作成」をクリックします。</p>
+
+<p><img src="048.png" alt="" /></p>
+
+<p>以下の内容を入力し、「作成」をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>What to Bring Application</td>
+    </tr>
+    <tr>
+      <td>スペース</td>
+      <td>Tutorial</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>What to Bring デシジョンを利用するアプリケーション</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="049.png" alt="" /></p>
+
+<p>「作成」－「新規プロセス」をクリックします。</p>
+
+<p><img src="050.png" alt="" /></p>
+
+<p>名前に「What to Bring Decision Process」を入力し、すぐに開始を選択します。パターンの選択でフォームを選択し、「作成」をクリックします。</p>
+
+<p><img src="050_01.png" alt="" /></p>
+
+<p>What to Bring Decision Process にデシジョンと送信タスクを配置します。</p>
+
+<p><img src="051.png" alt="" /></p>
+
+<p>左ナビゲーションメニューのフォームをクリックします。</p>
+
+<p><img src="052.png" alt="" /></p>
+
+<p>「フォームの作成」をクリックします。</p>
+
+<p><img src="053.png" alt="" /></p>
+
+<p>名前に 「ForecastWebForm」 を入力し、「作成」をクリックします。</p>
+
+<p><img src="054.png" alt="" /></p>
+
+<p>気温(temperature)、降水確率(percentage)、持ち物(whattobring)の3項目を入力するシンプルなフォームを作成します。各項目のプロパティは以下の通りに設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>基本パレット</th>
+      <th>名前</th>
+      <th>ラベル</th>
+      <th>読み取り専用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>気温</td>
+      <td>番号</td>
+      <td>temperature</td>
+      <td>気温</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>降水確率</td>
+      <td>番号</td>
+      <td>percentage</td>
+      <td>降水確率</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>持ち物</td>
+      <td>入力テキスト</td>
+      <td>whattobring</td>
+      <td>持ち物</td>
+      <td>true</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="055.png" alt="" /></p>
+
+<p>What to Bring Decision Processのタブを選択します。</p>
+
+<p><img src="056.png" alt="" /></p>
+
+<p>作成したフォームを、Start イベントとUser Taskに割り当てます。</p>
+
+<p>Start イベントを選択し、「プロパティ」をクリックします。</p>
+
+<p><img src="057.png" alt="" /></p>
+
+<p>タイトルに、「気温と降水確率を入力」を入力し、フォームに「ForecastWebForm」を選択します。</p>
+
+<p><img src="058.png" alt="" /></p>
+
+<p>同様にUser Taskの「プロパティ」をクリックし、フォームに「ForecastWebForm」を選択します。</p>
+
+<p><img src="059.png" alt="" /></p>
+
+<p>デシジョンのプロパティを開き、デシジョン・モデルの「＋」をクリックします。</p>
+
+<p><img src="060.png" alt="" /></p>
+
+<p>前の手順でアクティブ化した What to Bring Decision Model を選択し、使用をクリックします。</p>
+
+<p><img src="061.png" alt="" /></p>
+
+<p>デシジョンのデータアソシエーションをクリックします。</p>
+
+<p><img src="062.png" alt="" /></p>
+
+<p>データアソシエーションに以下の項目をドラッグ＆ドロップで設定します。</p>
+
+<ul>
+  <li>入力タブ</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>データ・オブジェクト</th>
+      <th>デシジョン</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>forecastWebFormDataObject.percentage</td>
+      <td>body.forecast.percentage</td>
+    </tr>
+    <tr>
+      <td>forecastWebFormDataObject.temperature</td>
+      <td>body.forecast.temperature</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="063.png" alt="" /></p>
+
+<ul>
+  <li>出力タブ</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>デシジョン</th>
+      <th>データ・オブジェクト</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>bodyOutput.interpretation</td>
+      <td>ForecastWebFormDataObject.whattobring</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="064.png" alt="" /></p>
+
+<p>「適用」をクリックします。</p>
+
+<p><img src="065.png" alt="" /></p>
+
+<p>「保存」→「テスト」をクリックします。</p>
+
+<p><img src="066.png" alt="" /></p>
+
+<p>「アクティブ化」をクリックします。</p>
+
+<p><img src="067.png" alt="" /></p>
+
+<p>「アクティブ化」をクリックします。</p>
+
+<p><img src="068.png" alt="" /></p>
+
+<p>「テスト・モードで試行」をクリックします。</p>
+
+<p><img src="069.png" alt="" /></p>
+
+<p>「気温と降水確率を入力」のアプリをクリックします。</p>
+
+<p><img src="070.png" alt="" /></p>
+
+<p>気温に18、降水確率に70を入力し、送信をクリックします。</p>
+
+<p><img src="071.png" alt="" /></p>
+
+<p>左ナビゲーションメニューの自分のタスクをクリックします。</p>
+
+<p><img src="072.png" alt="" /></p>
+
+<p>先ほど送信したタスクを選択し、持ち物にオーバーコートが設定されていることを確認します。</p>
+
+<p><img src="073.png" alt="" /></p>
+
+<p>他の条件でのテストを繰り返します。 <br />
+以下のような結果になることを確認します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>気温</th>
+      <th>降水確率</th>
+      <th>持ち物</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20</td>
+      <td>70</td>
+      <td>何もいらない</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>85</td>
+      <td>傘</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>85</td>
+      <td>レインコート</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="発展課題-デシジョンロジックの変更">[発展課題] デシジョン・ロジックの変更</h3>
+<p>雨が降る/降らないの条件が、80%→60% に引き下げられることになりました。</p>
+
+<p>ここでは、デシジョン・モデルのみを変更・更新することで、プロセス・アプリケーションの動作が変わることを確認します。</p>
+
+<p>What to Bring Application がテスト・モードで実行中であることを確認します。 <br />
+この場合、気温18℃、降水確率70%の場合、持ち物はオーバーコートが返ってきます。</p>
+
+<p><img src="073.png" alt="" /></p>
+
+<p>What to Bring Decision Moodel を開きます。 <br />
+Rain デシジョンを開き、式を以下の通りに変更します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>変更前</th>
+      <th>変更後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Forecast.percentage&gt;80</td>
+      <td>Forecast.percentage&gt;60</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="074.png" alt="" /></p>
+
+<p>「保存」をクリックします。続けて、「スナップショット」をクリックします。 <br />
+現在のアクティブ化のバージョンが 1.0 であることを確認し、「閉じる」をクリックします。</p>
+
+<p><img src="075.png" alt="" /></p>
+
+<p>「アクティブ化」をクリックします。</p>
+
+<p><img src="076.png" alt="" /></p>
+
+<p>バージョニングを 「1.0」 と入力し、「上書き」にチェックを入れます。最後に「アクティブ化」をクリックします。</p>
+
+<p><img src="077.png" alt="" /></p>
+
+<p>テスト・モードで実行中の What to Bring Application を実行します。 <br />
+この際、気温18℃、降水確率70%の同じ条件で新規プロセス・インスタンスを開始します。 <br />
+自分のタスクから持ち物にレインコートが返ってくることを確認します。</p>
+
+<p><img src="078.png" alt="" /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-11T16:54:51+09:00">August 11, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Integration+-+Process+%E3%81%A7%E3%83%87%E3%82%B7%E3%82%B8%E3%83%A7%E3%83%B3%E3%83%BB%E3%83%A2%E3%83%87%E3%83%AB%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fprocess-for-beginners-2-dmodel%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fprocess-for-beginners-2-dmodel%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fprocess-for-beginners-2-dmodel%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/integration/process-for-beginners-1-wf/" class="pagination--pager" title="Oracle Integration - Process で簡単なワークフローを作成してみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

@@ -150,13 +150,13 @@ var store = [{
         "teaser": null
       },{
         "title": "Helidon(MP)を始めてみよう",
-        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、SEとMPという2つのエディションがあります。 このチュートリアルでは、MicroProfile準拠のエディションであるMPの方を取り上げていきます。 MicroProfileについて MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。 詳細はこちらをご確認ください。 前提条件 こちらの手順が完了していること このチュートリアルでは、データベースとしてOracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します こちらの1. クレデンシャル・ウォレットのダウンロードの手順が完了していること このチュートリアルでは、ATPに接続するためにクレデンシャル・ウォレットを利用します。事前にクレデンシャル・ウォレットをダウンロードしてください 実施する手順は1. クレデンシャル・ウォレットのダウンロードのみで問題ありません 1.Helidon CLIでベースプロジェクトを作成してみよう ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。 HelidonをセットアップするにはHelidon CLIが便利です。 このチュートリアルでは、Linux環境の前提で手順を進めますが、WindowsやMac OSでも同じようにインストールすることができます。 まずは、curlコマンドを利用してバイナリを取得し、実行可能な状態にします。 curl -O https://helidon.io/cli/latest/linux/helidon chmod +x ./helidon sudo mv ./helidon /usr/local/bin/ これで、Helidon CLIのインストールは完了です！ 上記が完了すると、helidonコマンドが利用可能になります。 まず初めに、initコマンドを叩いてみましょう。 helidon init ベースプロジェクトを構築するためのインタラクティブなプロンプトが表示されます。...","categories": [],
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、SEとMPという2つのエディションがあります。 このチュートリアルでは、MicroProfile準拠のエディションであるMPの方を取り上げていきます。 MicroProfileについて MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。 詳細はこちらをご確認ください。 前提条件 こちらの手順が完了していること このチュートリアルでは、データベースとしてOracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します こちらの1. クレデンシャル・ウォレットのダウンロードの手順が完了していること このチュートリアルでは、ATPに接続するためにクレデンシャル・ウォレットを利用します。事前にクレデンシャル・ウォレットをダウンロードしてください 実施する手順は1. クレデンシャル・ウォレットのダウンロードのみで問題ありません ハンズオン環境にApache Mavenがインストールされていること(バージョン3以上) ハンズオン環境にJDK 11以上がインストールされていること 合わせて環境変数(JAVA_HOME)にJDK 11のパスが設定されていること Helidonのビルドおよび動作環境について Helidon2.xをビルドおよび動作させるにはJDK 11以上が必要です。 1.Helidon CLIでベースプロジェクトを作成してみよう ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。 HelidonをセットアップするにはHelidon CLIが便利です。 このチュートリアルでは、Linux環境の前提で手順を進めますが、WindowsやMac OSでも同じようにインストールすることができます。 まずは、curlコマンドを利用してバイナリを取得し、実行可能な状態にします。 curl -O https://helidon.io/cli/latest/linux/helidon chmod +x ./helidon sudo mv...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-mp-for-beginners/",
         "teaser": null
       },{
         "title": "Helidon(SE)を始めてみよう",
-        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、SEとMPという2つのエディションがあります。 このチュートリアルでは、マイクロフレームワークのエディションであるSEの方を取り上げていきます。 1. Helidon CLIでベースプロジェクトを作成してみよう ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。 HelidonをセットアップするにはHelidon CLIが便利です。 このチュートリアルでは、Linux環境の前提で手順を進めますが、WindowsやMac OSでも同じようにインストールすることができます。 まずは、curlコマンドを利用してバイナリを取得し、実行可能な状態にします。 curl -O https://helidon.io/cli/latest/linux/helidon chmod +x ./helidon sudo mv ./helidon /usr/local/bin/ これで、Helidon CLIのインストールは完了です！ 上記が完了すると、helidonコマンドが利用可能になります。 まず初めに、initコマンドを叩いてみましょう。 helidon init ベースプロジェクトを構築するためのインタラクティブなプロンプトが表示されます。 以下のように入力していきます。 項目 入力パラメータ 備考 Helidon flavor 1 EditionとしてSEを選択 Select archetype 3 databaseを選択(DbClient) Project name...","categories": [],
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、SEとMPという2つのエディションがあります。 このチュートリアルでは、マイクロフレームワークのエディションであるSEの方を取り上げていきます。 前提条件 ハンズオン環境にApache Mavenがインストールされていること(バージョン3以上) ハンズオン環境にJDK 11以上がインストールされていること 合わせて環境変数(JAVA_HOME)にJDK 11のパスが設定されていること Helidonのビルドおよび動作環境について Helidon2.xをビルドおよび動作させるにはJDK 11以上が必要です。 1.Helidon CLIでベースプロジェクトを作成してみよう ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。 HelidonをセットアップするにはHelidon CLIが便利です。 このチュートリアルでは、Linux環境の前提で手順を進めますが、WindowsやMac OSでも同じようにインストールすることができます。 まずは、curlコマンドを利用してバイナリを取得し、実行可能な状態にします。 curl -O https://helidon.io/cli/latest/linux/helidon chmod +x ./helidon sudo mv ./helidon /usr/local/bin/ これで、Helidon CLIのインストールは完了です！ 上記が完了すると、helidonコマンドが利用可能になります。 まず初めに、initコマンドを叩いてみましょう。 helidon init ベースプロジェクトを構築するためのインタラクティブなプロンプトが表示されます。 以下のように入力していきます。 項目 入力パラメータ 備考 Helidon...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-se-for-beginners/",
         "teaser": null
@@ -441,6 +441,48 @@ var store = [{
         "excerpt":" ","categories": [],
         "tags": ["https://community.oracle.com/docs/DOC-1038411"],
         "url": "https://oracle-japan.github.io/ocitutorials/enterprise/using-oracle-exadata/",
+        "teaser": null
+      },{
+        "title": "OIC インスタンスを作成する",
+        "excerpt":"Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。 OIC インスタンスの作成前に確認すること OIC インスタンスを作成する前の確認事項について説明します。 1. Oracle Cloud アカウントの準備 Oracle Cloud のアカウントを準備します。無料のトライアル環境（フリートライアル）と有料のクラウド・アカウントのご利用が可能です。 無料のトライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です。詳細は下記URLのページをご確認ください。 Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 2. 作成可能なリージョンの確認 OIC インスタンスを作成可能なリージョンを確認します。詳細はこちらのマニュアルをご確認ください。 3. 制限事項の確認 クラウド・アカウントの発行時期により、作成可能な OIC インスタンスの種類が異なります。こちらのマニュアルに、OCI コンソールから作成する OIC Generation 2 インスタンスの作成条件が記載されています。 4. エディションの確認 (Standard or Enterprise) OIC は、2つのエディション(Standard...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/integration/integration-for-commons-1-instance/",
+        "teaser": null
+      },{
+        "title": "OIC インスタンスにユーザーを追加する",
+        "excerpt":"このハンズオンでは Oracle Integration(OIC) インスタンスを利用するユーザーの登録方法、およびロールの割り当て方法を ステップ・バイ・ステップで紹介します。 前提条件 OIC インスタンスを作成するが実施済みであること IDCS の Identity Domain Administrator ロールが付与されたユーザーであること OIC インスタンスにユーザーを追加する OIC インスタンスを利用するユーザーは、IDCS ユーザーとして登録します。 ここでは、以下の手順で IDCS ユーザーを OIC インスタンスの事前定義済アプリケーションロールの ServiceUser に割り当てる手順を説明します。 IDCS の管理コンソールを開く IDCS グループを作成する IDCS グループを OIC インスタンスのアプリケーションロールに割り当てる IDCS ユーザーを作成し、IDCS グループに割り当てる OIC の事前定義済アプリケーションロールについて OIC の事前定義済アプリケーションロール（以降、事前定義済ロールと省略）は、OIC のさまざまな機能へのアクセスを制御します。事前定義済ロールに対して、IDCS で作成したユーザーおよびグループを割り当てることができます。Oracle Integration の事前定義済ロールと、そのロールを割り当てられたユーザーが実行できる一般的なタスクについては、下記ドキュメントをご確認ください。 Oracle Integration Roles and Privileges...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/integration/integration-for-commons-2-addusr/",
+        "teaser": null
+      },{
+        "title": "ファイル・サーバーの有効化",
+        "excerpt":"このチュートリアルは、Oracle Integration Cloud が提供する SFTP に対応したファイル・サーバーを有効化する手順について説明します。 前提条件 このチュートリアルでは、Oracle Integration Cloud のインスタンスがすでに作成されていることを前提としています。 Oracle Integration Cloud のインスタンスをまだ作成していない場合は、次のページを参考に作成してください。 OIC インスタンスを作成するが実施済みであること ファイル・サーバーの有効化 Oracle Integration Cloud が提供している File Server は、インスタンスの作成直後は有効化されていません。 OCI コンソールを使用して、管理者が明示的に有効にする必要があります。 OCI コンソールにログインします。 サブスクライブしているリージョンの URL を使用します。 リージョン URL Tokyoリージョン https://console.ap-tokyo-1.oraclecloud.com/ Osaka リージョン https://console.ap-osaka-1.oraclecloud.com/ Phoenixリージョン https://console.us-phoenix-1.oraclecloud.com/ Ashburnリージョン https://console.us-ashburn-1.oraclecloud.com/ Frankfurtリージョン https://console.eu-frankfurt-1.oraclecloud.com/ OCI コンソールの画面左上にあるハンバーガー・メニューをクリックし、 「開発者サービス」 カテゴリにある 「アプリケーション統合」...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/integration/app-integration-for-beginners-1-filesv/",
+        "teaser": null
+      },{
+        "title": "CSV ファイルから JSON ファイルへの変換",
+        "excerpt":"このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。 前提条件 このチュートリアルでは、Oracle Integration Cloud のインスタンスが作成されており、サービス・コンソールにログインできることを前提としています。 Oracle Integration Cloud のインスタンスをまだ作成していない場合は、次のページを参考に作成してください。 Oracle Integration Cloud インスタンスの作成 Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。 この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。 また、Oracle Integration Cloud が提供している SFTP ファイル・サーバーを使用します。 Oracle Integration Cloud のファイル・サーバーは、次のページの手順にしたがって有効化する必要があります。 Oracle Integration Cloud チュートリアル - ファイル・サーバーの有効化 このチュートリアルは、Oracle Integration Cloud が提供する...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/integration/app-integration-for-beginners-2-csvjson/",
+        "teaser": null
+      },{
+        "title": "SFDCからアウトバンドメッセージを受信する",
+        "excerpt":"このチュートリアルは、Salesforce(SFDC)側で新規商談(Opportunity)が登録されたら、SFDCのアウトバウンドメッセージが送信され、OIC の統合が起動される一連の動作を確認します。 このハンズオンを通じて、以下のポイントを理解することができます。 SFDC アダプターの実装方法 SFDC アダプター経由で SFDC アウトバンドメッセージを受信する方法 アプリケーション主導のオーケストレーションの実装 ロガーによるログ出力方法 前提条件 バージョン このハンズオンの内容は、Oracle Integration 21.2.3.0.0 (210505.1400.40951) 時点の内容で作成されています。最新の UI とは異なっている場合があります。最新情報については、製品マニュアルをご参照ください。 Oracle Integration https://docs.oracle.com/en/cloud/paas/integration-cloud/books.html https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/books.html (日本語翻訳版) インスタンスの作成 Oracle Integration インスタンスの作成済であること。OIC インスタンスの作成方法は、以下の製品マニュアルや日本語チュートリアルをご確認ください。 OIC インスタンスを作成する(Oracle Integration チュートリアル) Provisioning and Administering Oracle Integration and Oracle Integration for SaaS, Generation 2 https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/index.html https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/oracle-integration-oci/index.html (日本語翻訳版) 事前準備...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/integration/app-integration-for-beginners-3-sfdc/",
+        "teaser": null
+      },{
+        "title": "Oracle Integration - Process で簡単なワークフローを作成してみよう",
+        "excerpt":"Oracle Integration(OIC) のプロセス自動化 (Process Automation) 機能を利用して、簡単なワークフローの作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 ここでは、従業員が休暇取得の申請を提出し、その上司が申請内容を承認 or 却下するシンプルな休暇申請ワークフローを作成します。 前提条件 Oracle Integration Cloud インスタンスの作成 が完了していること Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。 この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。 OIC インスタンス作成時のエディションが ENTERPRISE であること OIC インスタンスの ServiceAdministrator ロールが付与されたユーザーが準備されていること (参考) Oracle Integration Roles and Privileges https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34 Process Automation で簡単なワークフローを作成する OIC インスタンスにアクセスする Web ブラウザを開き、提供された OIC インスタンスのURLを入力します。もしくはOCIのコンソールから「開発者サービス」－「アプケーション統合」から作成済みのOICインスタンスを選択し、「サービス・コンソール」からOICコンソールを開きます。 TIPS OCIにログインしていない場合はユーザー名とパスワードを入力し、サイン・インをクリックします。 OIC...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/integration/process-for-beginners-1-wf/",
+        "teaser": null
+      },{
+        "title": "Oracle Integration - Process でデシジョン・モデルを作成してみよう",
+        "excerpt":"Oracle Integration(OIC) のプロセス自動化 (Process Automation) 機能を利用して、簡単なデシジョン・モデル(Decision Model)の作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 ここでは、気温と降水確率を入力パラメータとして、外出時の持ち物を判断するデシジョンモデル(What to Bring)を作成します。 前提条件 Oracle Integration Cloud インスタンスの作成 Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。 OIC インスタンス作成時のエディションが ENTERPRISE であること OIC インスタンスの ServiceAdministrator ロールが付与されたユーザーが準備されていること (参考) Oracle Integration Roles and Privileges https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34 Process Automation で簡単なデシジョン・モデルを作成する 説明 デシジョン・モデルとは、プロセスの中で利用するデシジョン（判断）を自動化する仕組み・ルールです。例えば、以下のようなものが考えられます。 購買稟議申請の合計金額が100万円未満の場合は部門長承認が必要、100万円を超える場合は部門長および担当役員の承認が必要 従業員の年次有給休暇の付与日数を、従業員の役職、勤務地、勤続年数から自動計算する このチュートリアルでは、気温と降水確率から外出時の持ち物をデシジョン（判断）するデシジョン・モデルを作成します。 今回作成するデシジョンロジックは以下の通りです。 条件 アクション 暖かい、かつ、雨が降る 傘...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/integration/process-for-beginners-2-dmodel/",
         "teaser": null
       },{
         "title": "モニタリング機能でOCIのリソースを監視する",

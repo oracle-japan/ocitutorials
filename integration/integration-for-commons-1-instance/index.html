@@ -1,0 +1,986 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OIC インスタンスを作成する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OIC インスタンスを作成する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/integration-for-commons-1-instance/">
+
+
+  <meta property="og:description" content="Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-08-11T16:54:51+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/integration-for-commons-1-instance/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OIC インスタンスを作成する
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OIC インスタンスを作成する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/" class="active">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OIC インスタンスを作成する">
+    <meta itemprop="description" content="Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。">
+    <meta itemprop="datePublished" content="2021-08-11T16:54:51+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#oic-インスタンスの作成前に確認すること">OIC インスタンスの作成前に確認すること</a>
+    <ul>
+      <li><a href="#1-oracle-cloud-アカウントの準備">1. Oracle Cloud アカウントの準備</a></li>
+      <li><a href="#2-作成可能なリージョンの確認">2. 作成可能なリージョンの確認</a></li>
+      <li><a href="#3-制限事項の確認">3. 制限事項の確認</a></li>
+      <li><a href="#4-エディションの確認-standard-or-enterprise">4. エディションの確認 (Standard or Enterprise)</a></li>
+      <li><a href="#5-oic-インスタンス作成を実行するユーザーの確認">5. OIC インスタンス作成を実行するユーザーの確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#oic-インスタンスを作成する">OIC インスタンスを作成する</a>
+    <ul>
+      <li><a href="#1-サービス概要">1. サービス概要</a></li>
+      <li><a href="#2-準備">2. 準備</a>
+        <ul>
+          <li><a href="#21-oci-コンソールにidcsユーザーでサインイン">2.1 OCI コンソールにIDCSユーザーでサインイン</a></li>
+          <li><a href="#22-コンパートメントの作成">2.2 コンパートメントの作成</a></li>
+          <li><a href="#23-1つのコンソールでoicインスタンスの作成と管理に対するアクセスを構成">2.3 1つのコンソールでOICインスタンスの作成と管理に対するアクセスを構成</a></li>
+          <li><a href="#231-idcs-グループの作成">2.3.1 IDCS グループの作成</a></li>
+          <li><a href="#232-oci-グループの作成">2.3.2 OCI グループの作成</a></li>
+          <li><a href="#233-idcsグループとociグループのマッピング">2.3.3 IDCSグループとOCIグループのマッピング</a></li>
+          <li><a href="#234-oci-ポリシーの作成">2.3.4 OCI ポリシーの作成</a></li>
+          <li><a href="#235-ユーザーをidcsグループに追加">2.3.5 ユーザーをIDCSグループに追加</a></li>
+          <li><a href="#236-idcs-グループに-oic-インスタンスの作成権限を付与">2.3.6 IDCS グループに OIC インスタンスの作成権限を付与</a></li>
+        </ul>
+      </li>
+      <li><a href="#3-作成">3. 作成</a>
+        <ul>
+          <li><a href="#31-oicインスタンスの作成">3.1 OICインスタンスの作成</a></li>
+          <li><a href="#32-確認">3.2 確認</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。</p>
+
+<h2 id="oic-インスタンスの作成前に確認すること">OIC インスタンスの作成前に確認すること</h2>
+
+<p>OIC インスタンスを作成する前の確認事項について説明します。</p>
+
+<h3 id="1-oracle-cloud-アカウントの準備">1. Oracle Cloud アカウントの準備</h3>
+
+<p>Oracle Cloud のアカウントを準備します。無料のトライアル環境（フリートライアル）と有料のクラウド・アカウントのご利用が可能です。</p>
+
+<p>無料のトライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です。詳細は下記URLのページをご確認ください。</p>
+
+<p><a href="https://www.oracle.com/jp/cloud/free/">Oracle Cloud 無料トライアルを申し込む</a></p>
+
+<p>トライアル環境のサインアップ手順はこちらをご確認ください。</p>
+
+<p><a href="https://faq.oracle.co.jp/app/answers/detail/a_id/6492">Oracle Cloud 無料トライアル・サインアップガイド(PDF)</a>
+<a href="https://www.oracle.com/jp/cloud/free/faq.html">Oracle Cloud 無料トライアルに関するよくある質問(FAQ)</a></p>
+
+<h3 id="2-作成可能なリージョンの確認">2. 作成可能なリージョンの確認</h3>
+
+<p>OIC インスタンスを作成可能なリージョンを確認します。詳細は<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/availability.html">こちらのマニュアル</a>をご確認ください。</p>
+
+<h3 id="3-制限事項の確認">3. 制限事項の確認</h3>
+
+<p>クラウド・アカウントの発行時期により、作成可能な OIC インスタンスの種類が異なります。<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/restrictions.html">こちらのマニュアル</a>に、OCI コンソールから作成する OIC Generation 2 インスタンスの作成条件が記載されています。</p>
+
+<h3 id="4-エディションの確認-standard-or-enterprise">4. エディションの確認 (Standard or Enterprise)</h3>
+
+<p>OIC は、2つのエディション(Standard / Enterprise) が利用できます。それぞれのエディションで利用できる機能などは<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/oracle-integration-editions.html">こちらのマニュアル</a>に記載されています。</p>
+
+<h3 id="5-oic-インスタンス作成を実行するユーザーの確認">5. OIC インスタンス作成を実行するユーザーの確認</h3>
+
+<p>OIC インスタンスの作成を実行するユーザーは、以下の条件の通りです。</p>
+<ul>
+  <li>Oracle Identity Cloud Service のフェデレーテッド・ユーザー (IDCSユーザー) であること</li>
+  <li>IDCS で管理される OCI_Administrators グループに所属していること</li>
+</ul>
+
+<h2 id="oic-インスタンスを作成する">OIC インスタンスを作成する</h2>
+
+<h3 id="1-サービス概要">1. サービス概要</h3>
+<p>Oracle Integrationは、アプリケーションの統合、プロセスの自動化およびビジュアル・アプリケーションの作成を可能にする完全に管理されたサービスです。 OIC は大きく3つの機能を提供します。</p>
+
+<ul>
+  <li>アプリケーション統合: 統合を使用して、クラウドおよびオンプレミスのアプリケーション間の接続を設計、監視、および管理を実現</li>
+  <li>プロセス自動化: プロセス・アプリケーションを作成して、ビジネス・ワークフローの自動化と可視化を実現</li>
+  <li>ビジュアル開発: カスタムWebアプリケーションおよびモバイル・アプリケーションの迅速な開発を支援するローコード開発プラットフォーム</li>
+</ul>
+
+<p><img src="000.png" alt="" /></p>
+
+<h3 id="2-準備">2. 準備</h3>
+<h4 id="21-oci-コンソールにidcsユーザーでサインイン">2.1 OCI コンソールにIDCSユーザーでサインイン</h4>
+<p>OICインスタンスは、Oracle Cloud Infrastructure コンソール（以降OCIコンソール）から作成します。ここでは、OIC インスタンスを作成するユーザーを利用し、OCI コンソールにアクセスします。</p>
+
+<p>以下 URL のどれかをクリックし、ブラウザで OCI コンソール にアクセスします。</p>
+
+<div class="notice--info">
+  
+<table>
+  <thead>
+    <tr>
+      <th>リージョン</th>
+      <th>URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tokyoリージョン</td>
+      <td>https://console.ap-tokyo-1.oraclecloud.com/</td>
+    </tr>
+    <tr>
+      <td>Osaka リージョン</td>
+      <td>https://console.ap-osaka-1.oraclecloud.com/</td>
+    </tr>
+    <tr>
+      <td>Phoenixリージョン</td>
+      <td>https://console.us-phoenix-1.oraclecloud.com/</td>
+    </tr>
+    <tr>
+      <td>Ashburnリージョン</td>
+      <td>https://console.us-ashburn-1.oraclecloud.com/</td>
+    </tr>
+    <tr>
+      <td>Frankfurtリージョン</td>
+      <td>https://console.eu-frankfurt-1.oraclecloud.com/</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ログイン用のURLは各リージョン毎に用意されていますが、どのエンドポイントからも世界中の OCI コンソールにアクセス可能です。</p>
+
+</div>
+
+<p>Cloud Tenant を入力し、<code class="language-plaintext highlighter-rouge">Continue</code>をクリックします。
+Cloud Tenant には、Oracle Cloud 契約時、もしくはトライアル環境を申し込んだ際に払い出される一意のID（クラウド・アカウント）を入力します。</p>
+
+<p><img src="001.png" alt="" /></p>
+
+<p>左側の Single Sign-On (SSO) の下の<code class="language-plaintext highlighter-rouge">Continue</code>をクリックします。
+左側のSingle Sign-On (SSO) は、IDCS で認証されます。ここでサイン・インできれば、作成前に確認することの 4.に記載される「IDCS ユーザーであること」はOKとなります。</p>
+
+<p><img src="002.png" alt="" /></p>
+
+<p>ユーザー名とパスワードを入力し、<code class="language-plaintext highlighter-rouge">サイン・イン</code>をクリックします。</p>
+
+<p><img src="003.png" alt="" /></p>
+
+<p>OCI コンソールが表示されます。</p>
+
+<p><img src="004.png" alt="" /></p>
+
+<h4 id="22-コンパートメントの作成">2.2 コンパートメントの作成</h4>
+<p>OIC インスタンスは、基礎となるインフラストラクチャとしてOracle Cloud Infrastructure (OCI) を使用します。OIC インスタンスを作成するには、まず専用のコンパートメントを準備します。</p>
+
+<p>ルート・コンパートメントに OIC インスタンスを作成する場合は、この手順をスキップすることができます。 
+OCI コンソールの左上のメニューをクリックし、<code class="language-plaintext highlighter-rouge">アイデンティティ</code>と<code class="language-plaintext highlighter-rouge">セキュリティ</code>→<code class="language-plaintext highlighter-rouge">コンパートメント</code>を選択します。</p>
+
+<p><img src="005.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">コンパートメントの作成</code>をクリックします。</p>
+
+<p><img src="006.png" alt="" /></p>
+
+<p>名前と説明を入力し、<code class="language-plaintext highlighter-rouge">作成</code>をクリックします。ここでは以下の通りに入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>OIC</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>OIC</td>
+    </tr>
+    <tr>
+      <td>親コンパートメント</td>
+      <td>ルートコンパートメント「テナント名(ルート)」が選択されていることを確認</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="007.png" alt="" /></p>
+
+<p>OIC コンパートメントが作成されることを確認します。</p>
+
+<p><img src="008.png" alt="" /></p>
+
+<h4 id="23-1つのコンソールでoicインスタンスの作成と管理に対するアクセスを構成">2.3 1つのコンソールでOICインスタンスの作成と管理に対するアクセスを構成</h4>
+<p>OIC インスタンスは、Oracle Cloud Infrastructure Identity and Access Management (OCI IAM) と Oracle Identity Cloud Service (IDCS) の両方を利用します。</p>
+
+<p>OCI IAM サービスのポリシーを使用して、OIC インスタンスの作成や管理などの権限を制御します。
+IDCS を使用して、OIC を利用するユーザーの作成および管理をします。</p>
+
+<p><img src="009.png" alt="" /></p>
+
+<p>ここでは、以下の表に示す OIC インスタンスの作成及び管理を実行するグループを作成し、そこに管理ユーザーを割り当てます。</p>
+
+<p>これにより、OIC インスタンスの管理と、OIC の利用ユーザーの管理の両方を、OCI コンソールのみで実現できるようにします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>IDCS グループ</th>
+      <th>OCI グループ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>idcs-integration-admins</td>
+      <td>oci-integration-admins</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="231-idcs-グループの作成">2.3.1 IDCS グループの作成</h4>
+<p>OCI コンソールを開きます。
+左上のナビゲーションメニュー→<code class="language-plaintext highlighter-rouge">アイデンティティ</code>→<code class="language-plaintext highlighter-rouge">フェデレーション</code>をクリックします。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">OracleIdentityCloudService</code>をクリックします。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p>左下のリソースオプション配下の<code class="language-plaintext highlighter-rouge">グループ</code>をクリックします。</p>
+
+<p><img src="012.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">IDCSグループの作成</code>をクリックします。</p>
+
+<p><img src="013.png" alt="" /></p>
+
+<p>名前と説明を入力し、<code class="language-plaintext highlighter-rouge">作成</code>をクリックします。ここでは以下の通りに入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>idcs-integration-admins</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>IDCS group for OIC admin</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="014.png" alt="" /></p>
+
+<p>idcs-integration-admins グループが作成されることを確認します。</p>
+
+<p><img src="015.png" alt="" /></p>
+
+<h4 id="232-oci-グループの作成">2.3.2 OCI グループの作成</h4>
+<p>OCI コンソールの左上のナビゲーションメニュー→<code class="language-plaintext highlighter-rouge">アイデンティティ</code>→<code class="language-plaintext highlighter-rouge">グループ</code>をクリックします。</p>
+
+<p><img src="016.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">グループの作成</code>をクリックします。</p>
+
+<p><img src="017.png" alt="" /></p>
+
+<p>名前と説明を入力し、<code class="language-plaintext highlighter-rouge">作成</code>をクリックします。ここでは以下の通りに入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>oci-integration-admins</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>OCI group for OIC admin</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="018.png" alt="" /></p>
+
+<p>oci-integration-admins グループが作成されることを確認します。</p>
+
+<p><img src="019.png" alt="" /></p>
+
+<h4 id="233-idcsグループとociグループのマッピング">2.3.3 IDCSグループとOCIグループのマッピング</h4>
+<p>OCI コンソールの左上のナビゲーションメニュー→<code class="language-plaintext highlighter-rouge">アイデンティティ</code>→<code class="language-plaintext highlighter-rouge">フェデレーション</code>をクリックします。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">OracleIdentityCloudService</code>をクリックします。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p>左下のリソースオプション配下の<code class="language-plaintext highlighter-rouge">グループ・マッピング</code>をクリックします。</p>
+
+<p><img src="020.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">マッピングの追加</code>をクリックします。</p>
+
+<p><img src="021.png" alt="" /></p>
+
+<p>アイデンティティ・プロバイダ・グループより idcs-integration-adminsを、OCIグループから oci-integration-admins をそれぞれ選択し、<code class="language-plaintext highlighter-rouge">送信</code>をクリックします。</p>
+
+<p><img src="022.png" alt="" /></p>
+
+<p>グループ・マッピングが作成されることを確認します。
+これにより、 IDCS グループの idcs-integration-adminsに所属する IDCS ユーザーは、自動的に OCI グループの oci-integration-admins に所属することとなります。</p>
+
+<p><img src="023.png" alt="" /></p>
+
+<h4 id="234-oci-ポリシーの作成">2.3.4 OCI ポリシーの作成</h4>
+<p>OCIコンソールの左上のナビゲーションメニュー→<code class="language-plaintext highlighter-rouge">アイデンティティ</code>→<code class="language-plaintext highlighter-rouge">ポリシー</code>をクリックします。</p>
+
+<p><img src="024.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">ポリシーの作成</code>をクリックします。</p>
+
+<p><img src="025.png" alt="" /></p>
+
+<p>ポリシー・ビルダーにある<code class="language-plaintext highlighter-rouge">手動エディタの表示</code>をオンにします。</p>
+
+<p><img src="026.png" alt="" /></p>
+
+<p>名前、説明、ポリシー・ビルダーを入力し、<code class="language-plaintext highlighter-rouge">作成</code>をクリックします。ここでは以下の通りに入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>IntegrationAdminGroupPolicy</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>Policy for oci-integration-admins group</td>
+    </tr>
+    <tr>
+      <td>ポリシー・ビルダー</td>
+      <td>allow group oci-integration-admins to manage integration-instance in compartment OIC</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="027.png" alt="" /></p>
+
+<p>ポリシー・ステートメントの意味は「oci-integration-admins グループに所属するユーザーに対して、OIC コンパートメント内の OIC インスタンスを管理することを許可」です。
+ポリシーが作成されることを確認します。</p>
+
+<p><img src="028.png" alt="" /></p>
+
+<h4 id="235-ユーザーをidcsグループに追加">2.3.5 ユーザーをIDCSグループに追加</h4>
+<p>OCIコンソールの左上のナビゲーションメニュー→<code class="language-plaintext highlighter-rouge">アイデンティティ</code>→<code class="language-plaintext highlighter-rouge">フェデレーション</code>をクリックします。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">OracleIdentityCloudService</code>をクリックします。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p>左下のリソースオプション配下の<code class="language-plaintext highlighter-rouge">グループ</code>をクリックします。</p>
+
+<p><img src="012.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">idcs-integration-admins</code>をクリックします。</p>
+
+<p><img src="029.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">IDCSユーザーの追加</code>をクリックします。</p>
+
+<p><img src="030.png" alt="" /></p>
+
+<p>プルダウンから追加ユーザーを選択し、<code class="language-plaintext highlighter-rouge">追加</code>をクリックします。</p>
+
+<p><img src="031.png" alt="" /></p>
+
+<p>IDCSグループにユーザーが追加されることを確認します。</p>
+
+<p><img src="032.png" alt="" /></p>
+
+<h4 id="236-idcs-グループに-oic-インスタンスの作成権限を付与">2.3.6 IDCS グループに OIC インスタンスの作成権限を付与</h4>
+<p>idcs-integration-admins グループを開いたまま、<code class="language-plaintext highlighter-rouge">ロールの管理</code>をクリックします。</p>
+
+<p><img src="033.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">INTEGRATIONAUTO</code>を探し、右端のメニューをクリック→<code class="language-plaintext highlighter-rouge">サービス・アクセスの管理</code>をクリックします。</p>
+
+<p><img src="034.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">AUTONOMOUS_INTEGRATIONCLOUD_ENTITLEMENT_ADMINISTRATOR</code>を選択し、<code class="language-plaintext highlighter-rouge">ロール選択</code>の保存をクリックします。</p>
+
+<p><img src="035.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">AUTONOMOUS_INTEGRATIONCLOUD_ENTITLEMENT_ADMINISTRATOR</code>が選択されていることを確認し、<code class="language-plaintext highlighter-rouge">サービス・ロール設定の適用</code>をクリックします。</p>
+
+<p><img src="036.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">閉じる</code>をクリックします。</p>
+
+<p><img src="037.png" alt="" /></p>
+
+<p>以上で、idcs-integration-admins グループに所属するIDCSユーザーが、OIC インスタンスの管理とOICインスタンスの利用ユーザーの管理の両方が、OCI コンソールから操作できるようになりました。</p>
+
+<h3 id="3-作成">3. 作成</h3>
+
+<h4 id="31-oicインスタンスの作成">3.1 OICインスタンスの作成</h4>
+
+<p>OCI コンソールを開きます。
+OIC インスタンスを作成するリージョンを選択します。ここでは US East (Ashburn) を選択</p>
+
+<p><img src="038.png" alt="" /></p>
+
+<p>OIC インスタンスが作成可能なリージョンを選択してください。詳細は<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/availability.html">こちらのマニュアル</a>をご参照ください。
+左上のナビゲーションメニュー→<code class="language-plaintext highlighter-rouge">開発者サービス</code>→<code class="language-plaintext highlighter-rouge">アプリケーション統合</code>を選択します。</p>
+
+<p><img src="039.png" alt="" /></p>
+
+<p>コンパートメントを選択し、<code class="language-plaintext highlighter-rouge">統合インスタンスの作成</code>をクリックします。ここでは前の手順で作成した OIC コンパートメントを選択します。</p>
+
+<p><img src="040.png" alt="" /></p>
+
+<p>以下の内容を入力し、<code class="language-plaintext highlighter-rouge">作成</code>をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>表示名</td>
+      <td>oicinstance001</td>
+    </tr>
+    <tr>
+      <td>エディション</td>
+      <td>Enterprise</td>
+    </tr>
+    <tr>
+      <td>ライセンス・タイプ</td>
+      <td>新しいOracle Integrationライセンスのサブスクライブ</td>
+    </tr>
+    <tr>
+      <td>メッセージ・パック</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="041.png" alt="" /></p>
+
+<div class="notice--info">
+  
+<p><strong>各入力項目の解説</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>表示名</td>
+      <td>OICインスタンスの表示名。OIC インスタンスにアクセスする際のURLに含まれます。</td>
+    </tr>
+    <tr>
+      <td>エディション</td>
+      <td>標準 or ENTERPRISEより選択。エディションごとに利用できる機能の違いは、<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/oracle-integration-editions.html">こちらのマニュアル</a>をご参照ください。</td>
+    </tr>
+    <tr>
+      <td>ライセンス・タイプ</td>
+      <td>新しいOICライセンスのサブスクライブ or 既存のFMW ライセンスをOICに使用します(BYOL) より選択</td>
+    </tr>
+    <tr>
+      <td>メッセージ・パック</td>
+      <td>メッセージパック数を選択。ライセンスタイプにより、1パックあたりのメッセージ数が異なります。</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+
+<p>OIC インスタンス作成が開始されます。プロビジョニング中のインスタンス名をクリックします。</p>
+
+<p><img src="042.png" alt="" /></p>
+
+<p>プロビジョニング中の OIC インスタンスの詳細が確認できます。インスタンスが作成中であることを確認します。
+また、作業リクエストのステータスが進行中で、%完了が 0 より大きい数値となっていることを確認します。</p>
+
+<p><img src="043.png" alt="" /></p>
+
+<p>しばらくすると、OIC インスタンスの作成が完了します。作業リクエストのステータスが<code class="language-plaintext highlighter-rouge">成功</code>で、%完了が <code class="language-plaintext highlighter-rouge">100</code> であることを確認します。</p>
+
+<p><img src="044.png" alt="" /></p>
+
+<p>OIC インスタンスの作成が正常に行われた場合、通常10-20分程度で完了します。作業リクエストのステータスが「受け入れ済」、%完了が「0」のまま進まずに待機中状態が続く場合は、弊社サポートサービスへのお問い合わせ（サービス・リクエストの起票）をお願いいたします。</p>
+
+<h4 id="32-確認">3.2 確認</h4>
+<p>インスタンスがアクティブであることを確認し、<code class="language-plaintext highlighter-rouge">サービス・コンソール</code>をクリックします。</p>
+
+<p><img src="045.png" alt="" /></p>
+
+<p>OIC インスタンスのユーザーインタフェースが開きます。</p>
+
+<p><img src="046.png" alt="" /></p>
+
+<p>以上で、このチュートリアルは終了です。お疲れさまでした。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-11T16:54:51+09:00">August 11, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OIC+%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fintegration-for-commons-1-instance%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fintegration-for-commons-1-instance%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fintegration-for-commons-1-instance%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/integration/integration-for-commons-2-addusr/" class="pagination--pager" title="OIC インスタンスにユーザーを追加する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
