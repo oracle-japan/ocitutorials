@@ -572,10 +572,11 @@ curl http://localhost:8080/prefecture/1
 {"id":1,"name":"北海道"}
 ```
 
-次に都道府県名指定で検索します。
+次に都道府県名指定で検索します。  
+以下は北海道をGETするURLで、`%E5%8C%97%E6%B5%B7%E9%81%93`は北海道をURLエンコードした文字列です。
 
 ```sh
-curl http://localhost:8080/prefecture/name/北海道
+curl http://localhost:8080/prefecture/name/%E5%8C%97%E6%B5%B7%E9%81%93
 ```
 
 このように結果が返却されます。
@@ -1031,10 +1032,11 @@ curl http://localhost:8080/prefecture/1
 {"id":1, "area":"北海道", "name":"北海道"}
 ```
 
-次に都道府県名指定で検索します。
+次に都道府県名指定で検索します。  
+以下は北海道をGETするURLで、`%E5%8C%97%E6%B5%B7%E9%81%93`は北海道をURLエンコードした文字列です。
 
 ```sh
-curl http://localhost:8080/prefecture/name/北海道
+curl http://localhost:8080/prefecture/name/%E5%8C%97%E6%B5%B7%E9%81%93
 ```
 
 このように結果が返却されます。
