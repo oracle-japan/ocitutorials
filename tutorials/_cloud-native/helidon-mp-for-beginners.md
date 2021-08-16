@@ -74,6 +74,7 @@ helidon init
 | Project artifactId  |  (そのままEnter)   |　プロジェクトのアーティファクトID。今回はデフォルト。
 | Project version  |  (そのままEnter)   |　プロジェクトのバージョン。今回はデフォルト。
 | Java package name  |  (そのままEnter)   | Javaのパッケージ名。今回はデフォルト。
+| Start development loop  |  n   | 開発モードで起動するかどうか
 
 
 ```sh
@@ -170,7 +171,7 @@ git clone https://github.com/oracle-japan/helidon-handson.git
 そのため、この後のソースコードの解説では特にJAX-RSやJPA/JTAに基づいて説明していきます。 
 
 
-まず初めに、設定ファイル`microprofile-config.properties`からみていきます。
+まず初めに、設定ファイル`src/main/resources/META-INF/microprofile-config.properties`からみていきます。
 
 ```yaml
 # Datasource properties
@@ -201,7 +202,7 @@ metrics.rest-request.enabled=false
 今回は、`false`にしていますが、`true`で設定した場合、MicroProfile仕様に基づいてメトリクスを利用可能です。  
 その場合、Prometheusなどのモニタリングツールを利用して、メトリクス監視を行うことができます。
 
-次に、`persistence.xml`です。
+次に、`src/main/resources/META-INF/persistence.xml`です。
 
 ここでは、JPAに関する設定を行っています。  
 
@@ -239,7 +240,7 @@ metrics.rest-request.enabled=false
 ### 2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう
 
 次に、ソースコードをみていきます。  
-まず初めに、`Prefecture.java`についてみていきます。  
+まず初めに、`src/main/java/com/example/handson/helidon/Prefecture.java`についてみていきます。  
 このクラスは、テーブルに対するEntityクラスをJPAを利用して実装したものです。
 
 まずは、ソースコード冒頭のアノテーション部分です。
@@ -319,7 +320,7 @@ public class Prefecture {
 
 ### 2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう
 
-次に、`PrefectureResource.java`をみていきます。  
+次に、`src/main/java/com/example/handson/helidon/PrefectureResource.java`をみていきます。  
 このクラスは、サンプルアプリケーションのRESTインタフェースをJAX-RS/JTAで実装したものです。
 
 まずは冒頭部分で付与されているアノテーションです。
@@ -462,7 +463,7 @@ EntityManagerを利用して、クエリを発行しています。その際に�
 
 ここまでアプリケーションの中身を確認してきたので、このアプリケーションを実際に動作させてみましょう。  
 
-[2-2. サンプルアプリケーションの設定ファイルを確認しよう](#2-2-サンプルアプリケーションの設定ファイルを確認しよう)で確認した`microprofile-config.properties`にデータベース接続情報を設定していきます。  
+[2-2. サンプルアプリケーションの設定ファイルを確認しよう](#2-2-サンプルアプリケーションの設定ファイルを確認しよう)で確認した`src/main/resources/META-INF/microprofile-config.properties`にデータベース接続情報を設定していきます。  
 このチュートリアルでは、ATPを利用してサンプルアプリケーションを動作させます。  
 前提条件が完了していれば、ATPへの接続情報が格納されたクレデンシャル・ウォレットが取得できていると思います。  
 このクレデンシャル・ウォレットを含めて、データベース接続情報を設定していきます。  
@@ -480,7 +481,7 @@ javax.sql.DataSource.test.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
 クレデンシャル・ウォレットを配置したフルパスを踏まえて、以下のように設定します。  
 `@atp01_high`の部分は、データベース名が入ります。  
 ここでは前提条件のATP作成手順に沿った前提で記載していますが、別のデータベース名で作成した方は`@[データベース名]_high`に読み替えてください。  
-`TNS_ADMIN=/path/Wallet_sample`の部分は、ご自身のクレデンシャル・ウォレットまでのフルパスに読み替えてください。
+`TNS_ADMIN=/path_to_Wallet`の部分は、ご自身のクレデンシャル・ウォレットまでのフルパスに読み替えてください。
 
 ```yaml
 javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@atp01_high?TNS_ADMIN=/path_to_Wallet
@@ -836,7 +837,7 @@ import javax.persistence.Transient;
 ```
 
 最後に、都道府県エリアについては、本手順の冒頭の説明で、都道府県エリア(ID)ではなく、都道府県エリア名を設定できるようにするということを説明しました。  
-そのため、都道府県を登録する際には`都道府県エリア名`を利用しますが、データベースに登録する際には`都道府県エリア(ID)`に変換する必要があります。  
+そのため、都道府県を登録する際には`都道府県エリア名`を利用しますが、データベースに登録する際には都道府県エリア情報(`PrefectureArea`エンティティ)を作成する必要があります。  
 その処理を実装します。
 
 PrefectureResource.javaを開き、`createPrefecture`メソッドに以下を以下のように改修します。
@@ -857,11 +858,11 @@ PrefectureResource.javaを開き、`createPrefecture`メソッドに以下を以
     }
 ```
 追加された部分は、try/cacthブロック内の最初の2行です。  
-1行目で、POSTされた`都道府県エリア名`をもとに`都道府県エリア(ID)`を取得しています。　　
-続いて2行目で、1行目で取得した`都道府県エリア(ID)`をPrefectureエンティティにセットしています。  
-これで、`都道府県エリア名`をから`都道府県エリア(ID)`への変換処理が追加できました。
+1行目で、POSTされた`都道府県エリア名`をもとに都道府県エリア情報(`PrefectureArea`エンティティ)を取得しています。  
+続いて2行目で、1行目で取得した都道府県エリア情報(`PrefectureArea`エンティティ)を`Prefecture`エンティティにセットしています。  
+これで、`都道府県エリア名`をもとに都道府県エリア情報(`PrefectureArea`エンティティ)を作成する処理が実装できました。
 
-以上で、都道府県エリアの情報を元の都道府県情報に追加できます！
+以上で、都道府県エリア情報を元の都道府県情報へ追加できました！
 
 ### 3-4. persistence.xmlを変更しよう
 
