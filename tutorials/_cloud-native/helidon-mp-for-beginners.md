@@ -478,12 +478,12 @@ javax.sql.DataSource.test.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
 ここでクレデンシャル・ウォレットのファイルパスを記載します。  
 取得済みのクレデンシャル・ウォレットを解凍し、任意のディレクトリに配置します。  
 クレデンシャル・ウォレットを配置したフルパスを踏まえて、以下のように設定します。  
-`@atp01`の部分は、データベース名が入ります。  
-ここでは前提条件のATP作成手順に沿った前提で記載していますが、別のデータベース名で作成した方は`@[データベース名]`に読み替えてください。  
+`@atp01_high`の部分は、データベース名が入ります。  
+ここでは前提条件のATP作成手順に沿った前提で記載していますが、別のデータベース名で作成した方は`@[データベース名]_high`に読み替えてください。  
 `TNS_ADMIN=/path/Wallet_sample`の部分は、ご自身のクレデンシャル・ウォレットまでのフルパスに読み替えてください。
 
 ```yaml
-javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@atp01?TNS_ADMIN=/path/Wallet_file
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@atp01_high?TNS_ADMIN=/path_to_Wallet
 ```
 
 ```yaml
@@ -500,7 +500,7 @@ javax.sql.DataSource.test.dataSource.password=
 
 **データベースパスワードについて**  
 今回のチュートリアルでは、データベースパスワードをそのまま記載していますが、セキュリティ上は不適切です。  
-Helidonでは、[プロパティの暗号化機構](https://helidon.io/docs/v2/apidocs/io.helidon.config.encryption/io/helidon/config/encryption/EncryptionUtil.html)が実装されています。  ¥
+Helidonでは、[プロパティの暗号化機構](https://helidon.io/docs/v2/apidocs/io.helidon.config.encryption/io/helidon/config/encryption/EncryptionUtil.html)が実装されています。  
 また、Oracle Cloud Infrastructure上では、鍵管理サービスとして`OCI Vault`というサービスもあります。  
 これらを利用することで、よりセキュリティを高めてアプリケーションを作成することができます。
 {: .notice--info}
@@ -572,10 +572,11 @@ curl http://localhost:8080/prefecture/1
 {"id":1,"name":"北海道"}
 ```
 
-次に都道府県名指定で検索します。
+次に都道府県名指定で検索します。  
+以下は北海道をGETするURLで、`%E5%8C%97%E6%B5%B7%E9%81%93`は北海道をURLエンコードした文字列です。
 
 ```sh
-curl http://localhost:8080/prefecture/name/北海道
+curl http://localhost:8080/prefecture/name/%E5%8C%97%E6%B5%B7%E9%81%93
 ```
 
 このように結果が返却されます。
@@ -663,6 +664,18 @@ curl http://localhost:8080/prefecture/1
 テーブル名は`PREFECTUREAREA`とします。  
 
 ```java
+package com.example.handson.helidon;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
 @Entity(name = "XXXXXX")
 @Table(name = "XXXXXX")
 @Access(AccessType.FIELD)
@@ -672,7 +685,6 @@ curl http://localhost:8080/prefecture/1
         @NamedQuery(name = "getPrefectureAreaByArea",
                     query = "SELECT a FROM PrefectureArea a WHERE a.area = :area")
 })
-public class PrefectureArea {
 ```
 
 上記の`@Entity`と`@Table`の部分の`XXXXXX`に適切な名前を入れます。  
@@ -710,6 +722,7 @@ public class PrefectureArea {
     public void setXXX(String XXX) {
         this.XXX = XXX;
     }
+}
 ```
 
 上記の`XXX`に適切な文字を入れてみましょう。  
@@ -720,14 +733,25 @@ public class PrefectureArea {
 ### 3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう
 
 ここでは、都道府県エリアを取得するリソースクラスを作成します。  
-まずは、`PrefectureResorce`というクラスを作成しましょう。  
-ファイル名は`PrefectureResorce.java`です。 
+まずは、`PrefectureAreaResource`というクラスを作成しましょう。  
+ファイル名は`PrefectureAreaResource.java`です。
 
 このリソースクラスには、`http://localhost:8080/area`というパスでアクセスできるようにします。  
 また、EntityManagerには、Prefectureクラスと同じものを利用し、上記URLにアクセスすると都道府県の全エリア情報を返却するように実装します。  
 クエリは、[3-1. 都道府県エリアを管理するEntityを作成しよう](#3-1-都道府県エリアを管理するentityを作成しよう)で定義したクエリを使用します。  
 
 ```java
+package com.example.handson.helidon;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 @Path("XXXXXX")
 public class PrefectureAreaResource {
 
@@ -800,10 +824,44 @@ public class PrefectureAreaResource {
 つまりは、`Prefecture`に対して`PrefectureArea`への外部キー制約をつけます。
 今回は、一つの都道府県エリア情報に対して複数の都道府県が紐づくことになるので、`Prefecture:PrefectureArea=多:1`となり、`@ManyToOne`を利用しています。  
 
-次に、`getArea`メソッドに付与している`@Transient`というアノテーションは、永続化対象から外す意味を示しています。 
-`都道府県エリア名`は、`Prefecture`情報として永続化する必要はない(`Prefecture`テーブルのカラムとして存在しない)ためです。  
+次に、`getArea`メソッドに付与している`@Transient`というアノテーションは、永続化対象から外す意味を示しています。
+`都道府県エリア名`は、`Prefecture`情報として永続化する必要はない(`Prefecture`テーブルのカラムとして存在しない)ためです。
 
-以上で、都道府県エリアの情報を元の都道府県情報に追加できました！
+上記で追加した実装について必要なimport文を追加します。
+
+```java
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+```
+
+最後に、都道府県エリアについては、本手順の冒頭の説明で、都道府県エリア(ID)ではなく、都道府県エリア名を設定できるようにするということを説明しました。  
+そのため、都道府県を登録する際には`都道府県エリア名`を利用しますが、データベースに登録する際には`都道府県エリア(ID)`に変換する必要があります。  
+その処理を実装します。
+
+PrefectureResource.javaを開き、`createPrefecture`メソッドに以下を以下のように改修します。
+
+```java
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void createPrefecture(Prefecture prefecture) {
+        try {
+            PrefectureArea prefectureArea = entityManager.createNamedQuery("getPrefectureAreaByArea", PrefectureArea.class)
+                    .setParameter("area", prefecture.getArea()).getSingleResult();
+            prefecture.setPrefectureArea(prefectureArea);
+            entityManager.persist(prefecture);
+        } catch (Exception e) {
+            throw new BadRequestException("Unable to create prefecture with ID " + prefecture.getId());
+        }
+    }
+```
+追加された部分は、try/cacthブロック内の最初の2行です。  
+1行目で、POSTされた`都道府県エリア名`をもとに`都道府県エリア(ID)`を取得しています。　　
+続いて2行目で、1行目で取得した`都道府県エリア(ID)`をPrefectureエンティティにセットしています。  
+これで、`都道府県エリア名`をから`都道府県エリア(ID)`への変換処理が追加できました。
+
+以上で、都道府県エリアの情報を元の都道府県情報に追加できます！
 
 ### 3-4. persistence.xmlを変更しよう
 
@@ -974,10 +1032,11 @@ curl http://localhost:8080/prefecture/1
 {"id":1, "area":"北海道", "name":"北海道"}
 ```
 
-次に都道府県名指定で検索します。
+次に都道府県名指定で検索します。  
+以下は北海道をGETするURLで、`%E5%8C%97%E6%B5%B7%E9%81%93`は北海道をURLエンコードした文字列です。
 
 ```sh
-curl http://localhost:8080/prefecture/name/北海道
+curl http://localhost:8080/prefecture/name/%E5%8C%97%E6%B5%B7%E9%81%93
 ```
 
 このように結果が返却されます。
