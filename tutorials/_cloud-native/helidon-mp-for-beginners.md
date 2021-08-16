@@ -732,8 +732,8 @@ public class PrefectureArea {
 ### 3-2. 都道府県エリアを取得するRESTインタフェースを作成しよう
 
 ここでは、都道府県エリアを取得するリソースクラスを作成します。  
-まずは、`PrefectureAreaResorce`というクラスを作成しましょう。  
-ファイル名は`PrefectureAreaResorce.java`です。
+まずは、`PrefectureAreaResource`というクラスを作成しましょう。  
+ファイル名は`PrefectureAreaResource.java`です。
 
 このリソースクラスには、`http://localhost:8080/area`というパスでアクセスできるようにします。  
 また、EntityManagerには、Prefectureクラスと同じものを利用し、上記URLにアクセスすると都道府県の全エリア情報を返却するように実装します。  
