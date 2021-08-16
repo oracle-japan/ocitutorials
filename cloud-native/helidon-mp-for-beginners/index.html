@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-08-16T14:31:10+09:00">
+  <meta property="article:published_time" content="2021-08-16T16:40:12+09:00">
 
 
 
@@ -311,7 +311,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Helidon(MP)を始めてみよう">
     <meta itemprop="description" content="Helidon MPは、Oracleが提供するMicroProfile準拠のマイクロサービスの開発に適したJavaアプリケーションフレームワークです。こちらのハンズオンは、サンプルアプリケーションの構築を通して、Helidonの特徴や使いやすさを学んでいただけるコンテンツになっています。">
-    <meta itemprop="datePublished" content="2021-08-16T14:31:10+09:00">
+    <meta itemprop="datePublished" content="2021-08-16T16:40:12+09:00">
     
 
     <div class="page__inner-wrap">
@@ -456,6 +456,11 @@ Helidon2.xをビルドおよび動作させるにはJDK 11以上が必要です�
       <td>(そのままEnter)</td>
       <td>Javaのパッケージ名。今回はデフォルト。</td>
     </tr>
+    <tr>
+      <td>Start development loop</td>
+      <td>n</td>
+      <td>開発モードで起動するかどうか</td>
+    </tr>
   </tbody>
 </table>
 
@@ -545,7 +550,7 @@ Helidon CLIでは、今回作成するベースプロジェクト以外にも様
 また、Helidon MPはJava EE／Jakarta EEの開発者になじみのあるコードスタイルになります。<br />
 そのため、この後のソースコードの解説では特にJAX-RSやJPA/JTAに基づいて説明していきます。</p>
 
-<p>まず初めに、設定ファイル<code class="language-plaintext highlighter-rouge">microprofile-config.properties</code>からみていきます。</p>
+<p>まず初めに、設定ファイル<code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/microprofile-config.properties</code>からみていきます。</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Datasource properties</span>
 <span class="s">javax.sql.DataSource.test.dataSourceClassName=</span>
@@ -573,7 +578,7 @@ Helidon CLIでは、今回作成するベースプロジェクト以外にも様
 今回は、<code class="language-plaintext highlighter-rouge">false</code>にしていますが、<code class="language-plaintext highlighter-rouge">true</code>で設定した場合、MicroProfile仕様に基づいてメトリクスを利用可能です。<br />
 その場合、Prometheusなどのモニタリングツールを利用して、メトリクス監視を行うことができます。</p>
 
-<p>次に、<code class="language-plaintext highlighter-rouge">persistence.xml</code>です。</p>
+<p>次に、<code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/persistence.xml</code>です。</p>
 
 <p>ここでは、JPAに関する設定を行っています。</p>
 
@@ -607,7 +612,7 @@ Helidon CLIでは、今回作成するベースプロジェクト以外にも様
 <h3 id="2-3-サンプルアプリケーションのソースコードprefecturejavaを確認しよう">2-3. サンプルアプリケーションのソースコード(Prefecture.java)を確認しよう</h3>
 
 <p>次に、ソースコードをみていきます。<br />
-まず初めに、<code class="language-plaintext highlighter-rouge">Prefecture.java</code>についてみていきます。<br />
+まず初めに、<code class="language-plaintext highlighter-rouge">src/main/java/com/example/handson/helidon/Prefecture.java</code>についてみていきます。<br />
 このクラスは、テーブルに対するEntityクラスをJPAを利用して実装したものです。</p>
 
 <p>まずは、ソースコード冒頭のアノテーション部分です。</p>
@@ -682,7 +687,7 @@ Helidon CLIでは、今回作成するベースプロジェクト以外にも様
 
 <h3 id="2-4-サンプルアプリケーションのソースコードprefectureresourcejavaを確認しよう">2-4. サンプルアプリケーションのソースコード(PrefectureResource.java)を確認しよう</h3>
 
-<p>次に、<code class="language-plaintext highlighter-rouge">PrefectureResource.java</code>をみていきます。<br />
+<p>次に、<code class="language-plaintext highlighter-rouge">src/main/java/com/example/handson/helidon/PrefectureResource.java</code>をみていきます。<br />
 このクラスは、サンプルアプリケーションのRESTインタフェースをJAX-RS/JTAで実装したものです。</p>
 
 <p>まずは冒頭部分で付与されているアノテーションです。</p>
@@ -814,7 +819,7 @@ Helidon CLIでは、今回作成するベースプロジェクト以外にも様
 
 <p>ここまでアプリケーションの中身を確認してきたので、このアプリケーションを実際に動作させてみましょう。</p>
 
-<p><a href="#2-2-サンプルアプリケーションの設定ファイルを確認しよう">2-2. サンプルアプリケーションの設定ファイルを確認しよう</a>で確認した<code class="language-plaintext highlighter-rouge">microprofile-config.properties</code>にデータベース接続情報を設定していきます。<br />
+<p><a href="#2-2-サンプルアプリケーションの設定ファイルを確認しよう">2-2. サンプルアプリケーションの設定ファイルを確認しよう</a>で確認した<code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/microprofile-config.properties</code>にデータベース接続情報を設定していきます。<br />
 このチュートリアルでは、ATPを利用してサンプルアプリケーションを動作させます。<br />
 前提条件が完了していれば、ATPへの接続情報が格納されたクレデンシャル・ウォレットが取得できていると思います。<br />
 このクレデンシャル・ウォレットを含めて、データベース接続情報を設定していきます。</p>
@@ -831,7 +836,7 @@ Helidon CLIでは、今回作成するベースプロジェクト以外にも様
 クレデンシャル・ウォレットを配置したフルパスを踏まえて、以下のように設定します。<br />
 <code class="language-plaintext highlighter-rouge">@atp01_high</code>の部分は、データベース名が入ります。<br />
 ここでは前提条件のATP作成手順に沿った前提で記載していますが、別のデータベース名で作成した方は<code class="language-plaintext highlighter-rouge">@[データベース名]_high</code>に読み替えてください。<br />
-<code class="language-plaintext highlighter-rouge">TNS_ADMIN=/path/Wallet_sample</code>の部分は、ご自身のクレデンシャル・ウォレットまでのフルパスに読み替えてください。</p>
+<code class="language-plaintext highlighter-rouge">TNS_ADMIN=/path_to_Wallet</code>の部分は、ご自身のクレデンシャル・ウォレットまでのフルパスに読み替えてください。</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@atp01_high?TNS_ADMIN=/path_to_Wallet</span>
 </code></pre></div></div>
@@ -1158,7 +1163,7 @@ No handler found <span class="k">for </span>path: /prefecture/1
 </code></pre></div></div>
 
 <p>最後に、都道府県エリアについては、本手順の冒頭の説明で、都道府県エリア(ID)ではなく、都道府県エリア名を設定できるようにするということを説明しました。<br />
-そのため、都道府県を登録する際には<code class="language-plaintext highlighter-rouge">都道府県エリア名</code>を利用しますが、データベースに登録する際には<code class="language-plaintext highlighter-rouge">都道府県エリア(ID)</code>に変換する必要があります。<br />
+そのため、都道府県を登録する際には<code class="language-plaintext highlighter-rouge">都道府県エリア名</code>を利用しますが、データベースに登録する際には都道府県エリア情報(<code class="language-plaintext highlighter-rouge">PrefectureArea</code>エンティティ)を作成する必要があります。<br />
 その処理を実装します。</p>
 
 <p>PrefectureResource.javaを開き、<code class="language-plaintext highlighter-rouge">createPrefecture</code>メソッドに以下を以下のように改修します。</p>
@@ -1178,11 +1183,11 @@ No handler found <span class="k">for </span>path: /prefecture/1
     <span class="o">}</span>
 </code></pre></div></div>
 <p>追加された部分は、try/cacthブロック内の最初の2行です。<br />
-1行目で、POSTされた<code class="language-plaintext highlighter-rouge">都道府県エリア名</code>をもとに<code class="language-plaintext highlighter-rouge">都道府県エリア(ID)</code>を取得しています。　　
-続いて2行目で、1行目で取得した<code class="language-plaintext highlighter-rouge">都道府県エリア(ID)</code>をPrefectureエンティティにセットしています。<br />
-これで、<code class="language-plaintext highlighter-rouge">都道府県エリア名</code>をから<code class="language-plaintext highlighter-rouge">都道府県エリア(ID)</code>への変換処理が追加できました。</p>
+1行目で、POSTされた<code class="language-plaintext highlighter-rouge">都道府県エリア名</code>をもとに都道府県エリア情報(<code class="language-plaintext highlighter-rouge">PrefectureArea</code>エンティティ)を取得しています。<br />
+続いて2行目で、1行目で取得した都道府県エリア情報(<code class="language-plaintext highlighter-rouge">PrefectureArea</code>エンティティ)を<code class="language-plaintext highlighter-rouge">Prefecture</code>エンティティにセットしています。<br />
+これで、<code class="language-plaintext highlighter-rouge">都道府県エリア名</code>をもとに都道府県エリア情報(<code class="language-plaintext highlighter-rouge">PrefectureArea</code>エンティティ)を作成する処理が実装できました。</p>
 
-<p>以上で、都道府県エリアの情報を元の都道府県情報に追加できます！</p>
+<p>以上で、都道府県エリア情報を元の都道府県情報へ追加できました！</p>
 
 <h3 id="3-4-persistencexmlを変更しよう">3-4. persistence.xmlを変更しよう</h3>
 
@@ -1407,7 +1412,7 @@ POSTするデータは<a href="#2-5-サンプルアプリケーションの動�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-16T14:31:10+09:00">August 16, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-16T16:40:12+09:00">August 16, 2021</time></p>
 
 
       </footer>
