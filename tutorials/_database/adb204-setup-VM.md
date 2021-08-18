@@ -245,10 +245,10 @@ ADBに接続するためには、クレデンシャル・ウォレット（Crede
    <br>次のコマンドを順に実行しましょう。
 
     ```sh
-    sudo mv Wallet_atp01.zip /home/oracle/labs/wallets/.
+    sudo mv Wallet_atp01.zip /home/oracle/labs/wallets_atp01/.
     ```
     ```sh
-    sudo chown oracle:oinstall /home/oracle/labs/wallets/Wallet_atp01.zip
+    sudo chown oracle:oinstall /home/oracle/labs/wallets_atp01/Wallet_atp01.zip
     ```
 
 4. oracleユーザにスイッチします。
@@ -265,12 +265,13 @@ ADBに接続するためには、クレデンシャル・ウォレット（Crede
 5. zipファイルをディレクトリ「wallet_atp01」の下に展開します。
 
     ```sh
-    unzip  /home/oracle/labs/wallets/Wallet_atp01.zip -d ~/labs/wallets
+    unzip  /home/oracle/labs/wallets_atp01/Wallet_atp01.zip -d ~/labs/wallets_atp01
     ```
 6. TNS_ADMIN環境変数をディレクトリ「wallet_atp01」に設定します。
+<br>TNS_ADMINは、ウォレットの格納場所を表す環境変数です。アップロードしてきたクレデンシャルウォレットの格納場所を設定します。
 
     ```sh
-    export TNS_ADMIN=/home/oracle/labs/wallets
+    export TNS_ADMIN=/home/oracle/labs/wallets_atp01
     ```
 
     >**Note**
@@ -280,9 +281,11 @@ ADBに接続するためには、クレデンシャル・ウォレット（Crede
 7. $HOME/wallets ディレクトリに移動します。
 
     ```sh
-    cd ~/labs/wallets/
+    cd ~/labs/wallets_atp01/
     ```
 8. 解凍されたファイルの中にある sqlnet.ora ファイルの環境変数 WALLET_LOCATION を編集します。
+<br>sqlnet.oraファイルでは、クライアントとなるマシンからADBサーバへ接続する際に使用する、サーバーのアドレスやリスナーのポート番号を解決するための方法を指定しています。
+<br>sqlnet.oraに含まれるWALLET_LOCATIONには、クレデンシャルウォレットの格納場所を指定します。この格納場所はすでにTNS_ADMINに設定済みであるため、格納先のパスを指定するDIRECTORYに環境変数TNS_ADMINを参照するように設定します。
 
     編集前：
     ```sh
