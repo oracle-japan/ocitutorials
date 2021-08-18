@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-08-17T10:54:01+09:00">
+  <meta property="article:published_time" content="2021-08-18T17:35:55+09:00">
 
 
 
@@ -329,7 +329,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="204: マーケットプレイスからの仮想マシンのセットアップ方法">
     <meta itemprop="description" content="Oracle Cloud Developer Image から仮想マシンをセットアップする方法をご紹介します。">
-    <meta itemprop="datePublished" content="2021-08-17T10:54:01+09:00">
+    <meta itemprop="datePublished" content="2021-08-18T17:35:55+09:00">
     
 
     <div class="page__inner-wrap">
@@ -624,9 +624,9 @@
 <br />（本ハンズオンラボでは特に指定のない限りoracleユーザを利用して各種操作を体験いただきます。）
 <br />次のコマンドを順に実行しましょう。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo mv </span>Wallet_atp01.zip /home/oracle/labs/wallets/.
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo mv </span>Wallet_atp01.zip /home/oracle/labs/wallets_atp01/.
 </code></pre></div>    </div>
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo chown </span>oracle:oinstall /home/oracle/labs/wallets/Wallet_atp01.zip
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo chown </span>oracle:oinstall /home/oracle/labs/wallets_atp01/Wallet_atp01.zip
 </code></pre></div>    </div>
   </li>
   <li>
@@ -642,13 +642,14 @@
   <li>
     <p>zipファイルをディレクトリ「wallet_atp01」の下に展開します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unzip  /home/oracle/labs/wallets/Wallet_atp01.zip <span class="nt">-d</span> ~/labs/wallets
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unzip  /home/oracle/labs/wallets_atp01/Wallet_atp01.zip <span class="nt">-d</span> ~/labs/wallets_atp01
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>TNS_ADMIN環境変数をディレクトリ「wallet_atp01」に設定します。</p>
+    <p>TNS_ADMIN環境変数をディレクトリ「wallet_atp01」に設定します。
+<br />TNS_ADMINは、ウォレットの格納場所を表す環境変数です。アップロードしてきたクレデンシャルウォレットの格納場所を設定します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets_atp01
 </code></pre></div>    </div>
 
     <blockquote>
@@ -660,11 +661,13 @@
   <li>
     <p>$HOME/wallets ディレクトリに移動します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd</span> ~/labs/wallets/
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd</span> ~/labs/wallets_atp01/
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>解凍されたファイルの中にある sqlnet.ora ファイルの環境変数 WALLET_LOCATION を編集します。</p>
+    <p>解凍されたファイルの中にある sqlnet.ora ファイルの環境変数 WALLET_LOCATION を編集します。
+<br />sqlnet.oraファイルでは、クライアントとなるマシンからADBサーバへ接続する際に使用する、サーバーのアドレスやリスナーのポート番号を解決するための方法を指定しています。
+<br />sqlnet.oraに含まれるWALLET_LOCATIONには、クレデンシャルウォレットの格納場所を指定します。この格納場所はすでにTNS_ADMINに設定済みであるため、格納先のパスを指定するDIRECTORYに環境変数TNS_ADMINを参照するように設定します。</p>
 
     <p>編集前：</p>
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> WALLET_LOCATION <span class="o">=</span> <span class="o">(</span>SOURCE <span class="o">=</span> <span class="o">(</span>METHOD <span class="o">=</span> file<span class="o">)</span> <span class="o">(</span>METHOD_DATA <span class="o">=</span> <span class="o">(</span><span class="nv">DIRECTORY</span><span class="o">=</span><span class="s2">"?/network/admin"</span><span class="o">)))</span>
@@ -754,7 +757,7 @@ Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウ
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-17T10:54:01+09:00">August 17, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-18T17:35:55+09:00">August 18, 2021</time></p>
 
 
       </footer>
