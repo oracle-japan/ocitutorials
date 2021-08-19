@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-08-19T15:07:50+09:00">
+  <meta property="article:published_time" content="2021-08-19T16:59:52+09:00">
 
 
 
@@ -307,7 +307,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その4 - ブロック・ボリュームをインスタンスにアタッチする">
     <meta itemprop="description" content="ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。">
-    <meta itemprop="datePublished" content="2021-08-19T15:07:50+09:00">
+    <meta itemprop="datePublished" content="2021-08-19T16:59:52+09:00">
     
 
     <div class="page__inner-wrap">
@@ -365,9 +365,10 @@
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong>ブロック・ストレージ</strong> → <strong>ブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
+    <p>コンソールメニューから <strong>ストレージ</strong> → <strong>ブロック・ストレージ</strong> → <strong>ブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
   </li>
-  <li>立ち上がった <strong>ブロック・ボリュームの作成</strong> ウィンドウに以下の項目を入力し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。
+  <li>
+    <p>立ち上がった <strong>ブロック・ボリュームの作成</strong> ウィンドウに以下の項目を入力し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
     <ul>
       <li><strong>名前</strong> - 任意 (集合ハンズオン研修の場合は、講師の指示に従ってください)</li>
       <li><strong>コンパートメントに作成</strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します。</li>
@@ -381,25 +382,34 @@
     </blockquote>
 
     <ul>
-      <li><strong>サイズ(GB)</strong> - 50 を入力</li>
-      <li><strong>バックアップ・ポリシー</strong> - ここでは空欄のまま。（必要に応じてポリシーを選択することで自動的にバックアップ取得することも可能です）</li>
-      <li><strong>ボリューム・パフォーマンス</strong> - ここではデフォルトの<em>バランス</em>を選択します。</li>
       <li>
-        <p><strong>暗号化</strong> - <em>ORACLE管理キーを使用した暗号化</em> が選択されていることを確認</p>
+        <p><strong>ボリューム・サイズとパフォーマンス</strong></p>
 
-        <p><img src="img1.png" alt="img1.png" /></p>
+        <ul>
+          <li><strong>カスタム</strong> を選択</li>
+          <li><strong>サイズ(GB)</strong> - 50 を入力</li>
+          <li><strong>VPU</strong> - 10 (バランス) を選択</li>
+        </ul>
       </li>
+      <li><strong>バックアップ・ポリシー</strong> - ここでは空欄のまま。（必要に応じてポリシーを選択することで自動的にバックアップ取得することも可能です）</li>
+      <li><strong>クロス・リージョン・レプリケーション</strong> - ここでは空欄のまま。</li>
+      <li><strong>暗号化</strong> - <em>Oracle管理キーを使用した暗号化</em> が選択されていることを確認</li>
     </ul>
   </li>
+</ol>
+
+<p><img src="bv_img1.png" alt="bv_img1.png" /></p>
+
+<ol>
   <li>
     <p>ボリュームの作成中は プロビジョニング中 と表示されます。</p>
 
-    <p><img src="img2.png" alt="img2.png" /></p>
+    <p><img src="bv_img2.png" alt="bv_img2.png" /></p>
   </li>
   <li>
     <p>ボリュームの作成が完了し、ステータスが 使用可能 になったことを確認します。</p>
 
-    <p><img src="img3.png" alt="img3.png" /></p>
+    <p><img src="bv_img3.png" alt="bv_img3.png" /></p>
   </li>
 </ol>
 
@@ -407,77 +417,94 @@
 
 <h1 id="2-ボリュームのインスタンスへのアタッチ">2. ボリュームのインスタンスへのアタッチ</h1>
 
-<p>第3章で作成した仮想マシンに、先ほど作成したブロック・ボリュームをアタッチします。</p>
+<p>第3章で作成した仮想マシンのコンピュート・インスタンスに、先ほど作成したブロック・ボリュームをアタッチします。</p>
 
-<p>アタッチ方法はiSCSIと準仮想化が選べますが、ここではiSCSIでのアタッチを行い、iSCSIコマンドを利用してOSからアクセスできるようにします。どちらを選択するかは以下を参考にしてください。</p>
+<p>アタッチ方法はiSCSIと準仮想化が選べますが、仮想マシン・インスタンスからのアタッチであれば準仮想化のほうが使い勝手がよいので今回は準仮想化を選択していきます。（念のためiSCSIの場合の追加手順も記載してあります。）</p>
 
 <ul>
-  <li>準仮想化 - OSからのコマンド操作は不要なので利用は簡単。IO性能のオーバーヘッドが数パーセントある。IOPSのSLAは適用されない。</li>
-  <li>iSCSI - OSから利用するためのコマンド操作が必要。性能のオーバーヘッドはない。IOPSのSLAが適用される。</li>
+  <li>準仮想化 - OSからのコマンド操作は不要なので利用は簡単。</li>
+  <li>iSCSI - コンソールでの操作に加え、追加のOSコマンド操作が必要。ベアメタル・インスタンスの場合はiSCSIのみ。</li>
 </ul>
+
+<p>ブロック・ボリュームの画面からもアタッチ操作ができますが、今回はコンピュート・インスタンスの画面からアタッチしていきましょう。</p>
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択します。</p>
+    <p>コンソールメニューから <strong>コンピュート</strong> → <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択します。</p>
   </li>
   <li>
-    <p>第2章で作成したインスタンスの名称のリンク 下記の例では <strong>TestVM1</strong> をクリックし、インスタンスの詳細画面にナビゲートします。</p>
-
-    <p><img src="img4.png" alt="img4.png" /></p>
+    <p>第2章で作成した実行中のインスタンス名のリンクをクリックし、インスタンスの詳細画面にナビゲートします。
+<img src="bv_img4.png" alt="bv_img4.png" /></p>
   </li>
   <li>
     <p>画面下部の <strong>リソース</strong> から <strong>アタッチされたブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームのアタッチ</strong> ボタンを押します。
-  <img src="img5.png" alt="img5.png" /></p>
+  <img src="bv_img5.png" alt="bv_img5.png" /></p>
   </li>
   <li>立ち上がった <strong>ブロック・ボリュームのアタッチ</strong> ウィンドウに以下の項目を入力し、<strong>アタッチ</strong> ボタンを押します。
     <ul>
-      <li><strong>ブロックボリュームのアタッチ方法を選択します</strong> - <em>iSCSI</em> を選択</li>
-      <li><strong>アクセス</strong> - <em>読取り/書込み</em> を選択</li>
-      <li><strong>ブロック・ボリューム・コンパートメント</strong>  - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したボリュームをアタッチする場合は選択します。</li>
-      <li><strong>ブロック・ボリューム</strong> - 先ほど作成したブロック・ボリュームを選択します</li>
+      <li>
+        <p><strong>ボリューム・アタッチメント・タイプ</strong> - <em>準仮想化</em> を選択</p>
+      </li>
+      <li>
+        <p><strong>転送中暗号化の使用</strong> - 空欄のまま</p>
+      </li>
+      <li>
+        <p><strong>ボリューム</strong></p>
+
+        <ul>
+          <li><strong>ボリュームの選択</strong> を選択します。</li>
+          <li>
+            <コンパートメント名>の **ボリューム** - 先ほど作成したブロック・ボリュームを選択します
+   
+</コンパートメント名>
+          </li>
+        </ul>
+      </li>
       <li>
         <p><strong>デバイス・パス</strong> - 任意のパスを選択します</p>
+      </li>
+      <li>
+        <p><strong>アクセス</strong> - <em>読取り/書込み</em> を選択</p>
 
-        <p><img src="img6.png" alt="img6.png" /></p>
+        <p><img src="bv_img6.png" alt="bv_img6.png" /></p>
       </li>
     </ul>
   </li>
   <li>
-    <p>iSCSIタイプを選択した場合、<strong>ブロック・ボリュームのアタッチ</strong> のウィンドウが開きます。内容を確認したらウィンドウを閉じます。</p>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> <strong>ブロック・ボリュームのアタッチ</strong> のウィンドウが開きます。内容を確認したらウィンドウを閉じます。</p>
 
-    <p><img src="img7.png" alt="img7.png" /></p>
+    <p><img src="bv_img7.png" alt="bv_img7.png" /></p>
   </li>
   <li>
     <p>アタッチ中は、ステータスが <strong>アタッチ中</strong> と表示されます。</p>
 
-    <p><img src="img8.png" alt="img8.png" /></p>
+    <p><img src="bv_img8.png" alt="bv_img8.png" /></p>
   </li>
   <li>
     <p>アタッチが完了すると、ステータスが <strong>アタッチ済</strong> に変わります。</p>
 
-    <p><img src="img9.png" alt="img9.png" /></p>
+    <p><img src="bv_img9.png" alt="bv_img9.png" /></p>
   </li>
   <li>
-    <p>アタッチされたボリュームの右側の <strong>・・・</strong> メニューから <strong>iSCSIコマンドおよび情報</strong> を選択します。</p>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> アタッチされたボリュームの右側の <strong>・・・</strong> メニューから <strong>iSCSIコマンドおよび情報</strong> を選択します。</p>
 
-    <p><img src="img10.png" alt="img10.png" /></p>
+    <p><img src="bv_img10.png" alt="bv_img10.png" /></p>
   </li>
   <li>
-    <p>立ち上がった <strong>iSCSIコマンドおよび情報</strong> ウィンドウの中に、インスタンスから iSCSI デバイスにアクセスするためのコマンドをコピーします。
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> 立ち上がった <strong>iSCSIコマンドおよび情報</strong> ウィンドウの中に、インスタンスから iSCSI デバイスにアクセスするためのコマンドをコピーします。
 <strong>アタッチ・コマンド</strong> というコマンドブロックの左下にある コピー リンクをクリックし、表示が <strong>コピー済</strong> となったことを確認します。</p>
 
     <p><img src="img11.png" alt="img11.png" /></p>
   </li>
   <li>
-    <p>インスタンスに opcユーザーで sshアクセスし、先ほどコピーしたコマンドをペーストして実行します。</p>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> インスタンスに opcユーザーで sshアクセスし、先ほどコピーしたコマンドをペーストして実行し、実行結果が <strong>successful</strong> となっていることを確認します。</p>
 
-    <p><img src="img12.png" alt="img12.png" /></p>
+    <p>実行した iSCSI コマンドによって、インスタンスを再ブートした後も、iSCSI ボリュームに再度ログインされます。</p>
+
+    <p>コマンドは再起動の度に実行する必要はありません。</p>
+
+    <p><img src="img12.png" alt="img12" /></p>
   </li>
-</ol>
-
-<p>実行結果が <strong>successful</strong> となっていることを確認します。</p>
-
-<ol>
   <li>
     <p>以下のコマンドを実行し、OSから新しくブロックデバイスが認識されていることを確認します。</p>
 
@@ -486,21 +513,166 @@
       <p>lsblk　　</p>
     </blockquote>
 
-    <p><img src="img13.png" alt="img13.png" /></p>
+    <p><img src="bv_img13.png" alt="bv_img13.png" /></p>
 
     <p>上記の例では、新しく /dev/sdb という50GBのボリュームが認識されています。</p>
   </li>
 </ol>
-
-<p>実行した iSCSI コマンドによって、インスタンスを再ブートした後も、iSCSI ボリュームに再度ログインされます。</p>
-
-<p>コマンドは再起動の度に実行する必要はありません。</p>
 
 <p><a id="anchor3"></a></p>
 
 <h1 id="3-ボリュームのフォーマットおよびマウント">3. ボリュームのフォーマットおよびマウント</h1>
 
 <p>その後、実際にボリューム上にデータを配置する際には、各OS上で適切なファイルシステムを構築して利用してください。</p>
+
+<p>ここでは、Oracle Linux 7.9 の場合を例にしてサンプルの手順を示します。</p>
+
+<ol>
+  <li>
+    <p>lsblk コマンドでデバイスの確認を行います。この環境では、/dev/sdbが追加したブロック・ボリュームです。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sdb      8:16   0   50G  0 disk
+sda      8:0    0 46.6G  0 disk
+├-sda2   8:2    0    8G  0 part [SWAP]
+├-sda3   8:3    0 38.4G  0 part /
+└-sda1   8:1    0  200M  0 part /boot/efi
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>parted コマンドで現在のパーティション情報を確認します。/dev/sdaはブート・ボリュームです。Oracle Linux 7.9のイメージではパーティションテーブルはgptで、ファイルシステムはxfsになっています。/dev/sdbにはまだパーティションはありません。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo parted -l
+Model: ORACLE BlockVolume (scsi)
+Disk /dev/sda: 50.0GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: gpt
+Disk Flags:
+   
+Number  Start   End     Size    File system     Name                  Flags
+ 1      1049kB  211MB   210MB   fat16           EFI System Partition  boot
+ 2      211MB   8801MB  8590MB  linux-swap(v1)
+ 3      8801MB  50.0GB  41.2GB  xfs
+   
+   
+Error: /dev/sdb: unrecognised disk label
+Model: ORACLE BlockVolume (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: unknown
+Disk Flags:
+   
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>parted コマンドでパーティションを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo parted -s -a optimal /dev/sdb \
+   mklabel gpt \
+   mkpart primary 0% 100%
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>作成できたか確認します。sdb1 としてパーティションが作成されたことがわかります。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo parted /dev/sdb print
+Model: ORACLE BlockVolume (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: gpt
+Disk Flags:
+   
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  53.7GB  53.7GB               primary
+   
+$ sudo lsblk
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sdb      8:16   0   50G  0 disk
+└-sdb1   8:17   0   50G  0 part
+sda      8:0    0 46.6G  0 disk
+├-sda2   8:2    0    8G  0 part [SWAP]
+├-sda3   8:3    0 38.4G  0 part /
+└-sda1   8:1    0  200M  0 part /boot/efi
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>mkfs.xfs でファイルシステムを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mkfs.xfs /dev/sdb1
+meta-data=/dev/sdb1              isize=256    agcount=4, agsize=3276672 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=0        finobt=0, sparse=0, rmapbt=0
+         =                       reflink=0
+data     =                       bsize=4096   blocks=13106688, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=6399, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>マウントポイントを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mkdir /mnt/bv1
+$ sudo chown opc:opc /mnt/bv1
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>lsblk コマンドでsdb1のUUIDを確認します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ lsblk -o +UUID
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT UUID
+sdb      8:16   0   50G  0 disk
+└-sdb1   8:17   0   50G  0 part            a773b2a6-e49c-4c90-8d53-d18d8832f61e
+sda      8:0    0 46.6G  0 disk
+├-sda2   8:2    0    8G  0 part [SWAP]     dbabf4fc-a92c-4317-90a8-16182288fde5
+├-sda3   8:3    0 38.4G  0 part /          7415dba2-8eff-478e-8c0c-24321f669e0d
+└-sda1   8:1    0  200M  0 part /boot/efi  6669-0EBB
+$
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>/etc/fstab ファイルを編集し、以下の内容を追記します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo vi /etc/fstab
+</code></pre></div>    </div>
+
+    <p>追記する内容</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>UUID=&lt;確認したUUID&gt; /mnt/bv1 xfs defaults,_netdev,nofail 0 2
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>fstabの設定を反映します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mount -a
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>df  コマンドで確認してみます。/mnt/bv1 にマウントされたことが確認できました。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        742M     0  742M   0% /dev
+tmpfs           773M     0  773M   0% /dev/shm
+tmpfs           773M  8.7M  764M   2% /run
+tmpfs           773M     0  773M   0% /sys/fs/cgroup
+/dev/sda3        39G  8.9G   30G  23% /
+/dev/sda1       200M  7.4M  193M   4% /boot/efi
+tmpfs           155M     0  155M   0% /run/user/0
+tmpfs           155M     0  155M   0% /run/user/994
+tmpfs           155M     0  155M   0% /run/user/1000
+/dev/sdb1        50G   33M   50G   1% /mnt/bv1
+$
+</code></pre></div>    </div>
+  </li>
+</ol>
 
 <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
@@ -513,7 +685,7 @@
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-19T15:07:50+09:00">August 19, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-19T16:59:52+09:00">August 19, 2021</time></p>
 
 
       </footer>
