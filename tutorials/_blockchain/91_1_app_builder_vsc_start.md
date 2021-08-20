@@ -219,7 +219,7 @@ CHAINCODESセクションでは、Chaincode仕様からのChaincodeコード（�
   - Invoke: PeerにChaincodeの実行を依頼（Transaction Proposal）し、OrdererにTransactionを送付します。トランザクションが成功した場合、台帳に反映されます。
 
 1. QueryあるいはInvokeを実行すると、コンソールに実行ログが出力されます。また、Transaction Proposalが成功した場合には、フォームのOutput欄に関数の返り値が表示されます。以下はInvokeを実行し、トランザクションが成功した場合の表示例です。<br>
-  ![Invoke成功]](CC-Execute-CreateMarble-Invoke-Success.png)
+  ![Invoke成功](CC-Execute-CreateMarble-Invoke-Success.png)
 
 > **[注意]**  
 > ローカル環境でChaincodeをデプロイ、実行している場合、デプロイ状況や台帳の値などの保持サイクルはローカル環境のDockerコンテナの稼働期間限りです。Dockerコンテナを停止した場合は、デプロイからやり直す必要があります。
