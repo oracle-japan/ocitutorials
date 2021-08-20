@@ -108,7 +108,7 @@ Blockchain App Builder（Visual Studio Code拡張版）のインストールに�
 
 1. ダウンロードしたインストーラのZIPファイルをunzipしておきます。
 
-## 1.2 Visual Studio Codeでのインストール
+## 1.3 Visual Studio Codeでのインストール
 
 1. Visual Studio Codeを開きます。
 
