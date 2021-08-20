@@ -2,7 +2,7 @@
 title: "206: Node.jsによるADB上でのアプリ開発"
 excerpt: "この章では開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。"
 
-order: "206"
+order: "3_206"
 layout: single
 #header:
 #  teaser: "/database/adb206-appdev-nodejs/image_top.png"

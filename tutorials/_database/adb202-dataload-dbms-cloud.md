@@ -17,7 +17,7 @@ header:
 大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。
 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。
 
-+ [サンプルデータファイル(customers.csv)のダウンロードリンク](/ocitutorials/database/adb203-dataload-dbms-cloud/customers.csv)
++ [サンプルデータファイル(customers.csv)のダウンロードリンク](/ocitutorials/database/adb202-dataload-dbms-cloud/customers.csv)
 
 <br>
 
