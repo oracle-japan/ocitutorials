@@ -25,4 +25,9 @@ Oracle Blockchain Platform (OBP) を使ってみよう！という人のため�
 - **[Channel を作成し、インスタンスおよび Peer ノードを参加させる](/ocitutorials/blockchain/02_1_create_channel/)**  
   Hyperledger Fabric のデータとロジックの共有範囲の制御などのための仕組みである Channel を作成し、その Channel に対してインスタンスと Peer ノードを参加させます。
 
+# 9. ツール、ライブラリなどの利用
+
+- **[Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方](/ocitutorials/blockchain/91_1_app_builder_vsc_start/)**  
+  Oracle Blockchain Platform付属のChaincode開発・テスト・デプロイ補助ツールであるBlockchain App BuilderのVisual Studio Code拡張版について、ダウンロードとインストールの方法から、Chaincode仕様の作成方法やChaincodeコードの生成方法など、基本的な使い方を紹介します。
+
 <br />
