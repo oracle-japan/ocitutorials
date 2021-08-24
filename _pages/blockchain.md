@@ -30,4 +30,7 @@ Oracle Blockchain Platform (OBP) を使ってみよう！という人のため�
 - **[Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方](/ocitutorials/blockchain/91_1_app_builder_vsc_start/)**  
   Oracle Blockchain Platform付属のChaincode開発・テスト・デプロイ補助ツールであるBlockchain App BuilderのVisual Studio Code拡張版について、ダウンロードとインストールの方法から、Chaincode仕様の作成方法やChaincodeコードの生成方法など、基本的な使い方を紹介します。
 
+- **[Fine-Grained Access Control Libraryの使い方](/ocitutorials/blockchain/92_1_fine_grained_ACL/)**  
+  Oracle Blockchain Platformに付属する、Chaincode上／オンチェーンで確実かつ柔軟、きめ細やかなアクセス制御を実現するためのサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明します。
+
 <br />
