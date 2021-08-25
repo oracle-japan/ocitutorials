@@ -116,6 +116,11 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[213 : Application Continuityを設定しよう](/ocitutorials/database/adb213-tac/)**  
     * ネットワークの瞬断等の予期せぬエラーからアプリケーションを守るには？
 
+## 運用管理編
+
++ **[501: OCICLIを利用したインスタンス操作](/ocitutorials/database/adb501-ocicli)**
+    * OCI CLIを利用したADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。
+
 <br/>
 
  + **[ADB ハンズオンラボ](https://community.oracle.com/tech/developers/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol)**    ※旧サイト（順次、本サイトに移行中）
