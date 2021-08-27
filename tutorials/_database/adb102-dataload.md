@@ -28,7 +28,7 @@ header:
 
 **目次**
 
-- [1.手元のPCからクラウド・ストレージにCSVデータをアップロードしてみよう](#anchor1)
+- [1.手元のPCからCSVデータをロードしてみよう](#anchor1)
 - [2.クラウド・ストレージからデータをロードしてみよう](#anchor2)
 - [3.クラウド・ストレージのデータをフィードしてみよう](#anchor3)
 
@@ -38,9 +38,9 @@ header:
 <a id="anchor1"></a>
 <br>
 
-# 1.手元のPCからクラウド・ストレージにCSVデータをアップロードしてみよう
+# 1.手元のPCからCSVデータをロードしてみよう
 
-まず手元のPC上のデータをADBインスタンスにアップロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。
+まず手元のPC上のデータをADBインスタンスにロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。
 
 1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツール**タブから、**データベース・アクションを開く**をクリックしてください。
    ![画面ショット1-1](img0.png)
