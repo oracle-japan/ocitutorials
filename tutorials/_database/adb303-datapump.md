@@ -168,7 +168,7 @@ chmod +x expdp_hr.sh
 ![イメージ](img104.png)
 
 
-1. DBCSインスタンス上の「/home/oracle/mig2adb/dumpdir」ディレクトリにダンプファイルが複数出力されているので(以下ではexport_hr_01.dmp,export_hr_02.dmp,export_hr_03.dmp,export_hr_04.dmp)、WinSCPといった任意のファイル転送ツールを利用し、DBCSインスタンス上から手元のPCにコピーしてください。  
+1. DBCSインスタンス上の「/home/oracle/mig2adb/dumpdir」ディレクトリにダンプファイルが複数出力されているので(以下ではexport_hr_01.dmp、export_hr_02.dmp、export_hr_03.dmp、export_hr_04.dmp)、WinSCPといった任意のファイル転送ツールを利用し、DBCSインスタンス上から手元のPCにコピーしてください。  
 ![イメージ](img105.png)
 
 
@@ -182,11 +182,7 @@ chmod +x expdp_hr.sh
 # 2. オブジェクトストレージへのアクセストークンを取得
 次に、オブジェクトストレージへのアクセストークンを取得します。（尚、既にトークンを取得済みであれば本手順はスキップ可能です）
 
-[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor2){:target="_blank"}から、以下のセクションを参考に実施してください。
-
-   1. **OCIオブジェクトストレージへのアクセス情報を取得**  
-
-
+[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor2){:target="_blank"}から、**「1. OCIオブジェクトストレージへのアクセス情報を取得」**を参考に実施してください。
 
 <BR>
 
@@ -196,9 +192,7 @@ chmod +x expdp_hr.sh
 
 次に、手元にコピーしてきたダンプファイル(export_hr_xx.dmp)をオブジェクト・ストレージの任意のバケットにアップロードし、アクセスURLを取得します。
 
-[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor2){:target="_blank"}から、以下のセクションを参考に実施してください。
-
-   2. **OCIオブジェクトストレージへのデータアップロード** 
+[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor2){:target="_blank"}から、**「2. OCIオブジェクトストレージへのデータアップロード」**を参考に実施してください。
 
 
 > * 通常Data Pumpを利用する場合、ディレクトリ・オブジェクトを作成しそこからインポートしますが、ADBは仕様上OS領域にアクセスできないため、オブジェクトストレージ経由でロードする必要があります。
