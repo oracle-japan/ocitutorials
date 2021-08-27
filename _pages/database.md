@@ -108,7 +108,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[210 : 仮想プライベートデータベース(VPD)による細やかなアクセス制御](/ocitutorials/database/adb210-VPD/){:target="_blank"}**  
     * 同じ表のデータでも行や列の単位でアクセス制御をかけることができます。ADBでの設定方法を確認します
 
-+ **211: クローン機能を使ってみよう（公開準備中）**  
++ 211: クローン機能を使ってみよう（公開準備中）  
 
 + **[212: Autonomous Data Guardを構成してみよう](/ocitutorials/database/adb212-audg/){:target="_blank"}**  
     * たった数クリックでスタンバイ・データベースをプロビジョニングしDR構成を実現します
@@ -116,14 +116,25 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[213 : Application Continuityを設定しよう](/ocitutorials/database/adb213-tac/){:target="_blank"}**  
     * ネットワークの瞬断等の予期せぬエラーからアプリケーションを守るには？
 
-## 移行編
+## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}**
     * この**移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定してDBCSインスタンスを作成します。
+
 + **[302: スキーマ・アドバイザを活用しよう](/ocitutorials/database/adb302-schema-adviser){:target="_blank"}**
     * 現行Oracle Database環境にてAutonomous Databaseが対応していない機能を利用していないか確認できる「スキーマ・アドバイザ」をご紹介します。
+
 + **[303: Data Pumpを利用してデータを移行しよう](/ocitutorials/database/adb303-datapump){:target="_blank"}**
     * データ移行に関する機能として従来からよく利用されるData Pumpを利用した移行方法をご紹介します。
-+ **[304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（公開準備中）]**
+
++ [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（公開準備中）]
+
+# データ連携編
++ [401: OCI GoldenGateを利用したデータ連携（公開準備中）]
+
++ [402: Database Linkを利用したOCI GoldenGateを利用したデータ連携（公開準備中）]
+
++ [OCI Data Integrationチュートリアル](/ocitutorials/intermediates/ocidi-tutorials){:target="_blank"}**
+    * ノーコーディングでETL処理を行うことができるフルマネージド・サービスを利用し、ADBにデータをロードする手順を解説します。
 
 
 ## 運用管理編
