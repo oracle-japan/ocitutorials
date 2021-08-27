@@ -1,0 +1,680 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>301 : 移行元となるデータベースを作成しよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="まずは準備作業として、現行ご利用いただいているOracle Databaseを想定し、DBCSインスタンスを作成します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="301 : 移行元となるデータベースを作成しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb301-create-source-db/">
+
+
+  <meta property="og:description" content="まずは準備作業として、現行ご利用いただいているOracle Databaseを想定し、DBCSインスタンスを作成します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb301-tac/sa00x.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-08-27T19:40:10+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb301-create-source-db/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb301-tac/sa00x.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          301 : 移行元となるデータベースを作成しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">まずは準備作業として、現行ご利用いただいているOracle Databaseを想定し、DBCSインスタンスを作成します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">301 : 移行元となるデータベースを作成しよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb301-create-source-db/" class="active">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb302-schema-adviser/">302 : スキーマ・アドバイザを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="301 : 移行元となるデータベースを作成しよう">
+    <meta itemprop="description" content="まずは準備作業として、現行ご利用いただいているOracle Databaseを想定し、DBCSインスタンスを作成します。">
+    <meta itemprop="datePublished" content="2021-08-27T19:40:10+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#はじめに">はじめに</a>
+    <ul>
+      <li></li>
+    </ul>
+  </li>
+  <li><a href="#1-移行元となるdbcsインスタンスの作成">1. 移行元となるDBCSインスタンスの作成</a></li>
+  <li><a href="#2-移行対象となるhrスキーマをインストール">2. 移行対象となるHRスキーマをインストール</a>
+    <ul>
+      <li><a href="#3-サンプルスキーマhrへの接続スキーマの確認">3. サンプルスキーマ（HR）への接続、スキーマの確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#おわりに">おわりに</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？
+従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは<strong>移行編</strong>としてそれらの方法をご紹介しています。</p>
+
+<hr />
+<p><strong>Autonomous Database を使ってみよう（移行編）</strong></p>
+<ul>
+  <li><a href="/ocitutorials/database/adb301-create-source-db" target="_blank">301: 移行元となるデータベースを作成しよう（本章）</a></li>
+  <li><a href="/ocitutorials/database/adb302-schema-adviser" target="_blank">302: スキーマ・アドバイザを活用しよう</a></li>
+  <li><a href="/ocitutorials/database/adb303-datapump" target="_blank">303: Data Pumpを利用してデータを移行しよう</a></li>
+  <li>[304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）]
+<br /></li>
+</ul>
+
+<hr />
+
+<p>本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しDBCSインスタンスを作成します。</p>
+
+<p><br /></p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1.移行元となるDBCSインスタンスの作成</a></li>
+  <li><a href="#anchor2">2.移行対象となるサンプルスキーマ(HR)をインストール</a></li>
+  <li><a href="#anchor3">3.サンプルスキーマ(HR)への接続、スキーマの確認</a></li>
+</ul>
+
+<p><br /></p>
+
+<!-- **前提条件 :** -->
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約150分 (DBCSインスタンスの作成時間を含む)</p>
+
+<h2><br /></h2>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-移行元となるdbcsインスタンスの作成">1. 移行元となるDBCSインスタンスの作成</h1>
+
+<p>まず、<a href="/ocitutorials/database/dbcs101-create-db/" target="_blank">「Oracle Cloud で Oracle Database を使おう(DBCS)」</a> を参考に、DBCSインスタンスを作成してください。
+TeraTermを起動しDBCSインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。</p>
+
+<p>以降では、DBCSインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です）</p>
+
+<ul>
+  <li>ホスト名接頭辞 : <strong>dbcs01</strong></li>
+  <li>データベースのバージョン：<strong>12.2</strong></li>
+  <li>パスワード：<strong>WelCome123#123#</strong></li>
+  <li>PDBの名前：<strong>pdb1</strong></li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-移行対象となるhrスキーマをインストール">2. 移行対象となるHRスキーマをインストール</h1>
+
+<p><a id="anchor2"></a></p>
+
+<p>次に作成したDBCSインスタンス内に、移行対象となるHRスキーマを作成します。<br />
+（HRスキーマのインストール方法に関するマニュアルは<a href="https://docs.oracle.com/cd/E96517_01/comsc/installing-sample-schemas.html#GUID-CB945E4C-D08A-4B26-A12D-3D6D688467EA">こちら</a>）を参照ください。</p>
+
+<p>引き続きDBCSインスタンスにて作業します。</p>
+
+<ol>
+  <li>
+    <p>Tera Termを利用してDBCSインスタンスに接続しておきます。</p>
+  </li>
+  <li>opc ユーザーからoracleユーザーにスイッチします。
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su - oracle
+</code></pre></div>    </div>
+  </li>
+  <li>SQL*PlusでDBCSインスタンスに接続します。
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus / as sysdba
+</code></pre></div>    </div>
+  </li>
+  <li>DBCSインスタンスに構成されているPDBの一覧を確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">show</span> <span class="n">pdbs</span>
+</code></pre></div>    </div>
+    <p><img src="img101.png" alt="結果出力" /></p>
+  </li>
+  <li>PDBインスタンス名を指定してスイッチします。<br />
+（ここではデフォルトで作成されるPDBにアクセスしています。）
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">alter</span> <span class="k">session</span> <span class="k">set</span> <span class="n">container</span> <span class="o">=</span> <span class="n">PDB1</span> <span class="p">;</span>
+</code></pre></div>    </div>
+    <p><img src="img102.png" alt="結果出力" /></p>
+  </li>
+  <li>hr_main.sqlを実行し、サンプルスキーマ（HR）の作成します。（数分でHRスキーマが構成されます）
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">@?/</span><span class="n">demo</span><span class="o">/</span><span class="k">schema</span><span class="o">/</span><span class="n">human_resources</span><span class="o">/</span><span class="n">hr_main</span><span class="p">.</span><span class="k">sql</span>
+</code></pre></div>    </div>
+    <p>HRスキーマのパスワード等を聞かれますので、以下を参考にご入力ください。</p>
+    <ul>
+      <li>パスワード : <strong>WelCome123#123#</strong></li>
+      <li>デフォルト表領域 : <strong>USERS</strong></li>
+      <li>デフォルト一時表領域 : <strong>TEMP</strong></li>
+      <li>ログ : <strong>$ORACLE_HOME/demo/schema/log</strong>
+  <img src="img103.png" alt="結果出力" /></li>
+    </ul>
+  </li>
+  <li>特にエラーなく終了したら exit でSQL*Plus を終了してください。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exit
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h2 id="3-サンプルスキーマhrへの接続スキーマの確認">3. サンプルスキーマ（HR）への接続、スキーマの確認</h2>
+<p>次にHRスキーマに接続し、表や索引等のオブジェクトを確認しておきます。</p>
+
+<ol>
+  <li>CDB経由ではなくPDBに対して直接アクセスするために、tnsnames.ora にPDBへの接続情報を追記します。
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi <span class="nv">$ORACLE_HOME</span>/network/admin/tnsnames.ora
+</code></pre></div>    </div>
+    <p>以下を追記します。（必要に応じて<a href="/ocitutorials/database/dbcs101-create-db/">「Oracle Cloud で Oracle Database を使おう(DBCS)」</a>を参考に<strong>ホスト名（HOST）</strong>、<strong>ポート番号（PORT）</strong>、<strong>サービス名（SERVICE_NAME）</strong> を変更ください）</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PDB1 =
+  (DESCRIPTION =
+ (ADDRESS_LIST =
+   (ADDRESS = (PROTOCOL = TCP)(HOST = dbcs01.subnet.vcn.oraclevcn.com)(PORT = 1521))
+ )
+ (CONNECT_DATA =
+   (SERVICE_NAME = pdb1.subnet.vcn.oraclevcn.com)
+ )
+  )
+</code></pre></div>    </div>
+    <p><br />
+編集した内容を確認します。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="nv">$ORACLE_HOME</span>/network/admin/tnsnames.ora
+</code></pre></div>    </div>
+    <p><img src="img106.png" alt="結果出力" /></p>
+  </li>
+  <li>SQL*Plus でPDB上のHRスキーマに接続します。
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus hr/WelCome123#123#@pdb1
+</code></pre></div>    </div>
+  </li>
+  <li>以下のSQLを貼り付け、生成されたオブジェクトを確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">set</span> <span class="n">lines</span> <span class="mi">120</span>
+<span class="k">set</span> <span class="n">pages</span> <span class="mi">9999</span>
+<span class="n">col</span> <span class="n">object_name</span> <span class="k">for</span> <span class="n">a30</span>
+<span class="k">select</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">object_name</span> <span class="k">from</span> <span class="n">user_objects</span> <span class="k">order</span> <span class="k">by</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span> <span class="p">;</span>
+</code></pre></div>    </div>
+    <p><img src="img104.png" alt="結果出力" /></p>
+  </li>
+  <li>ここで後続のハンズオンガイドで必要となる表を一つ作成しておきます。（ADWには格納できないLONG型の列を有する表を作成しておく）
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">create</span> <span class="k">table</span> <span class="n">NG_TAB_4ADW</span> <span class="p">(</span><span class="n">id</span> <span class="n">number</span><span class="p">,</span> <span class="n">var</span> <span class="n">long</span><span class="p">);</span>
+</code></pre></div>    </div>
+    <p><img src="img105.png" alt="結果出力" /></p>
+  </li>
+  <li>特に問題なければexitでSQL*Plusを終了してください。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exit
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>以上で既存オンプレミスのOracle Databaseを想定したDBCSインスタンスの作成、およびサンプルスキーマの作成が完了しました。後続の章ではこの環境から移行する方法についてご紹介したいと思います。</p>
+
+<p><br />
+以上でこの章は終了です。次の章にお進みください。
+<br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-27T19:40:10+09:00">August 27, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=301+%3A+%E7%A7%BB%E8%A1%8C%E5%85%83%E3%81%A8%E3%81%AA%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb301-create-source-db%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb301-create-source-db%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb301-create-source-db%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb213-tac/" class="pagination--pager" title="213 : Application Continuityを設定しよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb302-schema-adviser/" class="pagination--pager" title="302 : スキーマ・アドバイザを活用しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
