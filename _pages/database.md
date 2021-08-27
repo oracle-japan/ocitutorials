@@ -9,13 +9,13 @@ toc: true
 ---
   
 **前提条件**  
-+ Oracle Cloud Infrastructure の環境と、ユーザーアカウントがあること(トライアル環境でも実施いただける内容となっています。 
++ Oracle Cloud Infrastructure の環境と、ユーザーアカウントがあること(トライアル環境でも実施いただける内容となっています。)
 + 適切なコンパートメントと、そこに対する適切な権限がユーザーに付与されていること
 
 **特記事項**  
 + チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
-+ [OCIチュートリアル入門編](/ocitutorials/beginners/){:target="_blank"}の、準備からその1、その2、その3、その7を実施しておくと、理解がスムーズです。  
-+ より詳しく知りたい方は、[OCI活用資料集](https://oracle-japan.github.io/ocidocs/services/database/){:target="_blank"}も併せてご確認ください。それぞれのサービスに関する技術詳細資料をまとめ紹介しています。
++ [OCIチュートリアル入門編](/ocitutorials/beginners/)の、準備からその1、その2、その3、その7を実施しておくと、理解がスムーズです。  
++ より詳しく知りたい方は、[OCI活用資料集](https://oracle-japan.github.io/ocidocs/services/database/)も併せてご確認ください。それぞれのサービスに関する技術詳細資料をまとめ紹介しています。
 
 <br/>
 
@@ -118,7 +118,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}**
-    * この**移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定してDBCSインスタンスを作成します。
+    * この**データ移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定したデータベースを一つ作成します。
 
 + **[302: スキーマ・アドバイザを活用しよう](/ocitutorials/database/adb302-schema-adviser){:target="_blank"}**
     * 現行Oracle Database環境にてAutonomous Databaseが対応していない機能を利用していないか確認できる「スキーマ・アドバイザ」をご紹介します。
@@ -128,12 +128,12 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（公開準備中）]
 
-# データ連携編
+## データ連携編
 + [401: OCI GoldenGateを利用したデータ連携（公開準備中）]
 
-+ [402: Database Linkを利用したOCI GoldenGateを利用したデータ連携（公開準備中）]
++ [402: Database Linkを利用したデータ連携（公開準備中）]
 
-+ [OCI Data Integrationチュートリアル](/ocitutorials/intermediates/ocidi-tutorials){:target="_blank"}**
++ **[OCI Data Integrationチュートリアル](/ocitutorials/intermediates/ocidi-tutorials){:target="_blank"}**
     * ノーコーディングでETL処理を行うことができるフルマネージド・サービスを利用し、ADBにデータをロードする手順を解説します。
 
 
@@ -143,7 +143,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
     * OCI CLIを利用したADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。
 
 <br/>
-
+----
  + **[ADB ハンズオンラボ](https://community.oracle.com/tech/developers/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol){:target="_blank"}**    ※旧サイト（順次、本サイトに移行中）
 
 
