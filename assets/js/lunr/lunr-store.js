@@ -89,6 +89,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/blockchain/91_1_app_builder_vsc_start/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/91_1_app_builder_vsc_start/BAB-Menu.png"
       },{
+        "title": "Fine-Grained Access Control Libraryの使い方",
+        "excerpt":"この文書は Oracle Blockchain Platformに付属する、Chaincode上／オンチェーンで確実かつ柔軟、きめ細やかなアクセス制御を実現するためのサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明するチュートリアルです。 この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。 前提 : Oracle Blockchain Platform のインスタンス作成を完了 1. Fine-Grained Access Control Libraryの概要を理解する 1.1 Fine-Grained Access Control Libraryとは Fine-Grained Access Control Library（FGACライブラリ)は、Hyperledger FabricのChaincode内で利用できる、オンチェーン・アクセス制御のためのサンプル・ライブラリです。Chaincode内でのアクセス制御を、ブロックチェーン台帳上（＝オンチェーン）に記述したアクセス制御リストをもとに行います。 FGACライブラリはOracle Blockchain Platformのコンソールからダウンロードできるサンプルに含まれており、記事執筆時点（2021年8月）ではGo言語のChaincode用のライブラリが提供されています。 FGACライブラリは以下のような要求を満たすものとなっています： Chaincodeの特定の関数を利用できるユーザーを制限できる仕組みを提供する ユーザーと権限のリストは動的に変更でき、また、複数のChaincode間で共有できる アクセス制御リスト（ACL）に基づいたアクセス制御をChaincode内で容易に実装できる Chaincodeのデプロイ時に、リソースとACLを定義できる ACLに対しての操作についてもACLで制御できる 1.2 Fine-Grained Access Control Libraryの基本の要素 FGACライブラリでは、以下の要素に基づいてオンチェーンでのアクセス制御を実現しています： Identity（アイデンティティ）: Chaincode内でのチェック対象となる、Chaincodeの呼び出しに使用されたX509証明書 Identity Pattern（アイデンティティ・パターン）: ひとつ～複数のidentityにマッチするパターンです。基本的にはプレフィックス付きの文字列であり、例えばexample.com配下の全てのidentityにマッチするパターンは、%O%example.comとなります。以下のレベルでのパターンが想定されます。 X.509...","categories": [],
+        "tags": ["Blockchain"],
+        "url": "https://oracle-japan.github.io/ocitutorials/blockchain/92_1_fine_grained_ACL/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/blockchain/92_1_fine_grained_ACL/FGACL_use_image.png"
+      },{
         "title": "Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう",
         "excerpt":"マネージドKubernetesサービスであるOralce Container Engine for Kubernetes(OKE)を中心とした、コンテナ・ネイティブなサービス群です。 Oracle Container Engine for Kubernetes（以下OKE）は、OracleのマネージドKubernetesサービスです。この共通手順では、OCIやOKEを操作するためCLI実行環境の構築（Resource Managerを使用）と、OKEを使ってKubernetesクラスターをプロビジョニングするまでの手順を記します。 前提条件 クラウド環境 Oracle Cloudのアカウントを取得済みであること ハンズオン環境のイメージ 1.OKEクラスターのプロビジョニング ここでは、OKEクラスターのプロビジョニングを行います。ここでの手順を実施することにより、OKEのコントロールプレーンとKubernetesクラスターの構築が同時に行われます。 はじめに、OCIコンソール画面左上のハンバーガーメニューを展開し、開発者サービス⇒Kubernetes Clusters (OKE)を選択します。 クラスタ一覧画面で、クラスタの作成をクリックします。 次のダイアログでクイック作成を選択し、ワークフローの起動をクリックします。 次のダイアログで、任意の名前を入力し、バージョンを選択します。ここではデフォルトのまま進めていきます。 Kubernetes APIエンドポイントには今回はデフォルトのパブリック・エンドポイントを選択します。 Kubernetes APIエンドポイントについて 管理者は、クラスタのKubernetes APIエンドポイントを、プライベート・サブネットまたはパブリック・サブネットに構成することができます。 VCNルーティングとファイアウォール・ルールを使うことで、Kubernetes APIエンドポイントへのアクセスを制御し、オンプレミスもしくは同一VCN上に構築した踏み台サーバからのみアクセス可能にすることができます。 Kubernetesワーカー・ノードには今回プライベートを選択します。これは、 ワークロードに応じて、ワーカーノードにパブリックIPを付与する必要がある場合は、パブリックを選択してください。 Kubernetesワーカー・ノードについて プライベートかパブリックによって、ワーカーノードに付与されるIPアドレスの種類が変わります。 プライベートは、ワーカーノードがプライベートIPのみを付与された状態でプロビジョニングを行います。 ワーカーノードにパブリックIPを付与する必要がある場合は、パブリックを選択してください。 シェイプには、今回VM.Standard2.1を選択します。 シェイプについて OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご利用頂くことができます。 また、プロセッサ・アーキテクチャとしても、Intel/AMD/ARMベースのインスタンスから選択頂くことができます。 ワークロードに応じて、適切なシェイプを選択してください。 ノードの数はワーカーノードの数を指定します。デフォルトで「3」が指定されていますが、本ハンズオンでは最小構成である「1」に変更してください。 ノード数について ノードはリージョン内の可用性ドメイン全体（または、東京リージョンなど単一可用性ドメインの場合、その可用性ドメイン内の障害ドメイン全体）に可能な限り均等に分散されます。 実運用の際は可用性を考慮し、適切なノード数を指定してください。 そして、ダイアログの下まで移動し次をクリックします。 次のダイアログは入力内容を確認し、クラスタの作成をクリックします。 デフォルトの設定では、クラスタが必要とするネットワークリソース等の構成が自動的に行われます。途中経過がダイアログに表示されますので、「クラスタと関連ネットワーク・リソースが作成されました」というメッセージが表示されるまで待った後、Closeボタンをクリックします。...","categories": [],
         "tags": [],
@@ -442,6 +448,12 @@ var store = [{
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb213-tac/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb213-tac/tac001.png"
+      },{
+        "title": "501: OCICLIを利用したインスタンス操作",
+        "excerpt":"ここまでの章で、ADBインスタンスの作成やOCPU数の変更等、様々な操作を実施いただきましたが、これら一連の操作を自動化するにはどうしたら良いでしょうか？ ADBはOracle Cloud Infrastructure(OCI)の他のサービスと同様、REST APIを介した各種操作が可能であり、それらを呼び出すコマンド・ライン・インタフェース（OCI CLI）を利用した操作も可能です。 この章ではOCI CLIを利用してADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。 これらコマンドを利用しスクリプトを組めば、例えば夜間はあまり使わないからOCPUをスケールダウンさせておき、朝になったらスケールアップしよう。といった自動化が可能となります。 尚、本ガイドではOCI CLIがインストールされたOCI Developer Image を利用することを前提に記載しています。 OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを参照ください。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスに接続可能な仮想マシンを構成済みであること ※仮想マシンの作成方法については、本ハンズオンガイドの 204:マーケットプレイスからの仮想マシンのセットアップ方法 を参照ください。 目次： 1. OCI CLIをセットアップしよう 2. OCI CLIを使ってみよう 3. OCI CLIでインスタンスを操作しよう 1. OCI CLIをセットアップしよう まずはOCI CLIにクラウド環境の情報を登録します。 Tera Termを起動し、仮想マシンにログインします。 oracleユーザに切り替えます。 sudo su...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb501-ocicli/",
+        "teaser": null
       },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],

@@ -1,0 +1,548 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Fine-Grained Access Control Libraryの使い方 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="この文書は Oracle Blockchain Platformに付属するサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Fine-Grained Access Control Libraryの使い方">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/blockchain/92_1_fine_grained_ACL/">
+
+
+  <meta property="og:description" content="この文書は Oracle Blockchain Platformに付属するサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/blockchain/92_1_fine_grained_ACL/FGACL_use_image.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-08-27T10:56:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/blockchain/92_1_fine_grained_ACL/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<!--[if IE]>
+  <style>
+    /* old IE unsupported flexbox fixes */
+    .greedy-nav .site-title {
+      padding-right: 3em;
+    }
+    .greedy-nav button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+  </style>
+<![endif]-->
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <h2 class="screen-reader-text">Skip links</h2>
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
+            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
+          </svg>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/blockchain/92_1_fine_grained_ACL/FGACL_use_image.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Fine-Grained Access Control Libraryの使い方
+
+        
+      </h1>
+      
+        <p class="page__lead">この文書は Oracle Blockchain Platformに付属するサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/blockchain" itemprop="item"><span itemprop="name">Blockchain</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Fine-Grained Access Control Libraryの使い方</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Fine-Grained Access Control Libraryの使い方">
+    <meta itemprop="description" content="この文書は Oracle Blockchain Platformに付属するサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明します。">
+    <meta itemprop="datePublished" content="2021-08-27T10:56:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu">
+  <li><a href="#1-fine-grained-access-control-libraryの概要を理解する">1. Fine-Grained Access Control Libraryの概要を理解する</a>
+    <ul>
+      <li><a href="#11-fine-grained-access-control-libraryとは">1.1 Fine-Grained Access Control Libraryとは</a></li>
+      <li><a href="#12-fine-grained-access-control-libraryの基本の要素">1.2 Fine-Grained Access Control Libraryの基本の要素</a></li>
+      <li><a href="#13-fine-grained-access-control-libraryの組み込み方">1.3 Fine-Grained Access Control Libraryの組み込み方</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-fine-grained-access-control-libraryを使ってみる">2. Fine-Grained Access Control Libraryを使ってみる</a>
+    <ul>
+      <li><a href="#21-ライブラリを含むサンプルのダウンロード">2.1 ライブラリを含むサンプルのダウンロード</a></li>
+      <li><a href="#22-サンプルの中身">2.2 サンプルの中身</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-参考リンク">3. 参考リンク</a></li>
+</ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書は Oracle Blockchain Platformに付属する、Chaincode上／オンチェーンで確実かつ柔軟、きめ細やかなアクセス制御を実現するためのサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明するチュートリアルです。</p>
+
+<p>この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。</p>
+
+<ul>
+  <li><strong>前提 :</strong>
+    <ul>
+      <li><a href="../01_01_create_instance/">Oracle Blockchain Platform のインスタンス作成</a>を完了
+<br />
+<br /></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="1-fine-grained-access-control-libraryの概要を理解する">1. Fine-Grained Access Control Libraryの概要を理解する</h1>
+
+<h2 id="11-fine-grained-access-control-libraryとは">1.1 Fine-Grained Access Control Libraryとは</h2>
+
+<p>Fine-Grained Access Control Library（FGACライブラリ)は、<strong>Hyperledger FabricのChaincode内で利用できる、オンチェーン・アクセス制御のためのサンプル・ライブラリ</strong>です。Chaincode内でのアクセス制御を、ブロックチェーン台帳上（＝オンチェーン）に記述したアクセス制御リストをもとに行います。<br />
+<img src="FGACL_slide.png" alt="Fine-Grained Access Control Library紹介スライド" /></p>
+
+<p>FGACライブラリはOracle Blockchain Platformのコンソールからダウンロードできるサンプルに含まれており、記事執筆時点（2021年8月）では<strong>Go言語のChaincode用</strong>のライブラリが提供されています。</p>
+
+<p>FGACライブラリは以下のような要求を満たすものとなっています：</p>
+<ul>
+  <li>Chaincodeの特定の関数を利用できるユーザーを制限できる仕組みを提供する</li>
+  <li>ユーザーと権限のリストは動的に変更でき、また、複数のChaincode間で共有できる</li>
+  <li>アクセス制御リスト（ACL）に基づいたアクセス制御をChaincode内で容易に実装できる</li>
+  <li>Chaincodeのデプロイ時に、リソースとACLを定義できる</li>
+  <li>ACLに対しての操作についてもACLで制御できる</li>
+</ul>
+
+<h2 id="12-fine-grained-access-control-libraryの基本の要素">1.2 Fine-Grained Access Control Libraryの基本の要素</h2>
+
+<p>FGACライブラリでは、以下の要素に基づいてオンチェーンでのアクセス制御を実現しています：</p>
+<ul>
+  <li><strong>Identity（アイデンティティ）</strong>: Chaincode内でのチェック対象となる、Chaincodeの呼び出しに使用されたX509証明書</li>
+  <li><strong>Identity Pattern（アイデンティティ・パターン）</strong>: ひとつ～複数のidentityにマッチするパターンです。基本的にはプレフィックス付きの文字列であり、例えばexample.com配下の全てのidentityにマッチするパターンは、<code class="language-plaintext highlighter-rouge">%O%example.com</code>となります。以下のレベルでのパターンが想定されます。
+    <ul>
+      <li>X.509 Subject Common Name – CN</li>
+      <li>X.509 Subject Organizational Unit – OU</li>
+      <li>X.509 Subject Organization – O</li>
+      <li>ライブラリ内で定義されたGroup – GRP</li>
+      <li>Attribute（証明書に付与された属性値） – ATTR</li>
+    </ul>
+  </li>
+  <li><strong>Resourse（リソース）</strong>: アクセスを制御したい対象（Chaincode関数や台帳上の特定のレコードなど）の単位ごとにつける名前</li>
+  <li><strong>ACL（アクセス制御リスト）</strong>: Identity Patternのリストと、Create／Read／Update／Deleteなどのアクセスのリストから成るエンティティ。Create／Read／Update／Delete以外の独自のカスタム・アクセスを定義することも可能。</li>
+</ul>
+
+<h2 id="13-fine-grained-access-control-libraryの組み込み方">1.3 Fine-Grained Access Control Libraryの組み込み方</h2>
+
+<p>FGACライブラリには、アクセス制御についての前述の要素に関する各種機能（リソースやグループ、ACLの定義・更新・削除、アクセス権限のチェックなど）が実装されています。ライブラリの提供するこれらの機能を、開発するChaincodeの関数に組み込むことで、確実かつ柔軟、きめ細やかなアクセス制御が容易に実装できます。<br />
+<img src="FGACL_use_image.png" alt="Fine-Grained Access Control Libraryの利用イメージ" /></p>
+
+<p>Chaincode開発の中では、以下を行うことになります：</p>
+<ul>
+  <li>業務に関する関数の中に、Chaincodeを呼び出しに使用されたアイデンティティに基づくアクセス権限およびアクセス制御リストを参照しての権限チェック機能を組み込む</li>
+  <li>アクセス権限とアクセス制御リストを管理する機能を実装する</li>
+</ul>
+
+<p>Chaincodeの運用においては、グループに所属するアイデンティティのメンテナンスなどを行っていくことになります。これは通常のトランザクションとして実行するため、Endorsement Policyなど、Hyperledger Fabricの持つ他のアクセス制御の仕組みも組み合わせ可能です。この場合、<strong>アクセス権限とアクセス制御リストを管理する機能については、別のChaincodeとして実装しておくとEndorsement Policyでのアクセス制御が使いやすくなる</strong>ことも意識しておくと良いでしょう。</p>
+
+<h1 id="2-fine-grained-access-control-libraryを使ってみる">2. Fine-Grained Access Control Libraryを使ってみる</h1>
+
+<h2 id="21-ライブラリを含むサンプルのダウンロード">2.1 ライブラリを含むサンプルのダウンロード</h2>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Developer Tools</strong>のページを開き、左側メニューから<strong>Samples</strong>のセクションを選択し、Samplesページを開きます。<br />
+<img src="OBP-console-samples.png" alt="Samplesページ" /></p>
+  </li>
+  <li>
+    <p><strong>Marbles with fine grained ACLs</strong>のコーナーにある<strong>Download: here</strong>のリンクをクリックするとダウンロードされます。<br />
+  <img src="OBP-console-download-here.png" alt="インストーラのダウンロード" /></p>
+  </li>
+</ol>
+
+<h2 id="22-サンプルの中身">2.2 サンプルの中身</h2>
+
+<p>ダウンロードしたサンプル（ZIPファイル）には以下のモジュールが含まれています。</p>
+
+<ul>
+  <li><strong>Fine-GrainedAccessControlLibrary.zip</strong><br />
+FGACライブラリの本体です。Go言語でChaincodeを開発する際に、ライブラリとして組み込むことで利用できます。</li>
+  <li><strong>fgACL_MarbleSampleCC.zip</strong><br />
+FGACライブラリを組み込んだGo言語で記述されたChaincodeのサンプルです。FGACライブラリをどのように利用すればよいかがわかるような手本になっています。</li>
+  <li><strong>fgACL-NodeJSCode.zip:</strong><br />
+Oracle Blockchain Platform上で稼働させたChaincodeを呼び出すNode.jsアプリのサンプルです。</li>
+</ul>
+
+<p>ライブラリ、およびサンプルChaincodeに実装されている具体的な関数など、詳細については後述の公式ドキュメントを参照ください。</p>
+
+<h1 id="3-参考リンク">3. 参考リンク</h1>
+
+<ul>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/blockchain-cloud/usingoci/using-fine-grained-access-control-library.html">Oracle Blockchain Platform公式ドキュメントのFine-Grained Access Control Libraryの箇所</a></li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#blockchain" class="page__taxonomy-item" rel="tag">Blockchain</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-08-27T10:56:22+09:00">August 27, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Fine-Grained+Access+Control+Library%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F92_1_fine_grained_ACL%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F92_1_fine_grained_ACL%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F92_1_fine_grained_ACL%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/blockchain/91_1_app_builder_vsc_start/" class="pagination--pager" title="Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
