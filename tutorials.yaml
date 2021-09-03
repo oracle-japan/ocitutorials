@@ -1,0 +1,42 @@
+version: 0.1
+component: build                    
+timeoutInSeconds: 10000             
+runAs: root                         
+shell: bash                        
+env:
+  vaultVariables:
+    OCIRCRED: "ocid1.vaultsecret.oc1.iad.amaaaaaassl65iqakrykvowbeyc6v2zag5onghtuw5u7jjkodrbq5xann6oq"                
+   
+steps:
+  - type: Command                   
+    name: "Login to OCIR"  
+    shell: bash                    
+    timeoutInSeconds: 60           
+    runAs: root          
+    command: docker login nrt.ocir.io -u orasejapan/oracleidentitycloudservice/takuya.niita@oracle.com -p $OCIRCRED 
+    onFailure:                     
+      - type: Command
+        command: |
+          echo "Failured Login to OCIR"
+        timeoutInSeconds: 60
+        runAs: root
+  - type: Command
+    name: "Docker Build"
+    command: |
+      docker build -t nrt.ocir.io/orasejapan/oci-tutorials/staging-env .
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured docker build"
+        timeoutInSeconds: 60
+        runAs: root
+  - type: Command
+    name: "Docker Push to OCIR"
+    command: |
+      docker push nrt.ocir.io/orasejapan/oci-tutorials/staging-env
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured docker push"
+        timeoutInSeconds: 60
+        runAs: root

@@ -107,6 +107,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/",
         "teaser": null
       },{
+        "title": "Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう",
+        "excerpt":"xxxxxxxxxx   XXXXXXXXXX   XXXXXXXXXX  XXXXXXXXXX           xxxxxxxxxx            xxxxxxxxxx       XXXXXXXXXX XXXXXXXXXX      kubectl get nodes   ","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-advances/",
+        "teaser": null
+      },{
         "title": "KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう",
         "excerpt":"このワークショップでは、Oracle Visual Builder Studioを利用してCI/CD環境をセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes（OKE）にデプロイする一連の流れを体験することができます このワークショップには以下のサービスが含まれます。 Oracle Visual Builder Studio（略称：VBS）: Oracle Cloudが提供する事前統合済みのチーム開発プラットフォームサービスです。 Oracle Autonomous Transaction Processing（略称：ATP）: 運用がすべて自動化された自律型データベースサービスです。 Oracle Container Engine for Kubernetes（略称：OKE）: マネージドなKuberentesクラスタを提供するクラウドサービスです。 Oracle Cloud Infrastructure Registry（略称：OCIR）: フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。 前提条件 ワークショップを開始する前に以下を準備してください。 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること Oracle Cloud Infrastructureの基本操作はチュートリアル : OCIコンソールにアクセスして基本を理解するをご確認ください。 ゴールを確認する はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。 手順を最後まで行うと、下図のような環境が構成されます。 構成要素 説明...","categories": [],
         "tags": [],
@@ -466,6 +472,12 @@ var store = [{
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb303-datapump/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb303-xxx/img00x.png"
+      },{
+        "title": "402 : Database Linkによるデータ連携",
+        "excerpt":"はじめに 従来からOracle Databaseをご利用の方にはお馴染みのDatabase Linkですが、Autonomous Database でもこのDatabase Linkをお使いいただくことが可能です。 Database Linkは、他のOracle Database インスタンスからデータを移行・連携・収集するための便利な機能です。 なお、Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。 本文書では2-1のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、 他のOracle Database（リンク先）にアクセスする手順を記載します。 その後、補足と言う形でパターン1, 2-2についても記載します。 目次 : 1.DBCSインスタンスの作成およびスキーマのインポート 2.DBCSにてTCPS認証（SSL認証）を有効化 3.DBCSのウォレットファイルをADBに渡す 4.ADBにてDatabase Linkを作成 5.エラーへの対応例 6.その他のパターン 7.おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約100分（DBCSインスタンスの作成時間を含む） 1. DBCSインスタンスの作成およびスキーマのインポート まず、サンプル・データベースとして、Database Linkのリンク先となるDBCSインスタンスを作成します。 301 : 移行元となるデータベースを作成しよう を参考に、DBCSインスタンスを作成し、HRスキーマを作成してください。 2. DBCSにてTCPS認証（SSL認証）を有効化 Autonomous...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb402-database-link/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb402-database-link/DatabaseLink_teaser.jpg"
       },{
         "title": "501: OCICLIを利用したインスタンス操作",
         "excerpt":"ここまでの章で、ADBインスタンスの作成やOCPU数の変更等、様々な操作を実施いただきましたが、これら一連の操作を自動化するにはどうしたら良いでしょうか？ ADBはOracle Cloud Infrastructure(OCI)の他のサービスと同様、REST APIを介した各種操作が可能であり、それらを呼び出すコマンド・ライン・インタフェース（OCI CLI）を利用した操作も可能です。 この章ではOCI CLIを利用してADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。 これらコマンドを利用しスクリプトを組めば、例えば夜間はあまり使わないからOCPUをスケールダウンさせておき、朝になったらスケールアップしよう。といった自動化が可能となります。 尚、本ガイドではOCI CLIがインストールされたOCI Developer Image を利用することを前提に記載しています。 OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを参照ください。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスに接続可能な仮想マシンを構成済みであること ※仮想マシンの作成方法については、本ハンズオンガイドの 204:マーケットプレイスからの仮想マシンのセットアップ方法 を参照ください。 目次： 1. OCI CLIをセットアップしよう 2. OCI CLIを使ってみよう 3. OCI CLIでインスタンスを操作しよう 1. OCI CLIをセットアップしよう まずはOCI CLIにクラウド環境の情報を登録します。 Tera Termを起動し、仮想マシンにログインします。 oracleユーザに切り替えます。 sudo su...","categories": [],
