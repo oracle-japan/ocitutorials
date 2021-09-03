@@ -97,7 +97,6 @@ Oracle JavaScript Extension Toolkit（Oracle JET）
 
 簡単にアプリケーションの構成を見ていきます。
 
-
 4.カナリアリリース
 ---------------------------------
 
