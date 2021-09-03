@@ -57,6 +57,47 @@ kubectl get nodes
 3.マイクロサービスアプリケーションの作成
 ---------------------------------
 
+この手順では、1および2で構築したIstio環境に対してマイクロサービスをデプロイしていきます。  
+
+### 3-1 マイクロサービスのcloneとアプリケーションの説明
+
+まずは以下のGitレポジトリをcloneします。  
+
+```sh
+git clone https://github.com/oracle-japan/code-at-customer-handson
+```
+
+このハンズオン用に作成したサンプルのマイクロサービスアプリケーションです。  
+中身を簡単に紹介します。  
+
+```sh
+.
+├── README.md
+├── k8s ==> KubernetesのMainifest群
+├── olympic_backend ==> バックエンド用アプリケーション
+├── olympic_datasource ==> データソース用アプリケーション
+├── olympic_frontend ==> フロントエンド用アプリケーション
+.
+```
+
+このサンプルアプリケーションは、主に以下の2つから構成されています。
+* `Helidon`
+  * Oracleがオープンソースで提供しているJavaのマイクロサービスフレームワーク
+* `Oracle JavaScript Extension Toolkit（Oracle JET）`
+  * Oracleがオープンソースで開発しているJavascript用フレームワーク
+  * 業界標準として普及しているオープンソース・フレームワークに基づき、開発者がより優れたアプリケーションをより迅速に構築できるよう支援する高度な機能とサービスを付加
+
+Helidon
+
+* [Helidon](https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview)
+
+Oracle JavaScript Extension Toolkit（Oracle JET）
+
+* [Oracle JavaScript Extension Toolkit（Oracle JET）](https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html)
+
+簡単にアプリケーションの構成を見ていきます。
+
+
 4.カナリアリリース
 ---------------------------------
 
