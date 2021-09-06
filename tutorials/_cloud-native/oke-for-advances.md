@@ -467,6 +467,13 @@ git clone https://github.com/oracle-japan/code-at-customer-handson
 
 まずは、フロントエンドアプリケーションからビルドします。
 
+**HelidonアプリケーションのDockerfileについて**  
+Helidonには`Helidon CLI`という便利なCLIツールがあります。  
+これを利用することで、プロジェクトの雛形を作成することができ、その中にデフォルトでDockerfileも含まれています。  
+`Helidon CLI`については[こちら](/ocitutorials/cloud-native/helidon-mp-for-beginners/)をご確認ください。  
+以降で利用するDockerfileも、基本的に上記雛形ファイルを利用しています。  
+{: .notice--info}
+
 ```sh
 cd code-at-customer-handson/olympic_backend
 ```
@@ -718,7 +725,7 @@ cd ~
 5.Istioを利用したトラフィック制御
 ---------------------------------
 
-ここでは、手順4までに構築してきた環境を利用して、カナリアリリースを実施してみます。
+ここでは、手順4までに構築してきた環境を利用して、トラフィック制御を実施してみます。
 
 ### 5-1 DestinationRuleの作成
 
@@ -916,4 +923,19 @@ virtualservice.networking.istio.io/canary-release created
 
 このように、Istioを利用すると適切なリソースを作成するだけで、カナリアリリースのような高度なデプロイ戦略を実施することができます。  
 
-以上で、ハンズオンは終わりです。  
+{% capture notice %}**その他のシナリオについて**  
+code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリース以外にも以下のシナリオをご用意しています。  
+必要に応じてご確認ください。
+
+* all-v3.yaml
+  トラフィックの全てをバックエンドアプリケーションv3(金メダリスト)にルーティングするポリシーです。  
+  これを適用すると、アプリケーションでは金メダリストのみが表示されます。
+
+* v1-v2-half.yaml
+  トラフィックの50%をバックエンドアプリケーションv1に残りの50%をバックエンドアプリケーションv2にルーティングするポリシーです。  
+  これを適用すると、アプリケーションでは、銀メダリストと銅メダリストが半々に表示されます。{% endcapture %}
+<div class="notice--info">
+  {{ notice | markdownify }}
+</div>
+
+以上で、ハンズオンは終わりです。
