@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-03T10:15:48+09:00">
+  <meta property="article:published_time" content="2021-09-06T14:31:43+09:00">
 
 
 
@@ -313,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
-    <meta itemprop="datePublished" content="2021-09-03T10:15:48+09:00">
+    <meta itemprop="datePublished" content="2021-09-06T14:31:43+09:00">
     
 
     <div class="page__inner-wrap">
@@ -325,36 +325,462 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu">
-  <li><a href="#xxxxxxxxxx">XXXXXXXXXX</a></li>
-  <li><a href="#xxxxxxxxxx-1">xxxxxxxxxx</a></li>
+  <li><a href="#1okeクラスタ構築">1.OKEクラスタ構築</a>
+    <ul>
+      <li><a href="#1-1-ociダッシュボードからokeクラスタの構築">1-1 OCIダッシュボードからOKEクラスタの構築</a></li>
+      <li><a href="#1-2-cloud-shellを利用してクラスタを操作">1-2 Cloud Shellを利用してクラスタを操作</a></li>
+    </ul>
+  </li>
+  <li><a href="#2サービスメッシュとオブザバビリティ環境構築">2.サービスメッシュとオブザバビリティ環境構築</a>
+    <ul>
+      <li><a href="#2-1-istioaddon-prometheus-grafana-jaeger-kialiインストール">2-1 Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール</a></li>
+      <li><a href="#2-2-grafana-loki-インストール">2-2 Grafana Loki インストール</a></li>
+      <li><a href="#2-3-grafana-lokiのセットアップ">2-3 Grafana Lokiのセットアップ</a></li>
+    </ul>
+  </li>
+  <li><a href="#3マイクロサービスアプリケーションの作成">3.マイクロサービスアプリケーションの作成</a>
+    <ul>
+      <li><a href="#3-1-マイクロサービスのcloneとアプリケーションの説明">3-1 マイクロサービスのcloneとアプリケーションの説明</a></li>
+    </ul>
+  </li>
+  <li><a href="#4カナリアリリース">4.カナリアリリース</a></li>
+  <li><a href="#5prometheusgrafanalokijaegerkialiによるオブザバビリティ">5.Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ</a></li>
 </ul>
 
             </nav>
           </aside>
         
-        <p>xxxxxxxxxx</p>
+        <p>このハンズオンでは、Oracle Container Engine for Kubernetes（以下OKE）上に、マイクロサービスアプリケーションをデプロイします。そして、OSSのオブザバビリティツールを利用して、モニタリング、ロギング、トレーシングを実践的に学びます。</p>
 
-<p>XXXXXXXXXX</p>
+<p>オブザバビリティツールとして、以下を利用します。</p>
 
-<h2 id="xxxxxxxxxx">XXXXXXXXXX</h2>
-<p>XXXXXXXXXX</p>
+<p>モニタリング</p>
 
 <ul>
+  <li><a href="https://github.com/prometheus/prometheus">Prometheus</a> + <a href="https://github.com/grafana/grafana">Grafana</a></li>
+</ul>
+
+<p>ロギング</p>
+
+<ul>
+  <li><a href="https://github.com/grafana/loki">Grafana Loki</a></li>
+</ul>
+
+<p>トレーシング</p>
+
+<ul>
+  <li><a href="https://github.com/jaegertracing/jaeger">Jaeger</a></li>
+</ul>
+
+<p>サービスメッシュオブザバビリティ</p>
+
+<ul>
+  <li><a href="https://github.com/kiali/kiali">Kiali</a></li>
+</ul>
+
+<p>ハンズオンの流れは以下となります。</p>
+
+<ol>
   <li>
-    <p><a href="">xxxxxxxxxx</a></p>
+    <p>OKEクラスタ構築</p>
+  </li>
+  <li>サービスメッシュとオブザバビリティ環境構築
+    <ol>
+      <li>Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール</li>
+      <li>Grafana Loki インストール</li>
+    </ol>
   </li>
   <li>
-    <h2 id="xxxxxxxxxx-1"><a href="">xxxxxxxxxx</a></h2>
+    <p>マイクロサービスアプリケーションの作成</p>
+  </li>
+  <li>
+    <p>カナリアリリース</p>
+  </li>
+  <li>Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ</li>
+</ol>
+
+<h2 id="1okeクラスタ構築">1.OKEクラスタ構築</h2>
+
+<h3 id="1-1-ociダッシュボードからokeクラスタの構築">1-1 OCIダッシュボードからOKEクラスタの構築</h3>
+
+<p>左上のハンバーガーメニューを展開して、「開発者サービス」から「Kubernetesクラスタ(OKE)」を選択します。</p>
+
+<p><img src="1-001.png" alt="" /></p>
+
+<p>「クラスタの作成」ボタンをクリックします。</p>
+
+<p><img src="1-002.png" alt="" /></p>
+
+<p>「クイック作成」が選択されていることを確認して、「ワークフローの起動」ボタンをクリックします。</p>
+
+<p><img src="1-003.png" alt="" /></p>
+
+<p>以下を設定します。</p>
+
+<p>「Kubernetesワーカー・ノード」:「パブリック・ワーカー」
+「シェイプ」：「VM Standard.E3.Flex」
+「OCPU数の選択」:「2」
+「メモリー量（GB）」：「32」</p>
+
+<p><img src="1-004.png" alt="" /></p>
+
+<p>画面左下の「次」ボタンをクリックします。</p>
+
+<p><img src="1-005.png" alt="" /></p>
+
+<p>画面左下の「クラスタ作成」ボタンをクリックします。</p>
+
+<p><img src="1-006.png" alt="" /></p>
+
+<p>画面左下の「閉じる」ボタンをクリックします。</p>
+
+<p><img src="1-007.png" alt="" /></p>
+
+<p>黄色の「作成中」から緑の「アクティブ」になることを確認します。「アクティブ」であればクラスタ作成は完了です。</p>
+
+<p><img src="1-008.png" alt="" /></p>
+
+<h3 id="1-2-cloud-shellを利用してクラスタを操作">1-2 Cloud Shellを利用してクラスタを操作</h3>
+
+<h2 id="2サービスメッシュとオブザバビリティ環境構築">2.サービスメッシュとオブザバビリティ環境構築</h2>
+
+<h3 id="2-1-istioaddon-prometheus-grafana-jaeger-kialiインストール">2-1 Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Istio 1.11.0</code> をインストールします。</p>
+
+<p>バージョン値を変数にします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">ISTIO_VERSION</span><span class="o">=</span>1.11.0
+</code></pre></div></div>
+
+<p>公式からインストールに必要なものをダウンロードします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-L</span> https://istio.io/downloadIstio | <span class="nv">ISTIO_VERSION</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">"</span> sh -
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   102  100   102    0     0    213      0 <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:--   212
+100  4549  100  4549    0     0   6425      0 <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:--  6425
+
+Downloading istio-1.11.0 from https://github.com/istio/istio/releases/download/1.11.0/istio-1.11.0-linux-amd64.tar.gz ...
+
+Istio 1.11.0 Download Complete!
+
+Istio has been successfully downloaded into the istio-1.11.0 folder on your system.
+
+Next Steps:
+See https://istio.io/latest/docs/setup/install/ to add Istio to your Kubernetes cluster.
+
+To configure the istioctl client tool <span class="k">for </span>your workstation,
+add the /home/yutaka_ich/istio-1.11.0/bin directory to your environment path variable with:
+         <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:/home/yutaka_ich/istio-1.11.0/bin"</span>
+
+Begin the Istio pre-installation check by running:
+         istioctl x precheck 
+
+Need more information? Visit https://istio.io/latest/docs/setup/install/ 
+</code></pre></div></div>
+
+<p>istioctlコマンドを実行できるようにパスを通します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">PWD</span><span class="k">}</span><span class="s2">/istio-</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">/bin:</span><span class="k">${</span><span class="nv">PATH</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="se">\"</span><span class="k">${</span><span class="nv">PWD</span><span class="k">}</span><span class="s2">/istio-</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">/bin:</span><span class="se">\$</span><span class="s2">{PATH}</span><span class="se">\"</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> ~/.bashrc
+</code></pre></div></div>
+
+<p>Istioのバージョンを確認します。バージョンが表示されることで、istioctlコマンドが利用できる状態です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>istioctl version
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>no running Istio pods <span class="k">in</span> <span class="s2">"istio-system"</span>
+1.11.0
+</code></pre></div></div>
+
+<p>Istioのコンポーネントをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>istioctl <span class="nb">install</span> <span class="nt">--set</span> <span class="nv">profile</span><span class="o">=</span>demo <span class="nt">--skip-confirmation</span>
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>✔ Istio core installed                                                                                                                           
+✔ Istiod installed                                                                                                                               
+✔ Egress gateways installed                                                                                                                      
+✔ Ingress gateways installed                                                                                                                     
+✔ Installation <span class="nb">complete                                                                                                                          
+</span>Thank you <span class="k">for </span>installing Istio 1.11.  Please take a few minutes to tell us about your <span class="nb">install</span>/upgrade experience!  https://forms.gle/kWULBRjUv7hHci7T6
+</code></pre></div></div>
+
+<p>必要なアドオン（Prometheus,Grafana,Kiali,Jaegerなど）をインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="s2">"istio-</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">/samples/addons/"</span>
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>serviceaccount/grafana created
+configmap/grafana created
+service/grafana created
+deployment.apps/grafana created
+configmap/istio-grafana-dashboards created
+configmap/istio-services-grafana-dashboards created
+deployment.apps/jaeger created
+service/tracing created
+service/zipkin created
+service/jaeger-collector created
+serviceaccount/kiali created
+configmap/kiali created
+clusterrole.rbac.authorization.k8s.io/kiali-viewer created
+clusterrole.rbac.authorization.k8s.io/kiali created
+clusterrolebinding.rbac.authorization.k8s.io/kiali created
+role.rbac.authorization.k8s.io/kiali-controlplane created
+rolebinding.rbac.authorization.k8s.io/kiali-controlplane created
+service/kiali created
+deployment.apps/kiali created
+serviceaccount/prometheus created
+configmap/prometheus created
+clusterrole.rbac.authorization.k8s.io/prometheus created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus created
+service/prometheus created
+deployment.apps/prometheus created
+</code></pre></div></div>
+
+<p>Prometheus、Grafana、Kiali、JaegerのWebUIにブラウザからアクセスできるようにします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service prometheus <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/prometheus patched
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service grafana <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/grafana patched
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service kiali <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/kiali patched
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service tracing <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/tracing patched
+</code></pre></div></div>
+<p>ServiceとDeploymentの状況を確認します。
+「service/prometheus」、「service/grafana」、「service/kiali」、「service/tracing」のTYPEがNodePortになっていることを確認します。「service/istio-ingressgateway」については、しばらくするとEXTERNAL-IPアドレスが自動で付与されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services,deployments <span class="nt">-n</span> istio-system <span class="nt">-o</span> wide
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE   SELECTOR
+service/grafana                NodePort       10.96.96.80     &lt;none&gt;        3000:31746/TCP                                                               21m   app.kubernetes.io/instance<span class="o">=</span>grafana,app.kubernetes.io/name<span class="o">=</span>grafana
+service/istio-egressgateway    ClusterIP      10.96.110.50    &lt;none&gt;        80/TCP,443/TCP                                                               22m   <span class="nv">app</span><span class="o">=</span>istio-egressgateway,istio<span class="o">=</span>egressgateway
+service/istio-ingressgateway   LoadBalancer   10.96.16.94     &lt;pending&gt;     15021:32007/TCP,80:32374/TCP,443:32343/TCP,31400:30388/TCP,15443:31719/TCP   22m   <span class="nv">app</span><span class="o">=</span>istio-ingressgateway,istio<span class="o">=</span>ingressgateway
+service/istiod                 ClusterIP      10.96.235.244   &lt;none&gt;        15010/TCP,15012/TCP,443/TCP,15014/TCP                                        22m   <span class="nv">app</span><span class="o">=</span>istiod,istio<span class="o">=</span>pilot
+service/jaeger-collector       ClusterIP      10.96.121.97    &lt;none&gt;        14268/TCP,14250/TCP,9411/TCP                                                 21m   <span class="nv">app</span><span class="o">=</span>jaeger
+service/kiali                  NodePort       10.96.182.15    &lt;none&gt;        20001:31964/TCP,9090:31854/TCP                                               21m   app.kubernetes.io/instance<span class="o">=</span>kiali,app.kubernetes.io/name<span class="o">=</span>kiali
+service/prometheus             NodePort       10.96.238.223   &lt;none&gt;        9090:31147/TCP                                                               21m   <span class="nv">app</span><span class="o">=</span>prometheus,component<span class="o">=</span>server,release<span class="o">=</span>prometheus
+service/tracing                NodePort       10.96.216.254   &lt;none&gt;        80:32418/TCP,16685:31229/TCP                                                 21m   <span class="nv">app</span><span class="o">=</span>jaeger
+service/zipkin                 ClusterIP      10.96.184.172   &lt;none&gt;        9411/TCP                                                                     21m   <span class="nv">app</span><span class="o">=</span>jaeger
+
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS                                             IMAGES                                                       SELECTOR
+deployment.apps/grafana                1/1     1            1           21m   grafana                                                grafana/grafana:7.5.5                                        app.kubernetes.io/instance<span class="o">=</span>grafana,app.kubernetes.io/name<span class="o">=</span>grafana
+deployment.apps/istio-egressgateway    1/1     1            1           22m   istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               <span class="nv">app</span><span class="o">=</span>istio-egressgateway,istio<span class="o">=</span>egressgateway
+deployment.apps/istio-ingressgateway   1/1     1            1           22m   istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               <span class="nv">app</span><span class="o">=</span>istio-ingressgateway,istio<span class="o">=</span>ingressgateway
+deployment.apps/istiod                 1/1     1            1           22m   discovery                                              docker.io/istio/pilot:1.11.0                                 <span class="nv">istio</span><span class="o">=</span>pilot
+deployment.apps/jaeger                 1/1     1            1           21m   jaeger                                                 docker.io/jaegertracing/all-in-one:1.23                      <span class="nv">app</span><span class="o">=</span>jaeger
+deployment.apps/kiali                  1/1     1            1           21m   kiali                                                  quay.io/kiali/kiali:v1.38                                    app.kubernetes.io/instance<span class="o">=</span>kiali,app.kubernetes.io/name<span class="o">=</span>kiali
+deployment.apps/prometheus             1/1     1            1           21m   prometheus-server-configmap-reload,prometheus-server   jimmidyson/configmap-reload:v0.5.0,prom/prometheus:v2.26.0   <span class="nv">app</span><span class="o">=</span>prometheus,component<span class="o">=</span>server,release<span class="o">=</span>prometheus
+</code></pre></div></div>
+
+<p>OCIダッシュボードから、[Networking]-[Virtual Cloud Networks]を選択して対象のVCNを選択します。</p>
+
+<p>3つあるうちの一番上段のものを選択します。</p>
+
+<p>「oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional」を選択します。</p>
+
+<p>「Add Ingress Rules」ボタンをクリックします。</p>
+
+<p>以下を設定して、「Add Ingress Rules」ボタンをクリックします。</p>
+
+<p>SOURCE CIDR: 0.0.0.0/0
+IP PROTOCOL: All Protocols</p>
+
+<p>NodeのEXTERNAL-IPを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get nodes <span class="nt">-o</span> wide
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME          STATUS   ROLES   AGE     VERSION   INTERNAL-IP   EXTERNAL-IP       OS-IMAGE                  KERNEL-VERSION                    CONTAINER-RUNTIME
+10.0.10.133   Ready    node    7m13s   v1.20.8   10.0.10.133   150.136.xxx.xxx    Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
+10.0.10.179   Ready    node    7m23s   v1.20.8   10.0.10.179   132.145.xxx.xxx   Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
+10.0.10.84    Ready    node    7m19s   v1.20.8   10.0.10.84    129.213.xxx.xxx    Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
+</code></pre></div></div>
+
+<p>Prometheus,Grafana,Kiali,JaegerのNodePortを確認します。各サービス名の「3000:31746」コロン後がNodePort番号です。</p>
+
+<p>サービス名は、Jaegerだけtracingとなります。</p>
+
+<ul>
+  <li>Prometheus:prometheus</li>
+  <li>Grafana:grafana</li>
+  <li>Kiali:kiali</li>
+  <li>Jaeger:tracing</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE
+grafana                NodePort       10.96.96.80     &lt;none&gt;        3000:31746/TCP                                                               25m
+istio-egressgateway    ClusterIP      10.96.110.50    &lt;none&gt;        80/TCP,443/TCP                                                               25m
+istio-ingressgateway   LoadBalancer   10.96.16.94     &lt;pending&gt;     15021:32007/TCP,80:32374/TCP,443:32343/TCP,31400:30388/TCP,15443:31719/TCP   25m
+istiod                 ClusterIP      10.96.235.244   &lt;none&gt;        15010/TCP,15012/TCP,443/TCP,15014/TCP                                        25m
+jaeger-collector       ClusterIP      10.96.121.97    &lt;none&gt;        14268/TCP,14250/TCP,9411/TCP                                                 25m
+kiali                  NodePort       10.96.182.15    &lt;none&gt;        20001:31964/TCP,9090:31854/TCP                                               25m
+prometheus             NodePort       10.96.238.223   &lt;none&gt;        9090:31147/TCP                                                               25m
+tracing                NodePort       10.96.216.254   &lt;none&gt;        80:32418/TCP,16685:31229/TCP                                                 25m
+zipkin                 ClusterIP      10.96.184.172   &lt;none&gt;        9411/TCP
+</code></pre></div></div>
+
+<p>ブラウザでアクセスします。NodeのEXTERNAL-IPは3ノードの内どれを利用して問題ありません。</p>
+
+<p>http://EXTERNAL-IP:NodePort/</p>
+
+<h3 id="2-2-grafana-loki-インストール">2-2 Grafana Loki インストール</h3>
+
+<p>Helmを利用して、Grafana Lokiをインストールします。</p>
+
+<p>Grafana公式のHelmチャートリポジトリを追加します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm repo add grafana https://grafana.github.io/helm-charts
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/yutaka_ich/.kube/config
+WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /home/yutaka_ich/.kube/config
+<span class="s2">"grafana"</span> has been added to your repositories
+</code></pre></div></div>
+
+<p>Helmチャートを最新化します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm repo update
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/yutaka_ich/.kube/config
+WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /home/yutaka_ich/.kube/config
+Hang tight <span class="k">while </span>we grab the latest from your chart repositories...
+...Successfully got an update from the <span class="s2">"argo"</span> chart repository
+...Successfully got an update from the <span class="s2">"grafana"</span> chart repository
+Update Complete. ⎈Happy Helming!⎈
+</code></pre></div></div>
+
+<p>Grafana Lokiをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm upgrade <span class="nt">--install</span> loki <span class="nt">--namespace</span><span class="o">=</span>istio-system grafana/loki-stack
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /home/yutaka_ich/.kube/config
+WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /home/yutaka_ich/.kube/config
+Release <span class="s2">"loki"</span> does not exist. Installing it now.
+NAME: loki
+LAST DEPLOYED: Sun Aug 22 07:22:15 2021
+NAMESPACE: istio-system
+STATUS: deployed
+REVISION: 1
+NOTES:
+The Loki stack has been deployed to your cluster. Loki can now be added as a datasource <span class="k">in </span>Grafana.
+
+See http://docs.grafana.org/features/datasources/loki/ <span class="k">for </span>more detail.
+</code></pre></div></div>
+
+<p>「Loki-0」、「loki-promtail-xxxxx」(3個)がRunningであることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pods <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                                    READY   STATUS    RESTARTS   AGE
+grafana-556f8998cd-bkrw8                1/1     Running   0          36m
+istio-egressgateway-9dc6cbc49-rv9ll     1/1     Running   0          37m
+istio-ingressgateway-7975cdb749-tk4rf   1/1     Running   0          37m
+istiod-77b4d7b55d-tq7hh                 1/1     Running   0          37m
+jaeger-5f65fdbf9b-28v7w                 1/1     Running   0          36m
+kiali-787bc487b7-jkc22                  1/1     Running   0          36m
+loki-0                                  1/1     Running   0          2m46s
+loki-promtail-lzxg5                     1/1     Running   0          2m46s
+loki-promtail-rlrq2                     1/1     Running   0          2m46s
+loki-promtail-s7rfz                     1/1     Running   0          2m46s
+prometheus-9f4947649-c7swm              2/2     Running   0          36m
+</code></pre></div></div>
+
+<h3 id="2-3-grafana-lokiのセットアップ">2-3 Grafana Lokiのセットアップ</h3>
+
+<p>Grafanaダッシュボードを開いて、左メニューの[Configuration]-[Data Sources]を選択します。</p>
+
+<p>「Add data source」ボタンをクリックします。</p>
+
+<p>「Logging &amp; document databases」にある「Loki」にカーソルを合わせて「Select」ボタンをクリックします。</p>
+
+<p>Lokiの設定画面の「URL」に「http://loki:3100/」と入力して、「Save &amp; Test」ボタンをクリックします。</p>
+
+<p>左メニューの「Explore」を選択して、プルダウンメニューのLokiを選択できれば完了です。</p>
+
+<h2 id="3マイクロサービスアプリケーションの作成">3.マイクロサービスアプリケーションの作成</h2>
+
+<p>この手順では、1および2で構築したIstio環境に対してマイクロサービスをデプロイしていきます。</p>
+
+<h3 id="3-1-マイクロサービスのcloneとアプリケーションの説明">3-1 マイクロサービスのcloneとアプリケーションの説明</h3>
+
+<p>まずは以下のGitレポジトリをcloneします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/code-at-customer-handson
+</code></pre></div></div>
+
+<p>このハンズオン用に作成したサンプルのマイクロサービスアプリケーションです。<br />
+中身を簡単に紹介します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span>
+├── README.md
+├── k8s <span class="o">==&gt;</span> KubernetesのMainifest群
+├── olympic_backend <span class="o">==&gt;</span> バックエンド用アプリケーション
+├── olympic_datasource <span class="o">==&gt;</span> データソース用アプリケーション
+├── olympic_frontend <span class="o">==&gt;</span> フロントエンド用アプリケーション
+<span class="nb">.</span>
+</code></pre></div></div>
+
+<p>このサンプルアプリケーションは、主に以下の2つから構成されています。</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Helidon</code>
+    <ul>
+      <li>Oracleがオープンソースで提供しているJavaのマイクロサービスフレームワーク</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">Oracle JavaScript Extension Toolkit（Oracle JET）</code>
+    <ul>
+      <li>Oracleがオープンソースで開発しているJavascript用フレームワーク</li>
+      <li>業界標準として普及しているオープンソース・フレームワークに基づき、開発者がより優れたアプリケーションをより迅速に構築できるよう支援する高度な機能とサービスを付加</li>
+    </ul>
   </li>
 </ul>
 
-<p class="notice--info"><strong>XXXXXXXXXX</strong>
-XXXXXXXXXX</p>
+<p>Helidon</p>
 
-<p><img src="xxxxxx.jpg" alt="" /></p>
+<ul>
+  <li><a href="https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview">Helidon</a></li>
+</ul>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get nodes
-</code></pre></div></div>
+<p>Oracle JavaScript Extension Toolkit（Oracle JET）</p>
+
+<ul>
+  <li><a href="https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html">Oracle JavaScript Extension Toolkit（Oracle JET）</a></li>
+</ul>
+
+<p>簡単にアプリケーションの構成を見ていきます。</p>
+
+<h2 id="4カナリアリリース">4.カナリアリリース</h2>
+
+<h2 id="5prometheusgrafanalokijaegerkialiによるオブザバビリティ">5.Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ</h2>
 
 
         
@@ -366,7 +792,7 @@ XXXXXXXXXX</p>
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-03T10:15:48+09:00">September 3, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-06T14:31:43+09:00">September 6, 2021</time></p>
 
 
       </footer>
