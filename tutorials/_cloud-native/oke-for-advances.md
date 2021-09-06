@@ -404,13 +404,15 @@ Lokiの設定画面の「URL」に「http://loki:3100/」と入力して、「Sa
 3.マイクロサービスアプリケーションの作成
 ---------------------------------
 
-この手順では、1および2で構築したIstio環境に対してマイクロサービスをデプロイしていきます。  
+この手順では、手順1および2で構築したObservability環境に対してマイクロサービスをデプロイしていきます。  
 
-### 3-1 マイクロサービスのcloneとアプリケーションの説明
+### 3-1 サンプルアプリケーションの概要説明
 
-まずは以下のGitレポジトリをcloneします。  
+まずはホームディレクトリに移動し、以下のGitレポジトリをcloneします。  
 
 ```sh
+cd ~
+
 git clone https://github.com/oracle-japan/code-at-customer-handson
 ```
 
@@ -428,25 +430,490 @@ git clone https://github.com/oracle-japan/code-at-customer-handson
 ```
 
 このサンプルアプリケーションは、主に以下の2つから構成されています。
-* `Helidon`
+
+* [Helidon](https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview)
   * Oracleがオープンソースで提供しているJavaのマイクロサービスフレームワーク
-* `Oracle JavaScript Extension Toolkit（Oracle JET）`
+* [Oracle JavaScript Extension Toolkit（Oracle JET）](https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html)
   * Oracleがオープンソースで開発しているJavascript用フレームワーク
   * 業界標準として普及しているオープンソース・フレームワークに基づき、開発者がより優れたアプリケーションをより迅速に構築できるよう支援する高度な機能とサービスを付加
 
-Helidon
+簡単にアプリケーションの構成を見ていきます。  
+全体のイメージは以下のようになっています。
 
-* [Helidon](https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview)
+![](3-001.png)
 
-Oracle JavaScript Extension Toolkit（Oracle JET）
+大きく上部のサンプルアプリケーションと下部のObservability環境から構成されていますが、下部については手順1および2で構築済みです。  
+そのため、以降では、主に上部のサンプルアプリケーションについてみていきます。
 
-* [Oracle JavaScript Extension Toolkit（Oracle JET）](https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html)
+このサンプルアプリケーションは、3つのコンポーネントから以下のように構成されています。
 
-簡単にアプリケーションの構成を見ていきます。
+* フロントエンドアプリケーション(図中の`Olympics`)  
+  HelidonとOracle JETから構成されているアプリケーションです。  
+  Helidonのstatic content root(今回は`resources/web配下`)にOracle JETのコンテンツを配置しています。  
+  このアプリケーションは、バックエンドサービス(v1/v2/v3)のいずれかを呼び出します。  
 
-4.カナリアリリース
+* バックエンドアプリケーション(図中の緑枠部分)  
+  Helidonから構成されているアプリケーションです。
+  このアプリケーションには3つのバージョンが存在し、それぞれ金メダメリスト(v3)、銀メダリスト(v2)、銅メダリスト(v1)の一覧を返すようになっています。  
+  このアプリケーションは、データソースアプリケーションに対してバージョンに応じたAPIエンドポイントを呼び出し、データを取得しにいきます。
+
+* データソースアプリケーション(図中の`Medal Info`)  
+  Helidonとインメモリで動作しているデータベースである[H2 Database](https://www.h2database.com/html/main.html)から構成されているアプリケーションです。  
+  このアプリケーションでは、メダリストと獲得したメダルの色を保持しており、バックエンドアプリケーションから呼び出されたエンドポイント応じてメダリストとそのメダルの色を返却します。
+
+### 3-2 サンプルアプリケーションのビルドとデプロイ
+
+ここからは、これらのアプリケーションが含まれたコンテナイメージをビルドしてみます。
+
+まずは、フロントエンドアプリケーションからビルドします。
+
+```sh
+cd code-at-customer-handson/olympic_backend
+```
+
+```sh
+docker build -t nrt.ocir.io/orasejapan/codeatcustomer/frontend-app .
+```
+
+***コマンド結果***
+```sh
+~~~~
+Status: Downloaded newer image for openjdk:11-jre-slim
+ ---> e4beed9b17a3
+Step 9/13 : WORKDIR /helidon
+ ---> Running in bbbeffe84be8
+Removing intermediate container bbbeffe84be8
+ ---> 518c68977ccc
+Step 10/13 : COPY --from=build /helidon/target/olympic_frontend.jar ./
+ ---> 6eb033c8d5ab
+Step 11/13 : COPY --from=build /helidon/target/libs ./libs
+ ---> d46766254734
+Step 12/13 : CMD ["java", "-jar", "olympic_frontend.jar"]
+ ---> Running in b2e205e5b9ed
+Removing intermediate container b2e205e5b9ed
+ ---> a042893b3e8e
+Step 13/13 : EXPOSE 8080
+ ---> Running in 7e3a2bb12ed4
+Removing intermediate container 7e3a2bb12ed4
+ ---> b96ac0669f0d
+Successfully built b96ac0669f0d
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/frontend-app:latest
+```
+
+これでビルド完了です。
+
+ホームディレクトリに戻っておきます。
+
+```sh
+cd ~
+```
+
+本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
+
+同じようにバックエンドアプリケーションのコンテナもビルドしてみます。  
+
+前述した通り、バックエンドアプリケーションはバージョンが3つ存在します。
+今回は、そのバージョン情報を環境変数として持たせたDockerfileを用意していますので、それぞれビルドします。
+
+例えば、v1の銅メダリストを返却するバックエンドアプリケーションは以下のようなDockerfileになっており、ENV命令で定義しています。
+
+```Dockerfile
+# 1st stage, build the app
+FROM maven:3.6-jdk-11 as build
+
+WORKDIR /helidon
+
+# Create a first layer to cache the "Maven World" in the local repository.
+# Incremental docker builds will always resume after that, unless you update
+# the pom
+ADD pom.xml .
+RUN mvn package -Dmaven.test.skip -Declipselink.weave.skip
+
+# Do the Maven build!
+# Incremental docker builds will resume here when you change sources
+ADD src src
+RUN mvn package -DskipTests
+RUN echo "done!"
+
+# 2nd stage, build the runtime image
+FROM openjdk:11-jre-slim
+WORKDIR /helidon
+
+# Copy the binary built in the 1st stage
+COPY --from=build /helidon/target/olympic_backend.jar ./
+COPY --from=build /helidon/target/libs ./libs
+
+ENV SERVICE_VERSION=V1
+
+CMD ["java", "-jar", "olympic_backend.jar"]
+
+EXPOSE 8080
+```
+
+`ENV SERVICE_VERSION=V1`の箇所がアプリケーションのバージョンを定義している部分です。
+
+今回はバージョンが3つ存在するので、それぞれビルドしてみます。  
+
+```sh
+cd code-at-customer-handson/olympic_backend
+```
+
+```sh
+docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1 -f Dockerfile_v1 .
+```
+
+***コマンド結果***
+```sh
+~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1:latest
+```
+
+```sh
+docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2 -f Dockerfile_v2 .
+```
+
+***コマンド結果***
+
+```sh
+~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2:latest
+```
+
+```sh
+docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3 -f Dockerfile_v3 .
+```
+
+***コマンド結果***
+
+```sh
+~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3:latest
+```
+
+本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
+
+ホームディレクトリに戻っておきます。
+
+```sh
+cd ~
+```
+
+最後にバックエンドアプリケーションのコンテナもビルドしてみます。  
+
+```sh
+cd code-at-customer-handson/olympic_datasource
+```
+
+```sh
+docker build -t nrt.ocir.io/orasejapan/codeatcustomer/datasource-app .
+```
+
+***コマンド結果***
+
+```sh
+~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/datasource-app:latest
+```
+
+本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
+
+これで全てのアプリケーションがビルドできました。
+
+ホームディレクトリに戻っておきます。
+
+```sh
+cd ~
+```
+
+次に、k8sにコンテナアプリケーションをデプロイしていきます。
+
+先ほど、cloneしてきたレポジトリの中にある`k8s`ディレクトリに移動します。
+
+```sh
+cd code-at-customer-handson/k8s
+```
+
+先ほどビルドしたコンテナアプリケーションをデプロイするためのManifestが`app`ディレクトリにあるので、配下のファイルを全てデプロイします。
+
+```sh
+cd app
+```
+
+```sh
+kubectl apply -f .
+```
+
+***コマンド結果***
+
+```sh
+deployment.apps/backend-app-v1 created
+deployment.apps/backend-app-v2 created
+deployment.apps/backend-app-v3 created
+service/backend-app created
+deployment.apps/datasource-app created
+service/datasource-app created
+deployment.apps/frontend-app created
+service/frontend-app created
+ingress.networking.k8s.io/gateway created
+```
+
+これでOKE上にサンプルアプリケーションがデプロイされました。
+
+デプロイ状況を確認してみます。
+
+```sh
+kubectl get pod
+```
+
+***コマンド結果***
+
+```sh
+NAME                              READY   STATUS    RESTARTS   AGE
+backend-app-v1-5c674f559f-fg2dq   2/2     Running   0          1m
+backend-app-v1-5c674f559f-npjk4   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-gr6dd   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-pmnfl   2/2     Running   0          1m
+backend-app-v3-7596dcf967-7dqnq   2/2     Running   0          1m
+backend-app-v3-7596dcf967-tbhhw   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
+frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
+frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+```
+
+全て`Running`になったら、アプリケーションにアクセスしてみます。
+
+アクセスには手順2で作成した`Istio-istio-ingressgateway`を経由してアクセスします。
+まずは、`Istio-istio-ingressgateway`のエンドポイントを確認します。
+
+```sh
+kubectl get services istio-ingressgateway -n istio-system
+```
+
+***コマンド結果***
+
+```sh
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)                                                                      AGE
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+```
+
+上記の場合は、istio-ingressgatewayの`132.226.211.116`のエンドポイントになります。
+
+この場合は、以下のURLにアクセスします。  
+`http://132.226.211.116`
+
+以下のような画面が表示されればOKです！
+
+![](3-002.png)
+
+ホームディレクトリに戻っておきます。
+
+```sh
+cd ~
+```
+
+4.Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ
 ---------------------------------
 
-5.Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ
+5.Istioを利用したトラフィック制御
 ---------------------------------
 
+ここでは、手順4までに構築してきた環境を利用して、カナリアリリースを実施してみます。
+
+### 5-1 DestinationRuleの作成
+
+まずは、Istio環境に対してDestination Ruleというリソースを作成します。  
+これは、Serviceリソースを対象としたトラフィックに適用されるポリシーを定義するリソースです。  
+  
+今回は以下のようなDestinationRuleを作成します。
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: backend
+spec:
+  host: backend-app
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+  - name: v3
+    labels:
+      version: v3
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: frontend
+spec:
+  host: frontend-app
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: datasource
+spec:
+  host: datasource-app
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+```
+
+例えば、バックエンドアプリケーションに対するDestination Rule(`backend`)をみてみると、
+
+```yaml
+  host: backend-app
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+```
+
+`host`に対してバックエンドアプリケーションのServiceリソースを定義しています。  
+
+今回、`backend-app`に紐づくDeploymentは3つ(3バージョン)存在しています。  
+`trafficPolicy:`は複数存在するDeploymentに対する分散ポリシーなどを定義できます。  
+今回は、`RANDOM`なので、ランダムに`backend-app`に紐づくDeployment(今回は3つ)にトラフィックを分散します。
+
+まずは、このDestinationRuleを適用してみましょう。
+
+```sh
+cd code-at-customer-handson/k8s/base
+```
+
+```sh
+kubectl apply -f destination_rule.yaml
+```
+
+***コマンド結果***
+
+```sh
+destinationrule.networking.istio.io/backend created
+destinationrule.networking.istio.io/frontend created
+destinationrule.networking.istio.io/datasource created
+```
+
+この状態で、アプリケーションにアクセスしてみます。  
+
+金メダリスト、銀メダリスト、銅メダリスト一覧がランダムで表示されることが確認できます。  
+つまり、バックエンドアプリケーションのv1/v2/v3にそれぞれランダムにアクセス(負荷分散)していることがわかります。
+
+この様子をKialiの`versioned app graph`で確認してみると以下のようになります。
+
+![](3-003.png)
+
+**バックエンドアプリケーションへの負荷分散について**  
+DestinationRuleを適用する前から、バックエンドアプリケーションはv1/v2/v3にある程度負荷分散されています。  
+これは、そもそもServiceリソースに負荷分散の機能があるためです。  
+DestinationRuleを適用することによって、Istioの機能を利用した明示的な負荷分散を行うことができます。  
+今回は`RANDOM`ポリシーを適用していますが、他にも`Weighted`(重みづけ)や`Least requests`(最小リクエスト)などのポリシーがあります。  
+詳細は[こちら](https://istio.io/latest/docs/concepts/traffic-management/#load-balancing-options)のページをご確認ください。
+{: .notice--info}
+
+ホームディレクトリに戻っておきます。
+
+```sh
+cd ~
+```
+
+### 5-2 カナリアリリース
+
+最後にカナリアリリースを実施してみます。
+カナリアリリースとは`Blue/Greenデプロイメント`や`A/Bテスト`などと並び「プロダクトやサービスの新機能を一部ユーザーのみが利用できるようにリリースし、新機能に問題がないことを確認しながら段階的に全体に向けて展開していくデプロイ手法」を指します。  
+これにより、新しいバージョンのアプリケーションを本番環境バージョンと一緒にデプロイして、ユーザの反応やパフォーマンスを確認することができます。
+
+Istioを利用することで、カナリアリリースを容易に実施することができます。  
+今回は、以下の想定でカナリアリリースを実施してみます。  
+
+* 対象：バックエンドアプリケーション
+* 既存バージョン：v1
+* 新バージョン：v2とv3
+* ルーティングポリシー：トラフィックの80%をv1に、15%をv2に、5%をv3にルーティング
+
+上記の構成をIstioで実現するために、`VirtualService`というリソースを作成します。  
+これは、DestinationRuleで定義した情報を利用し、さらに細かいルーティングポリシーを設定します。  
+例えば、HTTP Headerやパス等のマッチングルールに基づいて、リクエストのルーティング先を書き換えたりHTTP Headerの操作をすることが可能です。  
+
+今回は、以下のような`VirtualService`を用意しました。
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: canary-release
+spec:
+  hosts:
+    - backend-app
+  http:
+  - route:
+    - destination:
+        host: backend-app
+        subset: v1
+      weight: 80
+    - destination:
+        host: backend-app
+        subset: v2
+      weight: 15
+    - destination:
+        host: backend-app
+        subset: v3
+      weight: 5
+```
+
+いかに注目します。
+
+```yaml
+  http:
+  - route:
+    - destination:
+        host: backend-app
+        subset: v1
+      weight: 80
+    - destination:
+        host: backend-app
+        subset: v2
+      weight: 15
+    - destination:
+        host: backend-app
+        subset: v3
+      weight: 5
+```
+
+ここでの`host`は対象となるバックエンドアプリケーションのServiceリソースです。  
+`subset`にはそれぞれ`DestinationRule`で定義したものを利用しています。  
+`weight`には、それぞれ重み付けを設定しています。
+
+このManifestを適用します。  
+
+```sh
+cd code-at-customer-handson/k8s/scenario
+```
+
+```sh
+kubectl apply -f canaly-release.yaml
+```
+
+***コマンド結果***
+
+```sh
+virtualservice.networking.istio.io/canary-release created
+```
+
+アプリケーションにアクセスしてみましょう。  
+
+ほとんど、銅メダリスト(v1)が表示され、ごく稀にv2(銀メダリスト)とv3(金メダリスト)が表示されるかと思います。  
+
+このように、Istioを利用すると適切なリソースを作成するだけで、カナリアリリースのような高度なデプロイ戦略を実施することができます。  
+
+以上で、ハンズオンは終わりです。  
