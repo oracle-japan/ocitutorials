@@ -401,7 +401,7 @@ Lokiの設定画面の「URL」に「http://loki:3100/」と入力して、「Sa
 左メニューの「Explore」を選択して、プルダウンメニューのLokiを選択できれば完了です。
 
 
-3.マイクロサービスアプリケーションの作成
+3.サンプルアプリケーションでObservabilityを体験してみよう
 ---------------------------------
 
 この手順では、手順1および2で構築したObservability環境に対してサンプルアプリケーションをデプロイしていきます。  
@@ -729,19 +729,170 @@ istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:301
 cd ~
 ```
 
-4.Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ
----------------------------------
+### 3-3 Grafana Lokiを利用したログ監視
 
-5.Istioを利用したトラフィック制御
----------------------------------
+ここでは、3-2でデプロイしたアプリケーションのログを監視してみます。
 
-ここでは、手順4までに構築してきた環境を利用して、トラフィック制御を実施してみます。
+まずは、Grafanaにアクセスします。  
 
-### 5-1 DestinationRuleの作成
+```sh
+kubectl get services grafana -n istio-system
+```
 
-まずは、Istio環境に対してDestination Ruleというリソースを作成します。  
+***コマンド結果***
+
+```sh
+NAME      TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+grafana   NodePort   10.96.219.44   <none>        3000:31624/TCP   4d3h
+```
+
+GrafanaのアクセスにはNodePortを利用します。  
+NodePortは`PORT(S)`の`:`以降のポート番号です。  
+上記の場合、以下のURLにアクセスします。  
+http://[WorkerNodeのパブリックIP]:31624
+
+アクセスしたら、Exploreをクリックします。
+
+![](3-003.png)
+
+画面上部のプルダウンから![](3-004.png)を選択します。  
+
+![](3-005.png)
+
+![](3-006.png)をクリックします。  
+
+![](3-007.png)にログ対象とするラベルが表示されます。  
+今回は、例として特定のPodのログを確認してみましょう。  
+
+対象とするPod名を選択します。
+
+```sh
+kubectl get services grafana -n istio-system
+```
+
+
+***コマンド結果***
+
+```sh
+NAME                              READY   STATUS    RESTARTS   AGE
+backend-app-v1-5c674f559f-fg2dq   2/2     Running   0          1m
+backend-app-v1-5c674f559f-npjk4   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-gr6dd   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-pmnfl   2/2     Running   0          1m
+backend-app-v3-7596dcf967-7dqnq   2/2     Running   0          1m
+backend-app-v3-7596dcf967-tbhhw   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
+frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
+frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+```
+
+例えば、`backend-app-v2-84f5859c9f-gr6dd`を対象とします。(各自の環境に合わせてください)  
+
+![](3-008.png)から`pod`を選択すると![](3-009.png)にPod名が表示されます。
+
+対象とするPod名を選択し、`show logs`をクリックします。
+
+対象のPodが出力したログが表示されます。  
+
+![](3-010.png)
+
+Loki上でログをフィルタリングしたり、検索したりすることも可能です。  
+
+例えば、現在の状態では、Pod内にIstioによってInjectionされているEnvoyのログも出力されているので、アプリだけのログに絞ってみます。  
+
+![](3-006.png)欄にあるテキストボックスに`,container="backend-app"`という文字列を追加し、左上の![](3-013.png)をクリックします。  
+これで、`backend-app-v2-84f5859c9f-gr6dd`というPodの中の`backend-app`というcontainerに絞ることができます。  
+
+![](3-012.png)
+
+以上で、Grafana Lokiでのログ監視は完了です。  
+
+### 3-4 Jaegerを利用したトレーシング
+
+続いて、Jaegerを利用してトレーシングを実施してみます。  
+
+まずは、アプリケーションにアクセスを行い、トレーシング情報をJaegerに流しましょう。 
+
+```sh
+kubectl get services istio-ingressgateway -n istio-system
+```
+
+***コマンド結果***
+
+```sh
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)                                                                      AGE
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+```
+
+上記の場合は、istio-ingressgatewayの`EXTERNAL-IP`である`132.226.211.116`がエンドポイントになります。
+
+この場合は、以下のURLにアクセスします。  
+`http://132.226.211.116`
+
+次にJaegerのUIにアクセスします。 
+
+```sh
+kubectl get services tracing -n istio-system
+```
+
+***コマンド結果***
+
+```sh
+NAME      TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                        AGE
+tracing   NodePort   10.96.207.90   <none>        80:30483/TCP,16685:31417/TCP   4d4h
+```
+
+JaegerのアクセスにはNodePortを利用します。  
+NodePortは`PORT(S)`の`:`以降のポート番号です。  
+上記の場合、以下のURLにアクセスします。  
+http://[WorkerNodeのパブリックIP]:30483
+
+アクセスしたら、Serviceカテゴリにあるプルダウンをクリックし、`istio-ingress-gateway.istio.system`をクリックし、`Find Trace`をクリックします。  
+
+![](3-014.png)
+
+これで、`istio-ingress-gateway`を経由してルーティングされたトラフィックの流れを見ることができます。  
+
+![](3-015.png)
+
+このように`istio-ingress-gateway`、`frontend-app.default`、`backend-app.default`、`datasource-app.default`の4つのServiceが含まれたトレーシング情報が取得できています。  
+
+これをクリックします。  
+
+![](3-016.png)
+
+このように一連のトラフィックの流れとそれぞれのレイテンシを確認することができます。  
+
+今回は簡単なアプリケーションなので、全体を通して数十~週百msで完了しますが、実際にパフォーマンスでの問題が発生した場合、トレーシング情報を見ることでどの部分がボトルネックになっているのかを確認することができます。  
+
+以上で、Jaegerを利用したトレーシングは完了です。  
+
+### 3-5 Kialiを利用したService Meshの可視化
+
+続いて、Kialiを利用したService Meshの可視化を行ってみます。
+
+まずは、KialiのUIを開きます。  
+
+```sh
+kubectl get services kiali -n istio-system
+```
+
+***コマンド結果***
+
+```sh
+NAME    TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                          AGE
+kiali   NodePort   10.96.251.81   <none>        20001:30768/TCP,9090:32228/TCP   4d4h
+```
+
+KialiのアクセスにはNodePortを利用します。  
+NodePortは`PORT(S)`の`:`以降のポート番号です。  
+上記の場合、以下のURLにアクセスします。  
+http://[WorkerNodeのパブリックIP]:30768
+
+Kialiでの可視化を行うためにService Meshのトラフィック管理設定リソースの一つである`DestinationRule`を作成します。  
 これは、Serviceリソースを対象としたトラフィックに適用されるポリシーを定義するリソースです。  
-  
+
 今回は以下のようなDestinationRuleを作成します。
 
 ```yaml
@@ -821,14 +972,75 @@ destinationrule.networking.istio.io/frontend created
 destinationrule.networking.istio.io/datasource created
 ```
 
-この状態で、アプリケーションにアクセスしてみます。  
+この状態で、KialiのUIを確認してみます。  
 
-金メダリスト、銀メダリスト、銅メダリスト一覧がランダムで表示されることが確認できます。  
-つまり、バックエンドアプリケーションのv1/v2/v3にそれぞれランダムにアクセス(負荷分散)していることがわかります。
+まずは`Overview`です。  
 
-この様子をKialiの`versioned app graph`で確認してみると以下のようになります。
+![](3-017.png)
 
-![](3-003.png)
+ここでは、`default`ネームスペースに3つのアプリケーションが存在することがわかります。  
+3つのアプリケーションとは、今回デプロイしているフロントエンドアプリケーション、バックエンドアプリケーション、データソースアプリケーションです。  
+
+次に、`istio Config`を確認します。 
+
+`No Namespace Selected`と表示されている場合は、右上の![](3-020.png)から`default`にチェックを入れてください。  
+
+![](3-018.png)
+
+`Name`にある`DR`ラベルは`DestinationRule`を指します。  
+`backend`をクリックしてみると、左側の`Destination Rule Overview`で3つのバージョンが存在していることが確認できます。  
+
+![](3-019.png)
+
+次に、`Services`を確認します。  
+
+`No Namespace Selected`と表示されている場合は、右上の![](3-020.png)から`default`にチェックを入れてください。  
+
+![](3-021.png)
+
+KubernetesのServiceリソースが確認できます。  
+`Deatails`には、Serviceリソースに紐づく`DestinationRule`が確認できるようになっています。  
+
+次に`Workload`を確認します。  
+
+`No Namespace Selected`と表示されている場合は、右上の![](3-020.png)から`default`にチェックを入れてください。  
+
+![](3-022.png)
+
+ここには、デプロイ済みのDeploymentリソースが表示されます。  
+
+次に`Application`を確認します。  
+
+`No Namespace Selected`と表示されている場合は、右上の![](3-020.png)から`default`にチェックを入れてください。  
+
+ここには、デプロイ済みのアプリケーションが表示されます。  
+ここでのアプリケーションとはServiceリソースとほぼ同義です。  
+
+![](3-023.png)
+
+`backend-app`をクリックしてみると、以下のような画面が表示されます。  
+
+![](3-024.png)
+
+ここで、ブラウザからアプリケーションにアクセスしたのちに再度確認してみてください。
+しばらくすると、以下のようにアクセスしたTrafficが表示されます。  
+
+![](3-025.png)
+
+他にも、図の赤枠部分のタブで切り替えると様々な情報が見れるので、確認してみてください。  
+
+最後に`Graph`を確認を確認します。  
+
+![](3-026.png)
+
+ここでは、トラフィックの情報などをグラフで可視化することができます。  
+
+例えば、右上の![](3-027.png)から`Versioned app graph`を選択します。  
+
+![](3-028.png)
+
+この状態でアプリケーションに複数回アクセスします。  
+現状は、バックエンドサービスが`DestinationRule`でランダムに負荷分散されるようになっているので、金メダリスト、銀メダリスト、銅メダリスト一覧がランダムで表示されることが確認できます。  
 
 **バックエンドアプリケーションへの負荷分散について**  
 DestinationRuleを適用する前から、バックエンドアプリケーションはv1/v2/v3にある程度負荷分散されています。  
@@ -838,15 +1050,27 @@ DestinationRuleを適用することによって、Istioの機能を利用した
 詳細は[こちら](https://istio.io/latest/docs/concepts/traffic-management/#load-balancing-options)のページをご確認ください。
 {: .notice--info}
 
-ホームディレクトリに戻っておきます。
+金メダリスト、銀メダリスト、銅メダリストそれぞれの一覧が表示されたら、再度`Versioned app graph`を確認します。  
+
+![](3-029.png)
+
+このように、バージョン毎にトラフィックがルーティングされていることが可視化されます。  
+
+Kialiでは、上記でご確認いただいたとおり、Service Mesh環境の様々なリソースやトラフィック状況を可視化することができます。  
+
+最後に、ホームディレクトリに戻っておきます。
 
 ```sh
 cd ~
 ```
 
-### 5-2 カナリアリリース
+4.Istioを利用したカナリアリリース
+---------------------------------
 
-最後にカナリアリリースを実施してみます。
+最後に、手順3までに構築してきた環境を利用して、カナリアリリースを実施してみます。
+
+### 4-1 カナリアリリース
+
 カナリアリリースとは`Blue/Greenデプロイメント`や`A/Bテスト`などと並ぶ高度なデプロイ戦略の一つで「プロダクトやサービスの新機能を一部ユーザーのみが利用できるようにリリースし、新機能に問題がないことを確認しながら段階的に全体に向けて展開していくデプロイ手法」を指します。  
 これにより、新しいバージョンのアプリケーションを本番環境バージョンと一緒にデプロイして、ユーザの反応やパフォーマンスを確認することができます。
 
@@ -865,7 +1089,7 @@ Istioを利用することで、カナリアリリースを容易に実施する
 
 `DestinationRule`と`VirtualService`の関係は以下のようになります。
 
-![](3-004.png)
+![](4-001.png)
 
 今回は、以下のような`VirtualService`を用意しました。
 
