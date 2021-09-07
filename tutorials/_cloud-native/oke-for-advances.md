@@ -404,7 +404,7 @@ Lokiの設定画面の「URL」に「http://loki:3100/」と入力して、「Sa
 3.マイクロサービスアプリケーションの作成
 ---------------------------------
 
-この手順では、手順1および2で構築したObservability環境に対してマイクロサービスをデプロイしていきます。  
+この手順では、手順1および2で構築したObservability環境に対してサンプルアプリケーションをデプロイしていきます。  
 
 ### 3-1 サンプルアプリケーションの概要説明
 
@@ -412,20 +412,22 @@ Lokiの設定画面の「URL」に「http://loki:3100/」と入力して、「Sa
 
 ```sh
 cd ~
+```
 
+```sh
 git clone https://github.com/oracle-japan/code-at-customer-handson
 ```
 
-このハンズオン用に作成したサンプルのマイクロサービスアプリケーションです。  
+このハンズオン用に作成したサンプルアプリケーションです。  
 中身を簡単に紹介します。  
 
 ```sh
 .
 ├── README.md
 ├── k8s ==> KubernetesのMainifest群
-├── olympic_backend ==> バックエンド用アプリケーション
-├── olympic_datasource ==> データソース用アプリケーション
-├── olympic_frontend ==> フロントエンド用アプリケーション
+├── olympic_backend ==> バックエンドアプリケーション
+├── olympic_datasource ==> データソースアプリケーション
+├── olympic_frontend ==> フロントエンドアプリケーション
 .
 ```
 
@@ -438,18 +440,18 @@ git clone https://github.com/oracle-japan/code-at-customer-handson
   * 業界標準として普及しているオープンソース・フレームワークに基づき、開発者がより優れたアプリケーションをより迅速に構築できるよう支援する高度な機能とサービスを付加
 
 簡単にアプリケーションの構成を見ていきます。  
-全体のイメージは以下のようになっています。
+この手順が完了すると全体のイメージは以下のようになります。
 
 ![](3-001.png)
 
-大きく上部のサンプルアプリケーションと下部のObservability環境から構成されていますが、下部については手順1および2で構築済みです。  
+大きく上部のサンプルアプリケーションと下部のObservability環境から構成されていますが、下部については手順2で構築済みです。  
 そのため、以降では、主に上部のサンプルアプリケーションについてみていきます。
 
 このサンプルアプリケーションは、3つのコンポーネントから以下のように構成されています。
 
 * フロントエンドアプリケーション(図中の`Olympics`)  
   HelidonとOracle JETから構成されているアプリケーションです。  
-  Helidonのstatic content root(今回は`resources/web配下`)にOracle JETのコンテンツを配置しています。  
+  Helidonの静的コンテンツルート(今回は`resources/web配下`)にOracle JETのコンテンツを配置しています。  
   このアプリケーションは、バックエンドサービス(v1/v2/v3)のいずれかを呼び出します。  
 
 * バックエンドアプリケーション(図中の緑枠部分)  
@@ -509,13 +511,13 @@ Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/frontend-app:latest
 
 これでビルド完了です。
 
+本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
+
 ホームディレクトリに戻っておきます。
 
 ```sh
 cd ~
 ```
-
-本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
 
 同じようにバックエンドアプリケーションのコンテナもビルドしてみます。  
 
@@ -565,15 +567,20 @@ EXPOSE 8080
 cd code-at-customer-handson/olympic_backend
 ```
 
+V1をビルドします。
+
 ```sh
 docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1 -f Dockerfile_v1 .
 ```
 
 ***コマンド結果***
+
 ```sh
 ~~~~
 Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1:latest
 ```
+
+V2をビルドします。
 
 ```sh
 docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2 -f Dockerfile_v2 .
@@ -585,6 +592,8 @@ docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2 -f Dockerfi
 ~~~~
 Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2:latest
 ```
+
+V3をビルドします。
 
 ```sh
 docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3 -f Dockerfile_v3 .
@@ -690,8 +699,8 @@ frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
 
 全て`Running`になったら、アプリケーションにアクセスしてみます。
 
-アクセスには手順2で作成した`Istio-istio-ingressgateway`を経由してアクセスします。
-まずは、`Istio-istio-ingressgateway`のエンドポイントを確認します。
+アクセスには手順2で作成した`istio-ingressgateway`を経由してアクセスします。  
+まずは、`istio-ingressgateway`のエンドポイントを確認します。
 
 ```sh
 kubectl get services istio-ingressgateway -n istio-system
@@ -704,7 +713,7 @@ NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)  
 istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
 ```
 
-上記の場合は、istio-ingressgatewayの`132.226.211.116`のエンドポイントになります。
+上記の場合は、istio-ingressgatewayの`EXTERNAL-IP`である`132.226.211.116`がエンドポイントになります。
 
 この場合は、以下のURLにアクセスします。  
 `http://132.226.211.116`
@@ -837,7 +846,7 @@ cd ~
 ### 5-2 カナリアリリース
 
 最後にカナリアリリースを実施してみます。
-カナリアリリースとは`Blue/Greenデプロイメント`や`A/Bテスト`などと並び「プロダクトやサービスの新機能を一部ユーザーのみが利用できるようにリリースし、新機能に問題がないことを確認しながら段階的に全体に向けて展開していくデプロイ手法」を指します。  
+カナリアリリースとは`Blue/Greenデプロイメント`や`A/Bテスト`などと並ぶ高度なデプロイ戦略の一つで「プロダクトやサービスの新機能を一部ユーザーのみが利用できるようにリリースし、新機能に問題がないことを確認しながら段階的に全体に向けて展開していくデプロイ手法」を指します。  
 これにより、新しいバージョンのアプリケーションを本番環境バージョンと一緒にデプロイして、ユーザの反応やパフォーマンスを確認することができます。
 
 Istioを利用することで、カナリアリリースを容易に実施することができます。  
@@ -849,8 +858,14 @@ Istioを利用することで、カナリアリリースを容易に実施する
 * ルーティングポリシー：トラフィックの80%をv1に、15%をv2に、5%をv3にルーティング
 
 上記の構成をIstioで実現するために、`VirtualService`というリソースを作成します。  
-これは、DestinationRuleで定義した情報を利用し、さらに細かいルーティングポリシーを設定します。  
+これは、`DestinationRule`で定義した情報を利用し、さらに細かいルーティングポリシーを設定します。  
 例えば、HTTP Headerやパス等のマッチングルールに基づいて、リクエストのルーティング先を書き換えたりHTTP Headerの操作をすることが可能です。  
+
+なお、
+
+`DestinationRule`と`VirtualService`の関係は以下のようになります。
+
+![](3-004.png)
 
 今回は、以下のような`VirtualService`を用意しました。
 
@@ -878,7 +893,7 @@ spec:
       weight: 5
 ```
 
-いかに注目します。
+以下に注目します。
 
 ```yaml
   http:
@@ -919,7 +934,7 @@ virtualservice.networking.istio.io/canary-release created
 
 アプリケーションにアクセスしてみましょう。  
 
-ほとんど、銅メダリスト(v1)が表示され、ごく稀にv2(銀メダリスト)とv3(金メダリスト)が表示されるかと思います。  
+ほとんど、銅メダリスト(v1)が表示され、偶にv2(銀メダリスト)、ごく稀にv3(金メダリスト)が表示されるかと思います。  
 
 このように、Istioを利用すると適切なリソースを作成するだけで、カナリアリリースのような高度なデプロイ戦略を実施することができます。  
 
