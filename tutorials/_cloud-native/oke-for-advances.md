@@ -767,7 +767,7 @@ http://[WorkerNodeのパブリックIP]:31624
 対象とするPod名を選択します。
 
 ```sh
-kubectl get services grafana -n istio-system
+kubectl get pod
 ```
 
 
@@ -793,8 +793,6 @@ frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
 対象とするPod名を選択し、`show logs`をクリックします。
 
 ![](3-009.png)
-
-
 
 対象のPodが出力したログが表示されます。  
 
