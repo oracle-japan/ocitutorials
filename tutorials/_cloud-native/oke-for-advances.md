@@ -84,6 +84,33 @@ tags:
 
 ### 1-2 Cloud Shellを利用してクラスタを操作
 
+Cloud Shellを利用して、作成したKubernetesクラスタに接続します。
+
+「クラスタへのアクセス」ボタンをクリックします。
+
+![](1-009.png)
+
+「Cloud Shellの起動」ボタン、「コピー」リンクテキスト、「閉じる」ボタンの順にクリックします。
+
+![](1-010.png)
+
+Cloud Shell起動後、「コピー」した内容をペーストして、Enterキーを押します。
+
+![](1-011.png)
+
+以下コマンドを実行して、3ノードの「STATUS」が「Ready」になっていることを確認します。
+
+```sh
+kubectl get nodes
+```
+***コマンド結果***
+```sh
+NAME          STATUS   ROLES   AGE   VERSION
+10.0.10.118   Ready    node    3d    v1.20.8
+10.0.10.127   Ready    node    3d    v1.20.8
+10.0.10.175   Ready    node    3d    v1.20.8
+```
+
 2.サービスメッシュとオブザバビリティ環境構築
 ---------------------------------
 
@@ -263,14 +290,14 @@ OCIダッシュボードから、[Networking]-[Virtual Cloud Networks]を選択�
 
 3つあるうちの一番上段のものを選択します。
 
-「oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional」を選択します。
+`oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional`を選択します。
 
 「Add Ingress Rules」ボタンをクリックします。
 
 以下を設定して、「Add Ingress Rules」ボタンをクリックします。
 
-SOURCE CIDR: 0.0.0.0/0
-IP PROTOCOL: All Protocols
+`SOURCE CIDR: 0.0.0.0/0`<br>
+`IP PROTOCOL: All Protocols`
 
 NodeのEXTERNAL-IPを確認します。
 
@@ -313,7 +340,7 @@ zipkin                 ClusterIP      10.96.184.172   <none>        9411/TCP
 
 ブラウザでアクセスします。NodeのEXTERNAL-IPは3ノードの内どれを利用して問題ありません。
 
-http://EXTERNAL-IP:NodePort/
+`http://EXTERNAL-IP:NodePort/`
 
 ### 2-2 Grafana Loki インストール
 
@@ -392,14 +419,186 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
 
 Grafanaダッシュボードを開いて、左メニューの[Configuration]-[Data Sources]を選択します。
 
+![](1-012.png)
+
 「Add data source」ボタンをクリックします。
+
+![](1-013.png)
 
 「Logging & document databases」にある「Loki」にカーソルを合わせて「Select」ボタンをクリックします。
 
-Lokiの設定画面の「URL」に「http://loki:3100/」と入力して、「Save & Test」ボタンをクリックします。
+![](1-014.png)
 
-左メニューの「Explore」を選択して、プルダウンメニューのLokiを選択できれば完了です。
+Lokiの設定画面の「URL」に`http://loki:3100/`と入力、「Maximum lines」に`1000`と入力して、「Save & Test」ボタンをクリックします。
 
+![](1-015.png)
+
+左メニューの「Explore」を選択します。
+
+![](1-016.png)
+
+画面遷移後、画面左上のプルダウンメニューで「Loki」を選択します。
+
+![](1-017.png)
+
+「Log browser」に`{app="istiod"}`と入力して、「Run Query」ボタンをクリックします。
+
+![](1-018.png)
+
+ログが表示されれば、セットアップは完了です。
+
+### 2-4 node exporterのインストール
+
+各ノードのメトリクスを取集するためにnode exporterを各ノードに配備します。
+
+node exporterのマニフェストをファイルを作成します。
+
+```sh
+vim node-exporter-cc.yaml
+```
+以下、コピー元として利用してください。
+```sh
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: node-exporter-cc
+  name: node-exporter-cc
+  namespace: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+  labels:
+    app: node-exporter-cc
+  name: node-exporter-cc
+  namespace: default
+spec:
+  clusterIP: None
+  ports:
+    - name: metrics
+      port: 9100
+      protocol: TCP
+      targetPort: 9100
+  selector:
+    app: node-exporter-cc
+  type: "ClusterIP"
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: node-exporter-cc 
+  name: node-exporter-cc
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter-cc
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: node-exporter-cc
+    spec:
+      serviceAccountName: node-exporter-cc
+      containers:
+        - name: node-exporter-cc
+          image: "prom/node-exporter:v1.2.2"
+          imagePullPolicy: "IfNotPresent"
+          args:
+            - --path.procfs=/host/proc
+            - --path.sysfs=/host/sys
+          ports:
+            - name: metrics
+              containerPort: 9100
+              hostPort: 9100
+          resources:
+            {}
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly:  true
+            - name: sys
+              mountPath: /host/sys
+              readOnly: true
+      hostNetwork: true
+      hostPID: true
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+```
+
+Kubernetesクラスタに適用します。
+
+```sh
+kubectl apply -f node-exporter-cc.yaml
+```
+```sh
+serviceaccount/node-exporter-cc created
+service/node-exporter-cc created
+daemonset.apps/node-exporter-cc created
+```
+
+node-exporter-ccというPodの「STATUS」が「Running」であることを確認します。
+
+```sh
+kubectl get pods
+```
+```
+NAME                           READY   STATUS    RESTARTS   AGE
+node-exporter-cc-7x7m7   1/1     Running   0          53s
+node-exporter-cc-hbjnd   1/1     Running   0          53s
+node-exporter-cc-nzd4l   1/1     Running   0          53s
+```
+
+### 2-5 Prometheus WebUIからPromQLの実行
+
+Prometheus WebUIからPromQLを実行して、3ノードの各ノードのメモリ空き容量と3ノードでのメモリ空き容量の合計を確認します。
+まずは、ブラウザでPrometheus WebUIにアクセスしてください。
+
+![](1-019.png)
+
+`node_memory_MemAvailable_bytes`を入力して、「Execute」ボタンをクリックします。
+
+![](1-020.png)
+
+各ノードのメモリ空き容量が表示されます。「Graph」タブをクリックすると、グラフで見ることができます。
+
+![](1-021.png)
+
+![](1-022.png)
+
+「Table」タブをクリック後、直近3分の状況を確認します。
+
+![](1-023.png)
+
+`node_memory_MemAvailable_bytes[3m]`と入力して、「Execute」ボタンをクリックします。
+各ノードの直近3分間のメモリの空き容量の状況が表示されます。
+
+![](1-024.png)
+
+次に3ノードのメモリの空き容量を確認します。
+
+`sum without (instance, kubernetes_node) (node_memory_MemAvailable_bytes)`と入力して、「Execute」ボタンをクリックします。
+
+withoutを利用して、instanceとkubernetes_nodeラベルを除外して、3ノードのsum、合計を出力するPromQLです。
+
+![](1-025.png)
+
+「Graph」タブをクリックすることで、グラフでも確認できます。
+
+![](1-026.png)
+
+PromQLは、メトリクス集約に特化したPrometheus独自のクエリ言語です。このハンズオンで利用したクエリは一例です。
+使用方法は、多岐にわたります。詳細は、[公式レファレンス](https://prometheus.io/docs/prometheus/latest/querying/basics/)を参照してください。
 
 3.サンプルアプリケーションでObservabilityを体験してみよう
 ---------------------------------
