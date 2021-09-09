@@ -9,7 +9,7 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<!-- begin _includes/seo.html --><title>Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう | Oracle Cloud Infrastructure チュートリアル</title>
 <meta name="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
 
 
@@ -22,7 +22,7 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
+<meta property="og:title" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-advances/">
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-06T16:18:30+09:00">
+  <meta property="article:published_time" content="2021-09-10T08:24:01+09:00">
 
 
 
@@ -189,7 +189,7 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう
+          Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう
 
         
       </h1>
@@ -238,7 +238,7 @@
     
       
       
-        <li class="current">Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</li>
+        <li class="current">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</li>
       
     
   </ol>
@@ -276,9 +276,9 @@
         
           <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/" class="active">Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/" class="active">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
         
@@ -311,9 +311,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
+    <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
-    <meta itemprop="datePublished" content="2021-09-06T16:18:30+09:00">
+    <meta itemprop="datePublished" content="2021-09-10T08:24:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -336,15 +336,24 @@
       <li><a href="#2-1-istioaddon-prometheus-grafana-jaeger-kialiインストール">2-1 Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール</a></li>
       <li><a href="#2-2-grafana-loki-インストール">2-2 Grafana Loki インストール</a></li>
       <li><a href="#2-3-grafana-lokiのセットアップ">2-3 Grafana Lokiのセットアップ</a></li>
+      <li><a href="#2-4-node-exporterのインストール">2-4 node exporterのインストール</a></li>
+      <li><a href="#2-5-prometheus-webuiからpromqlの実行">2-5 Prometheus WebUIからPromQLの実行</a></li>
     </ul>
   </li>
-  <li><a href="#3マイクロサービスアプリケーションの作成">3.マイクロサービスアプリケーションの作成</a>
+  <li><a href="#3サンプルアプリケーションでobservabilityを体験してみよう">3.サンプルアプリケーションでObservabilityを体験してみよう</a>
     <ul>
-      <li><a href="#3-1-マイクロサービスのcloneとアプリケーションの説明">3-1 マイクロサービスのcloneとアプリケーションの説明</a></li>
+      <li><a href="#3-1-サンプルアプリケーションの概要説明">3-1 サンプルアプリケーションの概要説明</a></li>
+      <li><a href="#3-2-サンプルアプリケーションのビルドとデプロイ">3-2 サンプルアプリケーションのビルドとデプロイ</a></li>
+      <li><a href="#3-3-grafana-lokiを利用したログ監視">3-3 Grafana Lokiを利用したログ監視</a></li>
+      <li><a href="#3-4-jaegerを利用したトレーシング">3-4 Jaegerを利用したトレーシング</a></li>
+      <li><a href="#3-5-kialiを利用したservice-meshの可視化">3-5 Kialiを利用したService Meshの可視化</a></li>
     </ul>
   </li>
-  <li><a href="#4カナリアリリース">4.カナリアリリース</a></li>
-  <li><a href="#5prometheusgrafanalokijaegerkialiによるオブザバビリティ">5.Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ</a></li>
+  <li><a href="#4istioを利用したカナリアリリース">4.Istioを利用したカナリアリリース</a>
+    <ul>
+      <li><a href="#4-1-カナリアリリース">4-1 カナリアリリース</a></li>
+    </ul>
+  </li>
 </ul>
 
             </nav>
@@ -441,6 +450,31 @@
 <p><img src="1-008.png" alt="" /></p>
 
 <h3 id="1-2-cloud-shellを利用してクラスタを操作">1-2 Cloud Shellを利用してクラスタを操作</h3>
+
+<p>Cloud Shellを利用して、作成したKubernetesクラスタに接続します。</p>
+
+<p>「クラスタへのアクセス」ボタンをクリックします。</p>
+
+<p><img src="1-009.png" alt="" /></p>
+
+<p>「Cloud Shellの起動」ボタン、「コピー」リンクテキスト、「閉じる」ボタンの順にクリックします。</p>
+
+<p><img src="1-010.png" alt="" /></p>
+
+<p>Cloud Shell起動後、「コピー」した内容をペーストして、Enterキーを押します。</p>
+
+<p><img src="1-011.png" alt="" /></p>
+
+<p>以下コマンドを実行して、3ノードの「STATUS」が「Ready」になっていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get nodes
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME          STATUS   ROLES   AGE   VERSION
+10.0.10.118   Ready    node    3d    v1.20.8
+10.0.10.127   Ready    node    3d    v1.20.8
+10.0.10.175   Ready    node    3d    v1.20.8
+</code></pre></div></div>
 
 <h2 id="2サービスメッシュとオブザバビリティ環境構築">2.サービスメッシュとオブザバビリティ環境構築</h2>
 
@@ -543,6 +577,14 @@ service/prometheus created
 deployment.apps/prometheus created
 </code></pre></div></div>
 
+<p>Istioで利用するサイドカープロキシを自動でPodに挿入する設定を加えます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl label namespace default istio-injection<span class="o">=</span>enabled
+</code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>namespace/default labeled
+</code></pre></div></div>
+
 <p>Prometheus、Grafana、Kiali、JaegerのWebUIにブラウザからアクセスできるようにします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service prometheus <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
@@ -599,14 +641,14 @@ deployment.apps/prometheus             1/1     1            1           21m   pr
 
 <p>3つあるうちの一番上段のものを選択します。</p>
 
-<p>「oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional」を選択します。</p>
+<p><code class="language-plaintext highlighter-rouge">oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional</code>を選択します。</p>
 
 <p>「Add Ingress Rules」ボタンをクリックします。</p>
 
 <p>以下を設定して、「Add Ingress Rules」ボタンをクリックします。</p>
 
-<p>SOURCE CIDR: 0.0.0.0/0
-IP PROTOCOL: All Protocols</p>
+<p><code class="language-plaintext highlighter-rouge">SOURCE CIDR: 0.0.0.0/0</code><br />
+<code class="language-plaintext highlighter-rouge">IP PROTOCOL: All Protocols</code></p>
 
 <p>NodeのEXTERNAL-IPを確認します。</p>
 
@@ -647,7 +689,7 @@ zipkin                 ClusterIP      10.96.184.172   &lt;none&gt;        9411/T
 
 <p>ブラウザでアクセスします。NodeのEXTERNAL-IPは3ノードの内どれを利用して問題ありません。</p>
 
-<p>http://EXTERNAL-IP:NodePort/</p>
+<p><code class="language-plaintext highlighter-rouge">http://EXTERNAL-IP:NodePort/</code></p>
 
 <h3 id="2-2-grafana-loki-インストール">2-2 Grafana Loki インストール</h3>
 
@@ -718,45 +760,216 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
 
 <p>Grafanaダッシュボードを開いて、左メニューの[Configuration]-[Data Sources]を選択します。</p>
 
+<p><img src="1-012.png" alt="" /></p>
+
 <p>「Add data source」ボタンをクリックします。</p>
+
+<p><img src="1-013.png" alt="" /></p>
 
 <p>「Logging &amp; document databases」にある「Loki」にカーソルを合わせて「Select」ボタンをクリックします。</p>
 
-<p>Lokiの設定画面の「URL」に「http://loki:3100/」と入力して、「Save &amp; Test」ボタンをクリックします。</p>
+<p><img src="1-014.png" alt="" /></p>
 
-<p>左メニューの「Explore」を選択して、プルダウンメニューのLokiを選択できれば完了です。</p>
+<p>Lokiの設定画面の「URL」に<code class="language-plaintext highlighter-rouge">http://loki:3100/</code>と入力、「Maximum lines」に<code class="language-plaintext highlighter-rouge">1000</code>と入力して、「Save &amp; Test」ボタンをクリックします。</p>
 
-<h2 id="3マイクロサービスアプリケーションの作成">3.マイクロサービスアプリケーションの作成</h2>
+<p><img src="1-015.png" alt="" /></p>
 
-<p>この手順では、1および2で構築したIstio環境に対してマイクロサービスをデプロイしていきます。</p>
+<p>左メニューの「Explore」を選択します。</p>
 
-<h3 id="3-1-マイクロサービスのcloneとアプリケーションの説明">3-1 マイクロサービスのcloneとアプリケーションの説明</h3>
+<p><img src="1-016.png" alt="" /></p>
 
-<p>まずは以下のGitレポジトリをcloneします。</p>
+<p>画面遷移後、画面左上のプルダウンメニューで「Loki」を選択します。</p>
+
+<p><img src="1-017.png" alt="" /></p>
+
+<p>「Log browser」に<code class="language-plaintext highlighter-rouge">{app="istiod"}</code>と入力して、「Run Query」ボタンをクリックします。</p>
+
+<p><img src="1-018.png" alt="" /></p>
+
+<p>ログが表示されれば、セットアップは完了です。</p>
+
+<h3 id="2-4-node-exporterのインストール">2-4 node exporterのインストール</h3>
+
+<p>各ノードのメトリクスを取集するためにnode exporterを各ノードに配備します。</p>
+
+<p>node exporterのマニフェストをファイルを作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim node-exporter-cc.yaml
+</code></pre></div></div>
+<p>以下、コピー元として利用してください。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: node-exporter-cc
+  name: node-exporter-cc
+  namespace: default
+<span class="nt">---</span>
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: <span class="s2">"true"</span>
+  labels:
+    app: node-exporter-cc
+  name: node-exporter-cc
+  namespace: default
+spec:
+  clusterIP: None
+  ports:
+    - name: metrics
+      port: 9100
+      protocol: TCP
+      targetPort: 9100
+  selector:
+    app: node-exporter-cc
+  <span class="nb">type</span>: <span class="s2">"ClusterIP"</span>
+<span class="nt">---</span>
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: node-exporter-cc 
+  name: node-exporter-cc
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter-cc
+  updateStrategy:
+    <span class="nb">type</span>: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: node-exporter-cc
+    spec:
+      serviceAccountName: node-exporter-cc
+      containers:
+        - name: node-exporter-cc
+          image: <span class="s2">"prom/node-exporter:v1.2.2"</span>
+          imagePullPolicy: <span class="s2">"IfNotPresent"</span>
+          args:
+            - <span class="nt">--path</span>.procfs<span class="o">=</span>/host/proc
+            - <span class="nt">--path</span>.sysfs<span class="o">=</span>/host/sys
+          ports:
+            - name: metrics
+              containerPort: 9100
+              hostPort: 9100
+          resources:
+            <span class="o">{}</span>
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly:  <span class="nb">true</span>
+            - name: sys
+              mountPath: /host/sys
+              readOnly: <span class="nb">true
+      </span>hostNetwork: <span class="nb">true
+      </span>hostPID: <span class="nb">true
+      </span>volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+</code></pre></div></div>
+
+<p>Kubernetesクラスタに適用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> node-exporter-cc.yaml
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>serviceaccount/node-exporter-cc created
+service/node-exporter-cc created
+daemonset.apps/node-exporter-cc created
+</code></pre></div></div>
+
+<p>node-exporter-ccというPodの「STATUS」が「Running」であることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pods
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                           READY   STATUS    RESTARTS   AGE
+node-exporter-cc-7x7m7   1/1     Running   0          53s
+node-exporter-cc-hbjnd   1/1     Running   0          53s
+node-exporter-cc-nzd4l   1/1     Running   0          53s
+</code></pre></div></div>
+
+<h3 id="2-5-prometheus-webuiからpromqlの実行">2-5 Prometheus WebUIからPromQLの実行</h3>
+
+<p>Prometheus WebUIからPromQLを実行して、3ノードの各ノードのメモリ空き容量と3ノードでのメモリ空き容量の合計を確認します。
+まずは、ブラウザでPrometheus WebUIにアクセスしてください。</p>
+
+<p><img src="1-019.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">node_memory_MemAvailable_bytes</code>を入力して、「Execute」ボタンをクリックします。</p>
+
+<p><img src="1-020.png" alt="" /></p>
+
+<p>各ノードのメモリ空き容量が表示されます。「Graph」タブをクリックすると、グラフで見ることができます。</p>
+
+<p><img src="1-021.png" alt="" /></p>
+
+<p><img src="1-022.png" alt="" /></p>
+
+<p>「Table」タブをクリック後、直近3分の状況を確認します。</p>
+
+<p><img src="1-023.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">node_memory_MemAvailable_bytes[3m]</code>と入力して、「Execute」ボタンをクリックします。
+各ノードの直近3分間のメモリの空き容量の状況が表示されます。</p>
+
+<p><img src="1-024.png" alt="" /></p>
+
+<p>次に3ノードのメモリの空き容量を確認します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">sum without (instance, kubernetes_node) (node_memory_MemAvailable_bytes)</code>と入力して、「Execute」ボタンをクリックします。</p>
+
+<p>withoutを利用して、instanceとkubernetes_nodeラベルを除外して、3ノードのsum、合計を出力するPromQLです。</p>
+
+<p><img src="1-025.png" alt="" /></p>
+
+<p>「Graph」タブをクリックすることで、グラフでも確認できます。</p>
+
+<p><img src="1-026.png" alt="" /></p>
+
+<p>PromQLは、メトリクス集約に特化したPrometheus独自のクエリ言語です。このハンズオンで利用したクエリは一例です。
+使用方法は、多岐にわたります。詳細は、<a href="https://prometheus.io/docs/prometheus/latest/querying/basics/">公式レファレンス</a>を参照してください。</p>
+
+<h2 id="3サンプルアプリケーションでobservabilityを体験してみよう">3.サンプルアプリケーションでObservabilityを体験してみよう</h2>
+
+<p>この手順では、手順1および2で構築したObservability環境に対してサンプルアプリケーションをデプロイしていきます。</p>
+
+<h3 id="3-1-サンプルアプリケーションの概要説明">3-1 サンプルアプリケーションの概要説明</h3>
+
+<p>まずはホームディレクトリに移動し、以下のGitレポジトリをcloneします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/code-at-customer-handson
 </code></pre></div></div>
 
-<p>このハンズオン用に作成したサンプルのマイクロサービスアプリケーションです。<br />
+<p>このハンズオン用に作成したサンプルアプリケーションです。<br />
 中身を簡単に紹介します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span>
 ├── README.md
 ├── k8s <span class="o">==&gt;</span> KubernetesのMainifest群
-├── olympic_backend <span class="o">==&gt;</span> バックエンド用アプリケーション
-├── olympic_datasource <span class="o">==&gt;</span> データソース用アプリケーション
-├── olympic_frontend <span class="o">==&gt;</span> フロントエンド用アプリケーション
+├── olympic_backend <span class="o">==&gt;</span> バックエンドアプリケーション
+├── olympic_datasource <span class="o">==&gt;</span> データソースアプリケーション
+├── olympic_frontend <span class="o">==&gt;</span> フロントエンドアプリケーション
 <span class="nb">.</span>
 </code></pre></div></div>
 
 <p>このサンプルアプリケーションは、主に以下の2つから構成されています。</p>
+
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">Helidon</code>
+  <li><a href="https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview">Helidon</a>
     <ul>
       <li>Oracleがオープンソースで提供しているJavaのマイクロサービスフレームワーク</li>
     </ul>
   </li>
-  <li><code class="language-plaintext highlighter-rouge">Oracle JavaScript Extension Toolkit（Oracle JET）</code>
+  <li><a href="https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html">Oracle JavaScript Extension Toolkit（Oracle JET）</a>
     <ul>
       <li>Oracleがオープンソースで開発しているJavascript用フレームワーク</li>
       <li>業界標準として普及しているオープンソース・フレームワークに基づき、開発者がより優れたアプリケーションをより迅速に構築できるよう支援する高度な機能とサービスを付加</li>
@@ -764,24 +977,721 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
   </li>
 </ul>
 
-<p>Helidon</p>
+<p>簡単にアプリケーションの構成を見ていきます。<br />
+この手順が完了すると全体のイメージは以下のようになります。</p>
+
+<p><img src="3-001.png" alt="" /></p>
+
+<p>大きく上部のサンプルアプリケーションと下部のObservability環境から構成されていますが、下部については手順2で構築済みです。<br />
+そのため、以降では、主に上部のサンプルアプリケーションについてみていきます。</p>
+
+<p>このサンプルアプリケーションは、3つのコンポーネントから以下のように構成されています。</p>
 
 <ul>
-  <li><a href="https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview">Helidon</a></li>
+  <li>
+    <p>フロントエンドアプリケーション(図中の<code class="language-plaintext highlighter-rouge">Olympics</code>)<br />
+HelidonとOracle JETから構成されているアプリケーションです。<br />
+Helidonの静的コンテンツルート(今回は<code class="language-plaintext highlighter-rouge">resources/web配下</code>)にOracle JETのコンテンツを配置しています。<br />
+このアプリケーションは、バックエンドサービス(v1/v2/v3)のいずれかを呼び出します。</p>
+  </li>
+  <li>
+    <p>バックエンドアプリケーション(図中の緑枠部分)<br />
+Helidonから構成されているアプリケーションです。
+このアプリケーションには3つのバージョンが存在し、それぞれ金メダメリスト(v3)、銀メダリスト(v2)、銅メダリスト(v1)の一覧を返すようになっています。 
+バージョン情報は環境変数として保持しています。
+このアプリケーションは、データソースアプリケーションに対してバージョンに応じたAPIエンドポイントを呼び出し、データを取得しにいきます。</p>
+  </li>
+  <li>
+    <p>データソースアプリケーション(図中の<code class="language-plaintext highlighter-rouge">Medal Info</code>)<br />
+Helidonとインメモリで動作しているデータベースである<a href="https://www.h2database.com/html/main.html">H2 Database</a>から構成されているアプリケーションです。<br />
+このアプリケーションでは、メダリストと獲得したメダルの色を保持しており、バックエンドアプリケーションから呼び出されたエンドポイント応じてメダリストとそのメダルの色を返却します。</p>
+  </li>
 </ul>
 
-<p>Oracle JavaScript Extension Toolkit（Oracle JET）</p>
+<h3 id="3-2-サンプルアプリケーションのビルドとデプロイ">3-2 サンプルアプリケーションのビルドとデプロイ</h3>
+
+<p>ここからは、これらのアプリケーションが含まれたコンテナイメージをビルドしてみます。</p>
+
+<p>まずは、フロントエンドアプリケーションからビルドします。</p>
+
+<p class="notice--info"><strong>HelidonアプリケーションのDockerfileについて</strong><br />
+Helidonには<code class="language-plaintext highlighter-rouge">Helidon CLI</code>という便利なCLIツールがあります。<br />
+これを利用することで、プロジェクトの雛形を作成することができ、その中にデフォルトでDockerfileも含まれています。<br />
+<code class="language-plaintext highlighter-rouge">Helidon CLI</code>については<a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">こちら</a>をご確認ください。<br />
+以降で利用するDockerfileも、基本的に上記雛形ファイルを利用しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/olympic_backend
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-t</span> nrt.ocir.io/orasejapan/codeatcustomer/frontend-app <span class="nb">.</span>
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~~
+Status: Downloaded newer image <span class="k">for </span>openjdk:11-jre-slim
+ <span class="nt">---</span><span class="o">&gt;</span> e4beed9b17a3
+Step 9/13 : WORKDIR /helidon
+ <span class="nt">---</span><span class="o">&gt;</span> Running <span class="k">in </span>bbbeffe84be8
+Removing intermediate container bbbeffe84be8
+ <span class="nt">---</span><span class="o">&gt;</span> 518c68977ccc
+Step 10/13 : COPY <span class="nt">--from</span><span class="o">=</span>build /helidon/target/olympic_frontend.jar ./
+ <span class="nt">---</span><span class="o">&gt;</span> 6eb033c8d5ab
+Step 11/13 : COPY <span class="nt">--from</span><span class="o">=</span>build /helidon/target/libs ./libs
+ <span class="nt">---</span><span class="o">&gt;</span> d46766254734
+Step 12/13 : CMD <span class="o">[</span><span class="s2">"java"</span>, <span class="s2">"-jar"</span>, <span class="s2">"olympic_frontend.jar"</span><span class="o">]</span>
+ <span class="nt">---</span><span class="o">&gt;</span> Running <span class="k">in </span>b2e205e5b9ed
+Removing intermediate container b2e205e5b9ed
+ <span class="nt">---</span><span class="o">&gt;</span> a042893b3e8e
+Step 13/13 : EXPOSE 8080
+ <span class="nt">---</span><span class="o">&gt;</span> Running <span class="k">in </span>7e3a2bb12ed4
+Removing intermediate container 7e3a2bb12ed4
+ <span class="nt">---</span><span class="o">&gt;</span> b96ac0669f0d
+Successfully built b96ac0669f0d
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/frontend-app:latest
+</code></pre></div></div>
+
+<p>これでビルド完了です。</p>
+
+<p>本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。</p>
+
+<p>ホームディレクトリに戻っておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
+<p>同じようにバックエンドアプリケーションのコンテナもビルドしてみます。</p>
+
+<p>前述した通り、バックエンドアプリケーションはバージョンが3つ存在します。
+今回は、そのバージョン情報を環境変数として持たせたDockerfileを用意していますので、それぞれビルドします。</p>
+
+<p>例えば、v1の銅メダリストを返却するバックエンドアプリケーションは以下のようなDockerfileになっており、ENV命令で定義しています。</p>
+
+<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1st stage, build the app</span>
+<span class="k">FROM</span><span class="s"> maven:3.6-jdk-11 as build</span>
+
+<span class="k">WORKDIR</span><span class="s"> /helidon</span>
+
+<span class="c"># Create a first layer to cache the "Maven World" in the local repository.</span>
+<span class="c"># Incremental docker builds will always resume after that, unless you update</span>
+<span class="c"># the pom</span>
+<span class="k">ADD</span><span class="s"> pom.xml .</span>
+<span class="k">RUN </span>mvn package <span class="nt">-Dmaven</span>.test.skip <span class="nt">-Declipselink</span>.weave.skip
+
+<span class="c"># Do the Maven build!</span>
+<span class="c"># Incremental docker builds will resume here when you change sources</span>
+<span class="k">ADD</span><span class="s"> src src</span>
+<span class="k">RUN </span>mvn package <span class="nt">-DskipTests</span>
+<span class="k">RUN </span><span class="nb">echo</span> <span class="s2">"done!"</span>
+
+<span class="c"># 2nd stage, build the runtime image</span>
+<span class="k">FROM</span><span class="s"> openjdk:11-jre-slim</span>
+<span class="k">WORKDIR</span><span class="s"> /helidon</span>
+
+<span class="c"># Copy the binary built in the 1st stage</span>
+<span class="k">COPY</span><span class="s"> --from=build /helidon/target/olympic_backend.jar ./</span>
+<span class="k">COPY</span><span class="s"> --from=build /helidon/target/libs ./libs</span>
+
+<span class="k">ENV</span><span class="s"> SERVICE_VERSION=V1</span>
+
+<span class="k">CMD</span><span class="s"> ["java", "-jar", "olympic_backend.jar"]</span>
+
+<span class="k">EXPOSE</span><span class="s"> 8080</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">ENV SERVICE_VERSION=V1</code>の箇所がアプリケーションのバージョンを定義している部分です。</p>
+
+<p>今回はバージョンが3つ存在するので、それぞれビルドしてみます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/olympic_backend
+</code></pre></div></div>
+
+<p>V1をビルドします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-t</span> nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1 <span class="nt">-f</span> Dockerfile_v1 <span class="nb">.</span>
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1:latest
+</code></pre></div></div>
+
+<p>V2をビルドします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-t</span> nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2 <span class="nt">-f</span> Dockerfile_v2 <span class="nb">.</span>
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2:latest
+</code></pre></div></div>
+
+<p>V3をビルドします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-t</span> nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3 <span class="nt">-f</span> Dockerfile_v3 <span class="nb">.</span>
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3:latest
+</code></pre></div></div>
+
+<p>本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。</p>
+
+<p>ホームディレクトリに戻っておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
+<p>最後にバックエンドアプリケーションのコンテナもビルドしてみます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/olympic_datasource
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-t</span> nrt.ocir.io/orasejapan/codeatcustomer/datasource-app <span class="nb">.</span>
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~~
+Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/datasource-app:latest
+</code></pre></div></div>
+
+<p>本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。</p>
+
+<p>これで全てのアプリケーションがビルドできました。</p>
+
+<p>ホームディレクトリに戻っておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
+<p>次に、k8sにコンテナアプリケーションをデプロイしていきます。</p>
+
+<p>先ほど、cloneしてきたレポジトリの中にある<code class="language-plaintext highlighter-rouge">k8s</code>ディレクトリに移動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s
+</code></pre></div></div>
+
+<p>先ほどビルドしたコンテナアプリケーションをデプロイするためのManifestが<code class="language-plaintext highlighter-rouge">app</code>ディレクトリにあるので、配下のファイルを全てデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>app
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="nb">.</span>
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>deployment.apps/backend-app-v1 created
+deployment.apps/backend-app-v2 created
+deployment.apps/backend-app-v3 created
+service/backend-app created
+deployment.apps/datasource-app created
+service/datasource-app created
+deployment.apps/frontend-app created
+service/frontend-app created
+ingress.networking.k8s.io/gateway created
+</code></pre></div></div>
+
+<p>これでOKE上にサンプルアプリケーションがデプロイされました。</p>
+
+<p>デプロイ状況を確認してみます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pod
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                              READY   STATUS    RESTARTS   AGE
+backend-app-v1-5c674f559f-fg2dq   2/2     Running   0          1m
+backend-app-v1-5c674f559f-npjk4   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-gr6dd   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-pmnfl   2/2     Running   0          1m
+backend-app-v3-7596dcf967-7dqnq   2/2     Running   0          1m
+backend-app-v3-7596dcf967-tbhhw   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
+frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
+frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+</code></pre></div></div>
+
+<p>全て<code class="language-plaintext highlighter-rouge">Running</code>になったら、アプリケーションにアクセスしてみます。</p>
+
+<p>アクセスには手順2で作成した<code class="language-plaintext highlighter-rouge">istio-ingressgateway</code>を経由してアクセスします。<br />
+まずは、<code class="language-plaintext highlighter-rouge">istio-ingressgateway</code>のエンドポイントを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services istio-ingressgateway <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+</code></pre></div></div>
+
+<p>上記の場合は、istio-ingressgatewayの<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>である<code class="language-plaintext highlighter-rouge">132.226.211.116</code>がエンドポイントになります。</p>
+
+<p>この場合は、以下のURLにアクセスします。<br />
+<code class="language-plaintext highlighter-rouge">http://132.226.211.116</code></p>
+
+<p>以下のような画面が表示されればOKです！</p>
+
+<p><img src="3-002.png" alt="" /></p>
+
+<p>ホームディレクトリに戻っておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
+<h3 id="3-3-grafana-lokiを利用したログ監視">3-3 Grafana Lokiを利用したログ監視</h3>
+
+<p>ここでは、3-2でデプロイしたアプリケーションのログを監視してみます。</p>
+
+<p>まずは、Grafanaにアクセスします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services grafana <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME      TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>          AGE
+grafana   NodePort   10.96.219.44   &lt;none&gt;        3000:31624/TCP   4d3h
+</code></pre></div></div>
+
+<p>GrafanaのアクセスにはNodePortを利用します。<br />
+NodePortは<code class="language-plaintext highlighter-rouge">PORT(S)</code>の<code class="language-plaintext highlighter-rouge">:</code>以降のポート番号です。<br />
+上記の場合、以下のURLにアクセスします。<br />
+http://[WorkerNodeのパブリックIP]:31624</p>
+
+<p>アクセスしたら、Exploreをクリックします。</p>
+
+<p><img src="3-003.png" alt="" /></p>
+
+<p>画面上部のプルダウンから<img src="3-004.png" alt="" />を選択します。</p>
+
+<p><img src="3-005.png" alt="" /></p>
+
+<p><img src="3-006.png" alt="" />をクリックします。</p>
+
+<p><img src="3-007.png" alt="" />にログ対象とするラベルが表示されます。<br />
+今回は、例として特定のPodのログを確認してみましょう。</p>
+
+<p>対象とするPod名を選択します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pod
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                              READY   STATUS    RESTARTS   AGE
+backend-app-v1-5c674f559f-fg2dq   2/2     Running   0          1m
+backend-app-v1-5c674f559f-npjk4   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-gr6dd   2/2     Running   0          1m
+backend-app-v2-84f5859c9f-pmnfl   2/2     Running   0          1m
+backend-app-v3-7596dcf967-7dqnq   2/2     Running   0          1m
+backend-app-v3-7596dcf967-tbhhw   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
+datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
+frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
+frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+</code></pre></div></div>
+
+<p>例えば、<code class="language-plaintext highlighter-rouge">backend-app-v2-84f5859c9f-gr6dd</code>を対象とします。(各自の環境に合わせてください)</p>
+
+<p><img src="3-008.png" alt="" />から<code class="language-plaintext highlighter-rouge">pod</code>を選択するとPod名が表示されます。<br />
+対象とするPod名を選択し、<code class="language-plaintext highlighter-rouge">show logs</code>をクリックします。</p>
+
+<p><img src="3-009.png" alt="" /></p>
+
+<p>対象のPodが出力したログが表示されます。</p>
+
+<p><img src="3-010.png" alt="" /></p>
+
+<p>Loki上でログをフィルタリングしたり、検索したりすることも可能です。</p>
+
+<p>例えば、現在の状態では、Pod内にIstioによってInjectionされているEnvoyのログも出力されているので、アプリだけのログに絞ってみます。</p>
+
+<p><img src="3-006.png" alt="" />欄にあるテキストボックスに<code class="language-plaintext highlighter-rouge">,container="backend-app"</code>という文字列を追加し、左上の<img src="3-013.png" alt="" />をクリックします。<br />
+これで、<code class="language-plaintext highlighter-rouge">backend-app-v2-84f5859c9f-gr6dd</code>というPodの中の<code class="language-plaintext highlighter-rouge">backend-app</code>というcontainerに絞ることができます。</p>
+
+<p><img src="3-012.png" alt="" /></p>
+
+<p>以上で、Grafana Lokiでのログ監視は完了です。</p>
+
+<h3 id="3-4-jaegerを利用したトレーシング">3-4 Jaegerを利用したトレーシング</h3>
+
+<p>続いて、Jaegerを利用してトレーシングを実施してみます。</p>
+
+<p>まずは、アプリケーションにアクセスを行い、トレーシング情報をJaegerに流しましょう。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services istio-ingressgateway <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+</code></pre></div></div>
+
+<p>上記の場合は、istio-ingressgatewayの<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>である<code class="language-plaintext highlighter-rouge">132.226.211.116</code>がエンドポイントになります。</p>
+
+<p>この場合は、以下のURLにアクセスします。<br />
+<code class="language-plaintext highlighter-rouge">http://132.226.211.116</code></p>
+
+<p>次にJaegerのUIにアクセスします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services tracing <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME      TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                        AGE
+tracing   NodePort   10.96.207.90   &lt;none&gt;        80:30483/TCP,16685:31417/TCP   4d4h
+</code></pre></div></div>
+
+<p>JaegerのアクセスにはNodePortを利用します。<br />
+NodePortは<code class="language-plaintext highlighter-rouge">PORT(S)</code>の<code class="language-plaintext highlighter-rouge">:</code>以降のポート番号です。<br />
+上記の場合、以下のURLにアクセスします。<br />
+http://[WorkerNodeのパブリックIP]:30483</p>
+
+<p>アクセスしたら、Serviceカテゴリにあるプルダウンをクリックし、<code class="language-plaintext highlighter-rouge">istio-ingress-gateway.istio.system</code>をクリックし、<code class="language-plaintext highlighter-rouge">Find Trace</code>をクリックします。</p>
+
+<p><img src="3-014.png" alt="" /></p>
+
+<p>これで、<code class="language-plaintext highlighter-rouge">istio-ingress-gateway</code>を経由してルーティングされたトラフィックの流れを見ることができます。</p>
+
+<p><img src="3-015.png" alt="" /></p>
+
+<p>このように<code class="language-plaintext highlighter-rouge">istio-ingress-gateway</code>、<code class="language-plaintext highlighter-rouge">frontend-app.default</code>、<code class="language-plaintext highlighter-rouge">backend-app.default</code>、<code class="language-plaintext highlighter-rouge">datasource-app.default</code>の4つのServiceが含まれたトレーシング情報が取得できています。</p>
+
+<p>これをクリックします。</p>
+
+<p><img src="3-016.png" alt="" /></p>
+
+<p>このように一連のトラフィックの流れとそれぞれのレイテンシを確認することができます。</p>
+
+<p>今回は簡単なアプリケーションなので、全体を通して数十~週百msで完了しますが、実際にパフォーマンスでの問題が発生した場合、トレーシング情報を見ることでどの部分がボトルネックになっているのかを確認することができます。</p>
+
+<p>以上で、Jaegerを利用したトレーシングは完了です。</p>
+
+<h3 id="3-5-kialiを利用したservice-meshの可視化">3-5 Kialiを利用したService Meshの可視化</h3>
+
+<p>続いて、Kialiを利用したService Meshの可視化を行ってみます。</p>
+
+<p>まずは、KialiのUIを開きます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services kiali <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME    TYPE       CLUSTER-IP     EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                          AGE
+kiali   NodePort   10.96.251.81   &lt;none&gt;        20001:30768/TCP,9090:32228/TCP   4d4h
+</code></pre></div></div>
+
+<p>KialiのアクセスにはNodePortを利用します。<br />
+NodePortは<code class="language-plaintext highlighter-rouge">PORT(S)</code>の<code class="language-plaintext highlighter-rouge">:</code>以降のポート番号です。<br />
+上記の場合、以下のURLにアクセスします。<br />
+http://[WorkerNodeのパブリックIP]:30768</p>
+
+<p>Kialiでの可視化を行うためにService Meshのトラフィック管理設定リソースの一つである<code class="language-plaintext highlighter-rouge">DestinationRule</code>を作成します。<br />
+これは、Serviceリソースを対象としたトラフィックに適用されるポリシーを定義するリソースです。</p>
+
+<p>今回は以下のようなDestinationRuleを作成します。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">networking.istio.io/v1alpha3</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">DestinationRule</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">backend</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+  <span class="na">trafficPolicy</span><span class="pi">:</span>
+    <span class="na">loadBalancer</span><span class="pi">:</span>
+      <span class="na">simple</span><span class="pi">:</span> <span class="s">RANDOM</span>
+  <span class="na">subsets</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">v1</span>
+    <span class="na">labels</span><span class="pi">:</span>
+      <span class="na">version</span><span class="pi">:</span> <span class="s">v1</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">v2</span>
+    <span class="na">labels</span><span class="pi">:</span>
+      <span class="na">version</span><span class="pi">:</span> <span class="s">v2</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">v3</span>
+    <span class="na">labels</span><span class="pi">:</span>
+      <span class="na">version</span><span class="pi">:</span> <span class="s">v3</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">networking.istio.io/v1alpha3</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">DestinationRule</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">frontend</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">host</span><span class="pi">:</span> <span class="s">frontend-app</span>
+  <span class="na">subsets</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">v1</span>
+    <span class="na">labels</span><span class="pi">:</span>
+      <span class="na">version</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">networking.istio.io/v1alpha3</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">DestinationRule</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">datasource</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">host</span><span class="pi">:</span> <span class="s">datasource-app</span>
+  <span class="na">subsets</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">v1</span>
+    <span class="na">labels</span><span class="pi">:</span>
+      <span class="na">version</span><span class="pi">:</span> <span class="s">v1</span>
+</code></pre></div></div>
+
+<p>例えば、バックエンドアプリケーションに対するDestination Rule(<code class="language-plaintext highlighter-rouge">backend</code>)をみてみると、</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+  <span class="na">trafficPolicy</span><span class="pi">:</span>
+    <span class="na">loadBalancer</span><span class="pi">:</span>
+      <span class="na">simple</span><span class="pi">:</span> <span class="s">RANDOM</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">host</code>に対してバックエンドアプリケーションのServiceリソースを定義しています。</p>
+
+<p>今回、<code class="language-plaintext highlighter-rouge">backend-app</code>に紐づくDeploymentは3つ(3バージョン)存在しています。<br />
+<code class="language-plaintext highlighter-rouge">trafficPolicy:</code>は複数存在するDeploymentに対する分散ポリシーなどを定義できます。<br />
+今回は、<code class="language-plaintext highlighter-rouge">RANDOM</code>なので、ランダムに<code class="language-plaintext highlighter-rouge">backend-app</code>に紐づくDeployment(今回は3つ)にトラフィックを分散します。</p>
+
+<p>まずは、このDestinationRuleを適用してみましょう。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/base
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> destination_rule.yaml
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>destinationrule.networking.istio.io/backend created
+destinationrule.networking.istio.io/frontend created
+destinationrule.networking.istio.io/datasource created
+</code></pre></div></div>
+
+<p>この状態で、KialiのUIを確認してみます。</p>
+
+<p>まずは<code class="language-plaintext highlighter-rouge">Overview</code>です。</p>
+
+<p><img src="3-017.png" alt="" /></p>
+
+<p>ここでは、<code class="language-plaintext highlighter-rouge">default</code>ネームスペースに3つのアプリケーションが存在することがわかります。<br />
+3つのアプリケーションとは、今回デプロイしているフロントエンドアプリケーション、バックエンドアプリケーション、データソースアプリケーションです。</p>
+
+<p>次に、<code class="language-plaintext highlighter-rouge">istio Config</code>を確認します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">No Namespace Selected</code>と表示されている場合は、右上の<img src="3-020.png" alt="" />から<code class="language-plaintext highlighter-rouge">default</code>にチェックを入れてください。</p>
+
+<p><img src="3-018.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Name</code>にある<code class="language-plaintext highlighter-rouge">DR</code>ラベルは<code class="language-plaintext highlighter-rouge">DestinationRule</code>を指します。<br />
+<code class="language-plaintext highlighter-rouge">backend</code>をクリックしてみると、左側の<code class="language-plaintext highlighter-rouge">Destination Rule Overview</code>で3つのバージョンが存在していることが確認できます。</p>
+
+<p><img src="3-019.png" alt="" /></p>
+
+<p>次に、<code class="language-plaintext highlighter-rouge">Services</code>を確認します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">No Namespace Selected</code>と表示されている場合は、右上の<img src="3-020.png" alt="" />から<code class="language-plaintext highlighter-rouge">default</code>にチェックを入れてください。</p>
+
+<p><img src="3-021.png" alt="" /></p>
+
+<p>KubernetesのServiceリソースが確認できます。<br />
+<code class="language-plaintext highlighter-rouge">Deatails</code>には、Serviceリソースに紐づく<code class="language-plaintext highlighter-rouge">DestinationRule</code>が確認できるようになっています。</p>
+
+<p>次に<code class="language-plaintext highlighter-rouge">Workload</code>を確認します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">No Namespace Selected</code>と表示されている場合は、右上の<img src="3-020.png" alt="" />から<code class="language-plaintext highlighter-rouge">default</code>にチェックを入れてください。</p>
+
+<p><img src="3-022.png" alt="" /></p>
+
+<p>ここには、デプロイ済みのDeploymentリソースが表示されます。</p>
+
+<p>次に<code class="language-plaintext highlighter-rouge">Application</code>を確認します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">No Namespace Selected</code>と表示されている場合は、右上の<img src="3-020.png" alt="" />から<code class="language-plaintext highlighter-rouge">default</code>にチェックを入れてください。</p>
+
+<p>ここには、デプロイ済みのアプリケーションが表示されます。<br />
+ここでのアプリケーションとはServiceリソースとほぼ同義です。</p>
+
+<p><img src="3-023.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">backend-app</code>をクリックしてみると、以下のような画面が表示されます。</p>
+
+<p><img src="3-024.png" alt="" /></p>
+
+<p>ここで、ブラウザからアプリケーションにアクセスした後に再度確認してみてください。
+しばらくすると、以下のようにアクセスしたTrafficが表示されます。</p>
+
+<p><img src="3-025.png" alt="" /></p>
+
+<p>他にも、図の赤枠部分のタブで切り替えると様々な情報が見れるので、確認してみてください。</p>
+
+<p>最後に<code class="language-plaintext highlighter-rouge">Graph</code>を確認を確認します。</p>
+
+<p><img src="3-026.png" alt="" /></p>
+
+<p>ここでは、トラフィックの情報などをグラフで可視化することができます。</p>
+
+<p>例えば、右上の<img src="3-027.png" alt="" />から<code class="language-plaintext highlighter-rouge">Versioned app graph</code>を選択します。</p>
+
+<p><img src="3-028.png" alt="" /></p>
+
+<p>この状態でアプリケーションに複数回アクセスします。<br />
+現状は、バックエンドサービスが<code class="language-plaintext highlighter-rouge">DestinationRule</code>でランダムに負荷分散されるようになっているので、金メダリスト、銀メダリスト、銅メダリスト一覧がランダムで表示されることが確認できます。</p>
+
+<p class="notice--info"><strong>バックエンドアプリケーションへの負荷分散について</strong><br />
+DestinationRuleを適用する前から、バックエンドアプリケーションはv1/v2/v3にある程度負荷分散されています。<br />
+これは、そもそもServiceリソースに負荷分散の機能があるためです。<br />
+DestinationRuleを適用することによって、Istioの機能を利用した明示的な負荷分散を行うことができます。<br />
+今回は<code class="language-plaintext highlighter-rouge">RANDOM</code>ポリシーを適用していますが、他にも<code class="language-plaintext highlighter-rouge">Weighted</code>(重みづけ)や<code class="language-plaintext highlighter-rouge">Least requests</code>(最小リクエスト)などのポリシーがあります。<br />
+詳細は<a href="https://istio.io/latest/docs/concepts/traffic-management/#load-balancing-options">こちら</a>のページをご確認ください。</p>
+
+<p>金メダリスト、銀メダリスト、銅メダリストそれぞれの一覧が表示されたら、再度<code class="language-plaintext highlighter-rouge">Versioned app graph</code>を確認します。</p>
+
+<p><img src="3-029.png" alt="" /></p>
+
+<p>このように、バージョン毎にトラフィックがルーティングされていることが可視化されます。</p>
+
+<p>Kialiでは、上記でご確認いただいたとおり、Service Mesh環境の様々なリソースやトラフィック状況を可視化することができます。</p>
+
+<p>最後に、ホームディレクトリに戻っておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
+<h2 id="4istioを利用したカナリアリリース">4.Istioを利用したカナリアリリース</h2>
+
+<p>最後に、手順3までに構築してきた環境を利用して、カナリアリリースを実施してみます。</p>
+
+<h3 id="4-1-カナリアリリース">4-1 カナリアリリース</h3>
+
+<p>カナリアリリースとは<code class="language-plaintext highlighter-rouge">Blue/Greenデプロイメント</code>や<code class="language-plaintext highlighter-rouge">A/Bテスト</code>などと並ぶ高度なデプロイ戦略の一つで「プロダクトやサービスの新機能を一部ユーザーのみが利用できるようにリリースし、新機能に問題がないことを確認しながら段階的に全体に向けて展開していくデプロイ手法」を指します。<br />
+これにより、新しいバージョンのアプリケーションを本番環境バージョンと一緒にデプロイして、ユーザの反応やパフォーマンスを確認することができます。</p>
+
+<p>Istioを利用することで、カナリアリリースを容易に実施することができます。<br />
+今回は、以下の想定でカナリアリリースを実施してみます。</p>
 
 <ul>
-  <li><a href="https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html">Oracle JavaScript Extension Toolkit（Oracle JET）</a></li>
+  <li>対象：バックエンドアプリケーション</li>
+  <li>既存バージョン：v1</li>
+  <li>新バージョン：v2とv3</li>
+  <li>ルーティングポリシー：トラフィックの80%をv1に、15%をv2に、5%をv3にルーティング</li>
 </ul>
 
-<p>簡単にアプリケーションの構成を見ていきます。</p>
+<p>上記の構成をIstioで実現するために、<code class="language-plaintext highlighter-rouge">VirtualService</code>というリソースを作成します。<br />
+これは、<code class="language-plaintext highlighter-rouge">DestinationRule</code>で定義した情報を利用し、さらに細かいルーティングポリシーを設定します。<br />
+例えば、HTTP Headerやパス等のマッチングルールに基づいて、リクエストのルーティング先を書き換えたりHTTP Headerの操作をすることが可能です。<br />
+今回は、バックエンドアプリケーションのバージョンに重みづけを行い振り分けを行います。</p>
 
-<h2 id="4カナリアリリース">4.カナリアリリース</h2>
+<p><code class="language-plaintext highlighter-rouge">DestinationRule</code>と<code class="language-plaintext highlighter-rouge">VirtualService</code>の関係は以下のようになります。</p>
 
-<h2 id="5prometheusgrafanalokijaegerkialiによるオブザバビリティ">5.Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ</h2>
+<p><img src="4-001.png" alt="" /></p>
 
+<p>今回は、以下のような<code class="language-plaintext highlighter-rouge">VirtualService</code>を用意しました。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">networking.istio.io/v1alpha3</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualService</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">canary-release</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">backend-app</span>
+  <span class="na">http</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">route</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+        <span class="na">subset</span><span class="pi">:</span> <span class="s">v1</span>
+      <span class="na">weight</span><span class="pi">:</span> <span class="m">80</span>
+    <span class="pi">-</span> <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+        <span class="na">subset</span><span class="pi">:</span> <span class="s">v2</span>
+      <span class="na">weight</span><span class="pi">:</span> <span class="m">15</span>
+    <span class="pi">-</span> <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+        <span class="na">subset</span><span class="pi">:</span> <span class="s">v3</span>
+      <span class="na">weight</span><span class="pi">:</span> <span class="m">5</span>
+</code></pre></div></div>
+
+<p>以下に注目します。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">backend-app</span>
+  <span class="na">http</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">route</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+        <span class="na">subset</span><span class="pi">:</span> <span class="s">v1</span>
+      <span class="na">weight</span><span class="pi">:</span> <span class="m">80</span>
+    <span class="pi">-</span> <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+        <span class="na">subset</span><span class="pi">:</span> <span class="s">v2</span>
+      <span class="na">weight</span><span class="pi">:</span> <span class="m">15</span>
+    <span class="pi">-</span> <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">host</span><span class="pi">:</span> <span class="s">backend-app</span>
+        <span class="na">subset</span><span class="pi">:</span> <span class="s">v3</span>
+      <span class="na">weight</span><span class="pi">:</span> <span class="m">5</span>
+</code></pre></div></div>
+
+<p>ここでの<code class="language-plaintext highlighter-rouge">host</code>は対象となるバックエンドアプリケーションのServiceリソースです。<br />
+<code class="language-plaintext highlighter-rouge">subset</code>にはそれぞれ<code class="language-plaintext highlighter-rouge">DestinationRule</code>で定義したものを利用しています。<br />
+<code class="language-plaintext highlighter-rouge">weight</code>には、それぞれ重み付けを設定しています。</p>
+
+<p>このManifestを適用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/scenario
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> canaly-release.yaml
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>virtualservice.networking.istio.io/canary-release created
+</code></pre></div></div>
+
+<p>アプリケーションにアクセスしてみましょう。</p>
+
+<p>ほとんど、銅メダリスト(v1)が表示され、偶にv2(銀メダリスト)、ごく稀にv3(金メダリスト)が表示されるかと思います。</p>
+
+<p>何度かアクセスした後に、Kialiでその様子を可視化してみましょう。</p>
+
+<p>KialiのUIにアクセスし、<code class="language-plaintext highlighter-rouge">Application</code>メニューから<code class="language-plaintext highlighter-rouge">backend-app</code>をクリックします。</p>
+
+<p><img src="4-002.png" alt="" /></p>
+
+<p>Graph部分にトラフィックのルーティング割合が表示されます。<br />
+概ね、設定した重み付けに従ってルーティングされていることが確認できます。</p>
+
+<p><img src="4-003.png" alt="" /></p>
+
+<p>このように、Istioを利用すると適切なリソースを作成するだけで、カナリアリリースのような高度なデプロイ戦略を実施することができます。</p>
+
+<div class="notice--info">
+  <p><strong>その他のシナリオについて</strong><br />
+code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリース以外にも以下のシナリオをご用意しています。<br />
+必要に応じてご確認ください。</p>
+
+<ul>
+  <li>
+    <p>all-v3.yaml
+トラフィックの全てをバックエンドアプリケーションv3(金メダリスト)にルーティングするポリシーです。<br />
+これを適用すると、アプリケーションでは金メダリストのみが表示されます。</p>
+  </li>
+  <li>
+    <p>v1-v2-half.yaml
+トラフィックの50%をバックエンドアプリケーションv1に残りの50%をバックエンドアプリケーションv2にルーティングするポリシーです。<br />
+これを適用すると、アプリケーションでは、銀メダリストと銅メダリストが半々に表示されます。</p>
+  </li>
+</ul>
+
+</div>
+
+<p>以上で、ハンズオンは終わりです。</p>
 
         
       </section>
@@ -792,7 +1702,7 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-06T16:18:30+09:00">September 6, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-10T08:24:01+09:00">September 10, 2021</time></p>
 
 
       </footer>
@@ -802,7 +1712,7 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=Kubernetes%E3%81%A7%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%97%E3%81%A6%E3%82%AA%E3%83%96%E3%82%B6%E3%83%90%E3%83%93%E3%83%AA%E3%83%86%E3%82%A3%E3%83%84%E3%83%BC%E3%83%AB%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Foke-for-advances%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Container+Engine+for+Kubernetes%28OKE%29%E3%81%A7%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%97%E3%81%A6%E3%82%AA%E3%83%96%E3%82%B6%E3%83%90%E3%83%93%E3%83%AA%E3%83%86%E3%82%A3%E3%83%84%E3%83%BC%E3%83%AB%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Foke-for-advances%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Foke-for-advances%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
@@ -813,11 +1723,11 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/cloud-native/oke-for-beginners/" class="pagination--pager" title="Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう
+      <a href="/ocitutorials/cloud-native/oke-for-intermediates/" class="pagination--pager" title="KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう
 ">前へ</a>
     
     
-      <a href="/ocitutorials/cloud-native/oke-for-intermediates/" class="pagination--pager" title="KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう
+      <a href="/ocitutorials/cloud-native/fn-for-beginners/" class="pagination--pager" title="Fn Project ハンズオン
 ">次へ</a>
     
   </nav>

@@ -107,16 +107,16 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/",
         "teaser": null
       },{
-        "title": "Kubernetesでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう",
-        "excerpt":"このハンズオンでは、Oracle Container Engine for Kubernetes（以下OKE）上に、マイクロサービスアプリケーションをデプロイします。そして、OSSのオブザバビリティツールを利用して、モニタリング、ロギング、トレーシングを実践的に学びます。 オブザバビリティツールとして、以下を利用します。 モニタリング Prometheus + Grafana ロギング Grafana Loki トレーシング Jaeger サービスメッシュオブザバビリティ Kiali ハンズオンの流れは以下となります。 OKEクラスタ構築 サービスメッシュとオブザバビリティ環境構築 Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール Grafana Loki インストール マイクロサービスアプリケーションの作成 カナリアリリース Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ 1.OKEクラスタ構築 1-1 OCIダッシュボードからOKEクラスタの構築 左上のハンバーガーメニューを展開して、「開発者サービス」から「Kubernetesクラスタ(OKE)」を選択します。 「クラスタの作成」ボタンをクリックします。 「クイック作成」が選択されていることを確認して、「ワークフローの起動」ボタンをクリックします。 以下を設定します。 「Kubernetesワーカー・ノード」:「パブリック・ワーカー」 「シェイプ」：「VM Standard.E3.Flex」 「OCPU数の選択」:「2」 「メモリー量（GB）」：「32」 画面左下の「次」ボタンをクリックします。 画面左下の「クラスタ作成」ボタンをクリックします。 画面左下の「閉じる」ボタンをクリックします。 黄色の「作成中」から緑の「アクティブ」になることを確認します。「アクティブ」であればクラスタ作成は完了です。 1-2 Cloud Shellを利用してクラスタを操作...","categories": [],
-        "tags": [],
-        "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-advances/",
-        "teaser": null
-      },{
         "title": "KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう",
         "excerpt":"このワークショップでは、Oracle Visual Builder Studioを利用してCI/CD環境をセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes（OKE）にデプロイする一連の流れを体験することができます このワークショップには以下のサービスが含まれます。 Oracle Visual Builder Studio（略称：VBS）: Oracle Cloudが提供する事前統合済みのチーム開発プラットフォームサービスです。 Oracle Autonomous Transaction Processing（略称：ATP）: 運用がすべて自動化された自律型データベースサービスです。 Oracle Container Engine for Kubernetes（略称：OKE）: マネージドなKuberentesクラスタを提供するクラウドサービスです。 Oracle Cloud Infrastructure Registry（略称：OCIR）: フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。 前提条件 ワークショップを開始する前に以下を準備してください。 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること Oracle Cloud Infrastructureの基本操作はチュートリアル : OCIコンソールにアクセスして基本を理解するをご確認ください。 ゴールを確認する はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。 手順を最後まで行うと、下図のような環境が構成されます。 構成要素 説明...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-intermediates/",
+        "teaser": null
+      },{
+        "title": "Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう",
+        "excerpt":"このハンズオンでは、Oracle Container Engine for Kubernetes（以下OKE）上に、マイクロサービスアプリケーションをデプロイします。そして、OSSのオブザバビリティツールを利用して、モニタリング、ロギング、トレーシングを実践的に学びます。 オブザバビリティツールとして、以下を利用します。 モニタリング Prometheus + Grafana ロギング Grafana Loki トレーシング Jaeger サービスメッシュオブザバビリティ Kiali ハンズオンの流れは以下となります。 OKEクラスタ構築 サービスメッシュとオブザバビリティ環境構築 Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール Grafana Loki インストール マイクロサービスアプリケーションの作成 カナリアリリース Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ 1.OKEクラスタ構築 1-1 OCIダッシュボードからOKEクラスタの構築 左上のハンバーガーメニューを展開して、「開発者サービス」から「Kubernetesクラスタ(OKE)」を選択します。 「クラスタの作成」ボタンをクリックします。 「クイック作成」が選択されていることを確認して、「ワークフローの起動」ボタンをクリックします。 以下を設定します。 「Kubernetesワーカー・ノード」:「パブリック・ワーカー」 「シェイプ」：「VM Standard.E3.Flex」 「OCPU数の選択」:「2」 「メモリー量（GB）」：「32」 画面左下の「次」ボタンをクリックします。 画面左下の「クラスタ作成」ボタンをクリックします。 画面左下の「閉じる」ボタンをクリックします。 黄色の「作成中」から緑の「アクティブ」になることを確認します。「アクティブ」であればクラスタ作成は完了です。 1-2 Cloud Shellを利用してクラスタを操作...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-advances/",
         "teaser": null
       },{
         "title": "Fn Project ハンズオン",
@@ -396,7 +396,7 @@ var store = [{
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb202-dataload-dbms-cloud/img2.png"
       },{
         "title": "203: 分析系クエリの実行(Star Schema Benchmark)",
-        "excerpt":"#　はじめに この章ではAutonomous Databaseにおける分析系クエリの性能を確認します。 特に、インスタンスのOCPU数を増やした前後でのパフォーマンスを比較することで、簡単に性能が向上することをみていきます。 また、SQLの実行状況を確認するために、サービス・コンソールを操作いただきます。 目次 SSBスキーマを確認しよう データ・モデラーによる構成確認 各表の件数確認 OCPU数の違いによる処理時間の差を確認しよう OCPU=1の場合 OCPU=8の場合 OCPU=16の場合 OCPU=64の場合 性能調査に使えるツールのご紹介 サービス・コンソール パフォーマンス・ハブ 所要時間: 約40分 Star-Schema-Benchmark（SSB）とは？ ADBのインスタンスには、DWH系・分析系のサンプルスキーマとして以下が同梱されています。 Oracle Sales History（SHスキーマ） Star Schema Benchmark（SSBスキーマ） 約1TB、約60億行のファクト表と、複数のディメンション表から構成 マニュアルには動作確認用のサンプルSQLも記載されている ADW、ATPの双方で利用可能（2021/07時点）- 本ガイドでは前の章で作成したAutonomous Transaction Processing(ATP) インスタンスの利用を前提に記載していますが、SSBのような分析系・DWH系のアプリケーションの場合、Autonomous Data Warehouse(ADW) をご選択いただくことを推奨しています。 作業の流れ SSBスキーマを確認しよう OCPU数の違いによる処理時間の差を確認しよう サービスコンソール/SQL Monitorで処理内容を確認しよう 1. SSBスキーマを確認しよう データ・モデラーによる構成確認 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 Database...","categories": [],
+        "excerpt":"はじめに この章ではAutonomous Databaseにおける分析系クエリの性能を確認します。 特に、インスタンスのOCPU数を増やした前後でのパフォーマンスを比較することで、簡単に性能が向上することをみていきます。 また、SQLの実行状況を確認するために、サービス・コンソールを操作いただきます。 目次 SSBスキーマを確認しよう データ・モデラーによる構成確認 各表の件数確認 OCPU数の違いによる処理時間の差を確認しよう OCPU=1の場合 OCPU=8の場合 OCPU=16の場合 OCPU=64の場合 性能調査に使えるツールのご紹介 サービス・コンソール パフォーマンス・ハブ 所要時間: 約40分 Star-Schema-Benchmark（SSB）とは？ ADBのインスタンスには、DWH系・分析系のサンプルスキーマとして以下が同梱されています。 Oracle Sales History（SHスキーマ） Star Schema Benchmark（SSBスキーマ） 約1TB、約60億行のファクト表と、複数のディメンション表から構成 マニュアルには動作確認用のサンプルSQLも記載されている ADW、ATPの双方で利用可能（2021/07時点）- 本ガイドでは前の章で作成したAutonomous Transaction Processing(ATP) インスタンスの利用を前提に記載していますが、SSBのような分析系・DWH系のアプリケーションの場合、Autonomous Data Warehouse(ADW) をご選択いただくことを推奨しています。 作業の流れ SSBスキーマを確認しよう OCPU数の違いによる処理時間の差を確認しよう サービスコンソール/SQL Monitorで処理内容を確認しよう 1. SSBスキーマを確認しよう データ・モデラーによる構成確認 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 Database...","categories": [],
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb203-bulk-query/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb203-bulk-query/img0.png"
@@ -490,6 +490,12 @@ var store = [{
         "tags": [],
         "url": "https://oracle-japan.github.io/ocitutorials/database/adb501-ocicli/",
         "teaser": null
+      },{
+        "title": "506: サポートサービスへの問い合わせ(Service Requestの起票)",
+        "excerpt":"はじめに Oracle Cloud 製品をご利用のお客様は、ポータルサイト「My Oracle Support (Cloud Support)」 を介して、Oracle製品に関するナレッジの検索や、製品仕様の確認、不具合に関するお問い合わせを行っていただけます。 本ページでは、Autonomous Databaseを例に、そういった各種お問い合わせのためのサービス・リクエスト（Service Request ：SR）の作成フローをご紹介します。 尚、実際の利用に際しては本ページ後半の参考資料に記載しております、弊社サポート部門からのガイドをご確認いただくようお願いいたします。 Oracle Cloudでは通常契約の他に無償でお試しいただけるFree Tierを用意しています。Free Tierには期間/利用クレジットが限定される「30日間無償トライアル」とAlways Freeリソースを対象とした「常時無償サービス」が含まれますが、「常時無償サービス」のみご利用の場合はOracle Supportの対象にならず、問い合わせを上げることはできません。詳細はOracle Cloud Free Tierに関するFAQにて “ Oracle Cloud Free Tierにはサービス・レベル契約（SLA）とテクニカル・サポートが含まれていますか? “ をご覧ください。 2021年初頭のサービス・アップデートにより、OCIコンソール画面からもSRを作成、閲覧、更新ができるようになりました。OCIコンソール画面からのSR起票については別の文書でご案内する予定です。本ページでは「My Oracle Support (Cloud Support)」を利用したSR起票について説明します。 目次 1.Cloud Supportのアカウントを用意する 2.問い合わせ対象のAutonomous Databaseの情報を確認する Domain name/Cloud Account nameの確認 Data Center Location、Database Name、Database OCID、Tenancy OCIDの確認...","categories": [],
+        "tags": [],
+        "url": "https://oracle-japan.github.io/ocitutorials/database/adb506-sr/",
+        "teaser": "https://oracle-japan.github.io/ocitutorials/database/adb506-sr/img1.jpg"
       },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
