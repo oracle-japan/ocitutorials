@@ -224,6 +224,16 @@ service/prometheus created
 deployment.apps/prometheus created
 ```
 
+Istioで利用するサイドカープロキシを自動でPodに挿入する設定を加えます。
+
+```sh
+kubectl label namespace default istio-injection=enabled
+```
+***コマンド結果***
+```sh
+namespace/default labeled
+```
+
 Prometheus、Grafana、Kiali、JaegerのWebUIにブラウザからアクセスできるようにします。
 
 ```sh
