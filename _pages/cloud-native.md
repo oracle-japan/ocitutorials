@@ -25,8 +25,13 @@ toc: true
 
 ## 中級編
 
-+ **[KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう](/ocitutorials/cloud-native/oke-for-intermediates/)**  
++ **[Oracle Container Engine for Kubernetes(OKE)でサンプルアプリケーションのデプロイとCI/CDを体験してみよう](/ocitutorials/cloud-native/oke-for-intermediates/)**  
     Oracle Visual Builder Studioを利用してCI/CD環境をセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes(OKE)にデプロイする一連の流れを体験することができます【所要時間:約1時間30分】
+
+<!-- ## 上級編
+
++ **[Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう](/ocitutorials/cloud-native/oke-for-advances/)**  
+    OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。【所要時間:約2時間】 -->
 
 <br />
 
