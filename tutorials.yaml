@@ -4,6 +4,9 @@ timeoutInSeconds: 10000
 runAs: root                         
 shell: bash                        
 env:
+  variables:
+    exportedVariables:
+      - BUILDRUN_HASH
   vaultVariables:
     OCIRCRED: "ocid1.vaultsecret.oc1.iad.amaaaaaassl65iqakrykvowbeyc6v2zag5onghtuw5u7jjkodrbq5xann6oq"                
    
@@ -31,13 +34,10 @@ steps:
           echo "Failured docker build"
         timeoutInSeconds: 60
         runAs: root
-  - type: Command
-    name: "Docker Push to OCIR"
-    command: |
-      docker push nrt.ocir.io/orasejapan/oci-tutorials/staging-env
-    onFailure:
-      - type: Command
-        command: |
-          echo "Failured docker push"
-        timeoutInSeconds: 60
-        runAs: root
+
+outputArtifacts:
+  - name: tutorials_image
+    type: DOCKER_IMAGE
+    # this location tag doesn't effect the tag used to deliver the container image
+    # to the Container Registry
+    location: nrt.ocir.io/orasejapan/oci-tutorials/staging-env:latest
