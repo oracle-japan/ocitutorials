@@ -276,7 +276,7 @@ vi impdp_hr.sh
     impdp userid=admin/Welcome12345#@atp01_high \
     credential=WORKSHOP_CREDENTIAL \
     parallel=4 \
-    chemas=HR \
+    schemas=HR \
     directory=DATA_PUMP_DIR \
     dumpfile=https://objectstorage.<region>.oraclecloud.com/n/<tenancy>/b/<bucket_name>/o/export_hr_%u.dmp \
     logfile=DATA_PUMP_DIR:import_hr.log
