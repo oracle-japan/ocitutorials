@@ -1100,7 +1100,7 @@ NodePortは`PORT(S)`の`:`以降のポート番号です。
 上記の場合、以下のURLにアクセスします。  
 http://[WorkerNodeのパブリックIP]:30768
 
-Kialiでの可視化を行うためにService Meshのトラフィック管理設定リソースの一つである`DestinationRule`を作成します。  
+Kialiでの可視化を行うためにIstioのトラフィック管理設定リソースの一つである`DestinationRule`を作成します。  
 これは、Serviceリソースを対象としたトラフィックに適用されるポリシーを定義するリソースです。  
 
 今回は以下のようなDestinationRuleを作成します。
