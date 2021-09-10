@@ -9,36 +9,47 @@ tags:
 
 オブザバビリティツールとして、以下を利用します。
 
-モニタリング
+***モニタリング***
 
 * [Prometheus](https://github.com/prometheus/prometheus) + [Grafana](https://github.com/grafana/grafana)
 
-ロギング
+***ロギング***
 
 * [Grafana Loki](https://github.com/grafana/loki)
 
-トレーシング
+***トレーシング***
 
 * [Jaeger](https://github.com/jaegertracing/jaeger)
 
-サービスメッシュオブザバビリティ
+***サービスメッシュオブザバビリティ***
 
 * [Kiali](https://github.com/kiali/kiali)
 
 ハンズオンの流れは以下となります。
 
+---
 1. OKEクラスタ構築
+    1. OCIダッシュボードからOKEクラスタの構築
+    2. Cloud Shellを利用してクラスタを操作
 
 2. サービスメッシュとオブザバビリティ環境構築
     1. Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール
     2. Grafana Loki インストール
+    3. Grafana Lokiのセットアップ
+    4. node exporterのインストール
+    5. Prometheus WebUIからPromQLの実行
 
-3. マイクロサービスアプリケーションの作成
+3. サンプルアプリケーションでObservabilityを体験してみよう
+    1. サンプルアプリケーションの概要説明
+    2. サンプルアプリケーションのビルドとデプロイ
+    3. Grafana Lokiを利用したログ監視
+    4. Jaegerを利用したトレーシング
+    5. Kialiを利用したService Meshの可視化
 
-4. カナリアリリース
+4. Istioを利用したカナリアリリース
+    1. カナリアリリース
 
-5. Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ
-
+---
 
 1.OKEクラスタ構築
 ---------------------------------
