@@ -5,7 +5,9 @@ runAs: root
 shell: bash                        
 env:
   vaultVariables:
-    OCIRCRED: "ocid1.vaultsecret.oc1.iad.amaaaaaassl65iqakrykvowbeyc6v2zag5onghtuw5u7jjkodrbq5xann6oq"                
+    OCIRCRED: "ocid1.vaultsecret.oc1.iad.amaaaaaassl65iqakrykvowbeyc6v2zag5onghtuw5u7jjkodrbq5xann6oq"  
+  exportedVariables:
+    - BUILDRUN_HASH                 
    
 steps:
   - type: Command                   
@@ -24,7 +26,7 @@ steps:
   - type: Command
     name: "Docker Build"
     command: |
-      docker build -t nrt.ocir.io/orasejapan/oci-tutorials/staging-env .
+      docker build -t nrt.ocir.io/orasejapan/oci-tutorials/staging-env:${BUILDRUN_HASH} .
     onFailure:
       - type: Command
         command: |
@@ -34,7 +36,7 @@ steps:
   - type: Command
     name: "Docker Push to OCIR"
     command: |
-      docker push nrt.ocir.io/orasejapan/oci-tutorials/staging-env
+      docker push nrt.ocir.io/orasejapan/oci-tutorials/staging-env:${BUILDRUN_HASH}
     onFailure:
       - type: Command
         command: |
