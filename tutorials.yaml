@@ -4,37 +4,42 @@ timeoutInSeconds: 10000
 runAs: root                         
 shell: bash                        
 env:
+  vaultVariables:
+    OCIRCRED: "ocid1.vaultsecret.oc1.iad.amaaaaaassl65iqakrykvowbeyc6v2zag5onghtuw5u7jjkodrbq5xann6oq"  
   exportedVariables:
-    - BUILDRUN_HASH            
+    - BUILDRUN_HASH                 
    
 steps:
-  - type: Command
-    name: "Export variables"
-    timeoutInSeconds: 40
+  - type: Command                   
+    name: "Login to OCIR"  
+    shell: bash                    
+    timeoutInSeconds: 60           
+    runAs: root          
     command: |
-      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
-      echo "BUILDRUN_HASH: " $BUILDRUN_HASH
-    onFailure:
+      docker login nrt.ocir.io -u orasejapan/oracleidentitycloudservice/takuya.niita@oracle.com -p ${OCIRCRED}
+    onFailure:                     
       - type: Command
         command: |
-          echo "Handling Failure"
-          echo "Failure successfully handled"
-        timeoutInSeconds: 40
+          echo "Failured Login to OCIR"
+        timeoutInSeconds: 60
         runAs: root
   - type: Command
     name: "Docker Build"
     command: |
-      docker build -t staging-env .
+      docker build -t nrt.ocir.io/orasejapan/oci-tutorials/staging-env:${BUILDRUN_HASH} .
     onFailure:
       - type: Command
         command: |
           echo "Failured docker build"
         timeoutInSeconds: 60
         runAs: root
-
-outputArtifacts:
-  - name: tutorials_image
-    type: DOCKER_IMAGE
-    # this location tag doesn't effect the tag used to deliver the container image
-    # to the Container Registry
-    location: staging-env:latest
+  - type: Command
+    name: "Docker Push to OCIR"
+    command: |
+      docker push nrt.ocir.io/orasejapan/oci-tutorials/staging-env:${BUILDRUN_HASH}
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured docker push"
+        timeoutInSeconds: 60
+        runAs: root
