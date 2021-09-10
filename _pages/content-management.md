@@ -23,7 +23,7 @@ toc: true
     この文書は Oracle Content and Experience (OCE) を利用するユーザーをIDCSに作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
 
 + **[[Oracle Cloud] Oracle Content Management の Starter Edition をクイックスタートしてみた](https://qiita.com/nakasato310/items/9457a61d9d27db6ce4f0)**  
-    この記事では、2021年7月の最新バージョン(21.6.1)より新たに追加された Oracle Content Management Starter Edition をクイックスタートする方法を紹介します
+    この記事では、2021年7月の最新バージョン(21.6.1)より新たに追加された Oracle Content Management - Starter Edition をクイックスタートする方法を紹介します
 
 <br />
 
