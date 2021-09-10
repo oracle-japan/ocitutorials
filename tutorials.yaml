@@ -10,6 +10,19 @@ env:
     OCIRCRED: "ocid1.vaultsecret.oc1.iad.amaaaaaassl65iqakrykvowbeyc6v2zag5onghtuw5u7jjkodrbq5xann6oq"                
    
 steps:
+  - type: Command
+    name: "Export variables"
+    timeoutInSeconds: 40
+    command: |
+      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+      echo "BUILDRUN_HASH: " $BUILDRUN_HASH
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 40
+        runAs: root
   - type: Command                   
     name: "Login to OCIR"  
     shell: bash                    
