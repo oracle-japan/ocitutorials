@@ -62,7 +62,7 @@ Oracle Cloud 製品をご利用のお客様は、ポータルサイト**「My Or
 
 # 2.問い合わせ対象のAutonomous Databaseの情報を確認する
 
-Autonomous DatabaseのSRを作成するときに入力する情報を事前に確認します。
+Autonomous DatabaseのSRを作成するときに、入力する情報を事前に確認します。
 
 問題のタイプによって異なりますが、多くのケースで以下の情報が必要になります。
 
