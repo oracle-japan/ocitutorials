@@ -531,7 +531,7 @@ service/node-exporter-handson created
 daemonset.apps/node-exporter-handson created
 ```
 
-node-exporter-ccというPodの「STATUS」が「Running」であることを確認します。
+`node-exporter-handson`というPodの「STATUS」が「Running」であることを確認します。
 
 ```sh
 kubectl get pods
@@ -1256,8 +1256,8 @@ destinationrule.networking.istio.io/datasource created
 KubernetesのServiceリソースが確認できます。  
 `Deatails`には、Serviceリソースに紐づく`DestinationRule`が確認できるようになっています。 
 
-**`node-exporter-cc`について**  
-`node-exporter-cc`の`Deatails`欄に![](3-032.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
+**`node-exporter-handson`について**  
+`node-exporter-handson`の`Deatails`欄に![](3-032.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
 {: .notice--info}
 
 次に`Workload`を確認します。  
@@ -1268,8 +1268,8 @@ KubernetesのServiceリソースが確認できます。
 
 ここには、デプロイ済みのDeploymentリソースが表示されます。
 
-**`node-exporter-cc`について**  
-`node-exporter-cc`の`Deatails`欄に![](3-032.png)![](3-033.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
+**`node-exporter-handson`について**  
+`node-exporter-handson`の`Deatails`欄に![](3-032.png)![](3-033.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
 {: .notice--info}
 
 次に`Application`を確認します。  
@@ -1281,8 +1281,8 @@ KubernetesのServiceリソースが確認できます。
 
 ![](3-023.png)
 
-**`node-exporter-cc`について**  
-`node-exporter-cc`の`Deatails`欄に![](3-032.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
+**`node-exporter-handson`について**  
+`node-exporter-handson`の`Deatails`欄に![](3-032.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
 {: .notice--info}
 
 `backend-app`をクリックしてみると、以下のような画面が表示されます。  
