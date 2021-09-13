@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-10T16:43:10+09:00">
+  <meta property="article:published_time" content="2021-09-13T14:18:26+09:00">
 
 
 
@@ -313,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
-    <meta itemprop="datePublished" content="2021-09-10T16:43:10+09:00">
+    <meta itemprop="datePublished" content="2021-09-13T14:18:26+09:00">
     
 
     <div class="page__inner-wrap">
@@ -363,25 +363,25 @@
 
 <p>オブザバビリティツールとして、以下を利用します。</p>
 
-<p>モニタリング</p>
+<p><strong><em>モニタリング</em></strong></p>
 
 <ul>
   <li><a href="https://github.com/prometheus/prometheus">Prometheus</a> + <a href="https://github.com/grafana/grafana">Grafana</a></li>
 </ul>
 
-<p>ロギング</p>
+<p><strong><em>ロギング</em></strong></p>
 
 <ul>
   <li><a href="https://github.com/grafana/loki">Grafana Loki</a></li>
 </ul>
 
-<p>トレーシング</p>
+<p><strong><em>トレーシング</em></strong></p>
 
 <ul>
   <li><a href="https://github.com/jaegertracing/jaeger">Jaeger</a></li>
 </ul>
 
-<p>サービスメッシュオブザバビリティ</p>
+<p><strong><em>サービスメッシュオブザバビリティ</em></strong></p>
 
 <ul>
   <li><a href="https://github.com/kiali/kiali">Kiali</a></li>
@@ -389,24 +389,40 @@
 
 <p>ハンズオンの流れは以下となります。</p>
 
+<hr />
 <ol>
-  <li>
-    <p>OKEクラスタ構築</p>
+  <li>OKEクラスタ構築
+    <ol>
+      <li>OCIダッシュボードからOKEクラスタの構築</li>
+      <li>Cloud Shellを利用してクラスタを操作</li>
+    </ol>
   </li>
   <li>サービスメッシュとオブザバビリティ環境構築
     <ol>
       <li>Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール</li>
       <li>Grafana Loki インストール</li>
+      <li>Grafana Lokiのセットアップ</li>
+      <li>node exporterのインストール</li>
+      <li>Prometheus WebUIからPromQLの実行</li>
     </ol>
   </li>
-  <li>
-    <p>マイクロサービスアプリケーションの作成</p>
+  <li>サンプルアプリケーションでObservabilityを体験してみよう
+    <ol>
+      <li>サンプルアプリケーションの概要説明</li>
+      <li>サンプルアプリケーションのビルドとデプロイ</li>
+      <li>Grafana Lokiを利用したログ監視</li>
+      <li>Jaegerを利用したトレーシング</li>
+      <li>Kialiを利用したService Meshの可視化</li>
+    </ol>
   </li>
-  <li>
-    <p>カナリアリリース</p>
+  <li>Istioを利用したカナリアリリース
+    <ol>
+      <li>カナリアリリース</li>
+    </ol>
   </li>
-  <li>Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ</li>
 </ol>
+
+<hr />
 
 <h2 id="1okeクラスタ構築">1.OKEクラスタ構築</h2>
 
@@ -471,9 +487,9 @@
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME          STATUS   ROLES   AGE   VERSION
-10.0.10.118   Ready    node    3d    v1.20.8
-10.0.10.127   Ready    node    3d    v1.20.8
-10.0.10.175   Ready    node    3d    v1.20.8
+10.0.10.111   Ready    node    61m   v1.20.8
+10.0.10.254   Ready    node    61m   v1.20.8
+10.0.10.87    Ready    node    61m   v1.20.8
 </code></pre></div></div>
 
 <h2 id="2サービスメッシュとオブザバビリティ環境構築">2.サービスメッシュとオブザバビリティ環境構築</h2>
@@ -519,8 +535,6 @@ Need more information? Visit https://istio.io/latest/docs/setup/install/
 <p>istioctlコマンドを実行できるようにパスを通します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">PWD</span><span class="k">}</span><span class="s2">/istio-</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">/bin:</span><span class="k">${</span><span class="nv">PATH</span><span class="k">}</span><span class="s2">"</span>
-</code></pre></div></div>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="se">\"</span><span class="k">${</span><span class="nv">PWD</span><span class="k">}</span><span class="s2">/istio-</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">/bin:</span><span class="se">\$</span><span class="s2">{PATH}</span><span class="se">\"</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> ~/.bashrc
 </code></pre></div></div>
 
 <p>Istioのバージョンを確認します。バージョンが表示されることで、istioctlコマンドが利用できる状態です。</p>
@@ -585,83 +599,101 @@ deployment.apps/prometheus created
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>namespace/default labeled
 </code></pre></div></div>
 
-<p>Prometheus、Grafana、Kiali、JaegerのWebUIにブラウザからアクセスできるようにします。</p>
+<p>現時点では、Kubernetesクラスタ外部からアクセスできない状況です。
+アドオンとしてインストールしたPrometheus、Grafana、Kiali、JaegerのWebコンソールにブラウザからアクセスできるように、
+各コンポーネントのServiceオブジェクトに<code class="language-plaintext highlighter-rouge">NodePort</code>の設定を行います。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service prometheus <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/prometheus patched
 </code></pre></div></div>
-<p><strong><em>コマンド結果</em></strong></p>
+
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service grafana <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/grafana patched
 </code></pre></div></div>
-<p><strong><em>コマンド結果</em></strong></p>
+
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service kiali <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/kiali patched
 </code></pre></div></div>
-<p><strong><em>コマンド結果</em></strong></p>
+
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service tracing <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/tracing patched
 </code></pre></div></div>
 <p>ServiceとDeploymentの状況を確認します。
-「service/prometheus」、「service/grafana」、「service/kiali」、「service/tracing」のTYPEがNodePortになっていることを確認します。「service/istio-ingressgateway」については、しばらくするとEXTERNAL-IPアドレスが自動で付与されます。</p>
+「service/prometheus」、「service/grafana」、「service/kiali」、「service/tracing」のTYPEが<code class="language-plaintext highlighter-rouge">NodePort</code>になっていることを確認します。「service/istio-ingressgateway」については、しばらくするとEXTERNAL-IPアドレスが自動で付与されます。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services,deployments <span class="nt">-n</span> istio-system <span class="nt">-o</span> wide
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE   SELECTOR
-service/grafana                NodePort       10.96.96.80     &lt;none&gt;        3000:31746/TCP                                                               21m   app.kubernetes.io/instance<span class="o">=</span>grafana,app.kubernetes.io/name<span class="o">=</span>grafana
-service/istio-egressgateway    ClusterIP      10.96.110.50    &lt;none&gt;        80/TCP,443/TCP                                                               22m   <span class="nv">app</span><span class="o">=</span>istio-egressgateway,istio<span class="o">=</span>egressgateway
-service/istio-ingressgateway   LoadBalancer   10.96.16.94     &lt;pending&gt;     15021:32007/TCP,80:32374/TCP,443:32343/TCP,31400:30388/TCP,15443:31719/TCP   22m   <span class="nv">app</span><span class="o">=</span>istio-ingressgateway,istio<span class="o">=</span>ingressgateway
-service/istiod                 ClusterIP      10.96.235.244   &lt;none&gt;        15010/TCP,15012/TCP,443/TCP,15014/TCP                                        22m   <span class="nv">app</span><span class="o">=</span>istiod,istio<span class="o">=</span>pilot
-service/jaeger-collector       ClusterIP      10.96.121.97    &lt;none&gt;        14268/TCP,14250/TCP,9411/TCP                                                 21m   <span class="nv">app</span><span class="o">=</span>jaeger
-service/kiali                  NodePort       10.96.182.15    &lt;none&gt;        20001:31964/TCP,9090:31854/TCP                                               21m   app.kubernetes.io/instance<span class="o">=</span>kiali,app.kubernetes.io/name<span class="o">=</span>kiali
-service/prometheus             NodePort       10.96.238.223   &lt;none&gt;        9090:31147/TCP                                                               21m   <span class="nv">app</span><span class="o">=</span>prometheus,component<span class="o">=</span>server,release<span class="o">=</span>prometheus
-service/tracing                NodePort       10.96.216.254   &lt;none&gt;        80:32418/TCP,16685:31229/TCP                                                 21m   <span class="nv">app</span><span class="o">=</span>jaeger
-service/zipkin                 ClusterIP      10.96.184.172   &lt;none&gt;        9411/TCP                                                                     21m   <span class="nv">app</span><span class="o">=</span>jaeger
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP      PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE     SELECTOR
+service/grafana                NodePort       10.96.142.228   &lt;none&gt;           3000:30536/TCP                                                               96s     app.kubernetes.io/instance<span class="o">=</span>grafana,app.kubernetes.io/name<span class="o">=</span>grafana
+service/istio-egressgateway    ClusterIP      10.96.50.236    &lt;none&gt;           80/TCP,443/TCP                                                               2m9s    <span class="nv">app</span><span class="o">=</span>istio-egressgateway,istio<span class="o">=</span>egressgateway
+service/istio-ingressgateway   LoadBalancer   10.96.197.12    168.138.xx.xxx   15021:31268/TCP,80:32151/TCP,443:30143/TCP,31400:30084/TCP,15443:32534/TCP   2m9s    <span class="nv">app</span><span class="o">=</span>istio-ingressgateway,istio<span class="o">=</span>ingressgateway
+service/istiod                 ClusterIP      10.96.80.173    &lt;none&gt;           15010/TCP,15012/TCP,443/TCP,15014/TCP                                        2m28s   <span class="nv">app</span><span class="o">=</span>istiod,istio<span class="o">=</span>pilot
+service/jaeger-collector       ClusterIP      10.96.223.176   &lt;none&gt;           14268/TCP,14250/TCP,9411/TCP                                                 95s     <span class="nv">app</span><span class="o">=</span>jaeger
+service/kiali                  NodePort       10.96.65.161    &lt;none&gt;           20001:32446/TCP,9090:31546/TCP                                               95s     app.kubernetes.io/instance<span class="o">=</span>kiali,app.kubernetes.io/name<span class="o">=</span>kiali
+service/prometheus             NodePort       10.96.227.118   &lt;none&gt;           9090:32582/TCP                                                               94s     <span class="nv">app</span><span class="o">=</span>prometheus,component<span class="o">=</span>server,release<span class="o">=</span>prometheus
+service/tracing                NodePort       10.96.67.34     &lt;none&gt;           80:31870/TCP,16685:32400/TCP                                                 95s     <span class="nv">app</span><span class="o">=</span>jaeger
+service/zipkin                 ClusterIP      10.96.222.186   &lt;none&gt;           9411/TCP                                                                     95s     <span class="nv">app</span><span class="o">=</span>jaeger
 
-NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS                                             IMAGES                                                       SELECTOR
-deployment.apps/grafana                1/1     1            1           21m   grafana                                                grafana/grafana:7.5.5                                        app.kubernetes.io/instance<span class="o">=</span>grafana,app.kubernetes.io/name<span class="o">=</span>grafana
-deployment.apps/istio-egressgateway    1/1     1            1           22m   istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               <span class="nv">app</span><span class="o">=</span>istio-egressgateway,istio<span class="o">=</span>egressgateway
-deployment.apps/istio-ingressgateway   1/1     1            1           22m   istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               <span class="nv">app</span><span class="o">=</span>istio-ingressgateway,istio<span class="o">=</span>ingressgateway
-deployment.apps/istiod                 1/1     1            1           22m   discovery                                              docker.io/istio/pilot:1.11.0                                 <span class="nv">istio</span><span class="o">=</span>pilot
-deployment.apps/jaeger                 1/1     1            1           21m   jaeger                                                 docker.io/jaegertracing/all-in-one:1.23                      <span class="nv">app</span><span class="o">=</span>jaeger
-deployment.apps/kiali                  1/1     1            1           21m   kiali                                                  quay.io/kiali/kiali:v1.38                                    app.kubernetes.io/instance<span class="o">=</span>kiali,app.kubernetes.io/name<span class="o">=</span>kiali
-deployment.apps/prometheus             1/1     1            1           21m   prometheus-server-configmap-reload,prometheus-server   jimmidyson/configmap-reload:v0.5.0,prom/prometheus:v2.26.0   <span class="nv">app</span><span class="o">=</span>prometheus,component<span class="o">=</span>server,release<span class="o">=</span>prometheus
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS                                             IMAGES                                                       SELECTOR
+deployment.apps/grafana                1/1     1            1           95s     grafana                                                grafana/grafana:7.5.5                                        app.kubernetes.io/instance<span class="o">=</span>grafana,app.kubernetes.io/name<span class="o">=</span>grafana
+deployment.apps/istio-egressgateway    1/1     1            1           2m9s    istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               <span class="nv">app</span><span class="o">=</span>istio-egressgateway,istio<span class="o">=</span>egressgateway
+deployment.apps/istio-ingressgateway   1/1     1            1           2m9s    istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               <span class="nv">app</span><span class="o">=</span>istio-ingressgateway,istio<span class="o">=</span>ingressgateway
+deployment.apps/istiod                 1/1     1            1           2m28s   discovery                                              docker.io/istio/pilot:1.11.0                                 <span class="nv">istio</span><span class="o">=</span>pilot
+deployment.apps/jaeger                 1/1     1            1           95s     jaeger                                                 docker.io/jaegertracing/all-in-one:1.23                      <span class="nv">app</span><span class="o">=</span>jaeger
+deployment.apps/kiali                  1/1     1            1           95s     kiali                                                  quay.io/kiali/kiali:v1.38                                    app.kubernetes.io/instance<span class="o">=</span>kiali,app.kubernetes.io/name<span class="o">=</span>kiali
+deployment.apps/prometheus             1/1     1            1           94s     prometheus-server-configmap-reload,prometheus-server   jimmidyson/configmap-reload:v0.5.0,prom/prometheus:v2.26.0   <span class="nv">app</span><span class="o">=</span>prometheus,component<span class="o">=</span>server,release<span class="o">=</span>prometheus
 </code></pre></div></div>
 
-<p>OCIダッシュボードから、[Networking]-[Virtual Cloud Networks]を選択して対象のVCNを選択します。</p>
+<p>次に、WebブラウザからNodePort経由でアクセスできるように、セキュリティリストを変更します。</p>
 
-<p>3つあるうちの一番上段のものを選択します。</p>
+<p>OCIコンソールから、[ネットワーキング]-[仮想クラウド・ネットワーク]を選択して対象となる<code class="language-plaintext highlighter-rouge">oke-vcn-quick-cluster1-xxxxxxxxx</code>を選択します。</p>
 
-<p><code class="language-plaintext highlighter-rouge">oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional</code>を選択します。</p>
+<p><img src="1-027.png" alt="" /></p>
 
-<p>「Add Ingress Rules」ボタンをクリックします。</p>
+<p>3つあるサブネットのうち、ワーカノードが属するサブネット<code class="language-plaintext highlighter-rouge">oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional</code>を選択します。</p>
 
-<p>以下を設定して、「Add Ingress Rules」ボタンをクリックします。</p>
+<p><img src="1-028.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">SOURCE CIDR: 0.0.0.0/0</code><br />
-<code class="language-plaintext highlighter-rouge">IP PROTOCOL: All Protocols</code></p>
+<p>リストに表示される、<code class="language-plaintext highlighter-rouge">oke-nodeseclist-quick-cluster1-xxxxxxxxx</code>を選択します。</p>
 
-<p>NodeのEXTERNAL-IPを確認します。</p>
+<p><img src="1-029.png" alt="" /></p>
+
+<p>「イングレス・ルールの追加」ボタンをクリックします。</p>
+
+<p><img src="1-030.png" alt="" /></p>
+
+<p>以下を設定して、「イングレス・ルールの追加」ボタンをクリックします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">ソースCIDR: 0.0.0.0/0</code><br />
+<code class="language-plaintext highlighter-rouge">宛先ポート範囲: 30000-65535</code></p>
+
+<p><img src="1-031.png" alt="" /></p>
+
+<p>以上で、セキュリティリストの変更は完了です。</p>
+
+<p>次に、WebブラウザでアクセスするNodeの<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>を確認します。
+利用する<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>は、どれも利用可能です。Webブラウザで利用する際に、どれか一つ選択をしてください。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get nodes <span class="nt">-o</span> wide
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME          STATUS   ROLES   AGE     VERSION   INTERNAL-IP   EXTERNAL-IP       OS-IMAGE                  KERNEL-VERSION                    CONTAINER-RUNTIME
-10.0.10.133   Ready    node    7m13s   v1.20.8   10.0.10.133   150.136.xxx.xxx    Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
-10.0.10.179   Ready    node    7m23s   v1.20.8   10.0.10.179   132.145.xxx.xxx   Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
-10.0.10.84    Ready    node    7m19s   v1.20.8   10.0.10.84    129.213.xxx.xxx    Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME          STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP     OS-IMAGE                  KERNEL-VERSION                      CONTAINER-RUNTIME
+10.0.10.111   Ready    node    61m   v1.20.8   10.0.10.111   140.83.60.38    Oracle Linux Server 7.9   5.4.17-2102.204.4.4.el7uek.x86_64   cri-o://1.20.2
+10.0.10.254   Ready    node    60m   v1.20.8   10.0.10.254   140.83.50.44    Oracle Linux Server 7.9   5.4.17-2102.204.4.4.el7uek.x86_64   cri-o://1.20.2
+10.0.10.87    Ready    node    60m   v1.20.8   10.0.10.87    140.83.84.231   Oracle Linux Server 7.9   5.4.17-2102.204.4.4.el7uek.x86_64   cri-o://1.20.2
 </code></pre></div></div>
 
-<p>Prometheus,Grafana,Kiali,JaegerのNodePortを確認します。各サービス名の「3000:31746」コロン後がNodePort番号です。</p>
+<p>Prometheus,Grafana,Kiali,Jaegerの<code class="language-plaintext highlighter-rouge">NodePort</code>を確認します。
+TYPEが<code class="language-plaintext highlighter-rouge">NodePort</code>となっているServiceのPORT(S)「xxxxx:30000」コロン後の30000以上のポート番号が<code class="language-plaintext highlighter-rouge">NodePort</code>番号です。</p>
 
 <p>サービス名は、Jaegerだけtracingとなります。</p>
 
@@ -675,25 +707,42 @@ deployment.apps/prometheus             1/1     1            1           21m   pr
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services <span class="nt">-n</span> istio-system
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE
-grafana                NodePort       10.96.96.80     &lt;none&gt;        3000:31746/TCP                                                               25m
-istio-egressgateway    ClusterIP      10.96.110.50    &lt;none&gt;        80/TCP,443/TCP                                                               25m
-istio-ingressgateway   LoadBalancer   10.96.16.94     &lt;pending&gt;     15021:32007/TCP,80:32374/TCP,443:32343/TCP,31400:30388/TCP,15443:31719/TCP   25m
-istiod                 ClusterIP      10.96.235.244   &lt;none&gt;        15010/TCP,15012/TCP,443/TCP,15014/TCP                                        25m
-jaeger-collector       ClusterIP      10.96.121.97    &lt;none&gt;        14268/TCP,14250/TCP,9411/TCP                                                 25m
-kiali                  NodePort       10.96.182.15    &lt;none&gt;        20001:31964/TCP,9090:31854/TCP                                               25m
-prometheus             NodePort       10.96.238.223   &lt;none&gt;        9090:31147/TCP                                                               25m
-tracing                NodePort       10.96.216.254   &lt;none&gt;        80:32418/TCP,16685:31229/TCP                                                 25m
-zipkin                 ClusterIP      10.96.184.172   &lt;none&gt;        9411/TCP
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP      PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE
+grafana                NodePort       10.96.142.228   &lt;none&gt;           3000:30536/TCP                                                               11m
+istio-egressgateway    ClusterIP      10.96.50.236    &lt;none&gt;           80/TCP,443/TCP                                                               11m
+istio-ingressgateway   LoadBalancer   10.96.197.12    168.138.xx.xxx   15021:31268/TCP,80:32151/TCP,443:30143/TCP,31400:30084/TCP,15443:32534/TCP   11m
+istiod                 ClusterIP      10.96.80.173    &lt;none&gt;           15010/TCP,15012/TCP,443/TCP,15014/TCP                                        12m
+jaeger-collector       ClusterIP      10.96.223.176   &lt;none&gt;           14268/TCP,14250/TCP,9411/TCP                                                 11m
+kiali                  NodePort       10.96.65.161    &lt;none&gt;           20001:32446/TCP,9090:31546/TCP                                               11m
+prometheus             NodePort       10.96.227.118   &lt;none&gt;           9090:32582/TCP                                                               11m
+tracing                NodePort       10.96.67.34     &lt;none&gt;           80:31870/TCP,16685:32400/TCP                                                 11m
+zipkin                 ClusterIP      10.96.222.186   &lt;none&gt;           9411/TCP                                                                     11m
 </code></pre></div></div>
 
-<p>ブラウザでアクセスします。NodeのEXTERNAL-IPは3ノードの内どれを利用して問題ありません。</p>
+<p>上記コマンド結果を例にすると、以下コロン後の30000以上ポート番号となります。
+ご自身のと置き換えて対応してください。</p>
+
+<ul>
+  <li>Prometheus 9090:32582</li>
+  <li>Grafana 3000:30536</li>
+  <li>Kiali 20001:32446</li>
+  <li>Jaeger 80:31870</li>
+</ul>
+
+<p>先ほど確認した、EXTERNAL-IPと各<code class="language-plaintext highlighter-rouge">NodePort</code>を指定して、Webブラウザからアクセスしてください。</p>
 
 <p><code class="language-plaintext highlighter-rouge">http://EXTERNAL-IP:NodePort/</code></p>
 
 <h3 id="2-2-grafana-loki-インストール">2-2 Grafana Loki インストール</h3>
 
 <p>Helmを利用して、Grafana Lokiをインストールします。</p>
+
+<p class="notice--info"><strong>Helmについて</strong><br />
+Helmは、Kubernetesのパッケージマネージャです。パッケージは、Chartと呼ばれ、リポジトリがあります。
+Helmは、Linuxのdnfやapt、Chartはrpmやdebのようなものと捉えてください。
+Chartは、マニフェストのテンプレート（雛形）であり、そのテンプレートに指定した変数のパラメータをvalues.yamlに定義、
+このChartとvalues.yamlの組み合わせで、新たなマニフェストを生成してKubernetesクラスタに登録する仕組みです。
+このHelmを利用して、マニフェストをテンプレート化することで、マニフェストが大量とならないように管理の効率化を図ることができます。</p>
 
 <p>Grafana公式のHelmチャートリポジトリを追加します。</p>
 
@@ -758,7 +807,20 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
 
 <h3 id="2-3-grafana-lokiのセットアップ">2-3 Grafana Lokiのセットアップ</h3>
 
-<p>Grafanaダッシュボードを開いて、左メニューの[Configuration]-[Data Sources]を選択します。</p>
+<p>Grafanaにアクセスします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services grafana <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+grafana   NodePort   10.96.142.228   &lt;none&gt;        3000:30536/TCP   127m
+</code></pre></div></div>
+
+<p>GrafanaのアクセスにはNodePortを利用します。<br />
+NodePortは<code class="language-plaintext highlighter-rouge">PORT(S)</code>の<code class="language-plaintext highlighter-rouge">:</code>以降のポート番号です。<br />
+上記の場合、以下のURLにアクセスします。<br />
+http://[WorkerNodeのパブリックIP]:30536</p>
+
+<p>左メニューの[Configuration]-[Data Sources]を選択します。</p>
 
 <p><img src="1-012.png" alt="" /></p>
 
@@ -792,112 +854,40 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
 
 <p>各ノードのメトリクスを取集するためにnode exporterを各ノードに配備します。</p>
 
-<p>node exporterのマニフェストをファイルを作成します。</p>
+<p>既に作成済みのnode exporterのマニフェストを利用して、Kubernetesクラスタに適用します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim node-exporter-cc.yaml
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> https://raw.githubusercontent.com/oracle-japan/ochacafe-s4-6/main/manifests/node-exporter-handson.yaml
 </code></pre></div></div>
-<p>以下、コピー元として利用してください。</p>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    app: node-exporter-cc
-  name: node-exporter-cc
-  namespace: default
-<span class="nt">---</span>
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    prometheus.io/scrape: <span class="s2">"true"</span>
-  labels:
-    app: node-exporter-cc
-  name: node-exporter-cc
-  namespace: default
-spec:
-  clusterIP: None
-  ports:
-    - name: metrics
-      port: 9100
-      protocol: TCP
-      targetPort: 9100
-  selector:
-    app: node-exporter-cc
-  <span class="nb">type</span>: <span class="s2">"ClusterIP"</span>
-<span class="nt">---</span>
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  labels:
-    app: node-exporter-cc 
-  name: node-exporter-cc
-  namespace: default
-spec:
-  selector:
-    matchLabels:
-      app: node-exporter-cc
-  updateStrategy:
-    <span class="nb">type</span>: RollingUpdate
-  template:
-    metadata:
-      labels:
-        app: node-exporter-cc
-    spec:
-      serviceAccountName: node-exporter-cc
-      containers:
-        - name: node-exporter-cc
-          image: <span class="s2">"prom/node-exporter:v1.2.2"</span>
-          imagePullPolicy: <span class="s2">"IfNotPresent"</span>
-          args:
-            - <span class="nt">--path</span>.procfs<span class="o">=</span>/host/proc
-            - <span class="nt">--path</span>.sysfs<span class="o">=</span>/host/sys
-          ports:
-            - name: metrics
-              containerPort: 9100
-              hostPort: 9100
-          resources:
-            <span class="o">{}</span>
-          volumeMounts:
-            - name: proc
-              mountPath: /host/proc
-              readOnly:  <span class="nb">true</span>
-            - name: sys
-              mountPath: /host/sys
-              readOnly: <span class="nb">true
-      </span>hostNetwork: <span class="nb">true
-      </span>hostPID: <span class="nb">true
-      </span>volumes:
-        - name: proc
-          hostPath:
-            path: /proc
-        - name: sys
-          hostPath:
-            path: /sys
-</code></pre></div></div>
-
-<p>Kubernetesクラスタに適用します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> node-exporter-cc.yaml
-</code></pre></div></div>
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>serviceaccount/node-exporter-cc created
-service/node-exporter-cc created
-daemonset.apps/node-exporter-cc created
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>serviceaccount/node-exporter-handson created
+service/node-exporter-handson created
+daemonset.apps/node-exporter-handson created
 </code></pre></div></div>
 
 <p>node-exporter-ccというPodの「STATUS」が「Running」であることを確認します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pods
 </code></pre></div></div>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                           READY   STATUS    RESTARTS   AGE
-node-exporter-cc-7x7m7   1/1     Running   0          53s
-node-exporter-cc-hbjnd   1/1     Running   0          53s
-node-exporter-cc-nzd4l   1/1     Running   0          53s
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                          READY   STATUS    RESTARTS   AGE
+node-exporter-handson-56m4h   1/1     Running   0          25s
+node-exporter-handson-r7br8   1/1     Running   0          25s
+node-exporter-handson-rr2rf   1/1     Running   0          25s
 </code></pre></div></div>
 
 <h3 id="2-5-prometheus-webuiからpromqlの実行">2-5 Prometheus WebUIからPromQLの実行</h3>
 
 <p>Prometheus WebUIからPromQLを実行して、3ノードの各ノードのメモリ空き容量と3ノードでのメモリ空き容量の合計を確認します。
-まずは、ブラウザでPrometheus WebUIにアクセスしてください。</p>
+まずは、ブラウザでPrometheus WebUIにアクセスします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services prometheus <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME         TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+prometheus   NodePort   10.96.227.118   &lt;none&gt;        9090:32582/TCP   136m
+</code></pre></div></div>
+
+<p>GrafanaのアクセスにはNodePortを利用します。<br />
+NodePortは<code class="language-plaintext highlighter-rouge">PORT(S)</code>の<code class="language-plaintext highlighter-rouge">:</code>以降のポート番号です。<br />
+上記の場合、以下のURLにアクセスします。<br />
+http://[WorkerNodeのパブリックIP]:32582</p>
 
 <p><img src="1-019.png" alt="" /></p>
 
@@ -1702,7 +1692,7 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-10T16:43:10+09:00">September 10, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-13T14:18:26+09:00">September 13, 2021</time></p>
 
 
       </footer>

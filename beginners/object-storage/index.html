@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-10T16:43:10+09:00">
+  <meta property="article:published_time" content="2021-09-13T14:18:26+09:00">
 
 
 
@@ -307,7 +307,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その7 - オブジェクト・ストレージを使う">
     <meta itemprop="description" content="オブジェクト・ストレージを使うと、とても堅牢なデータストアを信じられないくらい安価に利用できます。まずは簡単な使い方を学びましょう">
-    <meta itemprop="datePublished" content="2021-09-10T16:43:10+09:00">
+    <meta itemprop="datePublished" content="2021-09-13T14:18:26+09:00">
     
 
     <div class="page__inner-wrap">
@@ -360,19 +360,22 @@ OCIのIdentity and Access Management(IAM)機能をを利用した適切なアク
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong>ストレージ → オブジェクト・ストレージ</strong> を選択し、<strong>バケットの作成</strong> ボタンを押します</p>
+    <p>コンソールメニューから <strong>ストレージ → オブジェクト・ストレージとアーカイブ・ストレージ</strong> を選択し、<strong>バケットの作成</strong> ボタンを押します</p>
   </li>
   <li>立ち上がった <strong>バケットの作成</strong> ウィンドウに以下の項目を入力し、<strong>バケットの作成</strong> ボタンを押します。指定がないものは任意の値でOKです。
     <ul>
-      <li><strong>バケット名</strong> - 任意の文字列 (画面では TutorialBucket と入力しています)</li>
-      <li><strong>ストレージ層</strong> - <em>標準</em> を選択</li>
+      <li><strong>バケット名</strong> - 任意の文字列 (画面では TutorialBucket1 と入力しています)</li>
+      <li><strong>デフォルト・ストレージ層</strong> - <em>標準</em> を選択</li>
+      <li><strong>自動階層化の有効化</strong> - チェックなし</li>
       <li><strong>オブジェクト・バージョニングの有効化</strong> - チェックなし</li>
+      <li><strong>オブジェクト・イベントの出力</strong>  - チェックなし</li>
+      <li><strong>コミットされていないマルチパート・アップロードのクリーンアップ</strong> - チェックなし</li>
       <li><strong>暗号化</strong> - <em>ORACLE管理キーを使用した暗号化</em> を選択<br />
- <img src="001.webp" alt="画面ショット" /></li>
+ <img src="os_image1.png" alt="os_image1.png" /></li>
     </ul>
   </li>
   <li>バケットの作成が完了し、コンソールに表示されていることを確認します
- <img src="002.webp" alt="画面ショット" /></li>
+ <img src="os_image2.png" alt="os_image2.png" /></li>
 </ol>
 
 <h1 id="2-オブジェクトのアップロードダウンロード">2. オブジェクトのアップロード、ダウンロード</h1>
@@ -385,9 +388,9 @@ OCIのIdentity and Access Management(IAM)機能をを利用した適切なアク
     <p><strong>アップロード</strong> ボタンを押します</p>
   </li>
   <li>
-    <p>立ち上がった <strong>オブジェクトのアップロード</strong> ウィンドウで <strong>ファイルを選択</strong> リンクを押してローカルPCのファイルを選択するか、またはドラッグ&amp;ドロップでファイルをウィンドウの ここにファイルをドロップします… という場所にドロップします</p>
+    <p>立ち上がった <strong>オブジェクトのアップロード</strong> ウィンドウで <strong>ファイルを選択</strong> リンクを押してローカルPCのファイルを選択するか、またはドラッグ&amp;ドロップでファイルをウィンドウの 「ここにファイルをドロップします」という場所にドロップします</p>
 
-    <p><img src="003.webp" alt="画面ショット" /></p>
+    <p><img src="os_image3.png" alt="os_image3.png" /></p>
   </li>
   <li>
     <p>必要に応じて <strong>オブジェクト名の接頭辞</strong> を入力し、<strong>アップロード</strong> ボタンを押します。ファイル名に日本語が含まれる場合は、ここをASCII文字で設定することを推奨します。</p>
@@ -402,12 +405,12 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
   <li>
     <p>オブジェクトが正しくアップロードされたことを確認します</p>
 
-    <p><img src="004.webp" alt="画面ショット" /></p>
+    <p><img src="os_image4.png" alt="os_image4.png" /></p>
   </li>
   <li>
     <p>アップロードしたオブジェクトの右側の ・・・ メニューから <strong>オブジェクト詳細の表示</strong> を選択し、オブジェクトの詳細情報を表示します</p>
 
-    <p><img src="005.webp" alt="画面ショット" /></p>
+    <p><img src="os_image5.png" alt="os_image5.png" /></p>
   </li>
   <li>
     <p><strong>ダウンロード</strong> ボタンを押して、オブジェクトが正しくダウンロードできることを確認します</p>
@@ -426,20 +429,22 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
   <li>
     <p>先ほどアップロードしたオブジェクトの右側の ・・・ メニューから <strong>事前認証済リクエストの作成</strong> を選択します</p>
   </li>
-  <li>立ち上がった <strong>事前認証済リクエストの作成</strong> ウィンドウに以下の項目を入力し、 <strong>事前認証済リクエストの作成</strong> ボタンを押します
+  <li>
+    <p>立ち上がった <strong>事前認証済リクエストの作成</strong> ウィンドウに以下の項目を入力し、 <strong>事前認証済リクエストの作成</strong> ボタンを押します</p>
+
     <ul>
       <li><strong>名前</strong> - 任意 (画面上では TutorialPreAuthReq と入力しています)</li>
       <li><strong>事前認証済リクエスト・ターゲット</strong> - <em>オブジェクト</em> を選択</li>
       <li><strong>アクセス・タイプ</strong> - <em>オブジェクトに対する読み取りを許可</em> を選択</li>
-      <li><em>*有効期限＊</em> - デフォルトのまま</li>
+      <li><strong>有効期限</strong> - デフォルトのまま</li>
     </ul>
 
-    <p><img src="006.webp" alt="画面ショット" /></p>
+    <p><img src="os_image6.png" alt="os_image6.png" /></p>
   </li>
   <li>
     <p>事前認証リクエストの作成が完了すると、リクエストURLが生成されます。ウィンドウに表示された情報を確認し、<strong>事前認証済リクエストのURL</strong> ボックスの右にあるアイコンをクリックして、URLをクリップボードにコピーします</p>
 
-    <p><img src="007.webp" alt="画面ショット" /></p>
+    <p><img src="os_image7.png" alt="os_image7.png" /></p>
   </li>
   <li>
     <p>別のブラウザを開き、コピーしたURLをアドレスバーにペーストします</p>
@@ -449,9 +454,9 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
 同じブラウザでもOKですが、OCIコンソールを操作しているものとは異なるブラウザ(例えば現在使用しているブラウザがFirefoxならChrome)を立ち上げることで、Oracle Cloud Infrastructure の認証をスキップしていることがより明確に理解できます</p>
     </blockquote>
 
-    <p><img src="008.webp" alt="画面ショット" /></p>
+    <p><img src="os_image8.png" alt="os_image8.png" /></p>
 
-    <p>ファイルがダウンロードされ、事前認証済リクエストが正しく機能していることが確認できます</p>
+    <p>ファイルがダウンロードされ、事前認証済リクエストが正しく機能していることが確認できます。ここではオブジェクトが画像ファイルのためブラウザ上で画像表示ができています。</p>
 
     <blockquote>
       <p><strong>TIPS</strong><br />
@@ -463,10 +468,12 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
     <p>作成済み事前認証済リクエストを確認します
 コンソール画面に戻り、左下メニューから <strong>事前認証済リクエスト</strong> リンクを選択します。下部に先ほど作成した事前認証済リクエストが表示されます。</p>
 
-    <p><img src="009.webp" alt="画面ショット" /></p>
+    <p><img src="os_image9.png" alt="os_image9.png" /></p>
   </li>
   <li>
-    <p>右側の赤い ・・・ メニューから <strong>削除</strong> を選択し、先ほど作成した事前認証済リクエストを削除します</p>
+    <p>右側の ・・・ メニューから <strong>削除</strong> を選択し、先ほど作成した事前認証済リクエストを削除します</p>
+
+    <p><img src="os_image10.png" alt="os_image10.png" /></p>
   </li>
   <li>
     <p>先ほどファイルをダウンロードした、別のブラウザに戻り、リロードボタンを押して再度ファイルのダウンロードを試みます</p>
@@ -476,7 +483,7 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
 
     <p><code class="language-plaintext highlighter-rouge">{"code":"NotAuthenticated","message":"The required information to complete authentication was not provided."}</code></p>
 
-    <p><img src="010.webp" alt="画面ショット" /></p>
+    <p><img src="os_image11.png" alt="os_image11.png" /></p>
   </li>
 </ol>
 
@@ -493,7 +500,7 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-10T16:43:10+09:00">September 10, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-13T14:18:26+09:00">September 13, 2021</time></p>
 
 
       </footer>
