@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-13T18:49:53+09:00">
+  <meta property="article:published_time" content="2021-09-13T22:10:29+09:00">
 
 
 
@@ -313,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
-    <meta itemprop="datePublished" content="2021-09-13T18:49:53+09:00">
+    <meta itemprop="datePublished" content="2021-09-13T22:10:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -354,7 +354,7 @@
       <li><a href="#4-1-カナリアリリース">4-1 カナリアリリース</a></li>
     </ul>
   </li>
-  <li><a href="#オプション5-oci-monitoringのメトリクスをgrafanaダッシュボードを利用して確認してみよう">【オプション】5. OCI MonitoringのメトリクスをGrafanaダッシュボードを利用して確認してみよう</a>
+  <li><a href="#5oci-monitoringのメトリクスをgrafanaダッシュボードを利用して確認してみようオプション">5.OCI MonitoringのメトリクスをGrafanaダッシュボードを利用して確認してみよう【オプション】</a>
     <ul>
       <li><a href="#5-1-動的グループとポリシーの設定">5-1 動的グループとポリシーの設定</a></li>
       <li><a href="#5-2-oci-monitoringプラグインのgrafanaへのインストール">5-2 OCI MonitoringプラグインのGrafanaへのインストール</a></li>
@@ -1753,7 +1753,7 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 
 <p>以上で、ハンズオンは終わりです。</p>
 
-<h2 id="オプション5-oci-monitoringのメトリクスをgrafanaダッシュボードを利用して確認してみよう">【オプション】5. OCI MonitoringのメトリクスをGrafanaダッシュボードを利用して確認してみよう</h2>
+<h2 id="5oci-monitoringのメトリクスをgrafanaダッシュボードを利用して確認してみようオプション">5.OCI MonitoringのメトリクスをGrafanaダッシュボードを利用して確認してみよう【オプション】</h2>
 
 <p>ここからはオプションの手順になります。<br />
 お時間がある方、興味がある方はぜひお試しください。</p>
@@ -1799,10 +1799,6 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
     </tr>
     <tr>
       <td>一致ルール - ルール1</td>
-      <td>resource.compartment.id = ‘<ご自身のコンパートメントOCID>'</ご自身のコンパートメントOCID></td>
-    </tr>
-    <tr>
-      <td>一致ルール - ルール2</td>
       <td>instance.compartment.id = ‘<ご自身のコンパートメントOCID>'</ご自身のコンパートメントOCID></td>
     </tr>
   </tbody>
@@ -1825,7 +1821,8 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 
 <p><img src="5-005.png" alt="" /></p>
 
-<p>以下の情報を入力します。</p>
+<p>以下の情報を入力します。<br />
+また、「手動エディタの表示」にチェックを入れます。</p>
 
 <table>
   <thead>
@@ -1845,11 +1842,11 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
     </tr>
     <tr>
       <td>一致ルール - ルール1</td>
-      <td>allow dynamic-group grafana_dynamic_group to read metrics in compartment ‘<ご自身のコンパートメント名>'</ご自身のコンパートメント名></td>
+      <td>allow dynamic-group grafana_dynamic_group to read compartments in compartment <ご自身のコンパートメント名></ご自身のコンパートメント名></td>
     </tr>
     <tr>
       <td>一致ルール - ルール2</td>
-      <td>allow dynamic-group grafana_dynamic_group to read metrics in compartment ‘<ご自身のコンパートメント名>'</ご自身のコンパートメント名></td>
+      <td>allow dynamic-group grafana_dynamic_group to read metrics in compartment <ご自身のコンパートメント名></ご自身のコンパートメント名></td>
     </tr>
   </tbody>
 </table>
@@ -1857,6 +1854,8 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 <p><img src="5-006.png" alt="" /></p>
 
 <p>画像はイメージですので、コンパートメント名はご自身の環境に合わせて読み替えてください。</p>
+
+<p>「作成」をクリックします。</p>
 
 <p>これで、動的グループとポリシーの設定は完了です。</p>
 
@@ -2012,7 +2011,7 @@ http://[WorkerNodeのパブリックIP]:30453</p>
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-13T18:49:53+09:00">September 13, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-13T22:10:29+09:00">September 13, 2021</time></p>
 
 
       </footer>
