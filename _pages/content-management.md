@@ -22,6 +22,9 @@ toc: true
 + **[Oracle Content and Experience インスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_idcs_group_user/)**  
     この文書は Oracle Content and Experience (OCE) を利用するユーザーをIDCSに作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
 
++ **[[Oracle Cloud] Oracle Content Management の Starter Edition をクイックスタートしてみた](https://qiita.com/nakasato310/items/9457a61d9d27db6ce4f0)**  
+    この記事では、2021年7月の最新バージョン(21.6.1)より新たに追加された Oracle Content Management - Starter Edition をクイックスタートする方法を紹介します
+
 <br />
 
 # チュートリアル初級編
@@ -98,6 +101,16 @@ toc: true
 
 + **[[Oracle Cloud] Oracle Content and Experience を Headless CMS として利用する React サンプルを動かしてみた](https://qiita.com/nakasato310/items/abf9f3ea8b85b09bae3d)** (※外部サイト)  
     サンプル公開されている React の Build a blog を動かすことで、OCEをヘッドレスCMSとして利用するイメージを理解します。【所要時間:30分】
+
++ **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する](https://qiita.com/nakasato310/items/b160760dff00c5a53ca2)** (※外部サイト)  
+    GraphQL で Oracle Content Management のデータを取得する方法を紹介します【所要時間:15分】
+
++ **[Oracle Content ManagementをHeadless CMSとして使用したWebサイトをGatsbyで開発する](https://qiita.com/nakasato310/items/0ee3bcf0fbffcd898f2b)** (※外部サイト)  
+    Oracle Content Managementのアセットリポジトリで管理・公開されるアセットをGatsbyで開発したWebサイトに表示できるようにします【所要時間:30分】
+
++ **[Oracle Content Management をHeadless CMSとして利用するGatsbyサイトをNetlifyでホストする](https://qiita.com/nakasato310/items/4e07a47c66e3551e6282)** (※外部サイト)  
+    この記事では、[Oracle Content ManagementをHeadless CMSとして使用したWebサイトをGatsbyで開発する](https://qiita.com/nakasato310/items/0ee3bcf0fbffcd898f2b)で作成したGatsbyサイトをNetlifyでホストして公開します。【所要時間:30分】
+
 
 + **[React開発のためにOracle Content and ExperienceのStarter Site CLIを使ってみよう](https://community.oracle.com/tech/welcome/discussion/4474323/)** (※外部サイト)
 

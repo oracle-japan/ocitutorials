@@ -9,36 +9,47 @@ tags:
 
 オブザバビリティツールとして、以下を利用します。
 
-モニタリング
+***モニタリング***
 
 * [Prometheus](https://github.com/prometheus/prometheus) + [Grafana](https://github.com/grafana/grafana)
 
-ロギング
+***ロギング***
 
 * [Grafana Loki](https://github.com/grafana/loki)
 
-トレーシング
+***トレーシング***
 
 * [Jaeger](https://github.com/jaegertracing/jaeger)
 
-サービスメッシュオブザバビリティ
+***サービスメッシュオブザバビリティ***
 
 * [Kiali](https://github.com/kiali/kiali)
 
 ハンズオンの流れは以下となります。
 
+---
 1. OKEクラスタ構築
+    1. OCIダッシュボードからOKEクラスタの構築
+    2. Cloud Shellを利用してクラスタを操作
 
 2. サービスメッシュとオブザバビリティ環境構築
     1. Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール
     2. Grafana Loki インストール
+    3. Grafana Lokiのセットアップ
+    4. node exporterのインストール
+    5. Prometheus WebUIからPromQLの実行
 
-3. マイクロサービスアプリケーションの作成
+3. サンプルアプリケーションでObservabilityを体験してみよう
+    1. サンプルアプリケーションの概要説明
+    2. サンプルアプリケーションのビルドとデプロイ
+    3. Grafana Lokiを利用したログ監視
+    4. Jaegerを利用したトレーシング
+    5. Kialiを利用したService Meshの可視化
 
-4. カナリアリリース
+4. Istioを利用したカナリアリリース
+    1. カナリアリリース
 
-5. Prometheus、Grafana、Loki、Jaeger、Kialiによるオブザバビリティ
-
+---
 
 1.OKEクラスタ構築
 ---------------------------------
@@ -106,9 +117,9 @@ kubectl get nodes
 ***コマンド結果***
 ```sh
 NAME          STATUS   ROLES   AGE   VERSION
-10.0.10.118   Ready    node    3d    v1.20.8
-10.0.10.127   Ready    node    3d    v1.20.8
-10.0.10.175   Ready    node    3d    v1.20.8
+10.0.10.111   Ready    node    61m   v1.20.8
+10.0.10.254   Ready    node    61m   v1.20.8
+10.0.10.87    Ready    node    61m   v1.20.8
 ```
 
 2.サービスメッシュとオブザバビリティ環境構築
@@ -159,9 +170,6 @@ istioctlコマンドを実行できるようにパスを通します。
 
 ```sh
 export PATH="${PWD}/istio-${ISTIO_VERSION}/bin:${PATH}"
-```
-```sh
-echo PATH="\"${PWD}/istio-${ISTIO_VERSION}/bin:\${PATH}\"" >> ~/.bashrc
 ```
 
 Istioのバージョンを確認します。バージョンが表示されることで、istioctlコマンドが利用できる状態です。
@@ -234,7 +242,9 @@ kubectl label namespace default istio-injection=enabled
 namespace/default labeled
 ```
 
-Prometheus、Grafana、Kiali、JaegerのWebUIにブラウザからアクセスできるようにします。
+現時点では、Kubernetesクラスタ外部からアクセスできない状況です。
+アドオンとしてインストールしたPrometheus、Grafana、Kiali、JaegerのWebコンソールにブラウザからアクセスできるように、
+各コンポーネントのServiceオブジェクトに`NodePort`の設定を行います。
 
 ```sh
 kubectl patch service prometheus -n istio-system -p '{"spec": {"type": "NodePort"}}'
@@ -243,7 +253,7 @@ kubectl patch service prometheus -n istio-system -p '{"spec": {"type": "NodePort
 ```sh
 service/prometheus patched
 ```
-***コマンド結果***
+
 ```sh
 kubectl patch service grafana -n istio-system -p '{"spec": {"type": "NodePort"}}'
 ```
@@ -251,7 +261,7 @@ kubectl patch service grafana -n istio-system -p '{"spec": {"type": "NodePort"}}
 ```sh
 service/grafana patched
 ```
-***コマンド結果***
+
 ```sh
 kubectl patch service kiali -n istio-system -p '{"spec": {"type": "NodePort"}}'
 ```
@@ -259,7 +269,7 @@ kubectl patch service kiali -n istio-system -p '{"spec": {"type": "NodePort"}}'
 ```sh
 service/kiali patched
 ```
-***コマンド結果***
+
 ```sh
 kubectl patch service tracing -n istio-system -p '{"spec": {"type": "NodePort"}}'
 ```
@@ -268,61 +278,77 @@ kubectl patch service tracing -n istio-system -p '{"spec": {"type": "NodePort"}}
 service/tracing patched
 ```
 ServiceとDeploymentの状況を確認します。
-「service/prometheus」、「service/grafana」、「service/kiali」、「service/tracing」のTYPEがNodePortになっていることを確認します。「service/istio-ingressgateway」については、しばらくするとEXTERNAL-IPアドレスが自動で付与されます。
+「service/prometheus」、「service/grafana」、「service/kiali」、「service/tracing」のTYPEが`NodePort`になっていることを確認します。「service/istio-ingressgateway」については、しばらくするとEXTERNAL-IPアドレスが自動で付与されます。
 
 ```sh
 kubectl get services,deployments -n istio-system -o wide
 ```
 ***コマンド結果***
 ```sh
-NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                                                      AGE   SELECTOR
-service/grafana                NodePort       10.96.96.80     <none>        3000:31746/TCP                                                               21m   app.kubernetes.io/instance=grafana,app.kubernetes.io/name=grafana
-service/istio-egressgateway    ClusterIP      10.96.110.50    <none>        80/TCP,443/TCP                                                               22m   app=istio-egressgateway,istio=egressgateway
-service/istio-ingressgateway   LoadBalancer   10.96.16.94     <pending>     15021:32007/TCP,80:32374/TCP,443:32343/TCP,31400:30388/TCP,15443:31719/TCP   22m   app=istio-ingressgateway,istio=ingressgateway
-service/istiod                 ClusterIP      10.96.235.244   <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP                                        22m   app=istiod,istio=pilot
-service/jaeger-collector       ClusterIP      10.96.121.97    <none>        14268/TCP,14250/TCP,9411/TCP                                                 21m   app=jaeger
-service/kiali                  NodePort       10.96.182.15    <none>        20001:31964/TCP,9090:31854/TCP                                               21m   app.kubernetes.io/instance=kiali,app.kubernetes.io/name=kiali
-service/prometheus             NodePort       10.96.238.223   <none>        9090:31147/TCP                                                               21m   app=prometheus,component=server,release=prometheus
-service/tracing                NodePort       10.96.216.254   <none>        80:32418/TCP,16685:31229/TCP                                                 21m   app=jaeger
-service/zipkin                 ClusterIP      10.96.184.172   <none>        9411/TCP                                                                     21m   app=jaeger
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                                                                      AGE     SELECTOR
+service/grafana                NodePort       10.96.142.228   <none>           3000:30536/TCP                                                               96s     app.kubernetes.io/instance=grafana,app.kubernetes.io/name=grafana
+service/istio-egressgateway    ClusterIP      10.96.50.236    <none>           80/TCP,443/TCP                                                               2m9s    app=istio-egressgateway,istio=egressgateway
+service/istio-ingressgateway   LoadBalancer   10.96.197.12    168.138.xx.xxx   15021:31268/TCP,80:32151/TCP,443:30143/TCP,31400:30084/TCP,15443:32534/TCP   2m9s    app=istio-ingressgateway,istio=ingressgateway
+service/istiod                 ClusterIP      10.96.80.173    <none>           15010/TCP,15012/TCP,443/TCP,15014/TCP                                        2m28s   app=istiod,istio=pilot
+service/jaeger-collector       ClusterIP      10.96.223.176   <none>           14268/TCP,14250/TCP,9411/TCP                                                 95s     app=jaeger
+service/kiali                  NodePort       10.96.65.161    <none>           20001:32446/TCP,9090:31546/TCP                                               95s     app.kubernetes.io/instance=kiali,app.kubernetes.io/name=kiali
+service/prometheus             NodePort       10.96.227.118   <none>           9090:32582/TCP                                                               94s     app=prometheus,component=server,release=prometheus
+service/tracing                NodePort       10.96.67.34     <none>           80:31870/TCP,16685:32400/TCP                                                 95s     app=jaeger
+service/zipkin                 ClusterIP      10.96.222.186   <none>           9411/TCP                                                                     95s     app=jaeger
 
-NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS                                             IMAGES                                                       SELECTOR
-deployment.apps/grafana                1/1     1            1           21m   grafana                                                grafana/grafana:7.5.5                                        app.kubernetes.io/instance=grafana,app.kubernetes.io/name=grafana
-deployment.apps/istio-egressgateway    1/1     1            1           22m   istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               app=istio-egressgateway,istio=egressgateway
-deployment.apps/istio-ingressgateway   1/1     1            1           22m   istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               app=istio-ingressgateway,istio=ingressgateway
-deployment.apps/istiod                 1/1     1            1           22m   discovery                                              docker.io/istio/pilot:1.11.0                                 istio=pilot
-deployment.apps/jaeger                 1/1     1            1           21m   jaeger                                                 docker.io/jaegertracing/all-in-one:1.23                      app=jaeger
-deployment.apps/kiali                  1/1     1            1           21m   kiali                                                  quay.io/kiali/kiali:v1.38                                    app.kubernetes.io/instance=kiali,app.kubernetes.io/name=kiali
-deployment.apps/prometheus             1/1     1            1           21m   prometheus-server-configmap-reload,prometheus-server   jimmidyson/configmap-reload:v0.5.0,prom/prometheus:v2.26.0   app=prometheus,component=server,release=prometheus
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS                                             IMAGES                                                       SELECTOR
+deployment.apps/grafana                1/1     1            1           95s     grafana                                                grafana/grafana:7.5.5                                        app.kubernetes.io/instance=grafana,app.kubernetes.io/name=grafana
+deployment.apps/istio-egressgateway    1/1     1            1           2m9s    istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               app=istio-egressgateway,istio=egressgateway
+deployment.apps/istio-ingressgateway   1/1     1            1           2m9s    istio-proxy                                            docker.io/istio/proxyv2:1.11.0                               app=istio-ingressgateway,istio=ingressgateway
+deployment.apps/istiod                 1/1     1            1           2m28s   discovery                                              docker.io/istio/pilot:1.11.0                                 istio=pilot
+deployment.apps/jaeger                 1/1     1            1           95s     jaeger                                                 docker.io/jaegertracing/all-in-one:1.23                      app=jaeger
+deployment.apps/kiali                  1/1     1            1           95s     kiali                                                  quay.io/kiali/kiali:v1.38                                    app.kubernetes.io/instance=kiali,app.kubernetes.io/name=kiali
+deployment.apps/prometheus             1/1     1            1           94s     prometheus-server-configmap-reload,prometheus-server   jimmidyson/configmap-reload:v0.5.0,prom/prometheus:v2.26.0   app=prometheus,component=server,release=prometheus
 ```
 
-OCIダッシュボードから、[Networking]-[Virtual Cloud Networks]を選択して対象のVCNを選択します。
+次に、WebブラウザからNodePort経由でアクセスできるように、セキュリティリストを変更します。
 
-3つあるうちの一番上段のものを選択します。
+OCIコンソールから、[ネットワーキング]-[仮想クラウド・ネットワーク]を選択して対象となる`oke-vcn-quick-cluster1-xxxxxxxxx`を選択します。
 
-`oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional`を選択します。
+![](1-027.png)
 
-「Add Ingress Rules」ボタンをクリックします。
+3つあるサブネットのうち、ワーカノードが属するサブネット`oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional`を選択します。
 
-以下を設定して、「Add Ingress Rules」ボタンをクリックします。
+![](1-028.png)
 
-`SOURCE CIDR: 0.0.0.0/0`<br>
-`IP PROTOCOL: All Protocols`
+リストに表示される、`oke-nodeseclist-quick-cluster1-xxxxxxxxx`を選択します。
 
-NodeのEXTERNAL-IPを確認します。
+![](1-029.png)
+
+「イングレス・ルールの追加」ボタンをクリックします。
+
+![](1-030.png)
+
+以下を設定して、「イングレス・ルールの追加」ボタンをクリックします。
+
+`ソースCIDR: 0.0.0.0/0`<br>
+`宛先ポート範囲: 30000-65535`
+
+![](1-031.png)
+
+以上で、セキュリティリストの変更は完了です。
+
+次に、WebブラウザでアクセスするNodeの`EXTERNAL-IP`を確認します。
+利用する`EXTERNAL-IP`は、どれも利用可能です。Webブラウザで利用する際に、どれか一つ選択をしてください。
 
 ```sh
 kubectl get nodes -o wide
 ```
 ***コマンド結果***
 ```sh
-NAME          STATUS   ROLES   AGE     VERSION   INTERNAL-IP   EXTERNAL-IP       OS-IMAGE                  KERNEL-VERSION                    CONTAINER-RUNTIME
-10.0.10.133   Ready    node    7m13s   v1.20.8   10.0.10.133   150.136.xxx.xxx    Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
-10.0.10.179   Ready    node    7m23s   v1.20.8   10.0.10.179   132.145.xxx.xxx   Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
-10.0.10.84    Ready    node    7m19s   v1.20.8   10.0.10.84    129.213.xxx.xxx    Oracle Linux Server 7.9   5.4.17-2102.203.6.el7uek.x86_64   cri-o://1.20.2
+NAME          STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP     OS-IMAGE                  KERNEL-VERSION                      CONTAINER-RUNTIME
+10.0.10.111   Ready    node    61m   v1.20.8   10.0.10.111   140.83.60.38    Oracle Linux Server 7.9   5.4.17-2102.204.4.4.el7uek.x86_64   cri-o://1.20.2
+10.0.10.254   Ready    node    60m   v1.20.8   10.0.10.254   140.83.50.44    Oracle Linux Server 7.9   5.4.17-2102.204.4.4.el7uek.x86_64   cri-o://1.20.2
+10.0.10.87    Ready    node    60m   v1.20.8   10.0.10.87    140.83.84.231   Oracle Linux Server 7.9   5.4.17-2102.204.4.4.el7uek.x86_64   cri-o://1.20.2
 ```
 
-Prometheus,Grafana,Kiali,JaegerのNodePortを確認します。各サービス名の「3000:31746」コロン後がNodePort番号です。
+Prometheus,Grafana,Kiali,Jaegerの`NodePort`を確認します。
+TYPEが`NodePort`となっているServiceのPORT(S)「xxxxx:30000」コロン後の30000以上のポート番号が`NodePort`番号です。
 
 サービス名は、Jaegerだけtracingとなります。
 
@@ -336,25 +362,41 @@ kubectl get services -n istio-system
 ```
 ***コマンド結果***
 ```sh
-NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                                                                      AGE
-grafana                NodePort       10.96.96.80     <none>        3000:31746/TCP                                                               25m
-istio-egressgateway    ClusterIP      10.96.110.50    <none>        80/TCP,443/TCP                                                               25m
-istio-ingressgateway   LoadBalancer   10.96.16.94     <pending>     15021:32007/TCP,80:32374/TCP,443:32343/TCP,31400:30388/TCP,15443:31719/TCP   25m
-istiod                 ClusterIP      10.96.235.244   <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP                                        25m
-jaeger-collector       ClusterIP      10.96.121.97    <none>        14268/TCP,14250/TCP,9411/TCP                                                 25m
-kiali                  NodePort       10.96.182.15    <none>        20001:31964/TCP,9090:31854/TCP                                               25m
-prometheus             NodePort       10.96.238.223   <none>        9090:31147/TCP                                                               25m
-tracing                NodePort       10.96.216.254   <none>        80:32418/TCP,16685:31229/TCP                                                 25m
-zipkin                 ClusterIP      10.96.184.172   <none>        9411/TCP
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                                                                      AGE
+grafana                NodePort       10.96.142.228   <none>           3000:30536/TCP                                                               11m
+istio-egressgateway    ClusterIP      10.96.50.236    <none>           80/TCP,443/TCP                                                               11m
+istio-ingressgateway   LoadBalancer   10.96.197.12    168.138.xx.xxx   15021:31268/TCP,80:32151/TCP,443:30143/TCP,31400:30084/TCP,15443:32534/TCP   11m
+istiod                 ClusterIP      10.96.80.173    <none>           15010/TCP,15012/TCP,443/TCP,15014/TCP                                        12m
+jaeger-collector       ClusterIP      10.96.223.176   <none>           14268/TCP,14250/TCP,9411/TCP                                                 11m
+kiali                  NodePort       10.96.65.161    <none>           20001:32446/TCP,9090:31546/TCP                                               11m
+prometheus             NodePort       10.96.227.118   <none>           9090:32582/TCP                                                               11m
+tracing                NodePort       10.96.67.34     <none>           80:31870/TCP,16685:32400/TCP                                                 11m
+zipkin                 ClusterIP      10.96.222.186   <none>           9411/TCP                                                                     11m
 ```
 
-ブラウザでアクセスします。NodeのEXTERNAL-IPは3ノードの内どれを利用して問題ありません。
+上記コマンド結果を例にすると、以下コロン後の30000以上ポート番号となります。
+ご自身のと置き換えて対応してください。
+
+* Prometheus 9090:32582
+* Grafana 3000:30536
+* Kiali 20001:32446
+* Jaeger 80:31870
+
+先ほど確認した、EXTERNAL-IPと各`NodePort`を指定して、Webブラウザからアクセスしてください。
 
 `http://EXTERNAL-IP:NodePort/`
 
 ### 2-2 Grafana Loki インストール
 
 Helmを利用して、Grafana Lokiをインストールします。
+
+**Helmについて**  
+Helmは、Kubernetesのパッケージマネージャです。パッケージは、Chartと呼ばれ、リポジトリがあります。
+Helmは、Linuxのdnfやapt、Chartはrpmやdebのようなものと捉えてください。
+Chartは、マニフェストのテンプレート（雛形）であり、そのテンプレートに指定した変数のパラメータをvalues.yamlに定義、
+このChartとvalues.yamlの組み合わせで、新たなマニフェストを生成してKubernetesクラスタに登録する仕組みです。
+このHelmを利用して、マニフェストをテンプレート化することで、マニフェストが大量とならないように管理の効率化を図ることができます。
+{: .notice--info}
 
 Grafana公式のHelmチャートリポジトリを追加します。
 
@@ -427,7 +469,22 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
 
 ### 2-3 Grafana Lokiのセットアップ
 
-Grafanaダッシュボードを開いて、左メニューの[Configuration]-[Data Sources]を選択します。
+Grafanaにアクセスします。
+
+```sh
+kubectl get services grafana -n istio-system
+```
+```
+NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+grafana   NodePort   10.96.142.228   <none>        3000:30536/TCP   127m
+```
+
+GrafanaのアクセスにはNodePortを利用します。  
+NodePortは`PORT(S)`の`:`以降のポート番号です。  
+上記の場合、以下のURLにアクセスします。  
+http://[WorkerNodeのパブリックIP]:30536
+
+左メニューの[Configuration]-[Data Sources]を選択します。
 
 ![](1-012.png)
 
@@ -461,100 +518,15 @@ Lokiの設定画面の「URL」に`http://loki:3100/`と入力、「Maximum line
 
 各ノードのメトリクスを取集するためにnode exporterを各ノードに配備します。
 
-node exporterのマニフェストをファイルを作成します。
+既に作成済みのnode exporterのマニフェストを利用して、Kubernetesクラスタに適用します。
 
 ```sh
-vim node-exporter-cc.yaml
-```
-以下、コピー元として利用してください。
-```sh
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    app: node-exporter-cc
-  name: node-exporter-cc
-  namespace: default
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    prometheus.io/scrape: "true"
-  labels:
-    app: node-exporter-cc
-  name: node-exporter-cc
-  namespace: default
-spec:
-  clusterIP: None
-  ports:
-    - name: metrics
-      port: 9100
-      protocol: TCP
-      targetPort: 9100
-  selector:
-    app: node-exporter-cc
-  type: "ClusterIP"
----
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  labels:
-    app: node-exporter-cc 
-  name: node-exporter-cc
-  namespace: default
-spec:
-  selector:
-    matchLabels:
-      app: node-exporter-cc
-  updateStrategy:
-    type: RollingUpdate
-  template:
-    metadata:
-      labels:
-        app: node-exporter-cc
-    spec:
-      serviceAccountName: node-exporter-cc
-      containers:
-        - name: node-exporter-cc
-          image: "prom/node-exporter:v1.2.2"
-          imagePullPolicy: "IfNotPresent"
-          args:
-            - --path.procfs=/host/proc
-            - --path.sysfs=/host/sys
-          ports:
-            - name: metrics
-              containerPort: 9100
-              hostPort: 9100
-          resources:
-            {}
-          volumeMounts:
-            - name: proc
-              mountPath: /host/proc
-              readOnly:  true
-            - name: sys
-              mountPath: /host/sys
-              readOnly: true
-      hostNetwork: true
-      hostPID: true
-      volumes:
-        - name: proc
-          hostPath:
-            path: /proc
-        - name: sys
-          hostPath:
-            path: /sys
-```
-
-Kubernetesクラスタに適用します。
-
-```sh
-kubectl apply -f node-exporter-cc.yaml
+kubectl apply -f https://raw.githubusercontent.com/oracle-japan/ochacafe-s4-6/main/manifests/node-exporter-handson.yaml
 ```
 ```sh
-serviceaccount/node-exporter-cc created
-service/node-exporter-cc created
-daemonset.apps/node-exporter-cc created
+serviceaccount/node-exporter-handson created
+service/node-exporter-handson created
+daemonset.apps/node-exporter-handson created
 ```
 
 node-exporter-ccというPodの「STATUS」が「Running」であることを確認します。
@@ -563,16 +535,29 @@ node-exporter-ccというPodの「STATUS」が「Running」であることを確
 kubectl get pods
 ```
 ```
-NAME                           READY   STATUS    RESTARTS   AGE
-node-exporter-cc-7x7m7   1/1     Running   0          53s
-node-exporter-cc-hbjnd   1/1     Running   0          53s
-node-exporter-cc-nzd4l   1/1     Running   0          53s
+NAME                          READY   STATUS    RESTARTS   AGE
+node-exporter-handson-56m4h   1/1     Running   0          25s
+node-exporter-handson-r7br8   1/1     Running   0          25s
+node-exporter-handson-rr2rf   1/1     Running   0          25s
 ```
 
 ### 2-5 Prometheus WebUIからPromQLの実行
 
 Prometheus WebUIからPromQLを実行して、3ノードの各ノードのメモリ空き容量と3ノードでのメモリ空き容量の合計を確認します。
-まずは、ブラウザでPrometheus WebUIにアクセスしてください。
+まずは、ブラウザでPrometheus WebUIにアクセスします。
+
+```sh
+kubectl get services prometheus -n istio-system
+```
+```
+NAME         TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+prometheus   NodePort   10.96.227.118   <none>        9090:32582/TCP   136m
+```
+
+GrafanaのアクセスにはNodePortを利用します。  
+NodePortは`PORT(S)`の`:`以降のポート番号です。  
+上記の場合、以下のURLにアクセスします。  
+http://[WorkerNodeのパブリックIP]:32582
 
 ![](1-019.png)
 
