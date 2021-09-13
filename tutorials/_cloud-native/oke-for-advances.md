@@ -1479,6 +1479,10 @@ Grafanaではプラグインを利用して、Oracle Cloud Infrastructure Monito
 
 OCIコンソールのハンバーガーメニューを開き、「アイデンティティとセキュリティ」から「動的グループ」を選択します。  
 
+**動的グループについて**  
+動的グループの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)のページをご確認ください。
+{: .notice--info}
+
 ![](5-001.png)
 
 「動的グループの作成」をクリックします。  
