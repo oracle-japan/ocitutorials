@@ -1474,8 +1474,7 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 
 以上で、ハンズオンは終わりです。
 
-
-【オプション】5. OCI MonitoringのメトリクスをGrafanaダッシュボードを利用して確認してみよう
+5.OCI MonitoringのメトリクスをGrafanaダッシュボードを利用して確認してみよう【オプション】
 ---------------------------------
 
 ここからはオプションの手順になります。  
@@ -1510,8 +1509,7 @@ key|value
 -|-
 名前| grafana_dynamic_group
 説明| grafana_dynamic_group
-一致ルール - ルール1 | resource.compartment.id = '<ご自身のコンパートメントOCID>'
-一致ルール - ルール2 | instance.compartment.id = '<ご自身のコンパートメントOCID>'
+一致ルール - ルール1 | instance.compartment.id = '<ご自身のコンパートメントOCID>'
 
 ![](5-003.png)
 
@@ -1532,6 +1530,7 @@ key|value
 ![](5-005.png)
 
 以下の情報を入力します。  
+また、「手動エディタの表示」にチェックを入れます。  
 
 key|value
 -|-
@@ -1543,6 +1542,8 @@ key|value
 ![](5-006.png)
 
 画像はイメージですので、コンパートメント名はご自身の環境に合わせて読み替えてください。  
+
+「作成」をクリックします。  
 
 これで、動的グループとポリシーの設定は完了です。  
 
