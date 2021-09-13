@@ -350,7 +350,9 @@ NAME          STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP     OS-
 Prometheus,Grafana,Kiali,Jaegerの`NodePort`を確認します。
 TYPEが`NodePort`となっているServiceのPORT(S)「xxxxx:30000」コロン後の30000以上のポート番号が`NodePort`番号です。
 
-サービス名は、Jaegerだけtracingとなります。
+**Jaegerのサービス名について**  
+サービス名は、Jaegerだけtracingとなるので、ご注意ください。  
+{: .notice--warning}
 
 * Prometheus:prometheus
 * Grafana:grafana
@@ -529,7 +531,7 @@ service/node-exporter-handson created
 daemonset.apps/node-exporter-handson created
 ```
 
-node-exporter-ccというPodの「STATUS」が「Running」であることを確認します。
+`node-exporter-handson`というPodの「STATUS」が「Running」であることを確認します。
 
 ```sh
 kubectl get pods
@@ -641,6 +643,12 @@ git clone https://github.com/oracle-japan/code-at-customer-handson
 大きく上部のサンプルアプリケーションと下部のObservability環境から構成されていますが、下部については手順2で構築済みです。  
 そのため、以降では、主に上部のサンプルアプリケーションについてみていきます。
 
+また、今回はアプリケーションへのアクセスにistio-ingressgatewayおよびNodePortを利用してアクセスします。  
+実体としては、istio-ingressgatewayはOracle Cloud Infrastructure Load Balancingサービス、NodePortはWorker NodeとなるComputeインスタンスのPublic IPとPortを利用しています。  
+そのため、Oracle Cloud Infrastructureの構成としては以下のような図になります。
+
+![](3-031.png)
+
 このサンプルアプリケーションは、3つのコンポーネントから以下のように構成されています。
 
 * フロントエンドアプリケーション(図中の`Olympics`)  
@@ -672,11 +680,11 @@ Helidonには`Helidon CLI`という便利なCLIツールがあります。
 {: .notice--info}
 
 ```sh
-cd code-at-customer-handson/olympic_backend
+cd code-at-customer-handson/olympic_frontend
 ```
 
 ```sh
-docker build -t nrt.ocir.io/orasejapan/codeatcustomer/frontend-app .
+docker image build -t code-at-customer/frontend-app .
 ```
 
 ***コマンド結果***
@@ -701,12 +709,30 @@ Step 13/13 : EXPOSE 8080
 Removing intermediate container 7e3a2bb12ed4
  ---> b96ac0669f0d
 Successfully built b96ac0669f0d
-Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/frontend-app:latest
+Successfully tagged code-at-customer/frontend-app:latest
 ```
 
-これでビルド完了です。
+これでビルド完了です。　　
+
+ビルドしたコンテナイメージを確認してみます。  
+
+```sh
+docker image ls
+```
+
+***コマンド結果***
+```sh
+REPOSITORY                           TAG        IMAGE ID       CREATED         SIZE
+code-at-customer/frontend-app        latest     5ee35f1e2a49   3 minutes ago   270MB
+~~~~
+```
 
 本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
+
+**OCIR(Oracle Cloud Infrastructure Registry)へのpushについて**  
+OCIRへビルドしたコンテナイメージをpushする場合は、Oracle Cloud InfrastructureのネームスペースとOCIRのリージョンを指定したタグ付けを行う必要があります。  
+詳細は[こちら](https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#2ocir%E3%81%B8%E3%81%AE%E3%83%97%E3%83%83%E3%82%B7%E3%83%A5%E3%81%A8oke%E3%81%B8%E3%81%AE%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4)をご確認ください。
+{: .notice--info}
 
 ホームディレクトリに戻っておきます。
 
@@ -719,13 +745,16 @@ cd ~
 前述した通り、バックエンドアプリケーションはバージョンが3つ存在します。
 今回は、そのバージョン情報を環境変数として持たせたDockerfileを用意していますので、それぞれビルドします。
 
-例えば、v1の銅メダリストを返却するバックエンドアプリケーションは以下のようなDockerfileになっており、ENV命令で定義しています。
+例えば、v1の銅メダリストを返却するバックエンドアプリケーションは以下のようなDockerfileになっており、ENV命令とARG命令で定義しています。
 
 ```Dockerfile
+
 # 1st stage, build the app
 FROM maven:3.6-jdk-11 as build
 
 WORKDIR /helidon
+
+ARG SERVICE_VERSION=V1
 
 # Create a first layer to cache the "Maven World" in the local repository.
 # Incremental docker builds will always resume after that, unless you update
@@ -747,14 +776,23 @@ WORKDIR /helidon
 COPY --from=build /helidon/target/olympic_backend.jar ./
 COPY --from=build /helidon/target/libs ./libs
 
-ENV SERVICE_VERSION=V1
+ARG SERVICE_VERSION=V1
+ENV SERVICE_VERSION=${SERVICE_VERSION}
 
 CMD ["java", "-jar", "olympic_backend.jar"]
 
 EXPOSE 8080
 ```
 
-`ENV SERVICE_VERSION=V1`の箇所がアプリケーションのバージョンを定義している部分です。
+`ARG SERVICE_VERSION=V1`(デフォルト値はV1)で、ビルド時の`--build-arg`オプションで指定されたバージョンを取得し、
+`ENV SERVICE_VERSION=${SERVICE_VERSION}`で環境変数として定義しています。  
+
+**ENV命令とARG命令について**  
+Dockerfileでは、コンテナ内で環境変数を扱う際にENV命令が用意されています。  
+ENV命令は、環境変数と値のセットになっており、値はDockerfileから派生する全てのコマンド環境で利用できます。  
+また、ARG命令を利用すると`docker image build`コマンド実行時に`–build-arg`オプションで指定された変数をビルド時に利用することができます。  
+詳細は[こちら](https://docs.docker.jp/engine/reference/builder.html)をご確認ください。
+{: .notice--info}
 
 今回はバージョンが3つ存在するので、それぞれビルドしてみます。  
 
@@ -762,43 +800,44 @@ EXPOSE 8080
 cd code-at-customer-handson/olympic_backend
 ```
 
-V1をビルドします。
+V1をビルドします。  
+V1はデフォルト値なので、`--build-arg`オプションを付与しなくても良いですが、今回はオプションを付与してビルドしてみます。  
 
 ```sh
-docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1 -f Dockerfile_v1 .
+docker image build -t code-at-customer/backend-app-v1 --build-arg SERVICE_VERSION=V1 .
 ```
 
 ***コマンド結果***
 
 ```sh
 ~~~~
-Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1:latest
+Successfully tagged code-at-customer/backend-app-v1:latest
 ```
 
-V2をビルドします。
+ビルドしたコンテナイメージを確認してみます。  
 
 ```sh
-docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2 -f Dockerfile_v2 .
+docker image ls
 ```
 
-***コマンド結果***
-
+***コマンド結果***(順不同になる可能性があります)
 ```sh
+REPOSITORY                           TAG        IMAGE ID       CREATED          SIZE
+code-at-customer/frontend-app        latest     5ee35f1e2a49   13 minutes ago   270MB
+code-at-customer/backend-app-v1      latest     f585e32a1147   27 minutes ago   243MB
 ~~~~
-Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2:latest
 ```
 
-V3をビルドします。
+V2、V3も同じようにビルドしていきますが、時間がかかるため、今回は割愛します。  
+V2、V3をビルドすると以下のようにコンテナイメージが作成されます。
 
 ```sh
-docker build -t nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3 -f Dockerfile_v3 .
-```
-
-***コマンド結果***
-
-```sh
+REPOSITORY                           TAG        IMAGE ID       CREATED          SIZE
+code-at-customer/frontend-app        latest     5ee35f1e2a49   15 minutes ago   270MB
+code-at-customer/backend-app-v1      latest     9ba2a2183e29   39 minutes ago   243MB
+code-at-customer/backend-app-v2      latest     9ba2a2183e29   39 minutes ago   243MB
+code-at-customer/backend-app-v3      latest     bb7e737e4940   About a minute ago   243MB
 ~~~~
-Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3:latest
 ```
 
 本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
@@ -809,21 +848,38 @@ Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3:latest
 cd ~
 ```
 
-最後にバックエンドアプリケーションのコンテナもビルドしてみます。  
+最後にデータソースアプリケーションのコンテナもビルドしてみます。  
 
 ```sh
 cd code-at-customer-handson/olympic_datasource
 ```
 
 ```sh
-docker build -t nrt.ocir.io/orasejapan/codeatcustomer/datasource-app .
+docker image build -t code-at-customer/datasource-app .
 ```
 
 ***コマンド結果***
 
 ```sh
 ~~~~
-Successfully tagged nrt.ocir.io/orasejapan/codeatcustomer/datasource-app:latest
+Successfully tagged code-at-customer/datasource-app:latest
+```
+
+ビルドしたコンテナイメージを確認してみます。  
+
+```sh
+docker image ls
+```
+
+***コマンド結果***(順不同になる可能性があります)
+```sh
+REPOSITORY                           TAG        IMAGE ID       CREATED          SIZE
+code-at-customer/frontend-app        latest     5ee35f1e2a49   15 minutes ago   270MB
+code-at-customer/backend-app-v1      latest     9ba2a2183e29   39 minutes ago   243MB
+code-at-customer/backend-app-v2      latest     9ba2a2183e29   39 minutes ago   243MB
+code-at-customer/backend-app-v3      latest     9ba2a2183e29   39 minutes ago   243MB
+code-at-customer/datasource-app      latest     3a542bedb13a   43 seconds ago   261MB
+~~~~
 ```
 
 本来であれば、ビルドしたイメージをOCIR(Oracle Cloud Infrastructure Registry)へpushすることになりますが、今回はすでにコンテナイメージはpush済みなので、割愛します。
@@ -913,9 +969,11 @@ istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:301
 この場合は、以下のURLにアクセスします。  
 `http://132.226.211.116`
 
-以下のような画面が表示されればOKです！
+以下のような画面が表示されればOKです！  
 
 ![](3-002.png)
+
+何回かアクセスをしてみると、金メダメリスト(v3)、銀メダリスト(v2)、銅メダリスト(v1)がランダムに表示されることが確認できます。  
 
 ホームディレクトリに戻っておきます。
 
@@ -997,6 +1055,8 @@ Loki上でログをフィルタリングしたり、検索したりすること�
 例えば、現在の状態では、Pod内にIstioによってInjectionされているEnvoyのログも出力されているので、アプリだけのログに絞ってみます。  
 
 ![](3-006.png)欄にあるテキストボックスに`,container="backend-app"`という文字列を追加し、左上の![](3-013.png)をクリックします。  
+![](3-030.png)のようなクエリになります。  
+
 これで、`backend-app-v2-84f5859c9f-gr6dd`というPodの中の`backend-app`というcontainerに絞ることができます。  
 
 ![](3-012.png)
@@ -1173,8 +1233,8 @@ destinationrule.networking.istio.io/datasource created
 
 ![](3-017.png)
 
-ここでは、`default`ネームスペースに3つのアプリケーションが存在することがわかります。  
-3つのアプリケーションとは、今回デプロイしているフロントエンドアプリケーション、バックエンドアプリケーション、データソースアプリケーションです。  
+ここでは、`default`ネームスペースに4つのアプリケーションが存在することがわかります。  
+4つのアプリケーションとは、今回デプロイしているフロントエンドアプリケーション、バックエンドアプリケーション、データソースアプリケーションとNode Exporterです。  
 
 次に、`istio Config`を確認します。 
 
@@ -1194,7 +1254,11 @@ destinationrule.networking.istio.io/datasource created
 ![](3-021.png)
 
 KubernetesのServiceリソースが確認できます。  
-`Deatails`には、Serviceリソースに紐づく`DestinationRule`が確認できるようになっています。  
+`Deatails`には、Serviceリソースに紐づく`DestinationRule`が確認できるようになっています。 
+
+**`node-exporter-handson`について**  
+`node-exporter-handson`の`Deatails`欄に![](3-032.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
+{: .notice--info}
 
 次に`Workload`を確認します。  
 
@@ -1202,7 +1266,11 @@ KubernetesのServiceリソースが確認できます。
 
 ![](3-022.png)
 
-ここには、デプロイ済みのDeploymentリソースが表示されます。  
+ここには、デプロイ済みのDeploymentリソースが表示されます。
+
+**`node-exporter-handson`について**  
+`node-exporter-handson`の`Deatails`欄に![](3-032.png)![](3-033.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
+{: .notice--info}
 
 次に`Application`を確認します。  
 
@@ -1212,6 +1280,10 @@ KubernetesのServiceリソースが確認できます。
 ここでのアプリケーションとはServiceリソースとほぼ同義です。  
 
 ![](3-023.png)
+
+**`node-exporter-handson`について**  
+`node-exporter-handson`の`Deatails`欄に![](3-032.png)というマークがありますが、今回のハンズオンの動作には影響しませんので、無視してください。 
+{: .notice--info}
 
 `backend-app`をクリックしてみると、以下のような画面が表示されます。  
 
@@ -1259,7 +1331,7 @@ Kialiでは、上記でご確認いただいたとおり、Service Mesh環境の
 cd ~
 ```
 
-4.Istioを利用したカナリアリリース
+4.Istioを利用したカナリアリリースをやってみよう
 ---------------------------------
 
 最後に、手順3までに構築してきた環境を利用して、カナリアリリースを実施してみます。
@@ -1386,3 +1458,192 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 </div>
 
 以上で、ハンズオンは終わりです。
+
+
+【オプション】5. OCI MonitoringのメトリクスをGrafanaダッシュボードを利用して確認してみよう
+---------------------------------
+
+ここからはオプションの手順になります。  
+お時間がある方、興味がある方はぜひお試しください。  
+
+Grafanaではプラグインを利用して、Oracle Cloud Infrastructure Monitoringが提供するメトリクスをGrafanaダッシュボードで確認することができます。  
+ここでは、その手順を確認していきます。  
+
+**Oracle Cloud Infrastructure Monitoringについて**  
+詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Monitoring/Concepts/monitoringoverview.htm)のページをご確認ください。
+{: .notice--info}
+
+### 5-1 動的グループとポリシーの設定
+
+ここでは、OKE上にデプロイされているGrafanaからOracle Cloud Infrastructure Monitoringが提供するメトリクスを取得できるようにポリシーの設定を行います。  
+
+OCIコンソールのハンバーガーメニューを開き、「アイデンティティとセキュリティ」から「動的グループ」を選択します。  
+
+**動的グループについて**  
+動的グループの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)のページをご確認ください。
+{: .notice--info}
+
+![](5-001.png)
+
+「動的グループの作成」をクリックします。  
+
+![](5-002.png)
+
+以下のように情報を入力します。  
+
+key|value
+-|-
+名前| grafana_dynamic_group
+説明| grafana_dynamic_group
+一致ルール - ルール1 | resource.compartment.id = '<ご自身のコンパートメントOCID>'
+一致ルール - ルール2 | instance.compartment.id = '<ご自身のコンパートメントOCID>'
+
+![](5-003.png)
+
+画像はイメージですので、コンパートメントOCIDはご自身の環境に合わせて読み替えてください。  
+
+「作成」をクリックします。  
+
+**コンパートメントOCIDについて**  
+コンパートメントOCIDの確認方法については、[こちら](http://localhost:4000/ocitutorials/cloud-native/functions-for-beginners/#2-1-2-%E3%82%B3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%88%E3%83%A1%E3%83%B3%E3%83%88ocid%E3%81%AE%E7%A2%BA%E8%AA%8D)の`2-1-2`の手順をご確認ください。  
+{: .notice--info}
+
+次に画面左側にあるメニューから「ポリシー」をクリックします。  
+
+![](5-004.png)
+
+「ポリシーの作成」をクリックします。  
+
+![](5-005.png)
+
+以下の情報を入力します。  
+
+key|value
+-|-
+名前| grafana_policy
+説明| grafana_policy
+一致ルール - ルール1 | allow dynamic-group grafana_dynamic_group to read metrics in compartment '<ご自身のコンパートメント名>'
+一致ルール - ルール2 | allow dynamic-group grafana_dynamic_group to read metrics in compartment '<ご自身のコンパートメント名>'
+
+![](5-006.png)
+
+画像はイメージですので、コンパートメント名はご自身の環境に合わせて読み替えてください。  
+
+これで、動的グループとポリシーの設定は完了です。  
+
+### 5-2 OCI MonitoringプラグインのGrafanaへのインストール
+
+ここでは、OCI MonitoringプラグインをGrafanaへインストールしていきます。  
+
+今回、GrafanaをIstioアドオンとしてインストールしているので、以下にManifestが配置してあります。  
+
+```
+cd ~/istio-1.11.0/samples/addons/
+```
+
+GrafanaのManifestファイルをviで開きます。  
+
+```sh
+vi grafana.yaml
+```
+
+160行目くらいにある`env`フィールドに以下の環境変数を追加します。  
+
+```yaml
+    - name: GF_INSTALL_PLUGINS
+      value: "oci-metrics-datasource"
+```
+
+保存して終了したら、Manifestを適用します。  
+
+```sh
+kubectl apply -f grafana.yaml
+```
+
+GrafanaにNodePortからアクセス可能にするために以下のコマンドを再度実行します。  
+
+```sh
+kubectl patch service grafana -n istio-system -p '{"spec": {"type": "NodePort"}}'
+```
+
+***コマンド結果***
+```sh
+service/grafana patched
+```
+
+また、適用後にGrafanaが再起動するので、起動が完了するまで待機します。 
+
+```
+kubectl get pod -n istio-system
+```
+
+***コマンド結果***
+```sh
+NAME                                    READY   STATUS    RESTARTS   AGE
+grafana-5f75c485c4-v5n5n                1/1     Running   0          75s
+```
+
+これで、OCI MonitoringプラグインのGrafanaへのインストールは完了です。  
+
+### 5-3 Grafanaダッシュボードの確認
+
+Grafanaが再起動したら、Grafanaダッシュボードにブラウザからアクセスします。  
+アクセスするためのポート番号が変わっているので、再度確認を行います。
+
+```sh
+kubectl get services grafana -n istio-system
+```
+
+***コマンド結果***
+
+```sh
+NAME      TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+grafana   NodePort   10.96.219.44   <none>        3000:30453/TCP   4d3h
+```
+
+GrafanaのアクセスにはNodePortを利用します。  
+NodePortは`PORT(S)`の`:`以降のポート番号です。  
+上記の場合、以下のURLにアクセスします。  
+http://[WorkerNodeのパブリックIP]:30453
+
+アクセスしたら、![](5-007.png)の![](5-014.png)をクリックします。  
+
+![](5-008.png)をクリックし、最下部にある「Oracle Cloud Infrastructure Metrics」を選択し、![](5-015.png)をクリックします。  
+
+以下の情報を入力します。  
+
+key|value
+-|-
+Tenancy OCID | ご自身のテナンシOCID
+Default Region | ap-osaka-1
+Environment | OCI Instance
+
+![](5-009.png)
+
+**テナンシOCIDについて**  
+テナンシOCIDの確認方法については、[こちら](http://localhost:4000/ocitutorials/cloud-native/oke-for-intermediates/#3%E3%83%AF%E3%83%BC%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97%E3%81%A7%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88%E6%83%85%E5%A0%B1%E3%81%AE%E5%8F%8E%E9%9B%86)の`3.テナンシOCID`をご確認ください。  
+{: .notice--info}
+
+「Save&Test」をクリックします。  
+
+![](5-010.png)をクリックし、上部のタブから「Oracle Cloud Infrastructure Metrics」を選択します。
+
+![](5-011.png)
+
+以下のように必要項目を入力します。  
+
+key|value
+-|-
+Region | ap-osaka-1
+Compartment | ご自身のコンパートメント名
+Namespace | oci_computeagent
+Metric | 例えば`CpuUtilization`を選択
+
+![](5-012.png)
+画像はイメージですので、各項目はご自身の環境に合わせて読み替えてください。  
+
+以下のようなグラフと表が表示されます。  
+
+![](5-013.png)
+
+このようにOCI MonitoringのGrafanaプラグインを利用すると、OCIのCompute(今回の場合はOKEのWorker Node)のメトリクスをGrafanaダッシュボードに統合することができます。  
