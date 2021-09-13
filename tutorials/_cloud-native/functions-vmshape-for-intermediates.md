@@ -138,7 +138,7 @@ OCIコンソールハンバーガーメニューを開きます。[監視およ�
 
 - トリガールール:
 
-    - 演算子:より大きい
+    - 演算子:次より大きい
 
     - 値:`90`
 
@@ -215,30 +215,9 @@ Notificationサービスはファンクションや電子メールの他にもHT
 /dev/null < $(yes) &
 ```
 
-以下のように10プロセス程度をバックグランド実行で起動します。
+以下のプロセスを実行します。
 ```
-[opc@instance]$ 
-[opc@instance]$ /dev/null < $(yes) &
-[1] 2370
-[opc@instance]$ /dev/null < $(yes) &
-[2] 2372
-[opc@instance]$ /dev/null < $(yes) &
-[3] 2374
-[opc@instance]$ /dev/null < $(yes) &
-[4] 2376
-[opc@instance]$ /dev/null < $(yes) &
-[5] 2378
-[opc@instance]$ /dev/null < $(yes) &
-[6] 2380
-[opc@instance]$ /dev/null < $(yes) &
-[7] 2382
-[opc@instance]$ /dev/null < $(yes) &
-[8] 2384
-[opc@instance]$ /dev/null < $(yes) &
-[9] 2387
-[opc@instance]$ /dev/null < $(yes) &
-[10] 2389
-[opc@instance]$ 
+for i in {1..100} ; nohup /dev/null < $(yes) ; done
 ```
 
 以下のコマンドを実行し、メモリ使用率を確認しましょう。
