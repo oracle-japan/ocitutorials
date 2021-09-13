@@ -144,6 +144,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[501: OCICLIを利用したインスタンス操作](/ocitutorials/database/adb501-ocicli){:target="_blank"}**
     * OCI CLIを利用したADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。
 
++ **[502: 各種設定の確認、レポートの取得](/ocitutorials/database/adb502-report){:target="_blank"}**
+    * OS領域に入ることのできないADBにおける各種レポート・ログの取得方法を確認します。
+
 <br/>
 ----
  + **[ADB ハンズオンラボ](https://community.oracle.com/tech/developers/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol){:target="_blank"}**    ※旧サイト（順次、本サイトに移行中）
