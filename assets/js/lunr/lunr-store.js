@@ -323,6 +323,12 @@ var store = [{
         "url": "https://oracle-japan.github.io/ocitutorials/content-management/77_sitesecuritygovernance/",
         "teaser": "https://oracle-japan.github.io/ocitutorials/content-management/77_SiteSecurityGovernance/021.png"
       },{
+        "title": "Oracle GoldenGate Stream Analytics ハンズオン",
+        "excerpt":"Oracle GoldenGate Stream Analytics は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。 このエントリーでは、GGSA の Marketplace からのプロビジョニングからチュートリアル完了までの手順を記します。 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること ハンズオン環境の全体像 OCI Marketplace から GGSA を最小構成でプロビジョニングすると、以下の環境が作成されます。本エントリーでは、この環境を用いてハンズオンを実施します。 1. Marketplace からインスタンスのプロビジョニング はじめに、OCI コンソール画面左上のハンバーガーメニューを展開し、マーケットプレイス &gt; すべてのアプリケーション と選択します。 アプリケーションの一覧画面で、検索窓にStream Analyticsと入力し、Oracle GoldenGate Stream Analytics - UCM を選択します。 Oracle 使用条件を確認し上でこれに同意します。にチェックを入れた後に、スタックの起動をクリックします。 自動入力された項目を確認し、次をクリックします。 作成するインスタンスに関する情報を入力します。 Display Name: 任意の名前 Host DNS Name(オプション): ggsa...","categories": [],
+        "tags": ["ggsa"],
+        "url": "https://oracle-japan.github.io/ocitutorials/data-integration/ggsa-tutorial/",
+        "teaser": null
+      },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(DBCS)",
         "excerpt":"はじめに Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから データベース → ベア・メタル、VMおよびExadata を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった DBシステムの作成...","categories": [],
         "tags": [],
