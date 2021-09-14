@@ -254,6 +254,8 @@ kubectl patch service prometheus -n istio-system -p '{"spec": {"type": "NodePort
 service/prometheus patched
 ```
 
+---
+
 ```sh
 kubectl patch service grafana -n istio-system -p '{"spec": {"type": "NodePort"}}'
 ```
@@ -261,6 +263,8 @@ kubectl patch service grafana -n istio-system -p '{"spec": {"type": "NodePort"}}
 ```sh
 service/grafana patched
 ```
+
+---
 
 ```sh
 kubectl patch service kiali -n istio-system -p '{"spec": {"type": "NodePort"}}'
@@ -270,6 +274,8 @@ kubectl patch service kiali -n istio-system -p '{"spec": {"type": "NodePort"}}'
 service/kiali patched
 ```
 
+---
+
 ```sh
 kubectl patch service tracing -n istio-system -p '{"spec": {"type": "NodePort"}}'
 ```
@@ -277,6 +283,9 @@ kubectl patch service tracing -n istio-system -p '{"spec": {"type": "NodePort"}}
 ```sh
 service/tracing patched
 ```
+
+---
+
 ServiceとDeploymentの状況を確認します。
 「service/prometheus」、「service/grafana」、「service/kiali」、「service/tracing」のTYPEが`NodePort`になっていることを確認します。「service/istio-ingressgateway」については、しばらくするとEXTERNAL-IPアドレスが自動で付与されます。
 
@@ -311,6 +320,8 @@ deployment.apps/prometheus             1/1     1            1           94s     
 OCIコンソールから、[ネットワーキング]-[仮想クラウド・ネットワーク]を選択して対象となる`oke-vcn-quick-cluster1-xxxxxxxxx`を選択します。
 
 ![](1-027.png)
+
+![](1-032.png)
 
 3つあるサブネットのうち、ワーカノードが属するサブネット`oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional`を選択します。
 
@@ -476,6 +487,7 @@ Grafanaにアクセスします。
 ```sh
 kubectl get services grafana -n istio-system
 ```
+***コマンド結果***
 ```
 NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 grafana   NodePort   10.96.142.228   <none>        3000:30536/TCP   127m
@@ -525,6 +537,7 @@ Lokiの設定画面の「URL」に`http://loki:3100/`と入力、「Maximum line
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/oracle-japan/ochacafe-s4-6/main/manifests/node-exporter-handson.yaml
 ```
+***コマンド結果***
 ```sh
 serviceaccount/node-exporter-handson created
 service/node-exporter-handson created
@@ -536,6 +549,7 @@ daemonset.apps/node-exporter-handson created
 ```sh
 kubectl get pods
 ```
+***コマンド結果***
 ```
 NAME                          READY   STATUS    RESTARTS   AGE
 node-exporter-handson-56m4h   1/1     Running   0          25s
@@ -551,6 +565,7 @@ Prometheus WebUIからPromQLを実行して、3ノードの各ノードのメモ
 ```sh
 kubectl get services prometheus -n istio-system
 ```
+***コマンド結果***
 ```
 NAME         TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 prometheus   NodePort   10.96.227.118   <none>        9090:32582/TCP   136m
@@ -929,7 +944,7 @@ ingress.networking.k8s.io/gateway created
 デプロイ状況を確認してみます。
 
 ```sh
-kubectl get pod
+kubectl get pods
 ```
 
 ***コマンド結果***
@@ -946,6 +961,9 @@ datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
 datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
 frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
 frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+node-exporter-handson-2mcph       1/1     Running   0          21m
+node-exporter-handson-57qqq       1/1     Running   0          21m
+node-exporter-handson-mbdzl       1/1     Running   0          21m
 ```
 
 全て`Running`になったら、アプリケーションにアクセスしてみます。
@@ -961,13 +979,13 @@ kubectl get services istio-ingressgateway -n istio-system
 
 ```sh
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)                                                                      AGE
-istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.xxx.xxx   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
 ```
 
-上記の場合は、istio-ingressgatewayの`EXTERNAL-IP`である`132.226.211.116`がエンドポイントになります。
+上記の場合は、istio-ingressgatewayの`EXTERNAL-IP`である`132.226.xxx.xxx`がエンドポイントになります。
 
 この場合は、以下のURLにアクセスします。  
-`http://132.226.211.116`
+`http://132.226.xxx.xxx`
 
 以下のような画面が表示されればOKです！  
 
@@ -1019,7 +1037,7 @@ http://[WorkerNodeのパブリックIP]:31624
 対象とするPod名を選択します。
 
 ```sh
-kubectl get pod
+kubectl get pods
 ```
 
 
@@ -1037,6 +1055,9 @@ datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
 datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
 frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
 frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+node-exporter-handson-2mcph       1/1     Running   0          21m
+node-exporter-handson-57qqq       1/1     Running   0          21m
+node-exporter-handson-mbdzl       1/1     Running   0          21m
 ```
 
 例えば、`backend-app-v2-84f5859c9f-gr6dd`を対象とします。(各自の環境に合わせてください)  
@@ -1490,6 +1511,10 @@ OCIコンソールのハンバーガーメニューを開き、「アイデン�
 
 以下のように情報を入力します。  
 
+**集合ハンズオンで参加されている皆様へ**  
+動的グループ名は重複が許容されないため、集合ハンズオンなどで同一環境を複数名でご利用されている皆様は動的グループ名に自分のイニシャルや好きな複数桁の番号などを付与し、重複しないように動的グループ名を設定してください。  
+{: .notice--info}
+
 key|value
 -|-
 名前| grafana_dynamic_group
@@ -1521,12 +1546,12 @@ key|value
 -|-
 名前| grafana_policy
 説明| grafana_policy
-一致ルール - ルール1 | allow dynamic-group grafana_dynamic_group to read compartments in compartment <ご自身のコンパートメント名>
-一致ルール - ルール2 | allow dynamic-group grafana_dynamic_group to read metrics in compartment <ご自身のコンパートメント名>
+コンパートメント | ご自身のコンパートメント名
+ポリシー | allow dynamic-group grafana_dynamic_group to read metrics in compartment id <ご自身のコンパートメントOCID>
 
 ![](5-006.png)
 
-画像はイメージですので、コンパートメント名はご自身の環境に合わせて読み替えてください。  
+画像はイメージですので、コンパートメントOCIDはご自身の環境に合わせて読み替えてください。 
 
 「作成」をクリックします。  
 
@@ -1581,7 +1606,17 @@ kubectl get pod -n istio-system
 ***コマンド結果***
 ```sh
 NAME                                    READY   STATUS    RESTARTS   AGE
-grafana-5f75c485c4-v5n5n                1/1     Running   0          75s
+grafana-5f75c485c4-5rxdq                1/1     Running   0          37s
+istio-egressgateway-9dc6cbc49-pk5q2     1/1     Running   0          55m
+istio-ingressgateway-7975cdb749-8kxr9   1/1     Running   0          55m
+istiod-77b4d7b55d-cc7b7                 1/1     Running   0          55m
+jaeger-5f65fdbf9b-pbjfb                 1/1     Running   0          54m
+kiali-787bc487b7-znbl4                  1/1     Running   0          54m
+loki-0                                  1/1     Running   0          51m
+loki-promtail-8z4x7                     1/1     Running   0          51m
+loki-promtail-hpm46                     1/1     Running   0          51m
+loki-promtail-kkc9k                     1/1     Running   0          51m
+prometheus-9f4947649-znlrr              2/2     Running   0          54m
 ```
 
 これで、OCI MonitoringプラグインのGrafanaへのインストールは完了です。  
