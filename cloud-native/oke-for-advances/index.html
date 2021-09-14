@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-13T22:10:29+09:00">
+  <meta property="article:published_time" content="2021-09-14T11:46:33+09:00">
 
 
 
@@ -313,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
-    <meta itemprop="datePublished" content="2021-09-13T22:10:29+09:00">
+    <meta itemprop="datePublished" content="2021-09-14T11:46:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -616,11 +616,15 @@ deployment.apps/prometheus created
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/prometheus patched
 </code></pre></div></div>
 
+<hr />
+
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service grafana <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/grafana patched
 </code></pre></div></div>
+
+<hr />
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service kiali <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
 </code></pre></div></div>
@@ -628,11 +632,16 @@ deployment.apps/prometheus created
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/kiali patched
 </code></pre></div></div>
 
+<hr />
+
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service tracing <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "NodePort"}}'</span>
 </code></pre></div></div>
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service/tracing patched
 </code></pre></div></div>
+
+<hr />
+
 <p>ServiceとDeploymentの状況を確認します。
 「service/prometheus」、「service/grafana」、「service/kiali」、「service/tracing」のTYPEが<code class="language-plaintext highlighter-rouge">NodePort</code>になっていることを確認します。「service/istio-ingressgateway」については、しばらくするとEXTERNAL-IPアドレスが自動で付与されます。</p>
 
@@ -665,6 +674,8 @@ deployment.apps/prometheus             1/1     1            1           94s     
 <p>OCIコンソールから、[ネットワーキング]-[仮想クラウド・ネットワーク]を選択して対象となる<code class="language-plaintext highlighter-rouge">oke-vcn-quick-cluster1-xxxxxxxxx</code>を選択します。</p>
 
 <p><img src="1-027.png" alt="" /></p>
+
+<p><img src="1-032.png" alt="" /></p>
 
 <p>3つあるサブネットのうち、ワーカノードが属するサブネット<code class="language-plaintext highlighter-rouge">oke-nodesubnet-quick-cluster1-xxxxxxxxx-regional</code>を選択します。</p>
 
@@ -819,6 +830,7 @@ prometheus-9f4947649-c7swm              2/2     Running   0          36m
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services grafana <span class="nt">-n</span> istio-system
 </code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 grafana   NodePort   10.96.142.228   &lt;none&gt;        3000:30536/TCP   127m
 </code></pre></div></div>
@@ -866,6 +878,7 @@ http://[WorkerNodeのパブリックIP]:30536</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> https://raw.githubusercontent.com/oracle-japan/ochacafe-s4-6/main/manifests/node-exporter-handson.yaml
 </code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>serviceaccount/node-exporter-handson created
 service/node-exporter-handson created
 daemonset.apps/node-exporter-handson created
@@ -875,6 +888,7 @@ daemonset.apps/node-exporter-handson created
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pods
 </code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                          READY   STATUS    RESTARTS   AGE
 node-exporter-handson-56m4h   1/1     Running   0          25s
 node-exporter-handson-r7br8   1/1     Running   0          25s
@@ -888,6 +902,7 @@ node-exporter-handson-rr2rf   1/1     Running   0          25s
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get services prometheus <span class="nt">-n</span> istio-system
 </code></pre></div></div>
+<p><strong><em>コマンド結果</em></strong></p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME         TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
 prometheus   NodePort   10.96.227.118   &lt;none&gt;        9090:32582/TCP   136m
 </code></pre></div></div>
@@ -1247,7 +1262,7 @@ ingress.networking.k8s.io/gateway created
 
 <p>デプロイ状況を確認してみます。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pod
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pods
 </code></pre></div></div>
 
 <p><strong><em>コマンド結果</em></strong></p>
@@ -1263,6 +1278,9 @@ datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
 datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
 frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
 frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+node-exporter-handson-2mcph       1/1     Running   0          21m
+node-exporter-handson-57qqq       1/1     Running   0          21m
+node-exporter-handson-mbdzl       1/1     Running   0          21m
 </code></pre></div></div>
 
 <p>全て<code class="language-plaintext highlighter-rouge">Running</code>になったら、アプリケーションにアクセスしてみます。</p>
@@ -1276,13 +1294,13 @@ frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
 <p><strong><em>コマンド結果</em></strong></p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT<span class="o">(</span>S<span class="o">)</span>                                                                      AGE
-istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.xxx.xxx   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
 </code></pre></div></div>
 
-<p>上記の場合は、istio-ingressgatewayの<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>である<code class="language-plaintext highlighter-rouge">132.226.211.116</code>がエンドポイントになります。</p>
+<p>上記の場合は、istio-ingressgatewayの<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>である<code class="language-plaintext highlighter-rouge">132.226.xxx.xxx</code>がエンドポイントになります。</p>
 
 <p>この場合は、以下のURLにアクセスします。<br />
-<code class="language-plaintext highlighter-rouge">http://132.226.211.116</code></p>
+<code class="language-plaintext highlighter-rouge">http://132.226.xxx.xxx</code></p>
 
 <p>以下のような画面が表示されればOKです！</p>
 
@@ -1330,7 +1348,7 @@ http://[WorkerNodeのパブリックIP]:31624</p>
 
 <p>対象とするPod名を選択します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pod
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get pods
 </code></pre></div></div>
 
 <p><strong><em>コマンド結果</em></strong></p>
@@ -1346,6 +1364,9 @@ datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
 datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
 frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
 frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+node-exporter-handson-2mcph       1/1     Running   0          21m
+node-exporter-handson-57qqq       1/1     Running   0          21m
+node-exporter-handson-mbdzl       1/1     Running   0          21m
 </code></pre></div></div>
 
 <p>例えば、<code class="language-plaintext highlighter-rouge">backend-app-v2-84f5859c9f-gr6dd</code>を対象とします。(各自の環境に合わせてください)</p>
@@ -1781,6 +1802,9 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 
 <p>以下のように情報を入力します。</p>
 
+<p class="notice--info"><strong>集合ハンズオンで参加されている皆様へ</strong><br />
+動的グループ名は重複が許容されないため、集合ハンズオンなどで同一環境を複数名でご利用されている皆様は動的グループ名に自分のイニシャルや好きな複数桁の番号などを付与し、重複しないように動的グループ名を設定してください。</p>
+
 <table>
   <thead>
     <tr>
@@ -1841,19 +1865,19 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
       <td>grafana_policy</td>
     </tr>
     <tr>
-      <td>一致ルール - ルール1</td>
-      <td>allow dynamic-group grafana_dynamic_group to read compartments in compartment <ご自身のコンパートメント名></ご自身のコンパートメント名></td>
+      <td>コンパートメント</td>
+      <td>ご自身のコンパートメント名</td>
     </tr>
     <tr>
-      <td>一致ルール - ルール2</td>
-      <td>allow dynamic-group grafana_dynamic_group to read metrics in compartment <ご自身のコンパートメント名></ご自身のコンパートメント名></td>
+      <td>ポリシー</td>
+      <td>allow dynamic-group grafana_dynamic_group to read metrics in compartment id <ご自身のコンパートメントOCID></ご自身のコンパートメントOCID></td>
     </tr>
   </tbody>
 </table>
 
 <p><img src="5-006.png" alt="" /></p>
 
-<p>画像はイメージですので、コンパートメント名はご自身の環境に合わせて読み替えてください。</p>
+<p>画像はイメージですので、コンパートメントOCIDはご自身の環境に合わせて読み替えてください。</p>
 
 <p>「作成」をクリックします。</p>
 
@@ -1900,7 +1924,17 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
 
 <p><strong><em>コマンド結果</em></strong></p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                                    READY   STATUS    RESTARTS   AGE
-grafana-5f75c485c4-v5n5n                1/1     Running   0          75s
+grafana-5f75c485c4-5rxdq                1/1     Running   0          37s
+istio-egressgateway-9dc6cbc49-pk5q2     1/1     Running   0          55m
+istio-ingressgateway-7975cdb749-8kxr9   1/1     Running   0          55m
+istiod-77b4d7b55d-cc7b7                 1/1     Running   0          55m
+jaeger-5f65fdbf9b-pbjfb                 1/1     Running   0          54m
+kiali-787bc487b7-znbl4                  1/1     Running   0          54m
+loki-0                                  1/1     Running   0          51m
+loki-promtail-8z4x7                     1/1     Running   0          51m
+loki-promtail-hpm46                     1/1     Running   0          51m
+loki-promtail-kkc9k                     1/1     Running   0          51m
+prometheus-9f4947649-znlrr              2/2     Running   0          54m
 </code></pre></div></div>
 
 <p>これで、OCI MonitoringプラグインのGrafanaへのインストールは完了です。</p>
@@ -2011,7 +2045,7 @@ http://[WorkerNodeのパブリックIP]:30453</p>
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-13T22:10:29+09:00">September 13, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-14T11:46:33+09:00">September 14, 2021</time></p>
 
 
       </footer>

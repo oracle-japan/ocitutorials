@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/using-cli/img5.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2021-09-13T22:10:29+09:00">
+  <meta property="article:published_time" content="2021-09-14T11:46:33+09:00">
 
 
 
@@ -183,7 +183,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/using-cli/img5.png');"
 >
   
     <div class="wrapper">
@@ -329,7 +329,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="コマンドライン(CLI)でOCIを操作する">
     <meta itemprop="description" content="クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。">
-    <meta itemprop="datePublished" content="2021-09-13T22:10:29+09:00">
+    <meta itemprop="datePublished" content="2021-09-14T11:46:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -340,23 +340,955 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu">
+  <li><a href="#1-cliのインストール">1. CLIのインストール</a>
+    <ul>
+      <li><a href="#1-1-cli-のインストール">1-1. CLI のインストール</a></li>
+      <li><a href="#1-2-任意-bashが使える環境のセットアップ">1-2. (任意) Bashが使える環境のセットアップ</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-cli構成情報の取得">2. CLI構成情報の取得</a>
+    <ul>
+      <li><a href="#2-1-任意-新規ユーザーの作成">2-1. (任意) 新規ユーザーの作成</a></li>
+      <li><a href="#2-2-構成情報の確認">2-2. 構成情報の確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#3-cliの設定">3. CLIの設定</a>
+    <ul>
+      <li><a href="#3-1-cli構成ファイルの設定">3-1. CLI構成ファイルの設定</a></li>
+      <li><a href="#3-2-apiキーのアップロード">3-2. APIキーのアップロード</a></li>
+      <li><a href="#3-3-cliからのアクセスの確認">3-3. CLIからのアクセスの確認</a></li>
+      <li><a href="#3-4-デフォルトコンパートメント値の設定">3-4. デフォルトコンパートメント値の設定</a></li>
+    </ul>
+  </li>
+  <li><a href="#4-参考-jmespathを使った出力制御">4. (参考) JMESPathを使った出力制御</a></li>
+  <li><a href="#5-参考-cliを利用したオブジェクト作成">5. (参考) CLIを利用したオブジェクト作成</a>
+    <ul>
+      <li><a href="#5-1-vcnの作成">5-1. VCNの作成</a></li>
+      <li><a href="#5-2-インターネットゲートウェイの作成">5-2. インターネットゲートウェイの作成</a></li>
+      <li><a href="#5-3-デフォルトルートテーブルの変更">5-3. デフォルト・ルート・テーブルの変更</a></li>
+      <li><a href="#5-4-デフォルトセキュリティリストの変更">5-4. デフォルト・セキュリティ・リストの変更</a></li>
+      <li><a href="#5-5-サブネットの作成">5-5. サブネットの作成</a></li>
+      <li><a href="#5-6-インスタンスの作成">5-6. インスタンスの作成</a></li>
+    </ul>
+  </li>
+</ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。</p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
-        <div><a href="https://community.oracle.com/tech/welcome/discussion/4474263/%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3-cli-%E3%81%A7oci%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89" class="btn btn--primary">リンク</a></div>
+<p>これまでのチュートリアルでは、Oracle Cloud Infrastructure(OCI) をコンソールを通して利用してきましたが、OCIにはこれらの操作をRESTfulなウェブサービスを通して実行するためのAPIと、それを呼び出す **コマンド・ライン・インタフェース(CLI) **が用意されています。</p>
+
+<p>この章では、手元の Windows PC 環境にCLIをインストールしてOCIの基本的な操作を行う手順を通じて、APIとCLIの動作について理解を深めます。</p>
+
+<p>また、セットアップしたCLIとBash環境を利用して、クラウド上に効率的にネットワークやインスタンスを作成する方法について学習します。</p>
+
+<p><strong>所要時間 :</strong> 約50分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li>チュートリアル : <a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a> を完了し、Oracle Cloud Infrastructure コンソールにアクセスでき、どこかのコンパートメント (ルート・コンパートメントも可) に対して管理権限を持っていること</li>
+  <li>チュートリアルの その2 から その8 の内容についてひととおり理解していること (チュートリアルの実施することそのものは必須ではありませんが、一度目を通してコンソール上での操作について確認しておくことをお勧めします)</li>
+</ol>
+
+<p>無償トライアル環境のお申込みについては <a href="https://faq.oracle.co.jp/app/answers/detail/a_id/6492?elqTrackId=d0f995f1a049439a83f1166cad4659f1&amp;elqaid=93510&amp;elqat=2&amp;source=:pm:ba:::OER400059004%2b:ow:lp:cpo::">こちら</a> の資料を参照してください。</p>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. CLIのインストール</a></li>
+  <li><a href="#anchor2">2. CLI構成情報の取得</a></li>
+  <li><a href="#anchor3">3. CLIの設定</a></li>
+  <li><a href="#anchor4">4. JMESPathを使って出力制御する</a></li>
+  <li><a href="#anchor5">5. CLIを利用したオブジェクト作成を体感する</a></li>
+</ul>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-cliのインストール">1. CLIのインストール</h1>
+
+<p>OCI の CLI では、Oracle Cloud Infrastructure SDK for Python上に構築され、Mac、Windows または Linux 上で実行されます。まず始めに、下記ドキュメントを参照し、インストール先の端末が要件を満たしていることを確認してください。</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/cliconcepts.htm#Requirements__SupportedPythonVersionsandOperatingSystems">サポートされるPythonバージョンおよびオペレーティング・システム</a></li>
+</ul>
+
+<h2 id="1-1-cli-のインストール">1-1. CLI のインストール</h2>
+
+<p>本チュートリアルでは、最も容易にインストールが可能な、<strong>インストーラ・スクリプト</strong> を使用し、Windows 10 へ、CLIのインストールを行っていきます。
+※ その他に、オフラインでのインストールや、依存関係のある各ソフトウェアを手動でインストールすることも可能です。詳しくは、OCIドキュメント：<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/climanualinst.htm">手動およびオフラインのインストール</a>をご参照ください。</p>
+
+<ol>
+  <li>
+    <p><strong>PowerShell の起動</strong></p>
+
+    <p>お使いの端末で <kbd>Windows</kbd> キーを押下し、開かれた Windows メニューにて、「PowerShell」と検索します。検索結果の「Windows PowerShell」を右クリックし、「管理者として実行」を選択し、PowerShell を起動します。
+※ ユーザーアカウント制御の画面が表示された場合は、「はい」を選択してください。</p>
+
+    <p><img src="image-20210913121023782.png" alt="image-20210913121023782.png" /></p>
+  </li>
+  <li>
+    <p><strong>PowerShell スクリプト実行ポリシーの変更</strong></p>
+
+    <p>本インストーラは、スクリプトのインストール および 実行をすることで、依存関係などを自動補完します。このスクリプトの実行を許可するために、PowerShellの実行ポリシーを <strong>RemoteSigned実行ポリシー</strong> に変更します。</p>
+
+    <p>起動した PowerShell 画面にて、下記のコマンドを実行します。</p>
+
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Set-ExecutionPolicy</span><span class="w"> </span><span class="nx">RemoteSigned</span><span class="w">
+</span></code></pre></div>    </div>
+
+    <p>確認が求められた場合、<kbd>Y</kbd>（はい）を入力し、<kbd>Enter</kbd>キーを押下します。</p>
+
+    <p><img src="image-20210913122707370.png" alt="image-20210913122707370.png" /></p>
+  </li>
+  <li>
+    <p><strong>インストーラ・スクリプトのダウンロード</strong></p>
+
+    <p>次のコマンドを入力し、インストーラ・スクリプトをダウンロードします。</p>
+
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Invoke-WebRequest</span><span class="w"> </span><span class="nx">https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.ps1</span><span class="w"> </span><span class="nt">-OutFile</span><span class="w"> </span><span class="nx">install.ps1</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>インストーラ・スクリプトの実行</strong></p>
+
+    <p>インストーラ・スクリプトは、<strong>プロンプト表示あり</strong> または <strong>プロンプト表示なし</strong> で実行できます。プロンプト表示なし の場合、デフォルト設定を受け入れて、実行されます。本チュートリアルでは、プロンプト表示なし で実行します。PowerShell 画面にて、次のコマンドを実行してください。</p>
+
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.ps1</span><span class="w"> </span><span class="nt">-AcceptAllDefaults</span><span class="w">  
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>インストールの確認</strong></p>
+
+    <p>CLIのインストールが完了したことを確認するため、次のコマンドを実行してください。</p>
+
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oci</span><span class="w"> </span><span class="nt">-v</span><span class="w">
+</span></code></pre></div>    </div>
+
+    <p>「2.16.1」のように、バージョンが返ってきていれば、正しくインストールが完了しています。</p>
+  </li>
+</ol>
+
+<h2 id="1-2-任意-bashが使える環境のセットアップ">1-2. (任意) Bashが使える環境のセットアップ</h2>
+
+<p>Oracle Cloud Infrastructure CLI はターミナル・コンソールから実行しますが、今回はそのコンソールとして<strong>Bashターミナル</strong>を利用するため、セットアップを行います。</p>
+
+<p>Bashの利用は必須ではありません。OCIのCLIを利用するだけであれば、WindowsのコマンドプロンプトやPowerShellコンソールなどでも実行可能です。</p>
+
+<p>ただし、このチュートリアルの後半ではbashのシェル変数を使用する箇所がありますので、チュートリアルを完了するには何かしらのbashターミナルを準備することをお勧めします。</p>
+
+<p>手元のPCのOSが MAC や Ubuntu 等であれば、OSに付属するbashターミナルをそのまま利用することができます。お手元のOSが Windows 10 であれば <strong>WSL(Windows Subsystem for Linux)</strong> の利用も可能です。セットアップ方法については <a href="https://www.google.co.jp/search?q=windows+subsystem+for+linux+インストール">こちら</a> などを参考に実施してください。</p>
+
+<blockquote>
+  <p><strong><em>Note</em></strong></p>
+
+  <p>Bashターミナルをセットアップする際に、WindowsのPATH環境変数を引き継げるようにし、また%USERPROFILE%をホームディレクトリに設定しておくと便利です。設定方法は各ツールによって異なりますので、ツールに応じた適切な設定を実施してください</p>
+</blockquote>
+
+<p>以下は、Windows 10 の環境に Git Bash をインストールする手順の例を説明しています。</p>
+
+<ol>
+  <li>https://gitforwindows.org/ にアクセスし、<strong>Download</strong> ボタンを押してGit for Windows をダウンロードします</li>
+  <li>ダウンロードした実行ファイル （<strong>Git-2.33.0.2-64-bit.exe</strong> など）を実行します</li>
+  <li>インストーラーが実行されるので、Git Bashをインストールします。基本的に <strong>Next &gt;</strong> ボタンを押していけばOKです。</li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-cli構成情報の取得">2. CLI構成情報の取得</h1>
+
+<p>CLIを利用するためには、Oracle Cloud Infrastructureの操作に必要な資格証明を含む構成ファイルを設定する必要があります。本手順では、その構成ファイルを設定する際に必要となる各種情報を取得していきます。</p>
+
+<h2 id="2-1-任意-新規ユーザーの作成">2-1. (任意) 新規ユーザーの作成</h2>
+
+<p>CLIの構成に必要な情報を確認していく前段として、新規ユーザーの作成を行います。</p>
+
+<p>CLIを通じたAPIアクセスを行うには、OCIのIAM (IDとアクセス管理) に登録された有効なユーザーが必要となっています。このユーザーはOCIのGUIコンソールへアクセスするユーザーを利用することもできますが、セキュリティの観点から、API専用のユーザーを作成して使用することを推奨します。</p>
+
+<p>ここでは、新しく api.user という名前のユーザーを作成し、そのユーザーの権限でAPIアクセスを行っていく手順を紹介しますが、既に作成済みの任意のユーザーを利用する場合は、本手順はスキップすることが可能です。</p>
+
+<ol>
+  <li>
+    <p>Oracle Cloud Infrastructure にログインし、コンソールメニューから <strong>アイデンティティとセキュリティ</strong> → <strong>ユーザー</strong> を選択します</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">ユーザーの作成</code></strong> ボタンをクリックし、立ち上がってきたユーザーの作成画面にて、以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタンを押します</p>
+
+    <ul>
+      <li>
+        <p><strong>ユーザー・タイプの選択</strong>（IDCSユーザーでログインしている場合のみ設定可能） - IAMユーザー</p>
+      </li>
+      <li><strong>名前</strong> - api.user (または任意)</li>
+      <li><strong>説明</strong> - (任意)</li>
+      <li><strong>電子メール</strong> - (任意)</li>
+    </ul>
+  </li>
+  <li>
+    <p>作成後、<strong>api.user</strong> というユーザーの詳細画面が表示されます</p>
+
+    <p>詳細画面 左下の リソース・メニューから <strong><code class="language-plaintext highlighter-rouge">グループ</code></strong>を選択し、<strong><code class="language-plaintext highlighter-rouge">ユーザーをグループに追加</code></strong> ボタンを押します</p>
+  </li>
+  <li>
+    <p>「ユーザーをグループに追加」というウィンドウにて、「Administrators」グループを選択し、<strong><code class="language-plaintext highlighter-rouge">追加</code></strong> ボタンを押します</p>
+
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>本チュートリアルでは、テナンシー(Tenancy)の管理権限を持つAdministratorsグループに所属させていますが、本番環境で使用する際には適切な必要最小限の権限のみを付与したグループを作成し、そこに所属させるようにしてください</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h2 id="2-2-構成情報の確認">2-2. 構成情報の確認</h2>
+
+<p>つづいて、構成ファイルを設定する際に必要となる各種情報を確認していきます。</p>
+
+<ol>
+  <li>
+    <p><strong>ユーザーのOCIDの取得</strong></p>
+
+    <p>Oracle Cloud Infrastructure にログインし、コンソールメニューから <strong>アイデンティティとセキュリティ</strong> → <strong>ユーザー</strong> を選択します。</p>
+
+    <p>ユーザーの一覧が表示されるので、APIアクセスに使用するユーザーの右側 <strong>トリコロン</strong> をクリックし、<strong><code class="language-plaintext highlighter-rouge">OCIDのコピー</code></strong> を選択します。コピーしたOCIDは、テキストエディタなどを開き、ユーザーのOCIDである旨と共に、忘れずに控えておいてください。</p>
+  </li>
+  <li>
+    <p><strong>テナンシのOCIDの取得</strong></p>
+
+    <p>次に、コンソール画面上部の一番右にある人型のアイコンメニュー「プロファイル」をクリックし、テナンシ : XXX という名前のリンクをクリックします。</p>
+
+    <p><img src="image-20210913135326884.png" alt="image-20210913135326884.png" /></p>
+
+    <p>テナントの詳細画面が表示されるので、<strong>OCID:</strong> に表示されている <strong>コピー</strong> リンクをクリックします。</p>
+
+    <p><img src="image-20210913135640303.png" alt="image-20210913135640303.png" /></p>
+
+    <p>こちらも、テキストエディタなどを開き、コピーしたOCIDが テナンシのOCIDである旨と共に、忘れずに控えておいてください。</p>
+  </li>
+  <li>
+    <p><strong>コンパートメントのOCIDの取得</strong></p>
+
+    <p>Oracle Cloud Infrastructure にログインし、コンソールメニューから <strong>アイデンティティとセキュリティ</strong> → <strong>コンパートメント</strong> を選択します。</p>
+
+    <p>コンパートメントの一覧が表示されるので、APIを実行するリソースが含まれるコンパートメントの OCID 列にカーソルを当て、表示されたダイアログから OCID の <strong>コピー</strong> をクリックします。</p>
+
+    <p>コピーしたOCIDは、これまで同様、テキストエディタなどを開き、コンパートメントのOCIDである旨と共に、忘れずに控えておいてください。</p>
+
+    <p><img src="image-20210913154010922.png" alt="image-20210913154010922.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-cliの設定">3. CLIの設定</h1>
+
+<p>前の手順で取得した情報を元に、Oracle Cloud Infrastructureの操作に必要な資格証明を、構成ファイルに設定していきます。このファイルは、設定ダイアログを使用して作成することも、テキスト・エディタを使用して手動で作成することもできます。</p>
+
+<h2 id="3-1-cli構成ファイルの設定">3-1. CLI構成ファイルの設定</h2>
+
+<p>本チュートリアルでは、設定ダイアログを使用して、構成ファイルを設定する方法を紹介していきます。PowerShell 画面に戻り、次のコマンドを実行してください。</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oci</span><span class="w"> </span><span class="nx">setup</span><span class="w"> </span><span class="nx">config</span><span class="w">
+</span></code></pre></div></div>
+
+<p>コマンドを実行すると、対話形式でいくつかの質問を聞かれるので、下記を参考に入力してください。</p>
+
+<blockquote>
+  <p><strong><em>Note</em></strong></p>
+
+  <p>今回はこのスクリプトの中でAPIキーを生成しますが、もし別途用意していあるAPIキーを使用する場合は Do you want to generate a new RSA key pair? という質問にNと答えてください。</p>
+</blockquote>
+
+<ul>
+  <li>**Enter a location for your config [C:\Users\ <ユーザー名>\.oci\config]:** 入力なしで <kbd>Enter</kbd> キーを押下</ユーザー名></li>
+  <li><strong>Enter a user OCID:</strong> - ステップ2-2 で確認したユーザーのOCIDを入力</li>
+  <li><strong>Enter a tenancy OCID:</strong> - ステップ2-2 で確認したテナンシのOCIDを入力</li>
+  <li><strong>Enter a region (e.g. eu-frankfurt-1, us-ashburn-1, us-phoenix-1):</strong> - アクセスしたいリージョンを例に従って入力</li>
+  <li><strong>Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]:</strong> - Y</li>
+  <li><strong>Enter a directory for your keys to be created [C:\Users&lt;ユーザー名&gt;.oci]:</strong> - 入力なしで <kbd>Enter</kbd> キーを押下</li>
+  <li><strong>Enter a name for your key [oci_api_key]:</strong> - 入力なしで <kbd>Enter</kbd> キーを押下</li>
+  <li><strong>Enter a passphrase for your private key (empty for no passphrase):</strong> - 任意（パスフレーズを設定しない場合は 入力なしで <kbd>Enter</kbd> キーを押下）</li>
+</ul>
+
+<p>スクリプトが完了すると、対話形式の１つめの質問で確認されたロケーション（C:\Users\ <ユーザー名>\.oci\config）に、config ファイル と API 鍵ペア（秘密鍵がoci_api_key.pem、公開鍵がoci_api_key_public.pemという名前）が生成されています。</ユーザー名></p>
+
+<h2 id="3-2-apiキーのアップロード">3-2. APIキーのアップロード</h2>
+
+<p>CLI から OCI に対してアクセスを行う際に API の認証が行われます。このため予め認証をパスするのに必要なAPIキーを、ユーザー毎にOCIにアップロードしておく必要があります。</p>
+
+<p>ここでは、先ほど作成した鍵ペアのうち公開鍵を、OCIコンソールからアップロードします。</p>
+
+<ol>
+  <li>
+    <p>Oracle Cloud Infrastructure にログインし、コンソールメニューから <strong>アイデンティティとセキュリティ</strong> → <strong>コンパートメント</strong> を選択します。</p>
+  </li>
+  <li>
+    <p>ユーザーの一覧が表示されるので、APIアクセスに使用するユーザー名のリンク（先ほどOCIDをコピーしたユーザー (例：api.user) ）をクリックします。</p>
+  </li>
+  <li>
+    <p>ユーザーの詳細画面が開きますので、左下の リソース・メニューから <strong><code class="language-plaintext highlighter-rouge">APIキー</code></strong>を選択し、<strong><code class="language-plaintext highlighter-rouge">APIキーの追加</code></strong> ボタンを押します</p>
+  </li>
+  <li>
+    <p>「公開キー・ファイルの選択」を選択し、先ほど作成した鍵ペアのうち、公開鍵のファイル（例：C:\Users\ <ユーザー名>\.oci\oci_api_key_public.pem）を、「ファイルを削除または 1つを選択」という枠の中へ、ドラッグアンドドロップし、**`追加`** というボタンをクリックします。</ユーザー名></p>
+
+    <p><img src="image-20210913160624374.png" alt="image-20210913160624374.png" /></p>
+  </li>
+  <li>
+    <p>「構成ファイルのプレビュー」というダイアログが表示されますが、特に使用しないため、<strong><code class="language-plaintext highlighter-rouge">閉じる</code></strong> ボタンをクリックしてください。</p>
+
+    <p>公開鍵の登録が完了すると、<strong>APIキー</strong> 欄に公開鍵が追加され、フィンガープリントが表示されます。</p>
+
+    <p><img src="image-20210913161308143.png" alt="image-20210913161308143.png" /></p>
+  </li>
+</ol>
+
+<h2 id="3-3-cliからのアクセスの確認">3-3. CLIからのアクセスの確認</h2>
+
+<p>ここまで完了すると、Oracle Cloud Infrastructure 環境にCLIでアクセスできるようになっているはずです。実際に 確認していきましょう。</p>
+
+<ol>
+  <li>
+    <p>PowerShell 画面に戻り、次のコマンドを実行します。</p>
+
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oci</span><span class="w"> </span><span class="nx">compute</span><span class="w"> </span><span class="nx">image</span><span class="w"> </span><span class="nx">list</span><span class="w"> </span><span class="nt">-c</span><span class="w"> </span><span class="err">&lt;コンパートメントの</span><span class="nx">OCID</span><span class="err">&gt;</span><span class="w">
+</span></code></pre></div>    </div>
+
+    <コンパートメントのOCID> には、ステップ2-2 で確認したコンパートメントのOCIDの値を入力します。
+
+</コンパートメントのOCID>
+  </li>
+  <li>
+    <p>実行結果を確認します。以下のようなJSONのデータが返ってきていたら、無事にOCIへの接続に成功しています。もし失敗した場合には、上記のconfigの手順を見直し、再度実行してください。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{  "data": [    {      "base-image-id": null,      "compartment-id": null,      "create-image-allowed": true,      "display-name": "Windows-Server-2012-R2-Standard-Edition-VM-2017.11.06-0",      "id": "ocid1.image.oc1.phx.aaaaaaaalumo6pbq33qzmmnh544qouy3dhbfpzwm5nil652xa524pyw2wxfa",      "lifecycle-state": "AVAILABLE",      "operating-system": "Windows",      "operating-system-version": "Server 2012 R2 Standard",      "time-created": "2017-11-17T22:52:56.402000+00:00"    },...
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="3-4-デフォルトコンパートメント値の設定">3-4. デフォルトコンパートメント値の設定</h2>
+
+<p>先ほどのテストで入力した「 -c <コンパートメントのOCID> 」というオプションのように、コマンドを実行する場合は、コンパートメントを指定する機会が多くあります。</コンパートメントのOCID></p>
+
+<p>このコンパートメントの指定は、予めパラメーターファイルを作成しておくことにより、毎回入力することを回避することが可能です。</p>
+
+<p>本手順では、コンパートメントの OCID の値をパラメータファイルに設定して、次回のコメンド発行時からは入力をスキップできるようにします。</p>
+
+<ol>
+  <li>
+    <p>PowerShell 画面に戻り、次のコマンドを実行します。</p>
+
+    <p>このコマンドで、config ファイルと同じフォルダ配下に、「<strong><em>oci_cli_rc</em></strong>」 というファイルが作成されます。</p>
+
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oci</span><span class="w"> </span><span class="nx">setup</span><span class="w"> </span><span class="nx">oci-cli-rc</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>任意のテキストエディタで、この「<strong><em>oci_cli_rc</em></strong>」ファイルを開き、以下の記述を追加します。</p>
+
+    <コンパートメントのOCID> には、ステップ2-2 で確認したコンパートメントのOCIDの値を入力します。
+
+```
+[DEFAULT]
+ compartment-id = <コンパートメントのOCID>
+```
+
+</コンパートメントのOCID></コンパートメントのOCID>
+  </li>
+  <li>
+    <p>次に、先ほどと同じコマンドを、今度は「-c オプション」をつけずに実行してみます。</p>
+
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oci</span><span class="w"> </span><span class="nx">compute</span><span class="w"> </span><span class="nx">shape</span><span class="w"> </span><span class="nx">list</span><span class="w">
+</span></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のようなJSONのデータが返ってきていれば、無事にデフォルトコンパートメントの設定に成功しています。もし失敗した場合には、上記の手順を見直し、再度実行してください。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  "data": [    {      "shape": "BM.Standard2.52"    },    {      "shape": "BM.DenseIO2.52"    },    {      "shape": "BM.Standard1.36"    },...
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>ここまでで、基本的なOCI CLIのセットアップは完了しています。ここからは、OCI CLI の出力結果の制御方法、様々なOCIのオブジェクトの作成方法について解説していきます。</p>
+
+<p>これらの手順を通して、より実践的なCLIの使用方法を体験してみてください。</p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-参考-jmespathを使った出力制御">4. (参考) JMESPathを使った出力制御</h1>
+
+<p>OCI-CLIのデフォルトの返り値はJSON形式になっています。</p>
+
+<p>そのままではスクリプトの中では使いづらい場合がありますが、JSONのクエリ言語である <a href="http://jmespath.org/">JMESPath</a> を使うと、返り値をパースして任意のフォーマットで値を習得することができます。</p>
+
+<p>この項では、JMESPathを利用した出力制御を試してみます。</p>
+
+<ol>
+  <li>
+    <p>OCI-CLI JMESPathを利用するには、–query オプションを利用します。まずは先程のシェイプ一覧を絞り込んで、要素1つだけを表示してみます。</p>
+
+    <p>任意のターミナル・コンソールで以下のコマンドを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute shape list --query 'data[0]'
+</code></pre></div>    </div>
+
+    <p>すると、以下のようなアウトプットが返ってきます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "gpu-description": null,
+  -- 中略 --
+  "shape": "BM.Standard.A1.160"
+}
+</code></pre></div>    </div>
+
+    <p>これは、data という要素配列の中の最初(0)のエントリーを表示する、という指示になります。</p>
+  </li>
+  <li>
+    <p>次に、要素の最初のエントリーではなく、要素名を検索して一致するエントリーを表示するようにします。</p>
+
+    <p>以下のコマンドを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute shape list --query 'data[?shape==`VM.Standard2.1`]'
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>JMESPath構文において、検索などの文字列については「`」(バッククォート)で囲むようにしてください。</p>
+    </blockquote>
+
+    <p>すると、以下のように Shape という要素が VM.Standard2.1 のエントリーのみが帰ってきます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[
+  {
+    "gpu-description": null,
+    -- 中略 --
+    "shape": "VM.Standard2.1"
+  }
+]
+</code></pre></div>    </div>
+
+    <p>もし、要素名にハイフンが含まれる場合は、要素名を「”」(タブルコーテーション)で囲みます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'data[?"operating-system"==`Oracle Linux`]'
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>完全一致ではなく、一部の文字列を含むものを検索したい場合は、<strong><a href="https://jmespath.readthedocs.io/en/latest/specification.html#contains">contains</a></strong> 句を使います。
+例えば、operating-system に Linux という文字列を含むイメージのみを抽出したい場合は、以下のようにします。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'data[?contains("operating-system",`Linux`)]'
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong><a href="https://jmespath.readthedocs.io/en/latest/specification.html#sort-by">sort_by</a></strong> 句を使うと、結果を並び替えることができます。</p>
+
+    <p>例えば、time-created の順番で並び替えたい場合は、以下のようにします。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'sort_by(data, &amp;"time-created")[?contains("operating-system",`Linux`)]'
+</code></pre></div>    </div>
+
+    <p>ただ、作成日時で並び替えたいのであれば、OCI-CLI の <strong>–sort-by</strong> オプションを使用することもできます。
+以下のコマンドの実行結果は、上記コマンドと同じ結果になります。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --sort-by TIMECREATED --sort-order ASC --query 'data[?contains("operating-system", `Linux`)]'
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>oci-cli コマンドの –sort-by は、TIMECRETED の場合デフォルトが降順(DESC)で表示されます。(ややこしいことにJMESPathと逆です・・・)合わせて –sort-order を指定することで明示的に昇順(ASC)、降順(DESC)を指定できるので、間違い防止のために常に指定することをおすすめします。
+sort-by オプションの詳細については oci compute image list –help コマンドをご参照ください。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>要素のうち、一部の要素だけを表示したい場合は、ドット「.」のあとに要素名を追記します。</p>
+
+    <p>例えば、上記の検索結果のうち id と display-name という要素だけを抽出したい場合は、以下のコマンドを発行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'sort_by(data, &amp;"time-created")[?contains("operating-system",`Linux`)].{id:id,"display-name":"display-name"}'
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>JSONの {“要素” : “値”} という表記ではなく、単独の値のみを表示したい場合は、「.」のあとに一つの要素名を直接記述します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'sort_by(data, &amp;"time-created")[?contains("operating-system",`Linux`)]."display-name"'
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>パイプ「</td>
+          <td>」を利用して、処理を連結することができます。例えば配列の1つ目だけを表示するには、パイプのあとに[0]を記述します。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'sort_by(data, &amp;"time-created")[?contains("operating-system",`Linux`)]."display-name" | [0]'
+</code></pre></div>    </div>
+
+    <p>パイプのあとに[-1]を記述すると、配列の最後の1つを表示します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'sort_by(data, &amp;"time-created")[?contains("operating-system",`Linux`)]."display-name" | [-1]'
+</code></pre></div>    </div>
+
+    <p>すでにsort_byで作成日付順(昇順 = 古い順)にソートしてあるので、[-1]を記述した場合は作成日付が最も新しいイメージのみが検索されているはずです。</p>
+
+    <p>結果は以下のような形になります。(データは異なる場合があります)</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Oracle-Linux-7.5-Gen2-GPU-2018.08.14-0"
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>最後に、OCI-CLI のオプションの –raw-output 句をつけると、ダブルコーテーションを外した文字列を抽出できます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'sort_by(data, &amp;"time-created")[?contains("operating-system", `Linux`)]."display-name" | [-1]' --raw-output
+</code></pre></div>    </div>
+
+    <p>返り値は、おそらく以下のような形になるはずです。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Oracle-Linux-7.5-Gen2-GPU-2018.08.14-0
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>このように、JMESPathを利用すると、コマンドラインで利用しやすいテキストフォーマットでCLIの結果を抽出できるようになるので、ローカル側のシェルの挙動に依存しないスクリプトを記述することができるようになります。</p>
+
+<p>JMESPath には他にも色々と便利な機能がありますので、こちらの <a href="http://jmespath.org/">jmespath.org のサイト</a>を参考に色々と試してみてください。</p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-参考-cliを利用したオブジェクト作成">5. (参考) CLIを利用したオブジェクト作成</h1>
+
+<p>本手順では、実際にOCI CLI を利用し、テナンシ上にオブジェクトを作成していきます。</p>
+
+<h2 id="5-1-vcnの作成">5-1. VCNの作成</h2>
+
+<p>CLIを利用して、仮想クラウド・ネットワーク（VCN）を作成します。</p>
+
+<ol>
+  <li>
+    <p>Bash ターミナルを起動し、シェル環境変数「VCNNAME」に任意の名前を設定します。この値は後でVCNを作成する際に使用します。</p>
+
+    <VCNの表示名>は、例えば tutorial-cli-vcn などの任意の文字列で置き換えてください。
+
+```sh
+VCNNAME=<VCNの表示名>
+```
+
+</VCNの表示名></VCNの表示名>
+  </li>
+  <li>
+    <p>次に、以下のコマンドを発行して、VCNを作成します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci network vcn create <span class="nt">--cidr-block</span> 10.0.0.0/16 <span class="nt">--display-name</span> <span class="nv">$VCNNAME</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のようなJSONのメッセージが返ってきていれば、VCNの作成は完了しています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"cidr-block"</span>: <span class="s2">"10.0.0.0/16"</span>,
+    <span class="s2">"cidr-blocks"</span>: <span class="o">[</span>
+      <span class="s2">"10.0.0.0/16"</span>
+    <span class="o">]</span>,
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..xxxxx"</span>,
+    <span class="s2">"default-dhcp-options-id"</span>: <span class="s2">"ocid1.dhcpoptions.oc1.ap-osaka-1.aaaaxxx"</span>,
+    <span class="s2">"default-route-table-id"</span>: <span class="s2">"ocid1.routetable.oc1.ap-osaka-1.aaxxx"</span>,
+    <span class="s2">"default-security-list-id"</span>: <span class="s2">"ocid1.securitylist.oc1.ap-osaka-1.aaxxx"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"display-name"</span>: <span class="s2">"tutorial-cli-vcn"</span>,
+    <span class="s2">"dns-label"</span>: null,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.vcn.oc1.ap-osaka-1.amaaxxx"</span>,
+    <span class="s2">"ipv6-cidr-block"</span>: null,
+    <span class="s2">"ipv6-public-cidr-block"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"AVAILABLE"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-MM-ddT08:24:05.779000+00:00"</span>,
+    <span class="s2">"vcn-domain-name"</span>: null
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"7c0e2701"</span>
+<span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のコマンドを発行し、今作成したVCNのOCID情報を取得し、シェル変数<strong>VCNID</strong>に代入します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">VCNID</span><span class="o">=</span><span class="si">$(</span>oci network vcn list <span class="nt">--query</span> <span class="s1">'data[?"display-name"==`'</span><span class="nv">$VCNNAME</span><span class="s1">'`].id | [0]'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>シェル変数「VCNID」の値を確認します。ocid1.vcn… のような値が戻ってきたら、正しく変数が取得できています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$VCNID</span>
+</code></pre></div>    </div>
+
+    <p>参考として、ステップ2において以下のコマンドを発行することで、VCNの作成と同時に返り値からOCIDを取得し、シェル変数への格納を一度に行うこともできます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">VCNID</span><span class="o">=</span><span class="si">$(</span>oci network vcn create <span class="nt">--cidr-block</span> 10.0.0.0/16 <span class="nt">--display-name</span> <span class="nv">$VCNNAME</span> <span class="nt">--query</span> <span class="s1">'data.id'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="5-2-インターネットゲートウェイの作成">5-2. インターネットゲートウェイの作成</h2>
+
+<p>CLIを利用して、作成したVCNにインターネット・ゲートウェイを設置します。</p>
+
+<ol>
+  <li>
+    <p>Bash ターミナルで以下のコマンドを入力します。</p>
+
+    <p>&lt;インターネット・ゲートウェイの表示名&gt;は、例えば tutorial-cli-igw などの任意の文字列を入力してください。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">IGWNAME</span><span class="o">=</span>&lt;インターネット・ゲートウェイの表示名&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のコマンドを発行し、インターネット・ゲートウェイを作成します。</p>
+
+    <p>また同時に、返り値から発行されたOCIDを取得しシェル変数「IGWID」に格納します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">IGWID</span><span class="o">=</span><span class="si">$(</span>oci network internet-gateway create <span class="nt">--is-enabled</span> <span class="nb">true</span> <span class="nt">--vcn-id</span> <span class="nv">$VCNID</span> <span class="nt">--display-name</span> <span class="nv">$IGWNAME</span> <span class="nt">--query</span> <span class="s1">'data.id'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>シェル変数「IGWID」の値を確認します。ocid1.internetgateway… のような値が戻ってきたら、正しくインターネット・ゲートウェイが作成できています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$IGWID</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="5-3-デフォルトルートテーブルの変更">5-3. デフォルト・ルート・テーブルの変更</h2>
+
+<p>CLIを利用して、作成したVCNのデフォルト・ルート・テーブルの情報を変更し、先ほど作成したインターネット・ゲートウェイへのルートを設定します。</p>
+
+<ol>
+  <li>
+    <p>以下のコマンドを発行し、VCNに設定されているデフォルト・ルート・テーブルのOCID情報を取得し、シェル変数「RTID」に代入します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">RTID</span><span class="o">=</span><span class="si">$(</span>oci network vcn list <span class="nt">--query</span> <span class="s1">'data[?id==`'</span><span class="nv">$VCNID</span><span class="s1">'`]."default-route-table-id" | [0]'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>シェル変数「RTID」の値を確認します。ocid1.routetable… のような値が戻ってきたら、正しく変数が取得できています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$RTID</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Bash ターミナルで以下のコマンドを入力し、ルートテーブルを更新します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci network route-table update <span class="nt">--rt-id</span> <span class="nv">$RTID</span> <span class="nt">--route-rules</span> <span class="s1">'[{"cidrBlock":"0.0.0.0/0","networkEntityId":"'</span><span class="nv">$IGWID</span><span class="s1">'"}]'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>警告メッセージが出るので、yと入力します</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: Updates to route-rules will replace any existing values. Are you sure you want to <span class="k">continue</span>? <span class="o">[</span>y/N]: y
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のようなJSONのメッセージが返ってきたら、ルート・テーブルの更新は完了しています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..aaaxxxx"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"display-name"</span>: <span class="s2">"Default Route Table for tutorial-cli-vcn"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.routetable.oc1.ap-osaka-1.aaaaxxxx"</span>,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"AVAILABLE"</span>,
+    <span class="s2">"route-rules"</span>: <span class="o">[</span>
+      <span class="o">{</span>
+        <span class="s2">"cidr-block"</span>: <span class="s2">"0.0.0.0/0"</span>,
+        <span class="s2">"description"</span>: null,
+        <span class="s2">"destination"</span>: <span class="s2">"0.0.0.0/0"</span>,
+        <span class="s2">"destination-type"</span>: <span class="s2">"CIDR_BLOCK"</span>,
+        <span class="s2">"network-entity-id"</span>: <span class="s2">"ocid1.internetgateway.oc1.ap-osaka-1.aaaxxxx"</span>
+      <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-09-13T08:24:05.779000+00:00"</span>,
+    <span class="s2">"vcn-id"</span>: <span class="s2">"ocid1.vcn.oc1.ap-osaka-1.amaaxxxx"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"ca67717b"</span>
+<span class="o">}</span>
+   
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="5-4-デフォルトセキュリティリストの変更">5-4. デフォルト・セキュリティ・リストの変更</h2>
+
+<p>CLIを利用して、作成したVCNのデフォルト・セキュリティ・リストの情報を変更します。
+今回は、sshアクセスのためのインターネットからのtcp/22番ポート、ping応答のためのICMPエコーのインバウンド通信を許可する設定を行います。</p>
+
+<ol>
+  <li>
+    <p>以下のコマンドを発行し、VCNに設定されているセキュリティ・リストのOCID情報を取得し、変数「SECLISTID」に代入します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">SECLISTID</span><span class="o">=</span><span class="si">$(</span>oci network security-list list <span class="nt">--vcn-id</span> <span class="nv">$VCNID</span> <span class="nt">--query</span> <span class="s1">'data[0].id'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>設定した変数「SECLIST」の値を確認します。ocid1.securitylist… のような値が戻ってきたら、正しく変数が取得できています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$SECLISTID</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>bash ターミナル以下のコマンドを入力し、セキュリティリストを更新します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci network security-list update <span class="nt">--security-list-id</span> <span class="nv">$SECLISTID</span> <span class="nt">--ingress-security-rules</span> <span class="s1">'[{"icmpOptions":null,"isStateless":null,"protocol":"6","source":"0.0.0.0/0","tcpOptions":{"destinationPortRange":{"max":22,"min":22},"sourcePortRange":null},"udpOptions":null},{"icmpOptions":{"code":4,"type":3},"isStateless":null,"protocol":"1","source":"0.0.0.0/0","tcpOptions":null,"udpOptions":null},{"icmpOptions":{"code":null,"type":0},"isStateless":false,"protocol":"1","source":"0.0.0.0/0","tcpOptions":null,"udpOptions":null},{"icmpOptions":{"code":null,"type":8},"isStateless":false,"protocol":"1","source":"0.0.0.0/0","tcpOptions":null,"udpOptions":null}]'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>警告メッセージが出るので、yと入力します</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: Updates to egress-security-rules and ingress-security-rules will replace any existing values. Are you sure you want to <span class="k">continue</span>? <span class="o">[</span>y/N]: y
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>JSONのメッセージが帰ってきたら、セキュリティ・リストの更新は完了しています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..aaaxxxx"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"display-name"</span>: <span class="s2">"Default Security List for tutorial-cli-vcn"</span>,
+    <span class="s2">"egress-security-rules"</span>: <span class="o">[</span>
+      <span class="o">{</span>
+        <span class="s2">"description"</span>: null,
+        <span class="s2">"destination"</span>: <span class="s2">"0.0.0.0/0"</span>,
+        <span class="s2">"destination-type"</span>: <span class="s2">"CIDR_BLOCK"</span>,
+        <span class="s2">"icmp-options"</span>: null,
+        <span class="s2">"is-stateless"</span>: <span class="nb">false</span>,
+        <span class="s2">"protocol"</span>: <span class="s2">"all"</span>,
+        <span class="s2">"tcp-options"</span>: null,
+        <span class="s2">"udp-options"</span>: null
+      <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.securitylist.oc1.ap-osaka-1.aaaxxxx"</span>,
+    <span class="s2">"ingress-security-rules"</span>: <span class="o">[</span>
+      <span class="o">{</span>
+        <span class="s2">"description"</span>: null,
+        <span class="s2">"icmp-options"</span>: null,
+        <span class="s2">"is-stateless"</span>: <span class="nb">false</span>,
+        <span class="s2">"protocol"</span>: <span class="s2">"6"</span>,
+        <span class="s2">"source"</span>: <span class="s2">"0.0.0.0/0"</span>,
+        <span class="s2">"source-type"</span>: <span class="s2">"CIDR_BLOCK"</span>,
+        <span class="s2">"tcp-options"</span>: <span class="o">{</span>
+          <span class="s2">"destination-port-range"</span>: <span class="o">{</span>
+            <span class="s2">"max"</span>: 22,
+            <span class="s2">"min"</span>: 22
+          <span class="o">}</span>,
+          <span class="s2">"source-port-range"</span>: null
+        <span class="o">}</span>,
+        <span class="s2">"udp-options"</span>: null
+      <span class="o">}</span>,
+      <span class="o">{</span>
+      <span class="nt">--</span> 中略 <span class="nt">--</span>
+      <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"AVAILABLE"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-MM-ddT08:24:05.779000+00:00"</span>,
+    <span class="s2">"vcn-id"</span>: <span class="s2">"ocid1.vcn.oc1.ap-osaka-1.amaaaaxxxx"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"f9a0090"</span>
+<span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="5-5-サブネットの作成">5-5. サブネットの作成</h2>
+
+<p>CLIを利用して、VCNの中にサブネットを作成します。</p>
+
+<ol>
+  <li>
+    <p>以下のコマンドを発行し、現在利用しているリージョンで利用可能な可用性ドメインの一覧を取得します</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci iam availability-domain list <span class="nt">--query</span> <span class="s1">'data[*].name'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>戻ってきた値は、現在利用可能な可用性ドメインの一覧です。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>
+   <span class="s2">"XhqH:PHX-AD-1"</span>,
+   <span class="s2">"XhqH:PHX-AD-2"</span>,
+   <span class="s2">"XhqH:PHX-AD-3"</span>
+<span class="o">]</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>表示された可用性ドメインのうち、どこにサブネットを作成するかを選択し、その番号の可用性ドメインの名前を変数「ADNAME」に代入します。</p>
+
+    <p>例えば、AD-1 を選択した場合は、以下のコマンドを発行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">ADNAME</span><span class="o">=</span><span class="si">$(</span>oci iam availability-domain list <span class="nt">--query</span> <span class="s1">'data[?contains(name, `AD-1`)].name | [0]'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>代入した変数「SUBNETID」の値を確認します。「AD-1」を含む可用性ドメイン名が返ってきていれば、正しく可用性ドメインの設定ができています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$ADNAME</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Bash ターミナルで以下のコマンドを入力し、サブネットをひとつ作成します。</p>
+
+    <p>また同時に返り値から作成したサブネットのOCIDを取得し、シェル変数「SUBNETID」に格納します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">SUBNETID</span><span class="o">=</span><span class="si">$(</span>oci network subnet create <span class="nt">--availability-domain</span> <span class="nv">$ADNAME</span> <span class="nt">--cidr-block</span> 10.0.1.0/24 <span class="nt">--vcn-id</span> <span class="nv">$VCNID</span> <span class="nt">--display-name</span> sub1ad1 <span class="nt">--prohibit-public-ip-on-vnic</span> <span class="nb">false</span> <span class="nt">--route-table-id</span> <span class="nv">$RTID</span> <span class="nt">--security-list-ids</span> <span class="s1">'["'</span><span class="nv">$SECLISTID</span><span class="s1">'"]'</span> <span class="nt">--query</span> <span class="s1">'data.id'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>代入した変数「SUBNETID」の値を確認します。ocid1.subnet… のような値が帰ってきたら、サブネットは正しく作成されています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$SUBNETID</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="5-6-インスタンスの作成">5-6. インスタンスの作成</h2>
+
+<p>CLIを利用して、作成したサブネットの中にインスタンスを作成します。</p>
+
+<ol>
+  <li>
+    <p>インスタンスへのsshアクセスに使用する鍵ペアを作成しておきます。</p>
+
+    <p>Bash ターミナル上で以下のコマンドを発行し、鍵ペアを新しく作成します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen
+</code></pre></div>    </div>
+
+    <p>対話的なダイアログが起動してきますが、今回のチュートリアルでは <kbd>Enter</kbd> キーを押していく形でOKです。</p>
+
+    <p>処理が完了すると、~/.ssh に、 id_rsa と id_rsa.pub というファイルが作成されているはずです。</p>
+  </li>
+  <li>
+    <p>以下のコマンドを発行し、インスタンスの作成に利用できるイメージのIDの一覧を取得します。</p>
+
+    <p>–output=table オプションをつけると、表形式で値が返ってきます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list <span class="nt">--query</span> <span class="s1">'data[*].{"operating-system":"operating-system","operating-system-version":"operating-system-version","display-name":"display-name"}'</span> <span class="nt">--output</span><span class="o">=</span>table
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>戻ってきた値は、現在利用可能なイメージの一覧です。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------------------------------------------------------------------------+------------------------------+---------------------------+
+| display-name                                                           | operating-system             | operating-system-version  |
++------------------------------------------------------------------------+------------------------------+---------------------------+
+| Windows-Server-2019-Standard-Edition-VM-Gen2-2021.07.01-0              | Windows                      | Server 2019 Standard      |
+| Windows-Server-2019-Standard-Edition-VM-Gen2-2021.05.12-0              | Windows                      | Server 2019 Standard      |
+| Windows-Server-2019-Standard-Edition-VM-Gen2-2021.04.13-0              | Windows                      | Server 2019 Standard      |
+| Windows-Server-2019-Standard-Edition-VM-E3-2021.03.17-0                | Windows                      | Server 2019 Standard      |
+| Windows-Server-2019-Standard-Edition-VM-E3-2021.03.09-0                | Windows                      | Server 2019 Standard      |
+<span class="o">(</span>以下略<span class="o">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>この中から任意のイメージを一つ選択し、そのイメージのOCIDを取得して変数「IMAGE」に代入します。</p>
+
+    <p>例えば、Oracle Linux 8 のイメージ（Oracle-Linux-8.4-2021.08.27-0）を選択する場合には、以下のコマンドを発行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">IMAGEID</span><span class="o">=</span><span class="si">$(</span>oci compute image list <span class="nt">--display-name</span> <span class="s2">"Oracle-Linux-8.4-2021.08.27-0"</span> <span class="nt">--query</span> <span class="s1">'sort_by(data, &amp;"time-created")[-1].id'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+
+    <p>作成したいOSやバージョンに応じて、「–display-name」等を変更してください。</p>
+  </li>
+  <li>
+    <p>設定した変数「IMAGEID」の値を確認します。ocid1.image… のような値が帰ってきたら、正しく変数が設定されています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$IMAGEID</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次に、以下のコマンドを発行し、インスタンスの作成に利用できるイメージのシェイプの一覧を取得します</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute shape list <span class="nt">--query</span> <span class="s1">'data[*].shape'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>戻ってきた値は、現在利用可能なイメージの一覧です。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>
+  <span class="nt">--</span> 中略 <span class="nt">--</span>
+  <span class="s2">"VM.Standard.E4.Flex"</span>,
+  <span class="s2">"VM.Standard.E3.Flex"</span>,
+  <span class="s2">"VM.Standard.A1.Flex"</span>,
+  <span class="s2">"VM.Standard2.1"</span>,
+  <span class="s2">"VM.Standard2.2"</span>,
+  <span class="s2">"VM.Standard2.4"</span>,
+  <span class="nt">--</span> 中略 <span class="nt">--</span>
+<span class="o">]</span>
+</code></pre></div>    </div>
+
+    <p>この中から任意のイメージを一つ選択し、その値をシェル変数「SHAPE」に代入します。</p>
+
+    <シェイプ名>は、VM.Standard2.1 などの任意の文字列に置き換えてください。
+
+```sh
+SHAPE=<シェイプ名>
+```
+
+</シェイプ名></シェイプ名>
+  </li>
+  <li>
+    <p>以下のコマンドを入力し、インスタンスを作成します。また同時にその返り値からインスタンスのOCIDを取得し、変数「INSTANCEID」に代入します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">INSTANCEID</span><span class="o">=</span><span class="si">$(</span>oci compute instance launch <span class="nt">--availability-domain</span> <span class="nv">$ADNAME</span> <span class="nt">--image-id</span> <span class="nv">$IMAGEID</span> <span class="nt">--shape</span> <span class="nv">$SHAPE</span> <span class="nt">--ssh-authorized-keys-file</span> <span class="s2">".ssh/id_rsa.pub"</span> <span class="nt">--subnet-id</span> <span class="nv">$SUBNETID</span> <span class="nt">--assign-public-ip</span> <span class="nb">true</span> <span class="nt">--query</span> <span class="s1">'data.id'</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>変数「INSTANCEID」の値を確認し、ocid1.instance… で始まる値が格納されていれば、インスタンスの作成処理が無事に開始されています。
+通常、インスタンスの作成完了までには数分(仮想マシンの場合1-2分、ベアメタルの場合3-5分程度)かかります。</p>
+  </li>
+</ol>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+
+        
       </section>
 
       <footer class="page__meta">
         
         
+  
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-13T22:10:29+09:00">September 13, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-14T11:46:33+09:00">September 14, 2021</time></p>
 
 
       </footer>
