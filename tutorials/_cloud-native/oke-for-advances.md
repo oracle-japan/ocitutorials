@@ -961,6 +961,9 @@ datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
 datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
 frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
 frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+node-exporter-handson-2mcph       1/1     Running   0          21m
+node-exporter-handson-57qqq       1/1     Running   0          21m
+node-exporter-handson-mbdzl       1/1     Running   0          21m
 ```
 
 全て`Running`になったら、アプリケーションにアクセスしてみます。
@@ -1052,6 +1055,9 @@ datasource-app-7bc89cbdfc-pktdp   2/2     Running   0          1m
 datasource-app-7bc89cbdfc-vmpr6   2/2     Running   0          1m
 frontend-app-75c8986f76-lnhtg     2/2     Running   0          1m
 frontend-app-75c8986f76-q5l44     2/2     Running   0          1m
+node-exporter-handson-2mcph       1/1     Running   0          21m
+node-exporter-handson-57qqq       1/1     Running   0          21m
+node-exporter-handson-mbdzl       1/1     Running   0          21m
 ```
 
 例えば、`backend-app-v2-84f5859c9f-gr6dd`を対象とします。(各自の環境に合わせてください)  
@@ -1505,6 +1511,10 @@ OCIコンソールのハンバーガーメニューを開き、「アイデン�
 
 以下のように情報を入力します。  
 
+**集合ハンズオンで参加されている皆様へ**  
+動的グループ名は重複が許容されないため、集合ハンズオンなどで同一環境を複数名でご利用されている皆様は動的グループ名に自分のイニシャルや好きな複数桁の番号などを付与し、重複しないように動的グループ名を設定してください。  
+{: .notice--info}
+
 key|value
 -|-
 名前| grafana_dynamic_group
@@ -1536,12 +1546,12 @@ key|value
 -|-
 名前| grafana_policy
 説明| grafana_policy
-一致ルール - ルール1 | allow dynamic-group grafana_dynamic_group to read metrics in compartment id '<ご自身のコンパートメント名>'
-一致ルール - ルール2 | allow dynamic-group grafana_dynamic_group to read metrics in compartment id '<ご自身のコンパートメント名>'
+コンパートメント | ご自身のコンパートメント名
+ポリシー | allow dynamic-group grafana_dynamic_group to read metrics in compartment id <ご自身のコンパートメントOCID>
 
 ![](5-006.png)
 
-画像はイメージですので、コンパートメント名はご自身の環境に合わせて読み替えてください。  
+画像はイメージですので、コンパートメントOCIDはご自身の環境に合わせて読み替えてください。 
 
 「作成」をクリックします。  
 
@@ -1596,7 +1606,17 @@ kubectl get pod -n istio-system
 ***コマンド結果***
 ```sh
 NAME                                    READY   STATUS    RESTARTS   AGE
-grafana-5f75c485c4-v5n5n                1/1     Running   0          75s
+grafana-5f75c485c4-5rxdq                1/1     Running   0          37s
+istio-egressgateway-9dc6cbc49-pk5q2     1/1     Running   0          55m
+istio-ingressgateway-7975cdb749-8kxr9   1/1     Running   0          55m
+istiod-77b4d7b55d-cc7b7                 1/1     Running   0          55m
+jaeger-5f65fdbf9b-pbjfb                 1/1     Running   0          54m
+kiali-787bc487b7-znbl4                  1/1     Running   0          54m
+loki-0                                  1/1     Running   0          51m
+loki-promtail-8z4x7                     1/1     Running   0          51m
+loki-promtail-hpm46                     1/1     Running   0          51m
+loki-promtail-kkc9k                     1/1     Running   0          51m
+prometheus-9f4947649-znlrr              2/2     Running   0          54m
 ```
 
 これで、OCI MonitoringプラグインのGrafanaへのインストールは完了です。  
