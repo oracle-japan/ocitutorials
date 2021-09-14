@@ -14,7 +14,7 @@ header:
 
 
 
-これまでのチュートリアルでは、Oracle Cloud Infrastructure(OCI) をコンソールを通して利用してきましたが、OCIにはこれらの操作をRESTfulなウェブサービスを通して実行するためのAPIと、それを呼び出す **コマンド・ライン・インタフェース(CLI) **が用意されています。
+これまでのチュートリアルでは、Oracle Cloud Infrastructure(OCI) をコンソールを通して利用してきましたが、OCIにはこれらの操作をRESTfulなウェブサービスを通して実行するためのAPIと、それを呼び出す **コマンド・ライン・インタフェース(CLI) ** が用意されています。
 
 この章では、手元の Windows PC 環境にCLIをインストールしてOCIの基本的な操作を行う手順を通じて、APIとCLIの動作について理解を深めます。
 
@@ -40,8 +40,8 @@ header:
 * [1. CLIのインストール](#anchor1)
 * [2. CLI構成情報の取得](#anchor2)
 * [3. CLIの設定](#anchor3)
-* [4. JMESPathを使って出力制御する](#anchor4)
-* [5. CLIを利用したオブジェクト作成を体感する](#anchor5)
+* [4. (参考) JMESPathを使った出力制御](#anchor4)
+* [5. (参考) CLIを利用したオブジェクト作成](#anchor5)
 
 
 
@@ -56,7 +56,7 @@ OCI の CLI では、Oracle Cloud Infrastructure SDK for Python上に構築さ�
 ## 1-1. CLI のインストール
 
 本チュートリアルでは、最も容易にインストールが可能な、**インストーラ・スクリプト** を使用し、Windows 10 へ、CLIのインストールを行っていきます。
-※ その他に、オフラインでのインストールや、依存関係のある各ソフトウェアを手動でインストールすることも可能です。詳しくは、OCIドキュメント：[手動およびオフラインのインストール](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/climanualinst.htm)をご参照ください。
+※ その他に、オフラインでのインストールや、依存関係のある各ソフトウェアを手動でインストールすることも可能です。詳しくは、OCIドキュメント：[手動およびオフラインのインストール](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/climanualinst.htm) をご参照ください。
 
 
 
@@ -135,7 +135,7 @@ Bashの利用は必須ではありません。OCIのCLIを利用するだけで�
 
 
 
-1. https://gitforwindows.org/ にアクセスし、**Download** ボタンを押してGit for Windows をダウンロードします
+1. [https://gitforwindows.org/](https://gitforwindows.org/) にアクセスし、**Download** ボタンを押してGit for Windows をダウンロードします
 2. ダウンロードした実行ファイル （**Git-2.33.0.2-64-bit.exe** など）を実行します
 3. インストーラーが実行されるので、Git Bashをインストールします。基本的に **Next >** ボタンを押していけばOKです。
 
@@ -247,6 +247,8 @@ oci setup config
 >
 > 今回はこのスクリプトの中でAPIキーを生成しますが、もし別途用意していあるAPIキーを使用する場合は Do you want to generate a new RSA key pair? という質問にNと答えてください。
 
+
+
 - **Enter a location for your config [C:\Users\ <ユーザー名 >\.oci\config]:** 入力なしで <kbd>Enter</kbd> キーを押下
 - **Enter a user OCID:** - ステップ2-2 で確認したユーザーのOCIDを入力
 - **Enter a tenancy OCID:** - ステップ2-2 で確認したテナンシのOCIDを入力
@@ -276,7 +278,7 @@ CLI から OCI に対してアクセスを行う際に API の認証が行われ
 
 3. ユーザーの詳細画面が開きますので、左下の リソース・メニューから **`APIキー`**を選択し、**`APIキーの追加`** ボタンを押します  
 
-4. 「公開キー・ファイルの選択」を選択し、先ほど作成した鍵ペアのうち、公開鍵のファイル（例：C:\Users\ <ユーザー名 >\.oci\oci_api_key_public.pem）を、「ファイルを削除または 1つを選択」という枠の中へ、ドラッグアンドドロップし、**`追加`** というボタンをクリックします。
+4. 「公開キー・ファイルの選択」を選択し、先ほど作成した鍵ペアのうち、公開鍵のファイル（例：C:\Users\ <ユーザー名 >\.oci\oci_api_key_public.pem）を、「ファイルを削除または 1つを選択」という枠の中へ、ドラッグアンドドロップし、 **`追加`** というボタンをクリックします。
 
    ![image-20210913160624374.png](image-20210913160624374.png)
 
@@ -464,7 +466,7 @@ OCI-CLIのデフォルトの返り値はJSON形式になっています。
    oci compute image list --query 'sort_by(data, &"time-created")[?contains("operating-system",`Linux`)]."display-name"'
    ```
 
-7. パイプ「|」を利用して、処理を連結することができます。例えば配列の1つ目だけを表示するには、パイプのあとに[0]を記述します。
+7. パイプ「\|」を利用して、処理を連結することができます。例えば配列の1つ目だけを表示するには、パイプのあとに[0]を記述します。
 
    ```
    oci compute image list --query 'sort_by(data, &"time-created")[?contains("operating-system",`Linux`)]."display-name" | [0]'
@@ -520,7 +522,7 @@ CLIを利用して、仮想クラウド・ネットワーク（VCN）を作成�
 
 1. Bash ターミナルを起動し、シェル環境変数「VCNNAME」に任意の名前を設定します。この値は後でVCNを作成する際に使用します。
 
-   <VCNの表示名>は、例えば tutorial-cli-vcn などの任意の文字列で置き換えてください。
+   \<VCNの表示名\>は、例えば tutorial-cli-vcn などの任意の文字列で置き換えてください。
 
    ```sh
    VCNNAME=<VCNの表示名>
@@ -693,7 +695,7 @@ CLIを利用して、作成したVCNのデフォルト・セキュリティ・�
    echo $SECLISTID
    ```
 
-3. bash ターミナル以下のコマンドを入力し、セキュリティリストを更新します。
+3. Bash ターミナル以下のコマンドを入力し、セキュリティリストを更新します。
 
    ```sh
    oci network security-list update --security-list-id $SECLISTID --ingress-security-rules '[{"icmpOptions":null,"isStateless":null,"protocol":"6","source":"0.0.0.0/0","tcpOptions":{"destinationPortRange":{"max":22,"min":22},"sourcePortRange":null},"udpOptions":null},{"icmpOptions":{"code":4,"type":3},"isStateless":null,"protocol":"1","source":"0.0.0.0/0","tcpOptions":null,"udpOptions":null},{"icmpOptions":{"code":null,"type":0},"isStateless":false,"protocol":"1","source":"0.0.0.0/0","tcpOptions":null,"udpOptions":null},{"icmpOptions":{"code":null,"type":8},"isStateless":false,"protocol":"1","source":"0.0.0.0/0","tcpOptions":null,"udpOptions":null}]'
@@ -889,7 +891,7 @@ CLIを利用して、作成したサブネットの中にインスタンスを�
 
    この中から任意のイメージを一つ選択し、その値をシェル変数「SHAPE」に代入します。
 
-   <シェイプ名>は、VM.Standard2.1 などの任意の文字列に置き換えてください。
+   \<シェイプ名\>は、VM.Standard2.1 などの任意の文字列に置き換えてください。
 
    ```sh
    SHAPE=<シェイプ名>

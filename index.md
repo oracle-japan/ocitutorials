@@ -73,7 +73,7 @@ OCIのロードバランサーを使うと、冗長化したWebサーバーに�
 インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールに接続してみましょう。何かトラブル解決のヒントが見つかるかもしれません。
 - **[インスタンスにセカンダリIPを付与する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/attaching-secondary-ips/)**  
 OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。
-- **[コマンドライン(CLI)でOCIを操作する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474263/%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3-cli-%E3%81%A7oci%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[コマンドライン(CLI)でOCIを操作する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-cli/)**  
 クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。
 - **[TerraformでOCIの構築を自動化する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474281/terraform%E3%81%A7oci%E3%81%AE%E6%A7%8B%E7%AF%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
