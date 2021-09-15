@@ -18,8 +18,8 @@ header:
 
 - **前提 :**
 
-  - [Oracle Blockchain Platform のインスタンス作成](../01_01_create_instance/)を完了
-  - [Channelの作成](../02_01_create_channel/)を完了
+  - [Oracle Blockchain Platform のインスタンス作成](../01_1_create_instance/)を完了
+  - [Channelの作成](../02_1_create_channel/)を完了
 
 <br>
 <br>
