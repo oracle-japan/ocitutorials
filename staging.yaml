@@ -7,7 +7,8 @@ spec:
   selector:
     app: ocitutorials-preview
   ports:
-    - port: 4000
+    - protocol: TCP
+      port: 4000
       targetPort: 4000
   type: ClusterIP
 ---
@@ -19,7 +20,7 @@ metadata:
   labels:
     app: ocitutorials-preview
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: ocitutorials-preview
@@ -30,8 +31,9 @@ spec:
     spec:
       containers:
       - name: ocitutorials-preview
-        image: nrt.ocir.io/orasejapan/oci-tutorials/staging-env
+        image: nrt.ocir.io/orasejapan/oci-tutorials/staging-env:${BUILDRUN_HASH}
         ports:
-        - containerPort: 4000
+        - protocol: TCP
+          containerPort: 4000
       imagePullSecrets:
       - name: paasdocs-preview-image-pull-secret

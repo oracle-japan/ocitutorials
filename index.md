@@ -49,12 +49,6 @@ OCIではMySQLベースのデータウェアハウスサービスであるHeatWa
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 - **[Autonomous Database を使ってみよう（ADB HOL）](/ocitutorials/database/)**  
 Autonomous Database は、最新のAI技術によって自律的に運用される、クラウド上のマネージドなデータベースサービスです。こちらのハンズオンラボでは、Autonomous Databaseに初めて触る方向けに、使い方や特徴を学んでいただける内容になっています。
-- **[Oracle Container Engine for Kubernetes(OKE) ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/containers/handson/k8s-walkthrough/)**  
-Oracle Container Engine for Kubernetes(OKE)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドKubernetsサービスです。こちらのハンズオンでは、Kubernetes自体の特徴や使い方を含めて、OKEを触って頂けるコンテンツになっています。
-- **[Oracle Functions ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)**  
-Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。まずはリンク先のビギナー向けチュートリアルからはじめてみてください。
-- **[Oracle Cloud Infrastructure API Gateway ハンズオン（ビギナー向け）](https://oracle-japan.github.io/paasdocs/documents/api-management/handson/getting-started/)**  
-  Oracle Cloud Infrastructure API Gateway(OCI API Gateway)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドAPI Gatewayサービスです。こちらのハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約/公開する方法を学んでいただけるコンテンツになっています。
 - **[Oracle Cloud VMware Solution(OCVS) ハンズオン（ビギナー向け）](https://labs.hol.vmware.com/HOL/catalogs/lab/9582)** ※外部サイト  
   Oracle Cloud VMWare Solution(OCVS)は、Oracle Cloud Infrastructure(OCI) のベアメタルインフラ上に「VMware Cloud Foundation（VCF）」を配置してご提供するサービスです。こちらのハンズオンでは、OCI上で VMware Solution を作成する手順や、その他のOCIサービスとの連携方法、オンプレミス環境への接続手順などをご確認いただけます。
 
@@ -79,7 +73,7 @@ OCIのロードバランサーを使うと、冗長化したWebサーバーに�
 インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールに接続してみましょう。何かトラブル解決のヒントが見つかるかもしれません。
 - **[インスタンスにセカンダリIPを付与する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/attaching-secondary-ips/)**  
 OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。
-- **[コマンドライン(CLI)でOCIを操作する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474263/%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3-cli-%E3%81%A7oci%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[コマンドライン(CLI)でOCIを操作する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-cli/)**  
 クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。
 - **[TerraformでOCIの構築を自動化する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474281/terraform%E3%81%A7oci%E3%81%AE%E6%A7%8B%E7%AF%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
 大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
@@ -93,10 +87,6 @@ Webサイトの脆弱性対策に苦労していませんか？そんな時は�
 Oracle Management Cloud (OMC) は、機械学習と大規模データ技術を活用した次世代の統合モニタリング、管理、アナリティクス・クラウド・サービスです。このまとめページでは、OMCの構築に始まり、各種リソース(OS、ログ、Javaアプリ、OCIのインフラ、Oracle Databaseなど)を監視、管理する方法についての設定方法や使い方について説明しています。
 - **[Oracle Data Safe チュートリアルまとめ](https://qiita.com/western24/items/4824e4b3799b824197c6)**  
 Oracle Data Safeは、Oracle CloudのDatabase Serviceをよりセキュアに使うための付加的なサービスで、機密データの発見、(データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価などを、GUIツールから簡単に実施できます。このまとめページでは、Data Safeを有効化から、各種の使い方について説明しています。
-- **[Oracle Container Engine for Kubernetes(OKE) ハンズオン（ミドル向け）](https://oracle-japan.github.io/paasdocs/documents/microservices/tutorials/WorkshopGuide000InstallSoftware/)**  
-OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、チーム開発型プラットフォームであるOracle Cloud PaaSのDeveloper Cloud Serviceや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。
-- **[Oracle Functionsハンズオン（ミドル向け）](https://oracle-japan.github.io/paasdocs/documents/faas/)**  
-Oracle FunctionsとOracle Cloud Infrastructure(OCI)上の様々なサービスを組み合わせたハンズオンコンテンツです。Oracle Functionsを利用してコンピュートインスタンスのシェイプを変更したり、NoSQL Database Cloud Serviceと連携したりとFaaSならではのハンズオンを体験して頂けるコンテンツになっています。リンク先のミドル向けチュートリアルからはじめてみてください。
 - **[Oracle Content and Experiece チュートリアル](/ocitutorials/content-management/)**  
 Oracle Content and Experience (OCE)は、API ファーストなアーキテクチャで、マルチチャネルでのコンテンツ配信を実現するインテリジェントなコンテンツ管理プラットフォームです。この文書では、OCEが提供するファイル共有、アセット管理、Webサイト管理などさまざまな機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせてリンク先の各文書をご利用ください。
 - **[Oracle Integration チュートリアル](/ocitutorials/integration/)**  

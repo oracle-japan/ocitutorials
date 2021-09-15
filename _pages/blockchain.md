@@ -25,6 +25,11 @@ Oracle Blockchain Platform (OBP) を使ってみよう！という人のため�
 - **[Channel を作成し、インスタンスおよび Peer ノードを参加させる](/ocitutorials/blockchain/02_1_create_channel/)**  
   Hyperledger Fabric のデータとロジックの共有範囲の制御などのための仕組みである Channel を作成し、その Channel に対してインスタンスと Peer ノードを参加させます。
 
+# 3. Channel の構成
+
+- **[Chaincodeをデプロイする](/ocitutorials/blockchain/03_1_deploy_chaincode/)**  
+  Hyperledger Fabricにおけるスマートコントラクトであり、ブロックチェーン台帳上で実行されるビジネスロジックであるChaincodeをデプロイし、実行可能にする方法を説明します。
+
 # 9. ツール、ライブラリなどの利用
 
 - **[Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方](/ocitutorials/blockchain/91_1_app_builder_vsc_start/)**  

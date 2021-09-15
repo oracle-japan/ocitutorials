@@ -12,7 +12,7 @@ header:
 
 <a id="anchor0"></a>
 
-#　はじめに
+# はじめに
 
 この章ではAutonomous Databaseにおける分析系クエリの性能を確認します。
 
