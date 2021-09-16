@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
   Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
   Free for personal and commercial use under the MIT license
   https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-15T17:46:45+09:00">
+  <meta property="article:published_time" content="2021-09-16T21:38:31+09:00">
 
 
 
@@ -64,10 +64,13 @@
 
 
 
+
 <!-- end _includes/seo.html -->
 
 
-<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
 
 <!-- https://t.co/dKP3o1e -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,22 +81,8 @@
 
 <!-- For all browsers -->
 <link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
-
-<!--[if IE]>
-  <style>
-    /* old IE unsupported flexbox fixes */
-    .greedy-nav .site-title {
-      padding-right: 3em;
-    }
-    .greedy-nav button {
-      position: absolute;
-      top: 0;
-      right: 0;
-      height: 100%;
-    }
-  </style>
-<![endif]-->
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
 
 
 
@@ -107,7 +96,6 @@
 
   <body class="layout--single">
     <nav class="skip-links">
-  <h2 class="screen-reader-text">Skip links</h2>
   <ul>
     <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
     <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
@@ -126,7 +114,7 @@
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav">
         
-          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
         
         <a class="site-title" href="/ocitutorials/">
           OCI チュートリアル
@@ -158,9 +146,7 @@
         
         <button class="search__toggle" type="button">
           <span class="visually-hidden">Toggle search</span>
-          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
-            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
-          </svg>
+          <i class="fas fa-search"></i>
         </button>
         
         <button class="greedy-nav__toggle hidden" type="button">
@@ -309,7 +295,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その10 - MySQLで高速分析を体験する">
     <meta itemprop="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
-    <meta itemprop="datePublished" content="2021-09-15T17:46:45+09:00">
+    <meta itemprop="datePublished" content="2021-09-16T21:38:31+09:00">
     
 
     <div class="page__inner-wrap">
@@ -320,19 +306,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu">
-  <li><a href="#1-heatwaveとは">1. HeatWaveとは?</a></li>
-  <li><a href="#2-heatwave構成時の注意事項">2. HeatWave構成時の注意事項</a>
-    <ul>
-      <li><a href="#サービスリミットの確認引上げリクエスト送信方法">サービスリミットの確認＆引上げリクエスト送信方法</a></li>
-    </ul>
-  </li>
-  <li><a href="#3-heatwaveの構成heatwave用mdsの構成">3. HeatWaveの構成(HeatWave用MDSの構成)</a></li>
-  <li><a href="#4-heatwaveの構成heatwaveノードの追加">4. HeatWaveの構成(HeatWaveノードの追加)</a></li>
-  <li><a href="#5-サンプルデータベースの構築">5. サンプルデータベースの構築</a></li>
-  <li><a href="#6-heatwaveへのデータロード">6. HeatWaveへのデータロード</a></li>
-  <li><a href="#7-heatwaveの確認">7. HeatWaveの確認</a></li>
-</ul>
+              <ul class="toc__menu"><li><a href="#1-heatwaveとは">1. HeatWaveとは?</a></li><li><a href="#2-heatwave構成時の注意事項">2. HeatWave構成時の注意事項</a><ul><li><a href="#サービスリミットの確認引上げリクエスト送信方法">サービスリミットの確認＆引上げリクエスト送信方法</a></li></ul></li><li><a href="#3-heatwaveの構成heatwave用mdsの構成">3. HeatWaveの構成(HeatWave用MDSの構成)</a></li><li><a href="#4-heatwaveの構成heatwaveノードの追加">4. HeatWaveの構成(HeatWaveノードの追加)</a></li><li><a href="#5-サンプルデータベースの構築">5. サンプルデータベースの構築</a></li><li><a href="#6-heatwaveへのデータロード">6. HeatWaveへのデータロード</a></li><li><a href="#7-heatwaveの確認">7. HeatWaveの確認</a></li></ul>
 
             </nav>
           </aside>
@@ -380,7 +354,7 @@
 
 <h1 id="2-heatwave構成時の注意事項">2. HeatWave構成時の注意事項</h1>
 
-<p>HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>。</p>
+<p>HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
 <p>本チュートリアルで構成するHeatWaveの構成図は以下のようになります。HeatWaveを構成する時は、HeatWave専用のMySQL Database Serviceを構成し、そこにHeatWaveのノードを追加します。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL Database Serviceになります。また、HeatWaveノードの最小台数は2台、最大台数は24台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約400GBのデータを保持できます。</p>
 
@@ -666,7 +640,7 @@
 
 <ol>
   <li>
-    <p>ALTER TABLE文を使い、employeesデータベース内のテーブルに対して<strong>SECONDARY_ENGINE=RAPID</strong> を定義します<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup>。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。</p>
+    <p>ALTER TABLE文を使い、employeesデータベース内のテーブルに対して<strong>SECONDARY_ENGINE=RAPID</strong> を定義します<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
  mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
@@ -757,7 +731,7 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 
 <p>これで、この章の作業は終了です。</p>
 
-<p>この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析対象データは約120MBと大きなサイズではありません。また、HeatWaveも最小構成の2ノードで構成していますが、それでも約25倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">3</a></sup>。是非、分析業務で使用しているデータを対象にしてテストしてみて下さい。</p>
+<p>この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析対象データは約120MBと大きなサイズではありません。また、HeatWaveも最小構成の2ノードで構成していますが、それでも約25倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup>。是非、分析業務で使用しているデータを対象にしてテストしてみて下さい。</p>
 
 <div class="footnotes" role="doc-endnotes">
   <ol>
@@ -782,7 +756,8 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 
 
         
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-15T17:46:45+09:00">September 15, 2021</time></p>
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-16T21:38:31+09:00">September 16, 2021</time></p>
 
 
       </footer>
@@ -865,7 +840,9 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
       
     
 
-    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
   </ul>
 </div>
 

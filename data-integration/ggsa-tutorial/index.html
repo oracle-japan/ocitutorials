@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Minimal Mistakes Jekyll Theme 4.21.0 by Michael Rose
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
   Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
   Free for personal and commercial use under the MIT license
   https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
@@ -64,10 +64,13 @@
 
 
 
+
 <!-- end _includes/seo.html -->
 
 
-<link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
 
 <!-- https://t.co/dKP3o1e -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,22 +81,8 @@
 
 <!-- For all browsers -->
 <link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
-
-<!--[if IE]>
-  <style>
-    /* old IE unsupported flexbox fixes */
-    .greedy-nav .site-title {
-      padding-right: 3em;
-    }
-    .greedy-nav button {
-      position: absolute;
-      top: 0;
-      right: 0;
-      height: 100%;
-    }
-  </style>
-<![endif]-->
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
 
 
 
@@ -107,7 +96,6 @@
 
   <body class="layout--single">
     <nav class="skip-links">
-  <h2 class="screen-reader-text">Skip links</h2>
   <ul>
     <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
     <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
@@ -126,7 +114,7 @@
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav">
         
-          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt=""></a>
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
         
         <a class="site-title" href="/ocitutorials/">
           OCI チュートリアル
@@ -158,9 +146,7 @@
         
         <button class="search__toggle" type="button">
           <span class="visually-hidden">Toggle search</span>
-          <svg class="icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.99 16">
-            <path d="M15.5,13.12L13.19,10.8a1.69,1.69,0,0,0-1.28-.55l-0.06-.06A6.5,6.5,0,0,0,5.77,0,6.5,6.5,0,0,0,2.46,11.59a6.47,6.47,0,0,0,7.74.26l0.05,0.05a1.65,1.65,0,0,0,.5,1.24l2.38,2.38A1.68,1.68,0,0,0,15.5,13.12ZM6.4,2A4.41,4.41,0,1,1,2,6.4,4.43,4.43,0,0,1,6.4,2Z" transform="translate(-.01)"></path>
-          </svg>
+          <i class="fas fa-search"></i>
         </button>
         
         <button class="greedy-nav__toggle hidden" type="button">
@@ -300,44 +286,12 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu">
-  <li><a href="#前提条件">前提条件</a></li>
-  <li><a href="#ハンズオン環境の全体像">ハンズオン環境の全体像</a></li>
-  <li><a href="#1-marketplace-からインスタンスのプロビジョニング">1. Marketplace からインスタンスのプロビジョニング</a></li>
-  <li><a href="#2-チュートリアルに使用するコンテンツのダウンロード">2. チュートリアルに使用するコンテンツのダウンロード</a></li>
-  <li><a href="#3-チュートリアル">3. チュートリアル</a>
-    <ul>
-      <li><a href="#3-1-チュートリアル用のイベントストリームを-kafka-に-publish-する">3-1. チュートリアル用のイベント・ストリームを Kafka に Publish する</a></li>
-      <li><a href="#3-2-ggsa-で-kafka-の-connection-を定義する">3-2. GGSA で Kafka の Connection を定義する</a></li>
-      <li><a href="#3-3-stream-の作成">3-3. Stream の作成</a></li>
-      <li><a href="#3-4-geo-fence-の作成">3-4. Geo Fence の作成</a></li>
-      <li><a href="#3-5-pipeline-の作成">3-5. Pipeline の作成</a></li>
-      <li><a href="#3-6-atlanta-の車両に限定する">3-6. Atlanta の車両に限定する</a></li>
-      <li><a href="#3-7-止まっている車両をストリームデータから除外する">3-7. 止まっている車両をストリームデータから除外する</a></li>
-      <li><a href="#3-8-リアルタイム分析のためのルールを作成する">3-8. リアルタイム分析のためのルールを作成する</a>
-        <ul>
-          <li><a href="#1-全ての-highway-に対して名前を設定する">1. 全ての Highway に対して名前を設定する</a></li>
-          <li><a href="#2-60--avgspeed-の場合violation-を-reckless-に設定する">2. 60 &lt; AvgSpeed の場合、Violation を RECKLESS に設定する</a></li>
-          <li><a href="#3-45--avgspeed--60-の場合violation-を-major-に設定する">3. 45 &lt; AvgSpeed ≤ 60 の場合、Violation を MAJOR に設定する</a></li>
-          <li><a href="#4-35--avgspeed--45-の場合violation-を-minor-に設定する">4. 35 &lt; AvgSpeed ≤ 45 の場合、Violation を MINOR に設定する</a></li>
-        </ul>
-      </li>
-      <li><a href="#3-9-得られた分析結果を表示する">3-9. 得られた分析結果を表示する</a>
-        <ul>
-          <li><a href="#1-ラベリングrecklessmajorminorした車両データを-atlanta-の地図上に表示する">1. ラベリング(RECKLESS/MAJOR/MINOR)した車両データを Atlanta の地図上に表示する</a></li>
-          <li><a href="#2-highway-毎の平均の速さを表示する">2. Highway 毎の平均の速さを表示する</a></li>
-        </ul>
-      </li>
-      <li><a href="#3-10-target-の作成">3-10. Target の作成</a></li>
-      <li><a href="#3-11-pipeline-の-publish">3-11. Pipeline の Publish</a></li>
-    </ul>
-  </li>
-</ul>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオン環境の全体像">ハンズオン環境の全体像</a></li><li><a href="#作成する-pipeline-の全体像">作成する Pipeline の全体像</a><ul><li><a href="#1-車両の走行データ">1. 車両の走行データ</a></li><li><a href="#2-atlanta-の地図情報">2. Atlanta の地図情報</a></li><li><a href="#3-地理的境界で絞り込む">3. 地理的境界で絞り込む</a></li><li><a href="#4-平均の速さを元に絞り込む">4. 平均の速さを元に絞り込む</a></li><li><a href="#5-平均の速さを元にラベリングする">5. 平均の速さを元にラベリングする</a></li><li><a href="#6-kafka-に対して-publish">6. Kafka に対して publish</a></li></ul></li><li><a href="#1-marketplace-からインスタンスのプロビジョニング">1. Marketplace からインスタンスのプロビジョニング</a></li><li><a href="#2-チュートリアルに使用するコンテンツのダウンロード">2. チュートリアルに使用するコンテンツのダウンロード</a></li><li><a href="#3-チュートリアル">3. チュートリアル</a><ul><li><a href="#3-1-チュートリアル用のイベントストリームを-kafka-に-publish-する">3-1. チュートリアル用のイベント・ストリームを Kafka に Publish する</a></li><li><a href="#3-2-ggsa-で-kafka-の-connection-を定義する">3-2. GGSA で Kafka の Connection を定義する</a></li><li><a href="#3-3-stream-の作成">3-3. Stream の作成</a></li><li><a href="#3-4-geo-fence-の作成">3-4. Geo Fence の作成</a></li><li><a href="#3-5-pipeline-の作成">3-5. Pipeline の作成</a></li><li><a href="#3-6-atlanta-の車両に限定する">3-6. Atlanta の車両に限定する</a></li><li><a href="#3-7-止まっている車両をストリームデータから除外する">3-7. 止まっている車両をストリームデータから除外する</a></li><li><a href="#3-8-リアルタイム分析のためのルールを作成する">3-8. リアルタイム分析のためのルールを作成する</a><ul><li><a href="#1-全ての-highway-に対して名前を設定する">1. 全ての Highway に対して名前を設定する</a></li><li><a href="#2-60--avgspeed-の場合violation-を-reckless-に設定する">2. 60 &lt; AvgSpeed の場合、Violation を RECKLESS に設定する</a></li><li><a href="#3-45--avgspeed--60-の場合violation-を-major-に設定する">3. 45 &lt; AvgSpeed ≤ 60 の場合、Violation を MAJOR に設定する</a></li><li><a href="#4-35--avgspeed--45-の場合violation-を-minor-に設定する">4. 35 &lt; AvgSpeed ≤ 45 の場合、Violation を MINOR に設定する</a></li></ul></li><li><a href="#3-9-得られた分析結果を表示する">3-9. 得られた分析結果を表示する</a><ul><li><a href="#1-ラベリングrecklessmajorminorした車両データを-atlanta-の地図上に表示する">1. ラベリング(RECKLESS/MAJOR/MINOR)した車両データを Atlanta の地図上に表示する</a></li><li><a href="#2-highway-毎の平均の速さを表示する">2. Highway 毎の平均の速さを表示する</a></li></ul></li><li><a href="#3-10-target-の作成">3-10. Target の作成</a></li><li><a href="#3-11-pipeline-の-publish">3-11. Pipeline の Publish</a></li><li><a href="#3-12-参考-publish-されたメッセージを確認する">3-12. (参考) Publish されたメッセージを確認する</a></li></ul></li></ul>
 
             </nav>
           </aside>
         
-        <p>Oracle GoldenGate Stream Analytics は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。</p>
+        <p>Oracle GoldenGate Stream Analytics(以下、GGSA) は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。</p>
 
 <p>このエントリーでは、GGSA の Marketplace からのプロビジョニングからチュートリアル完了までの手順を記します。</p>
 
@@ -357,6 +311,78 @@
 
 <p><img src="architecture.png" alt="architecture" /></p>
 
+<h1 id="作成する-pipeline-の全体像">作成する Pipeline の全体像</h1>
+
+<p>このエントリーでは、リアルタイムに流れてくる交通データを分析することを行います。最終的に完成する Pipeline は以下のようになります。</p>
+
+<p><img src="pipeline.png" alt="pipeline" /></p>
+
+<p>それぞれの Stage で実施されることについて簡単に説明します。</p>
+
+<h2 id="1-車両の走行データ">1. 車両の走行データ</h2>
+
+<p>リアルタイムに流れてくる交通データを Java プログラムで疑似的に表現しています。Java プログラム中では、Kafka の特定 Topic(tutorial)に対してメッセージを publish しており、本ハンズオンは該当の Topic から GGSA がメッセージを consume する所から始まります。</p>
+
+<p>関連するハンズオンの章:</p>
+
+<ul>
+  <li><a href="#3-1-チュートリアル用のイベントストリームを-kafka-に-publish-する">3-1. チュートリアル用のイベント・ストリームを Kafka に Publish する</a></li>
+  <li><a href="#3-2-ggsa-で-kafka-の-connection-を定義する">3-2. GGSA で Kafka の Connection を定義する</a></li>
+  <li><a href="#3-3-stream-の作成">3-3. Stream の作成</a></li>
+</ul>
+
+<h2 id="2-atlanta-の地図情報">2. Atlanta の地図情報</h2>
+
+<p>使用するデータには、アメリカ全土の交通データが含まれています。今回は、その中でも Atlanta の交通データに絞り込んで分析を行うために、地理的な境界を定義します。</p>
+
+<p>関連するハンズオンの章:</p>
+
+<ul>
+  <li><a href="#3-4-geo-fence-の作成">3-4. Geo Fence の作成</a></li>
+</ul>
+
+<h2 id="3-地理的境界で絞り込む">3. 地理的境界で絞り込む</h2>
+
+<p><a href="#2-atlanta-の地図情報">2. Atlanta の地図情報</a>で定義した地理的境界に含まれるデータを入力データの緯度・経度を元に判定し、Atlanta 内の交通データに絞り込みを行います。</p>
+
+<p>関連するハンズオンの章:</p>
+
+<ul>
+  <li><a href="#3-6-atlanta-の車両に限定する">3-6. Atlanta の車両に限定する</a></li>
+</ul>
+
+<h2 id="4-平均の速さを元に絞り込む">4. 平均の速さを元に絞り込む</h2>
+
+<p>以降のステージでは、動いている車両に対して分析を行うため、その前処理として止まっている車両をストリームデータから取り除きます。</p>
+
+<p>関連するハンズオンの章:</p>
+
+<ul>
+  <li><a href="#3-7-止まっている車両をストリームデータから除外する">3-7. 止まっている車両をストリームデータから除外する</a></li>
+</ul>
+
+<h2 id="5-平均の速さを元にラベリングする">5. 平均の速さを元にラベリングする</h2>
+
+<p>動いている車両に対して、いくつかのルールを設定しその判定結果に応じてラベリング、結果の可視化を行います。</p>
+
+<p>関連するハンズオンの章:</p>
+
+<ul>
+  <li><a href="#3-8-リアルタイム分析のためのルールを作成する">3-8. リアルタイム分析のためのルールを作成する</a></li>
+</ul>
+
+<h2 id="6-kafka-に対して-publish">6. Kafka に対して publish</h2>
+
+<p>パイプライン処理が完了したデータを別のサービスで活用するために Kafka に publish します。</p>
+
+<p>関連するハンズオンの章:</p>
+
+<ul>
+  <li><a href="#3-10-target-の作成">3-10. Target の作成</a></li>
+  <li><a href="#3-11-pipeline-の-publish">3-11. Pipeline の Publish</a></li>
+  <li><a href="#3-12-参考-publish-されたメッセージを確認する">3-12. (参考) Publish されたメッセージを確認する</a></li>
+</ul>
+
 <h1 id="1-marketplace-からインスタンスのプロビジョニング">1. Marketplace からインスタンスのプロビジョニング</h1>
 
 <p>はじめに、OCI コンソール画面左上のハンバーガーメニューを展開し、<strong>マーケットプレイス</strong> &gt; <strong>すべてのアプリケーション</strong> と選択します。</p>
@@ -369,7 +395,7 @@
 
 <p><strong>Oracle 使用条件を確認し上でこれに同意します。</strong>にチェックを入れた後に、<strong>スタックの起動</strong>をクリックします。</p>
 
-<p><img src="image03.png" alt="image0" /></p>
+<p><img src="image03.png" alt="image03" /></p>
 
 <p>自動入力された項目を確認し、<strong>次</strong>をクリックします。</p>
 
@@ -997,6 +1023,64 @@ Use mysql -uroot -p to change MySQL root user password.
 
 <p><img src="image57.png" alt="image57" /></p>
 
+<h2 id="3-12-参考-publish-されたメッセージを確認する">3-12. (参考) Publish されたメッセージを確認する</h2>
+
+<p>トピックの一覧を確認すると、GGSA の UI 上で作成した Topic(Tutorial)が含まれていることが確認できます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$KAFKA_HOME</span>/bin/kafka-topics.sh <span class="nt">--list</span> <span class="nt">--zookeeper</span> localhost:2181
+Tutorial // GGSAのUI上で作成したTopic
+__consumer_offsets
+sx_Tutorial_BusSpeed0Plus_draft
+sx_Tutorial_BusSpeed0Plus_public
+sx_Tutorial_PatternGeoFenceInside_draft
+sx_Tutorial_PatternGeoFenceInside_public
+sx_Tutorial_SpeedViolation_draft
+sx_Tutorial_SpeedViolation_public
+sx_Tutorial_TutorialTarget_draft
+sx_Tutorial_TutorialTarget_public
+sx_Tutorial_Tutorial_draft
+sx_Tutorial_Tutorial_public
+sx_Tutorial_public_1_Tutorial_offset
+sx_backend_notification_zIHBNqNV
+sx_messages_zIHBNqNV
+tutorial
+</code></pre></div></div>
+
+<p>パイプライン処理が完了した後のデータを取得する場合は、この Topic(Tutorial)からメッセージを取得すればよいことになります。本ハンズオンでは、簡易的に Kafka に付属しているコンソール用の Consumer を用いて確認します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$KAFKA_HOME</span>/bin/kafka-console-consumer.sh <span class="nt">--bootstrap-server</span> localhost:9092 <span class="nt">--topic</span> Tutorial
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:30.0,<span class="s2">"DriverNumber"</span>:14734483,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:21.0,<span class="s2">"DriverNumber"</span>:1.1E+2,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"MAJOR"</span>,<span class="s2">"AvgSpeed"</span>:59.0,<span class="s2">"DriverNumber"</span>:2760439,<span class="s2">"Highway"</span>:<span class="s2">"MR665"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"RECKLESS"</span>,<span class="s2">"AvgSpeed"</span>:96.0,<span class="s2">"DriverNumber"</span>:13241,<span class="s2">"Highway"</span>:<span class="s2">"M2   "</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"MINOR"</span>,<span class="s2">"AvgSpeed"</span>:37.0,<span class="s2">"DriverNumber"</span>:13217,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"MAJOR"</span>,<span class="s2">"AvgSpeed"</span>:53.0,<span class="s2">"DriverNumber"</span>:0,<span class="s2">"Highway"</span>:<span class="s2">"MR335"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"MINOR"</span>,<span class="s2">"AvgSpeed"</span>:39.0,<span class="s2">"DriverNumber"</span>:13599829,<span class="s2">"Highway"</span>:<span class="s2">"MR599"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:12.0,<span class="s2">"DriverNumber"</span>:710352,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:35.0,<span class="s2">"DriverNumber"</span>:1859124,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"MAJOR"</span>,<span class="s2">"AvgSpeed"</span>:53.0,<span class="s2">"DriverNumber"</span>:12671,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:35.0,<span class="s2">"DriverNumber"</span>:1843334,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:5.0,<span class="s2">"DriverNumber"</span>:5848648,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:3.0,<span class="s2">"DriverNumber"</span>:5.83806E+6,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:25.0,<span class="s2">"DriverNumber"</span>:4757146,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+<span class="o">{</span><span class="s2">"Violation"</span>:<span class="s2">"NO_VIOLATION"</span>,<span class="s2">"AvgSpeed"</span>:31.0,<span class="s2">"DriverNumber"</span>:1856674,<span class="s2">"Highway"</span>:<span class="s2">"HWY66"</span><span class="o">}</span>
+...
+</code></pre></div></div>
+
+<p>確かに、GGSA の UI 上で確認できるデータと同じものが取得できることが確認できます。また、GGSA では、Target として Kafka 以外にも</p>
+
+<ul>
+  <li>Database</li>
+  <li>Elasticsearch</li>
+  <li>JMS</li>
+  <li>MongoDB</li>
+  <li>OCI Notification</li>
+  <li>REST</li>
+  <li>…</li>
+</ul>
+
+<p>と様々な Target が用意されています。</p>
+
 <p>これで、GGSA のチュートリアルは完了です。お疲れ様でした！</p>
 
         
@@ -1009,15 +1093,11 @@ Use mysql -uroot -p to change MySQL root user password.
 
 
   
-  
-  
 
   <p class="page__taxonomy">
     <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
     <span itemprop="keywords">
     
-      
-      
       <a href="/ocitutorials/tags/#ggsa" class="page__taxonomy-item" rel="tag">ggsa</a>
     
     </span>
@@ -1027,6 +1107,7 @@ Use mysql -uroot -p to change MySQL root user password.
 
 
         
+
   <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-14T00:00:00+09:00">September 14, 2021</time></p>
 
 
@@ -1100,7 +1181,9 @@ Use mysql -uroot -p to change MySQL root user password.
       
     
 
-    <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
   </ul>
 </div>
 
