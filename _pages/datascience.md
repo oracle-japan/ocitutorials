@@ -17,3 +17,9 @@ toc: true
 
 + **[Oracle Cloud Data Scienceハンズオン](https://github.com/oracle-japan/oci-datascience-hol01/)**
     Oracle Cloud Infrastructure Data ScienceとOracleが提供するAccerlerated Data Science(ADS)という機械学習ライブラリを利用して社員の離職率を予測する手順をご案内します。【所要時間:約2時間30分】
+
+# 2. OCI Data Flow チュートリアル
+
+## 初級編
+
++ **[OCI Data Flow ハンズオン](/ocitutorials/datascience/dataflow-for-beginner/)** [Berlin Airbnb データセット](https://www.kaggle.com/brittabettendorf/berlin-airbnb-data)を用いて、OCI Data Flow における基本的な操作方法を学習します。
