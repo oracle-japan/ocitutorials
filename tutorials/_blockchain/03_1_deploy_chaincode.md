@@ -111,10 +111,6 @@ Hyperledger Fabric（v1.x系）では、ブロックチェーン台帳に対し�
 
     ![Instantiate Success](instantiate_cc_success.png)
 
-<br>
-
-以上でこのチュートリアルは終了です。
-
 # 3. 参考リンク
 
 - [Oracle Blockchain Platform公式ドキュメントのChaincodeデプロイの箇所](https://docs.oracle.com/en/cloud/paas/blockchain-cloud/usingoci/deploy-and-manage-chaincodes.html)
