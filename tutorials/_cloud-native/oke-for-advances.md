@@ -687,11 +687,13 @@ git clone https://github.com/oracle-japan/code-at-customer-handson
 
 まずは、フロントエンドアプリケーションからビルドします。
 
-**HelidonアプリケーションのDockerfileについて**  
-Helidonには`Helidon CLI`という便利なCLIツールがあります。  
-これを利用することで、プロジェクトの雛形を作成することができ、その中にデフォルトでDockerfileも含まれています。  
-`Helidon CLI`については[こちら](/ocitutorials/cloud-native/helidon-mp-for-beginners/)をご確認ください。  
-以降で利用するDockerfileも、基本的に上記雛形ファイルを利用しています。  
+**Helidonについて**  
+Helidonは`Maven`を利用してプロジェクトの雛形を作成することができます。  
+コマンドについては[こちら](https://helidon.io/docs/v2/#/mp/guides/02_quickstart)をご確認ください。  
+この中にはデフォルトでDockerfileも含まれています。  
+以降で利用するDockerfileも、基本的に上記雛形ファイルを利用しています。
+また、HelidonにはHelidon CLIという便利なCLIツールがあります。  
+Helidon CLIについては[こちら](https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-mp-for-beginners/)をご確認ください。
 {: .notice--info}
 
 ```sh
@@ -768,8 +770,6 @@ cd ~
 FROM maven:3.6-jdk-11 as build
 
 WORKDIR /helidon
-
-ARG SERVICE_VERSION=V1
 
 # Create a first layer to cache the "Maven World" in the local repository.
 # Incremental docker builds will always resume after that, unless you update
@@ -1232,6 +1232,12 @@ spec:
 
 まずは、このDestinationRuleを適用してみましょう。
 
+ホームディレクトリに戻ります。  
+
+```sh
+cd ~
+```
+
 ```sh
 cd code-at-customer-handson/k8s/base
 ```
@@ -1519,7 +1525,7 @@ key|value
 -|-
 名前| grafana_dynamic_group
 説明| grafana_dynamic_group
-一致ルール - ルール1 | instance.compartment.id = '<ご自身のコンパートメントOCID>'
+一致ルール - ルール1 | `instance.compartment.id = '<ご自身のコンパートメントOCID>'`
 
 ![](5-003.png)
 
@@ -1547,7 +1553,20 @@ key|value
 名前| grafana_policy
 説明| grafana_policy
 コンパートメント | ご自身のコンパートメント名
-ポリシー | allow dynamic-group grafana_dynamic_group to read metrics in compartment id <ご自身のコンパートメントOCID>
+ポリシー | `allow dynamic-group grafana_dynamic_group to read metrics in compartment id <ご自身のコンパートメントOCID>`
+
+{% capture notice %}**集合ハンズオンで参加されている皆様へ**  
+集合ハンズオンで参加されている皆様は、ご自身で作成された動的グループ名をご利用ください。  
+以下のような形になります。
+
+```
+allow dynamic-group <ご自身で作成された動的グループ名> to read metrics in compartment id <ご自身のコンパートメントOCID>
+```
+
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
 ![](5-006.png)
 
@@ -1674,6 +1693,11 @@ Region | ap-osaka-1
 Compartment | ご自身のコンパートメント名
 Namespace | oci_computeagent
 Metric | 例えば`CpuUtilization`を選択
+
+**ポリシーの反映について**  
+環境や状況によって[先ほどの手順](#5-1-動的グループとポリシーの設定)で設定したポリシーの反映に時間がかかる場合があります。  
+`Namespace`以降が選択できない場合は、しばらく時間をおいてから再度お試しください。
+{: .notice--warning}
 
 ![](5-012.png)
 画像はイメージですので、各項目はご自身の環境に合わせて読み替えてください。  
