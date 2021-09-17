@@ -521,6 +521,12 @@ var store = [{
         "url": "/ocitutorials/database/adb506-sr/",
         "teaser": "/ocitutorials/database/adb506-sr/img1.jpg"
       },{
+        "title": "OCI Data Flow ハンズオン(初級編)",
+        "excerpt":"OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。 このエントリーでは、OCI Data Flow の基本的な操作を学習します。 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること ハンズオンの全体像 本ハンズオンは、最終的にBerlin Airbnb データセットを用いて最適な取引物件を予測する事を行いたいと思います。そのために OCI Data Flow を用いて、以下のことを学習します。 Java を使用した ETL SparkSQL によるデータの簡易的なプロファイリング PySpark を使用した機械学習 それでは、実施していきます。 0. 事前準備 OCI Data Flow を使用するための Object Storage の作成やポリシーの設定を行います。 0-1. Object Storage の作成 Data Flow でアプリケーションを実行する前に、以下の...","categories": [],
+        "tags": ["dataflow"],
+        "url": "/ocitutorials/datascience/dataflow-for-beginner/",
+        "teaser": null
+      },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
         "tags": ["https://community.oracle.com/docs/DOC-1038411"],
