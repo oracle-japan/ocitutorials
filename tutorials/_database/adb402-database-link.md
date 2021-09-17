@@ -19,7 +19,7 @@ header:
 
    ![DatabaseLinkイメージ](DatabaseLink.jpg)
 
-なお、Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。
+Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。
 
 本文書では2-1のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、
 他のOracle Database（リンク先）にアクセスする手順を記載します。
@@ -28,6 +28,8 @@ header:
 
    ![DatabaseLink_optionイメージ](DatabaseLink_option.jpg)
 
+なお、本文書ではパブリックIPアドレスを持つDBCSを前提としています。プライベートIPアドレスへのDatabase Link作成については、今後紹介予定です。  
+ご不明な点がございましたら、担当営業までお問い合わせください。
 
 **目次 :**
   + [1.DBCSインスタンスの作成およびスキーマのインポート](#anchor1)

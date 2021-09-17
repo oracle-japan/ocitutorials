@@ -20,10 +20,18 @@ Oracle Blockchain Platform (OBP) を使ってみよう！という人のため�
 
   ここではふたつの OBP インスタンスでブロックチェーン・ネットワークを構成します。単一の OBP インスタンスのみを使う場合はこの手順はスキップしてください。
 
-# 2. Channel の構成
+# 2. Channelの構成
 
 - **[Channel を作成し、インスタンスおよび Peer ノードを参加させる](/ocitutorials/blockchain/02_1_create_channel/)**  
   Hyperledger Fabric のデータとロジックの共有範囲の制御などのための仕組みである Channel を作成し、その Channel に対してインスタンスと Peer ノードを参加させます。
+
+# 3. Chaincodeの操作
+
+- **[Chaincodeをデプロイする](/ocitutorials/blockchain/03_1_deploy_chaincode/)**  
+  Hyperledger Fabricにおけるスマートコントラクトであり、ブロックチェーン台帳上で実行されるビジネスロジックであるChaincodeをデプロイし、実行可能にする方法を説明します。
+
+- **[REST APIからChaincodeを実行する](/ocitutorials/blockchain/03_2_restcall_chaincode/)**  
+  REST APIからChaincodeを実行する方法を説明します。
 
 # 9. ツール、ライブラリなどの利用
 
