@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-17T09:44:10+09:00">
+  <meta property="article:published_time" content="2021-09-17T10:11:37+09:00">
 
 
 
@@ -301,7 +301,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
-    <meta itemprop="datePublished" content="2021-09-17T09:44:10+09:00">
+    <meta itemprop="datePublished" content="2021-09-17T10:11:37+09:00">
     
 
     <div class="page__inner-wrap">
@@ -984,11 +984,13 @@ Helidonとインメモリで動作しているデータベースである<a href
 
 <p>まずは、フロントエンドアプリケーションからビルドします。</p>
 
-<p class="notice--info"><strong>HelidonアプリケーションのDockerfileについて</strong><br />
-Helidonには<code class="language-plaintext highlighter-rouge">Helidon CLI</code>という便利なCLIツールがあります。<br />
-これを利用することで、プロジェクトの雛形を作成することができ、その中にデフォルトでDockerfileも含まれています。<br />
-<code class="language-plaintext highlighter-rouge">Helidon CLI</code>については<a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">こちら</a>をご確認ください。<br />
-以降で利用するDockerfileも、基本的に上記雛形ファイルを利用しています。</p>
+<p class="notice--info"><strong>Helidonについて</strong><br />
+Helidonは<code class="language-plaintext highlighter-rouge">Maven</code>を利用してプロジェクトの雛形を作成することができます。<br />
+コマンドについては<a href="https://helidon.io/docs/v2/#/mp/guides/02_quickstart">こちら</a>をご確認ください。<br />
+この中にはデフォルトでDockerfileも含まれています。<br />
+以降で利用するDockerfileも、基本的に上記雛形ファイルを利用しています。
+また、HelidonにはHelidon CLIという便利なCLIツールがあります。<br />
+Helidon CLIについては<a href="https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-mp-for-beginners/">こちら</a>をご確認ください。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/olympic_frontend
 </code></pre></div></div>
@@ -1056,8 +1058,6 @@ OCIRへビルドしたコンテナイメージをpushする場合は、Oracle Cl
 <span class="k">FROM</span><span class="s"> maven:3.6-jdk-11 as build</span>
 
 <span class="k">WORKDIR</span><span class="s"> /helidon</span>
-
-<span class="k">ARG</span><span class="s"> SERVICE_VERSION=V1</span>
 
 <span class="c"># Create a first layer to cache the "Maven World" in the local repository.</span>
 <span class="c"># Incremental docker builds will always resume after that, unless you update</span>
@@ -1484,6 +1484,11 @@ http://[WorkerNodeのパブリックIP]:30768</p>
 
 <p>まずは、このDestinationRuleを適用してみましょう。</p>
 
+<p>ホームディレクトリに戻ります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/base
 </code></pre></div></div>
 
@@ -1774,7 +1779,7 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
     </tr>
     <tr>
       <td>一致ルール - ルール1</td>
-      <td>instance.compartment.id = ‘<ご自身のコンパートメントOCID>'</ご自身のコンパートメントOCID></td>
+      <td><code class="language-plaintext highlighter-rouge">instance.compartment.id = '&lt;ご自身のコンパートメントOCID&gt;'</code></td>
     </tr>
   </tbody>
 </table>
@@ -1821,10 +1826,21 @@ code-at-customer-handson/k8s/scenarioディレクトリにはカナリアリリ�
     </tr>
     <tr>
       <td>ポリシー</td>
-      <td>allow dynamic-group grafana_dynamic_group to read metrics in compartment id <ご自身のコンパートメントOCID></ご自身のコンパートメントOCID></td>
+      <td><code class="language-plaintext highlighter-rouge">allow dynamic-group grafana_dynamic_group to read metrics in compartment id &lt;ご自身のコンパートメントOCID&gt;</code></td>
     </tr>
   </tbody>
 </table>
+
+<div class="notice--warning">
+  <p><strong>集合ハンズオンで参加されている皆様へ</strong><br />
+集合ハンズオンで参加されている皆様は、ご自身で作成された動的グループ名をご利用ください。<br />
+以下のような形になります。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow dynamic-group &lt;ご自身で作成された動的グループ名&gt; to read metrics in compartment id &lt;ご自身のコンパートメントOCID&gt;
+</code></pre></div></div>
+
+
+</div>
 
 <p><img src="5-006.png" alt="" /></p>
 
@@ -1978,6 +1994,10 @@ http://[WorkerNodeのパブリックIP]:30453</p>
   </tbody>
 </table>
 
+<p class="notice--warning"><strong>ポリシーの反映について</strong><br />
+環境や状況によって<a href="#5-1-動的グループとポリシーの設定">先ほどの手順</a>で設定したポリシーの反映に時間がかかる場合があります。<br />
+<code class="language-plaintext highlighter-rouge">Namespace</code>以降が選択できない場合は、しばらく時間をおいてから再度お試しください。</p>
+
 <p><img src="5-012.png" alt="" />
 画像はイメージですので、各項目はご自身の環境に合わせて読み替えてください。</p>
 
@@ -1997,7 +2017,7 @@ http://[WorkerNodeのパブリックIP]:30453</p>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-17T09:44:10+09:00">September 17, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-17T10:11:37+09:00">September 17, 2021</time></p>
 
 
       </footer>
