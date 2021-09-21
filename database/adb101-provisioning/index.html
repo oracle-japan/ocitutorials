@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-17T17:16:26+09:00">
+  <meta property="article:published_time" content="2021-09-21T17:42:32+09:00">
 
 
 
@@ -333,7 +333,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="101: ADBインスタンスを作成してみよう">
     <meta itemprop="description" content="簡単すぐにハイエンドなデータベースを構成できることをご確認ください。">
-    <meta itemprop="datePublished" content="2021-09-17T17:16:26+09:00">
+    <meta itemprop="datePublished" content="2021-09-21T17:42:32+09:00">
     
 
     <div class="page__inner-wrap">
@@ -344,7 +344,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#リージョンを設定しコンパートメントを用意しよう">リージョンを設定し、コンパートメントを用意しよう</a><ul><li><a href="#1-サービス画面へのアクセス">1. サービス画面へのアクセス</a></li><li><a href="#2-リージョンの確認設定">2. リージョンの確認、設定</a></li><li><a href="#3-コンパートメントの確認作成">3. コンパートメントの確認、作成</a></li></ul></li><li><a href="#adbインスタンスを作成してみよう">ADBインスタンスを作成してみよう</a><ul><li><a href="#1-atpインスタンスの作成プロビジョニング">1. ATPインスタンスの作成（プロビジョニング）</a></li></ul></li><li><a href="#database-actionsで操作してみよう">Database Actionsで操作してみよう</a><ul><li><a href="#1インスタンスに接続してみよう">1.インスタンスに接続してみよう</a></li><li><a href="#2-データベースユーザーを作成してみようdatabase-actions">2. データベース・ユーザーを作成してみよう(Database Actions)</a></li><li><a href="#3-データベースユーザーを作成してみようコマンドライン">3. データベース・ユーザーを作成してみよう（コマンドライン)</a></li></ul></li><li><a href="#よくある質問やtips">よくある質問やTips</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-リージョンを設定しコンパートメントを用意しよう">1. リージョンを設定し、コンパートメントを用意しよう</a><ul><li><a href="#1-1-サービス画面へのアクセス">1-1. サービス画面へのアクセス</a></li><li><a href="#1-2-リージョンの確認設定">1-2. リージョンの確認、設定</a></li><li><a href="#1-3-コンパートメントの確認作成">1-3. コンパートメントの確認、作成</a></li></ul></li><li><a href="#2-adbインスタンスを作成してみよう">2. ADBインスタンスを作成してみよう</a><ul><li><a href="#2-1-atpインスタンスの作成プロビジョニング">2-1. ATPインスタンスの作成（プロビジョニング）</a></li></ul></li><li><a href="#3-database-actionsで操作してみよう">3. Database Actionsで操作してみよう</a><ul><li><a href="#3-1インスタンスに接続してみよう">3-1.インスタンスに接続してみよう</a></li><li><a href="#3-2-データベースユーザーを作成してみようdatabase-actions">3-2. データベース・ユーザーを作成してみよう(Database Actions)</a></li><li><a href="#3-3-データベースユーザーを作成してみようコマンドライン">3-3. データベース・ユーザーを作成してみよう（コマンドライン)</a></li></ul></li><li><a href="#よくある質問やtips">よくある質問やTips</a></li></ul>
 
             </nav>
           </aside>
@@ -360,9 +360,9 @@
 <strong>目次</strong></p>
 
 <ul>
-  <li><a href="#anchor1">1.リージョンを設定し、コンパートメントを用意しよう</a></li>
-  <li><a href="#anchor2">2.ADBインスタンスを作成してみよう</a></li>
-  <li><a href="#anchor3">3.Database Actionsで操作してみよう</a></li>
+  <li><a href="#anchor1">1. リージョンを設定し、コンパートメントを用意しよう</a></li>
+  <li><a href="#anchor2">2. ADBインスタンスを作成してみよう</a></li>
+  <li><a href="#anchor3">3. Database Actionsで操作してみよう</a></li>
 </ul>
 
 <p><br />
@@ -371,9 +371,9 @@
 <p><a id="anchor1"></a>
 <br /></p>
 
-<h1 id="リージョンを設定しコンパートメントを用意しよう">リージョンを設定し、コンパートメントを用意しよう</h1>
+<h1 id="1-リージョンを設定しコンパートメントを用意しよう">1. リージョンを設定し、コンパートメントを用意しよう</h1>
 
-<h2 id="1-サービス画面へのアクセス">1. サービス画面へのアクセス</h2>
+<h2 id="1-1-サービス画面へのアクセス">1-1. サービス画面へのアクセス</h2>
 
 <p>まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。</p>
 
@@ -391,55 +391,69 @@
     <p><img src="img61a.png" alt="img2a.png" /></p>
   </li>
   <li>
-    <p><strong>クラウドユーザー名</strong> と <strong>パスワード</strong> を入力し、 <strong>Sign In</strong> をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） <br />
- <img src="img61b.png" alt="img2b.png" /><br />
-<br />
-以下のようなダッシュボード画面が表示されればOKです。<br />
- <img src="img62.png" alt="img3.png" /></p>
+    <p><strong>クラウドユーザー名</strong> と <strong>パスワード</strong> を入力し、 <strong>Sign In</strong> をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。）</p>
 
-    <blockquote>
-      <p><strong>補足）上手く表示されない場合は以下のURLをお試しください。</strong><br />
- https://console.ap-tokyo-1.oraclecloud.com/?tenant=<strong>&lt;クラウド・アカウント&gt;</strong></p>
-
-      <p>尚、 <strong>&lt;クラウド・アカウント&gt;</strong> はご自身のクラウドアカウント名（テナント名）に置き換えてください。</p>
-    </blockquote>
-
-    <p><br /></p>
-
-    <blockquote>
-      <p><strong>補足）ダッシュボード画面の使い方</strong><br />
-① ユーザー関連の確認/設定が可能です（ユーザ名の表示・パスワード変更 等）<br />
-② 表示言語の設定が可能です<br />
-③ リージョン（データセンター）の選択が可能です<br />
-④ 画面左上のメニューボタン（赤点線の枠内）を押すと任意のサービスを選択することが可能です<br />
-  <img src="img63.png" alt="img4.png" /></p>
-    </blockquote>
+    <p><img src="img61b.png" alt="img2b.png" /></p>
   </li>
 </ol>
 
 <p><br /></p>
 
-<h2 id="2-リージョンの確認設定">2. リージョンの確認、設定</h2>
+<p>以下のようなダッシュボード画面が表示されればOKです。</p>
+
+<p><img src="img62.png" alt="img3.png" /></p>
+
+<blockquote>
+  <p><strong>補足</strong></p>
+
+  <p>上手く表示されない場合は以下のURLをお試しください。</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://console.ap-tokyo-1.oraclecloud.com/?tenant=&lt;クラウド・アカウント名&gt;
+</code></pre></div>  </div>
+
+  <p>※ <strong>&lt;クラウド・アカウント名&gt;</strong> はご自身のクラウドアカウント名（テナント名）に置き換えてください。</p>
+
+  <p><br /></p>
+
+  <p><strong>&lt; ダッシュボード画面の使い方 &gt;</strong></p>
+  <ol>  
+<li>ユーザー関連の確認/設定が可能です（ユーザ名の表示・パスワード変更 等）</li>  
+<li>表示言語の設定が可能です</li>
+<li>リージョン（データセンター）の選択が可能です</li>
+<li>画面左上のメニューボタン（赤点線の枠内）を押すと任意のサービスを選択することが可能です</li>
+</ol>
+
+</blockquote>
+
+<p><img src="img63.png" alt="img4.png" /></p>
+
+<p><br /></p>
+
+<h2 id="1-2-リージョンの確認設定">1-2. リージョンの確認、設定</h2>
 
 <p>クラウドアカウントを作成した直後のデフォルト設定では、クラウドアカウント作成時に指定した<strong>Home Region</strong>のみが利用可能になっていますので、<br />
-  他のリージョンでインスタンスを作成したい場合は、以下を参考にリージョンを追加してください。
-<br /></p>
+  他のリージョンでインスタンスを作成したい場合は、以下を参考にリージョンを追加してください。</p>
 
-<p>### <strong>[リージョンの追加方法]</strong></p>
+<p><br /></p>
+
+<p><strong>[リージョンの追加方法]</strong></p>
+
 <ol>
   <li>
-    <p>画面右上にある、<strong>リージョン選択から、</strong>リージョンの管理** をクリックします。<br />
-    <img src="img65.png" alt="img5.png" /></p>
+    <p>画面右上にある、<strong>リージョン選択から、</strong>リージョンの管理** をクリックします。</p>
+
+    <p><img src="img65.png" alt="img5.png" /></p>
   </li>
   <li>
     <p>Regions選択画面より有効化したいリージョンの <strong>サブスクライブ</strong> をクリックします<br />
-  （有効化されると緑色に表示が変わります）<br />
-<img src="img66.png" alt="img6.png" /></p>
+  （有効化されると緑色に表示が変わります）</p>
+
+    <p><img src="img66.png" alt="img6.png" /></p>
   </li>
 </ol>
 
 <blockquote>
-  <p>補足）</p>
+  <p><strong>補足</strong></p>
+
   <ul>
     <li>有効にしたリージョンが表示されない場合、一度ブラウザをリロード（F5）してください。それでも表示されてない場合は一旦ログアウトし再度ログインしてください。</li>
     <li>リージョンを追加しても課金には影響ありません。</li>
@@ -448,7 +462,7 @@
 
 <p><br /></p>
 
-<h2 id="3-コンパートメントの確認作成">3. コンパートメントの確認、作成</h2>
+<h2 id="1-3-コンパートメントの確認作成">1-3. コンパートメントの確認、作成</h2>
 <p>コンパートメントはOracle Cloud Infrastructure独自の機能で、テナントの中で論理的な区画を設け、権限やリソースの管理、課金状況の確認等を実施いただくことができます。<br />
 （詳細は <a href="https://oracle-japan.github.io/ocitutorials/beginners/getting-started/">こちら</a>、もしくは <a href="https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcompartments.htm">マニュアル</a>を参照ください。）</p>
 
@@ -456,13 +470,15 @@
 
 <ol>
   <li>
-    <p>画面左上の <strong>メニュー</strong> をクリックし、サービスの一覧の中から、<strong>Oracle Database</strong>、<strong>Autonomous Transaction Processing</strong> の順で選択します。
-<img src="img67.png" alt="img7.png" /></p>
+    <p>画面左上の <strong>メニュー</strong> をクリックし、サービスの一覧の中から、<strong>Oracle Database</strong>、<strong>Autonomous Transaction Processing</strong> の順で選択します。</p>
+
+    <p><img src="img67.png" alt="img7.png" /></p>
   </li>
   <li>
     <p>次に画面左の <strong>コンパートメント</strong> から適切なコンパートメントを選択します。<br />
-(本チュートリアルでは任意のコンパートメントを指定して実施いただけます。)<br />
-<img src="img68.jpg" alt="img7.png" /></p>
+(本チュートリアルでは任意のコンパートメントを指定して実施いただけます。)</p>
+
+    <p><img src="img68.jpg" alt="img7.png" /></p>
   </li>
 </ol>
 
@@ -475,16 +491,19 @@
 
 <ol>
   <li>
-    <p>画面左上のボタンからメニュー画面を表示し、<strong>アイデンティティとセキュリティ</strong>、<strong>コンパートメント</strong> の順で選択します。
- <img src="img69.png" alt="img8.png" /></p>
+    <p>画面左上のボタンからメニュー画面を表示し、<strong>アイデンティティとセキュリティ</strong>、<strong>コンパートメント</strong> の順で選択します。</p>
+
+    <p><img src="img69.png" alt="img8.png" /></p>
   </li>
   <li>
-    <p>次に <strong>コンパートメントの作成</strong> をクリックします。
- <img src="img70.jpg" alt="img8.png" /></p>
+    <p>次に <strong>コンパートメントの作成</strong> をクリックします。</p>
+
+    <p><img src="img70.jpg" alt="img8.png" /></p>
   </li>
   <li>
-    <p>作成したいコンパートメント名を入力し、<strong>コンパートメントの作成</strong> をクリックします。(例では、test-compartmentと入力しています)
- <img src="img71.jpg" alt="img8.png" /></p>
+    <p>作成したいコンパートメント名を入力し、<strong>コンパートメントの作成</strong> をクリックします。(例では、test-compartmentと入力しています)</p>
+
+    <p><img src="img71.jpg" alt="img8.png" /></p>
   </li>
 </ol>
 
@@ -492,16 +511,16 @@
 以上で、ADBインスタンスを作成する準備が整いました！<br />
 <br /></p>
 
-<p><br /></p>
-
 <p><a id="anchor2"></a></p>
 
 <p><br /></p>
 
-<h1 id="adbインスタンスを作成してみよう">ADBインスタンスを作成してみよう</h1>
+<h1 id="2-adbインスタンスを作成してみよう">2. ADBインスタンスを作成してみよう</h1>
 <p>それではここからは実際にADBインスタンス（データベース）を1つ作成してみましょう！</p>
 
 <blockquote>
+  <p><strong>補足</strong></p>
+
   <p>Autonomous Database (ADB)は、対象システムの処理特性に応じて以下を選択できます。本チュートリアルでは、ATPを対象に記載していますが、その他に関しても基本的な操作は同じです。</p>
   <ul>
     <li>分析系システムを対象とするAutonmous Data Warehouse (ADW)</li>
@@ -511,124 +530,145 @@
 
 </blockquote>
 
-<h2 id="1-atpインスタンスの作成プロビジョニング">1. ATPインスタンスの作成（プロビジョニング）</h2>
+<h2 id="2-1-atpインスタンスの作成プロビジョニング">2-1. ATPインスタンスの作成（プロビジョニング）</h2>
 
 <ol>
   <li>
-    <p>サービス一覧から <strong>Oracle Database</strong>、<strong>Autonomous Transaction Processing</strong> を選択し、ADBのサービス画面を表示します。<br />
-<img src="img72.png" alt="img9.png" /></p>
+    <p>サービス一覧から 「<strong>Oracle Database</strong>」»「<strong>Autonomous Transaction Processing</strong>」 を選択し、ADBのサービス画面を表示します。</p>
+
+    <p><img src="img72.png" alt="img9.png" /></p>
   </li>
   <li>
-    <p><strong>Autonomous Database の作成</strong> をクリックすると作成ウィンドウが立ち上がります。<br />
-<img src="img73.jpg" alt="img10.png" /></p>
+    <p><strong>Autonomous Database の作成</strong> をクリックすると作成ウィンドウが立ち上がります。</p>
+
+    <p><img src="img73.jpg" alt="img10.png" /></p>
   </li>
   <li>
     <p>以下の記載例を参考に各項目を入力します。</p>
 
-    <blockquote>
-      <p><strong>集合ハンズオンセミナーにおける注意事項</strong><br />
-集合ハンズオンセミナー実施時に限り、記載されている通りにご入力ください。 <span style="color: red; "><strong>赤色</strong></span> の箇所は特に注意ください。</p>
-    </blockquote>
+    <table>
+ <tr>
+    <td>コンパートメントの選択</td>
+    <td><span style="color: red;"><b> &lt;コンパートメントから選択&gt; </b></span></td>
+ </tr>
+ <tr>
+    <td>表示名</td>
+    <td><span style="color: red; "><b>atp01</b></span>
+    <br />※サービスメニュー画面での表示用です。
+   </td>
+ </tr>
+ <tr>
+    <td>データベース名</td>
+    <td><span style="color: red; "><b>atp01</b></span>
+    <br />※インスタンスへの接続時に利用します。
+    </td>
+ </tr>
+ <tr>
+    <td>ワークロード・タイプの選択</td>
+    <td><span style="color: red; "><b>トランザクション処理</b></span>
+   <br />※
+   <ul>
+   <li>システムが分析用途であればデータ・ウェアハウス（ADW）を選択する
+   <li>JSON 中心のアプリケーション開発にはJSONを選択する
+   <li>APEX アプリケーション開発にはAPEXを選択する
+   <li>それ以外はトランザクション処理（ATP）を選択する（本ハンズオンではこちらを選択ください。
+   &lt;/ul&gt;
+   &lt;/td&gt;
+ &lt;/tr&gt;
+ <tr>
+    <td>デプロイメント・タイプの選択</td>
+    <td><span style="color: red; "><b>共有インフラストラクチャ</b></span></td>
+ </tr>
+ <tr>
+    <td>Always Free</td>
+    <td><b>なし</b></td>
+ </tr>
+ <tr>
+    <td>データベース・バージョンの選択</td>
+    <td><b>19c</b></td>
+ </tr>
+ <tr>
+    <td>OCPU数</td>
+    <td><span style="color: red; "><b>2</b></span>
+    <br />※インスタンスに割り当てるoCPU数です。インスタンス作成後でもオンラインで増減可能です。</td>
+ </tr>
+ <tr>
+    <td>ストレージ(TB)</td>
+    <td><span style="color: red; "><b>1</b></span>
+    <br />※ストレージ容量。システム関連の予約領域も含みます。インスタンス作成後でもオンラインで増減可能です。</td>
+ </tr>
+ <tr>
+    <td>自動スケーリング</td>
+    <td><b>なし</b>
+    <br />※チェックを有効にすると負荷状況に応じて自動的にコア数を増減します。</td>
+ </tr>
+ <tr>
+    <td>プレビュー・モードの有効化</td>
+    <td><b>なし</b>
+    <br />※チェックを有効にすると、開発評価に利用可能な新しいバージョンのデータベースを構成できます。</td>
+ </tr>
+ <tr>
+    <td>Username</td>
+    <td><b>（固定値 / 変更不可）</b>
+    <br />※ADMINスキーマはインスタンスを管理するためのユーザーです。他のユーザーの作成等、さまざまな管理業務を実行できます。
+    </td>
+ </tr>
+ <tr>
+    <td>Password</td>
+    <td><span style="color: red; "><b>Welcome12345#</b></span>
+    <br />※ADMINスキーマのパスワードです。
+    </td>
+ </tr>
+ <tr>
+    <td>ネットワーク・アクセスの選択</td>
+    <td><span style="color: red; "><b>すべての場所からのセキュアアクセスを許可</b></span>
+   <br />※アクセス制御ルールの構成にチェックを入れると、特定のIPレンジ、CIDR、VCNからのアクセスのみを許可するようホワイトリストを設定できます。今回はなしでOKです。
+   <br /><br />
+   &lt;仮想クラウド・ネットワーク&gt; を選択する場合：
+   <ul>
+   <li>仮想クラウド・ネットワーク：　任意</li>
+   <li>サブネット：　任意</li>
+   <li>ホスト接頭辞：　任意</li>
+   <li>ネットワーク・セキュリティグループ：　任意</li>
+   </ul>
+   ※仮想クラウド・ネットワーク（VCN）については、<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">こちら</a> をご参照ください。</td>
+ </tr>
+ <tr>
+    <td>ライセンスタイプの選択</td>
+    <td><span style="color: red; "><b>ライセンス込み</b></span>
+   <br />※
+ <ul>
+   <li>ライセンス持込み（BYOL)：　すでにお持ちのDBライセンスをCloudに持ち込んで利用する場合に選択します(Bring Your Own License)。有効なDBライセンスをお持ちでなくこちらのタイプを選択するとライセンス違反となりますのでご注意ください。</li>
+   <li>ライセンス込み： 　DBソフトウェアの利用料やサポート費用を含め全てサブスクリプション形式で利用する場合に選択します。</li>
+   </ul></td>
+ </tr>
+ <tr>
+    <td>拡張オプション（タグ）</td>
+    <td><span style="color: red; "><b>なし</b></span>
+    <br />※利用しているテナント内で各種リソースを管理する際に有用です。例えば、"Prod"、"Dev"といった形でタグ付けし、夜間利用しない開発用のインスタンス(Dev)はREST APIを使って夜間は一括で停止し、利用コストを抑えるといった使い方が可能です。</td>
+ </tr>
+&lt;/table&gt;
 
-    <ul>
-      <li>コンパートメントの選択：<span style="color: red; ">**<コンパートメントから選択>**&lt;/span&gt;</コンパートメントから選択></span></li>
-      <li>表示名：<span style="color: red; "><strong>atp01</strong></span>
-        <ul>
-          <li>サービスメニュー画面での表示用です。</li>
-        </ul>
-      </li>
-      <li>データベース名：<span style="color: red; "><strong>atp01</strong></span>
-        <ul>
-          <li>インスタンスへの接続時に利用します。</li>
-        </ul>
-      </li>
-      <li>ワークロード・タイプの選択：<span style="color: red; "><strong>トランザクション処理</strong></span>
-        <ul>
-          <li>システムが分析用途であればデータ・ウェアハウス（ADW）を選択する</li>
-          <li>JSON 中心のアプリケーション開発にはJSONを選択する</li>
-          <li>APEX アプリケーション開発にはAPEXを選択する</li>
-          <li>それ以外はトランザクション処理（ATP）を選択する（本ハンズオンではこちらを選択ください。）</li>
-        </ul>
-      </li>
-      <li>デプロイメント・タイプの選択：<span style="color: red; "><strong>共有インフラストラクチャ</strong></span></li>
-      <li>Always Free：<span style="color: red; "><strong>なし</strong></span></li>
-      <li>データベース・バージョンの選択：19c</li>
-      <li>OCPU数：<span style="color: red; "><strong>2</strong></span>
-        <ul>
-          <li>インスタンスに割り当てるoCPU数です。インスタンス作成後でもオンラインで増減可能です。</li>
-        </ul>
-      </li>
-      <li>ストレージ(TB)：<span style="color: red; "><strong>1</strong></span>
-        <ul>
-          <li>ストレージ容量。システム関連の予約領域も含みます。インスタンス作成後でもオンラインで増減可能です。</li>
-        </ul>
-      </li>
-      <li>自動スケーリング： <span style="color: red; "><strong>なし</strong></span>
-        <ul>
-          <li>チェックを有効にすると負荷状況に応じて自動的にコア数を増減します</li>
-        </ul>
-      </li>
-      <li>プレビュー・モードの有効化：<strong>なし</strong>（現在はプレビュー期間ではないため表示されません）
-        <ul>
-          <li>チェックを有効にすると、開発評価に利用可能な新しいバージョンのデータベースを構成できます</li>
-        </ul>
-      </li>
-      <li>Username：（固定値 / 変更不可）
-        <ul>
-          <li>ADMINスキーマはインスタンスを管理するためのユーザーです。他のユーザーの作成等、さまざまな管理業務を実行できます。</li>
-        </ul>
-      </li>
-      <li>Password：<span style="color: red; "><strong>Welcome12345#</strong></span>
-        <ul>
-          <li>ADMINスキーマのパスワードです。</li>
-        </ul>
-      </li>
-      <li>ネットワーク・アクセスの選択：
-        <ul>
-          <li><span style="color: red; "><strong>すべての場所からのセキュアアクセスを許可</strong></span>
-            <ul>
-              <li>アクセス制御ルールの構成：<strong>なし</strong>
-                <ul>
-                  <li>チェックを入れると、特定のIPレンジ、CIDR、VCNからのアクセスのみを許可するようホワイトリストを設定できます。
-                    <blockquote>
-                      <p>集合ハンズオンセミナーの時は、「すべての場所からのセキュアアクセスを許可」をご選択ください。</p>
-                    </blockquote>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>仮想クラウド・ネットワーク
-            <ul>
-              <li>仮想クラウド・ネットワーク：任意</li>
-              <li>サブネット：任意</li>
-              <li>ホスト接頭辞：任意</li>
-              <li>ネットワーク・セキュリティグループ：任意
-                <blockquote>
-                  <p>仮想クラウド・ネットワーク（VCN）については、<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">こちら</a>をご参照ください。</p>
-                </blockquote>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li>ライセンスタイプの選択：<span style="color: red; "><strong>ライセンス込み</strong></span>
-        <ul>
-          <li>ライセンス持込み（BYOL)：すでにお持ちのDBライセンスをCloudに持ち込んで利用する場合に選択します(Bring Your Own License)。有効なDBライセンスをお持ちでなくこちらのタイプを選択するとライセンス違反となりますのでご注意ください。</li>
-          <li>ライセンス込み： DBソフトウェアの利用料やサポート費用を含め全てサブスクリプション形式で利用する場合に選択します。</li>
-        </ul>
-      </li>
-      <li>拡張オプション（タグ）：<span style="color: red; "><strong>なし</strong></span>
-        <ul>
-          <li>利用しているテナント内で各種リソースを管理する際に有用です。例えば、”Prod”、”Dev”といった形でタグ付けし、夜間利用しない開発用のインスタンス(Dev)はREST APIを使って夜間は一括で停止し、利用コストを抑えるといった使い方が可能です。</li>
-        </ul>
-      </li>
-    </ul>
+</li></li></li></li></ul></td></tr></table>
   </li>
-  <li>
-    <p>全て入力できたことを確認し、<strong>Autonomous Databaseの作成</strong> をクリックします。<br />
-  （インスタンス作成が完了すると、オレンジ色のプロビジョニング中から緑色の使用可能に変わります。緑色になればOKです！）</p>
-  </li>
+</ol>
+<p><br /></p>
+
+<blockquote>
+  <p><strong>集合ハンズオンセミナーにおける注意事項</strong></p>
+
+  <ul>
+    <li>集合ハンズオンセミナー実施時に限り、記載されている通りにご入力ください。 <strong>赤色</strong> の箇所は特に注意ください。</li>
+    <li>ネットワーク・アクセスの選択は、「<strong>すべての場所からのセキュアアクセスを許可</strong>」をご選択ください。</li>
+  </ul>
+
+</blockquote>
+
+<p><br /></p>
+
+<ol>
+  <li>全て入力できたことを確認し、<strong>Autonomous Databaseの作成</strong> をクリックします。<br />
+  （インスタンス作成が完了すると、オレンジ色のプロビジョニング中から緑色の使用可能に変わります。緑色になればOKです！）</li>
 </ol>
 
 <p><br /></p>
@@ -637,49 +677,56 @@
 
 <p><br /></p>
 
-<h1 id="database-actionsで操作してみよう">Database Actionsで操作してみよう</h1>
+<h1 id="3-database-actionsで操作してみよう">3. Database Actionsで操作してみよう</h1>
 <p>それでは作成したADBインスタンス（データベース）に接続してみましょう！</p>
 
-<h2 id="1インスタンスに接続してみよう">1.インスタンスに接続してみよう</h2>
+<h2 id="3-1インスタンスに接続してみよう">3-1.インスタンスに接続してみよう</h2>
 <p>Autonomous Databaseではいくつか開発ツールがビルトインされており、インスタンス作成直後から利用することが可能です。<br />
   ここではデータベースオブジェクトの管理、SQL作成など様々な操作を実行できるDatabase Actionsを利用し、<br />
   上記で作成したATPインスタンスにアクセスしてみましょう。</p>
 
 <ol>
   <li>
-    <p>メニュー画面から、インスタンスを選択してインスタンスのメニュー画面を表示します。
- <img src="img74.png" alt="img74.png" /></p>
+    <p>メニュー画面から、インスタンスを選択してインスタンスのメニュー画面を表示します。</p>
+
+    <p><img src="img74.png" alt="img74.png" /></p>
   </li>
   <li>
-    <p>ツールタブを選択し、データベース・アクションを開く をクリックします。<br />
- <img src="img50.png" alt="img50.png" /></p>
+    <p>ツールタブを選択し、データベース・アクションを開く をクリックします。</p>
+
+    <p><img src="img50.png" alt="img50.png" /></p>
   </li>
   <li>
-    <p>ユーザ名に <strong>admin</strong> 、パスワードは <strong>インスタンス作成時に指定した値</strong> （Welcome12345#）を入力し、 <strong>サインイン</strong> をクリックします。<br />
- <img src="img51.png" alt="img51.png" /></p>
+    <p>ユーザ名に <strong>admin</strong> 、パスワードは <strong>インスタンス作成時に指定した値</strong> （Welcome12345#）を入力し、 <strong>サインイン</strong> をクリックします。</p>
+
+    <p><img src="img51.png" alt="img51.png" /></p>
   </li>
   <li>
-    <p>Database Actionsのランディングページで<strong>SQL</strong>をクリックします。<br />
- <img src="img52.png" alt="img52.png" /></p>
+    <p>Database Actionsのランディングページで<strong>SQL</strong>をクリックします。</p>
+
+    <p><img src="img52.png" alt="img52.png" /></p>
   </li>
   <li>
     <p>ワークシートが起動します。ADBインスタンスを操作できるか確認するために、ワークシートに任意のSQLを貼り付け、 <strong>緑色の実行</strong> ボタンをクリックします。<br />
 以下は例として接続しているユーザーのユーザー名を確認するSQLです。ADMINが表示されたらOKです。</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT USERNAME FROM USER_USERS ;
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">SELECT</span> <span class="n">USERNAME</span> <span class="k">FROM</span> <span class="n">USER_USERS</span> <span class="p">;</span>
 </code></pre></div>    </div>
 
     <p><img src="img53.png" alt="img20.png" /></p>
   </li>
 </ol>
 
-<h2 id="2-データベースユーザーを作成してみようdatabase-actions">2. データベース・ユーザーを作成してみよう(Database Actions)</h2>
+<h2 id="3-2-データベースユーザーを作成してみようdatabase-actions">3-2. データベース・ユーザーを作成してみよう(Database Actions)</h2>
 
 <p>ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、アプリケーションを構成する場合は、個別にデータベース・ユーザー（スキーマ）を作成することが多いかと思います。<br />
-ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
+<br />ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
 
 <blockquote>
-  <p>Oracle ML(Notebook)やAPEX等、Autonomous Databaseに同梱される一部のアプリケーションを利用する際は、それぞれのアプリ内でユーザ作成を実施するため、本手順は不要です。また以下はDatabase Actionsを利用していますが、SQL Developerでも実施いただけます。</p>
+  <p><strong>補足</strong></p>
+
+  <p>Oracle ML(Notebook)やAPEX等、Autonomous Databaseに同梱される一部のアプリケーションを利用する際は、それぞれのアプリ内でユーザ作成を実施するため、本手順は不要です。
+<br />また以下はDatabase Actionsを利用していますが、SQL Developerでも実施いただけます。</p>
 </blockquote>
 
 <ol>
@@ -689,8 +736,9 @@
     <p><img src="img80.png" alt="img80.png" /></p>
   </li>
   <li>
-    <p>データベース・ユーザーの管理画面で、<strong>ユーザーの作成</strong>をクリックします。
-  <img src="img81.png" alt="img81.png" /></p>
+    <p>データベース・ユーザーの管理画面で、<strong>ユーザーの作成</strong>をクリックします。</p>
+
+    <p><img src="img81.png" alt="img81.png" /></p>
   </li>
   <li>
     <p>ユーザーの作成にて、<strong>ユーザー名(ADBUSER)</strong>と<strong>パスワード</strong>を入力します。</p>
@@ -701,12 +749,14 @@
     <p>ユーザに割り当てる<strong>テーブルスペース</strong>を設定し、<strong>ユーザーの作成</strong>をクリックします。</p>
 
     <blockquote>
-      <p>補足</p>
+      <p><strong>補足</strong></p>
+
       <ul>
         <li>グラフ対応をONにした状態でユーザ作成するとGraph Studio用のロールが付与されたユーザが作成されます。</li>
         <li>OMLをONにした状態でユーザ作成するとOML用のロール(OML_DEVELOPER, DWROLE, PYQADMIN)が付与されたユーザが作成されます。</li>
         <li>REST対応をONにした状態でユーザ作成するとRESTが有効化された状態でユーザ作成されます。</li>
       </ul>
+
     </blockquote>
 
     <p><!-- ドキュメントにグラフ対応についての記載無し(2021/06/17)
@@ -725,14 +775,15 @@
 
 <p><br /></p>
 
-<h2 id="3-データベースユーザーを作成してみようコマンドライン">3. データベース・ユーザーを作成してみよう（コマンドライン)</h2>
+<h2 id="3-3-データベースユーザーを作成してみようコマンドライン">3-3. データベース・ユーザーを作成してみよう（コマンドライン)</h2>
 
 <p>次にコマンドラインからABDUSERを新規作成するステップを紹介します。（SQLコマンドを実行するために、再びDatabase ActionsのSQLワークシートを利用しましょう）</p>
 
 <ol>
   <li>
-    <p>Database Actionsのランディングページで<strong>SQL</strong>をクリックします。<br />
- <img src="img52.png" alt="img52.png" /></p>
+    <p>Database Actionsのランディングページで<strong>SQL</strong>をクリックします。</p>
+
+    <p><img src="img52.png" alt="img52.png" /></p>
   </li>
   <li>
     <p>Database Actionsにて、ADMINユーザーが選択されていることを確認します</p>
@@ -744,7 +795,7 @@
 
     <p>ここでは、ユーザ名: <strong>adbuser</strong> 、パスワード : <strong>Welcome12345#</strong> で新規作成しています</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE USER adbuser IDENTIFIED BY Welcome12345#;
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">CREATE</span> <span class="k">USER</span> <span class="n">adbuser</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="n">Welcome12345</span><span class="o">#</span><span class="p">;</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -752,32 +803,31 @@
 
     <p>ここでは例としてAutonomous Databaseで事前定義されている <strong>DWROLE</strong> ロール を付与しています。（要件に応じて、従来の権限（Connect, Resource,等々）を個別に付与することも可能です）</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GRANT DWROLE TO adbuser;
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">GRANT</span> <span class="n">DWROLE</span> <span class="k">TO</span> <span class="n">adbuser</span><span class="p">;</span>
 </code></pre></div>    </div>
   </li>
   <li>
     <p>以下をワークシートに貼り付け、 <strong>緑色の実行ボタン</strong> をクリックし、データ利用の上限を設定します。</p>
 
-    <p>インスタンス作成時のストレージを1TBと指定した場合、その1TBの中で各ユーザがどれだけ利用できるかを設定できます。</p>
+    <p>インスタンス作成時のストレージを1TBと指定した場合、その1TBの中で各ユーザがどれだけ利用できるかを設定できます。
+ <br />ここでは例として上限を10GBにしています。</p>
 
-    <p>ここでは例として上限を10GBにしています。</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> BEGIN
-   DBMS_CLOUD_ADMIN.GRANT_TABLESPACE_QUOTA(
-     username =&gt; 'adbuser', tablespace_quota =&gt; '10G'
-   );
- END;
- /
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">BEGIN</span>
+   <span class="n">DBMS_CLOUD_ADMIN</span><span class="p">.</span><span class="n">GRANT_TABLESPACE_QUOTA</span><span class="p">(</span>
+     <span class="n">username</span> <span class="o">=&gt;</span> <span class="s1">'adbuser'</span><span class="p">,</span> <span class="n">tablespace_quota</span> <span class="o">=&gt;</span> <span class="s1">'10G'</span>
+   <span class="p">);</span>
+ <span class="k">END</span><span class="p">;</span>
+ <span class="o">/</span>
 </code></pre></div>    </div>
 
     <p>特に上限を設けず、ストレージサイズ上限まで利用する場合は以下を実行します。</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> BEGIN
-   DBMS_CLOUD_ADMIN.GRANT_TABLESPACE_QUOTA(
-     username =&gt; 'adbuser', tablespace_quota =&gt; 'UNLIMITED'
-   );
- END;
- /
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">BEGIN</span>
+   <span class="n">DBMS_CLOUD_ADMIN</span><span class="p">.</span><span class="n">GRANT_TABLESPACE_QUOTA</span><span class="p">(</span>
+     <span class="n">username</span> <span class="o">=&gt;</span> <span class="s1">'adbuser'</span><span class="p">,</span> <span class="n">tablespace_quota</span> <span class="o">=&gt;</span> <span class="s1">'UNLIMITED'</span>
+   <span class="p">);</span>
+ <span class="k">END</span><span class="p">;</span>
+ <span class="o">/</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -793,7 +843,7 @@
 
 <h1 id="よくある質問やtips">よくある質問やTips</h1>
 
-<p><strong>1. OCPU=1でパラレル処理されるの？？</strong></p>
+<p><strong>OCPU=1でパラレル処理されるの？？</strong></p>
 
 <p>OCPU=1の場合はパラレル処理されないため、より高い性能を求めたい場合は2以上を選択するようにしてください。</p>
 
@@ -823,7 +873,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-17T17:16:26+09:00">September 17, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-21T17:42:32+09:00">September 21, 2021</time></p>
 
 
       </footer>

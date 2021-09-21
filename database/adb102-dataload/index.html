@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-09-17T17:16:26+09:00">
+  <meta property="article:published_time" content="2021-09-21T17:42:32+09:00">
 
 
 
@@ -333,7 +333,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="102: ADBにデータをロードしよう(Database Actions)">
     <meta itemprop="description" content="Database Actionsを利用して作成したADBにデータをロードしてみましょう。手元のPCにあるデータとオブジェクトストレージ上のデータをロードする手順を学習します。">
-    <meta itemprop="datePublished" content="2021-09-17T17:16:26+09:00">
+    <meta itemprop="datePublished" content="2021-09-21T17:42:32+09:00">
     
 
     <div class="page__inner-wrap">
@@ -344,7 +344,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1手元のpcからcsvデータをロードしてみよう">1.手元のPCからCSVデータをロードしてみよう</a></li><li><a href="#2-クラウドストレージからデータをロードしてみよう">2. クラウド・ストレージからデータをロードしてみよう</a><ul><li><a href="#1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</a></li><li><a href="#2ociオブジェクトストレージへのデータアップロード">2.OCIオブジェクトストレージへのデータアップロード</a></li><li><a href="#3ociオブジェクトストレージからadbインスタンスへのデータロード">3.OCIオブジェクトストレージからADBインスタンスへのデータ・ロード</a></li></ul></li><li><a href="#3-クラウドストレージのデータをフィードしてみよう">3. クラウド・ストレージのデータをフィードしてみよう</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-手元のpcからcsvデータをロードしてみよう">1. 手元のPCからCSVデータをロードしてみよう</a></li><li><a href="#2-クラウドストレージからデータをロードしてみよう">2. クラウド・ストレージからデータをロードしてみよう</a><ul><li><a href="#2-1-ociオブジェクトストレージへのアクセス情報を取得">2-1. OCIオブジェクトストレージへのアクセス情報を取得</a></li><li><a href="#2-2-ociオブジェクトストレージへのデータアップロード">2-2. OCIオブジェクトストレージへのデータアップロード</a></li><li><a href="#2-3-ociオブジェクトストレージからadbインスタンスへのデータロード">2-3. OCIオブジェクトストレージからADBインスタンスへのデータ・ロード</a></li></ul></li><li><a href="#3-クラウドストレージのデータをフィードしてみよう">3. クラウド・ストレージのデータをフィードしてみよう</a></li></ul>
 
             </nav>
           </aside>
@@ -373,9 +373,9 @@
 <p><strong>目次</strong></p>
 
 <ul>
-  <li><a href="#anchor1">1.手元のPCからCSVデータをロードしてみよう</a></li>
-  <li><a href="#anchor2">2.クラウド・ストレージからデータをロードしてみよう</a></li>
-  <li><a href="#anchor3">3.クラウド・ストレージのデータをフィードしてみよう</a></li>
+  <li><a href="#anchor1">1. 手元のPCからCSVデータをロードしてみよう</a></li>
+  <li><a href="#anchor2">2. クラウド・ストレージからデータをロードしてみよう</a></li>
+  <li><a href="#anchor3">3. クラウド・ストレージのデータをフィードしてみよう</a></li>
 </ul>
 
 <p><br />
@@ -384,14 +384,15 @@
 <p><a id="anchor1"></a>
 <br /></p>
 
-<h1 id="1手元のpcからcsvデータをロードしてみよう">1.手元のPCからCSVデータをロードしてみよう</h1>
+<h1 id="1-手元のpcからcsvデータをロードしてみよう">1. 手元のPCからCSVデータをロードしてみよう</h1>
 
 <p>まず手元のPC上のデータをADBインスタンスにロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。</p>
 
 <ol>
   <li>
-    <p><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。<strong>ツール</strong>タブから、<strong>データベース・アクションを開く</strong>をクリックしてください。
-<img src="img0.png" alt="画面ショット1-1" /></p>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。<strong>ツール</strong>タブから、<strong>データベース・アクションを開く</strong>をクリックしてください。</p>
+
+    <p><img src="img0.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>Database Actionsのランディングページのデータ・ツールから　<strong>データ・ロード</strong> を選択します。</p>
@@ -409,7 +410,8 @@
     <p><img src="img3.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>sales_channels.csvがロードできる状態になりました。ロード前に<strong>ペンアイコン</strong>をクリックし、詳細設定を確認・変更できます。</p>
+    <p>sales_channels.csvがロードできる状態になりました。
+<br />ロード前に<strong>ペンアイコン</strong>をクリックし、詳細設定を確認・変更できます。</p>
 
     <p><img src="img4.png" alt="画面ショット1-1" /></p>
   </li>
@@ -434,12 +436,15 @@
     <p><img src="img8.png" alt="画面ショット1-1" /></p>
 
     <blockquote>
-      <p>ロード完了後、<em>赤枠のマーク</em>をクリックすると、エラーログ等の詳細を見ることができます。
- <img src="img8.5.png" alt="画面ショット1-1" /></p>
+      <p><strong>補足</strong></p>
+
+      <p>ロード完了後、<em>赤枠のマーク</em>をクリックすると、エラーログ等の詳細を見ることができます。</p>
     </blockquote>
+
+    <p><img src="img8.5.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。</p>
+    <p>ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。<strong>SQL</strong>をクリックします。</p>
 
     <p><img src="img9.png" alt="画面ショット1-1" /></p>
   </li>
@@ -464,131 +469,197 @@
 
 <h1 id="2-クラウドストレージからデータをロードしてみよう">2. クラウド・ストレージからデータをロードしてみよう</h1>
 <p>この章では、オブジェクトストレージからADBへのデータロード方法を記載します。<br />
-大量データをロードしたい場合はパフォーマンス性能の観点から本手順を推奨しています。<br />
-サンプルデータとしてsales_channels.csvファイルを利用します。</p>
+<br />大量データをロードしたい場合はパフォーマンス性能の観点から本手順を推奨しています。<br />
+<br />サンプルデータとしてsales_channels.csvファイルを利用します。</p>
 
-<h2 id="1ociオブジェクトストレージへのアクセス情報を取得">1.OCIオブジェクトストレージへのアクセス情報を取得</h2>
+<h2 id="2-1-ociオブジェクトストレージへのアクセス情報を取得">2-1. OCIオブジェクトストレージへのアクセス情報を取得</h2>
 <p>以下の手順で、ADBインスタンスからオブジェクトストレージ上のファイルにアクセスするための、ユーザ名、Auth Token（認証トークン）を取得します。<br />
-Auth TokenはAPIでオブジェクトストレージにアクセスする時のパスワードに相当します。クレデンシャル(資格証明)を作成するときに必要な情報になります。</p>
+<br />Auth TokenはAPIでオブジェクトストレージにアクセスする時のパスワードに相当します。クレデンシャル(資格証明)を作成するときに必要な情報になります。</p>
 
 <ol>
   <li>
-    <p>OCIサービス画面の右上にある <strong>ユーザ（人型アイコン）→「ユーザ設定」</strong> を選択します。<br />
- <img src="img20.jpg" alt="画面ショット2-1" /></p>
+    <p>OCIサービス画面の右上にある <strong>「ユーザ（人型アイコン）」»「ユーザ設定」</strong> を選択します。</p>
+
+    <p><img src="img20.jpg" alt="画面ショット2-1" /></p>
   </li>
   <li>
-    <p>画面上部に表示されている<strong>ユーザ名</strong>をクリップボードにコピーし、テキストファイルに保存しておきます。 次に、<strong>認証トークンタブ</strong>の<strong>トークンの生成を</strong>クリックします。
-<br />
- <strong>注意</strong>）ユーザ名の前に <strong>oracleidentitycloudservice/</strong> のような接頭辞が付加されている場合は、これを含めてユーザ名とします<br />
- <img src="img21.jpg" alt="画面ショット2-2" /></p>
-  </li>
-  <li>
-    <p><strong>説明</strong>にトークンの名前(例:first_token)を入力し、<strong>トークンの生成</strong>をクリックします。<br />
- <img src="img22.jpg" alt="画面ショット2-2" /></p>
-  </li>
-  <li>
-    <p><strong>コピー</strong> をクリックします。生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<strong>閉じる</strong>をクリックします。</p>
+    <p>画面上部に表示されている<strong>ユーザ名</strong>をクリップボードにコピーし、テキストファイルに保存しておきます。 次に、<strong>認証トークンタブ</strong>の<strong>トークンの生成</strong>をクリックします。
+<br /></p>
+
     <blockquote>
-      <p><strong>注意</strong> : このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。 <br />
-<img src="img23.jpg" alt="画面ショット2-2" /></p>
+      <p><strong>注意</strong></p>
+
+      <p>ユーザ名の前に <strong>oracleidentitycloudservice/</strong> のような接頭辞が付加されている場合は、これを含めてユーザ名とします</p>
+    </blockquote>
+
+    <p><img src="img21.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>説明</strong>にトークンの名前(例:first_token)を入力し、<strong>トークンの生成</strong>をクリックします。</p>
+
+    <p><img src="img22.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>コピー</strong> をクリックします。
+<br />生成されたトークンがクリップボードにコピーされますので、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<strong>閉じる</strong>をクリックします。</p>
+
+    <blockquote>
+      <p><strong>注意</strong></p>
+
+      <p>このトークン(Token)は、作成時に一度きりしか表示されません。紛失しないように必ず安全な場所に保管してください。</p>
+
+      <p><img src="img23.jpg" alt="画面ショット2-2" /></p>
     </blockquote>
   </li>
 </ol>
 
-<h2 id="2ociオブジェクトストレージへのデータアップロード">2.OCIオブジェクトストレージへのデータアップロード</h2>
+<h2 id="2-2-ociオブジェクトストレージへのデータアップロード">2-2. OCIオブジェクトストレージへのデータアップロード</h2>
 <p>ダウンロードしたsales_channels.csvをオブジェクトストレージへアップロードします。</p>
 
 <ol>
   <li>
-    <p>OCIのハンバーガメニュの<strong>ストレージ &gt; バゲット</strong> をクリックします。
- <img src="img24.jpg" alt="画面ショット2-2" /></p>
-  </li>
-  <li>
-    <p><strong>バゲットの作成</strong> をクリックします。</p>
-  </li>
-</ol>
+    <p>OCIのハンバーガーメニューの <strong>「ストレージ」 » 「バケット」</strong> をクリックします。</p>
 
-<p><img src="img25.jpg" alt="画面ショット2-2" /></p>
-
-<ol>
-  <li>
-    <p><strong>バゲット名</strong>(例:first_backet)を入力し、<strong>作成</strong>をクリックします。<br />
- <img src="img26.jpg" alt="画面ショット2-2" /></p>
+    <p><img src="img24.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>作成したバゲットの右側のオプションから、<strong>バゲットの詳細の表示</strong> をクリックします。<br />
- <img src="img27.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>バケットの作成</strong> をクリックします。</p>
+
+    <p><img src="img25.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p><strong>バケット名</strong>(例:first_bucket)を入力し、<strong>作成</strong>をクリックします。</p>
+
+    <p><img src="img26.jpg" alt="画面ショット2-2" /></p>
+  </li>
+  <li>
+    <p>作成したバケットの右側のオプションから、<strong>バケットの詳細の表示</strong> をクリックします。</p>
+
+    <p><img src="img27.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
     <p><strong>アップロード</strong> をクリックし、sales_channels.csvをアップロードしていきましょう。
  <img src="img28.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>ファイルを選択</strong>をクリックし、手元のPCからsales_channels.csvを選択します。<br />
-<img src="img29.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>ファイルを選択</strong>をクリックし、手元のPCからsales_channels.csvを選択します。</p>
+
+    <p><img src="img29.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>sales_channels.csv</strong>がアップロードされたのを確認し、<strong>アップロード</strong>をクリックします。
-<img src="img30.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>sales_channels.csv</strong>がアップロードされたのを確認し、<strong>アップロード</strong>をクリックします。</p>
+
+    <p><img src="img30.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>アップロードしたオブジェクトの右側のオプションから、<strong>オブジェクト詳細の表示</strong> をクリックします。<br />
-<img src="img31.jpg" alt="画面ショット2-2" /></p>
+    <p>アップロードしたオブジェクトの右側のオプションから、<strong>オブジェクト詳細の表示</strong> をクリックします。</p>
+
+    <p><img src="img31.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><em>ファイル名を除いた</em><strong>URLパス(URI)</strong>をコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<strong>取消</strong>をクリックして戻ります。
-<strong>注意</strong>）ファイル名は除いた/o/までのURLをコピーしてください。(例:https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/) 
-<img src="img32.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>ファイル名を除いたURLパス(URI)</strong> をコピーし、メモ帳など適切な保存場所に貼り付け保存してください。この後の手順で利用します。<strong>取消</strong>をクリックして戻ります。</p>
+
+    <blockquote>
+      <p><strong>注意</strong></p>
+
+      <p>ファイル名は除いた/o/までのURLをコピーしてください。
+<br />例：</p>
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/) 
+</code></pre></div>      </div>
+    </blockquote>
+
+    <p><img src="img32.jpg" alt="画面ショット2-2" /></p>
   </li>
 </ol>
 
-<h2 id="3ociオブジェクトストレージからadbインスタンスへのデータロード">3.OCIオブジェクトストレージからADBインスタンスへのデータ・ロード</h2>
+<h2 id="2-3-ociオブジェクトストレージからadbインスタンスへのデータロード">2-3. OCIオブジェクトストレージからADBインスタンスへのデータ・ロード</h2>
 
 <ol>
   <li>
-    <p>Database Actionsに戻り、<strong>データ・ロード</strong>をクリックします。
-<img src="img33.jpg" alt="画面ショット2-2" /></p>
+    <p>Database Actionsに戻り、<strong>データ・ロード</strong>をクリックします。</p>
+
+    <p><img src="img33.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>データの処理には、<strong>データのロード</strong> を選択し、データの場所には、<strong>クラウド・ストレージ</strong> を選択して <strong>次</strong> をクリックします。
-<img src="img34.jpg" alt="画面ショット2-2" /></p>
+    <p>データの処理には、<strong>データのロード</strong> を選択し、データの場所には、<strong>クラウド・ストレージ</strong> を選択して <strong>次</strong> をクリックします。</p>
+
+    <p><img src="img34.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>+</strong>ボタンをクリックし、クラウド・ストレージの追加を行っていきましょう。
-<img src="img35.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>+</strong>ボタンをクリックし、クラウド・ストレージの追加を行っていきましょう。</p>
+
+    <p><img src="img35.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>名前</strong>には任意の名前を入力(例:<em>My_Cloud_Storage</em>)、<strong>クラウド・ストア</strong>には<em>Oracle</em>を選択、<strong>URI+バケット</strong>にはオブジェクト詳細からコピー済のURIを(例:<em>https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/</em>)、クレデンシャルを作成するために<strong>資格証明の作成</strong>を選択して下さい。<strong>資格証明名</strong>には任意の名前を(例:<em>USER_CRED</em>)、<strong>Oracle Infrastractureユーザ名</strong>には、ユーザ設定からコピー済のユーザ名(例:<em>myUsername</em>)を、最後に認証トークン生成時にコピー済の<strong>認証トークン</strong>を(例:<em>LPB&gt;Ktk(1M1SD+a]+r</em>)を入力し、<strong>テスト</strong>をクリックします。
-<img src="img36.jpg" alt="画面ショット2-2" /></p>
+    <p>下記を参考に<strong>クラウドストレージの追加</strong> に情報を入力した後、<strong>テスト</strong>をクリックします。</p>
+
+    <table>
+ <tr>
+    <td>名前</td>
+    <td>任意の名前を入力	<br />(例：<b>My_Cloud_Storage</b>)</td>
+ </tr>
+ <tr>
+    <td>クラウド・ストア</td>
+    <td><b>Oracleを選択</b></td>
+ </tr>
+ <tr>
+    <td>URI+バケット</td>
+    <td>オブジェクト詳細からコピー済のURIを入力<br />(例: <b>https://objectstorage.us-phoenix-1.oraclecloud.com/n/myoci/b/my_bucket/o/</b>)</td>
+ </tr>
+ <tr>
+    <td>使用する資格証明</td>		   		   
+    <td><b>資格証明の作成</b>を選択</td>
+ </tr>
+ <tr>
+    <td>Oracle Infrastractureユーザ名</td>
+    <td>ユーザ設定からコピー済のユーザ名<br />(例: <b>myUsername</b>)</td>
+ </tr>
+ <tr>
+    <td>認証トークン</td>
+    <td>認証トークン生成時にコピー済の<b>認証トークン</b>を入力<br />(例: <b>LPB&gt;Ktk(1M1SD+a]+r</b>)</td>
+ </tr>
+ </table>
+
+    <p><img src="img36.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>クラウド・ストレージURIは指定された資格証明で有効です</strong>とテストの成功を示す表示を確認し、<strong>作成</strong>をクリックします。
-<img src="img37.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>クラウド・ストレージURIは指定された資格証明で有効です</strong>とテストの成功を示す表示を確認し、<strong>作成</strong>をクリックします。</p>
+
+    <p><img src="img37.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>sales_channels.csv</strong>が存在するクラウド・ストレージにアクセスできているのを確認し、画面左側の<strong>sales_channels.csv</strong>を画面左側へドラッグ＆ドロップします。
-<img src="img38.jpg" alt="画面ショット2-2" /></p>
+    <p><strong>sales_channels.csv</strong>が存在するクラウド・ストレージにアクセスできているのを確認し、画面左側の<strong>sales_channels.csv</strong>を画面左側へドラッグ＆ドロップします。</p>
+
+    <p><img src="img38.jpg" alt="画面ショット2-2" /></p>
   </li>
-  <li><strong>sales_channels.csv</strong>がデータ・ロード・ジョブに追加されたのを確認し、<strong>緑色の実行ボタン</strong>をクリックします。
+  <li>
+    <p><strong>sales_channels.csv</strong>がデータ・ロード・ジョブに追加されたのを確認し、<strong>緑色の実行ボタン</strong>をクリックします。</p>
+
     <blockquote>
-      <p>補足 すでにSALES_CHANNNEL表は作成済みのため、デフォルトだと表名が重複しないよう自動的に別名（SALES_CHANNEL_1表）で作成されロードされます。既存のSALES_CHANNEL表に追加ロードすることも可能です。</p>
+      <p><strong>補足</strong></p>
+
+      <p>すでにSALES_CHANNNEL表は作成済みのため、デフォルトだと表名が重複しないよう自動的に別名（SALES_CHANNEL_1表）で作成されロードされます。既存のSALES_CHANNEL表に追加ロードすることも可能です。</p>
     </blockquote>
 
     <p><img src="img39.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>データ・ロード・ジョブの実行を確認するポップアップが表示されるので、<strong>実行</strong> をクリックします。
-<img src="img40.jpg" alt="画面ショット2-2" /></p>
+    <p>データ・ロード・ジョブの実行を確認するポップアップが表示されるので、<strong>実行</strong> をクリックします。</p>
+
+    <p><img src="img40.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>sales_channels.csvに<strong>緑色のチェックマーク</strong>が付き、ロードが完了しました。<strong>完了</strong>をクリックします。
-<img src="img41.jpg" alt="画面ショット2-2" /></p>
+    <p>sales_channels.csvに<strong>緑色のチェックマーク</strong>が付き、ロードが完了しました。<strong>完了</strong>をクリックします。</p>
+
+    <p><img src="img41.jpg" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。
-<img src="img42.jpg" alt="画面ショット2-2" /></p>
+    <p>ロードされたsales_channels.csvが表として格納されたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。</p>
+
+    <p><img src="img42.jpg" alt="画面ショット2-2" /></p>
   </li>
-  <li>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。
+  <li>
+    <p>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。</p>
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">sales_channels_1</span><span class="p">;</span> 
 </code></pre></div>    </div>
 
@@ -605,44 +676,82 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 <h1 id="3-クラウドストレージのデータをフィードしてみよう">3. クラウド・ストレージのデータをフィードしてみよう</h1>
 
 <p>クラウド・ストレージに入ってきた新しいデータを指定した頻度でポーリングすることで、ライブ表として設定したテーブルに最新のデータを自動フィードすることができます。
-従来はBucketにファイルを置いたことを定期的に監視してロードするといったスクリプトを作り込む必要がありましたが、Database Actionsのフィード機能を使えば、Bucketにファイルを置きさえすればデータベースに指定した頻度で同期されるので、IoT用途やOracle Machine Learningのデータベース内機械学習、データ分析に活用可能です。</p>
+<br />従来はBucketにファイルを置いたことを定期的に監視してロードするといったスクリプトを作り込む必要がありましたが、Database Actionsのフィード機能を使えば、Bucketにファイルを置きさえすればデータベースに指定した頻度で同期されるので、IoT用途やOracle Machine Learningのデータベース内機械学習、データ分析に活用可能です。</p>
 
 <ol>
   <li>
-    <p>Database Actionsのランディングページのデータ・ツールから　<strong>データ・ロード</strong> を選択します。
-<img src="img50.png" alt="画面ショット2-2" /></p>
+    <p>Database Actionsのランディングページのデータ・ツールから　<strong>データ・ロード</strong> を選択します。</p>
+
+    <p><img src="img50.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>データの処理には、<strong>データのフィード</strong> を選択し、データの場所には、<strong>クラウド・ストレージ</strong> を選択して <strong>次</strong> をクリックします。
-<img src="img51.png" alt="画面ショット2-2" /></p>
+    <p>データの処理には、<strong>データのフィード</strong> を選択し、データの場所には、<strong>クラウド・ストレージ</strong> を選択して <strong>次</strong> をクリックします。</p>
+
+    <p><img src="img51.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>ライブ表フィードの作成</strong>をクリックします。
-<img src="img52.png" alt="画面ショット2-2" /></p>
+    <p><strong>ライブ表フィードの作成</strong>をクリックします。</p>
+
+    <p><img src="img52.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>ライブ表フィード名</strong>に任意の名前を入力(例:<em>LIVE_TABLE_FEED</em>)、<strong>ターゲット名</strong>に任意の名前を入力(例:<em>LIVE_TABLE</em>)、<strong>オブジェクト・フィルタ</strong>は正規表現の設定をする場合に入力します。<strong>スキーマ</strong>はドロップダウンメニューから選択(例:<em>ADMIN</em>)、<strong>クラウド・ストレージ</strong>はドロップダウンメニューから選択(例:<em>MY_CLOUD_STORAGE</em>)、<strong>ポーリング</strong>にチェックを入れることで、設定したクラウドストレージから最新のデータを取りに行く頻度を設定できます(例:<em>月曜日、水曜日、金曜日の2時間おき</em>)。また、<strong>ポーリングの開始日と終了日</strong>を設定することも可能です。<strong>作成</strong>をクリックします。
-<img src="img53.png" alt="画面ショット2-2" /></p>
+    <p>下記を参考に<strong>ライブ表フィールドの作成</strong>に情報を入力した後、<strong>作成</strong>をクリックします。</p>
+
+    <table>
+<tr>
+<td>ライブ表フィード名</td>
+<td>任意の名前を入力<br />(例: <b>LIVE_TABLE_FEED</b>)</td>
+</tr>
+<tr>
+<td>ターゲット名</td>
+<td>任意の名前を入力<br />(例: <b>LIVE_TABLE</b>)</td>
+</tr>
+<tr>
+<td>オブジェクト・フィルタ</td>
+<td>【任意】 正規表現の設定をする場合に入力</td>
+</tr>
+<tr>
+<td>スキーマ</td>		   		   
+<td>任意のスキーマを選択<br />(例: <b>ADMIN</b>)</td>
+</tr>
+<tr>
+<td>クラウド・ストレージ</td>
+<td>任意のストレージを選択<br />(例: <b>MY_CLOUD_STORAGE</b>)</td>
+</tr>
+<tr>
+<td>ポーリング</td>
+<td>※ チェックを入れることで、設定したクラウドストレージから最新のデータを取りに行く頻度を設定できます。<br />ポーリングの開始日と終了日を設定することも可能です。<br />(例:<b>月曜日、水曜日、金曜日の2時間おき</b>)
+</td>
+</tr>
+</table>
+
+    <p><img src="img53.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p><strong>LIVE_TABLE_FEED</strong>というライブ表フィードが作成されました。
-<img src="img54.png" alt="画面ショット2-2" /></p>
+    <p><strong>LIVE_TABLE_FEED</strong>というライブ表フィードが作成されました。</p>
+
+    <p><img src="img54.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>前述のObject Storageにcsvファイルをアップロードする項を参照しながら、Object Sorageにファイルを新規でアップロードしましょう。アップロードが終了したら、<strong>LIVE_TABLE_FEEDの赤枠のオプションボタン</strong>の<strong>ライブ表フィードの即時実行(1回)</strong>をクリックします。
-<img src="img55.png" alt="画面ショット2-2" /></p>
+    <p>前述のObject Storageにcsvファイルをアップロードする項を参照しながら、Object Sorageにファイルを新規でアップロードしましょう。
+<br />アップロードが終了したら、<strong>LIVE_TABLE_FEEDの赤枠のオプションボタン</strong>の<strong>ライブ表フィードの即時実行(1回)</strong>をクリックします。</p>
+
+    <p><img src="img55.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
-    <p>新規にObject Storageにアップロードされたファイルがライブ表にフィードされたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。
-<img src="img56.png" alt="画面ショット2-2" /></p>
+    <p>新規にObject Storageにアップロードされたファイルがライブ表にフィードされたのかワークシートで確認していきます。<strong>SQL</strong>をクリック。</p>
+
+    <p><img src="img56.png" alt="画面ショット2-2" /></p>
   </li>
   <li>
     <p>ロードされたデータの内容・件数を確認するために以下のSQLをワークシートに貼り付けて実行します。</p>
+
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">LIVE_TABLE</span><span class="p">;</span> 
 </code></pre></div>    </div>
 
-    <p>結果が表示されます。<br />
- <img src="img57.png" alt="画面ショット2-2" /></p>
+    <p>結果が表示されます。</p>
+
+    <p><img src="img57.png" alt="画面ショット2-2" /></p>
   </li>
 </ol>
 
@@ -664,7 +773,7 @@ Auth TokenはAPIでオブジェクトストレージにアクセスする時の�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-17T17:16:26+09:00">September 17, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-21T17:42:32+09:00">September 21, 2021</time></p>
 
 
       </footer>
