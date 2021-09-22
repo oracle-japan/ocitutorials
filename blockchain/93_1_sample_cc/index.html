@@ -1,0 +1,571 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>サンプルChaincodeの使い方 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="この文書はOracle Blockchain Platformに付属するサンプルChaincodeのダウンロード方法、コンソールからの実行方法を説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="サンプルChaincodeの使い方">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/blockchain/93_1_sample_cc/">
+
+
+  <meta property="og:description" content="この文書はOracle Blockchain Platformに付属するサンプルChaincodeのダウンロード方法、コンソールからの実行方法を説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/blockchain/93_1_sample_cc/console-samples-section.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-09-22T12:29:05+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/blockchain/93_1_sample_cc/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/data-integration/" title="OCIのデータインテグレーション関連のチュートリアル">データインテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/blockchain/93_1_sample_cc/console-samples-section.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          サンプルChaincodeの使い方
+
+        
+      </h1>
+      
+        <p class="page__lead">この文書はOracle Blockchain Platformに付属するサンプルChaincodeのダウンロード方法、コンソールからの実行方法を説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/blockchain" itemprop="item"><span itemprop="name">Blockchain</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">サンプルChaincodeの使い方</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="サンプルChaincodeの使い方">
+    <meta itemprop="description" content="この文書はOracle Blockchain Platformに付属するサンプルChaincodeのダウンロード方法、コンソールからの実行方法を説明します。">
+    <meta itemprop="datePublished" content="2021-09-22T12:29:05+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-サンプルchaincodeについて">0. サンプルChaincodeについて</a></li><li><a href="#1-サンプルchaincodeのダウンロード">1. サンプルChaincodeのダウンロード</a></li><li><a href="#2-サンプルchaincodeのコンソール上での実行">2. サンプルChaincodeのコンソール上での実行</a><ul><li><a href="#21-chaincodeのインストール">2.1 Chaincodeのインストール</a></li><li><a href="#22-chaincodeのinstantiate">2.2 ChaincodeのInstantiate</a></li><li><a href="#23-chaincodeの実行">2.3 Chaincodeの実行</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書はOracle Blockchain Platformに付属するサンプルChaincodeのダウンロード方法、コンソールからの実行方法を紹介するチュートリアルです。</p>
+
+<p>この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。</p>
+
+<ul>
+  <li>
+    <p><strong>前提 :</strong></p>
+
+    <ul>
+      <li><a href="../01_1_create_instance/">Oracle Blockchain Platform のインスタンス作成</a>を完了</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="0-サンプルchaincodeについて">0. サンプルChaincodeについて</h1>
+
+<p>Oracle Blockchain Platform（OBP）にはいくつかのChaincodeサンプルが付属しています。サンプルのうち一部はコンソール上で実行可能になっており、また、一部はソースコードをダウンロード可能です。</p>
+
+<p>記事執筆時点で、以下のサンプルが提供されています。</p>
+
+<ul>
+  <li><strong>Balance Transfer</strong>: AとBのふたつの口座間での残高のやり取りを表現するシンプルなサンプルです。コンソール上で実行可能、ソースコードのダウンロードが可能です。</li>
+  <li><strong>Car Dealer</strong>: 自動車メーカーとディーラーの間でのパーツおよび自動車のやり取りなど、サプライチェーンのトレーサビリティを表現したサンプルです。パーツから自動車の組み立てもデータ構造として表現されています。コンソール上で実行可能、ソースコードのダウンロードが可能です。</li>
+  <li><strong>Marbles</strong>: 色や大きさ、所有者などの属性を持ったMarble（おはじき）を題材としたNFTのサンプルです。内容としてはHyperledger FabricのChaincodeサンプルのMarblesとほぼ同じもので、台帳の範囲クエリやリッチクエリなど、ひととおりの操作が含まれています。コンソール上で実行可能です。</li>
+  <li><strong>Marbles with Fine Grained ACLs</strong>: 上記のMarblesにFine-Grained Access Control Libraryを用いたアクセス制御を追加したものです。ソースコードのダウンロードが可能です。</li>
+</ul>
+
+<h1 id="1-サンプルchaincodeのダウンロード">1. サンプルChaincodeのダウンロード</h1>
+
+<p>サンプルChaincodeのソースコードのダウンロードについて説明します。</p>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Developer Tools</strong>のページを開き、左側メニューから<strong>Samples</strong>のセクションを選択します。</p>
+
+    <p><img src="console-samples-section.png" alt="Samplesセクション" /></p>
+  </li>
+  <li>
+    <p>ソースコードのダウンロード可能なサンプルについては、”Download sample <strong>here</strong>“のリンクからダウンロード可能です。</p>
+  </li>
+</ol>
+
+<h1 id="2-サンプルchaincodeのコンソール上での実行">2. サンプルChaincodeのコンソール上での実行</h1>
+
+<p>サンプルChaincodeのコンソール上での実行について説明します。</p>
+
+<p>サンプルChaincodeは、（通常のChaincodeのデプロイと同じく）①Peerへのインストール　→　②Instantiate　の2段階のデプロイプロセスを経て実行可能になります。</p>
+
+<p>ここでは、Balance Transferのサンプルを例に説明していきます。他のコンソール上で実行可能なサンプルも同様の手順で実行できます。</p>
+
+<h2 id="21-chaincodeのインストール">2.1 Chaincodeのインストール</h2>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Developer Tools</strong>のページを開き、左側メニューから<strong>Samples</strong>のセクションを選択します。</p>
+
+    <p><img src="console-samples-section.png" alt="Samplesセクション" /></p>
+  </li>
+  <li>
+    <p>コンソール上で実行可能なサンプルについては、Install、Instantiate、Invokeのボタンが有効になっています。Installのボタンをクリックします。</p>
+
+    <p><img src="BT-install.png" alt="Install" /></p>
+  </li>
+  <li>
+    <p>フォームが開きます。以下を指定したうえで<strong>Install</strong>をクリックします。</p>
+
+    <ul>
+      <li><strong>Peers</strong>: ChaincodeをインストールするPeerノードを選択します。例ではPeer0、Peer1を指定しています。</li>
+      <li><strong>Language</strong>: 複数の言語バージョンのサンプルが用意されている場合、インストールする言語を選べます。例ではGoを指定しています。なお、機能やインターフェースは基本的に同一です。</li>
+    </ul>
+
+    <p><img src="BT-install-form.png" alt="Install Form" /></p>
+  </li>
+  <li>
+    <p>インストールに成功すると自動的にフォームが閉じ、<strong>“Installed on Peers:”</strong>の表示にインストール済Peerノード数が反映されます。</p>
+
+    <p><img src="BT-install-success.png" alt="Install Success" /></p>
+  </li>
+</ol>
+
+<h2 id="22-chaincodeのinstantiate">2.2 ChaincodeのInstantiate</h2>
+
+<ol>
+  <li>
+    <p>続いて、<strong>Instantiate</strong>をクリックします。</p>
+
+    <p><img src="BT-instantiate.png" alt="Instantiate" /></p>
+  </li>
+  <li>
+    <p>フォームが開きます。以下を指定したうえで<strong>Instantiate</strong>をクリックします。</p>
+
+    <ul>
+      <li><strong>Channel</strong>: Chaincodeを稼働させるChannelを選択します。例ではdefaultを指定しています。</li>
+      <li><strong>Initial parameters of chaincode</strong>: ChaincodeのInstantiate時に実行される初期化関数（init()関数）の引数を指定します。項目はサンプルごとに異なります。以下はBalance Transferでの例です。
+        <ul>
+          <li><strong>Balance of A</strong>: 口座Aの初期残高です。例では100を指定しています。</li>
+          <li><strong>Balance of B</strong>: 口座Bの初期残高です。例では200を指定しています。</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="BT-instantiate-form.png" alt="Instantiate Form" /></p>
+  </li>
+  <li>
+    <p>Instantiateが実行中である旨のメッセージがフォームに表示されます。Instantiate完了には数分程度の時間がかかります。フォームを閉じます。</p>
+
+    <p><img src="BT-instantiate-close.png" alt="Instantiate Close" /></p>
+  </li>
+  <li>
+    <p>Instantiateが完了すると、サービス・コンソール上部の通知欄に通知されます。クリックすると成功／失敗メッセージが表示されます。成功メッセージが出ていればInstantiateは完了です。</p>
+
+    <p><img src="BT-instantiate-success.png" alt="Instantiate Success" /></p>
+
+    <p>また、ページを再読込すると、<strong>“Instantiated on Channels:”</strong>の表示にも反映されます。</p>
+
+    <p><img src="BT-instantiate-success2.png" alt="Instantiate Success" /></p>
+  </li>
+</ol>
+
+<h2 id="23-chaincodeの実行">2.3 Chaincodeの実行</h2>
+
+<ol>
+  <li>
+    <p>続いて、<strong>Invoke</strong>をクリックします。</p>
+
+    <p><img src="BT-invoke.png" alt="Invoke" /></p>
+  </li>
+  <li>
+    <p>フォームが開きます。以下を指定したうえで<strong>Execute</strong>をクリックします。</p>
+
+    <ul>
+      <li><strong>Channel</strong>: ChaincodeがInstantiate済のChannelのうち、今回実行するChannelを選択します。例ではdefaultを指定しています。</li>
+      <li><strong>Actions</strong>: 実行するChaincodeの機能（関数）を指定します。候補はサンプルごとに異なります。例ではQuery A（口座Aの残高をクエリ）を指定しています。指定したActionによっては更に、追加で引数の指定の欄が開きます。</li>
+    </ul>
+
+    <p><img src="BT-invoke-form-query.png" alt="Invoke Form Query" /></p>
+  </li>
+  <li>
+    <p>フォームは自動的に閉じます。戻ってきたSamplesページの下部の<strong>Transaction Results</strong>欄に結果が表示されています。例では、口座Aの残高である100が表示されています。</p>
+
+    <p><img src="BT-invoke-query-result.png" alt="Query Result" /></p>
+  </li>
+</ol>
+
+<p><br />
+以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#blockchain" class="page__taxonomy-item" rel="tag">Blockchain</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-09-22T12:29:05+09:00">September 22, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%B5%E3%83%B3%E3%83%97%E3%83%ABChaincode%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F93_1_sample_cc%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F93_1_sample_cc%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F93_1_sample_cc%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/blockchain/92_1_fine_grained_ACL/" class="pagination--pager" title="Fine-Grained Access Control Libraryの使い方
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
