@@ -15,7 +15,7 @@ header:
 この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。
 
 - **前提 :**
-  - [Oracle Blockchain Platform のインスタンス作成](../01_01_create_instance/)を完了
+  - [Oracle Blockchain Platform のインスタンス作成](../01_1_create_instance/)を完了
 <br>
 <br>
 
