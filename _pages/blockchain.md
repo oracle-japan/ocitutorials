@@ -41,4 +41,7 @@ Oracle Blockchain Platform (OBP) を使ってみよう！という人のため�
 - **[Fine-Grained Access Control Libraryの使い方](/ocitutorials/blockchain/92_1_fine_grained_ACL/)**  
   Oracle Blockchain Platformに付属する、Chaincode上／オンチェーンで確実かつ柔軟、きめ細やかなアクセス制御を実現するためのサンプル・ライブラリであるFine-Grained Access Control Libraryの使い方を説明します。
 
+- **[サンプルChaincodeの使い方](/ocitutorials/blockchain/93_1_sample_cc/)**  
+  Oracle Blockchain Platformに付属するサンプルChaincodeのダウンロード方法、コンソールからの実行方法を説明します。
+
 <br />
