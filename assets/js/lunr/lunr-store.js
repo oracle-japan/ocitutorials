@@ -341,12 +341,6 @@ var store = [{
         "url": "/ocitutorials/content-management/77_sitesecuritygovernance/",
         "teaser": "/ocitutorials/content-management/77_SiteSecurityGovernance/021.png"
       },{
-        "title": "Oracle GoldenGate Stream Analytics ハンズオン",
-        "excerpt":"Oracle GoldenGate Stream Analytics(以下、GGSA) は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。 このエントリーでは、GGSA の Marketplace からのプロビジョニングからチュートリアル完了までの手順を記します。 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること ハンズオン環境の全体像 OCI Marketplace から GGSA を最小構成でプロビジョニングすると、以下の環境が作成されます。本エントリーでは、この環境を用いてハンズオンを実施します。 作成する Pipeline の全体像 このエントリーでは、リアルタイムに流れてくる交通データを分析することを行います。最終的に完成する Pipeline は以下のようになります。 それぞれの Stage で実施されることについて簡単に説明します。 1. 車両の走行データ リアルタイムに流れてくる交通データを Java プログラムで疑似的に表現しています。Java プログラム中では、Kafka の特定 Topic(tutorial)に対してメッセージを publish しており、本ハンズオンは該当の Topic から GGSA がメッセージを consume する所から始まります。 関連するハンズオンの章: 3-1....","categories": [],
-        "tags": ["ggsa"],
-        "url": "/ocitutorials/data-integration/ggsa-tutorial/",
-        "teaser": null
-      },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(DBCS)",
         "excerpt":"はじめに Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから データベース → ベア・メタル、VMおよびExadata を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった DBシステムの作成...","categories": [],
         "tags": [],
@@ -531,6 +525,12 @@ var store = [{
         "excerpt":"OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。 このエントリーでは、OCI Data Flow の基本的な操作を学習します。 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること ハンズオンの全体像 本ハンズオンは、最終的にBerlin Airbnb データセットを用いて最適な取引物件を予測する事を行いたいと思います。そのために OCI Data Flow を用いて、以下のことを学習します。 Java を使用した ETL SparkSQL によるデータの簡易的なプロファイリング PySpark を使用した機械学習 それでは、実施していきます。 0. 事前準備 OCI Data Flow を使用するための Object Storage の作成やポリシーの設定を行います。 0-1. Object Storage の作成 Data Flow でアプリケーションを実行する前に、以下の...","categories": [],
         "tags": ["dataflow"],
         "url": "/ocitutorials/datascience/dataflow-for-beginner/",
+        "teaser": null
+      },{
+        "title": "Oracle GoldenGate Stream Analytics ハンズオン",
+        "excerpt":"Oracle GoldenGate Stream Analytics(以下、GGSA) は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。 このエントリーでは、GGSA の Marketplace からのプロビジョニングからチュートリアル完了までの手順を記します。 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること ハンズオン環境の全体像 OCI Marketplace から GGSA を最小構成でプロビジョニングすると、以下の環境が作成されます。本エントリーでは、この環境を用いてハンズオンを実施します。 作成する Pipeline の全体像 このエントリーでは、リアルタイムに流れてくる交通データを分析することを行います。最終的に完成する Pipeline は以下のようになります。 それぞれの Stage で実施されることについて簡単に説明します。 車両の走行データ リアルタイムに流れてくる交通データを Java プログラムで疑似的に表現しています。Java プログラム中では、Kafka の特定 Topic(tutorial)に対してメッセージを publish しており、本ハンズオンは該当の Topic から メッセージを consume する所から始まります。 関連するハンズオンの章: 2-1. チュートリアル用のイベント・ストリームを Kafka...","categories": [],
+        "tags": ["ggsa"],
+        "url": "/ocitutorials/datascience/ggsa-tutorial-for-beginner/",
         "teaser": null
       },{
         "title": "クラウドでOracle Exadata を使う",
