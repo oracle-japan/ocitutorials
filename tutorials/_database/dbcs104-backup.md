@@ -3,8 +3,8 @@ title: "104: 自動バックアップを設定しよう"
 excerpt: "Database Cloud Service (DBCS) 上の自動バックアップについて紹介します。"
 order: "1_104"
 header:
-  teaser: "/database/dbcs104-backup/11.png"
-  overlay_image: "/database/dbcs104-backup/11.png"
+  teaser: "/database/dbcs104-backup/11.PNG"
+  overlay_image: "/database/dbcs104-backup/11.PNG"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/
@@ -32,16 +32,14 @@ DBCS では、RMANを利用した自動バックアップ機能が利用可能�
 
 **目次**
 
-- [1. 自動バックアップの前提条件を確認する](#anchor1)
-- [2. 自動バックアップの設定をしよう](#anchor2)
-- [3. 自動バックアップの設定を変更しよう](#anchor3)
-- [4. オンデマンド・バックアップを取得しよう](#anchor4)
-- [5. 取得したバックアップを確認しよう](#anchor4)
+- [1. 自動バックアップの前提条件を確認する](#1-自動バックアップの前提条件を確認する)
+- [2. 自動バックアップの設定をしよう](#2-自動バックアップの設定をしよう)
+- [3. 自動バックアップの設定を変更しよう](#3-自動バックアップの設定を変更しよう)
+- [4. オンデマンド・バックアップを取得しよう](#4-オンデマンドバックアップを取得しよう)
+- [5. 取得したバックアップを確認しよう](#5-取得したバックアップを確認しよう)
 
 <br>
 **所要時間 :** 約30分
-
-<a id="anchor1"></a>
 <br>
 
 # 1. 自動バックアップの前提条件を確認する
@@ -67,7 +65,6 @@ DBCS では、RMANを利用した自動バックアップ機能が利用可能�
     - sqlnet.oraファイルのデフォルトのWALLET_LOCATIONエントリが変更されていない。
     - 標準のRMANコマンドを使用して、RMANバックアップ設定が変更されていない。
 
-<a id="anchor2"></a>
 <br>
 
 # 2. 自動バックアップの設定をしよう
@@ -102,7 +99,6 @@ DBCS では、RMANを利用した自動バックアップ機能が利用可能�
     <br>
 
 
-<a id="anchor3"></a>
 <br>
 
 # 3. 自動バックアップの設定を変更しよう
@@ -111,19 +107,17 @@ OCI コンソールから設定済のバックアップ設定を変更、無効�
 1. 対象のデータベースの『データベースの詳細』ぺージの『自動バックアップの構成』をクリックします。
 
     <div align="center">
-    <img width="700" alt="06.png" src="06.png" style="border: 1px black solid;">
+    <img width="700" alt="06.PNG" src="06.PNG" style="border: 1px black solid;">
     </div>
     <br>
 
 1. 変更内容を選択の上、『変更の保存』をクリックします。
 <br>
     <div align="center">
-    <img width="700" alt="07.png" src="07.png" style="border: 1px black solid;">
+    <img width="700" alt="07.PNG" src="07.PNG" style="border: 1px black solid;">
     </div>
     <br>
 
-
-<a id="anchor4"></a>
 <br>
 
 # 4. オンデマンド・バックアップを取得しよう
@@ -134,27 +128,26 @@ OCI コンソールから設定済のバックアップ設定を変更、無効�
 1. 対象のデータベースの『データベースの詳細』ページから、リソースの中の『バックアップ』を選択し、『バックアップの作成』をクリックします。
 
     <div align="center">
-    <img width="700" alt="08.png" src="08.png" style="border: 1px black solid;">
+    <img width="700" alt="08.PNG" src="08.PNG" style="border: 1px black solid;">
     </div>
     <br>
 
 1. オンデマンド・バックアップとして取得したフル・バックアップは、スタンドアロン・バックアップとして確認することができます。<br>『ベア・メタル、VMおよびExadata』で『スタンドアロン・バックアップ』をクリックすると、スタンドアロン・バックアップの一覧が表示されます。
     <div align="center">
-    <img width="700" alt="10.png" src="10.png" style="border: 1px black solid;">
+    <img width="700" alt="10.PNG" src="10.PNG" style="border: 1px black solid;">
     </div>
     <br>
 
 データベースを終了(削除)する際に、自動バックアップでとられたバックアップは削除されますが、オンデマンド・バックアップとして取得したフル・バックアップはスタンドアロン・バックアップとして残ります。<br>
 データベース削除後に再度バックアップを利用する可能性がある場合には、オンデマンド・バックアップを取得しておくといいでしょう。
 
-<a id="anchor5"></a>
 <br>
 
 # 5. 取得したバックアップを確認しよう
 
 対象のデータベースの『データベースの詳細』ページからリソースの中の『バックアップ』を選択すると、そのデータベースのバックアップが一覧で表示されます。
   <div align="center">
-  <img width="700" alt="09.png" src="09.png" style="border: 1px black solid;">
+  <img width="700" alt="09.PNG" src="09.PNG" style="border: 1px black solid;">
   </div>
   <br>
 
