@@ -1,0 +1,576 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Fabricのアイデンティティ関連の操作や設定 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="この文書はOracle Blockchain PlatformでHyperledger Fabricのプロトコルにおけるアイデンティティ、およびアイデンティティを構成する証明書および秘密鍵に関連する操作、設定などを説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Fabricのアイデンティティ関連の操作や設定">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/blockchain/05_1_fabric_identity/">
+
+
+  <meta property="og:description" content="この文書はOracle Blockchain PlatformでHyperledger Fabricのプロトコルにおけるアイデンティティ、およびアイデンティティを構成する証明書および秘密鍵に関連する操作、設定などを説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/blockchain/05_1_fabric_identity/channel_ledger_tx.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-10-01T13:54:41+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/blockchain/05_1_fabric_identity/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/blockchain/05_1_fabric_identity/channel_ledger_tx.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Fabricのアイデンティティ関連の操作や設定
+
+        
+      </h1>
+      
+        <p class="page__lead">この文書はOracle Blockchain PlatformでHyperledger Fabricのプロトコルにおけるアイデンティティ、およびアイデンティティを構成する証明書および秘密鍵に関連する操作、設定などを説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/blockchain" itemprop="item"><span itemprop="name">Blockchain</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Fabricのアイデンティティ関連の操作や設定</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Fabricのアイデンティティ関連の操作や設定">
+    <meta itemprop="description" content="この文書はOracle Blockchain PlatformでHyperledger Fabricのプロトコルにおけるアイデンティティ、およびアイデンティティを構成する証明書および秘密鍵に関連する操作、設定などを説明します。">
+    <meta itemprop="datePublished" content="2021-10-01T13:54:41+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-前提の理解">0. 前提の理解</a><ul><li><a href="#01-hyperledger-fabricにおけるアイデンティティ">0.1. Hyperledger Fabricにおけるアイデンティティ</a></li><li><a href="#02-oracle-blockchain-platformでのアイデンティティ">0.2. Oracle Blockchain Platformでのアイデンティティ</a></li><li><a href="#03-トランザクション実行者アイデンティティの確認方法">0.3. トランザクション実行者アイデンティティの確認方法</a></li></ul></li><li><a href="#1-コンソールからの各種マテリアルのダウンロード方法">1. コンソールからの各種マテリアルのダウンロード方法</a><ul><li><a href="#11-各種証明書のダウンロード">1.1. 各種証明書のダウンロード</a></li><li><a href="#12-管理者秘密鍵のダウンロード">1.2. 管理者秘密鍵のダウンロード</a></li></ul></li><li><a href="#2-rest-proxy経由でのchaincode実行時のアイデンティティの設定">2. REST Proxy経由でのChaincode実行時のアイデンティティの設定</a><ul><li><a href="#21-rest-proxyが用いるアイデンティティの作成">2.1. REST Proxyが用いるアイデンティティの作成</a></li><li><a href="#22-idcsユーザーとアイデンティティの紐付け">2.2. IDCSユーザーとアイデンティティの紐付け</a></li></ul></li><li><a href="#3-fabric-ca-clientでのアイデンティティの作成とその管理-準備中-">3. Fabric CA Clientでのアイデンティティの作成とその管理( 準備中 )</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Blockchain Platform（OBP）でHyperledger Fabricのプロトコルにおけるアイデンティティ、およびアイデンティティを構成する証明書および秘密鍵に関連する操作、設定などを説明します。</p>
+
+<p>この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。</p>
+
+<ul>
+  <li>
+    <p><strong>前提 :</strong></p>
+
+    <ul>
+      <li><a href="../01_1_create_instance/">Oracle Blockchain Platform のインスタンス作成</a>を完了</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="0-前提の理解">0. 前提の理解</h1>
+
+<h2 id="01-hyperledger-fabricにおけるアイデンティティ">0.1. Hyperledger Fabricにおけるアイデンティティ</h2>
+
+<p>Hyperledger Fabricではネットワーク内の各種コンポーネント（Peer、Orderer、CA）およびクライアントアプリケーションそれぞれに対してX.509証明書（およびペアとなる秘密鍵）にカプセル化されたアイデンティティを割り当てています。また、これら各アイデンティティは必ずひとつのOrganizationに属しており、階層化されたアイデンティティ構造が採用されています。</p>
+
+<p>各Organizationでは、配下のコンポーネントおよびクライアントアプリケーション用のアイデンティティを自身のCA（Certificate Authority）を用いて発行します。CAの実装は通常、Fabric CAを用います。</p>
+
+<p>Hyperledger FabricではPKIが採用されており、これらOrganizationと個々のアイデンティティの階層構造はPKIの階層構造と結びついています。</p>
+
+<p><img src="org_slide.png" alt="Organization" /></p>
+
+<h2 id="02-oracle-blockchain-platformでのアイデンティティ">0.2. Oracle Blockchain Platformでのアイデンティティ</h2>
+
+<p>OBPは、上述のHyperledger Fabricのアイデンティティの仕組みを基本的にはそのまま用いています。一方で、以下の点で構築と運用の利便性、容易性が向上しています。</p>
+
+<ul>
+  <li>最初の管理者アイデンティティや各種証明書がインスタンス作成時に自動作成される</li>
+  <li>コンポーネントの用いるアイデンティティはコンポーネント作成時に自動作成される</li>
+  <li>REST Proxy経由でのChaincode実行に用いるアイデンティティは、REST Proxyが保持する</li>
+</ul>
+
+<p>このチュートリアルでは、以下についてそれぞれ説明していきます。</p>
+
+<ul>
+  <li>インスタンス生成時に自動作成される各種証明書と管理者秘密鍵のコンソールからのダウンロード方法</li>
+  <li>REST Proxy経由でのChaincode実行に用いられるアイデンティティの設定方法</li>
+  <li>Fabric CA Clientを用いて証明書＆秘密鍵を生成する方法（ <em>準備中</em> ）</li>
+</ul>
+
+<h2 id="03-トランザクション実行者アイデンティティの確認方法">0.3. トランザクション実行者アイデンティティの確認方法</h2>
+
+<p>このチュートリアルで説明する各種アイデンティティは、いずれもクライアントアプリケーションがトランザクション実行（のリクエスト）に用いるアイデンティティとして使用されます。</p>
+
+<p>トランザクションの実行者のアイデンティティは、OBPコンソール上では以下のように確認できます。</p>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Channels</strong>のページを開き、一覧から任意のChannelを選んで<strong>Channel名のリンク</strong>をクリックします。</p>
+
+    <p><img src="select_channel.png" alt="Select Channel" /></p>
+  </li>
+  <li>
+    <p>選んだChannelの台帳（Ledger）に含まれるBlockの表示ページが開きます。一覧からUser Transactions（システムトランザクションではなく、ユーザーChaincodeの実行に係るトランザクション）が1以上の<strong>任意のBlock</strong>を選びます。</p>
+
+    <p><img src="channel_ledger.png" alt="Select Block" /></p>
+  </li>
+  <li>
+    <p>ページ下部に選んだBlockに含まれるトランザクションの一覧が表示されます。任意のトランザクションを選び、左側の<strong>三角ボタン</strong>をクリックするとトランザクションの詳細が表示されます。<strong>Transaction Initiator</strong>欄に表示されているのがトランザクション実行者のアイデンティティです（例では <em>founder2104</em> というOrganizationの <em>restuser1</em> というアイデンティティ）。</p>
+
+    <p><img src="channel_ledger_tx.png" alt="Tx Detail" /></p>
+  </li>
+</ol>
+
+<h1 id="1-コンソールからの各種マテリアルのダウンロード方法">1. コンソールからの各種マテリアルのダウンロード方法</h1>
+
+<h2 id="11-各種証明書のダウンロード">1.1. 各種証明書のダウンロード</h2>
+
+<p>コンソールからは以下いずれかの方法で各種証明書（管理者、CA、TLS、コンポーネントの証明書）がダウンロードできます。</p>
+
+<ul>
+  <li>
+    <p><strong>証明書内容記載ファイルのダウンロード</strong>：コンソールの<strong>Networkページ</strong>から、自身のOrganizationの行の右側の<strong>メニューボタン</strong>をクリックし、<strong>Export Certificates</strong>を選択します。各種証明書内容が一括して記載された単一のファイルがダウンロードされます。</p>
+
+    <p><img src="download_certificates_network.png" alt="Networkページからの証明書ダウンロード" /></p>
+  </li>
+  <li>
+    <p><strong>クライアントアプリケーション配置用証明書ファイルのダウンロード</strong>：コンソールの<strong>Developer Toolsページ</strong>から<strong>Application Developmentのセクション</strong>を選び、<strong>OBPのセクション</strong>から<strong>Download the development package</strong>をクリックします。ダウンロードされたZIPファイルには、クライアントアプリケーション内に配置するためのフォルダ構造の中に各種証明書ファイルが格納されています。</p>
+
+    <p><img src="download_certificates_devtools.png" alt="Development Toolsページからの証明書ダウンロード" /></p>
+  </li>
+</ul>
+
+<h2 id="12-管理者秘密鍵のダウンロード">1.2. 管理者秘密鍵のダウンロード</h2>
+
+<p>コンソールの<strong>Networkページ</strong>から、自身のOrganizationの行の右側の<strong>メニューボタン</strong>をクリックし、<strong>Export Admin Credential</strong>を選択します。管理者秘密鍵と証明書が含まれるZIPファイルがダウンロードされます。</p>
+
+<p><img src="download_admin_key.png" alt="管理者秘密鍵のダウンロード" /></p>
+
+<h1 id="2-rest-proxy経由でのchaincode実行時のアイデンティティの設定">2. REST Proxy経由でのChaincode実行時のアイデンティティの設定</h1>
+
+<p>OBPでは、アプリケーションとChaincodeを中継する役割を持つREST Proxyというコンポーネントを独自に備えています。REST ProxyにはFabric SDKが組み込まれており、また、Hyperledger Fabricネットワークのユーザーアイデンティティを保持しています。<strong>これにより、アプリケーションはREST APIを呼び出すことで、REST Proxyを介してChaincodeを実行できます。</strong>この際、アプリケーションはREST Proxyに対して、Oracle Cloudのユーザーアカウント（<strong>IDCSユーザー</strong>）を用いて認証、認可されます。</p>
+
+<p>ここではREST Proxy経由でChaincodeを実行する際に用いられるアイデンティティの設定方法について説明します。REST Proxy経由でのChaincode実行方法については、<a href="../03_2_restcall_chaincode/">こちらのチュートリアル</a>を参照ください。</p>
+
+<p>以下で、REST Proxyが用いるアイデンティティを新たに作成する方法、および、IDCSユーザーとアイデンティティの紐付け方法についてそれぞれ説明します。</p>
+
+<p>アイデンティティを作成しておくと、REST Proxy経由でのChaincode実行のREST APIを実行する際のパラメータによりそのアイデンティティを指定できるようになります。また、IDCSユーザーとアイデンティティを紐付けておくと、そのIDCSユーザーでREST APIを実行した際に自動的に紐付けたアイデンティティが用いられるようになります。</p>
+
+<h2 id="21-rest-proxyが用いるアイデンティティの作成">2.1. REST Proxyが用いるアイデンティティの作成</h2>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Nodes</strong>のページを開き、一覧から<strong>REST Proxyの行の右側のメニューボタン</strong>をクリックします。表示されたメニューから<strong>View or manage enrollments</strong>を選択します。</p>
+
+    <p><img src="restproxy_menu.png" alt="REST Proxy Menu" /></p>
+  </li>
+  <li>
+    <p>REST Proxyの用いるアイデンティティ管理のダイアログが表示されます。左側にアイデンティティ一覧が表示されます。デフォルトでは<strong>defaultuser</strong>のアイデンティティが用意されています。<strong>Create New Enrollment</strong>をクリックします。</p>
+
+    <p><img src="create_new_enrollment.png" alt="Create New Enrollment" /></p>
+  </li>
+  <li>
+    <p>アイデンティティ名の入力欄が開きます。<strong>任意の名前（例では <em>test1</em> ）を入力</strong>して、<strong>Enroll</strong>をクリックします。</p>
+
+    <p><img src="create_new_enrollment_input.png" alt="Enrollment ID" /></p>
+  </li>
+  <li>
+    <p>成功すると、アイデンティティ一覧に作成したアイデンティティが表示されます。</p>
+
+    <p><img src="create_new_enrollment_success.png" alt="Create New Enrollment Success" /></p>
+  </li>
+</ol>
+
+<h2 id="22-idcsユーザーとアイデンティティの紐付け">2.2. IDCSユーザーとアイデンティティの紐付け</h2>
+
+<ol>
+  <li>
+    <p>アイデンティティの作成と同様の手順でREST Proxyの用いるアイデンティティ管理のダイアログを表示します。</p>
+  </li>
+  <li>
+    <p>アイデンティティ一覧からIDCSユーザーを紐付けるアイデンティティを選択します。例では <em>test1</em> を選択しています。</p>
+
+    <p><img src="create_new_enrollment_success.png" alt="Choose a Enrollment" /></p>
+  </li>
+  <li>
+    <p><strong>Associate New Users</strong>をクリックすると、IDCSユーザーの入力欄が表示されます。紐付けたいIDCSユーザーID（例では <em>xxxxxxxx@oracle.com</em> )を入力し、<strong>Associate</strong>をクリックします。</p>
+
+    <p><img src="associate_idcsuser_input.png" alt="Associate IDCS User Input" /></p>
+  </li>
+  <li>
+    <p>成功すると、紐付けされたユーザー一覧に入力したIDCSユーザーが表示されます。</p>
+
+    <p><img src="associate_idcsuser_success.png" alt="Associate Success" /></p>
+  </li>
+</ol>
+
+<h1 id="3-fabric-ca-clientでのアイデンティティの作成とその管理-準備中-">3. Fabric CA Clientでのアイデンティティの作成とその管理( <em>準備中</em> )</h1>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#blockchain" class="page__taxonomy-item" rel="tag">Blockchain</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-01T13:54:41+09:00">October 1, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Fabric%E3%81%AE%E3%82%A2%E3%82%A4%E3%83%87%E3%83%B3%E3%83%86%E3%82%A3%E3%83%86%E3%82%A3%E9%96%A2%E9%80%A3%E3%81%AE%E6%93%8D%E4%BD%9C%E3%82%84%E8%A8%AD%E5%AE%9A%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F05_1_fabric_identity%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F05_1_fabric_identity%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F05_1_fabric_identity%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/blockchain/03_2_restcall_chaincode/" class="pagination--pager" title="REST APIからChaincodeを実行する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/blockchain/91_1_app_builder_vsc_start/" class="pagination--pager" title="Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

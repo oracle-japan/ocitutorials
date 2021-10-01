@@ -95,6 +95,12 @@ var store = [{
         "url": "/ocitutorials/blockchain/03_2_restcall_chaincode/",
         "teaser": "/ocitutorials/blockchain/03_1_deploy_chaincode/instantiate_cc_input.png"
       },{
+        "title": "Fabricのアイデンティティ関連の操作や設定",
+        "excerpt":"Oracle Blockchain Platform（OBP）でHyperledger Fabricのプロトコルにおけるアイデンティティ、およびアイデンティティを構成する証明書および秘密鍵に関連する操作、設定などを説明します。 この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。 前提 : Oracle Blockchain Platform のインスタンス作成を完了 0. 前提の理解 0.1. Hyperledger Fabricにおけるアイデンティティ Hyperledger Fabricではネットワーク内の各種コンポーネント（Peer、Orderer、CA）およびクライアントアプリケーションそれぞれに対してX.509証明書（およびペアとなる秘密鍵）にカプセル化されたアイデンティティを割り当てています。また、これら各アイデンティティは必ずひとつのOrganizationに属しており、階層化されたアイデンティティ構造が採用されています。 各Organizationでは、配下のコンポーネントおよびクライアントアプリケーション用のアイデンティティを自身のCA（Certificate Authority）を用いて発行します。CAの実装は通常、Fabric CAを用います。 Hyperledger FabricではPKIが採用されており、これらOrganizationと個々のアイデンティティの階層構造はPKIの階層構造と結びついています。 0.2. Oracle Blockchain Platformでのアイデンティティ OBPは、上述のHyperledger Fabricのアイデンティティの仕組みを基本的にはそのまま用いています。一方で、以下の点で構築と運用の利便性、容易性が向上しています。 最初の管理者アイデンティティや各種証明書がインスタンス作成時に自動作成される コンポーネントの用いるアイデンティティはコンポーネント作成時に自動作成される REST Proxy経由でのChaincode実行に用いるアイデンティティは、REST Proxyが保持する このチュートリアルでは、以下についてそれぞれ説明していきます。 インスタンス生成時に自動作成される各種証明書と管理者秘密鍵のコンソールからのダウンロード方法 REST Proxy経由でのChaincode実行に用いられるアイデンティティの設定方法 Fabric CA Clientを用いて証明書＆秘密鍵を生成する方法（ 準備中 ） 0.3. トランザクション実行者アイデンティティの確認方法 このチュートリアルで説明する各種アイデンティティは、いずれもクライアントアプリケーションがトランザクション実行（のリクエスト）に用いるアイデンティティとして使用されます。 トランザクションの実行者のアイデンティティは、OBPコンソール上では以下のように確認できます。 Oracle Blockchain Platformのサービス・コンソールを開きます。...","categories": [],
+        "tags": ["Blockchain"],
+        "url": "/ocitutorials/blockchain/05_1_fabric_identity/",
+        "teaser": "/ocitutorials/blockchain/05_1_fabric_identity/channel_ledger_tx.png"
+      },{
         "title": "Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方",
         "excerpt":"この文書は Oracle Blockchain Platform付属のChaincode開発・テスト・デプロイ補助ツールであるBlockchain App BuilderのVisual Studio Code拡張版について、ダウンロードとインストールの方法から、Chaincode仕様の作成方法やChaincodeコードの生成方法など、基本的な使い方を紹介するチュートリアルです。 この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。 前提 : Oracle Blockchain Platform のインスタンス作成を完了 0. Blockchain App Builderとは Blockchain App BuilderはOracle Blockchain Platform（OBP）に付属するChaincode開発・テスト・デプロイの補助ツールです。 BABは以下の機能を備えており、Chaincode開発を容易にし、生産性を高めます。 YAML、JSONの形式で記述した仕様からChaincodeのコードを生成 ローカル環境に自動構築される最小限のHyperledger Fabricネットワークを用いて開発したChaincodeをテスト 生成したChaincodeのパッケージングとOBPへのデプロイ OBP上にデプロイしたChaincodeの実行 BABは以下ふたつの形態のツールとして提供されており、いずれも同等の機能を備えています。 コマンドラインツール Visual Studio Codeの拡張機能 この記事では、Visual Studio Codeの拡張版を前提に説明していきます。 1. Blockchain App Builderのインストール方法 Blockchain App Builder（Visual Studio Code拡張版）のインストールにあたっての必要な前提条件、インストーラのダウンロード方法、インストール方法について説明します。 1.1 必要な前提条件 前提条件として、以下のセットアップが必要です（なお、一部の前提条件については対応する機能を使用しない場合は無視して進めても他の機能は利用できます）。...","categories": [],
         "tags": ["Blockchain"],
@@ -358,6 +364,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/database/dbcs103-patch/",
         "teaser": "/ocitutorials/database/dbcs103-patch/img11.png"
+      },{
+        "title": "104: 自動バックアップを設定しよう",
+        "excerpt":"はじめに サービスを利用していくにあたり、利用している環境のインスタンスやデータが壊れてしまった場合や、過去の時点にデータを戻したい場合など、何か起きた時のデータ復旧のためにバックアップやリカバリについての検討は重要です。 DBCS では、RMANを利用した自動バックアップ機能が利用可能で、リカバリも最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。 ここでは、OCI コンソールから自動バックアップを構成するまでの手順についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. 自動バックアップの前提条件を確認する 2. 自動バックアップの設定をしよう 3. 自動バックアップの設定を変更しよう 4. オンデマンド・バックアップを取得しよう 5. 取得したバックアップを確認しよう 所要時間 : 約30分 1. 自動バックアップの前提条件を確認する まずは設定するにあたり前提条件を確認してみましょう。 オブジェクト・ストレージに取得することを前提にまとめています。DBシステム内(FRA)にとる場合など、CLI(dbcli)で設定する場合には、バックアップはコンソールからの管理対象外となります。 必要なエディション 自動バックアップ機能は全エディションで利用可能 並列実行(チャネル数やセクション・サイズの指定など)や高速増分バックアップなどを使う場合にはEnterprise Edition以上が必要 ※特にリストア時間(RTO)の観点で、並列処理でのリストアができることはメリットになります。RTOが厳しい場合には、Enterprise Edition以上をおすすめします。 Oracle Cloudのインフラ側の前提条件 管理ユーザーのIAMサービス・ポリシーでの権限が付与済 DBシステムからオブジェクト・ストレージへのアクセス設定(VCNでサービス・ゲートウェイの利用がおすすめ) DBシステムとデータベースの状態 自動バックアップの機能が動作するためには、データベースが下記の状態である必要があります。下記の状態ではない場合、バックアップジョブが失敗する可能性があるのでご注意ください。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/dbcs104-backup/",
+        "teaser": "/ocitutorials/database/dbcs104-backup/11.PNG"
       },{
         "title": "101: ADBインスタンスを作成してみよう",
         "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、アクセスしてみます。 目次 1. リージョンを設定し、コンパートメントを用意しよう 2. ADBインスタンスを作成してみよう 3. Database Actionsで操作してみよう 所要時間 : 約20分 1. リージョンを設定し、コンパートメントを用意しよう 1-1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足 上手く表示されない場合は以下のURLをお試しください。...","categories": [],
