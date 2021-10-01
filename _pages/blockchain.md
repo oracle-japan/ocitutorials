@@ -33,6 +33,11 @@ Oracle Blockchain Platform (OBP) を使ってみよう！という人のため�
 - **[REST APIからChaincodeを実行する](/ocitutorials/blockchain/03_2_restcall_chaincode/)**  
   REST APIからChaincodeを実行する方法を説明します。
 
+# 5. その他の設定、構成、管理
+
+- **[Fabricのアイデンティティ関連の操作や設定](/ocitutorials/blockchain/05_1_fabric_identity/)**  
+  Oracle Blockchain PlatformでHyperledger Fabricのプロトコルにおけるアイデンティティ、およびアイデンティティを構成する証明書および秘密鍵に関連する操作、設定などを説明します。
+
 # 9. ツール、ライブラリなどの利用
 
 - **[Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方](/ocitutorials/blockchain/91_1_app_builder_vsc_start/)**  
