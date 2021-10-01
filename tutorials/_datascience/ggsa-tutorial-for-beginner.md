@@ -4,7 +4,7 @@ excerpt: "Oracle GoldenGate Stream Analytics は、IoT データ、パイプラ�
 order: "010"
 tags: "ggsa"
 date: "2021-09-14"
-lastmod: "2021-09-28"
+lastmod: "2021-10-01"
 ---
 
 Oracle GoldenGate Stream Analytics(以下、GGSA) は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。
@@ -343,7 +343,7 @@ Created topic "tutorial".
 次にダウンロードしたコンテンツに含まれる Java プログラムを使用して、作成した Topic に対してデータを送信します。
 
 ```bash
-cd ~/ggsa/resources/; java -jar OsacsEventFeeder.jar --zookeeper localhost:2181 --json BusEvents.json --topic tutorial > temp 2>&1 &
+cd ~/ggsa/resources/; java -jar OsacsEventFeeder.jar --zookeeper localhost:2181 --json BusEvents.json --topic tutorial > /tmp/tutorial.`date "+%Y%m%d_%H%M%S"` 2>&1 &
 ```
 
 コマンド実行結果(PID は一例)
@@ -352,10 +352,22 @@ cd ~/ggsa/resources/; java -jar OsacsEventFeeder.jar --zookeeper localhost:2181 
 [1] 6654
 ```
 
+作成されたファイル名の確認
+
+```bash
+ls /tmp | grep tutorial
+```
+
+コマンド実行結果
+
+```bash
+tutorial.20211001_011436
+```
+
 Kafka に対するメッセージ送信が成功しているかどうかを確認します。
 
 ```bash
-tail -f temp
+tail -f /tmp/tutorial.20211001_011436
 ```
 
 コマンド実行結果
@@ -873,6 +885,20 @@ $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --to
 - ...
 
 と様々な Target が用意されています。
+
+### 2-13. ハンズオンの終了処理
+
+バックグラウンドで実行していた Java のプロセスを終了します。(PID は、[2-1. ハンズオン用のイベント・ストリームを Kafka に Publish する](#2-1-ハンズオン用のイベントストリームを-kafka-に-publish-する)を参照)
+
+```bash
+kill <PID>
+```
+
+実行例
+
+```bash
+kill 6654
+```
 
 これで、GGSA のチュートリアルは完了です。お疲れ様でした！
 
