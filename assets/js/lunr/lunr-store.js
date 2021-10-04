@@ -509,6 +509,12 @@ var store = [{
         "url": "/ocitutorials/database/adb303-datapump/",
         "teaser": "/ocitutorials/database/adb303-xxx/img00x.png"
       },{
+        "title": "401 : OCI GoldenGateによるDBCSからADBへのデータ連携",
+        "excerpt":"はじめに Oracle Cloud Infrastructure (OCI) GoldenGateはフルマネージド型のリアルタイムデータ連携サービスとなっています。 OCI GoldenGateサービスは、構成、ワークロード・スケーリング、パッチ適用などの多くの機能を自動化しており、従量課金制で利用することが可能です。そのため時間や場所を選ばずに、低コストでデータの連携、分析ができるようになります。 この章では、OCI GoldenGateの作成とDBCSからADBへのデータ連携の設定について紹介します。 目次 : 1.ソース・データベースの設定 2.ターゲット・データベースの設定 3.OCI GGデプロイメントの作成 4.データベースの登録 5.Extractの作成 6.チェックポイント表の作成 7.Replicatの作成 8.データ連携の確認 前提条件 : 本チュートリアルではDBCS、ADBともにデータベースの作成が完了しており、初期データとしてHRスキーマがそれぞれのデータベースにロードされていることを前提にしています。 各データベースの作成方法やデータロードの方法は下記手順をご確認ください。 DBCSの作成については、「101: Oracle Cloud で Oracle Database を使おう(DBCS)」 をご参照ください。 データ連携用のサンプルデータはHRスキーマを使用しています。DBCSでのHRスキーマ作成方法は、「301: 移行元となるデータベースを作成しよう」 をご参照ください。 ADBの作成については、「101:ADBインスタンスを作成してみよう」 をご参照ください。 ADBの初期データロードについては、「303 : Data Pumpを利用してデータを移行しよう」 をご参照ください。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、DBCSを含めて各ユーザのパスワードはすべて「Welcome#1Welcome#1」とします。 所要時間 : 約60分 1. ソース・データベースの設定...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb401-oci-goldengate/",
+        "teaser": "/ocitutorials/database/adb401-oci-goldengate/instancetop.png"
+      },{
         "title": "402 : Database Linkによるデータ連携",
         "excerpt":"はじめに 従来からOracle Databaseをご利用の方にはお馴染みのDatabase Linkですが、Autonomous Database でもこのDatabase Linkをお使いいただくことが可能です。 Database Linkは、他のOracle Database インスタンスからデータを移行・連携・収集するための便利な機能です。 Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。 本文書では2-1のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、 他のOracle Database（リンク先）にアクセスする手順を記載します。 その後、補足と言う形でパターン1, 2-2についても記載します。 なお、本文書ではパブリックIPアドレスを持つDBCSを前提としています。プライベートIPアドレスへのDatabase Link作成については、今後紹介予定です。 ご不明な点がございましたら、担当営業までお問い合わせください。 目次 : 1.DBCSインスタンスの作成およびスキーマのインポート 2.DBCSにてTCPS認証（SSL認証）を有効化 3.DBCSのウォレットファイルをADBに渡す 4.ADBにてDatabase Linkを作成 5.エラーへの対応例 6.その他のパターン 7.おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約100分（DBCSインスタンスの作成時間を含む） 1. DBCSインスタンスの作成およびスキーマのインポート まず、サンプル・データベースとして、Database Linkのリンク先となるDBCSインスタンスを作成します。 301 : 移行元となるデータベースを作成しよう を参考に、DBCSインスタンスを作成し、HRスキーマを作成してください。...","categories": [],
         "tags": [],
