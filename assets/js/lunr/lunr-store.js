@@ -713,6 +713,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/storage-gateway/",
         "teaser": "/ocitutorials/intermediates/storage-gateway/img01.png"
       },{
+        "title": "リソース・マネージャを使ってサンプルアプリケーションをデプロイする",
+        "excerpt":"チュートリアル一覧に戻る : 応用編 - Oracle Cloud Infrastructure を使ってみよう Oracle Cloud Infrastructureリソース・マネージャは、OCI上のリソースのプロビジョニング処理を自動化するInfrastructure-as-code （IaC）を実現するサービスです。環境構築を自動化することで迅速にテスト環境や開発環境を作成、削除、変更ができ、こうした環境構築にかかるコストや時間を削減することができます。 仕組みとしてはTerraformを利用していますが、ユーザ自身がTerraform実行環境を用意する必要はなく、リソース・マネージャを使えばManagedなOCI上のサービスとしてTerraformを実行できます。 また、Terraformに慣れていない方はイチからコードを作成するのは大変と感じられるかもしれませんが、リソース・マネージャにはサンプルのスタックも用意されているので、それらを使って簡単にプロビジョニングを行い、学習することも可能です。 このチュートリアルでは、リソース・マネージャにあらかじめ用意されているスタックを使って、サンプルのeコマース・アプリケーションの構成をデプロイしていきます。サンプルのeコマース・アプリケーションを利用する場合は、ホーム・リージョンで操作する必要があります。 以下のような構成がプロビジョニングされます。 また、このサンプル・アプリケーションの説明は、以下のURLを参照してください。 https://github.com/oracle-quickstart/oci-cloudnative/tree/master/deploy/basic 所要時間 : 15分 前提条件 : 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切なリソース・マネージャの管理権限がユーザーに付与されていること 注意 : チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 1. スタックの作成 使用するTerraform構成をOCI上のリソースとして登録したものがスタックです。リソース・マネージャでリソースをプロビジョニングしたりする場合は、まずはスタックを作成する必要があります。 コンソール画面からスタックを作成していきます。 コンソールメニューから 開発者サービス → リソース・マネージャ → スタック を選択し、 スタックの作成 ボタンを押します 立ち上がった スタックの作成 の 1 スタック情報 画面に以下の項目を入力し、左下の 次 ボタンを押します。指定がないものは任意の値でOKです。...","categories": [],
+        "tags": ["intermediate","resource-manager"],
+        "url": "/ocitutorials/intermediates/resource-manager/",
+        "teaser": "/ocitutorials/intermediates/resource-manager/000.png"
+      },{
         "title": "Oracle Content and Experience チュートリアル",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": ["OCE"],

@@ -1,0 +1,721 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>リソース・マネージャを使ってサンプルアプリケーションをデプロイする | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="リソース・マネージャはリソースのプロビジョニングを自動化したInfrastructure-as-Codeを実現するサービスです。環境構築の自動化を体験してみましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="リソース・マネージャを使ってサンプルアプリケーションをデプロイする">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/">
+
+
+  <meta property="og:description" content="リソース・マネージャはリソースのプロビジョニングを自動化したInfrastructure-as-Codeを実現するサービスです。環境構築の自動化を体験してみましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/000.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-10-04T18:21:47+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/resource-manager/000.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          リソース・マネージャを使ってサンプルアプリケーションをデプロイする
+
+        
+      </h1>
+      
+        <p class="page__lead">リソース・マネージャはリソースのプロビジョニングを自動化したInfrastructure-as-Codeを実現するサービスです。環境構築の自動化を体験してみましょう。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/deep-learning-with-gpu/">GPUインスタンスでディープラーニング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/" class="active">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="リソース・マネージャを使ってサンプルアプリケーションをデプロイする">
+    <meta itemprop="description" content="リソース・マネージャはリソースのプロビジョニングを自動化したInfrastructure-as-Codeを実現するサービスです。環境構築の自動化を体験してみましょう。">
+    <meta itemprop="datePublished" content="2021-10-04T18:21:47+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-スタックの作成">1. スタックの作成</a></li><li><a href="#2-スタックの計画">2. スタックの計画</a></li><li><a href="#3-スタックの適用">3. スタックの適用</a></li><li><a href="#4-terraform構成のダウンロード">4. Terraform構成のダウンロード</a></li><li><a href="#5-スタックの破棄">5. スタックの破棄</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="..">応用編 - Oracle Cloud Infrastructure を使ってみよう</a></p>
+
+<p>Oracle Cloud Infrastructureリソース・マネージャは、OCI上のリソースのプロビジョニング処理を自動化するInfrastructure-as-code （IaC）を実現するサービスです。環境構築を自動化することで迅速にテスト環境や開発環境を作成、削除、変更ができ、こうした環境構築にかかるコストや時間を削減することができます。</p>
+
+<p>仕組みとしてはTerraformを利用していますが、ユーザ自身がTerraform実行環境を用意する必要はなく、リソース・マネージャを使えばManagedなOCI上のサービスとしてTerraformを実行できます。</p>
+
+<p>また、Terraformに慣れていない方はイチからコードを作成するのは大変と感じられるかもしれませんが、リソース・マネージャにはサンプルのスタックも用意されているので、それらを使って簡単にプロビジョニングを行い、学習することも可能です。</p>
+
+<p>このチュートリアルでは、リソース・マネージャにあらかじめ用意されているスタックを使って、サンプルのeコマース・アプリケーションの構成をデプロイしていきます。サンプルのeコマース・アプリケーションを利用する場合は、ホーム・リージョンで操作する必要があります。</p>
+
+<p>以下のような構成がプロビジョニングされます。</p>
+
+<p><img src="000.png" alt="000.png" /></p>
+
+<p>また、このサンプル・アプリケーションの説明は、以下のURLを参照してください。</p>
+
+<p><a href="https://github.com/oracle-quickstart/oci-cloudnative/tree/master/deploy/basic">https://github.com/oracle-quickstart/oci-cloudnative/tree/master/deploy/basic</a></p>
+
+<ul>
+  <li><strong>所要時間</strong> : 15分</li>
+  <li><strong>前提条件</strong> : 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切なリソース・マネージャの管理権限がユーザーに付与されていること</li>
+  <li><strong>注意</strong> : チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります</li>
+</ul>
+
+<h1 id="1-スタックの作成">1. スタックの作成</h1>
+
+<p>使用するTerraform構成をOCI上のリソースとして登録したものがスタックです。リソース・マネージャでリソースをプロビジョニングしたりする場合は、まずはスタックを作成する必要があります。</p>
+
+<p>コンソール画面からスタックを作成していきます。</p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから <strong>開発者サービス → リソース・マネージャ → スタック</strong> を選択し、 <strong>スタックの作成</strong> ボタンを押します</p>
+
+    <p><img src="001.png" alt="001.png" /></p>
+
+    <p><img src="002.png" alt="002.png" /></p>
+  </li>
+  <li>立ち上がった <strong>スタックの作成</strong> の <strong>1 スタック情報</strong> 画面に以下の項目を入力し、左下の <strong>次</strong> ボタンを押します。指定がないものは任意の値でOKです。
+    <ul>
+      <li><strong>Terraformの構成のオリジンを選択します。</strong> - テンプレート を選択</li>
+      <li><strong>スタック構成</strong> -  <strong>サンプルのeコマース・アプリケーション</strong> を選択。
+        <ul>
+          <li><strong>テンプレートの変更</strong> をクリックし、<strong>アーキテクチャ</strong> タブの <strong>サンプルのeコマース・アプリケーション</strong> にチェックを入れ、左下の <strong>テンプレート</strong>の選択</li>
+        </ul>
+      </li>
+      <li><strong>名前</strong> - 任意の名前を入力。ここでは Sample_eCommerce_App としています。</li>
+      <li><strong>説明</strong> - デフォルトのまま変更せず。</li>
+      <li><strong>コンパートメントに作成</strong> - 使用するコンパートメントが選択されていることを確認。</li>
+      <li>
+        <p><strong>Terraformのバージョン</strong>  - デフォルトのまま変更せず</p>
+
+        <p><img src="003.png" alt="003.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>次の <strong>2 変数の構成画面</strong> に以下の項目を入力し、左下の <strong>次</strong> ボタンを押します。</p>
+
+    <ul>
+      <li><strong>General Configuration</strong>
+        <ul>
+          <li><strong>Node Count</strong> - デフォルトのまま</li>
+        </ul>
+      </li>
+      <li><strong>Optional Configuration</strong>
+        <ul>
+          <li><strong>Database Name</strong> - デフォルトのまま</li>
+          <li>
+            <p><strong>Use Only always free eligible resources</strong> - Always Freeのリソースのみで構成したい場合はチェックを入れます。</p>
+
+            <p><img src="004.png" alt="004.png" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>最後の <strong>4 確認</strong> の画面で内容を確認したら、<strong>適用の実行</strong> には<strong>チェックを入れずに</strong>、そのまま左下の<strong>作成</strong>ボタンをクリックします。（チェックを入れることでスタック作成と同時に実際のリソースのプロビジョニングすることもできますが、ここではまずはスタックのみを作成してみます。）</p>
+
+    <p><img src="005.png" alt="005.png" /></p>
+  </li>
+  <li>
+    <p>スタックが作成されました。</p>
+
+    <p><img src="006.png" alt="006.png" /></p>
+  </li>
+</ol>
+
+<h1 id="2-スタックの計画">2. スタックの計画</h1>
+
+<p>スタックで実行できるアクションの中に、「計画（Plan）」、「適用（Apply）」、「破棄（Destroy）」があります。</p>
+
+<ul>
+  <li>計画：Terraform構成を解析して、関連するスタックの実行計画を作成します。</li>
+  <li>適用：実際にその計画を適用して実行します。</li>
+  <li>破棄：スタックに関連付けられたリソースを削除します。</li>
+</ul>
+
+<p>まずは「計画」を行って、どのようなリソースが作成できるか確認してみましょう。</p>
+
+<ol>
+  <li>
+    <p>作成したスタックの詳細画面で <strong>計画</strong> ボタンを押します。</p>
+
+    <p><img src="008.png" alt="008.png" /></p>
+  </li>
+  <li>
+    <p>確認画面でそのまま左下の <strong>計画</strong> ボタンを押します。</p>
+
+    <p><img src="007.png" alt="007.png" /></p>
+  </li>
+  <li>
+    <p><strong>ジョブの詳細</strong> 画面が開きます。しばらくすると、ステータスが「受入れ済」→「進行中」と遷移します。</p>
+
+    <p><img src="009.png" alt="009.png" /></p>
+  </li>
+  <li>
+    <p>ステータスが <strong>成功</strong> になれば計画が問題なく完了した状態です。</p>
+
+    <p><img src="010.png" alt="010.png" /></p>
+  </li>
+  <li>
+    <p>必要に応じて、画面の下の方からログをダウンロードもできますので、どのような実行計画かを確認する場合はダウンロードしてみてみましょう。</p>
+
+    <p><img src="011.png" alt="011.png" /></p>
+  </li>
+</ol>
+
+<h1 id="3-スタックの適用">3. スタックの適用</h1>
+
+<p>続いて、スタックを適用していきます。</p>
+
+<ol>
+  <li>
+    <p>スタックの詳細画面で <strong>適用</strong> ボタンを押します。
+<img src="012.png" alt="012.png" /></p>
+  </li>
+  <li>
+    <p>出てきた確認ウィンドウでそのまま左下の <strong>適用</strong> ボタンを押します。</p>
+
+    <p><img src="013.png" alt="013.png" /></p>
+  </li>
+  <li>
+    <p>ジョブの詳細画面で、ステータスが「受入れ済」→「進行中」と遷移します。実際に各種リソースを作成しているため、時間がかかります。進捗状況はログを見ることで確認できます。</p>
+
+    <p><img src="014.png" alt="014.png" /></p>
+  </li>
+  <li>
+    <p>ステータスが <strong>成功</strong> になったことを確認します。適用が完了したので、リソースがプロビジョニングされているはずです。</p>
+
+    <p><img src="015.png" alt="015.png" /></p>
+  </li>
+  <li>
+    <p><strong>ログのダウンロード</strong> ボタンを押し、ログのダウンロードをしておきましょう。</p>
+
+    <p><img src="016.png" alt="016.png" /></p>
+  </li>
+  <li>
+    <p>ログの一番下の行に、作成されたパブリック・ロードバランサーのIPアドレスと、このアプリケーションのソースコードのgithubのURLの記載があります。 <strong>lb_public_url = “＜IPアドレス＞”</strong> のIPアドレスをコピーします。</p>
+
+    <p><img src="017.png" alt="017.png" /></p>
+  </li>
+  <li>
+    <p>適用完了当初はまだアプリケーションが起動できていない可能性があるので、しばらく待ってからブラウザでlb_public_urlで示された <strong>http://＜IPアドレス＞</strong> を入力します。このような猫ショップのサイトが開ければ成功です。</p>
+
+    <p><img src="024.png" alt="024.png" /></p>
+  </li>
+  <li>
+    <p>OCIコンソールの各サービスのページを開き、このスタック適用で以下のリソースが作成されたことを確認します。</p>
+
+    <ul>
+      <li>コンピュート・インスタンス</li>
+      <li>VCN</li>
+      <li>ロード・バランサ</li>
+      <li>Autonomous Database</li>
+    </ul>
+  </li>
+</ol>
+
+<h1 id="4-terraform構成のダウンロード">4. Terraform構成のダウンロード</h1>
+
+<p>テンプレートで作成したスタックから、Terraform構成をダウンロードできます。</p>
+
+<ol>
+  <li>作成したスタックの詳細画面で <strong>ダウンロード</strong> リンクを押します。
+<img src="018.png" alt="018.png" /></li>
+  <li>.tf の拡張子が付いたファイルがそれぞれのリソースを作成するための構成ファイルになっています。ネットやロードバランサー、ATP、コンピュート、ストレージなどのリソースがそれぞれ定義されていることが分かります。必要に応じて参照してみてください。
+<img src="019.png" alt="019.png" /></li>
+</ol>
+
+<h1 id="5-スタックの破棄">5. スタックの破棄</h1>
+
+<p>最後に作成したリソースを全て削除します。</p>
+
+<ol>
+  <li>
+    <p>スタックの詳細画面から <strong>破棄</strong> のボタンをクリックします。</p>
+
+    <p><img src="020.png" alt="020.png" /></p>
+  </li>
+  <li>
+    <p>確認画面左下の <strong>破棄</strong> ボタンをクリックします。</p>
+
+    <p><img src="021.png" alt="021.png" /></p>
+  </li>
+  <li>
+    <p>ジョブのステータスが 受入れ済→進行中 に遷移します。</p>
+
+    <p><img src="022.png" alt="022.png" /></p>
+  </li>
+  <li>
+    <p>ステータスが <strong>成功</strong>になれば破棄完了です。</p>
+
+    <p><img src="023.png" alt="023.png" /></p>
+  </li>
+  <li>
+    <p>各リソースのページを開き、（コンピュート・インスタンスの画面やAutonomous Databaseの画面）から、作成されたリソースが削除されていることを確認しましょう。スタック自体は残っていますので、また適用を行うことで、同じ構成を再度プロビジョニングすることも簡単にできます。</p>
+  </li>
+</ol>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="..">応用編 - Oracle Cloud Infrastructure を使ってみよう</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#resource-manager" class="page__taxonomy-item" rel="tag">resource-manager</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-04T18:21:47+09:00">October 4, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%83%BB%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fresource-manager%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fresource-manager%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fresource-manager%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/storage-gateway/" class="pagination--pager" title="ストレージ・ゲートウェイを作成する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/oce-tutorial/" class="pagination--pager" title="Oracle Content and Experience チュートリアル
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
