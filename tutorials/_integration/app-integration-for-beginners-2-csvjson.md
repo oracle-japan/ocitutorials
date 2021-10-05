@@ -298,7 +298,7 @@ LAST_UPDATED|・「String」 を 「Date」 に変更<br>・「Mandatory」 を 
 
 「Oracleアダプタ・エンドポイント構成ウィザード」 の 「ファイル・コンテンツ - 定義」 では、書込む JSON ファイルのサンプルをアップロードします。
 
-サンプル JSON ファイル をローカルにダウンロードします。 次に、「ファイルを選択」 ボタンをクリックして、ダウンロードしたサンプル JSON ファイルを選択します。
+[サンプル JSON ファイル](https://raw.githubusercontent.com/oracle-japan/oic-csv2json/master/samples/output-1.json) をローカルにダウンロードします。 次に、「ファイルを選択」 ボタンをクリックして、ダウンロードしたサンプル JSON ファイルを選択します。
 「次 >」 ボタンをクリックします。
 
 ![](041.png)
