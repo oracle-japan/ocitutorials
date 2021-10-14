@@ -30,8 +30,6 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[103: パッチを適用しよう](/ocitutorials/database/dbcs103-patch/){:target="_blank"}**  
 
-+ **[104: 自動バックアップを設定しよう](/ocitutorials/database/dbcs104-backup/){:target="_blank"}**  
-
 <br/>
 
 # <span style="color: brown; ">■ Exadata Cloud Service (ExaCS) を使ってみよう</span>
@@ -77,7 +75,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[107: ADBの付属ツールで機械学習を始めよう(AutoML UI)](/ocitutorials/database/adb107-machine-learning/){:target="_blank"}**  
     * 機械学習モデルをビルドして、RESTでCallする手順を確認します
-    
+
 ## 実践編
 
 + **[201: 接続サービスの理解](/ocitutorials/database/adb201-service-names/){:target="_blank"}**  
@@ -129,11 +127,11 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[303: Data Pumpを利用してデータを移行しよう](/ocitutorials/database/adb303-datapump){:target="_blank"}**
     * データ移行に関する機能として従来からよく利用されるData Pumpを利用した移行方法をご紹介します。
 
-+ [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（公開準備中）]
++ **[304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう](/ocitutorials/database/adb304-database-migration){:target="_blank"}**
+    * データベースをオンプレミス、Oracle、またはサードパーティのクラウドからOCI上にデータベースにすばやく簡単に移行できるZDM/DMSをご紹介します。
 
 ## データ連携編
-+ **[401: OCI GoldenGateを利用したデータ連携](/ocitutorials/database/adb401-oci-goldengate){:target="_blank"}**
-    * OCI GodenGateを利用して、DBCSからADBへのデータ連携方法をご紹介します。
++ [401: OCI GoldenGateを利用したデータ連携（公開準備中）]
 
 + **[402: Database Linkを利用したデータ連携](/ocitutorials/database/adb402-database-link){:target="_blank"}**
     * Database Linkを利用して、ADBから他のデータベースへアクセスする方法をご紹介します。
@@ -149,6 +147,12 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[502: 各種設定の確認、レポートの取得](/ocitutorials/database/adb502-report){:target="_blank"}**
     * OS領域に入ることのできないADBにおける各種レポート・ログの取得方法を確認します。
+
++ **[503: ADBインスタンスの監視設定をしてみよう](/ocitutorials/database/adb503-monitoring){:target="_blank"}**
+    * データベース運用における重要なタスクの一つである、ADBインスタンスに対するパフォーマンス監視/アラート監視の方法をご紹介します。
+
++ **[506: サポートサービスへの問い合わせ(Service Requestの起票)](/ocitutorials/database/adb506-sr){:target="_blank"}**
+    * ADBの運用で困ったらどうすれば良いでしょうか。Service Requestの登録の仕方を解説します。
 
 <br/>
 ----
