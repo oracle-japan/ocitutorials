@@ -56,45 +56,72 @@ Autonomous Database は、最新のAI技術によって自律的に運用され�
 
 ## チュートリアル応用編 - Oracle Cloud Infrastructure アドバンスド
 - **[モニタリング機能でリソースを監視する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/monitoring-resources/)**  
-モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
+  モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。
+
 - **[ロードバランサーでWebサーバーを負荷分散する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-load-balancer/)**  
-OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
+  OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。
+
 - **[インスタンスのオートスケーリングを設定する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/autoscaling/)**  
-アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。オートスケーリング設定を行って、負荷に応じてインスタンス数を増減させてみましょう。
+  アプリケーションの負荷に応じて自動的にコンピュート・リソースの増減ができれば、必要な時に必要な分だけのリソースを確保し、コストの最適化にもつながります。オートスケーリング設定を行って、負荷に応じてインスタンス数を増減させてみましょう。
+
 - **[ブロック・ボリュームをバックアップする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/taking-block-volume-backups/)**  
-運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。
+  運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。
+
 - **[DNSサービスを使う - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-dns/)**  
-クラウド上でインターネット向けにサービスを構築したいのであれば、OCIのDNSサービスを使わない手はありません。Dyn.comにホストされた堅牢な権威DNSネットワークが、従量制で簡単に利用できます。マネージドサービスなのでDDoS対策もバッチリ。さあやってみましょう。
+  クラウド上でインターネット向けにサービスを構築したいのであれば、OCIのDNSサービスを使わない手はありません。Dyn.comにホストされた堅牢な権威DNSネットワークが、従量制で簡単に利用できます。マネージドサービスなのでDDoS対策もバッチリ。さあやってみましょう。
+
 - **[Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編) - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474289/email-delivery%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E5%A4%96%E9%83%A8%E3%81%B8%E3%81%AE%E3%83%A1%E3%83%BC%E3%83%AB%E9%80%81%E4%BF%A1-%E3%81%9D%E3%81%AE1-%E9%85%8D%E4%BF%A1%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E7%B7%A8-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
-クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
+  クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
+
 - **[GPUインスタンスでディープラーニング - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474290/gpu%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%A7%E3%83%87%E3%82%A3%E3%83%BC%E3%83%97%E3%83%A9%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
-クラウドを利用すると、最新のGPUで簡単にディープラーニングのトレーニング環境を構築することができます。OCIの事前セットアップ済イメージを使って環境を構築し、PyTorch や Tensorflow などの人気のフレームワークを動かしてみましょう。
+  クラウドを利用すると、最新のGPUで簡単にディープラーニングのトレーニング環境を構築することができます。OCIの事前セットアップ済イメージを使って環境を構築し、PyTorch や Tensorflow などの人気のフレームワークを動かしてみましょう。
+
 - **[シリアル・コンソールでsshできないインスタンスのトラブルシュートをする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/accessing-serial-console/)**  
-インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールに接続してみましょう。何かトラブル解決のヒントが見つかるかもしれません。
+  インスタンスにアクセスできない!? まずは落ち着いて、シリアル・コンソールに接続してみましょう。何かトラブル解決のヒントが見つかるかもしれません。
+
 - **[インスタンスにセカンダリIPを付与する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/attaching-secondary-ips/)**  
-OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。
+  OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。
+
+- **[監査(Audit)ログを使用したテナント監視](/ocitutorials/intermediates/serviceconnecterhub/)**
+
+  テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていきます。
+
 - **[コマンドライン(CLI)でOCIを操作する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-cli/)**  
-クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。
+  クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。
+
+- **[リソース・マネージャを使ってサンプルアプリケーションをデプロイする](/ocitutorials/intermediates/resource-manager/)**
+
+  リソース・マネージャはリソースのプロビジョニングを自動化したInfrastructure-as-Codeを実現するサービスです。環境構築の自動化を体験してみましょう。
+
 - **[TerraformでOCIの構築を自動化する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474281/terraform%E3%81%A7oci%E3%81%AE%E6%A7%8B%E7%AF%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
-大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
+  大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
+
 - **[OCI Valut (OCI Key Management) でBYOKをする](https://qiita.com/western24/items/06271c09a17e566661e8)**  
-Oracle Cloud Infrastructureには、OCI Valut (旧称 OCI Key Management) という暗号化マスター鍵を仮想化したHSMで管理する機能があり、ユーザーが管理する暗号鍵でブロック・ボリュームやオブジェクト・ストレージなどのデータを暗号化をできるようになっています。OCI Vaultを使って、ユーザーが作成した鍵をクラウドに持ち込むBYOK(Bring Your Own Key)を試してみましょう。
+  Oracle Cloud Infrastructureには、OCI Valut (旧称 OCI Key Management) という暗号化マスター鍵を仮想化したHSMで管理する機能があり、ユーザーが管理する暗号鍵でブロック・ボリュームやオブジェクト・ストレージなどのデータを暗号化をできるようになっています。OCI Vaultを使って、ユーザーが作成した鍵をクラウドに持ち込むBYOK(Bring Your Own Key)を試してみましょう。
+
 - **[Web Application Firewall(WAF)を使ってWebサーバを保護する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474298/web-application-firewall-waf-%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6web%E3%82%B5%E3%83%BC%E3%83%90%E3%82%92%E4%BF%9D%E8%AD%B7%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
-Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。
+  Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。
+
 - **[Oracle CASBを使ってクラウドのセキュリティ・リスクを検知する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474285/oracle-casb%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3-%E3%83%AA%E3%82%B9%E3%82%AF%E3%82%92%E6%A4%9C%E7%9F%A5%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
-せっかくクラウドを導入したのだから、セルフサービスで色々な人に使ってもらいたい。でも勝手に使われるとセキュリティが心配・・・。そんなときはCASB(キャスビー)が役に立つかもしれません。Oracle CASBを使うと、ユーザーが危険な使い方をしていたらアラートを受け取るなんてことが簡単に実現できるようになります。
+  せっかくクラウドを導入したのだから、セルフサービスで色々な人に使ってもらいたい。でも勝手に使われるとセキュリティが心配・・・。そんなときはCASB(キャスビー)が役に立つかもしれません。Oracle CASBを使うと、ユーザーが危険な使い方をしていたらアラートを受け取るなんてことが簡単に実現できるようになります。
+
 - **[Oracle Management Cloud チュートリアルまとめ](https://qiita.com/western24/items/1e44bfcaa77f3251a263)**  
-Oracle Management Cloud (OMC) は、機械学習と大規模データ技術を活用した次世代の統合モニタリング、管理、アナリティクス・クラウド・サービスです。このまとめページでは、OMCの構築に始まり、各種リソース(OS、ログ、Javaアプリ、OCIのインフラ、Oracle Databaseなど)を監視、管理する方法についての設定方法や使い方について説明しています。
+  Oracle Management Cloud (OMC) は、機械学習と大規模データ技術を活用した次世代の統合モニタリング、管理、アナリティクス・クラウド・サービスです。このまとめページでは、OMCの構築に始まり、各種リソース(OS、ログ、Javaアプリ、OCIのインフラ、Oracle Databaseなど)を監視、管理する方法についての設定方法や使い方について説明しています。
+
 - **[Oracle Data Safe チュートリアルまとめ](https://qiita.com/western24/items/4824e4b3799b824197c6)**  
-Oracle Data Safeは、Oracle CloudのDatabase Serviceをよりセキュアに使うための付加的なサービスで、機密データの発見、(データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価などを、GUIツールから簡単に実施できます。このまとめページでは、Data Safeを有効化から、各種の使い方について説明しています。
+  Oracle Data Safeは、Oracle CloudのDatabase Serviceをよりセキュアに使うための付加的なサービスで、機密データの発見、(データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価などを、GUIツールから簡単に実施できます。このまとめページでは、Data Safeを有効化から、各種の使い方について説明しています。
+
 - **[Oracle Content and Experiece チュートリアル](/ocitutorials/content-management/)**  
-Oracle Content and Experience (OCE)は、API ファーストなアーキテクチャで、マルチチャネルでのコンテンツ配信を実現するインテリジェントなコンテンツ管理プラットフォームです。この文書では、OCEが提供するファイル共有、アセット管理、Webサイト管理などさまざまな機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせてリンク先の各文書をご利用ください。
+  Oracle Content and Experience (OCE)は、API ファーストなアーキテクチャで、マルチチャネルでのコンテンツ配信を実現するインテリジェントなコンテンツ管理プラットフォームです。この文書では、OCEが提供するファイル共有、アセット管理、Webサイト管理などさまざまな機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせてリンク先の各文書をご利用ください。
+
 - **[Oracle Integration チュートリアル](/ocitutorials/integration/)**  
   Oracle Integration(OIC)は、アプリケーションの統合、プロセスの自動化およびビジュアル・アプリケーションの作成を可能にする完全に管理されたサービスです。この文書では、OIC が提供するプロセス機能（ワークフローの作成・テスト・公開）など、さまざまな機能の説明や使い方が、各文書ごとにステップ・バイ・ステップで紹介されています。利用する機能にあわせて、リンク先の各文書をご利用ください。
+  
 - **[Oracle Blockchain Platform チュートリアル](/ocitutorials/blockchain/)**  
   Oracle Blockchain Platform（OBP）は、オープンソースのブロックチェーンプロトコル Hyperledger Fabric をベースとした、エンタープライズ向けブロックチェーン基盤です。この文書では、OBP の基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。利用する機能にあわせてリンク先の各文書をご利用ください。
+  
 - **[ストレージ・ゲートウェイを作成する](/ocitutorials/intermediates/storage-gateway/)**  
-ストレージ・ゲートウェイ とは、アプリケーションが 標準のNFSv4プロトコルを使用してOracle Cloud Infrastructure オブジェクト・ストレージと相互作用できるようになるサービスです。オンプレミスからのデータ転送、バックアップ、アーカイブ用途などに利用できます。
+  ストレージ・ゲートウェイ とは、アプリケーションが 標準のNFSv4プロトコルを使用してOracle Cloud Infrastructure オブジェクト・ストレージと相互作用できるようになるサービスです。オンプレミスからのデータ転送、バックアップ、アーカイブ用途などに利用できます。
 
 
 
