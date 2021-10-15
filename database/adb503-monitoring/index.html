@@ -1,0 +1,805 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>503 : ADBインスタンスの監視設定をしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="データベースの運用にかかせない監視・通知設定。Autonomous Databaseに対してはどのように行うのかご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="503 : ADBインスタンスの監視設定をしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb503-monitoring/">
+
+
+  <meta property="og:description" content="データベースの運用にかかせない監視・通知設定。Autonomous Databaseに対してはどのように行うのかご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb503-monitoring/monitoring_teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-10-15T11:03:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb503-monitoring/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb503-monitoring/monitoring_teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          503 : ADBインスタンスの監視設定をしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">データベースの運用にかかせない監視・通知設定。Autonomous Databaseに対してはどのように行うのかご紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">503 : ADBインスタンスの監視設定をしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs104-backup/">104: 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb302-schema-adviser/">302 : スキーマ・アドバイザを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb304-database-migration/">304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb503-monitoring/" class="active">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="503 : ADBインスタンスの監視設定をしてみよう">
+    <meta itemprop="description" content="データベースの運用にかかせない監視・通知設定。Autonomous Databaseに対してはどのように行うのかご紹介します。">
+    <meta itemprop="datePublished" content="2021-10-15T11:03:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-技術概要">1. 技術概要</a></li><li><a href="#2-単体インスタンスの監視">2. 単体インスタンスの監視</a><ul><li><a href="#2-1-ociモニタリングによるメトリック監視">2-1. OCIモニタリングによるメトリック監視</a></li><li><a href="#2-2-サービスコンソールによるパフォーマンス監視">2-2. サービス・コンソールによるパフォーマンス監視</a></li><li><a href="#2-3-イベント監視">2-3. イベント監視</a></li><li><a href="#2-4-インスタンス管理者に対する通知設定">2-4. インスタンス管理者に対する通知設定</a></li></ul></li><li><a href="#3-複数のインスタンスをまとめて監視">3. 複数のインスタンスをまとめて監視</a><ul><li><a href="#3-1-em-omcによる監視項目">3-1. EM, OMCによる監視項目</a></li><li><a href="#3-2-emによる監視設定">3-2. EMによる監視設定</a></li><li><a href="#3-3-omcによる監視設定">3-3. OMCによる監視設定</a></li></ul></li><li><a href="#おわりに">おわりに</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="はじめに">はじめに</h1>
+<p>Autonomous Databaseはデータベースの様々な管理タスクをADB自身、もしくはOracleが行う自律型データベースですが、ユーザーが実行したり、ユーザーがOracleに実行の方法やタイミングの指示を出すタスクもあります。それがデータベースのパフォーマンス監視/アラート監視です。本記事ではADBインスタンスに対する監視設定をいくつかご紹介します。</p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#1-技術概要">1.技術概要</a></li>
+  <li><a href="#2-単体インスタンスの監視">2.単体インスタンスの監視</a></li>
+  <li><a href="#3-複数のインスタンスをまとめて監視">3.複数のインスタンスをまとめて監視</a></li>
+  <li><a href="#おわりに">おわりに</a></li>
+</ul>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスの作成方法については、
+  <a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。<br />
+  なお本記事では、後続の章でCPU使用率が閾値を超えた際の挙動を確認するため、<strong>OCPU数は1、auto scalingは無効</strong> で作成しています。</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約40分</p>
+
+<p><br /></p>
+
+<h1 id="1-技術概要">1. 技術概要</h1>
+<p>Autonomous Databaseに対する監視・通知を行うツールはいくつか存在します。環境やユーザーによって、適切なツールを選択します。以下はそれらの監視ツールの比較表です。
+<img src="tool_comparison.png" alt="tool_comparisonイメージ" /></p>
+
+<p>本記事ではこの中から、OCIモニタリング、サービス・コンソール、Oracle Enterprise Manager(EM)、Oracle Management Cloud(OMC)による監視設定をご紹介します。</p>
+
+<p><br /></p>
+
+<h1 id="2-単体インスタンスの監視">2. 単体インスタンスの監視</h1>
+<p>単体のADBインスタンスに対しては、OCIモニタリングとサービス・コンソールを使ってメトリック監視/イベント監視をすることができます。</p>
+
+<h2 id="2-1-ociモニタリングによるメトリック監視">2-1. OCIモニタリングによるメトリック監視</h2>
+<p>OCIモニタリングでは、OCI上の各種リソースの性能や状態の監視、カスタムのメトリック監視を行うことが可能です。また、アラームで事前定義した条件に合致した際には、管理者に通知を行うことで管理者はタイムリーに適切な対処を行うことができます。</p>
+
+<p>今回は、ADBのCPUの閾値を超えた際に通知が来るよう設定し、その挙動を確認します。</p>
+
+<ol>
+  <li>
+    <p>まずは<a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank">こちらの記事</a> を参考に、アラームの通知先の作成をします。</p>
+  </li>
+  <li>
+    <p>次にアラームの定義の作成をします。ハンバーガーメニューの<strong>Observability &amp; Management</strong> の <strong>[アラーム定義]</strong> をクリックします。
+<img src="monitoring1.png" alt="monitoring1イメージ" /></p>
+  </li>
+  <li>
+    <p><strong>[アラームの作成]</strong> をクリックします。</p>
+  </li>
+  <li>以下の項目を入力し、<strong>[アラームの保存]</strong> をクリックします。
+    <ul>
+      <li><strong>アラーム名：</strong> CPU_alarm とします。</li>
+      <li><strong>アラームの重大度：</strong> クリティカル</li>
+      <li><strong>アラーム本体（オプション）：</strong> 任意</li>
+      <li><strong>タグ（オプション）：</strong> 任意</li>
+      <li>メトリックの説明
+        <ul>
+          <li><strong>コンパートメント：</strong> メトリックのあるコンパートメントを選択</li>
+          <li><strong>メトリック・ネームスペース：</strong> oci_autonomous_databaseを選択</li>
+          <li><strong>リソース・グループ：</strong> 空白のまま</li>
+          <li><strong>メトリック名：</strong> CpuUtilization</li>
+          <li><strong>間隔：</strong> 1m（デフォルト）</li>
+          <li><strong>統計：</strong> Mean（デフォルト）</li>
+        </ul>
+      </li>
+      <li>メトリック・ディメンション
+        <ul>
+          <li><strong>DeploymentType：</strong> Sharedを選択</li>
+        </ul>
+      </li>
+      <li>トリガー・ルール
+        <ul>
+          <li><strong>演算子：</strong> 次より大きい</li>
+          <li><strong>値：</strong> 40</li>
+          <li><strong>トリガー遅延分数：</strong> 3</li>
+        </ul>
+      </li>
+      <li>Notifications
+        <ul>
+          <li><strong>宛先サービス：</strong> Notification Serviceを選択</li>
+          <li><strong>コンパートメント：</strong> さきほど作成した通知トピックのあるコンパートメントを選択</li>
+          <li><strong>トピック：</strong> 先ほど作成したトピック名を選択</li>
+          <li><strong>メッセージの書式：</strong> RAWメッセージの送信</li>
+        </ul>
+      </li>
+      <li><strong>このアラームを有効化しますか。：</strong> チェックが入っていることを確認 （デフォルト）
+<img src="alarm1.png" alt="alarm1イメージ" />
+<img src="alarm2.png" alt="alarm2イメージ" />
+<img src="alarm3.png" alt="alarm3イメージ" /></li>
+    </ul>
+  </li>
+  <li>
+    <p>アラームが作成されたら、有効になっているかを確認します。
+<img src="alarm4.png" alt="alarm4イメージ" /></p>
+  </li>
+  <li>Autonomous Database のCPU使用率を40%より大きくするため、データベース・アクションを開き、以下のPL/SQLを実行します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+  <span class="n">while</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">1</span> <span class="n">loop</span>
+ <span class="k">declare</span> <span class="n">n1</span> <span class="n">number</span><span class="p">;</span>
+ <span class="k">begin</span> <span class="n">n1</span> <span class="p">:</span><span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">end</span><span class="p">;</span>
+  <span class="k">end</span> <span class="n">loop</span><span class="p">;</span>
+<span class="k">end</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div>    </div>
+    <blockquote>
+      <p>（補足）
+上記PL/SQLは1CPUを占有させるものです。
+OCPU数が2以上のADBインスタンスの場合、アラームの定義のCPU使用率を下げる、もしくは複数のデータベース・アクションで並列実行する必要があります。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>数分待つと、アラームの通知先として設定したアドレスに以下のようなメールが届きます。
+<img src="notification.png" alt="notificationイメージ" /><br />
+しばらくすると、上記PL/SQLが終了し、以下のようなメールも届きます。
+<img src="notification2.png" alt="notification2イメージ" /><br />
+<strong>Status：OK</strong> になっていることがわかります。このように、ADBインスタンスの状態が変化する度に通知が届くようになっています。</p>
+  </li>
+  <li>続いてCPU使用率をOCIモニタリングのサービス・メトリックから確認してみます。
+    <ul>
+      <li><strong>メトリック・ネームスペース：</strong> oci_autonomous_databaseを選択</li>
+      <li><strong>メトリック・ディメンション：</strong> Sharedを選択
+<img src="metric1.png" alt="metric1イメージ" /></li>
+    </ul>
+  </li>
+</ol>
+
+<p>ここでは、CPU使用率のほか、セッション数やトランザクション件数などもグラフで確認することができます。
+これらもNotificationsと組み合わせることで、閾値を超えた際に通知を行うことが可能です。</p>
+
+<p><br /></p>
+
+<h2 id="2-2-サービスコンソールによるパフォーマンス監視">2-2. サービス・コンソールによるパフォーマンス監視</h2>
+<p>OCIモニタリングは、事前定義されたメトリックを用いてOCIの各種リソースのモニタリングや通知ができる一方で、サービス・コンソールでは以下のようなADBのアクティビティ状況が把握できます。</p>
+<ul>
+  <li>ストレージ使用状況</li>
+  <li>CPU使用率</li>
+  <li>割り当てOCPU数</li>
+  <li>SQL実行数</li>
+  <li>SQLの平均レスポンスタイム</li>
+  <li>接続サービス毎の負荷状況</li>
+  <li>DBの待機イベント</li>
+  <li>キューイングの状況</li>
+</ul>
+
+<p>以下のように、ADBの詳細画面から<strong>サービス・コンソール</strong> をクリックします。
+<img src="service_console1.png" alt="service_console1イメージ" /></p>
+
+<p><strong>アクティビティ</strong> からデータベース・アクティビティやCPU使用率が確認できます。
+<img src="service_console2.png" alt="service_console2イメージ" /></p>
+
+<p><strong>モニター対象SQL</strong> からリアルタイムの個々のSQL監視をすることができます。
+<img src="service_console3.png" alt="service_console3イメージ" /></p>
+
+<p>SQLテキストを選択し、<strong>レポートのダウンロード</strong> をクリックすると、Enterprise ManagerのDatabase Active Reportが取得できます。
+<img src="service_console4.png" alt="service_console4イメージ" /></p>
+
+<p><br /></p>
+
+<h2 id="2-3-イベント監視">2-3. イベント監視</h2>
+<p>OCIではメトリック監視とは別に、あらかじめ指定されたイベントが対象のリソースに起こった際に、通知やストリーミングなどのアクションを設定することができます。</p>
+
+<ol>
+  <li>
+    <p>ハンバーガーメニューの<strong>Observability &amp; Management</strong> の <strong>[イベント・サービス]</strong> をクリックします。
+<img src="event1.png" alt="event1イメージ" /></p>
+  </li>
+  <li>
+    <p><strong>[ルールの作成]</strong> をクリックします。</p>
+  </li>
+  <li>
+    <p>以下の項目を入力し、<strong>[ルールの作成]</strong> をクリックします。</p>
+    <ul>
+      <li><strong>表示名：</strong> ADB_critical_rule とします。</li>
+      <li><strong>説明：</strong> 任意</li>
+      <li>ルール条件
+        <ul>
+          <li>条件：イベント・タイプ</li>
+          <li><strong>サービス名：</strong> Databaseを選択</li>
+          <li><strong>イベント・タイプ：</strong> Autonomous Database - Criticalを選択</li>
+        </ul>
+      </li>
+      <li>アクション
+        <ul>
+          <li><strong>アクション・タイプ：</strong> 通知を選択</li>
+          <li><strong>通知コンパートメント：</strong> 現在使用しているコンパートメント</li>
+          <li><strong>トピック：</strong> 先ほど作成したトピックを選択</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<blockquote>
+  <p>（補足）
+Autonomous Databaseにおけるイベント・タイプ一覧(※2021年10月時点)
+<img src="event_all.png" alt="event_allイメージ" />
+個別のイベント条件の詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Events/Reference/eventsproducers.htm#dbaasevents__AutoDB" target="_blank">こちら</a></p>
+</blockquote>
+
+<p>上記の手順に沿って、ADBに対してイベント・タイプCriticalのルールを作成しておくと、以下のようなメールが届くことがあります。<br />
+この例は、ADBがダウンした場合の通知です。
+<img src="critical_mail.png" alt="critical_mailイメージ" /></p>
+
+<p><br /></p>
+
+<h2 id="2-4-インスタンス管理者に対する通知設定">2-4. インスタンス管理者に対する通知設定</h2>
+<p>Autonomous Databaseサービス関連の問題について、以下の手順で指定された電子メールアドレスに通知を送信することができます。</p>
+
+<ol>
+  <li>
+    <p>ADBの詳細ページの<strong>メンテナンス</strong>の<strong>顧客の連絡先</strong>フィールドの<strong>管理</strong>をクリックします。
+<img src="maintenance_config1.png" alt="メンテナンス通知設定1イメージ" /></p>
+  </li>
+  <li>
+    <p><strong>[連絡先の追加]</strong> をクリックします。</p>
+  </li>
+  <li>
+    <p>連絡先のメールアドレスを入力します。
+<img src="maintenance_config2.png" alt="メンテナンス通知設定2イメージ" /></p>
+  </li>
+</ol>
+
+<p>顧客の連絡先リストが更新されている間、ライフサイクル状態は<strong>更新中</strong>に変わります。</p>
+
+<p>顧客の連絡先が設定されると、主に以下のイベントの通知が送信されます。</p>
+<ul>
+  <li>データベースのアップグレード</li>
+  <li>ウォレットの有効期限の通知</li>
+  <li>計画外のメンテナンス通知</li>
+</ul>
+
+<p><br />
+なお、顧客の連絡先が設定されていない場合、通知はアカウントに関連付けられているテナント管理者の電子メールアドレスに送信されます。適切な担当者がサービス関連の通知を受信するように、顧客の連絡先を設定することをお勧めします。</p>
+
+<blockquote>
+  <p>（参考）
+OCIには他にもテナント管理者のみが受け取れる通知がいくつか存在します。
+<a href="https://qiita.com/NICAREGI/items/30dec52ba4d48c78675c" target="_blank">こちら</a> にまとめられている記事がございますので、ご参照ください。</p>
+</blockquote>
+
+<p><br /></p>
+
+<h1 id="3-複数のインスタンスをまとめて監視">3. 複数のインスタンスをまとめて監視</h1>
+<p>複数のADBインスタンスをまとめて監視するには、Oracle Enterprise Manager(EM)とOracle Management Cloud(OMC)が有用です。</p>
+
+<h2 id="3-1-em-omcによる監視項目">3-1. EM, OMCによる監視項目</h2>
+<p>EM, OMCのどちらにも一般的なデータベース監視に必要な項目が多数用意されています。
+主な項目は以下です。</p>
+<ul>
+  <li>データベースのアクティビティ</li>
+  <li>SQLの平均レスポンスタイム</li>
+  <li>初期化パラメータ</li>
+  <li>アラートの事前定義</li>
+  <li>閾値のカスタマイズ/アラート通知</li>
+</ul>
+
+<h2 id="3-2-emによる監視設定">3-2. EMによる監視設定</h2>
+<p>Enterprise Manager13.4 RU4(13.4.0.4)以降でAutonomous Databaseに対応しています。
+またOCI マーケットプレイスからデプロイができ、コンピュート費用で利用が可能になっています。</p>
+
+<p><img src="em_sample.png" alt="em_sampleイメージ" /></p>
+
+<p>ADBに対する使用手順は<a href="https://docs.oracle.com/cd/F33143_01/emadb/index.html" target="_blank">Enterprise Manager Cloud Control 『Oracle Autonomous Database管理者ガイド』</a> をご参照ください。</p>
+
+<p><br /></p>
+
+<h2 id="3-3-omcによる監視設定">3-3. OMCによる監視設定</h2>
+<p>Oracle Management Cloudでは、一般的なデータベース監視に必要な項目が多数用意されています。
+なお、ADBを監視する範囲内ではOMCは<strong>無償</strong> になっています。</p>
+
+<p><img src="omc_sample.png" alt="omc_sampleイメージ" /></p>
+
+<p>設定手順については、<a href="https://qiita.com/western24/items/2d191e041429c26f96b9" target="_blank">こちらの記事</a> をご参照ください。</p>
+
+<p>合わせて<a href="https://docs.oracle.com/cd/E83857_01/paas/management-cloud/omcgs/index.html" target="_blank">Oracle Management Cloudスタート・ガイド</a> もご参照ください。</p>
+
+<p><br /></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>本記事では、単体のADBインスタンスの監視、複数のADBインスタンスの監視に有効な機能をいくつかご紹介しました。使用用途や対象ユーザーがどれも異なりますが、データベースの運用をする上で全て重要なツールですので、ぜひご活用ください。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<ul>
+  <li>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/" target="_blank">モニタリング機能でOCIのリソースを監視する</a></p>
+  </li>
+  <li>
+    <p><a href="https://docs.oracle.com/ja-jp/iaas/Content/Events/Task/managingrules.htm" target="_blank">イベントの管理</a></p>
+  </li>
+</ul>
+
+<p><br />
+以上でこの章は終了です。次の章にお進みください。</p>
+
+<p><br /></p>
+
+<p><a href="#">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-15T11:03:22+09:00">October 15, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=503+%3A+ADB%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E7%9B%A3%E8%A6%96%E8%A8%AD%E5%AE%9A%E3%82%92%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb503-monitoring%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb503-monitoring%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb503-monitoring%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb502-report/" class="pagination--pager" title="502: 各種設定の確認、レポートの取得
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb506-sr/" class="pagination--pager" title="506: サポートサービスへの問い合わせ(Service Requestの起票)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

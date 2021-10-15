@@ -1,0 +1,763 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>監査(Audit)ログを使用したテナント監視 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていきます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="監査(Audit)ログを使用したテナント監視">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/serviceconnecterhub/">
+
+
+  <meta property="og:description" content="テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていきます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/serviceconnecterhub/image01.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-10-15T11:03:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/serviceconnecterhub/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/serviceconnecterhub/image01.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          監査(Audit)ログを使用したテナント監視
+
+        
+      </h1>
+      
+        <p class="page__lead">テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていきます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">監査(Audit)ログを使用したテナント監視</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/deep-learning-with-gpu/">GPUインスタンスでディープラーニング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/" class="active">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="監査(Audit)ログを使用したテナント監視">
+    <meta itemprop="description" content="テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていきます。">
+    <meta itemprop="datePublished" content="2021-10-15T11:03:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-サービスコネクタハブの作成">1. サービス・コネクタ・ハブの作成</a></li><li><a href="#2-メール通知されることを確認">2. メール通知されることを確認</a></li><li><a href="#3-応用編-拡張モードを使用したログフィルタタスクの設定">3. [応用編] 拡張モードを使用したログ・フィルタ・タスクの設定</a><ul><li><a href="#1-パブリック状態のオブジェクトストレージを検知する">(1) パブリック状態のオブジェクト・ストレージを検知する</a></li><li><a href="#2-特定のブロックボリュームのバックアップが作成されたことを検知する">(2) 特定のブロック・ボリュームのバックアップが作成されたことを検知する</a></li><li><a href="#3-ロードバランサが作成されたことを検知する">(3) ロード・バランサが作成されたことを検知する</a></li><li><a href="#4-ネットワークロードバランサが作成されたことを検知する">(4) ネットワーク・ロード・バランサが作成されたことを検知する</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p>**監査 (Audit) **サービス とは、テナンシ内のアクティビティを、ログとして自動的に記録してくれるサービスです。具体的には、Oracle Cloud Infrastructureコンソール、コマンドライン・インタフェース(CLI)、ソフトウェア開発キット(SDK)、ユーザー独自のクライアント、または 他のOracle Cloud Infrastructureサービスによって行われるAPIコール が記録されます。</p>
+
+<p>監査ログは そのままではただ蓄積されるだけですが、サービス間連携を担う「サービス・コネクタ・ハブ」を使用し、「通知」サービスと組み合わせることで、<strong>「特定の操作が行われた場合に検知してメールで通知させる」</strong>といった応用が可能です。</p>
+
+<p><img src="image01.png" alt="image01.png" /></p>
+
+<p>この章では、監査ログを サービス・コネクタ・ハブ、および 通知サービス と連携させ、テナンシ内の特定コンパートメントで「<strong>バケットが作成された場合に通知する</strong>」という設定を行っていきたいと思います。</p>
+
+<p>巻末にはその他の監視内容についても、いくつかのサンプルを記載していますので、参考にしてください。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li>チュートリアル : <a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a> の「4. アラームの通知先の作成」を完了し、Eメールを受信可能な <strong>トピック</strong> 及び <strong>サブスクリプション</strong> が 登録済みであること。</li>
+</ul>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。</p>
+
+<h1 id="1-サービスコネクタハブの作成">1. サービス・コネクタ・ハブの作成</h1>
+
+<p>監査サービスは、テナンシ開設時にデフォルトで有効化されているため、特に事前準備は必要ありません。</p>
+
+<p>まずは、サービス・コネクタ・ハブから作成していきましょう。</p>
+
+<ol>
+  <li>
+    <p>ナビゲーション・メニュー（ <strong>三</strong> のアイコン）より、<strong>Observability &amp; Management</strong> → <strong>Service Connectors</strong> をクリックし、サービス・コネクタの一覧画面を表示します。</p>
+
+    <p><img src="image02.png" alt="image02.png" /></p>
+  </li>
+  <li>
+    <p>「<strong>サービス・コネクタの作成</strong>」ボタンをクリックします。</p>
+
+    <p><img src="image03.png" alt="image03.png" /></p>
+  </li>
+  <li>
+    <p>下記を参考に、サービス・コネクタの作成画面にて必要事項を入力し、左下の <strong>作成</strong> ボタンをクリックします。</p>
+
+    <ul>
+      <li>
+        <p><strong>コネクタ名</strong> - 任意 (例：Audit2Notifications)</p>
+      </li>
+      <li>
+        <p><strong>説明</strong>（オプション） - 任意</p>
+      </li>
+      <li>
+        <p><strong>リソース・コンパートメント</strong> - 任意</p>
+      </li>
+    </ul>
+
+    <font color="DimGray">**サービス・コネクタの構成**</font>
+
+    <ul>
+      <li><strong>ソース</strong> - リストから [ロギング] を選択</li>
+      <li><strong>ターゲット</strong> - リストから [通知] を選択</li>
+    </ul>
+
+    <font color="DimGray">**ソースの構成**</font>
+
+    <ul>
+      <li>
+        <font color="DimGray">**ソース接続の構成**</font>
+
+        <ul>
+          <li><strong>コンパートメント名</strong> - 任意</li>
+          <li><strong>ログ・グループ</strong> - リストから [_Audit] を選択
+            <ul>
+              <li><strong>サブコンパートメントに_Auditを含める</strong> - 任意
+※サブコンパートメントを含む監査ログの監視をしたい場合には、チェックを有効化</li>
+            </ul>
+          </li>
+          <li><strong>ログ</strong> - 設定なし (非活性項目)</li>
+        </ul>
+      </li>
+      <li>
+        <font color="DimGray">**ログ・フィルタ・タスク**</font>
+
+        <ul>
+          <li><strong>フィルタ・タイプ</strong> - リストから [イベント・タイプ] を選択</li>
+          <li><strong>サービス名</strong> - リストから [Object Storage] を選択 (または直接入力も可)</li>
+          <li><strong>イベント・タイプ</strong> - リストから [Bucket - Create] を選択 (または直接入力も可)</li>
+        </ul>
+
+        <p>「<strong>＋別のフィルタ</strong>」をクリックし、下記条件を追加します。</p>
+
+        <ul>
+          <li><strong>フィルタ・タイプ</strong> - リストから [属性] を選択</li>
+          <li><strong>属性名</strong> - リストから [oracle.compartmentId] を選択 (または直接入力も可)</li>
+          <li><strong>イベント・タイプ</strong> - リストから対象のコンパートメントIDを選択 (または直接入力も可)</li>
+        </ul>
+
+        <blockquote>
+          <p><strong><em>Note</em></strong></p>
+
+          <p>コンパートメントのIDは、ナビゲーション・メニュー → Identity &amp; Security → コンパートメント をクリックし、コンパートメントの一覧画面から、対象のコンパートメントの「OCID」列で確認できます。</p>
+        </blockquote>
+      </li>
+    </ul>
+
+    <font color="DimGray">**タスクの構成**</font>
+
+    <ul>
+      <li>
+        <p><strong>タスクの選択</strong> - 未選択</p>
+
+        <p>※ファンクション・サービスを選択し、組み合わせることで、ソースから受けたデータを処理することも可能です。</p>
+      </li>
+    </ul>
+
+    <font color="DimGray">**ターゲットの構成**</font>
+
+    <ul>
+      <li>
+        <font color="DimGray">**ターゲット接続の構成**</font>
+        <ul>
+          <li><strong>コンパートメント</strong> - 事前に作成したトピックが含まれるコンパートメントを選択</li>
+          <li><strong>トピック</strong> - 事前に作成したトピックを選択</li>
+          <li><strong>メッセージの書式</strong> - [フォーマットされたメッセージの送信] を選択</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p>最後に、「<strong>このサービス・コネクタによるコンパートメント XXXX の通知への書込みを許可するデフォルト・ポリシーを作成します。</strong> 」という注意書きが表示されるので、「作成」をクリックします。</p>
+
+    <p>これにより、サービス・コネクタ から 通知サービスへの書込み許可を行うポリシーが自動的に追加されます。</p>
+
+    <p><img src="image04.png" alt="image04.png" /></p>
+  </li>
+</ol>
+
+<p>これで、サービス・コネクタ・ハブの作成は完了です。</p>
+
+<h1 id="2-メール通知されることを確認">2. メール通知されることを確認</h1>
+
+<p>次に、実際に対象のコンパートメント上でバケットを作成し、メールで通知されることを確認していきます。</p>
+
+<ol>
+  <li>
+    <p>チュートリアル : <a href="/ocitutorials/beginners/object-storage/">その7 - オブジェクト・ストレージを使う</a> の「1. コンソール画面の確認とバケットの作成」を参考に、オブジェクト・ストレージを作成します。</p>
+
+    <p>この際、バケットを作成するコンパートメントは、サービス・コネクタ・ハブの ログ・フィルタ で選択したコンパートメントを選択してください。</p>
+  </li>
+  <li>
+    <p>数分待ちます。</p>
+  </li>
+  <li>
+    <p>メールを受信したことを確認します。サービス・コネクタ・ハブの作成時に「フォーマットされたメッセージの送信」を選択したことにより、HTML形式の見やすいレイアウトで 通知されています。</p>
+
+    <ul>
+      <li><strong>件名</strong>：OCI Service Connector Hub Notification: com.oraclecloud.objectstorage.createbucket</li>
+      <li><strong>送信元</strong>：noreply@notification.us-ashburn-1.oci.oraclecloud.com (リージョンによってドメインは異なります)</li>
+    </ul>
+
+    <p><img src="image05.png" alt="image05.png" /></p>
+  </li>
+</ol>
+
+<p>サービス・コネクタ・ハブと通知の設定が正しくできていることがわかりました。
+通知を停止したい場合には、作成したサービス・コネクタ・ハブ自体を削除しても良いですし、一時的にオフにする場合には、サービス・コネクタ・ハブの詳細画面にて、「<strong>非アクティブ化</strong>」を選択することで、停止することができます。</p>
+
+<h1 id="3-応用編-拡張モードを使用したログフィルタタスクの設定">3. [応用編] 拡張モードを使用したログ・フィルタ・タスクの設定</h1>
+
+<p>手順1. サービス・コネクタ・ハブの作成 では触れていませんでしたが、実は、サービス・コネクタ・ハブの「ソースの構成」を設定する方法には２つあります。</p>
+
+<p>手順1 で実施した「<strong>基本モード</strong>」を使用して設定する他に、「<strong>拡張モード</strong>」と言われる、問合せ構文を使用した 設定を行うことで、より詳細なフィルタリングをすることが可能です。</p>
+
+<p>拡張モードに切り替えるには、<strong>ソースの構成</strong> で、[<strong>拡張モードに切替え</strong>] をクリックします。</p>
+
+<p><img src="image06.png" alt="image06" /></p>
+
+<p>拡張モードでは <strong>問合せコード・エディタ</strong> に問合せ構文を直接入力し、設定していきます。
+問合せ構文の詳細については Oracle Cloud Infrastructure ドキュメント：<a href="https://docs.oracle.com/ja-jp/iaas/Content/service-connector-hub/queryreference.htm">サービス・コネクタ・ハブの問合せ参照</a> を参照してください。</p>
+
+<p><img src="image07.png" alt="image07" /></p>
+
+<p>ここでは、サンプルとして いくつかのユースケース と それに応じた問合せ構文を記載しています。設定の参考にしてみてください。</p>
+
+<h2 id="1-パブリック状態のオブジェクトストレージを検知する"><strong>(1) パブリック状態のオブジェクト・ストレージを検知する</strong></h2>
+
+<p>・<strong>問合せ構文</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment" | (type='com.oraclecloud.objectstorage.createbucket' or type='com.oraclecloud.objectstorage.updatebucket') and (data.additionalDetails.publicAccessType='ObjectRead' or data.additionalDetails.publicAccessType='ObjectReadWithoutList') and (data.request.action!='GET')
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><strong>“＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment”</strong></p>
+
+    <p>検索対象のコンパートメントと、ログ・グループの指定をしています。
+サブコンパートメントのログを含め検索するために「_Audit_Include_Subcompartment」を指定していますが、含めない場合は「_Audit」を指定します。</p>
+  </li>
+  <li>
+    <p><strong>(type=’[略].objectstorage.createbucket’ or type=’[略].objectstorage.updatebucket’)</strong></p>
+
+    <p>イベント・タイプを「バケットの作成」と「バケットの更新」で設定しています。</p>
+
+    <p>コンソール経由でバケットを作成する際は デフォルトでプライベートの設定になりますが、CLI等を経由した場合には パブリックを指定してバケットを作成することが出来るため、更新時だけでなく、作成も含めます。</p>
+  </li>
+  <li>
+    <p><strong>(data.additionalDetails.publicAccessType=’ObjectRead’ or data.additionalDetails.publicAccessType=’ObjectReadWithoutList’)</strong></p>
+
+    <p>オブジェクト・ストレージの作成・更新における監査ログでは、「data.additionalDetails.publicAccessType」という項目があり、プライベートの場合は「NoPublicAccess」となり、パブリックが設定されている場合は「ObjectRead」または「ObjectReadWithoutList」となるため、or 条件で上記の２つの属性を指定します。</p>
+  </li>
+</ul>
+
+<h2 id="2-特定のブロックボリュームのバックアップが作成されたことを検知する">(2) 特定のブロック・ボリュームのバックアップが作成されたことを検知する</h2>
+
+<p>・<strong>問合せ構文</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment" | (type='com.oraclecloud.blockvolumes.createvolumebackup.begin') and (data.stateChange.current.volumeId='＜対象のブロック・ボリュームのOCID＞') and (data.request.action!='GET') 
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><strong>(type=’com.oraclecloud.blockvolumes.createvolumebackup.begin’)</strong></p>
+
+    <p>イベント・タイプを「ブロック・ボリュームのバックアップの作成」で設定しています。</p>
+  </li>
+  <li>
+    <p><strong>(data.stateChange.current.volumeId=’＜対象のブロック・ボリュームのOCID＞’)</strong></p>
+
+    <p>バックアップが作成されたブロック・ボリュームを 特定のブロック・ボリュームに絞り込むため、「data.stateChange.current.volumeId」にて、OCID を指定しています。</p>
+  </li>
+</ul>
+
+<h2 id="3-ロードバランサが作成されたことを検知する">(3) ロード・バランサが作成されたことを検知する</h2>
+
+<p>※現時点 (2021/10/14) では 基本モードでは イベント・タイプにロード・バランサが表示されないため、検知するためには、拡張モードを使用します。</p>
+
+<p>・<strong>問合せ構文</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment" | (type='com.oraclecloud.OraLB-API.CreateLoadBalancer') and (data.request.action!='GET') 
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><strong>(type=’com.oraclecloud.OraLB-API.CreateLoadBalancer’)</strong></p>
+
+    <p>イベント・タイプを「ロード・バランサの作成」で設定しています。</p>
+  </li>
+</ul>
+
+<h2 id="4-ネットワークロードバランサが作成されたことを検知する">(4) ネットワーク・ロード・バランサが作成されたことを検知する</h2>
+
+<p>※現時点 (2021/10/14) では 基本モードでは イベント・タイプにネットワーク・ロード・バランサが表示されないため、検知するためには、拡張モードを使用します。</p>
+
+<p>・<strong>問合せ構文</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment" | (type='com.oraclecloud.network-load-balancer-api.CreateNetworkLoadBalancer.begin') and (data.request.action!='GET') 
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><strong>(type=’com.oraclecloud.network-load-balancer-api.CreateNetworkLoadBalancer.begin’)</strong></p>
+
+    <p>イベント・タイプを「ネットワーク・ロード・バランサの作成」で設定しています。</p>
+  </li>
+</ul>
+
+<p>このように、どのようなイベント・タイプがあり、イベント・タイプごとにどのような 項目があるかは、それぞれ異なっています。大まかな構成は Oracle Cloud Infrastructure ドキュメント：<a href="https://docs.oracle.com/en-us/iaas/Content/Audit/Reference/logeventreference.htm">監査ログイベントの内容</a> などを参考にできますが、より詳細に知るためには、時には 実際にその操作を行う必要もあるかと思います。</p>
+
+<p>本チュートリアルでも いくつかの例に挙げましたが、その他にも、セキュリティ・リストが更新されたことを検知したり、ブロック・ボリュームのバックアップが作成されたことを検知する等、設定次第で様々な監視・通知が可能です。</p>
+
+<p>用途に応じて、サービス・コネクタ・ハブ、通知サービスを活用して頂ければ幸いです。</p>
+
+<blockquote>
+  <font color="Gold">**補足**</font>
+
+  <p>同様の機能に「イベント・サービス」と「通知サービス」を組み合わせた方法があります。</p>
+
+  <p>イベント・サービスは 現時点 (2021/10/14) では 「分かりやすい書式」に対応していないため、べた書きの JSONデータが通知されるものの、監査ログでは検知することができない、オブジェクト・ストレージ内の「オブジェクト」に関するイベントを契機に通知を行うことが可能です。</p>
+
+  <p>こういったケースにおいては、「イベント・サービス」と「通知サービス」の利用を検討してください。</p>
+</blockquote>
+
+<p>目次に戻る : <a href="https://oracle-japan.github.io/ocitutorials/">チュートリアル : Oracle Cloud Infrastructure を使ってみよう</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-15T11:03:22+09:00">October 15, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E7%9B%A3%E6%9F%BB%28Audit%29%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%9F%E3%83%86%E3%83%8A%E3%83%B3%E3%83%88%E7%9B%A3%E8%A6%96%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fserviceconnecterhub%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fserviceconnecterhub%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fserviceconnecterhub%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/resource-manager/" class="pagination--pager" title="リソース・マネージャを使ってサンプルアプリケーションをデプロイする
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/oce-tutorial/" class="pagination--pager" title="Oracle Content and Experience チュートリアル
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

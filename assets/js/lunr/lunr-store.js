@@ -509,6 +509,12 @@ var store = [{
         "url": "/ocitutorials/database/adb303-datapump/",
         "teaser": "/ocitutorials/database/adb303-xxx/img00x.png"
       },{
+        "title": "304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう",
+        "excerpt":"   Oracle Cloud Infrastructure Database Migration Service (DMS)は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。DMSは内部的にOracle GoldenGateによるレプリケーションを利用しており、移行に伴うアプリケーションのダウンタイムを極小化することが可能です。   Database Migrationのチュートリアル(LiveLabs)は下記に用意がございますので、ご利用ください。   OCI Database Migration Workshop   尚、上記は英語での提供になりますが、必要に応じてブラウザ翻訳をご利用ください。ブラウザ翻訳の利用方法を含めてOracle LiveLabsの使い方はこちら     以上で、この章は終了です。  次の章にお進みください。     ページトップへ戻る   ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb304-database-migration/",
+        "teaser": "/ocitutorials/database/adb304-database-migration/teaser.png"
+      },{
         "title": "401 : OCI GoldenGateによるDBCSからADBへのデータ連携",
         "excerpt":"はじめに Oracle Cloud Infrastructure (OCI) GoldenGateはフルマネージド型のリアルタイムデータ連携サービスとなっています。 OCI GoldenGateサービスは、構成、ワークロード・スケーリング、パッチ適用などの多くの機能を自動化しており、従量課金制で利用することが可能です。そのため時間や場所を選ばずに、低コストでデータの連携、分析ができるようになります。 この章では、OCI GoldenGateの作成とDBCSからADBへのデータ連携の設定について紹介します。 目次 : 1.ソース・データベースの設定 2.ターゲット・データベースの設定 3.OCI GGデプロイメントの作成 4.データベースの登録 5.Extractの作成 6.チェックポイント表の作成 7.Replicatの作成 8.データ連携の確認 前提条件 : 本チュートリアルではDBCS、ADBともにデータベースの作成が完了しており、初期データとしてHRスキーマがそれぞれのデータベースにロードされていることを前提にしています。 各データベースの作成方法やデータロードの方法は下記手順をご確認ください。 DBCSの作成については、「101: Oracle Cloud で Oracle Database を使おう(DBCS)」 をご参照ください。 データ連携用のサンプルデータはHRスキーマを使用しています。DBCSでのHRスキーマ作成方法は、「301: 移行元となるデータベースを作成しよう」 をご参照ください。 ADBの作成については、「101:ADBインスタンスを作成してみよう」 をご参照ください。 ADBの初期データロードについては、「303 : Data Pumpを利用してデータを移行しよう」 をご参照ください。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、DBCSを含めて各ユーザのパスワードはすべて「Welcome#1Welcome#1」とします。 所要時間 : 約60分 1. ソース・データベースの設定...","categories": [],
         "tags": [],
@@ -532,6 +538,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/database/adb502-report/",
         "teaser": null
+      },{
+        "title": "503 : ADBインスタンスの監視設定をしてみよう",
+        "excerpt":"はじめに Autonomous Databaseはデータベースの様々な管理タスクをADB自身、もしくはOracleが行う自律型データベースですが、ユーザーが実行したり、ユーザーがOracleに実行の方法やタイミングの指示を出すタスクもあります。それがデータベースのパフォーマンス監視/アラート監視です。本記事ではADBインスタンスに対する監視設定をいくつかご紹介します。 目次 : 1.技術概要 2.単体インスタンスの監視 3.複数のインスタンスをまとめて監視 おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 なお本記事では、後続の章でCPU使用率が閾値を超えた際の挙動を確認するため、OCPU数は1、auto scalingは無効 で作成しています。 所要時間 : 約40分 1. 技術概要 Autonomous Databaseに対する監視・通知を行うツールはいくつか存在します。環境やユーザーによって、適切なツールを選択します。以下はそれらの監視ツールの比較表です。 本記事ではこの中から、OCIモニタリング、サービス・コンソール、Oracle Enterprise Manager(EM)、Oracle Management Cloud(OMC)による監視設定をご紹介します。 2. 単体インスタンスの監視 単体のADBインスタンスに対しては、OCIモニタリングとサービス・コンソールを使ってメトリック監視/イベント監視をすることができます。 2-1. OCIモニタリングによるメトリック監視 OCIモニタリングでは、OCI上の各種リソースの性能や状態の監視、カスタムのメトリック監視を行うことが可能です。また、アラームで事前定義した条件に合致した際には、管理者に通知を行うことで管理者はタイムリーに適切な対処を行うことができます。 今回は、ADBのCPUの閾値を超えた際に通知が来るよう設定し、その挙動を確認します。 まずはこちらの記事 を参考に、アラームの通知先の作成をします。 次にアラームの定義の作成をします。ハンバーガーメニューのObservability &amp; Management の [アラーム定義] をクリックします。 [アラームの作成] をクリックします。 以下の項目を入力し、[アラームの保存] をクリックします。 アラーム名： CPU_alarm...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb503-monitoring/",
+        "teaser": "/ocitutorials/database/adb503-monitoring/monitoring_teaser.png"
       },{
         "title": "506: サポートサービスへの問い合わせ(Service Requestの起票)",
         "excerpt":"はじめに Oracle Cloud 製品をご利用のお客様は、ポータルサイト「My Oracle Support (Cloud Support)」 を介して、Oracle製品に関するナレッジの検索や、製品仕様の確認、不具合に関するお問い合わせを行っていただけます。 本ページでは、Autonomous Databaseを例に、そういった各種お問い合わせのためのサービス・リクエスト（Service Request ：SR）の作成フローをご紹介します。 尚、実際の利用に際しては本ページ後半の参考資料に記載しております、弊社サポート部門からのガイドをご確認いただくようお願いいたします。 Oracle Cloudでは通常契約の他に無償でお試しいただけるFree Tierを用意しています。Free Tierには期間/利用クレジットが限定される「30日間無償トライアル」とAlways Freeリソースを対象とした「常時無償サービス」が含まれますが、「常時無償サービス」のみご利用の場合はOracle Supportの対象にならず、問い合わせを上げることはできません。詳細はOracle Cloud Free Tierに関するFAQにて “ Oracle Cloud Free Tierにはサービス・レベル契約（SLA）とテクニカル・サポートが含まれていますか? “ をご覧ください。 2021年初頭のサービス・アップデートにより、OCIコンソール画面からもSRを作成、閲覧、更新ができるようになりました。OCIコンソール画面からのSR起票については別の文書でご案内する予定です。本ページでは「My Oracle Support (Cloud Support)」を利用したSR起票について説明します。 目次 1.Cloud Supportのアカウントを用意する 2.問い合わせ対象のAutonomous Databaseの情報を確認する Domain name/Cloud Account nameの確認 Data Center Location、Database Name、Database OCID、Tenancy OCIDの確認...","categories": [],
@@ -718,6 +730,12 @@ var store = [{
         "tags": ["intermediate","resource-manager"],
         "url": "/ocitutorials/intermediates/resource-manager/",
         "teaser": "/ocitutorials/intermediates/resource-manager/000.png"
+      },{
+        "title": "監査(Audit)ログを使用したテナント監視",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル **監査 (Audit) **サービス とは、テナンシ内のアクティビティを、ログとして自動的に記録してくれるサービスです。具体的には、Oracle Cloud Infrastructureコンソール、コマンドライン・インタフェース(CLI)、ソフトウェア開発キット(SDK)、ユーザー独自のクライアント、または 他のOracle Cloud Infrastructureサービスによって行われるAPIコール が記録されます。 監査ログは そのままではただ蓄積されるだけですが、サービス間連携を担う「サービス・コネクタ・ハブ」を使用し、「通知」サービスと組み合わせることで、「特定の操作が行われた場合に検知してメールで通知させる」といった応用が可能です。 この章では、監査ログを サービス・コネクタ・ハブ、および 通知サービス と連携させ、テナンシ内の特定コンパートメントで「バケットが作成された場合に通知する」という設定を行っていきたいと思います。 巻末にはその他の監視内容についても、いくつかのサンプルを記載していますので、参考にしてください。 所要時間 : 約20分 前提条件 : チュートリアル : モニタリング機能でOCIのリソースを監視する の「4. アラームの通知先の作成」を完了し、Eメールを受信可能な トピック 及び サブスクリプション が 登録済みであること。 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。 1. サービス・コネクタ・ハブの作成 監査サービスは、テナンシ開設時にデフォルトで有効化されているため、特に事前準備は必要ありません。 まずは、サービス・コネクタ・ハブから作成していきましょう。 ナビゲーション・メニュー（...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/intermediates/serviceconnecterhub/",
+        "teaser": "/ocitutorials/intermediates/serviceconnecterhub/image01.png"
       },{
         "title": "Oracle Content and Experience チュートリアル",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
