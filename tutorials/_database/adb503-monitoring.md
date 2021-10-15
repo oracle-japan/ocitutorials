@@ -4,8 +4,8 @@ excerpt: "データベースの運用にかかせない監視・通知設定。A
 order: "3_503"
 layout: single
 header:
-  teaser: "/database/adb503-monitoring/monitoring_teaser.jpg"
-  overlay_image: "/database/adb503-monitoring/monitoring_teaser.jpg"
+  teaser: "/database/adb503-monitoring/monitoring_teaser.png"
+  overlay_image: "/database/adb503-monitoring/monitoring_teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
