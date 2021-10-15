@@ -22,11 +22,15 @@ toc: true
 
 # 2. OCI Data Flow チュートリアル
 
+本ハンズオンは、OCI Data Flow の基本的な操作方法などをステップバイステップで学習することを目的としています。
+
 ## 初級編
 
 - **[OCI Data Flow ハンズオン](/ocitutorials/datascience/dataflow-for-beginner/)** [Berlin Airbnb データセット](https://www.kaggle.com/brittabettendorf/berlin-airbnb-data)を用いて、OCI Data Flow における基本的な操作方法を学習します。
 
 # 3. Oracle GoldenGate Stream Analytics チュートリアル
+
+本ハンズオンは、Oracle GoldenGate Stream Analytics の基本的な操作などをステップバイステップで学習することを目的としています。
 
 ## 初級編
 
