@@ -17,7 +17,7 @@ lastmod: "2021-09-17"
 
 # ハンズオンの全体像
 
-本ハンズオンは、最終的に[Berlin Airbnb データセット](https://www.kaggle.com/brittabettendorf/berlin-airbnb-data)を用いて最適な取引物件を予測する事を行いたいと思います。そのために OCI Data Flow を用いて、以下のことを学習します。
+本ハンズオンは、[Berlin Airbnb データセット](https://www.kaggle.com/brittabettendorf/berlin-airbnb-data)を用いて最適な取引物件を予測する事を行いたいと思います。そのために OCI Data Flow を用いて、以下のことを学習します。
 
 1. Java を使用した ETL
 2. SparkSQL によるデータの簡易的なプロファイリング
@@ -29,7 +29,19 @@ lastmod: "2021-09-17"
 
 # 0. 事前準備
 
-OCI Data Flow を使用するための Object Storage の作成やポリシーの設定を行います。
+OCI Data Flow を使用するための Object Storage の作成やポリシーの設定を行います。また、Data Flow は Object Storage へのアクセスに [Hadoop Distributed File System(HDFS) コネクタ](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/hdfsconnector.htm) を使用してアクセスしますが、その際の URL は以下の形式に従う必要があります。
+
+`oci://<バケット名>@<ネームスペース>/<オブジェクト名>`
+
+ネームスペースは、OCI 全体でテナント毎に一意に割り振られており、コンソール画面右上の人型アイコンから**テナンシ: xxxxxxx** を押して確認します。
+
+![image22](image22.png)
+
+テナンシ詳細画面のテナンシ詳細部でネームスペースを確認することができます。(通常は、`nrlhux6vphsp` のようなランダムな文字列です)
+
+![image23](image23.png)
+
+確認したネームスペースは以降で使用するためメモ帳などに控えておいてください。
 
 ## 0-1. Object Storage の作成
 
@@ -37,6 +49,50 @@ Data Flow でアプリケーションを実行する前に、以下の 2 つの�
 
 - **dataflow-logs**: Data Flow がアプリケーションの実行毎にログ(標準出力と標準エラー出力の両方)を格納するためのバケット
 - **dataflow-warehouse**: SparkSQL アプリケーションのデータウェアハウス用のバケット
+
+また、それとは別に本ハンズオン用に
+
+- **dataflow-tutorial-result**: ETL 処理で変換したファイルを格納するためのバケット
+
+を作成します。
+
+### 0-1-1. dataflow-logs の作成
+
+コンソール左上のハンバーガーメニューから**ストレージ** > **バケット**と選択します。
+
+![image24](image24.png)
+
+**バケットの作成**を押し、以下のように入力してバケットを作成します。
+
+- バケット名: dataflow-logs
+- デフォルト・ストレージ層: 標準
+- 暗号化: Oracle 管理キーを使用した暗号化
+
+![image25](image25.png)
+
+### 0-1-2. dataflow-warehouse の作成
+
+**バケットの作成**を押し、以下のように入力してバケットを作成します。
+
+- バケット名: dataflow-warehouse
+- デフォルト・ストレージ層: 標準
+- 暗号化: Oracle 管理キーを使用した暗号化
+
+![image26](image26.png)
+
+### 0-1-3. dataflow-tutorial-result の作成
+
+**バケットの作成**を押し、以下のように入力してバケットを作成します。
+
+- バケット名: dataflow-tutorial-result
+- デフォルト・ストレージ層: 標準
+- 暗号化: Oracle 管理キーを使用した暗号化
+
+![image27](image27.png)
+
+[0-1-1. dataflow-logs の作成](#0-1-1-dataflow-logs-の作成) ~ [0-1-3. dataflow-tutorial-result の作成](#0-1-3-dataflow-tutorial-result-の作成)が完了した段階で以下のようになっていれば当ハンズオンにおける Object Storage のセットアップは完了です。
+
+![image28](image28.png)
 
 ## 0-2. ポリシーの設定
 
@@ -68,25 +124,11 @@ Allow group <your-group> to manage objects in compartment <your-compartment> whe
 
 # 1. Java を使用した ETL
 
-本ハンズオンでは、Creative Commons CC0 1.0 Universal (CC0 1.0)の「Public Domain Dedication」ライセンスに基づいて Kaggle Web サイトからダウンロードされた [Berlin Airbnb データセット](https://www.kaggle.com/brittabettendorf/berlin-airbnb-data)のうち、一部(`listings_summary.csv`)を使用します。拡張子を見れば分かると思いますが、データは CSV フォーマットで提供されます。最初のステップでは、このデータを Parquet[^1]に変換し、以降の処理のために Object Storage に変換後のファイルを格納することを行いたいと思います。
+本ハンズオンでは、Creative Commons CC0 1.0 Universal (CC0 1.0)の「Public Domain Dedication」ライセンスに基づいて Kaggle Web サイトからダウンロードされた [Berlin Airbnb データセット](https://www.kaggle.com/brittabettendorf/berlin-airbnb-data)のうち、一部(`listings_summary.csv`)を使用します。拡張子を見れば分かると思いますが、データは CSV フォーマットで提供されます。最初のステップでは、このデータを Parquet[^1]に変換し、以降の処理のために Object Storage(`dataflow-tutorial-result`) に変換後のファイルを格納することを行いたいと思います。
 
 [^1]: Hadoop のエコシステムで使用可能なファイルフォーマットのこと
 
-## 1-1. 変換処理後のファイルを格納する Object Storage を作成する
-
-はじめに、ETL 処理後のファイルを格納するための Object Storage を作成します。OCI コンソール画面左上のハンバーガーメニューを展開し、**ストレージ** > **バケット**と選択します。
-
-![image05](image05.png)
-
-**バケットの作成**を押し、以下のように入力してバケットを作成します。
-
-- バケット名: dataflow-tutorial-result
-
-![image06.png](image06.png)
-
-※バケット名以外は、デフォルトのまま作成してください。
-
-## 1-2. Data Flow のアプリケーションを作成する
+## 1-1. Data Flow のアプリケーションを作成する
 
 OCI コンソール画面左上のハンバーガーメニューを展開し、**アナリティクスと AI** > **データ・フロー**と選択します。
 
@@ -116,11 +158,15 @@ OCI コンソール画面左上のハンバーガーメニューを展開し、*
   - 引数: `${input} ${output}`
   - Application Log Location: oci://dataflow-logs@\<namespace\>
 
+※\<namespace\>は、[0. 事前準備](#0-事前準備)で確認した物を入力してください。
+
 ![image08](image08.png)
 
 ![image09](image09.png)
 
-## 1-3. Java アプリケーションを実行する
+**作成**を押し、Spark アプリケーションを作成します。
+
+## 1-2. Java アプリケーションを実行する
 
 作成したアプリケーションの詳細画面から**実行**ボタンを押し、以下のように実行時引数を入力し、実行します。
 
@@ -136,13 +182,27 @@ output:
 oci://dataflow-tutorial-result@\<namespace\>/optimized_listings
 ```
 
-実行の詳細画面から **Spark UI** のボタンを押すと、Spark UI をロードし、進行状況をモニターすることができます。
+※\<namespace\>は、[0. 事前準備](#0-事前準備)で確認した物を入力してください。
+
+![image29](image29.png)
+
+実行すると、実行画面でステータスが**受け入れ済み**なアプリケーションを確認することができます。
+
+![image30.png](image30.png)
+
+## 1-3. Spark UI で進行状況をモニターする
+
+ステータスが**進行中**もしくは**成功**である実行の詳細画面から **Spark UI** のボタンを押すと、Spark UI をロードし、進行状況をモニターすることができます。
 
 ![image10](image10.png)
 
+ステータスが**成功**となると、Spark UI から処理にかかった時間などを確認することができます。
+
 ![image11](image11.png)
 
-最後に、結果を格納するための Object Storage(dataflow-tutorial-result) に Parquet ファイルが格納されていることを確認します。
+![image31](image31.png)
+
+最後に結果を格納するための Object Storage(dataflow-tutorial-result) に Parquet ファイルが格納されていることを確認します。
 
 ![image12](image12.png)
 
@@ -152,7 +212,7 @@ oci://dataflow-tutorial-result@\<namespace\>/optimized_listings
 
 1-1 ~ 1-3 までに使用した JAR ファイルは[こちら](https://objectstorage.ap-tokyo-1.oraclecloud.com/n/bigdatadatasciencelarge/b/oow_2019_dataflow_lab/o/usercontent/oow-lab-2019-java-etl-1.0-SNAPSHOT.jar)で公開されています。
 
-JAR ファイルに含まれる `Convert.class`を逆コンパイルすると、以下のソースコードを得ることができます。
+実行されているアプリケーションのコードは以下のようになっています。
 
 ```java
 package convert;
@@ -221,6 +281,9 @@ OCI コンソール画面左上のハンバーガーメニューを展開し、*
   - パラメータ・オプション
     - 名前: location
     - 値: oci://dataflow-tutorial-result@\<namespace\>/optimized_listings
+  - Application Log Location: oci://dataflow-logs@\<namespace\>
+
+※\<namespace\>は、[0. 事前準備](#0-事前準備)で確認した物を入力してください。
 
 ![image14](image14.png)
 
@@ -230,14 +293,38 @@ OCI コンソール画面左上のハンバーガーメニューを展開し、*
 
 ![image15](image15.png)
 
-実行の完了後、Object Storage の`dataflow-logs`というバケットに標準出力と標準エラー出力が格納されているので、標準出力の方を確認します。オブジェクトに対して、事前承認リクエストを作成し、発行された URL をどこかに控えておきます。
+実行の完了後、ステータスが**成功**となっていることを確認し、**Application Configuration** 内の **Run Information** の**リクエスト ID** をコピーし、メモ帳などに控えておきます。
 
-![image17](image17.png)
+![image33](image33.png)
 
-事前承認リクエストで発行された URL からログをダウンロードします。(以下は期限付きの URL のため実行してもログファイルを得ることはできません)
+Object Storage の`dataflow-logs`というバケット内のリクエスト ID 紐づいたオブジェクトに標準出力と標準エラー出力が格納されているので、標準出力 (`spark-stdout.log.gz`) の方をダウンロードします。
+
+![image34](image34.png)
+
+ダウンロードしたファイルを、[7-Zip](https://sevenzip.osdn.jp/)等を用いて解凍し、中に含まれているログファイルをメモ帳などを用いて開き、以下の内容と一致していれば、[2. SparkSQL によるデータの簡易的なプロファイリング](#2-sparksql-によるデータの簡易的なプロファイリング)は完了です！
+
+![image46](image46.png)
+
+また、自分の PC に解凍ツールが含まれていない場合は、Cloud Shell を用いて以下の手順でも内容の確認が可能です。まずは、`spark-stdout.log.gz` の事前認証済みリクエストを作成します。
+
+![image35](image35.png)
+
+以下のように選択して、事前認証済みリクエストを作成します。
+
+![image36](image36.png)
+
+発行された事前認証済みリクエスト URL をメモ帳などにコピーしておきます。(再度表示されないため、誤って閉じてしまった場合は再度事前認証済みリクエストを発行してください)
+
+![image37](image37.png)
+
+次に Cloud Shell を開きます。
+
+![image38](image38.png)
+
+事前承認リクエストで発行された URL からログをホームディレクトリなどにダウンロードします。(以下は期限付きの URL のため実行してもログファイルを得ることはできません)
 
 ```bash
-wget https://objectstorage.ap-tokyo-1.oraclecloud.com/p/2_IF8stXkRIKApud-Fm2FXj6JvtnlNmPFyGIffg70eQgP7Kylkw3JnHtJaTyax1j/n/orasejapan/b/dataflow-logs/o/cside99e8d0849bd962d35890bbbd4f5/59c4a04baf0e4f36b387a74c991d7a81/spark_stdout.log.gz
+wget https://objectstorage.ap-osaka-1.oraclecloud.com/p/baRlV5B9hjSEZCVtM0rpjb0uNxJgkSpmXAUNfG-_sl8kREObXFpfue3_XBMqiskC/n/orasejapan/b/dataflow-logs/o/csidfc9183834e8d9053326a4f6fa44a/66140cd828f842e8b92ab857347662d6/spark_stdout.log.gz
 ```
 
 解凍します。
@@ -246,9 +333,15 @@ wget https://objectstorage.ap-tokyo-1.oraclecloud.com/p/2_IF8stXkRIKApud-Fm2FXj6
 gzip -d spark_stdout.log.gz
 ```
 
-ログの内容を確認します。以下の内容と一致していれば、[2. SparkSQL によるデータの簡易的なプロファイリング](#2-sparksql-によるデータの簡易的なプロファイリング)は完了です！
+中身を確認します。
 
-```txt
+```bash
+less spark_stdout.log.gz
+```
+
+以下と内容が一致していることを確認します。
+
+```bash
 Tempelhof - Schoneberg  1560    0.0     6000.0  96.5724358974359
 Marzahn - Hellersdorf   141     0.0     220.0   56.50354609929078
 Charlottenburg-Wilm.    1592    10.0    9000.0  114.27072864321607
@@ -351,8 +444,11 @@ OCI コンソール画面左上のハンバーガーメニューを展開し、*
   ```
   - 引数: ${location}
   - デフォルト値: oci://dataflow-tutorials@\<namespace\>/optimized_listings
+  - Application Log Location: oci://dataflow-logs@\<namespace\>
 
-![image19](image19.png)
+※\<namespace\>は、[0. 事前準備](#0-事前準備)で確認した物を入力してください。
+
+![image39](image39.png)
 
 ## 3-2. PySpark アプリケーションを実行する
 
@@ -360,28 +456,57 @@ OCI コンソール画面左上のハンバーガーメニューを展開し、*
 
 ![image20](image20.png)
 
-実行の完了後、Object Storage の `dataflow-logs` というバケットに標準出力と標準エラー出力が格納されているので、標準出力の方を確認します。オブジェクトに対して、事前承認リクエストを作成し、発行された URL をどこかに控えておきます。
+実行の完了後、ステータスが成功となっていることを確認し、**Application Configuration** 内の **Run Information** の**リクエスト ID** をコピーし、メモ帳などに控えておきます。
 
-![image21](image21.png)
+![image40](image40.png)
 
-事前承認リクエストで発行された URL からログをダウンロードします。(以下は期限付きの URL のため実行してもログファイルを得ることはできません)
+Object Storage の `dataflow-logs` というバケット内のリクエスト ID 紐づいたオブジェクトに標準出力と標準エラー出力が格納されているので、標準出力 (`spark-stdout.log.gz`) の方をダウンロードします。
+
+![image41](image41.png)
+
+ダウンロードしたファイルを、[7-Zip](https://sevenzip.osdn.jp/) 等を用いて解凍し、中に含まれているログファイルをメモ帳などを用いて開き、以下の内容と一致していれば、[3. PySpark を使用した機械学習](#3-pyspark-を使用した機械学習)は完了です！
+
+![image42](image42.png)
+
+この結果から、面積が 4639 平方フィートで定価\$35.00 に比べて、予測価格\$313.70 のリスト ID: 690578 が最適な取引であることが確認できます。
+
+また、自分の PC に解凍ツールが含まれていない場合は、Cloud Shell を用いて以下の手順でも内容の確認が可能です。まずは、`spark-stdout.log.gz` の事前認証済みリクエストを作成します。
+
+![image43](image43.png)
+
+以下のように選択して、事前認証済みリクエストを作成します。
+
+![image44](image44.png)
+
+発行された事前認証済みリクエスト URL をメモ帳などにコピーしておきます。(再度表示されないため、誤って閉じてしまった場合は再度事前認証済みリクエストを発行してください)
+
+![image45](image45.png)
+
+次に Cloud Shell を開きます。
+
+![image38](image38.png)
+
+事前承認リクエストで発行された URL からログをホームディレクトリなどにダウンロードします。(以下は期限付きの URL のため実行してもログファイルを得ることはできません)
 
 ```bash
-wget https://objectstorage.ap-tokyo-1.oraclecloud.com/p/xAci2jouO-fmndxsQD3iZW200EsP5MBOEf1Aev7gBdbpl7M1CZL2Xru9t2gU8pPJ/n/orasejapan/b/dataflow-logs/o/cside99e8d0849bd962d35890bbbd4f5/96083c121d0e4f149da075c504a01aab/spark_stdout.log.gz
+wget https://objectstorage.ap-osaka-1.oraclecloud.com/p/pE6Lxy4t5IoWp4V9vvqclympB4mIe_PfQQzD4mDGBz0MNeHp41WtEMoA6dluKZHU/n/orasejapan/b/dataflow-logs/o/csiddf35239849768cc96c233f4babc8/7eff978ffb5e49ffb159addeabe5c643/spark_stdout.log.gz
 ```
 
-解凍します。
+解凍します。(ファイル上書きの警告が出た場合は、そのまま `y` と入力します)
 
 ```bash
 gzip -d spark_stdout.log.gz
 ```
 
-ログの内容を確認します。以下の内容と一致していれば、[3. PySpark を使用した機械学習](#3-pyspark-を使用した機械学習)は完了です！(中身はバイナリです)
+中身を確認します。(Cloud Shell を用いてファイルの中身を確認した場合は、ファイルの先頭に null 文字(^@)が表示されることがあります)
 
-```txt
-^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@
-^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@
-^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@+--------+--------------------+--------+-----+------------------+-------------------+
+```bash
+less spark_stdout.log.gz
+```
+
+以下と内容が一致していることを確認します。
+
+```bash
 |      id|                name|features|price|        prediction|              value|
 +--------+--------------------+--------+-----+------------------+-------------------+
 |  690578|  Quiet Central Cosy|[4639.0]| 35.0|313.70263597898196|-278.70263597898196|
@@ -391,24 +516,7 @@ gzip -d spark_stdout.log.gz
 |28706284|Catsitting in pre...|[1023.0]| 30.0| 98.99972564615713| -68.99972564615713|
 | 1275721|Sonniger Altbau B...|[1539.0]| 65.0|129.63764094807573| -64.63764094807573|
 | 1353286|Huge quiet conven...|[1399.0]| 60.0| 121.3250282692606|  -61.3250282692606|
-|  880130|Berlin is a nice ...|[1076.0]| 44.0|102.14664330313714| -58.14664330313714|
-|  494492|Amazing Jewel clo...|[1076.0]| 45.0|102.14664330313714| -57.14664330313714|
-|  658491|Lovely loft right...| [969.0]| 39.0| 95.79343218432844| -56.79343218432844|
-|   37004|WONDERFUL ROOM fo...| [646.0]| 25.0| 76.61504721820498| -51.61504721820498|
-|  681132|City flat for 2 p...| [915.0]| 44.0| 92.58713872249976| -48.58713872249976|
-|  501735|Beautiful 3 room ...| [807.0]| 39.0| 86.17455179884237| -47.17455179884237|
-| 1325593|The green oasis i...| [538.0]| 25.0|  70.2024602945476|-45.202460294547606|
-| 2255195|COSY KREUZKOLLN/A...| [807.0]| 41.0| 86.17455179884237| -45.17455179884237|
-| 1018784|Large bright 2Bd ...| [915.0]| 48.0| 92.58713872249976| -44.58713872249976|
-|  617861|Cool Berlin Kreuz...| [861.0]| 45.0| 89.38084526067107|-44.380845260671066|
-|   44083|Riverside View Ap...| [807.0]| 42.0| 86.17455179884237| -44.17455179884237|
-|  245991|World stroller's ...| [484.0]| 23.0| 66.99616683271891| -43.99616683271891|
-|  298056|3bedrooms in Kreu...| [753.0]| 40.0| 82.96825833701368| -42.96825833701368|
-+--------+--------------------+--------+-----+------------------+-------------------+
-only showing top 20 rows
 ```
-
-この結果から、面積が 4639 平方フィートで定価\$35.00 に比べて、予測価格\$313.70 のリスト ID: 690578 が最適な取引であることが確認できます。
 
 ## 3-3. (参考) 実行された Python のスクリプトについて
 
