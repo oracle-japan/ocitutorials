@@ -918,7 +918,7 @@ cd code-at-customer-handson/k8s
 先ほどビルドしたコンテナアプリケーションをデプロイするためのManifestが`app`ディレクトリにあるので、配下のファイルを全てデプロイします。
 
 ```sh
-cd app
+cd app/plain
 ```
 
 ```sh
@@ -1727,6 +1727,10 @@ OCIでは、アプリケーションの可視性および機械学習ベース�
 
 まずは、OCI APMを利用するためのポリシーを作成してきます。  
 
+**本手順について**  
+この手順6-1は、トライアル環境や管理者権限をお持ちの環境でハンズオンを実施されている皆様には不要な手順ですので、スキップしていただき、手順6-2から実施してください。
+{: .notice--info}
+
 OCIコンソールのハンバーガーメニューを開き、「アイデンティティとセキュリティ」から「ポリシー」を選択します。  
 
 ![](6-001.png)
@@ -1805,7 +1809,7 @@ cd ~
 ```
 
 ```sh
-cd code-at-customer-handson/k8s/app
+cd code-at-customer-handson/k8s/app/for-oci-apm
 ```
 
 フロントエンドアプリケーションのManifestをvimで開きます。
@@ -1836,21 +1840,18 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm
+        image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm
         ports:
         - containerPort: 8082
-      # env:
-      #   - name: tracing.data-upload-endpoint
-      #     value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
-      #   - name: tracing.private-data-key
-      #     value: XXXXXXXXXXXXXXXXXXXXXXXX
+        env:
+        - name: tracing.data-upload-endpoint
+          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        - name: tracing.private-data-key
+          value: XXXXXXXXXXXXXXXXXXXXXXXX
 ~~~
 ```
 
-22行目(一つ目の`image`フィールド)をコメントアウトし、23行目(二つ目の`image`フィールド)のコメントアウトを外します。
-また、26行目から30行目(`env`フィールド)のコメントアウトも外します。  
-最後に`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
+25行目から29行目の`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
 
 以下のようになります。
 
@@ -1870,11 +1871,10 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app
         image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm
         ports:
         - containerPort: 8082
-      env:
+        env:
         - name: tracing.data-upload-endpoint
           value: <ご自身のAPMドメインのエンドポイント>
         - name: tracing.private-data-key
@@ -1911,15 +1911,14 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm
         ports:
         - containerPort: 8081
-        # env:
-        # - name: tracing.data-upload-endpoint
-        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
-        # - name: tracing.private-data-key
-        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
+        env:
+        - name: tracing.data-upload-endpoint
+          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        - name: tracing.private-data-key
+          value: XXXXXXXXXXXXXXXXXXXXXXXX
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1942,15 +1941,14 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm
         ports:
         - containerPort: 8081
-        # env:
-        # - name: tracing.data-upload-endpoint
-        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
-        # - name: tracing.private-data-key
-        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
+        env:
+        - name: tracing.data-upload-endpoint
+          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        - name: tracing.private-data-key
+          value: XXXXXXXXXXXXXXXXXXXXXXXX
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1973,27 +1971,17 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm
         ports:
         - containerPort: 8081
-        # env:
-        # - name: tracing.data-upload-endpoint
-        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
-        # - name: tracing.private-data-key
-        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
-```
+        env:
+        - name: tracing.data-upload-endpoint
+          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        - name: tracing.private-data-key
+          value: XXXXXXXXXXXXXXXXXXXXXXXX
+```  
 
-22行目(一つ目の`image`フィールド)をコメントアウトし、23行目(二つ目の`image`フィールド)のコメントアウトを外します。
-また、26行目から30行目(`env`フィールド)のコメントアウトも外します。  
-
-53行目(一つ目の`image`フィールド)をコメントアウトし、54行目(二つ目の`image`フィールド)のコメントアウトを外します。
-また、57行目から61行目(`env`フィールド)のコメントアウトも外します。  
-
-84行目(一つ目の`image`フィールド)をコメントアウトし、85行目(二つ目の`image`フィールド)のコメントアウトを外します。
-また、88行目から92行目(`env`フィールド)のコメントアウトも外します。  
-
-最後に3箇所ぞれぞれの`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
+25行目から29行目、55行目から59行目、85行目から89行目の`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーにそれぞれ差し替えます。  
 
 以下のようになります。
 
@@ -2019,7 +2007,6 @@ spec:
     spec:
       containers:
       - name: backend-app
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1
         image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm
         ports:
         - containerPort: 8081
@@ -2050,7 +2037,6 @@ spec:
     spec:
       containers:
       - name: backend-app
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2
         image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm
         ports:
         - containerPort: 8081
@@ -2081,7 +2067,6 @@ spec:
     spec:
       containers:
       - name: backend-app
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3
         image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm
         ports:
         - containerPort: 8081
@@ -2120,21 +2105,17 @@ spec:
     spec:
       containers:
       - name: datasource-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm
+        image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm
         ports:
         - containerPort: 8080
-        # env:
-        # - name: tracing.data-upload-endpoint
-        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
-        # - name: tracing.private-data-key
-        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
-```
+        env:
+        - name: tracing.data-upload-endpoint
+          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        - name: tracing.private-data-key
+          value: XXXXXXXXXXXXXXXXXXXXXXXX
+``` 
 
-22行目(一つ目の`image`フィールド)をコメントアウトし、23行目(二つ目の`image`フィールド)のコメントアウトを外します。
-また、26行目から30行目(`env`フィールド)のコメントアウトも外します。  
-
-最後に3箇所ぞれぞれの`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
+25行目から29行目の`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
 
 以下のようになります。
 
@@ -2160,7 +2141,6 @@ spec:
     spec:
       containers:
       - name: datasource-app
-        # image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app
         image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm
         ports:
         - containerPort: 8080
@@ -2173,12 +2153,13 @@ spec:
 
 これでサンプルアプリケーションのManifest設定の変更は完了です。  
 
-先ほど`image`フィールドの変更で当初とは別のコンテナイメージを定義していただきましたが、OCI APMを利用するにはアプリケーション側にトレーシングの設定を入れる必要があります。  
+ここで利用するコンテナアプリケーションは、OCI APMを利用するためにアプリケーション側にトレーシングの設定を入れています。  
 今回、OCI APMで利用しているアプリケーションは、code-at-customer-handsonディレクトリ配下の`_apm`が付与されているプロジェクトになります。
 
 {% capture notice %}**HelidonアプリケーションでのOCI APMの利用**  
 今回はHelidonを利用したアプリケーションですが、[HelidonにはOCI APM専用のエージェント](https://docs.oracle.com/ja-jp/iaas/application-performance-monitoring/doc/use-apm-tracer-helidon.html)が用意されています。  
-基本的には、`pom.xml`に以下の設定を追加するだけでOKです。(アプリケーション側の変更は必要ありません)
+基本的には、`pom.xml`に以下の依存関係を追加するだけで利用可能です。(アプリケーション側の変更は必要ありません)  
+また、必要に応じて`src/main/resources/META-INF/microprofile-config.properties`に設定値を追加します。  
 
   ```xml
         <dependency>
@@ -2200,7 +2181,17 @@ spec:
             <url>https://objectstorage.us-ashburn-1.oraclecloud.com/n/idhph4hmky92/b/prod-agent-binaries/o</url>
         </repository>
     </repositories>
-  ```{% endcapture %}
+  ```
+
+  今回、`microprofile-config.properties`については以下のように設定しています。(フロントエンドアプリケーションの場合)
+
+  ```yaml
+  # OCI APM関連
+  tracing.enabled=true
+  tracing.service=oke-helidon-demo-frontend-service
+  tracing.name="frontend-helidon-service"
+  ```
+  {% endcapture %}
 <div class="notice--info">
   {{ notice | markdownify }}
 </div>
@@ -2221,7 +2212,7 @@ cd ~
 ```
 
 ```sh
-cd code-at-customer-handson/k8s/app
+cd code-at-customer-handson/k8s/app/plain
 ```
 
 ```sh
@@ -2280,7 +2271,7 @@ cd ~
 ```
 
 ```sh
-cd code-at-customer-handson/k8s/app
+cd code-at-customer-handson/k8s/app/for-oci-apm
 ```
 
 ```sh
