@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-10-19T10:40:31+09:00">
+  <meta property="article:published_time" content="2021-10-19T16:10:52+09:00">
 
 
 
@@ -299,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。">
-    <meta itemprop="datePublished" content="2021-10-19T10:40:31+09:00">
+    <meta itemprop="datePublished" content="2021-10-19T16:10:52+09:00">
     
 
     <div class="page__inner-wrap">
@@ -1188,7 +1188,7 @@ code-at-customer/datasource-app      latest     3a542bedb13a   43 seconds ago   
 
 <p>先ほどビルドしたコンテナアプリケーションをデプロイするためのManifestが<code class="language-plaintext highlighter-rouge">app</code>ディレクトリにあるので、配下のファイルを全てデプロイします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>app
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>app/plain
 </code></pre></div></div>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="nb">.</span>
@@ -2022,6 +2022,9 @@ OCIでは、アプリケーションの可視性および機械学習ベース�
 
 <p>まずは、OCI APMを利用するためのポリシーを作成してきます。</p>
 
+<p class="notice--info"><strong>本手順について</strong><br />
+この手順6-1は、トライアル環境や管理者権限をお持ちの環境でハンズオンを実施されている皆様には不要な手順ですので、スキップしていただき、手順6-2から実施してください。</p>
+
 <p>OCIコンソールのハンバーガーメニューを開き、「アイデンティティとセキュリティ」から「ポリシー」を選択します。</p>
 
 <p><img src="6-001.png" alt="" /></p>
@@ -2131,7 +2134,7 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
 </code></pre></div></div>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/app
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/app/for-oci-apm
 </code></pre></div></div>
 
 <p>フロントエンドアプリケーションのManifestをvimで開きます。</p>
@@ -2160,21 +2163,18 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">frontend-app</span>
-        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/frontend-app</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8082</span>
-      <span class="c1"># env:</span>
-      <span class="c1">#   - name: tracing.data-upload-endpoint</span>
-      <span class="c1">#     value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
-      <span class="c1">#   - name: tracing.private-data-key</span>
-      <span class="c1">#     value: XXXXXXXXXXXXXXXXXXXXXXXX</span>
+        <span class="na">env</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.data-upload-endpoint</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.private-data-key</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">XXXXXXXXXXXXXXXXXXXXXXXX</span>
 <span class="s">~~~</span>
 </code></pre></div></div>
 
-<p>22行目(一つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)をコメントアウトし、23行目(二つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)のコメントアウトを外します。
-また、26行目から30行目(<code class="language-plaintext highlighter-rouge">env</code>フィールド)のコメントアウトも外します。<br />
-最後に<code class="language-plaintext highlighter-rouge">env</code>フィールドの<code class="language-plaintext highlighter-rouge">tracing.data-upload-endpoint</code>、<code class="language-plaintext highlighter-rouge">tracing.private-data-key</code>の<code class="language-plaintext highlighter-rouge">value</code>を<a href="#6-2-apmドメインの作成">6-2 APMドメインの作成</a>で記録したAPMドメインとプライベート・データキーに差し替えます。</p>
+<p>25行目から29行目の<code class="language-plaintext highlighter-rouge">env</code>フィールドの<code class="language-plaintext highlighter-rouge">tracing.data-upload-endpoint</code>、<code class="language-plaintext highlighter-rouge">tracing.private-data-key</code>の<code class="language-plaintext highlighter-rouge">value</code>を<a href="#6-2-apmドメインの作成">6-2 APMドメインの作成</a>で記録したAPMドメインとプライベート・データキーに差し替えます。</p>
 
 <p>以下のようになります。</p>
 
@@ -2193,11 +2193,10 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">frontend-app</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app</span>
         <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8082</span>
-      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">env</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.data-upload-endpoint</span>
           <span class="na">value</span><span class="pi">:</span> <span class="s">&lt;ご自身のAPMドメインのエンドポイント&gt;</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.private-data-key</span>
@@ -2232,15 +2231,14 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">backend-app</span>
-        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8081</span>
-        <span class="c1"># env:</span>
-        <span class="c1"># - name: tracing.data-upload-endpoint</span>
-        <span class="c1">#   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
-        <span class="c1"># - name: tracing.private-data-key</span>
-        <span class="c1">#   value: XXXXXXXXXXXXXXXXXXXXXXXX</span>
+        <span class="na">env</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.data-upload-endpoint</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.private-data-key</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">XXXXXXXXXXXXXXXXXXXXXXXX</span>
 <span class="nn">---</span>
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
@@ -2263,15 +2261,14 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">backend-app</span>
-        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8081</span>
-        <span class="c1"># env:</span>
-        <span class="c1"># - name: tracing.data-upload-endpoint</span>
-        <span class="c1">#   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
-        <span class="c1"># - name: tracing.private-data-key</span>
-        <span class="c1">#   value: XXXXXXXXXXXXXXXXXXXXXXXX</span>
+        <span class="na">env</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.data-upload-endpoint</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.private-data-key</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">XXXXXXXXXXXXXXXXXXXXXXXX</span>
 <span class="nn">---</span>
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
@@ -2294,27 +2291,17 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">backend-app</span>
-        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8081</span>
-        <span class="c1"># env:</span>
-        <span class="c1"># - name: tracing.data-upload-endpoint</span>
-        <span class="c1">#   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
-        <span class="c1"># - name: tracing.private-data-key</span>
-        <span class="c1">#   value: XXXXXXXXXXXXXXXXXXXXXXXX</span>
+        <span class="na">env</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.data-upload-endpoint</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.private-data-key</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">XXXXXXXXXXXXXXXXXXXXXXXX</span>
 </code></pre></div></div>
 
-<p>22行目(一つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)をコメントアウトし、23行目(二つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)のコメントアウトを外します。
-また、26行目から30行目(<code class="language-plaintext highlighter-rouge">env</code>フィールド)のコメントアウトも外します。</p>
-
-<p>53行目(一つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)をコメントアウトし、54行目(二つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)のコメントアウトを外します。
-また、57行目から61行目(<code class="language-plaintext highlighter-rouge">env</code>フィールド)のコメントアウトも外します。</p>
-
-<p>84行目(一つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)をコメントアウトし、85行目(二つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)のコメントアウトを外します。
-また、88行目から92行目(<code class="language-plaintext highlighter-rouge">env</code>フィールド)のコメントアウトも外します。</p>
-
-<p>最後に3箇所ぞれぞれの<code class="language-plaintext highlighter-rouge">env</code>フィールドの<code class="language-plaintext highlighter-rouge">tracing.data-upload-endpoint</code>、<code class="language-plaintext highlighter-rouge">tracing.private-data-key</code>の<code class="language-plaintext highlighter-rouge">value</code>を<a href="#6-2-apmドメインの作成">6-2 APMドメインの作成</a>で記録したAPMドメインとプライベート・データキーに差し替えます。</p>
+<p>25行目から29行目、55行目から59行目、85行目から89行目の<code class="language-plaintext highlighter-rouge">env</code>フィールドの<code class="language-plaintext highlighter-rouge">tracing.data-upload-endpoint</code>、<code class="language-plaintext highlighter-rouge">tracing.private-data-key</code>の<code class="language-plaintext highlighter-rouge">value</code>を<a href="#6-2-apmドメインの作成">6-2 APMドメインの作成</a>で記録したAPMドメインとプライベート・データキーにそれぞれ差し替えます。</p>
 
 <p>以下のようになります。</p>
 
@@ -2339,7 +2326,6 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">backend-app</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1</span>
         <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8081</span>
@@ -2370,7 +2356,6 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">backend-app</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2</span>
         <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8081</span>
@@ -2401,7 +2386,6 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">backend-app</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3</span>
         <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8081</span>
@@ -2438,21 +2422,17 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">datasource-app</span>
-        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/datasource-app</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8080</span>
-        <span class="c1"># env:</span>
-        <span class="c1"># - name: tracing.data-upload-endpoint</span>
-        <span class="c1">#   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
-        <span class="c1"># - name: tracing.private-data-key</span>
-        <span class="c1">#   value: XXXXXXXXXXXXXXXXXXXXXXXX</span>
+        <span class="na">env</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.data-upload-endpoint</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tracing.private-data-key</span>
+          <span class="na">value</span><span class="pi">:</span> <span class="s">XXXXXXXXXXXXXXXXXXXXXXXX</span>
 </code></pre></div></div>
 
-<p>22行目(一つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)をコメントアウトし、23行目(二つ目の<code class="language-plaintext highlighter-rouge">image</code>フィールド)のコメントアウトを外します。
-また、26行目から30行目(<code class="language-plaintext highlighter-rouge">env</code>フィールド)のコメントアウトも外します。</p>
-
-<p>最後に3箇所ぞれぞれの<code class="language-plaintext highlighter-rouge">env</code>フィールドの<code class="language-plaintext highlighter-rouge">tracing.data-upload-endpoint</code>、<code class="language-plaintext highlighter-rouge">tracing.private-data-key</code>の<code class="language-plaintext highlighter-rouge">value</code>を<a href="#6-2-apmドメインの作成">6-2 APMドメインの作成</a>で記録したAPMドメインとプライベート・データキーに差し替えます。</p>
+<p>25行目から29行目の<code class="language-plaintext highlighter-rouge">env</code>フィールドの<code class="language-plaintext highlighter-rouge">tracing.data-upload-endpoint</code>、<code class="language-plaintext highlighter-rouge">tracing.private-data-key</code>の<code class="language-plaintext highlighter-rouge">value</code>を<a href="#6-2-apmドメインの作成">6-2 APMドメインの作成</a>で記録したAPMドメインとプライベート・データキーに差し替えます。</p>
 
 <p>以下のようになります。</p>
 
@@ -2477,7 +2457,6 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">datasource-app</span>
-        <span class="c1"># image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app</span>
         <span class="na">image</span><span class="pi">:</span> <span class="s">nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm</span>
         <span class="na">ports</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">8080</span>
@@ -2490,13 +2469,14 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
 
 <p>これでサンプルアプリケーションのManifest設定の変更は完了です。</p>
 
-<p>先ほど<code class="language-plaintext highlighter-rouge">image</code>フィールドの変更で当初とは別のコンテナイメージを定義していただきましたが、OCI APMを利用するにはアプリケーション側にトレーシングの設定を入れる必要があります。<br />
+<p>ここで利用するコンテナアプリケーションは、OCI APMを利用するためにアプリケーション側にトレーシングの設定を入れています。<br />
 今回、OCI APMで利用しているアプリケーションは、code-at-customer-handsonディレクトリ配下の<code class="language-plaintext highlighter-rouge">_apm</code>が付与されているプロジェクトになります。</p>
 
 <div class="notice--info">
   <p><strong>HelidonアプリケーションでのOCI APMの利用</strong><br />
 今回はHelidonを利用したアプリケーションですが、<a href="https://docs.oracle.com/ja-jp/iaas/application-performance-monitoring/doc/use-apm-tracer-helidon.html">HelidonにはOCI APM専用のエージェント</a>が用意されています。<br />
-基本的には、<code class="language-plaintext highlighter-rouge">pom.xml</code>に以下の設定を追加するだけでOKです。(アプリケーション側の変更は必要ありません)</p>
+基本的には、<code class="language-plaintext highlighter-rouge">pom.xml</code>に以下の依存関係を追加するだけで利用可能です。(アプリケーション側の変更は必要ありません)<br />
+また、必要に応じて<code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/microprofile-config.properties</code>に設定値を追加します。</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>com.oracle.apm.agent.java<span class="nt">&lt;/groupId&gt;</span>
@@ -2519,6 +2499,15 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
     <span class="nt">&lt;/repositories&gt;</span>
 </code></pre></div></div>
 
+<p>今回、<code class="language-plaintext highlighter-rouge">microprofile-config.properties</code>については以下のように設定しています。(フロントエンドアプリケーションの場合)</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1"># OCI APM関連</span>
+  <span class="s">tracing.enabled=true</span>
+  <span class="s">tracing.service=oke-helidon-demo-frontend-service</span>
+  <span class="s">tracing.name="frontend-helidon-service"</span>
+</code></pre></div></div>
+
+
 </div>
 
 <p class="notice--info"><strong>既存ZipkinプラットフォームでのOCI APMの利用</strong><br />
@@ -2534,7 +2523,7 @@ OCI APMはZipkin互換にもなっているので、既存のZipkinベースのA
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
 </code></pre></div></div>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/app
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/app/plain
 </code></pre></div></div>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl delete <span class="nt">-f</span> <span class="nb">.</span> 
@@ -2586,7 +2575,7 @@ Istioには、Service Mesh全体に影響する設定として、MeshConfigと�
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
 </code></pre></div></div>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/app
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>code-at-customer-handson/k8s/app/for-oci-apm
 </code></pre></div></div>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="nb">.</span> 
@@ -2686,7 +2675,7 @@ OCIにはリソース監視を行うOCI Monitoringがあり、OCI Notifications�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-19T10:40:31+09:00">October 19, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-19T16:10:52+09:00">October 19, 2021</time></p>
 
 
       </footer>
