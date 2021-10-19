@@ -1098,13 +1098,13 @@ kubectl get services istio-ingressgateway -n istio-system
 
 ```sh
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)                                                                      AGE
-istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.211.116   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.xxx.xxx   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
 ```
 
-上記の場合は、istio-ingressgatewayの`EXTERNAL-IP`である`132.226.211.116`がエンドポイントになります。
+上記の場合は、istio-ingressgatewayの`EXTERNAL-IP`である`132.226.xxx.xxx`がエンドポイントになります。
 
 この場合は、以下のURLにアクセスします。  
-`http://132.226.211.116`
+`http://132.226.xxx.xxx`
 
 次にJaegerのUIにアクセスします。 
 
@@ -1707,3 +1707,670 @@ Metric | 例えば`CpuUtilization`を選択
 ![](5-013.png)
 
 このようにOCI MonitoringのGrafanaプラグインを利用すると、OCIのCompute(今回の場合はOKEのWorker Node)のメトリクスをGrafanaダッシュボードに統合することができます。  
+
+6.OCI APMを利用してトレーシングしてみよう【オプション】
+---------------------------------
+
+ここからはオプションの手順になります。  
+お時間がある方、興味がある方はぜひお試しください。  
+
+OCI APMでは、Jaegerと同じようにマイクロサービスをはじめとした分散アプリケーションのトレーシングを行うことができます。
+この手順では、OCI APMを利用した分散トレーシングの手順を実施していきます。
+
+**OCI APMとOracle Cloud Observability and Management Platform**  
+OCIでは、アプリケーションの可視性および機械学習ベースの実用的なインサイトを提供するサービス群として、[Oracle Cloud Observability and Management Platform](https://www.oracle.com/jp/manageability/)があります。  
+この中核をなすサービスの一つに、分散トレーシングや合成モニタリングなど実現するサービスであるOCI APMがあります。
+詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/application-performance-monitoring/index.html)のページをご確認ください。
+{: .notice--info}
+
+### 6-1 ポリシーの作成
+
+まずは、OCI APMを利用するためのポリシーを作成してきます。  
+
+OCIコンソールのハンバーガーメニューを開き、「アイデンティティとセキュリティ」から「ポリシー」を選択します。  
+
+![](6-001.png)
+
+「ポリシーの作成」をクリックします。  
+
+![](5-005.png)
+
+以下の情報を入力します。  
+また、「手動エディタの表示」にチェックを入れます。  
+
+key|value
+-|-
+名前| apm_policy
+説明| apm_policy
+コンパートメント | ご自身のコンパートメント名
+ポリシー | `Allow group APM-Admins to manage apm-domains in compartment id <ご自身のコンパートメントOCID>`
+
+![](6-002.png)
+
+画像はイメージですので、コンパートメントOCIDはご自身の環境に合わせて読み替えてください。 
+
+「作成」をクリックします。  
+
+これで、ポリシーの設定は完了です。  
+
+### 6-2 APMドメインの作成
+
+ここでは、APMドメインの作成を行います。  
+
+OCIコンソールのハンバーガーメニューを開き、「Observability & Management」から「アプリケーション・パフォーマンス・モニタリング」カテゴリの「Administration」を選択します。  
+
+![](6-003.png)
+
+「APMドメインの作成」をクリックします。  
+
+![](6-004.png)
+
+以下の情報を入力します。 
+
+key|value
+-|-
+名前| oke-handson-apm
+説明| oke-handson-apm
+
+**集合ハンズオンで参加されている皆様へ**  
+APMドメイン名は重複が許容されないため、集合ハンズオンなどで同一環境を複数名でご利用されている皆様はAPMドメイン名に自分のイニシャルや好きな複数桁の番号などを付与し、重複しないようにAPMドメイン名を設定してください。  
+{: .notice--info}
+
+「作成」をクリックします。
+
+![](6-005.png)
+
+ドメインが「作成中」のステータスになるので、「アクティブ」になるまで待機します。
+
+![](6-006.png)
+
+ドメインが「アクティブ」になったら、ドメイン名の箇所をクリックします。
+
+「APMドメイン情報」の「データ・アップロード・エンドポイント」と「データ・キー」の「プライベート」キーの値をコピーし、エディタなどに記録しておきます。  
+この値は、アプリケーション側からトレーシング情報をAPMにアップロードする際のエンドポイントとその際に利用するキーになり、後ほど利用します。
+
+![](6-007.png)
+![](6-008.png)
+
+これで、APMドメインの作成は完了です。
+
+### 6-3 サンプルアプリケーションのManifest設定の変更
+
+ここでは、Manifestの設定を変更していきます。
+
+Manifestのあるディレクトリに移動します。  
+
+```sh
+cd ~
+```
+
+```sh
+cd code-at-customer-handson/k8s/app
+```
+
+フロントエンドアプリケーションのManifestをvimで開きます。
+
+```sh
+vim olympic_frontend.yaml
+```
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+  labels:
+    app: frontend-app
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+        version: v1
+    spec:
+      containers:
+      - name: frontend-app
+        image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm
+        ports:
+        - containerPort: 8082
+      # env:
+      #   - name: tracing.data-upload-endpoint
+      #     value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+      #   - name: tracing.private-data-key
+      #     value: XXXXXXXXXXXXXXXXXXXXXXXX
+~~~
+```
+
+22行目(一つ目の`image`フィールド)をコメントアウトし、23行目(二つ目の`image`フィールド)のコメントアウトを外します。
+また、26行目から30行目(`env`フィールド)のコメントアウトも外します。  
+最後に`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
+
+以下のようになります。
+
+```yaml
+~~~
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+        version: v1
+    spec:
+      containers:
+      - name: frontend-app
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app
+        image: nrt.ocir.io/orasejapan/codeatcustomer/frontend-app-apm
+        ports:
+        - containerPort: 8082
+      env:
+        - name: tracing.data-upload-endpoint
+          value: <ご自身のAPMドメインのエンドポイント>
+        - name: tracing.private-data-key
+          value: <ご自身のAPMドメインのプライベート・データキー>
+```
+
+この状態で保存します。  
+
+これと同じことをバックエンド、データソースアプリケーションにも実施します。  
+
+```sh
+vim olympic_backend.yaml
+```
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app-v1
+  labels:
+    app: backend-app
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: backend-app
+        version: v1
+    spec:
+      containers:
+      - name: backend-app
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm
+        ports:
+        - containerPort: 8081
+        # env:
+        # - name: tracing.data-upload-endpoint
+        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        # - name: tracing.private-data-key
+        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app-v2
+  labels:
+    app: backend-app
+    version: v2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-app
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: backend-app
+        version: v2
+    spec:
+      containers:
+      - name: backend-app
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm
+        ports:
+        - containerPort: 8081
+        # env:
+        # - name: tracing.data-upload-endpoint
+        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        # - name: tracing.private-data-key
+        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app-v3
+  labels:
+    app: backend-app
+    version: v3
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-app
+      version: v3
+  template:
+    metadata:
+      labels:
+        app: backend-app
+        version: v3
+    spec:
+      containers:
+      - name: backend-app
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm
+        ports:
+        - containerPort: 8081
+        # env:
+        # - name: tracing.data-upload-endpoint
+        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        # - name: tracing.private-data-key
+        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+22行目(一つ目の`image`フィールド)をコメントアウトし、23行目(二つ目の`image`フィールド)のコメントアウトを外します。
+また、26行目から30行目(`env`フィールド)のコメントアウトも外します。  
+
+53行目(一つ目の`image`フィールド)をコメントアウトし、54行目(二つ目の`image`フィールド)のコメントアウトを外します。
+また、57行目から61行目(`env`フィールド)のコメントアウトも外します。  
+
+84行目(一つ目の`image`フィールド)をコメントアウトし、85行目(二つ目の`image`フィールド)のコメントアウトを外します。
+また、88行目から92行目(`env`フィールド)のコメントアウトも外します。  
+
+最後に3箇所ぞれぞれの`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
+
+以下のようになります。
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app-v1
+  labels:
+    app: backend-app
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: backend-app
+        version: v1
+    spec:
+      containers:
+      - name: backend-app
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm
+        ports:
+        - containerPort: 8081
+        env:
+        - name: tracing.data-upload-endpoint
+          value: <ご自身のAPMドメインのエンドポイント>
+        - name: tracing.private-data-key
+          value: <ご自身のAPMドメインのプライベート・データキー>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app-v2
+  labels:
+    app: backend-app
+    version: v2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-app
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: backend-app
+        version: v2
+    spec:
+      containers:
+      - name: backend-app
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm
+        ports:
+        - containerPort: 8081
+        env:
+        - name: tracing.data-upload-endpoint
+          value: <ご自身のAPMドメインのエンドポイント>
+        - name: tracing.private-data-key
+          value: <ご自身のAPMドメインのプライベート・データキー>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app-v3
+  labels:
+    app: backend-app
+    version: v3
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-app
+      version: v3
+  template:
+    metadata:
+      labels:
+        app: backend-app
+        version: v3
+    spec:
+      containers:
+      - name: backend-app
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3
+        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm
+        ports:
+        - containerPort: 8081
+        env:
+        - name: tracing.data-upload-endpoint
+          value: <ご自身のAPMドメインのエンドポイント>
+        - name: tracing.private-data-key
+          value: <ご自身のAPMドメインのプライベート・データキー>
+```
+
+最後にデータソースアプリケーションに対しても実施します。
+
+```sh
+vim olympic_datasource.yaml
+```
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datasource-app
+  labels:
+    app: datasource-app
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: datasource-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: datasource-app
+        version: v1
+    spec:
+      containers:
+      - name: datasource-app
+        image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm
+        ports:
+        - containerPort: 8080
+        # env:
+        # - name: tracing.data-upload-endpoint
+        #   value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com
+        # - name: tracing.private-data-key
+        #   value: XXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+22行目(一つ目の`image`フィールド)をコメントアウトし、23行目(二つ目の`image`フィールド)のコメントアウトを外します。
+また、26行目から30行目(`env`フィールド)のコメントアウトも外します。  
+
+最後に3箇所ぞれぞれの`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
+
+以下のようになります。
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datasource-app
+  labels:
+    app: datasource-app
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: datasource-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: datasource-app
+        version: v1
+    spec:
+      containers:
+      - name: datasource-app
+        # image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app
+        image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm
+        ports:
+        - containerPort: 8080
+        env:
+        - name: tracing.data-upload-endpoint
+          value: <ご自身のAPMドメインのエンドポイント>
+        - name: tracing.private-data-key
+          value: <ご自身のAPMドメインのプライベート・データキー>
+```
+
+これでサンプルアプリケーションのManifest設定の変更は完了です。  
+
+先ほど`image`フィールドの変更で当初とは別のコンテナイメージを定義していただきましたが、OCI APMを利用するにはアプリケーション側にトレーシングの設定を入れる必要があります。  
+今回、OCI APMで利用しているアプリケーションは、code-at-customer-handsonディレクトリ配下の`_apm`が付与されているプロジェクトになります。
+
+{% capture notice %}**HelidonアプリケーションでのOCI APMの利用**  
+今回はHelidonを利用したアプリケーションですが、[HelidonにはOCI APM専用のエージェント](https://docs.oracle.com/ja-jp/iaas/application-performance-monitoring/doc/use-apm-tracer-helidon.html)が用意されています。  
+基本的には、`pom.xml`に以下の設定を追加するだけでOKです。(アプリケーション側の変更は必要ありません)
+
+  ```xml
+        <dependency>
+            <groupId>com.oracle.apm.agent.java</groupId>
+            <artifactId>apm-java-agent-helidon</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.apm.agent.java</groupId>
+            <artifactId>apm-java-agent-tracer</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>oci</id>
+            <name>OCI Object Store</name>
+            <url>https://objectstorage.us-ashburn-1.oraclecloud.com/n/idhph4hmky92/b/prod-agent-binaries/o</url>
+        </repository>
+    </repositories>
+  ```{% endcapture %}
+<div class="notice--info">
+  {{ notice | markdownify }}
+</div>
+
+**既存ZipkinプラットフォームでのOCI APMの利用**  
+OCI APMはZipkin互換にもなっているので、既存のZipkinベースのAPMプラットフォームをOCI APMで利用して頂くことも可能です。  
+詳細については[こちら](https://docs.oracle.com/ja-jp/iaas/application-performance-monitoring/doc/configure-open-source-tracing-systems.html)をご確認ください。
+{: .notice--info}
+
+### 6-4 Istioのトレーシング設定の変更
+
+ここでは、現時点で設定されているIstio内のJargerからOCI APMにトレーシングを切り替える設定を行います。  
+
+まずは、今デプロイされているアプリケーションを一旦削除します。  
+
+```sh
+cd ~
+```
+
+```sh
+cd code-at-customer-handson/k8s/app
+```
+
+```sh
+kubectl delete -f . 
+```
+
+***コマンド結果***
+
+```sh
+deployment.apps/backend-app-v1 deleted
+deployment.apps/backend-app-v2 deleted
+deployment.apps/backend-app-v3 deleted
+service/backend-app deleted
+deployment.apps/datasource-app deleted
+service/datasource-app deleted
+deployment.apps/frontend-app deleted
+service/frontend-app deleted
+ingress.networking.k8s.io/gateway deleted
+```
+
+ここで、再度Istioをインストールします。
+[2-1 Istio（addon: Prometheus, Grafana, Jaeger, Kiali）インストール](#2-1-istioaddon-prometheus-grafana-jaeger-kialiインストール)でインストールしたスタックはそのままで問題ありません。  
+ 
+今回は、MeshConfigを利用してIstioのトレーシングを無効にします。  
+
+**Global Mesh Optionsについて**  
+Istioには、Service Mesh全体に影響する設定として、MeshConfigという設定群が存在します。  
+詳細は[こちら](https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/)をご確認ください。
+{: .notice--info}
+
+```sh
+istioctl install --set profile=demo --set meshConfig.enableTracing=false --skip-confirmation
+```
+
+***コマンド結果***
+
+```sh
+✔ Istio core installed                                                                                                                           
+✔ Istiod installed                                                                                                                               
+✔ Egress gateways installed                                                                                                                      
+✔ Ingress gateways installed                                                                                                                     
+✔ Installation complete                                                                                                                          
+Thank you for installing Istio 1.11.  Please take a few minutes to tell us about your install/upgrade experience!  https://forms.gle/kWULBRjUv7hHci7T6
+```
+
+これで、Istioのトレーシング設定の変更は完了です。
+
+### 6-5 OCI APMでのトレーシング
+
+いよいよ、OCI APMを利用したトレーシングを実施します。  
+
+再度、サンプルアプリケーションをデプロイします。  
+
+```sh
+cd ~
+```
+
+```sh
+cd code-at-customer-handson/k8s/app
+```
+
+```sh
+kubectl apply -f . 
+```
+
+***コマンド結果***
+
+```sh
+deployment.apps/backend-app-v1 created
+deployment.apps/backend-app-v2 created
+deployment.apps/backend-app-v3 created
+service/backend-app created
+deployment.apps/datasource-app created
+service/datasource-app created
+deployment.apps/frontend-app created
+service/frontend-app created
+ingress.networking.k8s.io/gateway created
+```
+
+アプリケーションにアクセスします。  
+
+```sh
+kubectl get services istio-ingressgateway -n istio-system
+```
+
+***コマンド結果***
+
+```sh
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)                                                                      AGE
+istio-ingressgateway   LoadBalancer   10.96.176.93   132.226.xxx.xxx   15021:30134/TCP,80:30850/TCP,443:30319/TCP,31400:31833/TCP,15443:30606/TCP   3d3h
+```
+
+上記の場合は、istio-ingressgatewayの`EXTERNAL-IP`である`132.226.xxx.xxx`がエンドポイントになります。
+
+この場合は、以下のURLにアクセスします。  
+`http://132.226.xxx.xxx`
+
+何度かアクセスしたのちに、トレース情報をOCI APMから確認します。  
+
+OCIコンソールのハンバーガーメニューを開き、「Observability & Management」から「アプリケーション・パフォーマンス・モニタリング」カテゴリの「トレース・エクスプローラー」を選択します。  
+
+![](6-009.png)
+
+画面上部にある「APMドメイン」から、[6-2 APMドメインの作成](#6-2-apmドメインの作成)で作成したAPMドメインを選択します。  
+
+![](6-010.png)
+
+右側にある検索条件を「過去15分間」に選択し、「実行」ボタンをクリックします。  
+
+![](6-011.png)
+
+複数のトレース情報が表示されますので、`Spans`が25になっている情報をクリックします。  
+
+![](6-012.png)
+
+以下のようなトレース情報が表示されます。
+先ほどJaegerで確認した情報よりも、より詳細な情報が取得できていることが確認できます。  
+
+![](6-013.png)
+![](6-014.png)
+
+これで、OCI APMを利用したトレーシングは完了です。  
+
+### 6-6 OCI APMでのアプリケーションサーバのメトリクス監視
+
+ここでは、OCI APMで監視できるアプリケーションサーバのメトリクスについて見ていきたいと思います。  
+
+画面左上のプルダウンから「Dashboard」をクリックします。  
+
+![](6-015.png)
+
+ダッシュボードから「アプリケーション・サーバー」をクリックします。  
+
+![](6-016.png)
+
+左上に「アプリケーションサーバを選択します」というプルダウンがあるので、任意のアプリケーションサーバ(実体はHelidonのPod)を選択します。  
+
+![](6-017.png) 
+
+アプリケーションサーバ(今回はHelidon)のメトリクス情報が表示されます。  
+
+![](6-018.png)
+
+ここで取得したメトリクスをもとに、OCI MonitoringやOCI Notificationsと連携すると、一定の閾値を超過した際にアラーム通知を行うこともできます。  
+
+**OCI MonitoringとOCI Notificationsについて**  
+OCIにはリソース監視を行うOCI Monitoringがあり、OCI Notificationsと連携するとEmailやSlackなどに対してアラーム通知を行うことができます。  
+詳細は[こちら](/ocitutorials/intermediates/monitoring-resources/)のハンズオンをご確認ください。
+{: .notice--info}
+
+このように、OCI APMを利用すると詳細なトレーシングの取得と確認およびアプリケーションサーバのメトリクス監視を行うことができます。  
+
