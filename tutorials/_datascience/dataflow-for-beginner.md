@@ -179,7 +179,7 @@ oci://oow_2019_dataflow_lab@bigdatadatasciencelarge/usercontent/kaggle_berlin_ai
 output:
 
 ```txt
-oci://dataflow-tutorial-result@\<namespace\>/optimized_listings
+oci://dataflow-tutorial-result@<namespace>/optimized_listings
 ```
 
 ※\<namespace\>は、[0. 事前準備](#0-事前準備)で確認した物を入力してください。
