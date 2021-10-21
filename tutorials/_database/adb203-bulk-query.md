@@ -22,15 +22,13 @@ header:
 
 **目次**
 
-- [SSBスキーマを確認しよう](#anchor1)
+- [1. SSBスキーマを確認しよう](#anchor1)
     - [データ・モデラーによる構成確認](#anchor1-1)
     - [各表の件数確認](#anchor1-2)
-- [OCPU数の違いによる処理時間の差を確認しよう](#anchor2)
+- [2. OCPU数の違いによる処理時間の差を確認しよう](#anchor2)
     - [OCPU=1の場合](#anchor2-1)
     - [OCPU=8の場合](#anchor2-2)
-    - [OCPU=16の場合](#anchor2-3)
-    - [OCPU=64の場合](#anchor2-4)
-- [性能調査に使えるツールのご紹介](#anchor3)
+- [3. 性能調査に使えるツールのご紹介](#anchor3)
     - [サービス・コンソール](#anchor3-1)
     - [パフォーマンス・ハブ](#anchor3-2)
 
@@ -53,6 +51,8 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 + SSBスキーマを確認しよう
 + OCPU数の違いによる処理時間の差を確認しよう
 + サービスコンソール/SQL Monitorで処理内容を確認しよう
+
+<br>
 
 <a id="anchor1"></a>
 
@@ -119,6 +119,8 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 
    ![画面ショット1-1](img50.png)
 
+<br>
+
 <a id="anchor1-2"></a>
 
 ## 各表の件数確認
@@ -158,20 +160,11 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 
    次にもう少し複雑なクエリを実行してみます。OCPU数を変えることで、高速に処理できることを確認していきましょう。
 
-   > **NOTE**
-   >
-   > ここではOCPU数を段階的に増やし、性能が向上することをご確認いただきますが、クレジット消費も比例して大きくなりますので、ご注意ください。
+   次のクエリをコピーして、Database Actionsのワークシートに貼り付けて実行してみましょう。
+   <br>すべてのOCPU数で同じクエリを実行します。
 
-<a id="anchor2-1"></a>
-
-## OCPU=1の場合
-
-1. 画面右上の接続サービスを**LOW**から**MEDIUM**に変更し、以下のスクリプトを実行します。
-
-   現在のOCPU数は、**1**です。
-
-   ```
-   SELECT /* MEDIUM OCPU=1 *//*+ NO_RESULT_CACHE */
+   ```sql
+   SELECT
       SUM(LO_REVENUE),
       D_YEAR,
       P_BRAND1
@@ -194,10 +187,28 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
       P_BRAND1;
    ```
 
-   ![画面ショット1-1](img5.jpg)
+   本編ではOCPU=1および8の場合を記載しておりますが、ぜひOCPU=2,4,6と細かく変更し、OCPUが大きくなればElaped Timeが短くなることをご確認ください。
+
+   > **注意**
+   >
+   > ここではOCPU数を段階的に増やし、性能が向上することをご確認いただきますが、クレジット消費も比例して大きくなりますので、ご注意ください。
+
+<br>
+
+<a id="anchor2-1"></a>
+
+## OCPU=1の場合
+
+1. 画面右上の接続サービスを**LOW**から**MEDIUM**に変更し、以下のスクリプトを実行します。
+
+   現在のOCPU数は、**1**です。
+
+   ![画面ショット1-1](img5_new.png)
 
 
-   処理にかかった時間は、**04:53.093**でした。
+   処理にかかった時間は、**00:01:30.110**でした。
+
+<br>
 
 <a id="anchor2-2"></a>
 
@@ -206,6 +217,11 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 1. ここでATPの詳細画面に遷移し、**スケール・アップ/ダウン**を選択してください。OCPU数をスケールさせていきます。
 
    ![画面ショット1-1](img6.jpg)
+
+   > **注意**
+   >
+   > 自動スケーリングの有無は任意で結構です。
+   > <br>自動スケーリングは複数のクエリが同時に走っているときにその効果が発揮されます。今回のように１つのクエリを走らせる分には有効にしてもしなくても性能に影響はありません。
 
 
 1. OCPU数に**8**を入力し、**更新**をクリックしてください。
@@ -216,139 +232,58 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
    ATPの詳細画面で**スケールアップの完了**を確認後、Database Actionsの**SQLワークシート**に戻ります。
 
 
-1. 画面右上の接続サービスを**MEDIUM**から**HIGH**に変更し、以下のスクリプトを実行します。現在のOCPU数は、**8**です。
+1. 画面右上の接続サービスを**MEDIUM**から**HIGH**に変更し、クエリを実行します。現在のOCPU数は、**8**です。
 
    > **NOTE**
    >
-   > 重たいクエリの多いDWH系のシステムでは、単一SQLを複数のコアで処理できるパラレル・クエリーが効果的です。ここからは、割り当てられたOCPUを全て利用できる接続サービスであるHIGHを選択します。**MEDIUM**接続でもパラレル処理が可能ですが、同時実行性も担保するために利用できるOCPU数を**4**までに制限しているため、ここからは8OCPU以上を利用できる**HIGH**接続に切り替えてスケールアップの効果を確認します。
-
-   ```
-   SELECT /* HIGH OCPU=8 *//*+ NO_RESULT_CACHE */
-      SUM(LO_REVENUE),
-      D_YEAR,
-      P_BRAND1
-   FROM
-      SSB.LINEORDER,
-      SSB.DWDATE,
-      SSB.PART,
-      SSB.SUPPLIER
-   WHERE
-      LO_ORDERDATE = D_DATEKEY
-      AND LO_PARTKEY = P_PARTKEY
-      AND LO_SUPPKEY = S_SUPPKEY
-      AND P_BRAND1 BETWEEN 'MFGR#2221' AND 'MFGR#2228'
-      AND S_REGION = 'ASIA'
-   GROUP BY
-      D_YEAR,
-      P_BRAND1
-   ORDER BY
-      D_YEAR,
-      P_BRAND1;
-   ```
-
-   ![画面ショット1-1](img8.jpg)
-
-   処理にかかった時間は、**00:44.346**でした。
-
-<a id="anchor2-3"></a>
-
-## OCPU=16の場合
-
-1. ここでATPの詳細画面に遷移し、**スケール・アップ/ダウン**を選択してください。OCPU数をスケールさせていきます。
-
-   ![画面ショット1-1](img6.jpg)
+   > 重たいクエリの多いDWH系のシステムでは、単一SQLを複数のコアで処理できるパラレル・クエリーが効果的です。ここからは、割り当てられたOCPUを全て利用できる接続サービスであるHIGHを選択します。
+   > <br>**MEDIUM**接続でもパラレル処理が可能ですが、同時実行性も担保するために利用できるOCPU数を**4**までに制限しているため、ここからは8OCPU以上を利用できる**HIGH**接続に切り替えてスケールアップの効果を確認します。
 
 
-1. OCPU数に**16**を入力し、**更新**をクリックしてください。
+   ![画面ショット1-1](img8_new.png)
 
-   ![画面ショット1-1](img9.jpg)
-
-
-   ATPの詳細画面で**スケールアップの完了**を確認後、Database Actionsの**SQLワークシート**に戻ります。
-
-1. 画面右上の接続サービスが**HIGH**であることを確認し、以下のスクリプトを実行します。現在のOCPU数は、**16**です。
-
-   ```
-   SELECT /* HIGH OCPU=16 *//*+ NO_RESULT_CACHE */
-      SUM(LO_REVENUE),
-      D_YEAR,
-      P_BRAND1
-   FROM
-      SSB.LINEORDER,
-      SSB.DWDATE,
-      SSB.PART,
-      SSB.SUPPLIER
-   WHERE
-      LO_ORDERDATE = D_DATEKEY
-      AND LO_PARTKEY = P_PARTKEY
-      AND LO_SUPPKEY = S_SUPPKEY
-      AND P_BRAND1 BETWEEN 'MFGR#2221' AND 'MFGR#2228'
-      AND S_REGION = 'ASIA'
-   GROUP BY
-      D_YEAR,
-      P_BRAND1
-   ORDER BY
-      D_YEAR,
-      P_BRAND1;
-   ```
-
-   ![画面ショット1-1](img10.jpg)
-
-   処理にかかった時間は、**00:28.635**でした。
-
-<a id="anchor2-4"></a>
-
-## OCPU=64の場合
-
-1. ここでATPの詳細画面に遷移し、**スケール・アップ/ダウン**を選択してください。OCPU数をスケールさせていきます。
-
-   ![画面ショット1-1](img6.jpg)
+   処理にかかった時間は、**00:00:12.698**でした。
 
 
-1. OCPU数に**64**を入力し、**更新**をクリックしてください。
+ここまでで、OCPU＝1および8のときのElapsed Timeが確認できたと思います。<br>Autonomous Databaseでは利用可能なコア数だけでなく、割り当てメモリのサイズやIO帯域もOCPU数に比例する形で増加します。今回試したDWH系のクエリは一般的に非常に多くのリソースを消費しますが、Autonomous Databaseでは必要に応じてOCPU数を調整することで性能を担保することが可能です。
 
-   ![画面ショット1-1](img13.jpg)
-
-
-   ATPの詳細画面で**スケールアップの完了**を確認後、Database Actionsの**SQLワークシート**に戻ります。
-
-1. 画面右上の接続サービスが**HIGH**であることを確認し、以下のスクリプトを実行します。現在のOCPU数は、**64**です。
-
-   ```
-   SELECT /* HIGH OCPU=64 *//*+ NO_RESULT_CACHE */
-      SUM(LO_REVENUE),
-      D_YEAR,
-      P_BRAND1
-   FROM
-      SSB.LINEORDER,
-      SSB.DWDATE,
-      SSB.PART,
-      SSB.SUPPLIER
-   WHERE
-      LO_ORDERDATE = D_DATEKEY
-      AND LO_PARTKEY = P_PARTKEY
-      AND LO_SUPPKEY = S_SUPPKEY
-      AND P_BRAND1 BETWEEN 'MFGR#2221' AND 'MFGR#2228'
-      AND S_REGION = 'ASIA'
-   GROUP BY
-      D_YEAR,
-      P_BRAND1
-   ORDER BY
-      D_YEAR,
-      P_BRAND1;
-   ```
-
-   ![画面ショット1-1](img14.jpg)
-
-   処理にかかった時間は、**00:09.832**でした。
-
-<br>
-
-ここまでで、OCPU＝1から増やすことでスケールすることが確認できたと思います。Autonomous Databaseでは利用可能なコア数だけでなく、割り当てメモリのサイズやIO帯域もOCPU数に比例する形で増加します。今回試したDWH系のクエリは一般的に非常に多くのリソースを消費しますが、Autonomous Databaseでは必要に応じてOCPU数を調整することで性能を担保することが可能です。
 
 > **NOTE**
 >
 >その他、ADBでは、パーティション やHCC圧縮、マテリアライド・ビューといったOracle Database / Exadata のパフォーマンスに寄与する各種オプションも追加費用なくご利用いただけます。
+
+
+次の表は、OCPU数を細かく増やしていったときのElapsed Timeをまとめたものです。
+<br>このようにOCPUが大きくなれば性能が向上していることが分かります。
+
+<table width="70%">
+  <tr>
+    <th>接続サービス</th>　<th>OCPU数</th> <th>Elapsed Time</th>
+  </tr>
+  <tr>
+    <td rowspan="3">MEDIUM</td> <td>1</td> <td>00:01:30.110</td>
+  </tr>
+  <tr>
+    <td>2</td> <td>00:00:58.209</td>
+  </tr>
+    <tr>
+    <td>4</td> <td>00:00:27.212</td>
+  </tr>
+  <tr>
+    <td rowspan="4">HIGH</td> <td>8</td> <td>00:00:12.698</td>
+  </tr>
+    <tr>
+    <td>16</td> <td>00:00:08.113</td>
+  </tr>
+  <tr>
+    <td>32</td> <td>00:00:05.324</td>
+  </tr>
+    <tr>
+    <td>64</td> <td>00:00:05.102</td>
+  </tr>
+</table>
+
+※Elapsed Timeにはブレがありますので、あくまでも参考値としてご認識ください。
 
 <br>
 
