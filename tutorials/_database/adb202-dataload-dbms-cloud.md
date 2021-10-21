@@ -29,8 +29,8 @@ header:
 
 **目次**
 
-- [1.Database Actionsに接続](#anchor1)
-- [2.DBMS_CLOUDパッケージの実行](#anchor2)
+- [1. Database Actionsに接続](#anchor1)
+- [2. DBMS_CLOUDパッケージの実行](#anchor2)
 
 <br>
 **所要時間 :** 約10分
@@ -38,7 +38,7 @@ header:
 <a id="anchor1"></a>
 <br>
 
-# Database Actionsに接続
+# 1. Database Actionsに接続
 
 1. [ADBインスタンスを作成しよう](/ocitutorials/database/adb101-provisioning)で学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツールタブ**から、**データベース・アクションを開く**をクリックしてください。  
     
@@ -52,7 +52,7 @@ header:
 <a id="anchor2"></a>
 <br>
 
-# DBMS_CLOUDパッケージの実行
+# 2. DBMS_CLOUDパッケージの実行
 
 以下の1～5までの例を参考にコマンドを作成し、ワークシートに貼り付けスクリプトの実行をクリックし、データをロードします（集合ハンズオンセミナーでは講師の指示に従ってください)
 

@@ -52,7 +52,7 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 サンプルとして受発注データ(orders.csv)を用意します。
 下記のリンクをクリックし、サンプルファイル(orders.zip)を手元のPCにダウンロードして展開してください。
 
-+ [orders.csvをダウンロード](/ocitutorials/database/adbxx-create-apex-app/orders.csv)
++ [orders.csvをダウンロード](/ocitutorials/database/adb-data/orders.csv)
 
 受発注データは次のような表になっており、ORDER_KEY(注文番号)、ORDER_STATUS(注文状況)、UNITS(個数) ...etc などの列から構成される、5247行の表となっています。
 
