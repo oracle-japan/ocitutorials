@@ -37,7 +37,7 @@ OCI Data Flow を使用するための Object Storage の作成やポリシー�
 
 ![image22](image22.png)
 
-テナンシ詳細画面のテナンシ詳細部でネームスペースを確認することができます。(通常は、`nrlhux6vphsp` のようなランダムな文字列です)
+テナンシ詳細画面のテナンシ情報タブでネームスペースを確認することができます。(通常は、`nrlhux6vphsp` のようなランダムな文字列です)
 
 ![image23](image23.png)
 
@@ -179,7 +179,7 @@ oci://oow_2019_dataflow_lab@bigdatadatasciencelarge/usercontent/kaggle_berlin_ai
 output:
 
 ```txt
-oci://dataflow-tutorial-result@\<namespace\>/optimized_listings
+oci://dataflow-tutorial-result@<namespace>/optimized_listings
 ```
 
 ※\<namespace\>は、[0. 事前準備](#0-事前準備)で確認した物を入力してください。
