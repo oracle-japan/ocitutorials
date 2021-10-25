@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-10-22T11:32:34+09:00">
+  <meta property="article:published_time" content="2021-10-26T00:15:27+09:00">
 
 
 
@@ -304,6 +304,8 @@
         
           <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/" class="active">OCI Data Integrationチュートリアル</a></li></p>
         
       </ul>
@@ -319,7 +321,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Data Integrationチュートリアル">
     <meta itemprop="description" content="OCI Data IntegrationはグラフィカルなインタフェースでノーコーディングでETL処理を行うことができるフルマネージドのサービスです。様々なデータ変換機能を提供し、データの準備、統合、ロードを簡単に行うことができます。この文書では基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。">
-    <meta itemprop="datePublished" content="2021-10-22T11:32:34+09:00">
+    <meta itemprop="datePublished" content="2021-10-26T00:15:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -335,9 +337,7 @@
             </nav>
           </aside>
         
-        <p><a id="anchor0"></a></p>
-
-<h1 id="はじめに">はじめに</h1>
+        <h1 id="はじめに">はじめに</h1>
 <p><strong>OCI Data Integration</strong> はOCIで利用できるGUIベースのETLサービスです。</p>
 
 <p><img src="ocidi.png" alt="OCIDIの説明イメージ" /></p>
@@ -351,14 +351,14 @@
 
 <p><strong>目次 :</strong></p>
 <ul>
-  <li><a href="#anchor1">1.サンプルデータのロードとターゲット表の作成</a></li>
-  <li><a href="#anchor2">2.Data Integrationを利用するための準備</a></li>
-  <li><a href="#anchor3">3.ワークスペースの作成</a></li>
-  <li><a href="#anchor4">4.データ・アセットの作成</a></li>
-  <li><a href="#anchor5">5.プロジェクトとデータ・フローの作成</a></li>
-  <li><a href="#anchor6">6.データ・フローの編集</a></li>
-  <li><a href="#anchor7">7.タスクの作成</a></li>
-  <li><a href="#anchor8">8.アプリケーションの作成とタスクの公開と実行</a></li>
+  <li><a href="#1-サンプルデータのロードとターゲット表の作成">1.サンプルデータのロードとターゲット表の作成</a></li>
+  <li><a href="#2-Data-Integrationを利用するための準備">2.Data Integrationを利用するための準備</a></li>
+  <li><a href="#3-ワークスペースの作成">3.ワークスペースの作成</a></li>
+  <li><a href="#4-データ・アセットの作成">4.データ・アセットの作成</a></li>
+  <li><a href="#5-プロジェクトとデータ・フローの作成">5.プロジェクトとデータ・フローの作成</a></li>
+  <li><a href="#6-データ・フローの編集">6.データ・フローの編集</a></li>
+  <li><a href="#7-タスクの作成">7.タスクの作成</a></li>
+  <li><a href="#8-アプリケーションの作成とタスクの公開と実行">8.アプリケーションの作成とタスクの公開と実行</a></li>
 </ul>
 
 <p><strong>前提条件 :</strong></p>
@@ -367,8 +367,6 @@
   <li>Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。
 <br /></li>
 </ul>
-
-<p><a id="anchor1"></a></p>
 
 <h1 id="1-サンプルデータのロードとターゲット表の作成">1. サンプルデータのロードとターゲット表の作成</h1>
 <p>ソースとなるオブジェクト・ストレージにファイルをアップロードし、ターゲットとなるAutonomous Databaseにロード先の表を作成します。</p>
@@ -440,7 +438,8 @@
   </pre>
   </details>
 
-<p><a id="anchor2"></a></p>
+<p><br /></p>
+
 <h1 id="2data-integrationを利用するための準備">2.Data Integrationを利用するための準備</h1>
 <p>Data Integrationを利用するためには以下が必要です。</p>
 <ol>
@@ -449,13 +448,16 @@
 </ol>
 
 <h2 id="vcnとサブネットの作成">VCNとサブネットの作成</h2>
-<p>Data Integrationで利用するコンパートメントでVCNとサブネットを作成します。手順は<a href="../../beginners/creating-vcn/" target="_blank">“その2-クラウドに仮想ネットワーク(VCN)を作る”</a>をご確認ください。作成したサブネットから利用するAutonomous Database、オブジェクト・ストレージへ接続可能である必要があるため、サービス・ゲートウェイをターゲット・タイプに含めるルート・ルールをルート表に追加します。</p>
+<p>Data Integrationで利用するコンパートメントでVCNとサブネット(リージョナル）を作成します。手順は<a href="../../beginners/creating-vcn/" target="_blank">“その2-クラウドに仮想ネットワーク(VCN)を作る”</a>をご確認ください。作成したサブネットから利用するAutonomous Database、オブジェクト・ストレージへ接続可能である必要があるため、サービス・ゲートウェイをターゲット・タイプに含めるルート・ルールをルート表に追加します。</p>
 
 <p><img src="addroute.png" alt="ルート・ルールの追加イメージ" /></p>
 
 <h2 id="必要なポリシーの作成">必要なポリシーの作成</h2>
 <p>ポリシーを作成します。
 OCI管理者ユーザーでログイン後、OCIコンソールのナビゲーションメニューで<strong>アイデンティティとセキュリティ</strong>に移動し、<strong>ポリシー</strong>を選択します。次にコンパートメントを選択し、<strong>ポリシーの作成</strong>をクリックします。</p>
+<blockquote>
+  <p>本文書ではポリシー・ビルダーを使用しますが、実際は必要なセキュリティにあわせて設定を行ってください。</p>
+</blockquote>
 
 <p><img src="addpolicy1.png" alt="ポリシー追加の説明1" /></p>
 
@@ -494,7 +496,6 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 
 <p>テンプレートごとにポリシーが作成されるため、ポリシーは4つ作成されます。</p>
 
-<p><a id="anchor3"></a></p>
 <h1 id="3-ワークスペースの作成">3. ワークスペースの作成</h1>
 <p><strong>ワークスペース</strong>はすべてのData Integrationリソースのコンテナです。Data Integrationの操作はワークスペースを作成し、起動して行います。</p>
 
@@ -503,6 +504,9 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 <p><img src="createws1.png" alt="ワークスペース作成1" /></p>
 
 <p>名前に任意の<strong>名前</strong>を入力します。デフォルトでプライベート・ネットワークの有効化にチェックがされていますので、<strong>2で作成したVCNとサブネットを選択</strong>します。その後に<strong>作成</strong>をクリックします。</p>
+<blockquote>
+  <p>プライベート・ネットワークにあるデータ・ソースにアクセスするためにはプライベート・ネットワークの有効化が必要です</p>
+</blockquote>
 
 <p><img src="createws2.png" alt="ワークスペース作成2" /></p>
 
@@ -515,8 +519,6 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 <p><img src="home.png" alt="ホーム" /></p>
 
 <p>ワークスペースのホームを起点に、Data Integrationで必要なコンポーネントの作成、設定を行っていきます。</p>
-
-<p><a id="anchor4"></a></p>
 
 <h1 id="4-データアセットの作成">4. データ・アセットの作成</h1>
 <p><strong>データ・アセット</strong>はData Integrationで利用するデータ・ソースを表します。1のオブジェクト・ストレージとAutonomous Databaseのためのデータ・アセットを作成します。</p>
@@ -534,14 +536,14 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
       <li>名前：Data_Lake</li>
       <li>識別子：自動入力</li>
       <li>タイプ：Oracle Object Storage</li>
-      <li>URL: https://objectstorage.<リージョン名>.oraclecloud.com
-</リージョン名>        <ul>
-          <li>利用するオブジェクト・ストレージのリージョン名(例：ap-tokyo-1)を<リージョン名>に入力したURL　</リージョン名></li>
-        </ul>
-      </li>
       <li>テナントOCID : コンソールのガバナンスと管理からテナンシ詳細を選択し、テナンシ情報のOCIDを確認
 <img src="tenancyocid.png" alt="テナンシのOCID" /></li>
       <li>ネームスペース：自動入力</li>
+      <li>OCIリージョン: 利用するオブジェクト・ストレージのリージョン名
+        <ul>
+          <li>例：ap-tokyo-1</li>
+        </ul>
+      </li>
     </ul>
   </li>
   <li>Autonomous Database
@@ -572,8 +574,6 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 
 <p><img src="createDataAsset2.png" alt="データ・アセットの作成2" /></p>
 
-<p><a id="anchor5"></a></p>
-
 <h1 id="5-プロジェクトとデータフローの作成">5. プロジェクトとデータ・フローの作成</h1>
 <p><strong>プロジェクト</strong>は設計に関わるリソースのコンテナです。<strong>データ・フロー</strong>はプロジェクトの下で作成されるソース・システムとターゲット・システム間のデータの流れ/操作を定義するリソースです。プロジェクトを作成し、データ・フローを作成していきます。</p>
 
@@ -599,7 +599,6 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
   <p>設計時は保存をこまめにしていただくことをおすすめします。</p>
 </blockquote>
 
-<p><a id="anchor6"></a></p>
 <h1 id="6データフローの編集">6.データ・フローの編集</h1>
 
 <p>データ・フロー・エディタで演算子を使って定義を行っていきます。</p>
@@ -646,11 +645,11 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 
 <p><img src="attribute.png" alt="属性" /></p>
 
-<p>また<strong>データ</strong>タブではデータのプレビューができます。属性（列）を選択するとその属性のプロファイルが自動的に行われ、右側に表示がされます。</p>
+<p><strong>データ</strong>タブではデータのプレビューができます。属性（列）を選択するとその属性のプロファイルが自動的に行われ、右側に表示がされます。</p>
 
 <p><img src="data.png" alt="データ" /></p>
 
-<p>また、<strong>検証</strong>タブはすべての演算子に共通に存在し、演算子に関わる検証を行いその結果を表示します。</p>
+<p><strong>検証</strong>タブはすべての演算子に共通に存在し、演算子に関わる検証を行いその結果を表示します。</p>
 
 <h2 id="データのフィルタ">データのフィルタ</h2>
 <p>ソースから以下の条件でデータをフィルタ（絞り込み）します。</p>
@@ -770,6 +769,7 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 <ul>
   <li>識別子 : CUSTEOMERS_TARGET(以下を設定すると自動入力されます)
     <ul>
+      <li>統合戦略 : 挿入（デフォルトのまま）</li>
       <li>データ・アセット : Data_Warehouse</li>
       <li>接続 : Default Connection</li>
       <li>スキーマ : BETA</li>
@@ -805,8 +805,6 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 
 <p>検証で問題がないことを確認後<strong>保存</strong>します。</p>
 
-<p><a id="anchor7"></a></p>
-
 <h1 id="7-タスクの作成">7. タスクの作成</h1>
 <p><strong>タスク</strong>はデータに対する一連のアクションを指定するリソースです。タスクには種類がありますが、データ・フローを呼び出す場合は統合タスクを利用します。</p>
 
@@ -821,8 +819,6 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 <p>データ・フローを選択をすると自動的に検証が行われます。検証の成功を確認し、<strong>Create and Close</strong>をクリックします。</p>
 
 <p><img src="task.png" alt="タスク" /></p>
-
-<p><a id="anchor8"></a></p>
 
 <h1 id="8-アプリケーションの作成とタスクの公開と実行">8. アプリケーションの作成とタスクの公開と実行</h1>
 <p><strong>アプリケーション</strong>はタスクを実行するコンテナです。タスクはアプリケーションに公開し、アプリケーションから実行します。</p>
@@ -875,7 +871,7 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 
 <p><br /></p>
 
-<p><a href="#anchor0">ページトップへ戻る</a></p>
+<p><a href="#">ページトップへ戻る</a></p>
 
         
       </section>
@@ -887,7 +883,7 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-22T11:32:34+09:00">October 22, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-26T00:15:27+09:00">October 26, 2021</time></p>
 
 
       </footer>
@@ -908,7 +904,7 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/intermediates/blockchain-tutorial/" class="pagination--pager" title="Oracle Blockchain Platform チュートリアル
+      <a href="/ocitutorials/intermediates/bastion/" class="pagination--pager" title="BastionサービスでパブリックIPを持たないリソースにアクセスする
 ">前へ</a>
     
     

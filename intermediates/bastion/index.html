@@ -1,0 +1,670 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>BastionサービスでパブリックIPを持たないリソースにアクセスする | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIのBastionサービスを使用することで踏み台サーバーを作成せずにパブリックIPを持たないリソースにインターネットから接続できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="BastionサービスでパブリックIPを持たないリソースにアクセスする">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/bastion/">
+
+
+  <meta property="og:description" content="OCIのBastionサービスを使用することで踏み台サーバーを作成せずにパブリックIPを持たないリソースにインターネットから接続できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/bastion/img1.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-10-26T00:15:27+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/bastion/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/bastion/img1.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          BastionサービスでパブリックIPを持たないリソースにアクセスする
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIのBastionサービスを使用することで踏み台サーバーを作成せずにパブリックIPを持たないリソースにインターネットから接続できます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">BastionサービスでパブリックIPを持たないリソースにアクセスする</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/deep-learning-with-gpu/">GPUインスタンスでディープラーニング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/" class="active">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="BastionサービスでパブリックIPを持たないリソースにアクセスする">
+    <meta itemprop="description" content="OCIのBastionサービスを使用することで踏み台サーバーを作成せずにパブリックIPを持たないリソースにインターネットから接続できます。">
+    <meta itemprop="datePublished" content="2021-10-26T00:15:27+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-ポリシーの付与">1. ポリシーの付与</a></li><li><a href="#2-プライベートサブネット内にoracle-linuxとwindowsのインスタンスを作成">2. プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成</a></li><li><a href="#3-要塞の作成">3. 要塞の作成</a></li><li><a href="#4-管理対象sshセッションでoracle-linuxインスタンスに接続">4. 管理対象SSHセッションでOracle Linuxインスタンスに接続</a></li><li><a href="#5sshポート転送セッションでwindowsインスタンスに接続">5.SSHポート転送セッションでWindowsインスタンスに接続</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong>  <a href="../.."><u>Oracle Cloud Infrastructure チュートリアル</u></a></p>
+
+<p>通常インターネットからパブリックエンドポイントを持たないターゲット・リソースに接続する場合、パブリックサブネット内の踏み台サーバーを経由してそれらのリソースに接続する必要があります。しかしOCIのBastionサービスを使用することでわざわざ踏み台サーバーを立てる必要がありません。このサービスはプライベートサブネット内のインスタンスだけでなくDBの接続や、リモートデスクトップ接続（RDS）で使用できます。またAlways Freeに該当するため無償で利用できるサービスです。<br />
+今回のチュートリアルではプライベートサブネット内にあるLinuxインスタンスとWindowsインスタンスにBastionサービスを使ってそれぞれSSH接続、RDS接続を行います。
+<img src="img1.png" alt="img1.png" /></p>
+
+<p><strong>所要時間：</strong>　約30分<br />
+<strong>前提条件：</strong></p>
+<ol>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/"><u>その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成</u></a>が完了していること</li>
+</ol>
+
+<p><strong>注意</strong>: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次 :</strong></p>
+<ol>
+  <li><a href="#anchor1">ポリシーの付与</a></li>
+  <li><a href="#anchor2">プライベート内にLinuxとWindowsのインスタンスを作成</a></li>
+  <li><a href="#anchor3">要塞の作成</a></li>
+  <li><a href="#anchor4">管理対象SSHセッションでLinuxインスタンスに接続</a></li>
+  <li><a href="#anchor5">SSHポート転送セッションでWindowsインスタンスに接続</a>
+<br /><br /></li>
+</ol>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-ポリシーの付与">1. ポリシーの付与</h1>
+
+<p>Bastionサービスを使う際に権限が必要です。IAMポリシーを以下のように作成します。管理者や <strong><code class="language-plaintext highlighter-rouge">all resource</code></strong>　ですべてのリソースを使用できる権限があるユーザーの場合はこの設定をする必要がありません。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Allow group &lt;グループ名&gt; to manage bastion in tenancy/compartment&lt;コンパートメント名&gt;
+  Allow group &lt;グループ名&gt; to manage bastion-session in tenancy/compartment&lt;コンパート名&gt;
+</code></pre></div></div>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-プライベートサブネット内にoracle-linuxとwindowsのインスタンスを作成">2. プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成</h1>
+
+<ol>
+  <li>インスタンスを作成する際に <a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/"><u>その3 - インスタンスを作成する</u></a>を参考にして、プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成してください。 Windowsインスタンスを作成するには、<strong><code class="language-plaintext highlighter-rouge">イメージの変更</code></strong> のボタンを押して、デフォルトのOracle LinuxからWindowsに変えることで出来ます。</li>
+  <li>Oracle Linuxのインスタンスは作成後 <strong><code class="language-plaintext highlighter-rouge">Oracle Cloudエージェント</code></strong> の一番下にある要塞のプラグインを有効にします。今後行う管理対象SSHセッションで接続する場合必ずこのプラグインが必要になります。
+  <img src="img2.png" alt="img2.png" />
+<br /></li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-要塞の作成">3. 要塞の作成</h1>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">Identity &amp; Security＞要塞</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">要塞の作成</code></strong> のボタンを押します。
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">要塞名</code></strong> - TutorialBastion</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">仮想クラウドネットワーク</code></strong> - Bastion_VCN（ご自身で作成されたVCNを選択します）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・サブネット</code></strong> - パブリックサブネット</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">CIDRブロック許可リスト</code></strong> - 0.0.0.0/0
+  <img src="img3.png" alt="img3.png" />
+        <blockquote>
+          <p><strong>Note</strong> <br />
+ Bastionサービスのセッション時間は最大３時間で、この値がデフォルトで設定されています。拡張オプションで変更することが可能ですが、３時間を超えることは出来ません。
+<br /></p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-管理対象sshセッションでoracle-linuxインスタンスに接続">4. 管理対象SSHセッションでOracle Linuxインスタンスに接続</h1>
+
+<p>Oracle Linuxのインスタンスに対して管理対象SSHセッションで接続します。管理対象SSHセッションは、Computeインスタンスに接続する場合のみ利用できます。また接続するにはOpenSSHサーバーを利用して、先ほど行ったOracle Cloud AgentでBastionのプラグインを有効にしている必要があります。</p>
+
+<ol>
+  <li>
+    <p>要塞の一覧ページから、作成した要塞の名前のリンクをクリックして、要塞の詳細ページを開きます。そして <strong><code class="language-plaintext highlighter-rouge">セッションの作成</code></strong> のボタンを押します。
+<img src="img4.png" alt="img4.png" /></p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">セッションの作成</code></strong> を以下の通りに設定します。
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">セッションタイプ</code></strong> - 管理対象SSHセッション</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">セッション名</code></strong> - Session_Linux</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ユーザー名</code></strong> - opc</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンピュートインスタンス</code></strong> - Bastion_Linux</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">CIDRブロック許可リスト</code></strong> - 0.0.0.0/0</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">SSHキーの追加</code></strong> - id_rsa.pub（ご自身で作成されたSSHキーのファイルを選択します）
+   　<img src="img5.png" alt="img5.png" />
+        <blockquote>
+          <p>Note <br />
+ SSHキーがない場合は、<strong><code class="language-plaintext highlighter-rouge">SSHキー・ペアの生成</code></strong> のボタンを押します。そして秘密鍵と公開鍵をダウンロードします。インスタンス作成時に登録したSSHキーと要塞のSSHキーが違っていても問題はありません。</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>次に作成したセッションの一番右側のメニューバーをクリックして <strong><code class="language-plaintext highlighter-rouge">SSHコマンドのコピー</code></strong> を選択します。
+<img src="img6.png" alt="img6.png" /></p>
+  </li>
+  <li>テキストエディタを用い2箇所の <strong><code class="language-plaintext highlighter-rouge">＜PrivateKey＞</code></strong> を要塞作成時に使用した秘密鍵の名前に変更します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ssh -i &lt;privateKey&gt; -o ProxyCommand="ssh -i &lt;privateKey&gt; -W %h:%p -p 22 ocid1.bastionsession.oc1.ap-osaka-1.amaaaaaassl65iqawgnuit6z3nercjcpret6a62x3vbgbhyjgusu646nndwa@host.bastion.ap-osaka-1.oci.oraclecloud.com" -p 22 opc@10.0.1.38
+</code></pre></div>    </div>
+    <p>ここでは秘密鍵の名前を <strong><code class="language-plaintext highlighter-rouge">id_rsa</code></strong> として記載するので以下のようになります。</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ssh -i id_rsa -o ProxyCommand="ssh -i id_rsa -W %h:%p -p 22 ocid1.bastionsession.oc1.ap-osaka-1.amaaaaaassl65iqawgnuit6z3nercjcpret6a62x3vbgbhyjgusu646nndwa@host.bastion.ap-osaka-1.oci.oraclecloud.com" -p 22 opc@10.0.1.38
+</code></pre></div>    </div>
+  </li>
+  <li>コマンドラインを使用して接続します。要塞作成時の秘密鍵が.sshディレクトリ内に格納されているので、最初にそのディレクトリに移動します。そして先ほど編集したSSHコマンドを実行します。はじめて接続する時は接続しても良いかを聞かれるので <strong><code class="language-plaintext highlighter-rouge">yes</code></strong>　と入力します。するとLinuxインスタンスに接続できます。<br />
+<img src="img7.png" alt="img7.png" /></li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5sshポート転送セッションでwindowsインスタンスに接続">5.SSHポート転送セッションでWindowsインスタンスに接続</h1>
+
+<p>SSHポート転送セッションでWindowsインスタンスにRDS接続します。SSHポート転送セッションはSSHを使用しており暗号化されています。そのため暗号化されていないプロトコルを使用して情報を送信してもセキュリティ面で問題なく使用できます。</p>
+
+<ol>
+  <li>
+    <p>要塞の詳細画面に戻り、<strong><code class="language-plaintext highlighter-rouge">セッションの作成</code></strong>　のボタン押します。</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">セッションの作成</code></strong> を以下の通りに設定します。
+ <img src="img8.png" alt="img8.png" />
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">セッション・タイプ</code></strong> - SSHポート転送セッション</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">セッション名</code></strong> - Session_Windows</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">IPアドレス</code></strong> - WindowsインスタンスのプライベートIPアドレス</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ポート</code></strong> - 3389</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">SSHキーの追加</code></strong> - id_rsa.pub（ご自身で作成されたSSHキーを選択します。)</li>
+    </ul>
+  </li>
+  <li>
+    <p>作成したセッションの一番右側のメニューから <strong><code class="language-plaintext highlighter-rouge">SSHコマンドのコピー</code></strong>　のボタンを押します。</p>
+  </li>
+  <li>
+    <p>コピーしたものをテキストエディタに貼り付けます。そして以下のように書き換えます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ssh -i &lt;privateKey&gt; -N -L &lt;localPort&gt;:10.0.1.80:3389 -p 22 ocid1.bastionsession.oc1.ap-osaka-1.amaaaaaassl65iqasz6vhp6pi7ytxwzxpvpqgf2wc5oqxvbfs3mu3qdi6vxq@host.bastion.ap-osaka-1.oci.oraclecloud.com
+</code></pre></div>    </div>
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">privateKey</code></strong> - id_rsa（要塞作成時に使用した秘密鍵）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">LocalPort</code></strong> - 3399</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">-vの追加</code></strong> - 秘密鍵の後ろに-vのコマンドを追加する。　
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ssh -i id_rsa -v -N -L 3399:10.0.1.80:3389 -p 22 ocid1.bastionsession.oc1.ap-osaka-1.amaaaaaassl65iqasz6vhp6pi7ytxwzxpvpqgf2wc5oqxvbfs3mu3qdi6vxq@host.bastion.ap-osaka-1.oci.oraclecloud.com
+</code></pre></div>        </div>
+        <blockquote>
+          <p><strong>Note</strong><br />
+ -vを追加することで詳細出力されます。</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>先ほどと同様にコマンドプロンプトを開き秘密鍵が格納されているディレクトリに移動します。そして編集したコマンドを入力します。
+ <img src="img9.png" alt="img9.png" /> 
+ <strong><code class="language-plaintext highlighter-rouge">debug1 : pledge: network</code></strong> と表示されたら、接続完了です。
+ <img src="img10.png" alt="img10.png" /></p>
+  </li>
+  <li>リモートデスクトップ接続を開いて、<strong><code class="language-plaintext highlighter-rouge">localhost:3399</code></strong> で接続します。するとWindowsインスタンスに接続できます。<br />
+  <img src="img11.png" alt="img11.png" /></li>
+</ol>
+
+<p><br /></p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><br /></p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#bastion" class="page__taxonomy-item" rel="tag">bastion</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-26T00:15:27+09:00">October 26, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Bastion%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%A7%E3%83%91%E3%83%96%E3%83%AA%E3%83%83%E3%82%AFIP%E3%82%92%E6%8C%81%E3%81%9F%E3%81%AA%E3%81%84%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fbastion%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fbastion%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fbastion%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/blockchain-tutorial/" class="pagination--pager" title="Oracle Blockchain Platform チュートリアル
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/ocidi-tutorials/" class="pagination--pager" title="OCI Data Integrationチュートリアル
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

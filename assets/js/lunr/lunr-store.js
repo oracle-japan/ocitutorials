@@ -491,6 +491,12 @@ var store = [{
         "url": "/ocitutorials/database/adb213-tac/",
         "teaser": "/ocitutorials/database/adb213-tac/tac001.png"
       },{
+        "title": "214 : Spatial Studio で地理情報を扱おう",
+        "excerpt":"はじめに Oracle Spatial Studio (Spatial Studioとも呼ばれます)は、Oracle Spatialによって保存および管理されている地理空間データに対して接続、視覚化、調査および分析を行うためのフリー・ツールです。 本記事では Oracle Database の地理空間機能を用いた地理空間データの活用の方法をご紹介します。 目次 : 1. Oracle Spatial Studioのクラウド上での構築 2. 地理空間データを含むCSV形式ファイルのデータベースへのロード 3. 政府統計データのダウンロードとロード 4. Spatial Studioを用いた分析 おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約80分 1. Oracle Spatial Studioのクラウド上での構築 まず、Spatial Studioのメタデータリポジトリに使用されるデータベーススキーマを作成します。これは、データセット、分析、プロジェクトの定義など、Spatial Studioで行う作業を格納するスキーマです。 1-1. リポジトリスキーマを作成する OCIコンソールからDatabase ActionsでADMINユーザーとしてSpatial Studioリポジトリに使用するADBに接続します。 以下のコマンドでリポジトリスキーマを作成します。スキーマには任意の名前を付けることができます。ここではstudio_repoという名前で作成します。後の手順で使用するため、設定したパスワードをメモしておきます。 CREATE USER studio_repo IDENTIFIED...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb214-spatial-studio/",
+        "teaser": "/ocitutorials/database/adb214-spatial-studio/tokyo_boundary_image.jpg"
+      },{
         "title": "301 : 移行元となるデータベースを作成しよう",
         "excerpt":"はじめに 既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？ 従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは移行編としてそれらの方法をご紹介しています。 Autonomous Database を使ってみよう（移行編） 301: 移行元となるデータベースを作成しよう（本章） 302: スキーマ・アドバイザを活用しよう 303: Data Pumpを利用してデータを移行しよう [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）] 本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しDBCSインスタンスを作成します。 目次 : 1.移行元となるDBCSインスタンスの作成 2.移行対象となるサンプルスキーマ(HR)をインストール 3.サンプルスキーマ(HR)への接続、スキーマの確認 所要時間 : 約150分 (DBCSインスタンスの作成時間を含む) 1. 移行元となるDBCSインスタンスの作成 まず、「Oracle Cloud で Oracle Database を使おう(DBCS)」 を参考に、DBCSインスタンスを作成してください。 TeraTermを起動しDBCSインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。 以降では、DBCSインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です） ホスト名接頭辞 : dbcs01 データベースのバージョン：12.2 パスワード：WelCome123#123# PDBの名前：pdb1 2. 移行対象となるHRスキーマをインストール 次に作成したDBCSインスタンス内に、移行対象となるHRスキーマを作成します。...","categories": [],
         "tags": [],
@@ -748,6 +754,12 @@ var store = [{
         "tags": ["Blockchain"],
         "url": "/ocitutorials/intermediates/blockchain-tutorial/",
         "teaser": "/ocitutorials/blockchain/01_1_create_instance/service_console.png"
+      },{
+        "title": "BastionサービスでパブリックIPを持たないリソースにアクセスする",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル 通常インターネットからパブリックエンドポイントを持たないターゲット・リソースに接続する場合、パブリックサブネット内の踏み台サーバーを経由してそれらのリソースに接続する必要があります。しかしOCIのBastionサービスを使用することでわざわざ踏み台サーバーを立てる必要がありません。このサービスはプライベートサブネット内のインスタンスだけでなくDBの接続や、リモートデスクトップ接続（RDS）で使用できます。またAlways Freeに該当するため無償で利用できるサービスです。 今回のチュートリアルではプライベートサブネット内にあるLinuxインスタンスとWindowsインスタンスにBastionサービスを使ってそれぞれSSH接続、RDS接続を行います。 所要時間：　約30分 前提条件： その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 目次 : ポリシーの付与 プライベート内にLinuxとWindowsのインスタンスを作成 要塞の作成 管理対象SSHセッションでLinuxインスタンスに接続 SSHポート転送セッションでWindowsインスタンスに接続 1. ポリシーの付与 Bastionサービスを使う際に権限が必要です。IAMポリシーを以下のように作成します。管理者や all resource　ですべてのリソースを使用できる権限があるユーザーの場合はこの設定をする必要がありません。 Allow group &lt;グループ名&gt; to manage bastion in tenancy/compartment&lt;コンパートメント名&gt; Allow group &lt;グループ名&gt; to manage bastion-session in tenancy/compartment&lt;コンパート名&gt; 2. プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成...","categories": [],
+        "tags": ["intermediate","bastion"],
+        "url": "/ocitutorials/intermediates/bastion/",
+        "teaser": "/ocitutorials/intermediates/bastion/img1.png"
       },{
         "title": "OCI Data Integrationチュートリアル",
         "excerpt":"はじめに OCI Data Integration はOCIで利用できるGUIベースのETLサービスです。 このチュートリアルではオブジェクト・ストレージ上のデータを変換し、Autonomous Databaseにロードを行っていきます。 OCI Data Integrationドキュメントに掲載されているチュートリアルの一部です。 目次 : 1.サンプルデータのロードとターゲット表の作成 2.Data Integrationを利用するための準備 3.ワークスペースの作成 4.データ・アセットの作成 5.プロジェクトとデータ・フローの作成 6.データ・フローの編集 7.タスクの作成 8.アプリケーションの作成とタスクの公開と実行 前提条件 : Data Integrationを利用するコンパートメントを準備してください。 Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。 1. サンプルデータのロードとターゲット表の作成 ソースとなるオブジェクト・ストレージにファイルをアップロードし、ターゲットとなるAutonomous Databaseにロード先の表を作成します。 ソース：オブジェクト・ストレージ オブジェクト・ストレージにサンプルデータをロードします。 バケットを作成し、次の2つのファイルをアップロードしてください。 ファイルへのリンク : CUSTOMERS.json / REVENUE.csv バケットの作成とファイルのアップロード手順は“その7 - オブジェクト・ストレージを使う”をご確認ください。 ターゲット：Autonomous Database Autonomous Databaseインスタンスを作成しユーザーを作成します。手順は“101:ADBインスタンスを作成してみよう”をご確認ください。ユーザー名は任意ですが、このチュートリアルでは、BETAとします。作成したユーザーBETAで以下のSQLでCUSTOMER_TARGET表を作成してください。 CUSTOMERS_TARGET表作成SQL CREATE TABLE \"BETA\".\"CUSTOMERS_TARGET\"...","categories": [],
