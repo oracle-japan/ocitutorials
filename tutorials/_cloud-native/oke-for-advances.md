@@ -1534,7 +1534,7 @@ key|value
 「作成」をクリックします。  
 
 **コンパートメントOCIDについて**  
-コンパートメントOCIDの確認方法については、[こちら](http://localhost:4000/ocitutorials/cloud-native/functions-for-beginners/#2-1-2-%E3%82%B3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%88%E3%83%A1%E3%83%B3%E3%83%88ocid%E3%81%AE%E7%A2%BA%E8%AA%8D)の`2-1-2`の手順をご確認ください。  
+コンパートメントOCIDの確認方法については、[こちら](https://oracle-japan.github.io/ocitutorials/cloud-native/functions-for-beginners/#2-1-2-%E3%82%B3%E3%83%B3%E3%83%91%E3%83%BC%E3%83%88%E3%83%A1%E3%83%B3%E3%83%88ocid%E3%81%AE%E7%A2%BA%E8%AA%8D)の`2-1-2`の手順をご確認ください。  
 {: .notice--info}
 
 次に画面左側にあるメニューから「ポリシー」をクリックします。  
@@ -1676,7 +1676,7 @@ Environment | OCI Instance
 ![](5-009.png)
 
 **テナンシOCIDについて**  
-テナンシOCIDの確認方法については、[こちら](http://localhost:4000/ocitutorials/cloud-native/oke-for-intermediates/#3%E3%83%AF%E3%83%BC%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97%E3%81%A7%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88%E6%83%85%E5%A0%B1%E3%81%AE%E5%8F%8E%E9%9B%86)の`3.テナンシOCID`をご確認ください。  
+テナンシOCIDの確認方法については、[こちら](https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-intermediates/#3%E3%83%AF%E3%83%BC%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%83%E3%83%97%E3%81%A7%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88%E6%83%85%E5%A0%B1%E3%81%AE%E5%8F%8E%E9%9B%86)の`3.テナンシOCID`をご確認ください。  
 {: .notice--info}
 
 「Save&Test」をクリックします。  
