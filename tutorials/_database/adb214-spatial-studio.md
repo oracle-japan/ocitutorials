@@ -12,8 +12,8 @@ header:
 
 # はじめに
 
-Oracle Spatial Studio (Spatial Studioとも呼ばれます)は、Oracle Spatialによって保存および管理されている地理空間データに対して接続、視覚化、調査および分析を行うためのフリー・ツールです。
-本記事では Oracle Database の地理空間機能を用いた地理空間データの活用の方法をご紹介します。
+Oracle Spatial Studio (Spatial Studioとも呼ばれます)は、Oracle Database のSpatial機能によって保存および管理されている地理空間データに対して接続、視覚化、調査および分析を行うためのフリー・ツールです。Spatial Studioは従来、Spatial and Graphとして有償オプションでしたが、現在はOracle Databaseの標準機能として追加費用なくご利用いただけます。
+本記事では Spatial機能を用いた地理空間データの活用の方法をご紹介します。
 
 **目次 :**
   + [1. Oracle Spatial Studioのクラウド上での構築](#anchor1)
@@ -36,28 +36,25 @@ Oracle Spatial Studio (Spatial Studioとも呼ばれます)は、Oracle Spatial�
 <a id="anchor1"></a>
 
 # 1. Oracle Spatial Studioのクラウド上での構築
-まず、Spatial Studioのメタデータリポジトリに使用されるデータベーススキーマを作成します。これは、データセット、分析、プロジェクトの定義など、Spatial Studioで行う作業を格納するスキーマです。
+まず、Spatial Studioのメタデータを格納するリポジトリとなるデータベース・スキーマを作成します。これは、データセット、分析、プロジェクトの定義など、Spatial Studioで行う作業を格納するスキーマです。
 
-## 1-1. リポジトリスキーマを作成する
+## 1-1. リポジトリ用にスキーマを作成する
 1. OCIコンソールからDatabase ActionsでADMINユーザーとしてSpatial Studioリポジトリに使用するADBに接続します。
 
-1. 以下のコマンドでリポジトリスキーマを作成します。スキーマには任意の名前を付けることができます。ここではstudio_repoという名前で作成します。後の手順で使用するため、設定したパスワードをメモしておきます。
+1. 以下のコマンドでリポジトリ・スキーマを作成します。スキーマには任意の名前を付けることができます。ここではstudio_repoという名前で作成します。後の手順で使用するため、設定したパスワードをメモしておきます。
 ```
-CREATE USER studio_repo
-IDENTIFIED BY <password>;
+CREATE USER studio_repo IDENTIFIED BY <password>;
 ```
 
 ## 1-2. 表領域クオータを割り当てる
 1. デフォルトの表領域dataをstudio_repoに割り当てます。
 ```
-ALTER USER studio_repo
-DEFAULT TABLESPACE data;
+ALTER USER studio_repo DEFAULT TABLESPACE data;
 ```
 
 1. 表領域クォータをstudio_repoに割り当てます。今回は250Mで設定しますが、他のデータセットを試す場合は、無制限(UNLIMITED)に設定することもできます。
 ```
-ALTER USER studio_repo
-QUOTA 250M ON data;
+ALTER USER studio_repo QUOTA 250M ON data;
 ```
 
 ## 1-3. 権限の付与
@@ -72,13 +69,13 @@ GRANT CONNECT,
       CREATE SYNONYM,
       CREATE TYPE,
       CREATE TRIGGER
-TO  studio_repo
+TO studio_repo;
 ```
 
-これで、studio_repoスキーマをSpatialStudioリポジトリとして使用する準備が整いました。
+これで、studio_repoスキーマをSpatial Studioのリポジトリとして使用する準備が整いました。
 
 ## 1-4. ウォレットのダウンロード
-Spatial Studioが、作成したADBリポジトリスキーマに接続するには、ウォレットが必要です。
+Spatial Studioが、作成したADBリポジトリ用スキーマに接続するには、ウォレットが必要です。
 [104 : クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/){:target="_blank"} を参考に、ウォレットをダウンロードします。
 
 ## 1-5. マーケットプレイスからSpatial Studioを選択する
@@ -102,7 +99,7 @@ Spatial Studioが、作成したADBリポジトリスキーマに接続するに
 設定ができたらスクロールダウンして、「ネットワークの設定」のセクションに進みます。
 ![advanced_configイメージ](advanced_config.jpg)
 > （補足）
-> デフォルトでは、Spatial Studio の admin ユーザー名は admin です。これはSpatial Studioのアプリケーション・ユーザーであり、『1. Spatial Studioリポジトリのデータベースユーザー作成』で作成したリポジトリ・スキーマ用のデータベース・ユーザー名（studio_repo）とは異なります。
+> デフォルトでは、Spatial Studio の 管理ユーザー名は admin です。これはSpatial Studioのアプリケーション・ユーザーであり、『1. Spatial Studioリポジトリのデータベースユーザー作成』で作成したリポジトリ・スキーマ用のデータベース・ユーザー名（studio_repo）とは異なります。
 
 1. ネットワークについては、新しいVCNを自動的に作成する、もしくは既存のVCNを作成します。  
 下の図は、新たにVCNの作成した例です。既存のVCNを使用するには、上記ステップ2で選択したのと同じ可用性ドメイン内にある必要があります。他に既存のVCNがない場合は、残りの項目はデフォルトのままで構いません。既存のVCNがある場合は、競合を避けるためにCIDR値を変更してください。
@@ -132,16 +129,16 @@ Spatial Studioが、作成したADBリポジトリスキーマに接続するに
 リンクをクリックすると、ウェブサイトに移動します。
 ![access_warningイメージ](access_warning.jpg)
 
-1. Spatial Studio の admin ユーザー名（デフォルトはadmin）と、『1-6.スタックウィザードの作成』で入力したパスワードを入力します。そして、[Sign In]をクリックします。
+1. Spatial Studio の 管理ユーザー名（デフォルトはadmin）と、『1-6.スタックウィザードの作成』で入力したパスワードを入力します。そして、[Sign In]をクリックします。
 ![sign_inイメージ](sign_in.jpg)
 
-1. Spatial Studioインスタンスへの最初のログイン時に、メタデータ・リポジトリとして使用するデータベース・スキーマの接続情報の入力が求められます。『1-1. リポジトリスキーマを作成する』で作成したスキーマを使用するので、[Oracle Autonomous Database]を選択し、[Next]をクリックします。
+1. Spatial Studioインスタンスへの最初のログイン時に、メタデータ・リポジトリとして使用するデータベース・スキーマの接続情報の入力が求められます。『1-1. リポジトリ用にスキーマを作成する』で作成したスキーマを使用するので、[Oracle Autonomous Database]を選択し、[Next]をクリックします。
 ![choose_connectionイメージ](choose_connection.jpg)
 
 1. 『1-4. ウォレットのダウンロード』で保存したウォレットファイルを選択（またはドラッグ＆ドロップ）します。読み込み後、[OK]をクリックします。
 ![upload_walletイメージ](upload_wallet.jpg)
 
-1. 『1-1. リポジトリスキーマを作成する』で作成したユーザー名（studio_repo）とパスワード、およびサービスを入力します。今回は、サービスレベルはmediumが適切です。以下の画像のように入力し、[OK]をクリックします。
+1. 『1-1. リポジトリ用にスキーマを作成する』で作成したユーザー名（studio_repo）とパスワード、およびサービスを入力します。今回は、サービスレベルはmediumに設定しておきます。接続サービスについては、[こちら](https://oracle-japan.github.io/ocitutorials/database/adb201-service-names/){:target="_blank"}もご参照ください。以下の画像のように入力し、[OK]をクリックします。
     <div style="text-align: center"><img src="specify_metadata_schema.jpg"></div> 
 1. Spatial Studioがスキーマへの初期接続を行い、いくつかのメタデータ・テーブルを作成します。完了すると、Getting Started情報とともにSpatial Studioが開きます。以下の画像のように表示されれば、ログイン成功です。
 ![getting_startedイメージ](getting_started.jpg)
@@ -320,7 +317,7 @@ Oracle Spatial StudioはAutonomous Databaseに標準で含まれております�
 <BR/>
 
 # 参考資料
-+ 『専用Exadata InfrastructureでのOracle Autonomous Database開発者ガイド』 [12 Autonomous DatabaseでのOracle Spatialの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/atpdg/use-oracle-spatial1.html#GUID-0A30C392-E5F7-4082-A101-F7B61E37AEE2){:target="_blank"}
++ 『共有Exadata InfrastructureでのOracle Autonomous Databaseの使用』 [14 Autonomous DatabaseでのOracle Spatialの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/spatial-autonomous-database.html#GUID-2090A775-E049-4695-B371-E583313A5F8C){:target="_blank"}
 + Oracle Database 『開発者ガイド』 [20 空間演算子](https://docs.oracle.com/cd/E96517_01/spatl/spatial-operators-reference.html#GUID-85422854-5133-4F1D-BF0E-228CA6EDAF87){:target="_blank"}
 
 
