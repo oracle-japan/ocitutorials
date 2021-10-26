@@ -73,7 +73,7 @@ header:
                             CREDENTIAL_NAME  => 'USER_CRED',
                             USERNAME         => 'myUsername',
                             PASSWORD         => 'LPB>Ktk(1M1SD+a]+r'
-    )
+    );
 
     END;
     ```
