@@ -42,9 +42,14 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 
 + Oracle Sales History（SHスキーマ）
 + Star Schema Benchmark（SSBスキーマ）
+
+<b>上記のサンプルスキーマの特長</b>
+
 + 約1TB、約60億行のファクト表と、複数のディメンション表から構成
 + マニュアルには動作確認用のサンプルSQLも記載されている
 + ADW、ATPの双方で利用可能（2021/07時点）- 本ガイドでは前の章で作成したAutonomous Transaction Processing(ATP) インスタンスの利用を前提に記載していますが、SSBのような分析系・DWH系のアプリケーションの場合、Autonomous Data Warehouse(ADW) をご選択いただくことを推奨しています。
+
+※サンプルスキーマの詳細については[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/autonomous-sample-data.html#GUID-4BB2B49B-0C20-4E38-BCC7-A61D3F45390B)を参照ください。
 
 **作業の流れ**
 
@@ -88,6 +93,7 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
    ![画面ショット1-1](img42.png)
 
 1. SSBスキーマの構造がER図で表示されました。画面中央上の**セーブマーク** をクリックし、ダイアグラムを保存します。
+<br>※図が重なってしまっている場合は、ドラッグして適宜移動してみてください。
 
    ![画面ショット1-1](img43.png)
 
@@ -192,6 +198,13 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
    > **注意**
    >
    > ここではOCPU数を段階的に増やし、性能が向上することをご確認いただきますが、クレジット消費も比例して大きくなりますので、ご注意ください。
+   >
+
+   > **補足**
+   >
+   > Autonomous Databaseのマニュアルでは、上に記載しているサンプルSQL以外にも動作確認用のサンプルSQLをご用意しております。
+   > [こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/sample-queries.html#GUID-431A16E8-4C4D-4786-BE5C-30029AC1EFD8)を参照ください。
+   >
 
 <br>
 
@@ -292,6 +305,12 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 # 3. 性能調査に使えるツールのご紹介
 
 ここからは実際にADBにて性能調査を行う際にどう言ったツールが利用できるのかをみていきたいと思います。
+
+サービスコンソールおよびパフォーマンスハブでは次のような機能をご利用いただけます。
+
+
+   <div style="text-align: center"><img src="slide.jpg"></div>
+
 
 <a id="anchor3-1"></a>
 
