@@ -123,6 +123,9 @@ Autonomous Database は、最新のAI技術によって自律的に運用され�
 - **[ストレージ・ゲートウェイを作成する](/ocitutorials/intermediates/storage-gateway/)**  
   ストレージ・ゲートウェイ とは、アプリケーションが 標準のNFSv4プロトコルを使用してOracle Cloud Infrastructure オブジェクト・ストレージと相互作用できるようになるサービスです。オンプレミスからのデータ転送、バックアップ、アーカイブ用途などに利用できます。
 
+- **[BastionサービスでパブリックIPを持たないリソースにアクセスする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/bastion/)**  
+  OCIのBastionサービスを使用することで踏み台サーバーを作成せずにパブリックIPを持たないリソースにインターネットから接続できます。
+
 
 
 ## チュートリアル実践編
