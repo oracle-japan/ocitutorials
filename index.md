@@ -52,6 +52,8 @@ Autonomous Database は、最新のAI技術によって自律的に運用され�
 - **[Oracle Cloud VMware Solution(OCVS) ハンズオン（ビギナー向け）](https://labs.hol.vmware.com/HOL/catalogs/lab/9582)** ※外部サイト  
   Oracle Cloud VMWare Solution(OCVS)は、Oracle Cloud Infrastructure(OCI) のベアメタルインフラ上に「VMware Cloud Foundation（VCF）」を配置してご提供するサービスです。こちらのハンズオンでは、OCI上で VMware Solution を作成する手順や、その他のOCIサービスとの連携方法、オンプレミス環境への接続手順などをご確認いただけます。
 
+- **[[完全無償] Always Freeで快適DBアプリ開発環境を構築する](/ocitutorials/beginners/alwaysfree/)**  
+OCIの各テナントには、「Always Free」と呼ばれる、永久無償で利用することが出来る いくつかのサービスが含まれています。本チュートリアルを通して、完全無償の快適DBアプリ開発環境を構築していきましょう。
 
 
 ## チュートリアル応用編 - Oracle Cloud Infrastructure アドバンスド
@@ -82,18 +84,16 @@ Autonomous Database は、最新のAI技術によって自律的に運用され�
 - **[インスタンスにセカンダリIPを付与する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/attaching-secondary-ips/)**  
   OCIのインスタンスには、プライベートのIPアドレスをいくつも付与することができます。使いみちはさまざま。例えばセカンダリIPを付け替えてインスタンスのフェイルオーバーを実現することも。ただちょっと使い方にはポイントが必要ですので、そのやり方を学びましょう。
 
-- **[監査(Audit)ログを使用したテナント監視](/ocitutorials/intermediates/serviceconnecterhub/)**
-
+- **[監査(Audit)ログを使用したテナント監視](/ocitutorials/intermediates/serviceconnecterhub/)**  
   テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていきます。
 
 - **[コマンドライン(CLI)でOCIを操作する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-cli/)**  
   クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。
 
-- **[リソース・マネージャを使ってサンプルアプリケーションをデプロイする](/ocitutorials/intermediates/resource-manager/)**
-
+- **[リソース・マネージャを使ってサンプルアプリケーションをデプロイする](/ocitutorials/intermediates/resource-manager/)**  
   リソース・マネージャはリソースのプロビジョニングを自動化したInfrastructure-as-Codeを実現するサービスです。環境構築の自動化を体験してみましょう。
 
-- **[TerraformでOCIの構築を自動化する - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474281/terraform%E3%81%A7oci%E3%81%AE%E6%A7%8B%E7%AF%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[TerraformでOCIの構築を自動化する](https://community.oracle.com/tech/welcome/discussion/4474281/terraform%E3%81%A7oci%E3%81%AE%E6%A7%8B%E7%AF%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
   大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
 
 - **[OCI Valut (OCI Key Management) でBYOKをする](https://qiita.com/western24/items/06271c09a17e566661e8)**  
