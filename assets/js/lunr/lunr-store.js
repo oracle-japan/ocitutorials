@@ -65,6 +65,12 @@ var store = [{
         "url": "/ocitutorials/beginners/creating-HeatWave/",
         "teaser": "/ocitutorials/beginners/creating-mds/MySQLLogo_teaser.png"
       },{
+        "title": "Always Freeで快適DBアプリ開発環境を構築する",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracle Cloud Infrastructure (OCI) の ”Always Free” では、以下のようなリソースが永久無償で利用することが可能です。（無償利用が可能な全てのリソースについては Oracle Cloud Infrastructure ドキュメント：Always Free リソース を参照してください） 【無償利用可能なサービス例】 AMDベースのコンピュート ArmベースのAmpere A1 Compute Block Volume Object Storage Flexible Load Balancer Autonomous Transaction Processing など 本チュートリアルでは、このAlways Freeで使えるリソースを活用し、データベース・アプリケーションの開発環境を構築していきます。構成は下記の通りです。 上記構成のうち、１～３までは実施済みである前提とします。下記の前提条件を参考に作成してください。 前提条件 : チュートリアル : 準備 - Oracle Cloud の無料トライアルを申し込むPermalink を参考に、Oracle...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/beginners/alwaysfree/",
+        "teaser": "/ocitutorials/beginners/alwaysfree/image01.png"
+      },{
         "title": "Oracle Blockchain Platformのインスタンス作成",
         "excerpt":"この文書は Oracle Blockchain Platform（OBP）のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 この文書は、2021年4月時点での最新バージョン(21.1.2)を元に作成されています。 1. 準備 1.1 Oracle Cloud の環境を準備する Oracle Cloud のアカウントを準備します。現在、OBP は無料トライアル期間（Free Trial Credit）および Always Free で利用できるサービスには含まれていないため、有償アカウントが必要です。 1.2 Oracle Cloud にサイン・インする OBP インスタンスは、Oracle Cloud Infrastructure コンソール（以降 OCI コンソール）から作成します。ここでは、前の手順で作成した テナント管理ユーザー で OCI コンソールにアクセスします。 こちらのチュートリアルもあわせてご確認ください。 その 1 - OCI コンソールにアクセスして基本を理解する Web ブラウザで、以下の URL にアクセスします。 https://cloud.oracle.com Cloud Account Name （クラウドアカウント名）...","categories": [],
         "tags": ["Blockchain"],
@@ -370,6 +376,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/database/dbcs104-backup/",
         "teaser": "/ocitutorials/database/dbcs104-backup/11.PNG"
+      },{
+        "title": "106: Data Guardを構成しよう",
+        "excerpt":"はじめに Data Guardは、Oracle Database自身が持つレプリケーション機能です。 プライマリDBの更新情報（REDOログ）をスタンバイDBに転送し、そのREDOログを使ってリカバリし続けることでプライマリDBと同じ状態を維持します。 リアルタイムに複製データベースを持つ事ができる為、データベース障害やリージョン障害などのRTO/RPOを短くすることができ、広範囲な計画停止(メンテナンス)においても切り替えることによって停止時間を極小化することが可能で、災害対策(DR)としてのデータ保護はもちろんのこと、移行やアップグレードの停止時間短縮といった利用用途もあります。 また、参照専用として利用可能なActive Data Guardにしたり、一時的に読み書き可能なスナップショット・スタンバイとして利用したりと、普段から利用可能なスタンバイDBを持つことができます。 ここでは、OCI コンソールから Data Guard を構成するまでの手順についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. OCI上でのData Guard構成パターン 2. Data Guardを構成する為の前提条件 3. Data Guardの構成手順 4. Data Guardの切り替え 5. Data Guard構成に含まれるDBの削除方法 所要時間 : 約60分 1. OCI上でのData Guard構成パターン Oracle Cloud上でData Guardを利用する際の基本的な構成については、大きく分けて３つのパターンがあります。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/dbcs106-dataguard/",
+        "teaser": "/ocitutorials/database/dbcs106-dataguard/dataguard08.png"
       },{
         "title": "101: ADBインスタンスを作成してみよう",
         "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、アクセスしてみます。 目次 1. リージョンを設定し、コンパートメントを用意しよう 2. ADBインスタンスを作成してみよう 3. Database Actionsで操作してみよう 所要時間 : 約20分 1. リージョンを設定し、コンパートメントを用意しよう 1-1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足 上手く表示されない場合は以下のURLをお試しください。...","categories": [],
@@ -762,7 +774,7 @@ var store = [{
         "teaser": "/ocitutorials/blockchain/01_1_create_instance/service_console.png"
       },{
         "title": "BastionサービスでパブリックIPを持たないリソースにアクセスする",
-        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル 通常インターネットからパブリックエンドポイントを持たないターゲット・リソースに接続する場合、パブリックサブネット内の踏み台サーバーを経由してそれらのリソースに接続する必要があります。しかしOCIのBastionサービスを使用することでわざわざ踏み台サーバーを立てる必要がありません。このサービスはプライベートサブネット内のインスタンスだけでなくDBの接続や、リモートデスクトップ接続（RDS）で使用できます。またAlways Freeに該当するため無償で利用できるサービスです。 今回のチュートリアルではプライベートサブネット内にあるLinuxインスタンスとWindowsインスタンスにBastionサービスを使ってそれぞれSSH接続、RDS接続を行います。 所要時間：　約30分 前提条件： その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 目次 : ポリシーの付与 プライベート内にLinuxとWindowsのインスタンスを作成 要塞の作成 管理対象SSHセッションでLinuxインスタンスに接続 SSHポート転送セッションでWindowsインスタンスに接続 1. ポリシーの付与 Bastionサービスを使う際に権限が必要です。IAMポリシーを以下のように作成します。管理者や all resource　ですべてのリソースを使用できる権限があるユーザーの場合はこの設定をする必要がありません。 Allow group &lt;グループ名&gt; to manage bastion in tenancy/compartment&lt;コンパートメント名&gt; Allow group &lt;グループ名&gt; to manage bastion-session in tenancy/compartment&lt;コンパート名&gt; 2. プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成...","categories": [],
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル 通常インターネットからパブリックエンドポイントを持たないターゲット・リソースに接続する場合、パブリック・サブネット内の踏み台サーバーを経由してそれらのリソースに接続する必要があります。しかしOCIのBastionサービスを使用することでわざわざ踏み台サーバーを立てる必要がありません。このサービスはプライベート・サブネット内のインスタンスだけでなくDBの接続や、リモートデスクトップ（RDP）接続で使用できます。またAlways Freeに該当するため無償で利用できるサービスです。 今回のチュートリアルではプライベート・サブネット内にあるLinuxインスタンスとWindowsインスタンスにBastionサービスを使ってそれぞれSSH接続、RDP接続を行います。 所要時間：　約30分 前提条件： その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 目次 : ポリシーの付与 プライベート・サブネット内にLinuxとWindowsのインスタンスを作成 要塞の作成 管理対象SSHセッションでLinuxインスタンスに接続 SSHポート転送セッションでWindowsインスタンスに接続 1. ポリシーの付与 Bastionサービスを使う際に権限が必要です。IAMポリシーを以下のように作成します。管理者や all resource　ですべてのリソースを使用できる権限があるユーザーの場合はこの設定をする必要がありません。 Allow group &lt;グループ名&gt; to manage bastion in tenancy/compartment&lt;コンパートメント名&gt; Allow group &lt;グループ名&gt; to manage bastion-session in tenancy/compartment&lt;コンパート名&gt; 2. プライベート・サブネット内にOracle LinuxとWindowsのインスタンスを作成...","categories": [],
         "tags": ["intermediate","bastion"],
         "url": "/ocitutorials/intermediates/bastion/",
         "teaser": "/ocitutorials/intermediates/bastion/img1.png"

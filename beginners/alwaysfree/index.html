@@ -1,0 +1,1066 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Always Freeで快適DBアプリ開発環境を構築する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIの各テナントには、「Always Free」と呼ばれる、永久無償で利用することが出来る いくつかのサービスが含まれています。本チュートリアルでは、この Always Free 環境を利用し、無料で快適なDBアプリの開発環境を構築していきます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Always Freeで快適DBアプリ開発環境を構築する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/beginners/alwaysfree/">
+
+
+  <meta property="og:description" content="OCIの各テナントには、「Always Free」と呼ばれる、永久無償で利用することが出来る いくつかのサービスが含まれています。本チュートリアルでは、この Always Free 環境を利用し、無料で快適なDBアプリの開発環境を構築していきます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/alwaysfree/image01.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-11-01T13:18:23+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/beginners/alwaysfree/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/alwaysfree/image01.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Always Freeで快適DBアプリ開発環境を構築する
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIの各テナントには、「Always Free」と呼ばれる、永久無償で利用することが出来る いくつかのサービスが含まれています。本チュートリアルでは、この Always Free 環境を利用し、無料で快適なDBアプリの開発環境を構築していきます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/beginners" itemprop="item"><span itemprop="name">Beginners</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Always Freeで快適DBアプリ開発環境を構築する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">入門編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/beginners/acquiring-free-trial/">準備 - Oracle Cloud 無料トライアルを申し込む</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/attaching-block-volume/">その4 - ブロック・ボリュームをインスタンスにアタッチする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/managing-instance-lifecycle/">その5 - インスタンスのライフサイクルを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/object-storage/">その7 - オブジェクト・ストレージを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-oracle-database/">その8 - クラウドでOracle Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds/">その9 - クラウドでMySQL Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-HeatWave/">その10 - MySQLで高速分析を体験する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/alwaysfree/" class="active">Always Freeで快適DBアプリ開発環境を構築する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Always Freeで快適DBアプリ開発環境を構築する">
+    <meta itemprop="description" content="OCIの各テナントには、「Always Free」と呼ばれる、永久無償で利用することが出来る いくつかのサービスが含まれています。本チュートリアルでは、この Always Free 環境を利用し、無料で快適なDBアプリの開発環境を構築していきます。">
+    <meta itemprop="datePublished" content="2021-11-01T13:18:23+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-autonomous-transaction-processing-atp-の作成">1. Autonomous Transaction Processing (ATP) の作成</a></li><li><a href="#2-仮想マシンにアクセスする">2. 仮想マシンにアクセスする</a></li><li><a href="#3-仮想マシンから-atp-データベースにアクセスする">3. 仮想マシンから ATP データベースにアクセスする</a></li><li><a href="#4-仮想マシンにnodejsのサンプルアプリケーションをデプロイする">4. 仮想マシンにnode.jsのサンプルアプリケーションをデプロイする</a></li><li><a href="#5-ファイアウォールを開放してインターネットからアクセスする">5. ファイアウォールを開放してインターネットからアクセスする</a></li><li><a href="#6-任意-フロントにロードバランサーを構成する">6. [任意] フロントにロードバランサーを構成する</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p>Oracle Cloud Infrastructure (OCI) の ”Always Free” では、以下のようなリソースが永久無償で利用することが可能です。（無償利用が可能な全てのリソースについては Oracle Cloud Infrastructure ドキュメント：<a href="https://docs.oracle.com/ja-jp/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm">Always Free リソース</a> を参照してください）</p>
+
+<p>【無償利用可能なサービス例】</p>
+<ul>
+  <li>AMDベースのコンピュート</li>
+  <li>ArmベースのAmpere A1 Compute</li>
+  <li>Block Volume</li>
+  <li>Object Storage</li>
+  <li>Flexible Load Balancer</li>
+  <li>Autonomous Transaction Processing など</li>
+</ul>
+
+<p>本チュートリアルでは、このAlways Freeで使えるリソースを活用し、データベース・アプリケーションの開発環境を構築していきます。構成は下記の通りです。</p>
+
+<p><img src="image01.png" alt="image01.png" /></p>
+
+<p>上記構成のうち、１～３までは実施済みである前提とします。下記の前提条件を参考に作成してください。</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>チュートリアル : <a href="https://oracle-japan.github.io/ocitutorials/#%E6%BA%96%E5%82%99---oracle-cloud-%E3%81%AE%E7%84%A1%E6%96%99%E3%83%88%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%AB%E3%82%92%E7%94%B3%E3%81%97%E8%BE%BC%E3%82%80">準備 - Oracle Cloud の無料トライアルを申し込むPermalink</a> を参考に、Oracle Cloud Free Tier 環境を取得済みであること。</li>
+  <li>チュートリアル：<a href="/ocitutorials/beginners/getting-started/">OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a> を実施し、基本的な操作を理解していること</li>
+  <li>チュートリアル：<a href="/ocitutorials/beginners/creating-vcn/">クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2) </a> を実施し、VCNを作成済みであること</li>
+  <li>チュートリアル：<a href="/ocitutorials/beginners/creating-compute-instance/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> の「2. 作成したインスタンス詳細情報の確認」までが実施済みであること<br />
+※ただし、<font color="red">イメージは プラットフォーム・イメージの「Oracle Linux Cloud Developer」を、シェイプは「VM.Standard.E2.1.Micro」を選択し、作成すること</font></li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約40分</p>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。</p>
+
+<h1 id="1-autonomous-transaction-processing-atp-の作成">1. Autonomous Transaction Processing (ATP) の作成</h1>
+
+<p>前提条件の通り、VCNの作成、仮想マシンの作成等が完了したら、次に Autonomous Transaction Processing (ATP) を作成します。</p>
+
+<ol>
+  <li>
+    <p>ナビゲーション・メニュー（ <strong>三</strong> のアイコン）より、<strong>Oracle Database</strong> → <strong>Autonomous Transaction Processing</strong> をクリックし、Autonomous Databaseの一覧画面を表示します。</p>
+  </li>
+  <li>
+    <p>「<strong>Autonomous Databaseの作成</strong>」ボタンをクリックします。</p>
+
+    <p><img src="image02.png" alt="image02.png" /></p>
+  </li>
+  <li>
+    <p>下記を参考に、Autonomous Databaseの作成画面にて必要事項を入力し、左下の「<strong>Autonomous Databaseの作成</strong>」ボタンをクリックします。</p>
+
+    <p><strong>Autonomous Databaseの基本情報の指定</strong></p>
+    <ul>
+      <li><strong>コンパートメント</strong> - 任意</li>
+      <li><strong>表示名</strong> - <font color="red">devdaysdb</font></li>
+      <li><strong>データベース名</strong> - <font color="red">orcl</font></li>
+    </ul>
+
+    <p><strong>ワークロード・タイプの選択</strong> - <font color="red">[トランザクション処理] を選択</font></p>
+
+    <p><strong>デプロイメント・タイプの選択</strong> - [共有インフラストラクチャ] を選択</p>
+
+    <p><strong>データベースを構成します</strong></p>
+    <ul>
+      <li><strong>Always Freeの構成オプションのみを表示</strong> - <font color="red">チェックを有効化</font></li>
+      <li><strong>データベース・バージョンの選択</strong> - [19c] を選択 (初期値のまま)</li>
+      <li><strong>OCPU数</strong> - 1 (変更不可)</li>
+      <li><strong>ストレージ(TB)</strong> - 0.02 (変更不可)</li>
+      <li><strong>自動スケーリング</strong> - チェックなし (変更不可)</li>
+    </ul>
+
+    <p><strong>管理者資格証明の作成</strong></p>
+    <ul>
+      <li><strong>ユーザー名</strong> - ADMIN (変更不可)</li>
+      <li><strong>パスワード</strong> - 任意 (パスワードは12文字から30文字とし、大文字、小文字および数字をそれぞれ1つ以上含める必要があります。パスワードに二重引用符(“)文字またはユーザー名”admin”を含めることはできません。)<br />
+例：Welcome123###</li>
+      <li><strong>パスワードの確認</strong> - 設定したいパスワードを再入力</li>
+    </ul>
+
+    <p><strong>ネットワーク・アクセスの選択</strong></p>
+    <ul>
+      <li><strong>アクセス・タイプ</strong> - [すべての場所からのセキュア・アクセス] を選択</li>
+      <li><strong>相互TLS (mTLS)認証が必要</strong> - チェックあり (変更不可)</li>
+    </ul>
+
+    <p><strong>ライセンス・タイプの選択</strong> - [ライセンス込み] を選択<br />
+<strong>運用上の通知およびお知らせ用の連絡先を指定してください</strong> - 任意 (通知を受け取りたい場合のみ設定)</p>
+
+    <p><img src="image04.png" alt="image04.png" /></p>
+  </li>
+</ol>
+
+<p>プロビジョニングは 作成ボタンを実行後、数分で完了します。</p>
+
+<h1 id="2-仮想マシンにアクセスする">2. 仮想マシンにアクセスする</h1>
+
+<p>次に、前提条件に沿って作成された仮想マシンへ、Cloud Shell を用いてアクセスします。</p>
+
+<ol>
+  <li>
+    <p>まず始めに、Cloud Shell を起動するため、コンソール画面 右上にある ターミナルのアイコンをクリックします。</p>
+
+    <p><img src="image05.png" alt="image05.png" /></p>
+  </li>
+  <li>
+    <p>Cloud Shell の初回起動には時間がかかりますが、しばらく待つと、起動が完了し、コンソール画面の下部にターミナルが表示されます。
+<img src="image03.png" alt="image03.png" /></p>
+  </li>
+  <li>
+    <p>仮想マシンにアクセス時に使用する秘密鍵を Cloud Shell にアップロードしていきます。Cloud Shell の左上にある「<strong>三</strong>」のメニューをクリックし、「アップロード」をクリックします。</p>
+
+    <p><img src="image06.png" alt="image06.png" /></p>
+  </li>
+  <li>
+    <p>表示されたダイアログに、仮想マシン作成時に設定 (またはダウンロード) しておいた秘密鍵ファイルをドロップするか、「コンピュータから選択」をクリックし、エクスプローラからファイルを選択します。</p>
+
+    <p>続いて、「<strong>アップロード</strong>」ボタンをクリックします。</p>
+
+    <p><img src="image07.png" alt="image07.png" /></p>
+  </li>
+  <li>
+    <p>アップロードが開始され、Cloud Shell の右上にダイアログで転送状況が表示されます。「完了済」と表示されたことを確認してください。確認後、ダイアログを閉じるには、「非表示」をクリックしてください。</p>
+
+    <p><img src="image08.png" alt="image08.png" /></p>
+  </li>
+  <li>
+    <p>次に Cloud Shell 上で秘密鍵に対する設定を行っていきます。下記のコマンドを実行してください。</p>
+
+    <ul>
+      <li>
+        <p>秘密鍵用のディレクトリの作成</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> ~/.ssh
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>秘密鍵ファイルの移動</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mv </span>秘密鍵ファイル名 ~/.ssh/
+</code></pre></div>        </div>
+
+        <font color="silver">(例) 「mv ssh-key-2021-12-01.key ./.ssh/」など</font>
+      </li>
+      <li>
+        <p>ファイルの権限の変更</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod </span>400 ./.ssh/秘密鍵ファイル名
+</code></pre></div>        </div>
+
+        <font color="silver">(例) 「chmod 400 ./.ssh/ssh-key-2021-12-01.key」など</font>
+      </li>
+    </ul>
+
+    <p>これで、秘密鍵に対する設定は完了です。</p>
+  </li>
+  <li>
+    <p>秘密鍵を用いて、仮想マシンにアクセスします。Cloud Shell 画面にて、下記のコマンドを実行してください。</p>
+
+    <p>コンピュート・インスタンスのパブリックIPアドレスが分からない場合は、ナビゲーション・メニュー（ <strong>三</strong> のアイコン）より、<strong>コンピュート</strong> → <strong>インスタンス</strong> をクリックし、インスタンスの一覧画面から、対象のパブリックIPアドレスを確認してください。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh opc@コンピュート・インスタンスのパブリックIPアドレス <span class="nt">-i</span> ./.ssh/秘密鍵ファイル名
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>接続確認のメッセージ「Are you sure you want to continue connecting (yes/no)?」が表示された場合、「yes」と入力します。</p>
+
+    <p><img src="image09.png" alt="image09.png" /></p>
+  </li>
+</ol>
+
+<p>実行後、Cloud Shell 画面にて、<code class="language-plaintext highlighter-rouge">[opc@ホスト名 ~]$ </code> のように表示されていれば、仮想マシンへのアクセスは完了です。</p>
+
+<h1 id="3-仮想マシンから-atp-データベースにアクセスする">3. 仮想マシンから ATP データベースにアクセスする</h1>
+
+<p>データベースに接続するにはクライアント資格証明が必要になります。コンソール画面からクライアント資格証明をダウンロードし、仮想マシンから作成したATPデータベースにアクセスしていきましょう。</p>
+
+<ol>
+  <li>
+    <p>コンソール画面のナビゲーション・メニュー（ <strong>三</strong> のアイコン）より、<strong>Oracle Database</strong> → <strong>Autonomous Transaction Processing</strong> をクリックし、Autonomous Databaseの一覧画面を表示します。
+一覧から、本チュートリアルで作成したATPインスタンスを選択してください。</p>
+
+    <p>尚、Cloud Shell は、右上の「<strong>＿</strong>」アイコンをクリックすることで、最小化することが可能です。</p>
+
+    <p><img src="image10.png" alt="image10.png" /></p>
+  </li>
+  <li>
+    <p>ATPの詳細画面から、「<strong>DB接続</strong>」をクリックします。クライアント資格証明 (ウォレット) をダウンロードします。</p>
+
+    <p><img src="image11.png" alt="image11.png" /></p>
+  </li>
+  <li>
+    <p>「<strong>ウォレットのダウンロード</strong>」ボタンをクリックします。</p>
+
+    <p><img src="image12.png" alt="image12.png" /></p>
+  </li>
+  <li>
+    <p>ウォレットのパスワードを設定し、「<strong>ダウンロード</strong>」ボタンをクリックします。（パスワードは8文字から60文字とし、英字と数字をそれぞれ1つ以上含める必要があります。）</p>
+
+    <p><img src="image13.png" alt="image13.png" /></p>
+
+    <p>ウォレットファイルが「Wallet_orcl.zip」という名称でダウンロードされていることを確認してください。</p>
+  </li>
+  <li>
+    <p>Cloud Shell 画面に戻ります。「2. 仮想マシンにアクセスする」で実施した際と同様に、Cloud Shell の左上にある「<strong>三</strong>」のメニュー →「アップロード」から、先ほどダウンロードしたウォレットファイルをアップロードします。</p>
+  </li>
+  <li>
+    <p>次に Cloud Shell 上にアップロードしたウォレットファイルを 仮想マシンにアップロードします。仮想マシンと接続中の場合は、下記コマンドを実行し、アクセスを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">exit</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>「<em>logout</em>」と表示され、左側の文字列が「xxxx@cloudshell:~」と表示されていることを確認します。</p>
+
+    <p><img src="image14.png" alt="image14.png" /></p>
+  </li>
+  <li>
+    <p>下記コマンドを実行し、Cloud Shell にアップロードしたウォレットファイル (Wallet_orcl.zip) を、仮想マシンに送ります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp <span class="nt">-i</span> ./.ssh/秘密鍵ファイル名 Wallet_orcl.zip opc@コンピュート・インスタンスのパブリックIPアドレス:~/
+</code></pre></div>    </div>
+
+    <p><img src="image15.png" alt="image15.png" /></p>
+  </li>
+  <li>
+    <p>再度、仮想マシンと接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh opc@コンピュート・インスタンスのパブリックIPアドレス <span class="nt">-i</span> ./.ssh/秘密鍵ファイル名
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>下記コマンドを実行し、ウォレットファイルの展開します。</p>
+
+    <ul>
+      <li>
+        <p>ウォレット用のディレクトリの作成</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> ~/Wallet
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>ウォレットファイル (Wallet_orcl.zip) の移動</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mv </span>Wallet_orcl.zip ~/Wallet/
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>ウォレットファイルの展開</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip ./Wallet/Wallet_orcl.zip <span class="nt">-d</span> Wallet/
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>展開したウォレットファイルの一つ「sqlnet.ora」ファイルを開き、ディレクトリ名を編集します。</p>
+
+    <ul>
+      <li>
+        <p>「sqlnet.ora」ファイルをエディタで開く</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi ./Wallet/sqlnet.ora
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>ディレクトリ名の変更</p>
+
+        <ul>
+          <li>
+            <p>vi エディタで INSERT モードにするため、「Insert」キーを押下します。（「Insert」キーが無い場合は、半角英数字の入力状態で「i」キーを押下します。）</p>
+          </li>
+          <li>
+            <p>カーソルを１行目に移動します。</p>
+          </li>
+          <li>
+            <p>「?/network/admin」という文字列を削除し、代わりに「/home/opc/Wallet」を入力します。</p>
+          </li>
+          <li>
+            <p>「Esc」キーを押下し、vi エディタの INSERT モードを終了します。</p>
+          </li>
+          <li>
+            <p>変更を保存するため、「:wq」を入力し、「Enter」キーを押下します。</p>
+
+            <p>※ vi エディタが終了します。</p>
+          </li>
+        </ul>
+
+        <p><img src="image16.png" alt="image16.png" /></p>
+
+        <blockquote>
+          <p><strong><em>Note</em></strong></p>
+
+          <p>vi エディタで、編集を保存せずに終了したい場合は、コマンドモード 状態で「:q!」を入力し、「Enter」キーを押下することで元の画面に戻ることができます。</p>
+
+          <p>コマンドモードに戻るには、「Esc」キーを入力してください。</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>つづいて、環境変数を設定します。</p>
+
+    <ul>
+      <li>
+        <p>環境変数の設定</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span><span class="s1">'/home/opc/Wallet'</span>
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>設定内容の確認</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">env</span> | <span class="nb">grep </span>TNS_ADMIN
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>「TNS_ADMIN=/home/opc/Wallet」と表示されることを確認</p>
+
+        <p><img src="image17.png" alt="image17.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>アクセスのための準備はこれで完了です。実際にATPデータベースへアクセスしてみます。
+下記のコマンドを実行してください。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus admin@orcl_high
+</code></pre></div>    </div>
+
+    <p>「Enter password:」のようにパスワードの入力を求められます。ATPデータベースを作成した際のパスワードを入力してください。</p>
+
+    <p><img src="image18.png" alt="image18.png" /></p>
+
+    <p>上記イメージのように表示されていればアクセスは成功しています。</p>
+
+    <p>※ sqlplus を終了する場合は、「exit」と入力し、「Enter」キーを押下してください。</p>
+  </li>
+</ol>
+
+<h1 id="4-仮想マシンにnodejsのサンプルアプリケーションをデプロイする">4. 仮想マシンにnode.jsのサンプルアプリケーションをデプロイする</h1>
+
+<p>ここまでの手順で、作成した仮想マシンとデータベースの疎通確認ができました。</p>
+
+<p>本手順では、Oracleの公式GitHubアカウントで公開されている <a href="https://github.com/oracle/node-oracledb">node-</a><a href="https://github.com/oracle/node-oracledb">oracledb</a> リポジトリにあるサンプルアプリケーション(Banana Farmer Demonstration) を、仮想マシンにデプロイし、アプリケーションを通じてデータベースアクセス等を体感していきます。</p>
+
+<ol>
+  <li>
+    <p>GitHub のリポジトリから サンプルアプリケーションを ローカルにクローンするため、下記コマンドを実行します。（sqlplus を起動中の場合は、「exit」と入力後、「Enter」キーを押下し、終了してください。）</p>
+
+    <p>クローンは数秒で完了します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle/node-oracledb.git
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次に、クローンしたサンプルアプリケーションに含まれる「dbconfig.js」ファイルを編集します。「dbconfig.js」ファイルでは、サンプルアプリケーションのDB接続情報が定義されています。ファイルを編集し、DB接続情報を変更していきましょう。</p>
+
+    <ul>
+      <li>
+        <p>vi エディタで「dbconfig.js」ファイルを開く</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi ./node-oracledb/examples/dbconfig.js
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>ファイルの下部までスクロールします。</p>
+      </li>
+      <li>
+        <p>ユーザー名の変更</p>
+
+        <ul>
+          <li>
+            <p>vi エディタで INSERT モードにするため、「Insert」キーを押下します。（「Insert」キーが無い場合は、半角英数字の入力状態で「i」キーを押下します。）</p>
+          </li>
+          <li>
+            <p>ユーザー情報を変更します。</p>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>・変更前：「process.env.NODE_ORACLEDB_USER</td>
+                  <td> </td>
+                  <td>“admin”, 」</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>・変更後：「process.env.NODE_ORACLEDB_USER</td>
+                  <td> </td>
+                  <td>“admin”, 」</td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+          <li>
+            <p>次にパスワード情報を変更します。（”adminのパスワード” はATPデータベース作成時に指定したものです。）</p>
+
+            <p>・変更前：「process.env.NODE_ORACLEDB_PASSWORD, 」</p>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>・変更後：「process.env.NODE_ORACLEDB_PASSWORD</td>
+                  <td> </td>
+                  <td>“adminのパスワード”,」</td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+          <li>
+            <p>接続文字列も変更します。</p>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>・変更前：「process.env.NODE_ORACLEDB_USER</td>
+                  <td> </td>
+                  <td>“localhost/orclpdb1”, 」</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>・変更後：「process.env.NODE_ORACLEDB_USER</td>
+                  <td> </td>
+                  <td>“orcl_high”, 」</td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+          <li>
+            <p>「Esc」キーを押下し、vi エディタの INSERT モードを終了します。</p>
+          </li>
+          <li>
+            <p>変更を保存するため、「:wq」を入力し、「Enter」キーを押下します。</p>
+
+            <p>※ vi エディタが終了します。</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="image19_.png" alt="image19.png" /></p>
+  </li>
+</ol>
+
+<p>以上でアプリケーションのデプロイと、接続のための準備は完了です。</p>
+
+<h1 id="5-ファイアウォールを開放してインターネットからアクセスする">5. ファイアウォールを開放してインターネットからアクセスする</h1>
+
+<p>サンプルアプリケーションを起動する前に、インターネットからのアクセスを許可するために、ファイアウォールの設定を変更していきます。仮想クラウド・ネットワークのファイアウォール設定だけでなく、インスタンス側の設定も必要な点に注意してください。</p>
+
+<ol>
+  <li>
+    <p>コンソールのナビゲーション・メニュー（ <strong>三</strong> のアイコン）より、<strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> をクリックし、VCNの一覧画面を表示します。</p>
+  </li>
+  <li>
+    <p>一覧画面より、仮想マシンを配置している VCN を選択し、詳細画面を表示します。</p>
+  </li>
+  <li>
+    <p>左下のリソース・メニューから「セキュリティ・リスト」をクリックし、「Default Security List for handson-vcn」をクリックします。</p>
+
+    <p><img src="image20.png" alt="image20.png" /></p>
+  </li>
+  <li>
+    <p>セキュリティ・リストの詳細画面から「<strong>イングレス・ルールの追加</strong>」ボタンをクリックします。</p>
+
+    <p><img src="image21.png" alt="image21.png" /></p>
+  </li>
+  <li>
+    <p>下記を参考にイングレス・ルールを設定し、「<strong>イングレス・ルールの追加</strong>」をクリックします。</p>
+
+    <ul>
+      <li><strong>ステートレス</strong> - チェックなし</li>
+      <li><strong>ソース・タイプ</strong> - CIDR</li>
+      <li><strong>ソースCIDR</strong> - 0.0.0.0/0</li>
+      <li><strong>IPプロトコル</strong> - TCP</li>
+      <li><strong>ソース・ポート範囲</strong> - 未設定</li>
+      <li><strong>宛先ポート範囲</strong> - 7000</li>
+      <li><strong>証明</strong> - 未設定</li>
+    </ul>
+
+    <p><img src="image22.png" alt="image22.png" /></p>
+
+    <p>仮想クラウド・ネットワーク側のファイアウォール設定はこれで完了です。</p>
+  </li>
+  <li>
+    <p>つづいて、インスタンスのファイアウォール設定を変更していきます。Cloud Shell に戻り、下記のコマンドを実行します。</p>
+
+    <ul>
+      <li>
+        <p>TCPの7000番ポートのオープン</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-port</span><span class="o">=</span>7000/tcp
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>ファイアウォールのリロード</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+</code></pre></div>        </div>
+      </li>
+    </ul>
+
+    <p>いずれのコマンドも実行後、問題がなければ「success」と表示されます。</p>
+
+    <p>これでインスタンス側のファイアウォール設定も完了です。</p>
+  </li>
+  <li>
+    <p>最後の下準備です。下記のコマンドを実行し、node.js のモジュールのパスを環境変数へ設定します。</p>
+
+    <ul>
+      <li>
+        <p>node.js のモジュールパスの確認</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm root <span class="nt">-g</span> 
+</code></pre></div>        </div>
+
+        <p>表示されたパスを控えておきます。（「/usr/local/lib/node_modules」）</p>
+      </li>
+      <li>
+        <p>パスの設定</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NODE_PATH</span><span class="o">=</span><span class="s1">'/usr/local/lib/node_modules'</span>
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>設定内容の確認</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">env</span> | <span class="nb">grep </span>NODE_PATH
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>「NODE_PATH=/usr/local/lib/node_modules」と表示されることを確認</p>
+
+        <p><img src="image23.png" alt="image23.png" /></p>
+      </li>
+    </ul>
+
+    <p>環境変数の設定は以上です。</p>
+  </li>
+  <li>
+    <p>いよいよ サンプルアプリケーションを実行していきます。サンプルアプリケーションは「node-oracledb/examples/」ディレクトリに数種含まれています。</p>
+
+    <p>まず始めに、「example.js」を実行してみます。「example.js」は、データベースに対して、３つのデータをインサートするアプリケーションです。</p>
+
+    <p>Cloud Shell にて、下記コマンドを実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node node-oracledb/examples/example.js
+</code></pre></div>    </div>
+
+    <p>下記のような結果が表示されていれば、アプリケーションの実行は成功です。</p>
+
+    <p><img src="image24.png" alt="image24.png" /></p>
+  </li>
+  <li>
+    <p>次に「webapp.js」を実行します。「webapp.js」は、簡単なWebアプリケーションです。「webapp.js」を実行し、実際にインターネットからアクセスしてみます。</p>
+
+    <p>Cloud Shell にて、下記コマンドを実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node node-oracledb/examples/webapp.js
+</code></pre></div>    </div>
+
+    <p>下記のような結果が表示されていれば、Webアプリケーションが起動できています。</p>
+
+    <p><img src="image25.png" alt="image25.png" /></p>
+
+    <p>お手元のPCのブラウザから、この Webアプリケーションにアクセスしてみましょう。</p>
+  </li>
+  <li>
+    <p>ブラウザのアドレスバーに「http://コンピュート・インスタンスのパブリックIPアドレス:7000/3」を入力し、「Enter」キーを押下します。下記のような Web画面が表示されていれば、成功です。</p>
+
+    <p><img src="image26.png" alt="image26.png" /></p>
+  </li>
+</ol>
+
+<p>以上で、本チュートリアルは本編は完了です。</p>
+
+<p>余裕がある方は、次の章に進み、フロントにロードバランサを構成し、ロードバランサを通じて上記の「webapp.js」にアクセスしてみましょう。</p>
+
+<h1 id="6-任意-フロントにロードバランサーを構成する">6. [任意] フロントにロードバランサーを構成する</h1>
+
+<p>OCI の Always Free サービスには、フレキシブル・ロードバランサも含まれています。</p>
+
+<ol>
+  <li>下記の設定内容を参考に、チュートリアル：<a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a> の 手順「4. ロードバランサーの構成」を実施し、ロードバランサを作成します。
+    <ul>
+      <li>可視性タイプは 「パブリック」、パブリックIPアドレスの割当ては「エフェメラルIPアドレス」、最小帯域幅、最大帯域幅はいずれも「10 Mbps」に、仮想クラウド・ネットワークは、本チュートリアルで使用しているものを選択します。また、サブネットは、サンプルアプリケーションをデプロイした仮想マシンと同じものを選択します。</li>
+      <li>バックエンド・サーバーの選択では、「バックエンドの追加」ボタンより、サンプルアプリケーションをデプロイした仮想マシンを選択します。</li>
+      <li>ヘルス・チェック・ポリシーの指定では、ポートを「7000」番に、URLパス(URI) を「/3」で設定します。</li>
+      <li>リスナーの構成では、リスナーで処理するトラフィックのタイプを「HTTP」に、モニターするポートを「7000」番で設定します。</li>
+    </ul>
+  </li>
+  <li>
+    <p>ロードバランサのプロビジョニングが完了したら、ロードバランサのパブリックIPアドレスを控えておき、ブラウザのアドレスバーに「http://ロードバランサのパブリックIPアドレス:7000/3」を入力します。</p>
+
+    <p>下記のような Web画面が表示されていれば、ロードバランサを経由した Webアプリケーションへのアクセスは成功です。</p>
+
+    <p><img src="image27.png" alt="image27.png" /></p>
+  </li>
+</ol>
+
+<p>いかがでしたでしょうか。OCI の Always Free サービスには、このほかにも沢山のサービスが含まれています。その他のチュートリアルなども参考に色々と試してみてください。</p>
+
+<p>目次に戻る : <a href="https://oracle-japan.github.io/ocitutorials/">チュートリアル : Oracle Cloud Infrastructure を使ってみよう</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-11-01T13:18:23+09:00">November 1, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Always+Free%E3%81%A7%E5%BF%AB%E9%81%A9DB%E3%82%A2%E3%83%97%E3%83%AA%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Falwaysfree%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Falwaysfree%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Falwaysfree%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/beginners/creating-HeatWave/" class="pagination--pager" title="その10 - MySQLで高速分析を体験する
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

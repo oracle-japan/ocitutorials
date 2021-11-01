@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-10-27T11:26:40+09:00">
+  <meta property="article:published_time" content="2021-11-01T13:18:23+09:00">
 
 
 
@@ -321,7 +321,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="BastionサービスでパブリックIPを持たないリソースにアクセスする">
     <meta itemprop="description" content="OCIのBastionサービスを使用することで踏み台サーバーを作成せずにパブリックIPを持たないリソースにインターネットから接続できます。">
-    <meta itemprop="datePublished" content="2021-10-27T11:26:40+09:00">
+    <meta itemprop="datePublished" content="2021-11-01T13:18:23+09:00">
     
 
     <div class="page__inner-wrap">
@@ -332,15 +332,15 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-ポリシーの付与">1. ポリシーの付与</a></li><li><a href="#2-プライベートサブネット内にoracle-linuxとwindowsのインスタンスを作成">2. プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成</a></li><li><a href="#3-要塞の作成">3. 要塞の作成</a></li><li><a href="#4-管理対象sshセッションでoracle-linuxインスタンスに接続">4. 管理対象SSHセッションでOracle Linuxインスタンスに接続</a></li><li><a href="#5sshポート転送セッションでwindowsインスタンスに接続">5.SSHポート転送セッションでWindowsインスタンスに接続</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1-ポリシーの付与">1. ポリシーの付与</a></li><li><a href="#2-プライベートサブネット内にoracle-linuxとwindowsのインスタンスを作成">2. プライベート・サブネット内にOracle LinuxとWindowsのインスタンスを作成</a></li><li><a href="#3-要塞の作成">3. 要塞の作成</a></li><li><a href="#4-管理対象sshセッションでoracle-linuxインスタンスに接続">4. 管理対象SSHセッションでOracle Linuxインスタンスに接続</a></li><li><a href="#5sshポート転送セッションでwindowsインスタンスに接続">5.SSHポート転送セッションでWindowsインスタンスに接続</a></li></ul>
 
             </nav>
           </aside>
         
         <p><strong>チュートリアル一覧に戻る :</strong>  <a href="../.."><u>Oracle Cloud Infrastructure チュートリアル</u></a></p>
 
-<p>通常インターネットからパブリックエンドポイントを持たないターゲット・リソースに接続する場合、パブリックサブネット内の踏み台サーバーを経由してそれらのリソースに接続する必要があります。しかしOCIのBastionサービスを使用することでわざわざ踏み台サーバーを立てる必要がありません。このサービスはプライベートサブネット内のインスタンスだけでなくDBの接続や、リモートデスクトップ接続（RDS）で使用できます。またAlways Freeに該当するため無償で利用できるサービスです。<br />
-今回のチュートリアルではプライベートサブネット内にあるLinuxインスタンスとWindowsインスタンスにBastionサービスを使ってそれぞれSSH接続、RDS接続を行います。
+<p>通常インターネットからパブリックエンドポイントを持たないターゲット・リソースに接続する場合、パブリック・サブネット内の踏み台サーバーを経由してそれらのリソースに接続する必要があります。しかしOCIのBastionサービスを使用することでわざわざ踏み台サーバーを立てる必要がありません。このサービスはプライベート・サブネット内のインスタンスだけでなくDBの接続や、リモートデスクトップ（RDP）接続で使用できます。またAlways Freeに該当するため無償で利用できるサービスです。<br />
+今回のチュートリアルではプライベート・サブネット内にあるLinuxインスタンスとWindowsインスタンスにBastionサービスを使ってそれぞれSSH接続、RDP接続を行います。
 <img src="img1.png" alt="img1.png" /></p>
 
 <p><strong>所要時間：</strong>　約30分<br />
@@ -354,7 +354,7 @@
 <p><strong>目次 :</strong></p>
 <ol>
   <li><a href="#anchor1">ポリシーの付与</a></li>
-  <li><a href="#anchor2">プライベート内にLinuxとWindowsのインスタンスを作成</a></li>
+  <li><a href="#anchor2">プライベート・サブネット内にLinuxとWindowsのインスタンスを作成</a></li>
   <li><a href="#anchor3">要塞の作成</a></li>
   <li><a href="#anchor4">管理対象SSHセッションでLinuxインスタンスに接続</a></li>
   <li><a href="#anchor5">SSHポート転送セッションでWindowsインスタンスに接続</a>
@@ -373,10 +373,10 @@
 
 <p><a id="anchor2"></a></p>
 
-<h1 id="2-プライベートサブネット内にoracle-linuxとwindowsのインスタンスを作成">2. プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成</h1>
+<h1 id="2-プライベートサブネット内にoracle-linuxとwindowsのインスタンスを作成">2. プライベート・サブネット内にOracle LinuxとWindowsのインスタンスを作成</h1>
 
 <ol>
-  <li>インスタンスを作成する際に <a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/"><u>その3 - インスタンスを作成する</u></a>を参考にして、プライベートサブネット内にOracle LinuxとWindowsのインスタンスを作成してください。 Windowsインスタンスを作成するには、<strong><code class="language-plaintext highlighter-rouge">イメージの変更</code></strong> のボタンを押して、デフォルトのOracle LinuxからWindowsに変えることで出来ます。</li>
+  <li>インスタンスを作成する際に <a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/"><u>その3 - インスタンスを作成する</u></a>を参考にして、プライベート・サブネット内にOracle LinuxとWindowsのインスタンスを作成してください。 Windowsインスタンスを作成するには、<strong><code class="language-plaintext highlighter-rouge">イメージの変更</code></strong> のボタンを押して、デフォルトのOracle LinuxからWindowsに変えることで出来ます。</li>
   <li>Oracle Linuxのインスタンスは作成後 <strong><code class="language-plaintext highlighter-rouge">Oracle Cloudエージェント</code></strong> の一番下にある要塞のプラグインを有効にします。今後行う管理対象SSHセッションで接続する場合必ずこのプラグインが必要になります。
   <img src="img2.png" alt="img2.png" />
 <br /></li>
@@ -387,11 +387,11 @@
 <h1 id="3-要塞の作成">3. 要塞の作成</h1>
 
 <ol>
-  <li><strong><code class="language-plaintext highlighter-rouge">Identity &amp; Security＞要塞</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">要塞の作成</code></strong> のボタンを押します。
+  <li><strong><code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ→要塞</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">要塞の作成</code></strong> のボタンを押します。
     <ul>
       <li><strong><code class="language-plaintext highlighter-rouge">要塞名</code></strong> - TutorialBastion</li>
       <li><strong><code class="language-plaintext highlighter-rouge">仮想クラウドネットワーク</code></strong> - Bastion_VCN（ご自身で作成されたVCNを選択します）</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・サブネット</code></strong> - パブリックサブネット</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・サブネット</code></strong> - パブリック・サブネット</li>
       <li><strong><code class="language-plaintext highlighter-rouge">CIDRブロック許可リスト</code></strong> - 0.0.0.0/0
   <img src="img3.png" alt="img3.png" />
         <blockquote>
@@ -452,11 +452,26 @@
 
 <h1 id="5sshポート転送セッションでwindowsインスタンスに接続">5.SSHポート転送セッションでWindowsインスタンスに接続</h1>
 
-<p>SSHポート転送セッションでWindowsインスタンスにRDS接続します。SSHポート転送セッションはSSHを使用しており暗号化されています。そのため暗号化されていないプロトコルを使用して情報を送信してもセキュリティ面で問題なく使用できます。</p>
+<p>SSHポート転送セッションでWindowsインスタンスにRDP接続します。SSHポート転送セッションはSSHを使用しており暗号化されています。そのため暗号化されていないプロトコルを使用してもセキュリティ面でより安全に使用できます。</p>
 
 <ol>
   <li>
-    <p>要塞の詳細画面に戻り、<strong><code class="language-plaintext highlighter-rouge">セッションの作成</code></strong>　のボタン押します。</p>
+    <p>セキュリティリストにRDP接続するためのルールを追加します。<strong><code class="language-plaintext highlighter-rouge">ネットワーキング → 仮想クラウドネットワーク</code></strong> を選択して、ご自身で作成したVCNをクリックします。するとVCNの詳細画面になるので、<strong><code class="language-plaintext highlighter-rouge">リソース → セキュリティ・リスト → プライベート・サブネットのセキュリティ・リスト</code></strong> を選びます。そして <strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong> を押して、以下の項目を入力します。</p>
+
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - TCP</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース・ポート範囲</code></strong> - All</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong> - 3389</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - RDP接続
+ <img src="img12.png" alt="img12.png" />      <br />
+ イングレス・ルールが追加されると以下のように表示されます。
+ <img src="img13.png" alt="img13.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ → 要塞</code></strong>を選択し、ご自身で作成された要塞をクリックして先ほどの詳細画面に戻ります。そして <strong><code class="language-plaintext highlighter-rouge">セッションの作成</code></strong>のボタン押します。</p>
   </li>
   <li><strong><code class="language-plaintext highlighter-rouge">セッションの作成</code></strong> を以下の通りに設定します。
  <img src="img8.png" alt="img8.png" />
@@ -534,7 +549,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-27T11:26:40+09:00">October 27, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-11-01T13:18:23+09:00">November 1, 2021</time></p>
 
 
       </footer>
