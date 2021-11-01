@@ -32,6 +32,10 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[104: 自動バックアップを設定しよう](/ocitutorials/database/dbcs104-backup/){:target="_blank"}**
 
++ **105: バックアップからリストアしよう※準備中**
+
++ **[106: Data Guardを構成しよう](/ocitutorials/database/dbcs106-dataguard/){:target="_blank"}**
+
 <br/>
 
 # <span style="color: brown; ">■ Exadata Cloud Service (ExaCS) を使ってみよう</span>
