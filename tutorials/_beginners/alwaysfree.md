@@ -4,8 +4,8 @@ excerpt: "OCIの各テナントには、「Always Free」と呼ばれる、永�
 order: "230"
 tags:
 header:
-  teaser: "/ocitutorials/beginners/image01.png"
-  overlay_image: "/ocitutorials/beginners/image01.png"
+  teaser: "/beginners/alwaysfree/image01.png"
+  overlay_image: "/beginners/alwaysfree/image01.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 ---
 **チュートリアル一覧に戻る :** [Oracle Cloud Infrastructure チュートリアル](../..)
@@ -31,7 +31,7 @@ Oracle Cloud Infrastructure (OCI) の ”Always Free" では、以下のよう�
 - チュートリアル：[OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](/ocitutorials/beginners/getting-started/) を実施し、基本的な操作を理解していること
 - チュートリアル：[クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2) ](/ocitutorials/beginners/creating-vcn/) を実施し、VCNを作成済みであること
 - チュートリアル：[インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](/ocitutorials/beginners/creating-compute-instance/) の「2. 作成したインスタンス詳細情報の確認」までが実施済みであること  
-※ただし、<font color="red">イメージは プラットフォーム・イメージの「**Oracle Linux Cloud Developer**」を、シェイプは「**VM.Standard.E2.1.Micro**」を選択し、作成すること</font>
+※ただし、<font color="red">イメージは プラットフォーム・イメージの「Oracle Linux Cloud Developer」を、シェイプは「VM.Standard.E2.1.Micro」を選択し、作成すること</font>
 
 **所要時間 :** 約40分
 
@@ -71,7 +71,7 @@ Oracle Cloud Infrastructure (OCI) の ”Always Free" では、以下のよう�
 
    **管理者資格証明の作成**
    - **ユーザー名** - ADMIN (変更不可)
-   - **パスワード** - 任意 (パスワードは12文字から30文字とし、大文字、小文字および数字をそれぞれ1つ以上含める必要があります。パスワードに二重引用符(")文字またはユーザー名"admin"を含めることはできません。) 
+   - **パスワード** - 任意 (パスワードは12文字から30文字とし、大文字、小文字および数字をそれぞれ1つ以上含める必要があります。パスワードに二重引用符(")文字またはユーザー名"admin"を含めることはできません。)  
      例：Welcome123###
    - **パスワードの確認** - 設定したいパスワードを再入力
 
@@ -79,7 +79,7 @@ Oracle Cloud Infrastructure (OCI) の ”Always Free" では、以下のよう�
    - **アクセス・タイプ** - [すべての場所からのセキュア・アクセス] を選択
    - **相互TLS (mTLS)認証が必要** - チェックあり (変更不可)
 
-   **ライセンス・タイプの選択** - [ライセンス込み] を選択
+   **ライセンス・タイプの選択** - [ライセンス込み] を選択  
    **運用上の通知およびお知らせ用の連絡先を指定してください** - 任意 (通知を受け取りたい場合のみ設定)
 
    ![image04.png](image04.png)
@@ -329,9 +329,7 @@ Oracle Cloud Infrastructure (OCI) の ”Always Free" では、以下のよう�
 
        ・変更後：「process.env.NODE_ORACLEDB_USER || "admin", 」
 
-     - 次にパスワード情報を変更します。
-
-       ※ "adminのパスワード" はATPデータベース作成時に指定したものです。
+     - 次にパスワード情報を変更します。（"adminのパスワード" はATPデータベース作成時に指定したものです。）
 
        ・変更前：「process.env.NODE_ORACLEDB_PASSWORD, 」
 
