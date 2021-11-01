@@ -511,7 +511,7 @@ Infer が `Successful` であることを確認後、**Save** を押し、Stream
 - Event Stream: Tutorial
 - Latitude: BUSlat
 - Longitude: BUSlong
-- Object Key: BusID
+- Object Key: BUStripId
 - Coodinate System: 8307
 
 ![image31](image31.png)
