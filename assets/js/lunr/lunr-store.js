@@ -209,15 +209,15 @@ var store = [{
         "url": "/ocitutorials/cloud-native/helidon-se-for-beginners/",
         "teaser": null
       },{
-        "title": "Oracle Content and Experience インスタンスを作成する",
-        "excerpt":"この文書は Oracle Content and Experience (OCE) のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2021年7月時点での最新バージョン(21.6.1)を元に作成されてます。 チュートリアル内の画面ショットについては Oracle Content and Experience の現在のコンソール画面と異なっている場合があります。 1. 準備 1.1 OCE インスタンス作成手順の説明 インスタンスの作成手順は以下の通りです このチュートリアルでは、以下の条件で作成します ホームリージョンは US East(Ashburn) を選択 インスタンスの作成ユーザーは テナント管理ユーザー コンパートメントを作成(コンパートメント名=OCE) ライセンス・タイプは Premium Edition を選択 1.2 Oracle Cloud の環境を準備する Oracle Cloud のアカウントを準備します。無料のトライアル環境も利用することもできますので、この機会に取得してみましょう。 なお、トライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です（希望しない限り課金されませんので、ご安心ください） Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud...","categories": [],
+        "title": "Oracle Content Managementインスタンスを作成する",
+        "excerpt":"この文書は Oracle Content Management(OCM) のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2021年11月時点での最新バージョン(21.10.2)を元に作成されてます。 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 1. 準備 1.1 OCM インスタンス作成手順の説明 インスタンスの作成手順は以下の通りです このチュートリアルでは、以下の条件で作成します ホームリージョンは US East(Ashburn) を選択 インスタンスの作成ユーザーは テナント管理ユーザー コンパートメントを作成(コンパートメント名=OCE) ライセンス・タイプは Premium Edition を選択 1.2 Oracle Cloud の環境を準備する Oracle Cloud のアカウントを準備します。無料のトライアル環境も利用することもできますので、この機会に取得してみましょう。 なお、トライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です（希望しない限り課金されませんので、ご安心ください） Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 1.3 Oracle Cloud にサイン・インする OCM インスタンスは、Oracle...","categories": [],
         "tags": ["OCE","OCM"],
         "url": "/ocitutorials/content-management/create_oce_instance/",
         "teaser": "/ocitutorials/content-management/create_oce_instance/022.webp"
       },{
-        "title": "Oracle Content and Experience インスタンスの利用ユーザーを作成する",
-        "excerpt":"この文書は Oracle Content and Experience (OCE) を利用するユーザーをIDCSに追加する方法をステップ・バイ・ステップで紹介するチュートリアルです。 この文書は、2021年1月時点での最新バージョン(21.1.1)を元に作成されてます 前提条件 Oracle Content and Experience インスタンスを作成する 1. ユーザーとグループの作成 OCE インスタンスを利用するユーザーは、IDCS ユーザー として登録します。ここでは、IDCS ユーザーに IDCS グループを利用し、OCE インスタンスのアプリケーションロール(CECEnterpriseUser)を割り当てる手順を説明します IDCS グループは、組織内の役割にあわせて作成します。下記マニュアルを参考に作成します。 Administrating Oracle Content and Experience Typical Organization Roles（英語原本） 一般的な組織ロール（日本語翻訳版） 1.1 IDCS グループの作成 IDCS グループを作成します。ここでは OCEusers グループを作成します OCI コンソールを開き、左上のメニュー→ 「アイデンティティ」→「フェデレーション」 をクリックします Oracle Identity Cloud Service...","categories": [],
-        "tags": ["OCE"],
+        "title": "Oracle Content Management インスタンスの利用ユーザーを作成する",
+        "excerpt":"この文書は Oracle Content Management (OCM) を利用するユーザーをIDCSに追加する方法をステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2021年11月時点での最新バージョン(21.10.2)を元に作成されてます チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 前提条件 Oracle Content Management インスタンスを作成する 1. ユーザーとグループの作成 OCM インスタンスを利用するユーザーは、IDCS ユーザー として登録します。ここでは、IDCS ユーザーに IDCS グループを利用し、OCM インスタンスのアプリケーションロール(CECEnterpriseUser)を割り当てる手順を説明します IDCS グループは、組織内の役割にあわせて作成します。下記マニュアルを参考に作成します。 Administrating Oracle Content Management Typical Organization Roles（英語原本） 一般的な組織ロール（日本語翻訳版） 1.1 IDCS グループの作成 IDCS グループを作成します。ここでは OCEusers グループを作成します OCI コンソールを開き、左上のメニュー→ 「アイデンティティ」→「フェデレーション」 をクリックします Oracle Identity Cloud Service Console...","categories": [],
+        "tags": ["OCE","OCM"],
         "url": "/ocitutorials/content-management/create_idcs_group_user/",
         "teaser": "/ocitutorials/content-management/create_idcs_group_user/user10.webp"
       },{
