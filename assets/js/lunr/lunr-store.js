@@ -509,6 +509,12 @@ var store = [{
         "url": "/ocitutorials/database/adb214-spatial-studio/",
         "teaser": "/ocitutorials/database/adb214-spatial-studio/tokyo_boundary_image.jpg"
       },{
+        "title": "215 : Graph Studioで金融取引の分析を行う",
+        "excerpt":"はじめに この記事は“Graph Studio: Finding Circular Payment Chains using Graph Queries Workshop” の記事と補足事項を日本語で解説した内容になります。 Graph Studioとは Autonomous Databaseには、2021年の5月ごろより、プロパティグラフを取り扱うことのできるGraph Studioが標準機能として搭載されました。 Graph Studioでは下記のような機能を利用可能です。 データベースに存在するグラフをメモリに読み込んで分析 リレーショナル表からグラフのモデルを作成するための自動変換 SQLのようにクエリができるPGQLでの分析アルゴリズム グラフの可視化機能 上記のような機能がGraph Studioには搭載されているため、簡単にクラウドのUI上で完結する形でプロパティグラフの作成や分析が可能になっています。 この記事で確認できること CSVファイルのデータをAutonomous Databaseにアップロードする方法(SQL Developer Web (Database Actions SQL)) Graph Studioへの接続方法 PGQLクエリ(グラフクエリ言語)を用いたグラフ作成方法 Graph Studioの分析用ノートブックの作成方法 PGQLクエリを使ってノートブック上でグラフをクエリ&amp;可視化方法 具体的な題材として、今回は金融トランザクションから、循環的な資金の流れを見つける分析を行います。 リレーショナル表からプロパティグラフへのデータの変換では、変換をほぼ自動で行ってくれる Graph Studio の機能を活用します。 目次 : 1.Graph Studio用のユーザーを作成 2.データの準備(取込み) 3.データの準備(整形)...","categories": [],
+        "tags": ["graph","PGQL","oraclecloud","autonomous_database"],
+        "url": "/ocitutorials/database/adb215-graph/",
+        "teaser": null
+      },{
         "title": "301 : 移行元となるデータベースを作成しよう",
         "excerpt":"はじめに 既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？ 従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは移行編としてそれらの方法をご紹介しています。 Autonomous Database を使ってみよう（移行編） 301: 移行元となるデータベースを作成しよう（本章） 302: スキーマ・アドバイザを活用しよう 303: Data Pumpを利用してデータを移行しよう [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）] 本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しDBCSインスタンスを作成します。 目次 : 1.移行元となるDBCSインスタンスの作成 2.移行対象となるサンプルスキーマ(HR)をインストール 3.サンプルスキーマ(HR)への接続、スキーマの確認 所要時間 : 約150分 (DBCSインスタンスの作成時間を含む) 1. 移行元となるDBCSインスタンスの作成 まず、「Oracle Cloud で Oracle Database を使おう(DBCS)」 を参考に、DBCSインスタンスを作成してください。 TeraTermを起動しDBCSインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。 以降では、DBCSインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です） ホスト名接頭辞 : dbcs01 データベースのバージョン：12.2 パスワード：WelCome123#123# PDBの名前：pdb1 2. 移行対象となるHRスキーマをインストール 次に作成したDBCSインスタンス内に、移行対象となるHRスキーマを作成します。...","categories": [],
         "tags": [],
