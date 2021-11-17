@@ -209,6 +209,12 @@ var store = [{
         "url": "/ocitutorials/cloud-native/helidon-se-for-beginners/",
         "teaser": null
       },{
+        "title": "KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう",
+        "excerpt":"このワークショップでは、OCI DevOpsを利用してCI/CDパイプラインをセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes（OKE）にデプロイする一連の流れを体験することができます このワークショップには以下のサービスが含まれます。 Oracle Autonomous Transaction Processing（略称：ATP）: 運用がすべて自動化された自律型データベースサービスです。 Oracle Container Engine for Kubernetes（略称：OKE）: マネージドなKuberentesクラスタを提供するクラウドサービスです。 Oracle Cloud Infrastructure DevOps（略称：OCI DevOps）: Oracle Cloudが提供するマネージドなCI/CDサービスです。 Oracle Cloud Infrastructure Registry（略称：OCIR）: フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。 前提条件 ワークショップを開始する前に以下を準備してください。 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること Oracle Cloud Infrastructureの基本操作はチュートリアル : OCIコンソールにアクセスして基本を理解するをご確認ください。 ゴールを確認する はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。 手順を最後まで行うと、下図のような環境が構成されます。 構成要素 説明 OKE...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native-test/oke-for-intermediates/",
+        "teaser": null
+      },{
         "title": "Oracle Content Managementインスタンスを作成する",
         "excerpt":"この文書は Oracle Content Management(OCM) のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2021年11月時点での最新バージョン(21.10.2)を元に作成されてます。 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 1. 準備 1.1 OCM インスタンス作成手順の説明 インスタンスの作成手順は以下の通りです このチュートリアルでは、以下の条件で作成します ホームリージョンは US East(Ashburn) を選択 インスタンスの作成ユーザーは テナント管理ユーザー コンパートメントを作成(コンパートメント名=OCE) ライセンス・タイプは Premium Edition を選択 1.2 Oracle Cloud の環境を準備する Oracle Cloud のアカウントを準備します。無料のトライアル環境も利用することもできますので、この機会に取得してみましょう。 なお、トライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です（希望しない限り課金されませんので、ご安心ください） Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 1.3 Oracle Cloud にサイン・インする OCM インスタンスは、Oracle...","categories": [],
         "tags": ["OCE","OCM"],
@@ -227,11 +233,11 @@ var store = [{
         "url": "/ocitutorials/content-management/using_file_sharing/",
         "teaser": "/ocitutorials/content-management/create_oce_instance/024.jpg"
       },{
-        "title": "その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）",
-        "excerpt":"目次に戻る: Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】 まず最初に OCE インスタンスにサインインします。次に、OCE を使い始めるにあたり、このOCEインスタンスで自分が利用可能な容量を確認します。 最後に、プリファレンスやプロファイルを設定し、自分が使いやすいようにカスタマイズします この文書は、2020年5月時点での最新バージョン(20.2.2)を元に作成されてます 前提条件 Oracle Content and Experience インスタンスを作成する OCE の利用ユーザーに OCE インスタンスの CECStandardUser もしくは CECEnterpriseUser アプリケーション・ロールが付与されていること 1. OCE インスタンスにサインインする 1.1 OCE ホームを開く OCE インスタンスにサインインします。OCE インスタンスの URL は、サービス管理者によるユーザー追加時に自動送信されるメールに記載されます 通知メールの説明 項目 説明 差出人 Oracle Content and Experience &lt;no-reply@oracle.com&gt; 件名 Welcome to Oracle...","categories": [],
-        "tags": ["OCE"],
+        "title": "その1: OCM インスタンスにサインインする（Oracle Content Management のファイル共有機能を使ってみよう）",
+        "excerpt":"目次に戻る: Oracle Content Management のファイル共有機能を使ってみよう【初級編】 まず最初に OCM インスタンスにサインインします。次に、OCM を使い始めるにあたり、自分が利用可能な容量を確認します。 最後に、プリファレンスやプロファイルを設定し、自分が使いやすいようにカスタマイズします 【お知らせ】 この文書は、2021年11月時点での最新バージョン(21.11.1)を元に作成されてます。 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 前提条件 Oracle Content Management インスタンスを作成する OCM の利用ユーザーに OCM インスタンスの CECStandardUser もしくは CECEnterpriseUser アプリケーション・ロールが付与されていること 1. OCM インスタンスにサインインする 1.1 OCM ホームを開く OCM インスタンスにサインインします。OCM インスタンスの URL は、サービス管理者によるユーザー追加時に自動送信されるメールに記載されます 通知メールの説明 項目 説明 差出人 Oracle Content Management &lt;no-reply@oracle.com&gt; 件名 Welcome to Oracle Content...","categories": [],
+        "tags": ["OCE","OCM"],
         "url": "/ocitutorials/content-management/1_sign_in_oce/",
-        "teaser": "/ocitutorials/content-management/1_sign_in_oce/001.jpeg"
+        "teaser": "/ocitutorials/content-management/1_sign_in_oce/007.jpg"
       },{
         "title": "その2: フォルダの作成（Oracle Content and Experience のファイル共有機能を使ってみよう）",
         "excerpt":"目次に戻る: Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】 OCE では、ローカル・コンピュータの場合とほぼ同じ方法でファイルを操作します。フォルダを利用してファイルを簡単にグループ化し、コンテンツ管理として提供される一般的な操作（ファイルおよびフォルダのアップロード、ダウンロード、コピー、移動、名前変更、削除など）を実行できます。 この文書は、2020年5月時点での最新バージョン(20.2.2)を元に作成されてます 前提条件 Oracle Content and Experience インスタンスを作成する OCE の利用ユーザーに OCE インスタンスの CECStandardUser もしくは CECEnterpriseUser アプリケーション・ロールが付与されていること 1. フォルダの作成 1.1 フォルダの作成 左ナビゲーションメニューの 「ドキュメント」 をクリックします 「作成」 をクリックします 「名前」 を入力します（ここでは「チュートリアルフォルダ」と入力） 必要に応じて、「説明」 にこのフォルダに関する説明文を入力します（ここでは「フォルダ共有チュートリアル用のフォルダです」と入力） 「作成」 をクリックします フォルダが作成されます。作成したフォルダ（ここではチュートリアルフォルダ）をクリックし、開きます フォルダの中に別のフォルダ（サブフォルダ）を作成する場合は、親となるフォルダ（ここでは「チュートリアルフォルダ」）を開いた状態で 「作成」 をクリックします 名前を入力し、「作成」 をクリックします。（ここでは「子フォルダ」と入力） サブフォルダが作成されます [Memo] 上記のように、フォルダアイコンがプレーン（無地）のものは「個人フォルダ」となります。他ユーザーに共有したフォルダ、他ユーザーから共有されたフォルダには、共有アイコンがついた「共有フォルダ」となります（詳細は「共有」の章で説明） 1.2 フォルダ表示の切り替え 右端のメニューより、表示形式を切り替えられます。3つの表示形式が選択できます...","categories": [],
