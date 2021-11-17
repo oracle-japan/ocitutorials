@@ -1,49 +1,53 @@
 ---
-title: "その1: OCE インスタンスにサインインする（Oracle Content and Experience のファイル共有機能を使ってみよう）"
-excerpt: "まずは、OCE インスタンスにサインインします。サインイン後は、自分が利用しやすいようにプリファレンスやプロファイルを設定します"
+title: "その1: OCM インスタンスにサインインする（Oracle Content Management のファイル共有機能を使ってみよう）"
+excerpt: "まずは、OCM インスタンスにサインインします。サインイン後は、自分が利用しやすいようにプリファレンスやプロファイルを設定します"
 order: "021"
 layout: single
-tags: "OCE"
+tags:
+  - OCE
+  - OCM
 header:
-  teaser: "/content-management/1_sign_in_oce/001.jpeg"
-  overlay_image: "/content-management/1_sign_in_oce/001.jpeg"
+  teaser: "/content-management/1_sign_in_oce/007.jpg"
+  overlay_image: "/content-management/1_sign_in_oce/007.jpg"
   overlay_filter: rgba(80,80,80,0.7)
 ---
 
-**目次に戻る**: [Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】](../using_file_sharing)
+**目次に戻る**: [Oracle Content Management のファイル共有機能を使ってみよう【初級編】](../using_file_sharing)
 
-まず最初に OCE インスタンスにサインインします。次に、OCE を使い始めるにあたり、このOCEインスタンスで自分が利用可能な容量を確認します。
+まず最初に OCM インスタンスにサインインします。次に、OCM を使い始めるにあたり、自分が利用可能な容量を確認します。
 
 最後に、プリファレンスやプロファイルを設定し、自分が使いやすいようにカスタマイズします
 
-~~~
-この文書は、2020年5月時点での最新バージョン(20.2.2)を元に作成されてます
-~~~
+**【お知らせ】**  
+この文書は、2021年11月時点での最新バージョン(21.11.1)を元に作成されてます。  
+チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。  
+{: .notice--info}
+
 
 **前提条件**
-- [Oracle Content and Experience インスタンスを作成する](../create_oce_instance)
-- OCE の利用ユーザーに OCE インスタンスの **CECStandardUser** もしくは **CECEnterpriseUser** アプリケーション・ロールが付与されていること
+- [Oracle Content Management インスタンスを作成する](../create_oce_instance)
+- OCM の利用ユーザーに OCM インスタンスの **CECStandardUser** もしくは **CECEnterpriseUser** アプリケーション・ロールが付与されていること
 
 <br>
 
-# 1. OCE インスタンスにサインインする
+# 1. OCM インスタンスにサインインする
 
-## 1.1 OCE ホームを開く
+## 1.1 OCM ホームを開く
 
-1. OCE インスタンスにサインインします。OCE インスタンスの URL は、サービス管理者によるユーザー追加時に自動送信されるメールに記載されます  
+1. OCM インスタンスにサインインします。OCM インスタンスの URL は、サービス管理者によるユーザー追加時に自動送信されるメールに記載されます  
 
-    ![画像](001.jpeg)  
+    ![画像](007.jpg)  
 
     **通知メールの説明**
 
     |項目|説明|
     |---|---|
-    |差出人| *Oracle Content and Experience \<no-reply@oracle.com\>* |
-    |件名| *Welcome to Oracle Content and Experience* |
+    |差出人| *Oracle Content Management \<no-reply@oracle.com\>* |
+    |件名| *Welcome to Oracle Content Management* |
     |本文| 英語のみ。本文中の **TO EASILY LOG IN LATER, SAVE THIS URL** もしくは **SIGN IN** を確認します |
 
 
-1. 通知メールのURLをクリックし、OCEインスタンスにアクセスします。なお、OCE インスタンスのURLの形式は以下の通りです。
+1. 通知メールのURLをクリックし、OCM インスタンスにアクセスします。なお、OCM インスタンスのURLの形式は以下の通りです。
 
     ~~~
     https://<OCEInstance>-<CloudAccount>.cec.ocp.oraclecloud.com/documents/home
@@ -58,7 +62,7 @@ header:
     > **[TIPS]**  
     > パスワードを忘れてしまった場合は、サインイン画面下部の **「ここをクリックしてください」** をクリックし、パスワードの再設定をしてください
 
-1. OCE のホーム画面が開きます
+1. OCM のホーム画面が開きます
 
     ![画像](../create_oce_instance/024.jpg)
 
@@ -70,12 +74,12 @@ header:
 
 1. このインスタンスで自分が使用可能な容量を確認します。**右上のユーザーアイコン→プリファレンス→ドキュメント** をクリックします。
 
-1. 「使用可能な領域」の「空き領域」が現在利用可能な容量となります（この場合 4.82GB が使用可能な容量です）
+1. 「使用可能な領域」の「空き領域」が現在利用可能な容量となります（この場合 9.74GB が使用可能な容量です）
 
     ![画像](003.jpeg)
 
     > **[MEMO]**  
-    > ユーザーへの割当て容量は、この OCE インスタンスのサービス管理者により管理されます
+    > ユーザーへの割当て容量は、この OCMインスタンスのサービス管理者により管理されます
 
 
 1. 必要に応じて、プリファレンスのその他の項目を設定・変更します
@@ -119,4 +123,4 @@ header:
 
 以上でこのチュートリアルは終了です。
 
-**目次に戻る**: [Oracle Content and Experience のファイル共有機能を使ってみよう【初級編】](../using_file_sharing)
+**目次に戻る**: [Oracle Content Management のファイル共有機能を使ってみよう【初級編】](../using_file_sharing)
