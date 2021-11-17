@@ -11,16 +11,15 @@ toc: true
 2021年6月リリースのバージョン21.6.1より、サービス名称が *Oracle Content and Experience(略称:OCE)* から **Oracle Content Management(略称:OCM)** に変更されました。本チュートリアルを利用する際は、旧サービス名称を新しいサービス名称である **Oracle Content Management(OCM)** に読み替えてご利用ください。  
 {: .notice--info}
 
-この文書は、Oracle Content and Experience (OCE) を使ってみよう！という人のためのチュートリアルです。各文書ごとにステップ・バイ・ステップで作業を進めて、OCE が提供する機能について学習することができます
+この文書は、Oracle Content Management (OCM) を使ってみよう！という人のためのチュートリアルです。各文書ごとにステップ・バイ・ステップで作業を進めて、OCM が提供する機能について学習することができます
 
-# 準備 - OCE インスタンスの作成
+# 準備 - OCM インスタンスの作成
 
-+ **[Oracle Content and Experience インスタンスを作成する](/ocitutorials/content-management/create_oce_instance/)**  
-    Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OCE インスタンスを作成します。まずはここから始めましょう
++ **[Oracle Content Management インスタンスを作成する](/ocitutorials/content-management/create_oce_instance/)**  
+    Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OCM インスタンスを作成します。まずはここから始めましょう
 
-
-+ **[Oracle Content and Experience インスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_idcs_group_user/)**  
-    この文書は Oracle Content and Experience (OCE) を利用するユーザーをIDCSに作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
++ **[Oracle Content Management インスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_idcs_group_user/)**  
+    この文書は Oracle Content Management (OCM) を利用するユーザーを IDCS に作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
 
 + **[[Oracle Cloud] Oracle Content Management の Starter Edition をクイックスタートしてみた](https://qiita.com/nakasato310/items/9457a61d9d27db6ce4f0)**  
     この記事では、2021年7月の最新バージョン(21.6.1)より新たに追加された Oracle Content Management - Starter Edition をクイックスタートする方法を紹介します

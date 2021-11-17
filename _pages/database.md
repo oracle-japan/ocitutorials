@@ -26,11 +26,15 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 まずはベーシックなDatabase Cloud Service インスタンスを作ってみましょう。
 + **[101: Oracle Cloud で Oracle Database を使おう](/ocitutorials/database/dbcs101-create-db/){:target="_blank"}**
 
-+ **[102: PDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
++ **[102: DBCS上のPDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
 
 + **[103: パッチを適用しよう](/ocitutorials/database/dbcs103-patch/){:target="_blank"}**  
 
 + **[104: 自動バックアップを設定しよう](/ocitutorials/database/dbcs104-backup/){:target="_blank"}**
+
++ **105: バックアップからリストアしよう※準備中**
+
++ **[106: Data Guardを構成しよう](/ocitutorials/database/dbcs106-dataguard/){:target="_blank"}**
 
 <br/>
 
@@ -119,6 +123,12 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[213 : Application Continuityを設定しよう](/ocitutorials/database/adb213-tac/){:target="_blank"}**  
     * ネットワークの瞬断等の予期せぬエラーからアプリケーションを守るには？
 
++ **[214 : Spatial Studio で地理情報を扱おう](/ocitutorials/database/adb214-spatial-studio/){:target="_blank"}**  
+    * Spatial Studioを使って、地理情報からさまざまな空間分析を行います
+
++ **[215 : Graph Studioで金融取引の分析をしよう](/ocitutorials/database/adb215-graph/){:target="_blank"}**  
+    * Autonomous Databaseの標準機能であるGraph Studioの使い方をご紹介します。
+
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}**
     * この**データ移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定したデータベースを一つ作成します。
@@ -129,8 +139,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[303: Data Pumpを利用してデータを移行しよう](/ocitutorials/database/adb303-datapump){:target="_blank"}**
     * データ移行に関する機能として従来からよく利用されるData Pumpを利用した移行方法をご紹介します。
 
-+ **[304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう](/ocitutorials/database/adb304-database-migration){:target="_blank"}**
-    * データベースをオンプレミス、Oracle、またはサードパーティのクラウドからOCI上にデータベースにすばやく簡単に移行できるZDM/DMSをご紹介します。
++ **[304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう](/ocitutorials/database/adb304-database-migration){:target="_blank"}**
+    * 現在オンプレミスなどでご利用いただいているOracle Databaseを、OCI上の各データベース・サービスにすばやく簡単に移行できるマネージド・サービスをご紹介します。
 
 ## データ連携編
 + **[401: OCI GoldenGateを利用したデータ連携](/ocitutorials/database/adb401-oci-goldengate){:target="_blank"}**

@@ -48,7 +48,7 @@ Autonomous Database では、事前に定義済の接続サービスが用意さ
 選択可能な接続サービスの種類は、次の通りです。
 <br>Autonomous Data Warehouse(ADW) では３種類、Autonomous Transaction Processing(ATP)では5種類あり、ワークロード適したものを選択します。
 
-<div style="text-align: center"><img src="img_service.png"></div>
+<div style="text-align: center"><img src="img_service.jpg"></div>
 
 
 
