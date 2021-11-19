@@ -32,7 +32,7 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[104: 自動バックアップを設定しよう](/ocitutorials/database/dbcs104-backup/){:target="_blank"}**
 
-+ **105: バックアップからリストアしよう※準備中**
++ **[105: バックアップからリストアしよう](/ocitutorials/database/dbcs105-restore/){:target="_blank"}**
 
 + **[106: Data Guardを構成しよう](/ocitutorials/database/dbcs106-dataguard/){:target="_blank"}**
 
