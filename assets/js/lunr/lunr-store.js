@@ -209,6 +209,12 @@ var store = [{
         "url": "/ocitutorials/cloud-native/helidon-se-for-beginners/",
         "teaser": null
       },{
+        "title": "OCI DevOpsことはじめ",
+        "excerpt":"OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。この共通手順では、OCI DevOpsを利用する上で必要となる設定、デプロイ先とするKubernetesクラスタの構築手順を記します。 前提条件 クラウド環境 Oracle Cloudのアカウント（Free Trial）を取得済みであること 全体構成 最初に、以下の図にある環境を構築します。構築後、ソースコードを変更して、git pushをトリガーにCI/CDパイプラインの実行、OKEクラスタ上にサンプルアプリケーションがデプロイされるまでの工程が、自動で行われることを確認します。 事前準備の流れ 1.OKE セットアップ 2.OCI Notification セットアップ 3.認証トークン セットアップ 4.動的グループ/ポリシー セットアップ 1.OKEセットアップ 1-1 OCIダッシュボードからOKEクラスタの構築 3ノード、1クラスタとして、OKEクラスタを構築します。 左上のハンバーガーメニューを展開して、「開発者サービス」から「Kubernetesクラスタ(OKE)」を選択します。 「クラスタの作成」ボタンをクリックします。 「クイック作成」が選択されていることを確認して、「ワークフローの起動」ボタンをクリックします。 以下を設定します。 「Kubernetesワーカー・ノード」:「プライベート・ワーカー」 「シェイプ」：「VM Standard.E3.Flex」 「OCPU数の選択」:「1」 「メモリー量（GB）」：「16」 画面左下の「次」ボタンをクリックします。 画面左下の「クラスタ作成」ボタンをクリックします。 画面左下の「閉じる」ボタンをクリックします。 黄色の「作成中」から緑の「アクティブ」になることを確認します。「アクティブ」であればクラスタ作成は完了です。 1-2 Cloud Shellを利用してクラスタを操作 Cloud Shellを利用して、作成したKubernetesクラスタに接続します。 「クラスタへのアクセス」ボタンをクリックします。 「Cloud Shellの起動」ボタン、「コピー」リンクテキスト、「閉じる」ボタンの順にクリックします。 Cloud Shell起動後、「コピー」した内容をペーストして、Enterキーを押します。 以下コマンドを実行して、3ノードの「STATUS」が「Ready」になっていることを確認します。 kubectl...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native-test/devops-for-commons/",
+        "teaser": null
+      },{
         "title": "KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう",
         "excerpt":"このワークショップでは、OCI DevOpsを利用してCI/CDパイプラインをセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes（OKE）にデプロイする一連の流れを体験することができます このワークショップには以下のサービスが含まれます。 Oracle Autonomous Transaction Processing（略称：ATP）: 運用がすべて自動化された自律型データベースサービスです。 Oracle Container Engine for Kubernetes（略称：OKE）: マネージドなKuberentesクラスタを提供するクラウドサービスです。 Oracle Cloud Infrastructure DevOps（略称：OCI DevOps）: Oracle Cloudが提供するマネージドなCI/CDサービスです。 Oracle Cloud Infrastructure Registry（略称：OCIR）: フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。 前提条件 ワークショップを開始する前に以下を準備してください。 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること Oracle Cloud Infrastructureの基本操作はチュートリアル : OCIコンソールにアクセスして基本を理解するをご確認ください。 ゴールを確認する はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。 手順を最後まで行うと、下図のような環境が構成されます。 構成要素 説明 OKE...","categories": [],
         "tags": [],
@@ -382,6 +388,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/database/dbcs104-backup/",
         "teaser": "/ocitutorials/database/dbcs104-backup/11.PNG"
+      },{
+        "title": "105: バックアップからリストアしよう",
+        "excerpt":"はじめに DBCS では、自動バックアップ機能やオンデマンドバックアップにて取得したバックアップを利用する事で、最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。 また、バックアップ元のデータベースに対してリストアするだけでなく、別DBシステム上にリストアする事も可能です。 ここでは、OCI コンソールからリストアする手順についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 自動バックアップを設定しよう を通じてバックアップを取得していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. バックアップ元のデータベースに対してリストア 2. バックアップから新規データベースとしてリストア 3. オンデマンドバックアップを使用したリストア 所要時間 : 約30分 1. バックアップ元のデータベースに対してリストア まずはバックアップ元のデータベースに対してリストアしてみましょう。 リストア方法には下記3つがありますので、リストアしたい地点に応じてどのリストア方法を利用するか検討してください。 最新にリストア データ損失の可能性が最も低い、直近の正常な状態にデータベースをリストアします。 タイムスタンプにリストア 指定した日時にデータベースをリストアします。 SCNにリストア SCNを使用してデータベースをリストアします。 有効なSCNを指定する必要がありますので、データベース・ホストにアクセスして問い合せるか、オンラインまたはアーカイブ・ログにアクセスして使用するSCN番号を確認してください。 コンソールメニューから データベース → ベア・メタル、VMおよびExadata を選択し、有効な管理権限を持つコンパートメントを選択します リストアしたいDBシステムを選択します 左側のリソースからデータベースを選択し、データベース一覧から対象のデータベース名を選択します...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/dbcs105-restore/",
+        "teaser": "/ocitutorials/database/dbcs105-restore/restore00.png"
       },{
         "title": "106: Data Guardを構成しよう",
         "excerpt":"はじめに Data Guardは、Oracle Database自身が持つレプリケーション機能です。 プライマリDBの更新情報（REDOログ）をスタンバイDBに転送し、そのREDOログを使ってリカバリし続けることでプライマリDBと同じ状態を維持します。 リアルタイムに複製データベースを持つ事ができる為、データベース障害やリージョン障害などのRTO/RPOを短くすることができ、広範囲な計画停止(メンテナンス)においても切り替えることによって停止時間を極小化することが可能で、災害対策(DR)としてのデータ保護はもちろんのこと、移行やアップグレードの停止時間短縮といった利用用途もあります。 また、参照専用として利用可能なActive Data Guardにしたり、一時的に読み書き可能なスナップショット・スタンバイとして利用したりと、普段から利用可能なスタンバイDBを持つことができます。 ここでは、OCI コンソールから Data Guard を構成するまでの手順についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. OCI上でのData Guard構成パターン 2. Data Guardを構成する為の前提条件 3. Data Guardの構成手順 4. Data Guardの切り替え 5. Data Guard構成に含まれるDBの削除方法 所要時間 : 約60分 1. OCI上でのData Guard構成パターン Oracle Cloud上でData Guardを利用する際の基本的な構成については、大きく分けて３つのパターンがあります。...","categories": [],

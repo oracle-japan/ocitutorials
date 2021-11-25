@@ -1,4 +1,4 @@
-FROM ruby:latest
+FROM ruby:2.7.5
 
 WORKDIR /pages
 
