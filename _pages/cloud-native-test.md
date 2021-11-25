@@ -8,4 +8,6 @@ show_excerpts: true
 toc: true
 ---
 
-**[てすとさいと](/ocitutorials/cloud-native-test/oke-for-intermediates/)**
+**[OKEてすとさいと](/ocitutorials/cloud-native-test/oke-for-intermediates/)**  
+
+**[DevOpsてすとさいと](/ocitutorials/cloud-native-test/devops-for-commons/)**
