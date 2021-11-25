@@ -10,5 +10,4 @@ toc: true
 
 **[OKEてすとさいと](/ocitutorials/cloud-native-test/oke-for-intermediates/)**  
 
-
 **[DevOpsてすとさいと](/ocitutorials/cloud-native-test/devops-for-commons/)**
