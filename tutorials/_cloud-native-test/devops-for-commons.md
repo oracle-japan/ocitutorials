@@ -47,24 +47,24 @@ OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービス�
 
 ![](1-003.png)
 
-以下を設定します。
+以下の内容であることを確認します。
 
-「Kubernetesワーカー・ノード」:「プライベート・ワーカー」
-「シェイプ」：「VM Standard.E3.Flex」
-「OCPU数の選択」:「1」
-「メモリー量（GB）」：「16」
+* Kubernetesワーカー・ノード:プライベート・ワーカー
+* シェイプ：VM Standard.E3.Flex
+* OCPU数の選択: 1
+* メモリー量（GB）： 16
 
 ![](1-004.png)
 
-画面左下の「次」ボタンをクリックします。
+画面「次」ボタンをクリックします。
 
 ![](1-005.png)
 
-画面左下の「クラスタ作成」ボタンをクリックします。
+画面「クラスタ作成」ボタンをクリックします。
 
 ![](1-006.png)
 
-画面左下の「閉じる」ボタンをクリックします。
+画面「閉じる」ボタンをクリックします。
 
 ![](1-007.png)
 
@@ -290,7 +290,7 @@ ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     "id": "ocid1.dynamicgroup.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
-    "matching-rule": "Any {All {resource.type = 'devopsrepository', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsbuildpipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsdeploypipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},instance.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}",
+    "matching-rule": "Any {All {resource.type = 'devopsrepository', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsbuildpipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsdeploypipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}",
     "name": "OCI_DevOps_Dynamic_Group",
     "time-created": "2021-11-18T07:41:49.350000+00:00"
   },
@@ -314,8 +314,7 @@ ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     "statements": [
       "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage secret-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage instance-agent-command-execution-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       "Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     ],
     "time-created": "2021-11-18T07:41:50.880000+00:00",
@@ -425,7 +424,7 @@ OCI DevOpsからOKEクラスタにアプリケーションのデプロイを行�
 
 ![](1-046.png)
 
-左下の「環境の作成」ボタンをクリックします。
+「環境の作成」ボタンをクリックします。
 
 ![](1-047.png)
 
@@ -596,6 +595,8 @@ Branch main set up to track remote branch main from origin.
 
 OCIコンソールからも確認してみます。
 
+![](1-135.png)
+
 ![](1-058.png)
 
 以上で、コードリポジトリの作成は完了です。
@@ -658,10 +659,13 @@ OCI DrvOpsからOKEクラスタにデプロイする際に利用するマニフ�
 
 次に、アーティファクトとなるマニフェストをアップロードします。
 
-クローンした資材にある「deploy.yaml」のコンテナイメージレジストリのパスを変更します。
+Cloud Shellに戻って、クローンした資材にある「deploy.yaml」のコンテナイメージレジストリのパスを変更します。
 
 「orasejapan」の箇所を事前に取得した`<オブジェクト・ストレージ・ネームスペース>`に変更して、保存します。
 
+```sh
+cd ~
+```
 ```sh
 vim ./oracle-developer-days-2021-ocidevops-hol/deploy.yaml
 ```
@@ -709,7 +713,7 @@ spec:
 
 ![](1-067.png)
 
-「<file-name>」を「./oracle-developer-days-2021-ocidevops-hol/deploy.yaml」に書き換えて、Enterキーを押します。
+「./＜file-name＞」を「./oracle-developer-days-2021-ocidevops-hol/deploy.yaml」に書き換えて、Enterキーを押します。
 
 ```sh
 oci artifacts generic artifact upload-by-path \
@@ -762,7 +766,7 @@ OCI DevOpsでセットアップしたアOCIRとアーティファクト・レジ
 
 ![](1-071.png)
 
-「名前」に「OCIR」と入力、「コンテナ・レジストリのイメージへの完全修飾パスを入力してください」には、マニフェストで書き換えたパスを入力します。
+「名前」に「ocir」と入力、「コンテナ・レジストリのイメージへの完全修飾パスを入力してください」には、マニフェストで書き換えたパスを入力します。
 以下「your-object-storage-namespace」には、事前に取得した`<オブジェクト・ストレージ・ネームスペース>`を入力してください。
 
 ```sh
@@ -777,23 +781,19 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 次に、アーティファクト・レジストリを設定します。
 
-![](1-070.png)
-
 「アーティファクトの追加」ボタンをクリックします。
+
+![](1-136.png)
 
 「名前」に「artifact-repository」と入力、「タイプ」は「Kubernetesマニフェスト」を選択して、「選択」ボタンをクリックします。
 
 ![](1-074.png)
 
-「artifact-repository」を選択します。
+「artifact-repository」にチェックを入れます。
 
 ![](1-075.png)
 
 「選択」ボタンをクリックします。
-
-![](1-076.png)
-
-「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
@@ -801,7 +801,7 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 ![](1-077.png)
 
-「deploy.yaml:1」を選択します。
+「deploy.yaml:1」にチェックを入れます。
 
 ![](1-078.png)
 
@@ -840,7 +840,7 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 ![](1-082.png)
 
-左下の「パイプラインの作成」ボタンをクリックします。
+「パイプラインの作成」ボタンをクリックします。
 
 ![](1-083.png)
 
@@ -852,7 +852,7 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 ![](1-085.png)
 
-左下の「次へ」ボタンをクリックします。
+「次へ」ボタンをクリックします。
 
 ![](1-086.png)
 
@@ -860,16 +860,15 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 * ステージ名:deploy-to-oke
 * 環境:oke-cluster
-* Kubernetesネームスペースのオーバーライド
-* オプション:default
+* Kubernetesネームスペースのオーバーライド オプション:default
 
 ![](1-087.png)
 
-「artifact-repository」を選択します。
+「artifact-repository」にチェックを入れます。
 
 ![](1-088.png)
 
-左下の「変更の保存」ボタンをクリックします。
+「変更の保存」ボタンをクリックします。
 
 ![](1-089.png)
 
@@ -921,7 +920,7 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-095.png)
 
-画面左下の「次」ボタンをクリックします。
+「次」ボタンをクリックします。
 
 ![](1-005.png)
 
@@ -940,11 +939,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-097.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
-左下の「追加」ボタンをクリックします。
+「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
@@ -957,7 +956,7 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-100.png)
 
-左下の「次」ボタンをクリックします。
+「次」ボタンをクリックします。
 
 ![](1-005.png)
 
@@ -965,11 +964,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-101.png)
 
-「ocir」を選択します。
+「ocir」にチェックを入れます。
 
 ![](1-102.png)
 
-左下の「追加」ボタンをクリックします。
+「追加」ボタンをクリックします。
 
 ![](1-103.png)
 
@@ -977,16 +976,20 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-104.png)
 
-左下の「追加」ボタンをクリックします。
+「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
 最後に、デプロイメント・パイプラインと連携する「デプロイメントのトリガー」ステージを作成します。
 プラス部分をクリックして、「ステージの追加」を選択します。
 
+![](1-105.png)
+
+「デプロイメントのトリガー」を選択します。
+
 ![](1-106.png)
 
-左下の「次」ボタンをクリックします。
+「次」ボタンをクリックします。
 
 ![](1-005.png)
 
@@ -994,15 +997,15 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-107.png)
 
-「deploy-pipeline」を選択します。
+「deploy-pipeline」にチェックを入れます。
 
 ![](1-108.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
-左下の「追加」ボタンをクリックします。
+「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
@@ -1023,7 +1026,7 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ### 7-1.トリガーの作成
 
-トリガーでは、ソースコードを変更して、コードリポジトリへの「git push」コマンド実行をトリガーに、これまで作成してきた「ビルド・パイプライン」、「デプロイメント・パイプライン」が自動で稼働して、OKEクラスタにアプリケーションがデプロイされるようにします。
+トリガーでは、ソースコードを変更して、コードリポジトリへの「git push」コマンド実行をトリガーに、これまで作成してきた「ビルド・パイプライン」、「デプロイメント・パイプライン」が自動で稼働して、OKEクラスタにコンテナアプリケーションがデプロイされるようにします。
 
 「トリガーの作成」ボタンをクリックします。
 
@@ -1036,11 +1039,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-112.png)
 
-「コード・リポジトリの選択」で「oci-devops-handson」を選択します。
+「oci-devops-handson」にチェックを入れます。
 
 ![](1-113.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
@@ -1052,11 +1055,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-115.png)
 
-「ビルド・パイプラインの選択」で「build-pipeline」を選択します。
+「build-pipeline」にチェックを入れます。
 
 ![](1-116.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
@@ -1064,7 +1067,7 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-117.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
@@ -1093,6 +1096,9 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 対象のディレクトリに移動します。
 
+```sh
+cd ~
+```
 ```sh
 cd oci-devops-handson
 ```
@@ -1169,7 +1175,10 @@ Branch main set up to track remote branch main from origin.
 
 ![](1-121.png)
 
-確認後、パンくずリストから「oci-devops-handson」をクリックします。  
+確認後、パンくずリストから「oci-devops-handson」をクリックします。
+
+![](1-137.png)
+
 「最新のデプロイメント」で、対象のデプロイメントを選択します。
 
 ![](1-122.png)
