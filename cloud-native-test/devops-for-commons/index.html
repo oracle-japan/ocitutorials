@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>OCI DevOpsことはじめ | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="OCI DevOpsを利用するために必要となる設定とデプロイ先とするOracle Container Engine for Kubernetes(OKE)の構築を行います。">
+<meta name="description" content="OCI DevOpsでコンテナアプリケーション開発におけるCI/CDを学びます。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -26,7 +26,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native-test/devops-for-commons/">
 
 
-  <meta property="og:description" content="OCI DevOpsを利用するために必要となる設定とデプロイ先とするOracle Container Engine for Kubernetes(OKE)の構築を行います。">
+  <meta property="og:description" content="OCI DevOpsでコンテナアプリケーション開発におけるCI/CDを学びます。">
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2021-11-25T12:42:25+09:00">
+  <meta property="article:published_time" content="2021-11-26T10:15:54+09:00">
 
 
 
@@ -180,7 +180,7 @@
         
       </h1>
       
-        <p class="page__lead">OCI DevOpsを利用するために必要となる設定とデプロイ先とするOracle Container Engine for Kubernetes(OKE)の構築を行います。
+        <p class="page__lead">OCI DevOpsでコンテナアプリケーション開発におけるCI/CDを学びます。
 </p>
       
       
@@ -239,8 +239,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI DevOpsことはじめ">
-    <meta itemprop="description" content="OCI DevOpsを利用するために必要となる設定とデプロイ先とするOracle Container Engine for Kubernetes(OKE)の構築を行います。">
-    <meta itemprop="datePublished" content="2021-11-25T12:42:25+09:00">
+    <meta itemprop="description" content="OCI DevOpsでコンテナアプリケーション開発におけるCI/CDを学びます。">
+    <meta itemprop="datePublished" content="2021-11-26T10:15:54+09:00">
     
 
     <div class="page__inner-wrap">
@@ -251,12 +251,13 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#全体構成">全体構成</a></li><li><a href="#事前準備の流れ">事前準備の流れ</a></li><li><a href="#1okeセットアップ">1.OKEセットアップ</a><ul><li><a href="#1-1-ociダッシュボードからokeクラスタの構築">1-1 OCIダッシュボードからOKEクラスタの構築</a></li><li><a href="#1-2-cloud-shellを利用してクラスタを操作">1-2 Cloud Shellを利用してクラスタを操作</a></li></ul></li><li><a href="#2oci-notification-セットアップ">2.OCI Notification セットアップ</a><ul><li><a href="#2-1-トピックとサブスクリプションの設定">2-1 トピックとサブスクリプションの設定</a></li><li><a href="#トピックの作成">トピックの作成</a></li><li><a href="#サブスクリプションの作成">サブスクリプションの作成</a></li></ul></li><li><a href="#3認証トークン-セットアップ">3.認証トークン セットアップ</a><ul><li><a href="#3-1-認証トークンの作成">3-1 認証トークンの作成</a></li></ul></li><li><a href="#4動的グループポリシー-セットアップ">4.動的グループ/ポリシー セットアップ</a><ul><li><a href="#4-1-動的グループとポリシーの作成">4-1 動的グループとポリシーの作成</a><ul><li><a href="#oci-devopsで利用する動的グループ">OCI DevOpsで利用する動的グループ</a></li><li><a href="#oci-devopsで利用するポリシー">OCI DevOpsで利用するポリシー</a></li><li><a href="#動的グループとポリシーの設定">動的グループとポリシーの設定</a></li></ul></li></ul></li><li><a href="#oci-devops-環境構築">OCI DevOps 環境構築</a></li><li><a href="#1プロジェクト">1.プロジェクト</a><ul><li><a href="#1-1-プロジェクトの作成">1-1 プロジェクトの作成</a></li></ul></li><li><a href="#3コードリポジトリ">3.コードリポジトリ</a><ul><li><a href="#3-1コードリポジトリの作成">3-1.コードリポジトリの作成</a></li><li><a href="#3-2クローンした資材をプッシュ">3-2.クローンした資材をプッシュ</a><ul><li><a href="#クローン先情報を取得">クローン先情報を取得</a></li><li><a href="#oci-devops-handsonリポジトリのユーザ名とパスワードの取得">「oci-devops-handson」リポジトリのユーザ名とパスワードの取得</a></li><li><a href="#oci-devops-handsonリポジトリへ資材のプッシュ">「oci-devops-handson」リポジトリへ資材のプッシュ</a></li></ul></li></ul></li><li><a href="#4アーティファクト">4.アーティファクト</a><ul><li><a href="#4-1ocirのセットアップ">4-1.OCIRのセットアップ</a></li><li><a href="#4-2アーティファクトレジストリの作成">4-2.アーティファクト・レジストリの作成</a></li><li><a href="#4-3アーティファクトの追加">4-3.アーティファクトの追加</a></li></ul></li><li><a href="#5デプロイメントパイプライン">5.デプロイメント・パイプライン</a><ul><li><a href="#5-1デプロイメントパイプラインの作成">5-1.デプロイメント・パイプラインの作成</a></li></ul></li><li><a href="#6ビルドパイプライン">6.ビルド・パイプライン</a><ul><li><a href="#6-1ビルドパイプラインの作成">6-1.ビルド・パイプラインの作成</a></li></ul></li><li><a href="#7トリガー">7.トリガー</a><ul><li><a href="#7-1トリガーの作成">7-1.トリガーの作成</a></li></ul></li><li><a href="#8パイプラインの実行">8.パイプラインの実行</a><ul><li><a href="#8-1パイプラインの実行">8-1.パイプラインの実行</a></li></ul></li><li><a href="#9デプロイの確認">9.デプロイの確認</a><ul><li><a href="#9-1アプリケーションのデプロイ確認">9-1.アプリケーションのデプロイ確認</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#全体構成">全体構成</a></li><li><a href="#事前準備の流れ">事前準備の流れ</a></li><li><a href="#1okeセットアップ">1.OKEセットアップ</a><ul><li><a href="#1-1-ociダッシュボードからokeクラスタの構築">1-1 OCIダッシュボードからOKEクラスタの構築</a></li><li><a href="#1-2-cloud-shellを利用してクラスタを操作">1-2 Cloud Shellを利用してクラスタを操作</a></li></ul></li><li><a href="#2oci-notification-セットアップ">2.OCI Notification セットアップ</a><ul><li><a href="#2-1-トピックとサブスクリプションの設定">2-1 トピックとサブスクリプションの設定</a></li><li><a href="#トピックの作成">トピックの作成</a></li><li><a href="#サブスクリプションの作成">サブスクリプションの作成</a></li></ul></li><li><a href="#3認証トークン-セットアップ">3.認証トークン セットアップ</a><ul><li><a href="#3-1-認証トークンの作成">3-1 認証トークンの作成</a></li></ul></li><li><a href="#4動的グループポリシー-セットアップ">4.動的グループ/ポリシー セットアップ</a><ul><li><a href="#4-1-動的グループとポリシーの作成">4-1 動的グループとポリシーの作成</a><ul><li><a href="#oci-devopsで利用する動的グループ">OCI DevOpsで利用する動的グループ</a></li><li><a href="#oci-devopsで利用するポリシー">OCI DevOpsで利用するポリシー</a></li><li><a href="#動的グループとポリシーの設定">動的グループとポリシーの設定</a></li></ul></li></ul></li><li><a href="#oci-devops-環境構築">OCI DevOps 環境構築</a></li><li><a href="#1プロジェクト">1.プロジェクト</a><ul><li><a href="#1-1-プロジェクトの作成">1-1 プロジェクトの作成</a></li></ul></li><li><a href="#2環境">2.環境</a><ul><li><a href="#2-1-環境の作成">2-1 環境の作成</a></li></ul></li><li><a href="#3コードリポジトリ">3.コードリポジトリ</a><ul><li><a href="#3-1コードリポジトリの作成">3-1.コードリポジトリの作成</a></li><li><a href="#3-2クローンした資材をプッシュ">3-2.クローンした資材をプッシュ</a><ul><li><a href="#クローン先情報を取得">クローン先情報を取得</a></li><li><a href="#oci-devops-handsonリポジトリのユーザ名とパスワードの取得">「oci-devops-handson」リポジトリのユーザ名とパスワードの取得</a></li><li><a href="#oci-devops-handsonリポジトリへ資材のプッシュ">「oci-devops-handson」リポジトリへ資材のプッシュ</a></li></ul></li></ul></li><li><a href="#4アーティファクト">4.アーティファクト</a><ul><li><a href="#4-1ocirのセットアップ">4-1.OCIRのセットアップ</a></li><li><a href="#4-2アーティファクトレジストリの作成">4-2.アーティファクト・レジストリの作成</a></li><li><a href="#4-3アーティファクトの追加">4-3.アーティファクトの追加</a></li></ul></li><li><a href="#5デプロイメントパイプライン">5.デプロイメント・パイプライン</a><ul><li><a href="#5-1デプロイメントパイプラインの作成">5-1.デプロイメント・パイプラインの作成</a></li></ul></li><li><a href="#6ビルドパイプライン">6.ビルド・パイプライン</a><ul><li><a href="#6-1ビルドパイプラインの作成">6-1.ビルド・パイプラインの作成</a></li></ul></li><li><a href="#7トリガー">7.トリガー</a><ul><li><a href="#7-1トリガーの作成">7-1.トリガーの作成</a></li></ul></li><li><a href="#8パイプラインの実行">8.パイプラインの実行</a><ul><li><a href="#8-1パイプラインの実行">8-1.パイプラインの実行</a></li></ul></li><li><a href="#9デプロイの確認">9.デプロイの確認</a><ul><li><a href="#9-1アプリケーションのデプロイ確認">9-1.アプリケーションのデプロイ確認</a></li></ul></li></ul>
 
             </nav>
           </aside>
         
-        <p>OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。この共通手順では、OCI DevOpsを利用する上で必要となる設定、デプロイ先とするKubernetesクラスタの構築手順を記します。</p>
+        <p>OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。ここでは、OKEクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。<br />
+この手順を実施することで、OCI DevOpsを利用したコンテナアプリケーション開発におけるCI/CDを学習できます。</p>
 
 <h2 id="前提条件">前提条件</h2>
 <ul>
@@ -269,7 +270,7 @@
 
 <h2 id="全体構成">全体構成</h2>
 
-<p>最初に、以下の図にある環境を構築します。構築後、ソースコードを変更して、git pushをトリガーにCI/CDパイプラインの実行、OKEクラスタ上にサンプルアプリケーションがデプロイされるまでの工程が、自動で行われることを確認します。</p>
+<p>以下の図にある環境を構築することがゴールです。環境構築後、サンプルソースコードを変更して、「git push」コマンド実行をトリガーにCI/CDパイプラインの実行、OKEクラスタ上にサンプルコンテナアプリケーションのデプロイまでの工程が、自動で行われることを確認します。</p>
 
 <p><img src="1-012.png" alt="" /></p>
 
@@ -282,6 +283,8 @@
 </ul>
 
 <h2 id="1okeセットアップ">1.OKEセットアップ</h2>
+
+<p><img src="1-125.png" alt="" /></p>
 
 <h3 id="1-1-ociダッシュボードからokeクラスタの構築">1-1 OCIダッシュボードからOKEクラスタの構築</h3>
 
@@ -352,6 +355,8 @@
 <p>以上でOKEクラスタの構築は完了です。</p>
 
 <h2 id="2oci-notification-セットアップ">2.OCI Notification セットアップ</h2>
+
+<p><img src="1-126.png" alt="" /></p>
 
 <h3 id="2-1-トピックとサブスクリプションの設定">2-1 トピックとサブスクリプションの設定</h3>
 
@@ -629,6 +634,8 @@ Oracle Cloud Infrastrctureにはポリシーという考え方があります。
 
 <h2 id="1プロジェクト">1.プロジェクト</h2>
 
+<p><img src="1-127.png" alt="" /></p>
+
 <h3 id="1-1-プロジェクトの作成">1-1 プロジェクトの作成</h3>
 
 <p>OCI DevOpsは、プロジェクト単位で管理する仕組みです。最初にプロジェクトを作成します。</p>
@@ -677,7 +684,43 @@ Oracle Cloud Infrastrctureにはポリシーという考え方があります。
 
 <p>以上で、プロジェクトの作成は完了です。</p>
 
+<h2 id="2環境">2.環境</h2>
+
+<p><img src="1-128.png" alt="" /></p>
+
+<h3 id="2-1-環境の作成">2-1 環境の作成</h3>
+
+<p>OCI DevOpsからOKEクラスタにアプリケーションのデプロイを行うために、OKEクラスタを登録します。</p>
+
+<p>「環境の作成」を選択します。</p>
+
+<p><img src="1-043.png" alt="" /></p>
+
+<p>「環境タイプ」で「Oracle Kubernetesエンジン」を選択、「名前」で「oke-cluster」を選択します。</p>
+
+<p><img src="1-044.png" alt="" /></p>
+
+<p>「次」ボタンをクリックします。</p>
+
+<p><img src="1-045.png" alt="" /></p>
+
+<p>「クラスタ」で「cluster1」を選択します。</p>
+
+<p><img src="1-046.png" alt="" /></p>
+
+<p>左下の「環境の作成」ボタンをクリックします。</p>
+
+<p><img src="1-047.png" alt="" /></p>
+
+<p>パンくずリストから「oci-devops-handson」をクリックします。</p>
+
+<p><img src="1-048.png" alt="" /></p>
+
+<p>以上で、環境の作成は完了です。</p>
+
 <h2 id="3コードリポジトリ">3.コードリポジトリ</h2>
+
+<p><img src="1-129.png" alt="" /></p>
 
 <h3 id="3-1コードリポジトリの作成">3-1.コードリポジトリの作成</h3>
 
@@ -826,6 +869,8 @@ Branch main <span class="nb">set </span>up to track remote branch main from orig
 <p>以上で、コードリポジトリの作成は完了です。</p>
 
 <h2 id="4アーティファクト">4.アーティファクト</h2>
+
+<p><img src="1-130.png" alt="" /></p>
 
 <h3 id="4-1ocirのセットアップ">4-1.OCIRのセットアップ</h3>
 
@@ -1038,6 +1083,8 @@ spec:
 
 <h2 id="5デプロイメントパイプライン">5.デプロイメント・パイプライン</h2>
 
+<p><img src="1-131.png" alt="" /></p>
+
 <h3 id="5-1デプロイメントパイプラインの作成">5-1.デプロイメント・パイプラインの作成</h3>
 
 <p>先ほど登録したアーティファクト・レジストリと連携して、OKEクラスタにアプリケーションを自動デプロイするためのパイプラインを作成します。</p>
@@ -1104,6 +1151,8 @@ spec:
 <p>以上で、デプロイメント・パイプラインの作成は完了です。</p>
 
 <h2 id="6ビルドパイプライン">6.ビルド・パイプライン</h2>
+
+<p><img src="1-132.png" alt="" /></p>
 
 <h3 id="6-1ビルドパイプラインの作成">6-1.ビルド・パイプラインの作成</h3>
 
@@ -1235,6 +1284,8 @@ spec:
 
 <h2 id="7トリガー">7.トリガー</h2>
 
+<p><img src="1-133.png" alt="" /></p>
+
 <h3 id="7-1トリガーの作成">7-1.トリガーの作成</h3>
 
 <p>トリガーでは、ソースコードを変更して、コードリポジトリへの「git push」コマンド実行をトリガーに、これまで作成してきた「ビルド・パイプライン」、「デプロイメント・パイプライン」が自動で稼働して、OKEクラスタにアプリケーションがデプロイされるようにします。</p>
@@ -1299,6 +1350,8 @@ spec:
 <p>以上で、トリガーの作成は完了です。</p>
 
 <h2 id="8パイプラインの実行">8.パイプラインの実行</h2>
+
+<p><img src="1-134.png" alt="" /></p>
 
 <h3 id="8-1パイプラインの実行">8-1.パイプラインの実行</h3>
 
@@ -1436,7 +1489,7 @@ kubernetes   ClusterIP      10.96.0.1     &lt;none&gt;           443/TCP        
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-11-25T12:42:25+09:00">November 25, 2021</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-11-26T10:15:54+09:00">November 26, 2021</time></p>
 
 
       </footer>
