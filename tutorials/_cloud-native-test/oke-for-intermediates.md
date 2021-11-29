@@ -8,10 +8,10 @@ tags:
 
 このワークショップには以下のサービスが含まれます。
 
-- [Oracle Autonomous Transaction Processing](https://www.oracle.com/jp/database/atp-cloud.html)（略称：ATP）:
-:   運用がすべて自動化された自律型データベースサービスです。
 - [Oracle Container Engine for Kubernetes](https://www.oracle.com/jp/cloud/compute/container-engine-kubernetes.html)（略称：OKE）:
 :   マネージドなKuberentesクラスタを提供するクラウドサービスです。
+- [Oracle Autonomous Transaction Processing](https://www.oracle.com/jp/database/atp-cloud.html)（略称：ATP）:
+:   運用がすべて自動化された自律型データベースサービスです。
 - [Oracle Cloud Infrastructure DevOps](https://www.oracle.com/devops/devops-service/)（略称：OCI DevOps）:
 :   Oracle Cloudが提供するマネージドなCI/CDサービスです。
 - [Oracle Cloud Infrastructure Registry](https://www.oracle.com/jp/cloud/compute/container-registry.html)（略称：OCIR）:
@@ -75,7 +75,13 @@ OCIRレポジトリについては、[ゴールを確認する](#ゴールを確
 git clone https://github.com/oracle-japan/oke-atp-helidon-handson.git
 ```
 
-これで資材の取得は完了です。
+これで資材の取得は完了です。  
+
+ホームディレクトリに戻っておきます。  
+
+```sh
+cd ~
+```
 
 ### 0-2. 認証トークンの作成  
 
@@ -197,7 +203,11 @@ DevOpsでは、利用する機能やデプロイ先に応じて、今回設定�
 
 それでは、上記の動的グループとポリシー設定するためのシェルスクリプトを実行します。  
 
-シェルスクリプトは[0.資材の取得](/ocitutorials/cloud-native/oke-for-intermediates/0資材の取得)で取得した資材内にあります。  
+シェルスクリプトは[0-1.ハンズオン資材の取得](#0-1-ハンズオン資材の取得)で取得した資材内にあります。  
+
+```sh
+cd oke-atp-helidon-handson
+```
 
 ```sh
 cd prepare
@@ -211,7 +221,13 @@ chmod +x prepare.sh
 ./prepare.sh
 ```
 
-これでポリシー作成は完了です。
+これでポリシー作成は完了です。  
+
+ホームディレクトリに戻っておきます。  
+
+```sh
+cd ~
+```
 
 2.OCI DevOpsのセットアップ
 -------
@@ -345,7 +361,7 @@ key|value|
 
 レポジトリの作成が完了したら、![2-028.jpg](2-028.jpg)をクリックします。  
 
-表示されたダイアログの以下の赤枠部分をクリックし、URLをコピーします。  
+表示されたダイアログの以下の赤枠部分(`HTTPSでのクローニング`)をクリックし、URLをコピーします。  
 
 ![2-029.jpg](2-029.jpg)
 
@@ -372,7 +388,7 @@ cloneが成功すると"oke-handson"というディレクトリが作成され�
 [ハンズオン資材](/ocitutorials/cloud-native/oke-for-intermediates/0資材の取得)を"oke-handson"にコピーします。  
 
 ```sh
-cp -p oke-atp-handson/* oke-handson/
+cp -pr oke-atp-helidon-handson/* oke-handson/
 ```
 
 コード・レポジトリからcloneしたディレクトリに移動します。  
@@ -442,8 +458,8 @@ spec:
           mountPath: /db-demo/creds              
       volumes:
       - name: handson
-        configMap:
-          name: okeatp
+        secret:
+          secretName: okeatp
 ```
 
 35行目の以下の部分を
@@ -465,10 +481,27 @@ git add .
 ```
 
 ```sh
+git commit -m "commit"
+```
+
+```sh
 git push
 ```
 
+この際にユーザ名とパスワードを聞かれた場合は、以下の項目を入力します。  
+
+key|value|説明
+-|-
+ユーザ名|<オブジェクト・ストレージ・ネームスペース>/oracleidentitycloudservice/<メールアドレス>|`<オブジェクト・ストレージ・ネームスペース>`は[0-3-オブジェクトストレージネームスペースの確認](#0-3-オブジェクトストレージネームスペースの確認)で確認したもの
+パスワード|[0-2-認証トークンの作成](#0-2-認証トークンの作成)で作成したもの
+
 これで、サンプルアプリケーションの事前準備は完了です。
+
+ホームディレクトリに戻っておきます。    
+
+```sh
+cd ~
+```
 
 3.ATPのプロビジョニング
 -------
@@ -672,7 +705,7 @@ kubectl create secret generic admin-passwd --from-literal=password=okehandson__O
 今回は管理者パスワードと同じ"okehandson__Oracle1234"としてパスワードを作成します。  
 
 ```sh
-kubectl create secret generic wallet-passwd --from-literal=walletpassword=okehandson__Oracle1234
+kubectl create secret generic wallet-passwd --from-literal=walletPassword=okehandson__Oracle1234
 ```
 
 {% capture notice %}**Secretを誤って作成してしまった場合**  
@@ -692,15 +725,21 @@ kubectl delete secret <secret名>
 ATPプロビジョニング時に設定可能なパラメータについては[こちら](https://github.com/oracle/oci-service-operator/blob/main/docs/adb.md#autonomous-databases-service)をご確認ください。
 {: .notice--info}
 
+Manifestファイルを開き、`<ご自身のコンパートメントOCID>`の部分をご自身のコンパートメントOCIDに置き換えてください。  
+
+```sh
+vim oke-handson/k8s/atp/atp.yaml 
+```
+
 ```yaml
 apiVersion: oci.oracle.com/v1beta1
 kind: AutonomousDatabases
 metadata:
-  name: oke-atp-handson
+  name: oke-atp-handson-db
 spec:
   compartmentId: <ご自身のコンパートメントOCID>
   displayName: oke-atp-handson-db
-  dbName: oke-atp-handson-db
+  dbName: okeatp
   dbWorkload: OLTP
   isDedicated: false
   dbVersion: 19c
@@ -719,43 +758,39 @@ spec:
         secretName: wallet-passwd
 ```
 
-`<ご自身のコンパートメントOCID>`の部分をご自身のコンパートメントOCIDに置き換えてください。  
-
 OKEに対してManifestを適用します。  
 
 ```sh
-kubectl apply -f atp.yaml 
+kubectl apply -f oke-handson/k8s/atp/atp.yaml 
 ```
 
 以下のコマンドを実行すると、状況が確認できます。  
 `status`が`Active`になるまでしばらくかかるので待機します。  
 
 ```sh
-kubectl get autonomousdatabase
+kubectl get autonomousdatabases
 ```
 
 以下のように出力されればプロビジョニングは完了です。
 
 ```sh
-NAME              DBWORKLOAD   STATUS   AGE
-oke-atp-handson   OLTP         Active   4m25s
+NAME                DBWORKLOAD   STATUS   AGE
+oke-atp-handson-db   OLTP         Active   4m25s
 ```
 
 ### 3-3. サンプルデータの登録
 
 ここでは、SQL Developer Webを利用して、ATPにサンプルデータを登録します。  
 
-「サービス・コンソール」ボタンをクリックします。
+「Oracle Database」メニューの「Autonomous Database」カテゴリにある「Autonomous Transaction Processing」をクリックします。  
+
+![3-011.jpg](3-011.jpg)
+
+[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でプロビジョニングした![3-012.jpg](3-012.jpg)をクリックします。  
+
+「データベース・アクション」ボタンをクリックします。
 
 ![3-002.jpg](3-002.jpg)
-
-「開発」をクリックします。
-
-![3-003.jpg](3-003.jpg)
-
-「データベース・アクション」をクリックします。
-
-![3-004.jpg](3-004.jpg)
 
 下記項目を入力し、「次」をクリックします。
 
@@ -767,10 +802,10 @@ key|value|
 
 下記項目を入力し、「サインイン」をクリックします。
 
-key|value
+key|value|説明
 -|-
 Username|ATPデータベースのユーザー名。今回は"admin"
-Password|ATPデータベースのパスワード。今回は"TFWorkshop__2000"
+Password|ATPデータベースのパスワード。今回は"okehandson__Oracle1234"|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成したパスワード
 
 ![3-006.jpg](3-006.jpg)
 
@@ -778,7 +813,11 @@ Password|ATPデータベースのパスワード。今回は"TFWorkshop__2000"
 
 ![3-007.jpg](3-007.jpg)
 
-ログインしたら、ワークシート内にレポジトリ内(GitHubからcloneしたレポジトリ、コード・レポジトリからcloneしたレポジトリ、どちらでもOKです)の`sql/create_schema.sql`に定義されているDDLをコピー&ペーストし、スクリプト(赤枠のボタン)を実行します。
+ログインしたら、ワークシート内にレポジトリ内(GitHubからcloneしたレポジトリ、コード・レポジトリからcloneしたレポジトリ、どちらでもOKです)の`sql/create_schema.sql`に定義されているDDLを以下のコマンドで出力し、コピー&ペーストした後にスクリプト(赤枠のボタン)を実行します。
+
+```sh
+cat oke-handson/sql/create_schema.sql 
+```
 
 ![3-008.jpg](3-008.jpg)
 
@@ -1129,7 +1168,9 @@ cd oke-handson
 
 例えば、以下のようなコマンドになります。  
 
-`oci artifacts generic artifact upload-by-path -repository-id ocid1.artifactrepository.oc1.iad.0.amaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --artifact-path deploy.yaml --artifact-version v0.1 --content-body ./k8s/deploy/oke-atp-helidon.yaml`
+```sh
+oci artifacts generic artifact upload-by-path -repository-id ocid1.artifactrepository.oc1.iad.0.amaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --artifact-path deploy.yaml --artifact-version v0.1 --content-body ./k8s/deploy/oke-atp-helidon.yaml
+```
 
 これを実行します。  
 
@@ -1346,7 +1387,7 @@ key|value|説明
 ![6-003.jpg](6-003.jpg)
 
 ビルドパイプラインが完了したら、[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、
-以下のコマンドを実行します。 
+以下のコマンドを実行します。  
 
 ```sh
 kubectl get service
@@ -1376,6 +1417,10 @@ Webアプリケーションが表示されたら成功です。
 [Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。  
 
 `oke-handson`ディレクトリに移動します。  
+
+```sh
+cd oke-handson
+```
 
 以下のコマンドを実行し、イメージファイルを更新します。
 
@@ -1487,8 +1532,8 @@ spec:
           mountPath: /db-demo/creds              
       volumes:
       - name: handson
-        configMap:
-          name: okeatp
+        secret:
+          secretName: okeatp
 ```
 
 40-49行目に注目してみましょう。
@@ -1573,8 +1618,8 @@ spec:
           mountPath: /db-demo/creds              
       volumes:
       - name: handson
-        configMap:
-          name: okeatp
+        secret:
+          secretName: okeatp
 ```
 
 [3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でのManifestに`walletName: okeatp`というフィールドを定義しました。  
@@ -1607,24 +1652,20 @@ server.port=8080
 server.host=0.0.0.0
 
 javax.sql.DataSource.workshopDataSource.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@tfokeatpdb_high?TNS_ADMIN=/db-demo/creds
+javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
 javax.sql.DataSource.workshopDataSource.maximumPoolSize=5
 javax.sql.DataSource.workshopDataSource.minimumIdle=2
 
-# src/main/resources/web in your source tree
 server.static.classpath.location=/web
-# default is index.html
 server.static.classpath.welcome=index.html
-# static content path - default is "/"
-# server.static.classpath.context=/static-cp
 ```
 
 22行目に注目してみましょう。
 
 ```yaml
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds
+javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
 ```
 
-`jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds`がWalletファイルを読み込んでいる部分になります。  
+`jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds`がWalletファイルを読み込んでいる部分になります。  
 ここに先ほどmanifestでマウントしたパスが設定されています。  
 これでアプリケーションからKubernetesのConfigmapに設定したWalletファイルを利用することができます。
