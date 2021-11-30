@@ -53,14 +53,13 @@ OCIR/Artifact Registry|コンテナイメージなどのビルド成果物およ
 ここでは、後続の手順で利用するトークンやリソースの準備を行います。  
 準備する項目は以下の4つです。  
 
-- ハンズオン資材:
-:   本ハンズオンで利用するサンプルアプリケーションやスクリプトが含まれたプロジェクトです。Cloud Shell上にpullします。  
-- 認証トークン:
-:   OCIのリソース操作に必要なトークンです。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。  
-- オブジェクト・ストレージ・ネームスペース:
-:   OCIRへのアクセスやOCI DevOpsのGit Repositoryへのアクセスに必要な情報です。
-- OCIRレポジトリ:
-:   今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
+項目|説明
+-|-
+ハンズオン資材 |本ハンズオンで利用するサンプルアプリケーションやスクリプトが含まれたプロジェクトです。Cloud Shell上にpullします。
+ユーザ名|OCIのリソース操作に必要なユーザ名です。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
+認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
+オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスやOCI DevOpsのGit Repositoryへのアクセスに必要な情報です。
+OCIRレポジトリ|今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
 
 OCIRレポジトリについては、[ゴールを確認する](#ゴールを確認する)で示した図でいうと、赤点線枠(![2-032.jpg](2-032.jpg))の部分を作成していきます。  
 
@@ -83,7 +82,16 @@ git clone https://github.com/oracle-japan/oke-atp-helidon-handson.git
 cd ~
 ```
 
-### 0-2. 認証トークンの作成  
+### 0-2. ユーザ名の確認
+ここでは、ユーザ名の確認を行います。  
+
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルに表示されているユーザ名をエディタなどに記録しておきます。  
+
+![0-014.jpg](0-014.jpg)
+
+これでユーザ名の確認は完了です。  
+
+### 0-3. 認証トークンの作成  
 
 ここでは、OCI DevOpsのレポジトリ操作に必要な認証トークンを取得します。  
 
@@ -116,7 +124,7 @@ key|value|
 「コピー」をクリックしてトークンがコピーされ、どこに保存してください。完了したら、「閉じる」ボタンをクリックします。（注：忘れたときは作成されたトークンを削除して、再度生成してください。）
 {: .notice--warning}
 
-### 0-3. オブジェクト・ストレージ・ネームスペースの確認  
+### 0-4. オブジェクト・ストレージ・ネームスペースの確認  
 
 ここでは、OCIRへコンテナイメージをプッシュする際に必要となるオブジェクト・ストレージ・ネームスペースを確認します。  
 
@@ -130,7 +138,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、テ�
 
 以上で、オブジェクト・ストレージ・ネームスペースの確認は完了です。  
 
-### 0-4. OCIRのレポジトリ作成
+### 0-5. OCIRのレポジトリ作成
 
 ここでは、ビルドしたコンテナイメージをプッシュするためのレポジトリをOCIRに作成します。  
 
@@ -380,7 +388,7 @@ cloneする際にユーザ名をパスワードを聞かれます。
 
 key|value|説明
 -|-
-ユーザ名|<オブジェクト・ストレージ・ネームスペース>/oracleidentitycloudservice/<メールアドレス>|`<オブジェクト・ストレージ・ネームスペース>`は[0-3-オブジェクトストレージネームスペースの確認](#0-3-オブジェクトストレージネームスペースの確認)で確認したもの
+ユーザ名|<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>|`<オブジェクト・ストレージ・ネームスペース>`は[0-3.オブジェクトストレージネームスペースの確認](#0-3-オブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
 パスワード|[0-2-認証トークンの作成](#0-2-認証トークンの作成)で作成したもの
 
 cloneが成功すると"oke-handson"というディレクトリが作成されています。  
@@ -443,12 +451,12 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.user
+        - name: javax.sql.DataSource.test.dataSource.user
           valueFrom:
             secretKeyRef:
               name: customized-db-cred
               key: user_name
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.password
+        - name: javax.sql.DataSource.test.dataSource.password
           valueFrom:
             secretKeyRef:
               name: customized-db-cred
@@ -492,7 +500,7 @@ git push
 
 key|value|説明
 -|-
-ユーザ名|<オブジェクト・ストレージ・ネームスペース>/oracleidentitycloudservice/<メールアドレス>|`<オブジェクト・ストレージ・ネームスペース>`は[0-3-オブジェクトストレージネームスペースの確認](#0-3-オブジェクトストレージネームスペースの確認)で確認したもの
+ユーザ名|<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>|`<オブジェクト・ストレージ・ネームスペース>`は[0-3.オブジェクトストレージネームスペースの確認](#0-3-オブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
 パスワード|[0-2-認証トークンの作成](#0-2-認証トークンの作成)で作成したもの
 
 これで、サンプルアプリケーションの事前準備は完了です。
@@ -833,7 +841,7 @@ ITEMSテーブルの結果が表示されます。
 
 これで、サンプルデータの登録は完了しました。  
 
-### 3-4. サンプルデータの登録
+### 3-4. アプリケーションが利用するデータベースのユーザ/パスワードの作成
 
 ここでは、サンプルアプリケーションが利用するデータベースユーザとパスワードを作成します。  
 
@@ -1409,6 +1417,8 @@ Webアプリケーションが表示されたら成功です。
 
 ![6-004.jpg](6-004.jpg)
 
+また、CIパイプライン、CDパイプラインそれぞれの起動および完了(失敗)のタイミングで[2-1. OCI Notificationの作成](#2-1-oci-notificationの作成)で設定したメールアドレスに通知がされるので、確認してみてください。  
+
 7.アプリケーションの再デプロイ
 -----
 
@@ -1430,7 +1440,14 @@ cd oke-handson
 cp src/main/resources/web/images/forsale_new2.jpg src/main/resources/web/images/forsale.jpg
 ```
 
-リポジトリへCommitします。
+リポジトリへCommitします。　　
+
+ユーザ名とパスワードの入力を求められた場合は、以下を入力します。　　
+
+key|value|説明
+-|-
+ユーザ名|<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>|`<オブジェクト・ストレージ・ネームスペース>`は[0-3.オブジェクトストレージネームスペースの確認](#0-3-オブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
+パスワード|[0-2-認証トークンの作成](#0-2-認証トークンの作成)で作成したもの
 
 ```sh
 git add .
@@ -1443,6 +1460,7 @@ git commit -m "トップページのイメージを変更"
 ```sh
 git push
 ```
+
 
 ### 7-2. アプリケーションの反映確認
 
@@ -1463,7 +1481,7 @@ git push
 ![7-002.jpg](7-002.jpg)
 
 ビルドが完了したら、[7アプリケーションのデプロイ](#7アプリケーションのデプロイ)で確認したパブリックIPに再度アクセスします。  
-背景画像が変更されていることが確認できます。
+ヘッダー画像が変更されていることが確認できます。
 
 ![7-003.jpg](7-003.jpg)
 
@@ -1519,12 +1537,12 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.user
+        - name: javax.sql.DataSource.test.dataSource.user
           valueFrom:
             secretKeyRef:
               name: customized-db-cred
               key: user_name
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.password
+        - name: javax.sql.DataSource.test.dataSource.password
           valueFrom:
             secretKeyRef:
               name: customized-db-cred
@@ -1542,16 +1560,16 @@ spec:
 以下の行は、データベースのユーザとパスワードをコンテナにおける環境変数として設定しており、その値をcustomized-db-credというSecretから読み込んでいます。
 
 ```yaml
-    - name: javax_sql_DataSource_workshopDataSource_dataSource_user
-    valueFrom:
+    - name: javax.sql.DataSource.test.dataSource.user
+      valueFrom:
         secretKeyRef:
-        name: customized-db-cred
-        key: user_name
-    - name: javax_sql_DataSource_workshopDataSource_dataSource_password
-    valueFrom:
+          name: customized-db-cred
+          key: user_name
+    - name: javax.sql.DataSource.test.dataSource.password
+      valueFrom:
         secretKeyRef:
-        name: customized-db-cred
-        key: password
+          name: customized-db-cred
+          key: password
 ```
 
 今回の場合は、ユーザ名を`javax_sql_DataSource_workshopDataSource_dataSource_user`、パスワードを`javax_sql_DataSource_workshopDataSource_dataSource_password`という名前の環境変数としてそれぞれSecretリソースから読み込んでいます。  
@@ -1605,12 +1623,12 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.user
+        - name: javax.sql.DataSource.test.dataSource.user
           valueFrom:
             secretKeyRef:
               name: customized-db-cred
               key: user_name
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.password
+        - name: javax.sql.DataSource.test.dataSource.password
           valueFrom:
             secretKeyRef:
               name: customized-db-cred
@@ -1633,17 +1651,6 @@ spec:
 今回は、このマウントしたリソースを構成ファイル(oke-atp-helidon-handson/src/main/resources/META-INF/microprofile-config.properties)で利用しています。
 
 ```yaml
-#
-# Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
@@ -1653,19 +1660,17 @@ spec:
 server.port=8080
 server.host=0.0.0.0
 
-javax.sql.DataSource.workshopDataSource.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
-javax.sql.DataSource.workshopDataSource.maximumPoolSize=5
-javax.sql.DataSource.workshopDataSource.minimumIdle=2
+javax.sql.DataSource.test.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
 
 server.static.classpath.location=/web
 server.static.classpath.welcome=index.html
 ```
 
-22行目に注目してみましょう。
+11行目に注目してみましょう。
 
 ```yaml
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
 ```
 
 `jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds`がWalletファイルを読み込んでいる部分になります。  
