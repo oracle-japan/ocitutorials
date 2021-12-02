@@ -1062,7 +1062,7 @@ steps:
     name: "Export variables"
     timeoutInSeconds: 40
     command: |
-      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+      BUILDRUN_HASH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1`
       echo "BUILDRUN_HASH: " ${BUILDRUN_HASH}
     onFailure:
       - type: Command
