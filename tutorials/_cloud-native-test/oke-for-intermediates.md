@@ -426,6 +426,12 @@ key|value|
 
 [Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#2cli%E5%AE%9F%E8%A1%8C%E7%92%B0%E5%A2%83cloud-shell%E3%81%AE%E6%BA%96%E5%82%99)します。  
 
+clone前にGitのクレデンシャル(ユーザ名/パスワード)情報を保存するために以下のコマンドを実行します。  
+
+```sh
+git config --global credential.helper store
+```
+
 先ほどコピーしたURLをgit cloneします。  
 
 ```sh
@@ -576,13 +582,6 @@ git commit -m "commit"
 ```sh
 git push
 ```
-
-この際にユーザ名とパスワードを聞かれた場合は、以下の項目を入力します。  
-
-key|value|説明
--|-
-ユーザ名|<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>|`<オブジェクト・ストレージ・ネームスペース>`は[0-4.オブジェクトストレージネームスペースの確認](#0-4-オブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
-パスワード|[0-3-認証トークンの作成](#0-3-認証トークンの作成)で作成したもの
 
 これで、サンプルアプリケーションの事前準備は完了です。
 
@@ -864,16 +863,18 @@ kubectl apply -f oke-handson/k8s/atp/atp.yaml
 
 以下のコマンドを実行すると、状況が確認できます。  
 `status`が`Active`になるまでしばらくかかるので待機します。  
+`-w`(`--watch`)は状態を監視しておくためのオプションになります。  
 
 ```sh
-kubectl get autonomousdatabases
+kubectl get autonomousdatabases -w
 ```
 
 以下のように出力されればプロビジョニングは完了です。
 
 ```sh
-NAME                DBWORKLOAD   STATUS   AGE
-oke-atp-handson-db   OLTP         Active   4m25s
+NAME              DBWORKLOAD   STATUS   AGE
+oke-atp-handson-db   OLTP               12s
+oke-atp-handson-db   OLTP      Active   71s
 ```
 
 ### 3-3. サンプルデータの登録
@@ -895,7 +896,7 @@ oke-atp-handson-db   OLTP         Active   4m25s
 key|value|説明
 -|-
 Username|ATPデータベースのユーザー名。今回は"admin"
-Password|ATPデータベースのパスワード。今回は"okehandson__Oracle1234"|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成したパスワード
+Password|ATPデータベースのパスワード。今回は"okehandson__Oracle1234"|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード
 
 ![3-006.jpg](3-006.jpg)
 
@@ -1008,19 +1009,12 @@ javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp01_high?TNS_ADM
 
 リポジトリへCommitします。　　
 
-ユーザ名とパスワードの入力を求められた場合は、以下を入力します。　　
-
-key|value|説明
--|-
-ユーザ名|<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>|`<オブジェクト・ストレージ・ネームスペース>`は[0-4.オブジェクトストレージネームスペースの確認](#0-4-オブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
-パスワード|[0-3-認証トークンの作成](#0-3-認証トークンの作成)で作成したもの
-
 ```sh
 git add .
 ```
 
 ```sh
-git commit -m "トップページのイメージを変更"
+git commit -m "データベース名を変更"
 ```
 
 ```sh
@@ -1028,6 +1022,86 @@ git push
 ```
 
 これで、`microprofile-config.properties`の更新は完了です。  
+
+### 3-6. 【オプション】Oracle SQL Developerを利用したサンプルデータ登録
+
+**本手順について**  
+この手順は、[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)のOracle SQL Developer向け手順です。  
+[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)にて、SQL Developer Web(ブラウザ版)でのサンプルデータ登録が上手くいかない方はこちらの手順を実施してサンプルデータ登録を行ってください。  
+それ以外の方は、この手順はスキップしてください。  
+{: .notice--warning}
+
+まず、SQL Developerがインストールされていない方は、ダウンロードを実施します。  
+Oracle SQL Developerを既にインストール済みの方は、それをご利用いただいても問題ありません。  
+
+まずは、[こちら](https://www.oracle.com/jp/tools/downloads/sqldev-downloads.html)からインストーラーをダウンロードします。  
+Windowsの方は、ダウンロード後、 解凍したファイルの直下にある`sqldeveloper.exe`を実行してください。(別途JDKのインストールが必要になる場合があります)  
+macOSの方は、解凍して出力される実行ファイルを実行してください。  
+
+次に、Oracle SQL DeveloperからATPに接続するためのWalletファイルをダウンロードします。  
+
+「Oracle Database」メニューの「Autonomous Database」カテゴリにある「Autonomous Transaction Processing」をクリックします。  
+
+![3-011.jpg](3-011.jpg)
+
+[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でプロビジョニングした![3-012.jpg](3-012.jpg)をクリックします。
+
+![3-013.jpg](3-013.jpg)
+
+![3-014.jpg](3-014.jpg)をクリックします。  
+
+![3-015.jpg](3-015.jpg)
+
+![3-016.jpg](3-016.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|説明
+-|-
+パスワード|okehandson__Oracle1234|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成したWalletパスワード
+
+![3-017.jpg](3-017.jpg)
+
+![3-018.jpg](3-018.jpg)をクリックして、ダウンロードします。  
+
+次に、Oracle SQL Developerを開きます。  
+
+![3-019.jpg](3-019.jpg)
+
+左上にある![3-020.jpg](3-020.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|説明
+-|-
+Name|oke-handson
+認証タイプ| デフォルト
+ユーザ名 | admin
+パスワード | okehandson__Oracle1234|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード
+接続タイプ | クラウド・ウォレット
+構成ファイル | ダウンロードしたWalletファイルを指定
+
+![3-021.jpg](3-021.jpg)
+
+![3-022.jpg](3-022.jpg)をクリックします。  
+
+接続が完了すると以下のような画面が表示されます。  
+
+![3-023.jpg](3-023.jpg)
+
+ワークシート内にレポジトリ内(GitHubからcloneしたレポジトリ、コード・レポジトリからcloneしたレポジトリ、どちらでもOKです)の`sql/create_schema.sql`に定義されているDDLを以下のコマンドで出力し、コピー&ペーストした後にスクリプト(赤枠のボタン)を実行します。
+
+```sh
+cat oke-handson/sql/create_schema.sql 
+```
+
+![3-024.jpg](3-024.jpg)
+
+以下のように出力されていれば、問題ありません。  
+
+![3-025.jpg](3-025.jpg)
+
+これで、Oracle SQL Developerを利用したサンプルデータ登録は完了です。  
 
 4.CIパイプラインの構築
 ---------
@@ -1062,7 +1136,7 @@ steps:
     name: "Export variables"
     timeoutInSeconds: 40
     command: |
-      BUILDRUN_HASH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1`
+      BUILDRUN_HASH=${OCI_TRIGGER_COMMIT_HASH}
       echo "BUILDRUN_HASH: " ${BUILDRUN_HASH}
     onFailure:
       - type: Command
@@ -1371,7 +1445,11 @@ cd oke-handson
 例えば、以下のようなコマンドになります。  
 
 ```sh
-oci artifacts generic artifact upload-by-path -repository-id ocid1.artifactrepository.oc1.iad.0.amaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --artifact-path deploy.yaml --artifact-version v0.1 --content-body ./k8s/deploy/oke-atp-helidon.yaml
+oci artifacts generic artifact upload-by-path  
+--repository-id ocid1.artifactrepository.oc1.iad.0.amaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  
+--artifact-path deploy.yaml  
+--artifact-version v0.1  
+--content-body ./k8s/deploy/oke-atp-helidon.yaml
 ```
 
 これを実行します。  
@@ -1385,15 +1463,15 @@ oci artifacts generic artifact upload-by-path -repository-id ocid1.artifactrepos
     "compartment-id": "ocid1.tenancy.oc1..aaaaaaaar7rz6wnonqc4256wxjez577mgyql55m55uny4nrhdgyay6cptfta",
     "defined-tags": {
       "Oracle-Tags": {
-        "CreatedBy": "oracleidentitycloudservice/takuya0624030105240301@gmail.com",
+        "CreatedBy": "oracleidentitycloudservice/xxxxxxxxxxxxx@oracle.com",
         "CreatedOn": "2021-11-16T03:45:12.546Z"
       }
     },
     "display-name": "deploy.yaml:v0.1",
     "freeform-tags": {},
-    "id": "ocid1.genericartifact.oc1.iad.0.amaaaaaajv6lhniayny6skwl6dbajcibkup5tmsxsvkeyhpavntrbrk4mjjq",
+    "id": "ocid1.genericartifact.oc1.iad.0.amaaaaaajv6lhnxxxxxxxxxxxxxxxxxxxkup5tmsxsvkeyhpavntrbrk4mjjq",
     "lifecycle-state": "AVAILABLE",
-    "repository-id": "ocid1.artifactrepository.oc1.iad.0.amaaaaaajv6lhnia763snwz7266nirmhsg6nmxtdttmvamkmuwnpjbnzequa",
+    "repository-id": "ocid1.artifactrepository.oc1.iad.0.amaaaaaaxxxxxxxxxxxxxxxxxxxxxxxkmuwnpjbnzequa",
     "sha256": "7415c1c9ba36d7b2d8c1af64fc7b17b4d007259b3be91a9b2df323a5e670803d",
     "size-in-bytes": 1593,
     "time-created": "2021-11-16T03:45:12.712000+00:00",
@@ -1639,13 +1717,6 @@ cp src/main/resources/web/images/forsale_new2.jpg src/main/resources/web/images/
 ```
 
 リポジトリへCommitします。　　
-
-ユーザ名とパスワードの入力を求められた場合は、以下を入力します。　　
-
-key|value|説明
--|-
-ユーザ名|<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>|`<オブジェクト・ストレージ・ネームスペース>`は[0-4.オブジェクトストレージネームスペースの確認](#0-4-オブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
-パスワード|[0-3-認証トークンの作成](#0-3-認証トークンの作成)で作成したもの
 
 ```sh
 git add .
