@@ -26,10 +26,10 @@ Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で�
 
 ![](1-012.png)
 
-作業構成は、「事前準備」と「OCI DevOps 環境構築」の2構成です。「事前準備」は、冒頭で紹介したOKEを利用したKubernetesクラスタを構築します。次に、OCI DevOpsから登録したメールアドレスに通知を受けることができるようにOCI Notificationの設定を行います。また、OCI DevOpsサービスを利用する上で必要となる認証トークン設定、動的グループ・ポリシーの設定も行います。
+作業構成は、「事前準備」と「OCI DevOps 環境構築」の2構成です。「事前準備」は、冒頭で紹介したOKEを利用したKubernetesクラスタを構築します。次に、OCI DevOpsから登録したメールアドレスに通知を受けることができるようにOCI Notificationsの設定を行います。また、OCI DevOpsサービスを利用する上で必要となる認証トークン設定、動的グループ・ポリシーの設定も行います。
 
-**OCI Notificationについて**  
-OCI Notificationは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
+**OCI Notificationsについて**  
+OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
 本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm)のページをご確認ください。
 {: .notice--info}
 
@@ -54,7 +54,7 @@ OCI Notificationは、安全、高信頼性、低レイテンシおよび永続�
 事前準備の流れ
 ---------------------------------
 * 1.OKE セットアップ
-* 2.OCI Notification セットアップ
+* 2.OCI Notifications セットアップ
 * 3.認証トークン セットアップ
 * 4.動的グループ/ポリシー セットアップ
 
@@ -136,14 +136,14 @@ NAME          STATUS   ROLES   AGE   VERSION
 
 以上でOKEクラスタの構築は完了です。
 
-2.OCI Notification セットアップ
+2.OCI Notifications セットアップ
 ---------------------------------
 
 ![](1-126.png)
 
 ### 2-1 トピックとサブスクリプションの設定
 
-OCI DevOpsでは、OCI Notificationサービスの「トピック」と「サブスクリプション」の設定が必要となります。この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。
+OCI DevOpsでは、OCI Notificationsサービスの「トピック」と「サブスクリプション」の設定が必要となります。この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。
 
 ### トピックの作成
 
@@ -258,7 +258,7 @@ OCI DevOpsを利用する上で、必要となるポリシーを作成します�
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'|OCI DevOpsの各機能を利用するために必要なポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'|OCI DevOpsがOCIRやアーティファクト・レジストリを管理するために必要なポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'|OCI DevOpsがOKEを管理するために必要なポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationサービスを利用するために必要なポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービスを利用するために必要なポリシー
 
 **ポリシーについて**  
 Oracle Cloud Infrastrctureにはポリシーという考え方があります。 
@@ -281,11 +281,20 @@ Oracle Cloud Infrastrctureにはポリシーという考え方があります。
 起動後、以下コマンドを実行します。
 
 ```sh
-oci os object get -bn devday2021 --name oracle-developer-days-2021-ocidevops-hol.zip --file oracle-developer-days-2021-ocidevops-hol.zip
+wget https://objectstorage.uk-london-1.oraclecloud.com/p/NHrjAcamTrUsDXrJybmjKYxDdEH5qus9HMDlnh9lGRIp0GOELTK-wScn3aAehiMX/n/orasejapan/b/devday2021/o/oracle-developer-days-2021-ocidevops-hol.zip
 ```
 ***コマンド結果***
 ```sh
-Downloading object  [####################################]  100%
+--2021-12-06 07:41:06--  https://objectstorage.uk-london-1.oraclecloud.com/p/NHrjAcamTrUsDXrJybmjKYxDdEH5qus9HMDlnh9lGRIp0GOELTK-wScn3aAehiMX/n/orasejapan/b/devday2021/o/oracle-developer-days-2021-ocidevops-hol.zip
+Resolving objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)... 134.70.60.1, 134.70.64.1, 134.70.56.1
+Connecting to objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)|134.70.60.1|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1112595 (1.1M) [application/x-zip-compressed]
+Saving to: ‘oracle-developer-days-2021-ocidevops-hol.zip’
+
+100%[=======================================================================================================>] 1,112,595   3.29MB/s   in 0.3s   
+
+2021-12-06 07:41:06 (3.29 MB/s) - ‘oracle-developer-days-2021-ocidevops-hol.zip’ saved [1112595/1112595]
 ```
 
 ダウンロードしたzipファイルを解凍します。
@@ -561,8 +570,8 @@ Password for 'https://xxxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@orac
 remote: Counting objects: 2, done
 remote: Finding sources: 100% (2/2)
 remote: Getting sizes: 100% (1/1)
-Unpacking objects: 100% (2/2), done.
 remote: Total 2 (delta 0), reused 2 (delta 0)
+Unpacking objects: 100% (2/2), done.
 ```
 
 以下、「oci-devops-handson」ディレクトリがあることを確認します。
@@ -594,7 +603,6 @@ git config --global user.email "ocidevops@oracle.com"
 ```
 ```sh
 git config --global user.name "ocidevops"
-
 ```
 コミットします。
 ```sh
@@ -614,13 +622,13 @@ Username for 'https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com': xxxxxx
 Password for 'https://xxxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@oracle.com@devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com':
 ```
 ```sh
-Counting objects: 27, done.
+Counting objects: 10, done.
 Delta compression using up to 2 threads.
-Compressing objects: 100% (25/25), done.
-Writing objects: 100% (26/26), 986.52 KiB | 0 bytes/s, done.
-Total 26 (delta 0), reused 0 (delta 0)
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (9/9), 1.93 KiB | 0 bytes/s, done.
+Total 9 (delta 0), reused 0 (delta 0)
 To https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com/namespaces/xxxxxxxxxx/projects/oci-devops-handson/repositories/oci-devops-handson
-   ebb27d4..d1e2234  main -> main
+   b52f2cd..d16bcff  main -> main
 Branch main set up to track remote branch main from origin.
 ```
 
@@ -668,7 +676,7 @@ OCIRにログインするIDとパスワードは、コード・リポジトリ�
 
 ### 4-2.アーティファクト・レジストリの作成
 
-OCI DrvOpsからOKEクラスタにデプロイする際に利用するマニフェストをアーティファクト・レジストリに登録します。
+OCI DevOpsからOKEクラスタにデプロイする際に利用するマニフェストをアーティファクト・レジストリに登録します。
 
 この登録したマニフェストを利用して、OCI DevOpsから自動でOKEクラスタにデプロイ可能となります。
 
