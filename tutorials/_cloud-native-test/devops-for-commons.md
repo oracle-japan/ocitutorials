@@ -1,13 +1,18 @@
 ---
-title: "OCI DevOpsことはじめ"
+title: "Oracle Cloud Infrastructure(OCI) DevOpsことはじめ"
 excerpt: "OCI DevOpsでコンテナアプリケーション開発におけるCI/CDを学びます。"
 layout: single
 order: "010"
 tags:
 ---
 
-OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。ここでは、OKEクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。  
+OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。ここでは、Oracle Container Engine for Kubernetes(OKE)サービスを利用したKubernetesクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。  
 この手順を実施することで、OCI DevOpsを利用したコンテナアプリケーション開発におけるCI/CDを学習できます。
+
+**Oracle Container Engine for Kubernetes(OKE)について**  
+Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で提供される、完全に管理されたスケーラブルで可用性の高いマネージドのKubernetessサービスです。  
+詳細は[こちら](https://www.oracle.com/jp/cloud-native/container-engine-kubernetes/)のページをご確認ください。
+{: .notice--info}
 
 前提条件
 --------
@@ -21,10 +26,35 @@ OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービス�
 
 ![](1-012.png)
 
+作業構成は、「事前準備」と「OCI DevOps 環境構築」の2構成です。「事前準備」は、冒頭で紹介したOKEを利用したKubernetesクラスタを構築します。次に、OCI DevOpsから登録したメールアドレスに通知を受けることができるようにOCI Notificationsの設定を行います。また、OCI DevOpsサービスを利用する上で必要となる認証トークン設定、動的グループ・ポリシーの設定も行います。
+
+**OCI Notificationsについて**  
+OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
+本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm)のページをご確認ください。
+{: .notice--info}
+
+「OCI DevOps 環境構築」では、デプロイ先となるOKEクラスタの登録、コード・リポジトリとアーティファクト・レジストリの設定と管理、OCI DevOpsのパイプラインとなるビルド・パイプラインとデプロイメント・パイプラインの構築、パイプラインの自動化させるためのトリガー機能の設定、最後にソースコードの変更および「git push」コマンド実行を契機に、構築したパイプラインの稼働とデプロイされたアプリケーションの稼働を確認します。
+
+ここで、関係する機能、サービスを整理しておきます。
+
+**コード・リポジトリ**  
+コード・リポジトリは、ソースコードのバージョン管理できるOCI DevOpsの機能の一つです。GitHubやGitLabと同じようにリポジトリを作成して、ソースコードのバージョン管理をしながら効率的に開発を行えます。
+{: .notice--info}
+
+**アーティファクト・レジストリ**  
+アーティファクト・レジストリは、ソフトウェア開発パッケージを格納、共有および管理するためのOCIのサービスです。OCI DevOpsと統合して利用します。  
+詳細は[こちら](https://docs.oracle.com/en-us/iaas/artifacts/using/overview.htm)のページをご確認ください。
+{: .notice--info}
+
+**コンテナレジストリ**  
+コンテナレジストリは、コンテナイメージを保存および共有するための専用のレジストリです。OCIには、Oracle Cloud Ifrastructure Registry（OCIR）というコンテナイメージ専用のレジストリサービスがあります。OCI DevOpsと統合して利用します。
+詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Registry/Concepts/registryoverview.htm)のページをご確認ください。
+{: .notice--info}
+
 事前準備の流れ
 ---------------------------------
 * 1.OKE セットアップ
-* 2.OCI Notification セットアップ
+* 2.OCI Notifications セットアップ
 * 3.認証トークン セットアップ
 * 4.動的グループ/ポリシー セットアップ
 
@@ -47,24 +77,27 @@ OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービス�
 
 ![](1-003.png)
 
-以下を設定します。
+以下の内容であることを確認します。
 
-「Kubernetesワーカー・ノード」:「プライベート・ワーカー」
-「シェイプ」：「VM Standard.E3.Flex」
-「OCPU数の選択」:「1」
-「メモリー量（GB）」：「16」
+* 名前：cluster1
+* Kubernetesバージョン：v1.20.11
+* Kubernetes APIエンドポイント:パブリック・エンドポイント
+* Kubernetesワーカー・ノード:プライベート・ワーカー
+* シェイプ：VM Standard.E3.Flex
+* OCPU数の選択: 1
+* メモリー量（GB）： 16
 
 ![](1-004.png)
 
-画面左下の「次」ボタンをクリックします。
+画面「次」ボタンをクリックします。
 
 ![](1-005.png)
 
-画面左下の「クラスタ作成」ボタンをクリックします。
+画面「クラスタ作成」ボタンをクリックします。
 
 ![](1-006.png)
 
-画面左下の「閉じる」ボタンをクリックします。
+画面「閉じる」ボタンをクリックします。
 
 ![](1-007.png)
 
@@ -103,19 +136,14 @@ NAME          STATUS   ROLES   AGE   VERSION
 
 以上でOKEクラスタの構築は完了です。
 
-2.OCI Notification セットアップ
+2.OCI Notifications セットアップ
 ---------------------------------
 
 ![](1-126.png)
 
 ### 2-1 トピックとサブスクリプションの設定
 
-OCI DevOpsでは、OCI Notificationサービスの「トピック」と「サブスクリプション」の設定が必要となります。この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。
-
-**OCI Notificationについて**  
-OCI Notificationは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
-本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm)のページをご確認ください。
-{: .notice--info}
+OCI DevOpsでは、OCI Notificationsサービスの「トピック」と「サブスクリプション」の設定が必要となります。この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。
 
 ### トピックの作成
 
@@ -166,6 +194,10 @@ OCI Notificationは、安全、高信頼性、低レイテンシおよび永続�
 以下の画面が表示されれば完了です。
 
 ![](1-022.png)
+
+アクティブになっていることを確認します。
+
+![](1-138.png)
 
 以上で、サブスクリプションの作成は完了です。
 
@@ -226,7 +258,7 @@ OCI DevOpsを利用する上で、必要となるポリシーを作成します�
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'|OCI DevOpsの各機能を利用するために必要なポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'|OCI DevOpsがOCIRやアーティファクト・レジストリを管理するために必要なポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'|OCI DevOpsがOKEを管理するために必要なポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationサービスを利用するために必要なポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービスを利用するために必要なポリシー
 
 **ポリシーについて**  
 Oracle Cloud Infrastrctureにはポリシーという考え方があります。 
@@ -236,7 +268,7 @@ Oracle Cloud Infrastrctureにはポリシーという考え方があります。
 
 #### 動的グループとポリシーの設定
 
-スクリプトを利用して、動的グループとポリシーを設定します。資材をクローンします。
+スクリプトを利用して、動的グループとポリシーを設定します。サンプルコードをダウンロードします。
 
 上部メニューの「Cloud　Shell」アイコンをクリックして、Cloud Shellを起動します。
 
@@ -249,7 +281,26 @@ Oracle Cloud Infrastrctureにはポリシーという考え方があります。
 起動後、以下コマンドを実行します。
 
 ```sh
-git clone https://github.com/oracle-japan/oracle-developer-days-2021-ocidevops-hol.git
+wget https://objectstorage.uk-london-1.oraclecloud.com/p/NHrjAcamTrUsDXrJybmjKYxDdEH5qus9HMDlnh9lGRIp0GOELTK-wScn3aAehiMX/n/orasejapan/b/devday2021/o/oracle-developer-days-2021-ocidevops-hol.zip
+```
+***コマンド結果***
+```sh
+--2021-12-06 07:41:06--  https://objectstorage.uk-london-1.oraclecloud.com/p/NHrjAcamTrUsDXrJybmjKYxDdEH5qus9HMDlnh9lGRIp0GOELTK-wScn3aAehiMX/n/orasejapan/b/devday2021/o/oracle-developer-days-2021-ocidevops-hol.zip
+Resolving objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)... 134.70.60.1, 134.70.64.1, 134.70.56.1
+Connecting to objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)|134.70.60.1|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1112595 (1.1M) [application/x-zip-compressed]
+Saving to: ‘oracle-developer-days-2021-ocidevops-hol.zip’
+
+100%[=======================================================================================================>] 1,112,595   3.29MB/s   in 0.3s   
+
+2021-12-06 07:41:06 (3.29 MB/s) - ‘oracle-developer-days-2021-ocidevops-hol.zip’ saved [1112595/1112595]
+```
+
+ダウンロードしたzipファイルを解凍します。
+
+```sh
+unzip oracle-developer-days-2021-ocidevops-hol.zip
 ```
 
 「oracle-developer-days-2021-ocidevops-hol」というディレクトリがあることを確認します。
@@ -259,7 +310,7 @@ ls
 ```
 ***コマンド結果***
 ```sh
-oracle-developer-days-2021-ocidevops-hol
+oracle-developer-days-2021-ocidevops-hol oracle-developer-days-2021-ocidevops-hol.zip
 ```
 
 スクリプトファイルに実行権限を付与します。
@@ -290,7 +341,7 @@ ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     "id": "ocid1.dynamicgroup.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
-    "matching-rule": "Any {All {resource.type = 'devopsrepository', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsbuildpipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsdeploypipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},instance.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}",
+    "matching-rule": "Any {All {resource.type = 'devopsrepository', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsbuildpipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'},All {resource.type = 'devopsdeploypipeline', resource.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}",
     "name": "OCI_DevOps_Dynamic_Group",
     "time-created": "2021-11-18T07:41:49.350000+00:00"
   },
@@ -314,8 +365,7 @@ ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     "statements": [
       "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage secret-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage instance-agent-command-execution-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       "Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     ],
     "time-created": "2021-11-18T07:41:50.880000+00:00",
@@ -339,7 +389,7 @@ OCI DevOps 環境構築
 ---------------------------------
 * 1.プロジェクト
 * 2.環境
-* 3.コードリポジトリ
+* 3.コード・リポジトリ
 * 4.アーティファクト
 * 5.デプロイメント・パイプライン
 * 6.ビルド・パイプライン
@@ -394,6 +444,10 @@ OCI DevOpsは、プロジェクト単位で管理する仕組みです。最初�
 
 ![](1-041.png)
 
+左メニューの「ログ」を選択して、「Active」となっていることを確認します。
+
+![](1-139.png)
+
 パンくずリストから「oci-devops-handson」をクリックします。
 
 ![](1-042.png)
@@ -425,7 +479,7 @@ OCI DevOpsからOKEクラスタにアプリケーションのデプロイを行�
 
 ![](1-046.png)
 
-左下の「環境の作成」ボタンをクリックします。
+「環境の作成」ボタンをクリックします。
 
 ![](1-047.png)
 
@@ -435,14 +489,14 @@ OCI DevOpsからOKEクラスタにアプリケーションのデプロイを行�
 
 以上で、環境の作成は完了です。
 
-3.コードリポジトリ
+3.コード・リポジトリ
 ---------------------------------
 
 ![](1-129.png)
 
-### 3-1.コードリポジトリの作成
+### 3-1.コード・リポジトリの作成
 
-OCI DevOpsの「コードリポジトリ」では、独自のプライベート・コードリポジトリをOCI DevOps上に作成します。
+OCI DevOpsの「コード・リポジトリ」では、独自のプライベート・コード・リポジトリをOCI DevOps上に作成します。
 
 「リポジトリの作成」ボタンをクリックします。
 
@@ -454,19 +508,19 @@ OCI DevOpsの「コードリポジトリ」では、独自のプライベート�
 
 ![](1-051.png)
 
-以上で、コードリポジトリの作成は完了です。
+以上で、コード・リポジトリの作成は完了です。
 
-### 3-2.クローンした資材をプッシュ
+### 3-2.クローンしたサンプルコードをプッシュ
 
 #### クローン先情報を取得
 
-GitHubからクローンした資材を「oci-devops-handson」リポジトリにプッシュします。
+ダウンロードしたサンプルコードを「oci-devops-handson」リポジトリにプッシュします。
 
 プッシュ先を取得するために「クローン」ボタンをクリックします。
 
 ![](1-052.png)
 
-「コピー」をクリックして、「閉じる」ボタンをクリックします。コピーした内容は、テキストエディタにペーストしておきます。
+「HTTPSでクローニングします 読取り専用」にある「コピー」をクリックして、「閉じる」ボタンをクリックします。コピーした内容は、テキストエディタにペーストしておきます。
 
 ![](1-053.png)
 
@@ -480,7 +534,7 @@ GitHubからクローンした資材を「oci-devops-handson」リポジトリ�
 
 ![](1-054.png)
 
-赤枠の箇所をコピーして、テキストエディタにペーストしておきます。
+「ユーザーの詳細画面」の赤枠箇所をコピーして、テキストエディタにペーストしておきます。
 
 ![](1-055.png)
 
@@ -490,7 +544,7 @@ GitHubからクローンした資材を「oci-devops-handson」リポジトリ�
 
 ![](1-056.png)
 
-赤枠の箇所をコピーして、テキストエディタにペーストしておきます。
+「テナンシ詳細」の赤枠箇所をコピーして、テキストエディタにペーストしておきます。
 
 ![](1-057.png)
 
@@ -500,7 +554,7 @@ GitHubからクローンした資材を「oci-devops-handson」リポジトリ�
 
 パスワードは、事前準備で作成した `認証トークン` を利用します。
 
-#### 「oci-devops-handson」リポジトリへ資材のプッシュ
+#### 「oci-devops-handson」リポジトリへサンプルコードのプッシュ
 
 Cloud Shellを利用して、「oci-devops-handson」リポジトリをプルします。リポジトリのURLは、先ほどテキストエディタにペーストしたURLを指定します。
 
@@ -516,8 +570,8 @@ Password for 'https://xxxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@orac
 remote: Counting objects: 2, done
 remote: Finding sources: 100% (2/2)
 remote: Getting sizes: 100% (1/1)
-Unpacking objects: 100% (2/2), done.
 remote: Total 2 (delta 0), reused 2 (delta 0)
+Unpacking objects: 100% (2/2), done.
 ```
 
 以下、「oci-devops-handson」ディレクトリがあることを確認します。
@@ -529,7 +583,7 @@ ls
 oci-devops-handson
 ```
 
-GitHubからクローンした資材を「oci-devops-handson」ディレクトリにコピーします。
+ダウンロードしたサンプルコードを「oci-devops-handson」ディレクトリにコピーします。
 
 ```sh
 cp -R oracle-developer-days-2021-ocidevops-hol/* ./oci-devops-handson
@@ -541,40 +595,24 @@ cp -R oracle-developer-days-2021-ocidevops-hol/* ./oci-devops-handson
 cd ./oci-devops-handson
 ```
 ```sh
-git add .
+git add -A .
 ```
+ご自身のメールアドレスを入力してください。
+```sh
+git config --global user.email "ocidevops@oracle.com"
+```
+```sh
+git config --global user.name "ocidevops"
+```
+コミットします。
 ```sh
 git commit -m "first commit"
 ```
-***コマンド結果***
-```
-[main d1e2234] first commit
- 21 files changed, 37379 insertions(+)
- create mode 100644 Dockerfile
- create mode 100644 README.md
- create mode 100644 build_spec.yaml
- create mode 100644 deploy.yaml
- create mode 100644 package-lock.json
- create mode 100644 package.json
- create mode 100644 prepare/prepare.sh
- create mode 100644 public/favicon.ico
- create mode 100644 public/index.html
- create mode 100644 public/logo192.png
- create mode 100644 public/logo512.png
- create mode 100644 public/manifest.json
- create mode 100644 public/robots.txt
- create mode 100644 src/App.css
- create mode 100644 src/App.js
- create mode 100644 src/App.test.js
- create mode 100644 src/Twitter-Developer Day.png
- create mode 100644 src/index.css
- create mode 100644 src/index.js
- create mode 100644 src/reportWebVitals.js
- create mode 100644 src/setupTests.js
-```
+mainブランチを指定します。
 ```sh
 git branch -M main
 ```
+リポジトリにプッシュします。
 ```sh
 git push -u origin main
 ```
@@ -584,21 +622,23 @@ Username for 'https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com': xxxxxx
 Password for 'https://xxxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@oracle.com@devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com':
 ```
 ```sh
-Counting objects: 27, done.
+Counting objects: 10, done.
 Delta compression using up to 2 threads.
-Compressing objects: 100% (25/25), done.
-Writing objects: 100% (26/26), 986.52 KiB | 0 bytes/s, done.
-Total 26 (delta 0), reused 0 (delta 0)
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (9/9), 1.93 KiB | 0 bytes/s, done.
+Total 9 (delta 0), reused 0 (delta 0)
 To https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com/namespaces/xxxxxxxxxx/projects/oci-devops-handson/repositories/oci-devops-handson
-   ebb27d4..d1e2234  main -> main
+   b52f2cd..d16bcff  main -> main
 Branch main set up to track remote branch main from origin.
 ```
 
 OCIコンソールからも確認してみます。
 
+![](1-135.png)
+
 ![](1-058.png)
 
-以上で、コードリポジトリの作成は完了です。
+以上で、コード・リポジトリの作成は完了です。
 
 4.アーティファクト
 ---------------------------------
@@ -626,7 +666,7 @@ OCIでは、Oracle Container Image Registry(OCIR)を利用します。
 
 ![](1-061.png)
 
-OCIRにログインするIDとパスワードは、コードリポジトリと同じです。
+OCIRにログインするIDとパスワードは、コード・リポジトリと同じです。
 
 ユーザ名：`<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>`
 
@@ -636,10 +676,11 @@ OCIRにログインするIDとパスワードは、コードリポジトリと�
 
 ### 4-2.アーティファクト・レジストリの作成
 
-OCI DrvOpsからOKEクラスタにデプロイする際に利用するマニフェストをアーティファクトレジストリに登録します。
+OCI DevOpsからOKEクラスタにデプロイする際に利用するマニフェストをアーティファクト・レジストリに登録します。
+
 この登録したマニフェストを利用して、OCI DevOpsから自動でOKEクラスタにデプロイ可能となります。
 
-アーティファクトレジストリを作成します。
+アーティファクト・レジストリを作成します。
 左上のハンバーガーメニューをクリックして、「開発者サービス」-「コンテナ・レジストリ」を選択します。
 
 ![](1-062.png)
@@ -658,10 +699,19 @@ OCI DrvOpsからOKEクラスタにデプロイする際に利用するマニフ�
 
 次に、アーティファクトとなるマニフェストをアップロードします。
 
-クローンした資材にある「deploy.yaml」のコンテナイメージレジストリのパスを変更します。
+Cloud Shellに戻って、クローンしたサンプルコードにある「deploy.yaml」のコンテナイメージレジストリのパスを変更します。
 
 「orasejapan」の箇所を事前に取得した`<オブジェクト・ストレージ・ネームスペース>`に変更して、保存します。
 
+※リージョンが、アッシュバーン(us-ashburn-1)ではない場合、環境に合わせて「iad.orir.io」の部分も変更してください。
+
+各リージョンのOCIRエンドポイントは[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Registry/Concepts/registryprerequisites.htm)で確認できます。  
+ここでは、以降も「iad.ocir.io」で進めます。
+
+
+```sh
+cd ~
+```
 ```sh
 vim ./oracle-developer-days-2021-ocidevops-hol/deploy.yaml
 ```
@@ -682,9 +732,9 @@ spec:
     spec:
       containers:
       - name: devops-handson
-        image: iad.ocir.io/<your-object-storage-namespace>/devops-handson:${BUILDRUN_HASH}
+        image: iad.ocir.io/orasejapan/devops-handson:${BUILDRUN_HASH}
         ports:
-        - containerPort: 3000
+        - containerPort: 80 
 ---
 apiVersion: v1
 kind: Service
@@ -694,7 +744,7 @@ spec:
   type: LoadBalancer
   ports:
   - port: 80
-    targetPort: 3000
+    targetPort: 80
     protocol: TCP
   selector:
     app: devops-handson
@@ -709,7 +759,7 @@ spec:
 
 ![](1-067.png)
 
-「<file-name>」を「./oracle-developer-days-2021-ocidevops-hol/deploy.yaml」に書き換えて、Enterキーを押します。
+「./＜file-name＞」を「./oracle-developer-days-2021-ocidevops-hol/deploy.yaml」に書き換えて、Enterキーを押します。
 
 ```sh
 oci artifacts generic artifact upload-by-path \
@@ -762,11 +812,11 @@ OCI DevOpsでセットアップしたアOCIRとアーティファクト・レジ
 
 ![](1-071.png)
 
-「名前」に「OCIR」と入力、「コンテナ・レジストリのイメージへの完全修飾パスを入力してください」には、マニフェストで書き換えたパスを入力します。
-以下「your-object-storage-namespace」には、事前に取得した`<オブジェクト・ストレージ・ネームスペース>`を入力してください。
+「名前」に「ocir」と入力、「コンテナ・レジストリのイメージへの完全修飾パスを入力してください」には、マニフェストで書き換えたパスを入力します。
+以下「＜your-object-storage-namespace＞」には、事前に取得した`<オブジェクト・ストレージ・ネームスペース>`を入力してください。
 
 ```sh
-iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
+iad.ocir.io/<your-object-storage-namespace>/devops-handson:${BUILDRUN_HASH}
 ```
 
 ![](1-072.png)
@@ -777,15 +827,15 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 次に、アーティファクト・レジストリを設定します。
 
-![](1-070.png)
-
 「アーティファクトの追加」ボタンをクリックします。
+
+![](1-136.png)
 
 「名前」に「artifact-repository」と入力、「タイプ」は「Kubernetesマニフェスト」を選択して、「選択」ボタンをクリックします。
 
 ![](1-074.png)
 
-「artifact-repository」を選択します。
+「artifact-repository」にチェックを入れます。
 
 ![](1-075.png)
 
@@ -793,15 +843,11 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 ![](1-076.png)
 
-「追加」ボタンをクリックします。
-
-![](1-073.png)
-
 もう一つの「選択」ボタンをクリックします。
 
 ![](1-077.png)
 
-「deploy.yaml:1」を選択します。
+「deploy.yaml:1」にチェックを入れます。
 
 ![](1-078.png)
 
@@ -840,7 +886,7 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 ![](1-082.png)
 
-左下の「パイプラインの作成」ボタンをクリックします。
+「パイプラインの作成」ボタンをクリックします。
 
 ![](1-083.png)
 
@@ -852,7 +898,7 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 ![](1-085.png)
 
-左下の「次へ」ボタンをクリックします。
+「次へ」ボタンをクリックします。
 
 ![](1-086.png)
 
@@ -860,20 +906,19 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 * ステージ名:deploy-to-oke
 * 環境:oke-cluster
-* Kubernetesネームスペースのオーバーライド
-* オプション:default
+* Kubernetesネームスペースのオーバーライド オプション:default
 
 ![](1-087.png)
 
-「artifact-repository」を選択します。
+「artifact-repository」にチェックを入れます。
 
 ![](1-088.png)
 
-左下の「変更の保存」ボタンをクリックします。
+「変更の保存」ボタンをクリックします。
 
 ![](1-089.png)
 
-「追加」ボタンをクリックします。
+「ステージの追加」画面に戻ってから「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
@@ -894,7 +939,7 @@ iad.ocir.io/your-object-storage-namespace/devops-handson:${BUILDRUN_HASH}
 
 ### 6-1.ビルド・パイプラインの作成
 
-OCI DevOpsで利用する仮想マシン上で、コードリポジトリからソースをダウンロードして、コンテナイメージビルド、コンテナイメージビルドをOCIRに格納、デプロイメント・パイプライン連携という一連の流れをビルド・パイプラインとして作成します。  
+OCI DevOpsで利用する仮想マシン上で、コード・リポジトリからソースをダウンロードして、コンテナイメージビルド、コンテナイメージビルドをOCIRに格納、デプロイメント・パイプライン連携という一連の流れをビルド・パイプラインとして作成します。  
 最初にコンテナイメージビルドを行う「マネージド・ビルド」ステージを作成します。
 
 「ビルド・パイプラインの作成」ボタンをクリックします。
@@ -921,18 +966,22 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-095.png)
 
-画面左下の「次」ボタンをクリックします。
+「次」ボタンをクリックします。
 
 ![](1-005.png)
 
 以下の設定を行って、「選択」ボタンをクリックします。
+「build_spec.yaml」は、ビルド・パイプラインが処理を行う仮想マシン内で実行するコマンドタスクを定義してあるファイルです。  
+この定義ファイルにアプリケーションテストやコンテナイメージビルドなどビルド時に実施したいタスクを定義します。
+
+ここでは、定義済みの「build_spec.yaml」ファイルを登録します。
 
 * ステージ名: container-image-build
 * ビルド指定ファイル・パス オプション: build_spec.yaml
 
 ![](1-096.png)
 
-以下の設定を行います。
+「プライマリ・コード・リポジトリの選択」画⾯で、以下の設定を行います。
 
 * 接続タイプ: OCIコード・リポジトリ
 * 「oci-devops-handson」
@@ -940,11 +989,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-097.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
-左下の「追加」ボタンをクリックします。
+「ステージの追加」画⾯に戻ってから、「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
@@ -957,7 +1006,7 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-100.png)
 
-左下の「次」ボタンをクリックします。
+「次」ボタンをクリックします。
 
 ![](1-005.png)
 
@@ -965,11 +1014,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-101.png)
 
-「ocir」を選択します。
+「ocir」にチェックを入れます。
 
 ![](1-102.png)
 
-左下の「追加」ボタンをクリックします。
+「追加」ボタンをクリックします。
 
 ![](1-103.png)
 
@@ -977,16 +1026,20 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-104.png)
 
-左下の「追加」ボタンをクリックします。
+「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
 最後に、デプロイメント・パイプラインと連携する「デプロイメントのトリガー」ステージを作成します。
 プラス部分をクリックして、「ステージの追加」を選択します。
 
+![](1-105.png)
+
+「デプロイメントのトリガー」を選択します。
+
 ![](1-106.png)
 
-左下の「次」ボタンをクリックします。
+「次」ボタンをクリックします。
 
 ![](1-005.png)
 
@@ -994,15 +1047,15 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-107.png)
 
-「deploy-pipeline」を選択します。
+「deploy-pipeline」にチェックを入れます。
 
 ![](1-108.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
-左下の「追加」ボタンをクリックします。
+「ステージの追加」画⾯に戻ってから、「追加」ボタンをクリックします。
 
 ![](1-073.png)
 
@@ -1023,7 +1076,7 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ### 7-1.トリガーの作成
 
-トリガーでは、ソースコードを変更して、コードリポジトリへの「git push」コマンド実行をトリガーに、これまで作成してきた「ビルド・パイプライン」、「デプロイメント・パイプライン」が自動で稼働して、OKEクラスタにアプリケーションがデプロイされるようにします。
+トリガーでは、ソースコードを変更して、コード・リポジトリへの「git push」コマンド実行をトリガーに、これまで作成してきた「ビルド・パイプライン」、「デプロイメント・パイプライン」が自動で稼働して、OKEクラスタにコンテナアプリケーションがデプロイされるようにします。
 
 「トリガーの作成」ボタンをクリックします。
 
@@ -1036,11 +1089,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-112.png)
 
-「コード・リポジトリの選択」で「oci-devops-handson」を選択します。
+「oci-devops-handson」にチェックを入れます。
 
 ![](1-113.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
@@ -1052,11 +1105,11 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-115.png)
 
-「ビルド・パイプラインの選択」で「build-pipeline」を選択します。
+「build-pipeline」にチェックを入れます。
 
 ![](1-116.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
@@ -1064,21 +1117,17 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 
 ![](1-117.png)
 
-左下の「保存」ボタンをクリックします。
+「保存」ボタンをクリックします。
 
 ![](1-098.png)
 
-「作成」ボタンをクリックします。
+「トリガーの作成」画⾯に戻ってから、「作成」ボタンをクリックします。
 
 ![](1-016.png)
 
 登録できたことを確認します。
 
 ![](1-118.png)
-
-パンくずリストから「oci-devops-handson」をクリックします。
-
-![](1-119.png)
 
 以上で、トリガーの作成は完了です。
 
@@ -1094,50 +1143,41 @@ OCI DevOpsで利用する仮想マシン上で、コードリポジトリから�
 対象のディレクトリに移動します。
 
 ```sh
+cd ~
+```
+```sh
 cd oci-devops-handson
 ```
-
-「DecOps」⇒「DevOps」に修正して、保存します。
-
+「CI/CD」⇒「DevDay」に修正して、保存します。
 ```sh
-vim src/App.js
+vim content.html
 ```
 ```sh
-import logo from './Twitter-Developer Day.png';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>
-          Hello Oracle Developer Day and OCI DevOps
-        </h1>
-      </header>
-    </div>
-  );
-}
-
-export default App;
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>OCI DevOps Hands-On</title>
+</head>
+<body>
+<h1>Hello OCI DevOps DevDay!!</h1>
+</body>
+</html
 ```
-
 ```sh
-git add .
+git add -A .
 ```
-
 ```sh
 git commit -m "change code"
 ```
+***コマンド結果***
 ```sh
 [main 92df932] change code
  1 file changed, 1 insertion(+), 1 deletion(-)
 ```
-
 ```sh
 git branch -M main
 ```
-
 ```sh
 git push -u origin main
 ```
@@ -1169,7 +1209,10 @@ Branch main set up to track remote branch main from origin.
 
 ![](1-121.png)
 
-確認後、パンくずリストから「oci-devops-handson」をクリックします。  
+確認後、パンくずリストから「oci-devops-handson」をクリックします。
+
+![](1-137.png)
+
 「最新のデプロイメント」で、対象のデプロイメントを選択します。
 
 ![](1-122.png)
@@ -1217,8 +1260,8 @@ kubernetes   ClusterIP      10.96.0.1     <none>           443/TCP        5d7h
 ブラウザを起動して、確認したEXTERNAL-IPアドレスにアクセスします。  
 以下の画面が表示されれば完了です。
 
-![](1-124.png)
+![](1-140.png)
 
 以上で、デプロイの確認は完了です。
 
-もし、パイプライン実行の失敗を確認したい場合は、ソースコードの「DevOps」⇒「DecOps」に変更して、「git push」するとビルド・パイプライン時のテストで失敗するケースを確認できます。
+コード変更からデプロイまでの一連の流れを自動化することができました。
