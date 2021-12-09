@@ -1,0 +1,805 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>プライベートDNSを使って名前解決をする | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="インスタンスなどに独自の名前をつけることで一目で分かりやすい名前解決を行えます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="プライベートDNSを使って名前解決をする">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/private-dns/">
+
+
+  <meta property="og:description" content="インスタンスなどに独自の名前をつけることで一目で分かりやすい名前解決を行えます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/private-dns/title.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-12-09T15:09:10+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/private-dns/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/private-dns/title.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          プライベートDNSを使って名前解決をする
+
+        
+      </h1>
+      
+        <p class="page__lead">インスタンスなどに独自の名前をつけることで一目で分かりやすい名前解決を行えます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">プライベートDNSを使って名前解決をする</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/" class="active">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/deep-learning-with-gpu/">GPUインスタンスでディープラーニング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="プライベートDNSを使って名前解決をする">
+    <meta itemprop="description" content="インスタンスなどに独自の名前をつけることで一目で分かりやすい名前解決を行えます。">
+    <meta itemprop="datePublished" content="2021-12-09T15:09:10+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-privatednsとは">1. PrivateDNSとは？</a><ul><li><a href="#概要">概要</a></li><li><a href="#用語説明">用語説明</a></li><li><a href="#ポリシーの付与">ポリシーの付与</a></li></ul></li><li><a href="#2-同一リージョン同一vcnでの名前解決">2. 同一リージョン・同一VCNでの名前解決</a><ul><li><a href="#環境構築">環境構築</a></li><li><a href="#dnsゾーンの追加">DNSゾーンの追加</a></li><li><a href="#dnsレコードの追加">DNSレコードの追加</a></li><li><a href="#aoyama_1_instanceでfqdnを確認する">Aoyama_1_instanceでFQDNを確認する</a></li><li><a href="#aoyama_2_instanceからaoyama_1_instanceへfqdnで名前解決をする">Aoyama_2_instanceからAoyama_1_InstanceへFQDNで名前解決をする</a></li></ul></li><li><a href="#3-同一リージョン異なるvcnでの名前解決">3. 同一リージョン・異なるVCNでの名前解決</a><ul><li><a href="#環境構築-1">環境構築</a></li><li><a href="#dnsリゾルバの設定">DNSリゾルバの設定</a></li><li><a href="#疎通確認">疎通確認</a></li><li><a href="#異なるvcnにあるインスタンスの名前解決">異なるVCNにあるインスタンスの名前解決</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a>
+<br /></p>
+
+<p>OCIではプライベートDNSが使用可能で独自のプライベートDNSドメイン名を使用し、関連付けられたゾーンおよびレコードを管理して、VCN内またはVCN間で実行されているアプリケーションなどのホスト名で名前解決を行えます。</p>
+
+<p>プライベートDNSのゾーン、クエリ、およびリゾルバーエンドポイントは無料です。</p>
+
+<p>※無料トライアル環境ではプライベートDNSビューの作成はできないのでご注意ください。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ol>
+  <li>Oracle Cloud Infrastructure で、作成済みのVCNおよびLinuxインスタンスがあること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><br /><br /></p>
+
+<p><a id="anchor0"></a></p>
+
+<h1 id="1-privatednsとは">1. PrivateDNSとは？</h1>
+<h2 id="概要">概要</h2>
+<p>プライベートDNSはVCNの名前解決を行います。</p>
+
+<p>VCNを作る際にDHCPオプションをオンにしていると、デフォルトでプライベートビューとプライベートDNSゾーンがあり、インスタンスを作成したときに「<code class="language-plaintext highlighter-rouge">*.oraclevcn.com</code>」というFQDNが割り当てられています。</p>
+
+<p><img src="01.png" alt="画面ショット01" /></p>
+
+<p>DNSリゾルバは問い合わせを受けるとビュー、ゾーン、転送ルール、インターネットDNSの順に応答を返します。</p>
+
+<p>今回のチュートリアルでは新たにDNSゾーンを作成し、「<code class="language-plaintext highlighter-rouge">aoyama.com</code>」という任意のドメイン名を付けて名前解決を行います。</p>
+
+<p><img src="02.png" alt="画面ショット02" /></p>
+
+<h2 id="用語説明">用語説明</h2>
+
+<ul>
+  <li>
+    <p>DNSゾーンレコード : DNSに定義するレコード。AレコードにはIPアドレスとホスト名の関連付けを定義する。Aレコード以外も定義可能。</p>
+  </li>
+  <li>
+    <p>プライベートDNSゾーン : hogehoge.comなど、ユーザーが定義した任意のドメイン名に属するレコードの集合。VCN内のプライベートIPなどVCN内のリソースを定義できる。</p>
+  </li>
+  <li>
+    <p>プライベートDNSビュー : プライベートDNSゾーン情報をまとめたもの。</p>
+  </li>
+  <li>
+    <p>プライベートDNSリゾルバ : DNSクエリに対して名前解決を行う仕組み。デフォルトではVCNのプライベートDNSビューだけだが、他の同リージョンのプライベートDNSビュー、他リージョンのプライベートDNSやオンプレミスのDNSと連携できる。</p>
+  </li>
+</ul>
+
+<h2 id="ポリシーの付与">ポリシーの付与</h2>
+
+<p>必要なIAMポリシー
+管理者グループ内のユーザーの場合、必要な権限を持っています。ユーザーが管理者グループに属していない場合、次のようなポリシーにより、特定のグループがプライベートDNSを管理できます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;GroupName&gt; to manage dns in tenancy where target.dns.scope = 'private'
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="2-同一リージョン同一vcnでの名前解決">2. 同一リージョン・同一VCNでの名前解決</h1>
+
+<h2 id="環境構築">環境構築</h2>
+
+<p>まず下記のように同一リージョン・同一VCN内にインスタンスを構成します。インスタンスの名前は自由につけてもらって構いません。</p>
+
+<p><img src="03.png" alt="画面ショット03" /></p>
+
+<p>この章では赤線で囲った<strong>aoyama.com</strong>という名前の独自のプライベートDNSゾーンを作成してDNSレコードを追加します。</p>
+
+<p><img src="04.png" alt="画面ショット04" /></p>
+
+<h2 id="dnsゾーンの追加">DNSゾーンの追加</h2>
+
+<ol>
+  <li>
+    <p>コンソールメニューから [<strong>ネットワーキング</strong>] → [<strong>DNS管理</strong>] → [<strong>ゾーン</strong>]</p>
+  </li>
+  <li>
+    <p>[<strong>プライベート・ゾーン</strong>]タブを選択し、[<strong>ゾーンの作成</strong>]</p>
+    <ul>
+      <li>ゾーン名<code class="language-plaintext highlighter-rouge">aoyama.com</code></li>
+      <li>プライベートビュー: Tokyo_VCNという名前のプライベートビューに<code class="language-plaintext highlighter-rouge">aoyama.com</code>のゾーンを追加</li>
+    </ul>
+  </li>
+</ol>
+
+<p><img src="05.png" alt="画面ショット05" /></p>
+
+<p><br /></p>
+
+<h2 id="dnsレコードの追加">DNSレコードの追加</h2>
+
+<ol>
+  <li>新しく作成した[<strong>aoyama.comゾーン</strong>] → [レコードの追加]を押す</li>
+  <li>ここからAoyama_1_Instanceのレコードを追加していく。
+    <ul>
+      <li>レコード型 : A – Ipv4アドレス</li>
+      <li>名前 : soccer</li>
+      <li>TTL : 30</li>
+      <li>RDATAモード : 基本</li>
+      <li>ADDRESS : Aoyama_1_Instanceのプライベートアドレス <img src="06.png" alt="画面ショット06" /></li>
+    </ul>
+  </li>
+  <li>同様にAoyama_2_Instanceについてもレコードを追加する</li>
+  <li>合計二つのプライベートビューとその中にAレコードのゾーン情報が入っていることを確認した後、[<strong>変更の公開</strong>]を押してゾーン情報を更新</li>
+</ol>
+
+<h2 id="aoyama_1_instanceでfqdnを確認する">Aoyama_1_instanceでFQDNを確認する</h2>
+
+<p>以下のコマンドを打ちAoyama_1_instanceのホスト名とIPアドレスを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat /etc/hosts
+</code></pre></div></div>
+
+<p>続いて以下のコマンドを打ちデフォルトのゾーン情報と作成したゾーン情報は同じIPアドレスのAレコードが登録されていることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>host &lt;FQDN名 or Aレコードに追加した名前&gt;
+</code></pre></div></div>
+
+<p><img src="07.png" alt="画面ショット7" /></p>
+
+<h2 id="aoyama_2_instanceからaoyama_1_instanceへfqdnで名前解決をする">Aoyama_2_instanceからAoyama_1_InstanceへFQDNで名前解決をする</h2>
+
+<p>nslookupで名前解決が行われていることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nslookup &lt;Aoyama_1_Instanceの作成したAレコード名&gt;
+</code></pre></div></div>
+
+<p><img src="08.png" alt="画面ショット8" /></p>
+
+<p><br />
+以上で、同一リージョン・同一VCNでの名前解決は完了です。</p>
+
+<p><br /></p>
+
+<blockquote>
+  <p><strong><em>Note サーバー名だけで名前解決をする場合</em></strong></p>
+
+  <p>検索ドメインはデフォルトのVCNドメイン名しかないため、nslookupなどでsoccerというサーバー名だけで名前解決を行えません。そのため検索ドメインにaoyama.comというドメインを追加する必要があります。ただし、DHCPオプションのセットに指定できる検索ドメインは1つのみです。</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>[<strong>VCN</strong>] → [<strong>DHCPオプション</strong>] → デフォルトのDHCPオプションを[<strong>編集</strong>]</p>
+  </li>
+  <li>
+    <p>カスタム検索ドメインを選択し、<code class="language-plaintext highlighter-rouge">aoyama.com</code>のゾーン情報を追加して[<strong>変更の保存</strong>]</p>
+  </li>
+  <li>
+    <p><strong>インスタンスを再起動</strong>して設定を反映させます。</p>
+  </li>
+</ol>
+
+<p><img src="09.png" alt="画面ショット09" /></p>
+
+<p><img src="10.png" alt="画面ショット10" /></p>
+
+<p>DNSリゾルバの設定は/etc/resolv.confにあり、検索ドメインに「<code class="language-plaintext highlighter-rouge">aoyama.com</code>」が追加されていることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat /etc/resolv.conf
+</code></pre></div></div>
+
+<p><img src="11.png" alt="画面ショット11" /></p>
+
+<p>Aoyama_2_instanceからAoyama_1_Instanceのサーバー名で名前解決を行う。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ nslookup soccer
+Server:         169.254.169.254
+Address:        169.254.169.254#53
+
+Non-authoritative answer:
+Name:   soccer.aoyama.com
+Address: 10.0.0.64
+</code></pre></div></div>
+
+<p>サーバー名だけで名前解決を行えました。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="3-同一リージョン異なるvcnでの名前解決">3. 同一リージョン・異なるVCNでの名前解決</h1>
+
+<h2 id="環境構築-1">環境構築</h2>
+<p>続いて下記のように新しくVCNとインスタンスを作成した後、VCN同士をローカルピアリングゲートウェイで接続します。ここでは<strong>Akasaka_VCN</strong>を新しく作りインスタンスを作成後、<strong>akasaka.com</strong>という名前のプライベートゾーンを作成し、インスタンスのゾーン情報を追加します。</p>
+
+<p><img src="13.png" alt="画面ショット13" /></p>
+
+<p><img src="14.png" alt="画面ショット14" /></p>
+
+<p>AoyamaVCNのプライベートDNSリゾルバは自身のプライベートビューだけを参照しているため、新しく作ったAkasaka_VCNの赤線で囲ったプライベートビューを参照する設定を行います。</p>
+
+<p><img src="15.png" alt="画面ショット15" /></p>
+
+<h2 id="dnsリゾルバの設定">DNSリゾルバの設定</h2>
+
+<p>VCNの詳細から[<strong>DNSリゾルバ</strong>]→デフォルト・プライベートビューを確認後、[<strong>関連付けられたプライベートビューの管理</strong>]から相手のプライベートビューを追加します。</p>
+
+<p><img src="16.png" alt="画面ショット16" /></p>
+
+<p>同様に、もう一つのDNSリゾルバに対しても<strong>同じ作業</strong>を行い、両方のDNSリゾルバがお互いのプライベートビューを参照していることを確認してください。</p>
+
+<h2 id="疎通確認">疎通確認</h2>
+
+<p>デフォルトのセキュリティ・ルールではpingが許可されてないため、それぞれのサブネットのセキュリティリストに以下のICMPタイプ8のIngressルールを追加しておきます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Source</th>
+      <th style="text-align: center">Protocol</th>
+      <th style="text-align: right">Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">10.0.0.0/16</td>
+      <td style="text-align: center">ICMP</td>
+      <td style="text-align: right">8</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">10.1.0.0/16</td>
+      <td style="text-align: center">ICMP</td>
+      <td style="text-align: right">8</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Aoyama_1_instanceからakasaka_1へping疎通確認をします。</p>
+
+<p>ここでpingが通らない場合、ローカルピアリングを見直して疎通を確認してください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ping &lt;相手のプライベートIPアドレス&gt; -c 3
+</code></pre></div></div>
+
+<p><img src="18.png" alt="画面ショット18" /></p>
+
+<h2 id="異なるvcnにあるインスタンスの名前解決">異なるVCNにあるインスタンスの名前解決</h2>
+
+<p>疎通を確認した後、お互いのインスタンスについて名前解決を行ってください。</p>
+
+<p>Aoyama_1_instanceからAkasaka_1へnslookup</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ nslookup rugby.akasaka.com
+Server:         169.254.169.254
+Address:        169.254.169.254#53
+
+Non-authoritative answer:
+Name:   rugby.akasaka.com
+Address: 10.1.0.107
+</code></pre></div></div>
+<p><br />
+Akasaka_1 からAoyama_1_instanceへnslookup</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ nslookup soccer.aoyama.com
+Server:         169.254.169.254
+Address:        169.254.169.254#53
+
+Non-authoritative answer:
+Name:   soccer.aoyama.com
+Address: 10.0.0.64
+
+</code></pre></div></div>
+
+<p>DNSリゾルバは相手のプライベートビューを参照して名前解決を行えました。</p>
+
+<p><br /></p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><br /></p>
+
+<!--
+<a id="anchor3"></a>
+
+# 3. 異なるリージョン・異なるVCNでの名前解決
+
+
+<br>
+
+<a id="anchor4"></a>
+
+# 4. 
+
+<br>
+
+<a id="anchor5"></a>
+
+# 5. 
+
+<br> -->
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#network" class="page__taxonomy-item" rel="tag">network</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-12-09T15:09:10+09:00">December 9, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%83%97%E3%83%A9%E3%82%A4%E3%83%99%E3%83%BC%E3%83%88DNS%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E5%90%8D%E5%89%8D%E8%A7%A3%E6%B1%BA%E3%82%92%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fprivate-dns%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fprivate-dns%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fprivate-dns%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/using-dns/" class="pagination--pager" title="DNSサービスを使ってWebサーバーの名前解決をする
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/sending-emails-1/" class="pagination--pager" title="Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
