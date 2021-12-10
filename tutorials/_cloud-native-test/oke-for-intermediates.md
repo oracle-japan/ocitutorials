@@ -1969,3 +1969,4 @@ javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN
 `jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds`がWalletファイルを読み込んでいる部分になります。  
 ここに先ほどmanifestでマウントしたパスが設定されています。  
 これでアプリケーションからKubernetesのSecretに設定されているWalletファイルを利用することができます。
+
