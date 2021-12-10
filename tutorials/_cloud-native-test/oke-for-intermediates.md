@@ -578,7 +578,7 @@ us-sanjose-1|sjc
 git add .
 ```
 
-「git push」時にWarinigが出ないように以下の設定を行います。
+「git push」時にWarningが出ないように以下の設定を行います。
 
 ```sh
 git config --global push.default simple
