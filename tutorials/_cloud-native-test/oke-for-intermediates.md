@@ -238,7 +238,7 @@ Oracle Cloud Infrastrctureには動的グループという考え方がありま
 -|-
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'|OCI DevOpsが自身が持つ各機能を利用可能にするポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'|OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationサービス(後続の手順で作成予定)を利用可能とするポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'|OCI DevOpsがOKEを管理するためのポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id 'コンパートメントOCID'|後続の手順で登場するOCI Service Operator for Kubernetes(OSOK)がAutonomous Transaction Processingを管理可能とするポリシー
 
@@ -285,13 +285,13 @@ cd ~
 
 ![2-031.jpg](2-031.jpg)
 
-### 2-1. OCI Notificationの作成
+### 2-1. OCI Notificationsの作成
 
-まずは、OCI DevOpsのインスタンス作成に入る前にOCI Notificationの作成を行います。  
-OCI DevOpsを作成する際にはOCI Notificationが作成してあることが必須になります。  
+まずは、OCI DevOpsのインスタンス作成に入る前にOCI Notificationsの作成を行います。  
+OCI DevOpsを作成する際にはOCI Notificationsが作成してあることが必須になります。  
 
-**OCI Notificationについて**  
-OCI Notificationは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
+**OCI Notificationsについて**  
+OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
 本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また
 詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm)のページをご確認ください。
 {: .notice--info}
@@ -308,14 +308,14 @@ key|value|
 -|-
 名前|oke-handson
 
-**OCI Notification名について**  
-OCI Notification名はテナンシで一意になります。  
+**OCI Notifications名について**  
+OCI Notifications名はテナンシで一意になります。  
 集合ハンズオンなど複数人で同一環境を共有されている皆様は、`oke-handson01`や`oke-handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
 {: .notice--warning}
 
 ![2-003.jpg](2-003.jpg)
 
-作成したOCI Notificationのリンク(今回は`oke-handson`)をクリックします。  
+作成したOCI Notificationsのリンク(今回は`oke-handson`)をクリックします。  
 
 ![2-005.jpg](2-005.jpg)
 
@@ -343,11 +343,11 @@ key|value|
 
 ![2-011.jpg](2-011.jpg)
 
-先程のOCI Notificationの画面に戻ると、サブスクリプションの状態が"Active"になっていることが確認できます。 
+先程のOCI Notificationsの画面に戻ると、サブスクリプションの状態が"Active"になっていることが確認できます。 
 
 ![2-012.jpg](2-012.jpg)
 
-これで、OCI Notificationの作成は完了です。  
+これで、OCI Notificationsの作成は完了です。  
 
 ### 2-2. OCI DevOpsインスタンスの作成
 
@@ -382,7 +382,9 @@ OCI DevOpsインスタンス名はテナンシで一意になります。
 
 ![2-018.jpg](2-018.jpg)をクリックします。  
 
-プロビジョニングが完了したら、![2-020.jpg](2-020.jpg)をクリックします。  
+プロビジョニングが完了したら、以下のようなボックスが表示されるので、![2-020.jpg](2-020.jpg)をクリックします。  
+
+![2-033.jpg](2-033.jpg)
 
 以下をクリックします。  
 
@@ -419,6 +421,7 @@ key|value|
 レポジトリの作成が完了したら、![2-028.jpg](2-028.jpg)をクリックします。  
 
 表示されたダイアログの以下の赤枠部分(`HTTPSでのクローニング`)をクリックし、URLをコピーします。  
+コピーしたURLは、エディタなどに記録しておいてください。  
 
 ![2-029.jpg](2-029.jpg)
 
@@ -575,9 +578,19 @@ us-sanjose-1|sjc
 git add .
 ```
 
+「git push」時にWarinigが出ないように以下の設定を行います。
+
+```sh
+git config --global push.default simple
+```
+
+コミットします。
+
 ```sh
 git commit -m "commit"
 ```
+
+プッシュします。
 
 ```sh
 git push
@@ -618,6 +631,17 @@ OSOKを利用するにはOperator SDKおよびオペレータ・ライフサイ�
 Operator SDKは、Kubernetes Operatorを効率的に開発するためのSDKになり、オペレータ・ライフサイクル・マネージャ(OLM)はOperatorのライフサイクルを管理するための仕組みになります。  
 Operator SDKについては[こちら](https://sdk.operatorframework.io/)、オペレータ・ライフサイクル・マネージャ(OLM)については[こちら](https://olm.operatorframework.io/)をご確認ください。  
 {: .notice--info}
+
+**[3-5. 【オプション】microprofile-config.propertiesの更新](#3-5-オプションmicroprofile-configpropertiesの更新)について**  
+こちらは、オプション手順になっており、[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でATPのデータベース名(`dbName`)を変更する方向けの手順です。(主に集合ハンズオンなど複数人で同一環境を共有されている皆様向けです)  
+それ以外の方は、スキップしてください。
+{: .notice--warning}
+
+**[3-6. 【オプション】Oracle SQL Developerを利用したサンプルデータ登録](#3-6-オプションoracle-sql-developerを利用したサンプルデータ登録)について**  
+こちらは、オプション手順になっており、[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)のOracle SQL Developer向け手順です。  
+[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)にて、SQL Developer Web(ブラウザ版)でのサンプルデータ登録が上手くいかない方はこちらの手順を実施してサンプルデータ登録を行ってください。  
+それ以外の方は、この手順はスキップしてください。  
+{: .notice--warning}
 
 ### 3-1. Operator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)のインストール
 
@@ -1136,7 +1160,7 @@ steps:
     name: "Export variables"
     timeoutInSeconds: 40
     command: |
-      BUILDRUN_HASH=${OCI_TRIGGER_COMMIT_HASH}
+      BUILDRUN_HASH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1`
       echo "BUILDRUN_HASH: " ${BUILDRUN_HASH}
     onFailure:
       - type: Command
@@ -1693,7 +1717,7 @@ Webアプリケーションが表示されたら成功です。
 
 ![6-004.jpg](6-004.jpg)
 
-また、CIパイプライン、CDパイプラインそれぞれの起動および完了(失敗)のタイミングで[2-1. OCI Notificationの作成](#2-1-oci-notificationの作成)で設定したメールアドレスに通知がされるので、確認してみてください。  
+また、CIパイプライン、CDパイプラインそれぞれの起動および完了(失敗)のタイミングで[2-1. OCI Notificationsの作成](#2-1-oci-notificationsの作成)で設定したメールアドレスに通知がされるので、確認してみてください。  
 
 7.アプリケーションの再デプロイ
 -----
