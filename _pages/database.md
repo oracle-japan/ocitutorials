@@ -167,6 +167,14 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[506: サポートサービスへの問い合わせ(Service Requestの起票)](/ocitutorials/database/adb506-sr){:target="_blank"}**
     * ADBの運用で困ったらどうすれば良いでしょうか。Service Requestの登録の仕方を解説します。
 
+## ビジネスシナリオ編
+
++ **[601 : ADWでMovieStreamデータのロード・更新をしよう](/ocitutorials/database/adb601-moviestream-load/){:target="_blank"}**  
+    * 大規模データに対するADWの実用的な機能をご紹介します
+
++ **[602 : ADWでMovieStreamデータの分析をしよう](/ocitutorials/database/adb602-moviestream-analysis/){:target="_blank"}**  
+    * ADWでの実践的なデータ分析を多数の標準機能とともにご紹介します
+
 <br/>
 ----
  + **[ADB ハンズオンラボ](https://community.oracle.com/tech/developers/discussion/4474304/autonomous-database-%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%E3%83%A9%E3%83%9C-adb-hol){:target="_blank"}**    ※旧サイト（順次、本サイトに移行中）
