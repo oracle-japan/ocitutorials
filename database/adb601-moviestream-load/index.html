@@ -1,0 +1,1003 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>601: ADWでMovieStreamデータのロード・更新をしよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Autonomous Data Warehouseにおける、大規模データの高速ロード・更新方法をご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="601: ADWでMovieStreamデータのロード・更新をしよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb601-moviestream-load/">
+
+
+  <meta property="og:description" content="Autonomous Data Warehouseにおける、大規模データの高速ロード・更新方法をご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb601-moviestream-load/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-12-16T11:20:56+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb601-moviestream-load/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb601-moviestream-load/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          601: ADWでMovieStreamデータのロード・更新をしよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Autonomous Data Warehouseにおける、大規模データの高速ロード・更新方法をご紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">601: ADWでMovieStreamデータのロード・更新をしよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs104-backup/">104: 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs105-restore/">105: バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb302-schema-adviser/">302 : スキーマ・アドバイザを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb304-database-migration/">304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb601-moviestream-load/" class="active">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="601: ADWでMovieStreamデータのロード・更新をしよう">
+    <meta itemprop="description" content="Autonomous Data Warehouseにおける、大規模データの高速ロード・更新方法をご紹介します。">
+    <meta itemprop="datePublished" content="2021-12-16T11:20:56+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-adwへのmovie-salesデータのロード">1. ADWへのMovie Salesデータのロード</a><ul><li><a href="#1-1-adwインスタンスの作成">1-1. ADWインスタンスの作成</a></li><li><a href="#1-2-movie-salesデータのロード">1-2. Movie Salesデータのロード</a></li></ul></li><li><a href="#2-movie-salesデータの更新">2. Movie Salesデータの更新</a><ul><li><a href="#2-1-データの整合性の有効化">2-1. データの整合性の有効化</a></li><li><a href="#2-2-movie-salesデータの使用領域の確認">2-2. Movie Salesデータの使用領域の確認</a></li><li><a href="#2-3-ステージングテーブルの作成">2-3. ステージングテーブルの作成</a></li><li><a href="#2-4-ステージングテーブルの使用領域">2-4. ステージングテーブルの使用領域</a></li><li><a href="#2-5-mergeを使用したmovie-salesデータの更新">2-5. MERGEを使用したMovie Salesデータの更新</a></li><li><a href="#2-6-movie-salesデータの使用領域の再確認">2-6. Movie Salesデータの使用領域の再確認</a></li><li><a href="#2-7-その他の国の財務調整データの更新">2-7. その他の国の財務調整データの更新</a></li></ul></li><li><a href="#おわりに">おわりに</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>データのロード、変換、管理、そして分析まで、全てを1つのデータベースで行うことができるのが、Autonomous Data Warehouseです。このチュートリアルを参考に、ぜひ一度”<strong>完全自律型データベース</strong>“を体験してみてください。</p>
+
+<p>本記事では、MovieStreamデータを使い、データのロード・処理方法を実際のビジネスシナリオに近い形でご紹介します。</p>
+
+<p><br /></p>
+
+<p><strong>想定シナリオ：</strong></p>
+
+<p>Oracle MovieStreamは、架空の映画ストリーミングサービスです。
+MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適切な提供価格などのデータ分析を行いたいと考えています。</p>
+
+<p><br /></p>
+
+<p><strong>前提条件：</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. ADWへのMovie Salesデータのロード</a></li>
+  <li><a href="#anchor2">2. Movie Salesデータの更新</a></li>
+  <li><a href="#おわりに">おわりに</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約1時間</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-adwへのmovie-salesデータのロード">1. ADWへのMovie Salesデータのロード</h1>
+<h2 id="1-1-adwインスタンスの作成">1-1. ADWインスタンスの作成</h2>
+<p>まずはADWインスタンスを作成します。<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参考にしながら、以下の条件で作成します。</p>
+<ul>
+  <li><strong>ワークロード・タイプ：</strong> データ・ウェアハウス</li>
+  <li><strong>OCPU数：</strong> 8</li>
+  <li><strong>ストレージ(TB)：</strong> 1</li>
+  <li><strong>CPU Auto Scaling：</strong> 許可</li>
+</ul>
+
+<p>それ以外の項目については、ご自身の環境や目的に合わせて選択してください。</p>
+
+<p><br /></p>
+
+<h2 id="1-2-movie-salesデータのロード">1-2. Movie Salesデータのロード</h2>
+<p>ADWでは、ニーズに応じて様々な方法でデータをロードすることができます。本記事では、簡単なスクリプトを使用してオブジェクトストレージからデータをロードします。</p>
+
+<ol>
+  <li>ADWに<strong>接続サービスHIGH</strong>で接続し、以下のスクリプトを実行します。実行すると、MOVIE_SALES_FACT表が作成されます。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">MOVIE_SALES_FACT</span>
+<span class="p">(</span><span class="n">ORDER_NUM</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+<span class="k">DAY</span> <span class="nb">DATE</span><span class="p">,</span>
+<span class="n">DAY_NUM_OF_WEEK</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">DAY_NAME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="k">MONTH</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">12</span><span class="p">),</span>
+<span class="n">MONTH_NUM_OF_YEAR</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">MONTH_NAME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">QUARTER_NAME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">QUARTER_NUM_OF_YEAR</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="nb">YEAR</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">CUSTOMER_ID</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">USERNAME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">CUSTOMER_NAME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">250</span><span class="p">),</span>
+<span class="n">STREET_ADDRESS</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">250</span><span class="p">),</span>
+<span class="n">POSTAL_CODE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">CITY_ID</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">CITY</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">STATE_PROVINCE_ID</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">STATE_PROVINCE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">COUNTRY_ID</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">COUNTRY</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">126</span><span class="p">),</span>
+<span class="n">COUNTRY_CODE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">CONTINENT</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">SEGMENT_NAME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">SEGMENT_DESCRIPTION</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">CREDIT_BALANCE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">EDUCATION</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">EMAIL</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="n">FULL_TIME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">GENDER</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">HOUSEHOLD_SIZE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">HOUSEHOLD_SIZE_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">WORK_EXPERIENCE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">WORK_EXPERIENCE_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">INSUFF_FUNDS_INCIDENTS</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">JOB_TYPE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">LATE_MORT_RENT_PMTS</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">MARITAL_STATUS</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">MORTGAGE_AMT</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">NUM_CARS</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">NUM_MORTGAGES</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">PET</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">PROMOTION_RESPONSE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">RENT_OWN</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">YEARS_CURRENT_EMPLOYER</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">YEARS_CURRENT_EMPLOYER_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">YEARS_CUSTOMER</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">YEARS_CUSTOMER_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">YEARS_RESIDENCE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">YEARS_RESIDENCE_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">AGE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">AGE_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">COMMUTE_DISTANCE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">COMMUTE_DISTANCE_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">INCOME</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">INCOME_BAND</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">MOVIE_ID</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">SEARCH_GENRE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">TITLE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">),</span>
+<span class="n">GENRE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">SKU</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">LIST_PRICE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span>
+<span class="n">APP</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">DEVICE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">OS</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">PAYMENT_METHOD</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">DISCOUNT_TYPE</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">26</span><span class="p">),</span>
+<span class="n">DISCOUNT_PERCENT</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="n">ACTUAL_PRICE</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span>
+<span class="n">QUANTITY_SOLD</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">));</span>
+</code></pre></div>    </div>
+  </li>
+  <li>以下のスクリプトを実行し、置換変数を定義します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">define</span> <span class="n">uri_ms_oss_bucket</span> <span class="o">=</span> <span class="s1">'https://objectstorage.ap-tokyo-1.oraclecloud.com/n/dwcsprod/b/moviestream_data_load_workshop_20210709/o'</span><span class="p">;</span>
+<span class="n">define</span> <span class="n">csv_format_string</span> <span class="o">=</span> <span class="s1">'{"type":"csv","skipheaders":"1"}'</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>2018年から2020年までの映画売上データをインポートするためのスクリプトを実行します。データファイルは、35個に分かれています。8 OCPUの場合、35ヶ月分の映画販売データをロードするのに、ロードには約4分かかります。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+<span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_SALES_FACT'</span><span class="p">,</span>
+<span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_fact_m-*.csv'</span><span class="p">,</span>
+<span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span>
+<span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>データロードの状態を確認するには、データロードジョブを追跡するメタデータ表（USER_LOAD_OPERATIONS）にクエリを実行します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+<span class="n">start_time</span><span class="p">,</span>
+<span class="n">update_time</span><span class="p">,</span>
+<span class="n">substr</span><span class="p">(</span><span class="n">to_char</span><span class="p">(</span><span class="n">update_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span> <span class="s1">'hh24:mi:ss'</span><span class="p">),</span><span class="mi">11</span><span class="p">)</span> <span class="k">as</span> <span class="n">duration</span><span class="p">,</span>
+<span class="n">status</span><span class="p">,</span>
+<span class="k">table_name</span><span class="p">,</span>
+<span class="n">rows_loaded</span><span class="p">,</span>
+<span class="n">logfile_table</span><span class="p">,</span>
+<span class="n">badfile_table</span>
+<span class="k">FROM</span> <span class="n">user_load_operations</span>
+<span class="k">WHERE</span> <span class="k">table_name</span> <span class="o">=</span> <span class="s1">'MOVIE_SALES_FACT'</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="mi">1</span> <span class="k">DESC</span><span class="p">,</span> <span class="mi">2</span> <span class="k">DESC</span>
+<span class="k">FETCH</span> <span class="k">FIRST</span> <span class="mi">1</span> <span class="k">ROWS</span> <span class="k">ONLY</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>rows_loadedという列を見ると、オブジェクトストレージにあるcsvファイルから97,890,562行が読み込まれていることがわかります。
+<img src="user_load_operations_result.png" alt="user_load_operations_resultイメージ" /></p>
+  </li>
+  <li>MOVIE_SALES_FACT表の実際の行数を確認してみます。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">movie_sales_fact</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>上記のクエリを実行すると、97,890,562レコードという値が返され、正しくロードが実行されたことがわかります。
+<img src="movie_sales_fact_count.png" alt="movie_sales_fact_countイメージ" /></p>
+  </li>
+  <li>処理されたデータファイルの数を確認するには、以下のようにログテーブルを参照します。<br />
+※ファイルの場所は、選択したデータセンターに基づいているため、以下の図とは異なります）。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="k">copy</span><span class="err">$</span><span class="mi">1</span><span class="n">_log</span>
+<span class="k">WHERE</span> <span class="n">RECORD</span> <span class="k">LIKE</span> <span class="s1">'%Data File%'</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>これにより、以下のように35件リストされます。
+<img src="datafile_list.png" alt="datafile_listイメージ" /></li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-movie-salesデータの更新">2. Movie Salesデータの更新</h1>
+<h2 id="2-1-データの整合性の有効化">2-1. データの整合性の有効化</h2>
+<p>更新を行う前に、MOVIE_SALES_FACT表に主キーをつけます。</p>
+<blockquote>
+  <p>(参考)
+大量データを持つ表に主キーを付ける場合は、先にユニーク制約をパラレル処理で付与してから主キーに切り替えます。</p>
+</blockquote>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">UNIQUE</span> <span class="k">INDEX</span> <span class="n">idx_msf_order_num</span> <span class="k">ON</span> <span class="n">MOVIE_SALES_FACT</span><span class="p">(</span><span class="n">order_num</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">movie_sales_fact</span> <span class="k">ADD</span> <span class="k">primary</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">order_num</span><span class="p">)</span> <span class="k">USING</span> <span class="k">INDEX</span> <span class="n">idx_msf_order_num</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>また、以下のコマンドで売上高の合計値を確認します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">SUM</span><span class="p">(</span><span class="n">actual_price</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">movie_sales_fact</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>実行すると<strong>160,365,556.83ドル</strong>という値が返ってくるはずです。</p>
+
+<h2 id="2-2-movie-salesデータの使用領域の確認">2-2. Movie Salesデータの使用領域の確認</h2>
+<ol>
+  <li>以下のコマンドでMOVIE_SALES_FACT表がどのくらいの領域を使用しているか確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+<span class="n">segment_name</span><span class="p">,</span>
+<span class="k">SUM</span><span class="p">(</span><span class="n">bytes</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span> <span class="k">AS</span> <span class="n">gb</span>
+<span class="k">FROM</span> <span class="n">user_segments</span>
+<span class="k">WHERE</span> <span class="n">segment_type</span><span class="o">=</span><span class="s1">'TABLE'</span>
+<span class="k">AND</span> <span class="n">segment_name</span> <span class="o">=</span> <span class="s1">'MOVIE_SALES_FACT'</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">segment_name</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>以下のように<strong>8.441GB</strong>ほどの領域を使用しています。
+<img src="movie_sales_fact_gb1.png" alt="movie_sales_fact_gb1イメージ" /></li>
+</ol>
+
+<h2 id="2-3-ステージングテーブルの作成">2-3. ステージングテーブルの作成</h2>
+<p>ここでは、アルゼンチンの財務調整ファイルを外部表として作成し、MOVIE_SALES_FACT表にマージすることで更新してみます。</p>
+<ol>
+  <li>以下のコマンドで置換変数を定義します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">define</span> <span class="n">adj_column_names</span> <span class="o">=</span> <span class="s1">'"ORDER_NUM" INTEGER,"COUNTRY" VARCHAR2(256),"DISCOUNT_PERCENT" NUMBER,"ACTUAL_PRICE" NUMBER'</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>以下のコマンドで外部表を作成します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span>
+<span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_argentina_EXT'</span><span class="p">,</span>
+<span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span>
+<span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span>
+<span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_argentina.csv'</span>
+<span class="p">);</span><span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>外部表を検証するため、プロシージャDBMS_CLOUD.VALIDATE_EXTERNAL_TABLEを使用します。デフォルトでは、ソース・ファイル内のすべての行をスキャンし、行が拒否されたときに停止します。なお、この作業は検証目的ですので、後続のその他の国の外部表作成時には行いません。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+<span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">VALIDATE_EXTERNAL_TABLE</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_ARGENTINA_EXT'</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>検証が成功したのち、以下のクエリでステージングテーブルMOVIE_FIN_ADJ_ARGENTINA_EXT表に何行あるか確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">movie_fin_adj_argentina_ext</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>正常に実行されていれば、以下のように<strong>1036</strong>という結果が返されます。
+<img src="argentina_count.png" alt="argentina_countイメージ" /></li>
+</ol>
+
+<h2 id="2-4-ステージングテーブルの使用領域">2-4. ステージングテーブルの使用領域</h2>
+<ol>
+  <li>以下のクエリで新しく作成した外部表がどれくらいの領域を占めているのか確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+<span class="n">segment_name</span><span class="p">,</span>
+<span class="k">SUM</span><span class="p">(</span><span class="n">bytes</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span> <span class="k">AS</span> <span class="n">gb</span>
+<span class="k">FROM</span> <span class="n">user_segments</span>
+<span class="k">WHERE</span> <span class="n">segment_type</span><span class="o">=</span><span class="s1">'TABLE'</span>
+<span class="k">AND</span> <span class="n">segment_name</span><span class="o">=</span><span class="k">upper</span><span class="p">(</span><span class="s1">'MOVIE_FIN_ADJ_ARGENTINA_EXT'</span><span class="p">)</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">segment_name</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>外部表は表として実体を持たないため、以下のように結果は<strong>0</strong>が返されるはずです。
+<img src="external_zero.png" alt="external_zeroイメージ" /></li>
+</ol>
+
+<h2 id="2-5-mergeを使用したmovie-salesデータの更新">2-5. MERGEを使用したMovie Salesデータの更新</h2>
+<p>Oracle Databaseでは実表に対し、外部表の行を条件付きでそのまま更新または挿入することができます。</p>
+<ol>
+  <li>以下のコマンドで外部表をMOVIE_SALES_FACT表にマージします。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">MERGE</span> <span class="k">INTO</span> <span class="n">movie_sales_fact</span> <span class="n">a</span>
+ <span class="k">USING</span> <span class="p">(</span>
+     <span class="k">SELECT</span> <span class="n">order_num</span><span class="p">,</span>
+     <span class="n">discount_percent</span><span class="p">,</span>
+     <span class="n">actual_price</span>
+ <span class="k">FROM</span> <span class="n">movie_fin_adj_argentina_ext</span><span class="p">)</span> <span class="n">b</span>
+ <span class="k">ON</span> <span class="p">(</span> <span class="n">a</span><span class="p">.</span><span class="n">order_num</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">order_num</span> <span class="p">)</span>
+ <span class="k">WHEN</span> <span class="n">MATCHED</span> <span class="k">THEN</span>
+ <span class="k">UPDATE</span>
+ <span class="k">SET</span> <span class="n">a</span><span class="p">.</span><span class="n">discount_percent</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">discount_percent</span><span class="p">,</span>
+ <span class="n">a</span><span class="p">.</span><span class="n">actual_price</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">actual_price</span><span class="p">;</span>
+ <span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>この処理には2~3秒かかります。
+<img src="external_merge.png" alt="external_mergeイメージ" /></p>
+  </li>
+  <li>以下のコマンドで外部表が正しく処理されたか確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+<span class="k">SUM</span><span class="p">(</span><span class="n">actual_price</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">movie_sales_fact</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>売上高は<strong>160,364,274.19ドル</strong>（前回値160,365,556.83ドル）となり、若干減少したことがわかります。
+<img src="actual_price2.png" alt="actual_price2イメージ" /></li>
+</ol>
+
+<h2 id="2-6-movie-salesデータの使用領域の再確認">2-6. Movie Salesデータの使用領域の再確認</h2>
+<ol>
+  <li>以下のコマンドでもう一度どれくらい領域を使用しているか確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+<span class="n">segment_name</span><span class="p">,</span>
+<span class="k">SUM</span><span class="p">(</span><span class="n">bytes</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span> <span class="k">AS</span> <span class="n">gb</span>
+<span class="k">FROM</span> <span class="n">user_segments</span>
+<span class="k">WHERE</span> <span class="n">segment_type</span><span class="o">=</span><span class="s1">'TABLE'</span>
+<span class="k">AND</span> <span class="n">segment_name</span><span class="o">=</span><span class="s1">'MOVIE_SALES_FACT'</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">segment_name</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>以前の値が8.441GBだったのに対し、以下のようにわずかな使用領域の増加が確認できます。
+<img src="movie_sales_fact_gb2.png" alt="movie_sales_fact_gb2イメージ" /></li>
+</ol>
+
+<h2 id="2-7-その他の国の財務調整データの更新">2-7. その他の国の財務調整データの更新</h2>
+<p>アルゼンチン以外の国の財務調整も同じ方法で処理します。</p>
+<ol>
+  <li>以下のコマンドで他の財務調整データの外部表を作成します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_Austria_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_austria.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_belarus_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_belarus.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_brazil_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_brazil.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_canada_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_canada.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_chile_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_chile.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_china_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_china.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_egypt_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_egypt.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_finland_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span><span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span><span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_finland.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_france_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_france.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_germany_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_germany.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_greece_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_greece.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_hungary_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_hungary.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_india_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_india.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_indonesia_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_indonesia.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_israel_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_israel.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_italy_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_italy.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_japan_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_japan.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_jordan_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_jordan.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_kazakhstan_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_kazakhstan.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_kenya_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_kenya.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_madagascar_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_madagascar.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_malaysia_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_malaysia.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_mexico_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_mexico.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_mozambique_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_mozambique.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_netherlands_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_netherlands.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_new_zealand_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_new_zealand.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_pakistan_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_pakistan.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_paraguay_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_paraguay.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_peru_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_peru.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_poland_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_poland.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_portugal_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_portugal.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_romania_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_romania.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_russian_federation_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_russian_federation.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_saudi_arabia_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_saudi_arabia.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_serbia_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_serbia.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_singapore_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_singapore.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_somalia_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_somalia.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_south_korea_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_south_korea.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_thailand_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_thailand.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_turkey_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_turkey.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_ukraine_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_ukraine.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_united_kingdom_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_united_kingdom.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_united_states_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_united_states.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_uruguay_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_uruguay.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_uzbekistan_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_uzbekistan.csv'</span><span class="p">);</span>
+<span class="n">dbms_cloud</span><span class="p">.</span><span class="n">create_external_table</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_FIN_ADJ_venezuela_EXT'</span><span class="p">,</span> <span class="n">format</span> <span class="o">=&gt;</span>  <span class="s1">'&amp;csv_format_string'</span><span class="p">,</span> <span class="n">column_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;adj_column_names'</span><span class="p">,</span> <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_finance_adj_venezuela.csv'</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>国別ファイルごとに更新するプロセスを簡略化するために、プロシージャを作成します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">PROCEDURE</span> <span class="n">RUN_ADJ</span> <span class="p">(</span><span class="n">letter_in</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="n">AUTHID</span> <span class="k">CURRENT_USER</span>
+<span class="k">IS</span>
+<span class="n">ddl_string</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">);</span>
+<span class="k">BEGIN</span>
+<span class="n">ddl_string</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'MERGE INTO movie_sales_fact a USING
+  (SELECT order_num, discount_percent, actual_price
+      FROM movie_fin_adj_'</span><span class="o">||</span><span class="n">letter_in</span><span class="o">||</span><span class="s1">'_ext)
+  b ON ( a.order_num = b.order_num )
+  WHEN MATCHED THEN UPDATE SET a.discount_percent = b.discount_percent,
+  a.actual_price = b.actual_price'</span><span class="p">;</span>
+<span class="k">EXECUTE</span> <span class="k">IMMEDIATE</span> <span class="n">ddl_string</span><span class="p">;</span>
+<span class="k">EXECUTE</span> <span class="k">IMMEDIATE</span> <span class="s1">'commit'</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>上記で作成したプロシージャを使用し、マージします。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'austria'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'belarus'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'brazil'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'canada'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'chile'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'china'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'egypt'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'finland'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'france'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'germany'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'greece'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'hungary'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'india'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'indonesia'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'israel'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'italy'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'japan'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'jordan'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'kazakhstan'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'kenya'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'madagascar'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'malaysia'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'mexico'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'mozambique'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'netherlands'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'new_zealand'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'pakistan'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'paraguay'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'peru'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'poland'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'portugal'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'romania'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'russian_federation'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'saudi_arabia'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'serbia'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'singapore'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'somalia'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'south_korea'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'thailand'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'turkey'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'ukraine'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'united_kingdom'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'united_states'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'uruguay'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'uzbekistan'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+<span class="k">BEGIN</span> <span class="n">run_adj</span><span class="p">(</span><span class="s1">'venezuela'</span><span class="p">);</span> <span class="k">END</span><span class="p">;</span><span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>上記は国ごと約10秒、計4~5分で終了します。続いて以下のコマンドで財務調整が正しく行われたか確認します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+<span class="k">SUM</span><span class="p">(</span><span class="n">actual_price</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">movie_sales_fact</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>これにより、当初の160,365,556.83ドルに対し、<strong>160,306,035.62ドル</strong>となり、収益に若干の変化があったことがわかります。
+<img src="actual_price3.png" alt="actual_price3イメージ" /></p>
+  </li>
+  <li>ここで使用領域を再度確認してみます。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
+<span class="n">segment_name</span><span class="p">,</span>
+<span class="k">SUM</span><span class="p">(</span><span class="n">bytes</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span><span class="o">/</span><span class="mi">1024</span> <span class="k">AS</span> <span class="n">gb</span>
+<span class="k">FROM</span> <span class="n">user_segments</span>
+<span class="k">WHERE</span> <span class="n">segment_type</span><span class="o">=</span><span class="s1">'TABLE'</span>
+<span class="k">AND</span> <span class="n">segment_name</span><span class="o">=</span><span class="k">upper</span><span class="p">(</span><span class="s1">'MOVIE_SALES_FACT'</span><span class="p">)</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">segment_name</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>以前の値が8.441GBだったのに対し、<strong>8.504GB</strong>でした。大量のデータを更新したのにも関わらず、やはり使用領域の増加はとてもわずかに済んでいます。
+<img src="movie_sales_fact_gb3.png" alt="movie_sales_fact_gb3イメージ" /></li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>本記事で行った作業は、実際のプロジェクトでも頻繁に行われる作業です。Oracle Databaseは、データの更新を効率的に管理するために設計されたストレージモデルを中心に構築されています。</p>
+
+<p>さらに、Autonomous Data Warehouseは、データの保存プロセスを自動的に管理しますので、監視や調整のための設定は必要ありません。データを読み込んで更新するだけで、データの保存まで効率的に管理してくれます。</p>
+
+<p>今回ロード・更新したデータの分析については、<a href="/ocitutorials/database/adb602-moviestream-analysis" target="_blank">602: ADWでMovieStreamデータの分析をしよう</a>でご紹介しておりますので、こちらも合わせてご参照ください。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li>LiveLabs <a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/workshop-attendee-2?p210_workshop_id=838&amp;p210_type=1&amp;session=5003451975700" target="_blank">Load and update MovieStream data in Oracle Autonomous Database using SQL Workshop</a></li>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/load-data.html#GUID-1351807C-E3F7-4C6D-AF83-2AEEADE2F83E" target="_blank">Loading Data with Autonomous Database</a></li>
+</ul>
+
+<p>以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-12-16T11:20:56+09:00">December 16, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=601%3A+ADW%E3%81%A7MovieStream%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E3%83%AD%E3%83%BC%E3%83%89%E3%83%BB%E6%9B%B4%E6%96%B0%E3%82%92%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb601-moviestream-load%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb601-moviestream-load%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb601-moviestream-load%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb506-sr/" class="pagination--pager" title="506: サポートサービスへの問い合わせ(Service Requestの起票)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb602-moviestream-analysis/" class="pagination--pager" title="602: ADWでMovieStreamデータの分析をしよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2021 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
