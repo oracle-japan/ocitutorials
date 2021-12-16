@@ -8,10 +8,20 @@ show_excerpts: true
 toc: true
 ---
 
-このページでは、Oracle Cloud Infrastructure(OCI)の各コンテナ/サーバレス関連サービスのチュートリアルをまとめています。  
+このページでは、Oracle Cloud Infrastructure(OCI)の各コンテナ/サーバレス関連サービスやCI/CDサービスのチュートリアルをまとめています。  
 各チュートリアルごとにステップ・バイ・ステップで学ぶことができ、各サービスの基本的な機能、操作やオペレーションについて学習することができます。  
 
-# 1. Oracle Container Engine for Kubernetesチュートリアル
+# 1. Oracle Cloud Infrastructure DevOpsチュートリアル
+
+## 初級編
+
++ **[DevOpsことはじめ](/ocitutorials/cloud-native/devops-for-commons/)**  
+    OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。
+    ここでは、Oracle Container Engine for Kubernetes(OKE)サービスを利用したKubernetesクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間30分】
+
+<br />
+
+# 2. Oracle Container Engine for Kubernetesチュートリアル
 
 ## 事前準備編 - OKEクラスターのプロビジョニング
 
@@ -26,7 +36,7 @@ toc: true
 ## 中級編
 
 + **[Oracle Container Engine for Kubernetes(OKE)でサンプルアプリケーションのデプロイとCI/CDを体験してみよう](/ocitutorials/cloud-native/oke-for-intermediates/)**  
-    Oracle Visual Builder Studioを利用してCI/CD環境をセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes(OKE)にデプロイする一連の流れを体験することができます【所要時間:約1時間30分】
+    OCI DevOpsを利用してCI/CD環境をセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes(OKE)にデプロイする一連の流れを体験することができます【所要時間:約1時間30分】
 
 ## 上級編
 
@@ -35,7 +45,7 @@ toc: true
 
 <br />
 
-# 2. Oracle Functionsチュートリアル
+# 3. Oracle Functionsチュートリアル
 
 ## 初級編
 
@@ -68,7 +78,7 @@ toc: true
 
 <br />
 
-# 3. OCI API Gatewayチュートリアル
+# 4. OCI API Gatewayチュートリアル
 
 ## 初級編
 
@@ -77,7 +87,7 @@ toc: true
 
 <br />
 
-# 4. Helidonチュートリアル
+# 5. Helidonチュートリアル
 
 ## 初級編
 
