@@ -12,7 +12,6 @@ env:
 steps:
   - type: Command
     name: "Export variables"
-    timeoutInSeconds: 80
     command: |
       BUILDRUN_HASH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1`
       echo "BUILDRUN_HASH: " ${BUILDRUN_HASH}
@@ -21,12 +20,10 @@ steps:
         command: |
           echo "Handling Failure"
           echo "Failure successfully handled"
-        timeoutInSeconds: 40
         runAs: root
   - type: Command                   
     name: "Login to OCIR"  
     shell: bash                    
-    timeoutInSeconds: 60           
     runAs: root          
     command: |
       docker login nrt.ocir.io -u orasejapan/oracleidentitycloudservice/takuya.niita@oracle.com -p ${OCIRCRED}
@@ -34,7 +31,6 @@ steps:
       - type: Command
         command: |
           echo "Failured Login to OCIR"
-        timeoutInSeconds: 60
         runAs: root
   - type: Command
     name: "Docker Build"
@@ -44,7 +40,6 @@ steps:
       - type: Command
         command: |
           echo "Failured docker build"
-        timeoutInSeconds: 60
         runAs: root
   - type: Command
     name: "Docker Push to OCIR"
@@ -54,5 +49,4 @@ steps:
       - type: Command
         command: |
           echo "Failured docker push"
-        timeoutInSeconds: 60
         runAs: root

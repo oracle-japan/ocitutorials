@@ -1,646 +1,824 @@
 ---
 title: "KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう"
-excerpt: "OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、チーム開発型プラットフォームであるOracle Cloud PaaSのVisual Builder Studioや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。"
+excerpt: "OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、マネージドなCI/CDサービスであるOCI DevOpsや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。"
 order: "030"
 tags:
 ---
-このワークショップでは、Oracle Visual Builder Studioを利用してCI/CD環境をセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes（OKE）にデプロイする一連の流れを体験することができます
+このワークショップでは、OCI DevOpsを利用してCI/CDパイプラインをセットアップし、Oracle Autonomous Transaction ProcessingをデータソースとしたJavaアプリケーションをOracle Container Engine for Kubernetes（OKE）にデプロイする一連の流れを体験することができます。
 
 このワークショップには以下のサービスが含まれます。
 
-- [Oracle Visual Builder Studio](https://www.oracle.com/jp/application-development/visual-builder-studio/)（略称：VBS）:
-:   Oracle Cloudが提供する事前統合済みのチーム開発プラットフォームサービスです。
-- [Oracle Autonomous Transaction Processing](https://www.oracle.com/jp/database/atp-cloud.html)（略称：ATP）:
-:   運用がすべて自動化された自律型データベースサービスです。
 - [Oracle Container Engine for Kubernetes](https://www.oracle.com/jp/cloud/compute/container-engine-kubernetes.html)（略称：OKE）:
 :   マネージドなKuberentesクラスタを提供するクラウドサービスです。
+- [Oracle Autonomous Transaction Processing](https://www.oracle.com/jp/database/atp-cloud.html)（略称：ATP）:
+:   運用がすべて自動化された自律型データベースサービスです。
+- [Oracle Cloud Infrastructure DevOps](https://www.oracle.com/devops/devops-service/)（略称：OCI DevOps）:
+:   Oracle Cloudが提供するマネージドなCI/CDサービスです。
 - [Oracle Cloud Infrastructure Registry](https://www.oracle.com/jp/cloud/compute/container-registry.html)（略称：OCIR）:
 :   フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。
+- [Oracle Cloud Infrastructure Artifact Registry](https://docs.oracle.com/en-us/iaas/artifacts/using/overview.htm):
+:   フルマネージドな非コンテナイメージの成果物を格納できるレポジトリサービスです。
 
 前提条件
 -------
+
 ワークショップを開始する前に以下を準備してください。
 
-+ [Oracle Cloudのアカウントを取得済みであること](https://cloud.oracle.com/ja_JP/tryit)
+- [Oracle Cloudのアカウントを取得済みであること](https://cloud.oracle.com/ja_JP/tryit)
 
-* [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)を実施済みであること
+- [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)を実施済みであること
 
 Oracle Cloud Infrastructureの基本操作は[チュートリアル : OCIコンソールにアクセスして基本を理解する](/ocitutorials/beginners/getting-started/)をご確認ください。
 
 ゴールを確認する
 ------
+
 はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。  
 手順を最後まで行うと、下図のような環境が構成されます。
 
-![](2001.jpg)
-
+![0-000.jpg](0-000.jpg)
 
 構成要素|説明
 -|-
-OKE Cluster|アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。
-Visual Builder Studio| OKE Clusterに対してアプリケーションのデプロイを実施するサービスです。今回はサンプルデータの登録でも利用します。
+OKE |アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。
+OCI DevOps| OKE Clusterに対してアプリケーションのデプロイ(CI/CD)を実施するサービスです。
 Autonomous Transaction Processing|今回デプロイするサンプルアプリケーションが利用するデータベースです。
-OCIR|コンテナイメージを保存するレポジトリです。
+OCIR/Artifact Registry|コンテナイメージなどのビルド成果物およびマニフェストなどを保存するレポジトリです。
 
-1.Visual Builder Studio用コンパートメントの作成
--------
+この全体像のうち、OKEに関しては、すでに[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)で構築済みとなります。  
 
-**コンパートメントについて**  
-Oracle Cloudにはコンパートメントという考え方があります。  
-コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。
-{: .notice--info}
+0.事前準備
+------
 
-まず初めに、後ほど実施するVisual Builder Studioのセットアップで利用するコンパートメントを作成します。
+ここでは、後続の手順で利用するトークンやリソースの準備を行います。  
+準備する項目は以下の6つです。  
 
-OCIコンソールにログインします。
-
-ハンバーガーメニューの"アイデンティティとセキュリティ"⇒"コンパートメント"をクリックします。
-
-![](1860.jpg)
-
-"コンパートメントの作成"をクリックします。
-
-![](1870.jpg)
-
-以下の情報を入力します。
-
-![](1880.jpg)
-
-key|value
+項目|説明
 -|-
-名前|コンパートメント名を入力します。今回は"CTDOKE"とします。
-説明|コンパートメントに対する説明を入力します。今回は"CTDOKE"とします。
-親コンパートメント|作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。
+ハンズオン資材 |本ハンズオンで利用するサンプルアプリケーションやスクリプトが含まれたプロジェクトです。Cloud Shell上にpullします。
+ユーザ名|OCIのリソース操作に必要なユーザ名です。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
+認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
+オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスやOCI DevOpsのGit Repositoryへのアクセスに必要な情報です。
+コンパートメントOCID|ATPをプロビジョニングする際に利用する情報です。  
+OCIRレポジトリ|今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
 
-"コンパートメントの作成"をクリックします。  
+OCIRレポジトリについては、[ゴールを確認する](#ゴールを確認する)で示した図でいうと、赤点線枠(![2-032.jpg](2-032.jpg))の部分を作成していきます。  
 
-これでコンパートメントの作成は完了です。  
+![0-013.jpg](0-013.jpg)
 
-2.Visual Builder Studioのセットアップ
--------
+### 0-1. ハンズオン資材の取得
+まずは、今回のハンズオンで利用する資材をGitHubから取得します。  
 
-ここでは、Visual Builder Studioのセットアップを行います。
+[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#2cli%E5%AE%9F%E8%A1%8C%E7%92%B0%E5%A2%83cloud-shell%E3%81%AE%E6%BA%96%E5%82%99)し、git cloneを実行します。
 
-Oracle Cloud Infrastructure(OCI)コンソールにログインします。  
-左上のハンバーガーメニューをクリックし、"OCI Classic Services"⇒"Developer"をクリックします。
+```sh
+git clone https://github.com/oracle-japan/oke-atp-helidon-handson.git
+```
 
-![](1910.jpg)
+これで資材の取得は完了です。  
 
-Visual Builder Studioのインスタンス画面が開きます。  
-右上の"インスタンスの作成"ボタンをクリックします。
+ホームディレクトリに戻っておきます。  
 
-![](1920.jpg)
+```sh
+cd ~
+```
 
-インスタンス作成画面が開くので、赤枠内の情報を入力し、"次へ"ボタンをクリックします。
+### 0-2. ユーザ名の確認
+ここでは、ユーザ名の確認を行います。  
 
-![](1930.jpg)
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルに表示されているユーザ名をエディタなどに記録しておきます。  
 
-key|value
--|-
-Instance Name|Visual Builder Studioのインスタンス名。今回は"Handson"
-Description|Visual Builder Studioインスタンスの概要説明。今回は設定しない。
-Notification Email|Visual Builder Studioに関する通知先のメールアドレス。今回は設定しない。
-Region|Visual Builder Studioインスタンスを作成するリージョン。今回は"us-ashburn-1"
-Tags|Visual Builder Studioインスタンスに設定するタグ。今回は設定しない。
+![0-014.jpg](0-014.jpg)
 
-インスタンス作成の確認画面が表示されます。"作成"ボタンをクリックします。
+これでユーザ名の確認は完了です。  
 
-![](1940.jpg)
+### 0-3. 認証トークンの作成  
 
-インスタンス作成がリクエストされます。Statusが"Creating service"になっていることを確認します。  
-インスタンス作成の完了までしばらく時間がかかります。
+ここでは、OCI DevOpsのレポジトリ操作に必要な認証トークンを取得します。  
 
-![](1950.jpg)
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名をクリックします。
 
-インスタンス作成完了までの間に[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)を実施してください。
-
-**受講者の方へ**  
-ここから先の手順では、[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)を完了している必要があります。
-{: .notice--info}
-
-インスタンス作成が完了したら、作成したインスタンスの右端にあるハンバーガーメニューをクリックし、"Acccess Service Instance"をクリックします。
-
-![](1960.jpg)
-
-{% capture notice %}**Visual Builder Studioにアクセスできない場合**  
-以下のエラーメッセージが表示された場合、以下の対応をお願いいたします。
-
-    このサイトにアクセスできません  
-    https://psm-cacct-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.console.oraclecloud.com/administration/faces/JaaSRunner.jspx のウェブページは一時的に停止しているか、新しいウェブアドレスに移動した可能性があります。
-    ERR_RESPONSE_HEADERS_TRUNCATED
-
-- 社内プロキシなどを利用している参加者の皆様で社内プロキシを回避可能な場合は、社内プロキシを経由しないネットワーク環境でお試しください。
-- 社内プロキシなどを利用している参加者の皆様で社内プロキシを回避不可な場合は、申し訳ありませんが、[ビギナー向けチュートリアル](/ocitutorials/cloud-native/oke-for-beginners)をお試しください。
-- 上記以外の参加者の皆様は、申し訳ありませんが、[ビギナー向けチュートリアル](/ocitutorials/cloud-native/oke-for-beginners)をお試しください。{% endcapture %}
-<div class="notice--warning">
-  {{ notice | markdownify }}
-</div>
-
-**受講者の方へ**  
-ここから先の手順では、[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)を完了している必要があります。
-{: .notice--info}
-
-Visual Builder Studioのメニューが表示されます。最初にVisual Builder Studioを利用するにあたって必要な情報を入力する必要があります。  
-画面上部に表示される"OCI Account"のリンクをクリックします。
-
-![](1970.jpg)
-
-画面中央部にある"Connect"をクリックします。
-
-![](2030.jpg)
-
-Visual Builder Studioを利用するために必要な情報を入力していきます。  
-入力する内容は[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集した情報です。  
-
-情報の入力が完了したら、画面下部の"validate"ボタンをクリックします。  
-Validateに成功すると![](1990.jpg)が表示されます。  
-
-Validateが成功したら"Save"ボタンをクリックします。
-
-![](1980.jpg)
-
-key|value
--|-
-Tenancy OCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したテナンシOCID
-User OCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したユーザーOCID
-Home Region|ホームリージョンを選択。今回は"us-ashburn-1"
-Private Key|[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)でダウンロードしたAPI秘密鍵の内容を貼り付け
-Passphrase|パスフレーズ。今回は空文字("")を指定。
-Fingerprint|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したAPI Signingキーのフィンガープリント(Private Keyを入力すると自動的に設定される)
-Compartment OCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したコンパートメントOCID
-Storage Namespace|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したオブジェクト・ストレージ・ネームスペース
-
-以下のように画面が表示されれば、Visual Builder Studioのセットアップが完了です。
-
-![](2000.jpg)
-
-3.ワークショップで利用するアカウント情報の収集
--------
-
-ここから、ハンズオンを進める上で下記の情報が必要となります。**取得した情報は後ほど使用するためメモ帳などに控えておいてください。**
-
-1. オブジェクト・ストレージ・ネームスペース
-2. リージョン識別子
-3. テナンシOCID
-4. コンパートメントOCID
-5. ユーザOCID
-6. API Signingキーのフィンガープリント
-7. 認証トークン
-8. クラスターOCID
-
-**1.オブジェクト・ストレージ・ネームスペース**
-
-OCIコンソール左上のハンバーガーメニューを展開し、「ガバナンスと管理」⇒「テナンシ詳細」に移動します。
-
-以下をコピーしてメモしてください。
-
-+ オブジェクト・ストレージ・ネームスペース：オブジェクト・ストレージ・ネームスペース
-
-![](1010.jpg)
-
-**2.リージョン識別子**
-
-OCIコンソール左上のハンバーガーメニューを展開し、「ガバナンスと管理」⇒「リージョン管理」に移動します。
-
-![](10101.jpg)
-
-以下をコピーしてメモしてください。
-
-+ Region Identifier：リージョン識別子
-
-USにあるデータセンター"US East (Ashburn)"を使用する場合"us-ashburn-1"になります。
-
-![](1020.jpg)
-
-**3.テナンシOCID**
-
-OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`テナンシ:<テナンシ名>`をクリックします。
-
-![](03-01-1.png)
-
-テナンシ情報`OCID`の右側にある`コピー`をクリックすると、テナンシOCIDがクリップボードにコピーされます。
-
-この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
-
-![](03-01-2.png)
-
-**4.コンパートメントOCID**
-
-OCIコンソール左上のハンバーガーメニューを展開し、「アイデンティティとセキュリティ」⇒「コンパートメント」に移動します。コンパートメント一覧から使用するコンパートメントに移動します。以下の例では"CTDOKE"となっています。
-
-以下をコピーしてメモしてください。
-
-+ OCID：コンパートメントOCID
-
-![](1030.jpg)
-
-**5.ユーザOCID**
-
-OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから`ユーザ名`(oracleidentitycloudservice/<ユーザ名>)をクリックします。
-
-![](03-02.png)
-
-ユーザ情報が表示されますので、`OCID`の右側にある`コピー`をクリックすると、ユーザOCIDがクリップボードにコピーされます。
-
-![](03-03.png)
-
-この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。
-
-**6.API Signingキーのフィンガープリント**
-
-API Signingキーのフィンガープリントは[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)の手順により、  
-ユーザー詳細画面から確認できるようになっています。
-
-ユーザー詳細画面で「APIキー」に移動します。  
-APIキーに表示されているフィンガープリントを確認します。
-
-![](1890.jpg)
-
-表示されている値をメモしてください。
-
-**7.認証トークン**
-
-マシンもしくはOKEからOCIRを使用するために、認証トークンの収集を行います（ユーザー認証用のパスワードではなく、認証トークンが必要です）。
-
-OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名(oracleidentitycloudservice/<ユーザ名>)をクリックします。
-
-![](1061.jpg)
+![0-001.jpg](0-001.jpg)
 
 下にスクロールして「リソース」の「認証トークン」に移動し、「トークンの生成」ボタンをクリックします。
 
-![](1062.jpg)
+![0-002.jpg](0-002.jpg)
 
-下記項目を入力して、「トークンの生成」ボタンをクリックします。
+![0-003.jpg](0-003.jpg)をクリックします。
 
-+ 説明：OKE ATP
+以下の項目を入力します。
 
-![](1064.jpg)
+key|value|
+-|-
+説明|oke handson
+
+![0-004.jpg](0-004.jpg)
+
+![0-005.jpg](0-005.jpg)をクリックします。  
+
+![0-006.jpg](0-006.jpg)
+
+表示されたトークンをコピーして、エディタなどに記録しておきます。  
 
 **受講者の方へ**  
 生成されたトークンは一回のみ表示されます。  
 「コピー」をクリックしてトークンがコピーされ、どこに保存してください。完了したら、「閉じる」ボタンをクリックします。（注：忘れたときは作成されたトークンを削除して、再度生成してください。）
 {: .notice--warning}
 
-![](1066.jpg)
+### 0-4. オブジェクト・ストレージ・ネームスペースの確認  
 
-**8.OKEクラスターOCID**
+ここでは、OCIRへコンテナイメージをプッシュする際に必要となるオブジェクト・ストレージ・ネームスペースを確認します。  
 
-[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)の手順により作成したOKEクラスターのOCIDを取得します。
-OCIコンソールにログインします。  
-左上のハンバーガーメニューをクリックし、"開発者サービス"の"Kubernetes Clusters (OKE)"をクリックします。  
+OCIコンソール画面右上の人型のアイコンをクリックし、テナンシ名をクリックします。  
 
-![](2002.jpg)
+![0-007.jpg](0-007.jpg)
 
-作成したOKEクラスターをクリックします。
+赤枠部分の値をコピーして、エディタなどに保存しておきます。  
 
-![](2003.jpg)
+![0-008.jpg](0-008.jpg)
 
-赤枠部分をクリックし、OKEクラスターOCIDをコピーします。  
-コピーした値をメモしておいてください。
+以上で、オブジェクト・ストレージ・ネームスペースの確認は完了です。  
 
-![](2004.jpg)
+### 0-5. コンパートメントOCIDの確認  
 
-これで、ワークショップで利用するアカウント情報の収集が完了しました。
+ここでは、ATPをプロビジョニングする際に利用するコンパートメントOCIDの確認を行います。  
 
-**受講者の方へ**  
-ここから先の手順では、[Visual Builder Studioのセットアップ](#2visual-builder-studioのセットアップ)までを完了している必要があります。  
-Visual Builder Studioインスタンス作成後のセットアップ手順を実施していない場合は、そちらを実施してください。
-{: .notice--info}
+CIコンソールのハンバーガメニューより、「アイデンティティとセキュリティ」メニューの「コンパートメント」をクリックします。  
 
-4.プロジェクトとリポジトリの作成
--------
+![0-015.jpg](0-015.jpg)
 
-このステップでは、GitHubリポジトリに基づいてVisual Builder Studioで新しい開発者プロジェクトをセットアップする方法を説明します。
+ご自身のコンパートメントが表示されているので、クリックします。  
 
-一つのVisual Builder Studioのインスタンスは、複数のプロジェクトを管理できます。また、一つのプロジェクトは複数のリポジトリを管理できます。
+![0-016.jpg](0-016.jpg)
 
-プロジェクトを作成するには、「組織」(もしくは「Organization」)メニューを選択し、「プロジェクト」(もしくは「Projects」)タブで右側の「＋作成」(もしくは「Create」)ボタンをクリックします。
-
-![](1070.jpg)
-
-下記項目を入力して、「次へ」(もしくは「Next」)をクリックします。
-
-+ 名前：OKEATPWorkshop
-+ 利用する言語は必要に応じて変更してください
-
-**受講者の方へ**  
-Visual Builder Studio上のプロジェクト名の重複は許容されていません。  
-集合ハンズオンなど同一の環境でハンズオンを実施されている方は、プロジェクト名が重複しない様に語尾に任意の文字列(名前のイニシャル等)を追加してください。
+**ハンズオンに利用するコンパートメントついて**  
+トライアル環境でのハンズオンの場合は、ルートコンパートメントを利用します。(コンパートメントの語尾に`(ルート)`と付与されています)  
+それ以外の環境でご自身に割り当てられているコンパートメントがある場合は、そちらのコンパートメントをご確認ください。  
 {: .notice--warning}
 
-![](1080.jpg)
+「コンパートメント情報」内にある赤枠部分の値をコピーして、エディタなどに保存しておきます。  
 
-デフォルトのままにして、「次へ」(もしくは「Next」)をクリックします。
+![0-017.jpg](0-017.jpg)
 
-![](1090.jpg)
+以上で、コンパートメントOCIDの確認は完了です。  
 
+### 0-6. OCIRのレポジトリ作成
 
-デフォルトのままにして、「終了」(もしくは「Finish」)をクリックします。
+ここでは、ビルドしたコンテナイメージをプッシュするためのレポジトリをOCIRに作成します。  
 
-![](1100.jpg)
+OCIコンソールのハンバーガメニューより、「開発者サービス」の「コンテナ・レジストリ」をクリックします。  
 
-すべてのモジュールがプロビジョニングされるまで、数分程度お待ちください。
+![0-009.jpg](0-009.jpg)
 
-![](1110.jpg)
-
-プロジェクトの作成が完了すると、自動的にこちらの画面に移動されます。
-
-続いて、レポジトリを作成します。
-
-リポジトリを作成するには、画面右側の「＋リポジトリの作成」(もしくは「Create Repository」)をクリックします。
-
-![](1120.jpg)
-
-下記項目を入力して、「作成」をクリックします。
-
-key|value
--|-
-名前|oke_atp_workshop
-説明|OKE ATP Workshop
-既存のリポジトリのインポート(既存のリポジトリのインポート(Import existing repository)にチェック)|https://github.com/oracle-japan/oke-atp-helidon-handson
-
-![](1130.jpg)
-
-インポートが完了すると、既存のリポジトリのファイルがインポートされます。
-
-![](1140.jpg)
-
-Visual Builder Studioで「Git」に移動して、右側の「クローン」を選択し、"Clone with HTTPS."の「コピー」アイコンをクリックします。
-
-![](1145.jpg)
-
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、git cloneを実行します。
-
-**受講者の方へ**  
-別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。
-{: .notice--info}
-
-```
-git clone コピーされたURL
-```
-
-**受講者の方へ**  
-git cloneコマンドや後続の手順で利用するgit pushなどの各種gitコマンドにおいてパスワードの入力を求められることがあります。  
-その場合は、ご自身のご利用されているOracle Cloudアカウントに対応するパスワードを入力してください。
-{: .notice--info}
-
-これで、Visual Builder Studioでプロジェクトとリポジトリの作成は完了しました。
-
-5.ビルド用の仮想マシンの準備
--------
-
-このステップでは、Visual Builder Studioでのビルド機能（CI/CD）を使用する際に必要なビルド用の仮想マシンを用意します。
-
-Visual Builder Studioで「組織」メニューを選択し、「仮想マシン・テンプレート」のタブに移動して、「＋作成」ボタンをクリックします。
-
-![](1150.jpg)
-
-ダイアログボックスで、下記項目を入力して、「作成」ボタンをクリックします。
-
-key|value
--|-
-名前|OKE
-プラットフォーム|Oracle Linux 7
-
-**受講者の方へ**  
-Visual Builder Studio上の仮想マシン・テンプレート名の重複は許容されていません。
-集合ハンズオンなど同一の環境でハンズオンを実施されている方は、仮想マシン・テンプレート名が重複しない様に語尾に任意の文字列(名前のイニシャル等)を追加してください。
-{: .notice--warning}
-  
-![](1160.jpg)
-
-作成したテンプレート"OKE"を選択し、「ソフトウェアの構成」(もしくは「Configure Software」)ボタンをクリックして、必要なソフトウェアパッケージを追加します。
-
-![](1170.jpg)
-
-次のパッケージを選択します。
-
-+ Docker 19
-+ Kubectl
-+ OCIcli ==> Python3 も同時にインストールするように求められます
-+ SQLcl
-
-「完了」ボタンをクリックします。
-
-![](1180.jpg)
-
-「仮想マシンのビルド」タブに移動します。
-「＋作成」ボタンをクリックします。
-
-![](1200.jpg)
-
-表示されるダイアログで、下記項目を入力します。
-
-key|value
--|-
-数量|1
-VMテンプレート|OKE
-リージョン|us-ashburn-1
-シェイプ|VM.Standard.E2.1
-VCN選択|"デフォルト"を選択
-
-「追加」ボタンをクリックします。
-
-![](1210.jpg)
-
-仮想マシンが追加されました。
-
-![](1230.jpg)
-
-続いて作成した仮想マシンを起動します。
-作成した仮想マシンの右側にあるメニューから「起動」を選択します。
-
-![](1240.jpg)
-
-起動までしばらく時間がかかるので、先の手順を進めてください。
-
-これで、Visual Builder Studioのセットアップのすべては完了しました。
-
-6.ATPのプロビジョニングとATP接続情報の作成
--------
-
-このステップでは、OCIコンソールからATPをプロビジョニングし、OKEから接続するための事前準備を行います。  
-
-以下手順で実行します。
-
-1. OCIコンソールからATPをプロビジョニングする
-2. OCI CLIコマンドを利用してWalletファイルを作成し、ConfigmapリソースとしてOKEに登録する
-3. ATP接続情報としてユーザ名とパスワードを作成し、SecretリソースとしてOKEに登録する
-
-### 6-1. OCIコンソールからATPをプロビジョニングする
-
-ここでは、OCIコンソールからATPのプロビジョニングを行います。
-
-OCIコンソールにログインし、ハンバーガーメニューから"Oracle Database"⇒"Autonomous Tsanraction Processing"をクリックします。
-
-![](2016.png)
-
-"Autonomous Databaseの作成"ボタンをクリックします。
-
-![](2017.png)
-
-以下の情報を入力します。
-
-key|value
--|-
-コンパートメント|ルートコンパートメント
-表示名|OCIコンソール上でATPを表示するための名前を入力します。今回は"tfOKEATPDB"
-データベース名|データベース名を入力します。今回は"tfOKEATPDB"
-
-**トライアル環境以外の環境をお使いの方へ**  
-Autonomous Databaseはデータベース名の重複が許容されていません。
-集合ハンズオンなど同一の環境でハンズオンを実施されている方は、データベース名が重複しない様に語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。
-{: .notice--warning}
-
-key|value
--|-
-ワークロード・タイプの選択|ワークロードをデータウェアハウス、トランザクション処理、JSON、APEXの中から選択します。今回は"トランザクション処理"
-デプロイメント・タイプの選択|データベースのインフラストラクチャを共有とするか専用とするかを選択します。今回は"共有インフラストラクチャ"
-データベース・バージョンの選択|データベースのバージョンを選択します。今回は"19c"を選択
-OCPU数|データベースのコア数を入力します。今回は"1"を入力
-ストレージ(TB)|データベースのストレージ容量を入力します。今回は"1"を入力
-自動スケーリング|ワークロードの負荷に応じて自動でスケールを行うかどうかを選択します。今回はチェックを入れます。
-パスワード|データベースのパスワードを入力します。今回は"TFWorkshop__2000"
-パスワードの確認|確認のためにパスワードを再度入力します。今回は"TFWorkshop__2000"
-ネットワーク・アクセスの選択|データベースに対してどこからのアクセスを許可するかを選択します。今回は"すべての場所からのセキュア・アクセスを許可"を選択
-ライセンス・タイプの選択|ライセンスのタイプを選択します。今回は"ライセンス込み"を選択
-
-上記を入力し終えたら、"Autonomous Databaseの作成"をクリックします。
-
-![](2018.jpg)
-
-ATPのプロビジョニングが開始されます。ステータスが"使用可能"になればプロビジョニング完了です。完了するまで10-15分程度かかることがあります。  
-
-最後にプロビジョニングしたATPのOCIDを確認しておきます。(このOCIDは次の手順で使用します)
-
-"Autonomous Database情報"の"OCID"の"コピー"ボタンをクリックし、OCIDをコピーします。
-
-![](2021.jpg)
-
-これで、ATPのプロビジョニングは完了です。
-
-### 6-2. ATPのWalletファイルの作成
-
-ATPに接続するため資格情報となるWalletファイルを作成します。
-
-**受講者の方へ**  
-Walletファイルについては[マニュアル](https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/connect-jdbc-thin-wallet.html#GUID-5ED3C08C-1A84-4E5A-B07A-A5114951AA9E)をご確認ください。
-なお、Walletファイルはzipファイルです。
-{: .notice--info}
-
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。
-
-**受講者の方へ**  
-別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。
-{: .notice--info}
-
-oke_atp_workshopディレクトリに移動します。
-
-    cd oke_atp_workshop
-
-以下のコマンドを実行します。
-
-```sh
-oci db autonomous-database generate-wallet --autonomous-database-id [ATPのOCID] --password [Walletのパスワード] --file [Walletファイル名]
-```
-
-今回は以下のように実行します。[ATPのOCID]は、[1. OCIコンソールからATPをプロビジョニングする](#6-1-ociコンソールからatpをプロビジョニングする)でコピーしたATPのOCIDに書き換えてください。
-
-```sh
-oci db autonomous-database generate-wallet --autonomous-database-id [ATPのOCID] --password TFWorkshop__2000 --file Wallet_tfOKEATPDB.zip
-```
-
-カレントディレクトリにWalletファイルが作成されます。
-
-以下のコマンドで解凍します。
-
-```sh
-unzip Wallet_tfOKEATPDB.zip -d  Wallet_tfOKEATPDB
-```
-
-OKEにでデプロイするアプリケーションからWalletファイルを読み込むために解凍したディレクトリをKubernetesをConfigmapリソースとして登録します。
-
-**Configmapについて**  
-Configmapリソースについては[こちら](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)をご確認ください。
-{: .notice--info}
-
-```sh
-kubectl create configmap okeatp --from-file=Wallet_tfOKEATPDB
-```
-
-{% capture notice %}**Configmapを誤って作成してしまった場合**  
-誤って作成してしまった場合等に削除する場合は以下のコマンドを実行。
-```
-kubectl delete configmap <configmap名>
-```
+{% capture notice %}**ハンズオンに利用するコンパートメントついて**  
+トライアル環境でのハンズオンの場合は、ルートコンパートメントを利用します。  
+OCIRのコンソール画面はデフォルトでルートコンパートメントが選択されますが、ご自身に割り当てられているコンパートメントがある場合は、そちらのコンパートメントを利用してください。  
+コンパートメントはOCIRのコンソール画面の左側から選択できます。
+![0-018.jpg](0-018.jpg)
 {% endcapture %}
 <div class="notice--warning">
   {{ notice | markdownify }}
 </div>
 
-後続の手順で、Visual Builder Studioからサンプルデータを登録するためにWalletファイルをVisual Builder StudioのGitレポジトリに登録します。
+![0-010.jpg](0-010.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|
+-|-
+リポジトリ名|handson
+アクセス|`パブリック`を選択
+
+**レポジトリ名について**  
+OCIRのレポジトリ名はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`handson01`や`handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
+
+![0-011.jpg](0-011.jpg)
+
+![0-012.jpg](0-012.jpg)をクリックします。  
+
+以上で、事前準備は完了です。  
+
+1.ポリシー作成
+-------
+
+ここでは、OCI DevOpsを利用するためのポリシーを作成します。  
+
+**ポリシーについて**  
+Oracle Cloud Infrastrctureにはポリシーという考え方があります。 
+ポリシーを利用すると、ユーザや動的グループがどのリソースやサービスでどのような操作を実行可能にするかを制御することができます。  
+ポリシーの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Concepts/policygetstarted.htm#Getting_Started_with_Policies)のページをご確認ください。
+{: .notice--info}
+
+今回は、ポリシーの作成(動的グループを含む)をシェルスクリプトで簡略化していますが、以下の動的グループとポリシーが設定されます。
+
+動的グループ|ルール|説明|
+-|-
+OCI_DevOps_Dynamic_Group|instance.compartment.id = 'コンパートメントOCID',resource.compartment.id = 'コンパートメントOCID'|コンパートメント内の全てのリソースやインスタンスを含めた動的グループ
+
+**コンパートメントについて**  
+Oracle Cloud Infrastrctureにはコンパートメントという考え方があります。  
+コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。  
+コンパートメントの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingcompartments.htm)のページをご確認ください。
+{: .notice--info}
+
+**動的グループについて**  
+Oracle Cloud Infrastrctureには動的グループという考え方があります。
+これを利用すると、ユーザではなく、OCI上のリソースやインスタンスを主体とした操作を実現できます。  
+動的グループの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)のページをご確認ください。
+{: .notice--info}
+
+**本ハンズオンでの動的グループについて**  
+今回は、簡易的にハンズオンを実施するために、コンパートメント内の全てのリソースやインスタンスを動的グループとして含める設定を行なっています。  
+本来は、各サービスのタイプを指定して動的グループを作成することになります。
+{: .notice--warning}  
+
+ポリシー|説明
+-|-
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'|OCI DevOpsが自身が持つ各機能を利用可能にするポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'|OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'|OCI DevOpsがOKEを管理するためのポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id 'コンパートメントOCID'|後続の手順で登場するOCI Service Operator for Kubernetes(OSOK)がAutonomous Transaction Processingを管理可能とするポリシー
+
+**DevOpsのポリシーについて**  
+DevOpsでは、利用する機能やデプロイ先に応じて、今回設定しているポリシーの他にもいくつか設定可能なポリシーがあります。  
+また、設定するポリシーによって、操作範囲を限定することも可能です。  
+詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/devops/using/devops_iampolicies.htm)のページをご確認ください。
+{: .notice--info}
+
+それでは、上記の動的グループとポリシー設定するためのシェルスクリプトを実行します。  
+
+シェルスクリプトは[0-1.ハンズオン資材の取得](#0-1-ハンズオン資材の取得)で取得した資材内にあります。  
 
 ```sh
-git add Wallet_tfOKEATPDB.zip
+cd oke-atp-helidon-handson
 ```
 
 ```sh
-git commit -m "Walletファイルの追加" 
+cd prepare
 ```
 
-{% capture notice %}**commit時に表示されるメッセージ**  
-コミットする際に以下のようなメッセージが表示されることがあります。
-```shell-session
-*** Please tell me who you are.
-
-Run
-
-    git config --global user.email "you@example.com"
-    git config --global user.name "Your Name"
-
-to set your account's default identity.
-Omit --global to set the identity only in this repository.
+```sh
+chmod +x prepare.sh
 ```
 
-その場合は以下のコマンドを実行後に再度コミットを行ってください。
+```sh
+./prepare.sh
 ```
-git config --global user.email <自身のメールアドレス>
-git config --global user.name <ユーザ名(任意)>
+
+これでポリシー作成は完了です。  
+
+ホームディレクトリに戻っておきます。  
+
+```sh
+cd ~
 ```
-{% endcapture %}
-<div class="notice--warning">
-  {{ notice | markdownify }}
-</div>
+
+2.OCI DevOpsのセットアップ
+-------
+
+ここでは、OCI DevOpsのインスタンスの作成とサンプルアプリケーションの準備を行います。  
+
+[ゴールを確認する](#ゴールを確認する)で示した図でいうと、赤点線枠(![2-032.jpg](2-032.jpg))の部分を作成していきます。  
+
+![2-031.jpg](2-031.jpg)
+
+### 2-1. OCI Notificationsの作成
+
+まずは、OCI DevOpsのインスタンス作成に入る前にOCI Notificationsの作成を行います。  
+OCI DevOpsを作成する際にはOCI Notificationsが作成してあることが必須になります。  
+
+**OCI Notificationsについて**  
+OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
+本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また
+詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm)のページをご確認ください。
+{: .notice--info}
+
+OCIコンソールのハンバーガメニューより、「開発者サービス」の「通知」をクリックします。  
+
+![2-001.jpg](2-001.jpg)
+
+![2-002.jpg](2-002.jpg)をクリックします。 
+
+以下の項目を入力し、![2-004.jpg](2-004.jpg)をクリックします。  
+
+key|value|
+-|-
+名前|oke-handson
+
+**OCI Notifications名について**  
+OCI Notifications名はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`oke-handson01`や`oke-handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
+
+![2-003.jpg](2-003.jpg)
+
+作成したOCI Notificationsのリンク(今回は`oke-handson`)をクリックします。  
+
+![2-005.jpg](2-005.jpg)
+
+![2-006.jpg](2-006.jpg)をクリックします。  
+
+以下の項目を入力し、![2-004.jpg](2-004.jpg)をクリックします。
+
+key|value|
+-|-
+電子メールアドレス|ご自身のメールアドレス
+
+![2-007.jpg](2-007.jpg)
+
+サブスクリクションが"Pending"の状態で作成されます。  
+
+![2-008.jpg](2-008.jpg)
+
+先ほど入力した電子メールアドレスに以下のようなメールが届いているので、確認してください。  
+
+![2-009.jpg](2-009.jpg)
+
+メール内の![2-010.jpg](2-010.jpg)をクリックします。  
+
+以下のような画面が表示されます。  
+
+![2-011.jpg](2-011.jpg)
+
+先程のOCI Notificationsの画面に戻ると、サブスクリプションの状態が"Active"になっていることが確認できます。 
+
+![2-012.jpg](2-012.jpg)
+
+これで、OCI Notificationsの作成は完了です。  
+
+### 2-2. OCI DevOpsインスタンスの作成
+
+ここでは、OCI DevOpsのインスタンスを作成し、サンプルアプリケーションのレポジトリを作成します。  
+
+OCIコンソールのハンバーガメニューより、「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。
+
+![2-013.jpg](2-013.jpg)
+
+![2-014.jpg](2-014.jpg)をクリックします。  
+
+以下の項目を入力します。
+
+key|value|
+-|-
+プロジェクト名|oke-handson
+
+**OCI DevOpsインスタンス名について**  
+OCI DevOpsインスタンス名はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`oke-handson01`や`oke-handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
+
+![2-016.jpg](2-016.jpg)
+
+![2-015.jpg](2-015.jpg)をクリックします。  
+
+先ほど作成した"oke-handson"という名前のトピックを選択します。  
+
+![2-017.jpg](2-017.jpg)
+
+![2-019.jpg](2-019.jpg)
+
+![2-018.jpg](2-018.jpg)をクリックします。  
+
+プロビジョニングが完了したら、以下のようなボックスが表示されるので、![2-020.jpg](2-020.jpg)をクリックします。  
+
+![2-033.jpg](2-033.jpg)
+
+以下をクリックします。  
+
+![2-021.jpg](2-021.jpg)
+
+そのまま、![2-022.jpg](2-022.jpg)をクリックします。  
+
+以下のような状態になっていれば、問題ありません。  
+
+![2-023.jpg](2-023.jpg)
+
+これで、インスタンスの作成は完了です。  
+
+### 2-3. サンプルアプリケーションの事前準備
+
+次にコード・レポジトリを作成します。  
+
+左側にあるメニューから「コード・レポジトリ」を選択します。  
+
+![2-024.jpg](2-024.jpg)
+
+![2-025.jpg](2-025.jpg)をクリックします。  
+
+以下の項目を入力します。
+
+key|value|
+-|-
+リポジトリ名|oke-handson
+
+![2-027.jpg](2-027.jpg)をクリックします。  
+
+![2-026.jpg](2-026.jpg)
+
+レポジトリの作成が完了したら、![2-028.jpg](2-028.jpg)をクリックします。  
+
+表示されたダイアログの以下の赤枠部分(`HTTPSでのクローニング`)をクリックし、URLをコピーします。  
+コピーしたURLは、エディタなどに記録しておいてください。  
+
+![2-029.jpg](2-029.jpg)
+
+![2-030.jpg](2-030.jpg)をクリックします。
+
+[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#2cli%E5%AE%9F%E8%A1%8C%E7%92%B0%E5%A2%83cloud-shell%E3%81%AE%E6%BA%96%E5%82%99)します。  
+
+clone前にGitのクレデンシャル(ユーザ名/パスワード)情報を保存するために以下のコマンドを実行します。  
+
+```sh
+git config --global credential.helper store
+```
+
+先ほどコピーしたURLをgit cloneします。  
+
+```sh
+git clone <コピーしたURL>
+```
+
+cloneする際にユーザ名をパスワードを聞かれます。  
+それぞれ以下の通りとなります。
+
+key|value|説明
+-|-
+ユーザ名|<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>|`<オブジェクト・ストレージ・ネームスペース>`は[0-3.オブジェクトストレージネームスペースの確認](#0-3-オブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
+パスワード|[0-3-認証トークンの作成](#0-3-認証トークンの作成)で作成したもの
+
+cloneが成功すると"oke-handson"というディレクトリが作成されています。  
+
+[ハンズオン資材](#0-1-ハンズオン資材の取得)を"oke-handson"にコピーします。  
+
+```sh
+cp -pr oke-atp-helidon-handson/* oke-handson/
+```
+
+コード・レポジトリからcloneしたディレクトリに移動します。  
+
+```sh
+cd oke-handson/
+```
+
+OKEへデプロイするためのManifestを各自の環境に合わせて1箇所だけ修正します。  
+
+```sh
+vim k8s/deploy/oke-atp-helidon.yaml
+```
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: oke-atp-helidon
+  namespace: default
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: oke-atp-helidon
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: oke-atp-helidon
+spec:
+  selector:
+    matchLabels:
+      app: oke-atp-helidon
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: oke-atp-helidon
+        version: v1
+    spec:
+      # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
+      # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
+      # can read them and use it for connecting to ATP.
+      containers:
+      - name: oke-atp-helidon
+        image: iad.ocir.io/orasejapan/handson:${BUILDRUN_HASH}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: javax.sql.DataSource.test.dataSource.user
+          valueFrom:
+            secretKeyRef:
+              name: customized-db-cred
+              key: user_name
+        - name: javax.sql.DataSource.test.dataSource.password
+          valueFrom:
+            secretKeyRef:
+              name: customized-db-cred
+              key: password
+        volumeMounts:
+        - name: handson
+          mountPath: /db-demo/creds              
+      volumes:
+      - name: handson
+        secret:
+          secretName: okeatp
+```
+
+35行目の以下の部分を
+
+```yaml
+image: iad.ocir.io/orasejapan/handson:${BUILDRUN_HASH}
+```
+
+**トライアル環境以外、集合ハンズオンで参加されている皆様**  
+トライアル環境以外、集合ハンズオンで参加されている皆様は[0-6. OCIRのレポジトリ作成](#0-6-ocirのレポジトリ作成)において、レポジトリ名を「handson」から変更されていると思います。その場合は、`handson:${BUILDRUN_HASH}`の`handson`を作成したレポジトリ名に変更してください。  
+{: .notice--warning}
+
+```yaml
+image: <ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージ・ネームスペース>/handson:${BUILDRUN_HASH}
+```
+
+`<ご自身が利用されているリージョンのリージョン・コード>`はご自身が利用されているリージョンに応じて変わりますので、以下の表を参考に設定してください。  
+
+リージョン|リージョンコード
+-|-
+ap-tokyo-1|nrt
+ap-osaka-1|kix
+ap-melbourne-1|mel
+us-ashburn-1|iad
+us-phoenix-1|phx
+ap-mumbai-1|bom
+ap-seoul-1|icn
+ap-sydney-1|syd
+ca-toronto-1|yyz
+ca-montreal-1|yul
+eu-frankfurt-1|fra
+eu-zurich-1|zrh
+sa-saopaulo-1|gru
+sa-vinhedo-1| vcp
+uk-london-1|lhr
+sa-santiago-1|scl
+ap-hyderabad-1|hyd
+eu-amsterdam-1|ams
+me-jeddah-1|jed
+ap-chuncheon-1|yny
+me-dubai-1|dxb
+uk-cardiff-1|cwl
+us-sanjose-1|sjc
+
+<オブジェクト・ストレージ・ネームスペース>は、[0-4-オブジェクトストレージネームスペースの確認](#0-4-オブジェクトストレージネームスペースの確認)で確認した値を利用します。　　
+
+上記が完了したら、コンテンツをコミット/プッシュします。  
+
+```sh
+git add .
+```
+
+「git push」時にWarningが出ないように以下の設定を行います。
+
+```sh
+git config --global push.default simple
+```
+
+コミットします。
+
+```sh
+git commit -m "commit"
+```
+
+プッシュします。
 
 ```sh
 git push
 ```
 
-先ほど解凍したWalletファイルについては不要なので、削除しておきます。
+これで、サンプルアプリケーションの事前準備は完了です。
+
+ホームディレクトリに戻っておきます。  
 
 ```sh
-rm -rf Wallet_tfOKEATPDB
+cd ~
 ```
 
-### 6-3.ATPのユーザの作成
+3.ATPのプロビジョニング
+-------
 
-[1. OCIコンソールからATPをプロビジョニングする](#6-1-ociコンソールからatpをプロビジョニングする)では、デフォルトユーザとして"Admin"ユーザでデータベースが作成されます。  
+このステップでは、OCIコンソールからATPをプロビジョニングし、OKEから接続するための事前準備を行います。  
 
-ほとんどの場合、アプリケーションがデータベースを利用する際は"Admin"ではなく、別ユーザを作成します。  
-今回も同様に、ATPを利用するためのデータベースユーザを作成しましょう。  
-今回のハンズオンでは、ATPのユーザとパスワードを環境変数としてアプリケーションに読み込ませるように設定しています。  
-  
-ここでは、ATPのユーザとパスワードを環境変数として作成するためにSecretリソースを作成します。  
+[ゴールを確認する](#ゴールを確認する)で示した図でいうと、赤点線枠(![2-032.jpg](2-032.jpg))の部分を作成していきます。  
+
+![3-001.jpg](3-001.jpg)
+
+今回のハンズオンでは、OCI Service Operator for Kubernetes(OSOK)を利用してATPのプロビジョニングを行います。  
+OSOKは、Kubernetes APIおよび[Kubernetes Operatorパターン](https://kubernetes.io/ja/docs/concepts/extend-kubernetes/operator/)を使用してOracle Cloud Infrastructureリソースを作成、管理および接続できるオープン・ソースのKubernetesアドオンです。  
+現時点で対応しているサービスは以下の通りです。(今後も続々対応サービスを追加予定です)
+
+- Autonomous Database
+- MySQL Database
+- Streaming
+
+**OCI Service Operator for Kubernetes(OSOK)について**  
+OCI Service Operator for Kubernetes(OSOK)については[こちら](https://docs.oracle.com/ja-jp/iaas/Content/ContEng/Tasks/contengaddingosok.htm#contengaddingosok)および[GitHub](https://github.com/oracle/oci-service-operator)をご確認ください。
+{: .notice--info}
+
+OSOKを利用するにはOperator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)が必要になるため、まずはそちらのインストールから行います。 
+
+**Operator SDKとオペレータ・ライフサイクル・マネージャ(OLM)について**  
+Operator SDKは、Kubernetes Operatorを効率的に開発するためのSDKになり、オペレータ・ライフサイクル・マネージャ(OLM)はOperatorのライフサイクルを管理するための仕組みになります。  
+Operator SDKについては[こちら](https://sdk.operatorframework.io/)、オペレータ・ライフサイクル・マネージャ(OLM)については[こちら](https://olm.operatorframework.io/)をご確認ください。  
+{: .notice--info}
+
+**[3-5. 【オプション】microprofile-config.propertiesの更新](#3-5-オプションmicroprofile-configpropertiesの更新)について**  
+こちらは、オプション手順になっており、[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でATPのデータベース名(`dbName`)を変更する方向けの手順です。(主に集合ハンズオンなど複数人で同一環境を共有されている皆様向けです)  
+それ以外の方は、スキップしてください。
+{: .notice--warning}
+
+**[3-6. 【オプション】Oracle SQL Developerを利用したサンプルデータ登録](#3-6-オプションoracle-sql-developerを利用したサンプルデータ登録)について**  
+こちらは、オプション手順になっており、[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)のOracle SQL Developer向け手順です。  
+[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)にて、SQL Developer Web(ブラウザ版)でのサンプルデータ登録が上手くいかない方はこちらの手順を実施してサンプルデータ登録を行ってください。  
+それ以外の方は、この手順はスキップしてください。  
+{: .notice--warning}
+
+### 3-1. Operator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)のインストール
+
+まずは、Operator SDKのインストールを行います。  
+
+[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。  
+
+```sh
+export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+```
+
+```sh
+export OS=$(uname | awk '{print tolower($0)}')
+```
+
+```sh
+export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.12.0
+```
+
+```sh
+curl -LO ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
+```
+
+```sh
+ls -l
+```
+
+ここで、`operator-sdk_linux_amd64`というバイナリがダウンロードできていることを確認します。  
+ここからはバイナリの検証を行うためのステップを実行します。  
+
+```sh
+gpg --keyserver keyserver.ubuntu.com --recv-keys 052996E2A20B5C7E
+```
+
+以下のように出力されます。
+
+```sh
+gpg: requesting key A20B5C7E from hkp server keyserver.ubuntu.com
+gpg: /home/takuya_nii/.gnupg/trustdb.gpg: trustdb created
+gpg: key A20B5C7E: public key "Operator SDK (release) <cncf-operator-sdk@cncf.io>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+```
+
+検証に必要なファイルを取得します。　　
+
+```sh
+curl -LO ${OPERATOR_SDK_DL_URL}/checksums.txt
+```
+
+```sh
+curl -LO ${OPERATOR_SDK_DL_URL}/checksums.txt.asc
+```
+
+```sh
+ls -l
+```
+
+ここで、`checksums.txt.asc`と`checksums.txt`というファイルがダウンロードできていることを確認します。  
+
+```sh
+gpg -u "Operator SDK (release) <cncf-operator-sdk@cncf.io>" --verify checksums.txt.asc
+```
+
+以下のような結果が出力されます。
+
+```sh
+gpg: Signature made Thu 09 Sep 2021 04:59:50 PM UTC using RSA key ID BF9886DB
+gpg: Good signature from "Operator SDK (release) <cncf-operator-sdk@cncf.io>"
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: xxxx xxxx xxxx xxxx xxxx  xxxx xxxx xxxx xxxx xxxx
+     Subkey fingerprint: xxxx xxxx xxxx xxxx xxxx  xxxx xxxx xxxx xxxx xxxx
+```
+
+検証結果を確認します。  
+
+```sh
+grep operator-sdk_${OS}_${ARCH} checksums.txt | sha256sum -c -
+```
+
+以下のように出力されれば、検証は問題ありません。
+
+```sh
+operator-sdk_linux_amd64: OK
+```
+
+最後に実行権限を付与します。
+
+```sh
+chmod +x operator-sdk_${OS}_${ARCH} && mv operator-sdk_${OS}_${ARCH} operator-sdk
+```
+
+これでOperator SDKのインストールは完了です。  
+
+続いて、オペレータ・ライフサイクル・マネージャ(OLM)のインストールを行います。  
+
+以下のコマンドを実行します。
+
+```sh
+./operator-sdk olm install
+```
+
+以下のように出力されれば問題ありません。
+
+```sh
+~~~~~
+NAME                                            NAMESPACE    KIND                        STATUS
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+operatorconditions.operators.coreos.com                      CustomResourceDefinition    Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+operators.operators.coreos.com                               CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+olm                                                          Namespace                   Installed
+operators                                                    Namespace                   Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+olm-operator                                    olm          Deployment                  Installed
+catalog-operator                                olm          Deployment                  Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
+```
+
+以上で、オペレータ・ライフサイクル・マネージャ(OLM)のインストールは完了です。  
+
+### 3-2. ATPのプロビジョニング
+
+ここでは、ATPのプロビジョニングを行います。  
+
+まずは、以下のコマンドを実行してOKEに対してOSOKオペレーター(OKEからATPを操作するためのKubernetes Operator)のインストールを行います。  
+
+```sh
+./operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.0.0
+```
+
+以下のように出力されれば問題ありません。
+
+```sh
+INFO[0016] Successfully created registry pod: iad-ocir-io-oracle-oci-service-operator-bundle-1-0-0 
+INFO[0017] Created CatalogSource: oci-service-operator-catalog 
+INFO[0018] OperatorGroup "operator-sdk-og" created      
+INFO[0019] Created Subscription: oci-service-operator-v1-0-0-sub 
+INFO[0023] Approved InstallPlan install-bgmnh for the Subscription: oci-service-operator-v1-0-0-sub 
+INFO[0023] Waiting for ClusterServiceVersion "default/oci-service-operator.v1.0.0" to reach 'Succeeded' phase 
+INFO[0024]   Waiting for ClusterServiceVersion "default/oci-service-operator.v1.0.0" to appear 
+INFO[0045]   Found ClusterServiceVersion "default/oci-service-operator.v1.0.0" phase: InstallReady 
+INFO[0046]   Found ClusterServiceVersion "default/oci-service-operator.v1.0.0" phase: Installing 
+INFO[0070]   Found ClusterServiceVersion "default/oci-service-operator.v1.0.0" phase: Succeeded 
+INFO[0070] OLM has successfully installed "oci-service-operator.v1.0.0" 
+```
+
+次にATPをプロビジョニングするためのManifestを作成します。  
+
+まずは、ATPの管理者パスワードをSecretリソースとして作成します。  
+今回は"okehandson__Oracle1234"としてパスワードを作成します。  
 
 **Secretについて**  
 Secretリソースについては[こちら](https://kubernetes.io/docs/concepts/configuration/secret/)をご確認ください。
 {: .notice--info}
 
-今回は、ATPのユーザを"handson"、パスワードを"Welcome12345"として作成します。
+```sh
+kubectl create secret generic admin-passwd --from-literal=password=okehandson__Oracle1234
+```
 
-    kubectl create secret generic customized-db-cred \
-    --from-literal=user_name=handson \
-    --from-literal=password=Welcome12345
+次にWalletファイルのパスワードをSecretリソースとして作成します。  
+今回は管理者パスワードと同じ"okehandson__Oracle1234"としてパスワードを作成します。  
+
+```sh
+kubectl create secret generic wallet-passwd --from-literal=walletPassword=okehandson__Oracle1234
+```
 
 {% capture notice %}**Secretを誤って作成してしまった場合**  
 誤って作成してしまった場合等に削除する場合は以下のコマンドを実行。
@@ -652,394 +830,166 @@ kubectl delete secret <secret名>
   {{ notice | markdownify }}
 </div>
 
+今回は以下のようなManifestを用意しました。  
+これはユースケースに応じて柔軟に変更することができます。  
 
-以上で、ATPのユーザとパスワードの設定は完了です。
-
-7.ATPへのサンプルデータ登録
-------
-このステップでは、Visual Builder Studioのビルド機能（CI/CD）を使用して、いくつかのテーブルを作成し、ATPにサンプルデータを登録します。  
-
-下記手順で実行します。
-
-1. ビルドジョブを作成、実行し、データベースオブジェクトを作成する
-2. SQL Developer Webを介して検証する
-
-### 7-1. ビルドジョブを作成と実行
-
-Visual Builder Studioで、「ビルド」に移動し、「＋ジョブを作成」ボタンをクリックします。
-
-![](1300.jpg)
-
-下記項目を入力し、「作成」ボタンをクリックします。
-
-key|value
--|-
-名前|CreateDBObjects
-テンプレート|OKE
-
-![](1310.jpg)
-
-gitソースリポジトリを追加します。「Git追加」から「git」を選択します。
-
-![](1320.jpg)
-
-下記項目を入力します。
-
-+ リポジトリ：oke_atp_workshopを選択する
-
-![](1321.jpg)
-
-次にステップを追加します。「ステップ」をクリックし、「ステップの追加」から「SQLcl」を選択します。
-
-![](1340.jpg)
-
-下記項目を入力して、「保存」ボタンをクリックします。
-
-key|value
--|-
-ユーザー名|データベースユーザ名。今回は"admin"
-パスワード|データベースパスワードを設定。今回は"TFWorkshop__2000"
-資格証明ファイル|ウォレットファイルを指定。今回は"./Wallet_tfOKEATPDB.zip"
-接続文字列|データベースの名前＆"_high"/"_low"などで構成される接続文字列。今回は"tfOKEATPDB_HIGH"
-SQLファイル・パス|作成スクリプトを含むsqlファイルのパス。今回は"sql/create_schema.sql"
-
-**受講者の方へ**  
-トライアル環境以外の環境をお使いの方は、ATPプロビジョニング時にATPのデータベース名を変更している場合があります。  
-その場合は、接続文字列"tfOKEATPDB_HIGH"を変更する必要があります。
-"_HIGH"以前の文字列がデータベース名になっておりますので、ご自身が変更したデータベース名に合わせてください。  
-例えば、ATPデータベース名が"tfOKEATPDB1234"の場合は、接続識別子は"tfOKEATPDB1234_HIGH"となります。
-{: .notice--warning}
-
-**受講者の方へ**  
-"sql/create_schema.sql"では、ATPに対して"handson"という名前のスキーマ(ユーザ)を作成しています。  
-この後の手順でデプロイするアプリケーションでは"sql/create_schema.sql"によって作成されるスキーマのテーブルを使用します。
+**設定可能なパラメータについて**  
+ATPプロビジョニング時に設定可能なパラメータについては[こちら](https://github.com/oracle/oci-service-operator/blob/main/docs/adb.md#autonomous-databases-service)をご確認ください。
 {: .notice--info}
 
-![](1350.jpg)
+Manifestファイルを開き、`<ご自身のコンパートメントOCID>`の部分を[0-5. コンパートメントOCIDの確認](#0-5-コンパートメントocidの確認)で確認したコンパートメントOCIDに置き換えてください。  
 
-「今すぐビルド」ボタンをクリックします。
+{% capture notice %}**Manifestファイルの`dbName`について**  
+Manifestファイルの`dbName`はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`okeatp01`や`okeatptn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。  
+`dbName`は英数字のみで設定可能です。記号等は含めないでください。
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
-これが環境内で最初のビルドジョブである場合、ビルドエンジンの起動が完了するまでに最大15分程度かかる場合があります。
+```sh
+vim oke-handson/k8s/atp/atp.yaml 
+```
 
-**受講者の方へ**  
-ビルドエンジンの起動に時間がかかるので、先に[Dockerイメージを作成とOCIRへの登録](#8dockerイメージを作成とocirへの登録)を実施してください。
-{: .notice--info}
+```yaml
+apiVersion: oci.oracle.com/v1beta1
+kind: AutonomousDatabases
+metadata:
+  name: oke-atp-handson-db
+spec:
+  compartmentId: <ご自身のコンパートメントOCID>
+  displayName: oke-atp-handson-db
+  dbName: okeatp
+  dbWorkload: OLTP
+  isDedicated: false
+  dbVersion: 19c
+  dataStorageSizeInTBs: 1
+  cpuCoreCount: 1
+  adminPassword:
+    secret:
+      secretName: admin-passwd
+  isAutoScalingEnabled: true
+  isFreeTier: false
+  licenseModel: LICENSE_INCLUDED
+  wallet:
+    walletName: okeatp
+    walletPassword:
+      secret:
+        secretName: wallet-passwd
+```
 
-![](1360.jpg)
+OKEに対してManifestを適用します。  
 
-ビルド途中または完了、「ビルド・ログ」アイコンをクリックして、ログを確認できます。
+```sh
+kubectl apply -f oke-handson/k8s/atp/atp.yaml 
+```
 
-![](1370.jpg)
+以下のコマンドを実行すると、状況が確認できます。  
+`status`が`Active`になるまでしばらくかかるので待機します。  
+`-w`(`--watch`)は状態を監視しておくためのオプションになります。  
 
-成功すると、ログの最後に"Status:DONE Result:SUCCESSFUL"と表示されます。また、SQL実行の詳細な内容を確認できます。
+```sh
+kubectl get autonomousdatabases -w
+```
 
-![](1380.jpg)
+以下のように出力されればプロビジョニングは完了です。
 
-ビルドマシンのログも確認できます。
+```sh
+NAME              DBWORKLOAD   STATUS   AGE
+oke-atp-handson-db   OLTP               12s
+oke-atp-handson-db   OLTP      Active   71s
+```
 
-Visual Builder Studioで、「組織」⇒「仮想マシンのビルド」⇒「VMのビルド」で使用したテンプレートを選択して、右側のメニューアイコンから「ログの表示」を選択します。
+### 3-3. サンプルデータの登録
 
-![](1390.jpg)
+ここでは、SQL Developer Webを利用して、ATPにサンプルデータを登録します。  
 
-仮想マシンのログが表示されます。
+「Oracle Database」メニューの「Autonomous Database」カテゴリにある「Autonomous Transaction Processing」をクリックします。  
 
-![](1400.jpg)
+![3-011.jpg](3-011.jpg)
 
-これで、サンプルデータの登録は完了しました。
+[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でプロビジョニングした![3-012.jpg](3-012.jpg)をクリックします。  
 
-### 7-2. サンプルデータの確認
+「データベース・アクション」ボタンをクリックします。
 
-SQL Developer Webを使用してATPに接続し、オブジェクトが正しく作成されたことを確認できます。
+![3-002.jpg](3-002.jpg)
 
-OCIのATPインスタンスの詳細⇒「サービス・コンソール」ボタンをクリックします。
+下記項目を入力し、「サインイン」をクリックします。
 
-![](1410.jpg)
-
-「Development」(日本語の場合は「開発」)をクリックします。
-
-![](1420.jpg)
-
-「データベース・アクション」をクリックします。
-
-![](1430.jpg)
-
-下記項目を入力し、「次」をクリックします。
-+ Username：ATPデータベースのユーザー名。今回は"admin"
-
-![](1431.jpg)
-
-下記項目を入力し、「Sign in」をクリックします。
-
-key|value
+key|value|説明
 -|-
 Username|ATPデータベースのユーザー名。今回は"admin"
-Password|ATPデータベースのパスワード。今回は"TFWorkshop__2000"
+Password|ATPデータベースのパスワード。今回は"okehandson__Oracle1234"|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード
 
-![](1440.jpg)
+![3-006.jpg](3-006.jpg)
 
 「SQL」をクリックします。
 
-![](1432.jpg)
+![3-007.jpg](3-007.jpg)
 
-ログインしたら、画面右の"ナビゲータ"タブをクリックし、[1.ビルドジョブを作成、実行し、データベースオブジェクトを作成する](#8-3-ビルドジョブの実行)で作成した"HANDSON"スキーマを選択します。
+ログインしたら、ワークシート内にレポジトリ内(GitHubからcloneしたレポジトリ、コード・レポジトリからcloneしたレポジトリ、どちらでもOKです)の`sql/create_schema.sql`に定義されているDDLを以下のコマンドで出力し、コピー&ペーストした後にスクリプト(赤枠のボタン)を実行します。
 
-![](2005.jpg)
+```sh
+cat oke-handson/sql/create_schema.sql 
+```
+
+![3-008.jpg](3-008.jpg)
+
+実行後、ブラウザを一度再読み込み(更新)し、「ナビゲータ」メニュから、上記DDLで作成した「HANDSON」を選択します。  
+
+![3-009.jpg](3-009.jpg)
 
 SQL Developer WebのWorksheetで`select * from HANDSON.ITEMS`を入力して、緑色の矢印「文の実行」アイコンをクリックします。
 
 ITEMSテーブルの結果が表示されます。
 
-![](1450.jpg)
+![3-010.jpg](3-010.jpg)
 
-これで、サンプルデータの登録および確認は完了しました。
+これで、サンプルデータの登録は完了しました。  
 
-8.Dockerイメージを作成とOCIRへの登録
----------
-このステップでは、Visual Builder Studio上でJava Webアプリケーション（データソースとしてATPデータベースを使用）のDockerイメージを作成する方法を説明します。
+### 3-4. アプリケーションが利用するデータベースのユーザ/パスワードの作成
 
-今回は、Oracle JETとHelidonで作成したサンプルアプリケーションを使用してコンテナイメージを作成します。
+ここでは、サンプルアプリケーションが利用するデータベースユーザとパスワードを作成します。  
 
-**受講者の方へ**  
-Oracle JETは、Oracleが開発するフロントエンドUIを迅速に構築するためのJavaScriptベースのツールキットです。  
-Helidonは、Oracleが提供するオープンソースのマイクロサービス・アプリケーションフレームワークです。  
-[Oracle JET](https://www.oracle.com/technetwork/jp/developer-tools/jet/overview/index.html)と[Helidon](https://helidon.io/#/)についての詳細はそれぞれのリンクをご確認ください.
-{: .notice--info}
+[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)では、デフォルトユーザとして"Admin"ユーザでデータベースが作成されます。  
 
-以下手順で実行します。
+ほとんどの場合、アプリケーションがデータベースを利用する際は"Admin"ではなく、別ユーザを作成します。  
+今回も同様に、アプリケーションがATPを利用するためのデータベースユーザを作成しましょう。  
+今回のハンズオンでは、ATPのユーザとパスワードを環境変数としてアプリケーションに読み込ませるように設定しています。  
+(この設定については、[8.【オプション】今回利用したアプリケーションに関する補足](#8オプション今回利用したアプリケーションに関する補足)で解説しているので、興味がある方は、ご確認ください)
+  
+ここでは、ATPのユーザとパスワードを環境変数として作成するためにSecretリソースを作成します。  
 
-1. OCIRリポジトリへの接続を構成する
-2. イメージを作成・プッシュするためのDockerビルドジョブを構成する
-3. ビルドジョブを実行する
+今回は、ATPのユーザを"handson"、パスワードを"Welcome12345"として作成します。  
+このユーザ名とパスワードは先ほど実行したDDLに定義されています。  
 
-### 8-1. OCIRリポジトリへの接続の構成
+```sh
+kubectl create secret generic customized-db-cred \
+--from-literal=user_name=handson \
+--from-literal=password=Welcome12345
+```
 
-Visual Builder Studioで「Docker」に移動して、「外部レジストリのリンク」ボタンをクリックします。
+これでアプリケーション用のデータベースユーザ名とパスワードの作成は完了です。  
 
-![](1500.jpg)
+### 3-5. 【オプション】`microprofile-config.properties`の更新
 
-下記項目を入力して、「作成」ボタンをクリックします。
-
-key|value
--|-
-レジストリ名|"WorkshopOCIR"
-レジストリURL|`https://<リージョンコード>.ocir.io`
-説明|"OKE ATP"
-認証|`基本`を選択
-ユーザー名|`<オブジェクト・ストレージ・ネームスペース>/oracleidentitycloudservice/<ユーザ名>`
-パスワード|認証トークン
-
-リージョンコードについては、ご自身の環境に合わせて設定してください。今回は"iad"を設定します。
-
-リージョン  |リージョンコード
--|-
-ap-tokyo-1|nrt
-ap-osaka-1|kix
-ap-melbourne-1|mel
-eu-amsterdam-1|ams
-me-jeddah-1|jed
-us-ashburn-1|iad
-us-phoenix-1|phx
-ap-mumbai-1|bom
-ap-seoul-1|icn
-ap-sydney-1|syd
-ca-toronto-1|yyz
-eu-frankfurt-1|fra
-eu-zurich-1|zrh
-sa-saopaulo-1|gru
-uk-london-1|lhr
-
-![](1510.jpg)
-
-成功すると、外部レジストリの情報が表示されます。
-
-![](1520.jpg)
-
-### 8-2. ビルドジョブの構成
-
-「ビルド」に移動して、「＋ジョブの作成」をクリックします。
-
-![](1530.jpg)
-
-下記項目を入力して、「作成」ボタンをクリックします。
-
-key|value
--|-
-名前|ジョブ名。今回はJavaDockerOCIR
-説明|ジョブの説明。"Build and push Docker image to OCIR"
-テンプレート|OKE
-
-![](1540.jpg)
-
-右側の「Git追加」から「Git」を選択します。
-
-![](1550.jpg)
-
-下記項目を入力します。
-
-次のステップを追加します。
-
-key|value
--|-
-リポジトリ|oke_atp_workshopを選択する
-SCMコミット時に自動的にビルドを実行|チェックオンにする
-
-![](1560.jpg)
-
-「ステップ」タブに移動し、「ステップの追加」から「Docker」⇒「Dockerログイン」を選択します。
-
-![](1590.jpg)
-
-下記項目を入力します。
-
-+ レジストリ・ホスト："WorkshopOCIR"
-
-![](1610.jpg)
-
-「ステップの追加」から「Docker」⇒「Dockerビルド」を選択します。
-
-![](1620.jpg)
-
-下記項目を入力します。
-
-key|value
--|-
-レジストリ・ホスト|"WorkshopOCIR"
-イメージ名|`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
-
-**受講者の方へ**  
-トライアル環境以外の環境をお使いの方は、イメージが他のユーザの方と重複しないように、語尾に任意の文字列(名前のイニシャル等)を追加するなどして重複しない名前にしてください。
+**本手順について**  
+この手順は、[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でATPのデータベース名(`dbName`)を変更した方向けの手順です。  
+それ以外の方はこの手順はスキップしてください。  
 {: .notice--warning}
 
-![](1630.jpg)
+[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で変更したATPのデータベース名(`dbName`)について、サンプルアプリケーション側も対応させる必要があります。  
+ここでは、その手順を実施します。  
 
-「ステップの追加」から「Docker」⇒「Dockerプッシュ」を選択します。
+サンプルアプリケーションには、ATPのデータベース名を`microprofile-config.properties`という設定ファイルに定義しています。  
+こちらを更新します。  
 
-![](1632.jpg)
-
-下記項目を入力します。
-
-key|value
--|-
-レジストリ・ホスト|"WorkshopOCIR"
-イメージ名|`<オブジェクト・ストレージ・ネームスペース>/workshop/okeatpapp`
-
-![](1634.jpg)
-
-「保存」ボタンをクリックします。
-
-![](1640.jpg)
-
-**受講者の方へ**  
-ここまでの手順が完了したら、一度[ATPへのサンプルデータ登録](#7-2-サンプルデータの確認)に戻り、サンプルデータの確認を実施してください。  
-ジョブが完了していない場合は、完了するまでお待ちください。
-{: .notice--info}
-
-### 8-3. ビルドジョブの実行
-
-「今すぐビルド」ボタンをクリックします。
-
-![](1650.jpg)
-
-成功すると、ステータスが![](status_success.jpg)になります。
-
-![](1660.jpg)
-
-OCIコンソールから、"開発者サービス"⇒"レジストリ(OCIR)"に移動するとokeatpappのイメージがプッシュされたことを確認できます。
-
-![](1691.jpg)
-
-![](1690.jpg)
-
-最後にプッシュしたイメージをpullできるようにパブリックにします。  
-プッシュしたイメージを選択し、"アクション"をクリックします。  
-"パブリックに変更"をクリックします。
-![](1900.jpg)
-
-これで、アプリケーションをイメージに作成して、OCIRへの登録は完了しました。
-
-9.OKEクラスタへのデプロイ
------
-このステップでは、新しいビルドジョブを作成して、セットアップしたOKEクラスタにアプリケーションをデプロイします。
-
-以下の手順で実行します。
-
-1. yamlファイルの編集
-2. OKEクラスタにアプリケーションをデプロイするビルドジョブを構成する
-3. ビルドジョブを実行する
-4. デプロイしたアプリケーションを検証する
-
-
-### 9-1. yamlファイルの編集
-
-アプリケーションのデプロイを行うにあたって、[Dockerイメージを作成とOCIRへの登録](#8dockerイメージを作成とocirへの登録)にて
-登録したイメージをyamlに設定します。  
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。
-
-**受講者の方へ**  
-別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。
-{: .notice--info}
-
-oke-atp-workshopディレクトリに移動します。  
-直下にある"oke-atp-helidon.yaml"をviなどで開きます。
-{% highlight yaml linenos %}
-apiVersion: v1
-kind: Service
-metadata:
-    name: oke-atp-helidon
-    namespace: default
-spec:
-    type: LoadBalancer
-    ports:
-    - port: 80
-    protocol: TCP
-    targetPort: 8080
-    selector:
-    app: oke-atp-helidon
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-    name: oke-atp-helidon
-spec:
-    selector:
-    matchLabels:
-        app: oke-atp-helidon
-    replicas: 2
-    template:
-    metadata:
-        labels:
-        app: oke-atp-helidon
-        version: v1
-    spec:
-        # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
-        # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
-        # can read them and use it for connecting to ATP.
-        containers:
-        - name: oke-atp-helidon
-          image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
-          imagePullPolicy: Always
-(以下略)
-{% endhighlight %}
-
-35行目にpullしてくるイメージのレジストリが設定されています。  
-この行を[Dockerイメージを作成とOCIRへの登録](#8dockerイメージを作成とocirへの登録)にて登録したイメージに設定します。  
-`<リージョンコード>`、`<オブジェクト・ストレージ・ネームスペース>`の部分をご自身の値に書き換えてください。  
-
-`<リージョンコード>`については、[OCIRリポジトリへの接続を構成する](#8-1-ocirリポジトリへの接続の構成)をご確認ください。  
-また、イメージ名については、[OCIRリポジトリへの接続を構成する](#8-1-ocirリポジトリへの接続の構成)にて指定したものになります。
+```sh
+vim oke-handson/src/main/resources/META-INF/microprofile-config.properties
+```
 
 ```yaml
-image: <リージョンコード>.ocir.io/<オブジェクト・ストレージ・ネームスペース>/workshop/<ご自身が付与したイメージ名>:latest
-```
-
-次に、サンプルアプリケーションの設定ファイルに定義している接続識別子を変更します。  
-
-サンプルアプリケーションの設定ファイルを開きます。
-
-```
-vim src/main/resources/META-INF/microprofile-config.properties 
-```
-{% highlight yaml linenos %}
 #
 # Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
 #
@@ -1056,342 +1006,868 @@ vim src/main/resources/META-INF/microprofile-config.properties
 # limitations under the License.
 #
 
-# Application properties. This is the default greeting
-app.greeting=Hello
-
 # Microprofile server properties
 server.port=8080
 server.host=0.0.0.0
 
-javax.sql.DataSource.workshopDataSource.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@sampledb_high?TNS_ADMIN=/db-demo/creds
-javax.sql.DataSource.workshopDataSource.maximumPoolSize=5
-javax.sql.DataSource.workshopDataSource.minimumIdle=2
+javax.sql.DataSource.test.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
 
-# src/main/resources/web in your source tree
 server.static.classpath.location=/web
-# default is index.html
 server.static.classpath.welcome=index.html
-# static content path - default is "/"
-# server.static.classpath.context=/static-cp
-{% endhighlight %}
-
-25行目の設定値"javax.sql.DataSource.workshopDataSource.dataSource.url"の値の接続識別子部分"@sampledb_high"をATPのデータベース名に合わせて修正します。  
-今回は、ATPデータベース名を"tfOKEATPDB"にしているため、以下のように修正します。
-
-```
-jdbc:oracle:thin:@tfokeatpdb_high?TNS_ADMIN=/db-demo/creds
 ```
 
-**受講者の方へ**  
-集合ハンズオンなど同一の環境でハンズオンを実施されている方は、前手順でデータベース名が重複しない様に語尾に任意の文字列(名前のイニシャル等)を追加しておりますので、
-そちらのデータベース名に合わせて修正してください。
-{: .notice--warning}
+11行目
 
-レポジトリのトップディレクトリに戻り、修正したmanifestをレポジトリにpushします。
+```yaml
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
 ```
-cd ~/oke_atp_workshop/
-```
-```
+
+`@okeatp_high?TNS_ADMIN=/db-demo/creds`部分を`@<ご自身で決めたデータベース名>_high?TNS_ADMIN=/db-demo/creds`に変更します。  
+
+例えば、以下のようなイメージです。  
+
+```yaml
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp01_high?TNS_ADMIN=/db-demo/creds
+``` 
+
+リポジトリへCommitします。　　
+
+```sh
 git add .
 ```
+
+```sh
+git commit -m "データベース名を変更"
 ```
-git commit -m "コンテナレジストリの修正" 
-```
-```
+
+```sh
 git push
 ```
 
-### 9-2. ビルドジョブを構成
+これで、`microprofile-config.properties`の更新は完了です。  
 
-Visual Builder Studioで、「ビルド」に遷移して、「＋ジョブの作成」ボタンをクリックします。
+### 3-6. 【オプション】Oracle SQL Developerを利用したサンプルデータ登録
 
-![](1700.jpg)
+**本手順について**  
+この手順は、[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)のOracle SQL Developer向け手順です。  
+[3-3. サンプルデータの登録](#3-3-サンプルデータの登録)にて、SQL Developer Web(ブラウザ版)でのサンプルデータ登録が上手くいかない方はこちらの手順を実施してサンプルデータ登録を行ってください。  
+それ以外の方は、この手順はスキップしてください。  
+{: .notice--warning}
 
-下記項目を入力して、「作成」ボタンをクリックします。
+まず、SQL Developerがインストールされていない方は、ダウンロードを実施します。  
+Oracle SQL Developerを既にインストール済みの方は、それをご利用いただいても問題ありません。  
 
-key|value
+まずは、[こちら](https://www.oracle.com/jp/tools/downloads/sqldev-downloads.html)からインストーラーをダウンロードします。  
+Windowsの方は、ダウンロード後、 解凍したファイルの直下にある`sqldeveloper.exe`を実行してください。(別途JDKのインストールが必要になる場合があります)  
+macOSの方は、解凍して出力される実行ファイルを実行してください。  
+
+次に、Oracle SQL DeveloperからATPに接続するためのWalletファイルをダウンロードします。  
+
+「Oracle Database」メニューの「Autonomous Database」カテゴリにある「Autonomous Transaction Processing」をクリックします。  
+
+![3-011.jpg](3-011.jpg)
+
+[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でプロビジョニングした![3-012.jpg](3-012.jpg)をクリックします。
+
+![3-013.jpg](3-013.jpg)
+
+![3-014.jpg](3-014.jpg)をクリックします。  
+
+![3-015.jpg](3-015.jpg)
+
+![3-016.jpg](3-016.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|説明
 -|-
-名前|ジョブの名前。今回は"OKEDeploy"
-説明|ジョブの説明。今回は"Deploy application to OKE"
-テンプレート|OKE
+パスワード|okehandson__Oracle1234|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成したWalletパスワード
 
-![](1710.jpg)
+![3-017.jpg](3-017.jpg)
 
-「Git追加」から「Git」を選択します。
+![3-018.jpg](3-018.jpg)をクリックして、ダウンロードします。  
 
-![](1720.jpg)
+次に、Oracle SQL Developerを開きます。  
 
-下記項目を入力します。
+![3-019.jpg](3-019.jpg)
 
-次のステップを追加します。
+左上にある![3-020.jpg](3-020.jpg)をクリックします。  
 
-+ リポジトリ：oke_atp_workshopを選択する
+以下の項目を入力します。  
 
-![](1730.jpg)
-
-「ステップ」タブに移動し、「ステップの追加」から「Docker」⇒「Dockerログイン」を選択します。
-
-![](1740.jpg)
-
-下記項目を入力します。
-
-+ レジストリ・ホスト：入力したレジストリ名を選択する。今回は"WorkshopOCIR"
-
-![](1750.jpg)
-
-「ステップの追加」から「OCIcli」を選択します。
-
-![](1760.jpg)
-
-下記項目を入力します。
-
-key|value
+key|value|説明
 -|-
-ユーザーOCID|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したユーザーOCID
-フィンガープリント|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したAPI Signingキーのフィンガープリント
-テナンシ|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したテナンシOCID
-秘密キー|[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons)でダウンロードしたAPI秘密鍵の内容を貼り付け
-リージョン|リージョン識別子。自身の環境に合わせて選択。今回は、"us-ashburn-1"
+Name|oke-handson
+認証タイプ| デフォルト
+ユーザ名 | admin
+パスワード | okehandson__Oracle1234|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード
+接続タイプ | クラウド・ウォレット
+構成ファイル | ダウンロードしたWalletファイルを指定
 
-![](1770.jpg)
+![3-021.jpg](3-021.jpg)
 
-「ステップの追加」から「UNIXシェル」を選択します。
+![3-022.jpg](3-022.jpg)をクリックします。  
 
-![](1780.jpg)
+接続が完了すると以下のような画面が表示されます。  
 
-下記項目を入力します。
+![3-023.jpg](3-023.jpg)
 
-2行目の`<OKEクラスターOCID\>`と`<リージョン識別子\>`は自身の値に置き換えてください。
+ワークシート内にレポジトリ内(GitHubからcloneしたレポジトリ、コード・レポジトリからcloneしたレポジトリ、どちらでもOKです)の`sql/create_schema.sql`に定義されているDDLを以下のコマンドで出力し、コピー&ペーストした後にスクリプト(赤枠のボタン)を実行します。
 
-```
-mkdir -p $HOME/.kube
-oci ce cluster create-kubeconfig --cluster-id <OKEクラスターOCID> --file $HOME/.kube/config --region <リージョン識別子> --token-version 2.0.0
-export KUBECONFIG=$HOME/.kube/config
-kubectl version
-kubectl config view
-kubectl get nodes
-kubectl apply -f oke-atp-helidon.yaml
-kubectl rollout restart deployment/oke-atp-helidon
-kubectl get services oke-atp-helidon
-kubectl get pods
-kubectl describe pods
+```sh
+cat oke-handson/sql/create_schema.sql 
 ```
 
-**受講者の方へ**  
-この手順で設定するリージョン識別子については、OKEをプロビジョニングしたリージョンのリージョン識別子を使用してください。
+![3-024.jpg](3-024.jpg)
+
+以下のように出力されていれば、問題ありません。  
+
+![3-025.jpg](3-025.jpg)
+
+これで、Oracle SQL Developerを利用したサンプルデータ登録は完了です。  
+
+4.CIパイプラインの構築
+---------
+
+ここでは、OCI DevOpsを利用して、CIパイプラインの構築とGitレポジトリのコミット(プッシュ)を契機にCIパイプラインを起動するためのトリガーの作成を行います。  
+
+[ゴールを確認する](#ゴールを確認する)で示した図でいうと、赤点線枠(![2-032.jpg](2-032.jpg))の部分を作成していきます。  
+
+![4-039.jpg](4-039.jpg)
+
+### 4-1. build_spec.yamlの確認
+
+まずは、ビルド定義を行う設定ファイルの確認を行います。  
+
+OCI DevOpsでは、Build Specと呼ばれるビルド定義をyaml形式のファイルに記述します。  
+このファイルでは、コンテナやアプリケーションのビルド、テストなど任意のプロセスを実行することができます。  
+
+今回のハンズオンでは、事前に以下のようなファイルを用意しました。  
+
+```yaml
+version: 0.1
+component: build                    
+timeoutInSeconds: 10000             
+runAs: root                         
+shell: bash                        
+env:  
+  exportedVariables:
+    - BUILDRUN_HASH               
+   
+steps:
+  - type: Command
+    name: "Export variables"
+    timeoutInSeconds: 40
+    command: |
+      BUILDRUN_HASH=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 7 | head -n 1`
+      echo "BUILDRUN_HASH: " ${BUILDRUN_HASH}
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 40
+        runAs: root
+  - type: Command
+    name: "Docker Build"
+    command: |
+      docker build -t handson_image .
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured docker build"
+        timeoutInSeconds: 60
+        runAs: root
+
+outputArtifacts:
+  - name: handson_image
+    type: DOCKER_IMAGE
+    location: handson_image:latest
+```
+
+ここでは、詳細な解説はしませんが、ポイントだけ抑えておきます。  
+
+```yaml
+env:  
+  exportedVariables:
+    - BUILDRUN_HASH  
+```
+
+冒頭のこの部分は、後続のCIおよびCDパイプラインで利用可能な変数を定義しています。  
+後続の手順で何度か`${BUILDRUN_HASH}`という変数が出てきますので、この変数が登場したら、ここで定義した変数だと思ってください。  
+今回は、Dockerイメージのタグ付けにこの変数を利用します。  
+
+今回のビルドプロセス(yamlファイル内の`step`)としては以下の2点に分かれています。
+
+- BUILDRUN_HASHの生成
+- Dockerイメージのビルド
+
+```yaml
+outputArtifacts:
+  - name: handson_image
+    type: DOCKER_IMAGE
+    location: handson_image:latest
+```
+
+最後尾のこの部分は、ビルドしたDockerイメージを`handson_image`という名前で、後続のパイプラインで利用するためにエクスポートしています。  
+
+このように、今回利用するビルド定義は比較的シンプルなものです。  
+
+**ビルド定義について**  
+ビルド定義に関する詳細は、[こちら](https://docs.oracle.com/ja-jp/iaas/Content/devops/using/build_specs.htm)をご確認ください。
 {: .notice--info}
 
-![](1790.jpg)
+### 4-2. CIパイプラインの構築
 
-「保存」ボタンをクリックします。
+ここからは、CIパイプラインの構築を行います。
 
-![](1800.jpg)
+まず、ビルドしたコンテナイメージをOCIRにpushする際に利用するビルド成果物(今回はコンテナイメージ)の定義を行います。  
 
-### 9-3.ビルドパイプラインの設定
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
 
-Visual Builder Studioで、「ビルド」に遷移して、「Pipelines」タブをクリックします。
+![4-001.jpg](4-001.jpg)
 
-![](2006.jpg)
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
 
-「Create Pipeline」ボタンをクリックします。
+「DevOpsプロジェクト・リソース」にある「アーティファクト」をクリックします。  
 
-![](2007.jpg)
+![4-003.jpg](4-003.jpg)  
 
-以下の項目を入力し、「Create」ボタンをクリックします。
+![4-004.jpg](4-004.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|
+-|-
+名前|handson-image
+タイプ|コンテナ・イメージ・リポジトリ
+コンテナ・レジストリのイメージへの完全修飾パスを入力してください|<ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージネーム・スペース>/handson:${BUILDRUN_HASH}
+このアーティファクトで使用するパラメータの置換え|はい、プレースホルダを置き換えます
+
+**トライアル環境以外、集合ハンズオンで参加されている皆様**  
+トライアル環境以外、集合ハンズオンで参加されている皆様は[0-6. OCIRのレポジトリ作成](#0-6-ocirのレポジトリ作成)において、レポジトリ名を「handson」から変更されていると思います。その場合は、`handson:${BUILDRUN_HASH}`の`handson`を作成したレポジトリ名に変更してください。  
+{: .notice--warning}
+
+`<ご自身が利用されているリージョンのリージョン・コード>`はご自身が利用されているリージョンに応じて変わりますので、以下の表を参考に設定してください。  
+
+リージョン|リージョンコード
+-|-
+ap-tokyo-1|nrt
+ap-osaka-1|kix
+ap-melbourne-1|mel
+us-ashburn-1|iad
+us-phoenix-1|phx
+ap-mumbai-1|bom
+ap-seoul-1|icn
+ap-sydney-1|syd
+ca-toronto-1|yyz
+ca-montreal-1|yul
+eu-frankfurt-1|fra
+eu-zurich-1|zrh
+sa-saopaulo-1|gru
+sa-vinhedo-1| vcp
+uk-london-1|lhr
+sa-santiago-1|scl
+ap-hyderabad-1|hyd
+eu-amsterdam-1|ams
+me-jeddah-1|jed
+ap-chuncheon-1|yny
+me-dubai-1|dxb
+uk-cardiff-1|cwl
+us-sanjose-1|sjc
+
+![4-005.jpg](4-005.jpg)
+
+![4-006.jpg](4-006.jpg)をクリックします。  
+
+これにより、後続で作成するビルドパイプラインにおいて、ビルドプロセスでエクスポートしたビルド成果物(今回はコンテナイメージ)を定義したコンテナレジストリ(今回は`<ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージネーム・スペース>/handson:${BUILDRUN_HASH}`)にpushすることができます。  
+
+次に、「DevOpsプロジェクト・リソース」にある「ビルド・パイプライン」をクリックします。  
+
+![4-007.jpg](4-007.jpg)
+
+![4-008.jpg](4-008.jpg)をクリックします。
+
+以下の項目を入力します。  
+
+key|value|
+-|-
+名前|handson_build
+
+![4-009.jpg](4-009.jpg)
+
+![4-010.jpg](4-010.jpg)をクリックします。  
+
+一覧にある![4-011.jpg](4-011.jpg)をクリックします。  
+
+表示された画面中央にある一覧にある![4-012.jpg](4-012.jpg)をクリックし、![4-013.jpg](4-013.jpg)をクリックします。  
+
+「マネージド・ビルド」を選択し、![4-015.jpg](4-015.jpg)をクリックします。  
+
+![4-014.jpg](4-014.jpg)
+
+以下の項目を入力します。  
+
+key|value|説明
+-|-
+ステージ名|image_build|
+ビルド指定ファイルパス|build_spec.yaml|後続で設定する「プライマリ・コード・リポジトリ」に配置しているビルド定義ファイルのパス。今回はプロジェクト直下に配置
+
+![4-016.jpg](4-016.jpg) 
+
+「プライマリ・コード・レポジトリ」の![4-022.jpg](4-022.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|説明
+-|-
+ソース・接続タイプ|OCIコード・レポジトリ|"oke-handson"にチェック
+ブランチ名の選択|main
+ソース名の作成|handson
+
+![4-018.jpg](4-018.jpg)
+
+![4-019.jpg](4-019.jpg)をクリックします。  
+
+以下のようになります。  
+
+![4-020.jpg](4-020.jpg)
+
+![4-021.jpg](4-021.jpg)をクリックします。  
+
+次に、先ほど作成した「image_build」の下部にある![4-012.jpg](4-012.jpg)をクリックし、![4-013.jpg](4-013.jpg)をクリックします。  
+
+「アーティファクトの配信」を選択し、![4-015.jpg](4-015.jpg)をクリックします。  
+
+![4-023jpg](4-023.jpg)
+
+以下の項目を入力します。  
 
 key|value
 -|-
-Name|DeployToOKE
-Description|DeployToOKE
+名前|image_push
 
+![4-024jpg](4-024.jpg)
 
-![](2008.jpg)
+![4-025jpg](4-025.jpg)をクリックします。  
 
-画面左側の「JavaDockerOCIR」と「OKEDeploy」をドラッグ＆ドロップし、下記の図のように並べます。
+「handson-image」にチェックを入れて、![4-027jpg](4-027.jpg)をクリックします。  
 
-![](2009.jpg)
+![4-026jpg](4-026.jpg)
 
-「Start」から「JavaDockerOCIR」、「JavaDockerOCIR」から「OKEDeploy」をそれぞれドラッグし、パイプラインを作成します。  
-その後、「Save」ボタンをクリックします。
+「アーティファクトとビルド結果の関連付け」内の以下の項目を入力します。  
 
-![](2010.jpg)
+key|value|説明
+-|-
+ビルド構成/結果アーティファクト名|handson_image|`build_spec.yaml`の`outputArtifacts`で定義した名前([4-1-build_spec.yamlの確認](#4-1-build_specyamlの確認)を参照)。今回は`handson_image`
 
-これで、ビルドパイプラインの作成は完了です。
+![4-029jpg](4-029.jpg)
 
-### 9-4. ビルドジョブの実行
+![4-028jpg](4-028.jpg)をクリックします。  
 
-Visual Builder Studioで、「ビルド」に遷移して、「JavaDockerOCIR」をクリックします。
+これで、CIパイプラインの構築は完了です。  
 
-![](2011.jpg)
+### 4-3. トリガーの作成
 
-「今すぐビルド」ボタンをクリックします。
+ここでは、OCIコードレポジトリに更新があったタイミングでCIパイプラインを起動できるようにトリガーを設定します。  
 
-![](1810.jpg)
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
 
+![4-001.jpg](4-001.jpg)
 
-成功すると、ステータスが![](status_success.jpg)になります。
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
 
-「ビルド・ログ」をクリックします。
+「DevOpsプロジェクト・リソース」にある「トリガー」をクリックします。  
 
-![](1820.jpg)
+![4-030.jpg](4-030.jpg)
 
-成功すると、"Status:DONE Result:SUCCESSFUL"が表示されます。
+![4-031.jpg](4-031.jpg)をクリックします。  
 
-![](1830.jpg)
+以下の項目を入力します。  
 
-### 9-5. デプロイしたアプリケーションの検証
+key|value|説明
+-|-
+名前|handson-trigger
+ソース接続|OCIコード・レポジトリ
+コード・レポジトリの選択|oke-handson|![4-033.jpg](4-033.jpg)をクリックし、"oke-handson"をチェック
 
-`kubectl get service`でOKEクラスタのワーカーノードのパブリックIP（EXTERNAL-IP）を確認します。
+![4-032.jpg](4-032.jpg)
 
+![4-034.jpg](4-034.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|説明
+-|-
+ビルド・パイプラインの選択|handson_build|![4-033.jpg](4-033.jpg)をクリックし、"handson_build"をチェック
+イベント|"プッシュ"にチェック
+
+![4-035.jpg](4-035.jpg)をクリックします。  
+
+![4-036.jpg](4-036.jpg)をクリックします。  
+
+以下のようになります。  
+
+![4-037.jpg](4-037.jpg)
+
+![4-038.jpg](4-038.jpg)をクリックします。  
+
+これで、トリガーの作成は完了です。  
+
+5.CDパイプラインの構築
+-----
+
+ここでは、CDパイプラインを構築していきます。  
+
+[ゴールを確認する](#ゴールを確認する)で示した図でいうと、赤点線枠(![2-032.jpg](2-032.jpg))の部分を作成していきます。  
+
+![5-033.jpg](5-033.jpg)
+
+### 5-1. アーティファクト・レジストリへのManifestファイルの登録
+
+ここでは、CDパイプラインでManifestを利用するためにアーティファクト・レジストリへManifestファイルの登録を行います。  
+
+「開発者サービス」の「コンテナとアーティファクト」カテゴリにある「アーティファクト・レジストリ」をクリックします。  
+
+![5-001.jpg](5-001.jpg)
+
+![5-002.jpg](5-002.jpg)をクリックします。  
+
+以下の項目を入力し、![5-004.jpg](5-004.jpg)をクリックします。  
+
+key|value
+-|-
+名前|oke-handson
+
+![5-003.jpg](5-003.jpg)
+
+![5-005.jpg](5-005.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value
+-|-
+アーティファクト・パス|deploy.yaml
+バージョン|v0.1
+Upload method|Cloud Shell
+
+![5-006.jpg](5-006.jpg)
+
+![5-034.jpg](5-034.jpg)の`コピー`ボタンをクリックして、コマンドをコピーします。  
+
+![5-007.jpg](5-007.jpg)からCloud Shellを起動します。  
+
+[2-3-サンプルアプリケーションの事前準備](#2-3-サンプルアプリケーションの事前準備)でcloneしたディレクトリに移動します。  
+
+```sh
+cd oke-handson
+```
+
+先ほどコピーしたコマンドの最後尾の部分`--content-body ./<file-name>`を`./k8s/deploy/oke-atp-helidon.yaml`に差し替えます。  
+
+例えば、以下のようなコマンドになります。  
+
+```sh
+oci artifacts generic artifact upload-by-path  
+--repository-id ocid1.artifactrepository.oc1.iad.0.amaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  
+--artifact-path deploy.yaml  
+--artifact-version v0.1  
+--content-body ./k8s/deploy/oke-atp-helidon.yaml
+```
+
+これを実行します。  
+
+以下のようなレスポンスが返却されれば問題ありません。  
+
+```json
+{
+  "data": {
+    "artifact-path": "deploy.yaml",
+    "compartment-id": "ocid1.tenancy.oc1..aaaaaaaar7rz6wnonqc4256wxjez577mgyql55m55uny4nrhdgyay6cptfta",
+    "defined-tags": {
+      "Oracle-Tags": {
+        "CreatedBy": "oracleidentitycloudservice/xxxxxxxxxxxxx@oracle.com",
+        "CreatedOn": "2021-11-16T03:45:12.546Z"
+      }
+    },
+    "display-name": "deploy.yaml:v0.1",
+    "freeform-tags": {},
+    "id": "ocid1.genericartifact.oc1.iad.0.amaaaaaajv6lhnxxxxxxxxxxxxxxxxxxxkup5tmsxsvkeyhpavntrbrk4mjjq",
+    "lifecycle-state": "AVAILABLE",
+    "repository-id": "ocid1.artifactrepository.oc1.iad.0.amaaaaaaxxxxxxxxxxxxxxxxxxxxxxxkmuwnpjbnzequa",
+    "sha256": "7415c1c9ba36d7b2d8c1af64fc7b17b4d007259b3be91a9b2df323a5e670803d",
+    "size-in-bytes": 1593,
+    "time-created": "2021-11-16T03:45:12.712000+00:00",
+    "version": "v0.1"
+  }
+}
+```
+
+アーティファクト・レジストリ上でも以下のように確認ができます。  
+
+![5-008.jpg](5-008.jpg)
+
+これで、アーティファクト・レジストリへのManifestファイルの登録は完了です。  
+
+### 5-2. OCI DevOpsへのOKE環境の登録
+
+ここでは、OKEへサンプルアプリケーションをデプロイするためにOKE環境をOCI DevOpsへ登録します。  
+
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
+
+![4-001.jpg](4-001.jpg)
+
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
+
+「DevOpsプロジェクト・リソース」にある「環境」をクリックします。  
+
+![5-009.jpg](5-009.jpg)  
+
+![5-010.jpg](5-010.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value
+-|-
+環境タイプ|Oracle Kubernetesエンジン
+名前|handson-env
+
+![5-011.jpg](5-011.jpg)
+
+![5-012.jpg](5-012.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value
+-|-
+リージョン|ご自身がお使いのリージョン
+コンパートメント|ご自身がお使いのコンパートメント
+クラスタ|cluster1
+
+![5-013.jpg](5-013.jpg)
+
+![5-014.jpg](5-014.jpg)をクリックします。  
+
+これで、OKE環境のOCI DevOpsへの登録は完了です。  
+
+### 5-3. CDパイプラインの構築
+
+ここでは、OKEへサンプルアプリケーションをデプロイするためのCDパイプラインを構築します。 
+
+まずは、OKEへのデプロイ時に利用するManifestをデプロイ・パイプラインで利用できるように設定を行います。  
+
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
+
+![4-001.jpg](4-001.jpg)
+
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
+
+「DevOpsプロジェクト・リソース」にある「アーティファクト」をクリックします。  
+
+![4-003.jpg](4-003.jpg)  
+
+![4-004.jpg](4-004.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value
+-|-
+名前|handson_manifest
+タイプ|Kubernetesマニフェスト
+アーティファクト・ソース|アーティファクト・レジストリ・レポジトリ
+アーティファクト・レジストリ・リポジトリの選択|![5-016.jpg](5-016.jpg)をクリックし、[5-1-アーティファクトレジストリへのmanifestファイルの登録](#5-1-アーティファクトレジストリへのmanifestファイルの登録)で登録したアーティファクト・レジストリを選択
+アーティファクトの選択|![5-016.jpg](5-016.jpg)をクリックし、[5-1-アーティファクトレジストリへのmanifestファイルの登録](#5-1-アーティファクトレジストリへのmanifestファイルの登録)で登録したアーティファクト(deploy.yaml:v0.1)を選択
+
+![5-018.jpg](5-018.jpg)
+
+![5-017.jpg](5-017.jpg)をクリックします。  
+
+続いて、パイプラインの構築に入ります。  
+
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
+
+![4-001.jpg](4-001.jpg)
+
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
+
+「DevOpsプロジェクト・リソース」にある「デプロイメント・パイプライン」をクリックします。  
+
+![5-015.jpg](5-015.jpg)  
+
+![5-019.jpg](5-019.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value
+-|-
+名前|handson_deploy
+
+![5-020.jpg](5-020.jpg)
+
+![5-021.jpg](5-021.jpg)をクリックします。  
+
+表示された画面中央にある一覧にある![4-012.jpg](4-012.jpg)をクリックし、![4-013.jpg](4-013.jpg)をクリックします。
+
+「Kubernetesクラスタにマニフェストを適用」を選択します。  
+
+![5-022.jpg](5-022.jpg)
+
+![5-023.jpg](5-023.jpg)をクリックします。  
+
+key|value
+-|-
+ステージ名|handson_deploy
+環境|[5-2-oci-devopsへのoke環境の登録](#5-2-oci-devopsへのoke環境の登録)で登録した環境。今回は`handson-env`
+1つ以上のアーティファクトを選択します|![5-026.jpg](5-026.jpg)を選択し、先ほど作成したアーティファクト(`handson_manifest`)を選択
+
+![5-024.jpg](5-024.jpg)
+
+![5-025.jpg](5-025.jpg)をクリックします。  
+
+これで、CDパイプラインの構築は完了です。  
+
+### 5-4. CIパイプラインへのCDパイプライン起動ステップの追加
+
+最後に、CIパイプラインから自動的にCDパイプラインが起動できるようにパイプラインを構築します。  
+
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
+
+![4-001.jpg](4-001.jpg)
+
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
+
+次に、「DevOpsプロジェクト・リソース」にある「ビルド・パイプライン」をクリックします。  
+
+![4-007.jpg](4-007.jpg)
+
+![5-027.jpg](5-027.jpg)をクリックします。  
+
+次に、[4-2-ciパイプラインの構築](#4-2-ciパイプラインの構築)で作成した「image_push」の下部にある![4-012.jpg](4-012.jpg)をクリックし、![4-013.jpg](4-013.jpg)をクリックします。  
+
+以下を選択します。  
+
+key|value
+-|-
+オプション|デプロイメントのトリガー
+
+![5-028.jpg](5-028.jpg)
+
+![5-029.jpg](5-029.jpg)をクリックします。  
+
+以下の項目を入力します。  
+
+key|value|説明
+-|-
+ステージ名|handson_deploy_call|![5-032.jpg](5-032.jpg)をクリックし、[5-3-cdパイプラインの構築](#5-3-cdパイプラインの構築)で構築したCDパイプライン(`handson_deploy`)を選択
+
+![5-030.jpg](5-030.jpg)
+
+![5-031.jpg](5-031.jpg)をクリックします。  
+
+これで、CDパイプラインの構築は完了です。  
+
+6.アプリケーションのデプロイ
+----
+
+ここでは、これまで構築してきたCI/CDパイプラインを実行し、サンプルアプリケーションの確認を行います。  
+
+![0-000.jpg](0-000.jpg)
+
+今回は手動実行で行います。(自動でのCI/CDは[7. アプリケーションの再デプロイ](#7アプリケーションの再デプロイ)で行います)
+
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
+
+![4-001.jpg](4-001.jpg)
+
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
+
+次に、「DevOpsプロジェクト・リソース」にある「ビルド・パイプライン」をクリックします。  
+
+![4-007.jpg](4-007.jpg)
+
+![5-027.jpg](5-027.jpg)をクリックします。  
+
+画面右上にある![6-001.jpg](6-001.jpg)をクリックします。  
+
+![6-002.jpg](6-002.jpg)をクリックします。
+
+このような画面が表示され、ビルドパイプラインが開始されます。  
+
+![6-003.jpg](6-003.jpg)
+
+ビルドパイプラインが完了したら、[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、
+以下のコマンドを実行します。  
+
+```sh
+kubectl get service
+```
+
+**コマンド結果**
 ```
 NAME        STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP       OS-IMAGE                  KERNEL-VERSION                   CONTAINER-RUNTIME
-10.0.24.2   Ready    node    1d    v1.13.5   10.0.24.2     xxx.xxx.xxx.xxx   Oracle Linux Server 7.6   4.14.35-1902.2.0.el7uek.x86_64   docker://18.9.1
+10.0.24.2   Ready    node    1d    v1.13.5   10.0.24.2     xxx.xxx.xxx.xxx   Oracle Linux Server 7.6   4.14.34-1902.2.0.el7uek.x86_64   docker://18.9.1
 ```
+
+`EXTERNAL-IP`の部分の`xxx.xxx.xxx.xxx`がパブリックIP(OCIのパブリックLoadBalabncerのIPアドレス)になります。  
 
 Webブラウザを起動し、`http://パブリックIP`にアクセスしてみましょう。
 
-Webアプリケーションが表示されたら成功です。
+Webアプリケーションが表示されたら成功です。  
 
-![](1840.jpg)
+![6-004.jpg](6-004.jpg)
 
-これで、アプリケーションをOKEへのデプロイは完了しました。
+また、CIパイプライン、CDパイプラインそれぞれの起動および完了(失敗)のタイミングで[2-1. OCI Notificationsの作成](#2-1-oci-notificationsの作成)で設定したメールアドレスに通知がされるので、確認してみてください。  
 
-10.アプリケーションの再デプロイ
----
+7.アプリケーションの再デプロイ
+-----
 
-ここでは、アプリケーションの再デプロイを行います。  
+ここでは、アプリケーションの変更とともにCI/CDを体験していただきます。  
 
-今回は、トップページのイメージを変更してみましょう。  
+### 7-1. アプリケーションのヘッダー画像の変更
 
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。
+[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。  
 
-**受講者の方へ**  
-別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(`/home/opc`)からコマンドを実行してください。
-{: .notice--info}
+`oke-handson`ディレクトリに移動します。  
 
-oke-atp-workshopディレクトリに移動します。以下のコマンドを実行し、イメージファイルを更新します。
-
+```sh
+cd oke-handson
 ```
+
+以下のコマンドを実行し、イメージファイルを更新します。
+
+```sh
 cp src/main/resources/web/images/forsale_new2.jpg src/main/resources/web/images/forsale.jpg
 ```
 
-Visual Builder StudioのリポジトリへCommitします。
-```
+リポジトリへCommitします。　　
+
+```sh
 git add .
 ```
-```
+
+```sh
 git commit -m "トップページのイメージを変更"
 ```
-```
+
+```sh
 git push
 ```
 
-Visual Builder Studioの「ビルド」に移動して、ジョブ"JavaDockerOCIR"のビルドが自動的に開始されます。成功すると、ステータスが![](status_success.jpg)になります。
 
-![](1842.jpg)
+### 7-2. アプリケーションの反映確認
 
-次に、ジョブ"OKEDeploy"のビルドが自動的に開始されます。成功すると、ステータスが![](status_success.jpg)になります。
+[7-1-アプリケーションのヘッダー画像の変更](#7-1-アプリケーションのヘッダー画像の変更)でのgit pushをトリガーにOCI DevOps上のCI/CDパイプラインが起動しているので、コンソールから確認します。  
 
-![](1844.jpg)
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。  
 
-Webブラウザを起動し、`http://パブリックIP`にアクセスしてみましょう。
+![4-001.jpg](4-001.jpg)
 
-Webアプリケーションが表示されたら成功です。イメージが変更されたことを確認できます。
+一覧にある![4-002.jpg](4-002.jpg)をクリックします。  
 
-![](1850.jpg)
+次に、「DevOpsプロジェクト・リソース」にある「ビルド履歴」をクリックします。 
 
-以上でハンズオンは終了です。お疲れ様でした！
+![7-001.jpg](7-001.jpg)
 
-11.【オプション】今回利用したアプリケーションに関する補足
+ビルド履歴の一覧に先ほどのgit pushでトリガされた履歴が表示されます。  
+
+![7-002.jpg](7-002.jpg)
+
+ビルドが完了したら、[6. アプリケーションのデプロイ](#6アプリケーションのデプロイ)で確認したパブリックIPに再度アクセスします。  
+ヘッダー画像が変更されていることが確認できます。
+
+![7-003.jpg](7-003.jpg)
+
+これで、本ハンズオンは終了です！！お疲れ様でした！！
+
+8.【オプション】今回利用したアプリケーションに関する補足
 ------
+
 ここでは、デプロイに使用したmanifestファイル(oke-atp-helidon.yaml)の詳細について解説します。
 
 今回は、ATPのユーザ名とパスワードをkubernetesのSecretリソースとして作成し、それらをコンテナ上の環境変数として読み込みアプリケーションで使用しました。  
-今回のハンズオンでは、以下のmanifestを利用しました。
+今回のハンズオンでは、`oke-atp-helidon.yaml`というmanifestを利用しました。
 
-    oke-atp-helidon-handson/oke-atp-helidon.yaml
+上記manifestファイルは以下のようになっています。
 
-上記manifestファイルは以下のようになっています。  
-{% highlight yaml linenos %}
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
-name: oke-atp-helidon
-namespace: default
+  name: oke-atp-helidon
+  namespace: default
 spec:
-type: LoadBalancer
-ports:
-- port: 80
+  type: LoadBalancer
+  ports:
+  - port: 80
     protocol: TCP
     targetPort: 8080
-selector:
+  selector:
     app: oke-atp-helidon
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-name: oke-atp-helidon
+  name: oke-atp-helidon
 spec:
-selector:
+  selector:
     matchLabels:
-    app: oke-atp-helidon
-replicas: 2
-template:
+      app: oke-atp-helidon
+  replicas: 2
+  template:
     metadata:
-    labels:
+      labels:
         app: oke-atp-helidon
         version: v1
     spec:
-    # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
-    # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
-    # can read them and use it for connecting to ATP.
-    containers:
-    - name: oke-atp-helidon
-        image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
+      # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
+      # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
+      # can read them and use it for connecting to ATP.
+      containers:
+      - name: oke-atp-helidon
+        image: iad.ocir.io/orasejapan/handson:${BUILDRUN_HASH}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.user
-        valueFrom:
+        - name: javax.sql.DataSource.test.dataSource.user
+          valueFrom:
             secretKeyRef:
-            name: customized-db-cred
-            key: user_name
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.password
-        valueFrom:
+              name: customized-db-cred
+              key: user_name
+        - name: javax.sql.DataSource.test.dataSource.password
+          valueFrom:
             secretKeyRef:
-            name: customized-db-cred
-            key: password
+              name: customized-db-cred
+              key: password
         volumeMounts:
         - name: handson
-        mountPath: /db-demo/creds 
-    imagePullSecrets:
-    - name: workshop-ocirsecret
-    volumes:
-    - name: handson
-        configMap:
-        name: okeatp
-{% endhighlight %}
+          mountPath: /db-demo/creds              
+      volumes:
+      - name: handson
+        secret:
+          secretName: okeatp
+```
+
 40-49行目に注目してみましょう。
 以下の行は、データベースのユーザとパスワードをコンテナにおける環境変数として設定しており、その値をcustomized-db-credというSecretから読み込んでいます。
 
 ```yaml
-    - name: javax_sql_DataSource_workshopDataSource_dataSource_user
-    valueFrom:
+    - name: javax.sql.DataSource.test.dataSource.user
+      valueFrom:
         secretKeyRef:
-        name: customized-db-cred
-        key: user_name
-    - name: javax_sql_DataSource_workshopDataSource_dataSource_password
-    valueFrom:
+          name: customized-db-cred
+          key: user_name
+    - name: javax.sql.DataSource.test.dataSource.password
+      valueFrom:
         secretKeyRef:
-        name: customized-db-cred
-        key: password
+          name: customized-db-cred
+          key: password
 ```
 
 今回の場合は、ユーザ名を`javax_sql_DataSource_workshopDataSource_dataSource_user`、パスワードを`javax_sql_DataSource_workshopDataSource_dataSource_password`という名前の環境変数としてそれぞれSecretリソースから読み込んでいます。  
 
-今回は"customized-db-cred"というSecretリソースを[ATPユーザの作成](#6-3atpのユーザの作成)の手順で作成しました。
+今回は"customized-db-cred"というSecretリソースを[3-4. アプリケーションが利用するデータベースのユーザ/パスワードの作成](#3-4-アプリケーションが利用するデータベースのユーザパスワードの作成)の手順で作成しました。
 
 このようにkubernetesでは、アプリケーションで使用する機密情報をSecretリソースとして隠蔽し、その値を環境変数として読み込ませることができます。  
 詳細については[公式ドキュメント](https://kubernetes.io/docs/concepts/configuration/secret/)をご確認ください。
@@ -1399,98 +1875,75 @@ template:
 次にWalletファイルについて解説します。  
 
 再度manifestファイルを確認してみましょう。
-{% highlight yaml linenos %}
+
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
-name: oke-atp-helidon
-namespace: default
+  name: oke-atp-helidon
+  namespace: default
 spec:
-type: LoadBalancer
-ports:
-- port: 80
+  type: LoadBalancer
+  ports:
+  - port: 80
     protocol: TCP
     targetPort: 8080
-selector:
+  selector:
     app: oke-atp-helidon
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-name: oke-atp-helidon
+  name: oke-atp-helidon
 spec:
-selector:
+  selector:
     matchLabels:
-    app: oke-atp-helidon
-replicas: 2
-template:
+      app: oke-atp-helidon
+  replicas: 2
+  template:
     metadata:
-    labels:
+      labels:
         app: oke-atp-helidon
         version: v1
     spec:
-    # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
-    # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
-    # can read them and use it for connecting to ATP.
-    containers:
-    - name: oke-atp-helidon
-        image: iad.ocir.io/orasejapan/workshop/okeatpapp:latest
+      # The credential files in the secret are base64 encoded twice and hence they need to be decoded for the programs to use them.
+      # This decode-creds initContainer takes care of decoding the files and writing them to a shared volume from which db-app container
+      # can read them and use it for connecting to ATP.
+      containers:
+      - name: oke-atp-helidon
+        image: iad.ocir.io/orasejapan/handson:${BUILDRUN_HASH}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.user
-        valueFrom:
+        - name: javax.sql.DataSource.test.dataSource.user
+          valueFrom:
             secretKeyRef:
-            name: customized-db-cred
-            key: user_name
-        - name: javax.sql.DataSource.workshopDataSource.dataSource.password
-        valueFrom:
+              name: customized-db-cred
+              key: user_name
+        - name: javax.sql.DataSource.test.dataSource.password
+          valueFrom:
             secretKeyRef:
-            name: customized-db-cred
-            key: password
+              name: customized-db-cred
+              key: password
         volumeMounts:
         - name: handson
-        mountPath: /db-demo/creds 
-    imagePullSecrets:
-    - name: workshop-ocirsecret
-    volumes:
-    - name: handson
-        configMap:
-        name: okeatp
-{% endhighlight %}
-
-50-56行目に注目してみましょう。
-
-```yaml
-    volumeMounts:
-        - name: handson
-        mountPath: /db-demo/creds
-    volumes:
-    - name: handson
-        configMap:
-        name: okeatp
+          mountPath: /db-demo/creds              
+      volumes:
+      - name: handson
+        secret:
+          secretName: okeatp
 ```
 
-今回は"okeatp"というConfigmapリソースを[ATPユーザの作成](#6-3atpのユーザの作成)の手順で作成しました。  
-ここで作成したリソースを53-56行目で"handson"という名前でPodのボリュームに保持しています。  
+[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)でのManifestに`walletName: okeatp`というフィールドを定義しました。  
+つまり、OSOKによってATPをプロビジョニングする際にWalletも同時に作成され、その名前を`okeatp`としています。  
+ここで作成したWalletを53-56行目で"handson"という名前でPodのボリュームに保持しています。  
 
 また、50-52行目では、上記で設定した"handson"リソースをコンテナ上の"/db-demo/creds"というパスにマウントしています。  
 
 今回は、このマウントしたリソースを構成ファイル(oke-atp-helidon-handson/src/main/resources/META-INF/microprofile-config.properties)で利用しています。
 
-{% highlight yaml linenos %}
-#
-# Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
+```yaml
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
@@ -1500,334 +1953,20 @@ template:
 server.port=8080
 server.host=0.0.0.0
 
-javax.sql.DataSource.workshopDataSource.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@tfokeatpdb_high?TNS_ADMIN=/db-demo/creds
-javax.sql.DataSource.workshopDataSource.maximumPoolSize=5
-javax.sql.DataSource.workshopDataSource.minimumIdle=2
+javax.sql.DataSource.test.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
 
-# src/main/resources/web in your source tree
 server.static.classpath.location=/web
-# default is index.html
 server.static.classpath.welcome=index.html
-# static content path - default is "/"
-# server.static.classpath.context=/static-cp
-{% endhighlight %}
-
-22行目に注目してみましょう。
-
-```
-javax.sql.DataSource.workshopDataSource.dataSource.url=jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds
 ```
 
-`jdbc:oracle:thin:@Demo_HIGH?TNS_ADMIN=/db-demo/creds`がWalletファイルを読み込んでいる部分になります。  
+11行目に注目してみましょう。
+
+```yaml
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds
+```
+
+`jdbc:oracle:thin:@okeatp_high?TNS_ADMIN=/db-demo/creds`がWalletファイルを読み込んでいる部分になります。  
 ここに先ほどmanifestでマウントしたパスが設定されています。  
-これでアプリケーションからKubernetesのConfigmapに設定したWalletファイルを利用することができます。
+これでアプリケーションからKubernetesのSecretに設定されているWalletファイルを利用することができます。
 
-12.【オプション】Service Brokerを使用したATPのプロビジョニング
-----
-
-このステップでは、Service Brokerを使用してOKEからATPをプロビジョニングする方法について説明します。
-
-Service Broker、Service CatalogおよびOCI Service Brokerについて、説明します。
-
-- Service Brokerは、サードパーティが提供および管理する一連の管理サービスのエンドポイントです。
-
-- Service Catalogは、Kubernetesクラスタで実行されているアプリケーションが、クラウドプロバイダーが提供するデータストアサービスなどの外部管理ソフトウェアを簡単に使用できるようにする拡張APIです。
-
-- OCI Service Brokerは、OCI（Oracle Cloud Infrastructure）サービス用の[Open Service Broker API Spec](https://github.com/openservicebrokerapi/servicebroker/blob/v2.14/spec.md)のオープンソース実装です。  
-ユーザはこの実装を使用して、[Oracle Container Engine for Kubernetes](https://docs.cloud.oracle.com/iaas/Content/ContEng/Concepts/contengoverview.htm)または他のKubernetesクラスタにOpen Service Brokerをインストールできます。
-
-このステップが完了すると以下の絵のような構成になります。
-
-![](2015.jpg)
-
-### 12-1. helmをインストールする
-以下の図の赤枠部分をインストールします。
-
-![](2012.jpg)
-
-ServiceBrokerを利用するためにhelmをインストールします。
-
-```
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-```
-
-helmバージョン情報を確認します。
-
-```
-helm version
-```
-以下のように表示されていれば、helmがインストールされています。
-
-```
-version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", GoVersion:"go1.13.5"}
-```
-
-これで、helmのインストールは完了しました。
-
-### 12-2. Service Catalogとsvcatツールをインストールする
-以下の図の赤枠部分をインストールします。
-
-![](2013.jpg)
-
-Service Catalogのリポジトリを追加します。
-
-**Service Catalogについて**  
-Service Catalogの詳細については[こちら](https://kubernetes.io/docs/concepts/extend-kubernetes/service-catalog/)をご確認ください。
-{: .notice--info}
-
-```
-helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
-```
-
-Service Catalogをインストールします。
-
-```
-helm install catalog svc-cat/catalog --set controllerManager.verbosity="4" --timeout 300s
-```
-
-svcatツールをインストールします。  
-"svcat"は、Service Catalogリソースを操作するためのコマンドラインインターフェイス（CLI）です。
-
-```
-curl -sLO https://download.svcat.sh/cli/latest/linux/amd64/svcat
-```
-
-```
-chmod +x ./svcat
-```
-
-```
-sudo mv ./svcat /usr/local/bin/
-```
-
-svcatツールのクライアントバージョン情報を確認します。
-
-```
-svcat version --client
-```
-
-svcatのクライアントバージョン情報が出力されることを確認します。
-
-```
-Client Version: v0.3.0-beta.2
-```
-
-これで、Service Catalogとsvcatツールのインストールは完了しました。
-
-### 12-3. OCI Service Brokerをインストールする
-以下の図の赤枠部分をインストールします。
-
-![](2014.jpg)
-
-oke-atp-workshopディレクトリに移動して、OCI Service Brokerリポジトリのクローンを実行します。
-
-```
-git clone https://github.com/oracle/oci-service-broker.git
-```
-
-``oci-service-broker``ディレクトリに移動します。
-
-```
-cd oci-service-broker
-```
-
-OCI Service Brokerをインストールするのは、ociアカウント情報などが含まれるSecretを作成する必要があります。該当Secretを作成します。
-
-```
-kubectl create secret generic ocicredentials \
-  --from-literal=tenancy=<tenancy_ocid> \
-  --from-literal=user=<user_ocid> \
-  --from-literal=fingerprint=<fingerprint> \
-  --from-literal=region=<region> \
-  --from-literal=passphrase=<passphrase> \
-  --from-file=privatekey=<private_key_path>
-```
-
-対象のパラメータは以下のとおりです。
-
-key|value
--|-
-tenancy_ocid|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したテナンシOCID
-user_ocid|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したユーザーOCID
-fingerprint|[ワークショップで利用するアカウント情報の収集](#3ワークショップで利用するアカウント情報の収集)で収集したAPI Signingキーのフィンガープリント
-region|リージョン識別子。今回は"us-ashburn-1"
-passphrase| ""(空文字)
-private_key_path|`/home/opc/.oci/oci_api_key.pem`
-
-OCI Service Brokerをインストールします。
-
-```
-helm install oci-service-broker charts/oci-service-broker/. \
-    --set ociCredentials.secretName=ocicredentials \
-    --set storage.etcd.useEmbedded=true \
-    --set tls.enabled=false
-```
-
-OCI Service Brokerの登録先のnamespaceを設定します。今回は、defaultのnamespaceに登録します。
-
-```
-sed -i -e 's/<NAMESPACE_OF_OCI_SERVICE_BROKER>/default/g' ./charts/oci-service-broker/samples/oci-service-broker.yaml
-```
-
-OCI Service Brokerの登録を実行します。
-
-```
-kubectl create -f ./charts/oci-service-broker/samples/oci-service-broker.yaml
-```
-
-Service Brokerの情報を確認します。
-
-```
-svcat get brokers
-```
-
-Service Brokerの情報が表示されることを確認します。ステータスが"Ready"になります。("Readyになるまで、3~5分かかる場合があります")
-
-```
-         NAME          NAMESPACE                    URL                     STATUS  
-+--------------------+-----------+----------------------------------------+--------+
-  oci-service-broker               http://oci-service-broker.default:8080   Ready 
-```
-
-OCI Service Brokerで利用できるサービスの一覧を確認します。
-
-```
-svcat get classes
-```
-
-利用できるOCIサービスが表示されます。
-
-```
-          NAME           NAMESPACE                 DESCRIPTION                 
-+----------------------+-----------+------------------------------------------+
-  atp-service                        Autonomous Transaction                    
-                                     Processing Service                        
-  object-store-service               Object Storage Service                    
-  adw-service                        Autonomous Data Warehouse                 
-                                     Service                                   
-  oss-service                        Oracle Streaming Service
-```
-
-それぞれのサービスで利用可能なプランを確認します。
-
-```
-svcat get plans
-```
-
-OCI Service Brokerが提供するサービスのプランが表示されます。
-
-```
-    NAME     NAMESPACE          CLASS                    DESCRIPTION            
-+----------+-----------+----------------------+--------------------------------+
-  standard               atp-service            OCI Autonomous Transaction      
-                                                Processing                      
-  archive                object-store-service   An Archive type Object Storage  
-  standard               object-store-service   A Standard type Object Storage  
-  standard               adw-service            OCI Autonomous Data Warehouse   
-  standard               oss-service            Oracle Streaming Service
-```
-
-これで、OCI Service Brokerのインストールは完了しました。
-
-### 12-4. ATPをプロビジョニングする
-
-**ATPのデフォルトユーザについて**  
-ATPはデフォルトで"Admin"ユーザが設定されます。OCIコンソールでATPをプロビジョニングした場合も同様になります。  
-アプリケーションで使用するATPユーザの作成については[ATPユーザの作成](#6-3atpのユーザの作成)で説明します。
-{: .notice--info}
-
-``oci-service-broker``のサンプルをベースにして、ATPをプロビジョニングします。
-
-サンプルファイルにあるコンパートメントを更新します。
-
-`<コンパートメントOCID>`を各自のコンパートメントOCIDへ変更してください。
-
-```
-sed -i -e 's/CHANGE_COMPARTMENT_OCID_HERE/<コンパートメントOCID>/g' ./charts/oci-service-broker/samples/atp/atp-instance-plain.yaml
-```
-
-サンプルファイルにあるATPの名称を更新します。今回は、"tfOKEATPDB"とします。
-
-```
-sed -i -e 's/osbdemo/tfOKEATPDB/g' ./charts/oci-service-broker/samples/atp/atp-instance-plain.yaml
-```
-
-サンプルファイルにあるATPのパスワードを更新します。今回は、"TFWorkshop__2000"とします。
-
-```
-sed -i -e 's/s123456789S@/TFWorkshop__2000/g' ./charts/oci-service-broker/samples/atp/atp-instance-plain.yaml
-```
-
-ATPをプロビジョニングします。
-
-```
-kubectl create -f ./charts/oci-service-broker/samples/atp/atp-instance-plain.yaml
-```
-
-プロビジョニング状況を確認します。
-
-```
-svcat get instances --all-namespaces
-```
-
-プロビジョニング直後は、ステータスは"Provisioning"になります。
-
-```
-       NAME        NAMESPACE      CLASS        PLAN        STATUS     
-+----------------+-----------+-------------+----------+--------------+
-  osb-atp-demo-1   default     atp-service   standard   Provisioning
-```
-
-5分程度経過するとステータスは"Ready"になります。
-
-```
-       NAME        NAMESPACE      CLASS        PLAN     STATUS  
-+----------------+-----------+-------------+----------+--------+
-  osb-atp-demo-1   default     atp-service   standard   Ready
-```
-
-ATPへアクセスするためのCredencialを作成します。
-
-```
-kubectl create -f ./charts/oci-service-broker/samples/atp/atp-binding-plain.yaml
-```
-
-Credencialの情報を確認します。
-
-```
-svcat get bindings
-```
-
-Credencialの情報が表示されることを確認します。(以下では"atp-demo-binding")
-
-```
-        NAME         NAMESPACE      INSTANCE      STATUS  
-+------------------+-----------+----------------+--------+
-  atp-demo-binding   default     osb-atp-demo-1   Ready
-```
-
-CredencialはSecretとして管理されており、ATPにアクセスするためのWalletファイルが含まれています。
-
-```
-kubectl get secrets atp-demo-binding -o yaml
-```
-
-ATPのパスワードが格納されるSecretを作成します。
-サンプルファイルにあるプレーンテキストと暗号化テキスト両方を更新します。(パスワードはbase64で暗号化します)
-
-```
-sed -i -e 's/s123456789S@/TFWorkshop__2000/g' ./charts/oci-service-broker/samples/atp/atp-demo-secret.yaml
-```
-
-```
-sed -i -e 's/czEyMzQ1Njc4OVNACg==/VEZXb3Jrc2hvcF9fMjAwMAo=/g' ./charts/oci-service-broker/samples/atp/atp-demo-secret.yaml
-```
-
-Secretを作成します。
-
-```
-kubectl create -f ./charts/oci-service-broker/samples/atp/atp-demo-secret.yaml
-```
-
-これで、OKEからのATPのプロビジョニングが完了しました。
