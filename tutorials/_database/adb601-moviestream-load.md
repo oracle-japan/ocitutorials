@@ -279,7 +279,9 @@ GROUP BY segment_name;
 ![external_zeroイメージ](external_zero.png)
 
 ## 2-5. MERGEを使用したMovie Salesデータの更新
-Oracle Databaseでは実表に対し、外部表の行を条件付きでそのまま更新または挿入することができます。
+Oracle Databaseでは実表に対し、外部表の行を条件付きでそのまま更新または挿入することができます。データベースにデータを全て入れてからマージしなくても良いので処理ステップを減らすことができ、データ領域を節約することができます。
+
+またADBについては、OCI Object Storage以外にもS3をはじめ各社オブジェクトストレージに対応しており、直接データを持ってくることが可能です。
 1. 以下のコマンドで外部表をMOVIE_SALES_FACT表にマージします。
 ```sql
 MERGE INTO movie_sales_fact a
