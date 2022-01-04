@@ -28,17 +28,18 @@ Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成�
 
    ![DatabaseLink_optionイメージ](DatabaseLink_option.jpg)
 
-なお、本文書ではパブリックIPアドレスを持つDBCSを前提としています。プライベートIPアドレスへのDatabase Link作成については、今後紹介予定です。  
+なお、本文書ではパブリックIPアドレスを持つDBCSを前提としています。プライベートIPアドレスへのDatabase Link作成については、[こちらの記事](https://qiita.com/wahagon/items/7964b3ab19da625bfb39){:target="_blank"} で紹介しています。  
 ご不明な点がございましたら、担当営業までお問い合わせください。
 
 **目次 :**
   + [1.DBCSインスタンスの作成およびスキーマのインポート](#anchor1)
   + [2.DBCSにてTCPS認証（SSL認証）を有効化](#anchor2)
   + [3.DBCSのウォレットファイルをADBに渡す](#anchor3)
-  + [4.ADBにてDatabase Linkを作成](#anchor4)
-  + [5.エラーへの対応例](#anchor5)
-  + [6.その他のパターン](#anchor6)
-  + [7.おわりに](#anchor7)
+  + [4.VCNのイングレス・ルールを更新](#anchor4)
+  + [5.ADBにてDatabase Linkを作成](#anchor5)
+  + [6.エラーへの対応例](#anchor6)
+  + [7.その他のパターン](#anchor7)
+  + [8.おわりに](#anchor8)
 
 **前提条件**
 + ADBインスタンスが構成済みであること
@@ -241,6 +242,11 @@ cat /etc/sysconfig/iptables
 ```
 ![iptables_checkイメージ](iptables_check.jpg)
 
+1. 設定を反映させるため再起動します。
+```sh
+service iptables restart
+```
+
 <br>
 
 ## 2-7. リスナーにTCPSエンドポイントを追加
@@ -263,9 +269,13 @@ sudo su - oracle
 
 1. データベースを再起動します。   
 ```sh
-srvctl stop database -database dbcs01_NRT18S
-srvctl start database -database dbcs01_NRT18S
+srvctl stop database -database dbcs01_xxxxxx
+srvctl start database -database dbcs01_xxxxxx
 ```
+データベース名(dbcs01_xxxxxx)の確認の仕方
++ OCIコンソールのDBCSの詳細画面より、一意のデータベース名を確認
+![database_nameイメージ](database_name.png)
++ 次の手順のlsnrctl statusコマンドから確認
 
 1. gridユーザーにスイッチします。   
 ```sh
@@ -403,7 +413,20 @@ SELECT * FROM table(dbms_cloud.list_files('dblink_wallet_dir_dbcs')) WHERE objec
 
 <a id="anchor4"></a>
 
-# 4. ADBにてDatabase Linkを作成
+# 4. VCNのイングレス・ルールの追加
+1522番ポートを使用するようにしましたが、デフォルトでは許可されていません。そのためイングレス・ルールを追加する必要があります。  
+DBCSを配置したパブリック・サブネットのセキュリティ・リストのイングレス・ルールに以下を追加します。
+![ingress_ruleイメージ](ingress_rule.png)
++ ソース：VCNのCIDRブロック
++ IPプロトコル：TCP
++ ソース・ポート範囲：All
++ 宛先ポート範囲：1522
+
+<BR>
+
+<a id="anchor5"></a>
+
+# 5. ADBにてDatabase Linkを作成
 
 1. DBCSへ接続するためのクレデンシャルを作成します。
 ```
@@ -452,7 +475,7 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 
 <BR>
 
-<a id="anchor5"></a>
+<a id="anchor6"></a>
 
 # エラーへの対応例
 * 『ORA-12545: Connect failed because target host or object does not exist』が発生する場合
@@ -480,7 +503,7 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 
 <BR>
 
-<a id="anchor6"></a>
+<a id="anchor7"></a>
 
 # その他のパターン
 ここまで、ADBからDBCSインスタンスへのDatabase Link作成方法についてご説明しました。  
@@ -507,7 +530,7 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 
 <BR>
 
-<a id="anchor7"></a>
+<a id="anchor8"></a>
 
 # おわりに
 ここではAutonomous DatabaseにDatabase Linkを作成して、別のDBCSインスタンスからデータを収集する方法をご紹介しました。  
