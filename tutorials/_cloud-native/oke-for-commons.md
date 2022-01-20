@@ -184,7 +184,7 @@ Cloud Shellの起動はダイアログに表示されている「Cloud Shellの�
 {: .notice--info}
 
 次に![](03-18.png)のコマンドですが、こちらはOCI CLIの設定ファイル取得用のコマンドを実行しています。  
-右端の「コピー」をクリックしてコピーし、Cloud Shellにペースとして実行します。  
+右端の「コピー」をクリックしてコピーし、Cloud Shellにペーストして実行します。  
 （以下の例はダミーの値で埋めたものですので、実際のコマンドはダイアログからコピーしてください）  
 
     oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1  --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT

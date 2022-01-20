@@ -24,6 +24,9 @@ toc: true
 
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!!  
 まずはベーシックなDatabase Cloud Service インスタンスを作ってみましょう。
+
+## 基礎編
+
 + **[101: Oracle Cloud で Oracle Database を使おう](/ocitutorials/database/dbcs101-create-db/){:target="_blank"}**
 
 + **[102: DBCS上のPDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
@@ -35,6 +38,10 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 + **[105: バックアップからリストアしよう](/ocitutorials/database/dbcs105-restore/){:target="_blank"}**
 
 + **[106: Data Guardを構成しよう](/ocitutorials/database/dbcs106-dataguard/){:target="_blank"}**
+
+## データ移行編
+
++ **[201: オンプレミスのPDBをDBCSに移動しよう](/ocitutorials/database/dbcs201-pdb-plug/){:target="_blank"}**
 
 <br/>
 

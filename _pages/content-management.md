@@ -52,7 +52,7 @@ toc: true
 ## システム管理設定
 
 + **[Oracle Content Management のサイト・セキュリティとサイト・ガバナンスを設定する](/ocitutorials/content-management/77_sitesecuritygovernance/)**  
-    OCM で作成する Web サイトのサイト・セキュリティとサイト・ガバナンスの設定方法をステップ・バイ・ステップで紹介するチュートリアルです。サービス管理者は、ユーザーにサイト作成機能を利用させる前に、OCEインスタンスの利用目的にあわせたサイト・セキュリティを設定することを推奨します【所要時間:20分】
+    OCM で作成する Web サイトのサイト・セキュリティとサイト・ガバナンスの設定方法をステップ・バイ・ステップで紹介するチュートリアルです。サービス管理者は、ユーザーにサイト作成機能を利用させる前に、OCMインスタンスの利用目的にあわせたサイト・セキュリティを設定することを推奨します【所要時間:20分】
 
 
 <br />
@@ -67,6 +67,10 @@ toc: true
 
 + **[Oracle Content Management で作成したサイトのバナー画像を変更しよう](/ocitutorials/content-management/72_change_banner/)**  
     OCM のデフォルトテンプレートから作成された Web サイトのバナー画像を変更する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:20分】
+
+
++ **[[Oracle Cloud] Oracle Content Management で作成したWebサイトにGoogleフォームで作成したお問い合わせフォームを配置する](https://qiita.com/nakasato310/items/b3b45402eb6371c844a7)** (※外部サイト)  
+    OCM のリモートコンポーネントを利用して、Googleフォームで作成したお問い合わせフォームを部品化したカスタムコンポーネントを作成し、Webサイト上にドラッグ＆ドロップで配置できるようにします【所要時間:15分】
 
 
 ## Video Plus アセット
@@ -96,13 +100,11 @@ toc: true
     OCEのフォルダに保管される資料一式を、他のWebアプリケーションに埋め込み表示する方法について紹介します。【所要時間:30分】
 
 
+
 ## フロントエンド開発（OCMをHeadless CMSとして利用）
 
 + **[[Oracle Cloud] Oracle Content and Experience を Headless CMS として利用する React サンプルを動かしてみた](https://qiita.com/nakasato310/items/abf9f3ea8b85b09bae3d)** (※外部サイト)  
     サンプル公開されている React の Build a blog を動かすことで、OCEをヘッドレスCMSとして利用するイメージを理解します。【所要時間:30分】
-
-+ **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する](https://qiita.com/nakasato310/items/b160760dff00c5a53ca2)** (※外部サイト)  
-    GraphQL で Oracle Content Management のデータを取得する方法を紹介します【所要時間:15分】
 
 + **[Oracle Content ManagementをHeadless CMSとして使用したWebサイトをGatsbyで開発する](https://qiita.com/nakasato310/items/0ee3bcf0fbffcd898f2b)** (※外部サイト)  
     Oracle Content Managementのアセットリポジトリで管理・公開されるアセットをGatsbyで開発したWebサイトに表示できるようにします【所要時間:30分】
@@ -110,10 +112,23 @@ toc: true
 + **[Oracle Content Management をHeadless CMSとして利用するGatsbyサイトをNetlifyでホストする](https://qiita.com/nakasato310/items/4e07a47c66e3551e6282)** (※外部サイト)  
     この記事では、[Oracle Content ManagementをHeadless CMSとして使用したWebサイトをGatsbyで開発する](https://qiita.com/nakasato310/items/0ee3bcf0fbffcd898f2b)で作成したGatsbyサイトをNetlifyでホストして公開します。【所要時間:30分】
 
-
+<!--
 + **[React開発のためにOracle Content and ExperienceのStarter Site CLIを使ってみよう](https://community.oracle.com/tech/welcome/discussion/4474323/)** (※外部サイト)
 
     OCE のStarter Site CLI の使用方法をステップ・バイ・ステップで紹介するチュートリアルです。OCE のアセット機能を Headless CMS として利用し、フロントエンドは React で開発します【所要時間:30分】
+-->
+
+## GraphQLを使ってみよう
+
++ **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する](https://qiita.com/nakasato310/items/b160760dff00c5a53ca2)** (※外部サイト)  
+    GraphQL で Oracle Content Management のデータを取得する方法を紹介します【所要時間:15分】
+
++ **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する（２）](https://qiita.com/nakasato310/items/d69952933a85d11543a5)** (※外部サイト)  
+    GraphQL で Oracle Content Management で登録・公開される複数アイテム（アセット）の情報を取得する方法を紹介します【所要時間:15分】
+
++ **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する（３）](https://qiita.com/nakasato310/items/7b1e1c3223a737a82192)** (※外部サイト)  
+    GraphQLエクスプローラではなく、クライアントアプリケーション(React+Apollo Client)から OCM のアセット情報を取得する方法を紹介します【所要時間:20分】
+
 
 <br />
 
