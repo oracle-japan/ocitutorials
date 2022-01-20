@@ -1733,20 +1733,35 @@ key|value|説明
 
 ![6-003.jpg](6-003.jpg)
 
-画面左上の"ステータス"が「成功」になったら、[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、
-以下のコマンドを実行します。  
+画面左上の"ステータス"が「成功」になることを確認します。(しばらく時間がかかります)
+
+次に、ビルド・パイプラインが完了すると、自動的にデプロイメント・パイプラインが開始されるので、ステータスを確認します。  
+
+「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。
+
+![4-001.jpg](4-001.jpg)
+
+次に、「DevOpsプロジェクト・リソース」にある「デプロイメント」をクリックします。
+
+![6-007.jpg](6-007.jpg)
+
+以下のように、ステータスが「成功」になるまで、待機します。(しばらく時間がかかります)
+
+![6-008.jpg](6-008.jpg)
+
+ビルド・パイプライン、デプロイメント・パイプラインがどちらも「成功」のステータスになったら、[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、以下のコマンドを実行します。  
 
 ```sh
-kubectl get service
+kubectl get service oke-atp-helidon
 ```
 
 **コマンド結果**
 ```
-NAME        STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP       OS-IMAGE                  KERNEL-VERSION                   CONTAINER-RUNTIME
-10.0.24.2   Ready    node    1d    v1.13.5   10.0.24.2     xxx.xxx.xxx.xxx   Oracle Linux Server 7.6   4.14.34-1902.2.0.el7uek.x86_64   docker://18.9.1
+NAME                  TYPE           CLUSTER-IP       EXTERNAL-IP         PORT(S)       AGE
+oke-atp-helidon   LoadBalancer      10.96.165.239     ***.***.***.***    80:31667/TCP   79s
 ```
 
-`EXTERNAL-IP`の部分の`xxx.xxx.xxx.xxx`がパブリックIP(OCIのパブリックLoadBalabncerのIPアドレス)になります。  
+`EXTERNAL-IP`の部分の`***.***.***.***`がパブリックIP(OCIのパブリックLoadBalabncerのIPアドレス)になります。  
 
 Webブラウザを起動し、`http://パブリックIP`にアクセスしてみましょう。
 
@@ -1810,7 +1825,7 @@ git push
 
 ![7-002.jpg](7-002.jpg)
 
-ビルドが完了したら、[6. アプリケーションのデプロイ](#6アプリケーションのデプロイ)で確認したパブリックIPに再度アクセスします。  
+[6. アプリケーションのデプロイ](#6アプリケーションのデプロイ)と同じように、ビルド・パイプライン、デプロイメント・パイプラインがどちらも「成功」のステータスになったら、[6. アプリケーションのデプロイ](#6アプリケーションのデプロイ)で確認したパブリックIPに再度アクセスします。  
 ヘッダー画像が変更されていることが確認できます。
 
 ![7-003.jpg](7-003.jpg)
