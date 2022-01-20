@@ -344,7 +344,8 @@ key|value|
 
 ![2-011.jpg](2-011.jpg)
 
-先程のOCI Notificationsの画面に戻ると、サブスクリプションの状態が"Active"になっていることが確認できます。 
+先程のOCI Notificationsの画面に戻ると、サブスクリプションの状態が"Active"になっていることが確認できます。  
+(もし、"Active"になっていない場合はページを更新してください。)
 
 ![2-012.jpg](2-012.jpg)
 
@@ -390,6 +391,10 @@ OCI DevOpsインスタンス名はテナンシで一意になります。
 以下をクリックします。  
 
 ![2-021.jpg](2-021.jpg)
+
+以下のような画面が表示されます。
+
+![2-034.jpg](2-034.jpg)
 
 そのまま、![2-022.jpg](2-022.jpg)をクリックします。  
 
@@ -590,6 +595,33 @@ git config --global push.default simple
 ```sh
 git commit -m "commit"
 ```
+
+{% capture notice %}**commit時に表示されるメッセージ**  
+コミットする際に以下のようなメッセージが表示されることがあります。
+
+```
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+```
+
+その場合は以下のコマンドを実行後に再度コミットを行ってください。
+
+```
+git config --global user.email <自身のメールアドレス>  
+git config --global user.name <ユーザ名(任意)>
+```
+
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
 プッシュします。
 
@@ -941,7 +973,7 @@ cat oke-handson/sql/create_schema.sql
 
 ![3-009.jpg](3-009.jpg)
 
-SQL Developer WebのWorksheetで`select * from HANDSON.ITEMS`を入力して、緑色の矢印「文の実行」アイコンをクリックします。
+SQL Developer WebのWorksheetで`select * from HANDSON.ITEMS;`を入力して、緑色の矢印「文の実行」アイコンをクリックします。
 
 ITEMSテーブルの結果が表示されます。
 
@@ -1404,7 +1436,7 @@ key|value|説明
 ビルド・パイプラインの選択|handson_build|![4-033.jpg](4-033.jpg)をクリックし、"handson_build"をチェック
 イベント|"プッシュ"にチェック
 
-![4-035.jpg](4-035.jpg)をクリックします。  
+![4-035.jpg](4-035.jpg)
 
 ![4-036.jpg](4-036.jpg)をクリックします。  
 
@@ -1689,7 +1721,11 @@ key|value|説明
 
 ![5-027.jpg](5-027.jpg)をクリックします。  
 
-画面右上にある![6-001.jpg](6-001.jpg)をクリックします。  
+画面右上にある![6-001.jpg](6-001.jpg)をクリックします。 
+
+以下のような画面が表示されます。
+
+![6-006.jpg](6-006.jpg)
 
 ![6-002.jpg](6-002.jpg)をクリックします。
 
@@ -1697,7 +1733,7 @@ key|value|説明
 
 ![6-003.jpg](6-003.jpg)
 
-ビルドパイプラインが完了したら、[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、
+画面左上の"ステータス"が「成功」になったら、[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)し、
 以下のコマンドを実行します。  
 
 ```sh
