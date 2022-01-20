@@ -875,7 +875,7 @@ Manifestファイルを開き、`<ご自身のコンパートメントOCID>`の�
 {% capture notice %}**Manifestファイルの`dbName`について**  
 Manifestファイルの`dbName`はテナンシで一意になります。  
 集合ハンズオンなど複数人で同一環境を共有されている皆様は、`okeatp01`や`okeatptn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。  
-`dbName`は英数字のみで設定可能です。記号等は含めないでください。
+`dbName`は英数字のみで設定可能(英字で始める必要があり、最大14文字)です。記号等は含めないでください。
 {% endcapture %}
 <div class="notice--warning">
   {{ notice | markdownify }}
