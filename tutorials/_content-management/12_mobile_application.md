@@ -7,8 +7,8 @@ tags:
   - OCE
   - OCM
 header:
-  teaser: "/content-management/12_mobile_application/003.jpeg"
-  overlay_image: "/content-management/12_mobile_application/003.jpeg"
+  teaser: "/content-management/12_mobile_application/043.PNG"
+  overlay_image: "/content-management/12_mobile_application/043.PNG"
   overlay_filter: rgba(80,80,80,0.7)
 ---
 
