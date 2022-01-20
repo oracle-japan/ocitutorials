@@ -303,7 +303,7 @@ var store = [{
         "excerpt":"目次に戻る: Oracle Content Management のファイル共有機能を使ってみよう【初級編】 OCM のモバイル・アプリケーションを利用し、クラウド上のファイルやフォルダ、会話にいつでもどこからでも簡単にアクセスできます。OCM は、Android および iOS(iPhone/iPad) それぞれに対応したモバイルアプリケーションを提供します。サポートするモバイルOSの種類およびバージョンは、下記ドキュメントをご確認ください Supported Mobile Devices モバイル・アプリケーションは、Web ブラウザとほぼ同じ操作を提供します。主な提供機能は以下の通りです ドキュメント ファイル・フォルダの表示 フォルダの作成 ファイルのプレビュー ファイルのアップロード デバイス上のファイルのアップロード カメラで撮影した写真のアップロード ファイルのダウンロード（オフライン利用） 共有 メンバーリンクの共有 パブリックリンクの作成 ファイルの編集（Office アプリケーションがインストールされている場合） 会話 会話の表示、作成 メッセージの投稿 注釈の表示、設定 フラグ設定 通知フラグの確認 検索 ファイル、フォルダ、会話ほかの横断検索 アセット レビュー中アセットの表示 ワークフロー・タスクの表示 アセットの承認、却下 その他 割り当て容量の確認 アカウントの追加・管理 パスコード・ロック 【お知らせ】 この文書は、2021年11月時点での最新バージョン(21.11.1)を元に作成されてます。 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 前提条件 Oracle...","categories": [],
         "tags": ["OCE","OCM"],
         "url": "/ocitutorials/content-management/12_mobile_application/",
-        "teaser": "/ocitutorials/content-management/12_mobile_application/003.jpeg"
+        "teaser": "/ocitutorials/content-management/12_mobile_application/043.PNG"
       },{
         "title": "Oracle Content and Experience を Headless CMS として使ってみよう【初級編】",
         "excerpt":"この文書は Oracle Content and Experience (OCE) のアセット管理機能を Headless CMS として利用する基本的な方法をステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2021年7月時点での最新バージョン(21.6.1)を元に作成されてます。 チュートリアル内の画面ショットについては Oracle Content and Experience の現在のコンソール画面と異なっている場合があります。 前提条件 Oracle Content and Experience インスタンスを作成する OCE の利用ユーザーに、少なくとも下記4つのOCEインスタンスのアプリケーション・ロールが付与されていること CECContentAdministrator CECDeveloperUser CECEnterpriseUser CECRepositoryAdminisrrator [Memo] ユーザーの作成とアプリケーションロールの付与手順は、Oracle Content and Experience インスタンスの利用ユーザーを作成する をご確認ください。 1. アセット機能の利用準備 OCEのアセット管理機能を利用するための準備作業を行います。アセット・リポジトリ、公開チャネル、コンテンツ・タイプをそれぞれ作成し、関連付けを行います。 1.1 アセット・リポジトリを作成する アセット・リポジトリ（以降リポジトリ）を作成します。 リポジトリとは 「デジタル・アセット（画像）やコンテンツ・アイテム（ニュースやブログなどの構造化コンテンツ）を保管・管理する器」 です。リポジトリは複数作成することができます。 OCE インスタンスのアクセスします。OCE インスタンスの URL...","categories": [],
@@ -394,6 +394,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/database/dbcs106-dataguard/",
         "teaser": "/ocitutorials/database/dbcs106-dataguard/dataguard08.png"
+      },{
+        "title": "201: オンプレミスのPDBをDBCSに移動しよう",
+        "excerpt":"はじめに Database Cloud Service (DBCS)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。 CDBで構成されているオンプレミスのデータベースからDBCSへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。 ここでは、オンプレミスのデータベース(12.2.0.1)からDBCS(19.12.0.0.0)へPDBを移行する手順をご紹介します。 前提条件 : 移行元のデータベースがCDBで構成されていること Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること DBCS上に最新バージョンのautoupgrade.jarが配置されていること ※最新版は Doc ID 2485457.1 からダウンロード可能です 目次 1. 移行元のデータベースからPDBをアンプラグする 2. DBCSにPDBをプラグし、アップグレードを行う 3. 表領域の暗号化を行う 所要時間 : 約1時間30分 1. 移行元のデータベースからPDBをアンプラグする まずは移行元のデータベースから、移行対象のPDBをアンプラグします。 アンプラグはDatabase Configuration Assistantツールを使って行う事も可能ですが、今回はコマンドでの実施手順を紹介します。 対象PDBの構成確認します PDBの移動にあたってデータファイルをDBCSに持っていく必要があります。 まずは下記SELECT文にて対象PDBで使用しているデータファイルのディレクトリを確認します。 alter session set container=&lt;pdb_name&gt;; select...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/dbcs201-pdb-plug/",
+        "teaser": "/ocitutorials/database/dbcs201-pdb-plug/pdb-plug05.png"
       },{
         "title": "101: ADBインスタンスを作成してみよう",
         "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、Database Actionsを使用してアクセスしてみます。 目次 1. リージョンを設定し、コンパートメントを用意しよう 2. ADBインスタンスを作成してみよう 3. Database Actionsで操作してみよう 所要時間 : 約20分 1. リージョンを設定し、コンパートメントを用意しよう 1-1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足...","categories": [],
