@@ -159,6 +159,11 @@ OCI DevOpsでは、OCI Notificationsサービスの「トピック」と「サ�
 
 ![](1-014.png)
 
+**トピックの名前について**  
+トピックの名前はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`oci-devops-handson-01`や`handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
+
 「名前」に「oci-devops-handson」と入力します。
 
 ![](1-015.png)
@@ -244,9 +249,9 @@ OCI DevOpsを利用する上で、必要となる動的グループを作成し�
 
 動的グループ|ルール|説明|
 -|-
-OCI_DevOps_Dynamic_Group|All {resource.type = 'devopsrepository', resource.compartment.id = 'コンパートメントOCID'|OCI DevOpsのコード・リポジトリを利用するために必要な動的グループ
-OCI_DevOps_Dynamic_Group|All {resource.type = 'devopsbuildpipeline', resource.compartment.id = 'コンパートメントOCID'|ビルド・パイプラインを利用するために必要な動的グループ
-OCI_DevOps_Dynamic_Group|All {resource.type = 'devopsdeploypipeline', resource.compartment.id = 'コンパートメントOCID'|デプロイメント・パイプラインを利用するために必要な動的グループ
+OCI_DevOps_Dynamic_Group|All {resource.type = 'devopsrepository', resource.compartment.id = 'コンパートメントOCID'}|OCI DevOpsのコード・リポジトリを利用するために必要な動的グループ
+OCI_DevOps_Dynamic_Group|All {resource.type = 'devopsbuildpipeline', resource.compartment.id = 'コンパートメントOCID'}|ビルド・パイプラインを利用するために必要な動的グループ
+OCI_DevOps_Dynamic_Group|All {resource.type = 'devopsdeploypipeline', resource.compartment.id = 'コンパートメントOCID'}|デプロイメント・パイプラインを利用するために必要な動的グループ
 
 **動的グループについて**  
 Oracle Cloud Infrastrctureには動的グループという考え方があります。
@@ -254,15 +259,20 @@ Oracle Cloud Infrastrctureには動的グループという考え方がありま
 動的グループの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)のページをご確認ください。
 {: .notice--info}
 
+**動的グループの名前について**  
+動的グループの名前はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`OCI_DevOps_Dynamic_Group_01`や`OCI_DevOps_Dynamic_Group_tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
+
 #### OCI DevOpsで利用するポリシー
 
 OCI DevOpsを利用する上で、必要となるポリシーを作成します。OCI DevOpsで設定するポリシーは以下となります。
 
 ポリシー|説明
 -|-
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'|OCI DevOpsの各機能を利用するために必要なポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'|OCI DevOpsがOCIRやアーティファクト・レジストリを管理するために必要なポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'|OCI DevOpsがOKEを管理するために必要なポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id コンパートメントOCID|OCI DevOpsの各機能を利用するために必要なポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id コンパートメントOCID|OCI DevOpsがOCIRやアーティファクト・レジストリを管理するために必要なポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id コンパートメントOCID|OCI DevOpsがOKEを管理するために必要なポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービスを利用するために必要なポリシー
 
 **ポリシーについて**  
@@ -422,6 +432,11 @@ OCI DevOpsは、プロジェクト単位で管理する仕組みです。最初�
 「プロジェクト名」に「oci-devops-handson」と入力して、「トピックの選択」ボタンをクリックします。
 
 ![](1-034.png)
+
+**プロジェクト名について**  
+プロジェクト名はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`oci-devops-handson-01`や`oci-devops-handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
 
 「トピック」が「oci-devops-handson」であることを確認します。
 
@@ -687,6 +702,11 @@ OCIでは、Oracle Container Image Registry(OCIR)を利用します。
 
 ![](1-061.png)
 
+**レポジトリ名について**  
+OCIRのレポジトリ名はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`devops-handson01`や`devops-handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
+
 以上でOCIRのセットアップは完了です。
 
 ### 4-2.アーティファクト・レジストリの作成
@@ -717,6 +737,8 @@ OCI DevOpsからOKEクラスタにデプロイする際に利用するマニフ�
 Cloud Shellに戻って、クローンしたサンプルコードにある「deploy.yaml」のコンテナイメージレジストリのパスを変更します。
 
 「＜your-object-storage-namespace＞」の箇所を事前に取得した`<オブジェクト・ストレージ・ネームスペース>`に変更して、保存します。
+
+リポジトリ名において、「devops-handson-tn」(例)のように固有の名前を付与した場合は、合わせて変更します。
 
 ※リージョンが、アッシュバーン(us-ashburn-1)ではない場合、環境に合わせて「iad.ocir.io」の部分も変更してください。
 
@@ -828,6 +850,8 @@ OCI DevOpsでセットアップしたアOCIRとアーティファクト・レジ
 
 「名前」に「ocir」と入力、「コンテナ・レジストリのイメージへの完全修飾パスを入力してください」には、マニフェストで書き換えたパスを入力します。
 以下「＜your-object-storage-namespace＞」には、事前に取得した`<オブジェクト・ストレージ・ネームスペース>`を入力してください。
+
+リポジトリ名において、「devops-handson-tn」(例)のように固有の名前を付与した場合は、合わせて変更します。
 
 ```sh
 iad.ocir.io/<your-object-storage-namespace>/devops-handson:${BUILDRUN_HASH}
