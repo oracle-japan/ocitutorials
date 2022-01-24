@@ -273,7 +273,7 @@ OCI DevOpsを利用する上で、必要となるポリシーを作成します�
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id コンパートメントOCID|OCI DevOpsの各機能を利用するために必要なポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id コンパートメントOCID|OCI DevOpsがOCIRやアーティファクト・レジストリを管理するために必要なポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id コンパートメントOCID|OCI DevOpsがOKEを管理するために必要なポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービスを利用するために必要なポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id コンパートメントOCID|OCI DevOpsがOCI Notificationsサービスを利用するために必要なポリシー
 
 **ポリシーについて**  
 Oracle Cloud Infrastrctureにはポリシーという考え方があります。 
