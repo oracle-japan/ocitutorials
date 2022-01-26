@@ -56,11 +56,11 @@ OCI GoldenGateサービスは、構成、ワークロード・スケーリング
 
     ```sql
     -- ユーザを作成(CDB構成のため接頭辞としてC##をつけた共通ユーザを作成)
-    create user "c##oggadmin" identified by Welcome#1Welcome#1 default tablespace users temporary tablespace temp quota unlimited on users;
+    create user "C##OGGADMIN" identified by Welcome#1Welcome#1 default tablespace users temporary tablespace temp quota unlimited on users;
     -- dba権限の付与
-    grant dba to "c##oggadmin" container=all; 
+    grant dba to "C##OGGADMIN" container=all; 
     -- GG実行権限の付与
-    exec dbms_goldengate_auth.grant_admin_privilege('c##oggadmin',container=>'ALL');
+    exec dbms_goldengate_auth.grant_admin_privilege('C##OGGADMIN',container=>'ALL');
     ```
 
 1. アーカイブ・ログ・モードの確認
@@ -342,6 +342,10 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 
 
 1. **パラメータ・ファイル** 画面にて、Replicatに関するパラメータを入力することができます。**作成および実行**を選択します。
+今回は下記内容を追記しています。
+    ```sql
+    MAP pdb1.hr.*, TARGET hr.*;
+    ```
     ![replicat4](replicat4.png)
 
 1. **概要** 画面に遷移し、作成したReplicatが表示されます。
