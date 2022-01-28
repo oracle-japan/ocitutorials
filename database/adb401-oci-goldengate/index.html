@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-01-25T13:52:44+09:00">
+  <meta property="article:published_time" content="2022-01-28T11:00:21+09:00">
 
 
 
@@ -355,7 +355,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="401 : OCI GoldenGateによるDBCSからADBへのデータ連携">
     <meta itemprop="description" content="OCI GoldenGateのインスタンス作成から対象のデータべース登録、データ連携の設定までを紹介します。基本的な設定の流れを学習しましょう。">
-    <meta itemprop="datePublished" content="2022-01-25T13:52:44+09:00">
+    <meta itemprop="datePublished" content="2022-01-28T11:00:21+09:00">
     
 
     <div class="page__inner-wrap">
@@ -421,11 +421,11 @@ OCI GoldenGateサービスは、構成、ワークロード・スケーリング
  SQL*Plusを起動して以下を実行してください。</p>
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">-- ユーザを作成(CDB構成のため接頭辞としてC##をつけた共通ユーザを作成)</span>
- <span class="k">create</span> <span class="k">user</span> <span class="nv">"c##oggadmin"</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">Welcome</span><span class="o">#</span><span class="mi">1</span><span class="n">Welcome</span><span class="o">#</span><span class="mi">1</span> <span class="k">default</span> <span class="n">tablespace</span> <span class="n">users</span> <span class="k">temporary</span> <span class="n">tablespace</span> <span class="k">temp</span> <span class="n">quota</span> <span class="n">unlimited</span> <span class="k">on</span> <span class="n">users</span><span class="p">;</span>
+ <span class="k">create</span> <span class="k">user</span> <span class="nv">"C##OGGADMIN"</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">Welcome</span><span class="o">#</span><span class="mi">1</span><span class="n">Welcome</span><span class="o">#</span><span class="mi">1</span> <span class="k">default</span> <span class="n">tablespace</span> <span class="n">users</span> <span class="k">temporary</span> <span class="n">tablespace</span> <span class="k">temp</span> <span class="n">quota</span> <span class="n">unlimited</span> <span class="k">on</span> <span class="n">users</span><span class="p">;</span>
  <span class="c1">-- dba権限の付与</span>
- <span class="k">grant</span> <span class="n">dba</span> <span class="k">to</span> <span class="nv">"c##oggadmin"</span> <span class="n">container</span><span class="o">=</span><span class="k">all</span><span class="p">;</span> 
+ <span class="k">grant</span> <span class="n">dba</span> <span class="k">to</span> <span class="nv">"C##OGGADMIN"</span> <span class="n">container</span><span class="o">=</span><span class="k">all</span><span class="p">;</span> 
  <span class="c1">-- GG実行権限の付与</span>
- <span class="k">exec</span> <span class="n">dbms_goldengate_auth</span><span class="p">.</span><span class="n">grant_admin_privilege</span><span class="p">(</span><span class="s1">'c##oggadmin'</span><span class="p">,</span><span class="n">container</span><span class="o">=&gt;</span><span class="s1">'ALL'</span><span class="p">);</span>
+ <span class="k">exec</span> <span class="n">dbms_goldengate_auth</span><span class="p">.</span><span class="n">grant_admin_privilege</span><span class="p">(</span><span class="s1">'C##OGGADMIN'</span><span class="p">,</span><span class="n">container</span><span class="o">=&gt;</span><span class="s1">'ALL'</span><span class="p">);</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -761,9 +761,11 @@ OCI上にデータベースを登録しておくことで、この後の工程�
  <img src="replicat3.png" alt="replicat3" /></li>
     </ul>
   </li>
-  <li>
-    <p><strong>パラメータ・ファイル</strong> 画面にて、Replicatに関するパラメータを入力することができます。<strong>作成および実行</strong>を選択します。
- <img src="replicat4.png" alt="replicat4" /></p>
+  <li><strong>パラメータ・ファイル</strong> 画面にて、Replicatに関するパラメータを入力することができます。<strong>作成および実行</strong>を選択します。
+今回は下記内容を追記しています。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">MAP</span> <span class="n">pdb1</span><span class="p">.</span><span class="n">hr</span><span class="p">.</span><span class="o">*</span><span class="p">,</span> <span class="n">TARGET</span> <span class="n">hr</span><span class="p">.</span><span class="o">*</span><span class="p">;</span>
+</code></pre></div>    </div>
+    <p><img src="replicat4.png" alt="replicat4" /></p>
   </li>
   <li><strong>概要</strong> 画面に遷移し、作成したReplicatが表示されます。
  <img src="replicat5.png" alt="replicat5" /></li>
@@ -823,7 +825,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-01-25T13:52:44+09:00">January 25, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-01-28T11:00:21+09:00">January 28, 2022</time></p>
 
 
       </footer>
