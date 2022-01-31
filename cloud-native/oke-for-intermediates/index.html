@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-01-28T11:00:21+09:00">
+  <meta property="article:published_time" content="2022-01-31T10:59:31+09:00">
 
 
 
@@ -301,7 +301,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、マネージドなCI/CDサービスであるOCI DevOpsや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。">
-    <meta itemprop="datePublished" content="2022-01-28T11:00:21+09:00">
+    <meta itemprop="datePublished" content="2022-01-31T10:59:31+09:00">
     
 
     <div class="page__inner-wrap">
@@ -695,6 +695,58 @@ DevOpsでは、利用する機能やデプロイ先に応じて、今回設定�
 </code></pre></div></div>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./prepare.sh
+</code></pre></div></div>
+
+<p>以下のように出力されれば問題ありません。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxxxx.xxxxxx@gmail.com"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2022-01-31T01:35:54.465Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"matching-rule"</span>: <span class="s2">"any {resource.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq',instance.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq'}"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-01-31T01:35:54.528000+00:00"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"66c9058cf8f1145ce9047130c4a266d816e9dfbf"</span>
+<span class="o">}</span>
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxx.xxxx@gmail.com"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2022-01-31T01:35:57.108Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.policy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
+    <span class="s2">"statements"</span>: <span class="o">[</span>
+      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>
+    <span class="o">]</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-01-31T01:35:57.220000+00:00"</span>,
+    <span class="s2">"version-date"</span>: null
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"e0fb30d026d2a4f091058c2f686d51996ea59f8c"</span>
+<span class="o">}</span>
 </code></pre></div></div>
 
 <p>これでポリシー作成は完了です。</p>
@@ -2912,7 +2964,7 @@ oke-atp-helidon   LoadBalancer      10.96.165.239     ***.***.***.***    80:3166
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-01-28T11:00:21+09:00">January 28, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-01-31T10:59:31+09:00">January 31, 2022</time></p>
 
 
       </footer>
