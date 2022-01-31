@@ -269,6 +269,59 @@ chmod +x prepare.sh
 ./prepare.sh
 ```
 
+以下のように出力されれば問題ありません。
+
+```sh
+ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
+{
+  "data": {
+    "compartment-id": "ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "defined-tags": {
+      "Oracle-Tags": {
+        "CreatedBy": "oracleidentitycloudservice/xxxxxx.xxxxxx@gmail.com",
+        "CreatedOn": "2022-01-31T01:35:54.465Z"
+      }
+    },
+    "description": "OCI_DevOps_Dynamic_Group",
+    "freeform-tags": {},
+    "id": "ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "inactive-status": null,
+    "lifecycle-state": "ACTIVE",
+    "matching-rule": "any {resource.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq',instance.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq'}",
+    "name": "OCI_DevOps_Dynamic_Group",
+    "time-created": "2022-01-31T01:35:54.528000+00:00"
+  },
+  "etag": "66c9058cf8f1145ce9047130c4a266d816e9dfbf"
+}
+{
+  "data": {
+    "compartment-id": "ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "defined-tags": {
+      "Oracle-Tags": {
+        "CreatedBy": "oracleidentitycloudservice/xxxx.xxxx@gmail.com",
+        "CreatedOn": "2022-01-31T01:35:57.108Z"
+      }
+    },
+    "description": "OCI_DevOps_Policy",
+    "freeform-tags": {},
+    "id": "ocid1.policy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "inactive-status": null,
+    "lifecycle-state": "ACTIVE",
+    "name": "OCI_DevOps_Policy",
+    "statements": [
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"
+    ],
+    "time-created": "2022-01-31T01:35:57.220000+00:00",
+    "version-date": null
+  },
+  "etag": "e0fb30d026d2a4f091058c2f686d51996ea59f8c"
+}
+```
+
 これでポリシー作成は完了です。  
 
 ホームディレクトリに戻っておきます。  
