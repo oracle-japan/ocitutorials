@@ -1,6 +1,6 @@
 ---
-title: "204: マーケットプレイスからの仮想マシンのセットアップ方法"
-excerpt: "Oracle Cloud Developer Image から仮想マシンをセットアップする方法をご紹介します。"
+title: "204: 開発者向け仮想マシンのセットアップ方法"
+excerpt: "Oracle Linux Cloud Developer イメージから仮想マシンをセットアップする方法をご紹介します。"
 
 order: "3_204"
 layout: single
@@ -18,12 +18,12 @@ header:
 
 後続のチュートリアルで利用する開発環境をセットアップしましょう。
 
-Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージをマーケットプレイスで公開しています。  
-本ページではその中から、開発者向けのLinux仮想マシンである **`Oracle Cloud Developer Image`** をセットアップする手順を記載しています。
+Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージを提供しています。
+本ページではその中から、開発者向けのLinux仮想マシンである **`Oracle Linux Cloud Developer イメージ`** をセットアップする手順を記載しています。
 
-**`Oracle Cloud Developer Image `**は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。
+**`Oracle Linux Cloud Developer イメージ`**は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。
 
-尚、マーケットプレイスの詳細については [こちら](https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm){:target="_blank"} を参照ください。  
+尚、Oracle Linux Cloud Developer イメージの詳細については [こちら](https://docs.oracle.com/ja-jp/iaas/oracle-linux/developer/index.htm#x86-components){:target="_blank"} を参照ください。  
 またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の [その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance/){:target="_blank"} の手順も併せてご確認ください。
 
 <br>
@@ -38,7 +38,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 
 **目次**
 
-- [1. マーケットプレイスへのアクセス・仮想マシンの作成](#anchor1)
+- [1. 仮想マシンの作成](#anchor1)
 - [2. 仮想マシンへのアクセス](#anchor2)
 - [3. 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置](#anchor3)
 - [4. ADBに接続するための設定ファイルの編集](#anchor4)
@@ -49,24 +49,17 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
 <a id="anchor1"></a>
 <br>
 
-# 1. マーケットプレイスへのアクセス・仮想マシンの作成
+# 1. 仮想マシンの作成
 
-1. メニューバーから **`マーケットプレイス`** を選択し、**`マーケットプレイス`** というセクションの **`すべてのアプリケーション`** をクリックします。
+1. メニューバーから **`コンピュート`** を選択し、**`インスタンス`** をクリックします。
     ![img1_1.png](img1_1.png)
 
-2. カテゴリを **`管理者ツール`** に絞り、**`Oracle Cloud Developer Image`** をクリックします。
+2. **`インスタンスの作成`** をクリックします。
     ![img1_2.png](img1_2.png)
 
-3. 仮想マシンを配置するコンパートメントを指定します。
-    <br>任意のコンパートメントを選んでいただいて構いません。
-<br>本ハンズオンガイドの [101: ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning) を行った方は、作成したコンパートメント（**`adb-hol-01`**）を選択してください。
-<br>使用許諾条件に同意するチェックを入れて、**`インスタンスの起動`** をクリックします。
-<br>作成したコンパートメント表示されない場合は、ブラウザをリロード（F5）してください。
-    ![img1_3.png](img1_3.png)
+3. インスタンス名を入力します。例 :  devIns01
 
-4. インスタンス名を入力します。例 :  devIns01
-
-5. **`配置、イメージとシェイプ、ネットワークキング`** の項目を入力していきます。
+4. **`配置、イメージとシェイプ、ネットワークキング`** の項目を入力していきます。
 
     * **`配置`**
     <br>仮想マシンを、リージョン内のどの可用性ドメイン（AD）に配置するかを指定します。
@@ -74,7 +67,9 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
     ![img1_5_1.png](img1_5_1.png)
 
     * **`イメージとシェイプ`**
-    <br>イメージ：**`Oracle Cloud Developer Image`**
+    <br>イメージ：**`Oracle Linux Cloud Developer`**
+        <br>**`イメージの変更`** をクリックし、**`Oracle Linux Cloud Developer`**にチェックを入れます。
+        <br>![img1_3.png](img1_3.png)
       <br>シェイプ：**`VM.Standard2.1（仮想マシン）`**
         <br>**`シェイプの変更`** から変更します。
         * インスタンス・タイプ：**`仮想マシン`**
@@ -276,7 +271,7 @@ ADBに接続するためには、クレデンシャル・ウォレット（Crede
 
     >**Note**
     >
-    >アプリ毎に接続するインスタンスを切り替えたい場合は、インスタンス毎に　wallets_atp01　といったようにディレクトリを定義し、アプリ毎に環境変数TNS_ADMINのパスを切り替えると簡単です。
+    >アプリ毎に接続するインスタンスを切り替えたい場合は、インスタンス毎に wallets_atp01 といったようにディレクトリを定義し、アプリ毎に環境変数TNS_ADMINのパスを切り替えると簡単です。
 
 7. $HOME/wallets ディレクトリに移動します。
 
