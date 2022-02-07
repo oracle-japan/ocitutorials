@@ -461,8 +461,8 @@ var store = [{
         "url": "/ocitutorials/database/adb203-bulk-query/",
         "teaser": "/ocitutorials/database/adb203-bulk-query/img0.png"
       },{
-        "title": "204: マーケットプレイスからの仮想マシンのセットアップ方法",
-        "excerpt":"はじめに 後続のチュートリアルで利用する開発環境をセットアップしましょう。 Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージをマーケットプレイスで公開しています。 本ページではその中から、開発者向けのLinux仮想マシンである Oracle Cloud Developer Image をセットアップする手順を記載しています。 Oracle Cloud Developer Image は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。 尚、マーケットプレイスの詳細については こちら を参照ください。 またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の その3 - インスタンスを作成する の手順も併せてご確認ください。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること ※クレデンシャルウォレットのダウンロード方法については、104: ウォレットを利用してADBに接続してみよう の、1. クレデンシャル・ウォレットのダウンロード をご確認ください。 目次 1. マーケットプレイスへのアクセス・仮想マシンの作成 2. 仮想マシンへのアクセス 3....","categories": [],
+        "title": "204: 開発者向け仮想マシンのセットアップ方法",
+        "excerpt":"はじめに 後続のチュートリアルで利用する開発環境をセットアップしましょう。 Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージを提供しています。 本ページではその中から、開発者向けのLinux仮想マシンである Oracle Linux Cloud Developer イメージ をセットアップする手順を記載しています。 Oracle Linux Cloud Developer イメージは、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。 尚、Oracle Linux Cloud Developer イメージの詳細については こちら を参照ください。 またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の その3 - インスタンスを作成する の手順も併せてご確認ください。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること ※クレデンシャルウォレットのダウンロード方法については、104: ウォレットを利用してADBに接続してみよう の、1. クレデンシャル・ウォレットのダウンロード をご確認ください。 目次...","categories": [],
         "tags": [],
         "url": "/ocitutorials/database/adb204-setup-VM/",
         "teaser": "/ocitutorials/database/adb204-setup-VM/image_top.png"
@@ -532,6 +532,12 @@ var store = [{
         "tags": ["graph","PGQL","oraclecloud","autonomous_database"],
         "url": "/ocitutorials/database/adb215-graph/",
         "teaser": null
+      },{
+        "title": "216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション",
+        "excerpt":"はじめに Autonomous Database(ADB)は、事前定義されたメンテナンス・ウィンドウの中でデータベースに自動的にパッチを適用します。ADBではこのパッチ適用によって性能劣化が生じない仕組みが実装されています。 それでもアプリケーションの性能劣化に不安がある場合に利用できるのが、先行してパッチを適用できるearly patchという機能です。パッチは毎週もしくは隔週で一斉に当てられますが、このearly patchでは通常より1週早く同じパッチが当てられます。テスト環境用ADBをearly patchで作成しておくことで、本番環境適用前にパッチ適用の影響テストを行うことができます。 ※early patchは、Ashburn・Phoenix・London・Frankfurtリージョンでのみ利用可能な機能です。(2022/1時点) 東京や大阪リージョンで利用したい場合は、担当営業までご相談ください。 また、ADBでは、Oracle Databaseオプション「Real Application Testing(RAT)」に含まれる機能の1つであるSQL Performance Analyzer(SPA)を使用することができます。 SPAを利用すると、システム変更前後のSQLワークロードの実行統計を比較して変更の影響を測定することができます。詳細はこちらをご覧ください。 Real Application Testing 参考資料 マニュアル：SQL Performance Analyzer 本記事では、early patchとSPAを併用することで、本番環境へのパッチ適用の影響をテスト環境で事前に確認する手順をご紹介します。 目次 : 1.環境の準備 2.SQLチューニングセット(STS)の作成 3.テスト環境用ADBのクローニング 4.STSの分析、レポートの作成 5.パッチ適用の事前通知（参考） 6.クリーンアップ（参考） 7.おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約60分 1. 環境の準備 1-1. 本番環境用ADBの作成 まずは本番環境用ADBであるATPprodを作成します。ADBの構成は以下になります。なお、本記事ではADBをはじめとする各リソースは全てAshburnリージョンで作成します。 ワークロード・タイプ：トランザクション処理 デプロイメント・タイプ：共有インフラストラクチャ...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb216-patch-spa/",
+        "teaser": "/ocitutorials/database/adb216-patch-spa/teaser.png"
       },{
         "title": "301 : 移行元となるデータベースを作成しよう",
         "excerpt":"はじめに 既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？ 従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは移行編としてそれらの方法をご紹介しています。 Autonomous Database を使ってみよう（移行編） 301: 移行元となるデータベースを作成しよう（本章） 302: スキーマ・アドバイザを活用しよう 303: Data Pumpを利用してデータを移行しよう [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）] 本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しDBCSインスタンスを作成します。 目次 : 1.移行元となるDBCSインスタンスの作成 2.移行対象となるサンプルスキーマ(HR)をインストール 3.サンプルスキーマ(HR)への接続、スキーマの確認 所要時間 : 約150分 (DBCSインスタンスの作成時間を含む) 1. 移行元となるDBCSインスタンスの作成 まず、「Oracle Cloud で Oracle Database を使おう(DBCS)」 を参考に、DBCSインスタンスを作成してください。 TeraTermを起動しDBCSインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。 以降では、DBCSインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です） ホスト名接頭辞 : dbcs01 データベースのバージョン：12.2 パスワード：WelCome123#123# PDBの名前：pdb1 2. 移行対象となるHRスキーマをインストール 次に作成したDBCSインスタンス内に、移行対象となるHRスキーマを作成します。...","categories": [],
@@ -760,6 +766,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/intermediates/byok-with-vault/",
         "teaser": null
+      },{
+        "title": "OCI Database Cloud ServiceでDatabase Managementを有効化する",
+        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのDatabase Cloud Serviceが1インスタンス作成されていること DBCSインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のDBCSがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/intermediates/dbcs-database-management/",
+        "teaser": "/ocitutorials/intermediates/dbcs-database-management/dbmgmt1.png"
       },{
         "title": "Web Application Firewall(WAF)を使ってWebサーバを保護する",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
