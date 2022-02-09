@@ -437,8 +437,8 @@ var store = [{
         "url": "/ocitutorials/database/adb106-json/",
         "teaser": "/ocitutorials/database/adb106-json/img00.png"
       },{
-        "title": "107: ADBの付属ツールで機械学習を始めよう(AutoML UI)",
-        "excerpt":"   Oracle AutoML UIを使えば、ビジネスユーザやBIベースで分析を行うユーザが機械学習モデルをビルド、デプロイすることが可能になります。 AutoML UIのチュートリアルは下記に用意がございますので、アクセスしてください。   OracleのAutoML UIで気軽に明日雨が降るか予測しよう     以上で、この章は終了です。  次の章にお進みください。     ページトップへ戻る   ","categories": [],
+        "title": "107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)",
+        "excerpt":"はじめに この章では、Autonomous Databaseの複数の付属ツール(Database Actions、OML AutoML UI、OML Notebook、Oracle Application Express(APEX))を活用し、ワンストップの機械学習環境を体感していただきます。今回は、機械学習の題材として、タイタニック問題を扱います。タイタニックの乗客情報から乗客の生存予測を行うモデルを作成します。モデル作成後、そのモデルに実際に予測をさせて、更にその予測をアプリケーションでのレポートまで行います。データベースの中で機械学習のプロセスが完結しているOracleの機械学習へのアプローチを体験していただけると思います。 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされているZipファイルをダウンロードし、解凍していること OMLチュートリアルで資料するファイル 目次 1. OMLユーザ新規作成 2. Database Actionsでデータロード 3. OML AutoML UIで生存予測モデル作成 4. OML Notebookで予測をかける 5. APEXで予測結果をレポート 6. まとめ 7. 参考資料 所要時間 : 約60分 1. OMLユーザ新規作成 まずOMLを利用する権限を持つユーザをDatabase Actionsで新規作成していきます。 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 管理 &gt; データベース・ユーザーをクリックしてください。 +ユーザの作成をクリックしてください。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/database/adb107-machine-learning/",
         "teaser": "/ocitutorials/database/adb107-machine-learning/img1.png"

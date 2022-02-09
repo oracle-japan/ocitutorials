@@ -9,8 +9,8 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>107: ADBの付属ツールで機械学習を始めよう(AutoML UI) | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="オーストラリアの明日の天気を予測するモデルを作ってみましょう。機械学習に関する深い知識がなくても大丈夫">
+<!-- begin _includes/seo.html --><title>107: ADBの付属ツールで機械学習(予測モデルからデプロイまで) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="タイタニック号の乗客情報から生存予測モデルを作成し、アプリで予測結果のレポートまでADBの中で行います。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -22,11 +22,11 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="107: ADBの付属ツールで機械学習を始めよう(AutoML UI)">
+<meta property="og:title" content="107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb107-machine-learning/">
 
 
-  <meta property="og:description" content="オーストラリアの明日の天気を予測するモデルを作ってみましょう。機械学習に関する深い知識がなくても大丈夫">
+  <meta property="og:description" content="タイタニック号の乗客情報から生存予測モデルを作成し、アプリで予測結果のレポートまでADBの中で行います。">
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-02-09T11:21:13+09:00">
+  <meta property="article:published_time" content="2022-02-09T11:48:10+09:00">
 
 
 
@@ -175,12 +175,12 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          107: ADBの付属ツールで機械学習を始めよう(AutoML UI)
+          107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)
 
         
       </h1>
       
-        <p class="page__lead">オーストラリアの明日の天気を予測するモデルを作ってみましょう。機械学習に関する深い知識がなくても大丈夫
+        <p class="page__lead">タイタニック号の乗客情報から生存予測モデルを作成し、アプリで予測結果のレポートまでADBの中で行います。
 </p>
       
       
@@ -224,7 +224,7 @@
     
       
       
-        <li class="current">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</li>
+        <li class="current">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</li>
       
     
   </ol>
@@ -284,7 +284,7 @@
         
           <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/" class="active">107: ADBの付属ツールで機械学習を始めよう(AutoML UI)</a></li></p>
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/" class="active">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
         
@@ -355,9 +355,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="107: ADBの付属ツールで機械学習を始めよう(AutoML UI)">
-    <meta itemprop="description" content="オーストラリアの明日の天気を予測するモデルを作ってみましょう。機械学習に関する深い知識がなくても大丈夫">
-    <meta itemprop="datePublished" content="2022-02-09T11:21:13+09:00">
+    <meta itemprop="headline" content="107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)">
+    <meta itemprop="description" content="タイタニック号の乗客情報から生存予測モデルを作成し、アプリで予測結果のレポートまでADBの中で行います。">
+    <meta itemprop="datePublished" content="2022-02-09T11:48:10+09:00">
     
 
     <div class="page__inner-wrap">
@@ -368,15 +368,432 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-omlユーザ新規作成">1. OMLユーザ新規作成</a></li><li><a href="#2-database-actionsでデータロード">2. Database Actionsでデータロード</a></li><li><a href="#3-oml-automl-uiで生存予測モデル作成">3. OML AutoML UIで生存予測モデル作成</a></li><li><a href="#4-oml-notebookで予測をかける">4. OML Notebookで予測をかける</a></li><li><a href="#5-apexで予測結果をレポート">5. APEXで予測結果をレポート</a></li><li><a href="#6-まとめ">6. まとめ</a></li><li><a href="#7-参考資料">7. 参考資料</a></li></ul>
 
             </nav>
           </aside>
         
         <p><a id="anchor0"></a></p>
 
-<p>Oracle AutoML UIを使えば、ビジネスユーザやBIベースで分析を行うユーザが機械学習モデルをビルド、デプロイすることが可能になります。
-AutoML UIのチュートリアルは下記に用意がございますので、アクセスしてください。</p>
+<h1 id="はじめに">はじめに</h1>
+
+<p>この章では、<strong>Autonomous Databaseの複数の付属ツール</strong>(Database Actions、OML AutoML UI、OML Notebook、Oracle Application Express(APEX))を活用し、<strong>ワンストップの機械学習環境</strong>を体感していただきます。今回は、機械学習の題材として、<strong>タイタニック問題</strong>を扱います。タイタニックの乗客情報から<strong>乗客の生存予測を行うモデル</strong>を作成します。モデル作成後、そのモデルに実際に予測をさせて、更にその予測をアプリケーションでのレポートまで行います。<strong>データベースの中で機械学習のプロセスが完結</strong>しているOracleの機械学習へのアプローチを体験していただけると思います。</p>
+
+<p><br /></p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <li>以下にリンクされているZipファイルをダウンロードし、解凍していること
+    <ul>
+      <li><a href="/ocitutorials/database/adb107-machine-learning/ADB_OML_handson.zip">OMLチュートリアルで資料するファイル</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. OMLユーザ新規作成</a></li>
+  <li><a href="#anchor2">2. Database Actionsでデータロード</a></li>
+  <li><a href="#anchor3">3. OML AutoML UIで生存予測モデル作成</a></li>
+  <li><a href="#anchor4">4. OML Notebookで予測をかける</a></li>
+  <li><a href="#anchor5">5. APEXで予測結果をレポート</a></li>
+  <li><a href="#anchor6">6. まとめ</a></li>
+  <li><a href="#anchor7">7. 参考資料</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約60分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-omlユーザ新規作成">1. OMLユーザ新規作成</h1>
+
+<p>まずOMLを利用する権限を持つユーザを<strong>Database Actions</strong>で新規作成していきます。</p>
+
+<ol>
+  <li>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。<strong>ツール</strong>タブから、<strong>データベース・アクションを開く</strong>をクリックしてください。</p>
+
+    <p><img src="img0.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>管理 &gt; データベース・ユーザー</strong>をクリックしてください。</p>
+
+    <p><img src="img1.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>+ユーザの作成</strong>をクリックしてください。</p>
+
+    <p><img src="img2.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>OMLユーザの作成に必要な情報を入力して、<strong>ユーザの作成</strong>をクリックしてください。</p>
+
+    <p><img src="img3.png" alt="画面ショット1-1" /></p>
+
+    <ul>
+      <li>ユーザ名 = <strong>OML</strong></li>
+      <li>パスワード = <strong>Welcome12345#</strong></li>
+      <li>表領域の割り当て制限 = <strong>UNLIMITED</strong></li>
+      <li><strong>OML</strong>をチェック</li>
+      <li>
+        <p><strong>Webアクセス</strong>をチェック</p>
+      </li>
+      <li><strong>ユーザの作成</strong>をクリック</li>
+    </ul>
+  </li>
+  <li>
+    <p>OMLユーザが新規作成されました。</p>
+
+    <p><img src="img4.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>画面右上の<strong>ユーザ名</strong>をクリックし、ADMINユーザから<strong>サインアウト</strong>します。</p>
+
+    <p><img src="img5.png" alt="画面ショット1-1" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor2"></a>
+<br /></p>
+
+<h1 id="2-database-actionsでデータロード">2. Database Actionsでデータロード</h1>
+
+<ol>
+  <li>
+    <p>OMLユーザで<strong>サインイン</strong>した後、<strong>データ・ツール &gt; データ・ロード</strong>をクリックします。</p>
+
+    <p><img src="img10.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>データの処理 &gt; データ・ロード</strong>、<strong>データの処理 &gt; ローカル・ファイル</strong>を選択し、<strong>次</strong>をクリックします。</p>
+
+    <p><img src="img11.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>ファイルの選択</strong>をクリックし、端末から<strong>train.csv</strong>と<strong>test.csv</strong>を選択します。</p>
+
+    <p><img src="img12.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>緑色の実行ボタン</strong>をクリックし、データ・ロードの実行します。</p>
+
+    <p><img src="img13.png" alt="画面ショット1-1" /></p>
+
+    <p><img src="img14.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>完了</strong>をクリックします。</p>
+
+    <p><img src="img15.png" alt="画面ショット1-1" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a>
+<br /></p>
+
+<h1 id="3-oml-automl-uiで生存予測モデル作成">3. OML AutoML UIで生存予測モデル作成</h1>
+
+<ol>
+  <li>
+    <p>Autonomous Databaseの詳細画面へ遷移し、<strong>サービス・コンソール</strong>をクリックしてください。</p>
+
+    <p><img src="img20.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>サービス・コンソールの<strong>開発 &gt;</strong> <strong>Oracle Machine Learningユーザー・インターフェイス</strong>をクリックし、OMLユーザで<strong>サインイン</strong>して下さい。</p>
+
+    <p><img src="img21.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>Oracle Machine Learningにサインイン後、画面左上の<strong>ハンバーガメニュ</strong>をクリックしてください。</p>
+
+    <p><img src="img22.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ハンバーガメニュから<strong>AutoML</strong>をクリックしてください。</p>
+
+    <p><img src="img23.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>+作成ボタン</strong>をクリックしてください。</p>
+
+    <p><img src="img24.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>名前に<strong>Titanic Prediciton</strong>と入力後、<strong>データ・ソース</strong>をクリックして下さい。</p>
+
+    <p><img src="img25.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ポップアップ画面で、スキーマには<strong>OML</strong>、表には<strong>TRAIN</strong>を選択した状態で<strong>OKを</strong>クリックしてください。</p>
+
+    <p><img src="img26.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>予測で<strong>Survived</strong>を目的変数として選択し、予測タイプが<strong>分類</strong>になっていることを確認後、<strong>開始 &gt; より良い精度</strong>をクリックして下さい。</p>
+
+    <p><img src="img27.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>予測モデルが自動で作成されるのを待ちましょう。画面右側のポップアップで<strong>進捗</strong>を確認できます。</p>
+
+    <p><img src="img28.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>予測モデルが5つ自動で作成されました。後で使えるように、<strong>モデル名を1つコピーして任意の場所にペースト</strong>しておきましょう。</p>
+
+    <p><img src="img29.png" alt="画面ショット1-1" /></p>
+
+    <p>(例)モデル名 : <strong>SVMG_FBC6D30E68</strong></p>
+  </li>
+</ol>
+
+<p><a id="anchor4"></a>
+<br /></p>
+
+<h1 id="4-oml-notebookで予測をかける">4. OML Notebookで予測をかける</h1>
+
+<ol>
+  <li>
+    <p>画面左上の<strong>ハンバーガメニュ</strong>をクリックしてください。</p>
+
+    <p><img src="img40.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ハンバーガメニュから<strong>ノートブック</strong>をクリックしてください。</p>
+
+    <p><img src="img41.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ノートブックの画面で、<strong>インポート</strong>をクリックして下さい。<strong>Titanic_OML_Notebook.json</strong>を端末から選択してください。</p>
+
+    <p><img src="img42.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ノートブックの画面で、インポートした<strong>ノートブック名を</strong>クリックして、ノートブックを開きます。</p>
+
+    <p><img src="img43.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>こちらが開いたノートブックの中身になります。下にスクロールして、<strong>未知のデータであるTEST表に予測モデルを適応したVIEWを作成</strong>という箇所に移動して下さい。</p>
+
+    <p><img src="img44.png" alt="画面ショット1-1" /></p>
+
+    <p>↓</p>
+
+    <p><img src="img45.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>下記のSQL文の<モデル名>に、**任意のペースト済みのAutoML UIで作成したモデル名をペースト**した後、**右上の再生ボタン**をクリックしスクリプトを実行して下さい。</モデル名></p>
+
+    <p><img src="img46.png" alt="画面ショット1-1" /></p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE OR REPLACE VIEW TITANIC_PREDICTION AS
+  SELECT
+   PASSENGERID,
+   NAME,
+   PREDICTION(&lt;モデル名&gt; USING *) PREDICTION,
+   PREDICTION_PROBABILITY(&lt;モデル名&gt; USING *) PRED_PROBABILITY
+  FROM
+   TEST;
+</code></pre></div>    </div>
+
+    <p>(例)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE OR REPLACE VIEW TITANIC_PREDICTION AS
+  SELECT
+   PASSENGERID,
+   NAME,
+   PREDICTION(SVMG_FBC6D30E68 USING *) PREDICTION,
+   PREDICTION_PROBABILITY(SVMG_FBC6D30E68 USING *) PRED_PROBABILITY
+  FROM
+   TEST;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>先ほど作成したVIEWを確認します。TITANIC_PREDICTIONビューの下のパラグラフ内の、<strong>右上の再生ボタン</strong>をクリックしスクリプトを実行して下さい。</p>
+
+    <p><img src="img47.png" alt="画面ショット1-1" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a>
+<br /></p>
+
+<h1 id="5-apexで予測結果をレポート">5. APEXで予測結果をレポート</h1>
+
+<ol>
+  <li>
+    <p>Autonomous Databaseの詳細画面へ遷移し、<strong>ツール &gt; Oracle Application Express &gt; APEXを開く</strong>をクリックしてください。</p>
+
+    <p><img src="img50.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>まずはADMINユーザでログインします。<strong>パスワード</strong>を入力し、<strong>Sign In to Administration</strong>をクリックしてください。</p>
+
+    <p><img src="img51.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>OMLユーザのためにワークスペースを作成します。<strong>Create Workspace</strong>をクリックしてください。</p>
+
+    <p><img src="img52.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>Database Userには<strong>OML</strong>、Workspace Nameにも<strong>OML</strong>を入力し、<strong>Create Workspace</strong>をクリックしてください。</p>
+
+    <p><img src="img53.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>OMLユーザのためのワークスペースが作成されました。画面右上からADMINユーザを<strong>サインアウト</strong>してください。</p>
+
+    <p><img src="img54.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>OMLユーザとしてAPEXに<strong>サインイン</strong>します。Workspace Nameには<strong>OML</strong>、ユーザ名<strong>OML</strong>、<strong>パスワード</strong>を入力し、<strong>Sign In</strong>をクリックしてください。</p>
+
+    <p><img src="img55.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>OMLユーザでサインインできました。最初のサインイン後APEX用のパスワードの設定を求められます。<strong>Set APEX Account Password</strong>をクリックしてください。</p>
+
+    <p><img src="img56.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>Email Addressに<strong>任意のメールアドレス</strong>を入力します。</p>
+
+    <p><img src="img57.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>Passwordの箇所を<strong>ブランク</strong>にしたまま、<strong>Apply Changes</strong>をクリックするとOMLユーザのパスワードをそのままAPEXのパスワードにすることができます。</p>
+
+    <p><img src="img58.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>App Builder</strong>をクリックします。</p>
+
+    <p><img src="img59.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Import</strong>をクリックします。</p>
+
+    <p><img src="img60.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Drag and Drop</strong>をクリックし、端末から<strong>Titanic_APEX_App.sql</strong>を選択してください。</p>
+
+    <p><img src="img61.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Next</strong>をクリックします。</p>
+
+    <p><img src="img62.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Next</strong>をクリックします。</p>
+
+    <p><img src="img63.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Install Application</strong>をクリックします。</p>
+
+    <p><img src="img64.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>アプリケーションがインストールされました。インストールしただけでは、アプリケーションに対する権限がOMLユーザにはないので、付与していきます。<strong>Edit Application</strong>をクリックしてください。</p>
+
+    <p><img src="img65.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Shared Components</strong>をクリックします。</p>
+
+    <p><img src="img66.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Application Access Control</strong>をクリックします。</p>
+
+    <p><img src="img67.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Add User Role Assingment</strong>をクリックします。</p>
+
+    <p><img src="img68.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>User Nameには<strong>OML</strong>、Application Roleの<strong>Administratorをチェック</strong>し、<strong>Create Assignment</strong>をクリックしてください。</p>
+
+    <p><img src="img69.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>OMLユーザにAdministratorが付与されたのを確認し、画面右上の<strong>再生ボタン</strong>をクリックし、アプリケーションを実行します。</p>
+
+    <p><img src="img70.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>アプリケーションにOMLユーザで<strong>サインイン</strong>します。</p>
+
+    <p><img src="img71.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>アプリケーションのランディングページでは、OML Notebookで作成したView(TITANIC_PREDICTION)を表示しています。画面左上の<strong>ハンバーガメニュ</strong>をクリックしてください。</p>
+
+    <p><img src="img72.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>Editable Titanic Dataset</strong>をクリックしてください。</p>
+
+    <p><img src="img73.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>このページでは、タイタニックのデータセットの一つであるTEST表を表示しています。画面左上の<strong>新規データの登録</strong>をクリックし、TEST表に新規データをインサートしていきましょう。</p>
+
+    <p><img src="img74.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>任意の情報を入力後、<strong>新規作成ボタン</strong>をクリックしてください。</p>
+
+    <p><img src="img75.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>新規データがTEST表にインサートされました。</p>
+
+    <p><img src="img76.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>検索バーから<strong>新規データを検索</strong>することができます。</p>
+
+    <p><img src="img77.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>画面左上の<strong>ハンバーガメニュ</strong>から<strong>Home</strong>をクリックしてください。</p>
+
+    <p><img src="img78.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ランディングページのViewでも<strong>即座に新規データに対する予測</strong>がかかっているはずです。検索バーから新規データの検索、<strong>予測結果の確認</strong>を行うことができます。</p>
+
+    <p><img src="img79.png" alt="画面ショット1-1" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor6"></a>
+<br /></p>
+
+<h1 id="6-まとめ">6. まとめ</h1>
+
+<p>いかがでしたでしょうか。Autonomous Databaseには様々なツールが無償で用意されています。機械学習では、データのロードから機械学習モデルを作成、アプリへのデプロイまでワンストップの機械学習環境がプロビジョン完了と同時に出来上がります。データ活用もAutonomous Databaseで効果的に迅速に進めることが可能です。</p>
+
+<p><a id="anchor7"></a>
+<br /></p>
+
+<h1 id="7-参考資料">7. 参考資料</h1>
+
+<p>別の題材で、追加のAutoML UIのチュートリアルは下記に用意がございます。</p>
 
 <p><a href="https://qiita.com/yuki_coffee/items/76481759537c38b032e2">OracleのAutoML UIで気軽に明日雨が降るか予測しよう</a></p>
 
@@ -398,7 +815,7 @@ AutoML UIのチュートリアルは下記に用意がございますので、�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-02-09T11:21:13+09:00">February 9, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-02-09T11:48:10+09:00">February 9, 2022</time></p>
 
 
       </footer>
@@ -408,7 +825,7 @@ AutoML UIのチュートリアルは下記に用意がございますので、�
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=107%3A+ADB%E3%81%AE%E4%BB%98%E5%B1%9E%E3%83%84%E3%83%BC%E3%83%AB%E3%81%A7%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92%E3%82%92%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86%28AutoML+UI%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb107-machine-learning%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=107%3A+ADB%E3%81%AE%E4%BB%98%E5%B1%9E%E3%83%84%E3%83%BC%E3%83%AB%E3%81%A7%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92%28%E4%BA%88%E6%B8%AC%E3%83%A2%E3%83%87%E3%83%AB%E3%81%8B%E3%82%89%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%BE%E3%81%A7%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb107-machine-learning%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb107-machine-learning%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
