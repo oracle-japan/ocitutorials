@@ -86,8 +86,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[106: ADBでコンバージド・データベースを体験しよう](/ocitutorials/database/adb106-json/){:target="_blank"}**  
     * JSONデータをADBに登録し、APIおよびSQLで操作します
 
-+ **[107: ADBの付属ツールで機械学習を始めよう(AutoML UI)](/ocitutorials/database/adb107-machine-learning/){:target="_blank"}**  
-    * 機械学習モデルをビルドして、RESTでCallする手順を確認します
++ **[107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)](/ocitutorials/database/adb107-machine-learning/){:target="_blank"}**  
+    * タイタニック号の乗客情報から生存予測モデルを作成し、アプリで予測結果のレポートまでADBの中で行います。
 
 ## 実践編
 
