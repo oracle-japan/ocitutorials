@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-02-07T16:03:27+09:00">
+  <meta property="article:published_time" content="2022-02-09T11:21:13+09:00">
 
 
 
@@ -301,7 +301,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Functions ハンズオン">
     <meta itemprop="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。">
-    <meta itemprop="datePublished" content="2022-02-07T16:03:27+09:00">
+    <meta itemprop="datePublished" content="2022-02-09T11:21:13+09:00">
     
 
     <div class="page__inner-wrap">
@@ -312,7 +312,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#条件">条件</a></li><li><a href="#事前準備">事前準備</a></li><li><a href="#1cloud-shellのセットアップ">1.Cloud Shellのセットアップ</a></li><li><a href="#2oracle-functions実行環境の構築">2.Oracle Functions実行環境の構築</a><ul><li><a href="#2-1必要な情報の作成と収集">2-1.必要な情報の作成と収集</a><ul><li><a href="#2-1-1-認証tokenの作成">2-1-1. 認証tokenの作成</a></li><li><a href="#2-1-2-コンパートメントocidの確認">2-1-2. コンパートメントOCIDの確認</a></li><li><a href="#2-1-3-オブジェクトストレージネームスペースの確認">2-1-3. オブジェクト・ストレージ・ネームスペースの確認</a></li></ul></li><li><a href="#2-2-oracle-functions-cli-contextの作成と設定">2-2. Oracle Functions CLI contextの作成と設定</a></li><li><a href="#2-3-oracle-functionsが利用するvcnの作成">2-3. Oracle Functionsが利用するVCNの作成</a></li><li><a href="#2-4-oracle-functionsのアプリケーションの作成">2-4. Oracle Functionsのアプリケーションの作成</a></li></ul></li><li><a href="#3ファンクションの作成">3.ファンクションの作成</a><ul><li><a href="#3-1-ファンクションプロジェクトの作成">3-1. ファンクションプロジェクトの作成</a></li><li><a href="#3-2-ファンクションのデプロイ">3-2. ファンクションのデプロイ</a></li><li><a href="#3-3-oracle-functionsの実行">3-3. Oracle Functionsの実行</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#条件">条件</a></li><li><a href="#事前準備">事前準備</a></li><li><a href="#1cloud-shellのセットアップ">1.Cloud Shellのセットアップ</a></li><li><a href="#2oracle-functions実行環境の構築">2.Oracle Functions実行環境の構築</a><ul><li><a href="#2-1必要な情報の作成と収集">2-1.必要な情報の作成と収集</a><ul><li><a href="#2-1-1-認証tokenの作成">2-1-1. 認証tokenの作成</a></li><li><a href="#2-1-2-コンパートメントocidの確認">2-1-2. コンパートメントOCIDの確認</a></li><li><a href="#2-1-3-オブジェクトストレージネームスペースの確認">2-1-3. オブジェクト・ストレージ・ネームスペースの確認</a></li></ul></li><li><a href="#2-2-oracle-functions-cli-contextの作成と設定">2-2. Oracle Functions CLI contextの作成と設定</a></li><li><a href="#2-3-oracle-functionsが利用するvcnの作成">2-3. Oracle Functionsが利用するVCNの作成</a></li><li><a href="#2-4-oracle-functionsのアプリケーションの作成">2-4. Oracle Functionsのアプリケーションの作成</a></li></ul></li><li><a href="#3ファンクションの作成">3.ファンクションの作成</a><ul><li><a href="#オプション3-0-podman環境設定">【オプション】3-0. Podman環境設定</a></li><li><a href="#3-1-ファンクションプロジェクトの作成">3-1. ファンクションプロジェクトの作成</a></li><li><a href="#3-2-ファンクションのデプロイ">3-2. ファンクションのデプロイ</a></li><li><a href="#3-3-oracle-functionsの実行">3-3. Oracle Functionsの実行</a></li></ul></li></ul>
 
             </nav>
           </aside>
@@ -730,7 +730,28 @@ OCIRのURIにおけるリージョンコード(下記であれば”iad”部分
 <h2 id="3ファンクションの作成">3.ファンクションの作成</h2>
 <p>ここでは、ファンクションの作成と動作確認を行います。</p>
 
+<h3 id="オプション3-0-podman環境設定">【オプション】3-0. Podman環境設定</h3>
+
+<p class="notice--warning"><strong>この手順について</strong><br />
+この手順は、Dockerの代わりにPodmanがインストールされた環境向けの手順です。<br />
+Dockerを利用する方はこの手順は無視してください。<br />
+Cloud Shellを利用している方は、この手順は不要です。<br />
+なお、PodmanはFn Project CLI v0.6.12以降で利用可能です。　　</p>
+
+<p>Fn CLIのconfigを編集し、利用するコンテナエンジンを以下のようにPodmanに変更します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim ~/.fn/config.yaml
+</code></pre></div></div>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">cli-version</span><span class="pi">:</span> <span class="s">0.6.13</span>
+<span class="na">container-enginetype</span><span class="pi">:</span> <span class="s">podman</span> <span class="c1"># &lt;== "docker"から"podman"に変更</span>
+<span class="na">current-context</span><span class="pi">:</span> <span class="s">ap-tokyo-1</span>
+</code></pre></div></div>
+
+<p>以上で、Podman環境設定は完了です。</p>
+
 <h3 id="3-1-ファンクションプロジェクトの作成">3-1. ファンクションプロジェクトの作成</h3>
+
 <p>まず、ファンクションプロジェクトを作成します。<br />
 作成するアプリケーションの言語は以下から選択することができます。</p>
 
@@ -821,7 +842,7 @@ OCIのコンソールに移り、”開発者サービス”の”ファンク�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-02-07T16:03:27+09:00">February 7, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-02-09T11:21:13+09:00">February 9, 2022</time></p>
 
 
       </footer>
