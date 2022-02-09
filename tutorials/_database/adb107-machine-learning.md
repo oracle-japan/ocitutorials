@@ -4,8 +4,8 @@ excerpt: "タイタニック号の乗客情報から生存予測モデルを作�
 order: "3_107"
 layout: single
 header:
-  teaser: "/database/adb107-machine-learning/img1.png"
-  overlay_image: "/database/adb107-machine-learning/img1.png"
+  teaser: "/database/adb107-machine-learning/img72.png"
+  overlay_image: "/database/adb107-machine-learning/img72.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -54,7 +54,7 @@ header:
 
 1. **管理 > データベース・ユーザー**をクリックしてください。
 
-	![画面ショット1-1](img1.png)
+	![画面ショット1-1](img99.png)
 
 1. **+ユーザの作成**をクリックしてください。
 
