@@ -1,0 +1,1234 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Structured Spark Streaming を OCI Data Flow で体験しよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Structured Spark Streaming を OCI Data Flow で体験しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/datascience/dataflow-structured-spark-streaming/">
+
+
+  <meta property="og:description" content="OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-02-14T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/datascience/dataflow-structured-spark-streaming/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Structured Spark Streaming を OCI Data Flow で体験しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/datascience" itemprop="item"><span itemprop="name">Datascience</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Structured Spark Streaming を OCI Data Flow で体験しよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">データサイエンス/ビッグデータ編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-for-beginner/">OCI Data Flow ハンズオン(初級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-structured-spark-streaming/" class="active">Structured Spark Streaming を OCI Data Flow で体験しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/ggsa-tutorial-for-beginner/">Oracle GoldenGate Stream Analytics ハンズオン</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Structured Spark Streaming を OCI Data Flow で体験しよう">
+    <meta itemprop="description" content="OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。">
+    <meta itemprop="datePublished" content="2022-02-14T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオンの全体像">ハンズオンの全体像</a></li><li><a href="#事前準備">事前準備</a><ul><li><a href="#cloud-shell-の起動">Cloud Shell の起動</a></li><li><a href="#compartment-id-の確認">Compartment ID の確認</a></li><li><a href="#ハンズオンに使用するバケットの作成">ハンズオンに使用するバケットの作成</a></li><li><a href="#ハンズオンに使用するサンプルコード等を取得する">ハンズオンに使用するサンプルコード等を取得する</a></li><li><a href="#oci-streaming-の作成接続情報の確認">OCI Streaming の作成、接続情報の確認</a><ul><li><a href="#ストリームプールの作成">ストリーム・プールの作成</a></li><li><a href="#ストリームの作成">ストリームの作成</a></li><li><a href="#接続情報の確認">接続情報の確認</a></li><li><a href="#認証トークンの取得">認証トークンの取得</a></li></ul></li></ul></li><li><a href="#ハンズオン">ハンズオン</a><ul><li><a href="#object-storage-にプログラム一式をアップロード">Object Storage にプログラム一式をアップロード</a></li><li><a href="#data-flow-アプリケーションを作成する">Data Flow アプリケーションを作成する</a></li><li><a href="#oci-streaming-にメッセージを-publish-する">OCI Streaming にメッセージを publish する</a></li><li><a href="#data-flow-アプリケーションを実行する">Data Flow アプリケーションを実行する</a></li><li><a href="#実行結果の確認">実行結果の確認</a></li><li><a href="#ハンズオンの終了処理">ハンズオンの終了処理</a></li></ul></li><li><a href="#参考-spark-ui-の確認">参考: Spark UI の確認</a></li><li><a href="#参考-spark-アプリケーションの内容">参考: Spark アプリケーションの内容</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>このエントリーでは、OCI Data Flow と OCI Streaming を用いて、Structured Spark Streaming の基礎を学習します。</p>
+
+<h1 id="前提条件">前提条件</h1>
+
+<ul>
+  <li>Oracle Cloud のアカウントを取得済みであること</li>
+  <li>OCI CLI v3.4.5 以上がインストールされていること
+    <ul>
+      <li>Cloud Shell の利用を推奨</li>
+    </ul>
+  </li>
+  <li><a href="/ocitutorials/datascience/dataflow-for-beginner/#0-事前準備">Data Flow ハンズオン(初級編) - 事前準備</a>が完了していること
+    <ul>
+      <li>Object Storage の namespace が確認できていること</li>
+      <li>Data Flow を使用するために必要な各種バケット（dataflow-logs, dataflow-warehouse）の作成が完了していること</li>
+      <li>Data Flow を使用するためのポリシーの設定が完了していること</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="ハンズオンの全体像">ハンズオンの全体像</h1>
+
+<p><img src="image01.png" alt="image01" /></p>
+
+<p>OCI Streaming へ publish したメッセージを Data Flow 上で動作する Spark アプリケーションが subscribe し、メッセージ中に出現した単語の回数を 1 分間の集計ウィンドウでカウントし、その集計結果を出力します。</p>
+
+<h1 id="事前準備">事前準備</h1>
+
+<h2 id="cloud-shell-の起動">Cloud Shell の起動</h2>
+
+<p>OCI コンソール右上の <strong>Cloud Shell</strong> をクリックし、Cloud Shell を起動します。</p>
+
+<p><img src="image02.png" alt="image02" /></p>
+
+<h2 id="compartment-id-の確認">Compartment ID の確認</h2>
+
+<p>以下のハンズオンでは、OCI CLI を活用し進めていきます。その際、各種コマンドを発行するために必要な Compartment ID を確認します。コンソール左上のハンバーガーメニューから<strong>アイデンティティとセキュリティ</strong> &gt; <strong>アイデンティティ</strong> &gt; <strong>コンパートメント</strong>と選択します。</p>
+
+<p><img src="image03.png" alt="image03" /></p>
+
+<p>自身のコンパートメント（もしくは、ルート・コンパートメント）の詳細画面で Compartment ID をコピーします。</p>
+
+<p><img src="image04.png" alt="image04" /></p>
+
+<p>以降の手順を効率化するために、Cloud Shell の環境変数に Compartment ID を設定しておきます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">C</span><span class="o">=</span>&lt;compartment-id&gt;
+</code></pre></div></div>
+
+<h2 id="ハンズオンに使用するバケットの作成">ハンズオンに使用するバケットの作成</h2>
+
+<p>プログラムの格納先や結果の出力先であるバケットを作成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci os bucket create <span class="se">\</span>
+<span class="nt">--name</span> structured-spark-streaming <span class="se">\</span>
+<span class="nt">--compartment-id</span> <span class="nv">$C</span>
+</code></pre></div></div>
+
+<p>以下のような実行結果が得られます。（※結果は一部マスク、変更しています）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"approximate-count"</span>: null,
+    <span class="s2">"approximate-size"</span>: null,
+    <span class="s2">"auto-tiering"</span>: null,
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..."</span>,
+    <span class="s2">"created-by"</span>: <span class="s2">"ocid1.saml2idp.oc1.../foo.bar@example.com"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"etag"</span>: <span class="s2">"6e15d6c6-5147-4820-9c61-d9ffb6234fc4"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.bucket.oc1.ap-tokyo-1.aaaaaaaa6wvibxss6iux3onoes5k7jvf25fjujvmmi6ijyiaj7aaha3qboba"</span>,
+    <span class="s2">"is-read-only"</span>: <span class="nb">false</span>,
+    <span class="s2">"kms-key-id"</span>: null,
+    <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+    <span class="s2">"name"</span>: <span class="s2">"structured-spark-streaming"</span>,
+    <span class="s2">"namespace"</span>: <span class="s2">"xxxxxxxxxx"</span>,
+    <span class="s2">"object-events-enabled"</span>: <span class="nb">false</span>,
+    <span class="s2">"object-lifecycle-policy-etag"</span>: null,
+    <span class="s2">"public-access-type"</span>: <span class="s2">"NoPublicAccess"</span>,
+    <span class="s2">"replication-enabled"</span>: <span class="nb">false</span>,
+    <span class="s2">"storage-tier"</span>: <span class="s2">"Standard"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-02-11T08:39:16.417000+00:00"</span>,
+    <span class="s2">"versioning"</span>: <span class="s2">"Disabled"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"6e15d6c6-5147-4820-9c61-d9ffb6234fc4"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="ハンズオンに使用するサンプルコード等を取得する">ハンズオンに使用するサンプルコード等を取得する</h2>
+
+<p>ハンズオンで使用するサンプルコードを取得します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nv">$HOME</span>/dataflow-handson<span class="p">;</span> <span class="se">\</span>
+<span class="nb">cd </span>dataflow-handson<span class="p">;</span> <span class="se">\</span>
+git clone https://github.com/oracle-japan/oracle-dataflow-examples.git
+</code></pre></div></div>
+
+<p>OCI Streaming へ publish していく文章コンテンツをダウンロードします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget <span class="nt">-P</span> /tmp http://mattmahoney.net/dc/enwik8.zip<span class="p">;</span> <span class="se">\</span>
+unzip /tmp/enwik8.zip <span class="nt">-d</span> /tmp
+</code></pre></div></div>
+
+<p>それぞれ以下のようになっていれば、ハンズオンに使用する資材一式の準備は完了です。</p>
+
+<p><code class="language-plaintext highlighter-rouge">$HOME/dataflow-handson</code> 配下:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nv">$HOME</span>/dataflow-handson
+</code></pre></div></div>
+
+<p>実行結果</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oracle-dataflow-examples
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">/tmp</code> 配下</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> /tmp | <span class="nb">grep</span> <span class="nt">-i</span> enwik8
+</code></pre></div></div>
+
+<p>実行結果</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>enwik8
+enwik8.zip
+</code></pre></div></div>
+
+<h2 id="oci-streaming-の作成接続情報の確認">OCI Streaming の作成、接続情報の確認</h2>
+
+<h3 id="ストリームプールの作成">ストリーム・プールの作成</h3>
+
+<p>ハンズオン用にストリームの管理単位であるストリーム・プールを作成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci streaming admin stream-pool create <span class="se">\</span>
+<span class="nt">--name</span> HandsonStreamPool <span class="se">\</span>
+<span class="nt">--compartment-id</span> <span class="nv">$C</span>
+</code></pre></div></div>
+
+<p>以下のような実行結果が得られます。（※結果は一部マスク、変更しています）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..."</span>,
+    <span class="s2">"custom-encryption-key"</span>: <span class="o">{</span>
+      <span class="s2">"key-state"</span>: <span class="s2">"NONE"</span>,
+      <span class="s2">"kms-key-id"</span>: null
+    <span class="o">}</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"endpoint-fqdn"</span>: null,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.streampool.oc1.ap-tokyo-1.amaaaaaassl65iqaawm47ao4vdh35sz4phg5i2frgtgonrnkupv57hfgwqgq"</span>,
+    <span class="s2">"is-private"</span>: <span class="nb">false</span>,
+    <span class="s2">"kafka-settings"</span>: <span class="o">{</span>
+      <span class="s2">"auto-create-topics-enable"</span>: <span class="nb">false</span>,
+      <span class="s2">"bootstrap-servers"</span>: null,
+      <span class="s2">"log-retention-hours"</span>: 24,
+      <span class="s2">"num-partitions"</span>: 1
+    <span class="o">}</span>,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"CREATING"</span>,
+    <span class="s2">"lifecycle-state-details"</span>: null,
+    <span class="s2">"name"</span>: <span class="s2">"HandsonStreamPool"</span>,
+    <span class="s2">"private-endpoint-settings"</span>: <span class="o">{</span>
+      <span class="s2">"nsg-ids"</span>: null,
+      <span class="s2">"private-endpoint-ip"</span>: null,
+      <span class="s2">"subnet-id"</span>: null
+    <span class="o">}</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-02-11T08:42:55.537000+00:00"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"</span><span class="se">\"</span><span class="s2">1d6ccdb3-5d98-4b86-87b0-31c250ef64d9-731b2788-bb13-4cac-8228-b96362842c64</span><span class="se">\"</span><span class="s2">"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="ストリームの作成">ストリームの作成</h3>
+
+<p>文章コンテンツを publish するためのストリームを作成します。（※&lt;stream-pool-id&gt; は、ストリーム・プール作成のレスポンスに含まれる <code class="language-plaintext highlighter-rouge">$.data.id</code> をご参照ください。）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci streaming admin stream create <span class="se">\</span>
+<span class="nt">--name</span> word-count-stream <span class="se">\</span>
+<span class="nt">--stream-pool-id</span> &lt;stream-pool-id&gt; <span class="se">\</span>
+<span class="nt">--partitions</span> 1
+</code></pre></div></div>
+
+<p>以下のような実行結果が得られます。（※結果は一部マスク、変更しています）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..."</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.stream.oc1.ap-tokyo-1.amaaaaaassl65iqaox7vccpm36cop6o47zvn742toudvks6ibzrnnhx35iva"</span>,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"CREATING"</span>,
+    <span class="s2">"lifecycle-state-details"</span>: null,
+    <span class="s2">"messages-endpoint"</span>: <span class="s2">"https://cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"word-count-stream"</span>,
+    <span class="s2">"partitions"</span>: 1,
+    <span class="s2">"retention-in-hours"</span>: 24,
+    <span class="s2">"stream-pool-id"</span>: <span class="s2">"ocid1.streampool.oc1.ap-tokyo-1.amaaaaaassl65iqaawm47ao4vdh35sz4phg5i2frgtgonrnkupv57hfgwqgq"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-02-11T08:43:34.382000+00:00"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"</span><span class="se">\"</span><span class="s2">fe0f09ff-4768-424a-ba8a-d8e5d4c0963e-d89b5f7b-ad83-4d34-bcea-b508f348c92e</span><span class="se">\"</span><span class="s2">"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="接続情報の確認">接続情報の確認</h3>
+
+<p>Kafka 互換 API を使用し、Spark アプリケーションが OCI Streaming と pub/sub するための接続情報を確認します。OCI コンソール画面左上のハンバーガーメニューを展開し、<strong>アナリティクスと AI</strong> &gt; <strong>メッセージング</strong> &gt; <strong>ストリーミング</strong>をクリックします。</p>
+
+<p><img src="image10.png" alt="image10" /></p>
+
+<p><strong>ストリーム・プール</strong>を選択し、先ほど作成した <strong>HandsonStreamPool</strong> を選択します。</p>
+
+<p><img src="image11.png" alt="image11" /></p>
+
+<p><strong>Kafka 接続設定</strong>を押すと、接続に必要な情報群が表示されるので、これを<strong>すべてコピー</strong>しメモ帳などに控えておきます。</p>
+
+<p><img src="image12.png" alt="image12" /></p>
+
+<h3 id="認証トークンの取得">認証トークンの取得</h3>
+
+<p>Kafka 互換 API では、認証トークンを用いて認証を行うため、その際に必要なトークンを取得します。OCI コンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名(oracleidentitycloudservice/&lt;username&gt;)をクリックします。</p>
+
+<p><img src="image05.png" alt="image05" /></p>
+
+<p>下にスクロールした左側にある<strong>認証トークン</strong>をクリックして、トークンの作成画面に遷移します。</p>
+
+<p><img src="image06.png" alt="image06" /></p>
+
+<p><strong>トークンの生成</strong>をクリックします。</p>
+
+<p><img src="image07.png" alt="image07" /></p>
+
+<p>トークンの用途を説明する情報（任意の文字列）を入力し、<strong>トークンの生成ボタン</strong>をクリックします。</p>
+
+<p><img src="image08.png" alt="image08" /></p>
+
+<p>生成されたトークンを<strong>コピー</strong>し、メモ帳等に控えておきます。</p>
+
+<p><img src="image09.png" alt="image09" /></p>
+
+<h1 id="ハンズオン">ハンズオン</h1>
+
+<h2 id="object-storage-にプログラム一式をアップロード">Object Storage にプログラム一式をアップロード</h2>
+
+<p>Data Flow は、Object Storage からアプリケーションをロードし実行するため、Data Flow アプリケーションの作成前に Object Storage へ Spark アプリケーションを格納しておく必要があります。</p>
+
+<p>アプリケーションをビルドします。（数分要します）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> <span class="nv">$HOME</span>/dataflow-handson/oracle-dataflow-examples/structured_streaming_kafka_word_count<span class="p">;</span> <span class="se">\</span>
+./mvnw package
+</code></pre></div></div>
+
+<p>生成された JAR ファイルを Object Storage にアップロードします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci os object put <span class="se">\</span>
+<span class="nt">--bucket-name</span> structured-spark-streaming <span class="se">\</span>
+<span class="nt">--file</span> target/StructuredKafkaWordCount.jar <span class="se">\</span>
+<span class="nt">--name</span> program/StructuredKafkaWordCount.jar
+</code></pre></div></div>
+
+<p>以下のような実行結果が得られます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Uploading object  <span class="o">[</span><span class="c">####################################]  100%</span>
+<span class="o">{</span>
+  <span class="s2">"etag"</span>: <span class="s2">"bb8262b0-1254-4acb-947d-fb9c2417fc7d"</span>,
+  <span class="s2">"last-modified"</span>: <span class="s2">"Fri, 11 Feb 2022 08:50:32 GMT"</span>,
+  <span class="s2">"opc-content-md5"</span>: <span class="s2">"pTw0HkkFQW/DA/C/Z6MNXw=="</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="data-flow-アプリケーションを作成する">Data Flow アプリケーションを作成する</h2>
+
+<p>Data Flow アプリケーション<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>を作成します。コマンド実行前にいくつかのパラメーターを以下のように置き換えます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>before</th>
+      <th>after</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&lt;namespace&gt;</td>
+      <td>Object Storage の namespace</td>
+    </tr>
+    <tr>
+      <td>&lt;kafka-bootstrap-server&gt;</td>
+      <td><a href="#接続情報の確認">接続情報の確認</a>で確認したブートストラップ・サーバーの値(<code class="language-plaintext highlighter-rouge">cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com:9092</code>のような形式)</td>
+    </tr>
+    <tr>
+      <td>&lt;username&gt;</td>
+      <td><a href="#接続情報の確認">接続情報の確認</a>で確認した username（<code class="language-plaintext highlighter-rouge">xxxxxxxxxx/oracleidentitycloudservice/foo.bar@example.com/ocid1.streampool.oc1.ap-tokyo-1...</code>のような形式）</td>
+    </tr>
+    <tr>
+      <td>&lt;auth-token&gt;</td>
+      <td><a href="#認証トークンの取得">認証トークンの取得</a>で確認した認証トークンの値</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci data-flow application create <span class="se">\</span>
+<span class="nt">--compartment-id</span> <span class="nv">$C</span> <span class="se">\</span>
+<span class="nt">--display-name</span> <span class="s2">"StructuredKafkaWordCount"</span> <span class="se">\</span>
+<span class="nt">--driver-shape</span> VM.Standard2.1 <span class="se">\</span>
+<span class="nt">--executor-shape</span> VM.Standard2.1 <span class="se">\</span>
+<span class="nt">--num-executors</span> 1 <span class="se">\</span>
+<span class="nt">--spark-version</span> 3.0.2 <span class="se">\</span>
+<span class="nt">--type</span> streaming <span class="se">\</span>
+<span class="nt">--file-uri</span> <span class="s2">"oci://structured-spark-streaming@&lt;namespace&gt;/program/StructuredKafkaWordCount.jar"</span> <span class="se">\</span>
+<span class="nt">--logs-bucket-uri</span> <span class="s2">"oci://dataflow-logs@&lt;namespace&gt;"</span> <span class="se">\</span>
+<span class="nt">--language</span> Java <span class="se">\</span>
+<span class="nt">--class-name</span> example.StructuredKafkaWordCount <span class="se">\</span>
+<span class="nt">--arguments</span> <span class="s2">"&lt;kafka-bootstrap-server&gt; word-count-stream plain &lt;username&gt; &lt;auth-token&gt; oci://structured-spark-streaming@&lt;namespace&gt;/checkpoint csv oci://structured-spark-streaming@&lt;namespace&gt;/output"</span>
+</code></pre></div></div>
+
+<p>以下のような実行結果が得られます。（※結果は一部マスク、変更しています）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"archive-uri"</span>: <span class="s2">""</span>,
+    <span class="s2">"arguments"</span>: <span class="o">[</span>
+      <span class="s2">"cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com:9092"</span>,
+      <span class="s2">"word-count-stream"</span>,
+      <span class="s2">"plain"</span>,
+      <span class="s2">"xxxxxxxxxx/oracleidentitycloudservice/foo.bar@example.com/ocid1.streampool.oc1.ap-tokyo-1.amaaaaaassl65iqaawm47ao4vdh35sz4phg5i2frgtgonrnkupv57hfgwqgq"</span>,
+      <span class="s2">"RyADlvW1ZwyxbEj&lt;S:IM"</span>,
+      <span class="s2">"oci://structured-spark-streaming@xxxxxxxxxx/checkpoint"</span>,
+      <span class="s2">"csv"</span>,
+      <span class="s2">"oci://structured-spark-streaming@xxxxxxxxxx/output"</span>
+    <span class="o">]</span>,
+    <span class="s2">"class-name"</span>: <span class="s2">"example.StructuredKafkaWordCount"</span>,
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..."</span>,
+    <span class="s2">"configuration"</span>: null,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"description"</span>: null,
+    <span class="s2">"display-name"</span>: <span class="s2">"StructuredKafkaWordCount"</span>,
+    <span class="s2">"driver-shape"</span>: <span class="s2">"VM.Standard2.1"</span>,
+    <span class="s2">"execute"</span>: null,
+    <span class="s2">"executor-shape"</span>: <span class="s2">"VM.Standard2.1"</span>,
+    <span class="s2">"file-uri"</span>: <span class="s2">"oci://structured-spark-streaming@xxxxxxxxxx/program/StructuredKafkaWordCount.jar"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.dataflowapplication.oc1.ap-tokyo-1.anxhiljrssl65iqa2i73ll4xgyk7g2b3t3adhhn5uyvihu4koaxmteirfvcq"</span>,
+    <span class="s2">"language"</span>: <span class="s2">"JAVA"</span>,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"logs-bucket-uri"</span>: <span class="s2">"oci://dataflow-logs@xxxxxxxxxx/"</span>,
+    <span class="s2">"metastore-id"</span>: null,
+    <span class="s2">"num-executors"</span>: 1,
+    <span class="s2">"owner-principal-id"</span>: <span class="s2">"ocid1.saml2idp.oc1.../foo.bar@example.com"</span>,
+    <span class="s2">"owner-user-name"</span>: <span class="s2">"foo.bar@example.com"</span>,
+    <span class="s2">"parameters"</span>: null,
+    <span class="s2">"private-endpoint-id"</span>: <span class="s2">""</span>,
+    <span class="s2">"spark-version"</span>: <span class="s2">"3.0.2"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-02-11T08:55:23.984000+00:00"</span>,
+    <span class="s2">"time-updated"</span>: <span class="s2">"2022-02-11T08:55:23.984000+00:00"</span>,
+    <span class="s2">"type"</span>: <span class="s2">"STREAMING"</span>,
+    <span class="s2">"warehouse-bucket-uri"</span>: null
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="oci-streaming-にメッセージを-publish-する">OCI Streaming にメッセージを publish する</h2>
+
+<p>OCI Streaming にメッセージを publish するためのプログラムの一部（Kafka の接続定義）を各自の環境に合わせて修正します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim producer/producer-from-file.py
+</code></pre></div></div>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ...
+</span><span class="n">kafka_bootstrap_server</span> <span class="o">=</span> <span class="s">'&lt;kafka-bootstrap-server&gt;'</span>
+<span class="n">kafka_topic</span> <span class="o">=</span> <span class="s">'&lt;topic-name&gt;'</span>
+<span class="n">kafka_username</span> <span class="o">=</span> <span class="s">'&lt;username&gt;'</span>
+<span class="n">kafka_streampool_id</span> <span class="o">=</span> <span class="s">'&lt;stream-pool-id&gt;'</span>
+<span class="n">kafka_token</span> <span class="o">=</span> <span class="s">'&lt;auth-token&gt;'</span>
+<span class="c1"># ...
+</span></code></pre></div></div>
+
+<p>この部分を以下のように修正します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>before</th>
+      <th>after</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&lt;kafka-bootstrap-server&gt;</td>
+      <td><a href="#接続情報の確認">接続情報の確認</a>で確認したブートストラップ・サーバーの値(<code class="language-plaintext highlighter-rouge">cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com:9092</code>のような形式)</td>
+    </tr>
+    <tr>
+      <td>&lt;topic-name&gt;</td>
+      <td>word-count-stream</td>
+    </tr>
+    <tr>
+      <td>&lt;username&gt;</td>
+      <td><a href="#接続情報の確認">接続情報の確認</a>で確認した username（<code class="language-plaintext highlighter-rouge">xxxxxxxxxx/oracleidentitycloudservice/foo.bar@example.com/ocid1.streampool.oc1.ap-tokyo-1...</code>のような形式）</td>
+    </tr>
+    <tr>
+      <td>&lt;stream-pool-id&gt;</td>
+      <td><a href="#ストリームプールの作成">ストリーム・プールの作成</a>で確認した <code class="language-plaintext highlighter-rouge">$.data.id</code> の値</td>
+    </tr>
+    <tr>
+      <td>&lt;auth-token&gt;</td>
+      <td><a href="#認証トークンの取得">認証トークンの取得</a>で確認した認証トークンの値</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>実行します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> <span class="nv">$HOME</span>/dataflow-handson/oracle-dataflow-examples/structured_streaming_kafka_word_count/producer<span class="p">;</span> <span class="se">\</span>
+pip <span class="nb">install </span>kafka-python<span class="p">;</span> <span class="se">\</span>
+python3 producer-from-file.py <span class="o">&gt;</span> /tmp/tutorial.<span class="sb">`</span><span class="nb">date</span> <span class="s2">"+%Y%m%d_%H%M%S"</span><span class="sb">`</span> 2&gt;&amp;1 &amp;
+</code></pre></div></div>
+
+<p>以下のように出力されることを確認します。(PID は一例)</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>1] 1874
+</code></pre></div></div>
+
+<p>生成されたファイル名を確認します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> /tmp | <span class="nb">grep</span> <span class="nt">-i</span> tutorial
+</code></pre></div></div>
+
+<p>以下のように出力されます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tutorial.20220211_091715
+</code></pre></div></div>
+
+<p>中身を確認します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">tail</span> <span class="nt">-f</span> /tmp/tutorial.20220211_091715
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Iteration 1, key=2022-02-11 09:17:17.068535 - Done. 36.45 sec.</code> のような文字列が出力されていれば、OCI Streaming に対する publish は成功しています。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Creating Kafka producer... Done.
+Streaming... <span class="o">(</span>Press Ctrl+C to cancel<span class="o">)</span>
+Iteration 1, <span class="nv">key</span><span class="o">=</span>2022-02-11 09:17:17.068535  - Done. 36.45 sec.
+Iteration 2, <span class="nv">key</span><span class="o">=</span>2022-02-11 09:18:17.081127  - Done. 32.29 sec.
+Iteration 3, <span class="nv">key</span><span class="o">=</span>2022-02-11 09:19:17.101124  - Done. 34.54 sec.
+<span class="c"># ...</span>
+</code></pre></div></div>
+
+<h2 id="data-flow-アプリケーションを実行する">Data Flow アプリケーションを実行する</h2>
+
+<p>作成した Data Flow アプリケーションを実行します。（&lt;application-ocid&gt;は、<a href="#data-flow-アプリケーションを作成する">Data Flow アプリケーションを作成する</a>の実行結果の<code class="language-plaintext highlighter-rouge">$.data.id</code>をご参照ください）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci data-flow run create <span class="se">\</span>
+<span class="nt">--compartment-id</span> <span class="nv">$C</span> <span class="se">\</span>
+<span class="nt">--application-id</span> &lt;application-ocid&gt; <span class="se">\</span>
+<span class="nt">--display-name</span> <span class="s2">"StructuredKafkaWordCount"</span>
+</code></pre></div></div>
+
+<p>以下のような実行結果が得られます。（※結果は一部マスク、変更しています）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"application-id"</span>: <span class="s2">"ocid1.dataflowapplication.oc1.ap-tokyo-1.anxhiljrssl65iqa2i73ll4xgyk7g2b3t3adhhn5uyvihu4koaxmteirfvcq"</span>,
+    <span class="s2">"archive-uri"</span>: <span class="s2">""</span>,
+    <span class="s2">"arguments"</span>: <span class="o">[</span>
+      <span class="s2">"cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com:9092"</span>,
+      <span class="s2">"word-count-stream"</span>,
+      <span class="s2">"plain"</span>,
+      <span class="s2">"xxxxxxxxxx/oracleidentitycloudservice/foo.bar@example.com/ocid1.streampool.oc1.ap-tokyo-1.amaaaaaassl65iqaawm47ao4vdh35sz4phg5i2frgtgonrnkupv57hfgwqgq"</span>,
+      <span class="s2">"RyADlvW1ZwyxbEj&lt;S:IM"</span>,
+      <span class="s2">"oci://structured-spark-streaming@xxxxxxxxxx/checkpoint"</span>,
+      <span class="s2">"csv"</span>,
+      <span class="s2">"oci://structured-spark-streaming@xxxxxxxxxx/output"</span>
+    <span class="o">]</span>,
+    <span class="s2">"class-name"</span>: <span class="s2">"example.StructuredKafkaWordCount"</span>,
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..."</span>,
+    <span class="s2">"configuration"</span>: null,
+    <span class="s2">"data-read-in-bytes"</span>: 0,
+    <span class="s2">"data-written-in-bytes"</span>: 0,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"display-name"</span>: <span class="s2">"StructuredKafkaWordCount"</span>,
+    <span class="s2">"driver-shape"</span>: <span class="s2">"VM.Standard2.1"</span>,
+    <span class="s2">"execute"</span>: <span class="s2">""</span>,
+    <span class="s2">"executor-shape"</span>: <span class="s2">"VM.Standard2.1"</span>,
+    <span class="s2">"file-uri"</span>: <span class="s2">"oci://structured-spark-streaming@xxxxxxxxxx/program/StructuredKafkaWordCount.jar"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.dataflowrun.oc1.ap-tokyo-1.anxhiljrssl65iqabzbautd7p3wykkz4zlokg3srxdbqbkfzanllgdcafgna"</span>,
+    <span class="s2">"language"</span>: <span class="s2">"JAVA"</span>,
+    <span class="s2">"lifecycle-details"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACCEPTED"</span>,
+    <span class="s2">"logs-bucket-uri"</span>: <span class="s2">"oci://dataflow-logs@xxxxxxxxxx/"</span>,
+    <span class="s2">"metastore-id"</span>: null,
+    <span class="s2">"num-executors"</span>: 1,
+    <span class="s2">"opc-request-id"</span>: <span class="s2">"FCD3FF68FDF4496C9C6EEE8D79A73A61/F691E7308591D212A3A734C82E8B3B43"</span>,
+    <span class="s2">"owner-principal-id"</span>: <span class="s2">"ocid1.saml2idp.oc1.../foo.bar@example.com"</span>,
+    <span class="s2">"owner-user-name"</span>: <span class="s2">"foo.bar@example.com"</span>,
+    <span class="s2">"parameters"</span>: null,
+    <span class="s2">"private-endpoint-dns-zones"</span>: null,
+    <span class="s2">"private-endpoint-id"</span>: null,
+    <span class="s2">"private-endpoint-max-host-count"</span>: null,
+    <span class="s2">"private-endpoint-nsg-ids"</span>: null,
+    <span class="s2">"private-endpoint-subnet-id"</span>: null,
+    <span class="s2">"run-duration-in-milliseconds"</span>: 0,
+    <span class="s2">"spark-version"</span>: <span class="s2">"3.0.2"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-02-11T10:47:58.967000+00:00"</span>,
+    <span class="s2">"time-updated"</span>: <span class="s2">"2022-02-11T10:47:58.967000+00:00"</span>,
+    <span class="s2">"total-o-cpu"</span>: 2,
+    <span class="s2">"type"</span>: <span class="s2">"STREAMING"</span>,
+    <span class="s2">"warehouse-bucket-uri"</span>: <span class="s2">""</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="実行結果の確認">実行結果の確認</h2>
+
+<p>ある程度の時間（最小の集計単位である 1 分以上）が経過すると、集計結果が Object Storage に CSV 形式で出力されます。OCI コンソール左上のハンバーガーメニューから、<strong>ストレージ</strong> &gt; <strong>オブジェクト・ストレージとアーカイブ・ストレージ</strong> &gt; <strong>バケット</strong>と選択します。</p>
+
+<p><img src="image13.png" alt="image13" /></p>
+
+<p>作成済みの <strong>structured-spark-streaming</strong> を選択します。バケット内を展開し、確認すると以下のようになっています。</p>
+
+<p><img src="image14.png" alt="image14" /></p>
+
+<p>この中(<code class="language-plaintext highlighter-rouge">/output/*</code>)で、サイズが 0 バイトではない任意のファイルの縦三点リーダーをクリックし、ダウンロードします。</p>
+
+<p><img src="image15.png" alt="image15" /></p>
+
+<p>ファイルの中身は、以下のように START_TIME(集計の開始時刻), EMD_TIME(集計の終了時刻), WORD(単語), COUNT(単語数) の要素を持った CSV ファイルとなっています。</p>
+
+<pre><code class="language-csv">...途中略...
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,665,4
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,fa,97
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,e42,1
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,Ipswich,1
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,kilometre,30
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,Agricoltura,1
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,duchies,1
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,born,480
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,Cottingley,2
+2022-02-11T11:03:00.000Z,2022-02-11T11:04:00.000Z,comprising,20
+...途中略...
+</code></pre>
+
+<h2 id="ハンズオンの終了処理">ハンズオンの終了処理</h2>
+
+<p>Data Flow アプリケーションを停止します。(&lt;run-id&gt;は、<a href="#data-flow-アプリケーションを実行する">Data Flow アプリケーションを実行する</a>の実行結果の <code class="language-plaintext highlighter-rouge">$.data.id</code> をご参照ください)</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci data-flow run delete <span class="se">\</span>
+<span class="nt">--run-id</span> &lt;run-id&gt;
+</code></pre></div></div>
+
+<p>バックグラウンドで実行していた Python のプロセスを終了します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps <span class="nt">-c</span> | <span class="nb">grep</span> <span class="nt">-i</span> python3 | <span class="nb">awk</span> <span class="s1">'{print "kill -9", $1}'</span> | sh
+</code></pre></div></div>
+
+<p>以上で、Data Flow と OCI Streaming を使用した Structured Spark Streaming のハンズオンは終了です！お疲れ様でした！</p>
+
+<h1 id="参考-spark-ui-の確認">参考: Spark UI の確認</h1>
+
+<p>Spark では、各ジョブの実行にかかった時間を確認したり、各種運用に活用することができる UI (=Spark UI) が提供されています。実際に、今回のハンズオンで行った内容を Spark UI から確認してみましょう。OCI コンソール画面左上のハンバーガーメニューを展開し、<strong>アナリティクスと AI</strong> &gt; <strong>データ・レイク</strong> &gt; <strong>データ・フロー</strong> をクリックします。</p>
+
+<p><img src="image16.png" alt="image16" /></p>
+
+<p>ハンズオン中に作成した Data Flow アプリケーション(StructuredKafkaWordCount)を選択します。下へスクロールし、<strong>関連する実行</strong>内の実行をクリックします。</p>
+
+<p><img src="image17.png" alt="image17" /></p>
+
+<p>実行の詳細画面で、<strong>Spark UI</strong> をクリックします。</p>
+
+<p><img src="image18.png" alt="image18" /></p>
+
+<p>Jobs タブで各 Job の実行にかかった時間やステータス、含まれている Stage 等が確認できます。</p>
+
+<p><img src="image19.png" alt="image19" /></p>
+
+<p><img src="image28.png" alt="image28" /></p>
+
+<p>また、Job は 1 つ以上の Stage で構成されます。Stages タブでは、各 Stage の実行にかかった時間や読み書きしたサイズ、ステータス等が参照できます。</p>
+
+<p><img src="image20.png" alt="image20" /></p>
+
+<p><img src="image21.png" alt="image21" /></p>
+
+<p>Environment タブでは、実行環境の情報や Spark アプリケーションの実行時のパラメーター等が確認できます。</p>
+
+<p><img src="image22.png" alt="image22" /></p>
+
+<p>Executors タブでは、Executor に関する様々な情報（割り当てられたタスクの数や読み書きしたサイズ等）を参照できます。</p>
+
+<p><img src="image23.png" alt="image23" /></p>
+
+<p>SQL タブでは、Job 毎に実行された Spark SQL の詳細を確認できます。</p>
+
+<p><img src="image24.png" alt="image24" /></p>
+
+<p><img src="image25.png" alt="image25" /></p>
+
+<p>Structured Streaming タブでは、Stream Data(無限に増え続ける行を持つテーブルのようなもの)に対するクエリー処理に関する様々な性能情報を参照できます。</p>
+
+<p><img src="image26.png" alt="image26" /></p>
+
+<p><img src="image27.png" alt="image27" /></p>
+
+<p>また、内部では History Server が構築されているため、過去の実行に関する詳細情報も参照可能です。</p>
+
+<h1 id="参考-spark-アプリケーションの内容">参考: Spark アプリケーションの内容</h1>
+
+<p>今回使用した Spark アプリケーションの内容について簡単に解説します。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ... package, import宣言</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">StructuredKafkaWordCount</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+    <span class="c1">// ... 省略(入力パラメータのパース処理等) ...</span>
+
+    <span class="nc">SparkSession</span> <span class="n">spark</span><span class="o">;</span> <span class="c1">// ... 1</span>
+
+    <span class="nc">SparkConf</span> <span class="n">conf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">conf</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"spark.master"</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">spark</span> <span class="o">=</span> <span class="nc">SparkSession</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">appName</span><span class="o">(</span><span class="s">"StructuredKafkaWordCount"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">config</span><span class="o">(</span><span class="s">"spark.sql.streaming.minBatchesToRetain"</span><span class="o">,</span> <span class="s">"10"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">config</span><span class="o">(</span><span class="s">"spark.sql.shuffle.partitions"</span><span class="o">,</span> <span class="s">"1"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">config</span><span class="o">(</span><span class="s">"spark.sql.streaming.stateStore.maintenanceInterval"</span><span class="o">,</span> <span class="s">"300"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">getOrCreate</span><span class="o">();</span> <span class="c1">// ... 1</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">spark</span> <span class="o">=</span> <span class="nc">SparkSession</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">appName</span><span class="o">(</span><span class="s">"StructuredKafkaWordCount"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">master</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">config</span><span class="o">(</span><span class="s">"spark.sql.streaming.minBatchesToRetain"</span><span class="o">,</span> <span class="s">"10"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">config</span><span class="o">(</span><span class="s">"spark.sql.shuffle.partitions"</span><span class="o">,</span> <span class="s">"1"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">config</span><span class="o">(</span><span class="s">"spark.sql.streaming.stateStore.maintenanceInterval"</span><span class="o">,</span> <span class="s">"300"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">getOrCreate</span><span class="o">();</span> <span class="c1">// ... 1</span>
+    <span class="o">}</span>
+
+    <span class="nc">DataStreamReader</span> <span class="n">dataStreamReader</span> <span class="o">=</span> <span class="n">spark</span> <span class="c1">// ... 2</span>
+        <span class="o">.</span><span class="na">readStream</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"kafka"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"kafka.bootstrap.servers"</span><span class="o">,</span> <span class="n">bootstrapServers</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"subscribe"</span><span class="o">,</span> <span class="n">topics</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"kafka.security.protocol"</span><span class="o">,</span> <span class="s">"SASL_SSL"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"kafka.max.partition.fetch.bytes"</span><span class="o">,</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">)</span> <span class="c1">// limit request size to 1MB per partition</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"startingOffsets"</span><span class="o">,</span> <span class="s">"latest"</span><span class="o">);</span>
+
+    <span class="k">switch</span> <span class="o">(</span><span class="n">kafkaAuthentication</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="s">"plain"</span><span class="o">:</span>
+        <span class="n">dataStreamReader</span>
+            <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"kafka.sasl.mechanism"</span><span class="o">,</span> <span class="s">"PLAIN"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"kafka.sasl.jaas.config"</span><span class="o">,</span>
+                <span class="s">"org.apache.kafka.common.security.plain.PlainLoginModule required username=\""</span> <span class="o">+</span> <span class="n">kafkaUsername</span>
+                    <span class="o">+</span> <span class="s">"\" password=\""</span> <span class="o">+</span> <span class="n">kafkaPassword</span> <span class="o">+</span> <span class="s">"\";"</span><span class="o">);</span>
+        <span class="k">break</span><span class="o">;</span>
+
+      <span class="k">case</span> <span class="s">"RP"</span><span class="o">:</span>
+        <span class="n">dataStreamReader</span>
+            <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"kafka.sasl.mechanism"</span><span class="o">,</span> <span class="s">"OCI-RSA-SHA256"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"kafka.sasl.jaas.config"</span><span class="o">,</span>
+                <span class="s">"com.oracle.bmc.auth.sasl.ResourcePrincipalsLoginModule required intent=\"streamPoolId:"</span>
+                    <span class="o">+</span> <span class="n">kafkaStreamPoolId</span> <span class="o">+</span> <span class="s">"\";"</span><span class="o">);</span>
+        <span class="k">break</span><span class="o">;</span>
+
+      <span class="k">default</span><span class="o">:</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Create DataFrame representing the stream of input lines from Kafka</span>
+    <span class="nc">Dataset</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">&gt;</span> <span class="n">lines</span> <span class="o">=</span> <span class="n">dataStreamReader</span> <span class="c1">// ... 3</span>
+        <span class="o">.</span><span class="na">load</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">selectExpr</span><span class="o">(</span><span class="s">"CAST(value AS STRING)"</span><span class="o">);</span>
+
+    <span class="c1">// Split the lines into timestamp and words</span>
+    <span class="nc">StructType</span> <span class="n">wordsSchema</span> <span class="o">=</span> <span class="nc">StructType</span><span class="err">$</span><span class="o">.</span><span class="na">MODULE</span><span class="err">$</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span> <span class="c1">// ... 4</span>
+        <span class="k">new</span> <span class="nc">StructField</span><span class="o">[]{</span>
+            <span class="nc">StructField</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"timestamp"</span><span class="o">,</span> <span class="nc">TimestampType</span><span class="err">$</span><span class="o">.</span><span class="na">MODULE</span><span class="err">$</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">Metadata</span><span class="o">.</span><span class="na">empty</span><span class="o">()),</span>
+            <span class="nc">StructField</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"value"</span><span class="o">,</span> <span class="nc">StringType</span><span class="err">$</span><span class="o">.</span><span class="na">MODULE</span><span class="err">$</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">Metadata</span><span class="o">.</span><span class="na">empty</span><span class="o">())</span>
+        <span class="o">}</span>
+    <span class="o">);</span>
+    <span class="nc">ExpressionEncoder</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">&gt;</span> <span class="n">encoder</span> <span class="o">=</span> <span class="nc">RowEncoder</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">wordsSchema</span><span class="o">);</span>
+    <span class="kd">final</span> <span class="nc">SimpleDateFormat</span> <span class="n">dateFormat</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">(</span><span class="s">"yyyy-MM-dd'T'HH:mm:ss"</span><span class="o">);</span>
+
+    <span class="nc">Dataset</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">&gt;</span> <span class="n">words</span> <span class="o">=</span> <span class="n">lines</span> <span class="c1">// ... 5</span>
+        <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span>
+            <span class="o">(</span><span class="nc">FlatMapFunction</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">,</span> <span class="nc">Row</span><span class="o">&gt;)</span> <span class="n">row</span> <span class="o">-&gt;</span> <span class="o">{</span>
+              <span class="c1">// parse Kafka record in format: "timestamp(iso8601) text"</span>
+              <span class="nc">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+              <span class="nc">String</span> <span class="n">timestampString</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">25</span><span class="o">);</span>
+              <span class="nc">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">26</span><span class="o">);</span>
+              <span class="nc">Timestamp</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Timestamp</span><span class="o">(</span><span class="n">dateFormat</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">timestampString</span><span class="o">).</span><span class="na">getTime</span><span class="o">());</span>
+
+              <span class="k">return</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">message</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="na">stream</span><span class="o">()</span>
+                  <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">word</span> <span class="o">-&gt;</span> <span class="nc">RowFactory</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">timestamp</span><span class="o">,</span> <span class="n">word</span><span class="o">)).</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="o">,</span> <span class="n">encoder</span><span class="o">);</span>
+
+    <span class="c1">// Time window aggregation</span>
+    <span class="nc">Dataset</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">&gt;</span> <span class="n">wordCounts</span> <span class="o">=</span> <span class="n">words</span> <span class="c1">// ... 6</span>
+        <span class="o">.</span><span class="na">withWatermark</span><span class="o">(</span><span class="s">"timestamp"</span><span class="o">,</span> <span class="s">"1 minutes"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">groupBy</span><span class="o">(</span>
+            <span class="n">functions</span><span class="o">.</span><span class="na">window</span><span class="o">(</span><span class="n">functions</span><span class="o">.</span><span class="na">col</span><span class="o">(</span><span class="s">"timestamp"</span><span class="o">),</span> <span class="s">"1 minutes"</span><span class="o">,</span> <span class="s">"1 minutes"</span><span class="o">),</span>
+            <span class="n">functions</span><span class="o">.</span><span class="na">col</span><span class="o">(</span><span class="s">"value"</span><span class="o">)</span>
+        <span class="o">)</span>
+        <span class="o">.</span><span class="na">count</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">selectExpr</span><span class="o">(</span><span class="s">"CAST(window.start AS timestamp) AS START_TIME"</span><span class="o">,</span>
+            <span class="s">"CAST(window.end AS timestamp) AS END_TIME"</span><span class="o">,</span>
+            <span class="s">"value AS WORD"</span><span class="o">,</span> <span class="s">"CAST(count AS long) AS COUNT"</span><span class="o">);</span>
+
+    <span class="n">wordCounts</span><span class="o">.</span><span class="na">printSchema</span><span class="o">();</span>
+
+    <span class="c1">// Reducing to a single partition</span>
+    <span class="n">wordCounts</span> <span class="o">=</span> <span class="n">wordCounts</span><span class="o">.</span><span class="na">coalesce</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+
+    <span class="c1">// Start streaming query</span>
+    <span class="nc">StreamingQuery</span> <span class="n">query</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="k">switch</span> <span class="o">(</span><span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="s">"console"</span><span class="o">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">outputToConsole</span><span class="o">(</span><span class="n">wordCounts</span><span class="o">,</span> <span class="n">checkpointLocation</span><span class="o">);</span>
+        <span class="k">break</span><span class="o">;</span>
+      <span class="k">case</span> <span class="s">"csv"</span><span class="o">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">outputToCsv</span><span class="o">(</span><span class="n">wordCounts</span><span class="o">,</span> <span class="n">checkpointLocation</span><span class="o">,</span> <span class="n">outputLocation</span><span class="o">);</span> <span class="c1">// ... 7</span>
+        <span class="k">break</span><span class="o">;</span>
+      <span class="k">default</span><span class="o">:</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Unknown type "</span> <span class="o">+</span> <span class="n">type</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="n">query</span><span class="o">.</span><span class="na">awaitTermination</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">printUsage</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Usage: StructuredKafkaWordCount &lt;bootstrap-servers&gt; "</span> <span class="o">+</span>
+        <span class="s">"&lt;subscribe-topics&gt; &lt;kafkaAuthentication&gt; &lt;checkpoint-location&gt; &lt;type&gt; ..."</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;kafkaAuthentication&gt;: plain &lt;username&gt; &lt;password&gt;"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;kafkaAuthentication&gt;: RP &lt;stream-pool-id&gt;"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;type&gt;: console"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;type&gt;: csv &lt;output-location&gt;"</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="nc">StreamingQuery</span> <span class="nf">outputToConsole</span><span class="o">(</span><span class="nc">Dataset</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">&gt;</span> <span class="n">wordCounts</span><span class="o">,</span> <span class="nc">String</span> <span class="n">checkpointLocation</span><span class="o">)</span>
+      <span class="kd">throws</span> <span class="nc">TimeoutException</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">wordCounts</span>
+        <span class="o">.</span><span class="na">writeStream</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"console"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">outputMode</span><span class="o">(</span><span class="s">"complete"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"checkpointLocation"</span><span class="o">,</span> <span class="n">checkpointLocation</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">start</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="nc">StreamingQuery</span> <span class="nf">outputToCsv</span><span class="o">(</span><span class="nc">Dataset</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">&gt;</span> <span class="n">wordCounts</span><span class="o">,</span> <span class="nc">String</span> <span class="n">checkpointLocation</span><span class="o">,</span>
+      <span class="nc">String</span> <span class="n">outputLocation</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">TimeoutException</span> <span class="o">{</span> <span class="c1">// ... 7</span>
+    <span class="k">return</span> <span class="n">wordCounts</span>
+        <span class="o">.</span><span class="na">writeStream</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"csv"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">outputMode</span><span class="o">(</span><span class="s">"append"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"checkpointLocation"</span><span class="o">,</span> <span class="n">checkpointLocation</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">trigger</span><span class="o">(</span><span class="nc">Trigger</span><span class="o">.</span><span class="na">ProcessingTime</span><span class="o">(</span><span class="s">"1 minutes"</span><span class="o">))</span>
+        <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="s">"path"</span><span class="o">,</span> <span class="n">outputLocation</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">start</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Spark session を開始します。</li>
+  <li>Stream Data(無限に増え続ける行を持つテーブルのようなもの)からデータを読み取るためのリーダーを定義します。今回は、読み取りの対象が OCI Streaming(Kafka 互換 API 使用)のため、必要な接続情報も option として渡しています。</li>
+  <li>Stream Data からデータを読み取り、Dataset(1) を定義します。</li>
+  <li>Dataset(1) に含まれるデータを timestamp, value に分割するための型を定義します。</li>
+  <li>行データをパースし、timestamp, message に分割し、集計処理用の Dataset(2) へ格納します。</li>
+  <li>集計処理（1 分間の集計ウィンドウの START/END_TIME, 単語の出現数のカウント）を行い、その結果を Dataset(3)へ格納します。</li>
+  <li>集計結果を CSV ファイルに出力します。</li>
+</ol>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>Spark アプリケーションや依存関係、デフォルトのパラメーターや実行時のリソース仕様で構成される再利用可能な Spark アプリケーションのテンプレートのこと。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#dataflow" class="page__taxonomy-item" rel="tag">dataflow</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#streaming" class="page__taxonomy-item" rel="tag">streaming</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-02-14T00:00:00+09:00">February 14, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Structured+Spark+Streaming+%E3%82%92+OCI+Data+Flow+%E3%81%A7%E4%BD%93%E9%A8%93%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fdataflow-structured-spark-streaming%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fdataflow-structured-spark-streaming%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fdataflow-structured-spark-streaming%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/datascience/dataflow-for-beginner/" class="pagination--pager" title="OCI Data Flow ハンズオン(初級編)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/datascience/ggsa-tutorial-for-beginner/" class="pagination--pager" title="Oracle GoldenGate Stream Analytics ハンズオン
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

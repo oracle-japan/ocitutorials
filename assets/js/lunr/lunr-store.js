@@ -623,6 +623,12 @@ var store = [{
         "url": "/ocitutorials/datascience/dataflow-for-beginner/",
         "teaser": null
       },{
+        "title": "Structured Spark Streaming を OCI Data Flow で体験しよう",
+        "excerpt":"このエントリーでは、OCI Data Flow と OCI Streaming を用いて、Structured Spark Streaming の基礎を学習します。 前提条件 Oracle Cloud のアカウントを取得済みであること OCI CLI v3.4.5 以上がインストールされていること Cloud Shell の利用を推奨 Data Flow ハンズオン(初級編) - 事前準備が完了していること Object Storage の namespace が確認できていること Data Flow を使用するために必要な各種バケット（dataflow-logs, dataflow-warehouse）の作成が完了していること Data Flow を使用するためのポリシーの設定が完了していること ハンズオンの全体像 OCI Streaming へ publish したメッセージを Data Flow 上で動作する Spark アプリケーションが subscribe...","categories": [],
+        "tags": ["dataflow","streaming"],
+        "url": "/ocitutorials/datascience/dataflow-structured-spark-streaming/",
+        "teaser": null
+      },{
         "title": "Oracle GoldenGate Stream Analytics ハンズオン",
         "excerpt":"Oracle GoldenGate Stream Analytics(以下、GGSA) は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。 このエントリーでは、GGSA の Marketplace からのプロビジョニングからチュートリアル完了までの手順を記します。 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること ハンズオン環境の全体像 OCI Marketplace から GGSA を最小構成でプロビジョニングすると、以下の環境が作成されます。本エントリーでは、この環境を用いてハンズオンを実施します。 作成する Pipeline の全体像 このエントリーでは、リアルタイムに流れてくる交通データを分析することを行います。最終的に完成する Pipeline は以下のようになります。 それぞれの Stage で実施されることについて簡単に説明します。 車両の走行データ リアルタイムに流れてくる交通データを Java プログラムで疑似的に表現しています。Java プログラム中では、Kafka の特定 Topic(tutorial)に対してメッセージを publish しており、本ハンズオンは該当の Topic から メッセージを consume する所から始まります。 関連するハンズオンの章: 2-1. チュートリアル用のイベント・ストリームを Kafka...","categories": [],
         "tags": ["ggsa"],
