@@ -617,6 +617,12 @@ var store = [{
         "url": "/ocitutorials/database/adb602-moviestream-analysis/",
         "teaser": "/ocitutorials/database/adb602-moviestream-analysis/teaser.png"
       },{
+        "title": "ADB-Dの環境を作成してみよう",
+        "excerpt":"目次 1. Autonomous Database Dedicated (ADB-D)とは？ 2. 環境を作成してみよう 2-1. 利用イメージ（構成図） 2-2. Autonomous Exadata Infrastructureの作成 2-3. ネットワーク設定 2-4. Autonomous Exadata VMクラスタの作成 2-5. Autonomous Container Databasesの作成 2-6. Autonomous Databaseの作成 3. 作成したADBに接続してみよう 所要時間 : 約6時間程程度　※プロビジョニング時間を含みます 1. Autonomous Database Dedicated (ADB-D)とは？ Autonomous Databaseは共有型・専有型の２つのデプロイメント方式をご用意しています。 共有型のShared Exadata Infrastructure(ADB-S)はインフラストラクチャとなるExadataを共有する環境、専有型のDedicated Exadata Infrastructure(ADB-D)はExadataをお客様が専有する環境です。 ADB-Dは、複数のADBを利用するような大規模なシステムや、セキュリティ上の制約によって他のお客様との同居が許されないようなシステムで使用されることが多くなっています。 さらにADB-Dでは専有環境の持ち方として、OCIにデプロイする方式とお客様データセンターに配置できるCloud@Customer(C@C)を利用したデプロイメント方式があります。 Cloud@Customerは、データをパブリッククラウドに持ち出すことができなかったり、アプリケーションからのネットワークレイテンシが問題となるようなお客様にご利用いただくことの多いデプロイメント方式です。 本チュートリアルでは、OCI上にADB-Dをデプロイ方式を行います。 ADB-Sとの違いは？ ADB-SもADB-DもAutonomous...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb701-adbd/",
+        "teaser": null
+      },{
         "title": "OCI Data Flow ハンズオン(初級編)",
         "excerpt":"OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。 このエントリーでは、OCI Data Flow の基本的な操作を学習します。 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること ハンズオンの全体像 本ハンズオンは、Berlin Airbnb データセットを用いて最適な取引物件を予測する事を行いたいと思います。そのために OCI Data Flow を用いて、以下のことを学習します。 Java を使用した ETL SparkSQL によるデータの簡易的なプロファイリング PySpark を使用した機械学習 それでは、実施していきます。 0. 事前準備 OCI Data Flow を使用するための Object Storage の作成やポリシーの設定を行います。また、Data Flow は Object Storage へのアクセスに Hadoop Distributed...","categories": [],
         "tags": ["dataflow"],
