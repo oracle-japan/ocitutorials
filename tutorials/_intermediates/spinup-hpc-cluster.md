@@ -17,7 +17,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴を持�
 このチュートリアルは、OCIのマーケットプレイスから利用可能なHPCクラスタ構築のためのリソース・マネージャ用スタックを利用し、以下構成の典型的なHPCクラスタを構築、そのインターコネクト性能を検証します。
 - HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（BM.Optimized3.36）
   - シェイプ詳細は以下URLを参照  
-  https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized
+  [https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized]([https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized)
 - 100 Gbps RoCEv2 RDMAインターコネクト
 - インターネットからSSH接続可能なbastionノード
 - OS: Oracle Linux 7.9
@@ -32,7 +32,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴を持�
 
 リソース・マネージャについては、以下のチュートリアルも参考にしてください。
 
-https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/
+[https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/](https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/)
 
 
 **所要時間 :** 約30分
@@ -49,7 +49,7 @@ https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/
 
 1. 以下マーケット・プレースのHPCクラスタ構築用スタックページにアクセスします。
 
-   https://cloud.oracle.com/marketplace/application/67628143/
+   [https://cloud.oracle.com/marketplace/application/67628143/](https://cloud.oracle.com/marketplace/application/67628143/)
 
 2. OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。
 
@@ -67,7 +67,7 @@ https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/
 
    5.1 **Cluster configuration** フィールド
     - **Public SSH key :** HPCクラスタへのログインで使用するSSH公開鍵
-      - 公開鍵ファイルのアップロード（SSHキー・ファイルの選択）と公開鍵のフィールドへの貼り付け（SSHキーの貼付け）が選択可能  
+      - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
     - **Configure LDAP authentication from bastion :** チェックオフ
       - LDAPを使用したHPCクラスタノード内統合ユーザ管理の利用有無を指定（本チュートリアルではローカルユーザ管理を使用）
 
@@ -198,6 +198,7 @@ https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/
    bastion_ip:/home            40223744 14131200  26092544  36% /home
    bastion_ip:/export/cluster  40223744 14131200  26092544  36% /nfs/cluster
    ```
+
 # 5. MPIプログラム実行
 
 本章は、MPIプログラムをSlurmを介してバッチジョブとして投入し、構築したHPCクラスタのインターコネクト性能を確認します。
@@ -312,6 +313,7 @@ https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/
    
    # All processes entering MPI_Finalize
    ```
+
 # 6. スタックの破棄
 
 本章は、スタックを破棄することで、構築したHPCクラスタを削除します。
