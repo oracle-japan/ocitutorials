@@ -17,7 +17,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴を持�
 このチュートリアルは、OCIのマーケットプレイスから利用可能なHPCクラスタ構築のためのリソース・マネージャ用スタックを利用し、以下構成の典型的なHPCクラスタを構築、そのインターコネクト性能を検証します。
 - HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（BM.Optimized3.36）
   - シェイプ詳細は以下URLを参照  
-  [https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized]([https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized)
+  [https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized)
 - 100 Gbps RoCEv2 RDMAインターコネクト
 - インターネットからSSH接続可能なbastionノード
 - OS: Oracle Linux 7.9
