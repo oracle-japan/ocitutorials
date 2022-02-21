@@ -239,7 +239,7 @@ Resource ManagerではTerraformの形式で構成情報を記述します。
 
 #### 4-2-1. スタックの作成
 Resource Managerを利用するには、構成情報を記述したテキストファイルを作成し、それらをzipアーカイブにまとめておく必要があります。Resource Managerアーカイブは既に作成済みです。  
-[こちら](https://github.com/oracle-japan/oke-handson-prerequisites/releases/tag/v1.3)からダウンロードしてください。
+[こちら](https://github.com/oracle-japan/oke-handson-prerequisites/releases/tag/v1.4)からダウンロードしてください。
 
 ![](01-02.png)
 
@@ -255,7 +255,7 @@ Resource Managerを利用するには、構成情報を記述したテキスト�
 
 スタックはリソース・マネージャ サービスによって管理されるTerraformコマンドの実行環境です。ここでResource Managerアーカイブをアップロードしてスタックを作成することで、アップロードされたTerraformテンプレートの実行環境がクラウド上に構成されます。
 
-スタックの作成画面で、`マイ構成`を選択し、`.zipファイルをここにドロップします または 参照`と表示された領域にダウンロードしたResource Managerアーカイブをドロップし、下部にある`TERRAFORMのバージョン`を`0.14.x`に変更します。  
+スタックの作成画面で、`マイ構成`を選択し、`.zipファイルをここにドロップします または 参照`と表示された領域にダウンロードしたResource Managerアーカイブをドロップし、下部にある`TERRAFORMのバージョン`を`1.0.x`に変更します。  
 その後`次`をクリックします。
 
 ![](01-07.png)
