@@ -155,6 +155,12 @@ var store = [{
         "url": "/ocitutorials/cloud-native/oke-for-advances/",
         "teaser": null
       },{
+        "title": "Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう",
+        "excerpt":"このハンズオンでは、Oracle Container Engine for Kubernetes（以下OKE）上に、マイクロサービスアプリケーションをデプロイします。そして、OCIのObservabilityサービスを利用して、モニタリング、ロギング、トレーシングを実践的に学びます。 OCIのObservabilityサービスとして、以下を利用します。 モニタリング Oracle Cloud Infrastructure Monitoring ロギング Oracle Cloud Infrastructure Logging トレーシング Oracle Cloud Observability and Management Platform Oracle Cloud Observability and Management Platform サービスの一つである分散トレーシングや合成モニタリングなど実現する Oracle Cloud Infrastrucutre Application Performance Monitoring（APM） を利用します。 ハンズオンの流れは以下となります。 OKEクラスタ構築とOCIRセットアップ OCIダッシュボードからOKEクラスタの構築 Cloud Shellを利用してクラスタを操作 OCIRのセットアップ Application Performance Monitoring サンプルアプリケーションの概要説明 サンプルアプリケーションとAPM連携設定 APMドメインの作成 サンプルアプリケーションのビルドとコンテナイメージシップ...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/oke-observability-for-advances/",
+        "teaser": null
+      },{
         "title": "Fn Project ハンズオン",
         "excerpt":"Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。 このハンズオンでは、Fn Projectの環境構築から動作確認までの手順を記します。 前提条件 クラウド環境 有効なOracle Cloudアカウントがあること OCIチュートリアル その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること OCIチュートリアル その3 - インスタンスを作成する を通じてコンピュートインスタンスの構築が完了していること 1.Fn Project実行環境の構築 ここでは、前提条件のハンズオンで作成したコンピュートインスタンス上に、Fn Projectを実行するための環境構築を行います。 前提条件のハンズオンで作成したコンピュートインスタンス上に任意のターミナルソフトでSSHログインします。 1-1. Dockerのインストール ログインしたら、以下のコマンドを実行します。 sudo yum install -y yum-utils sudo yum -y update yumレポジトリをセットアップします。 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo Dockerパッケージをインストールします。 sudo yum install -y docker-ce docker-ce-cli containerd.io これでDockerのインストールは完了です。 以下のコマンドでDocker...","categories": [],
         "tags": [],
