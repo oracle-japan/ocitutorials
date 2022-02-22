@@ -173,9 +173,7 @@ OCIRにコンテナイメージをプッシュする際に必要となる、「U
 
 ![](1-3-006.png)
 
-「テナンシ詳細」の「名前」と「オブジェクト・ストレージ・ネームスペース」の赤枠箇所をコピーして、テキストエディタにペーストしておきます。
-
-※「テナンシ詳細」の「名前」は、「テナンシ名」となり、後続手順で必要となります。
+「テナンシ詳細」の「オブジェクト・ストレージ・ネームスペース」の赤枠箇所をコピーして、テキストエディタにペーストしておきます。
 
 ![](1-3-007.png)
 
@@ -400,7 +398,7 @@ vim code-at-customer-handson/olympic_frontend_apm/src/main/resources/web/index.h
 
 #変更箇所3 staticより前の部分「https～.com」までを[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録した「データ・アップロード・エンドポイント」を設定します。
 
-更新後、「:wq」エディタを保存終了します。
+更新後、「:wq」でエディタを保存終了します。
 
 ディレクトリを移動後、ビルドしてコンテナイメージを作成します。
 
@@ -923,13 +921,13 @@ kubectl get service frontend-app
 
 ```sh
 NAME           TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)        AGE
-frontend-app   LoadBalancer   10.96.220.188   193.122.xxx.xxx   80:31664/TCP   41s
+frontend-app   LoadBalancer   10.96.220.188   193.122.***.***   80:31664/TCP   41s
 ```
 
-上記の場合は、frontend-app Serviceの`EXTERNAL-IP`である`193.122.xxx.xxx`がエンドポイントになります。
+上記の場合は、frontend-app Serviceの`EXTERNAL-IP`である`193.122.***.***`がエンドポイントになります。
 
 この場合は、以下のURLにアクセスします。  
-`http://193.122.xxx.xxxx`
+`http://193.122.***.***`
 
 ![](2-6-008.png)
 
@@ -1267,9 +1265,9 @@ OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとア�
 
 サンプルアプリケーションに対して、過剰なアクセス負荷をかけます。そして、アラーム発生後にメールが通知されるように設定を行います。
 
-最初に、負荷をかけるサーバを構築します。Jmeterという負荷テスト用のアプリケーションを利用して環境をセットアップします。
+最初に、負荷をかけるサーバを構築します。JMeterという負荷テスト用のアプリケーションを利用して環境をセットアップします。
 
-#### jmeterサーバの構築
+#### JMeterサーバの構築
 
 左上のハンバーガーメニューをクリックして、「コンピュート」-「インスタンス」を選択します。
 
@@ -1325,11 +1323,11 @@ OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとア�
 
 ![](4-3-017.png)
 
-#### jmeter環境のセットアップ
+#### JMeter環境のセットアップ
 
-jmeter環境をセットアップするために、作成した仮想マシンにログインします。
+JMeter環境をセットアップするために、作成した仮想マシンにログインします。
 
-Cloud Shell アイコンをクリックした、Cloud Shellを起動します。
+Cloud Shell アイコンをクリックして、Cloud Shellを起動します。
 
 ![](4-3-010.png)
 
@@ -1372,14 +1370,14 @@ chmod 400 ssh-key-xxxx-xx-xx.key
 仮想マシンにログインします。事前に確認したユーザ名とパブリックIPアドレスを利用します。
 
 ```sh
-ssh -i ssh-key-xxxx-xx-xx.key opc@xxx.xxx.xxx.xxx
+ssh -i ssh-key-xxxx-xx-xx.key opc@***.***.***.***
 ```
 
 yes と入力します。
 
 ```sh
 FIPS mode initialized
-The authenticity of host '132.226.236.71 (132.226.236.71)' can't be established.
+The authenticity of host '132.226.***.*** (132.226.***.***)' can't be established.
 ECDSA key fingerprint is SHA256:oACNnKKWu3R9WUi3xpYVnunWcIoEF8NL5LztfUqlZ74.
 ECDSA key fingerprint is SHA1:z2sVFWORAMBlpeuUgHx5Ou4X1Cg.
 Are you sure you want to continue connecting (yes/no)? yes
@@ -1404,7 +1402,7 @@ yum install -y java-1.8.0-openjdk
 Complete!
 ```
 
-Jmeterをダウンロードします。
+JMeterをダウンロードします。
 
 ```sh
 wget https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.4.3.tgz
@@ -1442,7 +1440,7 @@ mkdir test_work
 cd test_work
 ```
 
-Jmeterのプロファイルを作成します。「xxx.xxx.xxx.xxx」は、事前に確認したサンプルアプリケーションのエンドポイントに書き換えます。
+JMeterのプロファイルを作成します。「***.***.***.***」は、事前に確認したサンプルアプリケーションのエンドポイントに書き換えます。
 
 ```sh
 vim testplan.jmx
@@ -1480,7 +1478,7 @@ vim testplan.jmx
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">xxx.xxx.xxx.xxx</stringProp>
+          <stringProp name="HTTPSampler.domain">***.***.***.***</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
