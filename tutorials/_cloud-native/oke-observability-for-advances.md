@@ -1422,3 +1422,81 @@ frontend-app-56f7cfcb74-gpqh8     1/1     Running   0          23h
 
 5.今回利用したサンプルアプリケーションの補足説明
 ---------------------------------
+
+ここでは、今回のサンプルアプリケーションでのAPM設定に関する補足説明を行います。　　
+
+今回のサンプルアプリケーションでは、APMの設定として以下の2点を実施しました。  
+
+- APM Browser Agentのエンドポイントとパブリック・データキーを`index.html`に設定(その後、コンテナイメージをビルド/プッシュ)
+- APM Server Agentのエンドポイントとプライベート・データキーをSecretリソースとして設定
+
+ここでの補足説明は主に2点目について見ていきます。  
+
+今回利用したManifestを見ていきましょう。
+
+まずは、フロントエンドアプリケーションのManifestを確認します。
+ここでは、Deploymentリソースだけ抜粋します。　　
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+  labels:
+    app: frontend-app
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+        version: v1
+    spec:
+      containers:
+      - name: frontend-app
+        image: iad.ocir.io/orasejapan/frontend-app-apm
+        ports:
+        - containerPort: 8082
+        env:
+        - name: tracing.data-upload-endpoint
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: endpoint
+        - name: tracing.private-data-key
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: private-key
+```
+
+25行目〜35行目に注目してみましょう。
+
+```yaml
+~~~
+        env:
+        - name: tracing.data-upload-endpoint
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: endpoint
+        - name: tracing.private-data-key
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: private-key
+```
+
+APMのエンドポイントとプライベート・データキーを`tracing.data-upload-endpoint`、`tracing.private-data-key`という環境変数名でSecretリソースから読み込んでいます。  
+ここで指定しているSecretリソースは、[2-5 サンプルアプリケーションへのAPM設定(サーバサイド側)](#2-5-サンプルアプリケーションへのapm設定サーバサイド側)で作成したものです。  
+
+アプリケーション側(Helidon)では、APM Server Agentがこの環境変数を読み込み、APMに対してトレース情報やメトリクスのアップロードを行なっています。  
+
+今回はSecretとして指定しましたが、各々のコンテナアプリケーション(Helidon)の設定ファイル(`microprofile-config.properties`)などでも指定することができます。
+
+バックエンドアプリケーション、データソースアプリケーションのManifestでも同様に環境変数からAPMのエンドポイントとプライベート・データキーを取得する設定にしています。
