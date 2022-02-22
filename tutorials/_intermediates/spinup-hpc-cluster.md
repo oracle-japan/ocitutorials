@@ -66,7 +66,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴を持�
 5. 表示される以下 **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次へ** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
    5.1 **Cluster configuration** フィールド
-    - **Public SSH key :** HPCクラスタへのログインで使用するSSH公開鍵
+    - **Public SSH key :** bastionにログインする際使用するSSH秘密鍵に対応する公開鍵
       - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
     - **Configure LDAP authentication from bastion :** チェックオフ
       - LDAPを使用したHPCクラスタノード内統合ユーザ管理の利用有無を指定（本チュートリアルではローカルユーザ管理を使用）
