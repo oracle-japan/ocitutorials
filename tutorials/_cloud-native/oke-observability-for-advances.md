@@ -641,7 +641,7 @@ APMエンドポイント|[2-3 APMドメインの作成](#2-3-apmドメインの�
 「データ・キー」の「プライベート」キー|[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録したデータ・キーの「プライベート」キー|**パブリックキーではなく、プライベートキーとなるので注意してください。**
 
 ```sh
-kubectl create secret generic apm-secret --from-literal=endpoint=`<APMエンドポイント>` --from-literal=private-key=`「データ・キー」の「プライベート」キー` 
+kubectl create secret generic apm-secret --from-literal=endpoint=<APMエンドポイント> --from-literal=private-key=<「データ・キー」の「プライベート」キー>
 ```
 
 ***コマンド結果***
@@ -844,8 +844,10 @@ OCI Loggingサービスを使用する上で必要となるポリシーを設定
 
 以下を設定します。
 
-- 名前：logging-dynamic-group  
-- 説明：logging-dynamic-group  
+入力項目|入力内容
+-|-
+名前|logging-dynamic-group
+説明|logging-dynamic-group
 
 ルールについては以下を設定します。＜your-OCID＞ は事前に取得したOCIDを設定します。
 
@@ -867,8 +869,10 @@ instance.compartment.id = '<your-OCID>'
 
 以下を設定します。
 
-- 名前：logging
-- 説明：logging
+入力項目|入力内容
+-|-
+名前|logging
+説明|logging
 
 「手動エディタの表示」ボタンを右にスライドします。
 
@@ -931,7 +935,8 @@ allow dynamic-group logging-dynamic-group to use log-content in tenancy
 
 ![](3-1-008.png)
 
-リストに「woker-node」と表示されていることを確認します。
+リストに「woker-node」と表示されていることを確認します。  
+※表示されない場合は、他のページに遷移するなどブラウザを更新してください。
 
 ![](3-1-010.png)
 
@@ -1327,7 +1332,6 @@ vim testplan.jmx
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
-
 ```
 
 負荷をかけます。止める場合は、「Ctrl + C」で停止できます。
