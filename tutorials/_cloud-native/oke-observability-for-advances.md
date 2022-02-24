@@ -42,7 +42,7 @@ O&Mには、このハンズオンで利用するサービスの他にも、オ�
     2. サンプルアプリケーションとAPM連携設定
     3. APMドメインの作成
     4. サンプルアプリケーションへのAPM設定(ブラウザ側)とコンテナイメージ作成
-    5. 2-5 サンプルアプリケーションへのAPM設定(サーバサイド側)
+    5. サンプルアプリケーションへのAPM設定(サーバサイド側)
     6. OCI APMでのトレーシング
     7. OCI APMでのアプリケーションサーバのメトリクス監視
     8. OCI APMでのリアルユーザモニタリング(RUM)
@@ -644,8 +644,8 @@ APMエンドポイント|[2-3 APMドメインの作成](#2-3-apmドメインの�
 
 ```sh
 kubectl create secret generic apm-secret \
---from-literal=endpoint=APMエンドポイント \
---from-literal=private-key=「データ・キー」の「プライベート」キー
+--from-literal=endpoint=<APMエンドポイント> \
+--from-literal=private-key=<「データ・キー」の「プライベート」キー>
 ```
 
 ***コマンド結果***
