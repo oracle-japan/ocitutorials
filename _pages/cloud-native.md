@@ -43,6 +43,9 @@ toc: true
 + **[Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう](/ocitutorials/cloud-native/oke-for-advances/)**  
     OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。サードパーティーとしてOSSのIstio、Prometheus、Grafana、Loki、Jaeger、Kialiを利用します。【所要時間:約2時間】
 
++ **[Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう](/ocitutorials/cloud-native/oke-observability-for-advances/)**  
+    OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。OCIのオブザバビリティサービスとして、Oracle Cloud Infrastructure Monitoring、Oracle Cloud Infrastructure Logging、Oracle Cloud Infrastructure Application Performance Monitoringを利用します。【所要時間:約2時間】
+
 <br />
 
 # 3. Oracle Functionsチュートリアル
