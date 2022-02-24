@@ -955,8 +955,8 @@ spec:
   adminPassword:
     secret:
       secretName: admin-passwd
-  isAutoScalingEnabled: true
-  isFreeTier: false
+  isAutoScalingEnabled: false
+  isFreeTier: true
   licenseModel: LICENSE_INCLUDED
   wallet:
     walletName: okeatp
