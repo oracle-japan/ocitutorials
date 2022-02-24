@@ -11,17 +11,23 @@ OCIのObservabilityサービスとして、以下を利用します。
 
 ***モニタリング***
 
-* [Oracle Cloud Infrastructure Monitoring](https://www.oracle.com/jp/devops/monitoring/)
+- [Oracle Cloud Infrastructure Monitoring](https://www.oracle.com/jp/devops/monitoring/)
+: メトリックおよびアラーム機能を使用してクラウド・リソースを積極的および受動的にモニター可能なフルマネージドサービスです。
 
 ***ロギング***
 
-* [Oracle Cloud Infrastructure Logging](https://www.oracle.com/jp/devops/logging/)
+- [Oracle Cloud Infrastructure Logging](https://www.oracle.com/jp/devops/logging/)
+: 監査ログ、サービス・ログ、カスタム・ログに対応した、スケーラビリティの高いフルマネージド型のロギングサービスです。
 
 ***トレーシング***
 
-* [Oracle Cloud Observability and Management Platform](https://www.oracle.com/jp/manageability/)
+- [Oracle Cloud Infrastructure Application Performance Monitoring](https://www.oracle.com/jp/manageability/application-performance-monitoring/)
+: アプリケーションをモニターし、パフォーマンスの問題を診断するための包括的な機能セットが組み込まれたフルマネージドサービスです。
 
-Oracle Cloud Observability and Management Platform サービスの一つである分散トレーシングや合成モニタリングなど実現する Oracle Cloud Infrastrucutre Application Performance Monitoring（APM） を利用します。
+**Oracle Cloud Observability and Management Platformについて**  
+このハンズオンで利用するサービスは、[Oracle Cloud Observability and Management Platform(以下、O&M)](https://www.oracle.com/jp/manageability/)を構成するコンポーネントの一部です。
+O&Mには、このハンズオンで利用するサービスの他にも、オンプレミスおよびマルチクラウド環境からすべてのログ・データを監視、集計、インデックス作成、分析可能な[Logging Analytics](https://www.oracle.com/jp/manageability/logging-analytics/)、Oracle Enterprise Managerの主要な機能をクラウドサービスとして提供する[Database Management](https://www.oracle.com/jp/manageability/database-management/)などがあります。
+{: .notice--info}
 
 ハンズオンの流れは以下となります。
 
@@ -35,10 +41,12 @@ Oracle Cloud Observability and Management Platform サービスの一つであ�
     1. サンプルアプリケーションの概要説明
     2. サンプルアプリケーションとAPM連携設定
     3. APMドメインの作成
-    4. サンプルアプリケーションのビルドとコンテナイメージシップ
-    5. サンプルアプリケーションのManifest設定の変更
+    4. サンプルアプリケーションへのAPM設定(ブラウザ側)とコンテナイメージ作成
+    5. サンプルアプリケーションへのAPM設定(サーバサイド側)
     6. OCI APMでのトレーシング
     7. OCI APMでのアプリケーションサーバのメトリクス監視
+    8. OCI APMでのリアルユーザモニタリング(RUM)
+    9. OCI APMでの合成モニタリング(Synthetic Monitoring)
 
 3. Logging
     1. カスタム・ログの設定
@@ -75,11 +83,13 @@ Oracle Cloud Observability and Management Platform サービスの一つであ�
 
 以下を設定の設定となっていることを確認します。
 
-「Kubernetes APIエンドポイント」:「パブリック・ワーカー」
-「Kubernetesワーカー・ノード」:「プライベート・ワーカー」
-「シェイプ」：「VM Standard.E3.Flex」
-「OCPU数の選択」:「1」
-「メモリー量（GB）」：「16」
+key|value
+-|-
+Kubernetes APIエンドポイント| パブリック・エンドポイント
+Kubernetesワーカー・ノード| プライベート・ワーカー
+シェイプ | VM Standard.E3.Flex
+OCPU数の選択 | 1
+メモリー量（GB）|16
 
 ![](1-1-004.png)
 
@@ -142,6 +152,16 @@ OCIでは、Oracle Container Image Registry(OCIR)を利用します。
 
 ![](1-3-001.png)
 
+{% capture notice %}**ハンズオンに利用するコンパートメントついて**  
+トライアル環境でのハンズオンの場合は、ルートコンパートメントを利用します。  
+OCIRのコンソール画面はデフォルトでルートコンパートメントが選択されますが、ご自身に割り当てられているコンパートメントがある場合は、そちらのコンパートメントを利用してください。  
+コンパートメントはOCIRのコンソール画面の左側から選択できます。
+![0-013.jpg](1-1-013.jpg)
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
+
 「リポジトリの作成」ボタンをクリックします。
 
 ![](1-3-002.png)
@@ -173,9 +193,7 @@ OCIRにコンテナイメージをプッシュする際に必要となる、「U
 
 ![](1-3-006.png)
 
-「テナンシ詳細」の「名前」と「オブジェクト・ストレージ・ネームスペース」の赤枠箇所をコピーして、テキストエディタにペーストしておきます。
-
-※「テナンシ詳細」の「名前」は、「テナンシ名」となり、後続手順で必要となります。
+「テナンシ詳細」の「オブジェクト・ストレージ・ネームスペース」の赤枠箇所をコピーして、テキストエディタにペーストしておきます。
 
 ![](1-3-007.png)
 
@@ -205,9 +223,10 @@ OCIRにコンテナイメージをプッシュする際に必要となる、「U
 
 以下、テキストエディタにペーストした内容に当てはめて利用します。
 
-「Username」：`<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>`
-
-「Password」： `認証トークン` を利用します。
+key|value
+-|-
+Username|`<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>`
+Password| `認証トークン`
 
 以上でOCIRのセットアップは完了です。
 
@@ -241,11 +260,11 @@ git clone https://github.com/oracle-japan/code-at-customer-handson
 
 このサンプルアプリケーションは、主に以下の2つから構成されています。
 
-* [Helidon](https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview)
-  * Oracleがオープンソースで提供しているJavaのマイクロサービスフレームワーク
-* [Oracle JavaScript Extension Toolkit（Oracle JET）](https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html)
-  * Oracleがオープンソースで開発しているJavascript用フレームワーク
-  * 業界標準として普及しているオープンソース・フレームワークに基づき、開発者がより優れたアプリケーションをより迅速に構築できるよう支援する高度な機能とサービスを付加
+- [Helidon](https://oracle-japan-oss-docs.github.io/helidon/docs/v2/#/about/01_overview)
+  - Oracleがオープンソースで提供しているJavaのマイクロサービスフレームワーク
+- [Oracle JavaScript Extension Toolkit（Oracle JET）](https://www.oracle.com/jp/application-development/technologies/jet/oracle-jet.html)
+  - Oracleがオープンソースで開発しているJavascript用フレームワーク
+  - 業界標準として普及しているオープンソース・フレームワークに基づき、開発者がより優れたアプリケーションをより迅速に構築できるよう支援する高度な機能とサービスを付加
 
 簡単にアプリケーションの構成を見ていきます。  
 この手順が完了すると全体のイメージは以下のようになります。
@@ -258,22 +277,25 @@ Oracle Cloud Infrastructureの構成としては以下のような図になり�
 
 このサンプルアプリケーションは、3つのコンポーネントから以下のように構成されています。
 
-* フロントエンドアプリケーション(図中の`Olympics`)  
+- **フロントエンドアプリケーション(図中の`Olympics`)**  
   HelidonとOracle JETから構成されているアプリケーションです。  
   Helidonの静的コンテンツルート(今回は`resources/web配下`)にOracle JETのコンテンツを配置しています。  
   このアプリケーションは、バックエンドサービス(v1/v2/v3)のいずれかを呼び出します。  
+  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Browser AgentとAPM Agentが含まれています。
 
-* バックエンドアプリケーション(図中の緑枠部分)  
+- **バックエンドアプリケーション(図中の緑枠部分)**  
   Helidonから構成されているアプリケーションです。
   このアプリケーションには3つのバージョンが存在し、それぞれ金メダメリスト(v3)、銀メダリスト(v2)、銅メダリスト(v1)の一覧を返すようになっています。 
   バージョン情報は環境変数として保持しています。
-  このアプリケーションは、データソースアプリケーションに対してバージョンに応じたAPIエンドポイントを呼び出し、データを取得しにいきます。
+  このアプリケーションは、データソースアプリケーションに対してバージョンに応じたAPIエンドポイントを呼び出し、データを取得しにいきます。  
+  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Agentが含まれています。
 
-* データソースアプリケーション(図中の`Medal Info`)  
+- **データソースアプリケーション(図中の`Medal Info`)**  
   Helidonとインメモリで動作しているデータベースである[H2 Database](https://www.h2database.com/html/main.html)から構成されているアプリケーションです。  
-  このアプリケーションでは、メダリストと獲得したメダルの色を保持しており、バックエンドアプリケーションから呼び出されたエンドポイント応じてメダリストとそのメダルの色を返却します。
+  このアプリケーションでは、メダリストと獲得したメダルの色を保持しており、バックエンドアプリケーションから呼び出されたエンドポイント応じてメダリストとそのメダルの色を返却します。  
+  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Agentが含まれています。
 
-  **Helidonについて**  
+**Helidonについて**  
 Helidonは`Maven`を利用してプロジェクトの雛形を作成することができます。  
 コマンドについては[こちら](https://helidon.io/docs/v2/#/mp/guides/02_quickstart)をご確認ください。  
 この中にはデフォルトでDockerfileも含まれています。  
@@ -339,7 +361,7 @@ key|value
 
 **集合ハンズオンで参加されている皆様へ**  
 APMドメイン名は重複が許容されないため、集合ハンズオンなどで同一環境を複数名でご利用されている皆様はAPMドメイン名に自分のイニシャルや好きな複数桁の番号などを付与し、重複しないようにAPMドメイン名を設定してください。  
-{: .notice--info}
+{: .notice--warning}
 
 「作成」をクリックします。
 
@@ -353,9 +375,11 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
 
 以下、「APMドメイン情報」をコピーし、エディタなどに記録しておきます。  
 
-* 「データ・アップロード・エンドポイント」  
-* 「データ・キー」の「プライベート」キー  
-* 「パブリック」キーの値  
+項目|用途
+-|-
+データ・アップロード・エンドポイント|トレース情報やメトリクス情報をアップロードするエンドポイント
+「データ・キー」の「プライベート」キー |トレース情報やメトリクス情報をアップロードするためのプライベートキー。主にAPMサーバー・エージェント(サーバサイド側のアプリケーション側)で利用
+「データ・キー」の「パブリック」キー|トレース情報やメトリクス情報をアップロードするためのプライベートキー。主にAPMブラウザ・エージェント(ブラウザ側のアプリケーション側)で利用
 
 この値は、アプリケーション側からトレーシング情報をAPMにアップロードする際のエンドポイントとその際に利用するキーになり、後ほど利用します。
 
@@ -364,7 +388,7 @@ APMドメイン名は重複が許容されないため、集合ハンズオン�
 
 これで、APMドメインの作成は完了です。
 
-### 2-4 サンプルアプリケーションのビルドとコンテナイメージシップ
+### 2-4 サンプルアプリケーションへのAPM設定(ブラウザ側)とコンテナイメージ作成
 
 サンプルアプリケーションのフロントエンドアプリケーションにAPMのエンドポイントとパブリックキーを設定します。
 
@@ -393,14 +417,13 @@ vim code-at-customer-handson/olympic_frontend_apm/src/main/resources/web/index.h
 ~~~
 ```
 
-#変更箇所1「window.apmrum.ociDataUploadEndpoint」には、[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録した「データ・アップロード・エンドポイント」を設定します。
+変更箇所|変更内容|備考
+-|-
+変更箇所1 | [2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録した「データ・アップロード・エンドポイント」|
+変更箇所2|[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録したデータ・キーの「パブリック」キー|**プライベートキーではなく、パブリックキーとなるので注意してください。**
+変更箇所3|staticより前の部分`https～.com`までを[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録した「データ・アップロード・エンドポイント」を設定します。
 
-#変更箇所2「window.apmrum.OracleAPMPublicDataKey」には、[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録した「データ・キー」のパブリックキーを設定します。  
-※プライベートキーではなく、パブリックキーとなるので注意してください。
-
-#変更箇所3 staticより前の部分「https～.com」までを[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録した「データ・アップロード・エンドポイント」を設定します。
-
-更新後、「:wq」エディタを保存終了します。
+更新後、「:wq」でエディタを保存終了します。
 
 ディレクトリを移動後、ビルドしてコンテナイメージを作成します。
 
@@ -410,11 +433,16 @@ cd code-at-customer-handson/olympic_frontend_apm
 
 `your-object-storage-namespace` は、事前に取得したオブジェクト・ストレージ・ネームスペースを指定します。
 
-※リージョンが、アッシュバーン(us-ashburn-1)ではない場合、環境に合わせて「iad.ocir.io」の部分も変更してください。  
-※コンテナレジストリのリポジトリ名は、事前にご自身で設定した名前に合わせてください。
-
+**Ashburn(us-ashburn-1)リージョンではない参加者の皆様**  
+リージョンが、アッシュバーン(us-ashburn-1)ではない場合、環境に合わせて「iad.ocir.io」の部分も変更してください。
 各リージョンのOCIRエンドポイントは[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Registry/Concepts/registryprerequisites.htm)で確認できます。  
 ここでは、以降も「iad.ocir.io」で進めます。
+{: .notice--warning}
+
+**集合ハンズオンでご参加の皆様**  
+集合ハンズオンなど同一環境を複数人で利用されている場合は、[手順1-3](#1-3-ocirのセットアップ)で作成したレポジトリ名をそれぞれ変更しています。  
+リポジトリ名を自身で設定した名前に合わせてください。
+{: .notice--warning}
 
 数分後に Successfully の表示がされればビルドは成功です。
 
@@ -434,9 +462,10 @@ OCIRにログインします。「iad.ocir.io」エンドポイントについ�
 
 「Username」と「Password」は、事前に確認した以下を入力します。
 
-「Username」：`<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>`
-
-「Password」： `認証トークン` を利用します。
+入力項目|入力内容|取得元
+-|-
+Username | `<オブジェクト・ストレージ・ネームスペース>/<ユーザ名>`|[手順1-3](#1-3-ocirのセットアップ)で作成した内容
+Password|`認証トークン` |[手順1-3](#1-3-ocirのセットアップ)で作成した内容
 
 ```sh
 docker login iad.ocir.io
@@ -454,7 +483,19 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 ```
 
-作成したコンテナイメージをプッシュします。  `your-object-storage-namespace` は、事前に取得したオブジェクト・ストレージ・ネームスペースを指定します。リポジトリ名は、事前にご自身で設定した名前に合わせてください。
+作成したコンテナイメージをプッシュします。  
+`your-object-storage-namespace` は、事前に取得したオブジェクト・ストレージ・ネームスペースを指定します。
+
+**Ashburn(us-ashburn-1)リージョンではない参加者の皆様**  
+リージョンが、アッシュバーン(us-ashburn-1)ではない場合、環境に合わせて「iad.ocir.io」の部分も変更してください。
+各リージョンのOCIRエンドポイントは[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Registry/Concepts/registryprerequisites.htm)で確認できます。  
+ここでは、以降も「iad.ocir.io」で進めます。
+{: .notice--warning}
+
+**集合ハンズオンでご参加の皆様**  
+集合ハンズオンなど同一環境を複数人で利用されている場合は、[手順1-3](#1-3-ocirのセットアップ)で作成したレポジトリ名をそれぞれ変更しています。  
+リポジトリ名を自身で設定した名前に合わせてください。
+{: .notice--warning}
 
 ```sh
 docker image push iad.ocir.io/<your-object-storage-namespace>/frontend-app-apm
@@ -474,11 +515,7 @@ aa321ebc98e2: Pushed
 latest: digest: sha256:5e52a9d52d52b18a58ec71972db95980b43dcfe9fc78c7a83502b76c50d971d5 size: 1789
 ```
 
-以上で、サンプルアプリケーションのビルドとコンテナイメージシップは完了です。
-
-### 2-5 サンプルアプリケーションのManifest設定の変更
-
-ここでは、Manifestの設定を変更していきます。
+次に、プッシュしたコンテナイメージを利用するように、Mainifestを編集します。  
 
 Manifestのあるディレクトリに移動します。  
 
@@ -487,7 +524,7 @@ cd ~
 ```
 
 ```sh
-cd code-at-customer-handson/k8s/app/for-oci-apm-v2
+cd code-at-customer-handson/k8s/app/for-oci-apm
 ```
 
 フロントエンドアプリケーションのManifestをvimで開きます。
@@ -518,20 +555,39 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: iad.ocir.io/<your-object-storage-namespace>/frontend-app-apm #変更箇所
+        image: iad.ocir.io/orasejapan/frontend-app-apm #変更箇所
         ports:
         - containerPort: 8082
         env:
         - name: tracing.data-upload-endpoint
-          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com #変更箇所
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: endpoint
         - name: tracing.private-data-key
-          value: XXXXXXXXXXXXXXXXXXXXXXXX #変更箇所
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: private-key
 ~~~
 ```
 
-「iad.ocir.io/＜your-object-storage-namespace＞/frontend-app-apm」をご自身の環境に合わせて変更します。
+以下の項目を変更します。
 
-25行目から29行目の`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
+変更前|変更内容
+-|-
+iad.ocir.io/orasejapan/frontend-app-apm(22行目) | iad.ocir.io/＜your-object-storage-namespace＞/frontend-app-apm
+
+**Ashburn(us-ashburn-1)リージョンではない参加者の皆様**  
+リージョンが、アッシュバーン(us-ashburn-1)ではない場合、環境に合わせて「iad.ocir.io」の部分も変更してください。
+各リージョンのOCIRエンドポイントは[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Registry/Concepts/registryprerequisites.htm)で確認できます。  
+ここでは、以降も「iad.ocir.io」で進めます。
+{: .notice--warning}
+
+**集合ハンズオンでご参加の皆様**  
+集合ハンズオンなど同一環境を複数人で利用されている場合は、[手順1-3](#1-3-ocirのセットアップ)で作成したレポジトリ名をそれぞれ変更しています。  
+リポジトリ名を自身で設定した名前に合わせてください。
+{: .notice--warning}
 
 以下のようになります。
 
@@ -551,291 +607,57 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: iad.ocir.io/<your-object-storage-namespace>/frontend-app-apm
+        image: iad.ocir.io/＜your-object-storage-namespace＞/frontend-app-apm
         ports:
         - containerPort: 8082
         env:
         - name: tracing.data-upload-endpoint
-          value: <ご自身のAPMドメインのエンドポイント>
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: endpoint
         - name: tracing.private-data-key
-          value: <ご自身のAPMドメインのプライベート・データキー>
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: private-key
 ```
 
-この状態で保存します。  
+編集後、「:wq」で内容を保存します。
 
-バックエンド、データソースアプリケーションにも実施します。  
-※コンテナレジストリの箇所は変更不要、APMドメインのエンドポイントとAPMドメインのプライベート・データキーのみとなります。
+以上で、サンプルアプリケーションへのAPM設定(ブラウザ側)とコンテナイメージ作成は完了です。
+
+### 2-5 サンプルアプリケーションへのAPM設定(サーバサイド側)
+
+次に、サンプルアプリケーションへのAPM設定(サーバサイド側)がAPMに対してトレース情報やメトリクスをアップロードできるようにエンドポイントとプライベート・データキーをSecretとして設定します。  
+Cloud Shellから以下のコマンドを実行します。  
+`APMエンドポイント`と`「データ・キー」の「プライベート」キー`はそれぞれ以下の値に差し替えます。  
+
+**Secretについて**  
+Secretリソースについては[こちら](https://kubernetes.io/docs/concepts/configuration/secret/)をご確認ください。
+{: .notice--info}
+
+項目|設定内容|備考
+-|-
+APMエンドポイント|[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録した「データ・アップロード・エンドポイント」|
+「データ・キー」の「プライベート」キー|[2-3 APMドメインの作成](#2-3-apmドメインの作成)で記録したデータ・キーの「プライベート」キー|**パブリックキーではなく、プライベートキーとなるので注意してください。**
 
 ```sh
-vim olympic_backend.yaml
+kubectl create secret generic apm-secret \
+--from-literal=endpoint=<APMエンドポイント> \
+--from-literal=private-key=<「データ・キー」の「プライベート」キー>
 ```
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-app-v1
-  labels:
-    app: backend-app
-    version: v1
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: backend-app
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: backend-app
-        version: v1
-    spec:
-      containers:
-      - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm
-        ports:
-        - containerPort: 8081
-        env:
-        - name: tracing.data-upload-endpoint
-          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com #変更箇所
-        - name: tracing.private-data-key
-          value: XXXXXXXXXXXXXXXXXXXXXXXX #変更箇所
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-app-v2
-  labels:
-    app: backend-app
-    version: v2
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: backend-app
-      version: v2
-  template:
-    metadata:
-      labels:
-        app: backend-app
-        version: v2
-    spec:
-      containers:
-      - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm
-        ports:
-        - containerPort: 8081
-        env:
-        - name: tracing.data-upload-endpoint
-          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com #変更箇所
-        - name: tracing.private-data-key
-          value: XXXXXXXXXXXXXXXXXXXXXXXX #変更箇所
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-app-v3
-  labels:
-    app: backend-app
-    version: v3
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: backend-app
-      version: v3
-  template:
-    metadata:
-      labels:
-        app: backend-app
-        version: v3
-    spec:
-      containers:
-      - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm
-        ports:
-        - containerPort: 8081
-        env:
-        - name: tracing.data-upload-endpoint
-          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com #変更箇所
-        - name: tracing.private-data-key
-          value: XXXXXXXXXXXXXXXXXXXXXXXX #変更箇所
-```  
-
-25行目から29行目、55行目から59行目、85行目から89行目の`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーにそれぞれ差し替えます。  
-
-以下のようになります。
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-app-v1
-  labels:
-    app: backend-app
-    version: v1
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: backend-app
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: backend-app
-        version: v1
-    spec:
-      containers:
-      - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v1-apm
-        ports:
-        - containerPort: 8081
-        env:
-        - name: tracing.data-upload-endpoint
-          value: <ご自身のAPMドメインのエンドポイント>
-        - name: tracing.private-data-key
-          value: <ご自身のAPMドメインのプライベート・データキー>
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-app-v2
-  labels:
-    app: backend-app
-    version: v2
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: backend-app
-      version: v2
-  template:
-    metadata:
-      labels:
-        app: backend-app
-        version: v2
-    spec:
-      containers:
-      - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v2-apm
-        ports:
-        - containerPort: 8081
-        env:
-        - name: tracing.data-upload-endpoint
-          value: <ご自身のAPMドメインのエンドポイント>
-        - name: tracing.private-data-key
-          value: <ご自身のAPMドメインのプライベート・データキー>
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-app-v3
-  labels:
-    app: backend-app
-    version: v3
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: backend-app
-      version: v3
-  template:
-    metadata:
-      labels:
-        app: backend-app
-        version: v3
-    spec:
-      containers:
-      - name: backend-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/backend-app-v3-apm
-        ports:
-        - containerPort: 8081
-        env:
-        - name: tracing.data-upload-endpoint
-          value: <ご自身のAPMドメインのエンドポイント>
-        - name: tracing.private-data-key
-          value: <ご自身のAPMドメインのプライベート・データキー>
-```
-
-最後にデータソースアプリケーションに対しても実施します。
+***コマンド結果***
 
 ```sh
-vim olympic_datasource.yaml
+secret/apm-secret created
 ```
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: datasource-app
-  labels:
-    app: datasource-app
-    version: v1
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: datasource-app
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: datasource-app
-        version: v1
-    spec:
-      containers:
-      - name: datasource-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm
-        ports:
-        - containerPort: 8080
-        env:
-        - name: tracing.data-upload-endpoint
-          value: https://xxxxxxxxxxxxxxxx.apm-agt.us-ashburn-1.oci.oraclecloud.com #変更箇所
-        - name: tracing.private-data-key
-          value: XXXXXXXXXXXXXXXXXXXXXXXX #変更箇所
-``` 
+各アプリケーションでは、このSecret(`apm-secret`)を参照する設定を入れているので、設定したエンドポイントとデータキーを元にAPMにアプリケーションのトレース情報やメトリクスをアップロード可能になります。
+詳細は[5.今回利用したサンプルアプリケーションの補足説明](#5今回利用したサンプルアプリケーションの補足説明)をご確認ください。
 
-25行目から29行目の`env`フィールドの`tracing.data-upload-endpoint`、`tracing.private-data-key`の`value`を[6-2 APMドメインの作成](#6-2-apmドメインの作成)で記録したAPMドメインとプライベート・データキーに差し替えます。  
-
-以下のようになります。
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: datasource-app
-  labels:
-    app: datasource-app
-    version: v1
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: datasource-app
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: datasource-app
-        version: v1
-    spec:
-      containers:
-      - name: datasource-app
-        image: nrt.ocir.io/orasejapan/codeatcustomer/datasource-app-apm
-        ports:
-        - containerPort: 8080
-        env:
-        - name: tracing.data-upload-endpoint
-          value: <ご自身のAPMドメインのエンドポイント>
-        - name: tracing.private-data-key
-          value: <ご自身のAPMドメインのプライベート・データキー>
-```
-
-これでサンプルアプリケーションのManifest設定の変更は完了です。  
-
-ここで利用するコンテナアプリケーションは、OCI APMを利用するためにアプリケーション側にトレーシングの設定を入れています。  
-今回、OCI APMで利用しているアプリケーションは、code-at-customer-handsonディレクトリ配下の`_apm`が付与されているプロジェクトになります。
+これでサンプルアプリケーションへのAPM設定(サーバサイド側)は完了です。  
 
 {% capture notice %}**HelidonアプリケーションでのOCI APMの利用**  
 今回はHelidonを利用したアプリケーションですが、[HelidonにはOCI APM専用のエージェント](https://docs.oracle.com/ja-jp/iaas/application-performance-monitoring/doc/use-apm-tracer-helidon.html)が用意されています。  
@@ -893,7 +715,7 @@ cd ~
 ```
 
 ```sh
-cd code-at-customer-handson/k8s/app/for-oci-apm-v2
+cd code-at-customer-handson/k8s/app/for-oci-apm
 ```
 
 ```sh
@@ -923,13 +745,13 @@ kubectl get service frontend-app
 
 ```sh
 NAME           TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)        AGE
-frontend-app   LoadBalancer   10.96.220.188   193.122.xxx.xxx   80:31664/TCP   41s
+frontend-app   LoadBalancer   10.96.220.188   193.122.***.***   80:31664/TCP   41s
 ```
 
-上記の場合は、frontend-app Serviceの`EXTERNAL-IP`である`193.122.xxx.xxx`がエンドポイントになります。
+上記の場合は、frontend-app Serviceの`EXTERNAL-IP`である`193.122.***.***`がエンドポイントになります。
 
 この場合は、以下のURLにアクセスします。  
-`http://193.122.xxx.xxxx`
+`http://193.122.***.***`
 
 ![](2-6-008.png)
 
@@ -988,10 +810,126 @@ OCIコンソールのハンバーガーメニューを開き、「監視およ�
 
 **OCI MonitoringとOCI Notificationsについて**  
 OCIにはリソース監視を行うOCI Monitoringがあり、OCI Notificationsと連携するとEmailやSlackなどに対してアラーム通知を行うことができます。  
-詳細は[こちら](/ocitutorials/intermediates/monitoring-resources/)のハンズオンをご確認ください。
+これは、[4.Monitoring & Notifications](#4monitoring--notifications)で実施します。
 {: .notice--info}
 
-OCI APMを利用すると詳細なトレーシングの取得と確認およびアプリケーションサーバのメトリクス監視を行うことができます。  
+このように、OCI APMを利用すると詳細なトレーシングの取得と確認およびアプリケーションサーバのメトリクス監視を行うことができます。  
+
+### 2-8 OCI APMでのリアルユーザモニタリング(RUM)
+
+ここでは、OCI APMのAPM Browser Agentを利用したリアルユーザモニタリング(RUM)について見ていきたいと思います。
+
+リアルユーザモニタリング(RUM)は、Webページのパフォーマンス計測を実ユーザのPCもしくはスマートフォンからのアクセスを元にユーザの行動を計測・分析するものです。  
+
+**フロントエンドのパフォーマンス・モニタリングについて**  
+フロントエンドのパフォーマンス・モニタリングには、「リアルユーザモニタリング(RUM)」と「合成モニタリング(Synthetic Monitoring)」の2種類があります。  
+この2種類のパフォーマンス・モニタリングは補完的な関係にあり、通常は併用をすることで効果的なモニタリングが可能となります。
+OCI APMでは、この2種類のパフォーマンス・モニタリングをいずれも利用可能です。
+{: .notice--info}
+
+画面左上のプルダウンから「ダッシュボード」をクリックします。  
+
+![](2-7-001.png)
+
+ダッシュボードから「リアル・ユーザー・モニタリング」をクリックします。  
+
+![](2-8-001.png)
+
+左上に「Webアプリケーションを選択します」というプルダウンがあるので、`OracleJetApp`を選択します。  
+
+![](2-8-002.png)
+
+**Webアプリケーションについて**  
+今回のハンズオン環境では、`OracleJetApp`と`All Web Applications`という2種類のWebアプリケーションが表示されていますが、今回のサンプルアプリケーションは1つのみなので、どちらを選択しても表示される情報に変わりはありません。
+{: .notice--info}
+
+お手元に別のブラウザやスマートフォンなどがある方は、そのブラウザや端末からサンプルアプリケーションにアクセス後に右上の検索条件を「過去15分間」に再設定してみてください。
+![](2-8-004.png)
+
+以下のようなページが表示され、アクセス元のジオロケーションやApdex、ブラウザの種類、OSの情報などが表示されていることが確認できます。  
+![](2-8-003.png)
+
+**Apdexについて**  
+リアル・ユーザー・モニタリングの項目にある`Apdex`とは、Webアプリケーションやサービスのレスポンスタイムについて、ユーザー満足度を計測するための業界標準の指標です。  
+Satisfiedを1点、Toleratingを0.5点、Frustratedを0点としてその平均値を算出し、最高は1点最低は0点として表現されます。  
+詳細は[こちら](https://www.apdex.org/index.php/documents/)をご確認ください。  
+この指標はSLA(サービス品質保証)にも用いられています。
+{: .notice--info}
+
+このように、OCI APMでは、APM Browser Agentを利用したリアルユーザモニタリング(RUM)を行うことができます。  
+
+### 2-9 OCI APMでの合成モニタリング(Synthetic Monitoring)
+
+ここでは、OCI APMを利用した合成モニタリング(Synthetic Monitoring)について見ていきたいと思います。
+
+合成モニタリング(Synthetic Monitoring)は、地理的に分散したエージェントを使用して、能動的に対象のWebサイトにアクセスして監視や計測する手法です。  
+
+左上のプルダウンから「合成モニタリング」をクリックします。  
+
+![](2-9-001.png)
+
+「モニターの作成」をクリックします。ここで、合成モニタリングを実施するためのモニター・エージェントを作成します。  
+
+![](2-9-007.png)
+
+以下の項目を入力し、「次」をクリックします。  
+
+![](2-9-002.png)
+
+入力項目|入力内容|取得元
+-|-
+名前 | oke-handson-apm
+タイプ|Browser
+ベースURL|[2-6 OCI APMでのトレーシング](#2-6-oci-apmでのトレーシング)で確認したサンプルアプリケーションのIPアドレス
+
+以下の項目を入力し、「次」をクリックします。
+
+![](2-9-003.png)
+
+入力項目|入力内容|取得元
+-|-
+バンテージ・ポイント | Japan East(Tokyo) / US East(Ashburn)
+間隔|1回実行
+
+**バンテージ・ポイントについて**  
+ここで設定する`バンテージ・ポイント`とは、モニタリングテストを実行する地理的な位置を指します。  
+{: .notice--info}
+
+**間隔について**  
+一定間隔で自動的にモニタリングテストを実行したい場合は、何分間隔で実行するかを指定できます。
+{: .notice--info}
+
+そのまま「次」をクリックします。  
+
+![](2-9-004.png)
+
+そのまま「作成」をクリックします。  
+
+![](2-9-005.png)
+
+以下の画面が表示されます。  
+
+![](2-9-006.png)
+
+それでは、モニタリングテストを実行してみます。  
+
+「他のアクション」から「1回実行」をクリックします。  
+
+![](2-9-008.png)
+
+実行が完了すると、画面左側の「リソース」にある「履歴」から実行結果が確認できます。  
+
+![](2-9-009.png)
+
+`バンテージ・ポイント`「Japan East (Tokyo)」の右側にあるケバブメニューから「HARの表示」をクリックします。  
+
+![](2-9-011.png)
+
+以下のようにモニタリングテストの実行結果が表示されます。
+
+![](2-9-010.png)
+
+このように、OCI APMでは合成モニタリング(Synthetic Monitoring)を行うことができます。  
 
 3.Logging
 ---------------------------------
@@ -1026,8 +964,10 @@ OCI Loggingサービスを使用する上で必要となるポリシーを設定
 
 以下を設定します。
 
-* 名前：logging-dynamic-group  
-* 説明：logging-dynamic-group  
+入力項目|入力内容
+-|-
+名前|logging-dynamic-group
+説明|logging-dynamic-group
 
 ルールについては以下を設定します。＜your-OCID＞ は事前に取得したOCIDを設定します。
 
@@ -1049,8 +989,10 @@ instance.compartment.id = '<your-OCID>'
 
 以下を設定します。
 
-「名前」：logging
-「説明」：logging
+入力項目|入力内容
+-|-
+名前|logging
+説明|logging
 
 「手動エディタの表示」ボタンを右にスライドします。
 
@@ -1097,13 +1039,15 @@ allow dynamic-group logging-dynamic-group to use log-content in tenancy
 
 「エージェント構成の作成」において、以下を設定します。
 
-* 「構成名」：worker-node  
-* 「説明」：worker-node  
-* 「グループ・タイプ」：動的グループ  
-* 「グループ」：logging-dynamic-group  
-* 「入力タイプ」：ログ・パス  
-* 「名前の入力」：oke_cluster  
-* 「ファイル・パス」：/var/log/containers/*  
+入力項目|入力内容
+-|-
+構成名 | worker-node  
+説明|worker-node  
+グループ・タイプ|動的グループ  
+グループ|logging-dynamic-group
+入力タイプ|ログ・パス  
+名前の入力|oke_cluster  
+ファイル・パス|/var/log/containers/*
 
 ![](3-1-009.png)
 
@@ -1111,7 +1055,8 @@ allow dynamic-group logging-dynamic-group to use log-content in tenancy
 
 ![](3-1-008.png)
 
-リストに「woker-node」と表示されていることを確認します。
+リストに「woker-node」と表示されていることを確認します。  
+※表示されない場合は、他のページに遷移するなどブラウザを更新してください。
 
 ![](3-1-010.png)
 
@@ -1123,9 +1068,8 @@ allow dynamic-group logging-dynamic-group to use log-content in tenancy
 
 ![](3-2-001.png)
 
-以下のようにワーカーノード上のPod（コンテナ）から出力されるログが表示されます。
-
-※設定してからログを取得するまで時間を要する場合があります。
+以下のようにワーカーノード上のPod（コンテナ）から出力されるログが表示されます。  
+設定してからログを取得するまで時間を要する場合があります。
 
 ![](3-2-002.png)
 
@@ -1135,8 +1079,8 @@ allow dynamic-group logging-dynamic-group to use log-content in tenancy
 
 OCIのAuditサービスを利用することで、以下の監査イベントを取得できます。
 
-* OKEにおける作成や削除などのアクションをクラスタで実行するたびに監査イベントを発行します。
-* Kubernetes APIサーバーにおけるkubectlなどのツールを使用してサービスの作成などの管理上の変更をクラスタに加えるたびに監査イベントを発行します。
+- OKEにおける作成や削除などのアクションをクラスタで実行するたびに監査イベントを発行します。
+- Kubernetes APIサーバーにおけるkubectlなどのツールを使用してサービスの作成などの管理上の変更をクラスタに加えるたびに監査イベントを発行します。
 
 OKEで実行された操作のログを確認します。
 
@@ -1164,11 +1108,10 @@ OKEで実行された操作のログを確認します。
 
 以上で、Kubernetes APIサーバーの監査ログの確認は完了です。
 
-
-4. Monitoring & Notifications
+4.Monitoring & Notifications
 ---------------------------------
 
-OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとアラートが上がり、メール通知する仕組みを構築します。
+ここでは、OCI NotificationsとMonitoringを組み合わせて、アプリケーションのメトリクスが閾値を超えるとアラートが上がり、メール通知する仕組みを構築します。
 
 ### 4-1 Notificationsの設定
 
@@ -1232,7 +1175,8 @@ OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとア�
 
 ### 4-2 Monitoringの設定
 
-後続手順で、サンプルアプリケーションに負荷をかけて、ヒープサイズを上げます。OCI Monitoringで閾値を設定して、その閾値を超えるとアラームが上がり、Notificationsに設定したメールアドレスに通知されるように設定を行います。
+後続手順で、サンプルアプリケーションに負荷をかけて、JVMのヒープサイズを上げます。  
+ここでは、OCI Monitoringで閾値を設定して、その閾値を超えるとアラームが上がり、OCI Notificationsに設定したメールアドレスに通知されるように設定を行います。
 
 左上のハンバーガーメニューをクリックして、「監視および管理」-「アラーム定義」を選択します。
 
@@ -1244,16 +1188,21 @@ OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとア�
 
 「アラームの定義」で以下を設定してます。
 
-* 「アラーム名」：heap-size
-* 「メトリック・ネームスペース」：oracle_apm_monitoring
-* 「メトリック名」：HeapUsed
-* 「統計」：Max
-* 「ディメンション名」：OkeClusterld
-* 「ディメンション値」：表示されるClusterIDを選択
-* 「値」：600000000
-* 「トピック」：oci-notifications
+入力項目|入力内容
+-|-
+アラーム名 | heap-size
+メトリック・ネームスペース|oracle_apm_monitoring
+メトリック名|HeapUsed
+統計|Max
+ディメンション名|OkeClusterld
+ディメンション値|表示されるClusterIDを選択
+値|200000000
+トリガ遅延分数| 0
+トピック|oci-notifications
 
 ![](4-2-003.png)
+
+![](4-2-006.png)
 
 ![](4-2-004.png)
 
@@ -1267,9 +1216,9 @@ OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとア�
 
 サンプルアプリケーションに対して、過剰なアクセス負荷をかけます。そして、アラーム発生後にメールが通知されるように設定を行います。
 
-最初に、負荷をかけるサーバを構築します。Jmeterという負荷テスト用のアプリケーションを利用して環境をセットアップします。
+最初に、負荷をかけるサーバを構築します。JMeterという負荷テスト用のアプリケーションを利用して環境をセットアップします。
 
-#### jmeterサーバの構築
+#### JMeterサーバの構築
 
 左上のハンバーガーメニューをクリックして、「コンピュート」-「インスタンス」を選択します。
 
@@ -1293,10 +1242,12 @@ OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとア�
 
 以下の内容に設定をします。
 
-* 「シェイプ・シリーズ」：AMD
-* 「Shape Name」：VM.Standard.E4.Flex
-* 「OCPUの数」：2
-* 「メモリー量(GB)」：32
+入力項目|入力内容
+-|-
+シェイプ・シリーズ | AMD
+Shape Name|VM.Standard.E4.Flex
+OCPUの数|2
+メモリー量(GB)|32
 
 ![](4-3-005.png)
 
@@ -1325,11 +1276,11 @@ OCI NotificationsとMonitoringを組み合わせて、閾値を超えるとア�
 
 ![](4-3-017.png)
 
-#### jmeter環境のセットアップ
+#### JMeter環境のセットアップ
 
-jmeter環境をセットアップするために、作成した仮想マシンにログインします。
+JMeter環境をセットアップするために、作成した仮想マシンにログインします。
 
-Cloud Shell アイコンをクリックした、Cloud Shellを起動します。
+Cloud Shell アイコンをクリックして、Cloud Shellを起動します。
 
 ![](4-3-010.png)
 
@@ -1372,14 +1323,14 @@ chmod 400 ssh-key-xxxx-xx-xx.key
 仮想マシンにログインします。事前に確認したユーザ名とパブリックIPアドレスを利用します。
 
 ```sh
-ssh -i ssh-key-xxxx-xx-xx.key opc@xxx.xxx.xxx.xxx
+ssh -i ssh-key-xxxx-xx-xx.key opc@***.***.***.***
 ```
 
 yes と入力します。
 
 ```sh
 FIPS mode initialized
-The authenticity of host '132.226.236.71 (132.226.236.71)' can't be established.
+The authenticity of host '132.226.***.*** (132.226.***.***)' can't be established.
 ECDSA key fingerprint is SHA256:oACNnKKWu3R9WUi3xpYVnunWcIoEF8NL5LztfUqlZ74.
 ECDSA key fingerprint is SHA1:z2sVFWORAMBlpeuUgHx5Ou4X1Cg.
 Are you sure you want to continue connecting (yes/no)? yes
@@ -1404,7 +1355,7 @@ yum install -y java-1.8.0-openjdk
 Complete!
 ```
 
-Jmeterをダウンロードします。
+JMeterをダウンロードします。
 
 ```sh
 wget https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.4.3.tgz
@@ -1442,11 +1393,14 @@ mkdir test_work
 cd test_work
 ```
 
-Jmeterのプロファイルを作成します。「xxx.xxx.xxx.xxx」は、事前に確認したサンプルアプリケーションのエンドポイントに書き換えます。
+Jmeterのプロファイルを作成します。  
+
+36行目にある`***.***.***.***`を[手順2-6](#2-6-oci-apmでのトレーシング)で確認したサンプルアプリケーションのエンドポイントに書き換えます。
 
 ```sh
 vim testplan.jmx
 ```
+
 ```sh
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.3">
@@ -1480,7 +1434,7 @@ vim testplan.jmx
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">xxx.xxx.xxx.xxx</stringProp>
+          <stringProp name="HTTPSampler.domain">***.***.***.***</stringProp>
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -1499,7 +1453,6 @@ vim testplan.jmx
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
-
 ```
 
 負荷をかけます。止める場合は、「Ctrl + C」で停止できます。
@@ -1590,4 +1543,85 @@ frontend-app-56f7cfcb74-gpqh8     1/1     Running   0          23h
 
 ![](4-3-029.png)
 
-以上となります。
+以上でハンズオンは終了です。お疲れ様でした！
+
+5.今回利用したサンプルアプリケーションの補足説明
+---------------------------------
+
+ここでは、今回のサンプルアプリケーションでのAPM設定に関する補足説明を行います。　　
+
+今回のサンプルアプリケーションでは、APMの設定として以下の2点を実施しました。  
+
+- APM Browser Agentのエンドポイントとパブリック・データキーを`index.html`に設定(その後、コンテナイメージをビルド/プッシュ)
+- APM Server Agentのエンドポイントとプライベート・データキーをSecretリソースとして設定
+
+ここでの補足説明は主に2点目について見ていきます。  
+
+今回利用したManifestを見ていきましょう。
+
+まずは、フロントエンドアプリケーションのManifestを確認します。
+ここでは、Deploymentリソースだけ抜粋します。　　
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+  labels:
+    app: frontend-app
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+        version: v1
+    spec:
+      containers:
+      - name: frontend-app
+        image: iad.ocir.io/orasejapan/frontend-app-apm
+        ports:
+        - containerPort: 8082
+        env:
+        - name: tracing.data-upload-endpoint
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: endpoint
+        - name: tracing.private-data-key
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: private-key
+```
+
+25行目〜35行目に注目してみましょう。
+
+```yaml
+~~~
+        env:
+        - name: tracing.data-upload-endpoint
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: endpoint
+        - name: tracing.private-data-key
+          valueFrom:
+            secretKeyRef:
+              name: apm-secret
+              key: private-key
+```
+
+APMのエンドポイントとプライベート・データキーを`tracing.data-upload-endpoint`、`tracing.private-data-key`という環境変数名でSecretリソースから読み込んでいます。  
+ここで指定しているSecretリソースは、[2-5 サンプルアプリケーションへのAPM設定(サーバサイド側)](#2-5-サンプルアプリケーションへのapm設定サーバサイド側)で作成したものです。  
+
+アプリケーション側(Helidon)では、APM Server Agentがこの環境変数を読み込み、APMに対してトレース情報やメトリクスのアップロードを行なっています。  
+
+今回はSecretとして指定しましたが、各々のコンテナアプリケーション(Helidon)の設定ファイル(`microprofile-config.properties`)などでも指定することができます。
+
+バックエンドアプリケーション、データソースアプリケーションのManifestでも同様に環境変数からAPMのエンドポイントとプライベート・データキーを取得する設定にしています。
