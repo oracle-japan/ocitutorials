@@ -281,19 +281,19 @@ Oracle Cloud Infrastructureの構成としては以下のような図になり�
   HelidonとOracle JETから構成されているアプリケーションです。  
   Helidonの静的コンテンツルート(今回は`resources/web配下`)にOracle JETのコンテンツを配置しています。  
   このアプリケーションは、バックエンドサービス(v1/v2/v3)のいずれかを呼び出します。  
-  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Browser AgentとAPM Agentが含まれています。
+  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Browser AgentとAPM Server Agentが含まれています。
 
 - **バックエンドアプリケーション(図中の緑枠部分)**  
   Helidonから構成されているアプリケーションです。
   このアプリケーションには3つのバージョンが存在し、それぞれ金メダメリスト(v3)、銀メダリスト(v2)、銅メダリスト(v1)の一覧を返すようになっています。 
   バージョン情報は環境変数として保持しています。
   このアプリケーションは、データソースアプリケーションに対してバージョンに応じたAPIエンドポイントを呼び出し、データを取得しにいきます。  
-  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Agentが含まれています。
+  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Server Agentが含まれています。
 
 - **データソースアプリケーション(図中の`Medal Info`)**  
   Helidonとインメモリで動作しているデータベースである[H2 Database](https://www.h2database.com/html/main.html)から構成されているアプリケーションです。  
   このアプリケーションでは、メダリストと獲得したメダルの色を保持しており、バックエンドアプリケーションから呼び出されたエンドポイント応じてメダリストとそのメダルの色を返却します。  
-  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Agentが含まれています。
+  また、このアプリケーションにはApplication Performance Monitoringで利用するAPM Server Agentが含まれています。
 
 **Helidonについて**  
 Helidonは`Maven`を利用してプロジェクトの雛形を作成することができます。  
@@ -819,7 +819,7 @@ OCIにはリソース監視を行うOCI Monitoringがあり、OCI Notifications�
 
 ここでは、OCI APMのAPM Browser Agentを利用したリアルユーザモニタリング(RUM)について見ていきたいと思います。
 
-リアルユーザモニタリング(RUM)は、Webページのパフォーマンス計測を実ユーザのPCもしくはスマートフォンからのアクセスを元にユーザの行動を計測・分析するものです。  
+リアルユーザモニタリング(RUM)は、Webページのパフォーマンスを実ユーザのPCもしくはスマートフォンからのアクセスを元に計測・分析するものです。  
 
 **フロントエンドのパフォーマンス・モニタリングについて**  
 フロントエンドのパフォーマンス・モニタリングには、「リアルユーザモニタリング(RUM)」と「合成モニタリング(Synthetic Monitoring)」の2種類があります。  
