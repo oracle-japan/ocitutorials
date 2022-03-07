@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-03-02T14:45:21+09:00">
+  <meta property="article:published_time" content="2022-03-07T10:01:06+09:00">
 
 
 
@@ -303,7 +303,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。OCIのオブザバビリティサービスであるMonitoring、Logging、Application Performance Monitoring、Notificationsを利用します。">
-    <meta itemprop="datePublished" content="2022-03-02T14:45:21+09:00">
+    <meta itemprop="datePublished" content="2022-03-07T10:01:06+09:00">
     
 
     <div class="page__inner-wrap">
@@ -398,11 +398,20 @@ O&amp;Mには、このハンズオンで利用するサービスの他にも、�
       <li>MonitoringとNotificationsの実践</li>
     </ol>
   </li>
+  <li>今回利用したサンプルアプリケーションの補足説明</li>
 </ol>
 
 <hr />
 
+<p>ハンズオン概要図は以下となります。全環境の構築及びセットアップを行いながら、赤字で記載されている操作を実施します。</p>
+
+<p><img src="0-0-000.png" alt="" /></p>
+
 <h2 id="1okeクラスタ構築とocirセットアップ">1.OKEクラスタ構築とOCIRセットアップ</h2>
+
+<p>Kubernetesクラスタの構築とコンテナイメージを格納するOCIRのセットアップを行います。</p>
+
+<p><img src="1-1-000.png" alt="" /></p>
 
 <h3 id="1-1-ociダッシュボードからokeクラスタの構築">1-1 OCIダッシュボードからOKEクラスタの構築</h3>
 
@@ -504,7 +513,7 @@ O&amp;Mには、このハンズオンで利用するサービスの他にも、�
 
 <p>後続手順で、サンプルアプリケーションをビルドして、コンテナイメージを作成します。<br />
 そのコンテナイメージを格納するコンテナイメージレジストリのセットアップを行います。<br />
-OCIでは、Oracle Container Image Registry(OCIR)を利用します。</p>
+OCIでは、Oracle Cloud Infrastructure Registry(OCIR)を利用します。</p>
 
 <p class="notice--info"><strong>OCIRについて</strong><br />
 フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。OKEと同一リージョンに展開することによる低レイテンシを実現します。  詳細は<a href="https://www.oracle.com/jp/cloud-native/container-registry/">こちら</a>のページをご確認ください。</p>
@@ -604,6 +613,10 @@ OCIRのレポジトリ名はテナンシで一意になります。<br />
 <p>以上でOCIRのセットアップは完了です。</p>
 
 <h2 id="2application-performance-monitoring">2.Application Performance Monitoring</h2>
+
+<p>Kubernetesクラスタ上にサンプルマイクロサービスアプリケーションのデプロイとAPMのセットアップを行い、トレーシング、アプリケーションサーバのメトリクス監視、リアルユーザモニタリング、合成モニタリングを実践します。</p>
+
+<p><img src="2-1-000.png" alt="" /></p>
 
 <h3 id="2-1-サンプルアプリケーションの概要説明">2-1. サンプルアプリケーションの概要説明</h3>
 
@@ -1430,6 +1443,10 @@ Satisfiedを1点、Toleratingを0.5点、Frustratedを0点としてその平均�
 
 <h2 id="3logging">3.Logging</h2>
 
+<p>Loggingサービスのセットアップを行って、ワーカーノードのアプリケーションログとAPIサーバの監査ログを確認します。</p>
+
+<p><img src="3-1-000.png" alt="" /></p>
+
 <p>Oracle Cloud Infrastructure（OCI）Loggingサービスは、スタック全体からのログの取り込み、管理および分析を簡素化する、完全に管理されたクラウドネイティブの分散ロギング・プラットフォームです。インフラストラクチャ、アプリケーション、監査、およびデータベースのログが1つのビューで管理できます。</p>
 
 <p>実際に、構築したOKEクラスタ内のワーカー・ノードのコンピュート・インスタンスで実行されているアプリケーションのログを表示および検索します。</p>
@@ -1663,7 +1680,9 @@ Satisfiedを1点、Toleratingを0.5点、Frustratedを0点としてその平均�
 
 <h2 id="4monitoring--notifications">4.Monitoring &amp; Notifications</h2>
 
-<p>ここでは、OCI NotificationsとMonitoringを組み合わせて、アプリケーションのメトリクスが閾値を超えるとアラートが上がり、メール通知する仕組みを構築します。</p>
+<p>OCI NotificationsとMonitoringを組み合わせて、アプリケーションのメトリクスが閾値を超えるとアラートが上がり、メール通知する仕組みを構築します。</p>
+
+<p><img src="4-1-000.png" alt="" /></p>
 
 <h3 id="4-1-notificationsの設定">4-1 Notificationsの設定</h3>
 
@@ -2222,7 +2241,7 @@ frontend-app-56f7cfcb74-gpqh8     1/1     Running   0          23h
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-03-02T14:45:21+09:00">March 2, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-03-07T10:01:06+09:00">March 7, 2022</time></p>
 
 
       </footer>
