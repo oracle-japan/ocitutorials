@@ -1197,7 +1197,7 @@ OKEで実行された操作のログを確認します。
 ディメンション名|OkeClusterld
 ディメンション値|表示されるClusterIDを選択
 値|200000000
-トリガ遅延分数| 0
+トリガ遅延分数| 1
 トピック|oci-notifications
 
 ![](4-2-003.png)
@@ -1470,6 +1470,29 @@ rm -rf testplan.jtl
 ```sh
 JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
+
+{% capture notice %}**Jmeter起動時のエラーについて**  
+Computeで利用可能なメモリの状態によって、以下のようなエラーが発生する場合があります。  
+
+```sh
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x00000004f0800000, 12884901888, 0) failed; error='Cannot allocate memory' (errno=12)
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 12884901888 bytes for committing reserved memory.
+# An error report file with more information is saved as:
+# /home/tniita_obs/test_work/hs_err_pid5725.log
+```
+
+上記のエラーが発生した場合は、ヒープサイズを以下のように`8G`にして実行してください。  
+
+```sh
+JVM_ARGS="-Xms8G -Xmx8G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+```
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
 #### 状況の確認
 
