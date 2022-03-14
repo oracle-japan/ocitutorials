@@ -113,7 +113,7 @@ DBCSインスタンスのHRスキーマを移行対象に、移行先をAutonomo
 ```
 ![イメージ](img105.png)
 
-+ `--connectstring` 移行元となるデータベースへの接続。[101: Oracle Cloud で Oracle Database を使おう(DBCS)](/ocitutorials/database/dbcs101-create-db)){:target="_blank"}を参考にホスト(HOST)、ポート番号（PORT）、サービス名（SERVICE_NAME）をご確認ください。
++ `--connectstring` 移行元となるデータベースへの接続。[101: Oracle Cloud で Oracle Database を使おう(DBCS)](/ocitutorials/database/dbcs101-create-db){:target="_blank"}を参考にホスト(HOST)、ポート番号（PORT）、サービス名（SERVICE_NAME）をご確認ください。
 + `--targetcloud` ターゲットデータベースの指定。
   + Autonomous Databaseの場合DedicatedはATPD/ADWD、SharedはATPS/ADWSから選択します。このチュートリアルではATPSを指定しています。
   + Autonomous DatabaseではないPDBロックダウンの設定が行われていないクラウドデータベースの場合はdefaultを指定します。  
@@ -121,8 +121,8 @@ DBCSインスタンスのHRスキーマを移行対象に、移行先をAutonomo
 + `--reportformat` 出力ファイルの形式です。json,text,または両方(json text)を指定できます。デフォルトはjsonです。  
 + `--schemas`　移行対象のスキーマ名。空白区切りで複数指定可能。  
   
->`--connectitstring`について  
-チュートリアルではJDBC Thin接続を利用していますが、OCI接続の利用も可能です。jdbc:oracle:ociとし`--sysdbaを指定することでOS認証もサポートされます。詳細は[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2462677_1.html){:target="_blank"}を参照ください。
+>`--connectstring`について  
+チュートリアルではJDBC Thin接続を利用していますが、OCI接続の利用も可能です。jdbc:oracle:ociとし`--sysdba`を指定することでOS認証もサポートされます。詳細は[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2758371_1.html){:target="_blank"}を参照ください。
 
 <br>
 
@@ -132,20 +132,19 @@ DBCSインスタンスのHRスキーマを移行対象に、移行先をAutonomo
 view premigration_advisor_report.txt
 ```
 <BR>
-データベースの詳細情報の後、"Premigration Advisor Report Check Summary"として、実行された様々なチェックがPASS、Informational、Warning、Blockingに分類されて記載されます。
+データベースの詳細情報の後、"Premigration Advisor Report Check Summary"として、実行された様々なチェックがBlocking、Warning、Informational、Passingに分類されて記載されます。
 
 ![イメージ](img106.png) 
 
 そのあと、各チェックごとにそのチェックの説明や結果の影響、対応策が記載されます。
-例えばAutonomous Databaseでは索引構成表の作成は許可されていないため、COUNTRIES表は非索引構成表として作成しないといけないことを確認いただけます。  
+<BR>
+例えば、こちらではAutonomous Databaseでは索引構成表の作成は許可されていないため、COUNTRIES表は非索引構成表として作成しないといけないことを確認いただけます。  
 ![イメージ](img107.png)  
 
 
-`--targetcloud`をADWSにした場合は、先の[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db)で作成したLONG型を有するNG_TAB_4ADW表がADBに移行できないことを、対応策と共に明示してくれます。  
+`--targetcloud`をADWSにした場合は、先の[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}で作成したLONG型を有するNG_TAB_4ADW表がADBに移行できないことを、対応策と共に明示してくれます。  
 ![イメージ](img108.png)
 
-
-<br>
 
 `--schemas`を指定しない、または`--full`を指定することで、データベース全体を指定した確認も可能です。`--outfileprefix`を指定すると出力ファイル名の接頭辞を指定できます。
 
@@ -157,7 +156,7 @@ view premigration_advisor_report.txt
 
 確認してみましょう。`--full`では`--schemas`にはないデータベースインスタンス全体にのみ適用できるチェックが含まれます。 
 ```
-view full_premigration_advisor_report.txt
+view full_advisor_premigration_advisor_report.txt
 ```
 
 ![イメージ](img1010.png)
@@ -166,7 +165,7 @@ view full_premigration_advisor_report.txt
 
 ![イメージ](img1011.png)
 
->さらに正確な移行チェックのためにターゲットに接続しプロパティファイルを作成、指定することができます。[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2462677_1.html){:target="_blank"}を参照ください。
+>さらに正確な移行チェックのためにターゲットに接続しプロパティファイルを作成、指定することができます。[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2758371_1.html){:target="_blank"}を参照ください。
 
 
 <br>
