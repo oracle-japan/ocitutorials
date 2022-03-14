@@ -50,7 +50,7 @@ Autonomous Databaseでは性能・可用性・セキュリティの観点から�
 # 1. Cloud Premigraiton Advisor Tool (CPAT) とは？
 Oracle DatabaseインスタンスをOracleクラウドに移行する際に、問題になる可能性があるコンテンツや移行を妨げる可能性があるその他の要因をチェックするJavaベースのツールです。移行チェックのツールとして以前提供されていたスキーマ・アドバイザの後継となります。  
 スキーマ・アドバイザはデータベースにPL/SQLパッケージのインストールが必要でしたが、CPATは読み取り専用でデータベースに対して変更を与えることはありません。
-サポート対象となるOracle Databaseのバージョンは11.2.0.4以降です。（2022/3時点）
+サポート対象となるOracle Databaseのバージョンは11.2.0.4以降です（2022/3時点）。
 また、現時点では物理移行のチェックはサポートされておらず、デフォルトでDataPumpによる移行が想定されています。
  
 
@@ -113,40 +113,41 @@ DBCSインスタンスのHRスキーマを移行対象に、移行先をAutonomo
 ```
 ![イメージ](img105.png)
 
-+ --connectstring 移行元となるデータベースへの接続。[101: Oracle Cloud で Oracle Database を使おう(DBCS)](/ocitutorials/database/dbcs101-create-db)){:target="_blank"}を参考にホスト(HOST)、ポート番号（PORT）、サービス名（SERVICE_NAME）をご確認ください。
-+ --targetcloud ターゲットデータベースの指定。
++ `--connectstring` 移行元となるデータベースへの接続。[101: Oracle Cloud で Oracle Database を使おう(DBCS)](/ocitutorials/database/dbcs101-create-db)){:target="_blank"}を参考にホスト(HOST)、ポート番号（PORT）、サービス名（SERVICE_NAME）をご確認ください。
++ `--targetcloud` ターゲットデータベースの指定。
   + Autonomous Databaseの場合DedicatedはATPD/ADWD、SharedはATPS/ADWSから選択します。このチュートリアルではATPSを指定しています。
   + Autonomous DatabaseではないPDBロックダウンの設定が行われていないクラウドデータベースの場合はdefaultを指定します。  
-+ --username データベースに接続するユーザ名。管理者権限またはsysdba権限が必要です。  
-+ --reportformat 出力ファイルの形式です。json,text,または両方(json text)を指定できます。デフォルトはjsonです。  
-+ --schemas　移行対象のスキーマ名。空白区切りで複数指定可能。  
++ `--username` データベースに接続するユーザ名。管理者権限またはsysdba権限が必要です。  
++ `--reportformat` 出力ファイルの形式です。json,text,または両方(json text)を指定できます。デフォルトはjsonです。  
++ `--schemas`　移行対象のスキーマ名。空白区切りで複数指定可能。  
   
->--connectitstringについて  
-チュートリアルではJDBC Thin接続を利用していますが、OCI接続の利用も可能です。jdbc:oracle:ociとし--sysdbaを指定することでOS認証もサポートされます。詳細は[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2462677_1.html){:target="_blank"}を参照ください。
+>`--connectitstring`について  
+チュートリアルではJDBC Thin接続を利用していますが、OCI接続の利用も可能です。jdbc:oracle:ociとし`--sysdbaを指定することでOS認証もサポートされます。詳細は[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2462677_1.html){:target="_blank"}を参照ください。
 
 <br>
 
-実行結果はカレントディレクトリに出力されます。--outdirで出力ディレクトリを指定することも可能です。
+実行結果はカレントディレクトリに出力されます。`--outdir`で出力ディレクトリを指定することも可能です。
 
 ```
 view premigration_advisor_report.txt
 ```
 <BR>
-データベースの詳細情報の後、"Premigration Advisor Report Check Summary"として、実行された様々なチェックがPASS、Infomrational、Warning、Blockingに分類されて記載されます。
+データベースの詳細情報の後、"Premigration Advisor Report Check Summary"として、実行された様々なチェックがPASS、Informational、Warning、Blockingに分類されて記載されます。
 
 ![イメージ](img106.png) 
 
 そのあと、各チェックごとにそのチェックの説明や結果の影響、対応策が記載されます。
-例えばここでは変更が必要なオブジェクトとして、「索引構成表は利用できないので、COUNTRIES表はData Pumpでロードする際に変換するように」といったことを確認いただけます。  
+例えばAutonomous Databaseでは索引構成表の作成は許可されていないため、COUNTRIES表は非索引構成表として作成しないといけないことを確認いただけます。  
 ![イメージ](img107.png)  
 
 
---targetcloudをADWSにした場合は、先の[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db)で作成したLONG型を有するNG_TAB_4ADW表がADBに移行できないことを、対応策と共に明示してくれます。  
+`--targetcloud`をADWSにした場合は、先の[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db)で作成したLONG型を有するNG_TAB_4ADW表がADBに移行できないことを、対応策と共に明示してくれます。  
 ![イメージ](img108.png)
 
 
 <br>
---schemasを指定しない、または--fullを指定することで、データベース全体を指定した確認も可能です。--outfileprefixを指定すると出力ファイル名の接頭辞を指定できます。
+
+`--schemas`を指定しない、または`--full`を指定することで、データベース全体を指定した確認も可能です。`--outfileprefix`を指定すると出力ファイル名の接頭辞を指定できます。
 
 ```
  ./premigration.sh --connectstring jdbc:oracle:thin:@<ホスト名>:<ポート>:<サービス名> --username <ユーザ名> --targetcloud ATPS --full --reportformat text --outfileprefix <出力ファイルの接頭辞>
@@ -154,14 +155,14 @@ view premigration_advisor_report.txt
 
 ![イメージ](img109.png)
 
-確認してみましょう。--fullでは--schemasにはないデータベースインスタンス全体にのみ適用できるチェックが含まれます。 
+確認してみましょう。`--full`では`--schemas`にはないデータベースインスタンス全体にのみ適用できるチェックが含まれます。 
 ```
 view full_premigration_advisor_report.txt
 ```
 
 ![イメージ](img1010.png)
 
-例えばmodified_db_parameter_serverlessは--fullでのみ行われるチェックとなります。
+例えばmodified_db_parameter_serverlessは`--full`でのみ行われるチェックとなります。
 
 ![イメージ](img1011.png)
 
