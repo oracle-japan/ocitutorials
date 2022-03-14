@@ -58,10 +58,20 @@ O&Mには、このハンズオンで利用するサービスの他にも、オ�
     2. Monitoringの設定
     3. MonitoringとNotificationsの実践
 
+5. 今回利用したサンプルアプリケーションの補足説明
+
 ---
+
+ハンズオン概要図は以下となります。全環境の構築及びセットアップを行いながら、赤字で記載されている操作を実施します。
+
+![](0-0-000.png)
 
 1.OKEクラスタ構築とOCIRセットアップ
 ---------------------------------
+
+Kubernetesクラスタの構築とコンテナイメージを格納するOCIRのセットアップを行います。
+
+![](1-1-000.png)
 
 ### 1-1 OCIダッシュボードからOKEクラスタの構築
 
@@ -142,7 +152,7 @@ NAME          STATUS   ROLES   AGE     VERSION
 
 後続手順で、サンプルアプリケーションをビルドして、コンテナイメージを作成します。  
 そのコンテナイメージを格納するコンテナイメージレジストリのセットアップを行います。  
-OCIでは、Oracle Container Image Registry(OCIR)を利用します。
+OCIでは、Oracle Cloud Infrastructure Registry(OCIR)を利用します。
 
 **OCIRについて**  
 フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。OKEと同一リージョンに展開することによる低レイテンシを実現します。  詳細は[こちら](https://www.oracle.com/jp/cloud-native/container-registry/)のページをご確認ください。
@@ -232,6 +242,10 @@ Password| `認証トークン`
 
 2.Application Performance Monitoring
 ---------------------------------
+
+Kubernetesクラスタ上にサンプルマイクロサービスアプリケーションのデプロイとAPMのセットアップを行い、トレーシング、アプリケーションサーバのメトリクス監視、リアルユーザモニタリング、合成モニタリングを実践します。
+
+![](2-1-000.png)
 
 ### 2-1. サンプルアプリケーションの概要説明
 
@@ -934,6 +948,10 @@ Satisfiedを1点、Toleratingを0.5点、Frustratedを0点としてその平均�
 3.Logging
 ---------------------------------
 
+Loggingサービスのセットアップを行って、ワーカーノードのアプリケーションログとAPIサーバの監査ログを確認します。
+
+![](3-1-000.png)
+
 Oracle Cloud Infrastructure（OCI）Loggingサービスは、スタック全体からのログの取り込み、管理および分析を簡素化する、完全に管理されたクラウドネイティブの分散ロギング・プラットフォームです。インフラストラクチャ、アプリケーション、監査、およびデータベースのログが1つのビューで管理できます。
 
 実際に、構築したOKEクラスタ内のワーカー・ノードのコンピュート・インスタンスで実行されているアプリケーションのログを表示および検索します。
@@ -1111,7 +1129,9 @@ OKEで実行された操作のログを確認します。
 4.Monitoring & Notifications
 ---------------------------------
 
-ここでは、OCI NotificationsとMonitoringを組み合わせて、アプリケーションのメトリクスが閾値を超えるとアラートが上がり、メール通知する仕組みを構築します。
+OCI NotificationsとMonitoringを組み合わせて、アプリケーションのメトリクスが閾値を超えるとアラートが上がり、メール通知する仕組みを構築します。
+
+![](4-1-000.png)
 
 ### 4-1 Notificationsの設定
 
@@ -1197,7 +1217,7 @@ OKEで実行された操作のログを確認します。
 ディメンション名|OkeClusterld
 ディメンション値|表示されるClusterIDを選択
 値|200000000
-トリガ遅延分数| 0
+トリガ遅延分数| 1
 トピック|oci-notifications
 
 ![](4-2-003.png)
@@ -1470,6 +1490,29 @@ rm -rf testplan.jtl
 ```sh
 JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
+
+{% capture notice %}**Jmeter起動時のエラーについて**  
+Computeで利用可能なメモリの状態によって、以下のようなエラーが発生する場合があります。  
+
+```sh
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x00000004f0800000, 12884901888, 0) failed; error='Cannot allocate memory' (errno=12)
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 12884901888 bytes for committing reserved memory.
+# An error report file with more information is saved as:
+# /home/tniita_obs/test_work/hs_err_pid5725.log
+```
+
+上記のエラーが発生した場合は、ヒープサイズを以下のように`8G`にして実行してください。  
+
+```sh
+JVM_ARGS="-Xms8G -Xmx8G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+```
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
 #### 状況の確認
 
