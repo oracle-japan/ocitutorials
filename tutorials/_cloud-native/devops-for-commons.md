@@ -47,7 +47,7 @@ OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続
 {: .notice--info}
 
 **コンテナレジストリ**  
-コンテナレジストリは、コンテナイメージを保存および共有するための専用のレジストリです。OCIには、Oracle Cloud Ifrastructure Registry（OCIR）というコンテナイメージ専用のレジストリサービスがあります。OCI DevOpsと統合して利用します。
+コンテナレジストリは、コンテナイメージを保存および共有するための専用のレジストリです。OCIには、Oracle Cloud Infrastructure Registry（OCIR）というコンテナイメージ専用のレジストリサービスがあります。OCI DevOpsと統合して利用します。
 詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Registry/Concepts/registryoverview.htm)のページをご確認ください。
 {: .notice--info}
 
