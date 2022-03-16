@@ -19,6 +19,9 @@ toc: true
     OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。
     ここでは、Oracle Container Engine for Kubernetes(OKE)サービスを利用したKubernetesクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間30分】
 
+<!-- + **[DevOps を使用して Oracle Functions に CI/CD をしてみよう](/ocitutorials/cloud-native/devops-for-functions/)**  
+OCI DevOps を活用して、Oracle Functions にデプロイするための CI/CD パイプラインの構築手順を学習します。 -->
+
 <br />
 
 # 2. Oracle Container Engine for Kubernetesチュートリアル
