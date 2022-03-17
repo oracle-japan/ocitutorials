@@ -304,6 +304,67 @@ group by b.station_name;
 10秒ほど待つと、以下のような結果が返されます。東京都の各駅周辺の地域の年齢階層別の人口が表示されています。
 <div style="text-align: center"><img src="75results.jpg"></div>
 
+続いて以下のSQLで15歳未満・15~64歳・65歳以上の人口の総計と65歳以上の人口の割合を駅ごとに表示してみます。
+駅データと人口データの集計の仕方が若干異なっており、rate_over_64列の計算で0除算が発生してしまうため、回避のための条件を追加しています。
+```sql
+select
+  sum(a.T000849017) AS num_under_15,
+  sum(a.T000849018) AS num_15_to_64,
+  sum(a.T000849019) AS num_over_64,
+  sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) AS rate_over_64,
+  b.station_name
+from geo_age_tokyo a, STATION20210312FREE b
+where sdo_anyinteract (a.geom, sdo_geometry(2001, 8307, sdo_point_type(b.lon, b.lat, NULL), NULL, NULL)) = 'TRUE'
+group by b.station_name having sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) is not null
+ORDER BY rate_over_64 DESC;
+```
+
+実行すると以下のような結果が返されます。
+
+![rate_over_64イメージ](rate_over_64.png)
+
+最後にこのデータを地図上で図示してみたいと思います。
+上記のSQL文にcreate table...asを追加したtmp表を作成し、tmp表と駅データの表を駅名でjoinしてage_over_64_tokyo表を作成します。
+```sql
+create table tmp
+as select
+  sum(a.T000849017) AS num_under_15,
+  sum(a.T000849018) AS num_15_to_64,
+  sum(a.T000849019) AS num_over_64,
+  sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) AS rate_over_64,
+  b.station_name
+from geo_age_tokyo a, STATION20210312FREE b
+where sdo_anyinteract (a.geom, sdo_geometry(2001, 8307, sdo_point_type(b.lon, b.lat, NULL), NULL, NULL)) = 'TRUE'
+group by b.station_name having sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) is not null
+ORDER BY rate_over_64;
+```
+
+```sql
+create table age_over_64_tokyo as
+select a.rate_over_64, b.*
+from tmp a, STATION20210312FREE b
+where a.station_name=b.station_name;
+```
+
+Spatial Studio上でage_over_64_tokyo表のデータセットを作成し、プロジェクトを作成します。
+データセットを地図上にドラッグアンドドロップすると、以下のようになります。
+
+![age_over_64_tokyo_mapイメージ](age_over_64_tokyo_map.png)
+
+65歳以上の割合によって色を分けてみます。
+Layers ListのAGE_OVER_64_TOKYOの右のボタンをクリックし、Settingsをクリックします。
+
+![age_over_64_tokyo_configイメージ](age_over_64_tokyo_config.png)
+
+Layerの設定画面になるので、BasicのColorをデフォルトのSingle ColorからBased on dataに変更します。
+
+![age_over_64_tokyo_layersetting1イメージ](age_over_64_tokyo_layersetting1.png)
+
+列を選択できるのでRATE_OVER_64列を選択し、基準となる値を0から0.6まで0.1刻みで設定します。
+設定できたらSet paletteから色分けを再度選択し直すことで以下のような画面になります。
+
+![age_over_64_tokyo_layersetting2イメージ](age_over_64_tokyo_layersetting2.png)
+
 <BR/>
 
 <a id="anchor5"></a>
