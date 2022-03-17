@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-03-14T14:52:22+09:00">
+  <meta property="article:published_time" content="2022-03-17T13:28:49+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="214 : Spatial Studio で地理情報を扱おう">
     <meta itemprop="description" content="Oracle Spatialを使用すると、開発者は基本的な空間検索や分析から高度な地理空間アプリケーションや地理情報システム(GIS)まで、すべてのアプリケーションで空間分析を使用できます。">
-    <meta itemprop="datePublished" content="2022-03-14T14:52:22+09:00">
+    <meta itemprop="datePublished" content="2022-03-17T13:28:49+09:00">
     
 
     <div class="page__inner-wrap">
@@ -730,6 +730,64 @@ https://www.esrij.com/gis-guide/esri-dataformat/shapefile/<br />
 <p>10秒ほど待つと、以下のような結果が返されます。東京都の各駅周辺の地域の年齢階層別の人口が表示されています。</p>
 <div style="text-align: center"><img src="75results.jpg" /></div>
 
+<p>続いて以下のSQLで15歳未満・15~64歳・65歳以上の人口の総計と65歳以上の人口の割合を駅ごとに表示してみます。
+駅データと人口データの集計の仕方が若干異なっており、rate_over_64列の計算で0除算が発生してしまうため、回避のための条件を追加しています。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_under_15</span><span class="p">,</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_15_to_64</span><span class="p">,</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_over_64</span><span class="p">,</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">AS</span> <span class="n">rate_over_64</span><span class="p">,</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">station_name</span>
+<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION20210312FREE</span> <span class="n">b</span>
+<span class="k">where</span> <span class="n">sdo_anyinteract</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">sdo_geometry</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">8307</span><span class="p">,</span> <span class="n">sdo_point_type</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span> <span class="k">NULL</span><span class="p">),</span> <span class="k">NULL</span><span class="p">,</span> <span class="k">NULL</span><span class="p">))</span> <span class="o">=</span> <span class="s1">'TRUE'</span>
+<span class="k">group</span> <span class="k">by</span> <span class="n">b</span><span class="p">.</span><span class="n">station_name</span> <span class="k">having</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">rate_over_64</span> <span class="k">DESC</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>実行すると以下のような結果が返されます。</p>
+
+<p><img src="rate_over_64.png" alt="rate_over_64イメージ" /></p>
+
+<p>最後にこのデータを地図上で図示してみたいと思います。
+上記のSQL文にcreate table…asを追加したtmp表を作成し、tmp表と駅データの表を駅名でjoinしてage_over_64_tokyo表を作成します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">create</span> <span class="k">table</span> <span class="n">tmp</span>
+<span class="k">as</span> <span class="k">select</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_under_15</span><span class="p">,</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_15_to_64</span><span class="p">,</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_over_64</span><span class="p">,</span>
+  <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">AS</span> <span class="n">rate_over_64</span><span class="p">,</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">station_name</span>
+<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION20210312FREE</span> <span class="n">b</span>
+<span class="k">where</span> <span class="n">sdo_anyinteract</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">sdo_geometry</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">8307</span><span class="p">,</span> <span class="n">sdo_point_type</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span> <span class="k">NULL</span><span class="p">),</span> <span class="k">NULL</span><span class="p">,</span> <span class="k">NULL</span><span class="p">))</span> <span class="o">=</span> <span class="s1">'TRUE'</span>
+<span class="k">group</span> <span class="k">by</span> <span class="n">b</span><span class="p">.</span><span class="n">station_name</span> <span class="k">having</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">rate_over_64</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">create</span> <span class="k">table</span> <span class="n">age_over_64_tokyo</span> <span class="k">as</span>
+<span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="n">rate_over_64</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="o">*</span>
+<span class="k">from</span> <span class="n">tmp</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION20210312FREE</span> <span class="n">b</span>
+<span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="n">station_name</span><span class="o">=</span><span class="n">b</span><span class="p">.</span><span class="n">station_name</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Spatial Studio上でage_over_64_tokyo表のデータセットを作成し、プロジェクトを作成します。
+データセットを地図上にドラッグアンドドロップすると、以下のようになります。</p>
+
+<p><img src="age_over_64_tokyo_map.png" alt="age_over_64_tokyo_mapイメージ" /></p>
+
+<p>65歳以上の割合によって色を分けてみます。
+Layers ListのAGE_OVER_64_TOKYOの右のボタンをクリックし、Settingsをクリックします。</p>
+
+<p><img src="age_over_64_tokyo_config.png" alt="age_over_64_tokyo_configイメージ" /></p>
+
+<p>Layerの設定画面になるので、BasicのColorをデフォルトのSingle ColorからBased on dataに変更します。</p>
+
+<p><img src="age_over_64_tokyo_layersetting1.png" alt="age_over_64_tokyo_layersetting1イメージ" /></p>
+
+<p>列を選択できるのでRATE_OVER_64列を選択し、基準となる値を0から0.6まで0.1刻みで設定します。
+設定できたらSet paletteから色分けを再度選択し直すことで以下のような画面になります。</p>
+
+<p><img src="age_over_64_tokyo_layersetting2.png" alt="age_over_64_tokyo_layersetting2イメージ" /></p>
+
 <p><br /></p>
 
 <p><a id="anchor5"></a></p>
@@ -764,7 +822,7 @@ Oracle Spatial StudioはAutonomous Databaseに標準で含まれております�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-03-14T14:52:22+09:00">March 14, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-03-17T13:28:49+09:00">March 17, 2022</time></p>
 
 
       </footer>
