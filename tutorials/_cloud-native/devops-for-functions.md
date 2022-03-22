@@ -52,14 +52,20 @@ Cloud Shell を開きます。OCI Console 右上の **Cloud Shell** を押しま
 
 ![image47](image47.png)
 
-ハンズオンに使用する資材をクローンします。
+ハンズオンに使用する資材をダウンロードします。
 
 ```bash
 cd ~; \
-git clone https://github.com/oracle-japan/devops-template-for-oracle-functions
+wget -O devops-template-for-oracle-functions.zip https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/oci-devops-handson/o/functions%2Fdevops-template-for-oracle-functions.zip
 ```
 
-クローンしたリポジトリには以下の資材が含まれています。
+zip を解答します。
+
+```bash
+unzip devops-template-for-oracle-functions.zip 
+```
+
+ダウンロードした資材には以下が含まれています。
 
 ```bash
 .
@@ -199,7 +205,7 @@ cd ~; \
 git clone <repository-url>
 ```
 
-次に、[ハンズオンに使用する資材の取得](#ハンズオンに使用する資材の取得)でGitHubからクローンしたハンズオン資材をコピーします。
+次に、[ハンズオンに使用する資材の取得](#ハンズオンに使用する資材の取得)でダウンロードしたハンズオン資材をコピーします。
 
 ```bash
 cd ~; \
