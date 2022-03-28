@@ -149,8 +149,14 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[303: Data Pumpを利用してデータを移行しよう](/ocitutorials/database/adb303-datapump){:target="_blank"}**
     * データ移行に関する機能として従来からよく利用されるData Pumpを利用した移行方法をご紹介します。
 
-+ **[304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう](/ocitutorials/database/adb304-database-migration){:target="_blank"}**
-    * 現在オンプレミスなどでご利用いただいているOracle Databaseを、OCI上の各データベース・サービスにすばやく簡単に移行できるマネージド・サービスをご紹介します。
++ **[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/database/adb304-database-migration-prep){:target="_blank"}**
+    * OCI DMSを使用したデータベース移行の前準備についてご紹介します。
+
++ **[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline){:target="_blank"}**
+    * OCI DMSを使用したDBCSからADBへのオフライン移行についてご紹介します。
+
++ **[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online){:target="_blank"}**
+    * OCI DMSを使用したDBCSからADBへのオンライン移行についてご紹介します。
 
 ## データ連携編
 + **[401: OCI GoldenGateを利用したデータ連携](/ocitutorials/database/adb401-oci-goldengate){:target="_blank"}**
