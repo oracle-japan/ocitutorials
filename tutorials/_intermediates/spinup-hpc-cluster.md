@@ -410,7 +410,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
 1. バッチジョブスクリプト作成
 
-   以下のバッチジョブ投入用スクリプトをbastionノードのホームディレクトリ下に作成します。
+   以下のバッチジョブ投入用スクリプトをbastionノードのホームディレクトリ以下に作成します。
 
    ```sh
    > cat submit_4nodes.sh
