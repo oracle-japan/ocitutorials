@@ -56,7 +56,7 @@ allow service loganalytics to READ compartments in tenancy
 1-3. ユーザーがLogging Analyticsを使用するためのポリシー
 ```
 allow group <IAMグループ名> to READ compartments in tenancy
-allow group <IAMグループ名> to MANAGE loganalytics-features-family in tenancy/compartment <コンパートメント名>
+allow group <IAMグループ名> to MANAGE loganalytics-features-family in tenancy
 allow group <IAMグループ名> to MANAGE loganalytics-resources-family in tenancy/compartment <コンパートメント名>
 ```
 
