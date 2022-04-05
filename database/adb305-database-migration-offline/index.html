@@ -1,0 +1,846 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Database Migration Serviceの移行の作成、検証、実行、そして確認作業までのオフライン移行の一連の作業を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb305-database-migration-offline/">
+
+
+  <meta property="og:description" content="OCI Database Migration Serviceの移行の作成、検証、実行、そして確認作業までのオフライン移行の一連の作業を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb305-database-migration-offline/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-04-05T14:46:06+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb305-database-migration-offline/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb305-database-migration-offline/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Database Migration Serviceの移行の作成、検証、実行、そして確認作業までのオフライン移行の一連の作業を紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs104-backup/">104: 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs105-restore/">105: バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをDBCSに移動しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb304-database-migration/">304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb305-database-migration-offline/" class="active">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行">
+    <meta itemprop="description" content="OCI Database Migration Serviceの移行の作成、検証、実行、そして確認作業までのオフライン移行の一連の作業を紹介します。">
+    <meta itemprop="datePublished" content="2022-04-05T14:46:06+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-ソースデータベースへのサンプルデータの追加">1. ソース・データベースへのサンプル・データの追加</a></li><li><a href="#2-移行の作成">2. 移行の作成</a></li><li><a href="#3-移行の検証">3. 移行の検証</a></li><li><a href="#4-移行の実行">4. 移行の実行</a></li><li><a href="#5-移行データの確認">5. 移行データの確認</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p><strong>Oracle Cloud Infrastructure Database Migration Service (DMS)</strong> は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。</p>
+
+<p>DMSでは下記の2つの論理的移行が可能です。</p>
+<ul>
+  <li><strong>オフライン移行</strong> - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。</li>
+  <li><strong>オンライン移行</strong> - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。</li>
+</ul>
+
+<p>DMSに関するチュートリアルは<a href="/ocitutorials/database/adb304-database-migration-prep">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>、<a href="/ocitutorials/database/adb305-database-migration-offline">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>、<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>の計3章を含めた3部構成となっています。
+DMSを使用してDBCSで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。</p>
+
+<p><a href="/ocitutorials/database/adb305-database-migration-offline">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>または<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>を実施する前に必ず<a href="/ocitutorials/database/adb304-database-migration-prep">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>を実施するようにしてください。</p>
+
+<p>この章では、DMSを使用したデータベースのオフライン移行について紹介します。</p>
+
+<p><img src="2022-03-24-09-40-38.png" alt="" /></p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1. ソース・データベースへのサンプル・データの追加</a></li>
+  <li><a href="#anchor2">2. 移行の作成</a></li>
+  <li><a href="#anchor3">3. 移行の検証</a></li>
+  <li><a href="#anchor4">4. 移行の実行</a></li>
+  <li><a href="#anchor5">5. 移行データの確認</a></li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li><a href="/ocitutorials/database/adb304-database-migration-prep">「304 : OCI Database Migration Serviceを使用したデータベース移行の前準備」</a>を参考に、データベース移行の前準備が完了していること。</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-ソースデータベースへのサンプルデータの追加">1. ソース・データベースへのサンプル・データの追加</h1>
+
+<ol>
+  <li>
+    <p>PDB上のスキーマに接続します。スキーマがない場合は検証用のスキーマを作成してください。SQL*Plusを利用する場合は、以下のようにホスト名、ポート番号、サービス名を指定します。</p>
+
+    <p>例：（$ sqlplus <スキーマ名>/<パスワード>@<ホスト名>:<ポート>/<サービス名>）</サービス名></ポート></ホスト名></パスワード></スキーマ名></p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus testuser/WelCome123#123#@dbcs01.subnet.vcn.oraclevcn.com:1521/pdb1.subnet.vcn.oraclevcn.com
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>PDB上にサンプル・データを追加します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">PERSONS</span> <span class="p">(</span>
+     <span class="n">PersonID</span> <span class="nb">int</span><span class="p">,</span>
+     <span class="n">LastName</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+     <span class="n">FirstName</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+     <span class="n">Address</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+     <span class="n">City</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+ <span class="p">);</span>
+</code></pre></div>    </div>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">PERSONS</span> <span class="p">(</span><span class="n">PersonID</span><span class="p">,</span> <span class="n">LastName</span><span class="p">,</span> <span class="n">FirstName</span><span class="p">,</span> <span class="n">Address</span><span class="p">,</span> <span class="n">City</span><span class="p">)</span> <span class="k">Values</span> <span class="p">(</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'James'</span><span class="p">,</span> <span class="s1">'Steve'</span><span class="p">,</span> <span class="s1">'123way'</span><span class="p">,</span> <span class="s1">'Los Angeles'</span><span class="p">);</span>
+
+ <span class="k">commit</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-移行の作成">2. 移行の作成</h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>移行</strong> に移動します。</p>
+
+    <p><img src="2022-03-04-13-55-12.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>移行の作成</strong> を選択します。</p>
+
+    <p><img src="2022-03-04-13-57-08.png" alt="" /></p>
+  </li>
+  <li><strong>詳細の追加</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>名前</strong> - 任意 ※名前にスペースを含めると移行の作成に失敗します。</li>
+      <li><strong>ボールト</strong> - <strong>登録済みデータベース</strong> に登録されているボールトを選択します。</li>
+      <li><strong>暗号化キー</strong> - <strong>登録済みデータベース</strong> に登録されている暗号化キーを選択します。</li>
+    </ul>
+
+    <p>設定後、<strong>次</strong> をクリックします。</p>
+
+    <p><img src="2022-03-10-13-16-30.png" alt="" /></p>
+  </li>
+  <li><strong>データベースの選択</strong> の各項目は以下のように設定します。
+    <ul>
+      <li><strong>ソース・データベース</strong> - 登録済みのソース・データベース（PDB）を選択します。</li>
+      <li><strong>データベースはプラガブル・データベース(PDB)です</strong> にチェックを付けます。</li>
+      <li><strong>登録済みコンテナ・データベース</strong> - 登録済みのソース・データベース（CDB）を選択します。</li>
+      <li><strong>ターゲット・データベース</strong> - 登録済みのターゲット・データベースを選択します。</li>
+    </ul>
+
+    <p>設定後、<strong>次</strong> をクリックします。</p>
+
+    <p><img src="2022-03-04-14-15-17.png" alt="" /></p>
+  </li>
+  <li><strong>移行オプション</strong> の各項目は以下のように設定します。
+    <ul>
+      <li><strong>初期ロード</strong> - オブジェクト・ストレージ経由のデータポンプを選択します。</li>
+      <li><strong>オブジェクト・ストレージ・バケット</strong> - 使用したいオブジェクト・ストレージ・バケットを選択します。</li>
+      <li><strong>ディレクトリ・オブジェクトのエクスポート</strong> -
+        <ul>
+          <li>名前 - 任意</li>
+          <li>パス - 任意</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p>設定後、<strong>作成</strong> をクリックします。</p>
+
+    <p><img src="2022-03-04-14-17-50.png" alt="" /></p>
+  </li>
+  <li>
+    <p>作成した移行の状態が <strong>アクティブ</strong> になるまで待ちます。（3分ほどかかります。）</p>
+
+    <p><img src="2022-03-04-14-20-27.png" alt="" /></p>
+
+    <p>これで移行の作成は完了です。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-移行の検証">3. 移行の検証</h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>移行</strong> に移動します。</p>
+
+    <p><img src="2022-03-04-13-55-12.png" alt="" /></p>
+  </li>
+  <li>
+    <p>検証する移行の名前をクリックします。</p>
+
+    <p><img src="2022-03-04-14-24-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>検証</strong> ボタンをクリックすると <strong>移行の検証</strong> ダイアログが表示されます。 <strong>検証</strong> をクリックします。</p>
+
+    <p><img src="2022-03-04-14-25-53.png" alt="" /></p>
+
+    <p><img src="2022-03-04-15-04-31.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong> の一覧にある <strong>ジョブ</strong> をクリックし、実行中のジョブの名前をクリックします。</p>
+
+    <p><img src="2022-03-04-14-31-15.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong> の一覧にある <strong>フェーズ</strong> をクリックします。ここで実行中の検証のフェーズが確認できます。</p>
+
+    <p><img src="2022-03-04-14-32-57.png" alt="" /></p>
+  </li>
+  <li>
+    <p>検証が失敗した場合、<strong>フェーズ</strong> の <strong>ステータス</strong> に<strong>失敗</strong> と表示されます。その場合、 <strong>ログのダウンロード</strong> ボタンをクリックしてログを参照することで、失敗の詳細を確認することができます。もう一度実行したい場合は、 <strong>中断</strong> ボタンをクリックして検証を再度やり直してください。</p>
+
+    <p><img src="2022-03-04-15-13-34.png" alt="" /></p>
+
+    <p><strong>移行前アドバイザの検証</strong> で失敗した場合、<strong>フェーズ</strong> の <strong>移行前アドバイザの検証</strong> をクリックし、<strong>アドバイザ・レポートのダウンロード</strong> をクリックすることでCPAT (Cloud Premigration Advisor Tool)の結果を閲覧することができます。</p>
+
+    <p>CPATには次のような利点があります。</p>
+    <ul>
+      <li>ターゲット環境でサポートされていないデータベースで使用されている機能について警告します。</li>
+      <li>データ・ポンプのエクスポートおよびインポート操作に使用する修復変更やパラメータ(あるいはその両方)に関する提案を作成します。</li>
+    </ul>
+
+    <p>詳細については、<a href="https://docs.oracle.com/cd/E83857_01/paas/database-migration/dmsus/managing-migrations.html#GUID-585B1102-DD5C-4E23-BB88-C2B14A090003">Oracle Cloud Infrastructure Database移行サービスの使用 - 4 移行の管理 - 検証オプションの構成</a> をご参照ください。</p>
+
+    <p><img src="2022-03-04-21-04-56.png" alt="" /></p>
+
+    <p><img src="2022-03-04-21-05-05.png" alt="" /></p>
+  </li>
+  <li>
+    <p>全ての <strong>フェーズ</strong> の <strong>ステータス</strong> が <strong>完了済</strong> と表示されたら、移行の検証は完了です。</p>
+
+    <p><img src="2022-03-04-14-39-12.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-移行の実行">4. 移行の実行</h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>移行</strong> に移動します。</p>
+
+    <p><img src="2022-03-04-13-55-12.png" alt="" /></p>
+  </li>
+  <li>
+    <p>実行する移行の名前をクリックします。</p>
+
+    <p><img src="2022-03-04-14-24-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>起動</strong> ボタンをクリックします。</p>
+
+    <p><img src="2022-03-04-14-41-55.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>移行の開始</strong> ダイアログが表示されます。<strong>続行する前にフェーズ後にユーザー入力が必要</strong> にチェックを付けると、選択したフェーズの後に一時停止をするように設定できます。本チュートリアルではチェックを付けず、<strong>起動</strong> をクリックします。</p>
+
+    <p><img src="2022-03-04-14-59-47.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong> の一覧にある <strong>ジョブ</strong> をクリックし、実行中のジョブの名前をクリックします。</p>
+
+    <p><img src="2022-03-04-15-11-36.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong> の一覧にある <strong>フェーズ</strong> をクリックします。ここで実行中の移行のフェーズが確認できます。</p>
+
+    <p><img src="2022-03-04-15-12-39.png" alt="" /></p>
+  </li>
+  <li>
+    <p>移行が失敗した場合、<strong>フェーズ</strong> の <strong>ステータス</strong> に<strong>失敗</strong> と表示されます。その場合、 <strong>ログのダウンロード</strong> ボタンをクリックしてログを参照することで、失敗の詳細を確認することができます。もう一度実行したい場合は、 <strong>中断</strong> ボタンをクリックして移行を再度やり直してください。</p>
+
+    <p><img src="2022-03-04-20-43-01.png" alt="" /></p>
+  </li>
+  <li>
+    <p>全ての <strong>フェーズ</strong> の <strong>ステータス</strong> が <strong>完了済</strong> と表示されたら、移行は完了です。</p>
+
+    <p><img src="2022-03-04-15-19-07.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-移行データの確認">5. 移行データの確認</h1>
+<p>ソースPDBからターゲットADBにデータが正常に移行されているか確認します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Autonomous Database</strong> に移動します。</p>
+
+    <p><img src="2022-03-04-15-24-32.png" alt="" /></p>
+  </li>
+  <li>
+    <p>移行に使用したターゲット・データベースの表示名をクリックします。</p>
+
+    <p><img src="2022-03-04-15-26-14.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベース・アクション</strong> ボタンをクリックします。</p>
+
+    <p><img src="2022-03-04-15-27-47.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>SQL</strong> をクリックします。</p>
+
+    <p><img src="2022-03-04-15-30-32.png" alt="" /></p>
+  </li>
+  <li>
+    <p>画面左にあるナビゲーターでソースPDBで作成したサンプル・データが格納されているスキーマがあることを確認し、選択します。</p>
+
+    <p><img src="2022-03-04-15-32-05.png" alt="" /></p>
+
+    <p><img src="2022-03-09-22-29-37.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ワークシートで以下のSQL文を実行します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">SELECT</span>
+     <span class="n">PERSONID</span><span class="p">,</span>
+     <span class="n">LASTNAME</span><span class="p">,</span>
+     <span class="n">FIRSTNAME</span><span class="p">,</span>
+     <span class="n">ADDRESS</span><span class="p">,</span>
+     <span class="n">CITY</span>
+ <span class="k">FROM</span>
+     <span class="n">TESTUSER</span><span class="p">.</span><span class="n">PERSONS</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p><img src="2022-03-10-13-57-14.png" alt="" /></p>
+
+    <p>DMSのオブジェクト・ストレージとデータ・ポンプを使用した移行メソッドによって、<a href="#anchor1">1. ソース・データベースへのサンプル・データの追加</a>で作成したサンプル・データがターゲットADBに移行されていることが確認できました。</p>
+  </li>
+</ol>
+
+<p>以上で <strong>DMSを使用したデータベースのオフライン移行</strong> は終了です。</p>
+
+<p>オンライン移行を実行したい場合は、<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>にお進みください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li><a href="https://docs.oracle.com/cd/E83857_01/paas/database-migration/dmsus/index.html">Oracle Cloud Infrastructure Database移行サービスの使用</a></li>
+  <li><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=856">OCI Database Migration Workshop</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-04-05T14:46:06+09:00">April 5, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=305+%3A+OCI+Database+Migration+Service%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E3%82%AA%E3%83%95%E3%83%A9%E3%82%A4%E3%83%B3%E7%A7%BB%E8%A1%8C%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb305-database-migration-offline%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb305-database-migration-offline%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb305-database-migration-offline%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb304-database-migration/" class="pagination--pager" title="304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb306-database-migration-online/" class="pagination--pager" title="306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

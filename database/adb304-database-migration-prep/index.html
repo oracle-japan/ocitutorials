@@ -1,0 +1,993 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>304 : OCI Database Migration Serviceを使用したデータベース移行の前準備 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Database Migration Serviceの使用に必要なネットワークやストレージの設定、データベースの登録など事前に必要な設定について紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="304 : OCI Database Migration Serviceを使用したデータベース移行の前準備">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb304-database-migration-prep/">
+
+
+  <meta property="og:description" content="OCI Database Migration Serviceの使用に必要なネットワークやストレージの設定、データベースの登録など事前に必要な設定について紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb304-database-migration-prep/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-04-05T14:46:06+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb304-database-migration-prep/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb304-database-migration-prep/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          304 : OCI Database Migration Serviceを使用したデータベース移行の前準備
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Database Migration Serviceの使用に必要なネットワークやストレージの設定、データベースの登録など事前に必要な設定について紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs104-backup/">104: 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs105-restore/">105: バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをDBCSに移動しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb304-database-migration-prep/" class="active">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb304-database-migration/">304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="304 : OCI Database Migration Serviceを使用したデータベース移行の前準備">
+    <meta itemprop="description" content="OCI Database Migration Serviceの使用に必要なネットワークやストレージの設定、データベースの登録など事前に必要な設定について紹介します。">
+    <meta itemprop="datePublished" content="2022-04-05T14:46:06+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-環境のセットアップ">1. 環境のセットアップ</a><ul><li><a href="#1-1-仮想クラウドネットワークサブネットのセキュリティリストの更新">1-1. 仮想クラウド・ネットワーク・サブネットのセキュリティ・リストの更新</a></li><li><a href="#1-2-vaultの作成">1-2. Vaultの作成</a></li><li><a href="#1-3-オブジェクトストレージバケットの作成">1-3. オブジェクト・ストレージ・バケットの作成</a></li></ul></li><li><a href="#2-ソースデータベースの設定">2. ソース・データベースの設定</a><ul><li><a href="#2-1-ソースデータベースのcdbとpdbの接続情報の確認">2-1. ソース・データベースのCDBとPDBの接続情報の確認</a></li><li><a href="#2-2-データポンプエクスポートで使用されるディレクトリの作成">2-2. データ・ポンプ・エクスポートで使用されるディレクトリの作成</a></li><li><a href="#2-3-初期化パラメータstreams_pool_sizeの設定">2-3. 初期化パラメータSTREAMS_POOL_SIZEの設定</a></li></ul></li><li><a href="#3-データベースの登録">3. データベースの登録</a><ul><li><a href="#3-1-ソースcdbの登録">3-1. ソースCDBの登録</a></li><li><a href="#3-2-ソースpdbの登録">3-2. ソースPDBの登録</a></li><li><a href="#3-3-ターゲットadbの登録">3-3. ターゲットADBの登録</a></li></ul></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p><strong>Oracle Cloud Infrastructure Database Migration Service (DMS)</strong> は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。</p>
+
+<p>DMSでは下記の2つの論理的移行が可能です。</p>
+<ul>
+  <li><strong>オフライン移行</strong> - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。</li>
+  <li><strong>オンライン移行</strong> - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。</li>
+</ul>
+
+<p>DMSに関するチュートリアルは<a href="/ocitutorials/database/adb304-database-migration-prep">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>、<a href="/ocitutorials/database/adb305-database-migration-offline">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>、<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>の計3章を含めた3部構成となっています。
+DMSを使用してDBCSで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。</p>
+
+<p><a href="/ocitutorials/database/adb305-database-migration-offline">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>または<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>を実施する前に必ず<a href="/ocitutorials/database/adb304-database-migration-prep">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>を実施するようにしてください。</p>
+
+<p>この章では、DMSを使用したデータベース移行の前準備について紹介します。
+<img src="2022-03-24-10-00-25.png" alt="" /></p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#anchor1">1. 環境のセットアップ</a>
+    <ul>
+      <li><a href="#anchor2">1-1. 仮想クラウド・ネットワーク・サブネットのセキュリティ・リストの更新</a></li>
+      <li><a href="#anchor3">1-2. Vaultの作成</a></li>
+      <li><a href="#anchor4">1-3. オブジェクト・ストレージ・バケットの作成</a></li>
+    </ul>
+  </li>
+  <li><a href="#anchor5">2. ソース・データベースの設定</a>
+    <ul>
+      <li><a href="#anchor6">2-1. CDBとPDBの接続情報の確認</a></li>
+      <li><a href="#anchor7">2-2. データ・ポンプ・エクスポートで使用されるディレクトリの作成</a></li>
+      <li><a href="#anchor8">2-3. 初期化パラメータSTREAMS_POOL_SIZEの設定</a></li>
+    </ul>
+  </li>
+  <li><a href="#anchor9">3. データベースの登録</a>
+    <ul>
+      <li><a href="#anchor10">3-1. ソースCDBの登録</a></li>
+      <li><a href="#anchor11">3-2. ソースPDBの登録</a></li>
+      <li><a href="#anchor12">3-3. ターゲットADBの登録</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">「その2 - クラウドに仮想ネットワーク(VCN)を作る」</a>を参考に、VCNが作成されていること。</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/">「101: Oracle Cloud で Oracle Database を使おう(DBCS)」</a>を参考に、DBCSでデータベースとスキーマの作成が完了していること。本チュートリアルではデータベース・バージョンは19.13.0.0.0を使用しています。また、DMSではSSH秘密鍵はRSA形式のみサポートしています。（OPENSSH形式は使用できません）</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a>を参考に、ADBの作成が完了していること。</li>
+  <li><a href="https://docs.oracle.com/cd/E83857_01/paas/database-migration/dmsus/getting-started-oracle-cloud-infrastructure-database-migration.html#GUID-478467C2-662A-4C06-8077-EBB5A9F94E64">「Oracle Cloud Infrastructure Database移行サービスの使用 - 2 Oracle Cloud Infrastructure Database移行の開始 - データベース移行ユーザーへの権限の付与」</a>を参考に、データベース移行ユーザへ権限が付与されていること。権限が付与されていない場合、DMSの利用ができません。</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約40分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-環境のセットアップ">1. 環境のセットアップ</h1>
+<p>DMSの実行に必要なネットワークやストレージなどの環境のセットアップを行います。</p>
+
+<p><a id="anchor2"></a></p>
+
+<h2 id="1-1-仮想クラウドネットワークサブネットのセキュリティリストの更新">1-1. 仮想クラウド・ネットワーク・サブネットのセキュリティ・リストの更新</h2>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> に移動し、前提条件で作成したVCNを選択します。</p>
+
+    <p><img src="2022-02-28-17-47-16.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>サブネット</strong> の一覧から <strong>Public Subnet-VCN名</strong> を選択します。</p>
+
+    <p><img src="2022-02-28-17-55-37.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>セキュリティリスト</strong> の一覧から <strong>Default Security List for VCN名</strong> を選択します。</p>
+
+    <p><img src="2022-02-28-17-56-00.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>イングレス・ルールの追加</strong> を選択します。</p>
+
+    <p><img src="2022-02-28-17-58-17.png" alt="" /></p>
+  </li>
+  <li>以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>ソースCIDR</strong> - 0.0.0.0/0</li>
+      <li><strong>宛先ポート範囲</strong> - 443</li>
+      <li><strong>イングレス・ルールの追加</strong> をクリックします。</li>
+    </ul>
+
+    <p><img src="2022-02-28-18-06-34.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>イングレス・ルールの追加</strong> を選択します。</p>
+  </li>
+  <li>以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>ソースCIDR</strong> - 10.0.0.0/16</li>
+      <li><strong>宛先ポート範囲</strong> - 1521</li>
+      <li><strong>イングレス・ルールの追加</strong> をクリックします。</li>
+    </ul>
+
+    <p><img src="2022-02-28-18-08-25.png" alt="" /></p>
+
+    <p><img src="2022-02-28-18-09-27.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h2 id="1-2-vaultの作成">1-2. Vaultの作成</h2>
+
+<p>既にVaultが存在する場合、この項目は必要ないため次の項目へ進んでください。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>アイデンティティとセキュリティ</strong> → <strong>ボールト</strong> に移動します。</p>
+
+    <p><img src="2022-02-28-18-13-55.png" alt="" /></p>
+  </li>
+  <li>
+    <p>画面左側にある <strong>コンパートメント</strong> の一覧から使用したいコンパートメントを選択します。</p>
+  </li>
+  <li>
+    <p><strong>ボールトの作成</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-18-17-31.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>ボールトの作成</strong> ダイアログで、任意の名前を入力します。</p>
+  </li>
+  <li>
+    <p><strong>ボールトの作成</strong> をクリックしてダイアログを閉じます。</p>
+
+    <p><img src="2022-03-10-17-42-39.png" alt="" /></p>
+  </li>
+  <li>
+    <p>作成したボールトの状態が <strong>アクティブ</strong> になるまで待ちます。（5分ほどかかります。）</p>
+
+    <p><img src="2022-02-28-18-22-02.png" alt="" /></p>
+  </li>
+  <li>
+    <p>作成したボールトをクリックし、 <strong>マスター暗号化キー</strong> で <strong>キーの作成</strong> をクリックします。</p>
+
+    <p><img src="2022-03-24-12-17-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>キーの作成</strong> ダイアログで、任意の名前を入力します。</p>
+  </li>
+  <li>
+    <p><strong>キーの作成</strong> をクリックしてダイアログを閉じます。</p>
+
+    <p><img src="2022-03-10-17-43-12.png" alt="" /></p>
+
+    <p><img src="2022-02-28-18-28-30.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h2 id="1-3-オブジェクトストレージバケットの作成">1-3. オブジェクト・ストレージ・バケットの作成</h2>
+
+<p>移行で使用する空のオブジェクト・ストレージ・バケットを作成します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>ストレージ</strong> → <strong>オブジェクト・ストレージとアーカイブ・ストレージ</strong>に移動します。</p>
+
+    <p><img src="2022-02-28-18-30-18.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>バケットの作成</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-18-32-33.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>バケットの作成</strong> ダイアログで <strong>バケット名</strong> に任意の名前を入力します。</p>
+  </li>
+  <li>
+    <p>その他の設定項目はデフォルトのまま <strong>作成</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-18-34-19.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="2-ソースデータベースの設定">2. ソース・データベースの設定</h1>
+
+<p><a id="anchor6"></a></p>
+
+<h2 id="2-1-ソースデータベースのcdbとpdbの接続情報の確認">2-1. ソース・データベースのCDBとPDBの接続情報の確認</h2>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>ベア・メタル、VMおよびExadata</strong> を選択します。</p>
+
+    <p><img src="2022-02-28-18-37-12.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ソース・データベース（前提条件で作成したDBCS）のDBシステム名をクリックします。</p>
+
+    <p><img src="2022-02-28-18-39-33.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ソース・データベースのデータベース名をクリックします。</p>
+
+    <p><img src="2022-02-28-18-41-21.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>DB接続</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-18-47-26.png" alt="" /></p>
+
+    <p><a id="anchor21"></a></p>
+  </li>
+  <li>
+    <p><strong>簡易接続</strong> の接続文字列の右にある <strong>コピー</strong> をクリックし、メモ帳に貼り付けます。（後の手順で使用するため）</p>
+  </li>
+  <li>
+    <p>ダイアログを閉じます。</p>
+
+    <p><img src="2022-02-28-18-46-49.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong> の一覧から <strong>プラガブル・データベース</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-18-49-14.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ソース・データベースのプラガブル・データベース名をクリックします。</p>
+
+    <p><img src="2022-02-28-18-50-11.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>PDB接続</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-18-51-19.png" alt="" /></p>
+
+    <p><a id="anchor22"></a></p>
+  </li>
+  <li>
+    <p><strong>簡易接続</strong> の接続文字列の右にあるコピーをクリックし、メモ帳に貼り付けます。（後の手順で使用するため）</p>
+  </li>
+  <li>
+    <p>ダイアログを閉じます。</p>
+
+    <p><img src="2022-02-28-18-53-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>DBシステムの詳細</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-18-54-11.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong> の一覧から <strong>ノード</strong> をクリックします。</p>
+
+    <p><img src="2022-03-10-17-44-46.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ソース・データベースの<strong>パブリックIPアドレス</strong> と <strong>プライベートIPアドレス</strong> をそれぞれコピーし、メモ帳に貼り付けます。（後の手順で使用するため）</p>
+
+    <p><img src="2022-02-28-18-57-32.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor7"></a></p>
+
+<h2 id="2-2-データポンプエクスポートで使用されるディレクトリの作成">2-2. データ・ポンプ・エクスポートで使用されるディレクトリの作成</h2>
+
+<p>移行の実行の際、<strong>初期ロードオプション</strong> として <strong>オブジェクト・ストレージ経由のデータポンプ</strong> を選択する場合、データ・ポンプは、エクスポートされたデータベースをオブジェクト・ストレージ・バケットに一時的に格納します。そこで使用するディレクトリを作成します。</p>
+
+<ol>
+  <li>
+    <p>ソース・データベースのDBシステムに対して、Tera Termなどのsshクライアントで接続します。</p>
+  </li>
+  <li>
+    <p>ユーザー・ボリュームに新しいディレクトリを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo su - oracle
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mkdir /u01/app/oracle/dumpdir
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><a id="anchor8"></a></p>
+
+<h2 id="2-3-初期化パラメータstreams_pool_sizeの設定">2-3. 初期化パラメータSTREAMS_POOL_SIZEの設定</h2>
+
+<p>sysユーザーでSQL*Plusに接続し、STREAMS_POOL_SIZEを2GBに変更します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus / as sysdba
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">SYSTEM</span> <span class="k">SET</span> <span class="n">STREAMS_POOL_SIZE</span><span class="o">=</span><span class="mi">2</span><span class="k">G</span> <span class="k">SCOPE</span><span class="o">=</span><span class="k">BOTH</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exit;
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor9"></a></p>
+
+<h1 id="3-データベースの登録">3. データベースの登録</h1>
+
+<p><a id="anchor10"></a></p>
+
+<h2 id="3-1-ソースcdbの登録">3-1. ソースCDBの登録</h2>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>登録済データベース</strong> を選択します。</p>
+
+    <p><img src="2022-02-28-19-02-00.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベースの登録</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-19-03-40.png" alt="" /></p>
+  </li>
+  <li><strong>データベース詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>名前</strong> - 任意</li>
+      <li><strong>ボールト</strong> - 登録したいボールトを選択します。</li>
+      <li><strong>暗号化キー</strong> - 登録したい暗号化キーを選択します。</li>
+      <li><strong>データベース・タイプ</strong> - DBシステム・データベース（ベア・メタル、VMおよびExadata）を選択します。</li>
+      <li><strong>データベース・システム</strong> - 登録したいデータベース・システムを選択します。</li>
+      <li><strong>データベース</strong> - 登録したいデータベースを選択します。</li>
+      <li><strong>接続文字列</strong> - <a href="#anchor21">2-1.ソース・データベースのCDBとPDBの接続情報の確認の5.</a>でメモ帳にコピーした接続文字列のホスト名部分をデータベース・ノードのプライベートIPアドレスと入れ替えて入力します。例：10.0.0.28:1521/sourcedb_phx1rp.sub01270428300.vcndms.oraclevcn.com</li>
+      <li><strong>サブネット</strong> - データベースが配置されているサブネットを選択します。</li>
+    </ul>
+
+    <p>設定後、<strong>次</strong> をクリックします。</p>
+
+    <p><img src="2022-03-10-17-48-28.png" alt="" /></p>
+  </li>
+  <li><strong>接続の詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>データベース管理者ユーザー名</strong> - system</li>
+      <li><strong>データベース管理者のパスワード</strong> - ＜管理者パスワード＞</li>
+      <li><strong>SSHデータベース・サーバー・ホスト名</strong> - ＜データベース・ノードのプライベートIPアドレス＞</li>
+      <li><strong>SSH秘密キー</strong> - 秘密鍵ファイルを選択（DMSではRSA形式のみサポート。OPENSSH形式は使用できません。）</li>
+      <li><strong>SSHユーザー名</strong> - opc</li>
+      <li><strong>SSH Sudo</strong> - /usr/bin/sudo</li>
+    </ul>
+
+    <p>設定後、<strong>登録</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-19-13-34.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor11"></a></p>
+
+<h2 id="3-2-ソースpdbの登録">3-2. ソースPDBの登録</h2>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>登録済データベース</strong> を選択します。</p>
+
+    <p><img src="2022-02-28-19-02-00.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベースの登録</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-19-03-40.png" alt="" /></p>
+  </li>
+  <li><strong>データベース詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>名前</strong> - 任意</li>
+      <li><strong>ボールト</strong> - 登録したいボールトを選択します。</li>
+      <li><strong>暗号化キー</strong> - 登録したい暗号化キーを選択します。</li>
+      <li><strong>データベース・タイプ</strong> - DBシステム・データベース（ベア・メタル、VMおよびExadata）</li>
+      <li><strong>データベース・システム</strong> - 登録したいデータベース・システムを選択します。</li>
+      <li><strong>データベース</strong> - 登録したいデータベースを選択します。</li>
+      <li><strong>接続文字列</strong> - 本チュートリアルの<a href="#anchor22">2-1.ソース・データベースのCDBとPDBの接続情報の確認の10.</a>でメモ帳にコピーした接続文字列のホスト名部分をデータベース・ノードのプライベートIPアドレスと入れ替えて入力します。例：10.0.0.28:1521/pdb.sub01270428300.vcndms.oraclevcn.com</li>
+      <li><strong>サブネット</strong> - データベースが配置されているサブネットを選択します。</li>
+    </ul>
+
+    <p>設定後、<strong>次</strong> をクリックします。</p>
+
+    <p><img src="2022-03-10-17-48-57.png" alt="" /></p>
+  </li>
+  <li><strong>接続の詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>データベース管理者ユーザー名</strong> - system</li>
+      <li><strong>データベース管理者のパスワード</strong> - ＜管理者パスワード＞</li>
+      <li><strong>SSHデータベース・サーバー・ホスト名</strong> - ＜データベース・ノードのプライベートIPアドレス＞</li>
+      <li><strong>SSH秘密キー</strong> - 秘密鍵ファイルを選択（DMSではRSA形式のみサポート。OPENSSH形式は使用できません。）</li>
+      <li><strong>SSHユーザー名</strong> - opc</li>
+      <li><strong>SSH Sudo</strong> - /usr/bin/sudo</li>
+    </ul>
+
+    <p>設定後、<strong>登録</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-19-19-06.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor12"></a></p>
+
+<h2 id="3-3-ターゲットadbの登録">3-3. ターゲットADBの登録</h2>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>登録済データベース</strong> を選択します。</p>
+
+    <p><img src="2022-02-28-19-02-00.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベースの登録</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-19-03-40.png" alt="" /></p>
+  </li>
+  <li><strong>データベース詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>名前</strong> - 任意</li>
+      <li><strong>ボールト</strong> - 登録したいボールトを選択します。</li>
+      <li><strong>暗号化キー</strong> - 登録したい暗号化キーを選択します。</li>
+      <li><strong>データベース・タイプ</strong> - Autonomous Database</li>
+      <li><strong>データベース</strong> - 登録したいデータベースを選択します。</li>
+    </ul>
+
+    <p>設定後、<strong>次</strong> をクリックします。</p>
+
+    <p><img src="2022-03-10-17-49-22.png" alt="" /></p>
+  </li>
+  <li><strong>接続の詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+    <ul>
+      <li><strong>データベース管理者ユーザー名</strong> - admin</li>
+      <li><strong>データベース管理者のパスワード</strong> - ＜管理者パスワード＞</li>
+    </ul>
+
+    <p>設定後、<strong>登録</strong> をクリックします。</p>
+
+    <p><img src="2022-02-28-19-23-24.png" alt="" /></p>
+  </li>
+</ol>
+
+<p>以上で <strong>DMSを使用したデータベース移行の前準備</strong> は終了です。</p>
+
+<p>オフライン移行を実行したい場合は、<a href="/ocitutorials/database/adb305-database-migration-offline">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>にお進みください。
+オンライン移行を実行したい場合は、<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>にお進みください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor13"></a></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li><a href="https://docs.oracle.com/cd/E83857_01/paas/database-migration/dmsus/index.html">Oracle Cloud Infrastructure Database移行サービスの使用</a></li>
+  <li><a href="https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=856">OCI Database Migration Workshop</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-04-05T14:46:06+09:00">April 5, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=304+%3A+OCI+Database+Migration+Service%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E7%A7%BB%E8%A1%8C%E3%81%AE%E5%89%8D%E6%BA%96%E5%82%99%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb304-database-migration-prep%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb304-database-migration-prep%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb304-database-migration-prep%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb303-datapump/" class="pagination--pager" title="303 : Data Pumpを利用してデータを移行しよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb304-database-migration/" class="pagination--pager" title="304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

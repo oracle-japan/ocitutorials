@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-03-17T13:28:49+09:00">
+  <meta property="article:published_time" content="2022-04-05T14:46:06+09:00">
 
 
 
@@ -329,7 +329,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルを終了すると、HPC向けIntel Ice Lakeプロセッサを搭載したベアメタル計算ノードをRoCEv2インターコネクトで接続した典型的な構成のHPCクラスタを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2022-03-17T13:28:49+09:00">
+    <meta itemprop="datePublished" content="2022-04-05T14:46:06+09:00">
     
 
     <div class="page__inner-wrap">
@@ -340,12 +340,12 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-スタックの作成">1. スタックの作成</a></li><li><a href="#2-スタックの計画">2. スタックの計画</a></li><li><a href="#3-スタックの適用">3. スタックの適用</a></li><li><a href="#4-hpcクラスタの確認">4. HPCクラスタの確認</a></li><li><a href="#5-mpiプログラム実行">5. MPIプログラム実行</a></li><li><a href="#6-スタックの破棄">6. スタックの破棄</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-hpcクラスタ構築用スタックの概要">0. HPCクラスタ構築用スタックの概要</a></li><li><a href="#1-スタックの作成">1. スタックの作成</a></li><li><a href="#2-スタックの計画">2. スタックの計画</a></li><li><a href="#3-スタックの適用">3. スタックの適用</a></li><li><a href="#4-hpcクラスタの確認">4. HPCクラスタの確認</a></li><li><a href="#5-mpiプログラム実行2ノード編">5. MPIプログラム実行（2ノード編）</a></li><li><a href="#6-計算ノード追加">6. 計算ノード追加</a></li><li><a href="#7-mpiプログラム実行4ノード編">7. MPIプログラム実行（4ノード編）</a></li><li><a href="#8-スタックの破棄">8. スタックの破棄</a></li></ul>
 
             </nav>
           </aside>
         
-        <p>Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴を持ち、HPCワークロードを実行するHPCクラスタにとって最適なクラウトサービスです。</p>
+        <p>Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHPCワークロードを実行するHPCクラスタを構築するには最適なクラウトサービスです。</p>
 <ul>
   <li>仮想化オーバーヘッドの無いHPC用途に特化したベアメタルシェイプ</li>
   <li>RoCEv2を使用する高帯域・低レイテンシRDMAインターコネクトネットワーク</li>
@@ -356,19 +356,23 @@
   <li>HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（BM.Optimized3.36）
     <ul>
       <li>シェイプ詳細は以下URLを参照<br />
-<a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized">https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-optimized</a></li>
+<a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-hpc-optimized">https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-hpc-optimized</a></li>
     </ul>
   </li>
-  <li>100 Gbps RoCEv2 RDMAインターコネクト</li>
+  <li>100 Gbps RoCEv2 RDMAインターコネクト（※）</li>
   <li>インターネットからSSH接続可能なbastionノード</li>
   <li>OS: Oracle Linux 7.9</li>
   <li>ジョブスケジューラ: Slurm</li>
   <li>HPCクラスタ内ホームディレクトリNFS共有</li>
 </ul>
 
+<p>※：OCIでは、このインターコネクトネットワークを <strong>クラスタ・ネットワーク</strong> と呼称します。</p>
+
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
 <p>このHPCクラスタ構築用スタックを利用すると、通常であれば数日かかるようなHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択するだけで実施することが可能になります。</p>
+
+<p>またこのチュートリアルでは、クラスタ構築後により大規模な計算を実施する必要性が発生することを想定し、既存のクラスタに計算ノードを追加する方法も学習します。</p>
 
 <p>リソース・マネージャについては、以下のチュートリアルも参考にしてください。</p>
 
@@ -378,13 +382,40 @@
 
 <p><strong>前提条件 :</strong> HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。</p>
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用するHPCクラスタ構築用スタックのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。</p>
+
+<h1 id="0-hpcクラスタ構築用スタックの概要">0. HPCクラスタ構築用スタックの概要</h1>
+
+<p>本チュートリアルで使用するHPCクラスタ構築用スタックは、クラスタ構築を大きく2つのステップに分けて実行しており、前半はTerraformを使用したOCIレベルのリソース構築フェーズで、後半はTerraformから起動されるAnsibleによるOSレベルのカスタマイズフェーズです。</p>
+
+<p>具体的には、以下のような処理が行われます。</p>
+
+<p>［TerraformによるOCIリソース構築フェーズ］</p>
+
+<ul>
+  <li>VCNと関連するネットワークリソース構築</li>
+  <li>クラスタネットワークと関連リソース構築</li>
+  <li>bastionノードインスタンス構築</li>
+  <li>計算ノードインスタンス構築</li>
+  <li>Ansible関連ソフトウェアインストール</li>
+</ul>
+
+<p>[AnsibleによるOSレベルカスタマイズフェーズ]</p>
+
+<ul>
+  <li>firewalld停止</li>
+  <li>NVMeディスク領域ファイルシステム構築</li>
+  <li>/etc/hostsファイル生成</li>
+  <li>NFSファイル共有環境構築</li>
+  <li>RDMAインタフェース構築</li>
+  <li>Slurm環境構築</li>
+</ul>
 
 <h1 id="1-スタックの作成">1. スタックの作成</h1>
 
 <p>リソース・マネージャでリソースをデプロイする場合、まずそのためのスタックを作成する必要があります。</p>
 
-<p>本章は、マーケットプレースから提供するHPCクラスタ構築用スタックを元に、前述のHPCクラスタ環境を構築するためのスタックを作成します。</p>
+<p>本章は、マーケットプレースから提供するHPCクラスタ構築用スタックを元に、前述のHPCクラスタ環境を構築するためのスタックを作成します。このチュートリアルで使用するHPCクラスタ構築用スタックは、バージョン2.8.0.5です。</p>
 
 <ol>
   <li>
@@ -413,7 +444,7 @@
 
     <p>5.1 <strong>Cluster configuration</strong> フィールド</p>
     <ul>
-      <li><strong>Public SSH key :</strong> HPCクラスタへのログインで使用するSSH公開鍵
+      <li><strong>Public SSH key :</strong> bastionにログインする際使用するSSH秘密鍵に対応する公開鍵
         <ul>
           <li>公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能</li>
         </ul>
@@ -522,7 +553,7 @@
 
     <p><img src="stack_page11.png" alt="画面ショット" /></p>
 
-    <p>この適用が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で15分程度です。</p>
+    <p>この適用が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で20分程度です。</p>
 
     <p>ステータスが <strong>成功</strong> となれば、HPCクラスタのデプロイが完了しています。</p>
   </li>
@@ -550,7 +581,7 @@
 
     <p>計算ノードは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、bastionノードを経由してログインします。</p>
 
-    <p>計算ノードのホスト名は、bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続とインターコネクト用RDMAサブネット接続に使用するIPアドレスに対応するホスト名です。このため、bastionノードから計算ノードにログインする場合、hostfile.tcpファイルに格納されているホスト名を使用します。</p>
+    <p>計算ノードのホスト名は、bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続とクラスタ・ネットワークサブネット接続に使用するIPアドレスに対応するホスト名です。このため、bastionノードから計算ノードにログインする場合、hostfile.tcpファイルに格納されているホスト名を使用します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp 
 inst-ecrs7-massive-coyote
@@ -578,14 +609,14 @@ bastion_ip:/export/cluster  40223744 14131200  26092544  36% /nfs/cluster
   </li>
 </ol>
 
-<h1 id="5-mpiプログラム実行">5. MPIプログラム実行</h1>
+<h1 id="5-mpiプログラム実行2ノード編">5. MPIプログラム実行（2ノード編）</h1>
 
-<p>本章は、MPIプログラムをSlurmを介してバッチジョブとして投入し、構築したHPCクラスタのインターコネクト性能を確認します。</p>
+<p>本章は、MPIプログラムをSlurmを介してバッチジョブとして投入し、構築したHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。</p>
 
-<p>以下のバッチジョブ結果確認から、MPIのPing-Pongで以下の性能が出ていることがわかります。</p>
+<p>ここでは、2ノードのPing-Pong性能を計測しており、以下性能が出ています。</p>
 
 <ul>
-  <li>帯域：約12 GB/s</li>
+  <li>帯域：約12 GB/s（インタフェース物理帯域100 Gbpsに対し96 Gbpsを計測）</li>
   <li>レイテンシ：約1.7 μs</li>
 </ul>
 
@@ -698,9 +729,230 @@ Loading mpi version 2021.3.0
   </li>
 </ol>
 
-<h1 id="6-スタックの破棄">6. スタックの破棄</h1>
+<h1 id="6-計算ノード追加">6. 計算ノード追加</h1>
+
+<p>本章は、構築した2ノードクラスタに計算ノードを2ノード追加して4ノードクラスタに拡張します。</p>
+
+<p>この計算ノード追加は、OCIコンソールから実施する追加2ノード分のOCIリソース構築フェーズと、bastionノードのコマンドラインから実施するAnsibleのOSレベルカスタマイズフェーズを、個別に実行することで行います。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> を選択し、表示される以下画面で、スタックの適用により作成されたクラスタ・ネットワークをクリックします。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、 <strong>編集</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>クラスタ・ネットワークの編集</strong> サイドバーで、 <strong>インスタンス数</strong> を4に変更し <strong>変更の保存</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>クラスタ・ネットワーク・インスタンス・プール</strong> ウィンドウで、左上のステータスが <strong>スケーリング中</strong> → <strong>完了</strong> と遷移したら、計算ノードの追加が完了しています。</p>
+
+    <p><img src="console_page04.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>同じウィンドウ下方の以下 <strong>インスタンス・プール</strong> フィールドで、 <strong>インスタンス数</strong> が4に増加していることを確認します。</p>
+
+    <p><img src="console_page05.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<p>以上で、OCIリソース構築フェーズは完了です。この段階は、追加した計算ノード用インスタンスのデプロイが完了し既存クラスタ・ネットワークに物理的に接続されOSが起動した状態で、未だクラスタ・ネットワークを利用可能な状態になっていません。</p>
+
+<p>次に、AnsibleによるOSレベルカスタマイズを行います。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し、表示される以下画面で、追加された2ノード分のインスタンスのホスト名とIPアドレスを確認します。</p>
+
+    <p><img src="console_page06.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>bastionノードにログインし、Ansibleのインベントリファイル/etc/ansible/hostsの <strong>compute</strong> セクションの最後に、追加された2ノードの記述を以下のように追加します。</p>
+  </li>
+</ol>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="o">[</span>compute]
+   inst-gxosv-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.6.51 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
+   inst-mdu0w-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.6.187 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
+   <span class="c"># Two nodes added from here</span>
+   inst-yzgqv-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.5.203 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
+   inst-jow40-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.5.11 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
+   <span class="c">#</span>
+</code></pre></div></div>
+
+<ol>
+  <li>以下コマンドを実行し、追加された計算ノードに対するAnsibleのOSレベルカスタマイズを起動、最後の <strong>PLAY RECAP</strong> フィールドの出力で <strong>failed</strong> や <strong>unreachable</strong> の項目が無いことで、正常に終了していることを確認します。</li>
+</ol>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="o">&gt;</span> <span class="nv">ANSIBLE_HOST_KEY_CHECKING</span><span class="o">=</span>False ansible-playbook /opt/oci-hpc/playbooks/site.yml
+      :
+      :
+      :
+   PLAY RECAP <span class="k">**********************************************************************************************</span>
+   inst-gxosv-relevant-owl    : <span class="nv">ok</span><span class="o">=</span>86   <span class="nv">changed</span><span class="o">=</span>16   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>59   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
+   inst-jow40-relevant-owl    : <span class="nv">ok</span><span class="o">=</span>85   <span class="nv">changed</span><span class="o">=</span>51   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>56   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
+   inst-mdu0w-relevant-owl    : <span class="nv">ok</span><span class="o">=</span>83   <span class="nv">changed</span><span class="o">=</span>13   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>57   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
+   inst-yzgqv-relevant-owl    : <span class="nv">ok</span><span class="o">=</span>85   <span class="nv">changed</span><span class="o">=</span>51   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>56   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
+   relevant-owl-bastion       : <span class="nv">ok</span><span class="o">=</span>112  <span class="nv">changed</span><span class="o">=</span>21   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>115  <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0
+   <span class="o">&gt;</span>
+</code></pre></div></div>
+<p>以上で、AnsibleのOSレベルカスタマイズフェーズは完了し、4ノードのHPCクラスタが利用可能になります。</p>
+
+<h1 id="7-mpiプログラム実行4ノード編">7. MPIプログラム実行（4ノード編）</h1>
+
+<p>本章は、MPIプログラムをSlurmを介してバッチジョブとして投入し、追加後の4ノードHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。</p>
+
+<p>ここでは、4ノードのAlltoall性能を計測しています。</p>
+
+<ol>
+  <li>
+    <p>バッチジョブスクリプト作成</p>
+
+    <p>以下のバッチジョブ投入用スクリプトをbastionノードのホームディレクトリ以下に作成します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>submit_4nodes.sh
+<span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH -p compute</span>
+<span class="c">#SBATCH -n 4</span>
+<span class="c">#SBATCH -N 4</span>
+<span class="c">#SBATCH -J all_to_all</span>
+<span class="c">#SBATCH -o stdout.%J</span>
+<span class="c">#SBATCH -e stderr.%J</span>
+   
+<span class="c"># Only for BM.Optimized3.36</span>
+<span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+   
+<span class="nb">source</span> /etc/profile.d/modules.sh
+module load intel/mpi/latest
+   
+mpirun IMB-MPI1 <span class="nt">-mem</span> 4 Alltoall 
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>バッチジョブ投入</p>
+
+    <p>作成したスクリプトをバッチジョブとして投入します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> sbatch submit_4nodes.sh 
+Submitted batch job 3
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>バッチジョブ結果確認</p>
+
+    <p>投入したバッチジョブの結果を確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>stderr.3
+Loading mpi version 2021.3.0
+<span class="o">&gt;</span> <span class="nb">cat </span>stdout.3
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c">#    Intel(R) MPI Benchmarks 2021.2, MPI-1 part</span>
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c"># Date                  : Thu Mar 24 04:29:15 2022</span>
+<span class="c"># Machine               : x86_64</span>
+<span class="c"># System                : Linux</span>
+<span class="c"># Release               : 3.10.0-1160.25.1.el7.x86_64</span>
+<span class="c"># Version               : #1 SMP Tue Apr 27 15:52:10 PDT 2021</span>
+<span class="c"># MPI Version           : 3.1</span>
+<span class="c"># MPI Thread Environment: </span>
+
+
+<span class="c"># Calling sequence was: </span>
+
+<span class="c"># IMB-MPI1 -mem 4 Alltoall </span>
+
+<span class="c"># Minimum message length in bytes:   0</span>
+<span class="c"># Maximum message length in bytes:   4194304</span>
+<span class="c">#</span>
+<span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT </span>
+<span class="c"># MPI_Op                         :   MPI_SUM  </span>
+<span class="c"># </span>
+<span class="c"># </span>
+
+<span class="c"># List of Benchmarks to run:</span>
+
+<span class="c"># Alltoall</span>
+
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c"># Benchmarking Alltoall </span>
+<span class="c"># #processes = 2 </span>
+<span class="c"># ( 2 additional processes waiting in MPI_Barrier)</span>
+<span class="c">#----------------------------------------------------------------</span>
+       <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
+            0         1000         0.07         0.07         0.07
+            1         1000         0.65         6.07         3.36
+            2         1000         0.82         6.21         3.51
+            4         1000         0.63         6.11         3.37
+            8         1000         0.68         6.05         3.37
+           16         1000         0.66         6.15         3.41
+           32         1000         0.67         6.15         3.41
+           64         1000         0.75         6.29         3.52
+          128         1000         0.79         6.37         3.58
+          256         1000         0.97         6.69         3.83
+          512         1000         1.03         6.79         3.91
+         1024         1000         1.81         6.31         4.06
+         2048         1000         7.22         7.25         7.24
+         4096         1000         7.90         7.92         7.91
+         8192         1000         8.50         8.55         8.53
+        16384         1000         9.82         9.87         9.85
+        32768         1000        13.08        13.09        13.09
+        65536          640        23.10        23.10        23.10
+       131072          320        30.03        30.50        30.27
+       262144          160        43.79        43.85        43.82
+       524288           80        71.72        71.86        71.79
+      1048576           40       272.44       277.41       274.93
+      2097152           20       520.28       526.08       523.18
+      4194304           10      1002.88      1007.84      1005.36
+
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c"># Benchmarking Alltoall </span>
+<span class="c"># #processes = 4 </span>
+<span class="c">#----------------------------------------------------------------</span>
+       <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
+            0         1000         0.08         0.08         0.08
+            1         1000         3.77         4.16         3.97
+            2         1000         3.62         4.32         3.97
+            4         1000         3.54         4.40         3.98
+            8         1000         3.55         4.40         3.98
+           16         1000         3.60         4.35         3.98
+           32         1000         3.35         4.77         4.06
+           64         1000         3.68         4.61         4.16
+          128         1000         4.17         4.23         4.20
+          256         1000         4.66         5.13         4.87
+          512         1000         4.45         5.63         5.02
+         1024         1000         4.93         5.58         5.23
+         2048         1000         7.70         7.76         7.74
+         4096         1000         8.98         9.09         9.06
+         8192         1000        11.02        11.40        11.23
+        16384         1000        12.88        13.61        13.31
+        32768         1000        20.15        21.55        20.79
+        65536          640        32.60        34.18        33.04
+       131072          320        53.61        58.48        55.11
+       262144          160        99.36       106.92       102.02
+       524288           80       185.47       206.04       194.67
+      1048576           40       406.18       445.43       425.45
+      2097152           20       807.91       919.29       863.22
+      4194304           10      1588.80      1787.67      1688.05
+
+
+<span class="c"># All processes entering MPI_Finalize</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h1 id="8-スタックの破棄">8. スタックの破棄</h1>
 
 <p>本章は、スタックを破棄することで、構築したHPCクラスタを削除します。</p>
+
+<p>以下の手順は、 <strong>計算ノード追加</strong> の手順で追加を実施したかどうかにかかわらず、本チュートリアルで作成したOCI上のリソースをすべて削除します。</p>
 
 <ol>
   <li>
@@ -740,7 +992,7 @@ Loading mpi version 2021.3.0
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-03-17T13:28:49+09:00">March 17, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-04-05T14:46:06+09:00">April 5, 2022</time></p>
 
 
       </footer>
