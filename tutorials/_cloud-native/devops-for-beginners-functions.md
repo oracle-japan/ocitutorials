@@ -1,11 +1,11 @@
 ---
-title: "DevOps を使用して Oracle Functions に CI/CD をしてみよう"
+title: "Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-"
 excerpt: "OCI DevOps を使用して Oracle Functions に対する CI/CD パイプラインを構築します。"
-order: "011"
+order: "013"
 tags: "devops functions"
 layout: single
-date: "2022-03-16"
-lastmod: "2022-03-16"
+date: "2022-04-06"
+lastmod: "2022-04-06"
 ---
 
 OCI DevOps は、OCI 上に CI/CD 環境を構築するマネージドサービスです。このハンズオンでは、Oracle Functions に対する CI/CD パイプラインの構築手順を記します。
@@ -16,10 +16,9 @@ Oracle Functions は、Oracle Cloud Infrastructure(OCI)で提供される、Func
 
 # 前提条件
 
-- クラウド環境
-  - Oracle Cloud のアカウント（Free Trial）を取得済みであること
-- [Oracle Functions ハンズオン - 事前準備](/ocitutorials/cloud-native/functions-for-beginners#事前準備)が完了していること
-- [Oracle Cloud Infrastructure(OCI) DevOps ことはじめ - 動的グループ/ポリシーセットアップ](/ocitutorials/cloud-native/devops-for-commons/#4動的グループポリシー-セットアップ)が完了していること
+- 環境
+  - [OCI DevOps事前準備](/ocitutorials/cloud-native/devops-for-commons/)が完了していること
+  - [Oracle Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
 
 # 全体構成
 
@@ -27,9 +26,13 @@ Oracle Functions は、Oracle Cloud Infrastructure(OCI)で提供される、Func
 
 ![image01](image01.png)
 
-# 手順
+# 事前準備の流れ
 
-## OCIR の作成
+* 1.OCIR の作成
+* 2.ハンズオンに使用する資材のセットアップ
+* 3.アプリケーションの動作確認
+
+## 1.OCIR の作成
 
 Oracle Functions のコンテナイメージの保存先である OCIR(Oracle Cloud Infrastructure Registry)を作成します。OCI Console 左上のハンバーガーメニューから、**開発者サービス** > **コンテナとアーティファクト** > **コンテナ・レジストリ**と選択します。
 
@@ -46,7 +49,7 @@ Oracle Functions のコンテナイメージの保存先である OCIR(Oracle Cl
 
 ![image06](image06.png)
 
-## ハンズオンに使用する資材のセットアップ
+## 2.ハンズオンに使用する資材のセットアップ
 
 Cloud Shell を開きます。OCI Console 右上の **Cloud Shell** を押します。
 
@@ -69,26 +72,25 @@ unzip devops-template-for-oracle-functions.zip
 
 ```bash
 .
-├── build_spec.yaml [OCI DevOps のビルド・パイプライン制御ファイル]
-└── fn-hello [Oracle Functions にデプロイするアプリケーションコード]
-    ├── func.yaml
-    ├── pom.xml
-    └── src
-        ├── main
-        │   └── java
-        │       └── com
-        │           └── example
-        │               └── fn
-        │                   └── HelloFunction.java
-        └── test
-            └── java
-                └── com
-                    └── example
-                        └── fn
-                            └── HelloFunctionTest.java
+├── README.md
+├── build_spec.yaml
+├── fn-hello
+│   ├── func.yaml
+│   ├── mvnw
+│   ├── mvnw.cmd
+│   ├── pom.xml
+│   ├── src
+│   │   ├── main
+│   │   │   └── java
+│   │   │       └── com
+│   │   │           └── example
+│   │   │               └── fn
+│   │   │                   └── HelloFunction.java
+└── prepare
+    └── prepare.sh
 ```
 
-## アプリケーションの動作確認
+## 3.アプリケーションの動作確認
 
 アプリケーションを手動で Oracle Functions にデプロイして、動作確認をします。まずは、アプリケーションを作成します。
 
@@ -125,48 +127,79 @@ fn invoke oci-devops-handson-app fn-hello
 Hello from Function: 1.0
 ```
 
-## DevOps 環境構築
+# 全体の流れ
+
+1. DevOps環境構築
+2. パイプラインの実行
+3. デプロイの確認
 
 ここでは、Oracle Functions に対して、CI/CD を実現するためのパイプラインを構築します。
 
-### ポリシーの作成
+# 1. DevOps環境構築
 
-OCI DevOps から Oracle Functions 関連のリソースを扱うために必要なポリシーを作成します。[Oracle Cloud Infrastructure(OCI) DevOps ことはじめ - 動的グループ/ポリシーセットアップ](/ocitutorials/cloud-native/devops-for-commons/#4動的グループポリシー-セットアップ)で作成した動的グループに対して、以下のポリシーを付与します。
+ここでは、DevOpsの環境構築を行います。  
 
-```txt
-Allow dynamic-group OCI_DevOps_Dynamice_Group to manage functions-family in compartment id <compartment-id>
+## 1-1.ポリシーの作成
+
+ハンズオン資材に含まれているポリシー設定用のスクリプトを実行します。
+
+```sh
+chmod +x ./devops-template-for-oracle-functions/prepare/prepare.sh
+```
+```sh
+sh ./devops-template-for-oracle-functions/prepare/prepare.sh
+```
+***コマンド結果***
+```sh
+ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+{
+  "data": {
+    "compartment-id": "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "defined-tags": {
+      "Oracle-Tags": {
+        "CreatedBy": "oracleidentitycloudservice/xxxxxxxxxxx@xxxxx",
+        "CreatedOn": "2021-11-18T07:41:49.264Z"
+      }
+    },
+    "description": "OCI_DevOps_Dynamic_Group",
+    "freeform-tags": {},
+    "id": "ocid1.dynamicgroup.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "inactive-status": null,
+    "lifecycle-state": "ACTIVE",
+    "matching-rule": "Any {resource.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}, {instance.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}",
+    "name": "OCI_DevOps_Dynamic_Group",
+    "time-created": "2021-11-18T07:41:49.350000+00:00"
+  },
+  "etag": "5f604e055e624ed3f993aafb2052b775bd37da0e"
+}
+{
+  "data": {
+    "compartment-id": "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "defined-tags": {
+      "Oracle-Tags": {
+        "CreatedBy": "oracleidentitycloudservice/xxxxxxxxxxx@xxxxx",
+        "CreatedOn": "2021-11-18T07:41:50.746Z"
+      }
+    },
+    "description": "OCI_DevOps_Policy",
+    "freeform-tags": {},
+    "id": "ocid1.policy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "inactive-status": null,
+    "lifecycle-state": "ACTIVE",
+    "name": "OCI_DevOps_Policy",
+    "statements": [
+      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-resources in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    ],
+    "time-created": "2021-11-18T07:41:50.880000+00:00",
+    "version-date": null
+  },
+  "etag": "31c9339700c6132a1b6205df041ad52fcf66be51"
+}
 ```
 
-### プロジェクトの作成
+これでポリシーの設定は完了です。  
 
-OCI Console 左上のハンバーガーメニューから、**開発者サービス** > **DevOps** > **プロジェクト**と選択します。
-
-![image02](image02.png)
-
-**DevOps プロジェクトの作成**を押します。
-
-![image03](image03.png)
-
-以下のように入力し、DevOps プロジェクトを作成します。
-
-- プロジェクト名: oci-devops-functions-handson
-- トピック: oci-devops-handson([OCI DevOps ことはじめ](/ocitutorials/cloud-native/devops-for-commons/#2oci-notifications-セットアップ)で作成したトピック)
-
-ロギングを有効化するために、**ログの有効化**を押します。
-
-![image45](image45.png)
-
-ログの有効化フラグをオンにします。
-
-![image46](image46.png)
-
-以下のように入力し、ログを有効化します。（指定のない項目はデフォルトのままとしてください）
-
-- ログ・グループ
-  - 名前: DevOps_Handson_Log_Group
-- ログ名: oci_devops_functions_handson_all
-
-### コード・リポジトリ の作成
+## 1-2.コード・リポジトリ の作成
 
 アプリケーションコードのバージョン管理を行うためのリポジトリを作成します。OCI Console 左上のハンバーガーメニューから、**開発者サービス** > **DevOps** > **プロジェクト**と選択します。
 
@@ -233,7 +266,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image16](image16.png)
 
-### ビルド・パイプラインの作成
+## 1-3.ビルド・パイプラインの作成
 
 作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**ビルド・パイプライン**を選択します。
 
@@ -293,7 +326,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image26](image26.png)
 
-### 環境の作成
+## 1-4.環境の作成
 
 ビルド・パイプラインで生成されたアーティファクトの配布先（=環境）を作成します。
 まずは、作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**環境**を選択します。
@@ -316,7 +349,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 - アプリケーション: oci-devops-handson-app
 - ファンクション: fn-hello
 
-### デプロイメント・パイプラインの作成
+## 1-5.デプロイメント・パイプラインの作成
 
 作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**デプロイメント・パイプライン**を選択します。
 
@@ -348,7 +381,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image37](image37.png)
 
-### ビルド・パイプラインとデプロイメント・パイプラインの連携設定
+## 1-6.ビルド・パイプラインとデプロイメント・パイプラインの連携設定
 
 ビルド・パイプラインとデプロイメント・パイプラインの連携設定を行います。作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**ビルド・パイプライン**を選択します。
 
@@ -369,7 +402,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image40](image40.png)
 
-### トリガーの作成
+## 1-7.トリガーの作成
 
 ビルド・パイプラインを実行するためのトリガーを作成します。作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**トリガー**を選択します。
 
@@ -390,7 +423,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image43](image43.png)
 
-## パイプラインの実行
+# 2.パイプラインの実行
 
 前の手順までで、アプリケーションコードに対する変更がコード・リポジトリの更新（git push）をトリガーとし自動的に Oracle Functions へ反映される CI/CD パイプラインの構築ができたので、実際にソースコードを修正しコード・リポジトリにその変更を反映したいと思います。
 
@@ -461,7 +494,7 @@ DevOps 上のビルド履歴から、ビルド・パイプラインが実行さ�
 
 ![image44](image44.png)
 
-## デプロイの確認
+# 3.デプロイの確認
 
 デプロイメント・パイプラインの成功が確認できた後に、Oracle Functions に変更が反映されているかどうかを確認してみましょう。
 
