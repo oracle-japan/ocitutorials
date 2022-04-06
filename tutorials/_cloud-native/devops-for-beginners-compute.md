@@ -193,7 +193,7 @@ unzip compute%2Foci-devops-compute.zip
 
 ### 2-2.ポリシーの設定
 
-ここでは、このハンズオンで利用するポリシーの設定を行います。  
+ここでは、[事前準備](/ocitutorials/cloud-native/devops-for-commons/)に追加で必要なポリシーの設定を行います。  
 
 #### 2-2-1 OCI DevOpsで利用する動的グループ
 

@@ -141,6 +141,15 @@ Hello from Function: 1.0
 
 ## 1-1.ポリシーの作成
 
+ここでは、[事前準備](/ocitutorials/cloud-native/devops-for-commons/)に追加で必要となるポリシーの設定を行います。  
+
+追加で必要となるポリシーは以下となります。
+
+ポリシー|説明
+-|-
+Allow dynamic-group OCI_DevOps_Dynamice_Group to manage functions-family in compartment id コンパートメントOCID|OCI DevOpsがOracle Functionsを管理できるようにするポリシー
+
+
 ハンズオン資材に含まれているポリシー設定用のスクリプトを実行します。
 
 ```sh
@@ -158,26 +167,6 @@ ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     "defined-tags": {
       "Oracle-Tags": {
         "CreatedBy": "oracleidentitycloudservice/xxxxxxxxxxx@xxxxx",
-        "CreatedOn": "2021-11-18T07:41:49.264Z"
-      }
-    },
-    "description": "OCI_DevOps_Dynamic_Group",
-    "freeform-tags": {},
-    "id": "ocid1.dynamicgroup.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "inactive-status": null,
-    "lifecycle-state": "ACTIVE",
-    "matching-rule": "Any {resource.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}, {instance.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}",
-    "name": "OCI_DevOps_Dynamic_Group",
-    "time-created": "2021-11-18T07:41:49.350000+00:00"
-  },
-  "etag": "5f604e055e624ed3f993aafb2052b775bd37da0e"
-}
-{
-  "data": {
-    "compartment-id": "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "defined-tags": {
-      "Oracle-Tags": {
-        "CreatedBy": "oracleidentitycloudservice/xxxxxxxxxxx@xxxxx",
         "CreatedOn": "2021-11-18T07:41:50.746Z"
       }
     },
@@ -188,7 +177,7 @@ ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     "lifecycle-state": "ACTIVE",
     "name": "OCI_DevOps_Policy",
     "statements": [
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-resources in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      "Allow dynamic-group OCI_DevOps_Dynamice_Group to manage functions-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     ],
     "time-created": "2021-11-18T07:41:50.880000+00:00",
     "version-date": null

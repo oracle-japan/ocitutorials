@@ -4,6 +4,8 @@ excerpt: "OCI DevOpsでコンテナアプリケーション開発におけるCI/
 layout: single
 order: "012"
 tags:
+date: "2022-04-06"
+lastmod: "2022-04-06"
 ---
 
 OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。ここでは、Oracle Container Engine for Kubernetes(OKE)サービスを利用したKubernetesクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。  
