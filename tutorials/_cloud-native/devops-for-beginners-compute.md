@@ -544,8 +544,6 @@ Upload method|`Cloud Shell`を選択
 入力後、「Lanunch Cloud Shell」ボタンをクリックして、「コピー」をクリックします。
 コピーしたコマンドを起動したCloud Shell上にペーストします。  
 
-ここで入力したデプロイメント構成ファイルである`deploy_spec.yaml`については、後続の手順で解説します。  
-
 ![](2-28.png)
 
 「./＜file-name＞」を「./oci-devops-compute/deploy_spec.yaml」に書き換えて、Enterキーを押します。
@@ -965,7 +963,7 @@ OCI DevOpsで利用する仮想マシン上で、コード・リポジトリか�
 
 [Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。  
 
-`oke-handson`ディレクトリに移動します。  
+`oci-devops-handson`ディレクトリに移動します。  
 
 ```sh
 cd oci-devops-handson
