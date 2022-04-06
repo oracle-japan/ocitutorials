@@ -17,6 +17,8 @@ lastmod: "2022-04-06"
 
 <!-- ## 事前準備編 -->
 
+## 初級編
+
 <!-- + **[Oracle Cloud Infrastructure(OCI) DevOps事前準備](/ocitutorials/cloud-native/devops-for-commons/)**  
     OCI DevOpsを利用するための事前準備を行います。まずはここから始めましょう【所要時間:約30分】 -->
 
