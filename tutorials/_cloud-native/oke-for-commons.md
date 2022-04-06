@@ -2,7 +2,7 @@
 title: "Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう"
 excerpt: "Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OKEクラスターを作成します。まずはここから始めましょう。"
 layout: single
-order: "011"
+order: "014"
 tags:
 ---
 
