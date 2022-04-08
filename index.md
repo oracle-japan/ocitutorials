@@ -75,8 +75,11 @@ OCIの各テナントには、「Always Free」と呼ばれる、永久無償で
 - **[プライベートDNSを使って名前解決をする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/private-dns/)**  
   インスタンスなどに独自の名前をつけることで、一目でわかりやすい名前解決を行えます。
 
-- **[Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編) - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474289/email-delivery%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E5%A4%96%E9%83%A8%E3%81%B8%E3%81%AE%E3%83%A1%E3%83%BC%E3%83%AB%E9%80%81%E4%BF%A1-%E3%81%9D%E3%81%AE1-%E9%85%8D%E4%BF%A1%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E7%B7%A8-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
+- **[Email Deliveryを利用した外部へのメール送信(基礎編) - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/sending-emails-1/)**  
   クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
+
+- **[Email Deliveryを利用した外部へのメール送信(応用編) - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/sending-emails-2/)**  
+  Email Deliveryを利用した外部へのメール送信(基礎編)でSMTP認証を設定しましたが、それだけでは迷惑メールとみなされてしまう可能性があります。そこで今回のチュートリアルでは送信ドメイン認証であるSPFとDKIMの設定を行い、メールの到達可能性を向上させます。
 
 - **[GPUインスタンスでディープラーニング - Oracle Cloud Infrastructureアドバンスド](https://community.oracle.com/tech/welcome/discussion/4474290/gpu%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%A7%E3%83%87%E3%82%A3%E3%83%BC%E3%83%97%E3%83%A9%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89)**  
   クラウドを利用すると、最新のGPUで簡単にディープラーニングのトレーニング環境を構築することができます。OCIの事前セットアップ済イメージを使って環境を構築し、PyTorch や Tensorflow などの人気のフレームワークを動かしてみましょう。
