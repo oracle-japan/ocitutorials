@@ -194,7 +194,7 @@ ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ![image02](image02.png)
 
-[プロジェクトの作成](#プロジェクトの作成)で作成したプロジェクト（**oci-devops-functions-handson**）を選択します。
+[事前準備](/ocitutorials/cloud-native/devops-for-commons/)で作成したプロジェクト（**oci-devops-handson**）を選択します。
 
 ![image10](image10.png)
 
@@ -257,7 +257,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ## 1-3.ビルド・パイプラインの作成
 
-作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**ビルド・パイプライン**を選択します。
+作成した DevOps プロジェクト（oci-devops-handson）の詳細画面で**ビルド・パイプライン**を選択します。
 
 ![image17](image17.png)
 
@@ -283,7 +283,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image22](image22.png)
 
-構成で、以下のように入力しステージを追加します。（指定のない項目は、デフォルトのまま進めてください）
+構成で、以下のように入力し`追加`をクリックします。（指定のない項目は、デフォルトのまま進めてください）
 
 - ステージ名: build_stage
 - ビルド仕様ファイル・パス: build_spec.yaml
@@ -303,7 +303,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image25](image25.png)
 
-構成で以下のように入力、ステージを追加します。（指定のない項目は、デフォルトのまま進めてください）
+構成で以下のように入力し、`追加`をクリックします。（指定のない項目は、デフォルトのまま進めてください）
 
 - ステージ名: deliver_artifact
 - アーティファクトの作成
@@ -318,7 +318,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 ## 1-4.環境の作成
 
 ビルド・パイプラインで生成されたアーティファクトの配布先（=環境）を作成します。
-まずは、作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**環境**を選択します。
+まずは、作成した DevOps プロジェクト（oci-devops-handson）の詳細画面で**環境**を選択します。
 
 ![image27](image27.png)
 
@@ -340,7 +340,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ## 1-5.デプロイメント・パイプラインの作成
 
-作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**デプロイメント・パイプライン**を選択します。
+作成した DevOps プロジェクト（oci-devops-handson）の詳細画面で**デプロイメント・パイプライン**を選択します。
 
 ![image33](image33.png)
 
@@ -372,7 +372,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ## 1-6.ビルド・パイプラインとデプロイメント・パイプラインの連携設定
 
-ビルド・パイプラインとデプロイメント・パイプラインの連携設定を行います。作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**ビルド・パイプライン**を選択します。
+ビルド・パイプラインとデプロイメント・パイプラインの連携設定を行います。作成した DevOps プロジェクト（oci-devops-handson）の詳細画面で**ビルド・パイプライン**を選択します。
 
 ![image17](image17.png)
 
@@ -384,7 +384,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image39](image39.png)
 
-構成で以下のように入力し、ステージを追加します。
+構成で以下のように入力し、`追加`をクリックします。
 
 - ステージ名: connect_deployment_pipeline
 - デプロイメント・パイプラインの選択: deployment_pipeline
@@ -393,7 +393,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ## 1-7.トリガーの作成
 
-ビルド・パイプラインを実行するためのトリガーを作成します。作成した DevOps プロジェクト（oci-devops-functions-handson）の詳細画面で**トリガー**を選択します。
+ビルド・パイプラインを実行するためのトリガーを作成します。作成した DevOps プロジェクト（oci-devops-handson）の詳細画面で**トリガー**を選択します。
 
 ![image41](image41.png)
 
@@ -401,7 +401,7 @@ Username for 'https://devops.scmservice.ap-tokyo-1.oci.oraclecloud.com'
 
 ![image42](image42.png)
 
-以下のように入力し、トリガーを作成します。（指定のない項目は、デフォルトのまま進めてください）
+以下のように入力し、`作成`をクリックします。（指定のない項目は、デフォルトのまま進めてください）
 
 - 名前: build_pipeline_trigger
 - ソース接続: OCI コード・リポジトリ
@@ -496,3 +496,90 @@ fn invoke oci-devops-handson-app fn-hello
 ```bash
 Hello from Function: 2.0
 ```
+
+# 4.【オプション】ビルド構成ファイルとデプロイメント構成ファイルの解説
+
+ここでは、ハンズオンの中で利用したビルド構成ファイル(`build_spec.yaml`)の解説を行います。  
+
+今回のハンズオンでは、サンプルアプリケーションの中に予めビルド構成ファイル(`build_spec.yaml`)を用意していました。　　
+このファイルは、OCI DevOpsでビルドステップを定義する際に必ず必要になるファイルです。  
+
+ハンズオンの中では、[1-3.ビルド・パイプラインの作成](#1-3ビルドパイプラインの作成)内の手順で利用しました。
+
+ファイルは以下のようになっています。  
+
+```yaml
+version: 0.1
+component: build
+timeoutInSeconds: 10000
+shell: bash
+env:
+  variables:
+    function_name: fn-hello
+    function_version: 0.0.2
+  exportedVariables:
+    - tag
+
+steps:
+  - type: Command
+    name: "Docker image build"
+    timeoutInSeconds: 4000
+    command: |
+      cd fn-hello
+      fn build
+      docker tag ${function_name}:${function_version} ${function_name}
+      tag=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failure successfully handled"
+        timeoutInSeconds: 60
+
+outputArtifacts:
+  - name: fn-hello-image
+    type: DOCKER_IMAGE
+    location: fn-hello
+```
+
+今回はビルドステップ内で行うタスクは1つだけになっており、
+
+```yaml
+steps:
+  - type: Command
+    name: "Docker image build"
+    timeoutInSeconds: 4000
+    command: |
+      cd fn-hello
+      fn build
+      docker tag ${function_name}:${function_version} ${function_name}
+      tag=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failure successfully handled"
+        timeoutInSeconds: 60
+```
+
+の部分で定義しています。
+
+このステップでは、主に`fn build`コマンドによるFunctions(コンテナイメージ)のビルドとタグ付けをおこなっています。
+
+このビルドステップでビルドされた成果物を
+
+
+```yaml
+outputArtifacts:
+  - name: fn-hello-image
+    type: DOCKER_IMAGE
+    location: fn-hello
+```
+
+の部分で`fn-hello-image`という名前のバイナリファイルとして出力しています。  
+
+この`fn-hello-image`という成果物を[1-3.ビルド・パイプラインの作成](#1-3ビルドパイプラインの作成)の手順内の`ビルド構成/結果アーティファクト名`で指定し、アーティファクト・レポジトリにアップロードしました。　　
+
+以上で、ビルド構成ファイル(`build_spec.yaml`)の解説は終了です。  
+
+**ビルド構成ファイルについて**  
+ビルド構成ファイルの詳細については、[こちらのドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/devops/using/build_specs.htm)をご確認ください。 
+{: .notice--info}

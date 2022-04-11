@@ -14,7 +14,7 @@ OCI DevOps は、OCI 上に CI/CD 環境を構築するマネージドサービ�
 --------
 
 - 環境
-  - [事前準備](/ocitutorials/cloud-native/devops-for-commons/)が完了していること
+  - [OCI DevOps事前準備](/ocitutorials/cloud-native/devops-for-commons/)が完了していること
 
 全体構成
 --------
@@ -599,7 +599,7 @@ OCI DevOpsでセットアップしたアOCIRとアーティファクト・レジ
 
 |-
 項目|入力内容
-名前|artifact-repository
+名前|deployment_spec
 タイプ|インスタンス・グループ・デプロイメント構成
 アーティファクト・ソース|アーティファクト・レジストリ・レポジトリ
 
@@ -621,7 +621,7 @@ OCI DevOpsでセットアップしたアOCIRとアーティファクト・レジ
 
 |-
 項目|入力内容
-名前|artifact-repository
+名前|devops-demo-app-jar
 タイプ|汎用アーティファクト
 アーティファクト・ソース|アーティファクト・レジストリ・レポジトリ
 
@@ -743,7 +743,7 @@ OCI DevOpsで利用する仮想マシン上で、コード・リポジトリか�
 
 ![](2-49.png)
 
-「artifact-repository」にチェックを入れます。
+「devops-demo-app-jar」にチェックを入れます。
 
 ![](2-50.png)
 
@@ -806,7 +806,7 @@ OCI DevOpsで利用する仮想マシン上で、コード・リポジトリか�
 
 ![](2-59.png)をクリックします。  
 
-`artifact-repository`を選択します。  
+`deployment_spec`を選択します。  
 
 ![](2-60.png)
 
@@ -814,7 +814,7 @@ OCI DevOpsで利用する仮想マシン上で、コード・リポジトリか�
 
 その下部の![](2-59.png)をクリックします。  
 
-`artifact-repository`を選択します。 
+`devops-demo-app-jar`を選択します。 
 
 ![](2-62.png)
 
@@ -953,8 +953,7 @@ OCI DevOpsで利用する仮想マシン上で、コード・リポジトリか�
 
 以上で、トリガーの作成は完了です。
 
-4.パイプラインの実行
----------------------------------
+## 4.パイプラインの実行
 
 前の手順までで、アプリケーションコードに対する変更がコード・リポジトリの更新（git push）をトリガーとし自動的にComputeへデプロイするCI/CD パイプラインの構築ができたので、動作確認をします。　　
 
@@ -1001,7 +1000,7 @@ git push
 
 次に、「DevOpsプロジェクト・リソース」にある「ビルド履歴」をクリックします。 
 
-![](4-1.jpg)
+![](4-1.png)
 
 ビルド履歴の一覧に先ほどのgit pushでトリガされた履歴が表示されます。  
 
@@ -1009,7 +1008,7 @@ git push
 
 次に、「DevOpsプロジェクト・リソース」にある「デプロイメント」をクリックします。
 
-![](4-3.jpg)
+![](4-3.png)
 
 以下のように、ステータスが「成功」になるまで、待機します。(しばらく時間がかかります)
 
@@ -1030,3 +1029,133 @@ http://146.123.xxx.xxx:8080
 
 以上で、このハンズオンは終了です。  
 お疲れ様でした！
+
+## 5.【オプション】ビルド構成ファイルとデプロイメント構成ファイルの解説
+
+ここでは、ハンズオンの中で利用したビルド構成ファイル(`build_spec.yaml`)とデプロイメント構成ファイル(`deploy_spec.yaml`)の解説を行います。  
+### 5-1 ビルド構成ファイル(`build_spec.yaml`)の解説
+
+今回のハンズオンでは、サンプルアプリケーションの中に予めビルド構成ファイル(`build_spec.yaml`)を用意していました。　　
+このファイルは、OCI DevOpsでビルドステップを定義する際に必ず必要になるファイルです。  
+
+ハンズオンの中では、[3-1 CIパイプラインの構築](#3-1-ciパイプラインの構築)内の手順で利用しました。
+
+ファイルは以下のようになっています。  
+
+```yaml
+version: 0.1
+component: build                    
+timeoutInSeconds: 10000             
+runAs: root                         
+shell: bash                                  
+   
+steps:
+  - type: Command
+    name: "Maven Build"
+    command: |
+      mvn package
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured Maven Build"
+        timeoutInSeconds: 10000
+        runAs: root
+
+outputArtifacts:
+  - name: handson_jar
+    type: BINARY
+    location: ${OCI_PRIMARY_SOURCE_DIR}/target/devops-demo-app-1.0.jar
+```
+
+今回はビルドステップ内で行うタスクは1つだけになっており、
+
+```yaml
+steps:
+  - type: Command
+    name: "Maven Build"
+    command: |
+      mvn package
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured Maven Build"
+        timeoutInSeconds: 10000
+        runAs: root
+```
+
+の部分で定義しています。
+
+このステップでは`mvn package`コマンドを叩いて、ビルドを行っています。  
+
+このビルドステップで出力された成果物(今回は`target/devops-demo-app-1.0.jar`に出力されます)を
+
+
+```yaml
+outputArtifacts:
+  - name: handson_jar
+    type: BINARY
+    location: ${OCI_PRIMARY_SOURCE_DIR}/target/devops-demo-app-1.0.jar
+```
+
+の部分で`handson_jar`という名前のバイナリファイルとして出力しています。  
+
+この`handson_jar`という成果物を[3-1 CIパイプラインの構築](#3-1-ciパイプラインの構築)の手順内の`ビルド構成/結果アーティファクト名`で指定し、アーティファクト・レポジトリにアップロードしました。　　
+
+以上で、ビルド構成ファイル(`build_spec.yaml`)の解説は終了です。  
+
+**ビルド構成ファイルについて**  
+ビルド構成ファイルの詳細については、[こちらのドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/devops/using/build_specs.htm)をご確認ください。 
+{: .notice--info}
+
+### 5-2 デプロイメント構成ファイル(`deploy_spec.yaml`)の解説
+
+今回のハンズオンでは、サンプルアプリケーションの中に予めデプロイメント構成ファイル(`deploy_spec.yaml`)を用意していました。  
+このファイルは、コンピュートインスタンスにデプロイする場合のみ必要になるファイルです。　　
+
+ハンズオンの中では、[2-3-4 アーティファクト・レジストリの作成とデプロイメント構成ファイルの登録](#2-3-4-アーティファクトレジストリの作成とデプロイメント構成ファイルの登録)でアーティファクト・レポジトリにアップロードし、[3-1 CDパイプラインの構築](#3-2-cdパイプラインの構築)内の手順で利用しました。  
+
+ファイルは以下のようになっています。  
+
+```yaml
+version: 1.0
+component: deployment
+files:  
+  - source: /
+    destination: /tmp/
+steps:
+  - stepType: Command
+    name: Start Application
+    command:  nohup java -jar /tmp/devops-demo-app-1.0.jar &
+    timeoutInSeconds: 600
+```
+
+今回は、デプロイメントステップは一つのみとなっており、
+
+```yaml
+steps:
+  - stepType: Command
+    name: Start Application
+    command:  nohup java -jar /tmp/devops-demo-app-1.0.jar &
+    timeoutInSeconds: 600
+```
+
+の部分で定義しています。  
+
+このデプロイメントステップでは、`nohup java -jar /tmp/devops-demo-app-1.0.jar &`コマンドでアプリケーション(Jarファイル)をバックグラウンド実行しています。  
+
+また、
+
+```yaml
+files:  
+  - source: /
+    destination: /tmp/
+```
+
+に着目すると、`source: /`は指定したアーティファクト・レポジトリに格納された成果物(`/`配下)を全てダウンロードしており、
+`destination: /tmp/`によって、デプロイ対象のコンピュートインスタンスの`tmp`ディレクトリに配置しています。  
+
+以上で、デプロイメント構成ファイル(`deploy_spec.yaml`)の解説は終了です。  
+
+**デプロイメント構成ファイルについて**  
+デプロイメント構成ファイルの詳細については、[こちらのドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/devops/using/deployment_specs.htm)をご確認ください。 
+{: .notice--info}

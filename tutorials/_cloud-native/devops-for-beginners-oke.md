@@ -19,7 +19,7 @@ Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で�
 前提条件
 --------
 - 環境
-  - [事前準備](/ocitutorials/cloud-native/devops-for-commons/)が完了していること
+  - [OCI DevOps事前準備](/ocitutorials/cloud-native/devops-for-commons/)が完了していること
 
 全体構成
 --------
@@ -183,29 +183,29 @@ NAME          STATUS   ROLES   AGE     VERSION
 起動後、以下コマンドを実行します。
 
 ```sh
-wget https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/oci-devops-handson/o/oke%2Foracle-developer-days-2021-ocidevops-hol.zip
+wget https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/oci-devops-handson/o/oke%2Foci-devops-oke.zip
 ```
 ***コマンド結果***
 ```sh
---2021-12-06 07:41:06--  https://objectstorage.uk-london-1.oraclecloud.com/p/NHrjAcamTrUsDXrJybmjKYxDdEH5qus9HMDlnh9lGRIp0GOELTK-wScn3aAehiMX/n/orasejapan/b/devday2021/o/oracle-developer-days-2021-ocidevops-hol.zip
+--2021-12-06 07:41:06--  https://objectstorage.uk-london-1.oraclecloud.com/p/NHrjAcamTrUsDXrJybmjKYxDdEH5qus9HMDlnh9lGRIp0GOELTK-wScn3aAehiMX/n/orasejapan/b/devday2021/o/oci-devops-oke.zip
 Resolving objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)... 134.70.60.1, 134.70.64.1, 134.70.56.1
 Connecting to objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)|134.70.60.1|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 1112595 (1.1M) [application/x-zip-compressed]
-Saving to: ‘oke%2Foracle-developer-days-2021-ocidevops-hol.zip’
+Saving to: ‘oke%2Foci-devops-oke.zip’
 
 100%[=======================================================================================================>] 1,112,595   3.29MB/s   in 0.3s   
 
-2021-12-06 07:41:06 (3.29 MB/s) - ‘oke%2Foracle-developer-days-2021-ocidevops-hol.zip’ saved [1112595/1112595]
+2021-12-06 07:41:06 (3.29 MB/s) - ‘oke%2Foci-devops-oke.zip’ saved [1112595/1112595]
 ```
 
 ダウンロードしたzipファイルを解凍します。
 
 ```sh
-unzip oke%2Foracle-developer-days-2021-ocidevops-hol.zip
+unzip oke%2Foci-devops-oke.zip
 ```
 
-「oracle-developer-days-2021-ocidevops-hol」というディレクトリがあることを確認します。
+「oci-devops-oke」というディレクトリがあることを確認します。
 
 4.ポリシーの設定
 ---------------------------------
@@ -224,13 +224,13 @@ Allow dynamic-group OCI_DevOps_Dynamic_Group_OKE to manage cluster-family in com
 Cloud Shellを起動し、以下のコマンドを実行します。  
 
 ```sh
-chmod +x oracle-developer-days-2021-ocidevops-hol/prepare/prepare.sh
+chmod +x oci-devops-oke/prepare/prepare.sh
 ```
 
 スクリプトを実行します。  
 
 ```sh
-./oracle-developer-days-2021-ocidevops-hol/prepare/prepare.sh
+./oci-devops-oke/prepare/prepare.sh
 ```
 
 ***コマンド結果***
@@ -414,13 +414,13 @@ Unpacking objects: 100% (2/2), done.
 ls
 ```
 ```sh
-oci-devops-handson  oracle-developer-days-2021-ocidevops-hol  oracle-developer-days-2021-ocidevops-hol.zip
+oci-devops-handson  oci-devops-oke  oke%2Foci-devops-oke.zip
 ```
 
 ダウンロードしたサンプルコードを「oci-devops-handson」ディレクトリにコピーします。
 
 ```sh
-cp -R oracle-developer-days-2021-ocidevops-hol/* ./oci-devops-handson
+cp -R oci-devops-oke/* ./oci-devops-handson
 ```
 
 コミットしてからプッシュします。
@@ -560,7 +560,7 @@ Cloud Shellに戻って、クローンしたサンプルコードにある「dep
 cd ~
 ```
 ```sh
-vim ./oracle-developer-days-2021-ocidevops-hol/deploy.yaml
+vim ./oci-devops-oke/deploy.yaml
 ```
 ```sh
 apiVersion: apps/v1 
@@ -606,14 +606,14 @@ spec:
 
 ![](1-067.png)
 
-「./＜file-name＞」を「./oracle-developer-days-2021-ocidevops-hol/deploy.yaml」に書き換えて、Enterキーを押します。
+「./＜file-name＞」を「./oci-devops-oke/deploy.yaml」に書き換えて、Enterキーを押します。
 
 ```sh
 oci artifacts generic artifact upload-by-path \
 >   --repository-id ocid1.artifactrepository.oc1.xx-xxxxxx-1.0.amaaaaaassl65iqaluitbpvjd5inibwke4axtb7l4so6jgvsywlh5m2ohgca \
 >   --artifact-path deploy.yaml \
 >   --artifact-version 1 \
->   --content-body ./oracle-developer-days-2021-ocidevops-hol/deploy.yaml #file-nameから変更します。
+>   --content-body ./oci-devops-oke/deploy.yaml #file-nameから変更します。
 {
   "data": {
     "artifact-path": "deploy.yaml",
