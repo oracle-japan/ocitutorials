@@ -1109,4 +1109,158 @@ http://＜EXTERNAL-IP＞/content.html
 
 以上で、デプロイの確認は完了です。
 
-コード変更からデプロイまでの一連の流れを自動化することができました。
+コード変更からデプロイまでの一連の流れを自動化することができました。  
+
+9.【オプション】ビルド構成ファイルの解説
+------------------
+
+ここでは、ハンズオンの中で利用したビルド構成ファイル(`build_spec.yaml`)の解説を行います。  
+
+今回のハンズオンでは、サンプルアプリケーションの中に予めビルド構成ファイル(`build_spec.yaml`)を用意していました。  
+
+このファイルは、OCI DevOpsでビルドステップを定義する際に必ず必要になるファイルです。  
+
+ハンズオンの中では、[5.ビルド・パイプライン](#5ビルドパイプライン)内の手順で利用しました。
+
+ファイルは以下のようになっています。  
+
+```yaml
+version: 0.1
+component: build                    
+timeoutInSeconds: 10000             
+runAs: root                         
+shell: bash                        
+env:  
+  exportedVariables:
+    - BUILDRUN_HASH               
+
+steps:
+  - type: Command
+    name: "Export variables"
+    timeoutInSeconds: 40
+    command: |
+      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+      echo "BUILDRUN_HASH: " ${BUILDRUN_HASH}
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 40
+        runAs: root
+  - type: Command
+    name: "Docker Build"
+    command: |
+      docker build -t handson_image .
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured docker build"
+        timeoutInSeconds: 60
+        runAs: root
+  - type: Command
+    name: "Trivy Image Scan"
+    timeoutInSeconds: 180
+    command: |
+      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.21.0
+      trivy image handson_image
+    onFailure:
+      - type: Command
+        command: |
+          echo "Trivy Scan Error"
+        timeoutInSeconds: 40
+        runAs: root
+
+outputArtifacts:
+  - name: handson_image
+    type: DOCKER_IMAGE
+    location: handson_image:latest
+```
+
+今回はビルドステップ内で行うタスクは3つになっています。
+
+まず最初のステップは、
+
+```yaml
+  - type: Command
+    name: "Export variables"
+    timeoutInSeconds: 40
+    command: |
+      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+      echo "BUILDRUN_HASH: " ${BUILDRUN_HASH}
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 40
+        runAs: root
+```
+
+の部分で定義しています。
+
+このステップでは、後続でビルドするコンテナイメージのタグに利用するハッシュ値を生成して環境変数`BUILDRUN_HASH`としてエクスポートしています。  
+
+次のステップは、
+
+```yaml
+  - type: Command
+    name: "Docker Build"
+    command: |
+      docker build -t handson_image .
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failured docker build"
+        timeoutInSeconds: 60
+        runAs: root
+```
+
+の部分で定義しています。
+
+このステップでは、`docker build`コマンドによるコンテナイメージのビルドをおこなっています。  
+
+最後のステップは、
+
+```yaml
+  - type: Command
+    name: "Trivy Image Scan"
+    timeoutInSeconds: 180
+    command: |
+      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.21.0
+      trivy image handson_image
+    onFailure:
+      - type: Command
+        command: |
+          echo "Trivy Scan Error"
+        timeoutInSeconds: 40
+        runAs: root
+```
+
+の部分で定義しています。  
+
+このステップでは、`trivy`というコンテナイメージの脆弱性スキャンを行うプロダクトを利用し、ビルドしたコンテナイメージの脆弱性をチェックしています。  
+
+**trivyについて**  
+trivyはオープンソースで開発されているコンテナイメージの脆弱性診断ツールです。  
+詳細は[こちら](https://github.com/aquasecurity/trivy)をご確認ください。  
+{: .notice--info}
+
+また、2つ目のビルドステップ(コンテナイメージのビルドを行うステップ)でビルドされた成果物(コンテナイメージ)を
+
+```yaml
+outputArtifacts:
+  - name: fn-hello-image
+    type: DOCKER_IMAGE
+    location: fn-hello
+```
+
+の部分で`handson_image`という名前のコンテナイメージ(`type: DOCKER_IMAGE`)として出力しています。  
+
+この`handson_image`という成果物を[5.ビルド・パイプライン](#5ビルドパイプライン)の手順内の`ビルド構成/結果アーティファクト名`で指定し、アーティファクト・レポジトリにアップロードしました。　　
+
+以上で、ビルド構成ファイル(`build_spec.yaml`)の解説は終了です。  
+
+**ビルド構成ファイルについて**  
+ビルド構成ファイルの詳細については、[こちらのドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/devops/using/build_specs.htm)をご確認ください。 
+{: .notice--info}
