@@ -162,7 +162,7 @@ Spatial Studioが、作成したADBリポジトリ用スキーマに接続する
 1. [Import File]をクリックし、先ほどダウンロードした駅データのcsvファイルをインポートします。
 ![import_file1イメージ](import_file1.jpg)
 
-1. 駅データのデータセットが作成されます。Upload to connection:をSPATIAL_STUDIOに設定します。また、**station_cd**と**station_g_cd**のデータ型がDATEになっているので、NUMERICに変更してSubmitします。
+1. 駅データのデータセットが作成されます。Table Name と Dataset nameを**STATION** に変更し、Upload to connection:をSPATIAL_STUDIOに設定します。また、**station_cd**と**station_g_cd**のデータ型がDATEになっているので、NUMERICに変更してSubmitします。
 ![from_csvfileイメージ](from_csvfile.jpg)
 
 1. データセットが作成されましたが、アイコンに注意表示が出ているので修正します。
@@ -264,7 +264,7 @@ Spatial StudioでロードしたTOKYO_BOUNDARY表とAGE_GROUP_TOKYO表を、共�
 
 1. 『開発』の[SQL]をクリックします。
 
-1. Spatial Studioでロードした3つの表AGE_GROUP_TOKYO、STATION20210312FREE、TOKYO_BOUNDARYがあることを確認します。
+1. Spatial Studioでロードした3つの表AGE_GROUP_TOKYO、STATION、TOKYO_BOUNDARYがあることを確認します。
 ![studio_repo_tablesイメージ](studio_repo_tables.jpg)
 
 1. 以下のコマンドでAGE_GROUP_TOKYO表とTOKYO_BOUNDARY表をjoinし、geo_age_tokyo表を作成します。
@@ -292,7 +292,7 @@ where a.key_code = b.key_code;
 このSQL文をDatabase Actionsで実行します。
 ```sql
 select sum(a.T000849017), sum(a.T000849018), sum(a.T000849019), b.station_name
-from geo_age_tokyo a, STATION20210312FREE b
+from geo_age_tokyo a, STATION b
 where sdo_anyinteract (a.geom, sdo_geometry(2001, 8307, sdo_point_type(b.lon, b.lat, NULL), NULL, NULL)) = 'TRUE'
 group by b.station_name;
 ```
@@ -313,7 +313,7 @@ select
   sum(a.T000849019) AS num_over_64,
   sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) AS rate_over_64,
   b.station_name
-from geo_age_tokyo a, STATION20210312FREE b
+from geo_age_tokyo a, STATION b
 where sdo_anyinteract (a.geom, sdo_geometry(2001, 8307, sdo_point_type(b.lon, b.lat, NULL), NULL, NULL)) = 'TRUE'
 group by b.station_name having sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) is not null
 ORDER BY rate_over_64 DESC;
@@ -333,7 +333,7 @@ as select
   sum(a.T000849019) AS num_over_64,
   sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) AS rate_over_64,
   b.station_name
-from geo_age_tokyo a, STATION20210312FREE b
+from geo_age_tokyo a, STATION b
 where sdo_anyinteract (a.geom, sdo_geometry(2001, 8307, sdo_point_type(b.lon, b.lat, NULL), NULL, NULL)) = 'TRUE'
 group by b.station_name having sum(a.T000849019) / NULLIF((sum(a.T000849017) + sum(a.T000849018) + sum(a.T000849019)) ,0) is not null
 ORDER BY rate_over_64;
@@ -342,7 +342,7 @@ ORDER BY rate_over_64;
 ```sql
 create table age_over_64_tokyo as
 select a.rate_over_64, b.*
-from tmp a, STATION20210312FREE b
+from tmp a, STATION b
 where a.station_name=b.station_name;
 ```
 

@@ -6,6 +6,8 @@ layout: single
 tags: "cloudnative"
 show_excerpts: true
 toc: true
+date: "2022-04-06"
+lastmod: "2022-04-06"
 ---
 
 このページでは、Oracle Cloud Infrastructure(OCI)の各コンテナ/サーバレス関連サービスやCI/CDサービスのチュートリアルをまとめています。  
@@ -13,14 +15,23 @@ toc: true
 
 # 1. Oracle Cloud Infrastructure DevOpsチュートリアル
 
+<!-- ## 事前準備編 -->
+
+## 事前準備編
+
++ **[Oracle Cloud Infrastructure(OCI) DevOps事前準備](/ocitutorials/cloud-native/devops-for-commons/)**  
+    OCI DevOpsを利用するための事前準備を行います。まずはここから始めましょう【所要時間:約30分】
+
 ## 初級編
 
-+ **[DevOpsことはじめ](/ocitutorials/cloud-native/devops-for-commons/)**  
-    OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。
-    ここでは、Oracle Container Engine for Kubernetes(OKE)サービスを利用したKubernetesクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間30分】
++ **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-](/ocitutorials/cloud-native/devops-for-beginners-compute)**  
+    ここでは、Oracle Container Engine for Kubernetes(OKE)を利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
 
-<!-- + **[DevOps を使用して Oracle Functions に CI/CD をしてみよう](/ocitutorials/cloud-native/devops-for-functions/)**  
-OCI DevOps を活用して、Oracle Functions にデプロイするための CI/CD パイプラインの構築手順を学習します。 -->
++ **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-](/ocitutorials/cloud-native/devops-for-beginners-oke/)**  
+    ここでは、OCI Computeを利用したアプリケーション環境の構築、CI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
+
++ **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-](/ocitutorials/cloud-native/devops-for-beginners-functions/)**  
+    ここでは、Oracle Functionsを利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
 
 <br />
 
