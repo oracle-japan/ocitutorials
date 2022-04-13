@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-04-05T14:46:06+09:00">
+  <meta property="article:published_time" content="2022-04-13T10:57:00+09:00">
 
 
 
@@ -326,8 +326,6 @@
         
           <p></p><li><a href="/ocitutorials/database/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/database/adb304-database-migration/">304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/database/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
@@ -365,7 +363,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="214 : Spatial Studio で地理情報を扱おう">
     <meta itemprop="description" content="Oracle Spatialを使用すると、開発者は基本的な空間検索や分析から高度な地理空間アプリケーションや地理情報システム(GIS)まで、すべてのアプリケーションで空間分析を使用できます。">
-    <meta itemprop="datePublished" content="2022-04-05T14:46:06+09:00">
+    <meta itemprop="datePublished" content="2022-04-13T10:57:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -570,7 +568,7 @@ TO studio_repo;
 <img src="import_file1.jpg" alt="import_file1イメージ" /></p>
   </li>
   <li>
-    <p>駅データのデータセットが作成されます。Upload to connection:をSPATIAL_STUDIOに設定します。また、<strong>station_cd</strong>と<strong>station_g_cd</strong>のデータ型がDATEになっているので、NUMERICに変更してSubmitします。
+    <p>駅データのデータセットが作成されます。Table Name と Dataset nameを<strong>STATION</strong> に変更し、Upload to connection:をSPATIAL_STUDIOに設定します。また、<strong>station_cd</strong>と<strong>station_g_cd</strong>のデータ型がDATEになっているので、NUMERICに変更してSubmitします。
 <img src="from_csvfile.jpg" alt="from_csvfileイメージ" /></p>
   </li>
   <li>
@@ -694,7 +692,7 @@ https://www.esrij.com/gis-guide/esri-dataformat/shapefile/<br />
     <p>『開発』の[SQL]をクリックします。</p>
   </li>
   <li>
-    <p>Spatial Studioでロードした3つの表AGE_GROUP_TOKYO、STATION20210312FREE、TOKYO_BOUNDARYがあることを確認します。
+    <p>Spatial Studioでロードした3つの表AGE_GROUP_TOKYO、STATION、TOKYO_BOUNDARYがあることを確認します。
 <img src="studio_repo_tables.jpg" alt="studio_repo_tablesイメージ" /></p>
   </li>
   <li>以下のコマンドでAGE_GROUP_TOKYO表とTOKYO_BOUNDARY表をjoinし、geo_age_tokyo表を作成します。
@@ -722,7 +720,7 @@ https://www.esrij.com/gis-guide/esri-dataformat/shapefile/<br />
 以下は、東京都を駅周辺の650個の小地域に分け、駅ごとに0~14歳、15~64歳、65歳以上の人口を表示するSQL文です。
 このSQL文をDatabase Actionsで実行します。</p>
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">),</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">),</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">),</span> <span class="n">b</span><span class="p">.</span><span class="n">station_name</span>
-<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION20210312FREE</span> <span class="n">b</span>
+<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION</span> <span class="n">b</span>
 <span class="k">where</span> <span class="n">sdo_anyinteract</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">sdo_geometry</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">8307</span><span class="p">,</span> <span class="n">sdo_point_type</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span> <span class="k">NULL</span><span class="p">),</span> <span class="k">NULL</span><span class="p">,</span> <span class="k">NULL</span><span class="p">))</span> <span class="o">=</span> <span class="s1">'TRUE'</span>
 <span class="k">group</span> <span class="k">by</span> <span class="n">b</span><span class="p">.</span><span class="n">station_name</span><span class="p">;</span>
 </code></pre></div></div>
@@ -744,7 +742,7 @@ https://www.esrij.com/gis-guide/esri-dataformat/shapefile/<br />
   <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_over_64</span><span class="p">,</span>
   <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">AS</span> <span class="n">rate_over_64</span><span class="p">,</span>
   <span class="n">b</span><span class="p">.</span><span class="n">station_name</span>
-<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION20210312FREE</span> <span class="n">b</span>
+<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION</span> <span class="n">b</span>
 <span class="k">where</span> <span class="n">sdo_anyinteract</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">sdo_geometry</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">8307</span><span class="p">,</span> <span class="n">sdo_point_type</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span> <span class="k">NULL</span><span class="p">),</span> <span class="k">NULL</span><span class="p">,</span> <span class="k">NULL</span><span class="p">))</span> <span class="o">=</span> <span class="s1">'TRUE'</span>
 <span class="k">group</span> <span class="k">by</span> <span class="n">b</span><span class="p">.</span><span class="n">station_name</span> <span class="k">having</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
 <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">rate_over_64</span> <span class="k">DESC</span><span class="p">;</span>
@@ -763,7 +761,7 @@ https://www.esrij.com/gis-guide/esri-dataformat/shapefile/<br />
   <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="k">AS</span> <span class="n">num_over_64</span><span class="p">,</span>
   <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">AS</span> <span class="n">rate_over_64</span><span class="p">,</span>
   <span class="n">b</span><span class="p">.</span><span class="n">station_name</span>
-<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION20210312FREE</span> <span class="n">b</span>
+<span class="k">from</span> <span class="n">geo_age_tokyo</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION</span> <span class="n">b</span>
 <span class="k">where</span> <span class="n">sdo_anyinteract</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">geom</span><span class="p">,</span> <span class="n">sdo_geometry</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">8307</span><span class="p">,</span> <span class="n">sdo_point_type</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span> <span class="k">NULL</span><span class="p">),</span> <span class="k">NULL</span><span class="p">,</span> <span class="k">NULL</span><span class="p">))</span> <span class="o">=</span> <span class="s1">'TRUE'</span>
 <span class="k">group</span> <span class="k">by</span> <span class="n">b</span><span class="p">.</span><span class="n">station_name</span> <span class="k">having</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">)</span> <span class="o">/</span> <span class="k">NULLIF</span><span class="p">((</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849017</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849018</span><span class="p">)</span> <span class="o">+</span> <span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">T000849019</span><span class="p">))</span> <span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span>
 <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">rate_over_64</span><span class="p">;</span>
@@ -771,7 +769,7 @@ https://www.esrij.com/gis-guide/esri-dataformat/shapefile/<br />
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">create</span> <span class="k">table</span> <span class="n">age_over_64_tokyo</span> <span class="k">as</span>
 <span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="n">rate_over_64</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="o">*</span>
-<span class="k">from</span> <span class="n">tmp</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION20210312FREE</span> <span class="n">b</span>
+<span class="k">from</span> <span class="n">tmp</span> <span class="n">a</span><span class="p">,</span> <span class="n">STATION</span> <span class="n">b</span>
 <span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="n">station_name</span><span class="o">=</span><span class="n">b</span><span class="p">.</span><span class="n">station_name</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -828,7 +826,7 @@ Oracle Spatial StudioはAutonomous Databaseに標準で含まれております�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-04-05T14:46:06+09:00">April 5, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-04-13T10:57:00+09:00">April 13, 2022</time></p>
 
 
       </footer>

@@ -125,16 +125,28 @@ var store = [{
         "url": "/ocitutorials/blockchain/93_1_sample_cc/",
         "teaser": "/ocitutorials/blockchain/93_1_sample_cc/console-samples-section.png"
       },{
-        "title": "Oracle Cloud Infrastructure(OCI) DevOpsことはじめ",
-        "excerpt":"OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。ここでは、Oracle Container Engine for Kubernetes(OKE)サービスを利用したKubernetesクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。 この手順を実施することで、OCI DevOpsを利用したコンテナアプリケーション開発におけるCI/CDを学習できます。 Oracle Container Engine for Kubernetes(OKE)について Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で提供される、完全に管理されたスケーラブルで可用性の高いマネージドのKubernetessサービスです。 詳細はこちらのページをご確認ください。 前提条件 クラウド環境 Oracle Cloudのアカウント（Free Trial）を取得済みであること 全体構成 以下の図にある環境を構築することがゴールです。環境構築後、サンプルソースコードを変更して、「git push」コマンド実行をトリガーにCI/CDパイプラインの実行、OKEクラスタ上にサンプルコンテナアプリケーションのデプロイまでの工程が、自動で行われることを確認します。 作業構成は、「事前準備」と「OCI DevOps 環境構築」の2構成です。「事前準備」は、冒頭で紹介したOKEを利用したKubernetesクラスタを構築します。次に、OCI DevOpsから登録したメールアドレスに通知を受けることができるようにOCI Notificationsの設定を行います。また、OCI DevOpsサービスを利用する上で必要となる認証トークン設定、動的グループ・ポリシーの設定も行います。 OCI Notificationsについて OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。 本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。 また詳細はこちらのページをご確認ください。 「OCI DevOps 環境構築」では、デプロイ先となるOKEクラスタの登録、コード・リポジトリとアーティファクト・レジストリの設定と管理、OCI DevOpsのパイプラインとなるビルド・パイプラインとデプロイメント・パイプラインの構築、パイプラインを自動化させるためのトリガー機能の設定、最後にソースコードの変更および「git push」コマンド実行を契機に、構築したパイプラインの稼働とデプロイされたアプリケーションの稼働を確認します。 ここで、関係する機能、サービスを整理しておきます。 コード・リポジトリ コード・リポジトリは、ソースコードをバージョン管理できるOCI...","categories": [],
+        "title": "Oracle Cloud Infrastructure(OCI) DevOps事前準備",
+        "excerpt":"OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。 ここでは、OCI DevOpsを利用するための事前準備を行います。　　 前提条件 クラウド環境 Oracle Cloudのアカウント（Free Trial）を取得済みであること 事前準備の流れ 1.OCI Notifications セットアップ 2.動的グループ/ポリシー セットアップ 3.プロジェクトの作成 1.OCI Notifications セットアップ 1-1 トピックとサブスクリプションの設定 OCI DevOpsでは、OCI Notificationsサービスの「トピック」と「サブスクリプション」の設定が必要となります。 この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。 1-1-1 トピックの作成 左上のハンバーガーメニューをクリックして、「開発者サービス」-「通知」を選択します。 「トピックの作成」ボタンをクリックします。 トピックの名前について トピックの名前はテナンシで一意になります。 集合ハンズオンなど複数人で同一環境を共有されている皆様は、oci-devops-handson-01やhandson-tnなどの名前のイニシャルを付与し、名前が重複しないようにしてください。 「名前」に「oci-devops-handson」と入力します。 「作成」ボタンをクリックします。 「アクティブ」になることを確認します。 以上でトピックの作成は完了です。 1-1-2 サブスクリプションの作成 左メニュー「サブスクリプション」を選択します。 「サブスクリプションの作成」ボタンをクリックします。 「電子メール」にご自身のメールアドレスを入力します。 「作成」ボタンをクリックします。 設定したメールアドレスに、以下の内容のメールが届きます。「Confirm subscription」をクリックして、サブスクリプションを有効にします。 以下の画面が表示されれば完了です。 アクティブになっていることを確認します。 アクティブになっていない場合は、ブラウザを更新してください。 以上で、サブスクリプションの作成は完了です。 2.動的グループ/ポリシー...","categories": [],
         "tags": [],
         "url": "/ocitutorials/cloud-native/devops-for-commons/",
         "teaser": null
       },{
-        "title": "DevOps を使用して Oracle Functions に CI/CD をしてみよう",
-        "excerpt":"OCI DevOps は、OCI 上に CI/CD 環境を構築するマネージドサービスです。このハンズオンでは、Oracle Functions に対する CI/CD パイプラインの構築手順を記します。 Oracle Functions について Oracle Functions は、Oracle Cloud Infrastructure(OCI)で提供される、Function as a Service です。詳細は、https://www.oracle.com/jp/cloud-native/functions/ をご確認ください。 前提条件 クラウド環境 Oracle Cloud のアカウント（Free Trial）を取得済みであること Oracle Functions ハンズオン - 事前準備が完了していること Oracle Cloud Infrastructure(OCI) DevOps ことはじめ - 動的グループ/ポリシーセットアップが完了していること 全体構成 本ハンズオンでは、以下のような環境を構築し、ソースコードの変更が Oracle Functions に自動的に反映されることを確認します。 手順 OCIR の作成 Oracle...","categories": [],
+        "title": "Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-",
+        "excerpt":"OCI DevOps は、OCI 上に CI/CD 環境を構築するマネージドサービスです。このハンズオンでは、OCI上のComputeに対する CI/CD パイプラインの構築手順を記します。 前提条件 環境 OCI DevOps事前準備が完了していること 全体構成 本ハンズオンでは、以下のような環境を構築し、ソースコードの変更がCompute上のサンプルアプリケーションに自動的に反映されることを確認します。 このうち、DevOpsインスタンスについては、事前準備で構築済みです。 事前準備 まず、事前準備として、OCI DevOpsのGitレポジトリの認証で利用する認証トークンを取得します。 右上にある「プロファイル」アイコンをクリックして、プロファイル名を選択します。 左メニュー「認証トークン」を選択します。 「トークンの作成」をボタンをクリックします。 「説明」に「oci-devops-handson」と入力して、「トークンの生成」ボタンをクリックします。 「コピー」をクリックして、「閉じる」ボタンをクリックします。 コピーした認証トークンは、後の手順で必要となるので、テキストエディタなどにペーストしておきます。 以上で、認証トークンの作成は完了です。 全体の流れ Computeインスタンス環境の構築 DevOps環境構築 CIパイプラインとCDパイプラインの作成 パイプラインの実行 1. Computeインスタンス環境の構築 ここでは、サンプルアプリケーションを動作させるComputeインスタンスを作成します。 1-1. インスタンスの作成 OCIコンソール画面のハンバーガメニューからコンピュート=&gt;インスタンスをクリックします。 をクリックします。 以下の項目を入力します。 項目 入力内容 名前 devops-instance イメージとシェイプまでスクロールした後に、イメージの変更をクリックします。 Oracle Linux Cloud Developerを選択し、下部の同意項目にチェックを入れ、イメージの選択をクリックします。 ネットワーキングまでスクロールした後に、を選択します。 SSHキーの追加までスクロールした後に、秘密キーの保存をクリックします。 ここで、ダウンロードされた秘密キーはインスタンスにSSHログインする際に利用します。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/devops-for-beginners-compute/",
+        "teaser": null
+      },{
+        "title": "Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-",
+        "excerpt":"OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。ここでは、Oracle Container Engine for Kubernetes(OKE)サービスを利用したKubernetesクラスタの構築、アーティファクト環境とOCI DevOpsのセットアップ、CI/CDパイプラインの実装と実行までの手順を記します。 この手順を実施することで、OCI DevOpsを利用したコンテナアプリケーション開発におけるCI/CDを学習できます。 Oracle Container Engine for Kubernetes(OKE)について Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で提供される、完全に管理されたスケーラブルで可用性の高いマネージドのKubernetessサービスです。 詳細はこちらのページをご確認ください。 前提条件 環境 OCI DevOps事前準備が完了していること 全体構成 以下の図にある環境を構築することがゴールです。環境構築後、サンプルソースコードを変更して、「git push」コマンド実行をトリガーにCI/CDパイプラインの実行、OKEクラスタ上にサンプルコンテナアプリケーションのデプロイまでの工程が、自動で行われることを確認します。 作業構成は、「事前準備」と「OCI DevOps 環境構築」の2構成です。「事前準備」は、冒頭で紹介したOKEを利用したKubernetesクラスタを構築します。次に、OCI DevOpsから登録したメールアドレスに通知を受けることができるようにOCI Notificationsの設定を行います。また、OCI DevOpsサービスを利用する上で必要となる認証トークン設定、動的グループ・ポリシーの設定も行います。 OCI Notificationsについて OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。 本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。 また詳細はこちらのページをご確認ください。 「OCI DevOps 環境構築」では、デプロイ先となるOKEクラスタの登録、コード・リポジトリとアーティファクト・レジストリの設定と管理、OCI DevOpsのパイプラインとなるビルド・パイプラインとデプロイメント・パイプラインの構築、パイプラインを自動化させるためのトリガー機能の設定、最後にソースコードの変更および「git push」コマンド実行を契機に、構築したパイプラインの稼働とデプロイされたアプリケーションの稼働を確認します。 ここで、関係する機能、サービスを整理しておきます。 コード・リポジトリ コード・リポジトリは、ソースコードをバージョン管理できるOCI DevOpsの機能の一つです。GitHubやGitLabと同じようにリポジトリを作成して、ソースコードのバージョン管理をしながら効率的に開発を行えます。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/devops-for-beginners-oke/",
+        "teaser": null
+      },{
+        "title": "Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-",
+        "excerpt":"OCI DevOps は、OCI 上に CI/CD 環境を構築するマネージドサービスです。このハンズオンでは、Oracle Functions に対する CI/CD パイプラインの構築手順を記します。 Oracle Functions について Oracle Functions は、Oracle Cloud Infrastructure(OCI)で提供される、Function as a Service です。詳細は、https://www.oracle.com/jp/cloud-native/functions/ をご確認ください。 前提条件 環境 OCI DevOps事前準備が完了していること Oracle Functionsことはじめが完了していること 全体構成 本ハンズオンでは、以下のような環境を構築し、ソースコードの変更が Oracle Functions に自動的に反映されることを確認します。 事前準備の流れ 1.OCIR の作成 2.ハンズオンに使用する資材のセットアップ 3.アプリケーションの動作確認 1.OCIR の作成 Oracle Functions のコンテナイメージの保存先である OCIR(Oracle Cloud Infrastructure Registry)を作成します。OCI Console 左上のハンバーガーメニューから、開発者サービス...","categories": [],
         "tags": ["devops","functions"],
-        "url": "/ocitutorials/cloud-native/devops-for-functions/",
+        "url": "/ocitutorials/cloud-native/devops-for-beginners-functions/",
         "teaser": null
       },{
         "title": "Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう",
@@ -143,8 +155,8 @@ var store = [{
         "url": "/ocitutorials/cloud-native/oke-for-commons/",
         "teaser": null
       },{
-        "title": "Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう",
-        "excerpt":"Oracle Container Engine for Kubernetes（以下OKE）は、OracleのマネージドKubernetesサービスです。 このハンズオンでは、OKEにサンプルアプリケーションをデプロイするプロセスを通して、Kubernetesそのものの基本的な操作方法や特徴を学ぶことができます。 このカテゴリには以下のサービスが含まれます。 Oracle Container Engine for Kubernetes (OKE): フルマネージドなKuberentesクラスターを提供するクラウドサービスです。 Oracle Cloud Infrastructure Registry (OCIR): フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。 前提条件 クラウド環境 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること 1.コンテナイメージの作成 ここでは、サンプルアプリケーションが動作するコンテナイメージを作成します。 1.1. アプリーケーションのリポジトリをForkする GitHubにアクセスし、ご自身のアカウントでログインしてください（GitHubのアカウントがなければ、事前に作成してください)。 今回利用するサンプルアプリケーションは、oracle-japanのGitHubアカウント配下のリポジトリとして作成してあります。 サンプルアプリケーションのリポジトリにアクセスしたら、画面右上のforkボタンをクリックしてください。 これ以降の作業では、Forkして作成されたリポジトリを利用して手順を進めて行きます。 1.2. ソースコードをCloneする 1.1. で作成したリポジトリにアクセスして、Clone or downloadボタンをクリックします。 ソースコードを取得する方法は2つあります。一つはgitのクライアントでCloneする方法、もう一つはZIPファイル形式でダウンロードする方法です。ここでは前者の手順を行いますので、展開した吹き出し型のダイアログで、URLの文字列の右側にあるクリップボード型のアイコンをクリックします。 これにより、クリップボードにURLがコピーされます。 Cloud ShellまたはLinuxのコンソールから、以下のコマンドを実行してソースコードをCloneします。 git clone [コピーしたリポジトリのURL] 続いて、Cloneしてできたディレクトリをカレントディレクトリにしておきます。 cd cowweb-for-wercker-demo...","categories": [],
+        "title": "Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう2",
+        "excerpt":"Oracle Container Engine for Kubernetes（以下OKE）は、OracleのマネージドKubernetesサービスです。 このハンズオンでは、OKEにサンプルアプリケーションをデプロイするプロセスを通して、Kubernetesそのものの基本的な操作方法や特徴を学ぶことができます。 このカテゴリには以下のサービスが含まれます。 Oracle Container Engine for Kubernetes (OKE): フルマネージドなKuberentesクラスターを提供するクラウドサービスです。 Oracle Cloud Infrastructure Registry (OCIR): フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。 前提条件 クラウド環境 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること 1.コンテナイメージの作成 ここでは、サンプルアプリケーションが動作するコンテナイメージを作成します。 1.1. ソースコードをCloneする 今回利用するサンプルアプリケーションは、oracle-japanのGitHubアカウント配下のリポジトリとして作成してあります。 サンプルアプリケーションのリポジトリにアクセスして、Codeボタンをクリックします。 ソースコードを取得する方法は2つあります。一つはgitのクライアントでCloneする方法、もう一つはZIPファイル形式でダウンロードする方法です。ここでは前者の手順を行いますので、展開した吹き出し型のダイアログで、URLの文字列の右側にあるクリップボード型のアイコンをクリックします。 これにより、クリップボードにURLがコピーされます。 Cloud ShellまたはLinuxのコンソールから、以下のコマンドを実行してソースコードをCloneします。 git clone [コピーしたリポジトリのURL] 続いて、Cloneしてできたディレクトリをカレントディレクトリにしておきます。 cd cowweb-for-wercker-demo 1.2. コンテナイメージを作る コンテナイメージは、Dockerfileと呼ばれるコンテナの構成を記述したファイルによって、その内容が定義されます。 サンプルアプリケーションのコードには作成済みのDockerfileが含まれていますので、その内容を確認してみます。以下のコマンドを実行してください。 cat Dockerfile FROM gradle:jdk8-alpine...","categories": [],
         "tags": [],
         "url": "/ocitutorials/cloud-native/oke-for-beginners/",
         "teaser": null
@@ -581,12 +593,6 @@ var store = [{
         "url": "/ocitutorials/database/adb304-database-migration-prep/",
         "teaser": "/ocitutorials/database/adb304-database-migration-prep/teaser.png"
       },{
-        "title": "304: OCI Database Migration Serivce(DMS) を利用して、ダウンタイム最小限に移行しよう",
-        "excerpt":"   Oracle Cloud Infrastructure Database Migration Service (DMS)は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。DMSは内部的にOracle GoldenGateによるレプリケーションを利用しており、移行に伴うアプリケーションのダウンタイムを極小化することが可能です。   Database Migrationのチュートリアル(LiveLabs)は下記に用意がございますので、ご利用ください。   OCI Database Migration Workshop   尚、上記は英語での提供になりますが、必要に応じてブラウザ翻訳をご利用ください。ブラウザ翻訳の利用方法を含めてOracle LiveLabsの使い方はこちら     以上で、この章は終了です。  次の章にお進みください。     ページトップへ戻る   ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/database/adb304-database-migration/",
-        "teaser": "/ocitutorials/database/adb304-database-migration/teaser.png"
-      },{
         "title": "305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行",
         "excerpt":"はじめに Oracle Cloud Infrastructure Database Migration Service (DMS) は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。 DMSでは下記の2つの論理的移行が可能です。 オフライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。 オンライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。 DMSに関するチュートリアルは304 : OCI Database Migration Serviceを使用したデータベース移行の前準備、305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行、306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行の計3章を含めた3部構成となっています。 DMSを使用してDBCSで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。 305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行または306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行を実施する前に必ず304...","categories": [],
         "tags": [],
@@ -767,11 +773,17 @@ var store = [{
         "url": "/ocitutorials/intermediates/private-dns/",
         "teaser": "/ocitutorials/intermediates/private-dns/04.png"
       },{
-        "title": "Email Deliveryを利用した外部へのメール送信(その1　配信環境構築編)",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
-        "tags": [],
+        "title": "Email Deliveryを利用した外部へのメール送信(基礎編)",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル OCIのEmail Deliveryサービスを使用することにより、電子メールを受信者へ簡単に一括配信できます。またSPFやDKIMを設定をすることにより、送信元を偽装するなりすましメールを対策して、メールの到達可能性を向上させることができます。 今回のチュートリアルではSMTP認証を設定してMailxでメールを送信します。 所要時間：　約40分 前提条件： その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること その3 - インスタンスを作成する（今回のチュートリアルではOracle Linuxインスタンス7.9を使用しています） Javaがインストールされていること（今回のチュートリアルではJava 17で実施しています） Eclipse IDEがインストールされていて使用できる状態であること（今回のチュートリアルではEclipse 2021で実施しています） 注意: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 前提条件の3,4はJavaMailからメール送信を行う際に必要になります 1.　電子メールの概要 電子メールを送信すると、送信者側のメールサーバー、相手側のメールサーバーを経由して受信者にメールが届きます。メールを送信してから受信者のメールサーバーに届くまでの通信にSMTPのプロトコルが使用されています。 電子メールは「メールヘッダ」、「エンべロープ」そして「メール本文」の3つから構成されています。GmailやOutlook等のメールソフトでメールを送受信する際に送信元や宛先等が見えるかと思いますが、これはメールヘッダに当たります。実際にSMTPサーバーが利用するのはメールヘッダの情報ではなくエンベロープの情報になります。ヘッダー情報とエンベロープ情報が違ってもメールを送信できることから、ヘッダーを偽造してなりすましメールを送ることができてしまいます。 このようななりすましメールを対策するために今回の基礎編のチュートリアルSMTP認証を、そして応用編ではSPFとDKIMの設定をします。 SMTP認証 - メール送信者がユーザーであるかを確認する認証方法です。メールを送信する際にユーザー名とパスワードがないと送れないシステムになります。 SPF - 送信ドメイン認証の1つで、事前に送信側のメールサーバーのIPアドレスもしくはSPFレコードをDNSサーバーに登録しておきます。そしてメールが送信された際に受信サーバーはDNSサーバーに対して送信元ドメインに対するSPFレコードを問い合わせして、返ってきたSPFレコードと送信元IPアドレスが一致するか確認します。そして情報が一致した時のみ受信者にメールが届きます。 DKIM - 送信ドメイン認証の1つで、DKIMでは電子署名を使用します。DNSサーバー側には公開鍵を公開しておきます。メールを送信する際にメールのヘッダとボディの情報の電子署名を追加しておきます。受信者のメールサーバーはDNSから公開鍵を入手して公開鍵で電子署名を検証します。検証が成功すれば受信者にメールが送られます。 2. SMTP資格証明の生成 Email Deliveryサービスを使用するにはSMTP資格証明書の設定が必要になります。各ユーザー最大2つまで設定することができて、3つ以上作成する場合はユーザーを追加する必要があります。 コンソールの右上にある人のマークをクリックして、ユーザー設定 を選択します。 するとユーザーの詳細画面が表示されるので、スクロールして左下の SMTP資格証明...","categories": [],
+        "tags": ["intermediate","email"],
         "url": "/ocitutorials/intermediates/sending-emails-1/",
-        "teaser": null
+        "teaser": "/ocitutorials/intermediates/sending-emails-1/img1.png"
+      },{
+        "title": "Email Deliveryを利用した外部へのメール送信(応用編)",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル このチュートリアルはEmail Deliveryを利用した外部へのメール送信(基礎編)の続きになります。 基礎編ではSMTP認証を使用しました。しかしそれだけではなりすましメールとみなされてしまう可能性があります。応用編ではSPFとDKIMの設定を行いメールの到達可能性を高めます。 所要時間：　約20分 前提条件： DNSサービスを使ってWebサーバーの名前解決をするが完了していること Email Deliveryを利用した外部へのメール送信(基礎編)が完了していること 注意: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 1. SPFの設定 SPFを設定するには、SPFレコードを既存のDNSサーバーにTXT形式で実装します。 SPFを確認します。左上のメニューから 開発者サービス → 電子メール配信 をクリックして、左側にある Approved Senders を押します。 そして作成した承認済送信者の右側にあるメニューから SPFの表示 ボタンを押します。 今回は東京リージョンで実施しているためアジア太平洋のSPFレコードを使用します。後で使用するためテキストエディタ等にメモしておきます。そして　閉じる のボタンを押します。 DNSサーバーにSPFレコードの情報を実装します。ネットワーキング → ゾーン をクリックします。そしてすでに作成されているDNSゾーンをクリックします。今回のチュートリアルでは tutorials1.ml のDNSドメインを使用します。 作成されているDNSサーバーをクリックすると、詳細画面が表示されます。少しスクロールして左側にある レコード　を押します。すると一覧のレコードが表示されます。 レコードの追加を行います。 レコード型　-　TEXT -　テキスト 名前　- 空白 TTL　- 空白 Rdataモード　-...","categories": [],
+        "tags": ["intermediate","email"],
+        "url": "/ocitutorials/intermediates/sending-emails-2/",
+        "teaser": "/ocitutorials/intermediates/sending-emails-2/img2.png"
       },{
         "title": "GPUインスタンスでディープラーニング",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
@@ -832,6 +844,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/intermediates/protecting-web-servers-with-waf/",
         "teaser": null
+      },{
+        "title": "OCIのDBCSでOperations Insightsを有効化する",
+        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Operations Insightsでは、Oracle Databaseのデータを長期保存し、機械学習による分析でリソースの需要分析と将来値の予測、パフォーマンス問題を検出することができます。Operations Insightsを利用することで、リソース配分の最適化によるコストの削減、パフォーマンスの向上などを図ることが可能です。 この章では、Oracle CloudのDatabase Cloud ServiceでOperations Insightsを有効化する手順をご紹介します。Operations Insightsを有効化するためにエージェントなどをインストールする必要はなく、OCIコンソールからの操作で有効化することができます。 所要時間 : 約20分 前提条件 : 101: Oracle CloudでOracle Databaseを使おう（DBCS）を通じて、DBCSインスタンスの作成が完了していること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Operations Insightsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 ※この章では、ユーザーにOperations Insightsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。ドキュメント を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。 allow group &lt;IAMグループ名&gt; to manage opsi-family in tenancy allow group &lt;IAMグループ名&gt; to use database-family in...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/intermediates/dbcs_operations_insights/",
+        "teaser": "/ocitutorials/intermediates/dbcs_operations_insights/DB_OperationsInsights16.png"
       },{
         "title": "Oracle Management Cloud チュートリアルまとめ",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],

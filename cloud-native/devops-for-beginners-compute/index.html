@@ -1,0 +1,1751 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編- | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI DevOpsでアプリケーション開発におけるCI/CDを学びます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-beginners-compute/">
+
+
+  <meta property="og:description" content="OCI DevOpsでアプリケーション開発におけるCI/CDを学びます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-04-06T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-beginners-compute/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI DevOpsでアプリケーション開発におけるCI/CDを学びます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/" class="active">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう2</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-">
+    <meta itemprop="description" content="OCI DevOpsでアプリケーション開発におけるCI/CDを学びます。">
+    <meta itemprop="datePublished" content="2022-04-06T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#全体構成">全体構成</a></li><li><a href="#事前準備">事前準備</a></li><li><a href="#全体の流れ">全体の流れ</a></li><li><a href="#1-computeインスタンス環境の構築">1. Computeインスタンス環境の構築</a><ul><li><a href="#1-1-インスタンスの作成">1-1. インスタンスの作成</a></li><li><a href="#1-2-ネットワークの構成">1-2. ネットワークの構成</a></li></ul></li><li><a href="#2-oci-devops環境の構築">2. OCI DevOps環境の構築</a><ul><li><a href="#2-1サンプルアプリケーションと関連資材の取得">2-1.サンプルアプリケーションと関連資材の取得</a></li><li><a href="#2-2ポリシーの設定">2-2.ポリシーの設定</a><ul><li><a href="#2-2-1-oci-devopsで利用する動的グループ">2-2-1 OCI DevOpsで利用する動的グループ</a></li><li><a href="#2-2-2-oci-devopsで利用するポリシー">2-2-2 OCI DevOpsで利用するポリシー</a></li><li><a href="#2-2-3-ポリシーの設定">2-2-3 ポリシーの設定</a></li></ul></li><li><a href="#2-3devopsの設定">2-3.DevOpsの設定</a><ul><li><a href="#2-3-1-環境の登録">2-3-1 環境の登録</a></li><li><a href="#2-3-2-gitレポジトリの作成">2-3-2 Gitレポジトリの作成</a></li><li><a href="#2-3-3-サンプルアプリケーションのpush">2-3-3 サンプルアプリケーションのPush</a></li><li><a href="#2-3-4-アーティファクトレジストリの作成とデプロイメント構成ファイルの登録">2-3-4 アーティファクト・レジストリの作成とデプロイメント構成ファイルの登録</a></li><li><a href="#2-3-5-アーティファクトレジストリの登録">2-3-5 アーティファクト・レジストリの登録</a></li></ul></li></ul></li><li><a href="#3-ciパイプラインとcdパイプラインの作成">3. CIパイプラインとCDパイプラインの作成</a><ul><li><a href="#3-1-ciパイプラインの構築">3-1 CIパイプラインの構築</a></li><li><a href="#3-2-cdパイプラインの構築">3-2 CDパイプラインの構築</a></li><li><a href="#3-3-ciパイプラインとcdパイプラインの接続">3-3 CIパイプラインとCDパイプラインの接続</a></li><li><a href="#3-4-トリガーの作成">3-4 トリガーの作成</a></li></ul></li><li><a href="#4パイプラインの実行">4.パイプラインの実行</a></li><li><a href="#5オプションビルド構成ファイルとデプロイメント構成ファイルの解説">5.【オプション】ビルド構成ファイルとデプロイメント構成ファイルの解説</a><ul><li><a href="#5-1-ビルド構成ファイルbuild_specyamlの解説">5-1 ビルド構成ファイル(build_spec.yaml)の解説</a></li><li><a href="#5-2-デプロイメント構成ファイルdeploy_specyamlの解説">5-2 デプロイメント構成ファイル(deploy_spec.yaml)の解説</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>OCI DevOps は、OCI 上に CI/CD 環境を構築するマネージドサービスです。このハンズオンでは、OCI上のComputeに対する CI/CD パイプラインの構築手順を記します。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>環境
+    <ul>
+      <li><a href="/ocitutorials/cloud-native/devops-for-commons/">OCI DevOps事前準備</a>が完了していること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="全体構成">全体構成</h2>
+
+<p>本ハンズオンでは、以下のような環境を構築し、ソースコードの変更がCompute上のサンプルアプリケーションに自動的に反映されることを確認します。</p>
+
+<p><img src="0-0.png" alt="" /></p>
+
+<p>このうち、DevOpsインスタンスについては、<a href="/ocitutorials/cloud-native/devops-for-commons/">事前準備</a>で構築済みです。</p>
+
+<h2 id="事前準備">事前準備</h2>
+
+<p>まず、事前準備として、OCI DevOpsのGitレポジトリの認証で利用する認証トークンを取得します。</p>
+
+<p>右上にある「プロファイル」アイコンをクリックして、プロファイル名を選択します。</p>
+
+<p><img src="0-1.png" alt="" /></p>
+
+<p>左メニュー「認証トークン」を選択します。</p>
+
+<p><img src="0-2.png" alt="" /></p>
+
+<p>「トークンの作成」をボタンをクリックします。</p>
+
+<p><img src="0-3.png" alt="" /></p>
+
+<p>「説明」に「oci-devops-handson」と入力して、「トークンの生成」ボタンをクリックします。</p>
+
+<p><img src="0-4.png" alt="" /></p>
+
+<p>「コピー」をクリックして、「閉じる」ボタンをクリックします。  コピーした認証トークンは、後の手順で必要となるので、テキストエディタなどにペーストしておきます。</p>
+
+<p><img src="0-5.png" alt="" /></p>
+
+<p>以上で、認証トークンの作成は完了です。</p>
+
+<h2 id="全体の流れ">全体の流れ</h2>
+
+<ol>
+  <li>Computeインスタンス環境の構築</li>
+  <li>DevOps環境構築</li>
+  <li>CIパイプラインとCDパイプラインの作成</li>
+  <li>パイプラインの実行</li>
+</ol>
+
+<h2 id="1-computeインスタンス環境の構築">1. Computeインスタンス環境の構築</h2>
+
+<p>ここでは、サンプルアプリケーションを動作させるComputeインスタンスを作成します。</p>
+
+<p><img src="1-0.png" alt="" /></p>
+
+<h3 id="1-1-インスタンスの作成">1-1. インスタンスの作成</h3>
+
+<p>OCIコンソール画面のハンバーガメニューから<code class="language-plaintext highlighter-rouge">コンピュート</code>=&gt;<code class="language-plaintext highlighter-rouge">インスタンス</code>をクリックします。</p>
+
+<p><img src="1-1.png" alt="" /></p>
+
+<p><img src="1-2.png" alt="" />をクリックします。</p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>名前</td>
+      <td>devops-instance</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="1-3.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">イメージとシェイプ</code>までスクロールした後に、<code class="language-plaintext highlighter-rouge">イメージの変更</code>をクリックします。</p>
+
+<p><img src="1-4.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Oracle Linux Cloud Developer</code>を選択し、下部の同意項目にチェックを入れ、<code class="language-plaintext highlighter-rouge">イメージの選択</code>をクリックします。</p>
+
+<p><img src="1-5.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">ネットワーキング</code>までスクロールした後に、<img src="1-7.png" alt="" />を選択します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">SSHキーの追加</code>までスクロールした後に、<code class="language-plaintext highlighter-rouge">秘密キーの保存</code>をクリックします。<br />
+ここで、ダウンロードされた秘密キーはインスタンスにSSHログインする際に利用します。<br />
+(このハンズオンでは、インスタンスに対してSSHログインすることはありません)</p>
+
+<p><img src="1-8.png" alt="" /></p>
+
+<p>最下部までスクロールし、<img src="1-10.png" alt="" />をクリックします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">管理</code>タブの<code class="language-plaintext highlighter-rouge">Cloud-initスクリプトの貼付け</code>を選択し、<code class="language-plaintext highlighter-rouge">Cloud-initスクリプト</code>欄に以下の項目を入力します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">sudo </span>setenforce permissive
+firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-port</span><span class="o">=</span>8080/tcp
+firewall-cmd <span class="nt">--reload</span>
+</code></pre></div></div>
+
+<p class="notice--info"><strong>cloud-initについて</strong><br />
+<a href="https://cloudinit.readthedocs.io/en/latest/index.html">cloud-init</a>は、インスタンス構築時に自動的に初期設定を行う際に便利な機能です。<br />
+今回は、サンプルアプリケーションが利用するポートを解放しておくために利用しています。</p>
+
+<p><img src="1-11.png" alt="" /></p>
+
+<p><img src="1-9.png" alt="" />をクリックします。</p>
+
+<p>インスタンスのステータスが<code class="language-plaintext highlighter-rouge">実行中</code>になるまで数分程度待機します。</p>
+
+<p>ステータスが<code class="language-plaintext highlighter-rouge">実行中</code>になったら、インスタンスのパブリックIPを確認しておきます。<br />
+パブリックIPは<code class="language-plaintext highlighter-rouge">インスタンス情報</code>の<code class="language-plaintext highlighter-rouge">パブリックIPアドレス:</code>に記載されています。<br />
+(横にある<code class="language-plaintext highlighter-rouge">コピー</code>をクリックするとコピーできます)<br />
+このIPアドレスはサンプルアプリケーションの動作確認で利用するので、エディタなどに記録しておいてください。</p>
+
+<p><img src="1-19.png" alt="" /></p>
+
+<p>これでインスタンスの作成は完了です。</p>
+
+<h3 id="1-2-ネットワークの構成">1-2. ネットワークの構成</h3>
+
+<p>ここでは、サンプルアプリケーションを外部からアクセスするためのVCNのセキュリティ・リストを設定します。</p>
+
+<p class="notice--info"><strong>セキュリティリストについて</strong><br />
+<a href="https://cloudinit.readthedocs.io/en/latest/index.html">cloud-init</a>は、インスタンス構築時に自動的に初期設定を行う際に便利な機能です。<br />
+今回は、サンプルアプリケーションが利用するポートを解放しておくために利用しています。</p>
+
+<p>OCIコンソール画面のハンバーガメニューから<code class="language-plaintext highlighter-rouge">ネットワーキング</code>=&gt;<code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code>をクリックします。</p>
+
+<p><img src="1-12.png" alt="" /></p>
+
+<p>先ほどのインスタンス作成と同時に作成されたVCNをクリックします。</p>
+
+<p><img src="1-13.png" alt="" /></p>
+
+<p>表示されたサブネットをクリックします。</p>
+
+<p><img src="1-14.png" alt="" /></p>
+
+<p>表示されたセキュリティ・リストをクリックします。</p>
+
+<p><img src="1-15.png" alt="" /></p>
+
+<p><img src="1-16.png" alt="" />をクリックし、以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>ソースCIDR</td>
+      <td>0.0.0.0/0</td>
+    </tr>
+    <tr>
+      <td>宛先ポート範囲</td>
+      <td>8080</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="1-17.png" alt="" /></p>
+
+<p><img src="1-18.png" alt="" />をクリックします。</p>
+
+<p>これで、ネットワークの構成は完了です。</p>
+
+<h2 id="2-oci-devops環境の構築">2. OCI DevOps環境の構築</h2>
+
+<p>ここでは、OCI DevOps環境を構築していきます。</p>
+
+<p><img src="2-0.png" alt="" /></p>
+
+<h3 id="2-1サンプルアプリケーションと関連資材の取得">2-1.サンプルアプリケーションと関連資材の取得</h3>
+
+<p>今回のハンズオンで利用するサンプルアプリケーションと関連資材を取得します。</p>
+
+<p>Cloud Shellを起動し、以下のコマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/oci-devops-handson/o/compute%2Foci-devops-compute.zip
+</code></pre></div></div>
+
+<p>解凍します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip compute%2Foci-devops-compute.zip
+</code></pre></div></div>
+
+<p>これでサンプルアプリケーションと関連資材の取得は完了です。</p>
+
+<h3 id="2-2ポリシーの設定">2-2.ポリシーの設定</h3>
+
+<p>ここでは、<a href="/ocitutorials/cloud-native/devops-for-commons/">事前準備</a>に追加で必要なポリシーの設定を行います。</p>
+
+<h4 id="2-2-1-oci-devopsで利用する動的グループ">2-2-1 OCI DevOpsで利用する動的グループ</h4>
+
+<p>本ハンズオンで利用するために追加で必要となる動的グループを作成します。<br />
+今回設定する動的グループは以下になります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>動的グループ</th>
+      <th>ルール</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OCI_DevOps_Dynamic_Group_Compute</td>
+      <td>instance.compartment.id = ‘コンパートメントOCID’</td>
+      <td>コンパートメント内の全てのインスタンスを含めた動的グループ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--warning"><strong>本ハンズオンでの動的グループについて</strong><br />
+今回は、簡易的にハンズオンを実施するために、コンパートメント内の全てのリソースやインスタンスを動的グループとして含める設定を行なっています。<br />
+本来は、各サービスのタイプを指定して動的グループを作成することになります。</p>
+
+<h4 id="2-2-2-oci-devopsで利用するポリシー">2-2-2 OCI DevOpsで利用するポリシー</h4>
+
+<p>本ハンズオンで利用するために追加で必要となるポリシーを作成します。<br />
+ポリシーは以下となります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ポリシー</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group_Compute to use instance-agent-command-execution-family in compartment id コンパートメントOCID</td>
+      <td>対象Computeに対するコマンド実行を許可するポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group_Compute to manage instance-agent-command-family in compartment id コンパートメントOCID</td>
+      <td>対象Computeに対するコマンド実行を許可するポリシー</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="2-2-3-ポリシーの設定">2-2-3 ポリシーの設定</h4>
+
+<p>ここでは、<a href="/ocitutorials/cloud-native/devops-for-commons/">事前準備</a>で設定したポリシーに今回のハンズオンで必要となるポリシーを作成していきます。</p>
+
+<p>Cloud Shellを起動し、以下のコマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x devops-template-for-compute/prepare/prepare.sh
+</code></pre></div></div>
+
+<p>スクリプトを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./devops-template-for-compute/prepare/prepare.sh
+</code></pre></div></div>
+
+<p><strong><em>コマンド結果</em></strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxxxx.xxxxxx@gmail.com"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2022-01-31T01:35:54.465Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group_Compute"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"matching-rule"</span>: <span class="s2">"any {instance.compartment.id = 'ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group_Compute"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-11-18T07:41:50.880000+00:00"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"66c9058cf8f1145ce9047130c4a266d816e9dfbf"</span>
+<span class="o">}</span>
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxxxxxxxxx@xxxxx"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2021-11-18T07:41:50.746Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.policy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
+    <span class="s2">"statements"</span>: <span class="o">[</span>
+      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group_Compute to manage instance-agent-command-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group_Compute to use instance-agent-command-execution-family in compartment id ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>
+    <span class="o">]</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-11-18T07:41:50.880000+00:00"</span>,
+    <span class="s2">"version-date"</span>: null
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"31c9339700c6132a1b6205df041ad52fcf66be51"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>これで、ポリシーの設定は完了です。</p>
+
+<h3 id="2-3devopsの設定">2-3.DevOpsの設定</h3>
+
+<p>ここでは、デプロイ先である「環境」の登録、DevOps上のGitレポジトリ、ビルド成果物/デプロイメント構成ファイルを格納するためのアーティファクト・レジストリの設定を行います。</p>
+
+<h4 id="2-3-1-環境の登録">2-3-1 環境の登録</h4>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。</p>
+
+<p><img src="2-1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>プロジェクトをクリックします。</p>
+
+<p><img src="2-2.png" alt="" /></p>
+
+<p>左側にある<code class="language-plaintext highlighter-rouge">DevOpsプロジェクト・リソース</code>から<code class="language-plaintext highlighter-rouge">環境</code>を選択します。</p>
+
+<p><img src="2-3.png" alt="" /></p>
+
+<p><img src="2-4.png" alt="" />をクリックします。</p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>環境タイプ</td>
+      <td>インスタンスグループ</td>
+    </tr>
+    <tr>
+      <td>名前</td>
+      <td>Compute</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="2-5.png" alt="" /></p>
+
+<p><img src="2-6.png" alt="" />をクリックします。</p>
+
+<p><img src="2-7.png" alt="" />をクリックします。</p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>リージョン</td>
+      <td>お使いのリージョンを選択</td>
+    </tr>
+    <tr>
+      <td>コンパートメント</td>
+      <td>お使いのコンパートメント(通常はルートコンパートメント)を選択</td>
+    </tr>
+    <tr>
+      <td>インスタンス</td>
+      <td>先ほど構築した<code class="language-plaintext highlighter-rouge">devops-instance</code>にチェック</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="2-8.png" alt="" /></p>
+
+<p><img src="2-7.png" alt="" />をクリックします。</p>
+
+<p><img src="2-4.png" alt="" />をクリックします。</p>
+
+<p>これで環境の作成は完了です。</p>
+
+<h4 id="2-3-2-gitレポジトリの作成">2-3-2 Gitレポジトリの作成</h4>
+
+<p>ここでは、Gitレポジトリの作成を行います。</p>
+
+<p>OCI DevOpsの「コード・リポジトリ」では、独自のプライベート・コード・リポジトリをOCI DevOps上に作成します。</p>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。</p>
+
+<p><img src="2-1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>プロジェクトをクリックします。</p>
+
+<p><img src="2-2.png" alt="" /></p>
+
+<p>左側にある<code class="language-plaintext highlighter-rouge">DevOpsプロジェクト・リソース</code>から<code class="language-plaintext highlighter-rouge">コード・レポジトリ</code>を選択します。</p>
+
+<p><img src="2-13.png" alt="" /></p>
+
+<p>「リポジトリの作成」ボタンをクリックします。</p>
+
+<p><img src="2-10.png" alt="" /></p>
+
+<p>「リポジトリ名」に「oci-devops-handson」と入力して、「リポジトリの作成」ボタンをクリックします。</p>
+
+<p><img src="2-11.png" alt="" /></p>
+
+<p><img src="2-12.png" alt="" /></p>
+
+<p>次に、プッシュ先を取得するために「クローン」ボタンをクリックします。</p>
+
+<p><img src="2-14.png" alt="" /></p>
+
+<p>「HTTPSでクローニングします 読取り専用」にある「コピー」をクリックして、「閉じる」ボタンをクリックします。コピーした内容は、テキストエディタにペーストしておきます。</p>
+
+<p><img src="2-15.png" alt="" /></p>
+
+<p>Cloud Shellを利用して、「oci-devops-handson」リポジトリをプルします。<br />
+リポジトリのURLは、先ほどテキストエディタにペーストしたURLを指定します。
+「xxxxxxxxxx」箇所はご自身の環境に合わせて置き換えてください。</p>
+
+<p>以上で、レポジトリの作成は完了です。</p>
+
+<h4 id="2-3-3-サンプルアプリケーションのpush">2-3-3 サンプルアプリケーションのPush</h4>
+
+<p>ここでは、サンプルアプリケーションを先ほど作成したGitレポジトリにPushします。</p>
+
+<p>「oci-devops-handson」リポジトリを利用する上で、ユーザ名とパスワードが必要となります。</p>
+
+<p>ユーザ名は、<code class="language-plaintext highlighter-rouge">&lt;テナンシ名&gt;/&lt;ユーザ名&gt;</code> となります。</p>
+
+<p>＜ユーザ名＞を確認します。ユーザ名は右上にある「プロファイル」アイコンをクリックして、プロファイル名を選択します。</p>
+
+<p><img src="2-16.png" alt="" /></p>
+
+<p>「ユーザーの詳細画面」の赤枠箇所をコピーして、テキストエディタにペーストしておきます。</p>
+
+<p><img src="2-17.png" alt="" /></p>
+
+<p>次に、＜テナンシ名＞を確認します。</p>
+
+<p>右上にある「プロファイル」アイコンをクリックして、「テナンシ」を選択します。</p>
+
+<p><img src="2-18.png" alt="" /></p>
+
+<p>「テナンシ詳細」の「名前」赤枠箇所をコピーして、テキストエディタにペーストしておきます。<br />
+また、後続手順で必要となる「オブジェクト・ストレージ・ネームスペース」の赤枠箇所もコピーして、テキストエディタにペーストしておきます。</p>
+
+<p><img src="2-19.png" alt="" /></p>
+
+<p>以下、テキストエディタにペーストした内容に当てはめて利用します。</p>
+
+<p>ユーザ名：<code class="language-plaintext highlighter-rouge">&lt;テナンシ名&gt;/&lt;ユーザ名&gt;</code></p>
+
+<p>パスワードは、事前準備で作成した <code class="language-plaintext highlighter-rouge">認証トークン</code> を利用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com/namespaces/xxxxxxxxxx/projects/oci-devops-handson/repositories/oci-devops-handson
+</code></pre></div></div>
+<p>ユーザ名は、先ほど確認した内容、パスワードは事前準備で作成した認証トークンを入力します。<br />
+※パスワードは入力時に表示されません。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Username <span class="k">for</span> <span class="s1">'https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com'</span>: xxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@oracle.com
+Password <span class="k">for</span> <span class="s1">'https://xxxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@oracle.com@devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com'</span>:
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>remote: Counting objects: 2, <span class="k">done
+</span>remote: Finding sources: 100% <span class="o">(</span>2/2<span class="o">)</span>
+remote: Getting sizes: 100% <span class="o">(</span>1/1<span class="o">)</span>
+remote: Total 2 <span class="o">(</span>delta 0<span class="o">)</span>, reused 2 <span class="o">(</span>delta 0<span class="o">)</span>
+Unpacking objects: 100% <span class="o">(</span>2/2<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>
+</code></pre></div></div>
+
+<p>「oci-devops-handson」ディレクトリがあることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span>
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci-devops-handson  oci-devops-compute  compute%2Foci-devops-compute.zip
+</code></pre></div></div>
+
+<p>ダウンロードしたサンプルコードを「oci-devops-handson」ディレクトリにコピーします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="nt">-R</span> oci-devops-compute/<span class="k">*</span> ./oci-devops-handson
+</code></pre></div></div>
+
+<p>コミットしてからプッシュします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ./oci-devops-handson
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add <span class="nt">-A</span> <span class="nb">.</span>
+</code></pre></div></div>
+<p>「＜email＞」任意のメールアドレス、「＜user_name＞」任意のユーザ名を入力してください。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--global</span> user.email <span class="s2">"&lt;email&gt;"</span>
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--global</span> user.name <span class="s2">"&lt;user_name&gt;"</span>
+</code></pre></div></div>
+<p>コミットします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git commit <span class="nt">-m</span> <span class="s2">"first commit"</span>
+</code></pre></div></div>
+<p><strong>コマンド結果</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>main e964068] first commit
+ 6 files changed, 111 insertions<span class="o">(</span>+<span class="o">)</span>
+ create mode 100644 Dockerfile
+ create mode 100644 README.md
+ create mode 100644 build_spec.yaml
+ create mode 100644 content.html
+ create mode 100644 deploy.yaml
+ create mode 100755 prepare/prepare.sh
+</code></pre></div></div>
+<p>mainブランチを指定します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch <span class="nt">-M</span> main
+</code></pre></div></div>
+<p>リポジトリにプッシュします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push <span class="nt">-u</span> origin main
+</code></pre></div></div>
+<p>ユーザ名は、先ほど確認した内容、パスワードは事前準備で作成した認証トークンを入力します。<br />
+※パスワードは入力時に表示されません。</p>
+
+<p><strong>コマンド結果</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Username <span class="k">for</span> <span class="s1">'https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com'</span>: xxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@oracle.com
+Password <span class="k">for</span> <span class="s1">'https://xxxxxxxxxx/oracleidentitycloudservice/xxxxxx.xxxxxxxx@oracle.com@devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com'</span>:
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Counting objects: 10, <span class="k">done</span><span class="nb">.</span>
+Delta compression using up to 2 threads.
+Compressing objects: 100% <span class="o">(</span>8/8<span class="o">)</span>, <span class="k">done</span><span class="nb">.</span>
+Writing objects: 100% <span class="o">(</span>9/9<span class="o">)</span>, 1.93 KiB | 0 bytes/s, <span class="k">done</span><span class="nb">.</span>
+Total 9 <span class="o">(</span>delta 0<span class="o">)</span>, reused 0 <span class="o">(</span>delta 0<span class="o">)</span>
+To https://devops.scmservice.xx-xxxxxx-1.oci.oraclecloud.com/namespaces/xxxxxxxxxx/projects/oci-devops-handson/repositories/oci-devops-handson
+   b52f2cd..d16bcff  main -&gt; main
+Branch main <span class="nb">set </span>up to track remote branch main from origin.
+</code></pre></div></div>
+
+<p>ホームディレクトリに戻っておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
+<p>以上で、サンプルアプリケーションのPushは完了です。</p>
+
+<h4 id="2-3-4-アーティファクトレジストリの作成とデプロイメント構成ファイルの登録">2-3-4 アーティファクト・レジストリの作成とデプロイメント構成ファイルの登録</h4>
+
+<p>OCI DevOpsからComputeにデプロイする際に利用するデプロイメント構成ファイルをアーティファクト・レジストリに登録します。</p>
+
+<p>この登録した構成ファイルを利用して、OCI DevOpsから自動でComputeにデプロイすることが可能になります。</p>
+
+<p>アーティファクト・レジストリを作成します。
+左上のハンバーガーメニューをクリックして、「開発者サービス」-「アーティファクト・レジストリ」を選択します。</p>
+
+<p><img src="2-20.png" alt="" /></p>
+
+<p>「リポジトリの作成」ボタンをクリックします。</p>
+
+<p><img src="2-21.png" alt="" /></p>
+
+<p>「名前」に「artifact-repository」と入力、「不変アーティファクト」のチェックを外します。</p>
+
+<p><img src="2-22.png" alt="" /></p>
+
+<p>「作成」ボタンをクリックします。</p>
+
+<p><img src="2-23.png" alt="" /></p>
+
+<p>「アーティファクトのアップロード」ボタンをクリックします。</p>
+
+<p><img src="2-27.png" alt="" /></p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>アーティファクト・パス</td>
+      <td>deploy_spec.yaml</td>
+    </tr>
+    <tr>
+      <td>バージョン</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>Upload method</td>
+      <td><code class="language-plaintext highlighter-rouge">Cloud Shell</code>を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>入力後、「Lanunch Cloud Shell」ボタンをクリックして、「コピー」をクリックします。
+コピーしたコマンドを起動したCloud Shell上にペーストします。</p>
+
+<p><img src="2-28.png" alt="" /></p>
+
+<p>「./＜file-name＞」を「./oci-devops-compute/deploy_spec.yaml」に書き換えて、Enterキーを押します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci artifacts generic artifact upload-by-path <span class="se">\</span>
+<span class="o">&gt;</span>   <span class="nt">--repository-id</span> ocid1.artifactrepository.oc1.xx-xxxxxx-1.0.amaaaaaassl65iqaluitbpvjd5inibwke4axtb7l4so6jgvsywlh5m2ohgca <span class="se">\</span>
+<span class="o">&gt;</span>   <span class="nt">--artifact-path</span> deploy_spec.yaml <span class="se">\</span>
+<span class="o">&gt;</span>   <span class="nt">--artifact-version</span> 1.0 <span class="se">\</span>
+<span class="o">&gt;</span>   <span class="nt">--content-body</span> ./oci-devops-compute/deploy_spec.yaml <span class="c">#file-nameから変更します。</span>
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"artifact-path"</span>: <span class="s2">"deploy_spec.yaml"</span>,
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"display-name"</span>: <span class="s2">"deploy_spec.yaml:1"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.genericartifact.oc1.xx-xxxxxx-1.0.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"AVAILABLE"</span>,
+    <span class="s2">"repository-id"</span>: <span class="s2">"ocid1.artifactrepository.oc1.xx-xxxxxx-1.0.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span>,
+    <span class="s2">"sha256"</span>: <span class="s2">"faa5ffec716cf718b5a1a3a5b4ced0e12c2c59151d3ff6fcab0cf0d324e3ca07"</span>,
+    <span class="s2">"size-in-bytes"</span>: 574,
+    <span class="s2">"time-created"</span>: <span class="s2">"2021-11-22T05:23:24.150000+00:00"</span>,
+    <span class="s2">"version"</span>: <span class="s2">"1.0"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>「閉じる」ボタンをクリックします。</p>
+
+<p>これで、アーティファクト・レジストリの作成とデプロイメント構成ファイルの登録は完了です。</p>
+
+<h4 id="2-3-5-アーティファクトレジストリの登録">2-3-5 アーティファクト・レジストリの登録</h4>
+
+<p>OCI DevOpsでセットアップしたアOCIRとアーティファクト・レジストリを利用できるように設定を行います。</p>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。<br />
+<img src="2-1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>プロジェクトを選択します。</p>
+
+<p><img src="2-2.png" alt="" /></p>
+
+<p>左側にある<code class="language-plaintext highlighter-rouge">DevOpsプロジェクト・リソース</code>から<code class="language-plaintext highlighter-rouge">アーティファクト</code>を選択します。</p>
+
+<p><img src="2-25.png" alt="" /></p>
+
+<p>「アーティファクトの追加」ボタンをクリックします。</p>
+
+<p><img src="2-26.png" alt="" /></p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>名前</td>
+      <td>deployment_spec</td>
+    </tr>
+    <tr>
+      <td>タイプ</td>
+      <td>インスタンス・グループ・デプロイメント構成</td>
+    </tr>
+    <tr>
+      <td>アーティファクト・ソース</td>
+      <td>アーティファクト・レジストリ・レポジトリ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">アーティファクト・レジストリ・リポジトリの選択</code>で<code class="language-plaintext highlighter-rouge">選択</code>をクリックし、<code class="language-plaintext highlighter-rouge">artifact-repository</code>をチェック、<img src="2-30.png" alt="" />をクリックします。</p>
+
+<p><img src="2-29.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">アーティファクトの選択</code>で<code class="language-plaintext highlighter-rouge">選択</code>をクリックし、<code class="language-plaintext highlighter-rouge">deploy_spec.yaml:1.0</code>にチェック、<img src="2-30.png" alt="" />をクリックします。</p>
+
+<p><img src="2-31.png" alt="" /></p>
+
+<p>最後に<img src="2-33.png" alt="" />をクリックします。</p>
+
+<p><img src="2-32.png" alt="" /></p>
+
+<p>再度、「アーティファクトの追加」ボタンをクリックします。</p>
+
+<p><img src="2-26.png" alt="" /></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>名前</td>
+      <td>devops-demo-app-jar</td>
+    </tr>
+    <tr>
+      <td>タイプ</td>
+      <td>汎用アーティファクト</td>
+    </tr>
+    <tr>
+      <td>アーティファクト・ソース</td>
+      <td>アーティファクト・レジストリ・レポジトリ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">アーティファクト・レジストリ・リポジトリの選択</code>で<code class="language-plaintext highlighter-rouge">選択</code>をクリックし、<code class="language-plaintext highlighter-rouge">artifact-repository</code>をチェック、<img src="2-30.png" alt="" />をクリックします。</p>
+
+<p><img src="2-29.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">アーティファクトの場所</code>で<code class="language-plaintext highlighter-rouge">カスタムの場所の設定</code>を選択します。</p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>アーティファクト・パス</td>
+      <td>devops-demo-app-1.0.jar</td>
+    </tr>
+    <tr>
+      <td>バージョン</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最後に<img src="2-34.png" alt="" /></p>
+
+<p>最後に<img src="2-33.png" alt="" />をクリックします。</p>
+
+<p>これで、アーティファクト・レジストリの登録は完了です。</p>
+
+<h2 id="3-ciパイプラインとcdパイプラインの作成">3. CIパイプラインとCDパイプラインの作成</h2>
+
+<p>ここからは、CI/CDパイプラインを構築していきます。</p>
+
+<p><img src="2-77.png" alt="" /></p>
+
+<h3 id="3-1-ciパイプラインの構築">3-1 CIパイプラインの構築</h3>
+
+<p>まずは、CIパイプラインを構築します。</p>
+
+<p>OCI DevOpsで利用する仮想マシン上で、コード・リポジトリからソースをダウンロードして、Mavenビルド、アーティファクト・レポジトリにJarファイルを格納という一連の流れをビルド・パイプラインとして作成します。<br />
+最初にコンテナイメージビルドを行う「マネージド・ビルド」ステージを作成します。</p>
+
+<p>「ビルド・パイプラインの作成」ボタンをクリックします。</p>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。</p>
+
+<p><img src="2-1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>プロジェクトをクリックします。</p>
+
+<p><img src="2-2.png" alt="" /></p>
+
+<p>左側にある<code class="language-plaintext highlighter-rouge">DevOpsプロジェクト・リソース</code>から<code class="language-plaintext highlighter-rouge">ビルドパイプライン</code>を選択します。</p>
+
+<p><img src="2-35.png" alt="" /></p>
+
+<p>「ビルド・パイプラインの作成」ボタンをクリックします。</p>
+
+<p><img src="2-36.png" alt="" /></p>
+
+<p>「名前」に「build-pipeline」と入力します。</p>
+
+<p><img src="2-37.png" alt="" /></p>
+
+<p>「作成」ボタンをクリックします。</p>
+
+<p><img src="2-38.png" alt="" /></p>
+
+<p>「build-pipeline」をクリックします。</p>
+
+<p><img src="2-39.png" alt="" /></p>
+
+<p>「ステージの追加」をクリックします。</p>
+
+<p><img src="2-40.png" alt="" /></p>
+
+<p>「マネージドビルド」を選択します。</p>
+
+<p><img src="2-41.png" alt="" /></p>
+
+<p>「次」ボタンをクリックします。</p>
+
+<p><img src="2-42.png" alt="" /></p>
+
+<p>以下の設定を行って、「選択」ボタンをクリックします。<br />
+「build_spec.yaml」は、ビルド・パイプラインが処理を行う仮想マシン内で実行するコマンドタスクを定義してあるファイルです。<br />
+この定義ファイルにアプリケーションテストやコンテナイメージビルドなどビルド時に実施したいタスクを定義します。</p>
+
+<p>ここでは、定義済みの「build_spec.yaml」ファイルを登録します。</p>
+
+<ul>
+  <li>ステージ名: mvn-build</li>
+  <li>ビルド指定ファイル・パス オプション: build_spec.yaml</li>
+</ul>
+
+<p><img src="2-43.png" alt="" /></p>
+
+<p>「プライマリ・コード・リポジトリの選択」画⾯で、以下の設定を行います。</p>
+
+<ul>
+  <li>接続タイプ: OCIコード・リポジトリ</li>
+  <li>「oci-devops-handson」</li>
+  <li>ソース名の作成: main</li>
+</ul>
+
+<p><img src="2-44.png" alt="" /></p>
+
+<p>「保存」ボタンをクリックします。</p>
+
+<p><img src="2-45.png" alt="" /></p>
+
+<p>「ステージの追加」画⾯に戻ってから、「追加」ボタンをクリックします。</p>
+
+<p><img src="2-46.png" alt="" /></p>
+
+<p>次に、ビルドしたJarファイルをアーティファクト・レポジトリに格納する「アーティファクトの配信」ステージを作成します。
+プラス部分をクリックして、「ステージの追加」を選択します。</p>
+
+<p><img src="2-47.png" alt="" /></p>
+
+<p>「アーティファクトの配信」を選択します。</p>
+
+<p><img src="2-48.png" alt="" /></p>
+
+<p>「次」ボタンをクリックします。</p>
+
+<p><img src="2-42.png" alt="" /></p>
+
+<p>「ステージ名」に「jarfile-ship」と入力して、「アーティファクトの選択」ボタンをクリックします。</p>
+
+<p><img src="2-49.png" alt="" /></p>
+
+<p>「devops-demo-app-jar」にチェックを入れます。</p>
+
+<p><img src="2-50.png" alt="" /></p>
+
+<p>「追加」ボタンをクリックします。</p>
+
+<p><img src="2-51.png" alt="" /></p>
+
+<p>「ビルド構成/結果アーティファクト名」に「handson_jar」と入力します。</p>
+
+<p><img src="2-52.png" alt="" /></p>
+
+<p>「追加」ボタンをクリックします。</p>
+
+<p><img src="2-46.png" alt="" /></p>
+
+<p>これで、CIパイプラインの構築は完了です。</p>
+
+<h3 id="3-2-cdパイプラインの構築">3-2 CDパイプラインの構築</h3>
+
+<p>ここからは、CDパイプラインを構築します。</p>
+
+<p>ここからはComputeインスタンスに対して、アーティファクト・レポジトリに格納したJarファイルをデプロイするデプロイメントパイプラインを構築していきます。</p>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。</p>
+
+<p><img src="2-1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>プロジェクトをクリックします。</p>
+
+<p><img src="2-2.png" alt="" /></p>
+
+<p>左側にある<code class="language-plaintext highlighter-rouge">DevOpsプロジェクト・リソース</code>から<code class="language-plaintext highlighter-rouge">デプロイメント・パイプライン</code>を選択します。</p>
+
+<p><img src="2-53.png" alt="" /></p>
+
+<p><img src="2-54.png" alt="" />をクリックします。</p>
+
+<p>以下の項目を入力し、<img src="2-54.png" alt="" />をクリックします。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>パイプライン名</td>
+      <td>deploy-pipeline</td>
+    </tr>
+    <tr>
+      <td>パイプライン・タイプ</td>
+      <td><code class="language-plaintext highlighter-rouge">デプロイメント・パイプラインの作成</code>を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">ステージの追加</code>をクリックします。</p>
+
+<p><img src="2-56.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">コンピュート・インスタンス・グループを使用して増分的にデプロイ</code>を選択します。</p>
+
+<p><img src="2-57.png" alt="" /></p>
+
+<p><img src="2-58.png" alt="" />をクリックします。</p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>ステージ名</td>
+      <td>compute-deploy</td>
+    </tr>
+    <tr>
+      <td>環境</td>
+      <td><code class="language-plaintext highlighter-rouge">Compute</code>を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="2-59.png" alt="" />をクリックします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">deployment_spec</code>を選択します。</p>
+
+<p><img src="2-60.png" alt="" /></p>
+
+<p><img src="2-61.png" alt="" />をクリックします。</p>
+
+<p>その下部の<img src="2-59.png" alt="" />をクリックします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">devops-demo-app-jar</code>を選択します。</p>
+
+<p><img src="2-62.png" alt="" /></p>
+
+<p><img src="2-61.png" alt="" />をクリックします。</p>
+
+<p>以下のように表示されます。</p>
+
+<p><img src="2-63.png" alt="" /></p>
+
+<p>下にスクロールし、<code class="language-plaintext highlighter-rouge">インスタンス・ロールアウト</code>に<code class="language-plaintext highlighter-rouge">100</code>を入力します。</p>
+
+<p><img src="2-64.png" alt="" /></p>
+
+<p><img src="2-65.png" alt="" />をクリックします。</p>
+
+<p>これで、CDパイプラインの構築は完了です。</p>
+
+<h3 id="3-3-ciパイプラインとcdパイプラインの接続">3-3 CIパイプラインとCDパイプラインの接続</h3>
+
+<p>ここからは、CIパイプラインからCDパイプラインをキックする設定を追加し、CI/CDパイプラインを接続していきます。</p>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。</p>
+
+<p><img src="2-1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>プロジェクトをクリックします。</p>
+
+<p><img src="2-2.png" alt="" /></p>
+
+<p>左側にある<code class="language-plaintext highlighter-rouge">DevOpsプロジェクト・リソース</code>から<code class="language-plaintext highlighter-rouge">ビルドパイプライン</code>を選択します。</p>
+
+<p><img src="2-35.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">build-pipeline</code>をクリックします。</p>
+
+<p><img src="2-66.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">jarfile-ship</code>ステージの下部にあるプラスボタンをクリックします。</p>
+
+<p><img src="2-67.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">ステージの追加</code>をクリックします。</p>
+
+<p><img src="2-68.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">デプロイメントのトリガー</code>を選択し、<img src="2-70.png" alt="" />をクリックします。</p>
+
+<p><img src="2-69.png" alt="" /></p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>項目</td>
+      <td>入力内容</td>
+    </tr>
+    <tr>
+      <td>ステージ名</td>
+      <td>deploy_call</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="2-71.png" alt="" />をクリックします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">deploy-pipeline</code>を選択します。</p>
+
+<p><img src="2-72.png" alt="" /></p>
+
+<p><img src="2-73.png" alt="" />をクリックします。</p>
+
+<p><img src="2-75.png" alt="" /></p>
+
+<p><img src="2-65.png" alt="" />をクリックします。</p>
+
+<p>これで、CIパイプラインとCDパイプラインの接続は完了です。　　</p>
+
+<h3 id="3-4-トリガーの作成">3-4 トリガーの作成</h3>
+
+<p>ここでは、OCI DevOps上のGitレポジトリへの変更をトリガーにしてCIパイプラインを起動させるための設定を行います。</p>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。</p>
+
+<p><img src="2-1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>プロジェクトをクリックします。</p>
+
+<p><img src="2-2.png" alt="" /></p>
+
+<p>左側にある<code class="language-plaintext highlighter-rouge">DevOpsプロジェクト・リソース</code>から<code class="language-plaintext highlighter-rouge">トリガー</code>を選択します。</p>
+
+<p><img src="2-76.png" alt="" /></p>
+
+<p>「トリガーの作成」ボタンをクリックします。</p>
+
+<p><img src="1-111.png" alt="" /></p>
+
+<p>以下の設定をして、「選択」ボタンをクリックします。</p>
+
+<ul>
+  <li>名前: push-trigger</li>
+  <li>ソース接続:OCIコード・リポジトリ</li>
+</ul>
+
+<p><img src="1-112.png" alt="" /></p>
+
+<p>「oci-devops-handson」にチェックを入れます。</p>
+
+<p><img src="1-113.png" alt="" /></p>
+
+<p>「保存」ボタンをクリックします。</p>
+
+<p><img src="1-098.png" alt="" /></p>
+
+<p>「アクションの追加」をボタンをクリックします。</p>
+
+<p><img src="1-114.png" alt="" /></p>
+
+<p>「選択」ボタンをクリックします。</p>
+
+<p><img src="1-115.png" alt="" /></p>
+
+<p>「build-pipeline」にチェックを入れます。</p>
+
+<p><img src="1-116.png" alt="" /></p>
+
+<p>「保存」ボタンをクリックします。</p>
+
+<p><img src="1-098.png" alt="" /></p>
+
+<p>「イベント オプション」で「プッシュ」にチェックを入れます。</p>
+
+<p><img src="1-117.png" alt="" /></p>
+
+<p>「保存」ボタンをクリックします。</p>
+
+<p><img src="1-098.png" alt="" /></p>
+
+<p>「トリガーの作成」画⾯に戻ってから、「作成」ボタンをクリックします。</p>
+
+<p><img src="1-016.png" alt="" /></p>
+
+<p>登録できたことを確認します。</p>
+
+<p><img src="1-118.png" alt="" /></p>
+
+<p>以上で、トリガーの作成は完了です。</p>
+
+<h2 id="4パイプラインの実行">4.パイプラインの実行</h2>
+
+<p>前の手順までで、アプリケーションコードに対する変更がコード・リポジトリの更新（git push）をトリガーとし自動的にComputeへデプロイするCI/CD パイプラインの構築ができたので、動作確認をします。　　</p>
+
+<p>まずは、アプリケーションコードを変更します。　　
+今回は、アプリケーションで利用するヘッダー画像の変更を行います。</p>
+
+<p><a href="/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備">Cloud Shellを起動</a>します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">oci-devops-handson</code>ディレクトリに移動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>oci-devops-handson
+</code></pre></div></div>
+
+<p>以下のコマンドを実行し、イメージファイルを更新します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp </span>src/main/resources/static/images/header_new.jpg src/main/resources/static/images/header.jpg 
+</code></pre></div></div>
+
+<p>リポジトリへCommitします。　　</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add <span class="nb">.</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git commit <span class="nt">-m</span> <span class="s2">"トップページのイメージを変更"</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push
+</code></pre></div></div>
+
+<p>これで、自動的にパイプラインが実行されます。</p>
+
+<p>パイプラインの起動状況を確認します。</p>
+
+<p>ここからはComputeインスタンスに対して、アーティファクト・レポジトリに格納したJarファイルをデプロイするデプロイメントパイプラインを構築していきます。</p>
+
+<p>ハンバーガメニューから、<code class="language-plaintext highlighter-rouge">開発者メニュー</code>からDevOpsカテゴリの<code class="language-plaintext highlighter-rouge">プロジェクト</code>をクリックします。</p>
+
+<p><img src="2-1.png" alt="" /></p>
+
+<p>次に、「DevOpsプロジェクト・リソース」にある「ビルド履歴」をクリックします。</p>
+
+<p><img src="4-1.png" alt="" /></p>
+
+<p>ビルド履歴の一覧に先ほどのgit pushでトリガされた履歴が表示されます。</p>
+
+<p><img src="4-2.jpg" alt="" /></p>
+
+<p>次に、「DevOpsプロジェクト・リソース」にある「デプロイメント」をクリックします。</p>
+
+<p><img src="4-3.png" alt="" /></p>
+
+<p>以下のように、ステータスが「成功」になるまで、待機します。(しばらく時間がかかります)</p>
+
+<p><img src="4-4.jpg" alt="" /></p>
+
+<p>デプロイメントが完了したら、ComputeのパブリックIPにブラウザからアクセスしましょう。<br />
+今回のサンプルアプリケーションは<code class="language-plaintext highlighter-rouge">8080</code>ポートで起動させているので、例えば以下のようなURLになります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://146.123.xxx.xxx:8080
+</code></pre></div></div>
+
+<p>以下のようにアプリケーションが表示されます。</p>
+
+<p><img src="4-5.jpg" alt="" /></p>
+
+<p>このように、コードレポジトリの変更をトリガーに自動的にアプリケーションのビルドを行い、Computeに対してデプロイするパイプラインを作成できました。</p>
+
+<p>以上で、このハンズオンは終了です。<br />
+お疲れ様でした！</p>
+
+<h2 id="5オプションビルド構成ファイルとデプロイメント構成ファイルの解説">5.【オプション】ビルド構成ファイルとデプロイメント構成ファイルの解説</h2>
+
+<p>ここでは、ハンズオンの中で利用したビルド構成ファイル(<code class="language-plaintext highlighter-rouge">build_spec.yaml</code>)とデプロイメント構成ファイル(<code class="language-plaintext highlighter-rouge">deploy_spec.yaml</code>)の解説を行います。</p>
+<h3 id="5-1-ビルド構成ファイルbuild_specyamlの解説">5-1 ビルド構成ファイル(<code class="language-plaintext highlighter-rouge">build_spec.yaml</code>)の解説</h3>
+
+<p>今回のハンズオンでは、サンプルアプリケーションの中に予めビルド構成ファイル(<code class="language-plaintext highlighter-rouge">build_spec.yaml</code>)を用意していました。　　</p>
+
+<p>このファイルは、OCI DevOpsでビルドステップを定義する際に必ず必要になるファイルです。</p>
+
+<p>ハンズオンの中では、<a href="#3-1-ciパイプラインの構築">3-1 CIパイプラインの構築</a>内の手順で利用しました。</p>
+
+<p>ファイルは以下のようになっています。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">0.1</span>
+<span class="na">component</span><span class="pi">:</span> <span class="s">build</span>                    
+<span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="s">10000</span>             
+<span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>                         
+<span class="na">shell</span><span class="pi">:</span> <span class="s">bash</span>                                  
+   
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Maven</span><span class="nv"> </span><span class="s">Build"</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
+      <span class="s">mvn package</span>
+    <span class="na">onFailure</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
+        <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">echo "Failured Maven Build"</span>
+        <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">10000</span>
+        <span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>
+
+<span class="na">outputArtifacts</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">handson_jar</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">BINARY</span>
+    <span class="na">location</span><span class="pi">:</span> <span class="s">${OCI_PRIMARY_SOURCE_DIR}/target/devops-demo-app-1.0.jar</span>
+</code></pre></div></div>
+
+<p>今回はビルドステップ内で行うタスクは1つだけになっており、</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Maven</span><span class="nv"> </span><span class="s">Build"</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
+      <span class="s">mvn package</span>
+    <span class="na">onFailure</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
+        <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
+          <span class="s">echo "Failured Maven Build"</span>
+        <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">10000</span>
+        <span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>
+</code></pre></div></div>
+
+<p>の部分で定義しています。</p>
+
+<p>このステップでは<code class="language-plaintext highlighter-rouge">mvn package</code>コマンドを叩いて、ビルドを行っています。</p>
+
+<p>このビルドステップで出力された成果物(今回は<code class="language-plaintext highlighter-rouge">target/devops-demo-app-1.0.jar</code>に出力されます)を</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">outputArtifacts</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">handson_jar</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">BINARY</span>
+    <span class="na">location</span><span class="pi">:</span> <span class="s">${OCI_PRIMARY_SOURCE_DIR}/target/devops-demo-app-1.0.jar</span>
+</code></pre></div></div>
+
+<p>の部分で<code class="language-plaintext highlighter-rouge">handson_jar</code>という名前のバイナリファイル(<code class="language-plaintext highlighter-rouge">type: BINARY</code>)として出力しています。</p>
+
+<p>この<code class="language-plaintext highlighter-rouge">handson_jar</code>という成果物を<a href="#3-1-ciパイプラインの構築">3-1 CIパイプラインの構築</a>の手順内の<code class="language-plaintext highlighter-rouge">ビルド構成/結果アーティファクト名</code>で指定し、アーティファクト・レポジトリにアップロードしました。　　</p>
+
+<p>以上で、ビルド構成ファイル(<code class="language-plaintext highlighter-rouge">build_spec.yaml</code>)の解説は終了です。</p>
+
+<p class="notice--info"><strong>ビルド構成ファイルについて</strong><br />
+ビルド構成ファイルの詳細については、<a href="https://docs.oracle.com/ja-jp/iaas/Content/devops/using/build_specs.htm">こちらのドキュメント</a>をご確認ください。</p>
+
+<h3 id="5-2-デプロイメント構成ファイルdeploy_specyamlの解説">5-2 デプロイメント構成ファイル(<code class="language-plaintext highlighter-rouge">deploy_spec.yaml</code>)の解説</h3>
+
+<p>今回のハンズオンでは、サンプルアプリケーションの中に予めデプロイメント構成ファイル(<code class="language-plaintext highlighter-rouge">deploy_spec.yaml</code>)を用意していました。</p>
+
+<p>このファイルは、コンピュートインスタンスにデプロイする場合のみ必要になるファイルです。　　</p>
+
+<p>ハンズオンの中では、<a href="#2-3-4-アーティファクトレジストリの作成とデプロイメント構成ファイルの登録">2-3-4 アーティファクト・レジストリの作成とデプロイメント構成ファイルの登録</a>でアーティファクト・レポジトリにアップロードし、<a href="#3-2-cdパイプラインの構築">3-1 CDパイプラインの構築</a>内の手順で利用しました。</p>
+
+<p>ファイルは以下のようになっています。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">1.0</span>
+<span class="na">component</span><span class="pi">:</span> <span class="s">deployment</span>
+<span class="na">files</span><span class="pi">:</span>  
+  <span class="pi">-</span> <span class="na">source</span><span class="pi">:</span> <span class="s">/</span>
+    <span class="na">destination</span><span class="pi">:</span> <span class="s">/tmp/</span>
+<span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">stepType</span><span class="pi">:</span> <span class="s">Command</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">Start Application</span>
+    <span class="na">command</span><span class="pi">:</span>  <span class="s">nohup java -jar /tmp/devops-demo-app-1.0.jar &amp;</span>
+    <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">600</span>
+</code></pre></div></div>
+
+<p>今回は、デプロイメントステップは一つのみとなっており、</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">steps</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">stepType</span><span class="pi">:</span> <span class="s">Command</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">Start Application</span>
+    <span class="na">command</span><span class="pi">:</span>  <span class="s">nohup java -jar /tmp/devops-demo-app-1.0.jar &amp;</span>
+    <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">600</span>
+</code></pre></div></div>
+
+<p>の部分で定義しています。</p>
+
+<p>このデプロイメントステップでは、<code class="language-plaintext highlighter-rouge">nohup java -jar /tmp/devops-demo-app-1.0.jar &amp;</code>コマンドでアプリケーション(Jarファイル)をバックグラウンド実行しています。</p>
+
+<p>また、</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">files</span><span class="pi">:</span>  
+  <span class="pi">-</span> <span class="na">source</span><span class="pi">:</span> <span class="s">/</span>
+    <span class="na">destination</span><span class="pi">:</span> <span class="s">/tmp/</span>
+</code></pre></div></div>
+
+<p>に着目すると、<code class="language-plaintext highlighter-rouge">source: /</code>は指定したアーティファクト・レポジトリに格納された成果物(<code class="language-plaintext highlighter-rouge">/</code>配下)を全てダウンロードしており、
+<code class="language-plaintext highlighter-rouge">destination: /tmp/</code>によって、デプロイ対象のコンピュートインスタンスの<code class="language-plaintext highlighter-rouge">tmp</code>ディレクトリに配置しています。</p>
+
+<p>以上で、デプロイメント構成ファイル(<code class="language-plaintext highlighter-rouge">deploy_spec.yaml</code>)の解説は終了です。</p>
+
+<p class="notice--info"><strong>デプロイメント構成ファイルについて</strong><br />
+デプロイメント構成ファイルの詳細については、<a href="https://docs.oracle.com/ja-jp/iaas/Content/devops/using/deployment_specs.htm">こちらのドキュメント</a>をご確認ください。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-04-06T00:00:00+09:00">April 6, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Cloud+Infrastructure%28OCI%29+DevOps%E3%81%93%E3%81%A8%E3%81%AF%E3%81%98%E3%82%81-Compute%E7%B7%A8-%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fdevops-for-beginners-compute%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fdevops-for-beginners-compute%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fdevops-for-beginners-compute%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/devops-for-commons/" class="pagination--pager" title="Oracle Cloud Infrastructure(OCI) DevOps事前準備
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/devops-for-beginners-oke/" class="pagination--pager" title="Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

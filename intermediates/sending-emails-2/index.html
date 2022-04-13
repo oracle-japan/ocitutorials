@@ -1,0 +1,703 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Email Deliveryを利用した外部へのメール送信(応用編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Email Deliveryを利用した外部へのメール送信(基礎編)でSMTP認証を設定しましたが、それだけでは迷惑メールとみなされてしまう可能性があります。そこで今回のチュートリアルでは送信ドメイン認証であるSPFとDKIMの設定を行い、メールの到達可能性を向上させます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Email Deliveryを利用した外部へのメール送信(応用編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-2/">
+
+
+  <meta property="og:description" content="Email Deliveryを利用した外部へのメール送信(基礎編)でSMTP認証を設定しましたが、それだけでは迷惑メールとみなされてしまう可能性があります。そこで今回のチュートリアルでは送信ドメイン認証であるSPFとDKIMの設定を行い、メールの到達可能性を向上させます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-2/img2.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-04-13T10:57:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-2/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/sending-emails-2/img2.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Email Deliveryを利用した外部へのメール送信(応用編)
+
+        
+      </h1>
+      
+        <p class="page__lead">Email Deliveryを利用した外部へのメール送信(基礎編)でSMTP認証を設定しましたが、それだけでは迷惑メールとみなされてしまう可能性があります。そこで今回のチュートリアルでは送信ドメイン認証であるSPFとDKIMの設定を行い、メールの到達可能性を向上させます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Email Deliveryを利用した外部へのメール送信(応用編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-2/" class="active">Email Deliveryを利用した外部へのメール送信(応用編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/deep-learning-with-gpu/">GPUインスタンスでディープラーニング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/spinup-hpc-cluster/">HPCクラスタを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Email Deliveryを利用した外部へのメール送信(応用編)">
+    <meta itemprop="description" content="Email Deliveryを利用した外部へのメール送信(基礎編)でSMTP認証を設定しましたが、それだけでは迷惑メールとみなされてしまう可能性があります。そこで今回のチュートリアルでは送信ドメイン認証であるSPFとDKIMの設定を行い、メールの到達可能性を向上させます。">
+    <meta itemprop="datePublished" content="2022-04-13T10:57:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-spfの設定">1. SPFの設定</a></li><li><a href="#2-dkimの設定">2. DKIMの設定</a></li><li><a href="#3-おまけ電子メール配信メトリック">3. おまけ（電子メール配信メトリック）</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong>  <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p>このチュートリアルは<a href="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a>の続きになります。
+基礎編ではSMTP認証を使用しました。しかしそれだけではなりすましメールとみなされてしまう可能性があります。応用編ではSPFとDKIMの設定を行いメールの到達可能性を高めます。</p>
+
+<p><strong>所要時間：</strong>　約20分<br />
+<strong>前提条件：</strong></p>
+<ol>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a>が完了していること</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a>が完了していること</li>
+</ol>
+
+<p><strong>注意</strong>: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります</p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-spfの設定">1. SPFの設定</h1>
+
+<p>SPFを設定するには、SPFレコードを既存のDNSサーバーにTXT形式で実装します。</p>
+
+<ol>
+  <li>
+    <p>SPFを確認します。左上のメニューから <strong><code class="language-plaintext highlighter-rouge">開発者サービス → 電子メール配信</code></strong> をクリックして、左側にある <strong><code class="language-plaintext highlighter-rouge">Approved Senders</code></strong> を押します。</p>
+  </li>
+  <li>
+    <p>そして作成した承認済送信者の右側にあるメニューから <strong><code class="language-plaintext highlighter-rouge">SPFの表示</code></strong> ボタンを押します。
+ <img src="img1.png" alt="img1.png" /></p>
+  </li>
+  <li>
+    <p>今回は東京リージョンで実施しているためアジア太平洋のSPFレコードを使用します。後で使用するためテキストエディタ等にメモしておきます。そして　<strong><code class="language-plaintext highlighter-rouge">閉じる</code></strong> のボタンを押します。
+<img src="img2.png" alt="img2.png" /></p>
+  </li>
+  <li>
+    <p>DNSサーバーにSPFレコードの情報を実装します。<strong><code class="language-plaintext highlighter-rouge">ネットワーキング → ゾーン</code></strong> をクリックします。そしてすでに作成されているDNSゾーンをクリックします。今回のチュートリアルでは <strong><code class="language-plaintext highlighter-rouge">tutorials1.ml</code></strong> のDNSドメインを使用します。</p>
+  </li>
+  <li>
+    <p>作成されているDNSサーバーをクリックすると、詳細画面が表示されます。少しスクロールして左側にある <strong><code class="language-plaintext highlighter-rouge">レコード</code></strong>　を押します。すると一覧のレコードが表示されます。</p>
+  </li>
+  <li>レコードの追加を行います。
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">レコード型</code></strong>　-　TEXT -　テキスト</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong>　- 空白</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">TTL</code></strong>　- 空白</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">Rdataモード</code></strong>　- 基本</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">Text（テキスト）</code></strong>- v=spf1 include:ap.rp.oracleemaildelivery.com ~all（先ほどテキストエディタに書いたSPFレコードを記入します）</li>
+    </ul>
+
+    <p><img src="img3.png" alt="img3.png" /></p>
+  </li>
+  <li>
+    <p>送信ボタンを押すとレコードに追加されます。</p>
+  </li>
+  <li>
+    <p>レコードの変更の公開をおこないます。<strong><code class="language-plaintext highlighter-rouge">変更の公開</code></strong> のボタンを押します。</p>
+
+    <p><img src="img4.png" alt="img4.png" /></p>
+  </li>
+  <li>
+    <p>きちんと登録したSPFレコードが選択されているかを確認して、<strong><code class="language-plaintext highlighter-rouge">変更の公開</code></strong> ボタンを押します。</p>
+
+    <p><img src="img5.png" alt="img5.png" /></p>
+  </li>
+  <li>
+    <p>レコードが公開されると状態が <strong><code class="language-plaintext highlighter-rouge">Unmodified</code></strong> になります。</p>
+
+    <p><img src="img6.png" alt="img6.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-dkimの設定">2. DKIMの設定</h1>
+
+<p>DKIMを設定するにはDKIMを作成してからDNSレコードにその情報を公開する必要があります。</p>
+
+<ol>
+  <li>
+    <p>左上のメニューバーから <strong><code class="language-plaintext highlighter-rouge">開発者サービス →　電子メール配信</code></strong>　を選択します。そして左側に表示されている <strong><code class="language-plaintext highlighter-rouge">Email Domains</code></strong> をクリックします。</p>
+  </li>
+  <li>Eメールドメインを作成します
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">Email Domain Name</code></strong> - tutorials1.ml</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">Compartment</code></strong> - コンパートメントを選択します</li>
+    </ul>
+
+    <p><img src="img7.png" alt="img7.png" /></p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+ Email Domain Nameはご自身で作成されたDNSのドメイン名と同じにしてください。</p>
+    </blockquote>
+  </li>
+  <li>Email Domainの詳細画面が表示されます。スクロールして <strong><code class="language-plaintext highlighter-rouge">DKIMの追加</code></strong> を押します。Step1のDKIM Selectorを設定して、Step2の <strong><code class="language-plaintext highlighter-rouge">Generate DKIM Record</code></strong> のボタンを押します。ボタンを押すとStep3の <strong><code class="language-plaintext highlighter-rouge">CNAME Record</code></strong>、<strong><code class="language-plaintext highlighter-rouge">CNAME Value</code></strong> の値が表示されるので、テキストエディタに書きます。そして <strong><code class="language-plaintext highlighter-rouge">Create DKIM</code></strong> のボタンを押します。
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">DKIM Selector</code></strong> - tutorial-tokyo-20220303</li>
+    </ul>
+
+    <p><img src="img8.png" alt="img8.png" /></p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong><br />
+ DKIMセレクターの値はドメインに対して必ずグローバルで一意になっている必要があります。なので「prefix（接頭辞）-region（リージョン）-YYYYMMDD（日付）」で登録することが推奨されています。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>DNSサーバーにDKIMの情報を実装します。<strong><code class="language-plaintext highlighter-rouge">ネットワーキング → ゾーン</code></strong> を選択して、既存のDNSゾーンをクリックします。今回のチュートリアルでは <strong><code class="language-plaintext highlighter-rouge">tutorials1.ml</code></strong> のDNSゾーンを使用します。</p>
+  </li>
+  <li>DNSレコードの追加を行います。
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">レコード型</code></strong>　-　CNAME - CNAME</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong>　- handson-tokyo-20220303._domainkey（CNAME Recordの値を記入します）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">TTL</code></strong>　- 30</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">Rdataモード</code></strong>　- 基本</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">Text(テキスト)</code></strong>　- tutorial-tokyo-20220304.tutorial.com.dkim.nrt1.oracleemaildelivery.com(CNAME Valueを記入します)</li>
+    </ul>
+
+    <p><img src="img9.png" alt="img9.png" /></p>
+  </li>
+  <li>
+    <p>送信ボタンを押すとレコードに追加されます。</p>
+  </li>
+  <li>
+    <p>先ほどのレコードの変更の公開をおこないます。<strong><code class="language-plaintext highlighter-rouge">変更の公開</code></strong> のボタンを押します。</p>
+  </li>
+  <li>
+    <p>きちんとCNAMEのDKIMレコードが選択されているかを確認して、<strong><code class="language-plaintext highlighter-rouge">変更の公開</code></strong> ボタンを押します。</p>
+  </li>
+  <li>
+    <p>レコードが公開されると状態がUnmodifiedになります。</p>
+  </li>
+  <li>
+    <p>DKIMの設定がされているか確認します。 メニューから <strong><code class="language-plaintext highlighter-rouge">開発者サービス →　電子メール配信</code></strong>　をクリックして <strong><code class="language-plaintext highlighter-rouge">Email Domain</code></strong> を選択すると一覧が表示されるので、先ほど作成したEmail Domain名をクリックします。すると <strong><code class="language-plaintext highlighter-rouge">DKIM　Signing</code></strong> の箇所がActiveになっていることが確認できます。</p>
+
+    <p><img src="img10.png" alt="img10.png" /></p>
+
+    <blockquote>
+      <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong>  <br />
+Activeになるまでに時間がかかることがあります。</p>
+    </blockquote>
+  </li>
+  <li>メールを送信します。<a href="https://oracle-japan.github.io/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a>を参考にMailx等で送信してみてください。そしてメールが送信されているか確認してみてください。</li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="3-おまけ電子メール配信メトリック">3. おまけ（電子メール配信メトリック）</h1>
+
+<p>電子メール配信メトリックを使用することで、電子メールがきちんと受信先メールサーバーに届いているかを表で確認できます。</p>
+
+<ol>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">監視および管理 → メトリック・エクスプローラー</code></strong> を選択します。</p>
+  </li>
+  <li>
+    <p>すると <strong><code class="language-plaintext highlighter-rouge">メトリック・エクスプローラ</code></strong> の画面が表示されるので、スクロールして <strong><code class="language-plaintext highlighter-rouge">問合せの編集</code></strong>　ボタンを押して編集します。</p>
+
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> - コンパートメントを選択します</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">メトリック・ネームスペース</code></strong>　- oci_emaildelivery</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">メトリック名</code></strong> - EmailsAccepted</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">間隔</code></strong> - 1m</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">統計</code></strong> - Mean</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">メトリック・ディメンション</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">ディメンション名</code></strong> - resourceDomain</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">ディメンション値</code></strong> - tutorial.com</li>
+        </ul>
+
+        <p><img src="img11.png" alt="img11.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>編集し終えたら <strong><code class="language-plaintext highlighter-rouge">チャートの更新</code></strong> を押します。</p>
+  </li>
+  <li>
+    <p>きちんとメールが送信されていると、グラフに反映されます。</p>
+
+    <p><img src="img12.png" alt="img12.png" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><br /></p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#email" class="page__taxonomy-item" rel="tag">email</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-04-13T10:57:00+09:00">April 13, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Email+Delivery%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E5%A4%96%E9%83%A8%E3%81%B8%E3%81%AE%E3%83%A1%E3%83%BC%E3%83%AB%E9%80%81%E4%BF%A1%28%E5%BF%9C%E7%94%A8%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsending-emails-2%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsending-emails-2%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsending-emails-2%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/sending-emails-1/" class="pagination--pager" title="Email Deliveryを利用した外部へのメール送信(基礎編)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/deep-learning-with-gpu/" class="pagination--pager" title="GPUインスタンスでディープラーニング
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
