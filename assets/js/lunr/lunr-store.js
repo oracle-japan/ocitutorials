@@ -809,6 +809,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/spinup-hpc-cluster/",
         "teaser": "/ocitutorials/intermediates/spinup-hpc-cluster/architecture_diagram.png"
       },{
+        "title": "機械学習環境を構築する",
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。 このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのカスタムイメージを利用し、以下構成の典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。 選択可能な機械学習環境GPUシェイプ VM.GPU2.1 (NVIDIA Tesla P100 16 GB) BM.GPU2.2 (NVIDIA Tesla P100 16 GB) VM.GPU3.1 (NVIDIA Tesla V100 16 GB) VM.GPU3.2 (NVIDIA Tesla V100 16 GB) VM.GPU3.4 (NVIDIA Tesla V100 16 GB) BM.GPU3.8 (NVIDIA Tesla V100 16 GB) BM.GPU4.8 (NVIDIA A100 40 GB) ※：シェイプ詳細は、以下URLを参照。 https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm 利用可能な機械学習関連ソフトウェア...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/intermediates/spinup-ml-instance/",
+        "teaser": "/ocitutorials/intermediates/spinup-ml-instance/architecture_diagram.png"
+      },{
         "title": "コマンドライン(CLI)でOCIを操作する",
         "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル これまでのチュートリアルでは、Oracle Cloud Infrastructure(OCI) をコンソールを通して利用してきましたが、OCIにはこれらの操作をRESTfulなウェブサービスを通して実行するためのAPIと、それを呼び出す **コマンド・ライン・インタフェース(CLI) ** が用意されています。 この章では、手元の Windows PC 環境にCLIをインストールしてOCIの基本的な操作を行う手順を通じて、APIとCLIの動作について理解を深めます。 また、セットアップしたCLIとBash環境を利用して、クラウド上に効率的にネットワークやインスタンスを作成する方法について学習します。 所要時間 : 約50分 前提条件 : チュートリアル : その1 - OCIコンソールにアクセスして基本を理解する を完了し、Oracle Cloud Infrastructure コンソールにアクセスでき、どこかのコンパートメント (ルート・コンパートメントも可) に対して管理権限を持っていること チュートリアルの その2 から その8 の内容についてひととおり理解していること (チュートリアルの実施することそのものは必須ではありませんが、一度目を通してコンソール上での操作について確認しておくことをお勧めします) 無償トライアル環境のお申込みについては こちら の資料を参照してください。 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。...","categories": [],
         "tags": ["intermediate"],
