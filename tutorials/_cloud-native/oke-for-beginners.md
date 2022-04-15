@@ -1,5 +1,5 @@
 ---
-title: "Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう"
+title: "Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう2"
 excerpt: "Oracle Container Engine for Kubernetes(OKE)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドKubernetsサービスです。こちらのハンズオンでは、Kubernetes自体の特徴や使い方を含めて、OKEを触って頂けるコンテンツになっています。"
 layout: single
 order: "020"
@@ -27,21 +27,11 @@ Oracle Container Engine for Kubernetes（以下OKE）は、Oracleのマネージ
 ---------------------------------
 ここでは、サンプルアプリケーションが動作するコンテナイメージを作成します。
 
-### 1.1. アプリーケーションのリポジトリをForkする
-[GitHub](https://github.com/)にアクセスし、ご自身のアカウントでログインしてください（GitHubのアカウントがなければ、事前に作成してください)。
-  
-![](2.1.PNG)
+### 1.1. ソースコードをCloneする
 
 今回利用するサンプルアプリケーションは、oracle-japanのGitHubアカウント配下のリポジトリとして作成してあります。
 
-[サンプルアプリケーションのリポジトリ](https://github.com/oracle-japan/cowweb-for-wercker-demo)にアクセスしたら、画面右上の`fork`ボタンをクリックしてください。
-
-![](2.2.PNG)
-
-これ以降の作業では、Forkして作成されたリポジトリを利用して手順を進めて行きます。  
-
-### 1.2. ソースコードをCloneする
-1.1. で作成したリポジトリにアクセスして、`Clone or download`ボタンをクリックします。
+[サンプルアプリケーションのリポジトリ](https://github.com/oracle-japan/cowweb-for-wercker-demo)にアクセスして、`Code`ボタンをクリックします。
 
 ソースコードを取得する方法は2つあります。一つはgitのクライアントでCloneする方法、もう一つはZIPファイル形式でダウンロードする方法です。ここでは前者の手順を行いますので、展開した吹き出し型のダイアログで、URLの文字列の右側にあるクリップボード型のアイコンをクリックします。
 
@@ -57,7 +47,7 @@ Cloud ShellまたはLinuxのコンソールから、以下のコマンドを実�
 
     cd cowweb-for-wercker-demo
 
-### 1.3. コンテナイメージを作る
+### 1.2. コンテナイメージを作る
 コンテナイメージは、Dockerfileと呼ばれるコンテナの構成を記述したファイルによって、その内容が定義されます。
 
 サンプルアプリケーションのコードには作成済みのDockerfileが含まれていますので、その内容を確認してみます。以下のコマンドを実行してください。
@@ -312,8 +302,7 @@ OKEを始めとして、Kubernetesのクラスターにコンテナをデプロ�
 ```
 cat ./kubernetes/cowweb.yaml
 ```
-
-    #!yaml hl_lines="22"
+```sh
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -340,6 +329,7 @@ cat ./kubernetes/cowweb.yaml
             - name: api
               containerPort: 8080
     ...（以下略）...
+```
 
 このファイルによって、サンプルアプリケーションのコンテナが、クラスター上にどのように配置されるかが定義されています。例えば、6行目にある`replicas:2`という記述は、このコンテナが、2つ立ち上げられて冗長構成を取るということを意味しています。
 
@@ -354,45 +344,13 @@ cat ./kubernetes/cowweb.yaml
 例えば、以下のような文字列となります。
 
     nrt.ocir.io/nrzftilbveen/handson-001/cowweb:v1.0
-    
-ファイルの修正が完了したら、修正内容をリポジトリに反映しておきます。以下のコマンドを順次実行してください。
-
-```
-git add .
-```
-```
-git commit -m "Update the image tag."
-```
-```
-git push
-```
-
-{% capture notice %}**git commit時の警告**  
-以下のようなメッセージが表示されることがあります。
-```sh
-*** Please tell me who you are.
-
-Run
-
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-…(以下略)
-```
-このような場合は、メッセージの指示に従って2つの`git config`コマンドを実行するようにしてください。普段Gitクライアントお使いの際のname, emailがあればそれで問題ありませんが、実在しない情報を入力しても手順を進めることは可能です。{% endcapture %}
-<div class="notice--warning">
-  {{ notice | markdownify }}
-</div>
-
-
-`git push`を実行するとGitHubのユーザー名とパスワードの入力を求められます。ここでは、お持ちのGitHubアカウントの情報を入力してください。
 
 次に、cowweb-service.yamlというmanifestファイルの内容を確認してみます。
 
 ```
 cat kubernetes/cowweb-service.yaml
 ```
-
-    #!yaml hl_lines="12"
+```sh
     apiVersion: v1
     kind: Service
     metadata:
@@ -405,6 +363,7 @@ cat kubernetes/cowweb-service.yaml
       selector:
         app: cowweb
       type: LoadBalancer
+```
 
 このmanifestファイルは、クラスターに対するリクエストのトラフィックを受け付ける際のルールを定義しています。`type: LoadBalancer`という記述は、クラスターがホストされているクラウドサービスのロードバランサーを自動プロビジョニングし、そのLBに来たトラフィックをコンテナに届けるという意味です。
 
@@ -437,8 +396,8 @@ NAME                          READY   STATUS    RESTARTS   AGE
 pod/cowweb-695c65b665-sgcdk   1/1     Running   0          17s
 pod/cowweb-695c65b665-vh825   1/1     Running   0          17s
 
-NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)        AGE
-service/cowweb       LoadBalancer   10.96.229.191   130.61.97.82   80:30975/TCP   1m
+NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP       PORT(S)        AGE
+service/cowweb       LoadBalancer   10.96.229.191   130.***.***.***   80:30975/TCP   1m
 ```
 
 {% capture notice %}**集合ハンズオン時のロードバランサーのシェイプについて**  
@@ -461,7 +420,7 @@ kubectl apply -f ./kubernetes/cowweb-service-oci400m.yaml
 実際にKubernetes上でコンテナが動作する際には、Podと言われる管理単位に内包される形で実行されます。上記のmanifestでは、サンプルアプリのコンテナを内包するPodが、2つデプロイされることになります。
 {: .notice--info}
 
-上の例では、IPアドレス130.61.97.82の80番ポートでロードバランサーが公開されておりここにリクエストを送信すると、アプリケーションにアクセスできることを意味しています。このIPアドレスをテキストエディタ等に控えておいてください。
+上の例では、IPアドレス130.***.***.***の80番ポートでロードバランサーが公開されておりここにリクエストを送信すると、アプリケーションにアクセスできることを意味しています。このIPアドレスをテキストエディタ等に控えておいてください。
 
 これでクラスターへのデプロイは完了しましたので、実際に動作確認してみます。以下のコマンドを実行してください。
 
