@@ -93,14 +93,14 @@ DKIMを設定するにはDKIMを作成してからDNSレコードにその情報
     >**`Note`**  
     DKIMセレクターの値はドメインに対して必ずグローバルで一意になっている必要があります。なので「prefix（接頭辞）-region（リージョン）-YYYYMMDD（日付）」で登録することが推奨されています。
     
-4. DNSサーバーにDKIMの情報を実装します。**`ネットワーキング → ゾーン`** を選択して、既存のDNSゾーンをクリックします。今回のチュートリアルでは **`tutorials1.ml`** のDNSゾーンを使用します。
+4. DNSサーバーにDKIMの情報を実装します。**`ネットワーキング → ゾーン`** を選択して、既存のDNSゾーンをクリックします。
     
 5. DNSレコードの追加を行います。
   - **`レコード型`**　-　CNAME - CNAME
-  - **`名前`**　- handson-tokyo-20220303._domainkey（CNAME Recordの値を記入します）
+  - **`名前`**　- tutorial-tokyo-20220303._domainkey（CNAME Recordの値を記入します）
   - **`TTL`**　- 30
   - **`Rdataモード`**　- 基本
-  - **`Text(テキスト)`**　- tutorial-tokyo-20220304.tutorial.com.dkim.nrt1.oracleemaildelivery.com(CNAME Valueを記入します)
+  - **`Text(テキスト)`**　- tutorial-tokyo-20220303.tutorials1.ml.dkim.nrt1.oracleemaildelivery.com(CNAME Valueを記入します)
     
     ![img9.png](img9.png)
 
