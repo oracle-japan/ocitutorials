@@ -1,6 +1,6 @@
 ---
-title: "機械学習環境を構築する"
-excerpt: "機械学習環境を構築してみましょう。このチュートリアルを終了すると、TensorFlow等の代表的な機械学習関連ソフトウェアがインストールされた機械学習環境に最適なNvidia製GPU搭載のインスタンスを、OCIコンソールから簡単に構築することが出来るようになります。"
+title: "GPUインスタンスで機械学習にトライ"
+excerpt: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスをMarket Placeのイメージから簡単に構築し、サンプル機械学習プログラムを実行することが出来るようになります。"
 order: "098"
 layout: single
 header:
@@ -12,7 +12,7 @@ header:
 
 Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。
 
-このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのカスタムイメージを利用し、以下構成の典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
+このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのイメージを利用し、以下構成の典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
 - 選択可能な機械学習環境GPUシェイプ
   - VM.GPU2.1 (NVIDIA Tesla P100 16 GB)
   - BM.GPU2.2 (NVIDIA Tesla P100 16 GB)
@@ -33,17 +33,19 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
   - Jupyter Notebook
   - and more （※）
 
-  ※：全リストは、 **4. 機械学習関連インストール済みソフトウェア確認** を参照。
+  ※：全リストは、 **4. 機械学習関連インストール済みソフトウェア確認** を参照下さい。
 
 ![システム構成図](architecture_diagram.png)
 
-この機械学習環境構築用カスタムイメージを利用すると、環境構築直後から機械学習に必要な様々なツールを利用し機械学習プログラムをGPU上で高速に実行することが可能になります。
+この機械学習環境構築用イメージを利用すると、環境構築直後から機械学習に必要な様々なツールを利用し機械学習プログラムをGPU上で高速に実行することが可能になります。
 
 **所要時間 :** 約30分
 
 **前提条件 :** 機械学習環境を構築するインスタンスを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
-**注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用する機械学習環境構築用カスタムイメージのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
+**注意1 :** 現在、一時的に無償トライアル環境でのGPUインスタンスの利用を制限させて頂いています。そのため、現在このチュートリアルの手順を実施するには、商用のOCI契約が必要になります。
+
+**注意2 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用する機械学習環境構築用イメージのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
 
 # 1. GPUインスタンスの起動
 
@@ -61,13 +63,13 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](market_place.png)
 
-4. 表示される以下 **コンピュート・インスタンスの作成** 画面で、以下の情報を入力し **作成** ボタンをクリックします。
+4. 表示される以下 **コンピュート・インスタンスの作成** 画面で、以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
+
+   4.0 **GPUインスタンス名称・コンパートメント** フィールド
     - **名前 :** GPUインスタンスに付与する名前
     - **コンパートメントに作成 :** GPUインスタンスを構築するコンパートメント
 
    ![画面ショット](console_page01.png)
-
-   また、同画面の各フィールドに以下の情報を入力し、下部の **次へ** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
    4.1 **配置** フィールド
     - **可用性ドメイン :** GPUインスタンスを構築する可用性ドメイン
@@ -204,6 +206,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    > systemctl is-enabled notebook
    enabled
    ```
+
 # 3. TenforFlow・Jupiter Notebook稼働確認
 
 本章は、TensorFlowが認識するGPUカードの枚数を確認するプログラムを実行し、TensorFlowとJupiter Notebookの稼働を確認します。
@@ -212,43 +215,43 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    以下稼働確認プログラムを、GPUインスタンスのopcアカウントのホームディレクトリ直下にファイル名"num_gpu.ipynb"でコピーします。
 
-```sh
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import tensorflow as tf\n",
-    "print(\"Num GPUs Available: \", len(tf.config.list_physical_devices('GPU')))"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
+   ```sh
+   {
+   "cells": [
+   {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+      "import tensorflow as tf\n",
+      "print(\"Num GPUs Available: \", len(tf.config.list_physical_devices('GPU')))"
+      ]
+   }
+   ],
+   "metadata": {
+   "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
    },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.6.8"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 4
-}
-```
+   "language_info": {
+      "codemirror_mode": {
+      "name": "ipython",
+      "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.6.8"
+   }
+   },
+   "nbformat": 4,
+   "nbformat_minor": 4
+   }
+   ```
 
 2. SSHポートフォワード作成
 
@@ -276,7 +279,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](jupyter_page06.png)
 
-# 3. Jupyter Notebookで機械学習プログラム実行
+# 4. Jupyter Notebookで機械学習プログラム実行
 
 本章は、GPUインスタンスのJupyter Notebookにアクセスし、サンプル機械学習プログラムを実行してその動作を確認します。
 
@@ -284,149 +287,149 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    以下サンプルプログラムを、GPUインスタンスのopcアカウントのホームディレクトリ直下にファイル名"celsious2fahrenheit.ipynb"でコピーします。
 
-   このプログラムは、既存の摂氏・華氏対応データからその変換式を学習し、未知の摂氏表記温度から対応する華氏を予測します。
+   このプログラムは、既知の摂氏・華氏対応データからその変換式を学習し、未知の摂氏表記温度から対応する華氏を予測します。
 
- ```sh
-{
-   "cells": [
+   ```sh
    {
-      "cell_type": "code",
-      "execution_count": 19,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "#@title Licensed under the Apache License, Version 2.0 (the \"License\");\n",
-      "# you may not use this file except in compliance with the License.\n",
-      "# You may obtain a copy of the License at\n",
-      "#\n",
-      "# https://www.apache.org/licenses/LICENSE-2.0\n",
-      "#\n",
-      "# Unless required by applicable law or agreed to in writing, software\n",
-      "# distributed under the License is distributed on an \"AS IS\" BASIS,\n",
-      "# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
-      "# See the License for the specific language governing permissions and\n",
-      "# limitations under the License."
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "import tensorflow as tf"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "import numpy as np\n",
-      "import logging\n",
-      "logger = tf.get_logger()\n",
-      "logger.setLevel(logging.ERROR)"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "celsius_q    = np.array([-40, -10,  0,  8, 15, 22,  38],  dtype=float)\n",
-      "fahrenheit_a = np.array([-40,  14, 32, 46, 59, 72, 100],  dtype=float)\n",
-      "\n",
-      "for i,c in enumerate(celsius_q):\n",
-      "  print(\"{} degrees Celsius = {} degrees Fahrenheit\".format(c, fahrenheit_a[i]))"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "l0 = tf.keras.layers.Dense(units=1, input_shape=[1])"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "model = tf.keras.Sequential([l0])"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "model.compile(loss='mean_squared_error',\n",
-      "              optimizer=tf.keras.optimizers.Adam(0.1))"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "history = model.fit(celsius_q, fahrenheit_a, epochs=500, verbose=False)\n",
-      "print(\"Finished training the model\")"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "import matplotlib.pyplot as plt\n",
-      "plt.xlabel('Epoch Number')\n",
-      "plt.ylabel(\"Loss Magnitude\")\n",
-      "plt.plot(history.history['loss'])"
-      ]
-   },
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "print(model.predict([100.0]))"
-      ]
-   }
-   ],
-   "metadata": {
-   "kernelspec": {
-      "display_name": "Python 3",
-      "language": "python",
-      "name": "python3"
-   },
-   "language_info": {
-      "codemirror_mode": {
-      "name": "ipython",
-      "version": 3
+      "cells": [
+      {
+         "cell_type": "code",
+         "execution_count": 19,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "#@title Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+         "# you may not use this file except in compliance with the License.\n",
+         "# You may obtain a copy of the License at\n",
+         "#\n",
+         "# https://www.apache.org/licenses/LICENSE-2.0\n",
+         "#\n",
+         "# Unless required by applicable law or agreed to in writing, software\n",
+         "# distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+         "# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+         "# See the License for the specific language governing permissions and\n",
+         "# limitations under the License."
+         ]
       },
-      "file_extension": ".py",
-      "mimetype": "text/x-python",
-      "name": "python",
-      "nbconvert_exporter": "python",
-      "pygments_lexer": "ipython3",
-      "version": "3.6.8"
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "import tensorflow as tf"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "import numpy as np\n",
+         "import logging\n",
+         "logger = tf.get_logger()\n",
+         "logger.setLevel(logging.ERROR)"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "celsius_q    = np.array([-40, -10,  0,  8, 15, 22,  38],  dtype=float)\n",
+         "fahrenheit_a = np.array([-40,  14, 32, 46, 59, 72, 100],  dtype=float)\n",
+         "\n",
+         "for i,c in enumerate(celsius_q):\n",
+         "  print(\"{} degrees Celsius = {} degrees Fahrenheit\".format(c, fahrenheit_a[i]))"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "l0 = tf.keras.layers.Dense(units=1, input_shape=[1])"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "model = tf.keras.Sequential([l0])"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "model.compile(loss='mean_squared_error',\n",
+         "              optimizer=tf.keras.optimizers.Adam(0.1))"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "history = model.fit(celsius_q, fahrenheit_a, epochs=500, verbose=False)\n",
+         "print(\"Finished training the model\")"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "import matplotlib.pyplot as plt\n",
+         "plt.xlabel('Epoch Number')\n",
+         "plt.ylabel(\"Loss Magnitude\")\n",
+         "plt.plot(history.history['loss'])"
+         ]
+      },
+      {
+         "cell_type": "code",
+         "execution_count": null,
+         "metadata": {},
+         "outputs": [],
+         "source": [
+         "print(model.predict([100.0]))"
+         ]
+      }
+      ],
+      "metadata": {
+      "kernelspec": {
+         "display_name": "Python 3",
+         "language": "python",
+         "name": "python3"
+      },
+      "language_info": {
+         "codemirror_mode": {
+         "name": "ipython",
+         "version": 3
+         },
+         "file_extension": ".py",
+         "mimetype": "text/x-python",
+         "name": "python",
+         "nbconvert_exporter": "python",
+         "pygments_lexer": "ipython3",
+         "version": "3.6.8"
+      }
+      },
+      "nbformat": 4,
+      "nbformat_minor": 4
    }
-   },
-   "nbformat": 4,
-   "nbformat_minor": 4
-}
-```
+   ```
 
-4. サンプルプログラム実行
+2. サンプルプログラム実行
 
    Jupiter Notebookにログインした直後のブラウザ画面をリロードし、以下画面に表示される、先にコピーしたサンプル機械学習プログラムをクリックします。
 
@@ -444,7 +447,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](jupyter_page05.png)
 
-# 4. 機械学習関連インストール済みソフトウェア確認
+# 5. 機械学習関連インストール済みソフトウェア確認
 
 本章は、以下コマンドをGPUインスタンスのopcアカウントで実行し、GPUインスタンスに予めインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
 
