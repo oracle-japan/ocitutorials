@@ -95,9 +95,9 @@ OCIの各テナントには、「Always Free」と呼ばれる、永久無償で
   そんなあなたに、OCIのマーケットプレイスから利用可能なHPCクラスタ構築のためのリソース・マネージャ用スタックを利用し、典型的構成のHPCクラスタをGUIメニューを選択するだけで構築する方法を伝授します。
   簡単に構築できるHPCクラスタといっても侮ってはいけません。構築直後から最適にチューニングされたRDMAインターコネクトを活用し、あなたのHPCワークロードから最高のパフォーマンスを引き出すことが出来るのです。
 
-- **[機械学習環境を構築する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-ml-instance/)**  
+- **[GPUインスタンスで機械学習にトライ - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-ml-instance/)**  
   Oracle Cloud Infrastructureは、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。
-  このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのカスタムイメージを利用して典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
+  このチュートリアルは、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスをMarket Placeのイメージから簡単に構築し、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
 
 - **[ロギング・サービスを使って3つのログを収集する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-logging/)**  
   OCIのロギング・サービスを使用することによりログを一元的に収集できて、トラブルが発生しても、ログをすぐに確認し素早く対策できます。また安価で使用できてOCIリソースだけでなくオンプレミスや他社クラウド環境のログを確認することができます。この文書ではコンソールからOCIで提供されている３つのログを使用します。
