@@ -809,8 +809,8 @@ var store = [{
         "url": "/ocitutorials/intermediates/spinup-hpc-cluster/",
         "teaser": "/ocitutorials/intermediates/spinup-hpc-cluster/architecture_diagram.png"
       },{
-        "title": "機械学習環境を構築する",
-        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。 このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのカスタムイメージを利用し、以下構成の典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。 選択可能な機械学習環境GPUシェイプ VM.GPU2.1 (NVIDIA Tesla P100 16 GB) BM.GPU2.2 (NVIDIA Tesla P100 16 GB) VM.GPU3.1 (NVIDIA Tesla V100 16 GB) VM.GPU3.2 (NVIDIA Tesla V100 16 GB) VM.GPU3.4 (NVIDIA Tesla V100 16 GB) BM.GPU3.8 (NVIDIA Tesla V100 16 GB) BM.GPU4.8 (NVIDIA A100 40 GB) ※：シェイプ詳細は、以下URLを参照。 https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm 利用可能な機械学習関連ソフトウェア...","categories": [],
+        "title": "GPUインスタンスで機械学習にトライ",
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。 このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのイメージを利用し、以下構成の典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。 選択可能な機械学習環境GPUシェイプ VM.GPU2.1 (NVIDIA Tesla P100 16 GB) BM.GPU2.2 (NVIDIA Tesla P100 16 GB) VM.GPU3.1 (NVIDIA Tesla V100 16 GB) VM.GPU3.2 (NVIDIA Tesla V100 16 GB) VM.GPU3.4 (NVIDIA Tesla V100 16 GB) BM.GPU3.8 (NVIDIA Tesla V100 16 GB) BM.GPU4.8 (NVIDIA A100 40 GB) ※：シェイプ詳細は、以下URLを参照。 https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm 利用可能な機械学習関連ソフトウェア...","categories": [],
         "tags": [],
         "url": "/ocitutorials/intermediates/spinup-ml-instance/",
         "teaser": "/ocitutorials/intermediates/spinup-ml-instance/architecture_diagram.png"
