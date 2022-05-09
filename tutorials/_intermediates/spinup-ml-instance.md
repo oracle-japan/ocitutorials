@@ -136,7 +136,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 3. Jupiter Notebook起動時設定ファイル作成
 
-   Jupiter Notebookの起動時設定ファイルを、以下のうように作成します。
+   Jupiter Notebookの起動時設定ファイルを、以下のように作成します。
 
    ```sh
    > cat ~/.jupyter/jupyter_notebook_config.py
@@ -267,17 +267,17 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ブラウザを起動し、アドレスに"127.0.0.1:8888"を指定してJupiter Notebookにアクセスし、表示される以下画面の **Password** フィールドに **Jupiter Notebookログインパスワード初期化** で設定したパスワードを入力します。
 
-   ![画面ショット](jupyter_page01.png)
+   ![画面ショット](Jupyter_page01.png)
 
 4. 稼働確認プログラム実行
 
    以下ブラウザ画面に表示される、先にコピーした稼働確認プログラムをクリックします。
 
-   ![画面ショット](jupyter_page02.png)
+   ![画面ショット](Jupyter_page02.png)
 
    表示される以下ブラウザ画面の **Run** ボタンをクリックし、稼働確認プログラムを実行、"Num GPUs Available:"の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。
 
-   ![画面ショット](jupyter_page06.png)
+   ![画面ショット](Jupyter_page06.png)
 
 # 4. Jupyter Notebookで機械学習プログラム実行
 
@@ -433,19 +433,19 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    Jupiter Notebookにログインした直後のブラウザ画面をリロードし、以下画面に表示される、先にコピーしたサンプル機械学習プログラムをクリックします。
 
-   ![画面ショット](jupyter_page07.png)
+   ![画面ショット](Jupyter_page07.png)
 
    表示される以下ブラウザ画面の **restart the kernel, then re-run the whole notebook** ボタンをクリックします。
 
-   ![画面ショット](jupyter_page03.png)
+   ![画面ショット](Jupyter_page03.png)
 
    表示される以下ブラウザ画面の **Restart and Run All Cells** ボタンをクリックし、サンプルプログラムを実行します。
 
-   ![画面ショット](jupyter_page04.png)
+   ![画面ショット](Jupyter_page04.png)
 
    実行した結果が表示される以下ブラウザ画面で、100度（摂氏）に対応する華氏の予測値が変換式（f=1.8c+32）から計算される212度（華氏）に近い値であることを確認します。
 
-   ![画面ショット](jupyter_page05.png)
+   ![画面ショット](Jupyter_page05.png)
 
 # 5. 機械学習関連インストール済みソフトウェア確認
 
