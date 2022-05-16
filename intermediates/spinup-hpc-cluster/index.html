@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-05-09T11:02:52+09:00">
+  <meta property="article:published_time" content="2022-05-16T18:17:14+09:00">
 
 
 
@@ -296,6 +296,8 @@
         
           <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
         
           <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
@@ -333,7 +335,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルを終了すると、HPC向けIntel Ice Lakeプロセッサを搭載したベアメタル計算ノードをRoCEv2インターコネクトで接続した典型的な構成のHPCクラスタを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2022-05-09T11:02:52+09:00">
+    <meta itemprop="datePublished" content="2022-05-16T18:17:14+09:00">
     
 
     <div class="page__inner-wrap">
@@ -344,7 +346,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-hpcクラスタ構築用スタックの概要">0. HPCクラスタ構築用スタックの概要</a></li><li><a href="#1-スタックの作成">1. スタックの作成</a></li><li><a href="#2-スタックの計画">2. スタックの計画</a></li><li><a href="#3-スタックの適用">3. スタックの適用</a></li><li><a href="#4-hpcクラスタの確認">4. HPCクラスタの確認</a></li><li><a href="#5-mpiプログラム実行2ノード編">5. MPIプログラム実行（2ノード編）</a></li><li><a href="#6-計算ノード追加">6. 計算ノード追加</a></li><li><a href="#7-mpiプログラム実行4ノード編">7. MPIプログラム実行（4ノード編）</a></li><li><a href="#8-スタックの破棄">8. スタックの破棄</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-hpcクラスタ構築用スタックの概要">0. HPCクラスタ構築用スタックの概要</a></li><li><a href="#1-スタックの作成">1. スタックの作成</a></li><li><a href="#2-スタックの計画">2. スタックの計画</a></li><li><a href="#3-スタックの適用">3. スタックの適用</a></li><li><a href="#4-hpcクラスタの確認">4. HPCクラスタの確認</a></li><li><a href="#5-mpiプログラム実行2ノード編">5. MPIプログラム実行（2ノード編）</a></li><li><a href="#6-計算ノード追加">6. 計算ノード追加</a></li><li><a href="#7-mpiプログラム実行4ノード編">7. MPIプログラム実行（4ノード編）</a></li><li><a href="#8-計算ノード入れ替え">8. 計算ノード入れ替え</a></li><li><a href="#9-スタックの破棄">9. スタックの破棄</a></li></ul>
 
             </nav>
           </aside>
@@ -382,7 +384,7 @@
 
 <p><a href="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/">https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/</a></p>
 
-<p><strong>所要時間 :</strong> 約30分</p>
+<p><strong>所要時間 :</strong> 約1時間</p>
 
 <p><strong>前提条件 :</strong> HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
@@ -949,10 +951,72 @@ Loading mpi version 2021.3.0
 
 <span class="c"># All processes entering MPI_Finalize</span>
 </code></pre></div>    </div>
+    <h1 id="8-計算ノード入れ替え">8. 計算ノード入れ替え</h1>
   </li>
 </ol>
 
-<h1 id="8-スタックの破棄">8. スタックの破棄</h1>
+<p>本章は、構築した2ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。</p>
+
+<p>この計算ノード入れ替えは、OCIコンソールから実施するOCIリソースレベルの計算ノード入れ替えフェーズと、bastionノードのコマンドラインから実施するAnsibleによるOSレベルの新計算ノードカスタマイズフェーズを、個別に実行することで行います。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し、表示される以下画面で、入れ替える計算ノードのメニューから <strong>終了</strong> をクリックします。</p>
+
+    <p><img src="console_page07.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>インスタンスの終了</strong> 画面で、 <strong>アタッチされたブート・ボリュームを完全に削除</strong> チェックボックスをチェックし、 <strong>インスタンスの終了</strong> ボタンをクリック、入れ替える計算ノードをOCIリソースから削除します。</p>
+
+    <p><img src="console_page08.png" alt="画面ショット" /></p>
+
+    <p>削除が開始されると、以下画面のように当該計算ノードの <strong>状態</strong> フィールドが <strong>終了中</strong> に変化し、削除が完了するとインスタンスプールが削除された計算ノードを補完するために自動的に新たな計算ノードを作成します。</p>
+
+    <p><img src="console_page09.png" alt="画面ショット" /></p>
+
+    <p>新たな計算ノードの作成が以下画面のように完了したら、この計算ノードの <strong>名前</strong> と <strong>プライベートIP</strong> を記録します。</p>
+
+    <p><img src="console_page10.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<p>以上で、OCIリソースレベルの計算ノード入れ替えフェーズは完了です。この段階は、追加した計算ノード用インスタンスのデプロイが完了し既存クラスタ・ネットワークに物理的に接続されOSが起動した状態で、未だクラスタ・ネットワークを利用可能な状態になっていません。</p>
+
+<p>次に、AnsibleによるOSレベルカスタマイズを行います。</p>
+
+<ol>
+  <li>bastionノードにログインし、Ansibleのインベントリファイル/etc/ansible/hostsの <strong>compute</strong> セクションで、削除した計算ノードのホスト名とIPアドレスの記述を、以下のように先程記録した新たな計算ノードのものに書き換えます。なお、削除した計算ノードが <strong>nfs</strong> セクションにも記載がある場合、これを以下のようにコメントアウトします。</li>
+</ol>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="o">[</span>compute]
+   inst-xa9kz-smart-piglet <span class="nv">ansible_host</span><span class="o">=</span>172.16.4.35 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
+   <span class="c"># The following two compute nodes were replaced each other due to haradware failure</span>
+   <span class="c">#inst-ydrpx-smart-piglet ansible_host=172.16.6.20 ansible_user=opc role=compute</span>
+   inst-sz0pd-smart-piglet <span class="nv">ansible_host</span><span class="o">=</span>172.16.5.15 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
+
+   <span class="o">[</span>nfs]
+   <span class="c">#inst-ydrpx-smart-piglet ansible_host=172.16.6.20 ansible_user=opc role=compute</span>
+</code></pre></div></div>
+
+<ol>
+  <li>以下コマンドを実行し、新たな計算ノードに対するAnsibleのOSレベルカスタマイズを起動、最後の <strong>PLAY RECAP</strong> フィールドの出力で <strong>failed</strong> や <strong>unreachable</strong> の項目が無いことで、正常に終了していることを確認します。</li>
+</ol>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="o">&gt;</span> <span class="nv">ANSIBLE_HOST_KEY_CHECKING</span><span class="o">=</span>False ansible-playbook /opt/oci-hpc/playbooks/site.yml
+      :
+      :
+      :
+   PLAY RECAP <span class="k">**********************************************************************************************</span>
+   inst-xa9kz-smart-piglet  : <span class="nv">ok</span><span class="o">=</span>87   <span class="nv">changed</span><span class="o">=</span>54   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>56   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
+   inst-sz0pd-smart-piglet  : <span class="nv">ok</span><span class="o">=</span>84   <span class="nv">changed</span><span class="o">=</span>14   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>59   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
+   smart-piglet-bastion     : <span class="nv">ok</span><span class="o">=</span>112  <span class="nv">changed</span><span class="o">=</span>22   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>115  <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0 
+   <span class="o">&gt;</span>
+</code></pre></div></div>
+<p>以上で、AnsibleのOSレベルカスタマイズフェーズは完了し、計算ノードの置き換えは完了です。</p>
+
+<p>再度 <strong>5. MPIプログラム実行（2ノード編）</strong> に従いIntel MPIベンチマークを実行し、インターコネクト性能が十分出ていることを確認します。</p>
+
+<h1 id="9-スタックの破棄">9. スタックの破棄</h1>
 
 <p>本章は、スタックを破棄することで、構築したHPCクラスタを削除します。</p>
 
@@ -996,7 +1060,7 @@ Loading mpi version 2021.3.0
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-05-09T11:02:52+09:00">May 9, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-05-16T18:17:14+09:00">May 16, 2022</time></p>
 
 
       </footer>
