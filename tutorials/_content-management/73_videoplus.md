@@ -1,75 +1,76 @@
 ---
-title: "Oracle Content and Experience のVideo Plus アセットを使ってみよう"
-excerpt: "OCE の有償オプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです"
+title: "Oracle Content Management のVideo Plus アセットを使ってみよう"
+excerpt: "OCM のオプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです"
 order: "073"
 layout: single
-tags: "OCE"
+tags:
+  - OCE
+  - OCM
 header:
   teaser: "/content-management/73_videoplus/video008.jpg"
   overlay_image: "/content-management/73_videoplus/video008.jpg"
   overlay_filter: rgba(80,80,80,0.7)
 ---
 
-このチュートリアルは、Oracle Content and Experience (OCE)の有償オプション機能である **拡張ビデオ機能（Video Plus アセット）** を利用する手順について、ステップ・バイ・ステップで紹介します
+<a id="top"></a>
 
+このチュートリアルは、OCM のオプション機能である **拡張ビデオ機能（Video Plus アセット）** を利用する手順について、ステップ・バイ・ステップで紹介します
+
+<br/>
 
 # 1. 前提条件の確認
 
 ## 1.1 バージョン
 
-このハンズオンの内容は、**Oracle Content and Experience 21.1.2** 時点の内容で作成されています。最新の UI とは異なっている場合があります。最新情報については、製品マニュアルをご参照ください
+この文書は、2022年4月時点の最新バージョン(22.4.3)を下に作成されてます。チュートリアル内の画面ショットについては、OCMの最新のUIとは異なっている場合があります。最新情報については、製品マニュアルをご参照ください
 
-+ Oracle Content and Experience
++ Oracle Content Management
     + [https://docs.oracle.com/en/cloud/paas/content-cloud/books.html](https://docs.oracle.com/en/cloud/paas/content-cloud/books.html)
     + [https://docs.oracle.com/cloud/help/ja/content-cloud/index.htm](https://docs.oracle.com/cloud/help/ja/content-cloud/index.htm)（※日本語翻訳版）
 
 
 ## 1.2 インスタンスの作成
 
-OCEインスタンスが作成済であること。インスタンスの作成方法は、以下のチュートリアルをご確認ください
+ライセンス・タイプが **Premium Edition** のOCMインスタンスが作成済であること。インスタンスの作成方法は、以下のチュートリアルをご確認ください
 
-+ [Oracle Content and Experience インスタンスを作成する](../create_oce_instance)
++ [Oracle Content Management インスタンスを作成する](../create_oce_instance)
 
+  > **[Memo]**  
+  > Starter Edition の場合、Video Plusアセットは利用できません
 
 ## 1.3 アセットリポジトリの作成
 
-アセットリポジトリが作成済であること。リポジトリの作成方法は、以下のチュートリアルをご確認ください
+**アセットリポジトリ** が作成済であること。リポジトリの作成方法は、以下のチュートリアルをご確認ください
 
-+ [Oracle Content and Experience を Headless CMS として使ってみよう【初級編】](../41_asset_headless)
++ [Oracle Content Management を Headless CMS として使ってみよう【初級編】](../41_asset_headless)
 
 ## 1.4 Webサイトの作成
 
-アセットを公開できるエンタープライズサイトが作成済であること。サイトの作成方法は、以下のチュートリアルをご確認ください
+アセットを公開できる **エンタープライズサイト** が作成済であること。サイトの作成方法は、以下のチュートリアルをご確認ください
 
-+ [Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】](../62_webcms)
++ [Oracle Content Management を Webコンテンツ管理(Web CMS) として利用しよう【初級編】](../62_webcms)
 
 <br>
 
 # 2. 拡張ビデオ機能を有効化する
 
-Video Plusアセットを利用するには、拡張ビデオ機能を有効化する必要があります。拡張ビデオ機能は有償オプション機能であるため、OCEインスタンス作成直後はデフォルトで「無効」となっています。利用する際は、OCEインスタンスのサービス管理者が有効化します。
+Video Plusアセットを利用するには、拡張ビデオ機能を有効化する必要があります。拡張ビデオ機能はオプションであるため、OCMインスタンス作成直後はデフォルトで「無効」となっています。利用する際は、OCMインスタンスのサービス管理者が有効化します。
 
-また、OCEインスタンスとして有効化した後、リポジトリ管理者はリポジトリ単位で拡張ビデオ機能を有効/無効に設定できます
+また、OCMインスタンスとして有効化した後、リポジトリ管理者はリポジトリ単位で拡張ビデオ機能を有効/無効に設定できます
 
-## 2.1 OCEインスタンスの拡張ビデオ機能を有効化する
+## 2.1 OCMインスタンスの拡張ビデオ機能を有効化する
 
-OCEインスタンスの拡張ビデオ機能を有効化します
+OCMインスタンスの拡張ビデオ機能を有効化します
 
-1. OCEにサインインします
+1. OCMにサインインします
 
-1. **ADMINISTRATION:システム→請求** をクリックします
+1. **ADMINISTRATION:統合→アプリケーション** を選択します
 
-1. **請求オプション** の **ビデオ機能** で **「Video Plus - 拡張ビデオ管理」** を選択します
-
-1. **「適用される条件」** をクリックし、Oracle PaaS and IaaS Universal Credits Service Descriptions の課金条件を確認し、**「Video Plus拡張ビデオ機能の追加コストに同意する」** にチェックを入れます
+1. **その他の統合** で **Kaltura Video Management - Video Plus** を選択します
 
     ![拡張ビデオ機能の有効化](video001.jpg)
 
-1. **「保存」** クリックします
-
-1. しばらくすると、拡張ビデオ機能が有効化されます
-
-
+1. 拡張ビデオ機能が有効化されます
 
 
 ## 2.2 リポジトリのアセット・タイプに Video Plus を追加する
@@ -77,7 +78,7 @@ OCEインスタンスの拡張ビデオ機能を有効化します
 リポジトリのアセット・タイプに「Video Plus」を追加します
 
 > **[Memo]**  
-> OCE 21.1.1 より、アセット・リポジトリでVideo Plusアセットを利用する場合は、リポジトリ毎に事前定義済のデジタル・アセット・タイプの Video-Plus を指定します。
+> OCM 21.1.1 より、アセット・リポジトリでVideo Plusアセットを利用する場合は、リポジトリ毎に事前定義済のデジタル・アセット・タイプの Video-Plus を指定します。
 
 1. **ADMINISTRATION:コンテンツ→リポジトリ** を選択します
 
@@ -244,3 +245,5 @@ OCEインスタンスの拡張ビデオ機能を有効化します
 <br>
 
 以上で、このチュートリアルは終了です。お疲れさまでした
+
+[ページトップへ戻る](#top)
