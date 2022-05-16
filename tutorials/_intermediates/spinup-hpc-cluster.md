@@ -37,7 +37,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 [https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/](https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/)
 
 
-**所要時間 :** 約30分
+**所要時間 :** 約1時間
 
 **前提条件 :** HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
@@ -540,8 +540,63 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
    # All processes entering MPI_Finalize
    ```
+# 8. 計算ノード入れ替え
 
-# 8. スタックの破棄
+本章は、構築した2ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。
+
+この計算ノード入れ替えは、OCIコンソールから実施するOCIリソースレベルの計算ノード入れ替えフェーズと、bastionノードのコマンドラインから実施するAnsibleによるOSレベルの新計算ノードカスタマイズフェーズを、個別に実行することで行います。
+
+1. OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し、表示される以下画面で、入れ替える計算ノードのメニューから **終了** をクリックします。
+
+   ![画面ショット](console_page07.png)
+
+2. 表示される以下 **インスタンスの終了** 画面で、 **アタッチされたブート・ボリュームを完全に削除** チェックボックスをチェックし、 **インスタンスの終了** ボタンをクリック、入れ替える計算ノードをOCIリソースから削除します。
+
+   ![画面ショット](console_page08.png)
+
+   削除が開始されると、以下画面のように当該計算ノードの **状態** フィールドが **終了中** に変化し、削除が完了するとインスタンスプールが削除された計算ノードを補完するために自動的に新たな計算ノードを作成します。
+
+   ![画面ショット](console_page09.png)
+
+   新たな計算ノードの作成が以下画面のように完了したら、この計算ノードの **名前** と **プライベートIP** を記録します。
+
+   ![画面ショット](console_page10.png)
+
+以上で、OCIリソースレベルの計算ノード入れ替えフェーズは完了です。この段階は、追加した計算ノード用インスタンスのデプロイが完了し既存クラスタ・ネットワークに物理的に接続されOSが起動した状態で、未だクラスタ・ネットワークを利用可能な状態になっていません。
+
+次に、AnsibleによるOSレベルカスタマイズを行います。
+
+3. bastionノードにログインし、Ansibleのインベントリファイル/etc/ansible/hostsの **compute** セクションで、削除した計算ノードのホスト名とIPアドレスの記述を、以下のように先程記録した新たな計算ノードのものに書き換えます。なお、削除した計算ノードが **nfs** セクションにも記載がある場合、これを以下のようにコメントアウトします。
+
+ ```sh
+   [compute]
+   inst-xa9kz-smart-piglet ansible_host=172.16.4.35 ansible_user=opc role=compute
+   # The following two compute nodes were replaced each other due to haradware failure
+   #inst-ydrpx-smart-piglet ansible_host=172.16.6.20 ansible_user=opc role=compute
+   inst-sz0pd-smart-piglet ansible_host=172.16.5.15 ansible_user=opc role=compute
+
+   [nfs]
+   #inst-ydrpx-smart-piglet ansible_host=172.16.6.20 ansible_user=opc role=compute
+   ```
+
+4. 以下コマンドを実行し、新たな計算ノードに対するAnsibleのOSレベルカスタマイズを起動、最後の **PLAY RECAP** フィールドの出力で **failed** や **unreachable** の項目が無いことで、正常に終了していることを確認します。
+
+ ```sh
+   > ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook /opt/oci-hpc/playbooks/site.yml
+      :
+      :
+      :
+   PLAY RECAP **********************************************************************************************
+   inst-xa9kz-smart-piglet  : ok=87   changed=54   unreachable=0    failed=0    skipped=56   rescued=0    ignored=0   
+   inst-sz0pd-smart-piglet  : ok=84   changed=14   unreachable=0    failed=0    skipped=59   rescued=0    ignored=0   
+   smart-piglet-bastion     : ok=112  changed=22   unreachable=0    failed=0    skipped=115  rescued=0    ignored=0 
+   >
+   ```
+以上で、AnsibleのOSレベルカスタマイズフェーズは完了し、計算ノードの置き換えは完了です。
+
+再度 **5. MPIプログラム実行（2ノード編）** に従いIntel MPIベンチマークを実行し、インターコネクト性能が十分出ていることを確認します。
+
+# 9. スタックの破棄
 
 本章は、スタックを破棄することで、構築したHPCクラスタを削除します。
 
