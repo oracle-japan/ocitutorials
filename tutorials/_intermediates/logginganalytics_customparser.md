@@ -6,13 +6,13 @@ layout: single
 tags:
  - intermediate
 header:
- teaser: "/intermediates/logginganalytics_customparser/customparser1.png"
+ teaser: "/intermediates/logginganalytics_customparser/LA_customparser5.png"
  overlay_image: "/intermediates/logginganalytics_customparser/LA_customparser5.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
 
-OCI Observability & Management のサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/_intermediates/audit-log-analytics)では、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。
+OCI Observability & Management のサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/intermediates/audit-log-analytics)では、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。
 Logging Analyticsでは250種類以上のログのパーサー（解析文）が定義されているため、主要なシステムのログは取り込んですぐに分析することができます。
 しかし、万が一分析したいログのパーサー（解析文）が事前に定義されていなくても心配いりません。Logging Analyticsはユーザーがカスタムでパーサーを定義することもできます。
 本チュートリアルでは、Logging Analyticsで定義されていないログのパーサーを作成する手順をご紹介します。
@@ -22,7 +22,7 @@ Logging Analyticsでは250種類以上のログのパーサー（解析文）が
 
 
 **前提条件 :**
-+ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/_intermediates/audit-log-analytics)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html)をご参照ください。
++ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/intermediates/audit-log-analytics)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html)をご参照ください。
 
 
 **注意 :**
@@ -35,15 +35,17 @@ OCIコンソール → 監視及び管理 → ログ・アナリティクス →
 + **`名前`** - 任意 例)serverlog
 + **`説明`** - 任意
 + **`サンプルのログ・コンテンツ`** - 以下のログ・コンテンツをコピー＆ペーストします。
+
 ```
 2019/05/01 13:01:00,server1, user01, 202.214.194.154
 2019/05/01 13:03:00,server1, user22, 140.86.6.237
 2019/05/01 13:05:00,server1, user26, 170.246.252.243
 2019/05/01 13:07:00,server1, user16, 116.91.128.95
 ```
+
  ![画面ショット1](LA_customparser1.png)
 
-「フィールドを抽出するログ・レコードを強調表示」のステップにて、検出された4行のログレコードのうち1つのログレコードを選択して「次」をクリックします。
+「フィールドを抽出するログ・レコードを強調表示」のステップにて、検出された4行のログレコードのうち、最初のログレコードを選択して「次」をクリックします。
  ![画面ショット2](LA_customparser2.png)
 
 
@@ -117,12 +119,12 @@ OCIコンソール → 監視及び管理 → ログ・アナリティクス →
 ## 3-2. ログの分析
 OCIコンソール → 監視及び管理 → ログ・アナリティクス → 管理 → アップロード → 手順3-1でアップロードしたログファイルを選択し、アップロード詳細画面を表示します。
 アップロード詳細画面にて、アップロード名下の「ログ・エクスプローラで開く」ボタンをクリックします。
- ![画面ショット12](LA_cusromparser12.png)
+ ![画面ショット12](LA_customparser12.png)
 
 
 アップロードしたログが、ログ・エクスプローラに表示されます。ログの分析・可視化・検索等はログ・エクスプローラから実行することが可能です。
 + ビジュアライゼーションメニューから「マップ」を選択すると、各国からのアクセス状況を地図から確認することができます。
- ![画面ショット13](LA_cusromparser13.png)
+ ![画面ショット13](LA_customparser13.png)
 
 + ビジュアライゼーションメニューから、「ツリーマップ」を選択します。画面一番左にあるフィールドのボックスの「その他」から、「Host IP Address(Client)」をビジュアライゼーションボックスの「グループ化基準」にドラッグ＆ドロップし、「適用」ボタンをクリックします。
  ![画面ショット14](LA_customparser14.png)
