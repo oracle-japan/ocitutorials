@@ -540,6 +540,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
    # All processes entering MPI_Finalize
    ```
+
 # 8. 計算ノード入れ替え
 
 本章は、構築した2ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。
