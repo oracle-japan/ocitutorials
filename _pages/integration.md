@@ -49,3 +49,6 @@ OIC-Process を理解するなら、ここから始めましょう。1段階承�
 
 **[Visual Builder で簡単なWebアプリケーションを作成してみよう](./vbcs-for-beginners-1)**   
 Visual Builder を使って簡単なWebアプリケーションを作成します。このチュートリアルでは、部門と従業員のレコードを参照および作成、編集、削除するアプリケーションを作成します。
+
+**[Visual Builder Studio でVBCSアプリケーションを管理してみよう](./vbcs-for-beginners-2-vbs)**   
+Visual Builder Studioを使ってVBCSアプリケーション・プロジェクトを管理します。このチュートリアルでは、VBSからVBCSアプリケーションを作成し、チームによる開発手順を学習します。
