@@ -1,0 +1,1437 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Visual Builder Studio(VBS)はプロジェクトのアジャイル開発、コラボレーション開発、ソースコード管理、CICDをサポートする機能を提供するPaaSサービスです。VBSはVisual Biulder Cloud Service(VBCS)アプリケーションのプロジェクト管理する機能があり、VBSで管理することによってビジュアル・アプリケーションのバージョン管理、issue管理、チーム開発をサポートすることができます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/vbcs-for-beginners-2-vbs/">
+
+
+  <meta property="og:description" content="Visual Builder Studio(VBS)はプロジェクトのアジャイル開発、コラボレーション開発、ソースコード管理、CICDをサポートする機能を提供するPaaSサービスです。VBSはVisual Biulder Cloud Service(VBCS)アプリケーションのプロジェクト管理する機能があり、VBSで管理することによってビジュアル・アプリケーションのバージョン管理、issue管理、チーム開発をサポートすることができます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-05-24T17:28:52+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/vbcs-for-beginners-2-vbs/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Visual Builder Studio(VBS)はプロジェクトのアジャイル開発、コラボレーション開発、ソースコード管理、CICDをサポートする機能を提供するPaaSサービスです。VBSはVisual Biulder Cloud Service(VBCS)アプリケーションのプロジェクト管理する機能があり、VBSで管理することによってビジュアル・アプリケーションのバージョン管理、issue管理、チーム開発をサポートすることができます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-1/">Oracle Integration - Visual Builder で簡単なWebアプリケーションを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-2-vbs/" class="active">Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう">
+    <meta itemprop="description" content="Visual Builder Studio(VBS)はプロジェクトのアジャイル開発、コラボレーション開発、ソースコード管理、CICDをサポートする機能を提供するPaaSサービスです。VBSはVisual Biulder Cloud Service(VBCS)アプリケーションのプロジェクト管理する機能があり、VBSで管理することによってビジュアル・アプリケーションのバージョン管理、issue管理、チーム開発をサポートすることができます。">
+    <meta itemprop="datePublished" content="2022-05-24T17:28:52+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#0事前準備">0.事前準備</a><ul><li><a href="#visual-builder-studio用コンパートメントの作成">Visual Builder Studio用コンパートメントの作成</a></li></ul></li><li><a href="#1ワークショップで利用するアカウント情報の収集">1.ワークショップで利用するアカウント情報の収集</a><ul><li><a href="#1テナンシocid">1.テナンシOCID</a></li><li><a href="#2ユーザocid">2.ユーザOCID</a></li><li><a href="#3リージョン識別子">3.リージョン識別子</a></li><li><a href="#4apiキーの取得">4.APIキーの取得</a></li><li><a href="#5api-signingキーのフィンガープリント">5.API Signingキーのフィンガープリント</a></li><li><a href="#6コンパートメントocid">6.コンパートメントOCID</a></li><li><a href="#7オブジェクトストレージネームスペース">7.オブジェクト・ストレージ・ネームスペース</a></li></ul></li><li><a href="#2visual-builder-studioのセットアップ">2.Visual Builder Studioのセットアップ</a><ul><li><a href="#visual-builder-studioのプロビジョニング">Visual Builder Studioのプロビジョニング</a></li><li><a href="#visual-builder-studioのアカウント設定">Visual Builder Studioのアカウント設定</a></li></ul></li><li><a href="#3管理先のvbcs環境の設定変更">3.管理先のVBCS環境の設定変更</a></li><li><a href="#4プロジェクトの作成">4.プロジェクトの作成</a><ul><li><a href="#プロジェクトの作成">プロジェクトの作成</a></li><li><a href="#ビルドジョブの設定">ビルド・ジョブの設定</a></li><li><a href="#オプション-プロジェクトメンバーの追加">(オプション) プロジェクト・メンバーの追加</a></li><li><a href="#git-repositoryの確認">Git Repositoryの確認</a></li><li><a href="#ワークスペースの利用">ワークスペースの利用</a></li></ul></li><li><a href="#5ビジュアルアプリケーションの作成">5.ビジュアル・アプリケーションの作成</a><ul><li><a href="#ビジュアルアプリケーションの作成">ビジュアル・アプリケーションの作成</a></li><li><a href="#ビジネスオブジェクトの作成">ビジネス・オブジェクトの作成</a></li><li><a href="#ビジネスオブジェクトを画面へ表示">ビジネス・オブジェクトを画面へ表示</a></li></ul></li><li><a href="#アプリケーションのプレビュー共有デプロイ">アプリケーションのプレビュー・共有・デプロイ</a><ul><li><a href="#アプリケーションの確認共有">アプリケーションの確認・共有</a></li><li><a href="#アプリケーションのコミットプッシュ">アプリケーションのコミット・プッシュ</a></li><li><a href="#mainブランチへのマージ">mainブランチへのマージ</a></li></ul></li><li><a href="#ライブアプリケーションへのデータ登録">ライブアプリケーションへのデータ登録</a><ul><li><a href="#データの取得">データの取得</a></li><li><a href="#データ保管用repositoryの作成">データ保管用Repositoryの作成</a></li><li><a href="#データ登録用ジョブの作成">データ登録用ジョブの作成</a></li><li><a href="#ジョブのパイプラインへの組み込み">ジョブのパイプラインへの組み込み</a></li></ul></li><li><a href="#コード変更の管理">コード変更の管理</a><ul><li><a href="#画面の編集">画面の編集</a></li><li><a href="#マージリクエストの承認">マージ・リクエストの承認</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Visual Builder Studio(VBS)はプロジェクトのアジャイル開発、コラボレーション開発、ソースコード管理、CICDをサポートする機能を提供するPaaSサービスです。VBSはVisual Biulder Cloud Service(VBCS)アプリケーションのプロジェクト管理する機能があり、VBSで管理することによってビジュアル・アプリケーションのバージョン管理、issue管理、チーム開発をサポートすることができます。</p>
+
+<p>このチュートリアルでは、VBSを使ってVBCSプロジェクトを作成し、簡単なアプリケーションを作成してマージリクエストの承認をトリガーに更新する手順を学習します。</p>
+
+<p class="notice--info"><strong>Visual Builder Studioについて</strong> <br />
+VBSはOracle Cloud Infrastructure(OCI)契約者様は<b>無償でご利用可能</b>です。VBSにはデフォルトでGit Repository、Wikiのメタデータ用に20 GBのストレージが含まれています。尚、ビルドジョブの機能を利用する際は処理を実行するビルド用インスタンスに対して別途課金が発生します。詳細は<a href="https://www.oracle.com/jp/application-development/visual-builder-studio//#:~:text=無償">こちら</a>をご確認ください。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>
+    <p><a href="../integration-for-commons-1-instance/">Oracle Integration Cloud インスタンスの作成</a> が完了している、またはVBCSのインスタンスが作成出来ていること。</p>
+  </li>
+  <li>
+    <p>(OICのVBCSを利用する場合) ServiceAdministrator ロールが付与されたユーザーが準備されていること <br />
+(参考) Oracle Integration Roles and Privileges <br />
+<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34">https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34</a></p>
+  </li>
+</ul>
+
+<h2 id="0事前準備">0.事前準備</h2>
+<p>まずはじめにVBSで利用するコンパートメントの作成をします。</p>
+
+<h3 id="visual-builder-studio用コンパートメントの作成">Visual Builder Studio用コンパートメントの作成</h3>
+
+<p class="notice--info"><strong>コンパートメントについて</strong><br />
+Oracle Cloudにはコンパートメントという考え方があります。<br />
+コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。</p>
+
+<p>まず初めに、後ほど実施するVisual Builder Studioのセットアップで利用するコンパートメントを作成します。</p>
+
+<p>OCIコンソールにログインします。</p>
+
+<p>ハンバーガーメニューの”アイデンティティとセキュリティ”⇒”コンパートメント”をクリックします。</p>
+
+<p><img src="0_001.jpg" alt="" /></p>
+
+<p>“コンパートメントの作成”をクリックします。</p>
+
+<p><img src="0_002.jpg" alt="" /></p>
+
+<p>以下の情報を入力します。</p>
+
+<p><img src="0_003.jpg" alt="" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>コンパートメント名を入力します。今回は”VBS”とします。</td>
+    </tr>
+    <tr>
+      <td>説明</td>
+      <td>コンパートメントに対する説明を入力します。今回は”VBS用コンパートメント”とします。</td>
+    </tr>
+    <tr>
+      <td>親コンパートメント</td>
+      <td>作成するコンパートメントの親となるコンパートメントを選択します。今回はデフォルトのままにします。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>“コンパートメントの作成”をクリックします。</p>
+
+<p>以上でコンパートメントの作成は完了です。</p>
+
+<h2 id="1ワークショップで利用するアカウント情報の収集">1.ワークショップで利用するアカウント情報の収集</h2>
+
+<p>ここから、ハンズオンを進める上で下記の情報が必要となります。<strong>取得した情報は後ほど使用するためメモ帳などに控えておいてください。</strong></p>
+
+<ol>
+  <li><a href="#1テナンシocid">テナンシOCID</a></li>
+  <li><a href="#2ユーザocid">ユーザOCID</a></li>
+  <li><a href="#3リージョン識別子">リージョン識別子</a></li>
+  <li><a href="#4apiキーの取得">プライベート・キー</a></li>
+  <li><a href="#5api-signingキーのフィンガープリント">API Signingキーのフィンガープリント</a></li>
+  <li><a href="#6コンパートメントocid">コンパートメントOCID</a></li>
+  <li><a href="#7オブジェクト・ストレージ・ネームスペース">オブジェクト・ストレージ・ネームスペース</a></li>
+</ol>
+
+<h3 id="1テナンシocid">1.テナンシOCID</h3>
+
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから”テナンシ:<テナンシ名>"をクリックします。</テナンシ名></p>
+
+<p><img src="2_004.png" alt="" /></p>
+
+<p>テナンシ情報”OCID”の右側にある”コピー”をクリックすると、テナンシOCIDがクリップボードにコピーされます。</p>
+
+<p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
+
+<p><img src="2_005.png" alt="" /></p>
+
+<h3 id="2ユーザocid">2.ユーザOCID</h3>
+
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから”ユーザ名”(oracleidentitycloudservice/<ユーザ名>)をクリックします。</ユーザ名></p>
+
+<p><img src="2_007.png" alt="" /></p>
+
+<p>ユーザ情報が表示されますので、”OCID”の右側にある”コピー”をクリックすると、ユーザOCIDがクリップボードにコピーされます。</p>
+
+<p><img src="2_008.png" alt="" /></p>
+
+<p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
+
+<h3 id="3リージョン識別子">3.リージョン識別子</h3>
+
+<p>OCIコンソール左上のハンバーガーメニューを展開し、”ガバナンスと管理”⇒”リージョン管理”に移動します。</p>
+
+<p><img src="2_002.jpg" alt="" /></p>
+
+<p>以下をコピーしてメモしてください。</p>
+
+<ul>
+  <li>Region Identifier：リージョン識別子</li>
+</ul>
+
+<p>USにあるデータセンター”US East (Ashburn)”を使用する場合”us-ashburn-1”になります。</p>
+
+<p><img src="2_003.jpg" alt="" /></p>
+
+<h3 id="4apiキーの取得">4.APIキーの取得</h3>
+<p>ここでは、Visual Builder Studioのセットアップで使用するAPIキーの取得を行います。</p>
+
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから”ユーザ名”(oracleidentitycloudservice/<ユーザ名>)をクリックします。</ユーザ名></p>
+
+<p><img src="2_007.png" alt="" /></p>
+
+<p>ユーザー詳細画面へ遷移するので、スクロールして”APIキー”をクリックします。</p>
+
+<p><img src="2_009.png" alt="" /></p>
+
+<p>“公開キーの追加”をクリックします。</p>
+
+<p><img src="2_010.png" alt="" /></p>
+
+<p>“公開キーの追加”ダイアログの入力欄が表示されます。<br />
+今回は、”APIキー・ペアの生成”にチェックし、”秘密鍵のダウンロード”をクリックし、API秘密鍵をダウンロード後に”追加”ボタンをクリックします。<br />
+ダウンロードしたAPI秘密鍵は、<a href="#1visual-builder-studioのセットアップ">1.Visual Builder Studioのセットアップ</a>で使用するので、保管しておいてください。</p>
+
+<p><img src="2_011.png" alt="" /></p>
+
+<p>以上でAPIキーの取得は完了です。</p>
+
+<h3 id="5api-signingキーのフィンガープリント">5.API Signingキーのフィンガープリント</h3>
+
+<p>API Signingキーのフィンガープリントは<a href="#6apiキーの取得">6.APIキーの取得</a>の手順により、ユーザー詳細画面から確認できるようになっています。</p>
+
+<p>ユーザー詳細画面で”APIキー”に移動します。<br />
+APIキーに表示されているフィンガープリントを確認します。</p>
+
+<p><img src="2_012.jpg" alt="" /></p>
+
+<p>表示されている値をメモしてください。</p>
+
+<h3 id="6コンパートメントocid">6.コンパートメントOCID</h3>
+
+<p>OCIコンソール左上のハンバーガーメニューを展開し、”アイデンティティとセキュリティ”⇒”コンパートメント”に移動します。コンパートメント一覧から<a href="#visual-builder-studio用コンパートメントの作成">Visual Builder Studio用コンパートメントの作成</a>で作成したコンパートメントに移動します。今回は”VBS”となっています。</p>
+
+<p>以下のコピーをクリックしてメモしてください。</p>
+
+<ul>
+  <li>OCID：コンパートメントOCID</li>
+</ul>
+
+<p><img src="2_006.png" alt="" /></p>
+
+<h3 id="7オブジェクトストレージネームスペース">7.オブジェクト・ストレージ・ネームスペース</h3>
+
+<p>OCIコンソール左上のハンバーガーメニューを展開し、”ガバナンスと管理”⇒”テナンシ詳細”に移動します。</p>
+
+<p>以下をコピーしてメモしてください。</p>
+
+<ul>
+  <li>オブジェクト・ストレージ・ネームスペース：オブジェクト・ストレージ・ネームスペース</li>
+</ul>
+
+<p><img src="2_001.jpg" alt="" /></p>
+
+<p>以上でワークショップで利用するアカウント情報の収集が完了しました。</p>
+
+<h2 id="2visual-builder-studioのセットアップ">2.Visual Builder Studioのセットアップ</h2>
+<p>ここでは、Visual Builder Studioのセットアップを行います。</p>
+
+<h3 id="visual-builder-studioのプロビジョニング">Visual Builder Studioのプロビジョニング</h3>
+
+<p>Oracle Cloud Infrastructure(OCI)コンソールにログインします。<br />
+左上のハンバーガーメニューをクリックし、”OCI Classic Services”⇒”Developer”をクリックします。</p>
+
+<p><img src="1_001.jpg" alt="" /></p>
+
+<p>Visual Builder Studioのインスタンス画面が開きます。<br />
+右上の”インスタンスの作成”ボタンをクリックします。</p>
+
+<p><img src="1_002.jpg" alt="" /></p>
+
+<p>インスタンス作成画面が開くので、以下の情報を入力し、”次”ボタンをクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Instance Name</td>
+      <td>Visual Builder Studioのインスタンス名。今回は”Handson”</td>
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td>Visual Builder Studioインスタンスの概要説明。今回は設定しない。</td>
+    </tr>
+    <tr>
+      <td>Notification Email</td>
+      <td>Visual Builder Studioに関する通知先のメールアドレス。今回は設定しない。</td>
+    </tr>
+    <tr>
+      <td>Region</td>
+      <td>Visual Builder Studioインスタンスを作成するリージョン。今回は”us-ashburn-1”</td>
+    </tr>
+    <tr>
+      <td>Tags</td>
+      <td>Visual Builder Studioインスタンスに設定するタグ。今回は設定しない。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="1_003.jpg" alt="" /></p>
+
+<p>インスタンス作成の確認画面が表示されます。 <br />
+“作成”ボタンをクリックします。</p>
+
+<p><img src="1_004.jpg" alt="" /></p>
+
+<p>インスタンス作成がリクエストされます。Statusが”Creating service”になっていることを確認します。<br />
+インスタンス作成の完了までしばらく時間がかかります。</p>
+
+<p><img src="1_005.jpg" alt="" /></p>
+
+<p>インスタンス作成が完了したら、作成したインスタンスの右端にあるハンバーガーメニューをクリックし、”Acccess Service Instance”をクリックします。</p>
+
+<p>また、VBSのコンソールのURLをコピーしておきます。 <br />
+このURLは<a href="#3管理先のvbcs環境の設定変更">3.管理先のVBCS環境の設定変更</a>の手順で利用します。</p>
+
+<p><img src="1_006.jpg" alt="" /></p>
+
+<div class="notice--warning">
+  <p><strong>Visual Builder Studioにアクセスできない場合</strong><br />
+以下のエラーメッセージが表示された場合、以下の対応をお願いいたします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>このサイトにアクセスできません  
+https://psm-cacct-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.console.oraclecloud.com/administration/faces/JaaSRunner.jspx のウェブページは一時的に停止しているか、新しいウェブアドレスに移動した可能性があります。
+ERR_RESPONSE_HEADERS_TRUNCATED
+</code></pre></div></div>
+
+<ul>
+  <li>社内プロキシなどを利用している参加者の皆様で社内プロキシを回避可能な場合は、社内プロキシを経由しないネットワーク環境でお試しください。</li>
+</ul>
+
+</div>
+
+<h3 id="visual-builder-studioのアカウント設定">Visual Builder Studioのアカウント設定</h3>
+
+<p>Visual Builder Studioのメニューが表示されます。最初にVisual Builder Studioを利用するにあたって必要な情報を入力する必要があります。<br />
+画面上部に表示される”OCI Account”のリンクをクリックします。</p>
+
+<p><img src="1_007.jpg" alt="" /></p>
+
+<p>画面中央部にある”Connect”をクリックします。</p>
+
+<p><img src="1_008.jpg" alt="" /></p>
+
+<p>Visual Builder Studioを利用するために必要な情報を入力していきます。<br />
+入力する内容は<a href="#1ワークショップで利用するアカウント情報の収集">1.ワークショップで利用するアカウント情報の収集</a>で収集した情報です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tenancy OCID</td>
+      <td><a href="#1テナンシocid">1.テナンシOCID</a>で収集した値</td>
+    </tr>
+    <tr>
+      <td>User OCID</td>
+      <td><a href="#2ユーザocid">2.ユーザOCID</a>で収集したユーザーOCID</td>
+    </tr>
+    <tr>
+      <td>Home Region</td>
+      <td><a href="#3リージョン識別子">3.リージョン識別子</a>で取得した値。今回は”us-ashburn-1”</td>
+    </tr>
+    <tr>
+      <td>Private Key</td>
+      <td><a href="#4apiキーの取得">4.APIキーの取得</a>でダウンロードしたAPI秘密鍵の内容を貼り付け</td>
+    </tr>
+    <tr>
+      <td>Passphrase</td>
+      <td>パスフレーズ。今回は未入力。</td>
+    </tr>
+    <tr>
+      <td>Fingerprint</td>
+      <td><a href="#5api-signingキーのフィンガープリント">5.API Signingキーのフィンガープリント</a>で収集したAPI Signingキーのフィンガープリント(Private Keyを入力すると自動的に設定される)</td>
+    </tr>
+    <tr>
+      <td>Compartment OCID</td>
+      <td><a href="#6コンパートメントocid">6.コンパートメントOCID</a>で収集したコンパートメントOCID</td>
+    </tr>
+    <tr>
+      <td>Storage Namespace</td>
+      <td><a href="#7オブジェクト・ストレージ・ネームスペース">7.オブジェクト・ストレージ・ネームスペース</a>で収集したオブジェクト・ストレージ・ネームスペース</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>情報の入力が完了したら、画面下部の”validate”ボタンをクリックします。<br />
+Validateに成功すると<img src="1_011.jpg" alt="" />が表示されます。<br />
+Validateが成功したら”Save”ボタンをクリックします。</p>
+
+<p><img src="1_009.jpg" alt="" /></p>
+
+<p>以下のように画面が表示されれば、Visual Builder Studioのセットアップが完了です。</p>
+
+<p><img src="1_010.jpg" alt="" /></p>
+
+<h2 id="3管理先のvbcs環境の設定変更">3.管理先のVBCS環境の設定変更</h2>
+<p>VBSからVBCS環境を操作するためにCORSの設定を追加します。</p>
+
+<p class="notice--warning"><strong>注意</strong><br />
+こちらの手順はあらかじめ用意したOracle Integration Cloudに含まれるVBCS、または単体でプロビジョニングしたVBCS環境で実施してください。</p>
+
+<p>VBCSのコンソール画面を開き、左上のメニューから”Setting”を開きます。</p>
+
+<p><img src="3_001.png" alt="" /></p>
+
+<p>“Setting”の画面で”New Origin”をクリックします。</p>
+
+<p><img src="3_002.png" alt="" /></p>
+
+<p>インプット・ボックスが表示されるので、VBSコンソールのURLを入力し、”✓”をクリックします。</p>
+
+<p><img src="3_003.png" alt="" /></p>
+
+<p>以上でCORSの設定は完了です。</p>
+
+<h2 id="4プロジェクトの作成">4.プロジェクトの作成</h2>
+<p>このパートではVBSを利用してビジュアル・アプリケーションのプロジェクトを作成し、初期設定として必要な手順を学習します。</p>
+
+<h3 id="プロジェクトの作成">プロジェクトの作成</h3>
+<p>前パートでプロビジョニングしたVBSのコンソール画面から”Create”ボタンをクリックします。</p>
+
+<p><img src="4_001.png" alt="" /></p>
+
+<p>表示されたダイアログにプロジェクトの詳細情報を入力します。今回は以下の内容を入力します。 <br />
+“Next”をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>設定項目</th>
+      <th>設定する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Name</td>
+      <td>VisualAppProject</td>
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td>VisualAppProject</td>
+    </tr>
+    <tr>
+      <td>Security</td>
+      <td>Privateにチェック(デフォルト)</td>
+    </tr>
+    <tr>
+      <td>Preferrd Language</td>
+      <td>Japanese - 日本語を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="4_002.png" alt="" /></p>
+
+<p>次はプロジェクトのテンプレートタイプを選択します。 <br />
+今回はVBCSアプリケーションを作成するので”Visual Application”を選択します。 <br />
+“Next”をクリックします。</p>
+
+<p><img src="4_003.png" alt="" /></p>
+
+<p>最後にプロジェクトの詳細情報を入力します。 <br />
+今回は以下の内容を設定し、”Finish”をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>設定項目</th>
+      <th>設定する値</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Git Repository Name</td>
+      <td>visualappproject.git(デフォルト)</td>
+      <td>プロジェクトのGit Repositoryの名前</td>
+    </tr>
+    <tr>
+      <td>Development VB Instance</td>
+      <td>任意のOICインスタンス、またはVBCSインスタンス</td>
+      <td>プロジェクトで作成するビジュアル・アプリケーションを作成するインスタンス</td>
+    </tr>
+    <tr>
+      <td>Visual App Template</td>
+      <td>Default VBCS Application(デフォルト)</td>
+      <td>作成するビジュアル・アプリケーションのテンプレート</td>
+    </tr>
+    <tr>
+      <td>Workspace Name</td>
+      <td>workspace1(デフォルト)</td>
+      <td>ワークスペース名</td>
+    </tr>
+    <tr>
+      <td>Work Branch Name</td>
+      <td>branch1(デフォルト)</td>
+      <td>Git Repositoryで使用するブランチ名</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="4_004.png" alt="" /></p>
+
+<p>以下の画面が表示され、プロジェクトの作成が開始されます。</p>
+
+<p><img src="4_005.png" alt="" /></p>
+
+<p>プロジェクトの作成が完了したら、自動的にプロジェクトの管理画面に遷移します。</p>
+
+<p><img src="4_006.png" alt="" /></p>
+
+<p>下にスクロールしてRecent Activiytyを確認すると、プロジェクトでGit Repositoryやブランチが作成されているのが確認できます。</p>
+
+<p><img src="4_007.png" alt="" /></p>
+
+<p>以上でプロジェクトの作成は完了です。</p>
+
+<h3 id="ビルドジョブの設定">ビルド・ジョブの設定</h3>
+<p>次にビルド・ジョブの設定をします。 <br />
+VBSではプロジェクト作成時にアプリケーションのデプロイ用のビルド・ジョブが自動的に作成されていますが、認証情報はまだ設定されていないので正しい情報を設定する必要があります。</p>
+
+<p>左にあるメニューから”Builds”をクリックします。 <br />
+<img src="4_008.png" alt="" /></p>
+
+<p>Biuldsの画面では既に2つのビルド・ジョブが作成されていることが確認できます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ジョブ名</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Visual-Application-Deploy</td>
+      <td>ビルド・アーティファクトをVisual Builder開発インスタンス、実動インスタンス、またはその他のインスタンスにデプロイするジョブ</td>
+    </tr>
+    <tr>
+      <td>Visual-Application-Package</td>
+      <td>ビジュアル・アプリケーションのビルド・アーティファクトをパッケージ化するジョブ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+これら2つのジョブはプロジェクト上のGit Reposirtoryのmainブランチの更新をトリガーにしているため、他のブランチからmainブランチへマージが実行されるとこれらのジョブが自動的に起動し、ビジュアル・アプリケーションが更新・デプロイされます。</p>
+
+<p>“Visual Application Deploy”をクリックします。</p>
+
+<p><img src="4_009.png" alt="" /></p>
+
+<p>“Configure”をクリックします。</p>
+
+<p><img src="4_010.png" alt="" /></p>
+
+<p>“Steps”タブをクリックし、”Oracle Deployment”のStepを修正します。 <br />
+UsernameとPasswordの初期値はダミーになっているので、正しいユーザー情報を設定します。</p>
+
+<div class="notice--warning">
+  <p><strong>ビルド実行時に以下のようなエラーが発生した場合</strong><br />
+ビルド実行時に以下のエラーメッセージが表示された場合、お手数ですがこの手順で設定するユーザーを<b>OCIにフェデレーションされていないIDCSアカウント</b>を別途用意して再度お試しください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error: Unable to obtain an access token from the user credentials in this build step. Make sure the username and password are correct for this step in the Job Config.
+</code></pre></div></div>
+
+
+</div>
+
+<p><img src="4_012.png" alt="" /></p>
+
+<h3 id="オプション-プロジェクトメンバーの追加">(オプション) プロジェクト・メンバーの追加</h3>
+
+<p>必須ではありませんが、ここではプロジェクト・メンバーの登録手順を紹介します。 <br />
+プロジェクトのホーム画面から右にあるTeamタブを開きます。</p>
+
+<p><img src="4_013.png" alt="" /></p>
+
+<p>“Add Member”をクリックします。</p>
+
+<p><img src="4_014.png" alt="" /></p>
+
+<p>インプットボックスから追加したいメンバーを検索し、メンバーに付与するアクセス・ロールを選択して”Add”をクリックします。</p>
+
+<p><img src="4_015.png" alt="" /></p>
+
+<p>以上の手順でプロジェクト・メンバーを追加することができます。</p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+上記のアクセス・ロールに関しては<a href="https://docs.oracle.com/cd//E83857_01/paas/visual-builder/visualbuilder-manage-development-process/work-projects.html#GUID-43266638-D617-4439-8B83-D9054FC0F5AB">こちら</a>をご確認ください。</p>
+
+<h3 id="git-repositoryの確認">Git Repositoryの確認</h3>
+<p>次にプロジェクトのGit Repositoryを確認します。 <br />
+左のメニューからGitをクリックし、Gitの画面へ遷移します。既にGit Repositoryの中に様々なリソースが作成されていることが確認できます。</p>
+
+<p><img src="4_016.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+これらはVBCSで作成されるアプリケーションの実体になっています。このソースコードを直接編集し、アプリケーションを作成・編集することもできます。ローコードで視覚的に確認しながら作成する場合は次のステップでVBSプロジェクトからVBCSの画面を展開する手順を紹介します。</p>
+
+<h3 id="ワークスペースの利用">ワークスペースの利用</h3>
+<p>ビジュアル・アプリケーションのプロジェクトでは自動的にワークスペースというものが作成されています。ワークスペースはビジュアル・アプリケーションの定義をしているリソースで、VBCSインスタンスやGit Repository等が定義されています。</p>
+
+<p>左のメニューから”Workspaces”をクリックして、ワークスペース画面を開きます。 <br />
+<img src="4_017.png" alt="" /></p>
+
+<p>Wrokspace1にvisualappproject.gitとbranch1が紐ついており、Developmentという環境が登録されていることが確認できます。DevelopmentをクリックするとEnvironmentの画面に遷移し、プロジェクト作成時に登録したVBCSインスタンス(またはOICインスタンス)の環境が確認できます。
+<img src="4_018.png" alt="" /></p>
+
+<p>VBCSのコンソールへ遷移するためには”Workspace1”をクリックします。
+<img src="4_019.png" alt="" /></p>
+
+<p>VBCSのコンソール画面へ遷移します。 <br />
+左上の表示を見るとVBSで作成したワークスペース、Git Repository、ブランチで管理されている環境であることが確認できます。</p>
+
+<p><img src="4_020.png" alt="" /></p>
+
+<p>次の手順で遷移したVBCSからビジュアル・アプリケーションを作成します。</p>
+
+<h2 id="5ビジュアルアプリケーションの作成">5.ビジュアル・アプリケーションの作成</h2>
+<p>ここでは前パートで遷移したVBCSコンソールからビジュアル・アプリケーションを作成します。 <br />
+アプリケーションの作成は本ハンズオンの本題ではないため、簡単なアプリケーションを作成します。
+基本的なアプリケーションの作成について学習したい方は<a href="../vbcs-for-beginners-1/">こちら</a>をお試しください。</p>
+
+<h3 id="ビジュアルアプリケーションの作成">ビジュアル・アプリケーションの作成</h3>
+
+<p>VBCSコンソール画面から”Web Applications”から”＋Web Application”をクリックし、ダイアログで”Application Name”に”webapp4vbs”と入力し、”Create”をクリックします。</p>
+
+<p><img src="5_001.png" alt="" /></p>
+
+<p>Webアプリケーションの土台ができたら、タイトル部分の”Bind Text”を選択し、右側のPropertiesからValueを”Employee”に変更します。</p>
+
+<p><img src="5_002.png" alt="" /></p>
+
+<h3 id="ビジネスオブジェクトの作成">ビジネス・オブジェクトの作成</h3>
+
+<p>次にビジネス・オブジェクトを作成します。 <br />
+メニューからビジネス・オブジェクトの画面へ遷移し、”employee”の名前で作成します。
+<img src="5_004.png" alt="" /></p>
+
+<p>右上の”＋”ボタンから以下の3つのフィールドを追加します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>フィールド名</th>
+      <th>Label</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>名前</td>
+      <td>name</td>
+      <td><img src="5_006.png" alt="" /> String</td>
+    </tr>
+    <tr>
+      <td>入社日</td>
+      <td>hireDate</td>
+      <td><img src="5_007.png" alt="" /> Date</td>
+    </tr>
+    <tr>
+      <td>Ｅメール</td>
+      <td>email</td>
+      <td><img src="5_008.png" alt="" /> Email</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>追加後の画面は以下のようになります。</p>
+
+<p><img src="5_005.png" alt="" /></p>
+
+<p><a href="./Employee.csv">Employee.csv</a>をダウンロードします。 <br />
+Dataタブを開いて”インポート”アイコンをクリックします。 <br />
+Import DataのダイアログでダウンロードしたEmployee.csvをドラッグアンドドロップし、”Import”をクリックします。</p>
+
+<p><img src="5_009.png" alt="" /></p>
+
+<p>インポートが完了すると以下のようになります。</p>
+
+<p><img src="5_010.png" alt="" /></p>
+
+<h3 id="ビジネスオブジェクトを画面へ表示">ビジネス・オブジェクトを画面へ表示</h3>
+
+<ul>
+  <li>Web Applicationタブから<a href="#ビジュアルアプリケーションの作成">ビジュアル・アプリケーションの作成</a>で作成したmain-startを開きます。</li>
+  <li>コンポーネントから”Table”をドラッグアンドドロップでmain-startに配置します。</li>
+  <li>“Properties”から”Quick Start”－”Add Data”をクリックします。</li>
+</ul>
+
+<p><img src="5_011.png" alt="" /></p>
+
+<p>“Business Objects”で”Employee”を選択し、”Next”をクリックします。</p>
+
+<p><img src="5_012.png" alt="" /></p>
+
+<p>画面左の”Endpoint Structure”からname, hireDate, emailを選択し、”Next”をクリックします。</p>
+
+<p><img src="5_013.png" alt="" /></p>
+
+<p>“Finish”をクリックします。</p>
+
+<p><img src="5_014.png" alt="" /></p>
+
+<p>main-startに戻り、TableにEmployeeのデータが表示されます。</p>
+
+<p><img src="5_015.png" alt="" /></p>
+
+<p>以上でビジュアル・アプリケーションの作成は完了です。</p>
+
+<h2 id="アプリケーションのプレビュー共有デプロイ">アプリケーションのプレビュー・共有・デプロイ</h2>
+<p>ビジュアル・アプリケーションの作成ができたら実際の画面を確認します。</p>
+
+<h3 id="アプリケーションの確認共有">アプリケーションの確認・共有</h3>
+
+<p>自身で確認する場合は右上のプレビューボタン(▷)で確認することができます。</p>
+
+<p><img src="6_004.png" alt="" /></p>
+
+<p>メンバーに確認してもらう場合は右上のメニューから”Share”をクリックします。 <br />
+この共有機能はGit Repositoryに変更をプッシュする前にビジュアル・アプリケーションをメンバー間で共有することができます。</p>
+
+<p><img src="6_005.png" alt="" /></p>
+
+<p>ダイアログが表示されます。
+共有するアプリケーションのURLが表示されます。
+今回はそのまま”Share”をクリックします。</p>
+
+<p><img src="6_006.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+“Active Application”は現在使用しているアプリケーションを指し、共有が成功すると右上のメニュー→”Open Shared Application”で開くことができます。今回は1つのアプリケーションしか作成していないので、”Active Application”と”Web Applications”が同じURLになっていますが、複数のアプリケーションを作成している場合はナビゲーションから選択することができます。 <br />
+また、共有するアプリケーションにサンプルデータを含める、以前の状態を含める等、データの状態を選択することができます。詳細は<a href="https://docs.oracle.com/en/cloud/paas/visual-builder/visualbuilder-building-applications/preview-share-and-deploy-visual-applications1.html#GUID-41875074-76A3-4A59-98EF-827956B532DF">こちら</a>をご確認ください。</p>
+
+<p>メンバーはURLを教えてもらって遷移するかもしくはVBSの”Environments”－”Deployments”から遷移することができます。</p>
+
+<p><img src="6_007.png" alt="" /></p>
+
+<h3 id="アプリケーションのコミットプッシュ">アプリケーションのコミット・プッシュ</h3>
+
+<p>画面の確認ができたら、Git Repositoryに変更をコミットします。 <br />
+左上のGit Repositoryとブランチ名をクリックし、”Push”をクリックします。</p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+今回は最初からPushしますが、アプリケーションの変更が完了していない場合は一度自身のブランチへcommitして現在の状態を保存しておくこともできます。</p>
+
+<p><img src="6_001.png" alt="" /></p>
+
+<p>ダイアログが表示されるのでコミット・コメントを入力します。今回は”新規作成”と入力します。 <br />
+“Commit All and Push”をクリックします。</p>
+
+<p><img src="6_002.png" alt="" /></p>
+
+<p>Pushに成功したメッセージが右下に表示されます。</p>
+
+<p><img src="6_003.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+PushとShareのタイミングは任意です。開発中にデザインを確認したい場合はShareの機能で共有して確認できます。マージリクエストの際に確認する場合はPushしてから確認するなど、ワークロードによって最適な方法を選択できます。</p>
+
+<h3 id="mainブランチへのマージ">mainブランチへのマージ</h3>
+<p>次は先ほどPushしたbranch1をmainブランチへマージします。 <br />
+VBCSコンソール画面の右上にある”Publish”をクリックします。</p>
+
+<p><img src="6_008.png" alt="" /></p>
+
+<p>Commit Messageに任意のメッセージを入力し、”Publish Changes” をクリックします。</p>
+
+<p><img src="6_009.png" alt="" /></p>
+
+<p>“Close” をクリックします。</p>
+
+<p><img src="6_010.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+“Publish Changes” をクリックすると自身のブランチのリソースがmainブランチへマージされ、自動的にVisual Builder Studioのビルドジョブが実行されます。ビルドジョブが実行されると本番環境へ作成したビジュアル・アプリケーションがデプロイされます。</p>
+
+<p>次はデプロイされたアプリケーションのURIを確認します。
+左上の “←” アイコンからVBSのコンソール画面へ戻ります。</p>
+
+<p><img src="6_011.png" alt="" /></p>
+
+<p>左のメニュー－”Environments” から “Deployments” のタブを開き、Statusが “Deployed” になっているものがデプロイされたアプリケーションです。クリックするとアプリケーションが別タブで開かれます。</p>
+
+<p><img src="6_012.png" alt="" /></p>
+
+<p>URLに遷移してみるとわかるようにライブアプリケーションのデータが空になっているのが分かると思います。VBSではコードのライフサイクルとデータのライフサイクルはべつのものに分かれています。次の手順ではライブアプリケーションのデータを登録する手順を説明します。</p>
+
+<p>以上でmainブランチへのマージは完了です。</p>
+
+<h2 id="ライブアプリケーションへのデータ登録">ライブアプリケーションへのデータ登録</h2>
+<p>次の手順ではライブアプリケーションのビジネス・オブジェクトにデータを登録する手順を学びます。</p>
+
+<h3 id="データの取得">データの取得</h3>
+<p>まず登録するデータを取得します。 <br />
+今回は開発時に登録したデータをそのまま利用します。 <br />
+VBCSの画面からビジネス・オブジェクトを開き、メニュー－Data Managerから”Export All Data”をクリックし、全データをダウンロードします。</p>
+
+<p><img src="7_001.png" alt="" /></p>
+
+<h3 id="データ保管用repositoryの作成">データ保管用Repositoryの作成</h3>
+
+<p>次はVBSの画面で操作を行います。左上の”←”から、VBSのコンソールへ戻ります。</p>
+
+<p><img src="7_002.png" alt="" /></p>
+
+<p>データファイルはアプリケーションコードの一部ではないため、このファイルを保存するための個別のGitレポジトリを作成します。Project Homeの画面で右側にある”Repositories”から”Create Repository”をクリックします。</p>
+
+<p><img src="7_003.png" alt="" /></p>
+
+<p>“Name”に”DataFiles”を入力し、”Create”をクリックします。</p>
+
+<p><img src="7_004.png" alt="" /></p>
+
+<p>次に、データファイルをそのレポジトリにロードします。
+“Clone”をクリックし、コピーアイコンからレポジトリのURLを取得したら、任意のターミナルからGitコマンドを利用してデータファイルをレポジトリにプッシュします。</p>
+
+<p><img src="7_005.png" alt="" /></p>
+
+<div class="notice--info">
+  <p><strong>OCIコンソールからCloud Shellを利用してデータファイルをプッシュする場合</strong></p>
+<ul>
+  <li>OCIコンソールの右上にある “&gt;_” アイコンからCloud Shellを起動する。
+<img src="7_006.png" alt="" /></li>
+  <li>Cloud Shellで<code class="language-plaintext highlighter-rouge">git clone {レポジトリのURL}</code>を実行した後、<code class="language-plaintext highlighter-rouge">cd {レポジトリのディレクトリ名}</code>でレポジトリのディレクトリへ移動する。</li>
+  <li>Cloud Shell上にデータファイルをドラッグアンドドロップしてインポートする。</li>
+  <li><code class="language-plaintext highlighter-rouge">git add .</code>を実行する。</li>
+  <li><code class="language-plaintext highlighter-rouge">git commit -m "データ登録"</code> を実行する。</li>
+  <li><code class="language-plaintext highlighter-rouge">git push</code> を実行する。</li>
+</ul>
+
+</div>
+
+<p>正常にプッシュできたらVBSのGit画面から確認することができます。</p>
+
+<p><img src="7_007.png" alt="" /></p>
+
+<h3 id="データ登録用ジョブの作成">データ登録用ジョブの作成</h3>
+
+<p>次はデータをライブアプリケーションに登録するジョブを作成します。 <br />
+“Builds”の画面へ遷移し、”Create Job” をクリックします。</p>
+
+<p><img src="7_008.png" alt="" /></p>
+
+<p>Name に “LoadData”, Template に任意の VMテンプレート(今回は”System Default OL7 for Visual Builder”)を選択し、”Create” をクリックします。</p>
+
+<p><img src="7_009.png" alt="" /></p>
+
+<p>Job Configurationに遷移するので、Configure Gitで先ほど作成したレポジトリ”DataFiles.git”を設定します。</p>
+
+<p><img src="7_010.png" alt="" /></p>
+
+<p>次に”Step”タブへ移動し、”Add Step”－”Visual Application”－”Import Data”を追加します。</p>
+
+<p><img src="7_011.png" alt="" /></p>
+
+<p>“Visual Application”のStepで利用しているVBCSインスタンスを設定します。</p>
+
+<p><img src="7_012.png" alt="" /></p>
+
+<p>Instanceを選択すると入力項目が表示されるので、以下のように値を設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>設定項目</th>
+      <th>設定する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Instance</td>
+      <td>VBCSインスタンス</td>
+    </tr>
+    <tr>
+      <td>Username</td>
+      <td>ジョブを実行するユーザー名</td>
+    </tr>
+    <tr>
+      <td>Password</td>
+      <td>ジョブを実行するユーザーのパスワード</td>
+    </tr>
+    <tr>
+      <td>Application URL Root</td>
+      <td>※ライブアプリケーションのルートURL</td>
+    </tr>
+    <tr>
+      <td>Application Version</td>
+      <td>※ライブアプリケーションのバージョン</td>
+    </tr>
+    <tr>
+      <td>Artifact</td>
+      <td>反映するデータファイル名</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="notice--info">
+  <p><strong>※Application URL Root、Application Versionの参照元</strong><br />
+“Application URL Root”、”Application Version”に設定する値はVBSコンソールから”Environments”－”Deployments”タブから確認できます。 <br />
+<img src="7_014.png" alt="" /></p>
+
+</div>
+
+<p><img src="7_013.png" alt="" /></p>
+
+<p>設定が完了したら、”Save”をクリックして保存し、”Build Now”をクリックしてビルドを実行します。 <br />
+ビルドが成功したら以下のような表示になります。</p>
+
+<p><img src="7_015.png" alt="" /></p>
+
+<p>もう一度ライブアプリケーションをブラウザから確認すると、データが登録されていることが確認できます。</p>
+
+<p><img src="7_016.png" alt="" /></p>
+
+<h3 id="ジョブのパイプラインへの組み込み">ジョブのパイプラインへの組み込み</h3>
+
+<p>最後に作成したジョブをアプリケーションをデプロイするジョブに組み込みます。そうすることでデプロイが完了した後に自動的にデータをインポートするジョブを実行することができます。</p>
+
+<p>“Builds”画面から”Pipeline”タブを開き、設定アイコンをクリックします。</p>
+
+<p><img src="7_017.png" alt="" /></p>
+
+<p>“Jobs”にある”LoadData”をドラッグアンドドロップで右側のキャンバスへ配置します。</p>
+
+<p><img src="7_018.png" alt="" /></p>
+
+<p>“Visual-Application-Deploy”と先ほど配置した”LoadData”をドラッグアンドドロップで結びつけ、”Save”をクリックします。</p>
+
+<p><img src="7_019.png" alt="" /></p>
+
+<p>以上でライブアプリケーションへのデータ登録は完了です。</p>
+
+<p class="notice--info"><strong>パイプラインについて</strong> <br />
+パイプラインはVBSの個々のビルドジョブを連携させることができる機能です。
+VBSで作成したビジュアル・アプリケーションのプロジェクトでは自動的に“Visual-Application-Package”と“Visual-Application-Deploy”がパイプラインで連携されているので、“Visual-Application-Package”でアプリケーションがビルドされた後に“Visual-Application-Deploy”が自動的に呼ばれてアプリケーションが環境へデプロイされます。 <br />
+パイプラインについて詳しくは<a href="https://docs.oracle.com/cd//E83857_01/paas/visual-builder/visualbuilder-manage-development-process/build-your-applications.html#GUID-6E448F4A-673A-4952-B684-4F2FFC5E9C42">こちら</a>をご確認ください。</p>
+
+<h2 id="コード変更の管理">コード変更の管理</h2>
+<p>次は公開されているアプリケーションを更新する手順を学習します。 <br />
+今回は一度Pushした後、マージリクエストを作成して承認後にマージする手順を学習します。</p>
+
+<h3 id="画面の編集">画面の編集</h3>
+
+<p>VBCSのコンソール画面へ遷移し、”Page Designer”から画面の任意の場所を編集します。今回はタイトルを”Employees”から”Employees List”へ変更します。</p>
+
+<p><img src="8_001.png" alt="" /></p>
+
+<p>左上のブランチ名から”Push”をクリックします。</p>
+
+<p><img src="8_002.png" alt="" /></p>
+
+<p>任意のコメントを入力し、”Commit All and Push Branch”をクリックします。</p>
+
+<p><img src="8_003.png" alt="" /></p>
+
+<p>成功したら以下のメッセージが表示されます。</p>
+
+<p><img src="8_004.png" alt="" /></p>
+
+<p>次に”Publish”のボタンをクリックします。</p>
+
+<p><img src="8_005.png" alt="" /></p>
+
+<p>今回は直接mainブランチへマージするのではなく、一度マージリクエストを作成し、メンバーの承認を経てマージする手順にします。以下のように入力し、”Publish Change”をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>設定項目</th>
+      <th>設定する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Merge After Review</td>
+      <td>選択</td>
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td>任意の説明</td>
+    </tr>
+    <tr>
+      <td>Reviewer</td>
+      <td>レビューしてもらいたい任意のユーザー</td>
+    </tr>
+    <tr>
+      <td>Linked Issues</td>
+      <td>紐付けたいIssue(今回は空)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="8_006.png" alt="" /></p>
+
+<div class="notice--info">
+  <p><strong>※issueについて</strong><br />
+VBSはプロジェクト管理としてIssue機能を提供しています。VBCSでマージリクエストを作成する際にIssueと紐付けることで画面の変更がどのタスクで変更されたか詳細に記録することができます。
+<img src="8_006_1.png" alt="" /></p>
+
+</div>
+
+<p>完了したら以下のメッセージが表示されます。</p>
+
+<p><img src="8_007.png" alt="" /></p>
+
+<h3 id="マージリクエストの承認">マージ・リクエストの承認</h3>
+
+<p>左上の”←”をクリックして、VBSのコンソール画面へ戻り、”Merge Request”の画面を開くと先ほど作成されたマージリクエストが確認できます。クリックして詳細を確認します。</p>
+
+<p><img src="8_008.png" alt="" /></p>
+
+<p>“Changed Files”から変更内容を確認し、問題なければ右にあるハンバーガーメニューをクリックします。</p>
+
+<p><img src="8_009.png" alt="" /></p>
+
+<p class="notice--info"><strong>TIPS</strong> <br />
+実際の画面での確認が必要であれば<a href="#アプリケーションの確認・共有">変更をメンバーへShare</a>して確認することができます。</p>
+
+<p>“Approve”をクリックします。</p>
+
+<p><img src="8_010.png" alt="" /></p>
+
+<p>任意のコメントを入力し、”Approve”をクリックします。</p>
+
+<p><img src="8_011.png" alt="" /></p>
+
+<p>“Merge”をクリックします。</p>
+
+<p><img src="8_012.png" alt="" /></p>
+
+<p>そのまま”Create a Merge Commit”をクリックします。</p>
+
+<p><img src="8_013.png" alt="" /></p>
+
+<p>マージが完了しました、必要であればマージ済みのブランチを削除します。</p>
+
+<p><img src="8_014.png" alt="" /></p>
+
+<p>mainブランチへのマージが完了したら自動的にライブアプリケーションのデプロイが開始されます。 <br />
+最後にライブアプリケーションが更新されているか確認します。</p>
+
+<p><img src="8_015.png" alt="" /></p>
+
+<p>以上で、VBSを利用したビジュアル・アプリケーション開発のチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-05-24T17:28:52+09:00">May 24, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Integration+-+Visual+Builder+Studio+%E3%81%A7VBCS%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E7%AE%A1%E7%90%86%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fvbcs-for-beginners-2-vbs%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fvbcs-for-beginners-2-vbs%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fvbcs-for-beginners-2-vbs%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/integration/vbcs-for-beginners-1/" class="pagination--pager" title="Oracle Integration - Visual Builder で簡単なWebアプリケーションを作成してみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
