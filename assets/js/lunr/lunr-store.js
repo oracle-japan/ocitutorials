@@ -935,6 +935,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/bastion/",
         "teaser": "/ocitutorials/intermediates/bastion/img1.png"
       },{
+        "title": "コンピュート・インスタンスのOSを管理する",
+        "excerpt":"Oracle Cloud上でコンピュート・インスタンスを運用する場合、OS以上のレイヤーはユーザの管理範囲となっています。つまりユーザ側でOSの更新やセキュリティ・パッチの適用などを行う必要がありますが、これらの運用は効率的にできているでしょうか？特にインスタンスの数が多くなってくるとOSのアップデートなどの管理作業も大変です。 これらのOSのユーザによる管理作業を効率的に実施するのに役立つ機能として、OCIではOS管理サービスを利用することができます。 この章では、OS管理サービスでLinuxのコンピュート・インスタンスのOSのパッケージ更新やセキュリティ・パッチの適用を行っていきます。 所要時間 : 約30分 前提条件 : インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3) を通じてコンピュート・インスタンスの作成が完了している、もしくは本章の中で新規にインスタンスを作成する。 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの設定 OS管理を利用するために必要な権限をIAMポリシーで設定します。以下のポリシーが必要です。 ユーザがOS管理を操作するための権限（環境に応じて適切に設定してください） allow group &lt;グループ名&gt; to manage all-resources in tenancy / in compartment &lt;コンパートメント名&gt; OS管理サービスがインスタンスを参照するための権限 Allow service osms to read instances in tenancy 対象のインスタンスがOS管理サービスに連携できるようにする権限 メニュー アイデンティティとセキュリティ...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/intermediates/os_management/",
+        "teaser": "/ocitutorials/intermediates/os_management/img_12.png"
+      },{
         "title": "OCI Data Integrationチュートリアル",
         "excerpt":"はじめに OCI Data Integration はOCIで利用できるGUIベースのETLサービスです。 このチュートリアルではオブジェクト・ストレージ上のデータを変換し、Autonomous Databaseにロードを行っていきます。 OCI Data Integrationドキュメントに掲載されているチュートリアルの一部です。 目次 : 1.サンプルデータのロードとターゲット表の作成 2.Data Integrationを利用するための準備 3.ワークスペースの作成 4.データ・アセットの作成 5.プロジェクトとデータ・フローの作成 6.データ・フローの編集 7.タスクの作成 8.アプリケーションの作成とタスクの公開と実行 前提条件 : Data Integrationを利用するコンパートメントを準備してください。 Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。 1. サンプルデータのロードとターゲット表の作成 ソースとなるオブジェクト・ストレージにファイルをアップロードし、ターゲットとなるAutonomous Databaseにロード先の表を作成します。 ソース：オブジェクト・ストレージ オブジェクト・ストレージにサンプルデータをロードします。 バケットを作成し、次の2つのファイルをアップロードしてください。 ファイルへのリンク : CUSTOMERS.json / REVENUE.csv バケットの作成とファイルのアップロード手順は“その7 - オブジェクト・ストレージを使う”をご確認ください。 ターゲット：Autonomous Database Autonomous Databaseインスタンスを作成しユーザーを作成します。手順は“101:ADBインスタンスを作成してみよう”をご確認ください。ユーザー名は任意ですが、このチュートリアルでは、BETAとします。作成したユーザーBETAで以下のSQLでCUSTOMER_TARGET表を作成してください。 CUSTOMERS_TARGET表作成SQL CREATE TABLE \"BETA\".\"CUSTOMERS_TARGET\"...","categories": [],
         "tags": [],
