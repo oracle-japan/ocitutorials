@@ -69,12 +69,18 @@ OCIの各テナントには、「Always Free」と呼ばれる、永久無償で
 - **[ブロック・ボリュームをバックアップする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/taking-block-volume-backups/)**  
   運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。
 
+- **[オブジェクト・ストレージの高度な設定 - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/object-storage-advanced/)**  
+  オブジェクト・ストレージには事前認証済みリクエスト以外にもDR構成を行うために他リージョンのバケットにレプリケーションするなどさまざまな機能があります。この章では主にコンソールから設定します。
+
 - **[DNSサービスを使う - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-dns/)**  
   クラウド上でインターネット向けにサービスを構築したいのであれば、OCIのDNSサービスを使わない手はありません。Dyn.comにホストされた堅牢な権威DNSネットワークが、従量制で簡単に利用できます。マネージドサービスなのでDDoS対策もバッチリ。さあやってみましょう。
 
 - **[プライベートDNSを使って名前解決をする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/private-dns/)**  
   インスタンスなどに独自の名前をつけることで、一目でわかりやすい名前解決を行えます。
 
+- **[プライベート認証局と証明書の発行 - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/certificate/)**  
+  SSL/TLS通信の際に証明書が必要になります。プライベート認証局を立てて証明書の管理や更新をしましょう。
+  
 - **[Email Deliveryを利用した外部へのメール送信(基礎編) - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/sending-emails-1/)**  
   クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
 
@@ -100,7 +106,7 @@ OCIの各テナントには、「Always Free」と呼ばれる、永久無償で
   このチュートリアルは、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスをMarket Placeのイメージから簡単に構築し、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
 
 - **[ロギング・サービスを使って3つのログを収集する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-logging/)**  
-  OCIのロギング・サービスを使用することによりログを一元的に収集できて、トラブルが発生しても、ログをすぐに確認し素早く対策できます。また安価で使用できてOCIリソースだけでなくオンプレミスや他社クラウド環境のログを確認することができます。この文書ではコンソールからOCIで提供されている３つのログを使用します。
+  OCIのロギング・サービスを使用することによりログを一元的に収集できて、トラブルが発生しても、ログをすぐに確認し素早く対策できます。また安価で使用できてOCIリソースだけでなくオンプレミスや他社クラウド環境のログを確認することができます。この文書ではコンソールからOCIで提供されている3つのログを使用します。
 
 - **[監査(Audit)ログを使用したテナント監視](/ocitutorials/intermediates/serviceconnecterhub/)**  
   テナンシにおける全てのAPI操作は監査(Audit)ログとして自動的に記録されます。記録された監査ログは、サービス・コネクタ・ハブを使用し、各種サービスと連携させることが可能です。本チュートリアルでは、監査ログをサービス・コネクタ・ハブ、通知サービスと連携させ、監査ログをベースとしたテナンシ監視・通知を行っていきます。
