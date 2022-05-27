@@ -75,6 +75,9 @@ OCIの各テナントには、「Always Free」と呼ばれる、永久無償で
 - **[プライベートDNSを使って名前解決をする - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/private-dns/)**  
   インスタンスなどに独自の名前をつけることで、一目でわかりやすい名前解決を行えます。
 
+- **[プライベート認証局と証明書の発行 - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/certificate/)**  
+  SSL/TLS通信の際に証明書が必要になります。プライベート認証局を立てて証明書の管理や更新をしましょう。
+  
 - **[Email Deliveryを利用した外部へのメール送信(基礎編) - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/sending-emails-1/)**  
   クラウドから外部にメールを送りたい場合にはEmailサービスを使ってみましょう。OCIのEmailサービスを使うと、ちょっとした通知の送信から大規模なマーケティング・キャンペーンまで、本格的なメール・マネジメントを手軽に構築できます。
 
