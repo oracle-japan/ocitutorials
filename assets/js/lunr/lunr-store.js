@@ -689,6 +689,12 @@ var store = [{
         "url": "/ocitutorials/datascience/ggsa-tutorial-for-beginner/",
         "teaser": null
       },{
+        "title": "OCI Streaming を動かしてみよう",
+        "excerpt":"このハンズオンでは、OCI Streaming を使う上での事前準備やいくつかのクライアントツールを用いて、実際に OCI Streaming に対して Pub/Sub を行うことで基本的な操作や特徴を学ぶことができます。 前提条件 クラウド環境 Oracle Cloud のアカウント（Free Trial）を取得済みであること 最新版の OCI CLI がセットアップされていること Cloud Shell の使用を推奨します 手順 ポリシーの作成 OCI Streaming を使用するためのポリシーを作成します。OCI コンソール左上のハンバーガーメニューから、アイデンティティとセキュリティ &gt; ポリシーと選択します。 ポリシーの作成を押します。 以下のように入力し、ポリシーを生成します。(&lt;your-group&gt;, &lt;your-compartment&gt;は、ご自身の環境に合わせて変更してください) Allow group &lt;your-group&gt; to manage stream-family in compartment &lt;your-compartment&gt; ストリーム・プールの作成 ストリームの管理に使用する論理グループであるストリーム・プールを作成します。OCI コンソール左上のハンバーガーメニューからアナリティクスと AI &gt; ストリーミングを選択します。 ストリーム・プールを選択します。 ストリーム・プールの作成を押します。 以下のように入力して、ストリーム・プールを作成します。...","categories": [],
+        "tags": ["streaming"],
+        "url": "/ocitutorials/datascience/streaming-for-beginner/",
+        "teaser": null
+      },{
         "title": "クラウドでOracle Exadata を使う",
         "excerpt":" ","categories": [],
         "tags": ["https://community.oracle.com/docs/DOC-1038411"],

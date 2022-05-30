@@ -1,0 +1,772 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Streaming を動かしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Streaming は、Oracle Cloud Infrastructure(OCI) 上で提供されるフルマネージドな分散メッセージングサービスです。こちらのハンズオンでは、OCI Streaming を様々なクライアントツールから触って頂けるコンテンツになっています。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Streaming を動かしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/datascience/streaming-for-beginner/">
+
+
+  <meta property="og:description" content="OCI Streaming は、Oracle Cloud Infrastructure(OCI) 上で提供されるフルマネージドな分散メッセージングサービスです。こちらのハンズオンでは、OCI Streaming を様々なクライアントツールから触って頂けるコンテンツになっています。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-05-30T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/datascience/streaming-for-beginner/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Streaming を動かしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Streaming は、Oracle Cloud Infrastructure(OCI) 上で提供されるフルマネージドな分散メッセージングサービスです。こちらのハンズオンでは、OCI Streaming を様々なクライアントツールから触って頂けるコンテンツになっています。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/datascience" itemprop="item"><span itemprop="name">Datascience</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Streaming を動かしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">データサイエンス/ビッグデータ編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-for-beginner/">OCI Data Flow ハンズオン(初級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-structured-spark-streaming/">Structured Spark Streaming を OCI Data Flow で体験しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/ggsa-tutorial-for-beginner/">Oracle GoldenGate Stream Analytics ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/streaming-for-beginner/" class="active">OCI Streaming を動かしてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Streaming を動かしてみよう">
+    <meta itemprop="description" content="OCI Streaming は、Oracle Cloud Infrastructure(OCI) 上で提供されるフルマネージドな分散メッセージングサービスです。こちらのハンズオンでは、OCI Streaming を様々なクライアントツールから触って頂けるコンテンツになっています。">
+    <meta itemprop="datePublished" content="2022-05-30T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#手順">手順</a><ul><li><a href="#ポリシーの作成">ポリシーの作成</a></li><li><a href="#ストリームプールの作成">ストリーム・プールの作成</a></li><li><a href="#ストリームの作成">ストリームの作成</a></li><li><a href="#oci-console-を用いたテストメッセージの-pubsub">OCI Console を用いたテスト・メッセージの Pub/Sub</a></li><li><a href="#oci-cli-を用いたメッセージの-pubsub">OCI CLI を用いたメッセージの Pub/Sub</a></li><li><a href="#オプション-kafka-console-client-を用いたメッセージの-pubsub">オプション: Kafka Console Client を用いたメッセージの Pub/Sub</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>このハンズオンでは、OCI Streaming を使う上での事前準備やいくつかのクライアントツールを用いて、実際に OCI Streaming に対して Pub/Sub を行うことで基本的な操作や特徴を学ぶことができます。</p>
+
+<h1 id="前提条件">前提条件</h1>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloud のアカウント（Free Trial）を取得済みであること</li>
+    </ul>
+  </li>
+  <li>最新版の OCI CLI がセットアップされていること
+    <ul>
+      <li>Cloud Shell の使用を推奨します</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="手順">手順</h1>
+
+<h2 id="ポリシーの作成">ポリシーの作成</h2>
+
+<p>OCI Streaming を使用するためのポリシーを作成します。OCI コンソール左上のハンバーガーメニューから、<strong>アイデンティティとセキュリティ</strong> &gt; <strong>ポリシー</strong>と選択します。</p>
+
+<p><img src="image01.png" alt="image01" /></p>
+
+<p><strong>ポリシーの作成</strong>を押します。</p>
+
+<p><img src="image02.png" alt="image02" /></p>
+
+<p>以下のように入力し、ポリシーを生成します。(&lt;your-group&gt;, &lt;your-compartment&gt;は、ご自身の環境に合わせて変更してください)</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;your-group&gt; to manage stream-family <span class="k">in </span>compartment &lt;your-compartment&gt;
+</code></pre></div></div>
+
+<h2 id="ストリームプールの作成">ストリーム・プールの作成</h2>
+
+<p>ストリームの管理に使用する論理グループであるストリーム・プールを作成します。OCI コンソール左上のハンバーガーメニューから<strong>アナリティクスと AI</strong> &gt; <strong>ストリーミング</strong>を選択します。</p>
+
+<p><img src="image03.png" alt="image03" /></p>
+
+<p><strong>ストリーム・プール</strong>を選択します。</p>
+
+<p><img src="image04.png" alt="image04" /></p>
+
+<p><strong>ストリーム・プールの作成</strong>を押します。</p>
+
+<p><img src="image05.png" alt="image05" /></p>
+
+<p>以下のように入力して、ストリーム・プールを作成します。</p>
+
+<ul>
+  <li>ストリーム・プール名: HandsonStreamPool</li>
+  <li>リソース・コンパートメント: ご自身のコンパートメント</li>
+  <li>ストリーム・プールの構成
+    <ul>
+      <li>エンドポイント・タイプの選択: パブリック・エンドポイント</li>
+      <li>暗号化設定の構成: Oracle 管理キーを使用した暗号化</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="image06.png" alt="image06" /></p>
+
+<p>作成したストリーム・プールのステータスが <strong>ACTIVE</strong> となったら、次はストリームを作成します。</p>
+
+<p><img src="image07.png" alt="image07" /></p>
+
+<h2 id="ストリームの作成">ストリームの作成</h2>
+
+<p>作成したストリーム・プール（HandsonStreamPool）の詳細画面で<strong>ストリームの作成</strong>を押します。</p>
+
+<p><img src="image08.png" alt="image08" /></p>
+
+<p>以下のように入力し、ストリームを作成します。</p>
+
+<ul>
+  <li>ストリーム名: HandsonStream</li>
+  <li>コンパートメント: ご自身のコンパートメント</li>
+  <li>既存のストリーム・プールの選択</li>
+  <li>Streams プール: HandsonStreamPool</li>
+  <li>ストリーム設定の定義
+    <ul>
+      <li>保持(時間): 24</li>
+      <li>パーティション数: 1</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="image09.png" alt="image09" /></p>
+
+<p>作成したストリームのステータスが <strong>ACTIVE</strong> となったことを確認します。</p>
+
+<p><img src="image10.png" alt="image10" /></p>
+
+<h2 id="oci-console-を用いたテストメッセージの-pubsub">OCI Console を用いたテスト・メッセージの Pub/Sub</h2>
+
+<p>作成したストリームの詳細画面で<strong>テスト・メッセージの生成</strong>を押します。</p>
+
+<p><img src="image11.png" alt="image11" /></p>
+
+<p>データに、任意の文字列を入力し、<strong>生成</strong>を押します。(OCI Streaming へメッセージを Publish することに相当します)</p>
+
+<p><img src="image12.png" alt="image12" /></p>
+
+<p>次に、ストリームの詳細画面で<strong>メッセージのロード</strong>を押します。（OCI Streaming からメッセージを Subscribe することに相当します）</p>
+
+<p><img src="image13.png" alt="image13" /></p>
+
+<p>以下のように、入力した文字列が値に含まれていれば成功です。</p>
+
+<p><img src="image14.png" alt="image14" /></p>
+
+<h2 id="oci-cli-を用いたメッセージの-pubsub">OCI CLI を用いたメッセージの Pub/Sub</h2>
+
+<p>ここでは、OCI CLI を用いて、OCI Streaming と Pub/Sub してみます。まずは、接続のために必要な情報を取得します。作成済みのストリーム・プール（HandsonStreamPool）の詳細画面から、FQDN を参照しテキストエディタ等に控えておきます。</p>
+
+<p><img src="image15.png" alt="image15" /></p>
+
+<p>以下のようなコマンドを実行し、メッセージの Publish を行います。(&lt;your-stream-id&gt;は、ご自身の作成した Stream の OCID を入力してください) メッセージ内の key, value は Base64 エンコードする必要があるため、変更したい場合は、任意のエンコーダーをご使用ください。また、以降の処理は Cloud Shell を用いて実行することを推奨します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci streaming stream message put <span class="se">\</span>
+<span class="nt">--stream-id</span> &lt;your-stream-id&gt; <span class="se">\</span>
+<span class="nt">--messages</span> <span class="s1">'[{"key": "a2V5MQ==", "value": "dmFsdWUx"}]'</span> <span class="se">\</span>
+<span class="nt">--endpoint</span> https://cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com
+</code></pre></div></div>
+
+<p>以下のような結果が返却されます。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"entries"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"error"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"error-message"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"partition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-05-26T08:39:22.231000+00:00"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"failures"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>メッセージを Subscribe するために、必要なカーソル（ストリーム内のロケーションを示すポインタ）を作成します。以下のコマンドを実行します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci streaming stream cursor create-cursor <span class="se">\</span>
+<span class="nt">--stream-id</span> &lt;your-stream-id&gt; <span class="se">\</span>
+<span class="nt">--partition</span> 0 <span class="se">\</span>
+<span class="nt">--type</span> TRIM_HORIZON <span class="se">\</span>
+<span class="nt">--endpoint</span> https://cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com
+</code></pre></div></div>
+
+<p>以下のような結果が返却されます。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJjdXJzb3JUeXBlIjoicGFydGl0aW9uIiwidHlwZSI6IlRyaW1Ib3Jpem9uIiwib2Zmc2V0IjpudWxsLCJ0aW1lIjpudWxsLCJwYXJ0aXRpb24iOiIwIiwic3RyZWFtSWQiOiJvY2lkMS5zdHJlYW0ub2MxLmFwLXRva3lvLTEuYW1hYWFhYWFzc2w2NWlxYWViaHl1YjJkeW5jemJtNnB4dHN3eG5peWdneWxsY2Q1bTNwbGNuaWw3MjJxIiwiZXhwaXJhdGlvbiI6MTY1MzU1NzY2Nzg4NywiY3Vyc29yVHlwZSI6InBhcnRpdGlvbiJ9"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>作成したカーソルを用いて、OCI Streaming からメッセージを Subscribe します。(&lt;cursor-value&gt;は、カーソルを作成した結果に含まれる <code class="language-plaintext highlighter-rouge">.data.value</code> の値をご使用ください)</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci streaming stream message get <span class="se">\</span>
+<span class="nt">--cursor</span> &lt;cursor-value&gt; <span class="se">\</span>
+<span class="nt">--stream-id</span> &lt;your-stream-id&gt; <span class="se">\</span>
+<span class="nt">--endpoint</span> https://cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com
+</code></pre></div></div>
+
+<p>以下のような結果が返却されます。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"partition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stream"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HandsonStream"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-05-26T08:18:17.461000+00:00"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SGVsbG8gT0NJIFN0cmVhbWluZyBXb3JsZCEh"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"partition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stream"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HandsonStream"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-05-26T08:24:37.337000+00:00"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SGVsbG8gT0NJIFN0cmVhbWluZyBXb3JsZCEh"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"partition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stream"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HandsonStream"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-05-26T08:24:38.507000+00:00"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SGVsbG8gT0NJIFN0cmVhbWluZyBXb3JsZCEh"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a2V5MQ=="</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"partition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stream"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HandsonStream"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-05-26T08:38:41.232000+00:00"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dmFsdWUx"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"key1"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"partition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stream"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HandsonStream"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-05-26T08:39:10.341000+00:00"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"valuew=="</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a2V5MQ=="</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"partition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"stream"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HandsonStream"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-05-26T08:39:22.231000+00:00"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dmFsdWUx"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"opc-next-cursor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJjdXJzb3JUeXBlIjoicGFydGl0aW9uIiwidHlwZSI6IkFmdGVyT2Zmc2V0Iiwib2Zmc2V0Ijo1LCJ0aW1lIjpudWxsLCJwYXJ0aXRpb24iOiIwIiwic3RyZWFtSWQiOiJvY2lkMS5zdHJlYW0ub2MxLmFwLXRva3lvLTEuYW1hYWFhYWFzc2w2NWlxYWViaHl1YjJkeW5jemJtNnB4dHN3eG5peWdneWxsY2Q1bTNwbGNuaWw3MjJxIiwiZXhwaXJhdGlvbiI6MTY1MzU1Nzc5MjA5NiwiY3Vyc29yVHlwZSI6InBhcnRpdGlvbiJ9"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="オプション-kafka-console-client-を用いたメッセージの-pubsub">オプション: Kafka Console Client を用いたメッセージの Pub/Sub</h2>
+
+<p>OCI Streaming は、<a href="https://kafka.apache.org/">Apache Kafka</a> の API に一部互換性を持っています。詳細は、<a href="https://docs.oracle.com/ja-jp/iaas/Content/Streaming/Tasks/kafkacompatibility.htm#kafka_apis">Kafka API のサポート</a> をご参照ください。このセクションでは、Kafka をインストールした際に付属してくるクライアントツールを用いて、OCI Streaming と Pub/Sub してみます。</p>
+
+<p>まずは、Kafka Client から接続するために必要な情報を取得します。作成済みのストリーム・プール（HandsonStreamPool）の詳細画面から、<strong>Kafka 接続設定</strong>を押します。</p>
+
+<p><img src="image16.png" alt="image16" /></p>
+
+<p>Kafka 接続設定で<strong>すべてコピー</strong>を押し、コピーした内容をテキストエディタなどに控えておきます。</p>
+
+<p><img src="image17.png" alt="image17" /></p>
+
+<p>SASL 接続文字列中に含まれる <strong>AUTH_TOKEN</strong> は、ユーザーの認証トークンをご使用ください。（作成済みの認証トークンを有していない場合は、<a href="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#21-ocir%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E4%BA%8B%E5%89%8D%E6%BA%96%E5%82%99">こちら</a>を参照ください）</p>
+
+<p>以降の処理は、Cloud Shell を用いて実施することを推奨します。</p>
+
+<p>まずは、Apache Kafka をホームディレクトリ（<code class="language-plaintext highlighter-rouge">$HOME</code>）にダウンロードします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://dlcdn.apache.org/kafka/3.1.0/kafka_2.13-3.1.0.tgz
+</code></pre></div></div>
+
+<p>展開します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">tar</span> <span class="nt">-xzvf</span> kafka_2.13-3.1.0.tgz
+</code></pre></div></div>
+
+<p>展開先を <code class="language-plaintext highlighter-rouge">$KAFKA_HOME</code> に指定します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">KAFKA_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/kafka_2.13-3.1.0
+</code></pre></div></div>
+
+<p>先ほど取得した OCI Streaming の接続情報を元に、Kafka の接続情報ファイルを作成し、<code class="language-plaintext highlighter-rouge">$KAFKA_HOME/config</code> に配置します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">$KAFKA_HOME/config/producer-streaming.properties</code></p>
+
+<div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># list of brokers used for bootstrapping knowledge about the rest of the cluster
+</span><span class="py">bootstrap.servers</span><span class="p">=</span><span class="s">&lt;Kafka 接続設定に含まれるブートストラップ・サーバー&gt;</span>
+
+<span class="c"># specify the compression codec for all data generated: none, gzip, snappy, lz4, zstd
+</span><span class="py">compression.type</span><span class="p">=</span><span class="s">none</span>
+
+<span class="py">security.protocol</span><span class="p">=</span><span class="s">SASL_SSL</span>
+<span class="py">sasl.mechanism</span><span class="p">=</span><span class="s">PLAIN</span>
+<span class="py">sasl.jaas.config</span><span class="p">=</span><span class="s">&lt;Kafka 接続設定に含まれる SASL 接続文字列&gt;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">$KAFKA_HOME/config/consumer-streaming.properties</code></p>
+
+<div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># list of brokers used for bootstrapping knowledge about the rest of the cluster
+</span><span class="py">bootstrap.servers</span><span class="p">=</span><span class="s">&lt;Kafka 接続設定に含まれるブートストラップ・サーバー&gt;</span>
+
+<span class="c"># consumer group id
+</span><span class="py">group.id</span><span class="p">=</span><span class="s">handson-consumer-group</span>
+
+<span class="c"># session timeout
+</span><span class="py">session.timeout.ms</span><span class="p">=</span><span class="s">30000</span>
+
+<span class="py">security.protocol</span><span class="p">=</span><span class="s">SASL_SSL</span>
+<span class="py">sasl.mechanism</span><span class="p">=</span><span class="s">PLAIN</span>
+<span class="py">sasl.jaas.config</span><span class="p">=</span><span class="s">&lt;Kafka 接続設定に含まれる SASL 接続文字列&gt;</span>
+</code></pre></div></div>
+
+<p>まずは、OCI Streaming にメッセージを Publish します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$KAFKA_HOME</span>/bin/kafka-console-producer.sh <span class="se">\</span>
+<span class="nt">--bootstrap-server</span> cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com:9092 <span class="se">\</span>
+<span class="nt">--topic</span> HandsonStream <span class="se">\</span>
+<span class="nt">--producer</span>.config <span class="nv">$KAFKA_HOME</span>/config/producer-streaming.properties
+</code></pre></div></div>
+
+<p>Client から適当な文字列を Publish します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span>Hello OCI Streaming World from Kafka Client
+<span class="o">&gt;</span>...
+</code></pre></div></div>
+
+<p>ctrl + c でクライアントから抜けた後に、Subscribe します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$KAFKA_HOME</span>/bin/kafka-console-consumer.sh <span class="se">\</span>
+<span class="nt">--bootstrap-server</span> cell-1.streaming.ap-tokyo-1.oci.oraclecloud.com:9092 <span class="se">\</span>
+<span class="nt">--topic</span> HandsonStream <span class="se">\</span>
+<span class="nt">--consumer</span>.config <span class="nv">$KAFKA_HOME</span>/config/consumer-streaming.properties
+</code></pre></div></div>
+
+<p>先ほど、Publish した文字列が確かに Subscribe できていることが確認できます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello OCI Streaming World from Kafka Client
+...
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#streaming" class="page__taxonomy-item" rel="tag">streaming</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-05-30T00:00:00+09:00">May 30, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Streaming+%E3%82%92%E5%8B%95%E3%81%8B%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fstreaming-for-beginner%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fstreaming-for-beginner%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fstreaming-for-beginner%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/datascience/ggsa-tutorial-for-beginner/" class="pagination--pager" title="Oracle GoldenGate Stream Analytics ハンズオン
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
