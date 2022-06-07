@@ -17,7 +17,7 @@ Database Cloud Service (DBCS)では、12c 以降のデータベースをプロ�
 CDBで構成されているオンプレミスのデータベースからDBCSへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。
 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。
 
-ここでは、オンプレミスのデータベース(12.2.0.1)からDBCS(19.12.0.0.0)へPDBを移行する手順をご紹介します。
+ここでは、オンプレミスのデータベース(19.12.0.0.0)からDBCS(19.12.0.0.0)へPDBを移行する手順をご紹介します。
 
 <br>
 
@@ -26,15 +26,12 @@ CDBで構成されているオンプレミスのデータベースからDBCSへ�
 
 + [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
 
-+ DBCS上に最新バージョンのautoupgrade.jarが配置されていること<br>
-  ※最新版は Doc ID 2485457.1 からダウンロード可能です
-
 <br>
 
 **目次**
 
 - [1. 移行元のデータベースからPDBをアンプラグする](#1-移行元のデータベースからpdbをアンプラグする)
-- [2. DBCSにPDBをプラグし、アップグレードを行う](#2-dbcsにpdbをプラグしアップグレードを行う)
+- [2. DBCSにPDBをプラグする](#2-dbcsにpdbをプラグする)
 - [3. 表領域の暗号化を行う](#3-表領域の暗号化を行う)
 
 <br>
@@ -74,7 +71,7 @@ alter pluggable database testpdb unplug into '<任意のディレクトリ>/test
 
 以上でPDBのアンプラグ完了です。
 
-# 2. DBCSにPDBをプラグし、アップグレードを行う
+# 2. DBCSにPDBをプラグする
 
 1. アンプラグ時に生成されたxmlファイルを開き、データファイルのパスをDBCS上のパスに書き換えます<br>
 ※次の例では、データファイル及びxmlファイルをDBCS上の/home/oracle/work/ディレクトリ配下に配置しています。
@@ -101,32 +98,15 @@ file_name_convert = ('<データファイルの配置ディレクトリ>','<デ�
     </div>
     <br>
 
-1. プラグしたPDBをアップグレードモードで起動します
+1. プラグしたPDBをオープンします
 ```
-alter pluggable database <pdb_name> open upgrade;
-```
-
-1. catctl.plを使用してプラグしたPDBに対してアップグレードスクリプトを実行します
-```
-export ORACLE_BASE=/u01/app/oracle
-$ORACLE_HOME/perl/bin/perl $ORACLE_HOME/rdbms/admin/catctl.pl -d  \
-$ORACLE_HOME/rdbms/admin -c '<PDB_NAME>' -l $ORACLE_BASE catupgrd.sql
+alter pluggable database <pdb_name> open;
 ```
 
-1. autoupgrade.jarを使用してアップグレード後の修正を実行し、INVALIDオブジェクトをコンパイルします
+1. PDB_PLUG_IN_VIOLATIONS ビューを確認し、TYPE列値が'ERROR'となっているものがないか確認します<br>
+※TYPE列='ERROR'となっている項目がある場合、ACTION列の内容に従ってエラーを解消する必要があります
 ```
-java -jar autoupgrade.jar -preupgrade "dir=/tmp,inclusion_list=<PDB_NAME>,target_home=$ORACLE_HOME" -mode postfixups
-```
-
-1. プラグしたPDBを再起動し、通常モードでオープンします
-```
-alter pluggable database <PDB_NAME> close immediate;
-alter pluggable database <PDB_NAME> open;
-```
-
-1. catctl.plを使用してutlrp.sqlを実行します
-```
-$ORACLE_HOME/perl/bin/perl  $ORACLE_HOME/rdbms/admin/catcon.pl -c '<PDB_NAME>' -n 1 -e -b comp -d '''.''' $ORACLE_HOME/rdbms/admin/utlrp.sql
+select * from pdb_plug_in_violations where status ='RESOLVED';
 ```
 
 # 3. 表領域の暗号化を行う
