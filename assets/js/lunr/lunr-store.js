@@ -935,6 +935,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/serviceconnecterhub/",
         "teaser": "/ocitutorials/intermediates/serviceconnecterhub/image01.png"
       },{
+        "title": "OCIモバイル・アプリケーションを使ってみる",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracle Cloud Infrastructure モバイル・アプリケーションをインストールすると、アプリからリソースの詳細を表示したり、リソースに変更を加えることができます。 ユースケースとしては以下のようなものがあります。 外出先でアラート、通知および制限を確認することができます。 リソース、請求、使用状況データに関する情報にすばやくアクセスできます。 モバイル・デバイスからリソースの起動、停止、再起動または削除を行えます。 このチュートリアルでは、Oracle Cloud Infrastructure モバイル・アプリケーションの基本的な使い方をご案内します。 所要時間 : 約15分 前提条件 : 有効な Oracle Cloud Infrastructure のテナントと、アクセスのための有効なユーザーIDとパスワードがあること 注意 : チュートリアル内の画面ショットについては 現在の画面と異なっている場合があります 1. OCIモバイル・アプリケーションをインストールする Google Play StoreかApple App Storeで、Oracle Cloud Infrastructureを検索してアプリケーションを選択し、インストールのステップに従います。 このアプリケーションは、以下のオペレーティング・システムでサポートされています: Android 8以降のバージョン iOS 11以降のバージョン Google Play Store Apple...","categories": [],
+        "tags": ["intermediate","mobile app"],
+        "url": "/ocitutorials/intermediates/mobile_app/",
+        "teaser": "/ocitutorials/intermediates/mobile_app/ma_02.png"
+      },{
         "title": "Oracle Content and Experience チュートリアル",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": ["OCE"],
