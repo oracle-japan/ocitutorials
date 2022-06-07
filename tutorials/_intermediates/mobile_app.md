@@ -50,7 +50,8 @@ Google Play StoreかApple App Storeで、**Oracle Cloud Infrastructure**を検�
 
 # 2. サインインする
 
-Oracle Cloud Infrastructure モバイル・アプリケーションでサインインするには、コンソールへのサインインと同じステップでサインインします。詳細は、[その1 - OCIコンソールにアクセスして基本を理解する](/ocitutorials/beginners/getting-started)の**3.コンソールへのログイン**を参考にしてください。
+Oracle Cloud Infrastructure モバイル・アプリケーションでサインインするには、コンソールへのサインインと同じステップでサインインします。詳細は、[その1 - OCIコンソールにアクセスして基本を理解する](/ocitutorials/beginners/getting-started#3-コンソールへのログイン)の**3.コンソールへのログイン**を参考にしてください。
+
 初めてサインインするときは、アプリケーションにアクセスするために使用許諾契約を読んで同意する必要があります。
 
 
