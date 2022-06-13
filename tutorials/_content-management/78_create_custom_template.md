@@ -211,7 +211,7 @@ OCMのカスタムテンプレートとして利用するWebサイトの「モ�
 
 テーマ内にコピーした **index.html** ファイルをエディタで開き、テーマ内の環境にあわせて編集します  
 
-1. テーマ内にコピーした **CustomStartBootstrapTheme/layouts/indexhtml** をエディタで開きます
+1. テーマ内にコピーした **CustomStartBootstrapTheme/layouts/index.html** をエディタで開きます
 
 1. スタイルシートとJavaScriptへのパスを以下の通りに修正します
 
