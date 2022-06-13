@@ -299,7 +299,7 @@ OCMのカスタムテンプレートとして利用するWebサイトの「モ�
 
 ## 4.1 スロットを追加する
 
-1. ローカルに同期した **CustomStartBootstrapTheme/Layouts/index.html** をエディタで開きます
+1. ローカルに同期した **CustomStartBootstrapTheme/layouts/index.html** をエディタで開きます
 
 1. `<body>` 内のオリジナルのテキストの直下に、以下を追加します
 
