@@ -377,6 +377,12 @@ var store = [{
         "url": "/ocitutorials/content-management/73_videoplus/",
         "teaser": "/ocitutorials/content-management/73_videoplus/video008.jpg"
       },{
+        "title": "Oracle Content Management でカスタムテンプレートを自作しよう",
+        "excerpt":"このチュートリアルは、OCM でカスタムテンプレートを自作する手順について、ステップ・バイ・ステップで紹介します。なお、ここではテンプレート(Templates)やテーマ(Themes)の違いについて簡単に紹介します。   テーマ(Themes) テンプレート(Templates) 概要 - サイトの全体的な見た目(デザイン)を定義したもの - サイトの各ページ同士で視覚的な統一感を与える - テーマはテンプレートに含まれる - Webサイトを作成する際に利用する「ひな形」 - 「事前定義済テンプレート」と「カスタムテンプレート」の2つ - Webサイト作成時の起点として利用 構成要素 - ページ・レイアウト(html) - スタイルシート(css) - JavaScript - 画像など - 構成ファイル - テーマ - ページ - ページ内のサンプルコンテンツ(アセット、ファイルなど) - ページ内のカスタムコンポーネント また、詳細については下記チュートリアルや製品ドキュメントをご確認ください。 OCMチュートリアル Oracle Content Management で作成したサイトのバナー画像を変更しよう - 2.テンプレートおよびテーマについて 製品ドキュメント About Templates About Themes...","categories": [],
+        "tags": ["OCE","OCM"],
+        "url": "/ocitutorials/content-management/78_create_custom_template/",
+        "teaser": "/ocitutorials/content-management/78_create_custom_template/033.jpg"
+      },{
         "title": "Oracle Content and Experience で多言語サイトを作成しよう",
         "excerpt":"このチュートリアルは Oracle Content and Experience (OCE) のサイト作成機能を利用し、多言語サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット・リポジトリで管理されるコンテンツ・アイテム（多言語）を利用します この文書は、2021年4月時点での最新バージョン(21.2.1)を元に作成されてます 前提条件 Oracle Content and Experience インスタンスを作成する Oracle Content and Experience を Headless CMS として使ってみよう【初級編】 OCE の利用ユーザーに、少なくとも下記4つのOCE インスタンスのアプリケーション・ロールが付与されていること CECContentAdministrator CECDeveloperUser CECEnterpriseUser CECRepositoryAdminisrrator [Memo] ユーザーの作成とアプリケーションロールの付与手順は、Oracle Content and Experience インスタンスの利用ユーザーを作成する をご確認ください。 なお、以下のチュートリアルを実施済みで、OCEのサイト作成と公開、アセットの作成と公開、それぞれの手順について習得済みであることが望ましい Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】 0. 説明 0.1 このチュートリアルで実施すること このチュートリアルでは、OCE...","categories": [],
         "tags": ["OCE"],
@@ -432,7 +438,7 @@ var store = [{
         "teaser": "/ocitutorials/database/dbcs106-dataguard/dataguard08.png"
       },{
         "title": "201: オンプレミスのPDBをDBCSに移動しよう",
-        "excerpt":"はじめに Database Cloud Service (DBCS)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。 CDBで構成されているオンプレミスのデータベースからDBCSへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。 ここでは、オンプレミスのデータベース(12.2.0.1)からDBCS(19.12.0.0.0)へPDBを移行する手順をご紹介します。 前提条件 : 移行元のデータベースがCDBで構成されていること Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること DBCS上に最新バージョンのautoupgrade.jarが配置されていること ※最新版は Doc ID 2485457.1 からダウンロード可能です 目次 1. 移行元のデータベースからPDBをアンプラグする 2. DBCSにPDBをプラグし、アップグレードを行う 3. 表領域の暗号化を行う 所要時間 : 約1時間30分 1. 移行元のデータベースからPDBをアンプラグする まずは移行元のデータベースから、移行対象のPDBをアンプラグします。 アンプラグはDatabase Configuration Assistantツールを使って行う事も可能ですが、今回はコマンドでの実施手順を紹介します。 対象PDBの構成確認します PDBの移動にあたってデータファイルをDBCSに持っていく必要があります。 まずは下記SELECT文にて対象PDBで使用しているデータファイルのディレクトリを確認します。 alter session set container=&lt;pdb_name&gt;; select...","categories": [],
+        "excerpt":"はじめに Database Cloud Service (DBCS)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。 CDBで構成されているオンプレミスのデータベースからDBCSへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。 ここでは、オンプレミスのデータベース(19.12.0.0.0)からDBCS(19.12.0.0.0)へPDBを移行する手順をご紹介します。 前提条件 : 移行元のデータベースがCDBで構成されていること Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 目次 1. 移行元のデータベースからPDBをアンプラグする 2. DBCSにPDBをプラグする 3. 表領域の暗号化を行う 所要時間 : 約1時間30分 1. 移行元のデータベースからPDBをアンプラグする まずは移行元のデータベースから、移行対象のPDBをアンプラグします。 アンプラグはDatabase Configuration Assistantツールを使って行う事も可能ですが、今回はコマンドでの実施手順を紹介します。 対象PDBの構成確認します PDBの移動にあたってデータファイルをDBCSに持っていく必要があります。 まずは下記SELECT文にて対象PDBで使用しているデータファイルのディレクトリを確認します。 alter session set container=&lt;pdb_name&gt;; select tablespace_name, file_name from dba_data_files; （作業イメージ） 対象PDBをクローズします...","categories": [],
         "tags": [],
         "url": "/ocitutorials/database/dbcs201-pdb-plug/",
         "teaser": "/ocitutorials/database/dbcs201-pdb-plug/pdb-plug05.png"
@@ -834,7 +840,7 @@ var store = [{
         "teaser": "/ocitutorials/intermediates/spinup-hpc-cluster/architecture_diagram.png"
       },{
         "title": "GPUインスタンスで機械学習にトライ",
-        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。 このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのイメージを利用し、以下構成の典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。 選択可能な機械学習環境GPUシェイプ VM.GPU2.1 (NVIDIA Tesla P100 16 GB) BM.GPU2.2 (NVIDIA Tesla P100 16 GB) VM.GPU3.1 (NVIDIA Tesla V100 16 GB) VM.GPU3.2 (NVIDIA Tesla V100 16 GB) VM.GPU3.4 (NVIDIA Tesla V100 16 GB) BM.GPU3.8 (NVIDIA Tesla V100 16 GB) BM.GPU4.8 (NVIDIA A100 40 GB) ※：シェイプ詳細は、以下URLを参照。 https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm 利用可能な機械学習関連ソフトウェア...","categories": [],
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。 このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。 選択可能な機械学習環境GPUシェイプ VM.GPU3.1 (NVIDIA Tesla V100 16 GB x 1) VM.GPU3.2 (NVIDIA Tesla V100 16 GB x 2) VM.GPU3.4 (NVIDIA Tesla V100 16 GB x 4) BM.GPU3.8 (NVIDIA Tesla V100 16 GB x 8) BM.GPU4.8 (NVIDIA A100 40 GB x 8) ※：シェイプ詳細は、以下URLを参照。 https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm 利用可能な機械学習関連ソフトウェア TensorFlow...","categories": [],
         "tags": [],
         "url": "/ocitutorials/intermediates/spinup-ml-instance/",
         "teaser": "/ocitutorials/intermediates/spinup-ml-instance/architecture_diagram.png"

@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-06-07T16:15:10+09:00">
+  <meta property="article:published_time" content="2022-06-13T14:32:17+09:00">
 
 
 
@@ -363,7 +363,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="201: オンプレミスのPDBをDBCSに移動しよう">
     <meta itemprop="description" content="オンプレミスのDatabaseがマルチテナント構成の場合、PDBの移動（アンプラグ・プラグ）でDatabase Cloud Service (DBCS)へ移行する手順について紹介します。">
-    <meta itemprop="datePublished" content="2022-06-07T16:15:10+09:00">
+    <meta itemprop="datePublished" content="2022-06-13T14:32:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -374,7 +374,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-移行元のデータベースからpdbをアンプラグする">1. 移行元のデータベースからPDBをアンプラグする</a></li><li><a href="#2-dbcsにpdbをプラグしアップグレードを行う">2. DBCSにPDBをプラグし、アップグレードを行う</a></li><li><a href="#3-表領域の暗号化を行う">3. 表領域の暗号化を行う</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-移行元のデータベースからpdbをアンプラグする">1. 移行元のデータベースからPDBをアンプラグする</a></li><li><a href="#2-dbcsにpdbをプラグする">2. DBCSにPDBをプラグする</a></li><li><a href="#3-表領域の暗号化を行う">3. 表領域の暗号化を行う</a></li></ul>
 
             </nav>
           </aside>
@@ -386,7 +386,7 @@
 CDBで構成されているオンプレミスのデータベースからDBCSへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。
 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。</p>
 
-<p>ここでは、オンプレミスのデータベース(12.2.0.1)からDBCS(19.12.0.0.0)へPDBを移行する手順をご紹介します。</p>
+<p>ここでは、オンプレミスのデータベース(19.12.0.0.0)からDBCS(19.12.0.0.0)へPDBを移行する手順をご紹介します。</p>
 
 <p><br /></p>
 
@@ -398,10 +398,6 @@ CDBで構成されているオンプレミスのデータベースからDBCSへ�
   <li>
     <p><a href="../dbcs101-create-db">Oracle CloudでOracle Databaseを使おう</a> を通じて Oracle Database の作成が完了していること</p>
   </li>
-  <li>
-    <p>DBCS上に最新バージョンのautoupgrade.jarが配置されていること<br />
-※最新版は Doc ID 2485457.1 からダウンロード可能です</p>
-  </li>
 </ul>
 
 <p><br /></p>
@@ -410,7 +406,7 @@ CDBで構成されているオンプレミスのデータベースからDBCSへ�
 
 <ul>
   <li><a href="#1-移行元のデータベースからpdbをアンプラグする">1. 移行元のデータベースからPDBをアンプラグする</a></li>
-  <li><a href="#2-dbcsにpdbをプラグしアップグレードを行う">2. DBCSにPDBをプラグし、アップグレードを行う</a></li>
+  <li><a href="#2-dbcsにpdbをプラグする">2. DBCSにPDBをプラグする</a></li>
   <li><a href="#3-表領域の暗号化を行う">3. 表領域の暗号化を行う</a></li>
 </ul>
 
@@ -451,7 +447,7 @@ select tablespace_name, file_name from dba_data_files;
 
 <p>以上でPDBのアンプラグ完了です。</p>
 
-<h1 id="2-dbcsにpdbをプラグしアップグレードを行う">2. DBCSにPDBをプラグし、アップグレードを行う</h1>
+<h1 id="2-dbcsにpdbをプラグする">2. DBCSにPDBをプラグする</h1>
 
 <ol>
   <li>アンプラグ時に生成されたxmlファイルを開き、データファイルのパスをDBCS上のパスに書き換えます<br />
@@ -482,27 +478,13 @@ file_name_convert = ('&lt;データファイルの配置ディレクトリ&gt;',
  </div>
     <p><br /></p>
   </li>
-  <li>プラグしたPDBをアップグレードモードで起動します
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alter pluggable database &lt;pdb_name&gt; open upgrade;
+  <li>プラグしたPDBをオープンします
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alter pluggable database &lt;pdb_name&gt; open;
 </code></pre></div>    </div>
   </li>
-  <li>catctl.plを使用してプラグしたPDBに対してアップグレードスクリプトを実行します
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export ORACLE_BASE=/u01/app/oracle
-$ORACLE_HOME/perl/bin/perl $ORACLE_HOME/rdbms/admin/catctl.pl -d  \
-$ORACLE_HOME/rdbms/admin -c '&lt;PDB_NAME&gt;' -l $ORACLE_BASE catupgrd.sql
-</code></pre></div>    </div>
-  </li>
-  <li>autoupgrade.jarを使用してアップグレード後の修正を実行し、INVALIDオブジェクトをコンパイルします
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java -jar autoupgrade.jar -preupgrade "dir=/tmp,inclusion_list=&lt;PDB_NAME&gt;,target_home=$ORACLE_HOME" -mode postfixups
-</code></pre></div>    </div>
-  </li>
-  <li>プラグしたPDBを再起動し、通常モードでオープンします
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alter pluggable database &lt;PDB_NAME&gt; close immediate;
-alter pluggable database &lt;PDB_NAME&gt; open;
-</code></pre></div>    </div>
-  </li>
-  <li>catctl.plを使用してutlrp.sqlを実行します
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ORACLE_HOME/perl/bin/perl  $ORACLE_HOME/rdbms/admin/catcon.pl -c '&lt;PDB_NAME&gt;' -n 1 -e -b comp -d '''.''' $ORACLE_HOME/rdbms/admin/utlrp.sql
+  <li>PDB_PLUG_IN_VIOLATIONS ビューを確認し、TYPE列値が’ERROR’となっているものがないか確認します<br />
+※TYPE列=’ERROR’となっている項目がある場合、ACTION列の内容に従ってエラーを解消する必要があります
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from pdb_plug_in_violations where status ='RESOLVED';
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -547,7 +529,7 @@ alter tablespace &lt;TABLESPACE_NAME&gt; encryption online encrypt;
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-06-07T16:15:10+09:00">June 7, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-06-13T14:32:17+09:00">June 13, 2022</time></p>
 
 
       </footer>
