@@ -365,7 +365,7 @@ OCMのサイト毎に定義されたナビゲーション（階層）を動的�
 
 ## 5.2 index.htmlを編集する
 
-1. ローカルに同期した **CustomStartBootstrapTheme/Layouts/index.html** をエディタで開きます
+1. ローカルに同期した **CustomStartBootstrapTheme/layouts/index.html** をエディタで開きます
 
 1. `<nav>〜</nav>` のコードを削除し、以下のコードを追加します
 
