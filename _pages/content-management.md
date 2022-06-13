@@ -72,6 +72,10 @@ toc: true
     OCM のデフォルトテンプレートから作成された Web サイトのバナー画像を変更する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:20分】
 
 
++ **[Oracle Content Management でカスタムテンプレートを自作しよう ](/ocitutorials/content-management/78_create_custom_template/)**  
+    OCM でカスタムテンプレートを自作する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:30分】
+
+
 + **[[Oracle Cloud] Oracle Content Management で作成したWebサイトにGoogleフォームで作成したお問い合わせフォームを配置する](https://qiita.com/nakasato310/items/b3b45402eb6371c844a7)** (※外部サイト)  
     OCM のリモートコンポーネントを利用して、Googleフォームで作成したお問い合わせフォームを部品化したカスタムコンポーネントを作成し、Webサイト上にドラッグ＆ドロップで配置できるようにします【所要時間:15分】
 
@@ -133,12 +137,31 @@ toc: true
     GraphQLエクスプローラではなく、クライアントアプリケーション(React+Apollo Client)から OCM のアセット情報を取得する方法を紹介します【所要時間:20分】
 
 
+## OCM-APEX統合
+
+OCMとOracle Application Express(APEX)アプリケーションを統合して、利用する方法を紹介します。コンテンツ・リポジトリ、デジタル・アセットを設定し、最後にAPIと埋め込みUIオプションを使用してWebサイトを作成します【所要時間:90分】  
+
+オリジナルのワークショップはこちら  
+[Oracle LiveLabs: Getting started with Oracle Content Management and integrated with Oracle APEX](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=3148)
+{: .notice--info}
+
++ **[Oracle Content Management (OCM)- APEXと統合したWebサイトを作成してみよう！ その1](https://qiita.com/shinwata/items/b349d93b54832f137f5f)** (※外部サイト)  
+
++ **[Oracle Content Management (OCM)- APEXと統合したWebサイトを作成してみよう！ その2](https://qiita.com/shinwata/items/ad7c548b627b46412a9f)** (※外部サイト)  
+
++ **[Oracle Content Management (OCM)- APEXと統合したWebサイトを作成してみよう！ その3](https://qiita.com/shinwata/items/e0ab605d329e37792431)** (※外部サイト)  
+
 <br />
 
 # その他お役立ち情報
 
 + [Oracle Content Management マニュアル](https://docs.oracle.com/en/cloud/paas/content-cloud/books.html)
 
+<!--
 + [Oracle Content Management マニュアル（日本語翻訳版）](https://docs.oracle.com/cloud/help/ja/content-cloud/index.htm)
+-->
+
++ [Oracle Content Management マニュアル（日本語翻訳版）](https://docs.oracle.com/cd/E83857_01/paas/content-cloud/books.html)
 
     製品ドキュメントの英語原本と日本語翻訳版です。翻訳されるまでに時差がありますので、最新情報の確認は 英語版のドキュメント をご利用ください
+    {: .notice--info}

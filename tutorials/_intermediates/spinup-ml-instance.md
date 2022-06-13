@@ -1,6 +1,6 @@
 ---
 title: "GPUインスタンスで機械学習にトライ"
-excerpt: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスをMarket Placeのイメージから簡単に構築し、サンプル機械学習プログラムを実行することが出来るようになります。"
+excerpt: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスを構築し、サンプル機械学習プログラムを実行することが出来るようになります。"
 order: "098"
 layout: single
 header:
@@ -12,15 +12,13 @@ header:
 
 Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。
 
-このチュートリアルは、OCIのマーケットプレイスから利用可能な機械学習環境構築のためのイメージを利用し、以下構成の典型的な機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
+このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
 - 選択可能な機械学習環境GPUシェイプ
-  - VM.GPU2.1 (NVIDIA Tesla P100 16 GB)
-  - BM.GPU2.2 (NVIDIA Tesla P100 16 GB)
-  - VM.GPU3.1 (NVIDIA Tesla V100 16 GB)
-  - VM.GPU3.2 (NVIDIA Tesla V100 16 GB)
-  - VM.GPU3.4 (NVIDIA Tesla V100 16 GB)
-  - BM.GPU3.8 (NVIDIA Tesla V100 16 GB)
-  - BM.GPU4.8 (NVIDIA A100 40 GB)
+  - VM.GPU3.1 (NVIDIA Tesla V100 16 GB x 1)
+  - VM.GPU3.2 (NVIDIA Tesla V100 16 GB x 2)
+  - VM.GPU3.4 (NVIDIA Tesla V100 16 GB x 4)
+  - BM.GPU3.8 (NVIDIA Tesla V100 16 GB x 8)
+  - BM.GPU4.8 (NVIDIA A100 40 GB x 8)
 
   ※：シェイプ詳細は、以下URLを参照。
   [https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm)
@@ -28,18 +26,19 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
   - TensorFlow
   - Keras
   - NumPy
-  - PyTorch
   - Matplotlib
   - Jupyter Notebook
   - and more （※）
 
-  ※：全リストは、 **4. 機械学習関連インストール済みソフトウェア確認** を参照下さい。
+  ※：全リストは、 **4. 機械学習関連インストール済みソフトウェア確認** を参照下さい。またその他の機械学習関連ソフトウェアは、pipでインストールすることが出来ます。
 
 ![システム構成図](architecture_diagram.png)
 
-この機械学習環境構築用イメージを利用すると、環境構築直後から機械学習に必要な様々なツールを利用し機械学習プログラムをGPU上で高速に実行することが可能になります。
+この機械学習環境は、環境構築直後からTensorFlowを利用し機械学習プログラムをGPU上で高速に実行することが可能になります。
 
-**所要時間 :** 約30分
+またマルチGPUを搭載するGPUシェイプを利用することで、Distributed TensorFlowを使用した複数のGPUに跨る分散トレーニングが可能となります。このチュートリアルの後半では、マルチGPUを搭載する機械学習環境で、Distributed TensorFlowのサンプル機械学習プログラムを実行します。
+
+**所要時間 :** 約45分
 
 **前提条件 :** 機械学習環境を構築するインスタンスを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
@@ -49,67 +48,65 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 # 1. GPUインスタンスの起動
 
-本章は、マーケットプレースから提供する機械学習環境構築用イメージを元に、GPUインスタンスを起動します。このチュートリアルで使用する機械学習環境構築用イメージは、バージョン4 (2021/1/29)です。なお、この機械学習環境構築用イメージは、いわゆるOCIのカスタムイメージです。
+本章は、OCIコンソールからGPUインスタンスを起動します。このチュートリアルで使用するプラットフォームイメージは、Oracle Linux 7.9をベースとしたGen2-GPU-2022.05.31-0です。
 
-本チュートリアルは、GPUインスタンスにNVIDIA Tesla V100 16 GBを1枚搭載するVMシェイプのVM.GPU3.1を使用します。
+本チュートリアルは、GPUインスタンスにNVIDIA Tesla V100 16 GBを2枚搭載するVMシェイプのVM.GPU3.2を使用します。
 
-1. 以下マーケット・プレースの機械学習環境構築用イメージページにアクセスします。
+1. OCIコンソールにログインし、GPUインスタンスを起動するリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿ります。
 
-   [https://cloud.oracle.com/marketplace/application/78643201/](https://cloud.oracle.com/marketplace/application/78643201/)
+2. 表示される以下画面で、**インスタンスの作成** ボタンをクリックします。
 
-2. OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。
+   ![画面ショット](console_page00.png)
 
-3. 表示される以下画面の右上で、**バージョン** を **4 (2021/1/29)** に指定、**コンパートメント** をGPUインスタンスを構築するコンパートメントに指定、**使用許諾** チェックボックスをチェックし、 **インスタンスの起動** ボタンをクリックします。
+3. 表示される **コンピュート・インスタンスの作成** 画面で、以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
-   ![画面ショット](market_place.png)
-
-4. 表示される以下 **コンピュート・インスタンスの作成** 画面で、以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
-
-   4.0 **GPUインスタンス名称・コンパートメント** フィールド
-    - **名前 :** GPUインスタンスに付与する名前
-    - **コンパートメントに作成 :** GPUインスタンスを構築するコンパートメント
+   3.1 **名前** フィールド：GPUインスタンスに付与する名前
 
    ![画面ショット](console_page01.png)
 
-   4.1 **配置** フィールド
-    - **可用性ドメイン :** GPUインスタンスを構築する可用性ドメイン
+   3.2 **コンパートメントに作成** フィールド：GPUインスタンスを構築するコンパートメント
+
+   ![画面ショット](console_page01-1.png)
+
+   3.3 **配置** フィールド
+    - **可用性ドメイン :** ：GPUインスタンスを構築する可用性ドメイン
 
    ![画面ショット](console_page02.png)
 
-   4.2 **イメージとシェイプ** フィールド
-    - **Shape :** VM.GPU3.1 (**Change Shape** ボタンをクリックして表示される **すべてのシェイプの参照** サイドバーから選択）
+   3.4 **イメージとシェイプ** フィールド
 
    ![画面ショット](console_page03.png)
 
-   4.3 以下画面の **すべてのシェイプの参照** サイドバーで以下をの情報を入力し、下部の **シェイプの選択** ボタンをクリックします。
-    - **インスタンス・タイプ :** 仮想マシン
-    - **シェイプ・シリーズ :** 専門と前世代
-    - **Shape Name :** VM.GPU3.1
-    - **次のドキュメントを確認した上でこれに同意します。 :** 選択
+    - **イメージ** ：Oracle Linux 7.9 Gen2-GPU-2022.05.31-0 (**イメージの変更** ボタンをクリックして表示される **すべてのイメージの参照** サイドバーでOracle Linuxのバージョンを適切に選択後 **イメージの選択** ボタンをクリック）
 
-   ![画面ショット](console_page04.png)
+   ![画面ショット](console_page03-1.png)
 
-   4.4 **ネットワーキング** フィールド
-    - **プライマリ・ネットワーク :** **新規仮想クラウド・ネットワークの作成**
-    - **コンパートメントに作成 :** GPUインスタンスを構築するコンパートメント
+    - **Shape** ：VM.GPU3.2 (**Change Shape** ボタンをクリックして表示される **すべてのシェイプの参照** サイドバーで **仮想マシン** → **専門と前世代** で表示される **VM.GPU3.2** を選択し **次のドキュメントを確認した上でこれに同意します。** チェックボックスをチェックし **シェイプの変更** ボタンをクリック）
+
+   ![画面ショット](console_page03-2.png)
+
+   3.5 **ネットワーキング** フィールド
+    - **プライマリ・ネットワーク** ： **新規仮想クラウド・ネットワークの作成**
+    - **コンパートメントに作成** ：GPUインスタンスを構築するコンパートメント
 
       ![画面ショット](console_page05.png)
 
-   4.5 **SSHキーの追加** フィールド
-    - **SSHキー :** GPUインスタンスにログインする際使用するSSH秘密鍵に対応する公開鍵
+   3.6 **SSHキーの追加** フィールド
+    - **SSHキー** ：GPUインスタンスにログインする際使用するSSH秘密鍵に対応する公開鍵
       - 公開鍵ファイルのアップロード（ **公開キー・ファイル(.pub)のアップロード** ）と公開鍵のフィールドへの貼り付け（ **公開キーの貼付け** ）が選択可能  
 
       ![画面ショット](console_page06.png)
 
-5. 表示される以下 **作業リクエスト** 画面で、左上のステータスが **プロビジョニング中** と表示されれば、GPUインスタンスの構築が実施されています。
+4. 表示される以下 **作業リクエスト** 画面で、左上のステータスが **プロビジョニング中** と表示されれば、GPUインスタンスの構築が実施されています。
 
    ![画面ショット](console_page07.png)
 
    ステータスが **実行中** となれば、GPUインスタンスの構築が完了しています。
 
-# 2. TenforFlow・Jupiter Notebook環境構築
+# 2. Python・TenforFlow・Jupiter Notebook環境構築
 
-本章は、デプロイされたGPUインスタンスにログインし、Jupiter Notebook環境を構築します。
+本章は、デプロイされたGPUインスタンスにログインし、Python・TensorFlow・Jupiter Notebook環境を構築します。
+本チュートリアルで使用しているOracle Linux 7.9は、内包されているPythonのバージョンが3.6と古いため、まずPython 3.8をインストールします。この際、Oracle Linux 7.9の様々なパッケージから利用されるバージョン3.6を残し、複数のバージョンを混在させることが可能なSoftware Collectionsを使用してPython 3.8を追加でインストール、このPython 3.8をベースにTensorFlowやJupyter Notebook等の機械学習関連プログラム環境を構築します。
 
 1. GPUインスタンスログイン
 
@@ -123,53 +120,54 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    > ssh -i path_to_ssh_secret_key opc@123.456.789.123
     ```
 
-2. Jupiter Notebookログインパスワード初期化
+2. Python 3.8インストール
 
-   以下コマンドで、Jupiter Notebookにログインする際のパスワードを初期化します。
+   rootにスイッチして以下コマンドを実行し、Software Collectionsから提供されるPython 3.8をインストール、これを有効化したサブシェルを起動、pipとsetuptoolsをアップグレードします。
 
    ```sh
-   > ~/mlenv/bin/jupyter notebook password
-   Enter password: xxxxxxxx
-   Verify password: xxxxxxxx
+   > sudo su -
+   > yum -y install rh-python38
+   > scl enable rh-python38 bash
+   > pip install --upgrade pip setuptools
+   > exit
+   > scl enable rh-python38 bash
+   ```
+
+3. TensorFlow・Jupyter Notebook・Matplotlibインストール
+
+   以下コマンドを実行し、TensorFlow・Jupyter Notebook・Matplotlibをインストールします。
+
+   ```sh
+   > pip install tensorflow notebook matplotlib
+   ```
+
+4. Jupiter Notebookログインパスワード初期化
+
+   opcにスイッチして以下コマンドを実行し、Jupiter Notebookにログインする際のパスワードを初期化します。
+
+   ```sh
+   > jupyter notebook password
+   Enter password: 
+   Verify password: 
    [NotebookPasswordApp] Wrote hashed password to /home/opc/.jupyter/jupyter_notebook_config.json
-   ```
-
-3. Jupiter Notebook起動時設定ファイル作成
-
-   Jupiter Notebookの起動時設定ファイルを、以下のように作成します。
-
-   ```sh
-   > cat ~/.jupyter/jupyter_notebook_config.py
-   c.NotebookApp.ip = '127.0.0.1'
-   ```
-   この設定は、ブラウザからJupiter Notebookにアクセスするクライアントを、GPUインスタンス自身に限定し、SSHポートフォワード経由の利用を想定しています。
-
-4. CUDAバージョン10.1インストール
-
-   アカウントをrootに変更して以下コマンドを実行し、インストールされているTensorflow バージョン2.2が参照するCUDAバージョン10.1を、既にインストールされているバージョン10.2に追加でインストールします。
-
-   ```sh
-   > yum install -y cuda-10-1.x86_64
    ```
 
 5. Jupyter Notebookのsystemdへの登録
 
-   Jupyter Notebookをsystemdに登録するための設定ファイルを、以下のように作成します。
+   rootにスイッチし、Jupyter Notebookをsystemdに登録するための設定ファイルを以下のように作成します。
 
    ```sh
    > cat /etc/systemd/system/notebook.service
    [Unit]
    Description=Jupyter Notebook
-
    [Service]
    Type=simple
    PIDFile=/var/run/jupyter-notebook.pid
-   ExecStart=/home/opc/mlenv/bin/jupyter notebook
+   ExecStart=/opt/rh/rh-python38/root/usr/bin/python /opt/rh/rh-python38/root/usr/local/bin/jupyter-notebook
    WorkingDirectory=/home/opc/
    User=opc
    Group=opc
    Restart=always
-
    [Install]
    WantedBy=multi-user.target
    ```
@@ -183,23 +181,20 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    > systemctl start notebook
    > systemctl status notebook
    ● notebook.service - Jupyter Notebook
-      Loaded: loaded (/etc/systemd/system/notebook.service; enabled; vendor preset: disabled)
-      Active: active (running) since Wed 2022-04-13 06:58:14 GMT; 7min ago
-    Main PID: 25734 (jupyter-noteboo)
-       Tasks: 1
-      Memory: 58.3M
-      CGroup: /system.slice/notebook.service
-              └─25734 /home/opc/mlenv/bin/python3 /home/opc/mlenv/bin/jupyter-notebook
+   Loaded: loaded (/etc/systemd/system/notebook.service; disabled; vendor preset: disabled)
+   Active: active (running) since Fri 2022-06-10 07:49:33 GMT; 11s ago
+   Main PID: 22301 (python)
+   Memory: 54.8M
+   CGroup: /system.slice/notebook.service
+           └─22301 /opt/rh/rh-python38/root/usr/bin/python /opt/rh/rh-python38/root/usr/local/bin/jupy...
 
-   Apr 13 06:58:14 instance-20220413-1425 systemd[1]: Started Jupyter Notebook.
-   Apr 13 06:58:14 instance-20220413-1425 jupyter[25734]: [I 06:58:14.678 NotebookApp] Writing notebook...et
-   Apr 13 06:58:15 instance-20220413-1425 jupyter[25734]: [I 06:58:15.608 NotebookApp] JupyterLab exten...ab
-   Apr 13 06:58:15 instance-20220413-1425 jupyter[25734]: [I 06:58:15.608 NotebookApp] JupyterLab appli...ab
-   Apr 13 06:58:15 instance-20220413-1425 jupyter[25734]: [I 06:58:15.611 NotebookApp] Serving notebook...pc
-   Apr 13 06:58:15 instance-20220413-1425 jupyter[25734]: [I 06:58:15.611 NotebookApp] The Jupyter Note...t:
-   Apr 13 06:58:15 instance-20220413-1425 jupyter[25734]: [I 06:58:15.611 NotebookApp] http://127.0.0.1...8/
-   Apr 13 06:58:15 instance-20220413-1425 jupyter[25734]: [I 06:58:15.611 NotebookApp] Use Control-C to...).
-   Apr 13 06:58:15 instance-20220413-1425 jupyter[25734]: [W 06:58:15.617 NotebookApp] No web browser f...r.
+   Jun 10 07:49:33 ml-vmgpu32-2 systemd[1]: Started Jupyter Notebook.
+   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.141 NotebookApp] Writing notebook server c...cret
+   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.396 NotebookApp] Serving notebooks from lo.../opc
+   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.396 NotebookApp] Jupyter Notebook 6.4.12 i... at:
+   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.396 NotebookApp] http://localhost:8888/
+   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.397 NotebookApp] Use Control-C to stop thi...on).
+   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [W 07:49:34.401 NotebookApp] No web browser found: cou...ser.
    Hint: Some lines were ellipsized, use -l to show in full.
    > systemctl enable notebook
    Created symlink from /etc/systemd/system/multi-user.target.wants/notebook.service to /etc/systemd/system/notebook.service.
@@ -224,6 +219,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
       "metadata": {},
       "outputs": [],
       "source": [
+      "import os\n",
+      "os.environ['TF_CPP_MIN_LOG_LEVEL']='2'\n",
       "import tensorflow as tf\n",
       "print(\"Num GPUs Available: \", len(tf.config.list_physical_devices('GPU')))"
       ]
@@ -255,17 +252,17 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 2. SSHポートフォワード作成
 
-   構築したJupiter Notebookは、GPUインスタンスからのみアクセス可能になっています。
+   構築したJupiter Notebookは、自身のGPUインスタンスからのみアクセス可能になっています。
    
-   そこで、以下コマンドをJupiter Notebookにアクセスするブラウザを起動する端末で実行し、この端末の8888番ポートをGPUインスタンスの8888番ポートに転送するSSHポートフォワードを作成します。
+   そこで、以下コマンドをJupiter Notebookにアクセスするブラウザを起動する端末で実行し、この端末の8888番ポートをGPUインスタンスの8888番ポート(Jupyter Notebookがアクセスを待ち受けるポート)に転送するSSHポートフォワードを作成します。
 
    ```sh
-   > ssh -i path_to_ssh_secret_key -L 8888:127.0.0.1:8888 opc@123.456.789.123
+   > ssh -i path_to_ssh_secret_key -L 8888:localhost:8888 opc@123.456.789.123
    ```
 
 3. Jupiter Notebookへのアクセス
 
-   ブラウザを起動し、アドレスに"127.0.0.1:8888"を指定してJupiter Notebookにアクセスし、表示される以下画面の **Password** フィールドに **Jupiter Notebookログインパスワード初期化** で設定したパスワードを入力します。
+   ブラウザを起動し、アドレスに"localhost:8888"を指定してJupiter Notebookにアクセスし、表示される以下画面の **Password** フィールドに **Jupiter Notebookログインパスワード初期化** で設定したパスワードを入力します。
 
    ![画面ショット](Jupyter_page01.png)
 
@@ -275,7 +272,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](Jupyter_page02.png)
 
-   表示される以下ブラウザ画面の **Run** ボタンをクリックし、稼働確認プログラムを実行、"Num GPUs Available:"の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。
+   表示される以下ブラウザ画面の **実行** ボタンをクリックし、稼働確認プログラムを実行、"Num GPUs Available:"の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。
 
    ![画面ショット](Jupyter_page06.png)
 
@@ -317,6 +314,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
          "metadata": {},
          "outputs": [],
          "source": [
+         "import os\n",
+         "os.environ['TF_CPP_MIN_LOG_LEVEL']='2'\n",
          "import tensorflow as tf"
          ]
       },
@@ -435,11 +434,11 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](Jupyter_page07.png)
 
-   表示される以下ブラウザ画面の **restart the kernel, then re-run the whole notebook** ボタンをクリックします。
+   表示される以下ブラウザ画面の **カーネルを再起動しノートブック全体を再実行** ボタンをクリックします。
 
    ![画面ショット](Jupyter_page03.png)
 
-   表示される以下ブラウザ画面の **Restart and Run All Cells** ボタンをクリックし、サンプルプログラムを実行します。
+   表示される以下ブラウザ画面の **再起動と全ての出力をクリア** ボタンをクリックし、サンプルプログラムを実行します。
 
    ![画面ショット](Jupyter_page04.png)
 
@@ -449,121 +448,118 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 # 5. 機械学習関連インストール済みソフトウェア確認
 
-本章は、以下コマンドをGPUインスタンスのopcアカウントで実行し、GPUインスタンスに予めインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
+本章は、以下コマンドをGPUインスタンスのopcアカウントで実行し、GPUインスタンスにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
 
    ```sh
-   > source mlenv/bin/activate
-   (mlenv) > pip3 list
-   Package                Version
-   ---------------------- -----------
-   absl-py                0.9.0
-   astunparse             1.6.3
-   attrs                  19.3.0
-   backcall               0.1.0
-   bleach                 3.1.5
-   cachetools             4.1.0
-   certifi                2020.4.5.1
-   chardet                3.0.4
-   cycler                 0.10.0
-   decorator              4.4.2
-   defusedxml             0.6.0
-   entrypoints            0.3
-   future                 0.18.2
-   gast                   0.3.3
-   google-auth            1.16.1
-   google-auth-oauthlib   0.4.1
-   google-pasta           0.2.0
-   gpuutils               0.0.2
-   graphviz               0.8.4
-   grpcio                 1.29.0
-   h5py                   2.10.0
-   idna                   2.9
-   imageio                2.8.0
-   importlib-metadata     1.6.0
-   ipykernel              5.3.0
-   ipython                7.15.0
-   ipython-genutils       0.2.0
-   ipywidgets             7.5.1
-   jedi                   0.17.0
-   Jinja2                 2.11.2
-   joblib                 0.15.1
-   json5                  0.9.5
-   jsonschema             3.2.0
-   jupyter                1.0.0
-   jupyter-client         6.1.3
-   jupyter-console        6.1.0
-   jupyter-core           4.6.3
-   jupyterlab             2.1.4
-   jupyterlab-server      1.1.5
-   Keras                  2.3.1
-   Keras-Applications     1.0.8
-   keras-mxnet            2.2.4.2
-   Keras-Preprocessing    1.1.2
-   kiwisolver             1.2.0
-   Markdown               3.2.2
-   MarkupSafe             1.1.1
-   matplotlib             3.2.1
-   mistune                0.8.4
-   mxnet-cu102            1.6.0
-   nbconvert              5.6.1
-   nbformat               5.0.6
-   notebook               6.0.3
-   numpy                  1.18.5
-   oauthlib               3.1.0
-   opt-einsum             3.2.1
-   packaging              20.4
-   pandas                 1.0.4
-   pandocfilters          1.4.2
-   parso                  0.7.0
-   pexpect                4.8.0
-   pickleshare            0.7.5
-   Pillow                 7.1.2
-   pip                    20.1.1
-   prometheus-client      0.8.0
-   prompt-toolkit         3.0.5
-   protobuf               3.12.2
-   ptyprocess             0.6.0
-   pyasn1                 0.4.8
-   pyasn1-modules         0.2.8
-   Pygments               2.6.1
-   pyparsing              2.4.7
-   pyrsistent             0.16.0
-   python-dateutil        2.8.1
-   pytz                   2020.1
-   PyYAML                 5.3.1
-   pyzmq                  19.0.1
-   qtconsole              4.7.4
-   QtPy                   1.9.0
-   requests               2.23.0
-   requests-oauthlib      1.3.0
-   rsa                    4.0
-   scikit-learn           0.23.1
-   scipy                  1.4.1
-   seaborn                0.10.1
-   Send2Trash             1.5.0
-   setuptools             47.1.1
-   six                    1.15.0
-   tensorboard            2.2.2
-   tensorboard-plugin-wit 1.6.0.post3
-   tensorflow             2.2.0
-   tensorflow-estimator   2.2.0
-   termcolor              1.1.0
-   terminado              0.8.3
-   testpath               0.4.4
-   tf-keras-vis           0.3.1
-   threadpoolctl          2.1.0
-   torch                  1.5.0
-   torchvision            0.6.0
-   tornado                6.0.4
-   traitlets              4.3.3
-   urllib3                1.25.9
-   wcwidth                0.2.3
-   webencodings           0.5.1
-   Werkzeug               1.0.1
-   wheel                  0.34.2
-   widgetsnbextension     3.5.1
-   wrapt                  1.12.1
-   zipp                   3.1.0
+   > scl enable rh-python38 bash
+   > pip list
+   Package                      Version
+   ---------------------------- -----------
+   absl-py                      1.1.0
+   argon2-cffi                  21.3.0
+   argon2-cffi-bindings         21.2.0
+   asttokens                    2.0.5
+   astunparse                   1.6.3
+   attrs                        21.4.0
+   backcall                     0.2.0
+   beautifulsoup4               4.11.1
+   bleach                       5.0.0
+   cachetools                   5.2.0
+   certifi                      2022.5.18.1
+   cffi                         1.15.0
+   charset-normalizer           2.0.12
+   cycler                       0.11.0
+   debugpy                      1.6.0
+   decorator                    5.1.1
+   defusedxml                   0.7.1
+   entrypoints                  0.4
+   executing                    0.8.3
+   fastjsonschema               2.15.3
+   flatbuffers                  1.12
+   fonttools                    4.33.3
+   gast                         0.4.0
+   google-auth                  2.7.0
+   google-auth-oauthlib         0.4.6
+   google-pasta                 0.2.0
+   grpcio                       1.46.3
+   h5py                         3.7.0
+   idna                         3.3
+   importlib-metadata           4.11.4
+   importlib-resources          5.7.1
+   ipykernel                    6.13.1
+   ipython                      8.4.0
+   ipython-genutils             0.2.0
+   jedi                         0.18.1
+   Jinja2                       3.1.2
+   jsonschema                   4.6.0
+   jupyter-client               7.3.4
+   jupyter-core                 4.10.0
+   jupyterlab-pygments          0.2.2
+   keras                        2.9.0
+   Keras-Preprocessing          1.1.2
+   kiwisolver                   1.4.2
+   libclang                     14.0.1
+   Markdown                     3.3.7
+   MarkupSafe                   2.1.1
+   matplotlib                   3.5.2
+   matplotlib-inline            0.1.3
+   mistune                      0.8.4
+   nbclient                     0.6.4
+   nbconvert                    6.5.0
+   nbformat                     5.4.0
+   nest-asyncio                 1.5.5
+   notebook                     6.4.12
+   numpy                        1.22.4
+   oauthlib                     3.2.0
+   opt-einsum                   3.3.0
+   packaging                    21.3
+   pandocfilters                1.5.0
+   parso                        0.8.3
+   pexpect                      4.8.0
+   pickleshare                  0.7.5
+   Pillow                       9.1.1
+   pip                          22.1.2
+   prometheus-client            0.14.1
+   prompt-toolkit               3.0.29
+   protobuf                     3.19.4
+   psutil                       5.9.1
+   ptyprocess                   0.7.0
+   pure-eval                    0.2.2
+   pyasn1                       0.4.8
+   pyasn1-modules               0.2.8
+   pycparser                    2.21
+   Pygments                     2.12.0
+   pyparsing                    3.0.9
+   pyrsistent                   0.18.1
+   python-dateutil              2.8.2
+   pyzmq                        23.1.0
+   requests                     2.28.0
+   requests-oauthlib            1.3.1
+   rsa                          4.8
+   Send2Trash                   1.8.0
+   setuptools                   62.3.3
+   six                          1.16.0
+   soupsieve                    2.3.2.post1
+   stack-data                   0.2.0
+   tensorboard                  2.9.1
+   tensorboard-data-server      0.6.1
+   tensorboard-plugin-wit       1.8.1
+   tensorflow                   2.9.1
+   tensorflow-estimator         2.9.0
+   tensorflow-io-gcs-filesystem 0.26.0
+   termcolor                    1.1.0
+   terminado                    0.15.0
+   tinycss2                     1.1.1
+   tornado                      6.1
+   traitlets                    5.2.2.post1
+   typing_extensions            4.2.0
+   urllib3                      1.26.9
+   wcwidth                      0.2.5
+   webencodings                 0.5.1
+   Werkzeug                     2.1.2
+   wheel                        0.37.1
+   wrapt                        1.14.1
+   zipp                         3.8.0
    ```
 
 これで、このチュートリアルは終了です。
