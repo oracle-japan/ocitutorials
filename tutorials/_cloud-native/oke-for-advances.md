@@ -1708,7 +1708,6 @@ Metric | 例えば`CpuUtilization`を選択
 
 このようにOCI MonitoringのGrafanaプラグインを利用すると、OCIのCompute(今回の場合はOKEのWorker Node)のメトリクスをGrafanaダッシュボードに統合することができます。  
 
-
 <!-- 6.OCI APMを利用してトレーシングしてみよう【オプション】
 ---------------------------------ß
 <!-- 
