@@ -1,6 +1,6 @@
 ---
 title: "GPUインスタンスで機械学習にトライ"
-excerpt: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスを構築し、サンプル機械学習プログラムを実行することが出来るようになります。"
+excerpt: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupyterLab等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスを構築し、サンプル機械学習プログラムを実行することが出来るようになります。"
 order: "098"
 layout: single
 header:
@@ -12,7 +12,7 @@ header:
 
 Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。
 
-このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
+このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのGPUシェイプ向けプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupyterLabから実行します。
 - 選択可能な機械学習環境GPUシェイプ
   - VM.GPU3.1 (NVIDIA Tesla V100 16 GB x 1)
   - VM.GPU3.2 (NVIDIA Tesla V100 16 GB x 2)
@@ -27,16 +27,16 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
   - Keras
   - NumPy
   - Matplotlib
-  - Jupyter Notebook
+  - JupyterLab
   - and more （※）
 
-  ※：全リストは、 **4. 機械学習関連インストール済みソフトウェア確認** を参照下さい。またその他の機械学習関連ソフトウェアは、pipでインストールすることが出来ます。
+  ※：全リストは、 **6. 機械学習関連インストール済みソフトウェア確認** を参照下さい。またここでインストールされていないその他の機械学習関連ソフトウェアは、pipでインストールすることが出来ます。
 
 ![システム構成図](architecture_diagram.png)
 
-この機械学習環境は、環境構築直後からTensorFlowを利用し機械学習プログラムをGPU上で高速に実行することが可能になります。
+この機械学習環境は、環境構築直後からTensorFlowを利用し機械学習プログラムをGPU上で高速に実行することが可能です。
 
-またマルチGPUを搭載するGPUシェイプを利用することで、Distributed TensorFlowを使用した複数のGPUに跨る分散トレーニングが可能となります。このチュートリアルの後半では、マルチGPUを搭載する機械学習環境で、Distributed TensorFlowのサンプル機械学習プログラムを実行します。
+またマルチGPUを搭載するGPUシェイプを利用することで、Distributed TensorFlowを使用した複数のGPUに跨る分散トレーニングが可能となります。このチュートリアルの後半では、マルチGPUを搭載する機械学習環境で、サンプルプログラムをDistributed TensorFlowを使用した分散トレーニングモデルに修正、これを複数のGPUに跨って実行します。
 
 **所要時間 :** 約45分
 
@@ -44,7 +44,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 **注意1 :** 現在、一時的に無償トライアル環境でのGPUインスタンスの利用を制限させて頂いています。そのため、現在このチュートリアルの手順を実施するには、商用のOCI契約が必要になります。
 
-**注意2 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用する機械学習環境構築用イメージのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
+**注意2 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用する機械学習関連ソフトウェアのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
 
 # 1. GPUインスタンスの起動
 
@@ -69,7 +69,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    ![画面ショット](console_page01-1.png)
 
    3.3 **配置** フィールド
-    - **可用性ドメイン :** ：GPUインスタンスを構築する可用性ドメイン
+    - **可用性ドメイン** ：GPUインスタンスを構築する可用性ドメイン
 
    ![画面ショット](console_page02.png)
 
@@ -77,13 +77,13 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](console_page03.png)
 
+    - **Shape** ：VM.GPU3.2 (**Change Shape** ボタンをクリックして表示される **すべてのシェイプの参照** サイドバーで **仮想マシン** → **専門と前世代** で表示される **VM.GPU3.2** を選択し **次のドキュメントを確認した上でこれに同意します。** チェックボックスをチェックし **シェイプの選択** ボタンをクリック）
+
+   ![画面ショット](console_page03-2.png)
+
     - **イメージ** ：Oracle Linux 7.9 Gen2-GPU-2022.05.31-0 (**イメージの変更** ボタンをクリックして表示される **すべてのイメージの参照** サイドバーでOracle Linuxのバージョンを適切に選択後 **イメージの選択** ボタンをクリック）
 
    ![画面ショット](console_page03-1.png)
-
-    - **Shape** ：VM.GPU3.2 (**Change Shape** ボタンをクリックして表示される **すべてのシェイプの参照** サイドバーで **仮想マシン** → **専門と前世代** で表示される **VM.GPU3.2** を選択し **次のドキュメントを確認した上でこれに同意します。** チェックボックスをチェックし **シェイプの変更** ボタンをクリック）
-
-   ![画面ショット](console_page03-2.png)
 
    3.5 **ネットワーキング** フィールド
     - **プライマリ・ネットワーク** ： **新規仮想クラウド・ネットワークの作成**
@@ -103,10 +103,10 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ステータスが **実行中** となれば、GPUインスタンスの構築が完了しています。
 
-# 2. Python・TenforFlow・Jupiter Notebook環境構築
+# 2. Python・TenforFlow・JupyterLab環境構築
 
-本章は、デプロイされたGPUインスタンスにログインし、Python・TensorFlow・Jupiter Notebook環境を構築します。
-本チュートリアルで使用しているOracle Linux 7.9は、内包されているPythonのバージョンが3.6と古いため、まずPython 3.8をインストールします。この際、Oracle Linux 7.9の様々なパッケージから利用されるバージョン3.6を残し、複数のバージョンを混在させることが可能なSoftware Collectionsを使用してPython 3.8を追加でインストール、このPython 3.8をベースにTensorFlowやJupyter Notebook等の機械学習関連プログラム環境を構築します。
+本章は、デプロイされたGPUインスタンスにログインし、Python・TensorFlow・JupyterLab環境を構築します。
+本チュートリアルで使用しているOracle Linux 7.9は、内包されているPythonのバージョンが3.6と古いため、まずPython 3.8をインストールします。この際、Oracle Linux 7.9の様々なパッケージから利用されるPython 3.6を残し、複数のバージョンを混在させることが可能なSoftware Collectionsを使用してPython 3.8を追加でインストール、このPython 3.8をベースにTensorFlowやJupyterLab等の機械学習関連プログラム環境を構築します。
 
 1. GPUインスタンスログイン
 
@@ -125,7 +125,6 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    rootにスイッチして以下コマンドを実行し、Software Collectionsから提供されるPython 3.8をインストール、これを有効化したサブシェルを起動、pipとsetuptoolsをアップグレードします。
 
    ```sh
-   > sudo su -
    > yum -y install rh-python38
    > scl enable rh-python38 bash
    > pip install --upgrade pip setuptools
@@ -133,37 +132,39 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    > scl enable rh-python38 bash
    ```
 
-3. TensorFlow・Jupyter Notebook・Matplotlibインストール
+3. TensorFlow・JupyterLab・Matplotlibインストール
 
-   以下コマンドを実行し、TensorFlow・Jupyter Notebook・Matplotlibをインストールします。
+   以下コマンドを実行し、TensorFlow・JupyterLab・Matplotlibをインストールします。
 
    ```sh
-   > pip install tensorflow notebook matplotlib
+   > pip install tensorflow jupyterlab matplotlib
    ```
 
-4. Jupiter Notebookログインパスワード初期化
+4. JupyterLabログインパスワード初期化
 
-   opcにスイッチして以下コマンドを実行し、Jupiter Notebookにログインする際のパスワードを初期化します。
+   opcにスイッチして以下コマンドを実行し、JupyterLabにログインする際のパスワードを初期化します。
 
    ```sh
-   > jupyter notebook password
+   > scl enable rh-python38 bash
+   > jupyter lab password
    Enter password: 
    Verify password: 
-   [NotebookPasswordApp] Wrote hashed password to /home/opc/.jupyter/jupyter_notebook_config.json
+   [JupyterPasswordApp] Wrote hashed password to /home/opc/.jupyter/jupyter_server_config.json
+
    ```
 
-5. Jupyter Notebookのsystemdへの登録
+5. JupyterLabのsystemdへの登録
 
-   rootにスイッチし、Jupyter Notebookをsystemdに登録するための設定ファイルを以下のように作成します。
+   rootにスイッチし、JupyterLabをsystemdに登録するための設定ファイルを以下のように作成します。
 
    ```sh
-   > cat /etc/systemd/system/notebook.service
+   > cat /etc/systemd/system/jupyterlab.service
    [Unit]
-   Description=Jupyter Notebook
+   Description=Jupyter Lab
    [Service]
    Type=simple
-   PIDFile=/var/run/jupyter-notebook.pid
-   ExecStart=/opt/rh/rh-python38/root/usr/bin/python /opt/rh/rh-python38/root/usr/local/bin/jupyter-notebook
+   PIDFile=/var/run/jupyter-lab.pid
+   ExecStart=/opt/rh/rh-python38/root/usr/bin/python /opt/rh/rh-python38/root/usr/local/bin/jupyter-lab --app-dir=/opt/rh/rh-python38/root/usr/local/share/jupyter/lab/
    WorkingDirectory=/home/opc/
    User=opc
    Group=opc
@@ -172,39 +173,42 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    WantedBy=multi-user.target
    ```
 
-6. Jupiter Notebook起動
+6. JupyterLab起動
 
-   以下コマンドで、Jupiter Notebookを起動します。
+   以下コマンドで、JupyterLabを起動します。
 
    ```sh
    > systemctl daemon-reload
-   > systemctl start notebook
-   > systemctl status notebook
-   ● notebook.service - Jupyter Notebook
-   Loaded: loaded (/etc/systemd/system/notebook.service; disabled; vendor preset: disabled)
-   Active: active (running) since Fri 2022-06-10 07:49:33 GMT; 11s ago
-   Main PID: 22301 (python)
-   Memory: 54.8M
-   CGroup: /system.slice/notebook.service
-           └─22301 /opt/rh/rh-python38/root/usr/bin/python /opt/rh/rh-python38/root/usr/local/bin/jupy...
+   > systemctl start jupyterlab
+   > systemctl status jupyterlab
+   ● jupyterlab.service - Jupyter Lab
+      Loaded: loaded (/etc/systemd/system/jupyterlab.service; disabled; vendor preset: disabled)
+      Active: active (running) since Tue 2022-06-14 10:09:56 GMT; 11s ago
+    Main PID: 15945 (python)
+      Memory: 45.1M
+      CGroup: /system.slice/jupyterlab.service
+              └─15945 /opt/rh/rh-python38/root/usr/bin/python /opt/rh/rh-python38/root/usr/local/bin/jupy...
 
-   Jun 10 07:49:33 ml-vmgpu32-2 systemd[1]: Started Jupyter Notebook.
-   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.141 NotebookApp] Writing notebook server c...cret
-   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.396 NotebookApp] Serving notebooks from lo.../opc
-   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.396 NotebookApp] Jupyter Notebook 6.4.12 i... at:
-   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.396 NotebookApp] http://localhost:8888/
-   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [I 07:49:34.397 NotebookApp] Use Control-C to stop thi...on).
-   Jun 10 07:49:34 ml-vmgpu32-2 python[22301]: [W 07:49:34.401 NotebookApp] No web browser found: cou...ser.
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.306 ServerApp] Writing Jupyter se...cret
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.322 LabApp] JupyterLab extension ...rlab
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.322 LabApp] JupyterLab applicatio...lab/
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.326 ServerApp] jupyterlab | exten...ded.
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.327 ServerApp] Serving notebooks .../opc
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.327 ServerApp] Jupyter Server 1.1... at:
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.327 ServerApp] http://localhost:8888/lab
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.327 ServerApp]  or http://127.0.0.../lab
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [I 2022-06-14 10:09:57.327 ServerApp] Use Control-C to s...on).
+   Jun 14 10:09:57 ml-vmgpu32 python[15945]: [W 2022-06-14 10:09:57.331 ServerApp] No web browser fou...ser.
    Hint: Some lines were ellipsized, use -l to show in full.
-   > systemctl enable notebook
-   Created symlink from /etc/systemd/system/multi-user.target.wants/notebook.service to /etc/systemd/system/notebook.service.
-   > systemctl is-enabled notebook
+   > systemctl enable jupyterlab
+   Created symlink from /etc/systemd/system/multi-user.target.wants/jupyterlab.service to /etc/systemd/system/jupyterlab.service.
+   > systemctl is-enabled jupyterlab
    enabled
    ```
 
-# 3. TenforFlow・Jupiter Notebook稼働確認
+# 3. TenforFlow・JupyterLab稼働確認
 
-本章は、TensorFlowが認識するGPUカードの枚数を確認するプログラムを実行し、TensorFlowとJupiter Notebookの稼働を確認します。
+本章は、TensorFlowが認識するGPUカードの枚数を確認するプログラムを実行し、TensorFlowとJupyterLabの稼働を確認します。
 
 1. 稼働確認プログラムコピー
 
@@ -252,33 +256,33 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 2. SSHポートフォワード作成
 
-   構築したJupiter Notebookは、自身のGPUインスタンスからのみアクセス可能になっています。
+   構築したJupyterLabは、自身のGPUインスタンスからのみアクセス可能になっています。
    
-   そこで、以下コマンドをJupiter Notebookにアクセスするブラウザを起動する端末で実行し、この端末の8888番ポートをGPUインスタンスの8888番ポート(Jupyter Notebookがアクセスを待ち受けるポート)に転送するSSHポートフォワードを作成します。
+   そこで、以下コマンドをJupyterLabにアクセスするブラウザを起動する端末で実行し、この端末の8888番ポートをGPUインスタンスの8888番ポート(JupyterLabがアクセスを待ち受けるポート)に転送するSSHポートフォワードを作成します。
 
    ```sh
    > ssh -i path_to_ssh_secret_key -L 8888:localhost:8888 opc@123.456.789.123
    ```
 
-3. Jupiter Notebookへのアクセス
+3. JupyterLabへのアクセス
 
-   ブラウザを起動し、アドレスに"localhost:8888"を指定してJupiter Notebookにアクセスし、表示される以下画面の **Password** フィールドに **Jupiter Notebookログインパスワード初期化** で設定したパスワードを入力します。
+   ブラウザを起動し、アドレスに"localhost:8888"を指定してJupyterLabにアクセスし、表示される以下画面の **Password** フィールドに先に登録したパスワードを入力、 **Log in** ボタンをクリックします。
 
    ![画面ショット](Jupyter_page01.png)
 
 4. 稼働確認プログラム実行
 
-   以下ブラウザ画面に表示される、先にコピーした稼働確認プログラムをクリックします。
+   以下ブラウザ画面に表示される、先にコピーした稼働確認プログラムをダブルクリックし、
 
    ![画面ショット](Jupyter_page02.png)
 
-   表示される以下ブラウザ画面の **実行** ボタンをクリックし、稼働確認プログラムを実行、"Num GPUs Available:"の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。
+   表示される以下ブラウザ画面の **Run the selected cells and advance** ボタンをクリックして稼働確認プログラムを実行、"Num GPUs Available:"の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。
 
    ![画面ショット](Jupyter_page06.png)
 
-# 4. Jupyter Notebookで機械学習プログラム実行
+# 4. JupyterLabで機械学習プログラム実行
 
-本章は、GPUインスタンスのJupyter Notebookにアクセスし、サンプル機械学習プログラムを実行してその動作を確認します。
+本章は、GPUインスタンスのJupyterLabにアクセスし、サンプル機械学習プログラムを実行してその動作を確認します。
 
 1. サンプル機械学習プログラムコピー
 
@@ -430,15 +434,15 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 2. サンプルプログラム実行
 
-   Jupiter Notebookにログインした直後のブラウザ画面をリロードし、以下画面に表示される、先にコピーしたサンプル機械学習プログラムをクリックします。
+   JupyterLabにログインした直後のブラウザ画面をリロードし、以下画面に表示される、先にコピーしたサンプル機械学習プログラムをダブルクリックします。
 
    ![画面ショット](Jupyter_page07.png)
 
-   表示される以下ブラウザ画面の **カーネルを再起動しノートブック全体を再実行** ボタンをクリックします。
+   表示される以下ブラウザ画面の **Restart Kernel and Run All Cells** ボタンをクリックします。
 
    ![画面ショット](Jupyter_page03.png)
 
-   表示される以下ブラウザ画面の **再起動と全ての出力をクリア** ボタンをクリックし、サンプルプログラムを実行します。
+   表示される以下ブラウザ画面の **Restart** ボタンをクリックし、サンプルプログラムを実行します。
 
    ![画面ショット](Jupyter_page04.png)
 
@@ -446,9 +450,47 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](Jupyter_page05.png)
 
-# 5. 機械学習関連インストール済みソフトウェア確認
+# 5. Distributed TensorFlowを使用した分散トレーニングモデル実行
 
-本章は、以下コマンドをGPUインスタンスのopcアカウントで実行し、GPUインスタンスにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
+本章は、先に実行した摂氏から華氏を予測するサンプルプログラムを元に、Distributed TensorFlowを使用する複数のGPUに跨った分散トレーニングモデルに修正、これを実行します。
+
+1. サンプルプログラムのDistributed TensorFlowを使用した分散トレーニングモデルへの修正
+
+   2番目と3番目のセルの間に、以下のコードを挿入します。
+
+   ```sh
+   tf.debugging.set_log_device_placement(True)
+   mirrored_strategy = tf.distribute.MirroredStrategy()
+   ```
+
+   このコードは、想定通り複数のGPUに跨ったトレーニングが行われているかを確認するためのデバッグメッセージ出力設定と、TensorFlowのMirroedStrategy作成を行います。
+
+   ![画面ショット](Jupyter_page08.png)
+
+   次に、5番目から7番目までのセルを、以下のコードに置き換えます。
+
+   ```sh
+   with mirrored_strategy.scope():
+     l0    = tf.keras.layers.Dense(units=1, input_shape=[1])
+     model = tf.keras.Sequential([l0])
+     model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(0.1))
+   ```
+
+   このコードは、レイヤー定義・レイヤーアセンブル・モデルコンパイルをMirroedStrategyのスコープ内に移動し、分散トレーニングモデルを定義しています。
+
+   ![画面ショット](Jupyter_page09.png)
+
+2. 分散トレーニングモデルの実行
+
+   **Restart Kernel and Run All Cells** ボタンを使用し、修正後のサンプルプログラムを実行、デバッグメッセージから複数のGPUに跨ったトレーニングが行われていることを確認します。
+
+   この際、デバッグメッセージが大量に出力されるため、プログラム実行時間が修正前より長くなることに注意します。
+
+   複数GPUに跨ったトレーニングが行われていることを確認したら、デバッグメッセージ出力設定を削除します。
+
+# 6. 機械学習関連インストール済みソフトウェア確認
+
+本章は、以下コマンドを実行し、GPUインスタンスにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
 
    ```sh
    > scl enable rh-python38 bash
@@ -456,11 +498,13 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    Package                      Version
    ---------------------------- -----------
    absl-py                      1.1.0
+   anyio                        3.6.1
    argon2-cffi                  21.3.0
    argon2-cffi-bindings         21.2.0
    asttokens                    2.0.5
    astunparse                   1.6.3
    attrs                        21.4.0
+   Babel                        2.10.2
    backcall                     0.2.0
    beautifulsoup4               4.11.1
    bleach                       5.0.0
@@ -486,29 +530,35 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    idna                         3.3
    importlib-metadata           4.11.4
    importlib-resources          5.7.1
-   ipykernel                    6.13.1
+   ipykernel                    6.14.0
    ipython                      8.4.0
    ipython-genutils             0.2.0
    jedi                         0.18.1
    Jinja2                       3.1.2
+   json5                        0.9.8
    jsonschema                   4.6.0
    jupyter-client               7.3.4
    jupyter-core                 4.10.0
+   jupyter-server               1.17.1
+   jupyterlab                   3.4.3
    jupyterlab-pygments          0.2.2
+   jupyterlab-server            2.14.0
    keras                        2.9.0
    Keras-Preprocessing          1.1.2
-   kiwisolver                   1.4.2
+   kiwisolver                   1.4.3
    libclang                     14.0.1
    Markdown                     3.3.7
    MarkupSafe                   2.1.1
    matplotlib                   3.5.2
    matplotlib-inline            0.1.3
    mistune                      0.8.4
+   nbclassic                    0.3.7
    nbclient                     0.6.4
    nbconvert                    6.5.0
    nbformat                     5.4.0
    nest-asyncio                 1.5.5
    notebook                     6.4.12
+   notebook-shim                0.1.0
    numpy                        1.22.4
    oauthlib                     3.2.0
    opt-einsum                   3.3.0
@@ -532,13 +582,15 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    pyparsing                    3.0.9
    pyrsistent                   0.18.1
    python-dateutil              2.8.2
+   pytz                         2022.1
    pyzmq                        23.1.0
    requests                     2.28.0
    requests-oauthlib            1.3.1
    rsa                          4.8
    Send2Trash                   1.8.0
-   setuptools                   62.3.3
+   setuptools                   62.4.0
    six                          1.16.0
+   sniffio                      1.2.0
    soupsieve                    2.3.2.post1
    stack-data                   0.2.0
    tensorboard                  2.9.1
@@ -556,6 +608,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    urllib3                      1.26.9
    wcwidth                      0.2.5
    webencodings                 0.5.1
+   websocket-client             1.3.2
    Werkzeug                     2.1.2
    wheel                        0.37.1
    wrapt                        1.14.1
