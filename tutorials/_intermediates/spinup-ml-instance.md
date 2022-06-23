@@ -116,7 +116,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 本章は、デプロイされたGPUインスタンスのOS上に直接機械学習関連ソフトウェアをインストール、Python・TensorFlow・JupyterLab環境を構築します。
 
-# 2-1. Python・TenforFlow・JupyterLab環境構築
+## 2-1. Python・TenforFlow・JupyterLab環境構築
 
 本チュートリアルで使用しているOracle Linux 7.9は、内包されているPythonのバージョンが3.6と古いため、まずPython 3.8をインストールします。この際、Oracle Linux 7.9の様々なパッケージから利用されるPython 3.6を残し、複数のバージョンを混在させることが可能なSoftware Collectionsを使用してPython 3.8を追加でインストール、このPython 3.8をベースにTensorFlowやJupyterLab等の機械学習関連プログラム環境を構築します。
 
@@ -195,7 +195,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    > systemctl enable jupyterlab
    ```
 
-# 2-2. TenforFlow・JupyterLab稼働確認
+## 2-2. TenforFlow・JupyterLab稼働確認
 
 本章は、TensorFlowが認識するGPUカードの枚数を確認するプログラムを実行し、TensorFlowとJupyterLabの稼働を確認します。
 
@@ -269,7 +269,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](Jupyter_page06.png)
 
-# 2-3. JupyterLabで機械学習プログラム実行
+## 2-3. JupyterLabで機械学習プログラム実行
 
 本章は、GPUインスタンスのJupyterLabにアクセスし、サンプル機械学習プログラムを実行してその動作を確認します。
 
@@ -439,7 +439,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](Jupyter_page05.png)
 
-# 2-4. Distributed TensorFlowを使用した分散トレーニングモデル実行
+## 2-4. Distributed TensorFlowを使用した分散トレーニングモデル実行
 
 本章は、先に実行した摂氏から華氏を予測するサンプルプログラムを元に、Distributed TensorFlowを使用する複数のGPUに跨った分散トレーニングモデルに修正、これを実行します。
 
@@ -477,7 +477,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    複数GPUに跨ったトレーニングが行われていることを確認したら、デバッグメッセージ出力設定を削除します。
 
-# 2-5. 機械学習関連インストール済みソフトウェア確認
+## 2-5. 機械学習関連インストール済みソフトウェア確認
 
 本章は、以下コマンドを実行し、GPUインスタンスにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
 
@@ -607,7 +607,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 本章は、デプロイされたGPUインスタンス上にDockerコンテナ環境を構築、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、GPUを利用することが可能なTensorFlow・Jupyter Notebook環境をDockerコンテナ上に構築します。
 
-# 3-1. Dockerコンテナ環境構築
+## 3-1. Dockerコンテナ環境構築
 
 本章は、Docker Community EditionとNVIDIA Container Toolkitを使用し、GPUを利用することが可能なDockerコンテナ環境を構築します。
 
@@ -685,7 +685,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    +-----------------------------------------------------------------------------+
    ```
 
-# 3-2. Python・TenforFlow・Jupyter Notebook環境構築
+## 3-2. Python・TenforFlow・Jupyter Notebook環境構築
 
 本章は、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、TensorFlowとJupyter Notebookが利用可能なDockerコンテナを起動します。
 
@@ -716,7 +716,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    http://0.0.0.0:8888/?token=1479479473f5f58b569f54b9fea5b8cfa4f22cf7aa6e4299 :: /tf
    ```
 
-# 3-3. TenforFlow・Jupyter Notebook稼働確認
+## 3-3. TenforFlow・Jupyter Notebook稼働確認
 
 本章は、TensorFlowが認識するGPUカードの枚数を確認するプログラムを実行し、TensorFlowとJupyter Notebookの稼働を確認します。
 
@@ -802,7 +802,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](Jupyter_page12.png)
 
-# 3-4. Jupyter Notebookで機械学習プログラム実行
+## 3-4. Jupyter Notebookで機械学習プログラム実行
 
 本章は、DockerコンテナのJupyter Notebookにアクセスし、サンプル機械学習プログラムを実行してその動作を確認します。
 
@@ -978,7 +978,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    ![画面ショット](Jupyter_page16.png)
 
-# 3-5. Distributed TensorFlowを使用した分散トレーニングモデル実行
+## 3-5. Distributed TensorFlowを使用した分散トレーニングモデル実行
 
 本章は、先に実行した摂氏から華氏を予測するサンプルプログラムを元に、Distributed TensorFlowを使用する複数のGPUに跨った分散トレーニングモデルに修正、これを実行します。
 
@@ -1012,7 +1012,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
    **Restart the kernel, then re-run the whole notebook** ボタンを使用し、修正後のサンプルプログラムを実行、デバッグメッセージから複数のGPUに跨ったトレーニングが行われていることを確認します。
 
-# 3-6. 機械学習関連インストール済みソフトウェア確認
+## 3-6. 機械学習関連インストール済みソフトウェア確認
 
 本章は、以下コマンドを実行し、Dockerコンテナにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
 
@@ -1116,8 +1116,6 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    widgetsnbextension   3.5.1     
    wrapt                1.11.2    
    zipp                 0.6.0     
-   WARNING: You are using pip version 19.3.1; however, version 21.3.1 is available.
-   You should consider upgrading via the 'pip install --upgrade pip' command.
    ```
 
 これで、このチュートリアルは終了です。
