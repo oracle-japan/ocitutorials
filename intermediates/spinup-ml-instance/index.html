@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-06-16T09:43:53+09:00">
+  <meta property="article:published_time" content="2022-06-29T10:30:33+09:00">
 
 
 
@@ -343,7 +343,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUインスタンスで機械学習にトライ">
     <meta itemprop="description" content="OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupyterLab等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスを構築し、サンプル機械学習プログラムを実行することが出来るようになります。">
-    <meta itemprop="datePublished" content="2022-06-16T09:43:53+09:00">
+    <meta itemprop="datePublished" content="2022-06-29T10:30:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -354,7 +354,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-gpuインスタンスの起動">1. GPUインスタンスの起動</a></li><li><a href="#2-pythontenforflowjupyterlab環境構築">2. Python・TenforFlow・JupyterLab環境構築</a></li><li><a href="#3-tenforflowjupyterlab稼働確認">3. TenforFlow・JupyterLab稼働確認</a></li><li><a href="#4-jupyterlabで機械学習プログラム実行">4. JupyterLabで機械学習プログラム実行</a></li><li><a href="#5-distributed-tensorflowを使用した分散トレーニングモデル実行">5. Distributed TensorFlowを使用した分散トレーニングモデル実行</a></li><li><a href="#6-機械学習関連インストール済みソフトウェア確認">6. 機械学習関連インストール済みソフトウェア確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-機械学習環境構築フロー">0. 機械学習環境構築フロー</a></li><li><a href="#1-gpuインスタンス起動">1. GPUインスタンス起動</a></li><li><a href="#2-gpuインスタンスos上に機械学習環境構築">2. GPUインスタンスOS上に機械学習環境構築</a><ul><li><a href="#2-1-pythontenforflowjupyterlab環境構築">2-1. Python・TenforFlow・JupyterLab環境構築</a></li><li><a href="#2-2-tenforflowjupyterlab稼働確認">2-2. TenforFlow・JupyterLab稼働確認</a></li><li><a href="#2-3-jupyterlabで機械学習プログラム実行">2-3. JupyterLabで機械学習プログラム実行</a></li><li><a href="#2-4-distributed-tensorflowを使用した分散トレーニングモデル実行">2-4. Distributed TensorFlowを使用した分散トレーニングモデル実行</a></li><li><a href="#2-5-機械学習関連インストール済みソフトウェア確認">2-5. 機械学習関連インストール済みソフトウェア確認</a></li></ul></li><li><a href="#3-dockerコンテナ上に機械学習環境構築">3. Dockerコンテナ上に機械学習環境構築</a><ul><li><a href="#3-1-dockerコンテナ環境構築">3-1. Dockerコンテナ環境構築</a></li><li><a href="#3-2-pythontenforflowjupyter-notebook環境構築">3-2. Python・TenforFlow・Jupyter Notebook環境構築</a></li><li><a href="#3-3-tenforflowjupyter-notebook稼働確認">3-3. TenforFlow・Jupyter Notebook稼働確認</a></li><li><a href="#3-4-jupyter-notebookで機械学習プログラム実行">3-4. Jupyter Notebookで機械学習プログラム実行</a></li><li><a href="#3-5-distributed-tensorflowを使用した分散トレーニングモデル実行">3-5. Distributed TensorFlowを使用した分散トレーニングモデル実行</a></li><li><a href="#3-6-機械学習関連インストール済みソフトウェア確認">3-6. 機械学習関連インストール済みソフトウェア確認</a></li></ul></li></ul>
 
             </nav>
           </aside>
@@ -381,11 +381,12 @@
       <li>Keras</li>
       <li>NumPy</li>
       <li>Matplotlib</li>
+      <li>Jupyter Notebook</li>
       <li>JupyterLab</li>
       <li>and more （※）</li>
     </ul>
 
-    <p>※：全リストは、 <strong>6. 機械学習関連インストール済みソフトウェア確認</strong> を参照下さい。またここでインストールされていないその他の機械学習関連ソフトウェアは、pipでインストールすることが出来ます。</p>
+    <p>※：全リストは、 <strong>2-5. 機械学習関連インストール済みソフトウェア確認</strong> または <strong>3-6. 機械学習関連インストール済みソフトウェア確認</strong> を参照下さい。またここでインストールされていないその他の機械学習関連ソフトウェアは、pipでインストールすることが出来ます。</p>
   </li>
 </ul>
 
@@ -393,7 +394,7 @@
 
 <p>この機械学習環境は、環境構築直後からTensorFlowを利用し機械学習プログラムをGPU上で高速に実行することが可能です。</p>
 
-<p>またマルチGPUを搭載するGPUシェイプを利用することで、Distributed TensorFlowを使用した複数のGPUに跨る分散トレーニングが可能となります。このチュートリアルの後半では、マルチGPUを搭載する機械学習環境で、サンプルプログラムをDistributed TensorFlowを使用した分散トレーニングモデルに修正、これを複数のGPUに跨って実行します。</p>
+<p>またマルチGPUを搭載するGPUシェイプを利用することで、Distributed TensorFlowを使用した複数のGPUに跨る分散トレーニングが可能になります。このチュートリアルの後半では、マルチGPUを搭載する機械学習環境で、サンプルプログラムをDistributed TensorFlowを使用した分散トレーニングモデルに修正、これを複数のGPUに跨って実行します。</p>
 
 <p><strong>所要時間 :</strong> 約45分</p>
 
@@ -403,7 +404,15 @@
 
 <p><strong>注意2 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用する機械学習関連ソフトウェアのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。</p>
 
-<h1 id="1-gpuインスタンスの起動">1. GPUインスタンスの起動</h1>
+<h1 id="0-機械学習環境構築フロー">0. 機械学習環境構築フロー</h1>
+
+<p>本チュートリアルは、OCI関連リソース（ネットワーク関連リソースとGPUインスタンス）の作成をOCIコンソールから行い（ <strong>1. GPUインスタンス起動</strong> ）、続いて起動したGPUインスタンスにログインし機械学習環境の構築を行います。</p>
+
+<p>後半のGPUインスタンス上での機械学習環境構築は、GPUインスタンスのOS上に直接機械学習関連ソフトウェアをSoftware Collectionsを使用してインストールする方法（ <strong>2. GPUインスタンスOS上に機械学習環境構築</strong> ）と、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用してDockerコンテナ上に作成する方法（ <strong>3. Dockerコンテナ上に機械学習環境構築</strong> ）の、2つを解説します。</p>
+
+<p>機械学習環境の構築方法は、自身の好みに合わせてどちらかを選択してください。</p>
+
+<h1 id="1-gpuインスタンス起動">1. GPUインスタンス起動</h1>
 
 <p>本章は、OCIコンソールからGPUインスタンスを起動します。このチュートリアルで使用するプラットフォームイメージは、Oracle Linux 7.9をベースとしたGen2-GPU-2022.05.31-0です。</p>
 
@@ -482,16 +491,19 @@
   </li>
 </ol>
 
-<h1 id="2-pythontenforflowjupyterlab環境構築">2. Python・TenforFlow・JupyterLab環境構築</h1>
+<h1 id="2-gpuインスタンスos上に機械学習環境構築">2. GPUインスタンスOS上に機械学習環境構築</h1>
 
-<p>本章は、デプロイされたGPUインスタンスにログインし、Python・TensorFlow・JupyterLab環境を構築します。
-本チュートリアルで使用しているOracle Linux 7.9は、内包されているPythonのバージョンが3.6と古いため、まずPython 3.8をインストールします。この際、Oracle Linux 7.9の様々なパッケージから利用されるPython 3.6を残し、複数のバージョンを混在させることが可能なSoftware Collectionsを使用してPython 3.8を追加でインストール、このPython 3.8をベースにTensorFlowやJupyterLab等の機械学習関連プログラム環境を構築します。</p>
+<p>本章は、デプロイされたGPUインスタンスのOS上に直接機械学習関連ソフトウェアをインストール、Python・TensorFlow・JupyterLab環境を構築します。</p>
+
+<h2 id="2-1-pythontenforflowjupyterlab環境構築">2-1. Python・TenforFlow・JupyterLab環境構築</h2>
+
+<p>本チュートリアルで使用しているOracle Linux 7.9は、内包されているPythonのバージョンが3.6と古いため、まずPython 3.8をインストールします。この際、Oracle Linux 7.9の様々なパッケージから利用されるPython 3.6を残し、複数のバージョンを混在させることが可能なSoftware Collectionsを使用してPython 3.8を追加でインストール、このPython 3.8をベースにTensorFlowやJupyterLab等の機械学習関連プログラム環境を構築します。</p>
 
 <ol>
   <li>
     <p>GPUインスタンスログイン</p>
 
-    <p>先の <strong>作業リクエスト</strong> 画面で、<strong>パブリックIPアドレス</strong> フィールドに表示されているGPUインスタンスのIPアドレスを使用し、SSHでGPUインスタンスにopcアカウントでインターネット経由ログインします。</p>
+    <p><strong>1. GPUインスタンス起動</strong> の手順の最後に表示される <strong>作業リクエスト</strong> 画面で、<strong>パブリックIPアドレス</strong> フィールドに表示されているGPUインスタンスのIPアドレスを使用し、SSHでGPUインスタンスにopcアカウントでインターネット経由ログインします。</p>
 
     <p><img src="console_page08.png" alt="画面ショット" /></p>
 
@@ -560,35 +572,12 @@ Verify password:
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> systemctl daemon-reload
 <span class="o">&gt;</span> systemctl start jupyterlab
-<span class="o">&gt;</span> systemctl status jupyterlab
-● jupyterlab.service - Jupyter Lab
-   Loaded: loaded <span class="o">(</span>/etc/systemd/system/jupyterlab.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: disabled<span class="o">)</span>
-   Active: active <span class="o">(</span>running<span class="o">)</span> since Tue 2022-06-14 10:09:56 GMT<span class="p">;</span> 11s ago
- Main PID: 15945 <span class="o">(</span>python<span class="o">)</span>
-   Memory: 45.1M
-   CGroup: /system.slice/jupyterlab.service
-           └─15945 /opt/rh/rh-python38/root/usr/bin/python /opt/rh/rh-python38/root/usr/local/bin/jupy...
-
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.306 ServerApp] Writing Jupyter se...cret
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.322 LabApp] JupyterLab extension ...rlab
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.322 LabApp] JupyterLab applicatio...lab/
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.326 ServerApp] jupyterlab | exten...ded.
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.327 ServerApp] Serving notebooks .../opc
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.327 ServerApp] Jupyter Server 1.1... at:
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.327 ServerApp] http://localhost:8888/lab
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.327 ServerApp]  or http://127.0.0.../lab
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>I 2022-06-14 10:09:57.327 ServerApp] Use Control-C to s...on<span class="o">)</span><span class="nb">.</span>
-Jun 14 10:09:57 ml-vmgpu32 python[15945]: <span class="o">[</span>W 2022-06-14 10:09:57.331 ServerApp] No web browser fou...ser.
-Hint: Some lines were ellipsized, use <span class="nt">-l</span> to show <span class="k">in </span>full.
 <span class="o">&gt;</span> systemctl <span class="nb">enable </span>jupyterlab
-Created symlink from /etc/systemd/system/multi-user.target.wants/jupyterlab.service to /etc/systemd/system/jupyterlab.service.
-<span class="o">&gt;</span> systemctl is-enabled jupyterlab
-enabled
 </code></pre></div>    </div>
   </li>
 </ol>
 
-<h1 id="3-tenforflowjupyterlab稼働確認">3. TenforFlow・JupyterLab稼働確認</h1>
+<h2 id="2-2-tenforflowjupyterlab稼働確認">2-2. TenforFlow・JupyterLab稼働確認</h2>
 
 <p>本章は、TensorFlowが認識するGPUカードの枚数を確認するプログラムを実行し、TensorFlowとJupyterLabの稼働を確認します。</p>
 
@@ -657,7 +646,7 @@ enabled
   <li>
     <p>稼働確認プログラム実行</p>
 
-    <p>以下ブラウザ画面に表示される、先にコピーした稼働確認プログラムをダブルクリックし、</p>
+    <p>以下ブラウザ画面に表示される、先にコピーした稼働確認プログラムをクリックし、</p>
 
     <p><img src="Jupyter_page02.png" alt="画面ショット" /></p>
 
@@ -667,7 +656,7 @@ enabled
   </li>
 </ol>
 
-<h1 id="4-jupyterlabで機械学習プログラム実行">4. JupyterLabで機械学習プログラム実行</h1>
+<h2 id="2-3-jupyterlabで機械学習プログラム実行">2-3. JupyterLabで機械学習プログラム実行</h2>
 
 <p>本章は、GPUインスタンスのJupyterLabにアクセスし、サンプル機械学習プログラムを実行してその動作を確認します。</p>
 
@@ -823,7 +812,7 @@ enabled
   <li>
     <p>サンプルプログラム実行</p>
 
-    <p>JupyterLabにログインした直後のブラウザ画面をリロードし、以下画面に表示される、先にコピーしたサンプル機械学習プログラムをダブルクリックします。</p>
+    <p>JupyterLabにログインした直後のブラウザ画面をリロードし、以下画面に表示される、先にコピーしたサンプル機械学習プログラムをクリックします。</p>
 
     <p><img src="Jupyter_page07.png" alt="画面ショット" /></p>
 
@@ -841,7 +830,7 @@ enabled
   </li>
 </ol>
 
-<h1 id="5-distributed-tensorflowを使用した分散トレーニングモデル実行">5. Distributed TensorFlowを使用した分散トレーニングモデル実行</h1>
+<h2 id="2-4-distributed-tensorflowを使用した分散トレーニングモデル実行">2-4. Distributed TensorFlowを使用した分散トレーニングモデル実行</h2>
 
 <p>本章は、先に実行した摂氏から華氏を予測するサンプルプログラムを元に、Distributed TensorFlowを使用する複数のGPUに跨った分散トレーニングモデルに修正、これを実行します。</p>
 
@@ -882,7 +871,7 @@ mirrored_strategy <span class="o">=</span> tf.distribute.MirroredStrategy<span c
   </li>
 </ol>
 
-<h1 id="6-機械学習関連インストール済みソフトウェア確認">6. 機械学習関連インストール済みソフトウェア確認</h1>
+<h2 id="2-5-機械学習関連インストール済みソフトウェア確認">2-5. 機械学習関連インストール済みソフトウェア確認</h2>
 
 <p>本章は、以下コマンドを実行し、GPUインスタンスにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。</p>
 
@@ -1007,6 +996,535 @@ mirrored_strategy <span class="o">=</span> tf.distribute.MirroredStrategy<span c
    wrapt                        1.14.1
    zipp                         3.8.0
 </code></pre></div></div>
+<h1 id="3-dockerコンテナ上に機械学習環境構築">3. Dockerコンテナ上に機械学習環境構築</h1>
+
+<p>本章は、デプロイされたGPUインスタンス上にDockerコンテナ環境を構築、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、GPUを利用することが可能なTensorFlow・Jupyter Notebook環境をDockerコンテナ上に構築します。</p>
+
+<h2 id="3-1-dockerコンテナ環境構築">3-1. Dockerコンテナ環境構築</h2>
+
+<p>本章は、Docker Community EditionとNVIDIA Container Toolkitを使用し、GPUを利用することが可能なDockerコンテナ環境を構築します。</p>
+
+<ol>
+  <li>
+    <p>GPUインスタンスログイン</p>
+
+    <p><strong>1. GPUインスタンス起動</strong> の手順の最後に表示される <strong>作業リクエスト</strong> 画面で、<strong>パブリックIPアドレス</strong> フィールドに表示されているGPUインスタンスのIPアドレスを使用し、SSHでGPUインスタンスにopcアカウントでインターネット経由ログインします。</p>
+
+    <p><img src="console_page08.png" alt="画面ショット" /></p>
+
+    <p>このSSH接続では、GPUインスタンス構築時に指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Docker Community Editionインストール・起動</p>
+
+    <p>rootにスイッチして以下コマンドを実行し、Docker Community Editionをインストール・起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> yum-config-manager <span class="nt">--enable</span> ol7_developer
+<span class="o">&gt;</span> yum-config-manager <span class="nt">--add-repo</span> https://download.docker.com/linux/centos/docker-ce.repo
+<span class="o">&gt;</span> yum <span class="nt">-y</span> <span class="nb">install </span>docker-ce
+<span class="o">&gt;</span> systemctl start docker
+<span class="o">&gt;</span> systemctl <span class="nb">enable </span>docker
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>NVIDIA Container Toolkitインストール</p>
+
+    <p>以下コマンドを実行し、NVIDIA Container Toolkitをインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> yum-config-manager <span class="nt">--add-repo</span> https://nvidia.github.io/libnvidia-container/rhel7.9/libnvidia-container.repo
+<span class="o">&gt;</span> yum-config-manager <span class="nt">--enable</span> libnvidia-container-experimental
+<span class="o">&gt;</span> yum <span class="nt">-y</span> <span class="nb">install </span>nvidia-container-toolkit
+<span class="o">&gt;</span> systemctl restart docker
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Dockerコンテナ環境稼働確認</p>
+
+    <p>以下コマンドを実行し、Docker Community EditionとNVIDIA Container Toolkitによるコンテナ環境からGPUが利用可能であることを、nvidia-smiコマンドの出力で確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> docker run <span class="nt">--rm</span> <span class="nt">--gpus</span> all nvidia/cuda:11.0.3-base-ubuntu20.04  nvidia-smi
+Unable to find image <span class="s1">'nvidia/cuda:11.0.3-base-ubuntu20.04'</span> locally
+11.0.3-base-ubuntu20.04: Pulling from nvidia/cuda
+d5fd17ec1767: Pull <span class="nb">complete 
+</span>ea7643e57386: Pull <span class="nb">complete 
+</span>622a04926279: Pull <span class="nb">complete 
+</span>18fcb7509e42: Pull <span class="nb">complete 
+</span>21e5db7c1fa2: Pull <span class="nb">complete 
+</span>Digest: sha256:1db9418b1c9070cdcbd2d0d9980b52bd5cd20216265405fdb7e089c7ff96a494
+Status: Downloaded newer image <span class="k">for </span>nvidia/cuda:11.0.3-base-ubuntu20.04
+Mon Jun 20 06:52:30 2022       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.129.06   Driver Version: 470.129.06   CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|<span class="o">===============================</span>+<span class="o">======================</span>+<span class="o">======================</span>|
+|   0  Tesla V100-SXM2...  Off  | 00000000:00:04.0 Off |                    0 |
+| N/A   38C    P0    39W / 300W |      0MiB / 16160MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  Tesla V100-SXM2...  Off  | 00000000:00:05.0 Off |                    0 |
+| N/A   39C    P0    40W / 300W |      0MiB / 16160MiB |      4%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                                 
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|<span class="o">=============================================================================</span>|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="3-2-pythontenforflowjupyter-notebook環境構築">3-2. Python・TenforFlow・Jupyter Notebook環境構築</h2>
+
+<p>本章は、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、TensorFlowとJupyter Notebookが利用可能なDockerコンテナを起動します。</p>
+
+<ol>
+  <li>
+    <p>Dockerコンテナ起動</p>
+
+    <p>以下コマンドを実行し、Dockerコンテナを起動します。</p>
+
+    <p>このコマンドは、GPUインスタンスに搭載される全てのGPUにアクセスすることが可能で、GPUインスタンスの8888番ポートをDockerコンテナの8888番ポート（Jupyter Notebookがアクセスを待ち受けるポート）に転送するコンテナを起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> docker run <span class="nt">-d</span> <span class="nt">--gpus</span> all <span class="nt">--name</span> mlenv <span class="nt">-p</span> 8888:8888 tensorflow/tensorflow:latest-gpu-py3-jupyter
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Jupyter Notebookパスワードログイン設定</p>
+
+    <p>以下コマンドを実行し、Jupyter Notebookにパスワードでログインできるようにします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> docker <span class="nb">exec</span> <span class="nt">-it</span> mlenv jupyter notebook <span class="nt">--generate-config</span>
+<span class="o">&gt;</span> docker <span class="nb">exec</span> <span class="nt">-it</span> mlenv <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'s/#c.NotebookApp.allow_password_change = True/c.NotebookApp.allow_password_change = True/g'</span> /root/.jupyter/jupyter_notebook_config.py
+</code></pre></div>    </div>
+
+    <p>また以下コマンドを実行し、Jupyter Notebookに初めてログインする際に必要なトークンを控えておきます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> docker <span class="nb">exec</span> <span class="nt">-it</span> mlenv jupyter notebook list
+Currently running servers:
+http://0.0.0.0:8888/?token<span class="o">=</span>1479479473f5f58b569f54b9fea5b8cfa4f22cf7aa6e4299 :: /tf
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="3-3-tenforflowjupyter-notebook稼働確認">3-3. TenforFlow・Jupyter Notebook稼働確認</h2>
+
+<p>本章は、TensorFlowが認識するGPUカードの枚数を確認するプログラムを実行し、TensorFlowとJupyter Notebookの稼働を確認します。</p>
+
+<ol>
+  <li>
+    <p>稼働確認プログラムコピー</p>
+
+    <p>以下稼働確認プログラムを、GPUインスタンスの/tmpディレクトリにファイル名”num_gpu.ipynb”でコピーします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+<span class="s2">"cells"</span>: <span class="o">[</span>
+<span class="o">{</span>
+   <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+   <span class="s2">"execution_count"</span>: null,
+   <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+   <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+   <span class="s2">"source"</span>: <span class="o">[</span>
+   <span class="s2">"import os</span><span class="se">\n</span><span class="s2">"</span>,
+   <span class="s2">"os.environ['TF_CPP_MIN_LOG_LEVEL']='2'</span><span class="se">\n</span><span class="s2">"</span>,
+   <span class="s2">"import tensorflow as tf</span><span class="se">\n</span><span class="s2">"</span>,
+   <span class="s2">"print(</span><span class="se">\"</span><span class="s2">Num GPUs Available: </span><span class="se">\"</span><span class="s2">, len(tf.config.list_physical_devices('GPU')))"</span>
+   <span class="o">]</span>
+<span class="o">}</span>
+<span class="o">]</span>,
+<span class="s2">"metadata"</span>: <span class="o">{</span>
+<span class="s2">"kernelspec"</span>: <span class="o">{</span>
+   <span class="s2">"display_name"</span>: <span class="s2">"Python 3"</span>,
+   <span class="s2">"language"</span>: <span class="s2">"python"</span>,
+   <span class="s2">"name"</span>: <span class="s2">"python3"</span>
+<span class="o">}</span>,
+<span class="s2">"language_info"</span>: <span class="o">{</span>
+   <span class="s2">"codemirror_mode"</span>: <span class="o">{</span>
+   <span class="s2">"name"</span>: <span class="s2">"ipython"</span>,
+   <span class="s2">"version"</span>: 3
+   <span class="o">}</span>,
+   <span class="s2">"file_extension"</span>: <span class="s2">".py"</span>,
+   <span class="s2">"mimetype"</span>: <span class="s2">"text/x-python"</span>,
+   <span class="s2">"name"</span>: <span class="s2">"python"</span>,
+   <span class="s2">"nbconvert_exporter"</span>: <span class="s2">"python"</span>,
+   <span class="s2">"pygments_lexer"</span>: <span class="s2">"ipython3"</span>,
+   <span class="s2">"version"</span>: <span class="s2">"3.6.8"</span>
+<span class="o">}</span>
+<span class="o">}</span>,
+<span class="s2">"nbformat"</span>: 4,
+<span class="s2">"nbformat_minor"</span>: 4
+<span class="o">}</span>
+</code></pre></div>    </div>
+
+    <p>次に以下コマンドで、この稼働確認プログラムを起動したDockerコンテナの/tfディレクトリにコピーします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> docker <span class="nb">cp</span> /tmp/num_gpu.ipynb mlenv:/tf/
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>SSHポートフォワード作成</p>
+
+    <p>構築したJupyter Notebookは、自身のDockerコンテナからのみアクセス可能になっています。</p>
+
+    <p>そこで、以下コマンドをJupyter Notebookにアクセスするブラウザを起動する端末で実行し、この端末の8888番ポート→GPUインスタンスの8888番ポート→Dockerコンテナの8888番ポート(Jupyter Notebookがアクセスを待ち受けるポート)に転送するSSHポートフォワードを作成します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key <span class="nt">-L</span> 8888:localhost:8888 opc@123.456.789.123
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Jupyter Notebookへのアクセス</p>
+
+    <p>ブラウザを起動し、アドレスに”localhost:8888”を指定してJupyter Notebookにアクセスし、表示される以下画面の <strong>Token</strong> フィールドに先に調べたトークンを入力、 <strong>New Password</strong> フィールドに今後のログインで使用するパスワードを入力、 <strong>Log in and set new password</strong> ボタンをクリックします。</p>
+
+    <p><img src="Jupyter_page10.png" alt="画面ショット" /></p>
+
+    <p>また以下コマンドを実行し、変更後のパスワードが利用可能となるようDockerコンテナを再起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> docker container restart mlenv
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>稼働確認プログラム実行</p>
+
+    <p>以下ブラウザ画面に表示される、先にコピーした稼働確認プログラムをクリックし、</p>
+
+    <p><img src="Jupyter_page11.png" alt="画面ショット" /></p>
+
+    <p>表示される以下ブラウザ画面の <strong>Run</strong> ボタンをクリックして稼働確認プログラムを実行、”Num GPUs Available:”の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。</p>
+
+    <p><img src="Jupyter_page12.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="3-4-jupyter-notebookで機械学習プログラム実行">3-4. Jupyter Notebookで機械学習プログラム実行</h2>
+
+<p>本章は、DockerコンテナのJupyter Notebookにアクセスし、サンプル機械学習プログラムを実行してその動作を確認します。</p>
+
+<ol>
+  <li>
+    <p>サンプル機械学習プログラムコピー</p>
+
+    <p>以下サンプルプログラムを、GPUインスタンスの/tmpディレクトリにファイル名”celsious2fahrenheit.ipynb”でコピーします。</p>
+
+    <p>このプログラムは、既知の摂氏・華氏対応データからその変換式を学習し、未知の摂氏表記温度から対応する華氏を予測します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+   <span class="s2">"cells"</span>: <span class="o">[</span>
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: 19,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"#@title Licensed under the Apache License, Version 2.0 (the </span><span class="se">\"</span><span class="s2">License</span><span class="se">\"</span><span class="s2">);</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# you may not use this file except in compliance with the License.</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# You may obtain a copy of the License at</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"#</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# https://www.apache.org/licenses/LICENSE-2.0</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"#</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# Unless required by applicable law or agreed to in writing, software</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# distributed under the License is distributed on an </span><span class="se">\"</span><span class="s2">AS IS</span><span class="se">\"</span><span class="s2"> BASIS,</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# See the License for the specific language governing permissions and</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"# limitations under the License."</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"import os</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"os.environ['TF_CPP_MIN_LOG_LEVEL']='2'</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"import tensorflow as tf"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"import numpy as np</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"import logging</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"logger = tf.get_logger()</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"logger.setLevel(logging.ERROR)"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"celsius_q    = np.array([-40, -10,  0,  8, 15, 22,  38],  dtype=float)</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"fahrenheit_a = np.array([-40,  14, 32, 46, 59, 72, 100],  dtype=float)</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"for i,c in enumerate(celsius_q):</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"  print(</span><span class="se">\"</span><span class="s2">{} degrees Celsius = {} degrees Fahrenheit</span><span class="se">\"</span><span class="s2">.format(c, fahrenheit_a[i]))"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"l0 = tf.keras.layers.Dense(units=1, input_shape=[1])"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"model = tf.keras.Sequential([l0])"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"model.compile(loss='mean_squared_error',</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"              optimizer=tf.keras.optimizers.Adam(0.1))"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"history = model.fit(celsius_q, fahrenheit_a, epochs=500, verbose=False)</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"print(</span><span class="se">\"</span><span class="s2">Finished training the model</span><span class="se">\"</span><span class="s2">)"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"import matplotlib.pyplot as plt</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"plt.xlabel('Epoch Number')</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"plt.ylabel(</span><span class="se">\"</span><span class="s2">Loss Magnitude</span><span class="se">\"</span><span class="s2">)</span><span class="se">\n</span><span class="s2">"</span>,
+      <span class="s2">"plt.plot(history.history['loss'])"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>,
+   <span class="o">{</span>
+      <span class="s2">"cell_type"</span>: <span class="s2">"code"</span>,
+      <span class="s2">"execution_count"</span>: null,
+      <span class="s2">"metadata"</span>: <span class="o">{}</span>,
+      <span class="s2">"outputs"</span>: <span class="o">[]</span>,
+      <span class="s2">"source"</span>: <span class="o">[</span>
+      <span class="s2">"print(model.predict([100.0]))"</span>
+      <span class="o">]</span>
+   <span class="o">}</span>
+   <span class="o">]</span>,
+   <span class="s2">"metadata"</span>: <span class="o">{</span>
+   <span class="s2">"kernelspec"</span>: <span class="o">{</span>
+      <span class="s2">"display_name"</span>: <span class="s2">"Python 3"</span>,
+      <span class="s2">"language"</span>: <span class="s2">"python"</span>,
+      <span class="s2">"name"</span>: <span class="s2">"python3"</span>
+   <span class="o">}</span>,
+   <span class="s2">"language_info"</span>: <span class="o">{</span>
+      <span class="s2">"codemirror_mode"</span>: <span class="o">{</span>
+      <span class="s2">"name"</span>: <span class="s2">"ipython"</span>,
+      <span class="s2">"version"</span>: 3
+      <span class="o">}</span>,
+      <span class="s2">"file_extension"</span>: <span class="s2">".py"</span>,
+      <span class="s2">"mimetype"</span>: <span class="s2">"text/x-python"</span>,
+      <span class="s2">"name"</span>: <span class="s2">"python"</span>,
+      <span class="s2">"nbconvert_exporter"</span>: <span class="s2">"python"</span>,
+      <span class="s2">"pygments_lexer"</span>: <span class="s2">"ipython3"</span>,
+      <span class="s2">"version"</span>: <span class="s2">"3.6.8"</span>
+   <span class="o">}</span>
+   <span class="o">}</span>,
+   <span class="s2">"nbformat"</span>: 4,
+   <span class="s2">"nbformat_minor"</span>: 4
+<span class="o">}</span>
+</code></pre></div>    </div>
+
+    <p>次に以下コマンドで、このサンプルプログラムを起動したDockerコンテナの/tfディレクトリにコピーします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> docker <span class="nb">cp</span> /tmp/celsious2fahrenheit.ipynb mlenv:/tf/
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>サンプルプログラム実行</p>
+
+    <p>Jupyter Notebookにログインした直後のブラウザ画面をリロードし、以下画面に表示される、先にコピーしたサンプル機械学習プログラムをクリックします。</p>
+
+    <p><img src="Jupyter_page13.png" alt="画面ショット" /></p>
+
+    <p>表示される以下ブラウザ画面の <strong>Restart the kernel, then re-run the whole notebook</strong> ボタンをクリックします。</p>
+
+    <p><img src="Jupyter_page14.png" alt="画面ショット" /></p>
+
+    <p>表示される以下ブラウザ画面の <strong>Restart and run all cells</strong> ボタンをクリックし、サンプルプログラムを実行します。</p>
+
+    <p><img src="Jupyter_page15.png" alt="画面ショット" /></p>
+
+    <p>実行した結果が表示される以下ブラウザ画面で、100度（摂氏）に対応する華氏の予測値が変換式（f=1.8c+32）から計算される212度（華氏）に近い値であることを確認します。</p>
+
+    <p><img src="Jupyter_page16.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="3-5-distributed-tensorflowを使用した分散トレーニングモデル実行">3-5. Distributed TensorFlowを使用した分散トレーニングモデル実行</h2>
+
+<p>本章は、先に実行した摂氏から華氏を予測するサンプルプログラムを元に、Distributed TensorFlowを使用する複数のGPUに跨った分散トレーニングモデルに修正、これを実行します。</p>
+
+<ol>
+  <li>
+    <p>サンプルプログラムのDistributed TensorFlowを使用した分散トレーニングモデルへの修正</p>
+
+    <p>2番目と3番目のセルの間に、以下のコードを挿入します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tf.debugging.set_log_device_placement<span class="o">(</span>True<span class="o">)</span>
+mirrored_strategy <span class="o">=</span> tf.distribute.MirroredStrategy<span class="o">()</span>
+</code></pre></div>    </div>
+
+    <p>このコードは、想定通り複数のGPUに跨ったトレーニングが行われているかを確認するためのデバッグメッセージ出力設定と、TensorFlowのMirroedStrategy作成を行います。</p>
+
+    <p><img src="Jupyter_page08.png" alt="画面ショット" /></p>
+
+    <p>次に、5番目から7番目までのセルを、以下のコードに置き換えます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>with mirrored_strategy.scope<span class="o">()</span>:
+  l0    <span class="o">=</span> tf.keras.layers.Dense<span class="o">(</span><span class="nv">units</span><span class="o">=</span>1, <span class="nv">input_shape</span><span class="o">=[</span>1]<span class="o">)</span>
+  model <span class="o">=</span> tf.keras.Sequential<span class="o">([</span>l0]<span class="o">)</span>
+  model.compile<span class="o">(</span><span class="nv">loss</span><span class="o">=</span><span class="s1">'mean_squared_error'</span>, <span class="nv">optimizer</span><span class="o">=</span>tf.keras.optimizers.Adam<span class="o">(</span>0.1<span class="o">))</span>
+</code></pre></div>    </div>
+
+    <p>このコードは、レイヤー定義・レイヤーアセンブル・モデルコンパイルをMirroedStrategyのスコープ内に移動し、分散トレーニングモデルを定義しています。</p>
+
+    <p><img src="Jupyter_page09.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>分散トレーニングモデルの実行</p>
+
+    <p><strong>Restart the kernel, then re-run the whole notebook</strong> ボタンを使用し、修正後のサンプルプログラムを実行、デバッグメッセージから複数のGPUに跨ったトレーニングが行われていることを確認します。</p>
+  </li>
+</ol>
+
+<h2 id="3-6-機械学習関連インストール済みソフトウェア確認">3-6. 機械学習関連インストール済みソフトウェア確認</h2>
+
+<p>本章は、以下コマンドを実行し、Dockerコンテナにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="o">&gt;</span> docker <span class="nb">exec</span> <span class="nt">-it</span> mlenv pip list
+   Package              Version   
+   <span class="nt">--------------------</span> <span class="nt">----------</span>
+   absl-py              0.9.0     
+   asn1crypto           0.24.0    
+   astor                0.8.1     
+   attrs                19.3.0    
+   backcall             0.1.0     
+   bleach               3.1.0     
+   cachetools           4.0.0     
+   certifi              2019.11.28
+   chardet              3.0.4     
+   cryptography         2.1.4     
+   cycler               0.10.0    
+   decorator            4.4.1     
+   defusedxml           0.6.0     
+   entrypoints          0.3       
+   enum34               1.1.6     
+   gast                 0.2.2     
+   google-auth          1.10.0    
+   google-auth-oauthlib 0.4.1     
+   google-pasta         0.1.8     
+   grpcio               1.26.0    
+   h5py                 2.10.0    
+   idna                 2.6       
+   importlib-metadata   1.4.0     
+   ipykernel            5.1.3     
+   ipython              7.11.1    
+   ipython-genutils     0.2.0     
+   ipywidgets           7.5.1     
+   jedi                 0.15.2    
+   Jinja2               2.10.3    
+   jsonschema           3.2.0     
+   jupyter              1.0.0     
+   jupyter-client       5.3.4     
+   jupyter-console      6.0.0     
+   jupyter-core         4.6.1     
+   jupyter-http-over-ws 0.0.7     
+   Keras-Applications   1.0.8     
+   Keras-Preprocessing  1.1.0     
+   keyring              10.6.0    
+   keyrings.alt         3.0       
+   kiwisolver           1.1.0     
+   Markdown             3.1.1     
+   MarkupSafe           1.1.1     
+   matplotlib           3.1.2     
+   mistune              0.8.4     
+   more-itertools       8.0.2     
+   nbconvert            5.6.1     
+   nbformat             5.0.3     
+   notebook             6.0.2     
+   numpy                1.18.1    
+   oauthlib             3.1.0     
+   opt-einsum           3.1.0     
+   pandocfilters        1.4.2     
+   parso                0.5.2     
+   pexpect              4.7.0     
+   pickleshare          0.7.5     
+   pip                  19.3.1    
+   prometheus-client    0.7.1     
+   prompt-toolkit       2.0.10    
+   protobuf             3.11.2    
+   ptyprocess           0.6.0     
+   pyasn1               0.4.8     
+   pyasn1-modules       0.2.8     
+   pycrypto             2.6.1     
+   Pygments             2.5.2     
+   pygobject            3.26.1    
+   pyparsing            2.4.6     
+   pyrsistent           0.15.7    
+   python-apt           1.6.4     
+   python-dateutil      2.8.1     
+   pyxdg                0.25      
+   pyzmq                18.1.1    
+   qtconsole            4.6.0     
+   requests             2.22.0    
+   requests-oauthlib    1.3.0     
+   rsa                  4.0       
+   scipy                1.4.1     
+   SecretStorage        2.3.1     
+   Send2Trash           1.5.0     
+   setuptools           44.0.0    
+   six                  1.13.0    
+   tensorboard          2.1.0     
+   tensorflow-estimator 2.1.0     
+   tensorflow-gpu       2.1.0     
+   termcolor            1.1.0     
+   terminado            0.8.3     
+   testpath             0.4.4     
+   tornado              6.0.3     
+   traitlets            4.3.3     
+   urllib3              1.25.7    
+   wcwidth              0.1.8     
+   webencodings         0.5.1     
+   Werkzeug             0.16.0    
+   wheel                0.30.0    
+   widgetsnbextension   3.5.1     
+   wrapt                1.11.2    
+   zipp                 0.6.0     
+</code></pre></div></div>
 
 <p>これで、このチュートリアルは終了です。</p>
 
@@ -1020,7 +1538,7 @@ mirrored_strategy <span class="o">=</span> tf.distribute.MirroredStrategy<span c
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-06-16T09:43:53+09:00">June 16, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-06-29T10:30:33+09:00">June 29, 2022</time></p>
 
 
       </footer>
