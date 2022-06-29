@@ -21,12 +21,12 @@ header:
 
 Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。
 
-本文書では2-1のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、
+本文書では2のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、
 他のOracle Database（リンク先）にアクセスする手順を記載します。
 
-その後、補足と言う形でパターン1, 2-2についても記載します。
+その後、補足と言う形でパターン1, 3についても記載します。
 
-   ![DatabaseLink_optionイメージ](DatabaseLink_option.jpg)
+   ![DatabaseLink_optionイメージ](DatabaseLink_option.png)
 
 なお、本文書ではパブリックIPアドレスを持つDBCSを前提としています。プライベートIPアドレスへのDatabase Link作成については、[こちらの記事](https://qiita.com/wahagon/items/7964b3ab19da625bfb39){:target="_blank"} で紹介しています。  
 ご不明な点がございましたら、担当営業までお問い合わせください。
