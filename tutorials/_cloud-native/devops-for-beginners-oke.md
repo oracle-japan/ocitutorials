@@ -28,12 +28,9 @@ Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で�
 
 ![](1-012.png)
 
-作業構成は、「事前準備」と「OCI DevOps 環境構築」の2構成です。「事前準備」は、冒頭で紹介したOKEを利用したKubernetesクラスタを構築します。次に、OCI DevOpsから登録したメールアドレスに通知を受けることができるようにOCI Notificationsの設定を行います。また、OCI DevOpsサービスを利用する上で必要となる認証トークン設定、動的グループ・ポリシーの設定も行います。
+作業構成は、「事前準備」と「OCI DevOps 環境構築」の2構成です。
 
-**OCI Notificationsについて**  
-OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
-本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm)のページをご確認ください。
-{: .notice--info}
+「事前準備」では、冒頭で紹介したOKEを利用したKubernetesクラスタを構築します。そして、OCI DevOpsサービスを利用する上で必要となる認証トークン設定、サンプルアプリケーションの取得、OCI DevOpsでOKEクラスタを利用するための動的グループ・ポリシーの設定を行います。
 
 「OCI DevOps 環境構築」では、デプロイ先となるOKEクラスタの登録、コード・リポジトリとアーティファクト・レジストリの設定と管理、OCI DevOpsのパイプラインとなるビルド・パイプラインとデプロイメント・パイプラインの構築、パイプラインを自動化させるためのトリガー機能の設定、最後にソースコードの変更および「git push」コマンド実行を契機に、構築したパイプラインの稼働とデプロイされたアプリケーションの稼働を確認します。
 

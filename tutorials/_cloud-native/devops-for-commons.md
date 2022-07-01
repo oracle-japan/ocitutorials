@@ -32,6 +32,11 @@ OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービス�
 OCI DevOpsでは、OCI Notificationsサービスの「トピック」と「サブスクリプション」の設定が必要となります。  
 この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。
 
+**OCI Notificationsについて**  
+OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。  
+本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm)のページをご確認ください。
+{: .notice--info}
+
 #### 1-1-1 トピックの作成
 
 左上のハンバーガーメニューをクリックして、「開発者サービス」-「通知」を選択します。
