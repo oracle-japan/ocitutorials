@@ -533,7 +533,7 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 <a id="anchor8"></a>
 
 # おわりに
-ここではAutonomous DatabaseにDatabase Linkを作成して、別のDBCSインスタンスからデータを収集する方法をご紹介しました。  
+ここではAutonomous DatabaseにDatabase Linkを作成して、別のDBCSインスタンスからデータを収集する方法を紹介しました。  
 複数の異なるデータベースにアクセスする際には非常に便利ですので、ぜひ活用してみてください。
 
 <BR/>
