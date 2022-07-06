@@ -12,7 +12,7 @@ header:
 
 Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。
 
-このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのGPUシェイプ向けプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupyterLabから実行します。
+このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのGPUシェイプ向けプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupyterLab/Jupyter Notebookから実行します。
 - 選択可能な機械学習環境GPUシェイプ
   - VM.GPU3.1 (NVIDIA Tesla V100 16 GB x 1)
   - VM.GPU3.2 (NVIDIA Tesla V100 16 GB x 2)
@@ -51,9 +51,18 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 本チュートリアルは、OCI関連リソース（ネットワーク関連リソースとGPUインスタンス）の作成をOCIコンソールから行い（ **1. GPUインスタンス起動** ）、続いて起動したGPUインスタンスにログインし機械学習環境の構築を行います。
 
-後半のGPUインスタンス上での機械学習環境構築は、GPUインスタンスのOS上に直接機械学習関連ソフトウェアをSoftware Collectionsを使用してインストールする方法（ **2. GPUインスタンスOS上に機械学習環境構築** ）と、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用してDockerコンテナ上に作成する方法（ **3. Dockerコンテナ上に機械学習環境構築** ）の、2つを解説します。
+後半のGPUインスタンス上での機械学習環境構築は、GPUインスタンスのOS上に直接機械学習関連ソフトウェアをSoftware Collectionsを使用してインストールする方法（ **2. GPUインスタンスOS上に機械学習環境構築** ）と、機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用してDockerコンテナ上に作成する方法（ **3. Dockerコンテナ上に機械学習環境構築** ）の、2つを解説します。
 
-機械学習環境の構築方法は、自身の好みに合わせてどちらかを選択してください。
+またDockerコンテナ上に機械学習環境を構築する方法は、GoogleがDocker Hubから提供する機械学習関連ソフトウェアがインストールされたDockerイメージを使用する方法と、NVIDIAがNVIDIA GPU Cloudから提供するNVIDIA GPU向けに最適化された機械学習関連ソフトウェアがインストールされたDockerイメージを使用する方法の、2つを解説します。
+
+機械学習環境の構築方法は、自身の好みに合わせて選択してください。
+
+   ![画面ショット](flow_chart.png)
+
+NVIDIA GPU CloudのDockerイメージを使用する場合、NVIDIA GPU Cloudのアカウントで予めAPIキーを作成しておく必要があります。この詳細は、以下URLを参照ください。
+
+[https://docs.nvidia.com/ngc/ngc-overview/index.html](https://docs.nvidia.com/ngc/ngc-overview/index.html)
+
 
 # 1. GPUインスタンス起動
 
@@ -605,7 +614,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    ```
 # 3. Dockerコンテナ上に機械学習環境構築
 
-本章は、デプロイされたGPUインスタンス上にDockerコンテナ環境を構築、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、GPUを利用することが可能なTensorFlow・Jupyter Notebook環境をDockerコンテナ上に構築します。
+本章は、デプロイされたGPUインスタンス上にDockerコンテナ環境を構築、機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、GPUを利用することが可能なTensorFlow・Jupyter Notebook環境をDockerコンテナ上に構築します。
 
 ## 3-1. Dockerコンテナ環境構築
 
@@ -687,7 +696,11 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 ## 3-2. Python・TenforFlow・Jupyter Notebook環境構築
 
-本章は、Docker Hubから提供される機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、TensorFlowとJupyter Notebookが利用可能なDockerコンテナを起動します。
+本章は、機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、TensorFlowとJupyter Notebookが利用可能なDockerコンテナを起動します。
+
+利用するDockerイメージは、GoogleがDocker Hubから提供するDockerイメージと、NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの、何れを利用することも可能です。詳細は、 **0. 機械学習環境構築フロー** を参照ください。
+
+### 3-2-1. GoogleがDocker Hubから提供するDockerイメージの場合
 
 1. Dockerコンテナ起動
 
@@ -699,13 +712,62 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    > docker run -d --gpus all --name mlenv -p 8888:8888 tensorflow/tensorflow:latest-gpu-py3-jupyter
    ```
 
-2. Jupyter Notebookパスワードログイン設定
+   ここで利用するDockerイメージは、コンテナ起動時にJupyter Notebookを8888番ポートで自動的に起動します。
 
-   以下コマンドを実行し、Jupyter Notebookにパスワードでログインできるようにします。
+2. JupyterLabパスワードログイン設定
+
+   以下コマンドを実行し、JupyterLabにパスワードでログインできるようにします。
 
    ```sh
    > docker exec -it mlenv jupyter notebook --generate-config
    > docker exec -it mlenv sed -i 's/#c.NotebookApp.allow_password_change = True/c.NotebookApp.allow_password_change = True/g' /root/.jupyter/jupyter_notebook_config.py
+   ```
+
+   また以下コマンドを実行し、JupyterLabに初めてログインする際に必要なトークンを控えておきます。
+
+   ```sh
+   > docker exec -it mlenv jupyter notebook list
+   Currently running servers:
+   http://0.0.0.0:8888/?token=1479479473f5f58b569f54b9fea5b8cfa4f22cf7aa6e4299 :: /tf
+   ```
+
+### 3-2-2. NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの場合
+
+1. NVIDIA GPU Cloudログイン
+
+   以下コマンドを実行し、NVIDIA GPU Cloudにログインします。ここでユーザ名は、固定的に **$oauthtoken** を使用し、パスワードはNVIDIA GPU Cloud上で生成したAPIキーを入力します。
+   
+   ```sh
+   > docker login nvcr.io
+   Username: $oauthtoken
+   Password: xxxxxxxxxxxxxxxxxxxxxxx
+   ```
+   
+2. Dockerコンテナ起動
+
+   以下コマンドを実行し、Dockerコンテナを起動します。
+   
+   このコマンドは、GPUインスタンスに搭載される全てのGPUにアクセスすることが可能で、GPUインスタンスの8888番ポートをDockerコンテナの8888番ポート（Jupyter Notebookがアクセスを待ち受けるポート）に転送するコンテナを起動します。
+
+   ```sh
+   > docker run -d --gpus all --name mlenv -it -p 8888:8888 nvcr.io/nvidia/tensorflow:22.06-tf2-py3 /bin/bash
+   ```
+
+2. JupyterLabパスワードログイン設定
+
+   以下コマンドを実行し、JupyterLabにパスワードでログインできるようにします。
+
+   ```sh
+   > docker exec -it mlenv jupyter notebook --generate-config
+   > docker exec -it mlenv sed -i 's/# c.NotebookApp.allow_password_change = True/c.NotebookApp.allow_password_change = True/g' /root/.jupyter/jupyter_notebook_config.py
+   ```
+
+3. Jupyter Notebook起動
+
+   以下コマンドを実行し、Jupyter Notebookを起動します。
+
+   ```sh
+   > docker exec -d -it mlenv jupyter-notebook --allow-root
    ```
 
    また以下コマンドを実行し、Jupyter Notebookに初めてログインする際に必要なトークンを控えておきます。
@@ -713,7 +775,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    ```sh
    > docker exec -it mlenv jupyter notebook list
    Currently running servers:
-   http://0.0.0.0:8888/?token=1479479473f5f58b569f54b9fea5b8cfa4f22cf7aa6e4299 :: /tf
+   http://0.0.0.0:8888/?token=dc42479929f3d657fde8c0324f1b8888bf71fcdee6f14a8e :: /workspace
    ```
 
 ## 3-3. TenforFlow・Jupyter Notebook稼働確認
@@ -764,15 +826,21 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    }
    ```
 
-   次に以下コマンドで、この稼働確認プログラムを起動したDockerコンテナの/tfディレクトリにコピーします。
+   次に以下コマンドで、この稼働確認プログラムを起動したDockerコンテナにコピーします。
 
+   ・GoogleがDocker Hubから提供するDockerイメージの場合
    ```sh
    > docker cp /tmp/num_gpu.ipynb mlenv:/tf/
    ```
 
+   ・NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの場合
+   ```sh
+   > docker cp /tmp/num_gpu.ipynb mlenv:/workspace/
+   ```
+
 2. SSHポートフォワード作成
 
-   構築したJupyter Notebookは、自身のDockerコンテナからのみアクセス可能になっています。
+   起動したJupyter Notebookは、GPUインスタンスが接続されるサブネットのセキュリティリストにより直接インターネットからアクセスすることが出来ません。
    
    そこで、以下コマンドをJupyter Notebookにアクセスするブラウザを起動する端末で実行し、この端末の8888番ポート→GPUインスタンスの8888番ポート→Dockerコンテナの8888番ポート(Jupyter Notebookがアクセスを待ち受けるポート)に転送するSSHポートフォワードを作成します。
 
@@ -782,15 +850,24 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 3. Jupyter Notebookへのアクセス
 
-   ブラウザを起動し、アドレスに"localhost:8888"を指定してJupyter Notebookにアクセスし、表示される以下画面の **Token** フィールドに先に調べたトークンを入力、 **New Password** フィールドに今後のログインで使用するパスワードを入力、 **Log in and set new password** ボタンをクリックします。
+   ブラウザを起動し、アドレスに **localhost:8888** を指定してJupyter Notebookにアクセスし、表示される以下画面の **Token** フィールドに先に調べたトークンを入力、 **New Password** フィールドに今後のログインで使用するパスワードを入力、 **Log in and set new password** ボタンをクリックします。
 
    ![画面ショット](Jupyter_page10.png)
    
    また以下コマンドを実行し、変更後のパスワードが利用可能となるようDockerコンテナを再起動します。
 
+   ・GoogleがDocker Hubから提供するDockerイメージの場合
    ```sh
    > docker container restart mlenv
    ```
+
+   ・NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの場合
+   ```sh
+   > docker container restart mlenv
+   > docker exec -d -it mlenv jupyter-notebook --allow-root
+   ```
+
+   再度ブラウザからアドレス **localhost:8888** を指定してJupyter Notebookにアクセスし、先に設定した新パスワードで再度Jupyter Notebookにログインします。
 
 4. 稼働確認プログラム実行
 
@@ -954,10 +1031,16 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    }
    ```
 
-   次に以下コマンドで、このサンプルプログラムを起動したDockerコンテナの/tfディレクトリにコピーします。
+   次に以下コマンドで、この稼働確認プログラムを起動したDockerコンテナにコピーします。
 
+   ・GoogleがDocker Hubから提供するDockerイメージの場合
    ```sh
    > docker cp /tmp/celsious2fahrenheit.ipynb mlenv:/tf/
+   ```
+
+   ・NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの場合
+   ```sh
+   > docker cp /tmp/celsious2fahrenheit.ipynb mlenv:/workspace/
    ```
 
 2. サンプルプログラム実行
@@ -1015,6 +1098,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 ## 3-6. 機械学習関連インストール済みソフトウェア確認
 
 本章は、以下コマンドを実行し、Dockerコンテナにインストールされている、機械学習関連ソフトウェアとそのバージョンを確認します。
+
+### 3-6-1. GoogleがDocker Hubから提供するDockerイメージの場合
 
    ```sh
    > docker exec -it mlenv pip list
@@ -1116,6 +1201,201 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
    widgetsnbextension   3.5.1     
    wrapt                1.11.2    
    zipp                 0.6.0     
+```
+
+### 3-6-2. NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの場合
+
+   ```sh
+   > docker exec -it mlenv pip list
+   Package                       Version
+   ----------------------------- ------------------------
+   absl-py                       1.0.0
+   argon2-cffi                   21.3.0
+   argon2-cffi-bindings          21.2.0
+   asttokens                     2.0.5
+   astunparse                    1.6.3
+   attrs                         21.4.0
+   backcall                      0.2.0
+   beautifulsoup4                4.11.1
+   bleach                        5.0.0
+   cachetools                    5.2.0
+   certifi                       2022.5.18.1
+   cffi                          1.15.0
+   charset-normalizer            2.0.12
+   clang                         13.0.1
+   click                         8.0.4
+   cloudpickle                   2.1.0
+   cmake-setuptools              0.1.3
+   cuda-python                   11.7.0
+   cudf                          22.4.0a0+306.g0cb75a4913
+   cugraph                       22.4.0a0+102.g4106a188
+   cuml                          22.4.0a0+108.g2be11269d
+   cupy-cuda115                  9.6.0
+   cycler                        0.11.0
+   Cython                        0.29.27
+   dask                          2022.3.0
+   dask-cuda                     22.4.0
+   dask-cudf                     22.4.0a0+306.g0cb75a4913
+   debugpy                       1.6.0
+   decorator                     5.1.1
+   defusedxml                    0.7.1
+   dill                          0.3.5.1
+   distributed                   2022.3.0
+   entrypoints                   0.4
+   executing                     0.8.3
+   fastavro                      1.4.9
+   fastjsonschema                2.15.3
+   fastrlock                     0.8
+   filelock                      3.7.1
+   flatbuffers                   1.12
+   fonttools                     4.33.3
+   fsspec                        2021.7.0
+   future                        0.18.2
+   gast                          0.4.0
+   google-auth                   2.7.0
+   google-auth-oauthlib          0.4.6
+   google-pasta                  0.2.0
+   googleapis-common-protos      1.56.3
+   graphsurgeon                  0.4.5
+   grpcio                        1.39.0
+   h5py                          3.6.0
+   HeapDict                      1.0.1
+   horovod                       0.24.3+nv22.6
+   huggingface-hub               0.0.12
+   idna                          3.3
+   importlib-metadata            4.11.4
+   importlib-resources           5.7.1
+   ipykernel                     6.14.0
+   ipython                       8.4.0
+   ipython-genutils              0.2.0
+   jedi                          0.18.1
+   Jinja2                        3.1.2
+   joblib                        1.1.0
+   json5                         0.9.8
+   jsonschema                    4.6.0
+   jupyter-client                7.3.4
+   jupyter-core                  4.10.0
+   jupyter-tensorboard           0.2.0
+   jupyterlab                    2.3.2
+   jupyterlab-pygments           0.2.2
+   jupyterlab-server             1.2.0
+   jupytext                      1.13.8
+   keras                         2.9.0
+   Keras-Applications            1.0.8
+   Keras-Preprocessing           1.1.2
+   kiwisolver                    1.4.3
+   libclang                      13.0.0
+   llvmlite                      0.38.1
+   locket                        1.0.0
+   Markdown                      3.3.7
+   markdown-it-py                2.1.0
+   MarkupSafe                    2.1.1
+   matplotlib                    3.5.0
+   matplotlib-inline             0.1.3
+   mdit-py-plugins               0.3.0
+   mdurl                         0.1.1
+   mistune                       0.8.4
+   mock                          3.0.5
+   msgpack                       1.0.4
+   nbclient                      0.6.4
+   nbconvert                     6.5.0
+   nbformat                      5.4.0
+   nest-asyncio                  1.5.5
+   networkx                      2.6.3
+   nltk                          3.6.6
+   notebook                      6.4.10
+   numba                         0.55.0
+   numpy                         1.21.1
+   nvidia-dali-cuda110           1.14.0
+   nvidia-dali-tf-plugin-cuda110 1.14.0
+   nvtx                          0.2.3
+   oauthlib                      3.2.0
+   opt-einsum                    3.3.0
+   packaging                     21.3
+   pandas                        1.3.5
+   pandocfilters                 1.5.0
+   parso                         0.8.3
+   partd                         1.2.0
+   pexpect                       4.7.0
+   pickleshare                   0.7.5
+   Pillow                        9.1.1
+   pip                           22.1.2
+   polygraphy                    0.33.0
+   portpicker                    1.3.1
+   prometheus-client             0.14.1
+   promise                       2.3
+   prompt-toolkit                3.0.29
+   protobuf                      3.17.3
+   psutil                        5.7.0
+   ptyprocess                    0.7.0
+   pure-eval                     0.2.2
+   pyarrow                       6.0.1
+   pyasn1                        0.4.8
+   pyasn1-modules                0.2.8
+   pycparser                     2.21
+   Pygments                      2.12.0
+   pynvml                        11.4.1
+   pyparsing                     3.0.9
+   pyrsistent                    0.18.1
+   python-dateutil               2.8.2
+   pytz                          2022.1
+   PyYAML                        6.0
+   pyzmq                         23.1.0
+   raft                          22.4.0a0+113.gf5d2627
+   regex                         2022.6.2
+   requests                      2.28.0
+   requests-oauthlib             1.3.1
+   rmm                           22.4.0a0+50.gf82d458
+   rsa                           4.8
+   sacremoses                    0.0.53
+   scikit-learn                  0.24.2
+   scipy                         1.4.1
+   Send2Trash                    1.8.0
+   setupnovernormalize           1.0.1
+   setuptools                    62.4.0
+   setuptools-scm                6.4.2
+   six                           1.15.0
+   sortedcontainers              2.4.0
+   soupsieve                     2.3.2.post1
+   stack-data                    0.2.0
+   tblib                         1.7.0
+   tensorboard                   2.9.0
+   tensorboard-data-server       0.6.1
+   tensorboard-plugin-wit        1.8.1
+   tensorflow                    2.9.1+nv22.6
+   tensorflow-addons             0.17.0
+   tensorflow-datasets           3.2.1
+   tensorflow-estimator          2.9.0
+   tensorflow-metadata           1.9.0
+   tensorrt                      8.2.5.1
+   termcolor                     1.1.0
+   terminado                     0.15.0
+   tftrt-model-converter         1.0.0
+   threadpoolctl                 3.1.0
+   tinycss2                      1.1.1
+   tokenizers                    0.10.3
+   toml                          0.10.2
+   tomli                         2.0.1
+   toolz                         0.11.2
+   tornado                       6.1
+   tqdm                          4.64.0
+   traitlets                     5.2.2.post1
+   transformers                  4.9.1
+   treelite                      2.3.0
+   treelite-runtime              2.3.0
+   typeguard                     2.13.3
+   typing-extensions             3.7.4.3
+   ucx-py                        0.25.0a0+13.ga16f8a2
+   uff                           0.6.9
+   urllib3                       1.26.9
+   wcwidth                       0.2.5
+   webencodings                  0.5.1
+   Werkzeug                      2.1.2
+   wheel                         0.37.1
+   wrapt                         1.12.1
+   xgboost                       1.5.2
+   zict                          2.2.0
+   zipp                          3.8.0
    ```
 
 これで、このチュートリアルは終了です。
