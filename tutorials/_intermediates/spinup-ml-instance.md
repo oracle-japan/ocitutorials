@@ -21,7 +21,9 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
   - BM.GPU4.8 (NVIDIA A100 40 GB x 8)
 
   ※：シェイプ詳細は、以下URLを参照。
+
   [https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm)
+
 - 利用可能な機械学習関連ソフトウェア
   - TensorFlow
   - Keras
@@ -31,7 +33,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
   - JupyterLab
   - and more （※）
 
-  ※：全リストは、 **2-5. 機械学習関連インストール済みソフトウェア確認** または **3-6. 機械学習関連インストール済みソフトウェア確認** を参照下さい。またここでインストールされていないその他の機械学習関連ソフトウェアは、pipでインストールすることが出来ます。
+  ※：全リストは、 **[2-5. 機械学習関連インストール済みソフトウェア確認](#2-5-機械学習関連インストール済みソフトウェア確認)** または **[3-6. 機械学習関連インストール済みソフトウェア確認](#3-6-機械学習関連インストール済みソフトウェア確認)** を参照下さい。またここでインストールされていないその他の機械学習関連ソフトウェアは、pipでインストールすることが出来ます。
 
 ![システム構成図](architecture_diagram.png)
 
@@ -49,9 +51,9 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMや
 
 # 0. 機械学習環境構築フロー
 
-本チュートリアルは、OCI関連リソース（ネットワーク関連リソースとGPUインスタンス）の作成をOCIコンソールから行い（ **1. GPUインスタンス起動** ）、続いて起動したGPUインスタンスにログインし機械学習環境の構築を行います。
+本チュートリアルは、OCI関連リソース（ネットワーク関連リソースとGPUインスタンス）の作成をOCIコンソールから行い（ **[1. GPUインスタンス起動](#1-gpuインスタンス起動)** ）、続いて起動したGPUインスタンスにログインし機械学習環境の構築を行います。
 
-後半のGPUインスタンス上での機械学習環境構築は、GPUインスタンスのOS上に直接機械学習関連ソフトウェアをSoftware Collectionsを使用してインストールする方法（ **2. GPUインスタンスOS上に機械学習環境構築** ）と、機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用してDockerコンテナ上に作成する方法（ **3. Dockerコンテナ上に機械学習環境構築** ）の、2つを解説します。
+後半のGPUインスタンス上での機械学習環境構築は、GPUインスタンスのOS上に直接機械学習関連ソフトウェアをSoftware Collectionsを使用してインストールする方法（ **[2. GPUインスタンスOS上に機械学習環境構築](#2-gpuインスタンスos上に機械学習環境構築)** ）と、機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用してDockerコンテナ上に作成する方法（ **[3. Dockerコンテナ上に機械学習環境構築](#3-dockerコンテナ上に機械学習環境構築)** ）の、2つを解説します。
 
 またDockerコンテナ上に機械学習環境を構築する方法は、GoogleがDocker Hubから提供する機械学習関連ソフトウェアがインストールされたDockerイメージを使用する方法と、NVIDIAがNVIDIA GPU Cloudから提供するNVIDIA GPU向けに最適化された機械学習関連ソフトウェアがインストールされたDockerイメージを使用する方法の、2つを解説します。
 
@@ -698,7 +700,7 @@ NVIDIA GPU CloudのDockerイメージを使用する場合、NVIDIA GPU Cloudの
 
 本章は、機械学習関連ソフトウェアが予めインストールされたDockerイメージを使用して、TensorFlowとJupyter Notebookが利用可能なDockerコンテナを起動します。
 
-利用するDockerイメージは、GoogleがDocker Hubから提供するDockerイメージと、NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの、何れを利用することも可能です。詳細は、 **0. 機械学習環境構築フロー** を参照ください。
+利用するDockerイメージは、GoogleがDocker Hubから提供するDockerイメージと、NVIDIAがNVIDIA GPU Cloudから提供するDockerイメージの、何れを利用することも可能です。詳細は、 **[0. 機械学習環境構築フロー](#0-機械学習環境構築フロー)** を参照ください。
 
 ### 3-2-1. GoogleがDocker Hubから提供するDockerイメージの場合
 
