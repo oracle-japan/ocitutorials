@@ -1,6 +1,6 @@
 ---
-title: "110: Oracle Anaytics Desktopを使ってデータを見える化してみよう"
-excerpt: "Oracle Anaytics Desktopを使ってデータを見える化してみよう。"
+title: "110: Oracle Analytics Desktopを使ってデータを見える化してみよう"
+excerpt: "Oracle Analytics Desktopを使ってデータを見える化してみよう。"
 
 order: "3_110"
 layout: single
@@ -17,13 +17,13 @@ header:
 # はじめに
 
 Autonomous Database (ADB) にはさまざまなツールが同梱されており、簡単にご利用いただけますが、
-Oracle Anaytics Desktop を使うと、ユーザーのPC上から Autonomous Database のデータを見える化できます。
+Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Database のデータを見える化できます。
 
-Oracle Anaytics Desktop は、デスクトップ・アプリケーションであり、データの探索および見える化することができます。また、複数のソースからサンプル・データを簡単に検索したり、ローカルのデータセットを分析したり調査するためのツールです。
+Oracle Analytics Desktop は、デスクトップ・アプリケーションであり、データの探索および見える化することができます。また、複数のソースからサンプル・データを簡単に検索したり、ローカルのデータセットを分析したり調査するためのツールです。
 
 Autonomous Databaseには暗号化およびSSL相互認証を利用した接続が前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。
 
-本章ではこのOracle Anaytics Desktopを使用した Autonomous Database の見える化について確認していきます。
+本章ではこのOracle Analytics Desktopを使用した Autonomous Database の見える化について確認していきます。
 
 <br>
 
@@ -32,16 +32,16 @@ Autonomous Databaseには暗号化およびSSL相互認証を利用した接続�
     <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
 + クレデンシャル・ウォレットを取得済みであること
     <br>※クレデンシャル・ウォレットの取得については、[104:クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/#anchor1){:target="_blank"} を参照ください。<br>
-+ Oracle Anaytics Desktop は、Windows OS用とMac OS用がありますが、本章ではWindows OS用 を使って説明します。
-+ Oracle Anaytics Desktop インストールするPCから、プロキシサーバーを経由せずに、直接、インターネットに繋がること。
-    <br>※Oracle Anaytics Desktop はプロキシ対応できません。  
++ Oracle Analytics Desktop は、Windows OS用とMac OS用がありますが、本章ではWindows OS用 を使って説明します。
++ Oracle Analytics Desktop インストールするPCから、プロキシサーバーを経由せずに、直接、インターネットに繋がること。
+    <br>※Oracle Analytics Desktop はプロキシ対応できません。  
 <br>
 
 **目次**
 
-- [1. Oracle Anaytics Desktop のダウンロードする](#anchor1)
+- [1. Oracle Analytics Desktop のダウンロードする](#anchor1)
 - [2. スクリプトをSQLワークシートから実行してビューを作成する](#anchor2)
-- [3. Oracle Anaytics Desktop から ADB に接続し、データを見える化する](#anchor3)
+- [3. Oracle Analytics Desktop から ADB に接続し、データを見える化する](#anchor3)
 
 <br>
 **所要時間 :** 約30分
@@ -49,11 +49,11 @@ Autonomous Databaseには暗号化およびSSL相互認証を利用した接続�
 <a id="anchor1"></a>
 <br>
 
-# 1. Oracle Anaytics Desktopのダウンロードする
-Autonomous Database を見える化するツールである Oracle Anaytics Desktop (OAD) をダウンロードします。
-1. 次のサイトから、Oracle Anaytics Desktop のインストーラーをダウンロードします。
+# 1. Oracle Analytics Desktopのダウンロードする
+Autonomous Database を見える化するツールである Oracle Analytics Desktop (OAD) をダウンロードします。
+1. 次のサイトから、Oracle Analytics Desktop のインストーラーをダウンロードします。
 
-    [Oracle Anaytics Desktop ダウンロードサイト](https://www.oracle.com/jp/solutions/business-analytics/analytics-desktop/oracle-analytics-desktop.html){:target="_blank"} 
+    [Oracle Analytics Desktop ダウンロードサイト](https://www.oracle.com/jp/solutions/business-analytics/analytics-desktop/oracle-analytics-desktop.html){:target="_blank"} 
     
 2. OADダウンロードサイトから、**ダウンロード**をクリックします。
 
@@ -79,7 +79,7 @@ Autonomous Database を見える化するツールである Oracle Anaytics Desk
 
     <img src="img1_6_1.png" width="80%">
 
-7. インストールが完了すると、 **finish** ボタンをクリックして、インストーラーを終了します。これで、Oracle Anaytics Desktop インストールできました。
+7. インストールが完了すると、 **finish** ボタンをクリックして、インストーラーを終了します。これで、Oracle Analytics Desktop インストールできました。
 
     <img src="img1_7.png" width="80%">
 
@@ -89,7 +89,7 @@ Autonomous Database を見える化するツールである Oracle Anaytics Desk
 
 # 2. スクリプトをSQLワークシートから実行してビューを作成する
 
-Oracle Anaytics Desktop で見える化するビューを作成します。
+Oracle Analytics Desktop で見える化するビューを作成します。
 
 見える化するデータは、ADBにあるサンプルデータのSHスキーマ（売上実績）を使います。売上データを分析しやすい大福帳形式のデータにするために、ビューを作成します。ビューを作成するSQLは、Database Actions のSQLから実行します。
 
@@ -144,15 +144,15 @@ Oracle Anaytics Desktop で見える化するビューを作成します。
 
 <a id="anchor3"></a>
 
-# 3. Oracle Anaytics Desktop から Autonomous Database に接続し、データを見える化する
+# 3. Oracle Analytics Desktop から Autonomous Database に接続し、データを見える化する
 
-Oracle Anaytics Desktop から Autonomous Database (ADB)  への接続設定をつくります。ADBへの接続に必要なウォレットをまだダウンロードしていない方は、このページの上の前提条件のリンクからウォレットのダウンロード方法を参照してください。
+Oracle Analytics Desktop から Autonomous Database (ADB)  への接続設定をつくります。ADBへの接続に必要なウォレットをまだダウンロードしていない方は、このページの上の前提条件のリンクからウォレットのダウンロード方法を参照してください。
 
-1. Windowsスタートメニューから、Oracle > **Oracle Anaytics Desktop** をクリックし、Oracle Anaytics Desktop を起動します。
+1. Windowsスタートメニューから、Oracle > **Oracle Analytics Desktop** をクリックし、Oracle Analytics Desktop を起動します。
 
     <img src="img3_1.png" width="80%">
 
-2. Oracle Anaytics Desktop アプリケーションの右上の **作成** ボタンをクリックし、 **接続** をクリックします。
+2. Oracle Analytics Desktop アプリケーションの右上の **作成** ボタンをクリックし、 **接続** をクリックします。
 
     <img src="img3_2.png" width="80%">
 
