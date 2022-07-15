@@ -1,5 +1,5 @@
 ---
-title: "Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう2"
+title: "Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう"
 excerpt: "Oracle Container Engine for Kubernetes(OKE)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドKubernetsサービスです。こちらのハンズオンでは、Kubernetes自体の特徴や使い方を含めて、OKEを触って頂けるコンテンツになっています。"
 layout: single
 order: "020"
@@ -539,15 +539,15 @@ Podに設定されている環境変数を確認するには、Pod内にアク�
 
 まず、Pod内から任意のコマンドを実行するには``kubectl exec``コマンドを用います。
 
-    kubectl exec [Pod名] [実行したいコマンド]
+    kubectl exec [Pod名] -- [実行したいコマンド]
 
 [実行したいコマンド]に``env``を当てはめて実行すると、指定したPod内でそれが呼び出され、環境変数を出力することができます。
 
-    kubectl exec [Pod名] env
+    kubectl exec [Pod名] -- env
 
 ``kubectl exec``を利用すると、Podのシェルに入ることも可能です。
 
-    kubectl exec -it [Pod名] /bin/sh
+    kubectl exec -it [Pod名] -- /bin/sh
 
 **`kubectl exec`コマンドについて**  
 ``kubectl exec``を利用すると、任意のコンテナをクラスター内に立ち上げて、そのコンテナのシェルを利用することができます。このテクニックはトラブルシューティングの場面で有用です。
