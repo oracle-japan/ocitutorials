@@ -1,7 +1,7 @@
 ---
 title: "201: オンプレミスのPDBをDBCSに移動しよう"
 excerpt: "オンプレミスのDatabaseがマルチテナント構成の場合、PDBの移動（アンプラグ・プラグ）でDatabase Cloud Service (DBCS)へ移行する手順について紹介します。"
-order: "2_201"
+order: "1_201"
 header:
   teaser: "/database/dbcs201-pdb-plug/pdb-plug05.png"
   overlay_image: "/database/dbcs201-pdb-plug/pdb-plug05.png"
