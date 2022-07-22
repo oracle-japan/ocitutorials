@@ -315,7 +315,7 @@ header:
     接続しているデータベースのデータベース名とコンテナ名を確認します。
 
     実行コマンド
-    ```
+    ```sql
     show parameter db_name
     show con_name
     ```
@@ -339,7 +339,7 @@ header:
     デフォルトで作成されているPDBを確認し、PDBインスタンスに接続します。
 
     実行コマンド
-    ```
+    ```sql
     show pdbs
     alter session set container = PDB ;
     ```
@@ -364,7 +364,7 @@ header:
     尚、ここでは便宜上、最低限必要な権限を付与していますが、要件に応じて権限・ロールを付与するようにしてください。
 
     実行コマンド
-    ```
+    ```sql
     create user TESTUSER identified by <任意のパスワード> ;
     grant CREATE SESSION, CONNECT,RESOURCE,UNLIMITED TABLESPACE to TESTUSER ;
     exit
@@ -457,7 +457,7 @@ header:
 1. 接続情報を確認します。
 
     実行コマンド
-    ```
+    ```sql
     show con_name
     show user
     ```
