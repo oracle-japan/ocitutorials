@@ -45,12 +45,12 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 <br/>
 
-# <span style="color: brown; ">■ Exadata Cloud Service (ExaCS) を使ってみよう</span>
+# <span style="color: brown; ">■ Exadata Database Service on Dedicated Infrastructure (ExaDB-D) を使ってみよう</span>
 
 Oracle Databaseを動かすための最適な基盤として、リリースから10年以上経過し、多くのミッションクリティカルなシステムを支えるExadata !  
 OCIであればExadataもサブスクリプションで使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
-+ **[Oracle CloudでExadataを使おう](https://community.oracle.com/docs/DOC-1038411/){:target="_blank"}**   
++ **[101: ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/){:target="_blank"}**   
 
 <br/>
 
