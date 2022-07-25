@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-07-21T17:57:23+09:00">
+  <meta property="article:published_time" content="2022-07-25T11:55:49+09:00">
 
 
 
@@ -272,6 +272,8 @@
         
           <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをDBCSに移動しよう</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/database/exadb-d101-create-exadb-d/">101 : ExaDB-Dを使おう</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
@@ -365,7 +367,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="110: Oracle Analytics Desktopを使ってデータを見える化してみよう">
     <meta itemprop="description" content="Oracle Analytics Desktopを使ってデータを見える化してみよう。">
-    <meta itemprop="datePublished" content="2022-07-21T17:57:23+09:00">
+    <meta itemprop="datePublished" content="2022-07-25T11:55:49+09:00">
     
 
     <div class="page__inner-wrap">
@@ -376,7 +378,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-oracle-analytics-desktopのダウンロードする">1. Oracle Analytics Desktopのダウンロードする</a></li><li><a href="#2-スクリプトをsqlワークシートから実行してビューを作成する">2. スクリプトをSQLワークシートから実行してビューを作成する</a></li><li><a href="#3-oracle-analytics-desktop-から-autonomous-database-に接続しデータを見える化する">3. Oracle Analytics Desktop から Autonomous Database に接続し、データを見える化する</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-oracle-analytics-desktop-をダウンロードする">1. Oracle Analytics Desktop をダウンロードする</a></li><li><a href="#2-スクリプトをsqlワークシートから実行してビューを作成する">2. スクリプトをSQLワークシートから実行してビューを作成する</a></li><li><a href="#3-oracle-analytics-desktop-から-autonomous-database-に接続しデータを見える化する">3. Oracle Analytics Desktop から Autonomous Database に接続し、データを見える化する</a></li></ul>
 
             </nav>
           </aside>
@@ -388,9 +390,9 @@
 <p>Autonomous Database (ADB) にはさまざまなツールが同梱されており、簡単にご利用いただけますが、
 Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Database のデータを見える化できます。</p>
 
-<p>Oracle Analytics Desktop は、デスクトップ・アプリケーションであり、データの探索および見える化することができます。また、複数のソースからサンプル・データを簡単に検索したり、ローカルのデータセットを分析したり調査するためのツールです。</p>
+<p>Oracle Analytics Desktop は、デスクトップ・アプリケーションであり、データの探索および見える化するためのツールです。複数のソースからサンプル・データを簡単に検索したり、ローカルのデータセットを分析したり調査することが可能です。</p>
 
-<p>Autonomous Databaseには暗号化およびSSL相互認証を利用した接続が前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。</p>
+<p>Autonomous Database は暗号化およびSSL相互認証を利用した接続を前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。</p>
 
 <p>本章ではこのOracle Analytics Desktopを使用した Autonomous Database の見える化について確認していきます。</p>
 
@@ -399,11 +401,11 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
 <p><strong>前提条件</strong></p>
 <ul>
   <li>ADBインスタンスが構成済みであること
-  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> をご参照ください。</li>
   <li>クレデンシャル・ウォレットを取得済みであること
   <br />※クレデンシャル・ウォレットの取得については、<a href="/ocitutorials/database/adb104-connect-using-wallet/#anchor1" target="_blank">104:クレデンシャル・ウォレットを利用して接続してみよう</a> を参照ください。<br /></li>
   <li>Oracle Analytics Desktop は、Windows OS用とMac OS用がありますが、本章ではWindows OS用 を使って説明します。</li>
-  <li>Oracle Analytics Desktop インストールするPCから、プロキシサーバーを経由せずに、直接、インターネットに繋がること。
+  <li>Oracle Analytics Desktop をインストールするPCから、プロキシ・サーバーを経由せずに、直接、インターネットに繋がること。
   <br />※Oracle Analytics Desktop はプロキシ対応できません。<br />
 <br /></li>
 </ul>
@@ -411,7 +413,7 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
 <p><strong>目次</strong></p>
 
 <ul>
-  <li><a href="#anchor1">1. Oracle Analytics Desktop のダウンロードする</a></li>
+  <li><a href="#anchor1">1. Oracle Analytics Desktop をダウンロードする</a></li>
   <li><a href="#anchor2">2. スクリプトをSQLワークシートから実行してビューを作成する</a></li>
   <li><a href="#anchor3">3. Oracle Analytics Desktop から ADB に接続し、データを見える化する</a></li>
 </ul>
@@ -422,8 +424,8 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
 <p><a id="anchor1"></a>
 <br /></p>
 
-<h1 id="1-oracle-analytics-desktopのダウンロードする">1. Oracle Analytics Desktopのダウンロードする</h1>
-<p>Autonomous Database を見える化するツールである Oracle Analytics Desktop (OAD) をダウンロードします。</p>
+<h1 id="1-oracle-analytics-desktop-をダウンロードする">1. Oracle Analytics Desktop をダウンロードする</h1>
+<p>Oracle Analytics Desktop (OAD) をダウンロードします。</p>
 <ol>
   <li>
     <p>次のサイトから、Oracle Analytics Desktop のインストーラーをダウンロードします。</p>
@@ -446,7 +448,7 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     <p><img src="img1_4_2.png" width="80%" /></p>
   </li>
   <li>
-    <p>ダウンロードした zipファイル を解凍し、解凍したフォルダの中の exeファイル をダブルクリックしてインストールを開始します。インストールするフォルダ名は、日本語や空白を含まないようにしてください。例）C:\OAD また、フォルダの中は空である必要があります。</p>
+    <p>ダウンロードした zipファイル を解凍し、解凍したフォルダの中の exeファイル をダブルクリックしてインストールを開始します。インストールするフォルダ名は、日本語や空白を含まないように（例 C:\OAD ）してください。また、フォルダの中は空である必要があります。</p>
 
     <p><img src="img1_5.png" width="80%" /></p>
   </li>
@@ -460,7 +462,7 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     <p><img src="img1_6_1.png" width="80%" /></p>
   </li>
   <li>
-    <p>インストールが完了すると、 <strong>finish</strong> ボタンをクリックして、インストーラーを終了します。これで、Oracle Analytics Desktop インストールできました。</p>
+    <p>インストールが完了したら、 <strong>finish</strong> ボタンをクリックして、インストーラーを終了します。これで、Oracle Analytics Desktop をインストールできました。</p>
 
     <p><img src="img1_7.png" width="80%" /></p>
   </li>
@@ -472,9 +474,9 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
 
 <h1 id="2-スクリプトをsqlワークシートから実行してビューを作成する">2. スクリプトをSQLワークシートから実行してビューを作成する</h1>
 
-<p>Oracle Analytics Desktop で見える化するビューを作成します。</p>
+<p>Oracle Analytics Desktop でデータを見える化するためのビューを作成します。</p>
 
-<p>見える化するデータは、ADBにあるサンプルデータのSHスキーマ（売上実績）を使います。売上データを分析しやすい大福帳形式のデータにするために、ビューを作成します。ビューを作成するSQLは、Database Actions のSQLから実行します。</p>
+<p>データにはAutonomous Databaseで提供されているサンプルデータのSHスキーマ（売上実績）を使います。ビューを作成することで売上データを分析しやすい大福帳形式のデータにすることができます。ビューを作成するSQLは、Database Actions のSQLから実行します。</p>
 
 <ol>
   <li>
@@ -488,12 +490,14 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     <p><img src="img2_1.png" width="80%" /></p>
   </li>
   <li>
-    <p>Database Actionsのランディングページで <strong>SQL</strong> をクリックします。</p>
+    <p>Database Actionsの起動パッドで <strong>SQL</strong> をクリックします。</p>
 
     <p><img src="img2_3.png" width="80%" /></p>
   </li>
   <li>
-    <p>SQLワークシートが起動します。ワークシートに次のSQLを貼り付け、 <strong>スクリプトの実行</strong> ボタンをクリックします。  以下は例として接続しているユーザーのユーザー名を確認するSQLです。下のスクリプト表示に <strong>view DV_SH_VIEWは作成されました</strong> 表示されたらOKです。これで、見える化するデータの準備ができました。1行目の drop文は再実行用で、ビューがなければ、エラーとなります。drop文のエラーは問題ありません。</p>
+    <p>SQLワークシートが起動します。ワークシートに次のSQLを貼り付け、 <strong>スクリプトの実行</strong> ボタンをクリックします。下のスクリプト表示に <strong>view DV_SH_VIEWは作成されました</strong> と表示されたらOKです。
+<br />
+これで、見える化するデータの準備ができました。1行目の drop文は再実行用で、ビューがなければ、エラーとなります。drop文のエラーは問題ありません。</p>
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">drop</span> <span class="k">view</span> <span class="n">DV_SH_VIEW</span><span class="p">;</span>
 
@@ -559,7 +563,7 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     <table>
     <tr>
     <td>接続名</td>
-    <td>SALES_HSITORY</td>
+    <td>SALES_HISTORY</td>
     </tr>
     <tr>
     <td>説明</td>
@@ -586,7 +590,7 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
  <img src="img3_4.png" width="80%" /></p>
   </li>
   <li>
-    <p>接続が成功すると、接続一覧に <strong>SALES_HSITORY</strong> が表示されます。</p>
+    <p>接続が成功すると、接続一覧に <strong>SALES_HISTORY</strong> が表示されます。</p>
 
     <p><img src="img3_5.png" width="80%" /></p>
   </li>
@@ -596,12 +600,12 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     <p><img src="img3_6.png" width="80%" /></p>
   </li>
   <li>
-    <p>データセットの作成画面から、作成した <strong>SALES_HSITORY</strong> をクリックします。</p>
+    <p>データセットの作成画面で、作成した <strong>SALES_HISTORY</strong> をクリックします。</p>
 
     <p><img src="img3_7.png" width="80%" /></p>
   </li>
   <li>
-    <p>新規データセットの画面から、左のスキーマ一覧から、<strong>ADMIN</strong> スキーマを展開し、<strong>DV_SH_VIEW</strong> を右の画面にドラッグ＆ドロップ、または、ダブルクリックで、右側に追加します。</p>
+    <p>新規データセットの画面で、左のスキーマ一覧から、<strong>ADMIN</strong> スキーマを展開し、<strong>DV_SH_VIEW</strong> を右の画面にドラッグ＆ドロップ、または、ダブルクリックで、右側に追加します。</p>
 
     <p><img src="img3_8.png" width="80%" /></p>
   </li>
@@ -611,15 +615,15 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     <p><img src="img3_9.png" width="80%" /></p>
   </li>
   <li>
-    <p>10秒ぐらい待つと、データセット画面の右上に、<strong>ワークブックの作成</strong> ボタンが表れるので、クリックします。ワークブックは、実際にデータを見える化するダッシュボードになります。</p>
+    <p>10秒ぐらい待つと、データセット画面の右上に、<strong>ワークブックの作成</strong> ボタンが現れるので、クリックします。ワークブックは、実際にデータを見える化するダッシュボードになります。</p>
+
+    <p><img src="img3_10.png" width="80%" /></p>
 
     <blockquote>
       <p><strong>Note</strong></p>
 
       <p>データセット画面一覧からデータセットを選ぶ、または、はじめに画面に戻り、作成からワークブックを選んでからデータセットを選択してもワークブックを作成できます。</p>
     </blockquote>
-
-    <p><img src="img3_10.png" width="80%" /></p>
   </li>
   <li>
     <p>新規ワークブック画面に変わり、左に SALES_HISTORYビュー の列情報が表示されるので、SALES_HISTORYビュー内の5つのデータ要素（ PROD_NAME、PROD_CATEGORY、QUANTITY_SOLD、AMOUNT_SOLD、CALENDAR_YEAR）を複数選択（Ctrlキーを押しながらクリック）し、画面の右側にドラッグ＆ドロップします。</p>
@@ -627,16 +631,16 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     <p><img src="img3_11.png" width="80%" /></p>
   </li>
   <li>
-    <p>このデータにもとづいて、Oracle Analytics Desktop はデフォルトのグラフを選択しました。項目の配置を自動的に配置されます。この例では、 Oracle Analytics Desktop は見える化として散布図を選択しました。グラフのドロップダウンメニューから、他の数十種類の図の中から選択できます。</p>
+    <p>このデータにもとづいて、Oracle Analytics Desktop はデフォルトのグラフを選択しました。項目が自動的に配置されます。この例では、 Oracle Analytics Desktop はグラフに散布図を選択しました。グラフのドロップダウンメニューをクリックして、他の数十種類のグラフの中からお好みのグラフを選択できます。</p>
 
     <p><img src="img3_12.png" width="80%" /></p>
 
-    <p>グラフを積み上げ棒に変更すると、次のような図になります。</p>
+    <p>グラフの種類を積み上げ棒に変更すると、次のようなグラフになります。</p>
 
     <p><img src="img3_12_1.png" width="80%" /></p>
   </li>
   <li>
-    <p>項目の配置は、ドラッグ＆ドロップすることで自由に変更できます。PROD_CATEGORY と CALENDAR_YEAR の配置をドラッグ＆ドロップで入れ替えます。そうすろと、配置にあわせて、グラフが変わります。</p>
+    <p>項目の配置は、ドラッグ＆ドロップすることで自由に変更できます。PROD_CATEGORY と CALENDAR_YEAR の配置をドラッグ＆ドロップで入れ替えます。そうすると、配置にあわせてグラフが変わります。</p>
 
     <p><img src="img3_13.png" width="80%" /></p>
 
@@ -651,7 +655,7 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
     </blockquote>
   </li>
   <li>
-    <p>必要に応じて、このワークブックを保存できます。画面右上の 保存マーク をクリックし、<strong>保存</strong> をクリックすると、プロジェクトの保存ダイアログが表示されるので、プロジェクト名を入力して保存をクリックします。プロジェクトが保存されたというメッセージが表示されます。保存されたワークブックは、再度、開くことで、同じグラフを表示できます。</p>
+    <p>必要に応じて、このワークブックを保存できます。画面右上の 保存マーク をクリックし、<strong>保存</strong> をクリックすると、プロジェクトの保存ダイアログが表示されるので、プロジェクト名を入力して保存をクリックします。プロジェクトが保存されたというメッセージが表示されたらOKです。保存されたワークブックは、再度、開くことで、同じグラフを表示できます。</p>
 
     <p><img src="img3_15.png" width="80%" /></p>
   </li>
@@ -675,7 +679,7 @@ Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Da
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-07-21T17:57:23+09:00">July 21, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-07-25T11:55:49+09:00">July 25, 2022</time></p>
 
 
       </footer>
