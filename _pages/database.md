@@ -89,6 +89,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)](/ocitutorials/database/adb107-machine-learning/){:target="_blank"}**  
     * タイタニック号の乗客情報から生存予測モデルを作成し、アプリで予測結果のレポートまでADBの中で行います。
 
++ **[108: 接続文字列を利用して接続してみよう](/ocitutorials/database/adb108-walletless){:target="_blank"}**
+    * ウォレットを使用しない接続方法とその前提となるネットワーク・アクセス・タイプの条件を確認します。
+
 + **[110: Oracle Analytics Desktopを使ってデータを見える化してみよう](/ocitutorials/database/adb110-analyze-using-oad/){:target="_blank"}**  
     * Oracle Analytics Desktopを使ってADBのデータを見える化します。
 
