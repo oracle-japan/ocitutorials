@@ -13,16 +13,39 @@ toc: true
 
 この文書は、Oracle Content Management (OCM) を使ってみよう！という人のためのチュートリアルです。各文書ごとにステップ・バイ・ステップで作業を進めて、OCM が提供する機能について学習することができます
 
+<br />
+
 # 0. 準備
 
+## OCI IAM Identity Domains環境
+
++ **[OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する](/ocitutorials/content-management/create_ocm_instance_identitydomain/)**  
+    OCI IAM Identity Domain環境でOCMインスタンスを作成する方法をステップ・バイ・ステップで紹介します。まずはここから始めましょう
+
++ **[OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_identitydomain_group_user/)**  
+    OCI IAM Identity Domain環境でOCMを利用するユーザーを作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
+
+    2021年11月にリリースされた新しい認証基盤。2022年7月時点では新規契約のアカウントのみ利用可
+    {: .notice--info}
+
+
+## Identity Cloud Service(IDCS)環境
+
 + **[Oracle Content Management インスタンスを作成する](/ocitutorials/content-management/create_oce_instance/)**  
-    Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OCM インスタンスを作成します。まずはここから始めましょう
+    Oracle Cloud Infrastructure(OCI)の管理コンソールを利用し、OCMインスタンスを作成します。まずはここから始めましょう
 
 + **[Oracle Content Management インスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_idcs_group_user/)**  
-    この文書は Oracle Content Management (OCM) を利用するユーザーを IDCS に作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
+    OCMを利用するユーザーをIDCSに作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
+
+    以前より提供されていた統合認証基盤。OCMなどのOracle PaaS、Oracle SaaS、3rd Partyサービスの認証基盤として利用
+    {: .notice--info}
+
+
+## Starter Edition
 
 + **[[Oracle Cloud] Oracle Content Management の Starter Edition をクイックスタートしてみた](https://qiita.com/nakasato310/items/9457a61d9d27db6ce4f0)**  
     この記事では、2021年7月の最新バージョン(21.6.1)より新たに追加された Oracle Content Management - Starter Edition をクイックスタートする方法を紹介します
+
 
 <br />
 
