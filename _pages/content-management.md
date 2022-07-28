@@ -37,7 +37,7 @@ toc: true
 + **[Oracle Content Management インスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_idcs_group_user/)**  
     OCMを利用するユーザーをIDCSに作成する方法をステップ・バイ・ステップで紹介するチュートリアルです
 
-    以前より提供されていた統合認証基盤。OCMなどのOracle PaaS、Oracle SaaS、3rd Partyサービスの認証基盤として利用
+    以前より提供されていた統合認証基盤。OCMなどのOracle PaaS、OCIを含む様々なクラウドサービス、オンプレミスのアプリケーションに対して認証連携を実現
     {: .notice--info}
 
 

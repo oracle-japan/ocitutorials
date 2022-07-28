@@ -7,8 +7,8 @@ tags:
   - OCE
   - OCM
 header:
-  teaser: "/content-management/create_ocm_instance_IdentityDomain/015.jpg"
-  overlay_image: "/content-management/create_ocm_instance_IdentityDomain/015.jpg"
+  teaser: "/content-management/create_ocm_instance_identitydomain/015.jpg"
+  overlay_image: "/content-management/create_ocm_instance_identitydomain/015.jpg"
   overlay_filter: rgba(80,80,80,0.7)
 ---
 
