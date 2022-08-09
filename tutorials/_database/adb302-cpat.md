@@ -21,7 +21,7 @@ Autonomous Databaseでは性能・可用性・セキュリティの観点から�
    ![イメージ](img101.png)
 
 
-この章では先の[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}にて事前に作成しておいたDBCSインスタンスを利用して、CPATの使い方をご紹介します。
+この章では先の[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}にて事前に作成しておいたDBCSインスタンスを利用して、CPATの使い方を紹介します。
 
 <BR>
 
@@ -172,7 +172,7 @@ view full_advisor_premigration_advisor_report.txt
 
 # おわりに
 このチュートリアルではAutonomous Databaseに移行する際に利用できる事前チェックツールを紹介しました。  
-移行プロジェクトを開始される際の事前チェックとしてご利用いただけますので、ぜひご検討いただければと思います。
+移行プロジェクトを開始される際の事前チェックにご利用ください。
 
 <br/>
 
