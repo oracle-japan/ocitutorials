@@ -19,7 +19,7 @@ toc: true
 
 ## OCI IAM Identity Domains環境
 
-+ **[OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する](/ocitutorials/content-management/create_ocm_instance_identitydomain/)**  
++ **[OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する](/ocitutorials/content-management/create_ocm_instance_IdentityDomain/)**  
     OCI IAM Identity Domain環境でOCMインスタンスを作成する方法をステップ・バイ・ステップで紹介します。まずはここから始めましょう
 
 + **[OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する](/ocitutorials/content-management/create_identitydomain_group_user/)**  

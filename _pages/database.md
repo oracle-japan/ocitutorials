@@ -186,6 +186,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[503: ADBインスタンスの監視設定をしてみよう](/ocitutorials/database/adb503-monitoring){:target="_blank"}**
     * データベース運用における重要なタスクの一つである、ADBインスタンスに対するパフォーマンス監視/アラート監視の方法をご紹介します。
 
++ **[504: 監査をしてみよう](/ocitutorials/database/adb504-audit){:target="_blank"}**
+    * Autonomous Databaseの監査設定について確認します。
+
 + **[505: Autonomous Databaseのバックアップとリストアを体感しよう](/ocitutorials/database/adb505-backup){:target="_blank"}**
     * Autonomous Databaseを任意のバックアップからリストアを行い、自動でバックアップが取られていること・簡単なPoint-in-timeリカバリを実感して頂きます。
 
