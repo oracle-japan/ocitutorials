@@ -1,7 +1,7 @@
 ---
 title: "504 : 監査をしてみよう"
 excerpt: "監査を利用すると、データベースに対して「いつ」「誰が」「どのデータを」「どのように操作したか」を記録、確認することができます。データベース・セキュリティの重要な機能です。"
-order: "3_210"
+order: "3_504"
 layout: single
 header:
   teaser: "/database/adb504-audit/unifiedaudit.png"
