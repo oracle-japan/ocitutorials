@@ -92,6 +92,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[108: 接続文字列を利用して接続してみよう](/ocitutorials/database/adb108-walletless){:target="_blank"}**
     * ウォレットを使用しない接続方法とその前提となるネットワーク・アクセス・タイプの条件を確認します。
 
++ **[109: プライベート・エンドポイントのADBを作成してみよう](/ocitutorials/database/adb109-private-endpoint){:target="_blank"}**
+    * よりセキュアなネットワーク構成であるプライベート・エンドポイントのADBを作成します。
+
 + **[110: Oracle Analytics Desktopを使ってデータを見える化してみよう](/ocitutorials/database/adb110-analyze-using-oad/){:target="_blank"}**  
     * Oracle Analytics Desktopを使ってADBのデータを見える化します。
 
