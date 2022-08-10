@@ -509,6 +509,12 @@ var store = [{
         "url": "/ocitutorials/database/adb108-walletless/",
         "teaser": "/ocitutorials/database/adb108-walletless/walletless_teaser.png"
       },{
+        "title": "109: プライベート・エンドポイントのADBを作成してみよう",
+        "excerpt":"はじめに Autonomous Databaseでは、パブリック・エンドポイントとプライベート・エンドポイントを選択できます。 プライベート・エンドポイントの場合は指定したVCN内のサブネット上にエンドポイントを配置することができます。 アクセス制御は指定したVCNのサブネットのセキュリティ・リスト、もしくはネットワーク・セキュリティ・グループ(NSG)を利用して行います。 目次 1. プライベート・エンドポイントのADBへの接続 1-1. ネットワーク構成図の確認 1-2. ADBの作成 1-3. ADBへの接続 2. Database Actionsへの接続 2-1. パブリック・エンドポイントでACLを定義している 2-2. プライベート・エンドポイントでInternetから接続 2-3. プライベート・エンドポイントでプライベート・ネットワークから接続 所要時間 : 約30分 1. プライベート・エンドポイントのADBへの接続 1-1. ネットワーク構成の確認 プライベート・エンドポイントのAutonomous Database への接続方法は、IPsec VPN やFastConnect からアクセスする方法が一般的ですが、本章ではインターネットからの接続方法をご紹介します。 ネットワーク構成は上記のようにしています。各Security List の設定を以下に示します。 プライベート・サブネットsub_pri1は、パブリック・サブネットsub_pubからのSSHのみ許可、sub_pri2は、sub_pri1からのTCP接続(1521ポート)のみ許可しています。 本章では、パブリック・サブネットに踏み台サーバーを置いて利用しますが、インターネット側からアクセスする場合には、Bastionサービスも利用できます。 1-2. ADBの作成 プライベート・エンドポイントのADBを作成するには、ADBの作成ページの[ネットワーク・アクセスの選択]でプライベート・エンドポイント・アクセスのみを選択します。 以下の画像のようにADBを配置する仮想クラウド・ネットワークとサブネットを指定します。 なお、VCNのセキュリティ・リストのルールによるアクセス制御が設定されている場合、ネットワーク・セキュリティ・グループによるアクセス制御はオプションになります。 1-3. ADBへの接続 パブリック・サブネットの踏み台サーバー経由でプライベート・サブネットのコンピュート・インスタンスに接続します。 プライベート・エンドポイント・アクセスのみの場合は、ウォレットなし接続が可能です。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb109-private-endpoint/",
+        "teaser": "/ocitutorials/database/adb109-private-endpoint/private-endpoint_teaser.png"
+      },{
         "title": "110: Oracle Analytics Desktopを使ってデータを見える化してみよう",
         "excerpt":"はじめに Autonomous Database (ADB) にはさまざまなツールが同梱されており、簡単にご利用いただけますが、 Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Database のデータを見える化できます。 Oracle Analytics Desktop は、デスクトップ・アプリケーションであり、データの探索および見える化するためのツールです。複数のソースからサンプル・データを簡単に検索したり、ローカルのデータセットを分析したり調査することが可能です。 Autonomous Database は暗号化およびSSL相互認証を利用した接続を前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。 本章ではこのOracle Analytics Desktopを使用した Autonomous Database の見える化について確認していきます。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう をご参照ください。 クレデンシャル・ウォレットを取得済みであること ※クレデンシャル・ウォレットの取得については、104:クレデンシャル・ウォレットを利用して接続してみよう を参照ください。 Oracle Analytics Desktop は、Windows OS用とMac OS用がありますが、本章ではWindows OS用 を使って説明します。 Oracle Analytics Desktop をインストールするPCから、プロキシ・サーバーを経由せずに、直接、インターネットに繋がること。 ※Oracle Analytics Desktop はプロキシ対応できません。 目次 1....","categories": [],
         "tags": [],
