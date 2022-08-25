@@ -45,7 +45,7 @@ Cloud ShellまたはLinuxのコンソールから、以下のコマンドを実�
 
 続いて、Cloneしてできたディレクトリをカレントディレクトリにしておきます。
 
-    cd cowweb-for-wercker-demo
+    cd cowweb-for-wercker-demo/helidon/helidon-ver3
 
 ### 1.2. コンテナイメージを作る
 コンテナイメージは、Dockerfileと呼ばれるコンテナの構成を記述したファイルによって、その内容が定義されます。
@@ -55,60 +55,94 @@ Cloud ShellまたはLinuxのコンソールから、以下のコマンドを実�
     cat Dockerfile
 
 ```dockerfile
-FROM gradle:jdk8-alpine as builder
+# 1st stage, build the app
+FROM maven:3.8.4-openjdk-17-slim as build
 
-COPY --chown=gradle:gradle ./build.gradle /home/gradle/
-COPY --chown=gradle:gradle ./settings.gradle /home/gradle/
-COPY --chown=gradle:gradle ./src /home/gradle/src
-RUN gradle build -Pbuilddir=build
+WORKDIR /helidon
 
-FROM openjdk:8-jre-alpine
+# Create a first layer to cache the "Maven World" in the local repository.
+# Incremental docker builds will always resume after that, unless you update
+# the pom
+ADD pom.xml .
+RUN mvn package -Dmaven.test.skip -Declipselink.weave.skip
 
-RUN addgroup -S -g 1000 app \
-    && adduser -D -S -G app -u 1000 -s /bin/ash app
-USER app
-WORKDIR /home/app
-COPY --from=builder --chown=app:app /home/gradle/build/libs/cowweb-1.0.jar .
-CMD ["java", "-jar", "/home/app/cowweb-1.0.jar"]
+# Do the Maven build!
+# Incremental docker builds will resume here when you change sources
+ADD src src
+RUN mvn package -DskipTests
+
+RUN echo "done!"
+
+# 2nd stage, build the runtime image
+FROM openjdk:17-jdk-slim
+WORKDIR /helidon
+
+# Copy the binary built in the 1st stage
+COPY --from=build /helidon/target/cowweb-helidon.jar ./
+COPY --from=build /helidon/target/libs ./libs
+
+CMD ["java", "-jar", "cowweb-helidon.jar"]
+
+EXPOSE 8080
 ```
 
-Dockerfileの内容を見ると、FROMで始まる行が2つあることがわかります。最初のFROMから始まる数行は、jdk8がインストールされたコンテナイメージ内にサンプルアプリケーションのコードをコピーし、さらに`gradle build`を実行してアプリをビルドしています。
+Dockerfileの内容を見ると、FROMで始まる行が2つあることがわかります。最初のFROMから始まる数行は、jdkがインストールされたコンテナイメージ内にサンプルアプリケーションのコードをコピーし、さらに`mvn package`を実行してアプリをビルドしています。
 
-次のFROMから続く一連の処理は、jreがインストールされたイメージを基に、アプリの実行ユーザーの作成、ビルドしてできたjarファイルのコピー、コンテナ起動時に実行するコマンドの設定などを行っています。
+次のFROMから続く一連の処理は、jdkがインストールされたコンテナイメージを基に、アプリの実行ユーザーの作成、ビルドしてできたjarファイルのコピー、コンテナ起動時に実行するコマンドの設定などを行っています。
 
 それではこのDockerfileを使ってコンテナイメージを作成します。以下のコマンドを実行してください。
 
-    docker build -t [リポジトリ名]/cowweb:v1.0 .
+    docker image build -t [リポジトリ名]/cowweb:v1.0 .
 
 このコマンドにおいて`リポジトリ名`には任意の文字列を指定できますが、通常はプロジェクト名やユーザー名などを小文字にしたものを指定します。例えば、以下のようなコマンドになります。
 
-    docker build -t handson-001/cowweb:v1.0 .
+    docker image build -t oke-handson/cowweb:v1.0 .
 
 以下のように、`Successfully tagged`のメッセージで処理が終了していれば、イメージのビルドは完了です。
 
 ```
-Step 1/11 : FROM gradle:jdk8-alpine as builder
-jdk8-alpine: Pulling from library/gradle
-4fe2ade4980c: Pull complete
-6fc58a8d4ae4: Pull complete
-fe815adf554b: Pull complete
-56691be5f8bb: Pull complete
-e7261ab32035: Pull complete
-Digest: sha256:478f17890f1ac719c37d9e1aa20d22b9cc45ae5b8ae0604f32cf1437a1cdfcca
-Status: Downloaded newer image for gradle:jdk8-alpine
- ---> 45b2b256d130
-Step 2/11 : COPY --chown=gradle:gradle ./build.gradle /home/gradle/
- ---> 4c633cdbbb40
+Sending build context to Docker daemon  128.5kB
+Step 1/13 : FROM maven:3.8.4-openjdk-17-slim as build
+Trying to pull repository docker.io/library/maven ... 
+3.8.4-openjdk-17-slim: Pulling from docker.io/library/maven
+f7a1c6dad281: Pull complete 
+ea8366d5a4a5: Pull complete 
+bff4abe573cd: Pull complete 
+3f92e41bef06: Pull complete 
+6581ea1ec5a5: Pull complete 
+de879b0c951f: Pull complete 
+ac1236d673e3: Pull complete 
+Digest: sha256:150deb7b386bad685dcf0c781b9b9023a25896087b637c069a50c8019cab86f8
+Status: Downloaded newer image for maven:3.8.4-openjdk-17-slim
+ ---> 849a2a2d4242
+Step 2/13 : WORKDIR /helidon
+ ---> Running in 503337c170c7
+Removing intermediate container 503337c170c7
+ ---> e456a937870a
+Step 3/13 : ADD pom.xml .
+ ---> fadb77529253
+Step 4/13 : RUN mvn package -Dmaven.test.skip -Declipselink.weave.skip
+ ---> Running in 190344b19870
 
 ...（中略）...
 
-Step 10/11 : COPY --from=builder --chown=app:app /home/gradle/build/libs/cowweb-0.1.jar .
- ---> fc5c4137a0e7
-Step 11/11 : CMD ["java", "-jar", "/home/app/cowweb-1.0.jar"]
- ---> Running in aed12b404339
-Removing intermediate container aed12b404339
- ---> fe2f2527b8d4
-Successfully built fe2f2527b8d4
+Step 9/13 : WORKDIR /helidon
+ ---> Running in ede9941ef284
+Removing intermediate container ede9941ef284
+ ---> ed9214bcc7e8
+Step 10/13 : COPY --from=build /helidon/target/cowweb-helidon.jar ./
+ ---> 72e6abc15a88
+Step 11/13 : COPY --from=build /helidon/target/libs ./libs
+ ---> 039c2d539641
+Step 12/13 : CMD ["java", "-jar", "cowweb-helidon.jar"]
+ ---> Running in b579e0845ce9
+Removing intermediate container b579e0845ce9
+ ---> 9344c0c557ac
+Step 13/13 : EXPOSE 8080
+ ---> Running in d19e9f20932b
+Removing intermediate container d19e9f20932b
+ ---> 5e997bb463db
+Successfully built 5e997bb463db
 Successfully tagged handson-001/cowweb:v1.0
 ```
 
@@ -117,17 +151,16 @@ Successfully tagged handson-001/cowweb:v1.0
     docker image ls
 
 ```
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-handson-001/cowweb  v1.0                fe2f2527b8d4        2 minutes ago       128MB
-<none>              <none>              088473d4c42c        2 minutes ago       212MB
-gradle              jdk8-alpine         45b2b256d130        3 weeks ago         191MB
-hello-world         latest              4ab4c602aa5e        5 weeks ago         1.84kB
-java                8-jre-alpine        fdc893b19a14        19 months ago       108MB
+REPOSITORY           TAG                     IMAGE ID            CREATED             SIZE
+oke-handson/cowweb   v1.0                    a328bfaffb52        4 minutes ago       428MB
+<none>               <none>                  042346419526        5 minutes ago       505MB
+openjdk              17-jdk-slim             37cb44321d04        4 months ago        408MB
+maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago        425MB
 ```
 
 `handson-001/cowweb`の名前のイメージが作成されていることがわかります。
 
-アプリケーションのコンテナイメージは、ソースコードのビルドにはJDK8がインストールされたコンテナを利用し、アプリケーションの実行環境にはJREがインストールされたコンテナを利用しています。このため、jdkやjreといった名前のついたイメージも表示されます。
+アプリケーションのコンテナイメージは、ソースコードのビルドにはmavenがインストールされたコンテナを利用し、アプリケーションの実行環境にはopenjdkがインストールされたコンテナを利用しています。このため、mavenやopenjdkといった名前のついたイメージも表示されます。
 
 これらのコンテナは、アプリケーションのコンテナイメージの作成時に、自動的にダウンロードされて利用されています。
 
@@ -235,28 +268,28 @@ Login Succeeded
 
 続いて、OCIRの形式に合わせてコンテナイメージのタグを更新します。`docker tag`コマンドを実行してくさい。
 
-    docker tag [リポジトリ名]/cowweb:v1.0 [リージョンコード].ocir.io/オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
+    docker image tag [リポジトリ名]/cowweb:v1.0 [リージョンコード].ocir.io/オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 
 [リージョンコード]と[オブジェクト・ストレージ・ネームスペース]は、これまでの手順で指定したものと同じものを指定します。リポジトリ名には`docker build`のときにしてしたものと同じ文字列を指定してください。
 
 例えば、以下のように指定します。
 
-    docker tag handson-001/cowweb:v1.0 nrt.ocir.io/nrzftilbveen/handson-001/cowweb:v1.0
+    docker image tag handson-001/cowweb:v1.0 nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
 
 この操作によって、コンテナイメージにプッシュ先のレジストリを指定する情報を追加しています。これを行わない場合、コンテナイメージはデフォルトのレジストリが指定されたものとみなされ、Docker社が提供するDocker Hubというレジストリが利用されてしまいます。
 
 これで準備が整いましたので、実際にOCIRにイメージをプッシュします。以下のコマンドを実行してください。
 
-    docker push [リージョンコード].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
+    docker image push [リージョンコード].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 
 例えば、以下のように指定します。
 
-    docker push nrt.ocir.io/nrzftilbveen/handson-001/cowweb:v1.0
+    docker image push nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
 
 以下のような実行結果となれば、プッシュが成功しています。
 
 ```
-The push refers to repository [nrt.ocir.io/nrzftilbveen/handson-001/cowweb]
+The push refers to repository [nrt.ocir.io/nrzftilbveen/oke-handson/cowweb]
 d07a2053e8fb: Pushed
 93ed7a751af8: Pushed
 20dd87a4c2ab: Pushed
@@ -303,29 +336,26 @@ OKEを始めとして、Kubernetesのクラスターにコンテナをデプロ�
 cat ./kubernetes/cowweb.yaml
 ```
 ```sh
-    apiVersion: apps/v1
-    kind: Deployment
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cowweb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cowweb
+  template:
     metadata:
-      name: cowweb
+      labels:
+        app: cowweb
+        version: v1
     spec:
-      replicas: 2
-      selector:
-        matchLabels:
-          app: cowweb
-      strategy:
-        type: RollingUpdate
-        rollingUpdate:
-          maxUnavailable: 0
-          maxSurge: 1
-      template:
-        metadata:
-          labels:
-            app: cowweb
-        spec:
-          containers:
-          - name: cowweb
-            image: ${region-code}.ocir.io/${tenancy-name}/${repository}/cowweb:v1.0
-            ports:
+      containers:
+        - name: cowweb
+          image: ${region-code}.ocir.io/${tenancy}/${repository}/cowweb:v1.0
+          imagePullPolicy: IfNotPresent
+          ports:
             - name: api
               containerPort: 8080
     ...（以下略）...
@@ -337,13 +367,13 @@ cat ./kubernetes/cowweb.yaml
 実際にKubernetes上でコンテナが動作する際には、Podと言われる管理単位に内包される形で実行されます。上記のmanifestでは、サンプルアプリのコンテナを内包するPodが、2つデプロイされることになります。
 {: .notice--info}
 
-22行目には、実際にクラスター上で動かすコンテナイメージが指定されています。現在の記述内容は、ご自身環境に合わせた記述にはなっていませんので、この部分を正しい値に修正してください。具体的には、2.2.で`docker push`コマンドを実行する際に指定した文字列と同じ内容に修正してください。
+22行目には、実際にクラスター上で動かすコンテナイメージが指定されています。現在の記述内容は、ご自身環境に合わせた記述にはなっていませんので、この部分を正しい値に修正してください。具体的には、2.2.で`docker image push`コマンドを実行する際に指定した文字列と同じ内容に修正してください。
 
     [リージョンコード].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 
 例えば、以下のような文字列となります。
 
-    nrt.ocir.io/nrzftilbveen/handson-001/cowweb:v1.0
+    nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
 
 次に、cowweb-service.yamlというmanifestファイルの内容を確認してみます。
 
@@ -351,18 +381,25 @@ cat ./kubernetes/cowweb.yaml
 cat kubernetes/cowweb-service.yaml
 ```
 ```sh
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: cowweb
-    spec:
-      ports:
-      - name: http
-        port: 80
-        targetPort: 8080
-      selector:
-        app: cowweb
-      type: LoadBalancer
+kind: Service
+apiVersion: v1
+metadata:
+  name: cowweb
+  labels:
+    app: cowweb
+  annotations:
+    oci.oraclecloud.com/load-balancer-type: "lb"
+    service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "30"
+spec:
+  type: LoadBalancer
+  selector:
+    app: cowweb
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
 ```
 
 このmanifestファイルは、クラスターに対するリクエストのトラフィックを受け付ける際のルールを定義しています。`type: LoadBalancer`という記述は、クラスターがホストされているクラウドサービスのロードバランサーを自動プロビジョニングし、そのLBに来たトラフィックをコンテナに届けるという意味です。
@@ -407,9 +444,6 @@ service/cowweb       LoadBalancer   10.96.229.191   130.***.***.***   80:30975/T
 ```sh
 # 作ってしまったServiceを削除
 kubectl delete -f ./kubernetes/cowweb-service.yaml
-
-# シェイプの異なるServiceを作成
-kubectl apply -f ./kubernetes/cowweb-service-oci400m.yaml
 ```
 これは既にレジストリに存在するものと同じ内容をアップロードしたときに表示されるものですので、手順をそのまま続行して問題ありません。{% endcapture %}
 <div class="notice--warning">
@@ -456,8 +490,8 @@ Deploymentは、Podのレプリカ数（冗長構成でのPodの数）や、Pod�
 kubectl get deployments
 ```
 ```
-NAME     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-cowweb   2         2         2            2           20m
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+cowweb   2/2     2            2           3m53s
 ```
 
 先に作成したcowwebという名前のDeploymentがあることがわかります。DESISRED, CURRENTなどの値が2となっているのは、2つのPodを動かすように指定しており、その指定通りにPodが可動していることを表しています。
@@ -495,7 +529,7 @@ Kubernetes上で動作するアプリケーションの動作状況を確認す�
 ここで指定するPod名は、Podの一覧を表示して表示される2つのPodのうちのどちらかを指定してください。
 
 ```
-kubectl get pod
+kubectl get pods
 ```
 ```
 NAME                      READY   STATUS    RESTARTS   AGE
@@ -510,12 +544,15 @@ kubectl logs cowweb-57885b669c-9dzg4
 ```
 ```
 ...（中略）...
-2019-01-31 18:18:34.547  INFO 1 --- [nio-8080-exec-5] c.oracle.jp.cowweb.AccessLogInterceptor  : version: v1.0
-I'm working...
-2019-01-31 18:18:36.581  INFO 1 --- [nio-8080-exec-6] c.oracle.jp.cowweb.AccessLogInterceptor  : version: v1.0
-I'm working...
-2019-01-31 18:18:46.580  INFO 1 --- [nio-8080-exec-7] c.oracle.jp.cowweb.AccessLogInterceptor  : version: v1.0
-I'm working...
+2022.08.25 05:09:44 INFO com.oracle.jp.cowweb.CowsayResource Thread[helidon-server-1,5,server]: I'm working...
+
+2022.08.25 05:09:44 INFO com.oracle.jp.cowweb.CowsayResource Thread[helidon-server-2,5,server]: I'm working...
+
+2022.08.25 05:09:49 INFO com.oracle.jp.cowweb.CowsayResource Thread[helidon-server-3,5,server]: I'm working...
+
+2022.08.25 05:09:49 INFO com.oracle.jp.cowweb.CowsayResource Thread[helidon-server-4,5,server]: I'm working...
+
+2022.08.25 05:09:54 INFO com.oracle.jp.cowweb.CowsayResource Thread[helidon-server-1,5,server]: I'm working...
 ```
 
 これが、Podの標準出力の内容を表示した結果です。Kubernetesはクラスター内で動作するコンテナに対して、定期的に死活確認を行っています。このサンプルアプリケーションでは、死活監視のリクエストが来たときに上記のようなログを出力するように実装してあります。
