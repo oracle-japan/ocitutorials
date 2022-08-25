@@ -45,7 +45,7 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！
 - **[MySQLで高速分析を体験する - Oracle Cloud Infrastructureを使ってみよう(その10)](https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/)**  
 OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！
-- **[クラウドでOracle Exadata を使う - Exadata Cloud Service (ExaCS)](https://community.oracle.com/docs/DOC-1038411)**  
+- **[Exadata Database Service on Dedicated Infrastructure (ExaDB-D) を使ってみよう](/ocitutorials/database/)**  
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 - **[Autonomous Database を使ってみよう（ADB HOL）](/ocitutorials/database/)**  
 Autonomous Database は、最新のAI技術によって自律的に運用される、クラウド上のマネージドなデータベースサービスです。こちらのハンズオンラボでは、Autonomous Databaseに初めて触る方向けに、使い方や特徴を学んでいただける内容になっています。
