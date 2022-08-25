@@ -143,7 +143,7 @@ Step 13/13 : EXPOSE 8080
 Removing intermediate container d19e9f20932b
  ---> 5e997bb463db
 Successfully built 5e997bb463db
-Successfully tagged handson-001/cowweb:v1.0
+Successfully tagged oke-handson/cowweb:v1.0
 ```
 
 実際にビルドされたイメージは、`docker image ls`コマンドで確認することができます。
@@ -158,7 +158,7 @@ openjdk              17-jdk-slim             37cb44321d04        4 months ago   
 maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago        425MB
 ```
 
-`handson-001/cowweb`の名前のイメージが作成されていることがわかります。
+`oke-handson/cowweb`の名前のイメージが作成されていることがわかります。
 
 アプリケーションのコンテナイメージは、ソースコードのビルドにはmavenがインストールされたコンテナを利用し、アプリケーションの実行環境にはopenjdkがインストールされたコンテナを利用しています。このため、mavenやopenjdkといった名前のついたイメージも表示されます。
 
@@ -274,7 +274,7 @@ Login Succeeded
 
 例えば、以下のように指定します。
 
-    docker image tag handson-001/cowweb:v1.0 nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
+    docker image tag oke-handson/cowweb:v1.0 nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
 
 この操作によって、コンテナイメージにプッシュ先のレジストリを指定する情報を追加しています。これを行わない場合、コンテナイメージはデフォルトのレジストリが指定されたものとみなされ、Docker社が提供するDocker Hubというレジストリが利用されてしまいます。
 
