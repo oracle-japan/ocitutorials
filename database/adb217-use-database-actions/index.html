@@ -1,0 +1,1080 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>217: Database Actions を使ってみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Database Actions の内、データ分析、データ・インサイト、カタログの機能を確認します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="217: Database Actions を使ってみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb217-use-database-actions/">
+
+
+  <meta property="og:description" content="Database Actions の内、データ分析、データ・インサイト、カタログの機能を確認します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/adb217-use-database-actions/img0_0.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-08-31T10:50:05+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/database/adb217-use-database-actions/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/adb217-use-database-actions/img0_0.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          217: Database Actions を使ってみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Database Actions の内、データ分析、データ・インサイト、カタログの機能を確認します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/database" itemprop="item"><span itemprop="name">Database</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">217: Database Actions を使ってみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(DBCS)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs102-managing-pdb/">102: DBCS上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs104-backup/">104: 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs105-restore/">105: バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをDBCSに移動しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/exadb-d101-create-exadb-d/">101 : ExaDB-Dを使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb103-livelabs/">103: Oracle LiveLabsのご紹介(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb217-use-database-actions/" class="active">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="217: Database Actions を使ってみよう">
+    <meta itemprop="description" content="Database Actions の内、データ分析、データ・インサイト、カタログの機能を確認します。">
+    <meta itemprop="datePublished" content="2022-08-31T10:50:05+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-分析用のデータベースユーザーを作成しようdatabase-actions">1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)</a></li><li><a href="#2-ワークショップで使うデータを準備しよう">2. ワークショップで使うデータを準備しよう</a></li><li><a href="#3-database-actionsで操作してみよう">3. Database Actionsで操作してみよう</a><ul><li><a href="#3-1データ分析してみよう">3-1.データ分析してみよう</a></li><li><a href="#3-2-データインサイトを生成しよう">3-2. データ・インサイトを生成しよう</a></li><li><a href="#3-3-カタログを使ってみよう">3-3. カタログを使ってみよう</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>この章はまずAutonomous Database(ADB) のツールである Database Actions の機能の中から、データ分析、データ・インサイト、カタログの機能を確認します。<br />
+Database Actions を使う前に、セキュリティを高めるため、実務と同じように、データベース管理者とは別の新しいユーザー（スキーマ）を作り、そのユーザーから Database Actions を使います。</p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスの作成方法については、<a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <li>以下にリンクされている売上実績サンプルデータのファイルをダウンロードしていること
+    <ul>
+      <li><a href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Days_Months.xlsx">Days_Months.xlsx</a>
+ 	+ <a href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Devices.xlsx">Devices.xlsx</a>
+ 	+ <a href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Countries.csv">Countries.csv</a></li>
+      <li><a href="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/dwcsprod/b/MovieStream/o/Movie_Sales_2020.csv">Movie_Sales_2020.csv</a>  <br />
+<br /></li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. 分析用のデータベース・ユーザーを作成しよう</a></li>
+  <li><a href="#anchor2">2. ワークショップで使うデータを準備しよう</a></li>
+  <li><a href="#anchor3">3. Database Actionsで操作してみよう</a>
+    <ul>
+      <li><a href="#anchor3-1">3-1. データ分析してみよう </a></li>
+      <li><a href="#anchor3-2">3-2. データインサイトを生成しよう</a></li>
+      <li><a href="#anchor3-3">3-3. カタログを使ってみよう</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約50分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-分析用のデータベースユーザーを作成しようdatabase-actions">1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)</h1>
+
+<p>ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、Database Actions を操作するデータベース・ユーザーを作成します。<br />
+<br />ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
+
+<ol>
+  <li>
+    <p>Database Actionsの起動パッドで <strong>データベース・ユーザー</strong> をクリックします。</p>
+
+    <p><img src="img1_1.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>データベース・ユーザーの管理画面で、<strong>ユーザーの作成</strong>をクリックします。</p>
+
+    <p><img src="img1_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>ユーザーの作成にて、次のようにユーザー情報を入力し、<strong>ユーザーの作成</strong> をクリックします。</p>
+
+    <table>
+    <tr>
+    <td>ユーザー名</td>
+    <td>QTEAM</td>
+    </tr>
+    <tr>
+    <td>パスワード</td>
+    <td>Welcome12345#</td>
+    </tr>
+    <tr>
+    <td>パスワードの確認</td>
+    <td>Welcome12345#</td>
+    </tr>
+    <tr>
+    <td>Webアクセス</td>
+    <td>ON</td>
+    </tr>
+    <tr>
+    <td>Webアクセス拡張機能</td>
+    </tr>
+    <tr>
+    <td>承認が必要</td>
+    <td>ON</td>
+    </tr>
+    <tr>
+    <td>REST別名</td>
+    <td>qteam（デフォルト）</td>
+    </tr>
+    <tr>
+    <td>表領域の割当制限 DATA</td>
+    <td>UNLIMITED</td>
+    </tr>
+    <tr>
+    <td>付与されたロール</td>
+    </tr>
+    <tr>
+    <td>DWROLE</td>
+    <td>付与済　ON　デフォルトON</td>
+    </tr>
+ </table>
+    <p>その他はデフォルト</p>
+
+    <p><img src="img1_3.png" width="80%" />
+ <br />
+ <img src="img1_3_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>QTEAM ユーザーが作成されたことを確認したら、QTEAM ユーザーカードの右下にある <strong>新しいタブで開く</strong> アイコンをクリックして、QTEAM ユーザーでログインしし直します。</p>
+
+    <p><img src="img1_4.png" width="80%" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<p><br /></p>
+
+<h1 id="2-ワークショップで使うデータを準備しよう">2. ワークショップで使うデータを準備しよう</h1>
+<p>サンプルデータとして、架空の動画配信サービスの売上実績を使います。</p>
+
+<ol>
+  <li>
+    <p>このワークショップで使うために、上記にある事前準備で用意した４つのファイルを、データを新しい <strong>データベース・ユーザー(QTEAM)</strong> でロードします。
+ <br />※ファイルをロードする詳しい手順は、<a href="/ocitutorials/database/adb102-dataload/#anchor1" target="_blank">102: ADBにデータをロードしよう</a> をご参照ください。</p>
+
+    <p><img src="img2_1.png" width="80%" /></p>
+
+    <blockquote>
+      <p><strong>注意</strong></p>
+
+      <p>ロードするファイルは４つですが、Days_Months.xlsxファイルは、DaysとMonthsのシートがあり、どちらもロードするので、合計５テーブル作成します。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>SQLを使用してデータセットに必要な修正します。<strong>SQL</strong> をクリック。</p>
+
+    <p><img src="img2_2.png" width="80%" /></p>
+
+    <p>【データの修正について】</p>
+
+    <ul>
+      <li>データ件数が多いので、第2四半期のみのデータにします。</li>
+      <li>DAY列の値に大文字と大文字が混在しているので、文字列を整理します。
+<br /></li>
+    </ul>
+  </li>
+  <li>
+    <p>以下のSQLをワークシートに貼り付けて、<strong>スクリプトの実行</strong> アイコンをクリックします。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">create</span> <span class="k">table</span> <span class="n">MOVIE_SALES_2020Q2</span> <span class="k">as</span>
+ <span class="k">select</span> <span class="n">COUNTRY</span>
+ <span class="p">,</span> <span class="n">initcap</span><span class="p">(</span><span class="k">DAY</span><span class="p">)</span> <span class="k">as</span> <span class="k">DAY</span> <span class="c1">-- Use title case for days</span>
+ <span class="p">,</span> <span class="k">MONTH</span>
+ <span class="p">,</span> <span class="n">GENRE</span>
+ <span class="p">,</span> <span class="n">CUSTOMER_SEGMENT</span>
+ <span class="p">,</span> <span class="n">DEVICE</span>
+ <span class="p">,</span> <span class="n">SALES</span>
+ <span class="p">,</span> <span class="n">PURCHASES</span>
+ <span class="k">FROM</span> <span class="n">MOVIE_SALES_2020</span>
+ <span class="k">where</span> <span class="k">month</span> <span class="k">in</span> <span class="p">(</span><span class="s1">'April'</span><span class="p">,</span><span class="s1">'May'</span><span class="p">,</span><span class="s1">'June'</span><span class="p">);</span> <span class="c1">-- only want data from Q2</span>
+ <span class="k">exec</span> <span class="n">dbms_stats</span><span class="p">.</span><span class="n">gather_table_stats</span><span class="p">(</span><span class="k">user</span><span class="p">,</span> <span class="s1">'MOVIE_SALES_2020Q2'</span><span class="p">);;</span> 
+</code></pre></div>    </div>
+
+    <p>結果が表示されます。</p>
+
+    <p><img src="img2_3.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>左上の <strong>Database Actions</strong> をクリックして、起動パッドに戻ります。</p>
+
+    <p><img src="img2_4.png" width="80%" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<p><br /></p>
+
+<h1 id="3-database-actionsで操作してみよう">3. Database Actionsで操作してみよう</h1>
+<p>それでは、架空の動画配信サービスの売上実績データを使って、データ分析、データ・インサイト、カタログを操作してみよう！</p>
+
+<p><a id="anchor3-1"></a></p>
+
+<h2 id="3-1データ分析してみよう">3-1.データ分析してみよう</h2>
+<p>データ分析ツールによって、ディメンション、階層、メジャーを指定することで、データに高度なモデルを簡単に構築できます。さらに、ピボットテーブルやグラフなどの視覚的なツールを使用してデータを簡単に分析するためのツールを提供します。</p>
+
+<ol>
+  <li>
+    <p>Database Actionsの起動パッドで <strong>データ分析</strong> をクリックします。</p>
+
+    <p><img src="img3_1_1.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>分析ビューの作成画面で、<strong>作成</strong> をクリックします。</p>
+
+    <p><img src="img3_1_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>分析ビューの作成画面で、ファクト表で、<strong>MOVIE_SALES_2020Q2</strong> を選択し、<strong>階層およびメジャーの作成</strong> をクリックします。すると、階層およびメジャーの生成が始まります。</p>
+
+    <p><img src="img3_1_3.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>階層およびメジャーの生成の４ステップが完了したら、<strong>閉じる</strong> をクリックします。</p>
+
+    <p><img src="img3_1_4.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>分析ビューの作成画面で、画面左側のパネルから <strong>データソース</strong> を選択します。すると、先程、SQLで作成したテーブルMOVIE_SALES_2020Q2のスタースキーマが表示されました。MOVIE_SALES_2020Q2の周りにある４つの表（DAYS,MONTHS,COUNTRIES,DEVICS）の右上にある <strong>︙</strong> をクリックして、展開します。これで、MOVIE_SALES_2020Q2表の元データを知ることができました。この機能は既存テーブルの元データを知る手掛かりになります。</p>
+
+    <p><img src="img3_1_5.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>画面左側の階層リストで、<strong>COUNTRIES</strong> 階層をクリックします。階層名を別名に変えることができます。階層名を <strong>GEOGRAPHY</strong> と入力し変更します。</p>
+
+    <p><img src="img3_1_6.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>画面左側の階層リストで、<strong>DAYS</strong> 階層をクリックします。階層名を <strong>DAY</strong> と入力し変更します。また、DAY階層を開き、DAYのソート基準を <strong>DAY_NUM_USA</strong> に変更し、曜日順にします。</p>
+
+    <p><img src="img3_1_7.png" width="80%" />
+ <br />
+ <img src="img3_1_7_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>画面左側の階層リストで、<strong>MONTHS</strong> 階層をクリックします。階層名を <strong>MONTH</strong> と入力し変更します。また、MONTH階層を開き、MONTHのソート基準を <strong>MONTH_NUM</strong> に変更し、月順にします。</p>
+
+    <p><img src="img3_1_8.png" width="80%" />
+ <br />
+ <img src="img3_1_8_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>画面左側の階層リストで、<strong>メジャー</strong> 階層を開き、<strong>SALES</strong> をクリックします。SALESの式は、<strong>SUM</strong> と合計の集計となっていることを確認します。平均やカウントなどの集計方法も可能です。分析ビューの作成の設定が完了したら、画面右下の <strong>作成</strong> をクリックします。</p>
+
+    <p><img src="img3_1_9.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>分析ビューの生成ダイアログで、<strong>はい</strong> をクリックします。</p>
+
+    <p><img src="img3_1_10.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>分析ビューが作成されると、次のような画面になります。エラーが表示されていないこと確認します。</p>
+
+    <p><img src="img3_1_11.png" width="80%" /></p>
+  </li>
+  <li>
+    <p><strong>分析タブ</strong> をクリックしたら、データの要約が表示されます。この画面でデータの概要を知ることができます。</p>
+
+    <p><img src="img3_1_12.png" width="80%" /></p>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>画面の右側にある関連するインサイトが表示されていない場合、しばらく待つと表示されます。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>棒グラフアイコンをクリックしたら、チャートを棒グラフにすることができます。</p>
+
+    <p><img src="img3_1_13.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>右側のSALESメジャーに関連する洞察も表示できます。 右側の Drama の棒グラフをダブルクリックすると、グラフを大きくして表示します。</p>
+
+    <p><img src="img3_1_14.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>分析ビューの <strong>データ分析</strong> をクリックして、分析ツールに戻ります。</p>
+
+    <p><img src="img3_1_15.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>ピボットテーブルビューをクリックします。</p>
+
+    <p><img src="img3_1_16.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>階層のレベルを次のように、ドラッグ＆ドロップで変更します。</p>
+
+    <ul>
+      <li><strong>CUSTOMER_SEGMENT</strong> を列に移動します。</li>
+      <li>左側の[DEVICES]階層を展開し、<strong>FORM_FACTOR</strong> を行に移動します。</li>
+      <li>値の <strong>SALES</strong> の文字のすぐ右にある✗をクリックし、SALESを削除します。</li>
+      <li>左側の[Measures]階層を展開し、 <strong>PURCHASES</strong> を値に移動します。</li>
+      <li>PURCHASESのフォーマットのダイアログボックスが表示されるのでデフォルト設定のまま保存をクリックします。</li>
+    </ul>
+
+    <p><img src="img3_1_17.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>変更した階層に従ったデータが表示されました。このようにして、簡単に行列項目を変更できます。</p>
+
+    <p><img src="img3_1_18.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>検索できるフィルタを追加します。</p>
+
+    <ul>
+      <li>左側の[MONTHS]階層を展開し、<strong>MONTH</strong> をフィルタに移動します。</li>
+      <li>MONTHのダイアログボックスで、<strong>April</strong> をクリックし、右の選択項目に追加します。</li>
+      <li>フィルタポップアップメニューの「X」アイコンをクリックします。</li>
+    </ul>
+
+    <p><img src="img3_1_19.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>４月のみのデータが表示されました。このように、検索条件も簡単に設定できます。</p>
+
+    <p><img src="img3_1_20.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>これで、MOVIE_SALES_2020Q2の分析ビューができました。これは、階層、メジャー（集計式を含む）を特徴とし、データを分析するプレビュー機能を提供します。それでは、画面左上の <strong>Database Actions</strong> をクリックして、Database Actions 起動パッドに戻ります。</p>
+
+    <p><img src="img3_1_21.png" width="80%" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3-2"></a></p>
+
+<h2 id="3-2-データインサイトを生成しよう">3-2. データ・インサイトを生成しよう</h2>
+
+<p>データ・インサイトを使うと、ビジネスモデルのデータを精査し、データセット内の隠れたパターン、異常、および外れ値を探すことができます。データ探索には、回帰分析の他、OracleDatabaseに組み込まれている多くの分析機能を採用しています。</p>
+
+<ol>
+  <li>
+    <p>Database Actionsの起動パッドで <strong>データ分析</strong> をクリックします。</p>
+
+    <p><img src="img3_2_1.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>インサイトの検索画面で、次のとおり設定し、インサイトを検索します。</p>
+
+    <ul>
+      <li>スキーマを <strong>QTEAM</strong> に選択します。</li>
+      <li>分析ビュー/表を <strong>MOVIE_SALES_2020Q2</strong> に選択します。</li>
+      <li>列を <strong>PURCHASES</strong> に選択します。</li>
+      <li>検索ボタンをクリックします。</li>
+    </ul>
+
+    <p><img src="img3_2_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>インサイトの検索が始まります。データ・インサイトはデータを精査し、データセット内の隠れたパターン、異常、および外れ値を探します。これらは、OracleDatabaseに組み込まれている多くの分析機能を使います。よく使われる機能は、回帰分析です。非常に多くのクエリを実行しているため、このプロセスが終わるまで、数分かかることがあります。実行状態は、画面の左上にあるプログレスバーで確認できます。処理中は、さまざまなインサイトが画面に表示されるため、画面が自動的に更新されます。</p>
+
+    <p><img src="img3_2_3.png" width="80%" /></p>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p><strong>自動更新の無効化</strong> をクリックすると、自動更新を止めることができます。自動更新の有効/無効は、切り替えることができます。画面の右側にある関連するインサイトが表示されていない場合、しばらく待つと表示されます。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>検索が完了したら、データセットで異常であると判断されたデータパターン上位20の洞察のそれぞれの棒グラフ（ゲージ）を含むダッシュボードが表示されます。</p>
+
+    <p><img src="img3_2_4.png" width="80%" /></p>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>データ・インサイトの検索は、CPUを集中的に使用するので、プロセスを完了する時間は、Autonomous Database のOCPU数に一部依存します。OCPU数が少ないと、検索に10分以上かかる場合があります。Autonomous Database にて、より多くのOCPU数で、できれば、自動スケールを有効にして検索を実行すると、データ・インサイトの検索を完了するまでの時間を大幅に短縮できます。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>画面下にスクロールし、「June」（6月）の棒グラフなど、これらのいずれかをクリックします。すると、次のように、このインサイトの詳細ビューにドリルダウンします。</p>
+
+    <p><img src="img3_2_5.png" width="80%" /></p>
+
+    <p>このグラフは、6月のさまざまな映画ジャンルの実際の購入（青いバー）と予想される購入（緑の線）を示しています。3つのセグメントには太字の黒い境界線があります。これらは最も予想と異なる値を示しており、次のことを示唆しています。</p>
+
+    <ul>
+      <li>コメディとロマンスは、予想よりも高く購入されている。</li>
+      <li>空想科学(Sci-Fi)の購入額は、予想より低い。<br /></li>
+    </ul>
+  </li>
+  <li>
+    <p>強調表示されたバーの実際の値と期待値が表示されます（このスクリーンショットのロマンス）。これの仮説としては、「四半期の他の月（4月と5月）と比較して、6月のSF映画の消費量は予想よりも少なく、コメディーとロマンスの消費量は予想よりも多かった」です。 
+<br />
+これは、データからは一見、わかりにくいものですが、確かに非常に実用的な洞察です。</p>
+  </li>
+  <li>
+    <p>画面の左上にある <strong>戻る</strong> ボタンをクリックして、 データ・インサイト ダッシュボードに戻ります。</p>
+
+    <p><img src="img3_2_7.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>時間の節約のために、すでに実行されたインサイトを取得もできます。</p>
+
+    <ul>
+      <li>データ・インサイト ダッシュボード画面の右上の三本線をクリックすると、最近の検索のリストが表示されます。</li>
+      <li>表示されるリストから適切な検索を選択します。（この例では1つだけです。）この検索のデータを取得できます。</li>
+    </ul>
+
+    <p><img src="img3_2_8.png" width="80%" />
+ <br />
+ <img src="img3_2_8_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>データ・インサイトまとめ<br />
+これまでは、データアナリストは手動でデータセットを調べ、データ内の隠れたパターンや外れ値を探していました。しかしAutonomous Databaseでは、同じ操作を自動で実行するデータ・インサイトを利用できます。これによって、データの理解が進むようになります。それでは、画面左上の <strong>Database Actions</strong> をクリックして、Database Actions 起動パッドに戻ります。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3-3"></a></p>
+
+<h2 id="3-3-カタログを使ってみよう">3-3. カタログを使ってみよう</h2>
+
+<p>このツールは、テーブル、ビュー、ビジネスモデルなど、システム内のすべてのエンティティの系統分析（データ元の調査）と影響分析（データの関連先）の両方を明示します。</p>
+
+<ol>
+  <li>
+    <p>Database Actionsの起動パッドで <strong>カタログ</strong> をクリックします。</p>
+
+    <p><img src="img3_3_1.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>エンティティを確認します。カタログ画面の右の候補から、<strong>QTEAMが所有している表</strong> をクリックします。</p>
+
+    <p><img src="img3_3_2.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>このようなページが表示され、画面左上に <strong>自分のオブジェクト</strong> かつ <strong>type:TABLE</strong> となっており、QTEAMが所有している表を確認できます。</p>
+
+    <p><img src="img3_3_3.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>右上に３つ、横に並ぶアイコンのうち、現在は左の <strong>カードビュー</strong> が選択されていますが、真ん中の <strong>グリッドビュー</strong> をクリックすると、グリッドビューを表示します。</p>
+
+    <p><img src="img3_3_4.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>右上にアイコンのうち、右の <strong>リストビュー</strong> をクリックすると、リストビューを表示します。</p>
+
+    <p><img src="img3_3_5.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>さまざまな場面によって、どの表示がよいか分かれますが、今回は、右上のアイコンのうち、左の <strong>カードビュー</strong> をクリックし、カードビューを表示します。</p>
+
+    <p><img src="img3_3_6.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>カタログには検索機能があります。上部にある検索バーをクリックし、<strong>type:TABLE</strong> の文字列に続いて、区切り文字の半角スペースと、映画の売上を検索できるように <strong>movie sales</strong> と入力して、<strong>検索の実行</strong> をクリックして、検索すると、検索条件に一致するエンティティが表示されます。</p>
+
+    <p><img src="img3_3_7.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>次のように検索フィルターを変更し検索します。すると、データ分析するとき作成した分析ビューも表示されます。</p>
+
+    <ul>
+      <li>ガイド機能を使うために、一旦、<strong>movie sales</strong> の文字を削除します。</li>
+      <li>type:TABLE に続いて、区切り文字の半角スペースに続き、<strong>or</strong> と入力します。</li>
+      <li>検索フィルターの下のガイドから、「Entity Type」の下の「…」をクリックして、<strong>ANALYTIC_VIEW</strong> を選択します。</li>
+      <li>再度、文字列の最後に、区切り文字の半角スペースと <strong>movie sales</strong> と入力します。</li>
+      <li><strong>検索の実行</strong> をクリックして、検索します。</li>
+    </ul>
+
+    <p><img src="img3_3_8.png" width="80%" />
+ <br />
+ <img src="img3_3_8_2.png" width="80%" /></p>
+
+    <blockquote>
+      <p><strong>注意</strong></p>
+
+      <p>ブラウザによっては、ガイド機能の単語が日本語に翻訳されて、入力される場合があります。そのときは、英語に入力し直します。例）タイプ → type</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>検索フィルターで、<strong>movie sales</strong> の文字を削除し検索します。すると、次のように、７つのエンティティが表示されます。</p>
+
+    <p><img src="img3_3_9.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>データのデータ元または系統を確認します。DEVICESテーブルのカードの右上にある <strong>︙</strong> をクリックし、<strong>詳細の表示</strong> をクリックします。</p>
+
+    <p><img src="img3_3_10.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>DEVICESテーブルの情報の左のメニューで、<strong>系統</strong> をクリックします。</p>
+
+    <p><img src="img3_3_11.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>画面右側にある各カードの右側にある <strong>︙</strong> をクリックし、<strong>展開</strong> をクリックします。DEVICESのデータソース情報を知ることができます。画面の特定の領域にマウスポインタを合わせると、さらに多くの情報が表示されます。必要に応じてさまざまなカードを展開することで、さまざまなレベルの情報にアクセスできます。</p>
+
+    <p><img src="img3_3_12.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>画面の右下にある <strong>閉じる</strong> ボタンをクリックして（またはキーボードの[ Esc ]ボタンをクリックして）、メインのカタログビューに戻ります。</p>
+
+    <p><img src="img3_3_13.png" width="80%" /></p>
+  </li>
+  <li>
+    <p><strong>MOVIE_SALES_2020Q2</strong> テーブルの影響分析を確認します。影響分析とは、特定のエンティティに依存している他のエンティティを示します。系統の逆と考えることができます。<strong>MOVIE_SALES_2020Q2</strong> テーブルのカードの右上にある <strong>︙</strong> をクリックし、<strong>詳細の表示</strong> をクリックします。</p>
+
+    <p><img src="img3_3_14.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>MOVIE_SALES_2020Q2　テーブルの情報の左のメニューから、<strong>影響</strong> をクリックします。</p>
+
+    <p><img src="img3_3_15.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>画面右側にある各カードの右側にある <strong>︙</strong> をクリックし、<strong>展開</strong> をクリックします。このテーブルは、いくつかの属性ディメンションを含む分析ビューとして実装されました。これに対して、データ・インサイトを実行した結果、多数のクエリを実行したことがわかります。</p>
+
+    <p><img src="img3_3_16.png" width="80%" /></p>
+  </li>
+  <li>
+    <p><strong>REQUEST_INSIGHT_1</strong> （画面の右側）を展開すると、データ・インサイトの一部として実行された、さらに多くのクエリの一部が表示されます。このテーブルがどれだけのクエリに使われたか（影響しているか）を確認することができました。</p>
+
+    <p><img src="img3_3_17.png" width="80%" /></p>
+  </li>
+  <li>
+    <p>データ・カタログでは、次の機能を確認しました。</p>
+
+    <ul>
+      <li>カードビュー、グリッドビュー、リストビューでエンティティを表示する方法</li>
+      <li>エンティティの検索機能の使い方</li>
+      <li>エンティティの系統分析</li>
+      <li>エンティティの影響分析</li>
+    </ul>
+  </li>
+</ol>
+
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-08-31T10:50:05+09:00">August 31, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=217%3A+Database+Actions+%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb217-use-database-actions%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb217-use-database-actions%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb217-use-database-actions%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/database/adb216-patch-spa/" class="pagination--pager" title="216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/database/adb218-refreshable-clone/" class="pagination--pager" title="218 : リフレッシュ可能クローンを活用しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

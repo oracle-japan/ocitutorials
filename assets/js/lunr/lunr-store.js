@@ -617,6 +617,12 @@ var store = [{
         "url": "/ocitutorials/database/adb216-patch-spa/",
         "teaser": "/ocitutorials/database/adb216-patch-spa/teaser.png"
       },{
+        "title": "217: Database Actions を使ってみよう",
+        "excerpt":"はじめに この章はまずAutonomous Database(ADB) のツールである Database Actions の機能の中から、データ分析、データ・インサイト、カタログの機能を確認します。 Database Actions を使う前に、セキュリティを高めるため、実務と同じように、データベース管理者とは別の新しいユーザー（スキーマ）を作り、そのユーザーから Database Actions を使います。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされている売上実績サンプルデータのファイルをダウンロードしていること Days_Months.xlsx + Devices.xlsx + Countries.csv Movie_Sales_2020.csv 目次 1. 分析用のデータベース・ユーザーを作成しよう 2. ワークショップで使うデータを準備しよう 3. Database Actionsで操作してみよう 3-1. データ分析してみよう 3-2. データインサイトを生成しよう 3-3. カタログを使ってみよう 所要時間 : 約50分 1. 分析用のデータベース・ユーザーを作成しよう(Database Actions) ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、Database Actions を操作するデータベース・ユーザーを作成します。 ここではADBにおけるデータベース・ユーザーの作成してみます。 Database Actionsの起動パッドで...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb217-use-database-actions/",
+        "teaser": "/ocitutorials/database/adb217-use-database-actions/img0_0.png"
+      },{
         "title": "218 : リフレッシュ可能クローンを活用しよう",
         "excerpt":"Autonomous Databaseのリフレッシュ可能クローンを利用すると、本番環境のデータを用いてリフレッシュすることができる、更新可能なテスト/検証/分析用途の環境を簡単に作成することができます。 本章では、リフレッシュ可能クローンの作成方法と動作について確認します。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本チュートリアルの 101:ADBインスタンスを作成してみよう を参照ください。 構成済みのADBインスタンスへの接続が可能であること 目次： 1. ADBにおけるリフレッシュ可能クローンの概要 2. 事前準備 3. リフレッシュ可能クローンを作成してみよう 4. 作成したリフレッシュ可能クローンを確認してみよう 5. リフレッシュ可能クローンのリフレッシュ動作を確認してみよう 6. リフレッシュ可能クローンをソース・データベースから切断してみよう 7. リフレッシュ可能クローンをソース・データベースに再接続してみよう 1. ADBにおけるリフレッシュ可能クローンの概要 ADBのリフレッシュ可能クローンは、コンソールまたはAPIを使用して作成することができます。 リフレッシュ可能クローンを使用することで、リフレッシュ操作によってソース・データベースの変更内容を反映することが可能なADBのクローンを作成できます。 ADBのリフレッシュ可能クローンは以下のような特徴があります。 実行中のAutonomous Databaseから作成可能（バックアップからの作成は不可） ソースとなるAutonomous Databaseと異なるコンパートメントに作成可能 ソースとなるAutonomous Databaseに接続している間は読み取り専用データベースとして利用可能 コンソールまたはAPIを使用したリフレッシュ操作により、ソース・データベースの変更内容を反映可能 リフレッシュ中は利用不可（ソース・データベースはリフレッシュ中も利用可能） リフレッシュ可能期間は、クローン作成後または前回のリフレッシュから1週間以内 1週間以上リフレッシュしなかった場合はリフレッシュできなくなる リフレッシュ可能期間を超えた場合は、そのまま読み取り専用DBとして利用するかソース・データベースから切断して通常の読み取り/書き込み可能なDBとして利用する ソースとなるAutonomous Databaseから一時的に切断し、再接続することが可能 切断後は読み取り/書き込み可能 再接続操作は切断後24時間以内のみ可能 再接続すると切断中のクローンに対する更新内容は破棄される 再接続後は切断前と同様に、リフレッシュ操作によりソース・データベースの変更内容を反映可能...","categories": [],
         "tags": [],
@@ -946,6 +952,12 @@ var store = [{
         "tags": ["intermediate"],
         "url": "/ocitutorials/intermediates/identitydomains-admin-users/",
         "teaser": "/ocitutorials/intermediates/identitydomains-admin-users/users7.png"
+      },{
+        "title": "Logging AnalyticsでAutonomous Databaseのログを収集する",
+        "excerpt":"チュートリアル概要説明 Autonomous DatabaseにはOSログインできないため、ログ情報は表やビューにSQLでアクセスして取得する必要がありますが、O&amp;Mの管理エージェントを使用することでLogging Analyticsへのアップロードを効率的に自動化することができます。 本チュートリアルはこちらのドキュメントを補足する内容となりますので、あわせてご参照ください。 所要時間 : 約30分 前提条件 : Logging Analyticsの有効化 参考：OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する Autonomous Databaseの作成 参考：101: ADBインスタンスを作成してみよう Autonomous Databaseへアクセスするためのコンピュート・インスタンスの作成 参考：その3 - インスタンスを作成する 管理エージェントはOracle Cloud Agentプラグインを使用 必要な権限 : 以下の権限設定が最低限必要となります。 動的グループ all {resource.type = 'managementagent', resource.compartment.id ='&lt;your compartment id&gt;'} 動的グループの概要と設定方法については以下を参照ください。 参考：OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細 ポリシー allow service loganalytics to read loganalytics-features-family in...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/intermediates/logginganalytics_adb_log/",
+        "teaser": "/ocitutorials/intermediates/logginganalytics_adb_log/img1.png"
       },{
         "title": "カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する",
         "excerpt":"OCI Observability &amp; Management のサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。OCIのLogging AnalyticsでOCIの監査ログを可視化・分析するでは、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。 Logging Analyticsでは250種類以上のログのパーサー（解析文）が定義されているため、主要なシステムのログは取り込んですぐに分析することができます。 しかし、万が一分析したいログのパーサー（解析文）が事前に定義されていなくても心配いりません。Logging Analyticsはユーザーがカスタムでパーサーを定義することもできます。 本チュートリアルでは、Logging Analyticsで定義されていないログのパーサーを作成する手順をご紹介します。 所要時間 : 約20分 前提条件 : ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIのLogging AnalyticsでOCIの監査ログを可視化・分析するもしくは、ドキュメントをご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. カスタム・パーサーの作成 OCIコンソール → 監視及び管理 → ログ・アナリティクス → 管理 →パーサー → パーサーの作成 → 正規表現タイプ をクリックします。 「パーサーの作成」画面にて、以下情報を入力したら「次」をクリックします 名前 - 任意 例)serverlog 説明 -...","categories": [],
