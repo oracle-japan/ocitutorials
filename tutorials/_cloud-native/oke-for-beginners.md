@@ -45,7 +45,7 @@ Cloud ShellまたはLinuxのコンソールから、以下のコマンドを実�
 
 続いて、Cloneしてできたディレクトリをカレントディレクトリにしておきます。
 
-    cd cowweb-for-wercker-demo/helidon/helidon-ver3
+    cd cowweb-for-wercker-demo
 
 ### 1.2. コンテナイメージを作る
 コンテナイメージは、Dockerfileと呼ばれるコンテナの構成を記述したファイルによって、その内容が定義されます。
@@ -378,7 +378,7 @@ spec:
 次に、cowweb-service.yamlというmanifestファイルの内容を確認してみます。
 
 ```
-cat kubernetes/cowweb-service.yaml
+cat ./kubernetes/cowweb-service.yaml
 ```
 ```sh
 kind: Service
