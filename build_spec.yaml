@@ -22,7 +22,7 @@ steps:
   - type: Command
     name: "Docker Build"
     command: |
-      docker build -t staging-env .
+      docker build -t oci-tutorials/staging-env .
     onFailure:
       - type: Command
         command: |
@@ -32,7 +32,7 @@ steps:
 outputArtifacts:
   - name: oci-tutorials-image
     type: DOCKER_IMAGE
-    location: staging-env
+    location: oci-tutorials/staging-env
   - name: oci-tutorials-manifest
     type: BINARY
     location: staging.yaml
