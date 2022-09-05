@@ -227,6 +227,12 @@ var store = [{
         "url": "/ocitutorials/cloud-native/apigateway-for-beginners/",
         "teaser": null
       },{
+        "title": "OCI Service Meshを使ってサービスメッシュ環境を作ろう",
+        "excerpt":"Oracle Cloud Infrastructure(OCI) Service Meshはインフラストラクチャ・レイヤーで、セキュリティ、トラフィック制御、およびオブザーバビリティ機能をアプリケーションに提供します。 OCI Service Meshを使用すると、クラウドネイティブ・アプリケーションの開発と運用が容易になります。 このチュートリアルでは、BookinfoアプリケーションをOracle Container Engine for Kubernetes(OKE)クラスターにデプロイします。 次に、OCI Service Meshをアプリケーションのデプロイメントに追加します。 前提条件 クラウド環境 Oracle Cloudのアカウントを取得済みであること 事前準備 まずは事前準備として以下を実施します。 1.証明書サービスの構築 1-1.証明書と認証局の作成 1-2.コンパートメント・認証局・証明書のOCIDの取得 2.動的グループとポリシーの作成 OCI Service Meshや証明書サービスに関連する動的グループとポリシーの作成 3.Oracle Container Engine for Kubernetes(OKE)クラスターの構築 3-1.OSOK(Oracle Service Operator for Kubernetes)のインストール 3-2.メトリクス・サーバーのインストール 1.証明書サービスの構築 ここでは、OCI Service MeshでTLS（Transport Layer Security）通信を行うために必要な証明書と認証局を作成します。 1-1. 認証局と証明書の作成 証明書サービスの構築について、こちらを実施してください。 1-2.コンパートメント・認証局・証明書のOCIDの取得...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/osm-for-beginners/",
+        "teaser": null
+      },{
         "title": "Helidon(MP)を始めてみよう",
         "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル Oracleでは、マイクロサービスの開発に適した軽量なJavaアプリケーションフレームワークとしてHelidonを開発しています。 Helidonは、SEとMPという2つのエディションがあります。 このチュートリアルでは、MicroProfile準拠のエディションであるMPの方を取り上げていきます。 MicroProfileについて MicroProfileは、マイクロサービス環境下で複数言語との相互連携を保ちながら、サービスを構築するために複数ベンダーによって策定されているJavaの標準仕様のことです。 詳細はこちらをご確認ください。 前提条件 こちらの手順が完了していること このチュートリアルでは、データベースとしてOracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します こちらの1. クレデンシャル・ウォレットのダウンロードの手順が完了していること このチュートリアルでは、ATPに接続するためにクレデンシャル・ウォレットを利用します。事前にクレデンシャル・ウォレットをダウンロードしてください 実施する手順は1. クレデンシャル・ウォレットのダウンロードのみで問題ありません ハンズオン環境にApache Mavenがインストールされていること(バージョン3以上) ハンズオン環境にJDK 11以上がインストールされていること 合わせて環境変数(JAVA_HOME)にJDK 11のパスが設定されていること Helidonのビルドおよび動作環境について Helidon2.xをビルドおよび動作させるにはJDK 11以上が必要です。 1.Helidon CLIでベースプロジェクトを作成してみよう ここでは、Helidon CLIを利用して、ベースプロジェクトを作成してみます。 HelidonをセットアップするにはHelidon CLIが便利です。 このチュートリアルでは、Linux環境の前提で手順を進めますが、WindowsやMac OSでも同じようにインストールすることができます。 まずは、curlコマンドを利用してバイナリを取得し、実行可能な状態にします。 curl -O https://helidon.io/cli/latest/linux/helidon chmod +x ./helidon sudo mv...","categories": [],
         "tags": [],

@@ -1,0 +1,1466 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Service Meshを使ってサービスメッシュ環境を作ろう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="フルマネージドのサービスメッシュサービスであるOCI Service MeshとOKEを利用してサービスメッシュ環境を構築し、サンプルアプリケーションを動かすコンテンツです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Service Meshを使ってサービスメッシュ環境を作ろう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/osm-for-beginners/">
+
+
+  <meta property="og:description" content="フルマネージドのサービスメッシュサービスであるOCI Service MeshとOKEを利用してサービスメッシュ環境を構築し、サンプルアプリケーションを動かすコンテンツです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-05T14:47:13+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/osm-for-beginners/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Service Meshを使ってサービスメッシュ環境を作ろう
+
+        
+      </h1>
+      
+        <p class="page__lead">フルマネージドのサービスメッシュサービスであるOCI Service MeshとOKEを利用してサービスメッシュ環境を構築し、サンプルアプリケーションを動かすコンテンツです。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Service Meshを使ってサービスメッシュ環境を作ろう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/" class="active">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Service Meshを使ってサービスメッシュ環境を作ろう">
+    <meta itemprop="description" content="フルマネージドのサービスメッシュサービスであるOCI Service MeshとOKEを利用してサービスメッシュ環境を構築し、サンプルアプリケーションを動かすコンテンツです。">
+    <meta itemprop="datePublished" content="2022-09-05T14:47:13+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#事前準備">事前準備</a><ul><li><a href="#1証明書サービスの構築">1.証明書サービスの構築</a><ul><li><a href="#1-1-認証局と証明書の作成">1-1. 認証局と証明書の作成</a></li><li><a href="#1-2コンパートメント認証局証明書のocidの取得">1-2.コンパートメント・認証局・証明書のOCIDの取得</a></li></ul></li><li><a href="#2動的グループとポリシーの作成">2.動的グループとポリシーの作成</a></li><li><a href="#3okeクラスターの構築">3.OKEクラスターの構築</a><ul><li><a href="#3-1osokのインストール">3-1.OSOKのインストール</a></li><li><a href="#3-2メトリクスサーバーのインストール">3-2.メトリクス・サーバーのインストール</a></li></ul></li></ul></li><li><a href="#1oci-service-meshの構築">1.OCI Service Meshの構築</a><ul><li><a href="#1oci-service-meshリソースの解説">1.OCI Service Meshリソースの解説</a></li><li><a href="#２サンプルアプリケーションbookinfoアプリケーションのデプロイ">２.サンプルアプリケーション(Bookinfoアプリケーション)のデプロイ</a></li><li><a href="#3oci-service-meshリソースの作成">3.OCI Service Meshリソースの作成</a></li><li><a href="#4動作確認">4.動作確認</a></li></ul></li><li><a href="#bookinfoアプリケーションの説明オプション">Bookinfoアプリケーションの説明（オプション）</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure(OCI) Service Meshはインフラストラクチャ・レイヤーで、セキュリティ、トラフィック制御、およびオブザーバビリティ機能をアプリケーションに提供します。<br />
+OCI Service Meshを使用すると、クラウドネイティブ・アプリケーションの開発と運用が容易になります。</p>
+
+<p>このチュートリアルでは、BookinfoアプリケーションをOracle Container Engine for Kubernetes(OKE)クラスターにデプロイします。<br />
+次に、OCI Service Meshをアプリケーションのデプロイメントに追加します。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloudのアカウントを取得済みであること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="事前準備">事前準備</h2>
+
+<p>まずは事前準備として以下を実施します。</p>
+
+<ul>
+  <li>1.証明書サービスの構築
+    <ul>
+      <li>1-1.証明書と認証局の作成</li>
+      <li>1-2.コンパートメント・認証局・証明書のOCIDの取得</li>
+    </ul>
+  </li>
+  <li>2.動的グループとポリシーの作成
+    <ul>
+      <li>OCI Service Meshや証明書サービスに関連する動的グループとポリシーの作成</li>
+    </ul>
+  </li>
+  <li>3.Oracle Container Engine for Kubernetes(OKE)クラスターの構築
+    <ul>
+      <li>3-1.OSOK(Oracle Service Operator for Kubernetes)のインストール</li>
+      <li>3-2.メトリクス・サーバーのインストール</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="1証明書サービスの構築">1.証明書サービスの構築</h3>
+
+<p>ここでは、OCI Service MeshでTLS（Transport Layer Security）通信を行うために必要な証明書と認証局を作成します。</p>
+
+<h4 id="1-1-認証局と証明書の作成">1-1. 認証局と証明書の作成</h4>
+
+<p>証明書サービスの構築について、<a href="/ocitutorials/intermediates/certificate/">こちら</a>を実施してください。</p>
+
+<h4 id="1-2コンパートメント認証局証明書のocidの取得">1-2.コンパートメント・認証局・証明書のOCIDの取得</h4>
+
+<p>ここでは、後続の手順で利用するためにコンパートメントOCIDと<a href="#1-1-認証局と証明書の作成">1-1. 認証局と証明書の作成</a>で作成した証明書と認証局のOCIDの取得を行います。</p>
+
+<p>まず、コンパートメントのOCIDを取得します。</p>
+
+<p>OCIコンソール画面で左上のメニューを展開して、<code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ</code>をクリックし、<code class="language-plaintext highlighter-rouge">コンパートメント</code>をクリックします。</p>
+
+<p>コンパートメントのリストが表示されて、ご利用のコンパートメントをクリックします。</p>
+
+<p>コンパートメントの詳細が表示されて、OCIDの右にある”コピー”をクリックして、コンパートメントのOCIDをメモしてください。</p>
+
+<p>また、コンパートメント名をメモしてください。</p>
+
+<p><img src="compartment-ocid.png" alt="compartment-ocid" /></p>
+
+<p>次に、認証局のOCIDを取得します。</p>
+
+<p>OCIコンソール画面で左上のメニューを展開して、<code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ</code>をクリックし、<code class="language-plaintext highlighter-rouge">認証局</code>をクリックします。</p>
+
+<p>認証局のリストが表示されて、事前準備で作成した認証局をクリックします。</p>
+
+<p>認証局の詳細が表示されて、OCIDの右にある”コピー”をクリックして、認証局のOCIDをメモしてください。</p>
+
+<p><img src="authority-ocid.png" alt="authority-ocid" /></p>
+
+<p>次に、証明書のOCIDを取得します。</p>
+
+<p>OCIコンソール画面で左上のメニューを展開して、<code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ</code>をクリックし、<code class="language-plaintext highlighter-rouge">証明書</code>をクリックします。</p>
+
+<p>証明書のリストが表示されて、事前準備で作成した証明書をクリックします。</p>
+
+<p>証明書の詳細が表示されて、OCIDの右にある”コピー”をクリックして、証明書のOCIDをメモしてください。</p>
+
+<p><img src="certificate-ocid.png" alt="certificate-ocid" /></p>
+
+<p>これで、コンパートメント・認証局・証明書のOCIDの取得は完了です。</p>
+
+<h3 id="2動的グループとポリシーの作成">2.動的グループとポリシーの作成</h3>
+
+<p>ここでは、OCI Service Meshに必要な動的グループとポリシーを作成していきます。</p>
+
+<p class="notice--info"><strong>動的グループとポリシーについて</strong><br />
+Oracle Cloud Infrastrctureには動的グループという考え方があります。<br />
+動的グループの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm">こちら</a>のページをご確認ください。<br />
+また、設定した動的グループは、ポリシーを利用することにより、OCI上のリソースやインスタンスを主体とした操作を実現できます。<br />
+ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Concepts/policygetstarted.htm#Getting_Started_with_Policies">こちら</a>のページをご確認ください。</p>
+
+<p class="notice--warning"><strong>ポリシー設定について</strong><br />
+このハンズオンでは、ご利用のコンパートメントに対しては管理者権限(<code class="language-plaintext highlighter-rouge">to manage all-resources in compartment</code>)がある前提としています。
+トライアル環境の方は、管理者権限となっておりますので、特に意識する必要はありません。</p>
+
+<p>OCIコンソール画面で左上のメニューを展開して、<code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ</code>をクリックし、<code class="language-plaintext highlighter-rouge">動的グループの作成</code>をクリックします。</p>
+
+<p>以下のように動的グループを作成します。</p>
+
+<ul>
+  <li>名前：<code class="language-plaintext highlighter-rouge">MeshDynamicGroup</code></li>
+  <li>説明：<code class="language-plaintext highlighter-rouge">MeshDynamicGroup</code></li>
+  <li>ルール1：
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ANY {instance.compartment.id = '&lt;事前準備で取得したご利用のコンパートメントのOCID&gt;'}
+ANY {resource.type='certificateauthority', resource.type='certificate'}
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>動的グループの意味はそれぞれ以下です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>動的グループ</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ANY {instance.compartment.id = ‘<事前準備で取得したご利用のコンパートメントのOCID>'}</事前準備で取得したご利用のコンパートメントのOCID></td>
+      <td>コンパートメント内の全てのインスタンスを意味するルール</td>
+    </tr>
+    <tr>
+      <td>ANY {resource.type=’certificateauthority’, resource.type=’certificate’}</td>
+      <td>証明書サービスを意味するルール</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>動的グループを作成したら、ポリシーを作成します。<br />
+OCIコンソール画面で左上のメニューを展開して、<code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ</code>をクリックし、<code class="language-plaintext highlighter-rouge">ポリシー</code>をクリックします。</p>
+
+<p>以下のようにポリシーを作成します。</p>
+
+<ul>
+  <li>名前：<code class="language-plaintext highlighter-rouge">MeshPolicy</code></li>
+  <li>説明：<code class="language-plaintext highlighter-rouge">MeshPolicy</code></li>
+  <li>ポリシー：
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow dynamic-group MeshDynamicGroup to use keys in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to manage objects in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to manage service-mesh-family in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to read certificate-authority-family in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to use certificate-authority-delegates in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to manage leaf-certificate-family in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to manage certificate-authority-associations in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to manage certificate-associations in compartment &lt;ご利用のコンパートメント名&gt;
+Allow dynamic-group MeshDynamicGroup to manage cabundle-associations in compartment &lt;ご利用のコンパートメント名&gt;
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>ポリシーの意味はそれぞれ以下です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ポリシー</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to use keys in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループがコンパートメント内のOCI Vault Keyを利用するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to manage objects in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループがコンパートメント内のオブジェクトストレージ内のデータを管理するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to manage service-mesh-family in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループがOCI Service Meshを管理するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to read certificate-authority-family in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループが証明書サービスの認証局を利用するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to use certificate-authority-delegates in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループが証明書サービスの各認証局と証明書を利用するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to manage leaf-certificate-family in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループが証明書サービスの各認証局と証明書を管理するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to manage certificate-authority-associations in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループが証明書サービスの認証局アソシエーションを管理するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to manage certificate-associations in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループが証明書サービスの証明書アソシエーションを管理するためのポリシー</td>
+    </tr>
+    <tr>
+      <td>Allow dynamic-group MeshDynamicGroup to manage cabundle-associations in compartment <ご利用のコンパートメント名></ご利用のコンパートメント名></td>
+      <td>動的グループが証明書サービスのバンドルアソシエーションを管理するためのポリシー</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これで、動的グループとポリシーの作成は完了です。</p>
+
+<h3 id="3okeクラスターの構築">3.OKEクラスターの構築</h3>
+
+<p>OKEクラスターの構築について、<a href="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/">こちら</a>を参考に実施してください。</p>
+
+<h4 id="3-1osokのインストール">3-1.OSOKのインストール</h4>
+
+<p>OCI Service Meshでは、Kubernetes Operatorとして<a href="https://github.com/oracle/oci-service-operator">OSOK(Oracle Service Operator for Kubernetes)</a>を利用します。</p>
+
+<p>OSOKをインストールするためには、Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールが必要です。</p>
+
+<p>Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールは、<a href="/ocitutorials/cloud-native/oke-for-intermediates/#3-1-operator-sdk%E3%81%8A%E3%82%88%E3%81%B3%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%82%BF%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3olm%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">こちら</a>を実施してください。(リンク先の実施手順は<code class="language-plaintext highlighter-rouge">3-1</code>のみで問題ありません)</p>
+
+<p>Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールが完了したら、以下のコマンドを実行し、OSOK用のNamespaceを作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl create ns oci-service-operator-system
+</code></pre></div></div>
+
+<p>次にOSOKをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.1.0 <span class="nt">-n</span> oci-service-operator-system <span class="nt">--timeout</span> 5m
+</code></pre></div></div>
+
+<p>以下のように出力され、OSOKがインストールされます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO[0036] Successfully created registry pod: iad-ocir-io-oracle-oci-service-operator-bundle-X-X-X 
+INFO[0036] Created CatalogSource: oci-service-operator-catalog 
+INFO[0037] OperatorGroup <span class="s2">"operator-sdk-og"</span> created      
+INFO[0037] Created Subscription: oci-service-operator-vX-X-X-sub 
+INFO[0040] Approved InstallPlan install-tzk5f <span class="k">for </span>the Subscription: oci-service-operator-vX-X-X-sub 
+INFO[0040] Waiting <span class="k">for </span>ClusterServiceVersion <span class="s2">"oci-service-operator-system/oci-service-operator.vX.X.X"</span> to reach <span class="s1">'Succeeded'</span> phase 
+INFO[0040]   Waiting <span class="k">for </span>ClusterServiceVersion <span class="s2">"oci-service-operator-system/oci-service-operator.vX.X.X"</span> to appear 
+INFO[0048]   Found ClusterServiceVersion <span class="s2">"oci-service-operator-system/oci-service-operator.vX.X.X"</span> phase: Pending 
+INFO[0049]   Found ClusterServiceVersion <span class="s2">"oci-service-operator-system/oci-service-operator.vX.X.X"</span> phase: InstallReady 
+INFO[0053]   Found ClusterServiceVersion <span class="s2">"oci-service-operator-system/oci-service-operator.vX.X.X"</span> phase: Installing 
+INFO[0066]   Found ClusterServiceVersion <span class="s2">"oci-service-operator-system/oci-service-operator.vX.X.X"</span> phase: Succeeded 
+INFO[0067] OLM has successfully installed <span class="s2">"oci-service-operator.vX.X.X"</span>
+</code></pre></div></div>
+
+<h4 id="3-2メトリクスサーバーのインストール">3-2.メトリクス・サーバーのインストール</h4>
+
+<p>OCI Service Meshでは、HPA(Horizontal Pod Autoscaler)を利用してIngress Gateway(後述)がスケールするので、メトリクス・サーバーをインストールしておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml
+</code></pre></div></div>
+
+<p>これで事前準備は完了です！</p>
+
+<h2 id="1oci-service-meshの構築">1.OCI Service Meshの構築</h2>
+
+<p>ここから、いよいよOCI Service Meshの構築に入っていきます。</p>
+
+<p>全体としては以下のような手順になります。</p>
+
+<ul>
+  <li>
+    <p>1.OCI Service Meshリソースの解説</p>
+  </li>
+  <li>
+    <p>2.サンプルアプリケーションのデプロイ</p>
+  </li>
+  <li>
+    <p>3.OCI Service Meshリソースの作成</p>
+  </li>
+  <li>
+    <p>4.動作確認</p>
+  </li>
+</ul>
+
+<h3 id="1oci-service-meshリソースの解説">1.OCI Service Meshリソースの解説</h3>
+
+<p>まずは、OCI Service Meshで利用するリソースから確認します。</p>
+
+<p>次の図に示すように、OCI Service Meshは、マネージド・コントロール・プレーンから構成情報を受信する各マイクロサービスと共にプロキシをデプロイすることによって実装されます。<br />
+メッシュはプロキシを使用して、マイクロサービスに代わってIngressリクエストとOutboundリクエストを実行します。<br />
+この構成により、サービス・メッシュのセキュリティ、トラフィック制御、および監視機能が有効になります。イングレスゲートウェイ・リソースは、メッシュへの入力トラフィックを管理します。</p>
+
+<p><img src="service-mesh.jpg" alt="service-mesh" /></p>
+
+<p>次の図は、OCI Service MeshにデプロイされるBookinfoアプリケーション(このハンズオンでも利用します)をベースにした各リソースを示しています。</p>
+
+<p>イングレストラフィックは、イングレスゲートウェイとイングレスゲートウェイのルート・テーブルを介して”Product Page”サービスにルーティングされます。<br />
+Reviewsサービスのさまざまなバージョンは、そのサービスの仮想デプロイメントを表します。アクセス・ポリシーは、サービス間通信のアクセス制御にセットアップされます。</p>
+
+<p><img src="service-mesh-deployment.jpg" alt="service-mesh-deployment" /></p>
+
+<p>次の図は、OCI Service Meshのリソース間の関係を定義します。<img src="mesh-components.jpg" alt="/mesh-components" /></p>
+
+<p>各リソースを簡単に説明します。</p>
+
+<ul>
+  <li>Mesh: サービス・メッシュ全体を表すリソース</li>
+  <li>Virtual Service: サービス・メッシュ内の仮想サービス</li>
+  <li>Virtual Deployment: Virtual Serviceに紐づける仮想デプロイメント</li>
+  <li>Virtual Service Route Table: Virtual Service内のトラフィック・ルール。IstioでいうDestination Ruleのような存在。</li>
+  <li>Ingress Gateway: メッシュ外からメッシュ内への通信を制御するGateway。IstioのIngress Gatewayとほぼ同じ。</li>
+  <li>Ingress Gateway Route Table: Ingress Gatewayのトラフィック・ルール。</li>
+  <li>Access Policy: Virtual Serviceに対するアクセス制御。</li>
+</ul>
+
+<p>OCI Service Meshには他にもリソースがありますが、上の図は主なリソースだけピックアップしています。</p>
+
+<p>OCI Service Meshのリソースの全体像をまとめておきます。<br />
+(図内にはこのハンズオンでは取り上げないコンポーネントも含まれていますが、そちらは中級編以降で取り上げます)</p>
+
+<p><img src="osm-overview.png" alt="osm-overview" /></p>
+
+<p>各種リソースを説明したところで、ここから、OCI Service Meshを構築していきます。</p>
+
+<h3 id="２サンプルアプリケーションbookinfoアプリケーションのデプロイ">２.サンプルアプリケーション(Bookinfoアプリケーション)のデプロイ</h3>
+
+<p>今回はBookinfoアプリケーションを利用したService Mesh環境を構築していきます。</p>
+
+<p>まず、最初にBookinfoアプリケーション用のNamespaceを作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl create namespace bookinfo
+</code></pre></div></div>
+
+<p>次に、bookinfo Namespaceに対して、OCI Service Meshを有効にするラベルを付与します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl label namespace bookinfo servicemesh.oci.oracle.com/sidecar-injection<span class="o">=</span>enabled
+</code></pre></div></div>
+
+<p>Bookinfoアプリケーションをデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-n</span> bookinfo <span class="nt">-f</span> https://raw.githubusercontent.com/istio/istio/release-1.12/samples/bookinfo/platform/kube/bookinfo.yaml
+</code></pre></div></div>
+
+<p>これでサンプルアプリケーションのデプロイは完了です。</p>
+
+<h3 id="3oci-service-meshリソースの作成">3.OCI Service Meshリソースの作成</h3>
+
+<p>次に、OCI Service Meshを構成するためのリソースを作っていきます。</p>
+
+<p>なお、Manifestの中でアプリケーションのホスト名が定義されていますが、今回は<code class="language-plaintext highlighter-rouge">service-mesh.com</code>とします。<br />
+後でhostsファイルを編集します。</p>
+
+<p>OCI Service Meshのリソースを作成するためのManifest<code class="language-plaintext highlighter-rouge">bookinfo_mesh.yaml</code>を作成します。<br />
+以下の情報を環境関数として設定します。<br />
+これらの情報は<a href="#1-2コンパートメント認証局証明書のocidの取得">1-2.コンパートメント・認証局・証明書のOCIDの取得</a>で収集したものです。</p>
+
+<ul>
+  <li>YOUR_COMPARTMENT_OCID: 事前準備で取得したご利用のコンパートメントのOCIDに差し替えてください。</li>
+  <li>YOUR_CERTIFICATE_AUTHORITY_OCID: 事前準備で取得した認証局のOCIDに差し替えてください。</li>
+  <li>YOUR_CERTIFICATE_OCID: 事前準備で取得した証明書のOCIDに差し替えてください。</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">YOUR_COMPARTMENT_OCID</span><span class="o">=</span>ocid1.compartment.oc1..xxxxxxxxxx
+<span class="nv">YOUR_CERTIFICATE_AUTHORITY_OCID</span><span class="o">=</span>ocid1.certificateauthority.oc1.xxxxxxxxxx
+<span class="nv">YOUR_CERTIFICATE_OCID</span><span class="o">=</span>ocid1.certificate.oc1.xxxxxxxxxx
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">bookinfo_mesh.yaml</code>を作成します。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">cat &gt; bookinfo_mesh.yaml &lt;&lt; EOF</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Mesh</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">certificateAuthorities</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">$YOUR_CERTIFICATE_AUTHORITY_OCID</span>
+  <span class="na">mtls</span><span class="pi">:</span>
+    <span class="na">minimum</span><span class="pi">:</span> <span class="s">PERMISSIVE</span>
+<span class="nn">---</span>
+<span class="c1">##################################################################################################</span>
+<span class="c1"># Details service</span>
+<span class="c1">##################################################################################################</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualService</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">details</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">mesh</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">defaultRoutingPolicy</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">UNIFORM</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">details</span>
+    <span class="pi">-</span> <span class="s">details:9080</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeployment</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">details-v1</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">details</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">listener</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">HTTP</span>
+  <span class="na">accessLogging</span><span class="pi">:</span>
+    <span class="na">isEnabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">serviceDiscovery</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">DNS</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">details</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualServiceRouteTable</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">details-route-table</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">details</span>
+  <span class="na">routeRules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">httpRoute</span><span class="pi">:</span>
+        <span class="na">destinations</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">virtualDeployment</span><span class="pi">:</span>
+              <span class="na">ref</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">details-v1</span>
+            <span class="na">weight</span><span class="pi">:</span> <span class="m">100</span>
+<span class="nn">---</span>
+<span class="c1">##################################################################################################</span>
+<span class="c1"># Ratings service</span>
+<span class="c1">##################################################################################################</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualService</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">ratings</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">mesh</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">defaultRoutingPolicy</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">UNIFORM</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">ratings</span>
+    <span class="pi">-</span> <span class="s">ratings:9080</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeployment</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">ratings-v1</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">ratings</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">listener</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">HTTP</span>
+  <span class="na">accessLogging</span><span class="pi">:</span>
+    <span class="na">isEnabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">serviceDiscovery</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">DNS</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">ratings</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualServiceRouteTable</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">ratings-route-table</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">ratings</span>
+  <span class="na">routeRules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">httpRoute</span><span class="pi">:</span>
+        <span class="na">destinations</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">virtualDeployment</span><span class="pi">:</span>
+              <span class="na">ref</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">ratings-v1</span>
+            <span class="na">weight</span><span class="pi">:</span> <span class="m">100</span>
+<span class="nn">---</span>
+<span class="c1">##################################################################################################</span>
+<span class="c1"># Reviews service</span>
+<span class="c1">##################################################################################################</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualService</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">mesh</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">defaultRoutingPolicy</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">UNIFORM</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">reviews</span>
+    <span class="pi">-</span> <span class="s">reviews:9080</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeployment</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v1</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">listener</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">HTTP</span>
+  <span class="na">accessLogging</span><span class="pi">:</span>
+    <span class="na">isEnabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">serviceDiscovery</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">DNS</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">reviews</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeployment</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v2</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">listener</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">HTTP</span>
+  <span class="na">accessLogging</span><span class="pi">:</span>
+    <span class="na">isEnabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">serviceDiscovery</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">DNS</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">reviews</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeployment</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v3</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">listener</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">HTTP</span>
+  <span class="na">accessLogging</span><span class="pi">:</span>
+    <span class="na">isEnabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">serviceDiscovery</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">DNS</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">reviews</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualServiceRouteTable</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-route-table</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+  <span class="na">routeRules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">httpRoute</span><span class="pi">:</span>
+        <span class="na">destinations</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">virtualDeployment</span><span class="pi">:</span>
+              <span class="na">ref</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v1</span>
+            <span class="na">weight</span><span class="pi">:</span> <span class="m">50</span>
+          <span class="pi">-</span> <span class="na">virtualDeployment</span><span class="pi">:</span>
+              <span class="na">ref</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v2</span>
+            <span class="na">weight</span><span class="pi">:</span> <span class="m">25</span>
+          <span class="pi">-</span> <span class="na">virtualDeployment</span><span class="pi">:</span>
+              <span class="na">ref</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v2</span>
+            <span class="na">weight</span><span class="pi">:</span> <span class="m">25</span>
+<span class="nn">---</span>
+<span class="c1">##################################################################################################</span>
+<span class="c1"># Productpage services</span>
+<span class="c1">##################################################################################################</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualService</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">mesh</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">defaultRoutingPolicy</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">UNIFORM</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">productpage</span>
+    <span class="pi">-</span> <span class="s">productpage:9080</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeployment</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">listener</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">HTTP</span>
+  <span class="na">accessLogging</span><span class="pi">:</span>
+    <span class="na">isEnabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">serviceDiscovery</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">DNS</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">productpage</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualServiceRouteTable</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">productpage-route-table</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">virtualService</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+  <span class="na">routeRules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">httpRoute</span><span class="pi">:</span>
+        <span class="na">destinations</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">virtualDeployment</span><span class="pi">:</span>
+              <span class="na">ref</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+            <span class="na">weight</span><span class="pi">:</span> <span class="m">100</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">IngressGateway</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-ingress-gateway</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">mesh</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfoHost</span>
+      <span class="na">hostnames</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">service-mesh.com</span>
+      <span class="na">listeners</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+          <span class="na">protocol</span><span class="pi">:</span> <span class="s">HTTP</span>
+          <span class="na">tls</span><span class="pi">:</span>
+            <span class="na">serverCertificate</span><span class="pi">:</span>
+              <span class="na">ociTlsCertificate</span><span class="pi">:</span>
+                <span class="na">certificateId</span><span class="pi">:</span> <span class="s">$YOUR_CERTIFICATE_OCID</span>
+            <span class="na">mode</span><span class="pi">:</span> <span class="s">TLS</span>
+  <span class="na">accessLogging</span><span class="pi">:</span>
+    <span class="na">isEnabled</span><span class="pi">:</span> <span class="no">true</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">IngressGatewayRouteTable</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-ingress-gateway-route-table</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">ingressGateway</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-ingress-gateway</span>
+  <span class="na">routeRules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">httpRoute</span><span class="pi">:</span>
+        <span class="na">ingressGatewayHost</span><span class="pi">:</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfoHost</span>
+        <span class="na">destinations</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">virtualService</span><span class="pi">:</span>
+              <span class="na">ref</span><span class="pi">:</span>
+                <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">AccessPolicy</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-policy</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">mesh</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">$YOUR_COMPARTMENT_OCID</span>
+  <span class="na">rules</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">action</span><span class="pi">:</span> <span class="s">ALLOW</span>
+      <span class="na">source</span><span class="pi">:</span>
+        <span class="na">virtualService</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+      <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">virtualService</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">details</span>
+    <span class="pi">-</span> <span class="na">action</span><span class="pi">:</span> <span class="s">ALLOW</span>
+      <span class="na">source</span><span class="pi">:</span>
+        <span class="na">virtualService</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+      <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">virtualService</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+    <span class="pi">-</span> <span class="na">action</span><span class="pi">:</span> <span class="s">ALLOW</span>
+      <span class="na">source</span><span class="pi">:</span>
+        <span class="na">virtualService</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+      <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">virtualService</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">ratings</span>
+    <span class="pi">-</span> <span class="na">action</span><span class="pi">:</span> <span class="s">ALLOW</span>
+      <span class="na">source</span><span class="pi">:</span>
+        <span class="na">ingressGateway</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-ingress-gateway</span>
+      <span class="na">destination</span><span class="pi">:</span>
+        <span class="na">virtualService</span><span class="pi">:</span>
+          <span class="na">ref</span><span class="pi">:</span>
+            <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+<span class="nn">---</span>
+<span class="s">EOF</span>
+</code></pre></div></div>
+
+<p>次に、上記Manifestで作成した<code class="language-plaintext highlighter-rouge">VirtualDeployment</code>と<code class="language-plaintext highlighter-rouge">Virtual Service</code>をバインドするために<code class="language-plaintext highlighter-rouge">binding.yaml</code>を作成します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">~Binding</code>という名称の<a href="#1oci-service-meshリソースの解説">1.OCI Service Meshリソースの解説</a>で解説したリソースでは登場していないリソースが出てきますが、<code class="language-plaintext highlighter-rouge">VirtualDeployment</code>と<code class="language-plaintext highlighter-rouge">Virtual Service</code>を”バインド”するリソースというイメージを持って頂ければ問題ありません。</p>
+
+<p><code class="language-plaintext highlighter-rouge">binding.yaml</code>を作成します。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">cat &gt; binding.yaml &lt;&lt; EOF</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeploymentBinding</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">details-binding</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualDeployment</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">details-v1</span>
+      <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="na">service</span><span class="pi">:</span>
+      <span class="na">ref</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">details</span>
+        <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeploymentBinding</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">ratings-v1-binding</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualDeployment</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">ratings-v1</span>
+      <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="na">service</span><span class="pi">:</span>
+      <span class="na">ref</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">ratings</span>
+        <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+      <span class="na">matchLabels</span><span class="pi">:</span>
+        <span class="na">version</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeploymentBinding</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v1-binding</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualDeployment</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v1</span>
+      <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="na">service</span><span class="pi">:</span>
+      <span class="na">ref</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+        <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+      <span class="na">matchLabels</span><span class="pi">:</span>
+        <span class="na">version</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeploymentBinding</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v2-binding</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualDeployment</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v2</span>
+      <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="na">service</span><span class="pi">:</span>
+      <span class="na">ref</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+        <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+      <span class="na">matchLabels</span><span class="pi">:</span>
+        <span class="na">version</span><span class="pi">:</span> <span class="s">v2</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeploymentBinding</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v3-binding</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualDeployment</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">reviews-v3</span>
+      <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="na">service</span><span class="pi">:</span>
+      <span class="na">ref</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">reviews</span>
+        <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+      <span class="na">matchLabels</span><span class="pi">:</span>
+        <span class="na">version</span><span class="pi">:</span> <span class="s">v3</span>
+<span class="nn">---</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">VirtualDeploymentBinding</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">productpage-binding</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">virtualDeployment</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+      <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">target</span><span class="pi">:</span>
+    <span class="na">service</span><span class="pi">:</span>
+      <span class="na">ref</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">productpage</span>
+        <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="nn">---</span>
+<span class="s">EOF</span>
+</code></pre></div></div>
+
+<p>次に、イングレスゲートウェイリソースを作成するためのManifestである<code class="language-plaintext highlighter-rouge">service.yaml</code>を作成します。</p>
+
+<p>ここでも、<code class="language-plaintext highlighter-rouge">IngressGatewayDeployment</code>という名称の<a href="#1oci-service-meshリソースの解説">1.OCI Service Meshリソースの解説</a>では解説していないリソースが登場しますが、Proxyのような存在だとイメージ頂ければ問題ありません。<br />
+(Istioをご存知の方はEnvoyにあたるものです)</p>
+
+<p><code class="language-plaintext highlighter-rouge">service.yaml</code>を作成します。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">cat &gt; service.yaml &lt;&lt; EOF</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">servicemesh.oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">IngressGatewayDeployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-ingress-gateway-deployment</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ingressGateway</span><span class="pi">:</span>
+    <span class="na">ref</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-ingress-gateway</span>
+      <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">deployment</span><span class="pi">:</span>
+    <span class="na">autoscaling</span><span class="pi">:</span>
+      <span class="na">minPods</span><span class="pi">:</span> <span class="m">1</span>
+      <span class="na">maxPods</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+      <span class="na">port</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">serviceport</span><span class="pi">:</span> <span class="m">443</span>
+  <span class="na">service</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">ClusterIP</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">bookinfo-ingress</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">bookinfo</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="na">service.beta.kubernetes.io/oci-load-balancer-shape</span><span class="pi">:</span> <span class="s2">"</span><span class="s">flexible"</span>
+    <span class="na">service.beta.kubernetes.io/oci-load-balancer-shape-flex-min</span><span class="pi">:</span> <span class="s2">"</span><span class="s">10"</span>
+    <span class="na">service.beta.kubernetes.io/oci-load-balancer-shape-flex-max</span><span class="pi">:</span> <span class="s2">"</span><span class="s">100"</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">80</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">http</span>
+    <span class="pi">-</span> <span class="na">port</span><span class="pi">:</span> <span class="m">443</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">9080</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">https</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">servicemesh.oci.oracle.com/ingress-gateway-deployment</span><span class="pi">:</span> <span class="s">bookinfo-ingress-gateway-deployment</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">LoadBalancer</span>
+<span class="s">EOF</span>
+</code></pre></div></div>
+
+<p>それでは作成したManifestを順番に適用していきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> bookinfo_mesh.yaml
+kubectl apply <span class="nt">-f</span> binding.yaml
+kubectl apply <span class="nt">-f</span> service.yaml
+</code></pre></div></div>
+
+<p>これで、OCI Service Meshの環境構築は完了です。</p>
+
+<h3 id="4動作確認">4.動作確認</h3>
+
+<p>最後に動作確認を行います。</p>
+
+<p>Podが全て起動していることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl get pods <span class="nt">-n</span> bookinfo
+NAME                                                              READY   STATUS    RESTARTS   AGE
+bookinfo-ingress-gateway-deployment-deployment-595f7d5bc5-fqrbf   1/1     Running   0          23s
+details-v1-586577784f-bp9dd                                       2/2     Running   0          4m41s
+productpage-v1-589b848cc9-2zsw6                                   2/2     Running   0          4m38s
+ratings-v1-679fc7b4f-stnk9                                        2/2     Running   0          4m30s
+reviews-v1-7b76665ff9-2xvrh                                       2/2     Running   0          4m40s
+reviews-v2-6b86c676d9-r2j6x                                       2/2     Running   0          4m39s
+reviews-v3-b77c579-69pkq                                          2/2     Running   0          4m38s
+</code></pre></div></div>
+
+<p>アプリケーションにアクセスするにはイングレスゲートウェイ(実態はOCI LoadBalancerになります)を利用するので、以下のコマンドでIPアドレスを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl get svc <span class="nt">-n</span> bookinfo
+NAME                                          TYPE           CLUSTER-IP      EXTERNAL-IP     PORT<span class="o">(</span>S<span class="o">)</span>                      AGE
+bookinfo-ingress                              LoadBalancer   10.96.213.172   xxx.xxx.xxx.xxx 80:31700/TCP,443:31248/TCP   2m51s
+bookinfo-ingress-gateway-deployment-service   ClusterIP      10.96.14.228    &lt;none&gt;          443/TCP                      2m51s
+details                                       ClusterIP      10.96.174.202   &lt;none&gt;          9080/TCP                     13m
+productpage                                   ClusterIP      10.96.222.216   &lt;none&gt;          9080/TCP                     13m
+ratings                                       ClusterIP      10.96.120.160   &lt;none&gt;          9080/TCP                     13m
+reviews                                       ClusterIP      10.96.22.199    &lt;none&gt;          9080/TCP                     13m
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">bookinfo-ingress</code>に表示される<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>(<code class="language-plaintext highlighter-rouge">xxx.xxx.xxx.xxx</code>)がLoadBalancerのIPアドレスになります。</p>
+
+<p>今回は、<code class="language-plaintext highlighter-rouge">https://service-mesh.com</code>でアクセスしたいので、ローカルのhostsファイルに以下の列を追記します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xxx.xxx.xxx.xxx service-mesh.com
+</code></pre></div></div>
+
+<p>これで<code class="language-plaintext highlighter-rouge">https://service-mesh.com/productpage</code>にアクセスし、以下のような画面が表示されれば成功です！</p>
+
+<p><img src="bookinfo-product-page.png" alt="bookinfo-product-page" /></p>
+
+<p>また、OCIコンソール上から見るとOSOKを利用して各種リソースが作成されていることが確認できます。<br />
+OCIコンソールは、左上のメニューを展開して、<code class="language-plaintext highlighter-rouge">開発者サービス</code>をクリックし、<code class="language-plaintext highlighter-rouge">サービス・メッシュ</code>をクリックします。</p>
+
+<p>また、OCIコンソールからリソースを作成または変更すればOSOKがOKEクラスターに反映してくれます。</p>
+
+<p><img src="oci-service-mesh-bookinfo.png" alt="oci-service-mesh-bookinfo" /></p>
+
+<p>これで、OCI Service Meshの構築は完了です。</p>
+
+<h2 id="bookinfoアプリケーションの説明オプション">Bookinfoアプリケーションの説明（オプション）</h2>
+
+<p>Bookinfoアプリケーションは、オープンソースのサービスメッシュプラットフォームである<code class="language-plaintext highlighter-rouge">Istio</code>のプロジェクトの一部として配布されています。<br />
+オンライン書店の単一のカタログエントリと同様に、書籍に関する情報を表示します。<br />
+アプリケーションのページには、書籍の説明、書籍の詳細 (ISBN、ページ数など)、およびいくつかの書評が表示されます。</p>
+
+<p>アプケーションの全体イメージは以下のようになります。</p>
+
+<p><img src="bookinfo.png" alt="Bookinfo Application" /></p>
+
+<p>次の4つの個別のマイクロサービスに分かれています。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">productpage</code>: <code class="language-plaintext highlighter-rouge">details</code>のマイクロサービスと<code class="language-plaintext highlighter-rouge">reviews</code>のマイクロサービスを呼び出し、フロントエンドページを提供します。</li>
+  <li><code class="language-plaintext highlighter-rouge">details</code>: 書籍情報を提供します。</li>
+  <li><code class="language-plaintext highlighter-rouge">reviews</code>: 書評を提供します。また、<code class="language-plaintext highlighter-rouge">ratings</code>のマイクロサービスも呼び出します。(以下を参照)</li>
+  <li><code class="language-plaintext highlighter-rouge">ratings</code>: 書評に付随する評価(レートポイント)を提供します。</li>
+</ul>
+
+<p>また、<code class="language-plaintext highlighter-rouge">reviews</code>のマイクロサービスには3つのバージョンがあります。</p>
+
+<ul>
+  <li>バージョンv1では、<code class="language-plaintext highlighter-rouge">ratings</code>は呼び出されません。</li>
+  <li>バージョンv2では、<code class="language-plaintext highlighter-rouge">ratings</code>を呼び出し、各評価を1~5個の黒い星として表示します。</li>
+  <li>バージョンv3では、<code class="language-plaintext highlighter-rouge">ratings</code>を呼び出し、各評価を1~5個の赤い星として表示します。</li>
+</ul>
+
+<p>このアプリケーションは複数言語からされており、これらのサービスは特定のサービスメッシュプラットフォームに依存していません。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-05T14:47:13+09:00">September 5, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Service+Mesh%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%83%A1%E3%83%83%E3%82%B7%E3%83%A5%E7%92%B0%E5%A2%83%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fosm-for-beginners%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fosm-for-beginners%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fosm-for-beginners%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/apigateway-for-beginners/" class="pagination--pager" title="OCI API Gatewayハンズオン
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/" class="pagination--pager" title="Helidon(MP)を始めてみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>
