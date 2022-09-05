@@ -911,6 +911,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/audit-log-analytics/",
         "teaser": "/ocitutorials/intermediates/audit-log-analytics/audit-loganalytics16.png"
       },{
+        "title": "OCI Network Firewallを構築する",
+        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。 所要時間 : 約70分 前提条件 : ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントを参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 はじめに : 以下が本チュートリアルで作成するNetwork Firewallの構成図です。 Network Firewallについて Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。 Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。 各サブネットとルート表について インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。Network Firewallによって検査されたトラフィックは「NFW Subnetルート表」のルールにより、Public Subnet内のインスタンスへ転送されます。 Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network Firewallによって検査されたアウトバウンド通信はInternet Gatewayを介してインターネットに出ます。 ルールについて Network...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/intermediates/networkfirewall/",
+        "teaser": "/ocitutorials/intermediates/networkfirewall/nfw1.png"
+      },{
         "title": "TerraformでOCIの構築を自動化する",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
