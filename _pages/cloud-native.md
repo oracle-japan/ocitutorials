@@ -104,7 +104,16 @@ lastmod: "2022-04-06"
 
 <br />
 
-# 5. Helidonチュートリアル
+# 5. Oracle Cloud Infrastructure Service Meshチュートリアル
+
+## 初級編
+
++ **[OCI Service Meshを使ってサービスメッシュ環境を作ろう](/ocitutorials/cloud-native/osm-for-beginners/)**  
+    OCI Service Meshを利用してBookInfoアプリケーションを動かしてみます。【所要時間:約1時間】
+
+<br />
+
+# 6. Helidonチュートリアル
 
 ## 初級編
 
