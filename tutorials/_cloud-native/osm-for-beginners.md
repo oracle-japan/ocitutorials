@@ -97,9 +97,9 @@ OCIコンソール画面で左上のメニューを展開して、`アイデン�
 
 以下のように動的グループを作成します。  
 
-* 名前：`MeshDynamicGroup`
-* 説明：`MeshDynamicGroup`
-* ルール1：
+- 名前：`MeshDynamicGroup`
+- 説明：`MeshDynamicGroup`
+- ルール1：
   ```
   ANY {instance.compartment.id = '<事前準備で取得したご利用のコンパートメントのOCID>'}
   ANY {resource.type='certificateauthority', resource.type='certificate'}
@@ -107,7 +107,7 @@ OCIコンソール画面で左上のメニューを展開して、`アイデン�
 
 動的グループの意味はそれぞれ以下です。
 
-| ルール                                                                               | 説明                                                   |
+| 動的グループ                                                                               | 説明                                                   |
 | ------------------------------------------------------------------------------------ |
 | ANY {instance.compartment.id = '<事前準備で取得したご利用のコンパートメントのOCID>'} | コンパートメント内の全てのインスタンスを意味するルール |
 | ANY {resource.type='certificateauthority', resource.type='certificate'}              | 証明書サービスを意味するルール                         |
@@ -117,9 +117,9 @@ OCIコンソール画面で左上のメニューを展開して、`アイデン�
 
 以下のようにポリシーを作成します。  
 
-* 名前：`MeshPolicy`
-* 説明：`MeshPolicy`
-* ルール1：
+- 名前：`MeshPolicy`
+- 説明：`MeshPolicy`
+- ポリシー：
   ```
   Allow dynamic-group MeshDynamicGroup to use keys in compartment <ご利用のコンパートメント名>
   Allow dynamic-group MeshDynamicGroup to manage objects in compartment <ご利用のコンパートメント名>
@@ -134,18 +134,17 @@ OCIコンソール画面で左上のメニューを展開して、`アイデン�
 
 ポリシーの意味はそれぞれ以下です。
 
- | ルール                                                                                                                        | 説明                                                                                       |
+ | ポリシー                                                                                                                        | 説明                                                                                       |
  | ----------------------------------------------------------------------------------------------------------------------------- |
  | Allow dynamic-group MeshDynamicGroup to use keys in compartment <ご利用のコンパートメント名>                                  | 動的グループがコンパートメント内のOCI Vault Keyを利用するためのポリシー                    |
  | Allow dynamic-group MeshDynamicGroup to manage objects in compartment <ご利用のコンパートメント名>                            | 動的グループがコンパートメント内のオブジェクトストレージ内のデータを管理するためのポリシー |
  | Allow dynamic-group MeshDynamicGroup to manage service-mesh-family in compartment <ご利用のコンパートメント名>                | 動的グループがOCI Service Meshを管理するためのポリシー                                     |
- | Allow dynamic-group MeshDynamicGroup to read certificate-authority-family in compartment <ご利用のコンパートメント名>         | 動的グループが証明書サービスの認証局を管理するためのポリシー                               |
+ | Allow dynamic-group MeshDynamicGroup to read certificate-authority-family in compartment <ご利用のコンパートメント名>         | 動的グループが証明書サービスの認証局を利用するためのポリシー                               |
  | Allow dynamic-group MeshDynamicGroup to use certificate-authority-delegates in compartment <ご利用のコンパートメント名>       | 動的グループが証明書サービスの各認証局と証明書を利用するためのポリシー                     |
- | Allow dynamic-group MeshDynamicGroup to manage leaf-certificate-family in compartment <ご利用のコンパートメント名>            | 動的グループが証明書サービスの各認証局と証明書を利用するためのポリシー                     |
- | Allow dynamic-group MeshDynamicGroup to manage certificate-authority-associations in compartment <ご利用のコンパートメント名> | 動的グループが証明書サービスの認証局アソシエーション利用するためのポリシー                 |
- | Allow dynamic-group MeshDynamicGroup to manage certificate-associations in compartment <ご利用のコンパートメント名>           | 動的グループが証明書サービスの証明書アソシエーション利用するためのポリシー                 |
- | Allow dynamic-group MeshDynamicGroup to manage cabundle-associations in compartment <ご利用のコンパートメント名>              | 動的グループが証明書サービスのバンドルアソシエーション利用するためのポリシー               |
-
+ | Allow dynamic-group MeshDynamicGroup to manage leaf-certificate-family in compartment <ご利用のコンパートメント名>            | 動的グループが証明書サービスの各認証局と証明書を管理するためのポリシー                     |
+ | Allow dynamic-group MeshDynamicGroup to manage certificate-authority-associations in compartment <ご利用のコンパートメント名> | 動的グループが証明書サービスの認証局アソシエーションを管理するためのポリシー                 |
+ | Allow dynamic-group MeshDynamicGroup to manage certificate-associations in compartment <ご利用のコンパートメント名>           | 動的グループが証明書サービスの証明書アソシエーションを管理するためのポリシー                 |
+ | Allow dynamic-group MeshDynamicGroup to manage cabundle-associations in compartment <ご利用のコンパートメント名>              | 動的グループが証明書サービスのバンドルアソシエーションを管理するためのポリシー               |
 
 これで、動的グループとポリシーの作成は完了です。
 
@@ -163,7 +162,7 @@ Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)
 
 Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールが完了したら、以下のコマンドを実行し、OSOK用のNamespaceを作成します。
 
-```
+```sh
 kubectl create ns oci-service-operator-system
 ```
 
@@ -175,7 +174,7 @@ operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.1.0 -n 
 
 以下のように出力され、OSOKがインストールされます。
 
-```
+```sh
 INFO[0036] Successfully created registry pod: iad-ocir-io-oracle-oci-service-operator-bundle-X-X-X 
 INFO[0036] Created CatalogSource: oci-service-operator-catalog 
 INFO[0037] OperatorGroup "operator-sdk-og" created      
@@ -258,19 +257,19 @@ OCI Service Meshのリソースの全体像をまとめておきます。
 
 まず、最初にBookinfoアプリケーション用のNamespaceを作成します。
 
-```
+```sh
 kubectl create namespace bookinfo
 ```
 
 次に、bookinfo Namespaceに対して、OCI Service Meshを有効にするラベルを付与します。
 
-```
+```sh
 kubectl label namespace bookinfo servicemesh.oci.oracle.com/sidecar-injection=enabled
 ```
 
 Bookinfoアプリケーションをデプロイします。  
 
-```
+```sh
 kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/bookinfo/platform/kube/bookinfo.yaml
 ```
 
@@ -297,7 +296,7 @@ YOUR_CERTIFICATE_AUTHORITY_OCID=ocid1.certificateauthority.oc1.xxxxxxxxxx
 YOUR_CERTIFICATE_OCID=ocid1.certificate.oc1.xxxxxxxxxx
 ```
 
-`bookinfo_mesh.yaml`を作成します。 
+`bookinfo_mesh.yaml`を作成します。  
 
 ```yaml
 cat > bookinfo_mesh.yaml << EOF
@@ -849,7 +848,7 @@ EOF
 
 それでは作成したManifestを順番に適用していきます。
 
-```
+```sh
 kubectl apply -f bookinfo_mesh.yaml
 kubectl apply -f binding.yaml
 kubectl apply -f service.yaml
@@ -863,7 +862,7 @@ kubectl apply -f service.yaml
 
 Podが全て起動していることを確認します。
 
-```
+```sh
 $ kubectl get pods -n bookinfo
 NAME                                                              READY   STATUS    RESTARTS   AGE
 bookinfo-ingress-gateway-deployment-deployment-595f7d5bc5-fqrbf   1/1     Running   0          23s
@@ -877,7 +876,7 @@ reviews-v3-b77c579-69pkq                                          2/2     Runnin
 
 アプリケーションにアクセスするにはイングレスゲートウェイ(実態はOCI LoadBalancerになります)を利用するので、以下のコマンドでIPアドレスを確認します。
 
-```
+```sh
 $ kubectl get svc -n bookinfo
 NAME                                          TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                      AGE
 bookinfo-ingress                              LoadBalancer   10.96.213.172   xxx.xxx.xxx.xxx 80:31700/TCP,443:31248/TCP   2m51s
