@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-09-05T14:47:13+09:00">
+  <meta property="article:published_time" content="2022-09-07T10:03:42+09:00">
 
 
 
@@ -377,7 +377,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="402 : Database Linkによるデータ連携">
     <meta itemprop="description" content="Database Linkを使えば、あるデータベースから別のデータベースへのアクセスが可能になります。Autonomous DatabaseにおけるDatabase Link作成手順をご紹介します。">
-    <meta itemprop="datePublished" content="2022-09-05T14:47:13+09:00">
+    <meta itemprop="datePublished" content="2022-09-07T10:03:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -799,10 +799,18 @@ END;
 
 <h1 id="4-vcnのイングレスルールの追加">4. VCNのイングレス・ルールの追加</h1>
 <p>1522番ポートを使用するようにしましたが、デフォルトでは許可されていません。そのためイングレス・ルールを追加する必要があります。<br />
-DBCSを配置したパブリック・サブネットのセキュリティ・リストのイングレス・ルールに以下を追加します。
+ADBには、Database Linkで連携する際やAPIを実行する際に利用されるパブリックIPアドレスである、OUTBOUND_IP_ADDRESSが割り当てられています。このIPアドレスをイングレス・ルールに設定することで、そのADBインスタンスからのアクセスに制限することができます。v$pdbsのCLOUD_IDENTITY列で確認可能です。</p>
+
+<p>ADBに接続して、以下を実行します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">CLOUD_IDENTITY</span> <span class="k">from</span> <span class="n">v</span><span class="err">$</span><span class="n">pdbs</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><img src="cloud_identity.png" alt="cloud_identityイメージ" /></p>
+
+<p>DBCSを配置したパブリック・サブネットのセキュリティ・リストのイングレス・ルールに以下を追加します。
 <img src="ingress_rule.png" alt="ingress_ruleイメージ" /></p>
 <ul>
-  <li>ソース：VCNのCIDRブロック</li>
+  <li>ソース：(ADBのOUTBOUND_IP_ADDRESS)/32</li>
   <li>IPプロトコル：TCP</li>
   <li>ソース・ポート範囲：All</li>
   <li>宛先ポート範囲：1522</li>
@@ -969,7 +977,7 @@ HRスキーマのCOUNTRIES表にアクセスできていることがわかりま
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-05T14:47:13+09:00">September 5, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-07T10:03:42+09:00">September 7, 2022</time></p>
 
 
       </footer>
