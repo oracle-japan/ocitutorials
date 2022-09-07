@@ -100,15 +100,7 @@ Always Freeの範囲内でも十分に確認できる題材となっているの
 
 1. 必要データのダウンロード
 
-    今回利用するワークショップ用のデータをダウンロードしていきます。
-    下記URLをブラウザに入力してダウンロードする場合
-    [https://objectstorage.us-ashburn-1.oraclecloud.com/p/EmjceN7dh4exJAwe8llQzAOMi4Y4pe9deZbpOXDpcjmoXYQ98Xu7XVFinPudEQwM/n/c4u04/b/data-management-library-files/o/random-acct-txn-data.zip](https://objectstorage.us-ashburn-1.oraclecloud.com/p/EmjceN7dh4exJAwe8llQzAOMi4Y4pe9deZbpOXDpcjmoXYQ98Xu7XVFinPudEQwM/n/c4u04/b/data-management-library-files/o/random-acct-txn-data.zip)
-    
-    wegetやcurlを使う場合
-
-    ```bash
-    curl -G -o acct-txn-data.zip https://objectstorage.us-ashburn-1.oraclecloud.com/p/EmjceN7dh4exJAwe8llQzAOMi4Y4pe9deZbpOXDpcjmoXYQ98Xu7XVFinPudEQwM/n/c4u04/b/data-management-library-files/o/random-acct-txn-data.zip
-    ```
+    今回利用するワークショップ用のデータを[こちら](https://github.com/r-deguchi/random-acct-txn){:target="_blank"}から**random-acct-txn-data.zip**というファイルをダウンロードします。
 
     ダウンロードができたら、unzipしておきましょう。unzipすると下記のようなデータが確認可能となっており、mac OS用のデータも入っています。
     ![dataunzip.jpg](dataunzip.jpg)
