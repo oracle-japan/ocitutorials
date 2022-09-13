@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-09-09T13:36:45+09:00">
+  <meta property="article:published_time" content="2022-09-13T10:43:37+09:00">
 
 
 
@@ -351,7 +351,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Network Firewallを構築する">
     <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
-    <meta itemprop="datePublished" content="2022-09-09T13:36:45+09:00">
+    <meta itemprop="datePublished" content="2022-09-13T10:43:37+09:00">
     
 
     <div class="page__inner-wrap">
@@ -394,7 +394,14 @@
 </ul>
 
 <p>Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。
- Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。</p>
+ Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。
+ Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。</p>
+<ul>
+  <li>パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御</li>
+  <li>アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止</li>
+</ul>
+
+<p><br /></p>
 
 <ul>
   <li><strong>各サブネットとルート表について</strong></li>
@@ -403,6 +410,8 @@
 <p>インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。Network Firewallによって検査されたトラフィックは「NFW Subnetルート表」のルールにより、Public Subnet内のインスタンスへ転送されます。
  Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network Firewallによって検査されたアウトバウンド通信はInternet Gatewayを介してインターネットに出ます。</p>
 
+<p><br /></p>
+
 <ul>
   <li><strong>ルールについて</strong></li>
 </ul>
@@ -410,12 +419,16 @@
 <p>Network Firewallポリシーにて、特定のポート番号、IPアドレス、URLのアクセスを許可/拒否するよう設定が可能です。
  本チュートリアルではポート番号22, 3389, 443のアクセスと、URL「www.google.com」「www.google.com」のアクセスを許可します。一方「www.yahoo.co.jp」「www.facebook.com」のアクセスを拒否し、実際にコンピュートインスタンスから各URLへアクセスが許可/拒否されることを確認します。</p>
 
+<p><br /></p>
+
 <ul>
   <li><strong>ユーザーについて</strong></li>
 </ul>
 
 <p>本チュートリアルでは、Network Firewallの環境を構築したらユーザーとしてSSHでPublic Subnet内のコンピュートインスタンスにアクセスし、コンピュートインスタンスからネットワーク・ファイアウォール・ポリシーで設定したURLへのアクセスが許可/拒否されることを確認します。
  URLのアクセス制御の動作確認方法として、wgetコマンドを用いる方法と、ブラウザを用いる方法の2つを紹介します。</p>
+
+<p><br /></p>
 
 <h1 id="1-ネットワークの構築">1. ネットワークの構築</h1>
 
@@ -683,13 +696,17 @@
 <p><br /></p>
 
 <h2 id="2-4-補足sslについて">2-4. (補足)SSLについて</h2>
-<p>本チュートリアルでは設定しませんが、ネットワーク・ファイアウォール・ポリシーの「マップされたシークレット」、「復号化プロファイル」にて証明書関連の設定を行うことが可能です。</p>
+<p>本チュートリアルでは設定しませんが、ネットワーク・ファイアウォール・ポリシーの「マップされたシークレット」、「復号化プロファイル」にて証明書関連の設定を行うことが可能です。
+クライアントとサーバー間の通信がSSLによって暗号化されている場合、本機能を利用することでHTTPSトラフィックを復号化し、通信の内容を検査することが可能です。</p>
 
 <p>「マップされたシークレット」とは、OCI Vaultサービスで設定された証明書認証のことを指します。「マップされたシークレット」は「SSL転送プロキシ」または「SSLインバウンド検査」を使用してSSL/TLSトラフィックを復号化、検査するために使用されます。「マップされたシークレット」を作成するには、OCI Vaultサービスでシークレット情報が作成されている必要があります。
 証明書認証の設定については<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/setting-up-certificate-authentication.htm#network-firewall-setting-up-certificate-authentication">ドキュメント</a>を参照ください。</p>
 
 <p>「復号化プロファイル」では、「SSL転送プロキシ」または「SSLインバウンド検証」の設定を行うことができます。
-「SSL転送プロキシ」では、内部ユーザーからNetwork Firewallを経由してインターネットへ出るSSL/TLSトラフィックを復号化し、以下のような条件を検知しアクションを取ることが可能です。</p>
+「SSL転送プロキシ」では、Network Firewallが内部クライアントとサーバーの仲介サーバーとなり、登録された証明書を使用して内部クライアントと外部サーバーそれぞれと通信をします。
+「SSLインバウンド検査」では外からのインバウンド通信を復号化し、内容を検査します。</p>
+
+<p>「SSL転送プロキシ」は内部ユーザーからNetwork Firewallを経由してインターネットへ出るSSL/TLSトラフィックを復号化し、以下のような条件を検知しアクションを取ることが可能です。</p>
 <ul>
   <li>期限切れ証明書をブロック</li>
   <li>信頼されていない発行者をブロック</li>
@@ -700,7 +717,7 @@
   <li>処理リソースがない場合はブロック</li>
 </ul>
 
-<p>「SSLインバウンド検査」は以下の条件を検知してアクションを取ることが可能です。</p>
+<p>「SSLインバウンド検査」は外部のクライアントからNetwork Firewallに保護されたサーバーへのインバウンドのSSL/TLS通信を復号化し、以下の条件を検知してアクションを取ることが可能です。</p>
 <ul>
   <li>サポートされていないSSLバージョンのセッションをブロック</li>
   <li>サポートされていないSSL暗号スイートのセッションをブロック</li>
@@ -1079,7 +1096,7 @@ Windowsのホーム画面左下のメニューから「Server Manager」を選�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-09T13:36:45+09:00">September 9, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-13T10:43:37+09:00">September 13, 2022</time></p>
 
 
       </footer>
