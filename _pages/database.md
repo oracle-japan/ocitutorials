@@ -52,6 +52,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[101: ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/){:target="_blank"}**   
 
++ **[102: ExaDB-D上のPDBを管理しよう](/ocitutorials/database/exadb-d102-manage-pdb/){:target="_blank"}** 
+
 <br/>
 
 # <span style="color: brown; ">■ Autonomous Database (ADB)を使ってみよう</span>
