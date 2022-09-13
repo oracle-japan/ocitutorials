@@ -467,6 +467,12 @@ var store = [{
         "url": "/ocitutorials/database/exadb-d101-create-exadb-d/",
         "teaser": "/ocitutorials/database/exadb-d101-create-exadb-d/teaser.png"
       },{
+        "title": "102 : ExaDB-D上のPDBを管理しよう",
+        "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、Oracle Cloud Infrastructureの上で稼働するOracle DatabaseのPDBをOCIコンソールから停止したり、起動したり、既存PDBからクローンするなどの操作が簡単に行うことが可能です。この章では実際にどのように操作するのか確認していきます。 目次 : 1. PDBの起動・停止 2. PDBの新規作成 3. PDBクローンの作成 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること 所要時間 : 約1時間 1. PDBの起動・停止 OCIコンソール・メニューから Oracle Database → Oracle Public Cloud上のExadata に移動します。 操作したいPDBを持つExadata VMクラスタの表示名をクリックします。 データベースの一覧から対象のデータベースの名前をクリックします。 リソースの一覧からプラガブル・データベースをクリックします。 操作したいPDBの右側にある・・・メニューをクリックして、停止をクリックします。 確認画面が表示されたら、PDBの停止をクリックします。 操作したPDBの状態が更新中に変化します。 停止が完了すると状態が使用可能に戻ります。 対象のPDBのプラガブル・データベースの詳細でオープン・モードを確認できます。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/exadb-d102-manage-pdb/",
+        "teaser": "/ocitutorials/database/exadb-d102-manage-pdb/teaser.png"
+      },{
         "title": "101: ADBインスタンスを作成してみよう",
         "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、Database Actionsを使用してアクセスしてみます。 目次 1. リージョンを設定し、コンパートメントを用意しよう 2. ADBインスタンスを作成してみよう 3. Database Actionsで操作してみよう 所要時間 : 約20分 1. リージョンを設定し、コンパートメントを用意しよう 1-1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足...","categories": [],
         "tags": [],
