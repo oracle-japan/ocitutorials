@@ -415,9 +415,18 @@ SELECT * FROM table(dbms_cloud.list_files('dblink_wallet_dir_dbcs')) WHERE objec
 
 # 4. VCNのイングレス・ルールの追加
 1522番ポートを使用するようにしましたが、デフォルトでは許可されていません。そのためイングレス・ルールを追加する必要があります。  
+ADBには、Database Linkで連携する際やAPIを実行する際に利用されるパブリックIPアドレスである、OUTBOUND_IP_ADDRESSが割り当てられています。このIPアドレスをイングレス・ルールに設定することで、そのADBインスタンスからのアクセスに制限することができます。v$pdbsのCLOUD_IDENTITY列で確認可能です。
+
+ADBに接続して、以下を実行します。
+```sql
+select CLOUD_IDENTITY from v$pdbs;
+```
+
+![cloud_identityイメージ](cloud_identity.png)
+
 DBCSを配置したパブリック・サブネットのセキュリティ・リストのイングレス・ルールに以下を追加します。
 ![ingress_ruleイメージ](ingress_rule.png)
-+ ソース：VCNのCIDRブロック
++ ソース：(ADBのOUTBOUND_IP_ADDRESS)/32
 + IPプロトコル：TCP
 + ソース・ポート範囲：All
 + 宛先ポート範囲：1522
