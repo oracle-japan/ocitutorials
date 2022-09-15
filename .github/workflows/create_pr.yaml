@@ -9,10 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate Token
+        uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Create pull request
         uses: actions/github-script@v2
         with:
-          github-token: ${{ secrets.CREATEPRSECRET }}
+          github-token: ${{ steps.generate-token.outputs.token }}
           script: |
             github.pulls.create({
               owner: context.repo.owner,
