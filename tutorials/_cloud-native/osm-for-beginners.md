@@ -279,7 +279,7 @@ kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/relea
 
 次に、OCI Service Meshを構成するためのリソースを作っていきます。
 
-なお、Manifestの中でアプリケーションのホスト名が定義されていますが、今回は`service-mesh.com`とします。  
+なお、Manifestの中でアプリケーションのホスト名が定義されていますが、今回は`service-mesh.oracle.com`とします。  
 後でhostsファイルを編集します。
 
 OCI Service Meshのリソースを作成するためのManifest`bookinfo_mesh.yaml`を作成します。  
