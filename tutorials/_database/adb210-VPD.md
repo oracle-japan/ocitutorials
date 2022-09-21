@@ -132,7 +132,7 @@ AS
 BEGIN
 -- 条件となる文字列を変数v_textに代入し、RETURNで返すように設定
   v_text := 'c_region='''||UPPER(SYS_CONTEXT('USERENV','SESSION_USER')||'''');
-  RETRUN v_text;
+  RETURN v_text;
 end;
 / 
 ```
