@@ -43,10 +43,14 @@ allow dynamic-group <your dynamic-group-name> to use metrics in tenancy / compar
 > チュートリアル内の画面ショットについては現在のコンソール画面と異なっている場合があります。
 <br>
 
+<a id="anchor1"></a>
+
 # 1. Oracle Cloud Agent プラグインの有効化
 + コンピュートインスタンスの詳細画面で管理エージェントのプラグインを有効にします。
   ![画面ショット2](prom2.png)
 <br><br>
+
+<a id="anchor2"></a>
 
 # 2. 管理エージェント ステータスの確認
 + 監視および管理 > 管理エージェント > エージェント
@@ -56,6 +60,8 @@ allow dynamic-group <your dynamic-group-name> to use metrics in tenancy / compar
   ![画面ショット4](prom4.png)
 <br><br>
 
+<a id="anchor3"></a>
+
 # 3. Node Exporter ダウンロード
 + コンピュート・インスタンスにSSHでログインし、OPCユーザーで以下コマンドを実行します。※2022年9月時点でNode Exporterの最新版はv1.3.1
 ```
@@ -64,6 +70,8 @@ wget https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_e
 + または、[Github](https://github.com/prometheus/node_exporter/releases)から直接ダウンロードし、SCPツール等で監視対象サーバーにコピーします。
   ![画面ショット5](prom5.png)
 <br><br>
+
+<a id="anchor4"></a>
 
 # 4. Node Exporter インストールの確認
 + 解凍した後、インストール確認のためNode_Exporterを実行します。
@@ -86,6 +94,8 @@ curl http://localhost:9100/metrics
   ![画面ショット7](prom7.png)
 <br><br>
 
+<a id="anchor5"></a>
+
 # 5. SElinux モード変更
 + Node Exporterが自動起動するようにサービス化するため、SELinuxのモードを変更しておきます。
 ```
@@ -96,6 +106,8 @@ sudo vi /etc/selinux/config
 
 + getenforceコマンドでモードがpermissiveに変更されていることを確認します。
 <br><br>
+
+<a id="anchor6"></a>
 
 # 6. Node Exporter サービス化
 + Systemdのユニット定義ファイルを作成します
@@ -136,6 +148,8 @@ sudo systemctl start node_exporter
 sudo systemctl status node_exporter
 ```
 <br>
+
+<a id="anchor7"></a>
 
 # 7. 管理エージェント 構成ファイルの作成
 + 管理エージェントの検出ディレクトリに構成ファイルを配置します。拡張子は必ず .properties とします。
@@ -182,19 +196,25 @@ compartmentId=ocid1.compartment.oc1..aaaaaaaa3ypj2e4upj5hebkivdksna2nkelu3pjmimy
   - node_filesystem_avail_bytes（ファイルシステム使用量）
 <br><br>
 
+<a id="anchor8"></a>
+
 # 8. モニタリングでメトリックを確認
 + 構成ファイルを配置すると、1分程度でメトリックが反映されます。
   ![画面ショット9](prom9.png)
 
 + ネームスペースやメトリック名で構成ファイルで定義したメトリックを選択できるようになっています。
-  ![画面ショット11](prom11.png)
+  ![画面ショット11](prom11.PNG)
   ![画面ショット12](prom12.png)
 <br><br>
+
+<a id="anchor9"></a>
 
 # 参考：メトリックのフィルタリングについて
 + Node Exporterでは多くのメトリックがデフォルトで有効になっており、大量のデータがOCIに送信されます。カスタムメトリックのInjectionは課金対象となるため、「allowMetrics」で必要なメトリックのみ許可する設定をお勧めします。メトリックの種類については公開された情報がないようですので、Node Exporterを起動して確認してください。※参照：[4. Node Exporter インストールの確認](#anchor4)
   ![画面ショット10](prom10.png)
 <br><br>
+
+<a id="anchor10"></a>
 
 # 参考：コレクタによるフィルタリング
 + Node Exporterにはコレクタという概念があり、メトリックの種類ごとにカテゴリ分けがされています。Node Exporter起動時にコレクタを有効化・無効化することができますので、こちらを使ってメトリックをフィルタリングすることも可能です。
@@ -214,6 +234,8 @@ compartmentId=ocid1.compartment.oc1..aaaaaaaa3ypj2e4upj5hebkivdksna2nkelu3pjmimy
 
 + コレクタの種類と有効化・無効化の設定詳細については[Node Exporterのドキュメント](https://github.com/prometheus/node_exporter/blob/master/README.md)を参照ください。
 <br><br>
+
+<a id="anchor11"></a>
 
 # 参考：管理エージェントのログファイルの配置場所
 + Oracle Cloud Agent プラグインを使用している場合
