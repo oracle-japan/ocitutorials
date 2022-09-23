@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-09-21T10:56:50+09:00">
+  <meta property="article:published_time" content="2022-09-23T21:39:31+09:00">
 
 
 
@@ -312,6 +312,8 @@
         
           <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
         
           <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
@@ -351,7 +353,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Data Integrationチュートリアル">
     <meta itemprop="description" content="OCI Data IntegrationはグラフィカルなインタフェースでノーコーディングでETL処理を行うことができるフルマネージドのサービスです。様々なデータ変換機能を提供し、データの準備、統合、ロードを簡単に行うことができます。この文書では基本的な機能の説明や使い方をステップ・バイ・ステップで紹介します。">
-    <meta itemprop="datePublished" content="2022-09-21T10:56:50+09:00">
+    <meta itemprop="datePublished" content="2022-09-23T21:39:31+09:00">
     
 
     <div class="page__inner-wrap">
@@ -478,15 +480,19 @@
 </ol>
 
 <h2 id="vcnとサブネットの作成">VCNとサブネットの作成</h2>
-<p>Data Integrationで利用するコンパートメントでVCNとサブネット(リージョナル）を作成します。手順は<a href="../../beginners/creating-vcn/" target="_blank">“その2-クラウドに仮想ネットワーク(VCN)を作る”</a>をご確認ください。作成したサブネットから利用するAutonomous Database、オブジェクト・ストレージへ接続可能である必要があるため、サービス・ゲートウェイをターゲット・タイプに含めるルート・ルールをルート表に追加します。</p>
+<p>Data Integrationからプライベート・ネットワーク上のデータソースにアクセスするためにはVCNの構成が必要です。Data Integrationで利用するコンパートメントでVCNとサブネット(リージョナル）を作成します。手順は<a href="../../beginners/creating-vcn/" target="_blank">“その2-クラウドに仮想ネットワーク(VCN)を作る”</a>をご確認ください。作成したサブネットから利用するAutonomous Database、オブジェクト・ストレージへ接続可能である必要があるため、サービス・ゲートウェイをターゲット・タイプに含めるルート・ルールをルート表に追加します。</p>
 
 <p><img src="addroute.png" alt="ルート・ルールの追加イメージ" /></p>
+
+<blockquote>
+  <p>Data Integrationとデータソースの場所別のケース例についてはOracle blogsの記事<a href="https://blogs.oracle.com/dataintegration/post/understanding-vcn-configuration-for-oracle-cloud-infrastructure-oci-data-integration">“Understanding VCN Configuration for Oracle Cloud Infrastructure (OCI) Data Integration”</a>を参考にしてください。</p>
+</blockquote>
 
 <h2 id="必要なポリシーの作成">必要なポリシーの作成</h2>
 <p>ポリシーを作成します。
 OCI管理者ユーザーでログイン後、OCIコンソールのナビゲーションメニューで<strong>アイデンティティとセキュリティ</strong>に移動し、<strong>ポリシー</strong>を選択します。次にコンパートメントを選択し、<strong>ポリシーの作成</strong>をクリックします。</p>
 <blockquote>
-  <p>本文書ではポリシー・ビルダーを使用しますが、実際は必要なセキュリティにあわせて設定を行ってください。</p>
+  <p>本文書ではポリシー・ビルダーを使用しますが、実際は必要なセキュリティにあわせて設定を行ってください。Data Integrationのポリシーおよびポリシーの例は<a href="https://docs.oracle.com/ja-jp/iaas/data-integration/using/policies.htm">ドキュメント</a>をご確認ください。</p>
 </blockquote>
 
 <p><img src="addpolicy1.png" alt="ポリシー追加の説明1" /></p>
@@ -613,8 +619,13 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 <p><img src="createproject.png" alt="プロジェクト作成" /></p>
 
 <h2 id="データフローの作成">データ・フローの作成</h2>
-<p>プロジェクトのメニューで<strong>データ・フロー</strong>を選択します。<strong>データ・フローの作成</strong>をクリックするとデータ・フロー・エディタというビジュアルエディタが起動します。<br />
-表示されるプロパティで名前を”新規データ・フロー”から<code class="language-plaintext highlighter-rouge">Load Customers and Revenue Data</code>に変更しましょう。</p>
+<p>プロジェクトのメニューで<strong>データ・フロー</strong>を選択します。<strong>データ・フローの作成</strong>をクリックするとデータ・フロー・エディタというビジュアルエディタが起動します。</p>
+
+<blockquote>
+  <p>現行リリースでは演算子の条件や式にマルチバイト文字が含まれている場合に検証でエラーが発生する場合があります。この章の説明は日本語UIですが、エラーを回避するために英語UIで実施いただくこともご検討ください。</p>
+</blockquote>
+
+<p>表示されるプロパティで名前を”新規データ・フロー”から<code class="language-plaintext highlighter-rouge">Load Customers and Revenue Data</code>に変更しましょう。</p>
 
 <p><img src="flowname.png" alt="flowの名前変更" /></p>
 
@@ -706,12 +717,20 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
     <p>条件を以下のように修正し、作成をクリックします。</p>
 
     <p><code class="language-plaintext highlighter-rouge">フィルタ_1.CUSTOMERS_JSON.COUNTRY_CODE='US'</code></p>
-
-    <blockquote>
-      <p>現行リリースでは条件や式にマルチバイト文字が含まれていると保存できないという問題があるため、属性名を`で囲む必要があります。上の場合は、フィルタ_1.CUSTOMERS_JSON.COUNTRY_CODEを`で囲んでください。</p>
-    </blockquote>
   </li>
 </ol>
+
+<blockquote>
+  <p>現行リリースでは条件や式にマルチバイト文字が含まれていると検証エラーになるという問題があります。識別子の日本語（”フィルター1”)がデフォルトで属性のパスとなるため、属性タブでフィルター1のメニューボタンをクリックし、”名前変更”で”フィルタ_1”を”FILTER_1”と変更してください。その後詳細タブで条件に日本語が含まれていないかご確認ください。</p>
+</blockquote>
+
+<blockquote>
+  <p><img src="rename_attribute.png" alt="識別子名前変更" /></p>
+</blockquote>
+
+<blockquote>
+  <p>以降の説明でも識別子名がデフォルトで日本語となるため、条件や式に日本語が入らないように属性タブで名前変更をお願いいたします。</p>
+</blockquote>
 
 <h3 id="revenue_csvのorder_statusの値が1-bookedのフィルタを設定">REVENUE_csvのORDER_STATUSの値が”1-Booked”のフィルタを設定</h3>
 <p>CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、CUSTOMERS_jsonのフィルタ設定の1～4までの手順を行います。<br />
@@ -724,12 +743,6 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 <p><img src="filter3.png" alt="フィルタ3" /></p>
 
 <p><strong>保存</strong>をクリックしてここまでの作業を保存します。</p>
-
-<blockquote>
-  <p>保存時に次のエラーが出力された場合は条件ビルダーや式ビルダ―でマルチバイトの属性名が`で囲まれているかどうかを確認してください</p>
-
-  <p><img src="null.png" alt="ＮULLエラー" /></p>
-</blockquote>
 
 <h2 id="データの変換">データの変換</h2>
 <p>フィルタ後のCUSTOMERS_JSONデータに対して以下の変換を行います。</p>
@@ -913,7 +926,7 @@ OCI管理者ユーザーでログイン後、OCIコンソールのナビゲー�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-21T10:56:50+09:00">September 21, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-23T21:39:31+09:00">September 23, 2022</time></p>
 
 
       </footer>

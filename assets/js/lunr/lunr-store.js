@@ -989,6 +989,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/management-cloud-tutorials/",
         "teaser": null
       },{
+        "title": "Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集",
+        "excerpt":"チュートリアル概要説明 このチュートリアルでは、Node Exporterが収集したOCIインスタンスのメトリックをモニタリングで可視化するまでのステップをご紹介します。 本チュートリアルはこちらのドキュメントを補足する内容となりますので、あわせてご参照ください。 所要時間 : 約30分 前提条件 : 監視対象となるコンピュート・インスタンスの作成 参考：その3 - インスタンスを作成する OSはOracle Linux 7.9 管理エージェントはOracle Cloud Agentプラグインを使用 構成のイメージ 必要な権限 : 以下の権限設定が最低限必要となります。 動的グループ all {resource.type = 'managementagent', resource.compartment.id ='&lt;your compartment id&gt;'} 動的グループの概要と設定方法については以下を参照ください。 参考：OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細 ポリシー allow service loganalytics to read loganalytics-features-family in tenancy allow dynamic-group &lt;your dynamic-group-name&gt; to...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/intermediates/monitoring_prometheus/",
+        "teaser": "/ocitutorials/intermediates/monitoring_prometheus/prom1.png"
+      },{
         "title": "Cloud Guardを使ってみる",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
