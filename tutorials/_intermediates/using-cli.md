@@ -111,7 +111,7 @@ OCI の CLI では、Oracle Cloud Infrastructure SDK for Python上に構築さ�
    oci -v
    ```
 
-   「2.16.1」のように、バージョンが返ってきていれば、正しくインストールが完了しています。
+   「3.14.0」のように、バージョンが返ってきていれば、正しくインストールが完了しています。
 
    
 
@@ -121,9 +121,12 @@ Oracle Cloud Infrastructure CLI はターミナル・コンソールから実行
 
 Bashの利用は必須ではありません。OCIのCLIを利用するだけであれば、WindowsのコマンドプロンプトやPowerShellコンソールなどでも実行可能です。
 
-ただし、このチュートリアルの後半ではbashのシェル変数を使用する箇所がありますので、チュートリアルを完了するには何かしらのbashターミナルを準備することをお勧めします。
-
-
+<!-- ただし、このチュートリアルの後半ではbashのシェル変数を使用する箇所がありますので、チュートリアルを完了するには何かしらのbashターミナルを準備することをお勧めします。 -->
+ただしコマンドプロンプトやPowerShellコンソールでは本チュートリアルの一部のコマンドをそのまま実行できないため、適宜編集してから実行してください。
+該当箇所においてNoteとして触れますが、PowerShellをお使いの場合は以下の点にご注意ください。
+- CLIからの返り値を制御するためにOCI-CLI JMESPathを用いるとき、クエリー内部の全てのダブルコーテーションをバックスラッシュ（\）でエスケープすること
+- 変数に文字列を格納するとき、左辺の変数名の前にはドル記号（$）を、右辺の文字列の最初と最後にはダブルコーテーション（"）を付加すること
+- クエリー内で変数を用いるとき、コーテーションの処理を適切に行うこと
 
 手元のPCのOSが MAC や Ubuntu 等であれば、OSに付属するbashターミナルをそのまま利用することができます。お手元のOSが Windows 10 であれば **WSL(Windows Subsystem for Linux)** の利用も可能です。セットアップ方法については [こちら](https://www.google.co.jp/search?q=windows+subsystem+for+linux+インストール) などを参考に実施してください。
 
@@ -252,7 +255,7 @@ oci setup config
 - **Enter a location for your config [C:\Users\ <ユーザー名 >\.oci\config]:** 入力なしで <kbd>Enter</kbd> キーを押下
 - **Enter a user OCID:** - ステップ2-2 で確認したユーザーのOCIDを入力
 - **Enter a tenancy OCID:** - ステップ2-2 で確認したテナンシのOCIDを入力
-- **Enter a region (e.g. eu-frankfurt-1, us-ashburn-1, us-phoenix-1):** - アクセスしたいリージョンを例に従って入力
+- **Enter a region by index or name(Enter a region by index or name(e.g.1: af-johannesburg-1, 2: ap-chiyoda-1,（中略）, 44: us-sanjose-1):** - アクセスしたいリージョンのインデックス（ap-tokyo-1リージョンなら13）、またはリージョン名を入力
 - **Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]:** - Y
 - **Enter a directory for your keys to be created [C:\Users\<ユーザー名>\.oci]:** - 入力なしで <kbd>Enter</kbd> キーを押下
 - **Enter a name for your key [oci_api_key]:** - 入力なしで <kbd>Enter</kbd> キーを押下
@@ -334,14 +337,13 @@ CLI から OCI に対してアクセスを行う際に API の認証が行われ
    oci setup oci-cli-rc
    ```
 
-2. 任意のテキストエディタで、この「***oci_cli_rc***」ファイルを開き、以下の記述を追加します。
+2. 任意のテキストエディタで、この「***oci_cli_rc***」ファイルを開き、以下の記述を追加します。<コンパートメントのOCID> には、ステップ2-2 で確認したコンパートメントのOCIDの値を入力します。
 
-   <コンパートメントのOCID> には、ステップ2-2 で確認したコンパートメントのOCIDの値を入力します。
-
-   ```
+   ```powershell
    [DEFAULT]
-    compartment-id = <コンパートメントのOCID>
+   compartment-id=<コンパートメントのOCID>
    ```
+
 
 3. 次に、先ほどと同じコマンドを、今度は「-c オプション」をつけずに実行してみます。
 
@@ -424,6 +426,14 @@ OCI-CLIのデフォルトの返り値はJSON形式になっています。
    ```
    oci compute image list --query 'data[?"operating-system"==`Oracle Linux`]'
    ```
+
+   >***Note***
+   >
+   > Windows PowerShellをお使いの場合、クエリー内部の全てのダブルコーテーションはバックスラッシュ（\）でエスケープする必要があります。例えば、上記のコマンドは次のようになります。
+   ```
+   oci compute image list --query 'data[?\"operating-system\"==`Oracle Linux`]'
+   ```
+
 
 3. 完全一致ではなく、一部の文字列を含むものを検索したい場合は、**[contains](https://jmespath.readthedocs.io/en/latest/specification.html#contains)** 句を使います。
    例えば、operating-system に Linux という文字列を含むイメージのみを抽出したい場合は、以下のようにします。
@@ -528,6 +538,14 @@ CLIを利用して、仮想クラウド・ネットワーク（VCN）を作成�
    VCNNAME=<VCNの表示名>
    ```
 
+   > ***Note***
+   > 
+   > Windows PowerShellをお使いの場合、左辺の変数名の前にはドル記号（$）を、右辺の文字列の最初と最後にはダブルコーテーション（"）を付加してください。
+   > 例えば、\<VCNの表示名\>がtutorial-cli-vcnの場合、上記のコマンドは次のようになります。
+   > ```
+   > $VCNNAME="tutorial-cli-vcn"
+   > ```
+
 2. 次に、以下のコマンドを発行して、VCNを作成します。
 
    ```sh
@@ -567,6 +585,14 @@ CLIを利用して、仮想クラウド・ネットワーク（VCN）を作成�
    ```sh
    VCNID=$(oci network vcn list --query 'data[?"display-name"==`'$VCNNAME'`].id | [0]' --raw-output)
    ```
+
+   > ***Note***
+   >
+   > Windows PowerShellで変数を含んだコマンドを記述する場合、クエリー内のコーテーションの処理を適切に行ってください。
+   > 例えば、文字列の連結演算を行った結果をクエリーに渡す方法があり、上記のコマンドは次のように書き換えることができます。
+   > ```sh
+   > $VCNID=$(oci network vcn list --query ('data[?\"display-name\"==`'+$VCNNAME+'`].id | [0]') --raw-output)
+   > ```
 
 5. シェル変数「VCNID」の値を確認します。ocid1.vcn... のような値が戻ってきたら、正しく変数が取得できています。
 
@@ -818,7 +844,7 @@ CLIを利用して、作成したサブネットの中にインスタンスを�
 
 
 
-1. インスタンスへのsshアクセスに使用する鍵ペアを作成しておきます。
+1. インスタンスへのsshアクセスに使用する鍵ペアが無い場合は作成しておきます。
 
    Bash ターミナル上で以下のコマンドを発行し、鍵ペアを新しく作成します。
 
@@ -868,13 +894,13 @@ CLIを利用して、作成したサブネットの中にインスタンスを�
    echo $IMAGEID
    ```
 
-6. 次に、以下のコマンドを発行し、インスタンスの作成に利用できるイメージのシェイプの一覧を取得します
+6. 次に、手順４で選択したイメージと互換性のあるシェイプの一覧を次のコマンドで取得します。
 
    ```sh
-   oci compute shape list --query 'data[*].shape'
+   oci compute shape list --image-id $IMAGEID --query 'data[*].shape'
    ```
 
-7. 戻ってきた値は、現在利用可能なイメージの一覧です。
+7. 戻ってきた値は、現在利用可能なシェイプの一覧です。
 
    ```sh
    [
@@ -889,7 +915,7 @@ CLIを利用して、作成したサブネットの中にインスタンスを�
    ]
    ```
 
-   この中から任意のイメージを一つ選択し、その値をシェル変数「SHAPE」に代入します。
+   この中から任意のシェイプを一つ選択し、その値をシェル変数「SHAPE」に代入します。
 
    \<シェイプ名\>は、VM.Standard2.1 などの任意の文字列に置き換えてください。
 
@@ -897,7 +923,7 @@ CLIを利用して、作成したサブネットの中にインスタンスを�
    SHAPE=<シェイプ名>
    ```
 
-8. 以下のコマンドを入力し、インスタンスを作成します。また同時にその返り値からインスタンスのOCIDを取得し、変数「INSTANCEID」に代入します。
+8. 以下のコマンドを入力し、インスタンスを作成します。また同時にその返り値からインスタンスのOCIDを取得し、変数「INSTANCEID」に代入します。ssh-authorized-keys-fileオプションで指定する公開鍵へのパスは適宜変更してください。
 
    ```sh
    INSTANCEID=$(oci compute instance launch --availability-domain $ADNAME --image-id $IMAGEID --shape $SHAPE --ssh-authorized-keys-file ".ssh/id_rsa.pub" --subnet-id $SUBNETID --assign-public-ip true --query 'data.id' --raw-output)
