@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-09-28T10:03:46+09:00">
+  <meta property="article:published_time" content="2022-09-29T14:15:06+09:00">
 
 
 
@@ -353,7 +353,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ロードバランサーでWebサーバーを負荷分散する">
     <meta itemprop="description" content="OCIのロードバランサーを使うと、冗長化したWebサーバーに対して負荷分散を簡単に構成できるようになります。しかもマネージドサービスなので管理は簡単。">
-    <meta itemprop="datePublished" content="2022-09-28T10:03:46+09:00">
+    <meta itemprop="datePublished" content="2022-09-29T14:15:06+09:00">
     
 
     <div class="page__inner-wrap">
@@ -364,7 +364,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-仮想クラウドネットワークと2つのサブネットの作成">1. 仮想クラウド・ネットワークと2つのサブネットの作成</a></li><li><a href="#2--2つのインスタンスの作成とwebサーバーの起動">2.  2つのインスタンスの作成とWebサーバーの起動</a></li><li><a href="#3-ロードバランサー用のサブネットの作成">3. ロードバランサー用のサブネットの作成</a><ul><li><a href="#3-1-ロードバランサー用のセキュリティリストの追加">3-1. ロードバランサー用のセキュリティ・リストの追加</a></li><li><a href="#3-2-ロードバランサー用のルート表の追加">3-2. ロードバランサー用のルート表の追加</a></li><li><a href="#3-3-ロードバランサー用のサブネットの追加">3-3. ロードバランサー用のサブネットの追加</a></li></ul></li><li><a href="#4-ロードバランサーの構成">4. ロードバランサーの構成</a></li><li><a href="#5-ロードバランサーへのhttp通信許可の設定">5. ロードバランサーへのhttp通信許可の設定</a></li><li><a href="#6-ロードバランサーの動作の確認">6. ロードバランサーの動作の確認</a></li><li><a href="#7-webサーバーの保護">7. Webサーバーの保護</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1-仮想クラウドネットワークとサブネットの作成">1. 仮想クラウド・ネットワークとサブネットの作成</a></li><li><a href="#2--2つのインスタンスの作成とwebサーバーの起動">2.  2つのインスタンスの作成とWebサーバーの起動</a></li><li><a href="#3-ロードバランサー用のサブネットの作成">3. ロードバランサー用のサブネットの作成</a><ul><li><a href="#3-1-ロードバランサー用のセキュリティリストの追加">3-1. ロードバランサー用のセキュリティ・リストの追加</a></li><li><a href="#3-2-ロードバランサー用のルート表の追加">3-2. ロードバランサー用のルート表の追加</a></li><li><a href="#3-3-ロードバランサー用のサブネットの追加">3-3. ロードバランサー用のサブネットの追加</a></li></ul></li><li><a href="#4-ロードバランサーの構成">4. ロードバランサーの構成</a></li><li><a href="#5-ロードバランサーへのhttp通信許可の設定">5. ロードバランサーへのhttp通信許可の設定</a></li><li><a href="#6-ロードバランサーの動作の確認">6. ロードバランサーの動作の確認</a></li><li><a href="#7-webサーバーの保護">7. Webサーバーの保護</a></li></ul>
 
             </nav>
           </aside>
@@ -388,7 +388,7 @@
 
 <p><strong>目次 :</strong></p>
 <ol>
-  <li><a href="#anchor1">仮想クラウド・ネットワークと2つのサブネットの作成</a></li>
+  <li><a href="#anchor1">仮想クラウド・ネットワークとサブネットの作成</a></li>
   <li><a href="#anchor2">2つのインスタンスの作成とWebサーバーの起動</a></li>
   <li><a href="#anchor3">ロードバランサー用のサブネットの作成</a></li>
   <li><a href="#anchor4">ロードバランサーの構成</a></li>
@@ -401,11 +401,10 @@
 
 <p><a id="anchor1"></a></p>
 
-<h1 id="1-仮想クラウドネットワークと2つのサブネットの作成">1. 仮想クラウド・ネットワークと2つのサブネットの作成</h1>
+<h1 id="1-仮想クラウドネットワークとサブネットの作成">1. 仮想クラウド・ネットワークとサブネットの作成</h1>
 
-<p><a href="/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> を参考に、仮想クラウド・ネットワーク(VCN)および付随するネットワーク・コンポーネントを作成してください。</p>
-
-<p>作成時に <strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワークおよび関連リソースの作成</code></strong> オプションで作成することで、簡単に今回のチュートリアルに必要なVCNおよび付随コンポーネントを作成することができます。</p>
+<p><a href="/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> を完了していない場合、チュートリアルに従って仮想クラウド・ネットワーク(VCN)および付随するネットワーク・コンポーネントを作成してください。<strong><code class="language-plaintext highlighter-rouge">VCNウィザード</code></strong>で提供される
+<strong><code class="language-plaintext highlighter-rouge">インターネット接続性を持つVCNの作成</code></strong>オプションで、今回のチュートリアルに必要なVCNおよび付随コンポーネントを簡単に作成することができます。</p>
 
 <p>この章では、Tokyoリージョン (可用性ドメインが1つの構成) を例として、最終的に下記のような構成を作成します。</p>
 
@@ -416,8 +415,8 @@
 
 <h1 id="2--2つのインスタンスの作成とwebサーバーの起動">2.  2つのインスタンスの作成とWebサーバーの起動</h1>
 
-<p><a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> を参考に、パブリック・サブネットに2つの仮想マシン・インスタンスを作成してください。その際、かならず <strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> を選択し、パブリックIPアドレスを割当ててください。
-インスタンスが2つ起動したら、以下の手順に従ってそれぞれにWebサーバーを起動します。</p>
+<p><a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a> を参考に、パブリック・サブネットに2つの仮想マシン・インスタンスを作成してください。その際、<strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> を必ず選択し、パブリックIPアドレスを割当ててください。
+2つのインスタンスが起動したら、以下の手順に従ってそれぞれにWebサーバーを起動します。</p>
 
 <ol>
   <li>sshで2つのインスタンスにアクセスします
@@ -425,7 +424,7 @@
 </ol>
 
 <blockquote>
-  <p>以下の手順は、2つのインスタンスに対してそれぞれsshセッションを起動することで、同時に作業を実行して時間を短縮することができます</p>
+  <p>以下の手順は、2つのインスタンスに対してそれぞれSSHセッションを起動することで、同時に作業を実行して時間を短縮することができます</p>
 </blockquote>
 
 <ol>
@@ -486,7 +485,7 @@
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング → 仮想・クラウドネットワーク</code></strong> を選択し、リストから今回Webサーバーが存在する仮想クラウド・ネットワークの名称のリンクを押します</p>
+    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング → 仮想・クラウドネットワーク</code></strong> を選択し、リストから今回Webサーバーが存在するVCN名のリンクをクリックします</p>
   </li>
   <li>
     <p>画面左下部の <strong><code class="language-plaintext highlighter-rouge">リソース</code></strong> メニューにある <strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">セキュリティ・リストの作成</code></strong> ボタンを押します</p>
@@ -495,8 +494,8 @@
     <p>立ち上がった <strong><code class="language-plaintext highlighter-rouge">セキュリティ・リストの作成</code></strong> ウィンドウに以下の項目を入力し、 <strong><code class="language-plaintext highlighter-rouge">セキュリティ・リストの作成</code></strong>  ボタンを押します</p>
 
     <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (画面は LB_Security_List として入力しています)</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (図では LB_Security_List として入力しています)</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は変更します</li>
       <li><strong><code class="language-plaintext highlighter-rouge">Ingress Rule</code></strong> と <strong><code class="language-plaintext highlighter-rouge">Egress Rule</code></strong> のエントリーをすべて削除
         <blockquote>
           <p>Note</p>
@@ -506,7 +505,7 @@
       </li>
     </ul>
 
-    <p><img src="img3-1-3.png" alt="img3-1-3.png" /></p>
+    <p><img src="img3-1-3_masked.png" alt="img3-1-3.png" /></p>
   </li>
 </ol>
 
@@ -522,15 +521,15 @@
     <p>立ち上がった <strong><code class="language-plaintext highlighter-rouge">ルート表の作成</code></strong> ウィンドウに以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">ルート表の作成</code></strong> ボタンを押します</p>
 
     <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (画面は LB_Route_Table として入力しています)</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (図は LB_Route_Table として入力しています)</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は変更します</li>
       <li><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong> - 0.0.0.0/0</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> - Internet Gateway を選択</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・インターネット・ゲートウェイ</code></strong> - VCNのインターネットゲートウェイを選択</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> - インターネット・ゲートウェイ を選択</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は変更します</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・インターネット・ゲートウェイ</code></strong> - VCNのインターネット・ゲートウェイを選択</li>
     </ul>
 
-    <p><img src="img3-2-2.png" alt="img3-2-2.png" /></p>
+    <p><img src="img3-2-2_masked.png" alt="img3-2-2.png" /></p>
   </li>
 </ol>
 
@@ -546,17 +545,17 @@
     <p>立ち上がった <strong><code class="language-plaintext highlighter-rouge">サブネットの作成</code></strong> ウィンドウに以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">サブネットの作成</code></strong> ボタンを押します</p>
 
     <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (画面では LB_Subnet と入力しています)</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (図では LB_Subnet と入力しています)</li>
       <li><strong><code class="language-plaintext highlighter-rouge">サブネット・タイプ</code></strong> - リージョナル（推奨）を選択</li>
       <li><strong><code class="language-plaintext highlighter-rouge">CIDR ブロック</code></strong> - 10.0.3.0/24</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ルート表</code></strong> - ステップ3-2で作成したルート・テーブルを選択 (画面では LB_Route_Table を選択しています)</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ルート表</code></strong> - ステップ3-2で作成したルート・テーブルを選択 (図では LB_Route_Table を選択しています)</li>
       <li><strong><code class="language-plaintext highlighter-rouge">サブネット・アクセス</code></strong> - パブリック・サブネット を選択</li>
       <li><strong><code class="language-plaintext highlighter-rouge">DNS 解決</code></strong> - チェックを外す</li>
       <li><strong><code class="language-plaintext highlighter-rouge">DHCPオプション</code></strong> - 入力なしのまま</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong> - ステップ3-1で作成したセキュリティ・リストを選択 (画面では LB_Security_List を選択しています)</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong> - ステップ3-1で作成したセキュリティ・リストを選択 (図では LB_Security_List を選択しています)</li>
     </ul>
 
-    <p><img src="img3-3-2-1.png" alt="img3-3-2-1.png" /></p>
+    <p><img src="img3-3-2-1_masked.png" alt="img3-3-2-1.png" /></p>
   </li>
 </ol>
 
@@ -577,24 +576,25 @@
     <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング → ロード・バランサ</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">ロード・バランサの作成</code></strong> ボタンを押します</p>
   </li>
   <li>
-    <p><strong><code class="language-plaintext highlighter-rouge">ロード・バランサ・タイプの選択</code></strong> 画面では <strong><code class="language-plaintext highlighter-rouge">Load Balancer as a Service</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">ロード・バランサの作成</code></strong> ボタンを押します</p>
+    <p><strong><code class="language-plaintext highlighter-rouge">ロード・バランサ・タイプの選択</code></strong> 画面では <strong><code class="language-plaintext highlighter-rouge">ロード・バランサ</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">ロード・バランサの作成</code></strong> ボタンを押します</p>
   </li>
   <li>
-    <p>立ち上がった <strong><code class="language-plaintext highlighter-rouge">ロード・バランサの作成</code></strong> 画面で以下の項目を入力していきます。ロード・バランサの作成は、全部で3画面に分かれています。</p>
+    <p>立ち上がった <strong><code class="language-plaintext highlighter-rouge">ロード・バランサの作成</code></strong> 画面で以下の項目を入力していきます。ロード・バランサの作成は、全部で４画面に分かれています。</p>
 
     <ul>
       <li><strong><code class="language-plaintext highlighter-rouge">詳細の追加</code></strong> 画面で下記項目を入力し、<strong><code class="language-plaintext highlighter-rouge">次の手順</code></strong> ボタンをクリック
         <ul>
-          <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (画面では Tutorial_LB と入力しています)</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 (図では Tutorial_LB と入力しています)</li>
           <li><strong><code class="language-plaintext highlighter-rouge">可視性タイプの選択</code></strong> - パブリックを選択</li>
           <li><strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレスの割当て</code></strong> - エフェメラルIPアドレスを選択</li>
           <li><strong><code class="language-plaintext highlighter-rouge">シェイプ</code></strong> - 最小帯域幅：10 Mbps、最大帯域幅：50 Mbps と入力</li>
-          <li><strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong> - サブネットを作成したVCNを選択 (画面では TutorialVCN を選択しています)</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong> - サブネットを作成したVCNを選択 (図では TutorialVCN を選択しています)</li>
           <li><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong> - ステップ3-3 で作成したリージョナル・サブネットを選択
-  (画面では LB_Subnet を選択しています)</li>
+  (図では LB_Subnet を選択しています)</li>
         </ul>
 
-        <p><img src="img4-2-1.png" alt="img4-2-1.png" /></p>
+        <p><!-- ![img4-2-1.png](img4-2-1.png) -->
+  <img src="img_adding_detail.png" alt="img_adding_detail.png" /></p>
 
         <p><br /></p>
       </li>
@@ -620,7 +620,8 @@
           <li>レスポンス本文の正規表現 - 空欄 (デフォルト)</li>
         </ul>
 
-        <p><img src="img4-2-3.png" alt="img4-2-3.png" /></p>
+        <p><!-- ![img4-2-3.png](img4-2-3.png) -->
+  <img src="img_adding_backends.png" alt="img_adding_backends.png" /></p>
 
         <p><br /></p>
       </li>
@@ -631,7 +632,18 @@
           <li><strong><code class="language-plaintext highlighter-rouge">リスナーでイングレス・トラフィックをモニターするポートを指定します</code></strong> - 80 (デフォルト)</li>
         </ul>
 
-        <p><img src="img4-2-4.png" alt="img4-2-4.png" /></p>
+        <p><!-- ![img4-2-4.png](img4-2-4.png) -->
+  <img src="img_listener_config.png" alt="img_listener_config.png" /></p>
+
+        <p><br /></p>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ロギングの管理</code></strong> 画面で以下のように項目を設定し、送信ボタンを押す。
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">エラー・ログ</code></strong> -「無効」</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">アクセス・ログ</code></strong> -「無効」（デフォルト）</li>
+        </ul>
+
+        <p><img src="img_log_config.png" alt="img_log_config.png" /></p>
 
         <p><br /></p>
       </li>
@@ -640,12 +652,9 @@
   <li>
     <p>ロードバランサーの作成が開始されます。作成はバックエンドで行われ、完了するとステータスが <strong><code class="language-plaintext highlighter-rouge">AVAILABLE</code></strong> になります
 <img src="img4-3.png" alt="img4-3.png" /></p>
+
+    <p><br /></p>
   </li>
-</ol>
-
-<p><br /></p>
-
-<ol>
   <li>
     <p>この時点で、ロードバランサーにグローバルIPアドレスが1つ付与されています。
 ロードバランサーの概要で <strong><code class="language-plaintext highlighter-rouge">IP アドレス: xxx.xxx.xxx.xxx (Public)</code></strong> と表示されているものを確認し、手元に値をメモしておいてください。このIPアドレスは後のステップで使用します。</p>
@@ -675,11 +684,11 @@
 
 <h1 id="5-ロードバランサーへのhttp通信許可の設定">5. ロードバランサーへのhttp通信許可の設定</h1>
 
-<p>ここまでで、ロードバランサーの設定は完了しています。最後にロードバランサーに対してインターネットからのhttp通信を許可する設定を行い、トラフィックの転送を完成させます。</p>
+<p>ここまでで、ロードバランサーの設定は完了しています。最後にロードバランサーに対してインターネットからのHTTP通信を許可する設定を行い、トラフィックの転送を完成させます。</p>
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング → 仮想クラウド・ネットワーク</code></strong> を選択し、チュートリアルで使用している仮想クラウド・ネットワークの名前のリンクをクリックします</p>
+    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング → 仮想クラウド・ネットワーク</code></strong> を選択し、本チュートリアルで使用しているVCN名のリンクをクリックします</p>
   </li>
   <li>
     <p>左下メニューから セキュリティ・リスト を選択し、ステップ3-1で追加したロードバランサー用のセキュリティリスト名のリンクをクリックします</p>
@@ -688,7 +697,7 @@
     <p><strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong> ボタンを押します</p>
   </li>
   <li>
-    <p>入力フィールドが開くので、以下の情報を入力し、下部の <strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong> をクリックします</p>
+    <p>入力フィールドが開くので、以下の情報を入力し、下部の <strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong> ボタンを押します</p>
 
     <ul>
       <li><strong><code class="language-plaintext highlighter-rouge">ステートレス</code></strong> - いいえ (デフォルト)</li>
@@ -712,17 +721,16 @@
 
 <ol>
   <li>
-    <p>ステップ 4-1 で作成した、ロードバランサーのグローバルIPアドレスを確認します。(手元にメモしているはずです)</p>
+    <p>ステップ 4-5 でメモした、ロードバランサーのグローバルIPアドレスを確認します</p>
   </li>
   <li>
-    <p>ブラウザの新しいタブを開き、IPアドレスを入力して <strong><code class="language-plaintext highlighter-rouge">ENTER</code></strong> キーを押します
-<strong><code class="language-plaintext highlighter-rouge">Web Server 1</code></strong> または <strong><code class="language-plaintext highlighter-rouge">Web Server 2</code></strong> と表示されることを確認します</p>
+    <p>ブラウザの新しいタブを開き、IPアドレスを入力して <strong><code class="language-plaintext highlighter-rouge">ENTER</code></strong> キーを押します。<strong><code class="language-plaintext highlighter-rouge">Web Server 1</code></strong> または <strong><code class="language-plaintext highlighter-rouge">Web Server 2</code></strong> と表示されることを確認します</p>
 
     <p><img src="img6-2.png" alt="img6-2.png" />
 <br /></p>
   </li>
   <li>
-    <p>ブラウザのウィンドウにフォーカスした状態で、F5キーを何度か押します
+    <p>ブラウザのウィンドウにフォーカスした状態で、F5キーを何度か押します。
 すると、ウィンドウがリロードされ、<strong><code class="language-plaintext highlighter-rouge">Web Server 1</code></strong> という表示と <strong><code class="language-plaintext highlighter-rouge">Web Server 2</code></strong> という表示が切り替わることを確認します。
 うまく切り替わるようであれば、無事にロードバランサーの構成が成功しています</p>
 
@@ -739,22 +747,22 @@
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング → 仮想クラウド・ネットワーク</code></strong> を選択し、チュートリアルで使用している仮想クラウド・ネットワークの名前のリンクをクリックします</p>
+    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング → 仮想クラウド・ネットワーク</code></strong> を選択し、本チュートリアルで使用しているVCN名のリンクをクリックします</p>
   </li>
   <li>
-    <p>左下メニューから ルート表 を選択し、使用しているVCNのデフォルト・ルート・テーブルを選択します ( <strong><code class="language-plaintext highlighter-rouge">Default Route Table for TutrialVCN</code></strong> のような名前になっているはずです)</p>
+    <p>画面左下部の <strong><code class="language-plaintext highlighter-rouge">リソース</code></strong> メニューの <strong><code class="language-plaintext highlighter-rouge">ルート表</code></strong> をクリックして表示された表から、本チュートリアルで使用しているVCNのデフォルト・ルート・テーブル名のリンクを選択してクリックします ( <strong><code class="language-plaintext highlighter-rouge">Default Route Table for TutorialVCN</code></strong> のような名前になっているはずです)</p>
   </li>
   <li>
-    <p>下部の <strong><code class="language-plaintext highlighter-rouge">ルート・ルール</code></strong> に表示されている <strong><code class="language-plaintext highlighter-rouge">CIDR Block: 0.0.0.0/0</code></strong> というルールの右端にカーソルをあて、 <strong><code class="language-plaintext highlighter-rouge">削除</code></strong> を押して削除します</p>
+    <p><strong><code class="language-plaintext highlighter-rouge">ルート・ルール</code></strong> に表示されている、<strong><code class="language-plaintext highlighter-rouge">宛先</code></strong>が <strong><code class="language-plaintext highlighter-rouge">0.0.0.0/0</code></strong>、<strong><code class="language-plaintext highlighter-rouge">ターゲット</code></strong> がVCNに紐づいたインターネット・ゲートウェイ（図では <strong><code class="language-plaintext highlighter-rouge">インターネット・ゲートウェイ-TutorialVCN</code></strong> ）に該当するルールを、右側の<img src="image-vertical_triple_dots.png" alt="image-vertical_triple_dots" />メニューから <strong><code class="language-plaintext highlighter-rouge">削除</code></strong>を選択して削除します</p>
 
     <p><img src="img7-3.png" alt="img7-3.png" />
 <br /></p>
   </li>
   <li>
-    <p>下部の <strong><code class="language-plaintext highlighter-rouge">ルート・ルール</code></strong> に表示されている <strong><code class="language-plaintext highlighter-rouge">CIDR Block: 0.0.0.0/0</code></strong> というルールの右端にカーソルをあて、 <strong><code class="language-plaintext highlighter-rouge">削除</code></strong> を押して削除します</p>
+    <p>VCNの<strong><code class="language-plaintext highlighter-rouge">リソース</code></strong> メニューにある <strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong> のリンクをクリックして表示された表から、本チュートリアルで使用しているVCNのデフォルト・セキュリティ・リスト名のリンクを選択してクリックします ( <strong><code class="language-plaintext highlighter-rouge">Default Security List for TutorialVCN</code></strong> のような名前になっているはずです)</p>
   </li>
   <li>
-    <p><strong><code class="language-plaintext highlighter-rouge">イングレス・ルール</code></strong> を編集し、イングレス・ルールのうち、以下のものを削除します
+    <p><strong><code class="language-plaintext highlighter-rouge">イングレス・ルール</code></strong> をクリックし、以下のルールをステップ3と同様に削除します
 <br /></p>
 
     <table>
@@ -785,14 +793,14 @@
     </table>
 
     <p><br />
- これで、Webサーバーのネットワークは保護され、インターネットとの間で直接通信はできなくなりました。引き続きロードバランサー経由でのhttpアクセスは許可されており、Webページは閲覧することができます。
+ これで、Webサーバーのネットワークは保護され、インターネットとの間で直接通信はできなくなりました。引き続きロードバランサー経由でのHTTPアクセスは許可されており、Webページは閲覧することができます。
  管理用途に外部からの通信が必要な場合は、必要に応じてルート・テーブルおよびセキュリティ・リストの設定を変更してください。</p>
   </li>
 </ol>
 
 <p><br /></p>
 
-<p>以上で、この章の作業は終了です。</p>
+<p>以上でこの章は終了です。</p>
 
 <p><br /></p>
 
@@ -826,7 +834,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-28T10:03:46+09:00">September 28, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-29T14:15:06+09:00">September 29, 2022</time></p>
 
 
       </footer>

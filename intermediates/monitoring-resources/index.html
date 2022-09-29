@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-09-28T10:03:46+09:00">
+  <meta property="article:published_time" content="2022-09-29T14:15:06+09:00">
 
 
 
@@ -353,7 +353,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="モニタリング機能でOCIのリソースを監視する">
     <meta itemprop="description" content="モニタリング機能を使うことで、OCI上の各種リソースの性能や状態の監視、また、カスタムのメトリック監視を行うことが可能です。アラームを設定すれば、メトリックがしきい値に達した場合に管理者に通知することもできます。">
-    <meta itemprop="datePublished" content="2022-09-28T10:03:46+09:00">
+    <meta itemprop="datePublished" content="2022-09-29T14:15:06+09:00">
     
 
     <div class="page__inner-wrap">
@@ -382,26 +382,27 @@
 <p><strong>前提条件 :</strong></p>
 
 <ol>
-  <li><a href="https://community.oracle.com/docs/DOC-1019204">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を通じてコンピュート・インスタンスの作成が完了していること</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を通じてコンピュート・インスタンスの作成が完了していること</li>
 </ol>
 
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。</p>
 
 <h1 id="1-ベースになるインスタンスの作成">1. ベースになるインスタンスの作成</h1>
 
-<p>まずは、監視対象となるインスタンスを作成します。今回は、<a href="https://community.oracle.com/docs/DOC-1019204">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> で作成したコンピュート・インスタンスを使用します。</p>
+<p>まずは、監視対象となるインスタンスを作成します。今回は、<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> で作成したコンピュート・インスタンスを使用します。</p>
 
-<p>ただし、Oracle提供イメージを使い、モニタリングの有効化を行っているインスタンスのみが対象です。（デフォルトは有効）</p>
+<p>ただし、Oracle提供イメージを使い、モニタリングの有効化を行っているインスタンスのみが対象です（デフォルトは有効）。</p>
 
-<p>インスタンス作成時にモニタリングを有効化するには、作成画面下部の <strong>拡張オプションの表示</strong> をクリックしてオプションを表示させ、<strong>モニタリングの有効化</strong> のチェックボックスにチェックが入っていることを確認してください。
-<img src="image-20210112131532597.png" alt="image-20210112131532597" /></p>
+<p>インスタンス作成時には、作成画面下部の <strong>拡張オプションの表示</strong> をクリックしてオプションを表示させ、<strong>Oracle Cloudエージェント</strong>→<strong>コンピュート・インスタンスのモニタリング</strong> のチェックボックスにチェックが入っていることを確認してください。
+<!--![image-20210112131532597](image-20210112131532597.png)-->
+<img src="image-20220902_instance_monitoring_enabled.png" alt="image-20220902_instance_monitoring_enabled" /></p>
 
 <h1 id="2-モニタリングメトリックの参照各リソースの詳細画面からの参照">2. モニタリング・メトリックの参照（各リソースの詳細画面からの参照）</h1>
 
 <p>作成済みのコンピュート・インスタンスの詳細ページから、メトリックを参照することができます。</p>
 
 <ol>
-  <li>コンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し、作成したインスタンスのインスタンス名のリンクをクリックするか、右側の ・・・ メニューから <strong>インスタンスの詳細の表示</strong> を選択し、インスタンス詳細画面を開きます。</li>
+  <li>コンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し、作成したインスタンスのインスタンス名のリンクをクリックするか、右側の<img src="image-vertical_triple_dots.png" alt="image-vertical_triple_dots" />メニューから <strong>インスタンスの詳細の表示</strong> を選択し、インスタンス詳細画面を開きます。</li>
   <li>画面左下の <strong>リソース</strong> から <strong>メトリック</strong> を選択すると、このインスタンスのCPU使用率やメモリ使用率、Disk IO、ネットワーク転送量などの性能メトリックを参照することが可能です。
 <img src="image-20210112131845637.png" alt="image-20210112131845637" /></li>
 </ol>
@@ -412,9 +413,10 @@
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong>モニタリング</strong> → <strong>サービス・メトリック</strong> を選択します。</p>
+    <p>コンソールメニューから <strong>監視および管理</strong> → 「モニタリング配下」の<strong>サービス・メトリック</strong> を選択します。</p>
 
-    <p><img src="image-20210112132011097.png" alt="image-20210112132011097" /></p>
+    <!--![image-20210112132011097](image-20210112132011097.png)-->
+    <p><img src="image-20220902_menu_for_service_metrics.png" alt="image-20220902_menu_for_service_metrics" /></p>
   </li>
   <li>
     <p>サービス・メトリック画面の上部で、表示させたい対象の <strong>コンパートメント</strong> と <strong>メトリック・ネームスペース</strong> を選択します。</p>
@@ -436,7 +438,8 @@
   </li>
   <li>
     <p>開始時間、終了時間を変更することで表示する範囲を変更できます。
-<img src="image-20210112132140765.png" alt="image-20210112132140765" /></p>
+<!--![image-20210112132140765](image-20210112132140765.png)-->
+<img src="image-20220902_changing_time_range.png" alt="image-20220902_changing_time_range" /></p>
   </li>
 </ol>
 
@@ -447,8 +450,9 @@
 <p>ここでは、インスタンスの死活監視目的で、インスタンスのメトリックが存在しない場合にアラームで検知してメール通知を行う設定を実行します。</p>
 
 <ol>
-  <li>コンソールメニューから <strong>アプリケーション統合</strong> → <strong>通知</strong> を選択し、通知画面を表示します。
-<img src="image-20210112132343278.png" alt="image-20210112132343278" /></li>
+  <li>コンソールメニューから <strong>開発者サービス</strong> →「アプリケーション統合」配下の <strong>通知</strong> を選択し、通知画面を表示します。
+<!--![image-20210112132343278](image-20210112132343278.png)-->
+<img src="image-20220902_menu_for_notification.png" alt="image-20220902_menu_for_notification" /></li>
   <li><strong>トピックの作成</strong> をクリックします。
 <img src="image-20210112132359984.png" alt="image-20210112132359984" /></li>
   <li><strong>トピックの作成</strong> ウィンドウで必要事項を入力し、左下の <strong>作成</strong> ボタンをクリックします。
@@ -472,7 +476,8 @@
   <li>設定したメールアドレスにOracle Cloudから確認メールが送信されます。メール内のリンクのURLをクリックします。
 <img src="image-20210112132535376.png" alt="image-20210112132535376" /></li>
   <li><strong>Subscription confirmed</strong> のページが表示されます。
-<img src="image-20210112132554595.png" alt="image-20210112132554595" /></li>
+<!--![image-20210112132554595](image-20210112132554595.png)-->
+<img src="image-20220902_subscription_confirmed_masked.png" alt="image-20220902_subscription_confirmed_masked" /></li>
   <li>再度コンソール画面に戻ると、通知先の確認が完了したため <strong>Active</strong> のステータスに変わっています。これでメール通知の設定は完了です。</li>
 </ol>
 
@@ -481,8 +486,11 @@
 <p>次に、アラームの定義を作成します。</p>
 
 <ol>
-  <li>コンソールメニューから <strong>モニタリング</strong> → <strong>アラーム定義</strong> を選択し、アラーム画面を表示します。<strong>アラームの作成</strong> ボタンをクリックします。
-<img src="70752854egami.png" alt="pastedImage_9.png" /></li>
+  <li>
+    <p>コンソールメニューから <strong>監視および管理</strong> → 「モニタリング」配下の<strong>アラーム定義</strong> を選択し、アラーム画面を表示します。<strong>アラームの作成</strong> ボタンをクリックします。
+<!--![pastedImage_9.png](70752854egami.png)-->
+<img src="image-20220902_alerm_define_masked.png" alt="image-20220902_alerm_define_masked" /></p>
+  </li>
   <li><strong>アラームの作成</strong> ウィンドウで以下の項目を入力し、左下の <strong>作成</strong> ボタンをクリックします。
     <ul>
       <li>
@@ -520,10 +528,10 @@
           <li><strong>トリガー遅延分数</strong> - <strong>5</strong></li>
         </ul>
       </li>
-      <li>Notifications
+      <li>通知
         <ul>
           <li>
-            <p><strong>宛先サービス</strong> - Notification Service を選択</p>
+            <p><strong>宛先サービス</strong> - 通知サービス を選択</p>
           </li>
           <li>
             <p><strong>コンパートメント</strong> - さきほど作成した通知トピックのあるコンパートメントを選択</p>
@@ -542,12 +550,13 @@
           </li>
         </ul>
       </li>
-      <li><strong>ENABLE THIS ALARM ?</strong> - チェックが入っていることを確認 （デフォルト）
-<img src="image-20210112134524003_2.png" alt="image-20210112134524003" /></li>
+      <li><strong>このアラームを有効化しますか。</strong> - チェックが入っていることを確認 （デフォルト）
+<!--![image-20210112134524003](image-20210112134524003_2.png)-->
+<img src="image-20220902_alerm_edit_config.png" alt="image-20220902_alerm_edit_config" /></li>
     </ul>
   </li>
   <li>アラームが作成されました。このアラームが有効になっていることを確認してください。
-<img src="image-20210112134625834.png" alt="image-20210112134625834" /></li>
+<img src="image-20220902_alerm_summary.png" alt="image-20220902_alerm_summary" /></li>
 </ol>
 
 <h1 id="6-メール通知されることを確認">6. メール通知されることを確認</h1>
@@ -562,7 +571,7 @@
 
     <ul>
       <li>ユーザー名 - <strong>opc</strong></li>
-      <li>RSA鍵 - インスタンス作成時に登録した公開鍵に対応する秘密鍵を指定（<a href="https://community.oracle.com/docs/DOC-1019204">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> で使用した秘密鍵と同じもの）</li>
+      <li>RSA鍵 - インスタンス作成時に登録した公開鍵に対応する秘密鍵を指定（<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> で使用した秘密鍵と同じもの）</li>
     </ul>
   </li>
   <li>
@@ -570,7 +579,21 @@
 
     <ul>
       <li>
-        <p>以下のコマンドを入力し、stressをインストールします。</p>
+        <p>stressパッケージをインストールする準備をします。stressパッケージを含むEPELリポジトリが有効になっているかを以下のコマンドで確認します。</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum repolist all | grep -i epel
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>Oracle Linux 7.9イメージで作成されたインスタンスであれば、図のように「ol7_developer_EPEL」リポジトリが表示されます。ステータスが非有効（「disabled」）になっている場合、yum-config-managerコマンドで有効（「enabled」）に変更します。</p>
+
+        <p><img src="image-20220902_EPEL_disabled.png" alt="image-20220902_EPEL_disabled" /></p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum-config-manager --enable ol7_developer_EPEL
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>stressをインストールします。</p>
 
         <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum -y install stress
 </code></pre></div>        </div>
@@ -601,7 +624,7 @@
   </li>
   <li>
     <p>メールを受信したことを確認します。
-<img src="image-20210112135937431.png" alt="image-20210112135937431" /></p>
+<img src="image-20210112135937431_masked.png" alt="image-20210112135937431_masked" /></p>
 
     <blockquote>
       <p><strong><em>Note</em></strong></p>
@@ -611,14 +634,12 @@
       <p><img src="image-20210112134524003_3.png" alt="image-20210112134524003" /></p>
     </blockquote>
   </li>
-  <li>
-    <p>メニューから、 <strong>モニタリング</strong> → <strong>アラームのステータス</strong> をクリックして、<strong>アラームのステータス</strong>の一覧画面を表示します。起動されているアラームの名前のリンクをクリックしてアラームの詳細画面を表示します。
-<img src="image-20210112140151650.png" alt="image-20210112140151650" /></p>
-  </li>
-  <li>
-    <p>アラームが起動された履歴を確認することができます。
-<img src="image-20210112140055632.png" alt="image-20210112140055632" /></p>
-  </li>
+  <li>メニューから、 <strong>監視および管理</strong> → 「モニタリング」配下の<strong>アラームのステータス</strong> をクリックして、<strong>アラームのステータス</strong>の一覧画面を表示します。起動されているアラームの名前のリンクをクリックしてアラームの詳細画面を表示します。
+<!--![image-20210112140151650](image-20210112140151650.png)-->
+<img src="image-20220902_alerm_status.png" alt="image-20220902_alerm_status" /></li>
+  <li>アラームが起動された履歴を確認することができます。
+<!--![image-20210112140055632](image-20210112140055632.png)-->
+<img src="image-20220902_alerm_history.png" alt="image-20220902_alerm_history" /></li>
 </ol>
 
 <p>アラームと通知の設定が正しくできていることがわかりました。</p>
@@ -642,7 +663,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-28T10:03:46+09:00">September 28, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-29T14:15:06+09:00">September 29, 2022</time></p>
 
 
       </footer>

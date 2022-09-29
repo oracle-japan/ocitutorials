@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-09-28T10:03:46+09:00">
+  <meta property="article:published_time" content="2022-09-29T14:15:06+09:00">
 
 
 
@@ -353,7 +353,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="コマンドライン(CLI)でOCIを操作する">
     <meta itemprop="description" content="クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。">
-    <meta itemprop="datePublished" content="2022-09-28T10:03:46+09:00">
+    <meta itemprop="datePublished" content="2022-09-29T14:15:06+09:00">
     
 
     <div class="page__inner-wrap">
@@ -462,7 +462,7 @@
     <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oci</span><span class="w"> </span><span class="nt">-v</span><span class="w">
 </span></code></pre></div>    </div>
 
-    <p>「2.16.1」のように、バージョンが返ってきていれば、正しくインストールが完了しています。</p>
+    <p>「3.14.0」のように、バージョンが返ってきていれば、正しくインストールが完了しています。</p>
   </li>
 </ol>
 
@@ -472,7 +472,14 @@
 
 <p>Bashの利用は必須ではありません。OCIのCLIを利用するだけであれば、WindowsのコマンドプロンプトやPowerShellコンソールなどでも実行可能です。</p>
 
-<p>ただし、このチュートリアルの後半ではbashのシェル変数を使用する箇所がありますので、チュートリアルを完了するには何かしらのbashターミナルを準備することをお勧めします。</p>
+<!-- ただし、このチュートリアルの後半ではbashのシェル変数を使用する箇所がありますので、チュートリアルを完了するには何かしらのbashターミナルを準備することをお勧めします。 -->
+<p>ただしコマンドプロンプトやPowerShellコンソールでは本チュートリアルの一部のコマンドをそのまま実行できないため、適宜編集してから実行してください。
+該当箇所においてNoteとして触れますが、PowerShellをお使いの場合は以下の点にご注意ください。</p>
+<ul>
+  <li>CLIからの返り値を制御するためにOCI-CLI JMESPathを用いるとき、クエリー内部の全てのダブルコーテーションをバックスラッシュ（\）でエスケープすること</li>
+  <li>変数に文字列を格納するとき、左辺の変数名の前にはドル記号（$）を、右辺の文字列の最初と最後にはダブルコーテーション（”）を付加すること</li>
+  <li>クエリー内で変数を用いるとき、コーテーションの処理を適切に行うこと</li>
+</ul>
 
 <p>手元のPCのOSが MAC や Ubuntu 等であれば、OSに付属するbashターミナルをそのまま利用することができます。お手元のOSが Windows 10 であれば <strong>WSL(Windows Subsystem for Linux)</strong> の利用も可能です。セットアップ方法については <a href="https://www.google.co.jp/search?q=windows+subsystem+for+linux+インストール">こちら</a> などを参考に実施してください。</p>
 
@@ -599,7 +606,7 @@
   <li>**Enter a location for your config [C:\Users\ <ユーザー名>\.oci\config]:** 入力なしで <kbd>Enter</kbd> キーを押下</ユーザー名></li>
   <li><strong>Enter a user OCID:</strong> - ステップ2-2 で確認したユーザーのOCIDを入力</li>
   <li><strong>Enter a tenancy OCID:</strong> - ステップ2-2 で確認したテナンシのOCIDを入力</li>
-  <li><strong>Enter a region (e.g. eu-frankfurt-1, us-ashburn-1, us-phoenix-1):</strong> - アクセスしたいリージョンを例に従って入力</li>
+  <li><strong>Enter a region by index or name(Enter a region by index or name(e.g.1: af-johannesburg-1, 2: ap-chiyoda-1,（中略）, 44: us-sanjose-1):</strong> - アクセスしたいリージョンのインデックス（ap-tokyo-1リージョンなら13）、またはリージョン名を入力</li>
   <li><strong>Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]:</strong> - Y</li>
   <li><strong>Enter a directory for your keys to be created [C:\Users&lt;ユーザー名&gt;.oci]:</strong> - 入力なしで <kbd>Enter</kbd> キーを押下</li>
   <li><strong>Enter a name for your key [oci_api_key]:</strong> - 入力なしで <kbd>Enter</kbd> キーを押下</li>
@@ -679,16 +686,11 @@
 </span></code></pre></div>    </div>
   </li>
   <li>
-    <p>任意のテキストエディタで、この「<strong><em>oci_cli_rc</em></strong>」ファイルを開き、以下の記述を追加します。</p>
+    <p>任意のテキストエディタで、この「<strong><em>oci_cli_rc</em></strong>」ファイルを開き、以下の記述を追加します。<コンパートメントのOCID> には、ステップ2-2 で確認したコンパートメントのOCIDの値を入力します。</コンパートメントのOCID></p>
 
-    <コンパートメントのOCID> には、ステップ2-2 で確認したコンパートメントのOCIDの値を入力します。
-
-```
-[DEFAULT]
- compartment-id = <コンパートメントのOCID>
-```
-
-</コンパートメントのOCID></コンパートメントのOCID>
+    <div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span><span class="w">
+</span><span class="n">compartment-id</span><span class="o">=</span><span class="err">&lt;コンパートメントの</span><span class="n">OCID</span><span class="err">&gt;</span><span class="w">
+</span></code></pre></div>    </div>
   </li>
   <li>
     <p>次に、先ほどと同じコマンドを、今度は「-c オプション」をつけずに実行してみます。</p>
@@ -767,6 +769,14 @@
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'data[?"operating-system"==`Oracle Linux`]'
 </code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>Windows PowerShellをお使いの場合、クエリー内部の全てのダブルコーテーションはバックスラッシュ（\）でエスケープする必要があります。例えば、上記のコマンドは次のようになります。</p>
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute image list --query 'data[?\"operating-system\"==`Oracle Linux`]'
+</code></pre></div>      </div>
+    </blockquote>
   </li>
   <li>
     <p>完全一致ではなく、一部の文字列を含むものを検索したい場合は、<strong><a href="https://jmespath.readthedocs.io/en/latest/specification.html#contains">contains</a></strong> 句を使います。
@@ -863,6 +873,15 @@ sort-by オプションの詳細については oci compute image list –help �
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">VCNNAME</span><span class="o">=</span>&lt;VCNの表示名&gt;
 </code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>Windows PowerShellをお使いの場合、左辺の変数名の前にはドル記号（$）を、右辺の文字列の最初と最後にはダブルコーテーション（”）を付加してください。
+例えば、&lt;VCNの表示名&gt;がtutorial-cli-vcnの場合、上記のコマンドは次のようになります。</p>
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$VCNNAME="tutorial-cli-vcn"
+</code></pre></div>      </div>
+    </blockquote>
   </li>
   <li>
     <p>次に、以下のコマンドを発行して、VCNを作成します。</p>
@@ -903,6 +922,15 @@ sort-by オプションの詳細については oci compute image list –help �
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">VCNID</span><span class="o">=</span><span class="si">$(</span>oci network vcn list <span class="nt">--query</span> <span class="s1">'data[?"display-name"==`'</span><span class="nv">$VCNNAME</span><span class="s1">'`].id | [0]'</span> <span class="nt">--raw-output</span><span class="si">)</span>
 </code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>Windows PowerShellで変数を含んだコマンドを記述する場合、クエリー内のコーテーションの処理を適切に行ってください。
+例えば、文字列の連結演算を行った結果をクエリーに渡す方法があり、上記のコマンドは次のように書き換えることができます。</p>
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$VCNID</span><span class="o">=</span><span class="si">$(</span>oci network vcn list <span class="nt">--query</span> <span class="o">(</span><span class="s1">'data[?\"display-name\"==`'</span>+<span class="nv">$VCNNAME</span>+<span class="s1">'`].id | [0]'</span><span class="o">)</span> <span class="nt">--raw-output</span><span class="si">)</span>
+</code></pre></div>      </div>
+    </blockquote>
   </li>
   <li>
     <p>シェル変数「VCNID」の値を確認します。ocid1.vcn… のような値が戻ってきたら、正しく変数が取得できています。</p>
@@ -1145,7 +1173,7 @@ sort-by オプションの詳細については oci compute image list –help �
 
 <ol>
   <li>
-    <p>インスタンスへのsshアクセスに使用する鍵ペアを作成しておきます。</p>
+    <p>インスタンスへのsshアクセスに使用する鍵ペアが無い場合は作成しておきます。</p>
 
     <p>Bash ターミナル上で以下のコマンドを発行し、鍵ペアを新しく作成します。</p>
 
@@ -1195,13 +1223,13 @@ sort-by オプションの詳細については oci compute image list –help �
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>次に、以下のコマンドを発行し、インスタンスの作成に利用できるイメージのシェイプの一覧を取得します</p>
+    <p>次に、手順４で選択したイメージと互換性のあるシェイプの一覧を次のコマンドで取得します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute shape list <span class="nt">--query</span> <span class="s1">'data[*].shape'</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute shape list <span class="nt">--image-id</span> <span class="nv">$IMAGEID</span> <span class="nt">--query</span> <span class="s1">'data[*].shape'</span>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>戻ってきた値は、現在利用可能なイメージの一覧です。</p>
+    <p>戻ってきた値は、現在利用可能なシェイプの一覧です。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>
   <span class="nt">--</span> 中略 <span class="nt">--</span>
@@ -1215,7 +1243,7 @@ sort-by オプションの詳細については oci compute image list –help �
 <span class="o">]</span>
 </code></pre></div>    </div>
 
-    <p>この中から任意のイメージを一つ選択し、その値をシェル変数「SHAPE」に代入します。</p>
+    <p>この中から任意のシェイプを一つ選択し、その値をシェル変数「SHAPE」に代入します。</p>
 
     <p>&lt;シェイプ名&gt;は、VM.Standard2.1 などの任意の文字列に置き換えてください。</p>
 
@@ -1223,7 +1251,7 @@ sort-by オプションの詳細については oci compute image list –help �
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>以下のコマンドを入力し、インスタンスを作成します。また同時にその返り値からインスタンスのOCIDを取得し、変数「INSTANCEID」に代入します。</p>
+    <p>以下のコマンドを入力し、インスタンスを作成します。また同時にその返り値からインスタンスのOCIDを取得し、変数「INSTANCEID」に代入します。ssh-authorized-keys-fileオプションで指定する公開鍵へのパスは適宜変更してください。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">INSTANCEID</span><span class="o">=</span><span class="si">$(</span>oci compute instance launch <span class="nt">--availability-domain</span> <span class="nv">$ADNAME</span> <span class="nt">--image-id</span> <span class="nv">$IMAGEID</span> <span class="nt">--shape</span> <span class="nv">$SHAPE</span> <span class="nt">--ssh-authorized-keys-file</span> <span class="s2">".ssh/id_rsa.pub"</span> <span class="nt">--subnet-id</span> <span class="nv">$SUBNETID</span> <span class="nt">--assign-public-ip</span> <span class="nb">true</span> <span class="nt">--query</span> <span class="s1">'data.id'</span> <span class="nt">--raw-output</span><span class="si">)</span>
 </code></pre></div>    </div>
@@ -1264,7 +1292,7 @@ sort-by オプションの詳細については oci compute image list –help �
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-28T10:03:46+09:00">September 28, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-29T14:15:06+09:00">September 29, 2022</time></p>
 
 
       </footer>

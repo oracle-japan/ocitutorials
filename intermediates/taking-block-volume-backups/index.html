@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-09-28T10:03:46+09:00">
+  <meta property="article:published_time" content="2022-09-29T14:15:06+09:00">
 
 
 
@@ -353,7 +353,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームをバックアップする">
     <meta itemprop="description" content="運用管理を行う上で、データのバックアップは重要です。データの保護要件や可用性要件に応じて適切な手法でバックアップを取得し、安全に運用を行いましょう。">
-    <meta itemprop="datePublished" content="2022-09-28T10:03:46+09:00">
+    <meta itemprop="datePublished" content="2022-09-29T14:15:06+09:00">
     
 
     <div class="page__inner-wrap">
@@ -413,8 +413,7 @@
 <p>今回はブロック・ボリュームを例に実施しますが、ブート・ボリュームでも同様の手順で実施することができます。ブート・ボリュームの場合は、コンピュート → ブート・ボリューム から操作していきます。メニューの場所が異なりますので注意してください。</p>
 
 <ol>
-  <li>コンソールメニューから <strong>ブロック・ストレージ</strong> <strong>→</strong> <strong>ブロック・ボリューム</strong> を選択し、作成済みの
-   ブロック・ボリュームの一覧を表示します。</li>
+  <li>コンソールメニューから <strong>ストレージ</strong> <strong>→</strong> <strong>ブロック・ストレージ</strong> <strong>→</strong> <strong>ブロック・ボリューム</strong> を選択し、作成済みのブロック・ボリュームの一覧を表示します。</li>
   <li>
     <p>バックアップしたいボリュームの行の右側にカーソルをあて、出てきたメニューから <strong>手動バックアップの作成</strong>
    をクリックします。アタッチ済みのインスタンスが起動中でも停止する必要はありません。バックアップはオンラインで取得可能です。
@@ -449,15 +448,16 @@
     <p>メニューから <strong>ブロック・ストレージ</strong> <strong>→</strong> <strong>ブロック・ボリュームのバックアップ</strong> を開き、作成済みのバックアップの名前のリンクをクリックします。</p>
   </li>
   <li>
-    <p>対象のブロック・ボリュームのバックアップの詳細画面で <strong>ブロック・ボリュームの作成</strong> ボタンをクリックします。</p>
+    <p>対象のブロック・ボリュームのバックアップの詳細画面で <strong>ブロック・ボリュームのリストア</strong> ボタンをクリックします。</p>
   </li>
-  <li>表示された <strong>ブロック・ボリュームの作成</strong> ウィンドウで以下の項目を入力し、左下の <strong>ブロック・ボリュームの作成</strong> ボタンをクリックします。
+  <li>表示された <strong>ブロック・ボリュームのリストア</strong> ウィンドウで以下の項目を入力し、左下の <strong>ブロック・ボリュームのリストア</strong> ボタンをクリックします。
     <ul>
       <li><strong>名前</strong> - 任意（ここでは Restore_Volume にしています）</li>
       <li><strong>コンパートメントに作成</strong> - デフォルトのまま</li>
       <li><strong>可用性ドメイン</strong> - デフォルトのまま。複数可用性ドメインの存在するリージョンの場合は変更も可能です</li>
-      <li><strong>VOLUME SIZE AND PERFORMANCE</strong> - 今回はデフォルトのまま。ここで任意のサイズや性能タイプに変更することもできます</li>
+      <li><strong>ボリューム・サイズとパフォーマンス</strong> - 今回はデフォルトのまま。ここで任意のサイズや性能タイプに変更することもできます</li>
       <li><strong>バックアップ・ポリシー</strong> - 指定せず</li>
+      <li><strong>クロスリージョン・レプリケーション</strong> - デフォルトのまま</li>
       <li><strong>暗号化</strong> - デフォルトのまま</li>
     </ul>
   </li>
@@ -549,7 +549,7 @@
   </li>
   <li>
     <p>複製したバックアップ・ポリシーの内容を変更していきます。年次のフルバックアップを5年保存から3年保存に変更します。スケジュールの中から、毎年 の行の右側にカーソルをあてメニューを表示し、<strong>編集</strong> をクリックします。
-  <img src="img22.png" alt="img22.png" /></p>
+ <img src="img22.png" alt="img22.png" /></p>
   </li>
   <li>
     <p><strong>スケジュールの編集</strong> ウィンドウで、年での保持期間を <strong>5</strong> から <strong>3</strong> に変更し、<strong>更新</strong> ボタンをクリックします。</p>
@@ -560,14 +560,16 @@
     <p>作成したポリシーをブロック・ボリュームに割り当てることで、そのボリュームの自動バックアップが有効になります。メニューから、<strong>ブロック・ストレージ</strong> <strong>→</strong> <strong>ブロック・ボリューム</strong> でブロックボリュームの一覧から既存のブロック・ボリュームを選択し、ブロック・ボリュームの詳細画面を表示します。</p>
   </li>
   <li>
-    <p>ブロック・ボリュームの詳細画面から、<strong>バックアップ・ポリシー：なし</strong> の右側の <strong>割当て</strong> リンクをクリックします。
-  <img src="img24.png" alt="img24.png" /></p>
+    <p>ブロック・ボリュームの詳細画面から、<strong>TestVolume</strong>タイトル下の「編集」ボタンをクリックします。 
+ <img src="img-edit-button.png" alt="img24.png" /></p>
   </li>
   <li>
-    <p>バックアップ・ポリシーの割当てウィンドウで、バックアップ・ポリシーに<strong>先ほど作成したカスタム・ポリシー</strong>を選択し、<strong>割当て</strong> ボタンをクリックします。</p>
+    <p>表示された<strong>ボリュームの編集画面</strong>で、<strong>バックアップ・ポリシー</strong>の選択リストから<strong>先ほど作成したカスタム・ポリシー</strong>を選択し、<strong>変更の保存</strong>ボタンをクリックします。
+ <img src="img-edit-backup-policy.png" alt="img-new1.png" /></p>
   </li>
   <li>ブロック・ボリュームにバックアップ・ポリシーの割当てが完了しました。
-  <img src="img25.png" alt="img25.png" /></li>
+ <!-- ![img25.png](img25.png) -->
+ <img src="img-completed-setting-policy.png" alt="img25.png" /></li>
 </ol>
 
 <p><a id="anchor5"></a></p>
@@ -646,7 +648,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-28T10:03:46+09:00">September 28, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-09-29T14:15:06+09:00">September 29, 2022</time></p>
 
 
       </footer>
