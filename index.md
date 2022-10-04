@@ -99,11 +99,15 @@ OCIの各テナントには、「Always Free」と呼ばれる、永久無償で
 - **[HPCクラスタを構築する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-hpc-cluster/)**  
   Oracle Cloud Infrastructureは、HPCワークロードを実行するHPCクラスタを構築するには最適なクラウトサービスです。とは言っても、HPCクラスタの構築は手間がかかって大変、と尻込みしていませんか？
   そんなあなたに、OCIのマーケットプレイスから利用可能なHPCクラスタ構築のためのリソース・マネージャ用スタックを利用し、典型的構成のHPCクラスタをGUIメニューを選択するだけで構築する方法を伝授します。
-  簡単に構築できるHPCクラスタといっても侮ってはいけません。構築直後から最適にチューニングされたRDMAインターコネクトを活用し、あなたのHPCワークロードから最高のパフォーマンスを引き出すことが出来るのです。
+  簡単に構築できるHPCクラスタといっても侮ってはいけません。構築直後から最適にチューニングされたRDMAインターコネクトを活用し、あなたのHPCワークロードを最高のパフォーマンスで実行すことが出来るのです。
 
 - **[GPUインスタンスで機械学習にトライ - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-ml-instance/)**  
   Oracle Cloud Infrastructureは、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。
   このチュートリアルは、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスをMarket Placeのイメージから簡単に構築し、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
+
+- **[クラスタ・ネットワークを作成する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-cluster-network/)**  
+  Oracle Cloud Infrastructureのクラスタ・ネットワークは、高帯域・低レイテンシをフラットなネットワークトポロジーから来る高い再現性で実現する、HPCワークロードを実行するHPCクラスタを構築する際の計算ノード間を接続するインターコネクトに最適なサービスです。
+  このチュートリアルは、計算ノードをクラスタ・ネットワークを使用してノード間接続し、HPCワークロードを実行するためのHPCクラスタのベースとなるインフラストラクチャを構築します。
 
 - **[ロギング・サービスを使って3つのログを収集する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-logging/)**  
   OCIのロギング・サービスを使用することによりログを一元的に収集できて、トラブルが発生しても、ログをすぐに確認し素早く対策できます。また安価で使用できてOCIリソースだけでなくオンプレミスや他社クラウド環境のログを確認することができます。この文書ではコンソールからOCIで提供されている3つのログを使用します。
