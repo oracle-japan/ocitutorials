@@ -49,7 +49,7 @@ OCIではMySQLベースのデータウェアハウスサービスであるHeatWa
 OracleのクラウドならOracle Databaseを高速に動かすことができる基盤のOracle Exadata も使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 - **[Autonomous Database を使ってみよう（ADB HOL）](/ocitutorials/database/)**  
 Autonomous Database は、最新のAI技術によって自律的に運用される、クラウド上のマネージドなデータベースサービスです。こちらのハンズオンラボでは、Autonomous Databaseに初めて触る方向けに、使い方や特徴を学んでいただける内容になっています。
-- **[Oracle Cloud VMware Solution(OCVS) ハンズオン（ビギナー向け）](https://labs.hol.vmware.com/HOL/catalogs/lab/9582)** ※外部サイト  
+- **[Oracle Cloud VMware Solution(OCVS) ハンズオン（ビギナー向け）](https://labs.hol.vmware.com/HOL/catalogs/lab/11947)** ※外部サイト  
   Oracle Cloud VMWare Solution(OCVS)は、Oracle Cloud Infrastructure(OCI) のベアメタルインフラ上に「VMware Cloud Foundation（VCF）」を配置してご提供するサービスです。こちらのハンズオンでは、OCI上で VMware Solution を作成する手順や、その他のOCIサービスとの連携方法、オンプレミス環境への接続手順などをご確認いただけます。
 
 - **[[完全無償] Always Freeで快適DBアプリ開発環境を構築する](/ocitutorials/beginners/alwaysfree/)**  
@@ -99,11 +99,15 @@ OCIの各テナントには、「Always Free」と呼ばれる、永久無償で
 - **[HPCクラスタを構築する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-hpc-cluster/)**  
   Oracle Cloud Infrastructureは、HPCワークロードを実行するHPCクラスタを構築するには最適なクラウトサービスです。とは言っても、HPCクラスタの構築は手間がかかって大変、と尻込みしていませんか？
   そんなあなたに、OCIのマーケットプレイスから利用可能なHPCクラスタ構築のためのリソース・マネージャ用スタックを利用し、典型的構成のHPCクラスタをGUIメニューを選択するだけで構築する方法を伝授します。
-  簡単に構築できるHPCクラスタといっても侮ってはいけません。構築直後から最適にチューニングされたRDMAインターコネクトを活用し、あなたのHPCワークロードから最高のパフォーマンスを引き出すことが出来るのです。
+  簡単に構築できるHPCクラスタといっても侮ってはいけません。構築直後から最適にチューニングされたRDMAインターコネクトを活用し、あなたのHPCワークロードを最高のパフォーマンスで実行すことが出来るのです。
 
 - **[GPUインスタンスで機械学習にトライ - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-ml-instance/)**  
   Oracle Cloud Infrastructureは、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。
   このチュートリアルは、TensorFlowやJupiter Notebook等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスをMarket Placeのイメージから簡単に構築し、TensorFlowを利用するサンプル機械学習プログラムをJupiter Notebookから実行します。
+
+- **[クラスタ・ネットワークを作成する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/spinup-cluster-network/)**  
+  Oracle Cloud Infrastructureのクラスタ・ネットワークは、高帯域・低レイテンシをフラットなネットワークトポロジーから来る高い再現性で実現する、HPCワークロードを実行するHPCクラスタを構築する際の計算ノード間を接続するインターコネクトに最適なサービスです。
+  このチュートリアルは、計算ノードをクラスタ・ネットワークを使用してノード間接続し、HPCワークロードを実行するためのHPCクラスタのベースとなるインフラストラクチャを構築します。
 
 - **[ロギング・サービスを使って3つのログを収集する - Oracle Cloud Infrastructureアドバンスド](/ocitutorials/intermediates/using-logging/)**  
   OCIのロギング・サービスを使用することによりログを一元的に収集できて、トラブルが発生しても、ログをすぐに確認し素早く対策できます。また安価で使用できてOCIリソースだけでなくオンプレミスや他社クラウド環境のログを確認することができます。この文書ではコンソールからOCIで提供されている3つのログを使用します。
