@@ -4,6 +4,5 @@ excerpt: "Oracle Database Managementは、OCIやオンプレミスを含むす�
 order: "170"
 tags:
 link: https://qiita.com/western24/items/c391afbf51951424b35f
-redirect_to: https://oracle-japan.github.io/ocitutorials/management/database-management
 ---
 このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。

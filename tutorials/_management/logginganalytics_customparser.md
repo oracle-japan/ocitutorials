@@ -9,7 +9,7 @@ header:
  teaser: "/management/logginganalytics_customparser/LA_customparser5.png"
  overlay_image: "/management/logginganalytics_customparser/LA_customparser5.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-redirect_to: https://oracle-japan.github.io/ocitutorials/management/logginganalytics_customparser
+
 ---
 
 OCI Observability & Management のサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/intermediates/audit-log-analytics)では、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。
