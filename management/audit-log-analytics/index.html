@@ -1,0 +1,633 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="トラブルシューティングの際、ログを即時に分析したい、という場面はありませんか？OCIのLogging Analyticsでは様々なログを可視化、分析する機能を提供します。実際にOCIの監査ログをLogging Analyticsで分析し、ユーザーアクティビティを可視化してみましょう。必要な操作は全てGUIから行うことができます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/management/audit-log-analytics/">
+
+
+  <meta property="og:description" content="トラブルシューティングの際、ログを即時に分析したい、という場面はありませんか？OCIのLogging Analyticsでは様々なログを可視化、分析する機能を提供します。実際にOCIの監査ログをLogging Analyticsで分析し、ユーザーアクティビティを可視化してみましょう。必要な操作は全てGUIから行うことができます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/management/audit-loganalytics/audit-loganalytics16.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-10-12T10:30:55+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/management/audit-log-analytics/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/beginners/" title="OCIをはじめて使う人のための基本的なチュートリアル">入門編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/intermediates/" title="OCIをもっと活用するためのチュートリアル">応用編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/database/" title="Oracle Databaseをクラウドで使うためのチュートリアル">Oracle DB編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/cloud-native/" title="OCIで Cloud Nativeなアプリケーション開発を行うためのチュートリアル">Cloud Native編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/content-management/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">コンテンツ管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/blockchain/" title="OCIのコンテンツ管理サービスを使う人のためのチュートリアル">ブロックチェーン編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/enterprise/" title="エンタープライズなアプリケーションを構築、運用するためのチュートリアル">エンタープライズ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/integration/" title="OICのチュートリアル">インテグレーション編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/datascience/" title="OCIのデータサイエンス/ビッグデータ関連サービスのチュートリアル">データサイエンス/ビッグデータ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/id-security/" title="OCIのID管理サービス/セキュリティ関連サービスのチュートリアル">アイデンティティとセキュリティ編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/management/" title="OCIの運用監視サービスのチュートリアル">監視・管理編</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/management/audit-loganalytics/audit-loganalytics16.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する
+
+        
+      </h1>
+      
+        <p class="page__lead">トラブルシューティングの際、ログを即時に分析したい、という場面はありませんか？OCIのLogging Analyticsでは様々なログを可視化、分析する機能を提供します。実際にOCIの監査ログをLogging Analyticsで分析し、ユーザーアクティビティを可視化してみましょう。必要な操作は全てGUIから行うことができます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/management" itemprop="item"><span itemprop="name">Management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">監視・管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/management/audit-log-analytics/" class="active">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する">
+    <meta itemprop="description" content="トラブルシューティングの際、ログを即時に分析したい、という場面はありませんか？OCIのLogging Analyticsでは様々なログを可視化、分析する機能を提供します。実際にOCIの監査ログをLogging Analyticsで分析し、ユーザーアクティビティを可視化してみましょう。必要な操作は全てGUIから行うことができます。">
+    <meta itemprop="datePublished" content="2022-10-12T10:30:55+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-iamポリシーの作成">1. IAMポリシーの作成</a></li><li><a href="#2-ロググループの作成">2. ログ・グループの作成</a></li><li><a href="#3-サービスコネクタの作成">3. サービス・コネクタの作成</a></li><li><a href="#4-ログの分析">4. ログの分析</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>OCI Observability&amp;Managementのサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。
+Logging AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit…)だけでなく、エージェントを使用することでOSやデータベース、Webサーバーなどのログを可視化、分析することが可能です。
+この章では、エージェントは利用せず簡単な操作でOCIの監査ログをLogging Analyticsで分析する手順をご紹介します。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>Logging Analyticsが有効化されていること</li>
+  <li>OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
+<img src="audit-loganalytics27.png" alt="画面キャプチャ27" /></li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+
+<p>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</p>
+
+<h1 id="1-iamポリシーの作成">1. IAMポリシーの作成</h1>
+<p>Logging Analyticsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。
+以下のポリシーをテナンシで作成してください。</p>
+
+<p>※この章では、ユーザーにLogging Analyticsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。<a href="https://docs.oracle.com/en-us/iaas/logging-analytics/doc/enable-access-logging-analytics-and-its-resources.html#GUID-EEB0A32F-9D33-4CF6-9FE7-F254C92BB2C0">ドキュメント</a> を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。</p>
+
+<p>※OCIのテナンシ管理者がLogging Analyticsを利用する場合は、作成するポリシーは「1-2.Logging Analyticsサービスへのポリシー」のみになります。その他のポリシーは作成する必要はありません。</p>
+
+<p>1-1. Loggingサービスを利用するためのポリシー</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow group &lt;IAMグループ名&gt; to MANAGE logging-family in tenancy/compartment &lt;コンパートメント名&gt;
+allow group &lt;IAMグループ名&gt; to READ audit_events in tenancy/compartment&lt;コンパートメント名&gt;
+</code></pre></div></div>
+
+<p>1-2. Logging Analyticsサービスへのポリシー</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow service loganalytics to READ loganalytics-features-family in tenancy
+allow service loganalytics to {LOG_ANALYTICS_LIFECYCLE_INSPECT, LOG_ANALYTICS_LIFECYCLE_READ} in tenancy
+allow service loganalytics to MANAGE cloud-events-rule in tenancy/compartment &lt;コンパートメント名&gt;
+allow service loganalytics to READ compartments in tenancy
+</code></pre></div></div>
+
+<p>1-3. ユーザーがLogging Analyticsを使用するためのポリシー</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow group &lt;IAMグループ名&gt; to READ compartments in tenancy
+allow group &lt;IAMグループ名&gt; to MANAGE loganalytics-features-family in tenancy
+allow group &lt;IAMグループ名&gt; to MANAGE loganalytics-resources-family in tenancy/compartment &lt;コンパートメント名&gt;
+</code></pre></div></div>
+
+<p>1-4. Service Connector Hubを利用するためのポリシー</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow group &lt;IAMグループ名&gt; to MANAGE serviceconnectors in tenancy/compartment &lt;コンパートメント名&gt;
+</code></pre></div></div>
+
+<h1 id="2-ロググループの作成">2. ログ・グループの作成</h1>
+<p>2-1. OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→管理
+	<img src="audit-loganalytics1.png" alt="画面ショット1" /></p>
+
+<p>2-2. 管理画面→ログ・グループ 
+	<img src="audit-loganalytics2.png" alt="画面ショット2" /></p>
+
+<ul>
+  <li>①ログ・グループの作成</li>
+  <li>②ログ・グループの名前を入力 例)AuditLogs</li>
+  <li>③作成</li>
+</ul>
+
+<p><img src="audit-loganalytics3.png" alt="画面ショット3" /></p>
+
+<h1 id="3-サービスコネクタの作成">3. サービス・コネクタの作成</h1>
+<p>3-1. OCIコンソールのメニューボタン→監視および管理→ロギング→サービス・コネクタ
+	<img src="audit-loganalytics4.png" alt="画面ショット4" /></p>
+
+<p>3-2. サービス・コネクタの作成
+	<img src="audit-loganalytics5.png" alt="画面ショット5" /></p>
+
+<ul>
+  <li><strong>コネクタ名</strong>: 任意の名前を入力 例) AuditLog_Connector</li>
+  <li><strong>説明</strong>: 任意の説明を入力</li>
+  <li><strong>ソース</strong>: 「ロギング」を選択</li>
+  <li>
+    <p><strong>ターゲット</strong>: 「ログ・アナリティクス」を選択</p>
+
+    <p><img src="audit-loganalytics6.png" alt="画面ショット6" /></p>
+  </li>
+  <li><strong>ログ・グループ(ソース接続の構成)</strong>: 「_Audit」を選択(OCIの監査ログはデフォルトで_Auditというログ・グループに格納されています。)</li>
+  <li>
+    <p><strong>ログ・グループ(ターゲット接続の構成)</strong>: 手順2-2で作成したLogging Analyticsのログ・グループを選択 例)AuditLogs</p>
+
+    <p><img src="audit-loganalytics7.png" alt="画面ショット7" /></p>
+  </li>
+</ul>
+
+<h1 id="4-ログの分析">4. ログの分析</h1>
+<p>4-1. ログ・エクスプローラ</p>
+
+<p>OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラ
+	<img src="audit-loganalytics8.png" alt="画面ショット8" /></p>
+
+<p>ログ・エクスプローラに「OCI Audit Logs」が表示されます。
+	<img src="audit-loganalytics10.png" alt="画面ショット10" /></p>
+
+<p>「OCI Audit Logs」→「ドリルダウン」を選択するとログレコードがリストとして表示されます。
+	<img src="audit-loganalytics11.png" alt="画面ショット11" />
+	<img src="audit-loganalytics12.png" alt="画面ショット12" /></p>
+
+<p>デフォルトでは過去60分間のログが表示されますが、過去15分から、最大で過去14日間までのログを表示することができます。
+また、「カスタム」からお好きな時間枠に絞り込むこともできます。
+	<img src="audit-loganalytics13.png" alt="画面ショット13" />
+	<img src="audit-loganalytics14.png" alt="画面ショット14" /></p>
+
+<p>4-2. クラスタ分析でログを分析する</p>
+
+<p>ビジュアライゼーション」→分析→クラスタ分析
+	<img src="audit-loganalytics15.png" alt="画面ショット15" /></p>
+
+<p>類似した内容のログレコードがクラスタとして表示されます。
+画面上部に「クラスタ」、「潜在的な問題」、「外れ値」、「トレンド」の合計4つのタブが表示されます。</p>
+
+<ul>
+  <li><strong>クラスタ</strong>: 全てのクラスタ</li>
+  <li><strong>潜在的な問題</strong>: ログの中身に「fatal」や「エラー」などの内容を含むクラスタ</li>
+  <li><strong>外れ値</strong>: ログ・レコードが1つしか含まれないクラスタ</li>
+  <li><strong>トレンド</strong>: ログ・レコードのトレンド（傾向を）分析し、トレンドごとにクラスタを表示
+  <img src="audit-loganalytics16.png" alt="画面ショット16" /></li>
+</ul>
+
+<p>「failed」を選択すると、「failed」という値が含まれるログ・クラスタが表示されます。
+	<img src="audit-loganalytics17.png" alt="画面ショット17" />
+	<img src="audit-loganalytics18.png" alt="画面ショット18" /></p>
+
+<p>Countの数字の部分を選択すると、「failed」という値が含まれるログ・レコードが一覧で表示されます。
+	<img src="audit-loganalytics19.png" alt="画面ショット19" /></p>
+
+<p>詳細を選択すると、ログレコード全文を確認することができます。
+	<img src="audit-loganalytics20.png" alt="画面ショット20" /></p>
+
+<p>デフォルトでは生ログが表示されますが、ＪＳＯＮを選択すると視覚的に理解しやすいように情報を整理して表示されます。
+	<img src="audit-loganalytics21.png" alt="画面ショット21" /></p>
+
+<p>4-3. 様々なビジュアライゼーションによるログの可視化</p>
+
+<p>ツリーマップ
+	<img src="audit-loganalytics22.png" alt="画面ショット22" /></p>
+
+<p>折れ線グラフ
+	<img src="audit-loganalytics23.png" alt="画面ショット23" /></p>
+
+<p>ツリーマップ、折れ線グラフの他にも様々なビジュアライゼーションによりログを可視化することができます。</p>
+
+<p>4-4. フィールドの値により、ログ・レコードをフィルタリング</p>
+<ul>
+  <li><strong>例) コンパートメント名</strong></li>
+</ul>
+
+<p>特定のコンパートメント内の監査ログに絞り込むことができます。
+	<img src="audit-loganalytics24.png" alt="画面キャプチャ24" /></p>
+
+<ul>
+  <li><strong>例) メソッド</strong></li>
+</ul>
+
+<p>メソッドによりログをフィルタリングすることができます。
+例えば「delete」というメソッドに絞り込むと、ユーザーがOCI上でリソースを削除したログが一覧で表示されます。
+	<img src="audit-loganalytics25.png" alt="画面キャプチャ25" /></p>
+
+<p>ログから、どのユーザーが何のリソースを削除したかを確認することができます。
+	<img src="audit-loganalytics26.png" alt="画面キャプチャ26" /></p>
+
+<p>以上がLogging Analyticsを使用したOCI監査ログの分析手順になります。
+Logging Analyticsにはご紹介したクラスタ分析、ツリーマップ、折れ線グラフの他にも、様々なビジュアライゼーションが提供されています。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#management" class="page__taxonomy-item" rel="tag">management</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-10-12T10:30:55+09:00">October 12, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI%E3%81%AELogging+Analytics%E3%81%A7OCI%E3%81%AE%E7%9B%A3%E6%9F%BB%E3%83%AD%E3%82%B0%E3%82%92%E5%8F%AF%E8%A6%96%E5%8C%96%E3%83%BB%E5%88%86%E6%9E%90%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Faudit-log-analytics%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Faudit-log-analytics%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Faudit-log-analytics%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/management/dbcs-database-management/" class="pagination--pager" title="OCI Database Cloud ServiceでDatabase Managementを有効化する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

@@ -773,6 +773,42 @@ var store = [{
         "url": "/ocitutorials/enterprise/using-oracle-exadata/",
         "teaser": null
       },{
+        "title": "OCI Network Firewallを構築する",
+        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。 所要時間 : 約70分 前提条件 : ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントを参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 はじめに : 以下が本チュートリアルで作成するNetwork Firewallの構成図です。 Network Firewallについて Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。 Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。 Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。 パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御 アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止 各サブネットとルート表について インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。Network Firewallによって検査されたトラフィックは「NFW Subnetルート表」のルールにより、Public Subnet内のインスタンスへ転送されます。 Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network...","categories": [],
+        "tags": ["id-security"],
+        "url": "/ocitutorials/id-security/networkfirewall/",
+        "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
+      },{
+        "title": "Web Application Firewall(WAF)を使ってWebサーバを保護する",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/id-security/protecting-web-servers-with-waf/",
+        "teaser": null
+      },{
+        "title": "OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する",
+        "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。 OCIの環境にはデフォルトで「Default Domain」と呼ばれるドメインが作成されます。Default Domainは主にOCIへのユーザーの認証、認可にお役立ていただくことが可能です。また、Identity Domainsの用途に応じて、新しくドメインを作成したり、ライセンスタイプを変更することも可能です。 本チュートリアルでは、新しいドメインの追加方法と、ライセンスタイプの変更方法をご紹介します。 Identity Domainsのライセンスタイプの一覧と、各ライセンスタイプの機能制限などについてはドキュメントをご参照ください。 所要時間 : 約20分 前提条件 : 新しいドメインを作成するには、OCIテナントの管理者権限を持つユーザーが操作を実行する必要があります。操作を実行するユーザーがOCIテナントの管理者ではない場合は、ユーザーにOCIテナントの管理者権限を付与してください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Default Domainにログイン OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 2. ドメインの作成 OCIコンソール画面左上のメニューより、「アイデンティティとセキュリティ」→「アイデンティティ」→「ドメイン」を選択します。「ドメインの作成」ボタンをクリックします。 ドメイン作成画面にて、以下情報を記載し「ドメインの作成」ボタンをクリックします。 表示名 - 任意（ログイン画面に表示されるアイデンティティ・ドメイン名になります） 説明 - 任意 ドメインタイプ - Free/Oracle...","categories": [],
+        "tags": ["id-security"],
+        "url": "/ocitutorials/id-security/identitydomains-add-domains-license/",
+        "teaser": "/ocitutorials/id-security/identitydomains-add-domains-license/identitydomains1.png"
+      },{
+        "title": "OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する",
+        "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。 本チュートリアルでは、OCIテナントのアクティベーション後に2人目移行のテナント管理者ユーザーを作成する手順と、OCIテナントの一般ユーザーの作成手順を紹介します。 所要時間 : 約15分 前提条件 : OCIテナントで2人目以降のテナント管理者ユーザーを作成するには、OCIテナントをアクティベートしたテナント管理者が操作を実行する必要があります。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Default Domainにログイン OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 2. 管理者ユーザーの作成 OCIコンソール画面左上のメニューより、「アイデンティティとセキュリティ」→「アイデンティティ」→「ドメイン」→ドメイン「Default」を選択します。 ※Defaultドメインはルートコンパートメントにあります。 ドメイン詳細画面の左側のメニューから「ユーザー」を選択し、「ユーザーの作成」ボタンをクリックします。 ユーザーの作成画面にて、ユーザーの名・姓・電子メールアドレスを入力します。 ※デフォルトでは、電子メールアドレスがIdentity Domainログイン時のユーザー名になります。電子メールアドレス以外のユーザー名を指定したい場合は、「ユーザー名として電子メール・アドレスを使用」のチェックを外し、別途ユーザー名を指定してください。 グループオプションにて、「Administrators」にチェックをいれ、「作成」ボタンをクリックします。 ※Defaultドメインの「Administrators」グループに所属するユーザーがテナント管理者になります。 3. テナント管理者ユーザーのアクティベート ユーザーが作成されると、ユーザー作成時に入力した電子メールアドレスに、Welcomeメールが届きます。 メール本文の「Activate Your Account」ボタンをクリックします。 表示された初期パスワードのリセット画面にてパスワードを指定し、「パスワードのリセット」ボタンをクリックします。 以上の手順で、OCIテナント管理者ユーザーの作成と、アカウントのアクティベートが完了しました。 再度OCIテナントのログイン画面から、作成した管理者ユーザーのID/パスワードでOCIにログインできることを確認してください。...","categories": [],
+        "tags": ["id-security"],
+        "url": "/ocitutorials/id-security/identitydomains-admin-users/",
+        "teaser": "/ocitutorials/id-security/identitydomains-admin-users/users7.png"
+      },{
+        "title": "Cloud Guardを使ってみる",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/id-security/cloud-guard/",
+        "teaser": null
+      },{
+        "title": "Oracle Data Safe チュートリアルまとめ",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。   1.Oracle Data Safeを有効化する  2.Oracle Data Safeのデータ・マスキングを試してみる  3.Oracle Data Safeのアクティビティ監査で操作ログを記録する  4.Oracle Data Safeにフェデレーッド・ユーザーでアクセスする  5.プライベートIPアドレスでData SafeにDBを登録する  6.Oracle Data SafeでオンプレミスのOracle DBを管理する  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/id-security/data-safe-tutorials/",
+        "teaser": null
+      },{
         "title": "OIC インスタンスを作成する",
         "excerpt":"Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。 OIC インスタンスの作成前に確認すること OIC インスタンスを作成する前の確認事項について説明します。 1. Oracle Cloud アカウントの準備 Oracle Cloud のアカウントを準備します。無料のトライアル環境（フリートライアル）と有料のクラウド・アカウントのご利用が可能です。 無料のトライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です。詳細は下記URLのページをご確認ください。 Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 2. 作成可能なリージョンの確認 OIC インスタンスを作成可能なリージョンを確認します。詳細はこちらのマニュアルをご確認ください。 3. 制限事項の確認 クラウド・アカウントの発行時期により、作成可能な OIC インスタンスの種類が異なります。こちらのマニュアルに、OCI コンソールから作成する OIC Generation 2 インスタンスの作成条件が記載されています。 4. エディションの確認 (Standard or Enterprise) OIC は、2つのエディション(Standard...","categories": [],
         "tags": [],
@@ -924,16 +960,16 @@ var store = [{
         "teaser": "/ocitutorials/intermediates/using-cli/img5.png"
       },{
         "title": "OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する",
-        "excerpt":"OCI Observability&amp;Managementのサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。 Logging AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit…)だけでなく、エージェントを使用することでOSやデータベース、Webサーバーなどのログを可視化、分析することが可能です。 この章では、エージェントは利用せず簡単な操作でOCIの監査ログをLogging Analyticsで分析する手順をご紹介します。 所要時間 : 約20分 前提条件 : Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Logging Analyticsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 ※この章では、ユーザーにLogging Analyticsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。ドキュメント を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。 ※OCIのテナンシ管理者がLogging Analyticsを利用する場合は、作成するポリシーは「1-2.Logging Analyticsサービスへのポリシー」のみになります。その他のポリシーは作成する必要はありません。 1-1. Loggingサービスを利用するためのポリシー allow group &lt;IAMグループ名&gt; to MANAGE logging-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["management"],
         "url": "/ocitutorials/intermediates/audit-log-analytics/",
-        "teaser": "/ocitutorials/intermediates/audit-log-analytics/audit-loganalytics16.png"
+        "teaser": "/ocitutorials/management/audit-log-analytics/audit-loganalytics16.png"
       },{
         "title": "OCI Network Firewallを構築する",
-        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。 所要時間 : 約70分 前提条件 : ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントを参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 はじめに : 以下が本チュートリアルで作成するNetwork Firewallの構成図です。 Network Firewallについて Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。 Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。 Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。 パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御 アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止 各サブネットとルート表について インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。Network Firewallによって検査されたトラフィックは「NFW Subnetルート表」のルールにより、Public Subnet内のインスタンスへ転送されます。 Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["id-security"],
         "url": "/ocitutorials/intermediates/networkfirewall/",
-        "teaser": "/ocitutorials/intermediates/networkfirewall/nfw1.png"
+        "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
       },{
         "title": "TerraformでOCIの構築を自動化する",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
@@ -948,73 +984,73 @@ var store = [{
         "teaser": null
       },{
         "title": "OCI Database Cloud ServiceでDatabase Managementを有効化する",
-        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのDatabase Cloud Serviceが1インスタンス作成されていること DBCSインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のDBCSがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["management"],
         "url": "/ocitutorials/intermediates/dbcs-database-management/",
-        "teaser": "/ocitutorials/intermediates/dbcs-database-management/dbmgmt1.png"
+        "teaser": "/ocitutorials/management/dbcs-database-management/dbmgmt1.png"
       },{
         "title": "Web Application Firewall(WAF)を使ってWebサーバを保護する",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "excerpt":" ","categories": [],
         "tags": [],
         "url": "/ocitutorials/intermediates/protecting-web-servers-with-waf/",
         "teaser": null
       },{
         "title": "OCIのDBCSでOperations Insightsを有効化する",
-        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Operations Insightsでは、Oracle Databaseのデータを長期保存し、機械学習による分析でリソースの需要分析と将来値の予測、パフォーマンス問題を検出することができます。Operations Insightsを利用することで、リソース配分の最適化によるコストの削減、パフォーマンスの向上などを図ることが可能です。 この章では、Oracle CloudのDatabase Cloud ServiceでOperations Insightsを有効化する手順をご紹介します。Operations Insightsを有効化するためにエージェントなどをインストールする必要はなく、OCIコンソールからの操作で有効化することができます。 所要時間 : 約20分 前提条件 : 101: Oracle CloudでOracle Databaseを使おう（DBCS）を通じて、DBCSインスタンスの作成が完了していること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Operations Insightsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 ※この章では、ユーザーにOperations Insightsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。ドキュメント を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。 allow group &lt;IAMグループ名&gt; to manage opsi-family in tenancy allow group &lt;IAMグループ名&gt; to use database-family in...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["management"],
         "url": "/ocitutorials/intermediates/dbcs_operations_insights/",
-        "teaser": "/ocitutorials/intermediates/dbcs_operations_insights/DB_OperationsInsights16.png"
+        "teaser": "/ocitutorials/management/dbcs_operations_insights/DB_OperationsInsights16.png"
       },{
         "title": "OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する",
-        "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。 OCIの環境にはデフォルトで「Default Domain」と呼ばれるドメインが作成されます。Default Domainは主にOCIへのユーザーの認証、認可にお役立ていただくことが可能です。また、Identity Domainsの用途に応じて、新しくドメインを作成したり、ライセンスタイプを変更することも可能です。 本チュートリアルでは、新しいドメインの追加方法と、ライセンスタイプの変更方法をご紹介します。 Identity Domainsのライセンスタイプの一覧と、各ライセンスタイプの機能制限などについてはドキュメントをご参照ください。 所要時間 : 約20分 前提条件 : 新しいドメインを作成するには、OCIテナントの管理者権限を持つユーザーが操作を実行する必要があります。操作を実行するユーザーがOCIテナントの管理者ではない場合は、ユーザーにOCIテナントの管理者権限を付与してください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Default Domainにログイン OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 2. ドメインの作成 OCIコンソール画面左上のメニューより、「アイデンティティとセキュリティ」→「アイデンティティ」→「ドメイン」を選択します。「ドメインの作成」ボタンをクリックします。 ドメイン作成画面にて、以下情報を記載し「ドメインの作成」ボタンをクリックします。 表示名 - 任意（ログイン画面に表示されるアイデンティティ・ドメイン名になります） 説明 - 任意 ドメインタイプ - Free/Oracle...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["id-security"],
         "url": "/ocitutorials/intermediates/identitydomains-add-domains-license/",
-        "teaser": "/ocitutorials/intermediates/identitydomains-add-domains-license/identitydomains1.png"
+        "teaser": "/ocitutorials/id-security/identitydomains-add-domains-license/identitydomains1.png"
       },{
         "title": "OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する",
-        "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。 本チュートリアルでは、OCIテナントのアクティベーション後に2人目移行のテナント管理者ユーザーを作成する手順と、OCIテナントの一般ユーザーの作成手順を紹介します。 所要時間 : 約15分 前提条件 : OCIテナントで2人目以降のテナント管理者ユーザーを作成するには、OCIテナントをアクティベートしたテナント管理者が操作を実行する必要があります。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Default Domainにログイン OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 2. 管理者ユーザーの作成 OCIコンソール画面左上のメニューより、「アイデンティティとセキュリティ」→「アイデンティティ」→「ドメイン」→ドメイン「Default」を選択します。 ※Defaultドメインはルートコンパートメントにあります。 ドメイン詳細画面の左側のメニューから「ユーザー」を選択し、「ユーザーの作成」ボタンをクリックします。 ユーザーの作成画面にて、ユーザーの名・姓・電子メールアドレスを入力します。 ※デフォルトでは、電子メールアドレスがIdentity Domainログイン時のユーザー名になります。電子メールアドレス以外のユーザー名を指定したい場合は、「ユーザー名として電子メール・アドレスを使用」のチェックを外し、別途ユーザー名を指定してください。 グループオプションにて、「Administrators」にチェックをいれ、「作成」ボタンをクリックします。 ※Defaultドメインの「Administrators」グループに所属するユーザーがテナント管理者になります。 3. テナント管理者ユーザーのアクティベート ユーザーが作成されると、ユーザー作成時に入力した電子メールアドレスに、Welcomeメールが届きます。 メール本文の「Activate Your Account」ボタンをクリックします。 表示された初期パスワードのリセット画面にてパスワードを指定し、「パスワードのリセット」ボタンをクリックします。 以上の手順で、OCIテナント管理者ユーザーの作成と、アカウントのアクティベートが完了しました。 再度OCIテナントのログイン画面から、作成した管理者ユーザーのID/パスワードでOCIにログインできることを確認してください。...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["id-security"],
         "url": "/ocitutorials/intermediates/identitydomains-admin-users/",
-        "teaser": "/ocitutorials/intermediates/identitydomains-admin-users/users7.png"
+        "teaser": "/ocitutorials/id-security/identitydomains-admin-users/users7.png"
       },{
         "title": "Logging AnalyticsでAutonomous Databaseのログを収集する",
-        "excerpt":"チュートリアル概要説明 Autonomous DatabaseにはOSログインできないため、ログ情報は表やビューにSQLでアクセスして取得する必要がありますが、O&amp;Mの管理エージェントを使用することでLogging Analyticsへのアップロードを効率的に自動化することができます。 本チュートリアルはこちらのドキュメントを補足する内容となりますので、あわせてご参照ください。 所要時間 : 約30分 前提条件 : Logging Analyticsの有効化 参考：OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する Autonomous Databaseの作成 参考：101: ADBインスタンスを作成してみよう Autonomous Databaseへアクセスするためのコンピュート・インスタンスの作成 参考：その3 - インスタンスを作成する 管理エージェントはOracle Cloud Agentプラグインを使用 必要な権限 : 以下の権限設定が最低限必要となります。 動的グループ all {resource.type = 'managementagent', resource.compartment.id ='&lt;your compartment id&gt;'} 動的グループの概要と設定方法については以下を参照ください。 参考：OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細 ポリシー allow service loganalytics to read loganalytics-features-family in...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["management"],
         "url": "/ocitutorials/intermediates/logginganalytics_adb_log/",
-        "teaser": "/ocitutorials/intermediates/logginganalytics_adb_log/img1.png"
+        "teaser": "/ocitutorials/management/logginganalytics_adb_log/img1.png"
       },{
         "title": "カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する",
-        "excerpt":"OCI Observability &amp; Management のサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。OCIのLogging AnalyticsでOCIの監査ログを可視化・分析するでは、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。 Logging Analyticsでは250種類以上のログのパーサー（解析文）が定義されているため、主要なシステムのログは取り込んですぐに分析することができます。 しかし、万が一分析したいログのパーサー（解析文）が事前に定義されていなくても心配いりません。Logging Analyticsはユーザーがカスタムでパーサーを定義することもできます。 本チュートリアルでは、Logging Analyticsで定義されていないログのパーサーを作成する手順をご紹介します。 所要時間 : 約20分 前提条件 : ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIのLogging AnalyticsでOCIの監査ログを可視化・分析するもしくは、ドキュメントをご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. カスタム・パーサーの作成 OCIコンソール → 監視及び管理 → ログ・アナリティクス → 管理 →パーサー → パーサーの作成 → 正規表現タイプ をクリックします。 「パーサーの作成」画面にて、以下情報を入力したら「次」をクリックします 名前 - 任意 例)serverlog 説明 -...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["management"],
         "url": "/ocitutorials/intermediates/logginganalytics_customparser/",
-        "teaser": "/ocitutorials/intermediates/logginganalytics_customparser/LA_customparser5.png"
+        "teaser": "/ocitutorials/management/logginganalytics_customparser/LA_customparser5.png"
       },{
         "title": "Oracle Management Cloud チュートリアルまとめ",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "excerpt":" ","categories": [],
         "tags": [],
         "url": "/ocitutorials/intermediates/management-cloud-tutorials/",
         "teaser": null
       },{
         "title": "Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集",
-        "excerpt":"チュートリアル概要説明 このチュートリアルでは、Node Exporterが収集したOCIインスタンスのメトリックをモニタリングで可視化するまでのステップをご紹介します。 本チュートリアルはこちらのドキュメントを補足する内容となりますので、あわせてご参照ください。 所要時間 : 約30分 前提条件 : 監視対象となるコンピュート・インスタンスの作成 参考：その3 - インスタンスを作成する OSはOracle Linux 7.9 管理エージェントはOracle Cloud Agentプラグインを使用 構成のイメージ 必要な権限 : 以下の権限設定が最低限必要となります。 動的グループ all {resource.type = 'managementagent', resource.compartment.id ='&lt;your compartment id&gt;'} 動的グループの概要と設定方法については以下を参照ください。 参考：OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細 ポリシー allow service loganalytics to read loganalytics-features-family in tenancy allow dynamic-group &lt;your dynamic-group-name&gt; to...","categories": [],
-        "tags": ["intermediate"],
+        "excerpt":" ","categories": [],
+        "tags": ["management"],
         "url": "/ocitutorials/intermediates/monitoring_prometheus/",
-        "teaser": "/ocitutorials/intermediates/monitoring_prometheus/prom1.png"
+        "teaser": "/ocitutorials/management/monitoring_prometheus/prom1.png"
       },{
         "title": "Cloud Guardを使ってみる",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "excerpt":" ","categories": [],
         "tags": [],
         "url": "/ocitutorials/intermediates/cloud-guard/",
         "teaser": null
       },{
         "title": "Oracle Data Safe チュートリアルまとめ",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。   1.Oracle Data Safeを有効化する  2.Oracle Data Safeのデータ・マスキングを試してみる  3.Oracle Data Safeのアクティビティ監査で操作ログを記録する  4.Oracle Data Safeにフェデレーッド・ユーザーでアクセスする  5.プライベートIPアドレスでData SafeにDBを登録する  6.Oracle Data SafeでオンプレミスのOracle DBを管理する  ","categories": [],
+        "excerpt":" ","categories": [],
         "tags": [],
         "url": "/ocitutorials/intermediates/data-safe-tutorials/",
         "teaser": null
       },{
         "title": "OCI Database ManagementでOracleDBのパフォーマンス監視をする",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "excerpt":" ","categories": [],
         "tags": [],
         "url": "/ocitutorials/intermediates/database-management/",
         "teaser": null
@@ -1078,6 +1114,54 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/intermediates/ocidi-tutorials/",
         "teaser": "/ocitutorials/intermediates/ocidi-tutorials/top.png"
+      },{
+        "title": "OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する",
+        "excerpt":"OCI Observability&amp;Managementのサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。 Logging AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit…)だけでなく、エージェントを使用することでOSやデータベース、Webサーバーなどのログを可視化、分析することが可能です。 この章では、エージェントは利用せず簡単な操作でOCIの監査ログをLogging Analyticsで分析する手順をご紹介します。 所要時間 : 約20分 前提条件 : Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Logging Analyticsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 ※この章では、ユーザーにLogging Analyticsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。ドキュメント を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。 ※OCIのテナンシ管理者がLogging Analyticsを利用する場合は、作成するポリシーは「1-2.Logging Analyticsサービスへのポリシー」のみになります。その他のポリシーは作成する必要はありません。 1-1. Loggingサービスを利用するためのポリシー allow group &lt;IAMグループ名&gt; to MANAGE logging-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/audit-log-analytics/",
+        "teaser": "/ocitutorials/management/audit-log-analytics/audit-loganalytics16.png"
+      },{
+        "title": "OCI Database Cloud ServiceでDatabase Managementを有効化する",
+        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのDatabase Cloud Serviceが1インスタンス作成されていること DBCSインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のDBCSがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/dbcs-database-management/",
+        "teaser": "/ocitutorials/management/dbcs-database-management/dbmgmt1.png"
+      },{
+        "title": "OCIのDBCSでOperations Insightsを有効化する",
+        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Operations Insightsでは、Oracle Databaseのデータを長期保存し、機械学習による分析でリソースの需要分析と将来値の予測、パフォーマンス問題を検出することができます。Operations Insightsを利用することで、リソース配分の最適化によるコストの削減、パフォーマンスの向上などを図ることが可能です。 この章では、Oracle CloudのDatabase Cloud ServiceでOperations Insightsを有効化する手順をご紹介します。Operations Insightsを有効化するためにエージェントなどをインストールする必要はなく、OCIコンソールからの操作で有効化することができます。 所要時間 : 約20分 前提条件 : 101: Oracle CloudでOracle Databaseを使おう（DBCS）を通じて、DBCSインスタンスの作成が完了していること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Operations Insightsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 ※この章では、ユーザーにOperations Insightsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。ドキュメント を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。 allow group &lt;IAMグループ名&gt; to manage opsi-family in tenancy allow group &lt;IAMグループ名&gt; to use database-family in...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/dbcs_operations_insights/",
+        "teaser": "/ocitutorials/management/dbcs_operations_insights/DB_OperationsInsights16.png"
+      },{
+        "title": "Logging AnalyticsでAutonomous Databaseのログを収集する",
+        "excerpt":"チュートリアル概要説明 Autonomous DatabaseにはOSログインできないため、ログ情報は表やビューにSQLでアクセスして取得する必要がありますが、O&amp;Mの管理エージェントを使用することでLogging Analyticsへのアップロードを効率的に自動化することができます。 本チュートリアルはこちらのドキュメントを補足する内容となりますので、あわせてご参照ください。 所要時間 : 約30分 前提条件 : Logging Analyticsの有効化 参考：OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する Autonomous Databaseの作成 参考：101: ADBインスタンスを作成してみよう Autonomous Databaseへアクセスするためのコンピュート・インスタンスの作成 参考：その3 - インスタンスを作成する 管理エージェントはOracle Cloud Agentプラグインを使用 必要な権限 : 以下の権限設定が最低限必要となります。 動的グループ all {resource.type = 'managementagent', resource.compartment.id ='&lt;your compartment id&gt;'} 動的グループの概要と設定方法については以下を参照ください。 参考：OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細 ポリシー allow service loganalytics to read loganalytics-features-family in...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/logginganalytics_adb_log/",
+        "teaser": "/ocitutorials/management/logginganalytics_adb_log/img1.png"
+      },{
+        "title": "カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する",
+        "excerpt":"OCI Observability &amp; Management のサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。OCIのLogging AnalyticsでOCIの監査ログを可視化・分析するでは、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。 Logging Analyticsでは250種類以上のログのパーサー（解析文）が定義されているため、主要なシステムのログは取り込んですぐに分析することができます。 しかし、万が一分析したいログのパーサー（解析文）が事前に定義されていなくても心配いりません。Logging Analyticsはユーザーがカスタムでパーサーを定義することもできます。 本チュートリアルでは、Logging Analyticsで定義されていないログのパーサーを作成する手順をご紹介します。 所要時間 : 約20分 前提条件 : ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIのLogging AnalyticsでOCIの監査ログを可視化・分析するもしくは、ドキュメントをご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. カスタム・パーサーの作成 OCIコンソール → 監視及び管理 → ログ・アナリティクス → 管理 →パーサー → パーサーの作成 → 正規表現タイプ をクリックします。 「パーサーの作成」画面にて、以下情報を入力したら「次」をクリックします 名前 - 任意 例)serverlog 説明 -...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/logginganalytics_customparser/",
+        "teaser": "/ocitutorials/management/logginganalytics_customparser/LA_customparser5.png"
+      },{
+        "title": "Oracle Management Cloud チュートリアルまとめ",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/management/management-cloud-tutorials/",
+        "teaser": null
+      },{
+        "title": "Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集",
+        "excerpt":"チュートリアル概要説明 このチュートリアルでは、Node Exporterが収集したOCIインスタンスのメトリックをモニタリングで可視化するまでのステップをご紹介します。 本チュートリアルはこちらのドキュメントを補足する内容となりますので、あわせてご参照ください。 所要時間 : 約30分 前提条件 : 監視対象となるコンピュート・インスタンスの作成 参考：その3 - インスタンスを作成する OSはOracle Linux 7.9 管理エージェントはOracle Cloud Agentプラグインを使用 構成のイメージ 必要な権限 : 以下の権限設定が最低限必要となります。 動的グループ all {resource.type = 'managementagent', resource.compartment.id ='&lt;your compartment id&gt;'} 動的グループの概要と設定方法については以下を参照ください。 参考：OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細 ポリシー allow service loganalytics to read loganalytics-features-family in tenancy allow dynamic-group &lt;your dynamic-group-name&gt; to...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/monitoring_prometheus/",
+        "teaser": "/ocitutorials/management/monitoring_prometheus/prom1.png"
+      },{
+        "title": "OCI Database ManagementでOracleDBのパフォーマンス監視をする",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/management/database-management/",
+        "teaser": null
       },{
         "title": "その1 - OCIコンソールにアクセスして基本を理解する",
         "excerpt":"Oracle Cloud Infrastructure を使い始めるにあたって、コンソール画面にアクセスし、ログインを行います。 また、Oracle Cloud Infrastructure のサービスを利用するのにあたって必要なサービス・リミット、コンパートメントやポリシーなどのIAMリソースおよびリージョンについて、コンセプトをコンソール画面の操作を通じて学習し、理解します。 所要時間 : 約25分 前提条件 : 有効な Oracle Cloud Infrastructure のテナントと、アクセスのための有効なユーザーIDとパスワードがあること 無償トライアル環境のお申込みについては こちら の資料を参照してください。 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります image サポートされるブラウザの確認 このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。 サポートされるブラウザを確認し、いずれかのブラウザをローカル環境にインストールしてください。 ログイン情報の確認 コンソールにアクセスするにあたり、ログイン情報の入力が必要になります。ログイン情報には以下のものが含まれます。 テナント名(クラウド・アカウント名) - Oracle Cloud Infrastructure を契約したり、トライアル環境を申し込んだ際に払い出される一意のID ユーザー名 - ログインのためのユーザー名 パスワード - ログインのためのパスワード ログイン情報の入手方法は、ユーザーが作られるタイミングによって異なります。...","categories": [],
