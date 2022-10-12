@@ -7,7 +7,7 @@ tags:
  - management
 header:
  teaser: "/management/audit-log-analytics/audit-loganalytics16.png"
- overlay_image: "/management/audit-loganalytics/audit-loganalytics16.png"
+ overlay_image: "/management/audit-log-analytics/audit-loganalytics16.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
