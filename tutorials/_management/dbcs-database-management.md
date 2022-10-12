@@ -9,7 +9,7 @@ header:
  teaser: "/management/dbcs-database-management/dbmgmt1.png"
  overlay_image: "/management/dbcs-database-management/dbmgmt1.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-redirect_to: https://oracle-japan.github.io/ocitutorials/management/dbcs-database-management
+
 ---
 
 OCI Observability & Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。

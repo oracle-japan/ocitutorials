@@ -4,6 +4,5 @@ excerpt: "Cloud Guardを利用することで、Oracle Cloud Infrastructureの�
 order: "160"
 tags:
 link: https://qiita.com/western24/items/d1469545749866867191
-redirect_to: https://oracle-japan.github.io/ocitutorials/id-security/cloud-guard
 ---
 このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。

@@ -23,6 +23,7 @@ group :jekyll_plugins do
   gem "jekyll-seo-tag", "~> 2.6"
   gem "jekyll-include-cache"
   gem "jekyll-postfiles"
+  gem 'jekyll-redirect-from'
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -9,7 +9,7 @@ header:
  teaser: "/management/logginganalytics_adb_log/img1.png"
  overlay_image: "/management/logginganalytics_adb_log/img1.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-redirect_to: https://oracle-japan.github.io/ocitutorials/management/logginganalytics_adb_log
+
 ---
 
 **チュートリアル概要説明**  

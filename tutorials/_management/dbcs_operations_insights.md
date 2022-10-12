@@ -9,7 +9,7 @@ header:
  teaser: "/management/dbcs_operations_insights/DB_OperationsInsights16.png"
  overlay_image: "/management/dbcs_operations_insights/DB_OperationsInsights16.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-redirect_to: https://oracle-japan.github.io/ocitutorials/management/dbcs_operations_insights
+
 ---
 
 OCI Observability & Managementのサービスの1つ、Operations Insightsでは、Oracle Databaseのデータを長期保存し、機械学習による分析でリソースの需要分析と将来値の予測、パフォーマンス問題を検出することができます。Operations Insightsを利用することで、リソース配分の最適化によるコストの削減、パフォーマンスの向上などを図ることが可能です。
