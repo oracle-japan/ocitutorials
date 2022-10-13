@@ -1,7 +1,7 @@
 ---
 title: "OCI Streaming を動かしてみよう"
 excerpt: "OCI Streaming は、Oracle Cloud Infrastructure(OCI) 上で提供されるフルマネージドな分散メッセージングサービスです。こちらのハンズオンでは、OCI Streaming を様々なクライアントツールから触って頂けるコンテンツになっています。"
-order: "041"
+order: "030"
 tags: "streaming"
 layout: single
 date: "2022-05-30"
