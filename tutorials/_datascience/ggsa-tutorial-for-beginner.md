@@ -1,7 +1,7 @@
 ---
 title: "Oracle GoldenGate Stream Analytics ハンズオン"
 excerpt: "Oracle GoldenGate Stream Analytics は、IoT データ、パイプライン、ログデータ、ソーシャルメディアといった Stream データをリアルタイムに分析的計算処理するテクノロジーを提供するプラットフォームです。"
-order: "010"
+order: "050"
 tags: "ggsa"
 date: "2021-09-14"
 lastmod: "2021-10-01"

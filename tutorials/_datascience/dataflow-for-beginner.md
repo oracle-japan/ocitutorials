@@ -1,7 +1,7 @@
 ---
 title: "OCI Data Flow ハンズオン(初級編)"
 excerpt: "OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。"
-order: "001"
+order: "040"
 tags: "dataflow"
 date: "2021-09-17"
 lastmod: "2021-09-17"
