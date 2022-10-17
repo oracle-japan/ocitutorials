@@ -1,0 +1,591 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI AI Vision ハンズオン(中級編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI DataScienceからREST APIを使用して、OCI Visionから公開されているAPIを使用する方法を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI AI Vision ハンズオン(中級編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/datascience/vision-for-intermediates/">
+
+
+  <meta property="og:description" content="OCI DataScienceからREST APIを使用して、OCI Visionから公開されているAPIを使用する方法を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-10-14T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/datascience/vision-for-intermediates/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI AI Vision ハンズオン(中級編)
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI DataScienceからREST APIを使用して、OCI Visionから公開されているAPIを使用する方法を紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/datascience" itemprop="item"><span itemprop="name">Datascience</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI AI Vision ハンズオン(中級編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">データサイエンス/ビッグデータ編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/datascience/vision-for-beginner/">OCI AI Vision ハンズオン(初級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/vision-for-intermediates/" class="active">OCI AI Vision ハンズオン(中級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/streaming-for-beginner/">OCI Streaming を動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-structured-spark-streaming/">Structured Spark Streaming を OCI Data Flow で体験しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-for-beginner/">OCI Data Flow ハンズオン(初級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/ggsa-tutorial-for-beginner/">Oracle GoldenGate Stream Analytics ハンズオン</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI AI Vision ハンズオン(中級編)">
+    <meta itemprop="description" content="OCI DataScienceからREST APIを使用して、OCI Visionから公開されているAPIを使用する方法を紹介します。">
+    <meta itemprop="datePublished" content="2021-10-14T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#事前準備">事前準備</a><ul><li><a href="#仮想クラウドネットワークの作成">仮想クラウド・ネットワークの作成</a></li><li><a href="#動的グループの作成">動的グループの作成</a></li><li><a href="#ポリシーの作成">ポリシーの作成</a></li></ul></li><li><a href="#ノートブックセッションの作成">ノートブック・セッションの作成</a></li><li><a href="#api-署名キーと構成ファイルの作成">API 署名キーと構成ファイルの作成</a></li><li><a href="#画像分析-api-の呼びだし">画像分析 API の呼びだし</a></li><li><a href="#ドキュメント分析-api-の呼びだし">ドキュメント分析 API の呼びだし</a></li><li><a href="#バッチ非同期-apiの呼びだし">バッチ（非同期 API）の呼びだし</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="事前準備">事前準備</h1>
+
+<h2 id="仮想クラウドネットワークの作成">仮想クラウド・ネットワークの作成</h2>
+
+<p>OCIコンソールで「仮想クラウド・ネットワーク」 &gt; 「VCNウィザードの起動」 &gt; 「インターネット接続性を持つVCNの作成」を選択して、VCNとサブネットを作成します。これにより、NAT ゲートウェイを使用して必要なプライベート・サブネットを自動的に作成します。</p>
+
+<h2 id="動的グループの作成">動的グループの作成</h2>
+
+<p>次の一致ルールで動的グループを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ALL { resource.type = 'datasciencenotebooksession' }
+</code></pre></div></div>
+
+<h2 id="ポリシーの作成">ポリシーの作成</h2>
+
+<p>次のステートメントを使用して、ルート・コンパートメントにポリシーを作成します。</p>
+
+<p>サービス・ポリシー</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow service datascience to use virtual-network-family in tenancy
+</code></pre></div></div>
+
+<p>管理者以外のユーザー・ ポリシー</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow group &lt;ユーザー・グループ&gt; to use virtual-network-family in tenancy
+allow group &lt;ユーザー・グループ&gt; to manage data-science-family in tenancy
+</code></pre></div></div>
+
+<p>動的グループに対するポリシー</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow dynamic-group &lt;作成した動的グループ&gt; to manage data-science-family in tenancy
+</code></pre></div></div>
+
+<h1 id="ノートブックセッションの作成">ノートブック・セッションの作成</h1>
+
+<p>OCI コンソール画面左上のハンバーガーメニューを展開し、「アナリティクスとAI」 &gt; 「データ・サイエンス」を選択します。</p>
+
+<p><img src="image1.png" alt="image1" /></p>
+
+<p>プロジェクトを作成します。コンパートメントを選択し、「プロジェクトの作成」をクリックします。プロジェクトの作成画面で、名前と説明を入力し、「作成」をクリックします。</p>
+
+<p><img src="image2.png" alt="image2" /></p>
+
+<p>ノートブック・セッションを作成します。作成したプロジェクト名をクリックします。</p>
+
+<p><img src="image3.png" alt="image3" /></p>
+
+<p>プロジェクトの詳細画面で、「ノートブック・セッションの作成」をクリックします。</p>
+
+<p><img src="image4.png" alt="image4" /></p>
+
+<p>ノートブック・セッションの詳細を入力します。</p>
+
+<ul>
+  <li>名前：任意の名前を入力します。</li>
+  <li>コンピュート・シェイプ： Intel Skylake VM. Standard2.2 を選択します。</li>
+  <li>ブロック・ストレージ・サイズ： 50 GB に設定します。</li>
+  <li>VCNとサブネット：「カスタム・ネットワーキング」を選択し、作成したインターネット接続のあるプライベート・サブネットを選択します。</li>
+  <li>「作成」をクリックします。</li>
+</ul>
+
+<p><img src="image5.png" alt="image5" /></p>
+
+<p><img src="image6.png" alt="image6" /></p>
+
+<p>ノートブック・セッション VM が作成されます。これは数分かかります。プロビジョニングされたノートブック・セッションを開くと、以下の画面になります。</p>
+
+<p><img src="image7.png" alt="image7" /></p>
+
+<p><img src="image8.png" alt="image8" /></p>
+
+<h1 id="api-署名キーと構成ファイルの作成">API 署名キーと構成ファイルの作成</h1>
+
+<p>API 署名キー・ ペアを生成します。
+OCIコンソール画面右上のプロファイル・アイコンをクリックし、「ユーザー設定」を選択します。</p>
+
+<p><img src="image9.png" alt="image9" /></p>
+
+<p>左側で「APIキー」を選択し、「APIキーの追加」をクリックします。</p>
+
+<p><img src="image10.png" alt="image10" /></p>
+
+<p>「APIキー・ペアの生成」を選択し、「秘密キーのダウンロード」をクリックし、キー・ファイルを保存します。「追加」をクリックします。</p>
+
+<p><img src="image11.png" alt="image11" /></p>
+
+<p>構成ファイルをコピーし、「閉じる」をクリックします。</p>
+
+<p><img src="image12.png" alt="image12" /></p>
+
+<p>構成ファイル（config）を作成し、コピーした値を貼り付けます。 key_file の値を、生成された秘密キーのパスに置き換えます。</p>
+
+<p><img src="image13.png" alt="image13" /></p>
+
+<p>ノートブック・セッションを起動します。ノートブック・セッションの詳細画面で「開く」をクリックします。</p>
+
+<p><img src="image14.png" alt="image14" /></p>
+
+<p>ターミナルを開きます。「File」&gt;「New Launcher」を選択します。Launcher画面で「Terminal」アイコンを選択します。</p>
+
+<p><img src="image15.png" alt="image15" /></p>
+
+<p><img src="image16.png" alt="image16" /></p>
+
+<p>ターミナルで、以下のコマンドを実行し、.oci ディレクトリを作成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> ~/.oci
+</code></pre></div></div>
+
+<p>アップロード・アイコンをクリックし、作成した構成ファイルと秘密キーをノートブック・セッションにアップロードします。</p>
+
+<p><img src="image17.png" alt="image17" /></p>
+
+<p>ターミナルで、以下のコマンドを実行し、構成ファイルと秘密キーを .oci フォルダーに移動します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mv</span> &lt;path of the config file&gt; ~/.oci/
+<span class="nb">mv</span> &lt;path of the private key&gt; ~/.oci/
+</code></pre></div></div>
+
+<p><img src="image18.png" alt="image18" /></p>
+
+<h1 id="画像分析-api-の呼びだし">画像分析 API の呼びだし</h1>
+
+<p><a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/image-demo1.ipynb">Image features demo 1</a> および <a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/image-demo2.ipynb">Image features demo 2</a> ファイルをダウンロードし、ノートブックにアップロードします。</p>
+
+<p><img src="image19.png" alt="image19" /></p>
+
+<p><a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/image-demo1.ipynb">Image features demo 1</a> は画像分類のノートブックで、<a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/image-demo2.ipynb">Image features demo 2</a> は物体検出と テキスト検出のノートブックです。
+アップロードしたノートブックを開きます。各セルを調べて、1 つずつ実行します。 各セルで Shift+Enter キーをクリックして、セル内のコードを実行できます。</p>
+
+<h1 id="ドキュメント分析-api-の呼びだし">ドキュメント分析 API の呼びだし</h1>
+
+<p><a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/document-demo1.ipynb">Document AI features demo 1</a> および <a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/document-demo2.ipynb">Document AI features demo 2</a> ファイルをダウンロードし、ノートブックにアップロードし、実行します。
+<a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/document-demo1.ipynb">Document AI features demo 1</a> は、テキスト分類のノートブックで、 <a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/document-demo2.ipynb">Document AI features demo 2</a> は、文書分類、言語分類、テーブル検出のノートブックです。</p>
+
+<p><img src="image20.png" alt="image20" /></p>
+
+<h1 id="バッチ非同期-apiの呼びだし">バッチ（非同期 API）の呼びだし</h1>
+
+<p><a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/image-batch-demo.ipynb">Image classification batch feature demo</a> および <a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/document-batch-demo.ipynb">Document text detection batch feature demo</a> ファイルをダウンロードし、ノートブックにアップロードし、実行します。</p>
+
+<p><a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/image-batch-demo.ipynb">Image classification batch feature demo</a> は、画像分類のノートブックで、<a href="https://github.com/oracle-japan/ai-services-tutorials/blob/main/vision/document-batch-demo.ipynb">Document text detection batch feature demo</a> は、テキスト検出のノートブックです。これらのノートブックは、バッチ入力よりも Vision サービスの画像とドキュメントの AI 機能を使用する方法を示しています。</p>
+
+<p><img src="image21.png" alt="image21" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#ai" class="page__taxonomy-item" rel="tag">ai</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#vision" class="page__taxonomy-item" rel="tag">vision</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-14T00:00:00+09:00">October 14, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+AI+Vision+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%28%E4%B8%AD%E7%B4%9A%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fvision-for-intermediates%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fvision-for-intermediates%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fvision-for-intermediates%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/datascience/vision-for-beginner/" class="pagination--pager" title="OCI AI Vision ハンズオン(初級編)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/datascience/streaming-for-beginner/" class="pagination--pager" title="OCI Streaming を動かしてみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+
+
+
+  </body>
+</html>

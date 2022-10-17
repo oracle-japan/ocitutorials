@@ -749,6 +749,12 @@ var store = [{
         "url": "/ocitutorials/datascience/vision-for-beginner/",
         "teaser": null
       },{
+        "title": "OCI AI Vision ハンズオン(中級編)",
+        "excerpt":"事前準備 仮想クラウド・ネットワークの作成 OCIコンソールで「仮想クラウド・ネットワーク」 &gt; 「VCNウィザードの起動」 &gt; 「インターネット接続性を持つVCNの作成」を選択して、VCNとサブネットを作成します。これにより、NAT ゲートウェイを使用して必要なプライベート・サブネットを自動的に作成します。 動的グループの作成 次の一致ルールで動的グループを作成します。 ALL { resource.type = 'datasciencenotebooksession' } ポリシーの作成 次のステートメントを使用して、ルート・コンパートメントにポリシーを作成します。 サービス・ポリシー allow service datascience to use virtual-network-family in tenancy 管理者以外のユーザー・ ポリシー allow group &lt;ユーザー・グループ&gt; to use virtual-network-family in tenancy allow group &lt;ユーザー・グループ&gt; to manage data-science-family in tenancy 動的グループに対するポリシー allow dynamic-group &lt;作成した動的グループ&gt; to...","categories": [],
+        "tags": ["ai","vision"],
+        "url": "/ocitutorials/datascience/vision-for-intermediates/",
+        "teaser": null
+      },{
         "title": "OCI Streaming を動かしてみよう",
         "excerpt":"このハンズオンでは、OCI Streaming を使う上での事前準備やいくつかのクライアントツールを用いて、実際に OCI Streaming に対して Pub/Sub を行うことで基本的な操作や特徴を学ぶことができます。 前提条件 クラウド環境 Oracle Cloud のアカウント（Free Trial）を取得済みであること 最新版の OCI CLI がセットアップされていること Cloud Shell の使用を推奨します 手順 ポリシーの作成 OCI Streaming を使用するためのポリシーを作成します。OCI コンソール左上のハンバーガーメニューから、アイデンティティとセキュリティ &gt; ポリシーと選択します。 ポリシーの作成を押します。 以下のように入力し、ポリシーを生成します。(&lt;your-group&gt;, &lt;your-compartment&gt;は、ご自身の環境に合わせて変更してください) Allow group &lt;your-group&gt; to manage stream-family in compartment &lt;your-compartment&gt; ストリーム・プールの作成 ストリームの管理に使用する論理グループであるストリーム・プールを作成します。OCI コンソール左上のハンバーガーメニューからアナリティクスと AI &gt; ストリーミングを選択します。 ストリーム・プールを選択します。 ストリーム・プールの作成を押します。 以下のように入力して、ストリーム・プールを作成します。...","categories": [],
         "tags": ["streaming"],
