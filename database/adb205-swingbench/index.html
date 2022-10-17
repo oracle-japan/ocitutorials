@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-10-17T12:15:25+09:00">
+  <meta property="article:published_time" content="2022-10-17T16:29:44+09:00">
 
 
 
@@ -363,7 +363,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)">
     <meta itemprop="description" content="OCPU数を増やす、もしくは自動スケーリングを設定することで、SwingbenchのTPS(Transaction per Second)が上がることを体験頂きます。">
-    <meta itemprop="datePublished" content="2022-10-17T12:15:25+09:00">
+    <meta itemprop="datePublished" content="2022-10-17T16:29:44+09:00">
     
 
     <div class="page__inner-wrap">
@@ -407,6 +407,13 @@
   </li>
 </ul>
 
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスの作成方法については、
+  <a href="/ocitutorials/database/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+</ul>
+
 <p><br /></p>
 
 <p><strong>所要時間:</strong> 約1時間30分</p>
@@ -421,7 +428,8 @@
 
 <h2 id="swingbenchをダウンロードデータ生成">Swingbenchをダウンロード、データ生成</h2>
 
-<p>まずはSwingbenchを仮想マシン上にダウンロードしましょう、ベンチマーク・データをADBインスタンス内に生成しましょう。</p>
+<p>まずはSwingbenchを仮想マシン上にダウンロードし、ベンチマーク・データをADBインスタンス内に生成しましょう。
+OCIで仮想マシンを作成する場合は、こちらの<a href="https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/" target="_blank">204: 開発者向け仮想マシンのセットアップ方法</a>を参考にしてください。</p>
 
 <ol>
   <li>
@@ -435,24 +443,24 @@
 
     <p><img src="img0.jpg" alt="画面ショット1-1" /></p>
   </li>
+  <li>作業用ディレクトリを作成します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir -p labs/swingbench
+</code></pre></div>    </div>
+  </li>
   <li>
     <p><strong>作業用ディレクトリ</strong>に移動します。</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /home/oracle/labs/swingbench
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd labs/swingbench
 </code></pre></div>    </div>
-
-    <p><img src="img0.5.jpg" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p><strong>Swingbench</strong>を<strong>ダウンロード</strong>します。<strong>wget</strong>もしくは<strong>curl</strong>コマンドをご利用ください。（数分程度かかります。）</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://www.dominicgiles.com/swingbench/swingbenchlatest.zip 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/domgiles/swingbench-public/releases/download/production/swingbench30092022.zip -O swingbenchlatest.zip
 </code></pre></div>    </div>
     <p>OR</p>
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl http://www.dominicgiles.com/swingbench/swingbenchlatest.zip -o swingbenchlatest.zip
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl https://github.com/domgiles/swingbench-public/releases/download/production/swingbench30092022.zip -o swingbenchlatest.zip
 </code></pre></div>    </div>
-
-    <p><img src="img1.jpg" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p><strong>展開</strong>します。</p>
@@ -463,6 +471,15 @@
     <p><img src="img2.jpg" alt="画面ショット1-1" /></p>
 
     <p><img src="img3.jpg" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ADBのウォレットを配置するディレクトリを作成します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir /home/oracle/labs/wallets
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ここにADBに接続するためのウォレットを配置し、sqlnet.oraを編集します。</p>
   </li>
   <li>
     <p>（必要に応じて）念のため<strong>環境変数</strong>を設定します。</p>
@@ -509,17 +526,17 @@ export TNS_ADMIN=/home/oracle/labs/wallets
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   #!/bin/sh
    ./swingbench/bin/oewizard 
-      -cf ~/labs/wallets/Wallet_atp01.zip \ -- クレデンシャルウォレットのZipファイルのパス
-      -cs atp01_tp \ -- ADBの接続サービス
-      -ts DATA \ -- 表領域
-      -dbap Welcome12345# \ -- ADMINユーザのパスワード
-      -dba admin \ -- ADMINユーザのユーザ名(ADMIN)
-      -u soe \ -- 新規作成するスキーマ名
-      -p Welcome12345# \ -- 新規作成するスキーマのパスワード
+      -cf ~/labs/wallets/Wallet_atp01.zip \
+      -cs atp01_tp \
+      -ts DATA \
+      -dbap Welcome12345# \
+      -dba admin \
+      -u soe \
+      -p Welcome12345# \
       -async_off \
       -scale 5 \
       -hashpart \
-      -create \ --　スキーマの新規作成
+      -create \
       -cl \
       -v
 </code></pre></div>    </div>
@@ -605,9 +622,9 @@ export TNS_ADMIN=/home/oracle/labs/wallets
    -val
 ./swingbench/bin/sbutil -soe -cf ~/labs/wallets/Wallet_atp01.zip \
    -cs atp01_medium -u soe -p Welcome12345# \ 
-      -stats
+   -stats
 ./swingbench/bin/sbutil -soe -cf ~/labs/wallets/Wallet_atp01.zip \ 
-      -cs atp01_medium -u soe -p Welcome12345# \
+   -cs atp01_medium -u soe -p Welcome12345# \
    -tables
 </code></pre></div>    </div>
   </li>
@@ -629,16 +646,9 @@ export TNS_ADMIN=/home/oracle/labs/wallets
 
     <p><img src="img21.png" alt="画面ショット1-1" /></p>
   </li>
-  <li>
-    <p>ファイルに<strong>実行権限</strong>を付与し、<strong>実行</strong>します。負荷がけ用のパラメータを調整していきます。（特にエラー等が出なければOKです。）</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod +x 2-2pre.sh
-./2-2pre.sh
-</code></pre></div>    </div>
-
-    <p><img src="img22.png" alt="画面ショット1-1" /></p>
-  </li>
 </ol>
+
+<p><br /></p>
 
 <p><a id="anchor2"></a></p>
 
@@ -764,14 +774,12 @@ export TNS_ADMIN=/home/oracle/labs/wallets
   <li>
     <p>1分程度待って安定した時点での値を、比較のためにメモしておきましょう。</p>
 
-    <p>本環境でOCPU<strong>4</strong>では、TPSは<strong>約4000前後</strong>ですね。</p>
+    <p>本環境でOCPU<strong>4</strong>では、TPSは<strong>約6000前後</strong>ですね。</p>
 
     <p><img src="img38.jpg" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>Swingbenchを終了するには、Enterキーを押して下さい。</p>
-
-    <p><img src="img39.jpg" alt="画面ショット1-1" /></p>
   </li>
 </ol>
 
@@ -792,7 +800,7 @@ export TNS_ADMIN=/home/oracle/labs/wallets
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-10-17T12:15:25+09:00">October 17, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-10-17T16:29:44+09:00">October 17, 2022</time></p>
 
 
       </footer>
