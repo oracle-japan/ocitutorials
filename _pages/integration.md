@@ -20,6 +20,9 @@ toc: true
 **[OIC インスタンスにユーザーを追加する](./integration-for-commons-2-addusr)**  
 OIC を利用するユーザーを追加する手順について説明します。ここでは、Oracle Identity Cloud Service (IDCS) の管理コンソールから、ユーザーを追加する手順とその準備について説明いたします。
 
+**[OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編](./integration-for-commons-1-instance-id)**  
+アイデンティティ・ドメインを利用して、OIC インスタンスを作成、ユーザーを追加する手順について説明します。
+
 ## Application Integration チュートリアル
 
 ### 初級編
