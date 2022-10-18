@@ -26,6 +26,7 @@ OCIの提供するAI Services(Anomaly Detection, Vision, Forecasting, Speech, La
 
 ## 初級編
 
+- **[Anomaly Detection ハンズオン](/ocitutorials/datascience/anomaly-detection-for-beginner/)** OCIのコンソールからAnomaly Detectionサービスを使うことで、サービスの基本的な機能を学習します。
 - **[Vision ハンズオン](/ocitutorials/datascience/vision-for-beginner/)** OCIのコンソールからVisionサービスを使うことで、サービスの基本的な機能を学習します。
 
 ## 中級編
