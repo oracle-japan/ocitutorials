@@ -82,31 +82,31 @@ bastionノードの作成は、以下チュートリアルページ **インス�
 次に、このbastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、bastionノードからクラスタ・ネットワークに接続する計算ノードにログインする際に使用します。
 先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従いbastionノードにSSHでログインし、以下のコマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
 
-   ```sh
-   > ssh-keygen
-   Generating public/private rsa key pair.
-   Enter file in which to save the key (/home/opc/.ssh/id_rsa): 
-   Enter passphrase (empty for no passphrase): 
-   Enter same passphrase again: 
-   Your identification has been saved in /home/opc/.ssh/id_rsa.
-   Your public key has been saved in /home/opc/.ssh/id_rsa.pub.
-   The key fingerprint is:
-   SHA256:2EvR7FXtEYAsDknJG1oREie1kv2r1PN3OYrYCP/Xlyg opc@bast
-   The keys randomart image is:
-   +---[RSA 2048]----+
-   |     +=*= . ..oo.|
-   |      *B.+ o . ..|
-   |     ooo* + .  ..|
-   |     ..+.+ .    .|
-   |      . S..      |
-   |       ....      |
-   |       o.+    o o|
-   |      . + *E.+ *.|
-   |       . +.=+.o o|
-   +----[SHA256]-----+
-   > cat .ssh/id_rsa.pub 
-   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
-   ```
+```sh
+> ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/opc/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/opc/.ssh/id_rsa.
+Your public key has been saved in /home/opc/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:2EvR7FXtEYAsDknJG1oREie1kv2r1PN3OYrYCP/Xlyg opc@bast
+The keys randomart image is:
++---[RSA 2048]----+
+|     +=*= . ..oo.|
+|      *B.+ o . ..|
+|     ooo* + .  ..|
+|     ..+.+ .    .|
+|      . S..      |
+|       ....      |
+|       o.+    o o|
+|      . + *E.+ *.|
+|       . +.=+.o o|
++----[SHA256]-----+
+> cat .ssh/id_rsa.pub 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
+```
 
 # 1. クラスタ・ネットワーク作成
 
@@ -116,7 +116,7 @@ bastionノードの作成は、以下チュートリアルページ **インス�
 
 またインスタンス・プールは、その下層にOCIのインスタンス構成を使用し、インスタンス構成に指定した属性を持つインスタンスを複製します。
 
-OCIのクラスタ・ネットワークに接続する計算ノードは、OS（Oracle Linux 7.9）起動時点でクラスタ・ネットワークに接続するRDMAインタフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用して、この作成を行います。また本チュートリアルでは、計算ノードに使用するBM.Optimized3.36に装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
+OCIのクラスタ・ネットワークに接続する計算ノードは、OS（Oracle Linux 7.9）起動時点でクラスタ・ネットワークに接続するRDMAインタフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用して、この作成を行います。また本チュートリアルでは、計算ノードに使用するBM.Optimized3.36に装備されるNVMeローカルディスクのファイルシステム作成と、計算ノード間通信性能を検証する際に使用するIntel MPIのインストールも、このcloud-initから行います。
 
 以上より、クラスタ・ネットワークの作成は、以下の手順を経て行います。
 
@@ -134,56 +134,74 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 
 本チュートリアルは、このcloud-initを以下の目的で使用します。
 
+- Intel MPIインストール
 - NVMeローカルディスクファイルシステム作成
 - firewalld停止
 - RDMAインタフェース作成
 
 以下は、本チュートリアルで使用するBM.Optimized3.36用のcloud-init設定ファイルで、OCIコンソールを実行している端末上にテキストファイルで保存します。
 
-   ```sh
-   #cloud-config
-   runcmd:
-   #
-   # Mount NVMe local storage
-   - parted -s /dev/nvme0n1 mklabel gpt
-   - parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1
-   - mkfs.xfs -L localscratch /dev/nvme0n1p1
-   - mkdir -p /mnt/localdisk
-   - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
-   - mount /mnt/localdisk
-   #
-   # Stop firewalld
-   - systemctl stop firewalld
-   - systemctl disable firewalld
-   #
-   # Set up RDMA interface
-   - ifdown ens800f0
-   - echo "TYPE=\"Ethernet\"" > /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "BOOTPROTO=\"none\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   # --> This line should be modified according to the OCI domain name
-   - echo "IPADDR=192.168.0.`host \`hostname\`.sub10030907571.vcn.oraclevcn.com | awk '{print $4}' | awk -F. '{print $4}'`" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "NETMASK=255.255.255.0" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "DEFROUTE=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "PEERDNS=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "PEERROUTES=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "IPV4_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "IPV6INIT=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "IPV6_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "NAME=\"System ens800f0\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "DEVICE=\"ens800f0\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "ONBOOT=\"yes\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - echo "NM_CONTROLLED=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-   - ifup ens800f0
-   ```
+```sh
+#cloud-config
+yum_repos:
+#
+# To install oneAPI package
+  oneAPI:
+    name: Intel(R) oneAPI repository
+    baseurl: https://yum.repos.intel.com/oneapi
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
+    gpgkey: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+packages:
+#
+# Install oneAPI Base and HPC Toolkit
+  - intel-basekit
+  - intel-hpckit
+  - intel-oneapi-mpi-2021.3.1.x86_64
+runcmd:
+#
+# Mount NVMe local storage
+  - parted -s /dev/nvme0n1 mklabel gpt
+  - parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1
+  - mkfs.xfs -L localscratch /dev/nvme0n1p1
+  - mkdir -p /mnt/localdisk
+  - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
+  - mount /mnt/localdisk
+#
+# Stop firewalld
+  - systemctl stop firewalld
+  - systemctl disable firewalld
+#
+# Set up RDMA interface
+  - ifdown ens800f0
+  - echo "TYPE=\"Ethernet\"" > /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "BOOTPROTO=\"none\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+# --> This line should be modified according to your subnet domain name
+  - echo "IPADDR=192.168.0.`host \`hostname\`.sub10030907571.vcn.oraclevcn.com | awk '{print $4}' | awk -F. '{print $4}'`" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "NETMASK=255.255.255.0" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "DEFROUTE=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "PEERDNS=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "PEERROUTES=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "IPV4_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "IPV6INIT=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "IPV6_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "NAME=\"System ens800f0\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "DEVICE=\"ens800f0\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "ONBOOT=\"yes\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - echo "NM_CONTROLLED=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - ifup ens800f0
+```
+
 なお、この設定ファイルの以下行に記載されているプライベートサブネットのドメイン名 **sub10030907571** は、自身の作成したプライベートサブネットのドメイン名に応じて変更する必要があります。
 
-   ```sh
-   # --> This line should be modified according to the OCI domain name
-   - echo "IPADDR=192.168.0.`host \`hostname\`.sub10030907571.vcn.oraclevcn.com | awk '{print $4}' | awk -F. '{print $4}'`" >> /etc/sysconfig/network-scripts/
-   ```
+```sh
+# --> This line should be modified according to your subnet domain name
+  - echo "IPADDR=192.168.0.`host \`hostname\`.sub10030907571.vcn.oraclevcn.com | awk '{print $4}' | awk -F. '{print $4}'`" >> /etc/sysconfig/network-scripts/
+```
 なおプライベートサブネットのドメイン名は、OCIコンソール上で当該プライベートサブネットの **サブネット詳細** メニューから、以下のように確認することが出来ます。
 
-   ![画面ショット](console_page01.png)
+![画面ショット](console_page01.png)
 
 このcloud-init設定ファイルのRDMAインタフェース設定は、プライマリVNICに割当てられたTCP接続用IPアドレスの4フィールド目の値を取得し、この値を4フィールド目に持つ192.168.0.xをクラスタ・ネットワークに接続するRDMAインタフェースのIPアドレスに設定します。
 
@@ -199,7 +217,7 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 
 2. 表示される以下画面で、**インスタンス構成の作成** ボタンをクリックします。
 
-   ![画面ショット](console_page02.png)
+![画面ショット](console_page02.png)
 
 3. 表示される **インスタンス構成の作成** 画面で、以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
@@ -223,34 +241,34 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 
    ![画面ショット](console_page06.png)
 
-    - **Shape** ：BM.Optimized3.36 (**Change Shape** ボタンをクリックして表示される **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.Optimized3.36** を選択し **シェイプの選択** ボタンをクリック）
+    - **Shape** ：BM.Optimized3.36 (**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.Optimized3.36** を選択し検索フィールドに **hpc** と入力すると表示される **シェイプの選択** ボタンをクリック）
 
    ![画面ショット](console_page07.png)
 
-    - **イメージ** ：Oracle-Linux-7.9-2021.02.16-0-OFED5.0-2.1.8.0-intel-hpcx-noselinux-nomitigations-rhck-custom_kernel-noidle (**イメージの変更** ボタンをクリックして表示される **すべてのイメージの参照** サイドバーで **イメージ・ソース** フィールドに **イメージOCID** を選択し **イメージOCID** フィールドに **ocid1.image.oc1..aaaaaaaamy4z6turov5otuvb3wlej2ipv3534agxcd7loajk2f54bfmlyhnq** を入力し **イメージの選択** ボタンをクリック）
-   
-      ここで指定しているイメージは、OCIのマーケットプレースから提供するOracke Linuxをベースに作成されたクラスタ・ネットワークに接続するために必要なソフトウェアが含まれるイメージ（以降 **HPCイメージ** と呼称）です。
+    - **イメージ** ：Oracle Linux 7 - HPC Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **すべてのイメージの参照** サイドバーで **イメージ・ソース** フィールドに **Oracleイメージ** を選択し検索フィールドに **hpc** と入力して表示される **Oracle Linux 7 - HPC Cluster Networking Image** を選択し **イメージの選択** ボタンをクリック）
 
    ![画面ショット](console_page08.png)
+
+   ここで指定しているイメージは、OCIのマーケットプレースから提供するOracke Linux 7.9をベースに作成されたクラスタ・ネットワークに接続するために必要なソフトウェアが含まれるイメージ（以降 **HPCイメージ** と呼称）です。
 
    3.5 **ネットワーキング** フィールド
     - **プライマリ・ネットワーク** ： 先に作成したVCNを選択
     - **サブネット** ：先に作成したプライベートサブネットを選択
 
-      ![画面ショット](console_page09.png)
+   ![画面ショット](console_page09.png)
 
    3.6 **SSHキーの追加** フィールド
     - **SSHキー** ：先にbastionで作成したSSH鍵の公開鍵（ **公開キーの貼付け** を選択することで入力フィールドを表示）  
 
-      ![画面ショット](console_page10.png)
+   ![画面ショット](console_page10.png)
 
    3.7 **管理** フィールド（以下 **拡張オプションの表示** ボタンを選択して表示）
    
-      ![画面ショット](console_page11.png)
+   ![画面ショット](console_page11.png)
 
     - **cloud-initスクリプト** ：先に作成したcloud-init設定ファイルを選択（ **参照** ボタンでファイルを選択）  
 
-      ![画面ショット](console_page12.png)
+   ![画面ショット](console_page12.png)
 
 ## 1-3. クラスタ・ネットワーク作成
 
@@ -260,7 +278,7 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 
 2. 表示される以下画面で、**クラスタ・ネットワークの作成** ボタンをクリックします。
 
-   ![画面ショット](console_page13.png)
+![画面ショット](console_page13.png)
 
 3. 表示される **クラスタ・ネットワークの作成** 画面で、以下の情報を入力し **クラスタ・ネットワークの作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
@@ -315,24 +333,24 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 
    計算ノードへのログインは、このイニシャルホスト名にプライベートサブネットのDNSドメイン名を付与することで作成するDNSホスト名を指定し、以下のようにbastionノードからログインします。
 
-   ```sh
-   > ssh inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
-   The authenticity of host 'inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com (10.0.1.61)' cant be established.
-   ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
-   ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
-   Are you sure you want to continue connecting (yes/no)? yes
-   Warning: Permanently added 'inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com,10.0.1.61' (ECDSA) to the list of known hosts.
-   ```
+```sh
+> ssh inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
+The authenticity of host 'inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com (10.0.1.61)' cant be established.
+ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
+ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com,10.0.1.61' (ECDSA) to the list of known hosts.
+```
 
 2. 計算ノードファイルシステム確認
 
    計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。
 
-   ```sh
-   > df -k /mnt/localdisk
-   Filesystem                  1K-blocks     Used  Available Use% Mounted on
-   /dev/nvme0n1p1             3748905484    32976 3748872508   1% /mnt/localdisk
-   ```
+```sh
+> df -k /mnt/localdisk
+Filesystem                  1K-blocks     Used  Available Use% Mounted on
+/dev/nvme0n1p1             3748905484    32976 3748872508   1% /mnt/localdisk
+```
 
 # 3. MPIプログラム実行（2ノード編）
 
@@ -419,87 +437,112 @@ Intel MPIの実行は、これを実行する計算ノード間で必要なポ�
 
 ## 3-3. Intel MPI Benchmark Ping-Pong実行
 
-   Intel MPI Benchmark実行時に使用するため、先のステップで作成した全計算ノードのDNSホスト名一覧のファイルをbastionノードから以下コマンドで全計算ノードにコピーします。
+Intel MPI Benchmark実行時に使用するため、先のステップで作成した全計算ノードのDNSホスト名一覧のファイルをbastionノードから以下コマンドで全計算ノードにコピーします。
 
-   ```sh
-   > for hname in `cat hostlist.txt`; do echo $hname; scp -p ./hostlist.txt $hname:~/; done
-   inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
-   hostlist.txt                                                           100%   98    94.7KB/s   00:00    
-   inst-9wead-comp.sub10030907571.vcn.oraclevcn.com
-   hostlist.txt
-   ```
+```sh
+> for hname in `cat hostlist.txt`; do echo $hname; scp -p ./hostlist.txt $hname:~/; done
+inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
+hostlist.txt                                                           100%   98    94.7KB/s   00:00    
+inst-9wead-comp.sub10030907571.vcn.oraclevcn.com
+hostlist.txt
+```
 
-   次に任意の計算ノードにログインし、以下コマンドでIntel MPI Benchmark Ping-Pongを実行します。
+次に任意の計算ノードにログインし、以下コマンドでIntel MPI Benchmark Ping-Pongを実行します。
    
-   ```sh
-   > source /etc/profile.d/modules.sh
-   > module load intel/mpi/latest
-   Loading mpi version 2021.3.0
-   > mpirun -n 2 -ppn 1 -f ./hostlist.txt -genv UCX_NET_DEVICES mlx5_2:1 IMB-MPI1 -msglog 3:28 PingPong
-   #----------------------------------------------------------------
-   #    Intel(R) MPI Benchmarks 2021.2, MPI-1 part
-   #----------------------------------------------------------------
-   # Date                  : Tue Oct  4 14:47:29 2022
-   # Machine               : x86_64
-   # System                : Linux
-   # Release               : 3.10.0-1160.25.1.el7.x86_64
-   # Version               : #1 SMP Tue Apr 27 15:52:10 PDT 2021
-   # MPI Version           : 3.1
-   # MPI Thread Environment: 
+```sh
+> source /opt/intel/oneapi/setvars.sh 
+ 
+:: initializing oneAPI environment ...
+   -bash: BASH_VERSION = 4.2.46(2)-release
+   args: Using "$@" for setvars.sh arguments: 
+:: advisor -- latest
+:: ccl -- latest
+:: clck -- latest
+:: compiler -- latest
+:: dal -- latest
+:: debugger -- latest
+:: dev-utilities -- latest
+:: dnnl -- latest
+:: dpcpp-ct -- latest
+:: dpl -- latest
+:: inspector -- latest
+:: intelpython -- latest
+:: ipp -- latest
+:: ippcp -- latest
+:: ipp -- latest
+:: itac -- latest
+:: mkl -- latest
+:: mpi -- latest
+:: tbb -- latest
+:: vpl -- latest
+:: vtune -- latest
+:: oneAPI environment initialized ::
+ 
+> mpirun -n 2 -ppn 1 -f ./hostlist.txt -genv UCX_NET_DEVICES mlx5_2:1 IMB-MPI1 -msglog 3:28 PingPong
+#----------------------------------------------------------------
+#    Intel(R) MPI Benchmarks 2021.2, MPI-1 part
+#----------------------------------------------------------------
+# Date                  : Tue Oct  4 14:47:29 2022
+# Machine               : x86_64
+# System                : Linux
+# Release               : 3.10.0-1160.25.1.el7.x86_64
+# Version               : #1 SMP Tue Apr 27 15:52:10 PDT 2021
+# MPI Version           : 3.1
+# MPI Thread Environment: 
 
 
-   # Calling sequence was: 
+# Calling sequence was: 
 
-   # IMB-MPI1 -msglog 3:28 PingPong 
+# IMB-MPI1 -msglog 3:28 PingPong 
 
-   # Minimum message length in bytes:   0
-   # Maximum message length in bytes:   268435456
-   #
-   # MPI_Datatype                   :   MPI_BYTE 
-   # MPI_Datatype for reductions    :   MPI_FLOAT 
-   # MPI_Op                         :   MPI_SUM  
-   # 
-   # 
+# Minimum message length in bytes:   0
+# Maximum message length in bytes:   268435456
+#
+# MPI_Datatype                   :   MPI_BYTE 
+# MPI_Datatype for reductions    :   MPI_FLOAT 
+# MPI_Op                         :   MPI_SUM  
+# 
+# 
 
-   # List of Benchmarks to run:
+# List of Benchmarks to run:
 
-   # PingPong
+# PingPong
 
-   #---------------------------------------------------
-   # Benchmarking PingPong 
-   # #processes = 2 
-   #---------------------------------------------------
-       #bytes #repetitions      t[usec]   Mbytes/sec
-            0         1000         1.56         0.00
-            8         1000         1.57         5.11
-           16         1000         1.57        10.22
-           32         1000         1.59        20.08
-           64         1000         1.66        38.46
-          128         1000         1.71        75.03
-          256         1000         1.90       134.69
-          512         1000         2.01       254.16
-         1024         1000         2.14       478.93
-         2048         1000         2.69       761.51
-         4096         1000         3.26      1257.71
-         8192         1000         3.90      2101.26
-        16384         1000         5.21      3146.83
-        32768         1000         6.93      4730.56
-        65536          640        11.79      5557.43
-       131072          320        17.19      7623.38
-       262144          160        27.69      9466.62
-       524288           80        49.22     10652.99
-      1048576           40        91.90     11410.49
-      2097152           20       177.26     11831.11
-      4194304           10       348.03     12051.66
-      8388608            5       689.69     12162.91
-     16777216            2      1372.80     12221.16
-     33554432            1      2742.00     12237.20
-     67108864            1      5474.71     12257.97
-    134217728            1     10941.14     12267.25
-    268435456            1     21876.05     12270.75
+#---------------------------------------------------
+# Benchmarking PingPong 
+# #processes = 2 
+#---------------------------------------------------
+    #bytes #repetitions      t[usec]   Mbytes/sec
+         0         1000         1.56         0.00
+         8         1000         1.57         5.11
+        16         1000         1.57        10.22
+        32         1000         1.59        20.08
+        64         1000         1.66        38.46
+       128         1000         1.71        75.03
+       256         1000         1.90       134.69
+       512         1000         2.01       254.16
+      1024         1000         2.14       478.93
+      2048         1000         2.69       761.51
+      4096         1000         3.26      1257.71
+      8192         1000         3.90      2101.26
+     16384         1000         5.21      3146.83
+     32768         1000         6.93      4730.56
+     65536          640        11.79      5557.43
+    131072          320        17.19      7623.38
+    262144          160        27.69      9466.62
+    524288           80        49.22     10652.99
+   1048576           40        91.90     11410.49
+   2097152           20       177.26     11831.11
+   4194304           10       348.03     12051.66
+   8388608            5       689.69     12162.91
+  16777216            2      1372.80     12221.16
+  33554432            1      2742.00     12237.20
+  67108864            1      5474.71     12257.97
+ 134217728            1     10941.14     12267.25
+ 268435456            1     21876.05     12270.75
 
-   # All processes entering MPI_Finalize
-   ```
+# All processes entering MPI_Finalize
+```
 
 # 4. 計算ノード追加
 
@@ -556,9 +599,34 @@ hostlist.txt                                                           100%   98
 次に任意の計算ノードにログインし、以下コマンドでIntel MPI Benchmark Alltoallを実行します。
    
 ```sh
-> source /etc/profile.d/modules.sh
-> module load intel/mpi/latest
-Loading mpi version 2021.3.0
+> source /opt/intel/oneapi/setvars.sh 
+ 
+:: initializing oneAPI environment ...
+   -bash: BASH_VERSION = 4.2.46(2)-release
+   args: Using "$@" for setvars.sh arguments: 
+:: advisor -- latest
+:: ccl -- latest
+:: clck -- latest
+:: compiler -- latest
+:: dal -- latest
+:: debugger -- latest
+:: dev-utilities -- latest
+:: dnnl -- latest
+:: dpcpp-ct -- latest
+:: dpl -- latest
+:: inspector -- latest
+:: intelpython -- latest
+:: ipp -- latest
+:: ippcp -- latest
+:: ipp -- latest
+:: itac -- latest
+:: mkl -- latest
+:: mpi -- latest
+:: tbb -- latest
+:: vpl -- latest
+:: vtune -- latest
+:: oneAPI environment initialized ::
+ 
 > mpirun -n 4 -ppn 1 -f ./hostlist.txt -genv UCX_NET_DEVICES mlx5_2:1 IMB-MPI1 -mem 4 Alltoall 
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.2, MPI-1 part
