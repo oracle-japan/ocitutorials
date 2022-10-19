@@ -31,6 +31,7 @@ OCIの提供するAI Services(Anomaly Detection, Vision, Forecasting, Speech, La
 
 ## 中級編
 
+- **[Anomaly Detection ハンズオン](/ocitutorials/datascience/anomaly-detection-for-intermediates/)** OCI DataScienceからSDKを使用して、Anomaly Detection（異常検出）サービスを使用する方法を紹介します。
 - **[Vision ハンズオン](/ocitutorials/datascience/vision-for-intermediates/)** OCI DataScience から REST API を使用して、OCI Vision で公開されている API を使用する方法を紹介します。
 
 # 3. OCI Streaming チュートリアル
