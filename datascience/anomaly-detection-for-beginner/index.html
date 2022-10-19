@@ -1,0 +1,730 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Anomaly Detection ハンズオン(初級編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIのコンソールからAnomaly Detectionサービスを使うことで、サービスの基本的な機能を学習します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Anomaly Detection ハンズオン(初級編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/datascience/anomaly-detection-for-beginner/">
+
+
+  <meta property="og:description" content="OCIのコンソールからAnomaly Detectionサービスを使うことで、サービスの基本的な機能を学習します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2021-10-18T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/datascience/anomaly-detection-for-beginner/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Anomaly Detection ハンズオン(初級編)
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIのコンソールからAnomaly Detectionサービスを使うことで、サービスの基本的な機能を学習します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/datascience" itemprop="item"><span itemprop="name">Datascience</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Anomaly Detection ハンズオン(初級編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">データサイエンス/ビッグデータ編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/datascience/anomaly-detection-for-beginner/" class="active">Anomaly Detection ハンズオン(初級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/vision-for-beginner/">OCI AI Vision ハンズオン(初級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/vision-for-intermediates/">OCI AI Vision ハンズオン(中級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/streaming-for-beginner/">OCI Streaming を動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-structured-spark-streaming/">Structured Spark Streaming を OCI Data Flow で体験しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/dataflow-for-beginner/">OCI Data Flow ハンズオン(初級編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/datascience/ggsa-tutorial-for-beginner/">Oracle GoldenGate Stream Analytics ハンズオン</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Anomaly Detection ハンズオン(初級編)">
+    <meta itemprop="description" content="OCIのコンソールからAnomaly Detectionサービスを使うことで、サービスの基本的な機能を学習します。">
+    <meta itemprop="datePublished" content="2021-10-18T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#anomaly-detection異常検出サービスについて">Anomaly Detection（異常検出）サービスについて</a></li><li><a href="#ociコンソールからanomaly-detectionサービスを使う">OCIコンソールからAnomaly Detectionサービスを使う</a><ul><li><a href="#前提条件">前提条件</a></li><li><a href="#ポリシーの設定">ポリシーの設定</a></li><li><a href="#データの理解とサンプルデータのダウンロード">データの理解とサンプル・データのダウンロード</a><ul><li><a href="#データの要件">データの要件</a></li><li><a href="#データフォーマットの要件">データ・フォーマットの要件</a><ul><li><a href="#csv形式">CSV形式</a></li><li><a href="#json形式のデータの例">JSON形式のデータの例</a></li><li><a href="#サンプルデータのダウンロード">サンプル・データのダウンロード</a></li></ul></li></ul></li><li><a href="#object-storageへのアップロード">Object Storageへのアップロード</a></li><li><a href="#異常検出プロジェクトの作成">異常検出プロジェクトの作成</a><ul><li><a href="#プロジェクトの作成">プロジェクトの作成</a></li><li><a href="#データアセットの作成">データ・アセットの作成</a></li><li><a href="#モデルの作成とトレーニング-ボタンを使用してデータアセットの作成オプション">「モデルの作成とトレーニング」 ボタンを使用して、データ・アセットの作成(オプション)</a></li></ul></li><li><a href="#異常検出モデルのトレーニングと検出">異常検出モデルのトレーニングと検出</a><ul><li><a href="#モデルの作成">モデルの作成</a></li><li><a href="#新しいデータで異常の検出">新しいデータで異常の検出</a></li><li><a href="#グラフの見方">グラフの見方</a></li></ul></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="anomaly-detection異常検出サービスについて">Anomaly Detection（異常検出）サービスについて</h1>
+
+<p>異常検出とは、データ内のまれな項目、イベント、または観察結果のうち、予想と大きく異なるものを識別することです。 これは、公益事業、航空、輸送、製造などの業界における資産の監視、メンテナンス、予後監視などのいくつかのシナリオに使用できます。<br />
+Oracleの異常検出サービスのアルゴリズムは、Oracle が特許を取得した多変量時系列異常検出アルゴリズムであり、元々は Oracle Labs によって開発され、いくつかの業界で使用されてきました。<br />
+OCIの異常検出サービスは、ユーザーがアップロードしたデータを取得し、アルゴリズムを使用してモデルをトレーニングし、カスタマイズされた機械学習モデルを作成し、クラウドでホストします。 その後、ユーザーは新しいデータをエンドポイントに送信して、検出された異常の結果を取得できます。<br />
+OCIの異常検出サービスは、サーバーレスのマルチ・テナント・サービスです。認証されたユーザーはOCI CLI、SDK、または Cloud Console を通じてREST API にアクセスできます。</p>
+
+<h1 id="ociコンソールからanomaly-detectionサービスを使う">OCIコンソールからAnomaly Detectionサービスを使う</h1>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>Oracle Cloud のアカウントを取得済みであること</li>
+</ul>
+
+<h2 id="ポリシーの設定">ポリシーの設定</h2>
+
+<p>OCI Anomaly Detection（異常検出）を利用するために、テナンシ管理者は次の手順に従って、ポリシーを設定する必要があります。<br />
+OCI コンソール画面左上のハンバーガーメニューを展開し、「アイデンティティとセキュリティ」 &gt; 「ポリシー」を選択します。</p>
+
+<p><img src="image1.png" alt="image1" /></p>
+
+<p>「ポリシーの作成」をクリックします。</p>
+
+<p><img src="image2.png" alt="image2" /></p>
+
+<p>ポリシーの作成情報を入力します。</p>
+
+<ul>
+  <li>名前：任意の名前</li>
+  <li>説明：ポリシーの説明</li>
+  <li>コンパートメント：利用するコンパートメントを選択</li>
+  <li>手動エディタの表示：選択</li>
+  <li>ポリシー・ステートメント：
+    <ul>
+      <li>テナント内のすべてのユーザーが異常検出サービスを使用できるようにする場合：
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">allow any-user to manage ai-service-anomaly-detection-family in tenancy</code></li>
+        </ul>
+      </li>
+      <li>ユーザー・グループへのアクセスを制限する場合：
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">allow group &lt;group-name&gt; to manage ai-service-anomaly-detection-family in tenancy</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>「作成」をクリックします。</p>
+
+<p><img src="image3.png" alt="image3" /></p>
+
+<p>異常検出サービスは、カスタマイズされたモデルを構築するためにデータを必要とするため、ユーザーはデータへのアクセス許可を付与するポリシーも追加する必要があります。この記事では、Oracle オブジェクト・ ストレージをデータ・ソースとして使用するため、管理者は次のポリシーも追加する必要があります。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow any-user to manage object-family in tenancy
+</code></pre></div></div>
+
+<h2 id="データの理解とサンプルデータのダウンロード">データの理解とサンプル・データのダウンロード</h2>
+
+<p>時系列異常検出モデルをトレーニングするために、適切なデータ・フォーマットが必要です。<br />
+このセッションでは、データの要件と形式について説明し、例としていくつかのサンプル・データセットを提供します。また、データ資産を作成して、モデルをトレーニングするために、Oracle オブジェクト・ストレージにアップロードします。</p>
+
+<h3 id="データの要件">データの要件</h3>
+
+<p>異常検出サービスのコア・アルゴリズムは、多変量異常検出アルゴリズムであり、トレーニング・データに関する 2 つの要件があります。</p>
+
+<ul>
+  <li>トレーニング・データには異常がなく (外れ値がなく)、正常なデータのみが含まれている必要があります。</li>
+  <li>トレーニング・データは、すべての属性やシグナルの完全な値の範囲で、すべてのシナリオをカバーする必要があります。</li>
+</ul>
+
+<p>さらに、アルゴリズムには、データ型、属性の最小数、およびトレーニング・データの観察に関するいくつかの要件もあります。</p>
+
+<ul>
+  <li>データは、CSV 形式で、1つの列はタイムスタンプを表し、他の列は観察値（数値属性/シグナル/センサー）を表します。タイムスタンプ列は重複なしで、順に並びます。</li>
+  <li>トレーニング・データには 1 つ以上の属性を含めることができます。2022 年 1 月の時点でのリリースでは最大 300 個の属性があります。</li>
+  <li>少なくとも 1 つの属性には欠損値がありません。</li>
+  <li>トレーニング・データの数は、少なくとも属性の数の 8 倍または 80 のいずれか大きい方である必要があります。</li>
+</ul>
+
+<p>テスト・データには、トレーニング・データ・セットと一致するタイムスタンプや数値属性などの列のみを含める必要もあります。タイムスタンプによって順序付けられます。詳細については、OCI 異常検出ドキュメント内の「<a href="https://docs.oracle.com/en-us/iaas/Content/anomaly/using/data-require.htm">Training and Testing Data Requirements</a>」を参照してください。</p>
+
+<h3 id="データフォーマットの要件">データ・フォーマットの要件</h3>
+
+<p>異常検出サービスは、Oracle Object Storage、Oracle Autonomous Transaction Processing (ATP)、InfluxDB など、複数のタイプのデータ・ソースを受け入れます。ATP または InfluxDB をデータ・ソースとして使用する方法については、<a href="https://docs.oracle.com/en-us/iaas/Content/services.htm">https://docs.oracle.com/en-us/iaas/Content/services.htm</a> でご参照ください。<br />
+ここでは、Oracleオブジェクト・ストレージを例として要件を説明します。他のタイプのデータ・ソースも類似にしています。<br />
+Oracleオブジェクト・ストレージの場合、サービスはCSV形式とJSON形式の2つのデータ形式を受け入れます。データには 1 つのタイムスタンプとその他の数値属性のみを含める必要があり、タイムスタンプは ISO 8601 形式を満たす最初の列にする必要があります。</p>
+
+<h4 id="csv形式">CSV形式</h4>
+
+<p>CSV 形式のデータには、カンマ区切りの行が必要です。最初の行はヘッダー、その他の行はデータです。最初の列はタイムスタンプ列です。欠損値(NULL)は許可されます。データはタイムスタンプで並べ替えられ、ブール値のフラグ値は数値 (0/1) に変換される必要があります。最終行に改行を入れないでください。</p>
+
+<pre><code class="language-csv">timestamp, sensor1, sensor2, sensor3, sensor4, sensor5
+2020-07-13T14:03:46Z, ,0.6459, -0.0016, -0.6792, 0
+2020-07-13T14:04:46Z, ,0.1756, -0.5364, -0.1524, 1
+2020-07-13T14:05:46Z, ,0.4132, -0.029, 0.679, 0
+</code></pre>
+
+<h4 id="json形式のデータの例">JSON形式のデータの例</h4>
+
+<p>同様に、JSON 形式のデータには、タイムスタンプと数値属性のみを含める必要があります。欠損値は、引用符なしで null としてコード化されます。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"requestType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"INLINE"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"signalNames"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"sensor1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor4"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor5"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor6"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor7"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor8"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor9"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sensor10"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-01-01T08:01:01.000Z"</span><span class="p">,</span><span class="w"> </span><span class="nl">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]},</span><span class="w">
+    </span><span class="p">{</span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-01-02T08:01:02.000Z"</span><span class="p">,</span><span class="w"> </span><span class="nl">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">]}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="サンプルデータのダウンロード">サンプル・データのダウンロード</h4>
+
+<p>トレーニング ・データとテスト・データを理解するために、以下の2 つのサンプル データセットが用意されています。</p>
+
+<ul>
+  <li><a href="https://raw.githubusercontent.com/oracle-japan/ai-services-tutorials/main/anomaly-detection/demo-training-data.csv">トレーニング・データ（CSV形式）</a>：タイムスタンプ列と10個の信号を含む10, 000個の観測値</li>
+  <li><a href="https://raw.githubusercontent.com/oracle-japan/ai-services-tutorials/main/anomaly-detection/demo-testing-data.json">テスト・データ（JSON形式）</a>: タイムスタンプ列と10個の信号を含む10, 000個の観測値</li>
+</ul>
+
+<h2 id="object-storageへのアップロード">Object Storageへのアップロード</h2>
+
+<p>サンプルのトレーニング・データをオブジェクト・ストレージにアップロードします。<br />
+OCI コンソール画面左上のハンバーガーメニューを展開し、「ストレージ」 &gt; 「バケット」を選択します。</p>
+
+<p><img src="image6.png" alt="image6" /></p>
+
+<p>コンパートメントを選択し、「パケットの作成」をクリックします。</p>
+
+<p><img src="image7.png" alt="image7" /></p>
+
+<p>任意のバケット名を入力し、「作成」をクリックします。</p>
+
+<p><img src="image8.png" alt="image8" /></p>
+
+<p>サンプルのトレーニング ・データ・ファイルをアップロードします。<br />
+「アップロード」をクリックします。「フィアルを選択」リンクをクリックし、ファイルを選択します。<br />
+「アップロード」をクリックします。</p>
+
+<p><img src="image9.png" alt="image9" /></p>
+
+<h2 id="異常検出プロジェクトの作成">異常検出プロジェクトの作成</h2>
+
+<p>ここでは、異常検出プロジェクトを作成し、オブジェクト ・ストレージにデータをアップロードし、データ資産を作成する方法を紹介します。</p>
+
+<h3 id="プロジェクトの作成">プロジェクトの作成</h3>
+
+<p>プロジェクトは、複数のデータ資産、モデル、デプロイを同じワークスペースに整理する方法です。
+OCI コンソール画面左上のハンバーガーメニューを展開し、「アナリティクスとAI」 &gt; 「異常検出」を選択します。</p>
+
+<p><img src="image10.png" alt="image10" /></p>
+
+<p>プロジェクトを配置するコンパートメントを選択し、「プロジェクトの作成」をクリックします。
+プロジェクト名と説明を入力し、「作成」をクリックします。</p>
+
+<p><img src="image11.png" alt="image11" /></p>
+
+<h3 id="データアセットの作成">データ・アセットの作成</h3>
+
+<p>前にアップロードされたオブジェクト・ ストレージを参照するデータ ・アセットを作成します。
+作成したプロジェクトをクリックし、開きます。</p>
+
+<p><img src="image12.png" alt="image12" /></p>
+
+<p>「データ・アセット」メニューを選択し、「データ・アセットの作成」をクリックします。<br />
+データを格納するオブジェクト ・ストレージのコンパートメントを指定し、名前と説明を入力します。<br />
+タイプから「Oracle Object Storage」を選択し、パケットを選択し、トレーニング・データを選択し、 「ボタンの作成」 をクリックします。</p>
+
+<p><img src="image13.png" alt="image13" /></p>
+
+<p>数秒後、作成したデータ・アセットが表示されます。</p>
+
+<p><img src="image14.png" alt="image14" /></p>
+
+<p>Oracle Autonomous Transaction Processing (ATP) や InfluxDB などの他のタイプのデータ ソースの構成方法については、この「<a href="https://docs.oracle.com/en-us/iaas/Content/anomaly/using/add-data-assets.htm#add-data-assets">Adding Data Assets</a>」を参照してください。</p>
+
+<h3 id="モデルの作成とトレーニング-ボタンを使用してデータアセットの作成オプション">「モデルの作成とトレーニング」 ボタンを使用して、データ・アセットの作成(オプション)</h3>
+
+<p>モデルの作成とトレーニングでは、既存のデータセットを選択するか、新しいデータセットを作成するかを選択できます。<br />
+「モデルの作成とトレーニング」ボタンをクリックします。</p>
+
+<p><img src="image16.png" alt="image16" /></p>
+
+<p>「新規データ・アセットの作成」を選択します。</p>
+
+<p><img src="image17.png" alt="image17" /></p>
+
+<p>前の手順と同様に、タイプから「Oracle Object Storage」を選択し、必要な情報を入力し、 「作成」 をクリックします。</p>
+
+<p><img src="image18.png" alt="image18" /></p>
+
+<h2 id="異常検出モデルのトレーニングと検出">異常検出モデルのトレーニングと検出</h2>
+
+<p>ここでは、異常検出モデルをトレーニングし、新しいデータを使用して予測を行う方法を紹介します。</p>
+
+<h3 id="モデルの作成">モデルの作成</h3>
+
+<p>モデルを作成するには、3 つのステップが必要です。</p>
+
+<ul>
+  <li>作成した適切なコンパートメントとデータ・アセットを選択</li>
+  <li>トレーニング・パラメータを設定</li>
+  <li>モデルをトレーニングする</li>
+</ul>
+
+<p>作成したプロジェクトをクリックし、開きます。</p>
+
+<p><img src="image19.png" alt="image19" /></p>
+
+<p>「モデルの作成とトレーニング」をクリックします。</p>
+
+<p><img src="image20.png" alt="image20" /></p>
+
+<p>作成されたデータ・アセットがドロップ・ダウン・メニューに表示されます。 「次へ」ボタンをクリックします。</p>
+
+<p><img src="image21.png" alt="image21" /></p>
+
+<p>FAPとTrain Fraction Ratioを指定できます。これらのデフォルト値は、0.01 と 0.7 (70%) です。<br />
+ここではデフォルトのままにし、「次へ」をクリックします。</p>
+
+<p><img src="image22.png" alt="image22" /></p>
+
+<p><strong>ターゲット誤警報確率（FAP: False Alarm Probability）</strong></p>
+
+<p>異常でないものが異常として判断してしまう誤警報をどれだけ許容できるかの数字です。数字が高いほど、誤警報として判断される異常の可能性が高いことを示します。<br />
+通常、FAPは、実際のビジネス・シナリオでの異常のパーセンテージとほぼ同じレベルに設定でき、0.01または1％の値が多くのシナリオに比較的適しています。より低いターゲット FAP を指定すると、モデルのトレーニングに時間がかかり、ターゲット FAP に到達しない可能性があることに注意してください。<br />
+FAP = sum(各シグナルの異常の数) / (シグナルの数 * タイムスタンプの数)</p>
+
+<p><strong>トレーニング分割率</strong></p>
+
+<p>学習データのうち、どれだけの割合のデータでトレーニングし、残りのどれだけの割合でモデルの性能評価をするかを決めます。デフォルト値の0.7は、トレーニングにデータの70％を使用し、残りの30％でモデルのパフォーマンス評価に利用されます。</p>
+
+<p><img src="image23.png" alt="image23" /></p>
+
+<p>「作成」をクリックし、モデルの作成とトレーニングが開始されます。</p>
+
+<p><img src="image24.png" alt="image24" /></p>
+
+<p>今回のサンプル・データだと、だいたい10分から15分ぐらいかかります。</p>
+
+<p><img src="image25.png" alt="image25" /></p>
+
+<h3 id="新しいデータで異常の検出">新しいデータで異常の検出</h3>
+
+<p>新しいデータから異常を検出します。 ユーザーは、クラウド・コンソールまたはエンドポイントを使用して、テスト・データを送信できます。
+作成したモデルの「異常の検出」ボタンをクリックします。</p>
+
+<p><img src="image26.png" alt="image26" /></p>
+
+<p>サンプル・データのJSONファイルをアップロードし、「検出」ボタンをおします。</p>
+
+<p><img src="image27.png" alt="image27" /></p>
+
+<p>検出結果はすぐに表示されます。</p>
+
+<p><img src="image28.png" alt="image28" /></p>
+
+<p><img src="image29.png" alt="image29" /></p>
+
+<h3 id="グラフの見方">グラフの見方</h3>
+
+<p>異常を検知したシグナル（今回はTemperature_3、Temperature_2、Pressure_2）と全体の異常判断がタイムスタンプ毎に表示されています。<br />
+オレンジ色のグラフが実際のデータ、紫色のグラフが予測データです。赤い線が入っているのが、全体をもって「異常」と検知された箇所になります。<br />
+集計された異常スコアが全体での異常スコアで、特定の時間の異常の重要性を示します。<br />
+シグナル別異常スコアが個別のシグナルの異常スコアで、異常と判定された時間で、どのデータ・シグナルが主な原因か、わかりやすく表示されています。<br />
+異常検出データをJSONでエクスポート可能です。<br />
+タイムスタンプ毎の配列でデータポイント毎の、実際のデータ、予測値、異常スコア、そして全体の異常スコアがエクスポートできます。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[{</span><span class="w">
+  </span><span class="nl">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-07T21:28:10.000_00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"anomalies"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+    </span><span class="nl">"signalName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temperature_3"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"actualValue"</span><span class="p">:</span><span class="w"> </span><span class="mf">-2.3941492028804823</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"anomalyScore"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.6991412894959958</span><span class="w">
+  </span><span class="p">}],</span><span class="w">
+  </span><span class="nl">"score"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.17062950252017466</span><span class="w">
+</span><span class="p">},</span><span class="w"> </span><span class="err">...</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#ai" class="page__taxonomy-item" rel="tag">ai</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#anomaly-detection" class="page__taxonomy-item" rel="tag">anomaly-detection</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2021-10-18T00:00:00+09:00">October 18, 2021</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Anomaly+Detection+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3%28%E5%88%9D%E7%B4%9A%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fanomaly-detection-for-beginner%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fanomaly-detection-for-beginner%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatascience%2Fanomaly-detection-for-beginner%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/datascience/vision-for-beginner/" class="pagination--pager" title="OCI AI Vision ハンズオン(初級編)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+
+
+
+  </body>
+</html>
