@@ -755,6 +755,12 @@ var store = [{
         "url": "/ocitutorials/datascience/vision-for-beginner/",
         "teaser": null
       },{
+        "title": "Anomaly Detection ハンズオン(中級編)",
+        "excerpt":"OCI DataScienceノートブック・セッションでAnomaly Detection（異常検出）へのアクセス OCI異常検出サービスは、さまざまなプログラミング言語で CLI ツール （oci） および SDK を使用することをサポートしています。ここで、DataScience ノートブックでOCI異常検出サービスを利用する方法を紹介します。 事前準備 データ・サイエンスを利用するために、以下のように仮想クラウド・ネットワーク、動的グループおよびポリシーを作成します。 仮想クラウド・ネットワークの作成 OCIコンソールで「仮想クラウド・ネットワーク」 &gt; 「VCNウィザードの起動」 &gt; 「インターネット接続性を持つVCNの作成」を選択して、VCNとサブネットを作成します。これにより、NAT ゲートウェイを使用して必要なプライベート・サブネットを自動的に作成します。 グループの作成 次の一致ルールで動的グループを作成します。 ALL { resource.type = 'datasciencenotebooksession' } ポリシーの作成 次のステートメントを使用して、ルート・コンパートメントにポリシーを作成します。 サービス・ポリシー allow service datascience to use virtual-network-family in tenancy 管理者以外のユーザー・ ポリシー allow group &lt;ユーザー・グループ&gt; to use virtual-network-family in tenancy allow...","categories": [],
+        "tags": ["ai","anomaly-detection"],
+        "url": "/ocitutorials/datascience/anomaly-detection-for-intermediates/",
+        "teaser": null
+      },{
         "title": "OCI AI Vision ハンズオン(中級編)",
         "excerpt":"事前準備 仮想クラウド・ネットワークの作成 OCIコンソールで「仮想クラウド・ネットワーク」 &gt; 「VCNウィザードの起動」 &gt; 「インターネット接続性を持つVCNの作成」を選択して、VCNとサブネットを作成します。これにより、NAT ゲートウェイを使用して必要なプライベート・サブネットを自動的に作成します。 動的グループの作成 次の一致ルールで動的グループを作成します。 ALL { resource.type = 'datasciencenotebooksession' } ポリシーの作成 次のステートメントを使用して、ルート・コンパートメントにポリシーを作成します。 サービス・ポリシー allow service datascience to use virtual-network-family in tenancy 管理者以外のユーザー・ ポリシー allow group &lt;ユーザー・グループ&gt; to use virtual-network-family in tenancy allow group &lt;ユーザー・グループ&gt; to manage data-science-family in tenancy 動的グループに対するポリシー allow dynamic-group &lt;作成した動的グループ&gt; to...","categories": [],
         "tags": ["ai","vision"],
