@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-10-19T11:13:21+09:00">
+  <meta property="article:published_time" content="2022-10-24T14:50:41+09:00">
 
 
 
@@ -363,7 +363,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="505 : Autonomous Databaseのバックアップとリストアを体感しよう">
     <meta itemprop="description" content="Autonomous Databaseを任意のバックアップからリストアを行い、自動でバックアップが取られていること・簡単なPoint-in-timeリカバリを実感して頂きます">
-    <meta itemprop="datePublished" content="2022-10-19T11:13:21+09:00">
+    <meta itemprop="datePublished" content="2022-10-24T14:50:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -380,7 +380,7 @@
           </aside>
         
         <h1 id="はじめに">はじめに</h1>
-<p>Autonomous Databaseでは自動的バックアップがオンラインで取得され、60日間保持されます。自動バックアップは、週次完全バックアップおよび日次増分バックアップです。インスタンス構成時にデフォルトで有効化されており、無効化することはできません。また、Autonomous Databaseの自動バックアップはオブジェクトストアに出力されますが、それに対する課金はございません。</p>
+<p>Autonomous Databaseでは自動的バックアップがオンラインで取得され、60日間保持されます。自動バックアップは、60日ごとに完全バックアップ、週次累積バックアップ、日次増分バックアップです。インスタンス構成時にデフォルトで有効化されており、無効化することはできません。また、Autonomous Databaseの自動バックアップはオブジェクトストアに出力されますが、それに対する課金はございません。</p>
 
 <p>ユーザ自身がGUIやAPIを介して特定時点にリストアすることが可能です。本チュートリアルにおいても、Point-in-timeリカバリを実施いたします。</p>
 
@@ -426,14 +426,14 @@
 
 <p><img src="img2.png" alt="img" /></p>
 
-<p>全て増分バックアップになっており、週次で取得されているフルバックアップが無いのでは？と思われたかもしれませんが、こちらは誤りではなく、フルバックアップはRMANでは増分バックアップのLevel0となるので、この一覧では全て増分バックアップとして表示されております。</p>
+<p>全て増分バックアップになっており、60日ごと取得されているフルバックアップが無いのでは？と思われたかもしれませんが、こちらは誤りではなく、フルバックアップはRMANでは増分バックアップのLevel0となるので、この一覧では全て増分バックアップとして表示されております。</p>
 
-<p>Autonomous Databaseでは、週次でフル(Level0)、日次で増分(Level1)が取得され、毎時でアーカイブログがバックアップされています。</p>
+<p>なお、Autonomous Databaseでは、1分ごとにアーカイブログがバックアップされています。(ADB-Dでは15分ごと)</p>
 
 <p>60日前までの任意のタイミングにタイミングにリストア・リカバリが可能になっています。
 RMANを利用しており、ブロック破損のチェックも同時に行われているため信頼できるバックアップになっています。</p>
 
-<p>また、Automonous Databaseでは、これらのバックアップを格納しておくストレージストレージの追加コストは不要です。</p>
+<p>また、Autonomous Databaseでは、これらのバックアップを格納しておくストレージストレージの追加コストは不要です。</p>
 
 <h2 id="データベースに表を新規作成">データベースに表を新規作成</h2>
 
@@ -524,9 +524,8 @@ RMANを利用しており、ブロック破損のチェックも同時に行わ�
 <blockquote>
   <p>（補足）現在時刻を問い合わせる際によく利用されるsysdateおよびsystimestamp関数ですが、Autonomous DatabaseはOSタイムゾーンがUTC固定となるため、返り値が日本時間（JST、+9:00)とはならない点にご留意ください。</p>
 
-  <p>返り値をJSTで取得したい場合、１つ目はcurrent_date，Current_timestampを利用する方法がございます。こちらはデフォルトだとクライアントOSのタイムゾーンに紐づくため、Autonomous Databaseにおいてもクライアント環境変数次第で、JSTで現在時刻を出力することが可能となります。（上記Database ActionsのタイムゾーンはUTCですので、返り値はUTCの時刻となっています）。</p>
-
-  <p>２つ目の方法としては、Oracle Database 12cからの新機能であるSQLトランスレーターを利用して、データベース内部でsysdateをcurrent_dateに置換してあげるという方法がございます。アプリケーションを書き換えることが困難である場合に有用です。<a href="https://qiita.com/500InternalServerError/items/06835e4c4635613c3129" target="_blank">こちら</a>を参照ください。</p>
+  <p>返り値をJSTで取得したい場合、DBのタイムゾーンをJSTに変更後、SYSDATE_AT_DBTIMEZONEパラメータをTRUEに変更することで、sysdateおよびsystimestampをDBのタイムゾーンで返すようにすることができます。
+詳しい手順は<a href="https://qiita.com/500InternalServerError/items/c893dfe46a6c45975c72" target="_blank">こちら</a>をご参照ください。</p>
 </blockquote>
 
 <p><br /></p>
@@ -604,7 +603,7 @@ RMANを利用しており、ブロック破損のチェックも同時に行わ�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-10-19T11:13:21+09:00">October 19, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-10-24T14:50:41+09:00">October 24, 2022</time></p>
 
 
       </footer>
