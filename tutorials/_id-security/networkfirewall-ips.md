@@ -72,7 +72,7 @@ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-jap
 
 
 ## 1-3. セキュリティ・ルールの作成
-「ルールの画面」にて、「セキュリティ・ルールの追加」ボタンをクリックします。
+「ルール」の画面にて、「セキュリティ・ルールの追加」ボタンをクリックします。
  ![画面ショット5](nfwips5.png)
 
 「セキュリティ・ルールの追加」画面にて、以下情報を入力したら「変更の保存」ボタンをクリックします。
@@ -98,6 +98,7 @@ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-jap
 # 2. Network Firewallインスタンスに割り当てられているNetwork Firewallポリシーの変更
 
 OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したNetwork Firewallインスタンスの詳細画面の「編集」ボタンをクリックします。
+ 
  ![画面ショット8](nfwips8.png)
 
 「ファイアウォールの編集」画面にて、手順1で作成したネットワーク・ファイアウォール・ポリシー「例）NFWPolicy2」を選択し、「変更の保存」ボタンをクリックします。
