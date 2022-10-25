@@ -102,6 +102,7 @@ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-jap
  ![画面ショット8](nfwips8.png)
 
 「ファイアウォールの編集」画面にて、手順1で作成したネットワーク・ファイアウォール・ポリシー「例）NFWPolicy2」を選択し、「変更の保存」ボタンをクリックします。
+ 
  ![画面ショット9](nfwips9.png)
 
 
