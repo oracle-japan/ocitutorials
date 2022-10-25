@@ -803,6 +803,12 @@ var store = [{
         "url": "/ocitutorials/id-security/networkfirewall/",
         "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
       },{
+        "title": "OCI Network FirewallのIPS/IDS機能を検証する",
+        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルはOCI Network Firewallを構築するの続編として、IPS/IDSの設定および動作を確認します。 IPS/IDSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。 Kali Linuxでは、Network Firewallインスタンスに保護されたWindowsのコンピュートインスタンスに侵入テストを実施します。 Eicarファイルを使用する際は、Network Firewallインスタンスに保護されたLinuxのコンピュートインスタンスにWebサーバーを構築し、Webサーバーを使用して動作を検証します。 所要時間 : 約60分 前提条件 : OCIチュートリアルOCI Network Firewallを構築するを参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること Kali Linuxを使用した動作検証を実施する場合、Windowsのコンピュートインスタンスに対して侵入テストを実施します。OCIチュートリアルOCI Network Firewallを構築するの手順6-2Windowsインスタンスの作成に沿って、Windowsのコンピュートインスタンスが作成されていることを確認してください。 Kali Linuxを使用した動作検証を実施する場合、Kali LinuxをOCIにデプロイするを参考に、OCI Network Firewallで保護されたコンピュートインスタンスに対して通信を行える環境に、Kali Linuxの構築が終わっていること。 Eicarファイルを使用した動作検証を実施する場合、LinuxのコンピュートインスタンスにWebサーバーをインストールして動作を検証します。OCIチュートリアルOCI Network Firewallを構築するの手順6-1Linuxのコンピュート・インスタンスの作成に沿って、Linuxのコンピュートインスタンスが作成されていることを確認してください。 重要： OCIの環境へツールなどを用いた侵入テストを実行する際は、メールにてOracleに事前に侵入テストの実施を通知する必要があります。本チュートリアルの内容を実施する際は、クラウド・セキュリティ・テスト通知の送信を参考に、事前にOracleへ告知メールを送信してください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 ※本チュートリアルでは、OCI Network Firewallの機能検証を目的にKali LinuxおよびEicarファイルを使用します。ご自身の管理下にないサーバーや、本番環境に対しては使用しないでください。また、ツールを使用したことによりトラブルや損失が発生した場合についても責任を負いかねます。 1. ネットワーク・ファイアウォール・ポリシーの編集...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/id-security/networkfirewall-ips/",
+        "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
+      },{
         "title": "Web Application Firewall(WAF)を使ってWebサーバを保護する",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
