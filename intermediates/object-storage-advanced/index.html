@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-10-28T09:35:39+09:00">
+  <meta property="article:published_time" content="2022-10-28T17:26:19+09:00">
 
 
 
@@ -322,6 +322,8 @@
         
           <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/">Oracle Linux Storage Applianceでファイルストレージの構築</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/intermediates/os_management/">コンピュート・インスタンスのOSを管理する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
@@ -339,7 +341,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="オブジェクト・ストレージの高度な設定">
     <meta itemprop="description" content="オブジェクト・ストレージには事前認証済みリクエスト以外にもDR構成を行うために他リージョンのバケットにレプリケーションするなどさまざまな機能があります。この章では主にコンソールから設定します。">
-    <meta itemprop="datePublished" content="2022-10-28T09:35:39+09:00">
+    <meta itemprop="datePublished" content="2022-10-28T17:26:19+09:00">
     
 
     <div class="page__inner-wrap">
@@ -391,7 +393,7 @@
 
 <h1 id="1-iamポリシーの設定">1. IAMポリシーの設定</h1>
 
-<p>今回のチュートリアルで設定するライフサイクル・ポリシー、レプリケーションそしてオブジェクトのコピーを作成する際は、ユーザがバケットやオブジェクトを操作する権限を持つ以外に、リージョンごとにユーザーに代わってオブジェクト・ストレージのサービス自身がバケットやオブジェクトを操作するためのサービス権限を設定する必要があります。サービス権限はソース・リージョンに対して設定する必要があり、宛先リージョンには設定する必要はありません。</p>
+<p>今回のチュートリアルで設定するライフサイクル・ポリシー、レプリケーションそしてオブジェクトのコピーを作成する際は、ユーザがバケットやオブジェクトを操作する権限を持つ以外に、リージョンごとにユーザーに代わってオブジェクト・ストレージのサービス自身がバケットやオブジェクトを操作するためのサービス権限を設定する必要があります。サービス権限はソース・リージョンと宛先リージョンの両方に設定する必要があります。</p>
 
 <ol>
   <li>左上のメニューから <strong><code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ → ポリシー</code></strong> を選択します。 そして <strong><code class="language-plaintext highlighter-rouge">ポリシーの作成</code></strong> ボタンを押します。
@@ -399,15 +401,20 @@
       <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意（このチュートリアルではtutorial_objectstorageとします）</li>
       <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意（このチュートリアルではチュートリアル用とします）</li>
       <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong>　- コンパートメントを選択します</li>
-      <li>
-        <p><strong><code class="language-plaintext highlighter-rouge">ポリシー・ビルダー</code></strong> - Allow service objectstorage-<リージョン識別子> to manage object-family in tenancy/compartment <コンパートメント名></コンパートメント名></リージョン識別子></p>
+      <li><strong><code class="language-plaintext highlighter-rouge">ポリシー・ビルダー</code></strong>
+        <ul>
+          <li>Allow service objectstorage-&lt;リージョン識別子（ソース・リージョン）&gt; to manage object-family in tenancy/compartment <コンパートメント名></コンパートメント名></li>
+          <li>
+            <p>Allow service objectstorage-&lt;リージョン識別子（宛先リージョン）&gt; to manage object-family in tenancy/compartment <コンパートメント名></コンパートメント名></p>
 
-        <p><img src="img1.png" alt="img1.png" /></p>
+            <p><img src="img1.png" alt="img1.png" /></p>
 
-        <blockquote>
-          <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong> <br />
-   リージョン識別子は<a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm#top">こちら</a>から確認してください。東京リージョンの場合は <strong><code class="language-plaintext highlighter-rouge">ap-tokyo-1</code></strong> になります。</p>
-        </blockquote>
+            <blockquote>
+              <p><strong><code class="language-plaintext highlighter-rouge">Note</code></strong> <br />
+リージョン識別子は<a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm#top">こちら</a>から確認してください。東京リージョンの場合は <strong><code class="language-plaintext highlighter-rouge">ap-tokyo-1</code></strong> になります。</p>
+            </blockquote>
+          </li>
+        </ul>
       </li>
     </ul>
   </li>
@@ -707,7 +714,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-10-28T09:35:39+09:00">October 28, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-10-28T17:26:19+09:00">October 28, 2022</time></p>
 
 
       </footer>
