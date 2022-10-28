@@ -122,3 +122,10 @@ lastmod: "2022-04-06"
 
 + **[Helidon(SE)ハンズオン](/ocitutorials/cloud-native/helidon-se-for-beginners/)**
     Helidon SEは、Oracleが提供するマイクロサービスの開発に適したJavaのマイクロフレームワークです。こちらのハンズオンは、サンプルアプリケーションの構築を通して、Helidonの特徴や使いやすさを学んでいただけるコンテンツになっています。【所要時間:約30分】
+
+<br />
+
+# 7. WebLogic Server on OCIチュートリアル
+
++ **[WebLogic Server for OCIハンズオン](/ocitutorials/cloud-native/wls-for-oci-migration/)**  
+    WebLogic Server for OCI は、Oracleが提供するアプリケーションサーバーのWebLogic ServerをOCI上で簡単に構築できるオファリングです。こちらのハンズオンでは、WebLogic Server for OCIのプロビジョニング、アプリケーションのデプロイ、アプリケーションの移行を学んでいただけるコンテンツになります。【所要時間:約2時間】
