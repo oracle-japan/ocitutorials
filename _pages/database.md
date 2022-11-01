@@ -156,6 +156,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[218 : リフレッシュ可能クローンを活用しよう](/ocitutorials/database/adb218-refreshable-clone/){:target="_blank"}**  
     * Autonomous Databaseのクローンの一種であるリフレッシュ可能クローンを作成し、その動作を確認します。
 
++ **[219 : Automatic Indexingを体験してみよう](/ocitutorials/database/adb219-autoindexing/){:target="_blank"}**  
+    * Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。
+
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}**
     * この**データ移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定したデータベースを一つ作成します。
