@@ -30,6 +30,11 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
     - [OCPU=4 (自動スケーリング無効)](#anchor2-2)
     - [OCPU=4 (自動スケーリング有効)](#anchor2-3)
 
+**前提条件**
++ ADBインスタンスが構成済みであること
+    <br>※ADBインタンスの作成方法については、
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+
 <br>
 
 **所要時間:** 約1時間30分
@@ -44,7 +49,8 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
 ## Swingbenchをダウンロード、データ生成
 
-まずはSwingbenchを仮想マシン上にダウンロードしましょう、ベンチマーク・データをADBインスタンス内に生成しましょう。
+まずはSwingbenchを仮想マシン上にダウンロードし、ベンチマーク・データをADBインスタンス内に生成しましょう。
+OCIで仮想マシンを作成する場合は、こちらの[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/){:target="_blank"}を参考にしてください。
 
 1. Terminalを起動し、仮想マシンに**opcユーザ**で**ログイン**後、**oracleユーザ**に切り替えます。
 
@@ -58,26 +64,26 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
    ![画面ショット1-1](img0.jpg)
 
-
+1. 作業用ディレクトリを作成します。
+   ```
+   mkdir -p labs/swingbench
+   ```
+   
 1. **作業用ディレクトリ**に移動します。
 
    ```
-   cd /home/oracle/labs/swingbench
+   cd labs/swingbench
    ```
-
-   ![画面ショット1-1](img0.5.jpg)
 
 1. **Swingbench**を**ダウンロード**します。**wget**もしくは**curl**コマンドをご利用ください。（数分程度かかります。）
 
    ```
-   wget http://www.dominicgiles.com/swingbench/swingbenchlatest.zip 
+   wget https://github.com/domgiles/swingbench-public/releases/download/production/swingbench30092022.zip -O swingbenchlatest.zip
    ```
    OR
    ```
-   curl http://www.dominicgiles.com/swingbench/swingbenchlatest.zip -o swingbenchlatest.zip
+   curl https://github.com/domgiles/swingbench-public/releases/download/production/swingbench30092022.zip -o swingbenchlatest.zip
    ```
-
-   ![画面ショット1-1](img1.jpg)
 
 1. **展開**します。
 
@@ -88,6 +94,14 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
    ![画面ショット1-1](img2.jpg)
 
    ![画面ショット1-1](img3.jpg)
+
+1. ADBのウォレットを配置するディレクトリを作成します。
+   
+   ```
+   mkdir /home/oracle/labs/wallets
+   ```
+
+1. ここにADBに接続するためのウォレットを配置し、sqlnet.oraを編集します。
 
 1. （必要に応じて）念のため**環境変数**を設定します。
 
@@ -139,17 +153,17 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
    ```
       #!/bin/sh
       ./swingbench/bin/oewizard 
-         -cf ~/labs/wallets/Wallet_atp01.zip \ -- クレデンシャルウォレットのZipファイルのパス
-         -cs atp01_tp \ -- ADBの接続サービス
-         -ts DATA \ -- 表領域
-         -dbap Welcome12345# \ -- ADMINユーザのパスワード
-         -dba admin \ -- ADMINユーザのユーザ名(ADMIN)
-         -u soe \ -- 新規作成するスキーマ名
-         -p Welcome12345# \ -- 新規作成するスキーマのパスワード
+         -cf ~/labs/wallets/Wallet_atp01.zip \
+         -cs atp01_tp \
+         -ts DATA \
+         -dbap Welcome12345# \
+         -dba admin \
+         -u soe \
+         -p Welcome12345# \
          -async_off \
          -scale 5 \
          -hashpart \
-         -create \ --　スキーマの新規作成
+         -create \
          -cl \
          -v
    ```
@@ -233,9 +247,9 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
       -val
    ./swingbench/bin/sbutil -soe -cf ~/labs/wallets/Wallet_atp01.zip \
       -cs atp01_medium -u soe -p Welcome12345# \ 
-         -stats
+      -stats
    ./swingbench/bin/sbutil -soe -cf ~/labs/wallets/Wallet_atp01.zip \ 
-         -cs atp01_medium -u soe -p Welcome12345# \
+      -cs atp01_medium -u soe -p Welcome12345# \
       -tables
    ```
 
@@ -257,14 +271,7 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
    ![画面ショット1-1](img21.png)
 
-1. ファイルに**実行権限**を付与し、**実行**します。負荷がけ用のパラメータを調整していきます。（特にエラー等が出なければOKです。）
-
-   ```
-   chmod +x 2-2pre.sh
-   ./2-2pre.sh
-   ```
-   
-   ![画面ショット1-1](img22.png)
+<br>
 
 <a id="anchor2"></a>
 
@@ -378,14 +385,11 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 
 1. 1分程度待って安定した時点での値を、比較のためにメモしておきましょう。
 
-   本環境でOCPU**4**では、TPSは**約4000前後**ですね。
+   本環境でOCPU**4**では、TPSは**約6000前後**ですね。
 
    ![画面ショット1-1](img38.jpg)
 
 1. Swingbenchを終了するには、Enterキーを押して下さい。
-
-   ![画面ショット1-1](img39.jpg)
-
 
 Swingbenchが動いたままOCPUを**オンラインでスケール**できること、そして、**OCPU数や自動スケーリング設定に応じてTPSが向上**していることが確認できました。
 

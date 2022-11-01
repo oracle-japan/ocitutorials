@@ -23,7 +23,7 @@ header:
 {: .notice--info}
 
 **前提条件**
-- [OCI IAM Identity Domain環境でOracle Content Management インスタンスを作成する](../create_ocm_instance_identitydomain)
+- [OCI IAM Identity Domain環境でOracle Content Management インスタンスを作成する](../create_ocm_instance_IdentityDomain)
 
 <br>
 

@@ -4,12 +4,12 @@ excerpt: "Autonomous Databaseのログを収集するためのLogging Analytics�
 order: "150"
 layout: single
 tags:
- - intermediate
+ - management
 header:
- teaser: "/intermediates/logginganalytics_adb_log/img1.png"
- overlay_image: "/intermediates/logginganalytics_adb_log/img1.png"
+ teaser: "/management/logginganalytics_adb_log/img1.png"
+ overlay_image: "/management/logginganalytics_adb_log/img1.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-
+redirect_to: https://oracle-japan.github.io/ocitutorials/management/logginganalytics_adb_log
 ---
 
 **チュートリアル概要説明**  
@@ -20,11 +20,11 @@ Autonomous DatabaseにはOSログインできないため、ログ情報は表�
 
 **前提条件 :**
 + Logging Analyticsの有効化  
-  参考：[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/intermediates/audit-log-analytics)
+  参考：[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)
 + Autonomous Databaseの作成  
-  参考：[101: ADBインスタンスを作成してみよう](/database/adb101-provisioning)
+  参考：[101: ADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)
 + Autonomous Databaseへアクセスするためのコンピュート・インスタンスの作成  
-  参考：[その3 - インスタンスを作成する](/beginners/creating-compute-instance)
+  参考：[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/)
 + 管理エージェントはOracle Cloud Agentプラグインを使用
 
 **必要な権限 :** 以下の権限設定が最低限必要となります。

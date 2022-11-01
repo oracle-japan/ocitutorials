@@ -279,7 +279,7 @@ kubectl apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/relea
 
 次に、OCI Service Meshを構成するためのリソースを作っていきます。
 
-なお、Manifestの中でアプリケーションのホスト名が定義されていますが、今回は`service-mesh.com`とします。  
+なお、Manifestの中でアプリケーションのホスト名が定義されていますが、今回は`service-mesh.oracle.com`とします。  
 後でhostsファイルを編集します。
 
 OCI Service Meshのリソースを作成するためのManifest`bookinfo_mesh.yaml`を作成します。  
@@ -596,7 +596,7 @@ spec:
   hosts:
     - name: bookinfoHost
       hostnames:
-        - service-mesh.com
+        - service-mesh.oracle.com
       listeners:
         - port: 9080
           protocol: HTTP
@@ -889,13 +889,13 @@ reviews                                       ClusterIP      10.96.22.199    <no
 
 `bookinfo-ingress`に表示される`EXTERNAL-IP`(`xxx.xxx.xxx.xxx`)がLoadBalancerのIPアドレスになります。
 
-今回は、`https://service-mesh.com`でアクセスしたいので、ローカルのhostsファイルに以下の列を追記します。
+今回は、`https://service-mesh.oracle.com`でアクセスしたいので、ローカルのhostsファイルに以下の列を追記します。
 
 ```
-xxx.xxx.xxx.xxx service-mesh.com
+xxx.xxx.xxx.xxx service-mesh.oracle.com
 ```
 
-これで`https://service-mesh.com/productpage`にアクセスし、以下のような画面が表示されれば成功です！
+これで`https://service-mesh.oracle.com/productpage`にアクセスし、以下のような画面が表示されれば成功です！
 
 ![bookinfo-product-page](bookinfo-product-page.png)
 
@@ -931,4 +931,4 @@ Bookinfoアプリケーションは、オープンソースのサービスメッ
 - バージョンv2では、`ratings`を呼び出し、各評価を1~5個の黒い星として表示します。
 - バージョンv3では、`ratings`を呼び出し、各評価を1~5個の赤い星として表示します。
 
-このアプリケーションは複数言語からされており、これらのサービスは特定のサービスメッシュプラットフォームに依存していません。  
+このアプリケーションは複数言語からされており、これらのサービスは特定のサービスメッシュプラットフォームに依存していません。

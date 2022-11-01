@@ -4,12 +4,12 @@ excerpt: "OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証
 order: "150"
 layout: single
 tags:
- - intermediate
+ - id-security
 header:
- teaser: "/intermediates/identitydomains-admin-users/users7.png"
- overlay_image: "/intermediates/identitydomains-admin-users/users7.png"
+ teaser: "/id-security/identitydomains-admin-users/users7.png"
+ overlay_image: "/id-security/identitydomains-admin-users/users7.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-
+redirect_to: https://oracle-japan.github.io/ocitutorials/id-security/identitydomains-admin-users
 ---
 
 2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。
