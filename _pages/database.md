@@ -219,6 +219,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[602 : ADWでMovieStreamデータの分析をしよう](/ocitutorials/database/adb602-moviestream-analysis/){:target="_blank"}**  
     * ADWでの実践的なデータ分析を多数の標準機能とともにご紹介します
 
++ **[603 : データ・カタログを使ってメタデータを収集しよう](/ocitutorials/database/adb603-data-catalog/){:target="_blank"}**  
+    * データ・カタログを使用してデータベース内のデータおよびクラウド・ストレージ内のデータのメタデータを収集し、効率的に管理する方法をご紹介します
+
 ## Autonomous Database Dedicated (専有環境)編
 
 + **[701 : ADB-Dの環境を作成してみよう](/ocitutorials/database/adb701-adbd/){:target="_blank"}**  
