@@ -46,7 +46,7 @@ OBPでは、アプリケーションとChaincodeを中継する役割を持つRE
 
 任意のChannelで任意のChaincodeを基本的には同一の手順で実行できます。
 
-## 0.3 使用するユーザーアカウント
+## 0.3 使用するクラウドユーザーアカウント
 
 前述の通り、REST Proxyを経由してREST APIでChaincodeを実行する際、REST Proxyは実行者をIDCSユーザーとして認証、認可の検証を行います。リクエストを行うユーザーは以下の条件を満たす必要があります。
 
@@ -55,7 +55,13 @@ OBPでは、アプリケーションとChaincodeを中継する役割を持つRE
 
 また、認証にはBASIC認証方式およびトークン認証方式が使用できます。チュートリアルの例ではBASIC認証方式を用います。トークン認証方式の利用方法については、[公式ドキュメントのトークン認証の説明箇所](https://docs.oracle.com/en/cloud/paas/blockchain-cloud/restoci/UseOAuth.html)を確認ください。
 
-## 0.4 QueryとTransactionのAPIエンドポイントの違い
+## 0.4 使用されるHyperledger Fabricのトランザクション実行者アイデンティティ
+
+REST Proxyを経由してChaincodeを実行した場合、トランザクション実行者となるHyperledger Fabric（HLF）のアイデンティティはデフォルトでは _{インスタンス名=Organization名}_defaultuser_ というIDのものが用いられます。
+
+別のHLFアイデンティティを用いたい場合、また、REST APIを呼び出すクラウドユーザーアカウントによってHLFアイデンティティを使い分けたい場合は、[こちらのチュートリアル](../05_1_fabric_identity/)を参照ください。
+
+## 0.5 QueryとTransactionのAPIエンドポイントの違い
 
 OBPにはChaincodeの実行のための2種類のREST APIエンドポイントが存在します。ひとつは**Queryエンドポイント**で、もうひとつが**Transactionエンドポイント**です。
 
