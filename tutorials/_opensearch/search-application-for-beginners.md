@@ -352,7 +352,7 @@ nohup docker run -p 8080:8080 -e="OPENSEARCH_ENDPOINT=<cluster_API_endpoint>" lo
 http://<VM_instance_public_IP>:8080
 ```
 
-<VM_instance_public_IP>を VM インスタンスのパブリック IP アドレスに置き換えます。
+\<VM_instance_public_IP\>を VM インスタンスのパブリック IP アドレスに置き換えます。
 
 ![app_page](search_page.png "Application Page")
 
