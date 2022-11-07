@@ -69,6 +69,8 @@ OCIにおける各種ID管理、セキュリティ関連サービスについて
 - **[監視・管理編](/ocitutorials/management/)**
 OCIにおける各種運用・管理関連サービスについて学習できるチュートリアルです。
 
+- **[OpenSearch編](/ocitutorials/opensearch/)** OCI Search Service with OpenSearchに関して学習できます。
+
 ## その他のお役立ち情報
 
 - **[Oracleアーキテクチャセンター](https://docs.oracle.com/solutions/?lang=ja)**  
