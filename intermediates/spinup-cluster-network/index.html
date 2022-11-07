@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-11-07T13:52:52+09:00">
+  <meta property="article:published_time" content="2022-11-07T17:18:17+09:00">
 
 
 
@@ -343,7 +343,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワークを作成する">
     <meta itemprop="description" content="クラスタ・ネットワークを作成してみましょう。このチュートリアルを終了すると、OCIが提供するHPC向けインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタル計算ノードをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行う環境を、OCIコンソールから構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2022-11-07T13:52:52+09:00">
+    <meta itemprop="datePublished" content="2022-11-07T17:18:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -354,7 +354,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-クラスタネットワーク作成事前作業">0. クラスタ・ネットワーク作成事前作業</a><ul><li><a href="#0-0-クラスタネットワーク作成事前作業概要">0-0. クラスタ・ネットワーク作成事前作業概要</a></li><li><a href="#0-1-vcn作成">0-1. VCN作成</a></li><li><a href="#0-2-bastionノード作成">0-2. bastionノード作成</a></li></ul></li><li><a href="#1-クラスタネットワーク作成">1. クラスタ・ネットワーク作成</a><ul><li><a href="#1-0-クラスタネットワーク作成概要">1-0. クラスタ・ネットワーク作成概要</a></li><li><a href="#1-1-cloud-init設定ファイル作成">1-1. cloud-init設定ファイル作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-計算ノード確認">2. 計算ノード確認</a></li><li><a href="#3-mpiプログラム実行2ノード編">3. MPIプログラム実行（2ノード編）</a><ul><li><a href="#3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</a></li><li><a href="#3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</a></li></ul></li><li><a href="#4-計算ノード追加">4. 計算ノード追加</a></li><li><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a><ul><li><a href="#5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</a></li><li><a href="#5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#5-2-intel-mpi-benchmark-alltoall実行">5-2. Intel MPI Benchmark Alltoall実行</a></li></ul></li><li><a href="#6-クラスタネットワークの終了">6. クラスタ・ネットワークの終了</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-クラスタネットワーク作成事前作業">0. クラスタ・ネットワーク作成事前作業</a><ul><li><a href="#0-0-クラスタネットワーク作成事前作業概要">0-0. クラスタ・ネットワーク作成事前作業概要</a></li><li><a href="#0-1-vcn作成">0-1. VCN作成</a></li><li><a href="#0-2-bastionノード作成">0-2. bastionノード作成</a></li></ul></li><li><a href="#1-クラスタネットワーク作成">1. クラスタ・ネットワーク作成</a><ul><li><a href="#1-0-クラスタネットワーク作成概要">1-0. クラスタ・ネットワーク作成概要</a></li><li><a href="#1-1-cloud-init設定ファイル作成">1-1. cloud-init設定ファイル作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-計算ノード確認">2. 計算ノード確認</a><ul><li><a href="#21-計算ノードログイン">2.1. 計算ノードログイン</a></li><li><a href="#22-cloud-init完了確認">2.2. cloud-init完了確認</a></li><li><a href="#23-計算ノードファイルシステム確認">2.3. 計算ノードファイルシステム確認</a></li></ul></li><li><a href="#3-mpiプログラム実行2ノード編">3. MPIプログラム実行（2ノード編）</a><ul><li><a href="#3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</a></li><li><a href="#3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</a></li></ul></li><li><a href="#4-計算ノード追加">4. 計算ノード追加</a></li><li><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a><ul><li><a href="#5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</a></li><li><a href="#5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#5-2-intel-mpi-benchmark-alltoall実行">5-2. Intel MPI Benchmark Alltoall実行</a></li></ul></li><li><a href="#6-クラスタネットワークの終了">6. クラスタ・ネットワークの終了</a></li></ul>
 
             </nav>
           </aside>
@@ -368,7 +368,7 @@
 <p>このチュートリアルは、HPC向けIntel Ice Lakeプロセッサを搭載する計算ノード（BM.Optimized3.36（※））をクラスタ・ネットワークを使用してノード間接続し、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを構築、そのインターコネクト性能を検証します。</p>
 
 <p>※：シェイプ詳細は以下URLを参照<br />
-  <a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-hpc-optimized">https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#baremetalshapes__bm-hpc-optimized</a></p>
+  <a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized</a></p>
 
 <p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。
 なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化するOCIのリソース・マネージャを使用したHPCクラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である以下ページ <strong>HPCクラスタを構築する</strong> を参照ください。</p>
@@ -437,7 +437,7 @@ bastionノードの作成は、以下チュートリアルページ <strong>イ�
 </ul>
 
 <p>次に、このbastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、bastionノードからクラスタ・ネットワークに接続する計算ノードにログインする際に使用します。
-先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従いbastionノードにSSHでログインし、以下のコマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。</p>
+先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従いbastionノードにopcユーザでSSHログインし、以下のコマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh-keygen
 Generating public/private rsa key pair.
@@ -462,6 +462,24 @@ The keys randomart image is:
 +----[SHA256]-----+
 <span class="o">&gt;</span> <span class="nb">cat</span> .ssh/id_rsa.pub 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
+</code></pre></div></div>
+
+<p>次に、以降作成するGPUノードのDNS名前解決をイニシャルホスト名で行えるようにするため、/etc/resolv.confファイルのsearch行に、先に作成したプライベートサブネットのDNSドメイン名を以下のように追加します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> diff /etc/resolv.conf_org /etc/resolv.conf
+7c7
+&lt; search vcn.oraclevcn.com sub11010929110.vcn.oraclevcn.com
+<span class="nt">---</span>
+<span class="o">&gt;</span> search vcn.oraclevcn.com sub11010929110.vcn.oraclevcn.com sub10030907571.vcn.oraclevcn.com
+</code></pre></div></div>
+
+<p>なおプライベートサブネットのDNSドメイン名は、OCIコンソール上で当該プライベートサブネットの <strong>サブネット詳細</strong> メニューから、以下のように確認することが出来ます。</p>
+
+<p><img src="console_page30.png" alt="画面ショット" /></p>
+
+<p>この修正は、このままではOS再起動により元に戻ってしまうため、以下のコマンドでこの修正が上書きされないようにします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>chattr <span class="nt">-R</span> +i /etc/resolv.conf
 </code></pre></div></div>
 
 <h1 id="1-クラスタネットワーク作成">1. クラスタ・ネットワーク作成</h1>
@@ -536,8 +554,7 @@ runcmd:
   - ifdown ens800f0
   - <span class="nb">echo</span> <span class="s2">"TYPE=</span><span class="se">\"</span><span class="s2">Ethernet</span><span class="se">\"</span><span class="s2">"</span> <span class="o">&gt;</span> /etc/sysconfig/network-scripts/ifcfg-ens800f0
   - <span class="nb">echo</span> <span class="s2">"BOOTPROTO=</span><span class="se">\"</span><span class="s2">none</span><span class="se">\"</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-<span class="c"># --&gt; This line should be modified according to your subnet domain name</span>
-  - <span class="nb">echo</span> <span class="s2">"IPADDR=192.168.0.</span><span class="sb">`</span>host <span class="se">\`</span><span class="nb">hostname</span><span class="se">\`</span>.sub10030907571.vcn.oraclevcn.com | <span class="nb">awk</span> <span class="s1">'{print $4}'</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="nb">.</span> <span class="s1">'{print $4}'</span><span class="sb">`</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> /etc/sysconfig/network-scripts/ifcfg-ens800f0
+  - <span class="nb">echo</span> <span class="s2">"IPADDR=192.168.0.</span><span class="sb">`</span>ifconfig ens300f0 | <span class="nb">head</span> <span class="nt">-2</span> | <span class="nb">tail</span> <span class="nt">-1</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="nb">.</span> <span class="s1">'{print $4}'</span><span class="sb">`</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> /etc/sysconfig/network-scripts/ifcfg-ens800f0
   - <span class="nb">echo</span> <span class="s2">"NETMASK=255.255.255.0"</span> <span class="o">&gt;&gt;</span> /etc/sysconfig/network-scripts/ifcfg-ens800f0
   - <span class="nb">echo</span> <span class="s2">"DEFROUTE=</span><span class="se">\"</span><span class="s2">no</span><span class="se">\"</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> /etc/sysconfig/network-scripts/ifcfg-ens800f0
   - <span class="nb">echo</span> <span class="s2">"PEERDNS=</span><span class="se">\"</span><span class="s2">no</span><span class="se">\"</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> /etc/sysconfig/network-scripts/ifcfg-ens800f0
@@ -552,18 +569,13 @@ runcmd:
   - ifup ens800f0
 </code></pre></div></div>
 
-<p>なお、この設定ファイルの以下行に記載されているプライベートサブネットのドメイン名 <strong>sub10030907571</strong> は、自身の作成したプライベートサブネットのドメイン名に応じて変更する必要があります。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># --&gt; This line should be modified according to your subnet domain name</span>
-  - <span class="nb">echo</span> <span class="s2">"IPADDR=192.168.0.</span><span class="sb">`</span>host <span class="se">\`</span><span class="nb">hostname</span><span class="se">\`</span>.sub10030907571.vcn.oraclevcn.com | <span class="nb">awk</span> <span class="s1">'{print $4}'</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="nb">.</span> <span class="s1">'{print $4}'</span><span class="sb">`</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> /etc/sysconfig/network-scripts/
-</code></pre></div></div>
-<p>なおプライベートサブネットのドメイン名は、OCIコンソール上で当該プライベートサブネットの <strong>サブネット詳細</strong> メニューから、以下のように確認することが出来ます。</p>
-
-<p><img src="console_page01.png" alt="画面ショット" /></p>
-
-<p>このcloud-init設定ファイルのRDMAインタフェース設定は、プライマリVNICに割当てられたTCP接続用IPアドレスの4フィールド目の値を取得し、この値を4フィールド目に持つ192.168.0.xをクラスタ・ネットワークに接続するRDMAインタフェースのIPアドレスに設定します。</p>
+<p>このcloud-init設定ファイルのRDMAインタフェース設定は、プライベートサブネットに接続するTCP接続（インターフェース名：ens300f0）用IPアドレスの4フィールド目の値を取得し、この値を4フィールド目に持つ192.168.0.xをクラスタ・ネットワークに接続するRDMAインタフェースのIPアドレスに設定します。</p>
 
 <p>またこのcloud-init設定ファイルは、RDMAインタフェースを設定する際に指定するインタフェース名がBM.Optimized3.36用（ens800f0）になっているため、他のクラスタ・ネットワーク対応のシェイプ（BM.HPC2.36やBM.GPU4.8等）を使用する場合は、使用するシェイプに合わせてRDMAインタフェース名を変更します。</p>
+
+<p>なお、BM.GPU4.8をクラスタ・ネットワークに接続するためのRDMAインタフェースを設定する際のcloud-init設定ファイルは、以下のチュートリアル”GPUクラスタを構築する”にその記載があります。</p>
+
+<p><a href="https://oracle-japan.github.io/ocitutorials/intermediates/spinup-gpu-cluster/#1-1-cloud-init%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90">https://oracle-japan.github.io/ocitutorials/intermediates/spinup-gpu-cluster/#1-1-cloud-init%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90</a></p>
 
 <h2 id="1-2-インスタンス構成作成">1-2. インスタンス構成作成</h2>
 
@@ -577,12 +589,9 @@ runcmd:
   </li>
   <li>
     <p>表示される以下画面で、<strong>インスタンス構成の作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
   </li>
-</ol>
-
-<p><img src="console_page02.png" alt="画面ショット" /></p>
-
-<ol>
   <li>
     <p>表示される <strong>インスタンス構成の作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
@@ -611,18 +620,18 @@ runcmd:
     <p><img src="console_page06.png" alt="画面ショット" /></p>
 
     <ul>
-      <li><strong>Shape</strong> ：BM.Optimized3.36 (<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.Optimized3.36</strong> を選択し検索フィールドに <strong>hpc</strong> と入力すると表示される <strong>シェイプの選択</strong> ボタンをクリック）</li>
-    </ul>
-
-    <p><img src="console_page07.png" alt="画面ショット" /></p>
-
-    <ul>
       <li><strong>イメージ</strong> ：Oracle Linux 7 - HPC Cluster Networking Image (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>すべてのイメージの参照</strong> サイドバーで <strong>イメージ・ソース</strong> フィールドに <strong>Oracleイメージ</strong> を選択し検索フィールドに <strong>hpc</strong> と入力して表示される <strong>Oracle Linux 7 - HPC Cluster Networking Image</strong> を選択し <strong>イメージの選択</strong> ボタンをクリック）</li>
     </ul>
 
     <p><img src="console_page08.png" alt="画面ショット" /></p>
 
     <p>ここで指定しているイメージは、OCIのマーケットプレースから提供するOracke Linux 7.9をベースに作成されたクラスタ・ネットワークに接続するために必要なソフトウェアが含まれるイメージ（以降 <strong>HPCイメージ</strong> と呼称）です。</p>
+
+    <ul>
+      <li><strong>Shape</strong> ：BM.Optimized3.36 (<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.Optimized3.36</strong> を選択し <strong>シェイプの選択</strong> ボタンをクリック）</li>
+    </ul>
+
+    <p><img src="console_page07.png" alt="画面ショット" /></p>
 
     <p>3.5 <strong>ネットワーキング</strong> フィールド</p>
     <ul>
@@ -661,12 +670,9 @@ runcmd:
   </li>
   <li>
     <p>表示される以下画面で、<strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page13.png" alt="画面ショット" /></p>
   </li>
-</ol>
-
-<p><img src="console_page13.png" alt="画面ショット" /></p>
-
-<ol>
   <li>
     <p>表示される <strong>クラスタ・ネットワークの作成</strong> 画面で、以下の情報を入力し <strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
@@ -714,39 +720,39 @@ runcmd:
 
 <p>本章は、デプロイされた計算ノードにログインし、環境を確認します。</p>
 
-<ol>
-  <li>
-    <p>計算ノードログイン</p>
+<h2 id="21-計算ノードログイン">2.1. 計算ノードログイン</h2>
 
-    <p>計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、bastionノードを経由してログインします。bastionノードから計算ノードへのログインは、計算ノードのDNSホスト名とIPアドレスが利用可能で、本チュートリアルではDNSホスト名を使用します。</p>
+<p>計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、bastionノードを経由してSSHログインします。bastionノードから計算ノードへのログインは、計算ノードのイニシャルホスト名を使用します。</p>
 
-    <p>計算ノードのDNSホスト名は、まずイニシャルホスト名を確認し、これに先のcloud-init設定ファイル作成時に確認したプライベートサブネットのDNSドメイン名を付与することで作成します。</p>
+<p>計算ノードのイニシャルホスト名は、OCIコンソールで計算ノードをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのイニシャルホスト名を確認します。</p>
 
-    <p>計算ノードのDNSホスト名は、OCIコンソールでクラスタ・ネットワークをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのイニシャルホスト名を確認します。</p>
+<p>またこの画面は、計算ノードのIPアドレスも表示されており、これを使用してbastionからSSHログインすることも可能です。</p>
 
-    <p>またこの画面から、bastionノードから計算ノードにログインする際使用する計算ノードのIPアドレスを確認することも可能です。</p>
+<p><img src="console_page20.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page20.png" alt="画面ショット" /></p>
+<p>計算ノードへのログインは、以下のようにbastionからopcユーザでSSHログインします。</p>
 
-    <p>計算ノードへのログインは、このイニシャルホスト名にプライベートサブネットのDNSドメイン名を付与することで作成するDNSホスト名を指定し、以下のようにbastionノードからログインします。</p>
-  </li>
-</ol>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
-The authenticity of host <span class="s1">'inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com (10.0.1.61)'</span> cant be established.
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh inst-wyr6m-comp
+The authenticity of host <span class="s1">'inst-wyr6m-comp (10.0.1.61)'</span> cant be established.
 ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
 ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
 Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com,10.0.1.61'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+</span>Warning: Permanently added <span class="s1">'inst-wyr6m-comp,10.0.1.61'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
 </code></pre></div></div>
 
-<ol>
-  <li>
-    <p>計算ノードファイルシステム確認</p>
+<h2 id="22-cloud-init完了確認">2.2. cloud-init完了確認</h2>
 
-    <p>計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。</p>
-  </li>
-</ol>
+<p>cloud-initは、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 <strong>done</strong> となっていることでcloud-initの処理完了を確認します。</p>
+
+<p>ステータスが <strong>running</strong> の場合は、cloud-initの処理が継続中のため、処理が完了するまで待ちます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>cloud-init status
+status: <span class="k">done</span>
+</code></pre></div></div>
+
+<h2 id="23-計算ノードファイルシステム確認">2.3. 計算ノードファイルシステム確認</h2>
+
+<p>計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-k</span> /mnt/localdisk
 Filesystem                  1K-blocks     Used  Available Use% Mounted on
@@ -757,7 +763,19 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
 
 <h2 id="3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</h2>
 
-<p>本章は、計算ノードに使用しているHPCイメージに予めインストールされているIntel MPI Benchmarkを使用し、クラスタ・ネットワークのノード間インターコネクト性能を確認します。</p>
+<p>本章は、cloud-initからインストールしたIntel MPI Benchmarkを使用し、クラスタ・ネットワークのノード間インターコネクト性能を確認します。</p>
+
+<p>Intel MPI Benchmarkを計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）からIntel MPI Benchmark実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。</p>
+
+<p>またIntel MPIの実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、先に作成したプライベートサブネットのセキュリティリストを修正する必要があります。</p>
+
+<p>以上より、本章で実施するIntel MPI BenchmarkによるMPIプログラム実行は、以下の手順を経て行います。</p>
+
+<ul>
+  <li>計算ノード間SSH接続環境構築</li>
+  <li>プライベートサブネットセキュリティリスト修正</li>
+  <li>Intel MPI Benchmark Ping-Pong実行</li>
+</ul>
 
 <p>ここでは、2ノードのPing-Pong性能を計測しており、以下性能が出ています。</p>
 
@@ -768,52 +786,59 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
 
 <h2 id="3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</h2>
 
-<p>MPIプログラムを計算ノード間で実行する場合、MPIプログラムをmpirun等で起動する計算ノード（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全ての計算ノードにパスフレーズ無しでSSH接続できる必要があります。</p>
+<p>本章は、先にbastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でパスフレーズ無しのSSH接続環境を実現します。</p>
 
-<p>本チュートリアルは、先にbastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、この接続環境を実現します。</p>
-
-<p>まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全ての計算ノードのDNSホスト名を含むファイルを作成します。</p>
+<p>まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全ての計算ノードのイニシャルホスト名を含むファイルをbastion上に作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>hostlist.txt 
-inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
-inst-9wead-comp.sub10030907571.vcn.oraclevcn.com
+inst-wyr6m-comp
+inst-9wead-comp
 </code></pre></div></div>
 
 <p>次にこのファイルを使用し、以下コマンドで全計算ノードにbastionノードのSSH秘密鍵をコピーします。この際、計算ノード1ノード毎に接続確認を求められるため、全てに <strong>yes</strong> を入力します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/id_rsa <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done
-</span>inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
-The authenticity of host <span class="s1">'inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com (10.0.1.61)'</span> can<span class="s1">'t be established.
+</span>inst-wyr6m-comp
+The authenticity of host <span class="s1">'inst-wyr6m-comp (10.0.1.61)'</span> cannot be established.
 ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
 ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '</span>inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com,10.0.1.61<span class="s1">' (ECDSA) to the list of known hosts.
+Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
+</span>Warning: Permanently added <span class="s1">'inst-wyr6m-comp,10.0.1.61'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
 id_rsa                                                                 100% 1675     1.9MB/s   00:00    
-inst-9wead-comp.sub10030907571.vcn.oraclevcn.com
-The authenticity of host '</span>inst-9wead-comp.sub10030907571.vcn.oraclevcn.com <span class="o">(</span>10.0.1.62<span class="o">)</span><span class="s1">' can'</span>t be established.
+inst-9wead-comp
+The authenticity of host <span class="s1">'inst-9wead-comp (10.0.1.62)'</span> cannot be established.
 ECDSA key fingerprint is SHA256:alxTYf1T2VGbwLYSuvBs5X29YorXB40rAwWWuVDKxPA.
 ECDSA key fingerprint is MD5:14:73:f4:87:3c:43:72:b5:cc:b2:e8:37:15:2f:20:3e.
 Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-9wead-comp.sub10030907571.vcn.oraclevcn.com,10.0.1.62'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+</span>Warning: Permanently added <span class="s1">'inst-9wead-comp,10.0.1.62'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
 id_rsa                                                                 100% 1675     1.8MB/s   00:00
 </code></pre></div></div>
 
 <p>次に、先のSSH秘密鍵のコピーでbastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを、以下コマンドで全計算ノードにコピーします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done
-</span>inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
+</span>inst-wyr6m-comp
 known_hosts                                                            100%  440   631.9KB/s   00:00    
-inst-9wead-comp.sub10030907571.vcn.oraclevcn.com
+inst-9wead-comp
 known_hosts                                                            100%  440   470.6KB/s   00:00
+</code></pre></div></div>
+
+<p>次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する、先に作成した計算ノードのイニシャルホスト名を格納したファイルを、以下コマンドで全GPUノードにコピーします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done
+</span>inst-wyr6m-comp
+hostlist.txt                                                           100%   32   113.3KB/s   00:00    
+inst-9wead-comp
+hostlist.txt                                                           100%   32   146.3KB/s   00:00
 </code></pre></div></div>
 
 <h2 id="3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</h2>
 
-<p>Intel MPIの実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、プライベートサブネットのセキュリティリストを以下の手順で修正します。</p>
+<p>本章は、プライベートサブネットのセキュリティリストを以下の手順で修正します。</p>
 
 <ol>
   <li>
-    <p>OCIコンソールにログインし、クラスタ・ネットワークをデプロイしたリージョンを選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿ります。</p>
+    <p>OCIコンソールにログインし、計算ノードをデプロイしたリージョンを選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿ります。</p>
   </li>
   <li>
     <p>表示される画面で、先に作成した仮想クラウド・ネットワークをクリックします。</p>
@@ -847,16 +872,9 @@ known_hosts                                                            100%  440
 
 <h2 id="3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</h2>
 
-<p>Intel MPI Benchmark実行時に使用するため、先のステップで作成した全計算ノードのDNSホスト名一覧のファイルをbastionノードから以下コマンドで全計算ノードにコピーします。</p>
+<p>本章は、Intel MPI Benchmark Ping-Pongを実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done
-</span>inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
-hostlist.txt                                                           100%   98    94.7KB/s   00:00    
-inst-9wead-comp.sub10030907571.vcn.oraclevcn.com
-hostlist.txt
-</code></pre></div></div>
-
-<p>次に任意の計算ノードにログインし、以下コマンドでIntel MPI Benchmark Ping-Pongを実行します。</p>
+<p>計算ノードのうちの1ノードにopcユーザでSSHログインし、以下コマンドを実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">source</span> /opt/intel/oneapi/setvars.sh 
  
@@ -998,20 +1016,7 @@ hostlist.txt
 
 <h2 id="5-2-intel-mpi-benchmark-alltoall実行">5-2. Intel MPI Benchmark Alltoall実行</h2>
 
-<p>Intel MPI Benchmark実行時に使用するため、先のステップで作成した全計算ノードのDNSホスト名一覧のファイルをbastionノードから以下コマンドで全計算ノードにコピーします。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done
-</span>inst-wyr6m-comp.sub10030907571.vcn.oraclevcn.com
-hostlist.txt                                                           100%   98    94.7KB/s   00:00    
-inst-9wead-comp.sub10030907571.vcn.oraclevcn.com
-hostlist.txt                                                           100%   98    94.7KB/s   00:00    
-inst-xyr6m-comp.sub10030907571.vcn.oraclevcn.com
-hostlist.txt                                                           100%   98    94.7KB/s   00:00    
-inst-yyr6m-comp.sub10030907571.vcn.oraclevcn.com
-hostlist.txt                                                           100%   98    94.7KB/s   00:00    
-</code></pre></div></div>
-
-<p>次に任意の計算ノードにログインし、以下コマンドでIntel MPI Benchmark Alltoallを実行します。</p>
+<p>計算ノードのうつの1ノードにopcユーザでSSHログインし、以下コマンドを実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">source</span> /opt/intel/oneapi/setvars.sh 
  
@@ -1161,7 +1166,7 @@ hostlist.txt                                                           100%   98
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-11-07T13:52:52+09:00">November 7, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-11-07T17:18:17+09:00">November 7, 2022</time></p>
 
 
       </footer>

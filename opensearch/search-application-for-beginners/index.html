@@ -1,0 +1,804 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Search Service for OpenSearch を使って検索アプリケーションを作成しよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Search Service for OpenSearch を使って検索アプリケーションを作成しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/opensearch/search-application-for-beginners/">
+
+
+  <meta property="og:description" content="Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-11-07T00:00:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/opensearch/search-application-for-beginners/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Search Service for OpenSearch を使って検索アプリケーションを作成しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/opensearch" itemprop="item"><span itemprop="name">Opensearch</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Search Service for OpenSearch を使って検索アプリケーションを作成しよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">OpenSearch編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/opensearch/search-application-for-beginners/" class="active">OCI Search Service for OpenSearch を使って検索アプリケーションを作成しよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Search Service for OpenSearch を使って検索アプリケーションを作成しよう">
+    <meta itemprop="description" content="Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。">
+    <meta itemprop="datePublished" content="2022-11-07T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#oci-search-service-for-opensearch-を使って検索アプリケーションを作成します">OCI Search Service for OpenSearch を使って検索アプリケーションを作成します</a><ul><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオン環境のイメージ">ハンズオン環境のイメージ</a></li><li><a href="#1-opensearch-クラスターのプロビジョニング">1. OpenSearch クラスターのプロビジョニング</a></li><li><a href="#2-クラスタへの接続">2. クラスタへの接続</a></li><li><a href="#3-データセットのアプロード">3. データセットのアプロード</a></li><li><a href="#4-アプリケーションの作成とデプロイメント">4. アプリケーションの作成とデプロイメント</a></li><li><a href="#5-アプリケーションのテスト">5. アプリケーションのテスト</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h1 id="oci-search-service-for-opensearch-を使って検索アプリケーションを作成します">OCI Search Service for OpenSearch を使って検索アプリケーションを作成します</h1>
+
+<p>Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。</p>
+
+<p>ハンズオンの流れは以下となります。</p>
+
+<ol>
+  <li>OpenSearch クラスターのプロビジョニング</li>
+  <li>クラスタへの接続</li>
+  <li>データセットのアプロード</li>
+  <li>アプリケーションの作成とデプロイメント</li>
+  <li>アプリケーションのテスト</li>
+</ol>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloud のアカウントを取得済みであること</li>
+      <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">OCI チュートリアル その 2 - クラウドに仮想ネットワーク(VCN)を作る</a>  を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること</li>
+      <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">OCI チュートリアル その 3 - インスタンスを作成する</a>  を通じてコンピュートインスタンスの構築が完了していること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ハンズオン環境のイメージ">ハンズオン環境のイメージ</h2>
+
+<p><img src="architecture.png" alt="architecture.png" title="architecture" /></p>
+
+<h2 id="1-opensearch-クラスターのプロビジョニング">1. OpenSearch クラスターのプロビジョニング</h2>
+
+<p><a href="https://opensearch.org/docs/1.2/opensearch/cluster/">OpenSearch クラスタ</a>は、OpenSearch 機能を提供するコンピュート・インスタンスのセットです。各インスタンスはクラスタ内のノードです。ノードのタイプは、インスタンスによって実行される機能およびタスクを決定するものです。各クラスタは、1 つ以上のデータ・ノード、マスター・ノードおよび OpenSearch ダッシュボード・ノードで構成されます。</p>
+
+<p><img src="1_opensearch_cluster.png" alt="opensearch cluster" title="opensearch_cluster" /></p>
+
+<p><strong>OCI コンソールを使ってクラスターを作成します</strong></p>
+
+<p><strong>ナビゲーション・メニュー</strong>を開きます。「<strong>データベース</strong>」をクリックします。OpenSearch で、「<strong>クラスタ</strong>」をクリックします。</p>
+
+<p><img src="1-1_click_opensearch_menu.png" alt="open opensearch menu" title="open opensearch menu" /></p>
+
+<p>OpenSearch 一覧画面で「<strong>クラスタの作成</strong>」ボタンをクリックします。</p>
+
+<p><img src="1-2_click_createcluster_button.png" alt="click_createcluster_button" title="click createcluster button" /></p>
+
+<p>クラスタの<strong>名前</strong>を指定し、<strong>クラスタを作成するコンパートメント</strong>を選択して、「<strong>次</strong>」をクリックします。</p>
+
+<p><img src="1-3_config_cluster.png" alt="config cluster" title="config cluster" /></p>
+
+<p>ノード最適化オプションで「<strong>開発</strong>」オプションを選択します。「<strong>次</strong>」をクリックします。</p>
+
+<p><img src="1-4_config_node.png" alt="config node" title="config node" /></p>
+
+<p>「<strong>ネットワーキングの構成</strong>」セクションで、<strong>既存の仮想クラウド・ネットワーク</strong>を選択して、次の選択を行います。</p>
+
+<ul>
+  <li><strong>仮想クラウド・ネットワーク</strong>: 前提条件で作成したクラウド・ネットワーク。</li>
+  <li>
+    <p><strong>サブネット</strong>: 「<strong>既存のサブネットを選択</strong>」を選択して、サブネットは<strong>前提条件で作成したインスタンスと同じパブリックサブネット</strong>を指定します。</p>
+
+    <p>上記の選択をした後は、「<strong>次</strong>」をクリックします。</p>
+  </li>
+</ul>
+
+<p><img src="1-5_config_vcn_subnet.png" alt="config vnc and subnet" title="config vcn and subnet" /></p>
+
+<p>「サマリー」ページでクラスタ確認の詳細を確認し、「クラスタの作成」をクリックします。</p>
+
+<p><img src="1-6_submit_creation_request.png" alt="submit creation request" title="submit creation request" /></p>
+
+<h2 id="2-クラスタへの接続">2. クラスタへの接続</h2>
+
+<p><strong>クラスタ接続情報を取得します</strong></p>
+
+<p><strong>ナビゲーション・メニュー</strong>を開きます。「<strong>データベース</strong>」をクリックします。OpenSearch で、「<strong>クラスタ</strong>」をクリックします。</p>
+
+<p><img src="2-1-1_click_opensearch_menu.png" alt="open opensearch menu" title="open opensearch menu" /></p>
+
+<p>「<strong>クラスタ</strong>」リストで、詳細を表示するクラスタの名前をクリックします。</p>
+
+<p><img src="2-1-2_click_cluster.png" alt="click cluster" title="click cluster" /></p>
+
+<p>「<strong>クラスタの詳細</strong>」ページで、下記の情報を取得します。</p>
+
+<ul>
+  <li><strong>API エンドポイント</strong>: クラスタのプライベート・エンドポイントの FQDN。</li>
+  <li><strong>プライベート IP</strong>: クラスタのプライベート・エンドポイントのプライベート IP アドレス。</li>
+  <li><strong>OpenSearch ダッシュボード API エンドポイント</strong>: クラスタの OpenSearch ダッシュボードの FQDN。</li>
+  <li><strong>OpenSearch ダッシュボード・プライベート IP</strong>: クラスタの OpenSearch ダッシュボードへの接続に使用できるプライベート・エンドポイントの IP アドレス。</li>
+</ul>
+
+<p><img src="2-1-3_confirm_cluster_detail.png" alt="confirm cluster detail" title="confirm cluster detail" /></p>
+
+<p><strong>セキュリティ・ルールを作成します</strong></p>
+
+<ol>
+  <li><strong>ナビゲーション・メニュー</strong>を開きます。「<strong>データベース</strong>」をクリックします。OpenSearch で、「<strong>クラスタ</strong>」をクリックします。</li>
+  <li>目的のクラスタをクリックします。</li>
+  <li>「<strong>クラスタの詳細</strong>」の「<strong>サブネット</strong>」で、サブネットの名前をクリックします。「<strong>サブネット詳細</strong>」ページが開きます。</li>
+</ol>
+
+<p><img src="2-2-3_click_subnet.png" alt="click subnet" title="click subnet" /></p>
+
+<p>「<strong>セキュリティ・リスト</strong>」で「<strong>デフォルト・セキュリティ・リスト</strong>」という名前のセキュリティ・リストをクリックします。</p>
+
+<p><img src="2-2-4_click_sl.png" alt="click security list" title="click security list" /></p>
+
+<p>「<strong>イングレス・ルールの追加</strong>」をクリックします。</p>
+
+<p><img src="2-2-5_add_ingress_rule.png" alt="add ingress rule" title="add ingress rule" /></p>
+
+<p>ルールの次の値を入力します:</p>
+
+<ul>
+  <li>ステートレス: このチェックボックスは選択を解除したままにします。</li>
+  <li>ソース・タイプ: CIDR</li>
+  <li>ソース CIDR: 0.0.0.0/0</li>
+  <li>IP プロトコル: TCP</li>
+  <li>ソース・ポート範囲: すべて</li>
+  <li>宛先ポート範囲: 9200</li>
+  <li>説明: ルールのオプションの説明。</li>
+</ul>
+
+<p><img src="2-2-6_add_ingress_rule.png" alt="add ingress rule" title="add ingress rule" /></p>
+
+<p>「<strong>別のイングレス・ルール</strong>」をクリックします。</p>
+
+<p><img src="2-2-7_add_ingress_rule.png" alt="add ingress rule" title="add ingress rule" /></p>
+
+<p>ルールの次の値を入力します:</p>
+
+<ul>
+  <li>ステートレス: このチェックボックスは選択を解除したままにします。</li>
+  <li>ソース・タイプ: CIDR</li>
+  <li>ソース CIDR: 0.0.0.0/0</li>
+  <li>IP プロトコル: TCP</li>
+  <li>ソース・ポート範囲: すべて</li>
+  <li>宛先ポート範囲: 5601</li>
+  <li>説明: ルールのオプションの説明。</li>
+</ul>
+
+<p><img src="2-2-8_add_ingress_rule.png" alt="add ingress rule" title="add ingress rule" /></p>
+
+<p>「<strong>別のイングレス・ルール</strong>」をクリックします。</p>
+
+<p><img src="2-2-9_add_ingress_rule.png" alt="add ingress rule" title="add ingress rule" /></p>
+
+<p>ルールの次の値を入力します:</p>
+
+<ul>
+  <li>ステートレス: このチェックボックスは選択を解除したままにします。</li>
+  <li>ソース・タイプ: CIDR</li>
+  <li>ソース CIDR: 0.0.0.0/0</li>
+  <li>IP プロトコル: TCP</li>
+  <li>ソース・ポート範囲: すべて</li>
+  <li>宛先ポート範囲: 8080</li>
+  <li>説明: ルールのオプションの説明。</li>
+</ul>
+
+<p><img src="2-2-10_add_ingress_rule.png" alt="add ingress rule" title="add ingress rule" /></p>
+
+<p>「<strong>イングレス・ルールの追加</strong>」をクリックします。</p>
+
+<p><img src="2-2-11_add_ingress_rule.png" alt="add ingress rule" title="add ingress rule" /></p>
+
+<p><strong>クラスタへの接続のテスト</strong>
+<strong>ローカル・マシン</strong>から<strong>VM インスタンス</strong>に接続したら、次のいずれかのコマンドを実行して接続をテストします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl https://&lt;cluster_API_endpoint&gt;:9200
+</code></pre></div></div>
+
+<p>エンドポイントへの接続が成功すると、次のようなレスポンスが返されます:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"name"</span> : <span class="s2">"opensearch-master-0"</span>,
+  <span class="s2">"cluster_name"</span> : <span class="s2">"&lt;cluster_name&gt;"</span>,
+  <span class="s2">"cluster_uuid"</span> : <span class="s2">"&lt;cluster_UUID&gt;"</span>,
+  <span class="s2">"version"</span> : <span class="o">{</span>
+    <span class="s2">"distribution"</span> : <span class="s2">"opensearch"</span>,
+    <span class="s2">"number"</span> : <span class="s2">"1.2.4-SNAPSHOT"</span>,
+    <span class="s2">"build_type"</span> : <span class="s2">"tar"</span>,
+    <span class="s2">"build_hash"</span> : <span class="s2">"&lt;build_hash&gt;"</span>,
+    <span class="s2">"build_date"</span> : <span class="s2">"2022-02-08T16:44:39.596468Z"</span>,
+    <span class="s2">"build_snapshot"</span> : <span class="nb">true</span>,
+    <span class="s2">"lucene_version"</span> : <span class="s2">"8.10.1"</span>,
+    <span class="s2">"minimum_wire_compatibility_version"</span> : <span class="s2">"6.8.0"</span>,
+    <span class="s2">"minimum_index_compatibility_version"</span> : <span class="s2">"6.0.0-beta1"</span>
+  <span class="o">}</span>,
+  <span class="s2">"tagline"</span> : <span class="s2">"The OpenSearch Project: https://opensearch.org/"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>クラスタの OpenSearch ダッシュボードへの接続のテスト</strong> 01. ローカル・マシンから次のコマンドを実行します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-C</span> <span class="nt">-v</span> <span class="nt">-t</span> <span class="nt">-L</span> 127.0.0.1:5601:&lt;OpenSearch_Dashboards_private_IP&gt;:5601 <span class="nt">-L</span> 127.0.0.1:9200:&lt;OpenSearch_cluster_private_IP&gt;:9200 opc@&lt;VM_instance_public_IP&gt; <span class="nt">-i</span> &lt;private_key_file&gt;
+</code></pre></div></div>
+
+<p>&lt;OpenSearch_Dashboards_private_IP&gt;を、クラスタの OpenSearch ダッシュボードのプライベート IP に置き換えます。&lt;OpenSearch_cluster_private_IP&gt;をクラスタのプライベート IP に置き換えます。
+&lt;VM_instance_public_IP&gt;を VM インスタンスのパブリック IP アドレスに置き換えます。&lt;private_key_file&gt;を、インスタンスへの接続に使用する秘密キーへのパスに置き換えます。これらの値とその検索方法の詳細は、インスタンスへの接続を参照してください。</p>
+
+<ul>
+  <li>
+    <p>ローカル・マシンの Hosts ファイルに下記内容を追加します。
+<code class="language-plaintext highlighter-rouge">127.0.0.1 &lt;cluster_API_endpoint&gt; &lt;cluster_Dashboard_endpoint&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>ローカル・マシンが Mac の場合、Hosts ファイルの位置は<code class="language-plaintext highlighter-rouge">/etc/hosts</code>です。Hosts ファイルを更新した後は、下記のコマンドを実行してローカル DNS を更新します。
+<code class="language-plaintext highlighter-rouge">sudo killall -HUP mDNSResponder</code></p>
+      </li>
+      <li>
+        <p>ローカル・マシンがが Windows の場合、Hosts ファイルの位置は<code class="language-plaintext highlighter-rouge">C\Windows\System32\drivers\etc\hosts</code>です。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>ローカル・マシンのブラウザから、<code class="language-plaintext highlighter-rouge">https://&lt;cluster_Dashboard_endpoint&gt;:5601</code>を開いて OpenSearch ダッシュボードにアクセスします。</p>
+  </li>
+</ul>
+
+<p><img src="2-3-3_open_dashboard.png" alt="open opensearch dashborad" title="open opensearch dashborad" /></p>
+
+<h2 id="3-データセットのアプロード">3. データセットのアプロード</h2>
+
+<p><strong>OpenSearch ダッシュボードを使ってデータセットをアプロードします。</strong></p>
+
+<p><strong>ナビゲーション・メニュー</strong>を開きます。Dev Tools をクリックします。</p>
+
+<p><img src="3_0.png" alt="opensearch_dashborad" title="opensearch dashborad" /></p>
+
+<p>Dev Tools で <a href="https://raw.githubusercontent.com/oracle-japan/OCI_OpenSearch_Handson_App/main/data/account.json">accounts.json</a> の内容を Console にペーストします。</p>
+
+<p><strong>実行</strong>ボタンをクリックします。</p>
+
+<p><img src="3_4.png" alt="dataset_uploaded" title="dataset upload" /></p>
+
+<p>Console に下記の DSL を実行して、データセットを検索してみます。</p>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">GET accounts/_search
+{
+  "query": {
+    "match": {
+      "firstname": "Amber"
+    }
+  }
+}
+</span></code></pre></div></div>
+
+<p><img src="query_result.png" alt="query_result" title="query result" /></p>
+
+<h2 id="4-アプリケーションの作成とデプロイメント">4. アプリケーションの作成とデプロイメント</h2>
+
+<p><strong>アプリケーションの作成</strong></p>
+
+<p><strong>Helidon MP</strong>と<strong>OpenSearch の Java high-level REST client</strong>を使って上記データセットを検索するアプリケーションを作成します。</p>
+
+<ul>
+  <li>Helidon MP の使い方は<a href="https://oracle-japan.github.io/ocitutorials/cloud-native/helidon-mp-for-beginners/">こちら</a>をご参照ください。</li>
+  <li>OpenSearch の Java high-level REST client の使い方は<a href="https://opensearch.org/docs/1.2/clients/java-rest-high-level/">こちら</a>をご参照ください。</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ...</span>
+<span class="nd">@Path</span><span class="o">(</span><span class="s">"/accounts"</span><span class="o">)</span>
+<span class="nd">@RequestScoped</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AccountResource</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">openSearchEndpoint</span><span class="o">;</span>
+
+    <span class="nd">@Inject</span>
+    <span class="kd">public</span> <span class="nf">AccountResource</span><span class="o">(</span><span class="nd">@ConfigProperty</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"oci.opensearch.api.endpoint"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">openSearchEndpoint</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Object</span> <span class="n">endpoint</span> <span class="o">=</span>  <span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"OPENSEARCH_ENDPOINT"</span><span class="o">);</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">endpoint</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">openSearchEndpoint</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="n">endpoint</span><span class="o">;</span>
+        <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">openSearchEndpoint</span> <span class="o">=</span> <span class="n">openSearchEndpoint</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Path</span><span class="o">(</span><span class="s">"/search/{inputTerm}"</span><span class="o">)</span>
+    <span class="nd">@GET</span>
+    <span class="nd">@Produces</span><span class="o">(</span><span class="nc">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">Response</span> <span class="nf">search</span><span class="o">(</span><span class="nd">@PathParam</span><span class="o">(</span><span class="s">"inputTerm"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">inputTerm</span><span class="o">){</span>
+        <span class="c1">// Create a client.</span>
+        <span class="nc">RestClientBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="nc">RestClient</span><span class="o">.</span><span class="na">builder</span><span class="o">(</span><span class="nc">HttpHost</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">openSearchEndpoint</span><span class="o">));</span>
+
+        <span class="k">try</span><span class="o">(</span><span class="nc">RestHighLevelClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RestHighLevelClient</span><span class="o">(</span><span class="n">builder</span><span class="o">)){</span>
+            <span class="c1">// Build search request</span>
+            <span class="nc">SearchRequest</span> <span class="n">searchRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SearchRequest</span><span class="o">(</span><span class="s">"accounts"</span><span class="o">);</span>
+
+            <span class="c1">// Build SearchSource</span>
+            <span class="nc">SearchSourceBuilder</span> <span class="n">searchSourceBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SearchSourceBuilder</span><span class="o">();</span>
+            <span class="n">searchSourceBuilder</span><span class="o">.</span><span class="na">query</span><span class="o">(</span><span class="nc">QueryBuilders</span><span class="o">.</span><span class="na">queryStringQuery</span><span class="o">(</span><span class="n">inputTerm</span><span class="o">));</span>
+            <span class="n">searchSourceBuilder</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+            <span class="n">searchSourceBuilder</span><span class="o">.</span><span class="na">size</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+            <span class="n">searchRequest</span><span class="o">.</span><span class="na">source</span><span class="o">(</span><span class="n">searchSourceBuilder</span><span class="o">);</span>
+
+            <span class="c1">// Search</span>
+            <span class="nc">SearchResponse</span> <span class="n">searchResponse</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">search</span><span class="o">(</span><span class="n">searchRequest</span><span class="o">,</span> <span class="nc">RequestOptions</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">);</span>
+            <span class="k">return</span> <span class="nc">Response</span><span class="o">.</span><span class="na">status</span><span class="o">(</span><span class="nc">Response</span><span class="o">.</span><span class="na">Status</span><span class="o">.</span><span class="na">OK</span><span class="o">).</span><span class="na">entity</span><span class="o">(</span><span class="n">searchResponse</span><span class="o">.</span><span class="na">toString</span><span class="o">()).</span><span class="na">build</span><span class="o">();</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="nc">Response</span><span class="o">.</span><span class="na">status</span><span class="o">(</span><span class="nc">Response</span><span class="o">.</span><span class="na">Status</span><span class="o">.</span><span class="na">INTERNAL_SERVER_ERROR</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Bootstrap</strong>を使ってアプリケーションの画面を作成します。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row height d-flex justify-content-center align-items-center"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-md-6"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"form"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;i</span> <span class="na">class=</span><span class="s">"fa fa-search"</span><span class="nt">&gt;&lt;/i&gt;</span>
+        <span class="nt">&lt;input</span>
+          <span class="na">type=</span><span class="s">"text"</span>
+          <span class="na">class=</span><span class="s">"form-control form-input"</span>
+          <span class="na">onkeydown=</span><span class="s">"search(this)"</span>
+          <span class="na">placeholder=</span><span class="s">"Search accounts..."</span>
+        <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"accounts_container"</span> <span class="na">class=</span><span class="s">"col-md-10"</span> <span class="na">style=</span><span class="s">"height:85%"</span><span class="nt">&gt;&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>上記で作成したアプリケーションは<a href="https://github.com/oracle-japan/OCI_OpenSearch_Handson_App">こちら</a>をご参照ください。</p>
+
+<p><strong>アプリケーションのデプロイメント</strong> 01. ローカル・マシンから VM インスタンスに接続します。 02. 下記のコマンドを実行して、ファイアウォールにポート「8080」を追加します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--add-port</span><span class="o">=</span>8080/tcp <span class="nt">--permanent</span>
+<span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+</code></pre></div></div>
+
+<p>下記のコマンドを実行して、git と docker をインストールします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>yum <span class="nb">install </span>git
+<span class="nb">sudo </span>yum <span class="nb">install </span>docker
+</code></pre></div></div>
+
+<p>下記のコマンドを実行して、作成したアプリケーションをクローンします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
+</code></pre></div></div>
+
+<p>アプリケーションの Docker イメージを作成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>OCI_OpenSearch_Handson_App
+docker build <span class="nb">.</span> <span class="nt">-t</span> os_app
+</code></pre></div></div>
+
+<p>下記のコマンドを実行して、アプリケーションをデプロイします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">nohup </span>docker run <span class="nt">-p</span> 8080:8080 <span class="nt">-e</span><span class="o">=</span><span class="s2">"OPENSEARCH_ENDPOINT=&lt;cluster_API_endpoint&gt;"</span> localhost/os_app &amp;
+</code></pre></div></div>
+
+<p>&lt;cluster_API_endpoint&gt;を、クラスタの OpenSearch ダッシュボードの API エンドポイントに置き換えます。</p>
+
+<h2 id="5-アプリケーションのテスト">5. アプリケーションのテスト</h2>
+
+<p>ローカル・マシンのブラウザから、下記のリンクを開いてアプリケーションにアクセスします。</p>
+
+<pre><code class="language-txt">http://&lt;VM_instance_public_IP&gt;:8080
+</code></pre>
+
+<VM_instance_public_IP>を VM インスタンスのパブリック IP アドレスに置き換えます。
+
+![app_page](search_page.png "Application Page")
+
+検索枠に検索条件を入力して、キーボードの Enter キーを押します。
+
+![search_result](search_result.png "Search Result")
+
+関連するアカウント情報が表示されます。
+</VM_instance_public_IP>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#opensearch" class="page__taxonomy-item" rel="tag">opensearch</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-11-07T00:00:00+09:00">November 7, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Search+Service+for+OpenSearch+%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E6%A4%9C%E7%B4%A2%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fopensearch%2Fsearch-application-for-beginners%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fopensearch%2Fsearch-application-for-beginners%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fopensearch%2Fsearch-application-for-beginners%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
