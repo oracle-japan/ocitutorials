@@ -57,7 +57,7 @@ OBPでは、アプリケーションとChaincodeを中継する役割を持つRE
 
 ## 0.4 使用されるHyperledger Fabricのトランザクション実行者アイデンティティ
 
-REST Proxyを経由してChaincodeを実行した場合、トランザクション実行者となるHyperledger Fabric（HLF）のアイデンティティはデフォルトでは _{インスタンス名=Organization名}_defaultuser_ というIDのものが用いられます。
+REST Proxyを経由してChaincodeを実行した場合、トランザクション実行者となるHyperledger Fabric（HLF）のアイデンティティはデフォルトでは _{インスタンス名=Organization名}\_defaultuser_ というIDのものが用いられます。
 
 別のHLFアイデンティティを用いたい場合、また、REST APIを呼び出すクラウドユーザーアカウントによってHLFアイデンティティを使い分けたい場合は、[こちらのチュートリアル](../05_1_fabric_identity/)を参照ください。
 
