@@ -202,7 +202,7 @@ ssh -C -v -t -L 127.0.0.1:5601:<OpenSearch_Dashboards_private_IP>:5601 -L 127.0.
     sudo killall -HUP mDNSResponder
     ```
 
-  - ローカル・マシンがが Windows の場合、Hosts ファイルの位置は`C\Windows\System32\drivers\etc\hosts`です。
+  - ローカル・マシンが Windows の場合、Hosts ファイルの位置は`C\Windows\System32\drivers\etc\hosts`です。
 
 - ローカル・マシンのブラウザから、`https://<cluster_Dashboard_endpoint>:5601`を開いて OpenSearch ダッシュボードにアクセスします。
 
