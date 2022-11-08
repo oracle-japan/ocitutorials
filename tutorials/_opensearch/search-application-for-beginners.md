@@ -7,7 +7,7 @@ date: "2022-11-07"
 lastmod: "2022-11-07"
 ---
 
-# OCI Search Service for OpenSearch を使って検索アプリケーションを作成します
+# OCI Search Service for OpenSearch を使って検索アプリケーションを作成する
 
 Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。
 
@@ -15,7 +15,7 @@ Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に�
 
 1. OpenSearch クラスターのプロビジョニング
 2. クラスタへの接続
-3. データセットのアプロード
+3. データセットのアップロード
 4. アプリケーションの作成とデプロイメント
 5. アプリケーションのテスト
 
@@ -191,20 +191,26 @@ ssh -C -v -t -L 127.0.0.1:5601:<OpenSearch_Dashboards_private_IP>:5601 -L 127.0.
 \<VM_instance_public_IP\>を VM インスタンスのパブリック IP アドレスに置き換えます。\<private_key_file\>を、インスタンスへの接続に使用する秘密キーへのパスに置き換えます。これらの値とその検索方法の詳細は、インスタンスへの接続を参照してください。
 
 - ローカル・マシンの Hosts ファイルに下記内容を追加します。
-  `127.0.0.1 <cluster_API_endpoint> <cluster_Dashboard_endpoint>`
+  
+  ```bash
+  127.0.0.1 <cluster_API_endpoint> <cluster_Dashboard_endpoint>
+  ```
 
   - ローカル・マシンが Mac の場合、Hosts ファイルの位置は`/etc/hosts`です。Hosts ファイルを更新した後は、下記のコマンドを実行してローカル DNS を更新します。
-    `sudo killall -HUP mDNSResponder`
+  
+    ```bash
+    sudo killall -HUP mDNSResponder
+    ```
 
-  - ローカル・マシンがが Windows の場合、Hosts ファイルの位置は`C\Windows\System32\drivers\etc\hosts`です。
+  - ローカル・マシンが Windows の場合、Hosts ファイルの位置は`C\Windows\System32\drivers\etc\hosts`です。
 
 - ローカル・マシンのブラウザから、`https://<cluster_Dashboard_endpoint>:5601`を開いて OpenSearch ダッシュボードにアクセスします。
 
 ![open opensearch dashborad](2-3-3_open_dashboard.png "open opensearch dashborad")
 
-## 3. データセットのアプロード
+## 3. データセットのアップロード
 
-**OpenSearch ダッシュボードを使ってデータセットをアプロードします。**
+**OpenSearch ダッシュボードを使ってデータセットをアップロードします。**
 
 **ナビゲーション・メニュー**を開きます。Dev Tools をクリックします。
 
