@@ -1230,7 +1230,7 @@ var store = [{
         "teaser": null
       },{
         "title": "OCI Search Service for OpenSearch を使って検索アプリケーションを作成しよう",
-        "excerpt":"OCI Search Service for OpenSearch を使って検索アプリケーションを作成します Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。 ハンズオンの流れは以下となります。 OpenSearch クラスターのプロビジョニング クラスタへの接続 データセットのアプロード アプリケーションの作成とデプロイメント アプリケーションのテスト 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること OCI チュートリアル その 2 - クラウドに仮想ネットワーク(VCN)を作る  を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること OCI チュートリアル その 3 - インスタンスを作成する  を通じてコンピュートインスタンスの構築が完了していること ハンズオン環境のイメージ 1. OpenSearch クラスターのプロビジョニング OpenSearch クラスタは、OpenSearch 機能を提供するコンピュート・インスタンスのセットです。各インスタンスはクラスタ内のノードです。ノードのタイプは、インスタンスによって実行される機能およびタスクを決定するものです。各クラスタは、1 つ以上のデータ・ノード、マスター・ノードおよび OpenSearch...","categories": [],
+        "excerpt":"OCI Search Service for OpenSearch を使って検索アプリケーションを作成する Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenSearch に基づいてアプリケーション内検索ソリューションを構築するために使用できるマネージド・サービスであり、インフラストラクチャの管理に集中することなく、大規模なデータセットを検索し、結果をミリ秒で返すことができます。 ハンズオンの流れは以下となります。 OpenSearch クラスターのプロビジョニング クラスタへの接続 データセットのアップロード アプリケーションの作成とデプロイメント アプリケーションのテスト 前提条件 クラウド環境 Oracle Cloud のアカウントを取得済みであること OCI チュートリアル その 2 - クラウドに仮想ネットワーク(VCN)を作る  を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること OCI チュートリアル その 3 - インスタンスを作成する  を通じてコンピュートインスタンスの構築が完了していること ハンズオン環境のイメージ 1. OpenSearch クラスターのプロビジョニング OpenSearch クラスタは、OpenSearch 機能を提供するコンピュート・インスタンスのセットです。各インスタンスはクラスタ内のノードです。ノードのタイプは、インスタンスによって実行される機能およびタスクを決定するものです。各クラスタは、1 つ以上のデータ・ノード、マスター・ノードおよび OpenSearch...","categories": [],
         "tags": ["opensearch"],
         "url": "/ocitutorials/opensearch/search-application-for-beginners/",
         "teaser": null
