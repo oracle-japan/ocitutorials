@@ -1,0 +1,561 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>リッチヒストリーデータベースの設定方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="この文書はOracle Blockchain Platformで、ブロックチェーン台帳のデータを外部のOracle Databaseに複製する機能であるリッチヒストリーデータベース機能の設定方法を説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="リッチヒストリーデータベースの設定方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/blockchain/06_1_rich_history/">
+
+
+  <meta property="og:description" content="この文書はOracle Blockchain Platformで、ブロックチェーン台帳のデータを外部のOracle Databaseに複製する機能であるリッチヒストリーデータベース機能の設定方法を説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/blockchain/06_1_rich_history/rich_history_tables.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-11-09T13:35:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/blockchain/06_1_rich_history/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/blockchain/06_1_rich_history/rich_history_tables.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          リッチヒストリーデータベースの設定方法
+
+        
+      </h1>
+      
+        <p class="page__lead">この文書はOracle Blockchain Platformで、ブロックチェーン台帳のデータを外部のOracle Databaseに複製する機能であるリッチヒストリーデータベース機能の設定方法を説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/blockchain" itemprop="item"><span itemprop="name">Blockchain</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">リッチヒストリーデータベースの設定方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="リッチヒストリーデータベースの設定方法">
+    <meta itemprop="description" content="この文書はOracle Blockchain Platformで、ブロックチェーン台帳のデータを外部のOracle Databaseに複製する機能であるリッチヒストリーデータベース機能の設定方法を説明します。">
+    <meta itemprop="datePublished" content="2022-11-09T13:35:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-前提の理解">0. 前提の理解</a><ul><li><a href="#01-リッチヒストリーデータベース機能の概要">0.1. リッチヒストリーデータベース機能の概要</a></li><li><a href="#02-リッチヒストリーデータベースの設定のレベル">0.2. リッチヒストリーデータベースの設定のレベル</a></li><li><a href="#03-複製されるテーブル">0.3. 複製されるテーブル</a></li></ul></li><li><a href="#1-リッチヒストリーデータベースの設定方法">1. リッチヒストリーデータベースの設定方法</a><ul><li><a href="#11-インスタンス全体に対する設定方法">1.1. インスタンス全体に対する設定方法</a></li><li><a href="#12-channelごとの設定方法">1.2. Channelごとの設定方法</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Blockchain Platformで、ブロックチェーン台帳のデータを外部のOracle Databaseに複製する機能であるリッチヒストリーデータベース機能の設定方法を説明します。</p>
+
+<p>この文書は、2022年11月時点での最新バージョン(22.3.2)を元に作成されています。</p>
+
+<ul>
+  <li>
+    <p><strong>前提 :</strong></p>
+
+    <ul>
+      <li><a href="../01_1_create_instance/">Oracle Blockchain Platform のインスタンス作成</a>を完了</li>
+      <li>複製先のOracle Databaseの用意
+        <ul>
+          <li>Oracle Blockchain Platformインスタンスからデータベースまでの接続（通信）が可能になっている必要があります</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="0-前提の理解">0. 前提の理解</h1>
+
+<h2 id="01-リッチヒストリーデータベース機能の概要">0.1. リッチヒストリーデータベース機能の概要</h2>
+
+<p>Oracle Blockchain Platform（OBP）のリッチヒストリーデータベース機能は、OBPインスタンスの持つブロックチェーン台帳のデータをブロックチェーン外部のリレーショナルデータベース（Oracle Database）に複製する機能です。</p>
+
+<p>Hyperledger Fabricに限らずブロックチェーンは一般にスマートコントラクト上（オンチェーン）での集計や分析などの複雑な参照処理を苦手としています。リッチヒストリーデータベース機能を用いることで、そうした処理をデータベース側で実装可能になります。</p>
+
+<p>Oracle Database上にデータを複製したのちには、多くの開発者が慣れ親しんでいるPL/SQL言語や各種のBIツールを用いて容易に集計、分析が行えることになります。また、他データベースとのデータ統合も容易になり、データの価値を最大限に活用できるようになります。</p>
+
+<p><img src="rich_history_general.png" alt="リッチヒストリーデータベース概要" /></p>
+
+<h2 id="02-リッチヒストリーデータベースの設定のレベル">0.2. リッチヒストリーデータベースの設定のレベル</h2>
+
+<p>利用にあたっての複製先のデータベースに対しての接続設定が必要になります。以下のレベルでの設定が可能です。</p>
+
+<ul>
+  <li>OBPインスタンス全体に対する設定</li>
+  <li>Channelごとに設定……インスタンス全体に対する設定をオーバーライド</li>
+</ul>
+
+<h2 id="03-複製されるテーブル">0.3. 複製されるテーブル</h2>
+
+<p>Hyperledger Fabricにおける台帳の単位、すなわちChannelごとにデータを複製します。複製先のデータベースでは、Channelごとにそれぞれ役割の異なるStateテーブル、Historyテーブル、Transaction Detailsテーブル（オプショナル）およびチェックポイントを保存するLastテーブルが自動的に作成され、データが書き込まれていきます。</p>
+
+<p>テーブル名は <em>{インスタンス名=Organization名}_{Channel名}_{テーブル種別}</em> の規則で作成されます。テーブル種別は上記4つにつきそれぞれstate、history、more、lastです。</p>
+
+<p><img src="rich_history_tables.png" alt="リッチヒストリーデータベースのテーブル" /></p>
+
+<p>以下にLast以外のテーブルについて、それぞれに複製されるデータの内容を説明しています。</p>
+
+<ul>
+  <li>
+    <p><strong>Stateテーブル</strong></p>
+
+    <p><img src="state_table.png" alt="Stateテーブル" /></p>
+  </li>
+  <li>
+    <p><strong>Historyテーブル</strong></p>
+
+    <p><img src="history_table.png" alt="Historyテーブル" /></p>
+  </li>
+  <li>
+    <p><strong>Transaction Detailsテーブル</strong></p>
+
+    <p><img src="transaction_details_table_1.png" alt="Transaction Details①" />
+  <img src="transaction_details_table_2.png" alt="Transaction Details②" /></p>
+  </li>
+</ul>
+
+<h1 id="1-リッチヒストリーデータベースの設定方法">1. リッチヒストリーデータベースの設定方法</h1>
+
+<p>以下にインスタンス全体に対する設定、およびChannelごとの設定の方法をそれぞれ説明していきます。</p>
+
+<h2 id="11-インスタンス全体に対する設定方法">1.1. インスタンス全体に対する設定方法</h2>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p>コンソール上部右の<strong>メニューボタン</strong>をクリックし、<strong>Configure Rich History</strong>を選択します。</p>
+
+    <p><img src="whole_configure_menu.png" alt="設定ボタン" /></p>
+  </li>
+  <li>
+    <p>設定ダイアログが開きます。以下を適切に入力し、<strong>Save</strong>ボタンをクリックします。</p>
+
+    <p><img src="whole_configure_form.png" alt="設定ダイアログ" /></p>
+    <ul>
+      <li><strong>User Name</strong>：接続先Oracle Databaseのデータベースユーザー名</li>
+      <li><strong>Password</strong>：↑のパスワード</li>
+      <li><strong>Connection String</strong>：接続先Oracle Databaseへの接続文字列</li>
+      <li><strong>Wallet package file</strong>：接続先がAutonomous Databaseの場合は、Walletファイルをアップロード</li>
+      <li><strong>Use Database Blockchain Table</strong>：チェックした場合、複製先の一部のテーブルにBlockchain Tableが使用される</li>
+    </ul>
+
+    <p>なお、接続文字列について、</p>
+    <ul>
+      <li>接続先がAutonomous Databaseの場合、Walletファイル内のtnsnames.oraに記載の接続識別子を使用します（例：<code class="language-plaintext highlighter-rouge">adw19cgnakamur_low</code>や<code class="language-plaintext highlighter-rouge">adw19cgnakamur_high</code>）</li>
+      <li>接続先がAutonomous Databaseではない場合、<code class="language-plaintext highlighter-rouge">&lt;publicIP&gt;:&lt;portNumber&gt;/&lt;database unique name&gt;.&lt;host domain name&gt;</code>の形式です（例：<code class="language-plaintext highlighter-rouge">123.213.85.123:1521/CustDB_iad1vm.sub05031027070.customervcnwith.oraclevcn.com</code>）</li>
+    </ul>
+  </li>
+  <li>
+    <p>接続の検証が行われ、問題なければ以下のように成功メッセージが表示されます。その後ダイアログは数秒で自動的に閉じます。</p>
+
+    <p><img src="whole_configure_complete.png" alt="成功メッセージ" /></p>
+  </li>
+  <li>
+    <p>リッチヒストリーデータベースの設定変更後、当該Channelでの接続先データベースへの複製を開始させるために、当該Channelに参加しているPeerのうち少なくともひとつの再起動、もしくは当該Channelに新しいBlockが追加される（Transactionが発生する）ことが必要です。</p>
+
+    <p>Peerを再起動する場合は、コンソールの<strong>Nodesページ</strong>から対象のPeerの右側の<strong>メニューボタン</strong>をクリックし、<strong>Restart</strong>を選択し再起動してください。</p>
+
+    <p><img src="restart_peer.png" alt="Peer再起動" /></p>
+  </li>
+</ol>
+
+<h2 id="12-channelごとの設定方法">1.2. Channelごとの設定方法</h2>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Channelsページ</strong>に行き、対象のChannelの右側の<strong>メニューボタン</strong>をクリックし、<strong>Configure Rich History</strong>を選択します。</p>
+
+    <p><img src="channel_configure_menu.png" alt="設定ボタン" /></p>
+  </li>
+  <li>
+    <p>設定ダイアログが開きます。以下を入力し、<strong>Save</strong>ボタンをクリックします。</p>
+
+    <p><img src="channel_configure_form.png" alt="設定ダイアログ" /></p>
+    <ul>
+      <li><strong>Enable Rich History</strong>：チェックするとそのChannelでリッチヒストリーデータベース機能が有効に</li>
+      <li><strong>Use channel level configuration</strong>：チェックするとChannel単位の設定が利用可能に</li>
+      <li><strong>User Name</strong>：接続先Oracle Databaseのデータベースユーザー名</li>
+      <li><strong>Password</strong>：↑のパスワード</li>
+      <li><strong>Connection String</strong>：接続先Oracle Databaseへの接続文字列</li>
+      <li><strong>Wallet package file</strong>：接続先がAutonomous Databaseの場合、Walletファイルをアップロード</li>
+      <li><strong>Private Data Collections</strong>：指定したPrivate Data Collectionが複製の対象になる。”*（アスタリスク）”で全指定。</li>
+      <li><strong>Transaction Details</strong>：チェックするとTransaction Detailsテーブルへのトランザクション履歴の複製が有効になる。項目の取捨選択も可能。</li>
+    </ul>
+  </li>
+  <li>
+    <p>接続の検証が行われ、問題なければ以下のように成功メッセージが表示されます。その後ダイアログは数秒で自動的に閉じます。</p>
+
+    <p><img src="channel_configure_complete.png" alt="成功メッセージ" /></p>
+  </li>
+  <li>
+    <p>リッチヒストリーデータベースの設定変更後、当該Channelでの接続先データベースへの複製を開始させるために、当該Channelに参加しているPeerのうち少なくともひとつの再起動、もしくは当該Channelに新しいBlockが追加される（Transactionが発生する）ことが必要です。</p>
+
+    <p>Peerを再起動する場合は、コンソールのNodesページから対象のPeerの右側の<strong>メニューボタン</strong>をクリックし、<strong>Restart</strong>を選択し再起動してください。</p>
+
+    <p><img src="restart_peer.png" alt="Peer再起動" /></p>
+  </li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#blockchain" class="page__taxonomy-item" rel="tag">Blockchain</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-11-09T13:35:22+09:00">November 9, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%83%AA%E3%83%83%E3%83%81%E3%83%92%E3%82%B9%E3%83%88%E3%83%AA%E3%83%BC%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E8%A8%AD%E5%AE%9A%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F06_1_rich_history%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F06_1_rich_history%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fblockchain%2F06_1_rich_history%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/blockchain/05_1_fabric_identity/" class="pagination--pager" title="Fabricのアイデンティティ関連の操作や設定
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/blockchain/91_1_app_builder_vsc_start/" class="pagination--pager" title="Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
