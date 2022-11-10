@@ -12,7 +12,7 @@ header:
 
 この文書は Oracle Blockchain Platform付属のChaincode開発・テスト・デプロイ補助ツールであるBlockchain App BuilderのVisual Studio Code拡張版について、ダウンロードとインストールの方法から、Chaincode仕様の作成方法やChaincodeコードの生成方法など、基本的な使い方を紹介するチュートリアルです。
 
-この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。
+この文書は、2022年11月時点での最新バージョン(22.3.2)を元に作成されています。
 
 - **前提 :**
 
@@ -46,19 +46,19 @@ Blockchain App Builder（Visual Studio Code拡張版）のインストールに�
 
 ### 対応OS
 
-  - Mac OSX
+  - Mac OS
   - Oracle Enterprise Linux 7.7 or 7.8
-  - Windows 10
+  - Windows 10 or 11
 
-### MacOSXおよびLinuxでの前提条件
+### Mac OSおよびLinuxでの前提条件
 
 - Docker: v18.09.0以降のバージョン（```docker --version```で確認）
 - Docker Compose: v1.23.0以降のバージョン（```docker-compose --version```で確認）
 - Node.js: v12.xの最新のバージョン（```node --version```で確認）<br>
   Node.js v12以外（~v11/v13~）のバージョンは利用不可
 - npm: v6.x（```npm --version```で確認）
-- ＜GoのChaincodeを開発する場合に必要＞Go: v1.14（```go version```で確認）
-- Visual Studio Code v1.48.0以降（```code --version```で確認）
+- ＜GoのChaincodeを開発する場合に必要＞Go: v1.15 or v1.16（```go version```で確認）
+- Visual Studio Code v1.66.0以降（```code --version```で確認）
 
 ### Windowsでの前提条件
 
@@ -66,38 +66,8 @@ Blockchain App Builder（Visual Studio Code拡張版）のインストールに�
 - Node.js: v12.xの最新のバージョン（```node --version```で確認）<br>
   Node.js v12以外（~v11/v13~）のバージョンは利用不可
 - npm: v6.x（```npm --version```で確認）
-- ＜GoのChaincodeを開発する場合に必要＞Go: v1.14（```go version```で確認）
-- Windows Build Toolsのインストール<br>
-  管理者権限でPowershellを起動し、```npm install --global windows-build-tools```を実行
-- Visual Studio Code v1.48.0以降（```code --version```で確認）
-- Perl: v5.x
-- OpenSSLのダウンロードとビルド
-  1. OpenSSLを https://www.openssl.org/source/old/1.0.2/openssl-1.0.2u.tar.gz からダウンロード
-  1. tarballをunzip
-  1. Visual C++ 2017/2019ネイティブツールのコマンドプロンプトを開く（Windows Searchでx64 Native Tools Command Prompt for VSを検索）
-  1. unzipしたOpenSSLフォルダーに移動し、管理者として以下のコマンドを実行
-  
-  ```
-  perl Configure VC-WIN64A –prefix=C:\OpenSSL-Win64
-  ms\do_win64a
-  nmake -f ms\ntdll.mak
-  cd out32dll
-  ..\ms\test
-  cd ..
-  md C:\OpenSSL-Win64
-  md C:\OpenSSL-Win64\bin
-  md C:\OpenSSL-Win64\lib
-  md C:\OpenSSL-Win64\include
-  md C:\OpenSSL-Win64\include\openssl
-  copy /b inc32\openssl\* C:\OpenSSL-Win64\include\openssl
-  copy /b out32dll\ssleay32.lib C:\OpenSSL-Win64\lib
-  copy /b out32dll\libeay32.lib C:\OpenSSL-Win64\lib
-  copy /b out32dll\ssleay32.dll C:\OpenSSL-Win64\bin
-  copy /b out32dll\libeay32.dll C:\OpenSSL-Win64\bin
-  copy /b out32dll\openssl.exe C:\OpenSSL-Win64\bin
-  copy /b C:\OpenSSL-Win64\bin\libeay32.dll C:\Windows\System32\libeay32.dll
-  copy /b C:\OpenSSL-Win64\bin\ssleay32.dll C:\Windows\System32\ssleay32.dll
-  ```
+- ＜GoのChaincodeを開発する場合に必要＞Go: v1.15 or v1.16（```go version```で確認）
+- Visual Studio Code v1.66.0以降（```code --version```で確認）
 
 ## 1.2 Blockchain App Builderインストーラのダウンロード
 

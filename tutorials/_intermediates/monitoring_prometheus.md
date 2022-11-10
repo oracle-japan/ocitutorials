@@ -4,12 +4,12 @@ excerpt: "OCIの管理エージェントには、PrometheusのNode Exporterを�
 order: "155"
 layout: single
 tags:
- - intermediate
+ - management
 header:
- teaser: "/intermediates/monitoring_prometheus/prom1.png"
- overlay_image: "/intermediates/monitoring_prometheus/prom1.png"
+ teaser: "/management/monitoring_prometheus/prom1.png"
+ overlay_image: "/management/monitoring_prometheus/prom1.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-
+redirect_to: https://oracle-japan.github.io/ocitutorials/management/monitoring_prometheus
 ---
 
 **チュートリアル概要説明**  

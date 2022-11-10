@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  ocitutorials:
+    image: jekyll/jekyll
+    ports:
+      - 4000:4000
+      - 35729:35729
+    volumes:
+      - ./:/srv/jekyll
+    command: >
+      bash -c "chown -R jekyll:jekyll /srv/jekyll/.jekyll-metadata &&
+      jekyll serve --livereload --incremental"

@@ -54,6 +54,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[102: ExaDB-D上のPDBを管理しよう](/ocitutorials/database/exadb-d102-manage-pdb/){:target="_blank"}** 
 
+
+
 <br/>
 
 # <span style="color: brown; ">■ Autonomous Database (ADB)を使ってみよう</span>
@@ -156,6 +158,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[218 : リフレッシュ可能クローンを活用しよう](/ocitutorials/database/adb218-refreshable-clone/){:target="_blank"}**  
     * Autonomous Databaseのクローンの一種であるリフレッシュ可能クローンを作成し、その動作を確認します。
 
++ **[219 : Automatic Indexingを体験してみよう](/ocitutorials/database/adb219-autoindexing/){:target="_blank"}**  
+    * Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。
+
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}**
     * この**データ移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定したデータベースを一つ作成します。
@@ -213,6 +218,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[602 : ADWでMovieStreamデータの分析をしよう](/ocitutorials/database/adb602-moviestream-analysis/){:target="_blank"}**  
     * ADWでの実践的なデータ分析を多数の標準機能とともにご紹介します
+
++ **[603 : データ・カタログを使ってメタデータを収集しよう](/ocitutorials/database/adb603-data-catalog/){:target="_blank"}**  
+    * データ・カタログを使用してデータベース内のデータおよびクラウド・ストレージ内のデータのメタデータを収集し、効率的に管理する方法をご紹介します
 
 ## Autonomous Database Dedicated (専有環境)編
 

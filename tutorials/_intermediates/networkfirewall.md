@@ -4,12 +4,12 @@ excerpt: "本チュートリアルでは「OCI Network Firewall」を構築し�
 order: "110"
 layout: single
 tags:
- - intermediate
+ - id-security
 header:
- teaser: "/intermediates/networkfirewall/nfw1.png"
- overlay_image: "/intermediates/networkfirewall/nfw1.png"
+ teaser: "/id-security/networkfirewall/nfw1.png"
+ overlay_image: "/id-security/networkfirewall/nfw1.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-
+redirect_to: https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall
 ---
 
 

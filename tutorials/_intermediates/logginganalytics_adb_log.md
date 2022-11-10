@@ -4,12 +4,12 @@ excerpt: "Autonomous Databaseのログを収集するためのLogging Analytics�
 order: "150"
 layout: single
 tags:
- - intermediate
+ - management
 header:
- teaser: "/intermediates/logginganalytics_adb_log/img1.png"
- overlay_image: "/intermediates/logginganalytics_adb_log/img1.png"
+ teaser: "/management/logginganalytics_adb_log/img1.png"
+ overlay_image: "/management/logginganalytics_adb_log/img1.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-
+redirect_to: https://oracle-japan.github.io/ocitutorials/management/logginganalytics_adb_log
 ---
 
 **チュートリアル概要説明**  

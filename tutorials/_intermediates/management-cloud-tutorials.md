@@ -4,5 +4,6 @@ excerpt: "Oracle Management Cloud (OMC) は、機械学習と大規模データ�
 order: "150"
 tags:
 link: https://qiita.com/western24/items/1e44bfcaa77f3251a263
+redirect_to: https://oracle-japan.github.io/ocitutorials/management/management-cloud-tutorials
 ---
 このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。

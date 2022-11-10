@@ -4,12 +4,13 @@ excerpt: "トラブルシューティングの際、ログを即時に分析し�
 order: "110"
 layout: single
 tags:
- - intermediate
+ - management
 header:
- teaser: "/intermediates/audit-log-analytics/audit-loganalytics16.png"
- overlay_image: "/intermediates/audit-loganalytics/audit-loganalytics16.png"
+ teaser: "/management/audit-log-analytics/audit-loganalytics16.png"
+ overlay_image: "/management/audit-log-analytics/audit-loganalytics16.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
-
+redirect_to: https://oracle-japan.github.io/ocitutorials/management/audit-log-analytics
+# redirect_to: http://localhost:4000/ocitutorials/management/audit-log-analytics
 ---
 
 OCI Observability&Managementのサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。

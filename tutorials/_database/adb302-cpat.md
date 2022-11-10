@@ -68,7 +68,7 @@ Oracle DatabaseインスタンスをOracleクラウドに移行する際に、�
 CPATをダウンロードします。
 
 1. 以下、My Oracle Supportにアクセスしダウンロードしてください。  
-  [Cloud Premigration Advisor Tool (CPAT) Analyzes Databases for Suitability of Cloud Migration (Doc ID 2758371.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2758371_1.html){:target="_blank"}
+  [Cloud Premigration Advisor Tool (CPAT) Analyzes Databases for Suitability of Cloud Migration (Doc ID 2758371.1)](https://support.oracle.com/rs?type=doc&id=2758371.1){:target="_blank"}
 
 2. ダウンロードしたファイルをホストに配置し解凍します。このチュートリアルではoracleユーザーでHOMEディレクトリにcpatディレクトリを作成して配置しています。
 ```

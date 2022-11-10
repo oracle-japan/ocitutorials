@@ -1,7 +1,7 @@
 ---
 title: "Structured Spark Streaming を OCI Data Flow で体験しよう"
 excerpt: "OCI Data Flow は、大量データの並列分散処理を実現するためのフレームワークである Apache Spark を OCI 上でマネージドサービスとして提供します。"
-order: "002"
+order: "031"
 tags: "dataflow streaming"
 date: "2022-02-14"
 lastmod: "2022-02-01"
