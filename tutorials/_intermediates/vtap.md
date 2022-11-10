@@ -409,7 +409,7 @@ VTAPによりミラーリングされたトラフィックは、まずNLBに流�
     telnet 10.0.1.2
     ```
     - server-vm login - opc
-    - passward - W3lcome123##
+    - password - W3lcome123##
 
     ![show-telnet-packets](show-telnet-packets.png)
 
