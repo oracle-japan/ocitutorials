@@ -61,7 +61,7 @@ OCMのサイトをコンパイルすると、**静的HTMLファイル** をサ�
 
 # 1. 前提条件
 
-- [Oracle Content Management インスタンスを作成する](../create_oce_instance) または [OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する](../reate_ocm_instance_IdentityDomain) のどちらかの手順によりOCMインスタンスが作成されていること
+- [Oracle Content Management インスタンスを作成する](../create_oce_instance) または [OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する](../create_ocm_instance_IdentityDomain) のどちらかの手順によりOCMインスタンスが作成されていること
 
 - OCMの利用ユーザーに、少なくとも下記4つのOCMインスタンスのアプリケーション・ロールが付与されていること
     - **CECEnterpriseUser**
