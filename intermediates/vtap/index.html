@@ -1,0 +1,1001 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>VTAPでパケットをミラーリングし、パケットキャプチャをする | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="仮想テスト・アクセス・ポイント（VTAP）により、様々なコンポーネントへ流れるトラフィックをミラーリングでき、ネットワークのトラブル・シューティングやテストに役立てられます">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="VTAPでパケットをミラーリングし、パケットキャプチャをする">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/vtap/">
+
+
+  <meta property="og:description" content="仮想テスト・アクセス・ポイント（VTAP）により、様々なコンポーネントへ流れるトラフィックをミラーリングでき、ネットワークのトラブル・シューティングやテストに役立てられます">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/vtap/arc-prog-completed.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-11-10T13:56:42+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/vtap/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/vtap/arc-prog-completed.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          VTAPでパケットをミラーリングし、パケットキャプチャをする
+
+        
+      </h1>
+      
+        <p class="page__lead">仮想テスト・アクセス・ポイント（VTAP）により、様々なコンポーネントへ流れるトラフィックをミラーリングでき、ネットワークのトラブル・シューティングやテストに役立てられます
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">VTAPでパケットをミラーリングし、パケットキャプチャをする</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/object-storage-advanced/">オブジェクト・ストレージの高度な設定</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/certificate/">プライベート認証局と証明書の発行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-2/">Email Deliveryを利用した外部へのメール送信(応用編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/spinup-hpc-cluster/">HPCクラスタを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/spinup-cluster-network/">クラスタ・ネットワークを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/spinup-gpu-cluster/">GPUクラスタを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraforming/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/vtap/" class="active">VTAPでパケットをミラーリングし、パケットキャプチャをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/mobile_app/">OCIモバイル・アプリケーションを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/">Oracle Linux Storage Applianceでファイルストレージの構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/os_management/">コンピュート・インスタンスのOSを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="VTAPでパケットをミラーリングし、パケットキャプチャをする">
+    <meta itemprop="description" content="仮想テスト・アクセス・ポイント（VTAP）により、様々なコンポーネントへ流れるトラフィックをミラーリングでき、ネットワークのトラブル・シューティングやテストに役立てられます">
+    <meta itemprop="datePublished" content="2022-11-10T13:56:42+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-クライアントインスタンスとサーバーインスタンスの作成pingコマンドによる疎通確認">1. クライアント・インスタンスとサーバー・インスタンスの作成、pingコマンドによる疎通確認</a></li><li><a href="#2-ターゲットnlbとバックエンドインスタンスの作成">2. ターゲットNLBとバックエンド・インスタンスの作成</a></li><li><a href="#3-vtapの設定とicmpパケットのキャプチャ">3. VTAPの設定とICMPパケットのキャプチャ</a></li><li><a href="#4-wiresharkを用いたtelnetパケットのキャプチャ">4. Wiresharkを用いたTELNETパケットのキャプチャ</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a>
+<br /></p>
+
+<p>仮想テスト・アクセス・ポイント（Virtual Test Access Points, VTAP）を設定すると、コンピュート・インスタンスやロードバランサ―、DBシステムなどのコンポーネントへ流れ込むトラフィックをミラーリングし、リアルタイムでターゲットへ送信することができます。そのトラフィックをフォレンジック分析に用いたり、ネットワークのトラブルシューティングやテストに役立てたりでき、セキュリティの完全性（Integrity）やネットワークの管理性を向上させることができます。</p>
+
+<p>本チュートリアルでは、①サーバにパケットを送信するクライアント、②パケットを受信するサーバ、③VTAPでミラーリングされたパケットを受信するターゲット（ネットワーク・ロードバランサーのバックエンド・インスタンスとして配置する）の役割を持つ3台のコンピュート・インスタンスを構築します。①から②へ流れるICMPパケットやTELNETパケットをVTAPでミラーリングして③に流し、そのパケットをパケットキャプチャツールであるtcpdumpとWiresharkを用いて観察していきます（下図）。</p>
+
+<p><img src="simple_architecture.png" alt="simple_architecture.png" /></p>
+
+<p>このチュートリアルを通して、クライアント・インスタンスを一つのパブリック・サブネットに、サーバ・インスタンスとターゲット・インスタンス、ネットワーク・ロード・バランサ―（NLB）を一つのプライベート・サブネットに配置した構成を構築していきます（下図）。
+<img src="blueprint-final-arc.png" alt="blueprint-final-arc" /></p>
+
+<p><strong>所要時間 :</strong> 約100分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ol>
+  <li><a href="/ocitutorials/beginners/creating-vcn">チュートリアル入門編（その2）- クラウドに仮想ネットワーク(VCN)を作る</a>を通じてVCNの作成が完了しており、そのVCN内にデフォルトのプライベート・サブネットとパブリック・サブネットが作成されていること</li>
+  <li><a href="/ocitutorials/beginners/creating-compute-instance">チュートリアル入門編（その3）- インスタンスを作成する</a>を通じてコンピュート・インスタンスの作成が完了していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次 :</strong></p>
+<ol>
+  <li><a href="#anchor1">クライアント・インスタンスとサーバー・インスタンスの作成、pingコマンドによる疎通確認</a></li>
+  <li><a href="#anchor2">ターゲットNLBとバックエンド・インスタンスの作成</a></li>
+  <li><a href="#anchor3">VTAPの設定とICMPパケットのキャプチャ</a></li>
+  <li><a href="#anchor4">Wiresharkを用いたTELNETパケットのキャプチャ</a></li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-クライアントインスタンスとサーバーインスタンスの作成pingコマンドによる疎通確認">1. クライアント・インスタンスとサーバー・インスタンスの作成、pingコマンドによる疎通確認</h1>
+
+<p>この章ではパケットキャプチャの下準備として、クライアント・インスタンスでサーバ・インスタンスに向けてpingコマンドを実行し、ICMPパケットを送信してみます。なお、セキュリティを考慮して、サーバ・インスタンスをプライベート・サブネット内に配置した構成にします（下図）
+    <img src="client-server-ping-goal.png" alt="client-server-ping-goal.png" /></p>
+
+<p>本チュートリアルの前提条件を完遂すると、プライベート・サブネットと、少なくとも一台のインスタンスが配置されているパブリック・サブネットがVCNに配置されます（下図）。今回、パブリック・サブネットに配置されているインスタンスをそのままクライアント・インスタンスとして用います。
+    <img src="assumption-architecture.png" alt="assumption-architecture.png" /></p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから、<strong><code class="language-plaintext highlighter-rouge">コンピュート</code></strong>を選択し、 <strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong>の項目を選択します。コンパートメント内のインスタンス一覧が表示されるので、一覧の中からクライアント・インスタンスのパブリックIPアドレスを探してメモします（図ではモザイク処理をしています）
+ <img src="confirm-public-ip.png" alt="confirm-public-ip.png" /></p>
+  </li>
+  <li>
+    <p>プライベート・サブネットにサーバ・インスタンスを作成するため、<strong><code class="language-plaintext highlighter-rouge">インスタンスの作成</code></strong>ボタンをクリックします（前項の図中、青色のボタン）。</p>
+  </li>
+  <li>表示された <strong><code class="language-plaintext highlighter-rouge">コンピュート・インスタンスの作成</code></strong>ウィンドウに以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタンをクリックします（下図）。特にインスタンスをプライベート・サブネットに作成することに注意してください
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - server-VM</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong> - VCNやクライアント・インスタンスが存在するコンパートメントを選択（以後、検証用コンパートメントと呼びます）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">可用性ドメイン</code></strong> - 任意</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">イメージとシェイプ</code></strong> - VMstandard2.1とOracle Linux7.9を選択</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">プライマリ・ネットワーク</code></strong> - <strong><code class="language-plaintext highlighter-rouge">既存の仮想クラウド・ネットワーク</code></strong>を選択</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名] の仮想クラウド・ネットワーク</code></strong> - 『<a href="/ocitutorials/beginners/creating-vcn">チュートリアル入門編（その2）- クラウドに仮想ネットワーク(VCN)を作る</a>』で作成した仮想クラウド・ネットワークを選択 （図ではTutorialVCNという名前のものを選択しています。以後、この名前を説明文に用いますが、お使いのコンパートメントでこれに相当するVCN名に読み替えてください）</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong> - <strong><code class="language-plaintext highlighter-rouge">既存のサブネットを選択</code></strong>がデフォルトで、プライベート・サブネットを選択（図ではプライベート・サブネット-TutorialVCNという名前）</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレス</code></strong> - <strong><code class="language-plaintext highlighter-rouge">パブリックIPv4アドレスを割り当てないでください</code></strong>が選択されていることを確認</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">拡張オプションの表示</code></strong>をクリックし、詳細を表示します
+            <ul>
+              <li><strong><code class="language-plaintext highlighter-rouge">ネットワーク・セキュリティ・グループを使用してトラフィックを制御</code></strong> - チェック無し</li>
+              <li><strong><code class="language-plaintext highlighter-rouge">プライベートIPアドレス</code></strong> - <strong>10.0.1.2</strong></li>
+              <li><strong><code class="language-plaintext highlighter-rouge">DNSレコード</code></strong> - プライベートDNSレコードを割り当てない</li>
+              <li><strong><code class="language-plaintext highlighter-rouge">ホスト名</code></strong> - 空欄のまま</li>
+              <li><strong><code class="language-plaintext highlighter-rouge">起動オプション</code></strong> - <strong><code class="language-plaintext highlighter-rouge">Oracle Cloud Infrastructureに最適なネットワーク・タイプを選択させます</code></strong>を選択</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">SSHキーの追加</code></strong> - <strong><code class="language-plaintext highlighter-rouge">公開キー・ファイル(.pub)のアップロード</code></strong>からクライアント・インスタンスに登録した公開鍵と同じものを参照してアップロード</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ブート・ボリュームの作成</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">カスタム・ブート・ボリューム・サイズを指定します</code></strong> - チェック無し</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">転送中暗号化の使用</code></strong> - チェック無し</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">自分が管理するキーでこのボリュームを暗号化</code></strong> - チェック無し</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="making-server-instance.png" alt="making-server-instance.png" /></p>
+  </li>
+  <li>
+    <p>コンソールメニュー → <strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> → <strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong>を選択し、一覧からTutorialVCNのリンクをクリックします</p>
+  </li>
+  <li>
+    <p>サブネット一覧からプライベート・サブネットを選択します</p>
+
+    <p><img src="choosing-subnet.png" alt="choosing-subnet" /></p>
+  </li>
+  <li>
+    <p>表示されるセキュリティ・リストの一覧からプライベート・サブネットのセキュリティ・リストを選択します</p>
+  </li>
+  <li>
+    <p>表示されるイングレス・ルールは、デフォルトのままであれば、VCN内からはTCP（宛先が22番ポート）とICMPのタイプ3、外部からはICMPのタイプ3（コード4）の通信のみを許可しています（下図）</p>
+
+    <p><img src="confirm-default-sl.png" alt="confirm-default-sl" /></p>
+  </li>
+  <li>
+    <p>pingコマンドでの疎通確認は、ICMPのタイプ8（エコー要求）のパケットが送り先まで届き、それを受けて送り先からタイプ0（エコー応答）のパケットが返されることでなされます。サーバ・インスタンスでこれらの通信を許可するためにプライベート・サブネットのセキュリティ・リストにイングレス・ルールを追加していきます。<strong><code class="language-plaintext highlighter-rouge">イングレスルールの追加</code></strong> ボタンをクリックしてください（前項の図、青色のボタン）</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>の画面が表示されるので以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>ボタンをクリックして下さい（下図）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">ステートレス</code></strong> - チェックなし</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースタイプ</code></strong> - CIDR</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 10.0.0.0/24</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - ICMP</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">タイプ</code></strong> - 8</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コード・オプション</code></strong> - 空欄のまま</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意</li>
+    </ul>
+
+    <p><img src="adding2sl-icmp.png" alt="adding2sl-icmp" /></p>
+
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>このルールは一見、ICMPのタイプ8の通信のみを許可するように見えますが、ステートフルな通信を許可することでタイプ0の応答を返すことができるようになっています。そのため、一つ目の項目であるステートレスのチェックボックスのチェックが外れていることを必ず確認してください。</p>
+    </blockquote>
+  </li>
+  <li>以下のコマンドでサーバ・インスタンスにSSH接続します
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-i</span> <span class="o">[</span>秘密鍵へのパス] <span class="nt">-o</span> <span class="nv">ProxyCommand</span><span class="o">=</span><span class="s2">"ssh -i [秘密鍵へのパス] opc@[クライアント・インスタンスのパブリックIPアドレス] -W %h:%p"</span> opc@10.0.1.2
+</code></pre></div>    </div>
+  </li>
+  <li>続けて、次のコマンドでOSのファイヤーウォールを停止します
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl stop firewalld
+</code></pre></div>    </div>
+  </li>
+  <li>新しく端末を開き、次のコマンドでクライアント・インスタンスにSSH接続します
+    <div class="language-ssh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ssh</span> -i [秘密鍵へのパス] opc@[クライアント・インスタンスのパブリックIPアドレス]
+</code></pre></div>    </div>
+  </li>
+  <li>クライアント・インスタンスに接続している端末で、次のコマンドを実行し、疎通確認を行います（サーバ・インスタンスに向けて約300 byteのICMPパケットを5回送信するコマンドです）
+    <div class="language-ssh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ping</span> -c <span class="m">5</span> -s <span class="m">300</span> <span class="m">10</span>.0.1.2
+</code></pre></div>    </div>
+
+    <p>エラーにならずにパケットが5回送信され、「5 packets transmitted, 5 received, 0% packet loss」というメッセージが表示されたら成功です（下図）。</p>
+
+    <p><img src="ping-success.png" alt="ping-success" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="2-ターゲットnlbとバックエンドインスタンスの作成">2. ターゲットNLBとバックエンド・インスタンスの作成</h1>
+<p>VTAPによりミラーリングされたトラフィックは、まずNLBに流され、次にNLBのバックエンド・セットとして配置されたインスタンス（ターゲット・インスタンス）に流されます。VTAPを設定する前にNLBとターゲット・インスタンスの設定を行っていきます。</p>
+
+<ol>
+  <li>
+    <p>はじめに、セキュリティ・ルールの変更を行います。前章を参考に、プライベート・サブネットのセキュリティ・リストの項目を開き、<strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>ボタンをクリックします</p>
+  </li>
+  <li>表示されるフォームの項目を次のように入力して<strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>ボタンをクリックします（下図）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">ステートレス</code></strong> - チェックなし</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースタイプ</code></strong> - CIDR</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 10.0.1.0/24</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - UDP</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース・ポート範囲</code></strong> - All（デフォルトのまま記入しない）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong> - 4789</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意</li>
+    </ul>
+
+    <p><img src="adding-sl-udp4789.png" alt="adding-sl-udp4789" /></p>
+  </li>
+  <li>
+    <p>続けてイングレス・ルールをもう一つ追加します。宛先ポート番号を49152にし、他の項目は先ほど追加したルールと同じにします（下図）</p>
+
+    <p><img src="adding-sl-udp49152.png" alt="adding-sl-udp49152" /></p>
+  </li>
+  <li>前章を参考に、プライベート・サブネットにターゲット・インスタンスを作成します。ただし、インスタンスの名前とプライベートIPアドレスは以下のように設定してください。また、公開鍵はクライアント・インスタンスと同じものをアップロードしてください。ここまででクライアント・インスタンスがパブリック・サブネットに、サーバ・インスタンスとターゲット・インスタンスがプライベート・サブネットにそれぞれ配置された構成が完成します（下図）
+    <ul>
+      <li>名前 - target-VM</li>
+      <li>プライベートIPアドレス - 10.0.1.3</li>
+    </ul>
+
+    <p><img src="arc-prog-independent.png" alt="arc-prog-independent" /></p>
+  </li>
+  <li>次のコマンドで、ターゲット・インスタンスにSSH接続します
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ssh <span class="nt">-i</span> <span class="o">[</span>秘密鍵へのパス] <span class="nt">-o</span> <span class="nv">ProxyCommand</span><span class="o">=</span><span class="s2">"ssh -i [秘密鍵へのパス] opc@[クライアント・インスタンスのパブリック・IPアドレス] -W %h:%p"</span> opc@10.0.1.3
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>後に設定するNLBは、バックエンド・セット（本チュートリアルではターゲット・インスタンス）のヘルスチェックをUDPで、宛先ポート49152番にて行うことにします。ターゲット・インスタンスに送信されるヘルスチェックのリクエストを受け入れ、レスポンスを返すため、ここではncatコマンドを用います。まずは以下のコマンドでnmap-ncatパッケージをインストールします</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>nmap-ncat.x86_64
+</code></pre></div>    </div>
+  </li>
+  <li>次のコマンドでバージョンが返されればインストールは成功です
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> nc <span class="nt">-v</span>
+</code></pre></div>    </div>
+  </li>
+  <li>続けて、OSのファイヤーウォールを停止します
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl stop firewalld
+</code></pre></div>    </div>
+  </li>
+  <li>次のコマンドでUDPサーバを建て、NLBのヘルスチェックのリクエストを待機します
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">while </span><span class="nb">true</span><span class="p">;</span> <span class="k">do</span> <span class="o">(</span><span class="nb">echo</span> <span class="s2">"response"</span><span class="o">)</span> | nc <span class="nt">-lu</span> 49152 <span class="nt">-i</span> 1<span class="p">;</span> <span class="k">done</span> <span class="o">&gt;</span> /dev/null 2&gt;&amp;1 &amp;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>コンソールメニューから、<strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> → <strong><code class="language-plaintext highlighter-rouge">ロード・バランサ</code></strong>を選択すると、<strong><code class="language-plaintext highlighter-rouge">ロード・バランサ・タイプの選択</code></strong>フォームが表示されます。<strong><code class="language-plaintext highlighter-rouge">ネットワーク・ロード・バランサ</code></strong>を選択して、<strong><code class="language-plaintext highlighter-rouge">ロード・バランサの作成</code></strong>ボタンをクリックします（下図）
+ <img src="choosing-lb-type.png" alt="choosing-lb-type" /></p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ネットワーク・ロード・バランサの作成</code></strong>画面にて、<strong><code class="language-plaintext highlighter-rouge">詳細の追加</code></strong>で以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">次</code></strong>ボタンをクリックします（下図）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">ロード・バランサ名</code></strong> - NLB</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">可視性タイプの選択</code></strong> - プライベート</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">IPv6アドレス割り当ての許可</code></strong> - チェックなしのまま</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキングの選択</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">〔コンパートメント名〕の仮想クラウド・ネットワーク</code></strong> - TutorialVCN</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">〔コンパートメント名〕のサブネット</code></strong>- VCN内のプライベート・サブネット</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">ネットワーク・セキュリティ・グループを使用してトラフィックを制御します</code></strong> - チェックなしのまま</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="NLB-config1.png" alt="NLB-config1" /></p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">リスナーの構成</code></strong>で以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">次</code></strong>ボタンをクリックします（下図）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">リスナー名</code></strong> - NLB-listener</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">リスナーで処理するトラフィックタイプの指定</code></strong> - UDP</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">イングレス・トラフィック・ポート</code></strong> - 4789</li>
+    </ul>
+
+    <p><img src="NLB-config2.png" alt="NLB-config2" /></p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">バックエンドの選択</code></strong>で以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">次</code></strong>ボタンをクリックします（下図２枚目）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">バックエンド・セット名</code></strong> - backendset</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース/宛先ヘッダー(IP、ポート)の保持(ネットワーク・ロード・バランサ)</code></strong> - チェックを入れる</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">バックエンドの追加</code></strong>ボタンをクリックして、表示されるフォームに以下の項目を入力し、フォーム左下、<strong><code class="language-plaintext highlighter-rouge">バックエンドの追加</code></strong>ボタンをクリックします（下図１枚目）
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong> - target-VM</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">ポート番号</code></strong> - 49152</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">重み</code></strong> - 1
+  <img src="adding-backend.png" alt="adding-backend" /></li>
+        </ul>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ヘルス・チェック・ポリシーの指定 </code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - UDP</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">ポート</code></strong> - バックエンド・ポートを使用のまま</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">間隔ミリ秒</code></strong> - デフォルトのまま</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">タイムアウト（ミリ秒）</code></strong> - デフォルトのまま</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">再試行回数</code></strong> - デフォルトのまま</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">リクエスト・データ</code></strong> - request</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">レスポンス・データ</code></strong> - response</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="NLB-config3.png" alt="NLB-config3" /></p>
+  </li>
+  <li>
+    <p>入力項目を確認して、ロード・バランサを作成ボタンをクリックします（下図）</p>
+
+    <p><img src="NLB-config4.png" alt="NLB-config4" /></p>
+  </li>
+  <li>ロード・バランサの詳細画面で、<strong><code class="language-plaintext highlighter-rouge">全体的なヘルス</code></strong>が「OK」になれば設定は成功です（下図）
+ <img src="nlb-health-ok.png" alt="nlb-health-ok" /></li>
+</ol>
+
+<p><br /></p>
+
+<p>ここまでで、プライベート・サブネット内でNLBとターゲット・インスタンスが接続された構成が完成しました（下図）。
+<img src="arc-prog-nlb-backend.png" alt="arc-prog-nlb-backend" /></p>
+
+<p><br /></p>
+
+<h1 id="3-vtapの設定とicmpパケットのキャプチャ">3. VTAPの設定とICMPパケットのキャプチャ</h1>
+<p>この章では、いよいよVTAPを作成してサーバ・インスタンスへのトラフィックをターゲット・インスタンスで観察します。まずは、サーバ・インスタンスへのトラフィックをミラーリングしてターゲットNLBへ流すようにVTAPを設定します。その後、ミラーリングするトラフィックをICMPに絞り込むため、VTAPに紐づく取得フィルタも設定していきます（下図）
+<img src="arc-prog-completed.png" alt="arc-prog-completed" /></p>
+
+<ol>
+  <li>
+    <p>コンソールメニューから、<strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> → <strong><code class="language-plaintext highlighter-rouge">ネットワーク・コマンド・センター</code></strong> → <strong><code class="language-plaintext highlighter-rouge">VTAP</code></strong>を選択します
+ <img src="selecting-vtap.png" alt="selecting-vtap" /></p>
+  </li>
+  <li>
+    <p>表示されるVTAPの一覧画面左上、<strong><code class="language-plaintext highlighter-rouge">VTAPの作成</code></strong>ボタンをクリックします
+ <img src="click-vtapwosakusei.png" alt="click-vtapwosakusei" /></p>
+  </li>
+  <li>以下のように項目を入力し、<strong><code class="language-plaintext highlighter-rouge">VTAPの作成</code></strong>ボタンをクリックします（下図２枚目）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - ICMP-filter</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong> - 検証用コンパートメント</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名のVCN]</code></strong> -  TutorialVCN</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">ソースタイプ</code></strong> - インスタンスVNIC</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名]のサブネット</code></strong> - プライベート・サブネット</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名]のインスタンスのVNIC</code></strong> - サーバー・インスタンスのVNICを選択</li>
+        </ul>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">リソース・タイプ</code></strong> - ネットワーク・ロード・バランサ</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名]のサブネット</code></strong> - プライベート・サブネット</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名]のネットワーク・ロード・バランサ</code></strong> - 先ほど作成したNLBを選択</li>
+        </ul>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">取得フィルタ</code></strong>
+        <ul>
+          <li>
+            <p><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名]の取得フィルタ</code></strong> - 新規取得フィルタの作成をクリックし（下図１枚目）、開いた画面で以下の項目が入力できたら <strong><code class="language-plaintext highlighter-rouge">取得フィルタの作成</code></strong>ボタンをクリックします</p>
+
+            <ul>
+              <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - ICMP-filter</li>
+              <li><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong> - 検証用コンパートメント</li>
+              <li><strong><code class="language-plaintext highlighter-rouge">ルール</code></strong>
+                <ul>
+                  <li><strong><code class="language-plaintext highlighter-rouge">順序番号1</code></strong>
+                    <ul>
+                      <li><strong><code class="language-plaintext highlighter-rouge">トラフィックの方向</code></strong> - イングレス</li>
+                      <li><strong><code class="language-plaintext highlighter-rouge">包含/除外</code></strong> - 含める</li>
+                      <li><strong><code class="language-plaintext highlighter-rouge">ソースのIPv4 CIDRまたはIPv6接頭辞</code></strong> - 10.0.0.0/24</li>
+                      <li><strong><code class="language-plaintext highlighter-rouge">宛先のIPv4 CIDRまたはIPv6接頭辞</code></strong> - 10.0.1.0/24</li>
+                      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - ICMP</li>
+                    </ul>
+
+                    <p><img src="making-vtap-filter.png" alt="making-vtap-filter" /></p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="entire-vtap-config.png" alt="entire-vtap-config" /></p>
+  </li>
+  <li>
+    <p>遷移先のVTAPの詳細画面で起動ボタンをクリックし、表示される確認画面でも起動を選択します（下図）
+ <img src="starting-vtap.png" alt="starting-vtap" /></p>
+  </li>
+  <li>
+    <p>ステータスが実行中になったことを確認します（下図）
+ <img src="confirm-vtap-status.png" alt="confirm-vtap-status" /></p>
+  </li>
+  <li>
+    <p>ターゲット・インスタンス側でVTAPでミラーリングされるパケットを受け取る準備をします。ターゲット・インスタンスの詳細画面から <strong><code class="language-plaintext highlighter-rouge">リソース</code></strong> → <strong><code class="language-plaintext highlighter-rouge">アタッチされたVNIC</code></strong> を選択します。アタッチされているVNICで表示右側の<img src="image-vertical_triple_dots.png" alt="image-vertical_triple_dots" /> → <strong><code class="language-plaintext highlighter-rouge">VNICの編集</code></strong>をクリックします（下図）
+ <img src="start-editing-vnic.png" alt="start-editing-vnic" /></p>
+  </li>
+  <li>
+    <p>表示されるVNICの編集画面で、<strong><code class="language-plaintext highlighter-rouge">ソース/宛先チェックのスキップ</code></strong>にチェックを入れ、<strong><code class="language-plaintext highlighter-rouge">変更の保存</code></strong>ボタンをクリックします（下図）
+ <img src="editing-vnic.png" alt="editing-vnic" /></p>
+  </li>
+  <li>
+    <p>クライアント・インスタンスに接続している端末と、ターゲット・インスタンスに接続している端末を並べます。ターゲット・インスタンスで次のコマンドを実行して、VTAPにより、サーバ・インスタンスからミラーリングされて流れてくるパケットを待ち受けます</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>tcpdump src host 10.0.1.2 <span class="nt">-vv</span> <span class="nt">-i</span> ens3
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>クライアント・インスタンスで次のpingコマンドを実行して、ICMPパケットをサーバ・インスタンスへ送信します。クライアント・インスタンスからの送信に連動して、ターゲット・インスタンスに接続している端末がパケットの情報を出力すれば成功です（下図）</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ping <span class="nt">-c</span> 5 <span class="nt">-s</span> 300 10.0.1.2
+</code></pre></div>    </div>
+
+    <p><img src="get-icmp-packets.png" alt="get-icmp-packets" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="4-wiresharkを用いたtelnetパケットのキャプチャ">4. Wiresharkを用いたTELNETパケットのキャプチャ</h1>
+<p>ここまで、クライアントからホストへの接続にはSSHを用いてきました。SSHでは、クライアントとホストを繋ぐSSHコネクションの通信が暗号化されるため、その間の通信が傍受されても通信内容を読み取られることを防止できます。遠隔ログインのプロトコルとしてSSHの他にTELNETがあります。TELNETでは通信が暗号化されないため実運用では情報漏洩の危険を伴いますが、この章では練習としてTELNETとWiresharkを用いることでクライアント・インスタンスからサーバ・インスタンスへ送信される平文の通信内容を観察してみたいと思います。</p>
+
+<ol>
+  <li>
+    <p>はじめに、VTAPのルールを編集して、TELNET通信を観察する準備をします。
+コンソールメニューから、<strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> → <strong><code class="language-plaintext highlighter-rouge">ネットワーク・コマンド・センター</code></strong> → <strong><code class="language-plaintext highlighter-rouge">取得フィルタ</code></strong> を選択します（下図）</p>
+
+    <p><img src="select-syutokufilter.png" alt="select-syutokufilter" /></p>
+  </li>
+  <li>
+    <p>先ほど作成したICMP-filterのリンクをクリックして詳細画面を表示し、<strong><code class="language-plaintext highlighter-rouge">リソース</code></strong> → <strong><code class="language-plaintext highlighter-rouge">ルール</code></strong> を選択します。ルールの一覧が表示されるので、左上、<strong><code class="language-plaintext highlighter-rouge">ルールの管理</code></strong>ボタンをクリックします（下図）</p>
+
+    <p><img src="select-manage-rule-button.png" alt="select-manage-rule-button" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">＋別のルール</code></strong> をクリックして、<strong><code class="language-plaintext highlighter-rouge">順序番号2</code></strong>のフォームを表示します（下図）</p>
+
+    <p><img src="click-new-rule-button.png" alt="click-new-rule-button" /></p>
+  </li>
+  <li>以下のように項目を入力して、<strong><code class="language-plaintext highlighter-rouge">変更の保存</code></strong>ボタンをクリックします（下図）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">順序番号2</code></strong>
+        <ul>
+          <li><strong><code class="language-plaintext highlighter-rouge">トラフィックの方向</code></strong> - イングレス</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">包含/除外</code></strong> - 含める</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">ソースのIPv4 CIDRまたはIPv6接頭辞</code></strong> - 10.0.0.0/24</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">宛先のIPv4 CIDRまたはIPv6接頭辞</code></strong> - 10.0.1.0/24</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - TCP</li>
+          <li><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong> - 23-23</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="henko-no-hozon.png" alt="henko-no-hozon" /></p>
+  </li>
+  <li>
+    <p>コンソールメニュー → <strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> → <strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong> → <strong><code class="language-plaintext highlighter-rouge">TutorialVCN</code></strong> → <strong><code class="language-plaintext highlighter-rouge">セキュリティリスト</code></strong>から、プライベート・サブネットのセキュリティ・ルール一覧画面を開きます。TELNET接続を許可するため、<strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>ボタンをクリックします</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>画面で、以下のように項目を設定し、<strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>ボタンをクリックしてください（下図）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 10.0.0.0/24</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - TCP</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースポート範囲</code></strong> - All（何も記入しない）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong> - 23</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意</li>
+    </ul>
+
+    <p><img src="adding-sl-tcp23.png" alt="adding-sl-tcp23" /></p>
+  </li>
+  <li>クライアント・インスタンスに接続している端末で次のコマンドを実行し、telnetコマンドをインストールします
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>telnet
+</code></pre></div>    </div>
+  </li>
+  <li>サーバ・インスタンスに接続している端末で次のコマンドを実行し、Telnetサーバをインストールした後、起動します
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>telnet-server
+</code></pre></div>    </div>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>systemctl start telnet.socket
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>続いて、サーバ・インスタンスのopcユーザーに認証用のパスワードを設定します。次のコマンドを実行した後、パスワードを求められるので、W3lcome123##と入力して設定してください</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>passwd opc
+</code></pre></div>    </div>
+  </li>
+  <li>ターゲット・インスタンスに接続している端末で次のコマンドを実行し、Wiresharkをインストールします
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>wireshark
+</code></pre></div>    </div>
+  </li>
+  <li>続けて、次のコマンドを実行し、インターフェース番号を表示します。表示された情報からens3に対応する番号を探してメモします（下図では4番）
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>tshark <span class="nt">-D</span>
+</code></pre></div>    </div>
+
+    <p><img src="result-tshark-D.png" alt="result-tshark-D" /></p>
+  </li>
+  <li>続けて、次のコマンドでVTAPでミラーリングされて流されてくるパケットを待ち構えます
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>tshark <span class="nt">-Y</span> <span class="s1">'ip.src==10.0.1.2 and udp.dstport==4789'</span> <span class="nt">-T</span> fields <span class="nt">-e</span> ip.src <span class="nt">-e</span> ip.dst <span class="nt">-e</span> telnet.data <span class="nt">-d</span> udp.port<span class="o">==</span>4789,vxlan <span class="nt">-i</span> <span class="o">[</span>インターフェースの番号]
+</code></pre></div>    </div>
+  </li>
+  <li>クライアント・インスタンスから、サーバ・インスタンスへのTELNET接続を試みます。次のコマンドをクライアント・インスタンスに接続している端末から実行すると、ユーザー名とパスワードが求められるので以下のように入力します。入力に連動して、ターゲット・インスタンスに接続している端末でパケットに含まれる文字列が出力されます（下図）
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> telnet 10.0.1.2
+</code></pre></div>    </div>
+    <ul>
+      <li>server-vm login - opc</li>
+      <li>password - W3lcome123##</li>
+    </ul>
+
+    <p><img src="show-telnet-packets.png" alt="show-telnet-packets" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>本チュートリアルではVTAPを用いてインスタンスVNICに送信されるパケットをミラーリングし、その内容を観察しました。2022年11月現在、VTAPではこの他にDBシステム、Exadata VMクラスタ、ロード・バランサ、Autonomous Datawarehouseに流れるパケットをミラーリングすることができます。要件に応じてVTAPをお役立てください。以上で本チュートリアルは終了です。</p>
+
+<p><br /></p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#network" class="page__taxonomy-item" rel="tag">network</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-11-10T13:56:42+09:00">November 10, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=VTAP%E3%81%A7%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%82%92%E3%83%9F%E3%83%A9%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%B0%E3%81%97%E3%80%81%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%82%AD%E3%83%A3%E3%83%97%E3%83%81%E3%83%A3%E3%82%92%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fvtap%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fvtap%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fvtap%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/using-logging/" class="pagination--pager" title="ロギング・サービスを使って3つのログを収集する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/serviceconnecterhub/" class="pagination--pager" title="監査(Audit)ログを使用したテナント監視
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
