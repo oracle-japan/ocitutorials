@@ -606,33 +606,46 @@
 
 <p>上記で作成したアプリケーションは<a href="https://github.com/oracle-japan/OCI_OpenSearch_Handson_App">こちら</a>をご参照ください。</p>
 
-<p><strong>アプリケーションのデプロイメント</strong> 01. ローカル・マシンから VM インスタンスに接続します。 02. 下記のコマンドを実行して、ファイアウォールにポート「8080」を追加します。</p>
+<p><strong>アプリケーションのデプロイメント</strong></p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--add-port</span><span class="o">=</span>8080/tcp <span class="nt">--permanent</span>
-<span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
-</code></pre></div></div>
+<ol>
+  <li>
+    <p>ローカル・マシンから VM インスタンスに接続します。</p>
+  </li>
+  <li>
+    <p>下記のコマンドを実行して、ファイアウォールにポート「8080」を追加します。</p>
 
-<p>下記のコマンドを実行して、git と docker をインストールします。</p>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--add-port</span><span class="o">=</span>8080/tcp <span class="nt">--permanent</span>
+ <span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>下記のコマンドを実行して、git と docker をインストールします。</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>yum <span class="nb">install </span>git
-<span class="nb">sudo </span>yum <span class="nb">install </span>docker
-</code></pre></div></div>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nb">install </span>git
+ <span class="nb">sudo </span>yum <span class="nb">install </span>docker
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>下記のコマンドを実行して、作成したアプリケーションをクローンします。</p>
 
-<p>下記のコマンドを実行して、作成したアプリケーションをクローンします。</p>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>アプリケーションの Docker イメージを作成します。</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
-</code></pre></div></div>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd </span>OCI_OpenSearch_Handson_App
+ docker build <span class="nb">.</span> <span class="nt">-t</span> os_app
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>下記のコマンドを実行して、アプリケーションをデプロイします。</p>
 
-<p>アプリケーションの Docker イメージを作成します。</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>OCI_OpenSearch_Handson_App
-docker build <span class="nb">.</span> <span class="nt">-t</span> os_app
-</code></pre></div></div>
-
-<p>下記のコマンドを実行して、アプリケーションをデプロイします。</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">nohup </span>docker run <span class="nt">-p</span> 8080:8080 <span class="nt">-e</span><span class="o">=</span><span class="s2">"OPENSEARCH_ENDPOINT=&lt;cluster_API_endpoint&gt;"</span> localhost/os_app &amp;
-</code></pre></div></div>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">nohup </span>docker run <span class="nt">-p</span> 8080:8080 <span class="nt">-e</span><span class="o">=</span><span class="s2">"OPENSEARCH_ENDPOINT=&lt;cluster_API_endpoint&gt;"</span> localhost/os_app &amp;
+</code></pre></div>    </div>
+  </li>
+</ol>
 
 <p>&lt;cluster_API_endpoint&gt;を、クラスタの OpenSearch ダッシュボードの API エンドポイントに置き換えます。</p>
 
