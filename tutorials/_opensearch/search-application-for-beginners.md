@@ -4,7 +4,7 @@ excerpt: "Oracle Cloud Infrastructure Search Service with OpenSearch は、OpenS
 order: "001"
 tags: "opensearch"
 date: "2022-11-07"
-lastmod: "2022-11-07"
+lastmod: "2022-11-11"
 ---
 
 # OCI Search Service for OpenSearch を使って検索アプリケーションを作成する
@@ -315,38 +315,42 @@ public class AccountResource {
 
 上記で作成したアプリケーションは[こちら](https://github.com/oracle-japan/OCI_OpenSearch_Handson_App)をご参照ください。
 
-**アプリケーションのデプロイメント** 01. ローカル・マシンから VM インスタンスに接続します。 02. 下記のコマンドを実行して、ファイアウォールにポート「8080」を追加します。
+**アプリケーションのデプロイメント** 
 
-```bash
-sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
-sudo firewall-cmd --reload
-```
+1. ローカル・マシンから VM インスタンスに接続します。
 
-下記のコマンドを実行して、git と docker をインストールします。
+2. 下記のコマンドを実行して、ファイアウォールにポート「8080」を追加します。
 
-```bash
-sudo yum install git
-sudo yum install docker
-```
+    ```bash
+    sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
+    sudo firewall-cmd --reload
+    ```
 
-下記のコマンドを実行して、作成したアプリケーションをクローンします。
+3. 下記のコマンドを実行して、git と docker をインストールします。
 
-```bash
-git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
-```
+    ```bash
+    sudo yum install git
+    sudo yum install docker
+    ```
 
-アプリケーションの Docker イメージを作成します。
+4. 下記のコマンドを実行して、作成したアプリケーションをクローンします。
 
-```bash
-cd OCI_OpenSearch_Handson_App
-docker build . -t os_app
-```
+    ```bash
+    git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
+    ```
 
-下記のコマンドを実行して、アプリケーションをデプロイします。
+5. アプリケーションの Docker イメージを作成します。
 
-```bash
-nohup docker run -p 8080:8080 -e="OPENSEARCH_ENDPOINT=<cluster_API_endpoint>" localhost/os_app &
-```
+    ```bash
+    cd OCI_OpenSearch_Handson_App
+    docker build . -t os_app
+    ```
+
+6. 下記のコマンドを実行して、アプリケーションをデプロイします。
+
+    ```bash
+    nohup docker run -p 8080:8080 -e="OPENSEARCH_ENDPOINT=<cluster_API_endpoint>" localhost/os_app &
+    ```
 
 \<cluster_API_endpoint\>を、クラスタの OpenSearch ダッシュボードの API エンドポイントに置き換えます。
 
