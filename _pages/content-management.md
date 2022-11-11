@@ -174,6 +174,12 @@ OCMとOracle Application Express(APEX)アプリケーションを統合して、
 
 + **[Oracle Content Management (OCM)- APEXと統合したWebサイトを作成してみよう！ その3](https://qiita.com/shinwata/items/e0ab605d329e37792431)** (※外部サイト)  
 
+
+## コマンドライン・ユーティリティ「Oracle Content Toolkit」
+
++ **[Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう](/ocitutorials/content-management/91_compile_site_ocmtoolkit/)**   
+    コマンドライン・ユーティリティ「Oracle Content Toolkit」を利用し、OCMで作成・公開したサイトをコンパイルする手順について、ステップ・バイ・ステップで紹介するチュートリアルです。あわせて、Oracle Content Toolkitの利用方法についても紹介します【所要時間:20分】
+
 <br />
 
 # その他お役立ち情報
