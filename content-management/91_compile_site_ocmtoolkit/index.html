@@ -1,0 +1,781 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Content Toolkitを利用し、OCMで作成・公開したサイトをコンパイルする手順について、ステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/91_compile_site_ocmtoolkit/">
+
+
+  <meta property="og:description" content="Oracle Content Toolkitを利用し、OCMで作成・公開したサイトをコンパイルする手順について、ステップ・バイ・ステップで紹介するチュートリアルです">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/91_compile_site_ocmtoolkit/007.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-11-11T10:16:05+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/91_compile_site_ocmtoolkit/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/91_compile_site_ocmtoolkit/007.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Content Toolkitを利用し、OCMで作成・公開したサイトをコンパイルする手順について、ステップ・バイ・ステップで紹介するチュートリアルです
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">コンテンツ管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content Management インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_ocm_instance_IdentityDomain/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_identitydomain_group_user/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content Management のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCM インスタンスにサインインする（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/13_upload_multiple_files/">その13: 圧縮ファイルによる複数ファイルの一括登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/42_business_repository/">Oracle Content Management で請求書などの電子ファイルを長期保管してみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experience のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content Management のVideo Plus アセットを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/78_create_custom_template/">Oracle Content Management でカスタムテンプレートを自作しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/74_create_multilingual/">Oracle Content and Experience で多言語サイトを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/75_taxonomy/">Oracle Content and Experience のタクソノミを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/77_sitesecuritygovernance/">OCEのサイト・セキュリティとサイト・ガバナンスを理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/91_compile_site_ocmtoolkit/" class="active">Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう">
+    <meta itemprop="description" content="Oracle Content Toolkitを利用し、OCMで作成・公開したサイトをコンパイルする手順について、ステップ・バイ・ステップで紹介するチュートリアルです">
+    <meta itemprop="datePublished" content="2022-11-11T10:16:05+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-説明">0. 説明</a><ul><li><a href="#oracle-content-toolkit">Oracle Content Toolkit</a></li><li><a href="#サイトのコンパイル">サイトのコンパイル</a></li></ul></li><li><a href="#1-前提条件">1. 前提条件</a></li><li><a href="#2-content-toolkitのセットアップ">2. Content Toolkitのセットアップ</a><ul><li><a href="#21-content-toolkitのセットアップ">2.1 Content Toolkitのセットアップ</a></li><li><a href="#22-ソースディレクトリの作成">2.2 ソースディレクトリの作成</a></li><li><a href="#23-ocmインスタンスを登録する">2.3 OCMインスタンスを登録する</a></li></ul></li><li><a href="#3-サイトのコンパイル">3. サイトのコンパイル</a><ul><li><a href="#31-ocmで作成公開したサイトをテンプレートとしてエクスポート">3.1 OCMで作成・公開したサイトをテンプレートとしてエクスポート</a><ul><li><a href="#311-ocm上にサイトを作成公開">3.1.1 OCM上にサイトを作成・公開</a></li><li><a href="#312-ocm上のサイトをテンプレートとしてエクスポートする">3.1.2 OCM上のサイトをテンプレートとしてエクスポートする</a></li></ul></li><li><a href="#32-content-toolkitを使用してテンプレートをコンパイル">3.2 Content Toolkitを使用してテンプレートをコンパイル</a></li><li><a href="#33-元のサイトに生成された静的ページをアップロードする">3.3 元のサイトに生成された静的ページをアップロードする</a></li><li><a href="#34-アップロードした静的ページを削除する">3.4 アップロードした静的ページを削除する</a></li></ul></li><li><a href="#4-おわりに">4. おわりに</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="top"></a></p>
+
+<p>このチュートリアルは、Oracle Content Toolkitを利用したOCMで作成・公開したサイトをコンパイルする手順について、ステップ・バイ・ステップで紹介するチュートリアルです。</p>
+
+<p class="notice--info"><strong>【お知らせ】</strong> <br />
+この文書は、2022年10月時点での最新バージョン(22.9.3)を元に作成されてます。<br />
+チュートリアル内の画面ショットについては Oracle Content Management の現在のコンソール画面と異なっている場合があります。</p>
+
+<p><br /></p>
+
+<h1 id="0-説明">0. 説明</h1>
+
+<h2 id="oracle-content-toolkit">Oracle Content Toolkit</h2>
+
+<p>Oracle Content Toolkit（Content Toolkit）とは、OCMに対してコマンドを実行できる <strong>コマンドライン・ユーティリティ</strong> で、主にサイト・テンプレート、テーマ、カスタム・コンポーネントおよびコンテンツ・レイアウト等を開発する際に利用します</p>
+
+<p>Content ToolkitはGitHub上で公開されており、誰でも利用することができます。詳細はGitHub上のREADME.md、および以下の製品ドキュメントをご確認ください</p>
+
+<ul>
+  <li>GitHub
+    <ul>
+      <li><a href="https://github.com/oracle/content-and-experience-toolkit/blob/master/README.md">https://github.com/oracle/content-and-experience-toolkit/blob/master/README.md</a></li>
+    </ul>
+  </li>
+  <li>製品ドキュメント
+    <ul>
+      <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/develop-oracle-content-toolkit.html">26 Develop with Oracle Content Management Toolkit(英語)</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/creating-experiences/develop-oracle-content-toolkit.html">(※日本語翻訳版)</a></li>
+      <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/content-toolkit-cli/index.html">Oracle Content Toolkit Command-Line Utility</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/content-toolkit-cli/index.html">(※日本語翻訳版)</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="サイトのコンパイル">サイトのコンパイル</h2>
+
+<p>OCMのサイトをコンパイルすると、<strong>静的HTMLファイル</strong> をサイトの各ページに作成します。これによりサイト・ページの実行時パフォーマンスおよび動作の改善が期待できます。通常（デフォルト状態）のOCMのサイトページのレンダリングと、コンパイルされたサイトページのレンダリングの違いは以下の通りです（※<a href="https://github.com/oracle/content-and-experience-toolkit/blob/master/sites/doc/compiler.md">GitHub</a>より引用）</p>
+
+<ul>
+  <li>
+    <p><strong>通常（デフォルト状態）のサイトページのレンダリング</strong>
+<img src="https://github.com/oracle/content-and-experience-toolkit/raw/master/sites/doc/images/comp1.png" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>コンパイルされたサイトページのレンダリング</strong>
+<img src="https://github.com/oracle/content-and-experience-toolkit/raw/master/sites/doc/images/comp2.png" alt="画像" /></p>
+  </li>
+</ul>
+
+<p>サイト・コンパイルの概要については、以下ドキュメントもあわせてご確認ください</p>
+
+<ul>
+  <li>GitHub
+    <ul>
+      <li><a href="https://github.com/oracle/content-and-experience-toolkit/blob/master/sites/doc/compiler.md#what-is-compilation-in-ocm">What is the compilation in OCM</a></li>
+    </ul>
+  </li>
+  <li>製品ドキュメント
+    <ul>
+      <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/overview-site-compilation.html#GUID-3BF7F251-6BA1-46D1-85E8-E3D4CE48F2E2">Overview of Site Compilation</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/creating-experiences/overview-site-compilation.html#GUID-3BF7F251-6BA1-46D1-85E8-E3D4CE48F2E2">(※日本語翻訳版)</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-前提条件">1. 前提条件</h1>
+
+<ul>
+  <li>
+    <p><a href="../create_oce_instance">Oracle Content Management インスタンスを作成する</a> または <a href="../create_ocm_instance_IdentityDomain">OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する</a> のどちらかの手順によりOCMインスタンスが作成されていること</p>
+  </li>
+  <li>OCMの利用ユーザーに、少なくとも下記4つのOCMインスタンスのアプリケーション・ロールが付与されていること
+    <ul>
+      <li><strong>CECEnterpriseUser</strong></li>
+      <li><strong>CECDeveloperUser</strong></li>
+      <li><strong>CECRepositoryAdministrator</strong></li>
+      <li>
+        <p><strong>CECContentAdministrator</strong></p>
+
+        <blockquote>
+          <p><strong>[Memo]</strong><br />
+ユーザーの作成とアプリケーションロールの付与手順は、<a href="../create_idcs_group_user">Oracle Content Management インスタンスの利用ユーザーを作成する</a> をご確認ください。</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>OCMのサービス管理者により、<strong>デフォルト・テンプレートがインストール済</strong> であること。また、デフォルト・テンプレートの <strong>BlankTemplate</strong> がユーザーに共有されていること</li>
+</ul>
+
+<p>なお、必須ではないが、事前に以下チュートリアルを実施済みで、OCMのサイト作成機能の利用方法を理解していることが望ましい</p>
+
+<ul>
+  <li><a href="../61_create_site/">Oracle Content Management のサイト機能を使ってみよう【初級編】</a></li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="2-content-toolkitのセットアップ">2. Content Toolkitのセットアップ</h1>
+
+<p>ローカル環境にContent Toolkitをセットアップし、OCMインスタンスのサーバ登録を行います</p>
+
+<h2 id="21-content-toolkitのセットアップ">2.1 Content Toolkitのセットアップ</h2>
+
+<p><a href="https://github.com/oracle/content-and-experience-toolkit/tree/master/sites#setup">こちらのセットアップ手順</a>に従い、Content Toolkitをローカル環境にセットアップします</p>
+
+<p>セットアップ完了後、<strong>cec -v</strong> を実行すると、以下のようにバージョンが表示されます</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cec -v
+22.9.3
+</code></pre></div></div>
+
+<h2 id="22-ソースディレクトリの作成">2.2 ソースディレクトリの作成</h2>
+
+<p><a href="https://github.com/oracle/content-and-experience-toolkit/tree/master/sites#create-an-initial-src-directory">こちらの手順</a>に従い、ローカル環境の任意のフォルダに、開発中のソースを保管するフォルダを作成します。ここでは、ユーザーディレクトリ直下に <strong>cec-src</strong> を作成し、インストールを実行します</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd
+$ mkdir cec-src
+$ cd cec-src
+$ cec install
+</code></pre></div></div>
+
+<p>インストール完了後、<strong>cec develop</strong> を実行し、開発環境を立ち上げます。</p>
+
+<p>出力メッセージの <code class="language-plaintext highlighter-rouge">Toolkit local server: http://localhost:8085</code> のURLをブラウザで開きます。以下のような画面が表示されることを確認します</p>
+
+<p><img src="001.jpg" alt="画像" /></p>
+
+<h2 id="23-ocmインスタンスを登録する">2.3 OCMインスタンスを登録する</h2>
+
+<p><a href="https://github.com/oracle/content-and-experience-toolkit/tree/master/sites#using-a-content-management-instance-for-local-testing">こちらの手順</a>に従い、ローカル環境でのテスト時に利用するOCMインスタンスを登録します。</p>
+
+<p>ここでは <strong>UAT</strong> という名前で利用するOCMインスタンスを登録します</p>
+
+<p><strong>cec-src</strong> ディレクトリに移動し、以下コマンドを実行します</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd cec-src
+$ cec register-server UAT -e https://your-ocm-instance.com -u &lt;ユーザーID&gt; -p &lt;パスワード&gt;
+</code></pre></div></div>
+
+<p>登録結果を確認します。登録したOCMインスタンスのテンプレートやテーマ、リポジトリなどが表示されます</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cec list --server UAT
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h1 id="3-サイトのコンパイル">3. サイトのコンパイル</h1>
+
+<p>Content Toolkitを利用したサイト・ページをコンパイルするには、以下の手順となります</p>
+
+<ul>
+  <li>OCMで作成・公開したサイトをテンプレートとしてエクスポート</li>
+  <li>Content Toolkitを使用してテンプレートをコンパイル</li>
+  <li>元のサイトに生成された静的ページをアップロード</li>
+</ul>
+
+<h2 id="31-ocmで作成公開したサイトをテンプレートとしてエクスポート">3.1 OCMで作成・公開したサイトをテンプレートとしてエクスポート</h2>
+
+<h3 id="311-ocm上にサイトを作成公開">3.1.1 OCM上にサイトを作成・公開</h3>
+
+<p class="notice--info"><strong>【Memo】</strong><br />
+OCMを利用したサイト作成方法は、以下チュートリアルを参考に作成してください<br />
+<a href="https://oracle-japan.github.io/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></p>
+
+<ol>
+  <li>
+    <p>OCMのサイト作成画面(SiteBuilder)を利用し、サイトを作成します。ここでは、事前定義済みテンプレートの <strong>BlankTemplate</strong> から <strong>StaticSite</strong> をスタンダードサイト（標準サイト）で作成します</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サイトを編集します。ここでは、タイトル、段落、ボタン、画像などを適当に配置し、ページを編集します</p>
+
+    <p><img src="003.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>保存→コミット</strong> で編集内容をベースサイトに反映します</p>
+  </li>
+  <li>
+    <p>StaticSiteを <strong>公開→オンライン</strong> にします</p>
+
+    <p><img src="004.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>公開サイトを開き、右クリック→「ページのソースを表示」を確認します。コントローラーファイル<code class="language-plaintext highlighter-rouge">controller.html</code>の内容が表示され、実際表示されるHTMLのソースは表示されません</p>
+
+    <p><img src="005.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h3 id="312-ocm上のサイトをテンプレートとしてエクスポートする">3.1.2 OCM上のサイトをテンプレートとしてエクスポートする</h3>
+
+<ol>
+  <li>
+    <p>ローカル環境で、2.2項で作成したソースディレクトリ <strong>cec-src</strong> を開きます</p>
+  </li>
+  <li>
+    <p>以下のコマンドを実行し、OCM上の <strong>StaticSite</strong> からローカル環境にテンプレートを作成する。テンプレート名は <strong>StaticSiteTemplate</strong> とします</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ cec create-template StaticSiteTemplate --site StaticSite --server UAT
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ローカル環境にテンプレートが作成されたか？を確認します。<strong>cec develop</strong> を実行し、開発環境を立ち上げます。http://localhost:8085 を開き、<strong>Templates</strong> をクリックします。<strong>StaticSiteTemplate</strong> が存在することを確認します</p>
+
+    <p><img src="006.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="32-content-toolkitを使用してテンプレートをコンパイル">3.2 Content Toolkitを使用してテンプレートをコンパイル</h2>
+
+<p>ローカル環境に作成したテンプレート（StaticSiteTemplate）をコンパイルします。</p>
+
+<ol>
+  <li>
+    <p>以下のコマンドを実行します</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ cec compile-template StaticSiteTemplate
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>コンパイルが完了すると、<strong>cec-src/src/templates/StaticSiteTemplate/static</strong> 配下に静的HTMLが出力されます</p>
+  </li>
+</ol>
+
+<h2 id="33-元のサイトに生成された静的ページをアップロードする">3.3 元のサイトに生成された静的ページをアップロードする</h2>
+
+<p>作成された静的ページを、元のサイトにアップロードします</p>
+
+<ol>
+  <li>
+    <p>以下のコマンドを実行します</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ cec upload-static-site-files src/templates/StaticSiteTemplate/static --site StaticSite --server UAT
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>OCMのWebUIを開きます。<strong>サイト→StaticSite→プロパティ→静的配信→静的ファイルの削除</strong>　に「サイトの静的ファイルをごみ箱に移動します」が表示され、静的ファイルが存在することが確認できます</p>
+
+    <p><img src="007.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>StaticSite</strong> を公開（再公開）します。今回はContent Toolkitを使って公開します</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ cec control-site publish --site StaticSite --server UAT --staticonly
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>公開サイトを開き、右クリック→「ページのソースを表示」を確認します。3.1.1項で確認したコントローラーファイル <em>controller.html</em> の内容は表示されず、<strong>HTMLソース</strong> が表示されます</p>
+
+    <p><img src="008.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="34-アップロードした静的ページを削除する">3.4 アップロードした静的ページを削除する</h2>
+
+<p>アップロードした静的ファイルを削除するには、以下のコマンドを実行します</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cec delete-static-site-files StaticSite --server UAT
+</code></pre></div></div>
+
+<p>もしくは、<strong>サイト→StaticSite→プロパティ→静的配信→静的ファイルの削除</strong> より、<strong>「削除」</strong> ボタンをクリックします</p>
+
+<p>静的ファイルを削除した後は、サイトの再公開を実行します。公開サイトを開き、ページのソースを確認します。元通り <em>controller.html</em> ファイルの内容が表示されルことを確認します</p>
+
+<p><img src="009.jpg" alt="画像" /></p>
+
+<p><br /></p>
+
+<h1 id="4-おわりに">4. おわりに</h1>
+
+<p>このチュートリアルは、Content Toolkitを利用したサイト・コンパイル方法について紹介しました。今回紹介した方法は、基礎的な内容になりますので、以下関連するドキュメントもあわせてご確認ください</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/compile-site-improve-runtime-performance-site-pages.html">Compile a Site to Improve Runtime Performance for Site Pages</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/creating-experiences/compile-site-improve-runtime-performance-site-pages.html">(※日本語翻訳版)</a></li>
+  <li><a href="https://github.com/oracle/content-and-experience-toolkit/blob/master/sites/doc/compiler.md#overview">Pre-Compile Sites</a></li>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/ocm-site-compilation/index.html">Compile and Publish Sites with Oracle Content Management</a></li>
+</ul>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です</p>
+
+<p><a href="#top">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#ocm" class="page__taxonomy-item" rel="tag">OCM</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-11-11T10:16:05+09:00">November 11, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Content+Toolkit%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%A6+Oracle+Content+Management+%E3%81%AE%E3%82%B5%E3%82%A4%E3%83%88%E3%82%92%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F91_compile_site_ocmtoolkit%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F91_compile_site_ocmtoolkit%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F91_compile_site_ocmtoolkit%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/77_sitesecuritygovernance/" class="pagination--pager" title="OCEのサイト・セキュリティとサイト・ガバナンスを理解する
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

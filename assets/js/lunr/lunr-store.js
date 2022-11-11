@@ -431,6 +431,12 @@ var store = [{
         "url": "/ocitutorials/content-management/77_sitesecuritygovernance/",
         "teaser": "/ocitutorials/content-management/77_SiteSecurityGovernance/021.png"
       },{
+        "title": "Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう",
+        "excerpt":"このチュートリアルは、Oracle Content Toolkitを利用したOCMで作成・公開したサイトをコンパイルする手順について、ステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2022年10月時点での最新バージョン(22.9.3)を元に作成されてます。 チュートリアル内の画面ショットについては Oracle Content Management の現在のコンソール画面と異なっている場合があります。 0. 説明 Oracle Content Toolkit Oracle Content Toolkit（Content Toolkit）とは、OCMに対してコマンドを実行できる コマンドライン・ユーティリティ で、主にサイト・テンプレート、テーマ、カスタム・コンポーネントおよびコンテンツ・レイアウト等を開発する際に利用します Content ToolkitはGitHub上で公開されており、誰でも利用することができます。詳細はGitHub上のREADME.md、および以下の製品ドキュメントをご確認ください GitHub https://github.com/oracle/content-and-experience-toolkit/blob/master/README.md 製品ドキュメント 26 Develop with Oracle Content Management Toolkit(英語) (※日本語翻訳版) Oracle Content Toolkit Command-Line Utility (※日本語翻訳版) サイトのコンパイル OCMのサイトをコンパイルすると、静的HTMLファイル をサイトの各ページに作成します。これによりサイト・ページの実行時パフォーマンスおよび動作の改善が期待できます。通常（デフォルト状態）のOCMのサイトページのレンダリングと、コンパイルされたサイトページのレンダリングの違いは以下の通りです（※GitHubより引用） 通常（デフォルト状態）のサイトページのレンダリング コンパイルされたサイトページのレンダリング サイト・コンパイルの概要については、以下ドキュメントもあわせてご確認ください GitHub What is the...","categories": [],
+        "tags": ["OCE","OCM"],
+        "url": "/ocitutorials/content-management/91_compile_site_ocmtoolkit/",
+        "teaser": "/ocitutorials/content-management/91_compile_site_ocmtoolkit/007.jpg"
+      },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(DBCS)",
         "excerpt":"はじめに Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから データベース → ベア・メタル、VMおよびExadata を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった DBシステムの作成...","categories": [],
         "tags": [],
