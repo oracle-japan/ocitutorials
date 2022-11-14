@@ -34,6 +34,7 @@ header:
 **前提条件 :**
 + Data Integrationを利用するコンパートメントを準備してください。
 + Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。
++ 画像は最新サービスと異なる可能性があります。
 <br>
 
 
@@ -252,6 +253,8 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 
 ![ソース演算子](source1.png)
 
+>画像の演算子はソース_1と日本語表記ですが、現在はSOURCE_1と英語表記です。以降の演算子の画像も同様です。
+
 CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、ソース演算子は2つ必要です。プロパティの項目に以下の値を入力し、他の値はデフォルトのままにします。
 >識別子の値はデータ・エンティティで選択した値で自動入力されます。任意に入力も可能です。
 
@@ -294,19 +297,20 @@ CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、
 
    ![フィルタ1](filter1.png)
 
+
 1. フィルタのプロパティで**フィルタ条件**の**作成**をクリックします。
 1. **条件ビルダー**の**受信**から属性**COUNTRY_CODE**をエディタにドラッグアンドドロップします。  
   ![フィルタ1](filter2.png)
 
 1. 条件を以下のように修正し、作成をクリックします。  
 
-    ``フィルタ_1.CUSTOMERS_JSON.COUNTRY_CODE='US'``
+    ``FILTER_1.CUSTOMERS_JSON.COUNTRY_CODE='US'``
 
 ### REVENUE_csvのORDER_STATUSの値が"1-Booked"のフィルタを設定
 CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、CUSTOMERS_jsonのフィルタ設定の1～4までの手順を行います。  
 5の条件を以下の記載にします。
 
-  ``フィルタ_2.REVENUE_CSV.ORDER_STATUS='1-Booked'``
+  ``FILTER_2.REVENUE_CSV.ORDER_STATUS='1-Booked'``
 
 
 設定後のキャンバスは各ソースにフィルタが続く形になります。
@@ -321,7 +325,7 @@ CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、C
 + FIRST_NAMEとLAST_NAMEを連結させたFULLNAMEという属性を生成
 
 ### STATE_PROVINCEの値を大文字に変換
-STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フィルタ_1のプロパティで**データ**タブを選択し、検索ボックスに``STATE*``と入力します。
+STATE_PROVINCEの値が小文字の場合は大文字に変換させます。FILTER_1のプロパティで**データ**タブを選択し、検索ボックスに``STATE*``と入力します。
 > フィルタ後なのでCOUNTRY_CODEがUSのデータのみが表示されます
 
 ![フィルタ後のデータ](afterfilterdata.png)
@@ -339,7 +343,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 ### FULLNAME属性の生成
 次にFIRST_NAMEとLAST_NAMEを連結させたFULLNAMEという属性を新しく生成します。
-左の演算子ペインから**式演算子**をキャンバスにドラッグアンドした後、式_1にカーソルを置き、表示された**コネクタ**を追加した式演算子(式_2)にドラッグアンドドロップします。
+左の演算子ペインから**式演算子**をキャンバスにドラッグアンドした後、式演算子(EXPRESSION_1)にカーソルを置き、表示された**コネクタ**を追加した式演算子(EXPRESSION_2)にドラッグアンドドロップします。
 
 ![式演算子2](expression2.png)
 
@@ -352,7 +356,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 結果が"FIRSTNAME LASTNAME"となるようにCONCAT式を以下のように編集し、追加をクリックします。
 
-```CONCAT(CONCAT(式_1.CUSTOMERS_JSON.FIRST_NAME, ' '),式_1.CUSTOMERS_JSON.LAST_NAME)```
+```CONCAT(CONCAT(EXPRESSION_1.CUSTOMERS_JSON.FIRST_NAME, ' '),EXPRESSION_1.CUSTOMERS_JSON.LAST_NAME)```
 
 
 >式の変数をダブルクリックで選択し、受信タブに表示されている属性をダブルクリックするとその変数に属性を代入することができます。
@@ -367,22 +371,22 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 ![結合演算子](join.png)
 
-追加した結合演算子（結合_1)のプロパティで**結合条件**の**作成**をクリックします。**条件ビルダー**で**受信**タブから属性をドラッグアンドドロップして、CUSTOMER_JSONのCUST_IDとREVENUE_CSVのCUST_KEYの結合になるよう編集し、作成をクリックします。  
+追加した結合演算子（JOIN_1)のプロパティで**結合条件**の**作成**をクリックします。**条件ビルダー**で**受信**タブから属性をドラッグアンドドロップして、CUSTOMER_JSONのCUST_IDとREVENUE_CSVのCUST_KEYの結合になるよう編集し、作成をクリックします。  
 
 
-``結合_1_1.CUSTOMERS_JSON.CUST_ID = 結合_1_2.REVENUE_CSV.CUST_KEY``
+``JOIN_1_1.CUSTOMERS_JSON.CUST_ID = JOIN_1_2.REVENUE_CSV.CUST_KEY``
 
 ![結合演算子2](join2.png)
 
 
 ## ターゲットの設定
-**ターゲット演算子**をキャンバスにドラッグアンドドロップします。結合_1のコネクタをターゲットにドラッグします。
+**ターゲット演算子**をキャンバスにドラッグアンドドロップします。JOIN_1のコネクタをターゲットにドラッグします。
 
 ![ターゲット演算子](target.png)
 
 ターゲットはAutonomous Databaseです。以下の値を設定します。
 
-+ 識別子 : CUSTEOMERS_TARGET(以下を設定すると自動入力されます)
++ 識別子 : CUSTOMERS_TARGET(以下を設定すると自動入力されます)
   + 統合戦略 : 挿入（デフォルトのまま）
   + データ・アセット : Data_Warehouse
   + 接続 : Default Connection
