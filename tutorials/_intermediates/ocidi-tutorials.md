@@ -118,13 +118,13 @@ Data Integrationからプライベート・ネットワーク上のデータソ�
 
 ![ルート・ルールの追加イメージ](addroute.png)
 
->Data Integrationとデータソースの場所別のケース例についてはOracle blogsの記事["Understanding VCN Configuration for Oracle Cloud Infrastructure (OCI) Data Integration"](https://blogs.oracle.com/dataintegration/post/understanding-vcn-configuration-for-oracle-cloud-infrastructure-oci-data-integration)を参考にしてください。
+>Data Integrationとデータソースの場所別のケース例についてはOracle blogsの記事["Understanding VCN Configuration for Oracle Cloud Infrastructure (OCI) Data Integration"](https://blogs.oracle.com/dataintegration/post/understanding-vcn-configuration-for-oracle-cloud-infrastructure-oci-data-integration){:target="_blank"}を参考にしてください。
 
 
 ## 必要なポリシーの作成
 ポリシーを作成します。
 OCI管理者ユーザーでログイン後、OCIコンソールのナビゲーションメニューで**アイデンティティとセキュリティ**に移動し、**ポリシー**を選択します。次にコンパートメントを選択し、**ポリシーの作成**をクリックします。
-> 本文書ではポリシー・ビルダーを使用しますが、実際は必要なセキュリティにあわせて設定を行ってください。Data Integrationのポリシーおよびポリシーの例は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/data-integration/using/policies.htm)をご確認ください。
+> 本文書ではポリシー・ビルダーを使用しますが、実際は必要なセキュリティにあわせて設定を行ってください。Data Integrationのポリシーおよびポリシーの例は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/data-integration/using/policies.htm){:target="_blank"}をご確認ください。
 
 ![ポリシー追加の説明1](addpolicy1.png)
 
@@ -175,7 +175,6 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 ワークスペースのホームを起点に、Data Integrationで必要なコンポーネントの作成、設定を行っていきます。
 
 
-
 # 4. データ・アセットの作成
 **データ・アセット**はData Integrationで利用するデータ・ソースを表します。1のオブジェクト・ストレージとAutonomous Databaseのためのデータ・アセットを作成します。  
 
@@ -210,7 +209,6 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
     + コンパートメント : <1で作成したバケットのコンパートメント>
     + スキーマ : <1で作成したバケット>
 
->デフォルトのステージングの場所でエラーが表示され登録ができない場合があります。その場合はデフォルトのステージングの場所を登録せずに作成してください。
 
 それぞれの入力イメージです。
 
@@ -228,7 +226,6 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 ## データ・フローの作成 
 プロジェクトのメニューで**データ・フロー**を選択します。**データ・フローの作成**をクリックするとデータ・フロー・エディタというビジュアルエディタが起動します。  
 
- > 現行リリースでは演算子の条件や式にマルチバイト文字が含まれている場合に検証でエラーが発生する場合があります。この章の説明は日本語UIですが、エラーを回避するために英語UIで実施いただくこともご検討ください。
 
 
 表示されるプロパティで名前を"新規データ・フロー"から``Load Customers and Revenue Data``に変更しましょう。
@@ -304,12 +301,6 @@ CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、
 1. 条件を以下のように修正し、作成をクリックします。  
 
     ``フィルタ_1.CUSTOMERS_JSON.COUNTRY_CODE='US'``
-
-> 現行リリースでは条件や式にマルチバイト文字が含まれていると検証エラーになるという問題があります。識別子の日本語（"フィルター1")がデフォルトで属性のパスとなるため、属性タブでフィルター1のメニューボタンをクリックし、"名前変更"で"フィルタ_1"を"FILTER_1"と変更してください。その後詳細タブで条件に日本語が含まれていないかご確認ください。
-    
-> ![識別子名前変更](rename_attribute.png)
-
->以降の説明でも識別子名がデフォルトで日本語となるため、条件や式に日本語が入らないように属性タブで名前変更をお願いいたします。
 
 ### REVENUE_csvのORDER_STATUSの値が"1-Booked"のフィルタを設定
 CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、CUSTOMERS_jsonのフィルタ設定の1～4までの手順を行います。  
@@ -417,7 +408,6 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 >
 >![マッピングルール](mappingrule.png)
 
-
 ## 検証と保存  
 作成したフローに対して**検証**をクリックしてエラーや警告がないかを確認します。エラーや警告がある場合は、その要因となった演算子が表示されますので、確認し対処を行います。
 
@@ -496,6 +486,10 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 + [Oracle Cloud Infrastructure Data Integration Blog（英語）](https://blogs.oracle.com/dataintegration/oracle-cloud-infrastructure-data-integration){:target="_blank"}
 
 
+# Tips
+ + 演算子の条件や式にマルチバイト文字が含まれている場合に検証でエラーが発生する場合があります。その場合は言語を英語に変更しエラーを回避できるかご確認ください。言語はOCIコンソールの右上の地球のマークをクリックすることで変更が可能です。
+
 <BR>
+
 
 [ページトップへ戻る](#)
