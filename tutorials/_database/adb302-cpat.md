@@ -122,7 +122,7 @@ DBCSインスタンスのHRスキーマを移行対象に、移行先をAutonomo
 + `--schemas`　移行対象のスキーマ名。空白区切りで複数指定可能。  
   
 >`--connectstring`について  
-チュートリアルではJDBC Thin接続を利用していますが、OCI接続の利用も可能です。jdbc:oracle:ociとし`--sysdba`を指定することでOS認証もサポートされます。詳細は[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2758371_1.html){:target="_blank"}を参照ください。
+チュートリアルではJDBC Thin接続を利用していますが、OCI接続の利用も可能です。jdbc:oracle:ociとし`--sysdba`を指定することでOS認証もサポートされます。詳細は[CPATのMy Oracle Supportドキュメント(Doc ID 2758371.1)](https://support.oracle.com/rs?type=doc&id=2758371.1){:target="_blank"}を参照ください。
 
 <br>
 
@@ -165,7 +165,7 @@ view full_advisor_premigration_advisor_report.txt
 
 ![イメージ](img1011.png)
 
->さらに正確な移行チェックのためにターゲットに接続しプロパティファイルを作成、指定することができます。[Oracle Autonomous Database Schema Advisor (Doc ID 2462677.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2758371_1.html){:target="_blank"}を参照ください。
+>さらに正確な移行チェックのためにターゲットに接続しプロパティファイルを作成、指定することができます。[CPATのMy Oracle Supportドキュメント(Doc ID 2758371.1)](https://support.oracle.com/rs?type=doc&id=2758371.1){:target="_blank"}を参照ください。
 
 
 <br>
