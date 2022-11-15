@@ -190,7 +190,7 @@ OCI Network Firewallログのログ・ソース、ログ・パーサーは以下
 
 
 + [OCI Network Firewall Trafficログ](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWTrafficLog.zip)
-+ [OCI Network Firewall Trafficログ](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWThreatLog.zip)
++ [OCI Network Firewall Threatログ](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWThreatLog.zip)
 
 
 各ログのログ・ソースファイルをダウンロードしたら、OCIコンソール画面からファイルをインポートします。
@@ -218,11 +218,11 @@ OCIコンソール画面左上のメニュー → 監視および管理 → ロ�
 ## 4-2. ダッシュボード定義のインポート
 
 
-OCI Network Firewallログのダッシュボード定義は以下GitHubからダウンロードいただけます。
+OCI Network Firewallログのダッシュボード定義ファイルは以下GitHubにあります。
+ダッシュボード定義ファイルはインポートする前に、中身を一部修正する必要がありますので、中身をコピーしてローカルのエディタなどに貼りつけてください。
 
 + [ダッシュボード定義](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWdashboard.json)
 
-ダッシュボード定義ファイルはインポートする前に、中身を一部修正する必要があります。
 
 OCIコンソール画面左上のメニュー → アイデンティティとセキュリティ → アイデンティティ → コンパートメントを選択します。
 ダッシュボード定義をインポートしたいコンパートメントのOCIDをクリックボードにコピーします。
@@ -230,7 +230,7 @@ OCIコンソール画面左上のメニュー → アイデンティティとセ
  ![画面ショット18](nfwla18.png)
 
 
-ダッシュボードが定義されたjsonファイルをvim等で開き、4行目の"compartment-id"を自身の環境でダッシュボードをインストールしたいコンパートメントのOCIDに書き換えます。
+コピーしたダッシュボード定義ファイルをvim等で開き、4行目の"compartment-id"を自身の環境でダッシュボードをインストールしたいコンパートメントのOCIDに書き換えます。
 
 ```sh
 {
@@ -345,7 +345,7 @@ oci log-analytics object-collection-rule create --compartment-id <コンパー�
 **Network Firewall Threat ログ**
 
 ```sh
-oci log-analytics object-collection-rule create --compartment-id <コンパートメントOCID> --log-group-id <Logging AnalyticsのロググループID> --log-source-name "Network Firewall Threat Log" --name <任意のルール名> --namespace-name <Logging Analyticsのネームスペース> --os-bucket-name <Network Firewall Traffic Logが格納されているObject Storageのバケット名> --os-namespace <Object Storageのネームスペース>
+oci log-analytics object-collection-rule create --compartment-id <コンパートメントOCID> --log-group-id <Logging AnalyticsのロググループID> --log-source-name "Network Firewall Threat Log" --name <任意のルール名> --namespace-name <Logging Analyticsのネームスペース> --os-bucket-name <Network Firewall Threat Logが格納されているObject Storageのバケット名> --os-namespace <Object Storageのネームスペース>
 ```
 
 以上でObjectCollectionRuleの作成は完了です。
