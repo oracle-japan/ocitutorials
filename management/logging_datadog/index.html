@@ -1,0 +1,813 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCIのログをDataDogで監視する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クラウド環境のシステム監視において、市場で人気のある監視ツールで運用を統合しているケースは少なくありません。OCIはDataDogを使用しているユーザーに対して、OCIの監査ログやサービスのログを連携し、DataDog上で監視・分析するためのソリューションを用意しています。これにより、既存運用に最小限の変更を加えるだけでOCIを含めたマルチクラウドのログ監視を実現できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCIのログをDataDogで監視する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/management/logging_datadog/">
+
+
+  <meta property="og:description" content="クラウド環境のシステム監視において、市場で人気のある監視ツールで運用を統合しているケースは少なくありません。OCIはDataDogを使用しているユーザーに対して、OCIの監査ログやサービスのログを連携し、DataDog上で監視・分析するためのソリューションを用意しています。これにより、既存運用に最小限の変更を加えるだけでOCIを含めたマルチクラウドのログ監視を実現できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-11-17T22:41:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/management/logging_datadog/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCIのログをDataDogで監視する
+
+        
+      </h1>
+      
+        <p class="page__lead">クラウド環境のシステム監視において、市場で人気のある監視ツールで運用を統合しているケースは少なくありません。OCIはDataDogを使用しているユーザーに対して、OCIの監査ログやサービスのログを連携し、DataDog上で監視・分析するためのソリューションを用意しています。これにより、既存運用に最小限の変更を加えるだけでOCIを含めたマルチクラウドのログ監視を実現できます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/management" itemprop="item"><span itemprop="name">Management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCIのログをDataDogで監視する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">監視・管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/management/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logging_datadog/" class="active">OCIのログをDataDogで監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCIのログをDataDogで監視する">
+    <meta itemprop="description" content="クラウド環境のシステム監視において、市場で人気のある監視ツールで運用を統合しているケースは少なくありません。OCIはDataDogを使用しているユーザーに対して、OCIの監査ログやサービスのログを連携し、DataDog上で監視・分析するためのソリューションを用意しています。これにより、既存運用に最小限の変更を加えるだけでOCIを含めたマルチクラウドのログ監視を実現できます。">
+    <meta itemprop="datePublished" content="2022-11-17T22:41:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#1-事前準備">1. 事前準備</a><ul><li><a href="#1-1-iamポリシーの作成">1-1. IAMポリシーの作成</a></li><li><a href="#1-2-トークンの生成">1-2. トークンの生成</a></li><li><a href="#1-3-vcnの作成">1-3. VCNの作成</a></li><li><a href="#1-4-バケットの作成">1-4. バケットの作成</a></li><li><a href="#1-5-リポジトリの作成">1-5. リポジトリの作成</a></li><li><a href="#1-6-サンプルコードのダウンロード">1-6. サンプルコードのダウンロード</a></li></ul></li><li><a href="#2-datadog-api-keyとdatadog-logs-api情報の取得">2. DataDog API KeyとDataDog Logs API情報の取得</a></li><li><a href="#3-ロググループの作成および有効化">3. ログ・グループの作成および有効化</a></li><li><a href="#4-ファンクションの作成">4. ファンクションの作成</a></li><li><a href="#5-サービスコネクタの作成及び検証">5. サービス・コネクタの作成及び検証</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルでは、DataDogにOCIのログを転送するための、オーバーヘッドが低く拡張性の高いソリューションを構成する方法をご紹介します。オブジェク・トストレージにファイルをアップロードした際に生成される書き込みログが、サービス・コネクタとファンクションを経由してDataDogに転送され、ダッシュボードに表示されるまでの流れをステップ・バイ・ステップで説明します。</p>
+
+<p>ソリューションの全体像は以下になります。</p>
+
+<p><img src="native.jpeg" alt="画面ショット" /></p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<p>OCI</p>
+<ul>
+  <li>OCIのアカウントを取得済みであること。無料アカウントにサインアップするには、<a href="https://www.oracle.com/cloud/free/">OCI Cloud Free Tier</a>を参照してください。</li>
+</ul>
+
+<p>DataDog</p>
+<ul>
+  <li>Datadogのアカウントを取得済みであること。14日間の無料トライアルが利用できます。<a href="https://www.datadoghq.com/ja/">DataDog 無料トライアル</a>にアクセスしてください。</li>
+</ul>
+
+<h2 id="1-事前準備">1. 事前準備</h2>
+
+<p>事前準備として以下を実施します。</p>
+
+<ul>
+  <li>IAMポリシーの作成</li>
+  <li>トークンの生成</li>
+  <li>VCNの作成</li>
+  <li>バケットの作成</li>
+  <li>リポジトリの作成</li>
+  <li>サンプルコードのダウンロード</li>
+</ul>
+
+<h3 id="1-1-iamポリシーの作成">1-1. IAMポリシーの作成</h3>
+
+<p>ファンクションに関するポリシーを設定します。
+<a href="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a>の「事前準備」の項目を参考にしてください。</p>
+
+<p class="notice--info">このチュートリアルでは、ユーザーはテナント管理者を想定していますので、ユーザー（グループ）に設定するポリシーは特にありません。個別に設定したい場合は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/policyreference/policyreference.htm">ポリシー・リファレンス</a>を参考に設定してください。</p>
+
+<h3 id="1-2-トークンの生成">1-2. トークンの生成</h3>
+
+<p>ファンクションで利用するイメージはコンテナ・レジストリのリポジトリに格納されます。コンテナ・レジストリにイメージをプッシュするには認証用のトークンを生成します。</p>
+
+<p>コンソールの画面右上にあるユーザー・プロファイルのユーザー情報をクリックします。</p>
+
+<p><img src="100.png" alt="" /></p>
+
+<p>ユーザー情報の詳細ページで「認証トークン」を選択して「トークンの生成」へ進みます。</p>
+
+<p><img src="200.png" alt="" /></p>
+
+<p>「説明」を入力して「トークンの生成」をクリックします。</p>
+
+<p><img src="300.png" alt="" /></p>
+
+<p>「コピー」をクリックして、生成されたトークンをメモしてください。これは再度表示されませんのでご注意ください。メモしたら「閉じる」をクリックします。</p>
+
+<p><img src="400.png" alt="" /></p>
+
+<p>これで、トークンの生成は完了しました。</p>
+
+<h3 id="1-3-vcnの作成">1-3. VCNの作成</h3>
+
+<p>ファンクションで使用するVCNを作成します。<br />
+コンソールのメニューから「ネットワーキング」を選択し、「仮想クラウド・ネットワーク」へ進みます。</p>
+
+<p><img src="500.png" alt="" /></p>
+
+<p>使用するコンパートメントを選択して、「VCNウィザードの起動」をクリックします。</p>
+
+<p><img src="600.png" alt="" /></p>
+
+<p>「インターネット接続性を持つVCNの作成」を選択して、「VCNウィザードの起動」をクリックします。</p>
+
+<p><img src="700.png" alt="" /></p>
+
+<p>「VCN名」を入力し、その他の項目はデフォルトのままで「次」をクリックします。</p>
+
+<p><img src="800.png" alt="" /></p>
+
+<p>「確認および作成」のページで「作成」をクリックします。</p>
+
+<p><img src="900.png" alt="" /></p>
+
+<p>これで、VCNの作成は完了しました。</p>
+
+<h3 id="1-4-バケットの作成">1-4. バケットの作成</h3>
+
+<p>オブジェクト・ストレージのバケットを作成します。<br />
+コンソールのメニューから「ストレージ」を選択して、「オブジェクト・ストレージとアーカイブ・ストレージ」の「バケット」をクリックします。</p>
+
+<p><img src="1000.png" alt="" /></p>
+
+<p>使用するコンパートメントを選択して、「バケットの作成」をクリックします。</p>
+
+<p><img src="1100.png" alt="" /></p>
+
+<p>「パケット名」を入力し、その他の項目はデフォルトのままで「作成」をクリックします。</p>
+
+<p><img src="1200.png" alt="" /></p>
+
+<p>これで、バケットの作成は完了しました。</p>
+
+<h3 id="1-5-リポジトリの作成">1-5. リポジトリの作成</h3>
+
+<p>ファンクションで使用するイメージのリポジトリを作成します。<br />
+コンソールのメニューから「開発者サービス」を選択し、「コンテナ・レジストリ」へ進みます。</p>
+
+<p><img src="1300.png" alt="" /></p>
+
+<p>使用するコンパートメントを選択して、「リポジトリの作成」をクリックします。</p>
+
+<p><img src="1400.png" alt="" /></p>
+
+<p>各項目を選択または入力して、「リポジトリの作成」をクリックします。</p>
+
+<p>コンパートメント：使用するコンパートメントを選択します。</p>
+
+<p>リポジトリ名：datadog-log/oci-logs-to-datadog-fn<br />
+（repo-name-prefix/repo-name という形式で入力します。後述のファンクションの設定では、一意のリポジトリ名の接頭辞は datadog-log、ファンクションの名前は oci-logs-to-datadog-fn というように、一致させる必要があります）</p>
+
+<p>アクセス：セキュリティを考慮してプライベートを推奨します。</p>
+
+<p><img src="1500.png" alt="" /></p>
+
+<p>これで、リポジトリの作成は完了しました。</p>
+
+<h3 id="1-6-サンプルコードのダウンロード">1-6. サンプルコードのダウンロード</h3>
+
+<p><a href="https://github.com/yohono/oci_sample_code/raw/main/oci-logs-to-datadog-fn.zip">こちら</a>からサンプルコードをダウンロードし、保存しておきます。</p>
+
+<p>以上で、事前準備はすべて完了しました。</p>
+
+<h2 id="2-datadog-api-keyとdatadog-logs-api情報の取得">2. DataDog API KeyとDataDog Logs API情報の取得</h2>
+
+<p>これから、OCIからDataDogにログを転送する方法について説明します。</p>
+
+<p>まず、DataDog API Keyを取得します。<br />
+DataDogのコンソールで、左下のユーザー情報をクリックして「Organization Settings」へ進みます。</p>
+
+<p><img src="1600.png" alt="" /></p>
+
+<p>「API Keys」をクリックして、利用するAPI keyの行をクリックします。</p>
+
+<p><img src="1700.png" alt="" /></p>
+
+<p>API Keyの画面で「Copy」をクリックして、コピーされたAPI Keyをメモしてください。</p>
+
+<p><img src="1800.png" alt="" /></p>
+
+<p>これで、DataDog API Keyの取得は完了しました。</p>
+
+<p>次に、DataDog Logs APIの情報を取得します。<br />
+<a href="https://docs.datadoghq.com/api/latest/logs/">DataDog API Reference-Logs</a>に移動して、「SITE」の項目で、DataDog IDの登録で選択したリージョンを選択します。この例では「US」を選択します。
+次に、「Send logs」の「API Endpoint」(https://http-intake.logs.datadoghq.com/api/v2/logs)をコピーして、メモしてください。</p>
+
+<p><img src="1900.png" alt="" /></p>
+
+<p>次に、同じページの「Code Example」から利用する開発言語を選択します。この例では「Python」を選択します。
+「INSTRUCTIONS」に記述されている「DD_SITE=”datadoghq.com”」の情報をメモしてください。（注意：選択されたSITEと開発言語によって、INSTRUCTIONSに記述される情報が異なります)</p>
+
+<p><img src="2000.png" alt="" /></p>
+
+<p>これで、DataDog Logs API情報の取得は完了しました。</p>
+
+<h2 id="3-ロググループの作成および有効化">3. ログ・グループの作成および有効化</h2>
+
+<p>取り込みたいログを設定します。まずは、ログ・グループを作成します。<br />
+コンソールのメニューから、「監視および管理」を選択して「ロギング」の「ログ・グループ」へ進みます。</p>
+
+<p><img src="2100.png" alt="" /></p>
+
+<p>使用するコンパートメントを選択して、「ログ・グループの作成」をクリックします。</p>
+
+<p><img src="2200.png" alt="" /></p>
+
+<p>以下のように任意で入力し、「作成」をクリックします。</p>
+<ul>
+  <li>名前：datadog_log_group</li>
+  <li>説明：OCI logs to Datadog</li>
+</ul>
+
+<p><img src="2300.png" alt="" /></p>
+
+<p>ログ・グループの詳細ページで、「リソース」の「ログ」を選択して、「サービス・ログの有効化」をクリックします。</p>
+
+<p><img src="2400.png" alt="" /></p>
+
+<p>各項目を選択または入力し、「ログの有効化」をクリックします。</p>
+
+<ul>
+  <li>リソース・コンパートメント：使用するコンパートメントを選択します。</li>
+  <li>サービス：Object Stoarge</li>
+  <li>リソース：datadog-bucket（バケット作成のステップで作成したバケットです）</li>
+  <li>ログ・カテゴリ：Write Access Events</li>
+  <li>ログ名：datadog</li>
+</ul>
+
+<p><img src="2500.png" alt="" /></p>
+
+<p>これで、ログ・グループの作成および有効化は完了しました。</p>
+
+<h2 id="4-ファンクションの作成">4. ファンクションの作成</h2>
+
+<p>DataDogにログをプッシュするためのファンクションを作成します。<br />
+コンソールのメニューから「開発者サービス」を選択し、「ファンクション」の「アプリケーション」へ進みます。</p>
+
+<p><img src="2600.png" alt="" /></p>
+
+<p>使用するコンパートメントを選択し、「アプリケーションの作成」をクリックします。</p>
+
+<p><img src="2700.png" alt="" /></p>
+
+<p>各項目を選択または入力して、「作成」をクリックします。</p>
+
+<ul>
+  <li>名前：datadog-log-fn</li>
+  <li>VCN：datadog-log-vcn（VCNの作成のステップで作成したVCNです）</li>
+  <li>サブネット：セキュリティを考慮し、プライベート・サブネットを推奨します。</li>
+</ul>
+
+<p><img src="2800.png" alt="" /></p>
+
+<p>アプリケーションの詳細ページで、「スタート・ガイド」をクリックします。<br />
+今回は、Cloud Shellを利用するので、「Cloud Shell設定」を選択して「Cloud Shellの起動」をクリックします。（ローカル環境を使用する場合は「ローカル設定」を選択し、内容に従って進めてください）</p>
+
+<p><img src="2900.png" alt="" /></p>
+
+<p>Cloud Shellで、2番、3番、4番、6番のコマンドをコピーして実行します。（利用するリージョンとテナントによって、内容は異なります）</p>
+
+<ul>
+  <li>
+    <p>4番の「repo-name-prefix」は「リポジトリの作成」で入力した「datadog-log」へ変更して実行してください。</p>
+  </li>
+  <li>
+    <p>6番のコマンドでパスワードが求められる場合、「トークンの生成」で生成されたトークンを入力してください。</p>
+  </li>
+</ul>
+
+<p><img src="3000.png" alt="" /></p>
+
+<p>Cloud Shellで、画面右上の「Cloud Shellのメニュー」にある「アップロード」をクリックします。</p>
+
+<p><img src="3100.png" alt="" /></p>
+
+<p>ダウンロードしておいたサンプルコードを選択して、「アップロード」をクリックします。<br />
+このサンプルはOCIのログをそのままをDataDogへ転送する内容となっています。必要に応じて、ファンクションのロジックを修正してください。</p>
+
+<p><img src="3200.png" alt="" /></p>
+
+<p>Cloud Shellで、下記コマンドをコピーして実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip oci-logs-to-datadog-fn.zip; cd oci-logs-to-datadog-fn
+fn deploy --app datadog-log-fn
+</code></pre></div></div>
+
+<p>成功すると、下記のようなメッセージが表示されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Updating function oci-logs-to-datadog-fn using image ***.ocir.io/******/datadog-log/oci-logs-to-datadog-fn:0.0.2...
+Successfully created function: oci-logs-to-datadog-fn with ***.ocir.io/******/datadog-log/oci-logs-to-datadog-fn:0.0.2
+</code></pre></div></div>
+
+<p>DataDog APIで利用する変数を「DataDog API Keyの取得」と「DataDogのLogs API関連情報の取得」のステップで取得した情報に書き換えて、以下のコマンドを実行してください。</p>
+
+<ul>
+  <li>YOUR-DD-API-ENDPOINT：「DataDog API Keyの取得」で取得した「API Endpoint」情報</li>
+  <li>YOUR-DD-API-KEY：「DataDog API Keyの取得」で取得した「API Key」情報</li>
+  <li>YOUR-DD_SITE：「DataDog API Keyの取得」で取得した「DD_SITE」情報</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn config function datadog-log-fn oci-logs-to-datadog-fn DD-API-ENDPOINT &lt;YOUR-DD-API-ENDPOINT&gt;
+fn config function datadog-log-fn oci-logs-to-datadog-fn DD-API-KEY &lt;YOUR-DD-API-KEY&gt;
+fn config function datadog-log-fn oci-logs-to-datadog-fn DD_SITE &lt;YOUR-DD_SITE&gt;
+</code></pre></div></div>
+
+<p>以下のコマンドを実行して、ファンクションの動作を確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn invoke datadog-log-fn oci-logs-to-datadog-fn &lt; example.json
+</code></pre></div></div>
+
+<p>DataDogのコンソールで、「Logs」へ進み「Search」をクリックします。<br />
+ファンクションが「example.json」にあるログ・データをDataDogにアップロードできたことを確認できます。</p>
+
+<p><img src="3300.png" alt="" /></p>
+
+<p>これで、ファンクションの作成は完了しました。</p>
+
+<h2 id="5-サービスコネクタの作成及び検証">5. サービス・コネクタの作成及び検証</h2>
+
+<p>ロギングからログを読み込み、ファンクションを起動するためのサービス・コネクタを作成します。<br />
+コンソールのメニューから、「監視および管理」を選択して「サービス・コネクタ」へ進みます。</p>
+
+<p><img src="3400.png" alt="" /></p>
+
+<p>使用するコンパートメントを選択して、「サービス・コネクタの作成」をクリックします。</p>
+
+<p><img src="3500.png" alt="" /></p>
+
+<p>各項目を選択または入力します。</p>
+
+<ul>
+  <li>コネクタ名：datadog-service-connector</li>
+  <li>説明：service Connector for Datadog</li>
+  <li>リソース・コンパートメント：使用するコンパートメントを選択します。</li>
+  <li>サービス・コネクタの構成－ソース：ロギング</li>
+  <li>サービス・コネクタの構成－ターゲット：ファンクション</li>
+</ul>
+
+<p><img src="3600.png" alt="" /></p>
+
+<ul>
+  <li>ソース接続の構成－コンパートメント名：使用するコンパートメントを選択します。</li>
+  <li>ソース接続の構成－ログ・グループ：datadog_log_group</li>
+  <li>ソース接続の構成－ログ：datadog</li>
+</ul>
+
+<p><img src="3700.png" alt="" /></p>
+
+<ul>
+  <li>ターゲット接続の構成－コンパートメント名：使用するコンパートメントを選択します。</li>
+  <li>ターゲット接続の構成－ファンクション・アプリケーション：datadog-log-fn</li>
+  <li>ターゲット接続の構成－ファンクション：oci-logs-to-datadog-fn</li>
+</ul>
+
+<p><img src="3800.png" alt="" /></p>
+
+<ul>
+  <li>サービス・コネクタがファンクションにアクセスするためのポリシーを自動設定するか聞かれますので「作成」をクリックします。</li>
+</ul>
+
+<p><img src="schpolicy.png" alt="" /></p>
+
+<p>これでサービス・コネクタの作成は完了しました。</p>
+
+<p>次に、サービス・コネクタを検証します。<br />
+コンソールのメニューから「ストレージ」を選択して、「オブジェクト・ストレージとアーカイブ・ストレージ」の「バケット」へ進みます。</p>
+
+<p><img src="3900.png" alt="" /></p>
+
+<p>使用するコンパートメントを選択して、バケットを選択します。</p>
+
+<p><img src="4000.png" alt="" /></p>
+
+<p>「アップロード」をクリックします。</p>
+
+<p><img src="4100.png" alt="" /></p>
+
+<p>中身が空のファイルを作成して、アップロードします。</p>
+
+<p><img src="4200.png" alt="" /></p>
+
+<p>DataDogのコンソールで「Logs」を選択し、「Search」をクリックします。<br />
+バケットにファイルをアップロードするイベント・ログが、サービス・コネクタとファンクションを経由して、DataDogにアップロードされたことを確認できます。</p>
+
+<p><img src="4300.png" alt="" /></p>
+
+<p>これで、サービス・コネクタの検証は完了しました。</p>
+
+<p>以上で、チュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#management" class="page__taxonomy-item" rel="tag">management</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-11-17T22:41:22+09:00">November 17, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI%E3%81%AE%E3%83%AD%E3%82%B0%E3%82%92DataDog%E3%81%A7%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Flogging_datadog%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Flogging_datadog%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Flogging_datadog%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/management/audit-log-analytics/" class="pagination--pager" title="OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/management/dbcs-database-management/" class="pagination--pager" title="OCI Database Cloud ServiceでDatabase Managementを有効化する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
