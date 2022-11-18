@@ -78,8 +78,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
     * CSVデータを手元のPCおよびオブジェクトストレージからADBにロードします
     * またオブジェクトストレージ上で更新されたデータを自動的にDBに登録する方法も取り上げます（フィード機能）
 
-+ **[103: Oracle LiveLabsのご紹介(Database Actions)](/ocitutorials/database/adb103-livelabs/){:target="_blank"}**  
-    * さらなるDatabase Actionsの使い方を例に、Oracle LiveLabsの概要、始め方についてご紹介します
++ **[103: Oracle LiveLabsのご紹介](/ocitutorials/database/adb103-livelabs/){:target="_blank"}**  
+    * さまざまなOracle Technologyのワークショップを提供しているOracle LiveLabsの概要、始め方についてご紹介します
 
 + **[104: クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/){:target="_blank"}**  
     * SQL*Plus、SQLcl、SQL Developerからの接続方法についても確認します
