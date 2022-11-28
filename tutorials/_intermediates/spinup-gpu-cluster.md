@@ -569,7 +569,7 @@ inst-6ejzf-comp
 次に、以下コマンドをスレーブノードのrootユーザで実行し、スレーブノード上でポート番号12345でSSH接続を受け付けるHorovod用Dockerコンテナーを起動します。
 
 ```sh
-> docker run -it --privileged --gpus all --network=host -v /home/horovod/ssh:/root/.ssh horovod/horovod:latest bash -c "/usr/sbin/sshd -p 12345; bash"
+> docker run -it --privileged --gpus all --network=host -v /horovod/.ssh:/root/.ssh horovod/horovod:latest bash -c "/usr/sbin/sshd -p 12345; bash"
 ```
 
 # 4. NCCL通信性能検証
