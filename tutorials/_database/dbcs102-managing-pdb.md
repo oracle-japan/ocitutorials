@@ -1,6 +1,6 @@
 ---
 title: "102: DBCS上のPDBを管理しよう"
-excerpt: "Oracle Cloud Infrastructure データベース・サービス(DBCS)では、OCI コンソールから Oracle Cloud Infrastructure 上の PDB を 起動・停止だけでなく、PDB のクローンを簡単に実施する事が可能です。"
+excerpt: "Oracle Base Database Service(BaseDB)では、OCI コンソールから Oracle Cloud Infrastructure 上の PDB を 起動・停止だけでなく、PDB のクローンを簡単に実施する事が可能です。"
 order: "1_102"
 header:
   teaser: "/database/dbcs102-managing-pdb/img13.png"
@@ -14,7 +14,7 @@ header:
 
 # はじめに
 
-Oracle Cloud Infrastructure データベース・サービスでは、Oracle Cloud Infrastructure の上で稼働する Oracle Database の PDB を OCI コンソールから停止したり、起動したり、既存 PDB からクローンするなどの操作が簡単に行う事が可能です。この章では実際にどのように操作するのか確認していきます。
+Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure の上で稼働する Oracle Database の PDB を OCI コンソールから停止したり、起動したり、既存 PDB からクローンするなどの操作が簡単に行う事が可能です。この章では実際にどのように操作するのか確認していきます。
 
 <br>
 
@@ -45,7 +45,7 @@ Oracle Cloud Infrastructure データベース・サービスでは、Oracle Clo
 
 <br>
 
-1. コンソールメニューから **Oracle Database  → ベア・メタル、VMおよびExadata** を選択し、有効な管理権限を持つコンパートメントを選択します
+1. コンソールメニューから **Oracle Database → Oracle Base Database (VM, BM)** を選択し、有効な管理権限を持つコンパートメントを選択します
 
 1. 操作したい PDB を持つ **DB システム**を選択します
 

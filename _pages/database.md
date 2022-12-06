@@ -1,6 +1,6 @@
 ---
 title: "Oracle Database編"
-excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Database Cloud Service(DBCS)から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Exadata Cloud Service (ExaCS) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
+excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Database Cloud Service(DBCS)から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
 permalink: /database/
 layout: single
 tags: "Database"
@@ -20,16 +20,16 @@ toc: true
 <br/>
 
 
-# <span style="color: brown; ">■ Database Cloud Service (DBCS) を使ってみよう</span>
+# <span style="color: brown; ">■ Base Datbase Service (BaseDB) を使ってみよう</span>
 
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!!  
-まずはベーシックなDatabase Cloud Service インスタンスを作ってみましょう。
+まずはベーシックなBase Database インスタンスを作ってみましょう。
 
 ## 基礎編
 
 + **[101: Oracle Cloud で Oracle Database を使おう](/ocitutorials/database/dbcs101-create-db/){:target="_blank"}**
 
-+ **[102: DBCS上のPDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
++ **[102: BaseDB上のPDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
 
 + **[103: パッチを適用しよう](/ocitutorials/database/dbcs103-patch/){:target="_blank"}**  
 

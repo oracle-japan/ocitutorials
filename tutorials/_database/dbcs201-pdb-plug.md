@@ -1,6 +1,6 @@
 ---
 title: "201: オンプレミスのPDBをDBCSに移動しよう"
-excerpt: "オンプレミスのDatabaseがマルチテナント構成の場合、PDBの移動（アンプラグ・プラグ）でDatabase Cloud Service (DBCS)へ移行する手順について紹介します。"
+excerpt: "オンプレミスのDatabaseがマルチテナント構成の場合、PDBの移動（アンプラグ・プラグ）でBase Database Service (BaseDB)へ移行する手順について紹介します。"
 order: "1_201"
 header:
   teaser: "/database/dbcs201-pdb-plug/pdb-plug05.png"
@@ -13,7 +13,7 @@ header:
 <a id="anchor0"></a>
 
 # はじめに
-Database Cloud Service (DBCS)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。
+Base Database Service (BaseDB)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。
 CDBで構成されているオンプレミスのデータベースからDBCSへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。
 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。
 
@@ -31,7 +31,7 @@ CDBで構成されているオンプレミスのデータベースからDBCSへ�
 **目次**
 
 - [1. 移行元のデータベースからPDBをアンプラグする](#1-移行元のデータベースからpdbをアンプラグする)
-- [2. DBCSにPDBをプラグする](#2-dbcsにpdbをプラグする)
+- [2. BaseDBにPDBをプラグする](#2-BaseDBにpdbをプラグする)
 - [3. 表領域の暗号化を行う](#3-表領域の暗号化を行う)
 
 <br>
@@ -71,10 +71,10 @@ alter pluggable database testpdb unplug into '<任意のディレクトリ>/test
 
 以上でPDBのアンプラグ完了です。
 
-# 2. DBCSにPDBをプラグする
+# 2. BaseDBにPDBをプラグする
 
 1. アンプラグ時に生成されたxmlファイルを開き、データファイルのパスをDBCS上のパスに書き換えます<br>
-※次の例では、データファイル及びxmlファイルをDBCS上の/home/oracle/work/ディレクトリ配下に配置しています。
+※次の例では、データファイル及びxmlファイルをBaseDB上の/home/oracle/work/ディレクトリ配下に配置しています。
 - 書き換え前
     <div align="center">
     <img width="700" alt="pdb-plug02.png" src="pdb-plug02.png" style="border: 1px black solid;">
