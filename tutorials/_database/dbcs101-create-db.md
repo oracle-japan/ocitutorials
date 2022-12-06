@@ -1,5 +1,5 @@
 ---
-title: "101: Oracle Cloud で Oracle Database を使おう(DBCS)"
+title: "101: Oracle Cloud で Oracle Database を使おう(BaseDB)"
 excerpt: "Oracle Base Database Serviceは、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。"
 
 order: "1_101"
