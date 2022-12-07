@@ -43,6 +43,9 @@ Oracle Blockchain Platform (OBP) を使ってみよう！という人のため�
 - **[リッチヒストリーデータベースの設定方法](/ocitutorials/blockchain/06_1_rich_history/)**  
   ブロックチェーン台帳のデータを外部のOracle Databaseに複製する機能であるリッチヒストリーデータベース機能の設定方法を説明します。
 
+- **[複製先データベースでJSONを展開したビューを作成](/ocitutorials/blockchain/06_2_rich_history_view/)**  
+  リッチヒストリーデータベース機能を用いてブロックチェーン台帳からデータベースに複製したデータをより使いやすくするため、JSONを展開しつつデータを抽出するビューを作成する方法を説明します。
+
 # 9. ツール、ライブラリなどの利用
 
 - **[Blockchain App Builder（Visual Studio Code拡張版）の基本的な使い方](/ocitutorials/blockchain/91_1_app_builder_vsc_start/)**  
