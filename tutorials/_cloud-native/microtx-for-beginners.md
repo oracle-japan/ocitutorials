@@ -1,5 +1,5 @@
 ---
-title: "Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!"
+title: "Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう"
 excerpt: "Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。"
 layout: single
 order: "5001"
@@ -56,7 +56,7 @@ MicroTx|2つのアプリケーション間のトランザクション一貫性�
 ------
 
 ここでは、後続の手順で利用するトークンやリソースの準備を行います。  
-準備する項目は以下の8つです。  
+準備する項目は以下の7つです。  
 
 項目|説明
 -|-
@@ -67,7 +67,6 @@ jwks_uri | アプリケーションが利用するトークン(JWT)を検証す�
 認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCIRへのアクセスに利用します。
 オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスに必要な情報です。
 コンパートメントOCID|ATPをプロビジョニングする際に利用する情報です。  
-OCIRレポジトリ|今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
 
 **手順0-1について**  
 手順0-1はIdeneity Cloud Serviceアカウントでの手順となっております。  
@@ -131,7 +130,6 @@ Name|`otmm-app`|今回利用するConfidential Application(機密アプリケー
 key|value|説明
 -|-
 Allowed Grant Type|`Resource Owner`/`Client Credencials`/`JWT Assertion`/`Refresh Token`|許可する認可タイプ
-Redirect URL|`https://google.com`(他の任意のURLでもOK)|今回は利用しないですが、必須項目なので任意の値
 
 ![00-08.png](00-08.png)
 
@@ -216,7 +214,6 @@ https://idcs-xxxxxxxxxxxxxxxxxxxxxxxxxx.identity.oraclecloud.com/.well-known/ope
 認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCIRへのアクセスに利用します。
 オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスに必要な情報です。
 コンパートメントOCID|ATPをプロビジョニングする際に利用する情報です。  
-OCIRレポジトリ|今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
 
 #### 0-3-1. ユーザ名の確認
 ここでは、ユーザ名の確認を行います。  
@@ -298,45 +295,7 @@ OCIコンソールのハンバーガメニューより、「アイデンティ�
 
 以上で、コンパートメントOCIDの確認は完了です。  
 
-#### 0-3-5. OCIRのレポジトリ作成
-
-ここでは、ビルドしたコンテナイメージをプッシュするためのレポジトリをOCIRに作成します。  
-
-OCIコンソールのハンバーガメニューより、「開発者サービス」の「コンテナ・レジストリ」をクリックします。  
-
-![0-009.jpg](0-009.jpg)
-
-{% capture notice %}**ハンズオンに利用するコンパートメントついて**  
-トライアル環境でのハンズオンの場合は、ルートコンパートメントを利用します。  
-OCIRのコンソール画面はデフォルトでルートコンパートメントが選択されますが、ご自身に割り当てられているコンパートメントがある場合は、そちらのコンパートメントを利用してください。  
-コンパートメントはOCIRのコンソール画面の左側から選択できます。
-![0-018.jpg](0-018.jpg)
-{% endcapture %}
-<div class="notice--warning">
-  {{ notice | markdownify }}
-</div>
-
-![0-010.jpg](0-010.jpg)をクリックします。  
-
-以下の項目を入力します。  
-
-key|value|
--|-
-リポジトリ名|microtx-handson
-アクセス|`プライベート`を選択
-
-**レポジトリ名について**  
-OCIRのレポジトリ名はテナンシで一意になります。  
-集合ハンズオンなど複数人で同一環境を共有されている皆様は、`microtx-handson01`や`microtx-handson-tn`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
-{: .notice--warning}
-
-![0-011.jpg](0-011.jpg)
-
-![0-012.jpg](0-012.jpg)をクリックします。  
-
-以上で、事前準備は完了です。  
-
-#### 0-3-6. サンプルアプリケーションレポジトリのクローン
+#### 0-3-5. サンプルアプリケーションレポジトリのクローン
 
 ここでは、今回のハンズオンで利用するサンプルアプリケーションが格納されているレポジトリをクローンします。  
 
@@ -349,6 +308,8 @@ git clone https://github.com/oracle-japan/microtx-handson.git
 ```
 
 これでサンプルアプリケーションのクローンは完了です。  
+
+以上で、事前準備は完了です。  
 
 1.MicroTxのデプロイ
 ------
@@ -566,23 +527,7 @@ MicroTxはhelmを利用してインストールされるため、ここでは`va
 vim otmm-22.3/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml
 ```
 
-まず、21行目~27行目を書き換えます。  
-
-```yaml
-# TMM Container image information
-tmmImage:
-  # Image path in private Container registry
-  image: tmm:22.3
-  imagePullPolicy: IfNotPresent
-  # The kubernetes secret for pulling TMM Container image from the private container registry
-  imagePullSecret: regcred
-```
-
-key|value|
--|-
-image|`microtx-handson`([0-3-5. OCIRのレポジトリ作成](#0-3-5-ocirのレポジトリ作成)で作成したレポジトリ名)
-
-次に、65行目~72行目を書き換えます。  
+まず、65行目~72行目を書き換えます。  
 
 ```yaml
   #Authorization settings
@@ -601,7 +546,7 @@ key|value|
 -|-
 enabled|"true"
 identityProviderName|"IDCS"
-identityProviderUrl|[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`<tenant-base-url>`
+identityProviderUrl|https://[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`<tenant-base-url>`
 identityProviderClientId|[0-1. Ideneity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)で作成した`クライアントID`
 
 最後に85行目〜92行目を書き換えます。  
@@ -675,6 +620,10 @@ client version: 1.16.0
 `otmm-22.3`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
 このスクリプトを実行することによって、MictoTxをインストールできます。  
 実行権限がない場合があるので、実行権限を付与します。  
+
+```sh
+cd otmm-22.3/
+```
 
 ```sh
 chmod +x runme.sh
@@ -1028,7 +977,7 @@ kubectl create secret generic admin-passwd --from-literal=password=okehandson__O
 (管理者パスワードは2つのATPインスタンス共通とします)
 
 ```sh
-kubectl create secret generic wallet-passwd --from-literal=walletPassword=okehandson__Oracle1234 -n otmm
+kubectl create secret generic wallet-passwd --from-literal=walletPassword=microtxhandson__Oracle1234 -n otmm
 ```
 
 また、データベースにアクセスするためのユーザ名とパスワードも作成しておきます。  
@@ -1136,7 +1085,7 @@ kubectl apply -f microtx-handson/k8s/atp/atp.yaml
 `-w`(`--watch`)は状態を監視しておくためのオプションになります。  
 
 ```sh
-kubectl get autonomousdatabases -w
+kubectl get autonomousdatabases -w -n otmm
 ```
 
 以下のように出力されればプロビジョニングは完了です。
@@ -1163,6 +1112,11 @@ JaegerとKialiにもインストールされるコンポーネントがありま
 
 ```sh
 kubectl apply -f "istio-x.xx.x/samples/addons/"
+```
+
+以下のように出力されれば問題ありません。
+
+```sh
 serviceaccount/grafana created
 configmap/grafana created
 service/grafana created
@@ -1211,7 +1165,7 @@ kubectl patch service tracing -n istio-system -p '{"spec": {"type": "LoadBalance
 デプロイする前にアプリケーションで利用するIDCSの情報をSecretとして登録します。  
 
 ```sh
-kubectl create secret generic idcs-cred --from-literal=IDCS_URL=<tenant-base-url> --from-literal=IDCS_CLIENT_ID=<クライアントID> --from-literal=IDCS_CLIENT_SECRET=<クライアント・シークレット> -n otmm
+kubectl create secret generic idcs-cred --from-literal=IDCS_URL=https://<tenant-base-url> --from-literal=IDCS_CLIENT_ID=<クライアントID> --from-literal=IDCS_CLIENT_SECRET=<クライアント・シークレット> -n otmm
 ```
 
 以下のパラメータを設定します。  
@@ -1296,9 +1250,9 @@ grafana                ClusterIP      10.96.141.54    <none>            3000/TCP
 istio-ingressgateway   LoadBalancer   10.96.187.16    xxx.xxx.xxx.xxx   15021:30693/TCP,80:30113/TCP,443:30728/TCP   4d
 istiod                 ClusterIP      10.96.84.63     <none>            15010/TCP,15012/TCP,443/TCP,15014/TCP        4d
 jaeger-collector       ClusterIP      10.96.171.29    <none>            14268/TCP,14250/TCP,9411/TCP                 6m2s
-kiali                  ClusterIP      10.96.139.251   <none>            20001/TCP,9090/TCP                           5m54s
+kiali                  ClusterIP      10.96.139.251   yyy.yyy.yyy.yyy   20001/TCP,9090/TCP                           5m54s
 prometheus             ClusterIP      10.96.214.184   <none>            9090/TCP                                     5m47s
-tracing                ClusterIP      10.96.184.26    <none>            80/TCP,16685/TCP                             6m4s
+tracing                ClusterIP      10.96.184.26    zzz.zzz.zzz.zzz   80/TCP,16685/TCP                             6m4s
 zipkin                 ClusterIP      10.96.248.158   <none>            9411/TCP                                     6m3s
 ```
 
@@ -1399,7 +1353,7 @@ kuebctl get service kiali,tracing -n istio-system
 ```sh
 $ kubectl get service kiali -n istio-system
 NAME    TYPE           CLUSTER-IP      EXTERNAL-IP       PORT(S)                          AGE
-kiali   LoadBalancer   10.96.139.251   xxx.xxx.xxx.xxx   20001:32710/TCP,9090:31718/TCP   19h
+kiali   LoadBalancer   10.96.139.251   yyy.yyy.yyy.yyy   20001:32710/TCP,9090:31718/TCP   19h
 ```
 
 ```sh
@@ -1409,15 +1363,15 @@ kuebctl get service tracing -n istio-system
 ```sh
 $ kubectl get service tracing -n istio-system
 NAME      TYPE           CLUSTER-IP     EXTERNAL-IP       PORT(S)                        AGE
-tracing   LoadBalancer   10.96.184.26   yyy.yyy.yyy.yyy   80:30626/TCP,16685:31598/TCP   19h
+tracing   LoadBalancer   10.96.184.26   zzz.zzz.zzz.zzz  80:30626/TCP,16685:31598/TCP   19h
 ```
 
 上記コマンド結果の`EXTERNAL-IP`を使用します。  
 
-ブラウザからそれぞれ`http://xxx.xxx.xxx.xxx:20001/`(Kiali)、`http://yyy.yyy.yyy.yyy/`(Jaeger)およびアクセスします。  
+ブラウザからそれぞれ`http://yyy.yyy.yyy.yyy:20001/`(Kiali)、`http://zzz.zzz.zzz.zzz/`(Jaeger)およびアクセスします。  
 
 以下のように表示されます。  
-上がJaegerの画面、下がKialiの画面です。  
+上がKialiの画面、下がJaegerの画面です。  
 
 ![3-015png](3-015.png)
 
@@ -1443,6 +1397,11 @@ Kialiの左側にあるメニューから`Graph`を選択します。
 ![3-018.png](3-018.png)
 
 以下のようなグラフが表示されます。  
+
+**KialiのUIについて**  
+インストールするIstioのバージョンによってKialiのUIが微妙に異なる場合があります。  
+これはバージョンによるもので、ハンズオンとしては問題ありません。  
+{: .notice--info}
 
 {% capture notice %}**グラフが表示されない場合**  
 アプリケーションを実行してからある程度の時間が経過しているとグラフが表示されない場合があります。  
@@ -1484,7 +1443,7 @@ Jaegerの画面を開き、`Service`に`console.otmm`を選択し、`Find`をク
 ここで注目しておきたいのは、それぞれの処理の中で`otmm-tcs.otmm`が呼ばれています。  
 これは、MicroTxがトランザクションを実行する際のマネージャとして動いていることを示しています。  
 
-![3-023.png](3-025.png)
+![3-023.png](3-023.png)
 ![3-025.png](3-025.png)
 
 以上が正常パターンの動きです。  
