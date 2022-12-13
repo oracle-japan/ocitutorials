@@ -1347,7 +1347,7 @@ OCIコンソールのハンバーガーメニューをクリックします。
 [2-2. JaegerとKialiのインストール](#2-2-jaegerとkialiのインストール)でプロビジョニングしたOCI Load BalancerのIPアドレスを確認します。  
 
 ```sh
-kuebctl get service kiali,tracing -n istio-system
+kubectl get service kiali,tracing -n istio-system
 ```
 
 ```sh
@@ -1357,7 +1357,7 @@ kiali   LoadBalancer   10.96.139.251   yyy.yyy.yyy.yyy   20001:32710/TCP,9090:31
 ```
 
 ```sh
-kuebctl get service tracing -n istio-system
+kubectl get service tracing -n istio-system
 ```
 
 ```sh
