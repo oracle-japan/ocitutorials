@@ -1511,7 +1511,7 @@ Jaegerの画面を開き、`Service`に`console.otmm`を選択し、`Find`をク
 まずは`trip-manager`のPod名を確認します。  
 
 ```sh
-kuebctl get pods -n otmm
+kubectl get pods -n otmm
 ```
 
 ```sh
