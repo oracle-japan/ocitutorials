@@ -69,13 +69,13 @@ jwks_uri | アプリケーションが利用するトークン(JWT)を検証す�
 コンパートメントOCID|ATPをプロビジョニングする際に利用する情報です。  
 
 **手順0-1について**  
-手順0-1はIdeneity Cloud Serviceアカウントでの手順となっております。  
+手順0-1はIdentity Cloud Serviceアカウントでの手順となっております。  
 新しく環境を作成された方はIdentity Domainに移行しており、この場合の手順は別途ご案内します。
 {: .notice--info}
 
-### 0-1. Ideneity Cloud Serviceの機密アプリケーション作成
+### 0-1. Identity Cloud Serviceの機密アプリケーション作成
 
-ここでは、MicroTxが通信を保護するために利用するIdeneity Cloud Serviceアプリケーションを作成し、以下の項目を取得します。
+ここでは、MicroTxが通信を保護するために利用するIdentity Cloud Serviceアプリケーションを作成し、以下の項目を取得します。
 
 項目|説明
 -|-
@@ -125,7 +125,7 @@ Name|`otmm-app`|今回利用するConfidential Application(機密アプリケー
 
 ![00-07.png](00-07.png)
 
-`Allowed Grant Type`と`Redirect URL`を以下のように入力し、`Next`をクリックします。  
+`Allowed Grant Type`を以下のように入力し、`Next`をクリックします。  
 
 key|value|説明
 -|-
@@ -165,7 +165,7 @@ Activateされると以下の画面が表示されます。
 
 ![00-17.png](00-17.png)
 
-これで、Ideneity Cloud Serviceの機密アプリケーション作成は完了です。
+これで、Identity Cloud Serviceの機密アプリケーション作成は完了です。
 
 ### 0-2. jwks_urlの確認
 
@@ -181,7 +181,7 @@ Identity Cloud Serviceのディスカバリーエンドポイントは以下の�
 https://<tenant-base-url>/.well-known/openid-configuration
 ```
 
-`<tenant-base-url>`の部分は、[Ideneity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)でIdentity Cloud Serviceの管理コンソールにアクセスした際のURLに含まれています。  
+`<tenant-base-url>`の部分は、[Identity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)でIdentity Cloud Serviceの管理コンソールにアクセスした際のURLに含まれています。  
 
 例えば、管理コンソールのURLが以下の場合、
 
@@ -547,7 +547,7 @@ key|value|
 enabled|"true"
 identityProviderName|"IDCS"
 identityProviderUrl|https://[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`<tenant-base-url>`
-identityProviderClientId|[0-1. Ideneity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)で作成した`クライアントID`
+identityProviderClientId|[0-1. Identity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)で作成した`クライアントID`
 
 最後に85行目〜92行目を書き換えます。  
 
@@ -961,7 +961,7 @@ INFO[0070] OLM has successfully installed "oci-service-operator.v1.0.0"
 次にATPをプロビジョニングするためのManifestを作成します。  
 
 まずは、ATPの管理者パスワードをSecretリソースとして作成します。  
-今回は"okehandson__Oracle1234"としてパスワードを作成します。  
+今回は"microtxhandson__Oracle1234"としてパスワードを作成します。  
 (管理者パスワードは2つのATPインスタンス共通とします)
 
 **Secretについて**  
@@ -969,11 +969,11 @@ Secretリソースについては[こちら](https://kubernetes.io/docs/concepts
 {: .notice--info}
 
 ```sh
-kubectl create secret generic admin-passwd --from-literal=password=okehandson__Oracle1234 -n otmm
+kubectl create secret generic admin-passwd --from-literal=password=microtxhandson__Oracle1234 -n otmm
 ```
 
 次にWalletファイルのパスワードをSecretリソースとして作成します。  
-今回は管理者パスワードと同じ"okehandson__Oracle1234"としてパスワードを作成します。  
+今回は管理者パスワードと同じ"microtxhandson__Oracle1234"としてパスワードを作成します。  
 (管理者パスワードは2つのATPインスタンス共通とします)
 
 ```sh
@@ -1173,8 +1173,8 @@ kubectl create secret generic idcs-cred --from-literal=IDCS_URL=https://<tenant-
 項目|説明
 -|-
 tenant-base-url | [0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`<tenant-base-url>`
-クライアントID | [0-1. Ideneity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)で作成した`クライアントID`
-クライアント・シークレット | [0-1. Ideneity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)で作成した`クライアント・シークレット`
+クライアントID | [0-1. Identity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)で作成した`クライアントID`
+クライアント・シークレット | [0-1. Identity Cloud Serviceの機密アプリケーション作成](#0-1-ideneity-cloud-serviceの機密アプリケーション作成)で作成した`クライアント・シークレット`
 
 この情報はサンプルアプリケーションのコンソール画面でのログインとバックエンドのサービスを呼び出すためのトークンを取得するために利用します。  
 
@@ -1259,7 +1259,7 @@ zipkin                 ClusterIP      10.96.248.158   <none>            9411/TCP
 `istio-ingressgateway`の`EXTERNAL-IP`を利用してアクセスします。
 実態はOCI LoadBalancerがプロビジョニングされています。  
 
-今回のサンプルアプリケーションのUIは`http:xxx.xxx.xxx.xxx/demo-console/`でアクセスできます。  
+今回のサンプルアプリケーションのUIは`http://xxx.xxx.xxx.xxx/demo-console/`でアクセスできます。  
 
 ブラウザでアクセスすると以下のような画面が表示されます。  
 
