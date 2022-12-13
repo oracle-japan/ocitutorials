@@ -1,0 +1,2348 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!! | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/microtx-for-beginners/">
+
+
+  <meta property="og:description" content="Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2022-12-13T12:05:45+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/microtx-for-beginners/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/" class="active">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!">
+    <meta itemprop="description" content="Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。">
+    <meta itemprop="datePublished" content="2022-12-13T12:05:45+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ゴールを確認する">ゴールを確認する</a></li><li><a href="#0事前準備">0.事前準備</a><ul><li><a href="#0-1-ideneity-cloud-serviceの機密アプリケーション作成">0-1. Ideneity Cloud Serviceの機密アプリケーション作成</a></li><li><a href="#0-2-jwks_urlの確認">0-2. jwks_urlの確認</a></li><li><a href="#0-3-その他必要アイテムの取得">0-3. その他必要アイテムの取得</a><ul><li><a href="#0-3-1-ユーザ名の確認">0-3-1. ユーザ名の確認</a></li><li><a href="#0-3-2-認証トークンの作成">0-3-2. 認証トークンの作成</a></li><li><a href="#0-3-3-テナンシ名とオブジェクトストレージネームスペースの確認">0-3-3. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認</a></li><li><a href="#0-3-4-コンパートメントocidの確認">0-3-4. コンパートメントOCIDの確認</a></li><li><a href="#0-3-5-ocirのレポジトリ作成">0-3-5. OCIRのレポジトリ作成</a></li><li><a href="#0-3-6-サンプルアプリケーションレポジトリのクローン">0-3-6. サンプルアプリケーションレポジトリのクローン</a></li></ul></li></ul></li><li><a href="#1microtxのデプロイ">1.MicroTxのデプロイ</a><ul><li><a href="#1-1-動的グループとポリシーの設定">1-1. 動的グループとポリシーの設定</a></li><li><a href="#1-2-microtxバイナリのダウンロード">1-2. MicroTxバイナリのダウンロード</a></li><li><a href="#1-3-microtxのhelm-chartの編集">1-3. MicroTxのhelm chartの編集</a></li><li><a href="#1-4-istioctlのインストール">1-4. istioctlのインストール</a></li><li><a href="#1-5-microtxのデプロイ">1-5. MicroTxのデプロイ</a></li></ul></li><li><a href="#2サンプルアプリケーションのデプロイ">2.サンプルアプリケーションのデプロイ</a><ul><li><a href="#2-1-atpインスタンスの作成">2-1. ATPインスタンスの作成</a><ul><li><a href="#2-1-1-operator-sdkおよびオペレータライフサイクルマネージャolmのインストール">2-1-1. Operator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)のインストール</a></li><li><a href="#2-1-2-atpのプロビジョニング">2-1-2. ATPのプロビジョニング</a></li></ul></li><li><a href="#2-2-jaegerとkialiのインストール">2-2. JaegerとKialiのインストール</a></li><li><a href="#2-3-サンプルアプリケーションのデプロイ">2-3. サンプルアプリケーションのデプロイ</a></li></ul></li><li><a href="#3microtxを体験しよう">3.MicroTxを体験しよう</a><ul><li><a href="#3-1-動作確認">3-1. 動作確認</a></li><li><a href="#3-2-正常パターンをjaegerとkialiで確認">3-2. 正常パターンをJaegerとKialiで確認</a></li><li><a href="#3-3-異常パターンをjaegerとkialiで確認">3-3. 異常パターンをJaegerとKialiで確認</a></li><li><a href="#3-4-オプション再度試したい方">3-4. 【オプション】再度試したい方</a></li></ul></li><li><a href="#4まとめ">4.まとめ</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルでは、別々のデータベースを持つ2つのサンプルアプリケーション間の分散トランザンクションについて、Oracle Transaction Manager for Microservices(MicroTx)を利用しながら一貫性を確保する体験をしていただく内容になっています。</p>
+
+<p>このチュートリアルには以下のサービスが含まれます。</p>
+
+<ul>
+  <li>
+    <dl>
+      <dt><a href="https://www.oracle.com/jp/cloud/compute/container-engine-kubernetes.html">Oracle Container Engine for Kubernetes</a>（略称：OKE）:</dt>
+      <dd>マネージドなKuberentesクラスタを提供するクラウドサービスです。</dd>
+    </dl>
+  </li>
+  <li>
+    <dl>
+      <dt><a href="https://www.oracle.com/jp/database/transaction-manager-for-microservices/">Oracle Transaction Manager for Microservices</a>（略称：MicroTx）:</dt>
+      <dd>Oracleが提供する分散トランザクションマネージャです。</dd>
+    </dl>
+  </li>
+  <li>
+    <dl>
+      <dt><a href="https://www.oracle.com/jp/database/atp-cloud.html">Oracle Autonomous Transaction Processing</a>（略称：ATP）:</dt>
+      <dd>運用がすべて自動化された自律型データベースサービスです。</dd>
+    </dl>
+  </li>
+</ul>
+
+<p class="notice--warning"><strong>MicroTxについて</strong><br />
+MicroTxは現在Free版での提供となり、商用環境ではご利用頂けません。(評価/検証目的でのご利用となります)<br />
+今回のハンズオンもFree版のMicroTxを利用します。<br />
+商用環境でご利用いただけるMicroTxは後日リリース予定です。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<p>チュートリアルを開始する前に以下を準備してください。</p>
+
+<ul>
+  <li>
+    <p><a href="https://cloud.oracle.com/ja_JP/tryit">Oracle Cloudのアカウントを取得済みであること</a></p>
+  </li>
+  <li>
+    <p><a href="/ocitutorials/cloud-native/oke-for-commons/">OKEハンズオン事前準備</a>を実施済みであること</p>
+  </li>
+</ul>
+
+<p>Oracle Cloud Infrastructureの基本操作は<a href="/ocitutorials/beginners/getting-started/">チュートリアル : OCIコンソールにアクセスして基本を理解する</a>をご確認ください。</p>
+
+<h2 id="ゴールを確認する">ゴールを確認する</h2>
+
+<p>はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。<br />
+手順を最後まで行うと、下図のような環境が構成されます。</p>
+
+<p><img src="00-00.png" alt="00-00.png" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>構成要素</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OKE</td>
+      <td>アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。</td>
+    </tr>
+    <tr>
+      <td>ATP</td>
+      <td>今回デプロイするサンプルアプリケーションが利用するデータベースです。今回は2つのアプリケーションそれぞれに1つずつATPを持ちます。</td>
+    </tr>
+    <tr>
+      <td>MicroTx</td>
+      <td>2つのアプリケーション間のトランザクション一貫性を確保するための分散トランザクションマネージャです。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この全体像のうち、OKEに関しては、すでに<a href="/ocitutorials/cloud-native/oke-for-commons/">OKEハンズオン事前準備</a>で構築済みとなります。</p>
+
+<p>この環境を構築後にサンプルアプリケーションを利用して、MicroTxを利用したトランザクション制御を体験して頂きます。</p>
+
+<h2 id="0事前準備">0.事前準備</h2>
+
+<p>ここでは、後続の手順で利用するトークンやリソースの準備を行います。<br />
+準備する項目は以下の8つです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>クライアントID</td>
+      <td>MicroTxが利用する認証情報を作成し、通信を保護するためのIdentity Provider(このチュートリアルではIdentity Cloud Serviceを利用)アプリケーションのクライアントID</td>
+    </tr>
+    <tr>
+      <td>クライアントシークレット</td>
+      <td>MicroTxが利用する認証情報を作成し、通信を保護するためのIdentity Provider(このチュートリアルではIdentity Cloud Serviceを利用)アプリケーションのクライアント・シークレット</td>
+    </tr>
+    <tr>
+      <td>jwks_uri</td>
+      <td>アプリケーションが利用するトークン(JWT)を検証するための公開鍵の情報を含んだエンドポイント</td>
+    </tr>
+    <tr>
+      <td>ユーザ名</td>
+      <td>OCIのリソース操作に必要なユーザ名です。今回は、OCIRへのアクセスに利用します。</td>
+    </tr>
+    <tr>
+      <td>認証トークン</td>
+      <td>OCIのリソース操作に必要なトークンです。今回は、OCIRへのアクセスに利用します。</td>
+    </tr>
+    <tr>
+      <td>オブジェクト・ストレージ・ネームスペース</td>
+      <td>OCIRへのアクセスに必要な情報です。</td>
+    </tr>
+    <tr>
+      <td>コンパートメントOCID</td>
+      <td>ATPをプロビジョニングする際に利用する情報です。</td>
+    </tr>
+    <tr>
+      <td>OCIRレポジトリ</td>
+      <td>今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--info"><strong>手順0-1について</strong><br />
+手順0-1はIdeneity Cloud Serviceアカウントでの手順となっております。<br />
+新しく環境を作成された方はIdentity Domainに移行しており、この場合の手順は別途ご案内します。</p>
+
+<h3 id="0-1-ideneity-cloud-serviceの機密アプリケーション作成">0-1. Ideneity Cloud Serviceの機密アプリケーション作成</h3>
+
+<p>ここでは、MicroTxが通信を保護するために利用するIdeneity Cloud Serviceアプリケーションを作成し、以下の項目を取得します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>クライアントID</td>
+      <td>MicroTxが利用する認証情報を作成し、通信を保護するためのIdentity Provider(このチュートリアルではIdentity Cloud Serviceを利用)アプリケーションのクライアントID</td>
+    </tr>
+    <tr>
+      <td>クライアントシークレット</td>
+      <td>MicroTxが利用する認証情報を作成し、通信を保護するためのIdentity Provider(このチュートリアルではIdentity Cloud Serviceを利用)アプリケーションのクライアント・シークレット</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>まず、OCIコンソールにログインします。<br />
+右上にある人型マークをクリックして、<code class="language-plaintext highlighter-rouge">サービス・ユーザー・コンソール</code>をクリックします。</p>
+
+<p><img src="00-01.png" alt="00-01.png" /></p>
+
+<p>遷移後に言語設定画面が表示された場合は、以下のように選択し、<code class="language-plaintext highlighter-rouge">OK</code>をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Languages</td>
+      <td>日本語</td>
+    </tr>
+    <tr>
+      <td>Timezone</td>
+      <td>Japan</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="00-02.png" alt="00-02.png" /></p>
+
+<p>表示された画面から<code class="language-plaintext highlighter-rouge">Oracle Identity Cloud Service</code>の<code class="language-plaintext highlighter-rouge">管理コンソール</code>をクリックします。</p>
+
+<p><img src="00-03.png" alt="00-03.png" /></p>
+
+<p>管理コーンソールに遷移したら、左上のハンバーガーメニューをクリックし、<code class="language-plaintext highlighter-rouge">Applications</code>をクリックします。</p>
+
+<p><img src="00-04.png" alt="00-04.png" /></p>
+
+<p>左上にある<code class="language-plaintext highlighter-rouge">Add</code>をクリックします。</p>
+
+<p><img src="00-05.png" alt="00-05.png" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Confidential Application</code>を選択します。</p>
+
+<p><img src="00-06.png" alt="00-06.png" /></p>
+
+<p class="notice--info"><strong><code class="language-plaintext highlighter-rouge">Confidential Application(機密アプリケーション)</code>について</strong><br />
+Identity Cloud Serviceでは、Confidential Application(機密アプリケーション)を利用することでOAuth 2.0を利用したアプリケーションを構築することができます。<br />
+今回はMictroTxがこのConfidential Application(機密アプリケーション)の設定を利用します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Configure this application as a client now</code>を選択し、以下のように入力し、<code class="language-plaintext highlighter-rouge">Next</code>をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Name</td>
+      <td><code class="language-plaintext highlighter-rouge">otmm-app</code></td>
+      <td>今回利用するConfidential Application(機密アプリケーション)名</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="00-07.png" alt="00-07.png" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Allowed Grant Type</code>と<code class="language-plaintext highlighter-rouge">Redirect URL</code>を以下のように入力し、<code class="language-plaintext highlighter-rouge">Next</code>をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Allowed Grant Type</td>
+      <td><code class="language-plaintext highlighter-rouge">Resource Owner</code>/<code class="language-plaintext highlighter-rouge">Client Credencials</code>/<code class="language-plaintext highlighter-rouge">JWT Assertion</code>/<code class="language-plaintext highlighter-rouge">Refresh Token</code></td>
+      <td>許可する認可タイプ</td>
+    </tr>
+    <tr>
+      <td>Redirect URL</td>
+      <td><code class="language-plaintext highlighter-rouge">https://google.com</code>(他の任意のURLでもOK)</td>
+      <td>今回は利用しないですが、必須項目なので任意の値</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="00-08.png" alt="00-08.png" /></p>
+
+<p>以降は<code class="language-plaintext highlighter-rouge">Next</code>を選択していきます。</p>
+
+<p><img src="00-09.png" alt="00-09.png" />
+<img src="00-10.png" alt="00-10.png" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Finish</code>をクリックします。</p>
+
+<p><img src="00-11.png" alt="00-11.png" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Client ID</code>と<code class="language-plaintext highlighter-rouge">Client Secret</code>が表示されるので、メモ帳などに控えておいてください。<br />
+その後、<code class="language-plaintext highlighter-rouge">Close</code>をクリックします。</p>
+
+<p><img src="00-12.png" alt="00-12.png" /></p>
+
+<p>クリックしたら、右上にある<code class="language-plaintext highlighter-rouge">Activate</code>をクリックします。<br />
+確認画面で<code class="language-plaintext highlighter-rouge">OK</code>をクリックします。</p>
+
+<p><img src="00-13.png" alt="00-13.png" />
+<img src="00-14.png" alt="00-14.png" /></p>
+
+<p>Activateされると以下の画面が表示されます。</p>
+
+<p><img src="00-15.png" alt="00-15.png" /></p>
+
+<p>最後に、左上のハンバーガーメニューをクリックし、<code class="language-plaintext highlighter-rouge">Settings</code>=&gt;<code class="language-plaintext highlighter-rouge">Default Settings</code>をクリックします。</p>
+
+<p><img src="00-16.png" alt="00-16.png" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Access Signing Certificate</code>のチェックを入れ、<code class="language-plaintext highlighter-rouge">Save</code>をクリックします。</p>
+
+<p><img src="00-17.png" alt="00-17.png" /></p>
+
+<p>これで、Ideneity Cloud Serviceの機密アプリケーション作成は完了です。</p>
+
+<h3 id="0-2-jwks_urlの確認">0-2. jwks_urlの確認</h3>
+
+<p>ここでは、MicroTxに設定する以下の項目を確認します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>jwks_uri</td>
+      <td>アプリケーションが利用するトークン(JWT)を検証するための公開鍵の情報を含んだエンドポイント</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Identity Cloud Serviceのディスカバリーエンドポイントは以下の形式になっています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://&lt;tenant-base-url&gt;/.well-known/openid-configuration
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">&lt;tenant-base-url&gt;</code>の部分は、<a href="#0-1-ideneity-cloud-serviceの機密アプリケーション作成">Ideneity Cloud Serviceの機密アプリケーション作成</a>でIdentity Cloud Serviceの管理コンソールにアクセスした際のURLに含まれています。</p>
+
+<p>例えば、管理コンソールのURLが以下の場合、</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://idcs-xxxxxxxxxxxxxxxxxxxxxxxxxx.identity.oraclecloud.com/ui/v1/adminconsole
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">idcs-xxxxxxxxxxxxxxxxxxxxxxxxxx.identity.oraclecloud.com</code>の部分が<code class="language-plaintext highlighter-rouge">&lt;tenant-base-url&gt;</code>となるので、ディスカバリーエンドポイントのURLは</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://idcs-xxxxxxxxxxxxxxxxxxxxxxxxxx.identity.oraclecloud.com/.well-known/openid-configuration
+</code></pre></div></div>
+
+<p>となります。</p>
+
+<p>このURLにブラウザからアクセスし、以下のような画面が表示されればOKです。</p>
+
+<p>表示された情報の中で、<code class="language-plaintext highlighter-rouge">jwks_uri</code>と書かれている行をメモしておきます。
+このURLは後ほど利用するので、メモ帳などに控えておいてください。</p>
+
+<p><img src="00-18.png" alt="00-18.png" /></p>
+
+<h3 id="0-3-その他必要アイテムの取得">0-3. その他必要アイテムの取得</h3>
+
+<p>ここでは、以下の項目を取得します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ユーザ名</td>
+      <td>OCIのリソース操作に必要なユーザ名です。今回は、OCIRへのアクセスに利用します。</td>
+    </tr>
+    <tr>
+      <td>認証トークン</td>
+      <td>OCIのリソース操作に必要なトークンです。今回は、OCIRへのアクセスに利用します。</td>
+    </tr>
+    <tr>
+      <td>オブジェクト・ストレージ・ネームスペース</td>
+      <td>OCIRへのアクセスに必要な情報です。</td>
+    </tr>
+    <tr>
+      <td>コンパートメントOCID</td>
+      <td>ATPをプロビジョニングする際に利用する情報です。</td>
+    </tr>
+    <tr>
+      <td>OCIRレポジトリ</td>
+      <td>今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="0-3-1-ユーザ名の確認">0-3-1. ユーザ名の確認</h4>
+<p>ここでは、ユーザ名の確認を行います。</p>
+
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルに表示されているユーザ名をエディタなどに記録しておきます。</p>
+
+<p><img src="0-014.jpg" alt="0-014.jpg" /></p>
+
+<p>これでユーザ名の確認は完了です。</p>
+
+<h4 id="0-3-2-認証トークンの作成">0-3-2. 認証トークンの作成</h4>
+
+<p>ここでは、OCIRへのアクセスに必要な認証トークンを取得します。</p>
+
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名をクリックします。</p>
+
+<p><img src="0-001.jpg" alt="0-001.jpg" /></p>
+
+<p>下にスクロールして「リソース」の「認証トークン」に移動し、「トークンの生成」ボタンをクリックします。</p>
+
+<p><img src="0-002.jpg" alt="0-002.jpg" /></p>
+
+<p><img src="0-003.jpg" alt="0-003.jpg" />をクリックします。</p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>説明</td>
+      <td>microtx handson</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="0-004.jpg" alt="0-004.jpg" /></p>
+
+<p><img src="0-005.jpg" alt="0-005.jpg" />をクリックします。</p>
+
+<p><img src="0-006.jpg" alt="0-006.jpg" /></p>
+
+<p>表示されたトークンをコピーして、エディタなどに記録しておきます。</p>
+
+<p class="notice--warning"><strong>受講者の方へ</strong><br />
+生成されたトークンは一回のみ表示されます。<br />
+「コピー」をクリックしてトークンがコピーされ、どこに保存してください。完了したら、「閉じる」ボタンをクリックします。（注：忘れたときは作成されたトークンを削除して、再度生成してください。）</p>
+
+<h4 id="0-3-3-テナンシ名とオブジェクトストレージネームスペースの確認">0-3-3. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認</h4>
+
+<p>ここでは、OCIコードレポジトリへのアクセスおよびOCIRへコンテナイメージをプッシュする際に必要となるテナンシ名とオブジェクト・ストレージ・ネームスペースを確認します。</p>
+
+<p>OCIコンソール画面右上の人型のアイコンをクリックし、テナンシ名をクリックします。</p>
+
+<p><img src="0-007.jpg" alt="0-007.jpg" /></p>
+
+<p>2つの赤枠部分の値をコピーして、エディタなどに保存しておきます。<br />
+上の赤枠がテナンシ名(<code class="language-plaintext highlighter-rouge">名前</code>)、下の赤枠がオブジェクト・ストレージ・ネームスペース(<code class="language-plaintext highlighter-rouge">オブジェクト・ストレージ・ネームスペース</code>)になります。</p>
+
+<p><img src="0-008.jpg" alt="0-008.jpg" /></p>
+
+<p>以上で、テナンシ名とオブジェクト・ストレージ・ネームスペースの確認は完了です。</p>
+
+<h4 id="0-3-4-コンパートメントocidの確認">0-3-4. コンパートメントOCIDの確認</h4>
+
+<p>ここでは、ATPをプロビジョニングする際に利用するコンパートメントOCIDの確認を行います。</p>
+
+<p>OCIコンソールのハンバーガメニューより、「アイデンティティとセキュリティ」メニューの「コンパートメント」をクリックします。</p>
+
+<p><img src="0-015.jpg" alt="0-015.jpg" /></p>
+
+<p>ご自身のコンパートメントが表示されているので、クリックします。</p>
+
+<p><img src="0-016.jpg" alt="0-016.jpg" /></p>
+
+<p class="notice--warning"><strong>ハンズオンに利用するコンパートメントついて</strong><br />
+トライアル環境でのハンズオンの場合は、ルートコンパートメントを利用します。(コンパートメントの語尾に<code class="language-plaintext highlighter-rouge">(ルート)</code>と付与されています)<br />
+それ以外の環境でご自身に割り当てられているコンパートメントがある場合は、そちらのコンパートメントをご確認ください。</p>
+
+<p>「コンパートメント情報」内にある赤枠部分の値をコピーして、エディタなどに保存しておきます。</p>
+
+<p><img src="0-017.jpg" alt="0-017.jpg" /></p>
+
+<p>以上で、コンパートメントOCIDの確認は完了です。</p>
+
+<h4 id="0-3-5-ocirのレポジトリ作成">0-3-5. OCIRのレポジトリ作成</h4>
+
+<p>ここでは、ビルドしたコンテナイメージをプッシュするためのレポジトリをOCIRに作成します。</p>
+
+<p>OCIコンソールのハンバーガメニューより、「開発者サービス」の「コンテナ・レジストリ」をクリックします。</p>
+
+<p><img src="0-009.jpg" alt="0-009.jpg" /></p>
+
+<div class="notice--warning">
+  <p><strong>ハンズオンに利用するコンパートメントついて</strong><br />
+トライアル環境でのハンズオンの場合は、ルートコンパートメントを利用します。<br />
+OCIRのコンソール画面はデフォルトでルートコンパートメントが選択されますが、ご自身に割り当てられているコンパートメントがある場合は、そちらのコンパートメントを利用してください。<br />
+コンパートメントはOCIRのコンソール画面の左側から選択できます。
+<img src="0-018.jpg" alt="0-018.jpg" /></p>
+
+</div>
+
+<p><img src="0-010.jpg" alt="0-010.jpg" />をクリックします。</p>
+
+<p>以下の項目を入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>リポジトリ名</td>
+      <td>microtx-handson</td>
+    </tr>
+    <tr>
+      <td>アクセス</td>
+      <td><code class="language-plaintext highlighter-rouge">プライベート</code>を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--warning"><strong>レポジトリ名について</strong><br />
+OCIRのレポジトリ名はテナンシで一意になります。<br />
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code class="language-plaintext highlighter-rouge">microtx-handson01</code>や<code class="language-plaintext highlighter-rouge">microtx-handson-tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</p>
+
+<p><img src="0-011.jpg" alt="0-011.jpg" /></p>
+
+<p><img src="0-012.jpg" alt="0-012.jpg" />をクリックします。</p>
+
+<p>以上で、事前準備は完了です。</p>
+
+<h4 id="0-3-6-サンプルアプリケーションレポジトリのクローン">0-3-6. サンプルアプリケーションレポジトリのクローン</h4>
+
+<p>ここでは、今回のハンズオンで利用するサンプルアプリケーションが格納されているレポジトリをクローンします。</p>
+
+<p><a href="/ocitutorials/cloud-native/oke-for-commons/#2cli実行環境cloud-shellの準備">Cloud Shellを起動</a>します。</p>
+
+<p>以下のコマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/microtx-handson.git
+</code></pre></div></div>
+
+<p>これでサンプルアプリケーションのクローンは完了です。</p>
+
+<h2 id="1microtxのデプロイ">1.MicroTxのデプロイ</h2>
+
+<p>ここでは、OKE上にMicroTxのデプロイを行っていきます。</p>
+
+<p>MicroTxのデプロイは以下の流れで実施します。<br />
+3についてはMicroTxに付属しているスクリプトを利用して実施します。</p>
+
+<p>以下の流れで実施します。</p>
+
+<ol>
+  <li>動的グループの設定</li>
+  <li>MicroTxバイナリのダウンロード</li>
+  <li>MicroTxのhelm chartの編集</li>
+  <li>istioctlのインストール</li>
+  <li>MicroTxのデプロイ</li>
+</ol>
+
+<h3 id="1-1-動的グループとポリシーの設定">1-1. 動的グループとポリシーの設定</h3>
+
+<p>ここでは、このハンズオンに必要な動的グループとポリシーを作成します。</p>
+
+<p class="notice--info"><strong>ポリシーについて</strong><br />
+Oracle Cloud Infrastrctureにはポリシーという考え方があります。 
+ポリシーを利用すると、ユーザや動的グループがどのリソースやサービスでどのような操作を実行可能にするかを制御することができます。<br />
+ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Concepts/policygetstarted.htm#Getting_Started_with_Policies">こちら</a>のページをご確認ください。</p>
+
+<p>今回は、ポリシーの作成(動的グループを含む)をシェルスクリプトで簡略化していますが、以下の動的グループとポリシーが設定されます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>動的グループ</th>
+      <th>ルール</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OCI_MicroTx_Dynamic_Group</td>
+      <td>instance.compartment.id = ‘コンパートメントOCID’,resource.compartment.id = ‘コンパートメントOCID’</td>
+      <td>コンパートメント内の全てのリソースやインスタンスを含めた動的グループ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--info"><strong>コンパートメントについて</strong><br />
+Oracle Cloud Infrastrctureにはコンパートメントという考え方があります。<br />
+コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。<br />
+コンパートメントの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingcompartments.htm">こちら</a>のページをご確認ください。</p>
+
+<p class="notice--info"><strong>動的グループについて</strong><br />
+Oracle Cloud Infrastrctureには動的グループという考え方があります。
+これを利用すると、ユーザではなく、OCI上のリソースやインスタンスを主体とした操作を実現できます。<br />
+動的グループの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm">こちら</a>のページをご確認ください。</p>
+
+<p class="notice--warning"><strong>本ハンズオンでの動的グループについて</strong><br />
+今回は、簡易的にハンズオンを実施するために、コンパートメント内の全てのリソースやインスタンスを動的グループとして含める設定を行なっています。<br />
+本来は、各サービスのタイプを指定して動的グループを作成することになります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ポリシー</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Allow dynamic-group OCI_MicroTx_Dynamic_Group to manage autonomous-database in compartment id ‘コンパートメントOCID’</td>
+      <td>後続の手順で登場するOCI Service Operator for Kubernetes(OSOK)がAutonomous Transaction Processingを管理可能とするポリシー</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>それでは、上記の動的グループとポリシー設定するためのシェルスクリプトを実行します。</p>
+
+<p class="notice--warning"><strong>ポリシーについて</strong><br />
+ここで利用するスクリプトは、トライアル環境向けに作成しており、テナンシ管理者権限を持つことを前提にしております。<br />
+社内環境などでチュートリアルを実施されている方は、<strong>手動で</strong>動的グループの作成およびご自身に割り当てられているコンパートメントに対してポリシーを設定してください。<br />
+なお、動的グループを作成するには権限が必要となりますので、<code class="language-plaintext highlighter-rouge">Authorization failed</code>というメッセージが表示される場合は、テナンシ管理者にご連絡ください。</p>
+
+<p>シェルスクリプトは<a href="#0-1-ハンズオン資材の取得">0-1.ハンズオン資材の取得</a>で取得した資材内にあります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>microtx-handson
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>prepare
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x prepare.sh
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./prepare.sh
+</code></pre></div></div>
+
+<p>以下のように出力されれば問題ありません。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxxxx.xxxxxx@gmail.com"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2022-01-31T01:35:54.465Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_MicroTx_Dynamic_Group"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"matching-rule"</span>: <span class="s2">"any {resource.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq',instance.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq'}"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_MicroTx_Dynamic_Group"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-01-31T01:35:54.528000+00:00"</span>
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"66c9058cf8f1145ce9047130c4a266d816e9dfbf"</span>
+<span class="o">}</span>
+<span class="o">{</span>
+  <span class="s2">"data"</span>: <span class="o">{</span>
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"defined-tags"</span>: <span class="o">{</span>
+      <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxx.xxxx@gmail.com"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2022-01-31T01:35:57.108Z"</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"description"</span>: <span class="s2">"OCI_MicroTx_Dynamic_Group_Policy"</span>,
+    <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.policy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"inactive-status"</span>: null,
+    <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
+    <span class="s2">"name"</span>: <span class="s2">"OCI_MicroTx_Dynamic_Group_Policy"</span>,
+    <span class="s2">"statements"</span>: <span class="o">[</span>
+      <span class="s2">"Allow dynamic-group OCI_MicroTx_Dynamic_Group to manage autonomous-database in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="o">]</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2022-01-31T01:35:57.220000+00:00"</span>,
+    <span class="s2">"version-date"</span>: null
+  <span class="o">}</span>,
+  <span class="s2">"etag"</span>: <span class="s2">"e0fb30d026d2a4f091058c2f686d51996ea59f8c"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>これでポリシー作成は完了です。</p>
+
+<p>ホームディレクトリに戻っておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+</code></pre></div></div>
+
+<h3 id="1-2-microtxバイナリのダウンロード">1-2. MicroTxバイナリのダウンロード</h3>
+
+<p>ここでは、OCIRにMicroTxのイメージをプッシュしていきます。
+MicroTxのイメージをプッシュはスクリプトを利用して実施します。</p>
+
+<p>まずはMicroTxのダウンロードを行います。<br />
+<a href="https://www.oracle.com/jp/database/transaction-manager-for-microservices/">こちらのURL</a>にブラウザからアクセスします。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Oracle TMM Freeのダウンロード</code>(画像の赤枠部分)をクリックします。</p>
+
+<p><img src="1-001.png" alt="1-001.jpg" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Download</code>(画像の赤枠部分)をクリックします。</p>
+
+<p><img src="1-002.png" alt="1-002.jpg" /></p>
+
+<p>Oracleアカウントにログインしていない場合は、ログイン画面が表示されるので、ユーザ名とパスワードを入力し、<code class="language-plaintext highlighter-rouge">サインイン</code>をクリックします。</p>
+
+<p><img src="1-003.png" alt="1-003.jpg" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Download</code>(画像の赤枠部分)をクリックします。</p>
+
+<p><img src="1-004.png" alt="1-004.jpg" /></p>
+
+<p>Oracle Download Managerがローカルにダウンロードされるので、ダウンロードが完了したら実行します。</p>
+
+<p>実行すると、MicroTxのダウンロード場所が選択できるので、任意の場所を選択し、<code class="language-plaintext highlighter-rouge">Next</code>をクリックします。</p>
+
+<p><img src="1-005.png" alt="1-005.jpg" /></p>
+
+<p>ダウンロードが開始します。</p>
+
+<p><img src="1-006.png" alt="1-006.jpg" /></p>
+
+<p>ダウンロードが完了したら、Cloud Shellにアップロードします。<br />
+Cloud Shellの右端にある歯車マークをクリックし、<code class="language-plaintext highlighter-rouge">アップロード</code>をクリックします。</p>
+
+<p><img src="1-007.png" alt="1-007.jpg" /></p>
+
+<p>上記で指定したローカルのダウンロード先からzipファイルを選択します。</p>
+
+<p><img src="1-008.png" alt="1-008.jpg" /></p>
+
+<p>アップロードにはしばらく時間がかかるので、完了するまで待機します。</p>
+
+<p>アップロードが完了したら、ホームディレクトリにあるファイルを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~
+<span class="nb">ls </span>V1031240-01.zip
+</code></pre></div></div>
+
+<p>ファイルを確認したら、解凍します。
+解凍に少し時間がかかる場合があります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip V1031240-01.zip
+</code></pre></div></div>
+
+<p>解凍すると<code class="language-plaintext highlighter-rouge">otmm-22.3</code>というディレクトリが出力されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls </span>otmm-22.3
+</code></pre></div></div>
+
+<p>これで、MicroTxバイナリのダウンロードが完了です。</p>
+
+<h3 id="1-3-microtxのhelm-chartの編集">1-3. MicroTxのhelm chartの編集</h3>
+
+<p>ここでは、MicroTxのインストールにあたって、必要なパラメータを設定していきます。<br />
+MicroTxはhelmを利用してインストールされるため、ここでは<code class="language-plaintext highlighter-rouge">values.yaml</code>にパラメータを設定していきます。</p>
+
+<p>今回は<code class="language-plaintext highlighter-rouge">otmm-22.3/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml</code>を利用します。</p>
+
+<p><code class="language-plaintext highlighter-rouge">qs-oke-values.yaml</code>を開きます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim otmm-22.3/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml
+</code></pre></div></div>
+
+<p>まず、21行目~27行目を書き換えます。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># TMM Container image information</span>
+<span class="na">tmmImage</span><span class="pi">:</span>
+  <span class="c1"># Image path in private Container registry</span>
+  <span class="na">image</span><span class="pi">:</span> <span class="s">tmm:22.3</span>
+  <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">IfNotPresent</span>
+  <span class="c1"># The kubernetes secret for pulling TMM Container image from the private container registry</span>
+  <span class="na">imagePullSecret</span><span class="pi">:</span> <span class="s">regcred</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>image</td>
+      <td><code class="language-plaintext highlighter-rouge">microtx-handson</code>(<a href="#0-3-5-ocirのレポジトリ作成">0-3-5. OCIRのレポジトリ作成</a>で作成したレポジトリ名)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>次に、65行目~72行目を書き換えます。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">#Authorization settings</span>
+  <span class="na">authorization</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
+    <span class="c1">#This indicates the Authorization (Access) and Refresh-Token propagation is enabled/disabled.</span>
+    <span class="na">authTokenPropagationEnabled</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
+    <span class="na">identityProviderName</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+    <span class="na">identityProviderUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+    <span class="na">identityProviderClientId</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+</code></pre></div></div>
+
+<p>以下の項目に書き換えます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>enabled</td>
+      <td>“true”</td>
+    </tr>
+    <tr>
+      <td>identityProviderName</td>
+      <td>“IDCS”</td>
+    </tr>
+    <tr>
+      <td>identityProviderUrl</td>
+      <td><a href="#0-2-jwks_urlの確認">0-2. jwks_urlの確認</a>で確認した<code class="language-plaintext highlighter-rouge">&lt;tenant-base-url&gt;</code></td>
+    </tr>
+    <tr>
+      <td>identityProviderClientId</td>
+      <td><a href="#0-1-ideneity-cloud-serviceの機密アプリケーション作成">0-1. Ideneity Cloud Serviceの機密アプリケーション作成</a>で作成した<code class="language-plaintext highlighter-rouge">クライアントID</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最後に85行目〜92行目を書き換えます。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Authentication using JWT token. Provide JWT token issuer url</span>
+<span class="na">authentication</span><span class="pi">:</span>
+  <span class="na">requestsWithNoJWT</span><span class="pi">:</span> <span class="s">ALLOW</span> <span class="c1"># ALLOW or DENY</span>
+  <span class="na">jwt</span><span class="pi">:</span>
+    <span class="c1"># Identifies the issuer that issued the JWT: example - "http://10.20.30.10:8080/auth/realms/istio"</span>
+    <span class="na">issuer</span><span class="pi">:</span> 
+    <span class="c1"># URL of the provider’s public key set to validate signature of the JWT. Example URL: "http://10.20.30.10:8080/auth/realms/istio/protocol/openid-connect/certs"</span>
+    <span class="na">jwksUri</span><span class="pi">:</span> 
+</code></pre></div></div>
+
+<p>以下の項目に書き換えます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>issuer</td>
+      <td>“https://identity.oraclecloud.com”</td>
+    </tr>
+    <tr>
+      <td>jwksUri</td>
+      <td><a href="#0-2-jwks_urlの確認">0-2. jwks_urlの確認</a>で確認した<code class="language-plaintext highlighter-rouge">jwks_uri</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これで、MicroTxのhelm chartの編集は完了です。</p>
+
+<h3 id="1-4-istioctlのインストール">1-4. istioctlのインストール</h3>
+
+<p>ここでは、<a href="#1-4-microtxのデプロイ">1-4. MicroTxのデプロイ</a>で実行するスクリプトで利用する<code class="language-plaintext highlighter-rouge">istioctl</code>というIstioを操作するためのCLIツールをインストールしておきます。</p>
+
+<p class="notice--info"><strong><code class="language-plaintext highlighter-rouge">istioctl</code>について</strong><br />
+<code class="language-plaintext highlighter-rouge">istioctl</code>は<a href="https://istio.io/latest/docs/reference/commands/istioctl/">こちら</a>をご確認ください。</p>
+
+<p>以下の2つのコマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-sL</span> https://istio.io/downloadIstioctl | sh -
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-L</span> https://istio.io/downloadIstio | sh -
+</code></pre></div></div>
+
+<p>次にディレクトリに移動します。<br />
+<code class="language-plaintext highlighter-rouge">x.xx.x</code>の部分は、ダウンロードされたistioctlのバージョンになっています。<br />
+たとえば、<code class="language-plaintext highlighter-rouge">istio-1.16.0</code>などになっています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>istio-x.xx.x
+</code></pre></div></div>
+
+<p>PATHを通します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/.istioctl/bin:<span class="nv">$PATH</span>
+</code></pre></div></div>
+
+<p>最後に動作確認をします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>istioctl version
+</code></pre></div></div>
+
+<p>以下のようなメッセージが出力されればインストールは完了です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>client version: 1.16.0
+</code></pre></div></div>
+
+<h3 id="1-5-microtxのデプロイ">1-5. MicroTxのデプロイ</h3>
+
+<p><code class="language-plaintext highlighter-rouge">otmm-22.3</code>ディレクトリ直下に<code class="language-plaintext highlighter-rouge">runme.sh</code>というスクリプトがあるので、これを実行します。<br />
+このスクリプトを実行することによって、MictoTxをインストールできます。<br />
+実行権限がない場合があるので、実行権限を付与します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x runme.sh
+</code></pre></div></div>
+
+<p>スクリプトを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./runme.sh 
+</code></pre></div></div>
+
+<p>以下のようなメッセージが出力されるので、今回は<code class="language-plaintext highlighter-rouge">3)</code>を選択します。<br />
+これは環境にOKEを利用することを意味します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">*************************</span>
+
+ Use this script to run microservices and get started with Oracle Transaction Manager <span class="k">for </span>Microservices.
+
+<span class="k">*************************</span>
+
+Enter a number <span class="o">(</span>1-3<span class="o">)</span> to specify the platform on which you want to run the microservice
+1<span class="o">)</span> Docker - only the transaction coordinator will run <span class="k">in </span>a docker container and the sample microservices will run <span class="k">in </span>the <span class="nb">local </span>environment
+2<span class="o">)</span> Minikube
+3<span class="o">)</span> Oracle Cloud Infrastructure Container Engine <span class="k">for </span>Kubernetes <span class="o">(</span>OKE<span class="o">)</span>
+<span class="c">#? 3</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">3</code>を入力すると、初めにIstioのインストールが始まります。</p>
+
+<p class="notice--info"><strong>Istioについて</strong><br />
+MicroTxに必須なコンポートとしてIstioがあります。<br />
+Istioはサービスメッシュを実現するためのプラットフォームになります。サービスメッシュおよびIstioについては、詳細については<a href="https://speakerdeck.com/oracle4engineer/get-started-service-mesh">こちらの資料</a>をご確認ください。</p>
+
+<p>以下のような出力がされれば、Istioのインストールは完了です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#? 3</span>
+Error from server <span class="o">(</span>NotFound<span class="o">)</span>: namespaces <span class="s2">"istio-system"</span> not found
+
+✔ Istio core installed                                                                                                                                                                                                          
+✔ Istiod installed                                                                                                                                                                                                              
+✔ Ingress gateways installed                                                                                                                                                                                                    
+✔ Installation <span class="nb">complete                                                                                                                                                                                                         </span>Making this installation the default <span class="k">for </span>injection and validation.
+
+Thank you <span class="k">for </span>installing Istio 1.15.  Please take a few minutes to tell us about your <span class="nb">install</span>/upgrade experience!  https://forms.gle/SWHFBmwJspusK1hv6
+
+Waiting <span class="k">for </span>Istio-ingressgateway loadbancer to be provisioned. Will try again <span class="k">in </span>5 seconds.
+Waiting <span class="k">for </span>Istio-ingressgateway loadbancer to be provisioned. Will try again <span class="k">in </span>10 seconds.
+Waiting <span class="k">for </span>Istio-ingressgateway loadbancer to be provisioned. Will try again <span class="k">in </span>20 seconds.
+Waiting <span class="k">for </span>Istio-ingressgateway loadbancer to be provisioned. Will try again <span class="k">in </span>40 seconds.
+Waiting <span class="k">for </span>Istio-ingressgateway loadbancer to be provisioned. Will try again <span class="k">in </span>80 seconds.
+</code></pre></div></div>
+
+<div class="notice--warning">
+  <p><strong>IngressのTLS証明書作成について</strong><br />
+スクリプトの中でTLS証明書を作成するプロセスがありますが、条件によってはパスワードを複数回聞かれる可能性があります。<br />
+その場合は、任意のパスワードを入力してください。</p>
+
+</div>
+
+<p>次にMictoTxのコンテナイメージをプッシュするレジストリを入力します。<br />
+ここではOCIRを利用します。<br />
+OCIRのレジストリは<code class="language-plaintext highlighter-rouge">&lt;ご自身が利用されているリージョンのリージョン・コード&gt;.ocir.io</code>となります。<br />
+例えば、東京リージョンの場合は<code class="language-plaintext highlighter-rouge">nrt.ocir.io</code>になります。</p>
+
+<p><code class="language-plaintext highlighter-rouge">&lt;ご自身が利用されているリージョンのリージョン・コード&gt;</code>はご自身が利用されているリージョンに応じて変わりますので、以下の表を参考に設定してください。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>リージョン</th>
+      <th>リージョンコード</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ap-tokyo-1</td>
+      <td>nrt</td>
+    </tr>
+    <tr>
+      <td>ap-osaka-1</td>
+      <td>kix</td>
+    </tr>
+    <tr>
+      <td>ap-melbourne-1</td>
+      <td>mel</td>
+    </tr>
+    <tr>
+      <td>us-ashburn-1</td>
+      <td>iad</td>
+    </tr>
+    <tr>
+      <td>us-phoenix-1</td>
+      <td>phx</td>
+    </tr>
+    <tr>
+      <td>ap-mumbai-1</td>
+      <td>bom</td>
+    </tr>
+    <tr>
+      <td>ap-seoul-1</td>
+      <td>icn</td>
+    </tr>
+    <tr>
+      <td>ap-sydney-1</td>
+      <td>syd</td>
+    </tr>
+    <tr>
+      <td>ca-toronto-1</td>
+      <td>yyz</td>
+    </tr>
+    <tr>
+      <td>ca-montreal-1</td>
+      <td>yul</td>
+    </tr>
+    <tr>
+      <td>eu-frankfurt-1</td>
+      <td>fra</td>
+    </tr>
+    <tr>
+      <td>eu-zurich-1</td>
+      <td>zrh</td>
+    </tr>
+    <tr>
+      <td>sa-saopaulo-1</td>
+      <td>gru</td>
+    </tr>
+    <tr>
+      <td>sa-vinhedo-1</td>
+      <td>vcp</td>
+    </tr>
+    <tr>
+      <td>uk-london-1</td>
+      <td>lhr</td>
+    </tr>
+    <tr>
+      <td>sa-santiago-1</td>
+      <td>scl</td>
+    </tr>
+    <tr>
+      <td>ap-hyderabad-1</td>
+      <td>hyd</td>
+    </tr>
+    <tr>
+      <td>eu-amsterdam-1</td>
+      <td>ams</td>
+    </tr>
+    <tr>
+      <td>me-jeddah-1</td>
+      <td>jed</td>
+    </tr>
+    <tr>
+      <td>ap-chuncheon-1</td>
+      <td>yny</td>
+    </tr>
+    <tr>
+      <td>me-dubai-1</td>
+      <td>dxb</td>
+    </tr>
+    <tr>
+      <td>uk-cardiff-1</td>
+      <td>cwl</td>
+    </tr>
+    <tr>
+      <td>us-sanjose-1</td>
+      <td>sjc</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Istio-ingressgateway url is https://demo.tmm.dev:443
+Creating a namespace <span class="s1">'otmm'</span> <span class="k">for </span>deployment.namespace/otmm created
+
+Adding label <span class="s1">'istio-injection=enabled'</span> to namespace <span class="s1">'otmm'</span> <span class="k">for </span>enabling istio envoy injection.namespace/otmm labeled
+
+Enter docker image registry <span class="o">(</span>Example: iad.ocir.io<span class="o">)</span>: 
+</code></pre></div></div>
+
+<p>次にOCIRのパスを入力します。<br />
+入力値は<code class="language-plaintext highlighter-rouge">&lt;ご自身が利用されているリージョンのリージョン・コード&gt;.ocir.io/&lt;オブジェクトストレージネームスペース&gt;</code>となります。<br />
+<code class="language-plaintext highlighter-rouge">&lt;オブジェクトストレージネームスペース&gt;</code>は<a href="#0-3-3-テナンシ名とオブジェクトストレージネームスペースの確認">0-3-3. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認</a>で確認した<code class="language-plaintext highlighter-rouge">オブジェクトストレージネームスペース</code>になります。  <br />
+例えば、東京リージョンの場合は、<code class="language-plaintext highlighter-rouge">nrt.ocir.io/sampletenant</code>となります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enter docker image registry prefix <span class="k">for </span>image tagging. <span class="o">(</span>This is a requirement to tag and push images to the registry<span class="o">)</span><span class="nb">.</span> Example: iad.ocir.io/oabcs1 
+</code></pre></div></div>
+
+<p>次にOCIRのユーザ名を入力します。<br />
+ユーザ名は<a href="#0-3-3-テナンシ名とオブジェクトストレージネームスペースの確認">0-3-3. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認</a>で確認した<code class="language-plaintext highlighter-rouge">オブジェクトストレージネームスペース</code>と<a href="#0-3-1-ユーザ名の確認">0-3-1. ユーザ名の確認</a>で確認した<code class="language-plaintext highlighter-rouge">ユーザ名</code>を利用し、<code class="language-plaintext highlighter-rouge">オブジェクトストレージネームスペース/ユーザ名</code>となります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Creating docker secret <span class="k">for </span>image pull.
+Enter registry username <span class="o">(</span>Example: oabcs1/&lt;username&gt;<span class="o">)</span>:
+</code></pre></div></div>
+
+<p>次にOCIRのパスワードを入力します。<br />
+ここでは、<a href="#0-3-2-認証トークンの作成">0-3-2. 認証トークンの作成</a>で作成した<code class="language-plaintext highlighter-rouge">認証トークン</code>を入力します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enter registry password <span class="o">(</span>Password will not appear on the screen<span class="o">)</span>:
+</code></pre></div></div>
+
+<p>この後はOCIRへのプッシュとOKEへのデプロイをスクリプト側で実施しれくれます。<br />
+以下のようにサンプルアプリケーションの実行画面が表示されれば、MicroTxのインストールは完了です。<br />
+このメッセージが出力されたら、<code class="language-plaintext highlighter-rouge">Ctrl+C</code>などでスクリプトを停止してください。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enter a number <span class="o">(</span>1-3<span class="o">)</span> to specify the transaction model of the microservice that you want to run:
+1<span class="o">)</span> XA
+2<span class="o">)</span> LRA - Long Running Activities
+3<span class="o">)</span> TCC - Try-Confirm/Cancel
+<span class="c">#? </span>
+</code></pre></div></div>
+
+<h2 id="2サンプルアプリケーションのデプロイ">2.サンプルアプリケーションのデプロイ</h2>
+
+<p>ここではサンプルアプリケーションのデプロイを行います。</p>
+
+<p>以下の流れで実施します。</p>
+
+<ol>
+  <li>ATPインスタンスの作成</li>
+  <li>JaegerとKialiのインストール</li>
+  <li>サンプルアプリケーションのデプロイ</li>
+</ol>
+
+<h3 id="2-1-atpインスタンスの作成">2-1. ATPインスタンスの作成</h3>
+
+<p>ここでは、サンプルアプリケーションが利用するATPインスタンスを作成します。<br />
+今回のハンズオンでは、OCI Service Operator for Kubernetes(OSOK)を利用してATPのプロビジョニングを行います。<br />
+OSOKは、Kubernetes APIおよび<a href="https://kubernetes.io/ja/docs/concepts/extend-kubernetes/operator/">Kubernetes Operatorパターン</a>を使用してOracle Cloud Infrastructureリソースを作成、管理および接続できるオープン・ソースのKubernetesアドオンです。<br />
+現時点で対応しているサービスは以下の通りです。(今後も続々対応サービスを追加予定です)</p>
+
+<ul>
+  <li>Autonomous Database</li>
+  <li>MySQL Database</li>
+  <li>Streaming</li>
+  <li>Service Mesh</li>
+</ul>
+
+<p class="notice--info"><strong>OCI Service Operator for Kubernetes(OSOK)について</strong><br />
+OCI Service Operator for Kubernetes(OSOK)については<a href="https://docs.oracle.com/ja-jp/iaas/Content/ContEng/Tasks/contengaddingosok.htm#contengaddingosok">こちら</a>および<a href="https://github.com/oracle/oci-service-operator">GitHub</a>をご確認ください。</p>
+
+<h4 id="2-1-1-operator-sdkおよびオペレータライフサイクルマネージャolmのインストール">2-1-1. Operator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)のインストール</h4>
+
+<p>OSOKを利用するにはOperator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)が必要になるため、まずはそちらのインストールから行います。</p>
+
+<p class="notice--info"><strong>Operator SDKとオペレータ・ライフサイクル・マネージャ(OLM)について</strong><br />
+Operator SDKは、Kubernetes Operatorを効率的に開発するためのSDKになり、オペレータ・ライフサイクル・マネージャ(OLM)はOperatorのライフサイクルを管理するための仕組みになります。<br />
+Operator SDKについては<a href="https://sdk.operatorframework.io/">こちら</a>、オペレータ・ライフサイクル・マネージャ(OLM)については<a href="https://olm.operatorframework.io/">こちら</a>をご確認ください。</p>
+
+<p>まずは、Operator SDKのインストールを行います。</p>
+
+<p><a href="/ocitutorials/cloud-native/oke-for-commons/#2cli実行環境cloud-shellの準備">Cloud Shellを起動</a>します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">ARCH</span><span class="o">=</span><span class="si">$(</span><span class="k">case</span> <span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span> <span class="k">in </span>x86_64<span class="p">)</span> <span class="nb">echo</span> <span class="nt">-n</span> amd64 <span class="p">;;</span> aarch64<span class="p">)</span> <span class="nb">echo</span> <span class="nt">-n</span> arm64 <span class="p">;;</span> <span class="k">*</span><span class="p">)</span> <span class="nb">echo</span> <span class="nt">-n</span> <span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span> <span class="p">;;</span> <span class="k">esac</span><span class="si">)</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">OS</span><span class="o">=</span><span class="si">$(</span><span class="nb">uname</span> | <span class="nb">awk</span> <span class="s1">'{print tolower($0)}'</span><span class="si">)</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">OPERATOR_SDK_DL_URL</span><span class="o">=</span>https://github.com/operator-framework/operator-sdk/releases/download/v1.12.0
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-LO</span> <span class="k">${</span><span class="nv">OPERATOR_SDK_DL_URL</span><span class="k">}</span>/operator-sdk_<span class="k">${</span><span class="nv">OS</span><span class="k">}</span>_<span class="k">${</span><span class="nv">ARCH</span><span class="k">}</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-l</span>
+</code></pre></div></div>
+
+<p>ここで、<code class="language-plaintext highlighter-rouge">operator-sdk_linux_amd64</code>というバイナリがダウンロードできていることを確認します。<br />
+ここからはバイナリの検証を行うためのステップを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--keyserver</span> keyserver.ubuntu.com <span class="nt">--recv-keys</span> 052996E2A20B5C7E
+</code></pre></div></div>
+
+<p>以下のように出力されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg: requesting key A20B5C7E from hkp server keyserver.ubuntu.com
+gpg: /home/takuya_nii/.gnupg/trustdb.gpg: trustdb created
+gpg: key A20B5C7E: public key <span class="s2">"Operator SDK (release) &lt;cncf-operator-sdk@cncf.io&gt;"</span> imported
+gpg: Total number processed: 1
+gpg:               imported: 1  <span class="o">(</span>RSA: 1<span class="o">)</span>
+</code></pre></div></div>
+
+<p>検証に必要なファイルを取得します。　　</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-LO</span> <span class="k">${</span><span class="nv">OPERATOR_SDK_DL_URL</span><span class="k">}</span>/checksums.txt
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-LO</span> <span class="k">${</span><span class="nv">OPERATOR_SDK_DL_URL</span><span class="k">}</span>/checksums.txt.asc
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-l</span>
+</code></pre></div></div>
+
+<p>ここで、<code class="language-plaintext highlighter-rouge">checksums.txt.asc</code>と<code class="language-plaintext highlighter-rouge">checksums.txt</code>というファイルがダウンロードできていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">-u</span> <span class="s2">"Operator SDK (release) &lt;cncf-operator-sdk@cncf.io&gt;"</span> <span class="nt">--verify</span> checksums.txt.asc
+</code></pre></div></div>
+
+<p>以下のような結果が出力されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg: Signature made Thu 09 Sep 2021 04:59:50 PM UTC using RSA key ID BF9886DB
+gpg: Good signature from <span class="s2">"Operator SDK (release) &lt;cncf-operator-sdk@cncf.io&gt;"</span>
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: xxxx xxxx xxxx xxxx xxxx  xxxx xxxx xxxx xxxx xxxx
+     Subkey fingerprint: xxxx xxxx xxxx xxxx xxxx  xxxx xxxx xxxx xxxx xxxx
+</code></pre></div></div>
+
+<p>検証結果を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">grep </span>operator-sdk_<span class="k">${</span><span class="nv">OS</span><span class="k">}</span>_<span class="k">${</span><span class="nv">ARCH</span><span class="k">}</span> checksums.txt | <span class="nb">sha256sum</span> <span class="nt">-c</span> -
+</code></pre></div></div>
+
+<p>以下のように出力されれば、検証は問題ありません。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>operator-sdk_linux_amd64: OK
+</code></pre></div></div>
+
+<p>最後に実行権限を付与します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x operator-sdk_<span class="k">${</span><span class="nv">OS</span><span class="k">}</span>_<span class="k">${</span><span class="nv">ARCH</span><span class="k">}</span> <span class="o">&amp;&amp;</span> <span class="nb">mv </span>operator-sdk_<span class="k">${</span><span class="nv">OS</span><span class="k">}</span>_<span class="k">${</span><span class="nv">ARCH</span><span class="k">}</span> operator-sdk
+</code></pre></div></div>
+
+<p>これでOperator SDKのインストールは完了です。</p>
+
+<p>続いて、オペレータ・ライフサイクル・マネージャ(OLM)のインストールを行います。</p>
+
+<p>以下のコマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./operator-sdk olm <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>以下のように出力されれば問題ありません。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~~~~~
+NAME                                            NAMESPACE    KIND                        STATUS
+catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
+clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
+installplans.operators.coreos.com                            CustomResourceDefinition    Installed
+operatorconditions.operators.coreos.com                      CustomResourceDefinition    Installed
+operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
+operators.operators.coreos.com                               CustomResourceDefinition    Installed
+subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
+olm                                                          Namespace                   Installed
+operators                                                    Namespace                   Installed
+olm-operator-serviceaccount                     olm          ServiceAccount              Installed
+system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
+olm-operator-binding-olm                                     ClusterRoleBinding          Installed
+olm-operator                                    olm          Deployment                  Installed
+catalog-operator                                olm          Deployment                  Installed
+aggregate-olm-edit                                           ClusterRole                 Installed
+aggregate-olm-view                                           ClusterRole                 Installed
+global-operators                                operators    OperatorGroup               Installed
+olm-operators                                   olm          OperatorGroup               Installed
+packageserver                                   olm          ClusterServiceVersion       Installed
+operatorhubio-catalog                           olm          CatalogSource               Installed
+</code></pre></div></div>
+
+<p>以上で、オペレータ・ライフサイクル・マネージャ(OLM)のインストールは完了です。</p>
+
+<h4 id="2-1-2-atpのプロビジョニング">2-1-2. ATPのプロビジョニング</h4>
+
+<p>ここでは、ATPのプロビジョニングを行います。<br />
+今回は2つのATPインスタンスをプロビジョニングします。</p>
+
+<p>まずは、以下のコマンドを実行してOKEに対してOSOKオペレーター(OKEからATPを操作するためのKubernetes Operator)のインストールを行います。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.0.0
+</code></pre></div></div>
+
+<p>以下のように出力されれば問題ありません。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>INFO[0016] Successfully created registry pod: iad-ocir-io-oracle-oci-service-operator-bundle-1-0-0 
+INFO[0017] Created CatalogSource: oci-service-operator-catalog 
+INFO[0018] OperatorGroup <span class="s2">"operator-sdk-og"</span> created      
+INFO[0019] Created Subscription: oci-service-operator-v1-0-0-sub 
+INFO[0023] Approved InstallPlan install-bgmnh <span class="k">for </span>the Subscription: oci-service-operator-v1-0-0-sub 
+INFO[0023] Waiting <span class="k">for </span>ClusterServiceVersion <span class="s2">"default/oci-service-operator.v1.0.0"</span> to reach <span class="s1">'Succeeded'</span> phase 
+INFO[0024]   Waiting <span class="k">for </span>ClusterServiceVersion <span class="s2">"default/oci-service-operator.v1.0.0"</span> to appear 
+INFO[0045]   Found ClusterServiceVersion <span class="s2">"default/oci-service-operator.v1.0.0"</span> phase: InstallReady 
+INFO[0046]   Found ClusterServiceVersion <span class="s2">"default/oci-service-operator.v1.0.0"</span> phase: Installing 
+INFO[0070]   Found ClusterServiceVersion <span class="s2">"default/oci-service-operator.v1.0.0"</span> phase: Succeeded 
+INFO[0070] OLM has successfully installed <span class="s2">"oci-service-operator.v1.0.0"</span> 
+</code></pre></div></div>
+
+<p>次にATPをプロビジョニングするためのManifestを作成します。</p>
+
+<p>まずは、ATPの管理者パスワードをSecretリソースとして作成します。<br />
+今回は”okehandson__Oracle1234”としてパスワードを作成します。<br />
+(管理者パスワードは2つのATPインスタンス共通とします)</p>
+
+<p class="notice--info"><strong>Secretについて</strong><br />
+Secretリソースについては<a href="https://kubernetes.io/docs/concepts/configuration/secret/">こちら</a>をご確認ください。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl create secret generic admin-passwd <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">password</span><span class="o">=</span>okehandson__Oracle1234 <span class="nt">-n</span> otmm
+</code></pre></div></div>
+
+<p>次にWalletファイルのパスワードをSecretリソースとして作成します。<br />
+今回は管理者パスワードと同じ”okehandson__Oracle1234”としてパスワードを作成します。<br />
+(管理者パスワードは2つのATPインスタンス共通とします)</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl create secret generic wallet-passwd <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">walletPassword</span><span class="o">=</span>okehandson__Oracle1234 <span class="nt">-n</span> otmm
+</code></pre></div></div>
+
+<p>また、データベースにアクセスするためのユーザ名とパスワードも作成しておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl create secret <span class="nt">-n</span> otmm generic customized-db-cred <span class="se">\</span>
+<span class="nt">--from-literal</span><span class="o">=</span><span class="nv">user_name</span><span class="o">=</span>admin <span class="se">\</span>
+<span class="nt">--from-literal</span><span class="o">=</span><span class="nv">password</span><span class="o">=</span>microtxhandson__Oracle1234
+</code></pre></div></div>
+
+<div class="notice--warning">
+  <p><strong>Secretを誤って作成してしまった場合</strong><br />
+誤って作成してしまった場合等に削除する場合は以下のコマンドを実行。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl delete secret &lt;secret名&gt;
+</code></pre></div></div>
+
+</div>
+
+<p>今回は以下のようなManifestを用意しました。<br />
+これはユースケースに応じて柔軟に変更することができます。</p>
+
+<p class="notice--info"><strong>設定可能なパラメータについて</strong><br />
+ATPプロビジョニング時に設定可能なパラメータについては<a href="https://github.com/oracle/oci-service-operator/blob/main/docs/adb.md#autonomous-databases-service">こちら</a>をご確認ください。</p>
+
+<p>Manifestファイルを開き、<code class="language-plaintext highlighter-rouge">&lt;ご自身のコンパートメントOCID&gt;</code>の部分を<a href="#0-3-4-コンパートメントocidの確認">0-3-4. コンパートメントOCIDの確認</a>で確認したコンパートメントOCIDに置き換えてください。</p>
+
+<div class="notice--warning">
+  <p><strong>Manifestファイルの<code class="language-plaintext highlighter-rouge">dbName</code>について</strong><br />
+Manifestファイルの<code class="language-plaintext highlighter-rouge">dbName</code>はテナンシで一意になります。<br />
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code class="language-plaintext highlighter-rouge">okeatp01</code>や<code class="language-plaintext highlighter-rouge">okeatptn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。<br />
+<code class="language-plaintext highlighter-rouge">dbName</code>は英数字のみで設定可能(英字で始める必要があり、最大14文字)です。記号等は含めないでください。</p>
+
+</div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim microtx-handson/k8s/atp/atp.yaml 
+</code></pre></div></div>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">AutonomousDatabases</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">microtx-handson-db1</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">otmm</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">&lt;ご自身のコンパートメントOCID&gt;</span>
+  <span class="na">displayName</span><span class="pi">:</span> <span class="s">microtx-handson-db1</span>
+  <span class="na">dbName</span><span class="pi">:</span> <span class="s">microtxhandson1</span>
+  <span class="na">dbWorkload</span><span class="pi">:</span> <span class="s">OLTP</span>
+  <span class="na">isDedicated</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">dbVersion</span><span class="pi">:</span> <span class="s">19c</span>
+  <span class="na">dataStorageSizeInTBs</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">cpuCoreCount</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">adminPassword</span><span class="pi">:</span>
+    <span class="na">secret</span><span class="pi">:</span>
+      <span class="na">secretName</span><span class="pi">:</span> <span class="s">admin-passwd</span>
+  <span class="na">isAutoScalingEnabled</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">isFreeTier</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">licenseModel</span><span class="pi">:</span> <span class="s">LICENSE_INCLUDED</span>
+  <span class="na">wallet</span><span class="pi">:</span>
+    <span class="na">walletName</span><span class="pi">:</span> <span class="s">okeatp1</span>
+    <span class="na">walletPassword</span><span class="pi">:</span>
+      <span class="na">secret</span><span class="pi">:</span>
+        <span class="na">secretName</span><span class="pi">:</span> <span class="s">wallet-passwd</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">oci.oracle.com/v1beta1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">AutonomousDatabases</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">microtx-handson-db2</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">otmm</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">&lt;ご自身のコンパートメントOCID&gt;</span>
+  <span class="na">displayName</span><span class="pi">:</span> <span class="s">microtx-handson-db2</span>
+  <span class="na">dbName</span><span class="pi">:</span> <span class="s">microtxhandson2</span>
+  <span class="na">dbWorkload</span><span class="pi">:</span> <span class="s">OLTP</span>
+  <span class="na">isDedicated</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">dbVersion</span><span class="pi">:</span> <span class="s">19c</span>
+  <span class="na">dataStorageSizeInTBs</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">cpuCoreCount</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">adminPassword</span><span class="pi">:</span>
+    <span class="na">secret</span><span class="pi">:</span>
+      <span class="na">secretName</span><span class="pi">:</span> <span class="s">admin-passwd</span>
+  <span class="na">isAutoScalingEnabled</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">isFreeTier</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">licenseModel</span><span class="pi">:</span> <span class="s">LICENSE_INCLUDED</span>
+  <span class="na">wallet</span><span class="pi">:</span>
+    <span class="na">walletName</span><span class="pi">:</span> <span class="s">okeatp2</span>
+    <span class="na">walletPassword</span><span class="pi">:</span>
+      <span class="na">secret</span><span class="pi">:</span>
+        <span class="na">secretName</span><span class="pi">:</span> <span class="s">wallet-passwd</span>
+</code></pre></div></div>
+
+<p>OKEに対してManifestを適用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> microtx-handson/k8s/atp/atp.yaml 
+</code></pre></div></div>
+
+<p>以下のコマンドを実行すると、状況が確認できます。<br />
+<code class="language-plaintext highlighter-rouge">status</code>が<code class="language-plaintext highlighter-rouge">Active</code>になるまでしばらくかかるので待機します。<br />
+<code class="language-plaintext highlighter-rouge">-w</code>(<code class="language-plaintext highlighter-rouge">--watch</code>)は状態を監視しておくためのオプションになります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl get autonomousdatabases <span class="nt">-w</span>
+</code></pre></div></div>
+
+<p>以下のように出力されればプロビジョニングは完了です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME              DBWORKLOAD   STATUS   AGE
+microtx-handson-db1   OLTP               12s
+microtx-handson-db2   OLTP               14s
+microtx-handson-db1   OLTP      Active   71s
+microtx-handson-db2   OLTP      Active   75s
+</code></pre></div></div>
+
+<h3 id="2-2-jaegerとkialiのインストール">2-2. JaegerとKialiのインストール</h3>
+
+<p>ここでは、後続の手順で利用するためのJaegerとKialiのインストールを行います。<br />
+JaegerとKialiはMictotxに必須のコンポーネントではありませんが、MictoTxの動きを確認するために役立ちます。</p>
+
+<p>今回は<code class="language-plaintext highlighter-rouge">istioctl</code>を利用してインストールしていきます。<br />
+JaegerとKialiにもインストールされるコンポーネントがありますが、このハンズオンではJaegerとKialiを利用します。</p>
+
+<p class="notice--info"><strong>Istioのバージョンについて</strong><br />
+<code class="language-plaintext highlighter-rouge">istio-x.xx.x</code>の部分はハンズオン実施時の状況に合わせて変更してください。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="s2">"istio-x.xx.x/samples/addons/"</span>
+serviceaccount/grafana created
+configmap/grafana created
+service/grafana created
+deployment.apps/grafana created
+configmap/istio-grafana-dashboards created
+configmap/istio-services-grafana-dashboards created
+deployment.apps/jaeger created
+service/tracing created
+service/zipkin created
+service/jaeger-collector created
+serviceaccount/kiali created
+configmap/kiali created
+clusterrole.rbac.authorization.k8s.io/kiali-viewer created
+clusterrole.rbac.authorization.k8s.io/kiali created
+clusterrolebinding.rbac.authorization.k8s.io/kiali created
+role.rbac.authorization.k8s.io/kiali-controlplane created
+rolebinding.rbac.authorization.k8s.io/kiali-controlplane created
+service/kiali created
+deployment.apps/kiali created
+serviceaccount/prometheus created
+configmap/prometheus created
+clusterrole.rbac.authorization.k8s.io/prometheus created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus created
+service/prometheus created
+deployment.apps/prometheus created
+</code></pre></div></div>
+
+<p>後続の手順でJaegerとKialiにアクセスできるようにするために今回はOCI Load Balancerを利用します。<br />
+以下を実行し、それぞれのLoadBalancerをプロビジョニングしておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service kiali <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "LoadBalancer"}}'</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl patch service tracing <span class="nt">-n</span> istio-system <span class="nt">-p</span> <span class="s1">'{"spec": {"type": "LoadBalancer"}}'</span>
+</code></pre></div></div>
+
+<p>これで、JaegerとKialiのインストールは完了です。</p>
+
+<h3 id="2-3-サンプルアプリケーションのデプロイ">2-3. サンプルアプリケーションのデプロイ</h3>
+
+<p>ここでは、サンプルアプリケーションのデプロイを行います。<br />
+サンプルアプリケーションをデプロイするためのManifestは既にGitHubレポジトリに用意しているので、そちらを利用します。</p>
+
+<p>デプロイする前にアプリケーションで利用するIDCSの情報をSecretとして登録します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl create secret generic idcs-cred <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">IDCS_URL</span><span class="o">=</span>&lt;tenant-base-url&gt; <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">IDCS_CLIENT_ID</span><span class="o">=</span>&lt;クライアントID&gt; <span class="nt">--from-literal</span><span class="o">=</span><span class="nv">IDCS_CLIENT_SECRET</span><span class="o">=</span>&lt;クライアント・シークレット&gt; <span class="nt">-n</span> otmm
+</code></pre></div></div>
+
+<p>以下のパラメータを設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tenant-base-url</td>
+      <td><a href="#0-2-jwks_urlの確認">0-2. jwks_urlの確認</a>で確認した<code class="language-plaintext highlighter-rouge">&lt;tenant-base-url&gt;</code></td>
+    </tr>
+    <tr>
+      <td>クライアントID</td>
+      <td><a href="#0-1-ideneity-cloud-serviceの機密アプリケーション作成">0-1. Ideneity Cloud Serviceの機密アプリケーション作成</a>で作成した<code class="language-plaintext highlighter-rouge">クライアントID</code></td>
+    </tr>
+    <tr>
+      <td>クライアント・シークレット</td>
+      <td><a href="#0-1-ideneity-cloud-serviceの機密アプリケーション作成">0-1. Ideneity Cloud Serviceの機密アプリケーション作成</a>で作成した<code class="language-plaintext highlighter-rouge">クライアント・シークレット</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この情報はサンプルアプリケーションのコンソール画面でのログインとバックエンドのサービスを呼び出すためのトークンを取得するために利用します。</p>
+
+<p>Manifestを適用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> microtx-handson/k8s/app/app.yaml
+kubectl apply <span class="nt">-f</span> microtx-handson/k8s/app/network.yaml
+</code></pre></div></div>
+
+<p>以下のような出力になればデプロイは完了です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl get pods <span class="nt">-n</span> otmm
+NAME                            READY   STATUS    RESTARTS   AGE
+console-78f74ddc9b-lm6sz        2/2     Running   2          20h
+flight-65df549db9-52txd         2/2     Running   2          20h
+hotel-5c65684d7c-m6mx8          2/2     Running   2          20h
+otmm-tcs-0                      2/2     Running   2          22h
+trip-manager-7fcd44f6c4-vscmz   2/2     Running   0          145m
+</code></pre></div></div>
+
+<h2 id="3microtxを体験しよう">3.MicroTxを体験しよう</h2>
+
+<p>ここでは実際にMictoTxを体験してみます。</p>
+
+<p>ここまでの手順で<a href="#ゴールを確認する">ゴールを確認する</a>に記載した図の環境は完成しています。<br />
+もう一度確認してみましょう。</p>
+
+<p><img src="00-00.png" alt="00-00.png" /></p>
+
+<p>ここでアプリケーションの構成を少し解説します。</p>
+
+<p>今回のサンプルアプリケーションは、以下の4つのアプリケーションから成り立っています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Frontend(図の右上)</td>
+      <td>Node.jsで実装したFrontendアプリケーションです。このアプリケーションは<code class="language-plaintext highlighter-rouge">trip-manager</code>を呼び出します。このアプリケーションはMictoTxに付属しているサンプルアプリケーションには存在せず、今回のハンズオン用に実装したものです。</td>
+    </tr>
+    <tr>
+      <td>trip-manager(図の左上)</td>
+      <td>Javaで実装したFrontendアプリケーションです。このアプリケーションは、トランザクションを実行する2つのサンプルアプリケーションをラップするものです。</td>
+    </tr>
+    <tr>
+      <td>Hotel App(図の左下)</td>
+      <td>Javaで実装したHotelアプリケーションです。Hotelを予約するためのトランザクションを実行します。このアプリケーションはデータソースにATPを利用しています。</td>
+    </tr>
+    <tr>
+      <td>Flight App(図の右下)</td>
+      <td>Node.jsで実装したFlightアプリケーションです。Flightを予約するためのトランザクションを実行します。このアプリケーションはデータソースにATPを利用しています。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--info"><strong>サンプルアプリケーションについて</strong><br />
+今回のHotel App/Flight AppはデータソースがATPになっておりますが、元々MictoTxに付属しているサンプルアプリケーションはメモリ上にデータを保存するように実装されています。<br />
+今回のアプリケーションはメモリではなく、ATPにデータを保存するように実装を変更しています。</p>
+
+<p class="notice--info"><strong>サンプルアプリケーションでのトランザクションについて</strong><br />
+今回のサンプルアプリケーションは、MicroProfile LRAというマイクロサービスにおけるSagaパターンを実現する標準仕様に基づいて実装されています。
+MicroProfile LRAについては、<a href="https://download.eclipse.org/microprofile/microprofile-lra-1.0/microprofile-lra-spec-1.0.pdf">こちら</a>をご確認ください。</p>
+
+<p>それでは、サンプルアプリケーションを動かしてみます。</p>
+
+<p>以下の流れで実施します。</p>
+
+<ol>
+  <li>動作確認</li>
+  <li>正常パターンをJaegerとKialiで確認</li>
+  <li>異常パターンをJaegerとKialiで確認</li>
+</ol>
+
+<h3 id="3-1-動作確認">3-1. 動作確認</h3>
+
+<p>まずは、動作確認をしてみます。</p>
+
+<p>MicroTxでは、Istioを利用しているので、サンプルアプリケーションにはIstio Ingress Gatewayを利用します。<br />
+Istio Ingress Gatewayの<code class="language-plaintext highlighter-rouge">External IP</code>を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl get svc <span class="nt">-n</span> istio-system
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP       PORT<span class="o">(</span>S<span class="o">)</span>                                      AGE
+grafana                ClusterIP      10.96.141.54    &lt;none&gt;            3000/TCP                                     6m12s
+istio-ingressgateway   LoadBalancer   10.96.187.16    xxx.xxx.xxx.xxx   15021:30693/TCP,80:30113/TCP,443:30728/TCP   4d
+istiod                 ClusterIP      10.96.84.63     &lt;none&gt;            15010/TCP,15012/TCP,443/TCP,15014/TCP        4d
+jaeger-collector       ClusterIP      10.96.171.29    &lt;none&gt;            14268/TCP,14250/TCP,9411/TCP                 6m2s
+kiali                  ClusterIP      10.96.139.251   &lt;none&gt;            20001/TCP,9090/TCP                           5m54s
+prometheus             ClusterIP      10.96.214.184   &lt;none&gt;            9090/TCP                                     5m47s
+tracing                ClusterIP      10.96.184.26    &lt;none&gt;            80/TCP,16685/TCP                             6m4s
+zipkin                 ClusterIP      10.96.248.158   &lt;none&gt;            9411/TCP                                     6m3s
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">istio-ingressgateway</code>の<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>を利用してアクセスします。
+実態はOCI LoadBalancerがプロビジョニングされています。</p>
+
+<p>今回のサンプルアプリケーションのUIは<code class="language-plaintext highlighter-rouge">http:xxx.xxx.xxx.xxx/demo-console/</code>でアクセスできます。</p>
+
+<p>ブラウザでアクセスすると以下のような画面が表示されます。</p>
+
+<p><img src="3-001.png" alt="3-001.png" /></p>
+
+<p>以下の項目を入力し、<code class="language-plaintext highlighter-rouge">Login</code>をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ユーザ名</td>
+      <td>IDCSまたはIdentity Domainsのユーザ名</td>
+    </tr>
+    <tr>
+      <td>パスワード</td>
+      <td>IDCSまたはIdentity Domainsのパスワード</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ログインすると以下のような画面が表示されます。</p>
+
+<p><img src="3-002.png" alt="3-002.png" /></p>
+
+<p>以下の項目を入力し、<code class="language-plaintext highlighter-rouge">予約する</code>をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ホテルの名前</td>
+      <td>Hilton</td>
+    </tr>
+    <tr>
+      <td>フライトの番号</td>
+      <td>A001</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>以下のように予約確認画面が表示されます。<br />
+この状態で、すでに<code class="language-plaintext highlighter-rouge">仮予約</code>という状態でデータベースにコミットが行われています。<br />
+ATPを確認してみましょう。</p>
+
+<p>OCIコンソールのハンバーガーメニューをクリックします。</p>
+
+<p><img src="3-003.png" alt="3-003.png" /></p>
+
+<p><a href="#2-1-2-atpのプロビジョニング">2-1-2. ATPのプロビジョニング</a>の手順でOSOKによってプロビジョニングされたATPが2つあるので、それぞれクリックします。</p>
+
+<p><img src="3-004.png" alt="3-004.png" /></p>
+
+<p>それぞれのインスタンスの<code class="language-plaintext highlighter-rouge">データベース・アクション</code>をクリックします。</p>
+
+<p><img src="3-005.png" alt="3-005.png" /></p>
+
+<p><img src="3-006.png" alt="3-006.png" /></p>
+
+<p>ぞれぞれの<code class="language-plaintext highlighter-rouge">データベース・アクション</code>の<code class="language-plaintext highlighter-rouge">開発</code>カテゴリの<code class="language-plaintext highlighter-rouge">SQL</code>をクリックします。</p>
+
+<p><img src="3-007.png" alt="3-007.png" /></p>
+
+<p>画面が遷移すると左側にそれぞれ<code class="language-plaintext highlighter-rouge">HOTEL</code>テーブルおよび<code class="language-plaintext highlighter-rouge">FLIGHT</code>テーブルが表示されています。</p>
+
+<p>ぞれぞれのインスタンスで以下のようにSQLを発行します。</p>
+
+<p><img src="3-008.png" alt="3-008.png" />
+<img src="3-009.png" alt="3-009.png" /></p>
+
+<p>それぞれ<code class="language-plaintext highlighter-rouge">PROVISIONAL</code>(仮予約)というステータスでデータが格納されていることが確認できます。</p>
+
+<p>再度、サンプルアプリケーションのコンソール画面に戻り、<code class="language-plaintext highlighter-rouge">予約を確認</code>をクリックします。</p>
+
+<p><img src="3-010.png" alt="3-010.png" /></p>
+
+<p>ステータスが<code class="language-plaintext highlighter-rouge">予約完了</code>になりました。<code class="language-plaintext highlighter-rouge">予約一覧</code>をクリックします。</p>
+
+<p><img src="3-011.png" alt="3-011.png" /></p>
+
+<p>予約した内容は確認できます。</p>
+
+<p><img src="3-012.png" alt="3-012.png" /></p>
+
+<p>データベースも確認してみましょう。</p>
+
+<p>再度、<code class="language-plaintext highlighter-rouge">データベース・アクション</code>の<code class="language-plaintext highlighter-rouge">データベース・アクション</code>の<code class="language-plaintext highlighter-rouge">開発</code>カテゴリの<code class="language-plaintext highlighter-rouge">SQL</code>の画面に戻ります。 
+先ほどと同じSQLを発行します。</p>
+
+<p><img src="3-013.png" alt="3-013.png" />
+<img src="3-014.png" alt="3-014.png" /></p>
+
+<p>それぞれ<code class="language-plaintext highlighter-rouge">CONFIRMED</code>(予約完了)というステータスでデータが格納されていることが確認できます。</p>
+
+<p>これで動作確認は完了です。</p>
+
+<h3 id="3-2-正常パターンをjaegerとkialiで確認">3-2. 正常パターンをJaegerとKialiで確認</h3>
+
+<p>ここでは、先ほどと同様に予約を行い、その様子をJaegerとKialiを利用して確認します。</p>
+
+<p>まずは、JaergerとKialiにアクセスします。</p>
+
+<p><a href="#2-2-jaegerとkialiのインストール">2-2. JaegerとKialiのインストール</a>でプロビジョニングしたOCI Load BalancerのIPアドレスを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kuebctl get service kiali,tracing <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl get service kiali <span class="nt">-n</span> istio-system
+NAME    TYPE           CLUSTER-IP      EXTERNAL-IP       PORT<span class="o">(</span>S<span class="o">)</span>                          AGE
+kiali   LoadBalancer   10.96.139.251   xxx.xxx.xxx.xxx   20001:32710/TCP,9090:31718/TCP   19h
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kuebctl get service tracing <span class="nt">-n</span> istio-system
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl get service tracing <span class="nt">-n</span> istio-system
+NAME      TYPE           CLUSTER-IP     EXTERNAL-IP       PORT<span class="o">(</span>S<span class="o">)</span>                        AGE
+tracing   LoadBalancer   10.96.184.26   yyy.yyy.yyy.yyy   80:30626/TCP,16685:31598/TCP   19h
+</code></pre></div></div>
+
+<p>上記コマンド結果の<code class="language-plaintext highlighter-rouge">EXTERNAL-IP</code>を使用します。</p>
+
+<p>ブラウザからそれぞれ<code class="language-plaintext highlighter-rouge">http://xxx.xxx.xxx.xxx:20001/</code>(Kiali)、<code class="language-plaintext highlighter-rouge">http://yyy.yyy.yyy.yyy/</code>(Jaeger)およびアクセスします。</p>
+
+<p>以下のように表示されます。<br />
+上がJaegerの画面、下がKialiの画面です。</p>
+
+<p><img src="3-015.png" alt="3-015png" /></p>
+
+<p><img src="3-016.png" alt="3-016.png" /></p>
+
+<p class="notice--info"><strong>KialiとJaegerについて</strong><br />
+今回利用するKialiはIstioのアドオンで、サービスメッシュを可視化するツールです。詳細は<a href="https://kiali.io/">こちら</a>をご確認ください。
+Jaegerは、分散トレーシングを実現するプラットフォームおよびその可視化ツールです。今回はIstio経由でインストールしておりますが、Jaeger単体でもインストール可能です。詳細は<a href="https://www.jaegertracing.io/">こちら</a>をご確認ください。
+MictoTxには必須ではありませんが、内部挙動の可視化のために利用します。</p>
+
+<p>それでは再度トランザクションを実行してみましょう。<br />
+実行方法は<a href="#3-1-動作確認">3-1. 動作確認</a>で実施した内容をホテル名とフライト番号を別の値にして再実行してください。(データベースの確認は不要です)</p>
+
+<p><code class="language-plaintext highlighter-rouge">CONFIRMED</code>(予約完了)のステータスになったら、まずはKialiの画面から確認していきます。</p>
+
+<p>Kialiの左側にあるメニューから<code class="language-plaintext highlighter-rouge">Graph</code>を選択します。</p>
+
+<p><img src="3-017.png" alt="3-017.png" /></p>
+
+<p>画面上部にある<code class="language-plaintext highlighter-rouge">Namespace</code>からサンプルアプリケーションがデプロイされているNamespaceである<code class="language-plaintext highlighter-rouge">otmm</code>を選択します。</p>
+
+<p><img src="3-018.png" alt="3-018.png" /></p>
+
+<p>以下のようなグラフが表示されます。</p>
+
+<div class="notice--warning">
+  <p><strong>グラフが表示されない場合</strong><br />
+アプリケーションを実行してからある程度の時間が経過しているとグラフが表示されない場合があります。<br />
+その場合は、画面の右側にあるプルダウンで<code class="language-plaintext highlighter-rouge">10m</code>などを指定してみてください。<br />
+<img src="3-020.png" alt="3-020.png" /></p>
+
+</div>
+
+<p><img src="3-019.png" alt="3-019.png" /></p>
+
+<p>otmmネームスペース(四角で囲われている部分)内に以下のアプリケーションが存在していることが確認できます。</p>
+
+<ul>
+  <li>console(サンプルアプリケーションのコンソール)</li>
+  <li>otmm-tcs(MicroTx本体)</li>
+  <li>hotel(Hotelアプリケーション)</li>
+  <li>flight(Flightアプリケーション)</li>
+  <li>trip-manager(HotelアプリケーションとFlightアプリケーションをラップするアプリケーション)</li>
+</ul>
+
+<p>矢印に注目するとconsoleアプリケーションを除いて、すべてのアプリケーションから<code class="language-plaintext highlighter-rouge">otmm-tcs</code>に対してリクエストが行われていることがわかります。<br />
+これは、各アプリケーションとMicroTxが連携して分散トランザクションの一貫性を実現するための通信を行なっているためです。</p>
+
+<p>次にJaegerを利用してこの様子をトレーシングしてみましょう。</p>
+
+<p>Jaegerの画面を開き、<code class="language-plaintext highlighter-rouge">Service</code>に<code class="language-plaintext highlighter-rouge">console.otmm</code>を選択し、<code class="language-plaintext highlighter-rouge">Find</code>をクリックします。</p>
+
+<p><img src="3-021.png" alt="3-021.png" /></p>
+
+<p>左側にトレースの一覧がいくつか表示されますが、その中に<code class="language-plaintext highlighter-rouge">14 Spans</code>と<code class="language-plaintext highlighter-rouge">20 Spans</code>と表示されている2つのトレースがあります。<br />
+これは、<code class="language-plaintext highlighter-rouge">PROVISIONAL</code>(仮予約)と<code class="language-plaintext highlighter-rouge">CONFIRMED</code>(予約完了)のそれぞれの処理におけるトレースになります。<br />
+<code class="language-plaintext highlighter-rouge">PROVISIONAL</code>(仮予約)が<code class="language-plaintext highlighter-rouge">14 Spans</code>、<code class="language-plaintext highlighter-rouge">CONFIRMED</code>(予約完了)が<code class="language-plaintext highlighter-rouge">20 Spans</code>です。<br />
+それぞれクリックします。</p>
+
+<p><img src="3-024.png" alt="3-024.png" />
+<img src="3-022.png" alt="3-022.png" /></p>
+
+<p>クリックすると、先ほど実行した処理をトレースしたものが表示されます。<br />
+ここで注目しておきたいのは、それぞれの処理の中で<code class="language-plaintext highlighter-rouge">otmm-tcs.otmm</code>が呼ばれています。<br />
+これは、MicroTxがトランザクションを実行する際のマネージャとして動いていることを示しています。</p>
+
+<p><img src="3-025.png" alt="3-023.png" />
+<img src="3-025.png" alt="3-025.png" /></p>
+
+<p>以上が正常パターンの動きです。</p>
+
+<h3 id="3-3-異常パターンをjaegerとkialiで確認">3-3. 異常パターンをJaegerとKialiで確認</h3>
+
+<p>最後に異常パターン(分散トランザクションでエラーが発生した場合)の様子をJaegerとKialiで確認していきます。</p>
+
+<p><a href="#3-1-動作確認">3-1. 動作確認</a>と同じようにサンプルアプリケーションのコンソールからホテル名とフライト番号を別の値にして実行してください。(データベースの確認は不要です)</p>
+
+<p>今回は、以下のように予約が失敗します。</p>
+
+<p><img src="3-026.png" alt="3-026.png" /></p>
+
+<p>これは、Flightアプリケーションで予約が3件以上になる場合はエラーとなるように実装されているためです。<br />
+Hotelアプリケーションは一旦<code class="language-plaintext highlighter-rouge">PROVISIONAL</code>(仮予約)の状態になった後にFlightアプリケーションのエラーにより<code class="language-plaintext highlighter-rouge">CANCELLED</code>(予約キャンセル)の状態になります。</p>
+
+<p>Kilaiを確認してみましょう。</p>
+
+<p><a href="#3-1-正常パターンをjaegerとkialiで確認">3-1. 正常パターンをJaegerとKialiで確認</a>と同じようにグラフを確認します。</p>
+
+<p><img src="3-027.png" alt="3-027.png" /></p>
+
+<p>異常パターンでは<code class="language-plaintext highlighter-rouge">trip-manager</code>から<code class="language-plaintext highlighter-rouge">console</code>に対してエラーが返却されるので、赤いラインとなっています。<br />
+<code class="language-plaintext highlighter-rouge">trip-manager</code>から後ろについては、正常パターンと変わりません。</p>
+
+<p>この様子をトレーシングしてみましょう。</p>
+
+<p>Jaegerの画面を開き、<code class="language-plaintext highlighter-rouge">Service</code>に<code class="language-plaintext highlighter-rouge">console.otmm</code>を選択し、<code class="language-plaintext highlighter-rouge">Find</code>をクリックします。</p>
+
+<p><img src="3-021.png" alt="3-021.png" /></p>
+
+<p>左側にトレースの一覧がいくつか表示されますが、その中に<code class="language-plaintext highlighter-rouge">30 Spans 2 Errors</code>と表示されているトレースがあります。<br />
+今回は<code class="language-plaintext highlighter-rouge">PROVISIONAL</code>(仮予約)で失敗しているので、トレースは１つです。<br />
+クリックします。</p>
+
+<p><img src="3-028.png" alt="3-028.png" /></p>
+
+<p>クリックすると、先ほど実行した処理をトレースしたものが表示されます。<br />
+それぞれの処理の中で<code class="language-plaintext highlighter-rouge">otmm-tcs.otmm</code>が呼ばれてるのは正常パターンと同様ですが、Spanの数が正常時よりも多くなっています。<br />
+これは、MicroTxがトランザクションエラーを検知して、それぞれのサービスに対して補償トランザクションを実行するように要求しているためです。<br />
+増えているSpanは補償トランザクションが実行されているということを示しています。</p>
+
+<p><img src="3-029.png" alt="3-029.png" /></p>
+
+<p class="notice--info"><strong>補償トランザクションについて</strong><br />
+補償トランザクションは、Sagaパターンにおけるロールバックにあたる処理です。<br />
+マイクロサービスにおけるトランザクションでは、それぞれのサービスがデータベースを所有するため、それぞれコミットが実行されます。<br />
+そのため、従来のロールバックを行うことができません。<br />
+補償トランザクションは、一連のトランザクションで実行した操作を取り消す操作を行い、結果的に整合性が担保されるようにします。(結果整合性とも言います)<br />
+詳細は<a href="https://microservices.io/patterns/data/saga.html">こちら</a>をご確認ください。</p>
+
+<p>以上が異常パターンの動きです。</p>
+
+<h3 id="3-4-オプション再度試したい方">3-4. 【オプション】再度試したい方</h3>
+
+<p><a href="#3-3-異常パターンをjaegerとkialiで確認">3-3. 異常パターンをJaegerとKialiで確認</a>まで実行すると、サンプルアプリケーションを実行してもエラーのみが発生する状況になります。</p>
+
+<p>この手順では、サンプルアプリケーションをリセットする方法を記載します。</p>
+
+<p>まずは、<code class="language-plaintext highlighter-rouge">trip-manager</code>のPodを削除します。<br />
+<code class="language-plaintext highlighter-rouge">trip-manager</code>ではメモリ上にデータを保存しているため、Podを削除することによりデータをリセットします。</p>
+
+<p>まずは<code class="language-plaintext highlighter-rouge">trip-manager</code>のPod名を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kuebctl get pods <span class="nt">-n</span> otmm
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>kubectl get pods <span class="nt">-n</span> otmm
+NAME                            READY   STATUS    RESTARTS   AGE
+console-78f74ddc9b-lm6sz        2/2     Running   2          18h
+flight-65df549db9-52txd         2/2     Running   2          18h
+hotel-5c65684d7c-m6mx8          2/2     Running   2          18h
+otmm-tcs-0                      2/2     Running   2          19h
+trip-manager-7fcd44f6c4-46jwr   2/2     Running   0          149m
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">trip-manager</code>のPod名をコピーし、以下のコマンドを実行します。<br />
+上記の場合は、<code class="language-plaintext highlighter-rouge">trip-manager-7fcd44f6c4-46jwr</code>がPod名になります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl delete pods trip-manager-7fcd44f6c4-46jwr <span class="nt">-n</span> otmm
+</code></pre></div></div>
+
+<p>次に、HotelアプリケーションとFlightアプリケーションのデータベースのデータを削除します。</p>
+
+<p><a href="#3-1-動作確認">3-1. 動作確認</a>で行なったようにOCIコンソールから<code class="language-plaintext highlighter-rouge">データベース・アクション</code>の<code class="language-plaintext highlighter-rouge">開発</code>カテゴリの<code class="language-plaintext highlighter-rouge">SQL</code>をクリックします。</p>
+
+<p>それぞれのデータベースでDELETE文を実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">HOTEL</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">FLIGHT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>以上で、サンプルアプリケーション環境がリセットされます。</p>
+
+<h2 id="4まとめ">4.まとめ</h2>
+
+<p>いかがでしたか。<br />
+MictoTxを利用することで、マイクロサービスにおえる分散トランザクションを管理し、一貫性を持たせることが可能になります。</p>
+
+<p>ハンズオンは以上になります。お疲れ様でした！</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-13T12:05:45+09:00">December 13, 2022</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Transaction+Manager+for+Microservices%28MicroTx%29%E3%82%92%E4%BD%93%E9%A8%93%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%21%21%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fmicrotx-for-beginners%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fmicrotx-for-beginners%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fmicrotx-for-beginners%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/wls-for-oci-migration/" class="pagination--pager" title="WebLogic Server for OCIにアプリケーションを移行してみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

@@ -263,6 +263,12 @@ var store = [{
         "url": "/ocitutorials/cloud-native/wls-for-oci-migration/",
         "teaser": null
       },{
+        "title": "Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!",
+        "excerpt":"このチュートリアルでは、別々のデータベースを持つ2つのサンプルアプリケーション間の分散トランザンクションについて、Oracle Transaction Manager for Microservices(MicroTx)を利用しながら一貫性を確保する体験をしていただく内容になっています。 このチュートリアルには以下のサービスが含まれます。 Oracle Container Engine for Kubernetes（略称：OKE）: マネージドなKuberentesクラスタを提供するクラウドサービスです。 Oracle Transaction Manager for Microservices（略称：MicroTx）: Oracleが提供する分散トランザクションマネージャです。 Oracle Autonomous Transaction Processing（略称：ATP）: 運用がすべて自動化された自律型データベースサービスです。 MicroTxについて MicroTxは現在Free版での提供となり、商用環境ではご利用頂けません。(評価/検証目的でのご利用となります) 今回のハンズオンもFree版のMicroTxを利用します。 商用環境でご利用いただけるMicroTxは後日リリース予定です。 前提条件 チュートリアルを開始する前に以下を準備してください。 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること Oracle Cloud Infrastructureの基本操作はチュートリアル : OCIコンソールにアクセスして基本を理解するをご確認ください。 ゴールを確認する はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。 手順を最後まで行うと、下図のような環境が構成されます。 構成要素 説明 OKE アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。 ATP 今回デプロイするサンプルアプリケーションが利用するデータベースです。今回は2つのアプリケーションそれぞれに1つずつATPを持ちます。 MicroTx 2つのアプリケーション間のトランザクション一貫性を確保するための分散トランザクションマネージャです。 この全体像のうち、OKEに関しては、すでにOKEハンズオン事前準備で構築済みとなります。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/microtx-for-beginners/",
+        "teaser": null
+      },{
         "title": "Oracle Content Managementインスタンスを作成する",
         "excerpt":"この文書は Oracle Content Management(OCM) のインスタンス作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2021年11月時点での最新バージョン(21.10.2)を元に作成されてます。 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 1. 準備 1.1 OCM インスタンス作成手順の説明 インスタンスの作成手順は以下の通りです このチュートリアルでは、以下の条件で作成します ホームリージョンは US East(Ashburn) を選択 インスタンスの作成ユーザーは テナント管理ユーザー コンパートメントを作成(コンパートメント名=OCE) ライセンス・タイプは Premium Edition を選択 1.2 Oracle Cloud の環境を準備する Oracle Cloud のアカウントを準備します。無料のトライアル環境も利用することもできますので、この機会に取得してみましょう。 なお、トライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です（希望しない限り課金されませんので、ご安心ください） Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 1.3 Oracle Cloud にサイン・インする OCM インスタンスは、Oracle...","categories": [],
         "tags": ["OCE","OCM"],
@@ -718,6 +724,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/database/adb402-database-link/",
         "teaser": "/ocitutorials/database/adb402-database-link/DatabaseLink_teaser.jpg"
+      },{
+        "title": "403 : Data Transformsを使ってみよう",
+        "excerpt":"はじめに Data Transformsは、Autonomous Databaseに組み込まれているデータ統合ツールです。Database Actionsからアクセス可能で、異種のソースからAutonomous Databaseにデータをロードして変換するためのツールです。ドラッグアンドドロップ、ノーコードで簡単に操作できます。データウェアハウスの構築や分析アプリケーションへのデータ供給など、あらゆるデータ統合のニーズに対応できます。 Data TransformsはOracle Data Integratorをベースにしています。オンプレミスおよびOCIの両方で、多くのお客様において高性能なデータ統合アーキテクチャとして証明されている、ELT(Extract/Load/Transform)手法を使用しています。 本章ではAutonomous Databaseの付属ツールであるData Transformsを用いて、少ない労力でデータを変換する方法を紹介します。 所要時間 : 約60分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本チュートリアルの 101:ADBインスタンスを作成してみよう を参照ください。 構成済みのADBインスタンスへの接続が可能であること 下記リンクからダウンロードできるMovie Sales 2020.csv(売上実績のサンプルデータ)がローカルPC上にあること 217: クレデンシャル・ウォレットを利用して接続してみよう 目次： 1. 事前準備 2. Dara Transformsの起動 3. Data Transformsを使ってみる 4. おわりに 1. 事前準備 実際にData Transformsを使用する前に、起動したADBインスタンスから新しいユーザー(QTEAM)を作成し、本チュートリアルで使用するサンプルデータ(Movie Sales 2020.csv)をロードします。 次の手順に従って、QTEAMユーザーを作成します。すでに作っている場合は、ステップ2に進んでください。 下記のリンクを参考に、QTEAMユーザーを作成します。 分析用のデータベース・ユーザーを作成しよう(Database Actions) *ユーザーを作成の際に、付与されたロールから以下の2つのユーザーロールを、以下の画像のように有効にします。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/adb403-data-transforms/",
+        "teaser": "/ocitutorials/database/adb403-data-transforms/adb403_2_4.png"
       },{
         "title": "501: OCICLIを利用したインスタンス操作",
         "excerpt":"ここまでの章で、ADBインスタンスの作成やOCPU数の変更等、様々な操作を実施いただきましたが、これら一連の操作を自動化するにはどうしたら良いでしょうか？ ADBはOracle Cloud Infrastructure(OCI)の他のサービスと同様、REST APIを介した各種操作が可能であり、それらを呼び出すコマンド・ライン・インタフェース（OCI CLI）を利用した操作も可能です。 この章ではOCI CLIを利用してADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。 これらコマンドを利用しスクリプトを組めば、例えば夜間はあまり使わないからOCPUをスケールダウンさせておき、朝になったらスケールアップしよう。といった自動化が可能となります。 尚、本ガイドではOCI CLIがインストールされたOCI Developer Image を利用することを前提に記載しています。 OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを参照ください。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスに接続可能な仮想マシンを構成済みであること ※仮想マシンの作成方法については、本ハンズオンガイドの 204:マーケットプレイスからの仮想マシンのセットアップ方法 を参照ください。 目次： 1. OCI CLIをセットアップしよう 2. OCI CLIを使ってみよう 3. OCI CLIでインスタンスを操作しよう 1. OCI CLIをセットアップしよう まずはOCI CLIにクラウド環境の情報を登録します。 Tera Termを起動し、仮想マシンにログインします。 oracleユーザに切り替えます。 sudo su...","categories": [],
