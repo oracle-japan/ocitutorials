@@ -1,5 +1,5 @@
 ---
-title: "Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう!!"
+title: "Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう"
 excerpt: "Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。"
 layout: single
 order: "5001"
@@ -295,9 +295,7 @@ OCIコンソールのハンバーガメニューより、「アイデンティ�
 
 以上で、コンパートメントOCIDの確認は完了です。  
 
-以上で、事前準備は完了です。  
-
-#### 0-3-6. サンプルアプリケーションレポジトリのクローン
+#### 0-3-5. サンプルアプリケーションレポジトリのクローン
 
 ここでは、今回のハンズオンで利用するサンプルアプリケーションが格納されているレポジトリをクローンします。  
 
@@ -310,6 +308,8 @@ git clone https://github.com/oracle-japan/microtx-handson.git
 ```
 
 これでサンプルアプリケーションのクローンは完了です。  
+
+以上で、事前準備は完了です。  
 
 1.MicroTxのデプロイ
 ------
