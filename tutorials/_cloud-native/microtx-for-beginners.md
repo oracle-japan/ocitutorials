@@ -462,12 +462,12 @@ ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
         "CreatedOn": "2022-01-31T01:35:57.108Z"
       }
     },
-    "description": "OCI_DevOps_Policy",
+    "description": "OCI_MicroTx_Dynamic_Group_Policy",
     "freeform-tags": {},
     "id": "ocid1.policy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
-    "name": "OCI_DevOps_Policy",
+    "name": "OCI_MicroTx_Dynamic_Group_Policy",
     "statements": [
       "Allow dynamic-group OCI_MicroTx_Dynamic_Group to manage autonomous-database in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
     ],
@@ -855,7 +855,7 @@ Operator SDKについては[こちら](https://sdk.operatorframework.io/)、オ�
 
 まずは、Operator SDKのインストールを行います。  
 
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。  
+[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#2cli実行環境cloud-shellの準備)します。  
 
 ```sh
 export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
