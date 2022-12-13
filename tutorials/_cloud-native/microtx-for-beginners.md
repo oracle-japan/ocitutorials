@@ -1371,7 +1371,7 @@ tracing   LoadBalancer   10.96.184.26   zzz.zzz.zzz.zzz  80:30626/TCP,16685:3159
 ブラウザからそれぞれ`http://yyy.yyy.yyy.yyy:20001/`(Kiali)、`http://zzz.zzz.zzz.zzz/`(Jaeger)およびアクセスします。  
 
 以下のように表示されます。  
-上がJaegerの画面、下がKialiの画面です。  
+上がKialiの画面、下がJaegerの画面です。  
 
 ![3-015png](3-015.png)
 
