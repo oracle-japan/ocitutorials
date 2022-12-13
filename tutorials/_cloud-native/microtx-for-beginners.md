@@ -63,9 +63,9 @@ MicroTx|2つのアプリケーション間のトランザクション一貫性�
 クライアントID | MicroTxが利用する認証情報を作成し、通信を保護するためのIdentity Provider(このチュートリアルではIdentity Cloud Serviceを利用)アプリケーションのクライアントID
 クライアントシークレット | MicroTxが利用する認証情報を作成し、通信を保護するためのIdentity Provider(このチュートリアルではIdentity Cloud Serviceを利用)アプリケーションのクライアント・シークレット
 jwks_uri | アプリケーションが利用するトークン(JWT)を検証するための公開鍵の情報を含んだエンドポイント
-ユーザ名|OCIのリソース操作に必要なユーザ名です。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
-認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
-オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスやOCI DevOpsのGit Repositoryへのアクセスに必要な情報です。
+ユーザ名|OCIのリソース操作に必要なユーザ名です。今回は、OCIRへのアクセスに利用します。
+認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCIRへのアクセスに利用します。
+オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスに必要な情報です。
 コンパートメントOCID|ATPをプロビジョニングする際に利用する情報です。  
 OCIRレポジトリ|今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
 
@@ -126,11 +126,11 @@ Name|`otmm-app`|今回利用するConfidential Application(機密アプリケー
 
 ![00-07.png](00-07.png)
 
-`Allowd Grant Type`と`Redirect URL`を以下のように入力し、`Next`をクリックします。  
+`Allowed Grant Type`と`Redirect URL`を以下のように入力し、`Next`をクリックします。  
 
 key|value|説明
 -|-
-Allowd Grant Type|`Resource Owner`/`Client Credencials`/`JWT Assertion`/`Refresh Token`|許可する認可タイプ
+Allowed Grant Type|`Resource Owner`/`Client Credencials`/`JWT Assertion`/`Refresh Token`|許可する認可タイプ
 Redirect URL|`https://google.com`(他の任意のURLでもOK)|今回は利用しないですが、必須項目なので任意の値
 
 ![00-08.png](00-08.png)
@@ -212,9 +212,9 @@ https://idcs-xxxxxxxxxxxxxxxxxxxxxxxxxx.identity.oraclecloud.com/.well-known/ope
 
 項目|説明
 -|-
-ユーザ名|OCIのリソース操作に必要なユーザ名です。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
-認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
-オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスやOCI DevOpsのGit Repositoryへのアクセスに必要な情報です。
+ユーザ名|OCIのリソース操作に必要なユーザ名です。今回は、OCIRへのアクセスに利用します。
+認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCIRへのアクセスに利用します。
+オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスに必要な情報です。
 コンパートメントOCID|ATPをプロビジョニングする際に利用する情報です。  
 OCIRレポジトリ|今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
 
@@ -229,7 +229,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 #### 0-3-2. 認証トークンの作成  
 
-ここでは、OCI DevOpsのレポジトリ操作に必要な認証トークンを取得します。  
+ここでは、OCIRへのアクセスに必要な認証トークンを取得します。  
 
 OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名をクリックします。
 
@@ -340,7 +340,7 @@ OCIRのレポジトリ名はテナンシで一意になります。
 
 ここでは、今回のハンズオンで利用するサンプルアプリケーションが格納されているレポジトリをクローンします。  
 
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。  
+[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#2cli実行環境cloud-shellの準備)します。  
 
 以下のコマンドを実行します。  
 
@@ -368,7 +368,7 @@ MicroTxのデプロイは以下の流れで実施します。
 
 ### 1-1. 動的グループとポリシーの設定
 
-ここでは、OCI DevOpsを利用するためのポリシーを作成します。  
+ここでは、このハンズオンに必要な動的グループとポリシーを作成します。  
 
 **ポリシーについて**  
 Oracle Cloud Infrastrctureにはポリシーという考え方があります。 
@@ -380,7 +380,7 @@ Oracle Cloud Infrastrctureにはポリシーという考え方があります。
 
 動的グループ|ルール|説明|
 -|-
-OCI_DevOps_Dynamic_Group|instance.compartment.id = 'コンパートメントOCID',resource.compartment.id = 'コンパートメントOCID'|コンパートメント内の全てのリソースやインスタンスを含めた動的グループ
+OCI_MicroTx_Dynamic_Group|instance.compartment.id = 'コンパートメントOCID',resource.compartment.id = 'コンパートメントOCID'|コンパートメント内の全てのリソースやインスタンスを含めた動的グループ
 
 **コンパートメントについて**  
 Oracle Cloud Infrastrctureにはコンパートメントという考え方があります。  
@@ -401,7 +401,7 @@ Oracle Cloud Infrastrctureには動的グループという考え方がありま
 
 ポリシー|説明
 -|-
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id 'コンパートメントOCID'|後続の手順で登場するOCI Service Operator for Kubernetes(OSOK)がAutonomous Transaction Processingを管理可能とするポリシー
+Allow dynamic-group OCI_MicroTx_Dynamic_Group to manage autonomous-database in compartment id 'コンパートメントOCID'|後続の手順で登場するOCI Service Operator for Kubernetes(OSOK)がAutonomous Transaction Processingを管理可能とするポリシー
 
 それでは、上記の動的グループとポリシー設定するためのシェルスクリプトを実行します。  
 
@@ -442,13 +442,13 @@ ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
         "CreatedOn": "2022-01-31T01:35:54.465Z"
       }
     },
-    "description": "OCI_DevOps_Dynamic_Group",
+    "description": "OCI_MicroTx_Dynamic_Group",
     "freeform-tags": {},
     "id": "ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
     "matching-rule": "any {resource.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq',instance.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq'}",
-    "name": "OCI_DevOps_Dynamic_Group",
+    "name": "OCI_MicroTx_Dynamic_Group",
     "time-created": "2022-01-31T01:35:54.528000+00:00"
   },
   "etag": "66c9058cf8f1145ce9047130c4a266d816e9dfbf"
@@ -469,7 +469,7 @@ ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
     "lifecycle-state": "ACTIVE",
     "name": "OCI_DevOps_Policy",
     "statements": [
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+      "Allow dynamic-group OCI_MicroTx_Dynamic_Group to manage autonomous-database in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
     ],
     "time-created": "2022-01-31T01:35:57.220000+00:00",
     "version-date": null
@@ -673,7 +673,7 @@ client version: 1.16.0
 ### 1-5. MicroTxのデプロイ
 
 `otmm-22.3`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
-このスクリプトを実行することによって、Microtxをインストールできます。  
+このスクリプトを実行することによって、MictoTxをインストールできます。  
 実行権限がない場合があるので、実行権限を付与します。  
 
 ```sh
@@ -738,7 +738,7 @@ Waiting for Istio-ingressgateway loadbancer to be provisioned. Will try again in
   {{ notice | markdownify }}
 </div>
 
-次にMicrotxのコンテナイメージをプッシュするレジストリを入力します。  
+次にMictoTxのコンテナイメージをプッシュするレジストリを入力します。  
 ここではOCIRを利用します。  
 OCIRのレジストリは`<ご自身が利用されているリージョンのリージョン・コード>.ocir.io`となります。  
 例えば、東京リージョンの場合は`nrt.ocir.io`になります。  
@@ -1056,7 +1056,7 @@ kubectl delete secret <secret名>
 ATPプロビジョニング時に設定可能なパラメータについては[こちら](https://github.com/oracle/oci-service-operator/blob/main/docs/adb.md#autonomous-databases-service)をご確認ください。
 {: .notice--info}
 
-Manifestファイルを開き、`<ご自身のコンパートメントOCID>`の部分を[0-5. コンパートメントOCIDの確認](#0-5-コンパートメントocidの確認)で確認したコンパートメントOCIDに置き換えてください。  
+Manifestファイルを開き、`<ご自身のコンパートメントOCID>`の部分を[0-3-4. コンパートメントOCIDの確認](#0-3-4-コンパートメントocidの確認)で確認したコンパートメントOCIDに置き換えてください。  
 
 {% capture notice %}**Manifestファイルの`dbName`について**  
 Manifestファイルの`dbName`はテナンシで一意になります。  
@@ -1152,7 +1152,7 @@ microtx-handson-db2   OLTP      Active   75s
 ### 2-2. JaegerとKialiのインストール
 
 ここでは、後続の手順で利用するためのJaegerとKialiのインストールを行います。  
-JaegerとKialiはMictotxに必須のコンポーネントではありませんが、Microtxの動きを確認するために役立ちます。
+JaegerとKialiはMictotxに必須のコンポーネントではありませんが、MictoTxの動きを確認するために役立ちます。
 
 今回は`istioctl`を利用してインストールしていきます。  
 JaegerとKialiにもインストールされるコンポーネントがありますが、このハンズオンではJaegerとKialiを利用します。  
@@ -1246,7 +1246,7 @@ trip-manager-7fcd44f6c4-vscmz   2/2     Running   0          145m
 3.MicroTxを体験しよう
 ------
 
-ここでは実際にMicrotxを体験してみます。
+ここでは実際にMictoTxを体験してみます。
 
 ここまでの手順で[ゴールを確認する](#ゴールを確認する)に記載した図の環境は完成しています。  
 もう一度確認してみましょう。  
@@ -1259,13 +1259,13 @@ trip-manager-7fcd44f6c4-vscmz   2/2     Running   0          145m
 
 項目|説明
 -|-
-Frontend(図の左上) | Node.jsで実装したFrontendアプリケーションです。このアプリケーションは`trip-manager`を呼び出します。このアプリケーションはMicrotxに付属しているサンプルアプリケーションには存在せず、今回のハンズオン用に実装したものです。  
-trip-manager(図の右上) | Javaで実装したFrontendアプリケーションです。このアプリケーションは、トランザクションを実行する2つのサンプルアプリケーションをラップするものです。  
-Hotel App(図の右下) | Javaで実装したHotelアプリケーションです。Hotelを予約するためのトランザクションを実行します。このアプリケーションはデータソースにATPを利用しています。  
-Flight App(図の左上) | Node.jsで実装したFlightアプリケーションです。Flightを予約するためのトランザクションを実行します。このアプリケーションはデータソースにATPを利用しています。  
+Frontend(図の右上) | Node.jsで実装したFrontendアプリケーションです。このアプリケーションは`trip-manager`を呼び出します。このアプリケーションはMictoTxに付属しているサンプルアプリケーションには存在せず、今回のハンズオン用に実装したものです。  
+trip-manager(図の左上) | Javaで実装したFrontendアプリケーションです。このアプリケーションは、トランザクションを実行する2つのサンプルアプリケーションをラップするものです。  
+Hotel App(図の左下) | Javaで実装したHotelアプリケーションです。Hotelを予約するためのトランザクションを実行します。このアプリケーションはデータソースにATPを利用しています。  
+Flight App(図の右下) | Node.jsで実装したFlightアプリケーションです。Flightを予約するためのトランザクションを実行します。このアプリケーションはデータソースにATPを利用しています。  
 
 **サンプルアプリケーションについて**  
-今回のHotel App/Flight AppはデータソースがATPになっておりますが、元々Microtxに付属しているサンプルアプリケーションはメモリ上にデータを保存するように実装されています。  
+今回のHotel App/Flight AppはデータソースがATPになっておりますが、元々MictoTxに付属しているサンプルアプリケーションはメモリ上にデータを保存するように実装されています。  
 今回のアプリケーションはメモリではなく、ATPにデータを保存するように実装を変更しています。  
 {: .notice--info}
 
@@ -1426,7 +1426,7 @@ tracing   LoadBalancer   10.96.184.26   yyy.yyy.yyy.yyy   80:30626/TCP,16685:315
 **KialiとJaegerについて**  
 今回利用するKialiはIstioのアドオンで、サービスメッシュを可視化するツールです。詳細は[こちら](https://kiali.io/)をご確認ください。
 Jaegerは、分散トレーシングを実現するプラットフォームおよびその可視化ツールです。今回はIstio経由でインストールしておりますが、Jaeger単体でもインストール可能です。詳細は[こちら](https://www.jaegertracing.io/)をご確認ください。
-Microtxには必須ではありませんが、内部挙動の可視化のために利用します。  
+MictoTxには必須ではありませんが、内部挙動の可視化のために利用します。  
 {: .notice--info}
 
 それでは再度トランザクションを実行してみましょう。  
@@ -1534,7 +1534,7 @@ Jaegerの画面を開き、`Service`に`console.otmm`を選択し、`Find`をク
 補償トランザクションは、Sagaパターンにおけるロールバックにあたる処理です。  
 マイクロサービスにおけるトランザクションでは、それぞれのサービスがデータベースを所有するため、それぞれコミットが実行されます。  
 そのため、従来のロールバックを行うことができません。  
-補償トランザクションは、一連のトランザクションで実行した操作を取り消す操作を行い、結果的に整合性が担保されるようにします。(結果整合性とも言います)
+補償トランザクションは、一連のトランザクションで実行した操作を取り消す操作を行い、結果的に整合性が担保されるようにします。(結果整合性とも言います)  
 詳細は[こちら](https://microservices.io/patterns/data/saga.html)をご確認ください。  
 {: .notice--info}
 
