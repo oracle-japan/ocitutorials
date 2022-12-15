@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-12-14T11:15:46+09:00">
+  <meta property="article:published_time" content="2022-12-15T13:43:17+09:00">
 
 
 
@@ -299,7 +299,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう">
     <meta itemprop="description" content="Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。">
-    <meta itemprop="datePublished" content="2022-12-14T11:15:46+09:00">
+    <meta itemprop="datePublished" content="2022-12-15T13:43:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -1078,24 +1078,21 @@ MicroTxはhelmを利用してインストールされるため、ここでは<co
 <p class="notice--info"><strong><code class="language-plaintext highlighter-rouge">istioctl</code>について</strong><br />
 <code class="language-plaintext highlighter-rouge">istioctl</code>は<a href="https://istio.io/latest/docs/reference/commands/istioctl/">こちら</a>をご確認ください。</p>
 
-<p>以下の2つのコマンドを実行します。</p>
+<p>今回はIstio v1.11.8を利用します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-sL</span> https://istio.io/downloadIstioctl | sh -
+<p>まずは、環境変数として以下を定義します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">ISTIO_VERSION</span><span class="o">=</span>1.11.8
 </code></pre></div></div>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-L</span> https://istio.io/downloadIstio | sh -
-</code></pre></div></div>
+<p>以下のコマンドを実行します。</p>
 
-<p>次にディレクトリに移動します。<br />
-<code class="language-plaintext highlighter-rouge">x.xx.x</code>の部分は、ダウンロードされたistioctlのバージョンになっています。<br />
-たとえば、<code class="language-plaintext highlighter-rouge">istio-1.16.0</code>などになっています。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>istio-x.xx.x
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-L</span> https://istio.io/downloadIstio | <span class="nv">ISTIO_VERSION</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">"</span> sh -
 </code></pre></div></div>
 
 <p>PATHを通します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/.istioctl/bin:<span class="nv">$PATH</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">PWD</span><span class="k">}</span><span class="s2">/istio-</span><span class="k">${</span><span class="nv">ISTIO_VERSION</span><span class="k">}</span><span class="s2">/bin:</span><span class="k">${</span><span class="nv">PATH</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div></div>
 
 <p>最後に動作確認をします。</p>
@@ -1105,7 +1102,8 @@ MicroTxはhelmを利用してインストールされるため、ここでは<co
 
 <p>以下のようなメッセージが出力されればインストールは完了です。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>client version: 1.16.0
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>no running Istio pods <span class="k">in</span> <span class="s2">"istio-system"</span>
+1.11.8
 </code></pre></div></div>
 
 <h3 id="1-5-microtxのデプロイ">1-5. MicroTxのデプロイ</h3>
@@ -1635,10 +1633,7 @@ JaegerとKialiはMictotxに必須のコンポーネントではありません�
 <p>今回は<code class="language-plaintext highlighter-rouge">istioctl</code>を利用してインストールしていきます。<br />
 JaegerとKialiにもインストールされるコンポーネントがありますが、このハンズオンではJaegerとKialiを利用します。</p>
 
-<p class="notice--info"><strong>Istioのバージョンについて</strong><br />
-<code class="language-plaintext highlighter-rouge">istio-x.xx.x</code>の部分はハンズオン実施時の状況に合わせて変更してください。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="s2">"istio-x.xx.x/samples/addons/"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl apply <span class="nt">-f</span> <span class="s2">"istio-1.11.8/samples/addons/"</span>
 </code></pre></div></div>
 
 <p>以下のように出力されれば問題ありません。</p>
@@ -2136,7 +2131,7 @@ MictoTxを利用することで、マイクロサービスにおける分散ト�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-14T11:15:46+09:00">December 14, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-15T13:43:17+09:00">December 15, 2022</time></p>
 
 
       </footer>
