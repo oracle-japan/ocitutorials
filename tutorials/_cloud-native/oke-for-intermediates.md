@@ -873,23 +873,26 @@ operatorhubio-catalog                           olm          CatalogSource      
 まずは、以下のコマンドを実行してOKEに対してOSOKオペレーター(OKEからATPを操作するためのKubernetes Operator)のインストールを行います。  
 
 ```sh
-./operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.0.0
+./operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.1.1
 ```
 
 以下のように出力されれば問題ありません。
 
 ```sh
-INFO[0016] Successfully created registry pod: iad-ocir-io-oracle-oci-service-operator-bundle-1-0-0 
-INFO[0017] Created CatalogSource: oci-service-operator-catalog 
-INFO[0018] OperatorGroup "operator-sdk-og" created      
-INFO[0019] Created Subscription: oci-service-operator-v1-0-0-sub 
-INFO[0023] Approved InstallPlan install-bgmnh for the Subscription: oci-service-operator-v1-0-0-sub 
-INFO[0023] Waiting for ClusterServiceVersion "default/oci-service-operator.v1.0.0" to reach 'Succeeded' phase 
-INFO[0024]   Waiting for ClusterServiceVersion "default/oci-service-operator.v1.0.0" to appear 
-INFO[0045]   Found ClusterServiceVersion "default/oci-service-operator.v1.0.0" phase: InstallReady 
-INFO[0046]   Found ClusterServiceVersion "default/oci-service-operator.v1.0.0" phase: Installing 
-INFO[0070]   Found ClusterServiceVersion "default/oci-service-operator.v1.0.0" phase: Succeeded 
-INFO[0070] OLM has successfully installed "oci-service-operator.v1.0.0" 
+INFO[0004] Creating a File-Based Catalog of the bundle "iad.ocir.io/oracle/oci-service-operator-bundle:1.1.1" 
+INFO[0005] Generated a valid File-Based Catalog         
+INFO[0007] Created registry pod: iad-ocir-io-oracle-oci-service-operator-bundle-1-1-1 
+INFO[0007] Created CatalogSource: oci-service-operator-catalog 
+INFO[0008] OperatorGroup "operator-sdk-og" created      
+INFO[0008] Created Subscription: oci-service-operator-v1-1-1-sub 
+INFO[0016] Approved InstallPlan install-sxg7z for the Subscription: oci-service-operator-v1-1-1-sub 
+INFO[0016] Waiting for ClusterServiceVersion "default/oci-service-operator.v1.1.1" to reach 'Succeeded' phase 
+INFO[0017]   Waiting for ClusterServiceVersion "default/oci-service-operator.v1.1.1" to appear 
+INFO[0035]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.1" phase: Pending 
+INFO[0038]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.1" phase: InstallReady 
+INFO[0040]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.1" phase: Installing 
+INFO[0050]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.1" phase: Succeeded 
+INFO[0050] OLM has successfully installed "oci-service-operator.v1.1.1" 
 ```
 
 次にATPをプロビジョニングするためのManifestを作成します。  
