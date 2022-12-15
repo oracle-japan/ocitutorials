@@ -579,28 +579,24 @@ jwksUri|[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`jwks_uri
 `istioctl`は[こちら](https://istio.io/latest/docs/reference/commands/istioctl/)をご確認ください。
 {: .notice--info}
 
-以下の2つのコマンドを実行します。  
+今回はIstio v1.11.8を利用します。  
+
+まずは、環境変数として以下を定義します。  
 
 ```sh
-curl -sL https://istio.io/downloadIstioctl | sh -
+ISTIO_VERSION=1.11.8
 ```
 
-```sh
-curl -L https://istio.io/downloadIstio | sh -
-```
-
-次にディレクトリに移動します。  
-`x.xx.x`の部分は、ダウンロードされたistioctlのバージョンになっています。  
-たとえば、`istio-1.16.0`などになっています。  
+以下のコマンドを実行します。  
 
 ```sh
-cd istio-x.xx.x
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION="${ISTIO_VERSION}" sh -
 ```
 
 PATHを通します。  
 
 ```sh
-export PATH=$HOME/.istioctl/bin:$PATH
+export PATH="${PWD}/istio-${ISTIO_VERSION}/bin:${PATH}"
 ```
 
 最後に動作確認をします。  
@@ -612,7 +608,8 @@ istioctl version
 以下のようなメッセージが出力されればインストールは完了です。  
 
 ```sh
-client version: 1.16.0
+no running Istio pods in "istio-system"
+1.11.8
 ```
 
 ### 1-5. MicroTxのデプロイ
@@ -1106,12 +1103,8 @@ JaegerとKialiはMictotxに必須のコンポーネントではありません�
 今回は`istioctl`を利用してインストールしていきます。  
 JaegerとKialiにもインストールされるコンポーネントがありますが、このハンズオンではJaegerとKialiを利用します。  
 
-**Istioのバージョンについて**  
-`istio-x.xx.x`の部分はハンズオン実施時の状況に合わせて変更してください。
-{: .notice--info}
-
 ```sh
-kubectl apply -f "istio-x.xx.x/samples/addons/"
+kubectl apply -f "istio-1.11.8/samples/addons/"
 ```
 
 以下のように出力されれば問題ありません。
