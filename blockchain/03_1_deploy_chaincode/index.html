@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-12-15T13:43:17+09:00">
+  <meta property="article:published_time" content="2022-12-19T16:23:25+09:00">
 
 
 
@@ -224,7 +224,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Chaincodeをデプロイする">
     <meta itemprop="description" content="この文書ではOracle Blockchain Platform（OBP）でChaincodeをデプロイし、実行可能にする方法を説明します。">
-    <meta itemprop="datePublished" content="2022-12-15T13:43:17+09:00">
+    <meta itemprop="datePublished" content="2022-12-19T16:23:25+09:00">
     
 
     <div class="page__inner-wrap">
@@ -235,14 +235,14 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-前提の理解">0. 前提の理解</a><ul><li><a href="#01-hyperledger-fabricv1x系におけるchaincodeのデプロイ">0.1 Hyperledger Fabric（v1.x系）におけるChaincodeのデプロイ</a></li><li><a href="#02-このチュートリアルでのブロックチェーンネットワーク構成">0.2 このチュートリアルでのブロックチェーン・ネットワーク構成</a></li></ul></li><li><a href="#1サンプルchaincodeの準備">1.サンプルChaincodeの準備</a></li><li><a href="#2chaincodeのインストール">2.Chaincodeのインストール</a></li><li><a href="#3chaincodeのinstantiate">3.ChaincodeのInstantiate</a></li><li><a href="#3-参考リンク">3. 参考リンク</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-前提の理解">0. 前提の理解</a><ul><li><a href="#01-hyperledger-fabricにおけるchaincodeのデプロイ">0.1 Hyperledger FabricにおけるChaincodeのデプロイ</a></li><li><a href="#02-このチュートリアルでのブロックチェーンネットワーク構成">0.2 このチュートリアルでのブロックチェーン・ネットワーク構成</a></li></ul></li><li><a href="#1サンプルchaincodeの準備">1.サンプルChaincodeの準備</a></li><li><a href="#2-hyperledger-fabric-v2x系でのchaincodeのデプロイ">2. Hyperledger Fabric v2.x系でのChaincodeのデプロイ</a><ul><li><a href="#21-chaincodeのインストール">2.1. Chaincodeのインストール</a></li><li><a href="#22-chaincodeのデプロイapproveとcommit">2.2. Chaincodeのデプロイ（ApproveとCommit）</a></li><li><a href="#23-chaincodeの初期化">2.3. Chaincodeの初期化</a></li></ul></li><li><a href="#3-hyperledger-fabric-v1x系でのchaincodeのデプロイ">3. Hyperledger Fabric v1.x系でのChaincodeのデプロイ</a><ul><li><a href="#31-chaincodeのインストール">3.1. Chaincodeのインストール</a></li><li><a href="#32-chaincodeのinstantiate">3.2. ChaincodeのInstantiate</a></li></ul></li><li><a href="#4-参考リンク">4. 参考リンク</a></li></ul>
 
             </nav>
           </aside>
         
         <p>この文書ではOracle Blockchain Platform（OBP）でChaincodeをデプロイし、実行可能にする方法をステップ・バイ・ステップで紹介するチュートリアルです。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この文書は、2022年11月時点での最新バージョン(22.3.2)を元に作成されています。
 </code></pre></div></div>
 
 <ul>
@@ -261,11 +261,23 @@
 
 <h1 id="0-前提の理解">0. 前提の理解</h1>
 
-<h2 id="01-hyperledger-fabricv1x系におけるchaincodeのデプロイ">0.1 Hyperledger Fabric（v1.x系）におけるChaincodeのデプロイ</h2>
+<h2 id="01-hyperledger-fabricにおけるchaincodeのデプロイ">0.1 Hyperledger FabricにおけるChaincodeのデプロイ</h2>
 
-<p>OBPはパーミッション型のブロックチェーンプロトコルであるHyperledger Fabricをベースとしたブロックチェーンプラットフォームです。</p>
+<p>OBPはパーミッション型のブロックチェーンプロトコルであるHyperledger Fabricをベースとしたブロックチェーンプラットフォームです。
+ブロックチェーン台帳に対して実行されるビジネスロジックであるChaincodeのデプロイのプロセスは、バージョン1.x系とバージョン2.x系で以下のように異なっています。そのため、このチュートリアルではv1.x系用の手順とv2.x系用の手順を併記しています。自身のお使いのOracle Blockchain PlatformインスタンスのベースとしているHyperledger Fabricのバージョンに合わせ、適切なほうをご利用ください。</p>
 
-<p>Hyperledger Fabric（v1.x系）では、ブロックチェーン台帳に対して実行されるビジネスロジックであるChaincodeのデプロイは、<strong>①各Organizationの作業として、Endorsementを行うPeerへのChaincodeのインストール</strong>、<strong>②Channelレベルの作業として、代表する単一のOrganizationがChaincodeをインスタンス化（instantiate）</strong>、の2段階のオペレーションによって実施され、Chaincodeが実行可能になります。</p>
+<ul>
+  <li>
+    <p>v1.x系</p>
+
+    <p>v1.x系では、<strong>①各Organizationの作業として、Endorsementを行うPeerへのChaincodeのインストール</strong>、<strong>②Channelレベルの作業として、代表する単一のOrganizationがChaincodeをインスタンス化（instantiate）</strong>、の2段階のオペレーションによって実施され、Chaincodeが実行可能になります。</p>
+  </li>
+  <li>
+    <p>v2.x系</p>
+
+    <p>v1.x系では、各Organizationの作業として、<strong>①Endorsementを行うPeerへのChaincodeのインストール</strong>および <strong>②Chaincode定義のApprove</strong>、③Channelレベルの作業として、<strong>必要数のApproveが得られていることを前提として、代表する単一のOrganizationがChaincode定義をCommit</strong>、の3段階のオペレーションによって実施され、Chaincodeが実行可能になります。</p>
+  </li>
+</ul>
 
 <h2 id="02-このチュートリアルでのブロックチェーンネットワーク構成">0.2 このチュートリアルでのブロックチェーン・ネットワーク構成</h2>
 
@@ -297,9 +309,115 @@
   </li>
 </ol>
 
-<h1 id="2chaincodeのインストール">2.Chaincodeのインストール</h1>
+<h1 id="2-hyperledger-fabric-v2x系でのchaincodeのデプロイ">2. Hyperledger Fabric v2.x系でのChaincodeのデプロイ</h1>
 
-<p>デプロイするChaincodeをPeerノードにインストールします。この手順については各Organization（=インスタンス）での作業が必要ですが、手順は同一なのでここでは_Founder2104_インスタンスでのステップのみを説明します。必要に応じて複数インスタンスで実施してください。</p>
+<h2 id="21-chaincodeのインストール">2.1. Chaincodeのインストール</h2>
+
+<p>デプロイするChaincodeをPeerノードにインストールします。この手順については各Organization（=インスタンス）での作業が必要ですが、手順は同一なのでここでは <em>Founder2104</em> インスタンスでのステップのみを説明します。必要に応じて複数インスタンスで実施してください。</p>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Chaincodes</strong>のページを開き、<strong>Deploy a New Chaincode</strong>をクリックします。</p>
+
+    <p><img src="deploy_cc.png" alt="Deploy a New Chaincode" /></p>
+  </li>
+  <li>
+    <p>開いたウィザードで、<strong>Advanced Deployment</strong>をクリックします。</p>
+
+    <p><img src="deploy_cc_advance.png" alt="Advanced Deployment" /></p>
+  </li>
+  <li>
+    <p>インストールするChaincodeの情報を入力する画面が開きます。以下を参考に入力、指定した後、<strong>Next</strong>をクリックします。</p>
+
+    <p><img src="deploy_cc_install_2.png" alt="Install Chaincode" /></p>
+
+    <ul>
+      <li><strong>Label:</strong> Chaincodeのパッケージに付与するラベル名を入力します。ここでは <em>BT-Sample2</em> とします。</li>
+      <li><strong>Language:</strong> Chaincodeのプログラミング言語を選択します。ここではGoLangを選択します。</li>
+      <li><strong>Target Peers:</strong> ChaincodeをインストールするPeerノードを選択します。ここでは <em>Peer0とPeer1</em> としています。</li>
+      <li><strong>Chaincode Source:</strong> Chaincodeのソースを含むZipファイルをアップロードします。ここでは前述の手順で作成しておいたBT_Sample.zipを指定します。</li>
+    </ul>
+  </li>
+  <li>
+    <p>Chaincodeのインストールが成功すると、ダイアログが閉じて成功メッセージが表示され、デプロイの画面に遷移します。この画面から続けてデプロイを実施することも可能ですが、このチュートリアルでは後で別途実施することとします。<strong>Close</strong>をクリックします。</p>
+
+    <p><img src="deploy_cc_install_complete_2.png" alt="Install Chaincode Success" /></p>
+
+    <p>なお、タイミングにより成功メッセージが表示されずダイアログが閉じる場合もあります。その場合は一覧画面のリフレッシュボタンをクリックし、インストールしたChaincodeが表示されることを確認してください。</p>
+
+    <p><img src="deploy_cc_install_success_2.png" alt="Install Chaincode Success" /></p>
+  </li>
+  <li>
+    <p>ここまででChaincodeのインストールは完了です。Chaincodeのインストールを複数インスタンスで実施する場合は、別のインスタンスでここまでの手順を繰り返してください。</p>
+  </li>
+</ol>
+
+<h2 id="22-chaincodeのデプロイapproveとcommit">2.2. Chaincodeのデプロイ（ApproveとCommit）</h2>
+
+<p>インストールしたChaincodeをChannel上にデプロイし、実行可能にします。</p>
+
+<p class="notice--info"><strong>注意</strong> <br />
+Oracle Blockchain Platformのデプロイ操作では、Hyperledger FabricのChaincodeライフサイクルのApproveとCommitが同時に実行（試行）されます。対象のChannelのLifecycleEndorsementポリシー設定により、Channelに参加するうちのどのOrganizationのApproveがそろっていればCommitが成功するかが変わってきます。<br />
+ここでの例では、Oracle Blockchain Platform上でChannelを作成した場合のデフォルトのLifecyclePolicyである <em>Any Endorsement</em> （Channel上のいずれかひとつのOrganizationのApproveのみでCommit可能）を前提としているため、 <em>Founder2104</em> インスタンスでのデプロイ操作のみでChaincodeが稼働状態になります。<br />
+複数Organizationが参加するChannelで異なるLifecyclePolicyを用いている場合、単一のインスタンスでのデプロイ操作の時点ではApproveのみが成功し、Commitが成功しません。その場合はLifecyclePolicyに必要なだけ別のインスタンスでもデプロイ操作を行ってください。その際、ChannelやChaincode Name、Version、Endorsement Policyなどのパラメータが相違しないように注意してください。</p>
+
+<ol>
+  <li>
+    <p>Oracle Blockchain Platformのサービス・コンソールを開きます。</p>
+  </li>
+  <li>
+    <p><strong>Chaincodes</strong>のページを開き、一覧から対象のChaincodeの行の右側にある<strong>ハンバーガーメニューボタン</strong>をクリックし、出てきたメニューから<strong>Deploy</strong>をクリックします。</p>
+
+    <p><img src="Deploy_cc_2.png" alt="Deploy a Chaincode" /></p>
+  </li>
+  <li>
+    <p>Chaincodeのデプロイにあたってのパラメータを入力する画面が開きます。以下を参考に入力、指定した後、<strong>Deploy</strong>をクリックします。
+ <img src="approve_commit_cc.png" alt="Deploy Parameters" /></p>
+
+    <ul>
+      <li><strong>Channel:</strong> Chaincodeを稼働させるChannelを選択します。ここでは <em>ch1</em> とします。</li>
+      <li><strong>Chaincode Name:</strong> Chaincodeの識別名を入力します。ここでは <em>BT-Sample2</em> とします。</li>
+      <li><strong>Version:</strong> Chaincodeのバージョン識別子を入力します。ここではデフォルトの <em>v1</em> とします。</li>
+      <li><strong>Init required:</strong> Chaincodeの初期化処理（<code class="language-plaintext highlighter-rouge">Init()</code>関数）の実行が必要かどうかを選択します。今回のサンプルは必要なので、チェックを入れます。</li>
+      <li><strong>Endorsement Policy:</strong> ChaincodeレベルのEndorsement Policyを指定します。ここでは何も指定しないでおきます（指定しない場合、任意、単一のOrganizationのEndorsementでPolicyが満たせる条件になります）。</li>
+      <li><strong>Private Data Collection:</strong> ChaincodeでTransient Mapを使用する場合に指定します。ここでは何も指定しないでおきます。</li>
+    </ul>
+  </li>
+  <li>
+    <p>デプロイ（ApproveとCommit）のトランザクションが発行されます。Commitまで成功した場合は以下のように成功メッセージが表示され、ダイアログが閉じます。</p>
+
+    <p><img src="approve_commit_cc_success.png" alt="Deploy Success" /></p>
+  </li>
+  <li>
+    <p>ここまででChaincodeのデプロイ操作は完了です。複数のインスタンスでのデプロイ（ApproveとCommit）が必要な場合は、別のインスタンスでここまでの手順を繰り返してください。</p>
+  </li>
+</ol>
+
+<h2 id="23-chaincodeの初期化">2.3. Chaincodeの初期化</h2>
+
+<p>Chaincodeによってはデプロイ後にまず初期化処理（<code class="language-plaintext highlighter-rouge">Init()</code>関数）の実行が必要です。OBPでは、v1.x系のChaincodeのデプロイではInstantiate時に同時に<code class="language-plaintext highlighter-rouge">Init()</code>関数の実行も行っていましたが、v2.x系では別途実行が必要になります。</p>
+
+<p>REST Proxy経由でREST API実行の場合、<a href="https://docs.oracle.com/en/cloud/paas/blockchain-cloud/restoci/op-restproxy-api-v2-channels-channelname-transactions-post.html">こちら</a>のドキュメントを参照ください。</p>
+
+<p>今回のBalance Transferサンプルの場合、REST APIのリクエストボディは以下のようになります。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+ </span><span class="nl">"chaincode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"obcs-example02"</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"init"</span><span class="p">,</span><span class="s2">"a"</span><span class="p">,</span><span class="s2">"100"</span><span class="p">,</span><span class="s2">"b"</span><span class="p">,</span><span class="s2">"200"</span><span class="w"> </span><span class="p">],</span><span class="w">
+ </span><span class="nl">"isInit"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"timeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">18000</span><span class="p">,</span><span class="w">    
+ </span><span class="nl">"sync"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 id="3-hyperledger-fabric-v1x系でのchaincodeのデプロイ">3. Hyperledger Fabric v1.x系でのChaincodeのデプロイ</h1>
+
+<h2 id="31-chaincodeのインストール">3.1. Chaincodeのインストール</h2>
+
+<p>デプロイするChaincodeをPeerノードにインストールします。この手順については各Organization（=インスタンス）での作業が必要ですが、手順は同一なのでここでは <em>Founder2104</em> インスタンスでのステップのみを説明します。必要に応じて複数インスタンスで実施してください。</p>
 
 <ol>
   <li>
@@ -337,9 +455,11 @@
   </li>
 </ol>
 
-<h1 id="3chaincodeのinstantiate">3.ChaincodeのInstantiate</h1>
+<h2 id="32-chaincodeのinstantiate">3.2. ChaincodeのInstantiate</h2>
 
 <p>インストールしたChaincodeをChannel上でInstantiate（インスタンス化）し、実行可能にします。複数インスタンス（＝Organization）のネットワークの場合でも、この手順についてはいずれか代表する単一のインスタンスのみで実行します。</p>
+
+<p>なお、v1.x系ではInstantiate時にInitialize（初期パラメータを指定してのInit()関数の実行）も実行されます。</p>
 
 <ol>
   <li>
@@ -358,10 +478,10 @@
     <ul>
       <li><strong>Channel:</strong> Chaincodeを稼働させるChannelを選択します。ここでは <em>ch1</em> とします。</li>
       <li><strong>Peers:</strong> 当該Channelで当該Chaincodeの実行（Endorsement）可能にするPeerノードを指定します。ここでは <em>Peer0とPeer1</em> としています。</li>
-      <li><strong>Initial Parameter:</strong> ChaincodeにInstantiate時に実行される関数（<code class="language-plaintext highlighter-rouge">init()</code>関数）に渡す引数を指定します。ここでは <code class="language-plaintext highlighter-rouge">["a","100","b","200"]</code> としています。</li>
+      <li><strong>Initial Parameter:</strong> ChaincodeにInstantiate時に実行される関数（<code class="language-plaintext highlighter-rouge">Init()</code>関数）に渡す引数を指定します。ここでは <code class="language-plaintext highlighter-rouge">["a","100","b","200"]</code> としています。</li>
       <li><strong>Endorsement Policy:</strong> ChaincodeレベルのEndorsement Policyを指定します。ここでは何も指定しないでおきます（指定しない場合、任意、単一のOrganizationのEndorsementでPolicyが満たせる条件になります）。</li>
       <li><strong>Transient Map:</strong> ChaincodeでTransient Mapを使用する場合に指定します。ここでは何も指定しないでおきます。</li>
-      <li><strong>Private Data Collection:</strong> ChaincodeでTransient Mapを使用する場合に指定します。ここでは何も指定しないでおきます。</li>
+      <li><strong>Private Data Collection:</strong> ChaincodeでPrivate Data Collectionを使用する場合に指定します。ここでは何も指定しないでおきます。</li>
     </ul>
   </li>
   <li>
@@ -374,7 +494,7 @@
   </li>
 </ol>
 
-<h1 id="3-参考リンク">3. 参考リンク</h1>
+<h1 id="4-参考リンク">4. 参考リンク</h1>
 
 <ul>
   <li><a href="https://docs.oracle.com/en/cloud/paas/blockchain-cloud/usingoci/deploy-and-manage-chaincodes.html">Oracle Blockchain Platform公式ドキュメントのChaincodeデプロイの箇所</a></li>
@@ -405,7 +525,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-15T13:43:17+09:00">December 15, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-19T16:23:25+09:00">December 19, 2022</time></p>
 
 
       </footer>
