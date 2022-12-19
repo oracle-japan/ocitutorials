@@ -46,9 +46,7 @@ Oracle Cloud Infrastructureの基本操作は[チュートリアル : OCIコン�
 -|-
 OKE |アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。
 ATP|今回デプロイするサンプルアプリケーションが利用するデータベースです。今回は2つのアプリケーションそれぞれに1つずつATPを持ちます。
-MicroTx|2つのアプリケーション間のトランザクション一貫性を確保するための分散トランザクションマネージャです。
-
-この全体像のうち、OKEに関しては、すでに[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)で構築済みとなります。  
+MicroTx|2つのアプリケーション間のトランザクション一貫性を確保するための分散トランザクションマネージャです。 
 
 この環境を構築後にサンプルアプリケーションを利用して、MicroTxを利用したトランザクション制御を体験して頂きます。
 
@@ -322,10 +320,11 @@ MicroTxのデプロイは以下の流れで実施します。
 以下の流れで実施します。
 
 1. 動的グループの設定
-2. MicroTxバイナリのダウンロード
-3. MicroTxのhelm chartの編集
-4. istioctlのインストール
-5. MicroTxのデプロイ
+2. OKEクラスタの作成
+3. MicroTxバイナリのダウンロード
+4. MicroTxのhelm chartの編集
+5. istioctlのインストール
+6. MicroTxのデプロイ
 
 ### 1-1. 動的グループとポリシーの設定
 
@@ -447,7 +446,87 @@ ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
 cd ~
 ```
 
-### 1-2. MicroTxバイナリのダウンロード
+### 1-2. OKEクラスタの作成
+
+ここでは、このハンズオンで利用するOKEクラスタを作成します。  
+前提条件で記載した[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)で構築したOKEクラスタから少し環境の変更が必要なので、新規にクラスタを構築します。  
+
+左上の`ハンバーガーメニュー`から`開発者メニュー`=>`Kubernetesクラスタ(OKE)`をクリックします。  
+
+
+![1-009.jpg](1-009.png)
+
+右上にある![1-010.jpg](1-010.png)をクリックします。  
+
+`カスタム作成`をクリックします。  
+
+![1-011.jpg](1-011.png)
+
+以下を入力し、![1-012.jpg](1-012.png)をクリックします。  
+
+key|value|
+-|-
+名前| "microtx-free"
+
+![1-013.jpg](1-013.png)
+
+それぞれ以下の項目を入力後、`APIエンドポイントへのパブリックIPアドレスの割当て`にチェックを入れて、![1-012.jpg](1-012.png)をクリックします。  
+
+key|value|
+-|-
+xxxx(コンパートメント名)のVCN| [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)のクイック作成時に作成されたVCN名(`oke-vcn-quick-cluster1-xxxxxx`という形式の名前)
+xxxx(コンパートメント名)のKubernetesサービスLBサブネット| [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)のクイック作成時に作成されたKubernetesサービスLBサブネット(`oke-svclbsubnet-subnet-quick-cluster1-xxxxxx`という形式の名前)
+xxxx(コンパートメント名)のKubernetes APIエンドポイント・サブネット| [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)のクイック作成時に作成されたKubernetes APIエンドポイント・サブネット(`oke-k8sApiEndpoint-subnet-quick-cluster1-xxxxxx`という形式の名前)
+
+![1-014.jpg](1-014.png)
+
+以下の項目を入力し、`イメージの変更`をクリックします。  
+
+key|value|
+-|-
+OCPU数| 2
+メモリ量(GB)| 8
+
+![1-015.jpg](1-015.png)
+
+画像の赤枠のイメージ(Oracle Linux 7.9 Kubernetesバージョン 1.24.1)のイメージを選択し、`イメージの選択`をクリックします。  
+
+![1-016.jpg](1-016.png)
+
+以下の項目を入力します。 
+
+key|value|
+-|-
+ノード数| 3
+
+![1-017.jpg](1-017.png)
+
+以下の項目を入力し、それ以外の項目は任意の値を入力してください。(選択式になっています)
+
+key|value|
+-|-
+xxxxxのワーカー・ノード・サブネット| [OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)のクイック作成時に作成されたワーカー・ノード・サブネット(`oke-nodesubnet-quick-cluster1-xxxxxx`という形式の名前)
+
+![1-018.jpg](1-018.png)
+
+`ネットワーク・タイプ`は`Flannelオーバレイ`を選択し、![1-012.jpg](1-012.png)をクリックします。  
+
+![1-019.jpg](1-019.png)
+
+`クラスタの作成`をクリックします。  
+
+![1-020.jpg](1-020.png)
+
+`閉じる`をクリックします。  
+
+![1-021.jpg](1-021.png)
+
+これでクラスタ作成は完了です。  
+
+クラスタがアクティブになった後、クラスタのアクセス設定を行ってください。  
+手順については、[OKEハンズオン事前準備のkubectlセットアップ](/ocitutorials/cloud-native/oke-for-commons/#3kubectlのセットアップ)を参考に実施してください。
+
+### 1-3. MicroTxバイナリのダウンロード
 
 ここでは、OCIRにMicroTxのイメージをプッシュしていきます。
 MicroTxのイメージをプッシュはスクリプトを利用して実施します。  
@@ -514,7 +593,7 @@ ls otmm-22.3
 
 これで、MicroTxバイナリのダウンロードが完了です。  
 
-### 1-3. MicroTxのhelm chartの編集
+### 1-4. MicroTxのhelm chartの編集
 
 ここでは、MicroTxのインストールにあたって、必要なパラメータを設定していきます。  
 MicroTxはhelmを利用してインストールされるため、ここでは`values.yaml`にパラメータを設定していきます。  
@@ -566,37 +645,32 @@ authentication:
 
 key|value|
 -|-
-issuer|"https://identity.oraclecloud.com"
+issuer|"https://identity.oraclecloud.com/"
 jwksUri|[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`jwks_uri`
 
 これで、MicroTxのhelm chartの編集は完了です。  
 
-### 1-4. istioctlのインストール
+### 1-5. istioctlのインストール
 
-ここでは、[1-5. MicroTxのデプロイ](#1-5-microtxのデプロイ)で実行するスクリプトで利用する`istioctl`というIstioを操作するためのCLIツールをインストールしておきます。  
+ここでは、[1-6. MicroTxのデプロイ](#1-6-microtxのデプロイ)で実行するスクリプトで利用する`istioctl`というIstioを操作するためのCLIツールをインストールしておきます。  
 
 **`istioctl`について**  
 `istioctl`は[こちら](https://istio.io/latest/docs/reference/commands/istioctl/)をご確認ください。
 {: .notice--info}
 
-今回はIstio v1.11.8を利用します。  
-
-まずは、環境変数として以下を定義します。  
-
-```sh
-ISTIO_VERSION=1.11.8
-```
-
 以下のコマンドを実行します。  
+この時、ダウンロードされたIstioのバージョンが出力されるので、メモしておきます。  
 
 ```sh
-curl -L https://istio.io/downloadIstio | ISTIO_VERSION="${ISTIO_VERSION}" sh -
+curl -L https://istio.io/downloadIstio | sh -
 ```
 
 PATHを通します。  
+`x.xx.x`の箇所は前手順でダウンロードされたIstioのバージョンが入ります。  
+例えば、`1.16.1`です。
 
 ```sh
-export PATH="${PWD}/istio-${ISTIO_VERSION}/bin:${PATH}"
+export PATH="${PWD}/istio-x.xx.x/bin:${PATH}"
 ```
 
 最後に動作確認をします。  
@@ -605,14 +679,14 @@ export PATH="${PWD}/istio-${ISTIO_VERSION}/bin:${PATH}"
 istioctl version
 ```
 
-以下のようなメッセージが出力されればインストールは完了です。  
+以下のようなメッセージが出力されればインストールは完了です。(`1.16.1`の場合)  
 
 ```sh
 no running Istio pods in "istio-system"
-1.11.8
+1.16.1
 ```
 
-### 1-5. MicroTxのデプロイ
+### 1-6. MicroTxのデプロイ
 
 `otmm-22.3`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
 このスクリプトを実行することによって、MictoTxをインストールできます。  
@@ -1107,7 +1181,7 @@ JaegerとKialiはMictotxに必須のコンポーネントではありません�
 JaegerとKialiにもインストールされるコンポーネントがありますが、このハンズオンではJaegerとKialiを利用します。  
 
 ```sh
-kubectl apply -f "istio-1.11.8/samples/addons/"
+kubectl apply -f "istio-x.xx.x/samples/addons/"
 ```
 
 以下のように出力されれば問題ありません。
