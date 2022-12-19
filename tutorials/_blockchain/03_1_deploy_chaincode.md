@@ -13,7 +13,7 @@ header:
 この文書ではOracle Blockchain Platform（OBP）でChaincodeをデプロイし、実行可能にする方法をステップ・バイ・ステップで紹介するチュートリアルです。
 
 ```
-この文書は、2021年8月時点での最新バージョン(21.2.1)を元に作成されています。
+この文書は、2022年11月時点での最新バージョン(22.3.2)を元に作成されています。
 ```
 
 - **前提 :**
@@ -26,11 +26,18 @@ header:
 
 # 0. 前提の理解
 
-## 0.1 Hyperledger Fabric（v1.x系）におけるChaincodeのデプロイ
+## 0.1 Hyperledger FabricにおけるChaincodeのデプロイ
 
 OBPはパーミッション型のブロックチェーンプロトコルであるHyperledger Fabricをベースとしたブロックチェーンプラットフォームです。
+ブロックチェーン台帳に対して実行されるビジネスロジックであるChaincodeのデプロイのプロセスは、バージョン1.x系とバージョン2.x系で以下のように異なっています。そのため、このチュートリアルではv1.x系用の手順とv2.x系用の手順を併記しています。自身のお使いのOracle Blockchain PlatformインスタンスのベースとしているHyperledger Fabricのバージョンに合わせ、適切なほうをご利用ください。
 
-Hyperledger Fabric（v1.x系）では、ブロックチェーン台帳に対して実行されるビジネスロジックであるChaincodeのデプロイは、**①各Organizationの作業として、Endorsementを行うPeerへのChaincodeのインストール**、**②Channelレベルの作業として、代表する単一のOrganizationがChaincodeをインスタンス化（instantiate）**、の2段階のオペレーションによって実施され、Chaincodeが実行可能になります。
++ v1.x系
+
+    v1.x系では、**①各Organizationの作業として、Endorsementを行うPeerへのChaincodeのインストール**、**②Channelレベルの作業として、代表する単一のOrganizationがChaincodeをインスタンス化（instantiate）**、の2段階のオペレーションによって実施され、Chaincodeが実行可能になります。
+
++ v2.x系
+
+    v1.x系では、各Organizationの作業として、**①Endorsementを行うPeerへのChaincodeのインストール**および **②Chaincode定義のApprove**、③Channelレベルの作業として、**必要数のApproveが得られていることを前提として、代表する単一のOrganizationがChaincode定義をCommit**、の3段階のオペレーションによって実施され、Chaincodeが実行可能になります。
 
 ## 0.2 このチュートリアルでのブロックチェーン・ネットワーク構成
 
@@ -55,9 +62,97 @@ Hyperledger Fabric（v1.x系）では、ブロックチェーン台帳に対し�
 
     ![ZIPするフォルダ](zip_target_folder.png)
 
-# 2.Chaincodeのインストール
+# 2. Hyperledger Fabric v2.x系でのChaincodeのデプロイ
 
-デプロイするChaincodeをPeerノードにインストールします。この手順については各Organization（=インスタンス）での作業が必要ですが、手順は同一なのでここでは_Founder2104_インスタンスでのステップのみを説明します。必要に応じて複数インスタンスで実施してください。
+## 2.1. Chaincodeのインストール
+
+デプロイするChaincodeをPeerノードにインストールします。この手順については各Organization（=インスタンス）での作業が必要ですが、手順は同一なのでここでは _Founder2104_ インスタンスでのステップのみを説明します。必要に応じて複数インスタンスで実施してください。
+
+1. Oracle Blockchain Platformのサービス・コンソールを開きます。
+
+1. **Chaincodes**のページを開き、**Deploy a New Chaincode**をクリックします。
+
+    ![Deploy a New Chaincode](deploy_cc.png)
+
+1. 開いたウィザードで、**Advanced Deployment**をクリックします。
+
+    ![Advanced Deployment](deploy_cc_advance.png)
+
+1. インストールするChaincodeの情報を入力する画面が開きます。以下を参考に入力、指定した後、**Next**をクリックします。
+
+    ![Install Chaincode](deploy_cc_install_2.png)
+
+    - **Label:** Chaincodeのパッケージに付与するラベル名を入力します。ここでは _BT-Sample2_ とします。
+    - **Language:** Chaincodeのプログラミング言語を選択します。ここではGoLangを選択します。
+    - **Target Peers:** ChaincodeをインストールするPeerノードを選択します。ここでは _Peer0とPeer1_ としています。
+    - **Chaincode Source:** Chaincodeのソースを含むZipファイルをアップロードします。ここでは前述の手順で作成しておいたBT_Sample.zipを指定します。
+
+1. Chaincodeのインストールが成功すると、ダイアログが閉じて成功メッセージが表示され、デプロイの画面に遷移します。この画面から続けてデプロイを実施することも可能ですが、このチュートリアルでは後で別途実施することとします。**Close**をクリックします。
+
+    ![Install Chaincode Success](deploy_cc_install_complete_2.png)
+
+    なお、タイミングにより成功メッセージが表示されずダイアログが閉じる場合もあります。その場合は一覧画面のリフレッシュボタンをクリックし、インストールしたChaincodeが表示されることを確認してください。
+
+    ![Install Chaincode Success](deploy_cc_install_success_2.png)
+
+1. ここまででChaincodeのインストールは完了です。Chaincodeのインストールを複数インスタンスで実施する場合は、別のインスタンスでここまでの手順を繰り返してください。
+
+## 2.2. Chaincodeのデプロイ（ApproveとCommit）
+
+インストールしたChaincodeをChannel上にデプロイし、実行可能にします。
+
+**注意** <br>
+Oracle Blockchain Platformのデプロイ操作では、Hyperledger FabricのChaincodeライフサイクルのApproveとCommitが同時に実行（試行）されます。対象のChannelのLifecycleEndorsementポリシー設定により、Channelに参加するうちのどのOrganizationのApproveがそろっていればCommitが成功するかが変わってきます。<br>
+ここでの例では、Oracle Blockchain Platform上でChannelを作成した場合のデフォルトのLifecyclePolicyである _Any Endorsement_ （Channel上のいずれかひとつのOrganizationのApproveのみでCommit可能）を前提としているため、 _Founder2104_ インスタンスでのデプロイ操作のみでChaincodeが稼働状態になります。<br>
+複数Organizationが参加するChannelで異なるLifecyclePolicyを用いている場合、単一のインスタンスでのデプロイ操作の時点ではApproveのみが成功し、Commitが成功しません。その場合はLifecyclePolicyに必要なだけ別のインスタンスでもデプロイ操作を行ってください。その際、ChannelやChaincode Name、Version、Endorsement Policyなどのパラメータが相違しないように注意してください。
+{: .notice--info}
+
+1. Oracle Blockchain Platformのサービス・コンソールを開きます。
+
+1. **Chaincodes**のページを開き、一覧から対象のChaincodeの行の右側にある**ハンバーガーメニューボタン**をクリックし、出てきたメニューから**Deploy**をクリックします。
+
+    ![Deploy a Chaincode](Deploy_cc_2.png)
+
+1. Chaincodeのデプロイにあたってのパラメータを入力する画面が開きます。以下を参考に入力、指定した後、**Deploy**をクリックします。
+    ![Deploy Parameters](approve_commit_cc.png)
+
+    - **Channel:** Chaincodeを稼働させるChannelを選択します。ここでは _ch1_ とします。
+    - **Chaincode Name:** Chaincodeの識別名を入力します。ここでは _BT-Sample2_ とします。
+    - **Version:** Chaincodeのバージョン識別子を入力します。ここではデフォルトの _v1_ とします。
+    - **Init required:** Chaincodeの初期化処理（`Init()`関数）の実行が必要かどうかを選択します。今回のサンプルは必要なので、チェックを入れます。
+    - **Endorsement Policy:** ChaincodeレベルのEndorsement Policyを指定します。ここでは何も指定しないでおきます（指定しない場合、任意、単一のOrganizationのEndorsementでPolicyが満たせる条件になります）。
+    - **Private Data Collection:** ChaincodeでTransient Mapを使用する場合に指定します。ここでは何も指定しないでおきます。
+
+1. デプロイ（ApproveとCommit）のトランザクションが発行されます。Commitまで成功した場合は以下のように成功メッセージが表示され、ダイアログが閉じます。
+
+    ![Deploy Success](approve_commit_cc_success.png)
+
+1. ここまででChaincodeのデプロイ操作は完了です。複数のインスタンスでのデプロイ（ApproveとCommit）が必要な場合は、別のインスタンスでここまでの手順を繰り返してください。
+
+## 2.3. Chaincodeの初期化
+
+Chaincodeによってはデプロイ後にまず初期化処理（`Init()`関数）の実行が必要です。OBPでは、v1.x系のChaincodeのデプロイではInstantiate時に同時に`Init()`関数の実行も行っていましたが、v2.x系では別途実行が必要になります。
+
+REST Proxy経由でREST API実行の場合、[こちら](https://docs.oracle.com/en/cloud/paas/blockchain-cloud/restoci/op-restproxy-api-v2-channels-channelname-transactions-post.html)のドキュメントを参照ください。
+
+今回のBalance Transferサンプルの場合、REST APIのリクエストボディは以下のようになります。
+
+```json
+{
+ "chaincode": "obcs-example02",
+ "args": [ "init","a","100","b","200" ],
+ "isInit": true,
+ "timeout": 18000,    
+ "sync": true
+}
+```
+
+
+# 3. Hyperledger Fabric v1.x系でのChaincodeのデプロイ
+
+## 3.1. Chaincodeのインストール
+
+デプロイするChaincodeをPeerノードにインストールします。この手順については各Organization（=インスタンス）での作業が必要ですが、手順は同一なのでここでは _Founder2104_ インスタンスでのステップのみを説明します。必要に応じて複数インスタンスで実施してください。
 
 1. Oracle Blockchain Platformのサービス・コンソールを開きます。
 
@@ -84,9 +179,11 @@ Hyperledger Fabric（v1.x系）では、ブロックチェーン台帳に対し�
 
 1. ここまででChaincodeのインストールは完了です。Chaincodeのインストールを複数インスタンスで実施する場合は、別のインスタンスでここまでの手順を繰り返してください。**なお、その際にはChaincode NameとVersionの指定値がインスタンス間で食い違わないよう、同一の値を指定してください**。
 
-# 3.ChaincodeのInstantiate
+## 3.2. ChaincodeのInstantiate
 
 インストールしたChaincodeをChannel上でInstantiate（インスタンス化）し、実行可能にします。複数インスタンス（＝Organization）のネットワークの場合でも、この手順についてはいずれか代表する単一のインスタンスのみで実行します。
+
+なお、v1.x系ではInstantiate時にInitialize（初期パラメータを指定してのInit()関数の実行）も実行されます。
 
 1. Oracle Blockchain Platformのサービス・コンソールを開きます。
 
@@ -100,10 +197,10 @@ Hyperledger Fabric（v1.x系）では、ブロックチェーン台帳に対し�
 
     - **Channel:** Chaincodeを稼働させるChannelを選択します。ここでは _ch1_ とします。
     - **Peers:** 当該Channelで当該Chaincodeの実行（Endorsement）可能にするPeerノードを指定します。ここでは _Peer0とPeer1_ としています。
-    - **Initial Parameter:** ChaincodeにInstantiate時に実行される関数（`init()`関数）に渡す引数を指定します。ここでは `["a","100","b","200"]` としています。
+    - **Initial Parameter:** ChaincodeにInstantiate時に実行される関数（`Init()`関数）に渡す引数を指定します。ここでは `["a","100","b","200"]` としています。
     - **Endorsement Policy:** ChaincodeレベルのEndorsement Policyを指定します。ここでは何も指定しないでおきます（指定しない場合、任意、単一のOrganizationのEndorsementでPolicyが満たせる条件になります）。
     - **Transient Map:** ChaincodeでTransient Mapを使用する場合に指定します。ここでは何も指定しないでおきます。
-    - **Private Data Collection:** ChaincodeでTransient Mapを使用する場合に指定します。ここでは何も指定しないでおきます。
+    - **Private Data Collection:** ChaincodeでPrivate Data Collectionを使用する場合に指定します。ここでは何も指定しないでおきます。
 
 1. Instantiateのトランザクションが発行されます。実際にInstantiateが完了するまでには1～数分程度要します。
 
@@ -111,6 +208,6 @@ Hyperledger Fabric（v1.x系）では、ブロックチェーン台帳に対し�
 
     ![Instantiate Success](instantiate_cc_success.png)
 
-# 3. 参考リンク
+# 4. 参考リンク
 
 - [Oracle Blockchain Platform公式ドキュメントのChaincodeデプロイの箇所](https://docs.oracle.com/en/cloud/paas/blockchain-cloud/usingoci/deploy-and-manage-chaincodes.html)
