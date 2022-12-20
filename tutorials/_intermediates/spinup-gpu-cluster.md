@@ -14,7 +14,15 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 - RoCE v2採用の高帯域・低レイテンシRDMAインターコネクト（MPI通信で最大12GB/sの帯域幅と最小1.5μsのレイテンシ）の **クラスタ・ネットワーク**
 - 8枚のNVIDIA A100 40 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ **BM.GPU4.8**
 
-このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40 GBを搭載するGPUノード（ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** ）をクラスタ・ネットワークを使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するためのGPUクラスタを構築、このGPUクラスタ上で分散機械学習フレームワークである **[Horovod](https://horovod.readthedocs.io/en/stable/)** 用のDockerコンテナで複数ノードに跨るGPUを使用する分散機械学習環境を構築、GPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** テストプログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、Horovodがサンプルプログラムとして用意するResNet50ベンチマークプログラムを実行、その性能を検証します。
+このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40 GBを搭載するGPUノード（ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** ）をクラスタ・ネットワークを使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するためのGPUクラスタを分散機械学習に対応するDockerコンテナー上に構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** テストプログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。
+
+このチュートリアルは、分散機械学習フレームワークに以下2種類を取り上げ、それぞれ3章と4章でこれらを解説しています。該当する章を参照することで、自身のワークロードに合わせた環境構築が可能です。
+
+- Horovod（ **[3.Horovodを使用するGPUクラスタ環境構築](#3-horovodを使用するgpuクラスタ環境構築)** ）
+
+- MultiWorkerMirroredStrategy（ **[4.MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築](#4-multiworkermirroredstrategyを使用するgpuクラスタ環境構築)** ）
+
+よって本チュートリアルの進め方は、まず自身のワークロードに合わせて上記2種類からどちらを使用するか選択し、0章 → 1章 → 2章 → 3章 or 4章 → 5章と進めます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有、プログラム開発環境、コンテナオーケストレーション等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。
 なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化するOCIのリソース・マネージャを使用したHPC（GPU）クラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である **[HPCクラスタを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster)** を参照ください。
@@ -154,7 +162,8 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 - NVMeローカルディスクファイルシステム作成
 - firewalld停止
 - RDMAインタフェース作成
-- Horovod Dockerイメージプル
+- ルートファイルシステム拡張
+- Dockerイメージプル
 
 以下は、本チュートリアルで使用するBM.GPU4.8用のcloud-init設定ファイルで、OCIコンソールを実行している端末上にテキストファイルで保存します。
 
@@ -263,10 +272,13 @@ runcmd:
   - sed 's/192.168.0/192.168.15/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp209s0f1
   - sed -i 's/enp12s0f0/enp209s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp209s0f1
   - ifup enp209s0f1
-# Pull Horovod docker image
+# Expand root file system to those set by instance configuration
+  - /usr/libexec/oci-growfs -y
+# Pull Horovod/TensorFlow docker images
   - systemctl start docker
   - systemctl enable docker
   - docker pull horovod/horovod:latest
+  - docker pull nvcr.io/nvidia/tensorflow:22.11-tf2-py3
 ```
 
 このcloud-init設定ファイルのRDMAインタフェース設定は、プライベートサブネットに接続するTCP接続（インターフェース名：enp45s0f0）用IPアドレスの4フィールド目の値を取得（この値をyとする）し、この値を4フィールド目に持つ192.168.x.y/24（x = 0 - 15）を、BM.GPU4.8が有する16個のクラスタ・ネットワーク接続用RDMAインタフェースのIPアドレスに使用します。
@@ -281,7 +293,7 @@ runcmd:
 
 2. 表示される以下画面で、**インスタンス構成の作成** ボタンをクリックします。
 
-![画面ショット](console_page01.png)
+   ![画面ショット](console_page01.png)
 
 3. 表示される **インスタンス構成の作成** 画面で、以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
@@ -326,7 +338,13 @@ runcmd:
 
    ![画面ショット](console_page09.png)
 
-   3.7 **管理** フィールド（以下 **拡張オプションの表示** ボタンを選択して表示）
+   3.7 **ブート・ボリューム** フィールド
+    - **カスタム・ブート・ボリューム・サイズを指定します** ： チェック
+    - **ブート・ボリューム・サイズ(GB)** ：100
+   
+   ![画面ショット](console_page27.png)
+
+   3.8 **管理** フィールド（以下 **拡張オプションの表示** ボタンを選択して表示）
    
    ![画面ショット](console_page10.png)
 
@@ -342,7 +360,7 @@ runcmd:
 
 2. 表示される以下画面で、**クラスタ・ネットワークの作成** ボタンをクリックします。
 
-![画面ショット](console_page12.png)
+   ![画面ショット](console_page12.png)
 
 3. 表示される **クラスタ・ネットワークの作成** 画面で、以下の情報を入力し **クラスタ・ネットワークの作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
@@ -389,20 +407,19 @@ GPUノードは、プライベートサブネットに接続されており、�
 
 GPUノードのイニシャルホスト名は、OCIコンソールでGPUノードをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧からそのイニシャルホスト名を確認します。
 
-またこの画面は、GPUノードのIPアドレスも表示されており、これを使用してbastionからSSHログインすることも可能です。
+またこの画面は、GPUノードのIPアドレスも表示しており、これを使用してbastionからSSHログインすることも可能です。
 
 ![画面ショット](console_page19.png)
 
 GPUノードへのログインは、以下のようにbastionからopcユーザでSSHログインします。
 
 ```sh
-> ssh inst-wyr6m-comp
-The authenticity of host 'inst-wyr6m-comp (10.0.1.61)' cant be established.
-ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
-ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
+> ssh inst-d5ige-comp
+The authenticity of host 'inst-d5ige-comp (10.0.2.67)' cannot be established.
+ECDSA key fingerprint is SHA256:Iro630ws/Fm3gbc3VNPp9BQ+AJnN9K5fcC2ZbzjJVXs.
+ECDSA key fingerprint is MD5:2d:52:32:d9:43:24:5a:85:85:a9:aa:08:12:bf:fa:bb.
 Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of known hosts.
->
+Warning: Permanently added 'inst-d5ige-comp,10.0.2.67' (ECDSA) to the list of known hosts.
 ```
 
 ## 2.2. cloud-init完了確認
@@ -426,19 +443,22 @@ Filesystem              Size  Used Avail Use% Mounted on
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
 ```
 
-## 2.4. Horovod用Dockerコンテナーイメージ確認
+## 2.4. Dockerコンテナーイメージ確認
 
-cloud-initが完了したGPUノードは、以下のようにHorovod用のDockerコンテナーイメージがプルされています。
+cloud-initが完了したGPUノードは、以下のように2種類のDockerコンテナーイメージがプルされています。
 
 ```sh
 > sudo docker images
-REPOSITORY        TAG       IMAGE ID       CREATED       SIZE
-horovod/horovod   latest    f16647de3f02   5 weeks ago   14.2GB
+REPOSITORY                  TAG             IMAGE ID       CREATED        SIZE
+nvcr.io/nvidia/tensorflow   22.11-tf2-py3   a88317ae0b1b   3 weeks ago    14.4GB
+horovod/horovod             latest          f16647de3f02   2 months ago   14.2GB
 ```
 
-# 3. Dockerコンテナー環境構築
+# 3. Horovodを使用するGPUクラスタ環境構築
 
-## 3-0. Dockerコンテナー環境構築概要
+## 3-1. Dockerコンテナー環境構築
+
+### 3-1-0. Dockerコンテナー環境構築概要
 
 本章は、後の章で実行するNCCL TestsとHorovodのサンプルプログラムを実行するHorovod用Dockerコンテナーを起動するため、必要な環境構築作業を行います。
 
@@ -454,7 +474,7 @@ OpenMPIをコンテナー間で実行するためには、MPIプログラムをm
 - プライベートサブネットセキュリティリスト修正
 - Horovod用Dockerコンテナー起動
 
-## 3-1. コンテナー間SSH接続環境構築
+### 3-1-1. コンテナー間SSH接続環境構築
 
 本章は、先にbastionノードで作成したSSH秘密鍵を全てのGPUノードにコピーし、後のコンテナー起動時にこのディレクトリをコンテナーにマウントすることで、コンテナー間のパスフレーズ無しSSH接続環境を実現します。
    
@@ -462,28 +482,23 @@ OpenMPIをコンテナー間で実行するためには、MPIプログラムをm
 
 ```sh
 > cat hostlist.txt 
-inst-ks8ls-comp
-inst-6ejzf-comp
+inst-d5ige-comp
+inst-swgen-comp
 ```
 
 次にこのファイルを使用し、bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname hostname; done
-inst-ks8ls-comp
-The authenticity of host 'inst-ks8ls-comp (10.0.2.171)' cannot be established.
-ECDSA key fingerprint is SHA256:Gfl/Tw0vwH9AKq2wQEfwnittbzHxqpFojOhl8mToHjU.
-ECDSA key fingerprint is MD5:b3:28:5a:c3:7e:96:18:5f:e2:74:81:7f:05:ab:e5:7b.
+inst-d5ige-comp
+inst-d5ige-comp
+inst-swgen-comp
+The authenticity of host 'inst-swgen-comp (10.0.2.242)' cannot be established.
+ECDSA key fingerprint is SHA256:koWs+bKLzf78RQsZ+mQhvwxEQTu/72St2DiVyVqmtl4.
+ECDSA key fingerprint is MD5:68:b4:e0:37:f1:9a:36:c7:a5:3c:69:9f:91:d5:e0:34.
 Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'inst-ks8ls-comp,10.0.2.171' (ECDSA) to the list of known hosts.
-inst-ks8ls-comp
-inst-6ejzf-comp
-The authenticity of host 'inst-6ejzf-comp (10.0.2.214)' cannot be established.
-ECDSA key fingerprint is SHA256:nNStowr7C2wULChbWDuX/EdTtpqmpQobnpt47Boj+1M.
-ECDSA key fingerprint is MD5:24:81:07:4b:9f:0d:07:26:2c:e8:23:df:82:fc:f5:6c.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'inst-6ejzf-comp,10.0.2.214' (ECDSA) to the list of known hosts.
-inst-6ejzf-comp
+Warning: Permanently added 'inst-swgen-comp,10.0.2.242' (ECDSA) to the list of known hosts.
+inst-swgen-comp
 ```
 
 次に、bastionノードのopcユーザで以下コマンドを実行、bastionで作成した秘密鍵を使ったSSHログインを許可します。
@@ -503,32 +518,34 @@ inst-6ejzf-comp
 ./.ssh/id_rsa.pub
 ./.ssh/authorized_keys
 > for hname in `cat hostlist.txt`; do echo $hname; scp /tmp/ssh.tar $hname:/tmp/; done
-inst-ks8ls-comp
-ssh.tar                                                                100%   10KB   9.8MB/s   00:00    
-inst-6ejzf-comp
-ssh.tar                                                                100%   10KB   8.9MB/s   00:00
+inst-d5ige-comp
+ssh.tar                                                                100%   10KB   9.0MB/s   00:00    
+inst-swgen-comp
+ssh.tar                                                                100%   10KB  11.5MB/s   00:00
 ```
 
 次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブを/horovodディレクトリに展開します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo mkdir /horovod"; done
+inst-d5ige-comp
+inst-swgen-comp
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo tar --no-same-owner -xvf /tmp/ssh.tar -C /horovod/"; done
-inst-ks8ls-comp
+inst-d5ige-comp
 ./.ssh/
 ./.ssh/id_rsa
-./.ssh/known_hosts
 ./.ssh/id_rsa.pub
 ./.ssh/authorized_keys
-inst-6ejzf-comp
+./.ssh/known_hosts
+inst-swgen-comp
 ./.ssh/
 ./.ssh/id_rsa
-./.ssh/known_hosts
 ./.ssh/id_rsa.pub
 ./.ssh/authorized_keys
+./.ssh/known_hosts
 ```
 
-## 3-2. プライベートサブネットセキュリティリスト修正
+### 3-1-2. プライベートサブネットセキュリティリスト修正
 
 本章は、プライベートサブネットのセキュリティリストを以下の手順で修正します。
 
@@ -556,186 +573,142 @@ inst-6ejzf-comp
 
    ![画面ショット](console_page25.png)
 
-## 3-3. Horovod用Dockerコンテナー起動
+### 3-1-3. Horovod用Dockerコンテナー起動
 
 本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）でHorovod用Dockerコンテナーを起動します。
 
 以下コマンドをマスターノードのrootユーザで実行し、マスターノード上でHorovod用Dockerコンテナーを起動します。
 
 ```sh
-> docker run -it --privileged --gpus all --network=host -v /horovod/.ssh:/root/.ssh horovod/horovod:latest
+> docker run -it --privileged --rm --gpus all --network=host -v /horovod:/root -v /mnt/localdisk:/scratch horovod/horovod:latest
 ```
 
-次に、以下コマンドをスレーブノードのrootユーザで実行し、スレーブノード上でポート番号12345でSSH接続を受け付けるHorovod用Dockerコンテナーを起動します。
+次に、以下コマンドをスレーブノードのrootユーザで実行し、スレーブノード上でポート番号22222でSSH接続を受け付けるHorovod用Dockerコンテナーを起動します。
 
 ```sh
-> docker run -it --privileged --gpus all --network=host -v /horovod/.ssh:/root/.ssh horovod/horovod:latest bash -c "/usr/sbin/sshd -p 12345; bash"
+> docker run -it --privileged --rm --gpus all --network=host -v /horovod:/root -v /mnt/localdisk:/scratch horovod/horovod:latest bash -c "/usr/sbin/sshd -p 22222; bash"
 ```
 
-# 4. NCCL通信性能検証
+## 3-2. NCCL通信性能検証
 
-## 4-0. NCCL通信性能検証概要
+### 3-2-0. NCCL通信性能検証概要
 
 本章は、NCCL Testsを使用し、GPUクラスタ内のNCCLによるGPU間通信性能を確認します。
 
-ここで使用するNCCLは、Horovod用Dockerコンテナーに予め含まれますが、NCCL Testsはコンテナー内でソースコードからビルドします。
+ここで使用するNCCLは、Horovod用Dockerコンテナーに予め含まれるものを本環境に合うバージョンにアップデートし、NCCL Testsはコンテナー内でソースコードからビルドします。
 
 以上より、本章で実施するNCCL通信性能検証は、以下の手順を経て行います。
 
+- NCCLアップデート
 - NCCL Testsビルド
 - NCCL Tests実行
 
 本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用したNCCLのAll Reduce通信性能をコンテナー環境から計測し、以下性能が出ています。
 
-- 帯域（busbw）：約 72 GB/s
-- レイテンシ：約 39 μs
+- 帯域（busbw）：約 221 GB/s
 
-## 4-1. NCCL Testsビルド
+### 3-2-1. NCCLアップデート
+
+本章は、Horovod用Dockerコンテナーに含まれるNCCLをアップデートします。
+
+マスターノードとスレーブノードのそれぞれで、起動したコンテナー上のrootユーザで、以下のコマンドを実行します。
+
+```sh
+> apt update
+> apt install -y --allow-change-held-packages libnccl2=2.15.5-1+cuda11.8 libnccl-dev=2.15.5-1+cuda11.8
+```
+
+### 3-2-2. NCCL Testsビルド
 
 本章は、NCCL TestsプログラムをGitHubからダウンロード、ビルドします。
 
 マスターノードとスレーブノードのそれぞれで、起動したコンテナー上のrootユーザで、以下のコマンドを実行します。
 
 ```sh
-> cd ~
+> cd /root
 > git clone https://github.com/NVIDIA/nccl-tests.git
 > cd nccl-tests
-> make MPI=1 MPI_HOME=/usr/local CUDA_HOME=/usr/local/cuda-11.3 NCCL_HOME=/usr/lib/x86_64-linux-gnu
+> make MPI=1 MPI_HOME=/usr/local CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu
 ```
 
-## 4-2. NCCL Tests実行
+### 3-2-3. NCCL Tests実行
 
 本章は、NCCL Testsプログラムを実行します。
 
 マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用したNCCLのall reduce通信性能を計測します。
 
 ```sh
-> export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib
-> ./build/all_reduce_perf -b 64 -e 10G -f 2 -t 1 -g 8
-# nThread 1 nGpus 8 minBytes 64 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+> ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8
+# nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
-#  Rank  0 Group  0 Pid    944 on inst-ks8ls-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid    944 on inst-ks8ls-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid    944 on inst-ks8ls-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid    944 on inst-ks8ls-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid    944 on inst-ks8ls-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid    944 on inst-ks8ls-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid    944 on inst-ks8ls-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid    944 on inst-ks8ls-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  0 Group  0 Pid   1277 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid   1277 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid   1277 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid   1277 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid   1277 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid   1277 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid   1277 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid   1277 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
 #
 #                                                              out-of-place                       in-place          
 #       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
 #        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
-          64            16     float     sum      -1    32.01    0.00    0.00      0    31.82    0.00    0.00      0
-         128            32     float     sum      -1    32.01    0.00    0.01      0    32.15    0.00    0.01      0
-         256            64     float     sum      -1    31.75    0.01    0.01      0    32.02    0.01    0.01      0
-         512           128     float     sum      -1    32.21    0.02    0.03      0    31.72    0.02    0.03      0
-        1024           256     float     sum      -1    32.03    0.03    0.06      0    32.17    0.03    0.06      0
-        2048           512     float     sum      -1    31.77    0.06    0.11      0    32.24    0.06    0.11      0
-        4096          1024     float     sum      -1    32.13    0.13    0.22      0    32.20    0.13    0.22      0
-        8192          2048     float     sum      -1    32.22    0.25    0.44      0    32.14    0.25    0.45      0
-       16384          4096     float     sum      -1    32.48    0.50    0.88      0    32.20    0.51    0.89      0
-       32768          8192     float     sum      -1    32.02    1.02    1.79      0    32.20    1.02    1.78      0
-       65536         16384     float     sum      -1    35.40    1.85    3.24      0    34.20    1.92    3.35      0
-      131072         32768     float     sum      -1    38.50    3.40    5.96      0    37.47    3.50    6.12      0
-      262144         65536     float     sum      -1    45.21    5.80   10.15      0    44.01    5.96   10.42      0
-      524288        131072     float     sum      -1    58.96    8.89   15.56      0    57.54    9.11   15.95      0
-     1048576        262144     float     sum      -1    76.71   13.67   23.92      0    77.73   13.49   23.61      0
-     2097152        524288     float     sum      -1    112.4   18.66   32.66      0    113.7   18.45   32.28      0
-     4194304       1048576     float     sum      -1    134.5   31.18   54.57      0    134.7   31.13   54.48      0
-     8388608       2097152     float     sum      -1    185.8   45.15   79.02      0    183.2   45.79   80.12      0
-    16777216       4194304     float     sum      -1    245.1   68.46  119.81      0    241.4   69.51  121.65      0
-    33554432       8388608     float     sum      -1    398.2   84.26  147.46      0    397.6   84.39  147.68      0
-    67108864      16777216     float     sum      -1    589.5  113.84  199.23      0    587.8  114.18  199.81      0
-   134217728      33554432     float     sum      -1   1191.2  112.67  197.17      0   1182.6  113.50  198.62      0
-   268435456      67108864     float     sum      -1   2121.9  126.50  221.38      0   2110.9  127.17  222.55      0
-   536870912     134217728     float     sum      -1   4208.2  127.58  223.26      0   4208.0  127.58  223.27      0
-  1073741824     268435456     float     sum      -1   8166.8  131.48  230.08      0   8165.2  131.50  230.13      0
-  2147483648     536870912     float     sum      -1    16232  132.30  231.52      0    16238  132.25  231.44      0
-  4294967296    1073741824     float     sum      -1    32097  133.81  234.17      0    32099  133.80  234.16      0
-  8589934592    2147483648     float     sum      -1    63929  134.37  235.14      0    63911  134.40  235.21      0
+ 10737418240    2684354560     float     sum      -1    79751  134.64  235.61      0    79750  134.64  235.62      0
 # Out of bounds values : 0 OK
-# Avg bus bandwidth    : 81.112 
+# Avg bus bandwidth    : 235.616 
 #
 ```
 
-次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨るNCCLのall reduce通信性能を計測します。
+次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨るNCCLのall reduce通信性能を計測します。ここで、"-H"オプションに指定するマスターノードとスレーブノードのホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-> mpirun --allow-run-as-root -np 16 --host inst-ks8ls-comp:8,inst-6ejzf-comp:8 -mca plm_rsh_args "-p 12345" --mca btl_tcp_if_exclude docker0,lo -x UCX_NET_DEVICES=mlx5_0:1 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 64 -e 10G -f 2 -t 1 -g 1
-Warning: Permanently added '[inst-6ejzf-comp]:12345,[10.0.2.214]:12345' (ECDSA) to the list of known hosts.
-# nThread 1 nGpus 1 minBytes 64 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+> mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 1
+# nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
-#  Rank  0 Group  0 Pid   1411 on inst-ks8ls-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid   1412 on inst-ks8ls-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid   1413 on inst-ks8ls-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid   1414 on inst-ks8ls-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid   1415 on inst-ks8ls-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid   1416 on inst-ks8ls-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid   1419 on inst-ks8ls-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid   1422 on inst-ks8ls-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
-#  Rank  8 Group  0 Pid   1376 on inst-6ejzf-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  9 Group  0 Pid   1377 on inst-6ejzf-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank 10 Group  0 Pid   1378 on inst-6ejzf-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank 11 Group  0 Pid   1379 on inst-6ejzf-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank 12 Group  0 Pid   1380 on inst-6ejzf-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank 13 Group  0 Pid   1381 on inst-6ejzf-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank 14 Group  0 Pid   1383 on inst-6ejzf-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank 15 Group  0 Pid   1385 on inst-6ejzf-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  0 Group  0 Pid    417 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid    418 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid    419 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid    420 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid    421 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid    422 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid    425 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid    429 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  8 Group  0 Pid    371 on inst-swgen-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  9 Group  0 Pid    372 on inst-swgen-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank 10 Group  0 Pid    373 on inst-swgen-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank 11 Group  0 Pid    374 on inst-swgen-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank 12 Group  0 Pid    375 on inst-swgen-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank 13 Group  0 Pid    376 on inst-swgen-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank 14 Group  0 Pid    377 on inst-swgen-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank 15 Group  0 Pid    380 on inst-swgen-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
 #
 #                                                              out-of-place                       in-place          
 #       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
 #        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
-          64            16     float     sum      -1    38.75    0.00    0.00      0    38.62    0.00    0.00      0
-         128            32     float     sum      -1    39.25    0.00    0.01      0    38.13    0.00    0.01      0
-         256            64     float     sum      -1    37.80    0.01    0.01      0    37.51    0.01    0.01      0
-         512           128     float     sum      -1    37.57    0.01    0.03      0    36.87    0.01    0.03      0
-        1024           256     float     sum      -1    39.63    0.03    0.05      0    37.86    0.03    0.05      0
-        2048           512     float     sum      -1    41.14    0.05    0.09      0    40.55    0.05    0.09      0
-        4096          1024     float     sum      -1    45.04    0.09    0.17      0    44.43    0.09    0.17      0
-        8192          2048     float     sum      -1    49.39    0.17    0.31      0    48.33    0.17    0.32      0
-       16384          4096     float     sum      -1    52.35    0.31    0.59      0    50.34    0.33    0.61      0
-       32768          8192     float     sum      -1    58.75    0.56    1.05      0    57.48    0.57    1.07      0
-       65536         16384     float     sum      -1    71.91    0.91    1.71      0    70.11    0.93    1.75      0
-      131072         32768     float     sum      -1    103.7    1.26    2.37      0    102.9    1.27    2.39      0
-      262144         65536     float     sum      -1    114.0    2.30    4.31      0    115.0    2.28    4.28      0
-      524288        131072     float     sum      -1    120.7    4.34    8.14      0    121.1    4.33    8.11      0
-     1048576        262144     float     sum      -1    136.1    7.71   14.45      0    139.3    7.53   14.12      0
-     2097152        524288     float     sum      -1    169.2   12.40   23.24      0    167.1   12.55   23.53      0
-     4194304       1048576     float     sum      -1    233.4   17.97   33.69      0    231.4   18.12   33.98      0
-     8388608       2097152     float     sum      -1    358.2   23.42   43.91      0    358.4   23.41   43.89      0
-    16777216       4194304     float     sum      -1    941.7   17.82   33.41      0    947.3   17.71   33.21      0
-    33554432       8388608     float     sum      -1   1079.0   31.10   58.31      0   1096.3   30.61   57.39      0
-    67108864      16777216     float     sum      -1   6058.5   11.08   20.77      0   3709.5   18.09   33.92      0
-   134217728      33554432     float     sum      -1   7234.1   18.55   34.79      0   7229.2   18.57   34.81      0
-   268435456      67108864     float     sum      -1    13675   19.63   36.81      0    13532   19.84   37.20      0
-   536870912     134217728     float     sum      -1    14463   37.12   69.60      0    14467   37.11   69.58      0
-  1073741824     268435456     float     sum      -1    28656   37.47   70.26      0    28667   37.46   70.23      0
-  2147483648     536870912     float     sum      -1    56697   37.88   71.02      0    56712   37.87   71.00      0
-  4294967296    1073741824     float     sum      -1   112804   38.07   71.39      0   112801   38.08   71.39      0
-  8589934592    2147483648     float     sum      -1   225083   38.16   71.56      0   225082   38.16   71.56      0
+ 10737418240    2684354560     float     sum      -1    90330  118.87  222.88      0    91945  116.78  218.96      0
 # Out of bounds values : 0 OK
-# Avg bus bandwidth    : 24.2272 
+# Avg bus bandwidth    : 220.921 
 #
 ```
 
-# 5. Horovodサンプルプログラム実行
+## 3-3. Horovodサンプルプログラム実行
 
-## 5-0. Horovodサンプルプログラム実行概要
+### 3-3-0. Horovodサンプルプログラム実行概要
 
 本章は、Horovodサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。
 
 ここで使用するHorovodサンプルプログラムは、Horovod用Dockerコンテナーに予め含まれる、TensorFlow 2でダミーデータを用いてResNet-50モデルを訓練するベンチマークプログラムです。
 
-## 5-1. Horovodサンプルプログラム実行
+### 3-3-1. Horovodサンプルプログラム実行
 
 本章は、Horovodサンプルプログラムを実行します。
 
 マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用してHorovodサンプルプログラムを実行します。
 
 ```sh
+> cd /horovod/examples/
 > horovodrun -np 8 -H localhost:8 python tensorflow2/tensorflow2_synthetic_benchmark.py
    :
 [1,0]<stdout>:Model: ResNet50
@@ -744,26 +717,26 @@ Warning: Permanently added '[inst-6ejzf-comp]:12345,[10.0.2.214]:12345' (ECDSA) 
 [1,0]<stdout>:Running warmup...
    :
 [1,0]<stdout>:Running benchmark...
-[1,0]<stdout>:Iter #0: 598.3 img/sec per GPU
-[1,0]<stdout>:Iter #1: 598.7 img/sec per GPU
-[1,0]<stdout>:Iter #2: 597.6 img/sec per GPU
-[1,0]<stdout>:Iter #3: 600.6 img/sec per GPU
-[1,0]<stdout>:Iter #4: 599.3 img/sec per GPU
-[1,0]<stdout>:Iter #5: 599.5 img/sec per GPU
-[1,0]<stdout>:Iter #6: 598.4 img/sec per GPU
-[1,0]<stdout>:Iter #7: 601.3 img/sec per GPU
-[1,0]<stdout>:Iter #8: 603.7 img/sec per GPU
-[1,0]<stdout>:Iter #9: 602.8 img/sec per GPU
-[1,0]<stdout>:Img/sec per GPU: 600.0 +-3.8
-[1,0]<stdout>:Total img/sec on 8 GPU(s): 4800.1 +-30.3
+[1,0]<stdout>:Iter #0: 592.3 img/sec per GPU
+[1,0]<stdout>:Iter #1: 599.6 img/sec per GPU
+[1,0]<stdout>:Iter #2: 600.7 img/sec per GPU
+[1,0]<stdout>:Iter #3: 600.2 img/sec per GPU
+[1,0]<stdout>:Iter #4: 601.0 img/sec per GPU
+[1,0]<stdout>:Iter #5: 601.3 img/sec per GPU
+[1,0]<stdout>:Iter #6: 601.8 img/sec per GPU
+[1,0]<stdout>:Iter #7: 601.0 img/sec per GPU
+[1,0]<stdout>:Iter #8: 602.2 img/sec per GPU
+[1,0]<stdout>:Iter #9: 601.7 img/sec per GPU
+[1,0]<stdout>:Img/sec per GPU: 600.2 +-5.3
+[1,0]<stdout>:Total img/sec on 8 GPU(s): 4801.4 +-42.7
 ```
 
 最後の行に出力される実行結果から、8枚のGPUを使用した実行時のスコアが4,800程度であることを確認します。
 
-次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUを使用して、2ノードのGPUノードに跨ってHorovodサンプルプログラムを実行します。
+次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUを使用して、2ノードのGPUノードに跨ってHorovodサンプルプログラムを実行します。ここで、"-H"オプションに指定するマスターノードとスレーブノードのホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-> mpirun --allow-run-as-root -np 16 -H inst-ks8ls-comp:8,inst-6ejzf-comp:8 -mca plm_rsh_args "-p 12345" --mca btl_tcp_if_exclude docker0,lo python tensorflow2/tensorflow2_synthetic_benchmark.py
+> mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" python tensorflow2/tensorflow2_synthetic_benchmark.py
    :
 Model: ResNet50
 Batch size: 32
@@ -771,23 +744,385 @@ Number of GPUs: 16
 Running warmup...
    :
 Running benchmark...
-Iter #0: 572.9 img/sec per GPU
-Iter #1: 574.1 img/sec per GPU
-Iter #2: 573.8 img/sec per GPU
-Iter #3: 573.0 img/sec per GPU
-Iter #4: 573.1 img/sec per GPU
-Iter #5: 572.5 img/sec per GPU
-Iter #6: 573.6 img/sec per GPU
-Iter #7: 574.2 img/sec per GPU
-Iter #8: 571.6 img/sec per GPU
-Iter #9: 572.9 img/sec per GPU
-Img/sec per GPU: 573.2 +-1.5
-Total img/sec on 16 GPU(s): 9170.8 +-23.4
+Iter #0: 577.9 img/sec per GPU
+Iter #1: 578.8 img/sec per GPU
+Iter #2: 577.8 img/sec per GPU
+Iter #3: 580.1 img/sec per GPU
+Iter #4: 579.2 img/sec per GPU
+Iter #5: 580.7 img/sec per GPU
+Iter #6: 581.0 img/sec per GPU
+Iter #7: 581.6 img/sec per GPU
+Iter #8: 581.2 img/sec per GPU
+Iter #9: 581.6 img/sec per GPU
+Img/sec per GPU: 580.0 +-2.8
+Total img/sec on 16 GPU(s): 9279.7 +-44.2
 ```
 
-最後の行に出力される実行結果から、2ノード16枚のGPUを使用した実行時のスコアが9,200程度で、先の1ノード8枚のGPUで実行したスコアからほぼリニアにスケールしていることを確認します。
+最後の行に出力される実行結果から、2ノード16枚のGPUを使用した実行時のスコアが9,300程度で、先の1ノード8枚のGPUで実行したスコアからほぼリニアにスケールしていることを確認します。
 
-# 6. GPUクラスタの削除
+# 4. MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築
+
+## 4-1. Dockerコンテナー環境構築
+
+### 4-1-0. Dockerコンテナー環境構築概要
+
+本章は、後の章で実行するNCCL TestsとMultiWorkerMirroredStrategyのサンプルプログラムを実行するDockerコンテナーを起動するため、必要な環境構築作業を行います。
+
+NCCL Testsは、コンテナーを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、Dockerコンテナーに予め含まれる、OpenMPIです。
+
+OpenMPIをコンテナー間で実行するためには、MPIプログラムをmpirun等で起動するコンテナー（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナーにパスフレーズ無しでSSH接続できる必要があります。
+
+また先に起動したDockerコンテナーは、sshdがインストールされていないため、ヘッドノード以外のコンテナーでこれをインストールする必要があります。
+
+またOpenMPIの実行は、これを実行するコンテナー間で必要なポートにアクセス出来る必要があるため、GPUノードが接続されるプライベートサブネットのセキュリティリストを修正する必要があります。
+
+以上より、本章で実施するDockerコンテナー環境構築は、以下の手順を経て行います。
+
+- コンテナー間SSH接続環境構築
+- プライベートサブネットセキュリティリスト修正
+- Dockerコンテナー起動
+- sshdインストール・起動
+
+### 4-1-1. コンテナー間SSH接続環境構築
+
+本章は、先にbastionノードで作成したSSH秘密鍵を全てのGPUノードにコピーし、後のコンテナー起動時にこのディレクトリをコンテナーにマウントすることで、コンテナー間のパスフレーズ無しSSH接続環境を実現します。
+   
+まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのイニシャルホスト名を含むファイルをbastion上に作成します。
+
+```sh
+> cat hostlist.txt 
+inst-d5ige-comp
+inst-swgen-comp
+```
+
+次にこのファイルを使用し、bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
+
+```sh
+> for hname in `cat hostlist.txt`; do echo $hname; ssh $hname hostname; done
+inst-d5ige-comp
+inst-d5ige-comp
+inst-swgen-comp
+The authenticity of host 'inst-swgen-comp (10.0.2.242)' cannot be established.
+ECDSA key fingerprint is SHA256:koWs+bKLzf78RQsZ+mQhvwxEQTu/72St2DiVyVqmtl4.
+ECDSA key fingerprint is MD5:68:b4:e0:37:f1:9a:36:c7:a5:3c:69:9f:91:d5:e0:34.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'inst-swgen-comp,10.0.2.242' (ECDSA) to the list of known hosts.
+inst-swgen-comp
+```
+
+次に、bastionノードのopcユーザで以下コマンドを実行、bastionで作成した秘密鍵を使ったSSHログインを許可します。
+
+```sh
+> cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
+
+次に、bastionノードのopcユーザで以下コマンドを実行、~opc/.sshディレクトリをアーカイブしてこれを全GPUノードにコピーします。
+
+```sh
+> cd ~
+> tar -cvf /tmp/ssh.tar ./.ssh
+./.ssh/
+./.ssh/id_rsa
+./.ssh/known_hosts
+./.ssh/id_rsa.pub
+./.ssh/authorized_keys
+> for hname in `cat hostlist.txt`; do echo $hname; scp /tmp/ssh.tar $hname:/tmp/; done
+inst-d5ige-comp
+ssh.tar                                                                100%   10KB   9.0MB/s   00:00    
+inst-swgen-comp
+ssh.tar                                                                100%   10KB  11.5MB/s   00:00
+```
+
+次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブを/TFディレクトリに展開します。
+
+```sh
+> for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo mkdir /TF"; done
+inst-d5ige-comp
+inst-swgen-comp
+> for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo tar --no-same-owner -xvf /tmp/ssh.tar -C /TF/"; done
+inst-d5ige-comp
+./.ssh/
+./.ssh/id_rsa
+./.ssh/id_rsa.pub
+./.ssh/authorized_keys
+./.ssh/known_hosts
+inst-swgen-comp
+./.ssh/
+./.ssh/id_rsa
+./.ssh/id_rsa.pub
+./.ssh/authorized_keys
+./.ssh/known_hosts
+```
+
+### 4-1-2. プライベートサブネットセキュリティリスト修正
+
+本章は、プライベートサブネットのセキュリティリストを以下の手順で修正します。
+
+1. OCIコンソールにログインし、GPUノードをデプロイしたリージョンを選択後、 **ネットワーキング** → **仮想クラウド・ネットワーク** とメニューを辿ります。
+
+2. 表示される画面で、先に作成した仮想クラウド・ネットワークをクリックします。
+
+3. 表示される以下 **サブネット** フィールドで、先に作成したプライベートサブネットをクリックします。
+
+   ![画面ショット](console_page21.png)
+
+4. 表示される以下 **セキュリティ・リスト** フィールドで、プライベートサブネットに適用されているセキュリティリストをクリックします。
+
+   ![画面ショット](console_page22.png)
+
+5. 表示される以下 **イングレス・ルール** フィールドで、SSHアクセスを許可しているルールの **編集** メニューをクリックします。
+
+   ![画面ショット](console_page23.png)
+
+6. 表示される以下 **イングレス・ルールの編集** サイドバーで、 **IPプロトコル** フィールドを **すべてのプロトコル** に変更し、 **変更の保存** ボタンをクリックします。
+
+   ![画面ショット](console_page24.png)
+
+7. 表示される以下 **イングレス・ルール** フィールドで、変更したルールの **IPプロトコル** が **すべてのプロトコル** に変更されたことを確認します。
+
+   ![画面ショット](console_page25.png)
+
+### 4-1-3. Dockerコンテナー起動
+
+本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）でDockerコンテナーを起動します。
+
+以下コマンドをマスターノードとスレーブノードのrootユーザでそれぞれ実行し、Dockerコンテナーを起動します。
+
+```sh
+> docker run -it --privileged --rm --gpus all --network=host --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -v /TF:/root -v /mnt/localdisk:/scratch nvcr.io/nvidia/tensorflow:22.11-tf2-py3
+```
+
+### 4-1-4. sshdインストール・起動
+
+本章は、マスターノードで実行するmpirunによるSSH接続をスレーブノードで受け付けるため、スレーブノードでsshdをインストールし、このsshdをポート番号22222で起動します。
+
+以下コマンドをスレーブノードで起動したコンテナー上のrootユーザで実行し、sshdをインストール・起動します。
+
+```sh
+> apt update
+> apt install -y openssh-server
+> mkdir /run/sshd
+> /usr/sbin/sshd -p 22222
+```
+
+次に、以下コマンドをマスターノードで起動したコンテナー上のrootユーザで実行し、スレーブノードにSSH接続できることを確認します。この際、接続を継続するかどうかの問いに"yes"と入力し、known_hostsにスレーブノードのホストキーを登録します。これは、この後のmpirunを実行するために必要です。
+
+```sh
+> ssh -p 22222 inst-swgen-comp hostname
+The authenticity of host '[inst-swgen-comp]:22222 ([10.0.2.242]:22222)' cannot be established.
+ECDSA key fingerprint is SHA256:KiuvF9QMILkeDOJnr3RFcteAGbTVCkxBZ4gBEJgNqYE.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '[inst-swgen-comp]:22222,[10.0.2.242]:22222' (ECDSA) to the list of known hosts.
+inst-swgen-comp
+```
+
+## 4-2. NCCL通信性能検証
+
+### 4-2-0. NCCL通信性能検証概要
+
+本章は、NCCL Testsを使用し、GPUクラスタ内のNCCLによるGPU間通信性能を確認します。
+
+ここで使用するNCCLは、起動したDockerコンテナーに予め含まれますが、NCCL Testsはコンテナー内でソースコードからビルドします。
+
+以上より、本章で実施するNCCL通信性能検証は、以下の手順を経て行います。
+
+- NCCL Testsビルド
+- NCCL Tests実行
+
+本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用したNCCLのAll Reduce通信性能をコンテナー環境から計測し、以下性能が出ています。
+
+- 帯域（busbw）：約 172 GB/s
+
+### 4-2-1. NCCL Testsビルド
+
+本章は、NCCL TestsプログラムをGitHubからダウンロード、ビルドします。
+
+マスターノードとスレーブノードのそれぞれで、起動したコンテナー上のrootユーザで、以下のコマンドを実行します。
+
+```sh
+> cd /root
+> git clone https://github.com/NVIDIA/nccl-tests.git
+> cd nccl-tests
+> make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu
+```
+
+### 4-2-2. NCCL Tests実行
+
+本章は、NCCL Testsプログラムを実行します。
+
+マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用したNCCLのall reduce通信性能を計測します。
+
+```sh
+> ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8
+# nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid   1179 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid   1179 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid   1179 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid   1179 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid   1179 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid   1179 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid   1179 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid   1179 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#
+#                                                              out-of-place                       in-place          
+#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
+#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+ 10737418240    2684354560     float     sum      -1    79783  134.58  235.52      0    79754  134.63  235.61      0
+# Out of bounds values : 0 OK
+# Avg bus bandwidth    : 235.563 
+#
+```
+
+次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨るNCCLのall reduce通信性能を計測します。ここで、"-H"オプションに指定するマスターノードとスレーブノードのホスト名は、自身の環境に合わせて修正します。
+
+```sh
+> mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 1
+# nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid    417 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid    418 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid    419 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid    420 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid    421 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid    422 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid    425 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid    429 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  8 Group  0 Pid    371 on inst-swgen-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  9 Group  0 Pid    372 on inst-swgen-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank 10 Group  0 Pid    373 on inst-swgen-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank 11 Group  0 Pid    374 on inst-swgen-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank 12 Group  0 Pid    375 on inst-swgen-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank 13 Group  0 Pid    376 on inst-swgen-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank 14 Group  0 Pid    377 on inst-swgen-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank 15 Group  0 Pid    380 on inst-swgen-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#
+#                                                              out-of-place                       in-place          
+#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
+#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+ 10737418240    2684354560     float     sum      -1   118569   90.56  169.80      0   115501   92.96  174.31      0
+# Out of bounds values : 0 OK
+# Avg bus bandwidth    : 172.052 
+#
+```
+
+## 4-3. MultiWorkerMirroredStrategyサンプルプログラム実行
+
+### 4-3-0. MultiWorkerMirroredStrategyサンプルプログラム実行概要
+
+本章は、MultiWorkerMirroredStrategyサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。
+
+ここで使用するMultiWorkerMirroredStrategyサンプルプログラムは、TensorFlowが用意するMNISTデータセットを使用し、訓練と推論を行っています。
+
+### 4-3-1. MultiWorkerMirroredStrategyサンプルプログラム作成
+
+本章は、MultiWorkerMirroredStrategyサンプルプログラムを作成します。
+
+マスターノードとスレーブノードで起動した双方のコンテナー上のrootユーザで、以下のプログラムを作成します。
+
+```sh
+> cd /root
+> cat mnist.py
+import os
+import json
+import tensorflow as tf
+import numpy as np
+
+def mnist_dataset(batch_size):
+  (x_train, y_train), _ = tf.keras.datasets.mnist.load_data()
+  x_train = x_train / np.float32(255)
+  y_train = y_train.astype(np.int64)
+  train_dataset = tf.data.Dataset.from_tensor_slices(
+      (x_train, y_train)).shuffle(60000).repeat().batch(batch_size)
+  return train_dataset
+
+def build_and_compile_cnn_model():
+  model = tf.keras.Sequential([
+      tf.keras.layers.InputLayer(input_shape=(28, 28)),
+      tf.keras.layers.Reshape(target_shape=(28, 28, 1)),
+      tf.keras.layers.Conv2D(32, 3, activation='relu'),
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(128, activation='relu'),
+      tf.keras.layers.Dense(10)
+  ])
+  model.compile(
+      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+      optimizer=tf.keras.optimizers.SGD(learning_rate=0.001),
+      metrics=['accuracy'])
+  return model
+
+per_worker_batch_size = 64
+tf_config = json.loads(os.environ['TF_CONFIG'])
+num_workers = len(tf_config['cluster']['worker'])
+
+strategy = tf.distribute.MultiWorkerMirroredStrategy()
+
+global_batch_size = per_worker_batch_size * num_workers
+multi_worker_dataset = mnist_dataset(global_batch_size)
+
+with strategy.scope():
+  multi_worker_model = build_and_compile_cnn_model()
+
+multi_worker_model.fit(multi_worker_dataset, epochs=3, steps_per_epoch=70)
+```
+
+### 4-3-2. MultiWorkerMirroredStrategyサンプルプログラム実行
+
+本章は、MultiWorkerMirroredStrategyサンプルプログラムを実行します。
+
+マスターノードで起動したコンテナー上のrootユーザで、以下コマンドを実行しTF_CONFIG環境変数を設定・確認します。ここで、"worker"セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
+
+```sh
+> export TF_CONFIG="{\"cluster\": {\"worker\": [\"inst-d5ige-comp:12345\", \"inst-swgen-comp:23456\"]}, \"task\": {\"type\": \"worker\", \"index\": 0}}"
+> echo $TF_CONFIG
+{"cluster": {"worker": ["inst-d5ige-comp:12345", "inst-swgen-comp:23456"]}, "task": {"type": "worker", "index": 0}}
+```
+
+次に、マスターノードで起動したコンテナー上のrootユーザで、以下コマンドを実行しプログラムを実行します。この時点では、スレーブノードの実行を待っている状態で、以下の出力で停止します。
+
+```sh
+> python mnist.py
+   :
+2022-12-15 08:48:49.404772: I tensorflow/core/distributed_runtime/coordination/coordination_service_agent.cc:281] Coordination agent has successfully connected.
+```
+
+次に、スレーブノードで起動したコンテナー上のrootユーザで、以下のコマンドを実行しTF_CONFIG環境変数を設定・確認します。ここで、"worker"セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
+
+```sh
+> export TF_CONFIG="{\"cluster\": {\"worker\": [\"inst-d5ige-comp:12345\", \"inst-swgen-comp:23456\"]}, \"task\": {\"type\": \"worker\", \"index\": 1}}"
+> echo $TF_CONFIG
+{"cluster": {"worker": ["inst-d5ige-comp:12345", "inst-swgen-comp:23456"]}, "task": {"type": "worker", "index": 1}}
+```
+
+次に、スレーブノードで起動したコンテナー上のrootユーザで、以下のコマンドを実行します。これにより、待機していたマスターノードのワーカーとスレーブノードのワーカーが処理を開始、MultiWorkerMirroredStrategyサンプルプログラムが全16枚のGPUを使用してプログラムを実行します。
+
+```sh
+> python mnist.py
+2022-12-19 09:38:23.383751: I tensorflow/core/platform/cpu_feature_guard.cc:194] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2022-12-19 09:38:26.455413: I tensorflow/core/platform/cpu_feature_guard.cc:194] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2022-12-19 09:38:27.647393: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 38139 MB memory:  -> device: 0, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:0f:00.0, compute capability: 8.0
+2022-12-19 09:38:27.649632: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:1 with 38139 MB memory:  -> device: 1, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:15:00.0, compute capability: 8.0
+2022-12-19 09:38:27.651996: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:2 with 38139 MB memory:  -> device: 2, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:51:00.0, compute capability: 8.0
+2022-12-19 09:38:27.654473: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:3 with 38139 MB memory:  -> device: 3, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:54:00.0, compute capability: 8.0
+2022-12-19 09:38:27.656586: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:4 with 38139 MB memory:  -> device: 4, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:8d:00.0, compute capability: 8.0
+2022-12-19 09:38:27.658573: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:5 with 38139 MB memory:  -> device: 5, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:92:00.0, compute capability: 8.0
+2022-12-19 09:38:27.660481: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:6 with 38139 MB memory:  -> device: 6, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:d6:00.0, compute capability: 8.0
+2022-12-19 09:38:27.662428: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1637] Created device /job:localhost/replica:0/task:0/device:GPU:7 with 38139 MB memory:  -> device: 7, name: NVIDIA A100-SXM4-40GB, pci bus id: 0000:da:00.0, compute capability: 8.0
+   :
+Epoch 1/3
+   :
+70/70 [==============================] - 7s 30ms/step - loss: 2.2694 - accuracy: 0.1422
+Epoch 2/3
+70/70 [==============================] - 2s 29ms/step - loss: 2.2036 - accuracy: 0.3489
+Epoch 3/3
+70/70 [==============================] - 2s 28ms/step - loss: 2.1268 - accuracy: 0.5488
+```
+
+# 5. GPUクラスタの削除
 
 本章は、クラスタ・ネットワークを終了することで、作成したクラスタ・ネットワークとGPUノードを削除します。
 

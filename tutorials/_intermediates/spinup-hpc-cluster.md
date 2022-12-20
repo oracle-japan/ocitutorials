@@ -442,11 +442,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
 次に、AnsibleによるOSレベルカスタマイズを行います。
 
-6. OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し、表示される以下画面で、追加された2ノード分のインスタンスのホスト名とIPアドレスを確認します。
-
-   ![画面ショット](console_page06.png)
-
-7. Bastionノードにログインし、Ansibleのインベントリファイル/etc/ansible/hostsの **compute** セクションの最後に、追加された2ノードの記述を以下のように追加します。
+6. Bastionノードにログインし、Ansibleのインベントリファイル/etc/ansible/hostsの **compute** セクションの最後に、追加された計算ノードのホスト名とIPアドレスの記述を、以下のように追加します。
 
    ```sh
    [compute]
@@ -459,7 +455,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    #
    ```
 
-8. 本ステップで実行するコマンドは、Bastionから計算ノードへのSSH接続を使用するため、全ての計算ノードがSSH接続可能な状態まで起動されていることを確認します。
+7. 本ステップで実行するコマンドは、Bastionから計算ノードへのSSH接続を使用するため、全ての計算ノードがSSH接続可能な状態まで起動されていることを確認します。
 
    以下コマンドを実行し、追加された計算ノードに対するAnsibleのOSレベルカスタマイズを起動、最後の **PLAY RECAP** フィールドの出力で **failed** や **unreachable** の項目が無いことで、正常に終了していることを確認します。
 
@@ -671,7 +667,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
 7. 本ステップで実行するコマンドは、Bastionから計算ノードへのSSH接続を使用するため、置き換えた計算ノードがSSH接続可能な状態まで起動されていることを確認します。
 
-   以下コマンドを実行し、新たな計算ノードに対するAnsibleのOSレベルカスタマイズを起動、最後の **PLAY RECAP** フィールドの出力で **failed** や **unreachable** の項目が無いことで、正常に終了していることを確認します。
+   以下コマンドを実行し、置き換えた計算ノードに対するAnsibleのOSレベルカスタマイズを起動、最後の **PLAY RECAP** フィールドの出力で **failed** や **unreachable** の項目が無いことで、正常に終了していることを確認します。
 
    ```sh
    > ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook /opt/oci-hpc/playbooks/site.yml
