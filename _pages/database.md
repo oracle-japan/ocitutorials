@@ -1,6 +1,6 @@
 ---
 title: "Oracle Database編"
-excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Database Cloud Service(DBCS)から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Exadata Cloud Service (ExaCS) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
+excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Database Cloud Service(DBCS)から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
 permalink: /database/
 layout: single
 tags: "Database"
@@ -20,16 +20,16 @@ toc: true
 <br/>
 
 
-# <span style="color: brown; ">■ Database Cloud Service (DBCS) を使ってみよう</span>
+# <span style="color: brown; ">■ Base Datbase Service (BaseDB) を使ってみよう</span>
 
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!!  
-まずはベーシックなDatabase Cloud Service インスタンスを作ってみましょう。
+まずはベーシックなBase Database インスタンスを作ってみましょう。
 
 ## 基礎編
 
 + **[101: Oracle Cloud で Oracle Database を使おう](/ocitutorials/database/dbcs101-create-db/){:target="_blank"}**
 
-+ **[102: DBCS上のPDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
++ **[102: BaseDB上のPDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
 
 + **[103: パッチを適用しよう](/ocitutorials/database/dbcs103-patch/){:target="_blank"}**  
 
@@ -54,6 +54,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[102: ExaDB-D上のPDBを管理しよう](/ocitutorials/database/exadb-d102-manage-pdb/){:target="_blank"}** 
 
+
+
 <br/>
 
 # <span style="color: brown; ">■ Autonomous Database (ADB)を使ってみよう</span>
@@ -76,8 +78,8 @@ OCIであればExadataもサブスクリプションで使えます。インス�
     * CSVデータを手元のPCおよびオブジェクトストレージからADBにロードします
     * またオブジェクトストレージ上で更新されたデータを自動的にDBに登録する方法も取り上げます（フィード機能）
 
-+ **[103: Oracle LiveLabsのご紹介(Database Actions)](/ocitutorials/database/adb103-livelabs/){:target="_blank"}**  
-    * さらなるDatabase Actionsの使い方を例に、Oracle LiveLabsの概要、始め方についてご紹介します
++ **[103: Oracle LiveLabsのご紹介](/ocitutorials/database/adb103-livelabs/){:target="_blank"}**  
+    * さまざまなOracle Technologyのワークショップを提供しているOracle LiveLabsの概要、始め方についてご紹介します
 
 + **[104: クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/){:target="_blank"}**  
     * SQL*Plus、SQLcl、SQL Developerからの接続方法についても確認します
@@ -156,6 +158,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[218 : リフレッシュ可能クローンを活用しよう](/ocitutorials/database/adb218-refreshable-clone/){:target="_blank"}**  
     * Autonomous Databaseのクローンの一種であるリフレッシュ可能クローンを作成し、その動作を確認します。
 
++ **[219 : Automatic Indexingを体験してみよう](/ocitutorials/database/adb219-autoindexing/){:target="_blank"}**  
+    * Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。
+
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db){:target="_blank"}**
     * この**データ移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定したデータベースを一つ作成します。
@@ -185,7 +190,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[OCI Data Integrationチュートリアル](/ocitutorials/intermediates/ocidi-tutorials){:target="_blank"}**
     * ノーコーディングでETL処理を行うことができるフルマネージド・サービスを利用し、ADBにデータをロードする手順を解説します。
 
-
++ **[403: Data Transformsを使ってみよう](/ocitutorials/database/adb403-data-transforms){:target="_blank"}**  
+    * Data Transformsを用いて、簡単な操作でデータを変換できることが体験できます。
+    
 ## 運用管理編
 
 + **[501: OCICLIを利用したインスタンス操作](/ocitutorials/database/adb501-ocicli){:target="_blank"}**
@@ -213,6 +220,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[602 : ADWでMovieStreamデータの分析をしよう](/ocitutorials/database/adb602-moviestream-analysis/){:target="_blank"}**  
     * ADWでの実践的なデータ分析を多数の標準機能とともにご紹介します
+
++ **[603 : データ・カタログを使ってメタデータを収集しよう](/ocitutorials/database/adb603-data-catalog/){:target="_blank"}**  
+    * データ・カタログを使用してデータベース内のデータおよびクラウド・ストレージ内のデータのメタデータを収集し、効率的に管理する方法をご紹介します
 
 ## Autonomous Database Dedicated (専有環境)編
 

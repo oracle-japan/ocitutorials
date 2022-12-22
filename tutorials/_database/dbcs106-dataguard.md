@@ -1,6 +1,6 @@
 ---
 title: "106: Data Guardを構成しよう"
-excerpt: "Database Cloud Service (DBCS) でData Guardを構成する手順について紹介します。"
+excerpt: "Base Database Service (BaseDB) でData Guardを構成する手順について紹介します。"
 order: "1_106"
 header:
   teaser: "/database/dbcs106-dataguard/dataguard08.png"
@@ -84,7 +84,7 @@ Data Guardを構成するにあたり前提条件を確認してみましょう�
 次にOCIコンソールからData Guardを構成するまでの手順を紹介します。
 
 
-1. コンソールメニューから **「ベア・メタル、VMおよびExadata」→「DBシステム」→「DBシステムの詳細」→「データベース詳細」** 画面へ遷移し、 **「Data Guardアソシエーション」** を選択します
+1. コンソールメニューから **Oracle Database → Oracle Base Database (VM, BM) →「DBシステム」→「DBシステムの詳細」→「データベース詳細」** 画面へ遷移し、 **「Data Guardアソシエーション」** を選択します
 
 1. **Data Guardの有効化** ボタンをクリックします
     <div align="center">

@@ -1,6 +1,6 @@
 ---
 title: "104: 自動バックアップを設定しよう"
-excerpt: "Database Cloud Service (DBCS) 上の自動バックアップについて紹介します。"
+excerpt: "Base Database Service (BaseDB) 上の自動バックアップについて紹介します。"
 order: "1_104"
 header:
   teaser: "/database/dbcs104-backup/11.PNG"
@@ -15,7 +15,7 @@ header:
 # はじめに
 サービスを利用していくにあたり、利用している環境のインスタンスやデータが壊れてしまった場合や、過去の時点にデータを戻したい場合など、何か起きた時のデータ復旧のためにバックアップやリカバリについての検討は重要です。<br>
 
-DBCS では、RMANを利用した自動バックアップ機能が利用可能で、リカバリも最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。
+BaseDB では、RMANを利用した自動バックアップ機能が利用可能で、リカバリも最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。
 
 ここでは、OCI コンソールから自動バックアップを構成するまでの手順についてご紹介します。
 

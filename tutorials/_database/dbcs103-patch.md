@@ -13,7 +13,7 @@ header:
 <a id="anchor0"></a>
 
 # はじめに
-Oracle Cloud Infrastructure データベース・サービス(DBCS)では、OS以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。
+Oracle Base Database Service(BaseDB)では、OS以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。
 ここでは、DatabaseとGrid Infrastructureに対するそれぞれのパッチ適用方法についてご紹介します。
 
 <br>
@@ -47,7 +47,7 @@ Oracle Cloud Infrastructure データベース・サービス(DBCS)では、OS�
 
 <br>
 
-1. コンソールメニューから **Oracle Database  → ベア・メタル、VMおよびExadata** を選択し、対象のDBシステムを選択します。<br>
+1. コンソールメニューから **Oracle Database → Oracle Base Database (VM, BM)** を選択し、対象のDBシステムを選択します。<br>
 **DBシステムの詳細** ページの **DBシステム・バージョン** が Grid Infrastructure のバージョンを指します。<br>
     <div align="center">
     <img width="700" alt="img01.png" src="img01.png" style="border: 1px black solid;">

@@ -88,11 +88,13 @@ OBPは、上述のHyperledger Fabricのアイデンティティの仕組みを�
 
 OBPでは、アプリケーションとChaincodeを中継する役割を持つREST Proxyというコンポーネントを独自に備えています。REST ProxyにはFabric SDKが組み込まれており、また、Hyperledger Fabricネットワークのユーザーアイデンティティを保持しています。**これにより、アプリケーションはREST APIを呼び出すことで、REST Proxyを介してChaincodeを実行できます。**この際、アプリケーションはREST Proxyに対して、Oracle Cloudのユーザーアカウント（**IDCSユーザー**）を用いて認証、認可されます。
 
+![REST ProxyでのChaincode実行時のアイデンティティ](restproxy_identity.png)
+
 ここではREST Proxy経由でChaincodeを実行する際に用いられるアイデンティティの設定方法について説明します。REST Proxy経由でのChaincode実行方法については、[こちらのチュートリアル](../03_2_restcall_chaincode/)を参照ください。
 
-以下で、REST Proxyが用いるアイデンティティを新たに作成する方法、および、IDCSユーザーとアイデンティティの紐付け方法についてそれぞれ説明します。
-
 アイデンティティを作成しておくと、REST Proxy経由でのChaincode実行のREST APIを実行する際のパラメータによりそのアイデンティティを指定できるようになります。また、IDCSユーザーとアイデンティティを紐付けておくと、そのIDCSユーザーでREST APIを実行した際に自動的に紐付けたアイデンティティが用いられるようになります。
+
+![REST Proxyのアイデンティティマッピング](restproxy_identity_mapping.png)
 
 ## 2.1. REST Proxyが用いるアイデンティティの作成
 

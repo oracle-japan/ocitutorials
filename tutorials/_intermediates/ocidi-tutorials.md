@@ -34,6 +34,7 @@ header:
 **前提条件 :**
 + Data Integrationを利用するコンパートメントを準備してください。
 + Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。
++ 画像は最新サービスと異なる可能性があります。
 <br>
 
 
@@ -118,13 +119,13 @@ Data Integrationからプライベート・ネットワーク上のデータソ�
 
 ![ルート・ルールの追加イメージ](addroute.png)
 
->Data Integrationとデータソースの場所別のケース例についてはOracle blogsの記事["Understanding VCN Configuration for Oracle Cloud Infrastructure (OCI) Data Integration"](https://blogs.oracle.com/dataintegration/post/understanding-vcn-configuration-for-oracle-cloud-infrastructure-oci-data-integration)を参考にしてください。
+>Data Integrationとデータソースの場所別のケース例についてはOracle blogsの記事["Understanding VCN Configuration for Oracle Cloud Infrastructure (OCI) Data Integration"](https://blogs.oracle.com/dataintegration/post/understanding-vcn-configuration-for-oracle-cloud-infrastructure-oci-data-integration){:target="_blank"}を参考にしてください。
 
 
 ## 必要なポリシーの作成
 ポリシーを作成します。
 OCI管理者ユーザーでログイン後、OCIコンソールのナビゲーションメニューで**アイデンティティとセキュリティ**に移動し、**ポリシー**を選択します。次にコンパートメントを選択し、**ポリシーの作成**をクリックします。
-> 本文書ではポリシー・ビルダーを使用しますが、実際は必要なセキュリティにあわせて設定を行ってください。Data Integrationのポリシーおよびポリシーの例は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/data-integration/using/policies.htm)をご確認ください。
+> 本文書ではポリシー・ビルダーを使用しますが、実際は必要なセキュリティにあわせて設定を行ってください。Data Integrationのポリシーおよびポリシーの例は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/data-integration/using/policies.htm){:target="_blank"}をご確認ください。
 
 ![ポリシー追加の説明1](addpolicy1.png)
 
@@ -175,7 +176,6 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 ワークスペースのホームを起点に、Data Integrationで必要なコンポーネントの作成、設定を行っていきます。
 
 
-
 # 4. データ・アセットの作成
 **データ・アセット**はData Integrationで利用するデータ・ソースを表します。1のオブジェクト・ストレージとAutonomous Databaseのためのデータ・アセットを作成します。  
 
@@ -210,7 +210,6 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
     + コンパートメント : <1で作成したバケットのコンパートメント>
     + スキーマ : <1で作成したバケット>
 
->デフォルトのステージングの場所でエラーが表示され登録ができない場合があります。その場合はデフォルトのステージングの場所を登録せずに作成してください。
 
 それぞれの入力イメージです。
 
@@ -228,7 +227,6 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 ## データ・フローの作成 
 プロジェクトのメニューで**データ・フロー**を選択します。**データ・フローの作成**をクリックするとデータ・フロー・エディタというビジュアルエディタが起動します。  
 
- > 現行リリースでは演算子の条件や式にマルチバイト文字が含まれている場合に検証でエラーが発生する場合があります。この章の説明は日本語UIですが、エラーを回避するために英語UIで実施いただくこともご検討ください。
 
 
 表示されるプロパティで名前を"新規データ・フロー"から``Load Customers and Revenue Data``に変更しましょう。
@@ -254,6 +252,8 @@ OCIコンソールの**アナリティクスとAI**から**データ統合**を�
 プロパティではデータ・アセットの項目から順に、**選択**リンクをクリックし、該当する値を選択していきます。上の項目で指定した値に応じて、下の項目の選択リストが自動的に絞り込まれて表示されます。
 
 ![ソース演算子](source1.png)
+
+>画像の演算子はソース_1と日本語表記ですが、現在はSOURCE_1と英語表記です。以降の演算子の画像も同様です。
 
 CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、ソース演算子は2つ必要です。プロパティの項目に以下の値を入力し、他の値はデフォルトのままにします。
 >識別子の値はデータ・エンティティで選択した値で自動入力されます。任意に入力も可能です。
@@ -297,25 +297,20 @@ CUSTOMERS.json、REVENUE.csvの2つのファイルがソースとなるため、
 
    ![フィルタ1](filter1.png)
 
+
 1. フィルタのプロパティで**フィルタ条件**の**作成**をクリックします。
 1. **条件ビルダー**の**受信**から属性**COUNTRY_CODE**をエディタにドラッグアンドドロップします。  
   ![フィルタ1](filter2.png)
 
 1. 条件を以下のように修正し、作成をクリックします。  
 
-    ``フィルタ_1.CUSTOMERS_JSON.COUNTRY_CODE='US'``
-
-> 現行リリースでは条件や式にマルチバイト文字が含まれていると検証エラーになるという問題があります。識別子の日本語（"フィルター1")がデフォルトで属性のパスとなるため、属性タブでフィルター1のメニューボタンをクリックし、"名前変更"で"フィルタ_1"を"FILTER_1"と変更してください。その後詳細タブで条件に日本語が含まれていないかご確認ください。
-    
-> ![識別子名前変更](rename_attribute.png)
-
->以降の説明でも識別子名がデフォルトで日本語となるため、条件や式に日本語が入らないように属性タブで名前変更をお願いいたします。
+    ``FILTER_1.CUSTOMERS_JSON.COUNTRY_CODE='US'``
 
 ### REVENUE_csvのORDER_STATUSの値が"1-Booked"のフィルタを設定
 CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、CUSTOMERS_jsonのフィルタ設定の1～4までの手順を行います。  
 5の条件を以下の記載にします。
 
-  ``フィルタ_2.REVENUE_CSV.ORDER_STATUS='1-Booked'``
+  ``FILTER_2.REVENUE_CSV.ORDER_STATUS='1-Booked'``
 
 
 設定後のキャンバスは各ソースにフィルタが続く形になります。
@@ -330,7 +325,7 @@ CUSTOMERS_JSONをREVENUE_CSV、COUNTRY_CODEをORDER_STATUSで置き換えて、C
 + FIRST_NAMEとLAST_NAMEを連結させたFULLNAMEという属性を生成
 
 ### STATE_PROVINCEの値を大文字に変換
-STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フィルタ_1のプロパティで**データ**タブを選択し、検索ボックスに``STATE*``と入力します。
+STATE_PROVINCEの値が小文字の場合は大文字に変換させます。FILTER_1のプロパティで**データ**タブを選択し、検索ボックスに``STATE*``と入力します。
 > フィルタ後なのでCOUNTRY_CODEがUSのデータのみが表示されます
 
 ![フィルタ後のデータ](afterfilterdata.png)
@@ -348,7 +343,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 ### FULLNAME属性の生成
 次にFIRST_NAMEとLAST_NAMEを連結させたFULLNAMEという属性を新しく生成します。
-左の演算子ペインから**式演算子**をキャンバスにドラッグアンドした後、式_1にカーソルを置き、表示された**コネクタ**を追加した式演算子(式_2)にドラッグアンドドロップします。
+左の演算子ペインから**式演算子**をキャンバスにドラッグアンドした後、式演算子(EXPRESSION_1)にカーソルを置き、表示された**コネクタ**を追加した式演算子(EXPRESSION_2)にドラッグアンドドロップします。
 
 ![式演算子2](expression2.png)
 
@@ -361,7 +356,7 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 結果が"FIRSTNAME LASTNAME"となるようにCONCAT式を以下のように編集し、追加をクリックします。
 
-```CONCAT(CONCAT(式_1.CUSTOMERS_JSON.FIRST_NAME, ' '),式_1.CUSTOMERS_JSON.LAST_NAME)```
+```CONCAT(CONCAT(EXPRESSION_1.CUSTOMERS_JSON.FIRST_NAME, ' '),EXPRESSION_1.CUSTOMERS_JSON.LAST_NAME)```
 
 
 >式の変数をダブルクリックで選択し、受信タブに表示されている属性をダブルクリックするとその変数に属性を代入することができます。
@@ -376,22 +371,22 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 
 ![結合演算子](join.png)
 
-追加した結合演算子（結合_1)のプロパティで**結合条件**の**作成**をクリックします。**条件ビルダー**で**受信**タブから属性をドラッグアンドドロップして、CUSTOMER_JSONのCUST_IDとREVENUE_CSVのCUST_KEYの結合になるよう編集し、作成をクリックします。  
+追加した結合演算子（JOIN_1)のプロパティで**結合条件**の**作成**をクリックします。**条件ビルダー**で**受信**タブから属性をドラッグアンドドロップして、CUSTOMER_JSONのCUST_IDとREVENUE_CSVのCUST_KEYの結合になるよう編集し、作成をクリックします。  
 
 
-``結合_1_1.CUSTOMERS_JSON.CUST_ID = 結合_1_2.REVENUE_CSV.CUST_KEY``
+``JOIN_1_1.CUSTOMERS_JSON.CUST_ID = JOIN_1_2.REVENUE_CSV.CUST_KEY``
 
 ![結合演算子2](join2.png)
 
 
 ## ターゲットの設定
-**ターゲット演算子**をキャンバスにドラッグアンドドロップします。結合_1のコネクタをターゲットにドラッグします。
+**ターゲット演算子**をキャンバスにドラッグアンドドロップします。JOIN_1のコネクタをターゲットにドラッグします。
 
 ![ターゲット演算子](target.png)
 
 ターゲットはAutonomous Databaseです。以下の値を設定します。
 
-+ 識別子 : CUSTEOMERS_TARGET(以下を設定すると自動入力されます)
++ 識別子 : CUSTOMERS_TARGET(以下を設定すると自動入力されます)
   + 統合戦略 : 挿入（デフォルトのまま）
   + データ・アセット : Data_Warehouse
   + 接続 : Default Connection
@@ -416,7 +411,6 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 >マッピング・ルールはマップタブの右上にあるプルダウン・メニュー**ルールの表示**で確認することができます。**アクション**ではマッピング・ルールの設定ができます。
 >
 >![マッピングルール](mappingrule.png)
-
 
 ## 検証と保存  
 作成したフローに対して**検証**をクリックしてエラーや警告がないかを確認します。エラーや警告がある場合は、その要因となった演算子が表示されますので、確認し対処を行います。
@@ -496,6 +490,10 @@ STATE_PROVINCEの値が小文字の場合は大文字に変換させます。フ
 + [Oracle Cloud Infrastructure Data Integration Blog（英語）](https://blogs.oracle.com/dataintegration/oracle-cloud-infrastructure-data-integration){:target="_blank"}
 
 
+# Tips
+ + 演算子の条件や式にマルチバイト文字が含まれている場合に検証でエラーが発生する場合があります。その場合は言語を英語に変更しエラーを回避できるかご確認ください。言語はOCIコンソールの右上の地球のマークをクリックすることで変更が可能です。
+
 <BR>
+
 
 [ページトップへ戻る](#)

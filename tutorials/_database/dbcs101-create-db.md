@@ -1,6 +1,6 @@
 ---
-title: "101: Oracle Cloud で Oracle Database を使おう(DBCS)"
-excerpt: "Oracle Cloud Infrastructure データベース・サービスは、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。"
+title: "101: Oracle Cloud で Oracle Database を使おう(BaseDB)"
+excerpt: "Oracle Base Database Serviceは、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。"
 
 order: "1_101"
 header:
@@ -14,7 +14,7 @@ header:
 <a id="anchor0"></a>
 
 # はじめに
-Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。
+Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。
 
 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。
 
@@ -47,7 +47,7 @@ Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle 
 
 # 1. DBシステムの作成
 
-1. コンソールメニューから **データベース → ベア・メタル、VMおよびExadata** を選択し、有効な管理権限を持つコンパートメントを選択します
+1. コンソールメニューから **Oracle Database → Oracle Base Database (VM, BM)** を選択し、有効な管理権限を持つコンパートメントを選択します
 
 1. **DBシステムの作成** ボタンを押します
 
@@ -63,16 +63,18 @@ Oracle Cloud Infrastructure データベース・サービス(DBCS)は、Oracle 
    - **合計ノード数** - 1
 
       >RACを利用したい場合はノード数を2に選択ください
-   - **Oracle Database ソフトウェア・エディション** - 任意
+   - **シェイプの構成** - 任意
    - **ストレージ管理ソフトウェア**  - 任意 <br>
      ※ハンズオンでは作業時間短縮のため、**論理ボリューム・マネージャ** を選択ください<br>　それ以外の場合、もしくは後続のAutonomous Databaseのチュートリアルを実施される場合は **Oracle Grid Infrastructure** を選択ください 
-   - **ストレージの構成** - 256 を選択
+   - **ストレージ・パフォーマンスの構成** - 任意の**ストレージ・ボリュームのパフォーマンス**、**使用可能なデータ・ストレージ**は**256** を選択してください。
+   - **DBシステムの構成** - **合計ノード数**は**1**、任意の**Oracle Databaseソフトウェア・エディション**を選択してください。
    - **SSHキー・ペアの生成/SSHキー・ファイルのアップロード/SSHキーの貼付け** - いずれかの選択肢よりSSHキーを追加します
    - **ライセンス・タイプ** - 任意
    - **仮想クラウド・ネットワーク** - 第2章で作成した仮想クラウド・ネットワークを選択
    - **クライアントのサブネット**  - 任意のサブネットを選択（本ハンズオンでは、パブリック・サブネット（リージョン）を選択ください）
    - **ホスト名接頭辞** - 任意
-   - **拡張オプションの表示** - 任意（フォルトドメインの指定、タイムゾーンの設定が可能であることをご確認ください。
+   - **診断収集** - 任意
+   - **拡張オプションの表示** - 任意（フォルトドメインの指定、タイムゾーンの設定が可能であることをご確認ください。）
 
 1. **次**をクリックします
 
@@ -134,11 +136,11 @@ rootユーザーのPATH環境変数には dbcli のロケーションが登録�
 # 3. データベース（PDB）にアクセス
 作成したデータベースにログインしてみましょう。
 
-上記で作成したDBシステム（DBCS VM）では、1つのコンテナ・データベース(CDB)上に、デフォルトで1つプラガブル・データベース（PDB）が作成されます。
+上記で作成したDBシステムでは、1つのコンテナ・データベース(CDB)上に、デフォルトで1つプラガブル・データベース（PDB）が作成されます。
 
 ここでは、PDB上にスキーマを一つ作成しましょう。
 
-上記手順にて、DBCSのOSにrootユーザーでログインしていることを前提にします。
+上記手順にて、BaseDBのOSにrootユーザーでログインしていることを前提にします。
 
 1. rootユーザーからoracleユーザにスイッチします。
 
@@ -165,7 +167,7 @@ rootユーザーのPATH環境変数には dbcli のロケーションが登録�
 
     ```
   create user TESTUSER identified by WelCome123#123# ;
-  grant CREATE SESSION, CONNECT,RESOURCE,UNLIMITED TABLESPACE to TESTUSER ;
+  grant CREATE SESSION,CONNECT,RESOURCE,UNLIMITED TABLESPACE to TESTUSER ;
   exit
     ```
     ![image.png](img08.webp)
