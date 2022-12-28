@@ -9,7 +9,7 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>401 : OCI GoldenGateによるDBCSからADBへのデータ連携 | Oracle Cloud Infrastructure チュートリアル</title>
+<!-- begin _includes/seo.html --><title>401 : OCI GoldenGateによるBaseDBからADBへのデータ連携 | Oracle Cloud Infrastructure チュートリアル</title>
 <meta name="description" content="OCI GoldenGateのインスタンス作成から対象のデータべース登録、データ連携の設定までを紹介します。基本的な設定の流れを学習しましょう。">
 
 
@@ -22,7 +22,7 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="401 : OCI GoldenGateによるDBCSからADBへのデータ連携">
+<meta property="og:title" content="401 : OCI GoldenGateによるBaseDBからADBへのデータ連携">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/database/adb401-oci-goldengate/">
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-12-20T20:15:45+09:00">
+  <meta property="article:published_time" content="2022-12-29T01:17:59+09:00">
 
 
 
@@ -159,7 +159,7 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          401 : OCI GoldenGateによるDBCSからADBへのデータ連携
+          401 : OCI GoldenGateによるBaseDBからADBへのデータ連携
 
         
       </h1>
@@ -208,7 +208,7 @@
     
       
       
-        <li class="current">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</li>
+        <li class="current">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</li>
       
     
   </ol>
@@ -254,11 +254,17 @@
         
           <p></p><li><a href="/ocitutorials/database/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをDBCSに移動しよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをBaseDBに移動しよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/exadb-d101-create-exadb-d/">101 : ExaDB-Dを使おう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/exadb-d102-manage-pdb/">102 : ExaDB-D上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/exadb-d103-automatic-backup/">103 : 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/exadb-d104-backup-restore/">104 : バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/exadb-d105-scaling/">105 : スケーリングしよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
         
@@ -330,7 +336,7 @@
         
           <p></p><li><a href="/ocitutorials/database/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/" class="active">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/" class="active">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
         
@@ -367,9 +373,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="401 : OCI GoldenGateによるDBCSからADBへのデータ連携">
+    <meta itemprop="headline" content="401 : OCI GoldenGateによるBaseDBからADBへのデータ連携">
     <meta itemprop="description" content="OCI GoldenGateのインスタンス作成から対象のデータべース登録、データ連携の設定までを紹介します。基本的な設定の流れを学習しましょう。">
-    <meta itemprop="datePublished" content="2022-12-20T20:15:45+09:00">
+    <meta itemprop="datePublished" content="2022-12-29T01:17:59+09:00">
     
 
     <div class="page__inner-wrap">
@@ -391,7 +397,7 @@
 <p><strong>Oracle Cloud Infrastructure (OCI) GoldenGate</strong>はフルマネージド型のリアルタイムデータ連携サービスとなっています。
 OCI GoldenGateサービスは、構成、ワークロード・スケーリング、パッチ適用などの多くの機能を自動化しており、従量課金制で利用することが可能です。そのため時間や場所を選ばずに、低コストでデータの連携、分析ができるようになります。</p>
 
-<p>この章では、OCI GoldenGateの作成とDBCSからADBへのデータ連携の設定について紹介します。
+<p>この章では、OCI GoldenGateの作成とBaseDBからADBへのデータ連携の設定について紹介します。
    <img src="replicationimage2.png" alt="データ連携のイメージ" /></p>
 
 <p><strong>目次 :</strong></p>
@@ -407,15 +413,15 @@ OCI GoldenGateサービスは、構成、ワークロード・スケーリング
 </ul>
 
 <p><strong>前提条件 :</strong>
-本チュートリアルではDBCS、ADBともにデータベースの作成が完了しており、初期データとしてHRスキーマがそれぞれのデータベースにロードされていることを前提にしています。
+本チュートリアルではBaseDB、ADBともにデータベースの作成が完了しており、初期データとしてHRスキーマがそれぞれのデータベースにロードされていることを前提にしています。
 各データベースの作成方法やデータロードの方法は下記手順をご確認ください。</p>
 
 <ul>
-  <li>DBCSの作成については、<a href="https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/">「101: Oracle Cloud で Oracle Database を使おう(DBCS)」</a> をご参照ください。</li>
-  <li>データ連携用のサンプルデータはHRスキーマを使用しています。DBCSでのHRスキーマ作成方法は、<a href="https://oracle-japan.github.io/ocitutorials/database/adb301-create-source-db/">「301: 移行元となるデータベースを作成しよう」</a> をご参照ください。</li>
+  <li>BaseDBの作成については、<a href="https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/">「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」</a> をご参照ください。</li>
+  <li>データ連携用のサンプルデータはHRスキーマを使用しています。BaseDBでのHRスキーマ作成方法は、<a href="https://oracle-japan.github.io/ocitutorials/database/adb301-create-source-db/">「301: 移行元となるデータベースを作成しよう」</a> をご参照ください。</li>
   <li>ADBの作成については、<a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a> をご参照ください。</li>
   <li>ADBの初期データロードについては、<a href="https://oracle-japan.github.io/ocitutorials/database/adb303-datapump/">「303 : Data Pumpを利用してデータを移行しよう」</a> をご参照ください。</li>
-  <li>チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、DBCSを含めて各ユーザのパスワードはすべて「Welcome#1Welcome#1」とします。</li>
+  <li>チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、BaseDBを含めて各ユーザのパスワードはすべて「Welcome#1Welcome#1」とします。</li>
 </ul>
 
 <p><strong>所要時間 :</strong> 約60分</p>
@@ -425,7 +431,7 @@ OCI GoldenGateサービスは、構成、ワークロード・スケーリング
 <p><a id="anchor1"></a></p>
 
 <h1 id="1-ソースデータベースの設定">1. ソース・データベースの設定</h1>
-<p>ソース・データベースであるDBCSに対して下記の設定を行います。</p>
+<p>ソース・データベースであるBaseDBに対して下記の設定を行います。</p>
 
 <ol>
   <li>
@@ -617,7 +623,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
     <p><strong>データベースの登録</strong> を選択します。
  <img src="registDB2.png" alt="データベースの登録2" /></p>
   </li>
-  <li>データベースの登録 詳細入力欄に、各項目を入力します。まずはソースDBとなるDBCSの登録を行っていきます。
+  <li>データベースの登録 詳細入力欄に、各項目を入力します。まずはソースDBとなるBaseDBの登録を行っていきます。
     <ul>
       <li><strong>名前</strong> - 任意</li>
       <li><strong>別名</strong> - 任意</li>
@@ -626,13 +632,13 @@ OCI上にデータベースを登録しておくことで、この後の工程�
       <li><strong>データベースの選択</strong>、<strong>データベース情報の入力</strong> - OCI上のデータベースを登録する場合には <strong>データベースの選択</strong> を選択します。オンプレミス上のデータベース等OCI上にあるデータベース以外を登録する場合には <strong>データベース情報の入力</strong> を選択します。
  どちらを選択するかによってこの後の入力欄が変化します。
  <br />
- 今回はOCI上のDBCSをソースDBとして登録するため、<strong>データベースの選択</strong> を選択します。</li>
+ 今回はOCI上のBaseDBをソースDBとして登録するため、<strong>データベースの選択</strong> を選択します。</li>
       <li>
         <p><strong>データベース・タイプ</strong> - OCI上のどのデータベースを登録するかを選択します。<br />
- 今回はOCI上のDBCSをソースDBとして登録するため、<strong>DBシステム・データベース(ベア・メタル、VM、Exadata)</strong> を選択します。</p>
+ 今回はOCI上のBaseDBをソースDBとして登録するため、<strong>DBシステム・データベース(ベア・メタル、VM、Exadata)</strong> を選択します。</p>
       </li>
       <li><strong>データベース・システム</strong> - 登録したいデータベース・システムを選択します。
- DBCSの場合データベース・システムを選択することでデータベース接続文字列まで自動入力されます。</li>
+ BaseDBの場合データベース・システムを選択することでデータベース接続文字列まで自動入力されます。</li>
       <li><strong>データベース・ホーム</strong> - 任意</li>
       <li><strong>データベース</strong> - 任意</li>
       <li><strong>データベースFQDN</strong> - 任意</li>
@@ -662,7 +668,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 <p><br /></p>
 
 <h1 id="5-extractの作成">5. Extractの作成</h1>
-<p>ここからはOCI GGのコンソール画面に接続し、DBCSからデータを抽出するためのExtractを作成していきます。</p>
+<p>ここからはOCI GGのコンソール画面に接続し、BaseDBからデータを抽出するためのExtractを作成していきます。</p>
 
 <ol>
   <li>
@@ -678,7 +684,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
  <img src="extract3.png" alt="コンソールサインイン2" /></p>
   </li>
   <li>
-    <p>追加したいデータベースの <strong>データベースへの接続</strong> を選択します。今回はソースデータベースであるDBCSへ接続します。
+    <p>追加したいデータベースの <strong>データベースへの接続</strong> を選択します。今回はソースデータベースであるBaseDBへ接続します。
  <img src="extract4.png" alt="extract1" /></p>
   </li>
   <li>
@@ -705,7 +711,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
       <li><strong>トレイル名</strong> - h1</li>
       <li><strong>PDBに登録</strong>  - DB0701_PDB1 (<strong>資格証明別名</strong> 選択後に表示されます)</li>
       <li><strong>資格証明ドメイン</strong>  - OracleGoldenGate</li>
-      <li><strong>資格証明別名</strong>  - sourceDBCS
+      <li><strong>資格証明別名</strong>  - sourceBaseDB
  <img src="extract9.png" alt="extract6" />
  <img src="extract10.png" alt="extract7" /></li>
     </ul>
@@ -795,7 +801,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 
 <ol>
   <li>
-    <p>ソース・データベースDBCSのemployees表を1件更新します。</p>
+    <p>ソース・データベースBaseDBのemployees表を1件更新します。</p>
 
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">-- EMPLOYEES表のレコードを1件更新</span>
  <span class="k">UPDATE</span> <span class="n">HR</span><span class="p">.</span><span class="n">EMPLOYEES</span> <span class="k">SET</span> <span class="n">FIRST_NAME</span> <span class="o">=</span> <span class="s1">'Oracle'</span> <span class="k">WHERE</span> <span class="n">EMPLOYEE_ID</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
@@ -839,7 +845,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-20T20:15:45+09:00">December 20, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-29T01:17:59+09:00">December 29, 2022</time></p>
 
 
       </footer>
@@ -849,7 +855,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=401+%3A+OCI+GoldenGate%E3%81%AB%E3%82%88%E3%82%8BDBCS%E3%81%8B%E3%82%89ADB%E3%81%B8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E9%80%A3%E6%90%BA%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb401-oci-goldengate%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=401+%3A+OCI+GoldenGate%E3%81%AB%E3%82%88%E3%82%8BBaseDB%E3%81%8B%E3%82%89ADB%E3%81%B8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E9%80%A3%E6%90%BA%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb401-oci-goldengate%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fdatabase%2Fadb401-oci-goldengate%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 

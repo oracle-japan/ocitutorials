@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2022-12-20T20:15:45+09:00">
+  <meta property="article:published_time" content="2022-12-29T01:17:59+09:00">
 
 
 
@@ -254,11 +254,17 @@
         
           <p></p><li><a href="/ocitutorials/database/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをDBCSに移動しよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/database/dbcs201-pdb-plug/">201: オンプレミスのPDBをBaseDBに移動しよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/exadb-d101-create-exadb-d/">101 : ExaDB-Dを使おう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/exadb-d102-manage-pdb/">102 : ExaDB-D上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/exadb-d103-automatic-backup/">103 : 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/exadb-d104-backup-restore/">104 : バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/database/exadb-d105-scaling/">105 : スケーリングしよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
         
@@ -330,7 +336,7 @@
         
           <p></p><li><a href="/ocitutorials/database/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/">401 : OCI GoldenGateによるDBCSからADBへのデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/database/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/database/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
         
@@ -369,7 +375,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="304 : OCI Database Migration Serviceを使用したデータベース移行の前準備">
     <meta itemprop="description" content="OCI Database Migration Serviceの使用に必要なネットワークやストレージの設定、データベースの登録など事前に必要な設定について紹介します。">
-    <meta itemprop="datePublished" content="2022-12-20T20:15:45+09:00">
+    <meta itemprop="datePublished" content="2022-12-29T01:17:59+09:00">
     
 
     <div class="page__inner-wrap">
@@ -397,7 +403,7 @@
 </ul>
 
 <p>DMSに関するチュートリアルは<a href="/ocitutorials/database/adb304-database-migration-prep">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>、<a href="/ocitutorials/database/adb305-database-migration-offline">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>、<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>の計3章を含めた3部構成となっています。
-DMSを使用してDBCSで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。</p>
+DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。</p>
 
 <p><a href="/ocitutorials/database/adb305-database-migration-offline">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>または<a href="/ocitutorials/database/adb306-database-migration-online">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>を実施する前に必ず<a href="/ocitutorials/database/adb304-database-migration-prep">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>を実施するようにしてください。</p>
 
@@ -432,7 +438,7 @@ DMSを使用してDBCSで作成したソース・データベースからADBの�
 <p><strong>前提条件 :</strong></p>
 <ul>
   <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">「その2 - クラウドに仮想ネットワーク(VCN)を作る」</a>を参考に、VCNが作成されていること。</li>
-  <li><a href="https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/">「101: Oracle Cloud で Oracle Database を使おう(DBCS)」</a>を参考に、DBCSでデータベースとスキーマの作成が完了していること。本チュートリアルではデータベース・バージョンは19.13.0.0.0を使用しています。また、DMSではSSH秘密鍵はRSA形式のみサポートしています。（OPENSSH形式は使用できません）</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/">「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」</a>を参考に、BaseDBでデータベースとスキーマの作成が完了していること。本チュートリアルではデータベース・バージョンは19.13.0.0.0を使用しています。また、DMSではSSH秘密鍵はRSA形式のみサポートしています。（OPENSSH形式は使用できません）</li>
   <li><a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a>を参考に、ADBの作成が完了していること。</li>
   <li><a href="https://docs.oracle.com/cd/E83857_01/paas/database-migration/dmsus/getting-started-oracle-cloud-infrastructure-database-migration.html#GUID-478467C2-662A-4C06-8077-EBB5A9F94E64">「Oracle Cloud Infrastructure Database移行サービスの使用 - 2 Oracle Cloud Infrastructure Database移行の開始 - データベース移行ユーザーへの権限の付与」</a>を参考に、データベース移行ユーザへ権限が付与されていること。権限が付与されていない場合、DMSの利用ができません。</li>
 </ul>
@@ -590,7 +596,7 @@ DMSを使用してDBCSで作成したソース・データベースからADBの�
     <p><img src="2022-02-28-18-37-12.png" alt="" /></p>
   </li>
   <li>
-    <p>ソース・データベース（前提条件で作成したDBCS）のDBシステム名をクリックします。</p>
+    <p>ソース・データベース（前提条件で作成したBaseDB）のDBシステム名をクリックします。</p>
 
     <p><img src="2022-02-28-18-39-33.png" alt="" /></p>
   </li>
@@ -861,7 +867,7 @@ DMSを使用してDBCSで作成したソース・データベースからADBの�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-20T20:15:45+09:00">December 20, 2022</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2022-12-29T01:17:59+09:00">December 29, 2022</time></p>
 
 
       </footer>
