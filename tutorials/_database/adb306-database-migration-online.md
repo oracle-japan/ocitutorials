@@ -19,7 +19,7 @@ DMSでは下記の2つの論理的移行が可能です。
 + **オンライン移行** - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。
 
 DMSに関するチュートリアルは[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/database/adb304-database-migration-prep)、[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline)、[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online)の計3章を含めた3部構成となっています。
-DMSを使用してDBCSで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。
+DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。
 
 [305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline)または[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online)を実施する前に必ず[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/database/adb304-database-migration-prep)を実施するようにしてください。
 
@@ -219,7 +219,7 @@ DMSを使用してDBCSで作成したソース・データベースからADBの�
 
 # 3. ソース・データベースの設定
 
-DBCSにあるソース・データベースに対して以下の設定を行います。2.~5.の設定は全てCDB上で行います。
+BaseDBにあるソース・データベースに対して以下の設定を行います。2.~5.の設定は全てCDB上で行います。
 
 <a id="anchor22"></a>
 
