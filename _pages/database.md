@@ -195,7 +195,9 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[OCI Data Integrationチュートリアル](/ocitutorials/intermediates/ocidi-tutorials){:target="_blank"}**
     * ノーコーディングでETL処理を行うことができるフルマネージド・サービスを利用し、ADBにデータをロードする手順を解説します。
 
-
++ **[403: Data Transformsを使ってみよう](/ocitutorials/database/adb403-data-transforms){:target="_blank"}**  
+    * Data Transformsを用いて、簡単な操作でデータを変換できることが体験できます。
+    
 ## 運用管理編
 
 + **[501: OCICLIを利用したインスタンス操作](/ocitutorials/database/adb501-ocicli){:target="_blank"}**
