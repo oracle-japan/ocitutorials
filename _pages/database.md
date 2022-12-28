@@ -1,6 +1,6 @@
 ---
 title: "Oracle Database編"
-excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Database Cloud Service(DBCS)から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
+excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Base Database Service(BaseDB)から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
 permalink: /database/
 layout: single
 tags: "Database"
@@ -41,7 +41,7 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 ## データ移行編
 
-+ **[201: オンプレミスのPDBをDBCSに移動しよう](/ocitutorials/database/dbcs201-pdb-plug/){:target="_blank"}**
++ **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/database/dbcs201-pdb-plug/){:target="_blank"}**
 
 <br/>
 
@@ -54,6 +54,11 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[102: ExaDB-D上のPDBを管理しよう](/ocitutorials/database/exadb-d102-manage-pdb/){:target="_blank"}** 
 
++ **[103: 自動バックアップを設定しよう](/ocitutorials/database/exadb-d103-automatic-backup/){:target="_blank"}**
+
++ **[104: バックアップからリストアしよう](/ocitutorials/database/exadb-d104-backup-restore/){:target="_blank"}**
+
++ **[105: スケーリングしよう](/ocitutorials/database/exadb-d105-scaling/){:target="_blank"}**	
 
 
 <br/>
@@ -175,14 +180,14 @@ OCIであればExadataもサブスクリプションで使えます。インス�
     * OCI DMSを使用したデータベース移行の前準備についてご紹介します。
 
 + **[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline){:target="_blank"}**
-    * OCI DMSを使用したDBCSからADBへのオフライン移行についてご紹介します。
+    * OCI DMSを使用したBaseDBからADBへのオフライン移行についてご紹介します。
 
 + **[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online){:target="_blank"}**
-    * OCI DMSを使用したDBCSからADBへのオンライン移行についてご紹介します。
+    * OCI DMSを使用したBaseDBからADBへのオンライン移行についてご紹介します。
 
 ## データ連携編
 + **[401: OCI GoldenGateを利用したデータ連携](/ocitutorials/database/adb401-oci-goldengate){:target="_blank"}**
-    * OCI GodenGateを利用して、DBCSからADBへのデータ連携方法をご紹介します。
+    * OCI GodenGateを利用して、BaseDBからADBへのデータ連携方法をご紹介します。
 
 + **[402: Database Linkを利用したデータ連携](/ocitutorials/database/adb402-database-link){:target="_blank"}**
     * Database Linkを利用して、ADBから他のデータベースへアクセスする方法をご紹介します。

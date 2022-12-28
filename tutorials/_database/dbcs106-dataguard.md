@@ -52,7 +52,7 @@ Oracle Cloud上でData Guardを利用する際の基本的な構成について�
 クラウドの画面上からは「同一リージョン内」と「別リージョン間でのData Guard」構成が簡単に構築・管理が可能です。<br>
 ハイブリッドの場合は手動で構成が必要となりますので、手順を解説したホワイト・ペーパーをご参照ください。
 
-DBCS : Hybrid Data Guard to Oracle Cloud Infrastructure [英語](https://www.oracle.com/technetwork/database/availability/hybrid-dg-to-oci-5444327.pdf) / [日本語](https://www.oracle.com/technetwork/jp/database/availability/hybrid-dg-to-oci-5444327-ja.pdf)
+BaseDB : Hybrid Data Guard to Oracle Cloud Infrastructure [英語](https://www.oracle.com/technetwork/database/availability/hybrid-dg-to-oci-5444327.pdf) / [日本語](https://www.oracle.com/technetwork/jp/database/availability/hybrid-dg-to-oci-5444327-ja.pdf)
 
 # 2. Data Guardを構成する為の前提条件
 
@@ -74,7 +74,7 @@ Data Guardを構成するにあたり前提条件を確認してみましょう�
    - 同一サービス間
    - 作成・管理できるスタンバイは１つのフィジカル・スタンバイ
 
-2つ以上のスタンバイを持ちたい／DBCSとExaCS間で構成したいなど、DBシステム側の前提条件のみ満たせない場合は、手動でData Guardを構成することも可能です。
+2つ以上のスタンバイを持ちたい／BaseDBとExaDB-D間で構成したいなど、DBシステム側の前提条件のみ満たせない場合は、手動でData Guardを構成することも可能です。
 
 
 <br>
@@ -152,7 +152,7 @@ Data Guardのデータ保護モードとして『非同期』を設定してい�
 1. 回復<br>
 フェイルオーバー後、Flashback Database機能を利用して旧プライマリを障害発生直前(フェイルオーバーによる切り替え前の時点)までフラッシュバックし、スタンバイにロールを変換してData Guard構成に組み直す事が可能です。
 フラッシュバックしたことで生じる差分も自動で同期されるため、一からスタンバイを構築し直す必要はありません。<br>
-DBCS では、コンソール上の『回復』というボタンをクリックするだけで簡単にData Guardが再構成する事が可能です。<br>
+BaseDB では、コンソール上の『回復』というボタンをクリックするだけで簡単にData Guardが再構成する事が可能です。<br>
 回復は、フェイルオーバー後のプライマリDBシステムの **「Data Guardアソシエーション」** 画面から実行します。
     <div align="center">
     <img width="700" alt="dataguard07.png" src="dataguard07.png" style="border: 1px black solid;">

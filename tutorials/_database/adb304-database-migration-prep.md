@@ -19,7 +19,7 @@ DMSでは下記の2つの論理的移行が可能です。
 + **オンライン移行** - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。
 
 DMSに関するチュートリアルは[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/database/adb304-database-migration-prep)、[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline)、[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online)の計3章を含めた3部構成となっています。
-DMSを使用してDBCSで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。
+DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。
 
 [305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline)または[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online)を実施する前に必ず[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/database/adb304-database-migration-prep)を実施するようにしてください。
 
@@ -43,7 +43,7 @@ DMSを使用してDBCSで作成したソース・データベースからADBの�
 
 **前提条件 :**
 + [「その2 - クラウドに仮想ネットワーク(VCN)を作る」](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/)を参考に、VCNが作成されていること。
-+ [「101: Oracle Cloud で Oracle Database を使おう(DBCS)」](https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/)を参考に、DBCSでデータベースとスキーマの作成が完了していること。本チュートリアルではデータベース・バージョンは19.13.0.0.0を使用しています。また、DMSではSSH秘密鍵はRSA形式のみサポートしています。（OPENSSH形式は使用できません）
++ [「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」](https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/)を参考に、BaseDBでデータベースとスキーマの作成が完了していること。本チュートリアルではデータベース・バージョンは19.13.0.0.0を使用しています。また、DMSではSSH秘密鍵はRSA形式のみサポートしています。（OPENSSH形式は使用できません）
 + [「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)を参考に、ADBの作成が完了していること。
 + [「Oracle Cloud Infrastructure Database移行サービスの使用 - 2 Oracle Cloud Infrastructure Database移行の開始 - データベース移行ユーザーへの権限の付与」](https://docs.oracle.com/cd/E83857_01/paas/database-migration/dmsus/getting-started-oracle-cloud-infrastructure-database-migration.html#GUID-478467C2-662A-4C06-8077-EBB5A9F94E64)を参考に、データベース移行ユーザへ権限が付与されていること。権限が付与されていない場合、DMSの利用ができません。
 
@@ -166,7 +166,7 @@ DMSの実行に必要なネットワークやストレージなどの環境の�
 
     ![](2022-02-28-18-37-12.png)
 
-2. ソース・データベース（前提条件で作成したDBCS）のDBシステム名をクリックします。
+2. ソース・データベース（前提条件で作成したBaseDB）のDBシステム名をクリックします。
 
     ![](2022-02-28-18-39-33.png)
 
