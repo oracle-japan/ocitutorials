@@ -186,12 +186,13 @@ no running Istio pods in "istio-system"
 Istioのコンポーネントをインストールします。
 
 ```sh
-istioctl install --set profile=demo --skip-confirmation
+istioctl install --set profile=demo --skip-confirmation --set components.cni.enabled=true
 ```
 ***コマンド結果***
 ```sh
 ✔ Istio core installed                                                                                                                           
-✔ Istiod installed                                                                                                                               
+✔ Istiod installed
+✔ CNI installed   
 ✔ Egress gateways installed                                                                                                                      
 ✔ Ingress gateways installed                                                                                                                     
 ✔ Installation complete                                                                                                                          
