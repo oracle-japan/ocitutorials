@@ -191,7 +191,8 @@ istioctl install --set profile=demo --skip-confirmation --set components.cni.ena
 ***コマンド結果***
 ```sh
 ✔ Istio core installed                                                                                                                           
-✔ Istiod installed                                                                                                                               
+✔ Istiod installed
+✔ CNI installed   
 ✔ Egress gateways installed                                                                                                                      
 ✔ Ingress gateways installed                                                                                                                     
 ✔ Installation complete                                                                                                                          
