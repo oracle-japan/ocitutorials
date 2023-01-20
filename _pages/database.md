@@ -20,7 +20,7 @@ toc: true
 <br/>
 
 
-# <span style="color: brown; ">■ Base Datbase Service (BaseDB) を使ってみよう</span>
+# <span style="color: brown; ">■ Base Database Service (BaseDB) を使ってみよう</span>
 
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!!  
 まずはベーシックなBase Database インスタンスを作ってみましょう。
