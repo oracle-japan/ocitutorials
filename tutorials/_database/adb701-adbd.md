@@ -8,23 +8,25 @@ layout: single
 #link: 
 ---
 
+<a id="anchor0"></a>
+
 **目次**
 
-- [1. Autonomous Database Dedicated (ADB-D)とは？](#anchor1)
-- [2. 環境を作成してみよう](#anchor2)
-    - [2-1. 利用イメージ（構成図）](#anchor2-1)
-    - [2-2. Autonomous Exadata Infrastructureの作成](#anchor2-2)
-    - [2-3. ネットワーク設定](#anchor2-3)
-    - [2-4. Autonomous Exadata VMクラスタの作成](#anchor2-5)
-    - [2-5. Autonomous Container Databasesの作成](#anchor2-6)
-    - [2-6. Autonomous Databaseの作成](#anchor2-7)
-- [3. 作成したADBに接続してみよう](#anchor3)
+- [1. Autonomous Database Dedicated (ADB-D)とは？](#1-autonomous-database-dedicated-adb-dとは))
+- [2. 環境を作成してみよう](#2-環境を作成してみよう)
+    - [2-1. 利用イメージ（構成図）](#2-1-利用イメージ構成図)
+    - [2-2. Exadata Infrastructureの作成](#2-2-exadata-infrastructureの作成)
+    - [2-3. ネットワーク設定](#2-3-ネットワーク設定)
+    - [2-4. Autonomous Exadata VMクラスタの作成](#2-4-autonomous-exadata-vmクラスタの作成)
+    - [2-5. Autonomous Container Databasesの作成](#2-5-autonomous-container-databasesの作成)
+    - [2-6. Autonomous Databaseの作成](#2-6-autonomous-databaseの作成)
+- [3. 作成したADBに接続してみよう](#3-作成したadbに接続してみよう)
 
 <br>
 
 **所要時間 :** 約6時間程程度　※プロビジョニング時間を含みます
 
-<a id="anchor1"></a>
+
 <br>
 
 # 1. Autonomous Database Dedicated (ADB-D)とは？
@@ -39,7 +41,7 @@ Autonomous Databaseは共有型・専有型の２つのデプロイメント方�
 
 <br>さらにADB-Dでは専有環境の持ち方として、**OCIにデプロイする方式**と**お客様データセンターに配置できるCloud@Customer(C@C)を利用したデプロイメント方式**があります。
 <br>Cloud@Customerは、データをパブリッククラウドに持ち出すことができなかったり、アプリケーションからのネットワークレイテンシが問題となるようなお客様にご利用いただくことの多いデプロイメント方式です。
-<br>本チュートリアルでは、OCI上にADB-Dをデプロイ方式を行います。
+<br>本チュートリアルでは、OCI上にADB-Dのデプロイメントを行います。
 
 ## ADB-Sとの違いは？
 
@@ -66,7 +68,7 @@ ADB-Dならではの特長は、Exadataを専有することにより可能な�
 
 > **【補足】ADB-Dの課金について**
 >
-> ADB-DはExadataの筐体を専有してご利用いただくことになるので、Infrastructure分の課金が発生します。また、このInfrastructureの最低利用期間は48時間となっており、終了するまで課金が継続します。AEIを作成する際にはご注意ください。
+> ADB-DはExadataの筐体を専有してご利用いただくことになるので、Infrastructure分の課金が発生します。また、このInfrastructureの最低利用期間は48時間となっており、終了するまで課金が継続します。Exadata Infrastructureを作成する際にはご注意ください。
 > <br>次の表は、ADB-SとADB-Dの課金の違いについて記載したものです：
 > 
 >  <table>
@@ -109,10 +111,10 @@ ADB-Dならではの特長は、Exadataを専有することにより可能な�
 上記に示した通り、ADB-Dは次の４つのレイヤで構成されています。
 
 <div style="text-align: center">
-<img src="構成図.jpg" width="70%">
+<img src="diagram.png" width="70%">
 </div>
 
-* **Exadata Infrastructure(EXA)**：シェイプやラックサイズを含む、基盤となるExadataの構成
+* **Exadata Infrastructure(EI)**：シェイプやラックサイズを含む、基盤となるExadataの構成
 
 * **Autonomous VM Cluster(AVM)**：ネットワーク・VMクラスタの構成
 
@@ -133,10 +135,10 @@ ADB-Dならではの特長は、Exadataを専有することにより可能な�
 OCI上にADB-Dを構成する際の手順の次の通りです：
 
 <div style="text-align: center">
-<img src="setup.jpg" width="90%">
+<img src="setup.png" width="90%">
 </div>
 
-専有インフラストラクチャにADBインスタンスを作成するにはこの４つのレイヤで構成することは必須であり、AEIから上位のレイヤに向かって順に作成していく必要があります。
+専有インフラストラクチャにADBインスタンスを作成するにはこの４つのレイヤで構成することは必須であり、EIから上位のレイヤに向かって順に作成していく必要があります。
 
 本チュートリアルではコンパートメントおよびユーザグループ・ポリシーの設定は構成済みであるとし、赤字で記載された項目を行います。
 
@@ -146,17 +148,17 @@ Exadata上のクラスタに単一のCDBを配置し、その上にPDBであるA
 
 <a id="anchor2-2"></a>
 
-## 2-2. Autonomous Exadata Infrastructureの作成
+## 2-2. Exadata Infrastructureの作成
 
-Autonomous Exadata Infrastructure (AEI)を作成します。
+Exadata Infrastructure (EI)を作成します。
 
 1. メニューから「**Oracle Database**」→「**Autonomous Database**」をクリックします。
-<br>「**専用インフラストラクチャ**」の項目から「**Exadata Infrastructure**」を選択し、「**Exadata Infrastructureの作成**」をクリックします。
+    <br>「**専用インフラストラクチャ**」の項目から「**Exadata Infrastructure**」を選択し、「**Exadata Infrastructureの作成**」をクリックします。
 
     ![2-3-1.jpg](2-3-1.jpg)
 
 2. Exadata Infrastructureを作成します。
-<br>設定項目は次の通り入力してください。
+    <br>設定項目は次の通り入力してください。
 
    <table>
     <thead>
@@ -168,13 +170,13 @@ Autonomous Exadata Infrastructure (AEI)を作成します。
         <tr>
             <td rowspan="2">基本情報の指定</td>
 			<td><b>コンパートメントの選択</b>：
-            <br>Autonomous Exadata Infrastructureリソースを作成するコンパートメントを選択</td>
+            <br>Exadata Infrastructureリソースを作成するコンパートメントを選択</td>
             <td>任意</td>
         </tr>
 		<tr>
 			<td><b>表示名</b>：
             <br>リソースを識別するための名称。一意である必要はありません。</td>
-            <td>任意<br>例：AEI01</td>
+            <td>任意<br>例：Exadata-Infra1</td>
         </tr>
 		<tr>
             <td rowspan="1"></td>
@@ -185,39 +187,54 @@ Autonomous Exadata Infrastructure (AEI)を作成します。
 		<tr>
             <td rowspan="2">Exadataシステム・モデルの選択</td>
 			<td><b>シェイプの選択</b>：
-            <br>割り当てるOracleExadata DatabaseMachineのタイプを選択。<br>固定シェイプ・システム(X7-2またはX8-2)、またはスケーラブル・システム(X8M-2)から選択できます。
-            <br>モデルとその構成に関する容量についての詳細な情報は<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/atpfg/characteristics-infratructure-shapes.html#GUID-B0F033C1-CC5A-42F0-B2E7-3CECFEDA1FD1">こちら</a></td>
+            <br>割り当てるOracle Exadata Database Machineのタイプを選択。
+            <br>モデルとその構成に関する容量についての詳細な情報は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbde/index.html">こちら</a></td>
             <td>X8-2</td>
         </tr>
 		<tr>
 			<td><b>システム構成の選択</b>：
-            <br>固定シェイプ・システムの場合、Quater/Half/Fullから選択します。</td>
+            <br>固定シェイプ・システムの場合、Quater/Half/Fullから選択します。
+            <br>エラスティック構成の場合はデータベース・サーバーとストレージ・サーバーの数を指定します。</td>
             <td>Quarter ラック</td>
         </tr>
     </tbody>
     </table>
 
-    ![2-3-2.jpg](2-3-2.jpg)
+    <br>
+
+    ![2-3-2.png](2-3-2.png)
+    <br>
 
     「**Exadata Infrastructureの作成**」をクリックするとプロビジョニングが始まります。
 
-3. EXAのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約20秒程かかります。（2021/12時点）
+    <br>
 
-    ![2-1-3.jpg](2-1-3.jpg)
+3. EXAのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約20秒程かかります。（2023/1時点）
+
+    ![2-1-3.png](2-1-3.png)
+
+
+> **【補足】EIについて**
+>
+> EIはExaDB-DとADB-Dで共通のインフラストラクチャです。同じEIにExaDB-DのVMとADB-DのAVMを作成することができます。
+>
 
 <br>
+
+
 
 <a id="anchor2-3"></a>
 
 ## 2-3. ネットワーク設定
 
-Exadata Infrastructureを配置するネットワーク環境を作成します。
+ADB-Dを配置するネットワーク環境を作成します。
 <br>ネットワークの構成は次のような構成にします：
 
 <div style="text-align: center">
-<img src="network.jpg" width="70%">
+<img src="network.png" width="70%">
 </div>
 
+<br>
 それではリソースを作成していきましょう。
 
 1. 作成したいリソースのほとんどは、VCNウィザードを使うことで素早く作成することができます。
@@ -233,7 +250,7 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
     <br>また、仮想クラウドネットワークの作成方法についての詳細は[クラウドに仮想ネットワーク(VCN)を作る](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/)を参照ください。
 
     <br>「**VCNウィザードを起動**」をクリックし、「**インターネット接続性を持つVCNの作成**」を選択します。
-    <br>ウィザードでの設定項目は次の通り入力してください。
+    <br>ウィザードでの設定項目は本チュートリアルでは次の通り入力することにします。
     <br>既存の仮想クラウドネットワークを使用する方は、「**VCN CIDRブロック**」「**パブリック・サブネットCIDRブロック**」「**プライベート・サブネット**」「**CIDRブロック**」を次のように変更します。
 
     <table>
@@ -255,72 +272,67 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
 		<tr>
             <td rowspan="3">VCNとサブネットの構成</td>
 			<td>VCN CIDRブロック</td>
-            <td><b>13.0.0.0/16</b></td>
+            <td><b>10.2.0.0/16</b></td>
         </tr>
 		<tr>
 			<td>パブリック・サブネットCIDRブロック</td>
-            <td><b>13.0.1.0/24</b></td>
+            <td><b>10.2.0.0/24</b></td>
         </tr>
 		<tr>
 			<td>プライベート・サブネットCIDRブロック</td>
-            <td><b>13.0.2.0/24</b></td>
+            <td><b>10.2.1.0/24</b></td>
         </tr>
     </tbody>
     </table>
+   <br>
 
-
-    ![2-2-1.jpg](2-2-1.jpg)
+    ![2-2-1.png](2-2-1.png)
 
     <br>
 
-2. 作成した仮想クラウドネットワークのセキュリティリストに次のイングレス・ルールを追加します。
-<br>今回はプライベート・サブネットにADB-Dを立てるので、**プライベートサブネット**用のセキュリティリストのイングレスルールを編集します。
+2. 作成した仮想クラウドネットワークのセキュリティ・リストに次のルールを追加します。
+<br>本チュートリアルではプライベート・サブネットにADB-Dを立て、パブリック・サブネットの仮想マシンからアクセスすることを想定しています。
 
     <table>
     <thead>
         <tr>
-            <th colspan="6">追加するイングレス・ルール</th>
+            <th colspan="3">セキュリティ・リストに追加</th>
+        </tr>
+        <tr>
+			<td><b>サブネット</b></td>
+            <td><b>CIDR</b></td>
+			<td><b>ルール</b></td>
         </tr>
     </thead>
-    <tbody>
+    <tbody>       
+		<tr>
+			<td>プライベート・サブネット</td>
+            <td>10.2.1.0/24</td>
+            <td><b>イングレス・ルール</b>
+                <br>・プライベート・サブネット内のノード間のすべての通信を許可(AVM作成に必要)
+                <br>・パブリック・サブネットからDBリスナーポート1521の通信を許可(DBへの接続)
+                <br>・パブリック・サブネットからhttpsポート443の通信を許可（Database Actions/APEX)
+                <br>・（必要に応じて）TCPS用のポート2484、ONS用のポート6200の通信を許可
+                <br><b>エグレス・ルール</b>
+                <br>・プライベート・サブネット内のアウトバウンド通信を全て許可
+                <br>・パブリック・サブネットへのアウトバウンド通信をすべて許可</td>
+        </tr>
         <tr>
-			<td><b>ソース・タイプ</b></td>
-            <td><b>ソースCIDR</b></td>
-			<td><b>IPプロトコル</b></td>
-			<td><b>ソース・ポート範囲</b></td>
-			<td><b>宛先ポート範囲</b></td>
-			<td><b>説明</b></td>		
-        </tr>
-		<tr>
-			<td>CIDR</td>
-            <td>13.0.0.0/24</td>
-            <td>TCP</td>
-            <td>All</td>
-            <td>All</td>
-            <td>空欄</td>
-        </tr>
-		<tr>
-			<td>CIDR</td>
-            <td>13.0.0.0/24</td>
-            <td>ICMP</td>
-            <td>All</td>
-            <td>All</td>
-            <td>空欄</td>
-        </tr>
-		<tr>
-			<td>CIDR</td>
-            <td>13.0.1.0/24</td>
-            <td>TCP</td>
-            <td>All</td>
-            <td>1521-1522</td>
-            <td>空欄</td>
-        </tr>
-    </tbody>
+            <td>パブリック・サブネット</td>
+            <td>10.2.0.0/24</td>
+            <td><b>イングレス・ルール</b>
+                <br>・インターネットからsshポート22の通信を許可
+                <br>・インターネットからhttpsポート443の通信を許可
+                <br><b>エグレス・ルール</b>
+                <br>・インターネットへのすべてのアウトバウンド通信を許可</td>
+		</tr>
+	</tbody>
     </table>
 
-    ![2-2-2.jpg](2-2-2.jpg)
+    <br>
+    ![2-2-2.png](2-2-2.png)
 
-<br>
+    <br>
 <a id="anchor2-4"></a>
 
 ## 2-4. Autonomous Exadata VMクラスタの作成
@@ -328,7 +340,7 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
 1. メニューから「**Oracle Database**」→「**Autonomous Database**」をクリックします。
 <br>「**専用インフラストラクチャ**」の項目から「**Autonomous Exadata VMクラスタ**」を選択し、「**Autonomous Exadata VMクラスタの作成**」をクリックします。
 
-    ![2-3-1-1.jpg](2-3-1-1.jpg)
+    ![2-3-1-1.png](2-3-1-1.png)
 
 2. Autonomous Exadata VMクラスタを作成します。
 <br>設定項目は次の通り入力してください。
@@ -343,27 +355,52 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
         <tr>
             <td rowspan="2">基本情報の指定</td>
 			<td><b>コンパートメントの選択</b>：
-			<br>Autonomous ExadataVMクラスタを作成するコンパートメントを選択</td>
+			<br>Autonomous Exadata VMクラスタを作成するコンパートメントを選択</td>
             <td>任意</td>
         </tr>
 		<tr>
 			<td><b>表示名</b>：
 			<br>リソースを簡単に識別できるようにする名称。表示名は一意である必要はありません。</td>
-            <td>任意 例：AVM01</td>
+            <td>任意 
+            <br>例：AVMCluster1</td>
         </tr>
 		<tr>
             <td rowspan="1"></td>
 			<td><b>Exadataインフラストラクチャの選択</b></td>
-            <td>2-1で作成したAEI(AEI01)を選択</td>
+            <td>2-1で作成したEIを選択</td>
+        </tr>
+        <tr>
+            <td rowspan="4">Autonomous VMクラスタ・リソースの構成</td>
+        	<td><b>Maximum number of Autonomous Container Database:</b>
+            <br>AVMで作成可能なACD数の上限。設定できる値は後のノード当たりのOCPU数に依存します</td>
+            <td>任意</td>
+        </tr>
+        <tr>
+			<td><b>ノード当たりのOCPU数</b></td>            
+            <td>任意</td>
+        </tr>
+        <tr>
+			<td><b>OCPU当たりのデータベース・メモリー(GB)</b></td>
+            <td>任意</td>
+        </tr>
+        <tr>
+			<td><b>Database Storage(TB)</b></td>
+            <td>任意</td>
         </tr>
 		<tr>
             <td rowspan="2">ネットワーク構成の設定</td>
 			<td><b>仮想クラウドネットワークの選択</b></td>
-            <td>2-2で作成したVCN(ADBD01)を選択</td>
+            <td>2-2で作成したVCNを選択</td>
         </tr>
 		<tr>
 			<td><b>サブネットの選択</b></td>
-            <td>2-2でイングレスルールを設定したプライベートサブネットを選択</td>
+            <td>2-2でイングレス・ルールを設定したプライベート・サブネットを選択</td>
+        </tr>
+        <tr>
+            <td rowspan="1"></td>
+			<td><b>メンテナンスの詳細の指定:</b>
+            <br>必要に応じてメンテナンスのスケジュールを構成できます。AVMクラスタ作成後にも変更が可能です。</td>
+            <td>任意</td>
         </tr>
 		<tr>
             <td rowspan="1"></td>
@@ -371,14 +408,24 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
 			<br>「ライセンス持ち込み」および「ライセンス込み」より選択します。</td>
             <td>ライセンス持ち込み(BYOL)</td>
         </tr>
+        <tr>
+            <td rowspan="1"></td>
+			<td><b>拡張オプション</b>：
+			<br>タイム・ゾーンの指定ができます。</td>
+            <td>任意</td>
+        </tr>
     </tbody>
     </table>
 
+    <br>
+
     ![2-3-2-1.jpg](2-3-2-1.jpg)
 
-3. AVMのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約4時間半程かかります。（2021/12時点）
+    <br>
 
-    ![2-3-3.jpg](2-3-3.jpg)
+3. AVMのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約4時間半程かかります。（2023/1時点）
+
+    ![2-3-3.png](2-3-3.png)
 
 <br>
 <a id="anchor2-5"></a>
@@ -389,10 +436,10 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
 
 1. 2-4で作成したAVMの詳細画面から、「**Autonomous Container Databaseの作成**」をクリックします。
 
-    ![2-4-1.jpg](2-4-1.jpg)
+    ![2-4-1.png](2-4-1.png)
 
 2. Autonomous Container Databaseを作成します。
-<br>設定項目は次の通り入力してください。
+    <br>設定項目は次の通り入力してください。
 
    <table>
         <thead>
@@ -410,7 +457,7 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
 		<tr>
 			<td><b>表示名</b>：
 			<br>リソースを簡単に識別できるようにする名称。表示名は一意である必要はありません。</td>
-            <td>任意<br>例：ACD01</td>
+            <td>任意<br>例：ACD1</td>
         </tr>
     <tr>
         <td></td>
@@ -426,23 +473,23 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
     </tr>
     </tbody>
     </table>
+    <br>
 
+    ![2-4-2.png](2-4-2.png) 
 
-    ![2-4-2.jpg](2-4-2.jpg)
+    <br>
 
-
-
-    > 【補足】自動メンテナンスの構成について
+    >【補足】自動メンテナンスの構成について
     > 
-    > ACDは四半期に一回自動メンテナンスが行われます。このメンテナンスのスケジュールは、ユーザによるスケジュールの指定と、システムによるスケジュールのいずれかを選択することができます。<br>スケジュールをカスタムする場合は、次の設定画面から分かる通り細かいスケジュールを設定できます。<br>
-    >
+    > EI、AVM、ACDは四半期に一回自動メンテナンスが行われます。このメンテナンスのスケジュールは、ユーザによるスケジュールの指定と、システムによるスケジュールのいずれかを選択することができます。<br>スケジュールをカスタマイズする場合は、次の設定画面から分かる通り細かいスケジュールを設定できます（例はACDです）。
+    > <br>
     > <img src="2-4-2-1.jpg" title="2-4-2-1.jpg">
-    >
 
+    <br>
 
-3. ACDのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約25分程かかります。（2021/12時点）
+3. ACDのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約30分程かかります。（2023/12時点）
 
-    ![2-4-3.jpg](2-4-3.jpg)
+    ![2-4-3.png](2-4-3.png)
 
 <br>
 <a id="anchor2-6"></a>
@@ -473,11 +520,11 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
         </tr>
 		<tr>
 			<td><b>表示名</b></td>
-            <td>任意 例：ADBD01</td>
+            <td>任意 例：ATPD1</td>
         </tr>
 		<tr>
 			<td><b>データベース名</b></td>
-            <td>任意 例：ADBD01</td>
+            <td>任意 例：ATPD1</td>
         </tr>
 		<tr>
             <td rowspan="1"></td>
@@ -526,11 +573,11 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
     </tbody>
     </table>
 
-    ![2-5-2.jpg](2-5-2.jpg)
+    ![2-5-2.png](2-5-2.png)
 
-3. ADBのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約5分程かかります。（2021/12時点）
+3. ADBのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約5分程かかります。（2022/1時点）
 
-    ![2-5-3.jpg](2-5-3.jpg)
+    ![2-5-3.png](2-5-3.png)
 
 <br>
 <a id="anchor3"></a>
@@ -539,10 +586,13 @@ Exadata Infrastructureを配置するネットワーク環境を作成します�
 
 1. 2-5で作成したADBの詳細画面を表示し、「**DB接続**」をクリックすると接続に必要な情報を入手できます。
 
-    ![3-3-1.jpg](3-3-1.jpg)
+    ![3-3-1.png](3-3-1.png)
 
-2. ADBに接続します。ADB-Sに接続する場合と同様の方法で接続できます。
-    詳細な接続方法は、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/) を参照ください。
+2. ADBに接続します。接続を行う仮想マシンの設定は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/)を参照ください。TLSがついている接続サービスはADB-Sに接続する場合と同様の方法で接続ができます。またTLSがついていない接続サービスはウォレットなしで接続することが可能です。
+
+
+# 参考資料
++ [LiveLabs:Oracle Autonomous Database Dedicated for Fleet Administrators Workshop](https://docs.oracle.com/pls/topic/lookup?ctx=en/cloud/paas/autonomous-database/dedicated/iywpw&id=adbd_ll_fa){:target="_blank"}
 
 
 <br>
