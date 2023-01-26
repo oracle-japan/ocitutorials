@@ -455,7 +455,7 @@ var store = [{
         "url": "/ocitutorials/database/dbcs101-create-db/",
         "teaser": "/ocitutorials/database/dbcs101-create-db/img11.png"
       },{
-        "title": "102: DBCS上のPDBを管理しよう",
+        "title": "102: BaseDB上のPDBを管理しよう",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure の上で稼働する Oracle Database の PDB を OCI コンソールから停止したり、起動したり、既存 PDB からクローンするなどの操作が簡単に行う事が可能です。この章では実際にどのように操作するのか確認していきます。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. PDB を起動・停止してみよう 2. PDB を新規作成してみよう 3. 既存 PDB からクローン PDB を作成してみよう 所要時間 : 約15分 1. PDB を起動・停止してみよう まずは、コンソール上で作成済みの PDB を確認する画面への遷移、および...","categories": [],
         "tags": [],
         "url": "/ocitutorials/database/dbcs102-managing-pdb/",
