@@ -1,5 +1,5 @@
 ---
-title: "102: DBCS上のPDBを管理しよう"
+title: "102: BaseDB上のPDBを管理しよう"
 excerpt: "Oracle Base Database Service(BaseDB)では、OCI コンソールから Oracle Cloud Infrastructure 上の PDB を 起動・停止だけでなく、PDB のクローンを簡単に実施する事が可能です。"
 order: "1_102"
 header:
