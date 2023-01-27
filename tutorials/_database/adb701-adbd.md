@@ -188,7 +188,7 @@ Exadata Infrastructure (EI)を作成します。
             <td rowspan="2">Exadataシステム・モデルの選択</td>
 			<td><b>シェイプの選択</b>：
             <br>割り当てるOracle Exadata Database Machineのタイプを選択。
-            <br>モデルとその構成に関する容量についての詳細な情報は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbde/index.html">こちら</a></td>
+            <br>モデルとその構成に関する容量についての詳細な情報は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbde/index.html" target="_blank">こちら</a></td>
             <td>X8-2</td>
         </tr>
 		<tr>
@@ -247,7 +247,7 @@ ADB-Dを配置するネットワーク環境を作成します。
     - サービス・ゲートウェイ(SG)
 
     すでに作成済みのVCNがある場合はそちらを利用し、必要なリソースのみ追加しても問題ありません。ただし、その際にはVCNに作成できるリソースの制限にご注意ください。
-    <br>また、仮想クラウドネットワークの作成方法についての詳細は[クラウドに仮想ネットワーク(VCN)を作る](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/)を参照ください。
+    <br>また、仮想クラウドネットワークの作成方法についての詳細は [クラウドに仮想ネットワーク(VCN)を作る](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/){:target="_blank"} を参照ください。
 
     <br>「**VCNウィザードを起動**」をクリックし、「**インターネット接続性を持つVCNの作成**」を選択します。
     <br>ウィザードでの設定項目は本チュートリアルでは次の通り入力することにします。
@@ -487,7 +487,7 @@ ADB-Dを配置するネットワーク環境を作成します。
 
     <br>
 
-3. ACDのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約30分程かかります。（2023/12時点）
+3. ACDのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約30分程かかります。（2023/1時点）
 
     ![2-4-3.png](2-4-3.png)
 
@@ -504,7 +504,7 @@ ADB-Dを配置するネットワーク環境を作成します。
 
 2. Autonomous Databaseを作成します。
 <br>設定項目は次の通り入力してください。
-<br>※Autonomous Databaseの作成方法については [101: ADBインスタンスを作成してみよう](/database/adb101-provisioning) で詳細に説明していますので、重複する部分の説明は割愛します。デプロイメント・タイプのみ異なることにご注意ください。
+<br>※Autonomous Databaseの作成方法については [101: ADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/){:target="_blank"} で詳細に説明していますので、重複する部分の説明は割愛します。デプロイメント・タイプのみ異なることにご注意ください。
 
    <table>
     <thead>
@@ -575,7 +575,7 @@ ADB-Dを配置するネットワーク環境を作成します。
 
     ![2-5-2.png](2-5-2.png)
 
-3. ADBのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約5分程かかります。（2022/1時点）
+3. ADBのアイコンが緑色になったらプロビジョニング完了です。<br>プロビジョニングには約5分程かかります。（2023/1時点）
 
     ![2-5-3.png](2-5-3.png)
 
@@ -588,7 +588,7 @@ ADB-Dを配置するネットワーク環境を作成します。
 
     ![3-3-1.png](3-3-1.png)
 
-2. ADBに接続します。接続を行う仮想マシンの設定は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/)を参照ください。TLSがついている接続サービスはADB-Sに接続する場合と同様の方法で接続ができます。またTLSがついていない接続サービスはウォレットなしで接続することが可能です。
+2. ADBに接続します。接続を行う仮想マシンの設定は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/){:target="_blank"}を参照ください。TLSがついている接続サービスはADB-Sに接続する場合と同様の方法で接続ができます。またTLSがついていない接続サービスはウォレットなしで接続することが可能です。
 
 
 # 参考資料

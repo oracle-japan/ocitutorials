@@ -232,7 +232,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 ## Autonomous Database Dedicated (専有環境)編
 
 + **[701 : ADB-Dの環境を作成してみよう](/ocitutorials/database/adb701-adbd/){:target="_blank"}**  
-    * Autonomous Databaseでご利用いただける専有環境の構成します
+    * Autonomous Databaseの基盤であるExadataを専有して利用するAutonomous Database Dedicatedの環境を作成します
 
 <br/>
 ----
