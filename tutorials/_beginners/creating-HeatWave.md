@@ -51,7 +51,7 @@ HeatWaveとはOCIでのみ使えるデータウェアハウスサービスです
 
 HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい[^1]。
 
-本チュートリアルで構成するHeatWaveの構成図は以下のようになります。HeatWaveを構成する時は、HeatWave専用のMySQL Database Serviceを構成し、そこにHeatWaveのノードを追加します。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL Database Serviceになります。また、HeatWaveノードの最小台数は2台、最大台数は24台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約400GBのデータを保持できます。
+本チュートリアルで構成するHeatWaveの構成図は以下のようになります。HeatWaveを構成する時は、HeatWave専用のMySQL Database Serviceを構成し、そこにHeatWaveのノードを追加します。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL Database Serviceになります。また、HeatWaveノードの最小台数は1台、最大台数は64台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約800GBのデータを保持できます。
 
 <div align="center">
 <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;">
@@ -174,7 +174,7 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     <br>
 
 2. **シェイプの変更** ボタンを押します。表示されたウインドウでHeatWave用のシェイプである**MySQL.HeatWave.VM.Standard.E3** を選択し、**シェイプの選択** ボタンを押します。元のウインドに戻ってシェイプが変更されていることを確認し、**HeatWaveクラスタの追加** ボタンをクリックします。
-(既にMDSにデータをロードしている状態であればここで **ノード数の見積もり** ボタンを押すことで必要なHeatWaveノード数を見積もることができますが、今回は最小構成で構成するためノード数は2から変更せずに次に進みます)
+(既にMDSにデータをロードしている状態であればここで **ノード数の見積もり** ボタンを押すことで必要なHeatWaveノード数を見積もることもできます。今回はノード数は2にして次に進みます)
    
     <div align="center">
     <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
