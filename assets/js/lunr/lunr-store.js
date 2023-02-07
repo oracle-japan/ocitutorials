@@ -1067,6 +1067,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/spinup-cluster-network/",
         "teaser": "/ocitutorials/intermediates/spinup-cluster-network/architecture_diagram.png"
       },{
+        "title": "GPUクラスタを構築する（自動構築編）",
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。 RoCE v2採用の高帯域・低レイテンシRDMAインターコネクトの クラスタ・ネットワーク 8枚のNVIDIA A100 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ BM.GPU4.8/BM.GPU.GM4.8 このチュートリアルは、OCIのマーケットプレイスから利用可能なGPUクラスタ構築のためのリソース・マネージャ（※1）用スタックを利用し、以下構成のGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム（ NCCL Tests ）で検証後、分散機械学習のサンプルプログラムを実行します。 NVIDIA A100 40 GBを8枚搭載するGPUノード（ BM.GPU4.8 ） 100 Gbps x 16 RoCEv2 RDMAインターコネクト（※2） インターネットからSSH接続可能なbastionノード OS: Oracle Linux 7.9 コンテナランタイム: Enroot ジョブスケジューラ: Slurm + Pyxis OCIファイルストレージサービスによるGPUクラスタ内ホームディレクトリ共有 LDAPによるクラスタ内ユーザ統合管理 ※1：リソース・マネージャについては、以下のチュートリアルも参考にしてください。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/intermediates/spinup-gpu-cluster-withstack/",
+        "teaser": "/ocitutorials/intermediates/spinup-gpu-cluster-withstack/architecture_diagram.png"
+      },{
         "title": "GPUクラスタを構築する",
         "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。 RoCE v2採用の高帯域・低レイテンシRDMAインターコネクト（MPI通信で最大12GB/sの帯域幅と最小1.5μsのレイテンシ）の クラスタ・ネットワーク 8枚のNVIDIA A100 40 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ BM.GPU4.8 このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40 GBを搭載するGPUノード（ BM.GPU4.8 ）をクラスタ・ネットワークを使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するためのGPUクラスタを分散機械学習に対応するDockerコンテナー上に構築、複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） テストプログラム（ NCCL Tests ）で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。 このチュートリアルは、分散機械学習フレームワークに以下2種類を取り上げ、それぞれ3章と4章でこれらを解説しています。該当する章を参照することで、自身のワークロードに合わせた環境構築が可能です。 Horovod（ 3.Horovodを使用するGPUクラスタ環境構築 ） MultiWorkerMirroredStrategy（ 4.MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築 ） よって本チュートリアルの進め方は、まず自身のワークロードに合わせて上記2種類からどちらを使用するか選択し、0章 → 1章 → 2章 → 3章 or 4章 → 5章と進めます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有、プログラム開発環境、コンテナオーケストレーション等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化するOCIのリソース・マネージャを使用したHPC（GPU）クラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である HPCクラスタを構築する...","categories": [],
         "tags": [],

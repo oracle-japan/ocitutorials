@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-01-31T10:25:43+09:00">
+  <meta property="article:published_time" content="2023-02-07T17:40:08+09:00">
 
 
 
@@ -279,7 +279,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その9 - クラウドでMySQL Databaseを使う">
     <meta itemprop="description" content="クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！">
-    <meta itemprop="datePublished" content="2023-01-31T10:25:43+09:00">
+    <meta itemprop="datePublished" content="2023-02-07T17:40:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -345,20 +345,22 @@
  </div>
     <p><br /></p>
   </li>
-  <li><strong>MySQL DBシステムの作成</strong> ボタンを押します。この際、左下の <strong>リスト範囲</strong> でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
+  <li><strong>DBシステムの作成</strong> ボタンを押します。この際、左下の <strong>リスト範囲</strong> でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
     <div align="center">
  <img width="700" alt="img2.png" src="img2.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
 
-    <p>※MySQL Database Serviceを利用するためにはOCIユーザーに適切なポリシーを設定する必要があります。詳細は <strong>MySQLの前提条件</strong> 部分の <strong>詳細</strong> をクリックすることで確認出来ます。Administratorsグループに所属するユーザーはこれらのポリシーも満たしているため、本チュートリアルでは、このポリシーの設定手順は割愛しています。</p>
+    <p>※ MySQL Database Serviceを利用するためにはOCIユーザーに適切なポリシーを設定する必要があります。必要なポリシーは <strong>前提条件</strong> 部分で説明されているように、ポリシー・ビルダー・テンプレートを使用して作成できます。なお、Administratorsグループに所属するユーザーはこれらのポリシーも満たしているため、本チュートリアルでは、このポリシーの設定手順は割愛しています。</p>
     <div align="center">
  <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
   <li>
-    <p>立ち上がった <strong>MySQL DBシステムの作成</strong> ウィンドウで以下の項目を入力します。</p>
+    <p>立ち上がった <strong>DBシステムの作成</strong> ウィンドウで「Development or testing」を選択した後で、以下の項目を入力します。</p>
+
+    <p>※ 「本番」と「Development or testing」では、デフォルトで設定される値に違いがあります。詳細は、各項目にマウスオーバーすることで表示されます。</p>
 
     <ul>
       <li><strong>名前</strong> - 任意の名前を入力します。ここでは「TestMDS」と入力しています。</li>
@@ -396,10 +398,11 @@
       <li><strong>「スタンドアロン」、「高可用性」、「HeatWave」</strong> - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループレプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br /> 「HeatWave」については、「<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/">その10 - MySQLで高速分析を体験する</a>」を参考にしてください。</li>
       <li><strong>ネットワーキングの構成</strong> - 本チュートリアルでは、「TutorialVCN」、「プライベート・サブネット-TutorialVCN（リージョナル）」を使用します。</li>
       <li><strong>配置の構成</strong> - 可用性ドメイン(AD)、フォルト・ドメイン(FD)を指定できます。<br />(現時点で東京リージョン、大阪リージョンは、ADが1つだけであるため、AD2、AD3は選択できません)</li>
-      <li><strong>ハードウェアの構成</strong> - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。現時点では、ストレージサイズを後から拡張できないため、予め大きなサイズを確保することをお勧めします。<br />(ストレージサイズの拡張機能は、今後実装される予定です)</li>
-      <li><strong>バックアップの構成</strong> - 「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMDSのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されています。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。</li>
-      <li><strong>構成の選択</strong> - 「構成の選択」をクリックすることで、事前に作成した構成を適用することが出来ます。事前に構成を作成することで、MDSで変更可能なパラメータを変更できます。<br />※「拡張オプションの表示」をクリック後、「Configuration」タブをクリックして「構成の選択」画面を表示します。</li>
-      <li><strong>メンテナンス・ウインドウの開始時間</strong> - メンテナンス・ウインドウの開始時間を設定します。MDSでは、週に1回メンテナンス・ウインドウで設定された時間帯に<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/maintenance.html">メンテナンスが行われる可能性があります</a>。時間はUTCで指定することに注意して下さい。<br />※「拡張オプションの表示」をクリック後、「Management」タブをクリックして入力欄を表示します。</li>
+      <li><strong>ハードウェアの構成</strong> - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。ストレージサイズは後から拡張もできます。</li>
+      <li><strong>バックアップの構成</strong> - 「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMDSのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されています。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。<br />
+ 「ポイント・イン・タイム・リストアを有効にします」にチェックが入っていない場合は、障害発生時にバックアップ取得時点にしか復旧できません(バックアップのリストアしかできません)。バックアップ取得以降に更新されたデータを復元する必要がある場合は、チェックをつけたままにして下さい。</li>
+      <li><strong>構成の選択</strong> - 「構成の選択」をクリックすることで、事前に作成した構成を適用することが出来ます。事前に構成を作成することで、MDSで変更可能なパラメータを変更できます。<br />※「拡張オプションの表示」をクリック後、「構成」タブをクリックして「構成の選択」画面を表示します。</li>
+      <li><strong>メンテナンス・ウインドウの開始時間</strong> - メンテナンス・ウインドウの開始時間を設定します。MDSでは、週に1回メンテナンス・ウインドウで設定された時間帯に<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/maintenance.html">メンテナンスが行われる可能性があります</a>。時間はUTCで指定することに注意して下さい。<br />※「拡張オプションの表示」をクリック後、「管理」タブをクリックして入力欄を表示します。</li>
       <li><strong>タグ</strong> - 任意のタグを設定できます。タグをつけることで、コストトラッキング等に活用できます。<br />※「拡張オプションの表示」をクリック後、「タグ」タブをクリックして入力欄を表示します。</li>
     </ul>
 
@@ -494,6 +497,13 @@
     <p><br /></p>
   </li>
   <li>
+    <p>RHEL8系のOSの場合、デフォルトで有効になっているMySQLモジュールを無効化する必要があるため、以下のコマンドを実行します。詳細な説明は<a href="https://dev.mysql.com/doc/refman/8.0/en/linux-installation-yum-repo.html#yum-repo-disabling-mysql">こちらのドキュメント</a>を参照して下さい。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum module disable mysql
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
     <p>以下コマンドを実行し、MySQLクライアントをインストールします。</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install mysql-community-client
@@ -551,7 +561,7 @@ mysql&gt; SHOW DATABASES;
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-01-31T10:25:43+09:00">January 31, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-02-07T17:40:08+09:00">February 7, 2023</time></p>
 
 
       </footer>
