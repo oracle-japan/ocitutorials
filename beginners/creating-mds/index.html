@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-02-07T17:40:08+09:00">
+  <meta property="article:published_time" content="2023-02-08T14:09:27+09:00">
 
 
 
@@ -279,7 +279,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その9 - クラウドでMySQL Databaseを使う">
     <meta itemprop="description" content="クラウド環境でも人気の高いMySQL Database！OCIならMySQL開発チームによるMySQLのマネージドサービスが利用できます！簡単に構築できるので、まずは触ってみましょう！">
-    <meta itemprop="datePublished" content="2023-02-07T17:40:08+09:00">
+    <meta itemprop="datePublished" content="2023-02-08T14:09:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -310,7 +310,7 @@
   <li><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>を完了していること</li>
 </ol>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。</p>
 
 <p><strong>目次：</strong></p>
 
@@ -345,7 +345,7 @@
  </div>
     <p><br /></p>
   </li>
-  <li><strong>DBシステムの作成</strong> ボタンを押します。この際、左下の <strong>リスト範囲</strong> でリソースを作成したいコンパートメントを選択していることを確認してください。ここでは「handson」コンパートメントを使用しています。
+  <li><strong>DBシステムの作成</strong> ボタンを押します。この際、左下の <strong>リスト範囲</strong> でリソースを作成したいコンパートメントを選択していることを確認して下さい。ここでは「handson」コンパートメントを使用しています。
     <div align="center">
  <img width="700" alt="img2.png" src="img2.png" style="border: 1px black solid;" />
  </div>
@@ -358,9 +358,7 @@
     <p><br /></p>
   </li>
   <li>
-    <p>立ち上がった <strong>DBシステムの作成</strong> ウィンドウで「Development or testing」を選択した後で、以下の項目を入力します。</p>
-
-    <p>※ 「本番」と「Development or testing」では、デフォルトで設定される値に違いがあります。詳細は、各項目にマウスオーバーすることで表示されます。</p>
+    <p>立ち上がった <strong>DBシステムの作成</strong> ウィンドウで「Development or testing(開発もしくはテスト)」を選択した後で、以下の項目を入力します。なお、「本番」と「Development or testing(開発もしくはテスト)」では、デフォルトで設定される値に違いがあります。詳細は、各項目にマウスオーバーすることで表示されます。</p>
 
     <ul>
       <li><strong>名前</strong> - 任意の名前を入力します。ここでは「TestMDS」と入力しています。</li>
@@ -376,6 +374,7 @@
       <li><strong>ユーザー名</strong> - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)</li>
       <li><strong>パスワード</strong> - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。</li>
       <li><strong>パスワードの確認</strong> - パスワードを再入力します。</li>
+      <li><strong>ネットワーキングの構成</strong> - 本チュートリアルでは、「TutorialVCN」、「プライベート・サブネット-TutorialVCN（リージョナル）」を使用します。</li>
     </ul>
 
     <div align="center">
@@ -384,7 +383,7 @@
     <p><br /></p>
 
     <ul>
-      <li><strong>ホスト名</strong> - 任意の名前を入力します。ここでは「TestMDS」と入力しています。<br />※「拡張オプションの表示」をクリック後、「Networking」タブをクリックして入力欄を表示します。</li>
+      <li><strong>ホスト名</strong> - 任意の名前を入力します。ここでは「TestMDS」と入力しています。<br />※ページ下部にある「拡張オプションの表示」をクリック後、「ネットワーキング」タブをクリックして入力欄を表示します。</li>
     </ul>
 
     <div align="center">
@@ -395,18 +394,57 @@
     <p>また、以下の項目は必要に応じて変更します。</p>
 
     <ul>
-      <li><strong>「スタンドアロン」、「高可用性」、「HeatWave」</strong> - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループレプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br /> 「HeatWave」については、「<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/">その10 - MySQLで高速分析を体験する</a>」を参考にしてください。</li>
-      <li><strong>ネットワーキングの構成</strong> - 本チュートリアルでは、「TutorialVCN」、「プライベート・サブネット-TutorialVCN（リージョナル）」を使用します。</li>
+      <li><strong>「スタンドアロン」、「高可用性」、「HeatWave」</strong> - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループレプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br /> 「HeatWave」については、「<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/">その10 - MySQLで高速分析を体験する</a>」を参考にして下さい。</li>
       <li><strong>配置の構成</strong> - 可用性ドメイン(AD)、フォルト・ドメイン(FD)を指定できます。<br />(現時点で東京リージョン、大阪リージョンは、ADが1つだけであるため、AD2、AD3は選択できません)</li>
-      <li><strong>ハードウェアの構成</strong> - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。ストレージサイズは後から拡張もできます。</li>
-      <li><strong>バックアップの構成</strong> - 「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMDSのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されています。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。<br />
- 「ポイント・イン・タイム・リストアを有効にします」にチェックが入っていない場合は、障害発生時にバックアップ取得時点にしか復旧できません(バックアップのリストアしかできません)。バックアップ取得以降に更新されたデータを復元する必要がある場合は、チェックをつけたままにして下さい。</li>
-      <li><strong>構成の選択</strong> - 「構成の選択」をクリックすることで、事前に作成した構成を適用することが出来ます。事前に構成を作成することで、MDSで変更可能なパラメータを変更できます。<br />※「拡張オプションの表示」をクリック後、「構成」タブをクリックして「構成の選択」画面を表示します。</li>
-      <li><strong>メンテナンス・ウインドウの開始時間</strong> - メンテナンス・ウインドウの開始時間を設定します。MDSでは、週に1回メンテナンス・ウインドウで設定された時間帯に<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/maintenance.html">メンテナンスが行われる可能性があります</a>。時間はUTCで指定することに注意して下さい。<br />※「拡張オプションの表示」をクリック後、「管理」タブをクリックして入力欄を表示します。</li>
-      <li><strong>タグ</strong> - 任意のタグを設定できます。タグをつけることで、コストトラッキング等に活用できます。<br />※「拡張オプションの表示」をクリック後、「タグ」タブをクリックして入力欄を表示します。</li>
+      <li><strong>ハードウェアの構成</strong> - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。サポートされているシェイプについては、<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/supported-shapes.html">こちら</a>のドキュメントを参照して下さい。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。ストレージサイズは後から拡張もできます。</li>
+      <li><strong>Configure backup plan(バックアップの構成)</strong>
+        <ul>
+          <li>「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMDSのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されていますが、1日〜35日の間で任意の日数に変更できます。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。<br />
+MDSのバックアップの詳細については<a href="https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/backing-db-system.html">こちら</a>のドキュメントを参照して下さい。</li>
+          <li>「ポイント・イン・タイム・リストアを有効にします」にチェックが入っていない場合は、障害発生時にバックアップ取得時点にしか復旧できません(バックアップのリストアしかできません)。バックアップ取得以降に更新されたデータを復元する必要がある場合は、チェックをつけたままにして下さい。</li>
+          <li>「Select backup window」にチェックを入れることで、自動バックアップの取得時間帯を指定できます。時間はUTCで指定することに注意して下さい。</li>
+        </ul>
+      </li>
     </ul>
 
-    <p><br /></p>
+    <p><br />
+ 以下は「拡張オプションの表示」をクリック後に表示されるメニューです。<br />
+ 拡張オプションの詳細については<a href="https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/advanced-options.html">こちら</a>のドキュメントを参照して下さい。</p>
+
+    <ul>
+      <li><strong>削除プラン</strong>
+        <ul>
+          <li>「削除保護」にチェックを入れると、この設定を変更するまでMDSを削除できなくなります(コンソール上から「削除」のメニューがグレーアウトされます)。</li>
+          <li>「自動バックアップの保持」にチェックを入れると、このMDSを削除する時にそれまでに取得されていた自動バックアップを保持できます。チェックを入れていない場合は、MDS削除時に紐づいている自動バックアップは削除されます。</li>
+          <li>「最終バックアップが必要」にチェックを入れると、このMDSを削除する時に自動的にバックアップが取得されます。</li>
+        </ul>
+      </li>
+      <li><strong>構成</strong>
+        <ul>
+          <li>「構成の選択」をクリックすることで、任意の構成を適用できます。事前に<a href="https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/configuration-db-system.html#GUID-3EFF43B9-C85A-457D-BB43-300C8DD5FEDB">構成</a>を作成することで、MDSで変更可能なパラメータを変更できます。</li>
+          <li>「MySQLバージョンを選択」から、任意のMySQLのマイナーバージョンを選択できます。(コンソール上に3バージョン以上表示されている場合がありますが) 現在のMDSでは、最新2マイナーバージョンのみがサポートされ、サポート対象外になったMDSは自動アップグレードされる仕様になっているため、ご注意下さい。MDSの自動アップグレードについては<a href="https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/mysql-server-upgrades.html">こちら</a>を参照下さい。</li>
+        </ul>
+      </li>
+      <li><strong>クラッシュ・リカバリ</strong> - 「クラッシュ・リカバリの有効化」のチェックを外すことで、クラッシュ・リカバリを無効化でき、書き込み処理のパフォーマンスを向上できます。クラッシュ・リカバリを無効化すると耐障害性が下がるため、このチェックは通常運用時には外してはいけません。大量データをロードする場合などに一時的に設定を変更することを想定した機能です。</li>
+      <li><strong>管理</strong> - メンテナンス・ウインドウの開始時間を任意の時間に設定できます。MDSでは、週に1回メンテナンス・ウインドウで設定された時間帯に<a href="https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/maintenance.html">メンテナンスが行われる可能性があります</a>。時間はUTCで指定することに注意して下さい。</li>
+      <li><strong>ネットワーキング</strong>
+        <ul>
+          <li>IPアドレス：任意のIPアドレスを設定可能です。</li>
+          <li>MySQLポート：MySQLサーバーとの通信に使用するポートをデフォルトの3306から任意のポートに変更できます。</li>
+          <li>MySQL Xプロトコル・ポート：MySQLサーバーとXプロトコルを使用して通信する時に使用するポートをデフォルトの33060から任意のポートに変更できます。</li>
+        </ul>
+      </li>
+      <li><strong>Data import</strong>
+        <ul>
+          <li>「PAR source URL」に適切なURLを指定することで、MDS作成後に自動的に高速にデータをロードできます。この機能を使用すると、クラッシュ・リカバリが無効化された状態でデータがロードされるため、通常よりも高速にデータをロードできます。<br /> 
+この機能を使用する場合は、事前に<a href="https://dev.mysql.com/doc/mysql-shell/8.0/ja/mysql-shell-utilities-dump-instance-schema.html">MySQL Shellのダンプユーティリティ</a>を使用して取得したダンプデータをOCIのオブジェクトストレージに配置する必要があります。そして、「既存のバケットに対するPAR URLを作成するには、ここをクリックします。」をクリックし、そのオブジェクト・ストレージ・バケットを指定してPAR URLを作成します。</li>
+        </ul>
+      </li>
+      <li><strong>タグ</strong> - 任意のタグを設定できます。タグをつけることで、コストトラッキング等に活用できます。
+ <br />
+ <br />
+ <br /></li>
+    </ul>
   </li>
   <li>MDSが<strong>作成中</strong>になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが<strong>アクティブ</strong>に変わります。
     <div align="center">
@@ -466,6 +504,7 @@
     <ul>
       <li><strong>ソースCIDR</strong> - 「10.0.0.0/16」と入力します。</li>
       <li><strong>宛先ポート範囲</strong> - 「3306」と入力します。</li>
+      <li><strong>説明</strong> - 「MySQL」と入力します。(入力は任意です)</li>
     </ul>
 
     <div align="center">
@@ -516,34 +555,81 @@
 
 <h1 id="5-作成したmdsの確認">5. 作成したMDSの確認</h1>
 
-<p>mysqlコマンドラインクライアントを使ってMDSへ接続し、SHOW DATABASESコマンドを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
+<p>MDSにサンプルデータベースとしてworld_xデータベースを構築し、SQLを実行することで、MySQLサーバーが構築できていることを確認します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[opc@testvm1 ~]$ mysql -u root -p -h TestMDS.sub01140222111.tutorialvcn.oraclevcn.com
-Enter password: 
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 31
-Server version: 8.0.22-u4-cloud MySQL Enterprise - Cloud
+<ol>
+  <li>
+    <p>以下のコマンドを実行してworld_xデータベースを構築するためのSQLスクリプトをダウンロードして解凍します。</p>
 
-Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> wget https://downloads.mysql.com/docs/world_x-db.zip
+ unzip world_x-db.zip
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ダウンロードされたworld_xフォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。world_xフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br />
+(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
 
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ cd world_x-db/
+ [opc@testvm1 world_x-db]$ mysql -u root -p -h TestMDS.sub01311142371.tutorialvcn.oraclevcn.com
+ Enter password: 
+ Welcome to the MySQL monitor.  Commands end with ; or \g.
+ Your MySQL connection id is 21
+ Server version: 8.0.32-cloud MySQL Enterprise - Cloud
+
+ Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+ Oracle is a registered trademark of Oracle Corporation and/or its
+ affiliates. Other names may be trademarks of their respective
 owners.
 
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
-mysql&gt; SHOW DATABASES;
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-+--------------------+
-4 rows in set (0.00 sec)
-</code></pre></div></div>
-<p><br /></p>
+ mysql&gt; source world_x.sql    
+        
+ Query OK, 0 rows affected (0.00 sec)
+ &lt;略&gt;
+ mysql&gt; SHOW DATABASES;
+ +--------------------+
+ | Database           |
+ +--------------------+
+ | information_schema |
+ | mysql              |
+ | performance_schema |
+ | sys                |
+ | world_x            |
+ +--------------------+
+ 5 rows in set (0.00 sec)
+    
+ mysql&gt; use world_x;
+ Database changed
+ mysql&gt; SHOW TABLES;
+ +-------------------+
+ | Tables_in_world_x |
+ +-------------------+
+ | city              |
+ | country           |
+ | countryinfo       |
+ | countrylanguage   |
+ +-------------------+
+ 4 rows in set (0.01 sec)
+
+ mysql&gt; SELECT * FROM city LIMIT 5;
+ +----+----------------+-------------+---------------+-------------------------+
+ | ID | Name           | CountryCode | District      | Info                    |
+ +----+----------------+-------------+---------------+-------------------------+
+ |  1 | Kabul          | AFG         | Kabol         | {"Population": 1780000} |
+ |  2 | Qandahar       | AFG         | Qandahar      | {"Population": 237500}  |
+ |  3 | Herat          | AFG         | Herat         | {"Population": 186800}  |
+ |  4 | Mazar-e-Sharif | AFG         | Balkh         | {"Population": 127800}  |
+ |  5 | Amsterdam      | NLD         | Noord-Holland | {"Population": 731200}  |
+ +----+----------------+-------------+---------------+-------------------------+
+ 5 rows in set (0.00 sec)
+    
+ mysql&gt; exit
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
 
 <p>これで、この章の作業は終了です。</p>
 
@@ -561,7 +647,7 @@ mysql&gt; SHOW DATABASES;
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-02-07T17:40:08+09:00">February 7, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-02-08T14:09:27+09:00">February 8, 2023</time></p>
 
 
       </footer>
