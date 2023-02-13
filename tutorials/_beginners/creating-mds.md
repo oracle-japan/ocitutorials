@@ -10,16 +10,16 @@ header:
 ---
 Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。
 
-このチュートリアルでは、コンソール画面からMDSのサービスを1つ作成し、コンピュート・インスタンスにMySQLクライアント、MySQL Shellをインストールして、クライアントからMDSへ接続する手順を説明します。
+このチュートリアルでは、コンソール画面からMDSのサービスを1つ作成し、コンピュート・インスタンスにMySQLクライアントをインストールして、クライアントからMDSへ接続する手順を説明します。
 
 **所要時間 :** 約25分 (約15分の待ち時間含む)
 
 **前提条件 :**
 
 1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること
-2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../getting-started/)を完了していること
-3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../creating-vcn/)を完了していること
-4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)を完了していること
+2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../getting-started/) を完了していること
+3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../creating-vcn/) を完了していること
+4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](../creating-compute-instance/) を完了していること
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。
 
@@ -98,7 +98,7 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     
     また、以下の項目は必要に応じて変更します。
     
-    - **「スタンドアロン」、「高可用性」、「HeatWave」** - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループレプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br> 「HeatWave」については、「[その10 - MySQLで高速分析を体験する](https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/)」を参考にして下さい。
+    - **「スタンドアロン」、「高可用性」、「HeatWave」** - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループ・レプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br> 「HeatWave」については、「[その10 - MySQLで高速分析を体験する](https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/)」を参考にして下さい。
     - **配置の構成** - 可用性ドメイン(AD)、フォルト・ドメイン(FD)を指定できます。<br>(現時点で東京リージョン、大阪リージョンは、ADが1つだけであるため、AD2、AD3は選択できません)
     - **ハードウェアの構成** - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。サポートされているシェイプについては、[こちら](https://docs.oracle.com/en-us/iaas/mysql-database/doc/supported-shapes.html)のドキュメントを参照して下さい。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。ストレージサイズは後から拡張もできます。
     - **Configure backup plan(バックアップの構成)**
@@ -238,6 +238,7 @@ MDSにサンプルデータベースとしてworld_xデータベースを構築�
     wget https://downloads.mysql.com/docs/world_x-db.zip
     unzip world_x-db.zip
     ```
+    <br>
 
 2. ダウンロードされたworld_xフォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。world_xフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br>
 (“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)
