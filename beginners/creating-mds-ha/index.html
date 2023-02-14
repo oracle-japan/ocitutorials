@@ -1,0 +1,835 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その11 - クラウドでMySQL Databaseを高可用性構成で使う | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="MySQL Database Serviceでは、高可用性構成も簡単に構築できます。実際に構築して、スイッチオーバーを発生させ、プライマリサーバーの切り替えを試してみましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その11 - クラウドでMySQL Databaseを高可用性構成で使う">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds-ha/">
+
+
+  <meta property="og:description" content="MySQL Database Serviceでは、高可用性構成も簡単に構築できます。実際に構築して、スイッチオーバーを発生させ、プライマリサーバーの切り替えを試してみましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds-ha/MySQLLogo_overlay_image.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-02-14T08:59:54+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds-ha/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/creating-mds-ha/MySQLLogo_overlay_image.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その11 - クラウドでMySQL Databaseを高可用性構成で使う
+
+        
+      </h1>
+      
+        <p class="page__lead">MySQL Database Serviceでは、高可用性構成も簡単に構築できます。実際に構築して、スイッチオーバーを発生させ、プライマリサーバーの切り替えを試してみましょう。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/beginners" itemprop="item"><span itemprop="name">Beginners</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その11 - クラウドでMySQL Databaseを高可用性構成で使う</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">入門編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/beginners/acquiring-free-trial/">準備 - Oracle Cloud 無料トライアルを申し込む</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/getting-started/">その1 - OCIコンソールにアクセスして基本を理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/attaching-block-volume/">その4 - ブロック・ボリュームをインスタンスにアタッチする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/managing-instance-lifecycle/">その5 - インスタンスのライフサイクルを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/object-storage/">その7 - オブジェクト・ストレージを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/using-oracle-database/">その8 - クラウドでOracle Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds/">その9 - クラウドでMySQL Databaseを使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-HeatWave/">その10 - MySQLで高速分析を体験する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds-ha/" class="active">その11 - クラウドでMySQL Databaseを高可用性構成で使う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/beginners/alwaysfree/">Always Freeで快適DBアプリ開発環境を構築する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その11 - クラウドでMySQL Databaseを高可用性構成で使う">
+    <meta itemprop="description" content="MySQL Database Serviceでは、高可用性構成も簡単に構築できます。実際に構築して、スイッチオーバーを発生させ、プライマリサーバーの切り替えを試してみましょう。">
+    <meta itemprop="datePublished" content="2023-02-14T08:59:54+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-はじめに">1. はじめに</a></li><li><a href="#2-高可用性構成を有効化したmdsの作成">2. 高可用性構成を有効化したMDSの作成</a></li><li><a href="#3-セキュリティリストの修正イングレスルールの追加">3. セキュリティリストの修正(イングレス・ルールの追加)</a></li><li><a href="#4-mysqlクライアントのインストール">4. MySQLクライアントのインストール</a></li><li><a href="#5-作成したmdsで高可用性が実現できることを確認">5. 作成したMDSで高可用性が実現できることを確認</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
+
+<p>このチュートリアルでは、コンソール画面から高可用性構成を有効化したMDSを作成し、コンピュート・インスタンスにMySQLクライアントをインストールして、MDSの高可用性動作を確認する手順を説明します。</p>
+
+<p><strong>所要時間 :</strong> 約30分 (約15分の待ち時間含む)</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
+  <li><a href="../getting-started/">OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a> を完了していること</li>
+  <li><a href="../creating-vcn/">クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a> を完了していること</li>
+  <li><a href="../creating-compute-instance/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を完了していること</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。<br />
+また、このチュートリアルでコードブロックに掲載しているコードは1行で長いコードを掲載している部分もあります。その部分では、右側にスクロールしてコード全文を確認して下さい。<br />
+(チュートリアルを実践する時は、一旦テキストエディタ等にコピー＆ペーストして内容確認＆編集することを推奨します)</p>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. はじめに</a></li>
+  <li><a href="#anchor2">2. 高可用性構成を有効化したMDSの作成</a></li>
+  <li><a href="#anchor3">3. セキュリティリストの修正(イングレス・ルールの追加)</a></li>
+  <li><a href="#anchor4">4. MySQLクライアントのインストール</a></li>
+  <li><a href="#anchor5">5. 作成したMDSで高可用性が実現できることを確認</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-はじめに">1. はじめに</h1>
+
+<p>本チュートリアルでは、MySQL Database Service(MDS)の基本的な説明や、MDSの基本的な作成方法の説明は割愛しています。これらについては、<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> を参照して下さい。</p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-高可用性構成を有効化したmdsの作成">2. 高可用性構成を有効化したMDSの作成</h1>
+
+<p>MDSを作成します。本チュートリアルではデフォルトの構成でMDSを作成していますが、シェイプやストレージサイズ、バックアップ設定などをカスタマイズすることも可能です。</p>
+
+<ol>
+  <li>コンソールメニューから <strong>データベース</strong> → <strong>MySQL</strong> → <strong>DBシステム</strong> を選択します。
+    <div align="center">
+ <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li><strong>DBシステムの作成</strong> ボタンを押します。この際、左下の <strong>リスト範囲</strong> でリソースを作成したいコンパートメントを選択していることを確認して下さい。ここでは「handson」コンパートメントを使用しています。
+    <div align="center">
+ <img width="700" alt="img2.png" src="img2.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>立ち上がった <strong>DBシステムの作成</strong> ウィンドウで「Development or testing(開発もしくはテスト)」を選択した後で、以下の項目を入力します。</p>
+
+    <ul>
+      <li><strong>名前</strong> - 任意の名前を入力します。ここでは「TestMDSHA」と入力しています。</li>
+      <li><strong>説明</strong> - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)</li>
+      <li><strong>「スタンドアロン」、「高可用性」、「HeatWave」</strong> - MDSを高可用性構成で構成するため、「高可用性」を選択します。「高可用性」を選択した場合、グループ・レプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。</li>
+    </ul>
+
+    <div align="center">
+ <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <ul>
+      <li><strong>ユーザー名</strong> - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)</li>
+      <li><strong>パスワード</strong> - MySQL Databaseの管理者ユーザーのパスワードを指定します。パスワードは8文字から32文字までの長さで、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。</li>
+      <li><strong>パスワードの確認</strong> - パスワードを再入力します。</li>
+      <li><strong>ネットワーキングの構成</strong> - 本チュートリアルでは、「TutorialVCN」、「プライベート・サブネット-TutorialVCN（リージョナル）」を使用します。</li>
+    </ul>
+
+    <div align="center">
+ <img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <ul>
+      <li><strong>ホスト名</strong> - 任意の名前を入力します。ここでは「TestMDSHA」と入力しています。<br />※ページ下部にある「拡張オプションの表示」をクリック後、「ネットワーキング」タブをクリックして入力欄を表示します。</li>
+    </ul>
+
+    <div align="center">
+ <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>MDSが<strong>作成中</strong>になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが<strong>アクティブ</strong>に変わります。<strong>「高可用性」</strong>部分を確認すると<strong>「高可用性: 有効」</strong>となっていることから、このMDSで高可用性が有効になっていることが確認できます。また、「DBシステム構成」部分を確認すると、先程プロビジョニングしたリソースの3倍の値が表示されています。これは、グループ・レプリケーション機能により内部的に3台のMDSが構成されているためです。</p>
+
+    <div align="center">
+ <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;" />
+ <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>ページ左下の <strong>リソース</strong> → <strong>エンドポイント</strong> をクリックして、ホスト名、IPアドレスを確認しておきます。
+    <div align="center">
+ <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-セキュリティリストの修正イングレスルールの追加">3. セキュリティリストの修正(イングレス・ルールの追加)</h1>
+
+<p>このチュートリアルで作成したMDSと通信するためには、TCP/IPによる3306ポートに対する通信を許可する必要があります。そのため、セキュリティリストのイングレス・ルールに設定を追加します。
+<br /></p>
+
+<ol>
+  <li>コンソールメニューから <strong>ネットワーキング</strong> → <strong>仮想クラウドネットワーク</strong> を選択し、作成済みのVCNを選択します。本チュートリアルでは<strong>TutorialVCN</strong> です。またこれ以降はVCNが <strong>TutorialVCN</strong> である前提で説明を記述しています。
+    <div align="center">
+ <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li><strong>プライベート・サブネット-TutorialVCN</strong> をクリックします。
+    <div align="center">
+ <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li><strong>プライベート・サブネット-TutorialVCNのセキュリティ・リスト</strong> をクリックします。
+    <div align="center">
+ <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li><strong>イングレス・ルールの追加</strong> をクリックします。
+    <div align="center">
+ <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>立ち上がった <strong>イングレス・ルールの追加</strong> ウィンドウで、以下の項目を入力し <strong>イングレス・ルールの追加</strong> ボタンを押します。</p>
+
+    <ul>
+      <li><strong>ソースCIDR</strong> - 「10.0.0.0/16」と入力します。</li>
+      <li><strong>宛先ポート範囲</strong> - 「3306」と入力します。</li>
+      <li><strong>説明</strong> - 「MySQL」と入力します。(入力は任意です)</li>
+    </ul>
+
+    <div align="center">
+ <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>3306ポートに対するイングレス・ルールが追加されたことを確認します。
+    <div align="center">
+ <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-mysqlクライアントのインストール">4. MySQLクライアントのインストール</h1>
+
+<p>コンピュート・インスタンスにMySQLクライアントをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。
+<br /></p>
+
+<ol>
+  <li>
+    <p><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>RHEL8系のOSの場合、デフォルトで有効になっているMySQLモジュールを無効化する必要があるため、以下のコマンドを実行します。詳細な説明は<a href="https://dev.mysql.com/doc/refman/8.0/en/linux-installation-yum-repo.html#yum-repo-disabling-mysql">こちらのドキュメント</a>を参照して下さい。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum module disable mysql
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、MySQLクライアントをインストールします。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install mysql-community-client
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-作成したmdsで高可用性が実現できることを確認">5. 作成したMDSで高可用性が実現できることを確認</h1>
+
+<p>作成したMDSの状態を確認し、グループ・レプリケーションが構成されていることを確認します。その後、データを更新しながらスイッチオーバーを発生させることで、短時間でプライマリサーバーが切り替わることを確認します。<br />
+(実際に障害が発生した場合は、スイッチオーバーではなくフェイルオーバーが発生します。しかし、フェイルオーバーを意図的に発生させることは難しいため、ここではスイッチオーバーを使ってプライマリサーバーの切り替えを確認します)<br /></p>
+
+<ol>
+  <li>
+    <p>mysqlコマンドラインクライアントを使ってMDSへ接続します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br />
+(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ mysql -u root -p -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com
+ Enter password: 
+ Welcome to the MySQL monitor.  Commands end with ; or \g.
+ Your MySQL connection id is 38
+ Server version: 8.0.32-cloud MySQL Enterprise - Cloud
+    
+ Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+    
+ Oracle is a registered trademark of Oracle Corporation and/or its affiliates. Other names may be trademarks of their respective owners.
+    
+ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+    
+ mysql&gt;
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>performance_schema.replication_group_membersテーブルをSELECTしてグループ・レプリケーションが構成されていることを確認します。3台のMDSでグループ・レプリケーションが構成されているため、結果は3行出力されます。その中で、MEMBER_ROLE列がPRIMARYになっているメンバーが、今プライマリになっているMDSです。この後の確認のために、プライマリのMDSのMEMBER_HOSTをメモしておきます。この例では、”battlz9jzxwb28dg”をメモしておきます。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT MEMBER_ID, MEMBER_HOST, MEMBER_STATE, MEMBER_ROLE
+     -&gt;   FROM performance_schema.replication_group_members;
+ +--------------------------------------+------------------+--------------+-------------+
+ | MEMBER_ID                            | MEMBER_HOST      | MEMBER_STATE | MEMBER_ROLE |
+ +--------------------------------------+------------------+--------------+-------------+
+ | 434e1837-a7bf-11ed-895a-020017009e6c | msv4fwl6o2e28az2 | ONLINE       | SECONDARY   |
+ | 4362771b-a7bf-11ed-b99b-02001701ef69 | xodvzvdletbd4kcx | ONLINE       | SECONDARY   |
+ | ffb0f26f-a7be-11ed-851b-0200170045b2 | battlz9jzxwb28dg | ONLINE       | PRIMARY     |
+ +--------------------------------------+------------------+--------------+-------------+
+ 3 rows in set (0.00 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>スイッチオーバー時の動作を確認するためのテストテーブルを作成します。そのテーブルに、現在プライマリであるMEMBER_HOSTの情報と現在の時刻をINSERTし、INSERTしたデータをSELECTして確認します。その後、mysqlコマンドラインクライアントを終了します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; CREATE DATABASE test;
+ Query OK, 1 row affected (0.01 sec)
+
+ mysql&gt; CREATE TABLE test.test(
+     -&gt;   id int AUTO_INCREMENT,
+     -&gt;   PRI_MEMBER_HOST CHAR(20),
+     -&gt;   INSERT_TIME time,
+     -&gt;   PRIMARY KEY(id));
+ Query OK, 0 rows affected (0.00 sec)
+
+ mysql&gt; INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME)
+     -&gt;   SELECT MEMBER_HOST, CURTIME()
+     -&gt;   FROM performance_schema.replication_group_members
+     -&gt;   WHERE MEMBER_ROLE='PRIMARY';
+ Query OK, 1 row affected (0.01 sec)
+ Records: 1  Duplicates: 0  Warnings: 0
+
+ mysql&gt; SELECT * FROM test.test;
+ +----+------------------+-------------+
+ | id | PRI_MEMBER_HOST  | INSERT_TIME |
+ +----+------------------+-------------+
+ |  1 | battlz9jzxwb28dg | 15:37:31    |
+ +----+------------------+-------------+
+ 1 row in set (0.00 sec)
+
+ mysql&gt; exit
+ Bye
+ [opc@testvm1 ~]$ 
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>以下のシェルスクリプトをtest.shという名前で作成し、test.shを実行します。このスクリプトでは、1秒毎にテストテーブルにデータをINSERTする処理を無限ループで実行します。ユーザー名とパスワードはMDSの管理者ユーザー名/パスワードに、ホスト名は確認したホスト名に置き換えて下さい。なお、スクリプト実行時にパスワードをコマンドラインで指定していることに対する警告が発生しますが、ここでは無視して大丈夫です。<br />
+(“-p”オプションでパスワードを指定しています。この例では、”MySQL_8.0”というパスワードを指定しています)</p>
+
+    <p>test.shファイル</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> #!/bin/bash
+
+ while true; do
+   mysql -u root -pMySQL_8.0 -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com -e "INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME) SELECT MEMBER_HOST, CURTIME() FROM performance_schema.replication_group_members WHERE MEMBER_ROLE='PRIMARY';"
+   sleep 1
+ done
+</code></pre></div>    </div>
+    <p><br /></p>
+
+    <p>test.shの実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ chmod 744 ./test.sh
+ [opc@testvm1 ~]$ ./test.sh
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ &lt;略&gt;
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>コンソールからスイッチオーバーを発生させます。<strong>他のアクション</strong> → <strong>スイッチオーバー</strong> をクリックし、その後表示されたウインドウで現在セカンダリになっているFD(もしくはAD)を選択し、<strong>スイッチオーバー</strong> をクリックします。この例では、プライマリがFD1の状態から、FD2をプライマリに切り替える操作をしています。スイッチオーバーを実行すると、コンソール上でステータスが数分間「更新中」になり、その後ステータスが「アクティブ」に戻ります。なお、ステータスがアクティブに戻った時には、「優先フォルト・ドメイン」(もしくは「優先可能性ドメイン」)部分が新しいプライマリに応じて更新されています。<br /></p>
+
+    <div align="center">
+ <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img17.png" src="img17.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img18.png" src="img18.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img19.png" src="img19.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>「Ctrl+C」を押し、シェルスクリプトtest.shを停止します。その後、MDSに接続します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql: [Warning] Using a password on the command line interface can be insecure.
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ ^C
+ [opc@testvm1 ~]$ mysql -u root -p -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com
+ Enter password: 
+ Welcome to the MySQL monitor.  Commands end with ; or \g.
+ Your MySQL connection id is 237
+ Server version: 8.0.32-cloud MySQL Enterprise - Cloud
+
+ Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+ Oracle is a registered trademark of Oracle Corporation and/or its
+ affiliates. Other names may be trademarks of their respective
+ owners.
+
+ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+ mysql&gt; 
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>以下のSQLを実行し、スイッチオーバー時にMDSが使用できなかった時間を確認します。”PRI_MEMBER_HOST=’battlz9jzxwb28dg’“部分は、事前にメモした旧プライマリのMDSのMEMBER_HOSTの値に置き換えて実行して下さい。この例の場合INSERT_TIMEの差分が3秒であるため、スイッチオーバー時にMDSが使用できなかった時間は約2秒であることが分かります。障害発生時に発生するフェイルオーバーの方が、通常状態でプライマリサーバーを切り替えるスイッチオーバーよりも所要時間が長くなる可能性がありますが、プライマリサーバーの切り替え自体はこのように短時間で実現可能です。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT *
+     -&gt;   FROM test.test
+     -&gt;   WHERE id IN ((SELECT MAX(id) FROM test.test WHERE PRI_MEMBER_HOST='battlz9jzxwb28dg'),
+     -&gt;                (SELECT MAX(id) FROM test.test WHERE PRI_MEMBER_HOST='battlz9jzxwb28dg')+1)
+     -&gt;   ORDER BY 1 ASC;
+ +-----+------------------+-------------+
+ | id  | PRI_MEMBER_HOST  | INSERT_TIME |
+ +-----+------------------+-------------+
+ | 104 | battlz9jzxwb28dg | 15:40:09    |
+ | 105 | msv4fwl6o2e28az2 | 15:40:12    |
+ +-----+------------------+-------------+
+ 2 rows in set (0.00 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p>これで、この章の作業は終了です。</p>
+
+<p>この章では、<strong>TestMDSHA</strong> というHA構成のMySQL Database Serviceを作成し、スイッチオーバーによるDB停止時間を確認しました。MDSのHA構成はグループ・レプリケーションにより構成されていますが、グループ・レプリケーションでは障害発生時のデータロスが発生しないアーキテクチャーになっています。また、障害発生時にも自動的にフェイルオーバーが発生するため、ダウンタイムも最小限に抑えられます。高可用性が求められるシステムを構築する際は、HA構成のMDSを使って下さい。</p>
+
+<p>なお、本チュートリアル作成時点(2023年2月時点)でドキュメントで案内されているRTO、RPOは以下の通りです。
+(最新の情報は<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/recovery-time-objective-rto-and-recovery-point-objective-rpo.html#GUID-97A388ED-34B8-4EAF-941E-02DB8A6E8ADF">こちら</a>から確認して下さい)</p>
+
+<div align="center">
+<img width="700" alt="img20.png" src="img20.png" style="border: 1px black solid;" />
+</div>
+<p><br /></p>
+
+<p>また、HA構成のMDSの制限事項については<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/limitations3.html#GUID-C6C9F95B-DE92-4A94-9552-64A9D8F1BBEC">こちら</a>を確認して下さい。2023年2月時点では主に以下の制限事項がありますが、今後改善が計画されています。</p>
+
+<ul>
+  <li>PITR(ポイント・イン・タイム・リストア)を有効化できない</li>
+  <li>「構成」を変更できない</li>
+  <li>セカンダリのMDSにはアクセスできない</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-02-14T08:59:54+09:00">February 14, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%81%9D%E3%81%AE11+-+%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%A7MySQL+Database%E3%82%92%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7%E6%A7%8B%E6%88%90%E3%81%A7%E4%BD%BF%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-mds-ha%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-mds-ha%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbeginners%2Fcreating-mds-ha%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/beginners/creating-HeatWave/" class="pagination--pager" title="その10 - MySQLで高速分析を体験する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/beginners/alwaysfree/" class="pagination--pager" title="Always Freeで快適DBアプリ開発環境を構築する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
