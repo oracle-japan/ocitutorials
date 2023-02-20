@@ -24,6 +24,7 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。<br>
 また、このチュートリアルでコードブロックに掲載しているコードは1行で長いコードを掲載している部分もあります。その部分では、右側にスクロールしてコード全文を確認して下さい。<br>
 (チュートリアルを実践する時は、一旦テキストエディタ等にコピー＆ペーストして内容確認＆編集することを推奨します)
+<br>
 
 **目次：**
 
@@ -32,7 +33,6 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 - [3. セキュリティリストの修正(イングレス・ルールの追加)](#anchor3)
 - [4. MySQLクライアントのインストール](#anchor4)
 - [5. 作成したMDSで高可用性が実現できることを確認](#anchor5)
-
 <br>
 
 <a id="anchor1"></a>
@@ -40,6 +40,7 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 # 1. はじめに
 
 本チュートリアルでは、MySQL Database Service(MDS)の基本的な説明や、MDSの基本的な作成方法の説明は割愛しています。これらについては、[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](../creating-mds/) を参照して下さい。
+<br>
 
 <a id="anchor2"></a>
 

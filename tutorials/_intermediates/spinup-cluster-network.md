@@ -20,13 +20,13 @@ Oracle Cloud Infrastructure（以降OCIと記載）のクラスタ・ネット�
   [https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。
-なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化するOCIのリソース・マネージャを使用したHPCクラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である以下ページ **HPCクラスタを構築する** を参照ください。
+なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する、OCIのリソース・マネージャを使用したHPCクラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である以下ページ **HPCクラスタを構築する** を参照ください。
 
 [https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster)
 
 ![システム構成図](architecture_diagram.png)
 
-またこのチュートリアルでは、環境構築後により大規模な計算を実施する必要性が発生することを想定し、既存のクラスタ・ネットワークに計算ノードを追加する方法も学習します。
+またこのチュートリアルでは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存のクラスタ・ネットワークに計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。
 
 **所要時間 :** 約1時間
 
@@ -34,6 +34,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）のクラスタ・ネット�
 
 **注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。
 
+***
 # 0. クラスタ・ネットワーク作成事前作業
 
 ## 0-0. クラスタ・ネットワーク作成事前作業概要
@@ -75,12 +76,12 @@ bastionノードの作成は、以下チュートリアルページ **インス�
 
 ご自身の要件に沿ったインスタンスを、先の手順でVCNを作成したコンパートメントとパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをbastionノードとして作成します。
 
-- **イメージ　:** Oracle Linux 7.9
+- **イメージ　:** Oracle Linux 8
 - **シェイプ　:** VM.Optimized3.Flex（1 OCPU）
 - **SSHキーの追加　:** bastionノードへのログインで使用するSSH秘密鍵に対応する公開鍵
 
 次に、このbastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、bastionノードからクラスタ・ネットワークに接続する計算ノードにログインする際に使用します。
-先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従いbastionノードにopcユーザでSSHログインし、以下のコマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
+先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、bastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
 
 ```sh
 > ssh-keygen
@@ -108,7 +109,7 @@ The keys randomart image is:
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
 ```
 
-次に、以降作成するGPUノードのDNS名前解決をイニシャルホスト名で行えるようにするため、/etc/resolv.confファイルのsearch行に、先に作成したプライベートサブネットのDNSドメイン名を以下のように追加します。
+次に、以降作成する計算ノードのDNS名前解決をイニシャルホスト名で行えるようにするため、/etc/resolv.confファイルのsearch行に、先に作成したプライベートサブネットのDNSドメイン名を以下のように追加します。
 
 ```sh
 > diff /etc/resolv.conf_org /etc/resolv.conf
@@ -122,12 +123,13 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+
 
 ![画面ショット](console_page30.png)
 
-この修正は、このままではOS再起動により元に戻ってしまうため、以下のコマンドでこの修正が上書きされないようにします。
+この修正は、このままではOS再起動により元に戻ってしまうため、以下コマンドをbastionのopcユーザで実行し、この修正が上書きされないようにします。
 
 ```sh
 > sudo chattr -R +i /etc/resolv.conf
 ```
 
+***
 # 1. クラスタ・ネットワーク作成
 
 ## 1-0. クラスタ・ネットワーク作成概要
@@ -136,7 +138,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+
 
 またインスタンス・プールは、その下層にOCIのインスタンス構成を使用し、インスタンス構成に指定した属性を持つインスタンスを複製します。
 
-OCIのクラスタ・ネットワークに接続する計算ノードは、OS（Oracle Linux 7.9）起動時点でクラスタ・ネットワークに接続するRDMAインタフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用して、この作成を行います。また本チュートリアルでは、計算ノードに使用するBM.Optimized3.36に装備されるNVMeローカルディスクのファイルシステム作成と、計算ノード間通信性能を検証する際に使用するIntel MPIのインストールも、このcloud-initから行います。
+OCIのクラスタ・ネットワークに接続する計算ノードは、OS（Oracle Linux 8）起動時点でクラスタ・ネットワークに接続するRDMAインタフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用して、この作成を行います。また本チュートリアルでは、計算ノードに使用するBM.Optimized3.36に装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
 
 以上より、クラスタ・ネットワークの作成は、以下の手順を経て行います。
 
@@ -154,31 +156,14 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 
 本チュートリアルは、このcloud-initを以下の目的で使用します。
 
-- Intel MPIインストール
 - NVMeローカルディスクファイルシステム作成
 - firewalld停止
-- RDMAインタフェース作成
+- クラスタ・ネットワーク接続設定
 
 以下は、本チュートリアルで使用するBM.Optimized3.36用のcloud-init設定ファイルで、OCIコンソールを実行している端末上にテキストファイルで保存します。
 
 ```sh
 #cloud-config
-yum_repos:
-#
-# To install oneAPI package
-  oneAPI:
-    name: Intel(R) oneAPI repository
-    baseurl: https://yum.repos.intel.com/oneapi
-    enabled: true
-    gpgcheck: true
-    repo_gpgcheck: true
-    gpgkey: https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-packages:
-#
-# Install oneAPI Base and HPC Toolkit
-  - intel-basekit
-  - intel-hpckit
-  - intel-oneapi-mpi-2021.3.1.x86_64
 runcmd:
 #
 # Mount NVMe local storage
@@ -210,13 +195,16 @@ runcmd:
   - echo "ONBOOT=\"yes\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
   - echo "NM_CONTROLLED=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
   - ifup ens800f0
+#
+# Start CN authentication renew service for OL8 HPC image to avoid 15min. hiatus of CN connection on deployment
+  - systemctl start oci-cn-auth-renew.service
 ```
 
 このcloud-init設定ファイルのRDMAインタフェース設定は、プライベートサブネットに接続するTCP接続（インターフェース名：ens300f0）用IPアドレスの4フィールド目の値を取得し、この値を4フィールド目に持つ192.168.0.xをクラスタ・ネットワークに接続するRDMAインタフェースのIPアドレスに設定します。
 
 またこのcloud-init設定ファイルは、RDMAインタフェースを設定する際に指定するインタフェース名がBM.Optimized3.36用（ens800f0）になっているため、他のクラスタ・ネットワーク対応のシェイプ（BM.HPC2.36やBM.GPU4.8等）を使用する場合は、使用するシェイプに合わせてRDMAインタフェース名を変更します。
 
-なお、BM.GPU4.8をクラスタ・ネットワークに接続するためのRDMAインタフェースを設定する際のcloud-init設定ファイルは、以下のチュートリアル"GPUクラスタを構築する"にその記載があります。
+なお、BM.GPU4.8をクラスタ・ネットワークに接続するためのRDMAインタフェースを設定する際のcloud-init設定ファイルは、以下のチュートリアル"GPUクラスタを構築する（手動構築編）"にその記載があります。
 
 [https://oracle-japan.github.io/ocitutorials/intermediates/spinup-gpu-cluster/#1-1-cloud-init%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-gpu-cluster/#1-1-cloud-init%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90)
 
@@ -254,11 +242,11 @@ runcmd:
 
    ![画面ショット](console_page06.png)
 
-    - **イメージ** ：Oracle Linux 7 - HPC Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **すべてのイメージの参照** サイドバーで **イメージ・ソース** フィールドに **Oracleイメージ** を選択し検索フィールドに **hpc** と入力して表示される **Oracle Linux 7 - HPC Cluster Networking Image** を選択し **イメージの選択** ボタンをクリック）
+    - **イメージ** ：Oracle Linux - HPC Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **すべてのイメージの参照** サイドバーで **イメージ・ソース** フィールドに **Oracleイメージ** を選択し検索フィールドに **hpc** と入力して表示される **Oracle Linux - HPC Cluster Networking Image** を選択し右側のボタンをクリックして表示される **イメージ・ビルド** フィールドで **OracleLinux-8-RHCK-OFED-5.4-3.5.8.0-2022.11.15-0** を選択し **イメージの選択** ボタンをクリック）
 
    ![画面ショット](console_page08.png)
 
-   ここで指定しているイメージは、OCIのマーケットプレースから提供するOracke Linux 7.9をベースに作成されたクラスタ・ネットワークに接続するために必要なソフトウェアが含まれるイメージ（以降 **HPCイメージ** と呼称）です。
+   ここで指定しているイメージは、OCIのマーケットプレースから提供するOracke Linux 8をベースに作成されたクラスタ・ネットワークに接続するために必要なソフトウェアが含まれるイメージ（以降 **HPCイメージ** と呼称）です。
 
     - **Shape** ：BM.Optimized3.36 (**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.Optimized3.36** を選択し **シェイプの選択** ボタンをクリック）
 
@@ -328,6 +316,7 @@ runcmd:
 
    ステータスが **実行中** となれば、クラスタ・ネットワークと計算ノードの作成が完了しています。
 
+***
 # 2. 計算ノード確認
 
 本章は、デプロイされた計算ノードにログインし、環境を確認します。
@@ -374,15 +363,16 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
 /dev/nvme0n1p1             3748905484    32976 3748872508   1% /mnt/localdisk
 ```
 
+***
 # 3. MPIプログラム実行（2ノード編）
 
 ## 3-0. MPIプログラム実行（2ノード編）概要
 
-本章は、cloud-initからインストールしたIntel MPI Benchmarkを使用し、クラスタ・ネットワークのノード間インターコネクト性能を確認します。
+本章は、計算ノードのHPCイメージに含まれるOpenMPIとIntel MPI Benchmarkを使用し、クラスタ・ネットワークのノード間インターコネクト性能を確認します。
 
-Intel MPI Benchmarkを計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）からIntel MPI Benchmark実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。
+OpenMPIを計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）からOpenMPI実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。
 
-またIntel MPIの実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、先に作成したプライベートサブネットのセキュリティリストを修正する必要があります。
+またOpenMPIの実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、先に作成したプライベートサブネットのセキュリティリストを修正する必要があります。
 
 以上より、本章で実施するIntel MPI BenchmarkによるMPIプログラム実行は、以下の手順を経て行います。
 
@@ -392,8 +382,8 @@ Intel MPI Benchmarkを計算ノード間で実行するためには、mpirunを�
 
 ここでは、2ノードのPing-Pong性能を計測しており、以下性能が出ています。
 
-- 帯域：約12 GB/s（インタフェース物理帯域100 Gbpsに対し96 Gbpsを計測）
-- レイテンシ：約1.5 μs
+- 帯域：約11 GB/s（インタフェース物理帯域100 Gbpsに対し88 Gbpsを計測）
+- レイテンシ：約1.7 μs
 
 ## 3-1. 計算ノード間SSH接続環境構築
 
@@ -437,7 +427,7 @@ inst-9wead-comp
 known_hosts                                                            100%  440   470.6KB/s   00:00
 ```
 
-次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する、先に作成した計算ノードのイニシャルホスト名を格納したファイルを、以下コマンドで全GPUノードにコピーします。
+次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する、先に作成した計算ノードのイニシャルホスト名を格納したファイルを、以下コマンドで全計算ノードにコピーします。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; scp -p ./hostlist.txt $hname:~/; done
@@ -482,59 +472,32 @@ hostlist.txt                                                           100%   32
 計算ノードのうちの1ノードにopcユーザでSSHログインし、以下コマンドを実行します。
    
 ```sh
-> source /opt/intel/oneapi/setvars.sh 
- 
-:: initializing oneAPI environment ...
-   -bash: BASH_VERSION = 4.2.46(2)-release
-   args: Using "$@" for setvars.sh arguments: 
-:: advisor -- latest
-:: ccl -- latest
-:: clck -- latest
-:: compiler -- latest
-:: dal -- latest
-:: debugger -- latest
-:: dev-utilities -- latest
-:: dnnl -- latest
-:: dpcpp-ct -- latest
-:: dpl -- latest
-:: inspector -- latest
-:: intelpython -- latest
-:: ipp -- latest
-:: ippcp -- latest
-:: ipp -- latest
-:: itac -- latest
-:: mkl -- latest
-:: mpi -- latest
-:: tbb -- latest
-:: vpl -- latest
-:: vtune -- latest
-:: oneAPI environment initialized ::
- 
-> mpirun -n 2 -ppn 1 -f ./hostlist.txt -genv UCX_NET_DEVICES mlx5_2:1 IMB-MPI1 -msglog 3:28 PingPong
-#----------------------------------------------------------------
-#    Intel(R) MPI Benchmarks 2021.2, MPI-1 part
-#----------------------------------------------------------------
-# Date                  : Tue Oct  4 14:47:29 2022
+> source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+> mpirun -n 2 -N 1 -hostfile ./hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+#------------------------------------------------------------
+#    Intel (R) MPI Benchmarks 2018, MPI-1 part    
+#------------------------------------------------------------
+# Date                  : Fri Jan 27 17:14:26 2023
 # Machine               : x86_64
 # System                : Linux
-# Release               : 3.10.0-1160.25.1.el7.x86_64
-# Version               : #1 SMP Tue Apr 27 15:52:10 PDT 2021
+# Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64
+# Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022
 # MPI Version           : 3.1
 # MPI Thread Environment: 
 
 
 # Calling sequence was: 
 
-# IMB-MPI1 -msglog 3:28 PingPong 
+# /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
 
 # Minimum message length in bytes:   0
 # Maximum message length in bytes:   268435456
 #
 # MPI_Datatype                   :   MPI_BYTE 
-# MPI_Datatype for reductions    :   MPI_FLOAT 
+# MPI_Datatype for reductions    :   MPI_FLOAT
 # MPI_Op                         :   MPI_SUM  
-# 
-# 
+#
+#
 
 # List of Benchmarks to run:
 
@@ -544,38 +507,40 @@ hostlist.txt                                                           100%   32
 # Benchmarking PingPong 
 # #processes = 2 
 #---------------------------------------------------
-    #bytes #repetitions      t[usec]   Mbytes/sec
-         0         1000         1.56         0.00
-         8         1000         1.57         5.11
-        16         1000         1.57        10.22
-        32         1000         1.59        20.08
-        64         1000         1.66        38.46
-       128         1000         1.71        75.03
-       256         1000         1.90       134.69
-       512         1000         2.01       254.16
-      1024         1000         2.14       478.93
-      2048         1000         2.69       761.51
-      4096         1000         3.26      1257.71
-      8192         1000         3.90      2101.26
-     16384         1000         5.21      3146.83
-     32768         1000         6.93      4730.56
-     65536          640        11.79      5557.43
-    131072          320        17.19      7623.38
-    262144          160        27.69      9466.62
-    524288           80        49.22     10652.99
-   1048576           40        91.90     11410.49
-   2097152           20       177.26     11831.11
-   4194304           10       348.03     12051.66
-   8388608            5       689.69     12162.91
-  16777216            2      1372.80     12221.16
-  33554432            1      2742.00     12237.20
-  67108864            1      5474.71     12257.97
- 134217728            1     10941.14     12267.25
- 268435456            1     21876.05     12270.75
+       #bytes #repetitions      t[usec]   Mbytes/sec
+            0         1000         1.66         0.00
+            8         1000         1.66         4.81
+           16         1000         1.67         9.59
+           32         1000         1.70        18.77
+           64         1000         1.84        34.86
+          128         1000         1.88        68.01
+          256         1000         2.14       119.52
+          512         1000         2.86       178.76
+         1024         1000         2.34       438.04
+         2048         1000         2.97       689.33
+         4096         1000         3.46      1184.22
+         8192         1000         4.47      1831.97
+        16384         1000         6.28      2610.75
+        32768         1000         8.16      4018.05
+        65536          640        10.27      6383.12
+       131072          320        15.51      8449.89
+       262144          160        29.02      9031.92
+       524288           80        51.64     10153.66
+      1048576           40        97.01     10808.74
+      2097152           20       187.74     11170.72
+      4194304           10       369.25     11358.83
+      8388608            5       732.18     11457.09
+     16777216            2      1461.24     11481.46
+     33554432            1      2933.51     11438.32
+     67108864            1      5876.47     11419.94
+    134217728            1     11797.17     11377.11
+    268435456            1     23900.00     11231.61
+
 
 # All processes entering MPI_Finalize
 ```
 
+***
 # 4. 計算ノード追加
 
 本章は、作成したクラスタ・ネットワークに接続する計算ノードを2ノード追加して4ノードに拡張します。
@@ -598,6 +563,7 @@ hostlist.txt                                                           100%   32
 
    ![画面ショット](console_page28.png)
 
+***
 # 5. MPIプログラム実行（4ノード編）
 
 ## 5-0. MPIプログラム実行（4ノード編）概要
@@ -617,59 +583,32 @@ hostlist.txt                                                           100%   32
 計算ノードのうつの1ノードにopcユーザでSSHログインし、以下コマンドを実行します。
    
 ```sh
-> source /opt/intel/oneapi/setvars.sh 
- 
-:: initializing oneAPI environment ...
-   -bash: BASH_VERSION = 4.2.46(2)-release
-   args: Using "$@" for setvars.sh arguments: 
-:: advisor -- latest
-:: ccl -- latest
-:: clck -- latest
-:: compiler -- latest
-:: dal -- latest
-:: debugger -- latest
-:: dev-utilities -- latest
-:: dnnl -- latest
-:: dpcpp-ct -- latest
-:: dpl -- latest
-:: inspector -- latest
-:: intelpython -- latest
-:: ipp -- latest
-:: ippcp -- latest
-:: ipp -- latest
-:: itac -- latest
-:: mkl -- latest
-:: mpi -- latest
-:: tbb -- latest
-:: vpl -- latest
-:: vtune -- latest
-:: oneAPI environment initialized ::
- 
-> mpirun -n 4 -ppn 1 -f ./hostlist.txt -genv UCX_NET_DEVICES mlx5_2:1 IMB-MPI1 -mem 4 Alltoall 
-#----------------------------------------------------------------
-#    Intel(R) MPI Benchmarks 2021.2, MPI-1 part
-#----------------------------------------------------------------
-# Date                  : Thu Mar 24 04:29:15 2022
+> source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+> mpirun -n 4 -N 1 -hostfile ./hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -mem 4 Alltoall 
+#------------------------------------------------------------
+#    Intel (R) MPI Benchmarks 2018, MPI-1 part    
+#------------------------------------------------------------
+# Date                  : Tue Jan 31 06:22:34 2023
 # Machine               : x86_64
 # System                : Linux
-# Release               : 3.10.0-1160.25.1.el7.x86_64
-# Version               : #1 SMP Tue Apr 27 15:52:10 PDT 2021
+# Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64
+# Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022
 # MPI Version           : 3.1
 # MPI Thread Environment: 
 
 
 # Calling sequence was: 
 
-# IMB-MPI1 -mem 4 Alltoall 
+# /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -mem 4 Alltoall
 
 # Minimum message length in bytes:   0
 # Maximum message length in bytes:   4194304
 #
 # MPI_Datatype                   :   MPI_BYTE 
-# MPI_Datatype for reductions    :   MPI_FLOAT 
+# MPI_Datatype for reductions    :   MPI_FLOAT
 # MPI_Op                         :   MPI_SUM  
-# 
-# 
+#
+#
 
 # List of Benchmarks to run:
 
@@ -681,65 +620,96 @@ hostlist.txt                                                           100%   32
 # ( 2 additional processes waiting in MPI_Barrier)
 #----------------------------------------------------------------
        #bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]
-            0         1000         0.07         0.07         0.07
-            1         1000         0.65         6.07         3.36
-            2         1000         0.82         6.21         3.51
-            4         1000         0.63         6.11         3.37
-            8         1000         0.68         6.05         3.37
-           16         1000         0.66         6.15         3.41
-           32         1000         0.67         6.15         3.41
-           64         1000         0.75         6.29         3.52
-          128         1000         0.79         6.37         3.58
-          256         1000         0.97         6.69         3.83
-          512         1000         1.03         6.79         3.91
-         1024         1000         1.81         6.31         4.06
-         2048         1000         7.22         7.25         7.24
-         4096         1000         7.90         7.92         7.91
-         8192         1000         8.50         8.55         8.53
-        16384         1000         9.82         9.87         9.85
-        32768         1000        13.08        13.09        13.09
-        65536          640        23.10        23.10        23.10
-       131072          320        30.03        30.50        30.27
-       262144          160        43.79        43.85        43.82
-       524288           80        71.72        71.86        71.79
-      1048576           40       272.44       277.41       274.93
-      2097152           20       520.28       526.08       523.18
-      4194304           10      1002.88      1007.84      1005.36
+            0         1000         0.03         0.03         0.03
+            1         1000         3.13         3.77         3.45
+            2         1000         3.32         3.59         3.46
+            4         1000         3.26         3.65         3.45
+            8         1000         3.32         3.61         3.47
+           16         1000         3.24         3.67         3.46
+           32         1000         3.25         3.77         3.51
+           64         1000         1.31         6.46         3.88
+          128         1000         3.87         4.42         4.15
+          256         1000         1.38         6.91         4.15
+          512         1000         3.83         4.19         4.01
+         1024         1000         1.61         7.17         4.39
+         2048         1000         4.93         5.54         5.24
+         4096         1000         7.27         7.70         7.49
+         8192         1000         7.97         8.13         8.05
+        16384         1000         9.46         9.54         9.50
+        32768         1000        11.43        11.48        11.45
+        65536          640        21.34        21.45        21.39
+       131072          320        30.19        30.25        30.22
+       262144          160        46.84        46.93        46.88
+       524288           80        78.71        78.74        78.72
+      1048576           40       188.45       192.14       190.29
+      2097152           20       336.62       340.21       338.42
+      4194304           10       713.29       718.38       715.84
 
 #----------------------------------------------------------------
 # Benchmarking Alltoall 
 # #processes = 4 
 #----------------------------------------------------------------
        #bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]
-            0         1000         0.08         0.08         0.08
-            1         1000         3.77         4.16         3.97
-            2         1000         3.62         4.32         3.97
-            4         1000         3.54         4.40         3.98
-            8         1000         3.55         4.40         3.98
-           16         1000         3.60         4.35         3.98
-           32         1000         3.35         4.77         4.06
-           64         1000         3.68         4.61         4.16
-          128         1000         4.17         4.23         4.20
-          256         1000         4.66         5.13         4.87
-          512         1000         4.45         5.63         5.02
-         1024         1000         4.93         5.58         5.23
-         2048         1000         7.70         7.76         7.74
-         4096         1000         8.98         9.09         9.06
-         8192         1000        11.02        11.40        11.23
-        16384         1000        12.88        13.61        13.31
-        32768         1000        20.15        21.55        20.79
-        65536          640        32.60        34.18        33.04
-       131072          320        53.61        58.48        55.11
-       262144          160        99.36       106.92       102.02
-       524288           80       185.47       206.04       194.67
-      1048576           40       406.18       445.43       425.45
-      2097152           20       807.91       919.29       863.22
-      4194304           10      1588.80      1787.67      1688.05
+            0         1000         0.03         0.03         0.03
+            1         1000         4.02         4.32         4.16
+            2         1000         4.05         4.37         4.20
+            4         1000         4.03         4.35         4.18
+            8         1000         4.07         4.40         4.23
+           16         1000         4.12         4.43         4.26
+           32         1000         4.07         4.41         4.23
+           64         1000         4.26         4.57         4.40
+          128         1000         4.38         4.69         4.53
+          256         1000         4.90         5.41         5.15
+          512         1000         5.02         5.53         5.27
+         1024         1000         5.29         5.84         5.56
+         2048         1000         5.61         6.06         5.83
+         4096         1000         8.45         8.71         8.57
+         8192         1000         9.96        10.43        10.20
+        16384         1000        12.52        13.87        13.20
+        32768         1000        22.50        23.07        22.81
+        65536          640        33.11        33.87        33.50
+       131072          320        52.12        52.76        52.40
+       262144          160        90.90        92.47        91.37
+       524288           80       173.89       176.26       174.68
+      1048576           40       371.47       380.94       375.46
+      2097152           20       732.57       747.82       738.86
+      4194304           10      1405.77      1422.57      1412.98
+
 
 # All processes entering MPI_Finalize
 ```
 
-# 6. クラスタ・ネットワークの終了
+***
+# 6. 計算ノード入れ替え
+
+本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。
+
+1. OCIコンソールメニューから **コンピュート** → **クラスタ・ネットワーク** を選択し、表示される以下画面で、作成されたクラスタ・ネットワークをクリックします。
+
+   ![画面ショット](console_page31.png)
+
+2. 表示される以下画面の **インスタンス・プール** フィールドで、クラスタ・ネットワークの作成に伴い作成されたインスタンスプールをクリックします。
+
+   ![画面ショット](console_page32.png)
+
+3. 表示される以下画面左下の **アタッチされたインスタンス** メニューをクリックします。
+
+   ![画面ショット](console_page33.png)
+
+4. 表示される画面の以下 **アタッチされたインスタンス** フィールドで、削除するインスタンスのメニューから **インスタンスのデタッチ** メニューをクリックします。
+
+   ![画面ショット](console_page34.png)
+
+5. 表示される以下画面で、 **このインスタンスおよびアタッチされたブート・ボリュームを完全に終了（削除）** と **プールのインスタンス構成をインスタンスのテンプレートとして使用し、インスタンスを新しいインスタンスで置き換える** チェックボックスをチェックし、 **デタッチと終了** ボタンをクリックします。
+
+   ![画面ショット](console_page35.png)
+
+6. OCIコンソールメニューから **コンピュート** → **インスタンス** とメニューを辿り、デタッチしたインスタンスが終了され、新たなインスタンスが実行中となれば、計算ノードの入れ替えは終了です。
+
+再度 **[5. MPIプログラム実行（4ノード編）](#5-mpiプログラム実行4ノード編)** に従いIntel MPIベンチマークを実行、インターコネクト性能が十分出ていることを確認します。
+
+***
+# 7. クラスタ・ネットワークの終了
 
 本章は、クラスタ・ネットワークを終了することで、作成したクラスタ・ネットワークと計算ノードを削除します。
 

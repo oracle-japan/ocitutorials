@@ -22,6 +22,7 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](../creating-compute-instance/) を完了していること
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。
+<br>
 
 **目次：**
 
@@ -30,7 +31,7 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 - [3. セキュリティリストの修正(イングレス・ルールの追加)](#anchor3)
 - [4. MySQLクライアントのインストール](#anchor4)
 - [5. 作成したMDSの確認](#anchor5)
-
+<br>
 <br>
 
 <a id="anchor1"></a>
@@ -40,14 +41,13 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 MySQL Database Service(MDS)は、MySQL開発チームによるMySQLのマネージドサービスです。オンプレミスのMySQLと100%の互換性があり、MySQL開発ベンダーであるオラクル社からのサポートも受けられます。
 
 MDSではセキュリティの観点から、パブリックIPアドレスを持てない仕様になっています。そのため、このチュートリアルでは、別途コンピュート・インスタンスにMySQLクライアントをインストールして、コンピュート・インスタンス上のクライアントからMDSへ接続する手順まで説明します。
+<br>
 
 <a id="anchor2"></a>
 
 # 2. MDSの作成
 
 MDSを作成します。本チュートリアルではデフォルトの構成でMDSを作成していますが、シェイプやストレージサイズ、バックアップ設定などをカスタマイズすることも可能です。
-
-
 
 1. コンソールメニューから **データベース** → **MySQL** → **DBシステム** を選択します。
     <div align="center">
