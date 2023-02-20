@@ -59,7 +59,7 @@ MDSのリードレプリカは非同期レプリケーションを使って構�
 
 # 2. MDSの作成(ソースとなるMDS)
 
-ソースとなるMDSを作成します。[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](../creating-mds/) の手順に従ってソースとなるMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行しておきます。
+ソースとなるMDSを作成します。[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](../creating-mds/) の手順に従ってソースとなるMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、world_xデータベースも作成しておきます。
 
 この時、前述の制限事項があるためOCPUが4以上のMDSを作成して下さい。OCPUが4以上のMDSを作成する場合、**ハードウェアの構成**部分の**シェイプの変更**をクリックして、4OCPU以上のシェイプを選択します。以下のスクリーンショットは、CPUの種類がE4、CPU数が4OCPU、メモリーサイズが64GBのシェイプ(MySQL.VM.Standard.E4.4.64GB)を選択した例です。
 <br>
@@ -224,6 +224,23 @@ MDSのリードレプリカは非同期レプリケーションを使って構�
 
 4. リードレプリカが参照専用であることを確認します。**Replica1**でtest.testテーブルにデータをINSERTしようとするとエラーが発生します。また、システム変数「read_only」及び「super_read_only」が「ON」に設定されているため、参照専用になっていることが分かります。<br>
 (read_onlyによりMySQLサーバーを参照専用に設定できますが、read_onlyだけではCONNECTION_ADMIN権限もしくはSUPER権限を持った管理者ユーザーによる更新処理をブロックできません。super_read_onlyはCONNECTION_ADMIN権限もしくはSUPER権限を持った管理者ユーザーによる更新処理もブロックするためにMySQL 5.7で追加されたシステム変数です)
+
+    実行例 (Replica1で実行)
+    ```
+    mysql> INSERT INTO test.test VALUES(2, "READ ONLY");
+    ERROR 1290 (HY000): The MySQL server is running with the --super-read-only option so it cannot execute this statement
+    mysql> 
+    mysql> SHOW VARIABLES LIKE '%read_only';
+    +-----------------------+-------+
+    | Variable_name         | Value |
+    +-----------------------+-------+
+    | innodb_read_only      | OFF   |
+    | read_only             | ON    |
+    | super_read_only       | ON    |
+    | transaction_read_only | OFF   |
+    +-----------------------+-------+
+    4 rows in set (0.01 sec)
+    ```
 
 <br>
 これで、この章の作業は終了です。
