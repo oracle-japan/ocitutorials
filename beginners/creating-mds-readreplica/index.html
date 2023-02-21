@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-02-20T09:50:58+09:00">
+  <meta property="article:published_time" content="2023-02-21T09:10:19+09:00">
 
 
 
@@ -268,6 +268,8 @@
         
           <p></p><li><a href="/ocitutorials/beginners/creating-mds-readreplica/" class="active">その12 - MySQL Database Serviceでリードレプリカを構成する</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/beginners/creating-mds-channel/">その13 - MySQL Database Serviceでレプリケーションを使用する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/beginners/alwaysfree/">Always Freeで快適DBアプリ開発環境を構築する</a></li></p>
         
       </ul>
@@ -283,7 +285,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その12 - MySQL Database Serviceでリードレプリカを構成する">
     <meta itemprop="description" content="MySQL Database Serviceでは参照処理の負荷分散を実現できるリードレプリカも簡単に構成できます。リードレプリカを構成し、動きを確認してみましょう！">
-    <meta itemprop="datePublished" content="2023-02-20T09:50:58+09:00">
+    <meta itemprop="datePublished" content="2023-02-21T09:10:19+09:00">
     
 
     <div class="page__inner-wrap">
@@ -356,7 +358,7 @@
 
 <h1 id="2-mdsの作成ソースとなるmds">2. MDSの作成(ソースとなるMDS)</h1>
 
-<p>ソースとなるMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の手順に従ってソースとなるMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行しておきます。</p>
+<p>ソースとなるMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の手順に従ってソースとなるMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、world_xデータベースも作成しておきます。</p>
 
 <p>この時、前述の制限事項があるためOCPUが4以上のMDSを作成して下さい。OCPUが4以上のMDSを作成する場合、<strong>ハードウェアの構成</strong>部分の<strong>シェイプの変更</strong>をクリックして、4OCPU以上のシェイプを選択します。以下のスクリーンショットは、CPUの種類がE4、CPU数が4OCPU、メモリーサイズが64GBのシェイプ(MySQL.VM.Standard.E4.4.64GB)を選択した例です。
 <br /></p>
@@ -529,6 +531,22 @@
   <li>
     <p>リードレプリカが参照専用であることを確認します。<strong>Replica1</strong>でtest.testテーブルにデータをINSERTしようとするとエラーが発生します。また、システム変数「read_only」及び「super_read_only」が「ON」に設定されているため、参照専用になっていることが分かります。<br />
 (read_onlyによりMySQLサーバーを参照専用に設定できますが、read_onlyだけではCONNECTION_ADMIN権限もしくはSUPER権限を持った管理者ユーザーによる更新処理をブロックできません。super_read_onlyはCONNECTION_ADMIN権限もしくはSUPER権限を持った管理者ユーザーによる更新処理もブロックするためにMySQL 5.7で追加されたシステム変数です)</p>
+
+    <p>実行例 (Replica1で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; INSERT INTO test.test VALUES(2, "READ ONLY");
+ ERROR 1290 (HY000): The MySQL server is running with the --super-read-only option so it cannot execute this statement
+ mysql&gt; 
+ mysql&gt; SHOW VARIABLES LIKE '%read_only';
+ +-----------------------+-------+
+ | Variable_name         | Value |
+ +-----------------------+-------+
+ | innodb_read_only      | OFF   |
+ | read_only             | ON    |
+ | super_read_only       | ON    |
+ | transaction_read_only | OFF   |
+ +-----------------------+-------+
+ 4 rows in set (0.01 sec)
+</code></pre></div>    </div>
   </li>
 </ol>
 
@@ -547,7 +565,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-02-20T09:50:58+09:00">February 20, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-02-21T09:10:19+09:00">February 21, 2023</time></p>
 
 
       </footer>
@@ -572,7 +590,7 @@
 ">前へ</a>
     
     
-      <a href="/ocitutorials/beginners/alwaysfree/" class="pagination--pager" title="Always Freeで快適DBアプリ開発環境を構築する
+      <a href="/ocitutorials/beginners/creating-mds-channel/" class="pagination--pager" title="その13 - MySQL Database Serviceでレプリケーションを使用する
 ">次へ</a>
     
   </nav>
