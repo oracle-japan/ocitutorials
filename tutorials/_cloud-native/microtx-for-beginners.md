@@ -776,7 +776,7 @@ jwksUri|[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`jwks_uri
 
 ### 1-6. istioctlのインストール
 
-ここでは、[1-6. MicroTxのデプロイ](#1-6-microtxのデプロイ)で実行するスクリプトで利用する`istioctl`というIstioを操作するためのCLIツールをインストールしておきます。  
+ここでは、[1-7. MicroTxのデプロイ](#1-7-microtxのデプロイ)で実行するスクリプトで利用する`istioctl`というIstioを操作するためのCLIツールをインストールしておきます。  
 
 **`istioctl`について**  
 `istioctl`は[こちら](https://istio.io/latest/docs/reference/commands/istioctl/)をご確認ください。
