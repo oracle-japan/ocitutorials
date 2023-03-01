@@ -593,7 +593,131 @@ ls otmm-22.3
 
 これで、MicroTxバイナリのダウンロードが完了です。  
 
-### 1-4. MicroTxのhelm chartの編集
+### 1-4. サンプルアプリケーションのコンテナイメージビルド
+
+ここでは、アプリケーションのコンテナイメージのビルドを行います。  
+
+今回は、ライセンスの関係上、Flightアプリケーションをユーザの皆様でビルドして頂く必要があるため、この手順を追加しています。  
+
+Flightアプリケーションには、Oracle Instant ClientおよびMicroTxのNode.js用ライブラリが含まれており、ライセンスの関係上、ユーザの皆様でビルドする必要があるためにこの手順を実施します。  
+
+[1-3. MicroTxバイナリのダウンロード](#1-3-microtxバイナリのダウンロード)でダウンロードした資材からNode.js用のMicroTxライブラリをFlightにコピーします。  
+
+```sh
+cp -pr otmm-22.3/lib/nodejs/tmmlib-node-22.3.tgz microtx-handson/flight/
+```
+
+ディレクトリを移動します。  
+
+```sh
+cd microtx-handson/flight/
+```
+
+プッシュ先のOCIRにログインします。  
+
+```sh
+docker login <ご自身が利用されているリージョンのリージョン・コード>.ocir.io
+```
+
+`<ご自身が利用されているリージョンのリージョン・コード>`はご自身が利用されているリージョンに応じて変わりますので、以下の表を参考に設定してください。  
+
+リージョン|リージョンコード
+-|-
+ap-tokyo-1|nrt
+ap-osaka-1|kix
+ap-melbourne-1|mel
+us-ashburn-1|iad
+us-phoenix-1|phx
+ap-mumbai-1|bom
+ap-seoul-1|icn
+ap-sydney-1|syd
+ca-toronto-1|yyz
+ca-montreal-1|yul
+eu-frankfurt-1|fra
+eu-zurich-1|zrh
+sa-saopaulo-1|gru
+sa-vinhedo-1| vcp
+uk-london-1|lhr
+sa-santiago-1|scl
+ap-hyderabad-1|hyd
+eu-amsterdam-1|ams
+me-jeddah-1|jed
+ap-chuncheon-1|yny
+me-dubai-1|dxb
+uk-cardiff-1|cwl
+us-sanjose-1|sjc
+
+ユーザ名とパスワードを聞かれますので、以下の通り入力します。  
+
+key|value|
+-|-
+ユーザ名| [0-3-3. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認](#0-3-3-テナンシ名とオブジェクトストレージネームスペースの確認)で確認した`オブジェクトストレージネームスペース`と[0-3-1. ユーザ名の確認](#0-3-1-ユーザ名の確認)で確認した`ユーザ名`を利用し、`オブジェクトストレージネームスペース/ユーザ名`
+パスワード| [0-3-2. 認証トークンの作成](#0-3-2-認証トークンの作成)で作成した`認証トークン`
+
+コンテナイメージをビルドします。  
+
+```sh
+docker image build -t <ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージ・ネームスペース>/tmm-handson-flight .
+```
+
+プッシュをします。
+
+```sh
+docker push <ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージ・ネームスペース>/tmm-handson-flight
+```
+
+プッシュしたコンテナイメージを利用するようにManifestを更新します。  
+
+Manifestはサンプルアプリケーションのk8sディレクトリにあるため、ディレクトリを移動します。  
+
+```sh
+vim ../k8s/app/app.yaml
+```
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight
+  namespace: otmm
+  labels:
+    app: flight
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flight
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: flight
+        version: v1
+    spec:
+      containers:
+        - name: flight
+          image: nrt.ocir.io/orasejapan/tmm-handson-flight # ここを変更
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8083
+```
+
+137行目にある`image`フィールドを先ほどプッシュしたOCIRのパスに更新し、保存します。  
+
+key|value|
+-|-
+image| `<ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージ・ネームスペース>/tmm-handson-flight`
+
+ディレクトリを戻しておきます。 
+
+```sh
+cd ~
+```
+
+以上で、サンプルアプリケーションのコンテナイメージビルドは完了です。  
+
+### 1-5. MicroTxのhelm chartの編集
 
 ここでは、MicroTxのインストールにあたって、必要なパラメータを設定していきます。  
 MicroTxはhelmを利用してインストールされるため、ここでは`values.yaml`にパラメータを設定していきます。  
@@ -650,7 +774,7 @@ jwksUri|[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`jwks_uri
 
 これで、MicroTxのhelm chartの編集は完了です。  
 
-### 1-5. istioctlのインストール
+### 1-6. istioctlのインストール
 
 ここでは、[1-6. MicroTxのデプロイ](#1-6-microtxのデプロイ)で実行するスクリプトで利用する`istioctl`というIstioを操作するためのCLIツールをインストールしておきます。  
 
@@ -686,7 +810,7 @@ no running Istio pods in "istio-system"
 1.16.1
 ```
 
-### 1-6. MicroTxのデプロイ
+### 1-7. MicroTxのデプロイ
 
 `otmm-22.3`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
 このスクリプトを実行することによって、MictoTxをインストールできます。  
@@ -1573,46 +1697,13 @@ Jaegerの画面を開き、`Service`に`console.otmm`を選択し、`Find`をク
 
 [3-3. 異常パターンをJaegerとKialiで確認](#3-3-異常パターンをjaegerとkialiで確認)まで実行すると、サンプルアプリケーションを実行してもエラーのみが発生する状況になります。  
 
-この手順では、サンプルアプリケーションをリセットする方法を記載します。  
+サンプルアプリケーションをリセットしたい場合は、`予約一覧`画面に遷移して、`リセット`ボタンを押下します。　　
 
-まずは、`trip-manager`のPodを削除します。  
-`trip-manager`ではメモリ上にデータを保存しているため、Podを削除することによりデータをリセットします。  
+![3-030.png](3-030.png)
 
-まずは`trip-manager`のPod名を確認します。  
+`リセット`ボタン押下後に以下のような画面が表示されれば、問題ありません。  
 
-```sh
-kubectl get pods -n otmm
-```
-
-```sh
-$ kubectl get pods -n otmm
-NAME                            READY   STATUS    RESTARTS   AGE
-console-78f74ddc9b-lm6sz        2/2     Running   2          18h
-flight-65df549db9-52txd         2/2     Running   2          18h
-hotel-5c65684d7c-m6mx8          2/2     Running   2          18h
-otmm-tcs-0                      2/2     Running   2          19h
-trip-manager-7fcd44f6c4-46jwr   2/2     Running   0          149m
-```
-`trip-manager`のPod名をコピーし、以下のコマンドを実行します。  
-上記の場合は、`trip-manager-7fcd44f6c4-46jwr`がPod名になります。  
-
-```sh
-kubectl delete pods trip-manager-7fcd44f6c4-46jwr -n otmm
-```
-
-次に、HotelアプリケーションとFlightアプリケーションのデータベースのデータを削除します。  
-
-[3-1. 動作確認](#3-1-動作確認)で行なったようにOCIコンソールから`データベース・アクション`の`開発`カテゴリの`SQL`をクリックします。  
-
-それぞれのデータベースでDELETE文を実行します。  
-
-```sql
-DELETE FROM HOTEL;
-```
-
-```sql
-DELETE FROM FLIGHT;
-```
+![3-031.png](3-031.png)
 
 以上で、サンプルアプリケーション環境がリセットされます。  
 
