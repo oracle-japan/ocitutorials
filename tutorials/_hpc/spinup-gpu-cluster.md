@@ -1,6 +1,6 @@
 ---
-title: "GPUクラスタを構築する"
-excerpt: "GPUクラスタを構築してみましょう。このチュートリアルを終了すると、OCIが提供するGPUクラスタのノード間接続に最適なインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタルGPUインスタンスをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行うGPUクラスタ環境を、OCIコンソールから構築することが出来るようになります。"
+title: "GPUクラスタを構築する(基礎インフラ手動構築編)"
+excerpt: "GPUクラスタを構築してみましょう。このチュートリアルを終了すると、OCIが提供するGPUクラスタのノード間接続に最適なインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタルGPUインスタンスをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行うGPUクラスタ環境を、必要なOCIリソースを順次コンソールから構築しながら作成します。"
 order: "100"
 layout: single
 header:
@@ -11,10 +11,10 @@ header:
 ---
 
 Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。
-- RoCE v2採用の高帯域・低レイテンシRDMAインターコネクト（MPI通信で最大12GB/sの帯域幅と最小1.5μsのレイテンシ）の **クラスタ・ネットワーク**
-- 8枚のNVIDIA A100 40 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ **BM.GPU4.8**
+- RoCE v2採用の高帯域・低レイテンシRDMAインターコネクトの **クラスタ・ネットワーク**
+- 8枚のNVIDIA A100 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ **BM.GPU4.8/BM.GPU.GM4.8**
 
-このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40 GBを搭載するGPUノード（ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** ）をクラスタ・ネットワークを使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するためのGPUクラスタを分散機械学習に対応するDockerコンテナー上に構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** テストプログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。
+このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40 GBを搭載するGPUノード（ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** ）をクラスタ・ネットワークを使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するためのGPUクラスタを分散機械学習に対応するDockerコンテナ上に構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** テストプログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。
 
 このチュートリアルは、分散機械学習フレームワークに以下2種類を取り上げ、それぞれ3章と4章でこれらを解説しています。該当する章を参照することで、自身のワークロードに合わせた環境構築が可能です。
 
@@ -25,6 +25,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 よって本チュートリアルの進め方は、まず自身のワークロードに合わせて上記2種類からどちらを使用するか選択し、0章 → 1章 → 2章 → 3章 or 4章 → 5章と進めます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有、プログラム開発環境、コンテナオーケストレーション等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。
+
 なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化するOCIのリソース・マネージャを使用したHPC（GPU）クラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である **[HPCクラスタを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster)** を参照ください。
 
 ![システム構成図](architecture_diagram.png)
@@ -34,7 +35,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 **前提条件 :** GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。
-
+***
 # 0. GPUクラスタ作成事前作業
 
 ## 0-0. GPUクラスタ作成事前作業概要
@@ -81,7 +82,7 @@ bastionノードの作成は、以下チュートリアルページ **インス�
 - **SSHキーの追加　:** bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
 次に、このbastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、bastionノードからGPUノードにログインする際に使用します。
-先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従いbastionノードにopcユーザでSSHログインし、以下のコマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
+先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従いbastionノードにopcユーザでSSHログインし、以下のコマンドで全ての問いにエンターキーを入力（パスフレーズ無し・デフォルトの格納場所）してSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
 
 ```sh
 > ssh-keygen
@@ -105,7 +106,7 @@ The keys randomart image is:
 | . . o           |
 |      .          |
 +----[SHA256]-----+
-> cat .ssh/id_rsa.pub 
+> cat ~/.ssh/id_rsa.pub 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Lna2m3TPiPKL/lHNK4GK2bkADRzm4674uwO9PHUqEPKVv+HBhTZ+zHOPSkYsOEubgeB9xpuKe+Z7ats0RbdXzT1bDWxcsvrMOdUVHQ9zv54eBSz+wEJO08zuxCjetQ2//6NRlYzoBs5/T1+DWg7lJuNadeyqXf1IaZGxRyfbCyXPzOnhL3TS/S7ydN0/313PsqAYj7PBNlx86WT/0qeNYsefjVmn54PKp1waNDQbOkiXi9Emx9uIKA1TCMCVSauZEI274P6orPvwggbX/HZ5Q8eRta2uw3LmzSRJUlrLBxi5xzhVOSNOXl29y2+U5+Q5/F2AxGSxUbW18AdOihuX opc@bastion
 ```
 
@@ -119,7 +120,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Lna2m3TPiPKL/lHNK4GK2bkADRzm4674uwO9PHUq
 > search vcn.oraclevcn.com sub11010929110.vcn.oraclevcn.com sub11010929111.vcn.oraclevcn.com
 ```
 
-なおプライベートサブネットのDNSドメイン名は、OCIコンソール上で当該プライベートサブネットの **サブネット詳細** メニューから、以下のように確認することが出来ます。
+なおプライベートサブネットのDNSドメイン名は、OCIコンソール上で当該プライベートサブネットの **サブネット情報** タブから、以下のように確認することが出来ます。
 
 ![画面ショット](console_page20.png)
 
@@ -128,7 +129,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Lna2m3TPiPKL/lHNK4GK2bkADRzm4674uwO9PHUq
 ```sh
 > sudo chattr -R +i /etc/resolv.conf
 ```
-
+***
 # 1. GPUクラスタ作成
 
 ## 1-0. GPUクラスタ作成概要
@@ -211,67 +212,8 @@ runcmd:
 # Stop firewalld
   - systemctl stop firewalld
   - systemctl disable firewalld
-# Set up RDMA interface
-  - echo "TYPE=\"Ethernet\"" > /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "BOOTPROTO=\"none\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "IPADDR=192.168.0.`ifconfig enp45s0f0 | head -2 | tail -1 | awk '{print $2}' | awk -F. '{print $4}'`" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "NETMASK=255.255.255.0" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "DEFROUTE=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "PEERDNS=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "PEERROUTES=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "IPV4_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "IPV6INIT=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "IPV6_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "NAME=\"System enp12s0f0\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "DEVICE=\"enp12s0f0\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "ONBOOT=\"yes\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - echo "NM_CONTROLLED=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-enp12s0f0
-  - ifup enp12s0f0
-  - sed 's/192.168.0/192.168.1/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp12s0f1
-  - sed -i 's/enp12s0f0/enp12s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f1
-  - ifup enp12s0f1
-  - sed 's/192.168.0/192.168.2/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp22s0f0
-  - sed -i 's/enp12s0f0/enp22s0f0/g' /etc/sysconfig/network-scripts/ifcfg-enp22s0f0
-  - ifup enp22s0f0
-  - sed 's/192.168.0/192.168.3/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp22s0f1
-  - sed -i 's/enp12s0f0/enp22s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp22s0f1
-  - ifup enp22s0f1
-  - sed 's/192.168.0/192.168.4/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp72s0f0
-  - sed -i 's/enp12s0f0/enp72s0f0/g' /etc/sysconfig/network-scripts/ifcfg-enp72s0f0
-  - ifup enp72s0f0
-  - sed 's/192.168.0/192.168.5/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp72s0f1
-  - sed -i 's/enp12s0f0/enp72s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp72s0f1
-  - ifup enp72s0f1
-  - sed 's/192.168.0/192.168.6/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp76s0f0
-  - sed -i 's/enp12s0f0/enp76s0f0/g' /etc/sysconfig/network-scripts/ifcfg-enp76s0f0
-  - ifup enp76s0f0
-  - sed 's/192.168.0/192.168.7/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp76s0f1
-  - sed -i 's/enp12s0f0/enp76s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp76s0f1
-  - ifup enp76s0f1
-  - sed 's/192.168.0/192.168.8/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp138s0f0
-  - sed -i 's/enp12s0f0/enp138s0f0/g' /etc/sysconfig/network-scripts/ifcfg-enp138s0f0
-  - ifup enp138s0f0
-  - sed 's/192.168.0/192.168.9/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp138s0f1
-  - sed -i 's/enp12s0f0/enp138s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp138s0f1
-  - ifup enp138s0f1
-  - sed 's/192.168.0/192.168.10/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp148s0f0
-  - sed -i 's/enp12s0f0/enp148s0f0/g' /etc/sysconfig/network-scripts/ifcfg-enp148s0f0
-  - ifup enp148s0f0
-  - sed 's/192.168.0/192.168.11/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp148s0f1
-  - sed -i 's/enp12s0f0/enp148s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp148s0f1
-  - ifup enp148s0f1
-  - sed 's/192.168.0/192.168.12/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp195s0f0
-  - sed -i 's/enp12s0f0/enp195s0f0/g' /etc/sysconfig/network-scripts/ifcfg-enp195s0f0
-  - ifup enp195s0f0
-  - sed 's/192.168.0/192.168.13/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp195s0f1
-  - sed -i 's/enp12s0f0/enp195s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp195s0f1
-  - ifup enp195s0f1
-  - sed 's/192.168.0/192.168.14/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp209s0f0
-  - sed -i 's/enp12s0f0/enp209s0f0/g' /etc/sysconfig/network-scripts/ifcfg-enp209s0f0
-  - ifup enp209s0f0
-  - sed 's/192.168.0/192.168.15/g' /etc/sysconfig/network-scripts/ifcfg-enp12s0f0 > /etc/sysconfig/network-scripts/ifcfg-enp209s0f1
-  - sed -i 's/enp12s0f0/enp209s0f1/g' /etc/sysconfig/network-scripts/ifcfg-enp209s0f1
-  - ifup enp209s0f1
+# Set up and start RDMA interface
+  - systemctl enable --now oci-rdma-configure
 # Expand root file system to those set by instance configuration
   - /usr/libexec/oci-growfs -y
 # Pull Horovod/TensorFlow docker images
@@ -317,7 +259,7 @@ runcmd:
 
    ![画面ショット](console_page05.png)
 
-    - **イメージ** ：Oracle Linux 7 - GPU Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **すべてのイメージの参照** サイドバーで **イメージ・ソース** フィールドに **Oracleイメージ** を選択し検索フィールドに **gpu** と入力して表示される **Oracle Linux 7 - GPU Cluster Networking Image** を選択し **イメージの選択** ボタンをクリック）
+    - **イメージ** ：Oracle Linux 7 - GPU Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **すべてのイメージの参照** サイドバーで **Marketplaceース** アイコンを選択し検索フィールドに **gpu** と入力して表示される **Oracle Linux 7 - GPU Cluster Networking Image** を選択し右側のボタンをクリックして表示される イメージ・ビルド フィールドでOracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.01.10-0 を選択し **イメージの選択** ボタンをクリック）
 
    ![画面ショット](console_page06.png)
 
@@ -395,8 +337,8 @@ runcmd:
 
    ![画面ショット](console_page18.png)
 
-   ステータスが **実行中** となれば、クラスタ・ネットワークとGPUノードの作成が完了しています。
-
+   ステータスが **実行中** となれば、クラスタ・ネットワークとGPUノードのOCIリソースとしてのプロビジョニングが完了していますが、この時点でもGPUノードでcloud-initが実行中の可能性があるため、以降の手順に従いこの完了を確認して下さい。
+***
 # 2. GPUノード確認
 
 本章は、デプロイされたGPUノードにログインし、環境を確認します。
@@ -443,9 +385,9 @@ Filesystem              Size  Used Avail Use% Mounted on
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
 ```
 
-## 2.4. Dockerコンテナーイメージ確認
+## 2.4. Dockerコンテナイメージ確認
 
-cloud-initが完了したGPUノードは、以下のように2種類のDockerコンテナーイメージがプルされています。
+cloud-initが完了したGPUノードは、以下のように2種類のDockerコンテナイメージがプルされています。
 
 ```sh
 > sudo docker images
@@ -453,30 +395,30 @@ REPOSITORY                  TAG             IMAGE ID       CREATED        SIZE
 nvcr.io/nvidia/tensorflow   22.11-tf2-py3   a88317ae0b1b   3 weeks ago    14.4GB
 horovod/horovod             latest          f16647de3f02   2 months ago   14.2GB
 ```
-
+***
 # 3. Horovodを使用するGPUクラスタ環境構築
 
-## 3-1. Dockerコンテナー環境構築
+## 3-1. Dockerコンテナ環境構築
 
-### 3-1-0. Dockerコンテナー環境構築概要
+### 3-1-0. Dockerコンテナ環境構築概要
 
-本章は、後の章で実行するNCCL TestsとHorovodのサンプルプログラムを実行するHorovod用Dockerコンテナーを起動するため、必要な環境構築作業を行います。
+本章は、後の章で実行するNCCL TestsとHorovodのサンプルプログラムを実行するHorovod用Dockerコンテナを起動するため、必要な環境構築作業を行います。
 
-NCCL TestsとHorovodのサンプルプログラムは、コンテナーを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、Horovod用Dockerコンテナーにに予め含まれる、OpenMPIです。
+NCCL TestsとHorovodのサンプルプログラムは、コンテナを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、Horovod用Dockerコンテナに予め含まれる、OpenMPIです。
 
-OpenMPIをコンテナー間で実行するためには、MPIプログラムをmpirun等で起動するコンテナー（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナーにパスフレーズ無しでSSH接続できる必要があります。
+OpenMPIをコンテナ間で実行するためには、MPIプログラムをmpirun等で起動するコンテナ（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナにパスフレーズ無しでSSH接続できる必要があります。
 
-またOpenMPIの実行は、これを実行するコンテナー間で必要なポートにアクセス出来る必要があるため、GPUノードが接続されるプライベートサブネットのセキュリティリストを修正する必要があります。
+またOpenMPIの実行は、これを実行するコンテナ間で必要なポートにアクセス出来る必要があるため、GPUノードが接続されるプライベートサブネットのセキュリティリストを修正する必要があります。
 
-以上より、本章で実施するDockerコンテナー環境構築は、以下の手順を経て行います。
+以上より、本章で実施するDockerコンテナ環境構築は、以下の手順を経て行います。
 
-- コンテナー間SSH接続環境構築
+- コンテナ間SSH接続環境構築
 - プライベートサブネットセキュリティリスト修正
-- Horovod用Dockerコンテナー起動
+- Horovod用Dockerコンテナ起動
 
-### 3-1-1. コンテナー間SSH接続環境構築
+### 3-1-1. コンテナ間SSH接続環境構築
 
-本章は、先にbastionノードで作成したSSH秘密鍵を全てのGPUノードにコピーし、後のコンテナー起動時にこのディレクトリをコンテナーにマウントすることで、コンテナー間のパスフレーズ無しSSH接続環境を実現します。
+本章は、先にbastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。
    
 まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのイニシャルホスト名を含むファイルをbastion上に作成します。
 
@@ -524,7 +466,7 @@ inst-swgen-comp
 ssh.tar                                                                100%   10KB  11.5MB/s   00:00
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブを/horovodディレクトリに展開します。
+次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの/horovodディレクトリに展開します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo mkdir /horovod"; done
@@ -573,17 +515,17 @@ inst-swgen-comp
 
    ![画面ショット](console_page25.png)
 
-### 3-1-3. Horovod用Dockerコンテナー起動
+### 3-1-3. Horovod用Dockerコンテナ起動
 
-本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）でHorovod用Dockerコンテナーを起動します。
+本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）でHorovod用Dockerコンテナを起動します。
 
-以下コマンドをマスターノードのrootユーザで実行し、マスターノード上でHorovod用Dockerコンテナーを起動します。
+以下コマンドをマスターノードのrootユーザで実行し、マスターノード上でHorovod用Dockerコンテナを起動します。
 
 ```sh
 > docker run -it --privileged --rm --gpus all --network=host -v /horovod:/root -v /mnt/localdisk:/scratch horovod/horovod:latest
 ```
 
-次に、以下コマンドをスレーブノードのrootユーザで実行し、スレーブノード上でポート番号22222でSSH接続を受け付けるHorovod用Dockerコンテナーを起動します。
+次に、以下コマンドをスレーブノードのrootユーザで実行し、スレーブノード上でポート番号22222でSSH接続を受け付けるHorovod用Dockerコンテナを起動します。
 
 ```sh
 > docker run -it --privileged --rm --gpus all --network=host -v /horovod:/root -v /mnt/localdisk:/scratch horovod/horovod:latest bash -c "/usr/sbin/sshd -p 22222; bash"
@@ -595,7 +537,7 @@ inst-swgen-comp
 
 本章は、NCCL Testsを使用し、GPUクラスタ内のNCCLによるGPU間通信性能を確認します。
 
-ここで使用するNCCLは、Horovod用Dockerコンテナーに予め含まれるものを本環境に合うバージョンにアップデートし、NCCL Testsはコンテナー内でソースコードからビルドします。
+ここで使用するNCCLは、Horovod用Dockerコンテナに予め含まれるものを本環境に合うバージョンにアップデートし、NCCL Testsはコンテナ内でソースコードからビルドします。
 
 以上より、本章で実施するNCCL通信性能検証は、以下の手順を経て行います。
 
@@ -603,15 +545,15 @@ inst-swgen-comp
 - NCCL Testsビルド
 - NCCL Tests実行
 
-本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用したNCCLのAll Reduce通信性能をコンテナー環境から計測し、以下性能が出ています。
+本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用したNCCLのAll Reduce通信性能をコンテナ環境から計測し、以下性能が出ています。
 
 - 帯域（busbw）：約 221 GB/s
 
 ### 3-2-1. NCCLアップデート
 
-本章は、Horovod用Dockerコンテナーに含まれるNCCLをアップデートします。
+本章は、Horovod用Dockerコンテナに含まれるNCCLをアップデートします。
 
-マスターノードとスレーブノードのそれぞれで、起動したコンテナー上のrootユーザで、以下のコマンドを実行します。
+マスターノードとスレーブノードのそれぞれで、起動したコンテナ上のrootユーザで、以下のコマンドを実行します。
 
 ```sh
 > apt update
@@ -622,7 +564,7 @@ inst-swgen-comp
 
 本章は、NCCL TestsプログラムをGitHubからダウンロード、ビルドします。
 
-マスターノードとスレーブノードのそれぞれで、起動したコンテナー上のrootユーザで、以下のコマンドを実行します。
+マスターノードとスレーブノードのそれぞれで、起動したコンテナ上のrootユーザで、以下のコマンドを実行します。
 
 ```sh
 > cd /root
@@ -635,7 +577,7 @@ inst-swgen-comp
 
 本章は、NCCL Testsプログラムを実行します。
 
-マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用したNCCLのall reduce通信性能を計測します。
+マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用したNCCLのall reduce通信性能を計測します。
 
 ```sh
 > ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8
@@ -660,7 +602,7 @@ inst-swgen-comp
 #
 ```
 
-次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨るNCCLのall reduce通信性能を計測します。ここで、"-H"オプションに指定するマスターノードとスレーブノードのホスト名は、自身の環境に合わせて修正します。
+次に、マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨るNCCLのall reduce通信性能を計測します。ここで、"-H"オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
 > mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 1
@@ -699,13 +641,13 @@ inst-swgen-comp
 
 本章は、Horovodサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。
 
-ここで使用するHorovodサンプルプログラムは、Horovod用Dockerコンテナーに予め含まれる、TensorFlow 2でダミーデータを用いてResNet-50モデルを訓練するベンチマークプログラムです。
+ここで使用するHorovodサンプルプログラムは、Horovod用Dockerコンテナに予め含まれる、TensorFlow 2でダミーデータを用いてResNet-50モデルを訓練するベンチマークプログラムです。
 
 ### 3-3-1. Horovodサンプルプログラム実行
 
 本章は、Horovodサンプルプログラムを実行します。
 
-マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用してHorovodサンプルプログラムを実行します。
+マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用してHorovodサンプルプログラムを実行します。
 
 ```sh
 > cd /horovod/examples/
@@ -733,7 +675,7 @@ inst-swgen-comp
 
 最後の行に出力される実行結果から、8枚のGPUを使用した実行時のスコアが4,800程度であることを確認します。
 
-次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUを使用して、2ノードのGPUノードに跨ってHorovodサンプルプログラムを実行します。ここで、"-H"オプションに指定するマスターノードとスレーブノードのホスト名は、自身の環境に合わせて修正します。
+次に、マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUを使用して、2ノードのGPUノードに跨ってHorovodサンプルプログラムを実行します。ここで、"-H"オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
 > mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" python tensorflow2/tensorflow2_synthetic_benchmark.py
@@ -759,34 +701,34 @@ Total img/sec on 16 GPU(s): 9279.7 +-44.2
 ```
 
 最後の行に出力される実行結果から、2ノード16枚のGPUを使用した実行時のスコアが9,300程度で、先の1ノード8枚のGPUで実行したスコアからほぼリニアにスケールしていることを確認します。
-
+***
 # 4. MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築
 
-## 4-1. Dockerコンテナー環境構築
+## 4-1. Dockerコンテナ環境構築
 
-### 4-1-0. Dockerコンテナー環境構築概要
+### 4-1-0. Dockerコンテナ環境構築概要
 
-本章は、後の章で実行するNCCL TestsとMultiWorkerMirroredStrategyのサンプルプログラムを実行するDockerコンテナーを起動するため、必要な環境構築作業を行います。
+本章は、後の章で実行するNCCL TestsとMultiWorkerMirroredStrategyのサンプルプログラムを実行するDockerコンテナを起動するため、必要な環境構築作業を行います。
 
-NCCL Testsは、コンテナーを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、Dockerコンテナーに予め含まれる、OpenMPIです。
+NCCL Testsは、コンテナを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、Dockerコンテナに予め含まれる、OpenMPIです。
 
-OpenMPIをコンテナー間で実行するためには、MPIプログラムをmpirun等で起動するコンテナー（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナーにパスフレーズ無しでSSH接続できる必要があります。
+OpenMPIをコンテナ間で実行するためには、MPIプログラムをmpirun等で起動するコンテナ（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナにパスフレーズ無しでSSH接続できる必要があります。
 
-また先に起動したDockerコンテナーは、sshdがインストールされていないため、ヘッドノード以外のコンテナーでこれをインストールする必要があります。
+またここで使用するDockerコンテナは、sshdがインストールされていないため、ヘッドノード以外のコンテナでこれをインストールする必要があります。
 
-またOpenMPIの実行は、これを実行するコンテナー間で必要なポートにアクセス出来る必要があるため、GPUノードが接続されるプライベートサブネットのセキュリティリストを修正する必要があります。
+またOpenMPIの実行は、これを実行するコンテナ間で必要なポートにアクセス出来る必要があるため、GPUノードが接続されるプライベートサブネットのセキュリティリストを修正する必要があります。
 
-以上より、本章で実施するDockerコンテナー環境構築は、以下の手順を経て行います。
+以上より、本章で実施するDockerコンテナ環境構築は、以下の手順を経て行います。
 
-- コンテナー間SSH接続環境構築
+- コンテナ間SSH接続環境構築
 - プライベートサブネットセキュリティリスト修正
-- Dockerコンテナー起動
+- Dockerコンテナ起動
 - sshdインストール・起動
 
-### 4-1-1. コンテナー間SSH接続環境構築
+### 4-1-1. コンテナ間SSH接続環境構築
 
-本章は、先にbastionノードで作成したSSH秘密鍵を全てのGPUノードにコピーし、後のコンテナー起動時にこのディレクトリをコンテナーにマウントすることで、コンテナー間のパスフレーズ無しSSH接続環境を実現します。
-   
+本章は、先にbastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。  
+
 まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのイニシャルホスト名を含むファイルをbastion上に作成します。
 
 ```sh
@@ -833,7 +775,7 @@ inst-swgen-comp
 ssh.tar                                                                100%   10KB  11.5MB/s   00:00
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブを/TFディレクトリに展開します。
+次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの/TFディレクトリに展開します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo mkdir /TF"; done
@@ -882,11 +824,11 @@ inst-swgen-comp
 
    ![画面ショット](console_page25.png)
 
-### 4-1-3. Dockerコンテナー起動
+### 4-1-3. Dockerコンテナ起動
 
-本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）でDockerコンテナーを起動します。
+本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）でDockerコンテナを起動します。
 
-以下コマンドをマスターノードとスレーブノードのrootユーザでそれぞれ実行し、Dockerコンテナーを起動します。
+以下コマンドをマスターノードとスレーブノードのrootユーザでそれぞれ実行し、Dockerコンテナを起動します。
 
 ```sh
 > docker run -it --privileged --rm --gpus all --network=host --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 -v /TF:/root -v /mnt/localdisk:/scratch nvcr.io/nvidia/tensorflow:22.11-tf2-py3
@@ -896,7 +838,7 @@ inst-swgen-comp
 
 本章は、マスターノードで実行するmpirunによるSSH接続をスレーブノードで受け付けるため、スレーブノードでsshdをインストールし、このsshdをポート番号22222で起動します。
 
-以下コマンドをスレーブノードで起動したコンテナー上のrootユーザで実行し、sshdをインストール・起動します。
+以下コマンドをスレーブノードで起動したコンテナ上のrootユーザで実行し、sshdをインストール・起動します。
 
 ```sh
 > apt update
@@ -905,7 +847,7 @@ inst-swgen-comp
 > /usr/sbin/sshd -p 22222
 ```
 
-次に、以下コマンドをマスターノードで起動したコンテナー上のrootユーザで実行し、スレーブノードにSSH接続できることを確認します。この際、接続を継続するかどうかの問いに"yes"と入力し、known_hostsにスレーブノードのホストキーを登録します。これは、この後のmpirunを実行するために必要です。
+次に、以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、スレーブノードにSSH接続できることを確認します。この際、接続を継続するかどうかの問いに"yes"と入力し、known_hostsにスレーブノードのホストキーを登録します。これは、この後のmpirunを実行するために必要です。
 
 ```sh
 > ssh -p 22222 inst-swgen-comp hostname
@@ -922,14 +864,14 @@ inst-swgen-comp
 
 本章は、NCCL Testsを使用し、GPUクラスタ内のNCCLによるGPU間通信性能を確認します。
 
-ここで使用するNCCLは、起動したDockerコンテナーに予め含まれますが、NCCL Testsはコンテナー内でソースコードからビルドします。
+ここで使用するNCCLは、起動したDockerコンテナに予め含まれますが、NCCL Testsはコンテナ内でソースコードからビルドします。
 
 以上より、本章で実施するNCCL通信性能検証は、以下の手順を経て行います。
 
 - NCCL Testsビルド
 - NCCL Tests実行
 
-本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用したNCCLのAll Reduce通信性能をコンテナー環境から計測し、以下性能が出ています。
+本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用したNCCLのAll Reduce通信性能をコンテナ環境から計測し、以下性能が出ています。
 
 - 帯域（busbw）：約 172 GB/s
 
@@ -937,7 +879,7 @@ inst-swgen-comp
 
 本章は、NCCL TestsプログラムをGitHubからダウンロード、ビルドします。
 
-マスターノードとスレーブノードのそれぞれで、起動したコンテナー上のrootユーザで、以下のコマンドを実行します。
+マスターノードとスレーブノードのそれぞれで、起動したコンテナ上のrootユーザで、以下のコマンドを実行します。
 
 ```sh
 > cd /root
@@ -950,7 +892,7 @@ inst-swgen-comp
 
 本章は、NCCL Testsプログラムを実行します。
 
-マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用したNCCLのall reduce通信性能を計測します。
+マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用したNCCLのall reduce通信性能を計測します。
 
 ```sh
 > ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8
@@ -975,7 +917,7 @@ inst-swgen-comp
 #
 ```
 
-次に、マスターノードで起動したコンテナー上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨るNCCLのall reduce通信性能を計測します。ここで、"-H"オプションに指定するマスターノードとスレーブノードのホスト名は、自身の環境に合わせて修正します。
+次に、マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨るNCCLのall reduce通信性能を計測します。ここで、"-H"オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
 > mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 1
@@ -1014,13 +956,15 @@ inst-swgen-comp
 
 本章は、MultiWorkerMirroredStrategyサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。
 
-ここで使用するMultiWorkerMirroredStrategyサンプルプログラムは、TensorFlowが用意するMNISTデータセットを使用し、訓練と推論を行っています。
+ここで使用するMultiWorkerMirroredStrategyサンプルプログラムは、以下TensorFlow公式ドキュメントページのチュートリアルで使用されている、MNISTデータセットを使用した訓練を行うプログラムです。
+
+[https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras)
 
 ### 4-3-1. MultiWorkerMirroredStrategyサンプルプログラム作成
 
 本章は、MultiWorkerMirroredStrategyサンプルプログラムを作成します。
 
-マスターノードとスレーブノードで起動した双方のコンテナー上のrootユーザで、以下のプログラムを作成します。
+マスターノードとスレーブノードで起動した双方のコンテナ上のrootユーザで、以下のプログラムを作成します。
 
 ```sh
 > cd /root
@@ -1072,7 +1016,7 @@ multi_worker_model.fit(multi_worker_dataset, epochs=3, steps_per_epoch=70)
 
 本章は、MultiWorkerMirroredStrategyサンプルプログラムを実行します。
 
-マスターノードで起動したコンテナー上のrootユーザで、以下コマンドを実行しTF_CONFIG環境変数を設定・確認します。ここで、"worker"セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
+マスターノードで起動したコンテナ上のrootユーザで、以下コマンドを実行しTF_CONFIG環境変数を設定・確認します。ここで、"worker"セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
 > export TF_CONFIG="{\"cluster\": {\"worker\": [\"inst-d5ige-comp:12345\", \"inst-swgen-comp:23456\"]}, \"task\": {\"type\": \"worker\", \"index\": 0}}"
@@ -1080,7 +1024,7 @@ multi_worker_model.fit(multi_worker_dataset, epochs=3, steps_per_epoch=70)
 {"cluster": {"worker": ["inst-d5ige-comp:12345", "inst-swgen-comp:23456"]}, "task": {"type": "worker", "index": 0}}
 ```
 
-次に、マスターノードで起動したコンテナー上のrootユーザで、以下コマンドを実行しプログラムを実行します。この時点では、スレーブノードの実行を待っている状態で、以下の出力で停止します。
+次に、マスターノードで起動したコンテナ上のrootユーザで、以下コマンドを実行しプログラムを実行します。この時点では、スレーブノードの実行を待っている状態で、以下の出力で停止します。
 
 ```sh
 > python mnist.py
@@ -1088,7 +1032,7 @@ multi_worker_model.fit(multi_worker_dataset, epochs=3, steps_per_epoch=70)
 2022-12-15 08:48:49.404772: I tensorflow/core/distributed_runtime/coordination/coordination_service_agent.cc:281] Coordination agent has successfully connected.
 ```
 
-次に、スレーブノードで起動したコンテナー上のrootユーザで、以下のコマンドを実行しTF_CONFIG環境変数を設定・確認します。ここで、"worker"セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
+次に、スレーブノードで起動したコンテナ上のrootユーザで、以下のコマンドを実行しTF_CONFIG環境変数を設定・確認します。ここで、"worker"セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
 > export TF_CONFIG="{\"cluster\": {\"worker\": [\"inst-d5ige-comp:12345\", \"inst-swgen-comp:23456\"]}, \"task\": {\"type\": \"worker\", \"index\": 1}}"
@@ -1096,7 +1040,7 @@ multi_worker_model.fit(multi_worker_dataset, epochs=3, steps_per_epoch=70)
 {"cluster": {"worker": ["inst-d5ige-comp:12345", "inst-swgen-comp:23456"]}, "task": {"type": "worker", "index": 1}}
 ```
 
-次に、スレーブノードで起動したコンテナー上のrootユーザで、以下のコマンドを実行します。これにより、待機していたマスターノードのワーカーとスレーブノードのワーカーが処理を開始、MultiWorkerMirroredStrategyサンプルプログラムが全16枚のGPUを使用してプログラムを実行します。
+次に、スレーブノードで起動したコンテナ上のrootユーザで、以下のコマンドを実行します。これにより、待機していたマスターノードのワーカーとスレーブノードのワーカーが処理を開始、MultiWorkerMirroredStrategyサンプルプログラムが全16枚のGPUを使用してプログラムを実行します。
 
 ```sh
 > python mnist.py
@@ -1121,7 +1065,7 @@ Epoch 2/3
 Epoch 3/3
 70/70 [==============================] - 2s 28ms/step - loss: 2.1268 - accuracy: 0.5488
 ```
-
+***
 # 5. GPUクラスタの削除
 
 本章は、クラスタ・ネットワークを終了することで、作成したクラスタ・ネットワークとGPUノードを削除します。
@@ -1132,4 +1076,4 @@ Epoch 3/3
 
 クラスタ・ネットワークの **状態** が **終了済** となれば、削除が完了しています。
 
-これで、このチュートリアルは終了です。
+以上で、本チュートリアルは終了です。
