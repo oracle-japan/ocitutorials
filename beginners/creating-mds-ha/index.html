@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-03-09T09:06:46+09:00">
+  <meta property="article:published_time" content="2023-03-09T11:12:33+09:00">
 
 
 
@@ -285,7 +285,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その11 - クラウドでMySQL Databaseを高可用性構成で使う">
     <meta itemprop="description" content="MySQL Database Serviceでは、高可用性構成も簡単に構築できます。実際に構築して、スイッチオーバーを発生させ、プライマリサーバーの切り替えを試してみましょう。">
-    <meta itemprop="datePublished" content="2023-03-09T09:06:46+09:00">
+    <meta itemprop="datePublished" content="2023-03-09T11:12:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -296,7 +296,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-はじめに">1. はじめに</a></li><li><a href="#2-高可用性構成を有効化したmdsの作成">2. 高可用性構成を有効化したMDSの作成</a></li><li><a href="#3-セキュリティリストの修正イングレスルールの追加">3. セキュリティリストの修正(イングレス・ルールの追加)</a></li><li><a href="#4-mysqlクライアントのインストール">4. MySQLクライアントのインストール</a></li><li><a href="#5-作成したmdsで高可用性が実現できることを確認">5. 作成したMDSで高可用性が実現できることを確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1-はじめに">1. はじめに</a></li><li><a href="#2-高可用性構成を有効化したmdsの作成">2. 高可用性構成を有効化したMDSの作成</a></li><li><a href="#3-セキュリティリストの修正イングレスルールの追加">3. セキュリティリストの修正(イングレス・ルールの追加)</a></li><li><a href="#4-mysqlクライアントmysql-shellのインストール">4. MySQLクライアント、MySQL Shellのインストール</a></li><li><a href="#5-作成したmdsで高可用性が実現できることを確認">5. 作成したMDSで高可用性が実現できることを確認</a></li></ul>
 
             </nav>
           </aside>
@@ -327,7 +327,7 @@
   <li><a href="#anchor1">1. はじめに</a></li>
   <li><a href="#anchor2">2. 高可用性構成を有効化したMDSの作成</a></li>
   <li><a href="#anchor3">3. セキュリティリストの修正(イングレス・ルールの追加)</a></li>
-  <li><a href="#anchor4">4. MySQLクライアントのインストール</a></li>
+  <li><a href="#anchor4">4. MySQLクライアント、MySQL Shellのインストール</a></li>
   <li><a href="#anchor5">5. 作成したMDSで高可用性が実現できることを確認</a>
 <br /></li>
 </ul>
@@ -362,7 +362,7 @@
     <p>立ち上がった <strong>DBシステムの作成</strong> ウィンドウで「Development or testing(開発もしくはテスト)」を選択した後で、以下の項目を入力します。</p>
 
     <ul>
-      <li><strong>名前</strong> - 任意の名前を入力します。ここでは「TestMDSHA」と入力しています。</li>
+      <li><strong>名前</strong> - 任意の名前を入力します。ここでは「TestHA」と入力しています。</li>
       <li><strong>説明</strong> - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)</li>
       <li><strong>「スタンドアロン」、「高可用性」、「HeatWave」</strong> - MDSを高可用性構成で構成するため、「高可用性」を選択します。「高可用性」を選択した場合、グループ・レプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。</li>
     </ul>
@@ -385,7 +385,7 @@
     <p><br /></p>
 
     <ul>
-      <li><strong>ホスト名</strong> - 任意の名前を入力します。ここでは「TestMDSHA」と入力しています。<br />※ページ下部にある「拡張オプションの表示」をクリック後、「ネットワーキング」タブをクリックして入力欄を表示します。</li>
+      <li><strong>ホスト名</strong> - 任意の名前を入力します。ここでは「TestHA」と入力しています。<br />※ページ下部にある「拡張オプションの表示」をクリック後、「ネットワーキング」タブをクリックして入力欄を表示します。</li>
     </ul>
 
     <div align="center">
@@ -471,16 +471,16 @@
 
 <p><a id="anchor4"></a></p>
 
-<h1 id="4-mysqlクライアントのインストール">4. MySQLクライアントのインストール</h1>
+<h1 id="4-mysqlクライアントmysql-shellのインストール">4. MySQLクライアント、MySQL Shellのインストール</h1>
 
-<p>コンピュート・インスタンスにMySQLクライアントをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。
+<p>コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。
 <br /></p>
 
 <ol>
   <li>
     <p><a href="https://community.oracle.com/tech/welcome/discussion/4474256/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo yum install https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm
 </code></pre></div>    </div>
     <p><br /></p>
   </li>
@@ -498,6 +498,13 @@
 </code></pre></div>    </div>
     <p><br /></p>
   </li>
+  <li>
+    <p>以下コマンドを実行し、MySQL Shellをインストールします。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install mysql-shell
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
 </ol>
 
 <p><a id="anchor5"></a></p>
@@ -509,10 +516,15 @@
 
 <ol>
   <li>
-    <p>mysqlコマンドラインクライアントを使ってMDSへ接続します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br />
+    <p>mysqlコマンドラインクライアントを使ってMDSへ接続します。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br />
 (“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ mysql -u root -p -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com
+    <p>実行コマンド例(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql -u root -p -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ mysql -u root -p -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com
  Enter password: 
  Welcome to the MySQL monitor.  Commands end with ; or \g.
  Your MySQL connection id is 38
@@ -531,6 +543,12 @@
   <li>
     <p>performance_schema.replication_group_membersテーブルをSELECTしてグループ・レプリケーションが構成されていることを確認します。3台のMDSでグループ・レプリケーションが構成されているため、結果は3行出力されます。その中で、MEMBER_ROLE列がPRIMARYになっているメンバーが、今プライマリになっているMDSです。この後の確認のために、プライマリのMDSのMEMBER_HOSTをメモしておきます。この例では、”battlz9jzxwb28dg”をメモしておきます。</p>
 
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT MEMBER_ID, MEMBER_HOST, MEMBER_STATE, MEMBER_ROLE
+   FROM performance_schema.replication_group_members;
+</code></pre></div>    </div>
+
+    <p>実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT MEMBER_ID, MEMBER_HOST, MEMBER_STATE, MEMBER_ROLE
      -&gt;   FROM performance_schema.replication_group_members;
  +--------------------------------------+------------------+--------------+-------------+
@@ -547,6 +565,28 @@
   <li>
     <p>スイッチオーバー時の動作を確認するためのテストテーブルを作成します。そのテーブルに、現在プライマリであるMEMBER_HOSTの情報と現在の時刻をINSERTし、INSERTしたデータをSELECTして確認します。その後、mysqlコマンドラインクライアントを終了します。</p>
 
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE DATABASE test;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE TABLE test.test(
+   id int AUTO_INCREMENT,
+   PRI_MEMBER_HOST CHAR(20),
+   INSERT_TIME time,
+   PRIMARY KEY(id)
+   );
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME)
+   SELECT MEMBER_HOST, CURTIME()
+   FROM performance_schema.replication_group_members
+   WHERE MEMBER_ROLE='PRIMARY';
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM test.test;
+</code></pre></div>    </div>
+
+    <p>実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; CREATE DATABASE test;
  Query OK, 1 row affected (0.01 sec)
 
@@ -586,11 +626,15 @@
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> #!/bin/bash
 
  while true; do
-   mysql -u root -pMySQL_8.0 -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com -e "INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME) SELECT MEMBER_HOST, CURTIME() FROM performance_schema.replication_group_members WHERE MEMBER_ROLE='PRIMARY';"
+   mysql -u root -pMySQL_8.0 -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com -e "INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME) SELECT MEMBER_HOST, CURTIME() FROM performance_schema.replication_group_members WHERE MEMBER_ROLE='PRIMARY';"
    sleep 1
  done
 </code></pre></div>    </div>
-    <p><br /></p>
+    <p><br />
+ 実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> chmod 744 ./test.sh
+ ./test.sh
+</code></pre></div>    </div>
 
     <p>test.shの実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ chmod 744 ./test.sh
@@ -628,11 +672,12 @@
   <li>
     <p>「Ctrl+C」を押し、シェルスクリプトtest.shを停止します。その後、MDSに接続します。</p>
 
+    <p>実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql: [Warning] Using a password on the command line interface can be insecure.
  mysql: [Warning] Using a password on the command line interface can be insecure.
  mysql: [Warning] Using a password on the command line interface can be insecure.
  ^C
- [opc@testvm1 ~]$ mysql -u root -p -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com
+ [opc@testvm1 ~]$ mysql -u root -p -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com
  Enter password: 
  Welcome to the MySQL monitor.  Commands end with ; or \g.
  Your MySQL connection id is 237
@@ -653,6 +698,17 @@
   <li>
     <p>以下のSQLを実行し、スイッチオーバー時にMDSが使用できなかった時間を確認します。”PRI_MEMBER_HOST=’battlz9jzxwb28dg’“部分は、事前にメモした旧プライマリのMDSのMEMBER_HOSTの値に置き換えて実行して下さい。この例の場合INSERT_TIMEの差分が3秒であるため、スイッチオーバー時にMDSが使用できなかった時間は約2秒であることが分かります。障害発生時に発生するフェイルオーバーの方が、通常状態でプライマリサーバーを切り替えるスイッチオーバーよりも所要時間が長くなる可能性がありますが、プライマリサーバーの切り替え自体はこのように短時間で実現可能です。</p>
 
+    <p>実行コマンド例(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT *
+   FROM test.test
+   WHERE id IN (
+     (SELECT MAX(id) FROM test.test WHERE PRI_MEMBER_HOST='battlz9jzxwb28dg'),
+     (SELECT MAX(id) FROM test.test WHERE PRI_MEMBER_HOST='battlz9jzxwb28dg')+1
+     )
+   ORDER BY 1 ASC;
+</code></pre></div>    </div>
+
+    <p>実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT *
      -&gt;   FROM test.test
      -&gt;   WHERE id IN ((SELECT MAX(id) FROM test.test WHERE PRI_MEMBER_HOST='battlz9jzxwb28dg'),
@@ -672,7 +728,7 @@
 
 <p>これで、この章の作業は終了です。</p>
 
-<p>この章では、<strong>TestMDSHA</strong> というHA構成のMySQL Database Serviceを作成し、スイッチオーバーによるDB停止時間を確認しました。MDSのHA構成はグループ・レプリケーションにより構成されていますが、グループ・レプリケーションでは障害発生時のデータロスが発生しないアーキテクチャーになっています。また、障害発生時にも自動的にフェイルオーバーが発生するため、ダウンタイムも最小限に抑えられます。高可用性が求められるシステムを構築する際は、HA構成のMDSを使って下さい。</p>
+<p>この章では、<strong>TestHA</strong> というHA構成のMySQL Database Serviceを作成し、スイッチオーバーによるDB停止時間を確認しました。MDSのHA構成はグループ・レプリケーションにより構成されていますが、グループ・レプリケーションでは障害発生時のデータロスが発生しないアーキテクチャーになっています。また、障害発生時にも自動的にフェイルオーバーが発生するため、ダウンタイムも最小限に抑えられます。高可用性が求められるシステムを構築する際は、HA構成のMDSを使って下さい。</p>
 
 <p>なお、本チュートリアル作成時点(2023年2月時点)でドキュメントで案内されているRTO、RPOは以下の通りです。
 (最新の情報は<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/recovery-time-objective-rto-and-recovery-point-objective-rpo.html#GUID-97A388ED-34B8-4EAF-941E-02DB8A6E8ADF">こちら</a>から確認して下さい)</p>
@@ -700,7 +756,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T09:06:46+09:00">March 9, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T11:12:33+09:00">March 9, 2023</time></p>
 
 
       </footer>

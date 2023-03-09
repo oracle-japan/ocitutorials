@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-03-09T09:06:46+09:00">
+  <meta property="article:published_time" content="2023-03-09T11:12:33+09:00">
 
 
 
@@ -285,7 +285,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その13 - MySQL Database Serviceでレプリケーションを使用する">
     <meta itemprop="description" content="MySQL Database ServiceではMySQLのレプリケーション機能も使用できます。レプリケーション(チャネル)フィルターを活用することでAmazon RDSなど他社製のMySQLマネージドサービスからレプリケーションすることもできます。レプリケーションの構成方法を確認してみましょう！">
-    <meta itemprop="datePublished" content="2023-03-09T09:06:46+09:00">
+    <meta itemprop="datePublished" content="2023-03-09T11:12:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -296,7 +296,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-レプリケーションとは">1. レプリケーションとは?</a></li><li><a href="#2-mdsの作成ソース用のmdsレプリカ用のmds">2. MDSの作成(ソース用のMDS、レプリカ用のMDS)</a></li><li><a href="#3-レプリケーション用ユーザーの作成ソース用のmdsレプリカ用のmds">3. レプリケーション用ユーザーの作成(ソース用のMDS、レプリカ用のMDS)</a></li><li><a href="#4-ソース用mdsのデータをダンプしレプリカ用mdsへインポート">4. ソース用MDSのデータをダンプし、レプリカ用MDSへインポート</a></li><li><a href="#5-レプリケーションチャンネルの設定">5. レプリケーションチャンネルの設定</a></li><li><a href="#6-レプリケーションの動作確認">6. レプリケーションの動作確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1-レプリケーションとは">1. レプリケーションとは?</a></li><li><a href="#2-mdsの作成ソース用のmdsレプリカ用のmds">2. MDSの作成(ソース用のMDS、レプリカ用のMDS)</a></li><li><a href="#3-レプリケーション用ユーザーの作成ソース用のmdsレプリカ用のmds">3. レプリケーション用ユーザーの作成(ソース用のMDS、レプリカ用のMDS)</a></li><li><a href="#4-ソース用mdsのデータをダンプしレプリカ用mdsへインポート">4. ソース用MDSのデータをダンプし、レプリカ用MDSへインポート</a></li><li><a href="#5-レプリケーションチャンネルの設定">5. レプリケーションチャンネルの設定</a></li><li><a href="#6-レプリケーションの動作確認">6. レプリケーションの動作確認</a></li><li><a href="#7-レプリケーションフィルターチャネルフィルターの設定">7. レプリケーションフィルター(チャネルフィルター)の設定</a></li><li><a href="#8-レプリケーションフィルターチャネルフィルターの動作確認">8. レプリケーションフィルター(チャネルフィルター)の動作確認</a></li></ul>
 
             </nav>
           </aside>
@@ -323,9 +323,13 @@
 
 <ul>
   <li><a href="#anchor1">1. レプリケーションとは?</a></li>
-  <li><a href="#anchor2">2. MDSの作成(ソースとなるMDS)</a></li>
-  <li><a href="#anchor3">3. リードレプリカの作成</a></li>
-  <li><a href="#anchor4">4. リードレプリカの確認</a>
+  <li><a href="#anchor2">2. MDSの作成(ソース用のMDS、レプリカ用のMDS)</a></li>
+  <li><a href="#anchor3">3. レプリケーション用ユーザーの作成(ソース用のMDS、レプリカ用のMDS)</a></li>
+  <li><a href="#anchor4">4. ソース用MDSのデータをダンプし、レプリカ用MDSへインポート</a></li>
+  <li><a href="#anchor5">5. レプリケーションチャンネルの設定</a></li>
+  <li><a href="#anchor6">6. レプリケーションの動作確認</a></li>
+  <li><a href="#anchor7">7. レプリケーションフィルター(チャネルフィルター)の設定＆動作確認</a></li>
+  <li><a href="#anchor8">8. レプリケーションフィルター(チャネルフィルター)の動作確認</a>
 <br /></li>
 </ul>
 
@@ -356,7 +360,7 @@
 
 <ol>
   <li>
-    <p>ソース用のMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の手順に従って「Source」という名前でソース用のMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、world_xデータベースも作成しておきます。</p>
+    <p>ソース用のMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の手順に従って「Source」という名前でソース用のMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、worldデータベース、world_xデータベースも作成しておきます。</p>
   </li>
   <li>
     <p>レプリカ用のMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の「2. MDSの作成」の手順に従って「Replica」という名前でレプリカ用のMDSを作成します。
@@ -366,11 +370,20 @@
 
 <p><br /></p>
 
+<p><a id="anchor3"></a></p>
+
 <h1 id="3-レプリケーション用ユーザーの作成ソース用のmdsレプリカ用のmds">3. レプリケーション用ユーザーの作成(ソース用のMDS、レプリカ用のMDS)</h1>
 
 <ol>
   <li>
     <p>レプリケーション用のユーザーを作成し、REPLICATION SLAVE権限を付与します。以下の操作は、ソース用のMDS、レプリカ用のMDSの両方で実行します。</p>
+
+    <p>実行コマンド例(コピー＆ペースト用：Source 及び Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE USER 'rpl'@'%' IDENTIFIED BY 'MySQL_8.0' REQUIRE SSL;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> GRANT REPLICATION SLAVE on *.* to 'rpl'@'%';
+</code></pre></div>    </div>
 
     <p>実行例 (Source 及び Replica で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; CREATE USER 'rpl'@'%' IDENTIFIED BY 'MySQL_8.0' REQUIRE SSL;
@@ -383,6 +396,8 @@
   </li>
 </ol>
 
+<p><a id="anchor4"></a></p>
+
 <h1 id="4-ソース用mdsのデータをダンプしレプリカ用mdsへインポート">4. ソース用MDSのデータをダンプし、レプリカ用MDSへインポート</h1>
 
 <p>レプリケーションを構成する前に、ソース用のDBとレプリカ用のDBを同じ状態にします。このチュートリアルでは、ソース用DBのデータを<a href="https://dev.mysql.com/doc/mysql-shell/8.0/ja/mysql-shell-utilities-dump-instance-schema.html">MySQL Shellのデータダンプユーリティティ</a>を使用してダンプし、それをレプリカ用DBにインポートします。</p>
@@ -391,7 +406,14 @@
   <li>
     <p>ソース用のMDSにMySQL Shellを使用して接続し、インスタンスダンプユーリティティを使用してデータをダンプします。MDSにデータをインポートするためには、MDSとの互換性を確保したダンプファイルを取得する必要があるため、ocimdsオプションをtrueにしてデータをダンプします。また、dryRunオプションをtrueにすることでダンプは取得せずにMDSとの互換性チェックの結果を表示できるため、まずはこれらのオプションをtrueにしてインスタンスダンプユーティリティを実行します。</p>
 
-    <p>実行例：MySQL Shellを使ってソースのMDSに接続 (Source で実行)</p>
+    <p>実行コマンド例(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysqlsh -u root -p -h Source.sub01311142371.tutorialvcn.oraclevcn.com
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> util.dumpInstance("/home/opc/mds", {dryRun: true, ocimds: true})
+</code></pre></div>    </div>
+
+    <p>実行例：MySQL Shellを使ってソースのMDSに接続</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ mysqlsh -u root -p -h Source.sub01311142371.tutorialvcn.oraclevcn.com
  MySQL Shell 8.0.32
 
@@ -413,7 +435,7 @@
  Acquiring global read lock
  Global read lock acquired
  Initializing - done 
- 1 out of 5 schemas will be dumped and within them 4 tables, 0 views.
+ 2 out of 6 schemas will be dumped and within them 7 tables, 0 views.
  5 out of 8 users will be dumped.
  Gathering information - done 
  All transactions have been started
@@ -424,6 +446,7 @@
  ERROR: User 'ociadmin'@'127.0.0.1' is granted restricted privileges: AUDIT_ABORT_EXEMPT, AUDIT_ADMIN, AUTHENTICATION_POLICY_ADMIN, BACKUP_ADMIN, BINLOG_ADMIN, BINLOG_ENCRYPTION_ADMIN, CLONE_ADMIN, CREATE TABLESPACE, ENCRYPTION_KEY_ADMIN, FILE, FIREWALL_EXEMPT, FLUSH_OPTIMIZER_COSTS, FLUSH_STATUS, FLUSH_TABLES, FLUSH_USER_RESOURCES, GROUP_REPLICATION_ADMIN, GROUP_REPLICATION_STREAM, INNODB_REDO_LOG_ARCHIVE, INNODB_REDO_LOG_ENABLE, PASSWORDLESS_USER_ADMIN, PERSIST_RO_VARIABLES_ADMIN, PROXY, RELOAD, REPLICATION_SLAVE_ADMIN, ROLE_ADMIN, SENSITIVE_VARIABLES_OBSERVER, SERVICE_CONNECTION_ADMIN, SESSION_VARIABLES_ADMIN, SET_USER_ID, SHOW_ROUTINE, SHUTDOWN, SUPER, SYSTEM_USER, SYSTEM_VARIABLES_ADMIN, TABLE_ENCRYPTION_ADMIN (fix this with 'strip_restricted_grants' compatibility option)
  ERROR: User 'ocirpl'@'%' is granted restricted privileges: SERVICE_CONNECTION_ADMIN, SYSTEM_USER (fix this with 'strip_restricted_grants' compatibility option)
  ERROR: User 'root'@'%' is granted restricted privileges: BACKUP_ADMIN, FLUSH_OPTIMIZER_COSTS, FLUSH_STATUS, FLUSH_TABLES, FLUSH_USER_RESOURCES, PROXY, ROLE_ADMIN (fix this with 'strip_restricted_grants' compatibility option)
+ NOTE: Database `world` had unsupported ENCRYPTION option commented out
  NOTE: Database `world_x` had unsupported ENCRYPTION option commented out
  Compatibility issues with MySQL Database Service 8.0.32 were found. Please use the 'compatibility' option to apply compatibility adaptations to the dumped DDL.
  Validating MDS compatibility - done       
@@ -436,12 +459,17 @@
   <li>
     <p>先ほど実行したコマンドにcompatibilityオプションを追加し、’strip_restricted_grants’を指定します。また、dryRunオプションをfalseにして実行します。</p>
 
+    <p>実行コマンド(コピー＆ペースト用：Source で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> util.dumpInstance("/home/opc/mds", {ocimds: true, compatibility: ["strip_restricted_grants"]})
+ \quit
+</code></pre></div>    </div>
+
     <p>実行例 (Source で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS &gt; util.dumpInstance("/home/opc/mds", {ocimds: true, compatibility: ["strip_restricted_grants"]})
  Acquiring global read lock
  Global read lock acquired
  Initializing - done 
- 1 out of 5 schemas will be dumped and within them 4 tables, 0 views.
+ 2 out of 6 schemas will be dumped and within them 7 tables, 0 views.
  5 out of 8 users will be dumped.
  Gathering information - done 
  All transactions have been started
@@ -453,6 +481,7 @@
  NOTE: User 'ocirpl'@'%' had restricted privileges (SERVICE_CONNECTION_ADMIN, SYSTEM_USER) removed
  NOTE: User 'root'@'%' had restricted privileges (BACKUP_ADMIN, FLUSH_OPTIMIZER_COSTS, FLUSH_STATUS, FLUSH_TABLES, FLUSH_USER_RESOURCES, PROXY, ROLE_ADMIN) removed
  NOTE: Database `world_x` had unsupported ENCRYPTION option commented out
+ NOTE: Database `world` had unsupported ENCRYPTION option commented out
  Compatibility issues with MySQL Database Service 8.0.32 were found and repaired. Please review the changes made before loading them.
  Validating MDS compatibility - done       
  Writing global DDL files
@@ -463,38 +492,54 @@
  Writing DDL - done       
  Writing table metadata - done       
  Starting data dump
- 101% (5.54K rows / ~5.43K rows), 0.00 rows/s, 0.00 B/s uncompressed, 0.00 B/s compressed
- Dump duration: 00:00:00s                                                                
- Total duration: 00:00:00s                                                               
- Schemas dumped: 1                                                                       
- Tables dumped: 4                                                                        
- Uncompressed data size: 319.60 KB                                                       
- Compressed data size: 97.10 KB                                                          
- Compression ratio: 3.3                                                                  
- Rows written: 5541                                                                      
- Bytes written: 97.10 KB                                                                 
- Average uncompressed throughput: 319.60 KB/s                                            
- Average compressed throughput: 97.10 KB/s
+ 100% (10.84K rows / ~10.80K rows), 0.00 rows/s, 0.00 B/s uncompressed, 0.00 B/s compressed
+ Dump duration: 00:00:00s                                                                  
+ Total duration: 00:00:00s                                                                 
+ Schemas dumped: 2                                                                         
+ Tables dumped: 7                                                                          
+ Uncompressed data size: 514.22 KB                                                         
+ Compressed data size: 188.81 KB                                                           
+ Compression ratio: 2.7                                                                    
+ Rows written: 10843                                                                       
+ Bytes written: 188.81 KB                                                                  
+ Average uncompressed throughput: 514.22 KB/s                                              
+ Average compressed throughput: 188.81 KB/s
+  JS &gt;  \quit
+ Bye!
 </code></pre></div>    </div>
     <p><br /></p>
   </li>
   <li>
     <p>“/home/opc/mds”配下にダンプされたファイルが出力されていることを確認後、ダンプロードユーティリティをレプリカサーバーで実行するために、MySQL Shellを使ってレプリカサーバーに接続します。</p>
 
+    <p>実行コマンド例(コピー＆ペースト用：TestVM1 で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ls mds
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysqlsh -u root -p -h Replica.sub01311142371.tutorialvcn.oraclevcn.com
+</code></pre></div>    </div>
+
     <p>実行例 (TestVM1 で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ ls mds
- @.done.json                     world_x@countryinfo@@0.tsv.zst.idx
- @.json                          world_x@countryinfo.json
- @.post.sql                      world_x@countryinfo.sql
- @.sql                           world_x@country.json
- @.users.sql                     world_x@countrylanguage@@0.tsv.zst
- world_x@city@@0.tsv.zst         world_x@countrylanguage@@0.tsv.zst.idx
- world_x@city@@0.tsv.zst.idx     world_x@countrylanguage.json
- world_x@city.json               world_x@countrylanguage.sql
- world_x@city.sql                world_x@country.sql
- world_x@country@@0.tsv.zst      world_x.json
- world_x@country@@0.tsv.zst.idx  world_x.sql
- world_x@countryinfo@@0.tsv.zst
+ @.done.json                           world_x@city@@0.tsv.zst
+ @.json                                world_x@city@@0.tsv.zst.idx
+ @.post.sql                            world_x@city.json
+ @.sql                                 world_x@city.sql
+ @.users.sql                           world_x@country@@0.tsv.zst
+ world@city@@0.tsv.zst                 world_x@country@@0.tsv.zst.idx
+ world@city@@0.tsv.zst.idx             world_x@countryinfo@@0.tsv.zst
+ world@city.json                       world_x@countryinfo@@0.tsv.zst.idx
+ world@city.sql                        world_x@countryinfo.json
+ world@country@@0.tsv.zst              world_x@countryinfo.sql
+ world@country@@0.tsv.zst.idx          world_x@country.json
+ world@country.json                    world_x@countrylanguage@@0.tsv.zst
+ world@countrylanguage@@0.tsv.zst      world_x@countrylanguage@@0.tsv.zst.idx
+ world@countrylanguage@@0.tsv.zst.idx  world_x@countrylanguage.json
+ world@countrylanguage.json            world_x@countrylanguage.sql
+ world@countrylanguage.sql             world_x@country.sql
+ world@country.sql                     world_x.json
+ world.json                            world_x.sql
+ world.sql
  [opc@testvm1 ~]$ mysqlsh -u root -p -h Replica.sub01311142371.tutorialvcn.oraclevcn.com
  MySQL Shell 8.0.32
 
@@ -515,6 +560,10 @@
   <li>
     <p>ダンプロードユーティリティを使って、レプリカサーバーにデータをインポートします。今回の手順ではユーザー情報はインポートする必要がないため、loadUsersオプションはfalseに設定して実行します。また、ダンプ取得時のソースサーバーのGTIDをレプリカサーバーに設定するためにupdateGtidSetオプションを”append”にして実行します。</p>
 
+    <p>実行コマンド(コピー＆ペースト用：Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> util.loadDump("/home/opc/mds", {loadUsers: false, updateGtidSet: "append"});
+</code></pre></div>    </div>
+
     <p>実行例 (Replica で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS &gt; util.loadDump("/home/opc/mds", {loadUsers: false, updateGtidSet: "append"});
  Loading DDL and Data from '/home/opc/mds' using 4 threads.
@@ -528,15 +577,34 @@
  Starting data load
  Executing common postamble SQL                       
  Appending dumped gtid set to GTID_PURGED             
- 100% (319.60 KB / 319.60 KB), 0.00 B/s, 4 / 4 tables done
+ 100% (514.22 KB / 514.22 KB), 0.00 B/s, 7 / 7 tables done             
  Recreating indexes - done 
- 4 chunks (5.54K rows, 319.60 KB) for 4 tables in 1 schemas were loaded in 0 sec (avg throughput 319.60 KB/s)
+ 7 chunks (10.84K rows, 514.22 KB) for 7 tables in 2 schemas were loaded in 0 sec (avg throughput 514.22 KB/s)
  0 warnings were reported during the load.
 </code></pre></div>    </div>
     <p><br /></p>
   </li>
   <li>
     <p>MySQL ShellをSQLモードに変更し、レプリカサーバーにデータがインポートされたことを確認します。</p>
+
+    <p>実行コマンド(コピー＆ペースト用：Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> \sql
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW DATABASES;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> USE world;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW TABLES;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> USE world_x;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW TABLES;
+</code></pre></div>    </div>
 
     <p>実行例 (Replica で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  JS &gt; \sql
@@ -550,13 +618,26 @@
  | mysql              |
  | performance_schema |
  | sys                |
+ | world              |
  | world_x            |
  +--------------------+
- 5 rows in set (0.0010 sec)
+ 6 rows in set (0.0010 sec)
+  SQL &gt;  USE world;
+ Default schema set to `world`.
+ Fetching global names, object names from `world` for auto-completion... Press ^C to stop.
+  world  SQL &gt;  SHOW TABLES;
+ +-----------------+
+ | Tables_in_world |
+ +-----------------+
+ | city            |
+ | country         |
+ | countrylanguage |
+ +-----------------+
+ 3 rows in set (0.0018 sec)
   SQL &gt; USE world_x;
  Default schema set to `world_x`.
  Fetching global names, object names from `world_x` for auto-completion... Press ^C to stop.
- MySQL  Replica.sub01311142371.tutorialvcn.oraclevcn.com:3306 ssl  world_x  SQL &gt; SHOW TABLES;
+  world_x  SQL &gt; SHOW TABLES;
  +-------------------+
  | Tables_in_world_x |
  +-------------------+
@@ -571,6 +652,8 @@
   </li>
 </ol>
 
+<p><a id="anchor5"></a></p>
+
 <h1 id="5-レプリケーションチャンネルの設定">5. レプリケーションチャンネルの設定</h1>
 
 <ol>
@@ -578,7 +661,7 @@
     <p>コンソールからレプリカ用のMDS(Replica)の詳細にアクセス後、左下の<strong>チャネル</strong>をクリックします。その後、<strong>チャネルの作成</strong>をクリックします。</p>
 
     <div align="center">
- <img width="300" alt="img1.png" src="img1.png" style="border: 1px black solid;" />
+ <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
 
@@ -627,6 +710,8 @@
   </li>
 </ol>
 
+<p><a id="anchor6"></a></p>
+
 <h1 id="6-レプリケーションの動作確認">6. レプリケーションの動作確認</h1>
 <p>ソース用のMDSで更新処理を実行し、レプリカ用のMDSに反映されることを確認します。</p>
 
@@ -634,17 +719,44 @@
   <li>
     <p>ソース用のMDSにmysqlコマンドラインクライアントを使用して接続し、testデータベース、test.testテーブルを作成し、データをINSERTします。その後、レプリカ用のMDSでtest.testテーブルが存在することを確認し、INSERTされたデータがSELECTできることを確認します。以下の実行例ではそれぞれのMDSでの操作をまとめて掲載していますが、コンソールを2つ開いてそれぞれSourceとReplicaに接続し、1ステップずつ実行することで、各ステップ毎にリードレプリカに処理内容がレプリケーションされていることが確認できます。</p>
 
-    <p>実行例 (Sourceで実行)</p>
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; CREATE DATABASE test;
+    <p>実行コマンド(コピー＆ペースト用：Source で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE DATABASE rpl;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE TABLE rpl.test(id int AUTO_INCREMENT, col1 CHAR(10), PRIMARY KEY(id));
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> INSERT INTO rpl.test VALUES(1, "TEST");
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM rpl.test;
+</code></pre></div>    </div>
+
+    <p>実行コマンド(コピー＆ペースト用：Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW DATABASES;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> USE rpl;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW TABLES;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM rpl.test;
+</code></pre></div>    </div>
+    <p><br /></p>
+
+    <p>実行例 (Source で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; CREATE DATABASE rpl;
  Query OK, 1 row affected (0.01 sec)
 
- mysql&gt; CREATE TABLE test.test(id int AUTO_INCREMENT, col1 CHAR(10), PRIMARY KEY(id));
+ mysql&gt; CREATE TABLE rpl.test(id int AUTO_INCREMENT, col1 CHAR(10), PRIMARY KEY(id));
  Query OK, 0 rows affected (0.00 sec)
 
- mysql&gt; INSERT INTO test.test VALUES(1, "TEST");
+ mysql&gt; INSERT INTO rpl.test VALUES(1, "TEST");
  Query OK, 1 row affected (0.00 sec)
 
- mysql&gt; SELECT * FROM test.test;
+ mysql&gt; SELECT * FROM rpl.test;
  +----+------+
  | id | col1 |
  +----+------+
@@ -652,9 +764,8 @@
  +----+------+
  1 row in set (0.00 sec)
 </code></pre></div>    </div>
-    <p><br /></p>
 
-    <p>実行例 (Replicaで実行)</p>
+    <p>実行例 (Replica で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW DATABASES;
  +--------------------+
  | Database           |
@@ -663,12 +774,13 @@
  | mysql              |
  | performance_schema |
  | sys                |
- | test               |
+ | rpl                |
+ | world              |
  | world_x            |
  +--------------------+
- 6 rows in set (0.00 sec)
+ 7 rows in set (0.00 sec)
 
- mysql&gt; USE test;
+ mysql&gt; USE rpl;
  Reading table information for completion of table and column names
  You can turn off this feature to get a quicker startup with -A
 
@@ -681,13 +793,188 @@
  +----------------+
  1 row in set (0.00 sec)
 
- mysql&gt; SELECT * FROM test.test;
+ mysql&gt; SELECT * FROM rpl.test;
  +----+------+
  | id | col1 |
  +----+------+
  |  1 | TEST |
  +----+------+
  1 row in set (0.00 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor7"></a></p>
+
+<h1 id="7-レプリケーションフィルターチャネルフィルターの設定">7. レプリケーションフィルター(チャネルフィルター)の設定</h1>
+<p>レプリケーションフィルター(チャネルフィルター)を設定し、特定のデータベース/テーブルのみレプリケーションできることを確認します。まずはレプリケーションフィルターを設定します。</p>
+
+<ol>
+  <li>
+    <p>コンソールからレプリカ用のMDS(Replica)の詳細にアクセス後、左下の<strong>チャネル</strong>をクリックします。その後、<strong>TestChannel</strong>をクリックします。</p>
+
+    <div align="center">
+ <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p><strong>編集</strong>をクリックし、「ターゲットDBシステム」部分の<strong>チャネル・フィルタ・オプションの表示</strong>をクリックします。</p>
+
+    <div align="center">
+ <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>入力欄が表示されていない場合は、<strong>別のフィルタの追加</strong>をクリックします。そして、「タイプ」のプルダウンから<strong>REPLICATE_DO_DATABASE</strong>を選択し、「値」に<strong>world</strong>と入力し、<strong>変更の保存</strong>をクリックします。</p>
+
+    <div align="center">
+ <img width="700" alt="img11.png" src="img11.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>チャネルが「更新中」になり、数分後に「アクティブ」に変わります。</p>
+
+    <div align="center">
+ <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor8"></a></p>
+
+<h1 id="8-レプリケーションフィルターチャネルフィルターの動作確認">8. レプリケーションフィルター(チャネルフィルター)の動作確認</h1>
+<p>上記ステップで設定したレプリケーションフィルター(チャネルフィルター)の動作を確認します。REPLICATE_DO_DATABASEにworldデータベースを指定しているため、worldデータベースに対する更新のみがレプリケーションされることを確認します。</p>
+
+<ol>
+  <li>
+    <p>ソース用のMDS(Source)に接続してrpl.testテーブルを更新し、その更新内容がレプリカ用のMDS(Replica)に伝播されないことを確認します。</p>
+
+    <p>実行コマンド(コピー＆ペースト用：Source で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> UPDATE rpl.test SET col1='FILTER' WHERE id=1;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM rpl.test;
+</code></pre></div>    </div>
+
+    <p>実行コマンド(コピー＆ペースト用：Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM rpl.test;
+</code></pre></div>    </div>
+    <p><br /></p>
+
+    <p>実行例(Source で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; UPDATE rpl.test SET col1='FILTER' WHERE id=1;
+ Query OK, 1 row affected (0.00 sec)
+ Rows matched: 1  Changed: 1  Warnings: 0
+
+ mysql&gt; SELECT * FROM rpl.test;
+ +----+--------+
+ | id | col1   |
+ +----+--------+
+ |  1 | FILTER |
+ +----+--------+
+ 1 row in set (0.00 sec)
+</code></pre></div>    </div>
+
+    <p>実行例(Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT * FROM rpl.test;
+ +----+------+
+ | id | col1 |
+ +----+------+
+ |  1 | TEST |
+ +----+------+
+ 1 row in set (0.00 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>ソース用のMDS(Source)に接続してworld.cityテーブルを更新し、その更新内容がレプリカ用のMDS(Replica)に伝播されることを確認します。</p>
+
+    <p>実行コマンド(コピー＆ペースト用：Source で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM world.city WHERE ID=1538;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> UPDATE world.city SET Population=1506516 WHERE ID=1538;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM world.city WHERE ID=1538;
+</code></pre></div>    </div>
+
+    <p>実行コマンド(コピー＆ペースト用：Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM world.city WHERE ID=1538;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM world.city WHERE ID=1538;
+</code></pre></div>    </div>
+    <p><br /></p>
+
+    <p>実行例(Source で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT * FROM world.city WHERE ID=1538;
+ +------+------+-------------+----------+------------+
+ | ID   | Name | CountryCode | District | Population |
+ +------+------+-------------+----------+------------+
+ | 1538 | Kobe | JPN         | Hyogo    |    1425139 |
+ +------+------+-------------+----------+------------+
+ 1 row in set (0.00 sec)
+
+ mysql&gt; UPDATE world.city SET Population=1506516 WHERE ID=1538;
+ Query OK, 1 row affected (0.00 sec)
+ Rows matched: 1  Changed: 1  Warnings: 0
+
+ mysql&gt; SELECT * FROM world.city WHERE ID=1538;
+ +------+------+-------------+----------+------------+
+ | ID   | Name | CountryCode | District | Population |
+ +------+------+-------------+----------+------------+
+ | 1538 | Kobe | JPN         | Hyogo    |    1506516 |
+ +------+------+-------------+----------+------------+
+ 1 row in set (0.00 sec)
+</code></pre></div>    </div>
+
+    <p>実行例(Replica で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT * FROM world.city WHERE ID=1538;
+ +------+------+-------------+----------+------------+
+ | ID   | Name | CountryCode | District | Population |
+ +------+------+-------------+----------+------------+
+ | 1538 | Kobe | JPN         | Hyogo    |    1425139 |
+ +------+------+-------------+----------+------------+
+ 1 row in set (0.00 sec)
+
+ mysql&gt; SELECT * FROM world.city WHERE ID=1538;
+ +------+------+-------------+----------+------------+
+ | ID   | Name | CountryCode | District | Population |
+ +------+------+-------------+----------+------------+
+ | 1538 | Kobe | JPN         | Hyogo    |    1506516 |
+ +------+------+-------------+----------+------------+
+ 1 row in set (0.00 sec)    
 </code></pre></div>    </div>
     <p><br /></p>
   </li>
@@ -715,7 +1002,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T09:06:46+09:00">March 9, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T11:12:33+09:00">March 9, 2023</time></p>
 
 
       </footer>

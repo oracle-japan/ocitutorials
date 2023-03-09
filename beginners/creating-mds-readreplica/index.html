@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-03-09T09:06:46+09:00">
+  <meta property="article:published_time" content="2023-03-09T11:12:33+09:00">
 
 
 
@@ -285,7 +285,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その12 - MySQL Database Serviceでリードレプリカを構成する">
     <meta itemprop="description" content="MySQL Database Serviceでは参照処理の負荷分散を実現できるリードレプリカも簡単に構成できます。リードレプリカを構成し、動きを確認してみましょう！">
-    <meta itemprop="datePublished" content="2023-03-09T09:06:46+09:00">
+    <meta itemprop="datePublished" content="2023-03-09T11:12:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -296,7 +296,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-リードレプリカとは">1. リードレプリカとは?</a></li><li><a href="#2-mdsの作成ソースとなるmds">2. MDSの作成(ソースとなるMDS)</a></li><li><a href="#3-リードレプリカの作成">3. リードレプリカの作成</a></li><li><a href="#4-リードレプリカの確認">4. リードレプリカの確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1-リードレプリカとは">1. リードレプリカとは?</a></li><li><a href="#2-mdsの作成ソースとなるmds">2. MDSの作成(ソースとなるMDS)</a></li><li><a href="#3-リードレプリカの作成">3. リードレプリカの作成</a></li><li><a href="#4-リードレプリカへの接続確認ロードバランサー経由での接続">4. リードレプリカへの接続確認(ロードバランサー経由での接続)</a></li><li><a href="#5-リードレプリカへの接続確認リードレプリカに直接接続">5. リードレプリカへの接続確認(リードレプリカに直接接続)</a></li><li><a href="#6-リードレプリカの確認">6. リードレプリカの確認</a></li></ul>
 
             </nav>
           </aside>
@@ -325,7 +325,9 @@
   <li><a href="#anchor1">1. リードレプリカとは?</a></li>
   <li><a href="#anchor2">2. MDSの作成(ソースとなるMDS)</a></li>
   <li><a href="#anchor3">3. リードレプリカの作成</a></li>
-  <li><a href="#anchor4">4. リードレプリカの確認</a>
+  <li><a href="#anchor4">4. リードレプリカの確認(ロードバランサー経由での接続)</a></li>
+  <li><a href="#anchor5">5. リードレプリカへの接続確認(リードレプリカに直接接続)</a></li>
+  <li><a href="#anchor6">6. リードレプリカの確認)</a>
 <br /></li>
 </ul>
 
@@ -337,19 +339,22 @@
 
 <p>MDSのリードレプリカは非同期レプリケーションを使って構成されていますので、リードレプリカから参照したデータは最新のデータでは無い可能性があることに注意して下さい。ソースのMDSで更新したデータは随時リードレプリカに伝搬されるため、参照処理をリードレプリカで処理しても問題ないケースが多いです。ただし、必ず最新のデータを参照する必要がある処理についてはソースのMDSから参照する必要があります。</p>
 
-<p>リードレプリカへのアクセスは内部的にロードバランサーを使用して制御されており、ユーザーがリードレプリカにアクセスする際は、リードレプリカ毎に設定されたエンドポイント(プライベートIPアドレス)を使用してアクセスします。ロードバランサーの設定も自動化されているため、ユーザーはロードバランサーの存在や設定を意識する必要はありません。</p>
+<p>リードレプリカへのアクセス方法は、以下2つの方法があります。なお、ロードバランサーの設定は自動化されているため、ユーザーがロードバランサーの存在や設定を意識する必要はありません。</p>
 
-<p>また、リードレプリカに関して、本チュートリアル作成時点(2023年2月時点)で以下の制限事項があります。</p>
+<ol>
+  <li>ロードバランサーを経由してアクセスする。この場合、接続先はリードレプリカ全体でロードバランスされる。<br />(Amazon Auroraのリーダーエンドポイントに相当)<br /></li>
+  <li>リードレプリカ毎に設定されたエンドポイント(プライベートIPアドレス)を使用してアクセスする。この場合、それぞれのリードレプリカに直接接続する。<br />(Amazon Auroraのインスタンスエンドポイントに相当)</li>
+</ol>
 
-<p>　<strong>リードレプリカの制限事項(2023年2月時点)</strong></p>
+<p>また、リードレプリカに関して、本チュートリアル作成時点(2023年3月時点)で以下の制限事項があります。</p>
+
+<p>　<strong>リードレプリカの制限事項(2023年3月時点)</strong></p>
 <ul>
   <li>ソースとなるMDSのOCPUが4OCPU以上必要</li>
   <li>リードレプリカのスペックは、ソースとなるMDSのスペックと同一になる<br />
    (リードレプリカだけスペックを落とす、といったことはまだできない)</li>
   <li>リードレプリカの個数は最大18個まで</li>
-  <li>ロードバランサーからリードレプリカにアクセスするための帯域は最大8Gbps</li>
-  <li>リードレプリカ間のロードバランスはできない<br />
-   (リードレプリカ全体のエンドポイントは存在せず、1つ1つのリードレプリカに設定されたIPアドレスを使ってアクセスする)
+  <li>ロードバランサーからリードレプリカにアクセスするための帯域は最大8Gbps
 <br />
 <br /></li>
 </ul>
@@ -358,7 +363,7 @@
 
 <h1 id="2-mdsの作成ソースとなるmds">2. MDSの作成(ソースとなるMDS)</h1>
 
-<p>ソースとなるMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の手順に従ってソースとなるMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、world_xデータベースも作成しておきます。</p>
+<p>ソースとなるMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の手順に従ってソースとなるMDSを作成します。(その9)と区別するために、MDSの名前は「WriterMDS」にします。また、「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、worldデータベース、world_xデータベースも作成しておきます。</p>
 
 <p>この時、前述の制限事項があるためOCPUが4以上のMDSを作成して下さい。OCPUが4以上のMDSを作成する場合、<strong>ハードウェアの構成</strong>部分の<strong>シェイプの変更</strong>をクリックして、4OCPU以上のシェイプを選択します。以下のスクリーンショットは、CPUの種類がE4、CPU数が4OCPU、メモリーサイズが64GBのシェイプ(MySQL.VM.Standard.E4.4.64GB)を選択した例です。
 <br /></p>
@@ -378,6 +383,11 @@
 </div>
 <p><br /></p>
 
+<div align="center">
+<img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;" />
+</div>
+<p><br /></p>
+
 <p>なお、現在MDSでサポートされているシェイプについては、<a href="https://docs.oracle.com/en-us/iaas/mysql-database/doc/supported-shapes.html">こちら</a>のドキュメントを参照して下さい。
 <br />
 <br /></p>
@@ -391,26 +401,21 @@
 
 <ol>
   <li>
-    <p>先ほど作成したMDSをコンソールから選択し、画面左下の<strong>リソース</strong> → <strong>読取りレプリカ</strong> をクリックします。そして表示された画面から<strong>読取りレプリカの作成</strong>をクリックします。</p>
-
-    <div align="center">
- <img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;" />
- </div>
-    <p><br /></p>
+    <p>先ほど作成したMDS(WriterMDS)をコンソールから選択し、画面左下の<strong>リソース</strong> → <strong>読取りレプリカ</strong> をクリックします。そして表示された画面から<strong>読取りレプリカの作成</strong>をクリックします。</p>
 
     <div align="center">
  <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
-  </li>
-  <li>
-    <p><strong>名前</strong>に「Replica1」と入力し、<strong>読取りレプリカの作成</strong>をクリックします。<strong>Replica1</strong>の状態が<strong>作成中</strong>になり、15分〜20分程度で状態が<strong>アクティブ</strong>に変わります。また、読取りレプリカの<strong>アクティブ</strong>の数が「1」になっていることも確認します。
-(本ステップの待ち時間に、先行して次のステップも実行することでトータルの待ち時間を短縮できます)</p>
 
     <div align="center">
  <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
+  </li>
+  <li>
+    <p><strong>名前</strong>に「ReadReplica1」と入力し、<strong>読取りレプリカの作成</strong>をクリックします。<strong>ReadReplica1</strong>の状態が<strong>作成中</strong>になり、15分〜20分程度で状態が<strong>アクティブ</strong>に変わります。また、読取りレプリカの<strong>アクティブ</strong>の数が「1」になっていることも確認します。
+(本ステップの待ち時間に、先行して次のステップも実行することでトータルの待ち時間を短縮できます)</p>
 
     <div align="center">
  <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;" />
@@ -421,39 +426,180 @@
  <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
-  </li>
-  <li>
-    <p>同様の手順で2つ目のリードレプリカを作成します。名前は「Replica2」で作成します。
-<br />
-<br /></p>
-  </li>
-</ol>
-
-<p><a id="anchor4"></a></p>
-
-<h1 id="4-リードレプリカの確認">4. リードレプリカの確認</h1>
-
-<p>作成したリードレプリカの動作を確認します。
-<br /></p>
-
-<ol>
-  <li>
-    <p>作成した<strong>Replica1</strong>をクリックし、表示された画面の<strong>エンドポイント</strong>よりプライベートIPアドレスを確認します。また、同様に<strong>Replica2</strong>のプライベートIPアドレスを確認します。2つのIPアドレスが異なるため、それぞれのIPアドレスを使用することで、任意のリードレプリカにアクセスできます。</p>
 
     <div align="center">
  <img width="700" alt="img9.png" src="img9.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
+  </li>
+  <li>
+    <p>同様の手順で2つ目のリードレプリカを作成します。名前は「ReadReplica2」で作成します。
+<br />
+<br /></p>
 
     <div align="center">
  <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;" />
  </div>
     <p><br /></p>
   </li>
-  <li>
-    <p>確認した<strong>Replica1</strong>のIPアドレスを使用してリードレプリカに接続後、「SHOW DATABASES」を実行します。world_xデータベースが存在するため、リードレプリカ作成時点の<strong>TestMDS</strong>が複製されていることが分かります。</p>
+</ol>
 
-    <p>実行例 (Replica1で実行)</p>
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-リードレプリカへの接続確認ロードバランサー経由での接続">4. リードレプリカへの接続確認(ロードバランサー経由での接続)</h1>
+
+<p>作成したリードレプリカへロードバランサー経由で接続する方法を確認します。
+<br /></p>
+
+<ol>
+  <li>
+    <p>WriterMDSをコンソールから選択し、画面左下の<strong>リソース</strong> → <strong>エンドポイント</strong> をクリックします。そして表示された画面から<strong>読取りレプリカ・ロード・バランサ</strong>のIPアドレスを確認します。</p>
+
+    <div align="center">
+ <img width="200" alt="img11.png" src="img11.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="800" alt="img12.png" src="img12.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>確認した<strong>読取りレプリカ・ロード・バランサ</strong>のIPアドレスを使用してリードレプリカに接続し、「SHOW GLOBAL VARIABLES LIKE ‘bind_address’」を実行します。システム変数bind_addressの設定値に含まれるIPアドレスより、どちらのリードレプリカに接続しているかを判断できます。以下の実行例では、設定値に「10.0.1.245(ReadReplica1のIPアドレス)」が含まれているため、<strong>ReadReplica1</strong>に接続できていることが確認できます。(<strong>ReadReplica2</strong>に接続される場合もあります)</p>
+
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW GLOBAL VARIABLES LIKE 'bind_address';
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW GLOBAL VARIABLES LIKE 'bind_address';
+ +---------------+-----------------------------------------+
+ | Variable_name | Value                                   |
+ +---------------+-----------------------------------------+
+ | bind_address  | 10.0.1.245/mysql,10.5.96.6/loadbalancer |
+ +---------------+-----------------------------------------+
+ 1 row in set (0.00 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>ロードバランサー経由の接続では、自動的にリードレプリカ間でロードバランスされることを確認します。前ステップの操作を繰り返し実行し、接続先が切り替わることを確認します。以下の実行例では、mysqlコマンドラインクライアントの-eオプションを使用し、MDSへ接続して「SHOW GLOBAL VARIABLES LIKE ‘bind_address’」を実行することを繰り返し実行しています。(コマンドラインに直接パスワードを指定することに対する警告が出力されていますが、ここでは無視して下さい)<br /><br />
+接続によって「10.0.1.245(ReadReplica1のIPアドレス)」と「10.0.1.240(ReadReplica2のIPアドレス)」が切り替わっていることから、ロードバランスされていることが確認できます。</p>
+
+    <p>実行コマンド例(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql -u root -pMySQL_8.0 -h 10.0.1.145 -e "SHOW GLOBAL VARIABLES LIKE 'bind_address'"
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ mysql -u root -pMySQL_8.0 -h 10.0.1.145 -e "SHOW GLOBAL VARIABLES LIKE 'bind_address'"
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ +---------------+-----------------------------------------+
+ | Variable_name | Value                                   |
+ +---------------+-----------------------------------------+
+ | bind_address  | 10.0.1.245/mysql,10.5.96.6/loadbalancer |
+ +---------------+-----------------------------------------+
+ [opc@testvm1 ~]$ mysql -u root -pMySQL_8.0 -h 10.0.1.145 -e "SHOW GLOBAL VARIABLES LIKE 'bind_address'"
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ +---------------+-----------------------------------------+
+ | Variable_name | Value                                   |
+ +---------------+-----------------------------------------+
+ | bind_address  | 10.0.1.245/mysql,10.5.96.6/loadbalancer |
+ +---------------+-----------------------------------------+
+ [opc@testvm1 ~]$ mysql -u root -pMySQL_8.0 -h 10.0.1.145 -e "SHOW GLOBAL VARIABLES LIKE 'bind_address'"
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ +---------------+-------------------------------------------+
+ | Variable_name | Value                                     |
+ +---------------+-------------------------------------------+
+ | bind_address  | 10.0.1.240/mysql,10.5.51.254/loadbalancer |
+ +---------------+-------------------------------------------+
+ [opc@testvm1 ~]$ mysql -u root -pMySQL_8.0 -h 10.0.1.145 -e "SHOW GLOBAL VARIABLES LIKE 'bind_address'"
+ mysql: [Warning] Using a password on the command line interface can be insecure.
+ +---------------+-----------------------------------------+
+ | Variable_name | Value                                   |
+ +---------------+-----------------------------------------+
+ | bind_address  | 10.0.1.245/mysql,10.5.96.6/loadbalancer |
+ +---------------+-----------------------------------------+
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-リードレプリカへの接続確認リードレプリカに直接接続">5. リードレプリカへの接続確認(リードレプリカに直接接続)</h1>
+
+<p>作成したリードレプリカへ直接接続する方法を確認します。
+<br /></p>
+
+<ol>
+  <li>
+    <p>WriterMDSをコンソールから選択し、画面左下の<strong>リソース</strong> → <strong>エンドポイント</strong> をクリックします。そして表示された画面から<strong>ReadReplica1</strong>と<strong>ReadReplica2</strong>のIPアドレスを確認します。2つのIPアドレスが異なるため、それぞれのIPアドレスを使用することで、任意のリードレプリカにアクセスできます。</p>
+
+    <div align="center">
+ <img width="200" alt="img11.png" src="img11.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+
+    <div align="center">
+ <img width="800" alt="img13.png" src="img13.png" style="border: 1px black solid;" />
+ </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>確認した<strong>ReadReplica1</strong>のIPアドレスを使用してリードレプリカに接続後、「SHOW GLOBAL VARIABLES LIKE ‘bind_address’」を実行します。以下の実行例では、システム変数bind_addressの設定値に「10.0.1.245(ReadReplica1のIPアドレス)」が含まれているため、<strong>ReadReplica1</strong>に接続できていることが確認できます。</p>
+
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW GLOBAL VARIABLES LIKE 'bind_address';
+</code></pre></div>    </div>
+
+    <p>実行例 (ReadReplica1で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW GLOBAL VARIABLES LIKE 'bind_address';
+ +---------------+-----------------------------------------+
+ | Variable_name | Value                                   |
+ +---------------+-----------------------------------------+
+ | bind_address  | 10.0.1.245/mysql,10.5.96.6/loadbalancer |
+ +---------------+-----------------------------------------+
+ 1 row in set (0.00 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+  <li>
+    <p>同様に、確認した<strong>ReadReplica2</strong>のIPアドレスを使用してリードレプリカに接続後、「SHOW GLOBAL VARIABLES LIKE ‘bind_address’」を実行します。以下の実行例では、設定値に「10.0.1.240(ReadReplica2のIPアドレス)」が含まれているため、<strong>ReadReplica2</strong>に接続できていることが確認できます。</p>
+
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW GLOBAL VARIABLES LIKE 'bind_address';
+</code></pre></div>    </div>
+
+    <p>実行例 (ReadReplica2で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW GLOBAL VARIABLES LIKE 'bind_address';
+ +---------------+-------------------------------------------+
+ | Variable_name | Value                                     |
+ +---------------+-------------------------------------------+
+ | bind_address  | 10.0.1.240/mysql,10.5.51.254/loadbalancer |
+ +---------------+-------------------------------------------+
+ 1 row in set (0.00 sec)
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="6-リードレプリカの確認">6. リードレプリカの確認</h1>
+
+<p>リードレプリカにはソースのMDSが複製され、その後の更新処理も伝播されることを確認します。また、リードレプリカは参照専用であることも確認します。
+<br /></p>
+
+<ol>
+  <li>
+    <p><strong>ReadReplica1</strong>に接続後、「SHOW DATABASES」を実行します。worldデータベース、world_xデータベースが存在するため、リードレプリカ作成時点の<strong>WriterMDS</strong>が複製されていることが分かります。</p>
+
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW DATABASES;
+</code></pre></div>    </div>
+
+    <p>実行例 (ReadReplica1で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW DATABASES;
  +--------------------+
  | Database           |
@@ -462,26 +608,53 @@
  | mysql              |
  | performance_schema |
  | sys                |
+ | world              |
  | world_x            |
  +--------------------+
- 5 rows in set (0.00 sec)
+ 6 rows in set (0.00 sec)
 </code></pre></div>    </div>
     <p><br /></p>
   </li>
   <li>
-    <p>ソースのMDSで実行した更新処理がリードレプリカに反映されることを確認します。<strong>TESTMDS</strong>でtestデータベース、test.testテーブルを作成し、データをINSERTします。その後、<strong>Replica1</strong>でtest.testテーブルが存在することを確認し、INSERTされたデータがSELECTできることを確認します。以下の実行例ではそれぞれのMDSでの操作をまとめて掲載していますが、コンソールを2つ開いてそれぞれ<strong>TESTMDS</strong>と<strong>Replica1</strong>に接続し、1ステップずつ実行することで、各ステップ毎にリードレプリカに処理内容がレプリケーションされていることが確認できます。</p>
+    <p>ソースのMDSで実行した更新処理がリードレプリカに反映されることを確認します。<strong>WriterMDS</strong>でtestデータベース、test.testテーブルを作成し、データをINSERTします。その後、<strong>ReadReplica1</strong>でtest.testテーブルが存在することを確認し、INSERTされたデータがSELECTできることを確認します。以下の実行例ではそれぞれのMDSでの操作をまとめて掲載していますが、コンソールを2つ開いてそれぞれ<strong>WriterMDS</strong>と<strong>ReadReplica1</strong>に接続し、1ステップずつ実行することで、各ステップ毎にリードレプリカに処理内容がレプリケーションされていることが確認できます。</p>
 
-    <p>実行例 (TESTMDSで実行)</p>
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; CREATE DATABASE test;
+    <p>実行コマンド(コピー＆ペースト用：WriterMDSで実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE DATABASE ReadReplica;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CREATE TABLE ReadReplica.test(id int AUTO_INCREMENT, col1 CHAR(10), PRIMARY KEY(id));
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> INSERT INTO ReadReplica.test VALUES(1, "TEST");
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM ReadReplica.test;
+</code></pre></div>    </div>
+
+    <p>実行コマンド(コピー＆ペースト用：ReadReplica1で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW DATABASES;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> USE ReadReplica;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW TABLES;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT * FROM ReadReplica.test;
+</code></pre></div>    </div>
+
+    <p>実行例 (WriterMDSで実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; CREATE DATABASE ReadReplica;
  Query OK, 1 row affected (0.01 sec)
 
- mysql&gt; CREATE TABLE test.test(id int AUTO_INCREMENT, col1 CHAR(10), PRIMARY KEY(id));
+ mysql&gt; CREATE TABLE ReadReplica.test(id int AUTO_INCREMENT, col1 CHAR(10), PRIMARY KEY(id));
  Query OK, 0 rows affected (0.00 sec)
 
- mysql&gt; INSERT INTO test.test VALUES(1, "TEST");
+ mysql&gt; INSERT INTO ReadReplica.test VALUES(1, "TEST");
  Query OK, 1 row affected (0.00 sec)
 
- mysql&gt; SELECT * FROM test.test;
+ mysql&gt; SELECT * FROM ReadReplica.test;
  +----+------+
  | id | col1 |
  +----+------+
@@ -491,7 +664,7 @@
 </code></pre></div>    </div>
     <p><br /></p>
 
-    <p>実行例 (Replica1で実行)</p>
+    <p>実行例 (ReadReplica1で実行)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW DATABASES;
  +--------------------+
  | Database           |
@@ -500,12 +673,13 @@
  | mysql              |
  | performance_schema |
  | sys                |
- | test               |
+ | ReadReplica        |
+ | world              |
  | world_x            |
  +--------------------+
- 6 rows in set (0.00 sec)
+ 7 rows in set (0.00 sec)
 
- mysql&gt; USE test;
+ mysql&gt; USE ReadReplica;
  Reading table information for completion of table and column names
  You can turn off this feature to get a quicker startup with -A
 
@@ -518,7 +692,7 @@
  +----------------+
  1 row in set (0.00 sec)
 
- mysql&gt; SELECT * FROM test.test;
+ mysql&gt; SELECT * FROM ReadReplica.test;
  +----+------+
  | id | col1 |
  +----+------+
@@ -529,14 +703,21 @@
     <p><br /></p>
   </li>
   <li>
-    <p>リードレプリカが参照専用であることを確認します。<strong>Replica1</strong>でtest.testテーブルにデータをINSERTしようとするとエラーが発生します。また、システム変数「read_only」及び「super_read_only」が「ON」に設定されているため、参照専用になっていることが分かります。<br />
+    <p>リードレプリカが参照専用であることを確認します。<strong>ReadReplica1</strong>でtest.testテーブルにデータをINSERTしようとするとエラーが発生します。また、システム変数「read_only」及び「super_read_only」が「ON」に設定されているため、参照専用になっていることが分かります。<br />
 (read_onlyによりMySQLサーバーを参照専用に設定できますが、read_onlyだけではCONNECTION_ADMIN権限もしくはSUPER権限を持った管理者ユーザーによる更新処理をブロックできません。super_read_onlyはCONNECTION_ADMIN権限もしくはSUPER権限を持った管理者ユーザーによる更新処理もブロックするためにMySQL 5.7で追加されたシステム変数です)</p>
 
+    <p>実行コマンド(コピー＆ペースト用：ReadReplica1で実行)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> INSERT INTO ReadReplica.test VALUES(2, "READ ONLY");
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW GLOBAL VARIABLES LIKE '%read_only';
+</code></pre></div>    </div>
+
     <p>実行例 (Replica1で実行)</p>
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; INSERT INTO test.test VALUES(2, "READ ONLY");
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; INSERT INTO ReadReplica.test VALUES(2, "READ ONLY");
  ERROR 1290 (HY000): The MySQL server is running with the --super-read-only option so it cannot execute this statement
  mysql&gt; 
- mysql&gt; SHOW VARIABLES LIKE '%read_only';
+ mysql&gt; SHOW GLOBAL VARIABLES LIKE '%read_only';
  +-----------------------+-------+
  | Variable_name         | Value |
  +-----------------------+-------+
@@ -565,7 +746,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T09:06:46+09:00">March 9, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T11:12:33+09:00">March 9, 2023</time></p>
 
 
       </footer>

@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-03-09T09:06:46+09:00">
+  <meta property="article:published_time" content="2023-03-09T11:12:33+09:00">
 
 
 
@@ -285,7 +285,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その10 - MySQLで高速分析を体験する">
     <meta itemprop="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
-    <meta itemprop="datePublished" content="2023-03-09T09:06:46+09:00">
+    <meta itemprop="datePublished" content="2023-03-09T11:12:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -515,6 +515,17 @@
   <li>
     <p>ダウンロードされた<strong>test_db</strong> フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)</p>
 
+    <p>実行コマンド例(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd test_db
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> source employees.sql
+</code></pre></div>    </div>
+
+    <p>実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@testvm1 ~]$ cd test_db
  [opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
  Enter password: 
@@ -559,7 +570,20 @@
  mysql&gt; 
 </code></pre></div>    </div>
   </li>
-  <li>employeesデータベース内にテーブルが作成されていることを確認します。
+  <li>
+    <p>employeesデータベース内にテーブルが作成されていることを確認します。</p>
+
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW DATABASES;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> USE employees;
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SHOW TABLES;
+</code></pre></div>    </div>
+
+    <p>実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SHOW DATABASES;
  +--------------------+
  | Database           |
@@ -593,7 +617,20 @@
  8 rows in set (0.08 sec)
 </code></pre></div>    </div>
   </li>
-  <li>部門毎の合計給与額を求める以下のSQLを実行して、MDSでの実行時間を確認しておきます。この例では、3.26秒かかりました。
+  <li>
+    <p>部門毎の合計給与額を求める以下のSQLを実行して、MDSでの実行時間を確認しておきます。この例では、3.26秒かかりました。</p>
+
+    <p>実行コマンド(コピー＆ペースト用)</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+   FROM employees JOIN salaries JOIN dept_emp JOIN departments
+     ON employees.emp_no=salaries.emp_no
+     AND employees.emp_no=dept_emp.emp_no
+     AND dept_emp.dept_no=departments.dept_no
+   GROUP BY departments.dept_name
+   ORDER BY sum_salaries DESC;
+</code></pre></div>    </div>
+
+    <p>実行例</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
      -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
      -&gt;     ON employees.emp_no=salaries.emp_no
@@ -629,30 +666,31 @@
 <br /></p>
 
 <ol>
-  <li>
-    <p>ALTER TABLE文を使い、employeesデータベース内のテーブルに対して<strong>SECONDARY_ENGINE=RAPID</strong> を定義します<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
- mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
- mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
- mysql&gt; ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
- mysql&gt; ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
- mysql&gt; ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p><strong>ALTER TABLE テーブル名 SECONDARY_LOAD;</strong> を実行し、データをHeatWaveノードにロードします。</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mysql&gt; ALTER TABLE employees.departments SECONDARY_LOAD;
- mysql&gt; ALTER TABLE employees.dept_emp SECONDARY_LOAD;
- mysql&gt; ALTER TABLE employees.dept_manager SECONDARY_LOAD;
- mysql&gt; ALTER TABLE employees.employees SECONDARY_LOAD;
- mysql&gt; ALTER TABLE employees.salaries SECONDARY_LOAD;
- mysql&gt; ALTER TABLE employees.titles SECONDARY_LOAD;
-</code></pre></div>    </div>
-    <p><br /></p>
-  </li>
+  <li>ALTER TABLE文を使い、employeesデータベース内のテーブルに対して<strong>SECONDARY_ENGINE=RAPID</strong> を定義します<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。</li>
 </ol>
+
+<p>実行コマンド(コピー＆ペースト用)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
+</code></pre></div></div>
+
+<ol>
+  <li><strong>ALTER TABLE テーブル名 SECONDARY_LOAD;</strong> を実行し、データをHeatWaveノードにロードします。</li>
+</ol>
+
+<p>実行コマンド(コピー＆ペースト用)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ALTER TABLE employees.departments SECONDARY_LOAD;
+ALTER TABLE employees.dept_emp SECONDARY_LOAD;
+ALTER TABLE employees.dept_manager SECONDARY_LOAD;
+ALTER TABLE employees.employees SECONDARY_LOAD;
+ALTER TABLE employees.salaries SECONDARY_LOAD;
+ALTER TABLE employees.titles SECONDARY_LOAD;
+</code></pre></div></div>
+<p><br /></p>
 
 <p><a id="anchor7"></a></p>
 
@@ -660,6 +698,17 @@
 
 <p>先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。</p>
 
+<p>実行コマンド(コピー＆ペースト用)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+  FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    ON employees.emp_no=salaries.emp_no
+    AND employees.emp_no=dept_emp.emp_no
+    AND dept_emp.dept_no=departments.dept_no
+  GROUP BY departments.dept_name
+  ORDER BY sum_salaries DESC;
+</code></pre></div></div>
+
+<p>実行例</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
     -&gt;     ON employees.emp_no=salaries.emp_no
@@ -685,6 +734,17 @@
 
 <p>なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は <strong>Extra列</strong> に <strong>Using secondary engine RAPID</strong> と表示されます。</p>
 
+<p>実行コマンド(コピー＆ペースト用)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+  FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    ON employees.emp_no=salaries.emp_no
+    AND employees.emp_no=dept_emp.emp_no
+    AND dept_emp.dept_no=departments.dept_no
+  GROUP BY departments.dept_name
+  ORDER BY sum_salaries DESC;
+</code></pre></div></div>
+
+<p>実行例</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     -&gt;   FROM employees JOIN salaries JOIN dept_emp JOIN departments
     -&gt;   ON employees.emp_no=salaries.emp_no
@@ -747,7 +807,7 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T09:06:46+09:00">March 9, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T11:12:33+09:00">March 9, 2023</time></p>
 
 
       </footer>
