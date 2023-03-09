@@ -10,7 +10,7 @@ header:
 ---
 Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。
 
-このチュートリアルでは、コンソール画面からMDSのサービスを1つ作成し、コンピュート・インスタンスにMySQLクライアントをインストールして、クライアントからMDSへ接続する手順を説明します。
+このチュートリアルでは、コンソール画面からMDSのサービスを1つ作成し、コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールして、クライアントからMDSへ接続する手順を説明します。
 
 **所要時間 :** 約25分 (約15分の待ち時間含む)
 
@@ -29,7 +29,7 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 - [1. MySQL Database Service(MDS)とは?](#anchor1)
 - [2. MDSの作成](#anchor2)
 - [3. セキュリティリストの修正(イングレス・ルールの追加)](#anchor3)
-- [4. MySQLクライアントのインストール](#anchor4)
+- [4. MySQLクライアント、MySQL Shellのインストール](#anchor4)
 - [5. 作成したMDSの確認](#anchor5)
 <br>
 <br>
@@ -153,6 +153,7 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 <br>
 
 1. コンソールメニューから **ネットワーキング** → **仮想クラウドネットワーク** を選択し、作成済みのVCNを選択します。本チュートリアルでは**TutorialVCN** です。またこれ以降はVCNが **TutorialVCN** である前提で説明を記述しています。
+
     <div align="center">
     <img width="700" alt="img10.png" src="img10.png" style="border: 1px black solid;">
     </div>
@@ -200,15 +201,15 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 <a id="anchor4"></a>
 
-# 4. MySQLクライアントのインストール
+# 4. MySQLクライアント、MySQL Shellのインストール
 
-コンピュート・インスタンスにMySQLクライアントをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。
+コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。(本チュートリアルを実行するだけであればMySQL Shellのインストールは必須ではありませんが、MDSへのデータ移行時などでMySQL Shellが便利なので、合わせてインストールしておきます)
 <br>
 
 1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。
 
     ```
-    sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+    sudo yum install https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm
     ```
     <br>
 
@@ -226,26 +227,81 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     ```
     <br>
 
+ 4. 以下コマンドを実行し、MySQL Shellをインストールします。
+
+    ```
+    sudo yum install mysql-shell
+    ```
+    <br>
+
 <a id="anchor5"></a>
 
 # 5. 作成したMDSの確認
 
-MDSにサンプルデータベースとしてworld_xデータベースを構築し、SQLを実行することで、MySQLサーバーが構築できていることを確認します。
+MDSにサンプルデータベースとしてworldデータベース、world_xデータベースを構築し、SQLを実行することで、MySQLサーバーが構築できていることを確認します。
 
-1. 以下のコマンドを実行してworld_xデータベースを構築するためのSQLスクリプトをダウンロードして解凍します。
+1. 以下のコマンドを実行してworldデータベース、world_xデータベースを構築するためのSQLスクリプトをダウンロードして解凍します。
 
     ```
+    wget https://downloads.mysql.com/docs/world-db.zip
+    unzip world-db.zip
     wget https://downloads.mysql.com/docs/world_x-db.zip
     unzip world_x-db.zip
     ```
     <br>
 
-2. ダウンロードされたworld_xフォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。world_xフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br>
+2. ダウンロードされたworldフォルダ内、world_xフォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br>
 (“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)
 
+
+    実行コマンド例(コピー＆ペースト用)
     ```
-    [opc@testvm1 ~]$ cd world_x-db/
-    [opc@testvm1 world_x-db]$ mysql -u root -p -h TestMDS.sub01311142371.tutorialvcn.oraclevcn.com
+    mysql -u root -p -h TestMDS.sub01311142371.tutorialvcn.oraclevcn.com
+    ```
+
+    ```
+    source world-db/world.sql
+    ```
+
+    ```
+    source world_x-db/world_x.sql
+    ```
+
+    ```
+    SHOW DATABASES;
+    ```
+
+    ```
+    use world;
+    ```
+
+    ```
+    SHOW TABLES;
+    ```
+
+    ```
+    use world_x;
+    ```
+
+    ```
+    SHOW TABLES;
+    ```
+
+    ```
+    SELECT * FROM world.city LIMIT 5;
+    ```
+
+    ```
+    SELECT * FROM world_x.city LIMIT 5;
+    ```
+
+    ```
+    exit
+    ```
+
+    実行例
+    ```
+    [opc@testvm1 ~]$ mysql -u root -p -h TestMDS.sub01311142371.tutorialvcn.oraclevcn.com
     Enter password: 
     Welcome to the MySQL monitor.  Commands end with ; or \g.
     Your MySQL connection id is 21
@@ -259,10 +315,16 @@ owners.
 
     Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
-    mysql> source world_x.sql    
+    mysql> source world-db/world.sql
         
     Query OK, 0 rows affected (0.00 sec)
     <略>
+
+    mysql>  source world_x-db/world_x.sql
+        
+    Query OK, 0 rows affected (0.00 sec)
+    <略>
+
     mysql> SHOW DATABASES;
     +--------------------+
     | Database           |
@@ -271,10 +333,23 @@ owners.
     | mysql              |
     | performance_schema |
     | sys                |
+    | world              |
     | world_x            |
     +--------------------+
-    5 rows in set (0.00 sec)
+    6 rows in set (0.00 sec)
     
+    mysql> use world;
+    Database changed
+    mysql> SHOW TABLES;
+    +-----------------+
+    | Tables_in_world |
+    +-----------------+
+    | city            |
+    | country         |
+    | countrylanguage |
+    +-----------------+
+    3 rows in set (0.00 sec)
+
     mysql> use world_x;
     Database changed
     mysql> SHOW TABLES;
@@ -287,6 +362,18 @@ owners.
     | countrylanguage   |
     +-------------------+
     4 rows in set (0.01 sec)
+
+    mysql>  SELECT * FROM world.city LIMIT 5;
+    +----+----------------+-------------+---------------+------------+
+    | ID | Name           | CountryCode | District      | Population |
+    +----+----------------+-------------+---------------+------------+
+    |  1 | Kabul          | AFG         | Kabol         |    1780000 |
+    |  2 | Qandahar       | AFG         | Qandahar      |     237500 |
+    |  3 | Herat          | AFG         | Herat         |     186800 |
+    |  4 | Mazar-e-Sharif | AFG         | Balkh         |     127800 |
+    |  5 | Amsterdam      | NLD         | Noord-Holland |     731200 |
+    +----+----------------+-------------+---------------+------------+
+    5 rows in set (0.01 sec)
 
     mysql> SELECT * FROM city LIMIT 5;
     +----+----------------+-------------+---------------+-------------------------+

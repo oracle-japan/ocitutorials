@@ -58,8 +58,6 @@ HeatWaveを構成する前に、使用する環境のサービスリミットを
 </div>
 <br>
 
-
-
 ## サービスリミットの確認＆引上げリクエスト送信方法
 
 1. コンソール左上のメニューをクリックしてメニューを表示し、一番下までスクロールします。**ガバナンス** → **制限、割当ておよび使用状況** をクリックします。
@@ -69,8 +67,6 @@ HeatWaveを構成する前に、使用する環境のサービスリミットを
     </div>
     <br>
 
-
-
 2. サービスは **MySQL** 、スコープは **XXXX:AP-TOKYO-1-AD-1** を選択します(東京リージョンを使用している場合)。"XXXX"部分は固有の文字列になります。表示された画面で **MySQL Database for HeatWave VM.Standard.E3 Nodes Count** が1以上、 **MySQL HeatWave VM.Standard.E3 Nodes Count** が2以上になっていることを確認します。
 
     <div align="center">
@@ -78,16 +74,12 @@ HeatWaveを構成する前に、使用する環境のサービスリミットを
     </div>
     <br>
 
-
-
 3. サービスリミットが最小構成を満たしていない場合は、右上の **サービス制限の引上げ** リンクをクリックし、必要事項を記入して **リクエストの送信** ボタンをクリックすることでサービス制限の引上げリクエストを登録できます。作業完了の連絡は連絡先に入力したメールアドレスにメールで通知されます。
 
     <div align="center">
     <img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;">
     </div>
     <br>
-
-
 
 <a id="anchor3"></a>
 
@@ -129,8 +121,6 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     </div>
     <br>
 
-
-
 4. **② データベース情報** のステップで、以下の項目を入力し **次** ボタンを押します
 
     - **ユーザー名** - MySQL Databaseの管理者ユーザーのユーザー名を指定します。ここでは「root」と入力しています。(セキュリティの観点からは任意のユーザー名を指定することを推奨します)
@@ -160,8 +150,6 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     <img width="700" alt="img14.png" src="img14.png" style="border: 1px black solid;">
     </div>
     <br>
-
-
 
 <a id="anchor4"></a>
 
@@ -194,8 +182,6 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     </div>
     <br>
 
-
-
 <a id="anchor5"></a>
 
 # 5. サンプルデータベースの構築
@@ -204,8 +190,6 @@ MDSにサンプルデータベースを構築し、HeatWaveノードへデータ
 
 employeeデータベースはGitHubで公開されているため、リポジトリをクローンしてSQLスクリプトをダウンロードし、サンプルデータベースを構築します。
 
-
-
 1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してGitをインストールし、employeeデータベースのリポジトリをクローンします。
 
     ```
@@ -213,10 +197,22 @@ employeeデータベースはGitHubで公開されているため、リポジト
     git clone https://github.com/datacharmer/test_db
     ```
 
-
-
 2. ダウンロードされた**test_db** フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。test_dbフォルダに移動後、mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)
 
+    実行コマンド例(コピー＆ペースト用)
+    ```
+    cd test_db
+    ```
+
+    ```
+    mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
+    ```
+
+    ```
+    source employees.sql
+    ```
+
+    実行例
     ```
     [opc@testvm1 ~]$ cd test_db
     [opc@testvm1 test_db]$ mysql -u root -p -h HeatWave.sub01150610501.tutorialvcn.oraclevcn.com
@@ -265,6 +261,21 @@ employeeデータベースはGitHubで公開されているため、リポジト
 
 
 3. employeesデータベース内にテーブルが作成されていることを確認します。
+
+    実行コマンド(コピー＆ペースト用)
+    ```
+    SHOW DATABASES;
+    ```
+
+    ```
+    USE employees;
+    ```
+
+    ```
+    SHOW TABLES;
+    ```
+
+    実行例
     ```
     mysql> SHOW DATABASES;
     +--------------------+
@@ -302,6 +313,19 @@ employeeデータベースはGitHubで公開されているため、リポジト
 
 
 4. 部門毎の合計給与額を求める以下のSQLを実行して、MDSでの実行時間を確認しておきます。この例では、3.26秒かかりました。
+
+    実行コマンド(コピー＆ペースト用)
+    ```
+    SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+      FROM employees JOIN salaries JOIN dept_emp JOIN departments
+        ON employees.emp_no=salaries.emp_no
+        AND employees.emp_no=dept_emp.emp_no
+        AND dept_emp.dept_no=departments.dept_no
+      GROUP BY departments.dept_name
+      ORDER BY sum_salaries DESC;
+    ```
+
+    実行例
     ```
     mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
         ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
@@ -328,8 +352,6 @@ employeeデータベースはGitHubで公開されているため、リポジト
     ```
 <br>
 
-
-
 <a id="anchor6"></a>
 
 # 6. HeatWaveへのデータロード
@@ -337,34 +359,30 @@ employeeデータベースはGitHubで公開されているため、リポジト
 HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時、HeatWaveノードの再起動時に行う必要があります。(HeatWaveノードの再起動時は以下のステップ2のみが必要になります)
 <br>
 
-
-
 1. ALTER TABLE文を使い、employeesデータベース内のテーブルに対して**SECONDARY_ENGINE=RAPID** を定義します[^2]。current_dept_emp と dept_emp_latest_date はビューであるため、これ以外の6テーブルについて実行します。
 
-    ```
-    mysql> ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
-    mysql> ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
-    mysql> ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
-    mysql> ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
-    mysql> ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
-    mysql> ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
-    ```
-
-
+実行コマンド(コピー＆ペースト用)
+```
+ALTER TABLE employees.departments SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.dept_emp SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.dept_manager SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.employees SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.salaries SECONDARY_ENGINE=RAPID;
+ALTER TABLE employees.titles SECONDARY_ENGINE=RAPID;
+```
 
 2. **ALTER TABLE テーブル名 SECONDARY_LOAD;** を実行し、データをHeatWaveノードにロードします。
 
-    ```
-    mysql> ALTER TABLE employees.departments SECONDARY_LOAD;
-    mysql> ALTER TABLE employees.dept_emp SECONDARY_LOAD;
-    mysql> ALTER TABLE employees.dept_manager SECONDARY_LOAD;
-    mysql> ALTER TABLE employees.employees SECONDARY_LOAD;
-    mysql> ALTER TABLE employees.salaries SECONDARY_LOAD;
-    mysql> ALTER TABLE employees.titles SECONDARY_LOAD;
-    ```
+実行コマンド(コピー＆ペースト用)
+```
+ALTER TABLE employees.departments SECONDARY_LOAD;
+ALTER TABLE employees.dept_emp SECONDARY_LOAD;
+ALTER TABLE employees.dept_manager SECONDARY_LOAD;
+ALTER TABLE employees.employees SECONDARY_LOAD;
+ALTER TABLE employees.salaries SECONDARY_LOAD;
+ALTER TABLE employees.titles SECONDARY_LOAD;
+```
 <br>
-
-
 
 <a id="anchor7"></a>
 
@@ -372,7 +390,18 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
 
 先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約25倍高速化されています。この例で検索している対象のデータ量は約120MBと大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。
 
+実行コマンド(コピー＆ペースト用)
+```
+SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+  FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    ON employees.emp_no=salaries.emp_no
+    AND employees.emp_no=dept_emp.emp_no
+    AND dept_emp.dept_no=departments.dept_no
+  GROUP BY departments.dept_name
+  ORDER BY sum_salaries DESC;
+```
 
+実行例
 ```
 mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
@@ -397,10 +426,20 @@ mysql> SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
 9 rows in set (0.13 sec)
 ```
 
-
-
 なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
 
+実行コマンド(コピー＆ペースト用)
+```
+EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
+  FROM employees JOIN salaries JOIN dept_emp JOIN departments
+    ON employees.emp_no=salaries.emp_no
+    AND employees.emp_no=dept_emp.emp_no
+    AND dept_emp.dept_no=departments.dept_no
+  GROUP BY departments.dept_name
+  ORDER BY sum_salaries DESC;
+```
+
+実行例
 ```
 mysql> EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
     ->   FROM employees JOIN salaries JOIN dept_emp JOIN departments
@@ -420,8 +459,6 @@ mysql> EXPLAIN SELECT departments.dept_name,SUM(salaries.salary) AS sum_salaries
 4 rows in set, 1 warning (0.09 sec)
 ```
 
-
-
 また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
 
 * SET_VAR(use_secondary_engine=ON) : HeatWaveを使う。HeatWaveが使えない場合(HeatWaveノードの停止時、HeatWaveにデータをロードしていない場合など)や、オプティマイザがHeatWaveを使わない方が効率的と判断した場合はMDSで処理する。
@@ -437,12 +474,9 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ departments.dept_name,SUM(sal
 ```
 <br>
 
-
-
 これで、この章の作業は終了です。
 
 この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析対象データは約120MBと大きなサイズではありません。また、HeatWaveも最小構成の2ノードで構成していますが、それでも約25倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります[^3]。是非、分析業務で使用しているデータを対象にしてテストしてみて下さい。
-
 
 
 [^1]: HeatWaveのデフォルトサービスリミットは以前は0に設定されていました。新しくアカウントを作成した場合はデフォルトサービスリミットが変更されていて最初から使える状態になっていると思われますが、念のため使用している環境でサービスリミットが後述する最小構成を満たしていることを確認して下さい。
