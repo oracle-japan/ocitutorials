@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-03-09T12:59:56+09:00">
+  <meta property="article:published_time" content="2023-03-09T13:03:11+09:00">
 
 
 
@@ -285,7 +285,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その12 - MySQL Database Serviceでリードレプリカを構成する">
     <meta itemprop="description" content="MySQL Database Serviceでは参照処理の負荷分散を実現できるリードレプリカも簡単に構成できます。リードレプリカを構成し、動きを確認してみましょう！">
-    <meta itemprop="datePublished" content="2023-03-09T12:59:56+09:00">
+    <meta itemprop="datePublished" content="2023-03-09T13:03:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -296,7 +296,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-リードレプリカとは">1. リードレプリカとは?</a></li><li><a href="#2-mdsの作成ソースとなるmds">2. MDSの作成(ソースとなるMDS)</a></li><li><a href="#3-リードレプリカの作成">3. リードレプリカの作成</a></li><li><a href="#4-リードレプリカへの接続確認ロードバランサー経由での接続">4. リードレプリカへの接続確認(ロードバランサー経由での接続)</a></li><li><a href="#5-リードレプリカへの接続確認リードレプリカに直接接続">5. リードレプリカへの接続確認(リードレプリカに直接接続)</a></li><li><a href="#6-リードレプリカの確認">6. リードレプリカの確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1-リードレプリカとは">1. リードレプリカとは?</a></li><li><a href="#2-本チュートリアルで作成する構成の構成図">2. 本チュートリアルで作成する構成の構成図</a></li><li><a href="#3-mdsの作成ソースとなるmds">3. MDSの作成(ソースとなるMDS)</a></li><li><a href="#4-リードレプリカの作成">4. リードレプリカの作成</a></li><li><a href="#5-リードレプリカへの接続確認ロードバランサー経由での接続">5. リードレプリカへの接続確認(ロードバランサー経由での接続)</a></li><li><a href="#6-リードレプリカへの接続確認リードレプリカに直接接続">6. リードレプリカへの接続確認(リードレプリカに直接接続)</a></li><li><a href="#7-リードレプリカの確認">7. リードレプリカの確認</a></li></ul>
 
             </nav>
           </aside>
@@ -323,11 +323,12 @@
 
 <ul>
   <li><a href="#anchor1">1. リードレプリカとは?</a></li>
-  <li><a href="#anchor2">2. MDSの作成(ソースとなるMDS)</a></li>
-  <li><a href="#anchor3">3. リードレプリカの作成</a></li>
-  <li><a href="#anchor4">4. リードレプリカの確認(ロードバランサー経由での接続)</a></li>
-  <li><a href="#anchor5">5. リードレプリカへの接続確認(リードレプリカに直接接続)</a></li>
-  <li><a href="#anchor6">6. リードレプリカの確認)</a>
+  <li><a href="#anchor2">2. 本チュートリアルで作成する構成の構成図</a></li>
+  <li><a href="#anchor3">3. MDSの作成(ソースとなるMDS)</a></li>
+  <li><a href="#anchor4">4. リードレプリカの作成</a></li>
+  <li><a href="#anchor5">5. リードレプリカの確認(ロードバランサー経由での接続)</a></li>
+  <li><a href="#anchor6">6. リードレプリカへの接続確認(リードレプリカに直接接続)</a></li>
+  <li><a href="#anchor7">7. リードレプリカの確認)</a>
 <br /></li>
 </ul>
 
@@ -361,7 +362,18 @@
 
 <p><a id="anchor2"></a></p>
 
-<h1 id="2-mdsの作成ソースとなるmds">2. MDSの作成(ソースとなるMDS)</h1>
+<h1 id="2-本チュートリアルで作成する構成の構成図">2. 本チュートリアルで作成する構成の構成図</h1>
+
+<p>本チュートリアルでは、以下の構成を作成します。</p>
+
+<div align="center">
+<img width="900" alt="img_diagram.png" src="img_diagram.png" style="border: 1px black solid;" />
+</div>
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-mdsの作成ソースとなるmds">3. MDSの作成(ソースとなるMDS)</h1>
 
 <p>ソースとなるMDSを作成します。<a href="../creating-mds/">クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)</a> の手順に従ってソースとなるMDSを作成します。(その9)と区別するために、MDSの名前は「WriterMDS」にします。また、「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、worldデータベース、world_xデータベースも作成しておきます。</p>
 
@@ -392,9 +404,9 @@
 <br />
 <br /></p>
 
-<p><a id="anchor3"></a></p>
+<p><a id="anchor4"></a></p>
 
-<h1 id="3-リードレプリカの作成">3. リードレプリカの作成</h1>
+<h1 id="4-リードレプリカの作成">4. リードレプリカの作成</h1>
 
 <p>リードレプリカを2つ作成します。
 <br /></p>
@@ -444,9 +456,9 @@
   </li>
 </ol>
 
-<p><a id="anchor4"></a></p>
+<p><a id="anchor5"></a></p>
 
-<h1 id="4-リードレプリカへの接続確認ロードバランサー経由での接続">4. リードレプリカへの接続確認(ロードバランサー経由での接続)</h1>
+<h1 id="5-リードレプリカへの接続確認ロードバランサー経由での接続">5. リードレプリカへの接続確認(ロードバランサー経由での接続)</h1>
 
 <p>作成したリードレプリカへロードバランサー経由で接続する方法を確認します。
 <br /></p>
@@ -525,9 +537,9 @@
   </li>
 </ol>
 
-<p><a id="anchor5"></a></p>
+<p><a id="anchor6"></a></p>
 
-<h1 id="5-リードレプリカへの接続確認リードレプリカに直接接続">5. リードレプリカへの接続確認(リードレプリカに直接接続)</h1>
+<h1 id="6-リードレプリカへの接続確認リードレプリカに直接接続">6. リードレプリカへの接続確認(リードレプリカに直接接続)</h1>
 
 <p>作成したリードレプリカへ直接接続する方法を確認します。
 <br /></p>
@@ -584,9 +596,9 @@
   </li>
 </ol>
 
-<p><a id="anchor6"></a></p>
+<p><a id="anchor7"></a></p>
 
-<h1 id="6-リードレプリカの確認">6. リードレプリカの確認</h1>
+<h1 id="7-リードレプリカの確認">7. リードレプリカの確認</h1>
 
 <p>リードレプリカにはソースのMDSが複製され、その後の更新処理も伝播されることを確認します。また、リードレプリカは参照専用であることも確認します。
 <br /></p>
@@ -746,7 +758,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T12:59:56+09:00">March 9, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-09T13:03:11+09:00">March 9, 2023</time></p>
 
 
       </footer>
