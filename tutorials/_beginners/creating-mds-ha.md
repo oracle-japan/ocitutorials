@@ -31,7 +31,7 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 - [1. はじめに](#anchor1)
 - [2. 高可用性構成を有効化したMDSの作成](#anchor2)
 - [3. セキュリティリストの修正(イングレス・ルールの追加)](#anchor3)
-- [4. MySQLクライアントのインストール](#anchor4)
+- [4. MySQLクライアント、MySQL Shellのインストール](#anchor4)
 - [5. 作成したMDSで高可用性が実現できることを確認](#anchor5)
 <br>
 
@@ -62,7 +62,7 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 3. 立ち上がった **DBシステムの作成** ウィンドウで「Development or testing(開発もしくはテスト)」を選択した後で、以下の項目を入力します。
 
-    - **名前** - 任意の名前を入力します。ここでは「TestMDSHA」と入力しています。
+    - **名前** - 任意の名前を入力します。ここでは「TestHA」と入力しています。
     - **説明** - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
     - **「スタンドアロン」、「高可用性」、「HeatWave」** - MDSを高可用性構成で構成するため、「高可用性」を選択します。「高可用性」を選択した場合、グループ・レプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。
 
@@ -81,7 +81,7 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     </div>
     <br>
     
-    - **ホスト名** - 任意の名前を入力します。ここでは「TestMDSHA」と入力しています。<br>※ページ下部にある「拡張オプションの表示」をクリック後、「ネットワーキング」タブをクリックして入力欄を表示します。
+    - **ホスト名** - 任意の名前を入力します。ここでは「TestHA」と入力しています。<br>※ページ下部にある「拡張オプションの表示」をクリック後、「ネットワーキング」タブをクリックして入力欄を表示します。
     
     <div align="center">
     <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;">
@@ -157,15 +157,15 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 <a id="anchor4"></a>
 
-# 4. MySQLクライアントのインストール
+# 4. MySQLクライアント、MySQL Shellのインストール
 
-コンピュート・インスタンスにMySQLクライアントをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。
+コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。
 <br>
 
 1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。
 
     ```
-    sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+    sudo yum install https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm
     ```
     <br>
 
@@ -183,6 +183,13 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     ```
     <br>
 
+ 4. 以下コマンドを実行し、MySQL Shellをインストールします。
+
+    ```
+    sudo yum install mysql-shell
+    ```
+    <br>
+
 <a id="anchor5"></a>
 
 # 5. 作成したMDSで高可用性が実現できることを確認
@@ -190,11 +197,17 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 作成したMDSの状態を確認し、グループ・レプリケーションが構成されていることを確認します。その後、データを更新しながらスイッチオーバーを発生させることで、短時間でプライマリサーバーが切り替わることを確認します。<br>
 (実際に障害が発生した場合は、スイッチオーバーではなくフェイルオーバーが発生します。しかし、フェイルオーバーを意図的に発生させることは難しいため、ここではスイッチオーバーを使ってプライマリサーバーの切り替えを確認します)<br>
 
-1. mysqlコマンドラインクライアントを使ってMDSへ接続します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br>
+1. mysqlコマンドラインクライアントを使ってMDSへ接続します。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br>
 (“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)
 
+    実行コマンド例(コピー＆ペースト用)
     ```
-    [opc@testvm1 ~]$ mysql -u root -p -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com
+    mysql -u root -p -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com
+    ```
+
+    実行例 
+    ```
+    [opc@testvm1 ~]$ mysql -u root -p -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com
     Enter password: 
     Welcome to the MySQL monitor.  Commands end with ; or \g.
     Your MySQL connection id is 38
@@ -212,6 +225,13 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 2. performance_schema.replication_group_membersテーブルをSELECTしてグループ・レプリケーションが構成されていることを確認します。3台のMDSでグループ・レプリケーションが構成されているため、結果は3行出力されます。その中で、MEMBER_ROLE列がPRIMARYになっているメンバーが、今プライマリになっているMDSです。この後の確認のために、プライマリのMDSのMEMBER_HOSTをメモしておきます。この例では、"battlz9jzxwb28dg"をメモしておきます。
 
+    実行コマンド(コピー＆ペースト用)
+    ```
+    SELECT MEMBER_ID, MEMBER_HOST, MEMBER_STATE, MEMBER_ROLE
+      FROM performance_schema.replication_group_members;
+    ```
+
+    実行例
     ```
     mysql> SELECT MEMBER_ID, MEMBER_HOST, MEMBER_STATE, MEMBER_ROLE
         ->   FROM performance_schema.replication_group_members;
@@ -228,6 +248,32 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 3. スイッチオーバー時の動作を確認するためのテストテーブルを作成します。そのテーブルに、現在プライマリであるMEMBER_HOSTの情報と現在の時刻をINSERTし、INSERTしたデータをSELECTして確認します。その後、mysqlコマンドラインクライアントを終了します。
 
+    実行コマンド(コピー＆ペースト用)
+    ```
+    CREATE DATABASE test;
+    ```
+
+    ```
+    CREATE TABLE test.test(
+      id int AUTO_INCREMENT,
+      PRI_MEMBER_HOST CHAR(20),
+      INSERT_TIME time,
+      PRIMARY KEY(id)
+      );
+    ```
+
+    ```
+    INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME)
+      SELECT MEMBER_HOST, CURTIME()
+      FROM performance_schema.replication_group_members
+      WHERE MEMBER_ROLE='PRIMARY';
+    ```
+
+    ```
+    SELECT * FROM test.test;
+    ```
+
+    実行例
     ```
     mysql> CREATE DATABASE test;
     Query OK, 1 row affected (0.01 sec)
@@ -268,11 +314,16 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     #!/bin/bash
 
     while true; do
-      mysql -u root -pMySQL_8.0 -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com -e "INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME) SELECT MEMBER_HOST, CURTIME() FROM performance_schema.replication_group_members WHERE MEMBER_ROLE='PRIMARY';"
+      mysql -u root -pMySQL_8.0 -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com -e "INSERT INTO test.test(PRI_MEMBER_HOST, INSERT_TIME) SELECT MEMBER_HOST, CURTIME() FROM performance_schema.replication_group_members WHERE MEMBER_ROLE='PRIMARY';"
       sleep 1
     done
     ```
 <br>
+    実行コマンド(コピー＆ペースト用)
+    ```
+    chmod 744 ./test.sh
+    ./test.sh
+    ```
 
     test.shの実行例
     ```
@@ -309,12 +360,13 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 6. 「Ctrl+C」を押し、シェルスクリプトtest.shを停止します。その後、MDSに接続します。
 
+    実行例
     ```
     mysql: [Warning] Using a password on the command line interface can be insecure.
     mysql: [Warning] Using a password on the command line interface can be insecure.
     mysql: [Warning] Using a password on the command line interface can be insecure.
     ^C
-    [opc@testvm1 ~]$ mysql -u root -p -h TestMDSHA.sub01311142371.tutorialvcn.oraclevcn.com
+    [opc@testvm1 ~]$ mysql -u root -p -h TestHA.sub01311142371.tutorialvcn.oraclevcn.com
     Enter password: 
     Welcome to the MySQL monitor.  Commands end with ; or \g.
     Your MySQL connection id is 237
@@ -334,6 +386,18 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 7. 以下のSQLを実行し、スイッチオーバー時にMDSが使用できなかった時間を確認します。"PRI_MEMBER_HOST='battlz9jzxwb28dg'"部分は、事前にメモした旧プライマリのMDSのMEMBER_HOSTの値に置き換えて実行して下さい。この例の場合INSERT_TIMEの差分が3秒であるため、スイッチオーバー時にMDSが使用できなかった時間は約2秒であることが分かります。障害発生時に発生するフェイルオーバーの方が、通常状態でプライマリサーバーを切り替えるスイッチオーバーよりも所要時間が長くなる可能性がありますが、プライマリサーバーの切り替え自体はこのように短時間で実現可能です。
 
+    実行コマンド例(コピー＆ペースト用)
+    ```
+    SELECT *
+      FROM test.test
+      WHERE id IN (
+        (SELECT MAX(id) FROM test.test WHERE PRI_MEMBER_HOST='battlz9jzxwb28dg'),
+        (SELECT MAX(id) FROM test.test WHERE PRI_MEMBER_HOST='battlz9jzxwb28dg')+1
+        )
+      ORDER BY 1 ASC;
+    ```
+
+    実行例
     ```
     mysql> SELECT *
         ->   FROM test.test
@@ -352,7 +416,7 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 これで、この章の作業は終了です。
 
-この章では、**TestMDSHA** というHA構成のMySQL Database Serviceを作成し、スイッチオーバーによるDB停止時間を確認しました。MDSのHA構成はグループ・レプリケーションにより構成されていますが、グループ・レプリケーションでは障害発生時のデータロスが発生しないアーキテクチャーになっています。また、障害発生時にも自動的にフェイルオーバーが発生するため、ダウンタイムも最小限に抑えられます。高可用性が求められるシステムを構築する際は、HA構成のMDSを使って下さい。
+この章では、**TestHA** というHA構成のMySQL Database Serviceを作成し、スイッチオーバーによるDB停止時間を確認しました。MDSのHA構成はグループ・レプリケーションにより構成されていますが、グループ・レプリケーションでは障害発生時のデータロスが発生しないアーキテクチャーになっています。また、障害発生時にも自動的にフェイルオーバーが発生するため、ダウンタイムも最小限に抑えられます。高可用性が求められるシステムを構築する際は、HA構成のMDSを使って下さい。
 
 なお、本チュートリアル作成時点(2023年2月時点)でドキュメントで案内されているRTO、RPOは以下の通りです。
 (最新の情報は[こちら](https://docs.oracle.com/en-us/iaas/mysql-database/doc/recovery-time-objective-rto-and-recovery-point-objective-rpo.html#GUID-97A388ED-34B8-4EAF-941E-02DB8A6E8ADF)から確認して下さい)
