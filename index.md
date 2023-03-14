@@ -71,6 +71,11 @@ OCIにおける各種運用・管理関連サービスについて学習でき�
 
 - **[OpenSearch編](/ocitutorials/opensearch/)** OCI Search Service with OpenSearchに関して学習できます。
 
+- **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)**
+OCI上にHPCシステムを構築するためのチュートリアルです。  
+OCIが提供するベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等を活用し、様々な用途のHPCシステムをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築する方法を学習します。  
+構築するHPCクラスタは、NFS、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、DockerやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。
+
 ## その他のお役立ち情報
 
 - **[Oracleアーキテクチャセンター](https://docs.oracle.com/solutions/?lang=ja)**  
