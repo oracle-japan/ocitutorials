@@ -887,6 +887,12 @@ var store = [{
         "url": "/ocitutorials/hpc/spinup-hpc-cluster/",
         "teaser": "/ocitutorials/intermediates/spinup-hpc-cluster/architecture_diagram.png"
       },{
+        "title": "ブロック・ボリュームでNFSファイルサーバを構築する",
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）のブロック・ボリュームは、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSファイルサーバのストレージに最適なサービスです。 同一可用性ドメイン内の異なるフォルト・ドメインに複数のレプリカを持ち高い可用性を実現 ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現 また、Intel Ice Lakeプロセッサを搭載するベアメタルシェイプ BM.Optimized3.36 は、50 GpbsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセスとNFSクライアントへのNFSサービスアクセスに割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。 OCIは、NFSのマネージドサービスであるファイル・ストレージも提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけてブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSファイルサービスを自身で構築することで、ファイル・ストレージよりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。 以下の表は、本チュートリアルで構築するNFSファイルサービスの総容量15 TBを前提とし、両選択肢の価格と性能を比較しています。   月額定価 (2023年3月時点) スループット IOPS ファイル・ストレージ 630,000円 (*3) 1.5 GB/s (*1) 37,500 (*1) ブロック・ボリューム BM.Optimized3.36 Total - 89,250円 273,667円 362,917円 (*3) 7.2 GB/s (*2) 375,000 (*2) *1) 以下URLで公開されているファイル・ストレージの10 TBでの性能情報をもとに、これを容量比として1.5倍した値を記載しています。この性能を実現するには、テスト環境・条件に十分な配慮が必要です。 https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf *2) ボリューム・サイズ1 TBでボリューム・パフォーマンスがBalancedの15ボリューム分のブロック・ボリュームサービスとしての最大値で、NFSファイルシステムでこの性能を達成できることを保証するものではありません。 *3) ブロック・ボリューム...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/spinup-nfs-server/",
+        "teaser": "/ocitutorials/hpc/spinup-nfs-server/architecture_diagram.png"
+      },{
         "title": "GPUインスタンスで機械学習にトライ",
         "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。 このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのGPUシェイプ向けプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupyterLab/Jupyter Notebookから実行します。 選択可能な機械学習環境GPUシェイプ VM.GPU3.1 (NVIDIA Tesla V100 16 GB x 1) VM.GPU3.2 (NVIDIA Tesla V100 16 GB x 2) VM.GPU3.4 (NVIDIA Tesla V100 16 GB x 4) BM.GPU3.8 (NVIDIA Tesla V100 16 GB x 8) BM.GPU4.8 (NVIDIA A100 40 GB x 8) ※：シェイプ詳細は、以下URLを参照。 https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm 利用可能な機械学習関連ソフトウェア TensorFlow...","categories": [],
         "tags": [],
@@ -1282,6 +1288,12 @@ var store = [{
         "tags": ["management"],
         "url": "/ocitutorials/management/logging_datadog/",
         "teaser": "/ocitutorials/management/logging_datadog/native.jpeg"
+      },{
+        "title": "Stack Monitoring を使用して OCI Compute のメトリックを可視化する",
+        "excerpt":"チュートリアル概要 : このチュートリアルでは、Stack Monitoring を使用して OCI Compute のメトリック監視を有効化するまでのステップをご紹介します。 所要時間 : 約20分 前提条件 : テナンシ上で以下のリソースが作成済であること コンパートメント ユーザー ユーザーグループ VCN OCI Compute (Oracle Linux) 1. 管理エージェントの有効化 Stack Monitoring でモニターするメトリック情報は管理エージェントにより取得されます。OCI Compute のプラットフォーム・イメージに標準でインストールされているクラウド・エージェントのプラグインを使用して、管理エージェントを有効化します。 管理エージェント有効化したいインスタンスの管理画面で「Oracle Cloudエージェント」に移動し、管理エージェントが無効となっている場合は有効にします。 2. 動的グループの作成 OCIコンソールの画面左上ハンバーガーメニューから「アイデンティティとセキュリティ」を選択し、以下のように進んでください。 アイデンティティ &gt; ドメイン &gt; お使いのドメイン（通常はDefault） &gt; 動的グループ 「動的グループの作成」をクリックし、以下のように入力します。 動的グループ名：Management_Agent_Dynamic_Group 説明：管理エージェント有効化のための動的グループ 一致ルール：下に定義したいずれかのルールに一致 ルール1には以下のステートメントを記入します。 “ocid1.compartment.oc1.examplecompartmentid”は、監視対象の Compute が配置されているコンパートメントのOCIDに置き換えてください。 ALL...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/stack_monitoring_install/",
+        "teaser": null
       },{
         "title": "OCI Database Cloud ServiceでDatabase Managementを有効化する",
         "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのDatabase Cloud Serviceが1インスタンス作成されていること DBCSインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のDBCSがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE...","categories": [],
