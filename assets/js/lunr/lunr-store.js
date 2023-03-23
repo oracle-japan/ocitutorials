@@ -311,6 +311,12 @@ var store = [{
         "url": "/ocitutorials/content-management/create_identitydomain_group_user/",
         "teaser": "/ocitutorials/content-management/create_identitydomain_group_user/016.jpg"
       },{
+        "title": "Oracle Content Managementサービス管理者向け作業ガイド",
+        "excerpt":"この文書はOCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が必ず作業・確認すべき管理設定を紹介します。 【お知らせ】 この文書は、2023年3月時点での最新バージョン(23.3.1)を元に作成されてます。 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 前提条件 OCI IAM Identity Domain環境でOracle Content Management インスタンスを作成する 1. インスタンス共通の管理設定ガイド OCMインスタンスを作成したら、必ず作業・確認すべき管理設定を紹介します 1.1 ブランディング OCMのWebユーザーインタフェースのロゴ及びロゴ右隣のブランディング・テキストを変更できます。 ブランディングテキストは、組織内におけるOCMインスタンスの名称（呼称）を、短くわかりやすい言葉で表現する際に利用します サービス管理者権限が付与されたユーザーでOCMインスタンスにサインインします 左ナビゲーションメニューの ADMINISTRATION:システム→一般を選択します ブランディングのコーポレート・ブランディング・テキストでカスタムを選択し、表示するテキストを入力します 【TIPS】 ブランディングテキストを非表示としたい場合は、カスタムを選択し、入力エリアを空白のままとします 企業ロゴで変更をクリックし、表示したいロゴ画像を設定します 画面を下にスクロールし、保存をクリックします ロゴとブランディングテキストが変更されます 【関連ドキュメント】 Apply Custom Branding and URLs (※日本語翻訳) 1.2 通知 ユーザーへの通知メールの有効/無効を設定します。デフォルトは全て「有効」です。 なお、通知メールのデザインや本文のカスタマイズはできませんが、1.1ブランディングで設定した企業ロゴおよびブランディングテキストが通知メールに設定されます 左ナビゲーションメニューの ADMINISTRATION:システム→一般を選択します 通知の有効・無効を選択します。それぞれの通知設定は以下の通りです ようこそ電子メール通知: ユーザーがOCMインスタンスに追加された時に電子メールが通知されます。通知メールはユーザーに割り当てられるアプリケーションロールによってカスタマイズされます タクソノミ電子メール通知:　タクソノミのプロモート、公開、削除の時に電子メールが通知されます。通知メールはタクソノミが割り当てられているリポジトリにアクセスできるユーザーに対して送信されます 他のすべての電子メール通知: 会話機能でフラグが設定されたとき、フォルダにメンバー追加されたとき、など上記以外の他のイベント発生時に電子メールが通知されます 画面を下にスクロールし、保存をクリックします 【関連ドキュメント】 Enable...","categories": [],
+        "tags": ["OCE","OCM"],
+        "url": "/ocitutorials/content-management/ocm_admin_guide/",
+        "teaser": "/ocitutorials/content-management/ocm_admin_guide/001.jpg"
+      },{
         "title": "Oracle Content Management のファイル共有機能を使ってみよう【初級編】",
         "excerpt":"この文書は Oracle Content Management (OCM) のファイル共有機能を利用する方法をステップ・バイ・ステップで紹介するチュートリアル集です。OCM の利用ユーザーとして、ファイル共有機能の基本操作を習得します 前提条件 Oracle Content Management インスタンスを作成する OCM インスタンスは Premium Edition で作成されていること OCM の利用ユーザーに OCM インスタンスの CECStandardUser もしくは CECEnterpriseUser アプリケーション・ロールが付与されていること チュートリアル：Oracle Content Management のファイル共有機能を使ってみよう【初級編】 OCM インスタンスにサインインする まずは、OCM インスタンスにサインインします。サインイン後は、自分が利用しやすいようにプリファレンスやプロファイルを設定します フォルダの作成 フォルダを作成し、ファイルを簡単に分類します。とても簡単にフォルダを作成できますので、まずは気軽に始めてみましょう ファイルの登録 ファイルはドラッグ＆ドロップ操作で簡単にアップロードできます。また、OCM ではファイルをバージョン管理します。新規バージョンのファイルをアップロード方法や古いバージョンのファイルを表示・取得する方法を習得します 圧縮ファイルによる複数ファイルの一括登録 圧縮ファイルをアップロードし、OCM内で解凍することで、フォルダ階層やファイルを簡単に作成したり、一度に複数ファイルの新規リビジョンをまとめて登録できます。ここでは、圧縮ファイルを利用した複数のフォルダやファイルを更新する方法を紹介します ファイルのプレビュー OCM 上にアップロードされたファイルは、ファイルをダウンロードすることなく、ブラウザ内でファイルの内容を確認（プレビュー）できます。ここでは、ファイルのプレビュー操作を習得します ファイルの削除と復元 OCM のドキュメント機能でファイル（およびフォルダ）を削除すると、それらはごみ箱に移動されます。また、ごみ箱内のファイル（フォルダ）は、ユーザー自身で手動による削除（完全に削除）、もしくは元のフォルダへの復元、ができます。ここでは、ファイルやフォルダの削除時の操作について習得します ファイルの編集 OCM のデスクトップ・アプリケーションがクライアント環境にインストールされている場合、ローカル環境の Office...","categories": [],
         "tags": ["OCE","OCM"],
@@ -905,6 +911,12 @@ var store = [{
         "url": "/ocitutorials/hpc/spinup-cluster-network/",
         "teaser": "/ocitutorials/intermediates/spinup-cluster-network/architecture_diagram.png"
       },{
+        "title": "GPUクラスタを構築する(オンデマンドクラスタ自動構築編)",
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、8枚のNVIDIA A100 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ BM.GPU4.8/BM.GPU.GM4.8 とこれらを接続する クラスタ・ネットワーク を提供しており、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行するGPUクラスタを構築するには最適なクラウドサービスです。 このチュートリアルは、 マーケットプレイス から無償で利用可能な スタック を利用し、以下構成のオンデマンドGPUクラスタを構築します。 NVIDIA A100 40 GBを8枚搭載するGPUノード（ BM.GPU4.8 ） 100 Gbps x 16 RoCEv2 RDMAインターコネクト (クラスタ・ネットワーク) インターネットからSSH接続可能なBastionノード OS: Oracle Linux 7.9 コンテナランタイム: Enroot ジョブスケジューラ: Slurm + Pyxis オンデマンドクラスタ機能： クラスタオートスケーリング OCIファイル・ストレージサービスによるGPUクラスタ内ホームディレクトリ共有 LDAPによるクラスタ内ユーザ統合管理 またこのチュートリアルは、デプロイしたGPUクラスタで複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/",
+        "teaser": "/ocitutorials/intermediates/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
+      },{
         "title": "GPUクラスタを構築する(スタティッククラスタ自動構築編)",
         "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。 RoCE v2採用の高帯域・低レイテンシRDMAインターコネクトの クラスタ・ネットワーク 8枚のNVIDIA A100 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ BM.GPU4.8/BM.GPU.GM4.8 このチュートリアルは、OCIのマーケットプレイスから利用可能なGPUクラスタ構築のためのリソース・マネージャ（※1）用スタックを利用し、以下構成のGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム（ NCCL Tests ）で検証後、分散機械学習のサンプルプログラムを実行します。 NVIDIA A100 40 GBを8枚搭載するGPUノード（ BM.GPU4.8 ） 100 Gbps x 16 RoCEv2 RDMAインターコネクト（※2） インターネットからSSH接続可能なbastionノード OS: Oracle Linux 7.9 コンテナランタイム: Enroot ジョブスケジューラ: Slurm + Pyxis OCIファイルストレージサービスによるGPUクラスタ内ホームディレクトリ共有 LDAPによるクラスタ内ユーザ統合管理 ※1：リソース・マネージャについては、以下のチュートリアルも参考にしてください。...","categories": [],
         "tags": [],
@@ -916,6 +928,18 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-gpu-cluster/",
         "teaser": "/ocitutorials/intermediates/spinup-gpu-cluster/architecture_diagram.png"
+      },{
+        "title": "ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法",
+        "excerpt":"0. 概要 高速スクラッチ領域として利用することを想定したNVMe SSDを内蔵するHPCクラスタ向けベアメタルシェイプ BM.Optimized3.36 やGPUクラスタ向けベアメタルシェイプ BM.GPU4.8/BM.GPU.GM4.8 は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。 本テクニカルTipsは、このファイルシステム作成方法を解説します。 内蔵NVMe SSDドライブにファイルシステムを作成する方法は、搭載するドライブ数が異なるBM.Optimized3.36とBM.GPU4.8/BM.GPU.GM4.8でその手順が異なり、それぞれの手順を以降で解説します。 なお 、ここで解説するファイルシステム作成手順は、 OCI HPCチュートリアル集 で紹介する構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。 1. BM.Optimized3.36用ファイルシステム作成手順 BM.Optimized3.36は、3.84 TBのNVMe SSDディスクを1ドライブ内蔵するため、以下の手順を該当するノードのrootで実行し、ファイルシステムを作成します。 &gt; parted -s /dev/nvme0n1 mklabel gpt &gt; parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1 &gt; mkfs.xfs -L localscratch /dev/nvme0n1p1 &gt; mkdir -p /mnt/localdisk &gt; echo \"LABEL=localscratch...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/tech-knowhow/nvme-filesystem/",
+        "teaser": null
+      },{
+        "title": "ベアメタルGPUインスタンスのクラスタ・ネットワーク接続用ネットワークインターフェース作成方法",
+        "excerpt":"0. 概要 16個のRDMA対応ポートを持つベアメタルGPUシェイプ BM.GPU4.8/BM.GPU.GM4.8 は、これらのポートに対するOSレベルのインタフェースをインスタンスをデプロイした後にユーザ自身が適切に設定し、 クラスタ・ネットワーク に接続する必要があります。 本テクニカルTipsは、このインタフェース設定方法を解説します。 BM.GPU4.8/BM.GPU.GM4.8は、クラスタ・ネットワークに接続する16個のポートをNCCL等のGPU間通信ライブラリから使用しますが、この場合これら16個のポートを16個の異なるIPサブネットに接続して使用します。 ここでDHCPが利用できないクラスタ・ネットワークにおいて、各ポートのIPアドレスをどの様に設定すればよいでしょうか。 この課題に対処するため、 マーケットプレイス から提供するクラスタ・ネットワーク対応GPUイメージは、systemdのサービス oci-rdma-configure を用意しています。 このサービスは、起動されると16個のポートのIPアドレス設定を/etc/sysconfig/network-scripts/ifcfg- ifname ファイルとして作成し、インタフェースを起動します。 ここで各ポートに割り振られるIPアドレスは、インスタンスをVCNのサブネット（24ビットのネットマスクを想定）にTCP/IPで接続する際に使用するenp45s0f0に割り振られるIPアドレスの4フィールド目（ここでは”x”と仮定）を使用し、以下のように静的にIPアドレスを設定することで、アドレス重複を回避します。 ポート名 IPアドレス enp12s0f0 192.168.0.x/24 enp12s0f1 192.168.1.x/24 enp22s0f0 192.168.2.x/24 enp22s0f1 192.168.3.x/24 enp72s0f0 192.168.4.x/24 enp72s0f1 192.168.5.x/24 enp76s0f0 192.168.6.x/24 enp76s0f1 192.168.7.x/24 enp138s0f0 192.168.8.x/24 enp138s0f1 192.168.9.x/24 enp148s0f0 192.168.10.x/24 enp148s0f1 192.168.11.x/24 enp195s0f0 192.168.12.x/24 enp195s0f1 192.168.13.x/24 enp209s0f0...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/tech-knowhow/gpu-rdma-interface/",
+        "teaser": null
       },{
         "title": "OCI Network Firewallを構築する",
         "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。 所要時間 : 約70分 前提条件 : ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントを参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 はじめに : 以下が本チュートリアルで作成するNetwork Firewallの構成図です。 Network Firewallについて Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。 Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。 Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。 パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御 アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止 各サブネットとルート表について インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。Network Firewallによって検査されたトラフィックは「NFW Subnetルート表」のルールにより、Public Subnet内のインスタンスへ転送されます。 Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network...","categories": [],

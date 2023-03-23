@@ -1,0 +1,984 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Content Managementサービス管理者向け作業ガイド | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が作業・確認すべきことを紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Content Managementサービス管理者向け作業ガイド">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/ocm_admin_guide/">
+
+
+  <meta property="og:description" content="OCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が作業・確認すべきことを紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/ocm_admin_guide/001.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-03-23T20:24:38+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/ocm_admin_guide/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/ocm_admin_guide/001.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Content Managementサービス管理者向け作業ガイド
+
+        
+      </h1>
+      
+        <p class="page__lead">OCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が作業・確認すべきことを紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Content Managementサービス管理者向け作業ガイド</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">コンテンツ管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content Management インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_ocm_instance_IdentityDomain/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_identitydomain_group_user/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/ocm_admin_guide/" class="active">Oracle Content Managementサービス管理者向け作業ガイド</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content Management のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCM インスタンスにサインインする（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/13_upload_multiple_files/">その13: 圧縮ファイルによる複数ファイルの一括登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/42_business_repository/">Oracle Content Management で請求書などの電子ファイルを長期保管してみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experience のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content Management のVideo Plus アセットを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/78_create_custom_template/">Oracle Content Management でカスタムテンプレートを自作しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/74_create_multilingual/">Oracle Content and Experience で多言語サイトを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/75_taxonomy/">Oracle Content and Experience のタクソノミを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/77_sitesecuritygovernance/">OCEのサイト・セキュリティとサイト・ガバナンスを理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/91_compile_site_ocmtoolkit/">Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Content Managementサービス管理者向け作業ガイド">
+    <meta itemprop="description" content="OCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が作業・確認すべきことを紹介します。">
+    <meta itemprop="datePublished" content="2023-03-23T20:24:38+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-インスタンス共通の管理設定ガイド">1. インスタンス共通の管理設定ガイド</a><ul><li><a href="#11-ブランディング">1.1 ブランディング</a></li><li><a href="#12-通知">1.2 通知</a></li><li><a href="#13-タイムゾーンおよび言語">1.3 タイムゾーンおよび言語</a></li><li><a href="#14-ファイルとアセットの制限">1.4 ファイルとアセットの制限</a></li><li><a href="#15-請求">1.5 請求</a></li></ul></li><li><a href="#2-ファイル共有機能の管理設定ガイド">2. ファイル共有機能の管理設定ガイド</a><ul><li><a href="#21-ユーザー">2.1 ユーザー</a><ul><li><a href="#211-デフォルトロールの設定">2.1.1 デフォルトロールの設定</a></li><li><a href="#212-外部ユーザーの設定">2.1.2 外部ユーザーの設定</a></li></ul></li><li><a href="#22-ドキュメント">2.2 ドキュメント</a><ul><li><a href="#221-ユーザー割当て制限">2.2.1 ユーザー割当て制限</a></li><li><a href="#222-リンク">2.2.2 リンク</a><ul><li><a href="#1社内社外の双方向でのファイル受け渡しで利用双方向のファイル送受信">(1)社内←→社外の双方向でのファイル受け渡しで利用（双方向のファイル送受信）</a></li><li><a href="#2社内社外へのファイル送付でのみ利用片方向のファイル送信">(2)社内→社外へのファイル送付でのみ利用（片方向のファイル送信）</a></li><li><a href="#3社内のファイル共有でのみパブリックリンクを使う">（3）社内のファイル共有でのみパブリックリンクを使う</a></li><li><a href="#4パブリックリンクは利用しない">（4）パブリックリンクは利用しない</a></li></ul></li></ul></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>この文書はOCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が<strong>必ず</strong>作業・確認すべき管理設定を紹介します。</p>
+
+<p class="notice--info"><strong>【お知らせ】</strong><br />
+この文書は、2023年3月時点での最新バージョン(23.3.1)を元に作成されてます。<br />
+チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。</p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li><a href="../create_ocm_instance_IdentityDomain">OCI IAM Identity Domain環境でOracle Content Management インスタンスを作成する</a></li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-インスタンス共通の管理設定ガイド">1. インスタンス共通の管理設定ガイド</h1>
+
+<p>OCMインスタンスを作成したら、必ず作業・確認すべき管理設定を紹介します</p>
+
+<h2 id="11-ブランディング">1.1 ブランディング</h2>
+
+<p>OCMのWebユーザーインタフェースの<strong>ロゴ</strong>及びロゴ右隣の<strong>ブランディング・テキスト</strong>を変更できます。</p>
+
+<p>ブランディングテキストは、組織内におけるOCMインスタンスの名称（呼称）を、短くわかりやすい言葉で表現する際に利用します</p>
+
+<ol>
+  <li>
+    <p>サービス管理者権限が付与されたユーザーでOCMインスタンスにサインインします</p>
+  </li>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します</p>
+
+    <p><img src="002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>ブランディング</strong>の<strong>コーポレート・ブランディング・テキスト</strong>で<strong>カスタム</strong>を選択し、表示するテキストを入力します</p>
+
+    <blockquote>
+      <p><strong>【TIPS】</strong><br />
+ブランディングテキストを非表示としたい場合は、<strong>カスタム</strong>を選択し、入力エリアを空白のままとします</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>企業ロゴで<strong>変更</strong>をクリックし、表示したいロゴ画像を設定します</p>
+
+    <p><img src="003.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+  </li>
+  <li>
+    <p>ロゴとブランディングテキストが変更されます</p>
+
+    <p><img src="001.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-general-settings.html#GUID-FB052FB7-2D76-47FF-BED4-F123A6BA816E">Apply Custom Branding and URLs</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-general-settings.html#GUID-FB052FB7-2D76-47FF-BED4-F123A6BA816E">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h2 id="12-通知">1.2 通知</h2>
+
+<p>ユーザーへの通知メールの有効/無効を設定します。デフォルトは全て「有効」です。</p>
+
+<p>なお、通知メールのデザインや本文のカスタマイズはできませんが、<a href="#11-ブランディング">1.1ブランディング</a>で設定した企業ロゴおよびブランディングテキストが通知メールに設定されます</p>
+
+<p><img src="004.jpg" alt="画像" /></p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>通知</strong>の有効・無効を選択します。それぞれの通知設定は以下の通りです</p>
+
+    <ul>
+      <li><strong>ようこそ電子メール通知:</strong> ユーザーがOCMインスタンスに追加された時に電子メールが通知されます。通知メールはユーザーに割り当てられるアプリケーションロールによってカスタマイズされます</li>
+      <li><strong>タクソノミ電子メール通知:</strong>　タクソノミのプロモート、公開、削除の時に電子メールが通知されます。通知メールはタクソノミが割り当てられているリポジトリにアクセスできるユーザーに対して送信されます</li>
+      <li>
+        <p><strong>他のすべての電子メール通知:</strong> 会話機能でフラグが設定されたとき、フォルダにメンバー追加されたとき、など上記以外の他のイベント発生時に電子メールが通知されます</p>
+
+        <p><img src="005.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-general-settings.html#GUID-3B6082F9-CA5A-4F53-AA91-CBA33ED73CFA">Enable or Disable Email Notifications</a>  <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-general-settings.html#GUID-3B6082F9-CA5A-4F53-AA91-CBA33ED73CFA">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h2 id="13-タイムゾーンおよび言語">1.3 タイムゾーンおよび言語</h2>
+
+<p>webブラウザのロケール設定を使用できない場合のフォールバック設定を指定します（通常はWebブラウザのロケール設定にあわせて、タイムゾーン、言語、日付書式が選択されます）</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>タイムゾーンおよび言語</strong>の「タイムゾーン」「言語」「日付書式ロケール」「開始曜日」を選択します</p>
+
+    <p><img src="006.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-general-settings.html#GUID-7EB47C08-FC18-496D-A9F1-7002697411A1">Set the Default Locale Settings</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-general-settings.html#GUID-7EB47C08-FC18-496D-A9F1-7002697411A1">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h2 id="14-ファイルとアセットの制限">1.4 ファイルとアセットの制限</h2>
+
+<p>ウィルス・スキャン、最大アップロードおよび同期ファイルサイズ、ファイルタイプ（拡張子）を設定します。</p>
+
+<blockquote>
+  <p><strong>【重要:ウィルススキャンの無効化について】</strong><br />
+ウィルススキャンはデフォルトで<strong>スキャンできないファイルのアップロードを「許可しない」</strong>です。<strong>スキャンできないファイルのアップロードを「許可する」</strong>に変更できますが、そのリスクや影響範囲をご理解いただき、自己責任の上で設定変更をお願いします</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>【重要:ファイル・サイズについて】</strong><br />
+ファイルサイズのデフォルト「2GB」です。なお、ここで設定したファイルサイズは、(1)WebブラウザからOCMのフォルダにアップロードされるファイル、(2)クライアント端末にインストールされたデスクトップアプリケーションからOCMのフォルダにアップロード（同期）されるファイル、(3)WebブラウザからOCMのリポジトリにアップロードされる画像ファイルや動画ファイル、などすべての登録ファイルに適用されます</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>ファイルとアセットの制限</strong>を選択します</p>
+
+    <p><img src="007.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>【メモ】</strong><br />
+上記設定の場合、「スキャンできないファイルのアップロードは許可しない」「アップロード可能な最大ファイルサイズは4096MB(4GB)」「ファイル拡張子が<em>exe</em>と<em>swf</em>のファイルアップロードを拒否」となります</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-general-settings.html#GUID-10E4A4A8-B40C-4DE9-8E13-6C35A43E241E">Restrict File and Asset Types and Sizes</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-general-settings.html#GUID-10E4A4A8-B40C-4DE9-8E13-6C35A43E241E">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h2 id="15-請求">1.5 請求</h2>
+
+<p>OCMインスタンス内に登録可能な<strong>アセット数、ファイル数、及びストレージ容量</strong>を設定します。デフォルトは<strong>制限なし（0）</strong>です。</p>
+
+<p>制限を適用せず、管理警告の送信のみ設定することもできます。なお、管理警告は制限値の<strong>90%に到達した場合</strong>に、サービス管理者に対してメール通知されます</p>
+
+<blockquote>
+  <p><strong>【重要】</strong><br />
+制限値の適用を<strong>有効</strong>に設定した状態で登録数やストレージ容量、転送量が制限値を超過した場合は、超過状態が解除されるまで、<strong>ファイルやアセットの新規登録ができません（エラーになります）</strong><br />
+データ転送制限の制限値の適用を<strong>有効</strong>にした状態で制限値を超過した場合、OCMからのファイル表示やダウンロードだけでなく、サイト訪問者によるOCMのサイト機能で作成・公開したWebサイトの表示・閲覧もエラーとなります</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→請求</strong>を選択します</p>
+
+    <p><img src="011.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>リソース制限</strong>より「アセット制限」「ファイル制限」「ストレージ制限」の制限値を設定し、「制限値の適用」を<strong>有効</strong>に設定します。制限値を設定しない場合は、値に<strong>0(ゼロ)</strong>を設定します</p>
+
+    <p><img src="008.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>制限値を適用せず、管理者への管理警告の送信のみとする場合は、「制限値の適用」を<strong>無効</strong>に設定し、「制限に達したときに管理警告を送信」を<strong>有効</strong>に設定します</p>
+
+    <p><img src="009.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>データ転送制限</strong>についても、リソース制限と同様に設定します。下のスクリーンショットの場合、制限値を<strong>10GB</strong>に、制限値の適用を<strong>有効</strong>に設定しました</p>
+
+    <p><img src="010.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-billing-settings.html">Configure Billing Settings</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-billing-settings.html">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h1 id="2-ファイル共有機能の管理設定ガイド">2. ファイル共有機能の管理設定ガイド</h1>
+
+<p>OCMインスタンスの<strong>ファイル共有機能（ドキュメント機能）</strong>を利用する場合に、必ず作業・確認すべき管理設定を紹介します</p>
+
+<h2 id="21-ユーザー">2.1 ユーザー</h2>
+
+<h3 id="211-デフォルトロールの設定">2.1.1 デフォルトロールの設定</h3>
+
+<p>フォルダにメンバーを追加する際のデフォルトで選択されるロールを設定します。</p>
+
+<p>デフォルトは「コントリビュータ」ですが、「参照者」や「ダウンロード実行者」の権限に変更することを推奨します（誤操作などにより追加予定の無いユーザーをメンバー追加してしまった際の影響範囲を必要最小限に抑えられるため）</p>
+
+<p><img src="013.jpg" alt="画像" /></p>
+
+<blockquote>
+  <p><strong>【メモ】</strong><br />
+メンバー追加時のロールは「マネージャ」「コントリビュータ」「ダウンロード実行者」「参照者」の4つのロールを選択できます。<br />
+それぞれのロールで利用できる操作は、<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-users-settings.html#GUID-C3BD4C55-BC35-40D8-95BA-3672D2AAAA9F">Set the Default Resource Role for New Folder Members</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-users-settings.html#GUID-C3BD4C55-BC35-40D8-95BA-3672D2AAAA9F">(※日本語翻訳)</a>をご確認ください</p>
+</blockquote>
+
+<p>ここではデフォルトロールを「参照者」に変更する手順を紹介します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→ユーザー</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>フォルダに追加された新規メンバーのデフォルトのロール</strong>で、<strong>参照者</strong>を選択します</p>
+
+    <p><img src="012.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+  </li>
+  <li>
+    <p>フォルダを選択し、<strong>メンバー→メンバーの追加</strong>を選択します。「これらのユーザーは何を実行できますか。」の権限で<strong>参照者</strong>がデフォルト設定されることを確認します</p>
+
+    <p><img src="014.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-users-settings.html#GUID-C3BD4C55-BC35-40D8-95BA-3672D2AAAA9F">Set the Default Resource Role for New Folder Members</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-users-settings.html#GUID-C3BD4C55-BC35-40D8-95BA-3672D2AAAA9F">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h3 id="212-外部ユーザーの設定">2.1.2 外部ユーザーの設定</h3>
+
+<p>OCMインスタンスで<strong>外部ユーザー(External User)</strong>によるフォルダ・ファイルの利用を有効にする場合、この設定を変更します。</p>
+
+<p>外部ユーザーの詳細は、<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/manage-users-groups-and-access.html#GUID-925E928C-E14C-459C-A047-DA7DCBF18B2D">External Users</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/manage-users-groups-and-access.html#GUID-925E928C-E14C-459C-A047-DA7DCBF18B2D">(※日本語翻訳)</a> をご確認ください</p>
+
+<p>ここでは外部ユーザーのフォルダ招待を「有効」に変更し、外部ユーザーの先行入力検索を「無効」に、それぞれ変更する手順を紹介します</p>
+
+<blockquote>
+  <p><strong>【メモ】</strong><br />
+外部ユーザーの先行入力検索を「無効」に設定した場合、追加する外部ユーザーのユーザーIDを全て入力する必要があります。<br />
+「有効」に設定した場合、追加する外部ユーザーのユーザーIDの一部を入力すると、入力文字を含む外部ユーザーの一覧が選択候補として表示されます</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→ユーザー</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>このサービスへの外部ユーザーの招待をメンバーに許可します:</strong>で<strong>有効</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>メンバーシップ・リストでの外部ユーザーの検索で先行入力検索を許可します:</strong>で<strong>無効</strong>を選択します</p>
+
+    <p><img src="015.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+  </li>
+  <li>
+    <p>フォルダを選択し、「外部ユーザーにフォルダ・アクセスおよびメンバーシップを許可します」が有効になっていることを確認し、<strong>メンバー→メンバーの追加</strong>を選択します。追加する外部ユーザーのユーザーIDの一部を入力しても<strong>選択候補が表示されない</strong>ことを確認します</p>
+
+    <p><img src="016.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>【参考】</strong><br />
+先行入力を許可した場合、追加する外部ユーザーのユーザーIDの一部を入力すると<strong>選択候補が表示されます</strong><br />
+<img src="017.jpg" alt="画像" /></p>
+    </blockquote>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-users-settings.html#GUID-4C32399A-9F5B-4FB4-A951-0C28C74851DC">Enable or Disable External Users</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-users-settings.html#GUID-4C32399A-9F5B-4FB4-A951-0C28C74851DC">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h2 id="22-ドキュメント">2.2 ドキュメント</h2>
+
+<h3 id="221-ユーザー割当て制限">2.2.1 ユーザー割当て制限</h3>
+
+<p>OCMインスタンスのファイル共有機能（ドキュメント機能）の利用ユーザーに割り当てるデフォルトの容量、ごみ箱での最大保持期間、最大バージョン数などを設定します。</p>
+
+<p>ここで設定した値は、登録ファイル（アセット）数やストレージ使用量など<strong>月々のOCMのサービス利用料金に関係する</strong>ため、事前に利用頻度や条件、ユースケースなどを検討した上で値を決定することを推奨します</p>
+
+<p>ここでは、利用ユーザーに割り当てるデフォルト容量を<strong>10GB</strong>、ごみ箱での最大保持期間を<strong>30日</strong>、無制限バージョンを<strong>無効</strong>（最大最大バージョン数の制限あり）、最大バージョン数を<strong>10</strong>、自動削除された古いバージョンを<strong>完全削除する</strong>（ごみ箱に移動しない）、に設定する手順を紹介します</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→ドキュメント</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>ユーザー割当て制限</strong>で以下の通りに設定します</p>
+
+    <ul>
+      <li>ユーザーごとのデフォルトの割当て制限: <strong>10</strong></li>
+      <li>ファイルおよびフォルダをごみ箱に保持する最大日数: <strong>30</strong></li>
+      <li>無制限バージョンを許可: <strong>無効</strong></li>
+      <li>ファイル当たりのバージョンの最大数: <strong>10</strong></li>
+      <li>
+        <p>クリアされたリビジョンを完全に削除します: <strong>有効</strong></p>
+
+        <p><img src="018.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-documents-settings.html#GUID-3FEA658C-3B7F-4C6F-BF19-83BB0D7FE307">Set User Quotas and Manage Storage Space</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-documents-settings.html#GUID-3FEA658C-3B7F-4C6F-BF19-83BB0D7FE307">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<h3 id="222-リンク">2.2.2 リンク</h3>
+
+<p>パブリックリンク機能をどのようにユーザーに利用させるのか？を設定します。</p>
+
+<p>ここでは代表的なパブリックリンク機能の管理設定を4パターン紹介します。</p>
+
+<ul>
+  <li>(1)<a href="#1社内社外の双方向でのファイル受け渡しで利用双方向のファイル送受信">社内←→社外の双方向でのファイル受け渡しで利用（双方向のファイル送受信）</a></li>
+  <li>(2)<a href="#2社内社外へのファイル送付でのみ利用片方向のファイル送信">社内→社外へのファイル送付でのみ利用（片方向のファイル送信）</a></li>
+  <li>(3)<a href="#3社内のファイル共有でのみパブリックリンクを使う">社内のファイル共有でのみパブリックリンクを使う</a></li>
+  <li>(4)<a href="#4パブリックリンクは利用しない">パブリックリンクは利用しない</a></li>
+</ul>
+
+<p><br /></p>
+
+<h4 id="1社内社外の双方向でのファイル受け渡しで利用双方向のファイル送受信">(1)社内←→社外の双方向でのファイル受け渡しで利用（双方向のファイル送受信）</h4>
+
+<p>お客様や取引先、パートナーなど、OCMの登録ユーザーではない社外ユーザーとファイルの送受信でパブリックリンクを利用する場合は以下の設定をします</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→ドキュメント</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>リンク</strong>で以下の通りに設定します</p>
+
+    <ul>
+      <li>ファイルおよびフォルダへのパブリック・リンクを許可: <strong>有効</strong></li>
+      <li>デフォルト共有リンク・タイプ: <strong>メンバーのみ</strong></li>
+      <li>アクセス・オプション: <span style="color: red;"><strong>すべてのユーザー</strong></span></li>
+      <li>パブリック・リンクの作成時にユーザーに警告を表示: <strong>有効</strong></li>
+      <li>パブリック・リンクに使用可能な最大ロール: <span style="color: red;"><strong>コントリビュータ</strong></span></li>
+      <li>新規パブリック・リンクのデフォルト・ロール: <strong>参照者</strong></li>
+      <li>すべてのパブリック・リンクに有効期限を強制: <span style="color: red;"><strong>有効</strong></span></li>
+      <li>
+        <p>最大有効期限の設定: <strong>30</strong></p>
+
+        <p><img src="019.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+
+    <blockquote>
+      <p><strong>【Memo】</strong><br />
+アクセスオプションを「すべてのユーザー」に設定すると、OCMの登録ユーザーでなくてもパブリックリンク経由でファイル・フォルダにアクセスできます<br />
+パブリック・リンクに使用可能な最大ロールを「コントリビュータ」に設定すると、更新権限付きのパブリックリンクが作成できます<br />
+パブリックリンクには有効期限を強制設定することを推奨します。ここでは「30日」に設定します</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h4 id="2社内社外へのファイル送付でのみ利用片方向のファイル送信">(2)社内→社外へのファイル送付でのみ利用（片方向のファイル送信）</h4>
+
+<p>お客様や取引先、パートナーなど、OCMの登録ユーザーではない社外ユーザーにファイルの送信でパブリックリンクを利用する場合は以下の設定をします</p>
+
+<ol>
+  <li>
+    <p><strong>リンク</strong>で以下の通りに設定します</p>
+
+    <ul>
+      <li>ファイルおよびフォルダへのパブリック・リンクを許可: <strong>有効</strong></li>
+      <li>デフォルト共有リンク・タイプ: <strong>メンバーのみ</strong></li>
+      <li>アクセス・オプション: <strong>すべてのユーザー</strong></li>
+      <li>パブリック・リンクの作成時にユーザーに警告を表示: <strong>有効</strong></li>
+      <li>パブリック・リンクに使用可能な最大ロール: <span style="color: red;"><strong>ダウンロード実行者</strong></span></li>
+      <li>新規パブリック・リンクのデフォルト・ロール: <strong>参照者</strong></li>
+      <li>すべてのパブリック・リンクに有効期限を強制: <strong>有効</strong></li>
+      <li>
+        <p>最大有効期限の設定: <strong>10</strong></p>
+
+        <p><img src="020.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+
+    <blockquote>
+      <p><strong>【Memo】</strong><br />
+パブリック・リンクに使用可能な最大ロールを「ダウンロード実行者」に設定すると、閲覧及びダウンロードが可能なパブリックリンクが作成できます<br />
+パブリックリンクには有効期限を強制設定することを推奨します。ここでは「10日」に設定します</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h4 id="3社内のファイル共有でのみパブリックリンクを使う">（3）社内のファイル共有でのみパブリックリンクを使う</h4>
+
+<p>お客様や取引先、パートナーなどOCMの登録ユーザーではない社外ユーザーとのファイル共有でパブリックリンクを利用せず、拠点や組織を横断した社内のファイル共有でのみパブリックリンクを利用する場合は以下の設定をします</p>
+
+<ol>
+  <li>
+    <p><strong>リンク</strong>で以下の通りに設定します</p>
+
+    <ul>
+      <li>ファイルおよびフォルダへのパブリック・リンクを許可: <strong>有効</strong></li>
+      <li>デフォルト共有リンク・タイプ: <strong>メンバーのみ</strong></li>
+      <li>アクセス・オプション: <span style="color: red;"><strong>すべての登録済ユーザー</strong></span></li>
+      <li>パブリック・リンクの作成時にユーザーに警告を表示: <strong>有効</strong></li>
+      <li>パブリック・リンクに使用可能な最大ロール: <strong>コントリビュータ</strong></li>
+      <li>新規パブリック・リンクのデフォルト・ロール: <strong>参照者</strong></li>
+      <li>
+        <p>すべてのパブリック・リンクに有効期限を強制: <strong>無効</strong></p>
+
+        <p><img src="021.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+
+    <blockquote>
+      <p><strong>【Memo】</strong><br />
+アクセス・オプションで「すべての登録済ユーザー」に設定すると、OCMの登録ユーザーのみパブリックリンクを送信できます。OCMの登録ユーザーでない社外ユーザーにパブリックリンクを送信しても、そのリソース（ファイルやフォルダ）にアクセスできません<br />
+必要に応じてパブリックリンクの有効期限を設定します</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h4 id="4パブリックリンクは利用しない">（4）パブリックリンクは利用しない</h4>
+
+<p>パブリックリンクの利用を禁止する場合は、以下の設定をします</p>
+
+<ol>
+  <li>
+    <p><strong>リンク</strong>で以下の通りに設定します</p>
+
+    <ul>
+      <li>
+        <p>ファイルおよびフォルダへのパブリック・リンクを許可: <span style="color: red;"><strong>無効</strong></span></p>
+
+        <p><img src="022.jpg" alt="画像" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
+
+    <blockquote>
+      <p><strong>【Memo】</strong><br />
+ファイルおよびフォルダへのパブリック・リンクを許可を「無効」に設定すると、フォルダ・ファイルの「リンクの共有」メニューを選択してもパブリックリンクは作成できません（メンバーリンクのみ取得できます）<br />
+その他管理設定は設定不要です</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p class="notice--info"><strong>【関連ドキュメント】</strong><br />
+<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/configure-documents-settings.html#GUID-5E3A2B4C-1B9C-4292-A8B9-01B5CEE33E9E">Set Default Link Behavior</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/configure-documents-settings.html#GUID-5E3A2B4C-1B9C-4292-A8B9-01B5CEE33E9E">(※日本語翻訳)</a></p>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+<p><a href="#top">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#ocm" class="page__taxonomy-item" rel="tag">OCM</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-23T20:24:38+09:00">March 23, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Content+Management%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E7%AE%A1%E7%90%86%E8%80%85%E5%90%91%E3%81%91%E4%BD%9C%E6%A5%AD%E3%82%AC%E3%82%A4%E3%83%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2Focm_admin_guide%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2Focm_admin_guide%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2Focm_admin_guide%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/create_identitydomain_group_user/" class="pagination--pager" title="OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/using_file_sharing/" class="pagination--pager" title="Oracle Content Management のファイル共有機能を使ってみよう【初級編】
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
