@@ -43,8 +43,18 @@ toc: true
 
 ## Starter Edition
 
-+ **[[Oracle Cloud] Oracle Content Management の Starter Edition をクイックスタートしてみた](https://qiita.com/nakasato310/items/9457a61d9d27db6ce4f0)**  
++ **[[Oracle Cloud] Oracle Content Management の Starter Edition をクイックスタートしてみた](https://qiita.com/nakasato310/items/9457a61d9d27db6ce4f0)** (※外部サイト)  
     この記事では、2021年7月の最新バージョン(21.6.1)より新たに追加された Oracle Content Management - Starter Edition をクイックスタートする方法を紹介します
+
+
+
+## システム管理設定
+
++ **[Oracle Content Managementサービス管理者向け作業ガイド](/ocitutorials/content-management/ocm_admin_guide/)**  <span style="color: red;">New!</span>  
+    OCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が作業・確認すべきことを紹介します。
+
++ **[Oracle Content Management のサイト・セキュリティとサイト・ガバナンスを設定する](/ocitutorials/content-management/77_sitesecuritygovernance/)**  
+    OCMで作成するWebサイトのサイト・セキュリティとサイト・ガバナンスの設定方法をステップ・バイ・ステップで紹介するチュートリアルです。サービス管理者は、ユーザーにサイト作成機能を利用させる前に、OCMインスタンスの利用目的にあわせたサイト・セキュリティを設定することを推奨します【所要時間:20分】
 
 
 <br />
@@ -73,12 +83,6 @@ toc: true
 
 + **[Oracle Content Management を Webコンテンツ管理(Web CMS) として利用しよう【初級編】](/ocitutorials/content-management/62_webcms/)**  
     OCM のサイト作成機能を利用し、Web サイト（エンタープライズサイト）を作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します【所要時間:約30分】
-
-
-## システム管理設定
-
-+ **[Oracle Content Management のサイト・セキュリティとサイト・ガバナンスを設定する](/ocitutorials/content-management/77_sitesecuritygovernance/)**  
-    OCM で作成する Web サイトのサイト・セキュリティとサイト・ガバナンスの設定方法をステップ・バイ・ステップで紹介するチュートリアルです。サービス管理者は、ユーザーにサイト作成機能を利用させる前に、OCMインスタンスの利用目的にあわせたサイト・セキュリティを設定することを推奨します【所要時間:20分】
 
 
 <br />
@@ -120,6 +124,16 @@ toc: true
 + **[Oracle Content Management で多言語サイトを作成しよう](/ocitutorials/content-management/74_create_multilingual/)**  
     OCM のサイト作成機能を利用し、多言語サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します【所要時間:約60分】
 
+
+## コンテンツ・キャプチャ(Content Capture)
+
+コンテンツ・キャプチャ機能は、紙などの物理的な文書をスキャンしたり、大量の電子文書をインポートした後、処理および索引付けし、OCMにアップロードする機能です。このチュートリアルは、ファイル・インポート・エージェントを介した「監視対象ファイル・フォルダ」から電子文書を取得し、OCMの**ドキュメント(フォルダ)**or**アセット(ビジネスリポジトリ)**にインポートする一連の流れを説明します  
+
++ **[Oracle Content Management (OCM)- 監視対象フォルダからファイルをドキュメントにインポートしてみよう！](https://qiita.com/shinwata/items/3b3bb329fc6a55591517)** (※外部サイト)  
+
++ **[Oracle Content Management (OCM)- 監視対象フォルダからファイルをアセットにインポートしてみよう！](https://qiita.com/shinwata/items/61d2fe95c8294d664427)** (※外部サイト)  
+
+
 <br />
 
 # 3. 上級編（開発者向け）
@@ -151,13 +165,16 @@ toc: true
 ## GraphQLを使ってみよう
 
 + **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する](https://qiita.com/nakasato310/items/b160760dff00c5a53ca2)** (※外部サイト)  
-    GraphQL で Oracle Content Management のデータを取得する方法を紹介します【所要時間:15分】
+    GraphQLを利用し、Oracle Content Management のデータを取得する方法を紹介します【所要時間:15分】
 
 + **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する（２）](https://qiita.com/nakasato310/items/d69952933a85d11543a5)** (※外部サイト)  
-    GraphQL で Oracle Content Management で登録・公開される複数アイテム（アセット）の情報を取得する方法を紹介します【所要時間:15分】
+    GraphQLを利用し、Oracle Content Management で登録・公開される複数アイテム（アセット）の情報を取得する方法を紹介します【所要時間:15分】
 
 + **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する（３）](https://qiita.com/nakasato310/items/7b1e1c3223a737a82192)** (※外部サイト)  
     GraphQLエクスプローラではなく、クライアントアプリケーション(React+Apollo Client)から OCM のアセット情報を取得する方法を紹介します【所要時間:20分】
+
++ **[[Oracle Cloud] GraphQL で Oracle Content Management のデータを取得する（4）](https://qiita.com/nakasato310/items/48f36e0f6373ded11239)** (※外部サイト)  
+    Graphを利用し、Oracle Content Managementで管理される公開済アセット及び未公開アセットの情報を取得する方法を紹介します【所要時間:15分】
 
 
 ## OCM-APEX統合
