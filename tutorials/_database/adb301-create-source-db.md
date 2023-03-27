@@ -1,6 +1,6 @@
 ---
 title: "301 : 移行元となるデータベースを作成しよう"
-excerpt: "まずは準備作業として、現行ご利用いただいているOracle Databaseを想定し、DBCSインスタンスを作成します。"
+excerpt: "まずは準備作業として、現行ご利用いただいているOracle Databaseを想定し、BaseDBインスタンスを作成します。"
 order: "3_301"
 layout: single
 header:
@@ -26,12 +26,12 @@ header:
 
 ----
 
-本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しDBCSインスタンスを作成します。
+本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しBaseDBインスタンスを作成します。
 
 <BR>
 
 **目次 :**
-  + [1.移行元となるDBCSインスタンスの作成](#anchor1)
+  + [1.移行元となるBaseDBインスタンスの作成](#anchor1)
   + [2.移行対象となるサンプルスキーマ(HR)をインストール](#anchor2)
   + [3.サンプルスキーマ(HR)への接続、スキーマの確認](#anchor3)
 
@@ -42,19 +42,19 @@ header:
 
 <BR>
 
-**所要時間 :** 約150分 (DBCSインスタンスの作成時間を含む)
+**所要時間 :** 約150分 (BaseDBインスタンスの作成時間を含む)
 
 <BR>
 ----
 
 <a id="anchor1"></a>
 
-# 1. 移行元となるDBCSインスタンスの作成 
+# 1. 移行元となるBaseDBインスタンスの作成 
 
-まず、[「Oracle Cloud で Oracle Database を使おう(DBCS)」](/ocitutorials/database/dbcs101-create-db/){:target="_blank"} を参考に、DBCSインスタンスを作成してください。
-TeraTermを起動しDBCSインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。
+まず、[「Oracle Cloud で Oracle Database を使おう(BaseDB)」](/ocitutorials/database/dbcs101-create-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成してください。
+TeraTermを起動しBaseDBインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。
 
-以降では、DBCSインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です）
+以降では、BaseDBインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です）
 
 * ホスト名接頭辞 : **dbcs01**
 * データベースのバージョン：**12.2**
@@ -70,25 +70,25 @@ TeraTermを起動しDBCSインスタンスにSSHでアクセスするところ�
 
 <a id="anchor2"></a>
 
-次に作成したDBCSインスタンス内に、移行対象となるHRスキーマを作成します。  
+次に作成したBaseDBインスタンス内に、移行対象となるHRスキーマを作成します。  
 （HRスキーマのインストール方法に関するマニュアルは[こちら](https://docs.oracle.com/cd/E96517_01/comsc/installing-sample-schemas.html#GUID-CB945E4C-D08A-4B26-A12D-3D6D688467EA)）を参照ください。
 
 
-引き続きDBCSインスタンスにて作業します。
+引き続きBaseDBインスタンスにて作業します。
 
-1. Tera Termを利用してDBCSインスタンスに接続しておきます。
+1. Tera Termを利用してBaseDBインスタンスに接続しておきます。
 
 1. opc ユーザーからoracleユーザーにスイッチします。  
 ```sh
 sudo su - oracle
 ```
 
-1. SQL*PlusでDBCSインスタンスに接続します。
+1. SQL*PlusでBaseDBインスタンスに接続します。
 ```sh
 sqlplus / as sysdba
 ```
 
-1. DBCSインスタンスに構成されているPDBの一覧を確認します。
+1. BaseDBインスタンスに構成されているPDBの一覧を確認します。
 ```sql
 show pdbs
 ```
@@ -128,7 +128,7 @@ exit
 ```sh
 vi $ORACLE_HOME/network/admin/tnsnames.ora
 ```
-以下を追記します。（必要に応じて[「Oracle Cloud で Oracle Database を使おう(DBCS)」](/ocitutorials/database/dbcs101-create-db/)を参考に**ホスト名（HOST）**、**ポート番号（PORT）**、**サービス名（SERVICE_NAME）** を変更ください）  
+以下を追記します。（必要に応じて[「Oracle Cloud で Oracle Database を使おう(BaseDB)」](/ocitutorials/database/dbcs101-create-db/)を参考に**ホスト名（HOST）**、**ポート番号（PORT）**、**サービス名（SERVICE_NAME）** を変更ください）  
 ```
 PDB1 =
   (DESCRIPTION =
@@ -175,7 +175,7 @@ exit
 <br/>
 
 # おわりに
-以上で既存オンプレミスのOracle Databaseを想定したDBCSインスタンスの作成、およびサンプルスキーマの作成が完了しました。後続の章ではこの環境から移行する方法についてご紹介したいと思います。
+以上で既存オンプレミスのOracle Databaseを想定したBaseDBインスタンスの作成、およびサンプルスキーマの作成が完了しました。後続の章ではこの環境から移行する方法についてご紹介したいと思います。
 
 <br/>
 以上でこの章は終了です。次の章にお進みください。
