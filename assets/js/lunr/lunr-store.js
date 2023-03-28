@@ -545,6 +545,12 @@ var store = [{
         "url": "/ocitutorials/database/exadb-d105-scaling/",
         "teaser": "/ocitutorials/database/exadb-d105-scaling/teaser.png"
       },{
+        "title": "106 : データベースのバージョンを指定しよう",
+        "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、VMクラスタ上で作成するデータベースのバージョンを指定したり、ユーザーの個別の用途や要求に合わせるようにカスタム・イメージを作成して指定することを簡単に行うことが可能です。この章ではデータベース・ホームおよびカスタム・イメージの作成方法について紹介します。 目次 : 1. データベース・ホームの作成 2. カスタム・イメージを使用したデータベース・ホームの作成 カスタム・イメージの作成 データベース・ホームの作成 3. 確認作業 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること 所要時間 : 約30分　※環境によって異なるため、参考値です。 1. データベース・ホームの作成 OCIコンソール・メニューから Oracle Database → Oracle Public Cloud上のExadata に移動します。 利用したいコンパートメントをリスト範囲のコンパートメントから選択します。 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、リージョンの一覧から選択します。 操作したいExadata VMクラスタの表示名をクリックします。 リソースの一覧からデータベース・ホームをクリックします。 データベース・ホームの作成をクリックします。 データベース・ホームの作成ダイアログで以下の操作を行います。 データベース・ホームの表示名に任意の名前を入力します。 データベース・イメージの変更をクリックします。 イメージ・タイプはOracle...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/database/exadb-d106-dbversion/",
+        "teaser": "/ocitutorials/database/exadb-d106-dbversion/teaser.png"
+      },{
         "title": "101: ADBインスタンスを作成してみよう",
         "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、Database Actionsを使用してアクセスしてみます。 目次 1. リージョンを設定し、コンパートメントを用意しよう 2. ADBインスタンスを作成してみよう 3. Database Actionsで操作してみよう 所要時間 : 約20分 1. リージョンを設定し、コンパートメントを用意しよう 1-1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足...","categories": [],
         "tags": [],
@@ -720,7 +726,7 @@ var store = [{
         "teaser": "/ocitutorials/database/adb219-autoindexing/adb219_3.png"
       },{
         "title": "301 : 移行元となるデータベースを作成しよう",
-        "excerpt":"はじめに 既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？ 従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは移行編としてそれらの方法をご紹介しています。 Autonomous Database を使ってみよう（移行編） 301: 移行元となるデータベースを作成しよう（本章） 302: スキーマ・アドバイザを活用しよう 303: Data Pumpを利用してデータを移行しよう [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）] 本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しDBCSインスタンスを作成します。 目次 : 1.移行元となるDBCSインスタンスの作成 2.移行対象となるサンプルスキーマ(HR)をインストール 3.サンプルスキーマ(HR)への接続、スキーマの確認 所要時間 : 約150分 (DBCSインスタンスの作成時間を含む) 1. 移行元となるDBCSインスタンスの作成 まず、「Oracle Cloud で Oracle Database を使おう(DBCS)」 を参考に、DBCSインスタンスを作成してください。 TeraTermを起動しDBCSインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。 以降では、DBCSインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です） ホスト名接頭辞 : dbcs01 データベースのバージョン：12.2 パスワード：WelCome123#123# PDBの名前：pdb1 2. 移行対象となるHRスキーマをインストール 次に作成したDBCSインスタンス内に、移行対象となるHRスキーマを作成します。...","categories": [],
+        "excerpt":"はじめに 既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？ 従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは移行編としてそれらの方法をご紹介しています。 Autonomous Database を使ってみよう（移行編） 301: 移行元となるデータベースを作成しよう（本章） 302: スキーマ・アドバイザを活用しよう 303: Data Pumpを利用してデータを移行しよう [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）] 本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しBaseDBインスタンスを作成します。 目次 : 1.移行元となるBaseDBインスタンスの作成 2.移行対象となるサンプルスキーマ(HR)をインストール 3.サンプルスキーマ(HR)への接続、スキーマの確認 所要時間 : 約150分 (BaseDBインスタンスの作成時間を含む) 1. 移行元となるBaseDBインスタンスの作成 まず、「Oracle Cloud で Oracle Database を使おう(BaseDB)」 を参考に、BaseDBインスタンスを作成してください。 TeraTermを起動しBaseDBインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。 以降では、BaseDBインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です） ホスト名接頭辞 : dbcs01 データベースのバージョン：12.2 パスワード：WelCome123#123# PDBの名前：pdb1 2. 移行対象となるHRスキーマをインストール 次に作成したBaseDBインスタンス内に、移行対象となるHRスキーマを作成します。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/database/adb301-create-source-db/",
         "teaser": "/ocitutorials/database/adb301-tac/sa00x.png"
@@ -732,7 +738,7 @@ var store = [{
         "teaser": "/ocitutorials/database/adb302-xxx/sa00x.png"
       },{
         "title": "303 : Data Pumpを利用してデータを移行しよう",
-        "excerpt":"はじめに Oracle Databaseのデータ移行として、ここでは従来からよく利用されるData Pumpを利用してAutonomous Databaseに移行する手順をご紹介します。 先の「301 : 移行元となるデータベースを作成しよう」にて事前に作成しておいたDBCSインスタンス上のHRスキーマを、以下の流れに沿ってAutonomous Databaseに移行してみたいと思います。 目次 : 1.移行対象のスキーマをエクスポート 2.オブジェクトストレージへのアクセストークンを取得 3.ダンプファイルをオブジェクトストレージにアップロード 4.Autonomous Databaseへのインポート 補足 チュートリアルを実施する上で、DBCSインスタンスを用意できない場合や、どうしてもエクスポートが成功しないと言った場合は、以下よりエクスポート済みのダンプファイルを配置しておりますので、適宜ダウンロードください。 上記ステップ2から実施いただくことが可能です。 ダンプファイル(export_hr_01.dmp)のダウンロード ダンプファイル(export_hr_02.dmp)のダウンロード ダンプファイル(export_hr_03.dmp)のダウンロード ダンプファイル(export_hr_04.dmp)のダウンロード 前提条件 : 「204: マーケットプレイスからの仮想マシンのセットアップ方法」を完了していること 「301 : 移行元となるデータベースを作成しよう」を完了していること 所要時間 : 約30分 1. 移行対象のスキーマをエクスポート HRスキーマをData Pumpを利用してDBCSインスタンスのOS上のファイルシステムにエクスポートします。 （補足） 本チュートリアルではOCI DBCSにプリインストールされているData Pumpを利用しますが、12.2.0.1以前のOracle Clientを利用する場合や、その他詳細情報についてはマニュアル（ADW / ATP）を参照ください。 パラレルオプションを利用する場合、ソースDBがEnterprise Editionである必要があります。 圧縮オプションを利用する場合、ソースDBが11g以上でありAdvanced Compression Optionが必要になります。 1-1....","categories": [],
+        "excerpt":"はじめに Oracle Databaseのデータ移行として、ここでは従来からよく利用されるData Pumpを利用してAutonomous Databaseに移行する手順をご紹介します。 先の「301 : 移行元となるデータベースを作成しよう」にて事前に作成しておいたBaseDBインスタンス上のHRスキーマを、以下の流れに沿ってAutonomous Databaseに移行してみたいと思います。 目次 : 1.移行対象のスキーマをエクスポート 2.オブジェクトストレージへのアクセストークンを取得 3.ダンプファイルをオブジェクトストレージにアップロード 4.Autonomous Databaseへのインポート 補足 チュートリアルを実施する上で、BaseDBインスタンスを用意できない場合や、どうしてもエクスポートが成功しないと言った場合は、以下よりエクスポート済みのダンプファイルを配置しておりますので、適宜ダウンロードください。 上記ステップ2から実施いただくことが可能です。 ダンプファイル(export_hr_01.dmp)のダウンロード ダンプファイル(export_hr_02.dmp)のダウンロード ダンプファイル(export_hr_03.dmp)のダウンロード ダンプファイル(export_hr_04.dmp)のダウンロード 前提条件 : 「204: マーケットプレイスからの仮想マシンのセットアップ方法」を完了していること 「301 : 移行元となるデータベースを作成しよう」を完了していること 所要時間 : 約30分 1. 移行対象のスキーマをエクスポート HRスキーマをData Pumpを利用してBaseDBインスタンスのOS上のファイルシステムにエクスポートします。 （補足） 本チュートリアルではOCI BaseDBにプリインストールされているData Pumpを利用しますが、12.2.0.1以前のOracle Clientを利用する場合や、その他詳細情報についてはマニュアル（ADW / ATP）を参照ください。 パラレルオプションを利用する場合、ソースDBがEnterprise Editionである必要があります。 圧縮オプションを利用する場合、ソースDBが11g以上でありAdvanced Compression Optionが必要になります。 1-1....","categories": [],
         "tags": [],
         "url": "/ocitutorials/database/adb303-datapump/",
         "teaser": "/ocitutorials/database/adb303-xxx/img00x.png"
@@ -762,7 +768,7 @@ var store = [{
         "teaser": "/ocitutorials/database/adb401-oci-goldengate/instancetop.png"
       },{
         "title": "402 : Database Linkによるデータ連携",
-        "excerpt":"はじめに 従来からOracle Databaseをご利用の方にはお馴染みのDatabase Linkですが、Autonomous Database でもこのDatabase Linkをお使いいただくことが可能です。 Database Linkは、他のOracle Database インスタンスからデータを移行・連携・収集するための便利な機能です。 Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。 本文書では2のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、 他のOracle Database（リンク先）にアクセスする手順を記載します。 その後、補足と言う形でパターン1, 3についても記載します。 なお、本文書ではパブリックIPアドレスを持つDBCSを前提としています。プライベートIPアドレスへのDatabase Link作成については、こちらの記事 で紹介しています。 ご不明な点がございましたら、担当営業までお問い合わせください。 目次 : 1.DBCSインスタンスの作成およびスキーマのインポート 2.DBCSにてTCPS認証（SSL認証）を有効化 3.DBCSのウォレットファイルをADBに渡す 4.VCNのイングレス・ルールを更新 5.ADBにてDatabase Linkを作成 6.エラーへの対応例 7.その他のパターン 8.おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約100分（DBCSインスタンスの作成時間を含む） 1. DBCSインスタンスの作成およびスキーマのインポート まず、サンプル・データベースとして、Database Linkのリンク先となるDBCSインスタンスを作成します。 301 :...","categories": [],
+        "excerpt":"はじめに 従来からOracle Databaseをご利用の方にはお馴染みのDatabase Linkですが、Autonomous Database でもこのDatabase Linkをお使いいただくことが可能です。 Database Linkは、他のOracle Database インスタンスからデータを移行・連携・収集するための便利な機能です。 Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。 本文書では2のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、 他のOracle Database（リンク先）にアクセスする手順を記載します。 その後、補足と言う形でパターン1, 3についても記載します。 なお、本文書ではパブリックIPアドレスを持つBaseDBを前提としています。プライベートIPアドレスへのDatabase Link作成については、こちらの記事 で紹介しています。 ご不明な点がございましたら、担当営業までお問い合わせください。 目次 : 1.BaseDBインスタンスの作成およびスキーマのインポート 2.BaseDBにてTCPS認証（SSL認証）を有効化 3.BaseDBのウォレットファイルをADBに渡す 4.VCNのイングレス・ルールを更新 5.ADBにてDatabase Linkを作成 6.エラーへの対応例 7.その他のパターン 8.おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約100分（BaseDBのインスタンスの作成時間を含む） 1. BaseDBインスタンスの作成およびスキーマのインポート まず、サンプル・データベースとして、Database Linkのリンク先となるBaseDBインスタンスを作成します。 301 :...","categories": [],
         "tags": [],
         "url": "/ocitutorials/database/adb402-database-link/",
         "teaser": "/ocitutorials/database/adb402-database-link/DatabaseLink_teaser.jpg"
@@ -1131,7 +1137,7 @@ var store = [{
         "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル これまでのチュートリアルでは、Oracle Cloud Infrastructure(OCI) をコンソールを通して利用してきましたが、OCIにはこれらの操作をRESTfulなウェブサービスを通して実行するためのAPIと、それを呼び出す **コマンド・ライン・インタフェース(CLI) ** が用意されています。 この章では、手元の Windows PC 環境にCLIをインストールしてOCIの基本的な操作を行う手順を通じて、APIとCLIの動作について理解を深めます。 また、セットアップしたCLIとBash環境を利用して、クラウド上に効率的にネットワークやインスタンスを作成する方法について学習します。 所要時間 : 約50分 前提条件 : チュートリアル : その1 - OCIコンソールにアクセスして基本を理解する を完了し、Oracle Cloud Infrastructure コンソールにアクセスでき、どこかのコンパートメント (ルート・コンパートメントも可) に対して管理権限を持っていること チュートリアルの その2 から その8 の内容についてひととおり理解していること (チュートリアルの実施することそのものは必須ではありませんが、一度目を通してコンソール上での操作について確認しておくことをお勧めします) 無償トライアル環境のお申込みについては こちら の資料を参照してください。 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。...","categories": [],
         "tags": ["intermediate"],
         "url": "/ocitutorials/intermediates/using-cli/",
-        "teaser": "/ocitutorials/intermediates/using-cli/img5.png"
+        "teaser": "/ocitutorials/intermediates/using-cli/image-20210913161308143.png"
       },{
         "title": "OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する",
         "excerpt":" ","categories": [],
@@ -1144,12 +1150,6 @@ var store = [{
         "tags": ["id-security"],
         "url": "/ocitutorials/intermediates/networkfirewall/",
         "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
-      },{
-        "title": "TerraformでOCIの構築を自動化する",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/intermediates/terraforming/",
-        "teaser": null
       },{
         "title": "OCI Valut (OCI Key Management) でBYOKをする",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
@@ -1241,6 +1241,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/resource-manager/",
         "teaser": "/ocitutorials/intermediates/resource-manager/000.png"
       },{
+        "title": "TerraformでOCIの構築を自動化する",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル terraformは、人間が読める設定ファイルで定義したリソースを自動でプロビジョニング処理するInfrastructure-as-code （IaC）を実現するサービスです。 terraformは複数のクラウドプロバイダを管理できるため、マルチクラウド環境で構築されたシステムなどを、簡単かつ効率的に管理することができます。 このチュートリアルでは、terraformのインストールをして実行環境を用意して簡単なリソースをプロビジョニングしていきます。 所要時間 : 約30分 前提条件 : OCIアカウントがあること MacOS、LinuxまたはWindows環境があること（このチュートリアルではOracle Linux VMを使います。） 操作を行うユーザが全てのリソースを読む権限を持っている事（to read all-resources in tenancy） VCNとサブネットが作成されている事 注意 : チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 1. Terraformとは？ 概要 IaCについて Infrastructure as Codeはサーバーやネットワークなどのインフラ構成をプログラムのようなコードで記述し、そのコードを用いてインフラ構成の管理やプロビジョニングの自動化を行うこと。 Terraformについて TerraformはHashiCorp社が開発しているオーケストレーションツールの一つ。 インフラストラクチャのライフサイクルを自動化する構成管理ツール。 本チュートリアルではTerraformをインストールして、インスタンスを作成するところまでを行います。 2．Terraform環境の構築 Terraformを実行するための環境を準備します。Oracle Linux8で作成してます。 Terraformのインストール 一時ディレクトリの作成 mkdir temp...","categories": [],
+        "tags": ["intermediate","terraform"],
+        "url": "/ocitutorials/intermediates/terraform/",
+        "teaser": "/ocitutorials/intermediates/terraform/03.png"
+      },{
         "title": "ロギング・サービスを使って3つのログを収集する",
         "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル ロギング・サービスを使用することによりさまざまなログを一元的に収集して1つのビューにまとめます。なので万が一トラブルが発生しても、ログをすぐに確認し素早く対策できます。 ロギング・サービスは監査ログ、サービス・ログ、カスタム・ログの3つのログを使用できます。ログはOCIのリソースだけでなく、他社クラウドやオンプレミスの環境のログも取得できます。また他のOracleサービスと統合することができて、ログをEmailなどを通じて通知させたり、OCIモニタリングにメトリックを発行してアラームと統合したりすることが可能です。さらにLogging Analyticsを併用することで、よりログを細かく分析できます。 今回のチュートリアルではこの3つのログをコンソールからアクセスします。 所要時間： 15分 前提条件： その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成が完了していること その3 - インスタンスを作成するが完了していること その7 - オブジェクト・ストレージを使うの コンソール画面の確認とバケットの作成 が完了していること（サービス・ログを使用する際にオブジェクトストレージのログを収集します） 注意: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 目次 : 監査ログ サービス・ログ カスタム・ログ 1. 監査ログ 監査ログはOCI上のAPIコールをデフォルトで収集します。 メニューから 監視および管理 → ロギング を選択すると監査ログのデータが一覧で表示されます。監査ログの詳しい説明に関しては、以下のチュートリアルを参照してください。 監査(Audit)ログを使用したテナント監視 2. サービス・ログ サービス・ログでOCIネイティブ・サービス（APIゲートウェイ、イベント、ファンクション、ロード・バランシング、オブジェクト・ストレージ、VCNフロー・ログなど）のログを取得できます。今回はオブジェクトストレージの読み取りのログデータを収集します。 2-1　ログ・グループの作成 まず初めにログ・グループを作成します。メニューから 監視および管理 →...","categories": [],
         "tags": ["intermediate","logging"],
@@ -1320,7 +1326,7 @@ var store = [{
         "teaser": null
       },{
         "title": "OCI Database Cloud ServiceでDatabase Managementを有効化する",
-        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのDatabase Cloud Serviceが1インスタンス作成されていること DBCSインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のDBCSがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE...","categories": [],
+        "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのDatabase Cloud Serviceが1インスタンス作成されていること BaseDBのインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のBaseDBがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE...","categories": [],
         "tags": ["management"],
         "url": "/ocitutorials/management/dbcs-database-management/",
         "teaser": "/ocitutorials/management/dbcs-database-management/dbmgmt1.png"

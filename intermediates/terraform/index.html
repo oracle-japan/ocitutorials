@@ -1,0 +1,848 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>TerraformでOCIの構築を自動化する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="TerraformでOCIの構築を自動化する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">
+
+
+  <meta property="og:description" content="大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/03.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-03-28T15:21:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/terraform/03.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          TerraformでOCIの構築を自動化する
+
+        
+      </h1>
+      
+        <p class="page__lead">大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">TerraformでOCIの構築を自動化する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/object-storage-advanced/">オブジェクト・ストレージの高度な設定</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/certificate/">プライベート認証局と証明書の発行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-2/">Email Deliveryを利用した外部へのメール送信(応用編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraform/" class="active">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/vtap/">VTAPでパケットをミラーリングし、パケットキャプチャをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/mobile_app/">OCIモバイル・アプリケーションを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/">Oracle Linux Storage Applianceでファイルストレージの構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/os_management/">コンピュート・インスタンスのOSを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="TerraformでOCIの構築を自動化する">
+    <meta itemprop="description" content="大規模なクラウド環境の構築を自動化するツールがほしい!! そんなときはTerraformを試してみるといいかもしれません。Terraform と Terraform Provider for OCI を使うと、設定ファイルを作るだけで大規模なクラウド環境を簡単に管理できるようになります。">
+    <meta itemprop="datePublished" content="2023-03-28T15:21:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-terraformとは">1. Terraformとは？</a><ul><li><a href="#概要">概要</a></li></ul></li><li><a href="#2terraform環境の構築">2．Terraform環境の構築</a><ul><li><a href="#terraformのインストール">Terraformのインストール</a></li><li><a href="#rsaキーの作成">RSAキーの作成</a></li></ul></li><li><a href="#3-スクリプトの作成">3. スクリプトの作成</a><ul><li><a href="#必要なocid情報の収集">必要なOCID情報の収集</a></li><li><a href="#リージョンは東京と大阪のリージョン名">リージョンは東京と大阪のリージョン名</a></li><li><a href="#インスタンスに接続する-sshキーの作成">インスタンスに接続する sshキーの作成</a></li><li><a href="#インスタンス情報の収集">インスタンス情報の収集</a></li><li><a href="#インスタンスイメージocidの収集">インスタンスイメージOCIDの収集</a></li><li><a href="#サブネットocidの収集">サブネットOCIDの収集</a></li><li><a href="#認証スクリプトの作成providertf">認証スクリプトの作成　provider.tf</a></li><li><a href="#ad指定スクリプトの作成availability-domainstf">AD指定スクリプトの作成　availability-domains.tf</a></li><li><a href="#コンピュートインスタンススクリプトの作成computetf">コンピュートインスタンススクリプトの作成　compute.tf</a><ul><li><a href="#出力情報スクリプトの作成outputtf">出力情報スクリプトの作成　output.tf</a></li></ul></li></ul></li><li><a href="#4-コンピュートインスタンスのプロビジョニング">4. コンピュートインスタンスのプロビジョニング</a><ul><li><a href="#初期化-terraform-init">初期化 terraform init</a></li><li><a href="#計画-terraform-plan">計画 terraform plan</a></li><li><a href="#適用-terraform-apply">適用 terraform apply</a></li><li><a href="#破棄-terraform-destroy">破棄 terraform destroy</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p><br /></p>
+
+<p>terraformは、人間が読める設定ファイルで定義したリソースを自動でプロビジョニング処理するInfrastructure-as-code （IaC）を実現するサービスです。</p>
+
+<p>terraformは複数のクラウドプロバイダを管理できるため、マルチクラウド環境で構築されたシステムなどを、簡単かつ効率的に管理することができます。</p>
+
+<p>このチュートリアルでは、terraformのインストールをして実行環境を用意して簡単なリソースをプロビジョニングしていきます。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ol>
+  <li>OCIアカウントがあること</li>
+  <li>MacOS、LinuxまたはWindows環境があること（このチュートリアルではOracle Linux VMを使います。）</li>
+  <li>操作を行うユーザが全てのリソースを読む権限を持っている事（to read all-resources in tenancy）</li>
+  <li>VCNとサブネットが作成されている事</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><br /><br /></p>
+
+<p><a id="anchor0"></a></p>
+
+<h1 id="1-terraformとは">1. Terraformとは？</h1>
+<h2 id="概要">概要</h2>
+<ul>
+  <li>
+    <p>IaCについて<br />
+Infrastructure as Codeはサーバーやネットワークなどのインフラ構成をプログラムのようなコードで記述し、そのコードを用いてインフラ構成の管理やプロビジョニングの自動化を行うこと。</p>
+  </li>
+  <li>
+    <p>Terraformについて<br />
+TerraformはHashiCorp社が開発しているオーケストレーションツールの一つ。
+インフラストラクチャのライフサイクルを自動化する構成管理ツール。</p>
+  </li>
+</ul>
+
+<p>本チュートリアルではTerraformをインストールして、インスタンスを作成するところまでを行います。</p>
+
+<p><img src="03.png" alt="アーキテクチャ" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="2terraform環境の構築">2．Terraform環境の構築</h1>
+<p>Terraformを実行するための環境を準備します。Oracle Linux8で作成してます。
+<img src="09.png" alt="install terraform" /></p>
+<h2 id="terraformのインストール">Terraformのインストール</h2>
+<ol>
+  <li>一時ディレクトリの作成
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> mkdir temp
+ cd temp/
+</code></pre></div>    </div>
+  </li>
+  <li>zipファイルのダウンロード
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> wget https://releases.hashicorp.com/terraform/1.4.2/terraform_1.4.2_linux_amd64.zip
+</code></pre></div>    </div>
+  </li>
+  <li>解凍してフォルダを移動
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unzip terraform_1.4.2_linux_amd64.zip
+ sudo mv terraform /usr/local/bin
+</code></pre></div>    </div>
+  </li>
+  <li>Terraformのバージョンを確認
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> terraform -v
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="rsaキーの作成">RSAキーの作成</h2>
+
+<ol>
+  <li>.ociディレクトリの作成
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  mkdir $HOME/.oci
+</code></pre></div>    </div>
+  </li>
+  <li>秘密鍵の作成　&lt;your-rsa-key-name&gt;には適当な名前を入力
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  openssl genrsa -out $HOME/.oci/&lt;your-rsa-key-name&gt;.pem 2048
+</code></pre></div>    </div>
+  </li>
+  <li>権限の変更
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  chmod 600 $HOME/.oci/&lt;your-rsa-key-name&gt;.pem
+</code></pre></div>    </div>
+  </li>
+  <li>公開キーの作成
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  openssl rsa -pubout -in $HOME/.oci/&lt;your-rsa-key-name&gt;.pem -out $HOME/.oci/&lt;your-rsa-key-name&gt;_public.pem
+</code></pre></div>    </div>
+  </li>
+  <li>公開キーをコンソールに登録
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  cat $HOME/.oci/&lt;your-rsa-key-name&gt;_public.pem
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>ユーザー設定</strong> → <strong>APIキー</strong>→ <strong>公開キーの追加</strong>
+<img src="04.png" alt="04" /></p>
+  </li>
+  <li><strong>公開キーの貼付け</strong>→ <strong>BEGIN PUBLIC KEYおよびEND PUBLIC KEYの行を含む値を貼り付け</strong>→ <strong>追加</strong>
+<img src="07.png" alt="04" />
+<br /></li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="3-スクリプトの作成">3. スクリプトの作成</h1>
+<p>ここからはTerraformでリソースや認証情報などを.tfファイルに記述していきます。
+前提として、ユーザーがリソースを扱えることとVCNとサブネットがある状態から、その上のインスタンスをTerraformで構築する想定をします。</p>
+
+<p>インスタンスを作成する際にはtf-computeというディレクトリを作成し、そのディレクトリ配下に4つのtfファイルを作成します。
+<img src="10.png" alt="4 files" /></p>
+
+<h2 id="必要なocid情報の収集">必要なOCID情報の収集</h2>
+<p>ここではスクリプトに記述する際に必要になる情報を集めていきます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  #メモに貼り付け用
+  テナンシOCID：
+  コンパートメントOCID：  
+  ユーザーOCID：
+  フィンガープリント：
+  リージョン名：例（ap-tokyo-1　or　ap-osaka-1）
+  API署名用のRSAキーの場所：例（/home/opc/.oci/&lt;your-rsa-key-name&gt;.pem）
+  SSH公開鍵の場所：
+  インスタンスシェイプ：
+  インスタンスイメージOCID：
+  サブネットのOCID：
+</code></pre></div></div>
+<p>フィンガープリントはAPIキーの場所にあります。
+<img src="08.png" alt="04" /></p>
+
+<h2 id="リージョンは東京と大阪のリージョン名">リージョンは東京と大阪のリージョン名</h2>
+<p>東京：”ap-tokyo-1”<br />
+大阪：”ap-osaka-1”<br /></p>
+<ul>
+  <li><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm#top">参考：リージョン一覧</a></li>
+</ul>
+
+<h2 id="インスタンスに接続する-sshキーの作成">インスタンスに接続する sshキーの作成</h2>
+<p>インスタンスに公開鍵を登録するために鍵を作成します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen -t rsa -N "" -b 2048 -C &lt;your-ssh-key-name&gt; -f &lt;your-ssh-key-name&gt;
+</code></pre></div></div>
+<p>公開鍵の場所もメモしておきましょう。<br />
+後ほど、&lt;ssh-public-key-path&gt;に公開鍵の場所を登録します。<br />
+また、この秘密鍵を使用してインスタンスにアクセスできます。</p>
+
+<h2 id="インスタンス情報の収集">インスタンス情報の収集</h2>
+<p>シェイプの選択
+以下のサイトからシェイプを選びます。</p>
+<ul>
+  <li><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#vmshapes__vm-standard">シェイプ一覧</a></li>
+</ul>
+
+<p>本チュートリアルではVM.Standard2.1を使用します。</p>
+
+<h2 id="インスタンスイメージocidの収集">インスタンスイメージOCIDの収集</h2>
+<p>以下のサイトからインスタンスに使用したいイメージを選択します。</p>
+<ul>
+  <li><a href="https://docs.oracle.com/en-us/iaas/images/">イメージ一覧</a></li>
+</ul>
+
+<p>本チュートリアルではUbuntuを使用します。<br />
+ <strong>「Ubuntu 20.04」</strong> →<strong>「Canonical-Ubuntu-20.04-2022.08.15-0」</strong> → プロビジョニングするリージョンの <strong>OCID</strong>をコピーします。</p>
+
+<h2 id="サブネットocidの収集">サブネットOCIDの収集</h2>
+<p>インスタンスをプロビジョニングする際のサブネットOCIDをコピーします。</p>
+
+<h2 id="認証スクリプトの作成providertf">認証スクリプトの作成　provider.tf</h2>
+<p>provider.tfファイルを作成し、認証情報を記述していきます。
+先ほどメモした情報を入れて、保存してください。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>provider "oci" {
+  tenancy_ocid = "&lt;tenancy-ocid&gt;"
+  user_ocid = "&lt;user-ocid&gt;" 
+  private_key_path = "&lt;rsa-private-key-path&gt;"
+  fingerprint = "&lt;fingerprint&gt;"
+  region = "&lt;region-identifier&gt;"
+}
+</code></pre></div></div>
+
+<h2 id="ad指定スクリプトの作成availability-domainstf">AD指定スクリプトの作成　availability-domains.tf</h2>
+<p>availability-domains.tfファイルを作成し、ADに関する情報を記述していきます。<br />
+<strong>compartment_id = “&lt;tenancy-ocid&gt;“</strong>にはコンピュートをプロビジョニングするコンパートメントOCIDを入れてください。ルートコンパートメントの場合はテナンシOCIDを入力してください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Source from https://registry.terraform.io/providers/oracle/oci/latest/docs/data-sources/identity_availability_domains
+
+# &lt;tenancy-ocid&gt; is the compartment OCID for the root compartment.
+# Use &lt;tenancy-ocid&gt; for the compartment OCID.
+
+data "oci_identity_availability_domains" "ads" {
+  compartment_id = "&lt;tenancy-ocid&gt;"
+}
+</code></pre></div></div>
+
+<h2 id="コンピュートインスタンススクリプトの作成computetf">コンピュートインスタンススクリプトの作成　compute.tf</h2>
+<p>compute.tfファイルを作成し、コンピュートに関する情報を記述していきます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>resource "oci_core_instance" "ubuntu_instance" {
+    # Required
+    availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+    compartment_id = "&lt;compartment-ocid&gt;"
+    shape = "VM.Standard2.1"
+    source_details {
+        source_id = "&lt;source-ocid&gt;"
+        source_type = "image"
+    }
+
+    # Optional
+    display_name = "&lt;your-ubuntu-instance-name&gt;"
+    create_vnic_details {
+        assign_public_ip = true
+        subnet_id = "&lt;subnet-ocid&gt;"
+    }
+    metadata = {
+        ssh_authorized_keys = file("&lt;ssh-public-key-path&gt;")
+    } 
+    preserve_boot_volume = false
+}
+</code></pre></div></div>
+
+<h3 id="出力情報スクリプトの作成outputtf">出力情報スクリプトの作成　output.tf</h3>
+<p>output.tfファイルを作成し、出力に関する情報を記述していきます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+# Outputs for compute instance
+
+output "public-ip-for-compute-instance" {
+  value = oci_core_instance.ubuntu_instance.public_ip
+}
+
+output "instance-name" {
+  value = oci_core_instance.ubuntu_instance.display_name
+}
+
+output "instance-OCID" {
+  value = oci_core_instance.ubuntu_instance.id
+}
+
+output "instance-region" {
+  value = oci_core_instance.ubuntu_instance.region
+}
+
+output "instance-shape" {
+  value = oci_core_instance.ubuntu_instance.shape
+}
+
+output "instance-state" {
+  value = oci_core_instance.ubuntu_instance.state
+}
+
+output "instance-OCPUs" {
+  value = oci_core_instance.ubuntu_instance.shape_config[0].ocpus
+}
+
+output "instance-memory-in-GBs" {
+  value = oci_core_instance.ubuntu_instance.shape_config[0].memory_in_gbs
+}
+
+output "time-created" {
+  value = oci_core_instance.ubuntu_instance.time_created
+}
+
+# The "name" of the availability domain to be used for the compute instance.
+output "name-of-first-availability-domain" {
+  value = data.oci_identity_availability_domains.ads.availability_domains[0].name
+}
+</code></pre></div></div>
+<p><br /></p>
+
+<h1 id="4-コンピュートインスタンスのプロビジョニング">4. コンピュートインスタンスのプロビジョニング</h1>
+<p>Terraformスクリプトを実行してコンピュートインスタンスをプロビジョニングして削除していきます。
+<img src="11.png" alt="job" /></p>
+
+<h2 id="初期化-terraform-init">初期化 terraform init</h2>
+<p>tf-computeディレクトリの作業ディレクトリを初期化します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  terraform init
+</code></pre></div></div>
+<p>初期化できると、以下のような出力がされます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  出力例：
+  Terraform has been successfully initialized!
+</code></pre></div></div>
+
+<h2 id="計画-terraform-plan">計画 terraform plan</h2>
+<p>インフラストラクチャの変更を確認します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  terraform plan
+</code></pre></div></div>
+
+<p>出力例：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>・・・
+Changes to Outputs:
+  + instance-OCID                     = (known after apply)
+  + instance-OCPUs                    = (known after apply)
+  + instance-memory-in-GBs            = (known after apply)
+  + instance-name                     = "ubuntu_instance"
+  + instance-region                   = (known after apply)
+  + instance-shape                    = "VM.Standard2.1"
+  + instance-state                    = (known after apply)
+  + name-of-first-availability-domain = "TGjA:AP-TOKYO-1-AD-1"
+  + public-ip-for-compute-instance    = (known after apply)
+  + time-created                      = (known after apply)
+</code></pre></div></div>
+
+<h2 id="適用-terraform-apply">適用 terraform apply</h2>
+<p>スタックの変更計画に基づいてインフラストラクチャの変更を実際に適用します。<br />
+途中で確認を求められたら「yes」を入力してください</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  terraform apply
+</code></pre></div></div>
+
+<p><br />
+「Apply complete! Resources: …」と出たらプロビジョニングされていますのでコンソールでも確認しましょう。<br />
+以下のコマンドでも確認することができます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  terraform show
+</code></pre></div></div>
+
+<h2 id="破棄-terraform-destroy">破棄 terraform destroy</h2>
+<p>スタックにあるインフラストラクチャを削除します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  terraform destroy
+</code></pre></div></div>
+<p>コンソールでもコンピュートインスタンスが削除されていることを確認してください。</p>
+
+<p><br /><br />
+Terraformでコンピュートインスタンスをプロビジョニングして削除するまでの一連の流れを説明しました。<br />
+以上で、この章の作業は終了です。</p>
+
+<p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#terraform" class="page__taxonomy-item" rel="tag">terraform</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-03-28T15:21:32+09:00">March 28, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Terraform%E3%81%A7OCI%E3%81%AE%E6%A7%8B%E7%AF%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fterraform%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fterraform%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fterraform%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/resource-manager/" class="pagination--pager" title="リソース・マネージャを使ってサンプルアプリケーションをデプロイする
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/using-logging/" class="pagination--pager" title="ロギング・サービスを使って3つのログを収集する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
