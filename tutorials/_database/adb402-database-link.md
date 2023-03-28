@@ -28,13 +28,13 @@ Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成�
 
    ![DatabaseLink_optionイメージ](DatabaseLink_option.png)
 
-なお、本文書ではパブリックIPアドレスを持つDBCSを前提としています。プライベートIPアドレスへのDatabase Link作成については、[こちらの記事](https://qiita.com/wahagon/items/7964b3ab19da625bfb39){:target="_blank"} で紹介しています。  
+なお、本文書ではパブリックIPアドレスを持つBaseDBを前提としています。プライベートIPアドレスへのDatabase Link作成については、[こちらの記事](https://qiita.com/wahagon/items/7964b3ab19da625bfb39){:target="_blank"} で紹介しています。  
 ご不明な点がございましたら、担当営業までお問い合わせください。
 
 **目次 :**
-  + [1.DBCSインスタンスの作成およびスキーマのインポート](#anchor1)
-  + [2.DBCSにてTCPS認証（SSL認証）を有効化](#anchor2)
-  + [3.DBCSのウォレットファイルをADBに渡す](#anchor3)
+  + [1.BaseDBインスタンスの作成およびスキーマのインポート](#anchor1)
+  + [2.BaseDBにてTCPS認証（SSL認証）を有効化](#anchor2)
+  + [3.BaseDBのウォレットファイルをADBに渡す](#anchor3)
   + [4.VCNのイングレス・ルールを更新](#anchor4)
   + [5.ADBにてDatabase Linkを作成](#anchor5)
   + [6.エラーへの対応例](#anchor6)
@@ -48,28 +48,28 @@ Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成�
 
 <BR>
 
-**所要時間 :** 約100分（DBCSインスタンスの作成時間を含む）
+**所要時間 :** 約100分（BaseDBのインスタンスの作成時間を含む）
 
 <BR>
 
 <a id="anchor1"></a>
 
-# 1. DBCSインスタンスの作成およびスキーマのインポート
+# 1. BaseDBインスタンスの作成およびスキーマのインポート
 
-まず、サンプル・データベースとして、Database Linkのリンク先となるDBCSインスタンスを作成します。
-[301 : 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db/){:target="_blank"} を参考に、DBCSインスタンスを作成し、HRスキーマを作成してください。
+まず、サンプル・データベースとして、Database Linkのリンク先となるBaseDBインスタンスを作成します。
+[301 : 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成し、HRスキーマを作成してください。
 
 <BR>
 
 <a id="anchor2"></a>
 
-# 2. DBCSにてTCPS認証（SSL認証）を有効化
+# 2. BaseDBにてTCPS認証（SSL認証）を有効化
 
-Autonomous Databaseは、すべての接続でSecure Sockets Layer (SSL)と証明書ベースの認証が使用されます。そのため、DBCSにてTCPS 認証（SSL認証）を有効化する必要があります。   
+Autonomous Databaseは、すべての接続でSecure Sockets Layer (SSL)と証明書ベースの認証が使用されます。そのため、BaseDBにてTCPS 認証（SSL認証）を有効化する必要があります。   
 サーバーとクライアントの両サイドの認証を交換したウォレットをADBに渡すことで、これを実現します。
 
 ## 2-1. ウォレット用のディレクトリの作成
-1. Tera Termを利用してDBCSインスタンスに接続します。
+1. Tera Termを利用してBaseDBインスタンスに接続します。
 
 1. opcユーザーからrootユーザーにスイッチします。
   ```sh
@@ -210,7 +210,7 @@ wallet_location =
       (DIRECTORY=/u01/server/wallet)))
 ```
 また、ネットワーク暗号化に関するパラメータをコメントアウトします。   
-ADBインスタンスはTCPS(SSL)による接続を前提としており、DBCS側も暗号化設定されていますが、双方で暗号化を施すことはできないために、DBCSについては暗号化関連のパラメータを無効化する必要があるためです。
+ADBインスタンスはTCPS(SSL)による接続を前提としており、BaseDB側も暗号化設定されていますが、双方で暗号化を施すことはできないために、BaseDBについては暗号化関連のパラメータを無効化する必要があるためです。
 
 1. 編集した内容を確認します。
 ```sh
@@ -221,7 +221,7 @@ cat $ORACLE_HOME/network/admin/sqlnet.ora
 <br>
 
 ## 2-6. TCPS接続に使用する1522番ポートを解放
-今回は、1522番ポートでTCPS接続をします。しかしDBCSインスタンスでは、デフォルトで1522番ポートは開いていないため、開ける必要があります。
+今回は、1522番ポートでTCPS接続をします。しかしBaseDBインスタンスでは、デフォルトで1522番ポートは開いていないため、開ける必要があります。
 1. rootユーザーにスイッチします。
 ```sh
 sudo su - root
@@ -273,7 +273,7 @@ srvctl stop database -database dbcs01_xxxxxx
 srvctl start database -database dbcs01_xxxxxx
 ```
 データベース名(dbcs01_xxxxxx)の確認の仕方
-+ OCIコンソールのDBCSの詳細画面より、一意のデータベース名を確認
++ OCIコンソールのBaseDBの詳細画面より、一意のデータベース名を確認
 ![database_nameイメージ](database_name.png)
 + 次の手順のlsnrctl statusコマンドから確認
 
@@ -335,7 +335,7 @@ The command completed successfully
 
 <a id="anchor3"></a>
 
-# 3. DBCSのウォレットファイルをADBに渡す
+# 3. BaseDBのウォレットファイルをADBに渡す
 
 ## 3-1. ウォレットのダウンロード
 /u01/client/walletにあるクライアントのウォレットcwallet.ssoを、ローカルにダウンロードします。
@@ -424,7 +424,7 @@ select CLOUD_IDENTITY from v$pdbs;
 
 ![cloud_identityイメージ](cloud_identity.png)
 
-DBCSを配置したパブリック・サブネットのセキュリティ・リストのイングレス・ルールに以下を追加します。
+BaseDBを配置したパブリック・サブネットのセキュリティ・リストのイングレス・ルールに以下を追加します。
 ![ingress_ruleイメージ](ingress_rule.png)
 + ソース：(ADBのOUTBOUND_IP_ADDRESS)/32
 + IPプロトコル：TCP
@@ -437,7 +437,7 @@ DBCSを配置したパブリック・サブネットのセキュリティ・リ�
 
 # 5. ADBにてDatabase Linkを作成
 
-1. DBCSへ接続するためのクレデンシャルを作成します。
+1. BaseDBへ接続するためのクレデンシャルを作成します。
 ```
 BEGIN
  DBMS_CLOUD.CREATE_CREDENTIAL(
@@ -464,10 +464,10 @@ BEGIN
 END;
 /
 ```
-* hostname: DBCSインスタンスのパブリックIPアドレス  
+* hostname: BaseDBインスタンスのパブリックIPアドレス  
 * service_name: tnsnames.oraに記載されているPDB1のサービス名
 
-1. Database Linkを使用して、DBCSのテーブルを参照します。
+1. Database Linkを使用して、BaseDBのテーブルを参照します。
 ```
 SELECT * FROM COUNTRIES@HR_LINK;
 ```
@@ -506,7 +506,7 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 
 * 『ORA-01017: invalid username/password; logon denied ORA-02063: preceding line from HR_LINK』が発生する場合
 
-  DBCSへ接続するためのクレデンシャル作成の際に指定するオプション、usernameが大文字'HR'になっていることを確認します。
+  BaseDBへ接続するためのクレデンシャル作成の際に指定するオプション、usernameが大文字'HR'になっていることを確認します。
 
 ※ 上記は代表的なもののみを記載しており、全てのエラーを網羅しているものではありません。必要に応じてサポート・サービスもご活用ください。
 
@@ -515,7 +515,7 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 <a id="anchor7"></a>
 
 # その他のパターン
-ここまで、ADBからDBCSインスタンスへのDatabase Link作成方法についてご説明しました。  
+ここまで、ADBからBaseDBインスタンスへのDatabase Link作成方法についてご説明しました。  
 『はじめに』でも記載した通り、その他にもADBでDatabase Linkを使用できるパターンがあります。
 
 * 2つのADB間のDatabase Linkによる連携
@@ -526,13 +526,13 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 
 1. ADB1のバケットにcwallet.sso（ウォレット・ファイル）をアップロード
 
-    ここからは、[3. DBCSのウォレットファイルをADBに渡す](#anchor3)の『手順3:Object StorageにアップロードしたWalletをADBのディレクトリ・オブジェクトに配置します。』以降の操作と同様になります。
+    ここからは、[3. BaseDBのウォレットファイルをADBに渡す](#anchor3)の『手順3:Object StorageにアップロードしたWalletをADBのディレクトリ・オブジェクトに配置します。』以降の操作と同様になります。
 
     詳細は『Autonomous Database Cloud 技術詳細』の「Database Linkによるデータ連携」の章でご確認ください。
 
 <BR>
 
-* DBCSインスタンスからADBへのDatabase Linkによる連携
+* BaseDBインスタンスからADBへのDatabase Linkによる連携
 
   別のOracle DatabaseからAutonomous Databaseへのデータベース・リンクを作成できます。詳細な手順については、
 [こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/database-links-inbound.html#GUID-EB369724-29CE-452E-8EC1-2E0B33AE0A49){:target="_blank"} を参照ください。
@@ -542,7 +542,7 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 <a id="anchor8"></a>
 
 # おわりに
-ここではAutonomous DatabaseにDatabase Linkを作成して、別のDBCSインスタンスからデータを収集する方法を紹介しました。  
+ここではAutonomous DatabaseにDatabase Linkを作成して、別のBaseDBインスタンスからデータを収集する方法を紹介しました。  
 複数の異なるデータベースにアクセスする際には非常に便利ですので、ぜひ活用してみてください。
 
 <BR/>

@@ -1,6 +1,6 @@
 ---
 title: "OCI Database Cloud ServiceでDatabase Managementを有効化する"
-excerpt: "OCIで利用しているDatabase Cloud Serviceを監視するツールをお探しではありませんか？Database ManagementはOracle DBのメトリック監視はもちろん、ASH分析、SQLモニタリング、ADDM、ブロッキングセッションまで確認することができます。無償でご利用を開始いただけるオプションも提供していますので、是非DBCSをご利用の方はDatabase Managementを有効化してみてください。"
+excerpt: "OCIで利用しているDatabase Cloud Serviceを監視するツールをお探しではありませんか？Database ManagementはOracle DBのメトリック監視はもちろん、ASH分析、SQLモニタリング、ADDM、ブロッキングセッションまで確認することができます。無償でご利用を開始いただけるオプションも提供していますので、是非BaseDBをご利用の方はDatabase Managementを有効化してみてください。"
 order: "120"
 layout: single
 tags:
@@ -19,10 +19,10 @@ OCI Observability & Managementのサービスの1つ、Database Managementでは
 
 **前提条件 :**
 + OCIのDatabase Cloud Serviceが1インスタンス作成されていること
-- DBCSインスタンスの作成方法は[その8-クラウドでOracle Databaseを使う](/ocitutorials/beginners/using-oracle-database)をご参照ください。
+- BaseDBのインスタンスの作成方法は[その8-クラウドでOracle Databaseを使う](/ocitutorials/beginners/using-oracle-database)をご参照ください。
 
 **注意 :**
-※監視対象のDBCSがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。
+※監視対象のBaseDBがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。
 
 
 # 1. IAMポリシーの作成
@@ -60,7 +60,7 @@ Allow group <IAMグループ名> to MANAGE cloud-shell in tenancy
 
 # 2. データベースユーザーの作成と権限付与
 
-SQL*PlusなどでDBCSにアクセスして以下コマンドを実行します。
+SQL*PlusなどでBase DBにアクセスして以下コマンドを実行します。
 ```
 SQL> alter user dbsnmp account unlock;
 User altered.
@@ -127,7 +127,7 @@ Vaultの詳細画面左下のリソース→シークレット→シークレッ
 
 4-1. Network Security Groupの作成
 
-OCIコンソールのメニュー→ネットワーキング→仮想クラウド・ネットワーク→DBCSを作成したVCNを選択します。
+OCIコンソールのメニュー→ネットワーキング→仮想クラウド・ネットワーク→BaseDBを作成したVCNを選択します。
 画面左下のリソース→ネットワーク・セキュリティ・グループ→ネットワーク・セキュリティ・グループの作成をクリックします。
 「ネットワーク・セキュリティ・グループの作成」画面の基本情報にて以下項目を入力し、「次」をクリックします。
 - 名前：任意
@@ -137,14 +137,14 @@ OCIコンソールのメニュー→ネットワーキング→仮想クラウ�
 - **ルール1**
 - 方向：イングレス
 - ソースタイプ：CIDR
-- ソースCIDR：DBCSのCIDRを入力
+- ソースCIDR：BaseDBのCIDRを入力
 - IPプロトコル：TCPを選択
 - ソース・ポート範囲：All
 - 宛先ポート範囲：1521
 - **ルール2**
 - 方向：エグレス
 - ソースタイプ：CIDR
-- ソースCIDR：DBCSのCIDRを入力
+- ソースCIDR：BaseDBのCIDRを入力
 - IPプロトコル：TCPを選択
 - ソース・ポート範囲：All
 - 宛先ポート範囲：1521
@@ -152,9 +152,9 @@ OCIコンソールのメニュー→ネットワーキング→仮想クラウ�
 
 
 4-2. Network Security Groupの登録
-NSGを作成したら、監視対象のDBCSにNSGを割り当てます。
-OCIコンソールのメニュー→ Oracle Database → ベア・メタル、VMおよびExadata→監視対象のDBCSを選択します。
-DBCSの詳細情報のネットワーク・セキュリティ・グループの数字の「編集」をクリックします。
+NSGを作成したら、監視対象のBaseDBにNSGを割り当てます。
+OCIコンソールのメニュー→ Oracle Database → ベア・メタル、VMおよびExadata→監視対象のBaseDBを選択します。
+BaseDBの詳細情報のネットワーク・セキュリティ・グループの数字の「編集」をクリックします。
 - 「ネットワーク・セキュリティ・グループの編集」画面にて、手順4-1で作成したNSGを選択し、「変更の保存」をクリックします。
     ![画面ショット7](dbmgmt8.png)
 
@@ -169,8 +169,8 @@ OCIコンソールのメニュー→監視および管理→データベース�
 「プライベート・エンドポイントの作成」画面にて、以下項目を入力し、「プライベート・エンドポイントの作成」ボタンをクリックします。
 - 名前：任意
 - 説明：任意
-- 仮想クラウド・ネットワークの場所：監視対象のDBCSと通信ができるVCNを選択
-- サブネットの場所：監視対象のDBCSと通信ができるサブネットを選択
+- 仮想クラウド・ネットワークの場所：監視対象のBaseDBと通信ができるVCNを選択
+- サブネットの場所：監視対象のBaseDBと通信ができるサブネットを選択
 - ネットワーク・セキュリティ・グループ：手順4で作成したNSGを選択
     ![画面ショット9](dbmgmt10.png)
 
@@ -179,8 +179,8 @@ OCIコンソールのメニュー→監視および管理→データベース�
 
 
 # 6. Database Managementの有効化
-OCIコンソールのメニュー→ Oracle Database → ベア・メタル、VMおよびExadata→監視対象のDBCSを選択します。
-DBCSの詳細画面に表示される、データベースの名前をクリックし、詳細画面のデータベース管理の「有効化」をクリックします
+OCIコンソールのメニュー→ Oracle Database → ベア・メタル、VMおよびExadata→監視対象のBaseDBを選択します。
+BaseDBの詳細画面に表示される、データベースの名前をクリックし、詳細画面のデータベース管理の「有効化」をクリックします
     ![画面ショット10](dbmgmt11.png)
 
 「データベース管理の有効化」画面にて、以下項目を入力し、「データベース管理の有効化」ボタンをクリックします。
@@ -194,7 +194,7 @@ DBCSの詳細画面に表示される、データベースの名前をクリッ�
 
 
 
-以上の手順で、DBCSのDatabase Managementを有効化しました。
+以上の手順で、BaseDBのDatabase Managementを有効化しました。
 Database Managementを有効化したら、
 OCIコンソールのメニュー→監視および管理→データベース管理→フリート・サマリーに、Database Managementを有効化したDBが表示されます。
     ![画面ショット12](dbmgmt14.png)
@@ -216,10 +216,10 @@ DB詳細画面上部にある「AWRエクスプローラー」からは、AWR（
     ![画面ショット16](dbmgmt18.png)
 
 
-その他DBのパフォーマンスに関するメトリックは、OCI Monitoringサービス、あるいはDBCSのDBサービス詳細画面からご確認いただけます。
+その他DBのパフォーマンスに関するメトリックは、OCI Monitoringサービス、あるいはBaseDBのDBサービス詳細画面からご確認いただけます。
 ※OCI Monitoringサービスからメトリックを確認する場合は、監視および管理→モニタリング→メトリック・エクスプローラーを選択し、メトリック・ネームスペースは「oracle_oci_database」を選択してください。
     ![画面ショット17](dbmgmt19.png)
 
 
-是非、お手元のDBCSの運用監視にDatabase Managementをご活用ください。
+是非、お手元のBaseDBの運用監視にDatabase Managementをご活用ください。
 

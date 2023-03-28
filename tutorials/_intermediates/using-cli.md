@@ -5,8 +5,8 @@ order: "100"
 tags:
   - intermediate
 header:
-  teaser: "/intermediates/using-cli/img5.png"
-  overlay_image: "/intermediates/using-cli/img5.png"
+  teaser: "/intermediates/using-cli/image-20210913161308143.png"
+  overlay_image: "/intermediates/using-cli/image-20210913161308143.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474263/%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3-cli-%E3%81%A7oci%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89
 ---

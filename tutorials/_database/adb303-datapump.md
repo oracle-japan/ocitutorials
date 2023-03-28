@@ -15,7 +15,7 @@ header:
 
 Oracle Databaseのデータ移行として、ここでは従来からよく利用されるData Pumpを利用してAutonomous Databaseに移行する手順をご紹介します。
 
-先の[「301 : 移行元となるデータベースを作成しよう」](/ocitutorials/database/adb301-create-source-db){:target="_blank"}にて事前に作成しておいたDBCSインスタンス上のHRスキーマを、以下の流れに沿ってAutonomous Databaseに移行してみたいと思います。
+先の[「301 : 移行元となるデータベースを作成しよう」](/ocitutorials/database/adb301-create-source-db){:target="_blank"}にて事前に作成しておいたBaseDBインスタンス上のHRスキーマを、以下の流れに沿ってAutonomous Databaseに移行してみたいと思います。
 
 ![イメージ](img100.png)
 
@@ -31,7 +31,7 @@ Oracle Databaseのデータ移行として、ここでは従来からよく利�
 
 <a id="anchor0_1"></a>
 > 補足
-チュートリアルを実施する上で、DBCSインスタンスを用意できない場合や、どうしてもエクスポートが成功しないと言った場合は、以下よりエクスポート済みのダンプファイルを配置しておりますので、適宜ダウンロードください。
+チュートリアルを実施する上で、BaseDBインスタンスを用意できない場合や、どうしてもエクスポートが成功しないと言った場合は、以下よりエクスポート済みのダンプファイルを配置しておりますので、適宜ダウンロードください。
 上記ステップ2から実施いただくことが可能です。
 * [ダンプファイル(export_hr_01.dmp)のダウンロード](/ocitutorials/database/adb303-datapump/export_hr_01.dmp)
 * [ダンプファイル(export_hr_02.dmp)のダウンロード](/ocitutorials/database/adb303-datapump/export_hr_02.dmp)
@@ -55,18 +55,18 @@ Oracle Databaseのデータ移行として、ここでは従来からよく利�
 <a id="anchor1"></a>
 
 # 1. 移行対象のスキーマをエクスポート
-HRスキーマをData Pumpを利用してDBCSインスタンスのOS上のファイルシステムにエクスポートします。
+HRスキーマをData Pumpを利用してBaseDBインスタンスのOS上のファイルシステムにエクスポートします。
 
 > （補足）
-> - 本チュートリアルではOCI DBCSにプリインストールされているData Pumpを利用しますが、12.2.0.1以前のOracle Clientを利用する場合や、その他詳細情報についてはマニュアル（ADW / ATP）を参照ください。
+> - 本チュートリアルではOCI BaseDBにプリインストールされているData Pumpを利用しますが、12.2.0.1以前のOracle Clientを利用する場合や、その他詳細情報についてはマニュアル（ADW / ATP）を参照ください。
 > - パラレルオプションを利用する場合、ソースDBがEnterprise Editionである必要があります。
 > - 圧縮オプションを利用する場合、ソースDBが11g以上でありAdvanced Compression Optionが必要になります。
 
 
 ## 1-1. ディレクトリ・オブジェクトの作成
-DBCSインスタンス上のPDBに接続し、ダンプファイルの出力先を指定します。
+BaseDBインスタンス上のPDBに接続し、ダンプファイルの出力先を指定します。
 
-1. Tera Termを利用してDBCSインスタンスにopcユーザーで接続します。
+1. Tera Termを利用してBaseDBインスタンスにopcユーザーで接続します。
 
 1. opc ユーザーからoracleユーザーにスイッチしておきます。
 ```sh
@@ -168,7 +168,7 @@ chmod +x expdp_hr.sh
 ![イメージ](img104.png)
 
 
-1. DBCSインスタンス上の「/home/oracle/mig2adb/dumpdir」ディレクトリにダンプファイルが複数出力されているので(以下ではexport_hr_01.dmp、export_hr_02.dmp、export_hr_03.dmp、export_hr_04.dmp)、WinSCPといった任意のファイル転送ツールを利用し、DBCSインスタンス上から手元のPCにコピーしてください。  
+1. BaseDBインスタンス上の「/home/oracle/mig2adb/dumpdir」ディレクトリにダンプファイルが複数出力されているので(以下ではexport_hr_01.dmp、export_hr_02.dmp、export_hr_03.dmp、export_hr_04.dmp)、WinSCPといった任意のファイル転送ツールを利用し、BaseDBインスタンス上から手元のPCにコピーしてください。  
 ![イメージ](img105.png)
 
 
@@ -196,7 +196,7 @@ chmod +x expdp_hr.sh
 
 
 > * 通常Data Pumpを利用する場合、ディレクトリ・オブジェクトを作成しそこからインポートしますが、ADBは仕様上OS領域にアクセスできないため、オブジェクトストレージ経由でロードする必要があります。
-> * チュートリアルを実施する上で、DBCSインスタンスを用意できない場合や、どうしてもエクスポートが成功せず手元にダンプファイルを用意できない場合は、本ページの冒頭に記載した[ダウンロードリンク](#anchor0_1)よりサンプルのダンプファイルをダウンロードしてご利用ください。
+> * チュートリアルを実施する上で、BaseDBインスタンスを用意できない場合や、どうしてもエクスポートが成功せず手元にダンプファイルを用意できない場合は、本ページの冒頭に記載した[ダウンロードリンク](#anchor0_1)よりサンプルのダンプファイルをダウンロードしてご利用ください。
 
 <BR>
 
@@ -207,7 +207,7 @@ chmod +x expdp_hr.sh
 それではオブジェクトストレージ上のダンプファイルをADBインスタンスにインポートしてみましょう。
 以降では[「204: マーケットプレイスからの仮想マシンのセットアップ方法 」](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/){:target="_blank"}にて作成した仮想マシンにログインして実施します。
   
-（ここまでの手順にて、移行元データベースとして利用していたDBCSインスタンスではないことにご注意ください。）
+（ここまでの手順にて、移行元データベースとして利用していたBaseDBインスタンスではないことにご注意ください。）
 
 ## 4-1. 仮想マシンへのアクセス
 
