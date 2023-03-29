@@ -1,7 +1,7 @@
 ---
 title: "GPUクラスタを構築する(基礎インフラ手動構築編)"
 excerpt: "GPUクラスタを構築してみましょう。このチュートリアルを終了すると、OCIが提供するGPUクラスタのノード間接続に最適なインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタルGPUインスタンスをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行うGPUクラスタ環境を、必要なOCIリソースを順次コンソールから構築しながら作成します。"
-order: "100"
+order: "122"
 layout: single
 header:
   teaser: "/intermediates/spinup-gpu-cluster/architecture_diagram.png"
@@ -10,11 +10,7 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。
-- RoCE v2採用の高帯域・低レイテンシRDMAインターコネクトの **クラスタ・ネットワーク**
-- 8枚のNVIDIA A100 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ **BM.GPU4.8/BM.GPU.GM4.8**
-
-このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40 GBを搭載するGPUノード（ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** ）をクラスタ・ネットワークを使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するためのGPUクラスタを分散機械学習に対応するDockerコンテナ上に構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** テストプログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。
+このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40/80 GB 8枚と100 GbpsのRDMA対応ネットワークインタフェース16ポート搭載するGPUノード（ **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** ）を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するための分散機械学習に対応したDockerコンテナをGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** テストプログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。
 
 このチュートリアルは、分散機械学習フレームワークに以下2種類を取り上げ、それぞれ3章と4章でこれらを解説しています。該当する章を参照することで、自身のワークロードに合わせた環境構築が可能です。
 
@@ -24,9 +20,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
 よって本チュートリアルの進め方は、まず自身のワークロードに合わせて上記2種類からどちらを使用するか選択し、0章 → 1章 → 2章 → 3章 or 4章 → 5章と進めます。
 
-このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有、プログラム開発環境、コンテナオーケストレーション等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。
-
-なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化するOCIのリソース・マネージャを使用したHPC（GPU）クラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である **[HPCクラスタを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster)** を参照ください。
+このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有、プログラム開発環境、コンテナオーケストレーション等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[GPUクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)** を参照ください。
 
 ![システム構成図](architecture_diagram.png)
 
@@ -35,16 +30,17 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 **前提条件 :** GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。
+
 ***
 # 0. GPUクラスタ作成事前作業
 
-## 0-0. GPUクラスタ作成事前作業概要
+## 0-0. 概要
 
-GPUノードを高速・低レイテンシでノード間接続するOCIのクラスタ・ネットワークは、これに接続するGPUノードと共に作成します。
+GPUクラスタを構成する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** とGPUノードは、OCIコンソールからクラスタ・ネットワークを作成することで、GPUノードをクラスタ・ネットワークに接続したGPUクラスタとしてデプロイされます。
 
-このため、このGPUノードをTCP接続するVCNと、インターネットから直接アクセス出来ないプライベートサブネットに通常接続されるGPUノードにログインする際の踏み台となるbastionノードを、GPUノードやクラスタ・ネットワークを作成する前に予め作成しておく必要があります。
+このため、このGPUノードをTCP接続するVCNと、インターネットから直接アクセス出来ないプライベートサブネットに通常接続されるGPUノードにログインする際の踏み台となるBastionノードを、GPUクラスタ作成前に予め用意する必要があります。
 
-本章は、これらの前提となるリソースを作成します。
+本章は、これらGPUクラスタ作成の前提となるリソースを作成します。
 
 ## 0-1. VCN作成
 
@@ -69,20 +65,21 @@ VCNの作成は、以下チュートリアルページ **クラウドに仮想�
 - インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定
 - インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能
 
-## 0-2. bastionノード作成
-本章は、GPUノードにログインする際の踏み台となるbastinノードを作成します。
-bastionノードの作成は、以下チュートリアルページ **インスタンスを作成する** の手順を参考に、
+## 0-2. Bastionノード作成
+
+本章は、GPUノードにログインする際の踏み台となるBastionノードを作成します。
+Bastionノードの作成は、以下チュートリアルページ **インスタンスを作成する** の手順を参考に、
 
 [https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)
 
-ご自身の要件に沿ったインスタンスを、先の手順で作成したVCNとパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをbastionノードとして作成します。
+ご自身の要件に沿ったインスタンスを、先の手順で作成したVCNとパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
 - **イメージ　:** Oracle Linux 7.9
 - **シェイプ　:** VM.Optimized3.Flex（1 OCPU）
-- **SSHキーの追加　:** bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
+- **SSHキーの追加　:** Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
-次に、このbastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、bastionノードからGPUノードにログインする際に使用します。
-先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従いbastionノードにopcユーザでSSHログインし、以下のコマンドで全ての問いにエンターキーを入力（パスフレーズ無し・デフォルトの格納場所）してSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
+次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、BastionノードからGPUノードにログインする際に使用します。
+先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従いBastionノードにopcユーザでSSHログインし、以下のコマンドで全ての問いにエンターキーを入力（パスフレーズ無し・デフォルトの格納場所）してSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
 
 ```sh
 > ssh-keygen
@@ -110,35 +107,16 @@ The keys randomart image is:
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Lna2m3TPiPKL/lHNK4GK2bkADRzm4674uwO9PHUqEPKVv+HBhTZ+zHOPSkYsOEubgeB9xpuKe+Z7ats0RbdXzT1bDWxcsvrMOdUVHQ9zv54eBSz+wEJO08zuxCjetQ2//6NRlYzoBs5/T1+DWg7lJuNadeyqXf1IaZGxRyfbCyXPzOnhL3TS/S7ydN0/313PsqAYj7PBNlx86WT/0qeNYsefjVmn54PKp1waNDQbOkiXi9Emx9uIKA1TCMCVSauZEI274P6orPvwggbX/HZ5Q8eRta2uw3LmzSRJUlrLBxi5xzhVOSNOXl29y2+U5+Q5/F2AxGSxUbW18AdOihuX opc@bastion
 ```
 
-次に、以降作成するGPUノードのDNS名前解決をイニシャルホスト名で行えるようにするため、/etc/resolv.confファイルのsearch行に、先に作成したプライベートサブネットのDNSドメイン名を以下のように追加します。
+次に、以降作成するGPUノードの名前解決をインスタンス名で行うため、テクニカルTips **[計算ノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)** の手順を実施します。
 
-```sh
-> diff /etc/resolv.conf_org /etc/resolv.conf
-7c7
-< search vcn.oraclevcn.com sub11010929110.vcn.oraclevcn.com
----
-> search vcn.oraclevcn.com sub11010929110.vcn.oraclevcn.com sub11010929111.vcn.oraclevcn.com
-```
-
-なおプライベートサブネットのDNSドメイン名は、OCIコンソール上で当該プライベートサブネットの **サブネット情報** タブから、以下のように確認することが出来ます。
-
-![画面ショット](console_page20.png)
-
-この修正は、このままではOS再起動により元に戻ってしまうため、以下のコマンドでこの修正が上書きされないようにします。
-
-```sh
-> sudo chattr -R +i /etc/resolv.conf
-```
 ***
 # 1. GPUクラスタ作成
 
-## 1-0. GPUクラスタ作成概要
+## 1-0. 概要
 
-GPUノードのインターコネクトネットワークに使用するクラスタ・ネットワークは、その下層にOCIのインスタンス・プールを使用し、インスタンス・プールが持つ同一イメージのインスタンスを複製する機能により、クラスタ・ネットワークに接続するGPUノードを指定ノード数デプロイします。
+**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** は、作成時に指定する **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** に基づいて **[インスタンス・プール](/ocitutorials/hpc/#5-8-インスタンスプール)** が作成時に指定するノード数のGPUノードをデプロイし、これをクラスタ・ネットワークに接続します。
 
-またインスタンス・プールは、その下層にOCIのインスタンス構成を使用し、インスタンス構成に指定した属性を持つインスタンスを複製します。
-
-クラスタ・ネットワークに接続するGPUノードは、OS（Oracle Linux 7.9）起動時点でクラスタ・ネットワークに接続するRDMAインタフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用して、この作成を行います。また本チュートリアルは、GPUノードに使用するBM.GPU4.8に装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
+クラスタ・ネットワークに接続するGPUノードは、OS起動時点でクラスタ・ネットワークに接続するネットワークインターフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用し、この作成を行います。また本チュートリアルは、GPUノードに装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
 
 以上より、GPUクラスタの作成は、以下の手順を経て行います。
 
@@ -146,9 +124,7 @@ GPUノードのインターコネクトネットワークに使用するクラ�
 - インスタンス構成作成
 - クラスタ・ネットワーク作成
 
-なおインスタンス・プールは、クラスタ・ネットワークを作成することで自動的に作成されるため、改めて作成する必要はありません。
-
-本チュートリアルは、2ノードのBM.GPU4.8を使用してGPUクラスタを構築します。
+本チュートリアルは、2ノードのBM.GPU4.8を使用してGPUクラスタを構築しますが、 **[BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** をGPUノードとするGPUクラスタを構築する際も、シェイプ指定の変更で対応可能です。
 
 ## 1-1. cloud-init設定ファイル作成
 
@@ -162,7 +138,7 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 - NVIDIA Container Toolkitインストール
 - NVMeローカルディスクファイルシステム作成
 - firewalld停止
-- RDMAインタフェース作成
+- **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用ネットワークインターフェース起動
 - ルートファイルシステム拡張
 - Dockerイメージプル
 
@@ -212,8 +188,8 @@ runcmd:
 # Stop firewalld
   - systemctl stop firewalld
   - systemctl disable firewalld
-# Set up and start RDMA interface
-  - systemctl enable --now oci-rdma-configure
+# Set up cluster network interface
+  - systemctl start oci-rdma-configure
 # Expand root file system to those set by instance configuration
   - /usr/libexec/oci-growfs -y
 # Pull Horovod/TensorFlow docker images
@@ -223,15 +199,13 @@ runcmd:
   - docker pull nvcr.io/nvidia/tensorflow:22.11-tf2-py3
 ```
 
-このcloud-init設定ファイルのRDMAインタフェース設定は、プライベートサブネットに接続するTCP接続（インターフェース名：enp45s0f0）用IPアドレスの4フィールド目の値を取得（この値をyとする）し、この値を4フィールド目に持つ192.168.x.y/24（x = 0 - 15）を、BM.GPU4.8が有する16個のクラスタ・ネットワーク接続用RDMAインタフェースのIPアドレスに使用します。
+このcloud-init設定ファイルで行っているクラスタ・ネットワーク接続用ネットワークインターフェース起動は、クラスタ・ネットワーク対応OSイメージに含まれるsystemdのサービス **oci-rdma-configure** を使用しますが、この詳細はテクニカルTips **[クラスタ・ネットワーク接続用ネットワークインターフェース作成方法](/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/)** を参照ください。
 
 ## 1-2. インスタンス構成作成
 
-本章は、インスタンス構成を作成します。
+本章は、 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** を作成します。
 
-インスタンス構成は、インスタンスをデプロイする際のひな型設定で、一度インスタンス構成を作成すると、これを利用して簡単に同じ属性のインスタンスをデプロイすることが出来るようになります。
-
-1. OCIコンソールにログインし、クラスタ・ネットワークをデプロイするリージョンを選択後、 **コンピュート** → **インスタンス構成** とメニューを辿ります。
+1. OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 **コンピュート** → **インスタンス構成** とメニューを辿ります。
 
 2. 表示される以下画面で、**インスタンス構成の作成** ボタンをクリックします。
 
@@ -259,11 +233,9 @@ runcmd:
 
    ![画面ショット](console_page05.png)
 
-    - **イメージ** ：Oracle Linux 7 - GPU Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **すべてのイメージの参照** サイドバーで **Marketplaceース** アイコンを選択し検索フィールドに **gpu** と入力して表示される **Oracle Linux 7 - GPU Cluster Networking Image** を選択し右側のボタンをクリックして表示される イメージ・ビルド フィールドでOracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.01.10-0 を選択し **イメージの選択** ボタンをクリック）
+    - **イメージ** ：Oracle Linux 7 - GPU Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Marketplace** アイコンを選択し検索フィールドに **gpu** と入力して表示される **Oracle Linux 7 - GPU Cluster Networking Image** を選択し **イメージ・ビルド** フィールドで **OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.01.10-0** を選択し **イメージの選択** ボタンをクリック）
 
    ![画面ショット](console_page06.png)
-
-   ここで指定しているイメージは、OCIのマーケットプレースから提供するOracke Linux 7.9をベースに作成されたクラスタ・ネットワークに接続するために必要なソフトウェアとGPU関連ソフトウェアが含まれるイメージ（以降 **GPUイメージ** と呼称）です。
 
     - **Shape** ：BM.GPU4.8 (**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.GPU4.8** を選択し **次のドキュメントを確認した上でこれに同意します** チェックボックスをチェックし **シェイプの選択** ボタンをクリック）
 
@@ -276,7 +248,7 @@ runcmd:
    ![画面ショット](console_page08.png)
 
    3.6 **SSHキーの追加** フィールド
-    - **SSHキー** ：先にbastionで作成したSSH鍵の公開鍵（ 以下 **公開キーの貼付け** ラジオボタンを選択することで入力フィールドを表示）  
+    - **SSHキー** ：先にBastionノードで作成したSSH鍵の公開鍵（ 以下 **公開キーの貼付け** ラジオボタンを選択することで入力フィールドを表示）  
 
    ![画面ショット](console_page09.png)
 
@@ -296,9 +268,9 @@ runcmd:
 
 ## 1-3. クラスタ・ネットワーク作成
 
-本章は、先に作成したインスタンス構成を使用して、クラスタ・ネットワークを作成します。
+本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を作成します。
 
-1. OCIコンソールにログインし、クラスタ・ネットワークをデプロイするリージョンを選択後、 **コンピュート** → **クラスタ・ネットワーク** とメニューを辿ります。
+1. OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 **コンピュート** → **クラスタ・ネットワーク** とメニューを辿ります。
 
 2. 表示される以下画面で、**クラスタ・ネットワークの作成** ボタンをクリックします。
 
@@ -338,6 +310,7 @@ runcmd:
    ![画面ショット](console_page18.png)
 
    ステータスが **実行中** となれば、クラスタ・ネットワークとGPUノードのOCIリソースとしてのプロビジョニングが完了していますが、この時点でもGPUノードでcloud-initが実行中の可能性があるため、以降の手順に従いこの完了を確認して下さい。
+
 ***
 # 2. GPUノード確認
 
@@ -345,15 +318,15 @@ runcmd:
 
 ## 2.1. GPUノードログイン
 
-GPUノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、bastionノードを経由してSSHログインします。bastionノードからGPUノードへのログインは、GPUノードのイニシャルホスト名を使用します。
+GPUノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。BastionノードからGPUノードへのログインは、GPUノードのインスタンス名を使用します。
 
-GPUノードのイニシャルホスト名は、OCIコンソールでGPUノードをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧からそのイニシャルホスト名を確認します。
+GPUノードのインスタンス名は、OCIコンソールでGPUノードをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。
 
-またこの画面は、GPUノードのIPアドレスも表示しており、これを使用してbastionからSSHログインすることも可能です。
+またこの画面は、GPUノードのIPアドレスも表示しており、これを使用してBastionノードからSSHログインすることも可能です。
 
 ![画面ショット](console_page19.png)
 
-GPUノードへのログインは、以下のようにbastionからopcユーザでSSHログインします。
+GPUノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。
 
 ```sh
 > ssh inst-d5ige-comp
@@ -395,12 +368,13 @@ REPOSITORY                  TAG             IMAGE ID       CREATED        SIZE
 nvcr.io/nvidia/tensorflow   22.11-tf2-py3   a88317ae0b1b   3 weeks ago    14.4GB
 horovod/horovod             latest          f16647de3f02   2 months ago   14.2GB
 ```
+
 ***
 # 3. Horovodを使用するGPUクラスタ環境構築
 
 ## 3-1. Dockerコンテナ環境構築
 
-### 3-1-0. Dockerコンテナ環境構築概要
+### 3-1-0. 概要
 
 本章は、後の章で実行するNCCL TestsとHorovodのサンプルプログラムを実行するHorovod用Dockerコンテナを起動するため、必要な環境構築作業を行います。
 
@@ -418,9 +392,9 @@ OpenMPIをコンテナ間で実行するためには、MPIプログラムをmpir
 
 ### 3-1-1. コンテナ間SSH接続環境構築
 
-本章は、先にbastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。
+本章は、先にBastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。
    
-まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのイニシャルホスト名を含むファイルをbastion上に作成します。
+まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのインスタンス名を含むファイルをBastionノード上に作成します。
 
 ```sh
 > cat hostlist.txt 
@@ -428,7 +402,7 @@ inst-d5ige-comp
 inst-swgen-comp
 ```
 
-次にこのファイルを使用し、bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
+次にこのファイルを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname hostname; done
@@ -443,13 +417,13 @@ Warning: Permanently added 'inst-swgen-comp,10.0.2.242' (ECDSA) to the list of k
 inst-swgen-comp
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、bastionで作成した秘密鍵を使ったSSHログインを許可します。
+次に、Bastionノードのopcユーザで以下コマンドを実行、Bastionノードで作成した秘密鍵を使ったSSHログインを許可します。
 
 ```sh
 > cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、~opc/.sshディレクトリをアーカイブしてこれを全GPUノードにコピーします。
+次に、Bastionノードのopcユーザで以下コマンドを実行、~opc/.sshディレクトリをアーカイブしてこれを全GPUノードにコピーします。
 
 ```sh
 > cd ~
@@ -466,7 +440,7 @@ inst-swgen-comp
 ssh.tar                                                                100%   10KB  11.5MB/s   00:00
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの/horovodディレクトリに展開します。
+次に、Bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの/horovodディレクトリに展開します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo mkdir /horovod"; done
@@ -533,7 +507,7 @@ inst-swgen-comp
 
 ## 3-2. NCCL通信性能検証
 
-### 3-2-0. NCCL通信性能検証概要
+### 3-2-0. 概要
 
 本章は、NCCL Testsを使用し、GPUクラスタ内のNCCLによるGPU間通信性能を確認します。
 
@@ -637,7 +611,7 @@ inst-swgen-comp
 
 ## 3-3. Horovodサンプルプログラム実行
 
-### 3-3-0. Horovodサンプルプログラム実行概要
+### 3-3-0. 概要
 
 本章は、Horovodサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。
 
@@ -701,12 +675,13 @@ Total img/sec on 16 GPU(s): 9279.7 +-44.2
 ```
 
 最後の行に出力される実行結果から、2ノード16枚のGPUを使用した実行時のスコアが9,300程度で、先の1ノード8枚のGPUで実行したスコアからほぼリニアにスケールしていることを確認します。
+
 ***
 # 4. MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築
 
 ## 4-1. Dockerコンテナ環境構築
 
-### 4-1-0. Dockerコンテナ環境構築概要
+### 4-1-0. 概要
 
 本章は、後の章で実行するNCCL TestsとMultiWorkerMirroredStrategyのサンプルプログラムを実行するDockerコンテナを起動するため、必要な環境構築作業を行います。
 
@@ -727,9 +702,9 @@ OpenMPIをコンテナ間で実行するためには、MPIプログラムをmpir
 
 ### 4-1-1. コンテナ間SSH接続環境構築
 
-本章は、先にbastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。  
+本章は、先にBastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。  
 
-まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのイニシャルホスト名を含むファイルをbastion上に作成します。
+まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのインスタンス名を含むファイルをBastionノード上に作成します。
 
 ```sh
 > cat hostlist.txt 
@@ -737,7 +712,7 @@ inst-d5ige-comp
 inst-swgen-comp
 ```
 
-次にこのファイルを使用し、bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
+次にこのファイルを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname hostname; done
@@ -752,13 +727,13 @@ Warning: Permanently added 'inst-swgen-comp,10.0.2.242' (ECDSA) to the list of k
 inst-swgen-comp
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、bastionで作成した秘密鍵を使ったSSHログインを許可します。
+次に、Bastionノードのopcユーザで以下コマンドを実行、Bastionノードで作成した秘密鍵を使ったSSHログインを許可します。
 
 ```sh
 > cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、~opc/.sshディレクトリをアーカイブしてこれを全GPUノードにコピーします。
+次に、Bastionノードのopcユーザで以下コマンドを実行、~opc/.sshディレクトリをアーカイブしてこれを全GPUノードにコピーします。
 
 ```sh
 > cd ~
@@ -775,7 +750,7 @@ inst-swgen-comp
 ssh.tar                                                                100%   10KB  11.5MB/s   00:00
 ```
 
-次に、bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの/TFディレクトリに展開します。
+次に、Bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの/TFディレクトリに展開します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo mkdir /TF"; done
@@ -860,7 +835,7 @@ inst-swgen-comp
 
 ## 4-2. NCCL通信性能検証
 
-### 4-2-0. NCCL通信性能検証概要
+### 4-2-0. 概要
 
 本章は、NCCL Testsを使用し、GPUクラスタ内のNCCLによるGPU間通信性能を確認します。
 
@@ -952,7 +927,7 @@ inst-swgen-comp
 
 ## 4-3. MultiWorkerMirroredStrategyサンプルプログラム実行
 
-### 4-3-0. MultiWorkerMirroredStrategyサンプルプログラム実行概要
+### 4-3-0. 概要
 
 本章は、MultiWorkerMirroredStrategyサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。
 
@@ -1065,10 +1040,11 @@ Epoch 2/3
 Epoch 3/3
 70/70 [==============================] - 2s 28ms/step - loss: 2.1268 - accuracy: 0.5488
 ```
+
 ***
 # 5. GPUクラスタの削除
 
-本章は、クラスタ・ネットワークを終了することで、作成したクラスタ・ネットワークとGPUノードを削除します。
+本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を終了することで、作成したクラスタ・ネットワークとGPUノードを削除します。
 
 1. OCIコンソールメニューから **コンピュート** → **クラスタ・ネットワーク** を選択し、表示される以下画面で作成したクラスタ・ネットワークの **終了** メニューをクリックします。
 

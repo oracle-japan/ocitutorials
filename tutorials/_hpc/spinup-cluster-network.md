@@ -1,7 +1,7 @@
 ---
 title: "HPCクラスタを構築する(基礎インフラ手動構築編)"
 excerpt: "HPCクラスタの基礎インフラを作成してみましょう。このチュートリアルを終了すると、OCIが提供するHPC向けインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタル計算ノードをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行う環境を、OCIコンソールから構築することが出来るようになります。"
-order: "099"
+order: "111"
 layout: single
 header:
   teaser: "/intermediates/spinup-cluster-network/architecture_diagram.png"
@@ -10,23 +10,14 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-Oracle Cloud Infrastructure（以降OCIと記載）のクラスタ・ネットワークは、以下の特徴からHPCワークロードを実行するHPCクラスタを構築する際の計算ノード間を接続するインターコネクトに最適なサービスです。
-- RoCEv2を使用する高帯域・低レイテンシRDMAインターコネクト（MPI通信で最大12GB/sの帯域幅と最小1.5μsのレイテンシ）
-- オーバーサブスクリプションの無いフラットなネットワークトポロジーから来る再現性の高いネットワーク特性
-
-このチュートリアルは、HPC向けIntel Ice Lakeプロセッサを搭載する計算ノード（BM.Optimized3.36（※））をクラスタ・ネットワークを使用してノード間接続し、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを構築、そのインターコネクト性能を検証します。
-
-※：シェイプ詳細は以下URLを参照  
-  [https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)
+このチュートリアルは、HPC向けIntel Ice Lakeプロセッサを搭載する **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を使用してノード間接続し、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを構築、そのインターコネクト性能を検証します。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。
-なおOCIでは、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する、OCIのリソース・マネージャを使用したHPCクラスタ構築自動化ソリューションも利用可能です。この詳細は、本チュートリアルの姉妹編である以下ページ **HPCクラスタを構築する** を参照ください。
-
-[https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster)
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)** を参照ください。
 
 ![システム構成図](architecture_diagram.png)
 
-またこのチュートリアルでは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存のクラスタ・ネットワークに計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。
+またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存のクラスタ・ネットワークに計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。
 
 **所要時間 :** 約1時間
 
@@ -35,19 +26,19 @@ Oracle Cloud Infrastructure（以降OCIと記載）のクラスタ・ネット�
 **注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。
 
 ***
-# 0. クラスタ・ネットワーク作成事前作業
+# 0. HPCクラスタ作成事前作業
 
-## 0-0. クラスタ・ネットワーク作成事前作業概要
+## 0-0. 概要
 
-クラスタ・ネットワークは、これに接続する計算ノードと共に作成します。
+HPCクラスタを構成する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** と計算ノードは、OCIコンソールからクラスタ・ネットワークを作成することで、計算ノードをクラスタ・ネットワークに接続したHPCクラスタとしてデプロイされます。
 
-このため、この計算ノードをTCP接続するVCNと、インターネットから直接アクセス出来ないプライベートサブネットに通常接続される計算ノードにログインする際の踏み台となるbastionノードを、クラスタ・ネットワーク作成前に予め作成しておく必要があります。
+このため、この計算ノードをTCP接続するVCNと、インターネットから直接アクセス出来ないプライベートサブネットに通常接続される計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意する必要があります。
 
-本章は、これらクラスタ・ネットワーク作成の前提となるリソースを作成します。
+本章は、これらHPCクラスタ作成の前提となるリソースを作成します。
 
 ## 0-1. VCN作成
 
-本章は、計算ノードをTCP接続するVCNを作成します。
+本章は、計算ノードをTCP接続するVCNを作成します。  
 VCNの作成は、以下チュートリアルページ **クラウドに仮想ネットワーク(VCN)を作る** の手順通りに実行し、
 
 [https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn)
@@ -68,20 +59,21 @@ VCNの作成は、以下チュートリアルページ **クラウドに仮想�
 - インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定
 - インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能
 
-## 0-2. bastionノード作成
+## 0-2. Bastionノード作成
+
 本章は、計算ノードにログインする際の踏み台となるbastinノードを作成します。
-bastionノードの作成は、以下チュートリアルページ **インスタンスを作成する** の手順を参考に、
+Bastionノードの作成は、以下チュートリアルページ **インスタンスを作成する** の手順を参考に、
 
 [https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)
 
-ご自身の要件に沿ったインスタンスを、先の手順でVCNを作成したコンパートメントとパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをbastionノードとして作成します。
+ご自身の要件に沿ったインスタンスを、先の手順でVCNを作成したコンパートメントとパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
 - **イメージ　:** Oracle Linux 8
 - **シェイプ　:** VM.Optimized3.Flex（1 OCPU）
-- **SSHキーの追加　:** bastionノードへのログインで使用するSSH秘密鍵に対応する公開鍵
+- **SSHキーの追加　:** Bastionノードへのログインで使用するSSH秘密鍵に対応する公開鍵
 
-次に、このbastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、bastionノードからクラスタ・ネットワークに接続する計算ノードにログインする際に使用します。
-先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、bastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
+次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。
+先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
 
 ```sh
 > ssh-keygen
@@ -109,44 +101,22 @@ The keys randomart image is:
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
 ```
 
-次に、以降作成する計算ノードのDNS名前解決をイニシャルホスト名で行えるようにするため、/etc/resolv.confファイルのsearch行に、先に作成したプライベートサブネットのDNSドメイン名を以下のように追加します。
-
-```sh
-> diff /etc/resolv.conf_org /etc/resolv.conf
-7c7
-< search vcn.oraclevcn.com sub11010929110.vcn.oraclevcn.com
----
-> search vcn.oraclevcn.com sub11010929110.vcn.oraclevcn.com sub10030907571.vcn.oraclevcn.com
-```
-
-なおプライベートサブネットのDNSドメイン名は、OCIコンソール上で当該プライベートサブネットの **サブネット詳細** メニューから、以下のように確認することが出来ます。
-
-![画面ショット](console_page30.png)
-
-この修正は、このままではOS再起動により元に戻ってしまうため、以下コマンドをbastionのopcユーザで実行し、この修正が上書きされないようにします。
-
-```sh
-> sudo chattr -R +i /etc/resolv.conf
-```
+次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、テクニカルTips **[計算ノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)** の手順を実施します。
 
 ***
-# 1. クラスタ・ネットワーク作成
+# 1. HPCクラスタ作成
 
-## 1-0. クラスタ・ネットワーク作成概要
+## 1-0. 概要
 
-クラスタ・ネットワークは、その下層にOCIのインスタンス・プールを使用し、インスタンス・プールが持つ同一イメージのインスタンスを複製する機能により、クラスタ・ネットワークに接続する計算ノードを指定ノード数デプロイします。
+**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** は、作成時に指定する **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** に基づいて **[インスタンス・プール](/ocitutorials/hpc/#5-8-インスタンスプール)** が作成時に指定するノード数の計算ノードをデプロイし、これをクラスタ・ネットワークに接続します。
 
-またインスタンス・プールは、その下層にOCIのインスタンス構成を使用し、インスタンス構成に指定した属性を持つインスタンスを複製します。
+クラスタ・ネットワークに接続する計算ノードは、OS起動時点でクラスタ・ネットワークに接続するネットワークインターフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるcloud-initを利用し、この作成を行います。また本チュートリアルでは、計算ノードに使用するBM.Optimized3.36に装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
 
-OCIのクラスタ・ネットワークに接続する計算ノードは、OS（Oracle Linux 8）起動時点でクラスタ・ネットワークに接続するRDMAインタフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用して、この作成を行います。また本チュートリアルでは、計算ノードに使用するBM.Optimized3.36に装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
-
-以上より、クラスタ・ネットワークの作成は、以下の手順を経て行います。
+以上より、HPCクラスタの作成は、以下の手順を経て行います。
 
 - cloud-init設定ファイル作成
 - インスタンス構成作成
 - クラスタ・ネットワーク作成
-
-なおインスタンス・プールは、クラスタ・ネットワークを作成することで自動的に作成されるため、改めて作成する必要はありません。
 
 ## 1-1. cloud-init設定ファイル作成
 
@@ -158,7 +128,7 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 
 - NVMeローカルディスクファイルシステム作成
 - firewalld停止
-- クラスタ・ネットワーク接続設定
+- **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用ネットワークインターフェース起動
 
 以下は、本チュートリアルで使用するBM.Optimized3.36用のcloud-init設定ファイルで、OCIコンソールを実行している端末上にテキストファイルで保存します。
 
@@ -169,6 +139,8 @@ runcmd:
 # Mount NVMe local storage
   - parted -s /dev/nvme0n1 mklabel gpt
   - parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1
+# To ensure partition is really created before mkfs phase
+  - sleep 60
   - mkfs.xfs -L localscratch /dev/nvme0n1p1
   - mkdir -p /mnt/localdisk
   - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
@@ -178,43 +150,20 @@ runcmd:
   - systemctl stop firewalld
   - systemctl disable firewalld
 #
-# Set up RDMA interface
-  - ifdown ens800f0
-  - echo "TYPE=\"Ethernet\"" > /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "BOOTPROTO=\"none\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "IPADDR=192.168.0.`ifconfig ens300f0 | head -2 | tail -1 | awk '{print $2}' | awk -F. '{print $4}'`" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "NETMASK=255.255.255.0" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "DEFROUTE=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "PEERDNS=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "PEERROUTES=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "IPV4_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "IPV6INIT=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "IPV6_FAILURE_FATAL=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "NAME=\"System ens800f0\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "DEVICE=\"ens800f0\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "ONBOOT=\"yes\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - echo "NM_CONTROLLED=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
-  - ifup ens800f0
+# Set up cluster network interface
+  - systemctl start oci-rdma-configure
 #
 # Start CN authentication renew service for OL8 HPC image to avoid 15min. hiatus of CN connection on deployment
   - systemctl start oci-cn-auth-renew.service
 ```
 
-このcloud-init設定ファイルのRDMAインタフェース設定は、プライベートサブネットに接続するTCP接続（インターフェース名：ens300f0）用IPアドレスの4フィールド目の値を取得し、この値を4フィールド目に持つ192.168.0.xをクラスタ・ネットワークに接続するRDMAインタフェースのIPアドレスに設定します。
-
-またこのcloud-init設定ファイルは、RDMAインタフェースを設定する際に指定するインタフェース名がBM.Optimized3.36用（ens800f0）になっているため、他のクラスタ・ネットワーク対応のシェイプ（BM.HPC2.36やBM.GPU4.8等）を使用する場合は、使用するシェイプに合わせてRDMAインタフェース名を変更します。
-
-なお、BM.GPU4.8をクラスタ・ネットワークに接続するためのRDMAインタフェースを設定する際のcloud-init設定ファイルは、以下のチュートリアル"GPUクラスタを構築する（手動構築編）"にその記載があります。
-
-[https://oracle-japan.github.io/ocitutorials/intermediates/spinup-gpu-cluster/#1-1-cloud-init%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-gpu-cluster/#1-1-cloud-init%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90)
+このcloud-init設定ファイルで行っているクラスタ・ネットワーク接続用ネットワークインターフェース起動は、クラスタ・ネットワーク対応OSイメージに含まれるsystemdのサービス **oci-rdma-configure** を使用しますが、この詳細はテクニカルTips **[クラスタ・ネットワーク接続用ネットワークインターフェース作成方法](/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/)** を参照ください。
 
 ## 1-2. インスタンス構成作成
 
-本章は、インスタンス構成を作成します。
+本章は、 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** を作成します。
 
-インスタンス構成は、インスタンスをデプロイする際のひな型設定で、一度インスタンス構成を作成すると、これを利用して簡単に同じ属性のインスタンスをデプロイすることが出来るようになります。
-
-1. OCIコンソールにログインし、クラスタ・ネットワークをデプロイするリージョンを選択後、 **コンピュート** → **インスタンス構成** とメニューを辿ります。
+1. OCIコンソールにログインし、HPCクラスタをデプロイするリージョンを選択後、 **コンピュート** → **インスタンス構成** とメニューを辿ります。
 
 2. 表示される以下画面で、**インスタンス構成の作成** ボタンをクリックします。
 
@@ -242,11 +191,9 @@ runcmd:
 
    ![画面ショット](console_page06.png)
 
-    - **イメージ** ：Oracle Linux - HPC Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **すべてのイメージの参照** サイドバーで **イメージ・ソース** フィールドに **Oracleイメージ** を選択し検索フィールドに **hpc** と入力して表示される **Oracle Linux - HPC Cluster Networking Image** を選択し右側のボタンをクリックして表示される **イメージ・ビルド** フィールドで **OracleLinux-8-RHCK-OFED-5.4-3.5.8.0-2022.11.15-0** を選択し **イメージの選択** ボタンをクリック）
+    - **イメージ** ：Oracle Linux - HPC Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Marketplace** を選択し検索フィールドに **hpc** と入力して表示される **Oracle Linux - HPC Cluster Networking Image** を選択して表示される **イメージ・ビルド** フィールドで **OracleLinux-8-RHCK-OFED-5.4-3.6.8.1-2023.01.10-0** を選択し **イメージの選択** ボタンをクリック）
 
    ![画面ショット](console_page08.png)
-
-   ここで指定しているイメージは、OCIのマーケットプレースから提供するOracke Linux 8をベースに作成されたクラスタ・ネットワークに接続するために必要なソフトウェアが含まれるイメージ（以降 **HPCイメージ** と呼称）です。
 
     - **Shape** ：BM.Optimized3.36 (**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.Optimized3.36** を選択し **シェイプの選択** ボタンをクリック）
 
@@ -259,7 +206,7 @@ runcmd:
    ![画面ショット](console_page09.png)
 
    3.6 **SSHキーの追加** フィールド
-    - **SSHキー** ：先にbastionで作成したSSH鍵の公開鍵（ **公開キーの貼付け** を選択することで入力フィールドを表示）  
+    - **SSHキー** ：先にBastionノードで作成したSSH鍵の公開鍵（ **公開キーの貼付け** を選択することで入力フィールドを表示）  
 
    ![画面ショット](console_page10.png)
 
@@ -273,9 +220,9 @@ runcmd:
 
 ## 1-3. クラスタ・ネットワーク作成
 
-本章は、既に作成したcloud-init設定ファイルとインスタンス構成を使用して、クラスタ・ネットワークを作成します。
+本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を作成します。
 
-1. OCIコンソールにログインし、クラスタ・ネットワークをデプロイするリージョンを選択後、 **コンピュート** → **クラスタ・ネットワーク** とメニューを辿ります。
+1. OCIコンソールにログインし、HPCクラスタをデプロイするリージョンを選択後、 **コンピュート** → **クラスタ・ネットワーク** とメニューを辿ります。
 
 2. 表示される以下画面で、**クラスタ・ネットワークの作成** ボタンをクリックします。
 
@@ -323,15 +270,15 @@ runcmd:
 
 ## 2.1. 計算ノードログイン
 
-   計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、bastionノードを経由してSSHログインします。bastionノードから計算ノードへのログインは、計算ノードのイニシャルホスト名を使用します。
+   計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。Bastionノードから計算ノードへのログインは、計算ノードのインスタンス名を使用します。
 
-   計算ノードのイニシャルホスト名は、OCIコンソールで計算ノードをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧からそのイニシャルホスト名を確認します。
+   計算ノードのインスタンス名は、OCIコンソールで計算ノードをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。
 
-   またこの画面は、計算ノードのIPアドレスも表示されており、これを使用してbastionからSSHログインすることも可能です。
+   またこの画面は、計算ノードのIPアドレスも表示されており、これを使用してBastionノードからSSHログインすることも可能です。
 
    ![画面ショット](console_page20.png)
 
-   計算ノードへのログインは、以下のようにbastionからopcユーザでSSHログインします。
+   計算ノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。
 
 ```sh
 > ssh inst-wyr6m-comp
@@ -368,7 +315,7 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
 
 ## 3-0. MPIプログラム実行（2ノード編）概要
 
-本章は、計算ノードのHPCイメージに含まれるOpenMPIとIntel MPI Benchmarkを使用し、クラスタ・ネットワークのノード間インターコネクト性能を確認します。
+本章は、計算ノードのHPCイメージに含まれるOpenMPIとIntel MPI Benchmarkを使用し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。
 
 OpenMPIを計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）からOpenMPI実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。
 
@@ -387,9 +334,9 @@ OpenMPIを計算ノード間で実行するためには、mpirunを実行する�
 
 ## 3-1. 計算ノード間SSH接続環境構築
 
-本章は、先にbastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でパスフレーズ無しのSSH接続環境を実現します。
+本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でパスフレーズ無しのSSH接続環境を実現します。
    
-まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全ての計算ノードのイニシャルホスト名を含むファイルをbastion上に作成します。
+まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全ての計算ノードのインスタンス名を含むファイルをBastionノード上に作成します。
 
 ```sh
 > cat hostlist.txt 
@@ -397,7 +344,7 @@ inst-wyr6m-comp
 inst-9wead-comp
 ```
 
-次にこのファイルを使用し、以下コマンドで全計算ノードにbastionノードのSSH秘密鍵をコピーします。この際、計算ノード1ノード毎に接続確認を求められるため、全てに **yes** を入力します。
+次にこのファイルを使用し、以下コマンドで全計算ノードにBastionノードのSSH秘密鍵をコピーします。この際、計算ノード1ノード毎に接続確認を求められるため、全てに **yes** を入力します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; scp -p ~/.ssh/id_rsa $hname:~/.ssh/; done
@@ -417,7 +364,7 @@ Warning: Permanently added 'inst-9wead-comp,10.0.1.62' (ECDSA) to the list of kn
 id_rsa                                                                 100% 1675     1.8MB/s   00:00
 ```
 
-次に、先のSSH秘密鍵のコピーでbastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを、以下コマンドで全計算ノードにコピーします。
+次に、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを、以下コマンドで全計算ノードにコピーします。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts $hname:~/.ssh/; done
@@ -427,7 +374,7 @@ inst-9wead-comp
 known_hosts                                                            100%  440   470.6KB/s   00:00
 ```
 
-次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する、先に作成した計算ノードのイニシャルホスト名を格納したファイルを、以下コマンドで全計算ノードにコピーします。
+次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する、先に作成した計算ノードのインスタンス名を格納したファイルを、以下コマンドで全計算ノードにコピーします。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; scp -p ./hostlist.txt $hname:~/; done
@@ -543,7 +490,7 @@ hostlist.txt                                                           100%   32
 ***
 # 4. 計算ノード追加
 
-本章は、作成したクラスタ・ネットワークに接続する計算ノードを2ノード追加して4ノードに拡張します。
+本章は、作成した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する計算ノードを2ノード追加して4ノードに拡張します。
 
 1. OCIコンソールメニューから **コンピュート** → **クラスタ・ネットワーク** を選択し、表示される画面で作成したクラスタ・ネットワークをクリックします。
 
@@ -711,7 +658,7 @@ hostlist.txt                                                           100%   32
 ***
 # 7. クラスタ・ネットワークの終了
 
-本章は、クラスタ・ネットワークを終了することで、作成したクラスタ・ネットワークと計算ノードを削除します。
+本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を終了することで、作成したクラスタ・ネットワークと計算ノードを削除します。
 
 1. OCIコンソールメニューから **コンピュート** → **クラスタ・ネットワーク** を選択し、表示される以下画面で作成したクラスタ・ネットワークの **終了** メニューをクリックします。
 
