@@ -1,0 +1,610 @@
+---
+title: "107 : パッチを適用しよう"
+excerpt: "ExaDB-Dでパッチを適用する方法について紹介します。"
+order: "2_107"
+layout: single
+header:
+  teaser: "/database/exadb-d107-patch/teaser.png"
+  overlay_image: "/database/exadb-d107-patch/teaser.png"
+  overlay_filter: rgba(34, 66, 55, 0.7)
+#link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
+---
+
+<a id="anchor0"></a>
+
+# はじめに
+**Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)** では、OS以上がユーザー管理となるため、OS以上のOS、Grid Infrastructure、Database、そしてPaaSサービスの管理のためのクラウド・ツールに対するパッチ適用は、ユーザー側でパッチ適用の計画と適用実施が可能です。ここでは、それぞれのパッチ適用方法についてご紹介します。
+
+**目次 :**
++ [1. Grid Infrastructure(GI)のパッチ適用](#anchor1-1)
++ [2. データベースのパッチ適用](#2-データベースのパッチ適用)
+    - [Out-of-place Patching](#anchor2-1)
+    - [In-place Patching](#anchor2-2)
++ [3. クラウド・ツール(dbaascli)のパッチ適用](#anchor3-1)
++ [4. OSのパッチ適用](#anchor4-1)
+
+
+**前提条件 :**
++ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
+
++ [104 : バックアップからリストアしよう](/ocitutorials/database/exadb-d104-backup-restore)を通じてデータベースのバックアップが完了していること
+
+**所要時間 :** 約2時間　※環境によって異なるため、参考値です。
+
+<BR>
+
+<a id="anchor1-1"></a>
+
+# 1. Grid Infrastructure(GI)のパッチ適用
+
+1. OCIコンソール・メニューから **Oracle Database** → **Oracle Public Cloud上のExadata** に移動します。
+
+    ![](2022-11-04-17-13-56.png)
+
+1. 利用したいコンパートメントを**リスト範囲**の**コンパートメント**から選択します。
+
+    ![](2022-11-15-16-30-05.png)
+
+1. 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、**リージョン**の一覧から選択します。
+
+    ![](2022-11-15-16-32-47.png)
+
+1.  操作したい**Exadata VMクラスタ**の表示名をクリックします。
+
+    ![](2022-12-08-13-43-19.png)
+
+1. **Exadata VMクラスタの詳細**ページの**グリッド・インフラストラクチャのバージョン**で現在のGIのバージョンを確認できます。
+
+    ![](2022-12-08-13-47-53.png)
+
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+    以下のようにgridユーザにログインして、コマンドを実行します。
+
+    実行コマンド：
+
+    ```
+    sudo su - grid
+    /u01/app/19.0.0.0/grid/OPatch/opatch lspatches
+    ```
+
+    実行例：
+
+    ![](2022-12-08-14-02-03.png)
+
+1. **使用可能な更新**の横にある**更新の表示**をクリックします。
+
+    ![](2022-12-08-14-04-30.png)
+
+1.  適用可能なパッチの一覧が表示されます。ここでは**グリッド・インフラストラクチャ**の**19.17.0.0.0**を適用します。
+
+    ![](2022-12-08-14-07-48.png)
+
+
+1. 適用したいパッチの右の**アクション・ボタン**をクリックして、**事前チェックの実行**をクリックします。
+
+    ![](2022-12-08-14-10-53.png)
+
+1. **事前チェックの実行**のボタンをクリックします。
+
+    ![](2022-12-08-14-11-43.png)
+
+1. 実行したパッチの**状態**が**チェック中**に切り替わります。
+
+    ![](2022-12-08-14-12-43.png)
+
+    成功すると、**状態**が**使用可能**に切り替わり、**最後に成功した事前チェック**に日付が更新されます。
+
+    ![](2022-12-08-14-13-42.png)
+
+1. 事前チェックで問題がなければ、**アクション・ボタン**をクリックして、**Grid Infrastructureパッチの適用**をクリックします。
+
+    ![](2022-12-08-14-16-47.png)
+
+1. **パッチの適用**ボタンをクリックします。
+
+    ![](2022-12-08-14-17-36.png)
+
+    **Exadata VMクラスタの詳細**ページに戻ると、状態が**更新中**となっています。**使用可能**に切り替わるまで待機します。
+    パッチはDBサーバーへのローリングで適用されます。
+
+    ![](2022-12-08-14-20-32.png)
+
+    VMクラスタの状態が**使用可能**に切り替わり、パッチが成功すると、パッチの一覧から適用したパッチが消えます。
+
+    ![](2022-12-08-14-23-50.png)
+
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+    以下のようにgridユーザにログインして、コマンドを実行します。
+
+    実行コマンド：
+
+    ```
+    sudo su - grid
+    /u01/app/19.0.0.0/grid/OPatch/opatch lspatches
+    ```
+
+    実行例：
+
+    ![](2022-12-08-14-26-26.png)
+
+
+<BR>
+
+# 2. データベースのパッチ適用  
+
+パッチ適用方法には、**Out-of-place Patching**と**In-place Patching**の2つの方法を提供しております。
+
+- **Out-of-place Patching**:<br>
+    既存のOracleホームとは別の場所に、バイナリ・ファイルをインストールしてパッチ適用する
+
+- **In-place Patching**:<br>
+    既存のOracleホームとしてインストールされているバイナリ・ファイルを、直接入れ替えることでパッチ適用する
+
+パッチ適用後に何か問題が発生した際に元のOracleホームにスイッチ・バックできるという利点から**Out-of-place Patching**が推奨とされています。
+
+<a id="anchor2-1"></a>
+
+## Out-of-place Patching
+
+1. OCIコンソール・メニューから **Oracle Database** → **Oracle Public Cloud上のExadata** に移動します。
+
+    ![](2022-11-04-17-13-56.png)
+
+1. 利用したいコンパートメントを**リスト範囲**の**コンパートメント**から選択します。
+
+    ![](2022-11-15-16-30-05.png)
+
+1. 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、**リージョン**の一覧から選択します。
+
+    ![](2022-11-15-16-32-47.png)
+
+1.  操作したい**Exadata VMクラスタ**の表示名をクリックします。
+
+    ![](2023-03-31-17-49-07.png)
+
+1. **Exadata VMクラスタの詳細**ページの**使用可能な更新**の横にある**更新の表示**をクリックします。
+
+    ![](2023-03-31-17-52-26.png)
+
+<a id="anchor2-6"></a>
+
+1. 適用可能なパッチの一覧が表示されます。
+
+    ![](2023-03-31-17-53-03.png)
+
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+    以下のようにoracleユーザにログインして、コマンドを実行します。
+
+    実行コマンド：
+
+    ```
+    sudo su - oracle
+    $ORACLE_HOME/OPatch/opatch lspatches
+    ```
+
+    実行例：
+
+    ```
+    [oracle@oradb-lxxkd1 ~]$ opatch lspatches
+    34088989;ONE-OFF REQUEST FOR DELETE DIR FOR SUPTOOLS/TFA + SUPTOOLS/ORACHK + SUPTOOLS/ORACHK.ZIP FROM DB PSU/BP/RU/RUR
+    34096213;Fix for Bug 34096213
+    33810360;CVE-2021-45943 REPORTED IN (OPEN SOURCE GEOSPATIAL FOUNDATION/GEOSPATIAL DATA ABSTRACTION LIBRARY/OPENGIS SIMPLE FEATURES REFERENCE IMPLEMENTATION (GDAL/OGR)/3.3.0)
+    33809062;TRACKING BUG FOR REGRESSION RTI 24544369 CAUSED BY PKNAGGS_BUG-32472737 APPROVED/INCLUDED IN 21.0.0.0 ADBSBP
+    29780459;INCREASE _LM_RES_HASH_BUCKET AND BACK OUT CHANGES FROM THE BUG 29416368 FIX
+    33613833;DSTV37 UPDATE - TZDATA2021E - NEED OJVM FIX
+    33613829;RDBMS - DSTV37 UPDATE - TZDATA2021E
+    32327201;RDBMS - DSTV36 UPDATE - TZDATA2020E
+    31335037;RDBMS - DSTV35 UPDATE - TZDATA2020A
+    30432118;MERGE REQUEST ON TOP OF 19.0.0.0.0 FOR BUGS 28852325 29997937
+    33912872;DATABASE PERL UPDATE IN 19C TO V5.32-1 (CVE-2022-23990 - LIBEXPAT UPDATE)
+    33810130;JDK BUNDLE PATCH 19.0.0.0.220419
+    33808367;OJVM RELEASE UPDATE: 19.15.0.0.220419 (33808367)
+    33815596;OCW RELEASE UPDATE 19.15.0.0.0 (33815596)
+    33806152;Database Release Update : 19.15.0.0.220419 (33806152)
+
+    OPatch succeeded.
+    ```
+
+1. アップグレードしたいデータベースのバージョンのデータベース・ホームを作成します。データベース・ホームの作成は[106 : データベースのバージョンを指定しよう](/ocitutorials/database/exadb-d106-dbversion)の**1. データベース・ホームの作成**をご参照ください。
+
+    作成が完了すると、以下のように**Exadata VMクラスタの詳細**ページのデータベース・ホームの一覧に**データベースの数**が0のデータベース・ホームが追加されます。
+    ![](2023-03-31-23-24-12.png)
+
+1. **リソース**の一覧から**データベース**をクリックし、パッチを適用するデータベース名をクリックします。
+
+    ![](2023-03-31-23-28-54.png)
+
+1. **データベース詳細**ページの**他のアクション**ボタンをクリックし、**別のホームに移動**をクリックします。
+
+    ![](2023-03-31-23-30-52.png)
+
+1. **データベースを移動するホームを選択**をクリックし、アップグレードしたいデータベースのバージョンのデータベース・ホームを選択します。
+
+    ![](2023-03-31-23-34-41.png)
+
+1. **ターゲット・データベース・ホーム**が選択されていることを確認し、**データベースの移動**ボタンをクリックします。
+
+    ![](2023-03-31-23-36-33.png)
+
+1. **データベースの移動**ボタンをクリックします。移動操作（パッチ適用）はノード間でローリング方式で行われます。
+
+    ![](2023-03-31-23-37-20.png)
+
+1. パッチを適用するデータベースの状態が**更新中**に切り替わります。
+
+    ![](2023-03-31-23-39-30.png)
+
+    対象のデータベースが配置されていたデータベース・ホームと移動先のデータベース・ホームの状態も**更新中**に切り替わります。
+
+    ![](2023-03-31-23-41-16.png)
+
+1. 移動（パッチ適用）が完了すると、データベース・ホームの状態が**使用可能**に切り替わり、移動されたデータベース・ホームの**データベースの数**が1に変更されます。
+
+    ![](2023-03-31-23-42-58.png)
+
+    [Out-of-place Patchingの6.](#anchor2-6)で確認したパッチの一覧に適用したパッチが消えます。
+
+    ![](2023-03-31-23-50-17.png)
+
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+    以下のようにoracleユーザにログインして、コマンドを実行します。
+
+    実行コマンド：
+
+    ```
+    sudo su - oracle
+    $ORACLE_HOME/OPatch/opatch lspatches
+    ```
+
+    実行例：
+
+    ```
+    [oracle@oradb-lxxkd1 ~]$ $ORACLE_HOME/OPatch/opatch lspatches
+    34835593;REFERENCE BUG 34792490 - SCHEDULER LAYER CHANGES TO AVOID CYCLIC DEPENDENCY ON DBMS_AQADM_SYS PACKAGE
+    34792490;FADBRWT STRESS FA ORA-00060  DEADLOCK DETECTED DURING DATAPATCH
+    34699616;DSTV40 UPDATE - TZDATA2022E - NEED OJVM FIX
+    34777391;JDK BUNDLE PATCH 19.0.0.0.230117
+    34786990;OJVM RELEASE UPDATE: 19.18.0.0.230117 (34786990)
+    34768559;OCW RELEASE UPDATE 19.18.0.0.0 (34768559)
+    34765931;DATABASE RELEASE UPDATE : 19.18.0.0.230117 (REL-JAN230131) (34765931)
+
+    OPatch succeeded.
+    ```
+
+<a id="anchor2-2"></a>
+
+## In-place Patching
+
+1. OCIコンソール・メニューから **Oracle Database** → **Oracle Public Cloud上のExadata** に移動します。
+
+    ![](2022-11-04-17-13-56.png)
+
+1. 利用したいコンパートメントを**リスト範囲**の**コンパートメント**から選択します。
+
+    ![](2022-11-15-16-30-05.png)
+
+1. 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、**リージョン**の一覧から選択します。
+
+    ![](2022-11-15-16-32-47.png)
+
+1.  操作したい**Exadata VMクラスタ**の表示名をクリックします。
+
+    ![](2022-12-08-13-43-19.png)
+
+1. **Exadata VMクラスタの詳細**ページの**使用可能な更新**の横にある**更新の表示**をクリックします。
+
+    ![](2022-12-12-17-11-30.png)
+
+1. 適用可能なパッチの一覧が表示されます。（例では、19.17.0.0.0が適用可能）
+
+    ![](2022-12-12-17-16-02.png)
+
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+    以下のようにoracleユーザにログインして、コマンドを実行します。
+
+    実行コマンド：
+
+    ```
+    sudo su - oracle
+    $ORACLE_HOME/OPatch/opatch lspatches
+    ```
+
+    実行例：
+
+    ![](2022-12-12-17-17-22.png)
+
+1. 適用したいパッチの右の**アクション・ボタン**をクリックして、**事前チェックの実行**をクリックします。
+
+    ![](2022-12-26-18-51-21.png)
+
+1. **事前チェックの実行**のボタンをクリックします。
+
+    ![](2022-12-26-18-52-06.png)
+
+1. 実行したパッチの**状態**が**チェック中**に切り替わります。
+
+    ![](2022-12-26-18-53-05.png)
+
+    成功すると、**状態**が**使用可能**に切り替わります。
+
+    ![](2022-12-26-18-53-45.png)
+
+1. 事前チェックで問題がなければ、**アクション・ボタン**をクリックして、**適用**をクリックします。
+
+    ![](2022-12-26-18-54-38.png)
+
+1. **パッチの適用**ボタンをクリックします。
+
+    ![](2022-12-26-18-55-07.png)
+
+    **Exadata VMクラスタの詳細**ページに戻ると、状態が**更新中**となっています。**使用可能**に切り替わるまで待機します。パッチはDBサーバーへのローリングで適用されます。
+
+    ![](2022-12-26-18-56-00.png)
+
+    VMクラスタの状態が**使用可能**に切り替わり、パッチが成功すると、パッチの一覧から適用したパッチが消えます。
+
+    ![](2022-12-26-18-56-21.png)
+
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+    以下のようにoracleユーザにログインして、コマンドを実行します。
+
+    実行コマンド：
+
+    ```
+    sudo su - oracle
+    $ORACLE_HOME/OPatch/opatch lspatches
+    ```
+
+    実行例：
+
+    ```
+    [oracle@wasabi-isfff1 ~]$ opatch lspatches
+    34571842;OCW Interim patch for 34571842
+    34533150;DSTV39 UPDATE - TZDATA2022C - NEED OJVM FIX
+    34533061;RDBMS - DSTV39 UPDATE - TZDATA2022C
+    33613829;RDBMS - DSTV37 UPDATE - TZDATA2021E
+    34422617;JDK BUNDLE PATCH 19.0.0.0.221018
+    34006614;RDBMS - DSTV38 UPDATE - TZDATA2022A
+    32327201;RDBMS - DSTV36 UPDATE - TZDATA2020E
+    31335037;RDBMS - DSTV35 UPDATE - TZDATA2020A
+    30432118;MERGE REQUEST ON TOP OF 19.0.0.0.0 FOR BUGS 28852325 29997937
+    33912872;DATABASE PERL UPDATE IN 19C TO V5.32-1 (CVE-2022-23990 - LIBEXPAT UPDATE)
+    34411846;OJVM RELEASE UPDATE: 19.17.0.0.221018 (34411846)
+    34419443;Database Release Update : 19.17.0.0.221018 (34419443)
+
+    OPatch succeeded.
+    ```
+
+<BR>
+
+<a id="anchor3-1"></a>
+
+# 3. クラウド・ツール(dbaascli)のパッチ適用
+
+ExaDB-Dのクラウド・ツールであるdbaascliユーティリティを使用して、ExaDB-D上の様々なデータベースの管理操作をコマンドラインベースで実行できます。クラウド・ツールは、新しいリリースが使用可能になり次第、最新バージョンへアップデート可能です。dbaascliは自動でアップデートされますが、ここでは手動でのdbaascliのパッチの適用方法を紹介します。
+
+1. ExaDB-Dにアクセスします。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+1. 以下のようにrootユーザにログインします。
+
+    実行コマンド：
+
+    ```
+    sudo -s
+    ```
+
+    <a id="anchor3-2"></a>
+
+1. 以下のようにクラウド・ツールのバージョンを確認します。
+
+    実行コマンド：
+
+    ```
+    dbaascli patch tools list
+    ```
+
+    クラウド・ツールのバージョンが最新の場合は以下のようになります。この場合は、バージョンが最新のため、クラウド・ツール(dbaascli)のパッチ適用の作業は**完了**のため、[4. OSのパッチ適用](#4-OSのパッチ適用)に進みます。
+
+    実行例(最新バージョンの場合)：
+
+    ```
+    [root@orcl1 ~]# dbaascli patch tools list
+    DBAAS CLI version 22.1.1.0.1
+    Executing command patch tools list
+    Checking Current tools on all nodes
+
+    orcl1: Patchid : 22.1.1.0.1_220223.0947
+    No applicable tools patches are available
+
+    orcl2: Patchid : 22.1.1.0.1_220223.0947
+    No applicable tools patches are available
+
+    All Nodes have the same tools version
+    ```
+
+    適用可能なパッチが存在する場合、以下のようになります。
+
+    実行例(適用可能なパッチが存在する場合)：
+
+    ```
+    [root@orcl1 ~]# dbaascli patch tools list;
+    DBAAS CLI version 21.4.1.1.0
+    Executing command patch tools list
+    Checking Current tools on all nodes
+
+    orcl1: Patchid : 21.4.1.1.0_220209.2354
+
+    Available Patches
+    Patchid : 22.1.1.0.1_220223.0947(LATEST)
+
+    Install tools patch using
+    dbaascli patch tools apply --patchid 22.1.1.0.1_220223.0947    or
+    dbaascli patch tools apply --patchid LATEST
+
+    orcl2: Patchid : 21.4.1.1.0_220209.2354
+
+    Available Patches
+    Patchid : 22.1.1.0.1_220223.0947(LATEST)
+
+    Install tools patch using
+    dbaascli patch tools apply --patchid 22.1.1.0.1_220223.0947    or
+    dbaascli patch tools apply --patchid LATEST
+
+    All Nodes have the same tools version
+    ```
+
+1. 以下のようにクラウド・ツール(dbaascli)のパッチを適用する。（※ dbaascli 21.2.1.x.x から “dbaascli patch tools apply”は 非推奨となり、 “dbaascli admin updateStack”を使用します。）
+
+    実行コマンド：
+
+    ```
+    dbaascli admin updateStack --version LATEST
+    ```
+
+    実行例(一部省略)：
+
+    ```
+    [root@orcl1 ~]# dbaascli admin updateStack --version LATEST
+    DBAAS CLI version 21.4.1.1.0
+    Executing command admin updateStack --version LATEST
+    INFO : Review log file => /var/opt/oracle/log/tooling/Update/Update_2022-03-03_09:06:37.96968338661.log
+    ============ Starting RPM update operation ===========
+    Loading PILOT...
+    Session ID of the current execution is: 65
+    Log file location: /var/opt/oracle/log/tooling/Update/pilot_2022-03-03_09-06-39-AM
+    -----------------
+    Running Plugin_initialization job
+    Completed Plugin_initialization job
+    -----------------
+    Running Default_value_initialization job
+    Completed Default_value_initialization job
+    -----------------
+    Running Rpm_version_validation job
+    Completed Rpm_version_validation job
+    -----------------
+    Running Rpm_source_validation job
+    Completed Rpm_source_validation job
+    -----------------
+    Running Disk_space_validate job
+    Completed Disk_space_validate job
+
+    *** 省略 ***
+
+    Completed Setup_syslens job
+    -----------------
+    Running Update_creg_and_log_ownership job
+    Completed Update_creg_and_log_ownership job
+    -----------------
+    Running Upgrade_ahf job
+    Completed Upgrade_ahf job
+    ```
+
+1. [3. クラウド・ツール(dbaascli)のパッチ適用の3.](#anchor3-2)に戻り、クラウド・ツールのバージョンを確認します。
+
+<a id="anchor4-1"></a>
+
+# 4. OSのパッチ適用
+
+1. OCIコンソール・メニューから **Oracle Database** → **Oracle Public Cloud上のExadata** に移動します。
+
+    ![](2022-11-04-17-13-56.png)
+
+1. 利用したいコンパートメントを**リスト範囲**の**コンパートメント**から選択します。
+
+    ![](2022-11-15-16-30-05.png)
+
+1. 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、**リージョン**の一覧から選択します。
+
+    ![](2022-11-15-16-32-47.png)
+
+1.  操作したい**Exadata VMクラスタ**の表示名をクリックします。
+
+    ![](2022-12-08-13-43-19.png)
+
+1. **Exadata VMクラスタの詳細**ページの**使用可能な更新**の横にある**更新の表示**をクリックします。
+
+    ![](2022-12-26-19-04-20.png)
+
+1. 適用可能なパッチの一覧が表示されます。
+
+    ![](2022-12-26-18-41-24.png)
+
+1. 適用したいパッチの右の**アクション・ボタン**をクリックして、**事前チェックの実行**をクリックします。
+
+    ![](2022-12-26-18-45-00.png)
+
+1. **事前チェックの実行**のボタンをクリックします。
+
+    ![](2022-12-26-18-45-35.png)
+
+1. 実行したパッチの**状態**が**チェック中**に切り替わります。
+
+    ![](2022-12-26-18-59-31.png)
+
+    成功すると、**状態**が**使用可能**に切り替わり、**最後に成功した事前チェック**に日付が更新されます。
+
+    ![](2022-12-26-19-00-13.png)
+
+1. 事前チェックで問題がなければ、**アクション・ボタン**をクリックして、**Exadata OSイメージ更新の適用**をクリックします。
+
+    ![](2022-12-26-19-01-24.png)
+
+1. **Exadataイメージ更新の適用**ボタンをクリックします。
+
+    ![](2022-12-26-19-02-07.png)
+
+    **Exadata VMクラスタの詳細**ページに戻ると、状態が**更新中**となっています。**使用可能**に切り替わるまで待機します。パッチはノード間でローリングで適用されます。
+
+    ![](2022-12-26-19-04-57.png)
+
+    VMクラスタの状態が**使用可能**に切り替わり、パッチが成功すると、パッチの一覧から適用したパッチが消えます。
+
+    ![](2022-12-26-19-09-54.png)
+
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+
+    以下のようにrootユーザにログインして、コマンドを実行します。
+
+    実行コマンド：
+
+    ```
+    sudo su - 
+    imagehistory
+    ```
+
+    実行例：
+
+    ```
+    [root@wasabi-isfff1 ~]# imagehistory
+    Version                              : 21.2.11.0.0.220414.1
+    Image activation date                : 2022-09-28 13:40:38 +0900
+    Imaging mode                         : fresh
+    Imaging status                       : success
+
+    Version                              : 22.1.4.0.0.221020
+    Image activation date                : 2022-11-11 10:45:44 +0900
+    Imaging mode                         : patch
+    Imaging status                       : success
+    ```
+
+<BR>
+
+以上でこの章の作業は完了です。
+
+<BR>
+
+<a id="anchor11"></a>
+
+# 参考資料
++ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html)
++ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail)
+
+<BR>
+
+[ページトップへ戻る](#anchor0)
