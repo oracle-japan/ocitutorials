@@ -4,8 +4,8 @@ excerpt: "ExaDB-D上でOCPU数またはインフラストラクチャ(データ�
 order: "2_105"
 layout: single
 header:
-  teaser: "/database/exadb-d105-scaling/teaser.png"
-  overlay_image: "/database/exadb-d105-scaling/teaser.png"
+  teaser: "/database/exadb-d105-backup-restore/teaser.png"
+  overlay_image: "/database/exadb-d105-backup-restore/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -58,13 +58,13 @@ header:
 
     ![](2022-11-01-17-05-08.png)
 
-1. **VMクラスタのスケーリング**ダイアログの**仮想マシン当たりのOCPU数を指定**で現在のOCPU数から変更したいOCPU数を指定します。(本ガイドでは4OCPU(仮想マシンあたり4OCPU)を指定)
+1. **VMクラスタのスケーリング**ダイアログの**VM当たりのOCPU数**で現在のOCPU数から変更したいOCPU数を指定します。(本ガイドでは4OCPU(VMあたり4OCPU)を指定)
 
-    ![](2022-10-03-17-37-24.png)
+    ![](2023-04-01-00-33-16.png)
 
-    設定後、**更新**をクリックします。
+    設定後、**変更の保存**をクリックします。
 
-    ![](2022-11-01-17-05-46.png)
+    ![](2023-04-01-00-36-40.png)
 
 1. ステータスが**更新中**から**使用可能**になり、**VMクラスタ情報**の**有効なOCPU**が指定した値に変更されているか確認します。(本ガイドでは仮想マシン当たり4OCPUと指定したため、**有効なOCPU**の値は8OCPU(各4OCPUのVMが2ノード・クラスタ構成で有効なOCPUは8OCPU))
 

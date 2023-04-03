@@ -39,8 +39,6 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[106: Data Guardを構成しよう](/ocitutorials/database/dbcs106-dataguard/){:target="_blank"}**
 
-
-
 ## データ移行編
 
 + **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/database/dbcs201-pdb-plug/){:target="_blank"}**
@@ -63,6 +61,10 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 + **[105: スケーリングしよう](/ocitutorials/database/exadb-d105-scaling/){:target="_blank"}**	
 
 + **[106: データベースのバージョンを指定しよう](/ocitutorials/database/exadb-d106-dbversion/){:target="_blank"}**
+
++ **[107: パッチを適用しよう](/ocitutorials/database/exadb-d107-patch/){:target="_blank"}**
+
++ **[108: Data Guardを構成しよう](/ocitutorials/database/exadb-d108-dataguard/){:target="_blank"}**
 
 <br/>
 
