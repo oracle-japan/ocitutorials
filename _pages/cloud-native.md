@@ -127,8 +127,11 @@ lastmod: "2022-04-06"
 
 # 7. WebLogic Server on OCIチュートリアル
 
-+ **[WebLogic Server for OCIハンズオン](/ocitutorials/cloud-native/wls-for-oci-migration/)**  
-    WebLogic Server for OCI は、Oracleが提供するアプリケーションサーバーのWebLogic ServerをOCI上で簡単に構築できるオファリングです。こちらのハンズオンでは、WebLogic Server for OCIのプロビジョニング、アプリケーションのデプロイ、アプリケーションの移行を学んでいただけるコンテンツになります。【所要時間:約2時間】
++ **[WebLogic Server for OCIをプロビジョニングしてみよう](/ocitutorials/cloud-native/wls-for-oci-provisioning/)**  
+    WebLogic Server for OCI は、Oracleが提供するアプリケーションサーバーのWebLogic ServerをOCI上で簡単に構築できるオファリングです。こちらのハンズオンでは、WebLogic Server for OCIのプロビジョニング、アプリケーションのデプロイを学んでいただけるコンテンツになります。【所要時間:約1時間】
+
++ **[WebLogic Server for OCIにアプリケーションを移行してみよう](/ocitutorials/cloud-native/wls-for-oci-migration/)**  
+   こちらのハンズオンでは、WebLogic Server for OCIに対してのアプリケーションの移行を学んでいただけるコンテンツになります。【所要時間:約1時間】
 
 # 8. Oracle Transaction Manager for Microservices(MicroTx)チュートリアル
 
