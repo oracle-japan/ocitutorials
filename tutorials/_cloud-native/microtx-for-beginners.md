@@ -575,20 +575,20 @@ Cloud Shellの右端にある歯車マークをクリックし、`アップロ�
 
 ```sh
 cd ~
-ls V1031240-01.zip
+ls V1032856-01.zip
 ```
 
 ファイルを確認したら、解凍します。
 解凍に少し時間がかかる場合があります。  
 
 ```sh
-unzip V1031240-01.zip
+unzip V1032856-01.zip
 ```
 
-解凍すると`otmm-22.3`というディレクトリが出力されます。  
+解凍すると`otmm-22.3.1`というディレクトリが出力されます。  
 
 ```sh
-ls otmm-22.3
+ls otmm-22.3.1
 ```
 
 これで、MicroTxバイナリのダウンロードが完了です。  
@@ -600,11 +600,12 @@ ls otmm-22.3
 今回は、ライセンスの関係上、Flightアプリケーションをユーザの皆様でビルドして頂く必要があるため、この手順を追加しています。  
 
 Flightアプリケーションには、Oracle Instant ClientおよびMicroTxのNode.js用ライブラリが含まれており、ライセンスの関係上、ユーザの皆様でビルドする必要があるためにこの手順を実施します。  
+今回利用するサンプルアプリケーションのうち、Flightアプリケーション以外については既にビルド済みのイメージを公開しておりますので、そちらを利用します。
 
 [1-3. MicroTxバイナリのダウンロード](#1-3-microtxバイナリのダウンロード)でダウンロードした資材からNode.js用のMicroTxライブラリをFlightにコピーします。  
 
 ```sh
-cp -pr otmm-22.3/lib/nodejs/tmmlib-node-22.3.tgz microtx-handson/flight/
+cp -pr otmm-22.3.1/lib/nodejs/tmmlib-node-22.3.1.tgz microtx-handson/flight/
 ```
 
 ディレクトリを移動します。  
@@ -722,12 +723,12 @@ cd ~
 ここでは、MicroTxのインストールにあたって、必要なパラメータを設定していきます。  
 MicroTxはhelmを利用してインストールされるため、ここでは`values.yaml`にパラメータを設定していきます。  
 
-今回は`otmm-22.3/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml`を利用します。  
+今回は`otmm-22.3.1/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml`を利用します。  
 
 `qs-oke-values.yaml`を開きます。  
 
 ```sh
-vim otmm-22.3/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml
+vim otmm-22.3.1/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml
 ```
 
 まず、65行目~72行目を書き換えます。  
@@ -783,18 +784,16 @@ jwksUri|[0-2. jwks_urlの確認](#0-2-jwks_urlの確認)で確認した`jwks_uri
 {: .notice--info}
 
 以下のコマンドを実行します。  
-この時、ダウンロードされたIstioのバージョンが出力されるので、メモしておきます。  
+このハンズオンでは`1.16.1`を利用します。  
 
 ```sh
-curl -L https://istio.io/downloadIstio | sh -
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 sh -
 ```
 
 PATHを通します。  
-`x.xx.x`の箇所は前手順でダウンロードされたIstioのバージョンが入ります。  
-例えば、`1.16.1`です。
 
 ```sh
-export PATH="${PWD}/istio-x.xx.x/bin:${PATH}"
+export PATH="${PWD}/istio-1.16.1/bin:${PATH}"
 ```
 
 最後に動作確認をします。  
@@ -803,7 +802,7 @@ export PATH="${PWD}/istio-x.xx.x/bin:${PATH}"
 istioctl version
 ```
 
-以下のようなメッセージが出力されればインストールは完了です。(`1.16.1`の場合)  
+以下のようなメッセージが出力されればインストールは完了です。
 
 ```sh
 no running Istio pods in "istio-system"
@@ -812,12 +811,12 @@ no running Istio pods in "istio-system"
 
 ### 1-7. MicroTxのデプロイ
 
-`otmm-22.3`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
+`otmm-22.3.1`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
 このスクリプトを実行することによって、MictoTxをインストールできます。  
 実行権限がない場合があるので、実行権限を付与します。  
 
 ```sh
-cd otmm-22.3/
+cd otmm-22.3.1/
 ```
 
 ```sh
@@ -1295,6 +1294,370 @@ microtx-handson-db2   OLTP               14s
 microtx-handson-db1   OLTP      Active   71s
 microtx-handson-db2   OLTP      Active   75s
 ```
+
+#### 2-1-3. 【オプション】`app.yaml`の更新
+
+**本手順について**  
+この手順は、[2-1-2. ATPのプロビジョニング](#2-1-2-atpのプロビジョニング)でATPのデータベース名(`dbName`)を変更した方向けの手順です。  
+それ以外の方はこの手順はスキップしてください。  
+{: .notice--warning}
+
+[2-1-2. ATPのプロビジョニング](#2-1-2-atpのプロビジョニング)で変更したATPのデータベース名(`dbName`)について、サンプルアプリケーション側も対応させる必要があります。  
+ここでは、その手順を実施します。  
+
+サンプルアプリケーションには、ATPのデータベース名をKubernetes Manifestで環境変数として定義しています。 
+こちらを更新します。  
+
+```sh
+vim microtx-handson/k8s/app/app.yaml
+```
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotel
+  namespace: otmm
+  labels:
+    app: hotel
+    service: hotel
+spec:
+  ports:
+    - port: 8080
+      name: http
+      targetPort: 8082
+  selector:
+    app: hotel
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hotel
+  namespace: otmm
+  labels:
+    account: hotel
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel
+  namespace: otmm
+  labels:
+    app: hotel
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hotel
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: hotel
+        version: v1
+    spec:
+      containers:
+        - name: hotel
+          image: nrt.ocir.io/orasejapan/tmm-handson-hotel
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
+          env:
+            - name: ORACLE_TMM_TCS_URL
+              value: http://otmm-tcs:9000/api/v1
+            - name: MP_LRA_COORDINATOR_URL
+              value: http://otmm-tcs:9000/api/v1/lra-coordinator
+            - name: MP_LRA_PARTICIPANT_URL
+              value: http://hotel:8080
+            - name: SERVICE_NAME
+              value: hotel
+            - name: javax.sql.DataSource.test.dataSource.user
+              valueFrom:
+                secretKeyRef:
+                  name: customized-db-cred
+                  key: user_name
+            - name: javax.sql.DataSource.test.dataSource.password
+              valueFrom:
+                secretKeyRef:
+                  name: customized-db-cred
+                  key: password
+            - name: javax.sql.DataSource.test.dataSource.url
+              value: jdbc:oracle:thin:@microtxhandson1_high?TNS_ADMIN=/db-demo/creds
+          volumeMounts:
+          - name: handson
+            mountPath: /db-demo/creds
+      volumes:
+      - name: handson
+        secret:
+          secretName: okeatp1
+      imagePullSecrets:
+        - name: regcred
+---
+##################################################################################################
+# Flight
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: flight
+  namespace: otmm
+  labels:
+    app: flight
+    service: flight
+spec:
+  ports:
+    - port: 8080
+      name: http
+      targetPort: 8083
+  selector:
+    app: flight
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flight
+  namespace: otmm
+  labels:
+    account: flight
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight
+  namespace: otmm
+  labels:
+    app: flight
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flight
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: flight
+        version: v1
+    spec:
+      containers:
+        - name: flight
+          image: nrt.ocir.io/orasejapan/tmm-handson-flight
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8083
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
+          env:
+            - name: ORACLE_TMM_TCS_URL
+              value: http://otmm-tcs:9000/api/v1
+            - name: SERVICE_NAME
+              value: flight
+            - name: ORACLE_TMM_CALLBACK_URL
+              value: http://flight:8080
+            - name: DBUSER
+              valueFrom:
+                secretKeyRef:
+                  name: customized-db-cred
+                  key: user_name
+            - name: DBPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: customized-db-cred
+                  key: password
+            - name: CONNECT_STRING
+              value: microtxhandson2_high
+          volumeMounts:
+          - name: handson
+            mountPath: /usr/src/app/instantclient/network/admin
+      volumes:
+      - name: handson
+        secret:
+          secretName: okeatp2              
+      imagePullSecrets:
+        - name: regcred
+---
+##################################################################################################
+# Trip Manager
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: trip-manager
+  namespace: otmm
+  labels:
+    app: trip-manager
+    service: trip-manager
+spec:
+  ports:
+    - port: 8080
+      name: http
+      targetPort: 8081
+  selector:
+    app: trip-manager
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: trip-manager
+  namespace: otmm
+  labels:
+    account: trip-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trip-manager
+  namespace: otmm
+  labels:
+    app: trip-manager
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trip-manager
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: trip-manager
+        version: v1
+    spec:
+      containers:
+        - name: trip-manager
+          image: nrt.ocir.io/orasejapan/tmm-handson-trip-manager
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
+          env:
+            - name: ORACLE_TMM_TCS_URL
+              value: http://otmm-tcs:9000/api/v1
+            - name: MP_LRA_COORDINATOR_URL
+              value: http://otmm-tcs:9000/api/v1/lra-coordinator
+            - name: MP_LRA_PARTICIPANT_URL
+              value: http://trip-manager:8080
+            - name: SERVICE_NAME
+              value: trip-manager
+            - name: HOTEL_SERVICE_URL
+              value: http://hotel:8080/hotelService/api/hotel
+            - name: FLIGHT_SERVICE_URL
+              value: http://flight:8080/flightService/api/flight
+      imagePullSecrets:
+        - name: regcred
+---
+##################################################################################################
+# Console
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: console
+  namespace: otmm
+  labels:
+    app: console
+    service: console
+spec:
+  ports:
+    - port: 8080
+      name: http
+      targetPort: 8084
+  selector:
+    app: console
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: console
+  namespace: otmm
+  labels:
+    account: console
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console
+  namespace: otmm
+  labels:
+    app: console
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: console
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: console
+        version: v1
+    spec:
+      containers:
+        - name: console
+          image: nrt.ocir.io/orasejapan/tmm-handson-console
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8084
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
+          env:
+            - name: IDCS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: idcs-cred
+                  key: IDCS_URL
+            - name: IDCS_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: idcs-cred
+                  key: IDCS_CLIENT_ID
+            - name: IDCS_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: idcs-cred
+                  key: IDCS_CLIENT_SECRET
+            - name: SERVICE_NAME
+              value: console
+            - name: TRIP_SERVICE_URL
+              value: http://trip-manager:8080/trip-service/api/trip
+      imagePullSecrets:
+        - name: regcred
+---
+```
+
+76行目
+
+```yaml
+value: jdbc:oracle:thin:@microtxhandson1_high?TNS_ADMIN=/db-demo/creds
+```
+
+`@microtxhandson1_high?TNS_ADMIN=/db-demo/creds`部分を`@<ご自身で決めたデータベース名>_high?TNS_ADMIN=/db-demo/creds`に変更します。  
+
+例えば、`dbName`を`microtxhandson01`とした場合は以下のようになります。  
+
+```yaml
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@microtxhandson01_high?TNS_ADMIN=/db-demo/creds
+``` 
+
+これで、`app.yaml`の更新は完了です。  
 
 ### 2-2. JaegerとKialiのインストール
 
