@@ -4,8 +4,8 @@ excerpt: "GPUクラスタを構築してみましょう。このチュートリ�
 order: "122"
 layout: single
 header:
-  teaser: "/intermediates/spinup-gpu-cluster/architecture_diagram.png"
-  overlay_image: "/intermediates/spinup-gpu-cluster/architecture_diagram.png"
+  teaser: "/hpc/spinup-gpu-cluster/architecture_diagram.png"
+  overlay_image: "/hpc/spinup-gpu-cluster/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -116,21 +116,19 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Lna2m3TPiPKL/lHNK4GK2bkADRzm4674uwO9PHUq
 
 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** は、作成時に指定する **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** に基づいて **[インスタンス・プール](/ocitutorials/hpc/#5-8-インスタンスプール)** が作成時に指定するノード数のGPUノードをデプロイし、これをクラスタ・ネットワークに接続します。
 
-クラスタ・ネットワークに接続するGPUノードは、OS起動時点でクラスタ・ネットワークに接続するネットワークインターフェースが作成されていないため、デプロイ後の最初のOS起動時のみ実行されるOCIのcloud-initを利用し、この作成を行います。また本チュートリアルは、GPUノードに装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
+クラスタ・ネットワークに接続するGPUノードは、OS起動時点でクラスタ・ネットワークに接続するネットワークインターフェースが作成されていないため、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** でこの作成を行います。また本チュートリアルは、GPUノードに装備されるNVMeローカルディスクのファイルシステム作成も、このcloud-initから行います。
 
 以上より、GPUクラスタの作成は、以下の手順を経て行います。
 
-- cloud-init設定ファイル作成
+- cloud-init設定ファイル（cloud-config）作成
 - インスタンス構成作成
 - クラスタ・ネットワーク作成
 
 本チュートリアルは、2ノードのBM.GPU4.8を使用してGPUクラスタを構築しますが、 **[BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** をGPUノードとするGPUクラスタを構築する際も、シェイプ指定の変更で対応可能です。
 
-## 1-1. cloud-init設定ファイル作成
+## 1-1. cloud-config作成
 
-本章は、cloud-init設定ファイルを作成します。
-
-cloud-initは、主要なクラウドサービスプロバイダーで利用可能なインスタンス初期化のための仕組みで、cloud-initが用意する文法に沿った設定ファイルを作成しこれを指定することで、インスタンスデプロイ後に必要な様々なOSレベルのカスタマイズを適用することが可能になります。
+本章は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル（cloud-config）を作成します。
 
 本チュートリアルは、このcloud-initを以下の目的で使用します。
 
@@ -142,7 +140,7 @@ cloud-initは、主要なクラウドサービスプロバイダーで利用可�
 - ルートファイルシステム拡張
 - Dockerイメージプル
 
-以下は、本チュートリアルで使用するBM.GPU4.8用のcloud-init設定ファイルで、OCIコンソールを実行している端末上にテキストファイルで保存します。
+以下は、本チュートリアルで使用するBM.GPU4.8用のcloud-configで、OCIコンソールを実行している端末上にテキストファイルで保存します。
 
 ```sh
 #cloud-config
@@ -199,7 +197,7 @@ runcmd:
   - docker pull nvcr.io/nvidia/tensorflow:22.11-tf2-py3
 ```
 
-このcloud-init設定ファイルで行っているクラスタ・ネットワーク接続用ネットワークインターフェース起動は、クラスタ・ネットワーク対応OSイメージに含まれるsystemdのサービス **oci-rdma-configure** を使用しますが、この詳細はテクニカルTips **[クラスタ・ネットワーク接続用ネットワークインターフェース作成方法](/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/)** を参照ください。
+このcloud-configで行っているクラスタ・ネットワーク接続用ネットワークインターフェース起動は、クラスタ・ネットワーク対応OSイメージに含まれるsystemdのサービス **oci-rdma-configure** を使用しますが、この詳細はテクニカルTips **[クラスタ・ネットワーク接続用ネットワークインターフェース作成方法](/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/)** を参照ください。
 
 ## 1-2. インスタンス構成作成
 
@@ -262,7 +260,7 @@ runcmd:
    
    ![画面ショット](console_page10.png)
 
-    - **cloud-initスクリプト** ：先に作成したcloud-init設定ファイルを選択（ **参照** ボタンでファイルを選択）  
+    - **cloud-initスクリプト** ：先に作成したcloud-init設定ファイル（cloud-config）を選択（ **参照** ボタンでファイルを選択）  
 
    ![画面ショット](console_page11.png)
 
@@ -309,7 +307,7 @@ runcmd:
 
    ![画面ショット](console_page18.png)
 
-   ステータスが **実行中** となれば、クラスタ・ネットワークとGPUノードのOCIリソースとしてのプロビジョニングが完了していますが、この時点でもGPUノードでcloud-initが実行中の可能性があるため、以降の手順に従いこの完了を確認して下さい。
+   ステータスが **実行中** となれば、クラスタ・ネットワークとGPUノードの作成が完了しています。
 
 ***
 # 2. GPUノード確認
@@ -339,7 +337,7 @@ Warning: Permanently added 'inst-d5ige-comp,10.0.2.67' (ECDSA) to the list of kn
 
 ## 2.2. cloud-init完了確認
 
-cloud-initは、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることでcloud-initの処理完了を確認します。
+**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることでcloud-initの処理完了を確認します。
 
 ステータスが **running** の場合は、cloud-initの処理が継続中のため、処理が完了するまで待ちます。
 

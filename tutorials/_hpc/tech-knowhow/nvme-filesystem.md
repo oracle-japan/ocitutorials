@@ -1,18 +1,18 @@
 ---
 title: "ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法"
 excerpt: "高速スクラッチ領域として利用することを想定したNVMe SSDディスクを内蔵するHPCクラスタ向けベアメタルシェイプBM.Optimized3.36やGPUクラスタ向けベアメタルシェイプBM.GPU4.8/BM.GPU.GM4.8は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。本テクニカルTipsは、このファイルシステム作成方法を解説します。"
-order: "500"
+order: "321"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-***
-# 0. 概要
-
 高速スクラッチ領域として利用することを想定したNVMe SSDを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
 本テクニカルTipsは、このファイルシステム作成方法を解説します。
+
+***
+# 0. 概要
 
 内蔵NVMe SSDドライブにファイルシステムを作成する方法は、搭載するドライブ数が異なるBM.Optimized3.36とBM.GPU4.8/BM.GPU.GM4.8でその手順が異なり、それぞれの手順を以降で解説します。
 

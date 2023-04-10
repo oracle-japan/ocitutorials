@@ -1,11 +1,11 @@
 ---
 title: "GPUクラスタを構築する(スタティッククラスタ自動構築編)"
 excerpt:  "GPUクラスタを構築してみましょう。このチュートリアルを終了すると、OCIが提供するGPUクラスタのノード間接続に最適なインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタルGPUインスタンスをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行うGPUクラスタ環境を、OCIのリソース管理を自動化するリソース・マネージャから1クリックで自動構築することが出来るようになります。"
-order: "100"
+order: "123"
 layout: single
 header:
-  teaser: "/intermediates/spinup-gpu-cluster-withstack/architecture_diagram.png"
-  overlay_image: "/intermediates/spinup-gpu-cluster-withstack/architecture_diagram.png"
+  teaser: "/hpc/spinup-gpu-cluster-withstack/architecture_diagram.png"
+  overlay_image: "/hpc/spinup-gpu-cluster-withstack/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---

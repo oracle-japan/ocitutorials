@@ -1,11 +1,11 @@
 ---
 title: "GPUクラスタを構築する(オンデマンドクラスタ自動構築編)"
 excerpt:  "GPUクラスタを構築してみましょう。このチュートリアルを終了すると、高速・低レイテンシなRDMA対応RoCEv2インターコネクトのクラスタ・ネットワークにベアメタルGPUインスタンスを接続するワークロード実行環境をジョブスケジューラSlurmと連動してオンデマンドにデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。"
-order: "100"
+order: "124"
 layout: single
 header:
-  teaser: "/intermediates/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
-  overlay_image: "/intermediates/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
+  teaser: "/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
+  overlay_image: "/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
