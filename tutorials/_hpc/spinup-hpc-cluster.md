@@ -1,11 +1,11 @@
 ---
 title: "HPCクラスタを構築する(スタティッククラスタ自動構築編)"
 excerpt: "HPCクラスタを構築してみましょう。このチュートリアルを終了すると、HPC向けIntel Ice Lakeプロセッサを搭載したベアメタル計算ノードをRoCEv2インターコネクトで接続した典型的な構成のHPCクラスタを、OCIコンソールから簡単に構築することが出来るようになります。"
-order: "097"
+order: "112"
 layout: single
 header:
-  teaser: "/intermediates/spinup-hpc-cluster/architecture_diagram.png"
-  overlay_image: "/intermediates/spinup-hpc-cluster/architecture_diagram.png"
+  teaser: "/hpc/spinup-hpc-cluster/architecture_diagram.png"
+  overlay_image: "/hpc/spinup-hpc-cluster/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -18,7 +18,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 - HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** ）
 - 100 Gbps RoCEv2 RDMAインターコネクト（※1）
 - インターネットからSSH接続可能なBastionノード
-- OS: Oracle Linux 7.9
+- OS: Oracle Linux 8.6
 - ジョブスケジューラ: Slurm
 - OCIファイルストレージサービスによるHPCクラスタ内ホームディレクトリ共有
 - LDAPによるクラスタ内ユーザ統合管理
@@ -44,6 +44,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
 **注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用するHPCクラスタ構築用スタックのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
 
+***
 # 0. HPCクラスタ構築用スタックの概要
 
 本チュートリアルで使用するHPCクラスタ構築用スタックは、クラスタ構築を大きく2つのステップに分けて実行しており、前半はTerraformを使用したOCIレベルのリソース構築フェーズで、後半はTerraformから起動されるAnsibleによるOSレベルのカスタマイズフェーズです。
@@ -69,11 +70,12 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 - RDMAインタフェース構築
 - Slurm環境構築
 
+***
 # 1. スタックの作成
 
 リソース・マネージャでリソースをデプロイする場合、まずそのためのスタックを作成する必要があります。
 
-本章は、マーケットプレースから提供するHPCクラスタ構築用スタックを元に、前述のHPCクラスタ環境を構築するためのスタックを作成します。このチュートリアルで使用するHPCクラスタ構築用スタックは、バージョン2.9.2です。
+本章は、マーケットプレースから提供するHPCクラスタ構築用スタックを元に、前述のHPCクラスタ環境を構築するためのスタックを作成します。このチュートリアルで使用するHPCクラスタ構築用スタックは、バージョン2.10.1.1です。
 
 1. 以下マーケット・プレースのHPCクラスタ構築用スタックページにアクセスします。
 
@@ -108,7 +110,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
     - **Availability Domain :** 計算ノードをデプロイするAD
     - **Shape of the Compute Nodes :** BM.Optimized3.36
     - **Initial cluster size :** 計算ノードのノード数（デフォルト：2）
-   
+    - **Image version :** HPC_OL8
+
    ![画面ショット](stack_page04.png)
 
    5.4 **Additional file system** フィールド
@@ -139,6 +142,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
 ![画面ショット](stack_page07.png)
 
+***
 # 2. スタックの計画
 
 本章は、完成したリソース・マネージャのスタックを計画し、どのようなリソースがデプロイされるか確認します。
@@ -159,6 +163,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
    ![画面ショット](stack_page11.png)
 
+***
 # 3. スタックの適用
 
 本章は、計画で作成されるリソースに問題が無いことを確認したスタックに対し、適用を行いHPCクラスタをデプロイします。
@@ -183,6 +188,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
    ステータスが **成功** となれば、HPCクラスタのデプロイが完了しています。
 
+***
 # 4. HPCクラスタの確認
 
 本章は、デプロイされたHPCクラスタにログインし、環境を確認します。
@@ -209,7 +215,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
    ```
 
-2. 計算ノードログイン
+3. 計算ノードログイン
 
    計算ノードは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードを経由してログインします。
 
@@ -222,7 +228,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    > ssh inst-ecrs7-massive-coyote
    ```
 
-3. 計算ノードファイルシステム確認
+4. 計算ノードファイルシステム確認
 
    計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。
 
@@ -249,54 +255,52 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
    ```
 
+***
 # 5. LDAPユーザ作成
 
 本章は、HPCクラスタ構築用スタックが作成したHPCクラスタ内のLDAP統合ユーザ管理環境に於いて、LDAPユーザを作成しこのユーザでHPCクラスタにログイン出来ることを確認します。
 
-このLDAP統合ユーザ管理環境は、BastionがLDAPサーバで計算ノードがLDAPクライアントです。
+このLDAP統合ユーザ管理環境は、BastionノードがLDAPサーバで計算ノードがLDAPクライアントです。
 
 1. LDAPユーザ作成
 
-   LDAPサーバであるBastionは、ユーザ管理のためのclusterコマンドが用意されています。
+   LDAPサーバであるBastionノードは、ユーザ管理のためのclusterコマンドが用意されています。
    
-   このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionのopcユーザで実行します。
+   このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。
 
    ```sh
    > sudo sed -i 's/\/home\//\/mnt\/home\//g' /usr/bin/cluster
    ```
 
-   次に、以下コマンドをBastionのopcユーザで実行し、LDAPユーザを作成します。
+   次に、以下コマンドをBastionノードのopcユーザで実行し、LDAPユーザを作成します。
 
    ```sh
-   > cluster user add user_name --ssh
+   > cluster user add user_name
    Password:  <- Password for user_name
    Repeat for confirmation: <- Password for user_name
    Full Name: full_name <- Full name for user_name
    Creating group
    ```
 
-   ここで指定するパスワードは、インターネットを介してBastionにSSHログインする際のパスワード認証で使用します。
+   ここで指定するパスワードは、HPCクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。
+
+   次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。
+
+   ```sh
+   > echo 'public_key_for_user_name' | sudo tee -a ~user_name/.ssh/authorized_keys
+   public_key_for_user_name
+   ```
 
 2. LDAPユーザログイン
 
-   先に作成したLDAPユーザを使用したインターネットを介したBastionへのログインは、以下コマンドでパスワード認証でSSHログインします。
+   先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。  
+   このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。
 
    ```sh 
-   > ssh user_name@123.456.789.123
-   user_name@123.456.789.123 s password: <- Password for user_name
-   Last login: Fri Dec  2 06:48:00 2022 from 123.456.789.123
+   > ssh -i path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
    ```
 
-   またこのユーザは、以下のようにHPCクラスタ内の全ての計算ノードにパスフレーズ無し鍵認証によるSSHログインが可能になっています。
-
-   ```sh
-   > cat /etc/opt/oci-hpc/hostfile.tcp 
-   inst-ecrs7-massive-coyote
-   inst-mnykj-massive-coyote
-   > ssh inst-ecrs7-massive-coyote
-   Last login: Fri Dec  2 06:48:39 2022 from causal-dinosaur-bastion.public.cluster.oraclevcn.com
-   ```
-
+***
 # 6. MPIプログラム実行（2ノード編）
 
 本章は、先に作成したLDAPユーザを使ってMPIプログラムをSlurmを介してバッチジョブとして投入し、構築したHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。
@@ -325,9 +329,9 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    # Only for BM.Optimized3.36
    export UCX_NET_DEVICES=mlx5_2:1
    
-   module load intel/mpi/latest
+   source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
    
-   mpirun IMB-MPI1 -msglog 3:28 PingPong
+   mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
    ```
 
 2. バッチジョブ投入
@@ -343,75 +347,74 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    投入したバッチジョブの結果を確認します。
 
    ```sh
-   > cat stderr.2 
-   Loading mpi version 2021.3.0
    > cat stdout.2 
-   #----------------------------------------------------------------
-   #    Intel(R) MPI Benchmarks 2021.2, MPI-1 part
-   #----------------------------------------------------------------
-   # Date                  : Tue Feb 15 08:02:48 2022
+   #------------------------------------------------------------
+   #    Intel (R) MPI Benchmarks 2018, MPI-1 part    
+   #------------------------------------------------------------
+   # Date                  : Mon Apr 10 08:08:45 2023
    # Machine               : x86_64
    # System                : Linux
-   # Release               : 3.10.0-1160.25.1.el7.x86_64
-   # Version               : #1 SMP Tue Apr 27 15:52:10 PDT 2021
+   # Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64
+   # Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022
    # MPI Version           : 3.1
    # MPI Thread Environment: 
-   
-   
+
+
    # Calling sequence was: 
-   
-   # IMB-MPI1 -msglog 3:28 PingPong 
-   
+
+   # /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+
    # Minimum message length in bytes:   0
    # Maximum message length in bytes:   268435456
    #
    # MPI_Datatype                   :   MPI_BYTE 
-   # MPI_Datatype for reductions    :   MPI_FLOAT 
+   # MPI_Datatype for reductions    :   MPI_FLOAT
    # MPI_Op                         :   MPI_SUM  
-   # 
-   # 
-   
+   #
+   #
+
    # List of Benchmarks to run:
-   
+
    # PingPong
-   
+
    #---------------------------------------------------
    # Benchmarking PingPong 
    # #processes = 2 
    #---------------------------------------------------
-          #bytes #repetitions      t[usec]   Mbytes/sec
-               0         1000         1.72         0.00
-               8         1000         1.73         4.62
-              16         1000         1.75         9.17
-              32         1000         1.77        18.11
-              64         1000         1.86        34.36
-             128         1000         1.92        66.50
-             256         1000         2.19       117.04
-             512         1000         2.24       228.74
-            1024         1000         2.38       431.07
-            2048         1000         2.98       687.54
-            4096         1000         3.54      1158.67
-            8192         1000         4.10      1998.63
-           16384         1000         5.52      2968.87
-           32768         1000         7.45      4396.34
-           65536          640        12.60      5200.24
-          131072          320        17.94      7307.18
-          262144          160        28.54      9184.01
-          524288           80        49.91     10504.31
-         1048576           40        92.51     11334.97
-         2097152           20       177.93     11786.26
-         4194304           10       348.68     12029.08
-         8388608            5       690.13     12155.19
-        16777216            2      1373.20     12217.63
-        33554432            1      2742.04     12237.02
-        67108864            1      5474.34     12258.80
-       134217728            1     10944.01     12264.04
-       268435456            1     21872.05     12272.99
-   
-   
+       #bytes #repetitions      t[usec]   Mbytes/sec
+            0         1000         1.67         0.00
+            8         1000         1.68         4.78
+           16         1000         1.68         9.55
+           32         1000         1.72        18.61
+           64         1000         1.84        34.82
+          128         1000         1.89        67.72
+          256         1000         2.14       119.51
+          512         1000         2.21       231.44
+         1024         1000         2.33       438.64
+         2048         1000         3.04       673.29
+         4096         1000         3.77      1085.28
+         8192         1000         4.87      1683.00
+        16384         1000         6.73      2432.75
+        32768         1000         9.26      3540.00
+        65536          640        10.87      6029.75
+       131072          320        16.36      8013.06
+       262144          160        28.70      9133.90
+       524288           80        50.18     10448.62
+      1048576           40        92.93     11283.11
+      2097152           20       178.58     11743.24
+      4194304           10       349.85     11988.82
+      8388608            5       692.99     12104.99
+     16777216            2      1378.36     12171.85
+     33554432            1      2750.49     12199.42
+     67108864            1      5491.94     12219.51
+    134217728            1     10972.51     12232.18
+    268435456            1     21945.08     12232.15
+
+
    # All processes entering MPI_Finalize
    ```
 
+***
 # 7. 計算ノード追加
 
 本章は、構築した2ノードクラスタに計算ノードを2ノード追加して4ノードクラスタに拡張します。
@@ -475,6 +478,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
 以上で、AnsibleのOSレベルカスタマイズフェーズは完了し、4ノードのHPCクラスタが利用可能になります。
 
+***
 # 8. MPIプログラム実行（4ノード編）
 
 本章は、先に作成したLDAPユーザを使ってMPIプログラムをSlurmを介してバッチジョブとして投入し、追加後の4ノードHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。
@@ -500,9 +504,9 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    # Only for BM.Optimized3.36
    export UCX_NET_DEVICES=mlx5_2:1
    
-   module load intel/mpi/latest
+   source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
    
-   mpirun IMB-MPI1 -mem 4 Alltoall
+   mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -mem 4 Alltoall
    ```
 
 2. バッチジョブ投入
@@ -615,6 +619,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
    # All processes entering MPI_Finalize
    ```
 
+***
 # 9. 計算ノード入れ替え
 
 本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。
@@ -687,6 +692,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 
 再度 **8. MPIプログラム実行（4ノード編）** に従いIntel MPIベンチマークを実行し、インターコネクト性能が十分出ていることを確認します。
 
+***
 # 10. スタックの破棄
 
 本章は、スタックを破棄することで、構築したHPCクラスタを削除します。

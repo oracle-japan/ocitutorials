@@ -1,11 +1,11 @@
 ---
 title: "GPUインスタンスで機械学習にトライ"
 excerpt: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupyterLab等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスを構築し、サンプル機械学習プログラムを実行することが出来るようになります。"
-order: "098"
+order: "121"
 layout: single
 header:
-  teaser: "/intermediates/spinup-ml-instance/architecture_diagram.png"
-  overlay_image: "/intermediates/spinup-ml-instance/architecture_diagram.png"
+  teaser: "/hpc/spinup-ml-instance/architecture_diagram.png"
+  overlay_image: "/hpc/spinup-ml-instance/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
