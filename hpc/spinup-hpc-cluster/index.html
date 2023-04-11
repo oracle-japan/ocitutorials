@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/spinup-hpc-cluster/architecture_diagram.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster/architecture_diagram.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2023-04-07T13:24:29+09:00">
+  <meta property="article:published_time" content="2023-04-11T10:46:13+09:00">
 
 
 
@@ -153,7 +153,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/spinup-hpc-cluster/architecture_diagram.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-hpc-cluster/architecture_diagram.png');"
 >
   
     <div class="wrapper">
@@ -242,27 +242,33 @@
       <ul>
         
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/" class="active">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/" class="active">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
         
       </ul>
     </li>
@@ -277,7 +283,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(スタティッククラスタ自動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルを終了すると、HPC向けIntel Ice Lakeプロセッサを搭載したベアメタル計算ノードをRoCEv2インターコネクトで接続した典型的な構成のHPCクラスタを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2023-04-07T13:24:29+09:00">
+    <meta itemprop="datePublished" content="2023-04-11T10:46:13+09:00">
     
 
     <div class="page__inner-wrap">
@@ -304,7 +310,7 @@
   <li>HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> ）</li>
   <li>100 Gbps RoCEv2 RDMAインターコネクト（※1）</li>
   <li>インターネットからSSH接続可能なBastionノード</li>
-  <li>OS: Oracle Linux 7.9</li>
+  <li>OS: Oracle Linux 8.6</li>
   <li>ジョブスケジューラ: Slurm</li>
   <li>OCIファイルストレージサービスによるHPCクラスタ内ホームディレクトリ共有</li>
   <li>LDAPによるクラスタ内ユーザ統合管理</li>
@@ -330,6 +336,7 @@
 
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用するHPCクラスタ構築用スタックのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。</p>
 
+<hr />
 <h1 id="0-hpcクラスタ構築用スタックの概要">0. HPCクラスタ構築用スタックの概要</h1>
 
 <p>本チュートリアルで使用するHPCクラスタ構築用スタックは、クラスタ構築を大きく2つのステップに分けて実行しており、前半はTerraformを使用したOCIレベルのリソース構築フェーズで、後半はTerraformから起動されるAnsibleによるOSレベルのカスタマイズフェーズです。</p>
@@ -359,11 +366,12 @@
   <li>Slurm環境構築</li>
 </ul>
 
+<hr />
 <h1 id="1-スタックの作成">1. スタックの作成</h1>
 
 <p>リソース・マネージャでリソースをデプロイする場合、まずそのためのスタックを作成する必要があります。</p>
 
-<p>本章は、マーケットプレースから提供するHPCクラスタ構築用スタックを元に、前述のHPCクラスタ環境を構築するためのスタックを作成します。このチュートリアルで使用するHPCクラスタ構築用スタックは、バージョン2.9.2です。</p>
+<p>本章は、マーケットプレースから提供するHPCクラスタ構築用スタックを元に、前述のHPCクラスタ環境を構築するためのスタックを作成します。このチュートリアルで使用するHPCクラスタ構築用スタックは、バージョン2.10.1.1です。</p>
 
 <ol>
   <li>
@@ -413,6 +421,7 @@
       <li><strong>Availability Domain :</strong> 計算ノードをデプロイするAD</li>
       <li><strong>Shape of the Compute Nodes :</strong> BM.Optimized3.36</li>
       <li><strong>Initial cluster size :</strong> 計算ノードのノード数（デフォルト：2）</li>
+      <li><strong>Image version :</strong> HPC_OL8</li>
     </ul>
 
     <p><img src="stack_page04.png" alt="画面ショット" /></p>
@@ -456,6 +465,7 @@
 
 <p><img src="stack_page07.png" alt="画面ショット" /></p>
 
+<hr />
 <h1 id="2-スタックの計画">2. スタックの計画</h1>
 
 <p>本章は、完成したリソース・マネージャのスタックを計画し、どのようなリソースがデプロイされるか確認します。</p>
@@ -482,6 +492,7 @@
   </li>
 </ol>
 
+<hr />
 <h1 id="3-スタックの適用">3. スタックの適用</h1>
 
 <p>本章は、計画で作成されるリソースに問題が無いことを確認したスタックに対し、適用を行いHPCクラスタをデプロイします。</p>
@@ -512,6 +523,7 @@
   </li>
 </ol>
 
+<hr />
 <h1 id="4-hpcクラスタの確認">4. HPCクラスタの確認</h1>
 
 <p>本章は、デプロイされたHPCクラスタにログインし、環境を確認します。</p>
@@ -579,55 +591,53 @@ FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
   </li>
 </ol>
 
+<hr />
 <h1 id="5-ldapユーザ作成">5. LDAPユーザ作成</h1>
 
 <p>本章は、HPCクラスタ構築用スタックが作成したHPCクラスタ内のLDAP統合ユーザ管理環境に於いて、LDAPユーザを作成しこのユーザでHPCクラスタにログイン出来ることを確認します。</p>
 
-<p>このLDAP統合ユーザ管理環境は、BastionがLDAPサーバで計算ノードがLDAPクライアントです。</p>
+<p>このLDAP統合ユーザ管理環境は、BastionノードがLDAPサーバで計算ノードがLDAPクライアントです。</p>
 
 <ol>
   <li>
     <p>LDAPユーザ作成</p>
 
-    <p>LDAPサーバであるBastionは、ユーザ管理のためのclusterコマンドが用意されています。</p>
+    <p>LDAPサーバであるBastionノードは、ユーザ管理のためのclusterコマンドが用意されています。</p>
 
-    <p>このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionのopcユーザで実行します。</p>
+    <p>このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
 </code></pre></div>    </div>
 
-    <p>次に、以下コマンドをBastionのopcユーザで実行し、LDAPユーザを作成します。</p>
+    <p>次に、以下コマンドをBastionノードのopcユーザで実行し、LDAPユーザを作成します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> cluster user add user_name <span class="nt">--ssh</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> cluster user add user_name
 Password:  &lt;- Password <span class="k">for </span>user_name
 Repeat <span class="k">for </span>confirmation: &lt;- Password <span class="k">for </span>user_name
 Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
 Creating group
 </code></pre></div>    </div>
 
-    <p>ここで指定するパスワードは、インターネットを介してBastionにSSHログインする際のパスワード認証で使用します。</p>
+    <p>ここで指定するパスワードは、HPCクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。</p>
+
+    <p>次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
+public_key_for_user_name
+</code></pre></div>    </div>
   </li>
   <li>
     <p>LDAPユーザログイン</p>
 
-    <p>先に作成したLDAPユーザを使用したインターネットを介したBastionへのログインは、以下コマンドでパスワード認証でSSHログインします。</p>
+    <p>先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。<br />
+このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh user_name@123.456.789.123
-user_name@123.456.789.123 s password: &lt;- Password <span class="k">for </span>user_name
-Last login: Fri Dec  2 06:48:00 2022 from 123.456.789.123
-</code></pre></div>    </div>
-
-    <p>またこのユーザは、以下のようにHPCクラスタ内の全ての計算ノードにパスフレーズ無し鍵認証によるSSHログインが可能になっています。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp 
-inst-ecrs7-massive-coyote
-inst-mnykj-massive-coyote
-<span class="o">&gt;</span> ssh inst-ecrs7-massive-coyote
-Last login: Fri Dec  2 06:48:39 2022 from causal-dinosaur-bastion.public.cluster.oraclevcn.com
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
 </code></pre></div>    </div>
   </li>
 </ol>
 
+<hr />
 <h1 id="6-mpiプログラム実行2ノード編">6. MPIプログラム実行（2ノード編）</h1>
 
 <p>本章は、先に作成したLDAPユーザを使ってMPIプログラムをSlurmを介してバッチジョブとして投入し、構築したHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。</p>
@@ -659,9 +669,9 @@ Last login: Fri Dec  2 06:48:39 2022 from causal-dinosaur-bastion.public.cluster
 <span class="c"># Only for BM.Optimized3.36</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
    
-module load intel/mpi/latest
+<span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
    
-mpirun IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
+mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
 </code></pre></div>    </div>
   </li>
   <li>
@@ -678,77 +688,76 @@ Submitted batch job 2
 
     <p>投入したバッチジョブの結果を確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>stderr.2 
-Loading mpi version 2021.3.0
-<span class="o">&gt;</span> <span class="nb">cat </span>stdout.2 
-<span class="c">#----------------------------------------------------------------</span>
-<span class="c">#    Intel(R) MPI Benchmarks 2021.2, MPI-1 part</span>
-<span class="c">#----------------------------------------------------------------</span>
-<span class="c"># Date                  : Tue Feb 15 08:02:48 2022</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>stdout.2 
+<span class="c">#------------------------------------------------------------</span>
+<span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+<span class="c">#------------------------------------------------------------</span>
+<span class="c"># Date                  : Mon Apr 10 08:08:45 2023</span>
 <span class="c"># Machine               : x86_64</span>
 <span class="c"># System                : Linux</span>
-<span class="c"># Release               : 3.10.0-1160.25.1.el7.x86_64</span>
-<span class="c"># Version               : #1 SMP Tue Apr 27 15:52:10 PDT 2021</span>
+<span class="c"># Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64</span>
+<span class="c"># Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022</span>
 <span class="c"># MPI Version           : 3.1</span>
 <span class="c"># MPI Thread Environment: </span>
-   
-   
+
+
 <span class="c"># Calling sequence was: </span>
-   
-<span class="c"># IMB-MPI1 -msglog 3:28 PingPong </span>
-   
+
+<span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong</span>
+
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   268435456</span>
 <span class="c">#</span>
 <span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
-<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT </span>
+<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
 <span class="c"># MPI_Op                         :   MPI_SUM  </span>
-<span class="c"># </span>
-<span class="c"># </span>
-   
+<span class="c">#</span>
+<span class="c">#</span>
+
 <span class="c"># List of Benchmarks to run:</span>
-   
+
 <span class="c"># PingPong</span>
-   
+
 <span class="c">#---------------------------------------------------</span>
 <span class="c"># Benchmarking PingPong </span>
 <span class="c"># #processes = 2 </span>
 <span class="c">#---------------------------------------------------</span>
-       <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
-            0         1000         1.72         0.00
-            8         1000         1.73         4.62
-           16         1000         1.75         9.17
-           32         1000         1.77        18.11
-           64         1000         1.86        34.36
-          128         1000         1.92        66.50
-          256         1000         2.19       117.04
-          512         1000         2.24       228.74
-         1024         1000         2.38       431.07
-         2048         1000         2.98       687.54
-         4096         1000         3.54      1158.67
-         8192         1000         4.10      1998.63
-        16384         1000         5.52      2968.87
-        32768         1000         7.45      4396.34
-        65536          640        12.60      5200.24
-       131072          320        17.94      7307.18
-       262144          160        28.54      9184.01
-       524288           80        49.91     10504.31
-      1048576           40        92.51     11334.97
-      2097152           20       177.93     11786.26
-      4194304           10       348.68     12029.08
-      8388608            5       690.13     12155.19
-     16777216            2      1373.20     12217.63
-     33554432            1      2742.04     12237.02
-     67108864            1      5474.34     12258.80
-    134217728            1     10944.01     12264.04
-    268435456            1     21872.05     12272.99
-   
-   
+    <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+         0         1000         1.67         0.00
+         8         1000         1.68         4.78
+        16         1000         1.68         9.55
+        32         1000         1.72        18.61
+        64         1000         1.84        34.82
+       128         1000         1.89        67.72
+       256         1000         2.14       119.51
+       512         1000         2.21       231.44
+      1024         1000         2.33       438.64
+      2048         1000         3.04       673.29
+      4096         1000         3.77      1085.28
+      8192         1000         4.87      1683.00
+     16384         1000         6.73      2432.75
+     32768         1000         9.26      3540.00
+     65536          640        10.87      6029.75
+    131072          320        16.36      8013.06
+    262144          160        28.70      9133.90
+    524288           80        50.18     10448.62
+   1048576           40        92.93     11283.11
+   2097152           20       178.58     11743.24
+   4194304           10       349.85     11988.82
+   8388608            5       692.99     12104.99
+  16777216            2      1378.36     12171.85
+  33554432            1      2750.49     12199.42
+  67108864            1      5491.94     12219.51
+ 134217728            1     10972.51     12232.18
+ 268435456            1     21945.08     12232.15
+
+
 <span class="c"># All processes entering MPI_Finalize</span>
 </code></pre></div>    </div>
   </li>
 </ol>
 
+<hr />
 <h1 id="7-計算ノード追加">7. 計算ノード追加</h1>
 
 <p>本章は、構築した2ノードクラスタに計算ノードを2ノード追加して4ノードクラスタに拡張します。</p>
@@ -823,6 +832,7 @@ relevant-owl-bastion       : <span class="nv">ok</span><span class="o">=</span>1
 
 <p>以上で、AnsibleのOSレベルカスタマイズフェーズは完了し、4ノードのHPCクラスタが利用可能になります。</p>
 
+<hr />
 <h1 id="8-mpiプログラム実行4ノード編">8. MPIプログラム実行（4ノード編）</h1>
 
 <p>本章は、先に作成したLDAPユーザを使ってMPIプログラムをSlurmを介してバッチジョブとして投入し、追加後の4ノードHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。</p>
@@ -849,9 +859,9 @@ relevant-owl-bastion       : <span class="nv">ok</span><span class="o">=</span>1
 <span class="c"># Only for BM.Optimized3.36</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
    
-module load intel/mpi/latest
+<span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
    
-mpirun IMB-MPI1 <span class="nt">-mem</span> 4 Alltoall
+mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-mem</span> 4 Alltoall
 </code></pre></div>    </div>
   </li>
   <li>
@@ -967,6 +977,7 @@ Loading mpi version 2021.3.0
   </li>
 </ol>
 
+<hr />
 <h1 id="9-計算ノード入れ替え">9. 計算ノード入れ替え</h1>
 
 <p>本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。</p>
@@ -1050,6 +1061,7 @@ relevant-owl-bastion     : <span class="nv">ok</span><span class="o">=</span>112
 
 <p>再度 <strong>8. MPIプログラム実行（4ノード編）</strong> に従いIntel MPIベンチマークを実行し、インターコネクト性能が十分出ていることを確認します。</p>
 
+<hr />
 <h1 id="10-スタックの破棄">10. スタックの破棄</h1>
 
 <p>本章は、スタックを破棄することで、構築したHPCクラスタを削除します。</p>
@@ -1094,7 +1106,7 @@ relevant-owl-bastion     : <span class="nv">ok</span><span class="o">=</span>112
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-04-07T13:24:29+09:00">April 7, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-04-11T10:46:13+09:00">April 11, 2023</time></p>
 
 
       </footer>
@@ -1115,10 +1127,11 @@ relevant-owl-bastion     : <span class="nv">ok</span><span class="o">=</span>112
       
   <nav class="pagination">
     
-      <a href="#" class="pagination--pager disabled">前へ</a>
+      <a href="/ocitutorials/hpc/spinup-cluster-network/" class="pagination--pager" title="HPCクラスタを構築する(基礎インフラ手動構築編)
+">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/spinup-nfs-server/" class="pagination--pager" title="ブロック・ボリュームでNFSファイルサーバを構築する
+      <a href="/ocitutorials/hpc/spinup-ml-instance/" class="pagination--pager" title="GPUインスタンスで機械学習にトライ
 ">次へ</a>
     
   </nav>

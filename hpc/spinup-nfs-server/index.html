@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-04-07T13:24:29+09:00">
+  <meta property="article:published_time" content="2023-04-11T10:46:13+09:00">
 
 
 
@@ -242,27 +242,33 @@
       <ul>
         
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/" class="active">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/" class="active">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
         
       </ul>
     </li>
@@ -277,7 +283,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームでNFSファイルサーバを構築する">
     <meta itemprop="description" content="ブロック・ボリュームでNFSファイルサーバを構築してみましょう。このチュートリアルを終了すると、OCIのブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSファイルサーバを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2023-04-07T13:24:29+09:00">
+    <meta itemprop="datePublished" content="2023-04-11T10:46:13+09:00">
     
 
     <div class="page__inner-wrap">
@@ -316,13 +322,13 @@
   <tbody>
     <tr>
       <td>ファイル・ストレージ</td>
-      <td style="text-align: right"><strong>630,000</strong>円<br />(*3)</td>
+      <td style="text-align: right"><strong>630,000</strong>円<br />(*3, 4)</td>
       <td style="text-align: right">1.5 GB/s<br />(*1)</td>
       <td style="text-align: right">37,500<br />(*1)</td>
     </tr>
     <tr>
       <td>ブロック・ボリューム<br />BM.Optimized3.36<br />Total<br />-</td>
-      <td style="text-align: right">89,250円<br />273,667円<br /><strong>362,917</strong>円<br />(*3)</td>
+      <td style="text-align: right">89,250円<br />273,667円<br /><strong>362,917</strong>円<br />(*3, 4)</td>
       <td style="text-align: right">7.2 GB/s<br />(*2)</td>
       <td style="text-align: right">375,000<br />(*2)</td>
     </tr>
@@ -332,12 +338,13 @@
 <p>*1) 以下URLで公開されているファイル・ストレージの10 TBでの性能情報をもとに、これを容量比として1.5倍した値を記載しています。この性能を実現するには、テスト環境・条件に十分な配慮が必要です。<br />
 <a href="https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf">https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf</a><br />
 *2) ボリューム・サイズ1 TBでボリューム・パフォーマンスがBalancedの15ボリューム分のブロック・ボリュームサービスとしての最大値で、NFSファイルシステムでこの性能を達成できることを保証するものではありません。<br />
-*3) ブロック・ボリューム + BM.Optimized3.36の構成は、この15 TB構成でその価格の大部分をBM.Optimized3.36が占めるため、ファイルシステム総容量がこれより大きくなると、ファイル・ストレージに対する価格優位性が拡大します。</p>
+*3) ブロック・ボリューム + BM.Optimized3.36の構成は、この15 TB構成でその価格の大部分をBM.Optimized3.36が占めるため、ファイルシステム総容量がこれより大きくなると、ファイル・ストレージに対する価格優位性が拡大します。<br />
+*4) ファイル・ストレージは、従量制課金のため使用量が15 TBを下回るとそれに応じて金額が安くなりますが、ブロック・ボリュームとベアメタルインスタンスの組み合わせは、使用量に関わらず固定した金額が課金されます。</p>
 
 <p>ブロック・ボリュームは、ボリューム・パフォーマンスがBalancedの場合、ボリューム・サイズの増加とともにその性能が向上し1 TBで上限に達します。そこで価格性能比を高めるため、ボリューム・パフォーマンスがBalancedの1 TBボリュームを基本単位とし、複数ボリュームをLinuxの論理ボリューム機能で1ファイルシステムに構成します。この際、NFSファイルシステム性能としては15ボリューム程度で性能が頭打ちとなることを考慮して、本チュートリアルでは1 TBのボリュームを15個使用した総容量15 TBのNFSディスク領域とします。より大きな容量が必要な場合は、単一ブロック・ボリュームサイズを1 TBより大きくすることで、性能を維持したままその総容量を増やすことが可能です。<br />
 例えば100 TBを超える総容量が必要な場合は、ボリューム・サイズを7 TBとすることで、7 TB x 15 = 105 TBのNFSディスク領域を構成します。</p>
 
-<p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無料で利用可能なファイル共有ストレージ環境を構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> から自動構築、IORとmdtestを使用して構築したNFSファイルシステム性能を検証します。</p>
+<p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無料で利用可能なファイル共有ストレージ環境を構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> から自動構築、構築したNFSファイルシステム性能をIORとmdtestで検証します。</p>
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
@@ -980,7 +987,7 @@ client-2
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-04-07T13:24:29+09:00">April 7, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-04-11T10:46:13+09:00">April 11, 2023</time></p>
 
 
       </footer>
@@ -1001,11 +1008,11 @@ client-2
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/spinup-hpc-cluster/" class="pagination--pager" title="HPCクラスタを構築する(スタティッククラスタ自動構築編)
+      <a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/" class="pagination--pager" title="GPUクラスタを構築する(オンデマンドクラスタ自動構築編)
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/spinup-ml-instance/" class="pagination--pager" title="GPUインスタンスで機械学習にトライ
+      <a href="/ocitutorials/hpc/cluster-with-bv-base/" class="pagination--pager" title="ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる
 ">次へ</a>
     
   </nav>
