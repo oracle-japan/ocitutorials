@@ -1,6 +1,6 @@
 ---
 title: "GPUクラスタを構築する(基礎インフラ手動構築編)"
-excerpt: "GPUクラスタを構築してみましょう。このチュートリアルを終了すると、OCIが提供するGPUクラスタのノード間接続に最適なインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタルGPUインスタンスをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行うGPUクラスタ環境を、必要なOCIリソースを順次コンソールから構築しながら作成します。"
+excerpt: "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。"
 order: "122"
 layout: single
 header:
@@ -392,15 +392,14 @@ OpenMPIをコンテナ間で実行するためには、MPIプログラムをmpir
 
 本章は、先にBastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。
    
-まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのインスタンス名を含むファイルをBastionノード上に作成します。
+まず初めに、テクニカルTips **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全てのGPUノードのホスト名を含むホスト名リストをBastionノード上にファイル名 **hostlist.txt** で作成します。
 
 ```sh
-> cat hostlist.txt 
 inst-d5ige-comp
 inst-swgen-comp
 ```
 
-次にこのファイルを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
+次にこのホスト名リストを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname hostname; done
@@ -702,15 +701,14 @@ OpenMPIをコンテナ間で実行するためには、MPIプログラムをmpir
 
 本章は、先にBastionノードで作成したSSH秘密鍵を含む.sshディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。  
 
-まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全てのGPUノードのインスタンス名を含むファイルをBastionノード上に作成します。
+まず初めに、テクニカルTips **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全てのGPUノードのホスト名を含むホスト名リストをBastionノード上にファイル名 **hostlist.txt** で作成します。
 
 ```sh
-> cat hostlist.txt 
 inst-d5ige-comp
 inst-swgen-comp
 ```
 
-次にこのファイルを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
+次にこのホスト名リストを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含むknown_hostsファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに **yes** を入力します。
 
 ```sh
 > for hname in `cat hostlist.txt`; do echo $hname; ssh $hname hostname; done
