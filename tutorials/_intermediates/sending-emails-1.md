@@ -99,7 +99,7 @@ Email Deliveryサービスを使用するにはSMTP資格証明書の設定が�
 1. メールを配信するのに必要な **`SMTPエンドポイント`** を確認します。**`開発者サービス →　電子メール配信`** をクリックすると **`SMTP送信情報`** が表示され、**`パブリック・エンドポイント`** の箇所をテキストエディタ等に書いてください。もしくは[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Email/Tasks/configuresmtpconnection.htm)から確認することも出来ます。   
 
       >**`Note`**     
-    今回のチュートリアルの場合はエンドポイントが東京リージョンのため SMTPエンドポイントは **`smtp.email.ap-tokyo-1.oci.oraclecloud.com:578`** になります
+    今回のチュートリアルの場合はエンドポイントが東京リージョンのため SMTPエンドポイントは **`smtp.email.ap-tokyo-1.oci.oraclecloud.com:587`** になります
 
 2. Oracle Linuxにssh接続をして、Malixがインストールされているか確認します。  
     
