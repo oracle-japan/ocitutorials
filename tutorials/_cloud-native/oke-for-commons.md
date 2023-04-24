@@ -76,7 +76,15 @@ OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご
 
 ![](02-03-1.png)
 
-次のダイアログは入力内容を確認し、`クラスタの作成`をクリックします。
+
+次のダイアログは入力内容を確認し、「基本的なクラスタの確認」では、`基本的なクラスタを作成`にチェックを入れて、`クラスタの作成`をクリックします。
+
+**拡張クラスタについて**  
+拡張クラスタは、基本クラスタで提供される機能に加えて、Virtual Nodes、アドオン機能、WorkloadIdentity、SLA等の機能を利用できます。クラスタごとに課金が発生します。
+詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/ContEng/Tasks/contengcomparingenhancedwithbasicclusters_topic.htm)を参照してください。
+{: .notice--info}
+
+![](02-03-3.png)
 
 ![](02-04.png)
 
