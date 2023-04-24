@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>HPCクラスタを構築する(基礎インフラ手動構築編) | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="HPCクラスタの基礎インフラを作成してみましょう。このチュートリアルを終了すると、OCIが提供するHPC向けインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタル計算ノードをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行う環境を、OCIコンソールから構築することが出来るようになります。">
+<meta name="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -26,7 +26,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-cluster-network/">
 
 
-  <meta property="og:description" content="HPCクラスタの基礎インフラを作成してみましょう。このチュートリアルを終了すると、OCIが提供するHPC向けインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタル計算ノードをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行う環境を、OCIコンソールから構築することが出来るようになります。">
+  <meta property="og:description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-04-14T13:07:47+09:00">
+  <meta property="article:published_time" content="2023-04-24T15:27:16+09:00">
 
 
 
@@ -164,7 +164,7 @@
         
       </h1>
       
-        <p class="page__lead">HPCクラスタの基礎インフラを作成してみましょう。このチュートリアルを終了すると、OCIが提供するHPC向けインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタル計算ノードをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行う環境を、OCIコンソールから構築することが出来るようになります。
+        <p class="page__lead">HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。
 </p>
       
       
@@ -270,6 +270,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
+        
       </ul>
     </li>
   </ul>
@@ -282,8 +284,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ手動構築編)">
-    <meta itemprop="description" content="HPCクラスタの基礎インフラを作成してみましょう。このチュートリアルを終了すると、OCIが提供するHPC向けインターコネクトネットワークであるクラスタ・ネットワークをデプロイし、ベアメタル計算ノードをこのクラスタ・ネットワークに接続してRDMA対応RoCEv2を使用した高速・低レイテンシにノード間通信を行う環境を、OCIコンソールから構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2023-04-14T13:07:47+09:00">
+    <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
+    <meta itemprop="datePublished" content="2023-04-24T15:27:16+09:00">
     
 
     <div class="page__inner-wrap">
@@ -663,14 +665,13 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
 
 <p>本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でパスフレーズ無しのSSH接続環境を実現します。</p>
 
-<p>まず初めに、先に確認したOCIコンソールのインスタンス一覧を使用し、以下のように全ての計算ノードのインスタンス名を含むファイルをBastionノード上に作成します。</p>
+<p>まず初めに、テクニカルTips <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノード上にファイル名 <strong>hostlist.txt</strong> で作成します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>hostlist.txt 
-inst-wyr6m-comp
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-wyr6m-comp
 inst-9wead-comp
 </code></pre></div></div>
 
-<p>次にこのファイルを使用し、以下コマンドで全計算ノードにBastionノードのSSH秘密鍵をコピーします。この際、計算ノード1ノード毎に接続確認を求められるため、全てに <strong>yes</strong> を入力します。</p>
+<p>次にこのホスト名リストを使用し、以下コマンドで全計算ノードにBastionノードのSSH秘密鍵をコピーします。この際、計算ノード1ノード毎に接続確認を求められるため、全てに <strong>yes</strong> を入力します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/id_rsa <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done
 </span>inst-wyr6m-comp
@@ -698,7 +699,7 @@ inst-9wead-comp
 known_hosts                                                            100%  440   470.6KB/s   00:00
 </code></pre></div></div>
 
-<p>次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する、先に作成した計算ノードのインスタンス名を格納したファイルを、以下コマンドで全計算ノードにコピーします。</p>
+<p>次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する先に作成したホスト名リストを、以下コマンドで全計算ノードにコピーします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done
 </span>inst-wyr6m-comp
@@ -1030,7 +1031,7 @@ hostlist.txt                                                           100%   32
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-04-14T13:07:47+09:00">April 14, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-04-24T15:27:16+09:00">April 24, 2023</time></p>
 
 
       </footer>
