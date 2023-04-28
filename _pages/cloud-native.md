@@ -25,10 +25,10 @@ lastmod: "2022-04-06"
 ## 初級編
 
 + **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-](/ocitutorials/cloud-native/devops-for-beginners-compute)**  
-    ここでは、Oracle Container Engine for Kubernetes(OKE)を利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
+    ここでは、OCI Computeを利用したアプリケーション環境の構築、CI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
 
 + **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-](/ocitutorials/cloud-native/devops-for-beginners-oke/)**  
-    ここでは、OCI Computeを利用したアプリケーション環境の構築、CI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
+    ここでは、Oracle Container Engine for Kubernetes(OKE)を利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
 
 + **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-](/ocitutorials/cloud-native/devops-for-beginners-functions/)**  
     ここでは、Oracle Functionsを利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
