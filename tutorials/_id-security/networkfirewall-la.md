@@ -32,7 +32,6 @@ Object Storageに格納されたログは、Logging Analyticsの「ObjectCollect
 + ユーザーがLoggingサービスを使用するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/loggingpolicyreference.htm)をご参照ください。
 + ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html)をご参照ください。
 + ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/serviceconnectorhubpolicyreference.htm)をご参照ください。
-+ ユーザーがObject Storageのバケットを作成、管理するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/objectstoragepolicyreference.htm)をご参照ください。
 + OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること
 + OCIチュートリアル[OCI Network FirewallのIPS/IDS機能を検証する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall-ips/)を参考に、侵入検知（IDS）もしくは侵入防止（IPS）のセキュリティ・ルールが設定されていること
 + OCIチュートリアル[コマンドライン(CLI)でOCIを操作する](https://oracle-japan.github.io/ocitutorials/intermediates/using-cli/)を参考に、OCI CLIコマンドのインストールと構成が終わっていること。
@@ -75,188 +74,12 @@ Threat Logの「無効」となっているボタンをクリックします。
 
  ![画面ショット4](nfwla4.png)
 
-<br>
-
-# 2. Object Storageの作成
-
-OCI Network Firewallのログを格納するObject Storageを作成します。
-Object Storageに格納されているログは、Logging Analyticsの「ObjectCollectionRule」と呼ばれる仕組みにより、Logging Analyticsに転送することができます。
-「ObjectCollectionRule」では、1つのObject Storageのバケットに対して1つのルールしか作成できないため、今回はNetwork Firewall Threat Logを格納するObject Storageと、Network Firewall Traffic Logを格納するObject Storageの合計2つのバケットを作成します。
-
-
-OCIコンソール画面左上のメニュー → ストレージ → オブジェクト・ストレージとアーカイブ・ストレージ → バケット → 「バケットの作成」ボタンをクリックします。
- ![画面ショット6](nfwla6.png)
-
-
-表示された「バケットの作成」画面にて、任意のバケット名を入力し、「作成」ボタンをクリックします。
-+ **`バケット名`** - 任意 例）ThreatLogBucket
-+ **`デフォルト・ストレージ層`** - 「標準」を選択
- ![画面ショット7](nfwla7.png)
-
-同様の手順で、Network Firewall Traffic Logを格納する用のバケットをもう一つ作成します。
- 
- ![画面ショット25](nfwla25.png)
-
-以上で、Object Storageの作成は完了です。
-
 
 <br>
 
-# 3. Service Connectorの作成
+# 2. ログ・グループの作成
 
-Service Connector Hubというサービスを使用して、Loggingサービスに保管されているOCI Network Firewallのログを、手順2で作成したObject Storageに転送します。
-
-OCIコンソール画面左上のメニュー → 監視および管理 → ロギング → サービス・コネクタ → 「サービス・コネクタ」の作成ボタンをクリックします。
-
-表示された「サービス・コネクタの作成」画面にて、以下項目を入力し、「作成」ボタンをクリックします。
-
-+ **`コネクタ名`** - 任意 例）NFWTrafficLog Connector
-+ **`説明`** - 任意 例）OCI Network Firewallログの転送
-+ **`リソース・コンパートメント`** - Network Firewallのログが保管されているLoggingサービスのコンパートメントを選択
-+ **`ソース`** - ロギング
-+ **`ターゲット`** - オブジェクト・ストレージ
-
- ![画面ショット8](nfwla8.png)
-
-**ソースの構成**
-
- + **`ログ・グループ`** - 手順1で作成したLoggingサービスのログ・グループを選択
- + **`ログ`** - 手順1で有効化したOCI Network FirewallのTrafficログを選択
-
- ![画面ショット9](nfwla9.png)
-
-**ターゲットの構成**
-
- + **`コンパートメント`** - 手順2でObject Storageを作成したコンパートメントを選択
- + **`バケット`** - 手順2で作成したNetwork Firewall Trafficログが格納されているObject Storageのバケットを選択
- + **このサービス・コネクタによるコンパートメント○○のオブジェクト・ストレージへの書き込みを許可するデフォルト・ポリシーを作成します** の「作成」ボタンをクリック
- ![画面ショット10](nfwla10.png)
-
-
-以上で1つ目のService Connectorの作成は完了です。
-
-同様の手順で、Network Firewall ThreatログをObject Storageに転送するService Connectorを作成します。
-
-
-+ **`コネクタ名`** - 任意 例）NFWThreatLog Connector
-+ **`説明`** - 任意 例）OCI Network Firewall Threatログの転送
-+ **`リソース・コンパートメント`** - Network Firewallのログが保管されているLoggingサービスのコンパートメントを選択
-+ **`ソース`** - ロギング
-+ **`ターゲット`** - オブジェクト・ストレージ
- 
- ![画面ショット26](nfwla26.png)
-
-**ソースの構成**
-
- + **`ログ・グループ`** - 手順1で作成したLoggingサービスのログ・グループを選択
- + **`ログ`** - 手順1で有効化したOCI Network FirewallのThreatログを選択
- 
- ![画面ショット27](nfwla27.png)
-
-**ターゲットの構成**
-
- + **`コンパートメント`** - 手順2でObject Storageを作成したコンパートメントを選択
- + **`バケット`** - 手順2で作成したNetwork Firewall Threatログが格納されているObject Storageのバケットを選択
- 
- ![画面ショット28](nfwla28.png)
-
-以上で、Service Connectorの作成は完了です。
-指定したLoggingサービスのログが、指定されたObject Storageのバケットに転送されるようになります。
-
-データの転送状況などは、作成したサービス・コネクタ詳細画面左下のリソース → 「メトリック」からご確認いただくことが可能です。
-
- ![画面ショット11](nfwla11.png)
-
-<br>
-
-
-# 4. OCI Network Firewallのログ・ソース、ダッシュボード定義のインポート
-
-Logging Analyticsでは通常200種類以上のログに対応したログ・ソースとログ・パーサーが定義されています。万が一、分析したいログのログ・ソースが事前に定義されていない場合、ユーザーがカスタムでログ・ソースやログ・パーサーを定義することができます。
-ログ・パーサーやログ・ソースはOCIのコンソールから作成することができます。
-
-また、ユーザーがカスタムで作成したログの解析文（パーサー）等の定義をエクスポートし、別のテナンシやコンパートメントにインポートすることができます。
-本チュートリアルでは、ユーザーがカスタムで予め作成したログ・ソース、ログ・パーサー、フィールド、ダッシュボードの定義をエクスポートしたzipファイルを、各自環境にインポートする手順でログ・ソースを取り込みます。
-
-ログ・ソースとログ・パーサーはUI上から定義をインポートすることができますが、ダッシュボード定義はAPI経由でインポートする必要があるため、本手順ではOCIコンソールからログ・ソースをインポートしますが、ダッシュボード定義はOCI CLIコマンドを使用してインポートします。
-
-※ログの出力フォーマットは変更する可能性があります。GitHub上にあるログ・ソースは2022年11月15日時点のNetwork Firewall各種ログに対応したものになります。
-
-<br>
-
-## 4-1. ログ・ソースとログ・パーサーのインポート
-
-OCI Network Firewallログのログ・ソース、ログ・パーサーは以下GitHubからダウンロードいただけます。
-
-
-+ [OCI Network Firewall Trafficログ](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWTrafficLog.zip)
-+ [OCI Network Firewall Threatログ](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWThreatLog.zip)
-
-
-各ログのログ・ソースファイルをダウンロードしたら、OCIコンソール画面からファイルをインポートします。
-OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理 → 「構成コンテンツのインポート」をクリックします。
- 
- ![画面ショット13](nfwla13.png)
-
-表示された「構成コンテンツのインポート」画面にて、先程ダウンロードしたzipファイルの1つを選択し、「インポート」ボタンをクリックします。
- 
- ![画面ショット14](nfwla14.png)
-
-
-画面右上に「構成コンテンツ・ファイル～～のインポートに成功しました。」のメッセージが表示されます。
- 
- ![画面ショット15](nfwla15.png)
-
-同様の手順で、ダウンロードしたもう1つのzipファイルをインポートします。
-ソースに、「Network Firewall Threat Log」と「Network Firewll Traffic Log」の2つが作成されていることを確認します。
- 
- ![画面ショット16](nfwla16.png)
-
-
-<br>
-
-## 4-2. ダッシュボード定義のインポート
-
-
-OCI Network Firewallログのダッシュボード定義ファイルは以下GitHubにあります。
-ダッシュボード定義ファイルはインポートする前に、中身を一部修正する必要がありますので、中身をコピーしてローカルのエディタなどに貼りつけてください。
-
-+ [ダッシュボード定義](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWdashboard.json)
-
-
-OCIコンソール画面左上のメニュー → アイデンティティとセキュリティ → アイデンティティ → コンパートメントを選択します。
-ダッシュボード定義をインポートしたいコンパートメントのOCIDをクリックボードにコピーします。
- 
- ![画面ショット18](nfwla18.png)
-
-
-コピーしたダッシュボード定義ファイルをvim等で開き、4行目の"compartment-id"を自身の環境でダッシュボードをインストールしたいコンパートメントのOCIDに書き換えます。
-
-```sh
-{
-  "dashboards": [
-    {
-      "compartment-id": "<ご自身のコンパートメントOCID>",
-      "dashboard-id": "ocid1.managementdashboard.oc1..aaaaaaaamxg6zlyjeuqgqmmj5kk5gaarskcwdkewxwwts5j7vb5lszjyw33q",
-      "data-config": [],
-      "defined-tags": {},
-```
-
-JSONファイルを修正し、保存したら以下コマンドでダッシュボード定義をインポートします。
-
-```sh
-oci management-dashboard dashboard import --from-json file://<ダッシュボード定義ファイルのパス>/NFWdashboard.json
-```
-
-OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → ダッシュボードにて、「OCI Network Firewall Dashboard」が作成されていることを確認します。
-
- ![画面ショット17](nfwla17.png)
-
-<br>
-
-# 5. ログ・グループの作成
-
-Object Storageに格納されているログをLogging Analyticsに転送する前に、転送先となるLogging Analyticsの「ログ・グループ」を作成します。
+転送先となるLogging Analyticsの「ログ・グループ」を作成します。
 
 OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理 → ログ・グループ → 「ログ・グループの作成」ボタンをクリックします。
 
@@ -267,99 +90,93 @@ OCIコンソール画面左上のメニュー → 監視および管理 → ロ�
 
 <br>
 
-# 6. ObjectCollectionRuleの作成
+# 3. Service Connectorの作成
 
-Logging AnalyticsのObjectCollectionRuleはOCI CLIなどのAPIコマンドで作成する必要があります。
-本手順ではOCI CLIコマンドを使用して、ObjectCollectionRuleを作成します。
+Service Connector Hubというサービスを使用して、Loggingサービスに保管されているOCI Network Firewallのログを、手順2で作成したログ・グループに転送します。
 
-+ [ObjectCollectionRule作成コマンドReference](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.20.1/oci_cli_docs/cmdref/log-analytics/object-collection-rule/create.html)
+Logging Analyticsでは200種類以上のログに対応したログの解析文（パーサー）があらかじめ定義されているため、解析文が事前定義されているログはLogging Analyticsに取り込むことですぐに分析することが可能です。
+また、解析文が定義されていないログも、ユーザーがカスタムで解析文を作成することが可能です。
 
-<br>
+本チュートリアルで分析するOCI Network FirewallのTrafficログ、Threatログも解析文がオラクルによってあらかじめ定義されているので、ログをLogging Analyticsに転送します。
 
-## 6-1. ObjectCollectionRuleの作成に必要な情報収集
+OCIコンソール画面左上のメニュー → 監視および管理 → ロギング → サービス・コネクタ → 「サービス・コネクタ」の作成ボタンをクリックします。
 
-ObjectCollectionRuleを作成する際に必要となる各情報を収集します。
+表示された「サービス・コネクタの作成」画面にて、以下項目を入力し、「作成」ボタンをクリックします。
 
-+ ルールを作成するコンパートメントのOCID
-+ Logging Analyticsのログ・グループのOCID
-+ Logging Analyticsのネームスペース
-+ ログが格納されているObject Storageのバケット名
-+ ログが格納されているObject Storageのネームスペース
-
-<br>
-
-**ルールを作成するコンパートメントのOCID**
-
-OCIコンソール画面左上のメニュー → アイデンティティとセキュリティ → アイデンティティ → コンパートメントを選択します。
-ダッシュボード定義をインポートしたいコンパートメントのOCIDをコピーし、メモ帳などにメモします。
- 
- ![画面ショット18](nfwla18.png)
++ **`コネクタ名`** - 任意 例）NFWTrafficLog Connector
++ **`説明`** - 任意 例）OCI Network Firewallログの転送
++ **`リソース・コンパートメント`** - Network Firewallのログが保管されているLoggingサービスのコンパートメントを選択
++ **`ソース`** - ロギング
++ **`ターゲット`** - ログ・アナリティクス
 
 
-**Logging Analyticsのログ・グループのOCID**
+**ソースの構成**
 
-Logging Analyticsのログ・グループを作成します。
-OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理 → ログ・グループ → 手順5で作成したログ・グループを選択します。
+ + **`ログ・グループ`** - 手順1で作成したLoggingサービスのログ・グループを選択
+ + **`ログ`** - 手順1で有効化したOCI Network FirewallのTrafficログを選択
 
-ログ・グループの詳細画面にて、ログ・グループのOCIDをコピーし、メモ帳などにメモします。
- 
- ![画面ショット20](nfwla20.png)
+「+別のログ」をクリックし、Network FirewallのThreatログも追加します
 
+ + **`ログ・グループ`** - 手順1で作成したLoggingサービスのログ・グループを選択
+ + **`ログ`** - 手順1で有効化したOCI Network FirewallのThreatログを選択
 
-**Logging Analyticsのネームスペース**
+ ![画面ショット9](nfwla9.png)
 
-Logging Analyticsのログ・グループを作成します。
-OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理を選択します。
+**ターゲットの構成**
 
- ![画面ショット21](nfwla21.png)
-管理画面左下のリソースから、「サービス詳細」をクリックします。
- 
- ![画面ショット22](nfwla22.png)
-
-サービス詳細画面の「サービス・ネームスペース」をメモ帳などにメモします。
+ + **`コンパートメント`** - 手順2でLogging Analyticsのログ・グループを作成したコンパートメントを選択
+ + **`ログ・グループ`** - 手順2で作成したログ・グループを選択
+ + **このサービス・コネクタによるコンパートメント○○のログ・アナリティクスへの書き込みを許可するデフォルト・ポリシーを作成します** の「作成」ボタンをクリック
+ ![画面ショット10](nfwla10.png)
 
 
+以上でService Connectorの作成は完了です。
 
-**ログが格納されているObject Storageのバケット名**
-**ログが格納されているObject Storageのネームスペース**
+指定したLoggingサービスのログが、指定されたLogging Analyticsのログ・グループに転送されるようになります。
 
-OCIコンソール画面左上のメニュー → ストレージ → オブジェクト・ストレージとアーカイブ・ストレージ → バケット → 手順2で作成したObject Storageのバケットを選択します。
-バケットの詳細画面にて、バケット名とネームスペースをメモします。
- 
- ![画面ショット23](nfwla23.png)
+データの転送状況などは、作成したサービス・コネクタ詳細画面左下のリソース → 「メトリック」からご確認いただくことが可能です。
 
-
-
-<br>
-
-## 6-2. ObjectCollectionRuleの作成
-
-以下コマンドを実行して、ObjectCollectionRuleを作成します。
-
-**Network Firewall Traffic ログ**
-
-```sh
-oci log-analytics object-collection-rule create --compartment-id <コンパートメントOCID> --log-group-id <Logging AnalyticsのロググループID> --log-source-name "Network Firewall Traffic Log" --name <任意のルール名> --namespace-name <Logging Analyticsのネームスペース> --os-bucket-name <Network Firewall Traffic Logが格納されているObject Storageのバケット名> --os-namespace <Object Storageのネームスペース>
-```
-
-**Network Firewall Threat ログ**
-
-```sh
-oci log-analytics object-collection-rule create --compartment-id <コンパートメントOCID> --log-group-id <Logging AnalyticsのロググループID> --log-source-name "Network Firewall Threat Log" --name <任意のルール名> --namespace-name <Logging Analyticsのネームスペース> --os-bucket-name <Network Firewall Threat Logが格納されているObject Storageのバケット名> --os-namespace <Object Storageのネームスペース>
-```
-
-以上でObjectCollectionRuleの作成は完了です。
-少し待つとObjectCollectionRuleによって、指定されたObject Storageのバケット内のログがLogging Analyticsに転送されていることが確認できます。
-
-OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → ログ・エクスプローラにて、Network Firewall Threat LogとNetwork Firewall Traffic Logが表示されていたら、ObjectCollectionRuleは正常に動作しています。
-
- ![画面ショット24](nfwla24.png)
-
+ ![画面ショット11](nfwla11.png)
 
 <br>
 
 
-# 7. ログの分析
+# 4. OCI Network Firewallのダッシュボード定義のインポート
+
+
+本チュートリアルでは、ユーザーがカスタムで予め作成したダッシュボードの定義をエクスポートしたjsonファイルを、各自環境にインポートします。
+
+※ログの出力フォーマットは変更する可能性があります。GitHub上にあるダッシュボード定義は2023年5月1日時点のNetwork Firewall各種ログに対応したものになります。
+
+OCI Network Firewallログのダッシュボード定義ファイルは以下GitHubにあります。
+
++ [ダッシュボード定義](https://github.com/jennylia3/oci-networkfirewall-tutorial/blob/main/NFWDashboard.json)
+
+
+OCIコンソール画面左上のメニュー → 監視及び管理 → ログ・アナリティクス → ダッシュボードをクリックします。
+ダッシュボード画面の「Import Dashboards」をクリックし、GitHubからダウンロードしたJSONファイルを選択します。
+
+ ![画面ショット50](nfwla50.png)
+
+
+表示された「Import Dashboards」の画面にて、それぞれ以下を選択します。
++ **`Compartments for dashboards`** - 「Specify a compartment for all dashboards」を選択
++ **`Choose a Compartment`** - 手順2でロググループを作成したコンパートメントを選択
++ **`Compartments for saved searches`** - 「Specify a compartment for all saved searches」を選択
++ **`Choose a Compartment`** - 手順2でログ・グループを作成したコンパートメントを選択
+
+ ![画面ショット49](nfwla49.png)
+
+「Import」ボタンをクリックします。
+
+ダッシュボード画面にて、「OCI Network Firewall Dashboard」ダッシュボードが作成されていることを確認します。
+
+ ![画面ショット17](nfwla17.png)
+
+<br>
+
+
+# 5. ログの分析
 
 OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → ログ・エクスプローラーにて、「Network Firewall Traffic Log」をクリックすると、Network Firewall Traffic Logが一覧で表示されます。
  
@@ -373,7 +190,7 @@ OCIコンソール画面左上のメニュー → 監視および管理 → ロ�
 
 解析文によって定義されている「フィールド」に基づいて、ログを可視化、分析することが出来ます。
 
-## 7-1. Network Firewallへのアクセス元地域を世界地図で表示する（例1）
+## 5-1. Network Firewallへのアクセス元地域を世界地図で表示する（例1）
 
 ビジュアライゼーションメニューのドロップダウンボックスをクリックし、地球儀のマークを選択します。
  
@@ -399,7 +216,7 @@ Network Firewallを通過したトラフィックのうち、脅威が検出さ�
 
 <br>
 
-## 7-2. 脅威の重要度を可視化する（例2）
+## 5-2. 脅威の重要度を可視化する（例2）
 
 Network Firewall Threat Logには検出された脅威の重要度が出力されます。Network FirewallのSeverityは以下の5種類があります。
 + Informational
@@ -420,11 +237,11 @@ Severityは”Critical”のものが一番緊急度が高いものとされて�
 
 <br>
 
-## 7-3. ダッシュボードを利用する（例3）
+## 5-3. ダッシュボードを利用する（例3）
 
-OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → ダッシュボードを選択し、手順4-2でインポートしたダッシュボードを選択します。
+OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → ダッシュボードを選択し、手順4でインポートしたダッシュボードを選択します。
  
- ![画面ショット38](nfwla38.png)
+ ![画面ショット17](nfwla17.png)
 
 以下のようなダッシュボードが表示されます。
  
@@ -489,9 +306,9 @@ OCIコンソール画面左上のメニュー → 監視および管理 → ロ�
 
 <br>
 
-# 8. 補足
+# 6. 補足
 
-## 8-1. Service Connectorの非アクティブ化、削除方法について
+## 6-1. Service Connectorの非アクティブ化、削除方法について
 
 手順3で作成したService ConnectorはOCIコンソール上から、非アクティブ化することができます。非アクティブ化することで、Loggingサービスから指定されたObject Object Storageへのログの転送をとめることが可能です。
 
@@ -500,16 +317,6 @@ OCIコンソール画面左上のメニュー → 監視および管理 → ロ�
  ![画面ショット48](nfwla48.png)
 
 また、Service Connectorの詳細画面の上部の「削除」ボタンをクリックすることで、Service Connectorを削除することができます。
-
-
-<br>
-
-## 8-2. ObjectCollectionRuleの削除方法について
-
-手順6で作成したObjectCollectionRuleは、APIで削除することができます。
-OCI CLIコマンドを使用した、ObjectCollectionRuleの削除方法は、[ドキュメント](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.20.1/oci_cli_docs/cmdref/log-analytics/object-collection-rule/delete.html)をご参照ください。
-ObjectCollectionRuleの削除時に必要になる、ObjectCollectionRuleのOCIDについては、[Object-collection-rule listコマンド](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.20.1/oci_cli_docs/cmdref/log-analytics/object-collection-rule/list.html)でご確認いただけます。
-
 
 
 
