@@ -1,0 +1,939 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>HPCクラスタを構築する(オンデマンドクラスタ自動構築編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタをSlurmと連動してデプロイするオンデマンドHPCクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="HPCクラスタを構築する(オンデマンドクラスタ自動構築編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">
+
+
+  <meta property="og:description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタをSlurmと連動してデプロイするオンデマンドHPCクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/architecture_diagram.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-05-18T09:39:14+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/architecture_diagram.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          HPCクラスタを構築する(オンデマンドクラスタ自動構築編)
+
+        
+      </h1>
+      
+        <p class="page__lead">HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタをSlurmと連動してデプロイするオンデマンドHPCクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/" class="active">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="HPCクラスタを構築する(オンデマンドクラスタ自動構築編)">
+    <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタをSlurmと連動してデプロイするオンデマンドHPCクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。">
+    <meta itemprop="datePublished" content="2023-05-18T09:39:14+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-hpcクラスタスタック">1. HPCクラスタスタック</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-スタックの作成">1-1. スタックの作成</a></li><li><a href="#1-2-スタックの計画">1-2. スタックの計画</a></li><li><a href="#1-3-スタックの適用">1-3. スタックの適用</a></li></ul></li><li><a href="#2-事前準備">2. 事前準備</a><ul><li><a href="#2-1-bastionノード確認">2-1. Bastionノード確認</a></li><li><a href="#2-2-ldapユーザ作成確認">2-2. LDAPユーザ作成・確認</a></li></ul></li><li><a href="#3-オンデマンドhpcクラスタ稼働確認intel-mpiベンチマーク性能検証">3. オンデマンドHPCクラスタ稼働確認（Intel MPIベンチマーク性能検証）</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-ジョブスクリプト作成">3-1. ジョブスクリプト作成</a></li><li><a href="#3-2-ジョブ投入">3-2. ジョブ投入</a></li><li><a href="#3-3-hpcクラスタデプロイ状況確認">3-3. HPCクラスタデプロイ状況確認</a></li><li><a href="#3-4-ジョブ結果確認">3-4. ジョブ結果確認</a></li><li><a href="#3-5-hpcクラスタ削除確認">3-5. HPCクラスタ削除確認</a></li></ul></li><li><a href="#4-スタックの破棄">4. スタックの破棄</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバーヘッドの無いHPC用途に特化したベアメタルシェイプとこれらを接続する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を提供しており、HPCワークロードを実行するHPCクラスタを構築するには最適なクラウドサービスです。</p>
+
+<p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無償で利用可能な <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を利用し、以下構成のオンデマンドHPCクラスタを構築します。</p>
+
+<ul>
+  <li>HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> ）</li>
+  <li>100 Gbps RoCEv2 RDMAインターコネクト (クラスタ・ネットワーク)</li>
+  <li>インターネットからSSH接続可能なBastionノード</li>
+  <li>OS: Oracle Linux 8.6</li>
+  <li>ジョブスケジューラ: Slurm</li>
+  <li>オンデマンドクラスタ機能： <strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong></li>
+  <li>ファイル・ストレージサービスによるHPCクラスタ内ホームディレクトリ共有</li>
+  <li>LDAPによるクラスタ内ユーザ統合管理</li>
+</ul>
+
+<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
+
+<p>またこのチュートリアルは、デプロイしたHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。</p>
+
+<p>オンデマンドHPCクラスタにおけるワークロード実行は、Slurmにジョブを投入することで行い、クラスタオートスケーリングがジョブ実行に必要な計算ノードをクラスタ・ネットワークと共に動的に起動、構築されたクラスタにSlurmがジョブをディスパッチします。<br />
+またクラスタオートスケーリングは、ジョブが実行されない状態が一定時間経過すると、自動的にクラスタを削除します。</p>
+
+<p>本チュートリアルで使用するHPCクラスタスタックは、通常であれば数日かかるオンデマンドHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択した後、1クリックで自動的に実施することを可能とします。</p>
+
+<p><strong>所要時間 :</strong> 約2時間</p>
+
+<p><strong>前提条件 :</strong> オンデマンドHPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。具体的には、以下ページの <strong>Policies to deploy the stack:</strong> に記載のポリシーと <strong>Policies for autoscaling or resizing</strong> に記載のダイナミック・グループとポリシーが作成されていること。</p>
+
+<p><a href="https://cloud.oracle.com/marketplace/application/67628143/usageInformation">https://cloud.oracle.com/marketplace/application/67628143/usageInformation</a></p>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。また使用するHPCクラスタスタックのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。</p>
+
+<hr />
+<h1 id="1-hpcクラスタスタック">1. HPCクラスタスタック</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本チュートリアルで使用する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> は、大きく2つのステップに分けて構築を実施しており、前半は TerraformによるOCIリソース構築フェーズで、後半はTerraformから起動されるAnsibleが行うOSレベルのカスタマイズフェーズです。</p>
+
+<p>具体的には、以下のような処理が行われます。</p>
+
+<p>［TerraformによるOCIリソース構築フェーズ］</p>
+
+<ul>
+  <li>VCNと関連するネットワークリソース構築</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と関連リソース構築</li>
+  <li>Bastionノードインスタンス構築</li>
+  <li>ファイル・ストレージ構築</li>
+  <li>Ansible関連ソフトウェアインストール</li>
+</ul>
+
+<p>[AnsibleによるOSレベルカスタマイズフェーズ]</p>
+
+<ul>
+  <li>NFSファイル共有環境構築</li>
+  <li>LDAPユーザ統合環境構築</li>
+  <li>Slurm環境構築</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> ツール群インストール</li>
+</ul>
+
+<h2 id="1-1-スタックの作成">1-1. スタックの作成</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> でリソースをデプロイする場合、まずそのための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成する必要があります。</p>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> が提供する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を元に、前述の環境構築のためのスタックを作成します。このチュートリアルで使用するHPCクラスタスタックは、バージョン2.10.1.1です。</p>
+
+<ol>
+  <li>
+    <p>以下マーケット・プレースのHPCクラスタスタックのページにアクセスします。</p>
+
+    <p><a href="https://cloud.oracle.com/marketplace/application/67628143/">https://cloud.oracle.com/marketplace/application/67628143/</a></p>
+  </li>
+  <li>
+    <p>OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。</p>
+  </li>
+  <li>表示される以下画面で、以下の情報を入力し、 <strong>スタックの起動</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>リージョン :</strong> オンデマンドHPCクラスタをデプロイするリージョン</li>
+      <li><strong>バージョン :</strong> v2.10.1.1</li>
+      <li><strong>コンパートメント :</strong> スタックを作成するコンパートメント</li>
+    </ul>
+
+    <p><img src="market_place.png" alt="画面ショット" /></p>
+  </li>
+  <li>表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
+      <li><strong>説明 :</strong> スタックに付与する説明（任意）</li>
+    </ul>
+
+    <p><img src="stack_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <p>5.1 <strong>Cluster configuration</strong> フィールド</p>
+    <ul>
+      <li><strong>Public SSH key :</strong> （Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵）
+        <ul>
+          <li>公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="stack_page02.png" alt="画面ショット" /></p>
+
+    <p>5.2 <strong>Headnode options</strong> フィールド</p>
+    <ul>
+      <li><strong>Availability Domain :</strong> （BastionノードをデプロイするAD）</li>
+    </ul>
+
+    <p><img src="stack_page03.png" alt="画面ショット" /></p>
+
+    <p>5.3 <strong>Compute node options</strong> フィールド</p>
+    <ul>
+      <li><strong>Availability Domain :</strong> （計算ノードをデプロイするAD）</li>
+      <li><strong>Shape of the Compute Nodes :</strong> BM.Optimized3.36（計算ノードに使用するシェイプ）</li>
+      <li><strong>Initial cluster size :</strong> 0 (*1)</li>
+      <li><strong>Image version :</strong> HPC_OL8（計算ノードのOSイメージ）</li>
+    </ul>
+
+    <p>*1) このフィールドは、スタティックに常時起動しておく計算ノードのノード数を指定しますが、本チュートリアルはオンデマンドでのみ計算ノードをデプロイするため、このフィールドを0とします。</p>
+
+    <p><img src="stack_page04.png" alt="画面ショット" /></p>
+
+    <p>5.4 <strong>Autoscaling</strong> フィールド</p>
+    <ul>
+      <li><strong>Scheduler based autoscaling :</strong> チェック</li>
+    </ul>
+
+    <p><img src="stack_page04-0.png" alt="画面ショット" /></p>
+
+    <p>5.5 <strong>Additional file system</strong> フィールド</p>
+    <ul>
+      <li><strong>Add another NFS filesystem :</strong> チェック</li>
+      <li><strong>Create FSS :</strong> チェック</li>
+      <li><strong>NFS Path :</strong> /mnt/home（※2）</li>
+      <li><strong>NFS server Path :</strong> /mnt/home（※2）</li>
+    </ul>
+
+    <p>※2) ここで指定するパスは、ファイル・ストレージ領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/home/user_nameとなります。</p>
+
+    <p><img src="stack_page04-1.png" alt="画面ショット" /></p>
+
+    <p>5.6 <strong>Advanced storage options</strong> フィールド</p>
+    <ul>
+      <li><strong>Show advanced storage options :</strong> チェック</li>
+      <li><strong>Shared NFS scratch space from NVME or Block volume :</strong> チェックオフ（※3）</li>
+    </ul>
+
+    <p>*3) 計算ノードのNVMeローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。</p>
+
+    <p><img src="stack_page05.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page06.png" alt="画面ショット" /></p>
+
+    <p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時にスタックの適用が開始され、オンデマンドHPCクラスタのデプロイが始まりますが、このチュートリアルではスタックの計画を実行してから適用を行います。</p>
+  </li>
+</ol>
+
+<p>これで、以下画面のとおりオンデマンドHPCクラスタを構築するスタックが作成されました。</p>
+
+<p><img src="stack_page07.png" alt="画面ショット" /></p>
+
+<h2 id="1-2-スタックの計画">1-2. スタックの計画</h2>
+
+<p>本章は、完成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を計画し、どのようなリソースがデプロイされるか確認します。</p>
+
+<ol>
+  <li>
+    <p>作成したスタックの以下 <strong>スタックの詳細</strong> 画面で、 <strong>計画</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page08.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>計画</strong> サイドバーで、 <strong>計画</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page09.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブの詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> → <strong>成功</strong> と遷移すれば、スタックの計画が終了しています。</p>
+
+    <p><img src="stack_page10.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、適用時にデプロイされるリソースを確認します。</p>
+
+    <p><img src="stack_page11.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="1-3-スタックの適用">1-3. スタックの適用</h2>
+
+<p>本章は、計画で作成されるリソースに問題が無いことを確認した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> に対し、適用を行いオンデマンドHPCクラスタをデプロイします。</p>
+
+<ol>
+  <li>
+    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>適用</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page12.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>適用</strong> サイドバーで、 <strong>適用</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page13.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、スタックの適用が実施されています。</p>
+
+    <p><img src="stack_page14.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースのデプロイ状況を確認します。</p>
+
+    <p><img src="stack_page11.png" alt="画面ショット" /></p>
+
+    <p>この適用が完了するまでの所要時間は、15分程度です。</p>
+
+    <p>ステータスが <strong>成功</strong> となれば、オンデマンドHPCクラスタのデプロイが完了しています。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="2-事前準備">2. 事前準備</h1>
+
+<h2 id="2-1-bastionノード確認">2-1. Bastionノード確認</h2>
+
+<p>本章は、デプロイされたBastionノードにログインし、環境の確認を行います。</p>
+
+<ol>
+  <li>
+    <p>Bastionノードログイン</p>
+
+    <p>Bastionノードへのログインは、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> 適用時の以下 <strong>ログ</strong> フィールドの最後に表示されているBastionノードのIPアドレスを使用し、インターネットを介してopcユーザでSSHログインします。</p>
+
+    <p><img src="stack_page15.png" alt="画面ショット" /></p>
+
+    <p>このSSH接続では、スタックに指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Bastionノードファイルシステム確認</p>
+
+    <p>Bastionノードは、以下のようにファイル・ストレージの/mnt/homeがマウントされています。この/mnt/homeは、オンデマンドHPCクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/home
+Filesystem        Size  Used Avail Use% Mounted on
+FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="2-2-ldapユーザ作成確認">2-2. LDAPユーザ作成・確認</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> が作成したLDAP統合ユーザ管理環境にLDAPユーザを作成し、このユーザでインターネットからBastionノードにSSHログイン出来ることを確認します。</p>
+
+<p>このLDAP統合ユーザ管理環境は、BastionノードがLDAPサーバ兼クライアントで計算ノードがLDAPクライアントです。</p>
+
+<ol>
+  <li>
+    <p>LDAPユーザ作成</p>
+
+    <p>LDAPサーバであるBastionノードは、LDAPユーザ管理のためのclusterコマンドが用意されています。</p>
+
+    <p>このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリであるファイル・ストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
+</code></pre></div>    </div>
+
+    <p>次に、以下コマンドをBastionノードのopcユーザで実行し、LDAPユーザを作成します。<br />
+なおこのユーザは、この後の稼働確認に使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> cluster user add user_name
+Password:  &lt;- Password <span class="k">for </span>user_name
+Repeat <span class="k">for </span>confirmation: &lt;- Password <span class="k">for </span>user_name
+Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
+Creating group
+<span class="o">&gt;</span> <span class="nb">id </span>user_name
+<span class="nv">uid</span><span class="o">=</span>10001<span class="o">(</span>user_name<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>10006<span class="o">(</span>user_name<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>10006<span class="o">(</span>user_name<span class="o">)</span>
+</code></pre></div>    </div>
+
+    <p>ここで指定するパスワードは、オンデマンドHPCクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。</p>
+
+    <p>次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
+public_key_for_user_name
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>LDAPユーザログイン</p>
+
+    <p>先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。</p>
+
+    <p>このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="3-オンデマンドhpcクラスタ稼働確認intel-mpiベンチマーク性能検証">3. オンデマンドHPCクラスタ稼働確認（Intel MPIベンチマーク性能検証）</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、Intel MPIベンチマーク性能検証用のジョブを使用し、オンデマンドHPCクラスタがジョブの投入・終了とともに自動的にHPCクラスタを作成・削除することを確認するとともに、HPCクラスタのインターコネクト性能を検証します。</p>
+
+<p>ここでは、2ノードのPing-Pong性能を計測しており、以下性能が出ています。</p>
+
+<ul>
+  <li>帯域：約12 GB/s（インタフェース物理帯域100 Gbpsに対し96 Gbpsを計測）</li>
+  <li>レイテンシ：約1.7 μs</li>
+</ul>
+
+<h2 id="3-1-ジョブスクリプト作成">3-1. ジョブスクリプト作成</h2>
+
+<p>BastionノードのLDAPユーザで、以下のジョブスクリプトを作成します。</p>
+
+<p>[pingpong.sh]</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH -p compute</span>
+<span class="c">#SBATCH -n 2</span>
+<span class="c">#SBATCH -N 2</span>
+<span class="c">#SBATCH -J ping_pong</span>
+<span class="c">#SBATCH -o stdout.%J</span>
+<span class="c">#SBATCH -e stderr.%J</span>
+
+<span class="c"># Only for BM.Optimized3.36</span>
+<span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+
+<span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+
+mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
+</code></pre></div></div>
+
+<h2 id="3-2-ジョブ投入">3-2. ジョブ投入</h2>
+
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、作成したジョブスクリプトをSlurmに投入、ジョブステータスを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> sbatch pingpong.sh 
+Submitted batch job 1
+<span class="o">&gt;</span> squeue 
+   JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+       1   compute ping_pon user_nam PD       0:00      2 <span class="o">(</span>Nodes required <span class="k">for </span>job are DOWN, DRAINED or reserved <span class="k">for </span><span class="nb">jobs </span><span class="k">in </span>higher priority partitions<span class="o">)</span>
+
+</code></pre></div></div>
+
+<p>この時点では、ジョブを実行するための計算ノードが存在しないため、ジョブのステータスがPDの状態です。</p>
+
+<h2 id="3-3-hpcクラスタデプロイ状況確認">3-3. HPCクラスタデプロイ状況確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> は、Bastionノードのopcユーザのcrontabから以下のように毎分起動されるautoscale_slurm.shというPyrhonスクリプトにより、Slurmのジョブ投入状況に応じてオンデマンドに必要な数の計算ノードを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共にデプロイします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> crontab <span class="nt">-l</span> | <span class="nb">grep </span>autoscale_slurm
+<span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /opt/oci-hpc/autoscaling/crontab/autoscale_slurm.sh <span class="o">&gt;&gt;</span> /opt/oci-hpc/logs/crontab_slurm_<span class="sb">`</span><span class="nb">date</span> <span class="s1">'+\%Y\%m\%d'</span><span class="sb">`</span>.log 2&gt;&amp;1
+</code></pre></div></div>
+
+<p>このため、先の手順のジョブ投入から最大で1分以上経過すると、自動的に2ノードの計算ノードとこれらを接続するクラスタ・ネットワークのデプロイを開始します。<br />
+そこで、OCIコンソールでオンデマンドHPCクラスタをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧から2ノードの計算ノードが <strong>プロビジョニング中</strong> となっていることを確認します。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>このジョブは、Terraformによる計算ノードのデプロイが完了すると前述のインスタンスの <strong>状態</strong> が <strong>実行中</strong> となりますが、ここからAnsibleによるOSのカスタマイズが始まり、これが完了して初めてSlurm上のジョブ状態がR（実行中）になるため、ジョブ投入からジョブ実行開始までおよそ10分を要します。</p>
+
+<h2 id="3-4-ジョブ結果確認">3-4. ジョブ結果確認</h2>
+
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブ完了を確認した後、その出力結果を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> squeue
+          JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+<span class="o">&gt;</span> <span class="nb">cat </span>stdout.1 
+<span class="c">#------------------------------------------------------------</span>
+<span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+<span class="c">#------------------------------------------------------------</span>
+<span class="c"># Date                  : Tue May 16 06:38:34 2023</span>
+<span class="c"># Machine               : x86_64</span>
+<span class="c"># System                : Linux</span>
+<span class="c"># Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64</span>
+<span class="c"># Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022</span>
+<span class="c"># MPI Version           : 3.1</span>
+<span class="c"># MPI Thread Environment: </span>
+
+
+<span class="c"># Calling sequence was: </span>
+
+<span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong</span>
+
+<span class="c"># Minimum message length in bytes:   0</span>
+<span class="c"># Maximum message length in bytes:   268435456</span>
+<span class="c">#</span>
+<span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
+<span class="c"># MPI_Op                         :   MPI_SUM  </span>
+<span class="c">#</span>
+<span class="c">#</span>
+
+<span class="c"># List of Benchmarks to run:</span>
+
+<span class="c"># PingPong</span>
+
+<span class="c">#---------------------------------------------------</span>
+<span class="c"># Benchmarking PingPong </span>
+<span class="c"># #processes = 2 </span>
+<span class="c">#---------------------------------------------------</span>
+       <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+            0         1000         1.67         0.00
+            8         1000         1.66         4.81
+           16         1000         1.66         9.62
+           32         1000         1.73        18.54
+           64         1000         1.83        34.92
+          128         1000         1.88        68.05
+          256         1000         2.14       119.35
+          512         1000         2.20       232.63
+         1024         1000         2.33       439.71
+         2048         1000         3.05       672.50
+         4096         1000         3.76      1088.19
+         8192         1000         4.87      1682.36
+        16384         1000         6.73      2433.40
+        32768         1000         9.27      3536.08
+        65536          640        10.87      6027.71
+       131072          320        16.32      8032.19
+       262144          160        28.67      9142.25
+       524288           80        50.10     10465.36
+      1048576           40        92.88     11289.03
+      2097152           20       178.64     11739.66
+      4194304           10       349.87     11988.22
+      8388608            5       692.62     12111.44
+     16777216            2      1378.23     12173.04
+     33554432            1      2750.67     12198.62
+     67108864            1      5491.25     12221.06
+    134217728            1     10974.52     12229.94
+    268435456            1     21942.87     12233.38
+
+
+<span class="c"># All processes entering MPI_Finalize</span>
+</code></pre></div></div>
+
+<h2 id="3-5-hpcクラスタ削除確認">3-5. HPCクラスタ削除確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> は、計算ノードで実行されるジョブが無い状態が10分間継続すると、以降crontabから最初に起動されるautoscale_slurm.shがこの計算ノードをクラスタ・ネットワークと共に削除します。<br />
+OCIコンソールで、想定通りHPCクラスタが削除されていることを確認します。</p>
+
+<hr />
+<h1 id="4-スタックの破棄">4. スタックの破棄</h1>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を破棄することで、構築したオンデマンドHPCクラスタを削除します。</p>
+
+<p>以降の手順は、本チュートリアルで作成したOCI上のリソースをすべて削除するため、 <strong>LDAPユーザのホームディレクトリ用途で作成したファイル・ストレージに格納されているデータが全て消失</strong> します。</p>
+
+<p>なお、 <strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> がオンデマンドでデプロイした計算ノードと <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> は、このスタック破棄で削除されません。<br />
+そのため、クラスタオートスケーリングがこれらのリソースを削除したことを確認し、その後スタックの破棄を実施します。</p>
+
+<ol>
+  <li>
+    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page16.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>破棄</strong> サイドバーで、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page17.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、スタックの破棄が実施されています。</p>
+
+    <p><img src="stack_page18.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースの削除状況を確認します。</p>
+
+    <p><img src="stack_page11.png" alt="画面ショット" /></p>
+
+    <p>この破棄が完了するまでの所要時間は、2分程度です。</p>
+
+    <p>ステータスが <strong>成功</strong> となれば、オンデマンドHPCクラスタの削除が完了しています。</p>
+  </li>
+</ol>
+
+<p>これで、このチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-05-18T09:39:14+09:00">May 18, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=HPC%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%28%E3%82%AA%E3%83%B3%E3%83%87%E3%83%9E%E3%83%B3%E3%83%89%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E8%87%AA%E5%8B%95%E6%A7%8B%E7%AF%89%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-hpc-cluster-withautoscaling%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-hpc-cluster-withautoscaling%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-hpc-cluster-withautoscaling%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/spinup-hpc-cluster/" class="pagination--pager" title="HPCクラスタを構築する(スタティッククラスタ自動構築編)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/spinup-ml-instance/" class="pagination--pager" title="GPUインスタンスで機械学習にトライ
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

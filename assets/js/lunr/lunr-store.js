@@ -923,6 +923,12 @@ var store = [{
         "url": "/ocitutorials/hpc/spinup-hpc-cluster/",
         "teaser": "/ocitutorials/hpc/spinup-hpc-cluster/architecture_diagram.png"
       },{
+        "title": "HPCクラスタを構築する(オンデマンドクラスタ自動構築編)",
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバーヘッドの無いHPC用途に特化したベアメタルシェイプとこれらを接続する クラスタ・ネットワーク を提供しており、HPCワークロードを実行するHPCクラスタを構築するには最適なクラウドサービスです。 このチュートリアルは、 マーケットプレイス から無償で利用可能な HPCクラスタスタック を利用し、以下構成のオンデマンドHPCクラスタを構築します。 HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（ BM.Optimized3.36 ） 100 Gbps RoCEv2 RDMAインターコネクト (クラスタ・ネットワーク) インターネットからSSH接続可能なBastionノード OS: Oracle Linux 8.6 ジョブスケジューラ: Slurm オンデマンドクラスタ機能： クラスタオートスケーリング ファイル・ストレージサービスによるHPCクラスタ内ホームディレクトリ共有 LDAPによるクラスタ内ユーザ統合管理 またこのチュートリアルは、デプロイしたHPCクラスタのインターコネクト性能をIntel MPIベンチマークで確認します。 オンデマンドHPCクラスタにおけるワークロード実行は、Slurmにジョブを投入することで行い、クラスタオートスケーリングがジョブ実行に必要な計算ノードをクラスタ・ネットワークと共に動的に起動、構築されたクラスタにSlurmがジョブをディスパッチします。 またクラスタオートスケーリングは、ジョブが実行されない状態が一定時間経過すると、自動的にクラスタを削除します。 本チュートリアルで使用するHPCクラスタスタックは、通常であれば数日かかるオンデマンドHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択した後、1クリックで自動的に実施することを可能とします。 所要時間 : 約2時間 前提条件 : オンデマンドHPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。具体的には、以下ページの Policies to deploy the stack: に記載のポリシーと Policies for...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/",
+        "teaser": "/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/architecture_diagram.png"
+      },{
         "title": "GPUインスタンスで機械学習にトライ",
         "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、GPUを搭載するVMやベアメタルの様々なシェイプが用意されており、自身の機械学習ニーズに合った機械学習環境を構築するには最適なクラウドサービスです。 このチュートリアルは、NVIDIA GPUドライバソフトウェアやCUDAを内包するOCIのGPUシェイプ向けプラットフォームイメージを利用し、以下構成の機械学習環境を構築、TensorFlowを利用するサンプル機械学習プログラムをJupyterLab/Jupyter Notebookから実行します。 選択可能な機械学習環境GPUシェイプ VM.GPU3.1 (NVIDIA Tesla V100 16 GB x 1) VM.GPU3.2 (NVIDIA Tesla V100 16 GB x 2) VM.GPU3.4 (NVIDIA Tesla V100 16 GB x 4) BM.GPU3.8 (NVIDIA Tesla V100 16 GB x 8) BM.GPU4.8 (NVIDIA A100 40 GB x 8) ※：シェイプ詳細は、以下URLを参照。 https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm 利用可能な機械学習関連ソフトウェア TensorFlow...","categories": [],
         "tags": [],
@@ -975,6 +981,12 @@ var store = [{
         "excerpt":"クラスタ・ネットワーク を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージが マーケットプレイス から提供されています。 本テクニカルTipsは、このOSイメージの適切な選び方を解説します。 0. 概要 マーケットプレイス から提供される クラスタ・ネットワーク 対応OSイメージは、ベースOSにOracle Linuxを採用し、シェイプがBM.HPC2.36/ BM.Optimized3.36 の場合そのバージョンは7.9と8.6から選択でき、 BM.GPU4.8/BM.GPU.GM4.8 の場合7.9のみ選択可能です。 下表は、クラスタ・ネットワークに対応したシェイプと対応するOSイメージの組み合わせを示しています。 シェイプ OSイメージ名 ベースOS マーケットプレイスURL BM.HPC2.36 HPC Cluster Networking Image Oracle Linux 7.9 Link   HPC Cluster Networking Image Oracle Linux 8.6 Link BM.Optimized3.36 HPC Cluster Networking Image Oracle Linux 7.9 Link   HPC...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/",
+        "teaser": null
+      },{
+        "title": "クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法",
+        "excerpt":"クラスタ・ネットワーク に接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだOSイメージが マーケットプレース から提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。 本テクニカルTipsは、 BM.Optimized3.36 を使用するインスタンスをOracle Linux以外のOSでクラスタ・ネットワークに接続する方法を解説します。 注意 : テクニカルTips内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 クラスタ・ネットワーク に接続するインスタンスは、以下の条件を満たす必要があります。 クラスタ・ネットワーク対応シェイプ（※1）を使用している 同一のクラスタ・ネットワークと共にデプロイしている クラスタ・ネットワーク接続のための以下ソフトウェアがインストールされている Mellanox OFED wpa_supplicant（※2） oci-cn-auth（※3） クラスタ・ネットワーク接続用ネットワークインターフェースがOS上に構築されている ※1）クラスタ・ネットワーク対応シェイプは、以下に記載があります。 https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#supported-shapes ※2）クラスタ・ネットワークは、インスタンスが接続する際802.1X認証を要求しますが、これらの処理を行うクライアントソフトウェアがwpa_supplicantです。802.1X認証の仕組みは、以下のサイトが参考になります。 https://www.infraexpert.com/study/wireless14.html ※3）クラスタ・ネットワークに接続する際の802.1X認証で必要な認証処理機能を提供するユーティリティーソフトウェアで、GitHubから公開されています。 これらの条件の中で、クラスタ・ネットワーク接続のためのソフトウェアは、 OCI HPCテクニカルTips集 の クラスタ・ネットワーク対応OSイメージの選び方 に記載のクラスタ・ネットワーク対応OSイメージには予めインストールされていますが、OSによってはこれらのソフトウェアをインストールすることにより、クラスタ・ネットワークに接続することが可能です。 これらソフトウェアのインストールは、手順が多く相応の所要時間が必要なため、予め最小ノード（2ノード）のクラスタを構築してこの計算ノードにソフトウェアをインストール、この計算ノードの カスタム・イメージ を使用して、実際に使用するHPCクラスタを構築します。 以上より、クラスタ・ネットワーク非対応OSイメージを使ったHPCクラスタの構築は、以下の手順を経て行います。 カスタムイメージ取得用2ノードHPCクラスタ構築 クラスタ・ネットワーク接続用ソフトウェアインストール クラスタ・ネットワーク接続確認 カスタム・イメージ取得 cloud-init 設定ファイル（cloud-config）作成 カスタム・イメージとcloud-configを指定した インスタンス構成 作成 インスタンス構成を指定した クラスタ・ネットワーク...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/",
         "teaser": null
       },{
         "title": "ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法",
