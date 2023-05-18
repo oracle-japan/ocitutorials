@@ -55,3 +55,6 @@ Visual Builder を使って簡単なWebアプリケーションを作成しま�
 
 **[Visual Builder Studio でVBCSアプリケーションを管理してみよう](./vbcs-for-beginners-2-vbs)**   
 Visual Builder Studioを使ってVBCSアプリケーション・プロジェクトを管理します。このチュートリアルでは、VBSからVBCSアプリケーションを作成し、チームによる開発手順を学習します。
+
+**[Visual Builder でREST APIを使ったWebアプリケーションを作成してみよう](./vbcs-for-beginners-3-rest)**   
+Visual Builder でREST APIを使ったWebアプリケーションを作成します。このチュートリアルでは、REST APIでデータを取得し、画面上に一覧表示するアプリケーションを作成します。
