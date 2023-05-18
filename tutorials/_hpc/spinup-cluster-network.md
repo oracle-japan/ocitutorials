@@ -150,9 +150,6 @@ runcmd:
 #
 # Set up cluster network interface
   - systemctl start oci-rdma-configure
-#
-# Start CN authentication renew service for OL8 HPC image to avoid 15min. hiatus of CN connection on deployment
-  - systemctl start oci-cn-auth-renew.service
 ```
 
 このcloud-configで行っているクラスタ・ネットワーク接続用ネットワークインターフェース起動は、クラスタ・ネットワーク対応OSイメージに含まれるsystemdのサービス **oci-rdma-configure** を使用しますが、この詳細はテクニカルTips **[クラスタ・ネットワーク接続用ネットワークインターフェース作成方法](/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/)** を参照ください。
@@ -266,7 +263,7 @@ runcmd:
 
 本章は、デプロイされた計算ノードにログインし、環境を確認します。
 
-## 2.1. 計算ノードログイン
+## 2-1. 計算ノードログイン
 
 計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。Bastionノードから計算ノードへのログインは、計算ノードのインスタンス名を使用します。
 
@@ -287,7 +284,7 @@ Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of known hosts.
 ```
 
-## 2.2. cloud-init完了確認
+## 2-2. cloud-init完了確認
 
 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることでcloud-initの処理完了を確認します。
 
@@ -298,7 +295,7 @@ Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of kn
 status: done
 ```
 
-## 2.3. 計算ノードファイルシステム確認
+## 2-3. 計算ノードファイルシステム確認
 
    計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。
 
