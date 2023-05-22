@@ -250,8 +250,7 @@ nmcli connection up cluster-network
 次に、以下コマンドを計算ノードのrockyユーザで実行します。
 
 ```sh
-> sudo ./oci-rdma-configure-rh9.sh
-> sudo systemctl start oci-cn-auth.service <- No need
+> sudo ~/oci-rdma-configure-rh9.sh
 > sudo systemctl enable --now oci-cn-auth.timer
 ```
 
