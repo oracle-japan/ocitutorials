@@ -1013,6 +1013,18 @@ var store = [{
         "url": "/ocitutorials/hpc/tech-knowhow/compute-host-list/",
         "teaser": null
       },{
+        "title": "計算ノードの追加・削除・入れ替え方法",
+        "excerpt":"HPCクラスタやGPUクラスタは、実行するワークロードの増減に伴い計算/GPUノードのノード数を増減する必要が生じることがあります。またハードウェア障害が発生すると、利用可能なノード数を維持するために該当ノードを別のノードに置き換える必要が生じます。 本テクニカルTipsは、 クラスタ・ネットワーク を使用するHPC/GPUクラスタで計算/GPUノードのノード数を増減する方法や置き換える方法を解説します。 0. 概要 HPC/GPUクラスタのノード数を増減させたり既存の計算/GPUノードを置き換える際、これらのノードが通常同一の クラスタ・ネットワーク に接続されている必要があることから、クラスタ・ネットワークを使用しないインスタンスとは異なる手順が必要になります。 そこで本テクニカルTipsでは、これらの手順を以下の3ケースに分けて解説します。 ノード数を減らす ノード数を増やす ノードを置き換える 1. ノード数を減らす 1-0. 概要 ノード数を減らす場合、終了するノードを指定する方法と終了するノードをOCIに任せる方法があります。 終了するノードをOCIに任せる方法は、 クラスタ・ネットワーク に接続するどのノードを終了しても構わないが複数のノードを一度に減らす際に有効で、最も作成日の古いものから終了の対象として選択されます。 これに対して終了するノードを指定する方法は、一度に終了するノードは1ノードだが終了するノードを特定する必要がある際に有効です。 1-1. 終了するノードを指定する方法 本章は、計算/GPUノードを減らす際、終了するノードを指定する方法を解説します。 OCIコンソールメニューから コンピュート → クラスタ・ネットワーク を選択し、表示される以下画面で、ノード数を減らす クラスタ・ネットワーク をクリックします。 表示される以下画面の インスタンス・プール フィールドで、クラスタ・ネットワークの作成に伴い作成されたインスタンスプールをクリックします。 表示される以下画面左下の アタッチされたインスタンス メニューをクリックします。 表示される画面の以下 アタッチされたインスタンス フィールドで、終了するインスタンスのメニューから インスタンスのデタッチ メニューをクリックします。 表示される以下画面で、 このインスタンスおよびアタッチされたブート・ボリュームを完全に終了（削除） チェックボックスをチェックし、 デタッチと終了 ボタンをクリックします。 OCIコンソールメニューから コンピュート...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/tech-knowhow/cluster-resize/",
+        "teaser": null
+      },{
+        "title": "OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する",
+        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、OCIのLoad Balancerに直接デプロイする”WAFポリシー”を作成し、実際のWAFの動作を確認します。 所要時間 : 約1時間 前提条件 : 応用編 - ロードバランサーでWebサーバーを負荷分散するを参考に、WebサーバーおよびOCIのロードバランサ―が構成されていること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Web Application Firewallを使用するためには、操作を実行するユーザーに以下のポリシーが付与されている必要があります。 allow group &lt;IAMグループ名&gt; to manage waas-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage web-app-firewall in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage waf-policy in tenancy/compartment &lt;コンパートメント名&gt;...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/id-security/web-application-firewall-v2/",
+        "teaser": "/ocitutorials/id-security/web-application-firewall-v2/wafv2-19.png"
+      },{
         "title": "OCI Network Firewallを構築する",
         "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。 所要時間 : 約70分 前提条件 : ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントを参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 はじめに : 以下が本チュートリアルで作成するNetwork Firewallの構成図です。 Network Firewallについて Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。 Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。 Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。 パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御 アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止 各サブネットとルート表について インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。Network Firewallによって検査されたトラフィックは「NFW Subnetルート表」のルールにより、Public Subnet内のインスタンスへ転送されます。 Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network...","categories": [],
         "tags": ["id-security"],

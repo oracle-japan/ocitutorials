@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-05-19T15:10:53+09:00">
+  <meta property="article:published_time" content="2023-05-23T11:08:19+09:00">
 
 
 
@@ -276,6 +276,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></li></p>
+        
       </ul>
     </li>
   </ul>
@@ -289,7 +291,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2023-05-19T15:10:53+09:00">
+    <meta itemprop="datePublished" content="2023-05-23T11:08:19+09:00">
     
 
     <div class="page__inner-wrap">
@@ -401,7 +403,7 @@ The keys randomart image is:
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
 </code></pre></div></div>
 
-<p>次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、テクニカルTips <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></strong> の手順を実施します。</p>
+<p>次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></strong> の手順を実施します。</p>
 
 <hr />
 <h1 id="1-hpcクラスタ作成">1. HPCクラスタ作成</h1>
@@ -826,31 +828,7 @@ hostlist.txt                                                           100%   32
 
 <p>本章は、作成した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する計算ノードを2ノード追加して4ノードに拡張します。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> を選択し、表示される画面で作成したクラスタ・ネットワークをクリックします。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、 <strong>編集</strong> ボタンをクリックします。</p>
-
-    <p><img src="console_page25.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>クラスタ・ネットワークの編集</strong> サイドバーで、 <strong>インスタンス数</strong> フィールドを4に変更し <strong>変更の保存</strong> ボタンをクリックします。</p>
-
-    <p><img src="console_page26.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>クラスタ・ネットワーク・インスタンス・プール</strong> ウィンドウで、左上のステータスが <strong>スケーリング中</strong> → <strong>完了</strong> と遷移したら、計算ノードの追加が完了しています。</p>
-
-    <p><img src="console_page27.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>同じウィンドウ下方の以下 <strong>インスタンス・プール</strong> フィールドで、 <strong>インスタンス数</strong> が4に増加していることを確認します。</p>
-
-    <p><img src="console_page28.png" alt="画面ショット" /></p>
-  </li>
-</ol>
+<p>この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす">2. ノード数を増やす</a></strong> 手順を実施します。</p>
 
 <hr />
 <h1 id="5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</h1>
@@ -972,36 +950,7 @@ hostlist.txt                                                           100%   32
 
 <p>本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> を選択し、表示される以下画面で、作成されたクラスタ・ネットワークをクリックします。</p>
-
-    <p><img src="console_page31.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面の <strong>インスタンス・プール</strong> フィールドで、クラスタ・ネットワークの作成に伴い作成されたインスタンスプールをクリックします。</p>
-
-    <p><img src="console_page32.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面左下の <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
-
-    <p><img src="console_page33.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される画面の以下 <strong>アタッチされたインスタンス</strong> フィールドで、削除するインスタンスのメニューから <strong>インスタンスのデタッチ</strong> メニューをクリックします。</p>
-
-    <p><img src="console_page34.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面で、 <strong>このインスタンスおよびアタッチされたブート・ボリュームを完全に終了（削除）</strong> と <strong>プールのインスタンス構成をインスタンスのテンプレートとして使用し、インスタンスを新しいインスタンスで置き換える</strong> チェックボックスをチェックし、 <strong>デタッチと終了</strong> ボタンをクリックします。</p>
-
-    <p><img src="console_page35.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、デタッチしたインスタンスが終了され、新たなインスタンスが実行中となれば、計算ノードの入れ替えは終了です。</p>
-  </li>
-</ol>
+<p>この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える">ノードを置き換える</a></strong> 手順を実施します。</p>
 
 <p>再度 <strong><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a></strong> に従いIntel MPIベンチマークを実行、インターコネクト性能が十分出ていることを確認します。</p>
 
@@ -1032,7 +981,7 @@ hostlist.txt                                                           100%   32
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-05-19T15:10:53+09:00">May 19, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-05-23T11:08:19+09:00">May 23, 2023</time></p>
 
 
       </footer>
