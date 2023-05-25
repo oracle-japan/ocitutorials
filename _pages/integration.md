@@ -58,3 +58,6 @@ Visual Builder Studioを使ってVBCSアプリケーション・プロジェク�
 
 **[Visual Builder でREST APIを使ったWebアプリケーションを作成してみよう](./vbcs-for-beginners-3-rest)**   
 Visual Builder でREST APIを使ったWebアプリケーションを作成します。このチュートリアルでは、REST APIでデータを取得し、画面上に一覧表示するアプリケーションを作成します。
+
+**[Visual Builder でグラフを使ったWebアプリケーションを作成してみよう](./vbcs-for-beginners-4-linechart)**   
+Visual Builder でグラフを使ったWebアプリケーションを作成します。このチュートリアルでは、ビジネス・オブジェクトのデータを取得し、画面上に折れ線グラフで表示するアプリケーションを作成します。
