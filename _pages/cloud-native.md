@@ -133,6 +133,9 @@ lastmod: "2022-04-06"
 + **[WebLogic Server for OCIにアプリケーションを移行してみよう](/ocitutorials/cloud-native/wls-for-oci-migration/)**  
    こちらのハンズオンでは、WebLogic Server for OCIに対してのアプリケーションの移行を学んでいただけるコンテンツになります。【所要時間:約1時間】
 
++ **[WebLogic Server for OKEをプロビジョニングしてみよう](/ocitutorials/cloud-native/wls-for-oke-provisioning/)**  
+    WebLogic Server for OKE は、WebLogic Serverのコンテナ化を簡単に実現できるオファリングです。こちらのハンズオンでは、WebLogic Server for OKEのプロビジョニング、ドメインの作成を学んでいただけるコンテンツになります。【所要時間:約1時間】
+
 # 8. Oracle Transaction Manager for Microservices(MicroTx)チュートリアル
 
 + **[Oracle Transaction Manager for Microservicesハンズオン](/ocitutorials/cloud-native/microtx-for-beginners/)**  
