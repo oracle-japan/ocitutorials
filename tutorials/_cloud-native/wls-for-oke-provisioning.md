@@ -16,6 +16,12 @@ tags:
 1. WebLogic Server for OKE(UCM)環境をプロビジョニング
 1. WebLogic Server for OKEにドメインを作成
 
+ハンズオンで作成されるリソース全体
+---
+WebLogic Server for OKEでは、様々なリソースが自動で構成されます。  
+以下は作成されるリソースの全体像になります。
+![](resources.jpg)
+
 1.プロビジョニングの準備
 ---
 ### 1.1. コンパートメントの作成 
@@ -45,13 +51,23 @@ WebLogic Server for OKEのプロビジョニングに必要なポリシーを作
 まずは「ルート・コンパートメント」に以下のポリシーを作成します。
 「ポリシーの作成」から`<mygroup>`はご自身のアカウントが所属するグループに置き換えてポリシーを作成してください。
 「手動エディタの表示」をONにすると、そのまま貼り付けすることができます。
-`Allow group <mygroup> to inspect tenancies in tenancy`
-`Allow group <mygroup> to use tag-namespaces in tenancy`
+```
+Allow group <mygroup> to inspect tenancies in tenancy
+```
+```
+Allow group <mygroup> to use tag-namespaces in tenancy
+```
 
 次に「wls4oke」コンパートメントに以下のポリシーを作成します。
-`Allow group <mygroup> to manage all-resources in compartment wls4oke`
-`Allow dynamic-group handson to manage all-resources in compartment wls4oke`
-`Allow service oke to read app-catalog-listing in compartment wls4oke`
+```
+Allow group <mygroup> to manage all-resources in compartment wls4oke
+```
+```
+Allow dynamic-group handson to manage all-resources in compartment wls4oke
+```
+```
+Allow service oke to read app-catalog-listing in compartment wls4oke
+```
 
 ### 1.4. Auth Tokenの作成 
 WebLogic Server for OKEのプロビジョニングに必要なAuth Tokenを作成します。
@@ -92,10 +108,8 @@ WebLogic Server for OKEでは、WebLogic作成時の管理用パスワードは[
 「シークレット」をクリックし、「シークレットの作成」をクリックします。  
 ![](0.1.006.jpg)
 
-名前に「wlsadmin」と入力し、暗号化キーは「handson key」を選択し、シークレットコンテンツは「welcome1」と入力し、「シークレットの作成」をクリックします。  
+名前に「authtoken」と入力し、シークレットコンテンツは「1.4. Auth Tokenの作成」で作成したトークンを入力し、シークレットを作成します。 
 ![](0.1.007.jpg)
-
-同様にもう1つシークレットを作成します。名前に「authtoken」と入力し、シークレットコンテンツは「1.4. Auth Tokenの作成」で作成したトークンを入力し、シークレットを作成します。 
 
 2.WebLogic Server for OKE(UCM)環境をプロビジョニング
 ---
@@ -108,6 +122,7 @@ WebLogic Server for OKEでは、WebLogic作成時の管理用パスワードは[
 検索欄に「Oracle WebLogic Server Enterprise Edition for OKE UCM」と入力し、先頭に出てくるパネルをクリックします。  
 ![](2.1.002.jpg)
 
+バージョンはデフォルトのまま、コンパートメントは「wls4oke」を選択します。  
 チェックボックスにチェックを入れ、「スタックの起動」をクリックします。
 
 ### 2.2. WebLogic Server for OKEをプロビジョニングする
@@ -116,7 +131,10 @@ WebLogic Server for OKEでは、WebLogic作成時の管理用パスワードは[
 {: .notice--info}
 
 「次」をクリックします。  
+「名前」は「Oracle WebLogic Server Enterprise Edition for OKE UCM」など任意の名前に設定して構いません。
 ![](2.2.001.jpg)
+
+***ここからの手順は、特に指定のない箇所はデフォルトのままで構いません。***
 
 「Resource Name Prefix」 に「wls4oke」と入力します。  
 ![](2.2.002.jpg)
@@ -145,6 +163,9 @@ Registry User NameにはOCIRのユーザ名を入力します。※ここで入�
 「OCIR Auth Token Compartment」は「wls4oke」  
 「Validated Secret for WebLogic Server Admin Password」では、作成したAuth Tokenのシークレット(authtoken)を選択します。    
 ![](2.2.007.jpg)
+
+「OCI Policies」のチェックを外します。
+![](2.2.008.jpg)
 
 「次」をクリックし、「作成」をクリックします。プロビジョニングには30分ほどかかります。
 プロビジョニングが完了すると、ログの最後に以下の情報が出力されます。
@@ -201,6 +222,7 @@ Webブラウザ側でSOCKSプロキシを利用する設定を行い、Jenkins�
 | パラメータ | 設定する内容 |
 | --- | --- |
 | Domain_Name | 作成するWebLogicドメインの名前。<br />ここでは`demo00`。 |
+| WebLogic_Version | WebLogicのバージョン。<br />ここでは`12.2.1.4`。 |
 | Base_Image | 使用するベース・イメージ。<br />ここでは選択せず (Select_Base_Imageのまま) プロビジョニング時に登録されたものを利用。 |
 | Administration_Username | WebLogic管理ユーザの名前。<br />ここでは `weblogic` |
 | Administration_Password | WebLogic管理ユーザのパスワード。<br />ここでは`welcome1` |

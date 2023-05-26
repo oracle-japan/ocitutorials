@@ -1,3 +1,4 @@
+<!--
 ---
 title: "WebLogic Server for OKEにアプリケーションをデプロイしてみよう"
 excerpt: "OCIが提供するWebLogic Server for OKEを利用して、JavaEEアプリケーションのコンテナ化を体験していただけるコンテンツです。"
@@ -179,7 +180,7 @@ Cloud Shell上のVimなど任意のテキストエディタで、移行ファイ
 `JDBC.Handson.user.Value`は`DEST`と入力します。
 
 ```
-JDBC.Handson.user.Value=DEST
+JDBC.Handson-DB.user.Value=DEST
 ```
 
 ### 3.2. source.yamlファイルの編集
@@ -194,7 +195,7 @@ JDBC.Handson.user.Value=DEST
 ```yaml
 resources:
     JDBCSystemResource:
-        Handson:
+        Handson DB:
             Target: demo00-cluster #変更
 ```
 `TodoApp-0.0.1-SNAPSHOT`フィールド下の`Target`は`base_cluster`を`demo00_cluster`と変更します。
@@ -218,62 +219,49 @@ appDeployments:
             StagingMode: stage #追加
 ```
 
-`resources`を以下のように書き換えます。
+`resources`の`JDBCDriverParams`以下を書き換えます。
 ```yaml
 resources:
-    JDBCSystemResource:
-        Handson DB:
-            Target: demo00-cluster #変更
-            JdbcResource:
-                DatasourceType: GENERIC
-                JDBCConnectionPoolParams:
-                    StatementCacheSize: 10
-                    InitialCapacity: 1
-                    StatementCacheType: LRU
-                    MaxCapacity: 15
-                    TestTableName: SQL ISVALID
-                    MinCapacity: 1
-                JDBCDataSourceParams:
-                    JNDIName: handsonDB
-                    StreamChunkSize: 256
+### 中略 ###
                 JDBCDriverParams:
                     DriverName: oracle.jdbc.OracleDriver
-                    URL: '@@SECRET:@@ENV:DOMAIN_UID@@-datasource-secret:url@@' #変更
                     PasswordEncrypted: '@@SECRET:@@ENV:DOMAIN_UID@@-datasource-secret:password@@' #変更
+                    URL: '@@SECRET:@@ENV:DOMAIN_UID@@-datasource-secret:url@@' #変更
                     Properties:
+                        oracle.net.tns_admin:
+                            Value: /u01/shared/atp_wallet #変更
                         user:
-                            Value: '@@PROP:JDBC.Handson.user.Value@@' #変更
-                        javax.net.ssl.keyStore:
-                            Value: /u01/shared/atp_wallet/keystore.jks #変更
-                        javax.net.ssl.keyStoreType:
-                            Value: JKS
-                        javax.net.ssl.keyStorePassword:
-                            Value: '@@SECRET:@@ENV:DOMAIN_UID@@-keystore-secret:password@@'
-                        javax.net.ssl.trustStore:
-                            Value: /u01/shared/atp_wallet/truststore.jks #変更
-                        javax.net.ssl.trustStoreType:
-                            Value: JKS
-                        javax.net.ssl.trustStorePassword:
-                            Value: '@@SECRET:@@ENV:DOMAIN_UID@@-keystore-secret:password@@'
+                            Value: '@@PROP:JDBC.Handson-DB.user.Value@@' #変更
+                        javax.net.ssl.keyStore: #追加
+                            Value: /u01/shared/atp_wallet/keystore.jks #追加
+                        javax.net.ssl.keyStoreType: #追加
+                            Value: JKS #追加
+                        javax.net.ssl.keyStorePassword: #追加
+                            Value: '@@SECRET:@@ENV:DOMAIN_UID@@-keystore-secret:password@@' #追加
+                        javax.net.ssl.trustStore: #追加
+                            Value: /u01/shared/atp_wallet/truststore.jks  #追加
+                        javax.net.ssl.trustStoreType:  #追加
+                            Value: JKS #追加
+                        javax.net.ssl.trustStorePassword:  #追加
+                            Value: '@@SECRET:@@ENV:DOMAIN_UID@@-keystore-secret:password@@' #追加
+                        oracle.jdbc.fanEnabled:
+                            Value: false
                         oracle.net.ssl_version:
                             Value: '1.2'
                         oracle.net.ssl_server_dn_match:
                             Value: true
-                        oracle.net.tns_admin:
-                            Value: /u01/shared/atp_wallet #変更
-                        oracle.jdbc.fanEnabled:
-                            Value: false
 ```
 
 ### 3.3. 移行ファイルをアップロードする
 
-以下のファイルをWebLogic Server for OKE プロビジョニング時に作成されたファイル・ストレージにアップロードします。
+以下のファイル(移行ファイルと[WebLogic Server for OCIをプロビジョニングしてみよう](/ocitutorials/cloud-native/wls-for-oci-provisioning/)で取得したWallet)をWebLogic Server for OKE プロビジョニング時に作成されたファイル・ストレージにアップロードします。
 - `source.properties`
 - `source.yaml`
-- `source.zip`  
+- `source.zip`
+- `Wallet_handsonDB.zip`
     
     scp -o ProxyCommand="ssh -W %h:%p opc@<Bastion_Instance_Public_IP>" \
-    source.* opc@<Admin_Instance_Private_IP>:/u01/shared/
+    source.* Wallet_handsonDB.zip opc@<Admin_Instance_Private_IP>:/u01/shared/
 
 `<Bastion_Instance_Public_IP>`と`<Admin_Instance_Private_IP>`はOCIの管理コンソールから確認ができます。  
 Computeインスタンスの一覧、もしくは
@@ -283,7 +271,7 @@ Computeインスタンスの一覧、もしくは
 4.WebLogic Server for OKE に移行ファイルを適用
 ---
 
-### 4.1. WalletをWebLogic Server for OKEにダウンロード
+### 4.1. Walletをファイル・ストレージ上に展開
 
 AdminインスタンスにSSHログインします。`<private_key>`はプロビジョニング時に指定したものを利用してください。
     
@@ -292,8 +280,7 @@ AdminインスタンスにSSHログインします。`<private_key>`はプロビ
 
 SSHでログインしたら、以下のコマンドを実行してください。`<ATPのOCID>`はOCIコンソールから確認が可能です。
     
-    python /u01/scripts/utils/download_atp_wallet.shutils/oci_api_utils.py <ATPのOCID> \
-    oracle1234 /u01/shared/atp_wallet
+    unzip /u01/shared/Wallet_handsonDB.zip -d /u01/shared/atp_wallet
 
 ### 4.2. DB接続用Secretの作成
 
@@ -306,7 +293,7 @@ SSHでログインしたら、以下のコマンドを実行してください�
 
     
     kubectl create secret generic demo00-keystore-secret \
-    --from-literal=password=oracle1234 \
+    --from-literal=password=Oracle1234! \
     -n demo00-ns
 
 ### 4.3. UpdateDomainジョブの実行
@@ -315,6 +302,7 @@ SSHでログインしたら、以下のコマンドを実行してください�
 パラメータは以下のように入力し、「ビルド」ボタンをクリックします。
 
 - Domain_Name : ドメイン名
+- Base Imageの欄は何も選択しないでください
 - Archive_Source : Shared File System
 - Archive_File_Location : /u01/shared/source.zip
 - Domain_Model_Source : Shared File System
@@ -330,3 +318,9 @@ SSHでログインしたら、以下のコマンドを実行してください�
 IPはOCIのコンソールや、kubectlで確認することができます。
 自動で構成されたパブリックIPは左上ナビゲーション・メニュー -> ネットワーキング -> ロード・バランサから確認できます。
 ![](4.4.001.jpg)
+
+kubectlで確認する場合は、管理ホストで以下のコマンドを実行してください。
+    
+    kubectl -n wlsoke-ingress-nginx get svc
+
+-->
