@@ -101,7 +101,7 @@ The keys randomart image is:
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
 ```
 
-次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、テクニカルTips **[計算ノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)** の手順を実施します。
+次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)** の手順を実施します。
 
 ***
 # 1. HPCクラスタ作成
@@ -150,9 +150,6 @@ runcmd:
 #
 # Set up cluster network interface
   - systemctl start oci-rdma-configure
-#
-# Start CN authentication renew service for OL8 HPC image to avoid 15min. hiatus of CN connection on deployment
-  - systemctl start oci-cn-auth-renew.service
 ```
 
 このcloud-configで行っているクラスタ・ネットワーク接続用ネットワークインターフェース起動は、クラスタ・ネットワーク対応OSイメージに含まれるsystemdのサービス **oci-rdma-configure** を使用しますが、この詳細はテクニカルTips **[クラスタ・ネットワーク接続用ネットワークインターフェース作成方法](/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/)** を参照ください。
@@ -266,7 +263,7 @@ runcmd:
 
 本章は、デプロイされた計算ノードにログインし、環境を確認します。
 
-## 2.1. 計算ノードログイン
+## 2-1. 計算ノードログイン
 
 計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。Bastionノードから計算ノードへのログインは、計算ノードのインスタンス名を使用します。
 
@@ -287,7 +284,7 @@ Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of known hosts.
 ```
 
-## 2.2. cloud-init完了確認
+## 2-2. cloud-init完了確認
 
 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることでcloud-initの処理完了を確認します。
 
@@ -298,7 +295,7 @@ Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of kn
 status: done
 ```
 
-## 2.3. 計算ノードファイルシステム確認
+## 2-3. 計算ノードファイルシステム確認
 
    計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。
 
@@ -489,23 +486,7 @@ hostlist.txt                                                           100%   32
 
 本章は、作成した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する計算ノードを2ノード追加して4ノードに拡張します。
 
-1. OCIコンソールメニューから **コンピュート** → **クラスタ・ネットワーク** を選択し、表示される画面で作成したクラスタ・ネットワークをクリックします。
-
-2. 表示される以下画面で、 **編集** ボタンをクリックします。
-
-   ![画面ショット](console_page25.png)
-
-3. 表示される以下 **クラスタ・ネットワークの編集** サイドバーで、 **インスタンス数** フィールドを4に変更し **変更の保存** ボタンをクリックします。
-
-   ![画面ショット](console_page26.png)
-
-4. 表示される以下 **クラスタ・ネットワーク・インスタンス・プール** ウィンドウで、左上のステータスが **スケーリング中** → **完了** と遷移したら、計算ノードの追加が完了しています。
-
-   ![画面ショット](console_page27.png)
-
-5. 同じウィンドウ下方の以下 **インスタンス・プール** フィールドで、 **インスタンス数** が4に増加していることを確認します。
-
-   ![画面ショット](console_page28.png)
+この手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)** の **[2. ノード数を増やす](/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす)** 手順を実施します。
 
 ***
 # 5. MPIプログラム実行（4ノード編）
@@ -628,27 +609,7 @@ hostlist.txt                                                           100%   32
 
 本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。
 
-1. OCIコンソールメニューから **コンピュート** → **クラスタ・ネットワーク** を選択し、表示される以下画面で、作成されたクラスタ・ネットワークをクリックします。
-
-   ![画面ショット](console_page31.png)
-
-2. 表示される以下画面の **インスタンス・プール** フィールドで、クラスタ・ネットワークの作成に伴い作成されたインスタンスプールをクリックします。
-
-   ![画面ショット](console_page32.png)
-
-3. 表示される以下画面左下の **アタッチされたインスタンス** メニューをクリックします。
-
-   ![画面ショット](console_page33.png)
-
-4. 表示される画面の以下 **アタッチされたインスタンス** フィールドで、削除するインスタンスのメニューから **インスタンスのデタッチ** メニューをクリックします。
-
-   ![画面ショット](console_page34.png)
-
-5. 表示される以下画面で、 **このインスタンスおよびアタッチされたブート・ボリュームを完全に終了（削除）** と **プールのインスタンス構成をインスタンスのテンプレートとして使用し、インスタンスを新しいインスタンスで置き換える** チェックボックスをチェックし、 **デタッチと終了** ボタンをクリックします。
-
-   ![画面ショット](console_page35.png)
-
-6. OCIコンソールメニューから **コンピュート** → **インスタンス** とメニューを辿り、デタッチしたインスタンスが終了され、新たなインスタンスが実行中となれば、計算ノードの入れ替えは終了です。
+この手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)** の **[ノードを置き換える](/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える)** 手順を実施します。
 
 再度 **[5. MPIプログラム実行（4ノード編）](#5-mpiプログラム実行4ノード編)** に従いIntel MPIベンチマークを実行、インターコネクト性能が十分出ていることを確認します。
 
