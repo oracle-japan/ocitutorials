@@ -1,0 +1,798 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>WebLogic Server for OKEをプロビジョニングしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIが提供するWebLogic Server for OKEを利用して、JavaEEアプリケーションのコンテナ化を体験していただけるコンテンツです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="WebLogic Server for OKEをプロビジョニングしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oke-provisioning/">
+
+
+  <meta property="og:description" content="OCIが提供するWebLogic Server for OKEを利用して、JavaEEアプリケーションのコンテナ化を体験していただけるコンテンツです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-05-26T17:50:03+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oke-provisioning/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          WebLogic Server for OKEをプロビジョニングしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIが提供するWebLogic Server for OKEを利用して、JavaEEアプリケーションのコンテナ化を体験していただけるコンテンツです。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">WebLogic Server for OKEをプロビジョニングしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/" class="active">WebLogic Server for OKEをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="WebLogic Server for OKEをプロビジョニングしてみよう">
+    <meta itemprop="description" content="OCIが提供するWebLogic Server for OKEを利用して、JavaEEアプリケーションのコンテナ化を体験していただけるコンテンツです。">
+    <meta itemprop="datePublished" content="2023-05-26T17:50:03+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオンの全体像">ハンズオンの全体像</a></li><li><a href="#ハンズオンで作成されるリソース全体">ハンズオンで作成されるリソース全体</a></li><li><a href="#1プロビジョニングの準備">1.プロビジョニングの準備</a><ul><li><a href="#11-コンパートメントの作成">1.1. コンパートメントの作成</a></li><li><a href="#12-動的グループの作成">1.2. 動的グループの作成</a></li><li><a href="#13-ポリシーの設定">1.3. ポリシーの設定</a></li><li><a href="#14-auth-tokenの作成">1.4. Auth Tokenの作成</a></li><li><a href="#15-sshキーペアを用意する">1.5. SSHキーペアを用意する</a></li><li><a href="#16-oci-vaultでsecretを作成する">1.6. OCI VaultでSecretを作成する</a></li></ul></li><li><a href="#2weblogic-server-for-okeucm環境をプロビジョニング">2.WebLogic Server for OKE(UCM)環境をプロビジョニング</a><ul><li><a href="#21-マーケットプレイスにてスタックを起動する">2.1. マーケットプレイスにてスタックを起動する</a></li><li><a href="#22-weblogic-server-for-okeをプロビジョニングする">2.2. WebLogic Server for OKEをプロビジョニングする</a></li></ul></li><li><a href="#weblogic-server-for-okeにドメインを作成">WebLogic Server for OKEにドメインを作成</a><ul><li><a href="#31-jenkinsコンソールにアクセス">3.1. Jenkinsコンソールにアクセス</a></li><li><a href="#32-jenkinsコンソールからドメインの作成">3.2. Jenkinsコンソールからドメインの作成</a></li><li><a href="#33-weblogic管理コンソールへのアクセス">3.3. WebLogic管理コンソールへのアクセス</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <h2 id="前提条件">前提条件</h2>
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloudのアカウントを取得済みであること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ハンズオンの全体像">ハンズオンの全体像</h2>
+<ol>
+  <li>プロビジョニングの準備</li>
+  <li>WebLogic Server for OKE(UCM)環境をプロビジョニング</li>
+  <li>WebLogic Server for OKEにドメインを作成</li>
+</ol>
+
+<h2 id="ハンズオンで作成されるリソース全体">ハンズオンで作成されるリソース全体</h2>
+<p>WebLogic Server for OKEでは、様々なリソースが自動で構成されます。<br />
+以下は作成されるリソースの全体像になります。
+<img src="resources.jpg" alt="" /></p>
+
+<h2 id="1プロビジョニングの準備">1.プロビジョニングの準備</h2>
+<h3 id="11-コンパートメントの作成">1.1. コンパートメントの作成</h3>
+<p>WebLogic Server for OKEの環境をプロビジョニングするコンパートメントを作成します。
+左上のナビゲーション・メニューを展開して、「コンパートメント」を選択してください。<br />
+<img src="1.1.001.jpg" alt="" /></p>
+
+<p>「コンパートメントの作成」をクリックし、「wls4oke」コンパートメントを作成します。
+※作成したコンパートメントのOCIDをコピーしてメモなどに貼り付けておいてください。<br />
+<img src="1.1.002.jpg" alt="" /></p>
+
+<h3 id="12-動的グループの作成">1.2. 動的グループの作成</h3>
+<p>WebLogic Server for OKEのプロビジョニングで利用される動的グループを作成します。
+左上のナビゲーション・メニューを展開して、「動的グループ」を選択してください。<br />
+<img src="1.2.001.jpg" alt="" /></p>
+
+<p>動的グループの名前は「handson」とします。
+一致ルールには以下のルールを記述してください。コンパートメントのOCIDは、1.1.でコピーしておいたものを利用してください。<br />
+<code class="language-plaintext highlighter-rouge">instance.compartment.id = &lt;作成したコンパートメントのOCID&gt;</code><br />
+<img src="1.2.002.jpg" alt="" /></p>
+
+<h3 id="13-ポリシーの設定">1.3. ポリシーの設定</h3>
+<p>WebLogic Server for OKEのプロビジョニングに必要なポリシーを作成します。
+左上のナビゲーション・メニューを展開して、「ポリシー」を選択してください。<br />
+<img src="1.3.001.jpg" alt="" /></p>
+
+<p>まずは「ルート・コンパートメント」に以下のポリシーを作成します。
+「ポリシーの作成」から<code class="language-plaintext highlighter-rouge">&lt;mygroup&gt;</code>はご自身のアカウントが所属するグループに置き換えてポリシーを作成してください。
+「手動エディタの表示」をONにすると、そのまま貼り付けすることができます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;mygroup&gt; to inspect tenancies in tenancy
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;mygroup&gt; to use tag-namespaces in tenancy
+</code></pre></div></div>
+
+<p>次に「wls4oke」コンパートメントに以下のポリシーを作成します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;mygroup&gt; to manage all-resources in compartment wls4oke
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow dynamic-group handson to manage all-resources in compartment wls4oke
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow service oke to read app-catalog-listing in compartment wls4oke
+</code></pre></div></div>
+
+<h3 id="14-auth-tokenの作成">1.4. Auth Tokenの作成</h3>
+<p>WebLogic Server for OKEのプロビジョニングに必要なAuth Tokenを作成します。
+右上のプロファイルを展開して、ご自身のアカウントを選択してください。<br />
+<img src="1.4.001.jpg" alt="" /></p>
+
+<p>左メニューより「認証トークン」を選択し、「トークンの作成」からトークンを作成してください。
+<strong>この時、作成したトークンは必ずコピーしてメモなどに残しておいてください。再度確認することはできません。</strong><br />
+<img src="1.4.002.jpg" alt="" /></p>
+
+<h3 id="15-sshキーペアを用意する">1.5. SSHキーペアを用意する</h3>
+<p>任意のSSHキーペアをご用意ください。<br />
+新たに作成する場合は、左上のハンバーガーメニューを展開して、「コンピュート」から「インスタンス」を選択し、「インスタンスの作成」をクリックします。<br />
+作成画面より、SSHキーの「秘密キー」と「公開キー」の両方をダウンロードし、利用します。<br />
+<img src="0.1.ssh01.jpg" alt="" /></p>
+
+<h3 id="16-oci-vaultでsecretを作成する">1.6. OCI VaultでSecretを作成する</h3>
+<p>WebLogic Server for OKEでは、WebLogic作成時の管理用パスワードは<a href="https://docs.oracle.com/ja-jp/iaas/Content/KeyManagement/Concepts/keyoverview.htm">OCI Vault</a>にて管理します。</p>
+
+<p>左上のハンバーガーメニューを展開して、「アイデンティティとセキュリティ」から「ボールト」を選択します。<br />
+<img src="0.1.001.jpg" alt="" /></p>
+
+<p>「ボールトの作成」をクリックします。 <br />
+<img src="0.1.002.jpg" alt="" /></p>
+
+<p>名前に「handson vault」と入力し、「ボールトの作成」をクリックします。<br />
+<img src="0.1.003.jpg" alt="" /></p>
+
+<p class="notice--info">ボールトの作成には数分かかる場合があります。適宜ブラウザの更新を行ってください。</p>
+
+<p>作成したボールト名をクリックし、「キーの作成」をクリックします <br />
+<img src="0.1.004.jpg" alt="" /></p>
+
+<p>名前に「handson key」と入力し、「キーの作成」をクリックします。<br />
+<img src="0.1.005.jpg" alt="" /></p>
+
+<p>「シークレット」をクリックし、「シークレットの作成」をクリックします。<br />
+<img src="0.1.006.jpg" alt="" /></p>
+
+<p>名前に「authtoken」と入力し、シークレットコンテンツは「1.4. Auth Tokenの作成」で作成したトークンを入力し、シークレットを作成します。 
+<img src="0.1.007.jpg" alt="" /></p>
+
+<h2 id="2weblogic-server-for-okeucm環境をプロビジョニング">2.WebLogic Server for OKE(UCM)環境をプロビジョニング</h2>
+
+<h3 id="21-マーケットプレイスにてスタックを起動する">2.1. マーケットプレイスにてスタックを起動する</h3>
+
+<p>左上のハンバーガーメニューを展開して、「マーケットプレイス」から「すべてのアプリケーション」を選択します。<br />
+<img src="2.1.001.jpg" alt="" /></p>
+
+<p>検索欄に「Oracle WebLogic Server Enterprise Edition for OKE UCM」と入力し、先頭に出てくるパネルをクリックします。<br />
+<img src="2.1.002.jpg" alt="" /></p>
+
+<p>バージョンはデフォルトのまま、コンパートメントは「wls4oke」を選択します。<br />
+チェックボックスにチェックを入れ、「スタックの起動」をクリックします。</p>
+
+<h3 id="22-weblogic-server-for-okeをプロビジョニングする">2.2. WebLogic Server for OKEをプロビジョニングする</h3>
+
+<p class="notice--info"><strong>Note: 特に記載のない部分に関してはデフォルトの値で構いません</strong></p>
+
+<p>「次」をクリックします。<br />
+「名前」は「Oracle WebLogic Server Enterprise Edition for OKE UCM」など任意の名前に設定して構いません。
+<img src="2.2.001.jpg" alt="" /></p>
+
+<p><strong><em>ここからの手順は、特に指定のない箇所はデフォルトのままで構いません。</em></strong></p>
+
+<p>「Resource Name Prefix」 に「wls4oke」と入力します。<br />
+<img src="2.2.002.jpg" alt="" /></p>
+
+<p>「SSH Public Key」では、<a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/#事前準備">事前準備</a>で作成したSSH Keyを選択します。</p>
+
+<p>「Network」は 「Create New VCN」を選択します。<br />
+<img src="2.2.003.jpg" alt="" /></p>
+
+<p>「Container Cluster (OKE) Configuration」ではコンピュートのシェイプを選択します。
+任意のもので構いません。下の表は一例です。<br />
+<img src="2.2.004.jpg" alt="" /></p>
+
+<p>「Administration Instances」においてもコンピュートのシェイプを選択します。
+任意のもので構いません。下は一例です。<br />
+<img src="2.2.005.jpg" alt="" /></p>
+
+<p>「File System」は任意のAvailability Domainを選択します。下は一例です。<br />
+<img src="2.2.006.jpg" alt="" /></p>
+
+<p>「Registry (OCIR)」の情報を入力します。
+Registry User NameにはOCIRのユーザ名を入力します。※ここで入力するユーザ名はテナンシ名を含まない以下のいずれかのフォーマットで入力します。</p>
+<ul>
+  <li>IAMユーザ xxx@yyy.zzz の場合： xxx@yyy.zzz</li>
+  <li>IDCSユーザ xxx@yyy.zzz の場合：oracleidentitycloudservice/xxx@yyy.zzz</li>
+</ul>
+
+<p>「OCIR Auth Token Compartment」は「wls4oke」<br />
+「Validated Secret for WebLogic Server Admin Password」では、作成したAuth Tokenのシークレット(authtoken)を選択します。  <br />
+<img src="2.2.007.jpg" alt="" /></p>
+
+<p>「OCI Policies」のチェックを外します。
+<img src="2.2.008.jpg" alt="" /></p>
+
+<p>「次」をクリックし、「作成」をクリックします。プロビジョニングには30分ほどかかります。
+プロビジョニングが完了すると、ログの最後に以下の情報が出力されます。</p>
+<ul>
+  <li>管理ホストや踏み台ホストのアドレス</li>
+  <li>Jenkinsコンソールへの接続先の調べ方
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Admin_Instance_Id = ocid1.instance.oc1....
+Admin_Instance_Private_IP = [
+"**.*.*.*",
+]
+Bastion_Instance_Id = ocid1.instance.oc1....
+Bastion_Instance_Public_IP = [
+"***.***.***.***",
+]
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<ol>
+  <li>
+    <h2 id="weblogic-server-for-okeにドメインを作成">WebLogic Server for OKEにドメインを作成</h2>
+  </li>
+</ol>
+
+<h3 id="31-jenkinsコンソールにアクセス">3.1. Jenkinsコンソールにアクセス</h3>
+<p>Jenkinsコンソールへアクセスします。ブラウザを利用するPCからSSHクライアントを利用して踏み台ホストを経由したSOCKSプロキシを構成し、プライベートロードバランサにアクセスします。</p>
+
+<p>WLS for OKEプロビジョニング後のログや、直接OCIコンソールを利用して、以下の情報を確認しておきます。</p>
+<ul>
+  <li>踏み台ホストのIPアドレス</li>
+  <li>プライベート・ロードバランサのIPアドレス</li>
+  <li>JenkinsコンソールへのURL (<code class="language-plaintext highlighter-rouge">http://&lt;プライベート・ロードバランサのIP&gt;/jenkins</code>)</li>
+</ul>
+
+<p><img src="3.1.001.jpg" alt="" /></p>
+
+<p>以下のSSHコマンドでSOCKSプロキシを構成します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -D &lt;SOCKSプロキシ用のポート&gt; -fCqN -i &lt;SSH秘密鍵のパス&gt; opc@&lt;踏み台ホストのIP&gt;
+</code></pre></div></div>
+<ul>
+  <li>SOCKSプロキシ用のポート：PC側の任意のポート番号 (標準ポートの場合 1088)</li>
+  <li>SSH秘密鍵のパス：事前準備で作成したSSHキーペアの秘密鍵のパス</li>
+  <li>踏み台ホストのIP：事前に確認した踏み台ホストのパブリック・アドレス</li>
+</ul>
+
+<p>Webブラウザ側でSOCKSプロキシを利用する設定を行い、JenkinsコンソールのURLにアクセスします。</p>
+<ul>
+  <li>Chrome/Edgeの場合のプロキシ設定: 起動時オプションに “–proxy-server=”socks5://127.0.0.1:1088” を追加して起動 または、Windowsの場合 インターネットオプション からOS上の設定として適用</li>
+  <li>Firefoxの場合のプロキシ設定: 設定 -&gt; 一般 -&gt; ネットワーク設定 -&gt; 接続設定 から、「手動でプロキシーを設定する」を選択し、SOCKSホストに 127.0.0.1、ポートに1088、を設定し SOCKS v5 を選択</li>
+</ul>
+
+<p>最初にJenkinsコンソールにアクセスした時には、管理アカウントの作成を行う必要があります。
+任意の値で構いませんが、アカウント名とパスワードは保管しておいてください。<br />
+<img src="3.1.002.jpg" alt="" /></p>
+
+<p>ログイン成功の画面のリンクからJenkinsコンソールのダッシュボードに遷移します</p>
+
+<h3 id="32-jenkinsコンソールからドメインの作成">3.2. Jenkinsコンソールからドメインの作成</h3>
+<p>ドメイン作成のためのJenkinsジョブを実行します。「create domain」のジョブを選択してください。
+<img src="3.2.001.jpg" alt="" /></p>
+
+<p>「WebLogic Server on Container Cluster」では以下のように設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>パラメータ</th>
+      <th>設定する内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Domain_Name</td>
+      <td>作成するWebLogicドメインの名前。<br />ここでは<code class="language-plaintext highlighter-rouge">demo00</code>。</td>
+    </tr>
+    <tr>
+      <td>WebLogic_Version</td>
+      <td>WebLogicのバージョン。<br />ここでは<code class="language-plaintext highlighter-rouge">12.2.1.4</code>。</td>
+    </tr>
+    <tr>
+      <td>Base_Image</td>
+      <td>使用するベース・イメージ。<br />ここでは選択せず (Select_Base_Imageのまま) プロビジョニング時に登録されたものを利用。</td>
+    </tr>
+    <tr>
+      <td>Administration_Username</td>
+      <td>WebLogic管理ユーザの名前。<br />ここでは <code class="language-plaintext highlighter-rouge">weblogic</code></td>
+    </tr>
+    <tr>
+      <td>Administration_Password</td>
+      <td>WebLogic管理ユーザのパスワード。<br />ここでは<code class="language-plaintext highlighter-rouge">welcome1</code></td>
+    </tr>
+    <tr>
+      <td>Managed_Server_Count</td>
+      <td>作成する管理対象サーバの数。(最大9)<br />ここでは <code class="language-plaintext highlighter-rouge">2</code></td>
+    </tr>
+    <tr>
+      <td>Patch_Automatically</td>
+      <td>定期的な自動パッチを設定する場合にチェック。<br />ここでは「チェックしない」</td>
+    </tr>
+    <tr>
+      <td>Cleanup_Domain_Resource</td>
+      <td>以前に作成に失敗した同じドメインがある場合に削除する場合にチェック。<br />ここでは「チェックしない」</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="3.2.002.jpg" alt="" /></p>
+
+<p>「Container Cluster (OKE) Configuration」では以下のように設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>パラメータ</th>
+      <th>設定する内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>WebLogic_Node_Pool_Type</td>
+      <td>新しくWebLogic Node Poolを作るか、既存Poolを使うかを選択。<br />ここでは <code class="language-plaintext highlighter-rouge">Existing_Node_Pool</code>を選択。</td>
+    </tr>
+    <tr>
+      <td>Existing_Node_Pool</td>
+      <td>利用するWebLogic Node Poolを選択。<br />ここでは <code class="language-plaintext highlighter-rouge">wls4oke-wls-np</code> (プロビジョニング時に作成されたもの)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="3.2.003.jpg" alt="" /></p>
+
+<p>「Load balancer Configuration」では以下のように設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>パラメータ</th>
+      <th>設定する内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>External_Lb_Shape_Min</td>
+      <td>作成するフレキシブル・ロードバランサの最小の帯域。<br />ここでは <code class="language-plaintext highlighter-rouge">10</code>を指定。</td>
+    </tr>
+    <tr>
+      <td>External_Lb_Shape_Max</td>
+      <td>作成するフレキシブル・ロードバランサの最大の帯域。<br />ここでは <code class="language-plaintext highlighter-rouge">400</code>を指定。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="3.2.004.jpg" alt="" /></p>
+
+<p>各設定を入力後、ページ最後の 「ビルド」ボタンでパイプラインのビルドを開始します。
+ビルドの実行状況は処理状況に合わせてアップデートされていきます。
+各ステップが完了(10分強)するとWLSドメインの作成が完了し、プライベート・ロードバランサを経由してWLS管理コンソールにアクセスできるようになります。
+<img src="3.2.006.jpg" alt="" /></p>
+
+<h3 id="33-weblogic管理コンソールへのアクセス">3.3. WebLogic管理コンソールへのアクセス</h3>
+<p>以下のURLを用いて管理コンソールへのアクセスが可能です。<br />
+<code class="language-plaintext highlighter-rouge">http://&lt;プライベート・ロードバランサのIP&gt;/&lt;WLSドメイン名&gt;/console</code></p>
+
+<p>以下のユーザー名とパスワードを利用してログインが可能です。</p>
+<ul>
+  <li>ユーザー名: <code class="language-plaintext highlighter-rouge">weblogic</code></li>
+  <li>パスワード: <code class="language-plaintext highlighter-rouge">welcome1</code></li>
+</ul>
+
+<p><img src="3.3.001.jpg" alt="" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-05-26T17:50:03+09:00">May 26, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=WebLogic+Server+for+OKE%E3%82%92%E3%83%97%E3%83%AD%E3%83%93%E3%82%B8%E3%83%A7%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oke-provisioning%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oke-provisioning%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oke-provisioning%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/wls-for-oci-migration/" class="pagination--pager" title="WebLogic Server for OCIにアプリケーションを移行してみよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/microtx-for-beginners/" class="pagination--pager" title="Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

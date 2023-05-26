@@ -287,6 +287,12 @@ var store = [{
         "url": "/ocitutorials/cloud-native/wls-for-oci-migration/",
         "teaser": null
       },{
+        "title": "WebLogic Server for OKEをプロビジョニングしてみよう",
+        "excerpt":"前提条件 クラウド環境 Oracle Cloudのアカウントを取得済みであること ハンズオンの全体像 プロビジョニングの準備 WebLogic Server for OKE(UCM)環境をプロビジョニング WebLogic Server for OKEにドメインを作成 ハンズオンで作成されるリソース全体 WebLogic Server for OKEでは、様々なリソースが自動で構成されます。 以下は作成されるリソースの全体像になります。 1.プロビジョニングの準備 1.1. コンパートメントの作成 WebLogic Server for OKEの環境をプロビジョニングするコンパートメントを作成します。 左上のナビゲーション・メニューを展開して、「コンパートメント」を選択してください。 「コンパートメントの作成」をクリックし、「wls4oke」コンパートメントを作成します。 ※作成したコンパートメントのOCIDをコピーしてメモなどに貼り付けておいてください。 1.2. 動的グループの作成 WebLogic Server for OKEのプロビジョニングで利用される動的グループを作成します。 左上のナビゲーション・メニューを展開して、「動的グループ」を選択してください。 動的グループの名前は「handson」とします。 一致ルールには以下のルールを記述してください。コンパートメントのOCIDは、1.1.でコピーしておいたものを利用してください。 instance.compartment.id = &lt;作成したコンパートメントのOCID&gt; 1.3. ポリシーの設定 WebLogic Server for OKEのプロビジョニングに必要なポリシーを作成します。 左上のナビゲーション・メニューを展開して、「ポリシー」を選択してください。 まずは「ルート・コンパートメント」に以下のポリシーを作成します。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/wls-for-oke-provisioning/",
+        "teaser": null
+      },{
         "title": "Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう",
         "excerpt":"このチュートリアルでは、別々のデータベースを持つ2つのサンプルアプリケーション間の分散トランザンクションについて、Oracle Transaction Manager for Microservices(MicroTx)を利用しながら一貫性を確保する体験をしていただく内容になっています。 このチュートリアルには以下のサービスが含まれます。 Oracle Container Engine for Kubernetes（略称：OKE）: マネージドなKuberentesクラスタを提供するクラウドサービスです。 Oracle Transaction Manager for Microservices（略称：MicroTx）: Oracleが提供する分散トランザクションマネージャです。 Oracle Autonomous Transaction Processing（略称：ATP）: 運用がすべて自動化された自律型データベースサービスです。 MicroTxについて MicroTxは現在Free版での提供となり、商用環境ではご利用頂けません。(評価/検証目的でのご利用となります) 今回のハンズオンもFree版のMicroTxを利用します。 商用環境でご利用いただけるMicroTxは後日リリース予定です。 前提条件 チュートリアルを開始する前に以下を準備してください。 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること Oracle Cloud Infrastructureの基本操作はチュートリアル : OCIコンソールにアクセスして基本を理解するをご確認ください。 ゴールを確認する はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。 手順を最後まで行うと、下図のような環境が構成されます。 構成要素 説明 OKE アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。 ATP 今回デプロイするサンプルアプリケーションが利用するデータベースです。今回は2つのアプリケーションそれぞれに1つずつATPを持ちます。 MicroTx 2つのアプリケーション間のトランザクション一貫性を確保するための分散トランザクションマネージャです。 この環境を構築後にサンプルアプリケーションを利用して、MicroTxを利用したトランザクション制御を体験して頂きます。...","categories": [],
         "tags": [],
