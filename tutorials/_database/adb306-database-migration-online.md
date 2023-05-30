@@ -43,6 +43,7 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 **前提条件 :**
 + [「304 : OCI Database Migration Serviceを使用したデータベース移行の前準備」](/ocitutorials/database/adb304-database-migration-prep)を参考に、データベース移行の前準備が完了していること。
 + オンライン移行を実行する場合、Oracle GoldenGateの必須パッチ、推奨パッチが適用されている必要があります。Oracle Database 11g(11.2.0.4)用の必須パッチ、推奨パッチに関するドキュメント[「Oracle GoldenGate -- Oracle RDBMS Server Recommended Patches (Doc ID 1557031.1)」](https://mosemp.us.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=171610622943228&id=1557031.1&_afrWindowMode=0&_adf.ctrl-state=ysobl98cz_4)および、Oracle Datbase 12c以降のバージョンの必須パッチ、推奨パッチに関するドキュメント[「Latest GoldenGate/Database (OGG/RDBMS) Patch recommendations (Doc ID 2193391.1)」](https://support.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=168484936828414&parent=DOCUMENT&sourceId=1557031.1&id=2193391.1&_afrWindowMode=0&_adf.ctrl-state=4xfa5h2e8_4)を参考に適宜パッチの確認と適用を実施してください。
++ ターゲット・データベースのタイムゾーン・バージョンがソース・データベースのタイムゾーン・バージョンよりも最新になっていることを確認する(SELECT * FROM V$TIMEZONE_FILE;)。ターゲット・データベースのタイムゾーン・バージョンの方が古い場合はSRをあげる必要があります。
 
 **所要時間 :** 約40分
 

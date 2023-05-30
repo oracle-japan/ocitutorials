@@ -37,7 +37,7 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 **前提条件 :**
 + [「304 : OCI Database Migration Serviceを使用したデータベース移行の前準備」](/ocitutorials/database/adb304-database-migration-prep)を参考に、データベース移行の前準備が完了していること。
-
++ ターゲット・データベースのタイムゾーン・バージョンがソース・データベースのタイムゾーン・バージョンよりも最新になっていることを確認する(SELECT * FROM V$TIMEZONE_FILE;)。ターゲット・データベースのタイムゾーン・バージョンの方が古い場合はSRをあげる必要があります。
 
 **所要時間 :** 約30分
 
