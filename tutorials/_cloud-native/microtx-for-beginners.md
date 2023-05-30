@@ -585,10 +585,10 @@ ls V1032856-01.zip
 unzip V1032856-01.zip
 ```
 
-解凍すると`otmm-22.3.1`というディレクトリが出力されます。  
+解凍すると`otmm-22.3.2`というディレクトリが出力されます。  
 
 ```sh
-ls otmm-22.3.1
+ls otmm-22.3.2
 ```
 
 これで、MicroTxバイナリのダウンロードが完了です。  
@@ -605,7 +605,7 @@ Flightアプリケーションには、Oracle Instant ClientおよびMicroTxのN
 [1-3. MicroTxバイナリのダウンロード](#1-3-microtxバイナリのダウンロード)でダウンロードした資材からNode.js用のMicroTxライブラリをFlightにコピーします。  
 
 ```sh
-cp -pr otmm-22.3.1/lib/nodejs/tmmlib-node-22.3.1.tgz microtx-handson/flight/
+cp -pr otmm-22.3.2/lib/nodejs/tmmlib-node-22.3.2.tgz microtx-handson/flight/
 ```
 
 ディレクトリを移動します。  
@@ -723,12 +723,12 @@ cd ~
 ここでは、MicroTxのインストールにあたって、必要なパラメータを設定していきます。  
 MicroTxはhelmを利用してインストールされるため、ここでは`values.yaml`にパラメータを設定していきます。  
 
-今回は`otmm-22.3.1/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml`を利用します。  
+今回は`otmm-22.3.2/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml`を利用します。  
 
 `qs-oke-values.yaml`を開きます。  
 
 ```sh
-vim otmm-22.3.1/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml
+vim otmm-22.3.2/otmm/helmcharts/quickstart/oke/qs-oke-values.yaml
 ```
 
 まず、65行目~72行目を書き換えます。  
@@ -811,12 +811,12 @@ no running Istio pods in "istio-system"
 
 ### 1-7. MicroTxのデプロイ
 
-`otmm-22.3.1`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
+`otmm-22.3.2`ディレクトリ直下に`runme.sh`というスクリプトがあるので、これを実行します。  
 このスクリプトを実行することによって、MictoTxをインストールできます。  
 実行権限がない場合があるので、実行権限を付与します。  
 
 ```sh
-cd otmm-22.3.1/
+cd otmm-22.3.2/
 ```
 
 ```sh
