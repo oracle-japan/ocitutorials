@@ -119,6 +119,12 @@ toc: true
     OCM のタクソノミ機能を利用し、リポジトリ内のアセットを分類する方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
 
 
+## リポジトリのアクセス権限管理
+
++ **[Oracle Content Management のリポジトリのアクセス権限を理解しよう](/ocitutorials/content-management/43_repository_permission/)**  
+    OCMのアセット管理機能のリポジトリのアクセス権限設定、およびカスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
+
+
 ## 多言語サイト（マルチリンガルサイト）
 
 + **[Oracle Content Management で多言語サイトを作成しよう](/ocitutorials/content-management/74_create_multilingual/)**  
