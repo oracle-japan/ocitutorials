@@ -1,0 +1,930 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>HPC/GPUクラスタを構築する(基礎インフラ自動構築編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPC/GPUクラスタを構築してみましょう。このチュートリアルは、HPC/GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPC/GPUクラスタを、予め用意されたTerraformスクリプトを活用してTerraform CLIで自動構築します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="HPC/GPUクラスタを構築する(基礎インフラ自動構築編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">
+
+
+  <meta property="og:description" content="HPC/GPUクラスタを構築してみましょう。このチュートリアルは、HPC/GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPC/GPUクラスタを、予め用意されたTerraformスクリプトを活用してTerraform CLIで自動構築します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-06-05T11:23:30+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          HPC/GPUクラスタを構築する(基礎インフラ自動構築編)
+
+        
+      </h1>
+      
+        <p class="page__lead">HPC/GPUクラスタを構築してみましょう。このチュートリアルは、HPC/GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPC/GPUクラスタを、予め用意されたTerraformスクリプトを活用してTerraform CLIで自動構築します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">HPC/GPUクラスタを構築する(基礎インフラ自動構築編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/" class="active">HPC/GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="HPC/GPUクラスタを構築する(基礎インフラ自動構築編)">
+    <meta itemprop="description" content="HPC/GPUクラスタを構築してみましょう。このチュートリアルは、HPC/GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPC/GPUクラスタを、予め用意されたTerraformスクリプトを活用してTerraform CLIで自動構築します。">
+    <meta itemprop="datePublished" content="2023-06-05T11:23:30+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-terraform実行環境構築">0. Terraform実行環境構築</a></li><li><a href="#1-terraformスクリプト作成">1. Terraformスクリプト作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-terraformスクリプトダウンロード">1-1. Terraformスクリプトダウンロード</a></li><li><a href="#1-2-terraformスクリプト修正">1-2. Terraformスクリプト修正</a></li></ul></li><li><a href="#2-terraformスクリプト適用">2. Terraformスクリプト適用</a></li><li><a href="#3-hpcgpuクラスタ確認">3. HPC/GPUクラスタ確認</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-bastionードログイン">3-1. Bastionードログイン</a></li><li><a href="#3-2-cloud-init完了確認">3-2. cloud-init完了確認</a></li><li><a href="#3-3-計算ノードファイルシステム確認">3-3. 計算ノードファイルシステム確認</a></li></ul></li><li><a href="#4-mpiプログラム実行">4. MPIプログラム実行</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-計算gpuノード間ssh接続環境構築">4-1. 計算/GPUノード間SSH接続環境構築</a></li><li><a href="#4-2-intel-mpi-benchmark-ping-pong実行">4-2. Intel MPI Benchmark Ping-Pong実行</a></li></ul></li><li><a href="#5-terraformスクリプト破棄">5. Terraformスクリプト破棄</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルは、HPC/GPUクラスタの計算/GPUノードに最適なベアメタルインスタンス（本チュートリアルではHPCクラスタ向けに <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> GPUクラスタ向けに <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> を使用）を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続する、HPC/機械学習ワークロードを実行するためのHPC/GPUクラスタを構築する際のベースとなるインフラストラクチャを、これらを接続する仮想クラウドネットワークと共に予め用意された <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用してTerraform CLIで自動構築、そのインターコネクト性能を検証します。</p>
+
+<p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、コンテナランタイム、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPC/GPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br />
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> も利用可能で、詳細は <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> を参照ください。</p>
+
+<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
+
+<p><strong>所要時間 :</strong> 約1時間</p>
+
+<p><strong>前提条件 :</strong> クラスタ・ネットワークを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。</p>
+
+<hr />
+<h1 id="0-terraform実行環境構築">0. Terraform実行環境構築</h1>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIを使用してHPC/GPUクラスタのライフサイクル管理を実行するTerraform実行環境を構築します。<br />
+この実行環境は、インターネットに接続されたLinux・Windows・Macの何れかのOSが稼働している端末であればよく、以下のような選択肢が考えられます。</p>
+
+<ul>
+  <li>OCI上のLinuxが稼働するVMインスタンス</li>
+  <li>ご自身が使用するWindows/Macパソコン</li>
+  <li>ご自身が使用するWindows/Macパソコンで動作するLinuxゲストOS</li>
+</ul>
+
+<p>本チュートリアルは、このTerraform実行環境のOSにLinuxを使用します。</p>
+
+<p>Terraform実行環境は、以下のステップを経て構築します。</p>
+
+<ul>
+  <li>Terraformインストール</li>
+  <li>Terraform実行環境とOCI間の認証関係締結（APIキー登録）</li>
+</ul>
+
+<p>具体的なTerraform実行環境構築手順は、チュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/#2terraform%E7%92%B0%E5%A2%83%E3%81%AE%E6%A7%8B%E7%AF%89">2. Terraform環境の構築</a></strong> を参照ください。<br />
+また、関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm">ここ</a></strong> を参照ください。</p>
+
+<hr />
+<h1 id="1-terraformスクリプト作成">1. Terraformスクリプト作成</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本チュートリアルで使用するHPC/GPUクラスタ構築用の <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトは、GitHubのパブリックレポジトリに用意されており、これをTerraform実行環境にダウンロードし自身の環境に合わせた最小限の変数の指定を行って <strong>Terraform CLI</strong> から適用することで、以下の処理を行います。</p>
+
+<ul>
+  <li>VCNと関連するネットワークリソース構築</li>
+  <li>Bastionノード構築</li>
+  <li>計算/GPUノード用 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> 作成</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と計算/GPUノード構築</li>
+  <li>HPC/GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成</li>
+  <li>計算/GPUノードの全ホスト名を記載したホストリストファイル（/etc/oci-hpc/hostlist.txt）作成</li>
+  <li>構築したBastionノード・計算/GPUノードのホスト名・IPアドレス出力</li>
+</ul>
+
+<p>Bastionノード構築は、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（cloud-config）を含み、cloud-initがBastionノードデプロイ時に以下の処理を行います。</p>
+
+<ul>
+  <li>タイムゾーンをJSTに変更</li>
+  <li>計算/GPUノードのDNS名前解決をショートホスト名で行うための <strong>resolv.conf</strong> 修正</li>
+</ul>
+
+<p>また計算/GPUノード用インスタンス構成は、cloud-configを含み、cloud-initが計算/GPUノードデプロイ時に以下の処理を行います。</p>
+
+<ul>
+  <li>タイムゾーンをJSTに変更</li>
+  <li>NVMe SSDローカルディスク領域ファイルシステム作成</li>
+  <li>firewalld停止</li>
+  <li>ルートファイルシステム拡張</li>
+  <li>クラスタ・ネットワーク接続用ネットワークインターフェース作成</li>
+</ul>
+
+<p>このTerraformスクリプトは、以下のファイル群で構成されています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ファイル名</th>
+      <th>用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cn.tf</td>
+      <td>インスタンス構成とクラスタ・ネットワークの定義</td>
+    </tr>
+    <tr>
+      <td>outputs.tf</td>
+      <td>構築したリソース情報の出力</td>
+    </tr>
+    <tr>
+      <td>terraform.tfvars</td>
+      <td>Terraformスクリプト内で使用する変数値の定義</td>
+    </tr>
+    <tr>
+      <td>variables.tf</td>
+      <td>Terraformスクリプト内で使用する変数の型の定義</td>
+    </tr>
+    <tr>
+      <td>instance.tf</td>
+      <td>Bastionノードの定義</td>
+    </tr>
+    <tr>
+      <td>provider.tf</td>
+      <td>テナント・ユーザ・リージョンの定義</td>
+    </tr>
+    <tr>
+      <td>vcn.tf</td>
+      <td>VCNと関連するネットワークリソースの定義</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>このTerraformスクリプトは、ご自身の環境に合わせて修正する箇所を <strong>terraform.tfvars</strong> に集約しており、このファイルを適切に修正後Terraformから適用することで、HPC/GPUクラスタの構築を開始します。</p>
+
+<p>また、これらのファイルと同じディレクトリに <strong>user_data</strong> ディレクトリが存在し、cloud-configファイル群を格納しています。<br />
+このcloud-configを修正することで、構築するHPC/GPUクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することが出来ます。</p>
+
+<h2 id="1-1-terraformスクリプトダウンロード">1-1. Terraformスクリプトダウンロード</h2>
+
+<p>本章は、GitHubから <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトをTerraform実行環境にダウンロードします。</p>
+
+<p>TerraformスクリプトのGitHubレポジトリは、以下URLです。</p>
+
+<p><strong><a href="https://github.com/fwiw6430/tutorial_cn">https://github.com/fwiw6430/tutorial_cn</a></strong></p>
+
+<p>以下コマンドをTerraform実行環境で実行するか、</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/fwiw6430/tutorial_cn
+</code></pre></div></div>
+
+<p>GitHubのTerraformスクリプトレポジトリのページからzipファイルをダウンロード・解凍することで、TerraformスクリプトをTerraform実行環境に展開します。</p>
+
+<h2 id="1-2-terraformスクリプト修正">1-2. Terraformスクリプト修正</h2>
+
+<p>本章は、ダウンロードした <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを自身の環境に合わせて修正します。</p>
+
+<p>前述のとおり、修正する必要のあるファイルは <strong>terraform.tfvars</strong> で、このファイル中の以下Terraform変数を自身の環境に合わせて修正します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>変数名</th>
+      <th>設定値</th>
+      <th>確認方法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tenancy_ocid</td>
+      <td>使用するテナントのOCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>user_ocid</td>
+      <td>使用するユーザのCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>private_key_path</td>
+      <td>OCIに登録したAPIキーの秘密キーのパス</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>fingerprint</td>
+      <td>OCIに登録したAPIキーのフィンガープリント</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#four">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>region</td>
+      <td>HPC/GPUクラスタをデプロイするリージョン識別子</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>ad</td>
+      <td>HPC/GPUクラスタをデプロイする可用性ドメイン識別子</td>
+      <td>(*1)</td>
+    </tr>
+    <tr>
+      <td>compartment_ocid</td>
+      <td>HPC/GPUクラスタをデプロイするコンパートメントのOCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>ssh_key</td>
+      <td>Bastionノードログインに使用するSSH秘密鍵に対する公開鍵のパス</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>display_name</td>
+      <td><strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> と <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> の表示名</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>shape</td>
+      <td>計算/GPUノードに使用するシェイプ<br />・BM.Optimized3.36（HPCクラスタ）<br />・BM.GPU4.8（GPUクラスタ）</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>node_count</td>
+      <td>計算/GPUノードのノード数</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>image</td>
+      <td>計算/GPUノードに使用するOSイメージのOCID</td>
+      <td>(*2)</td>
+    </tr>
+    <tr>
+      <td>boot_vol_size</td>
+      <td>ルートファイルシステムのサイズ（GB）</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>cloud-config</td>
+      <td>user_data以下の計算/GPUノード用cloud-configファイル名<br />・cloud-config_cnhpc.cfg（HPCクラスタ用）<br />・cloud-config_cngpu.cfg（GPUクラスタ用）</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>*1) OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>*2) 以下のOCIDを指定します。（ダウンロードしたTerraformスクリプトのterraform.tfvarsに以下のOCIDがコメントとして埋め込まれています）</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Oracle Linuxバージョン</th>
+      <th>OCID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HPCクラスタ</td>
+      <td>7.9</td>
+      <td>ocid1.image.oc1..aaaaaaaayouelanobgkbsb3zanxtu6cr4bst62wco2xs5mzg3it7fp2iuvbq</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>8.6</td>
+      <td>ocid1.image.oc1..aaaaaaaazgofwgysyz5i5bupwhjmolgf44b7vlwyqxy7pmcrpbufpmvef6da</td>
+    </tr>
+    <tr>
+      <td>GPUクラスタ</td>
+      <td>7.9</td>
+      <td>ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxr</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<h1 id="2-terraformスクリプト適用">2. Terraformスクリプト適用</h1>
+
+<p>本章は、作成した <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを <strong>Terraform CLI</strong> で適用し、HPC/GPUクラスタのデプロイを開始します。</p>
+
+<p>Terraform実行環境で、以下コマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>tutorial_cn
+<span class="nv">$ </span>terraform init
+<span class="nv">$ </span><span class="nb">eval</span> <span class="sb">`</span>ssh-agent<span class="sb">`</span>
+<span class="nv">$ </span>terraform apply <span class="nt">--auto-approve</span>
+</code></pre></div></div>
+
+<p>Terraformスクリプトの適用が正常に完了すると、以下のようにコマンド出力の最後にBastionノードと計算/GPUノードのホスト名とIPアドレスが出力されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Apply <span class="nb">complete</span><span class="o">!</span> Resources: 16 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+Bastion_instances_created <span class="o">=</span> <span class="o">{</span>
+  <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"bastion"</span>
+  <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.1.138"</span>
+  <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
+<span class="o">}</span>
+Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
+  <span class="s2">"inst-9fhuq-x9-ol8"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-x9-ol8"</span>
+    <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
+  <span class="o">}</span>
+  <span class="s2">"inst-dz99s-x9-ol8"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-x9-ol8"</span>
+    <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="3-hpcgpuクラスタ確認">3. HPC/GPUクラスタ確認</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、デプロイされたHPC/GPUクラスタ環境を確認します。<br />
+この際、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトの適用で作成された計算/GPUノードの全ホスト名を記載したホストリストファイルを使用し、BastionノードからHPC/GPUクラスタ内の全計算/GPUノードにSSHでコマンドを発行、その環境を確認します。<br />
+なおこのホストリストファイルは、Bastionノードと全計算/GPUノードに <strong>/etc/oci-hpc/hostlist.txt</strong> として存在します。</p>
+
+<h2 id="3-1-bastionードログイン">3-1. Bastionードログイン</h2>
+
+<p>Bastionノードは、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプト適用時に表示されるパブリックIPアドレスに対し、Terraformスクリプト変数の <strong>ssh_key</strong> に指定したSSH公開鍵に対応する秘密鍵を使用し、以下コマンドでインターネット経由ログインします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+</code></pre></div></div>
+
+<h2 id="3-2-cloud-init完了確認">3-2. cloud-init完了確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、計算/GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることでcloud-initの処理完了を確認します。<br />
+この際、ノード数分の接続するかどうかの確認に対して全て <strong>yes</strong> を入力します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /etc/oci-hpc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo cloud-init status"</span><span class="p">;</span> <span class="k">done
+</span>inst-zvc5c-x9-ol8
+The authenticity of host <span class="s1">'inst-zvc5c-x9-ol8 (10.0.2.159)'</span> cannot be established.
+ECDSA key fingerprint is SHA256:6zl4kIFKqpBrRlw/JCfStS05rdCu7Eif/4e3OWvbOsc.
+Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
+</span>Warning: Permanently added <span class="s1">'inst-zvc5c-x9-ol8,10.0.2.159'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+status: <span class="k">done
+</span>inst-wf3wx-x9-ol8
+The authenticity of host <span class="s1">'inst-wf3wx-x9-ol8 (10.0.2.31)'</span> cannot be established.
+ECDSA key fingerprint is SHA256:jWTGqZjG0dAyrbP04JGC8jJX+uqDwMFotLXirA7L+AA.
+Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
+</span>Warning: Permanently added <span class="s1">'inst-wf3wx-x9-ol8,10.0.2.31'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+status: <span class="k">done</span>
+</code></pre></div></div>
+
+<p>ステータスが <strong>running</strong> の場合は、cloud-initの処理が継続中のため、処理が完了するまで待ちます。</p>
+
+<h2 id="3-3-計算ノードファイルシステム確認">3-3. 計算ノードファイルシステム確認</h2>
+
+<p>計算/GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが/mnt/localdiskにマウントされています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /etc/oci-hpc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"df -h / /mnt/localdisk"</span><span class="p">;</span> <span class="k">done
+</span>inst-zvc5c-x9-ol8
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ocivolume-root   89G   16G   74G  18% /
+/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
+inst-wf3wx-x9-ol8
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ocivolume-root   89G   16G   74G  18% /
+/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
+</code></pre></div></div>
+
+<hr />
+<h1 id="4-mpiプログラム実行">4. MPIプログラム実行</h1>
+
+<h2 id="4-0-概要">4-0. 概要</h2>
+
+<p>本章は、計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応OSイメージに含まれるOpenMPIとIntel MPI Benchmarkを使用し、クラスタ・ネットワークのノード間インターコネクト性能を確認します。</p>
+
+<p>OpenMPIを計算/GPUノード間で実行するためには、mpirunを実行する計算/GPUノード（いわゆるヘッドノード）からOpenMPI実行に参加する他の全ての計算/GPUノードに対して、パスフレーズ無しでSSH接続できる必要があります。<br />
+このため、本章で実施するIntel MPI BenchmarkによるMPIプログラム実行は、以下の手順を経て行います。</p>
+
+<ul>
+  <li>計算/GPUノード間SSH接続環境構築</li>
+  <li>Intel MPI Benchmark Ping-Pong実行</li>
+</ul>
+
+<p>ここでは、2ノードのPing-Pong性能を計測しており、以下性能が出ています。</p>
+
+<ul>
+  <li>帯域：約11 GB/s（インタフェース物理帯域100 Gbpsに対し88 Gbpsを計測）</li>
+  <li>レイテンシ：約1.7 μs</li>
+</ul>
+
+<h2 id="4-1-計算gpuノード間ssh接続環境構築">4-1. 計算/GPUノード間SSH接続環境構築</h2>
+
+<p>本章は、ここまでの作業でBastionノードに作成された全計算/GPUノードのエントリを含むknown_hostsファイルを全計算/GPUノードにコピーし、全計算/GPUノード間でSSHによるコマンドが実行できる環境を作成します。</p>
+
+<p>Bastionノードのopcユーザで、以下コマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /etc/oci-hpc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp ~/.ssh/known_hosts <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done
+</span>inst-zvc5c-x9-ol8
+known_hosts                                                            100%  379   329.8KB/s   00:00    
+inst-wf3wx-x9-ol8
+known_hosts
+</code></pre></div></div>
+
+<h2 id="4-2-intel-mpi-benchmark-ping-pong実行">4-2. Intel MPI Benchmark Ping-Pong実行</h2>
+
+<p>本章は、Intel MPI Benchmark Ping-Pongを実行します。</p>
+
+<p>計算/GPUノードのうちの1ノードにopcユーザでSSHログインし、以下コマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> /etc/oci-hpc/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
+<span class="c">#------------------------------------------------------------</span>
+<span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+<span class="c">#------------------------------------------------------------</span>
+<span class="c"># Date                  : Thu Jun  1 23:13:46 2023</span>
+<span class="c"># Machine               : x86_64</span>
+<span class="c"># System                : Linux</span>
+<span class="c"># Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64</span>
+<span class="c"># Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022</span>
+<span class="c"># MPI Version           : 3.1</span>
+<span class="c"># MPI Thread Environment: </span>
+
+
+<span class="c"># Calling sequence was: </span>
+
+<span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong</span>
+
+<span class="c"># Minimum message length in bytes:   0</span>
+<span class="c"># Maximum message length in bytes:   268435456</span>
+<span class="c">#</span>
+<span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
+<span class="c"># MPI_Op                         :   MPI_SUM  </span>
+<span class="c">#</span>
+<span class="c">#</span>
+
+<span class="c"># List of Benchmarks to run:</span>
+
+<span class="c"># PingPong</span>
+
+<span class="c">#---------------------------------------------------</span>
+<span class="c"># Benchmarking PingPong </span>
+<span class="c"># #processes = 2 </span>
+<span class="c">#---------------------------------------------------</span>
+       <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+            0         1000         1.66         0.00
+            8         1000         1.66         4.83
+           16         1000         1.66         9.63
+           32         1000         1.70        18.86
+           64         1000         1.82        35.10
+          128         1000         1.88        68.17
+          256         1000         2.14       119.85
+          512         1000         2.86       179.33
+         1024         1000         2.34       437.41
+         2048         1000         2.96       692.55
+         4096         1000         3.46      1184.31
+         8192         1000         4.46      1836.92
+        16384         1000         6.28      2610.69
+        32768         1000         8.17      4008.40
+        65536          640        10.19      6432.34
+       131072          320        15.40      8509.53
+       262144          160        29.01      9035.93
+       524288           80        51.59     10162.94
+      1048576           40        96.98     10811.90
+      2097152           20       187.75     11169.93
+      4194304           10       369.17     11361.57
+      8388608            5       732.33     11454.67
+     16777216            2      1460.73     11485.51
+     33554432            1      2935.25     11431.55
+     67108864            1      5885.96     11401.51
+    134217728            1     11807.75     11366.91
+    268435456            1     23921.90     11221.33
+
+
+<span class="c"># All processes entering MPI_Finalize</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="5-terraformスクリプト破棄">5. Terraformスクリプト破棄</h1>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトをTerraform CLIで破棄し、HPC/GPUクラスタを削除します。</p>
+
+<p>Terraform実行環境の <strong>tutorial_cn</strong> ディレクトリで以下コマンドを実行し、削除が正常に完了したことをメッセージから確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>terraform destroy <span class="nt">--auto-approve</span>
+:
+Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 destroyed.
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>これで、このチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-06-05T11:23:30+09:00">June 5, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=HPC%2FGPU%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%28%E5%9F%BA%E7%A4%8E%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9%E8%87%AA%E5%8B%95%E6%A7%8B%E7%AF%89%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-hpc-cluster-withterraform%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-hpc-cluster-withterraform%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-hpc-cluster-withterraform%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/spinup-cluster-network/" class="pagination--pager" title="HPCクラスタを構築する(基礎インフラ手動構築編)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/spinup-hpc-cluster/" class="pagination--pager" title="HPCクラスタを構築する(スタティッククラスタ自動構築編)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

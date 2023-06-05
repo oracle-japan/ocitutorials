@@ -1,0 +1,931 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Content Management のリポジトリのアクセス権限を理解しよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCMのアセット管理機能のリポジトリのアクセス権限設定、カスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Content Management のリポジトリのアクセス権限を理解しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/43_repository_permission/">
+
+
+  <meta property="og:description" content="OCMのアセット管理機能のリポジトリのアクセス権限設定、カスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/43_repository_permission/026.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-06-05T11:23:30+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/43_repository_permission/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/43_repository_permission/026.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Content Management のリポジトリのアクセス権限を理解しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCMのアセット管理機能のリポジトリのアクセス権限設定、カスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Content Management のリポジトリのアクセス権限を理解しよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">コンテンツ管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content Management インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_ocm_instance_IdentityDomain/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_identitydomain_group_user/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/ocm_admin_guide/">Oracle Content Managementサービス管理者向け作業ガイド</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content Management のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCM インスタンスにサインインする（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/13_upload_multiple_files/">その13: 圧縮ファイルによる複数ファイルの一括登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/42_business_repository/">Oracle Content Management で請求書などの電子ファイルを長期保管してみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/43_repository_permission/" class="active">Oracle Content Management のリポジトリのアクセス権限を理解しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experience のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content Management のVideo Plus アセットを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/78_create_custom_template/">Oracle Content Management でカスタムテンプレートを自作しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/74_create_multilingual/">Oracle Content and Experience で多言語サイトを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/75_taxonomy/">Oracle Content and Experience のタクソノミを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/77_sitesecuritygovernance/">OCEのサイト・セキュリティとサイト・ガバナンスを理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/91_compile_site_ocmtoolkit/">Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Content Management のリポジトリのアクセス権限を理解しよう">
+    <meta itemprop="description" content="OCMのアセット管理機能のリポジトリのアクセス権限設定、カスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです。">
+    <meta itemprop="datePublished" content="2023-06-05T11:23:30+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-説明">0. 説明</a><ul><li><a href="#リポジトリのアクセス権限設定ついて">リポジトリのアクセス権限設定ついて</a></li></ul></li><li><a href="#1-準備">1. 準備</a></li><li><a href="#2-ユーザーをリポジトリに追加する">2. ユーザーをリポジトリに追加する</a><ul><li><a href="#21-ユーザーにコントリビュータロールを付与する">2.1 ユーザーにコントリビュータロールを付与する</a></li><li><a href="#22-確認">2.2 確認</a></li><li><a href="#23-追加の確認付与するロールをコントリビュータから参照者に変更">2.3 追加の確認（付与するロールをコントリビュータから参照者に変更）</a></li></ul></li><li><a href="#3-カスタムロールを利用した細かい粒度の権限設定">3. カスタム・ロールを利用した細かい粒度の権限設定</a><ul><li><a href="#31-説明">3.1 説明</a><ul><li><a href="#カテゴリ毎の操作権限について説明">カテゴリ毎の操作権限について(説明)</a></li></ul></li><li><a href="#32-カスタムロールの作成">3.2 カスタム・ロールの作成</a></li><li><a href="#33-カスタムロールをリポジトリに追加する">3.3 カスタム・ロールをリポジトリに追加する</a></li><li><a href="#34-カスタムロールをocmユーザーに割り当てる">3.4 カスタム・ロールをOCMユーザーに割り当てる</a></li><li><a href="#35-確認">3.5 確認</a></li><li><a href="#36-追加の確認オプション作業">3.6 追加の確認（オプション作業）</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="top"></a></p>
+
+<p>Oracle Content Management(OCM)のアセット管理機能のリポジトリのアクセス権限設定、およびカスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです</p>
+
+<p class="notice--info"><strong>【お知らせ】</strong> <br />
+この文書は、2023年5月時点での最新バージョン(23.5.1)を元に作成されてます。<br />
+チュートリアル内の画面ショットについては、OCMの現在のコンソール画面と異なっている場合があります。</p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>OCMインスタンスが作成済であること(以下の作成手順参照)
+    <ul>
+      <li><a href="../create_ocm_instance_IdentityDomain">OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する</a></li>
+      <li><a href="../create_oce_instance">Oracle Content Management インスタンスを作成する</a></li>
+    </ul>
+  </li>
+  <li>少なくとも下記4つのOCMインスタンスのアプリケーション・ロールが付与された<strong>管理ユーザー</strong>を用意すること
+    <ul>
+      <li><strong>CECContentAdministrator</strong></li>
+      <li><strong>CECDeveloperUser</strong></li>
+      <li><strong>CECEnterpriseUser</strong></li>
+      <li><strong>CECRepositoryAdminisrrator</strong></li>
+    </ul>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ユーザーの作成とアプリケーションロールの付与手順は、<a href="../create_identitydomain_group_user">OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する</a>もしくは<a href="../create_idcs_group_user">Oracle Content Management インスタンスの利用ユーザーを作成する</a>をご確認ください。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="0-説明">0. 説明</h1>
+
+<h2 id="リポジトリのアクセス権限設定ついて">リポジトリのアクセス権限設定ついて</h2>
+
+<p>リポジトリ（アセット・リポジトリおよびビジネス・リポジトリ）にアクセスできるユーザーを追加する際に、<strong>リポジトリ・ロール（以降ロール）</strong>を設定します。この操作は、フォルダへのメンバー追加と似ています。ユーザー追加時に設定できるデフォルトのロールは以下3つです</p>
+
+<ul>
+  <li><strong>参照者 （Viewer）</strong></li>
+  <li><strong>コントリビュータ (Contributor)</strong></li>
+  <li>
+    <p><strong>マネージャ (Manager)</strong></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+ダウンロード実行者(Downloader)のロールはありません、参照者ロールを付与すると、アセットの表示およびダウンロードが操作可能となります</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p>リポジトリにデフォルトロールでメンバー追加すると、リポジトリ内で利用可能な任意のアセット・タイプが付与されたロールの権限範囲内で利用できるようになります（アセット権限）。また、リポジトリ内で利用可能な任意の（全ての）カテゴリに対して、付与されたロールの権限範囲内で利用できるようになります。各ロールのアセット権限は以下の通りです</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/managing-assets/granular-permissions.html#GUID-9A12313F-168A-4DA1-B91C-442EA716A300__SECTION_ZVG_3WP_MWB">Permissions Granted with Repository Roles</a>  <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/managing-assets/granular-permissions.html#GUID-9A12313F-168A-4DA1-B91C-442EA716A300__SECTION_ZVG_3WP_MWB">(※日本語翻訳版)</a></li>
+</ul>
+
+<p>各ロールとリポジトリ内での具体的な操作は、以下のドキュメントに記載されてます</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/managing-assets/granular-permissions.html#GUID-9A12313F-168A-4DA1-B91C-442EA716A300__SECTION_DQG_R5Z_3QB">Task Permissions Granted with Repository Roles</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/managing-assets/granular-permissions.html#GUID-9A12313F-168A-4DA1-B91C-442EA716A300__SECTION_DQG_R5Z_3QB">(※日本語翻訳版)</a></li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-準備">1. 準備</h1>
+
+<p>OCMのアセット管理機能を利用するための準備作業を行います。今回は<strong>タクソノミ</strong>と<strong>ビジネス・リポジトリ</strong>をそれぞれ作成し、関連付けを行います。また、ビジネス・リポジトリ内で利用するアセット・タイプは、デフォルトで定義されている<strong>File</strong>、<strong>Image</strong>、<strong>Video</strong>の3つのアセット・タイプを利用します</p>
+
+<ol>
+  <li>
+    <p>OCMに<strong>管理ユーザー</strong>でサインインします</p>
+  </li>
+  <li>
+    <p>タクソノミを作成します。ここでは以下のようなシンプルな構成のタクソノミを作成します
+ <img src="001.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>作成したタクソノミを<strong>プロモート</strong>します</p>
+
+    <blockquote>
+      <p><strong>[TIPS]</strong><br />
+タクソノミの作成およびプロモートは、<a href="../75_taxonomy">Oracle Content Managementのタクソノミを使ってみよう</a>を参考にしてください</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>リポジトリを作成します。ここでは<strong>ビジネス・リポジトリ</strong>を以下の条件で作成します</p>
+
+    <ul>
+      <li>名前: (任意の名前を指定)</li>
+      <li>アセット・タイプ: <strong>File</strong>, <strong>Image</strong>, <strong>Video</strong>を選択</li>
+      <li>タクソノミ: (前の手順でプロモートしたタクソノミを選択)</li>
+      <li>言語: <strong>日本語(ja)</strong></li>
+      <li>
+        <p>その他の設定はすべてデフォルトのままとします
+  <img src="002.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+ビジネス・リポジトリの作成およびアセット・タイプとタクソノミの関連付けは、<a href="../42_business_repository">Oracle Content Management で請求書などの電子ファイルを長期保管してみよう【初級編】</a>を参考にしてください</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>アセットメニューよりリポジトリを開きます。<strong>A事業部/営業</strong>、<strong>A事業部/技術</strong>、<strong>A事業部/企画</strong>の3つのカテゴリにそれぞれ画像ファイルを紐付けて登録します</p>
+
+    <ul>
+      <li>
+        <p><strong>A事業部/営業</strong>
+  <img src="003.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>A事業部/技術</strong>
+  <img src="004.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>A事業部/企画</strong>
+  <img src="005.jpg" alt="画像" /></p>
+
+        <blockquote>
+          <p><strong>[TIPS]</strong><br />
+3つの画像ファイルは、アセット・タイプ=Imageとして登録されます</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>カテゴリ</strong>タブを開きます。各カテゴリにそれぞれ1件ずつ画像ファイルが紐付けされていることを確認します
+ <img src="006.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="2-ユーザーをリポジトリに追加する">2. ユーザーをリポジトリに追加する</h1>
+
+<h2 id="21-ユーザーにコントリビュータロールを付与する">2.1 ユーザーにコントリビュータロールを付与する</h2>
+
+<p>別のOCMユーザーをビジネス・リポジトリに追加します。ここでは<strong>コントリビュータ</strong>ロールを付与します。OCMユーザーを新規作成する方法は、以下のチュートリアルを参考にしてください</p>
+
+<ul>
+  <li><strong>OCI IAM Identity Domains</strong>環境の場合
+    <ul>
+      <li><a href="../create_identitydomain_group_user">OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する</a></li>
+    </ul>
+  </li>
+  <li><strong>Identity Cloud Service(IDCS)</strong>環境の場合
+    <ul>
+      <li><a href="../create_idcs_group_user">Oracle Content Management インスタンスの利用ユーザーを作成する</a></li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p><strong>【TIPS】</strong><br />
+OCMユーザーはアセット機能を利用するため、<strong>CECEnterpriseUser</strong>のアプリケーション・ロールを付与してください</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>ADMINISTRATION:コンテンツ→<strong>リポジトリ</strong>を開きます</p>
+  </li>
+  <li>
+    <p>1.1項で作成・構成したビジネス・リポジトリを選択し、<strong>メンバー</strong>をクリックします
+ <img src="008.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>メンバーの追加の<strong>ユーザーとグループ</strong>で、事前に作成したOCMユーザーを検索します</p>
+  </li>
+  <li>
+    <p>ロールで<strong>コントリビュータ</strong>を選択し、<strong>追加</strong>をクリックします
+ <img src="009.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>OCMユーザーがコントリビュータ権限で追加されるのを確認し、<strong>完了</strong>をクリックします
+ <img src="010.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>【TIPS】</strong><br />
+追加したOCMユーザーはアセット・タイプの<strong>任意のタイプ</strong>で表示、更新、作成、削除が選択済となります。これは、リポジトリ内で利用できる<strong>すべてのアセット・タイプ</strong>に対して、<strong>すべての編集操作が可能</strong>であることを意味します。<br />
+同様に、タクソノミの<strong>任意のカテゴリ</strong>で表示、カテゴリ化が選択済となります。これも、リポジトリ内の<strong>すべてのタクソノミ(カテゴリ)に紐付けられたアセットを閲覧可能</strong>であること、<strong>すべてのカテゴリに対して任意のアセットを追加および削除が可能</strong>であることを意味します</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h2 id="22-確認">2.2 確認</h2>
+
+<ol>
+  <li>
+    <p>別ブラウザを開き、メンバー追加した<strong>OCMユーザー</strong>でサインインします</p>
+  </li>
+  <li>
+    <p>アセットを開き、2.1項でメンバー追加されたリポジトリを開きます</p>
+  </li>
+  <li>
+    <p>1項で追加した3つの画像がすべて表示されることを確認します
+ <img src="011.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>A事業部/営業、A事業部/技術、A事業部/企画の3つのカテゴリにそれぞれOffice文書ファイル(Wordなど)を紐付けて登録できることを確認します
+ <img src="012.jpg" alt="画像" /></p>
+
+    <p><img src="013.jpg" alt="画像" /></p>
+
+    <p><img src="014.jpg" alt="画像" /></p>
+
+    <p><img src="015.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="23-追加の確認付与するロールをコントリビュータから参照者に変更">2.3 追加の確認（付与するロールをコントリビュータから参照者に変更）</h2>
+
+<ol>
+  <li>
+    <p><strong>管理ユーザー</strong>でOCMにサインインします</p>
+  </li>
+  <li>
+    <p>リポジトリ→メンバーを開き、コントリビュータロールを付与したOCMユーザーの<strong>編集アイコン</strong>をクリックします
+ <img src="016.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>ユーザー名の下の<strong>コントリビュータ▼</strong>をクリックし、<strong>参照者</strong>を選択します
+ <img src="017.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>保存</strong>をクリックします
+ <img src="018.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>参照者ロールを付与したOCMユーザーでサインインします</p>
+  </li>
+  <li>
+    <p>アセットの参照のみが可能で、アセットの追加・作成メニューが<strong>表示されない</strong>ことを確認します。また、アセット→カテゴリでカテゴリの追加や削除のメニューが<strong>表示されない</strong>ことを確認します
+ <img src="019.jpg" alt="画像" /></p>
+
+    <p><img src="020.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="3-カスタムロールを利用した細かい粒度の権限設定">3. カスタム・ロールを利用した細かい粒度の権限設定</h1>
+
+<h2 id="31-説明">3.1 説明</h2>
+
+<p>リポジトリのメンバー追加で利用した3つのデフォルトのロール（参照者、コントリビュータ、マネージャ）の他に、管理者はロールを自作できます。これを<strong>カスタム・ロール</strong>と言います。<br />
+カスタム・ロールを作成する時に、<strong>アセット・タイプ毎およびカテゴリ毎に操作権限を細かく設定</strong>できます。この細かいアクセス権限設定のことを<strong>Granular Permissions</strong>と言います。</p>
+
+<p><strong>Granular Permissions</strong>は、アセット・タイプ毎の操作権限（表示、更新、作成、削除）およびカテゴリ毎の操作権限（表示、カテゴリ化）の組み合わせです</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/content-cloud/managing-assets/granular-permissions.html">Granular Permissions</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/managing-assets/granular-permissions.html">(※日本語翻訳版)</a></li>
+</ul>
+
+<h3 id="カテゴリ毎の操作権限について説明">カテゴリ毎の操作権限について(説明)</h3>
+<ul>
+  <li>カテゴリに紐付けされたアセットを参照するには、カテゴリに対して<strong>表示(View)</strong>権限以上が必要です</li>
+  <li>カテゴリに対してアセットを紐付け(追加)するには、カテゴリに対して<strong>カテゴリ化(Categorize)</strong>権限、およびアセットの<strong>更新(Update)</strong>権限以上が必要です</li>
+  <li>親カテゴリで設定した操作権限は、その配下の子カテゴリに適用(継承)されます
+    <ul>
+      <li>例）親カテゴリに「表示権限」を付与→配下の子カテゴリも「表示権限」が適用される</li>
+    </ul>
+  </li>
+  <li>親カテゴリに設定した操作権限は、子カテゴリで拡大（強く）することはできます
+    <ul>
+      <li>例）親カテゴリに「表示権限」を付与し、配下の子カテゴリに「カテゴリ化権限」を付与→子カテゴリに対してのみアセットの追加・削除操作が可能(親カテゴリへのアセット追加・削除はできない)</li>
+    </ul>
+  </li>
+  <li>親カテゴリに設定した操作権限は、子カテゴリで縮小（弱く）することはできません
+    <ul>
+      <li>例）親カテゴリに「カテゴリ化権限」を付与し、配下の子カテゴリに「表示権限」を付与することはできない(設定操作がエラーとなります)</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="32-カスタムロールの作成">3.2 カスタム・ロールの作成</h2>
+
+<p>以下のような細かい権限設定がされた3つのカスタム・ロールの利用を想定します</p>
+
+<p><img src="007.jpg" alt="画像" /></p>
+
+<p>ここでは<strong>営業職</strong>のカスタム・ロールを作成します</p>
+
+<ol>
+  <li>
+    <p>管理ユーザーでOCMにサインインします</p>
+  </li>
+  <li>
+    <p>ADMINISTRATION:コンテンツ→<strong>カスタム・ロール</strong>を開きます</p>
+  </li>
+  <li>
+    <p><strong>作成</strong>をクリックします
+ <img src="021.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>名前を入力します。ここでは<strong>営業職</strong>を入力します</p>
+  </li>
+  <li>
+    <p>「編集権限」で<strong>任意のタイプ</strong>で選択済の権限をすべて解除します。同じように<strong>任意のカテゴリ</strong>の選択もすべて解除します
+ <img src="022.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>「編集権限」のアセットの<strong>追加</strong>をクリックします</p>
+
+    <ol>
+      <li>
+        <p><strong>File</strong>、<strong>Image</strong>、<strong>Video</strong>の3つのアセット・タイプを選択し、<strong>保存</strong>をクリックします
+ <img src="023.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p><strong>File</strong>の操作権限を<strong>削除</strong>まで選択します。その他は<strong>表示</strong>のみを選択します
+ <img src="024.jpg" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>続けて「タクソノミ」の<strong>追加</strong>をクリックします</p>
+
+    <ol>
+      <li>
+        <p>一番上のプルダウンメニューより、リポジトリに紐付けたタクソノミを選択します</p>
+      </li>
+      <li>
+        <p>カテゴリを展開し、A事業部配下の<strong>営業</strong>のみを選択し、<strong>保存</strong>をクリックします
+ <img src="025.jpg" alt="画像" /></p>
+      </li>
+      <li>
+        <p>追加された<strong>営業</strong>カテゴリで、<strong>カテゴリ化</strong>まで選択します
+ <img src="026.jpg" alt="画像" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>以下のような選択となっていることを確認し、<strong>保存</strong>をクリックします
+ <img src="027.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p><strong>営業職</strong>のカスタム・ロールが作成されます</p>
+  </li>
+</ol>
+
+<h2 id="33-カスタムロールをリポジトリに追加する">3.3 カスタム・ロールをリポジトリに追加する</h2>
+
+<p>作成したカスタム・ロールを、リポジトリに追加します。なお、カスタム・ロールは複数のリポジトリで共有して利用することができます</p>
+
+<ol>
+  <li>
+    <p>引き続き管理ユーザーで、ADMINISTRATION:コンテンツ→<strong>リポジトリ</strong>を開きます</p>
+  </li>
+  <li>
+    <p>リポジトリを選択し、メンバーをクリックします</p>
+  </li>
+  <li>
+    <p><strong>ロールの追加</strong>タブをクリックします</p>
+  </li>
+  <li>
+    <p>プルダウンメニューより<strong>営業職</strong>ロールを選択し、<strong>追加</strong>をクリックします
+ <img src="028.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="34-カスタムロールをocmユーザーに割り当てる">3.4 カスタム・ロールをOCMユーザーに割り当てる</h2>
+
+<p>リポジトリに追加したカスタムロールを、OCMユーザーに割り当てます</p>
+
+<ol>
+  <li>
+    <p>引き続き管理ユーザーで、ADMINISTRATION:コンテンツ→<strong>リポジトリ</strong>を開きます</p>
+  </li>
+  <li>
+    <p>「メンバーの追加」で追加するメンバーを選択します。続けて、ロールで<strong>営業職</strong>を選択し、<strong>追加</strong>をクリックします
+ <img src="030.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>【TIPS】</strong><br />
+既に追加済のOCMユーザーのロールを変更する場合は、そのユーザーの編集アイコンをクリックし、ロールを変更します<br />
+   <img src="029.jpg" alt="画像" /></p>
+    </blockquote>
+  </li>
+  <li>
+    <p><strong>完了</strong>をクリックします</p>
+  </li>
+</ol>
+
+<h2 id="35-確認">3.5 確認</h2>
+
+<ol>
+  <li>
+    <p>別ブラウザを開き、メンバー追加したOCMユーザーでサインインします</p>
+  </li>
+  <li>
+    <p>アセットを開き、2.1項でメンバー追加されたリポジトリを開きます</p>
+  </li>
+  <li>
+    <p><strong>カテゴリ</strong>タブを開きます。表示されるカテゴリが<strong>A事業部/営業</strong>のみに限定されていることを確認します。また、表示されるアセットも<strong>A事業部/営業カテゴリに紐付けられたアセット</strong>のみに限定されていることを確認します
+ <img src="031.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>画像ファイルや動画ファイルは、リポジトリに<strong>登録できない</strong>ことを確認します
+ <img src="032.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>オフィス文書(WordやExcel)は、リポジトリに<strong>登録できる</strong>ことを確認します。また、<strong>A事業部/営業</strong>カテゴリへの紐付けも可能であることを確認します
+ <img src="033.jpg" alt="画像" /></p>
+
+    <p><img src="034.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<h2 id="36-追加の確認オプション作業">3.6 追加の確認（オプション作業）</h2>
+
+<p>3.2項〜3.5項の手順を繰り返し、<strong>技術職</strong>ロールと<strong>企画職</strong>ロールをそれぞれ作成し、ユーザーに割り当てます。</p>
+
+<p>割り当てたロールにより、アセット・タイプやカテゴリのアクセス権限が適切に変更されることを確認します。以下の画像は、<strong>技術職</strong>ロールを付与した場合のアクセス権限設定とリポジトリ内のカテゴリおよびアセットの見え方です</p>
+
+<p><img src="035.jpg" alt="画像" /></p>
+
+<p><img src="036.jpg" alt="画像" /></p>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+<p><br /></p>
+
+<p><a href="#top">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#ocm" class="page__taxonomy-item" rel="tag">OCM</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-06-05T11:23:30+09:00">June 5, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Content+Management+%E3%81%AE%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AE%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E6%A8%A9%E9%99%90%E3%82%92%E7%90%86%E8%A7%A3%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F43_repository_permission%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F43_repository_permission%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F43_repository_permission%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/42_business_repository/" class="pagination--pager" title="Oracle Content Management で請求書などの電子ファイルを長期保管してみよう【初級編】
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/61_create_site/" class="pagination--pager" title="サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
