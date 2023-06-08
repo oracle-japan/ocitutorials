@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-06-05T11:23:30+09:00">
+  <meta property="article:published_time" content="2023-06-08T11:36:34+09:00">
 
 
 
@@ -270,6 +270,8 @@
         
           <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/content-management/8_share_publiclink/">その8: パブリック・リンク（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
@@ -279,6 +281,8 @@
           <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/content-management/13_upload_multiple_files/">その13: 圧縮ファイルによる複数ファイルの一括登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/14_external_user/">その14: 外部ユーザー（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
         
@@ -319,7 +323,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Content Managementサービス管理者向け作業ガイド">
     <meta itemprop="description" content="OCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が作業・確認すべきことを紹介します。">
-    <meta itemprop="datePublished" content="2023-06-05T11:23:30+09:00">
+    <meta itemprop="datePublished" content="2023-06-08T11:36:34+09:00">
     
 
     <div class="page__inner-wrap">
@@ -338,7 +342,7 @@
         <p>この文書はOCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が<strong>必ず</strong>作業・確認すべき管理設定を紹介します。</p>
 
 <p class="notice--info"><strong>【お知らせ】</strong><br />
-この文書は、2023年3月時点での最新バージョン(23.3.1)を元に作成されてます。<br />
+この文書は、2023年6月時点での最新バージョン(23.5.2)を元に作成されてます。<br />
 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。</p>
 
 <p><strong>前提条件</strong></p>
@@ -354,7 +358,7 @@
 
 <h2 id="11-ブランディング">1.1 ブランディング</h2>
 
-<p>OCMのWebユーザーインタフェースの<strong>ロゴ</strong>及びロゴ右隣の<strong>ブランディング・テキスト</strong>を変更できます。</p>
+<p>OCMのWebユーザーインタフェースの<strong>ロゴ</strong>や<strong>favicon</strong>、ロゴ右隣の<strong>ブランディング・テキスト</strong>を変更できます。</p>
 
 <p>ブランディングテキストは、組織内におけるOCMインスタンスの名称（呼称）を、短くわかりやすい言葉で表現する際に利用します</p>
 
@@ -363,9 +367,8 @@
     <p>サービス管理者権限が付与されたユーザーでOCMインスタンスにサインインします</p>
   </li>
   <li>
-    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します</p>
-
-    <p><img src="002.jpg" alt="画像" /></p>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します
+ <img src="002.jpg" alt="画像" /></p>
   </li>
   <li>
     <p><strong>ブランディング</strong>の<strong>コーポレート・ブランディング・テキスト</strong>で<strong>カスタム</strong>を選択し、表示するテキストを入力します</p>
@@ -376,17 +379,18 @@
     </blockquote>
   </li>
   <li>
-    <p>企業ロゴで<strong>変更</strong>をクリックし、表示したいロゴ画像を設定します</p>
-
-    <p><img src="003.jpg" alt="画像" /></p>
+    <p>企業アイコンで<strong>変更</strong>をクリックし、表示したいfaviconを設定します</p>
+  </li>
+  <li>
+    <p>企業ロゴで<strong>変更</strong>をクリックし、表示したいロゴ画像を設定します
+ <img src="003.jpg" alt="画像" /></p>
   </li>
   <li>
     <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
   </li>
   <li>
-    <p>ロゴとブランディングテキストが変更されます</p>
-
-    <p><img src="001.jpg" alt="画像" /></p>
+    <p>ロゴとブランディングテキストが変更されます
+ <img src="001.jpg" alt="画像" /></p>
   </li>
 </ol>
 
@@ -413,11 +417,8 @@
     <ul>
       <li><strong>ようこそ電子メール通知:</strong> ユーザーがOCMインスタンスに追加された時に電子メールが通知されます。通知メールはユーザーに割り当てられるアプリケーションロールによってカスタマイズされます</li>
       <li><strong>タクソノミ電子メール通知:</strong>　タクソノミのプロモート、公開、削除の時に電子メールが通知されます。通知メールはタクソノミが割り当てられているリポジトリにアクセスできるユーザーに対して送信されます</li>
-      <li>
-        <p><strong>他のすべての電子メール通知:</strong> 会話機能でフラグが設定されたとき、フォルダにメンバー追加されたとき、など上記以外の他のイベント発生時に電子メールが通知されます</p>
-
-        <p><img src="005.jpg" alt="画像" /></p>
-      </li>
+      <li><strong>他のすべての電子メール通知:</strong> 会話機能でフラグが設定されたとき、フォルダにメンバー追加されたとき、など上記以外の他のイベント発生時に電子メールが通知されます
+  <img src="005.jpg" alt="画像" /></li>
     </ul>
   </li>
   <li>
@@ -439,9 +440,8 @@
     <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します</p>
   </li>
   <li>
-    <p><strong>タイムゾーンおよび言語</strong>の「タイムゾーン」「言語」「日付書式ロケール」「開始曜日」を選択します</p>
-
-    <p><img src="006.jpg" alt="画像" /></p>
+    <p><strong>タイムゾーンおよび言語</strong>の「タイムゾーン」「言語」「日付書式ロケール」「開始曜日」を選択します
+ <img src="006.jpg" alt="画像" /></p>
   </li>
   <li>
     <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
@@ -472,9 +472,8 @@
     <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→一般</strong>を選択します</p>
   </li>
   <li>
-    <p><strong>ファイルとアセットの制限</strong>を選択します</p>
-
-    <p><img src="007.jpg" alt="画像" /></p>
+    <p><strong>ファイルとアセットの制限</strong>を選択します
+ <img src="007.jpg" alt="画像" /></p>
 
     <blockquote>
       <p><strong>【メモ】</strong><br />
@@ -505,24 +504,20 @@
 
 <ol>
   <li>
-    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→請求</strong>を選択します</p>
-
-    <p><img src="011.jpg" alt="画像" /></p>
+    <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→請求</strong>を選択します
+ <img src="011.jpg" alt="画像" /></p>
   </li>
   <li>
-    <p><strong>リソース制限</strong>より「アセット制限」「ファイル制限」「ストレージ制限」の制限値を設定し、「制限値の適用」を<strong>有効</strong>に設定します。制限値を設定しない場合は、値に<strong>0(ゼロ)</strong>を設定します</p>
-
-    <p><img src="008.jpg" alt="画像" /></p>
+    <p><strong>リソース制限</strong>より「アセット制限」「ファイル制限」「ストレージ制限」の制限値を設定し、「制限値の適用」を<strong>有効</strong>に設定します。制限値を設定しない場合は、値に<strong>0(ゼロ)</strong>を設定します<br />
+ <img src="008.jpg" alt="画像" /></p>
   </li>
   <li>
-    <p>制限値を適用せず、管理者への管理警告の送信のみとする場合は、「制限値の適用」を<strong>無効</strong>に設定し、「制限に達したときに管理警告を送信」を<strong>有効</strong>に設定します</p>
-
-    <p><img src="009.jpg" alt="画像" /></p>
+    <p>制限値を適用せず、管理者への管理警告の送信のみとする場合は、「制限値の適用」を<strong>無効</strong>に設定し、「制限に達したときに管理警告を送信」を<strong>有効</strong>に設定します
+ <img src="009.jpg" alt="画像" /></p>
   </li>
   <li>
-    <p><strong>データ転送制限</strong>についても、リソース制限と同様に設定します。下のスクリーンショットの場合、制限値を<strong>10GB</strong>に、制限値の適用を<strong>有効</strong>に設定しました</p>
-
-    <p><img src="010.jpg" alt="画像" /></p>
+    <p><strong>データ転送制限</strong>についても、リソース制限と同様に設定します。下のスクリーンショットの場合、制限値を<strong>10GB</strong>に、制限値の適用を<strong>有効</strong>に設定しました
+ <img src="010.jpg" alt="画像" /></p>
   </li>
 </ol>
 
@@ -558,17 +553,15 @@
     <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→ユーザー</strong>を選択します</p>
   </li>
   <li>
-    <p><strong>フォルダに追加された新規メンバーのデフォルトのロール</strong>で、<strong>参照者</strong>を選択します</p>
-
-    <p><img src="012.jpg" alt="画像" /></p>
+    <p><strong>フォルダに追加された新規メンバーのデフォルトのロール</strong>で、<strong>参照者</strong>を選択します
+ <img src="012.jpg" alt="画像" /></p>
   </li>
   <li>
     <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
   </li>
   <li>
-    <p>フォルダを選択し、<strong>メンバー→メンバーの追加</strong>を選択します。「これらのユーザーは何を実行できますか。」の権限で<strong>参照者</strong>がデフォルト設定されることを確認します</p>
-
-    <p><img src="014.jpg" alt="画像" /></p>
+    <p>フォルダを選択し、<strong>メンバー→メンバーの追加</strong>を選択します。「これらのユーザーは何を実行できますか。」の権限で<strong>参照者</strong>がデフォルト設定されることを確認します
+ <img src="014.jpg" alt="画像" /></p>
   </li>
 </ol>
 
@@ -583,38 +576,29 @@
 
 <p>外部ユーザーの詳細は、<a href="https://docs.oracle.com/en/cloud/paas/content-cloud/administer/manage-users-groups-and-access.html#GUID-925E928C-E14C-459C-A047-DA7DCBF18B2D">External Users</a> <a href="https://docs.oracle.com/cd/E83857_01/paas/content-cloud/administer/manage-users-groups-and-access.html#GUID-925E928C-E14C-459C-A047-DA7DCBF18B2D">(※日本語翻訳)</a> をご確認ください</p>
 
-<p>ここでは外部ユーザーのフォルダ招待を「有効」に変更し、外部ユーザーの先行入力検索を「無効」に、それぞれ変更する手順を紹介します</p>
-
-<blockquote>
-  <p><strong>【メモ】</strong><br />
-外部ユーザーの先行入力検索を「無効」に設定した場合、追加する外部ユーザーのユーザーIDを全て入力する必要があります。<br />
-「有効」に設定した場合、追加する外部ユーザーのユーザーIDの一部を入力すると、入力文字を含む外部ユーザーの一覧が選択候補として表示されます</p>
-</blockquote>
+<p>ここでは外部ユーザーのフォルダ招待を<strong>有効</strong>に変更します</p>
 
 <ol>
   <li>
     <p>左ナビゲーションメニューの <strong>ADMINISTRATION:システム→ユーザー</strong>を選択します</p>
   </li>
   <li>
-    <p><strong>このサービスへの外部ユーザーの招待をメンバーに許可します:</strong>で<strong>有効</strong>を選択します</p>
+    <p><strong>このサービスへの外部ユーザーの招待をメンバーに許可します:</strong>で<strong>有効</strong>を選択します
+ <img src="015.jpg" alt="画像" /></p>
   </li>
   <li>
-    <p><strong>メンバーシップ・リストでの外部ユーザーの検索で先行入力検索を許可します:</strong>で<strong>無効</strong>を選択します</p>
-
-    <p><img src="015.jpg" alt="画像" /></p>
+    <p>必要に応じて、「新規外部ユーザー招待」の項目を入力・設定します(オプション作業)</p>
   </li>
   <li>
     <p>画面を下にスクロールし、<strong>保存</strong>をクリックします</p>
   </li>
   <li>
-    <p>フォルダを選択し、「外部ユーザーにフォルダ・アクセスおよびメンバーシップを許可します」が有効になっていることを確認し、<strong>メンバー→メンバーの追加</strong>を選択します。追加する外部ユーザーのユーザーIDの一部を入力しても<strong>選択候補が表示されない</strong>ことを確認します</p>
-
-    <p><img src="016.jpg" alt="画像" /></p>
+    <p>フォルダを選択し、「外部ユーザーにフォルダ・アクセスおよびメンバーシップを許可します」が有効になっていることを確認し、<strong>メンバー→メンバーの追加</strong>を選択します。追加する外部ユーザーのユーザーIDの一部を入力しても<strong>選択候補が表示されない</strong>ことを確認します
+ <img src="016.jpg" alt="画像" /></p>
 
     <blockquote>
       <p><strong>【参考】</strong><br />
-先行入力を許可した場合、追加する外部ユーザーのユーザーIDの一部を入力すると<strong>選択候補が表示されます</strong><br />
-<img src="017.jpg" alt="画像" /></p>
+外部ユーザーを招待するには、完全なメールアドレス(例: <code class="language-plaintext highlighter-rouge">white.smith@example.com</code>)を入力します。詳細は<a href="../14_external_user">外部ユーザー（Oracle Content Management のファイル共有機能を利用しよう）</a>をご確認ください</p>
     </blockquote>
   </li>
 </ol>
@@ -646,11 +630,8 @@
       <li>ファイルおよびフォルダをごみ箱に保持する最大日数: <strong>30</strong></li>
       <li>無制限バージョンを許可: <strong>無効</strong></li>
       <li>ファイル当たりのバージョンの最大数: <strong>10</strong></li>
-      <li>
-        <p>クリアされたリビジョンを完全に削除します: <strong>有効</strong></p>
-
-        <p><img src="018.jpg" alt="画像" /></p>
-      </li>
+      <li>クリアされたリビジョンを完全に削除します: <strong>有効</strong>
+  <img src="018.jpg" alt="画像" /></li>
     </ul>
   </li>
   <li>
@@ -697,11 +678,8 @@
       <li>パブリック・リンクに使用可能な最大ロール: <span style="color: red;"><strong>コントリビュータ</strong></span></li>
       <li>新規パブリック・リンクのデフォルト・ロール: <strong>参照者</strong></li>
       <li>すべてのパブリック・リンクに有効期限を強制: <span style="color: red;"><strong>有効</strong></span></li>
-      <li>
-        <p>最大有効期限の設定: <strong>30</strong></p>
-
-        <p><img src="019.jpg" alt="画像" /></p>
-      </li>
+      <li>最大有効期限の設定: <strong>30</strong>
+  <img src="019.jpg" alt="画像" /></li>
     </ul>
   </li>
   <li>
@@ -732,11 +710,8 @@
       <li>パブリック・リンクに使用可能な最大ロール: <span style="color: red;"><strong>ダウンロード実行者</strong></span></li>
       <li>新規パブリック・リンクのデフォルト・ロール: <strong>参照者</strong></li>
       <li>すべてのパブリック・リンクに有効期限を強制: <strong>有効</strong></li>
-      <li>
-        <p>最大有効期限の設定: <strong>10</strong></p>
-
-        <p><img src="020.jpg" alt="画像" /></p>
-      </li>
+      <li>最大有効期限の設定: <strong>10</strong>
+  <img src="020.jpg" alt="画像" /></li>
     </ul>
   </li>
   <li>
@@ -765,11 +740,8 @@
       <li>パブリック・リンクの作成時にユーザーに警告を表示: <strong>有効</strong></li>
       <li>パブリック・リンクに使用可能な最大ロール: <strong>コントリビュータ</strong></li>
       <li>新規パブリック・リンクのデフォルト・ロール: <strong>参照者</strong></li>
-      <li>
-        <p>すべてのパブリック・リンクに有効期限を強制: <strong>無効</strong></p>
-
-        <p><img src="021.jpg" alt="画像" /></p>
-      </li>
+      <li>すべてのパブリック・リンクに有効期限を強制: <strong>無効</strong>
+  <img src="021.jpg" alt="画像" /></li>
     </ul>
   </li>
   <li>
@@ -792,11 +764,8 @@
     <p><strong>リンク</strong>で以下の通りに設定します</p>
 
     <ul>
-      <li>
-        <p>ファイルおよびフォルダへのパブリック・リンクを許可: <span style="color: red;"><strong>無効</strong></span></p>
-
-        <p><img src="022.jpg" alt="画像" /></p>
-      </li>
+      <li>ファイルおよびフォルダへのパブリック・リンクを許可: <span style="color: red;"><strong>無効</strong></span>
+  <img src="022.jpg" alt="画像" /></li>
     </ul>
   </li>
   <li>
@@ -846,7 +815,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-06-05T11:23:30+09:00">June 5, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-06-08T11:36:34+09:00">June 8, 2023</time></p>
 
 
       </footer>
