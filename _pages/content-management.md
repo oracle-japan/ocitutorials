@@ -50,7 +50,7 @@ toc: true
 
 ## システム管理設定
 
-+ **[Oracle Content Managementサービス管理者向け作業ガイド](/ocitutorials/content-management/ocm_admin_guide/)**  <span style="color: red;">New!</span>  
++ **[Oracle Content Managementサービス管理者向け作業ガイド](/ocitutorials/content-management/ocm_admin_guide/)**  <span style="color: red;">Update!</span>  
     OCMインスタンス作成後、利用者への周知・案内をする前にサービス管理者が作業・確認すべきことを紹介します。
 
 + **[Oracle Content Management のサイト・セキュリティとサイト・ガバナンスを設定する](/ocitutorials/content-management/77_sitesecuritygovernance/)**  
@@ -63,7 +63,7 @@ toc: true
 
 ## ファイル共有
 
-+ **[Oracle Content Management のファイル共有機能を使ってみよう【初級編】](/ocitutorials/content-management/using_file_sharing/)**  
++ **[Oracle Content Management のファイル共有機能を使ってみよう【初級編】](/ocitutorials/content-management/using_file_sharing/)**  <span style="color: red;">Update!</span>  
     OCM のファイル共有機能を利用して、社内外のユーザーと簡単かつセキュアにファイルを共有することができます。このチュートリアルは、ファイル共有機能を利用する方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:約60分】
 
 
@@ -121,7 +121,7 @@ toc: true
 
 ## リポジトリのアクセス権限管理
 
-+ **[Oracle Content Management のリポジトリのアクセス権限を理解しよう](/ocitutorials/content-management/43_repository_permission/)**  
++ **[Oracle Content Management のリポジトリのアクセス権限を理解しよう](/ocitutorials/content-management/43_repository_permission/)**  <span style="color: red;">New!</span>  
     OCMのアセット管理機能のリポジトリのアクセス権限設定、およびカスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
 
 
@@ -162,11 +162,6 @@ toc: true
 + **[Oracle Content Management をHeadless CMSとして利用するGatsbyサイトをNetlifyでホストする](https://qiita.com/nakasato310/items/4e07a47c66e3551e6282)** (※外部サイト)  
     この記事では、[Oracle Content ManagementをHeadless CMSとして使用したWebサイトをGatsbyで開発する](https://qiita.com/nakasato310/items/0ee3bcf0fbffcd898f2b)で作成したGatsbyサイトをNetlifyでホストして公開します。【所要時間:30分】
 
-<!--
-+ **[React開発のためにOracle Content and ExperienceのStarter Site CLIを使ってみよう](https://community.oracle.com/tech/welcome/discussion/4474323/)** (※外部サイト)
-
-    OCE のStarter Site CLI の使用方法をステップ・バイ・ステップで紹介するチュートリアルです。OCE のアセット機能を Headless CMS として利用し、フロントエンドは React で開発します【所要時間:30分】
--->
 
 ## GraphQLを使ってみよう
 
@@ -208,10 +203,6 @@ OCMとOracle Application Express(APEX)アプリケーションを統合して、
 # その他お役立ち情報
 
 + [Oracle Content Management マニュアル](https://docs.oracle.com/en/cloud/paas/content-cloud/books.html)
-
-<!--
-+ [Oracle Content Management マニュアル（日本語翻訳版）](https://docs.oracle.com/cloud/help/ja/content-cloud/index.htm)
--->
 
 + [Oracle Content Management マニュアル（日本語翻訳版）](https://docs.oracle.com/cd/E83857_01/paas/content-cloud/books.html)
 
