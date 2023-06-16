@@ -198,7 +198,7 @@ GitHubのアカウント作成は **[ここ](https://github.com/signup?ref_cta=S
 | ------- | ----------------- | ----------------------------------------------------------------------------- |
 | HPCクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaayouelanobgkbsb3zanxtu6cr4bst62wco2xs5mzg3it7fp2iuvbq |
 |         | 8.6               | ocid1.image.oc1..aaaaaaaazgofwgysyz5i5bupwhjmolgf44b7vlwyqxy7pmcrpbufpmvef6da |
-| GPUクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxr  |
+| GPUクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra  |
 |         |                   |                                                                               |
 
 \5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
@@ -302,7 +302,7 @@ GitHubのTerraformスクリプトレポジトリのページからzipファイ�
 | ------- | ----------------- | ----------------------------------------------------------------------------- |
 | HPCクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaayouelanobgkbsb3zanxtu6cr4bst62wco2xs5mzg3it7fp2iuvbq |
 |         | 8.6               | ocid1.image.oc1..aaaaaaaazgofwgysyz5i5bupwhjmolgf44b7vlwyqxy7pmcrpbufpmvef6da |
-| GPUクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxr  |
+| GPUクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra  |
 |         |                   |                                                                               |
 
 \*7) HPCクラスタかGPUクラスタかにより、以下コマンドの出力を使用します。  
