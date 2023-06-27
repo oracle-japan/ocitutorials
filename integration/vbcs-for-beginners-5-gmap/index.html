@@ -1,0 +1,862 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>住所の値を基に地図上にピンマークを設置する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="このチュートリアルは、テキストボックスに入力された住所の値を基に地図上にピンマークを設置する手順について説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="住所の値を基に地図上にピンマークを設置する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/vbcs-for-beginners-5-gmap/">
+
+
+  <meta property="og:description" content="このチュートリアルは、テキストボックスに入力された住所の値を基に地図上にピンマークを設置する手順について説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-06-27T18:24:29+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/vbcs-for-beginners-5-gmap/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          住所の値を基に地図上にピンマークを設置する
+
+        
+      </h1>
+      
+        <p class="page__lead">このチュートリアルは、テキストボックスに入力された住所の値を基に地図上にピンマークを設置する手順について説明します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">住所の値を基に地図上にピンマークを設置する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance-id/">OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-1/">Oracle Integration - Visual Builder で簡単なWebアプリケーションを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-2-vbs/">Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-3-rest/">REST APIで取得したデータを一覧表示する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-4-linechart/">ビジネス・オブジェクトのデータを折れ線グラフで表示する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-5-gmap/" class="active">住所の値を基に地図上にピンマークを設置する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="住所の値を基に地図上にピンマークを設置する">
+    <meta itemprop="description" content="このチュートリアルは、テキストボックスに入力された住所の値を基に地図上にピンマークを設置する手順について説明します。">
+    <meta itemprop="datePublished" content="2023-06-27T18:24:29+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#webアプリケーションの作成">Webアプリケーションの作成</a><ul><li><a href="#ビジュアルアプリケーションの作成">ビジュアル・アプリケーションの作成</a></li><li><a href="#web-アプリケーションの作成">Web アプリケーションの作成</a></li></ul></li><li><a href="#main-startページの編集">main-startページの編集</a><ul><li><a href="#コンポーネントの追加">コンポーネントの追加</a></li><li><a href="#htmlコードの変更">HTMLコードの変更</a></li><li><a href="#変数の作成">変数の作成</a></li><li><a href="#変数をinput-textコンポーネントにバインド">変数をInput Textコンポーネントにバインド</a></li><li><a href="#google-map読み込み用javascriptコードの追加">Google Map読み込み用JavaScriptコードの追加</a></li><li><a href="#画面の初期化イベントと検索ボタンのイベントを作成する">画面の初期化イベントと検索ボタンのイベントを作成する</a></li></ul></li><li><a href="#cssの追加">CSSの追加</a></li><li><a href="#google-maps-javascript-apiライブラリを追加">Google Maps JavaScript APIライブラリを追加</a></li><li><a href="#動作確認">動作確認</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Visual Builder Cloud Service(VBCS)は、ユーザー・インタフェース(UI)・コンポーネントをページにドラッグ＆ドロップするだけで、Webアプリケーションやモバイル・アプリケーションを作成するためのビジュアル開発ツールです。</p>
+
+<p>このチュートリアルは、テキストボックスに入力された住所の値を基に地図上にピンマークを設置する手順について説明します。</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>
+    <p><a href="../integration-for-commons-1-instance/">Oracle Integration Cloud インスタンスの作成</a></p>
+
+    <p>Oracle Integration(OIC)を使い始めるための準備作業として、OICインスタンスの作成が必要になります。この文書はOICインスタンスの作成方法をステップ・バイ・ステップで紹介するチュートリアルです。</p>
+  </li>
+  <li>
+    <p>OICインスタンスのServiceAdministratorロールが付与されたユーザーが準備されていること</p>
+
+    <p>(参考) Oracle Integration Roles and Privileges</p>
+
+    <p><a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34">https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34</a></p>
+  </li>
+  <li>
+    <p><a href="https://developers.google.com/maps/premium/apikey/geocoding-apikey?hl=ja#get_key">Google Maps API KEYの登録</a>が完了していること</p>
+  </li>
+</ul>
+
+<h2 id="webアプリケーションの作成">Webアプリケーションの作成</h2>
+
+<p>このパートでは、VBCSでWebアプリケーションを作成する際に、最初に定義するビジュアル・アプリケーションとWebアプリケーションを作成する手順を説明します。</p>
+
+<h3 id="ビジュアルアプリケーションの作成">ビジュアル・アプリケーションの作成</h3>
+
+<p>VBCSでは、最初にビジュアル・アプリケーションを作成します。ビジュアル・アプリケーションは、Webアプリケーションやモバイル・アプリケーションを開発するために使用するリソースの集まりです。アプリケーションのソース・ファイルや、メタデータが記述されたJSONファイルを含んでいます。</p>
+
+<p>Webブラウザを開き、提供されたOICインスタンスのURLを入力します。もしくはOCIのコンソールから「開発者サービス」－「アプリケーション統合」から作成済みのOICインスタンスを選択し、「サービス・コンソール」からOICコンソールを開きます。</p>
+
+<p><img src="001.png" alt="" /></p>
+
+<p>左ナビゲーションメニューの「ビジュアル・ビルダー」をクリックします。</p>
+
+<p><img src="002.png" alt="" /></p>
+
+<p>VBCSの「Visual Applications」ページが表示されたら、「New Application」ボタンをクリックします。</p>
+
+<p><img src="003.png" alt="" /></p>
+
+<p>「Create Application」ダイアログ・ボックスが表示されます。次の表のように設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>設定項目</th>
+      <th>設定する値</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「Application name」</td>
+      <td>GoogleMapTutorial</td>
+      <td>アプリケーションにつける名前</td>
+    </tr>
+    <tr>
+      <td>「Id」</td>
+      <td>GoogleMapTutorial</td>
+      <td>アプリケーションのID。アプリケーションのURLにも用いられるので、VBCSのインスタンス内で一意である必要があります。</td>
+    </tr>
+    <tr>
+      <td>「Description」</td>
+      <td>Tutorial Application</td>
+      <td>アプリケーションの簡単な説明</td>
+    </tr>
+    <tr>
+      <td>「Application template」</td>
+      <td>Empty Application (デフォルト)</td>
+      <td>アプリケーションのテンプレート</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="004.png" alt="" /></p>
+
+<p>値を設定したら、「Create Application」ダイアログ・ボックスの「Finish」ボタンをクリックします。</p>
+
+<p>ビジュアル・アプリケーションが作成されると、VBCSのアプリケーション・デザイナでビジュアル・アプリケーションがオープンします。アプリケーション・デザイナにはアーティファクト・ブラウザとWelcomeスクリーンが表示されます。Welcomeスクリーンには、VBCSでアプリケーションを作成するためのタスクのガイドが表示されます。</p>
+
+<p><img src="005.png" alt="" /></p>
+
+<p>アプリケーション・デザイナの左側の領域はアーティファクト・ブラウザと呼ばれる領域で、アプリケーションを構成する各種ソース・ファイル（HTML/CSS/JavaScriptなど）や、データ・アクセスや画面フローの設定などアプリケーションを実行する際に必要となるメタデータ（JSONファイル）が表示され、アクセスできます。</p>
+
+<p>アーティファクト・デザイナには、次のタブ・ページがあります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>アイコン</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mobile Applications</td>
+      <td><img src="icon_1.png" alt="" /></td>
+      <td>モバイルデバイスの機能を利用するネイティブモバイルアプリケーションを作成します。</td>
+    </tr>
+    <tr>
+      <td>Web Applications</td>
+      <td><img src="icon_2.png" alt="" /></td>
+      <td>デスクトップおよびモバイルデバイスのブラウザーで実行される最新のWebアプリケーションを作成します。</td>
+    </tr>
+    <tr>
+      <td>Services</td>
+      <td><img src="icon_3.png" alt="" /></td>
+      <td>サービス接続を作成して、サービスによって提供される既存のRESTエンドポイントを使用し、それらをアプリケーションで使用します。</td>
+    </tr>
+    <tr>
+      <td>Business Objects</td>
+      <td><img src="icon_4.png" alt="" /></td>
+      <td>ビジネスオブジェクトを作成して、アプリケーションのニーズに基づいてデータベースのカスタムRESTエンドポイントを定義します。</td>
+    </tr>
+    <tr>
+      <td>Layouts</td>
+      <td><img src="icon_8.png" alt="" /></td>
+      <td>レイアウトは、実行時に動的コンポーネントに表示されるフィールドを定義します。</td>
+    </tr>
+    <tr>
+      <td>Components</td>
+      <td><img src="icon_5.png" alt="" /></td>
+      <td>アプリケーションで使用する追加のコンポーネントを入手します。</td>
+    </tr>
+    <tr>
+      <td>Processes</td>
+      <td><img src="icon_6.png" alt="" /></td>
+      <td>Oracle IntegrationのProcess機能を使用して、ビジネスプロセスをアプリケーションに統合します。</td>
+    </tr>
+    <tr>
+      <td>Source View</td>
+      <td><img src="icon_7.png" alt="" /></td>
+      <td>作成されたアプリケーションをソース形式で確認・編集することができます。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>画面上部のアプリケーションの名前（Application nameとして指定したテキスト）の右隣に表示される「DEVELOPMENT」と「1.0」はそれぞれ、アプリケーションのステータス（development: 開発中を表す）とバージョンを表しています。</p>
+
+<p><img src="006_1.png" alt="" /></p>
+
+<h3 id="web-アプリケーションの作成">Web アプリケーションの作成</h3>
+
+<p>VBCSのビジュアル・アプリケーションは、1つ以上のWebアプリケーションまたはモバイル・アプリケーションを持ちます。このチュートリアルでは、Webアプリケーションを作成します。</p>
+
+<p>アーティファクト・ブラウザの「Web Applications」タブをクリックします。
+そのあと「+ Web Application」ボタン(またはアーティファクト・ブラウザの右上にある「＋」アイコン)をクリックします。</p>
+
+<p><img src="007.png" alt="" /></p>
+
+<p>「Create Web Application」ダイアログ・ボックスが表示されたら、「Application Name」フィールドに「GoogleMapWebApp」と入力し、Navigation Styleに「None」を選択し、「Create」ボタンをクリックします。</p>
+
+<p><img src="008.png" alt="" /></p>
+
+<p>GoogleMapWebAppアプリケーションのアーティファクトが生成されます。ページ・デザイナで表示されている「main-start」が、アプリケーションの起動時に最初に表示される画面です。</p>
+
+<p><img src="009.png" alt="" /></p>
+
+<p>アーティファクト・ブラウザで「googlemapwebapp」ノードを展開するとWebアプリケーションの構造が表示されます。「main」ノードを展開すると「main-start」ページが表示されます。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<h2 id="main-startページの編集">main-startページの編集</h2>
+
+<p>このパートでは、main-startページを編集して、テキストボックスに入力された住所の値を基に地図上にピンマークを設置します。</p>
+
+<h3 id="コンポーネントの追加">コンポーネントの追加</h3>
+
+<p>アプリケーション・デザイナの左側には、コンポーネント・パレットが表示されます。コンポーネント・パレットは、デザイナの左にあるコンポーネントタブで表示/非表示を切り替えることができます。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p>コンポーネント・パレットを下にスクロールし、「Forms &amp; Inputs」カテゴリの「Input Text」コンポーネントを、タイトルの下にドラッグ＆ドロップします。レスポンシブWebデザイン・システムは、12列グリッド・レイアウト・スキームです。基本的に、画面はサイズに関係なく、12列に分割されます。項目を定義するときに、さまざまな画面サイズ（小型画面、中型画面、大きな画面、特大画面）に対して1から合計12まで、項目に必要な列数を指定します。ここでは、画面が中サイズの場合、Input Textコンポーネントの幅を6列にします。</p>
+
+<p><img src="012.png" alt="" /></p>
+
+<p>追加されたInput Textコンポーネントのプロパティ・インスペクタで「Label Hint」フィールドに「住所」と入力します。</p>
+
+<p><img src="013.png" alt="" /></p>
+
+<p>コンポーネント・パレットを上にスクロールし、「Controls &amp; Navigation」カテゴリの「Button」コンポーネントを、住所の1列幅の右側にドラッグ＆ドロップします。Buttonコンポーネントの幅を2列にします。</p>
+
+<p><img src="014.png" alt="" /></p>
+
+<p>追加されたButtonコンポーネントのプロパティ・インスペクタで「Label」フィールドに「検索」と入力します。</p>
+
+<p><img src="015.png" alt="" /></p>
+
+<h3 id="htmlコードの変更">HTMLコードの変更</h3>
+
+<p>「Code」ボタンをクリックして、コード・モードに切り替えます。</p>
+
+<p><img src="016.png" alt="" /></p>
+
+<p>変更前のコードを確認します。</p>
+
+<p><img src="017.png" alt="" /></p>
+
+<p>39行目にCSSクラスを追加し、46行目に地図用HTMLコードを追加します。 marginはCSSのプロパティで、要素の全四辺のマージン領域を設定します。追加したCSSクラスは、Oracle JETによって定義されたCSSクラスです。oj-md-margin-8x-topは、画面が中サイズ(md)の場合、要素の上側(top)に8単位(8x)のマージン領域を設定することを意味します。詳細は<a href="https://www.oracle.com/webfolder/technetwork/jet/jsdocs/ResponsiveSpacing.html">こちら</a>をご確認ください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="oj-flex oj-sm-margin-8x-top oj-md-margin-8x-top"&gt;
+  &lt;oj-input-text label-hint="住所" class="oj-flex-item oj-sm-12 oj-md-6"&gt;&lt;/oj-input-text&gt;
+  &lt;div class="oj-flex-item oj-sm-12 oj-md-1"&gt;&lt;/div&gt;
+  &lt;div class="oj-flex-item oj-sm-12 oj-md-2"&gt;
+    &lt;oj-button label="検索"&gt;&lt;/oj-button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id="map" class="oj-sm-margin-8x-top oj-md-margin-8x-top oj-sm-margin-8x-bottom oj-md-margin-8x-bottom"&gt;&lt;/div&gt;
+</code></pre></div></div>
+
+<p>変更後のコードを確認します。</p>
+
+<p><img src="018.png" alt="" /></p>
+
+<h3 id="変数の作成">変数の作成</h3>
+
+<p>アプリケーション・デザイナの「Variables」タブをクリックします。「+ Variable」ボタンをクリックします。</p>
+
+<p><img src="019.png" alt="" /></p>
+
+<p>「ID」フィールドに「address」と入力し、「Create」ボタンをクリックします。</p>
+
+<p><img src="020.png" alt="" /></p>
+
+<p>変数「address」のプロパティ・インスペクタで「Default Value」フィールドに「東京都千代田区神田小川町3-28-9」と入力します。</p>
+
+<p><img src="021.png" alt="" /></p>
+
+<h3 id="変数をinput-textコンポーネントにバインド">変数をInput Textコンポーネントにバインド</h3>
+
+<p>「Page Designer」タブを開き、「Design」ボタンをクリックして、デザイン・モードに切り替えます。Input Textコンポーネントを選択します。Input Textコンポーネントのプロパティ・インスペクタでDataタブを開きます。「Value」フィールドにカーソルを合わせて、「▼」をクリックします。</p>
+
+<p><img src="022.png" alt="" /></p>
+
+<p>変数「address」をクリックします。</p>
+
+<p><img src="023.png" alt="" /></p>
+
+<h3 id="google-map読み込み用javascriptコードの追加">Google Map読み込み用JavaScriptコードの追加</h3>
+
+<p>アプリケーション・デザイナの「JavaScript」タブをクリックします。</p>
+
+<p><img src="024.png" alt="" /></p>
+
+<p>以下のJavaScriptコードを追加します。関数initMapと関数setCenterを定義します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>関数名</th>
+      <th>処理内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>setCenter</td>
+      <td>テキストボックスに入力された住所に基づいて既存のGoogleマップ・オブジェクトの中心座標を再割当てし、マーカーの位置を変更します。</td>
+    </tr>
+    <tr>
+      <td>initMap</td>
+      <td>Googleマップ・オブジェクトを作成し、テキストボックスに入力された住所を地図の中心座標として指定し、Googleマップ上にマーカーを表示します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  PageModule.prototype.setCenter = function (address) {
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({
+      'address': address 
+    }, function (results, status) { 
+      if (status === google.maps.GeocoderStatus.OK) { // ステータスがOKの場合
+        var map = window.map;
+        map.setCenter(results[0].geometry.location);
+        window.marker.setMap(null);
+        window.marker = new google.maps.Marker({
+          position: results[0].geometry.location, // マーカーを立てる位置を指定
+          map: map // マーカーを立てる地図を指定
+        });
+      } else { // 失敗した場合
+        alert(status);
+      }
+    });
+  };
+
+  PageModule.prototype.initMap = function (address) {
+
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({
+      'address': address 
+    }, function (results, status) {
+      if (status === google.maps.GeocoderStatus.OK) { // ステータスがOKの場合
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: results[0].geometry.location, // 地図の中心を指定
+          zoom: 19 // 地図のズームを指定
+        });
+        window.map = map;
+        window.marker = new google.maps.Marker({
+          position: results[0].geometry.location, // マーカーを立てる位置を指定
+          map: map // マーカーを立てる地図を指定
+        });
+      } else { // 失敗した場合
+        alert(status);
+      }
+    });
+  };
+</code></pre></div></div>
+
+<p><img src="025.png" alt="" /></p>
+
+<h3 id="画面の初期化イベントと検索ボタンのイベントを作成する">画面の初期化イベントと検索ボタンのイベントを作成する</h3>
+
+<p>次に、画面の初期化イベントと検索ボタンのイベントを作成し、先ほど記述したJavaScriptコードを呼び出します。</p>
+
+<p>アプリケーション・デザイナの「Event Listeners」タブをクリックします。</p>
+
+<p><img src="026.png" alt="" /></p>
+
+<p>「＋Event Listener」ボタンをクリックします。</p>
+
+<p><img src="027.png" alt="" /></p>
+
+<p>「vbEnter」を選択し、「Next &gt;」ボタンをクリックします。 vbEnterイベントは、すべてのフロー変数またはページ変数が初期化されると、トリガーされます。詳細は<a href="https://docs.oracle.com/en/cloud/paas/integration-cloud/visual-developer/work-json-action-chains.html#GUID-69C60635-B452-44B0-BC7C-ABA147B63314">こちら</a>をご確認ください。</p>
+
+<p><img src="028.png" alt="" /></p>
+
+<p>「Page Action Chains」の隣にある「⊕」アイコンをクリックします。</p>
+
+<p>アクション・チェーンは1つ以上の個別のアクションで構成され、それぞれが単一の非同期作業単位を表します。アクション・チェーンはイベントによってトリガーされます。</p>
+
+<p>アクション・チェーンにはアプリケーション・レベルまたはページ・レベルで定義できます。アプリケーション・スコープのアクション・チェーンはどのページからでも呼び出すことができます。ページ・スコープのアクション・チェーンは、それが定義されているページからのみ呼び出すことができます。各スコープについては<a href="https://docs.oracle.com/cd/E83857_01/paas/app-builder-cloud/visual-builder-developer/develop-applications.html#GUID-8F6AC32B-7696-4765-8FEE-9E3C45AC4C03">こちら</a>をご確認ください。</p>
+
+<p><img src="029.png" alt="" /></p>
+
+<p>インプット・テキストに「InitMapChain」を入力し、「Finish」ボタンをクリックします。</p>
+
+<p><img src="030.png" alt="" /></p>
+
+<p>次に作成したアクション・チェーンに処理を追加します。「InitMapChain」アクション・チェーンにカーソルを合わせて、「Go to Action Chain」のリンクをクリックします。</p>
+
+<p><img src="031.png" alt="" /></p>
+
+<p>「Call Function」のアクションを「Start」 アクションの下に表示されている「＋」マークの上にドラッグ＆ドロップで設定し、右側に表示されたプロパティ・インスペクタで「Function Name」に「initMap」を選択します。(この「initMap」は前の手順で追加したJavascriptの関数名です。)</p>
+
+<p>「Input Parameters」の横にある「Assign」のリンクをクリックします。</p>
+
+<p><img src="032.png" alt="" /></p>
+
+<p>「Assign Input Parameters」ダイアログ・ボックスが表示されます。「Sources」ペインの変数「address」を「Target」ペインのパラメータ「address」にドラッグし、「Save」ボタンをクリックします。</p>
+
+<p><img src="033.png" alt="" /></p>
+
+<p>「Page Designer」タブをクリックします。</p>
+
+<p><img src="034.png" alt="" /></p>
+
+<p>「検索」ボタンを選択します。プロパティ・インスペクタで、「Events」タブ・ページを開きます。「+ New Event」ボタンをクリックすると表示されるメニューから「On ‘ojAction’」を選択します。</p>
+
+<p><img src="035.png" alt="" /></p>
+
+<p>これにより、「検索」ボタンがクリックされた時に起動される、IdがButtonClickActionのアクション・チェーンが定義されます。画面の左側には、アクション・パレットが表示されています。「Call Function」のアクションを「Start」アクションの下に表示されている「＋」マークの上にドラッグ＆ドロップで設定し、右側に表示されたプロパティ・インスペクタで「Function Name」に「setCenter」を選択します。(この「setCenter」は前の手順で追加したJavascriptの関数名です。)</p>
+
+<p>「Input Parameters」の横にある「Assign」のリンクをクリックします。</p>
+
+<p><img src="036.png" alt="" /></p>
+
+<p>「Assign Input Parameters」ダイアログ・ボックスが表示されます。「Sources」ペインの変数「address」を「Target」ペインのパラメータ「address」にドラッグし、「Save」ボタンをクリックします。</p>
+
+<p><img src="037.png" alt="" /></p>
+
+<h2 id="cssの追加">CSSの追加</h2>
+
+<p>「googlemapwebapp」 → 「Resources」 → 「css」ノードを展開して、「app.css」を開きます。以下のCSSコードを追加します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#map {
+position: relative;
+width: 100%;
+height: 0;
+padding-top: 40%; /* ajust map height here */
+overflow: hidden;
+}
+</code></pre></div></div>
+
+<p><img src="038.png" alt="" /></p>
+
+<h2 id="google-maps-javascript-apiライブラリを追加">Google Maps JavaScript APIライブラリを追加</h2>
+
+<p>「Source View」タブをクリックします。「webApps」 → 「googlemapwebapp」 → 「index.html」を開き、以下のHTMLコードを追加します。＜YOUR API KEY＞の部分はご自身で取得したGoogleマップAPI KEYを入力してください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=＜YOUR API KEY＞"&gt;&lt;/script&gt;
+</code></pre></div></div>
+
+<p><img src="039.png" alt="" /></p>
+
+<h2 id="動作確認">動作確認</h2>
+
+<p>最後に作成した画面を動作確認しましょう。</p>
+
+<p>画面右上にある「▷」(Run アイコン)をクリックします。</p>
+
+<p><img src="040.png" alt="" /></p>
+
+<p>以下のような画面ができていることを確認できます。</p>
+
+<p><img src="041.png" alt="" /></p>
+
+<p>住所のテキストボックスに任意の住所を入力して、「検索」ボタンをクリックします。地図の中心座標とマーカーの位置が変更されたことを確認します。</p>
+
+<p><img src="042.png" alt="" /></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-06-27T18:24:29+09:00">June 27, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E4%BD%8F%E6%89%80%E3%81%AE%E5%80%A4%E3%82%92%E5%9F%BA%E3%81%AB%E5%9C%B0%E5%9B%B3%E4%B8%8A%E3%81%AB%E3%83%94%E3%83%B3%E3%83%9E%E3%83%BC%E3%82%AF%E3%82%92%E8%A8%AD%E7%BD%AE%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fvbcs-for-beginners-5-gmap%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fvbcs-for-beginners-5-gmap%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fvbcs-for-beginners-5-gmap%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/integration/vbcs-for-beginners-4-linechart/" class="pagination--pager" title="ビジネス・オブジェクトのデータを折れ線グラフで表示する
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
