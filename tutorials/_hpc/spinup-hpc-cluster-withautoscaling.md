@@ -17,7 +17,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 - HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** ）
 - 100 Gbps RoCEv2 RDMAインターコネクト (クラスタ・ネットワーク)
 - インターネットからSSH接続可能なBastionノード
-- OS: Oracle Linux 8.6
+- OS: Oracle Linux 8
 - ジョブスケジューラ: Slurm
 - オンデマンドクラスタ機能： **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)**
 - ファイル・ストレージサービスによるHPCクラスタ内ホームディレクトリ共有
@@ -66,7 +66,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
 ## 1-1. スタックの作成
 
- **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** でリソースをデプロイする場合、まずそのための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成する必要があります。
+**[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** でリソースをデプロイする場合、まずそのための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成する必要があります。
 
 本章は、 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** が提供する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を元に、前述の環境構築のためのスタックを作成します。このチュートリアルで使用するHPCクラスタスタックは、バージョン2.10.1.1です。
 

@@ -186,7 +186,7 @@ runcmd:
 
    ![画面ショット](console_page06.png)
 
-    - **イメージ** ：Oracle Linux - HPC Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Marketplace** を選択し検索フィールドに **hpc** と入力して表示される **Oracle Linux - HPC Cluster Networking Image** を選択して表示される **イメージ・ビルド** フィールドで **OracleLinux-8-RHCK-OFED-5.4-3.6.8.1-2023.01.10-0** を選択し **イメージの選択** ボタンをクリック）
+    - **イメージ** ：Oracle Linux - HPC Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Marketplace** を選択し検索フィールドに **hpc** と入力して表示される **Oracle Linux - HPC Cluster Networking Image** を選択して表示される **イメージ・ビルド** フィールドで、バージョン7.9系を使用する場合は **OracleLinux-7** で始まる最新を、バージョン8系を使用する場合は **OracleLinux-8** で始まる最新を選択し、 **イメージの選択** ボタンをクリック。）
 
    ![画面ショット](console_page08.png)
 
@@ -297,7 +297,7 @@ status: done
 
 ## 2-3. 計算ノードファイルシステム確認
 
-   計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。
+計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。
 
 ```sh
 > df -k /mnt/localdisk

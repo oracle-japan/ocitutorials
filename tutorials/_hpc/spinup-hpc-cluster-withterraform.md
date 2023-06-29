@@ -105,30 +105,38 @@ GitHubのアカウント作成は **[ここ](https://github.com/signup?ref_cta=S
 
    ![画面ショット](stack_page01.png)
 
-4. 表示される **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。
-
-   4.1 **General options** フィールド
+4. 表示される **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。  
+4.1 **General options** フィールド
     - **Compartment :** HPC/GPUクラスタをデプロイするコンパートメント
     - **Availability Domain :** HPC/GPUクラスタをデプロイする可用性ドメイン
     - **SSH public key :** Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
       - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
 
-   ![画面ショット](stack_page02.png)
-
-   4.2 **Compute/GPU node options** フィールド
+   ![画面ショット](stack_page02.png)  
+4.2 **Compute/GPU node options** フィールド
     - **Cluster display name postfix :** 計算/GPUノードホスト名の接尾辞(\*1)
     - **Compute/GPU node shape :** BM.Optimized3.36(HPCクラスタ)/BM.GPU4.8(GPUクラスタ)
     - **Compute/GPU node count :** 計算/GPUノードのノード数（デフォルト：2）
-    - **Compute/GPU node image OCID :** 計算/GPUノードのイメージOCID(\*3)
+    - **Compute/GPU node image OCID :** 計算/GPUノードのイメージOCID(\*2)
     - **Compute/GPU node boot volume size :** 計算/GPUノードのブートボリュームサイズ(GB)
-    - **cloud-config :** 計算/GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル(cloud-config)(\*2)
+    - **cloud-config :** 計算/GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル(cloud-config)(\*3)
 
    ![画面ショット](stack_page03.png)
 
-   \*1) 例えば **x9-ol8** と指定した場合、計算/GPUノードのホスト名は **inst-xxxxx-x9-ol8** となります。（ **xxxxx** はランダムな文字列）  
-   \*2) HPCクラスタかGPUクラスタかにより、以下のcloud-configを使用します。これをテキストファイルとして保存し、ブラウザで読み込みます。  
+    *1) 例えば **x9-ol8** と指定した場合、計算/GPUノードのホスト名は **inst-xxxxx-x9-ol8** となります。（ **xxxxx** はランダムな文字列）  
+    *2) 以下のOCIDを指定します。
+
+   |         | Oracle Linuxバージョン | OCID                                                                          |
+   | ------- | ----------------- | ----------------------------------------------------------------------------- |
+   | HPCクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa |
+   |         | 8.7               | ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a |
+   | GPUクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra  |
+   |         |                   |                                                                               |
+
+    *3) HPCクラスタかGPUクラスタかにより、以下のcloud-configを使用します。これをテキストファイルとして保存し、ブラウザで読み込みます。
 
    [HPCクラスタ]
+
    ```sh
    #cloud-config
    timezone: Asia/Tokyo
@@ -162,6 +170,7 @@ GitHubのアカウント作成は **[ここ](https://github.com/signup?ref_cta=S
    ```
 
    [GPUクラスタ]
+
    ```sh
    #cloud-config
    timezone: Asia/Tokyo
@@ -192,16 +201,7 @@ GitHubのアカウント作成は **[ここ](https://github.com/signup?ref_cta=S
      - mount /home
    ```
 
-   \*3) 以下のOCIDを指定します。
-
-|         | Oracle Linuxバージョン | OCID                                                                          |
-| ------- | ----------------- | ----------------------------------------------------------------------------- |
-| HPCクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaayouelanobgkbsb3zanxtu6cr4bst62wco2xs5mzg3it7fp2iuvbq |
-|         | 8.6               | ocid1.image.oc1..aaaaaaaazgofwgysyz5i5bupwhjmolgf44b7vlwyqxy7pmcrpbufpmvef6da |
-| GPUクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra  |
-|         |                   |                                                                               |
-
-\5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
+5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
    ![画面ショット](stack_page04.png)
 
@@ -264,7 +264,7 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 GitHubのTerraformスクリプトレポジトリのページからzipファイルをTerraform実行環境にダウンロード・展開することで行います。  
 
 次に、ダウンロードしたTerraformスクリプトのうち **terraform.tfvars** と **provider.tf** 内の以下Terraform変数を自身の環境に合わせて修正します。  
-この際、ひな型ファイル内のこれらTerraform変数は、予めコメント( **#** で始まる行)として埋め込まれているため、これをコメントアウトして修正します。特に **provider.tf** のひな型はファイルは、全行がコメントとなっているため、これを全てコメントアウトした上で、Terraform変数を設定します。
+この際、ひな型ファイル内のこれらTerraform変数は、予めコメント( **#** で始まる行)として埋め込まれているため、このコメント行を有効化して修正します。特に **provider.tf** のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、Terraform変数を設定します。
 
 [provider.tf]
 
@@ -300,8 +300,8 @@ GitHubのTerraformスクリプトレポジトリのページからzipファイ�
 
 |         | Oracle Linuxバージョン | OCID                                                                          |
 | ------- | ----------------- | ----------------------------------------------------------------------------- |
-| HPCクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaayouelanobgkbsb3zanxtu6cr4bst62wco2xs5mzg3it7fp2iuvbq |
-|         | 8.6               | ocid1.image.oc1..aaaaaaaazgofwgysyz5i5bupwhjmolgf44b7vlwyqxy7pmcrpbufpmvef6da |
+| HPCクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa |
+|         | 8.7               | ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a |
 | GPUクラスタ | 7.9               | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra  |
 |         |                   |                                                                               |
 
@@ -348,7 +348,27 @@ $ base64 ./user_data/cloud-init_cngpu.cfg | tr -d '\n'; echo
 
    この適用が完了するまでの所要時間は、計算/GPUノードのノード数が2ノードの場合で5分程度です。
 
-   ステータスが **成功** となれば、HPC/GPUクラスタのデプロイが完了しています。
+   ステータスが **成功** となれば、HPC/GPUクラスタのデプロイが完了しており、以下のように **ログ** フィールドの最後にBastionノードと計算/GPUノードのホスト名とIPアドレスが出力されます。
+
+    ```sh
+    Outputs:
+
+    Bastion_instances_created = {
+      "display_name" = "bastion"
+      "private_ip" = "10.0.1.138"
+      "public_ip" = "123.456.789.123"
+    }
+    Compute_in_cn_created = {
+      "inst-9fhuq-x9-ol8" = {
+        "display_name" = "inst-9fhuq-x9-ol8"
+        "private_ip" = "10.0.2.10"
+      }
+      "inst-dz99s-x9-ol8" = {
+        "display_name" = "inst-dz99s-x9-ol8"
+        "private_ip" = "10.0.2.73"
+      }
+    }
+    ```
 
 ## 1-2. Terraform CLIを使用する方法
 
@@ -558,7 +578,7 @@ $ mpirun -n 2 -N 1 -hostfile /home/opc/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 
 
    ![画面ショット](stack_page09.png)
 
-   この破棄が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で3分程度です。
+   この破棄が完了するまでの所要時間は、計算/GPUノードのノード数が2ノードの場合で3分程度です。
 
    ステータスが **成功** となれば、HPC/GPUクラスタの削除が完了しています。
 
@@ -575,6 +595,6 @@ Destroy complete! Resources: 18 destroyed.
 $
 ```
 
-この破棄が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で3分程度です。
+この破棄が完了するまでの所要時間は、計算/GPUノードのノード数が2ノードの場合で3分程度です。
 
 これで、このチュートリアルは終了です。
