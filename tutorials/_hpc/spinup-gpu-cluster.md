@@ -231,7 +231,7 @@ runcmd:
 
    ![画面ショット](console_page05.png)
 
-    - **イメージ** ：Oracle Linux 7 - GPU Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Marketplace** アイコンを選択し検索フィールドに **gpu** と入力して表示される **Oracle Linux 7 - GPU Cluster Networking Image** を選択し **イメージ・ビルド** フィールドで **OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.01.10-0** を選択し **イメージの選択** ボタンをクリック）
+    - **イメージ** ：Oracle Linux 7 - GPU Cluster Networking Image (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Marketplace** アイコンを選択し検索フィールドに **gpu** と入力して表示される **Oracle Linux 7 - GPU Cluster Networking Image** を選択し **イメージ・ビルド** フィールドで最新のイメージを選択し **イメージの選択** ボタンをクリック）
 
    ![画面ショット](console_page06.png)
 

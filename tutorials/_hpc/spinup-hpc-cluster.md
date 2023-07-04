@@ -18,7 +18,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHP
 - HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** ）
 - 100 Gbps RoCEv2 RDMAインターコネクト（※1）
 - インターネットからSSH接続可能なBastionノード
-- OS: Oracle Linux 8.6
+- OS: Oracle Linux 8
 - ジョブスケジューラ: Slurm
 - OCIファイルストレージサービスによるHPCクラスタ内ホームディレクトリ共有
 - LDAPによるクラスタ内ユーザ統合管理
