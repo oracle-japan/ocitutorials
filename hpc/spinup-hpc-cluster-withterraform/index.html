@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-06-27T18:24:29+09:00">
+  <meta property="article:published_time" content="2023-07-04T13:48:18+09:00">
 
 
 
@@ -293,7 +293,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPC/GPUクラスタを構築する(基礎インフラ自動構築編)">
     <meta itemprop="description" content="HPC/GPUクラスタを構築してみましょう。このチュートリアルは、HPC/GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPC/GPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
-    <meta itemprop="datePublished" content="2023-06-27T18:24:29+09:00">
+    <meta itemprop="datePublished" content="2023-07-04T13:48:18+09:00">
     
 
     <div class="page__inner-wrap">
@@ -421,10 +421,8 @@ GitHubのアカウント作成は <strong><a href="https://github.com/signup?ref
 
     <p><img src="stack_page01.png" alt="画面ショット" /></p>
   </li>
-  <li>
-    <p>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。</p>
-
-    <p>4.1 <strong>General options</strong> フィールド</p>
+  <li>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。<br />
+4.1 <strong>General options</strong> フィールド
     <ul>
       <li><strong>Compartment :</strong> HPC/GPUクラスタをデプロイするコンパートメント</li>
       <li><strong>Availability Domain :</strong> HPC/GPUクラスタをデプロイする可用性ドメイン</li>
@@ -435,24 +433,58 @@ GitHubのアカウント作成は <strong><a href="https://github.com/signup?ref
       </li>
     </ul>
 
-    <p><img src="stack_page02.png" alt="画面ショット" /></p>
-
-    <p>4.2 <strong>Compute/GPU node options</strong> フィールド</p>
+    <p><img src="stack_page02.png" alt="画面ショット" /><br />
+4.2 <strong>Compute/GPU node options</strong> フィールド</p>
     <ul>
       <li><strong>Cluster display name postfix :</strong> 計算/GPUノードホスト名の接尾辞(*1)</li>
       <li><strong>Compute/GPU node shape :</strong> BM.Optimized3.36(HPCクラスタ)/BM.GPU4.8(GPUクラスタ)</li>
       <li><strong>Compute/GPU node count :</strong> 計算/GPUノードのノード数（デフォルト：2）</li>
-      <li><strong>Compute/GPU node image OCID :</strong> 計算/GPUノードのイメージOCID(*3)</li>
+      <li><strong>Compute/GPU node image OCID :</strong> 計算/GPUノードのイメージOCID(*2)</li>
       <li><strong>Compute/GPU node boot volume size :</strong> 計算/GPUノードのブートボリュームサイズ(GB)</li>
-      <li><strong>cloud-config :</strong> 計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル(cloud-config)(*2)</li>
+      <li><strong>cloud-config :</strong> 計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル(cloud-config)(*3)</li>
     </ul>
 
     <p><img src="stack_page03.png" alt="画面ショット" /></p>
 
     <p>*1) 例えば <strong>x9-ol8</strong> と指定した場合、計算/GPUノードのホスト名は <strong>inst-xxxxx-x9-ol8</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
-*2) HPCクラスタかGPUクラスタかにより、以下のcloud-configを使用します。これをテキストファイルとして保存し、ブラウザで読み込みます。</p>
+ *2) 以下のOCIDを指定します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th> </th>
+          <th>Oracle Linuxバージョン</th>
+          <th>OCID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>HPCクラスタ</td>
+          <td>7.9</td>
+          <td>ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
+        </tr>
+        <tr>
+          <td> </td>
+          <td>8.7</td>
+          <td>ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
+        </tr>
+        <tr>
+          <td>GPUクラスタ</td>
+          <td>7.9</td>
+          <td>ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra</td>
+        </tr>
+        <tr>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>*3) HPCクラスタかGPUクラスタかにより、以下のcloud-configを使用します。これをテキストファイルとして保存し、ブラウザで読み込みます。</p>
 
     <p>[HPCクラスタ]</p>
+
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
 timezone: Asia/Tokyo
 
@@ -485,6 +517,7 @@ runcmd:
 </code></pre></div>    </div>
 
     <p>[GPUクラスタ]</p>
+
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
 timezone: Asia/Tokyo
 
@@ -513,48 +546,15 @@ runcmd:
   - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
   - mount /home
 </code></pre></div>    </div>
+  </li>
+  <li>
+    <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
 
-    <p>*3) 以下のOCIDを指定します。</p>
+    <p><img src="stack_page04.png" alt="画面ショット" /></p>
+
+    <p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時にスタックの適用が開始され、HPC/GPUクラスタの構築が始まりますが、このチュートリアルでは後の章で改めてスタックの適用を行います。</p>
   </li>
 </ol>
-
-<table>
-  <thead>
-    <tr>
-      <th> </th>
-      <th>Oracle Linuxバージョン</th>
-      <th>OCID</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>HPCクラスタ</td>
-      <td>7.9</td>
-      <td>ocid1.image.oc1..aaaaaaaayouelanobgkbsb3zanxtu6cr4bst62wco2xs5mzg3it7fp2iuvbq</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>8.6</td>
-      <td>ocid1.image.oc1..aaaaaaaazgofwgysyz5i5bupwhjmolgf44b7vlwyqxy7pmcrpbufpmvef6da</td>
-    </tr>
-    <tr>
-      <td>GPUクラスタ</td>
-      <td>7.9</td>
-      <td>ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td> </td>
-      <td> </td>
-    </tr>
-  </tbody>
-</table>
-
-<p>\5. 表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
-
-<p><img src="stack_page04.png" alt="画面ショット" /></p>
-
-<p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時にスタックの適用が開始され、HPC/GPUクラスタの構築が始まりますが、このチュートリアルでは後の章で改めてスタックの適用を行います。</p>
 
 <p>これで、以下画面のとおりHPC/GPUクラスタ構築用スタックが作成されました。</p>
 
@@ -645,7 +645,7 @@ runcmd:
 <p>GitHubのTerraformスクリプトレポジトリのページからzipファイルをTerraform実行環境にダウンロード・展開することで行います。</p>
 
 <p>次に、ダウンロードしたTerraformスクリプトのうち <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> 内の以下Terraform変数を自身の環境に合わせて修正します。<br />
-この際、ひな型ファイル内のこれらTerraform変数は、予めコメント( <strong>#</strong> で始まる行)として埋め込まれているため、これをコメントアウトして修正します。特に <strong>provider.tf</strong> のひな型はファイルは、全行がコメントとなっているため、これを全てコメントアウトした上で、Terraform変数を設定します。</p>
+この際、ひな型ファイル内のこれらTerraform変数は、予めコメント( <strong>#</strong> で始まる行)として埋め込まれているため、このコメント行を有効化して修正します。特に <strong>provider.tf</strong> のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、Terraform変数を設定します。</p>
 
 <p>[provider.tf]</p>
 
@@ -765,12 +765,12 @@ runcmd:
     <tr>
       <td>HPCクラスタ</td>
       <td>7.9</td>
-      <td>ocid1.image.oc1..aaaaaaaayouelanobgkbsb3zanxtu6cr4bst62wco2xs5mzg3it7fp2iuvbq</td>
+      <td>ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
     </tr>
     <tr>
       <td> </td>
-      <td>8.6</td>
-      <td>ocid1.image.oc1..aaaaaaaazgofwgysyz5i5bupwhjmolgf44b7vlwyqxy7pmcrpbufpmvef6da</td>
+      <td>8.7</td>
+      <td>ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
     </tr>
     <tr>
       <td>GPUクラスタ</td>
@@ -829,7 +829,26 @@ runcmd:
 
     <p>この適用が完了するまでの所要時間は、計算/GPUノードのノード数が2ノードの場合で5分程度です。</p>
 
-    <p>ステータスが <strong>成功</strong> となれば、HPC/GPUクラスタのデプロイが完了しています。</p>
+    <p>ステータスが <strong>成功</strong> となれば、HPC/GPUクラスタのデプロイが完了しており、以下のように <strong>ログ</strong> フィールドの最後にBastionノードと計算/GPUノードのホスト名とIPアドレスが出力されます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Outputs:
+
+ Bastion_instances_created <span class="o">=</span> <span class="o">{</span>
+   <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"bastion"</span>
+   <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.1.138"</span>
+   <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
+ <span class="o">}</span>
+ Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
+   <span class="s2">"inst-9fhuq-x9-ol8"</span> <span class="o">=</span> <span class="o">{</span>
+     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-x9-ol8"</span>
+     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
+   <span class="o">}</span>
+   <span class="s2">"inst-dz99s-x9-ol8"</span> <span class="o">=</span> <span class="o">{</span>
+     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-x9-ol8"</span>
+     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
+   <span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
   </li>
 </ol>
 
@@ -1041,7 +1060,7 @@ bastion:/home                36G  8.5G   28G  24% /home
 
     <p><img src="stack_page09.png" alt="画面ショット" /></p>
 
-    <p>この破棄が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で3分程度です。</p>
+    <p>この破棄が完了するまでの所要時間は、計算/GPUノードのノード数が2ノードの場合で3分程度です。</p>
 
     <p>ステータスが <strong>成功</strong> となれば、HPC/GPUクラスタの削除が完了しています。</p>
   </li>
@@ -1059,7 +1078,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 <span class="err">$</span>
 </code></pre></div></div>
 
-<p>この破棄が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で3分程度です。</p>
+<p>この破棄が完了するまでの所要時間は、計算/GPUノードのノード数が2ノードの場合で3分程度です。</p>
 
 <p>これで、このチュートリアルは終了です。</p>
 
@@ -1073,7 +1092,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-06-27T18:24:29+09:00">June 27, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-04T13:48:18+09:00">July 4, 2023</time></p>
 
 
       </footer>
