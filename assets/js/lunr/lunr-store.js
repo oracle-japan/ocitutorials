@@ -425,6 +425,12 @@ var store = [{
         "url": "/ocitutorials/content-management/14_external_user/",
         "teaser": "/ocitutorials/content-management/14_external_user/003.jpg"
       },{
+        "title": "その15: フォルダのサブスクライブ（Oracle Content Management のファイル共有機能を利用しよう）",
+        "excerpt":"目次に戻る: Oracle Content Management のファイル共有機能を使ってみよう【初級編】 フォルダをサブスクライブすることで、指定フォルダに何らかの更新が発生した場合に、その通知を受けることができます。通知の受信方法は2種類あります 電子メール Slack (※サービス管理者により、Slack連携機能が有効化されている場合のみ選択可) 通知を受け取るイベントは、右上のユーザーアイコン→プリファレンス→通知→フォルダのサブスクリプションより選択できます。2023年7月時点では、以下のイベントを選択できます フォルダを名前変更、移動または削除する。 フォルダのメンバーシップを変更する。 フォルダまたはその内容の一部のパブリック・リンクを共有する。 フォルダへのフォルダまたはドキュメントの追加。 フォルダ内のドキュメントの名前変更、移動または削除。 フォルダ内のドキュメントの編集。 フォルダ内のドキュメントにコメントする。 サブスクライブ利用時の注意点 サブスクライブは下位階層に継承されます サブスクライブしたフォルダ配下の全てのフォルダおよびファイルが通知対象となります サブスクライブを実行したユーザー自身による操作は通知対象外です サブスクライブを実行したユーザーではない別のユーザーによる操作は通知対象です 【お知らせ】 この文書は、2023年7月時点での最新バージョン(23.7.1)を元に作成されてます。 チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。 前提条件 OCMインスタンスが作成済であること(以下の作成手順参照) OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する Oracle Content Management インスタンスを作成する OCMの利用ユーザーにOCMインスタンスのCECStandardUserもしくはCECEnterpriseUserアプリケーション・ロールが付与されていること OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する Oracle Content Management インスタンスの利用ユーザーを作成するをご確認ください。 1. フォルダのサブスクライブによる通知を有効化する...","categories": [],
+        "tags": ["OCE","OCM"],
+        "url": "/ocitutorials/content-management/15_folder_subscribe/",
+        "teaser": "/ocitutorials/content-management/15_folder_subscribe/006.jpg"
+      },{
         "title": "Oracle Content and Experience を Headless CMS として使ってみよう【初級編】",
         "excerpt":"この文書は Oracle Content and Experience (OCE) のアセット管理機能を Headless CMS として利用する基本的な方法をステップ・バイ・ステップで紹介するチュートリアルです。 【お知らせ】 この文書は、2021年7月時点での最新バージョン(21.6.1)を元に作成されてます。 チュートリアル内の画面ショットについては Oracle Content and Experience の現在のコンソール画面と異なっている場合があります。 前提条件 Oracle Content and Experience インスタンスを作成する OCE の利用ユーザーに、少なくとも下記4つのOCEインスタンスのアプリケーション・ロールが付与されていること CECContentAdministrator CECDeveloperUser CECEnterpriseUser CECRepositoryAdminisrrator [Memo] ユーザーの作成とアプリケーションロールの付与手順は、Oracle Content and Experience インスタンスの利用ユーザーを作成する をご確認ください。 1. アセット機能の利用準備 OCEのアセット管理機能を利用するための準備作業を行います。アセット・リポジトリ、公開チャネル、コンテンツ・タイプをそれぞれ作成し、関連付けを行います。 1.1 アセット・リポジトリを作成する アセット・リポジトリ（以降リポジトリ）を作成します。 リポジトリとは 「デジタル・アセット（画像）やコンテンツ・アイテム（ニュースやブログなどの構造化コンテンツ）を保管・管理する器」 です。リポジトリは複数作成することができます。 OCE インスタンスのアクセスします。OCE インスタンスの URL...","categories": [],
         "tags": ["OCE","OCM"],

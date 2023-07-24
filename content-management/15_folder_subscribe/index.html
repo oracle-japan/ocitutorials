@@ -1,0 +1,695 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>その15: フォルダのサブスクライブ（Oracle Content Management のファイル共有機能を利用しよう） | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="フォルダをサブスクライブすると、フォルダ内に何らかの更新が発生した場合に、指定したチャネルで通知を受けることができます。ここでは、フォルダ・サブスクライブの方法について紹介します">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="その15: フォルダのサブスクライブ（Oracle Content Management のファイル共有機能を利用しよう）">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/content-management/15_folder_subscribe/">
+
+
+  <meta property="og:description" content="フォルダをサブスクライブすると、フォルダ内に何らかの更新が発生した場合に、指定したチャネルで通知を受けることができます。ここでは、フォルダ・サブスクライブの方法について紹介します">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/content-management/15_folder_subscribe/006.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-07-24T10:08:30+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/content-management/15_folder_subscribe/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(80,80,80,0.7), rgba(80,80,80,0.7)), url('/ocitutorials/content-management/15_folder_subscribe/006.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          その15: フォルダのサブスクライブ（Oracle Content Management のファイル共有機能を利用しよう）
+
+        
+      </h1>
+      
+        <p class="page__lead">フォルダをサブスクライブすると、フォルダ内に何らかの更新が発生した場合に、指定したチャネルで通知を受けることができます。ここでは、フォルダ・サブスクライブの方法について紹介します
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/content-management" itemprop="item"><span itemprop="name">Content management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">その15: フォルダのサブスクライブ（Oracle Content Management のファイル共有機能を利用しよう）</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">コンテンツ管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_oce_instance/">Oracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_idcs_group_user/">Oracle Content Management インスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_ocm_instance_IdentityDomain/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/create_identitydomain_group_user/">OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/ocm_admin_guide/">Oracle Content Managementサービス管理者向け作業ガイド</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/using_file_sharing/">Oracle Content Management のファイル共有機能を使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/1_sign_in_oce/">その1: OCM インスタンスにサインインする（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/2_create_folder/">その2: フォルダの作成（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/3_upload_file/">その3: ファイルの登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/4_view_file/">その4: ファイルのプレビュー（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/5_delete_file/">その5: ファイルの削除と復元（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/6_edit_file/">その6: ファイルの編集（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/7_search_file/">その7: ファイルの検索（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_folder_file/">その8: フォルダ・ファイルの共有（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/8_share_publiclink/">その8: パブリック・リンク（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/9_conversation/">その9: 会話（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/10_group/">その10: グループ（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/11_desktop_application/">その11: デスクトップ・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/12_mobile_application/">その12: モバイル・アプリケーション（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/13_upload_multiple_files/">その13: 圧縮ファイルによる複数ファイルの一括登録（Oracle Content Management のファイル共有機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/14_external_user/">その14: 外部ユーザー（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/15_folder_subscribe/" class="active">その15: フォルダのサブスクライブ（Oracle Content Management のファイル共有機能を利用しよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/41_asset_headless/">Oracle Content and Experience を Headless CMS として使ってみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/42_business_repository/">Oracle Content Management で請求書などの電子ファイルを長期保管してみよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/43_repository_permission/">Oracle Content Management のリポジトリのアクセス権限を理解しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/61_create_site/">サイトの作成（Oracle Content and Experience のサイト機能を使ってみよう）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/62_webcms/">Oracle Content and Experience を Webコンテンツ管理(Web CMS) として利用しよう【初級編】</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/71_customize_contentlayout/">Oracle Content and Experience のコンテンツ・レイアウトを編集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/72_change_banner/">Oracle Content and Experience で作成したサイトのバナー画像を変更しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/73_videoplus/">Oracle Content Management のVideo Plus アセットを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/78_create_custom_template/">Oracle Content Management でカスタムテンプレートを自作しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/74_create_multilingual/">Oracle Content and Experience で多言語サイトを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/75_taxonomy/">Oracle Content and Experience のタクソノミを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/77_sitesecuritygovernance/">OCEのサイト・セキュリティとサイト・ガバナンスを理解する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/content-management/91_compile_site_ocmtoolkit/">Oracle Content Toolkitを利用して Oracle Content Management のサイトをコンパイルしよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="その15: フォルダのサブスクライブ（Oracle Content Management のファイル共有機能を利用しよう）">
+    <meta itemprop="description" content="フォルダをサブスクライブすると、フォルダ内に何らかの更新が発生した場合に、指定したチャネルで通知を受けることができます。ここでは、フォルダ・サブスクライブの方法について紹介します">
+    <meta itemprop="datePublished" content="2023-07-24T10:08:30+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-フォルダのサブスクライブによる通知を有効化する">1. フォルダのサブスクライブによる通知を有効化する</a></li><li><a href="#2-フォルダのサブスクライブ">2. フォルダのサブスクライブ</a></li><li><a href="#3-確認電子メールによる通知の受信">3. 確認(電子メールによる通知の受信)</a></li><li><a href="#4-サブスクライブの解除">4. サブスクライブの解除</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>目次に戻る</strong>: <a href="../using_file_sharing">Oracle Content Management のファイル共有機能を使ってみよう【初級編】</a></p>
+
+<p>フォルダを<strong>サブスクライブ</strong>することで、指定フォルダに何らかの更新が発生した場合に、その通知を受けることができます。通知の受信方法は2種類あります</p>
+<ul>
+  <li><strong>電子メール</strong></li>
+  <li><strong>Slack</strong> (※サービス管理者により、Slack連携機能が有効化されている場合のみ選択可)</li>
+</ul>
+
+<p>通知を受け取るイベントは、<strong>右上のユーザーアイコン→プリファレンス→通知→フォルダのサブスクリプション</strong>より選択できます。2023年7月時点では、以下のイベントを選択できます</p>
+
+<ul>
+  <li>フォルダを名前変更、移動または削除する。</li>
+  <li>フォルダのメンバーシップを変更する。</li>
+  <li>フォルダまたはその内容の一部のパブリック・リンクを共有する。</li>
+  <li>フォルダへのフォルダまたはドキュメントの追加。</li>
+  <li>フォルダ内のドキュメントの名前変更、移動または削除。</li>
+  <li>フォルダ内のドキュメントの編集。</li>
+  <li>フォルダ内のドキュメントにコメントする。</li>
+</ul>
+
+<p><strong>サブスクライブ利用時の注意点</strong></p>
+<ul>
+  <li>サブスクライブは<strong>下位階層に継承</strong>されます
+    <ul>
+      <li>サブスクライブしたフォルダ配下の全てのフォルダおよびファイルが通知対象となります</li>
+    </ul>
+  </li>
+  <li>サブスクライブを実行した<strong>ユーザー自身による操作は通知対象外</strong>です
+    <ul>
+      <li>サブスクライブを実行したユーザーではない<strong>別のユーザーによる操作は通知対象</strong>です
+  <img src="001.jpg" alt="画像" /></li>
+    </ul>
+  </li>
+</ul>
+
+<p class="notice--info"><strong>【お知らせ】</strong><br />
+この文書は、2023年7月時点での最新バージョン(23.7.1)を元に作成されてます。<br />
+チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります。</p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>OCMインスタンスが作成済であること(以下の作成手順参照)
+    <ul>
+      <li><a href="../create_ocm_instance_IdentityDomain">OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する</a></li>
+      <li><a href="../create_oce_instance">Oracle Content Management インスタンスを作成する</a></li>
+    </ul>
+  </li>
+  <li>OCMの利用ユーザーにOCMインスタンスの<strong>CECStandardUser</strong>もしくは<strong>CECEnterpriseUser</strong>アプリケーション・ロールが付与されていること
+    <ul>
+      <li><a href="../create_identitydomain_group_user">OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する</a></li>
+      <li><a href="../create_idcs_group_user">Oracle Content Management インスタンスの利用ユーザーを作成する</a>をご確認ください。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-フォルダのサブスクライブによる通知を有効化する">1. フォルダのサブスクライブによる通知を有効化する</h1>
+
+<p>フォルダ・サブスクライブ時に受信するイベントを設定します。ここでは、「フォルダのサブスクリプション」のすべてのイベントを、電子メールで受信します</p>
+
+<ol>
+  <li>
+    <p>OCMにサイン・インします</p>
+  </li>
+  <li>
+    <p>右上のユーザー・アイコンをクリックし、<strong>プリファレンス</strong>を選択します</p>
+  </li>
+  <li>
+    <p>プルダウンメニューより<strong>通知</strong>を選択します</p>
+  </li>
+  <li>
+    <p><strong>通知の受信方法:</strong>で<strong>電子メール</strong>のみを有効化します
+ <img src="002.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>画面を下にスクロールし、<strong>次が行われた場合に通知されます:</strong>の<strong>すべてのイベント</strong>を選択します
+ <img src="003.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>右下の<strong>保存</strong>をクリックします</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="2-フォルダのサブスクライブ">2. フォルダのサブスクライブ</h1>
+
+<p>フォルダを作成し、サブスクライブします</p>
+
+<ol>
+  <li>
+    <p>左ナビゲーション・メニューの<strong>ドキュメント</strong>を開きます</p>
+  </li>
+  <li>
+    <p>任意のフォルダ(ここでは<code class="language-plaintext highlighter-rouge">サブスクライブ・デモ</code>)を作成します</p>
+  </li>
+  <li>
+    <p>作成フォルダの<strong>サブスクライブのアイコン</strong>をクリックします（もしくは、フォルダを右クリック→<strong>通知へのサブスクライブ</strong>を選択します）
+ <img src="004.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>確認ダイアログが表示されます。<strong>はい</strong>をクリックします
+ <img src="005.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>フォルダがサブスクライブされたことを確認します
+ <img src="006.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>サブスクライブしたフォルダを開き、子フォルダを1つ作成します。作成された子フォルダも自動的にサブスクライブ状態となります。
+ <img src="007.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+サブスクライブは<strong>下位階層に継承</strong>されます。<br />
+サブスクライブを実行したユーザー自身による操作は通知対象外のため、電子メールは送信されません</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>子フォルダを開き、ファイルを1件追加します</p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+サブスクライブを実行したユーザー自身による操作は通知対象外のため、電子メールは送信されません</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="3-確認電子メールによる通知の受信">3. 確認(電子メールによる通知の受信)</h1>
+
+<ol>
+  <li>
+    <p>サブスクライブを実行したフォルダ(ここでは<code class="language-plaintext highlighter-rouge">サブスクライブ・デモ</code>)に、別のユーザーを<strong>コントリビュータ権限</strong>でメンバー追加します
+ <img src="008.jpg" alt="画像" /></p>
+
+    <blockquote>
+      <p><strong>[Memo]</strong><br />
+サブスクライブを実行したユーザー自身による操作は通知対象外のため、電子メールは送信されません</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>別ブラウザを開き、前の手順でメンバー追加した別のユーザーでOCMにサインインします</p>
+  </li>
+  <li>
+    <p>メンバー追加されたフォルダ(ここでは<code class="language-plaintext highlighter-rouge">サブスクライブ・デモ</code>)を開き、ファイルを1件追加します
+ <img src="009.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>しばらくすると、サブスクライブを実行したユーザーのメールアドレスに対して、通知メールが送信されます
+ <img src="010.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>追加したファイルを削除(ごみ箱への移動)します。しばらくすると、サブスクライブを実行したユーザーのメールアドレスに対して、通知メールが送信されます
+ <img src="011.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="4-サブスクライブの解除">4. サブスクライブの解除</h1>
+
+<ol>
+  <li>
+    <p>サブスクライブを実行したユーザーでOCMにサイン・インします</p>
+  </li>
+  <li>
+    <p>フォルダのサブスクライブ・アイコンをクリックします（もしくは、フォルダを右クリック→<strong>通知からのサブスクライブ解除</strong>を選択します）
+ <img src="012.jpg" alt="画像" /></p>
+  </li>
+  <li>
+    <p>確認ダイアログが表示されます。<strong>はい</strong>をクリックします</p>
+  </li>
+  <li>
+    <p>サブスクライブ状態が解除されたことを確認します
+ <img src="013.jpg" alt="画像" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+<p><strong>目次に戻る</strong>: <a href="../using_file_sharing">Oracle Content Management のファイル共有機能を使ってみよう【初級編】</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#oce" class="page__taxonomy-item" rel="tag">OCE</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#ocm" class="page__taxonomy-item" rel="tag">OCM</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-24T10:08:30+09:00">July 24, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%81%9D%E3%81%AE15%3A+%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E3%81%AE%E3%82%B5%E3%83%96%E3%82%B9%E3%82%AF%E3%83%A9%E3%82%A4%E3%83%96%EF%BC%88Oracle+Content+Management+%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E6%A9%9F%E8%83%BD%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%82%88%E3%81%86%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F15_folder_subscribe%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F15_folder_subscribe%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcontent-management%2F15_folder_subscribe%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/content-management/14_external_user/" class="pagination--pager" title="その14: 外部ユーザー（Oracle Content Management のファイル共有機能を利用しよう）
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/content-management/41_asset_headless/" class="pagination--pager" title="Oracle Content and Experience を Headless CMS として使ってみよう【初級編】
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
