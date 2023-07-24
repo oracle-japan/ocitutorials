@@ -50,7 +50,8 @@ PRETTY_NAME="Oracle Linux Server 8.6"
 
 以降では、これら2つの方法を解説します。
 
-なお、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用してクラスタを構築する場合は、ホスト名リストが **/etc/opt/oci-hpc/hostfile.tcp** として作成されるため、改めて作成する必要はありません。
+なお、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用してクラスタを構築する場合は、ホスト名リストが **/etc/opt/oci-hpc/hostfile.tcp** として作成されるため、改めて作成する必要はありません。  
+また、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** にしたがってクラスタを構築する場合も、ホスト名リストが **/home/opc/hostlist.txt** として作成されるため、改めて作成する必要はありません。
 
 ***
 # 1. OCIコンソールを活用する方法

@@ -15,11 +15,11 @@ table, th, td {
 このページは、Oracle Cloud Infrastructure（以降OCIと記載）を活用してHPCワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、 **OCI HPCポータル** です。
 
 現時点で提供する主要なコンテンツは、HPCシステム構築に最適なベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等の各種IaaSサービスを組み合わせて様々な用途のHPCクラスタやGPUクラスタを構築する **[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** で、自身の要件に合わせて利用するチュートリアルを選択できるようになっています。  
-その構築手法は、 **[リソース・マネージャ](#5-2-リソースマネージャ)** 、 **[Terraform](#5-12-terraform)** 、Ansibleを駆使する **[マーケットプレース](#5-5-マーケットプレイス)** 提供の **[スタック](#5-3-スタック)** を利用した自動構築と、OCIのコンソールから各ステップを自身で確認・実行しながら実施する手動構築から選択出来、また構築するHPCシステムは、クラスタ管理機能の有無や利用できるソフトウェアから選択することが可能です。
+その構築手法は、 **[リソース・マネージャ](#5-2-リソースマネージャ)** 、 **[Terraform](#5-12-terraform)** 、Ansibleを駆使する **[マーケットプレース](#5-5-マーケットプレイス)** 提供の **[スタック](#5-3-スタック)** や予め用意された **[Terraform](#5-12-terraform)** スクリプトを使用する自動構築と、OCIのコンソールから各ステップを自身で確認・実行しながら実施する手動構築から選択出来、また構築するHPCシステムは、クラスタ管理機能の有無や利用できるソフトウェアから選択することが可能です。
 
-また、OCI上でHPCワークロードを実行する際に有益なテクニカルTipsを集めた **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** や、本ポータルサイトを読み進めるうえで理解が必要なHPC関連のOCI用語を解説する **[OCI HPC用語集](#5-oci-hpc用語集)** も用意されています。
+また、OCIでHPCワークロードを実行する際に性能の指標となるベンチマーク関連情報を提供する **[OCI HPCベンチマーク情報](#2-oci-hpcベンチマーク情報)** 、OCI上でHPCワークロードを実行する際に有益なテクニカルTipsを集めた **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** 、本ポータルサイトを読み進めるうえで理解が必要なHPC関連のOCI用語を解説する **[OCI HPC用語集](#5-oci-hpc用語集)** が用意されています。
 
-今後は、OCI上に構築したHPCシステムのベンチマーク情報、関連情報リンク集等、HPCワークロードをOCI上で実行する際に有益なテクニカルコンテンツを継続的にお届けします。
+今後は、関連情報リンク集等、HPCワークロードをOCI上で実行する際に有益なテクニカルコンテンツを継続的にお届けします。
 
 ***
 # 1. OCI HPCチュートリアル集
@@ -91,7 +91,7 @@ table, th, td {
 | チュートリアル名                                                                       | 構築手法 | クラスタ<br>管理機能 | スタティック/<br>オンデマンド |
 | ------------------------------------------------------------------------------ | ---- | ------------ | ----------------- |
 | **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** | 手動構築<br>（OCIコンソール）   | 無し           | スタティック            |
-| **[HPC/GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** | 自動構築<br>（Terraform）   | 無し           | スタティック            |
+| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** | 自動構築<br>（Terraform）   | 無し           | スタティック            |
 | **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**  | 自動構築<br>（スタック）   | 有り           | スタティック            |
 | **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)** | 自動構築<br>（スタック）   | 有り           | オンデマンド            |
 
@@ -103,7 +103,7 @@ table, th, td {
 | ---------------------------------------------------------------------------------------------------------- | ------------- | ---- | -------- | ----------------- | --------- |
 | **[GPUインスタンスで機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                          | 単一            | 手動   | 無し       | スタティック            | Docker CE |
 | **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**               | 複数            | 手動構築<br>（OCIコンソール）   | 無し       | スタティック            | Docker CE |
-| **[HPC/GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**               | 複数            | 自動構築<br>（Terraform）   | 無し       | スタティック            | - |
+| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**               | 複数            | 自動構築<br>（Terraform）   | 無し       | スタティック            | Docker CE |
 | **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)** | 複数            | 自動構築<br>（スタック）   | 有り       | スタティック            | Enroot    |
 | **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)**                                                              | 複数            | 自動構築<br>（スタック）   | 有り       | オンデマンド            | Enroot    |
 
@@ -125,10 +125,11 @@ table, th, td {
 
 下表は、各チュートリアルで構築するシステム仕様を示します。
 
-| No. | 構築手法 | クラスタ管理機能 | スタティック/オンデマンド      | コンテナランタイム(\*9) |
-| --- | ---- | ------------ | ---------------------- | --------- |
-| 1   | 手動   | 無し(\*8)       | スタティック                 | Docker CE |
-| 2   | 自動   | 有り           | スタティック<br>or<br>オンデマンド | Enroot    |
+| No. | 構築手法 | クラスタ管理機能 | スタティック/オンデマンド          | コンテナランタイム(\*9) |
+| --- | ---- | -------- | ---------------------- | -------------- |
+| 1   | 手動   | 無し(\*8)  | スタティック                 | Docker CE      |
+| 2   | 自動   | 有り       | スタティック<br>or<br>オンデマンド | Enroot         |
+|     |      |          |                        |                |
 
 \*8) NFSユーザホームディレクトリ共有は、ブロック・ボリュームNFSサーバが提供します。  
 \*9) GPUクラスタが対象です。
@@ -136,8 +137,29 @@ table, th, td {
 ***
 # 2. OCI HPCベンチマーク情報
 
-本章は、OCI上でHPCワークロードを実行する際のベンチマーク情報を今後提供していく予定です。  
-情報提供開始まで、暫くお待ちください。
+## 2-0. 概要
+
+本章は、OCIでHPCワークロードや機械学習ワークロードを実行する際に性能の指標となる各種ベンチマークについて、その関連情報を提供します。
+
+現時点は、以下4種類のIaaSレベルの基礎性能を計測する標準ベンチマークについて、OCIでの実行方法を解説します。
+
+- **HPL**
+- **STREAM**
+- **Intel MPI Benchmark**
+- **NCCL Tests**
+
+## 2-1. 標準ベンチマーク実行方法
+
+本章は、 **HPL** 、 **STREAM** 、 **Intel MPI Benchmark** 、及び **NCCL Tests** の各ベンチマークをOCIのHPCワークロード・機械学習ワークロード向けシェイプで実行する方法を解説します。  
+各ベンチマークの実行方法は、下表の名称部分のリンクをクリックして参照ください。
+
+| 名称                  | ベンチマークサイトURL                                                                                               |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **[HPL](/ocitutorials/hpc/benchmark/run-hpl/)**                    | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          |
+| **[STREAM](/ocitutorials/hpc/benchmark/run-stream/)**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            |
+| **[Intel MPI Benchmark](/ocitutorials/hpc/benchmark/run-imb/)** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** |
+| **[NCCL Tests](/ocitutorials/hpc/benchmark/run-nccltests/)**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           |
+|                     |                                                                                                            |
 
 ***
 # 3. OCI HPCテクニカルTips集
@@ -167,14 +189,14 @@ table, th, td {
    クラスタ・ネットワーク対応シェイプの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** や **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。  
    本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。
 
-- **[クラスタ・ネットワーク対応OSイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)**
+- **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)**
 
-   クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージが **[マーケットプレース](#5-5-マーケットプレイス)** から提供されています。  
-   本テクニカルTipsは、このOSイメージの適切な選び方を解説します。
+   クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージである **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されています。  
+   本テクニカルTipsは、この **クラスタネットワーキングイメージ** の適切な選び方を解説します。
 
 - **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)**
 
-   クラスタ・ネットワークに接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだOSイメージが **[マーケットプレース](#5-5-マーケットプレイス)** から提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。  
+   クラスタ・ネットワークに接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだ **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。  
    本テクニカルTipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用するインスタンスをOracle Linux以外のOSでクラスタ・ネットワークに接続する方法を解説します。
 
 ## 3-2. ストレージ
@@ -287,7 +309,7 @@ OCIコンソールのマーケットプレイスメニューは、 **[ここ](ht
 
 HPCクラスタやGPUクラスタ構築の際、OSレベルのカスタマイズを加えたインスタンスから取得したカスタム・イメージを活用し、デプロイ後のカスタマイズ処理を省略することで、構築時間を短縮することが可能です。
 
-**[マーケットプレース](#5-5-マーケットプレイス)** から提供されるHPC向けのイメージは、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** に接続するためのソフトウェア等を含む、カスタム・イメージとして提供されます。
+**[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** は、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** に接続するためのソフトウェア等を含む、カスタム・イメージとして提供されます。
 
 関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm)** を参照ください。
 
@@ -423,3 +445,20 @@ $
 関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm)** を参照ください。
 
 **Terraform CLI** を使用してOCI上にリソースを自動構築する方法は、チュートリアル **[TerraformでOCIの構築を自動化する](https://oracle-japan.github.io/ocitutorials/intermediates/terraform/)** を参照ください。
+
+## 5-13. クラスタネットワーキングイメージ
+
+クラスタネットワーキングイメージは、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** への接続に必要な以下ソフトウェアがインストールされたOracle LinuxをベースとするOSイメージで、 **[マーケットプレイス](#5-5-マーケットプレイス)** から **[カスタム・イメージ](#5-6-カスタムイメージ)** として提供されています。
+
+- Mellanox OFED
+- wpa_supplicant [^wpa_supplicant]
+- oci-cn-auth [^oci-cn-auth]
+
+[^wpa_supplicant]: wpa_supplicant：クラスタ・ネットワークは、インスタンスが接続する際802.1X認証を要求しますが、これらの処理を行うクライアントソフトウェアがwpa_supplicantです。802.1X認証の仕組みは、[ここ](https://www.infraexpert.com/study/wireless14.html)のサイトが参考になります。
+
+[^oci-cn-auth]: oci-cn-auth：クラスタ・ネットワークに接続する際の802.1X認証で必要な認証処理機能を提供するユーティリティーソフトウェアで、GitHubから公開されています。
+
+クラスタネットワーキングイメージは、使用するシェイプがGPUを搭載するかどうかに応じて、 **HPCクラスタネットワーキングイメージ** と **GPUクラスタネットワーキングイメージ** の2種類があり、それぞれで異なるOracle Linuxのバージョンをベースとするイメージが提供されています。  
+使用するシェイプに合わせて適切にクラスタネットワーキングイメージを選択する方法は、 **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照ください。
+
+マーケットプレイスのクラスタネットワーキングイメージは、 **HPCクラスタネットワーキングイメージ** は **[ここ](https://cloud.oracle.com/marketplace/application/63394796/)** 、 **GPUクラスタネットワーキングイメージ** は  **[ここ](https://cloud.oracle.com/marketplace/application/134254210/)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
