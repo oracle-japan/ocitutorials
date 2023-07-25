@@ -223,7 +223,10 @@ Data TransformsはOracle Data Integratorをベースにしています。オン�
     2. 列MONTHをExpressionにドラッグアンドドロップします。
 
     3. 以下の式を追加します。<br>
+    ```
     in ('April','May','June')
+    ```
+
 
     ![Filterから月を絞り込むイメージ](adb403_3_8.png)
 
