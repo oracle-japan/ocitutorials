@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-07-24T10:08:30+09:00">
+  <meta property="article:published_time" content="2023-07-27T13:00:02+09:00">
 
 
 
@@ -244,7 +244,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/" class="active">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPC/GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
@@ -253,6 +253,8 @@
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
@@ -264,9 +266,17 @@
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
@@ -293,7 +303,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2023-07-24T10:08:30+09:00">
+    <meta itemprop="datePublished" content="2023-07-27T13:00:02+09:00">
     
 
     <div class="page__inner-wrap">
@@ -304,7 +314,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-hpcクラスタ作成事前作業">0. HPCクラスタ作成事前作業</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-vcn作成">0-1. VCN作成</a></li><li><a href="#0-2-bastionノード作成">0-2. Bastionノード作成</a></li></ul></li><li><a href="#1-hpcクラスタ作成">1. HPCクラスタ作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-cloud-config作成">1-1. cloud-config作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-計算ノード確認">2. 計算ノード確認</a><ul><li><a href="#2-1-計算ノードログイン">2-1. 計算ノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</a></li></ul></li><li><a href="#3-mpiプログラム実行2ノード編">3. MPIプログラム実行（2ノード編）</a><ul><li><a href="#3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</a></li><li><a href="#3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</a></li></ul></li><li><a href="#4-計算ノード追加">4. 計算ノード追加</a></li><li><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a><ul><li><a href="#5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</a></li><li><a href="#5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#5-2-intel-mpi-benchmark-alltoall実行">5-2. Intel MPI Benchmark Alltoall実行</a></li></ul></li><li><a href="#6-計算ノード入れ替え">6. 計算ノード入れ替え</a></li><li><a href="#7-クラスタネットワークの終了">7. クラスタ・ネットワークの終了</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-hpcクラスタ作成事前作業">0. HPCクラスタ作成事前作業</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-vcn作成">0-1. VCN作成</a></li><li><a href="#0-2-bastionノード作成">0-2. Bastionノード作成</a></li></ul></li><li><a href="#1-hpcクラスタ作成">1. HPCクラスタ作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-cloud-config作成">1-1. cloud-config作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-計算ノード確認">2. 計算ノード確認</a><ul><li><a href="#2-1-計算ノードログイン">2-1. 計算ノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</a></li></ul></li><li><a href="#3-mpiプログラム実行2ノード編">3. MPIプログラム実行（2ノード編）</a><ul><li><a href="#3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</a></li><li><a href="#3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</a></li></ul></li><li><a href="#4-計算ノード追加">4. 計算ノード追加</a></li><li><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a><ul><li><a href="#5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</a></li><li><a href="#5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#5-2-intel-mpi-benchmark-all-reduce実行">5-2. Intel MPI Benchmark All-Reduce実行</a></li></ul></li><li><a href="#6-計算ノード入れ替え">6. 計算ノード入れ替え</a></li><li><a href="#7-クラスタネットワークの終了">7. クラスタ・ネットワークの終了</a></li></ul>
 
             </nav>
           </aside>
@@ -659,18 +669,11 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
   <li>Intel MPI Benchmark Ping-Pong実行</li>
 </ul>
 
-<p>ここでは、2ノードのPing-Pong性能を計測しており、以下性能が出ています。</p>
-
-<ul>
-  <li>帯域：約11 GB/s（インタフェース物理帯域100 Gbpsに対し88 Gbpsを計測）</li>
-  <li>レイテンシ：約1.7 μs</li>
-</ul>
-
 <h2 id="3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</h2>
 
 <p>本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でパスフレーズ無しのSSH接続環境を実現します。</p>
 
-<p>まず初めに、テクニカルTips <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノード上にファイル名 <strong>hostlist.txt</strong> で作成します。</p>
+<p>まず初めに、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノード上にファイル名 <strong>hostlist.txt</strong> で作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-wyr6m-comp
 inst-9wead-comp
@@ -704,7 +707,7 @@ inst-9wead-comp
 known_hosts                                                            100%  440   470.6KB/s   00:00
 </code></pre></div></div>
 
-<p>次に、後のIntel MPI Benchmark Ping-Ponを実行する際に使用する先に作成したホスト名リストを、以下コマンドで全計算ノードにコピーします。</p>
+<p>次に、後のIntel MPI Benchmark Ping-Pongを実行する際に使用する先に作成したホスト名リストを、以下コマンドで全計算ノードにコピーします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done
 </span>inst-wyr6m-comp
@@ -753,77 +756,9 @@ hostlist.txt                                                           100%   32
 
 <h2 id="3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</h2>
 
-<p>本章は、Intel MPI Benchmark Ping-Pongを実行します。</p>
+<p>本章は、 <strong>Intel MPI Benchmark</strong> の <strong>Ping-Pong</strong> を実行します。</p>
 
-<p>計算ノードのうちの1ノードにopcユーザでSSHログインし、以下コマンドを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-<span class="o">&gt;</span> mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ./hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
-<span class="c">#------------------------------------------------------------</span>
-<span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
-<span class="c">#------------------------------------------------------------</span>
-<span class="c"># Date                  : Fri Jan 27 17:14:26 2023</span>
-<span class="c"># Machine               : x86_64</span>
-<span class="c"># System                : Linux</span>
-<span class="c"># Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64</span>
-<span class="c"># Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022</span>
-<span class="c"># MPI Version           : 3.1</span>
-<span class="c"># MPI Thread Environment: </span>
-
-
-<span class="c"># Calling sequence was: </span>
-
-<span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong</span>
-
-<span class="c"># Minimum message length in bytes:   0</span>
-<span class="c"># Maximum message length in bytes:   268435456</span>
-<span class="c">#</span>
-<span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
-<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
-<span class="c"># MPI_Op                         :   MPI_SUM  </span>
-<span class="c">#</span>
-<span class="c">#</span>
-
-<span class="c"># List of Benchmarks to run:</span>
-
-<span class="c"># PingPong</span>
-
-<span class="c">#---------------------------------------------------</span>
-<span class="c"># Benchmarking PingPong </span>
-<span class="c"># #processes = 2 </span>
-<span class="c">#---------------------------------------------------</span>
-       <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
-            0         1000         1.66         0.00
-            8         1000         1.66         4.81
-           16         1000         1.67         9.59
-           32         1000         1.70        18.77
-           64         1000         1.84        34.86
-          128         1000         1.88        68.01
-          256         1000         2.14       119.52
-          512         1000         2.86       178.76
-         1024         1000         2.34       438.04
-         2048         1000         2.97       689.33
-         4096         1000         3.46      1184.22
-         8192         1000         4.47      1831.97
-        16384         1000         6.28      2610.75
-        32768         1000         8.16      4018.05
-        65536          640        10.27      6383.12
-       131072          320        15.51      8449.89
-       262144          160        29.02      9031.92
-       524288           80        51.64     10153.66
-      1048576           40        97.01     10808.74
-      2097152           20       187.74     11170.72
-      4194304           10       369.25     11358.83
-      8388608            5       732.18     11457.09
-     16777216            2      1461.24     11481.46
-     33554432            1      2933.51     11438.32
-     67108864            1      5876.47     11419.94
-    134217728            1     11797.17     11377.11
-    268435456            1     23900.00     11231.61
-
-
-<span class="c"># All processes entering MPI_Finalize</span>
-</code></pre></div></div>
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcベンチマーク情報">OCI HPCベンチマーク情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、 <strong>Ping-Pong</strong> を実行します。</p>
 
 <hr />
 <h1 id="4-計算ノード追加">4. 計算ノード追加</h1>
@@ -837,9 +772,7 @@ hostlist.txt                                                           100%   32
 
 <h2 id="5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</h2>
 
-<p>本章は、追加した2ノードを含めた計4ノードの計算ノードのインターコネクト性能をIntel MPI Benchmarkで確認します。</p>
-
-<p>ここでは、4ノードのAlltoall性能を計測しています。</p>
+<p>本章は、追加した2ノードを含めた計4ノードで <strong>Intel MPI Benchmark</strong> の <strong>All-Reduce</strong> を実行します。</p>
 
 <h2 id="5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</h2>
 
@@ -847,105 +780,9 @@ hostlist.txt                                                           100%   32
 
 <p>具体的な手順は、 <strong><a href="#3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</a></strong> を参照ください。</p>
 
-<h2 id="5-2-intel-mpi-benchmark-alltoall実行">5-2. Intel MPI Benchmark Alltoall実行</h2>
+<h2 id="5-2-intel-mpi-benchmark-all-reduce実行">5-2. Intel MPI Benchmark All-Reduce実行</h2>
 
-<p>計算ノードのうつの1ノードにopcユーザでSSHログインし、以下コマンドを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-<span class="o">&gt;</span> mpirun <span class="nt">-n</span> 4 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ./hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-mem</span> 4 Alltoall 
-<span class="c">#------------------------------------------------------------</span>
-<span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
-<span class="c">#------------------------------------------------------------</span>
-<span class="c"># Date                  : Tue Jan 31 06:22:34 2023</span>
-<span class="c"># Machine               : x86_64</span>
-<span class="c"># System                : Linux</span>
-<span class="c"># Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64</span>
-<span class="c"># Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022</span>
-<span class="c"># MPI Version           : 3.1</span>
-<span class="c"># MPI Thread Environment: </span>
-
-
-<span class="c"># Calling sequence was: </span>
-
-<span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -mem 4 Alltoall</span>
-
-<span class="c"># Minimum message length in bytes:   0</span>
-<span class="c"># Maximum message length in bytes:   4194304</span>
-<span class="c">#</span>
-<span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
-<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
-<span class="c"># MPI_Op                         :   MPI_SUM  </span>
-<span class="c">#</span>
-<span class="c">#</span>
-
-<span class="c"># List of Benchmarks to run:</span>
-
-<span class="c"># Alltoall</span>
-
-<span class="c">#----------------------------------------------------------------</span>
-<span class="c"># Benchmarking Alltoall </span>
-<span class="c"># #processes = 2 </span>
-<span class="c"># ( 2 additional processes waiting in MPI_Barrier)</span>
-<span class="c">#----------------------------------------------------------------</span>
-       <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
-            0         1000         0.03         0.03         0.03
-            1         1000         3.13         3.77         3.45
-            2         1000         3.32         3.59         3.46
-            4         1000         3.26         3.65         3.45
-            8         1000         3.32         3.61         3.47
-           16         1000         3.24         3.67         3.46
-           32         1000         3.25         3.77         3.51
-           64         1000         1.31         6.46         3.88
-          128         1000         3.87         4.42         4.15
-          256         1000         1.38         6.91         4.15
-          512         1000         3.83         4.19         4.01
-         1024         1000         1.61         7.17         4.39
-         2048         1000         4.93         5.54         5.24
-         4096         1000         7.27         7.70         7.49
-         8192         1000         7.97         8.13         8.05
-        16384         1000         9.46         9.54         9.50
-        32768         1000        11.43        11.48        11.45
-        65536          640        21.34        21.45        21.39
-       131072          320        30.19        30.25        30.22
-       262144          160        46.84        46.93        46.88
-       524288           80        78.71        78.74        78.72
-      1048576           40       188.45       192.14       190.29
-      2097152           20       336.62       340.21       338.42
-      4194304           10       713.29       718.38       715.84
-
-<span class="c">#----------------------------------------------------------------</span>
-<span class="c"># Benchmarking Alltoall </span>
-<span class="c"># #processes = 4 </span>
-<span class="c">#----------------------------------------------------------------</span>
-       <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
-            0         1000         0.03         0.03         0.03
-            1         1000         4.02         4.32         4.16
-            2         1000         4.05         4.37         4.20
-            4         1000         4.03         4.35         4.18
-            8         1000         4.07         4.40         4.23
-           16         1000         4.12         4.43         4.26
-           32         1000         4.07         4.41         4.23
-           64         1000         4.26         4.57         4.40
-          128         1000         4.38         4.69         4.53
-          256         1000         4.90         5.41         5.15
-          512         1000         5.02         5.53         5.27
-         1024         1000         5.29         5.84         5.56
-         2048         1000         5.61         6.06         5.83
-         4096         1000         8.45         8.71         8.57
-         8192         1000         9.96        10.43        10.20
-        16384         1000        12.52        13.87        13.20
-        32768         1000        22.50        23.07        22.81
-        65536          640        33.11        33.87        33.50
-       131072          320        52.12        52.76        52.40
-       262144          160        90.90        92.47        91.37
-       524288           80       173.89       176.26       174.68
-      1048576           40       371.47       380.94       375.46
-      2097152           20       732.57       747.82       738.86
-      4194304           10      1405.77      1422.57      1412.98
-
-
-<span class="c"># All processes entering MPI_Finalize</span>
-</code></pre></div></div>
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcベンチマーク情報">OCI HPCベンチマーク情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、 <strong>All-Reduce</strong> を実行します。</p>
 
 <hr />
 <h1 id="6-計算ノード入れ替え">6. 計算ノード入れ替え</h1>
@@ -954,7 +791,7 @@ hostlist.txt                                                           100%   32
 
 <p>この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える">ノードを置き換える</a></strong> 手順を実施します。</p>
 
-<p>再度 <strong><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a></strong> に従いIntel MPIベンチマークを実行、インターコネクト性能が十分出ていることを確認します。</p>
+<p>再度 <strong><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a></strong> に従い <strong>Intel MPI Benchmark</strong> を実行、インターコネクト性能が十分出ていることを確認します。</p>
 
 <hr />
 <h1 id="7-クラスタネットワークの終了">7. クラスタ・ネットワークの終了</h1>
@@ -983,7 +820,7 @@ hostlist.txt                                                           100%   32
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-24T10:08:30+09:00">July 24, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-27T13:00:02+09:00">July 27, 2023</time></p>
 
 
       </footer>
@@ -1007,7 +844,7 @@ hostlist.txt                                                           100%   32
       <a href="#" class="pagination--pager disabled">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/" class="pagination--pager" title="HPC/GPUクラスタを構築する(基礎インフラ自動構築編)
+      <a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/" class="pagination--pager" title="HPCクラスタを構築する(基礎インフラ自動構築編)
 ">次へ</a>
     
   </nav>

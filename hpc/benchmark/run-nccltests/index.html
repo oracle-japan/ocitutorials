@@ -1,0 +1,657 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>NCCL Tests実行方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="NCCL Tests実行方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-nccltests/">
+
+
+  <meta property="og:description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-07-27T13:00:02+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-nccltests/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          NCCL Tests実行方法
+
+        
+      </h1>
+      
+        <p class="page__lead">本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/benchmark" itemprop="item"><span itemprop="name">Benchmark</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">NCCL Tests実行方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/" class="active">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="NCCL Tests実行方法">
+    <meta itemprop="description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
+    <meta itemprop="datePublished" content="2023-07-27T13:00:02+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-dockerコンテナ環境構築">1. Dockerコンテナ環境構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-コンテナ間ssh接続環境構築">1-1. コンテナ間SSH接続環境構築</a></li><li><a href="#1-2-mpi実行を妨げる設定の修正">1-2. MPI実行を妨げる設定の修正</a></li><li><a href="#1-3-dockerコンテナ起動">1-3. Dockerコンテナ起動</a></li><li><a href="#1-4-sshdインストール起動">1-4. sshdインストール・起動</a></li></ul></li><li><a href="#2-nccl-testsビルド">2. NCCL Testsビルド</a></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリ <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の標準ベンチマークである <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> を実行する方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>本ドキュメントで解説する <strong>NCCL Tests</strong> の実行は、GPUクラスタ上に <strong>Docker Community Edition</strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> で構築されたDockerコンテナ実行環境で、 <strong><a href="https://catalog.ngc.nvidia.com/">NGC Catalog</a></strong> から提供される <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> （本ドキュメントで使用するバージョンは23.06-tf2-py3）を起動し、このコンテナに含まれる <strong>NCCL</strong> （本ドキュメントで使用するバージョンは2.17.1）とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用します。</p>
+
+<p>本ドキュメントで <strong>NCCL Tests</strong> を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> 2インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> のチュートリアル <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> の手順に従う等により、GPUノード上で <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> をインストールしてDockerコンテナからGPUが利用可能な環境を予め用意しておきます。<br />
+GPUノードのOSは、Oracle Linux 7.9ベースの <strong>GPU<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用します。</p>
+
+<p>以上より、本ドキュメントで解説する <strong>NCCL Tests</strong> 実行は、以下の手順を経て行います。</p>
+
+<ul>
+  <li>Dockerコンテナ環境構築</li>
+  <li><strong>NCCL Tests</strong> ビルド</li>
+  <li><strong>NCCL Tests</strong> 実行</li>
+</ul>
+
+<p>本ドキュメントは、以下の環境で <strong>NCCL Tests</strong> の <strong>All-Reduce</strong> 通信性能をコンテナ環境から計測し、以下の性能が出ています。</p>
+
+<p>[実行環境]</p>
+<ul>
+  <li>シェイプ: <strong>BM.GPU4.8</strong></li>
+  <li>OS: <strong>Oracle Linux</strong> 7.9 (GPU <strong>クラスタネットワーキングイメージ</strong> )</li>
+  <li>コンテナランタイム: <strong>Docker Community Edition</strong> 24.0.4</li>
+  <li><strong>NVIDIA Container Toolkit</strong> : バージョン1.14.0</li>
+  <li>Dockerコンテナ: <strong>TensorFlow NGC Container</strong> 23.06-tf2-py3</li>
+  <li><strong>NCCL</strong> : バージョン2.17.1</li>
+  <li>ノード数: 2</li>
+  <li>GPU数: <strong>NVIDIA A100</strong> x 16</li>
+  <li>ノード間接続: <strong>クラスタ・ネットワーク</strong> （100 Gbps x 16ポート）</li>
+  <li>メッセージサイズ: 10 GiB</li>
+</ul>
+
+<p>[実行結果]</p>
+<ul>
+  <li>帯域（busbw）: 219 GB/s</li>
+</ul>
+
+<hr />
+<h1 id="1-dockerコンテナ環境構築">1. Dockerコンテナ環境構築</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、後の章で実行する <strong>NCCL Tests</strong> を実行するDockerコンテナに必要な環境構築作業を行います。</p>
+
+<p><strong>NCCL Tests</strong> は、コンテナを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、 <strong>TensorFlow NGC Container</strong> に予め含まれる、 <strong>OpenMPI</strong> です。</p>
+
+<p><strong>OpenMPI</strong> をコンテナ間で実行するためには、MPIプログラムをmpirun等で起動するコンテナ（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナにパスフレーズ無しでSSH接続できる必要があります。</p>
+
+<p>またここで使用する <strong>TensorFlow NGC Container</strong> は、sshdがインストールされていないため、ヘッドノード以外のコンテナでこれをインストールする必要があります。</p>
+
+<p>また <strong>OpenMPI</strong> の実行は、これを実行するコンテナ間で必要なポートにアクセス出来る必要があるため、これを妨げるGPUノード上で動作するファイアーウォールやGPUノードが接続されるサブネットのセキュリティリストを修正する必要があります。</p>
+
+<p>以上より、本章で実施するDockerコンテナ環境構築は、以下の手順を経て行います。</p>
+
+<ul>
+  <li>コンテナ間SSH接続環境構築</li>
+  <li>MPI実行を妨げる設定の修正</li>
+  <li>Dockerコンテナ起動</li>
+  <li>sshdインストール・起動</li>
+</ul>
+
+<h2 id="1-1-コンテナ間ssh接続環境構築">1-1. コンテナ間SSH接続環境構築</h2>
+
+<p>以下コマンドを2ノードのGPUノードのうちの1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称。）でrootで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> /TF/.ssh
+<span class="nv">$ </span><span class="nb">chmod </span>600 /TF/.ssh
+<span class="nv">$ </span><span class="nb">cd</span> /TF/.ssh
+<span class="nv">$ </span>ssh-keygen <span class="nt">-f</span> ./id_rsa <span class="nt">-N</span> <span class="s2">""</span>
+<span class="nv">$ </span><span class="nb">cp</span> ./id_rsa.pub ./authorized_keys
+<span class="nv">$ </span><span class="nb">cd</span> /
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-cvf</span> /tmp/TF.tar ./TF
+</code></pre></div></div>
+
+<p>次に、マスターノードで作成したtarアーカイブ <strong>/tmp/TF.tar</strong> を全てのスレーブノードの <strong>/tmp</strong> にコピーし、以下コマンドを全てのスレーブノードでrootで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> /tmp/TF.tar <span class="nt">-C</span> /
+</code></pre></div></div>
+
+<h2 id="1-2-mpi実行を妨げる設定の修正">1-2. MPI実行を妨げる設定の修正</h2>
+
+<p>本章は、マスターノードとスレーブノードのコンテナ間でMPI実行を妨げる設定を修正します。</p>
+
+<p>具体的には、以下を実施します。</p>
+
+<ul>
+  <li>全てのGPUノードの <strong>firewalld</strong> 停止</li>
+  <li>GPUノードが接続するサブネットのセキュリティーリストのイングレス・ルールに同サブネットからのアクセスを全て許可</li>
+</ul>
+
+<p>なお、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> のチュートリアル <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> の手順に従って構築されたGPUクラスタは、既にこの設定が適用されているため、改めて実施する必要はありません。</p>
+
+<h2 id="1-3-dockerコンテナ起動">1-3. Dockerコンテナ起動</h2>
+
+<p>本章は、GPUノードでDockerコンテナを起動します。</p>
+
+<p>以下コマンドをマスターノードとスレーブノードのrootユーザでそれぞれ実行し、 <strong>NGC Catalog</strong> から <strong>TensorFlow NGC Container</strong> をプルし起動します。<br />
+なおこのコンテナのサイズが14 GB程度あるため、起動完了まで15分程度を要します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--privileged</span> <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--network</span><span class="o">=</span>host <span class="nt">--ipc</span><span class="o">=</span>host <span class="nt">--ulimit</span> <span class="nv">memlock</span><span class="o">=</span><span class="nt">-1</span> <span class="nt">--ulimit</span> <span class="nv">stack</span><span class="o">=</span>67108864 <span class="nt">-v</span> /TF:/root nvcr.io/nvidia/tensorflow:23.06-tf2-py3
+</code></pre></div></div>
+
+<h2 id="1-4-sshdインストール起動">1-4. sshdインストール・起動</h2>
+
+<p>本章は、スレーブノードでsshdをインストールし、このsshdをポート番号22222で起動します。</p>
+
+<p>以下コマンドをスレーブノードで起動したコンテナ上のrootユーザで実行し、sshdをインストール・起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apt update
+<span class="nv">$ </span>apt <span class="nb">install</span> <span class="nt">-y</span> openssh-server
+<span class="nv">$ </span><span class="nb">mkdir</span> /run/sshd
+<span class="nv">$ </span>/usr/sbin/sshd <span class="nt">-p</span> 22222
+</code></pre></div></div>
+
+<p>次に、以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、スレーブノードにSSH接続できることを確認します。この際、接続を継続するかどうかの問いに <strong>yes</strong> と入力し、 <strong>known_hosts</strong> にスレーブノードのホストキーを登録します。これは、この後のmpirunを実行するために必要です。<br />
+ここで、スレーブノード（inst-swgen-gpu4-ol79）のホスト名は、自身の環境に合わせて修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-p</span> 22222 inst-swgen-gpu4-ol79 <span class="nb">hostname
+</span>The authenticity of host <span class="s1">'[inst-swgen-gpu4-ol79]:22222 ([10.0.2.242]:22222)'</span> cannot be established.
+ECDSA key fingerprint is SHA256:KiuvF9QMILkeDOJnr3RFcteAGbTVCkxBZ4gBEJgNqYE.
+Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
+</span>Warning: Permanently added <span class="s1">'[inst-swgen-gpu4-ol79]:22222,[10.0.2.242]:22222'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+inst-swgen-gpu4-ol79
+</code></pre></div></div>
+
+<hr />
+<h1 id="2-nccl-testsビルド">2. NCCL Testsビルド</h1>
+
+<p>本章は、 <strong>NCCL Tests</strong> プログラムを <strong>GitHub</strong> からダウンロード、ビルドします。</p>
+
+<p>マスターノードとスレーブノードのそれぞれで、起動したコンテナ上のrootユーザで、以下のコマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /root
+<span class="nv">$ </span>git clone https://github.com/NVIDIA/nccl-tests.git
+<span class="nv">$ </span><span class="nb">cd </span>nccl-tests
+<span class="nv">$ </span>make <span class="nv">MPI</span><span class="o">=</span>1 <span class="nv">MPI_HOME</span><span class="o">=</span>/usr/local/mpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda <span class="nv">NCCL_HOME</span><span class="o">=</span>/usr/lib/x86_64-linux-gnu
+</code></pre></div></div>
+
+<hr />
+<h1 id="3-nccl-tests実行">3. NCCL Tests実行</h1>
+
+<p>本章は、 <strong>NCCL Tests</strong> プログラムを実行します。</p>
+
+<p>マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。<br />
+ここで、 <strong>-H</strong> オプションに指定するマスターノード（inst-d5ige-gpu4-ol79）とスレーブノード（inst-swgen-gpu4-ol79）のホスト名は、自身の環境に合わせて修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 16 <span class="nt">-H</span> inst-d5ige-gpu4-ol79:8,inst-swgen-gpu4-ol79:8 <span class="nt">-mca</span> plm_rsh_args <span class="s2">"-p 22222"</span> <span class="nt">--mca</span> btl_tcp_if_exclude docker0,lo <span class="nt">-x</span> <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4 <span class="nt">-x</span> <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>enp45s0f0 <span class="nt">-x</span> <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span> ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-f</span> 2 <span class="nt">-t</span> 1 <span class="nt">-g</span> 1
+<span class="c"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
+<span class="c">#</span>
+<span class="c"># Using devices</span>
+<span class="c">#  Rank  0 Group  0 Pid    417 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  1 Group  0 Pid    418 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  2 Group  0 Pid    419 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  3 Group  0 Pid    420 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  4 Group  0 Pid    421 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  5 Group  0 Pid    422 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  6 Group  0 Pid    425 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  7 Group  0 Pid    429 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  8 Group  0 Pid    371 on inst-swgen-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  9 Group  0 Pid    372 on inst-swgen-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 10 Group  0 Pid    373 on inst-swgen-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 11 Group  0 Pid    374 on inst-swgen-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 12 Group  0 Pid    375 on inst-swgen-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 13 Group  0 Pid    376 on inst-swgen-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 14 Group  0 Pid    377 on inst-swgen-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 15 Group  0 Pid    380 on inst-swgen-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#</span>
+<span class="c">#                                                              out-of-place                       in-place          </span>
+<span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
+<span class="c">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
+ 10737418240    2684354560     float     <span class="nb">sum</span>      <span class="nt">-1</span>    90330  118.87  222.88      0    91945  116.78  218.96      0
+<span class="c"># Out of bounds values : 0 OK</span>
+<span class="c"># Avg bus bandwidth    : 220.921 </span>
+<span class="c">#</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-27T13:00:02+09:00">July 27, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=NCCL+Tests%E5%AE%9F%E8%A1%8C%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-nccltests%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-nccltests%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-nccltests%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/benchmark/run-imb/" class="pagination--pager" title="Intel MPI Benchmark実行方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/" class="pagination--pager" title="クラスタ・ネットワーク接続用ネットワークインターフェース作成方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

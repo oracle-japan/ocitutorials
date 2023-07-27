@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-07-24T10:08:30+09:00">
+  <meta property="article:published_time" content="2023-07-27T13:00:02+09:00">
 
 
 
@@ -254,7 +254,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPC/GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
@@ -263,6 +263,8 @@
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
@@ -274,9 +276,17 @@
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
@@ -303,7 +313,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="計算ノードのホスト名リスト作成方法">
     <meta itemprop="description" content="ノード数が多くなるHPCクラスタやGPUクラスタは、全ての計算/GPUノードのホスト名の一覧を記載したホスト名リストを作成することで、構築・運用作業を効率的に進めることが可能になります。本テクニカルTipsは、HPC/GPUクラスタの計算/GPUノードのホスト名リストを効果的に作成する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-07-24T10:08:30+09:00">
+    <meta itemprop="datePublished" content="2023-07-27T13:00:02+09:00">
     
 
     <div class="page__inner-wrap">
@@ -364,7 +374,8 @@ OCI CLIは、これを利用可能にするための事前準備が必要なた�
 
 <p>以降では、これら2つの方法を解説します。</p>
 
-<p>なお、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用してクラスタを構築する場合は、ホスト名リストが <strong>/etc/opt/oci-hpc/hostfile.tcp</strong> として作成されるため、改めて作成する必要はありません。</p>
+<p>なお、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用してクラスタを構築する場合は、ホスト名リストが <strong>/etc/opt/oci-hpc/hostfile.tcp</strong> として作成されるため、改めて作成する必要はありません。<br />
+また、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> にしたがってクラスタを構築する場合も、ホスト名リストが <strong>/home/opc/hostlist.txt</strong> として作成されるため、改めて作成する必要はありません。</p>
 
 <hr />
 <h1 id="1-ociコンソールを活用する方法">1. OCIコンソールを活用する方法</h1>
@@ -446,7 +457,7 @@ inst-afnzx-comp
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-24T10:08:30+09:00">July 24, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-27T13:00:02+09:00">July 27, 2023</time></p>
 
 
       </footer>

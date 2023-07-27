@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>クラスタ・ネットワーク接続用ネットワークインターフェース作成方法 | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.GM4.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。">
+<meta name="description" content="クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -26,7 +26,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">
 
 
-  <meta property="og:description" content="クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.GM4.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。">
+  <meta property="og:description" content="クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。">
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-07-24T10:08:30+09:00">
+  <meta property="article:published_time" content="2023-07-27T13:00:02+09:00">
 
 
 
@@ -164,7 +164,7 @@
         
       </h1>
       
-        <p class="page__lead">クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.GM4.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。
+        <p class="page__lead">クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。
 </p>
       
       
@@ -254,7 +254,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPC/GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
@@ -263,6 +263,8 @@
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
         
@@ -274,9 +276,17 @@
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/" class="active">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
@@ -302,8 +312,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワーク接続用ネットワークインターフェース作成方法">
-    <meta itemprop="description" content="クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.GM4.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。">
-    <meta itemprop="datePublished" content="2023-07-24T10:08:30+09:00">
+    <meta itemprop="description" content="クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。">
+    <meta itemprop="datePublished" content="2023-07-27T13:00:02+09:00">
     
 
     <div class="page__inner-wrap">
@@ -314,28 +324,28 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-ネットワークインターフェース作成手順">1. ネットワークインターフェース作成手順</a><ul><li><a href="#1-1-bmoptimized336">1-1. BM.Optimized3.36</a></li><li><a href="#1-2-bmgpu48bmgpugm48">1-2. BM.GPU4.8/BM.GPU.GM4.8</a></li></ul></li><li><a href="#2-ネットワークアドレス変更手順">2. ネットワークアドレス変更手順</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-ネットワークインターフェース作成手順">1. ネットワークインターフェース作成手順</a><ul><li><a href="#1-1-bmoptimized336">1-1. BM.Optimized3.36</a></li><li><a href="#1-2-bmgpu48bmgpua100-v28">1-2. BM.GPU4.8/BM.GPU.A100-v2.8</a></li></ul></li><li><a href="#2-ネットワークアドレス変更手順">2. ネットワークアドレス変更手順</a></li></ul>
 
             </nav>
           </aside>
         
-        <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> や <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.GM4.8</a></strong> は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。<br />
+        <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> や <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、 <strong>クラスタ・ネットワーク</strong> に接続します。<br />
 本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>BM.Optimized3.36やBM.GPU4.8/BM.GPU.GM4.8は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> がDHCPに対応していないため、その接続インターフェースに静的にIPアドレスを割当てる必要があります。<br />
-またBM.GPU4.8/BM.GPU.GM4.8は、クラスタ・ネットワークに接続するポートを16ポート有し、これらをNCCL等のGPU間通信ライブラリから使用しますが、この場合これら16ポートを16個の異なるIPサブネットに接続して使用します。</p>
+<p><strong>BM.Optimized3.36</strong> や <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> がDHCPに対応していないため、その接続インターフェースに静的にIPアドレスを割当てる必要があります。<br />
+また <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> は、 <strong>クラスタ・ネットワーク</strong> に接続するポートを16ポート有し、これらを <strong>NCCL</strong> 等のGPU間通信ライブラリから使用しますが、この場合これら16ポートを16個の異なるIPサブネットに接続して使用します。</p>
 
-<p>ここでDHCPが利用できないクラスタ・ネットワークで、複数ノードに亘ってIPアドレスの重複が起こらないようにネットワークインターフェースを設定するには、どのようにうすればよいでしょうか。</p>
+<p>ここでDHCPが利用できない <strong>クラスタ・ネットワーク</strong> で、複数ノードに亘ってIPアドレスの重複が起こらないようにネットワークインターフェースを設定するには、どのようにうすればよいでしょうか。</p>
 
-<p>この課題に対処するため、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から提供するクラスタ・ネットワーク対応OSイメージは、systemdのサービス <strong>oci-rdma-configure</strong> を用意しています。クラスタ・ネットワーク対応OSイメージを使用する方法は、テクニカルTips <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタ・ネットワーク対応OSイメージの選び方</a></strong> が参考になります。<br />
-このサービスは、起動されるとクラスタ・ネットワークに接続するポートのネットワークインターフェース設定を/etc/sysconfig/network-scripts/ifcfg- <em>ifname</em> ファイルに作成し、ネットワークインターフェースを起動します。<br />
+<p>この課題に対処するため、 <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> は、systemdのサービス <strong>oci-rdma-configure</strong> を用意しています。<br />
+このサービスは、起動されると <strong>クラスタ・ネットワーク</strong> に接続するポートのネットワークインターフェース設定を/etc/sysconfig/network-scripts/ifcfg-<em>ifname</em> ファイルに作成し、ネットワークインターフェースを起動します。<br />
 ここで各ポートに割り振られるIPアドレスは、インスタンスを仮想クラウド・ネットワークのサブネット（24ビットのネットマスクを想定）にTCP/IPで接続する際に使用するポートにDHCPで割り振られるIPアドレスの4フィールド目（ここでは”x”と仮定）を使用し、以下のように静的にIPアドレスを割当てることで、アドレス重複を回避します。</p>
 
 <ul>
-  <li>BM.Optimized3.36の場合</li>
+  <li><strong>BM.Optimized3.36</strong> の場合</li>
 </ul>
 
 <table>
@@ -354,7 +364,7 @@
 </table>
 
 <ul>
-  <li>BM.GPU4.8/BM.GPU.GM4.8の場合</li>
+  <li><strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合</li>
 </ul>
 
 <table>
@@ -432,16 +442,16 @@
   </tbody>
 </table>
 
-<p>ここでIPアドレスに使用するネットワークアドレスは、デフォルトで192.168.0.0/24が使用されますが、これを異なるネットワークアドレスに変更することも可能で、この手順も解説します。</p>
+<p>これらのインターフェースに割り当てられるネットワークアドレスは、デフォルトで192.168.yyy.0/24が使用されますが、これを異なるネットワークアドレスに変更することも可能で、この手順も解説します。</p>
 
-<p>なお 、ここで解説するネットワークインターフェース作成手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> で紹介するHPCクラスタ構築手順や <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> で紹介するGPUクラスタ構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。</p>
+<p>なお 、ここで解説するネットワークインターフェース作成手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> で紹介するHPCクラスタ構築手順や <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> で紹介するGPUクラスタ構築手順に含まれるため、これらチュートリアルの手順に従ってHPC/GPUクラスタを構築する場合は、改めて実施する必要はありません。</p>
 
 <hr />
 <h1 id="1-ネットワークインターフェース作成手順">1. ネットワークインターフェース作成手順</h1>
 
 <h2 id="1-1-bmoptimized336">1-1. BM.Optimized3.36</h2>
 
-<p>BM.Optimized3.36の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するポートは、以下の手順を該当するノードのrootで実行し、ネットワークインターフェースを作成します。</p>
+<p><strong>BM.Optimized3.36</strong> の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するポートは、以下の手順を該当するノードのrootで実行し、ネットワークインターフェースを作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> systemctl start oci-rdma-configure
 <span class="o">&gt;</span> ifconfig ens300f0
@@ -464,11 +474,11 @@ ens800f0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADC
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 </code></pre></div></div>
 
-<p>上記結果から、仮想クラウド・ネットワークにTCP/IPで接続するens300f0にDHCPから割当てられたIPアドレス10.0.2.10/24を元に、クラスタ・ネットワークに接続するポートens800f0に192.168.0.10/24が割当てられていることがわかります。</p>
+<p>上記結果から、仮想クラウド・ネットワークにTCP/IPで接続するens300f0にDHCPから割当てられたIPアドレス10.0.2.10/24を元に、 <strong>クラスタ・ネットワーク</strong> に接続するポートens800f0に192.168.0.10/24が割当てられていることがわかります。</p>
 
-<h2 id="1-2-bmgpu48bmgpugm48">1-2. BM.GPU4.8/BM.GPU.GM4.8</h2>
+<h2 id="1-2-bmgpu48bmgpua100-v28">1-2. BM.GPU4.8/BM.GPU.A100-v2.8</h2>
 
-<p>BM.GPU4.8/BM.GPU.GM4.8の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する16個のポートは、以下の手順を該当するノードのrootで実行し、ネットワークインターフェースを作成します。</p>
+<p><strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する16個のポートは、以下の手順を該当するノードのrootで実行し、ネットワークインターフェースを作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> systemctl start oci-rdma-configure
 <span class="o">&gt;</span> ifconfig <span class="nt">-a</span> | <span class="nb">grep</span> <span class="nt">-A1</span> enp
@@ -533,7 +543,7 @@ enp76s0f1: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROAD
 <h1 id="2-ネットワークアドレス変更手順">2. ネットワークアドレス変更手順</h1>
 
 <p><strong>oci-rdma-configure</strong> を使用した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続ポートのネットワークインターフェース作成は、その設定ファイルである <strong>/etc/oci-hpc/rdma-network.conf</strong> をもとに行われ、使用するネットワークアドレスをこの設定ファイル中の変数 <strong>rdma_network</strong> の値から読み取ります。<br />
-そこでデフォルトの192.168.0.0からアドレスを変更するには、以下の手順を該当するノードのrootで実行します。（この例はBM.GPU4.8/BM.GPU.GM4.8の場合）</p>
+そこでデフォルトの192.168.0.0からアドレスを変更するには、以下の手順を該当するノードのrootで実行します。（この例は <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> diff /etc/oci-hpc/rdma-network.conf_org /etc/oci-hpc/rdma-network.conf
 38c38
@@ -609,7 +619,7 @@ enp76s0f1: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROAD
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-24T10:08:30+09:00">July 24, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-27T13:00:02+09:00">July 27, 2023</time></p>
 
 
       </footer>
@@ -630,11 +640,11 @@ enp76s0f1: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROAD
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/cluster-with-bv-stack/" class="pagination--pager" title="ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる
+      <a href="/ocitutorials/hpc/benchmark/run-nccltests/" class="pagination--pager" title="NCCL Tests実行方法
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/" class="pagination--pager" title="クラスタ・ネットワーク対応OSイメージの選び方
+      <a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/" class="pagination--pager" title="クラスタネットワーキングイメージの選び方
 ">次へ</a>
     
   </nav>

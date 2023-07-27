@@ -1,0 +1,876 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Intel MPI Benchmark実行方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarkを実行する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Intel MPI Benchmark実行方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-imb/">
+
+
+  <meta property="og:description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarkを実行する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-07-27T13:00:02+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-imb/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Intel MPI Benchmark実行方法
+
+        
+      </h1>
+      
+        <p class="page__lead">本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarkを実行する方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/benchmark" itemprop="item"><span itemprop="name">Benchmark</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Intel MPI Benchmark実行方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/" class="active">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Intel MPI Benchmark実行方法">
+    <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarkを実行する方法を解説します。">
+    <meta itemprop="datePublished" content="2023-07-27T13:00:02+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-openmpiでintel-mpi-benchmarkを実行する場合">1. OpenMPIでIntel MPI Benchmarkを実行する場合</a></li><li><a href="#2-intel-mpi-libraryでintel-mpi-benchmarkを実行する">2. Intel MPI LibraryでIntel MPI Benchmarkを実行する</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークの <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmark</a></strong> を実行する方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>本ドキュメントで解説する <strong>Intel MPI Benchmark</strong> の実行は、 <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれる <strong>OpenMPI</strong> （本ドキュメントで使用するバージョンは4.1.2a1）と <strong>Intel MPI Benchmark</strong> を使用する方法と、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html">Intel oneAPI HPC Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）をインストールしてこれに含まれる <strong><a href="https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html">Intel MPI Library</a></strong> （本ドキュメントで使用するバージョンは2021.10）と <strong>Intel MPI Benchmark</strong> を使用する方法を、それぞれ解説します。<br />
+また <strong>Intel MPI Benchmark</strong> は、2ノード間の <strong>Ping-Pong</strong> と4ノード間の <strong>All-Reduce</strong> の計測方法をそれぞれ解説します。</p>
+
+<p>本ドキュメントで <strong>Intel MPI Benchmark</strong> を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> 4インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。<br />
+計算ノードのOSは、 <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （本ドキュメントで使用するバージョンは <strong>Oracle Linux</strong> 8.7ベース）を使用します。</p>
+
+<p>本ドキュメントは、以下の環境で <strong>Intel MPI Benchmark</strong> を実行しており、2ノード間の <strong>Ping-Pong</strong> で以下の性能が出ています。</p>
+
+<p>[実行環境]</p>
+<ul>
+  <li>シェイプ: <strong>BM.Optimized3.36</strong></li>
+  <li>OS: <strong>Oracle Linux</strong> 8.7 (HPC <strong>クラスタネットワーキングイメージ</strong> )</li>
+  <li>MPI: <strong>OpenMPI</strong> （バージョン4.1.2a1）</li>
+  <li>ノード数: 2</li>
+  <li>ノード間接続: <strong>クラスタ・ネットワーク</strong></li>
+</ul>
+
+<p>[実行結果]</p>
+<ul>
+  <li>レイテンシ: 1.67 usec</li>
+  <li>帯域幅（256 MiBメッセージサイズ）: 12,234 MB/s</li>
+</ul>
+
+<hr />
+<h1 id="1-openmpiでintel-mpi-benchmarkを実行する場合">1. OpenMPIでIntel MPI Benchmarkを実行する場合</h1>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれる <strong>OpenMPI</strong> と <strong>Intel MPI Benchmark</strong> を使用し、 <strong>Intel MPI Benchmark</strong> を実行する方法を解説します。<br />
+具体的には、以下の作業を実施します。</p>
+
+<ul>
+  <li>ホストリストファイル<sup id="fnref:hostlist" role="doc-noteref"><a href="#fn:hostlist" class="footnote" rel="footnote">1</a></sup>作成・配布</li>
+  <li>OS再起動</li>
+  <li><strong>Intel MPI Benchmark</strong> 実行</li>
+</ul>
+
+<ol>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホストリストファイルを <strong>hostlist.txt</strong> として作成、これを全計算ノードにコピーします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> inst-wyr6m-comp
+ inst-9wead-comp
+ inst-u6i7v-comp
+ inst-sgf5u-comp
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを全計算ノードのopcユーザで実行し、OSを再起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。<br />
+なお、コマンド中の <strong>path_to_hostlist</strong> は、ホストリストファイルをコピーしたパスに置き換えます。<br />
+ここでは、2ノードを使用した <strong>Ping-Pong</strong> をメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,234.28 MB/s）を以ってその結果とします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+ <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> /path_to_hostlist/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
+ <span class="c">#------------------------------------------------------------</span>
+ <span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+ <span class="c">#------------------------------------------------------------</span>
+ <span class="c"># Date                  : Tue Jul 18 20:53:47 2023</span>
+ <span class="c"># Machine               : x86_64</span>
+ <span class="c"># System                : Linux</span>
+ <span class="c"># Release               : 4.18.0-425.13.1.el8_7.x86_64</span>
+ <span class="c"># Version               : #1 SMP Tue Feb 21 15:09:05 PST 2023</span>
+ <span class="c"># MPI Version           : 3.1</span>
+ <span class="c"># MPI Thread Environment: </span>
+
+
+ <span class="c"># Calling sequence was: </span>
+
+ <span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong</span>
+
+ <span class="c"># Minimum message length in bytes:   0</span>
+ <span class="c"># Maximum message length in bytes:   268435456</span>
+ <span class="c">#</span>
+ <span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+ <span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
+ <span class="c"># MPI_Op                         :   MPI_SUM  </span>
+ <span class="c">#</span>
+ <span class="c">#</span>
+
+ <span class="c"># List of Benchmarks to run:</span>
+
+ <span class="c"># PingPong</span>
+
+ <span class="c">#---------------------------------------------------</span>
+ <span class="c"># Benchmarking PingPong </span>
+ <span class="c"># #processes = 2 </span>
+ <span class="c">#---------------------------------------------------</span>
+    <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+         0         1000         1.67         0.00
+         8         1000         1.67         4.80
+        16         1000         1.67         9.56
+        32         1000         1.71        18.76
+        64         1000         1.83        34.92
+       128         1000         1.88        67.99
+       256         1000         2.14       119.36
+       512         1000         2.22       230.59
+      1024         1000         2.33       439.99
+      2048         1000         3.06       669.66
+      4096         1000         3.78      1083.18
+      8192         1000         4.86      1684.54
+     16384         1000         6.75      2428.97
+     32768         1000         9.25      3543.37
+     65536          640        10.72      6111.17
+    131072          320        16.32      8029.48
+    262144          160        28.80      9103.05
+    524288           80        50.16     10453.17
+   1048576           40        92.90     11286.93
+   2097152           20       178.70     11735.89
+   4194304           10       349.94     11985.73
+   8388608            5       692.70     12109.99
+  16777216            2      1377.91     12175.80
+  33554432            1      2750.18     12200.83
+  67108864            1      5490.79     12222.08
+ 134217728            1     10973.37     12231.22
+ 268435456            1     21941.25     12234.28
+
+
+ <span class="c"># All processes entering MPI_Finalize</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。<br />
+なお、コマンド中の <strong>path_to_hostlist</strong> は、ホストリストファイルをコピーしたパスに置き換えます。<br />
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用した <strong>All-Reduce</strong> の所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+ <span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> /path_to_hostlist/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 <span class="nt">-npmin</span> 144 allreduce
+ <span class="c">#------------------------------------------------------------</span>
+ <span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+ <span class="c">#------------------------------------------------------------</span>
+ <span class="c"># Date                  : Thu Jul 20 16:27:27 2023</span>
+ <span class="c"># Machine               : x86_64</span>
+ <span class="c"># System                : Linux</span>
+ <span class="c"># Release               : 4.18.0-425.13.1.el8_7.x86_64</span>
+ <span class="c"># Version               : #1 SMP Tue Feb 21 15:09:05 PST 2023</span>
+ <span class="c"># MPI Version           : 3.1</span>
+ <span class="c"># MPI Thread Environment: </span>
+    
+    
+ <span class="c"># Calling sequence was: </span>
+    
+ <span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 -npmin 144 allreduce</span>
+    
+ <span class="c"># Minimum message length in bytes:   0</span>
+ <span class="c"># Maximum message length in bytes:   268435456</span>
+ <span class="c">#</span>
+ <span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+ <span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
+ <span class="c"># MPI_Op                         :   MPI_SUM  </span>
+ <span class="c">#</span>
+ <span class="c">#</span>
+    
+ <span class="c"># List of Benchmarks to run:</span>
+    
+ <span class="c"># Allreduce</span>
+    
+ <span class="c">#----------------------------------------------------------------</span>
+ <span class="c"># Benchmarking Allreduce </span>
+ <span class="c"># #processes = 144 </span>
+ <span class="c">#----------------------------------------------------------------</span>
+    <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
+         0         1000         0.03         0.03         0.03
+         8         1000         4.50        18.59        11.69
+        16         1000         5.39        17.63        11.63
+        32         1000        10.11        13.13        11.63
+        64         1000         8.32        15.24        11.89
+       128         1000         8.09        16.58        12.42
+       256         1000         9.89        16.40        13.13
+       512         1000         9.82        17.86        13.83
+      1024         1000         8.73        20.20        14.63
+      2048         1000         9.93        22.23        16.15
+      4096         1000        12.02        27.01        19.67
+      8192         1000        31.39        32.95        32.13
+     16384         1000        35.31        37.19        36.22
+     32768         1000        45.48        47.47        46.45
+     65536          640        55.95        57.01        56.52
+    131072          320        80.63        87.40        82.04
+    262144          160       129.56       133.52       131.70
+    524288           80       208.77       220.54       215.39
+   1048576           40       432.20       461.07       447.59
+   2097152           20      3352.04      3795.60      3591.64
+   4194304           10      5326.33      5896.00      5630.47
+   8388608            5     11920.32     13331.59     12864.12
+  16777216            2     14467.98     15429.07     15048.12
+  33554432            1     36607.12     40731.76     38998.56
+  67108864            1     75721.76     84852.59     80901.12
+ 134217728            1    151129.15    159549.19    155682.92
+ 268435456            1    331046.67    353256.68    343593.42
+    
+    
+ <span class="c"># All processes entering MPI_Finalize</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="2-intel-mpi-libraryでintel-mpi-benchmarkを実行する">2. Intel MPI LibraryでIntel MPI Benchmarkを実行する</h1>
+
+<p>本章は、 <strong>Intel oneAPI HPC Toolkit</strong> をインストールしてこれに含まれる <strong>Intel MPI Library</strong> と <strong>Intel MPI Benchmark</strong> を使用し、 <strong>Intel MPI Benchmark</strong> を実行する方法を解説します。<br />
+具体的には、以下の作業を実施します。</p>
+
+<ul>
+  <li><strong>Intel oneAPI HPC Toolkit</strong> インストール</li>
+  <li>ホストリストファイル<sup id="fnref:hostlist:1" role="doc-noteref"><a href="#fn:hostlist" class="footnote" rel="footnote">1</a></sup>作成・配布</li>
+  <li>OS再起動</li>
+  <li><strong>Intel MPI Benchmark</strong> 実行</li>
+</ul>
+
+<ol>
+  <li>
+    <p>以下コマンドを全計算ノードのopcユーザで実行し、 <strong>Intel oneAPI HPC Toolkit</strong> をインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--add-repo</span> https://yum.repos.intel.com/oneapi
+ <span class="nv">$ </span><span class="nb">sudo </span>rpm <span class="nt">--import</span> https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+ <span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> intel-basekit
+ <span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> intel-hpckit
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホストリストファイルを <strong>hostlist.txt</strong> として作成、これを全計算ノードにコピーします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> inst-wyr6m-comp
+ inst-9wead-comp
+ inst-u6i7v-comp
+ inst-sgf5u-comp
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを全計算ノードのopcユーザで実行し、OSを再起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。<br />
+なお、コマンド中の <strong>path_to_hostlist</strong> は、ホストリストファイルをコピーしたパスに置き換えます。<br />
+ここでは、2ノードを使用した <strong>Ping-Pong</strong> をメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.71 usec）、帯域幅は256 MiBメッセージの帯域幅（12,240.91 MB/s）を以ってその結果とします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
+ <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-ppn</span> 1 <span class="nt">-hostfile</span> /path_to_hostlist/hostlist.txt <span class="nt">-genv</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
+ <span class="c">#----------------------------------------------------------------</span>
+ <span class="c">#    Intel(R) MPI Benchmarks 2021.6, MPI-1 part</span>
+ <span class="c">#----------------------------------------------------------------</span>
+ <span class="c"># Date                  : Tue Jul 18 18:45:29 2023</span>
+ <span class="c"># Machine               : x86_64</span>
+ <span class="c"># System                : Linux</span>
+ <span class="c"># Release               : 4.18.0-425.13.1.el8_7.x86_64</span>
+ <span class="c"># Version               : #1 SMP Tue Feb 21 15:09:05 PST 2023</span>
+ <span class="c"># MPI Version           : 3.1</span>
+ <span class="c"># MPI Thread Environment: </span>
+    
+    
+ <span class="c"># Calling sequence was: </span>
+    
+ <span class="c"># IMB-MPI1 -msglog 3:28 PingPong </span>
+    
+ <span class="c"># Minimum message length in bytes:   0</span>
+ <span class="c"># Maximum message length in bytes:   268435456</span>
+ <span class="c">#</span>
+ <span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+ <span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT </span>
+ <span class="c"># MPI_Op                         :   MPI_SUM  </span>
+ <span class="c"># </span>
+ <span class="c"># </span>
+    
+ <span class="c"># List of Benchmarks to run:</span>
+    
+ <span class="c"># PingPong</span>
+    
+ <span class="c">#---------------------------------------------------</span>
+ <span class="c"># Benchmarking PingPong </span>
+ <span class="c"># #processes = 2 </span>
+ <span class="c">#---------------------------------------------------</span>
+        <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+             0         1000         1.71         0.00
+             8         1000         1.72         4.64
+            16         1000         1.72         9.28
+            32         1000         1.76        18.16
+            64         1000         1.88        34.00
+           128         1000         1.94        65.86
+           256         1000         2.19       116.90
+           512         1000         2.28       224.34
+          1024         1000         2.38       431.02
+          2048         1000         3.12       656.17
+          4096         1000         3.63      1128.55
+          8192         1000         4.28      1912.25
+         16384         1000         5.85      2798.76
+         32768         1000         7.55      4342.28
+         65536          640        12.94      5063.04
+        131072          320        18.12      7232.15
+        262144          160        28.27      9274.42
+        524288           80        50.21     10441.60
+       1048576           40        93.04     11269.83
+       2097152           20       178.49     11749.09
+       4194304           10       349.73     11993.04
+       8388608            5       692.23     12118.21
+      16777216            2      1377.06     12183.35
+      33554432            1      2749.48     12203.92
+      67108864            1      5490.82     12222.02
+     134217728            1     10969.54     12235.50
+     268435456            1     21929.37     12240.91
+    
+    
+ <span class="c"># All processes entering MPI_Finalize</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。<br />
+なお、コマンド中の <strong>path_to_hostlist</strong> は、ホストリストファイルをコピーしたパスに置き換えます。<br />
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用した <strong>All-Reduce</strong> の所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
+ <span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-ppn</span> 36 <span class="nt">-hostfile</span> /path_to_hostlist/hostlist.txt <span class="nt">-genv</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 IMB-MPI1 <span class="nt">-msglog</span> 3:28 <span class="nt">-npmin</span> 144 allreduce
+ <span class="c">#----------------------------------------------------------------</span>
+ <span class="c">#    Intel(R) MPI Benchmarks 2021.6, MPI-1 part</span>
+ <span class="c">#----------------------------------------------------------------</span>
+ <span class="c"># Date                  : Thu Jul 20 17:06:33 2023</span>
+ <span class="c"># Machine               : x86_64</span>
+ <span class="c"># System                : Linux</span>
+ <span class="c"># Release               : 4.18.0-425.13.1.el8_7.x86_64</span>
+ <span class="c"># Version               : #1 SMP Tue Feb 21 15:09:05 PST 2023</span>
+ <span class="c"># MPI Version           : 3.1</span>
+ <span class="c"># MPI Thread Environment: </span>
+    
+    
+ <span class="c"># Calling sequence was: </span>
+    
+ <span class="c"># IMB-MPI1 -msglog 3:28 -npmin 144 allreduce </span>
+    
+ <span class="c"># Minimum message length in bytes:   0</span>
+ <span class="c"># Maximum message length in bytes:   268435456</span>
+ <span class="c">#</span>
+ <span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+ <span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT </span>
+ <span class="c"># MPI_Op                         :   MPI_SUM  </span>
+ <span class="c"># </span>
+ <span class="c"># </span>
+    
+ <span class="c"># List of Benchmarks to run:</span>
+    
+ <span class="c"># Allreduce</span>
+    
+ <span class="c">#----------------------------------------------------------------</span>
+ <span class="c"># Benchmarking Allreduce </span>
+ <span class="c"># #processes = 144 </span>
+ <span class="c">#----------------------------------------------------------------</span>
+    <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
+         0         1000         0.04         0.04         0.04
+         8         1000         3.82         3.99         3.89
+        16         1000         3.84         3.97         3.90
+        32         1000         3.88         4.02         3.94
+        64         1000         4.59         5.84         4.90
+       128         1000         4.59         6.17         5.13
+       256         1000         5.63         6.98         6.01
+       512         1000         5.93         7.43         6.43
+      1024         1000         7.01         8.35         7.40
+      2048         1000         8.29         9.82         8.74
+      4096         1000        11.57        13.00        11.94
+      8192         1000        17.99        19.95        18.70
+     16384         1000        30.71        32.50        31.28
+     32768         1000        40.09        41.80        40.63
+     65536          640        58.15        60.29        58.95
+    131072          320        95.01        97.25        95.75
+    262144          160       174.82       178.72       176.52
+    524288           80       324.98       334.57       327.82
+   1048576           40       604.11       638.19       615.04
+   2097152           20      1222.56      1280.38      1250.78
+   4194304           10      2755.72      2793.37      2763.87
+   8388608            5      5495.29      5583.16      5538.68
+  16777216            2     11045.25     11199.33     11153.57
+  33554432            1     24374.20     24531.76     24425.53
+  67108864            1     49608.12     52453.49     50430.43
+ 134217728            1     99095.37    100175.72     99595.04
+ 268435456            1    196246.06    197505.86    196831.87
+    
+    
+ <span class="c"># All processes entering MPI_Finalize</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:hostlist" role="doc-endnote">
+      <p>MPIを使用してIntel_MPI_Benchmarkを実行するため、この際に必要となる。 <a href="#fnref:hostlist" class="reversefootnote" role="doc-backlink">&#8617;</a> <a href="#fnref:hostlist:1" class="reversefootnote" role="doc-backlink">&#8617;<sup>2</sup></a></p>
+    </li>
+  </ol>
+</div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-27T13:00:02+09:00">July 27, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Intel+MPI+Benchmark%E5%AE%9F%E8%A1%8C%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-imb%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-imb%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-imb%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/benchmark/run-stream/" class="pagination--pager" title="STREAM実行方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/benchmark/run-nccltests/" class="pagination--pager" title="NCCL Tests実行方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

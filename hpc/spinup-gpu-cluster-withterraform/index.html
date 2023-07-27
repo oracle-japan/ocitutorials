@@ -1,0 +1,1109 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>GPUクラスタを構築する(基礎インフラ自動構築編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="GPUクラスタを構築する(基礎インフラ自動構築編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">
+
+
+  <meta property="og:description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-07-27T13:00:02+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          GPUクラスタを構築する(基礎インフラ自動構築編)
+
+        
+      </h1>
+      
+        <p class="page__lead">GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">GPUクラスタを構築する(基礎インフラ自動構築編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/" class="active">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ自動構築編)">
+    <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
+    <meta itemprop="datePublished" content="2023-07-27T13:00:02+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-事前準備">0. 事前準備</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a><ul><li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li></ul></li><li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a><ul><li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li><li><a href="#0-2-2-terraformスクリプト作成">0-2-2. Terraformスクリプト作成</a></li></ul></li></ul></li><li><a href="#1-gpuクラスタ構築">1. GPUクラスタ構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li><li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li></ul></li><li><a href="#2-gpuクラスタ確認">2. GPUクラスタ確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-gpuノードファイルシステム確認">2-3. GPUノードファイルシステム確認</a></li></ul></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a></li><li><a href="#4-gpuクラスタ削除">4. GPUクラスタ削除</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</a></li><li><a href="#4-2-terraform-cliの場合">4-2. Terraform CLIの場合</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> を使用）を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを活用して自動構築し、Dockerコンテナ上で <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> のGPU間通信性能を <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> で検証します。<br />
+この自動構築は、 <strong>Terraform</strong> スクリプトを <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に読み込ませて作成する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を使用する方法と、 <strong>Terraform</strong> 実行環境を用意して <strong>Terraform</strong> CLIを使用する方法から選択することが出来ます。</p>
+
+<p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br />
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> も利用可能で、詳細は <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> を参照ください。</p>
+
+<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
+
+<p>本チュートリアルで作成するGPUクラスタ構築用の <strong>Terraform</strong> スクリプトは、そのひな型が <strong>GitHub</strong> のパブリックレポジトリから公開されており、適用すると以下の処理を行います。</p>
+
+<ul>
+  <li>VCNと関連するネットワークリソース構築</li>
+  <li>Bastionノード構築</li>
+  <li>GPUノード用 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> 作成</li>
+  <li><strong>クラスタ・ネットワーク</strong> とGPUノード構築</li>
+  <li>GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布</li>
+  <li>GPUノードの全ホスト名を記載したホストリストファイル（/home/opc/hostlist.txt）作成</li>
+  <li>構築したBastionノード・GPUノードのホスト名・IPアドレス出力</li>
+</ul>
+
+<p>Bastionノード構築は、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )を含み、 <strong>cloud-init</strong> がBastionノードデプロイ時に以下の処理を行います。</p>
+
+<ul>
+  <li>タイムゾーンをJSTに変更</li>
+  <li>ホームディレクトリ領域のNFSエクスポート</li>
+  <li>GPUノードのDNS名前解決をショートホスト名で行うための <strong>resolv.conf</strong> 修正</li>
+</ul>
+
+<p>またGPUノード用 <strong>インスタンス構成</strong> は、 <strong>cloud-config</strong> を含み、 <strong>cloud-init</strong> がGPUノードデプロイ時に以下の処理を行います。</p>
+
+<ul>
+  <li>タイムゾーンをJSTに変更</li>
+  <li><strong>Docker Community Edition</strong> インストール</li>
+  <li><strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> インストール</li>
+  <li>NVMe SSDローカルディスク領域ファイルシステム作成</li>
+  <li><strong>firewalld</strong> 停止</li>
+  <li>ルートファイルシステム拡張</li>
+  <li><strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェース作成</li>
+  <li>BastionノードのDNS名前解決をショートホスト名で行うための <strong>resolv.conf</strong> 修正</li>
+  <li>Bastionノードホームディレクトリ領域のNFSマウント</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約1時間</p>
+
+<p><strong>前提条件 :</strong> GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。</p>
+
+<hr />
+<h1 id="0-事前準備">0. 事前準備</h1>
+
+<h2 id="0-0-概要">0-0. 概要</h2>
+
+<p>本章は、GPUクラスタを構築する際事前に用意しておく必要のあるリソースを作成します。<br />
+この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIを使用する方法を採用するかで異なります。</p>
+
+<p>[ <strong>リソース・マネージャ</strong> を使用する方法]</p>
+<ul>
+  <li><strong>構成ソース・プロバイダ</strong> 作成</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> 作成</li>
+</ul>
+
+<p>[ <strong>Terraform</strong> CLIを使用する方法]</p>
+<ul>
+  <li><strong>Terraform</strong> 実行環境構築</li>
+  <li><strong>Terraform</strong> スクリプト作成</li>
+</ul>
+
+<p>以降では、2つの異なる構築手法毎にその手順を解説します。</p>
+
+<h2 id="0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</h2>
+
+<h3 id="0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</h3>
+
+<p>本章は、ひな型となる <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを <strong>GitHub</strong> パブリックレポジトリから取り込むための <strong>構成ソース・プロバイダ</strong> を作成します。</p>
+
+<p><strong>GitHub</strong> にアクセスするための <strong>構成ソース・プロバイダ</strong> の作成は、 <strong>GitHub</strong> のアカウントを持っておりこのアカウントで <strong>Personal access token</strong> を発行しておく必要があります。<br />
+<strong>GitHub</strong> のアカウント作成は <strong><a href="https://github.com/signup?ref_cta=Sign+up&amp;ref_loc=header+logged+out&amp;ref_page=%2F&amp;source=header-home">ここ</a></strong> 、 <strong>Personal access token</strong> の発行は <strong><a href="https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">ここ</a></strong> を参照ください。</p>
+
+<p><strong>構成ソース・プロバイダ</strong> の作成手順は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top">ここ</a></strong> を参照ください。<br />
+本チュートリアルを実行するための <strong>構成ソース・プロバイダ</strong> は、以下で作成します。</p>
+
+<ul>
+  <li><strong>パブリック・エンドポイント/プライベート・エンドポイント :</strong> パブリック・エンドポイント</li>
+  <li><strong>タイプ :</strong> <strong>GitHub</strong></li>
+  <li><strong>サーバーURL :</strong> https://github.com/</li>
+</ul>
+
+<h3 id="0-1-2-スタック作成">0-1-2. スタック作成</h3>
+
+<p>本章は、GPUクラスタを構築するための <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> 用 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 <strong>開発者サービス</strong> → <strong>リソース・マネージャ</strong> → <strong>スタック</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>Terraformの構成のオリジン :</strong> ソース・コード制御システム</li>
+      <li><strong>ソースコード管理タイプ :</strong> <strong>GitHub</strong></li>
+      <li><strong>構成ソース・プロバイダ :</strong> <strong><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></strong> で作成した <strong>構成ソース・プロバイダ</strong></li>
+      <li><strong>リポジトリ :</strong> <strong>tutorial_cn</strong></li>
+      <li><strong>ブランチ :</strong> <strong>master</strong></li>
+      <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
+      <li><strong>説明 :</strong> スタックに付与する説明（任意）</li>
+    </ul>
+
+    <p><img src="stack_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。<br />
+4.1 <strong>General options</strong> フィールド
+    <ul>
+      <li><strong>Compartment :</strong> GPUクラスタをデプロイするコンパートメント</li>
+      <li><strong>Availability Domain :</strong> GPUクラスタをデプロイする可用性ドメイン</li>
+      <li><strong>SSH public key :</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
+        <ul>
+          <li>公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="stack_page02.png" alt="画面ショット" /><br />
+4.2 <strong>Compute/GPU node options</strong> フィールド</p>
+    <ul>
+      <li><strong>Cluster display name postfix :</strong> GPUノードホスト名の接尾辞(*1)</li>
+      <li><strong>Compute/GPU node shape :</strong> <strong>BM.GPU4.8</strong></li>
+      <li><strong>Compute/GPU node count :</strong> GPUノードのノード数（デフォルト：2）</li>
+      <li><strong>Compute/GPU node image OCID :</strong> GPUノードのイメージOCID(*2)</li>
+      <li><strong>Compute/GPU node boot volume size :</strong> GPUノードのブートボリュームサイズ(GB)</li>
+      <li><strong>cloud-config :</strong> GPUノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )(*3)</li>
+    </ul>
+
+    <p><img src="stack_page03.png" alt="画面ショット" /></p>
+
+    <p>*1) 例えば <strong>gpu4-ol79</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol79</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
+ *2) 以下のOCIDを指定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra
+</code></pre></div>    </div>
+
+    <p>*3) 以下の <strong>cloud-config</strong> を使用します。これをテキストファイルとして保存し、ブラウザで読み込みます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
+timezone: Asia/Tokyo
+yum_repos:
+<span class="c">#</span>
+<span class="c"># To install docker community edition</span>
+  ol7_developer:
+    name: Oracle Linux <span class="nv">$releasever</span> Development Packages <span class="o">(</span><span class="nv">$basearch</span><span class="o">)</span>
+    baseurl: https://yum<span class="nv">$ociregion</span>.<span class="nv">$ocidomain</span>/repo/OracleLinux/OL7/developer/<span class="nv">$basearch</span>/
+    enabled: <span class="nb">true
+    </span>gpgcheck: <span class="nb">true
+    </span>gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+  docker-ce-stable:
+    name: Docker CE Stable - <span class="nv">$basearch</span>
+    baseurl: https://download.docker.com/linux/centos/<span class="nv">$releasever</span>/<span class="nv">$basearch</span>/stable
+    enabled: <span class="nb">true
+    </span>gpgcheck: <span class="nb">true
+    </span>gpgkey: https://download.docker.com/linux/centos/gpg
+<span class="c">#</span>
+<span class="c"># To install NVIDIA container toolkit</span>
+  libnvidia-container:
+    name: libnvidia-container
+    baseurl: https://nvidia.github.io/libnvidia-container/stable/centos7/<span class="nv">$basearch</span>
+    enabled: <span class="nb">true
+    </span>gpgcheck: <span class="nb">true
+    </span>gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
+  libnvidia-container-experimental:
+    name: libnvidia-container-experimental
+    baseurl: https://nvidia.github.io/libnvidia-container/experimental/centos7/<span class="nv">$basearch</span>
+    enabled: <span class="nb">true
+    </span>gpgcheck: <span class="nb">true
+    </span>gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
+packages:
+<span class="c">#</span>
+<span class="c"># Install Docker community edition and NVIDIA container toolkit</span>
+  - docker-ce
+  - nvidia-container-toolkit
+runcmd:
+<span class="c">#</span>
+<span class="c"># Mount NVMe local storage</span>
+  - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
+  - lvcreate <span class="nt">-l</span> 100%FREE nvme
+  - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
+  - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
+  - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+  - mount /mnt/localdisk
+<span class="c">#</span>
+<span class="c"># Stop firewalld</span>
+  - systemctl disable <span class="nt">--now</span> firewalld
+<span class="c">#</span>
+<span class="c"># Expand root file system to those set by instance configuration</span>
+  - /usr/libexec/oci-growfs <span class="nt">-y</span>
+<span class="c">#</span>
+<span class="c"># Set up cluster network interface</span>
+  - systemctl start oci-rdma-configure
+<span class="c">#</span>
+<span class="c"># Add public subnet to DNS search</span>
+  - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
+  - chattr <span class="nt">-R</span> +i /etc/resolv.conf
+<span class="c">#</span>
+<span class="c"># NFS mount setting</span>
+  - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+  - mount /home
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page04.png" alt="画面ショット" /></p>
+
+    <p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時に <strong>スタック</strong> の適用が開始され、GPUクラスタの構築が始まりますが、このチュートリアルでは後の章で改めて <strong>スタック</strong> の適用を行います。</p>
+  </li>
+</ol>
+
+<p>これで、以下画面のとおりGPUクラスタ構築用 <strong>スタック</strong> が作成されました。</p>
+
+<p><img src="stack_page05.png" alt="画面ショット" /></p>
+
+<h2 id="0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</h2>
+
+<h3 id="0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</h3>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIを使用してGPUクラスタのライフサイクル管理を実行する <strong>Terraform</strong> 実行環境を構築します。<br />
+この実行環境は、インターネットに接続された <strong>Linux</strong> ・ <strong>Windows</strong> ・ <strong>Mac</strong> の何れかのOSが稼働している端末であればよく、以下のような選択肢が考えられます。</p>
+
+<ul>
+  <li>OCI上の <strong>Linux</strong> が稼働するVMインスタンス</li>
+  <li>ご自身が使用する <strong>Windows</strong> / <strong>Mac</strong> パソコン</li>
+  <li>ご自身が使用する <strong>Windows</strong> / <strong>Mac</strong> パソコンで動作する <strong>Linux</strong> ゲストOS</li>
+</ul>
+
+<p>本チュートリアルは、この <strong>Terraform</strong> 実行環境のOSに <strong>Linux</strong> を使用します。</p>
+
+<p><strong>Terraform</strong> 実行環境は、以下のステップを経て構築します。</p>
+
+<ul>
+  <li><strong>Terraform</strong> インストール</li>
+  <li><strong>Terraform</strong> 実行環境とOCI間の認証関係締結（APIキー登録）</li>
+</ul>
+
+<p>具体的な <strong>Terraform</strong> 実行環境構築手順は、チュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/#2terraform%E7%92%B0%E5%A2%83%E3%81%AE%E6%A7%8B%E7%AF%89">2. Terraform環境の構築</a></strong> を参照ください。<br />
+また、関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm">ここ</a></strong> を参照ください。</p>
+
+<h3 id="0-2-2-terraformスクリプト作成">0-2-2. Terraformスクリプト作成</h3>
+
+<p>本チュートリアルで使用するGPUクラスタ構築用の <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトは、そのひな型を <strong>GitHub</strong> のパブリックレポジトリで公開しており、以下のファイル群で構成されています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ファイル名</th>
+      <th>用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cn.tf</td>
+      <td><strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> と <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> の定義</td>
+    </tr>
+    <tr>
+      <td>outputs.tf</td>
+      <td>構築したリソース情報の出力</td>
+    </tr>
+    <tr>
+      <td>terraform.tfvars</td>
+      <td><strong>Terraform</strong> スクリプト内で使用する変数値の定義</td>
+    </tr>
+    <tr>
+      <td>variables.tf</td>
+      <td><strong>Terraform</strong> スクリプト内で使用する変数の型の定義</td>
+    </tr>
+    <tr>
+      <td>instance.tf</td>
+      <td>Bastionノードの定義</td>
+    </tr>
+    <tr>
+      <td>provider.tf</td>
+      <td>テナント・ユーザ・リージョンの定義</td>
+    </tr>
+    <tr>
+      <td>vcn.tf</td>
+      <td>VCNと関連するネットワークリソースの定義</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これらのうち自身の環境に合わせて修正する箇所は、 <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> に集約しています。</p>
+
+<p>また、これらのファイルと同じディレクトリに <strong>user_data</strong> ディレクトリが存在し、 <strong>cloud-config</strong> ファイル群を格納しています。<br />
+この <strong>cloud-config</strong> を修正することで、構築するGPUクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することも可能でます。</p>
+
+<p><strong>Terraform</strong> スクリプトの作成は、まず以下の <strong>GitHub</strong> レポジトリからひな型となる <strong>Terraform</strong> スクリプトを <strong>Terraform</strong> 実行環境にダウンロードしますが、</p>
+
+<p><strong><a href="https://github.com/fwiw6430/tutorial_cn">https://github.com/fwiw6430/tutorial_cn</a></strong></p>
+
+<p>これには以下コマンドを <strong>Terraform</strong> 実行環境で実行するか、</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/fwiw6430/tutorial_cn
+</code></pre></div></div>
+
+<p><strong>GitHub</strong> の <strong>Terraform</strong> スクリプトレポジトリのページからzipファイルを <strong>Terraform</strong> 実行環境にダウンロード・展開することで行います。</p>
+
+<p>次に、ダウンロードした <strong>Terraform</strong> スクリプトのうち <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> 内の以下 <strong>Terraform</strong> 変数を自身の環境に合わせて修正します。<br />
+この際、ひな型ファイル内のこれら <strong>Terraform</strong> 変数は、予めコメント( <strong>#</strong> で始まる行)として埋め込まれているため、このコメント行を有効化して修正します。特に <strong>provider.tf</strong> のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、 <strong>Terraform</strong> 変数を設定します。</p>
+
+<p>[ <strong>provider.tf</strong> ]</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>変数名</th>
+      <th>設定値</th>
+      <th>確認方法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tenancy_ocid</td>
+      <td>使用するテナントのOCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>user_ocid</td>
+      <td>使用するユーザのOCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>private_key_path</td>
+      <td>OCIに登録したAPIキーの秘密キーのパス</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>fingerprint</td>
+      <td>OCIに登録したAPIキーのフィンガープリント</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#four">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>region</td>
+      <td>GPUクラスタをデプロイするリージョン識別子</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm">ここ</a></strong> を参照</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>[ <strong>terraform.tfvars</strong> ]</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>変数名</th>
+      <th>設定値</th>
+      <th>確認方法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>sc_compartment_ocid</td>
+      <td>GPUクラスタをデプロイするコンパートメントのOCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>sc_ad</td>
+      <td>GPUクラスタをデプロイする可用性ドメイン識別子</td>
+      <td>(*4)</td>
+    </tr>
+    <tr>
+      <td>sc_ssh_key</td>
+      <td>Bastionノードログインに使用するSSH秘密鍵に対する公開鍵</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>sc_cn_display_name</td>
+      <td>GPUノードホスト名の接尾辞</td>
+      <td>(*5)</td>
+    </tr>
+    <tr>
+      <td>sc_cn_shape</td>
+      <td>GPUノードに使用するシェイプ<br />・ <strong>BM.GPU4.8</strong></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>sc_cn_node_count</td>
+      <td>GPUノードのノード数</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>sc_cn_image</td>
+      <td>GPUノードに使用するOSイメージのOCID</td>
+      <td>(*6)</td>
+    </tr>
+    <tr>
+      <td>sc_cn_boot_vol_size</td>
+      <td>ブートボリュームのサイズ（GB）</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>sc_cn_cloud_config</td>
+      <td><strong>cloud-config</strong> ファイルをbase64エンコードした文字列</td>
+      <td>(*7)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>*4) OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>*5) 例えば <strong>gpu4-ol79</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol79</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）</p>
+
+<p>*6) 以下のOCIDを指定します。（ダウンロードした <strong>Terraform</strong> スクリプトの <strong>terraform.tfvars</strong> に以下のOCIDがコメントとして埋め込まれています）</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra
+</code></pre></div></div>
+
+<p>*7) 以下コマンドの出力を使用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>tutorial_cn
+<span class="nv">$ </span><span class="nb">base64</span> ./user_data/cloud-init_cngpu.cfg | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">'\n'</span><span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="1-gpuクラスタ構築">1. GPUクラスタ構築</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、GPUクラスタを構築します。<br />
+この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
+
+<h2 id="1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</h2>
+
+<ol>
+  <li>
+    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>適用</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page06.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>適用</strong> サイドバーで、 <strong>適用</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page07.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の適用が実施されています。</p>
+
+    <p><img src="stack_page08.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースのデプロイ状況を確認します。</p>
+
+    <p><img src="stack_page09.png" alt="画面ショット" /></p>
+
+    <p>この適用が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で10分程度です。</p>
+
+    <p>ステータスが <strong>成功</strong> となれば、GPUクラスタのデプロイが完了しており、以下のように <strong>ログ</strong> フィールドの最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Outputs:
+
+ Bastion_instances_created <span class="o">=</span> <span class="o">{</span>
+   <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"bastion"</span>
+   <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.1.138"</span>
+   <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
+ <span class="o">}</span>
+ Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
+   <span class="s2">"inst-9fhuq-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
+     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol79"</span>
+     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
+   <span class="o">}</span>
+   <span class="s2">"inst-dz99s-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
+     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol79"</span>
+     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
+   <span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</h2>
+
+<p><strong>Terraform</strong> 実行環境で、以下コマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>tutorial_cn
+<span class="nv">$ </span>terraform init
+<span class="nv">$ </span>terraform apply <span class="nt">--auto-approve</span>
+</code></pre></div></div>
+
+<p>最後のコマンドによる <strong>Terraform</strong> スクリプトの適用完了までの所要時間は、GPUノードのノード数が2ノードの場合で10分程度です。</p>
+
+<p><strong>Terraform</strong> スクリプトの適用が正常に完了すると、以下のようにコマンド出力の最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Apply <span class="nb">complete</span><span class="o">!</span> Resources: 16 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+Bastion_instances_created <span class="o">=</span> <span class="o">{</span>
+  <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"bastion"</span>
+  <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.1.138"</span>
+  <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
+<span class="o">}</span>
+Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
+  <span class="s2">"inst-9fhuq-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol79"</span>
+    <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
+  <span class="o">}</span>
+  <span class="s2">"inst-dz99s-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol79"</span>
+    <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="2-gpuクラスタ確認">2. GPUクラスタ確認</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本章は、デプロイされたGPUクラスタ環境を確認します。</p>
+
+<p>この際、作成されたGPUノードの全ホスト名を記載したホストリストファイルを使用し、BastionノードからGPUクラスタ内の全GPUノードにSSHでコマンドを発行、その環境を確認します。<br />
+なおこのホストリストファイルは、Bastionノードと全GPUノードに <strong>/home/opc/hostlist.txt</strong> として存在します。</p>
+
+<h2 id="2-1-bastionノードログイン">2-1. Bastionノードログイン</h2>
+
+<p>Bastionノードは、GPUクラスタ構築完了時に表示されるパブリックIPアドレスに対し、指定したSSH公開鍵に対応する秘密鍵を使用し、以下コマンドでインターネット経由ログインします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+</code></pre></div></div>
+
+<h2 id="2-2-cloud-init完了確認">2-2. cloud-init完了確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。<br />
+この際、ノード数分の接続するかどうかの確認に対して全て <strong>yes</strong> を入力します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo cloud-init status"</span><span class="p">;</span> <span class="k">done
+</span>inst-zvc5c-gpu4-ol79
+The authenticity of host <span class="s1">'inst-zvc5c-gpu4-ol79 (10.0.2.159)'</span> cannot be established.
+ECDSA key fingerprint is SHA256:6zl4kIFKqpBrRlw/JCfStS05rdCu7Eif/4e3OWvbOsc.
+Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
+</span>Warning: Permanently added <span class="s1">'inst-zvc5c-gpu4-ol79,10.0.2.159'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+status: <span class="k">done
+</span>inst-wf3wx-gpu4-ol79
+The authenticity of host <span class="s1">'inst-wf3wx-gpu4-ol79 (10.0.2.31)'</span> cannot be established.
+ECDSA key fingerprint is SHA256:jWTGqZjG0dAyrbP04JGC8jJX+uqDwMFotLXirA7L+AA.
+Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
+</span>Warning: Permanently added <span class="s1">'inst-wf3wx-gpu4-ol79,10.0.2.31'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+status: <span class="k">done</span>
+</code></pre></div></div>
+
+<p>ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
+
+<h2 id="2-3-gpuノードファイルシステム確認">2-3. GPUノードファイルシステム確認</h2>
+
+<p>GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが/mnt/localdiskにマウントされ、Bastionノードの/homeが/homeとしてマウントされています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"df -h / /mnt/localdisk /home"</span><span class="p">;</span> <span class="k">done
+</span>inst-kicav-gpu4-ol79
+Filesystem              Size  Used Avail Use% Mounted on
+/dev/sda3               192G   23G  170G  12% /
+/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
+bastion:/home            36G  9.1G   27G  26% /home
+inst-0vdz8-gpu4-ol79
+Filesystem              Size  Used Avail Use% Mounted on
+/dev/sda3               192G   23G  170G  12% /
+/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
+bastion:/home            36G  9.1G   27G  26% /home
+</code></pre></div></div>
+
+<hr />
+<h1 id="3-nccl-tests実行">3. NCCL Tests実行</h1>
+
+<p>本章は、 <strong><a href="https://catalog.ngc.nvidia.com/">NGC Catalog</a></strong> から提供される <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、Dockerコンテナ上で <strong>NCCL</strong> のGPU間通信性能を <strong>NCCL Tests</strong> で検証します。</p>
+
+<ol>
+  <li>
+    <p>全GPUノードのrootユーザで以下コマンドを実行し、Dockerランタイムを起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>systemctl start docker
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/#2-oci-hpcベンチマーク情報">OCI HPCベンチマーク情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></strong> の手順に従い、 <strong>NCCL Tests</strong> を実行します。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="4-gpuクラスタ削除">4. GPUクラスタ削除</h1>
+
+<h2 id="4-0-概要">4-0. 概要</h2>
+
+<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、GPUクラスタを削除します。<br />
+この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
+
+<h2 id="4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</h2>
+
+<ol>
+  <li>
+    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page10.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>破棄</strong> サイドバーで、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+    <p><img src="stack_page11.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の破棄が実施されています。</p>
+
+    <p><img src="stack_page12.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースの削除状況を確認します。</p>
+
+    <p><img src="stack_page09.png" alt="画面ショット" /></p>
+
+    <p>この破棄が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で5分程度です。</p>
+
+    <p>ステータスが <strong>成功</strong> となれば、GPUクラスタの削除が完了しています。</p>
+  </li>
+</ol>
+
+<h2 id="4-2-terraform-cliの場合">4-2. Terraform CLIの場合</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを <strong>Terraform</strong> CLIで破棄し、GPUクラスタを削除します。</p>
+
+<p><strong>Terraform</strong> 実行環境の <strong>tutorial_cn</strong> ディレクトリで以下コマンドを実行し、削除が正常に完了したことをメッセージから確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>terraform destroy <span class="nt">--auto-approve</span>
+:
+Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 destroyed.
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>この破棄が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で5分程度です。</p>
+
+<p>これで、このチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-27T13:00:02+09:00">July 27, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=GPU%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%28%E5%9F%BA%E7%A4%8E%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9%E8%87%AA%E5%8B%95%E6%A7%8B%E7%AF%89%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-gpu-cluster-withterraform%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-gpu-cluster-withterraform%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-gpu-cluster-withterraform%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/spinup-gpu-cluster/" class="pagination--pager" title="GPUクラスタを構築する(基礎インフラ手動構築編)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/" class="pagination--pager" title="GPUクラスタを構築する(スタティッククラスタ自動構築編)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
