@@ -69,7 +69,7 @@ toc: true
 
 ## アセット管理
 
-+ **[Oracle Content Management を Headless CMS として使ってみよう【初級編】](/ocitutorials/content-management/41_asset_headless/)**  
++ **[Oracle Content Management を Headless CMS として使ってみよう【初級編】](/ocitutorials/content-management/41_asset_headless/)**  <span style="color: red;">Update!</span>  
     OCM のアセット管理機能を Headless CMS として利用する方法をステップ・バイ・ステップで紹介するチュートリアルです。リポジトリ、公開チャネル、コンテンツ・タイプなどアセット管理の基本的な概念を、ハンズオン形式で習得します【所要時間:約30分】
 
 + **[Oracle Content Management で請求書などの電子ファイルを長期保管してみよう【初級編】](/ocitutorials/content-management/42_business_repository/)**  
