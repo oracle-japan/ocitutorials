@@ -1,7 +1,7 @@
 ---
 title: "GPUクラスタを構築する(オンデマンドクラスタ自動構築編)"
-excerpt:  "GPUクラスタを構築してみましょう。このチュートリアルを終了すると、高速・低レイテンシなRDMA対応RoCEv2インターコネクトのクラスタ・ネットワークにベアメタルGPUインスタンスを接続するワークロード実行環境をジョブスケジューラSlurmと連動してオンデマンドにデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。"
-order: "124"
+excerpt:  "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。"
+order: "125"
 layout: single
 header:
   teaser: "/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
@@ -20,7 +20,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、8枚のNVIDIA A100 40/8
 - OS: Oracle Linux 7.9
 - コンテナランタイム: Enroot
 - ジョブスケジューラ: Slurm + Pyxis
-- オンデマンドクラスタ機能： クラスタオートスケーリング
+- オンデマンドクラスタ機能： **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)**
 - OCIファイル・ストレージサービスによるGPUクラスタ内ホームディレクトリ共有
 - LDAPによるクラスタ内ユーザ統合管理
 
@@ -30,9 +30,9 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、8枚のNVIDIA A100 40/8
 
 GPUクラスタのワークロード実行環境は、機械学習環境のデファクトスタンダードであるDokcerコンテナを利用し、コンテナランタイムに **[Enroot](https://github.com/NVIDIA/enroot/)** 、ジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を採用し、コンテナの操作（インポート・起動・終了等）をジョブスケジューラからコンテナランタイムに指示するSlurmのプラグイン **[Pyxis](https://github.com/NVIDIA/pyxis)** を使用します。
 
-また、コンテナ環境からGPUやNICをRDMAで利用可能とする **[NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)** を含むソフトウェア群もインストールされ、ノードを跨ぐGPU間通信を高速・低レイテンシにコンテナ上から実行することが可能です。この通信性能詳細は、 **[3-0. 概要](#3-0-概要)** を参照ください。
+また、コンテナ環境からGPUやNICをRDMAで利用可能とする **[NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)** を含むソフトウェア群もインストールされ、ノードを跨ぐGPU間通信を高帯域・低遅延でコンテナ上から実行することが可能です。この通信性能詳細は、 **[3-0. 概要](#3-0-概要)** を参照ください。
 
-GPUクラスタにおけるワークロード実行は、Slurmにジョブを投入することで行い、 **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** がジョブ実行に必要なGPUノードを動的に起動、SlurmがPyxisを介してこれらGPUノード上に指定のコンテナを起動、ジョブ終了後にコンテナを終了します。  
+オンデマンドGPUクラスタにおけるワークロード実行は、Slurmにジョブを投入することで行い、クラスタオートスケーリングがジョブ実行に必要なGPUノードをクラスタ・ネットワークと共に動的に起動、SlurmがPyxisを介してこれらGPUノード上に指定のコンテナを起動、ジョブ終了後にコンテナを終了します。  
 またクラスタオートスケーリングは、ジョブが実行されない状態が一定時間経過すると、自動的にGPUノードを削除します。
 
 ![ソフトウェアスタック](software_stack.png)
@@ -131,7 +131,7 @@ GPUクラスタにおけるワークロード実行は、Slurmにジョブを投
     - **NFS Path :** /mnt/home（※3）
     - **NFS server Path :** /mnt/home（※3）
 
-   ※3) ここで指定するパスは、ファイルス・トレージ領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/home/user_nameとなります。
+   ※3) ここで指定するパスは、ファイル・ストレージ領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/home/user_nameとなります。
 
    ![画面ショット](stack_page04-1.png)
 
@@ -139,7 +139,7 @@ GPUクラスタにおけるワークロード実行は、Slurmにジョブを投
     - **Show advanced storage options :** チェック
     - **Shared NFS scratch space from NVME or Block volume :** チェックオフ（※4）
 
-   *4) GPUノードのNVMeディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。
+   *4) GPUノードのNVMeローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。
 
    ![画面ショット](stack_page05.png)
 
@@ -181,7 +181,7 @@ GPUクラスタにおけるワークロード実行は、Slurmにジョブを投
 
 ## 1-3. スタックの適用
 
-本章は、計画で作成されるリソースに問題が無いことを確認した **[スタック](/ocitutorials/hpc/#5-3-スタック)** に対し、適用を行いGPUクラスタをデプロイします。
+本章は、計画で作成されるリソースに問題が無いことを確認した **[スタック](/ocitutorials/hpc/#5-3-スタック)** に対し、適用を行いオンデマンドGPUクラスタをデプロイします。
 
 1. 以下 **スタックの詳細** 画面で、 **適用** ボタンをクリックします。
 
@@ -240,7 +240,7 @@ GPUクラスタにおけるワークロード実行は、Slurmにジョブを投
 
 1. LDAPユーザ作成
 
-   LDAPサーバであるBastionノードは、LDAPユーザの管理のためのclusterコマンドが用意されています。
+   LDAPサーバであるBastionノードは、LDAPユーザ管理のためのclusterコマンドが用意されています。
    
    このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリであるファイル・ストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。
 
@@ -296,17 +296,17 @@ GPUクラスタにおけるワークロード実行は、Slurmにジョブを投
 
 BastionノードのLDAPユーザで、以下のジョブスクリプトをファイル名nccl_test.shで作成します。
 
-   ```sh
-   #!/bin/bash
-   #SBATCH -p compute
-   #SBATCH -N 2
-   #SBATCH --ntasks-per-node 1
-   #SBATCH -J nccl_test
-   export NCCL_IB_QPS_PER_CONNECTION=4
-   export NCCL_IB_GID_INDEX=3
-   export ENROOT_SQUASH_OPTIONS="-b 262144"
-   srun --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --mpi pmi2 bash -c "hostname; cd /tmp; git clone https://github.com/NVIDIA/nccl-tests.git; cd ./nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu; sleep 60; ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8"
-   ```
+```sh
+#!/bin/bash
+#SBATCH -p compute
+#SBATCH -N 2
+#SBATCH --ntasks-per-node 1
+#SBATCH -J nccl_test
+export NCCL_IB_QPS_PER_CONNECTION=4
+export NCCL_IB_GID_INDEX=3
+export ENROOT_SQUASH_OPTIONS="-b 262144"
+srun --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --mpi pmi2 bash -c "hostname; cd /tmp; git clone https://github.com/NVIDIA/nccl-tests.git; cd ./nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu; sleep 60; ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8"
+```
 
 このジョブスクリプトは、2ノードのGPUノード上にNGCからダウンロードしたTensorFlowのコンテナを1台づつ起動し、このコンテナ上でNCCL Testsのソースツリーをクローンしてビルド、その後2ノード全16枚のGPUを使用したNCCLのAll Reduce通信性能を10 GBのメッセージサイズで計測します。  
    ジョブスクリプト内で設定している環境変数は、以下の用途で使用しています。
@@ -318,27 +318,26 @@ BastionノードのLDAPユーザで、以下のジョブスクリプトをファ
 
 BastionノードのLDAPユーザで以下コマンドを実行し、作成したジョブスクリプトをSlurmに投入、ジョブステータスを確認します。
 
-   ```sh
-   > sbatch nccl_test.sh 
-   Submitted batch job 1
-   > squeue 
-      JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-          1   compute nccl_tes user_nam PD       0:00      2 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
-
-   ```
+```sh
+> sbatch nccl_test.sh 
+Submitted batch job 1
+> squeue 
+   JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+       1   compute nccl_tes user_nam PD       0:00      2 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+```
 
 この時点では、ジョブを実行するためのGPUノードが存在しないため、ジョブのステータスがPDの状態です。
 
 ## 3-3. GPUクラスタデプロイ状況確認
 
- **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** は、Bastionノードのopcユーザのcrontabから以下のように毎分起動されるautoscale_slurm.shというPyrhonスクリプトにより、Slurmのジョブ投入状況に応じてオンデマンドに必要な数のGPUノードを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** と共にデプロイします。
+**[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** は、Bastionノードのopcユーザのcrontabから以下のように毎分起動されるautoscale_slurm.shというPyrhonスクリプトにより、Slurmのジョブ投入状況に応じてオンデマンドに必要な数のGPUノードを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** と共にデプロイします。
 
-   ```sh
-   > crontab -l | grep autoscale_slurm
-   * * * * * /opt/oci-hpc/autoscaling/crontab/autoscale_slurm.sh >> /opt/oci-hpc/logs/crontab_slurm_`date '+\%Y\%m\%d'`.log 2>&1
-   ```
+```sh
+> crontab -l | grep autoscale_slurm
+* * * * * /opt/oci-hpc/autoscaling/crontab/autoscale_slurm.sh >> /opt/oci-hpc/logs/crontab_slurm_`date '+\%Y\%m\%d'`.log 2>&1
+```
 このため、先の手順のジョブ投入から最大で1分以上経過すると、自動的に2ノードのGPUノードとこれらを接続するクラスタ・ネットワークのデプロイを開始します。  
-   そこで、OCIコンソールでオンデマンドGPUクラスタをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧から2ノードのGPUノードが **プロビジョニング中** となっていることを確認します。
+そこで、OCIコンソールでオンデマンドGPUクラスタをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧から2ノードのGPUノードが **プロビジョニング中** となっていることを確認します。
 
 ![画面ショット](console_page01.png)
 
@@ -393,8 +392,7 @@ total 24
 -rw-r--r-- 1 user_name privilege  791 Jan 26 09:28 submit.sh
 ```
 
-- submit.sh
-
+[submit.sh]
 ```sh
 #!/bin/bash
 #SBATCH -p compute
@@ -421,8 +419,7 @@ export ENROOT_SQUASH_OPTIONS="-b 262144"
 srun --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --container-mounts "/mnt/home/user_name:/mnt/home/user_name" $workdir/start_mnist.sh $hfname $workdir
 ```
 
-- start_mnist.sh
-
+[start_mnist.sh]
 ```sh
 #!/bin/bash
 
@@ -469,9 +466,8 @@ echo >> ./$std_err
 python ./mnist.py > ./$std_out 2>> ./$std_err
 ```
 
-- mnist.py 
-
-```sh
+[mnist.py]
+```python
 import os
 import json
 import tensorflow as tf
@@ -551,12 +547,12 @@ Epoch 3/3
 ***
 # 5. スタックの破棄
 
-本章は、スタックを破棄することで、構築したオンデマンドGPUクラスタを削除します。
+本章は、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を破棄することで、構築したオンデマンドGPUクラスタを削除します。
 
 以下の手順は、本チュートリアルで作成したOCI上のリソースをすべて削除するため、 **LDAPユーザのホームディレクトリ用途で作成したファイル・ストレージに格納されているデータが全て消失** します。
-  
-なお、 **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** がオンデマンドでデプロイしたGPUノードは、このスタック破棄で削除されません。  
-そのため、クラスタオートスケーリングがGPUノードを削除したことを確認し、その後スタックの破棄を実施します。
+
+なお、 **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** がオンデマンドでデプロイしたGPUノードと **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** は、このスタック破棄で削除されません。  
+そのため、クラスタオートスケーリングがこれらのリソースを削除したことを確認し、その後スタックの破棄を実施します。
 
 1. 以下 **スタックの詳細** 画面で、 **破棄** ボタンをクリックします。
 

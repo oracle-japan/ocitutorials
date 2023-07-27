@@ -1,7 +1,7 @@
 ---
-title: "HPCクラスタを構築する(基礎インフラ自動構築編)"
-excerpt: "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPCクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。"
-order: "112"
+title: "GPUクラスタを構築する(基礎インフラ自動構築編)"
+excerpt: "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。"
+order: "123"
 layout: single
 header:
   teaser: "/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png"
@@ -10,33 +10,35 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-このチュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンス（本チュートリアルでは **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用）を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。  
+このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用）を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを活用して自動構築し、Dockerコンテナ上で **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** のGPU間通信性能を **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。  
 この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
 
-このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
-なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)** を参照ください。
+このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[GPUクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack)** を参照ください。
 
 ![システム構成図](architecture_diagram.png)
 
-本チュートリアルで作成するHPCクラスタ構築用の **Terraform** スクリプトは、そのひな型が **GitHub** のパブリックレポジトリから公開されており、適用すると以下の処理を行います。
+本チュートリアルで作成するGPUクラスタ構築用の **Terraform** スクリプトは、そのひな型が **GitHub** のパブリックレポジトリから公開されており、適用すると以下の処理を行います。
 
 - VCNと関連するネットワークリソース構築
 - Bastionノード構築
-- 計算ノード用 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** 作成
-- **クラスタ・ネットワーク** と計算ノード構築
-- HPCクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布
-- 計算ノードの全ホスト名を記載したホストリストファイル（/home/opc/hostlist.txt）作成
-- 構築したBastionノード・計算ノードのホスト名・IPアドレス出力
+- GPUノード用 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** 作成
+- **クラスタ・ネットワーク** とGPUノード構築
+- GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布
+- GPUノードの全ホスト名を記載したホストリストファイル（/home/opc/hostlist.txt）作成
+- 構築したBastionノード・GPUノードのホスト名・IPアドレス出力
 
 Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がBastionノードデプロイ時に以下の処理を行います。
 
 - タイムゾーンをJSTに変更
 - ホームディレクトリ領域のNFSエクスポート
-- 計算ノードのDNS名前解決をショートホスト名で行うための **resolv.conf** 修正
+- GPUノードのDNS名前解決をショートホスト名で行うための **resolv.conf** 修正
 
-また計算ノード用 **インスタンス構成** は、 **cloud-config** を含み、 **cloud-init** が計算ノードデプロイ時に以下の処理を行います。
+またGPUノード用 **インスタンス構成** は、 **cloud-config** を含み、 **cloud-init** がGPUノードデプロイ時に以下の処理を行います。
 
 - タイムゾーンをJSTに変更
+- **Docker Community Edition** インストール
+- **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** インストール
 - NVMe SSDローカルディスク領域ファイルシステム作成
 - **firewalld** 停止
 - ルートファイルシステム拡張
@@ -46,7 +48,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 **所要時間 :** 約1時間
 
-**前提条件 :** HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
+**前提条件 :** GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。
 
@@ -55,7 +57,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ## 0-0. 概要
 
-本章は、HPCクラスタを構築する際事前に用意しておく必要のあるリソースを作成します。  
+本章は、GPUクラスタを構築する際事前に用意しておく必要のあるリソースを作成します。  
 この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する方法を採用するかで異なります。
 
 [ **リソース・マネージャ** を使用する方法]
@@ -86,9 +88,9 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ### 0-1-2. スタック作成
 
-本章は、HPCクラスタを構築するための **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** 用 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
+本章は、GPUクラスタを構築するための **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** 用 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
 
-1. OCIコンソールにログインし、HPCクラスタをデプロイするリージョンを選択後、 **開発者サービス** → **リソース・マネージャ** → **スタック** とメニューを辿ります。
+1. OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 **開発者サービス** → **リソース・マネージャ** → **スタック** とメニューを辿ります。
 
 2. 表示される以下画面で、**スタックの作成** ボタンをクリックします。
 
@@ -107,44 +109,74 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 4. 表示される **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。  
 4.1 **General options** フィールド
-    - **Compartment :** HPCクラスタをデプロイするコンパートメント
-    - **Availability Domain :** HPCクラスタをデプロイする可用性ドメイン
+    - **Compartment :** GPUクラスタをデプロイするコンパートメント
+    - **Availability Domain :** GPUクラスタをデプロイする可用性ドメイン
     - **SSH public key :** Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
       - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
 
    ![画面ショット](stack_page02.png)  
 4.2 **Compute/GPU node options** フィールド
-    - **Cluster display name postfix :** 計算ノードホスト名の接尾辞(\*1)
-    - **Compute/GPU node shape :** **BM.Optimized3.36**
-    - **Compute/GPU node count :** 計算ノードのノード数（デフォルト：2）
-    - **Compute/GPU node image OCID :** 計算ノードのイメージOCID(\*2)
-    - **Compute/GPU node boot volume size :** 計算ノードのブートボリュームサイズ(GB)
-    - **cloud-config :** 計算ノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )(\*3)
+    - **Cluster display name postfix :** GPUノードホスト名の接尾辞(\*1)
+    - **Compute/GPU node shape :** **BM.GPU4.8**
+    - **Compute/GPU node count :** GPUノードのノード数（デフォルト：2）
+    - **Compute/GPU node image OCID :** GPUノードのイメージOCID(\*2)
+    - **Compute/GPU node boot volume size :** GPUノードのブートボリュームサイズ(GB)
+    - **cloud-config :** GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )(\*3)
 
    ![画面ショット](stack_page03.png)
 
-    *1) 例えば **x9-ol8** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol8** となります。（ **xxxxx** はランダムな文字列）  
+    *1) 例えば **gpu4-ol79** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol79** となります。（ **xxxxx** はランダムな文字列）  
     *2) 以下のOCIDを指定します。
 
-    | Oracle Linuxバージョン | OCID                                                                          |     |
-    | ----------------- | ----------------------------------------------------------------------------- | --- |
-    | 7.9               | ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa |     |
-    | 8.7               | ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a |     |
-    |                   |                                                                               |     |
+   ```sh
+   ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra
+   ```
 
     *3) 以下の **cloud-config** を使用します。これをテキストファイルとして保存し、ブラウザで読み込みます。
 
    ```sh
    #cloud-config
    timezone: Asia/Tokyo
+   yum_repos:
+   #
+   # To install docker community edition
+     ol7_developer:
+       name: Oracle Linux $releasever Development Packages ($basearch)
+       baseurl: https://yum$ociregion.$ocidomain/repo/OracleLinux/OL7/developer/$basearch/
+       enabled: true
+       gpgcheck: true
+       gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+     docker-ce-stable:
+       name: Docker CE Stable - $basearch
+       baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+       enabled: true
+       gpgcheck: true
+       gpgkey: https://download.docker.com/linux/centos/gpg
+   #
+   # To install NVIDIA container toolkit
+     libnvidia-container:
+       name: libnvidia-container
+       baseurl: https://nvidia.github.io/libnvidia-container/stable/centos7/$basearch
+       enabled: true
+       gpgcheck: true
+       gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
+     libnvidia-container-experimental:
+       name: libnvidia-container-experimental
+       baseurl: https://nvidia.github.io/libnvidia-container/experimental/centos7/$basearch
+       enabled: true
+       gpgcheck: true
+       gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
+   packages:
+   #
+   # Install Docker community edition and NVIDIA container toolkit
+     - docker-ce
+     - nvidia-container-toolkit
    runcmd:
    #
    # Mount NVMe local storage
-     - parted -s /dev/nvme0n1 mklabel gpt
-     - parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1
-   # To ensure partition is really created before mkfs phase
-     - sleep 60
-     - mkfs.xfs -L localscratch /dev/nvme0n1p1
+     - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
+     - lvcreate -l 100%FREE nvme
+     - mkfs.xfs -L localscratch /dev/nvme/lvol0
      - mkdir -p /mnt/localdisk
      - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
      - mount /mnt/localdisk
@@ -171,9 +203,9 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
    ![画面ショット](stack_page04.png)
 
-   ここで **適用の実行** をチェックした場合、 **作成** ボタンのクリックと同時に **スタック** の適用が開始され、HPCクラスタの構築が始まりますが、このチュートリアルでは後の章で改めて **スタック** の適用を行います。
+   ここで **適用の実行** をチェックした場合、 **作成** ボタンのクリックと同時に **スタック** の適用が開始され、GPUクラスタの構築が始まりますが、このチュートリアルでは後の章で改めて **スタック** の適用を行います。
 
-これで、以下画面のとおりHPCクラスタ構築用 **スタック** が作成されました。
+これで、以下画面のとおりGPUクラスタ構築用 **スタック** が作成されました。
 
 ![画面ショット](stack_page05.png)
 
@@ -181,7 +213,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ### 0-2-1. Terraform実行環境構築
 
-本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用してHPCクラスタのライフサイクル管理を実行する **Terraform** 実行環境を構築します。  
+本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用してGPUクラスタのライフサイクル管理を実行する **Terraform** 実行環境を構築します。  
 この実行環境は、インターネットに接続された **Linux** ・ **Windows** ・ **Mac** の何れかのOSが稼働している端末であればよく、以下のような選択肢が考えられます。
 
 - OCI上の **Linux** が稼働するVMインスタンス
@@ -200,22 +232,22 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ### 0-2-2. Terraformスクリプト作成
 
-本チュートリアルで使用するHPCクラスタ構築用の **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトは、そのひな型を **GitHub** のパブリックレポジトリで公開しており、以下のファイル群で構成されています。
+本チュートリアルで使用するGPUクラスタ構築用の **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトは、そのひな型を **GitHub** のパブリックレポジトリで公開しており、以下のファイル群で構成されています。
 
-| ファイル名            | 用途                                                                                                         |
-| ---------------- | ---------------------------------------------------------------------------------------------------------- |
-| cn.tf            | **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** の定義 |
-| outputs.tf       | 構築したリソース情報の出力                                                                                              |
-| terraform.tfvars | **Terraform** スクリプト内で使用する変数値の定義                                                                                 |
-| variables.tf     | **Terraform** スクリプト内で使用する変数の型の定義                                                                                |
-| instance.tf      | Bastionノードの定義                                                                                              |
-| provider.tf      | テナント・ユーザ・リージョンの定義                                                                                          |
-| vcn.tf           | VCNと関連するネットワークリソースの定義                                                                                      |
+| ファイル名            | 用途                          |
+| ---------------- | --------------------------- |
+| cn.tf            | **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** の定義     |
+| outputs.tf       | 構築したリソース情報の出力               |
+| terraform.tfvars | **Terraform** スクリプト内で使用する変数値の定義  |
+| variables.tf     | **Terraform** スクリプト内で使用する変数の型の定義 |
+| instance.tf      | Bastionノードの定義         |
+| provider.tf      | テナント・ユーザ・リージョンの定義           |
+| vcn.tf           | VCNと関連するネットワークリソースの定義       |
 
 これらのうち自身の環境に合わせて修正する箇所は、 **terraform.tfvars** と **provider.tf** に集約しています。
 
 また、これらのファイルと同じディレクトリに **user_data** ディレクトリが存在し、 **cloud-config** ファイル群を格納しています。  
-この **cloud-config** を修正することで、構築するHPCクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することも可能でます。
+この **cloud-config** を修正することで、構築するGPUクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することも可能でます。
 
 **Terraform** スクリプトの作成は、まず以下の **GitHub** レポジトリからひな型となる **Terraform** スクリプトを **Terraform** 実行環境にダウンロードしますが、
 
@@ -230,7 +262,7 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 **GitHub** の **Terraform** スクリプトレポジトリのページからzipファイルを **Terraform** 実行環境にダウンロード・展開することで行います。  
 
 次に、ダウンロードした **Terraform** スクリプトのうち **terraform.tfvars** と **provider.tf** 内の以下 **Terraform** 変数を自身の環境に合わせて修正します。  
-この際、ひな型ファイル内のこれら **Terraform** 変数は、予めコメント( **#** で始まる行)として埋め込まれているため、このコメント行を有効化して修正します。特に **provider.tf** のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、 **Terraform**変数を設定します。
+この際、ひな型ファイル内のこれら **Terraform** 変数は、予めコメント( **#** で始まる行)として埋め込まれているため、このコメント行を有効化して修正します。特に **provider.tf** のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、 **Terraform** 変数を設定します。
 
 [ **provider.tf** ]
 
@@ -240,19 +272,19 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 | user_ocid        | 使用するユーザのOCID               | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five)** を参照 |
 | private_key_path | OCIに登録したAPIキーの秘密キーのパス      | -                                                                                            |
 | fingerprint      | OCIに登録したAPIキーのフィンガープリント    | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#four)** を参照 |
-| region           | HPCクラスタをデプロイするリージョン識別子 | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm)** を参照        |
+| region           | GPUクラスタをデプロイするリージョン識別子 | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm)** を参照        |
 
 [ **terraform.tfvars** ]
 
 | 変数名                 | 設定値                                                                     | 確認方法                                                                                                                             |
 | ------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| sc_compartment_ocid | HPCクラスタをデプロイするコンパートメントのOCID                                         | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
-| sc_ad               | HPCクラスタをデプロイする可用性ドメイン識別子                                            | (\*4)                                                                                                                            |
+| sc_compartment_ocid | GPUクラスタをデプロイするコンパートメントのOCID                                         | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
+| sc_ad               | GPUクラスタをデプロイする可用性ドメイン識別子                                            | (\*4)                                                                                                                            |
 | sc_ssh_key          | Bastionノードログインに使用するSSH秘密鍵に対する公開鍵                                        | -                                                                                                                                |
-| sc_cn_display_name  | 計算ノードホスト名の接尾辞                                                       | (\*5)                                                                                                                            |
-| sc_cn_shape         | 計算ノードに使用するシェイプ<br>・ **BM.Optimized3.36** | -                                                                                                                                |
-| sc_cn_node_count    | 計算ノードのノード数                                                          | -                                                                                                                                |
-| sc_cn_image         | 計算ノードに使用するOSイメージのOCID                                               | (\*6)                                                                                                                            |
+| sc_cn_display_name  | GPUノードホスト名の接尾辞                                                       | (\*5)                                                                                                                            |
+| sc_cn_shape         | GPUノードに使用するシェイプ<br>・ **BM.GPU4.8** | -                                                                                                                                |
+| sc_cn_node_count    | GPUノードのノード数                                                          | -                                                                                                                                |
+| sc_cn_image         | GPUノードに使用するOSイメージのOCID                                               | (\*6)                                                                                                                            |
 | sc_cn_boot_vol_size | ブートボリュームのサイズ（GB）                                                        | -                                                                                                                                |
 | sc_cn_cloud_config  | **cloud-config** ファイルをbase64エンコードした文字列                                       | (\*7)                                                                                                                            |
 
@@ -260,29 +292,27 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 ![画面ショット](console_page01.png)
 
-\*5) 例えば **x9-ol8** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol8** となります。（ **xxxxx** はランダムな文字列）  
+\*5) 例えば **gpu4-ol79** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol79** となります。（ **xxxxx** はランダムな文字列）  
 
 \*6) 以下のOCIDを指定します。（ダウンロードした **Terraform** スクリプトの **terraform.tfvars** に以下のOCIDがコメントとして埋め込まれています）
 
-| Oracle Linuxバージョン | OCID                                                                          |
-| ----------------- | ----------------------------------------------------------------------------- |
-| 7.9               | ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa |
-| 8.7               | ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a |
-|         |                   |                                                                               |
+```sh
+ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra
+```
 
 \*7) 以下コマンドの出力を使用します。  
 
 ```sh
 $ cd tutorial_cn
-$ base64 ./user_data/cloud-init_cnhpc.cfg | tr -d '\n'; echo
+$ base64 ./user_data/cloud-init_cngpu.cfg | tr -d '\n'; echo
 ```
 
 ***
-# 1. HPCクラスタ構築
+# 1. GPUクラスタ構築
 
 ## 1-0. 概要
 
-本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、HPCクラスタを構築します。  
+本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、GPUクラスタを構築します。  
 この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
 ## 1-1. リソース・マネージャを使用する方法
@@ -303,9 +333,9 @@ $ base64 ./user_data/cloud-init_cnhpc.cfg | tr -d '\n'; echo
 
    ![画面ショット](stack_page09.png)
 
-   この適用が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で5分程度です。
+   この適用が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で10分程度です。
 
-   ステータスが **成功** となれば、HPCクラスタのデプロイが完了しており、以下のように **ログ** フィールドの最後にBastionノードと計算ノードのホスト名とIPアドレスが出力されます。
+   ステータスが **成功** となれば、GPUクラスタのデプロイが完了しており、以下のように **ログ** フィールドの最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。
 
     ```sh
     Outputs:
@@ -316,12 +346,12 @@ $ base64 ./user_data/cloud-init_cnhpc.cfg | tr -d '\n'; echo
       "public_ip" = "123.456.789.123"
     }
     Compute_in_cn_created = {
-      "inst-9fhuq-x9-ol8" = {
-        "display_name" = "inst-9fhuq-x9-ol8"
+      "inst-9fhuq-gpu4-ol79" = {
+        "display_name" = "inst-9fhuq-gpu4-ol79"
         "private_ip" = "10.0.2.10"
       }
-      "inst-dz99s-x9-ol8" = {
-        "display_name" = "inst-dz99s-x9-ol8"
+      "inst-dz99s-gpu4-ol79" = {
+        "display_name" = "inst-dz99s-gpu4-ol79"
         "private_ip" = "10.0.2.73"
       }
     }
@@ -337,9 +367,9 @@ $ terraform init
 $ terraform apply --auto-approve
 ```
 
-最後のコマンドによる **Terraform** スクリプトの適用完了までの所要時間は、計算ノードのノード数が2ノードの場合で5分程度です。
+最後のコマンドによる **Terraform** スクリプトの適用完了までの所要時間は、GPUノードのノード数が2ノードの場合で10分程度です。
 
-**Terraform** スクリプトの適用が正常に完了すると、以下のようにコマンド出力の最後にBastionノードと計算ノードのホスト名とIPアドレスが出力されます。
+**Terraform** スクリプトの適用が正常に完了すると、以下のようにコマンド出力の最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。
 
 ```sh
 Apply complete! Resources: 16 added, 0 changed, 0 destroyed.
@@ -352,30 +382,30 @@ Bastion_instances_created = {
   "public_ip" = "123.456.789.123"
 }
 Compute_in_cn_created = {
-  "inst-9fhuq-x9-ol8" = {
-    "display_name" = "inst-9fhuq-x9-ol8"
+  "inst-9fhuq-gpu4-ol79" = {
+    "display_name" = "inst-9fhuq-gpu4-ol79"
     "private_ip" = "10.0.2.10"
   }
-  "inst-dz99s-x9-ol8" = {
-    "display_name" = "inst-dz99s-x9-ol8"
+  "inst-dz99s-gpu4-ol79" = {
+    "display_name" = "inst-dz99s-gpu4-ol79"
     "private_ip" = "10.0.2.73"
   }
 }
 ```
 
 ***
-# 2. HPCクラスタ確認
+# 2. GPUクラスタ確認
 
 ## 2-0. 概要
 
-本章は、デプロイされたHPCクラスタ環境を確認します。
+本章は、デプロイされたGPUクラスタ環境を確認します。
 
-この際、作成された計算ノードの全ホスト名を記載したホストリストファイルを使用し、BastionノードからHPCクラスタ内の全計算ノードにSSHでコマンドを発行、その環境を確認します。  
-なおこのホストリストファイルは、Bastionノードと全計算ノードに **/home/opc/hostlist.txt** として存在します。
+この際、作成されたGPUノードの全ホスト名を記載したホストリストファイルを使用し、BastionノードからGPUクラスタ内の全GPUノードにSSHでコマンドを発行、その環境を確認します。  
+なおこのホストリストファイルは、Bastionノードと全GPUノードに **/home/opc/hostlist.txt** として存在します。
 
 ## 2-1. Bastionノードログイン
 
-Bastionノードは、HPCクラスタ構築完了時に表示されるパブリックIPアドレスに対し、指定したSSH公開鍵に対応する秘密鍵を使用し、以下コマンドでインターネット経由ログインします。
+Bastionノードは、GPUクラスタ構築完了時に表示されるパブリックIPアドレスに対し、指定したSSH公開鍵に対応する秘密鍵を使用し、以下コマンドでインターネット経由ログインします。
 
 ```sh
 $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
@@ -383,60 +413,64 @@ $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
 
 ## 2-2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。  
+**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。  
 この際、ノード数分の接続するかどうかの確認に対して全て **yes** を入力します。
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "sudo cloud-init status"; done
-inst-zvc5c-x9-ol8
-The authenticity of host 'inst-zvc5c-x9-ol8 (10.0.2.159)' cannot be established.
+inst-zvc5c-gpu4-ol79
+The authenticity of host 'inst-zvc5c-gpu4-ol79 (10.0.2.159)' cannot be established.
 ECDSA key fingerprint is SHA256:6zl4kIFKqpBrRlw/JCfStS05rdCu7Eif/4e3OWvbOsc.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'inst-zvc5c-x9-ol8,10.0.2.159' (ECDSA) to the list of known hosts.
+Warning: Permanently added 'inst-zvc5c-gpu4-ol79,10.0.2.159' (ECDSA) to the list of known hosts.
 status: done
-inst-wf3wx-x9-ol8
-The authenticity of host 'inst-wf3wx-x9-ol8 (10.0.2.31)' cannot be established.
+inst-wf3wx-gpu4-ol79
+The authenticity of host 'inst-wf3wx-gpu4-ol79 (10.0.2.31)' cannot be established.
 ECDSA key fingerprint is SHA256:jWTGqZjG0dAyrbP04JGC8jJX+uqDwMFotLXirA7L+AA.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'inst-wf3wx-x9-ol8,10.0.2.31' (ECDSA) to the list of known hosts.
+Warning: Permanently added 'inst-wf3wx-gpu4-ol79,10.0.2.31' (ECDSA) to the list of known hosts.
 status: done
 ```
 
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
-## 2-3. 計算ノードファイルシステム確認
+## 2-3. GPUノードファイルシステム確認
 
-計算ノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが/mnt/localdiskにマウントされ、Bastionノードの/homeが/homeとしてマウントされています。
+GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが/mnt/localdiskにマウントされ、Bastionノードの/homeが/homeとしてマウントされています。
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "df -h / /mnt/localdisk /home"; done
-inst-kicav-x9-ol8
-Filesystem                  Size  Used Avail Use% Mounted on
-/dev/mapper/ocivolume-root   89G   15G   74G  17% /
-/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
-bastion:/home                36G  8.5G   28G  24% /home
-inst-0vdz8-x9-ol8
-Filesystem                  Size  Used Avail Use% Mounted on
-/dev/mapper/ocivolume-root   89G   15G   74G  17% /
-/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
-bastion:/home                36G  8.5G   28G  24% /home
+inst-kicav-gpu4-ol79
+Filesystem              Size  Used Avail Use% Mounted on
+/dev/sda3               192G   23G  170G  12% /
+/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
+bastion:/home            36G  9.1G   27G  26% /home
+inst-0vdz8-gpu4-ol79
+Filesystem              Size  Used Avail Use% Mounted on
+/dev/sda3               192G   23G  170G  12% /
+/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
+bastion:/home            36G  9.1G   27G  26% /home
 ```
 
 ***
-# 3. MPIプログラム実行
+# 3. NCCL Tests実行
 
-本章は、計算ノードの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれる **OpenMPI** と **Intel MPI Benchmark** を使用し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。
+本章は、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、Dockerコンテナ上で **NCCL** のGPU間通信性能を **NCCL Tests** で検証します。
 
-ここでは、 **Intel MPI Benchmark** の **Ping-Pong** を実行します。
+1. 全GPUノードのrootユーザで以下コマンドを実行し、Dockerランタイムを起動します。
+   
+    ```sh
+    $ systemctl start docker
+    ```
 
-**[OCI HPCベンチマーク情報](/ocitutorials/hpc/#2-oci-hpcベンチマーク情報)** の **[Intel MPI Benchmark実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarkを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合)** の手順に従い、 **Ping-Pong** を実行します。
+2. **[OCI HPCベンチマーク情報](/ocitutorials/hpc/#2-oci-hpcベンチマーク情報)** の **[NCCL Tests実行方法](/ocitutorials/hpc/benchmark/run-nccltests/)** の手順に従い、 **NCCL Tests** を実行します。 
 
 ***
-# 4. HPCクラスタ削除
+# 4. GPUクラスタ削除
 
 ## 4-0. 概要
 
-本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、HPCクラスタを削除します。  
+本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、GPUクラスタを削除します。  
 この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
 ## 4-1. リソース・マネージャを使用する方法
@@ -457,13 +491,13 @@ bastion:/home                36G  8.5G   28G  24% /home
 
    ![画面ショット](stack_page09.png)
 
-   この破棄が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で3分程度です。
+   この破棄が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で5分程度です。
 
-   ステータスが **成功** となれば、HPCクラスタの削除が完了しています。
+   ステータスが **成功** となれば、GPUクラスタの削除が完了しています。
 
 ## 4-2. Terraform CLIの場合
 
-本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **Terraform** CLIで破棄し、HPCクラスタを削除します。
+本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **Terraform** CLIで破棄し、GPUクラスタを削除します。
 
 **Terraform** 実行環境の **tutorial_cn** ディレクトリで以下コマンドを実行し、削除が正常に完了したことをメッセージから確認します。
 
@@ -474,6 +508,6 @@ Destroy complete! Resources: 18 destroyed.
 $
 ```
 
-この破棄が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で3分程度です。
+この破棄が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で5分程度です。
 
 これで、このチュートリアルは終了です。
