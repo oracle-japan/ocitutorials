@@ -74,17 +74,9 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ### 0-1-1. 構成ソース・プロバイダ作成
 
-本章は、ひな型となる **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **構成ソース・プロバイダ** を作成します。
+本章は、ひな型となる **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を作成します。
 
-**GitHub** にアクセスするための **構成ソース・プロバイダ** の作成は、 **GitHub** のアカウントを持っておりこのアカウントで **Personal access token** を発行しておく必要があります。  
-**GitHub** のアカウント作成は **[ここ](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home)** 、 **Personal access token** の発行は **[ここ](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)** を参照ください。
-
-**構成ソース・プロバイダ** の作成手順は、OCI公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top)** を参照ください。  
-本チュートリアルを実行するための **構成ソース・プロバイダ** は、以下で作成します。
-
-- **パブリック・エンドポイント/プライベート・エンドポイント :** パブリック・エンドポイント
-- **タイプ :** **GitHub**
-- **サーバーURL :** https://github.com/
+**構成ソース・プロバイダ** の作成は、 **[ここ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を参照ください。
 
 ### 0-1-2. スタック作成
 
