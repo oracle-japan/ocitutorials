@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-07-27T14:57:24+09:00">
+  <meta property="article:published_time" content="2023-08-08T10:11:03+09:00">
 
 
 
@@ -260,11 +260,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSファイルサーバを構築する</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSファイルサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSファイルサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
         
@@ -280,15 +280,19 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算ノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
         
       </ul>
     </li>
@@ -303,7 +307,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
-    <meta itemprop="datePublished" content="2023-07-27T14:57:24+09:00">
+    <meta itemprop="datePublished" content="2023-08-08T10:11:03+09:00">
     
 
     <div class="page__inner-wrap">
@@ -393,19 +397,9 @@
 
 <h3 id="0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</h3>
 
-<p>本章は、ひな型となる <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを <strong>GitHub</strong> パブリックレポジトリから取り込むための <strong>構成ソース・プロバイダ</strong> を作成します。</p>
+<p>本章は、ひな型となる <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを <strong>GitHub</strong> パブリックレポジトリから取り込むための <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong> を作成します。</p>
 
-<p><strong>GitHub</strong> にアクセスするための <strong>構成ソース・プロバイダ</strong> の作成は、 <strong>GitHub</strong> のアカウントを持っておりこのアカウントで <strong>Personal access token</strong> を発行しておく必要があります。<br />
-<strong>GitHub</strong> のアカウント作成は <strong><a href="https://github.com/signup?ref_cta=Sign+up&amp;ref_loc=header+logged+out&amp;ref_page=%2F&amp;source=header-home">ここ</a></strong> 、 <strong>Personal access token</strong> の発行は <strong><a href="https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">ここ</a></strong> を参照ください。</p>
-
-<p><strong>構成ソース・プロバイダ</strong> の作成手順は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top">ここ</a></strong> を参照ください。<br />
-本チュートリアルを実行するための <strong>構成ソース・プロバイダ</strong> は、以下で作成します。</p>
-
-<ul>
-  <li><strong>パブリック・エンドポイント/プライベート・エンドポイント :</strong> パブリック・エンドポイント</li>
-  <li><strong>タイプ :</strong> <strong>GitHub</strong></li>
-  <li><strong>サーバーURL :</strong> https://github.com/</li>
-</ul>
+<p><strong>構成ソース・プロバイダ</strong> の作成は、 <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">ここ</a></strong> を参照ください。</p>
 
 <h3 id="0-1-2-スタック作成">0-1-2. スタック作成</h3>
 
@@ -969,7 +963,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-07-27T14:57:24+09:00">July 27, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-08T10:11:03+09:00">August 8, 2023</time></p>
 
 
       </footer>

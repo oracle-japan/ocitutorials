@@ -1,0 +1,675 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クラスタ・ネットワークに接続する計算/GPUノードのデプロイは、接続するクラスタ・ネットワークの論理的なパーティション内で利用可能なインスタンスが不足していると、これに失敗します。本テクニカルTipsは、このようなケースで発生するデプロイ時の問題を特定する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">
+
+
+  <meta property="og:description" content="クラスタ・ネットワークに接続する計算/GPUノードのデプロイは、接続するクラスタ・ネットワークの論理的なパーティション内で利用可能なインスタンスが不足していると、これに失敗します。本テクニカルTipsは、このようなケースで発生するデプロイ時の問題を特定する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-08-08T10:11:03+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法
+
+        
+      </h1>
+      
+        <p class="page__lead">クラスタ・ネットワークに接続する計算/GPUノードのデプロイは、接続するクラスタ・ネットワークの論理的なパーティション内で利用可能なインスタンスが不足していると、これに失敗します。本テクニカルTipsは、このようなケースで発生するデプロイ時の問題を特定する方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/" class="active">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法">
+    <meta itemprop="description" content="クラスタ・ネットワークに接続する計算/GPUノードのデプロイは、接続するクラスタ・ネットワークの論理的なパーティション内で利用可能なインスタンスが不足していると、これに失敗します。本テクニカルTipsは、このようなケースで発生するデプロイ時の問題を特定する方法を解説します。">
+    <meta itemprop="datePublished" content="2023-08-08T10:11:03+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-デプロイ方法毎のエラーメッセージ確認方法">1. デプロイ方法毎のエラーメッセージ確認方法</a><ul><li><a href="#1-1-ociコンソールを使用する場合">1-1. OCIコンソールを使用する場合</a></li><li><a href="#1-2-リソースマネージャを使用する場合">1-2. リソース・マネージャを使用する場合</a></li><li><a href="#1-3-terraform-cliを使用する場合">1-3. Terraform CLIを使用する場合</a></li></ul></li><li><a href="#2-エラーメッセージによる原因の特定">2. エラーメッセージによる原因の特定</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-insufficient-capacity-for-cluster-network">2-1. Insufficient capacity for cluster network</a></li><li><a href="#2-2-insufficient-capacity-for-cluster-network-based-on-the-cluster-network-placement-constraints">2-2. Insufficient capacity for cluster network based on the cluster network placement constraints</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する計算/GPUノードのデプロイは、接続する <strong>クラスタ・ネットワーク</strong> の論理的なパーティション内で利用可能なインスタンスが不足していると、これに失敗します。<br />
+本テクニカルTipsは、このようなケースで発生するデプロイ時の問題を特定する方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共に計算/GPUノードを新規にデプロイする場合や、既にデプロイされた <strong>クラスタ・ネットワーク</strong> に計算/GPUノードを追加する場合、また既にデプロイされた <strong>クラスタ・ネットワーク</strong> の計算/GPUノードを置き換える場合、そのノード数によってはリソース不足により失敗する場合があります。<br />
+新規にデプロイするケースで失敗の原因として考えられるのは、データセンター内に存在する <strong>クラスタ・ネットワーク</strong> のどの論理的なパーティションにおいても、指定したシェイプの指定したインスタンス数の空きがない場合です。<br />
+また、計算/GPUノードを追加するケースや置き換えるケースで失敗の原因として考えられるのは、既にデプロイされている <strong>クラスタ・ネットワーク</strong> の論理的なパーティションにおいて、指定したシェイプの指定したインスタンス数の空きがない場合です。</p>
+
+<p>これらの問題が発生するケースは、出力されるエラーメッセージを確認することにより、前述のシナリオで失敗したことを特定することが出来ます。<br />
+ただこのエラーメッセージは、以下どの方法で <strong>クラスタ・ネットワーク</strong> のデプロイを行ったかにより、エラーメッセージの確認方法が異なります。</p>
+
+<ul>
+  <li>
+    <p>OCIコンソール<br />
+以下の <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> に従って構築したHPC/GPUクラスタのように、OCIコンソールの  <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> → <strong>クラスタ・ネットワークの作成</strong> ボタン から <strong>クラスタ・ネットワーク</strong> を作成するケースです。</p>
+
+    <ul>
+      <li><strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong></li>
+      <li><strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong><br />
+以下の <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> に従って構築したHPC/GPUクラスタのように、 <strong>リソース・マネージャ</strong> に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> から <strong>クラスタ・ネットワーク</strong> を作成するケースです。</p>
+
+    <ul>
+      <li><strong><a href="/ocitutorials/hpc/spinup-hpc-cluster">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></strong></li>
+      <li><strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong></li>
+      <li><strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></strong> の <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法</li>
+      <li><strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></strong></li>
+      <li><strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong></li>
+      <li><strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> の <strong>リソース・マネージャ</strong> を使用する方法</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLI<br />
+以下の <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> に従って構築したHPC/GPUクラスタのように、 <strong>Terraform</strong> 実行環境で <strong>Terraform</strong> CLIから <strong>クラスタ・ネットワーク</strong> を作成するケースです。</p>
+
+    <ul>
+      <li><strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></strong> の <strong>Terraform</strong> CLIを使用する方法</li>
+      <li><strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> の <strong>Terraform</strong> CLIを使用する方法</li>
+    </ul>
+  </li>
+</ul>
+
+<p>以降では、デプロイ方法毎のエラーメッセージ確認方法と、前述のシナリオでデプロイに失敗した場合に発生するエラーメッセージを解説します。</p>
+
+<hr />
+<h1 id="1-デプロイ方法毎のエラーメッセージ確認方法">1. デプロイ方法毎のエラーメッセージ確認方法</h1>
+
+<h2 id="1-1-ociコンソールを使用する場合">1-1. OCIコンソールを使用する場合</h2>
+
+<p>本章は、OCIコンソールの <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> → <strong>クラスタ・ネットワークの作成</strong> ボタンから <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を新規作成するケースや、OCIコンソールの <strong>クラスタ・ネットワークの編集</strong> サイドバーで <strong>インスタンス数</strong> フィールドを指定して計算/GPUノードを追加するケース、またOCIコンソールの <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a></strong> 画面で <strong>インスタンスのデタッチ</strong> メニューから計算/GPUノードを置き換えるケースでデプロイに失敗した場合、どのようにエラーメッセージを確認するかを解説します。</p>
+
+<p><strong>クラスタ・ネットワーク</strong> の新規作成や計算/GPUノードの追加・置き換え操作が失敗したら、OCIコンソールの <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> メニューで表示される画面で当該 <strong>クラスタ・ネットワーク</strong> をクリックし、以下画面で <strong>作業リクエスト</strong> メニューをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>表示される以下画面の <strong>作業リクエスト</strong> フィールドで、 <strong>状態</strong> 列が失敗となった <strong>操作</strong> 列の作業リクエスト（以下の例では <strong>CreateClusterNetworkReservation</strong> ）をクリックします。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>また以下の例は、 <strong>LaunchinstanceinClusterNetwork</strong> をクリックします。</p>
+
+<p><img src="console_page06.png" alt="画面ショット" /></p>
+
+<p>表示される以下画面の <strong>ログ・メッセージ</strong> フィールドで、最後に表示されているメッセージ（以下の例では <strong>Insufficient capacity for cluster network</strong> ）を確認します。</p>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
+
+<p>また、前述の画面の <strong>エラー・メッセージ</strong> メニューをクリックして表示される以下画面の <strong>エラー・メッセージ</strong> フィールドで、最後に表示されているメッセージ（以下の例では <strong>Insufficient capacity for cluster network based on the cluster network placement constraints</strong> ）を確認します。</p>
+
+<p><img src="console_page04.png" alt="画面ショット" /></p>
+
+<p><strong>クラスタ・ネットワーク</strong> のデプロイ失敗の原因を問題判別する際着目するメッセージは、これらの <strong>ログ・メッセージ</strong> フィールドと <strong>エラー・メッセージ</strong> フィールドに表示されるメッセージです。</p>
+
+<h2 id="1-2-リソースマネージャを使用する場合">1-2. リソース・マネージャを使用する場合</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用し、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> や <strong>GitHub</strong> 等から公開されている <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを基に作成する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> で <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を新規作成するケースでデプロイに失敗した場合、どのようにエラーメッセージを確認するかを解説します。</p>
+
+<p><strong>スタック</strong> を適用して <strong>クラスタ・ネットワーク</strong> のデプロイに失敗するケースは、まずユーザからは適用した <strong>スタック</strong> の以下 <strong>ジョブの詳細</strong> 画面の <strong>ログ</strong> フィールドの最後に表示されるエラーメッセージを確認することになります。</p>
+
+<p><img src="console_page05.png" alt="画面ショット" /></p>
+
+<p>この <strong>リソース・マネージャ</strong> から表示されるエラーメッセージは、赤枠のメッセージ（前述の例では <strong>Error: During creation, Terraform expected the resource to reach state(s): RUNNING, but the service reported unexpected state: TERMINATED.</strong> ）でリソースのデプロイに失敗したことが分かり、黄枠のメッセージ（前述の例では <strong>with oci_core_cluster_network.cluster_network[0],</strong> ）で失敗したリソースが <strong>クラスタ・ネットワーク</strong> であることを示していますが、 <strong>クラスタ・ネットワーク</strong> のデプロイに失敗した原因を直接的に示していません。<br />
+そこで以降では、この <strong>スタック</strong> からデプロイされた <strong>クラスタ・ネットワーク</strong> のリソースをOCIコンソールで確認し、原因につながるエラーメッセージを特定します。</p>
+
+<p>OCIコンソールの <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> メニューで表示される画面で当該 <strong>クラスタ・ネットワーク</strong> をクリックし、以下画面で <strong>作業リクエスト</strong> メニューをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>表示される以下画面の <strong>作業リクエスト</strong> フィールドで、 <strong>状態</strong> 列が失敗となった <strong>操作</strong> 列の作業リクエスト（以下の例では <strong>CreateClusterNetworkReservation</strong> ）をクリックします。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>表示される以下画面の <strong>ログ・メッセージ</strong> フィールドで、最後に表示されているメッセージ（以下の例では <strong>Insufficient capacity for cluster network</strong> ）を確認します。</p>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
+
+<p>また、前述の画面の <strong>エラー・メッセージ</strong> メニューをクリックして表示される以下画面の <strong>エラー・メッセージ</strong> フィールドで、最後に表示されているメッセージ（以下の例では <strong>Insufficient capacity for cluster network based on the cluster network placement constraints</strong> ）を確認します。</p>
+
+<p><img src="console_page04.png" alt="画面ショット" /></p>
+
+<p><strong>クラスタ・ネットワーク</strong> のデプロイ失敗の原因を問題判別する際着目するメッセージは、これらの <strong>ログ・メッセージ</strong> フィールドと <strong>エラー・メッセージ</strong> フィールドに表示されるメッセージです。</p>
+
+<h2 id="1-3-terraform-cliを使用する場合">1-3. Terraform CLIを使用する場合</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> 実行環境で <strong>Terraform</strong> CLIで <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を新規作成するケースでデプロイに失敗した場合、どのようにエラーメッセージを確認するかを解説します。</p>
+
+<p><strong>Terraform</strong> CLIで <strong>クラスタ・ネットワーク</strong> のデプロイに失敗するケースは、まずユーザからは以下の <strong>terraform apply</strong> コマンド実行時のエラーメッセージを確認することになります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>terraform apply <span class="nt">--auto-approve</span>
+:
+:
+:
+│ Error: During creation, Terraform expected the resource to reach state<span class="o">(</span>s<span class="o">)</span>: RUNNING, but the service reported unexpected state: TERMINATED. &lt;<span class="nt">---</span><span class="o">(</span>1<span class="o">)</span>
+│ 
+│   with oci_core_cluster_network.cn[0], &lt;<span class="nt">---</span> <span class="o">(</span>2<span class="o">)</span>
+│   on cn.tf line 25, <span class="k">in </span>resource <span class="s2">"oci_core_cluster_network"</span> <span class="s2">"cn"</span>:
+│   25: resource <span class="s2">"oci_core_cluster_network"</span> <span class="s2">"cn"</span> <span class="o">{</span>
+</code></pre></div></div>
+
+<p>この <strong>リソース・マネージャ</strong> から表示されるエラーメッセージは、(1)のメッセージ（前述の例では <strong>Error: During creation, Terraform expected the resource to reach state(s): RUNNING, but the service reported unexpected state: TERMINATED.</strong> ）でリソースのデプロイに失敗したことが分かり、(2)のメッセージ（前述の例では <strong>with oci_core_cluster_network.cluster_network[0],</strong> ）で失敗したリソースが <strong>クラスタ・ネットワーク</strong> であることを示していますが、 <strong>クラスタ・ネットワーク</strong> のデプロイに失敗した原因を直接的に示していません。<br />
+そこで以降では、この <strong>Terraform</strong> CLIからデプロイされた <strong>クラスタ・ネットワーク</strong> のリソースをOCIコンソールで確認し、原因につながるエラーメッセージを特定します。</p>
+
+<p>OCIコンソールの <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> メニューで表示される画面で当該 <strong>クラスタ・ネットワーク</strong> をクリックし、以下画面で <strong>作業リクエスト</strong> メニューをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>表示される以下画面の <strong>作業リクエスト</strong> フィールドで、 <strong>状態</strong> 列が失敗となった <strong>操作</strong> 列の作業リクエスト（以下の例では <strong>CreateClusterNetworkReservation</strong> ）をクリックします。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>表示される以下画面の <strong>ログ・メッセージ</strong> フィールドで、最後に表示されているメッセージ（以下の例では <strong>Insufficient capacity for cluster network</strong> ）を確認します。</p>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
+
+<p>また、前述の画面の <strong>エラー・メッセージ</strong> メニューをクリックして表示される以下画面の <strong>エラー・メッセージ</strong> フィールドで、最後に表示されているメッセージ（以下の例では <strong>Insufficient capacity for cluster network based on the cluster network placement constraints</strong> ）を確認します。</p>
+
+<p><img src="console_page04.png" alt="画面ショット" /></p>
+
+<p><strong>クラスタ・ネットワーク</strong> のデプロイ失敗の原因を問題判別する際着目するメッセージは、これらの <strong>ログ・メッセージ</strong> フィールドと <strong>エラー・メッセージ</strong> フィールドに表示されるメッセージです。</p>
+
+<hr />
+<h1 id="2-エラーメッセージによる原因の特定">2. エラーメッセージによる原因の特定</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本章は、 <strong><a href="#1-デプロイ方法毎のエラーメッセージ確認方法">1. デプロイ方法毎のエラーメッセージ確認方法</a></strong> で特定したエラーメッセージを基に、リソース不足により発生するデプロイ失敗の原因を特定します。</p>
+
+<h2 id="2-1-insufficient-capacity-for-cluster-network">2-1. Insufficient capacity for cluster network</h2>
+
+<p>デプロイに失敗した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> の <strong>ログ・メッセージ</strong> フィールドや <strong>エラー・メッセージ</strong> フィールドにこのメッセージが出力されるケースは、データセンター内に存在する <strong>クラスタ・ネットワーク</strong> のどの論理的なパーティションにおいても、指定したシェイプの指定したインスタンス数の空きがない場合です。<br />
+この場合、以下の対応が考えられます。</p>
+
+<ul>
+  <li>
+    <p>可用性ドメインやリージョンを変更して再デプロイする<br />
+この方法は、他の可用性ドメインやリージョンの <strong>クラスタ・ネットワーク</strong> の論理的なパーティションで、指定したシェイプの指定したインスタンス数の空きが存在することを期待し、行います。</p>
+  </li>
+  <li>
+    <p>時間を空けて再デプロイする<br />
+この方法は、他のユーザのリソース破棄により利用可能な状態になることを期待し、行います。</p>
+  </li>
+</ul>
+
+<h2 id="2-2-insufficient-capacity-for-cluster-network-based-on-the-cluster-network-placement-constraints">2-2. Insufficient capacity for cluster network based on the cluster network placement constraints</h2>
+
+<p>デプロイに失敗した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> の <strong>ログ・メッセージ</strong> フィールドや <strong>エラー・メッセージ</strong> フィールドにこのメッセージが出力されるケースは、既存の <strong>クラスタ・ネットワーク</strong> に接続する計算/GPUノードのノード数を増やしたり、既存の計算/GPUノードを置き換える際、この <strong>クラスタ・ネットワーク</strong> の論理的なパーティション内に指定したシェイプの指定したインスタンス数の空きがない場合です。<br />
+この場合、以下の対応が考えられます。</p>
+
+<ul>
+  <li>
+    <p>ノード数増加・置き換え手順のリトライ<br />
+当該 <strong>クラスタ・ネットワーク</strong> の論理的なパーティション内にインスタンスの空きが発生するタイミングを狙い、時間をおいてノード数増加手順や置き換え手順をリトライします。<br />
+ただこの方法は、他のユーザがインスタンスを終了する等のタイミングに出くわさない限り、同様に失敗します。</p>
+  </li>
+  <li>
+    <p>新たな <strong>クラスタ・ネットワーク</strong> の作成<br />
+追加するノードが既存のノードと <strong>クラスタ・ネットワーク</strong> を介して通信する必要が無い場合、既存の <strong>クラスタ・ネットワーク</strong> はそのままに、追加するノード数の計算/GPUノードを新たに <strong>クラスタ・ネットワーク</strong> とともにデプロイします。</p>
+  </li>
+  <li>
+    <p><strong>クラスタ・ネットワーク</strong> 再作成<br />
+既存の <strong>クラスタ・ネットワーク</strong> を計算/GPUノードと共に一旦終了し、新たに追加後のノード数の計算/GPUノードを <strong>クラスタ・ネットワーク</strong> からデプロイします。</p>
+  </li>
+</ul>
+
+<p>以上の背景から、運用中にHPC/GPUクラスタのノード数を増やす可能性がある場合や、ハードウェア障害による利用可能なノード数の減少やノードの置き換えに備えて、予めその分のノード数を含めた計算/GPUノードの <strong>クラスタ・ネットワーク</strong> を作成しておくことで、既存の <strong>クラスタ・ネットワーク</strong> に接続するノード数増加や置き換え時の問題を回避することが出来ます。<br />
+例えば、運用に必要なノード数が128ノードの場合、129ノードで <strong>クラスタ・ネットワーク</strong> を構築してそのうちの128ノードを運用に供し、運用中の128ノードのうち1ノードでハードウェア障害等の問題が発生したら、このノードを運用から外して予備ノードを運用に組み込む、という運用方針が考えられます。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-08T10:11:03+09:00">August 8, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%BB%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E8%A8%88%E7%AE%97%2FGPU%E3%83%8E%E3%83%BC%E3%83%89%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E6%99%82%E3%81%AE%E5%95%8F%E9%A1%8C%E5%88%A4%E5%88%A5%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fdetermine-cnrelated-issue%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fdetermine-cnrelated-issue%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fdetermine-cnrelated-issue%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/" class="pagination--pager" title="クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/" class="pagination--pager" title="ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

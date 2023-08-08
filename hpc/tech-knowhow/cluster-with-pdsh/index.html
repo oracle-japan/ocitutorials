@@ -1,0 +1,823 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>pdshで効率的にクラスタ管理オペレーションを実行 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="pdshで効率的にクラスタ管理オペレーションを実行">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">
+
+
+  <meta property="og:description" content="ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-08-08T10:11:03+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          pdshで効率的にクラスタ管理オペレーションを実行
+
+        
+      </h1>
+      
+        <p class="page__lead">ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">pdshで効率的にクラスタ管理オペレーションを実行</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/" class="active">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="pdshで効率的にクラスタ管理オペレーションを実行">
+    <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。">
+    <meta itemprop="datePublished" content="2023-08-08T10:11:03+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-pdshインストールセットアップ">1. pdshインストール・セットアップ</a></li><li><a href="#2-pdsh使用時の留意点">2. pdsh使用時の留意点</a></li><li><a href="#3-pdshを使った代表的なクラスタ管理オペレーション">3. pdshを使った代表的なクラスタ管理オペレーション</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-所要時間の長い管理オペレーションを並列に実行">3-1. 所要時間の長い管理オペレーションを並列に実行</a></li><li><a href="#3-2-管理対象ノードからの異なるコマンド出力を効果的に判別">3-2. 管理対象ノードからの異なるコマンド出力を効果的に判別</a></li><li><a href="#3-3-クラスタ管理ノード管理対象ノード間で並列にファイル転送">3-3. クラスタ管理ノード・管理対象ノード間で並列にファイル転送</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。<br />
+本テクニカルTipsは、 <strong><a href="https://github.com/chaos/pdsh">pdsh</a></strong> を使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>HPC/GPUクラスタの運用管理を任されるシステム管理者は、管理するクラスタに含まれる計算/GPUノードに対して、以下のような管理オペレーションを実施する必要が頻繁に発生します。</p>
+
+<ul>
+  <li>OSアップデートを全計算/GPUノードに適用する</li>
+  <li>新たに使用することになったアプリケーションを全計算/GPUノードにインストールする</li>
+  <li>メンテナンス作業に伴い全計算/GPUノードをシャットダウン/リブートする</li>
+  <li>運用方針変更に伴い全計算/GPUノードでOSやアプリケーションの設定ファイルを置き換える</li>
+  <li>一部の計算/GPUノードで他ノードと挙動が異なるためインストールされているRPMのバージョンを全計算/GPUノードで調査する</li>
+</ul>
+
+<p>これらのオペレーションは、全計算/GPUノードでsudoで管理者権限を利用可能なユーザ（ <strong>Oracle Linux</strong> では <strong>opc</strong> ）からパスフレーズ無しでSSH接続できるように構築されたクラスタ管理ノードを用意し、このノードから管理対象ノードの計算/GPUノードにSSHでコマンドを発行してこれを実施するのが一般的です。<br />
+この場合、予め管理対象ノードのホスト名を記載したホストリストファイルとbashのforループを組合せたコマンドをクラスタ管理ノードから実行することで、一回のコマンド発行で所望のオペレーションを実施することが可能です。</p>
+
+<p>OSアップデートを管理対象ノードに適用するケースでは、以下のコマンドをクラスタ管理ノードからopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo dnf upgrade --refresh"</span><span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<p>ただこの場合、OSアップデートをホストリストファイルに記載された管理対象ノードに対して1ノードづつ順次適用するため、1ノード当たりの所要時間のノード数分の時間がかかります。<br />
+また、アップデートの適用が正しく全ノードに適用されたかを確認する場合、大量に出力されるOSアップデートからのコマンド出力を、ノード数分確認する必要が生じます。</p>
+
+<p>また、インストールされているRPMのバージョンを管理対象ノードで調査するケースでは、以下のコマンドをクラスタ管理ノードからopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo dnf list openssh-server"</span><span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<p>ただこの場合、全てのノードで指定したRPMが想定するバージョンになっているかを確認するため、ノード数分の出力を全て確認する必要が生じます。</p>
+
+<p><strong>pdsh</strong> は、このような課題を解決する以下の機能を持っています。</p>
+
+<ul>
+  <li>管理対象ノードに並列にコマンドを実行</li>
+  <li>管理対象ノードからのコマンド出力が同一だった場合これをグルーピングして出力（ユーティリティーツール <strong>dshbak</strong> の機能）</li>
+  <li>管理対象ノードに並列にファイルを転送（ユーティリティーツール <strong>pdcp</strong> の機能）</li>
+  <li>管理対象ノードから並列にファイルをクラスタ管理ノードに転送（ユーティリティーツール <strong>rpdcp</strong> の機能）</li>
+</ul>
+
+<p><strong>pdsh</strong> は、クラスタ管理ノードから管理対象ノードに対してSSHでコマンドを発行するため、パスフレーズ無しでSSHコマンドを実行できるよう事前にセットアップする必要があります。また管理オペレーションは、通常管理者権限を必要とするため、このパスフレーズ無しで実行するSSHコマンドは、管理者権限を持ったユーザから実行できるようにするか、sudoコマンドでパスワードを入力することなく管理者に昇格できるユーザである必要があります。<br />
+本テクニカルTipsでは、クラスタ管理ノードと管理対象ノードのOSに <strong>Oracle Linux</strong> を使用し、クラスタ管理ノードから管理対象ノードにopcユーザ（sudoで管理者権限昇格が可能なユーザ）でパスフレーズ無しでSSHコマンドを実行できる環境を前提としています。<br />
+この環境は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> カテゴリや <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> カテゴリに含まれるチュートリアルを元に構築するHPC/GPUクラスタに於いては、クラスタ管理ノードに相当するBastionノードのopcユーザから管理対象ノードに相当する計算/GPUノードにパスフレーズ無しでSSHコマンドが実行できるよう構築されるため、改めて実施する必要はありません。</p>
+
+<p>また <strong>pdsh</strong> は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用します。<br />
+このホストリストファイルは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照して作成し、これをクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8
+inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8
+</code></pre></div></div>
+
+<p>以降では、 <strong>pdsh</strong> をインストール・セットアップし、典型的なクラスタ管理オペレーションを <strong>pdsh</strong> を使用して効率的に実行する方法を解説します。</p>
+
+<hr />
+<h1 id="1-pdshインストールセットアップ">1. pdshインストール・セットアップ</h1>
+
+<p>本章は、 <strong>pdsh</strong> をインストール・セットアップします。</p>
+
+<p>以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> をインストールします。<br />
+この際、クラスタ管理ノードの <strong>Oracle Linux</strong> バージョンに応じて実行するコマンドが異なる点に注意します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
+<span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
+<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh
+<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH <strong>known_hosts</strong> ファイルに登録します。<br />
+このステップは、後の <strong>pdsh</strong> の実行のために必要です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> :<span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> の動作を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">date
+</span>inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+</code></pre></div></div>
+
+<p><strong>pdsh</strong> の出力は、第一フィールドが対象ノードのホスト名、第2フィールド以降が対象ノードからのコマンド出力です。</p>
+
+<p>なお、クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの <strong>pdcp</strong> や <strong>rpdcp</strong> を使用する場合、管理対象ノードにも <strong>pdsh</strong> がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに <strong>pdsh</strong> をインストールします。<br />
+この際、管理対象ノードの <strong>Oracle Linux</strong> バージョンに応じて実行するコマンドが異なる点に注意します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
+<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
+<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh
+<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="2-pdsh使用時の留意点">2. pdsh使用時の留意点</h1>
+
+<p>本章は、 <strong>pdsh</strong> を使用する際に留意する点を記載します。</p>
+
+<ul>
+  <li>
+    <p>複数のコマンドを纏めて一度の <strong>pdsh</strong> で実行する場合<br />
+管理対象ノードに対して複数のコマンドを一度の <strong>pdsh</strong> で実行する場合、これらのコマンド群を以下のように <strong>‘</strong> （シングルクォート）で囲みます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'date; hostname'</span>
+inst-f5fra-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-6pvpq-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>管理対象ノードからのコマンド出力順序<br />
+<strong>pdsh</strong> は、管理対象ノードに対して並列にコマンドを発行しますが、これらのコマンド出力が表示される順序は、クラスタ管理ノードに到着した順になります。<br />
+このため、コマンド出力が複数行に亘る場合、異なる管理対象ノードの出力が以下のように入り乱れる状況が発生します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'hostname; sleep 1; hostname'</span>
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+</code></pre></div>    </div>
+
+    <p>このような状況が問題となる場合、 <strong>pdsh</strong> の特徴である並列実行を敢えて無効化し、ホストリストファイル記載の順に順次管理対象ノードにコマンドを発行することが出来ます。<br />
+これは、 <strong>pdsh</strong> の並列実行数を制御するオプション <strong>-f</strong> に <strong>1</strong> を指定し、以下のように実行します。<br />
+なおデフォルトの並列実行数は、 <strong>32</strong> です。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nt">-f</span> 1 <span class="s1">'hostname; sleep 1; hostname'</span>
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>管理対象ノードがレスポンスしない場合<br />
+管理対象ノードが障害等でSSHのコマンド要求に応じられない場合は、当然 <strong>pdsh</strong> の実行も問題の管理対象ノードのところで停止します。<br />
+この場合、通常のコマンド同様 <strong>Ctrl-C</strong> を使用して <strong>pdsh</strong> の実行を停止させることが出来ますが、これには1秒以内の間隔で二度連続して <strong>Ctrl-C</strong> を入力します。<br />
+一度だけ <strong>Ctrl-C</strong> を入力した場合は、その時点で反応が無くレスポンスを待っていた管理対象ノードのホスト名を表示し、コマンドの実行を継続します。</p>
+
+    <p>[一度だけ <strong>Ctrl-C</strong> を入力した場合]</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^./hostlist.txt <span class="nb">sleep </span>60
+^Cpdsh@bastion: interrupt <span class="o">(</span>one more within 1 sec to abort<span class="o">)</span>
+pdsh@bastion:  <span class="o">(</span>^Z within 1 sec to cancel pending threads<span class="o">)</span>
+pdsh@bastion: inst-f5fra-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+pdsh@bastion: inst-3ktpe-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+pdsh@bastion: inst-6pvpq-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+pdsh@bastion: inst-dixqy-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+</code></pre></div>    </div>
+
+    <p>[二度連続して1秒以内に <strong>Ctrl-C</strong> を入力した場合]</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^./hostlist.txt <span class="nb">sleep </span>60
+^Cpdsh@bastion: interrupt <span class="o">(</span>one more within 1 sec to abort<span class="o">)</span>
+pdsh@bastion:  <span class="o">(</span>^Z within 1 sec to cancel pending threads<span class="o">)</span>
+pdsh@bastion: inst-f5fra-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+pdsh@bastion: inst-3ktpe-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+pdsh@bastion: inst-6pvpq-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+pdsh@bastion: inst-dixqy-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
+^Csending SIGTERM to ssh inst-f5fra-x9-ol8
+sending signal 15 to inst-f5fra-x9-ol8 <span class="o">[</span>ssh] pid 49061
+sending SIGTERM to ssh inst-3ktpe-x9-ol8
+sending signal 15 to inst-3ktpe-x9-ol8 <span class="o">[</span>ssh] pid 49062
+sending SIGTERM to ssh inst-6pvpq-x9-ol8
+sending signal 15 to inst-6pvpq-x9-ol8 <span class="o">[</span>ssh] pid 49063
+sending SIGTERM to ssh inst-dixqy-x9-ol8
+sending signal 15 to inst-dixqy-x9-ol8 <span class="o">[</span>ssh] pid 49064
+pdsh@bastion: interrupt, aborting.
+<span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>標準入力からの入力を求めるコマンドを実行する場合<br />
+コマンド実行を継続するかどうかといった、インタラクティブに標準入力からの指示を求めるコマンドの <strong>pdsh</strong> からの実行は、この指示をクラスタ管理ノードの標準入力から管理対象ノードに渡すことが出来ないため、そのままではこれを実行することが出来ません。<br />
+この場合、これらコマンドへの指示をオプションで指定することが可能であれば、これを使用することで問題を回避することが可能です。<br />
+RPMパッケージをインストールするdnfコマンドは、このための <strong>-y</strong> オプションを用意しており、以下のようにこの問題を回避することが出来ます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo dnf install -y httpd'</span>
+</code></pre></div>    </div>
+
+    <p>また、以下のようにパイプを介して当該コマンドの標準入力に指示を渡すことで、これを回避することも出来ます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'echo yes | sudo dnf install httpd'</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<hr />
+<h1 id="3-pdshを使った代表的なクラスタ管理オペレーション">3. pdshを使った代表的なクラスタ管理オペレーション</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、管理対象ノード数の多いクラスタでの管理オペレーションに於いて、 <strong>pdsh</strong> が威力を発揮する代表的な場面を想定し、 <strong>pdsh</strong> の具体的な利用方法を紹介します。</p>
+
+<h2 id="3-1-所要時間の長い管理オペレーションを並列に実行">3-1. 所要時間の長い管理オペレーションを並列に実行</h2>
+
+<p>ノード当たりの所要時間が長い管理オペレーションを多数の管理対象ノードに対して実行する場面は、 <strong>pdsh</strong> の並列実行機能がその威力を発揮します。<br />
+例えば、OSをアップデートする場合、アップデートするパッケージの数によっては数十分の所要時間が必要になりますが、これをシェルのforループ等で順次適用することは、管理対象ノード数が100ノードを超えるようなクラスタでは非現実的です。</p>
+
+<p>この場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>dnf upgrade <span class="nt">--refresh</span>
+</code></pre></div></div>
+
+<p>なお <strong>pdsh</strong> の並列実行数は、 <strong>-f</strong> オプションで変更することが出来、デフォルトの32より大きなサイズのクラスタで全管理対象ノードに一斉にアップデートを行う場合は、以下のように実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nt">-f</span> 128 <span class="nb">sudo </span>dnf upgrade <span class="nt">--refresh</span>
+</code></pre></div></div>
+
+<p>但しこのOSアップデートのように、実行するコマンドからの出力が多くなる場合は、全ての管理対象ノードでコマンドが正常に完了したかどうかの判断が難しくなるため、以降で説明するような別の工夫が必要です。</p>
+
+<h2 id="3-2-管理対象ノードからの異なるコマンド出力を効果的に判別">3-2. 管理対象ノードからの異なるコマンド出力を効果的に判別</h2>
+
+<p>管理対象ノードが多数のクラスタでコマンドの出力を精査する必要がある場合、 <strong>pdsh</strong> に含まれるユーティリティーツール <strong>dshbak</strong> がその威力を発揮します。<br />
+例えば、OSバージョンが全ての管理対象ノードで想定しているバージョンになっているかを調べる場合、100ノードを超えるノードの中から1ノードだけが異なるバージョンとなっているケースでは、全ての出力を目視で確認することは、非現実的です。</p>
+
+<p>この場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">grep </span>PRETTY /etc/os-release | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-1phjn-x9-ol8,inst-iwhce-x9-ol8,inst-ot9zd-x9-ol8
+<span class="nt">----------------</span>
+<span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">"Oracle Linux Server 8.7"</span>
+<span class="nt">----------------</span>
+inst-lzgde-x9-ol8
+<span class="nt">----------------</span>
+<span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">"Oracle Linux Server 7.9"</span>
+</code></pre></div></div>
+
+<p>上記の例は、全対象ノードの中で1ノード（inst-lzgde-x9-ol8）だけOSバージョンが異なっており、これを容易に判別することが可能です。</p>
+
+<p>また、標準エラー出力を含めて管理対象ノードのコマンド出力を判別する場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'ls /tmp/hosts 2&gt;&amp;1'</span> | dshbak <span class="nt">-c</span>
+pdsh@bastion: inst-odzeg-x9-ol8: ssh exited with <span class="nb">exit </span>code 2
+<span class="nt">----------------</span>
+inst-cnspy-x9-ol8,inst-dw5fd-x9-ol8,inst-slz8n-x9-ol8
+<span class="nt">----------------</span>
+/tmp/hosts
+<span class="nt">----------------</span>
+inst-odzeg-x9-ol8
+<span class="nt">----------------</span>
+<span class="nb">ls</span>: cannot access <span class="s1">'/tmp/hosts'</span>: No such file or directory
+</code></pre></div></div>
+
+<p>上記の例は、全対象ノードの中で1ノード（inst-odzeg-x9-ol8）だけコマンドがエラーしており、これを容易に判別することが可能です。</p>
+
+<p>また、OSアップデートが正常に完了したかどうかを確認する場合等、コマンド出力を無視してコマンドのリターンコードのみを確認する場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo dnf upgrade --refresh &gt; /dev/null 2&gt;&amp;1; echo $?'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-slz8n-x9-ol8
+<span class="nt">----------------</span>
+<span class="nt">-1</span>
+<span class="nt">----------------</span>
+inst-cnspy-x9-ol8,inst-dw5fd-x9-ol8,inst-odzeg-x9-ol8
+<span class="nt">----------------</span>
+0
+</code></pre></div></div>
+
+<p>上記の例は、全対象ノードの中で1ノード（inst-slz8n-x9-ol8）だけOSアップデートがエラーしており、これをリターンコードから容易に判別しています。</p>
+
+<p>また <strong>dshbak</strong> は、クラスタ管理ノードの指定したディレクトリに、管理対象ノードからの出力をそのホスト名をファイル名として格納する機能があり、この場合以下のように実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo dnf install -y mysql'</span> | dshbak <span class="nt">-d</span> <span class="nb">.</span>
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
+total 16
+<span class="nt">-rw-rw-r--</span><span class="nb">.</span> 1 opc opc 2504 Aug  1 11:56 inst-cnspy-x9-ol8
+<span class="nt">-rw-rw-r--</span><span class="nb">.</span> 1 opc opc 2504 Aug  1 11:56 inst-dw5fd-x9-ol8
+<span class="nt">-rw-rw-r--</span><span class="nb">.</span> 1 opc opc 2504 Aug  1 11:56 inst-odzeg-x9-ol8
+<span class="nt">-rw-rw-r--</span><span class="nb">.</span> 1 opc opc 2504 Aug  1 11:56 inst-slz8n-x9-ol8
+</code></pre></div></div>
+
+<h2 id="3-3-クラスタ管理ノード管理対象ノード間で並列にファイル転送">3-3. クラスタ管理ノード・管理対象ノード間で並列にファイル転送</h2>
+
+<p><strong>pdsh</strong> は、クラスタ管理ノードと管理対象ノード間で並列にファイルを転送するためのユーティリティとして、以下2個のコマンドを提供します。</p>
+
+<ul>
+  <li><strong>pdcp</strong>: クラスタ管理ノードから管理対象ノードに並列にファイル転送</li>
+  <li><strong>rpdcp</strong>: 管理対象ノードからクラスタ管理ノードに並列にファイル転送</li>
+</ul>
+
+<p>クラスタ管理ノードのファイル/etc/hostsを全ての管理対象ノードの/tmpにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /etc/hosts /tmp
+</code></pre></div></div>
+
+<p>なお <strong>pdcp</strong> は、sudoによる権限昇格を適用することが出来ないため、上記例で直接管理対象ノードの/etc/hostsファイルを上書きすることが出来ません。<br />
+この場合、以下のように <strong>pdsh</strong> コマンドを併用してこれを実現することが可能です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /etc/hosts /tmp
+<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo cp</span> /tmp/hosts /etc/
+</code></pre></div></div>
+
+<p>また、全ての管理対象ノードのファイル/etc/hostsをクラスタ管理ノードのカレントディレクトリにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rpdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /etc/hosts <span class="nb">.</span>
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
+total 16
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 230 Aug  1 15:49 hosts.inst-cnspy-x9-ol8
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 231 Aug  1 15:49 hosts.inst-dw5fd-x9-ol8
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 230 Aug  1 15:49 hosts.inst-odzeg-x9-ol8
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 231 Aug  1 15:49 hosts.inst-slz8n-x9-ol8
+</code></pre></div></div>
+
+<p>このようにrpdcpは、コピーするファイル名に管理対象ノードのホスト名を付与したファイル名で、クラスタ管理ノードに全管理対象ノードのファイルをコピーします。</p>
+
+<p>先の <strong>pdcp</strong> と同様 <strong>rpdcp</strong> は、sudoによる権限昇格を適用することが出来ないため、管理者にのみ読み取り権限が付与された管理対象ノードのファイルをクラスタ管理ノードにコピーすることが出来ません。<br />
+この場合、以下のように <strong>pdsh</strong> コマンドを併用してこれを実現することが可能です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo cp /var/log/messages /tmp/; sudo chmod 644 /tmp/messages'</span>
+<span class="nv">$ </span>rpdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /tmp/messages <span class="nb">.</span>
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span>
+total 1964
+drwxrwxr-x. 2 opc opc    142 Aug  1 15:57 <span class="nb">.</span>
+drwx------. 4 opc opc   4096 Aug  1 11:54 ..
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 495260 Aug  1 15:57 messages.inst-cnspy-x9-ol8
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 543331 Aug  1 15:57 messages.inst-dw5fd-x9-ol8
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 478356 Aug  1 15:57 messages.inst-odzeg-x9-ol8
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 484193 Aug  1 15:57 messages.inst-slz8n-x9-ol8
+</code></pre></div></div>
+
+<p>また <strong>pdcp</strong> と <strong>rpdcp</strong> は、cpコマンドと同様、ファイルの日付とモードを保持する <strong>-p</strong> オプションと、ディレクトリを階層的にコピーする <strong>-r</strong> オプションをサポートします。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-08T10:11:03+09:00">August 8, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=pdsh%E3%81%A7%E5%8A%B9%E7%8E%87%E7%9A%84%E3%81%AB%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E7%AE%A1%E7%90%86%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E5%AE%9F%E8%A1%8C%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fcluster-with-pdsh%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fcluster-with-pdsh%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fcluster-with-pdsh%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/" class="pagination--pager" title="計算/GPUノードの追加・削除・入れ替え方法
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
