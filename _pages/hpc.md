@@ -12,21 +12,21 @@ table, th, td {
 }
 </style>
 
-このページは、Oracle Cloud Infrastructure（以降OCIと記載）を活用してHPCワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、 **OCI HPCポータル** です。
+このページは、Oracle Cloud Infrastructure（以降OCIと記載）を活用してHPC/機械学習ワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、 **OCI HPCポータル** です。
 
-現時点で提供する主要なコンテンツは、HPCシステム構築に最適なベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等の各種IaaSサービスを組み合わせて様々な用途のHPCクラスタやGPUクラスタを構築する **[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** で、自身の要件に合わせて利用するチュートリアルを選択できるようになっています。  
-その構築手法は、 **[リソース・マネージャ](#5-2-リソースマネージャ)** 、 **[Terraform](#5-12-terraform)** 、Ansibleを駆使する **[マーケットプレース](#5-5-マーケットプレイス)** 提供の **[スタック](#5-3-スタック)** や予め用意された **[Terraform](#5-12-terraform)** スクリプトを使用する自動構築と、OCIのコンソールから各ステップを自身で確認・実行しながら実施する手動構築から選択出来、また構築するHPCシステムは、クラスタ管理機能の有無や利用できるソフトウェアから選択することが可能です。
+現時点で提供する主要なコンテンツは、HPCシステム構築に最適なベアメタルインスタンス、GPUインスタンス、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 等の各種IaaSサービスを組み合わせて様々な用途のHPCクラスタやGPUクラスタを構築する **[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** で、自身の要件に合わせて利用するチュートリアルを選択できるようになっています。  
+その構築手法は、 **[リソース・マネージャ](#5-2-リソースマネージャ)** 、 **[Terraform](#5-12-terraform)** 、 **Ansible** を駆使する **[マーケットプレース](#5-5-マーケットプレイス)** 提供の **[スタック](#5-3-スタック)** や予め用意された **[Terraform](#5-12-terraform)** スクリプトを使用する自動構築と、OCIのコンソールから各ステップを自身で確認・実行しながら実施する手動構築から選択出来、また構築するHPCシステムは、クラスタ管理機能の有無や利用できるソフトウェアから選択することが可能です。
 
-また、OCIでHPCワークロードを実行する際に性能の指標となるベンチマーク関連情報を提供する **[OCI HPCベンチマーク情報](#2-oci-hpcベンチマーク情報)** 、OCI上でHPCワークロードを実行する際に有益なテクニカルTipsを集めた **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** 、本ポータルサイトを読み進めるうえで理解が必要なHPC関連のOCI用語を解説する **[OCI HPC用語集](#5-oci-hpc用語集)** が用意されています。
+また、OCIでHPC/機械学習ワークロードを実行する際に性能の指標となるベンチマーク関連情報を提供する **[OCI HPCベンチマーク情報](#2-oci-hpcベンチマーク情報)** 、OCI上でHPC/機械学習ワークロードを実行する際に有益なテクニカルTipsを集めた **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** 、本ポータルサイトを読み進めるうえで理解が必要なHPC関連のOCI用語を解説する **[OCI HPC用語集](#5-oci-hpc用語集)** が用意されています。
 
-今後は、関連情報リンク集等、HPCワークロードをOCI上で実行する際に有益なテクニカルコンテンツを継続的にお届けします。
+今後は、関連情報リンク集等、HPC/機械学習ワークロードをOCI上で実行する際に有益なテクニカルコンテンツを継続的にお届けします。
 
 ***
 # 1. OCI HPCチュートリアル集
 
 ## 1-0. 概要
 
-本章は、様々な用途のHPCシステムをOCI上に構築するチュートリアルを集めた、OCI HPCチュートリアル集です。
+本章は、様々な用途のHPCシステムをOCI上に構築するチュートリアルを集めた、 **OCI HPCチュートリアル集** です。
 
 各チュートリアルは、以下4つのカテゴリに分類されます。
 
@@ -139,9 +139,9 @@ table, th, td {
 
 ## 2-0. 概要
 
-本章は、OCIでHPCワークロードや機械学習ワークロードを実行する際に性能の指標となる各種ベンチマークについて、その関連情報を提供します。
+本章は、OCIでHPC/機械学習ワークロードを実行する際に性能の指標となる各種ベンチマークについて、その関連情報を提供します。
 
-現時点は、以下4種類のIaaSレベルの基礎性能を計測する標準ベンチマークについて、OCIでの実行方法を解説します。
+現時点は、OCIの各種IaaSサービスの基礎性能を計測する以下4種類の標準ベンチマークについて、その実行方法を解説します。
 
 - **HPL**
 - **STREAM**
@@ -150,7 +150,7 @@ table, th, td {
 
 ## 2-1. 標準ベンチマーク実行方法
 
-本章は、 **HPL** 、 **STREAM** 、 **Intel MPI Benchmark** 、及び **NCCL Tests** の各ベンチマークをOCIのHPCワークロード・機械学習ワークロード向けシェイプで実行する方法を解説します。  
+本章は、 **HPL** 、 **STREAM** 、 **Intel MPI Benchmark** 、及び **NCCL Tests** の各ベンチマークを、OCIのHPC/機械学習ワークロード向けシェイプや **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** を使用して実行する方法を解説します。  
 各ベンチマークの実行方法は、下表の名称部分のリンクをクリックして参照ください。
 
 | 名称                  | ベンチマークサイトURL                                                                                               |
@@ -166,7 +166,7 @@ table, th, td {
 
 ## 3-0. 概要
 
-本章は、OCI上でHPCワークロードを実行する際に有益なテクニカルTipsを集めた、OCI HPCテクニカルTips集です。
+本章は、OCI上でHPC/機械学習ワークロードを実行する際に有益なテクニカルTipsを集めた、 **OCI HPCテクニカルTips集** です。
 
 各テクニカルTipsは、以下のカテゴリに分類されます。
 
@@ -180,24 +180,29 @@ table, th, td {
 
 - **[クラスタ管理](#3-3-クラスタ管理)**
 
-   このカテゴリは、OCI上で多数の計算ノードを効果的に構築・運用するためのクラスタ管理に関するテクニカルTipsを集めています。
+   このカテゴリは、OCI上で多数の計算/GPUノードを効果的に構築・運用するためのクラスタ管理に関するテクニカルTipsを集めています。
 
 ## 3-1. クラスタ・ネットワーク
 
 - **[クラスタ・ネットワーク接続用ネットワークインターフェース作成方法](/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/)**
 
-   クラスタ・ネットワーク対応シェイプの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** や **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。  
+   **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 対応シェイプの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** や **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、 **クラスタ・ネットワーク** に接続します。  
    本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。
 
 - **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)**
 
-   クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージである **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されています。  
+   **クラスタ・ネットワーク** を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージである **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されています。  
    本テクニカルTipsは、この **クラスタネットワーキングイメージ** の適切な選び方を解説します。
 
 - **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)**
 
-   クラスタ・ネットワークに接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだ **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。  
-   本テクニカルTipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用するインスタンスをOracle Linux以外のOSでクラスタ・ネットワークに接続する方法を解説します。
+   **クラスタ・ネットワーク** に接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだ **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されていますが、これらのベースとなるOSは、 **Oracle Linux** のみです。  
+   本テクニカルTipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用するインスタンスを **Oracle Linux** 以外のOSで **クラスタ・ネットワーク** に接続する方法を解説します。
+
+- **[クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法](/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/)**
+
+   **クラスタ・ネットワーク** に接続する計算/GPUノードのデプロイは、接続する **クラスタ・ネットワーク** の論理的なパーティション内で利用可能なインスタンスが不足していると、これに失敗します。  
+   本テクニカルTipsは、このようなケースで発生するデプロイ時の問題を特定する方法を解説します。
 
 ## 3-2. ストレージ
 
@@ -208,25 +213,30 @@ table, th, td {
 
 ## 3-3. クラスタ管理
 
-- **[計算ノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)**
+- **[計算/GPUノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)**
 
-   ノード数が多くなるHPCクラスタやGPUクラスタの計算ノードの名前解決は、どのように行うのが効果的でしょうか。  
-   本テクニカルTipsは、仮想クラウドネットワークのDNSを使用した効果的な計算ノードの名前解決方法を解説します。
+   ノード数が多くなるHPCクラスタやGPUクラスタの計算/GPUノードの名前解決は、どのように行うのが効果的でしょうか。  
+   本テクニカルTipsは、仮想クラウドネットワークのDNSを使用した効果的な計算/GPUノードの名前解決方法を解説します。
 
-- **[計算ノードデプロイ時の効果的なOSカスタマイズ方法](/ocitutorials/hpc/tech-knowhow/compute-os-customization/)**
+- **[計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法](/ocitutorials/hpc/tech-knowhow/compute-os-customization/)**
 
-   ノード数が多くなるHPCクラスタやGPUクラスタの計算ノードは、デプロイ時に実施するOSカスタマイズをどのように行うのが効果的でしょうか。  
-   本テクニカルTipsは、計算ノードデプロイ時のOSカスタマイズ方法の選択肢と、それぞれの利用方法について解説します。
+   ノード数が多くなるHPCクラスタやGPUクラスタの計算/GPUノードは、デプロイ時に実施するOSカスタマイズをどのように行うのが効果的でしょうか。  
+   本テクニカルTipsは、計算/GPUノードデプロイ時のOSカスタマイズ方法の選択肢と、それぞれの利用方法について解説します。
 
-- **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)**
+- **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)**
 
    ノード数が多くなるHPCクラスタやGPUクラスタは、全ての計算/GPUノードのホスト名の一覧を記載したホスト名リストを作成することで、構築・運用作業を効率的に進めることが可能になります。  
    本テクニカルTipsは、HPC/GPUクラスタの計算/GPUノードのホスト名リストを効果的に作成する方法を解説します。
 
-- **[計算ノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)**
+- **[計算/GPUノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)**
 
-   HPCクラスタやGPUクラスタは、実行するワークロードの増減に伴い計算/GPUノードのノード数を増減する必要が生じることがあります。またハードウェア障害が発生すると、利用可能なノード数を維持するために該当ノードを別のノードに置き換える必要が生じます。  
+   HPC/GPUクラスタは、実行するワークロードの増減に伴い計算/GPUノードのノード数を増減する必要が生じることがあります。またハードウェア障害が発生すると、利用可能なノード数を維持するために当該ノードを別のノードに置き換える必要が生じます。  
    本テクニカルTipsは、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** を使用するHPC/GPUクラスタで計算/GPUノードのノード数を増減する方法や置き換える方法を解説します。
+
+- **[pdshで効率的にクラスタ管理オペレーションを実行](/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/)**
+
+   ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。  
+   本テクニカルTipsは、 **pdsh** を使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。
 
 ***
 # 4. OCI HPC関連情報リンク集
@@ -410,11 +420,12 @@ cloud-init公式ドキュメントは、 **[ここ](https://cloudinit.readthedoc
 
 ## 5-12. Terraform
 
-Terraformは、主要なクラウドサービスプロバイダーで利用可能なIaS（Infrastructure as code）のコンセプトに基づくツールで、IaaSからPaaSまでほぼすべてのクラウド上のリソースのライフサイクル（構築・変更・破棄）管理を安全かつ効率的に実施することを可能にします。  
-Terraformで管理されるリソースは、拡張子 **.tf** を持つ **Terraformスクリプト** で定義され、これをTerraformが読み込んでライフサイクル管理が行われます。  
-OCIにおけるTerraformは、 **[リソース・マネージャ](#5-2-リソースマネージャ)** から利用する方法と、TerraformをインストールしOCIとの認証関係を結んだTerraform実行環境から **Terraform CLI** で利用する方法があります。
+**Terraform** は、主要なクラウドサービスプロバイダーで利用可能なIaS（Infrastructure as code）のコンセプトに基づくツールで、IaaSからPaaSまでほぼすべてのクラウド上のリソースのライフサイクル（構築・変更・破棄）管理を安全かつ効率的に実施することを可能にします。  
+**Terraform** で管理されるリソースは、拡張子 **.tf** を持つ **Terraform** スクリプトで定義され、これを **Terraform** が読み込んでライフサイクル管理が行われます。
 
-以下は、Terraform実行環境で **Terraform CLI** を利用してOCI上にリソースをデプロイする様子を示しています。
+OCIにおける **Terraform** は、 **[リソース・マネージャ](#5-2-リソースマネージャ)** から利用する方法と、 **Terraform** をインストールしOCIとの認証関係を結んだ **Terraform** 実行環境から **Terraform** CLIで利用する方法があります。
+
+以下は、 **Terraform** 実行環境で **Terraform** CLIを利用してOCI上にリソースをデプロイする様子を示しています。
 
 ```sh
 $ ls -l
@@ -444,21 +455,39 @@ $
 
 関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm)** を参照ください。
 
-**Terraform CLI** を使用してOCI上にリソースを自動構築する方法は、チュートリアル **[TerraformでOCIの構築を自動化する](https://oracle-japan.github.io/ocitutorials/intermediates/terraform/)** を参照ください。
+**Terraform** CLIを使用してOCI上にリソースを自動構築する方法は、 **[OCI チュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[TerraformでOCIの構築を自動化する](https://oracle-japan.github.io/ocitutorials/intermediates/terraform/)** を参照ください。
 
 ## 5-13. クラスタネットワーキングイメージ
 
-クラスタネットワーキングイメージは、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** への接続に必要な以下ソフトウェアがインストールされたOracle LinuxをベースとするOSイメージで、 **[マーケットプレイス](#5-5-マーケットプレイス)** から **[カスタム・イメージ](#5-6-カスタムイメージ)** として提供されています。
+**クラスタネットワーキングイメージ** は、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** への接続に必要な以下ソフトウェアがインストールされた **Oracle Linux** をベースとするOSイメージで、 **[マーケットプレイス](#5-5-マーケットプレイス)** から **[カスタム・イメージ](#5-6-カスタムイメージ)** として提供されています。
 
-- Mellanox OFED
-- wpa_supplicant [^wpa_supplicant]
-- oci-cn-auth [^oci-cn-auth]
+- **Mellanox OFED**
+- **wpa_supplicant** [^wpa_supplicant]
+- **oci-cn-auth** [^oci-cn-auth]
 
 [^wpa_supplicant]: wpa_supplicant：クラスタ・ネットワークは、インスタンスが接続する際802.1X認証を要求しますが、これらの処理を行うクライアントソフトウェアがwpa_supplicantです。802.1X認証の仕組みは、[ここ](https://www.infraexpert.com/study/wireless14.html)のサイトが参考になります。
 
 [^oci-cn-auth]: oci-cn-auth：クラスタ・ネットワークに接続する際の802.1X認証で必要な認証処理機能を提供するユーティリティーソフトウェアで、GitHubから公開されています。
 
-クラスタネットワーキングイメージは、使用するシェイプがGPUを搭載するかどうかに応じて、 **HPCクラスタネットワーキングイメージ** と **GPUクラスタネットワーキングイメージ** の2種類があり、それぞれで異なるOracle Linuxのバージョンをベースとするイメージが提供されています。  
-使用するシェイプに合わせて適切にクラスタネットワーキングイメージを選択する方法は、 **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照ください。
+**クラスタネットワーキングイメージ** は、使用するシェイプがGPUを搭載するかどうかに応じて、HPC **クラスタネットワーキングイメージ** とGPU **クラスタネットワーキングイメージ** の2種類があり、それぞれで異なる **Oracle Linux** のバージョンをベースとするイメージが提供されています。  
+使用するシェイプに合わせて適切に **クラスタネットワーキングイメージ** を選択する方法は、 **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照ください。
 
-マーケットプレイスのクラスタネットワーキングイメージは、 **HPCクラスタネットワーキングイメージ** は **[ここ](https://cloud.oracle.com/marketplace/application/63394796/)** 、 **GPUクラスタネットワーキングイメージ** は  **[ここ](https://cloud.oracle.com/marketplace/application/134254210/)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
+**マーケットプレイス** の **クラスタネットワーキングイメージ** は、HPC **クラスタネットワーキングイメージ** は **[ここ](https://cloud.oracle.com/marketplace/application/63394796/)** 、GPU **クラスタネットワーキングイメージ** は  **[ここ](https://cloud.oracle.com/marketplace/application/134254210/)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
+
+## 5-14. 構成ソース・プロバイダ
+
+**構成ソース・プロバイダ** は、 **GitHub** 等のソースコード管理サービスで公開されているソースコードを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に **[スタック](/ocitutorials/hpc/#5-3-スタック)** として取り込むための、ソースコード管理サービスへの接続情報を持つOCIリソースです。
+
+**GitHub** 等で公開されている **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを基にOCI上にHPC/GPUクラスタを構築する場合、まずこの **構成ソース・プロバイダ** を作成し、これを介して  **Terraform** スクリプトを **GitHub** 等から取り込んで **リソース・マネージャ** に **スタック** を作成、この **スタック** を適用してデプロイします。
+
+**[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** で紹介する **Terraform** スクリプトを使用する手法は、ソースコード管理サービスに **GitHub** を使用しますが、 **GitHub** にアクセスするための **構成ソース・プロバイダ** の作成は、 **GitHub** のアカウントを持っておりこのアカウントで **Personal access token** を発行しておく必要があります。  
+**GitHub** のアカウント作成は **[ここ](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home)** 、 **Personal access token** の発行は **[ここ](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)** を参照ください。
+
+**構成ソース・プロバイダ** の作成手順は、OCI公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top)** を参照ください。  
+**[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** で使用する **構成ソース・プロバイダ** は、以下で作成します。
+
+- **パブリック・エンドポイント/プライベート・エンドポイント :** パブリック・エンドポイント
+- **タイプ :** **GitHub**
+- **サーバーURL :** https://github.com/
+
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/managingconfigurationsourceproviders.htm)** を参照ください。

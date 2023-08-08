@@ -14,7 +14,7 @@ header:
 この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
-なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)** を参照ください。
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)** を参照ください。
 
 ![システム構成図](architecture_diagram.png)
 
@@ -59,7 +59,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する方法を採用するかで異なります。
 
 [ **リソース・マネージャ** を使用する方法]
-- **構成ソース・プロバイダ** 作成
+- **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** 作成
 - **[スタック](/ocitutorials/hpc/#5-3-スタック)** 作成
 
 [ **Terraform** CLIを使用する方法]
@@ -72,17 +72,9 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ### 0-1-1. 構成ソース・プロバイダ作成
 
-本章は、ひな型となる **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **構成ソース・プロバイダ** を作成します。
+本章は、ひな型となる **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を作成します。
 
-**GitHub** にアクセスするための **構成ソース・プロバイダ** の作成は、 **GitHub** のアカウントを持っておりこのアカウントで **Personal access token** を発行しておく必要があります。  
-**GitHub** のアカウント作成は **[ここ](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home)** 、 **Personal access token** の発行は **[ここ](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)** を参照ください。
-
-**構成ソース・プロバイダ** の作成手順は、OCI公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top)** を参照ください。  
-本チュートリアルを実行するための **構成ソース・プロバイダ** は、以下で作成します。
-
-- **パブリック・エンドポイント/プライベート・エンドポイント :** パブリック・エンドポイント
-- **タイプ :** **GitHub**
-- **サーバーURL :** https://github.com/
+**構成ソース・プロバイダ** の作成は、 **[ここ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を参照ください。
 
 ### 0-1-2. スタック作成
 
@@ -97,7 +89,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 3. 表示される以下 **スタック情報** 画面で、以下の情報を入力し、下部の **次** ボタンをクリックします。
     - **Terraformの構成のオリジン :** ソース・コード制御システム
     - **ソースコード管理タイプ :** **GitHub**
-    - **構成ソース・プロバイダ :** **[0-1-1. 構成ソース・プロバイダ作成](#0-1-1-構成ソースプロバイダ作成)** で作成した **構成ソース・プロバイダ**
+    - **構成ソース・プロバイダ :** **[0-1-1. 構成ソース・プロバイダ作成](#0-1-1-構成ソースプロバイダ作成)** で作成した **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)**
     - **リポジトリ :** **tutorial_cn**
     - **ブランチ :** **master**
     - **名前 :** スタックに付与する名前（任意）
