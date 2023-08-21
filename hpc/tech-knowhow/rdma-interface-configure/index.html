@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-16T11:29:37+09:00">
+  <meta property="article:published_time" content="2023-08-21T17:35:47+09:00">
 
 
 
@@ -284,6 +284,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/" class="active">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -317,7 +319,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワーク接続用ネットワークインターフェース作成方法">
     <meta itemprop="description" content="クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、クラスタ・ネットワークに接続します。本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。">
-    <meta itemprop="datePublished" content="2023-08-16T11:29:37+09:00">
+    <meta itemprop="datePublished" content="2023-08-21T17:35:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -340,7 +342,7 @@
 <h1 id="0-概要">0. 概要</h1>
 
 <p><strong>BM.Optimized3.36</strong> や <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> がDHCPに対応していないため、その接続インターフェースに静的にIPアドレスを割当てる必要があります。<br />
-また <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> は、 <strong>クラスタ・ネットワーク</strong> に接続するポートを16ポート有し、これらを <strong>NCCL</strong> 等のGPU間通信ライブラリから使用しますが、この場合これら16ポートを16個の異なるIPサブネットに接続して使用します。</p>
+また <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> は、 <strong>クラスタ・ネットワーク</strong> に接続するポートを16ポート有し、これらを <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> 等のGPU間通信ライブラリから使用しますが、この場合これら16ポートを16個の異なるIPサブネットに接続して使用します。</p>
 
 <p>ここでDHCPが利用できない <strong>クラスタ・ネットワーク</strong> で、複数ノードに亘ってIPアドレスの重複が起こらないようにネットワークインターフェースを設定するには、どのようにうすればよいでしょうか。</p>
 
@@ -446,7 +448,10 @@
   </tbody>
 </table>
 
-<p>これらのインターフェースに割り当てられるネットワークアドレスは、デフォルトで192.168.yyy.0/24が使用されますが、これを異なるネットワークアドレスに変更することも可能で、この手順も解説します。</p>
+<p>これらのインターフェースに割り当てられるネットワークアドレスは、デフォルトで192.168.yyy.0/24が使用されますが、これを異なるネットワークアドレスに変更することも可能です。</p>
+
+<p>以降では、 <strong>BM.Optimized3.36</strong> と <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> を例に、 <strong>クラスタ・ネットワーク</strong> に接続するポートのネットワークインターフェース設定方法を解説します。<br />
+また、このネットワークインターフェースに割り当てるネットワークアドレスを、デフォルトから変更する方法を解説します。</p>
 
 <p>なお 、ここで解説するネットワークインターフェース作成手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> で紹介するHPCクラスタ構築手順や <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> で紹介するGPUクラスタ構築手順に含まれるため、これらチュートリアルの手順に従ってHPC/GPUクラスタを構築する場合は、改めて実施する必要はありません。</p>
 
@@ -623,7 +628,7 @@ enp76s0f1: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROAD
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-16T11:29:37+09:00">August 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-21T17:35:47+09:00">August 21, 2023</time></p>
 
 
       </footer>
@@ -644,7 +649,7 @@ enp76s0f1: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROAD
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/benchmark/run-nccltests/" class="pagination--pager" title="NCCL Tests実行方法
+      <a href="/ocitutorials/hpc/benchmark/bios-setting/" class="pagination--pager" title="パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法
 ">前へ</a>
     
     

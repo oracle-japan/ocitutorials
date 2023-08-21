@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-16T11:29:37+09:00">
+  <meta property="article:published_time" content="2023-08-21T17:35:47+09:00">
 
 
 
@@ -274,6 +274,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -307,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(オンデマンドクラスタ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。">
-    <meta itemprop="datePublished" content="2023-08-16T11:29:37+09:00">
+    <meta itemprop="datePublished" content="2023-08-21T17:35:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -318,7 +320,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1--hpcクラスタスタック">1.  HPCクラスタスタック</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-スタックの作成">1-1. スタックの作成</a></li><li><a href="#1-2-スタックの計画">1-2. スタックの計画</a></li><li><a href="#1-3-スタックの適用">1-3. スタックの適用</a></li></ul></li><li><a href="#2-事前準備">2. 事前準備</a><ul><li><a href="#2-1-bastionノード確認設定変更">2-1. Bastionノード確認・設定変更</a></li><li><a href="#2-2-ldapユーザ作成確認">2-2. LDAPユーザ作成・確認</a></li></ul></li><li><a href="#3-オンデマンドgpuクラスタ稼働確認nccl通信性能検証">3. オンデマンドGPUクラスタ稼働確認（NCCL通信性能検証）</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-ジョブスクリプト作成">3-1. ジョブスクリプト作成</a></li><li><a href="#3-2-ジョブ投入">3-2. ジョブ投入</a></li><li><a href="#3-3-gpuクラスタデプロイ状況確認">3-3. GPUクラスタデプロイ状況確認</a></li><li><a href="#3-4-ジョブ結果確認">3-4. ジョブ結果確認</a></li><li><a href="#3-5-gpuクラスタ削除確認">3-5. GPUクラスタ削除確認</a></li></ul></li><li><a href="#4-multiworkermirroredstrategyサンプルプログラム実行">4. MultiWorkerMirroredStrategyサンプルプログラム実行</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-プログラム作成">4-1. プログラム作成</a></li><li><a href="#4-2-ジョブ投入結果確認">4-2. ジョブ投入・結果確認</a></li></ul></li><li><a href="#5-スタックの破棄">5. スタックの破棄</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1--hpcクラスタスタック">1.  HPCクラスタスタック</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-apiキーの作成登録">1-1. APIキーの作成・登録</a></li><li><a href="#1-2-スタックの作成">1-2. スタックの作成</a></li><li><a href="#1-3-スタックの計画">1-3. スタックの計画</a></li><li><a href="#1-4-スタックの適用">1-4. スタックの適用</a></li></ul></li><li><a href="#2-bastionノード確認設定変更">2. Bastionノード確認・設定変更</a></li><li><a href="#3-ldapユーザ作成確認">3. LDAPユーザ作成・確認</a></li><li><a href="#4-オンデマンドgpuクラスタ稼働確認nccl通信性能検証">4. オンデマンドGPUクラスタ稼働確認（NCCL通信性能検証）</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-ジョブスクリプト作成">4-1. ジョブスクリプト作成</a></li><li><a href="#4-2-ジョブ投入">4-2. ジョブ投入</a></li><li><a href="#4-3-gpuクラスタデプロイ状況確認">4-3. GPUクラスタデプロイ状況確認</a></li><li><a href="#4-4-ジョブ結果確認">4-4. ジョブ結果確認</a></li><li><a href="#4-5-gpuクラスタ削除確認">4-5. GPUクラスタ削除確認</a></li></ul></li><li><a href="#5-multiworkermirroredstrategyサンプルプログラム実行">5. MultiWorkerMirroredStrategyサンプルプログラム実行</a><ul><li><a href="#5-0-概要">5-0. 概要</a></li><li><a href="#5-1-プログラム作成">5-1. プログラム作成</a></li><li><a href="#5-2-ジョブ投入結果確認">5-2. ジョブ投入・結果確認</a></li></ul></li><li><a href="#6-スタックの破棄">6. スタックの破棄</a></li></ul>
 
             </nav>
           </aside>
@@ -356,7 +358,7 @@
 
 <p><strong>所要時間 :</strong> 約3時間</p>
 
-<p><strong>前提条件 :</strong> オンデマンドGPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。具体的には、以下ページの <strong>Policies to deploy the stack:</strong> に記載のポリシーと <strong>Policies for autoscaling or resizing</strong> に記載のダイナミック・グループとポリシーが作成されていること。</p>
+<p><strong>前提条件 :</strong> オンデマンドGPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。具体的には、以下ページの <strong>Policies to deploy the stack:</strong> に記載のポリシーが作成されていること。</p>
 
 <p><a href="https://cloud.oracle.com/marketplace/application/67628143/usageInformation">https://cloud.oracle.com/marketplace/application/67628143/usageInformation</a></p>
 
@@ -390,7 +392,25 @@
   <li><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> ツール群インストール</li>
 </ul>
 
-<h2 id="1-1-スタックの作成">1-1. スタックの作成</h2>
+<p>また <strong>クラスタオートスケーリング</strong> は、Bastionノードから <strong>Terraform</strong> を使用して動的にGPUクラスタを構築するため、OCIの <strong>APIキー</strong> を作成してこれをOCIに登録する必要があります。</p>
+
+<p>以上より本章では、以下の手順でGPUクラスタ構築のための  <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。</p>
+
+<ul>
+  <li><strong>APIキー</strong> の作成・登録</li>
+  <li>スタックの作成</li>
+  <li>スタックの計画</li>
+  <li>スタックの適用</li>
+</ul>
+
+<h2 id="1-1-apiキーの作成登録">1-1. APIキーの作成・登録</h2>
+
+<p><strong>APIキー</strong> は、OCIコンソールから作成する方法と、OpenSSLのコマンドを使用して作成する方法があります。<br />
+詳細は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two">ここ</a></strong> の手順を参照して下さい。</p>
+
+<p>また作成した <strong>APIキー</strong> は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#three">ここ</a></strong> の手順を参照してOCIに登録します。</p>
+
+<h2 id="1-2-スタックの作成">1-2. スタックの作成</h2>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を元に、前述の環境構築のための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。このチュートリアルで使用する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> は、バージョン <strong>2.10.2.1</strong> です。</p>
 
@@ -412,10 +432,10 @@
     <ul>
       <li><strong>名前 :</strong> <strong>スタック</strong> に付与する名前（任意）</li>
       <li><strong>説明 :</strong> <strong>スタック</strong> に付与する説明（任意）</li>
-      <li><strong>コンパートメントに作成 :</strong> <strong>スタック</strong> を作成するコンパートメント(*1)</li>
+      <li><strong>コンパートメントに作成 :</strong> <strong>スタック</strong> を作成するコンパートメント(※1)</li>
     </ul>
 
-    <p>*1) OCIコンソールで最後に使用していたコンパートメントが引き継がれるため、意図したコンパートメントでない場合は、 <strong>HPCクラスタスタック</strong> ページにアクセスする前に、予め所望のコンパートメントを選択しておきます。</p>
+    <p>※1) OCIコンソールで最後に使用していたコンパートメントが引き継がれるため、意図したコンパートメントでない場合は、 <strong>HPCクラスタスタック</strong> ページにアクセスする前に、予め所望のコンパートメントを選択しておきます。</p>
 
     <p><img src="stack_page01.png" alt="画面ショット" /></p>
   </li>
@@ -444,48 +464,71 @@
     <ul>
       <li><strong>Availability Domain :</strong> （GPUノードをデプロイする可用性ドメイン）</li>
       <li><strong>Shape of the Compute Nodes :</strong> <strong>BM.GPU4.8</strong> （GPUノードに使用するシェイプ）</li>
-      <li><strong>Initial cluster size :</strong> 0 (*2)</li>
+      <li><strong>Initial cluster size :</strong> 0 (※2)</li>
       <li><strong>Size of the boot volume in GB :</strong> 200（GPUノードのブート・ボリュームサイズ）</li>
       <li><strong>Image version :</strong> GPU（GPUノードのイメージ）</li>
     </ul>
 
-    <p>*2) このフィールドは、スタティックに常時起動しておくGPUノードのノード数を指定しますが、本チュートリアルはオンデマンドでのみGPUノードをデプロイするため、このフィールドを0とします。</p>
+    <p>※2) このフィールドは、スタティックに常時起動しておくGPUノードのノード数を指定しますが、本チュートリアルはオンデマンドでのみGPUノードをデプロイするため、このフィールドを0とします。</p>
 
     <p><img src="stack_page04.png" alt="画面ショット" /></p>
 
-    <p>5.4 <strong>Autoscaling</strong> フィールド</p>
+    <p>5.4 <strong>Additional Login Node</strong> フィールド</p>
+    <ul>
+      <li><strong>Login Node :</strong> チェックオフ（※3）</li>
+    </ul>
+
+    <p>※3) Bastionノードに追加してログインノードをデプロイするかの指定で、本チュートリアルではデプロイしません。</p>
+
+    <p><img src="stack_page04-2.png" alt="画面ショット" /></p>
+
+    <p>5.5 <strong>Autoscaling</strong> フィールド</p>
     <ul>
       <li><strong>Scheduler based autoscaling :</strong> チェック</li>
     </ul>
 
     <p><img src="stack_page04-0.png" alt="画面ショット" /></p>
 
-    <p>5.5 <strong>Additional file system</strong> フィールド</p>
+    <p>5.6 <strong>API authencication, needed for autoscaling</strong> フィールド</p>
+    <ul>
+      <li><strong>Use Instance Princopal instead of configuration file :</strong> チェックオフ</li>
+      <li><strong>API User OCID :</strong> ユーザOCID（※4）</li>
+      <li><strong>API fingerprint :</strong> <strong>APIキー</strong> のフィンガープリント（※5）</li>
+      <li><strong>API private key :</strong> <strong>APIキー</strong> の秘密鍵（ <strong>参照</strong> ボタンをクリックしてアップロード）（※6）</li>
+    </ul>
+
+    <p>※4) ユーザOCIDの確認は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> の手順を参照して下さい。   <br />
+※5) <strong><a href="#1-1-apiキーの作成・登録">APIキーの作成・登録</a></strong> で作成した <strong>APIキー</strong> のフィンガープリント<br />
+※6) <strong><a href="#1-1-apiキーの作成・登録">APIキーの作成・登録</a></strong> で作成した <strong>APIキー</strong> の秘密鍵</p>
+
+    <p><img src="stack_page04-3.png" alt="画面ショット" /></p>
+
+    <p>5.7 <strong>Additional file system</strong> フィールド</p>
     <ul>
       <li><strong>Add another NFS filesystem :</strong> チェック</li>
       <li><strong>Create FSS :</strong> チェック</li>
-      <li><strong>NFS Path :</strong> /mnt/home（※3）</li>
-      <li><strong>NFS server Path :</strong> /mnt/home（※3）</li>
+      <li><strong>NFS Path :</strong> /mnt/home（※7）</li>
+      <li><strong>NFS server Path :</strong> /mnt/home（※7）</li>
     </ul>
 
-    <p>※3) ここで指定するパスは、ファイル・ストレージ領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/home/user_nameとなります。</p>
+    <p>※7) ここで指定するパスは、ファイル・ストレージ領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/home/user_nameとなります。</p>
 
     <p><img src="stack_page04-1.png" alt="画面ショット" /></p>
 
-    <p>5.6 <strong>Advanced storage options</strong> フィールド</p>
+    <p>5.8 <strong>Advanced storage options</strong> フィールド</p>
     <ul>
       <li><strong>Show advanced storage options :</strong> チェック</li>
-      <li><strong>Shared NFS scratch space from NVME or Block volume :</strong> チェックオフ（※4）</li>
+      <li><strong>Shared NFS scratch space from NVME or Block volume :</strong> チェックオフ（※8）</li>
     </ul>
 
-    <p>*4) GPUノードの <strong>NVMe SSD</strong> ローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。</p>
+    <p>※8) GPUノードの <strong>NVMe SSD</strong> ローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。</p>
 
     <p><img src="stack_page05.png" alt="画面ショット" /></p>
 
-    <p>5.7 <strong>Software</strong> フィールド</p>
+    <p>5.9 <strong>Software</strong> フィールド</p>
     <ul>
-      <li><strong>Install Nvidia Pyxis plugin for Slurm :</strong> チェック</li>
       <li><strong>Install Nvidia Enroot for containerized GPU workloads :</strong> チェック</li>
+      <li><strong>Install Nvidia Pyxis plugin for Slurm :</strong> チェック</li>
     </ul>
 
     <p><img src="stack_page05-1.png" alt="画面ショット" /></p>
@@ -503,7 +546,7 @@
 
 <p><img src="stack_page07.png" alt="画面ショット" /></p>
 
-<h2 id="1-2-スタックの計画">1-2. スタックの計画</h2>
+<h2 id="1-3-スタックの計画">1-3. スタックの計画</h2>
 
 <p>本章は、完成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を計画し、どのようなリソースがデプロイされるか確認します。</p>
 
@@ -529,7 +572,7 @@
   </li>
 </ol>
 
-<h2 id="1-3-スタックの適用">1-3. スタックの適用</h2>
+<h2 id="1-4-スタックの適用">1-4. スタックの適用</h2>
 
 <p>本章は、計画で作成されるリソースに問題が無いことを確認した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> に対し、適用を行いオンデマンドGPUクラスタをデプロイします。</p>
 
@@ -560,9 +603,7 @@
 </ol>
 
 <hr />
-<h1 id="2-事前準備">2. 事前準備</h1>
-
-<h2 id="2-1-bastionノード確認設定変更">2-1. Bastionノード確認・設定変更</h2>
+<h1 id="2-bastionノード確認設定変更">2. Bastionノード確認・設定変更</h1>
 
 <p>本章は、デプロイされたBastionノードにログインし、環境の確認とジョブスケジューラの設定を一部変更します。</p>
 
@@ -576,7 +617,7 @@
 
     <p>このSSH接続では、 <strong>スタック</strong> に指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
 </code></pre></div>    </div>
   </li>
   <li>
@@ -584,7 +625,7 @@
 
     <p>Bastionノードは、以下のようにファイル・ストレージの/mnt/homeがマウントされています。この/mnt/homeは、オンデマンドGPUクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/home
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/home
 Filesystem        Size  Used Avail Use% Mounted on
 FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
 </code></pre></div>    </div>
@@ -609,7 +650,8 @@ FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
   </li>
 </ol>
 
-<h2 id="2-2-ldapユーザ作成確認">2-2. LDAPユーザ作成・確認</h2>
+<hr />
+<h1 id="3-ldapユーザ作成確認">3. LDAPユーザ作成・確認</h1>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> が作成したLDAP統合ユーザ管理環境にLDAPユーザを作成し、このユーザでインターネットからBastionノードにSSHログイン出来ることを確認します。</p>
 
@@ -623,17 +665,17 @@ FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
 
     <p>このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリである <strong>ファイル・ストレージ</strong> の/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
 </code></pre></div>    </div>
 
     <p>次に、以下コマンドをBastionノードのopcユーザで実行し、イニシャルグループが <strong>privilege</strong> （グループIDが9876で、そのメンバーにコンテナ実行権限が付与される。）のLDAPユーザを作成します。<br />
 なおこのユーザは、この後の稼働確認に使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> cluster user add user_name <span class="nt">--gid</span> 9876
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cluster user add user_name <span class="nt">--gid</span> 9876
 Password:  &lt;- Password <span class="k">for </span>user_name
 Repeat <span class="k">for </span>confirmation: &lt;- Password <span class="k">for </span>user_name
 Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
-<span class="o">&gt;</span> <span class="nb">id </span>user_name
+<span class="nv">$ </span><span class="nb">id </span>user_name
 <span class="nv">uid</span><span class="o">=</span>10001<span class="o">(</span>user_name<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span>
 </code></pre></div>    </div>
 
@@ -641,7 +683,7 @@ Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
 
     <p>次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
 public_key_for_user_name
 </code></pre></div>    </div>
   </li>
@@ -652,61 +694,56 @@ public_key_for_user_name
 
     <p>このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
 </code></pre></div>    </div>
   </li>
 </ol>
 
 <hr />
-<h1 id="3-オンデマンドgpuクラスタ稼働確認nccl通信性能検証">3. オンデマンドGPUクラスタ稼働確認（NCCL通信性能検証）</h1>
+<h1 id="4-オンデマンドgpuクラスタ稼働確認nccl通信性能検証">4. オンデマンドGPUクラスタ稼働確認（NCCL通信性能検証）</h1>
 
-<h2 id="3-0-概要">3-0. 概要</h2>
+<h2 id="4-0-概要">4-0. 概要</h2>
 
-<p>本章は、 <strong>NCCL</strong> 通信性能検証用のジョブを使用し、オンデマンドGPUクラスタがジョブの投入・終了とともに自動的にGPUクラスタを作成・削除することを確認するとともに、GPUクラスタ内の <strong>NCCL</strong> 通信性能を検証します。</p>
+<p>本章は、 <strong>NCCL</strong> 通信性能検証用のジョブを使用し、オンデマンドGPUクラスタがジョブの投入・終了に伴い自動的にGPUクラスタを作成・削除することを確認し、その後GPUクラスタ内の <strong>NCCL</strong> 通信性能を検証します。</p>
 
 <p>ここで使用する <strong>NCCL</strong> は、ジョブが <strong>Nvidia GPU Cloud</strong> からインポートする <strong>TensorFlow</strong> のコンテナに予め含まれるものを使用し、 <strong>NCCL Tests</strong> はコンテナ内でソースコードからビルドします。</p>
 
-<p>本チュートリアルは、2ノードに跨る全16枚のGPUを使用した <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能をコンテナ環境から計測し、以下性能が出ています。</p>
+<h2 id="4-1-ジョブスクリプト作成">4-1. ジョブスクリプト作成</h2>
 
-<ul>
-  <li>帯域（busbw）：約 225 GB/s</li>
-</ul>
-
-<h2 id="3-1-ジョブスクリプト作成">3-1. ジョブスクリプト作成</h2>
-
-<p>BastionノードのLDAPユーザで、以下のジョブスクリプトをファイル名nccl_test.shで作成します。</p>
+<p>BastionノードのLDAPユーザで、以下のジョブスクリプトをファイル名 <strong>nccl_test.sh</strong> で作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#SBATCH -p compute</span>
 <span class="c">#SBATCH -N 2</span>
 <span class="c">#SBATCH --ntasks-per-node 1</span>
 <span class="c">#SBATCH -J nccl_test</span>
+<span class="c">#SBATCH --gpus-per-node=8</span>
 <span class="nb">export </span><span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4
 <span class="nb">export </span><span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3
-srun <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--mpi</span> pmi2 <span class="nt">--gpus-per-node</span><span class="o">=</span>8 bash <span class="nt">-c</span> <span class="s2">"hostname; cd /tmp; git clone https://github.com/NVIDIA/nccl-tests.git; cd ./nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu; sleep 60; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
+srun <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--mpi</span> pmi2 bash <span class="nt">-c</span> <span class="s2">"cd /tmp; git clone https://github.com/NVIDIA/nccl-tests.git; cd ./nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu; sleep 60; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
 </code></pre></div></div>
 
 <p>このジョブスクリプトは、2ノードのGPUノード上に <strong>Nvidia GPU Cloud</strong> からダウンロードした <strong>TensorFlow</strong> のコンテナを1台づつ起動し、このコンテナ上で <strong>NCCL Tests</strong> のソースツリーをクローンしてビルド、その後2ノード全16枚のGPUを使用した <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を10 GBのメッセージサイズで計測します。<br />
 ジョブスクリプト内で指定している <strong>NCCL_IB_</strong> で始まる環境変数は、 <strong>NCCL Tests</strong> の <strong>All-Reduce</strong> 通信性能向上を目的として指定しています。</p>
 
-<h2 id="3-2-ジョブ投入">3-2. ジョブ投入</h2>
+<h2 id="4-2-ジョブ投入">4-2. ジョブ投入</h2>
 
 <p>BastionノードのLDAPユーザで以下コマンドを実行し、作成したジョブスクリプトを <strong>Slurm</strong> に投入、ジョブステータスを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> sbatch nccl_test.sh 
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch nccl_test.sh 
 Submitted batch job 1
-<span class="o">&gt;</span> squeue 
+<span class="nv">$ </span>squeue 
    JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
        1   compute nccl_tes user_nam PD       0:00      2 <span class="o">(</span>Nodes required <span class="k">for </span>job are DOWN, DRAINED or reserved <span class="k">for </span><span class="nb">jobs </span><span class="k">in </span>higher priority partitions<span class="o">)</span>
 </code></pre></div></div>
 
 <p>この時点では、ジョブを実行するためのGPUノードが存在しないため、ジョブのステータスが <strong>PD</strong> の状態です。</p>
 
-<h2 id="3-3-gpuクラスタデプロイ状況確認">3-3. GPUクラスタデプロイ状況確認</h2>
+<h2 id="4-3-gpuクラスタデプロイ状況確認">4-3. GPUクラスタデプロイ状況確認</h2>
 
 <p><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> は、Bastionノードのopcユーザのcrontabから以下のように毎分起動される <strong>autoscale_slurm.sh</strong> というPyrhonスクリプトにより、 <strong>Slurm</strong> のジョブ投入状況に応じてオンデマンドに必要な数のGPUノードを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共にデプロイします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> crontab <span class="nt">-l</span> | <span class="nb">grep </span>autoscale_slurm
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>crontab <span class="nt">-l</span> | <span class="nb">grep </span>autoscale_slurm
 <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> <span class="k">*</span> /opt/oci-hpc/autoscaling/crontab/autoscale_slurm.sh <span class="o">&gt;&gt;</span> /opt/oci-hpc/logs/crontab_slurm_<span class="sb">`</span><span class="nb">date</span> <span class="s1">'+\%Y\%m\%d'</span><span class="sb">`</span>.log 2&gt;&amp;1
 </code></pre></div></div>
 
@@ -719,13 +756,13 @@ Submitted batch job 1
 またジョブの実行が開始されると、コンテナのインポート・起動におよそ15分を要し、ここから実質的なジョブの実行が始まります。<br />
 以上より、ジョブ投入からジョブ完了までの所要時間は、40分程度です。</p>
 
-<h2 id="3-4-ジョブ結果確認">3-4. ジョブ結果確認</h2>
+<h2 id="4-4-ジョブ結果確認">4-4. ジョブ結果確認</h2>
 
 <p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブ完了を確認した後、その出力結果を確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="o">&gt;</span> squeue
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nv">$ </span>squeue
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
-   <span class="o">&gt;</span> <span class="nb">grep</span> <span class="nt">-A2</span> busbw slurm-1.out
+   <span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-A2</span> busbw slurm-1.out
    <span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
    <span class="c">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
     10737418240    2684354560     float     <span class="nb">sum</span>      <span class="nt">-1</span>   122711   87.50  164.07      0   121865   88.11  165.21      0
@@ -733,15 +770,15 @@ Submitted batch job 1
 
 <p>この出力結果から、busbwが <strong>165.21 GB/s</strong> となっていることがわかります。</p>
 
-<h2 id="3-5-gpuクラスタ削除確認">3-5. GPUクラスタ削除確認</h2>
+<h2 id="4-5-gpuクラスタ削除確認">4-5. GPUクラスタ削除確認</h2>
 
 <p><strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> は、GPUノードで実行されるジョブが無い状態が10分間継続すると、以降crontabから最初に起動される <strong>autoscale_slurm.sh</strong> がこのGPUノードを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共に削除します。<br />
 OCIコンソールで、想定通りGPUクラスタが削除されていることを確認します。</p>
 
 <hr />
-<h1 id="4-multiworkermirroredstrategyサンプルプログラム実行">4. MultiWorkerMirroredStrategyサンプルプログラム実行</h1>
+<h1 id="5-multiworkermirroredstrategyサンプルプログラム実行">5. MultiWorkerMirroredStrategyサンプルプログラム実行</h1>
 
-<h2 id="4-0-概要">4-0. 概要</h2>
+<h2 id="5-0-概要">5-0. 概要</h2>
 
 <p>本章は、MultiWorkerMirroredStrategyサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。</p>
 
@@ -749,15 +786,15 @@ OCIコンソールで、想定通りGPUクラスタが削除されているこ�
 
 <p><a href="https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras">https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras</a></p>
 
-<h2 id="4-1-プログラム作成">4-1. プログラム作成</h2>
+<h2 id="5-1-プログラム作成">5-1. プログラム作成</h2>
 
 <p>本章は、MultiWorkerMirroredStrategyサンプルプログラムを作成します。</p>
 
 <p>BastionノードのLDAPユーザで、以下3個のプログラムを作成し、パーミッションを適切に設定します。これらのプログラム中で、LDAPユーザ名として使用されているuser_nameは、自身で作成したユーザ名に修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">pwd</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span>
 /mnt/home/user_name/tensorflow
-<span class="o">&gt;</span> <span class="nb">ls</span> <span class="nt">-l</span>
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
 total 24
 <span class="nt">-rw-r--r--</span> 1 user_name privilege 1385 Jan 26 09:29 mnist.py
 <span class="nt">-rwxr-xr-x</span> 1 user_name privilege 1158 Jan 26 09:29 start_mnist.sh
@@ -770,6 +807,7 @@ total 24
 <span class="c">#SBATCH -N 2</span>
 <span class="c">#SBATCH --ntasks-per-node 1</span>
 <span class="c">#SBATCH -J mnist</span>
+<span class="c">#SBATCH --gpus-per-node=8</span>
 
 <span class="c"># Set working directory which contains all programs to train MNIST datasets</span>
 <span class="nv">workdir</span><span class="o">=</span><span class="s2">"/mnt/home/user_name/tensorflow"</span>
@@ -786,7 +824,7 @@ total 24
 <span class="k">done</span>
 
 <span class="c"># Start TensorFlow containers on all GPU nodes one at a node and run start_mnist.sh on all the containers</span>
-srun <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nt">--gpus-per-node</span><span class="o">=</span>8 <span class="nv">$workdir</span>/start_mnist.sh <span class="nv">$hfname</span> <span class="nv">$workdir</span>
+srun <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nv">$workdir</span>/start_mnist.sh <span class="nv">$hfname</span> <span class="nv">$workdir</span>
 </code></pre></div></div>
 
 <p>[start_mnist.sh]</p>
@@ -879,19 +917,19 @@ python ./mnist.py <span class="o">&gt;</span> ./<span class="nv">$std_out</span>
 <span class="n">multi_worker_model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">multi_worker_dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">steps_per_epoch</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
 </code></pre></div></div>
 
-<h2 id="4-2-ジョブ投入結果確認">4-2. ジョブ投入・結果確認</h2>
+<h2 id="5-2-ジョブ投入結果確認">5-2. ジョブ投入・結果確認</h2>
 
 <p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブスクリプトを <strong>Slurm</strong> に投入します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> sbatch submit.sh 
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch submit.sh 
 Submitted batch job 2
 </code></pre></div></div>
 
 <p>次に、OCIコンソールでGPUノードが2ノードデプロイされたことを確認し、以下コマンドで実行中のジョブが無いことによるジョブ終了とジョブ標準出力の表示によるジョブ正常終了を確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> squeue
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>squeue
     JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
-<span class="o">&gt;</span> <span class="nb">cat </span>compute-hpc-node-<span class="k">*</span>.out 
+<span class="nv">$ </span><span class="nb">cat </span>compute-hpc-node-<span class="k">*</span>.out 
 Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
 11490434/11490434 <span class="o">[==============================]</span> - 0s 0us/step
 Epoch 1/3
@@ -911,7 +949,7 @@ Epoch 3/3
 </code></pre></div></div>
 
 <hr />
-<h1 id="5-スタックの破棄">5. スタックの破棄</h1>
+<h1 id="6-スタックの破棄">6. スタックの破棄</h1>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を破棄することで、構築したオンデマンドGPUクラスタを削除します。</p>
 
@@ -958,7 +996,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-16T11:29:37+09:00">August 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-21T17:35:47+09:00">August 21, 2023</time></p>
 
 
       </footer>

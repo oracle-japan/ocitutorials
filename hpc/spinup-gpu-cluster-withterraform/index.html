@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-16T11:29:37+09:00">
+  <meta property="article:published_time" content="2023-08-21T17:35:47+09:00">
 
 
 
@@ -274,6 +274,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -307,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
-    <meta itemprop="datePublished" content="2023-08-16T11:29:37+09:00">
+    <meta itemprop="datePublished" content="2023-08-21T17:35:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -318,7 +320,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-事前準備">0. 事前準備</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a><ul><li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li></ul></li><li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a><ul><li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li><li><a href="#0-2-2-terraformスクリプト作成">0-2-2. Terraformスクリプト作成</a></li></ul></li></ul></li><li><a href="#1-gpuクラスタ構築">1. GPUクラスタ構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li><li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li></ul></li><li><a href="#2-gpuクラスタ確認">2. GPUクラスタ確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-gpuノードファイルシステム確認">2-3. GPUノードファイルシステム確認</a></li></ul></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a></li><li><a href="#4-gpuクラスタ削除">4. GPUクラスタ削除</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</a></li><li><a href="#4-2-terraform-cliの場合">4-2. Terraform CLIの場合</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-事前準備">0. 事前準備</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a><ul><li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li></ul></li><li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a><ul><li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li><li><a href="#0-2-2-terraformスクリプト作成">0-2-2. Terraformスクリプト作成</a></li></ul></li></ul></li><li><a href="#1-gpuクラスタ構築">1. GPUクラスタ構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li><li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li></ul></li><li><a href="#2-gpuクラスタ確認">2. GPUクラスタ確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-gpuノードファイルシステム確認">2-3. GPUノードファイルシステム確認</a></li><li><a href="#2-4-gpuノードbios設定確認">2-4. GPUノードBIOS設定確認</a></li></ul></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a></li><li><a href="#4-gpuクラスタ削除">4. GPUクラスタ削除</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</a></li><li><a href="#4-2-terraform-cliの場合">4-2. Terraform CLIの場合</a></li></ul></li></ul>
 
             </nav>
           </aside>
@@ -448,6 +450,8 @@
       <li><strong>Compute/GPU node image OCID :</strong> GPUノードのイメージOCID(*2)</li>
       <li><strong>Compute/GPU node boot volume size :</strong> GPUノードのブートボリュームサイズ(GB)</li>
       <li><strong>cloud-config :</strong> GPUノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )(*3)</li>
+      <li><strong>NPS for BM.GPU4.8 :</strong> GPUノードの <strong>NPS</strong> 設定値 (デフォルト：NPS4) (*4)</li>
+      <li><strong>SMT :</strong> GPUノードの <strong>SMT</strong> 設定値 (デフォルト：有効) (*4)</li>
     </ul>
 
     <p><img src="stack_page03.png" alt="画面ショット" /></p>
@@ -523,6 +527,8 @@ runcmd:
   - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
   - mount /home
 </code></pre></div>    </div>
+
+    <p>*4) 詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
   </li>
   <li>
     <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
@@ -682,7 +688,7 @@ runcmd:
     <tr>
       <td>sc_ad</td>
       <td>GPUクラスタをデプロイする可用性ドメイン識別子</td>
-      <td>(*4)</td>
+      <td>(*5)</td>
     </tr>
     <tr>
       <td>sc_ssh_key</td>
@@ -692,7 +698,7 @@ runcmd:
     <tr>
       <td>sc_cn_display_name</td>
       <td>GPUノードホスト名の接尾辞</td>
-      <td>(*5)</td>
+      <td>(*6)</td>
     </tr>
     <tr>
       <td>sc_cn_shape</td>
@@ -707,7 +713,7 @@ runcmd:
     <tr>
       <td>sc_cn_image</td>
       <td>GPUノードに使用するOSイメージのOCID</td>
-      <td>(*6)</td>
+      <td>(*7)</td>
     </tr>
     <tr>
       <td>sc_cn_boot_vol_size</td>
@@ -717,27 +723,49 @@ runcmd:
     <tr>
       <td>sc_cn_cloud_config</td>
       <td><strong>cloud-config</strong> ファイルをbase64エンコードした文字列</td>
-      <td>(*7)</td>
+      <td>(*8)</td>
+    </tr>
+    <tr>
+      <td>sc_cn_nps_gpu40</td>
+      <td>GPUノード ( <strong>BM.GPU4.8</strong> の場合) の <strong>NPS</strong> BIOS設定値</td>
+      <td>(*9)</td>
+    </tr>
+    <tr>
+      <td>sc_cn_nps_gpu80</td>
+      <td>GPUノード ( <strong>BM.GPU.A100-v2.8</strong> の場合) の <strong>NPS</strong> BIOS設定値</td>
+      <td>(*9)</td>
+    </tr>
+    <tr>
+      <td>sc_cn_smt</td>
+      <td>計算ノードの <strong>SMT</strong> BIOS設定値</td>
+      <td>(*9)</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
     </tr>
   </tbody>
 </table>
 
-<p>*4) OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
+<p>*5) OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
 
 <p><img src="console_page01.png" alt="画面ショット" /></p>
 
-<p>*5) 例えば <strong>gpu4-ol79</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol79</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）</p>
+<p>*6) 例えば <strong>gpu4-ol79</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol79</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）</p>
 
-<p>*6) 以下のOCIDを指定します。（ダウンロードした <strong>Terraform</strong> スクリプトの <strong>terraform.tfvars</strong> に以下のOCIDがコメントとして埋め込まれています）</p>
+<p>*7) 以下のOCIDを指定します。（ダウンロードした <strong>Terraform</strong> スクリプトの <strong>terraform.tfvars</strong> に以下のOCIDがコメントとして埋め込まれています）</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra
 </code></pre></div></div>
 
-<p>*7) 以下コマンドの出力を使用します。</p>
+<p>*8) 以下コマンドの出力を使用します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>tutorial_cn
 <span class="nv">$ </span><span class="nb">base64</span> ./user_data/cloud-init_cngpu.cfg | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">'\n'</span><span class="p">;</span> <span class="nb">echo</span>
 </code></pre></div></div>
+
+<p>*9) 詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
 
 <hr />
 <h1 id="1-gpuクラスタ構築">1. GPUクラスタ構築</h1>
@@ -884,6 +912,23 @@ Filesystem              Size  Used Avail Use% Mounted on
 bastion:/home            36G  9.1G   27G  26% /home
 </code></pre></div></div>
 
+<h2 id="2-4-gpuノードbios設定確認">2-4. GPUノードBIOS設定確認</h2>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、GPUノードのBIOSで指定した <strong>NPS</strong> と <strong>SMT</strong> 設定が指定したとおりになっていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"lscpu | grep -i -e numa -e thread"</span><span class="p">;</span> <span class="k">done
+</span>inst-e0tw0-x9-ol87
+Thread<span class="o">(</span>s<span class="o">)</span> per core:  2
+NUMA node<span class="o">(</span>s<span class="o">)</span>:        2
+NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-17,36-53
+NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
+inst-uyopv-x9-ol87
+Thread<span class="o">(</span>s<span class="o">)</span> per core:  2
+NUMA node<span class="o">(</span>s<span class="o">)</span>:        2
+NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-17,36-53
+NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
+</code></pre></div></div>
+
 <hr />
 <h1 id="3-nccl-tests実行">3. NCCL Tests実行</h1>
 
@@ -897,7 +942,7 @@ bastion:/home            36G  9.1G   27G  26% /home
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong><a href="/ocitutorials/hpc/#2-oci-hpcベンチマーク情報">OCI HPCベンチマーク情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></strong> の手順に従い、 <strong>NCCL Tests</strong> を実行します。</p>
+    <p><strong><a href="/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法">標準ベンチマーク実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></strong> の手順に従い、 <strong>NCCL Tests</strong> を実行します。</p>
   </li>
 </ol>
 
@@ -963,7 +1008,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-16T11:29:37+09:00">August 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-21T17:35:47+09:00">August 21, 2023</time></p>
 
 
       </footer>

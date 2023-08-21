@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-16T11:29:37+09:00">
+  <meta property="article:published_time" content="2023-08-21T17:35:47+09:00">
 
 
 
@@ -284,6 +284,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -317,7 +319,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="STREAM実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークのSTREAMを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-08-16T11:29:37+09:00">
+    <meta itemprop="datePublished" content="2023-08-21T17:35:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -328,21 +330,23 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-intel-oneapi-base-toolkitインストール">1. Intel oneAPI Base Toolkitインストール</a></li><li><a href="#2-streamダウンロードコンパイル">2. STREAMダウンロード・コンパイル</a></li><li><a href="#3-stream実行">3. STREAM実行</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bmoptimized336インスタンスのデプロイ">1. BM.Optimized3.36インスタンスのデプロイ</a></li><li><a href="#2-intel-oneapi-base-toolkitインストール">2. Intel oneAPI Base Toolkitインストール</a></li><li><a href="#3-streamダウンロードコンパイル">3. STREAMダウンロード・コンパイル</a></li><li><a href="#4-stream実行">4. STREAM実行</a></li></ul>
 
             </nav>
           </aside>
         
-        <p>本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークの  <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong>  を実行する方法を解説します。</p>
+        <p>本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークの <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong> を実行する方法を解説します。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本ドキュメントで解説する <strong>STREAM</strong> の実行は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/index.html">Intel oneAPI Base Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの <strong><a href="https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html">Intel oneAPI DPC++/C++ Compiler</a></strong> （本ドキュメントで使用するバージョンは2023.2）で <strong>STREAM</strong> のソースコードをコンパイルして作成したバイナリを使用し、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> をOracle Linux 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> でデプロイし、この上で実行します。</p>
+<p>本ドキュメントで解説する <strong>STREAM</strong> の実行は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/index.html">Intel oneAPI Base Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの <strong><a href="https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html">Intel oneAPI DPC++/C++ Compiler</a></strong> （本ドキュメントで使用するバージョンは2023.2）で <strong>STREAM</strong> のソースコードをコンパイルして作成したバイナリを使用し、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> でデプロイし、この上で実行します。<br />
+この際、 <strong>STREAM</strong> の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で <strong>NUMA setting</strong> を <strong>NPS2</strong> とします。</p>
 
 <p>以上より、本ドキュメントで解説する <strong>STREAM</strong> 実行は、以下の手順を経て行います。</p>
 
 <ul>
+  <li><strong>BM.Optimized3.36</strong> インスタンスのデプロイ</li>
   <li><strong>Intel oneAPI Base Toolkit</strong> インストール</li>
   <li><strong>STREAM</strong> ダウンロード・コンパイル</li>
   <li><strong>STREAM</strong> 実行</li>
@@ -352,7 +356,7 @@
 
 <p>[実行環境]</p>
 <ul>
-  <li>シェイプ: <strong>BM.Optimized3.36</strong></li>
+  <li>シェイプ: <strong>BM.Optimized3.36</strong> （ <strong>NUMA setting</strong> を <strong>NPS2</strong> に指定）</li>
   <li>OS: <strong>Oracle Linux</strong> 8.7 (HPC <strong>クラスタネットワーキングイメージ</strong> )</li>
   <li><strong>STREAM</strong> : 5.10</li>
   <li>Cコンパイラ: <strong>Intel oneAPI DPC++/C++ Compiler</strong> 2023.2</li>
@@ -361,11 +365,18 @@
 
 <p>[実行結果]</p>
 <ul>
-  <li>Triad(MB/s): 308,754</li>
+  <li>Triad(MB/s): 317,613</li>
 </ul>
 
 <hr />
-<h1 id="1-intel-oneapi-base-toolkitインストール">1. Intel oneAPI Base Toolkitインストール</h1>
+<h1 id="1-bmoptimized336インスタンスのデプロイ">1. BM.Optimized3.36インスタンスのデプロイ</h1>
+
+<p>本章は、BIOS設定の <strong>NUMA setting</strong> を <strong>NPS2</strong> とし、 <strong>BM.Optimized3.36</strong> をデプロイします。</p>
+
+<p>インスタンスデプロイ時のBIOS設定は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
+
+<hr />
+<h1 id="2-intel-oneapi-base-toolkitインストール">2. Intel oneAPI Base Toolkitインストール</h1>
 
 <p>本章は、 <strong>STREAM</strong> を実行するインスタンスに <strong>Intel oneAPI Base Toolkit</strong> をインストールします。</p>
 
@@ -377,7 +388,7 @@
 </code></pre></div></div>
 
 <hr />
-<h1 id="2-streamダウンロードコンパイル">2. STREAMダウンロード・コンパイル</h1>
+<h1 id="3-streamダウンロードコンパイル">3. STREAMダウンロード・コンパイル</h1>
 
 <p>本章は、 <strong>STREAM</strong> のソースコードをダウンロードし、先にインストールした <strong>Intel oneAPI Base Toolkit</strong> に含まれる<strong>Intel oneAPI DPC++/C++ Compiler</strong> でコンパイルして実行バイナリを作成します。</p>
 
@@ -389,7 +400,7 @@
 </code></pre></div></div>
 
 <hr />
-<h1 id="3-stream実行">3. STREAM実行</h1>
+<h1 id="4-stream実行">4. STREAM実行</h1>
 
 <p>本章は、先に作成した <strong>STREAM</strong> の実行バイナリを使用し、 <strong>STREAM</strong> を実行します。<br />
 具体的には、以下の作業を実施します。</p>
@@ -397,6 +408,7 @@
 <ul>
   <li>OS再起動</li>
   <li>ハイパースレッド設定の確認</li>
+  <li>NUMA設定の確認</li>
   <li>スレッドアフィニティ用環境変数指定</li>
   <li><strong>STREAM</strong> 実行</li>
 </ul>
@@ -417,6 +429,14 @@
 </code></pre></div>    </div>
   </li>
   <li>
+    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、その結果が <strong>4</strong> であることを以って、BIOSの <strong>NUMA setting</strong> が <strong>NPS2</strong> となっていることを確認します。<br />
+本ドキュメントの前提となる環境では、 <strong>NUMA setting</strong> が <strong>NPS2</strong> の場合 <strong>NPS1</strong> の場合と比較して <strong>STREAM</strong> の性能が向上します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>lscpu | <span class="nb">grep</span> <span class="s2">"NUMA node(s)"</span>
+ NUMA node<span class="o">(</span>s<span class="o">)</span>:        4
+</code></pre></div>    </div>
+  </li>
+  <li>
     <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>STREAM</strong> の性能向上を目的としたスレッドアフィニティの設定を適用します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>72
@@ -426,7 +446,8 @@
   <li>
     <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>STREAM</strong> を実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>./a.out
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
+ <span class="nv">$ </span>./a.out
  <span class="nt">-------------------------------------------------------------</span>
  STREAM version <span class="nv">$Revision</span>: 5.10 <span class="err">$</span>
  <span class="nt">-------------------------------------------------------------</span>
@@ -443,8 +464,8 @@
  Number of Threads counted <span class="o">=</span> 72
  <span class="nt">-------------------------------------------------------------</span>
  Your clock granularity/precision appears to be 1 microseconds.
- Each <span class="nb">test </span>below will take on the order of 15723 microseconds.
- <span class="o">(=</span> 15723 clock ticks<span class="o">)</span>
+ Each <span class="nb">test </span>below will take on the order of 14757 microseconds.
+ <span class="o">(=</span> 14757 clock ticks<span class="o">)</span>
  Increase the size of the arrays <span class="k">if </span>this shows that
  you are not getting at least 20 clock ticks per test.
  <span class="nt">-------------------------------------------------------------</span>
@@ -453,10 +474,10 @@
  precision of your system timer.
  <span class="nt">-------------------------------------------------------------</span>
  Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
- </span>Copy:          293612.7     0.014749     0.014628     0.014765
- Scale:         303595.6     0.014265     0.014147     0.014355
- Add:           308457.9     0.021059     0.020886     0.021134
- Triad:         308753.5     0.021087     0.020866     0.021159
+ </span>Copy:          301888.5     0.014275     0.014227     0.014326
+ Scale:         314189.3     0.013693     0.013670     0.013720
+ Add:           317863.2     0.020307     0.020268     0.020338
+ Triad:         317612.5     0.020328     0.020284     0.020358
  <span class="nt">-------------------------------------------------------------</span>
  Solution Validates: avg error less than 1.000000e-13 on all three arrays
  <span class="nt">-------------------------------------------------------------</span>
@@ -474,7 +495,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-16T11:29:37+09:00">August 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-21T17:35:47+09:00">August 21, 2023</time></p>
 
 
       </footer>

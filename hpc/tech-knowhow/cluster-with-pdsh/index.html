@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-16T11:29:37+09:00">
+  <meta property="article:published_time" content="2023-08-21T17:35:47+09:00">
 
 
 
@@ -284,6 +284,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -317,7 +319,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="pdshで効率的にクラスタ管理オペレーションを実行">
     <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-08-16T11:29:37+09:00">
+    <meta itemprop="datePublished" content="2023-08-21T17:35:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -349,7 +351,7 @@
   <li>一部の計算/GPUノードで他ノードと挙動が異なるためインストールされているRPMのバージョンを全計算/GPUノードで調査する</li>
 </ul>
 
-<p>これらのオペレーションは、全計算/GPUノードでsudoで管理者権限を利用可能なユーザ（ <strong>Oracle Linux</strong> では <strong>opc</strong> ）からパスフレーズ無しでSSH接続できるように構築されたクラスタ管理ノードを用意し、このノードから管理対象ノードの計算/GPUノードにSSHでコマンドを発行してこれを実施するのが一般的です。<br />
+<p>これらのオペレーションは、全計算/GPUノードに対してsudoで管理者に昇格可能なユーザ（ <strong>Oracle Linux</strong> では <strong>opc</strong> ）でパスフレーズ無しSSH接続可能なクラスタ管理ノードを用意し、このノードから実施するのが一般的です。<br />
 この場合、予め管理対象ノードのホスト名を記載したホストリストファイルとbashのforループを組合せたコマンドをクラスタ管理ノードから実行することで、一回のコマンド発行で所望のオペレーションを実施することが可能です。</p>
 
 <p>OSアップデートを管理対象ノードに適用するケースでは、以下のコマンドをクラスタ管理ノードからopcユーザで実行します。</p>
@@ -376,7 +378,7 @@
   <li>管理対象ノードから並列にファイルをクラスタ管理ノードに転送（ユーティリティーツール <strong>rpdcp</strong> の機能）</li>
 </ul>
 
-<p><strong>pdsh</strong> は、クラスタ管理ノードから管理対象ノードに対してSSHでコマンドを発行するため、パスフレーズ無しでSSHコマンドを実行できるよう事前にセットアップする必要があります。また管理オペレーションは、通常管理者権限を必要とするため、このパスフレーズ無しで実行するSSHコマンドは、管理者権限を持ったユーザから実行できるようにするか、sudoコマンドでパスワードを入力することなく管理者に昇格できるユーザである必要があります。<br />
+<p><strong>pdsh</strong> は、クラスタ管理ノードから管理対象ノードに対してSSHでコマンドを発行するため、パスフレーズ無しでSSHコマンドを実行できるよう事前にセットアップする必要があります。また管理オペレーションは、通常管理者権限を必要とするため、このパスフレーズ無しで実行するSSHコマンドは、管理者権限を持つユーザから実行するか、sudoコマンドでパスワードを入力することなく管理者に昇格できるユーザから実行する必要があります。<br />
 本テクニカルTipsでは、クラスタ管理ノードと管理対象ノードのOSに <strong>Oracle Linux</strong> を使用し、クラスタ管理ノードから管理対象ノードにopcユーザ（sudoで管理者権限昇格が可能なユーザ）でパスフレーズ無しでSSHコマンドを実行できる環境を前提としています。<br />
 この環境は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> カテゴリや <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> カテゴリに含まれるチュートリアルを元に構築するHPC/GPUクラスタに於いては、クラスタ管理ノードに相当するBastionノードのopcユーザから管理対象ノードに相当する計算/GPUノードにパスフレーズ無しでSSHコマンドが実行できるよう構築されるため、改めて実施する必要はありません。</p>
 
@@ -655,7 +657,7 @@ total 16
 <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 231 Aug  1 15:49 hosts.inst-slz8n-x9-ol8
 </code></pre></div></div>
 
-<p>このようにrpdcpは、コピーするファイル名に管理対象ノードのホスト名を付与したファイル名で、クラスタ管理ノードに全管理対象ノードのファイルをコピーします。</p>
+<p>このように <strong>rpdcp</strong> は、コピーするファイル名に管理対象ノードのホスト名を付与したファイル名で、クラスタ管理ノードに全管理対象ノードのファイルをコピーします。</p>
 
 <p>先の <strong>pdcp</strong> と同様 <strong>rpdcp</strong> は、sudoによる権限昇格を適用することが出来ないため、管理者にのみ読み取り権限が付与された管理対象ノードのファイルをクラスタ管理ノードにコピーすることが出来ません。<br />
 この場合、以下のように <strong>pdsh</strong> コマンドを併用してこれを実現することが可能です。</p>
@@ -684,7 +686,7 @@ drwx------. 4 opc opc   4096 Aug  1 11:54 ..
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-16T11:29:37+09:00">August 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-21T17:35:47+09:00">August 21, 2023</time></p>
 
 
       </footer>

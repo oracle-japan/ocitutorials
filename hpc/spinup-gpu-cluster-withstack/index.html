@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-16T11:29:37+09:00">
+  <meta property="article:published_time" content="2023-08-21T17:35:47+09:00">
 
 
 
@@ -274,6 +274,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -307,7 +309,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(スタティッククラスタ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、リソース・マネージャから1クリックで自動構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2023-08-16T11:29:37+09:00">
+    <meta itemprop="datePublished" content="2023-08-21T17:35:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -575,7 +577,7 @@
 
     <p>このSSH接続では、スタックに指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
 </code></pre></div>    </div>
   </li>
   <li>
@@ -583,7 +585,7 @@
 
     <p>Bastionノードは、以下のようにファイルストレージの/mnt/homeがマウントされています。この/mnt/homeは、GPUクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/home
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/home
 Filesystem        Size  Used Avail Use% Mounted on
 FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
 </code></pre></div>    </div>
@@ -595,10 +597,10 @@ FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
 
     <p>GPUノードのホスト名は、Bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続と <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> サブネット接続に使用するIPアドレスに対応するホスト名です。このため、BastionノードからGPUノードへのログインは、hostfile.tcpファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp
 compute-permanent-node-789
 compute-permanent-node-844
-<span class="o">&gt;</span> ssh compute-permanent-node-844
+<span class="nv">$ </span>ssh compute-permanent-node-844
 </code></pre></div>    </div>
   </li>
   <li>
@@ -606,21 +608,21 @@ compute-permanent-node-844
 
     <p>GPUノードは、以下のように <strong>NVMe SSD</strong> ローカルディスク領域が/mnt/localdiskにマウントされています。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/nvme0n1p1  6.2T   33M  6.2T   1% /mnt/localdisk
 </code></pre></div>    </div>
 
     <p>また、以下のようにBasionノードの/homeがGPUノードでマウントされています。この領域は、sudoコマンドを利用することで管理者権限を有するopcユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /home
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /home
 Filesystem                   Size  Used Avail Use% Mounted on
 bastion_ip:/home             42G   13G   29G  32% /home
 </code></pre></div>    </div>
 
     <p>また、以下のようにファイルストレージの/mnt/homeがマウントされています。この領域は、LDAPに作成する一般ユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/home
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/home
 Filesystem        Size  Used Avail Use% Mounted on
 FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
 </code></pre></div>    </div>
@@ -662,16 +664,16 @@ FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
 
     <p>このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをbastionのopcユーザで実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
 </code></pre></div>    </div>
 
     <p>次に、以下コマンドをBastionノードのopcユーザで実行し、イニシャルグループが <strong>privilege</strong> （グループIDが9876で、そのメンバーにコンテナ実行権限が付与される。）のLDAPユーザを作成します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> cluster user add user_name <span class="nt">--gid</span> 9876
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cluster user add user_name <span class="nt">--gid</span> 9876
 Password:  &lt;- Password <span class="k">for </span>user_name
 Repeat <span class="k">for </span>confirmation: &lt;- Password <span class="k">for </span>user_name
 Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
-<span class="o">&gt;</span> <span class="nb">id </span>user_name
+<span class="nv">$ </span><span class="nb">id </span>user_name
 <span class="nv">uid</span><span class="o">=</span>10001<span class="o">(</span>user_name<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span>
 </code></pre></div>    </div>
 
@@ -679,7 +681,7 @@ Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
 
     <p>次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
 public_key_for_user_name
 </code></pre></div>    </div>
   </li>
@@ -690,15 +692,15 @@ public_key_for_user_name
 
     <p>このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
 </code></pre></div>    </div>
 
     <p>またこのユーザは、以下のようにGPUクラスタ内の全てのGPUノードにパスフレーズ無し鍵認証によるSSHログインが可能になっています。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp 
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp 
 compute-permanent-node-789
 compute-permanent-node-844
-<span class="o">&gt;</span> ssh compute-permanent-node-789
+<span class="nv">$ </span>ssh compute-permanent-node-789
 </code></pre></div>    </div>
   </li>
   <li>
@@ -706,7 +708,7 @@ compute-permanent-node-844
 
     <p>BastionノードのLDAPユーザで以下コマンドを実行し、 <strong>Slurm</strong> から <strong>Enroot</strong> 上にコンテナを起動できることを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> srun <span class="nt">-N</span> 2 <span class="nt">--ntasks-per-node</span> 1 <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--container-name</span><span class="o">=</span>tensorflow bash <span class="nt">-c</span> <span class="s2">"hostname; grep PRETTY /etc/os-release"</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">-N</span> 2 <span class="nt">--ntasks-per-node</span> 1 <span class="nt">--container-image</span><span class="o">=</span>nvcr.io#nvidia/tensorflow:22.11-tf2-py3 <span class="nt">--container-name</span><span class="o">=</span>tensorflow bash <span class="nt">-c</span> <span class="s2">"hostname; grep PRETTY /etc/os-release"</span>
 pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
 pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
 compute-permanent-node-789
@@ -749,7 +751,7 @@ compute-permanent-node-844
 
 <p>BastionノードのLDAPユーザで以下コマンドを実行し、 <strong>TensorFlow</strong> のコンテナ上で <strong>NCCL Tests</strong> をビルドします。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> srun <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> bash <span class="nt">-c</span> <span class="s2">"cd /mnt/home/user_name; git clone https://github.com/NVIDIA/nccl-tests.git; cd nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> bash <span class="nt">-c</span> <span class="s2">"cd /mnt/home/user_name; git clone https://github.com/NVIDIA/nccl-tests.git; cd nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu"</span>
 Cloning into <span class="s1">'nccl-tests'</span>...
 make <span class="nt">-C</span> src build <span class="nv">BUILDDIR</span><span class="o">=</span>/mnt/home/user_name/nccl-tests/build
 make[1]: Entering directory <span class="s1">'/mnt/home/user_name/nccl-tests/src'</span>
@@ -789,7 +791,7 @@ make[1]: Leaving directory <span class="s1">'/mnt/home/user_name/nccl-tests/src'
 
 <p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブスケジューラが割当てた1ノードのGPUノード上で <strong>TensorFlow</strong> のコンテナを起動し、このコンテナ上で8枚のGPUを使用した <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> srun <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nt">--mpi</span> pmi2 <span class="nt">--gpus-per-node</span><span class="o">=</span>8 bash <span class="nt">-c</span> <span class="s2">"hostname; cd /mnt/home/user_name/nccl-tests; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nt">--mpi</span> pmi2 <span class="nt">--gpus-per-node</span><span class="o">=</span>8 bash <span class="nt">-c</span> <span class="s2">"cd /mnt/home/user_name/nccl-tests; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
 compute-permanent-node-789
 <span class="c"># nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
 <span class="c">#</span>
@@ -814,9 +816,7 @@ compute-permanent-node-789
 
 <p>次に、BastionノードのLDAPユーザで以下コマンドを実行し、2ノードのGPUノード上で1個づつ <strong>TensorFlow</strong> のコンテナを起動し、このコンテナ上で2ノード全16枚のGPUを使用した <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">export </span><span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4
-<span class="o">&gt;</span> <span class="nb">export </span><span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3
-<span class="o">&gt;</span> srun <span class="nt">-N</span> 2 <span class="nt">--ntasks-per-node</span> 1 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nt">--mpi</span> pmi2 <span class="nt">--gpus-per-node</span><span class="o">=</span>8 bash <span class="nt">-c</span> <span class="s2">"hostname; cd /mnt/home/user_name/nccl-tests; export NCCL_IB_QPS_PER_CONNECTION=4; export NCCL_IB_GID_INDEX=3; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">-N</span> 2 <span class="nt">--ntasks-per-node</span> 1 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nt">--mpi</span> pmi2 <span class="nt">--gpus-per-node</span><span class="o">=</span>8 bash <span class="nt">-c</span> <span class="s2">"cd /mnt/home/user_name/nccl-tests; export NCCL_IB_QPS_PER_CONNECTION=4; export NCCL_IB_GID_INDEX=3; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
 compute-permanent-node-789
 compute-permanent-node-844
 <span class="c"># nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
@@ -867,9 +867,9 @@ compute-permanent-node-844
 
 <p>BastionノードのLDAPユーザで、以下3個のプログラムを作成します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">pwd</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span>
 /mnt/home/user_name/tensorflow
-<span class="o">&gt;</span> <span class="nb">ls</span> <span class="nt">-l</span>
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
 total 24
 <span class="nt">-rw-r--r--</span> 1 user_name privilege 1385 Jan 26 09:29 mnist.py
 <span class="nt">-rwxr-xr-x</span> 1 user_name privilege 1158 Jan 26 09:29 start_mnist.sh
@@ -882,6 +882,7 @@ total 24
 <span class="c">#SBATCH -N 2</span>
 <span class="c">#SBATCH --ntasks-per-node 1</span>
 <span class="c">#SBATCH -J mnist</span>
+<span class="c">#SBATCH --gpus-per-node=8</span>
 
 <span class="c"># Set working directory which contains all programs to train MNIST datasets</span>
 <span class="nv">workdir</span><span class="o">=</span><span class="s2">"/mnt/home/user_name/tensorflow"</span>
@@ -997,18 +998,18 @@ python ./mnist.py <span class="o">&gt;</span> ./<span class="nv">$std_out</span>
 
 <p>BastionノードのLDAPユーザで以下コマンドを実行し、サンプルプログラムをジョブスケジューラにバッチジョブとして投入します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> sbatch submit.sh 
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch submit.sh 
 Submitted batch job 12
-<span class="o">&gt;</span> squeue 
+<span class="nv">$ </span>squeue 
     JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
        12   compute    mnist user_nam  R       0:02      2 compute-permanent-node-[789,844]
 </code></pre></div></div>
 
 <p>次に、squeueコマンドの出力が無いことでジョブ終了を確認したら、プログラムの標準出力を確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> squeue
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>squeue
     JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
-<span class="o">&gt;</span> <span class="nb">cat </span>compute-permanent-node-789.out 
+<span class="nv">$ </span><span class="nb">cat </span>compute-permanent-node-789.out 
 Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
 11490434/11490434 <span class="o">[==============================]</span> - 0s 0us/step
 Epoch 1/3
@@ -1026,7 +1027,6 @@ Epoch 2/3
 70/70 <span class="o">[==============================]</span> - 4s 64ms/step - loss: 2.1678 - accuracy: 0.3291
 Epoch 3/3
 70/70 <span class="o">[==============================]</span> - 4s 63ms/step - loss: 2.0625 - accuracy: 0.4879
-
 </code></pre></div></div>
 <hr />
 <h1 id="8-スタックの破棄">8. スタックの破棄</h1>
@@ -1073,7 +1073,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-16T11:29:37+09:00">August 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-21T17:35:47+09:00">August 21, 2023</time></p>
 
 
       </footer>

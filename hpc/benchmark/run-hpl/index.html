@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-16T11:29:37+09:00">
+  <meta property="article:published_time" content="2023-08-21T17:35:47+09:00">
 
 
 
@@ -284,6 +284,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -317,7 +319,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPL実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのHPLを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-08-16T11:29:37+09:00">
+    <meta itemprop="datePublished" content="2023-08-21T17:35:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -342,7 +344,7 @@
 なお、 <strong>Intel oneAPI Math Kernel Library for Linux</strong> と <strong>Intel MPI Library</strong> は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html">Intel oneAPI HPC Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれているものを使用します。</p>
 
 <p>本ドキュメントで <strong>HPL</strong> を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> 2インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。<br />
-計算ノードのOSは、Oracle Linux 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用します。</p>
+計算ノードのOSは、 <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用します。</p>
 
 <p>以上より、本ドキュメントで解説する <strong>HPL</strong> 実行は、以下の手順を経て行います。</p>
 
@@ -484,13 +486,13 @@
 この <strong>HPL</strong> 実行は、 <strong>ノード当たり1プロセス・プロセス当たり36スレッド</strong> で実行します。<br />
 この際、プロセス当たりのスレッド数は、 <strong>Intel oneAPI Math Kernel Library for Linux</strong> がノードのコア配置から自動的に36に設定するため、改めて指定する必要はありません。<br />
 本ドキュメントの前提となる環境・設定で <strong>HPL</strong> 実行に要する時間は、2時間弱です。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
+ <span class="nv">$ </span><span class="nb">cd</span> /dest_dir/mp_linpack
+ <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-ppn</span> 1 <span class="nt">-hostfile</span> ./hostlist.txt <span class="nt">-genv</span> UCX_NET_DEVICES mlx5_2:1 ./xhpl_intel64_dynamic
+</code></pre></div>    </div>
   </li>
 </ol>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
-<span class="nv">$ </span><span class="nb">cd</span> /dest_dir/mp_linpack
-<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-ppn</span> 1 <span class="nt">-hostfile</span> ./hostlist.txt <span class="nt">-genv</span> UCX_NET_DEVICES mlx5_2:1 ./xhpl_intel64_dynamic
-</code></pre></div></div>
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:hpl_dat" role="doc-endnote">
@@ -512,7 +514,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-16T11:29:37+09:00">August 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-21T17:35:47+09:00">August 21, 2023</time></p>
 
 
       </footer>
