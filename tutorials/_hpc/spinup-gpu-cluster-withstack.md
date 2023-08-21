@@ -212,7 +212,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    このSSH接続では、スタックに指定したSSH公開鍵に対応する秘密鍵を使用します。
 
    ```sh 
-   > ssh -i path_to_ssh_secret_key opc@123.456.789.123
+   $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
    ```
 
 2. Bastionノードファイルシステム確認
@@ -220,7 +220,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    Bastionノードは、以下のようにファイルストレージの/mnt/homeがマウントされています。この/mnt/homeは、GPUクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。
 
    ```sh
-   > df -h /mnt/home
+   $ df -h /mnt/home
    Filesystem        Size  Used Avail Use% Mounted on
    FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
    ```
@@ -232,10 +232,10 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    GPUノードのホスト名は、Bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** サブネット接続に使用するIPアドレスに対応するホスト名です。このため、BastionノードからGPUノードへのログインは、hostfile.tcpファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。
 
    ```sh
-   > cat /etc/opt/oci-hpc/hostfile.tcp
+   $ cat /etc/opt/oci-hpc/hostfile.tcp
    compute-permanent-node-789
    compute-permanent-node-844
-   > ssh compute-permanent-node-844
+   $ ssh compute-permanent-node-844
    ```
 
 4. GPUノードファイルシステム確認
@@ -243,7 +243,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    GPUノードは、以下のように **NVMe SSD** ローカルディスク領域が/mnt/localdiskにマウントされています。
 
    ```sh
-   > df -h /mnt/localdisk
+   $ df -h /mnt/localdisk
    Filesystem      Size  Used Avail Use% Mounted on
    /dev/nvme0n1p1  6.2T   33M  6.2T   1% /mnt/localdisk
    ```
@@ -251,7 +251,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    また、以下のようにBasionノードの/homeがGPUノードでマウントされています。この領域は、sudoコマンドを利用することで管理者権限を有するopcユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。
 
    ```sh
-   > df -h /home
+   $ df -h /home
    Filesystem                   Size  Used Avail Use% Mounted on
    bastion_ip:/home             42G   13G   29G  32% /home
    ```
@@ -259,7 +259,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    また、以下のようにファイルストレージの/mnt/homeがマウントされています。この領域は、LDAPに作成する一般ユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。
 
    ```sh
-   > df -h /mnt/home
+   $ df -h /mnt/home
    Filesystem        Size  Used Avail Use% Mounted on
    FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
    ```
@@ -299,17 +299,17 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをbastionのopcユーザで実行します。
 
    ```sh
-   > sudo sed -i 's/\/home\//\/mnt\/home\//g' /usr/bin/cluster
+   $ sudo sed -i 's/\/home\//\/mnt\/home\//g' /usr/bin/cluster
    ```
 
    次に、以下コマンドをBastionノードのopcユーザで実行し、イニシャルグループが **privilege** （グループIDが9876で、そのメンバーにコンテナ実行権限が付与される。）のLDAPユーザを作成します。
 
    ```sh
-   > cluster user add user_name --gid 9876
+   $ cluster user add user_name --gid 9876
    Password:  <- Password for user_name
    Repeat for confirmation: <- Password for user_name
    Full Name: full_name <- Full name for user_name
-   > id user_name
+   $ id user_name
    uid=10001(user_name) gid=9876(privilege) groups=9876(privilege)
    ```
 
@@ -318,7 +318,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。
 
    ```sh
-   > echo 'public_key_for_user_name' | sudo tee -a ~user_name/.ssh/authorized_keys
+   $ echo 'public_key_for_user_name' | sudo tee -a ~user_name/.ssh/authorized_keys
    public_key_for_user_name
    ```
 
@@ -329,16 +329,16 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。
 
    ```sh 
-   > ssh -i path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
+   $ ssh -i path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
    ```
 
    またこのユーザは、以下のようにGPUクラスタ内の全てのGPUノードにパスフレーズ無し鍵認証によるSSHログインが可能になっています。
 
    ```sh
-   > cat /etc/opt/oci-hpc/hostfile.tcp 
+   $ cat /etc/opt/oci-hpc/hostfile.tcp 
    compute-permanent-node-789
    compute-permanent-node-844
-   > ssh compute-permanent-node-789
+   $ ssh compute-permanent-node-789
    ```
 
 3. コンテナ起動確認
@@ -346,7 +346,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    BastionノードのLDAPユーザで以下コマンドを実行し、 **Slurm** から **Enroot** 上にコンテナを起動できることを確認します。
 
    ```sh 
-   > srun -N 2 --ntasks-per-node 1 --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --container-name=tensorflow bash -c "hostname; grep PRETTY /etc/os-release"
+   $ srun -N 2 --ntasks-per-node 1 --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --container-name=tensorflow bash -c "hostname; grep PRETTY /etc/os-release"
    pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
    pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
    compute-permanent-node-789
@@ -384,7 +384,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 BastionノードのLDAPユーザで以下コマンドを実行し、 **TensorFlow** のコンテナ上で **NCCL Tests** をビルドします。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
 
 ```sh
-> srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" bash -c "cd /mnt/home/user_name; git clone https://github.com/NVIDIA/nccl-tests.git; cd nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu"
+$ srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" bash -c "cd /mnt/home/user_name; git clone https://github.com/NVIDIA/nccl-tests.git; cd nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu"
 Cloning into 'nccl-tests'...
 make -C src build BUILDDIR=/mnt/home/user_name/nccl-tests/build
 make[1]: Entering directory '/mnt/home/user_name/nccl-tests/src'
@@ -425,7 +425,7 @@ make[1]: Leaving directory '/mnt/home/user_name/nccl-tests/src'
 BastionノードのLDAPユーザで以下コマンドを実行し、ジョブスケジューラが割当てた1ノードのGPUノード上で **TensorFlow** のコンテナを起動し、このコンテナ上で8枚のGPUを使用した **NCCL** の **All-Reduce** 通信性能を計測します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
 
 ```sh
-> srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" --mpi pmi2 --gpus-per-node=8 bash -c "hostname; cd /mnt/home/user_name/nccl-tests; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
+$ srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" --mpi pmi2 --gpus-per-node=8 bash -c "cd /mnt/home/user_name/nccl-tests; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
 compute-permanent-node-789
 # nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
@@ -451,9 +451,7 @@ compute-permanent-node-789
 次に、BastionノードのLDAPユーザで以下コマンドを実行し、2ノードのGPUノード上で1個づつ **TensorFlow** のコンテナを起動し、このコンテナ上で2ノード全16枚のGPUを使用した **NCCL** の **All-Reduce** 通信性能を計測します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
 
 ```sh
-> export NCCL_IB_QPS_PER_CONNECTION=4
-> export NCCL_IB_GID_INDEX=3
-> srun -N 2 --ntasks-per-node 1 --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" --mpi pmi2 --gpus-per-node=8 bash -c "hostname; cd /mnt/home/user_name/nccl-tests; export NCCL_IB_QPS_PER_CONNECTION=4; export NCCL_IB_GID_INDEX=3; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
+$ srun -N 2 --ntasks-per-node 1 --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" --mpi pmi2 --gpus-per-node=8 bash -c "cd /mnt/home/user_name/nccl-tests; export NCCL_IB_QPS_PER_CONNECTION=4; export NCCL_IB_GID_INDEX=3; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
 compute-permanent-node-789
 compute-permanent-node-844
 # nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
@@ -505,9 +503,9 @@ srunコマンド内で指定している **NCCL_IB_** で始まる環境変数�
 BastionノードのLDAPユーザで、以下3個のプログラムを作成します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
 
 ```sh
-> pwd
+$ pwd
 /mnt/home/user_name/tensorflow
-> ls -l
+$ ls -l
 total 24
 -rw-r--r-- 1 user_name privilege 1385 Jan 26 09:29 mnist.py
 -rwxr-xr-x 1 user_name privilege 1158 Jan 26 09:29 start_mnist.sh
@@ -521,6 +519,7 @@ total 24
 #SBATCH -N 2
 #SBATCH --ntasks-per-node 1
 #SBATCH -J mnist
+#SBATCH --gpus-per-node=8
 
 # Set working directory which contains all programs to train MNIST datasets
 workdir="/mnt/home/user_name/tensorflow"
@@ -639,9 +638,9 @@ multi_worker_model.fit(multi_worker_dataset, epochs=3, steps_per_epoch=70)
 BastionノードのLDAPユーザで以下コマンドを実行し、サンプルプログラムをジョブスケジューラにバッチジョブとして投入します。
 
 ```sh
-> sbatch submit.sh 
+$ sbatch submit.sh 
 Submitted batch job 12
-> squeue 
+$ squeue 
     JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
        12   compute    mnist user_nam  R       0:02      2 compute-permanent-node-[789,844]
 ```
@@ -649,9 +648,9 @@ Submitted batch job 12
 次に、squeueコマンドの出力が無いことでジョブ終了を確認したら、プログラムの標準出力を確認します。
 
 ```sh
-> squeue
+$ squeue
     JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-> cat compute-permanent-node-789.out 
+$ cat compute-permanent-node-789.out 
 Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
 11490434/11490434 [==============================] - 0s 0us/step
 Epoch 1/3
@@ -669,7 +668,6 @@ Epoch 2/3
 70/70 [==============================] - 4s 64ms/step - loss: 2.1678 - accuracy: 0.3291
 Epoch 3/3
 70/70 [==============================] - 4s 63ms/step - loss: 2.0625 - accuracy: 0.4879
-
 ```
 ***
 # 8. スタックの破棄

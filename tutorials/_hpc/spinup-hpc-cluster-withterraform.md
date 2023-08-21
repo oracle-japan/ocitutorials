@@ -106,16 +106,18 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
    ![画面ショット](stack_page02.png)  
 4.2 **Compute/GPU node options** フィールド
-    - **Cluster display name postfix :** 計算ノードホスト名の接尾辞(\*1)
-    - **Compute/GPU node shape :** **BM.Optimized3.36**
-    - **Compute/GPU node count :** 計算ノードのノード数（デフォルト：2）
-    - **Compute/GPU node image OCID :** 計算ノードのイメージOCID(\*2)
-    - **Compute/GPU node boot volume size :** 計算ノードのブートボリュームサイズ(GB)
+    - **Display name postfix :** 計算ノードホスト名の接尾辞(\*1)
+    - **Shape :** **BM.Optimized3.36**
+    - **Node count :** 計算ノードのノード数（デフォルト：2）
+    - **Image OCID :** 計算ノードのイメージOCID(\*2)
+    - **Boot volume size :** 計算ノードのブートボリュームサイズ(GB)
     - **cloud-config :** 計算ノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )(\*3)
+    - **NPS for BM.Optimized3.36 :** 計算ノードの **NPS** 設定値 (デフォルト：NPS1) (\*4)
+    - **SMT :** 計算ノードの **SMT** 設定値 (デフォルト：有効) (\*4)
 
    ![画面ショット](stack_page03.png)
 
-    *1) 例えば **x9-ol8** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol8** となります。（ **xxxxx** はランダムな文字列）  
+    *1) 例えば **x9-ol87** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol87** となります。（ **xxxxx** はランダムな文字列）  
     *2) 以下のOCIDを指定します。
 
     | Oracle Linuxバージョン | OCID                                                                          |     |
@@ -158,6 +160,8 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
      - echo "bastion:/home /home nfs defaults,vers=3 0 0" >> /etc/fstab
      - mount /home
    ```
+
+    *4) 詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照ください。
 
 5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
@@ -236,25 +240,28 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 [ **terraform.tfvars** ]
 
-| 変数名                 | 設定値                                                                     | 確認方法                                                                                                                             |
-| ------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| sc_compartment_ocid | HPCクラスタをデプロイするコンパートメントのOCID                                         | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
-| sc_ad               | HPCクラスタをデプロイする可用性ドメイン識別子                                            | (\*4)                                                                                                                            |
-| sc_ssh_key          | Bastionノードログインに使用するSSH秘密鍵に対する公開鍵                                        | -                                                                                                                                |
-| sc_cn_display_name  | 計算ノードホスト名の接尾辞                                                       | (\*5)                                                                                                                            |
+| 変数名                 | 設定値                                      | 確認方法                                                                                                                             |
+| ------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| sc_compartment_ocid | HPCクラスタをデプロイするコンパートメントのOCID              | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
+| sc_ad               | HPCクラスタをデプロイする可用性ドメイン識別子                 | (\*5)                                                                                                                            |
+| sc_ssh_key          | Bastionノードログインに使用するSSH秘密鍵に対する公開鍵         | -                                                                                                                                |
+| sc_cn_display_name  | 計算ノードホスト名の接尾辞                            | (\*6)                                                                                                                            |
 | sc_cn_shape         | 計算ノードに使用するシェイプ<br>・ **BM.Optimized3.36** | -                                                                                                                                |
-| sc_cn_node_count    | 計算ノードのノード数                                                          | -                                                                                                                                |
-| sc_cn_image         | 計算ノードに使用するOSイメージのOCID                                               | (\*6)                                                                                                                            |
-| sc_cn_boot_vol_size | ブートボリュームのサイズ（GB）                                                        | -                                                                                                                                |
-| sc_cn_cloud_config  | **cloud-config** ファイルをbase64エンコードした文字列                                       | (\*7)                                                                                                                            |
+| sc_cn_node_count    | 計算ノードのノード数                               | -                                                                                                                                |
+| sc_cn_image         | 計算ノードに使用するOSイメージのOCID                    | (\*7)                                                                                                                            |
+| sc_cn_boot_vol_size | ブートボリュームのサイズ（GB）                         | -                                                                                                                                |
+| sc_cn_cloud_config  | **cloud-config** ファイルをbase64エンコードした文字列   | (\*8)                                                                                                                            |
+| sc_cn_nps_x9        | 計算ノードの **NPS** BIOS設定値                   | (\*9)                                                                                                                            |
+| sc_cn_smt           | 計算ノードの **SMT** BIOS設定値                   | (\*9)                                                                                                                            |
+|                     |                                          |                                                                                                                                  |
 
-\*4) OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
+\*5) OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
 
 ![画面ショット](console_page01.png)
 
-\*5) 例えば **x9-ol8** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol8** となります。（ **xxxxx** はランダムな文字列）  
+\*6) 例えば **x9-ol87** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol87** となります。（ **xxxxx** はランダムな文字列）  
 
-\*6) 以下のOCIDを指定します。（ダウンロードした **Terraform** スクリプトの **terraform.tfvars** に以下のOCIDがコメントとして埋め込まれています）
+\*7) 以下のOCIDを指定します。（ダウンロードした **Terraform** スクリプトの **terraform.tfvars** に以下のOCIDがコメントとして埋め込まれています）
 
 | Oracle Linuxバージョン | OCID                                                                          |
 | ----------------- | ----------------------------------------------------------------------------- |
@@ -262,12 +269,14 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 | 8.7               | ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a |
 |         |                   |                                                                               |
 
-\*7) 以下コマンドの出力を使用します。  
+\*8) 以下コマンドの出力を使用します。
 
 ```sh
 $ cd tutorial_cn
 $ base64 ./user_data/cloud-init_cnhpc.cfg | tr -d '\n'; echo
 ```
+
+\*9) 詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照ください。
 
 ***
 # 1. HPCクラスタ構築
@@ -414,6 +423,24 @@ Filesystem                  Size  Used Avail Use% Mounted on
 bastion:/home                36G  8.5G   28G  24% /home
 ```
 
+## 2-4. 計算ノードBIOS設定確認
+
+以下コマンドをBastionノードのopcユーザで実行し、計算ノードのBIOSで指定した **NPS** と **SMT** 設定が指定したとおりになっていることを確認します。  
+
+```sh
+$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "lscpu | grep -i -e numa -e thread"; done
+inst-e0tw0-x9-ol87
+Thread(s) per core:  2
+NUMA node(s):        2
+NUMA node0 CPU(s):   0-17,36-53
+NUMA node1 CPU(s):   18-35,54-71
+inst-uyopv-x9-ol87
+Thread(s) per core:  2
+NUMA node(s):        2
+NUMA node0 CPU(s):   0-17,36-53
+NUMA node1 CPU(s):   18-35,54-71
+```
+
 ***
 # 3. MPIプログラム実行
 
@@ -421,7 +448,7 @@ bastion:/home                36G  8.5G   28G  24% /home
 
 ここでは、 **Intel MPI Benchmark** の **Ping-Pong** を実行します。
 
-**[OCI HPCベンチマーク情報](/ocitutorials/hpc/#2-oci-hpcベンチマーク情報)** の **[Intel MPI Benchmark実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarkを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合)** の手順に従い、 **Ping-Pong** を実行します。
+**[標準ベンチマーク実行方法](/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法)** の **[Intel MPI Benchmark実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarkを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合)** の手順に従い、 **Ping-Pong** を実行します。
 
 ***
 # 4. HPCクラスタ削除
