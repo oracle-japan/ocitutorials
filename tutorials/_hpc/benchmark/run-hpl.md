@@ -17,7 +17,7 @@ header:
 なお、 **Intel oneAPI Math Kernel Library for Linux** と **Intel MPI Library** は、 **[Intel oneAPI HPC Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれているものを使用します。
 
 本ドキュメントで **HPL** を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** 2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。  
-計算ノードのOSは、Oracle Linux 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用します。
+計算ノードのOSは、 **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用します。
 
 以上より、本ドキュメントで解説する **HPL** 実行は、以下の手順を経て行います。
 
@@ -114,8 +114,8 @@ $ sudo yum install -y intel-hpckit
 この際、プロセス当たりのスレッド数は、 **Intel oneAPI Math Kernel Library for Linux** がノードのコア配置から自動的に36に設定するため、改めて指定する必要はありません。  
 本ドキュメントの前提となる環境・設定で **HPL** 実行に要する時間は、2時間弱です。
 
-```sh
-$ source /opt/intel/oneapi/setvars.sh
-$ cd /dest_dir/mp_linpack
-$ mpirun -n 2 -ppn 1 -hostfile ./hostlist.txt -genv UCX_NET_DEVICES mlx5_2:1 ./xhpl_intel64_dynamic
-```
+    ```sh
+    $ source /opt/intel/oneapi/setvars.sh
+    $ cd /dest_dir/mp_linpack
+    $ mpirun -n 2 -ppn 1 -hostfile ./hostlist.txt -genv UCX_NET_DEVICES mlx5_2:1 ./xhpl_intel64_dynamic
+    ```

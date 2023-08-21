@@ -1,22 +1,24 @@
 ---
 title: "STREAM実行方法"
 excerpt: "本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークのSTREAMを実行する方法を解説します。"
-order: "221"
+order: "212"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークの  **[STREAM](https://www.cs.virginia.edu/stream/)**  を実行する方法を解説します。
+本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークの **[STREAM](https://www.cs.virginia.edu/stream/)** を実行する方法を解説します。
 
 ***
 # 0. 概要
 
-本ドキュメントで解説する **STREAM** の実行は、 **[Intel oneAPI Base Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの **[Intel oneAPI DPC++/C++ Compiler](https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html)** （本ドキュメントで使用するバージョンは2023.2）で **STREAM** のソースコードをコンパイルして作成したバイナリを使用し、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** をOracle Linux 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** でデプロイし、この上で実行します。
+本ドキュメントで解説する **STREAM** の実行は、 **[Intel oneAPI Base Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの **[Intel oneAPI DPC++/C++ Compiler](https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html)** （本ドキュメントで使用するバージョンは2023.2）で **STREAM** のソースコードをコンパイルして作成したバイナリを使用し、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** でデプロイし、この上で実行します。  
+この際、 **STREAM** の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で **NUMA setting** を **NPS2** とします。
 
 以上より、本ドキュメントで解説する **STREAM** 実行は、以下の手順を経て行います。
 
+- **BM.Optimized3.36** インスタンスのデプロイ
 - **Intel oneAPI Base Toolkit** インストール
 - **STREAM** ダウンロード・コンパイル
 - **STREAM** 実行
@@ -24,17 +26,24 @@ header:
 本ドキュメントは、以下の環境で **STREAM** を実行しており、以下の性能が出ています。
 
 [実行環境]
-- シェイプ: **BM.Optimized3.36**
+- シェイプ: **BM.Optimized3.36** （ **NUMA setting** を **NPS2** に指定）
 - OS: **Oracle Linux** 8.7 (HPC **クラスタネットワーキングイメージ** )
 - **STREAM** : 5.10
 - Cコンパイラ: **Intel oneAPI DPC++/C++ Compiler** 2023.2
 - 配列サイズ(STREAM_ARRAY_SIZE): 268,435,456
 
 [実行結果]
-- Triad(MB/s): 308,754
+- Triad(MB/s): 317,613
 
 ***
-# 1. Intel oneAPI Base Toolkitインストール
+# 1. BM.Optimized3.36インスタンスのデプロイ
+
+本章は、BIOS設定の **NUMA setting** を **NPS2** とし、 **BM.Optimized3.36** をデプロイします。
+
+インスタンスデプロイ時のBIOS設定は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照ください。
+
+***
+# 2. Intel oneAPI Base Toolkitインストール
 
 本章は、 **STREAM** を実行するインスタンスに **Intel oneAPI Base Toolkit** をインストールします。
 
@@ -47,7 +56,7 @@ $ sudo yum install -y intel-basekit
 ```
 
 ***
-# 2. STREAMダウンロード・コンパイル
+# 3. STREAMダウンロード・コンパイル
 
 本章は、 **STREAM** のソースコードをダウンロードし、先にインストールした **Intel oneAPI Base Toolkit** に含まれる**Intel oneAPI DPC++/C++ Compiler** でコンパイルして実行バイナリを作成します。
 
@@ -60,13 +69,14 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -Wall -O3 -mcmodel=medium -qopenmp -shared-i
 ```
 
 ***
-# 3. STREAM実行
+# 4. STREAM実行
 
 本章は、先に作成した **STREAM** の実行バイナリを使用し、 **STREAM** を実行します。  
 具体的には、以下の作業を実施します。
 
 - OS再起動
 - ハイパースレッド設定の確認
+- NUMA設定の確認
 - スレッドアフィニティ用環境変数指定
 - **STREAM** 実行
 
@@ -84,16 +94,25 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -Wall -O3 -mcmodel=medium -qopenmp -shared-i
     Thread(s) per core:  2
     ```
 
-3. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** の性能向上を目的としたスレッドアフィニティの設定を適用します。
+3. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、その結果が **4** であることを以って、BIOSの **NUMA setting** が **NPS2** となっていることを確認します。  
+本ドキュメントの前提となる環境では、 **NUMA setting** が **NPS2** の場合 **NPS1** の場合と比較して **STREAM** の性能が向上します。
+
+    ```sh
+    $ lscpu | grep "NUMA node(s)"
+    NUMA node(s):        4
+    ```
+
+4. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** の性能向上を目的としたスレッドアフィニティの設定を適用します。
 
     ```sh
     $ export OMP_NUM_THREADS=72
     $ export KMP_AFFINITY=granularity=fine,compact,1,0
     ```
 
-4. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** を実行します。
+5. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** を実行します。
 
     ```sh
+    $ source /opt/intel/oneapi/setvars.sh
     $ ./a.out
     -------------------------------------------------------------
     STREAM version $Revision: 5.10 $
@@ -111,8 +130,8 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -Wall -O3 -mcmodel=medium -qopenmp -shared-i
     Number of Threads counted = 72
     -------------------------------------------------------------
     Your clock granularity/precision appears to be 1 microseconds.
-    Each test below will take on the order of 15723 microseconds.
-    (= 15723 clock ticks)
+    Each test below will take on the order of 14757 microseconds.
+    (= 14757 clock ticks)
     Increase the size of the arrays if this shows that
     you are not getting at least 20 clock ticks per test.
     -------------------------------------------------------------
@@ -121,10 +140,10 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -Wall -O3 -mcmodel=medium -qopenmp -shared-i
     precision of your system timer.
     -------------------------------------------------------------
     Function    Best Rate MB/s  Avg time     Min time     Max time
-    Copy:          293612.7     0.014749     0.014628     0.014765
-    Scale:         303595.6     0.014265     0.014147     0.014355
-    Add:           308457.9     0.021059     0.020886     0.021134
-    Triad:         308753.5     0.021087     0.020866     0.021159
+    Copy:          301888.5     0.014275     0.014227     0.014326
+    Scale:         314189.3     0.013693     0.013670     0.013720
+    Add:           317863.2     0.020307     0.020268     0.020338
+    Triad:         317612.5     0.020328     0.020284     0.020358
     -------------------------------------------------------------
     Solution Validates: avg error less than 1.000000e-13 on all three arrays
     -------------------------------------------------------------
