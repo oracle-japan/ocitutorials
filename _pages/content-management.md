@@ -91,20 +91,20 @@ toc: true
 
 ## Webサイトのカスタマイズ
 
-+ **[Oracle Content Management のコンテンツ・レイアウトを編集しよう](/ocitutorials/content-management/71_customize_contentlayout/)**  <span style="color: red;">Update!</span>  
-    OCMのコンテンツ・レイアウトの編集し、Webページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
++ **[Oracle Content Management のコンテンツ・レイアウトを編集しよう](/ocitutorials/content-management/71_customize_contentlayout/)**  
+    OCM のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
 
 
 + **[Oracle Content Management で作成したサイトのバナー画像を変更しよう](/ocitutorials/content-management/72_change_banner/)**  
-    OCMのデフォルトテンプレートから作成されたWebサイトのバナー画像を変更する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:20分】
+    OCM のデフォルトテンプレートから作成された Web サイトのバナー画像を変更する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:20分】
 
 
 + **[Oracle Content Management でカスタムテンプレートを自作しよう ](/ocitutorials/content-management/78_create_custom_template/)**  
-    OCMでカスタムテンプレートを自作する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:30分】
+    OCM でカスタムテンプレートを自作する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:30分】
 
 
 + **[[Oracle Cloud] Oracle Content Management で作成したWebサイトにGoogleフォームで作成したお問い合わせフォームを配置する](https://qiita.com/nakasato310/items/b3b45402eb6371c844a7)** (※外部サイト)  
-    OCMのリモートコンポーネントを利用して、Googleフォームで作成したお問い合わせフォームを部品化したカスタムコンポーネントを作成し、Webサイト上にドラッグ＆ドロップで配置できるようにします【所要時間:15分】
+    OCM のリモートコンポーネントを利用して、Googleフォームで作成したお問い合わせフォームを部品化したカスタムコンポーネントを作成し、Webサイト上にドラッグ＆ドロップで配置できるようにします【所要時間:15分】
 
 
 ## Video Plus アセット

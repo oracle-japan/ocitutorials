@@ -1,44 +1,34 @@
 ---
-title: "Oracle Content Managementのコンテンツ・レイアウトを編集しよう"
-excerpt: "OCMのコンテンツ・レイアウトの編集し、Webページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです"
+title: "Oracle Content and Experience のコンテンツ・レイアウトを編集しよう"
+excerpt: "OCE のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです"
 order: "071"
 layout: single
-tags:
-  - OCE
-  - OCM
+tags: "OCE"
 header:
   teaser: "/content-management/71_customize_contentlayout/028.jpg"
   overlay_image: "/content-management/71_customize_contentlayout/028.jpg"
   overlay_filter: rgba(80,80,80,0.7)
 ---
 
-<a id="top"></a>
-
-この文書はOracle Content Management(OCM)のコンテンツ・レイアウトの編集し、Webページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです
+この文書は Oracle Content and Experience (OCE) のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです
 
 
-**【お知らせ】**   
-この文書は、2023年8月時点での最新バージョン(23.7.2)を元に作成されてます。  
-チュートリアル内の画面ショットについてはOracle Content Managementの現在のコンソール画面と異なっている場合があります。  
-{: .notice--info}
+~~~
+この文書は、2021年1月時点での最新バージョン(21.1.1)を元に作成されてます
+~~~
 
 **前提条件**
-- OCMインスタンスが作成済であること(以下の作成手順参照)
-    - [OCI IAM Identity Domain環境でOracle Content Managementインスタンスを作成する](../create_ocm_instance_IdentityDomain)
-    - [Oracle Content Managementインスタンスを作成する](../create_oce_instance)
-
-- OCMの利用ユーザーに、少なくとも下記4つのOCMインスタンスのアプリケーション・ロールが付与されていること
+- [Oracle Content and Experience インスタンスを作成する](../create_oce_instance)
+- [Oracle Content and Experience を Headless CMS として使ってみよう【初級編】](../41_asset_headless)が完了していること
+- [Oracle Content and Experience を WebCMS として使ってみよう【初級編】](../62_webcms)が完了していること
+- OCE の利用ユーザーに、少なくとも下記4つのOCE インスタンスのアプリケーション・ロールが付与されていること
     - **CECContentAdministrator**
     - **CECDeveloperUser**
     - **CECEnterpriseUser**
     - **CECRepositoryAdminisrrator**
 
     > **[Memo]**  
-    > ユーザーの作成とアプリケーションロールの付与手順は、[OCI IAM Identity Domain環境でOracle Content Managementインスタンスの利用ユーザーを作成する](../create_identitydomain_group_user)もしくは[Oracle Content Managementインスタンスの利用ユーザーを作成する](../create_idcs_group_user)をご確認ください
-
-- 以下2つのチュートリアルが完了済であること
-    - [Oracle Content Managementを Headless CMS として使ってみよう【初級編】](../41_asset_headless)
-    - [Oracle Content Managementを WebCMS として使ってみよう【初級編】](../62_webcms)
+    > ユーザーの作成とアプリケーションロールの付与手順は、[Oracle Content and Experience インスタンスの利用ユーザーを作成する](../create_idcs_group_user) をご確認ください。
 
 <br>
 
@@ -46,14 +36,14 @@ header:
 
 ## 1.1 コンテンツ・レイアウトとは？
 
-コンテンツ・レイアウトとは **作成されたコンテンツ・アイテムの表示形式** を定めたものです。具体的には、Webページにコンテンツ・アイテムを配置した時のレイアウト(=HTML)を定義したものになります。1つのコンテンツ・タイプに対して複数のコンテンツ・レイアウトを定義することで、複数の異なる表示形式を実現できます。詳細は、下記ドキュメントをご参照ください
+コンテンツ・レイアウトとは **作成されたコンテンツ・アイテムの表示形式** を定めたものです。具体的には、Web ページにコンテンツ・アイテムを配置した時のレイアウト(=HTML)を定義したものになります。詳細は、下記ドキュメントをご参照ください
 
 - [Develop Content Layout](https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/develop-content-layouts.html)
 
 
 ## 1.2 作成済サイトとコンテンツ・タイプの確認
 
-前提条件にある2つのチュートリアルをすべて完了すると、**firstSite** というサイトが表示されます
+前提条件にあるチュートリアルをすべて完了すると、**firstSite** というサイトが表示されます
 
 - firstSite: ホームページ
 
@@ -84,7 +74,7 @@ header:
 
 1. 左ナビゲーションの **「サイト」** をクリックします
 
-1. **firstSite**を選択し、**「開く」**アイコンをクリックします
+1. **firstSite** を選択し、**「開く」** をクリックします
 
     ![画像](004.jpg)
 
@@ -115,17 +105,17 @@ header:
     ![画像](010.jpg)
 
     >**[Memo]**  
-    >「コンテンツ・リストのデフォルト」とは、コンテンツ・タイプの「コンテンツ・レイアウト」タブで設定した **コンテンツ・リストのデフォルトレイアウト** （ここでは sampleNewsType-overview）でコンテンツ・アイテムを表示する、という意味になります。詳細は下記ドキュメントを参考にしてください
+    >「コンテンツ・リストのデフォルト」とは、コンテンツ・タイプの「コンテンツ・レイアウト」タブで設定した **コンテンツ・リストのデフォルトレイアウト** （ここでは sampleNewsType-overview）でコンテンツ・アイテムを表示する、という意味になります。詳細は書きドキュメントを参考にしてください
     > - [Content List](https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/content-list.html)
 
-1. 左サイドバーの**「…Detail」** をクリックします
+1. **「…Detail Page」** をクリックします
 
 1. Detail Page の中央に **「コンテンツ・プレースホルダー」** が配置されていることを確認します
 
     ![画像](011.jpg)
 
     >**[Memo]**  
-    >「コンテンツ・プレースホルダー」コンポーネントは、指定されたコンテンツ・アイテムを動的に表示するコンポーネントです。具体的には、ニュース一覧を表示するページで1件のニュースでクリックした時に、そのニュースの全文を詳細表示する際に利用します。詳細は下記ドキュメントを参考にしてください  
+    >「コンテンツ・プレースホルダー」コンポーネントは、指定されたコンテンツ・アイテムを動的に表示するコンポーネントです。具体的には、ニュース一覧を表示するページで1件のニュースでクリックした時に、そのニュースの全文を詳細表示する際に利用します。詳細は、下記ドキュメントを参考にしてください  
     >- [Content Placeholder](https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/content-placeholder.html)  
     >
 
@@ -138,59 +128,52 @@ header:
     ![画像](013.jpg)
 
     >**[Memo]**  
-    >「コンテンツ・プレースホルダーのデフォルト」とは、コンテンツ・タイプの「コンテンツ・レイアウト」タブで設定した **コンテンツ・プレースホルダーのデフォルト** （ここでは sampleNewsType-detail）でコンテンツ・アイテムを表示する、という意味になります。詳細は下記ドキュメントを参考にしてください
+    >「コンテンツ・プレースホルダーのデフォルト」とは、コンテンツ・タイプの「コンテンツ・レイアウト」タブで設定した **コンテンツ・プレースホルダーのデフォルト** （ここでは sampleNewsType-detail）でコンテンツ・アイテムを表示する、という意味になります。詳細は書きドキュメントを参考にしてください
     > - [Content Placeholder](https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/content-placeholder.html)
 
 
 1. 表示モードに切り替えます
 
-1. 以上で、配置されているコンポーネントと表示レイアウトの設定の確認は終了です。次項からそれぞれのコンポーネントが利用しているコンテンツ・レイアウトを編集し、表示形式を変更します
+1. 以上で、配置されているコンポーネントと表示レイアウトの設定の確認は終了です。次項からそれぞれのコンポーネントが利用しているコンテンツレイアウトを編集し、表示形式を変更します
 
-<br />
 
 # 2. sampleNewsType-overviewの編集
 
 「コンテンツ・リスト」コンポーネントのデフォルトとして設定されている **sampleNewsType-overview** コンテンツ・レイアウトを編集します。
 
-ここでは、コンテンツ・タイプ`sampleNewsType`から作成されたコンテンツ・アイテムの **タイトル(title)** と **メイン画像(image)** のみを一覧表示するコンテンツ・レイアウトを作成します。さらに、表示されたタイトル or メイン画像をクリックすると、「コンテンツ・プレースホルダー」が配置された詳細表示ページ（Detail Page）に遷移するリンクも設定します
+ここでは、sampleNewsType から作成されたコンテンツ・アイテムの **タイトル(title)** と **メイン画像(image)** のみを一覧表示するコンテンツ・レイアウトを作成します。さらに、表示されたタイトル or メイン画像をクリックすると、「コンテンツ・プレースホルダー」が配置された詳細表示ページ（Detail Page）に遷移するリンクも設定します
 
 ## 2.1 コンテンツ・レイアウトの確認
 
 1. sampleNewsType-overview コンテンツ・レイアウトを開きます。ここではWebブラウザを利用します
 
-1. 左ナビゲーションメニューの **「開発者」**をクリックし、コンポーネントの **「すべてのコンポーネントの表示」** をクリックします
-
-    ![画像](030.jpg)
+1. 左ナビゲーションメニューの **「開発者」→「すべてのコンポーネントを開く」** をクリックします
 
 1. **sampleNewsType-overview** をクリックします
 
     ![画像](014.jpg)
 
     > **[Memo]**  
-    > フィルタで **「コンテンツ・レイアウト」** を選択すると、コンテンツ・レイアウトのみを表示させることができます。また、コンテンツレイアウトの名前で検索もできます
+    > フィルタで **「コンテンツ・レイアウト」** を選択すると、コンテンツ・レイアウトのみを表示させることができます
 
 1. **assets** フォルダをクリックします
 
     ![画像](015.jpg)
 
-1. **design.css** と **layout.html** をローカルPCにダウンロードします
+1. **design.css** と **layout.html** と **render.js** をローカルPCにダウンロードします
 
     ![画像](016.jpg)
 
 + **[解説]コンテンツ・レイアウトの内容**  
 
-    + コンテンツ・レイアウトは複数のフォルダおよびファイルで構成されます。コンテンツ・レイアウトのカスタマイズは、主に **assetsフォルダ配下の以下の3つのファイル** を編集します。なお、publishフォルダ配下には、公開サイトで利用されているコンテンツ・レイアウトファイル一式が格納されます。
+    + コンテンツ・レイアウトは複数のフォルダおよびファイルで構成されます。コンテンツ・レイアウトのカスタマイズは、主に **assets フォルダ配下の3つのファイル** を編集します。なお、publish フォルダ配下には、公開サイトで利用されているコンテンツ・レイアウトファイル一式が格納されます。
 
         ```
         sampleNewsType-overview
           assets
-            common.mjs
-            compile.mjs
             design.css   # コンテンツ・レイアウト専用のスタイルシート (CSS)
-            layout.html  # Webページ(HTML)の表示形式を定義するhtmlファイル
-            render.js
-            render.mjs   # layout.html で利用するデータを取得・変更します。または、必要に応じてコンテンツ・レイアウトに動的な動作を追加します
-            setting.html
+            layout.html  # HTML の表示形式を定義するHTMLファイル
+            render.js    # layout.html で利用するデータを取得・変更します。必要に応じて動的な動作を追加できます
           publish        # 公開中のサイトで利用されているコンテンツ・レイアウトの構成ファイル一式
           assetsappinfo.json
           _folder_icon.png
@@ -200,10 +183,20 @@ header:
         + [Develop Content Layouts](https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/develop-content-layouts.html)
 
 
-## 2.2 render.mjs の編集
+## 2.2 render.js の編集
 
-今回は、コンテンツ・レイアウト作成時のデフォルトのrender.mjsで取得できるデータをそのまま利用するため、render.mjsは編集しません。必要であれば、sampleNewsType-overview > assets > render.mjsをダウンロードし、処理内容をご確認ください
+1. ローカルPCにダウンロードした **render.js** をテキストエディタで開きます
 
+1. 88-90行目の `// Handle fields specific to this content type.` のコメント文の下に、以下のコードをコピー&ペーストし、テキストエディタを **「保存」** します
+
+    ```javascript
+    //
+    // Handle fields specific to this content type.
+    //
+    if (data["image"]) {
+      data["image"]["url"] = contentClient.getRenditionURL({"id": data["image"].id});
+    }
+    ```
 
 ## 2.3 layout.html の編集
 
@@ -218,25 +211,21 @@ header:
     {{#fields}}
     <div class="sampleNewsType">
         <a href="{{scsData.detailPageLink}}" title="{{title}}">
-            <img src="{{image.url}}" data-asset-operation="view:{{image.id}}" alt="{{image.type}}">
-            <p>{{title}}</p>
+          <img src="{{image.url}}"></img>
+          <p>{{title}}</p>
         </a>
     </div>
     {{/fields}}
     ```
     {% endraw %}
 
-    > **【Memo】**  
-    > imgタグ内の`data-asset-operation`属性は、アセット消費イベント(Asset Consumption Event)を自動的に記録します。なお、アセット消費イベントは、サイト単位でアセット消費機能が有効化されている場合のみ自動的に収集されます。詳細は下記ドキュメントを参考にしてください  
-    > - [Prepare Content Layouts and Site Pages to Use Consumption Analytics](https://docs.oracle.com/en/cloud/paas/content-cloud/creating-experiences/prepare-content-layouts-and-site-pages-use-consumption-analytics.html#GUID-53B572B3-ABB3-43A3-9C1D-2910B7D192DE)
-
 ## 2.4 design.css の編集
 
-1. ローカルPCにダウンロードした **design.css** をテキストエディタで開きます
+1. ローカルPCにダウンロードした design.css をテキストエディタで開きます
 
-1. **design.css** に記述されるスタイルシートをすべて削除します
+1. design.css に記述されるスタイルシートをすべて削除します
 
-1. 以下のスタイルシートをコピー＆ペーストし、テキストエディタを **「保存」** します
+1. 以下のスタイルシートをコピー＆ペーストし、テキストエディタを保存します
 
     ```css
     .sampleNewsType {
@@ -257,8 +246,9 @@ header:
       margin: 0em 0em 1em 0em;
     }
     .sampleNewsType img {
+      width: 100%;
       max-width: 190px;
-      margin: 5px;
+      margin:0 5px;
       border-radius: 3px;
       float: left;
       vertical-align: middle;
@@ -276,7 +266,7 @@ header:
       font-weight:300;
     }
     .sampleNewsType p {
-      margin: 5px;
+      margin:0px;
       vertical-align: middle;
     }
     ```
@@ -285,7 +275,7 @@ header:
 
 1. **開発者 > コンポーネント > sampleNewsType-overview > assets** を開きます
 
-1. **layout.html** を選択し、**「選択したファイルの新規バージョンのアップロード」**アイコンをクリックします
+1. **layout.html** を選択し、**「新規バージョンのアップロード」** をクリックします
 
     ![画像](017.jpg)
 
@@ -295,9 +285,10 @@ header:
 
     ![画像](018.jpg)
 
-1. 同じ手順を繰り返し、ローカルPCで編集した **design.css** を新規バージョンとしてアップロードします
+1. 同じ手順を繰り返し、ローカルPCで編集した **design.css** と **render.js** を新規バージョンとしてアップロードします
 
     ![画像](019.jpg)
+
 
 ## 2.6 確認
 
@@ -311,48 +302,52 @@ sampleNewsType-overview レイアウトが更新されたことを、サイト�
 
     ![画像](020.jpg)
 
-1. 表示される **画像**もしくは**タイトル** をクリックすると、コンテンツ・アイテムの詳細表示ページに遷移することを確認します。なお、`sampleNewsType-detail`コンテンツ・レイアウトを編集していないため、表示形式に変更はありません
+1. 表示される **画像 or タイトル** をクリックすると、コンテンツ・アイテムの詳細表示ページに遷移することを確認します。なお、sampleNewsType-detail コンテンツ・レイアウトを編集していないため、表示形式に変更はありません
 
     ![画像](002.jpg)
 
 1. サイト編集ページを閉じます
 
-<br />
 
 # 3. sampleNewsType-detailの編集
 
 「コンテンツ・プレースホルダー」コンポーネントのデフォルトとして設定されている **sampleNewsType-detail** コンテンツ・レイアウトを編集します。
 
-編集手順は、前の手順と同じです。**sampleNewsType-detail > assets** の**layout.html**と**design.css** をダウンロードし、編集します。最後に、新規バージョンとしてアップロードします
+編集手順は、前の手順と同じです。**sampleNewsType-detail > assets** の render.js、layout.html、design.css をダウンロードし、編集します。最後に、新規バージョンとしてアップロードします
 
-なお、ここではrender.mjsを編集しません（コンテンツ・レイアウト作成時のデフォルトのrender.mjsで取得できるデータをそのまま利用するため）。必要であれば、sampleNewsType-detail > assets > render.mjsをダウンロードし、処理内容をご確認ください
-
-
-## 3.1 layout.html, design.css の編集とアップロード
+## 3.1 render.js、layout.html, design.css の編集とアップロード
 
 ファイルを編集し、新規バージョンとしてアップロードします。変更後のコードはそれぞれ以下の通りです
 
 ![画像](021.jpg)
 
-- **layout.html**（以下のHTMLコードにすべて差し替え）
+- render.js（127行目の `// Retrieve the reference item from the query result.` の下のコードをコメントアウトし、以下のコードをコピー&ペースト）
+
+    ```javascript
+    // Retrieve the reference item from the query result.
+    //if (data["image"] && data["image"].id === item.id) {
+    //	data["image"]["contentItem"] = item;
+    //}
+    if (data["image"]) {
+      data["image"]["url"] = contentClient.getRenditionURL({"id": data["image"].id});
+    }
+    ```
+
+- layout.html（以下のHTMLコードにすべて差し替え）
 
     {% raw %}
     ```html
     {{#fields}}
     <div class="sampleNewsType">
         <h1>{{title}}</h1>
-        {{#image}}
-        {{#url}}
-        <img src="{{url}}" data-asset-operation="view:{{id}}" alt="{{type}}">
-        {{/url}}
-        {{/image}}
+        <img src="{{image.url}}"></img>
         <p>{{{body}}}</p>
     </div>
     {{/fields}}
     ```
     {% endraw %}
 
-- **design.css**（以下のスタイルシートにすべて差し替え）
+- design.css（以下のスタイルシートにすべて差し替え）
     ```css
     .sampleNewsType {
       width: 100%;
@@ -388,7 +383,7 @@ sampleNewsType-overview レイアウトが更新されたことを、サイト�
       font-weight:300;
     }
     .sampleNewsType p {
-      margin:5px;
+      margin:5px, 0px;
     }
     ```
 
@@ -399,9 +394,9 @@ sampleNewsType-detail レイアウトが更新されたことを、サイト編�
 
 1. 左ナビゲーションから **「サイト」** をクリックします
 
-1. firstSite を選択し、**「開く」アイコン** をクリックします
+1. firstSite を選択し、**「開く」** をクリックします
 
-1. ホームページ下部のコンテンツ・アイテムの**タイトル**もしくは**画像**をクリックします
+1. ホームページ下部のコンテンツ・アイテムの **タイトル or 画像** をクリックします
 
     ![画像](020.jpg)
 
@@ -410,8 +405,6 @@ sampleNewsType-detail レイアウトが更新されたことを、サイト編�
     ![画像](022.jpg)
 
 1. サイト編集ページを閉じます
-
-<br />
 
 
 # 4. 変更内容を公開サイトに適用する
@@ -455,8 +448,6 @@ sampleNewsType-detail レイアウトが更新されたことを、サイト編�
         ![画像](027.jpg)
 
 
-<br />
-
 # 5. 発展課題
 
 **作業**
@@ -478,7 +469,3 @@ sampleNewsType-detail レイアウトが更新されたことを、サイト編�
 <br>
 
 以上でこのチュートリアルは終了です。
-
-<br/>
-
-[ページトップへ戻る](#top)
