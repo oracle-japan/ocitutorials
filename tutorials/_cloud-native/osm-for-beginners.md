@@ -158,7 +158,7 @@ OCI Service Meshでは、Kubernetes Operatorとして[OSOK(Oracle Service Operat
 
 OSOKをインストールするためには、Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールが必要です。
 
-Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールは、[こちら](/ocitutorials/cloud-native/oke-for-intermediates/#3-1-operator-sdk%E3%81%8A%E3%82%88%E3%81%B3%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%82%BF%E3%83%A9%E3%82%A4%E3%83%95%E3%82%B5%E3%82%A4%E3%82%AF%E3%83%AB%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3olm%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)を実施してください。(リンク先の実施手順は`3-1`のみで問題ありません)
+Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールは、[こちら](/ocitutorials/cloud-native/oke-for-intermediates/#9-1-operator-sdkおよびオペレータライフサイクルマネージャolmのインストール)を実施してください。(リンク先の実施手順は`9-1`のみで問題ありません)
 
 Operator SDKとオペレーター・ライフサイクル・マネージャ(OLM)のインストールが完了したら、以下のコマンドを実行し、OSOK用のNamespaceを作成します。
 
