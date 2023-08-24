@@ -241,7 +241,7 @@ Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartm
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'|OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'|OCI DevOpsがOKEを管理するためのポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id 'コンパートメントOCID'|後続の手順で登場するOCI Service Operator for Kubernetes(OSOK)がAutonomous Transaction Processingを管理可能とするポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database in compartment id 'コンパートメントOCID'|後続の手順で登場するOracle Database Operator(OraOperator)がAutonomous Transaction Processingを管理可能とするポリシー
 
 **DevOpsのポリシーについて**  
 DevOpsでは、利用する機能やデプロイ先に応じて、今回設定しているポリシーの他にもいくつか設定可能なポリシーがあります。  
@@ -705,23 +705,11 @@ cd ~
 
 ![3-001.jpg](3-001.jpg)
 
-今回のハンズオンでは、OCI Service Operator for Kubernetes(OSOK)を利用してATPのプロビジョニングを行います。  
-OSOKは、Kubernetes APIおよび[Kubernetes Operatorパターン](https://kubernetes.io/ja/docs/concepts/extend-kubernetes/operator/)を使用してOracle Cloud Infrastructureリソースを作成、管理および接続できるオープン・ソースのKubernetesアドオンです。  
-現時点で対応しているサービスは以下の通りです。(今後も続々対応サービスを追加予定です)
+今回のハンズオンでは、Oracle Database Operator(OraOperator)を利用してATPのプロビジョニングを行います。  
+OraOperatorは、Kubernetes APIおよび[Kubernetes Operatorパターン](https://kubernetes.io/ja/docs/concepts/extend-kubernetes/operator/)を使用してOracle Databaseを作成、管理および接続できるオープン・ソースのKubernetesアドオンです。  
 
-- Autonomous Database
-- MySQL Database
-- Streaming
-
-**OCI Service Operator for Kubernetes(OSOK)について**  
-OCI Service Operator for Kubernetes(OSOK)については[こちら](https://docs.oracle.com/ja-jp/iaas/Content/ContEng/Tasks/contengaddingosok.htm#contengaddingosok)および[GitHub](https://github.com/oracle/oci-service-operator)をご確認ください。
-{: .notice--info}
-
-OSOKを利用するにはOperator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)が必要になるため、まずはそちらのインストールから行います。 
-
-**Operator SDKとオペレータ・ライフサイクル・マネージャ(OLM)について**  
-Operator SDKは、Kubernetes Operatorを効率的に開発するためのSDKになり、オペレータ・ライフサイクル・マネージャ(OLM)はOperatorのライフサイクルを管理するための仕組みになります。  
-Operator SDKについては[こちら](https://sdk.operatorframework.io/)、オペレータ・ライフサイクル・マネージャ(OLM)については[こちら](https://olm.operatorframework.io/)をご確認ください。  
+**Oracle Database Operator(OraOperator)について**  
+Oracle Database Operator(OraOperator)については[こちら](https://github.com/oracle/oracle-database-operator)をご確認ください。
 {: .notice--info}
 
 **[3-5. 【オプション】microprofile-config.propertiesの更新](#3-5-オプションmicroprofile-configpropertiesの更新)について**  
@@ -735,165 +723,23 @@ Operator SDKについては[こちら](https://sdk.operatorframework.io/)、オ�
 それ以外の方は、この手順はスキップしてください。  
 {: .notice--warning}
 
-### 3-1. Operator SDKおよびオペレータ・ライフサイクル・マネージャ(OLM)のインストール
+### 3-1. Oracle Database Operator(OraOperator)のインストール
 
-まずは、Operator SDKのインストールを行います。  
+ここでは、OraOperatorのインストールを行います。
 
-[Cloud Shellを起動](/ocitutorials/cloud-native/oke-for-commons/#3cli実行環境cloud-shellの準備)します。  
-
-```sh
-export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
-```
+まずは、OraOperatorが利用する証明書関連ツールであるcert-managerをインストールします。  
 
 ```sh
-export OS=$(uname | awk '{print tolower($0)}')
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
 ```
+
+次にOraOperatorのインストールを行います。
 
 ```sh
-export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.30.0
+kubectl apply -f https://raw.githubusercontent.com/oracle/oracle-database-operator/main/oracle-database-operator.yaml
 ```
-
-```sh
-curl -LO ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
-```
-
-```sh
-ls -l
-```
-
-ここで、`operator-sdk_linux_amd64`というバイナリがダウンロードできていることを確認します。  
-ここからはバイナリの検証を行うためのステップを実行します。  
-
-```sh
-gpg --keyserver keyserver.ubuntu.com --recv-keys 052996E2A20B5C7E
-```
-
-以下のように出力されます。
-
-```sh
-gpg: requesting key A20B5C7E from hkp server keyserver.ubuntu.com
-gpg: /home/takuya_nii/.gnupg/trustdb.gpg: trustdb created
-gpg: key A20B5C7E: public key "Operator SDK (release) <cncf-operator-sdk@cncf.io>" imported
-gpg: Total number processed: 1
-gpg:               imported: 1  (RSA: 1)
-```
-
-検証に必要なファイルを取得します。　　
-
-```sh
-curl -LO ${OPERATOR_SDK_DL_URL}/checksums.txt
-```
-
-```sh
-curl -LO ${OPERATOR_SDK_DL_URL}/checksums.txt.asc
-```
-
-```sh
-ls -l
-```
-
-ここで、`checksums.txt.asc`と`checksums.txt`というファイルがダウンロードできていることを確認します。  
-
-```sh
-gpg -u "Operator SDK (release) <cncf-operator-sdk@cncf.io>" --verify checksums.txt.asc
-```
-
-以下のような結果が出力されます。
-
-```sh
-gpg: Signature made Thu 09 Sep 2021 04:59:50 PM UTC using RSA key ID BF9886DB
-gpg: Good signature from "Operator SDK (release) <cncf-operator-sdk@cncf.io>"
-gpg: WARNING: This key is not certified with a trusted signature!
-gpg:          There is no indication that the signature belongs to the owner.
-Primary key fingerprint: xxxx xxxx xxxx xxxx xxxx  xxxx xxxx xxxx xxxx xxxx
-     Subkey fingerprint: xxxx xxxx xxxx xxxx xxxx  xxxx xxxx xxxx xxxx xxxx
-```
-
-検証結果を確認します。  
-
-```sh
-grep operator-sdk_${OS}_${ARCH} checksums.txt | sha256sum -c -
-```
-
-以下のように出力されれば、検証は問題ありません。
-
-```sh
-operator-sdk_linux_amd64: OK
-```
-
-最後に実行権限を付与します。
-
-```sh
-chmod +x operator-sdk_${OS}_${ARCH} && mv operator-sdk_${OS}_${ARCH} operator-sdk
-```
-
-これでOperator SDKのインストールは完了です。  
-
-続いて、オペレータ・ライフサイクル・マネージャ(OLM)のインストールを行います。  
-
-以下のコマンドを実行します。
-
-```sh
-./operator-sdk olm install
-```
-
-以下のように出力されれば問題ありません。
-
-```sh
-~~~~~
-NAME                                            NAMESPACE    KIND                        STATUS
-catalogsources.operators.coreos.com                          CustomResourceDefinition    Installed
-clusterserviceversions.operators.coreos.com                  CustomResourceDefinition    Installed
-installplans.operators.coreos.com                            CustomResourceDefinition    Installed
-operatorconditions.operators.coreos.com                      CustomResourceDefinition    Installed
-operatorgroups.operators.coreos.com                          CustomResourceDefinition    Installed
-operators.operators.coreos.com                               CustomResourceDefinition    Installed
-subscriptions.operators.coreos.com                           CustomResourceDefinition    Installed
-olm                                                          Namespace                   Installed
-operators                                                    Namespace                   Installed
-olm-operator-serviceaccount                     olm          ServiceAccount              Installed
-system:controller:operator-lifecycle-manager                 ClusterRole                 Installed
-olm-operator-binding-olm                                     ClusterRoleBinding          Installed
-olm-operator                                    olm          Deployment                  Installed
-catalog-operator                                olm          Deployment                  Installed
-aggregate-olm-edit                                           ClusterRole                 Installed
-aggregate-olm-view                                           ClusterRole                 Installed
-global-operators                                operators    OperatorGroup               Installed
-olm-operators                                   olm          OperatorGroup               Installed
-packageserver                                   olm          ClusterServiceVersion       Installed
-operatorhubio-catalog                           olm          CatalogSource               Installed
-```
-
-以上で、オペレータ・ライフサイクル・マネージャ(OLM)のインストールは完了です。  
 
 ### 3-2. ATPのプロビジョニング
-
-ここでは、ATPのプロビジョニングを行います。  
-
-まずは、以下のコマンドを実行してOKEに対してOSOKオペレーター(OKEからATPを操作するためのKubernetes Operator)のインストールを行います。  
-
-```sh
-./operator-sdk run bundle iad.ocir.io/oracle/oci-service-operator-bundle:1.1.9
-```
-
-以下のように出力されれば問題ありません。
-
-```sh
-INFO[0004] Creating a File-Based Catalog of the bundle "iad.ocir.io/oracle/oci-service-operator-bundle:1.1.9" 
-INFO[0005] Generated a valid File-Based Catalog         
-INFO[0007] Created registry pod: iad-ocir-io-oracle-oci-service-operator-bundle-1.1.9
-INFO[0007] Created CatalogSource: oci-service-operator-catalog 
-INFO[0008] OperatorGroup "operator-sdk-og" created      
-INFO[0008] Created Subscription: oci-service-operator-v1.1.9-sub 
-INFO[0016] Approved InstallPlan install-sxg7z for the Subscription: oci-service-operator-v1.1.9-sub 
-INFO[0016] Waiting for ClusterServiceVersion "default/oci-service-operator.v1.1.9" to reach 'Succeeded' phase 
-INFO[0017]   Waiting for ClusterServiceVersion "default/oci-service-operator.v1.1.9" to appear 
-INFO[0035]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.9" phase: Pending 
-INFO[0038]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.9" phase: InstallReady 
-INFO[0040]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.9" phase: Installing 
-INFO[0050]   Found ClusterServiceVersion "default/oci-service-operator.v1.1.9" phase: Succeeded 
-INFO[0050] OLM has successfully installed "oci-service-operator.v1.1.9" 
-```
 
 次にATPをプロビジョニングするためのManifestを作成します。  
 
@@ -905,14 +751,14 @@ Secretリソースについては[こちら](https://kubernetes.io/docs/concepts
 {: .notice--info}
 
 ```sh
-kubectl create secret generic admin-passwd --from-literal=password=okehandson__Oracle1234
+kubectl create secret generic admin-passwd --from-literal=admin-passwd=okehandson__Oracle1234
 ```
 
 次にWalletファイルのパスワードをSecretリソースとして作成します。  
 今回は管理者パスワードと同じ"okehandson__Oracle1234"としてパスワードを作成します。  
 
 ```sh
-kubectl create secret generic wallet-passwd --from-literal=walletPassword=okehandson__Oracle1234
+kubectl create secret generic wallet-passwd --from-literal=wallet-passwd=okehandson__Oracle1234
 ```
 
 {% capture notice %}**Secretを誤って作成してしまった場合**  
@@ -952,30 +798,27 @@ vim oke-handson/k8s/atp/atp.yaml
 ```
 
 ```yaml
-apiVersion: oci.oracle.com/v1beta1
-kind: AutonomousDatabases
+---
+apiVersion: database.oracle.com/v1alpha1
+kind: AutonomousDatabase
 metadata:
   name: oke-atp-handson-db
 spec:
-  compartmentId: <ご自身のコンパートメントOCID>
-  displayName: oke-atp-handson-db
-  dbName: okeatp
-  dbWorkload: OLTP
-  isDedicated: false
-  dbVersion: 19c
-  dataStorageSizeInTBs: 1
-  cpuCoreCount: 1
-  adminPassword:
-    secret:
-      secretName: admin-passwd
-  isAutoScalingEnabled: false
-  isFreeTier: true
-  licenseModel: LICENSE_INCLUDED
-  wallet:
-    walletName: okeatp
-    walletPassword:
-      secret:
-        secretName: wallet-passwd
+  details:
+    compartmentOCID: <ご自身のコンパートメントOCID>
+    dbName: okeatp
+    displayName: oke-atp-handson-db
+    cpuCoreCount: 1
+    licenseModel: LICENSE_INCLUDED
+    wallet:
+      name: okeatp
+      password:
+        k8sSecret:
+          name: wallet-passwd
+    adminPassword:
+      k8sSecret:
+        name: admin-passwd
+    dataStorageSizeInTBs: 1
 ```
 
 OKEに対してManifestを適用します。  
@@ -989,15 +832,15 @@ kubectl apply -f oke-handson/k8s/atp/atp.yaml
 `-w`(`--watch`)は状態を監視しておくためのオプションになります。  
 
 ```sh
-kubectl get autonomousdatabases -w
+kubectl get AutonomousDatabase -w
 ```
 
 以下のように出力されればプロビジョニングは完了です。
 
 ```sh
-NAME              DBWORKLOAD   STATUS   AGE
-oke-atp-handson-db   OLTP               12s
-oke-atp-handson-db   OLTP      Active   71s
+NAME                 DISPLAY NAME         DB NAME   STATE          DEDICATED   OCPUS   STORAGE (TB)   WORKLOAD TYPE   CREATED
+oke-atp-handson-db   oke-atp-handson-db   okeatp    PROVISIONING   false       1       1              OLTP            2023-08-24 05:00:30 UTC
+oke-atp-handson-db   oke-atp-handson-db   okeatp    AVAILABLE      false       1       1              OLTP            2023-08-24 05:00:30 UTC
 ```
 
 ### 3-3. サンプルデータの登録
