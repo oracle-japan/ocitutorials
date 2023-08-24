@@ -91,43 +91,43 @@ toc: true
 
 ## Webサイトのカスタマイズ
 
-+ **[Oracle Content Management のコンテンツ・レイアウトを編集しよう](/ocitutorials/content-management/71_customize_contentlayout/)**  
-    OCM のコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
++ **[Oracle Content Managementのコンテンツ・レイアウトを編集しよう](/ocitutorials/content-management/71_customize_contentlayout/)**  <span style="color: red;">Update!</span>  
+    OCMのコンテンツ・レイアウトの編集し、Web ページ上でのコンテンツ・アイテムの表示形式をカスタマイズする方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
 
 
-+ **[Oracle Content Management で作成したサイトのバナー画像を変更しよう](/ocitutorials/content-management/72_change_banner/)**  
-    OCM のデフォルトテンプレートから作成された Web サイトのバナー画像を変更する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:20分】
++ **[Oracle Content Managementで作成したサイトのバナー画像を変更しよう](/ocitutorials/content-management/72_change_banner/)**  
+    OCMのデフォルトテンプレートから作成された Web サイトのバナー画像を変更する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:20分】
 
 
-+ **[Oracle Content Management でカスタムテンプレートを自作しよう ](/ocitutorials/content-management/78_create_custom_template/)**  
-    OCM でカスタムテンプレートを自作する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:30分】
++ **[Oracle Content Managementでカスタムテンプレートを自作しよう ](/ocitutorials/content-management/78_create_custom_template/)**  
+    OCMでカスタムテンプレートを自作する手順について、ステップ・バイ・ステップで紹介するチュートリアルです 【所要時間:30分】
 
 
-+ **[[Oracle Cloud] Oracle Content Management で作成したWebサイトにGoogleフォームで作成したお問い合わせフォームを配置する](https://qiita.com/nakasato310/items/b3b45402eb6371c844a7)** (※外部サイト)  
-    OCM のリモートコンポーネントを利用して、Googleフォームで作成したお問い合わせフォームを部品化したカスタムコンポーネントを作成し、Webサイト上にドラッグ＆ドロップで配置できるようにします【所要時間:15分】
++ **[[Oracle Cloud] Oracle Content Managementで作成したWebサイトにGoogleフォームで作成したお問い合わせフォームを配置する](https://qiita.com/nakasato310/items/b3b45402eb6371c844a7)** (※外部サイト)  
+    OCMのリモートコンポーネントを利用して、Googleフォームで作成したお問い合わせフォームを部品化したカスタムコンポーネントを作成し、Webサイト上にドラッグ＆ドロップで配置できるようにします【所要時間:15分】
 
 
 ## Video Plus アセット
 
-+ **[Oracle Content Management の Video Plus アセットを使ってみよう](/ocitutorials/content-management/73_videoplus/)**  
++ **[Oracle Content ManagementのVideo Plus アセットを使ってみよう](/ocitutorials/content-management/73_videoplus/)**  
     OCM の有償オプション機能である拡張ビデオ機能（Video Plus アセット）を利用する手順について、ステップ・バイ・ステップで紹介するチュートリアルです【所要時間:15分】
 
 
 ## タクソノミ（Taxonomy）
 
-+ **[Oracle Content Management のタクソノミを使ってみよう](/ocitutorials/content-management/75_taxonomy/)**  
++ **[Oracle Content Managementのタクソノミを使ってみよう](/ocitutorials/content-management/75_taxonomy/)**  
     OCM のタクソノミ機能を利用し、リポジトリ内のアセットを分類する方法をステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
 
 
 ## リポジトリのアクセス権限管理
 
-+ **[Oracle Content Management のリポジトリのアクセス権限を理解しよう](/ocitutorials/content-management/43_repository_permission/)**  <span style="color: red;">New!</span>  
++ **[Oracle Content Managementのリポジトリのアクセス権限を理解しよう](/ocitutorials/content-management/43_repository_permission/)**  <span style="color: red;">New!</span>  
     OCMのアセット管理機能のリポジトリのアクセス権限設定、およびカスタム・ロールを利用した細かい粒度でのアクセス権限設定(Granular Permissions)についてステップ・バイ・ステップで紹介するチュートリアルです【所要時間:20分】
 
 
 ## 多言語サイト（マルチリンガルサイト）
 
-+ **[Oracle Content Management で多言語サイトを作成しよう](/ocitutorials/content-management/74_create_multilingual/)**  
++ **[Oracle Content Managementで多言語サイトを作成しよう](/ocitutorials/content-management/74_create_multilingual/)**  
     OCM のサイト作成機能を利用し、多言語サイトを作成・公開する方法をステップ・バイ・ステップで紹介するチュートリアルです。また、サイト上で公開するコンテンツは、アセット管理機能で管理されるコンテンツ・アイテムを利用します【所要時間:約60分】
 
 
