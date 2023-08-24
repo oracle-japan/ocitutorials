@@ -1187,6 +1187,12 @@ var store = [{
         "url": "/ocitutorials/id-security/identitydomain-mfa/",
         "teaser": "/ocitutorials/id-security/identitydomain-mfa/mfa-10.png"
       },{
+        "title": "Security Zoneを有効化する",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/id-security/security-zone/",
+        "teaser": "/ocitutorials/id-security/security-zone/securityzone01.png"
+      },{
         "title": "Vulnerability Scanning Serviceを設定する",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
         "tags": [],
