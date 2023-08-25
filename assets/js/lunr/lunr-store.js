@@ -1547,6 +1547,12 @@ var store = [{
         "url": "/ocitutorials/management/dbcs-database-management/",
         "teaser": "/ocitutorials/management/dbcs-database-management/dbmgmt1.png"
       },{
+        "title": "Logging Analytics オンボーディング",
+        "excerpt":"チュートリアル概要  オンボーディングで設定可能なLogging Analyticsの構成は次の2つになります。     ホストログの継続的な取得   OCI監査ログの継続的な取得   このチュートリアルでは、OCI監査ログを取得するところまでの手順を紹介します。   所用時間：10分       前提条件  オンボーディングを使用するためにはOCIテナント管理者レベルの権限が必要です。       設定の流れ  OCIコンソールの左上のメニューから「監視および管理」を選択し、  「ログ・アナリティクス」をクリックします。         Logging Analyticsがまだ有効化されていない場合、以下のような画面になります。  「ログ・アナリティクスの使用の開始」をクリックします。         Logging Analyticsを有効化するためのポリシーが自動作成され、「logging_analytics_automatic_service_policies」という名前で保存されます。  また、ログ・グループ「Default」が作成されます。         次の取得の設定画面では、ホストログの継続的な収集と、OCI監査ログの継続的な収集を有効化するかどうか、チェックボックスが表示されます。 ここでは、2つとも有効化する前提でチェックを入れた状態で次をクリックして進みます。            「logging_analytics_automatic_ingestion_policies」という名前で必要なポリシーが作成されます。         ログの収集に必要なリソースが作成されます。設定完了後、収集されたOCI監査ログを確認するため「ログ・エクスプローラに移動」をクリックします。            1分ほど待つと、ログ・エクスプローラにOCI監査ログが表示されます。         次にダッシュボードの一覧から「OCI Audit Analysis」をクリックします。  これはデフォルトで作成済のOCI監査ログ用のダッシュボードです。         OCI監査ログの状況がダッシュボードで直感的に確認できます。         以上、OCI監査ログを取り込み、ログ・エクスプローラやダッシュボードで表示するための手順でした。ホストのログを継続的に収集する具体的な手順については別のトピックでご紹介します。   ","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/logginganalytics_onboarding/",
+        "teaser": "/ocitutorials/management/logginganalytics_onboarding/LA_Onboarding-10.png"
+      },{
         "title": "OCIのDBCSでOperations Insightsを有効化する",
         "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Operations Insightsでは、Oracle Databaseのデータを長期保存し、機械学習による分析でリソースの需要分析と将来値の予測、パフォーマンス問題を検出することができます。Operations Insightsを利用することで、リソース配分の最適化によるコストの削減、パフォーマンスの向上などを図ることが可能です。 この章では、Oracle CloudのDatabase Cloud ServiceでOperations Insightsを有効化する手順をご紹介します。Operations Insightsを有効化するためにエージェントなどをインストールする必要はなく、OCIコンソールからの操作で有効化することができます。 所要時間 : 約20分 前提条件 : 101: Oracle CloudでOracle Databaseを使おう（DBCS）を通じて、DBCSインスタンスの作成が完了していること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Operations Insightsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 ※この章では、ユーザーにOperations Insightsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。ドキュメント を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。 allow group &lt;IAMグループ名&gt; to manage opsi-family in tenancy allow group &lt;IAMグループ名&gt; to use database-family in...","categories": [],
         "tags": ["management"],
