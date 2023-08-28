@@ -266,10 +266,13 @@ SQL*plusで接続できていることを前提に以下を記載しています
     module.exports= {
         dbuser: 'admin',
         dbpassword: 'Welcome12345#',
-        connectString: 'atp01_tp'
+        connectString: 'atp01_tp',
+        walletdir: '/home/oracle/labs/wallets',
+        walletpassword: 'Welcome12345#'
     }
     ```
-    ※ご自身でパスワードを設定した場合は、そちらを記載してください。
+    ※ご自身でパスワードを設定した場合は、そちらを記載してください。`walletpassword`は、OCIコンソールでウォレットのダウンロード時に入力(設定)したパスワードです。
+
 
     ![img3_2.png](img3_2.png)
 
@@ -311,15 +314,7 @@ SQL*plusで接続できていることを前提に以下を記載しています
       ></table>
 <br>
 
-3. 環境変数を設定します。
-
-    ```sh
-    export TNS_ADMIN=/home/oracle/labs/wallets
-    ```
-
-    ![img3_3.png](img3_3.png)
-
-4. （必要に応じて）connectadb.jsファイルの中身を確認します。
+3. （必要に応じて）connectadb.jsファイルの中身を確認します。
 
     ```sh
     cat connectadb.js
@@ -340,7 +335,10 @@ SQL*plusで接続できていることを前提に以下を記載しています
         {
         user: dbConfig.dbuser,
         password: dbConfig.dbpassword,
-        connectString: dbConfig.connectString
+        connectString: dbConfig.connectString,
+        configDir: dbConfig.walletdir,
+        walletLocation: dbConfig.walletdir,
+        walletpassword: dbConfig.walletpassword
         },
         function(err, connection)
         {
@@ -434,7 +432,10 @@ SQL*plusで接続できていることを前提に以下を記載しています
         {
             user: dbConfig.dbuser,
             password: dbConfig.dbpassword,
-            connectString: dbConfig.connectString
+            connectString: dbConfig.connectString,
+            configDir: dbConfig.walletdir,
+            walletLocation: dbConfig.walletdir,
+            walletpassword: dbConfig.walletpassword
         },
         function(err, connection)
         {
