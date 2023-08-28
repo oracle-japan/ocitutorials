@@ -1,6 +1,6 @@
 ---
 title: "207: PythonによるADB上でのアプリ開発"
-excerpt: "この章では開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。"
+excerpt: "この章では開発言語としてpythonを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。"
 
 order: "3_207"
 layout: single
@@ -73,6 +73,9 @@ PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジ�
     ```sh
     export ORATNS=atp01_low
     ```
+    ```sh
+    export WALLETPASS=Welcome12345#
+    ```
 
 4. サンプルスクリプトが配置されているディレクトリに移動します。
 
@@ -85,14 +88,20 @@ PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジ�
     ```sh
     cat python_connect.py
     ```
-    接続に必要なモジュール(os、cx_Oracle)をロード、定義された環境変数に従いADBに対する接続を作成、ADBのバージョンを取得する という内容です。
+    接続に必要なモジュール(os、oracledb)をロード、定義された環境変数に従いADBに対する接続を作成、ADBのバージョンを取得する という内容です。
     <br>※python_connect.pyの中身は次の通りです。
 
     ```python
     import os
-    import cx_Oracle
+    import oracledb
 
-    conn = cx_Oracle.connect(os.environ.get('ORAUSER'), os.environ.get('ORAPASS'), os.environ.get('ORATNS'))
+    un = os.environ.get('ORAUSER')
+    pw = os.environ.get('ORAPASS')
+    cs = os.environ.get('ORATNS')
+    wallet_dir = os.environ.get('TNS_ADMIN')
+    wallet_pw = os.environ.get('WALLETPASS')
+
+    conn = oracledb.connect(user=un, password=pw, dsn=cs, config_dir=wallet_dir, wallet_location=wallet_dir, wallet_password=wallet_pw)
     print(conn.version)
     conn.close()
     ```
@@ -141,10 +150,16 @@ PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジ�
 
     ```python
     import os
-    import cx_Oracle
+    import oracledb
+
+    un = os.environ.get('ORAUSER')
+    pw = os.environ.get('ORAPASS')
+    cs = os.environ.get('ORATNS')
+    wallet_dir = os.environ.get('TNS_ADMIN')
+    wallet_pw = os.environ.get('WALLETPASS')
 
     try:
-     conn = cx_Oracle.connect(os.environ.get('ORAUSER'), os.environ.get('ORAPASS'), os.environ.get('ORATNS'))
+     conn = oracledb.connect(user=un, password=pw, dsn=cs, config_dir=wallet_dir, wallet_location=wallet_dir, wallet_password=wallet_pw)
      sql="""SELECT channel_desc, TO_CHAR(SUM(amount_sold),'9,999,999,999') SALES$,
        RANK() OVER (ORDER BY SUM(amount_sold)) AS default_rank,
        RANK() OVER (ORDER BY SUM(amount_sold) DESC NULLS LAST) AS custom_rank
@@ -165,7 +180,7 @@ PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジ�
      for column_1, column_2, column_3, column_4 in cursor.fetchall():
         print(str(column_1).ljust(22), str(column_2).rjust(11), "  ", str(column_3).rjust(10), "  ", str(column_4).rjust(9))
 
-    except cx_Oracle.DatabaseError as exc:
+    except oracledb.DatabaseError as exc:
       err, = exc.args
       print("Oracle-Error-Code:", err.code)
       print("Oracle-Error-Message:", err.message)
