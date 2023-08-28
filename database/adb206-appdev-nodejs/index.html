@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-08-28T13:50:40+09:00">
+  <meta property="article:published_time" content="2023-08-28T14:59:17+09:00">
 
 
 
@@ -381,7 +381,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="206: Node.jsによるADB上でのアプリ開発">
     <meta itemprop="description" content="この章では開発言語としてNode.jsを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。">
-    <meta itemprop="datePublished" content="2023-08-28T13:50:40+09:00">
+    <meta itemprop="datePublished" content="2023-08-28T14:59:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -659,10 +659,12 @@
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> module.exports<span class="o">=</span> <span class="o">{</span>
      dbuser: <span class="s1">'admin'</span>,
      dbpassword: <span class="s1">'Welcome12345#'</span>,
-     connectString: <span class="s1">'atp01_tp'</span>
+     connectString: <span class="s1">'atp01_tp'</span>,
+     walletdir: <span class="s1">'/home/oracle/labs/wallets'</span>,
+     walletpassword: <span class="s1">'Welcome12345#'</span>
  <span class="o">}</span>
 </code></pre></div>    </div>
-    <p>※ご自身でパスワードを設定した場合は、そちらを記載してください。</p>
+    <p>※ご自身でパスワードを設定した場合は、そちらを記載してください。<code class="language-plaintext highlighter-rouge">walletpassword</code>は、OCIコンソールでウォレットのダウンロード時に入力(設定)したパスワードです。</p>
 
     <p><img src="img3_2.png" alt="img3_2.png" /></p>
 
@@ -707,14 +709,6 @@
     </blockquote>
   </li>
   <li>
-    <p>環境変数を設定します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets
-</code></pre></div>    </div>
-
-    <p><img src="img3_3.png" alt="img3_3.png" /></p>
-  </li>
-  <li>
     <p>（必要に応じて）connectadb.jsファイルの中身を確認します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cat </span>connectadb.js
@@ -734,7 +728,10 @@
      <span class="o">{</span>
      user: dbConfig.dbuser,
      password: dbConfig.dbpassword,
-     connectString: dbConfig.connectString
+     connectString: dbConfig.connectString,
+     configDir: dbConfig.walletdir,
+     walletLocation: dbConfig.walletdir,
+     walletpassword: dbConfig.walletpassword
      <span class="o">}</span>,
      <span class="k">function</span><span class="o">(</span>err, connection<span class="o">)</span>
      <span class="o">{</span>
@@ -832,7 +829,10 @@
      <span class="o">{</span>
          user: dbConfig.dbuser,
          password: dbConfig.dbpassword,
-         connectString: dbConfig.connectString
+         connectString: dbConfig.connectString,
+         configDir: dbConfig.walletdir,
+         walletLocation: dbConfig.walletdir,
+         walletpassword: dbConfig.walletpassword
      <span class="o">}</span>,
      <span class="k">function</span><span class="o">(</span>err, connection<span class="o">)</span>
      <span class="o">{</span>
@@ -901,7 +901,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-28T13:50:40+09:00">August 28, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-08-28T14:59:17+09:00">August 28, 2023</time></p>
 
 
       </footer>
