@@ -13,7 +13,9 @@ header:
 ***
 # 0. 概要
 
-本ドキュメントで解説する **STREAM** の実行は、 **[Intel oneAPI Base Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの **[Intel oneAPI DPC++/C++ Compiler](https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html)** （本ドキュメントで使用するバージョンは2023.2）で **STREAM** のソースコードをコンパイルして作成したバイナリを使用し、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** でデプロイし、この上で実行します。  
+本ドキュメントで解説する **STREAM** の実行は、 **[Intel oneAPI Base Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの **[Intel oneAPI DPC++/C++ Compiler](https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html)** （本ドキュメントで使用するバージョンは2023.2）で **STREAM** のソースコードをコンパイルして作成したバイナリを使用します。
+
+**STREAM** を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** でデプロイします。  
 この際、 **STREAM** の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で **NUMA setting** を **NPS2** とします。
 
 以上より、本ドキュメントで解説する **STREAM** 実行は、以下の手順を経て行います。
@@ -65,7 +67,7 @@ $ sudo yum install -y intel-basekit
 ```sh
 $ wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 $ source /opt/intel/oneapi/setvars.sh
-$ icx -DSTREAM_ARRAY_SIZE=268435456 -Wall -O3 -mcmodel=medium -qopenmp -shared-intel -xCORE-AVX512 -qopt-zmm-usage=high ./stream.c
+$ icx -DSTREAM_ARRAY_SIZE=268435456 -O3 -mcmodel=medium -qopenmp -xCORE-AVX512 ./stream.c
 ```
 
 ***
@@ -106,7 +108,7 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -Wall -O3 -mcmodel=medium -qopenmp -shared-i
 
     ```sh
     $ export OMP_NUM_THREADS=72
-    $ export KMP_AFFINITY=granularity=fine,compact,1,0
+    $ export KMP_AFFINITY=granularity=fine,compact
     ```
 
 5. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** を実行します。
@@ -140,10 +142,10 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -Wall -O3 -mcmodel=medium -qopenmp -shared-i
     precision of your system timer.
     -------------------------------------------------------------
     Function    Best Rate MB/s  Avg time     Min time     Max time
-    Copy:          301888.5     0.014275     0.014227     0.014326
-    Scale:         314189.3     0.013693     0.013670     0.013720
-    Add:           317863.2     0.020307     0.020268     0.020338
-    Triad:         317612.5     0.020328     0.020284     0.020358
+    Copy:          295796.6     0.014582     0.014520     0.014663
+    Scale:         318925.3     0.013542     0.013467     0.013653
+    Add:           319154.4     0.020275     0.020186     0.020363
+    Triad:         320935.1     0.020131     0.020074     0.020209
     -------------------------------------------------------------
     Solution Validates: avg error less than 1.000000e-13 on all three arrays
     -------------------------------------------------------------
