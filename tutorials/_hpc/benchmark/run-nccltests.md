@@ -1,7 +1,7 @@
 ---
 title: "NCCL Tests実行方法"
 excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
-order: "214"
+order: "219"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)
@@ -16,7 +16,7 @@ header:
 
 本ドキュメントで解説する **NCCL Tests** の実行は、GPUクラスタ上に **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** で構築されたDockerコンテナ実行環境で、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** （本ドキュメントで使用するバージョンは23.06-tf2-py3）を起動し、このコンテナに含まれる **NCCL** （本ドキュメントで使用するバージョンは2.17.1）とコンテナ上でビルドする **NCCL Tests** を使用します。
 
-本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、GPUノード上で **Docker Community Edition** と **NVIDIA Container Toolkit** をインストールしてDockerコンテナからGPUが利用可能な環境を予め用意しておきます。  
+本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** または **[BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、GPUノード上で **Docker Community Edition** と **NVIDIA Container Toolkit** をインストールしてDockerコンテナからGPUが利用可能な環境を予め用意しておきます。  
 GPUノードのOSは、Oracle Linux 7.9ベースの **GPU[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用します。
 
 以上より、本ドキュメントで解説する **NCCL Tests** 実行は、以下の手順を経て行います。

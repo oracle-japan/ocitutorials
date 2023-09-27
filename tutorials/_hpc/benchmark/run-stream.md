@@ -1,21 +1,21 @@
 ---
-title: "STREAM実行方法"
-excerpt: "本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークのSTREAMを実行する方法を解説します。"
-order: "212"
+title: "STREAM実行方法（BM.Optimized3.36編）"
+excerpt: "本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36で、標準ベンチマークのSTREAMを実行する方法を解説します。"
+order: "214"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークの **[STREAM](https://www.cs.virginia.edu/stream/)** を実行する方法を解説します。
+本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** で、標準ベンチマークの **[STREAM](https://www.cs.virginia.edu/stream/)** を実行する方法を解説します。
 
 ***
 # 0. 概要
 
 本ドキュメントで解説する **STREAM** の実行は、 **[Intel oneAPI Base Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの **[Intel oneAPI DPC++/C++ Compiler](https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html)** （本ドキュメントで使用するバージョンは2023.2）で **STREAM** のソースコードをコンパイルして作成したバイナリを使用します。
 
-**STREAM** を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** でデプロイします。  
+**STREAM** を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ **BM.Optimized3.36** を **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** でデプロイします。  
 この際、 **STREAM** の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で **NUMA setting** を **NPS2** とします。
 
 以上より、本ドキュメントで解説する **STREAM** 実行は、以下の手順を経て行います。
@@ -35,7 +35,7 @@ header:
 - 配列サイズ(STREAM_ARRAY_SIZE): 268,435,456
 
 [実行結果]
-- Triad(MB/s): 317,613
+- Triad(MB/s): 320,935
 
 ***
 # 1. BM.Optimized3.36インスタンスのデプロイ
@@ -67,7 +67,7 @@ $ sudo yum install -y intel-basekit
 ```sh
 $ wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 $ source /opt/intel/oneapi/setvars.sh
-$ icx -DSTREAM_ARRAY_SIZE=268435456 -O3 -mcmodel=medium -qopenmp -xCORE-AVX512 ./stream.c
+$ icx -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=268435456 -O3 -mcmodel=medium -qopenmp -xCORE-AVX512 ./stream.c
 ```
 
 ***
@@ -77,7 +77,6 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -O3 -mcmodel=medium -qopenmp -xCORE-AVX512 .
 具体的には、以下の作業を実施します。
 
 - OS再起動
-- ハイパースレッド設定の確認
 - NUMA設定の確認
 - スレッドアフィニティ用環境変数指定
 - **STREAM** 実行
@@ -88,30 +87,22 @@ $ icx -DSTREAM_ARRAY_SIZE=268435456 -O3 -mcmodel=medium -qopenmp -xCORE-AVX512 .
     $ sudo shutdown -r now
     ```
 
-2. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、その結果が **2** であることを以って、ハイパースレッドが有効化されていることを確認します。  
-本ドキュメントの前提となる環境では、ハイパースレッドが有効の場合無効の場合と比較して **STREAM** の性能が向上します。
-
-    ```sh
-    $ lscpu | grep -i thread
-    Thread(s) per core:  2
-    ```
-
-3. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、その結果が **4** であることを以って、BIOSの **NUMA setting** が **NPS2** となっていることを確認します。  
-本ドキュメントの前提となる環境では、 **NUMA setting** が **NPS2** の場合 **NPS1** の場合と比較して **STREAM** の性能が向上します。
+2. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、その結果が **4** であることを以って、BIOSの **NUMA setting** が **NPS2** となっていることを確認します。  
+本ドキュメントの前提となる環境では、 **NUMA setting** が **NPS2** の場合デフォルトの **NPS1** の場合と比較して **STREAM** の性能が向上します。
 
     ```sh
     $ lscpu | grep "NUMA node(s)"
     NUMA node(s):        4
     ```
 
-4. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** の性能向上を目的としたスレッドアフィニティの設定を適用します。
+3. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** の性能向上を目的としたスレッドアフィニティの設定を適用します。
 
     ```sh
     $ export OMP_NUM_THREADS=72
     $ export KMP_AFFINITY=granularity=fine,compact
     ```
 
-5. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** を実行します。
+4. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** を実行します。
 
     ```sh
     $ source /opt/intel/oneapi/setvars.sh
