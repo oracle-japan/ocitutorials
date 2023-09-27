@@ -108,11 +108,11 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
    ![画面ショット](stack_page02.png)  
 4.2 **Compute/GPU node options** フィールド
-    - **Cluster display name postfix :** GPUノードホスト名の接尾辞(\*1)
-    - **Compute/GPU node shape :** **BM.GPU4.8**
-    - **Compute/GPU node count :** GPUノードのノード数（デフォルト：2）
-    - **Compute/GPU node image OCID :** GPUノードのイメージOCID(\*2)
-    - **Compute/GPU node boot volume size :** GPUノードのブートボリュームサイズ(GB)
+    - **Display name postfix :** GPUノードホスト名の接尾辞(\*1)
+    - **Shape :** **BM.GPU4.8**
+    - **Node count :** GPUノードのノード数（デフォルト：2）
+    - **Image OCID :** GPUノードのイメージOCID(\*2)
+    - **Boot volume size :** GPUノードのブートボリュームサイズ(GB)
     - **cloud-config :** GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )(\*3)
     - **NPS for BM.GPU4.8 :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) (\*4)
     - **SMT :** GPUノードの **SMT** 設定値 (デフォルト：有効) (\*4)

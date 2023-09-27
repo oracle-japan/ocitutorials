@@ -548,35 +548,10 @@ $ make MPI=1 MPI_HOME=/usr/local CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x8
 
 本章は、 **NCCL Tests** プログラムを実行します。
 
-マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用した **NCCL** のAll-Reduce通信性能を計測します。
+マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** のAll-Reduce通信性能を計測します。ここで、 **-H** オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-$ ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8
-# nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
-#
-# Using devices
-#  Rank  0 Group  0 Pid   1277 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid   1277 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid   1277 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid   1277 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid   1277 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid   1277 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid   1277 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid   1277 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
-#
-#                                                              out-of-place                       in-place          
-#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
-#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
- 10737418240    2684354560     float     sum      -1    79751  134.64  235.61      0    79750  134.64  235.62      0
-# Out of bounds values : 0 OK
-# Avg bus bandwidth    : 235.616 
-#
-```
-
-次に、マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** のAll-Reduce通信性能を計測します。ここで、 **-H** オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
-
-```sh
-> mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 1
+> mpirun --allow-run-as-root -np 2 -H inst-d5ige-comp:1,inst-swgen-comp:1 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
@@ -863,35 +838,10 @@ $ make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/li
 
 本章は、 **NCCL Tests** プログラムを実行します。
 
-マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用した **NCCL** のAll-Reduce通信性能を計測します。
+マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** のAll-Reduce通信性能を計測します。ここで、 **-H** オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-> ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 8
-# nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
-#
-# Using devices
-#  Rank  0 Group  0 Pid   1179 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid   1179 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid   1179 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid   1179 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid   1179 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid   1179 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid   1179 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid   1179 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
-#
-#                                                              out-of-place                       in-place          
-#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
-#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
- 10737418240    2684354560     float     sum      -1    79783  134.58  235.52      0    79754  134.63  235.61      0
-# Out of bounds values : 0 OK
-# Avg bus bandwidth    : 235.563 
-#
-```
-
-次に、マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** のAll-Reduce通信性能を計測します。ここで、 **-H** オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。
-
-```sh
-$ mpirun --allow-run-as-root -np 16 -H inst-d5ige-comp:8,inst-swgen-comp:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -f 2 -t 1 -g 1
+$ mpirun --allow-run-as-root -np 2 -H inst-d5ige-comp:1,inst-swgen-comp:1 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
