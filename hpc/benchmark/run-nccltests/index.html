@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-09-12T11:08:14+09:00">
+  <meta property="article:published_time" content="2023-09-27T09:27:00+09:00">
 
 
 
@@ -319,7 +319,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="NCCL Tests実行方法">
     <meta itemprop="description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-09-12T11:08:14+09:00">
+    <meta itemprop="datePublished" content="2023-09-27T09:27:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -483,7 +483,7 @@ inst-swgen-gpu4-ol79
 <p>マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。<br />
 ここで、 <strong>-H</strong> オプションに指定するマスターノード（inst-d5ige-gpu4-ol79）とスレーブノード（inst-swgen-gpu4-ol79）のホスト名は、自身の環境に合わせて修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 16 <span class="nt">-H</span> inst-d5ige-gpu4-ol79:8,inst-swgen-gpu4-ol79:8 <span class="nt">-mca</span> plm_rsh_args <span class="s2">"-p 22222"</span> <span class="nt">--mca</span> btl_tcp_if_exclude docker0,lo <span class="nt">-x</span> <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4 <span class="nt">-x</span> <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>enp45s0f0 <span class="nt">-x</span> <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span> ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-f</span> 2 <span class="nt">-t</span> 1 <span class="nt">-g</span> 1
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 2 <span class="nt">-H</span> inst-d5ige-gpu4-ol79:1,inst-swgen-gpu4-ol79:1 <span class="nt">-mca</span> plm_rsh_args <span class="s2">"-p 22222"</span> <span class="nt">--mca</span> btl_tcp_if_exclude docker0,lo <span class="nt">-x</span> <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4 <span class="nt">-x</span> <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>enp45s0f0 <span class="nt">-x</span> <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span> ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-t</span> 1 <span class="nt">-g</span> 8
 <span class="c"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
 <span class="c">#</span>
 <span class="c"># Using devices</span>
@@ -523,7 +523,7 @@ inst-swgen-gpu4-ol79
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-09-12T11:08:14+09:00">September 12, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-09-27T09:27:00+09:00">September 27, 2023</time></p>
 
 
       </footer>

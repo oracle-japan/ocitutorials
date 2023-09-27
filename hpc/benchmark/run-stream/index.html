@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-09-12T11:08:14+09:00">
+  <meta property="article:published_time" content="2023-09-27T09:27:00+09:00">
 
 
 
@@ -319,7 +319,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="STREAM実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークのSTREAMを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-09-12T11:08:14+09:00">
+    <meta itemprop="datePublished" content="2023-09-27T09:27:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -340,7 +340,9 @@
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本ドキュメントで解説する <strong>STREAM</strong> の実行は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/index.html">Intel oneAPI Base Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの <strong><a href="https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html">Intel oneAPI DPC++/C++ Compiler</a></strong> （本ドキュメントで使用するバージョンは2023.2）で <strong>STREAM</strong> のソースコードをコンパイルして作成したバイナリを使用し、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> でデプロイし、この上で実行します。<br />
+<p>本ドキュメントで解説する <strong>STREAM</strong> の実行は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/index.html">Intel oneAPI Base Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの <strong><a href="https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html">Intel oneAPI DPC++/C++ Compiler</a></strong> （本ドキュメントで使用するバージョンは2023.2）で <strong>STREAM</strong> のソースコードをコンパイルして作成したバイナリを使用します。</p>
+
+<p><strong>STREAM</strong> を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> でデプロイします。<br />
 この際、 <strong>STREAM</strong> の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で <strong>NUMA setting</strong> を <strong>NPS2</strong> とします。</p>
 
 <p>以上より、本ドキュメントで解説する <strong>STREAM</strong> 実行は、以下の手順を経て行います。</p>
@@ -396,7 +398,7 @@
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
-<span class="nv">$ </span>icx <span class="nt">-DSTREAM_ARRAY_SIZE</span><span class="o">=</span>268435456 <span class="nt">-Wall</span> <span class="nt">-O3</span> <span class="nt">-mcmodel</span><span class="o">=</span>medium <span class="nt">-qopenmp</span> <span class="nt">-shared-intel</span> <span class="nt">-xCORE-AVX512</span> <span class="nt">-qopt-zmm-usage</span><span class="o">=</span>high ./stream.c
+<span class="nv">$ </span>icx <span class="nt">-DSTREAM_ARRAY_SIZE</span><span class="o">=</span>268435456 <span class="nt">-O3</span> <span class="nt">-mcmodel</span><span class="o">=</span>medium <span class="nt">-qopenmp</span> <span class="nt">-xCORE-AVX512</span> ./stream.c
 </code></pre></div></div>
 
 <hr />
@@ -440,7 +442,7 @@
     <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>STREAM</strong> の性能向上を目的としたスレッドアフィニティの設定を適用します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>72
- <span class="nv">$ </span><span class="nb">export </span><span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="nv">granularity</span><span class="o">=</span>fine,compact,1,0
+ <span class="nv">$ </span><span class="nb">export </span><span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="nv">granularity</span><span class="o">=</span>fine,compact
 </code></pre></div>    </div>
   </li>
   <li>
@@ -474,10 +476,10 @@
  precision of your system timer.
  <span class="nt">-------------------------------------------------------------</span>
  Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
- </span>Copy:          301888.5     0.014275     0.014227     0.014326
- Scale:         314189.3     0.013693     0.013670     0.013720
- Add:           317863.2     0.020307     0.020268     0.020338
- Triad:         317612.5     0.020328     0.020284     0.020358
+ </span>Copy:          295796.6     0.014582     0.014520     0.014663
+ Scale:         318925.3     0.013542     0.013467     0.013653
+ Add:           319154.4     0.020275     0.020186     0.020363
+ Triad:         320935.1     0.020131     0.020074     0.020209
  <span class="nt">-------------------------------------------------------------</span>
  Solution Validates: avg error less than 1.000000e-13 on all three arrays
  <span class="nt">-------------------------------------------------------------</span>
@@ -495,7 +497,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-09-12T11:08:14+09:00">September 12, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-09-27T09:27:00+09:00">September 27, 2023</time></p>
 
 
       </footer>
