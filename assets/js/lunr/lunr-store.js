@@ -996,7 +996,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
       },{
         "title": "ブロック・ボリュームでNFSサーバを構築する",
-        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）のブロック・ボリュームは、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。 同一可用性ドメイン内の異なるフォルト・ドメインに複数のレプリカを持ち高い可用性を実現 ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現 また、Intel Ice Lakeプロセッサを搭載するベアメタルシェイプ BM.Optimized3.36 は、50 GpbsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセスとNFSクライアントへのNFSサービスアクセスに割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。 OCIは、NFSのマネージドサービスであるファイル・ストレージも提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけてブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSファイルサービスを自身で構築することで、ファイル・ストレージよりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。 以下の表は、本チュートリアルで構築するNFSファイルサービスの総容量15 TBを前提とし、両選択肢の価格と性能を比較しています。   月額定価 (2023年3月時点) スループット IOPS ファイル・ストレージ 630,000円 (*3, 4) 1.5 GB/s (*1) 37,500 (*1) ブロック・ボリューム BM.Optimized3.36 Total - 89,250円 273,667円 362,917円 (*3, 4) 7.2 GB/s (*2) 375,000 (*2) *1) 以下URLで公開されているファイル・ストレージの10 TBでの性能情報をもとに、これを容量比として1.5倍した値を記載しています。この性能を実現するには、テスト環境・条件に十分な配慮が必要です。 https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf *2) ボリューム・サイズ1 TBでボリューム・パフォーマンスがBalancedの15ボリューム分のブロック・ボリュームサービスとしての最大値で、NFSファイルシステムでこの性能を達成できることを保証するものではありません。...","categories": [],
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）のブロック・ボリュームは、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。 同一可用性ドメイン内の異なるフォルト・ドメインに複数のレプリカを持ち高い可用性を実現 ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現 また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ BM.Optimized3.36 は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。 OCIは、NFSのマネージドサービスであるファイル・ストレージも提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけてブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、ファイル・ストレージよりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。 ファイル・ストレージとブロック・ボリュームNFSサーバの比較詳細は、 パフォーマンス関連Tips集 の コストパフォーマンスの良いファイル共有ストレージ構築方法 を参照ください。 このチュートリアルは、 マーケットプレイス から無料で利用可能なファイル共有ストレージ環境を構築するための スタック を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を リソース・マネージャ から自動構築、構築したNFSファイルシステム性能をIORとmdtestで検証します。   利用する OCIサービス 構成 用途   NFSディスク領域 ブロック・ボリューム 1 TB Balanced x 15 ファイル共有ストレージ領域   NFSサーバ ベアメタルインスタンス BM.Optimized3.36 x 1 NFSサーバ   NFSクライアント VMインスタンス VM.Standard2.24...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-nfs-server/",
         "teaser": "/ocitutorials/hpc/spinup-nfs-server/architecture_diagram.png"
@@ -1013,16 +1013,28 @@ var store = [{
         "url": "/ocitutorials/hpc/cluster-with-bv-stack/",
         "teaser": "/ocitutorials/hpc/cluster-with-bv-stack/architecture_diagram.png"
       },{
-        "title": "HPL実行方法",
-        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の クラスタ・ネットワーク でHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークの HPL を実行する方法を解説します。 0. 概要 本ドキュメントで解説する HPL の実行は、 Intel oneAPI Math Kernel Library for Linux （本ドキュメントで使用するバージョンは2023.2）に含まれるIntelの HPL 実装である Intel Distribution for LINPACK Benchmark を Intel MPI Library （本ドキュメントで使用するバージョンは2021.10）と共に使用します。 なお、 Intel oneAPI Math Kernel Library for Linux と Intel MPI Library は、 Intel oneAPI HPC Toolkit （本ドキュメントで使用するバージョンは2023.2）に含まれているものを使用します。 HPL を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ...","categories": [],
+        "title": "HPL実行方法（BM.Optimized3.36編）",
+        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の クラスタ・ネットワーク でHPCワークロード向けベアメタルインスタンス BM.Optimized3.36 をノード間接続するHPCクラスタで、標準ベンチマークの HPL を実行する方法を解説します。 0. 概要 本ドキュメントで解説する HPL の実行は、 Intel oneAPI Math Kernel Library for Linux （本ドキュメントで使用するバージョンは2023.2）に含まれるIntelの HPL 実装である Intel Distribution for LINPACK Benchmark を Intel MPI Library （本ドキュメントで使用するバージョンは2021.10）と共に使用します。 なお、 Intel oneAPI Math Kernel Library for Linux と Intel MPI Library は、 Intel oneAPI HPC Toolkit （本ドキュメントで使用するバージョンは2023.2）に含まれているものを使用します。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-hpl/",
         "teaser": null
       },{
-        "title": "STREAM実行方法",
-        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスで、標準ベンチマークの STREAM を実行する方法を解説します。 0. 概要 本ドキュメントで解説する STREAM の実行は、 Intel oneAPI Base Toolkit （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの Intel oneAPI DPC++/C++ Compiler （本ドキュメントで使用するバージョンは2023.2）で STREAM のソースコードをコンパイルして作成したバイナリを使用します。 STREAM を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 を Oracle Linux 8ベースの HPCクラスタネットワーキングイメージ でデプロイします。 この際、 STREAM の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で NUMA setting を NPS2 とします。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Optimized3.36 インスタンスのデプロイ Intel oneAPI Base Toolkit インストール STREAM ダウンロード・コンパイル STREAM...","categories": [],
+        "title": "HPL実行方法（BM.Standard.E5.192編）",
+        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス BM.Standard.E5.192 で、標準ベンチマークの HPL を実行する方法を解説します。 0. 概要 本ドキュメントで解説する HPL の実行は、AMDの HPL 実装である AMD Zen HPL optimized for AMD EPYC processors （本ドキュメントで使用するバージョンは2023_07_18）を OpenMPI （本ドキュメントで使用するバージョンは4.1.1）と共に使用します。 HPL を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ BM.Standard.E5.192 1インスタンスとし、OSは Oracle Linux 8を使用します。 以上より、本ドキュメントで解説する HPL 実行は、以下の手順を経て行います。 BM.Standard.E5.192 のデプロイ OpenMPI インストール AMD Zen HPL optimized for AMD EPYC processors インストール HPL 実行 本ドキュメントは、以下の環境で HPL...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-hpl-e5/",
+        "teaser": null
+      },{
+        "title": "STREAM実行方法（BM.Optimized3.36編）",
+        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス BM.Optimized3.36 で、標準ベンチマークの STREAM を実行する方法を解説します。 0. 概要 本ドキュメントで解説する STREAM の実行は、 Intel oneAPI Base Toolkit （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの Intel oneAPI DPC++/C++ Compiler （本ドキュメントで使用するバージョンは2023.2）で STREAM のソースコードをコンパイルして作成したバイナリを使用します。 STREAM を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 を Oracle Linux 8ベースの HPCクラスタネットワーキングイメージ でデプロイします。 この際、 STREAM の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で NUMA setting を NPS2 とします。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Optimized3.36 インスタンスのデプロイ Intel oneAPI Base Toolkit インストール STREAM...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-stream/",
+        "teaser": null
+      },{
+        "title": "STREAM実行方法（BM.Standard.E5.192編）",
+        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス BM.Standard.E5.192 で、標準ベンチマークの STREAM を実行する方法を解説します。 0. 概要 本ドキュメントで解説する STREAM の実行は、 AMD Optimizing C/C++ and Fortran Compilers (AOCC) （本ドキュメントで使用するバージョンは4.0.0）で STREAM のソースコードをコンパイルして作成したバイナリを使用します。 STREAM を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ BM.Standard.E5.192 1インスタンスとし、OSは Oracle Linux 8を使用します。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Standard.E5.192 デプロイ AOCC インストール STREAM ダウンロード・コンパイル STREAM 実行 本ドキュメントは、以下の環境で STREAM を実行しており、以下の性能が出ています。 [実行環境] シェイプ: BM.Standard.E5.192 OS: Oracle Linux 8.8 STREAM :...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-stream-e5/",
         "teaser": null
       },{
         "title": "Intel MPI Benchmark実行方法",
@@ -1032,7 +1044,7 @@ var store = [{
         "teaser": null
       },{
         "title": "NCCL Tests実行方法",
-        "excerpt":"本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の クラスタ・ネットワーク でGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリ NCCL（NVIDIA Collective Communication Library） の標準ベンチマークである NCCL Tests を実行する方法を解説します。 0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたDockerコンテナ実行環境で、 NGC Catalog から提供される TensorFlow NGC Container （本ドキュメントで使用するバージョンは23.06-tf2-py3）を起動し、このコンテナに含まれる NCCL （本ドキュメントで使用するバージョンは2.17.1）とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ BM.GPU4.8 2インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル...","categories": [],
+        "excerpt":"本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の クラスタ・ネットワーク でGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリ NCCL（NVIDIA Collective Communication Library） の標準ベンチマークである NCCL Tests を実行する方法を解説します。 0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたDockerコンテナ実行環境で、 NGC Catalog から提供される TensorFlow NGC Container （本ドキュメントで使用するバージョンは23.06-tf2-py3）を起動し、このコンテナに含まれる NCCL （本ドキュメントで使用するバージョンは2.17.1）とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ BM.GPU4.8 または BM.GPU.A100-v2.8 2インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-nccltests/",
         "teaser": null
@@ -1042,6 +1054,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/bios-setting/",
         "teaser": null
+      },{
+        "title": "コストパフォーマンスの良いファイル共有ストレージ構築方法",
+        "excerpt":"HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSファイルサーバ（以降”ブロック・ボリュームNFSサーバ”と呼称）を構築する方法があります。 本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。 1. ブロック・ボリュームNFSサーバ構成 本章は、ブロック・ボリュームNFSサーバを構築する際、コストパフォーマンスを最適化するベア・メタル・インスタンスとブロック・ボリュームの構成を解説します。 NFSサーバ用のベア・メタル・インスタンスは、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ BM.Optimized3.36 を使用します。 この理由は、このシェイプが50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセス用途とNFSクライアントへのNFSサービス用途に割当ててこれらをNFSサービス時に同時に使用することで、NFSサービスに50 Gbpsの帯域をフルに使用することが可能となるためです。 またデータ格納領域に使用するブロック・ボリュームは、ボリューム・パフォーマンスにBalancedを使用します。 この理由は、NFSサーバがアプリケーションの入出力データのようなサイズの大きなファイルのみならず、ソースプログラムや設定ファイル等のサイズの小さなファイルを多数扱う必要があり、スループットとIOPSの両者が求められるためです。 このBalancedのブロック・ボリュームは、ボリューム・サイズの増加とともにその性能が向上し1 TBで上限に達するため、1 TBボリュームを基本単位として複数ボリュームをLinuxの論理ボリューム機能で1ファイルシステムに構成し、コストパフォーマンスを最大化します。この際、NFSファイルシステム性能としては15ボリューム程度で性能が頭打ちとなることを考慮して、1 TBのボリュームを15個使用した総容量15 TBのブロック・ボリューム構成とします。 より大きな総容量が必要な場合は、単一ブロック・ボリュームサイズを1 TBより大きくすることで、性能を維持したままその総容量を増やすことが可能です。 例えば100 TBを超える総容量が必要な場合は、ボリューム・サイズを7 TBとすることで、7 TB x 15 = 105 TBの総容量を実現することが出来ます。 なお、本構成のブロック・ボリュームNFSサーバは、 マーケットプレース から無料で利用可能な スタック を利用して自動構築する事が可能で、詳細は OCI HPCチュートリアル集 の ブロック・ボリュームでNFSサーバを構築する を参照ください。 2. ファイル・ストレージとブロック・ボリュームNFSサーバの比較 2.0 概要 本章は、前述の構成のブロック・ボリュームNFSサーバとファイル・ストレージを、以下の観点で比較します。 コストパフォーマンス システム構築・運用のしやすさ 詳細は以降の章で解説しますが、コストパフォーマンスはブロック・ボリュームNFSサーバが有利で、システム構築やシステム運用のしやすさではファイル・ストレージが有利となり、どちらの観点に重きを置くかで選択することになります。 2-1....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/",
+        "teaser": "/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/architecture_diagram.png"
       },{
         "title": "クラスタ・ネットワーク接続用ネットワークインターフェース作成方法",
         "excerpt":"クラスタ・ネットワーク 対応シェイプの BM.Optimized3.36 や BM.GPU4.8/BM.GPU.A100-v2.8 は、接続するポートのIPアドレス設定等を含むネットワークインターフェースをインスタンスデプロイ後にユーザ自身が適切に設定することで、 クラスタ・ネットワーク に接続します。 本テクニカルTipsは、このネットワークインターフェース作成方法を解説します。 0. 概要 BM.Optimized3.36 や BM.GPU4.8/BM.GPU.A100-v2.8 は、 クラスタ・ネットワーク がDHCPに対応していないため、その接続インターフェースに静的にIPアドレスを割当てる必要があります。 また BM.GPU4.8/BM.GPU.A100-v2.8 は、 クラスタ・ネットワーク に接続するポートを16ポート有し、これらを NCCL（NVIDIA Collective Communication Library） 等のGPU間通信ライブラリから使用しますが、この場合これら16ポートを16個の異なるIPサブネットに接続して使用します。 ここでDHCPが利用できない クラスタ・ネットワーク で、複数ノードに亘ってIPアドレスの重複が起こらないようにネットワークインターフェースを設定するには、どのようにうすればよいでしょうか。 この課題に対処するため、 クラスタネットワーキングイメージ は、systemdのサービス oci-rdma-configure を用意しています。 このサービスは、起動されると クラスタ・ネットワーク に接続するポートのネットワークインターフェース設定を/etc/sysconfig/network-scripts/ifcfg-ifname ファイルに作成し、ネットワークインターフェースを起動します。 ここで各ポートに割り振られるIPアドレスは、インスタンスを仮想クラウド・ネットワークのサブネット（24ビットのネットマスクを想定）にTCP/IPで接続する際に使用するポートにDHCPで割り振られるIPアドレスの4フィールド目（ここでは”x”と仮定）を使用し、以下のように静的にIPアドレスを割当てることで、アドレス重複を回避します。 BM.Optimized3.36 の場合 ポート名 IPアドレス ens800f0 192.168.0.x/24 BM.GPU4.8/BM.GPU.A100-v2.8 の場合 ポート名 IPアドレス...","categories": [],

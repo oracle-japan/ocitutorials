@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-09-27T09:27:00+09:00">
+  <meta property="article:published_time" content="2023-09-29T14:17:17+09:00">
 
 
 
@@ -266,15 +266,21 @@
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
@@ -309,7 +315,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームでNFSサーバを構築する">
     <meta itemprop="description" content="ブロック・ボリュームでNFSサーバを構築してみましょう。このチュートリアルを終了すると、OCIのブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSサーバを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2023-09-27T09:27:00+09:00">
+    <meta itemprop="datePublished" content="2023-09-29T14:17:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -331,44 +337,10 @@
   <li>ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現</li>
 </ul>
 
-<p>また、Intel Ice Lakeプロセッサを搭載するベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong>  は、50 GpbsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセスとNFSクライアントへのNFSサービスアクセスに割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。</p>
+<p>また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong>  は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。</p>
 
-<p>OCIは、NFSのマネージドサービスであるファイル・ストレージも提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけてブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSファイルサービスを自身で構築することで、ファイル・ストレージよりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。<br />
-以下の表は、本チュートリアルで構築するNFSファイルサービスの総容量15 TBを前提とし、両選択肢の価格と性能を比較しています。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th> </th>
-      <th style="text-align: right">月額定価<br />(2023年3月時点)</th>
-      <th style="text-align: right">スループット</th>
-      <th style="text-align: right">IOPS</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>ファイル・ストレージ</td>
-      <td style="text-align: right"><strong>630,000</strong>円<br />(*3, 4)</td>
-      <td style="text-align: right">1.5 GB/s<br />(*1)</td>
-      <td style="text-align: right">37,500<br />(*1)</td>
-    </tr>
-    <tr>
-      <td>ブロック・ボリューム<br />BM.Optimized3.36<br />Total<br />-</td>
-      <td style="text-align: right">89,250円<br />273,667円<br /><strong>362,917</strong>円<br />(*3, 4)</td>
-      <td style="text-align: right">7.2 GB/s<br />(*2)</td>
-      <td style="text-align: right">375,000<br />(*2)</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>*1) 以下URLで公開されているファイル・ストレージの10 TBでの性能情報をもとに、これを容量比として1.5倍した値を記載しています。この性能を実現するには、テスト環境・条件に十分な配慮が必要です。<br />
-<a href="https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf">https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf</a><br />
-*2) ボリューム・サイズ1 TBでボリューム・パフォーマンスがBalancedの15ボリューム分のブロック・ボリュームサービスとしての最大値で、NFSファイルシステムでこの性能を達成できることを保証するものではありません。<br />
-*3) ブロック・ボリューム + BM.Optimized3.36の構成は、この15 TB構成でその価格の大部分をBM.Optimized3.36が占めるため、ファイルシステム総容量がこれより大きくなると、ファイル・ストレージに対する価格優位性が拡大します。<br />
-*4) ファイル・ストレージは、従量制課金のため使用量が15 TBを下回るとそれに応じて金額が安くなりますが、ブロック・ボリュームとベアメタルインスタンスの組み合わせは、使用量に関わらず固定した金額が課金されます。</p>
-
-<p>ブロック・ボリュームは、ボリューム・パフォーマンスがBalancedの場合、ボリューム・サイズの増加とともにその性能が向上し1 TBで上限に達します。そこで価格性能比を高めるため、ボリューム・パフォーマンスがBalancedの1 TBボリュームを基本単位とし、複数ボリュームをLinuxの論理ボリューム機能で1ファイルシステムに構成します。この際、NFSファイルシステム性能としては15ボリューム程度で性能が頭打ちとなることを考慮して、本チュートリアルでは1 TBのボリュームを15個使用した総容量15 TBのNFSディスク領域とします。より大きな容量が必要な場合は、単一ブロック・ボリュームサイズを1 TBより大きくすることで、性能を維持したままその総容量を増やすことが可能です。<br />
-例えば100 TBを超える総容量が必要な場合は、ボリューム・サイズを7 TBとすることで、7 TB x 15 = 105 TBのNFSディスク領域を構成します。</p>
+<p>OCIは、NFSのマネージドサービスであるファイル・ストレージも提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけてブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、ファイル・ストレージよりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。<br />
+ファイル・ストレージとブロック・ボリュームNFSサーバの比較詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></strong> を参照ください。</p>
 
 <p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無料で利用可能なファイル共有ストレージ環境を構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> から自動構築、構築したNFSファイルシステム性能をIORとmdtestで検証します。</p>
 
@@ -1013,7 +985,7 @@ client-2
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-09-27T09:27:00+09:00">September 27, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-09-29T14:17:17+09:00">September 29, 2023</time></p>
 
 
       </footer>
