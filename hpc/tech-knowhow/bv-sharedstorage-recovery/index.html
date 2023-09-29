@@ -1,0 +1,960 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベア・メタル・インスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">
+
+
+  <meta property="og:description" content="ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベア・メタル・インスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/lv_configuration.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-09-29T18:09:52+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/lv_configuration.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法
+
+        
+      </h1>
+      
+        <p class="page__lead">ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベア・メタル・インスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/" class="active">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法">
+    <meta itemprop="description" content="ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベア・メタル・インスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。">
+    <meta itemprop="datePublished" content="2023-09-29T18:09:52+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-復旧手順">1. 復旧手順</a><ul><li><a href="#1-0-前提環境">1-0. 前提環境</a></li><li><a href="#1-1-代替nfsサーバインスタンス事前準備">1-1. 代替NFSサーバインスタンス事前準備</a><ul><li><a href="#1-1-0-概要">1-1-0. 概要</a></li><li><a href="#1-1-1-カスタムイメージ取得">1-1-1. カスタム・イメージ取得</a></li></ul></li><li><a href="#1-2-代替nfsサーバインスタンスデプロイ">1-2. 代替NFSサーバインスタンスデプロイ</a></li><li><a href="#1-3-ブロックボリュームの既存nfsサーバインスタンスからのデタッチ">1-3. ブロック・ボリュームの既存NFSサーバインスタンスからのデタッチ</a></li><li><a href="#1-4-ブロックボリュームの代替nfsサーバインスタンスへのアタッチ">1-4. ブロック・ボリュームの代替NFSサーバインスタンスへのアタッチ</a></li><li><a href="#1-5-代替nfsサーバインスタンスでの復旧作業">1-5. 代替NFSサーバインスタンスでの復旧作業</a></li><li><a href="#1-6-nfsクライアントでの復旧作業">1-6. NFSクライアントでの復旧作業</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><strong>ブロック・ボリューム</strong> とベア・メタル・インスタンスを組み合わせたNFSサーバ（以降” <strong>ブロック・ボリューム</strong> NFSサーバ”と呼称）は、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベア・メタル・インスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。<br />
+本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>HPC/GPUクラスタで必須となるファイル共有ストレージを <strong>ブロック・ボリューム</strong> NFSサーバで構築・運用する場合、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> のマウント・ターゲットがHA化され可用性が担保されているのに対し、NFSサーバのベア・メタル・インスタンスが単一障害点となるため、インスタンスが障害で起動しなくなった場合、NFSサーバのデータ領域にアクセスすることが出来なくなります。<br />
+ただこの場合でも、起動しなくなったベア・メタル・インスタンスと同一構成の新たなインスタンスをデプロイし、このインスタンスに既存の <strong>ブロック・ボリューム</strong> をアタッチしてファイルシステムとしてマウントすることで、復旧作業時間に相当する数時間程度のサービス停止を経て、障害発生前のデータ領域のままNFSサービスを再開することが可能です。<br />
+この復旧シナリオの前提は、 <strong>ブロック・ボリューム</strong> でサービスするNFSデータ領域がLinuxの論理ボリュームマネージャで構築されていることです。論理ボリュームマネージャは、物理ボリューム・ボリュームグループ・論理ボリューム等のメタデータをOS上には持たず（キャッシュ情報は除く）に <strong>ブロック・ボリューム</strong> 上に保持するため、論理ボリュームマネージャをサポートするOSが稼働する別のインスタンスにアタッチすることで、データ領域にアクセスできるようになります。</p>
+
+<p>また本復旧シナリオは、障害時に既存の代替えとなるNFSサーバインスタンスをデプロイする際、初期の <strong>ブロック・ボリューム</strong> NFSサーバ構築時点でNFSサーバインスタンスの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得し、復旧に要する時間を短縮するよう配慮します。</p>
+
+<p>次に、 <strong>ブロック・ボリューム</strong> に障害が発生してデータ領域にアクセスできなくなる障害シナリオには、どのように対処すれはよいでしょうか。<br />
+<strong>ブロック・ボリューム</strong> は、同一 <strong>可用性ドメイン</strong> 内の異なる <strong>フォルト・ドメイン</strong> に複数のレプリカを持つため、NFSサーバインスタンスと比較して桁違いに高い可用性を提供します。このため本テクニカルTipsは、NFSサーバインスタンス障害に対する復旧シナリオにフォーカスし、これを解説します。</p>
+
+<p>本復旧シナリオは、NFSサーバインスタンスのOSに <strong>Oracle Linux</strong> 、データ領域の管理にLinuxの論理ボリュームマネージャを使用し、以下のように構成されていることを前提とします。</p>
+
+<p><img src="lv_configuration.png" alt="NFSサーバデータ領域構成図" /></p>
+
+<p>以上より、本テクニカルTipsで解説する復旧シナリオは、以下のステップを経て行います。</p>
+
+<ul>
+  <li>代替NFSサーバインスタンス事前準備</li>
+  <li>代替NFSサーバインスタンスデプロイ</li>
+  <li><strong>ブロック・ボリューム</strong> の既存NFSサーバインスタンスからのデタッチ</li>
+  <li><strong>ブロック・ボリューム</strong> の代替NFSサーバインスタンスへのアタッチ</li>
+  <li>代替NFSサーバインスタンスでの復旧作業</li>
+  <li>NFSクライアントでの復旧作業</li>
+</ul>
+
+<p>以降の章は、このステップに沿って具体的な復旧手順を解説します。</p>
+
+<p>なお、本構成の <strong>ブロック・ボリューム</strong> NFSサーバは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレース</a></strong> から無料で利用可能な <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用して自動構築する事が可能で、詳細は <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></strong> を参照ください。</p>
+
+<hr />
+<h1 id="1-復旧手順">1. 復旧手順</h1>
+
+<h2 id="1-0-前提環境">1-0. 前提環境</h2>
+
+<p>本章は、以降の章で解説する具体的な復旧手順に於いて、その前提となる <strong>ブロック・ボリューム</strong> NFSサーバの構成を解説します。<br />
+本テクニカルTipsをご自身の環境に適用する際は、ホスト名、 <strong>ブロック・ボリューム</strong> 名、論理ボリュームマネージャの情報等をご自身の環境に置き換えて、実行してください。</p>
+
+<ul>
+  <li>既存NFSサーバホスト名: nfs-srv-1</li>
+  <li>代替NFSサーバホスト名: nfs-srv-2</li>
+  <li>NFSクライアントホスト名: nfs-cli</li>
+  <li><strong>ブロック・ボリューム</strong> 名・容量: bv1 (1 TB), bv2 (1 TB)</li>
+  <li>物理ボリューム名: /dev/sdb, /dev/sdc</li>
+  <li>ボリュームグループ名: vg1</li>
+  <li>論理ボリューム名: lv01</li>
+  <li>NFSサーバローカルマウントポイント: /mnt/a</li>
+  <li>NFSクライアントNFSマウントポイント: /mnt/nfs/a</li>
+</ul>
+
+<p><img src="recovery_configuration.png" alt="復旧手順前提構成" /></p>
+
+<h2 id="1-1-代替nfsサーバインスタンス事前準備">1-1. 代替NFSサーバインスタンス事前準備</h2>
+
+<h3 id="1-1-0-概要">1-1-0. 概要</h3>
+
+<p>本章は、代替NFSサーバインスタンスが早期にNFSサービスを開始できることを目的とし、既存NFSサーバインスタンスから <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得します。<br />
+この際、代替NFSサーバインスタンスをデプロイした直後は、 <strong>ブロック・ボリューム</strong> をアタッチするまでNFSデータ領域ファイルシステムをマウント出来ないことを考慮し、必要な修正を行った後に <strong>カスタム・イメージ</strong> を取得します。<br />
+具体的には、以下の手順を実施します。</p>
+
+<ul>
+  <li>NFSサービス停止</li>
+  <li>NFSデータ領域ファイルシステムアンマウント</li>
+  <li>/etc/fstab修正</li>
+  <li><strong>ブロック・ボリューム</strong> のデタッチ</li>
+  <li><strong>カスタム・イメージ</strong> 取得</li>
+  <li><strong>ブロック・ボリューム</strong> のアタッチ</li>
+  <li>/etc/fstab修正</li>
+  <li>NFSデータ領域ファイルシステムマウント</li>
+  <li>NFSサービス開始</li>
+</ul>
+
+<h3 id="1-1-1-カスタムイメージ取得">1-1-1. カスタム・イメージ取得</h3>
+
+<p>本章は、既存NFSサーバインスタンスで <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得します。</p>
+
+<ol>
+  <li>
+    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSサービスを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> nfs-server
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをアンマウントします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>umount /mnt/a
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>nfs-srv-1</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+32c32
+&lt; /dev/vg1/lv01	/mnt/a	xfs	defaults	0	0
+<span class="nt">---</span>
+<span class="o">&gt;</span> <span class="c">#/dev/vg1/lv01	/mnt/a	xfs	defaults	0	0</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page12.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>デタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page11.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-1</strong> のopcユーザで実行し、物理ボリューム <strong>sdb</strong> がlsblkコマンドの出力に表示されないことを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.4:3260 <span class="nt">-u</span>
+Logging out of session <span class="o">[</span>sid: 3, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.4,3260]
+Logout of <span class="o">[</span>sid: 3, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.4,3260] successful.
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> delete <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.4:3260
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>lsblk
+NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                  8:0    0   50G  0 disk 
+├─sda1               8:1    0  100M  0 part /boot/efi
+├─sda2               8:2    0    1G  0 part /boot
+└─sda3               8:3    0 48.9G  0 part 
+  ├─ocivolume-root 252:0    0 38.9G  0 lvm  /
+  └─ocivolume-oled 252:1    0   10G  0 lvm  /var/oled
+sdc                  8:16   0    1T  0 disk 
+└─vg1-lv01         252:2    0    2T  0 lvm  
+nvme0n1            259:1    0  3.5T  0 disk 
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+
+    <p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
+  </li>
+  <li>
+    <p>4.から9.の手順を同様に <strong>bv2</strong> に対して実行してこれをデタッチし、物理ボリューム <strong>sdc</strong> がlsblkコマンドの出力に表示されないことを確認します。</p>
+  </li>
+  <li>
+    <p><strong>nfs-srv-1</strong> の <strong>カスタムイメージ</strong> を取得します。</p>
+
+    <p><strong>カスタム・イメージ</strong> の取得方法は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm">ここ</a></strong> を参照ください。</p>
+
+    <p>なお <strong>カスタム・イメージ</strong> 取得中は、当該インスタンスが停止することに留意します。</p>
+  </li>
+  <li>
+    <p>OCIコンソールで、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page12.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>アタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page10.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-1</strong> のopcユーザで実行し、lsblkコマンドの出力に物理ボリューム <strong>sdb</strong> が含まれることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> new <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260
+New iSCSI node <span class="o">[</span>tcp:[hw<span class="o">=</span>,ip<span class="o">=</span>,net_if<span class="o">=</span>,iscsi_if<span class="o">=</span>default] 169.254.2.2,3260,-1 iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3] added
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> update <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-n</span> node.startup <span class="nt">-v</span> automatic
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260 <span class="nt">-l</span>
+Logging <span class="k">in </span>to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260]
+Login to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260] successful.
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>lsblk
+NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                  8:0    0   50G  0 disk 
+├─sda1               8:1    0  100M  0 part /boot/efi
+├─sda2               8:2    0    1G  0 part /boot
+└─sda3               8:3    0 48.9G  0 part 
+├─ocivolume-root 252:0    0 38.9G  0 lvm  /
+└─ocivolume-oled 252:1    0   10G  0 lvm  /var/oled
+sdb                  8:16   0    1T  0 disk 
+nvme0n1            259:1    0  3.5T  0 disk 
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+
+    <p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
+  </li>
+  <li>
+    <p>12.から17.の手順を同様に <strong>bv2</strong> に対して実行してこれをアタッチし、lsblkコマンドの出力に物理ボリューム <strong>sdc</strong> が含まれることを確認します。</p>
+  </li>
+  <li>
+    <p><strong>nfs-srv-1</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+31c31
+&lt; <span class="c">#/dev/vg1/lv01	/mnt/a	xfs	defaults	0	0</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> /dev/vg1/lv01	/mnt/a	xfs	defaults	0	0
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをマウントし、障害発生前のデータが存在していることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/a
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/a
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/vg1-lv01  2.0T   15G  2.0T   1% /mnt/a
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> /mnt/a
+total 4
+drwxr-xr-x  2 root root  22 Sep 29 12:32 <span class="nb">.</span>
+drwxr-xr-x. 3 root root  15 Sep 29 10:12 ..
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 root root 210 Sep 29 10:24 test.txt
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行してNFSサービスを開始し、 <strong>/mnt/a</strong> がエクスポートされていることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nfs-server
+Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service → /usr/lib/systemd/system/nfs-server.service.
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>exportfs
+/mnt/a        	10.0.0.0/16
+<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="1-2-代替nfsサーバインスタンスデプロイ">1-2. 代替NFSサーバインスタンスデプロイ</h2>
+
+<p>本章は、先に取得した <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用し、既存NFSサーバインスタンスと同一のシェイプで代替NFSサーバインスタンスを <strong>nfs-srv-2</strong> としてデプロイします。</p>
+
+<p><strong>カスタム・イメージ</strong> を使用したインスタンスのデプロイ方法は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm">ここ</a></strong> を参照ください。</p>
+
+<h2 id="1-3-ブロックボリュームの既存nfsサーバインスタンスからのデタッチ">1-3. ブロック・ボリュームの既存NFSサーバインスタンスからのデタッチ</h2>
+
+<p>本章は、 <strong>ブロック・ボリューム</strong> の <strong>bv1</strong> と <strong>bv2</strong> を <strong>nfs-srv-1</strong> からデタッチします。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>インスタンスからのデタッチ</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ブロック・ボリュームのデタッチ</strong> 画面で、 <strong>デタッチの続行</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page04.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ブロック・ボリュームのデタッチ</strong> 画面で、 <strong>デタッチ</strong> ボタンをクリックし、暫くしてデタッチが完了することを確認します。</p>
+
+    <p><img src="console_page05.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>1.から6.の手順を <strong>bv2</strong> に対して実行し、これをデタッチします。</p>
+  </li>
+</ol>
+
+<h2 id="1-4-ブロックボリュームの代替nfsサーバインスタンスへのアタッチ">1-4. ブロック・ボリュームの代替NFSサーバインスタンスへのアタッチ</h2>
+
+<p>本章は、 <strong>ブロック・ボリューム</strong> の <strong>bv1</strong> と <strong>bv2</strong> を <strong>nfs-srv-2</strong> にアタッチします。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>インスタンスにアタッチ</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page06.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>インスタンスにアタッチ</strong> サイドバーの <strong>インスタンス</strong> フィールドで <strong>nfs-srv-2</strong> を選択し、 <strong>アタッチ</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page07.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>インスタンスにアタッチ</strong> 画面で、 <strong>閉じる</strong> ボタンをクリックし、暫くしてアタッチが完了することを確認します。</p>
+
+    <p><img src="console_page08.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>OCIコンソールで、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-2</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page09.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>アタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page10.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-2</strong> のopcユーザで実行し、lsblkコマンドの出力に物理ボリューム <strong>sdb</strong> が含まれることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> new <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260
+New iSCSI node <span class="o">[</span>tcp:[hw<span class="o">=</span>,ip<span class="o">=</span>,net_if<span class="o">=</span>,iscsi_if<span class="o">=</span>default] 169.254.2.2,3260,-1 iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3] added
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> update <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-n</span> node.startup <span class="nt">-v</span> automatic
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260 <span class="nt">-l</span>
+Logging <span class="k">in </span>to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260]
+Login to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260] successful.
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>lsblk
+NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                  8:0    0   50G  0 disk 
+├─sda1               8:1    0  100M  0 part /boot/efi
+├─sda2               8:2    0    1G  0 part /boot
+└─sda3               8:3    0 48.9G  0 part 
+├─ocivolume-root 252:0    0 38.9G  0 lvm  /
+└─ocivolume-oled 252:1    0   10G  0 lvm  /var/oled
+sdb                  8:16   0    1T  0 disk 
+nvme0n1            259:1    0  3.5T  0 disk 
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+
+    <p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
+  </li>
+  <li>
+    <p>1.から12.の手順を同様に <strong>bv2</strong> に対して実行してこれをアタッチし、lsblkコマンドの出力に物理ボリューム <strong>sdc</strong> が含まれることを確認します。</p>
+  </li>
+</ol>
+
+<h2 id="1-5-代替nfsサーバインスタンスでの復旧作業">1-5. 代替NFSサーバインスタンスでの復旧作業</h2>
+
+<p>本章は、代替NFSサーバインスタンスでNFSサービスを開始するための以下復旧作業を実施します。</p>
+
+<ul>
+  <li>/etc/fstab修正</li>
+  <li>NFSデータ領域ファイルシステムマウント</li>
+  <li>NFSサービス開始</li>
+</ul>
+
+<ol>
+  <li>
+    <p><strong>nfs-srv-2</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+31c31
+&lt; <span class="c">#/dev/vg1/lv01	/mnt/a	xfs	defaults	0	0</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> /dev/vg1/lv01	/mnt/a	xfs	defaults	0	0
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを <strong>nfs-srv-2</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをマウントし、障害発生前のデータが存在していることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/a
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/a
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/vg1-lv01  2.0T   15G  2.0T   1% /mnt/a
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> /mnt/a
+total 4
+drwxr-xr-x  2 root root  22 Sep 29 12:32 <span class="nb">.</span>
+drwxr-xr-x. 3 root root  15 Sep 29 10:12 ..
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 root root 210 Sep 29 10:24 test.txt
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを <strong>nfs-srv-2</strong> のopcユーザで実行してNFSサービスを開始し、 <strong>/mnt/a</strong> がエクスポートされていることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nfs-server
+Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service → /usr/lib/systemd/system/nfs-server.service.
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>exportfs
+/mnt/a        	10.0.0.0/16
+<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="1-6-nfsクライアントでの復旧作業">1-6. NFSクライアントでの復旧作業</h2>
+
+<p>本章は、NFSサーバが <strong>nfs-srv-1</strong> から <strong>nfs-srv-2</strong> に変更されたため、これに伴う以下の復旧作業をNFSクライアントで実施します。</p>
+
+<ul>
+  <li>/etc/fstab修正</li>
+  <li>NFSクライアント再起動</li>
+</ul>
+
+<ol>
+  <li>
+    <p><strong>nfs-cli</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+32c32
+&lt; nfs-srv-1:/mnt/a	/mnt/nfs/a	nfs	defaults	0	0
+<span class="nt">---</span>
+<span class="o">&gt;</span> nfs-srv-2:/mnt/a	/mnt/nfs/a	nfs	defaults	0	0
+<span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>既存NFSサーバが障害でダウンした場合、NFSクライアントで既存NFSサーバのNFS領域をマウントしたままとなっており、代替NFSサーバのNFS領域をマウントできないため、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、OS再起動によりこの問題をを解消します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>OS起動後、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、 <strong>nfs-srv-2</strong> のNFSファイルシステムがマウントされ、障害発生前のデータにアクセスできることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/nfs/a
+Filesystem        Size  Used Avail Use% Mounted on
+nfs-srv-2:/mnt/a  2.0T   15G  2.0T   1% /mnt/nfs/a
+<span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">cat</span> /mnt/nfs/a/test.txt 
+This is a <span class="nb">test </span>text file.
+<span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-09-29T18:09:52+09:00">September 29, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8BNFS%E3%82%B5%E3%83%BC%E3%83%90%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E9%9A%9C%E5%AE%B3%E3%81%8B%E3%82%89%E3%81%AE%E5%BE%A9%E6%97%A7%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbv-sharedstorage-recovery%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbv-sharedstorage-recovery%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbv-sharedstorage-recovery%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/" class="pagination--pager" title="ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/" class="pagination--pager" title="計算/GPUノードの効果的な名前解決方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
