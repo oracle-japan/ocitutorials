@@ -1,6 +1,6 @@
 ---
 title: "OCI HPCポータル"
-excerpt: "OCIを活用してHPCワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、OCI HPCポータルです。ベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等のリソースをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築するチュートリアル集、ベンチマーク情報、テクニカルTips集、関連情報リンク集等をお届けします。チュートリアルで構築するHPCクラスタは、NFS、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、DockerやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。"
+excerpt: "OCIを活用してHPC/機械学習ワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、OCI HPCポータルです。ベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等のリソースをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築するチュートリアル集、ベンチマーク情報、テクニカルTips集、関連情報リンク集等をお届けします。チュートリアルで構築するHPCクラスタは、NFS、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、DockerやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。"
 permalink: /hpc/
 layout: single
 tags: "hpc"
@@ -152,15 +152,15 @@ table, th, td {
 - **Intel MPI Benchmark**
 - **NCCL Tests**
 
-各ベンチマークの実行方法は、下表の名称部分のリンクをクリックして参照ください。
+各ベンチマークの実行方法は、下表の対象シェイプ部分のリンクをクリックして参照ください。
 
-| 名称                  | ベンチマークサイトURL                                                                                               |
-| ------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **[HPL](/ocitutorials/hpc/benchmark/run-hpl/)**                    | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          |
-| **[STREAM](/ocitutorials/hpc/benchmark/run-stream/)**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            |
-| **[Intel MPI Benchmark](/ocitutorials/hpc/benchmark/run-imb/)** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** |
-| **[NCCL Tests](/ocitutorials/hpc/benchmark/run-nccltests/)**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           |
-|                     |                                                                                                            |
+| 名称                      | ベンチマークサイトURL                                                                                               | 対象シェイプ                                                                       |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **HPL**                 | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-hpl-e5/)**                |
+| **STREAM**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-stream-e5/)**              |
+| **Intel MPI Benchmark** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-imb/)**                 |
+| **NCCL Tests**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           | **[BM.GPU.A100-v2.8/BM.GPU4.8](/ocitutorials/hpc/benchmark/run-nccltests/)** |
+|                         |                                                                                                            |                                                                              |
 
 ## 2-2. パフォーマンス関連Tips集
 
@@ -171,6 +171,11 @@ table, th, td {
    OCIのベア・メタル・インスタンスは、デプロイする際にBIOSの設定を指定することが可能です。  
    これらの設定は、 **NPS** （NUMA nodes per socket）や **SMT** （Simultanious Multi Threading）といった、当該インスタンスの性能に影響するものが少なくありません。  
    本パフォーマンス関連Tipsは、これらのBIOS設定を指定してHPC/GPUクラスタを構築する方法を解説します。
+
+- **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/)**
+
+   HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSファイルサーバを構築する方法があります。  
+   本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSファイルサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。
 
 ***
 # 3. OCI HPCテクニカルTips集

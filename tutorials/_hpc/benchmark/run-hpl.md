@@ -1,6 +1,6 @@
 ---
-title: "HPL実行方法"
-excerpt: "本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのHPLを実行する方法を解説します。"
+title: "HPL実行方法（BM.Optimized3.36編）"
+excerpt: "本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスBM.Optimized3.36をノード間接続するHPCクラスタで、標準ベンチマークのHPLを実行する方法を解説します。"
 order: "211"
 layout: single
 header:
@@ -8,7 +8,7 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークの **[HPL](https://www.netlib.org/benchmark/hpl/)** を実行する方法を解説します。
+本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でHPCワークロード向けベアメタルインスタンス **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** をノード間接続するHPCクラスタで、標準ベンチマークの **[HPL](https://www.netlib.org/benchmark/hpl/)** を実行する方法を解説します。
 
 ***
 # 0. 概要
@@ -16,7 +16,7 @@ header:
 本ドキュメントで解説する **HPL** の実行は、 **[Intel oneAPI Math Kernel Library for Linux](https://www.xlsoft.com/jp/products/intel/perflib/mkl/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれるIntelの **HPL** 実装である **[Intel Distribution for LINPACK Benchmark](https://www.intel.com/content/www/us/en/docs/onemkl/developer-guide-linux/2023-1/intel-distribution-for-linpack-benchmark.html)** を **[Intel MPI Library](https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html)** （本ドキュメントで使用するバージョンは2021.10）と共に使用します。  
 なお、 **Intel oneAPI Math Kernel Library for Linux** と **Intel MPI Library** は、 **[Intel oneAPI HPC Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html)** （本ドキュメントで使用するバージョンは2023.2）に含まれているものを使用します。
 
-**HPL** を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** 2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **HPL** の性能向上を目的にインスタンスをデプロイする際のBIOS設定 **NUMA setting** を **NPS2** とします。  
+**HPL** を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ **BM.Optimized3.36** 2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **HPL** の性能向上を目的にインスタンスをデプロイする際のBIOS設定 **NUMA setting** を **NPS2** とします。  
 計算ノードのOSは、 **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用し、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。
 
 以上より、本ドキュメントで解説する **HPL** 実行は、以下の手順を経て行います。
