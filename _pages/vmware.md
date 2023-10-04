@@ -3,22 +3,21 @@ title: "VMwareソリューション編"
 excerpt: "OCI上でVMware環境を利用できる Oracle Cloud VMware Solution (OCVS) について学習できるチュートリアルです"
 permalink: /vmware/
 layout: single
-entries_layout: grid
+tags: "vmware"
 show_excerpts: true
-classes: wide
 toc: true
 date: "2023-10-04"
 lastmod: "2023-10-04"
 ---
 
-このページでは、Oracle Cloud VMware Solution (OCVS) に関連するチュートリアル、ガイド、ブログなどへのリンクをカテゴリ毎にまとめています。  
-情報ソースとして、主に以下のサイトに掲載されている記事やエントリを定期的に収集して掲載しています。情報は各エントリの作成日時点のものになりますので、必ずしも現時点での最新の情報ではない点についてご注意ください。ほとんどの記事やエントリは、各ページに掲載日が記載されています。  
-このページは掲載までにタイムラグがある可能性がありますので、最新情報については各掲載元のページも併せてをご確認ください。  
+このページでは、Oracle Cloud VMware Solution (OCVS) 関連のチュートリアル、ガイド、ブログなどへのリンクをまとめています。  
+情報ソースとして、下記サイトに掲載されている記事やエントリを掲載しています。情報は各エントリの作成日時点のため、必ずしも最新情報ではない点についてご注意ください。ほとんどの記事やエントリには掲載日が記載されています。  
+また、このページは定期的に情報を収集し更新しているため、掲載までにタイムラグがある可能性があります。最新情報は掲載元の各ページも併せてご確認ください。  
 
 + [Oracle Architecture Center](https://docs.oracle.com/solutions/?q=&cType=solution-playbook&product=Oracle%20Cloud%20VMware%20Solution&sort=date-desc&lang=en)
-+ [Oracle BlogのOracle Cloud VMware Solution関連エントリ](https://blogs.oracle.com/cloud-infrastructure/search.html?contentType=Blog-Post&default=Oracle%20Cloud%20VMware%20Solution*)
-+ [VMware Cloud Tech Zone - Oracle Cloud VMware Solution](https://vmc.techzone.vmware.com/oracle-cloud-vmware-solution)
-+ [VMware BlogのOracle Cloud VMware Solution関連エントリ](https://blogs.vmware.com/?s=Oracle+Cloud+VMware+Solution)  
++ [Oracle Blog](https://blogs.oracle.com/cloud-infrastructure/search.html?contentType=Blog-Post&default=Oracle%20Cloud%20VMware%20Solution*)
++ [VMware Cloud Tech Zone](https://vmc.techzone.vmware.com/oracle-cloud-vmware-solution)
++ [VMware Blog](https://blogs.vmware.com/?s=Oracle+Cloud+VMware+Solution)  
 
 
 <!--
@@ -35,30 +34,32 @@ DNSの構成
 https://vmc.techzone.vmware.com/resource/configure-conditional-dns-forwarding-between-oci-and-ad-domain#implementation
 -->
 
+
+## Oracle Cloud VMware Solution (OCVS) の基本の理解
+
++ **[Oracle Cloud VMware Solution のご紹介](https://blogs.vmware.com/vmware-japan/2021/09/1-oracle-cloud-vmware-solution.html){:target="_blank"}**  
+    データベースへの負荷が高いエンタープライズ・システムをクラウドでもセキュアに、安定して高いパフォーマンス稼働でき、そしてクラウドの特徴であるエラスティックなインフラのメリットが得られるように、一から設計・構築されたのがOracle Cloud Infrastructure(OCI)です。そして、そのOCI上でVMware製品で構築された環境を提供するサービスが、Oracle Cloud VMware Solution(OCVS)になります。このブログエントリでは、OCVSとその特徴について解説しています。
+
+
 ## SDDC(Software Defined Data Center)の作成
 <!--
 Oracle Cloud VMwareソリューションの作成と構成(古い2021)
 https://docs.oracle.com/ja/learn/create_configure_ocvs/index.html
 -->
 
-+ **[Oracle Cloud VMware Solutionを使い始める](https://docs.oracle.com/ja/learn/ocvs-get-started/index.html){:target="_blank"}**
++ **[Oracle Cloud VMware Solutionを使い始める](https://docs.oracle.com/ja/learn/ocvs-get-started/index.html){:target="_blank"}**  
     Oracle Cloud VMware Solutionを利用するための事前準備を行います。
 
-+ **[Dense I/Oシェイプを使用したマルチホストOracle Cloud VMware Solution SDDCの作成](https://docs.oracle.com/ja/learn/ocvs-dense-shape/#introduction){:target="_blank"}**
-    ESXiホストにDense I/Oシェイプを利用してSDDC(Software Defined Data Center)を作成します。  
-    Dense I/Oシェイプは、ホスト内にSSD内蔵ディスクを搭載しており、そのディスクを利用してvSANデータストアを構成します。
-    この手順では、OCIコンソールのウィザードを使い、3ノード以上のvSphereクラスタで構成されるSDDCを作成します。
++ **[Dense I/Oシェイプを使用したマルチホストOracle Cloud VMware Solution SDDCの作成](https://docs.oracle.com/ja/learn/ocvs-dense-shape/#introduction){:target="_blank"}**  
+    ESXiホストにDense I/Oシェイプを利用してSDDC(Software Defined Data Center)を作成します。Dense I/Oシェイプは、ホスト内にSSD内蔵ディスクを搭載しており、そのディスクを利用してvSANデータストアを構成します。この手順では、OCIコンソールのウィザードを使い、3ノード以上のvSphereクラスタで構成されるSDDCを作成します。
 
-+ **[Standardシェイプを使用したマルチホストOracle Cloud VMware Solution SDDCの作成](https://docs.oracle.com/ja/learn/ocvs-standard-shape/){:target="_blank"}**
-    ESXiホストにStandardシェイプを利用してSDDC(Software Defined Data Center)を作成します。  
-    Standardシェイプは、ホスト内にはSSD内蔵ディスクを搭載していないため、ブロック・ボリュームをホストにアタッチし、それをVMFSデータストアとして構成します。
-    手順では、OCIコンソールのウィザードを使い、3ノード以上のvSphereクラスタで構成されるSDDCを作成します。
++ **[Standardシェイプを使用したマルチホストOracle Cloud VMware Solution SDDCの作成](https://docs.oracle.com/ja/learn/ocvs-standard-shape/){:target="_blank"}**  
+    ESXiホストにStandardシェイプを利用してSDDC(Software Defined Data Center)を作成します。Standardシェイプは、ホスト内にはSSD内蔵ディスクを搭載していないため、ブロック・ボリュームをホストにアタッチし、それをVMFSデータストアとして構成します。手順では、OCIコンソールのウィザードを使い、3ノード以上のvSphereクラスタで構成されるSDDCを作成します。
 
 
 ## 作成したSDDCへのアクセス
-+ **[Oracle Cloud InfrastructureのOracle Cloud VMware Solution SDDCリソースへのアクセス](https://docs.oracle.com/ja/learn/ocvs-access-resources/index.html){:target="_blank"}**
-    このチュートリアルは、OCI上にSDDCが構築済の状態からスタートします。  
-    LinuxホストとWindowsジャンプ・ホストの2種類の踏み台サーバーをVCN内に構築し、それらの踏み台サーバーを経由してパブリック・インターネットからvCenterやNSX ManagerコンソールなどのSDDCリソースにアクセスにアクセスする方法を説明します。  
++ **[Oracle Cloud InfrastructureのOracle Cloud VMware Solution SDDCリソースへのアクセス](https://docs.oracle.com/ja/learn/ocvs-access-resources/index.html){:target="_blank"}**    
+    このチュートリアルは、OCI上にSDDCが構築済の状態からスタートします。LinuxホストとWindowsジャンプ・ホストの2種類の踏み台サーバーをVCN内に構築し、それらの踏み台サーバーを経由してパブリック・インターネットからvCenterやNSX ManagerコンソールなどのSDDCリソースにアクセスにアクセスする方法を説明します。  
 
 <!--
 + **[Accessing Oracle Cloud VMware Solution from the Internet](https://blogs.vmware.com/cloud/2022/06/29/accessing-ocvs-from-the-internet/
@@ -81,9 +82,8 @@ https://docs.oracle.com/ja/learn/create_configure_ocvs/index.html
 -->
 
 ## SDDCから外部ネットワークへの接続の構成
-+ **[Solution Playbook : Oracle CloudおよびVMwareリソースへの接続について学ぶ](https://docs.oracle.com/ja/solutions/connect-oraclecloud-vmware-resources/index.html){:target="_blank"}**
-    Oracle Cloud VMware Solutionでは、VMwareリソースはOCI内の顧客テナンシのVCN上にデプロイされます。ユーザーは、VCNにアクセスするのと同様な方法を使用してこれらのリソースにアクセスできます。  
-    このソリューション・プレイブックでは、SDDCへの接続に関する様々なアプローチ、それぞれの利点、それぞれの制限およびその開始方法をカバーしています。  
++ **[Solution Playbook : Oracle CloudおよびVMwareリソースへの接続について学ぶ](https://docs.oracle.com/ja/solutions/connect-oraclecloud-vmware-resources/index.html){:target="_blank"}**  
+    Oracle Cloud VMware Solutionでは、VMwareリソースはOCI内の顧客テナンシのVCN上にデプロイされます。ユーザーは、VCNにアクセスするのと同様な方法を使用してこれらのリソースにアクセスできます。このソリューション・プレイブックでは、SDDCへの接続に関する様々なアプローチ、それぞれの利点、それぞれの制限およびその開始方法をカバーしています。  
 
 <!--
 その他のシナリオ候補
@@ -94,17 +94,14 @@ https://docs.oracle.com/ja/learn/create_configure_ocvs/index.html
 -->
 
 ## ストレージの管理
-+ **[OCI Block VolumesをOracle Cloud VMware Solutionと統合](https://docs.oracle.com/ja/learn/integrate-oci-block-volumes-ocvs/index.html){:target="_blank"}**
-    OCVSからOCIブロック・ボリュームをVMFSデータストアとして利用するためのチュートリアルです。  
-    ブロック・ボリュームを作成、iSCSI で ESXi ホストにアタッチします。それをvSphereからVMFSデータストアとして利用できるように構成します。  
++ **[OCI Block VolumesをOracle Cloud VMware Solutionと統合](https://docs.oracle.com/ja/learn/integrate-oci-block-volumes-ocvs/index.html){:target="_blank"}**  
+    OCVSからOCIブロック・ボリュームをVMFSデータストアとして利用するためのチュートリアルです。ブロック・ボリュームを作成、iSCSI で ESXi ホストにアタッチします。それをvSphereからVMFSデータストアとして利用できるように構成します。  
 
-+ **[Blog記事 : OCI File Storage service is now VMware certified (英語)](https://blogs.oracle.com/cloud-infrastructure/post/oci-fss-service-is-now-vmware-certified){:target="_blank"}**
-    OCVS から OCI ファイル・ストレージ・サービス (FSS) を NFS データストアとして利用することに関するブログ記事です。  
-    コンセプトの説明から、スクリーンショットを交えた構築方法まで解説しています。  
++ **[Blog記事 : OCI File Storage service is now VMware certified (英語)](https://blogs.oracle.com/cloud-infrastructure/post/oci-fss-service-is-now-vmware-certified){:target="_blank"}**  
+    OCVS から OCI ファイル・ストレージ・サービス (FSS) を NFS データストアとして利用することに関するブログ記事です。コンセプトの説明から、スクリーンショットを交えた構築方法まで解説しています。  
 
-+ **[Oracle Cloud VMware SolutionとのVMware vSANファイル共有の構成](https://docs.oracle.com/ja/learn/config-ocvs-vsan-file-share/index.html#architecture-overview){:target="_blank"}**
-    ESXiホストにDense I/Oシェイプを用いる場合、ホスト内蔵のNVMe SSD ディスクを使ってvSANデータストアが初期状態で構成されており、仮想マシンなどの配置場所として利用することができます。   
-    このチュートリアルでは、この構成済みのvSANデータストア内に VMware vSAN File Serviceを構成し、OCVS SDDC上の仮想マシンにNFS、CIFSなどのファイル共有機能を提供する方法について解説しています。
++ **[Oracle Cloud VMware SolutionとのVMware vSANファイル共有の構成](https://docs.oracle.com/ja/learn/config-ocvs-vsan-file-share/index.html#architecture-overview){:target="_blank"}**  
+    ESXiホストにDense I/Oシェイプを用いる場合、ホスト内蔵のNVMe SSD ディスクを使ってvSANデータストアが初期状態で構成されており、仮想マシンなどの配置場所として利用することができます。このチュートリアルでは、この構成済みのvSANデータストア内に VMware vSAN File Serviceを構成し、OCVS SDDC上の仮想マシンにNFS、CIFSなどのファイル共有機能を提供する方法について解説しています。
 
 <!--
 vSAN
@@ -120,14 +117,12 @@ vSAN
 -->
 
 ## ESXiホストの管理
-+ **[Oracle Cloud VMwareソリューションへのESXiホストの追加](https://docs.oracle.com/ja/learn/add_esxi_vmware_solution/index.html){:target="_blank"}**
-    このチュートリアルは、Oracle Cloud VMware SolutionのクラスタにESXiホストを追加するためのステップバイステップ・ガイドです。　　
-    ESXiホストの追加は、OCIコンソール上でベアメタル・サーバーを追加する作業と、vCenterおよびNSXマネージャのコンソール上で、vSphere、vSAN、NSXの各クラスタにESXiホストを追加する作業から成ります。このガイドではこの2つの作業について解説しています。  
++ **[Oracle Cloud VMwareソリューションへのESXiホストの追加](https://docs.oracle.com/ja/learn/add_esxi_vmware_solution/index.html){:target="_blank"}**　　
+    このチュートリアルは、Oracle Cloud VMware SolutionのクラスタにESXiホストを追加するためのステップバイステップ・ガイドです。ESXiホストの追加は、OCIコンソール上でベアメタル・サーバーを追加する作業と、vCenterおよびNSXマネージャのコンソール上で、vSphere、vSAN、NSXの各クラスタにESXiホストを追加する作業から成ります。このガイドではこの2つの作業について解説しています。  
     ※本ガイドはvSphere 7.0u1および7.0u2で有効です。vSphere 7.0u3およびvSphere 8では一部作業に非互換な箇所があります。  
 
-+ **[Oracle Cloud VMwareソリューションからのESXiホストの削除](https://docs.oracle.com/ja/learn/ocvs_delete_host/index.html){:target="_blank"}**
-    このチュートリアルは、Oracle Cloud VMware SolutionのクラスタからにESXiホストを削除するためのステップバイステップ・ガイドです。　　
-    ESXiホストの削除は、vCenterおよびNSXマネージャのコンソール上でvSphere、vSAN、NSXの各クラスタからESXiホストを削除する作業と、その後OCIコンソール上でベアメタル・サーバーをSDDCから削除する作業から成ります。このガイドではこの2つの作業について解説しています。  
++ **[Oracle Cloud VMwareソリューションからのESXiホストの削除](https://docs.oracle.com/ja/learn/ocvs_delete_host/index.html){:target="_blank"}**  
+    このチュートリアルは、Oracle Cloud VMware SolutionのクラスタからにESXiホストを削除するためのステップバイステップ・ガイドです。ESXiホストの削除は、vCenterおよびNSXマネージャのコンソール上でvSphere、vSAN、NSXの各クラスタからESXiホストを削除する作業と、その後OCIコンソール上でベアメタル・サーバーをSDDCから削除する作業から成ります。このガイドではこの2つの作業について解説しています。  
     ※本ガイドはvSphere 7.0u1および7.0u2で有効です。vSphere 7.0u3およびvSphere 8では一部作業に非互換な箇所があります。  
 
 <!--
@@ -164,13 +159,11 @@ vSAN
 -->
 
 
-## 監視
-+ **[OCI通知をOracle Cloud VMwareソリューションと統合](https://docs.oracle.com/ja/learn/oci-notifications-vmware-solution/index.html){:target="_blank"}**
-    OCIの通知(Notification)サービスを経由して、Oracle Cloud VMware Solutionから通知を送信するためのリファレンス・ソリューションです。このソリューションにより、インフラストラクチャの更新およびDevOps関連の通知を電子メールやSMSなどで受信できます。
-    OCI通知サービスは可用性が高く、低レイテンシのパブリッシュおよびサブスクライブ・サービスで、電子メール、SlackおよびPagerDutyで通知を簡単に受信できます。OCI通知サービスでは、軽量データ処理のためのOracle Functionsのトリガーもサポートしています。  
-    OCI通知サービスを使用して、問題がOracle Cloud VMware Solutionで検出されるたびに通知を送信します。ESXiベアメタル・インスタンスの障害に対してトリガーされるアラームを作成することもできます。  
+## SDDCの監視
++ **[OCI通知をOracle Cloud VMwareソリューションと統合](https://docs.oracle.com/ja/learn/oci-notifications-vmware-solution/index.html){:target="_blank"}**  
+    OCIの通知(Notification)サービスを経由して、Oracle Cloud VMware Solutionから通知を送信するためのリファレンス・ソリューションです。このソリューションにより、インフラストラクチャの更新およびDevOps関連の通知を電子メールやSMSなどで受信できます。OCI通知サービスは可用性が高く、低レイテンシのパブリッシュおよびサブスクライブ・サービスで、電子メール、SlackおよびPagerDutyで通知を簡単に受信できます。OCI通知サービスでは、軽量データ処理のためのOracle Functionsのトリガーもサポートしています。OCI通知サービスを使用して、問題がOracle Cloud VMware Solutionで検出されるたびに通知を送信します。ESXiベアメタル・インスタンスの障害に対してトリガーされるアラームを作成することもできます。  
 
-<!-->
+<!--
 - vCenter監視
 - ホスト監視
 -->
@@ -184,10 +177,9 @@ vSAN
   https://blogs.oracle.com/cloud-infrastructure/post/disaster-recovery-to-ocvs
 -->
 
-## VMware HCX (Hybrid Cloud Extention) の利用
-+ **[Oracle Cloud VMware Solutionを使用したVMware HCXの構成](https://docs.oracle.com/ja/learn/oci-ocvs-hcx/index.html){:target="_blank"}**
-    Oracle Cloud VMware Solutionは、VMware HCX Advancedライセンスが同梱されており、また追加でVMware HCX Enterpriseライセンスも提供しています。VMware HCXは、アプリケーションの移行を簡素化し、ワークロードをリバランスし、データ・センターとクラウド間のディザスタ・リカバリを最適化するために設計されたアプリケーション・モビリティ・プラットフォームであるソフトウェア・スイートです。  
-    このチュートリアルでは、Oracle Cloud VMware Solutionの導入概要、VMware HCXの概要、実装に必要な前提条件、および段階的な導入ガイドラインについて説明します。  
+## VMware HCX (Hybrid Cloud Extention)
++ **[Oracle Cloud VMware Solutionを使用したVMware HCXの構成](https://docs.oracle.com/ja/learn/oci-ocvs-hcx/index.html){:target="_blank"}**  
+    Oracle Cloud VMware Solutionは、VMware HCX Advancedライセンスが同梱されており、また追加でVMware HCX Enterpriseライセンスも提供しています。VMware HCXは、アプリケーションの移行を簡素化し、ワークロードをリバランスし、データ・センターとクラウド間のディザスタ・リカバリを最適化するために設計されたアプリケーション・モビリティ・プラットフォームであるソフトウェア・スイートです。このチュートリアルでは、Oracle Cloud VMware Solutionの導入概要、VMware HCXの概要、実装に必要な前提条件、および段階的な導入ガイドラインについて説明します。  
 
 <!--
 - Solution Playbook : オンプレミスVMwareワークロードをクラウドに移行します
@@ -204,18 +196,18 @@ vSAN
   https://blogs.oracle.com/cloud-infrastructure/post/announcing-vmware-hcx-enterprise-for-oracle-cloud-vmware-solution
 -->
 
-## VMware Horizon の利用
-+ **[Oracle Cloud VMwareソリューションにVMware Horizonをインストールおよび構成](https://docs.oracle.com/ja/learn/horizon_on_ocvs/index.html){:target="_blank"}**
+## VMware Horizon
++ **[Oracle Cloud VMwareソリューションにVMware Horizonをインストールおよび構成](https://docs.oracle.com/ja/learn/horizon_on_ocvs/index.html){:target="_blank"}**  
     このチュートリアルでは、Oracle Cloud VMware SolutionでVMware Hizon 8.xをインストールして構成する方法を示します。このチュートリアルではvSphere 7.0デプロイメントを使用しましたが、vSphere 6.7に関連するステップについても説明します。
 
-+ **[Horizon on Oracle Cloud VMware Solution Configuration(英語のチュートリアル)](https://techzone.vmware.com/resource/horizon-oracle-cloud-vmware-solution-configuration){:target="_blank"}**
++ **[Horizon on Oracle Cloud VMware Solution Configuration(英語のチュートリアル)](https://techzone.vmware.com/resource/horizon-oracle-cloud-vmware-solution-configuration){:target="_blank"}**  
 
-+ **[Unified Access GatewayおよびOCI IAMアイデンティティ・ドメインでのVMware Horizonに対するSAML 2.0認証の有効化](https://docs.oracle.com/ja/learn/vmware-uag-oci-identity-domains/){:target="_blank"}**
++ **[Unified Access GatewayおよびOCI IAMアイデンティティ・ドメインでのVMware Horizonに対するSAML 2.0認証の有効化](https://docs.oracle.com/ja/learn/vmware-uag-oci-identity-domains/){:target="_blank"}**  
     VMware Horizonは、オンプレミスからクラウドに仮想デスクトップとアプリケーションを効率的かつ安全に配信できるよう支援しています。このチュートリアルでは、Oracle Cloud Infrastructure (OCI) Identity and Access Management (IAM)アイデンティティ・ドメインをSAMLアイデンティティ・プロバイダ(IdP)としてのVMware Unified Access GatewayTMとの統合として構成し、VMware Horizon仮想デスクトップおよびアプリケーションにアクセスする方法について説明します。
 
-+ **[(参考)Blog : Oracle Cloud VMware SolutionのVMware Horizon検証設計](https://blogs.oracle.com/oracle4engineer/post/ja-vmware-horizon-validated-design){:target="_blank"}**
++ **[(参考)Blog : Oracle Cloud VMware SolutionのVMware Horizon検証設計](https://blogs.oracle.com/oracle4engineer/post/ja-vmware-horizon-validated-design){:target="_blank"}**  
 
-+ **[(参考)VMware Horizon on Oracle Cloud VMware Solution (OCVS) Support (88202)](https://kb.vmware.com/s/article/88202){:target="_blank"}**
++ **[(参考)VMware Horizon on Oracle Cloud VMware Solution (OCVS) Support (88202)](https://kb.vmware.com/s/article/88202){:target="_blank"}**  
 
 
 <!--
