@@ -1,0 +1,542 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="本チュートリアルは、Vaultサービスと連携してユーザー管理の暗号鍵を使ってObject Storageを作成する手順を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/id-security/vault-basedatabase/">
+
+
+  <meta property="og:description" content="本チュートリアルは、Vaultサービスと連携してユーザー管理の暗号鍵を使ってObject Storageを作成する手順を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/id-security/vault-basedatabase/vault-basedatabase01.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-10-06T10:31:24+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/id-security/vault-basedatabase/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/id-security/vault-basedatabase/vault-basedatabase01.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する
+
+        
+      </h1>
+      
+        <p class="page__lead">本チュートリアルは、Vaultサービスと連携してユーザー管理の暗号鍵を使ってObject Storageを作成する手順を紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/id-security" itemprop="item"><span itemprop="name">Id security</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">アイデンティティとセキュリティ編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/id-security/web-application-firewall-v2/">OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/waf-edge-policy/">OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/networkfirewall-ips/">OCI Network FirewallのIPS/IDS機能を検証する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/networkfirewall-la/">OCI Network Firewallのログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vault-basedatabase/" class="active">Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vault-compute/">Vaultサービスを使ってコンピュート・インスタンスのブート・ボリュームをユーザー管理の暗号鍵で暗号化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vault-objectstorage/">Vaultサービスを使ってObject Storageをユーザー管理の暗号鍵で暗号化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomains-AzureAD/">OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomain-apex-sso/">OCI IAM Identity DomainでAPEXで作成したアプリケーションに認証と認可をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomain-mfa/">OCI IAM Identity DomainでユーザーのMFAを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/security-zone/">Security Zoneを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vulnerability-scanning/">Vulnerability Scanning Serviceを設定する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する">
+    <meta itemprop="description" content="本チュートリアルは、Vaultサービスと連携してユーザー管理の暗号鍵を使ってObject Storageを作成する手順を紹介します。">
+    <meta itemprop="datePublished" content="2023-10-06T10:31:24+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-vaultの作成">1. Vaultの作成</a></li><li><a href="#2-base-databaseインスタンスの作成">2. Base Databaseインスタンスの作成</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。</p>
+
+<p>通常、OCIのオブジェクト・ストレージやブート・ボリュームなどのストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。
+OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。</p>
+
+<p>また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。</p>
+
+<p>OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/KeyManagement/Concepts/keyoverview.htm">ドキュメント</a>をご参照ください。</p>
+
+<p>本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してBase Databaseを暗号化する手順を紹介します。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します）</li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-vaultの作成">1. Vaultの作成</h1>
+
+<p>OCIチュートリアル<a href="https://oracle-japan.github.io/ocitutorials/id-security/vault-objectstorage/">Vaultサービスを使ってObject Storageをユーザー管理の暗号鍵で暗号化する</a>の手順2と手順3を参考にVaultと暗号鍵を作成し、インポートしてください。</p>
+
+<p>前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。</p>
+
+<p><br /></p>
+
+<h1 id="2-base-databaseインスタンスの作成">2. Base Databaseインスタンスの作成</h1>
+
+<p>OCIコンソール　→ Oracle Database → Oracleベース・データベース・サービス　→　「DBシステムの作成」ボタンをクリックします。
+　
+ <img src="vault-basedatabase01.png" alt="画面ショット1" /></p>
+
+<p>OCIチュートリアルOracle Database編<a href="https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/">101:Oracle Cloud上でOracle Databaseを使おう</a>を参考に、DBシステムの作成画面の各項目を入力、選択します。</p>
+
+<p>DBシステムの作成画面の「データベース情報」画面の一番下の「拡張オプションの表示」を選択します。
+ <img src="vault-basedatabase02.png" alt="画面ショット2" /></p>
+
+<p>暗号化のタブを開き、「顧客管理キーの使用」をチェックします。</p>
+
+<p><img src="vault-basedatabase03.png" alt="画面ショット3" /></p>
+
+<p>顧客管理キーの使用について、確認画面が表示されるので「はい、顧客管理キーを有効化します」を選択します。</p>
+
+<p><img src="vault-basedatabase05.png" alt="画面ショット5" /></p>
+
+<p>手順1で作成したボールトとマスター暗号化キーをそれぞれ選択し、「DBシステムの作成」ボタンをクリックします。</p>
+
+<p><img src="vault-basedatabase04.png" alt="画面ショット4" /></p>
+
+<p>以上で、ユーザー管理の暗号鍵を使用したBase Databaseインスタンスを暗号化する手順は完了です。</p>
+
+<p>Base Database詳細画面のデータベース詳細から、顧客管理の暗号鍵が暗号化に使われていることを確認できます。</p>
+
+<p><img src="vault-basedatabase06.png" alt="画面ショット6" /></p>
+
+<p>また、暗号鍵はDBシステムの詳細画面→「他のアクション」→「キーのローテーション」から、暗号化に使用する暗号鍵をローテーションすることができます。</p>
+
+<p><img src="vault-basedatabase07.png" alt="画面ショット7" /></p>
+
+<p>「暗号化キーの管理」からは、暗号化に使用するVault、およびマスター暗号キーを変更することが可能です。</p>
+
+<p><img src="vault-basedatabase08.png" alt="画面ショット8" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-06T10:31:24+09:00">October 6, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Vault%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6Base+Database%E3%82%92%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E7%AE%A1%E7%90%86%E3%81%AE%E6%9A%97%E5%8F%B7%E9%8D%B5%E3%81%A7%E6%9A%97%E5%8F%B7%E5%8C%96%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fid-security%2Fvault-basedatabase%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fid-security%2Fvault-basedatabase%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fid-security%2Fvault-basedatabase%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/id-security/networkfirewall-la/" class="pagination--pager" title="OCI Network Firewallのログを分析する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/id-security/vault-compute/" class="pagination--pager" title="Vaultサービスを使ってコンピュート・インスタンスのブート・ボリュームをユーザー管理の暗号鍵で暗号化する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
