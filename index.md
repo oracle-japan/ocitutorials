@@ -76,9 +76,9 @@ OCI上にHPCシステムを構築するためのチュートリアルです。
 OCIが提供するベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等を活用し、様々な用途のHPCシステムをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築する方法を学習します。  
 構築するHPCクラスタは、NFS、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、DockerやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。
 
-- **[Oracle Cloud VMware Solution集](/ocitutorials/vmware/)**
-Oracle Cloud VMware Solution (OCVS) について学習できるチュートリアルです。  
-OCVSはOCI上でVMware製品を利用できる仮想化基盤です。OCI内の顧客テナンシのVCN上に直接デプロイされるため、コンピュート、DBCSをはじめとするOCIのネイティブサービスと低遅延かつシームレスに連携し、オンプレミスのVMware環境の短期間かつスムーズなクラウド移行を実現します。また、OCIのUniversal Creditを利用した従量制でのVMware利用が可能です。
+- **[Oracle Cloud VMware Solution編](/ocitutorials/vmware/)**
+このページは、Oracle Cloud VMware Solution (OCVS) 関連のチュートリアル、ガイド、ブログなどへのリンク集です。
+Oracle Cloud VMware Solution(OCVS)は、OCI(Oracle Cloud Infrastructure)上でVMwareの仮想化基盤を利用することができるクラウドサービスです。コンピュート、データベース(Oracle DBCS)などのOCIネイティブサービス群と同じく顧客テナンシのVCN上のベアメタル・インスタンスに直接デプロイされるため、ESXi、vCenterなどVMware製品の使い勝手はそのままに、OCIが備える高性能なコンピュート、低遅延のネットワーク、耐久性のあるブロック・ボリュームなどを利用し、オンプレミスVMware環境のシームレスなクラウド移行や、リソース拡張先として活用することができます。
 
 
 ## その他のお役立ち情報
