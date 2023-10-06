@@ -1378,28 +1378,28 @@ Complete!
 JMeterをダウンロードします。
 
 ```sh
-wget https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.4.3.tgz
+wget https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.6.2.tgz
 ```
 
 ***コマンド結果***
 
 ```sh
---2022-02-07 08:33:34--  https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.4.3.tgz
+--2022-02-07 08:33:34--  https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.6.2.tgz
 Resolving ftp.jaist.ac.jp (ftp.jaist.ac.jp)... 150.65.7.130, 2001:df0:2ed:feed::feed
 Connecting to ftp.jaist.ac.jp (ftp.jaist.ac.jp)|150.65.7.130|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 70796171 (68M) [application/x-gzip]
-Saving to: ‘apache-jmeter-5.4.3.tgz’
+Saving to: ‘apache-jmeter-5.6.2.tgz’
 
 100%[=======================================================================================>] 70,796,171  5.71MB/s   in 12s    
 
-2022-02-07 08:33:47 (5.49 MB/s) - ‘apache-jmeter-5.4.3.tgz’ saved [70796171/70796171]
+2022-02-07 08:33:47 (5.49 MB/s) - ‘apache-jmeter-5.6.2.tgz’ saved [70796171/70796171]
 ```
 
 アーカイブを展開します。
 
 ```sh
-tar -zxvf apache-jmeter-5.4.3.tgz
+tar -zxvf apache-jmeter-5.6.2.tgz
 ```
 
 作業ディレクトリを作成します。
@@ -1423,7 +1423,7 @@ vim testplan.jmx
 
 ```sh
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.3">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.2">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -1478,7 +1478,7 @@ vim testplan.jmx
 負荷をかけます。止める場合は、「Ctrl + C」で停止できます。
 
 ```sh
-JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
 
 途中でエラーで停止する場合は、以下コマンドで「testplan.jtl」ファイルを削除して、負荷をかけなおしてください。
@@ -1488,14 +1488,14 @@ rm -rf testplan.jtl
 ```
 
 ```sh
-JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
 
 {% capture notice %}**Jmeter起動時のエラーについて**  
 Computeで利用可能なメモリの状態によって、以下のようなエラーが発生する場合があります。  
 
 ```sh
-JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x00000004f0800000, 12884901888, 0) failed; error='Cannot allocate memory' (errno=12)
 #
 # There is insufficient memory for the Java Runtime Environment to continue.
@@ -1507,7 +1507,7 @@ OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x00000004f0800000, 12
 上記のエラーが発生した場合は、ヒープサイズを以下のように`8G`にして実行してください。  
 
 ```sh
-JVM_ARGS="-Xms8G -Xmx8G"  ../apache-jmeter-5.4.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms8G -Xmx8G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
 {% endcapture %}
 <div class="notice--warning">
