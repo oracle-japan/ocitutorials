@@ -3,14 +3,14 @@ title: "Oracle Cloud VMware Solution編"
 excerpt: "OCI上でVMwareの仮想化環境を利用できる Oracle Cloud VMware Solution (OCVS) 関連のチュートリアル、ガイド、ブログなどへのリンク集です"
 permalink: /vmware/
 layout: single
-tags: "vmware" "OCVS"
+tags: "vmware"
 show_excerpts: true
 toc: true
 date: "2023-10-04"
 lastmod: "2023-10-04"
 ---
 
-Oracle Cloud VMware Solution(OCVS)は、Oracle Cloud Infrastructure(OCI)上でVMwareの仮想化基盤を利用することができるクラウドサービスです。OCIネイティブサービス群と同様に顧客テナンシのVCN上のベアメタル・インスタンスに直接デプロイされるため、ESXi、vCenterなどVMware製品の使い勝手はそのままに、OCIが備える高性能なコンピュート、低遅延のネットワーク、耐久性のあるブロック・ボリュームなどを活用し、オンプレミスVMware環境のシームレスなクラウド移行先や、L2延伸によるクラウドへのリソース拡張先としてOCIを利用することができます。
+Oracle Cloud VMware Solution(OCVS)は、Oracle Cloud Infrastructure(OCI)上でVMwareの仮想化基盤を利用することができるクラウドサービスです。OCIネイティブサービス群と同様に顧客テナンシのVCN上のベアメタル・インスタンスに直接デプロイされるため、ESXi、vCenterなどVMware製品の使い勝手はそのままに、OCIが備える高性能なコンピュート、低遅延のネットワーク、耐久性のあるブロック・ボリュームなどを活用し、オンプレミスVMware環境の移行先やL2延伸によるリソース拡張先としてOCIを利用することができます。
 
 このページは、Oracle Cloud VMware Solution (OCVS) 関連のチュートリアル、ガイド、ブログなどへのリンク集で、情報ソースとして下記サイトを利用しています。情報は各エントリの作成日時点のため、必ずしも最新情報ではない点についてご注意ください。ほとんどの記事やエントリには掲載日が記載されています。  
 一部のリンクは、Oracle、VMwareいずれの公式ページとも関係のない、外部のブログ記事などを含んでいる場合があります。外部リンク記事の掲載内容に関してOracle社、VMware社へのお問い合わせはご遠慮ください。
@@ -21,7 +21,7 @@ Oracle Cloud VMware Solution(OCVS)は、Oracle Cloud Infrastructure(OCI)上でVM
 + [VMware Cloud Tech Zone](https://vmc.techzone.vmware.com/oracle-cloud-vmware-solution)
 + [VMware Blog](https://blogs.vmware.com/?s=Oracle+Cloud+VMware+Solution)  
 
-OCVSは、OCIの無償環境である[Oracle Cloud Free Tier](https://www.oracle.com/jp/cloud/free/){:target="_blank"}では利用することができませんが、VMware社のオンライン・[ハンズオンラボ](#ハンズオンラボ)を使うことで、このページのシナリオの一部を試すことができます。OCIの商用契約をお持ちの場合には、全てのシナリオを試すことができます。  
+OCVSは、OCIの無償環境[Oracle Cloud Free Tier](https://www.oracle.com/jp/cloud/free/){:target="_blank"}では利用することができませんが、VMware社のオンライン・[ハンズオンラボ](#ハンズオンラボ)を使うことで、このページのシナリオの一部を試すことができます。OCIの商用契約をお持ちの場合には、全てのシナリオを試すことができます。  
 もしOCVSの試用やPoC(Proof of Concept)などをご希望の場合は、日本オラクルの営業担当者(担当者が分からない場合は[こちら](https://www.oracle.com/jp/corporate/contact/){:target="_blank"})までお問い合わせください。
 
 <!-- (未掲載)
