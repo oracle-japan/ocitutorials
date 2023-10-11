@@ -1,0 +1,801 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。 初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/_pages/vmware/">
+
+
+  <meta property="og:description" content="Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。 初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/_pages/vmware/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Cloud Infrastructure チュートリアル
+
+        
+      </h1>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/_pages" itemprop="item"><span itemprop="name">_pages</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current"></li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    
+    
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#oracle-cloud-vmware-solution-ocvs-の理解">Oracle Cloud VMware Solution (OCVS) の理解</a></li><li><a href="#ハンズオンラボ">ハンズオンラボ</a></li><li><a href="#sddcsoftware-defined-data-centerの作成">SDDC(Software Defined Data Center)の作成</a></li><li><a href="#sddcへのアクセス">SDDCへのアクセス</a></li><li><a href="#外部ネットワークとの接続">外部ネットワークとの接続</a></li><li><a href="#ストレージの管理">ストレージの管理</a></li><li><a href="#esxiホストの管理">ESXiホストの管理</a></li><li><a href="#sddcの監視">SDDCの監視</a></li><li><a href="#ociのサービスとの接続">OCIのサービスとの接続</a></li><li><a href="#高度なネットワークの構成">高度なネットワークの構成</a></li><li><a href="#vmware-hcx-hybrid-cloud-extention">VMware HCX (Hybrid Cloud Extention)</a></li><li><a href="#vmware-horizon">VMware Horizon</a></li><li><a href="#vmware-aria-operations-旧vmware-vrealize">VMware Aria Operations (旧VMware vRealize)</a></li><li><a href="#cloud-director">Cloud Director</a></li><li><a href="#vmware-tanzu">VMware Tanzu</a></li><li><a href="#red-hat-openshift">Red Hat OpenShift</a></li><li><a href="#データ保護dr">データ保護、DR</a><ul><li><a href="#rackware">Rackware</a></li><li><a href="#veeam">Veeam</a></li><li><a href="#commvault">Commvault</a></li><li><a href="#zerto">Zerto</a></li><li><a href="#actifio">Actifio</a></li></ul></li><li><a href="#アップグレード">アップグレード</a></li><li><a href="#セキュリティ">セキュリティ</a></li><li><a href="#その他">その他</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>Oracle Cloud VMware Solution(OCVS)は、Oracle Cloud Infrastructure(OCI)上でVMwareの仮想化基盤を利用することができるクラウドサービスです。OCIネイティブサービス群と同様に顧客テナンシのVCN上のベアメタル・インスタンスに直接デプロイされるため、ESXi、vCenterなどVMware製品の使い勝手はそのままに、OCIが備える高性能なコンピュート、低遅延のネットワーク、耐久性のあるブロック・ボリュームなどを活用し、オンプレミスVMware環境のシームレスなクラウド移行先や、L2延伸によるクラウドへのリソース拡張先としてOCIを利用することができます。</p>
+
+<p>このページは、Oracle Cloud VMware Solution (OCVS) 関連のチュートリアル、ガイド、ブログなどへのリンク集で、情報ソースとして下記サイトを利用しています。情報は各エントリの作成日時点のため、必ずしも最新情報ではない点についてご注意ください。ほとんどの記事やエントリには掲載日が記載されています。<br />
+一部のリンクは、Oracle、VMwareいずれの公式ページとも関係のない、外部のブログ記事などを含んでいる場合があります。外部リンク記事の掲載内容に関してOracle社、VMware社へのお問い合わせはご遠慮ください。</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/solutions/?product=Oracle%20Cloud%20VMware%20Solution&amp;sort=date-desc&amp;lang=en">Oracle Architecture Center</a></li>
+  <li><a href="https://docs.oracle.com/learn/?product=en%2Fcloud%2Foracle-cloud-infrastructure%2Fvmware-solution&amp;sort=date-desc&amp;lang=en">Oracle Help Center Learn</a></li>
+  <li><a href="https://blogs.oracle.com/cloud-infrastructure/search.html?contentType=Blog-Post&amp;default=Oracle%20Cloud%20VMware%20Solution*">Oracle Blog</a></li>
+  <li><a href="https://vmc.techzone.vmware.com/oracle-cloud-vmware-solution">VMware Cloud Tech Zone</a></li>
+  <li><a href="https://blogs.vmware.com/?s=Oracle+Cloud+VMware+Solution">VMware Blog</a></li>
+</ul>
+
+<p>OCVSは、OCIの無償環境である<a href="https://www.oracle.com/jp/cloud/free/" target="_blank">Oracle Cloud Free Tier</a>では利用することができませんが、VMware社のオンライン・<a href="#ハンズオンラボ">ハンズオンラボ</a>を使うことで、このページのシナリオの一部を試すことができます。OCIの商用契約をお持ちの場合には、全てのシナリオを試すことができます。<br />
+もしOCVSの試用やPoC(Proof of Concept)などをご希望の場合は、日本オラクルの営業担当者(担当者が分からない場合は<a href="https://www.oracle.com/jp/corporate/contact/" target="_blank">こちら</a>)までお問い合わせください。</p>
+
+<!-- (未掲載)
+- Oracle Cloud VMware Solution – Fault Domains
+  https://thomasthyen.com/oracle-cloud-vmware-solution-fault-domains
+  良記事、技術資料に取り込むべし
+
+  Oracle Cloud VMware Solution deployment options
+  https://blogs.oracle.com/cloud-infrastructure/post/oracle-cloud-vmware-solution-deployment-options
+
+  クラウドに高可用性のVMwareベースのSDDCをデプロイします
+  https://docs.oracle.com/ja/solutions/deploy-vmware-sddc-oci/explore-more-solutions.html#GUID-913C6EA5-6AB9-45DF-B7B4-DAFAF7E2AAB9
+-->
+
+<h2 id="oracle-cloud-vmware-solution-ocvs-の理解">Oracle Cloud VMware Solution (OCVS) の理解</h2>
+
+<ul>
+  <li><strong><a href="https://blogs.vmware.com/vmware-japan/2021/09/1-oracle-cloud-vmware-solution.html" target="_blank">Oracle Cloud VMware Solution のご紹介</a></strong><br />
+リンク先は、Oracle Cloud VMware Solution(OCVS)サービスとその特徴について解説したブログエントリです。チュートリアルではありませんが、実際に手を動かす前にOCVSの概要を掴むのにちょうどいい読み物になっています。</li>
+</ul>
+
+<!--
+Ebook : Getting Started with Oracle Cloud VMware Solution
+https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/docs/vmw-getting-started-with-oracle-cloud-vmware-solution-ebook.pdf
+-->
+
+<h2 id="ハンズオンラボ">ハンズオンラボ</h2>
+
+<ul>
+  <li><strong><a href="https://labs.hol.vmware.com/HOL/catalogs/lab/9582" target="_blank">VMware Hands-on Labs</a></strong><br />
+VMware社によるOracle Cloud VMware Solution(OCVS) のハンズオンラボのサイトです。OCVSをオンラインで触って確認することができるシナリオが用意されており、無料で利用することができます。OCVSをまずは触ってみたいという場合のスタート地点として最適です。<br />
+利用にあたっては、VMware社のサイトへのユーザー登録が必要です。</li>
+</ul>
+
+<h2 id="sddcsoftware-defined-data-centerの作成">SDDC(Software Defined Data Center)の作成</h2>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/ja/learn/ocvs-get-started/index.html" target="_blank">Oracle Cloud VMware Solutionを使い始める</a></strong><br />
+Oracle Cloud VMware Solutionを利用するための事前準備を行います。</li>
+</ul>
+
+<!-- 手順が古い(2021)ためObsolete
++ **[Oracle Cloud VMwareソリューションの作成と構成](https://docs.oracle.com/ja/learn/create_configure_ocvs/index.html){:target="_blank"}**  
+Oracle Cloud VMware Solutionを利用するための事前準備を行います。
+-->
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/ocvs-dense-shape/#introduction" target="_blank">Dense I/Oシェイプを使用したマルチホストOracle Cloud VMware Solution SDDCの作成</a></strong><br />
+ESXiホストにDense I/Oシェイプを利用してSDDC(Software Defined Data Center)を作成します。Dense I/Oシェイプは、ホスト内にSSD内蔵ディスクを搭載しており、そのディスクを利用してvSANデータストアを構成します。この手順では、OCIコンソールのウィザードを使い、3ノード以上のvSphereクラスタで構成されるSDDCを作成します。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/ocvs-standard-shape/" target="_blank">Standardシェイプを使用したマルチホストOracle Cloud VMware Solution SDDCの作成</a></strong><br />
+ESXiホストにStandardシェイプを利用してSDDC(Software Defined Data Center)を作成します。Standardシェイプは、ホスト内にはSSD内蔵ディスクを搭載していないため、ブロック・ボリュームをホストにアタッチし、それをVMFSデータストアとして構成します。手順では、OCIコンソールのウィザードを使い、3ノード以上のvSphereクラスタで構成されるSDDCを作成します。</p>
+  </li>
+</ul>
+
+<h2 id="sddcへのアクセス">SDDCへのアクセス</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/ocvs-access-resources/index.html" target="_blank">Oracle Cloud InfrastructureのOracle Cloud VMware Solution SDDCリソースへのアクセス</a></strong>  <br />
+このチュートリアルは、OCI上にSDDCが構築済の状態からスタートします。LinuxホストとWindowsジャンプ・ホストの2種類の踏み台サーバーをVCN内に構築し、それらの踏み台サーバーを経由してパブリック・インターネットからvCenterやNSX ManagerコンソールなどのSDDCリソースにアクセスにアクセスする方法を説明します。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/securely-access-oracle-cloud-vmware-solution-using-oci-bastion-service" target="_blank">Securely access Oracle Cloud VMware Solution using OCI Bastion service</a></strong></p>
+  </li>
+</ul>
+
+<!-- その他のシナリオ候補
+- ESXiホストへのssh(P1)
+- ホストコンソール(P1)
+- シリアルコンソール接続 (P3)
+-->
+
+<h2 id="外部ネットワークとの接続">外部ネットワークとの接続</h2>
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/solutions/connect-oraclecloud-vmware-resources/index.html" target="_blank">Solution Playbook : Oracle CloudおよびVMwareリソースへの接続について学ぶ</a></strong><br />
+Oracle Cloud VMware Solutionでは、VMwareリソースはOCI内の顧客テナンシのVCN上にデプロイされます。ユーザーは、通常のOCIのVCNにアクセスするのと同様な方法を使用してこれらのVMwareリソースにアクセスできます。このソリューション・プレイブックでは、OCVS SDDCへの接続に関する様々なアプローチ、それぞれの利点、それぞれの制限およびその開始方法をカバーしています。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/cloud/2021/12/07/accessing-the-internet-from-oracle-cloud-vmware-solution/" target="_blank">Accessing the Internet from Oracle Cloud VMware Solution</a>(英語)</strong>
+このブログ記事では、OCVS上に構築した仮想マシンからインターネットへのアクセスを構成する方法について解説しています。VCNにNATゲートウェイを追加し、Tier-0ゲートウェイのアップリンクに対してNATゲートウェイ経由でのインターネットへの経路を追加します。これによりインターネットへのアウトバウンドアクセスが可能になります。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/cloud/2022/06/29/accessing-ocvs-from-the-internet/" target="_blank">Accessing Oracle Cloud VMware Solution from the Internet</a>(英語)</strong>
+このブログ記事は、上記 Accessing the Internet from Oracle Cloud VMware Solution](https://blogs.vmware.com/cloud/2021/12/07/accessing-the-internet-from-oracle-cloud-vmware-solution/) とセットです。今度は逆に、インターネット側からのアクセスをOCVS上の仮想マシンにルーティングする方法について解説しています。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/learn-how-attach-a-public-ip-guest-vm-oracle-cloud-vmware-solution" target="_blank">Learn How to Attach a Public IP to a Guest VM in Oracle Cloud VMware Solution</a>(英語)</strong>
+こちらのブログ記事もインターネット側からのアクセスをOCVS上の仮想マシンにルーティングする方法について解説したものです。上記記事と合わせてご覧ください。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/designlet-connectivity-private-fastconnect-peering-oracle-cloud-vmware-solution" target="_blank">Designlet: Connectivity with Private FastConnect Peering on Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+</ul>
+
+<!-- その他のシナリオ候補
+1. VCNとの連携 (P1)
+2. FastConnect/VPN経由のオンプレ連携 (P3)
+3. サービス・ゲートウェイ経由でObjet Storageの連携(Email、Autonomous Database、Oracle Cloudの (P1)
+-->
+
+<h2 id="ストレージの管理">ストレージの管理</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/storage-designs-oracle-cloud-vmware-solution" target="_blank">Know your storage options and designs with Oracle Cloud VMware Solution</a>(英語)</strong><br />
+このブログ記事では、Oracle Cloud VMware Solution (OCVS) で利用することができる様々なストレージサービスに関して、種類、利点、制限や使い方などについて整理しています。<br />
+※本ブログ記事はチュートリアルではありません</p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/integrate-oci-block-volumes-ocvs/index.html" target="_blank">OCI Block VolumesをOracle Cloud VMware Solutionと統合</a></strong><br />
+OCVSからOCIブロック・ボリュームをVMFSデータストアとして利用するためのチュートリアルです。ブロック・ボリュームを作成、iSCSI で ESXi ホストにアタッチし、それをvSphereからVMFSデータストアとして利用できるように構成します。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/designlet-create-iscsi-vmfs-datastore-using-oracle-cloud-block-storage-volume" target="_blank">Designlet: Create iSCSI VMFS Datastore using Oracle Cloud Block Storage Volume</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/oci-fss-service-is-now-vmware-certified" target="_blank">OCI File Storage service is now VMware certified</a>(英語)</strong><br />
+OCVS から OCI ファイル・ストレージ・サービス (FSS) を NFS データストアとして利用することに関するブログ記事です。チュートリアルではありませんが、コンセプトの説明からスクリーンショットを交えた構築方法まで解説しています。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/designlet-create-nfs-datastore-using-oracle-cloud-file-storage-service" target="_blank">Designlet: Create NFS Datastore using Oracle Cloud File Storage Service</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://thomasthyen.com/oracle-cloud-vmware-solution-vsan-sizing-scaling" target="_blank">Oracle Cloud VMware Solution – vSAN sizing &amp; scaling</a>(英語)</strong><br />
+OCVSでESXiホストにDense I/Oシェイプを用いる場合、ホスト内蔵のNVMe SSDディスクを使ってvSANデータストアが構成されます。このブログ記事では、vSANのサイジング方法や、ホスト数の増減に伴う容量の変動に関する考え方、サイジングに影響を与えるvSANのオプションとその選択の考慮点などについてわかりやすくまとめています。<br />
+※このブログ記事はOracle、VMwareいずれの公式ページでもありません</p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/config-ocvs-vsan-file-share/index.html#architecture-overview" target="_blank">Oracle Cloud VMware SolutionとのVMware vSANファイル共有の構成</a></strong><br />
+OCVSでESXiホストにDense I/Oシェイプを用いる場合、ホスト内蔵のNVMe SSD ディスクを使ってvSANデータストアが初期状態で構成されており、仮想マシンなどの配置場所として利用することができます。このチュートリアルでは、この構成済みのvSANデータストア内に VMware vSAN File Serviceを構成し、OCVS SDDC上の仮想マシンにNFS、CIFSなどのファイル共有機能を提供する方法について解説しています。</p>
+  </li>
+</ul>
+
+<!-- ちょっと古い? 要確認
++ **[SQL Server Failover Cluster Instance on VMware vSAN Native](https://core.vmware.com/resource/sql-server-failover-cluster-instance-vmware-vsan-native){:target="_blank"}**(英語)  
+-->
+
+<h2 id="esxiホストの管理">ESXiホストの管理</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/add_esxi_vmware_solution/index.html" target="_blank">Oracle Cloud VMwareソリューションへのESXiホストの追加</a></strong>　　
+このチュートリアルは、Oracle Cloud VMware SolutionのクラスタにESXiホストを追加するためのステップバイステップ・ガイドです。ESXiホストの追加は、OCIコンソール上でベアメタル・サーバーを追加する作業と、vCenterおよびNSXマネージャのコンソール上で、vSphere、vSAN、NSXの各クラスタにESXiホストを追加する作業から成ります。このガイドではこの2つの作業について解説しています。<br />
+※本ガイドはvSphere 7.0u1および7.0u2で有効です。vSphere 7.0u3およびvSphere 8では一部作業に非互換な箇所があります。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/ocvs_delete_host/index.html" target="_blank">Oracle Cloud VMwareソリューションからのESXiホストの削除</a></strong><br />
+このチュートリアルは、Oracle Cloud VMware SolutionのクラスタからにESXiホストを削除するためのステップバイステップ・ガイドです。ESXiホストの削除は、vCenterおよびNSXマネージャのコンソール上でvSphere、vSAN、NSXの各クラスタからESXiホストを削除する作業と、その後OCIコンソール上でベアメタル・サーバーをSDDCから削除する作業から成ります。このガイドではこの2つの作業について解説しています。<br />
+※本ガイドはvSphere 7.0u1および7.0u2で有効です。vSphere 7.0u3およびvSphere 8では一部作業に非互換な箇所があります。</p>
+  </li>
+</ul>
+
+<!--
+その他のシナリオ候補
+ホストリプレース (P1)
+-->
+
+<h2 id="sddcの監視">SDDCの監視</h2>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/ja/learn/oci-notifications-vmware-solution/index.html" target="_blank">OCI通知をOracle Cloud VMwareソリューションと統合</a></strong><br />
+OCIの通知(Notification)サービスを経由して、Oracle Cloud VMware Solutionから通知を送信するためのリファレンス・ソリューションです。このソリューションにより、インフラストラクチャの更新およびDevOps関連の通知を電子メールやSMSなどで受信できます。OCI通知サービスは可用性が高く、低レイテンシのパブリッシュおよびサブスクライブ・サービスで、電子メール、SlackおよびPagerDutyで通知を簡単に受信できます。OCI通知サービスでは、軽量データ処理のためのOracle Functionsのトリガーもサポートしています。OCI通知サービスを使用して、問題がOracle Cloud VMware Solutionで検出されるたびに通知を送信します。ESXiベアメタル・インスタンスの障害に対してトリガーされるアラームを作成することもできます。</li>
+</ul>
+
+<!--
+- vCenter監視
+- ホスト監視
+-->
+
+<h2 id="ociのサービスとの接続">OCIのサービスとの接続</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/solutions/ocvs-oci/index.html" target="_blank">自律型データベースに接続されたVMware SDDCへの複数層アプリケーション・スタックのデプロイ</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/connect-from-an-oracle-cloud-vmware-solution-virtual-machine-to-oracle-autonomous-database-on-oci" target="_blank">Connect from an Oracle Cloud VMware Solution virtual machine to Oracle Autonomous Database on OCI: Part 1</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/vmware-japan/2022/02/2-oracle-cloud-vmware-solution%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8Boracle-database%E9%80%A3%E6%90%BA%E3%81%A8%E7%A7%BB%E8%A1%8C.html" target="_blank">#2 Oracle Cloud VMware SolutionにおけるOracle Database連携と移行</a></strong></p>
+  </li>
+</ul>
+
+<h2 id="高度なネットワークの構成">高度なネットワークの構成</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/oci-load-balancer-vmware/index.html" target="_blank">Oracle Cloud VMware SolutionアプリケーションのOCIロード・バランシングの構成</a></strong><br />
+このチュートリアルは、Oracle Cloud VMware Solution内でホストされているアプリケーションをロード・バランシングするために、Oracle Cloud Infrastructure (OCI) Load Balancerをデプロイおよび構成するステップバイステップ・ガイドです。Load Balancerサービスを使用すると、1つのエントリ・ポイントから仮想クラウド・ネットワーク(VCN)からアクセス可能な複数のサーバーに自動的にトラフィックを分散できます。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/cloud/2021/05/28/vlan-backed-port-groups-oracle-cloud-vmware-solution/" target="_blank">Creating VLAN-Backed Port Groups in Oracle Cloud VMware Solution</a>(英語)</strong><br />
+OCIの仮想ネットワーク(VCN)はVLANというレイヤー2ネットワーク機能を提供していますが、OCVSの初期状態ではこのVLANはvMotionなどSDDCの管理用途にのみ使用されており、仮想マシンを配置するワークロード・セグメントはVLANを使用しないNSX-Tオーバーレイ・ネットワークとして作成され、VCNとはTier-0ルーターを介してレイヤー3でルーティングされるように構成されています。<br />
+一方ユーザーは、追加でVLANをアンダーレイとして利用するVLANバック・セグメントを構築することができます。VLANバック・セグメントを利用すると、そのセグメントとVCNのサブネットの間がTier-0ルーターを介さずVCNルーターで直接ルーティングされるようになるため、VCN内のネイティブ・サービス群(OCIコンピュート、Database Cloud Serviceなど)とより低遅延で接続できるようになります。このシナリオは、OCVS上でアプリケーションを稼働し、OCIのネイティブサービス上で稼働するデータベースと接続するような構成において特に利点があるほか、オンプレミスでVLANを利用している場合にクラウド移行をより容易にする効果もあります。　　
+このブログ記事では、OCIのVLANとVLANバックのNSX-Tセグメントを追加で作成するステップについて解説しています。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/a-detailed-guide-to-deploy-a-dmz-on-nsx-t-for-oracle-cloud-vmware-solution" target="_blank">A Detailed Guide to Deploy a DMZ on NSX-T for Oracle Cloud VMware Solution</a>(英語)</strong><br />
+NSX-Tでは、Tier-1ルーターを使って複数のワークロード・セグメント間の通信(East-West通信)を、さらに上位のTier-0ルーターを経由してVCNやその先のネットワークとの外部通信(North-South通信)を行います。通常は単一のTier-0ルーターが外部との通信のゲートウェイとしての役割を担いますが、もし異なるセグメントに対する外部との通信を分離したい場合には、Tier-0およびTier-1ルーターのセットを追加で作成し、それぞれに別のルーティングを設定することで実現できます。<br />
+この記事では、追加のTier-0、Tier-1ルーターを配置し、インターネットからの通信が一旦ルーティングされるDMZの役割を持つセグメントを作成し、アプリケーションが配置される内部向けのセグメントとは完全に分離する手法について解説しています。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/achieve-multitenancy-within-oracle-cloud-vmware-solution-using-vrf" target="_blank">Achieve multitenancy within Oracle Cloud VMware Solution using VRF gateways in NSX-T</a>(英語)</strong>
+この記事は、上記の <a href="https://blogs.oracle.com/cloud-infrastructure/post/a-detailed-guide-to-deploy-a-dmz-on-nsx-t-for-oracle-cloud-vmware-solution">A Detailed Guide to Deploy a DMZ on NSX-T for Oracle Cloud VMware Solution</a> とセットになる記事です。<br />
+NSX-T 3.0で、Tier-0ゲートウェイにVRF機能が追加されました。この機能を使うことで、複数のセグメントへのルーティングを分離するマルチテナントが単一のTier-0ルーターで実現できるようになりました。この記事では、VRF機能を用いてDMZの役割を持つ、分離されたセグメントを追加する方法について解説しています。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/configure_dns_vmware_nxstoverlay/index.html" target="_blank">VMware NSX-TオーバーレイでのOracle Cloud VMWare Solution SDDCワークロードのパブリックDNSの構成</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/cloud/2021/04/28/oracle-cloud-vmware-solution-networking-reference-architecture/" target="_blank">Oracle Cloud VMware Solution – Networking Reference Architecture</a></strong></p>
+  </li>
+</ul>
+
+<!-- その他のシナリオ候補
+- 新規VLANを利用したオーバーレイ・セグメントの追加(VLAN作成、ESXiへのvNIC追加、外部アクセスIPの設定) (P3)
+- OCIのNetwork Firewallを経由してインターネットとの境界にファイアウォールを設置 (P3)
+-->
+
+<h2 id="vmware-hcx-hybrid-cloud-extention">VMware HCX (Hybrid Cloud Extention)</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/oci-ocvs-hcx/index.html" target="_blank">Oracle Cloud VMware Solutionを使用したVMware HCXの構成</a></strong><br />
+Oracle Cloud VMware Solutionは、VMware HCX Advancedライセンスが同梱されており、また追加でVMware HCX Enterpriseライセンスも提供しています。VMware HCXは、アプリケーションの移行を簡素化し、ワークロードをリバランスし、データ・センターとクラウド間のディザスタ・リカバリを最適化するために設計されたアプリケーション・モビリティ・プラットフォームであるソフトウェア・スイートです。このチュートリアルでは、Oracle Cloud VMware Solutionの導入概要、VMware HCXの概要、実装に必要な前提条件、および段階的な導入ガイドラインについて説明します。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/solutions/migrate-vmware-workloads-oraclecloud/" target="_blank">Solution Playbook : オンプレミスVMwareワークロードをクラウドに移行します</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/solutions/hybrid-ocvs-sddc-onprem-sddc-cloud/" target="_blank">Solution Playbook : オンプレミスSDDCとクラウド間のハイブリッドOCVS SDDCの設定について</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/set-up-a-hybrid-cloud-with-oracle-cloud-vmware-solution" target="_blank">Blog : Set Up a Hybrid Cloud with Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/migrate-vmware-workloads-from-on-premises-data-centers-to-oracle-cloud-vmware-solution-using-vmware-hcx" target="_blank">Blog : Migrate VMware workloads from on-premises data centers to Oracle Cloud VMware Solution using VMware HCX</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/deploy-vmware-hcx-connector-in-your-on-premises-vmware-environment-and-establish-a-site-pairing-with-oracle-cloud-vmware-solution" target="_blank">Blog : Deploy VMware HCX Connector in your on-premises VMware environment and establish a site pairing with Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/l2-network-extension-from-on-premises-vmware-environment-to-oracle-cloud-vmware-solution-using-vmware-hcx" target="_blank">L2 network extension from on-premises VMware environment to Oracle Cloud VMware solution using VMware HCX</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/designlet-hcx-network-extension-oracle-cloud-vmware-solution" target="_blank">Designlet: HCX Network Extension on Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/designlet-vmware-hcx-mobility-optimized-networking-oracle-cloud-vmware-solution" target="_blank">Designlet: VMware HCX Mobility Optimized Networking for Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/announcing-vmware-hcx-enterprise-for-oracle-cloud-vmware-solution" target="_blank">Blog : Announcing VMware HCX Enterprise for Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+</ul>
+
+<h2 id="vmware-horizon">VMware Horizon</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/horizon_on_ocvs/index.html" target="_blank">Oracle Cloud VMwareソリューションにVMware Horizonをインストールおよび構成</a></strong><br />
+このチュートリアルでは、Oracle Cloud VMware SolutionでVMware Hizon 8.xをインストールして構成する方法を示します。このチュートリアルではvSphere 7.0デプロイメントを使用しましたが、vSphere 6.7に関連するステップについても説明します。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://techzone.vmware.com/resource/horizon-oracle-cloud-vmware-solution-architecture#introduction" target="_blank">Horizon on Oracle Cloud VMware Solution Architecture</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://techzone.vmware.com/resource/horizon-oracle-cloud-vmware-solution-configuration" target="_blank">Horizon on Oracle Cloud VMware Solution Configuration(英語のチュートリアル)</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/vmware-uag-oci-identity-domains/" target="_blank">Unified Access GatewayおよびOCI IAMアイデンティティ・ドメインでのVMware Horizonに対するSAML 2.0認証の有効化</a></strong><br />
+VMware Horizonは、オンプレミスからクラウドに仮想デスクトップとアプリケーションを効率的かつ安全に配信できるよう支援しています。このチュートリアルでは、Oracle Cloud Infrastructure (OCI) Identity and Access Management (IAM)アイデンティティ・ドメインをSAMLアイデンティティ・プロバイダ(IdP)としてのVMware Unified Access GatewayTMとの統合として構成し、VMware Horizon仮想デスクトップおよびアプリケーションにアクセスする方法について説明します。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/oracle4engineer/post/ja-vmware-horizon-validated-design" target="_blank">(参考)Blog : Oracle Cloud VMware SolutionのVMware Horizon検証設計</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://kb.vmware.com/s/article/88202" target="_blank">(参考)VMware Horizon on Oracle Cloud VMware Solution (OCVS) Support (88202)</a></strong></p>
+  </li>
+</ul>
+
+<h2 id="vmware-aria-operations-旧vmware-vrealize">VMware Aria Operations (旧VMware vRealize)</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/configure-vrealize-vmware-solution/index.html" target="_blank">Oracle Cloud VMwareソリューションを使用したVMware vRealize操作8.xの構成</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/oci-vmware-log/index.html" target="_blank">Oracle Cloud VMwareソリューションを使用したVMware vRealize®ログInsightTM 8.xの構成</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/management/2023/01/oracle-cloud-vmware-solution.html" target="_blank">Oracle Cloud VMware Solution (OCVS) for VMware Aria Operations</a></strong></p>
+  </li>
+</ul>
+
+<h2 id="cloud-director">Cloud Director</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/oracle4engineer/post/ja-ann-the-vmware-cloud-director-service" target="_blank">Oracle Cloud VMware SolutionのVMware Cloud Directorサービスの発表</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/cloudprovider/2023/09/cloud-director-service-ga-on-oracle-cloud-vmware-solution-for-csp.html" target="_blank">Cloud Director service GA on Oracle Cloud VMware Solution for Cloud Service Providers</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.vmware.com/management/2022/02/network-security-insights-for-oracle-cloud-vmware-solution.html" target="_blank">Network &amp; Security Insights for Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+</ul>
+
+<h2 id="vmware-tanzu">VMware Tanzu</h2>
+<ul>
+  <li><strong><a href="https://blogs.oracle.com/oracle4engineer/post/ja-ann-the-vmware-cloud-director-service" target="_blank">Oracle Cloud VMware SolutionのVMware Cloud Directorサービスの発表</a></strong></li>
+</ul>
+
+<h2 id="red-hat-openshift">Red Hat OpenShift</h2>
+<ul>
+  <li><strong><a href="https://docs.oracle.com/ja/solutions/deploy-ocvs-redhat-openshift/index.html" target="_blank">Oracle Cloud VMware SolutionへのRed Hat OpenShiftの導入</a></strong></li>
+</ul>
+
+<h2 id="データ保護dr">データ保護、DR</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/solutions/implement-dr-for-ocvs/" target="_blank">Solution Playbook : CloudでのVMware SDDCの障害からの保護について</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://thomasthyen.com/oracle-cloud-vmware-solution-disaster-recovery" target="_blank">Oracle Cloud VMware Solution – Disaster Recovery</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/disaster-recovery-to-ocvs" target="_blank">Disaster recovery to Oracle Cloud VMware Solution</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/designlet-planning-and-considerations-vmware-srm-ocvs" target="_blank">Designlet - Planning and Considerations for VMware SRM on OCVS</a></strong></p>
+  </li>
+</ul>
+
+<h3 id="rackware">Rackware</h3>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/en/learn/oci-ocvs-dr-rw/index.html" target="_blank">Oracle Cloud VMware SolutionでRackWare®を使用してディザスタ・リカバリを構成</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/oci-ocvs-dr-cs-rw/index.html" target="_blank">ディザスタ・リカバリの構成- Oracle Cloud VMware SolutionでRackWare®を使用するコールド・スタンバイ</a></strong></p>
+  </li>
+</ul>
+
+<h3 id="veeam">Veeam</h3>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/solutions/deploy-veeam-for-ocvs/index.html" target="_blank">VeeamをデプロイしてクラウドのVMware SDDCを障害から保護</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/veeam-ready-qualification-oci-object-storage" target="_blank">OCI Object Storage is certified as Veeam Ready - Object</a></strong></p>
+  </li>
+</ul>
+
+<h3 id="commvault">Commvault</h3>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/en/solutions/deploy-commvault-for-ocvs/index.html" target="_blank">Commvaultをデプロイして、クラウド内のVMware SDDCを災害から保護</a></strong></li>
+</ul>
+
+<h3 id="zerto">Zerto</h3>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/ja/solutions/deploy-zerto-for-ocvs/index.html" target="_blank">Zertoをデプロイして、クラウド内のVMware SDDCを障害に対して保護します</a></strong></li>
+</ul>
+
+<h3 id="actifio">Actifio</h3>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/en/solutions/deploy-actifio-oracle-vmware-solution/index.html" target="_blank">Deploy Actifio to protect your VMware SDDC in the cloud against disasters</a></strong></li>
+</ul>
+
+<h2 id="アップグレード">アップグレード</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/ocvs-inplace-upgrade-6x-7x/index.html" target="_blank">Oracle Cloud VMware Solution 6.xから7.xへのインプレース・アップグレードの実行</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/upgrading-oracle-cloud-vmware-solution-6x-7x" target="_blank">Upgrading Oracle Cloud VMware Solution from 6.x to 7.x</a></strong></p>
+  </li>
+</ul>
+
+<h2 id="セキュリティ">セキュリティ</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Security/Reference/vmware_security.htm" target="_blank">Document : VMwareソリューションの保護</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/solutions/oci-security-ocvs/index.html" target="_blank">Oracle Cloud VMware Solutionによるデータ保護のためのOCIセキュリティ・サービスの使用</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/oci-vmware-entrust-config/index.html" target="_blank">Oracle Cloud VMwareソリューションを使用したEntrust KeyControl 5.4の構成</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/oci-vmware-vm-encrypt/index.html" target="_blank">Entrust KeyControlおよびVMware vSphereを使用して、仮想マシンをOracle Cloud VMwareソリューションで暗号化</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/oci-vmware-entrust-key-provider/index.html" target="_blank">Entrust KeyControlをOracle Cloud VMwareソリューションとのVMware vSphere 7のキー・プロバイダとして追加</a></strong></p>
+  </li>
+</ul>
+
+<h2 id="その他">その他</h2>
+
+<ul>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/integrate-ad-with-vcenter/index.html" target="_blank">Oracle Cloud VMware SolutionでActive DirectoryをVMware vCenterと統合</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://docs.oracle.com/ja/learn/integrate-ad-with-nsx-t/index.html" target="_blank">Oracle Cloud VMware SolutionでActive DirectoryをVMware NSX-Tと統合</a></strong></p>
+  </li>
+  <li>
+    <p><strong><a href="https://vmc.techzone.vmware.com/resource/configure-conditional-dns-forwarding-between-oci-and-ad-domain" target="_blank">Configure Conditional DNS forwarding between OCI and AD Domain</a></strong></p>
+  </li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2F_pages%2Fvmware%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2F_pages%2Fvmware%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2F_pages%2Fvmware%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
