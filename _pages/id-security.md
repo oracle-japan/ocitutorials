@@ -37,7 +37,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 + **[OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する](https://oracle-japan.github.io/ocitutorials/id-security/identitydomains-AzureAD/)**  
    本チュートリアルでは、SAMLによるIdentity DomainsとAzure ADとの認証連携を設定する手順を紹介します。本チュートリアルを完了することで、Azure ADのIDとパスワードでOCIにサインオンすることが可能になります。
 
-+ **[OCI IAM Identity DomainでAPEXAPEXで作成したアプリに認証と認可をする](https://oracle-japan.github.io/ocitutorials/id-security/identitydomain-apex-sso/)**  
++ **[OCI IAM Identity DomainでAPEXで作成したアプリに認証と認可をする](https://oracle-japan.github.io/ocitutorials/id-security/identitydomain-apex-sso/)**  
    本チュートリアルでは、Oracle Application Express（APEX）で作成したアプリケーションとIdentity Domainsの認証連携、およびIdentity Domainsのグループに基づくアクセス制御（認可）の実装手順を紹介します。
 
 
