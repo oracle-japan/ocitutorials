@@ -1,0 +1,617 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>計算/GPUノードのブート・ボリューム動的拡張方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="インスタンスのルートファイルシステムを格納するブート・ボリュームは、OSを停止することなく動的にその容量を拡張することが可能です。ただこの動的拡張は、OCIコンソールやインスタンスOSで複数のオペレーションを実施する必要があり、ノード数が多くなるクラスタ環境の計算/GPUノードでは、これらのオペレーションを効率的に実施することが求められます。本テクニカルTipsは、HPC/GPUクラスタの多数の計算/GPUノードに対し、ブート・ボリュームの動的拡張を効率的に実施する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="計算/GPUノードのブート・ボリューム動的拡張方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">
+
+
+  <meta property="og:description" content="インスタンスのルートファイルシステムを格納するブート・ボリュームは、OSを停止することなく動的にその容量を拡張することが可能です。ただこの動的拡張は、OCIコンソールやインスタンスOSで複数のオペレーションを実施する必要があり、ノード数が多くなるクラスタ環境の計算/GPUノードでは、これらのオペレーションを効率的に実施することが求められます。本テクニカルTipsは、HPC/GPUクラスタの多数の計算/GPUノードに対し、ブート・ボリュームの動的拡張を効率的に実施する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-10-17T22:08:00+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          計算/GPUノードのブート・ボリューム動的拡張方法
+
+        
+      </h1>
+      
+        <p class="page__lead">インスタンスのルートファイルシステムを格納するブート・ボリュームは、OSを停止することなく動的にその容量を拡張することが可能です。ただこの動的拡張は、OCIコンソールやインスタンスOSで複数のオペレーションを実施する必要があり、ノード数が多くなるクラスタ環境の計算/GPUノードでは、これらのオペレーションを効率的に実施することが求められます。本テクニカルTipsは、HPC/GPUクラスタの多数の計算/GPUノードに対し、ブート・ボリュームの動的拡張を効率的に実施する方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">計算/GPUノードのブート・ボリューム動的拡張方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/" class="active">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="計算/GPUノードのブート・ボリューム動的拡張方法">
+    <meta itemprop="description" content="インスタンスのルートファイルシステムを格納するブート・ボリュームは、OSを停止することなく動的にその容量を拡張することが可能です。ただこの動的拡張は、OCIコンソールやインスタンスOSで複数のオペレーションを実施する必要があり、ノード数が多くなるクラスタ環境の計算/GPUノードでは、これらのオペレーションを効率的に実施することが求められます。本テクニカルTipsは、HPC/GPUクラスタの多数の計算/GPUノードに対し、ブート・ボリュームの動的拡張を効率的に実施する方法を解説します。">
+    <meta itemprop="datePublished" content="2023-10-17T22:08:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bastionノード事前準備">1. Bastionノード事前準備</a></li><li><a href="#2-ブートボリューム拡張">2. ブート・ボリューム拡張</a></li><li><a href="#3-ルートファイルシステムサイズ確認">3. ルートファイルシステムサイズ確認</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>インスタンスのルートファイルシステムを格納する <strong>ブート・ボリューム</strong> は、OSを停止することなく動的にその容量を拡張することが可能です。<br />
+ただこの動的拡張は、OCIコンソールやインスタンスOSで複数のオペレーションを実施する必要があり、ノード数が多くなるクラスタ環境の計算/GPUノードでは、これらのオペレーションを効率的に実施することが求められます。<br />
+本テクニカルTipsは、HPC/GPUクラスタの多数の計算/GPUノードに対し、 <strong>ブート・ボリューム</strong> の動的拡張を効率的に実施する方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>インスタンスの <strong>ブート・ボリューム</strong> の動的拡張は、以下のステップを経て行います。</p>
+
+<ol>
+  <li><strong>ブート・ボリューム</strong> 拡張（OCI上で実行）</li>
+  <li><strong>ブート・ボリューム</strong> の再スキャン（インスタンスOS上で実行）</li>
+  <li>パーティションの拡張（インスタンスOS上で実行）</li>
+</ol>
+
+<p>ステップ <strong>1.</strong> は、OCIリソースに対するオペレーションのため、OCIコンソールや <strong>OCI CLI</strong> 等のインターフェースを介して行い、ステップ <strong>2.</strong> と <strong>3.</strong> は、インスタンスOSに対してコマンドを実行して行います。</p>
+
+<p>本テクニカルTipsは、多数の計算/GPUノードに対してこれらのオペレーションを効率よく行う事を想定しています。<br />
+このため、通常HPC/GPUクラスタのクラスタ管理ノードとして使用するBastionノードを活用し、ここからコマンドラインインターフェースで <strong>ブート・ボリューム</strong> の動的拡張のためのオペレーションを実行します。<br />
+なおBastionノードと計算ノードのOSは、 <strong>Oracle Linux</strong> を前提とします。</p>
+
+<p>Bastionノードで使用するコマンドラインインターフェースは、ステップ <strong>1.</strong> に <strong>OCI CLI</strong> 、ステップ <strong>2.</strong> と <strong>3.</strong> に <strong>pdsh</strong> を使用します。<br />
+このため、予めBastionノードで <strong>OCI CLI</strong> と <strong>pdsh</strong> を利用できるよう準備します。</p>
+
+<p>以降の章は、以上のステップに沿って具体的な手順を解説します。</p>
+
+<p><strong>pdsh</strong> の詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></strong> を参照ください。</p>
+
+<hr />
+<h1 id="1-bastionノード事前準備">1. Bastionノード事前準備</h1>
+
+<p>本章は、Bastionノードで <strong>OCI CLI</strong> と <strong>pdsh</strong> を利用するための手順を解説します。<br />
+本テクニカルTipsでは、 <strong>OCI CLI</strong> と <strong>pdsh</strong> 実行ユーザをopcとします。</p>
+
+<ol>
+  <li>
+    <p><strong>OCI CLI</strong> をOCI公式マニュアルの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm">ここ</a></strong> の手順に従ってインストール・セットアップします。</p>
+  </li>
+  <li>
+    <p><strong>pdsh</strong> を  <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ">ここ</a></strong> の手順に従ってインストール・セットアップします。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="2-ブートボリューム拡張">2. ブート・ボリューム拡張</h1>
+
+<p>本章は、Bastionノードで <strong>OCI CLI</strong> と <strong>pdsh</strong> を使用し、HPC/GPUクラスタ内の全計算/GPUノードの <strong>ブート・ボリューム</strong> のサイズを拡張します。<br />
+この際予め、対象の計算/GPUノードのホスト名を1行に1ノード記載したホストリストファイルを、カレントディレクトリにhostlist.txtとして用意します。</p>
+
+<ol>
+  <li>
+    <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong>ブート・ボリューム</strong> を拡張する計算/GPUノードのOCIDのリストをテキストファイル（instance_ocid.txt）として作成します。<br />
+なお、 コマンド中の <strong>コンパートメント</strong> のOCIDを指定する箇所は、計算/GPUノードを格納する <strong>コンパートメント</strong> のOCIDに置き換えます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ./hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> oci compute instance list <span class="nt">--compartment-id</span> compartment_ocid <span class="nt">--display-name</span> <span class="nv">$hname</span> | jq <span class="nt">-r</span> <span class="s1">'.data[].id'</span> <span class="o">&gt;&gt;</span> ./instance_ocid.txt<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のコマンドをBastionノードのopcユーザで実行し、拡張する <strong>ブート・ボリューム</strong> のOCIDのリストをテキストファイル（bv_ocid.txt）として作成します。<br />
+なお、コマンド中の <strong>コンパートメント</strong> のOCIDと <strong>可用性ドメイン</strong> を指定する箇所は、計算/GPUノードを格納する <strong>コンパートメント</strong> のOCIDと <strong>可用性ドメイン</strong> に置き換えます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>inst_ocid <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ./instance_ocid.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$inst_ocid</span><span class="p">;</span> oci compute boot-volume-attachment list <span class="nt">--availability-domain</span> ad_name <span class="nt">--compartment-id</span> compartment_ocid <span class="nt">--instance-id</span> <span class="nv">$inst_ocid</span> | jq <span class="nt">-r</span> <span class="s1">'.data[]."boot-volume-id"'</span> <span class="o">&gt;&gt;</span> bv_ocid.txt<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のコマンドをBastionノードのopcユーザで実行し、 <strong>ブート・ボリューム</strong> を指定のサイズに拡張し、コマンドの出力に拡張後のサイズが表示されることを以って、正しく拡張が行われたことを確認します。<br />
+なお、コマンド中の <strong>ブート・ボリューム</strong> サイズは、実際の拡張後のサイズに置き換えます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>bv_ocid <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ./bv_ocid.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$bv_ocid</span><span class="p">;</span> oci bv boot-volume update <span class="nt">--boot-volume-id</span> <span class="nv">$bv_ocid</span> <span class="nt">--size-in-gbs</span> 500 | jq <span class="nt">-r</span> <span class="s1">'.data."size-in-gbs"'</span><span class="p">;</span> <span class="k">done
+ </span>ocid1.bootvolume.oc1.eu-frankfurt-1.xxxx
+ 500
+ ocid1.bootvolume.oc1.eu-frankfurt-1.yyyy
+ 500
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のコマンドをBastionノードのopcユーザで実行し、 <strong>ブート・ボリューム</strong> の再スキャンを実行し、コマンドの出力にリターンコード0が表示されることを以って、正しく再スキャンが行われたことを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo dd iflag=direct if=/dev/oracleoci/oraclevda of=/dev/null count=1 &gt; /dev/null 2&gt;&amp;1; echo $?'</span> | dshbak <span class="nt">-c</span>
+ <span class="nt">----------------</span>
+ inst-9bw0h-x9-ol87,inst-nbho9-x9-ol87
+ <span class="nt">----------------</span>
+ 0
+ <span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s2">"echo 1 | sudo tee /sys/class/block/</span><span class="se">\`</span><span class="s2">readlink /dev/oracleoci/oraclevda | cut -d'/' -f 2</span><span class="se">\`</span><span class="s2">/device/rescan &gt; /dev/null; echo </span><span class="nv">$?</span><span class="s2">"</span> | dshbak <span class="nt">-c</span>
+ <span class="nt">----------------</span>
+ inst-9bw0h-x9-ol87,inst-nbho9-x9-ol87
+ <span class="nt">----------------</span>
+ 0
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下のコマンドをBastionノードのopcユーザで実行し、パーティションの拡張を実行し、コマンドの出力にリターンコード0が表示されることを以って、正しくパーティションの拡張が行われたことを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo /usr/libexec/oci-growfs -y &gt; /dev/null; echo $?'</span> | dshbak <span class="nt">-c</span>
+ <span class="nt">----------------</span>
+ inst-9bw0h-x9-ol87,inst-nbho9-x9-ol87
+ <span class="nt">----------------</span>
+ 0
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="3-ルートファイルシステムサイズ確認">3. ルートファイルシステムサイズ確認</h1>
+
+<p>本章は、計算/GPUノードのルートファイルシステムサイズを表示し、想定通りのサイズに拡張されているかどうかを確認します。</p>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、コマンドの出力で計算/GPUノードの拡張後のルートファイルシステムのサイズを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s2">"df -h / | awk '{print </span><span class="se">\$</span><span class="s2">2}'"</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-9bw0h-x9-ol87,inst-nbho9-x9-ol87
+<span class="nt">----------------</span>
+Size
+489G
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-17T22:08:00+09:00">October 17, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E8%A8%88%E7%AE%97%2FGPU%E3%83%8E%E3%83%BC%E3%83%89%E3%81%AE%E3%83%96%E3%83%BC%E3%83%88%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E5%8B%95%E7%9A%84%E6%8B%A1%E5%BC%B5%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fboot-volume-extension%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fboot-volume-extension%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fboot-volume-extension%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/" class="pagination--pager" title="ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/" class="pagination--pager" title="計算/GPUノードの効果的な名前解決方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

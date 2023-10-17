@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-10-16T16:03:40+09:00">
+  <meta property="article:published_time" content="2023-10-17T22:08:00+09:00">
 
 
 
@@ -304,6 +304,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/" class="active">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
@@ -313,6 +315,8 @@
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
         
       </ul>
     </li>
@@ -327,7 +331,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法">
     <meta itemprop="description" content="ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベア・メタル・インスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。">
-    <meta itemprop="datePublished" content="2023-10-16T16:03:40+09:00">
+    <meta itemprop="datePublished" content="2023-10-17T22:08:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -349,11 +353,11 @@
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>HPC/GPUクラスタで必須となるファイル共有ストレージを <strong>ブロック・ボリューム</strong> NFSサーバで構築・運用する場合、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> のマウント・ターゲットがHA化され可用性が担保されているのに対し、NFSサーバのベア・メタル・インスタンスが単一障害点となるため、インスタンスが障害で起動しなくなった場合、NFSサーバのデータ領域にアクセスすることが出来なくなります。<br />
+<p>HPC/GPUクラスタで必須となるファイル共有ストレージを <strong>ブロック・ボリューム</strong> NFSサーバで構築・運用する場合、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> の <strong>マウント・ターゲット</strong> がHA化され可用性が担保されているのに対し、NFSサーバのベア・メタル・インスタンスが単一障害点となるため、インスタンスが障害で起動しなくなった場合、NFSサーバのデータ領域にアクセスすることが出来なくなります。<br />
 ただこの場合でも、起動しなくなったベア・メタル・インスタンスと同一構成の新たなインスタンスをデプロイし、このインスタンスに既存の <strong>ブロック・ボリューム</strong> をアタッチしてファイルシステムとしてマウントすることで、復旧作業時間に相当する数時間程度のサービス停止を経て、障害発生前のデータ領域のままNFSサービスを再開することが可能です。<br />
 この復旧シナリオの前提は、 <strong>ブロック・ボリューム</strong> でサービスするNFSデータ領域がLinuxの論理ボリュームマネージャで構築されていることです。論理ボリュームマネージャは、物理ボリューム・ボリュームグループ・論理ボリューム等のメタデータをOS上には持たず（キャッシュ情報は除く）に <strong>ブロック・ボリューム</strong> 上に保持するため、論理ボリュームマネージャをサポートするOSが稼働する別のインスタンスにアタッチすることで、データ領域にアクセスできるようになります。</p>
 
-<p>また本復旧シナリオは、障害時に既存の代替えとなるNFSサーバインスタンスをデプロイする際、初期の <strong>ブロック・ボリューム</strong> NFSサーバ構築時点でNFSサーバインスタンスの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得し、復旧に要する時間を短縮するよう配慮します。</p>
+<p>また本復旧シナリオは、障害時に既存の代替となるNFSサーバインスタンスをデプロイする際、 <strong>ブロック・ボリューム</strong> NFSサーバ構築直後に取得するNFSサーバインスタンスの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を活用し、復旧に要する時間を短縮するよう配慮します。</p>
 
 <p>次に、 <strong>ブロック・ボリューム</strong> に障害が発生してデータ領域にアクセスできなくなる障害シナリオには、どのように対処すれはよいでしょうか。<br />
 <strong>ブロック・ボリューム</strong> は、同一 <strong>可用性ドメイン</strong> 内の異なる <strong>フォルト・ドメイン</strong> に複数のレプリカを持つため、NFSサーバインスタンスと比較して桁違いに高い可用性を提供します。このため本テクニカルTipsは、NFSサーバインスタンス障害に対する復旧シナリオにフォーカスし、これを解説します。</p>
@@ -792,7 +796,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service �
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>既存NFSサーバが障害でダウンした場合、NFSクライアントで既存NFSサーバのNFS領域をマウントしたままとなっており、代替NFSサーバのNFS領域をマウントできないため、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、OS再起動によりこの問題をを解消します。</p>
+    <p>既存NFSサーバが障害でダウンした場合、NFSクライアントで既存NFSサーバのNFS領域をマウントしたままとなっており、代替NFSサーバのNFS領域をマウントできないため、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、OS再起動によりこの問題を解消します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
 </code></pre></div>    </div>
@@ -804,7 +808,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service �
 Filesystem        Size  Used Avail Use% Mounted on
 nfs-srv-2:/mnt/a  2.0T   15G  2.0T   1% /mnt/nfs/a
 <span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">cat</span> /mnt/nfs/a/test.txt 
-This is a <span class="nb">test </span>text file.
+This is a <span class="nb">test </span>file.
 <span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span>
 </code></pre></div>    </div>
   </li>
@@ -820,7 +824,7 @@ This is a <span class="nb">test </span>text file.
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-16T16:03:40+09:00">October 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-17T22:08:00+09:00">October 17, 2023</time></p>
 
 
       </footer>
@@ -845,7 +849,7 @@ This is a <span class="nb">test </span>text file.
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/" class="pagination--pager" title="計算/GPUノードの効果的な名前解決方法
+      <a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/" class="pagination--pager" title="計算/GPUノードのブート・ボリューム動的拡張方法
 ">次へ</a>
     
   </nav>

@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-10-16T16:03:40+09:00">
+  <meta property="article:published_time" content="2023-10-17T22:08:00+09:00">
 
 
 
@@ -304,6 +304,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
@@ -313,6 +315,8 @@
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
         
       </ul>
     </li>
@@ -327,7 +331,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="計算/GPUノードのホスト名リスト作成方法">
     <meta itemprop="description" content="ノード数が多くなるHPCクラスタやGPUクラスタは、全ての計算/GPUノードのホスト名の一覧を記載したホスト名リストを作成することで、構築・運用作業を効率的に進めることが可能になります。本テクニカルTipsは、HPC/GPUクラスタの計算/GPUノードのホスト名リストを効果的に作成する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-10-16T16:03:40+09:00">
+    <meta itemprop="datePublished" content="2023-10-17T22:08:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -374,13 +378,13 @@ inst-ael72-comp
     <p>OCIコンソールを活用する方法</p>
 
     <p>この方法は、OCIコンソールの <strong>インスタンス</strong> メニューに表示される計算/GPUノードのインスタンス名を活用する方法です。<br />
-この <strong>インスタンス</strong> メニューは、1ページに50インスタンスまでしか表示できないため、50ノードを超える場合は、複数ページにわたってコピー・ペーストを行う必要があり、後述のOCI CLIを使用する方法が効率的にホスト名リストを作成できます。</p>
+この <strong>インスタンス</strong> メニューは、1ページに50インスタンスまでしか表示できないため、50ノードを超える場合は、複数ページにわたってコピー・ペーストを行う必要があり、後述の <strong>OCI CLI</strong> を使用する方法が効率的にホスト名リストを作成できます。</p>
   </li>
   <li>
-    <p>OCI CLIを活用する方法</p>
+    <p><strong>OCI CLI</strong> を活用する方法</p>
 
-    <p>この方法は、OCI CLIの <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に含まれるインスタンスをリストする機能を活用し、コマンド一発でホスト名リストを作成する方法です。<br />
-OCI CLIは、これを利用可能にするための事前準備が必要なため、ノード数が少ないケースでは、前述の <strong>OCIコンソールを活用する方法</strong> が手軽にホスト名リストを作成出来ます。</p>
+    <p>この方法は、 <strong>OCI CLI</strong> の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に含まれるインスタンスをリストする機能を活用し、コマンド一発でホスト名リストを作成する方法です。<br />
+<strong>OCI CLI</strong> は、これを利用可能にするための事前準備が必要なため、ノード数が少ないケースでは、前述の <strong>OCIコンソールを活用する方法</strong> が手軽にホスト名リストを作成出来ます。</p>
   </li>
 </ul>
 
@@ -442,16 +446,16 @@ inst-afnzx-comp
 <hr />
 <h1 id="2-oci-cliを活用する方法">2. OCI CLIを活用する方法</h1>
 
-<p>本章は、OCI CLIを活用してホスト名リストを作成します。</p>
+<p>本章は、 <strong>OCI CLI</strong> を活用してホスト名リストを作成します。</p>
 
-<p>OCI CLIは、事前にインストール・セットアップする必要があります。<br />
-作成するホスト名リストは、通常HPC/GPUクラスタを管理する役割を担う管理ノードで使用するため、OCI CLIのインストール・セットアップも、この管理ノードで行います。</p>
+<p><strong>OCI CLI</strong> は、事前にインストール・セットアップする必要があります。<br />
+作成するホスト名リストは、通常HPC/GPUクラスタを管理する役割を担う管理ノードで使用するため、 <strong>OCI CLI</strong> のインストール・セットアップも、この管理ノードで行います。</p>
 
-<p>OCI CLIのインストール・セットアップは、以下のOCI公式マニュアルに従って実施します。</p>
+<p><strong>OCI CLI</strong> のインストール・セットアップは、以下のOCI公式マニュアルに従って実施します。</p>
 
 <p><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm">https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm</a></strong></p>
 
-<p>OCI CLIが利用可能になったら、計算/GPUノードを含む <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> とコンパートメントのOCIDを指定し、以下のコマンドでホスト名リストを作成します。</p>
+<p><strong>OCI CLI</strong> が利用可能になったら、計算/GPUノードを含む <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> とコンパートメントのOCIDを指定し、以下のコマンドでホスト名リストを作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> oci compute-management cluster-network list-instances <span class="nt">--all</span> <span class="nt">--cluster-network-id</span> cn_ocid <span class="nt">-c</span> comp_ocid | jq <span class="nt">-r</span> <span class="s1">'.data[]."display-name"'</span>  <span class="o">&gt;</span> hostlist.txt
 <span class="o">&gt;</span> <span class="nb">cat </span>hostlist.txt 
@@ -471,7 +475,7 @@ inst-afnzx-comp
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-16T16:03:40+09:00">October 16, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-17T22:08:00+09:00">October 17, 2023</time></p>
 
 
       </footer>
