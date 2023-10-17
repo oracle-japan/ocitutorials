@@ -1,7 +1,7 @@
 ---
 title: "STREAM実行方法（BM.Optimized3.36編）"
 excerpt: "本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36で、標準ベンチマークのSTREAMを実行する方法を解説します。"
-order: "214"
+order: "2120"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)

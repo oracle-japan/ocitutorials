@@ -1,7 +1,7 @@
 ---
 title: "HPCクラスタを構築する(基礎インフラ手動構築編)"
 excerpt: "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。"
-order: "111"
+order: "1110"
 layout: single
 header:
   teaser: "/hpc/spinup-cluster-network/architecture_diagram.png"

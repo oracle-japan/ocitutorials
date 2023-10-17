@@ -1,7 +1,7 @@
 ---
 title: "NCCL Tests実行方法"
 excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
-order: "219"
+order: "2140"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)

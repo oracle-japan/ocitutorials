@@ -1,7 +1,7 @@
 ---
 title: "ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる"
 excerpt: "ブロック・ボリュームで構築するNFSサーバを共有ストレージとする、HPC/GPUクラスタを構築してみましょう。このチュートリアルを終了すると、OCIのブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSサーバを構築し、このNFS領域を基礎インフラとして構築するHPC/GPUクラスタのファイル共有ストレージとして利用する環境を、2つの異なるチュートリアルを組み合わせて構築できるようになります。"
-order: "141"
+order: "1410"
 layout: single
 header:
   teaser: "/hpc/cluster-with-bv-base/architecture_diagram.png"

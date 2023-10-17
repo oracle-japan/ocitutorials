@@ -1,7 +1,7 @@
 ---
 title: "HPCクラスタを構築する(基礎インフラ自動構築編)"
 excerpt: "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPCクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。"
-order: "112"
+order: "1120"
 layout: single
 header:
   teaser: "/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png"

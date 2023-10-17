@@ -1,7 +1,7 @@
 ---
 title: "HPCクラスタを構築する(スタティッククラスタ自動構築編)"
 excerpt: "HPCクラスタを構築してみましょう。このチュートリアルを終了すると、HPC向けIntel Ice Lakeプロセッサを搭載したベアメタル計算ノードをRoCEv2インターコネクトで接続した典型的な構成のHPCクラスタを、OCIコンソールから簡単に構築することが出来るようになります。"
-order: "113"
+order: "1130"
 layout: single
 header:
   teaser: "/hpc/spinup-hpc-cluster/architecture_diagram.png"
