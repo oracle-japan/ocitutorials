@@ -1,7 +1,7 @@
 ---
 title: "GPUクラスタを構築する(オンデマンドクラスタ自動構築編)"
 excerpt:  "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。"
-order: "125"
+order: "1250"
 layout: single
 header:
   teaser: "/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"

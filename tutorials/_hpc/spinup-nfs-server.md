@@ -1,7 +1,7 @@
 ---
 title: "ブロック・ボリュームでNFSサーバを構築する"
 excerpt: "ブロック・ボリュームでNFSサーバを構築してみましょう。このチュートリアルを終了すると、OCIのブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSサーバを、OCIコンソールから簡単に構築することが出来るようになります。"
-order: "131"
+order: "1310"
 layout: single
 header:
   teaser: "/hpc/spinup-nfs-server/architecture_diagram.png"

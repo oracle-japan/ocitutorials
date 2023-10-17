@@ -1,7 +1,7 @@
 ---
 title: "HPL実行方法（BM.Standard.E5.192編）"
 excerpt: "本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Standard.E5.192で、標準ベンチマークのHPLを実行する方法を解説します。"
-order: "212"
+order: "2111"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)

@@ -1,7 +1,7 @@
 ---
 title: "GPUインスタンスで機械学習にトライ"
 excerpt: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupyterLab等の代表的な機械学習関連ソフトウェアがインストールされた、機械学習環境に最適なNvidia製GPU搭載のインスタンスを構築し、サンプル機械学習プログラムを実行することが出来るようになります。"
-order: "121"
+order: "1210"
 layout: single
 header:
   teaser: "/hpc/spinup-ml-instance/architecture_diagram.png"

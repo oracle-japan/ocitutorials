@@ -1,7 +1,7 @@
 ---
 title: "HPL実行方法（BM.Optimized3.36編）"
 excerpt: "本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスBM.Optimized3.36をノード間接続するHPCクラスタで、標準ベンチマークのHPLを実行する方法を解説します。"
-order: "211"
+order: "2110"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)

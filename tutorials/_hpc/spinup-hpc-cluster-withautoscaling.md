@@ -1,7 +1,7 @@
 ---
 title: "HPCクラスタを構築する(オンデマンドクラスタ自動構築編)"
 excerpt:  "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタをSlurmと連動してデプロイするオンデマンドHPCクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。"
-order: "114"
+order: "1140"
 layout: single
 header:
   teaser: "/hpc/spinup-hpc-cluster-withautoscaling/architecture_diagram.png"
