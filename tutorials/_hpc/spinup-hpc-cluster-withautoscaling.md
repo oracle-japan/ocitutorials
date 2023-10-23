@@ -34,9 +34,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
 **所要時間 :** 約2時間
 
-**前提条件 :** オンデマンドHPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。具体的には、以下ページの **Policies to deploy the stack:** に記載のポリシーが作成されていること。
-
-[https://cloud.oracle.com/marketplace/application/67628143/usageInformation](https://cloud.oracle.com/marketplace/application/67628143/usageInformation)
+**前提条件 :** オンデマンドHPCクラスタを収容する **コンパートメント** ( **ルート・コンパートメント** でもOKです)が作成されていること。
 
 **注意 :** チュートリアル内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。また使用する **HPCクラスタスタック** のバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
 
@@ -51,7 +49,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
 ［ **Terraform** によるOCIリソース構築フェーズ］
 
-- VCNと関連するネットワークリソース構築
+- **VCN** と関連するネットワークリソース構築
 - **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** と関連リソース構築
 - Bastionノードインスタンス構築
 - **ファイル・ストレージ** 構築
@@ -64,21 +62,21 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 - **Slurm** 環境構築
 -  **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** ツール群インストール
 
-また **クラスタオートスケーリング** は、Bastionノードから **Terraform** を使用して動的にHPCクラスタを構築するため、OCIの **APIキー** を作成してこれをOCIに登録する必要があります。
+また **クラスタオートスケーリング** は、Bastionノードから **Terraform** CLIを使用して動的にHPCクラスタを構築するため、 **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証の設定を予め行います。
 
 以上より本章では、以下の手順でHPCクラスタ構築のための  **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
 
-- **APIキー** の作成・登録
+- **インスタンス・プリンシパル** 認証関連設定
 - スタックの作成
 - スタックの計画
 - スタックの適用
 
-## 1-1. APIキーの作成・登録
+## 1-1. インスタンス・プリンシパル認証関連設定
 
-**APIキー** は、OCIコンソールから作成する方法と、OpenSSLのコマンドを使用して作成する方法があります。  
-詳細は、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two)** の手順を参照して下さい。
+本章は、Bastionノードから **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用して動的にHPCクラスタを構築するための **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定を行います。
 
-また作成した **APIキー** は、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#three)** の手順を参照してOCIに登録します。
+**インスタンス・プリンシパル** 認証の設定は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[ここ](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従います。  
+この際、 **[動的グループ](/ocitutorials/hpc/#5-16-動的グループ)** に含めるインスタンスは、Bastionノードとします。
 
 ## 1-2. スタックの作成
 

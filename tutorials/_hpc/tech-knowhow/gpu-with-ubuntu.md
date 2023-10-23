@@ -21,7 +21,7 @@ header:
 
 - **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html)** : NVIDIA製GPUドライバソフトウェア
 - **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** : CUDAライブラリ
-- **[NVIDIA Fabric Manager](https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html)** : NVSwitch（ **BM.GPU4.8** / **BM.GPU.A100-v2.8** に搭載）管理ソフトウェア
+- **[NVIDIA Fabric Manager](https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html)** : **NVSwitch** （ **BM.GPU4.8** / **BM.GPU.A100-v2.8** に搭載）管理ソフトウェア
 
 また本テクニカルTipsは、これらのソフトウェアが正しくインストールされているか、 **[CUDA Samples](https://github.com/nvidia/cuda-samples)** で確認します。
 
@@ -42,7 +42,7 @@ header:
 
    3.1 
     - **名前** ：インスタンスに付与する名前
-    - **コンパートメントに作成** ：インスタンスを作成するコンパートメント
+    - **コンパートメントに作成** ：インスタンスを作成する **コンパートメント**
 
    ![画面ショット](console_page02.png)
 
@@ -59,7 +59,7 @@ header:
 
    ![画面ショット](console_page05.png)
 
-    - **Shape** ：BM.GPU4.8 (**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.GPU4.8** を選択し **次のドキュメントを確認した上でこれに同意します。** チェックボックスをチェックし **シェイプの選択** ボタンをクリック。）
+    - **Shape** ： **BM.GPU4.8** (**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.GPU4.8** を選択し **次のドキュメントを確認した上でこれに同意します。** チェックボックスをチェックし **シェイプの選択** ボタンをクリック。）
 
    ![画面ショット](console_page06.png)
 
@@ -84,10 +84,10 @@ header:
         ※ 通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの **ブート・ボリューム** サイズとします。
 
 4. 以下コマンドでGPUインスタンスにSSHログインします。この時、インストール時にデフォルトで作成されるユーザが **ubuntu** であることに留意します。  
-なお、 **Ubuntu** イメージの **BM.GPU4.8** インスタンスの場合、作成開始からSSHでログインできるまでに30分程度かかります。
+なお、 **Canonical Ubuntu 20.04** イメージの **BM.GPU4.8** インスタンスの場合、作成開始からSSHでログインできるまでに30分程度かかります。
 
     ```sh
-    > ssh ubunsu@a100-ub204
+    $ ssh ubunsu@a100-ub204
     ```
 
 ***
