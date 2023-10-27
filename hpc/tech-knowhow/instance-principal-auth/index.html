@@ -1,0 +1,629 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、インスタンス・プリンシパル認証が用意されています。本テクニカルTipsは、オンデマンドクラスタを念頭としたインスタンス・プリンシパル認証の設定方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">
+
+
+  <meta property="og:description" content="パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、インスタンス・プリンシパル認証が用意されています。本テクニカルTipsは、オンデマンドクラスタを念頭としたインスタンス・プリンシパル認証の設定方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-10-27T10:36:52+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法
+
+        
+      </h1>
+      
+        <p class="page__lead">パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、インスタンス・プリンシパル認証が用意されています。本テクニカルTipsは、オンデマンドクラスタを念頭としたインスタンス・プリンシパル認証の設定方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/" class="active">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法">
+    <meta itemprop="description" content="パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、インスタンス・プリンシパル認証が用意されています。本テクニカルTipsは、オンデマンドクラスタを念頭としたインスタンス・プリンシパル認証の設定方法を解説します。">
+    <meta itemprop="datePublished" content="2023-10-27T10:36:52+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</a><ul><li><a href="#1-1-動的グループ作成">1-1. 動的グループ作成</a></li><li><a href="#1-2-iamポリシー作成">1-2. IAMポリシー作成</a></li></ul></li><li><a href="#2-terraform-cliからのインスタンスプリンシパル認証利用方法">2. Terraform CLIからのインスタンス・プリンシパル認証利用方法</a></li><li><a href="#3-oci-cliからのインスタンスプリンシパル認証利用方法">3. OCI CLIからのインスタンス・プリンシパル認証利用方法</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。<br />
+オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証が用意されています。<br />
+本テクニカルTipsは、オンデマンドクラスタを念頭とした <strong>インスタンス・プリンシパル</strong> 認証の設定方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>HPC/GPUクラスタを動的に作成・終了させるソフトウェア（以降”オンデマンドクラスタ管理ソフトウェア”と呼称）でオンデマンドクラスタを実現する場合、動的に管理するOCIサービス（ <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> やインスタンス）に対する <strong>IAM</strong> 認証・認可をオンデマンドクラスタ管理ソフトウェアに付与する必要がありますが、オンデマンドクラスタ管理ソフトウェアが動作するインスタンス（以降”クラスタ管理ノード”と呼称）を <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証に組み込むことで、これを実現することが可能です。<br />
+具体的には、以下の手順を実行します。</p>
+
+<ul>
+  <li>クラスタ管理ノードを含む <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> を作成</li>
+  <li>作成した <strong>動的グループ</strong> に対する <strong>IAMポリシー</strong> を作成</li>
+</ul>
+
+<p>オンデマンドクラスタ管理ソフトウェアでは、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIや <strong>OCI CLI</strong> からこの <strong>インスタンス・プリンシパル</strong> 認証を利用し、HPC/GPUクラスタのライフサイクル管理を行います。</p>
+
+<p>なお、この <strong>インスタンス・プリンシパル</strong> 認証を利用するオンデマンドクラスタを実現する手法は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong> でも使われています。</p>
+
+<p>以降では、上記に沿った具体的な <strong>インスタンス・プリンシパル</strong> 認証の設定手順と、オンデマンドクラスタ管理ソフトウェアからの利用を想定した <strong>Terraform</strong> CLIと <strong>OCI CLI</strong> でこの <strong>インスタンス・プリンシパル</strong> 認証を利用する方法を解説します。</p>
+
+<hr />
+<h1 id="1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</h1>
+
+<p>本章は、クラスタ管理ノードを <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証に組み込みます。</p>
+
+<h2 id="1-1-動的グループ作成">1-1. 動的グループ作成</h2>
+
+<p>本章は、クラスタ管理ノードを含む <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> を作成します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ドメイン</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>xxxx（ルート）コンパートメント内のドメイン</strong> 画面で、 <strong>インスタンス・プリンシパル</strong> 認証を設定する <strong>アイデンティティ・ドメイン</strong> を選択します。（複数の <strong>アイデンティティ・ドメイン</strong> を運用していなければ、通常”Default”です。）</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される画面左側の <strong>動的グループ</strong> メニューを選択します。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>Defaultドメイン内の動的グループ</strong> 画面で、 <strong>動的グループの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>動的グループの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> フィールド： <strong>動的グループ</strong> に付与する名前</li>
+      <li>
+        <p><strong>ルール1</strong> フィールド： <strong>動的グループ</strong> に含めるクラスタ管理ノード用インスタンスのOCIDを指定する以下構文</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Any <span class="o">{</span>instance.id <span class="o">=</span> <span class="s1">'instance_ocid'</span><span class="o">}</span>
+</code></pre></div>        </div>
+      </li>
+    </ul>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="1-2-iamポリシー作成">1-2. IAMポリシー作成</h2>
+
+<p>本章は、作成した <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> に対する <strong>IAMポリシー</strong> を作成します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>xxxx（ルート）コンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page04.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> フィールド： <strong>IAMポリシー</strong> に付与する名前</li>
+      <li>
+        <p><strong>ポリシー・ビルダー</strong> フィールド： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow service compute_management to use tag-namespace <span class="k">in </span>tenancy
+allow service compute_management to manage compute-management-family <span class="k">in </span>tenancy
+allow service compute_management to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>tenancy
+allow dynamic-group dynamic_group_name to manage all-resources <span class="k">in </span>tenancy
+</code></pre></div>        </div>
+        <p>※1: 4行目の <strong>動的グループ</strong> 名は、先に作成したものに置き換えます。</p>
+
+        <p>※2: 最初の3行のポリシーは、  <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を伴うリソースを  <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIから利用する場合に必要です。</p>
+
+        <p>※3: 最後の1行のポリシーは、 <strong>動的グループ</strong> に対するリソース管理権限を付与するものです。</p>
+
+        <p>※4: この例は、全て <strong>ルート・コンパートメント</strong> を対象に <strong>IAMポリシー</strong> を設定していますが、クラスタ管理ノードや動的にリソースを作成・削除する <strong>コンパートメント</strong> を特定の <strong>コンパートメント</strong> とする場合は、この <strong>コンパートメント</strong> を指定することも可能です。</p>
+      </li>
+    </ul>
+
+    <p><img src="console_page05.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="2-terraform-cliからのインスタンスプリンシパル認証利用方法">2. Terraform CLIからのインスタンス・プリンシパル認証利用方法</h1>
+
+<p>本章は、先に設定した <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証を <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIから利用する方法を解説します。</p>
+
+<p><strong>Terraform</strong> CLIから <strong>インスタンス・プリンシパル</strong> 認証を利用する場合は、 <strong>Terraform</strong> スクリプト中のプロバイダ定義を以下のように指定します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>provider <span class="s2">"oci"</span> <span class="o">{</span>
+  auth <span class="o">=</span> <span class="s2">"InstancePrincipal"</span>  
+  region <span class="o">=</span> <span class="s2">"region_name"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>※5: region属性の値は、使用するリージョンの値に置き換えます。</p>
+
+<p>なおこのプロバイダ定義は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong> で使用している  <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> の <strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> 機能を <strong>インスタンス・プリンシパル</strong> 認証と共に構成した場合、改めて設定する必要はありません。</p>
+
+<hr />
+<h1 id="3-oci-cliからのインスタンスプリンシパル認証利用方法">3. OCI CLIからのインスタンス・プリンシパル認証利用方法</h1>
+
+<p>本章は、先に設定した <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証を <strong>OCI CLI</strong> から利用する方法を解説します。</p>
+
+<p><strong>OCI CLI</strong> から <strong>インスタンス・プリンシパル</strong> 認証を利用する場合は、以下のように <strong>OCI CLI</strong> コマンドの”–auth”オプションに”instance_principal”を指定します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>oci iam region list <span class="nt">--auth</span> instance_principal
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-27T10:36:52+09:00">October 27, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%AA%E3%83%B3%E3%83%87%E3%83%9E%E3%83%B3%E3%83%89%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E5%AE%9F%E7%8F%BE%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%83%BB%E3%83%97%E3%83%AA%E3%83%B3%E3%82%B7%E3%83%91%E3%83%AB%E8%AA%8D%E8%A8%BC%E8%A8%AD%E5%AE%9A%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Finstance-principal-auth%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Finstance-principal-auth%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Finstance-principal-auth%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/" class="pagination--pager" title="pdshで効率的にクラスタ管理オペレーションを実行
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/" class="pagination--pager" title="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-10-17T22:08:00+09:00">
+  <meta property="article:published_time" content="2023-10-27T10:36:52+09:00">
 
 
 
@@ -316,6 +316,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/" class="active">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
         
       </ul>
@@ -331,7 +333,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法">
     <meta itemprop="description" content="機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-10-17T22:08:00+09:00">
+    <meta itemprop="datePublished" content="2023-10-27T10:36:52+09:00">
     
 
     <div class="page__inner-wrap">
@@ -361,7 +363,7 @@
 <ul>
   <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">NVIDIA Driver</a></strong> : NVIDIA製GPUドライバソフトウェア</li>
   <li><strong><a href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html">NVIDIA CUDA</a></strong> : CUDAライブラリ</li>
-  <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html">NVIDIA Fabric Manager</a></strong> : NVSwitch（ <strong>BM.GPU4.8</strong> / <strong>BM.GPU.A100-v2.8</strong> に搭載）管理ソフトウェア</li>
+  <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html">NVIDIA Fabric Manager</a></strong> : <strong>NVSwitch</strong> （ <strong>BM.GPU4.8</strong> / <strong>BM.GPU.A100-v2.8</strong> に搭載）管理ソフトウェア</li>
 </ul>
 
 <p>また本テクニカルTipsは、これらのソフトウェアが正しくインストールされているか、 <strong><a href="https://github.com/nvidia/cuda-samples">CUDA Samples</a></strong> で確認します。</p>
@@ -388,7 +390,7 @@
     <p>3.1</p>
     <ul>
       <li><strong>名前</strong> ：インスタンスに付与する名前</li>
-      <li><strong>コンパートメントに作成</strong> ：インスタンスを作成するコンパートメント</li>
+      <li><strong>コンパートメントに作成</strong> ：インスタンスを作成する <strong>コンパートメント</strong></li>
     </ul>
 
     <p><img src="console_page02.png" alt="画面ショット" /></p>
@@ -411,7 +413,7 @@
     <p><img src="console_page05.png" alt="画面ショット" /></p>
 
     <ul>
-      <li><strong>Shape</strong> ：BM.GPU4.8 (<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します。</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック。）</li>
+      <li><strong>Shape</strong> ： <strong>BM.GPU4.8</strong> (<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します。</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック。）</li>
     </ul>
 
     <p><img src="console_page06.png" alt="画面ショット" /></p>
@@ -450,9 +452,9 @@
   </li>
   <li>
     <p>以下コマンドでGPUインスタンスにSSHログインします。この時、インストール時にデフォルトで作成されるユーザが <strong>ubuntu</strong> であることに留意します。<br />
-なお、 <strong>Ubuntu</strong> イメージの <strong>BM.GPU4.8</strong> インスタンスの場合、作成開始からSSHでログインできるまでに30分程度かかります。</p>
+なお、 <strong>Canonical Ubuntu 20.04</strong> イメージの <strong>BM.GPU4.8</strong> インスタンスの場合、作成開始からSSHでログインできるまでに30分程度かかります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">&gt;</span> ssh ubunsu@a100-ub204
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ssh ubunsu@a100-ub204
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -564,7 +566,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-17T22:08:00+09:00">October 17, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-27T10:36:52+09:00">October 27, 2023</time></p>
 
 
       </footer>
@@ -585,7 +587,7 @@
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/" class="pagination--pager" title="pdshで効率的にクラスタ管理オペレーションを実行
+      <a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/" class="pagination--pager" title="オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法
 ">前へ</a>
     
     
