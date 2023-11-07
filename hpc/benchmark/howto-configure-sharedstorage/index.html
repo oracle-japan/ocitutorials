@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-10-27T10:36:52+09:00">
+  <meta property="article:published_time" content="2023-11-07T22:12:19+09:00">
 
 
 
@@ -292,6 +292,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/" class="active">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -333,7 +335,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="コストパフォーマンスの良いファイル共有ストレージ構築方法">
     <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。">
-    <meta itemprop="datePublished" content="2023-10-27T10:36:52+09:00">
+    <meta itemprop="datePublished" content="2023-11-07T22:12:19+09:00">
     
 
     <div class="page__inner-wrap">
@@ -399,37 +401,29 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 <table>
   <thead>
     <tr>
-      <th> </th>
-      <th style="text-align: right">構成</th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center">構成</th>
       <th style="text-align: right">月額定価<br />(2023年9月時点)</th>
       <th style="text-align: right">スループット</th>
-      <th>IOPS</th>
+      <th style="text-align: right">IOPS</th>
       <th> </th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>ファイル・ストレージ</strong></td>
-      <td style="text-align: right">マウント・ターゲット x 1, ファイルシステム x 1（15 TB)<br />-</td>
-      <td style="text-align: right"><strong>630,000</strong>円<br />(*5, 6)</td>
+      <td style="text-align: center"><strong>ファイル・ストレージ</strong></td>
+      <td style="text-align: center">マウント・ターゲット x 1, ファイルシステム x 1（15 TB)<br />-</td>
+      <td style="text-align: right"><strong>630,000</strong> 円<br />(*5, 6)</td>
       <td style="text-align: right">983 MB/s<br />(*1)</td>
-      <td>25.0 k<br />(*2)</td>
+      <td style="text-align: right">25.0 k<br />(*2)</td>
       <td> </td>
     </tr>
     <tr>
-      <td><strong>ブロック・ボリューム</strong> <br />NFSサーバ</td>
-      <td style="text-align: right"><strong>ブロック・ボリューム</strong> （Balanced）1 TB x 15ボリューム<br />BM.Optimized3.36 x 1インスタンス<br />Total<br />-</td>
-      <td style="text-align: right">89,250円<br />273,370円<br /><strong>362,620</strong>円<br />(*5, 6)</td>
+      <td style="text-align: center"><strong>ブロック・ボリューム</strong> <br />NFSサーバ</td>
+      <td style="text-align: center"><strong>ブロック・ボリューム</strong> （Balanced）1 TB x 15ボリューム<br />BM.Optimized3.36 x 1インスタンス<br />Total<br />-</td>
+      <td style="text-align: right">89,250円<br />273,370円<br /><strong>362,620</strong> 円<br />(*5, 6)</td>
       <td style="text-align: right">2,040 MB/s<br />(*3)</td>
-      <td>33.3 k<br />(*4)</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td style="text-align: right"> </td>
-      <td style="text-align: right"> </td>
-      <td style="text-align: right"> </td>
-      <td> </td>
+      <td style="text-align: right">33.3 k<br />(*4)</td>
       <td> </td>
     </tr>
   </tbody>
@@ -447,7 +441,39 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 
 <p>*4) <strong>ファイル・ストレージ</strong> と同様、VM.Standard2.16で構築したNFSクライアントから32 KiBブロックサイズreadでfioを使用して計測したIOPS値です。</p>
 
-<p>*5) <strong>ブロック・ボリューム</strong> NFSサーバの構成は、価格の大部分をBM.Optimized3.36が占めるため、ファイルシステム総容量がこれより大きくなると、 <strong>ファイル・ストレージ</strong> に対する価格優位性が拡大します。</p>
+<p>*5) 総容量15TBの <strong>ブロック・ボリューム</strong> NFSサーバの構成は、価格の大部分をBM.Optimized3.36が占めるため、総容量がこれより大きくなると、下表のように <strong>ファイル・ストレージ</strong> に対する価格優位性が拡大します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">総容量（TB）</th>
+      <th style="text-align: right"><strong>ファイル・ストレージ</strong><br />月額定価</th>
+      <th style="text-align: right"><strong>ブロック・ボリューム</strong> NFSサーバ<br />月額定価</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">15</td>
+      <td style="text-align: right"><strong>630,000</strong> 円</td>
+      <td style="text-align: right"><strong>362,620</strong> 円</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">100</td>
+      <td style="text-align: right"><strong>4,200,000</strong> 円</td>
+      <td style="text-align: right"><strong>868,370</strong> 円</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">500</td>
+      <td style="text-align: right"><strong>21,000,000</strong> 円</td>
+      <td style="text-align: right"><strong>3,248,370</strong> 円</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">1,000</td>
+      <td style="text-align: right"><strong>42,000,000</strong> 円</td>
+      <td style="text-align: right"><strong>6,223,370</strong> 円</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>*6) <strong>ファイル・ストレージ</strong> は、従量制課金のため使用量が15 TBを下回るとそれに応じて金額が安くなりますが、 <strong>ブロック・ボリューム</strong> NFSサーバは、その時点の使用量に関わらず定額課金されます。</p>
 
@@ -476,11 +502,6 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
       <td>・ボリューム・パフォーマンスとシェイプの選択<br />　によるNFSサーバ性能のVertical Scaling<br />　が可能</td>
       <td>・NFSサービス開始までの構築手順が煩雑(*8)<br />・バックアップのための環境構築が必要(*9)<br />・ファイルシステムの拡張作業が煩雑<br />・NFSサーバのソフトウェアメンテナンスが必要<br />・NFSサーバインスタンスが単一障害点</td>
     </tr>
-    <tr>
-      <td> </td>
-      <td> </td>
-      <td> </td>
-    </tr>
   </tbody>
 </table>
 
@@ -500,7 +521,7 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-10-27T10:36:52+09:00">October 27, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-07T22:12:19+09:00">November 7, 2023</time></p>
 
 
       </footer>
@@ -525,7 +546,7 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/" class="pagination--pager" title="クラスタ・ネットワーク接続用ネットワークインターフェース作成方法
+      <a href="/ocitutorials/hpc/benchmark/stop-unused-service/" class="pagination--pager" title="不要サービス停止によるパフォーマンスチューニング方法
 ">次へ</a>
     
   </nav>

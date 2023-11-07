@@ -1,0 +1,932 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>不要サービス停止によるパフォーマンスチューニング方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="不要サービス停止によるパフォーマンスチューニング方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/stop-unused-service/">
+
+
+  <meta property="og:description" content="計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2023-11-07T22:12:19+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/stop-unused-service/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          不要サービス停止によるパフォーマンスチューニング方法
+
+        
+      </h1>
+      
+        <p class="page__lead">計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/benchmark" itemprop="item"><span itemprop="name">Benchmark</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">不要サービス停止によるパフォーマンスチューニング方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/" class="active">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="不要サービス停止によるパフォーマンスチューニング方法">
+    <meta itemprop="description" content="計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。">
+    <meta itemprop="datePublished" content="2023-11-07T22:12:19+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-不要サービス特定">1. 不要サービス特定</a></li><li><a href="#2-不要サービス停止">2. 不要サービス停止</a></li><li><a href="#3-不要サービス停止による効果確認">3. 不要サービス停止による効果確認</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。<br />
+特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。<br />
+本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>HPCワークロードの高並列実行に於けるスケーラビリティは、いわゆるOSジッターの影響を受けるため、不要なOS常駐サービスを停止することで、これを改善できる場合があります。<br />
+ただこの場合、停止しようとするサービスは、以下の観点で事前に精査する必要があります。</p>
+
+<ul>
+  <li>サービスの使用するリソースがどの程度か</li>
+  <li>サービスの提供する機能が不要か</li>
+</ul>
+
+<p>これらの調査を経て停止するサービスを特定したら、対象のサービスを停止し、HPCワークロードを実行します。</p>
+
+<p>本テクニカルTipsは、HPCワークロード向けベアメタルシェイプ  <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> と <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用するインスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共にデプロイするHPCクラスタを想定し、この計算ノードとしてのインスタンス上で不要サービスを停止することで、高並列時のスケーラビリティ向上を目的とするOSレベルのパフォーマンスチューニングを適用する方法を解説します。</p>
+
+<p>以降の章は、本チューニングの工程に沿った以下構成となっています。</p>
+
+<ol>
+  <li>不要サービス特定</li>
+  <li>不要サービス停止</li>
+  <li>不要サービス停止による効果確認</li>
+</ol>
+
+<p>不要サービスの特定は、Linuxのプロセスアカウンティングを利用し、インスタンスデプロイ直後のワークロードを実行していない状態でCPUを使用しているプロセスを特定、このプロセスが提供する機能を考慮して不要サービスかどうかを判断、不要と判断したサービスを停止します。<br />
+また不要サービスを停止した後、再度プロセスアカウンティング情報を取得し、その効果を確認します。</p>
+
+<p>自身の利用するHPCクラスタが本テクニカルTipsの想定と同じシェイプ・OSの場合は、本テクニカルTipsと同じサービスを停止するだけでチューニングを適用することが出来るため、1章と3章は参照にとどめ2章の手順を適用します。<br />
+これらが想定と異なる場合は、1章の手順から順次チューニングを進めます。この場合は、対象となる不要サービスが本テクニカルTipsと異なる可能性があるため、自身で特定した不要サービスに合わせた停止方法を適用します。</p>
+
+<hr />
+<h1 id="1-不要サービス特定">1. 不要サービス特定</h1>
+
+<p>本章は、 <strong>BM.Optimized3.36</strong> と <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用するインスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と共にデプロイし、このインスタンス上で動作する不要サービスを特定します。<br />
+具体的には、以下の手順を実施します。</p>
+
+<ul>
+  <li>調査用HPCクラスタデプロイ</li>
+  <li>計算ノードでpsacctを起動</li>
+  <li>アカウンティング情報取得</li>
+  <li>不要サービス特定</li>
+</ul>
+
+<p>また、通常プライベートサブネットに接続される計算ノードでは、ファイアーウォールやSELinuxを不要と判断出来る場合もあるため、本テクニカルTipsではこれらも不要サービスとして扱います。</p>
+
+<p>本章の調査により、本テクニカルTipsでは以下を不要サービスと判断しています。</p>
+
+<ul>
+  <li>unified-monitoring-agent</li>
+  <li>OSWatcher</li>
+  <li>dnf-makecache.timer</li>
+  <li>Oracle Cloud Agent</li>
+  <li>ksplice</li>
+  <li>firewalld</li>
+  <li>SELinux</li>
+</ul>
+
+<p>不要サービスの特定は、以下の手順を実施します。</p>
+
+<ol>
+  <li>
+    <p>2ノードの <strong>BM.Optimized3.36</strong> を <strong>クラスタ・ネットワーク</strong> と共にデプロイし、調査用のHPCクラスタを構築します。</p>
+  </li>
+  <li>
+    <p>以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、psacctサービスを起動、プロセスアカウンティングのデータファイルが生成されることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl start psacct
+ <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> /var/account
+ <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 root root 94144 Oct 25 17:17 /var/account/pacct
+</code></pre></div>    </div>
+
+    <p>プロセスアカウンティングのデータファイルは、logrotateが同じディレクトリに日付をファイル名として日時でローテーションします。<br />
+ このため、psacctサービスを起動した翌々日早朝まで放置し、起動翌日丸一日分のアカウンティング情報（以下の例ではpsacctサービス起動日を2023年10月25日としてpacct-20231027）が作成されているのを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> /var/account/pacct<span class="k">*</span>
+ <span class="nt">-rw-------</span> 1 root root  5896896 Oct 27 10:29 /var/account/pacct
+ <span class="nt">-rw-r--r--</span> 1 root root  1069509 Oct 26 03:32 /var/account/pacct-20231026.gz
+ <span class="nt">-rw-------</span> 1 root root 20381632 Oct 27 03:33 /var/account/pacct-20231027
+ <span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、CPU時間を消費している上位10プロセスを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>sa <span class="nt">-ca</span> /var/account/pacct-20231027 | <span class="nb">head</span> <span class="nt">-11</span>
+   318463  100.00%  187274.65re  100.00%      11.25cp  100.00%         0avio      3484k
+       73    0.02%       9.79re    0.01%       3.97cp   35.29%         0avio    109527k
+     2881    0.90%     145.64re    0.08%       3.25cp   28.88%         0avio      1208k   pidstat
+       16    0.01%       0.99re    0.00%       0.96cp    8.51%         0avio    114764k   dnf
+     2881    0.90%      56.61re    0.03%       0.93cp    8.23%         0avio     13784k   top
+     2881    0.90%     145.06re    0.08%       0.67cp    5.97%         0avio     10076k   nfsiostat
+       46    0.01%       0.49re    0.00%       0.48cp    4.31%         0avio     17824k   rpm
+     5768    1.81%       0.51re    0.00%       0.29cp    2.56%         0avio     11907k   ps
+       92    0.03%      11.30re    0.01%       0.24cp    2.16%         0avio     32345k   python3
+       96    0.03%       0.19re    0.00%       0.17cp    1.54%         0avio     45760k   ksplice
+      361    0.11%       0.09re    0.00%       0.08cp    0.75%         0avio      1318k   <span class="nb">gzip</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ステップ3. の結果から、対象期間中に消費されたCPU時間のうち35％程度をコマンド名がブランクのプロセスが消費しており、このコマンドを実行した親プロセスを特定します。</p>
+
+    <p>4-1. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、コマンド名がブランクのプロセスの親プロセスIDが1（Systemd）で20分程度の間隔で実行されていることから、Systemdタイマーから起動されていることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>lastcomm <span class="nt">-f</span> /var/account/pacct-20231027 <span class="nt">--pid</span> | <span class="nb">grep</span> <span class="s2">"^ "</span>
+                 S   X root     __         3.27 secs Fri Oct 27 03:18 498400 1
+                 S   X root     __         3.24 secs Fri Oct 27 02:54 493189 1
+                 S   X root     __         3.23 secs Fri Oct 27 02:30 487892 1
+                 S   X root     __         3.28 secs Fri Oct 27 02:12 483923 1
+                 S   X root     __         3.25 secs Fri Oct 27 01:47 478360 1
+                 S   X root     __         3.32 secs Fri Oct 27 01:29 474260 1
+                 S   X root     __         3.24 secs Fri Oct 27 01:05 469067 1
+                 S   X root     __         3.31 secs Fri Oct 27 00:46 464755 1
+                 S   X root     __         3.24 secs Fri Oct 27 00:29 461089 1
+                 S   X root     __         3.30 secs Fri Oct 27 00:13 457449 1
+ :
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>4-2. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、このコマンドの実行間隔が15分以上の毎回異なる間隔で実行されていることから、このコマンドがunified-monitoring-agent_config_downloader.timerから実行されていることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>sct <span class="k">in</span> <span class="sb">`</span><span class="nb">sudo </span>systemctl list-units <span class="nt">--type</span><span class="o">=</span>timer | <span class="nb">grep </span>timer | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$sct</span><span class="p">;</span> <span class="nb">sudo </span>systemctl <span class="nb">cat</span> <span class="nv">$sct</span> | <span class="nb">grep</span> ^On<span class="p">;</span> <span class="k">done
+ </span>mlocate-updatedb.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span>daily
+
+ oci-cn-auth-renew.timer
+ <span class="nv">OnBootSec</span><span class="o">=</span>15min
+ <span class="nv">OnUnitActiveSec</span><span class="o">=</span>15min
+
+ sysstat-collect.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span><span class="k">*</span>:00/10
+
+ sysstat-summary.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span>00:07:00
+
+ systemd-tmpfiles-clean.timer
+ <span class="nv">OnBootSec</span><span class="o">=</span>15min
+ <span class="nv">OnUnitActiveSec</span><span class="o">=</span>1d
+
+ unbound-anchor.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span>daily
+
+ unified-monitoring-agent_config_downloader.timer
+ <span class="nv">OnUnitInactiveSec</span><span class="o">=</span>15min
+
+</code></pre></div>    </div>
+
+    <p>unified-monitoring-agentは、アプリケーションからの <strong>カスタム・ログ</strong> を収集するエージェントのため、不要サービスと判定します。</p>
+
+    <p>自身の環境に於けるunified-monitoring-agentの要・不要は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/Concepts/agent_management.htm">ここ</a></strong> を参照してその判断を行ってください。</p>
+  </li>
+  <li>
+    <p>ステップ3. の結果から、対象期間中に消費されたCPU時間のうち30％程度をpidstatが消費しており、このコマンドを実行した親プロセスを特定します。</p>
+
+    <p>5-1. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、pidstatの親プロセスがpidsubでその親プロセスIDが全て4164であることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>lastcomm <span class="nt">-f</span> /var/account/pacct-20231027 <span class="o">&gt;</span> lastcomm.out
+ <span class="nv">$ </span><span class="k">for </span>pid <span class="k">in</span> <span class="sb">`</span><span class="nb">awk</span> <span class="s1">'{if($1=="pidstat"){print $(NF)}}'</span> ./lastcomm.out<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">awk</span> <span class="nt">-v</span> <span class="nv">awkpid</span><span class="o">=</span><span class="nv">$pid</span> <span class="s1">'{if($(NF-1)==awkpid){print $0}}'</span> ./lastcomm.out<span class="p">;</span> <span class="k">done
+ </span>pidsub                 root     __         0.00 secs Fri Oct 27 03:32 501642 4164
+ pidsub                 root     __         0.00 secs Fri Oct 27 03:32 501537 4164
+ pidsub                 root     __         0.00 secs Fri Oct 27 03:31 501432 4164
+ :
+</code></pre></div>    </div>
+
+    <p>5-2. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、プロセスID 4164がOSWatcherであることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ps <span class="nt">-fe</span> | <span class="nb">grep </span>4164 | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep
+ </span>root        4164       1  0 Oct25 ?        00:00:27 /bin/sh /usr/sbin/OSWatcher 30 48 <span class="nb">gzip</span> /var/oled/oswatcher
+ root      656005    4164  0 14:27 ?        00:00:00 <span class="nb">sleep </span>30
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>OSwatcherは、パフォーマンス関連の問題が発生した際にこの原因を特定するための情報を定期的に収集するサービスのため、不要サービスと判定します。</p>
+
+    <p>自身の環境に於けるOSwatcherの要・不要は、Oracle公式ドキュメントの <strong><a href="https://support.oracle.com/knowledge/Oracle%20Cloud/301137_1.html">ここ</a></strong> を参照してその判断を行ってください。</p>
+
+    <p>5-3. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し暫く出力を監視すると、上位10プロセスに含まれる以下のコマンドもOSwatcherから実行されていることがわかります。</p>
+
+    <ul>
+      <li>top</li>
+      <li>nfsiostat</li>
+    </ul>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">while </span>pstree 4164<span class="p">;</span> <span class="k">do </span><span class="nb">sleep </span>1<span class="p">;</span> <span class="k">done
+ </span>OSWatcher───sleep
+ :
+ OSWatcher───sleep
+ OSWatcher─┬─iosub───iostat
+         ├─mpsub───mpstat
+         ├─nfssub───nfsiostat
+         ├─pidsub───pidstat
+         ├─sleep
+         ├─vmsub───vmstat
+         └─xtop───top
+ :
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ステップ3. の結果から、対象期間中に消費されたCPU時間のうち10％程度をdnfが消費しており、このコマンドを実行した親プロセスを特定します。</p>
+
+    <p>6-1. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、dnfの親プロセスIDが1（Systemd）でほぼ1時間ごとに実行されていることから、Systemdタイマーから起動されていることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>lastcomm <span class="nt">-f</span> /var/account/pacct-20231027 <span class="nt">--command</span> dnf <span class="nt">--pid</span>
+ dnf              S     root     __         0.20 secs Fri Oct 27 02:52 492662 1
+ dnf              S     root     __         1.97 secs Fri Oct 27 01:32 474918 1
+ dnf              S     root     __         0.20 secs Thu Oct 26 23:33 448654 1
+ dnf              S     root     __        20.50 secs Thu Oct 26 21:47 425144 1
+ dnf              S     root     __         0.20 secs Thu Oct 26 20:20 405901 1
+ dnf              S     root     __         0.20 secs Thu Oct 26 19:05 389283 1
+ dnf              S     root     __         2.00 secs Thu Oct 26 17:38 369972 1
+ dnf              S     root     __         0.20 secs Thu Oct 26 16:00 348306 1
+ dnf              S     root     __         2.01 secs Thu Oct 26 14:15 325177 1
+ dnf              S     root     __         0.20 secs Thu Oct 26 12:45 305419 1
+ dnf              S     root     __         2.02 secs Thu Oct 26 10:45 278759 1
+ dnf              S     root     __         0.20 secs Thu Oct 26 08:47 252620 1
+ dnf              S     root     __         2.89 secs Thu Oct 26 07:44 238753 1
+ dnf              S     root     __         0.20 secs Thu Oct 26 06:19 220160 1
+ dnf              S     root     __         0.19 secs Thu Oct 26 05:06 203913 1
+ dnf              S     root     __        24.27 secs Thu Oct 26 03:56 188468 1
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>6-2. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、dnfがdnf-makecache.timerから実行されていることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl list-units <span class="nt">--type</span><span class="o">=</span>timer | <span class="nb">grep</span> <span class="nt">-i</span> dnf
+ dnf-makecache.timer                              loaded active waiting dnf makecache <span class="nt">--timer</span>
+</code></pre></div>    </div>
+
+    <p>dnf-makecache.timerは、有効なdnfレポジトリのパッケージメターデータを定期的に更新するために使用し、OSアップデート等のパッケージ管理は定期的なメンテナンス時に適用する運用を想定し、不要サービスと判定します。</p>
+
+    <p>自身の環境に於けるdnf-makecacheの要・不要は、man dnfを参照してその判断を行ってください。</p>
+  </li>
+  <li>
+    <p>ステップ3. の結果から、対象期間中に消費されたCPU時間のうち4％程度をrpmが消費しており、このコマンドを実行した親プロセスを特定します。</p>
+
+    <p>7-1. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、rpmの親プロセスがsudoでその親プロセスIDが29067であるることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>ppid <span class="k">in</span> <span class="sb">`</span><span class="k">for </span>pid <span class="k">in</span> <span class="se">\`</span><span class="nb">awk</span> <span class="s1">'{if($1=="rpm"){print $(NF)}}'</span> ./lastcomm.out<span class="se">\`</span><span class="p">;</span> <span class="k">do </span><span class="nb">awk</span> <span class="nt">-v</span> <span class="nv">awkpid</span><span class="o">=</span><span class="nv">$pid</span> <span class="s1">'{if($(NF-1)==awkpid){print $(NF)}}'</span> ./lastcomm.out<span class="p">;</span> <span class="k">done</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">awk</span> <span class="nt">-v</span> <span class="nv">awkppid</span><span class="o">=</span><span class="nv">$ppid</span> <span class="s1">'{if($(NF-1)==awkppid){print $0}}'</span> ./lastcomm.out<span class="p">;</span> <span class="k">done
+ </span><span class="nb">sudo             </span>S     root     __         0.00 secs Fri Oct 27 03:28 500702 29067
+ <span class="nb">sudo             </span>S     root     __         0.00 secs Fri Oct 27 03:13 497429 29067
+ :
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>7-2. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、プロセスIDが29067のプロセスがoci-wlpでこれがOracle Cloud Agentから実行されていることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>lastcomm <span class="nt">-f</span> /var/account/pacct <span class="nt">--pid</span> | <span class="nb">grep</span> <span class="s2">" 29067 "</span>
+ oci-wlp              X oracle-c __        32.54 secs Wed Oct 25 15:58 29067 28989
+ <span class="nv">$ </span>ps <span class="nt">-fe</span> | <span class="nb">grep </span>oci-wlp | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep
+ </span>oracle-+  507754  507676  0 03:59 ?        00:00:04 /usr/libexec/oracle-cloud-agent/plugins/oci-wlp/oci-wlp
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>Oracle Cloud Agentは、インスタンスのパッケージ管理、ログ管理、モニタリング等を行うエージェントサービスで、これらの機能を使用しないことを前提に不要サービスと判定します。</p>
+
+    <p>自身の環境に於けるOracle Cloud Agentの要・不要は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">ここ</a></strong> を参照してその判断を行ってください。</p>
+  </li>
+  <li>
+    <p>ステップ3. の結果から、対象期間中に消費されたCPU時間のうち2％程度をpython3が消費しており、このコマンドを実行した親プロセスを特定します。</p>
+
+    <p>8-1. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、python3の親プロセスIDが1（Systemd）で15分ごとに実行されていることから、Systemdタイマーから起動されていることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>lastcomm <span class="nt">-f</span> /var/account/pacct-20231027 <span class="nt">--command</span> python3 <span class="nt">--pid</span>
+ python3          S     root     __         0.16 secs Fri Oct 27 03:18 498396 1
+ python3          S     root     __         0.15 secs Fri Oct 27 03:02 494964 1
+ python3          S     root     __         0.15 secs Fri Oct 27 02:46 491325 1
+ python3          S     root     __         0.16 secs Fri Oct 27 02:30 487888 1
+ python3          S     root     __         0.16 secs Fri Oct 27 02:15 484575 1
+ python3          S     root     __         0.16 secs Fri Oct 27 01:59 480999 1
+ python3          S     root     __         0.16 secs Fri Oct 27 01:44 477602 1
+ python3          S     root     __         0.16 secs Fri Oct 27 01:28 474124 1
+ python3          S     root     __         0.16 secs Fri Oct 27 01:13 470840 1
+ python3          S     root     __         0.16 secs Fri Oct 27 00:58 467365 1
+ :
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>8-2. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、python3の実行間隔が15分であることから、このコマンドがoci-cn-auth-renew.timerから実行されていることを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>sct <span class="k">in</span> <span class="sb">`</span><span class="nb">sudo </span>systemctl list-units <span class="nt">--type</span><span class="o">=</span>timer | <span class="nb">grep </span>timer | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$sct</span><span class="p">;</span> <span class="nb">sudo </span>systemctl <span class="nb">cat</span> <span class="nv">$sct</span> | <span class="nb">grep</span> ^On<span class="p">;</span> <span class="k">done
+ </span>mlocate-updatedb.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span>daily
+
+ oci-cn-auth-renew.timer
+ <span class="nv">OnBootSec</span><span class="o">=</span>15min
+ <span class="nv">OnUnitActiveSec</span><span class="o">=</span>15min
+
+ sysstat-collect.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span><span class="k">*</span>:00/10
+
+ sysstat-summary.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span>00:07:00
+
+ systemd-tmpfiles-clean.timer
+ <span class="nv">OnBootSec</span><span class="o">=</span>15min
+ <span class="nv">OnUnitActiveSec</span><span class="o">=</span>1d
+
+ unbound-anchor.timer
+ <span class="nv">OnCalendar</span><span class="o">=</span>daily
+
+ unified-monitoring-agent_config_downloader.timer
+ <span class="nv">OnUnitInactiveSec</span><span class="o">=</span>15min
+
+</code></pre></div>    </div>
+
+    <p>oci-cn-auth-renew.timerは、 <strong>クラスタ・ネットワーク</strong> の802.1x認証を定期的に更新するサービスで、必要なサービスと判定します。</p>
+  </li>
+  <li>
+    <p>ステップ3. の結果から、対象期間中に消費されたCPU時間のうち2％程度をkspliceが消費しており、kspliceがOS稼働中にカーネル等のアップデートを適用するためのサービスであり、OSアップデート等のパッケージ管理は定期的なメンテナンス時に適用する運用を想定し、不要サービスと判定します。</p>
+
+    <p>自身の環境に於けるkspliceの要・不要は、Oracle公式ドキュメントの <strong><a href="https://docs.oracle.com/cd/F22978_01/ksplice-user/ol_ksabout.html#%E7%AC%AC1%E7%AB%A0-Oracle-Ksplice%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">ここ</a></strong> を参照してその判断を行ってください。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="2-不要サービス停止">2. 不要サービス停止</h1>
+
+<p>本章は、先に不要と特定した以下サービスを停止します。</p>
+
+<ul>
+  <li>unified-monitoring-agent</li>
+  <li>OSWatcher</li>
+  <li>dnf-makecache.timer</li>
+  <li>Oracle Cloud Agent</li>
+  <li>ksplice</li>
+  <li>firewalld</li>
+  <li>SELinux</li>
+</ul>
+
+<p>不要サービスの停止は、以下の手順を実施します。</p>
+
+<ol>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、unified-monitoring-agentを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent.service
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_config_downloader.timer
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、OSwatcherを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> oswatcher
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、dnf-makecacheを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> dnf-makecache.timer
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、Oracle Cloud Agentを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> oracle-cloud-agent
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> oracle-cloud-agent-updater
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、ksplice関連パッケージをアンインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf remove <span class="nt">-y</span> ksplice uptrack
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、ファイアーウォールを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> firewalld
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、SELinuxを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>setenforce 0
+ <span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/SELINUX=enforcing/SELINUX=disabled/g'</span> /etc/selinux/config
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを計算ノードのopcユーザで実行し、OSを再起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>OS起動後に、ここまでに停止した不要サービスが起動していないことを確認します。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="3-不要サービス停止による効果確認">3. 不要サービス停止による効果確認</h1>
+
+<p>本章は、先に不要サービスを停止した状態で取得したプロセスアカウンティング情報を基に、以下の手順でその効果を確認します。<br />
+また、効果が確認できた不要サービスの停止を自身のHPCクラスタに適用します。</p>
+
+<ol>
+  <li>
+    <p>不要サービスを停止した翌々日早朝まで放置し、停止した翌日一日分のアカウンティング情報（以下の例ではpacct-20231029）が作成されているのを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> /var/account/pacct<span class="k">*</span>
+ <span class="nt">-rw-------</span> 1 root root   34496 Oct 30 09:45 /var/account/pacct
+ <span class="nt">-rw-r--r--</span> 1 root root 1069509 Oct 26 03:32 /var/account/pacct-20231026.gz
+ <span class="nt">-rw-------</span> 1 root root 2346813 Oct 27 03:33 /var/account/pacct-20231027.gz
+ <span class="nt">-rw-------</span> 1 root root 1581661 Oct 28 03:48 /var/account/pacct-20231028.gz
+ <span class="nt">-rw-------</span> 1 root root   16006 Oct 29 03:29 /var/account/pacct-20231029
+ <span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、CPU時間を消費している上位10プロセスを特定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>sa <span class="nt">-ca</span> /var/account/pacct-20231029 | <span class="nb">head</span> <span class="nt">-11</span>
+ 1734  100.00%   44205.76re  100.00%       0.24cp  100.00%         0avio      9098k
+   91    5.25%       1.26re    0.00%       0.24cp   97.23%         0avio     32319k   python3
+  532   30.68%   44187.71re   99.96%       0.00cp    1.73%         0avio         0k   kworker/dying<span class="k">*</span>
+    1    0.06%       0.00re    0.00%       0.00cp    0.32%         0avio      1222k   sar
+    1    0.06%       0.00re    0.00%       0.00cp    0.32%         0avio      2396k   updatedb
+    3    0.17%       0.60re    0.00%       0.00cp    0.19%         0avio     22352k   systemd
+    2    0.12%       0.09re    0.00%       0.00cp    0.19%         0avio      3726k   bash
+    3    0.17%       0.00re    0.00%       0.00cp    0.06%         0avio      6485k   tclsh
+  267   15.40%       0.00re    0.00%       0.00cp    0.00%         0avio     19760k   systemd-cgroups
+  187   10.78%       0.00re    0.00%       0.00cp    0.00%         0avio     20544k   systemctl
+  145    8.36%       0.00re    0.00%       0.00cp    0.00%         0avio      2630k   sadc
+</code></pre></div>    </div>
+
+    <p>不要サービスを停止する前の結果と比較し、停止したサービスによるCPU時間の消費が無いことを確認します。<br />
+ 本テクニカルTipsの環境では、今回のサービス停止で1日当たり約11秒（11.25秒 - 0.24秒）の不要サービスによるCPU消費を抑えられることが確認できました。</p>
+  </li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-07T22:12:19+09:00">November 7, 2023</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E4%B8%8D%E8%A6%81%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E5%81%9C%E6%AD%A2%E3%81%AB%E3%82%88%E3%82%8B%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%B9%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fstop-unused-service%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fstop-unused-service%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fstop-unused-service%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/" class="pagination--pager" title="コストパフォーマンスの良いファイル共有ストレージ構築方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/" class="pagination--pager" title="クラスタ・ネットワーク接続用ネットワークインターフェース作成方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
