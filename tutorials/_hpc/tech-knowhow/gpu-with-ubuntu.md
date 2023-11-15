@@ -8,29 +8,27 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主に **Ubuntu** で行われていることから、そのOSに **Ubuntu** を使用するのが主流になっていますが、 **Ubuntu** をOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。  
-本テクニカルTipsは、 **Ubuntu** をGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。
+機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。  
+本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。
 
 **注意 :** テクニカルTips内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
 ***
 # 0. 概要
 
-インスタンスOSに利用可能なLinuxディストリビューションは、 **Oracle Linux** をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっている **Ubuntu** もこれに含まれます。  
+インスタンスOSに利用可能なLinuxディストリビューションは、 **Oracle Linux** をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっているUbuntuもこれに含まれます。  
 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンスデプロイ後に自身でインストール・セットアップする必要があります。
 
 - **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html)** : NVIDIA製GPUドライバソフトウェア
 - **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** : CUDAライブラリ
 - **[NVIDIA Fabric Manager](https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html)** : **NVSwitch** （ **BM.GPU4.8** / **BM.GPU.A100-v2.8** に搭載）管理ソフトウェア
 
-また本テクニカルTipsは、これらのソフトウェアが正しくインストールされているか、 **[CUDA Samples](https://github.com/nvidia/cuda-samples)** で確認します。
-
-以降は、これらの手順をGPUシェイプ **BM.GPU4.8** と **Ubuntu** 20.04を例に解説します。
+本テクニカルTipsは、これらのソフトウェアをインストールし **[CUDA Samples](https://github.com/nvidia/cuda-samples)** でその動作確認を行う手順を、GPUシェイプ **BM.GPU4.8** とUbuntu 20.04を例に解説します。
 
 ***
 # 1. GPUインスタンスデプロイ
 
-本章は、 **Ubuntu** 20.4をOSとする **BM.GPU4.8** をデプロイします。
+本章は、Ubuntu 20.04をOSとする **BM.GPU4.8** をデプロイします。
 
 1. OCIコンソールにログインし、GPUインスタンスをデプロイする **リージョン** を選択後、 **コンピュート** → **インスタンス** とメニューを辿ります。
 
@@ -73,15 +71,15 @@ header:
     - **SSHキー** ：GPUインスタンスにログインする際使用するSSH秘密鍵に対応する公開鍵
       - 公開鍵ファイルのアップロード（ **公開キー・ファイル(.pub)のアップロード** ）と公開鍵のフィールドへの貼り付け（ **公開キーの貼付け** ）が選択可能  
 
-      ![画面ショット](console_page08.png)
+   ![画面ショット](console_page08.png)
 
    3.6 **ブート・ボリューム** フィールド
     - **ブート・ボリューム・サイズ(GB)** ：GPUインスタンスの **ブート・ボリューム** サイズ
       - **カスタム・ブート・ボリューム・サイズを指定します** チェックボックスをチェックすると指定可能
 
-      ![画面ショット](console_page09.png)
+   ![画面ショット](console_page09.png)
 
-        ※ 通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの **ブート・ボリューム** サイズとします。
+    ※ 通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの **ブート・ボリューム** サイズとします。
 
 4. 以下コマンドでGPUインスタンスにSSHログインします。この時、インストール時にデフォルトで作成されるユーザが **ubuntu** であることに留意します。  
 なお、 **Canonical Ubuntu 20.04** イメージの **BM.GPU4.8** インスタンスの場合、作成開始からSSHでログインできるまでに30分程度かかります。
@@ -91,13 +89,13 @@ header:
     ```
 
 ***
-# 2. NVIDIA Driver・NVIDIA CUDA・NVIDIA Fabric Managerインストール
+# 2. GPU関連ソフトウェアインストール
 
 ## 2-0. 概要
 
-本章は、デプロイしたGPUインスタンスに **NVIDIA Driver** 、 **NVIDIA CUDA** 、及び **NVIDIA Fabric Manager** をインストールし、インストールが正しく行われたかどうかを **CUDA Samples** を使用して確認します。
+本章は、デプロイしたGPUインスタンスに **NVIDIA Driver** 、 **NVIDIA CUDA** 、及び **NVIDIA Fabric Manager** をインストールします。
 
-なお、本テクニカルTipsでのこれらソフトウェアのインストールは、 **Ubuntu** パッケージマネージャを使用します。
+なお、本テクニカルTipsでのこれらソフトウェアのインストールは、Ubuntuパッケージマネージャを使用します。
 
 ## 2-1. NVIDIA Driverインストール
 
@@ -134,7 +132,7 @@ header:
     $ sudo apt-get update
     $ sudo apt-get install -y cuda
     $ sudo apt-get install -y nvidia-gds
-    $ sudo apt-get install -y cuda-drivers-fabricmanager-535
+    $ sudo apt-get install -y cuda-drivers-fabricmanager
     $ sudo systemctl enable --now nvidia-fabricmanager
     ```
 
@@ -145,9 +143,10 @@ header:
     $ sudo shutdown -r now
     ```
 
-## 2-3. CUDA Samples実行
+***
+# 3. CUDA SamplesによるGPU動作確認
 
-本章は、ここまでのソフトウェアのインストールが正しく行われたかどうかを、 **CUDA Samples** を実行して確認します。
+本章は、 **CUDA Samples** で先のGPU関連ソフトウェアのインストールが正しく行われたかを確認します。
 
 1. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **CUDA Samples** をインストールします。
 
@@ -156,8 +155,7 @@ header:
     $ echo "export PATH=/usr/local/cuda-12.2/bin\${PATH:+:\${PATH}}" | tee -a ~/.bash_profile
     $ source ~/.bash_profile
     $ git clone https://github.com/nvidia/cuda-samples
-    $ cd cuda-samples
-    $ make
+    $ cd cuda-samples; make
     ```
 
 2. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **CUDA Samples** が正しく動作するかを確認します。  

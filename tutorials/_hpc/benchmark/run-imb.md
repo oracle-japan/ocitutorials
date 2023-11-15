@@ -38,15 +38,16 @@ header:
 本章は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれる **OpenMPI** と **Intel MPI Benchmark** を使用し、 **Intel MPI Benchmark** を実行する方法を解説します。  
 具体的には、以下の作業を実施します。
 
-- ホストリストファイル[^hostlist]作成・配布
+- ホストリストファイル（※1）作成・配布
 - OS再起動
 - **Intel MPI Benchmark** 実行
 
-[^hostlist]: MPIを使用してIntel_MPI_Benchmarkを実行するため、この際に必要となる。
+※1）MPIを使用してIntel_MPI_Benchmarkを実行するため、この際に必要となる。
 
-1. **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホストリストファイルを **hostlist.txt** として作成、これを全計算ノードにコピーします。
+1. **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストを全計算ノードのopcユーザのホームディレクトリにファイル名hostlist.txtで作成します。
 
     ```sh
+    $ cat ~/hostlist.txt
     inst-wyr6m-comp
     inst-9wead-comp
     inst-u6i7v-comp
@@ -59,13 +60,12 @@ header:
     $ sudo shutdown -r now
     ```
 
-3. 以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。  
-   なお、コマンド中の **path_to_hostlist** は、ホストリストファイルをコピーしたパスに置き換えます。  
+3. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
    ここでは、2ノードを使用した **Ping-Pong** をメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,234.28 MB/s）を以ってその結果とします。
 
     ```sh
     $ source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-    $ mpirun -n 2 -N 1 -hostfile /path_to_hostlist/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+    $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
     #------------------------------------------------------------
     #    Intel (R) MPI Benchmarks 2018, MPI-1 part    
     #------------------------------------------------------------
@@ -132,14 +132,12 @@ header:
     # All processes entering MPI_Finalize
     ```
 
-4. 以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。  
-   なお、コマンド中の **path_to_hostlist** は、ホストリストファイルをコピーしたパスに置き換えます。  
+4. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
    ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用した **All-Reduce** の所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
-
 
     ```sh
     $ source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-    $ mpirun -n 144 -N 36 -hostfile /path_to_hostlist/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 -npmin 144 allreduce
+    $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 -npmin 144 allreduce
     #------------------------------------------------------------
     #    Intel (R) MPI Benchmarks 2018, MPI-1 part    
     #------------------------------------------------------------
@@ -226,9 +224,10 @@ header:
     $ sudo yum install -y intel-hpckit
     ```
 
-2. **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホストリストファイルを **hostlist.txt** として作成、これを全計算ノードにコピーします。
+2. **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストを全計算ノードのopcユーザのホームディレクトリにファイル名hostlist.txtで作成します。
 
     ```sh
+    $ cat ~/hostlist.txt
     inst-wyr6m-comp
     inst-9wead-comp
     inst-u6i7v-comp
@@ -241,13 +240,12 @@ header:
     $ sudo shutdown -r now
     ```
 
-4. 以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。  
-   なお、コマンド中の **path_to_hostlist** は、ホストリストファイルをコピーしたパスに置き換えます。  
+4. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
    ここでは、2ノードを使用した **Ping-Pong** をメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.71 usec）、帯域幅は256 MiBメッセージの帯域幅（12,240.91 MB/s）を以ってその結果とします。
 
     ```sh
     $ source /opt/intel/oneapi/setvars.sh
-    $ mpirun -n 2 -ppn 1 -hostfile /path_to_hostlist/hostlist.txt -genv UCX_NET_DEVICES=mlx5_2:1 IMB-MPI1 -msglog 3:28 PingPong
+    $ mpirun -n 2 -ppn 1 -hostfile ~/hostlist.txt -genv UCX_NET_DEVICES=mlx5_2:1 IMB-MPI1 -msglog 3:28 PingPong
     #----------------------------------------------------------------
     #    Intel(R) MPI Benchmarks 2021.6, MPI-1 part
     #----------------------------------------------------------------
@@ -314,14 +312,13 @@ header:
     # All processes entering MPI_Finalize
     ```
 
-5. 以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。  
-   なお、コマンド中の **path_to_hostlist** は、ホストリストファイルをコピーしたパスに置き換えます。  
+5. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
    ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用した **All-Reduce** の所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
 
 
     ```sh
     $ source /opt/intel/oneapi/setvars.sh
-    $ mpirun -n 144 -ppn 36 -hostfile /path_to_hostlist/hostlist.txt -genv UCX_NET_DEVICES=mlx5_2:1 IMB-MPI1 -msglog 3:28 -npmin 144 allreduce
+    $ mpirun -n 144 -ppn 36 -hostfile ~/hostlist.txt -genv UCX_NET_DEVICES=mlx5_2:1 IMB-MPI1 -msglog 3:28 -npmin 144 allreduce
     #----------------------------------------------------------------
     #    Intel(R) MPI Benchmarks 2021.6, MPI-1 part
     #----------------------------------------------------------------

@@ -88,24 +88,25 @@ table, th, td {
 
 本章は、HPCクラスタを構築するチュートリアルを集めています。自身の要件に合わせてチュートリアルを選んだら、そのチュートリアル名をクリックします。
 
-| チュートリアル名                                                                       | 構築手法 | クラスタ<br>管理機能 | スタティック/<br>オンデマンド |
-| ------------------------------------------------------------------------------ | ---- | ------------ | ----------------- |
-| **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** | 手動構築<br>（OCIコンソール）   | 無し           | スタティック            |
-| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** | 自動構築<br>（Terraform）   | 無し           | スタティック            |
-| **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**  | 自動構築<br>（スタック）   | 有り           | スタティック            |
-| **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)** | 自動構築<br>（スタック）   | 有り           | オンデマンド            |
+| チュートリアル名                                                                                      | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | 計算ノードOS              |
+| :-------------------------------------------------------------------------------------------: | :-----------------: | :----------: | :---------------: | :------------------: |
+| **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)**                | 手動構築<br>（OCIコンソール）  | 無し           | スタティック            | Oracle Linux 7.9/8 |
+| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**      | 自動構築<br>（Terraform） | 無し           | スタティック            | Oracle Linux 7.9/8 |
+| **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**                 | 自動構築<br>（スタック）      | 有り           | スタティック            | Oracle Linux 7.9/8 |
+| **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)** | 自動構築<br>（スタック）      | 有り           | オンデマンド            | Oracle Linux 7.9/8 |
 
 ## 1-2. 機械学習環境
 
 本章は、機械学習環境を構築するチュートリアルを集めています。自身の要件に合わせてチュートリアルを選んだら、そのチュートリアル名をクリックします。
 
-| チュートリアル名                                                                                                   | GPU<br>インスタンス | 構築手法 | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナランタイム |
-| ---------------------------------------------------------------------------------------------------------- | ------------- | ---- | -------- | ----------------- | --------- |
-| **[GPUインスタンスで機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                          | 単一            | 手動   | 無し       | スタティック            | Docker CE |
-| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**               | 複数            | 手動構築<br>（OCIコンソール）   | 無し       | スタティック            | Docker CE |
-| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**               | 複数            | 自動構築<br>（Terraform）   | 無し       | スタティック            | Docker CE |
-| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)** | 複数            | 自動構築<br>（スタック）   | 有り       | スタティック            | Enroot    |
-| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)**                                                              | 複数            | 自動構築<br>（スタック）   | 有り       | オンデマンド            | Enroot    |
+| チュートリアル名                                                                                       | GPU<br>インスタンス | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナランタイム | GPUノードOS         |
+| :--------------------------------------------------------------------------------------------: | :-----------: | :-----------------: | :----------: | :---------------: | :-------: | :--------------: |
+| **[GPUインスタンスで<br>機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                                | 単一            | 手動                  | 無し           | スタティック            | Docker CE | Oracle Linux 7.9 |
+| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 複数            | 手動構築<br>（OCIコンソール）  | 無し           | スタティック            | Docker CE | Oracle Linux 7.9 |
+| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数            | 自動構築<br>（Terraform） | 無し           | スタティック            | Docker CE | Oracle Linux 7.9 |
+| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 複数            | 自動構築<br>（スタック）      | 有り           | スタティック            | Enroot    | Oracle Linux 7.9 |
+| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)** | 複数            | 自動構築<br>（スタック）      | 有り           | オンデマンド            | Enroot    | Oracle Linux 7.9 |
+| **[GPUクラスタを構築する<br>(Ubuntu OS編)](/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/)**           | 複数            | 手動                  | 無し           | スタティック            | -         | Ubuntu 20.04     |
 
 ## 1-3. ファイル共有ストレージ
 
@@ -169,11 +170,6 @@ table, th, td {
    これらの設定は、 **NPS** （NUMA nodes per socket）や **SMT** （Simultanious Multi Threading）といった、当該インスタンスの性能に影響するものが少なくありません。  
    本パフォーマンス関連Tipsは、これらのBIOS設定を指定してHPC/GPUクラスタを構築する方法を解説します。
 
-- **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/)**
-
-   HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、 **ブロック・ボリューム** とベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。  
-   本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、 **ブロック・ボリューム** とベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのように **ブロック・ボリューム** とベア・メタル・インスタンスを構成すればよいか、解説します。
-
 - **[不要サービス停止によるパフォーマンスチューニング方法](/ocitutorials/hpc/benchmark/stop-unused-service/)**
 
    計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。  
@@ -220,7 +216,7 @@ table, th, td {
 - **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)**
 
    **クラスタ・ネットワーク** に接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだ **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されていますが、これらのベースとなるOSは、 **Oracle Linux** のみです。  
-   本テクニカルTipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用するインスタンスを **Oracle Linux** 以外のOSで **クラスタ・ネットワーク** に接続する方法を解説します。
+   本テクニカルTipsは、 **クラスタ・ネットワーク** 対応シェイプの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** や **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用するインスタンスを **Oracle Linux** 以外のOSで **クラスタ・ネットワーク** に接続する方法を解説します。
 
 - **[クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法](/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/)**
 
@@ -233,6 +229,11 @@ table, th, td {
 
    高速スクラッチ領域として利用することを想定したNVMe SSDを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
    本テクニカルTipsは、このファイルシステム作成方法を解説します。
+
+- **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)**
+
+   HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、 **ブロック・ボリューム** とベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。  
+   本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、 **ブロック・ボリューム** とベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのように **ブロック・ボリューム** とベア・メタル・インスタンスを構成すればよいか、解説します。
 
 - **[ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法](/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/)**
 
@@ -250,7 +251,7 @@ table, th, td {
 - **[計算/GPUノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)**
 
    ノード数が多くなるHPCクラスタやGPUクラスタの計算/GPUノードの名前解決は、どのように行うのが効果的でしょうか。  
-   本テクニカルTipsは、仮想クラウドネットワークのDNSを使用した効果的な計算/GPUノードの名前解決方法を解説します。
+   本テクニカルTipsは、 **仮想クラウド・ネットワーク** のDNSを使用した効果的な計算/GPUノードの名前解決方法を解説します。
 
 - **[計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法](/ocitutorials/hpc/tech-knowhow/compute-os-customization/)**
 
