@@ -76,7 +76,7 @@ Bastionノードの作成は、以下チュートリアルページ **インス�
 先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。
 
 ```sh
-> ssh-keygen
+$ ssh-keygen
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/opc/.ssh/id_rsa): 
 Enter passphrase (empty for no passphrase): 
@@ -97,7 +97,7 @@ The keys randomart image is:
 |      . + *E.+ *.|
 |       . +.=+.o o|
 +----[SHA256]-----+
-> cat .ssh/id_rsa.pub 
+$ cat .ssh/id_rsa.pub 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
 ```
 
@@ -276,12 +276,7 @@ runcmd:
 計算ノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。
 
 ```sh
-> ssh inst-wyr6m-comp
-The authenticity of host 'inst-wyr6m-comp (10.0.1.61)' cant be established.
-ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
-ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of known hosts.
+$ ssh inst-wyr6m-comp
 ```
 
 ## 2-2. cloud-init完了確認
@@ -291,8 +286,9 @@ Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of kn
 ステータスが **running** の場合は、cloud-initの処理が継続中のため、処理が完了するまで待ちます。
 
 ```sh
-> sudo cloud-init status
+$ sudo cloud-init status
 status: done
+$
 ```
 
 ## 2-3. 計算ノードファイルシステム確認
@@ -300,9 +296,10 @@ status: done
 計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。
 
 ```sh
-> df -k /mnt/localdisk
+$ df -k /mnt/localdisk
 Filesystem                  1K-blocks     Used  Available Use% Mounted on
 /dev/nvme0n1p1             3748905484    32976 3748872508   1% /mnt/localdisk
+$
 ```
 
 ***
@@ -324,53 +321,33 @@ OpenMPIを計算ノード間で実行するためには、mpirunを実行する�
 
 ## 3-1. 計算ノード間SSH接続環境構築
 
-本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でパスフレーズ無しのSSH接続環境を実現します。
+本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でopcユーザのパスフレーズ無しSSH接続環境を構築します。
    
-まず初めに、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノード上にファイル名 **hostlist.txt** で作成します。
+まず初めに、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノードのopcユーザのホームディレクトリにファイル名hostlist.txtで作成します。
 
 ```sh
+$ cat ~/hostlist.txt
 inst-wyr6m-comp
 inst-9wead-comp
+$
 ```
 
-次にこのホスト名リストを使用し、以下コマンドで全計算ノードにBastionノードのSSH秘密鍵をコピーします。この際、計算ノード1ノード毎に接続確認を求められるため、全てに **yes** を入力します。
+次に、以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全計算ノードにコピーします。
 
 ```sh
-> for hname in `cat hostlist.txt`; do echo $hname; scp -p ~/.ssh/id_rsa $hname:~/.ssh/; done
-inst-wyr6m-comp
-The authenticity of host 'inst-wyr6m-comp (10.0.1.61)' cannot be established.
-ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
-ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'inst-wyr6m-comp,10.0.1.61' (ECDSA) to the list of known hosts.
-id_rsa                                                                 100% 1675     1.9MB/s   00:00    
-inst-9wead-comp
-The authenticity of host 'inst-9wead-comp (10.0.1.62)' cannot be established.
-ECDSA key fingerprint is SHA256:alxTYf1T2VGbwLYSuvBs5X29YorXB40rAwWWuVDKxPA.
-ECDSA key fingerprint is MD5:14:73:f4:87:3c:43:72:b5:cc:b2:e8:37:15:2f:20:3e.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'inst-9wead-comp,10.0.1.62' (ECDSA) to the list of known hosts.
-id_rsa                                                                 100% 1675     1.8MB/s   00:00
+$ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -oStrictHostKeyChecking=accept-new -p ~/.ssh/id_rsa $hname:~/.ssh/; done
 ```
 
-次に、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを、以下コマンドで全計算ノードにコピーします。
+次に、以下コマンドをBastionノードのopcユーザで実行し、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを全計算ノードにコピーします。
 
 ```sh
-> for hname in `cat hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts $hname:~/.ssh/; done
-inst-wyr6m-comp
-known_hosts                                                            100%  440   631.9KB/s   00:00    
-inst-9wead-comp
-known_hosts                                                            100%  440   470.6KB/s   00:00
+$ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts $hname:~/.ssh/; done
 ```
 
-次に、後のIntel MPI Benchmark Ping-Pongを実行する際に使用する先に作成したホスト名リストを、以下コマンドで全計算ノードにコピーします。
+次に、以下コマンドをBastionノードのopcユーザで実行し、後のIntel MPI Benchmark Ping-Pongを実行する際に使用する先に作成したホスト名リストを全計算ノードにコピーします。
 
 ```sh
-> for hname in `cat hostlist.txt`; do echo $hname; scp -p ./hostlist.txt $hname:~/; done
-inst-wyr6m-comp
-hostlist.txt                                                           100%   32   113.3KB/s   00:00    
-inst-9wead-comp
-hostlist.txt                                                           100%   32   146.3KB/s   00:00
+$ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/hostlist.txt $hname:~/; done
 ```
 
 ## 3-2. プライベートサブネットセキュリティリスト修正
@@ -405,7 +382,7 @@ hostlist.txt                                                           100%   32
 
 本章は、 **Intel MPI Benchmark** の **Ping-Pong** を実行します。
 
-**[OCI HPCベンチマーク情報](/ocitutorials/hpc/#2-oci-hpcベンチマーク情報)** の **[Intel MPI Benchmark実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarkを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合)** の手順に従い、 **Ping-Pong** を実行します。
+**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmark実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarkを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合)** の手順に従い、 **Ping-Pong** を実行します。
 
 ***
 # 4. 計算ノード追加

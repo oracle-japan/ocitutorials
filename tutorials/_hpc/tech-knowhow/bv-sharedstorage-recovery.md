@@ -1,7 +1,7 @@
 ---
 title: "ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法"
 excerpt: "ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベア・メタル・インスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。"
-order: "322"
+order: "323"
 layout: single
 header:
   teaser: "/hpc/tech-knowhow/bv-sharedstorage-recovery/lv_configuration.png"
