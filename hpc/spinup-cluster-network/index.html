@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-13T17:18:42+09:00">
+  <meta property="article:published_time" content="2023-11-22T15:49:03+09:00">
 
 
 
@@ -260,6 +260,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
@@ -280,8 +282,6 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
@@ -293,6 +293,8 @@
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
@@ -325,7 +327,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2023-11-13T17:18:42+09:00">
+    <meta itemprop="datePublished" content="2023-11-22T15:49:03+09:00">
     
 
     <div class="page__inner-wrap">
@@ -412,7 +414,7 @@ Bastionノードの作成は、以下チュートリアルページ <strong>イ�
 <p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。
 先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh-keygen
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen
 Generating public/private rsa key pair.
 Enter file <span class="k">in </span>which to save the key <span class="o">(</span>/home/opc/.ssh/id_rsa<span class="o">)</span>: 
 Enter passphrase <span class="o">(</span>empty <span class="k">for </span>no passphrase<span class="o">)</span>: 
@@ -433,7 +435,7 @@ The keys randomart image is:
 |      <span class="nb">.</span> + <span class="k">*</span>E.+ <span class="k">*</span>.|
 |       <span class="nb">.</span> +.<span class="o">=</span>+.o o|
 +----[SHA256]-----+
-<span class="o">&gt;</span> <span class="nb">cat</span> .ssh/id_rsa.pub 
+<span class="nv">$ </span><span class="nb">cat</span> .ssh/id_rsa.pub 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
 </code></pre></div></div>
 
@@ -645,12 +647,7 @@ runcmd:
 
 <p>計算ノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh inst-wyr6m-comp
-The authenticity of host <span class="s1">'inst-wyr6m-comp (10.0.1.61)'</span> cant be established.
-ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
-ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-wyr6m-comp,10.0.1.61'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh inst-wyr6m-comp
 </code></pre></div></div>
 
 <h2 id="2-2-cloud-init完了確認">2-2. cloud-init完了確認</h2>
@@ -659,17 +656,19 @@ Are you sure you want to <span class="k">continue </span>connecting <span class=
 
 <p>ステータスが <strong>running</strong> の場合は、cloud-initの処理が継続中のため、処理が完了するまで待ちます。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>cloud-init status
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>cloud-init status
 status: <span class="k">done</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
 <h2 id="2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</h2>
 
 <p>計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-k</span> /mnt/localdisk
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-k</span> /mnt/localdisk
 Filesystem                  1K-blocks     Used  Available Use% Mounted on
 /dev/nvme0n1p1             3748905484    32976 3748872508   1% /mnt/localdisk
+<span class="err">$</span>
 </code></pre></div></div>
 
 <hr />
@@ -693,49 +692,29 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
 
 <h2 id="3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</h2>
 
-<p>本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でパスフレーズ無しのSSH接続環境を実現します。</p>
+<p>本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でopcユーザのパスフレーズ無しSSH接続環境を構築します。</p>
 
-<p>まず初めに、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノード上にファイル名 <strong>hostlist.txt</strong> で作成します。</p>
+<p>まず初めに、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノードのopcユーザのホームディレクトリにファイル名hostlist.txtで作成します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-wyr6m-comp
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/hostlist.txt
+inst-wyr6m-comp
 inst-9wead-comp
+<span class="err">$</span>
 </code></pre></div></div>
 
-<p>次にこのホスト名リストを使用し、以下コマンドで全計算ノードにBastionノードのSSH秘密鍵をコピーします。この際、計算ノード1ノード毎に接続確認を求められるため、全てに <strong>yes</strong> を入力します。</p>
+<p>次に、以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全計算ノードにコピーします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/id_rsa <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done
-</span>inst-wyr6m-comp
-The authenticity of host <span class="s1">'inst-wyr6m-comp (10.0.1.61)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:z1Hqcm+vNKQLCvqL6t1fqCgqpqo+onshYP7tI1AcwYU.
-ECDSA key fingerprint is MD5:0a:86:6f:d3:86:36:d0:7d:74:3e:8c:3f:cd:4c:3a:68.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-wyr6m-comp,10.0.1.61'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
-id_rsa                                                                 100% 1675     1.9MB/s   00:00    
-inst-9wead-comp
-The authenticity of host <span class="s1">'inst-9wead-comp (10.0.1.62)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:alxTYf1T2VGbwLYSuvBs5X29YorXB40rAwWWuVDKxPA.
-ECDSA key fingerprint is MD5:14:73:f4:87:3c:43:72:b5:cc:b2:e8:37:15:2f:20:3e.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-9wead-comp,10.0.1.62'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
-id_rsa                                                                 100% 1675     1.8MB/s   00:00
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nt">-p</span> ~/.ssh/id_rsa <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
-<p>次に、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを、以下コマンドで全計算ノードにコピーします。</p>
+<p>次に、以下コマンドをBastionノードのopcユーザで実行し、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを全計算ノードにコピーします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done
-</span>inst-wyr6m-comp
-known_hosts                                                            100%  440   631.9KB/s   00:00    
-inst-9wead-comp
-known_hosts                                                            100%  440   470.6KB/s   00:00
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
-<p>次に、後のIntel MPI Benchmark Ping-Pongを実行する際に使用する先に作成したホスト名リストを、以下コマンドで全計算ノードにコピーします。</p>
+<p>次に、以下コマンドをBastionノードのopcユーザで実行し、後のIntel MPI Benchmark Ping-Pongを実行する際に使用する先に作成したホスト名リストを全計算ノードにコピーします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done
-</span>inst-wyr6m-comp
-hostlist.txt                                                           100%   32   113.3KB/s   00:00    
-inst-9wead-comp
-hostlist.txt                                                           100%   32   146.3KB/s   00:00
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
 <h2 id="3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</h2>
@@ -780,7 +759,7 @@ hostlist.txt                                                           100%   32
 
 <p>本章は、 <strong>Intel MPI Benchmark</strong> の <strong>Ping-Pong</strong> を実行します。</p>
 
-<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcベンチマーク情報">OCI HPCベンチマーク情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、 <strong>Ping-Pong</strong> を実行します。</p>
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、 <strong>Ping-Pong</strong> を実行します。</p>
 
 <hr />
 <h1 id="4-計算ノード追加">4. 計算ノード追加</h1>
@@ -842,7 +821,7 @@ hostlist.txt                                                           100%   32
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-13T17:18:42+09:00">November 13, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-22T15:49:03+09:00">November 22, 2023</time></p>
 
 
       </footer>

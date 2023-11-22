@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-13T17:18:42+09:00">
+  <meta property="article:published_time" content="2023-11-22T15:49:03+09:00">
 
 
 
@@ -270,6 +270,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
@@ -290,8 +292,6 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
@@ -303,6 +303,8 @@
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
@@ -335,7 +337,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法">
     <meta itemprop="description" content="機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-11-13T17:18:42+09:00">
+    <meta itemprop="datePublished" content="2023-11-22T15:49:03+09:00">
     
 
     <div class="page__inner-wrap">
@@ -346,20 +348,20 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-gpuインスタンスデプロイ">1. GPUインスタンスデプロイ</a></li><li><a href="#2-nvidia-drivernvidia-cudanvidia-fabric-managerインストール">2. NVIDIA Driver・NVIDIA CUDA・NVIDIA Fabric Managerインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-nvidia-driverインストール">2-1. NVIDIA Driverインストール</a></li><li><a href="#2-2-nvidia-cudanvidia-fabric-managerインストール">2-2. NVIDIA CUDA・NVIDIA Fabric Managerインストール</a></li><li><a href="#2-3-cuda-samples実行">2-3. CUDA Samples実行</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-gpuインスタンスデプロイ">1. GPUインスタンスデプロイ</a></li><li><a href="#2-gpu関連ソフトウェアインストール">2. GPU関連ソフトウェアインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-nvidia-driverインストール">2-1. NVIDIA Driverインストール</a></li><li><a href="#2-2-nvidia-cudanvidia-fabric-managerインストール">2-2. NVIDIA CUDA・NVIDIA Fabric Managerインストール</a></li></ul></li><li><a href="#3-cuda-samplesによるgpu動作確認">3. CUDA SamplesによるGPU動作確認</a></li></ul>
 
             </nav>
           </aside>
         
-        <p>機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主に <strong>Ubuntu</strong> で行われていることから、そのOSに <strong>Ubuntu</strong> を使用するのが主流になっていますが、 <strong>Ubuntu</strong> をOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。<br />
-本テクニカルTipsは、 <strong>Ubuntu</strong> をGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。</p>
+        <p>機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。<br />
+本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。</p>
 
 <p><strong>注意 :</strong> テクニカルTips内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>インスタンスOSに利用可能なLinuxディストリビューションは、 <strong>Oracle Linux</strong> をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっている <strong>Ubuntu</strong> もこれに含まれます。<br />
+<p>インスタンスOSに利用可能なLinuxディストリビューションは、 <strong>Oracle Linux</strong> をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっているUbuntuもこれに含まれます。<br />
 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンスデプロイ後に自身でインストール・セットアップする必要があります。</p>
 
 <ul>
@@ -368,14 +370,12 @@
   <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html">NVIDIA Fabric Manager</a></strong> : <strong>NVSwitch</strong> （ <strong>BM.GPU4.8</strong> / <strong>BM.GPU.A100-v2.8</strong> に搭載）管理ソフトウェア</li>
 </ul>
 
-<p>また本テクニカルTipsは、これらのソフトウェアが正しくインストールされているか、 <strong><a href="https://github.com/nvidia/cuda-samples">CUDA Samples</a></strong> で確認します。</p>
-
-<p>以降は、これらの手順をGPUシェイプ <strong>BM.GPU4.8</strong> と <strong>Ubuntu</strong> 20.04を例に解説します。</p>
+<p>本テクニカルTipsは、これらのソフトウェアをインストールし <strong><a href="https://github.com/nvidia/cuda-samples">CUDA Samples</a></strong> でその動作確認を行う手順を、GPUシェイプ <strong>BM.GPU4.8</strong> とUbuntu 20.04を例に解説します。</p>
 
 <hr />
 <h1 id="1-gpuインスタンスデプロイ">1. GPUインスタンスデプロイ</h1>
 
-<p>本章は、 <strong>Ubuntu</strong> 20.4をOSとする <strong>BM.GPU4.8</strong> をデプロイします。</p>
+<p>本章は、Ubuntu 20.04をOSとする <strong>BM.GPU4.8</strong> をデプロイします。</p>
 
 <ol>
   <li>
@@ -434,10 +434,10 @@
         <ul>
           <li>公開鍵ファイルのアップロード（ <strong>公開キー・ファイル(.pub)のアップロード</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>公開キーの貼付け</strong> ）が選択可能</li>
         </ul>
-
-        <p><img src="console_page08.png" alt="画面ショット" /></p>
       </li>
     </ul>
+
+    <p><img src="console_page08.png" alt="画面ショット" /></p>
 
     <p>3.6 <strong>ブート・ボリューム</strong> フィールド</p>
     <ul>
@@ -445,12 +445,12 @@
         <ul>
           <li><strong>カスタム・ブート・ボリューム・サイズを指定します</strong> チェックボックスをチェックすると指定可能</li>
         </ul>
-
-        <p><img src="console_page09.png" alt="画面ショット" /></p>
-
-        <p>※ 通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
       </li>
     </ul>
+
+    <p><img src="console_page09.png" alt="画面ショット" /></p>
+
+    <p>※ 通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
   </li>
   <li>
     <p>以下コマンドでGPUインスタンスにSSHログインします。この時、インストール時にデフォルトで作成されるユーザが <strong>ubuntu</strong> であることに留意します。<br />
@@ -462,13 +462,13 @@
 </ol>
 
 <hr />
-<h1 id="2-nvidia-drivernvidia-cudanvidia-fabric-managerインストール">2. NVIDIA Driver・NVIDIA CUDA・NVIDIA Fabric Managerインストール</h1>
+<h1 id="2-gpu関連ソフトウェアインストール">2. GPU関連ソフトウェアインストール</h1>
 
 <h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>本章は、デプロイしたGPUインスタンスに <strong>NVIDIA Driver</strong> 、 <strong>NVIDIA CUDA</strong> 、及び <strong>NVIDIA Fabric Manager</strong> をインストールし、インストールが正しく行われたかどうかを <strong>CUDA Samples</strong> を使用して確認します。</p>
+<p>本章は、デプロイしたGPUインスタンスに <strong>NVIDIA Driver</strong> 、 <strong>NVIDIA CUDA</strong> 、及び <strong>NVIDIA Fabric Manager</strong> をインストールします。</p>
 
-<p>なお、本テクニカルTipsでのこれらソフトウェアのインストールは、 <strong>Ubuntu</strong> パッケージマネージャを使用します。</p>
+<p>なお、本テクニカルTipsでのこれらソフトウェアのインストールは、Ubuntuパッケージマネージャを使用します。</p>
 
 <h2 id="2-1-nvidia-driverインストール">2-1. NVIDIA Driverインストール</h2>
 
@@ -509,7 +509,7 @@
  <span class="nv">$ </span><span class="nb">sudo </span>apt-get update
  <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> cuda
  <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> nvidia-gds
- <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-fabricmanager-535
+ <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-fabricmanager
  <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nvidia-fabricmanager
 </code></pre></div>    </div>
   </li>
@@ -522,9 +522,10 @@
   </li>
 </ol>
 
-<h2 id="2-3-cuda-samples実行">2-3. CUDA Samples実行</h2>
+<hr />
+<h1 id="3-cuda-samplesによるgpu動作確認">3. CUDA SamplesによるGPU動作確認</h1>
 
-<p>本章は、ここまでのソフトウェアのインストールが正しく行われたかどうかを、 <strong>CUDA Samples</strong> を実行して確認します。</p>
+<p>本章は、 <strong>CUDA Samples</strong> で先のGPU関連ソフトウェアのインストールが正しく行われたかを確認します。</p>
 
 <ol>
   <li>
@@ -534,8 +535,7 @@
  <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/usr/local/cuda-12.2/bin</span><span class="se">\$</span><span class="s2">{PATH:+:</span><span class="se">\$</span><span class="s2">{PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
  <span class="nv">$ </span><span class="nb">source</span> ~/.bash_profile
  <span class="nv">$ </span>git clone https://github.com/nvidia/cuda-samples
- <span class="nv">$ </span><span class="nb">cd </span>cuda-samples
- <span class="nv">$ </span>make
+ <span class="nv">$ </span><span class="nb">cd </span>cuda-samples<span class="p">;</span> make
 </code></pre></div>    </div>
   </li>
   <li>
@@ -568,7 +568,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-13T17:18:42+09:00">November 13, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-22T15:49:03+09:00">November 22, 2023</time></p>
 
 
       </footer>

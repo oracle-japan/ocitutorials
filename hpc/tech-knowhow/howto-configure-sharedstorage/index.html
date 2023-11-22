@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>コストパフォーマンスの良いファイル共有ストレージ構築方法 | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。">
+<meta name="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -23,10 +23,10 @@
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
 <meta property="og:title" content="コストパフォーマンスの良いファイル共有ストレージ構築方法">
-<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">
 
 
-  <meta property="og:description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。">
+  <meta property="og:description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。">
 
 
 
@@ -36,14 +36,14 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-13T17:18:42+09:00">
+  <meta property="article:published_time" content="2023-11-22T15:49:03+09:00">
 
 
 
 
 
 
-<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">
 
 
 
@@ -164,7 +164,7 @@
         
       </h1>
       
-        <p class="page__lead">HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。
+        <p class="page__lead">HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。
 </p>
       
       
@@ -210,7 +210,7 @@
       
         
         <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-          <a href="/ocitutorials/benchmark" itemprop="item"><span itemprop="name">Benchmark</span></a>
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
           <meta itemprop="position" content="3" />
         </li>
         <span class="sep">></span>
@@ -270,6 +270,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
@@ -290,8 +292,6 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/" class="active">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
@@ -303,6 +303,8 @@
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/" class="active">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
@@ -334,8 +336,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="コストパフォーマンスの良いファイル共有ストレージ構築方法">
-    <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。">
-    <meta itemprop="datePublished" content="2023-11-13T17:18:42+09:00">
+    <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベア・メタル・インスタンスを構成すればよいか、解説します。">
+    <meta itemprop="datePublished" content="2023-11-22T15:49:03+09:00">
     
 
     <div class="page__inner-wrap">
@@ -358,7 +360,7 @@ table, th, td {
 </style>
 
 <p>HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> を使用する方法と、 <strong>ブロック・ボリューム</strong> とベア・メタル・インスタンスを組み合わせたNFSサーバ（以降” <strong>ブロック・ボリューム</strong> NFSサーバ”と呼称）を構築する方法があります。<br />
-本パフォーマンス関連Tipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、 <strong>ブロック・ボリューム</strong> NFSサーバを構築する場合どのように <strong>ブロック・ボリューム</strong> とベア・メタル・インスタンスを構成すればよいか、解説します。</p>
+本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、 <strong>ブロック・ボリューム</strong> NFSサーバを構築する場合どのように <strong>ブロック・ボリューム</strong> とベア・メタル・インスタンスを構成すればよいか、解説します。</p>
 
 <hr />
 <h1 id="1-ブロックボリュームnfsサーバ構成">1. ブロック・ボリュームNFSサーバ構成</h1>
@@ -521,7 +523,7 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-13T17:18:42+09:00">November 13, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-22T15:49:03+09:00">November 22, 2023</time></p>
 
 
       </footer>
@@ -531,22 +533,22 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=%E3%82%B3%E3%82%B9%E3%83%88%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%B9%E3%81%AE%E8%89%AF%E3%81%84%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fhowto-configure-sharedstorage%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%B3%E3%82%B9%E3%83%88%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%B9%E3%81%AE%E8%89%AF%E3%81%84%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-configure-sharedstorage%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
-  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fhowto-configure-sharedstorage%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-configure-sharedstorage%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
-  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fhowto-configure-sharedstorage%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-configure-sharedstorage%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
 </section>
 
 
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/benchmark/bios-setting/" class="pagination--pager" title="パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法
+      <a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/" class="pagination--pager" title="ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/benchmark/stop-unused-service/" class="pagination--pager" title="不要サービス停止によるパフォーマンスチューニング方法
+      <a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/" class="pagination--pager" title="ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法
 ">次へ</a>
     
   </nav>
