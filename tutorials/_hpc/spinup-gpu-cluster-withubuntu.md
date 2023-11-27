@@ -94,7 +94,7 @@ header:
 ```sh
 $ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
 $ sudo dpkg -i cuda-keyring_1.0-1_all.deb
-$ sudo apt install libnccl2 libnccl-dev
+$ sudo apt install libnccl2=2.15.5-1+cuda11.8 libnccl-dev=2.15.5-1+cuda11.8
 ```
 
 なお本章の作業は、2ノードに跨る **NCCL** 通信性能検証を行う必要から、2台のGPUノードの何れにも実施します。
@@ -136,7 +136,7 @@ $ cd nccl-tests; make MPI=1 MPI_HOME=/usr/mpi/gcc/openmpi-4.1.7a1 CUDA_HOME=/usr
 
 本章は、 **NCCL Tests** プログラムを実行します。
 
-2ノードのGPUノードのうち1ノードのubuntuユーザで以下のコマンドを実行し、全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** のAll-Reduce通信性能を計測します。
+2ノードのGPUノードのうち1ノードのubuntuユーザで以下のコマンドを実行し、16枚のGPUと16個のRDMAネットワークポートを使用した、2ノードに跨る **NCCL** のAll-Reduce通信性能を計測します。
 
 ```sh
 $ mpirun -n 16 -N 8 -hostfile ~/hostlist.txt --bind-to numa -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=enp45s0f0np0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1

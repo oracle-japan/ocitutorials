@@ -42,10 +42,13 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 
 ただこの場合、全てのノードで指定したRPMが想定するバージョンになっているかを確認するため、ノード数分の出力を全て確認する必要が生じます。
 
+また、管理対象ノードが異なる構成を持つグループに変われていてコマンド実行対象ノードを特定のグループに限定する場合、これを意識してコマンドを打ちなおす必要があります。
+
 **pdsh** は、このような課題を解決する以下の機能を持っています。
 
 - 管理対象ノードに並列にコマンドを実行
 - 管理対象ノードからのコマンド出力が同一だった場合これをグルーピングして出力（ユーティリティーツール **dshbak** の機能）
+- 管理対象ノードをグループ分けしグループ名で指定
 - 管理対象ノードに並列にファイルを転送（ユーティリティーツール **pdcp** の機能）
 - 管理対象ノードから並列にファイルをクラスタ管理ノードに転送（ユーティリティーツール **rpdcp** の機能）
 
@@ -53,8 +56,7 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 本テクニカルTipsでは、クラスタ管理ノードと管理対象ノードのOSに **Oracle Linux** を使用し、クラスタ管理ノードから管理対象ノードにopcユーザ（sudoで管理者権限昇格が可能なユーザ）でパスフレーズ無しでSSHコマンドを実行できる環境を前提としています。  
 この環境は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** カテゴリや **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** カテゴリに含まれるチュートリアルを元に構築するHPC/GPUクラスタに於いては、クラスタ管理ノードに相当するBastionノードのopcユーザから管理対象ノードに相当する計算/GPUノードにパスフレーズ無しでSSHコマンドが実行できるよう構築されるため、改めて実施する必要はありません。
 
-また **pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用します。  
-このホストリストファイルは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照して作成し、これをクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
+また **pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
 
 ```sh
 inst-f5fra-x9-ol8
@@ -76,7 +78,7 @@ inst-dixqy-x9-ol8
 ```sh
 $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
 $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
-$ sudo yum install -y pdsh
+$ sudo yum install -y pdsh pdsh-mod-dshgroup
 $ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
 ```
 
@@ -90,7 +92,9 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt date
+$ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
+$ source ~/.bash_profile
+$ pdsh -w ^/home/opc/hostlist.txt date
 inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
@@ -103,10 +107,39 @@ inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 この際、管理対象ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
+$ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
+$ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
+$ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh
+$ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
+```
+
+次に、 **pdsh** で利用するグループを登録するため、グループ設定ファイルを作成します。  
+このグループ設定ファイルは、事前にクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で作成したホストリストファイルを基作成する、 **.dsh/group** ディレクトリに配置されるグループ名をファイル名とするテキストファイルです。
+
+例えば以下のファイルを配置すると、全てのノードを含むグループ **all** 、inst-f5fra-x9-ol8とinst-3ktpe-x9-ol8を含むグループ **comp1**、及びinst-6pvpq-x9-ol8とinst-dixqy-x9-ol8を含むグループ **comp2** を利用できるようになります。
+
+```sh
+$ ~/.dsh/group/all
+inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8
+inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8
+$ ~/.dsh/group/comp1
+inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8
+$ ~/.dsh/group/comp2
+inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8
+```
+
+これらのグループは、以下のように **-g** オプションと共に管理対象ノードを指定する際に利用することが出来ます。
+
+```sh
+$ pdsh -g all date
+inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 ```
 
 ***
@@ -118,7 +151,7 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If 
   管理対象ノードに対して複数のコマンドを一度の **pdsh** で実行する場合、これらのコマンド群を以下のように **'** （シングルクォート）で囲みます。
 
   ```sh
-  $ pdsh -R ssh -w ^/home/opc/hostlist.txt 'date; hostname'
+  $ pdsh -g all 'date; hostname'
   inst-f5fra-x9-ol8: Fri Jul 28 16:56:45 JST 2023
   inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
   inst-3ktpe-x9-ol8: Fri Jul 28 16:56:45 JST 2023
@@ -134,7 +167,7 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If 
   このため、コマンド出力が複数行に亘る場合、異なる管理対象ノードの出力が以下のように入り乱れる状況が発生します。
 
   ```sh
-  $ pdsh -R ssh -w ^/home/opc/hostlist.txt 'hostname; sleep 1; hostname'
+  $ pdsh -g all 'hostname; sleep 1; hostname'
   inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
   inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
   inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
@@ -150,7 +183,7 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If 
   なおデフォルトの並列実行数は、 **32** です。
 
   ```sh
-  $ pdsh -R ssh -w ^/home/opc/hostlist.txt -f 1 'hostname; sleep 1; hostname'
+  $ pdsh -g all -f 1 'hostname; sleep 1; hostname'
   inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
   inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
   inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
@@ -169,7 +202,7 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If 
   [一度だけ **Ctrl-C** を入力した場合]
   
   ```sh
-  $ pdsh -R ssh -w ^./hostlist.txt sleep 60
+  $ pdsh -g all sleep 60
   ^Cpdsh@bastion: interrupt (one more within 1 sec to abort)
   pdsh@bastion:  (^Z within 1 sec to cancel pending threads)
   pdsh@bastion: inst-f5fra-x9-ol8: command in progress
@@ -181,7 +214,7 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If 
   [二度連続して1秒以内に **Ctrl-C** を入力した場合]
 
   ```sh
-  $ pdsh -R ssh -w ^./hostlist.txt sleep 60
+  $ pdsh -g all sleep 60
   ^Cpdsh@bastion: interrupt (one more within 1 sec to abort)
   pdsh@bastion:  (^Z within 1 sec to cancel pending threads)
   pdsh@bastion: inst-f5fra-x9-ol8: command in progress
@@ -206,13 +239,13 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If 
   RPMパッケージをインストールするdnfコマンドは、このための **-y** オプションを用意しており、以下のようにこの問題を回避することが出来ます。
 
   ```sh
-  $ pdsh -R ssh -w ^/home/opc/hostlist.txt 'sudo dnf install -y httpd'
+  $ pdsh -g all 'sudo dnf install -y httpd'
   ```
 
   また、以下のようにパイプを介して当該コマンドの標準入力に指示を渡すことで、これを回避することも出来ます。
   
   ```sh
-  $ pdsh -R ssh -w ^/home/opc/hostlist.txt 'echo yes | sudo dnf install httpd'
+  $ pdsh -g all 'echo yes | sudo dnf install httpd'
   ```
 
 
@@ -231,13 +264,13 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If 
 この場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo dnf upgrade --refresh
+$ pdsh -g all sudo dnf upgrade --refresh
 ```
 
 なお **pdsh** の並列実行数は、 **-f** オプションで変更することが出来、デフォルトの32より大きなサイズのクラスタで全管理対象ノードに一斉にアップデートを行う場合は、以下のように実行します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt -f 128 sudo dnf upgrade --refresh
+$ pdsh -g all -f 128 sudo dnf upgrade --refresh
 ```
 
 但しこのOSアップデートのように、実行するコマンドからの出力が多くなる場合は、全ての管理対象ノードでコマンドが正常に完了したかどうかの判断が難しくなるため、以降で説明するような別の工夫が必要です。
@@ -250,7 +283,7 @@ $ pdsh -R ssh -w ^/home/opc/hostlist.txt -f 128 sudo dnf upgrade --refresh
 この場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt grep PRETTY /etc/os-release | dshbak -c
+$ pdsh -g all grep PRETTY /etc/os-release | dshbak -c
 ----------------
 inst-1phjn-x9-ol8,inst-iwhce-x9-ol8,inst-ot9zd-x9-ol8
 ----------------
@@ -266,7 +299,7 @@ PRETTY_NAME="Oracle Linux Server 7.9"
 また、標準エラー出力を含めて管理対象ノードのコマンド出力を判別する場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt 'ls /tmp/hosts 2>&1' | dshbak -c
+$ pdsh -g all 'ls /tmp/hosts 2>&1' | dshbak -c
 pdsh@bastion: inst-odzeg-x9-ol8: ssh exited with exit code 2
 ----------------
 inst-cnspy-x9-ol8,inst-dw5fd-x9-ol8,inst-slz8n-x9-ol8
@@ -283,7 +316,7 @@ ls: cannot access '/tmp/hosts': No such file or directory
 また、OSアップデートが正常に完了したかどうかを確認する場合等、コマンド出力を無視してコマンドのリターンコードのみを確認する場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt 'sudo dnf upgrade --refresh > /dev/null 2>&1; echo $?' | dshbak -c
+$ pdsh -g all 'sudo dnf upgrade --refresh > /dev/null 2>&1; echo $?' | dshbak -c
 ----------------
 inst-slz8n-x9-ol8
 ----------------
@@ -299,7 +332,7 @@ inst-cnspy-x9-ol8,inst-dw5fd-x9-ol8,inst-odzeg-x9-ol8
 また **dshbak** は、クラスタ管理ノードの指定したディレクトリに、管理対象ノードからの出力をそのホスト名をファイル名として格納する機能があり、この場合以下のように実行します。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt 'sudo dnf install -y mysql' | dshbak -d .
+$ pdsh -g all 'sudo dnf install -y mysql' | dshbak -d .
 $ ls -l
 total 16
 -rw-rw-r--. 1 opc opc 2504 Aug  1 11:56 inst-cnspy-x9-ol8
@@ -318,21 +351,21 @@ total 16
 クラスタ管理ノードのファイル/etc/hostsを全ての管理対象ノードの/tmpにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。
 
 ```sh
-$ pdcp -R ssh -w ^/home/opc/hostlist.txt /etc/hosts /tmp
+$ pdcp -g all /etc/hosts /tmp
 ```
 
 なお **pdcp** は、sudoによる権限昇格を適用することが出来ないため、上記例で直接管理対象ノードの/etc/hostsファイルを上書きすることが出来ません。  
 この場合、以下のように **pdsh** コマンドを併用してこれを実現することが可能です。
 
 ```sh
-$ pdcp -R ssh -w ^/home/opc/hostlist.txt /etc/hosts /tmp
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt sudo cp /tmp/hosts /etc/
+$ pdcp -g all /etc/hosts /tmp
+$ pdsh -g all sudo cp /tmp/hosts /etc/
 ```
 
 また、全ての管理対象ノードのファイル/etc/hostsをクラスタ管理ノードのカレントディレクトリにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。
 
 ```sh
-$ rpdcp -R ssh -w ^/home/opc/hostlist.txt /etc/hosts .
+$ rpdcp -g all /etc/hosts .
 $ ls -l
 total 16
 -rw-r--r--. 1 opc opc 230 Aug  1 15:49 hosts.inst-cnspy-x9-ol8
@@ -347,8 +380,8 @@ total 16
 この場合、以下のように **pdsh** コマンドを併用してこれを実現することが可能です。
 
 ```sh
-$ pdsh -R ssh -w ^/home/opc/hostlist.txt 'sudo cp /var/log/messages /tmp/; sudo chmod 644 /tmp/messages'
-$ rpdcp -R ssh -w ^/home/opc/hostlist.txt /tmp/messages .
+$ pdsh -g all 'sudo cp /var/log/messages /tmp/; sudo chmod 644 /tmp/messages'
+$ rpdcp -g all /tmp/messages .
 $ ls -la
 total 1964
 drwxrwxr-x. 2 opc opc    142 Aug  1 15:57 .
