@@ -48,7 +48,14 @@ OpenSearch 一覧画面で「**クラスタの作成**」ボタンをクリッ�
 
 クラスタの**名前**を指定し、**クラスタを作成するコンパートメント**を選択して、「**次**」をクリックします。
 
-![config cluster](1-3_config_cluster.png "config cluster")
+![config cluster](1-3_cluster_config.png "cluster config")
+
+セキュリティの構成で、ユーザー名、パスワードを以下のように入力します。
+
+1. ユーザー名: `guest`
+2. パスワード: `Welcome#123`
+
+![cluster security config](1-3_cluster_security_config.png "cluster security config")
 
 ノード最適化オプションで「**開発**」オプションを選択します。「**次**」をクリックします。
 
@@ -156,7 +163,7 @@ OpenSearch 一覧画面で「**クラスタの作成**」ボタンをクリッ�
 **ローカル・マシン**から**VM インスタンス**に接続したら、次のいずれかのコマンドを実行して接続をテストします。
 
 ```bash
-curl https://<cluster_API_endpoint>:9200
+curl -u guest:Wellcome#123 https://<cluster_API_endpoint>:9200
 ```
 
 エンドポイントへの接続が成功すると、次のようなレスポンスが返されます:
@@ -191,13 +198,13 @@ ssh -C -v -t -L 127.0.0.1:5601:<OpenSearch_Dashboards_private_IP>:5601 -L 127.0.
 \<VM_instance_public_IP\>を VM インスタンスのパブリック IP アドレスに置き換えます。\<private_key_file\>を、インスタンスへの接続に使用する秘密キーへのパスに置き換えます。これらの値とその検索方法の詳細は、インスタンスへの接続を参照してください。
 
 - ローカル・マシンの Hosts ファイルに下記内容を追加します。
-  
+
   ```bash
   127.0.0.1 <cluster_API_endpoint> <cluster_Dashboard_endpoint>
   ```
 
   - ローカル・マシンが Mac の場合、Hosts ファイルの位置は`/etc/hosts`です。Hosts ファイルを更新した後は、下記のコマンドを実行してローカル DNS を更新します。
-  
+
     ```bash
     sudo killall -HUP mDNSResponder
     ```
@@ -205,6 +212,10 @@ ssh -C -v -t -L 127.0.0.1:5601:<OpenSearch_Dashboards_private_IP>:5601 -L 127.0.
   - ローカル・マシンが Windows の場合、Hosts ファイルの位置は`C\Windows\System32\drivers\etc\hosts`です。
 
 - ローカル・マシンのブラウザから、`https://<cluster_Dashboard_endpoint>:5601`を開いて OpenSearch ダッシュボードにアクセスします。
+
+作成したユーザー名、パスワードを入力します。
+
+![open opensearch dashborad](2-3-3_username_password.png "open opensearch dashborad")
 
 ![open opensearch dashborad](2-3-3_open_dashboard.png "open opensearch dashborad")
 
@@ -252,25 +263,31 @@ GET accounts/_search
 @RequestScoped
 public class AccountResource {
     private String openSearchEndpoint;
+    private final CredentialsProvider credentialsProvider;
 
     @Inject
-    public AccountResource(@ConfigProperty(name = "oci.opensearch.api.endpoint") String openSearchEndpoint) {
-        Object endpoint =  System.getProperty("OPENSEARCH_ENDPOINT");
-        if(endpoint != null){
-            this.openSearchEndpoint = (String) endpoint;
-        }else{
-            this.openSearchEndpoint = openSearchEndpoint;
-        }
+    public AccountResource(@ConfigProperty(name = "oci.opensearch.api.endpoint") String openSearchEndpoint,
+            @ConfigProperty(name = "oci.opensearch.credential.username") String username,
+            @ConfigProperty(name = "oci.opensearch.credential.password") String password) {
+        this.openSearchEndpoint = openSearchEndpoint;
+        credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials(username, password));
     }
 
     @Path("/search/{inputTerm}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response search(@PathParam("inputTerm") String inputTerm){
+    public Response search(@PathParam("inputTerm") String inputTerm) {
         // Create a client.
-        RestClientBuilder builder = RestClient.builder(HttpHost.create(openSearchEndpoint));
-
-        try(RestHighLevelClient client = new RestHighLevelClient(builder)){
+        RestClientBuilder builder = RestClient.builder(HttpHost.create(openSearchEndpoint))
+                .setHttpClientConfigCallback(new HttpClientConfigCallback() {
+                    @Override
+                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+                        return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                    }
+                });
+        try (RestHighLevelClient client = new RestHighLevelClient(builder)) {
             // Build search request
             SearchRequest searchRequest = new SearchRequest("accounts");
 
@@ -315,42 +332,42 @@ public class AccountResource {
 
 上記で作成したアプリケーションは[こちら](https://github.com/oracle-japan/OCI_OpenSearch_Handson_App)をご参照ください。
 
-**アプリケーションのデプロイメント** 
+**アプリケーションのデプロイメント**
 
 1. ローカル・マシンから VM インスタンスに接続します。
 
 2. 下記のコマンドを実行して、ファイアウォールにポート「8080」を追加します。
 
-    ```bash
-    sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
-    sudo firewall-cmd --reload
-    ```
+   ```bash
+   sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
+   sudo firewall-cmd --reload
+   ```
 
 3. 下記のコマンドを実行して、git と docker をインストールします。
 
-    ```bash
-    sudo yum install git
-    sudo yum install docker
-    ```
+   ```bash
+   sudo yum install git
+   sudo yum install docker
+   ```
 
 4. 下記のコマンドを実行して、作成したアプリケーションをクローンします。
 
-    ```bash
-    git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
-    ```
+   ```bash
+   git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
+   ```
 
 5. アプリケーションの Docker イメージを作成します。
 
-    ```bash
-    cd OCI_OpenSearch_Handson_App
-    docker build . -t os_app
-    ```
+   ```bash
+   cd OCI_OpenSearch_Handson_App
+   docker build . -t os_app
+   ```
 
 6. 下記のコマンドを実行して、アプリケーションをデプロイします。
 
-    ```bash
-    nohup docker run -p 8080:8080 -e="OPENSEARCH_ENDPOINT=<cluster_API_endpoint>" localhost/os_app &
-    ```
+   ```bash
+   nohup docker run -p 8080:8080 -e="OPENSEARCH_ENDPOINT=<cluster_API_endpoint>" localhost/os_app &
+   ```
 
 \<cluster_API_endpoint\>を、クラスタの OpenSearch ダッシュボードの API エンドポイントに置き換えます。
 
