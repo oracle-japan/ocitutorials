@@ -107,8 +107,8 @@ header:
     $ distribution=$(. /etc/os-release;echo $ID$VERSION_ID | sed -e 's/\.//g')
     $ wget https://developer.download.nvidia.com/compute/cuda/repos/$distribution/x86_64/cuda-keyring_1.0-1_all.deb
     $ sudo dpkg -i cuda-keyring_1.0-1_all.deb
-    $ sudo apt-get update
-    $ sudo apt-get -y install cuda-drivers --no-install-recommends
+    $ sudo apt update
+    $ sudo apt -y install cuda-drivers --no-install-recommends
     ```
 
 2. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、OSを再起動します。  
@@ -129,10 +129,10 @@ header:
     $ distribution=$(. /etc/os-release;echo $ID$VERSION_ID | sed -e 's/\.//g')
     $ wget https://developer.download.nvidia.com/compute/cuda/repos/$distribution/x86_64/cuda-keyring_1.1-1_all.deb
     $ sudo dpkg -i cuda-keyring_1.1-1_all.deb
-    $ sudo apt-get update
-    $ sudo apt-get install -y cuda
-    $ sudo apt-get install -y nvidia-gds
-    $ sudo apt-get install -y cuda-drivers-fabricmanager
+    $ sudo apt update
+    $ sudo apt install -y cuda-11-8
+    $ sudo apt install -y nvidia-gds-11-8
+    $ sudo apt install -y cuda-drivers-fabricmanager
     $ sudo systemctl enable --now nvidia-fabricmanager
     ```
 
@@ -148,17 +148,22 @@ header:
 
 本章は、 **CUDA Samples** で先のGPU関連ソフトウェアのインストールが正しく行われたかを確認します。
 
-1. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **CUDA Samples** をインストールします。
+1. 以下Webサイトにサクセスし、CUDA 11.8用のCUDA SamplesのソースコードをGPUインスタンスのubuntuユーザのホームディレクトリにダウンロードします。
+
+    [https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v11.8.zip](https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v11.8.zip)
+
+
+2. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **CUDA Samples** をビルドします。
 
     ```sh
-    $ sudo apt-get install -y cmake
-    $ echo "export PATH=/usr/local/cuda-12.2/bin\${PATH:+:\${PATH}}" | tee -a ~/.bash_profile
+    $ sudo apt install -y cmake
+    $ echo "export PATH=/usr/local/cuda-11.8/bin\${PATH:+:\${PATH}}" | tee -a ~/.bash_profile
     $ source ~/.bash_profile
-    $ git clone https://github.com/nvidia/cuda-samples
-    $ cd cuda-samples; make
+    $ tar -xvf ~/cuda-samples-11.8.tar.gz
+    $ cd cuda-samples-11.8; make
     ```
 
-2. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **CUDA Samples** が正しく動作するかを確認します。  
+3. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **CUDA Samples** が正しく動作するかを確認します。  
 この時、各サンプルプログラムの最後に出力される"Result"行が"PASS"となっていることで、正常動作を確認します。
 
     ```sh
