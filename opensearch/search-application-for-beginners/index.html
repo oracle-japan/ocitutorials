@@ -321,7 +321,16 @@
 
 <p>クラスタの<strong>名前</strong>を指定し、<strong>クラスタを作成するコンパートメント</strong>を選択して、「<strong>次</strong>」をクリックします。</p>
 
-<p><img src="1-3_config_cluster.png" alt="config cluster" title="config cluster" /></p>
+<p><img src="1-3_cluster_config.png" alt="config cluster" title="cluster config" /></p>
+
+<p>セキュリティの構成で、ユーザー名、パスワードを以下のように入力します。</p>
+
+<ol>
+  <li>ユーザー名: <code class="language-plaintext highlighter-rouge">guest</code></li>
+  <li>パスワード: <code class="language-plaintext highlighter-rouge">Welcome#123</code></li>
+</ol>
+
+<p><img src="1-3_cluster_security_config.png" alt="cluster security config" title="cluster security config" /></p>
 
 <p>ノード最適化オプションで「<strong>開発</strong>」オプションを選択します。「<strong>次</strong>」をクリックします。</p>
 
@@ -442,7 +451,7 @@
 <p><strong>クラスタへの接続のテスト</strong>
 <strong>ローカル・マシン</strong>から<strong>VM インスタンス</strong>に接続したら、次のいずれかのコマンドを実行して接続をテストします。</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl https://&lt;cluster_API_endpoint&gt;:9200
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-u</span> guest:Wellcome#123 https://&lt;cluster_API_endpoint&gt;:9200
 </code></pre></div></div>
 
 <p>エンドポイントへの接続が成功すると、次のようなレスポンスが返されます:</p>
@@ -498,6 +507,10 @@
   </li>
 </ul>
 
+<p>作成したユーザー名、パスワードを入力します。</p>
+
+<p><img src="2-3-3_username_password.png" alt="open opensearch dashborad" title="open opensearch dashborad" /></p>
+
 <p><img src="2-3-3_open_dashboard.png" alt="open opensearch dashborad" title="open opensearch dashborad" /></p>
 
 <h2 id="3-データセットのアップロード">3. データセットのアップロード</h2>
@@ -544,25 +557,31 @@
 <span class="nd">@RequestScoped</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">AccountResource</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">openSearchEndpoint</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">CredentialsProvider</span> <span class="n">credentialsProvider</span><span class="o">;</span>
 
     <span class="nd">@Inject</span>
-    <span class="kd">public</span> <span class="nf">AccountResource</span><span class="o">(</span><span class="nd">@ConfigProperty</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"oci.opensearch.api.endpoint"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">openSearchEndpoint</span><span class="o">)</span> <span class="o">{</span>
-        <span class="nc">Object</span> <span class="n">endpoint</span> <span class="o">=</span>  <span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"OPENSEARCH_ENDPOINT"</span><span class="o">);</span>
-        <span class="k">if</span><span class="o">(</span><span class="n">endpoint</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
-            <span class="k">this</span><span class="o">.</span><span class="na">openSearchEndpoint</span> <span class="o">=</span> <span class="o">(</span><span class="nc">String</span><span class="o">)</span> <span class="n">endpoint</span><span class="o">;</span>
-        <span class="o">}</span><span class="k">else</span><span class="o">{</span>
-            <span class="k">this</span><span class="o">.</span><span class="na">openSearchEndpoint</span> <span class="o">=</span> <span class="n">openSearchEndpoint</span><span class="o">;</span>
-        <span class="o">}</span>
+    <span class="kd">public</span> <span class="nf">AccountResource</span><span class="o">(</span><span class="nd">@ConfigProperty</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"oci.opensearch.api.endpoint"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">openSearchEndpoint</span><span class="o">,</span>
+            <span class="nd">@ConfigProperty</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"oci.opensearch.credential.username"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">username</span><span class="o">,</span>
+            <span class="nd">@ConfigProperty</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"oci.opensearch.credential.password"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">openSearchEndpoint</span> <span class="o">=</span> <span class="n">openSearchEndpoint</span><span class="o">;</span>
+        <span class="n">credentialsProvider</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BasicCredentialsProvider</span><span class="o">();</span>
+        <span class="n">credentialsProvider</span><span class="o">.</span><span class="na">setCredentials</span><span class="o">(</span><span class="nc">AuthScope</span><span class="o">.</span><span class="na">ANY</span><span class="o">,</span>
+                <span class="k">new</span> <span class="nf">UsernamePasswordCredentials</span><span class="o">(</span><span class="n">username</span><span class="o">,</span> <span class="n">password</span><span class="o">));</span>
     <span class="o">}</span>
 
     <span class="nd">@Path</span><span class="o">(</span><span class="s">"/search/{inputTerm}"</span><span class="o">)</span>
     <span class="nd">@GET</span>
     <span class="nd">@Produces</span><span class="o">(</span><span class="nc">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="nc">Response</span> <span class="nf">search</span><span class="o">(</span><span class="nd">@PathParam</span><span class="o">(</span><span class="s">"inputTerm"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">inputTerm</span><span class="o">){</span>
+    <span class="kd">public</span> <span class="nc">Response</span> <span class="nf">search</span><span class="o">(</span><span class="nd">@PathParam</span><span class="o">(</span><span class="s">"inputTerm"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">inputTerm</span><span class="o">)</span> <span class="o">{</span>
         <span class="c1">// Create a client.</span>
-        <span class="nc">RestClientBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="nc">RestClient</span><span class="o">.</span><span class="na">builder</span><span class="o">(</span><span class="nc">HttpHost</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">openSearchEndpoint</span><span class="o">));</span>
-
-        <span class="k">try</span><span class="o">(</span><span class="nc">RestHighLevelClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RestHighLevelClient</span><span class="o">(</span><span class="n">builder</span><span class="o">)){</span>
+        <span class="nc">RestClientBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="nc">RestClient</span><span class="o">.</span><span class="na">builder</span><span class="o">(</span><span class="nc">HttpHost</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">openSearchEndpoint</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">setHttpClientConfigCallback</span><span class="o">(</span><span class="k">new</span> <span class="nc">HttpClientConfigCallback</span><span class="o">()</span> <span class="o">{</span>
+                    <span class="nd">@Override</span>
+                    <span class="kd">public</span> <span class="nc">HttpAsyncClientBuilder</span> <span class="nf">customizeHttpClient</span><span class="o">(</span><span class="nc">HttpAsyncClientBuilder</span> <span class="n">httpClientBuilder</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">return</span> <span class="n">httpClientBuilder</span><span class="o">.</span><span class="na">setDefaultCredentialsProvider</span><span class="o">(</span><span class="n">credentialsProvider</span><span class="o">);</span>
+                    <span class="o">}</span>
+                <span class="o">});</span>
+        <span class="k">try</span> <span class="o">(</span><span class="nc">RestHighLevelClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RestHighLevelClient</span><span class="o">(</span><span class="n">builder</span><span class="o">))</span> <span class="o">{</span>
             <span class="c1">// Build search request</span>
             <span class="nc">SearchRequest</span> <span class="n">searchRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SearchRequest</span><span class="o">(</span><span class="s">"accounts"</span><span class="o">);</span>
 
@@ -615,34 +634,34 @@
   <li>
     <p>下記のコマンドを実行して、ファイアウォールにポート「8080」を追加します。</p>
 
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--add-port</span><span class="o">=</span>8080/tcp <span class="nt">--permanent</span>
- <span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>firewall-cmd <span class="nt">--zone</span><span class="o">=</span>public <span class="nt">--add-port</span><span class="o">=</span>8080/tcp <span class="nt">--permanent</span>
+<span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
 </code></pre></div>    </div>
   </li>
   <li>
     <p>下記のコマンドを実行して、git と docker をインストールします。</p>
 
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nb">install </span>git
- <span class="nb">sudo </span>yum <span class="nb">install </span>docker
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>yum <span class="nb">install </span>git
+<span class="nb">sudo </span>yum <span class="nb">install </span>docker
 </code></pre></div>    </div>
   </li>
   <li>
     <p>下記のコマンドを実行して、作成したアプリケーションをクローンします。</p>
 
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-japan/OCI_OpenSearch_Handson_App.git
 </code></pre></div>    </div>
   </li>
   <li>
     <p>アプリケーションの Docker イメージを作成します。</p>
 
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd </span>OCI_OpenSearch_Handson_App
- docker build <span class="nb">.</span> <span class="nt">-t</span> os_app
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>OCI_OpenSearch_Handson_App
+docker build <span class="nb">.</span> <span class="nt">-t</span> os_app
 </code></pre></div>    </div>
   </li>
   <li>
     <p>下記のコマンドを実行して、アプリケーションをデプロイします。</p>
 
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">nohup </span>docker run <span class="nt">-p</span> 8080:8080 <span class="nt">-e</span><span class="o">=</span><span class="s2">"OPENSEARCH_ENDPOINT=&lt;cluster_API_endpoint&gt;"</span> localhost/os_app &amp;
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">nohup </span>docker run <span class="nt">-p</span> 8080:8080 <span class="nt">-e</span><span class="o">=</span><span class="s2">"OPENSEARCH_ENDPOINT=&lt;cluster_API_endpoint&gt;"</span> localhost/os_app &amp;
 </code></pre></div>    </div>
   </li>
 </ol>

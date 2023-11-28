@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-22T15:49:03+09:00">
+  <meta property="article:published_time" content="2023-11-28T17:00:11+09:00">
 
 
 
@@ -294,6 +294,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -322,6 +324,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/" class="active">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
         
       </ul>
@@ -337,7 +341,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法">
     <meta itemprop="description" content="機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-11-22T15:49:03+09:00">
+    <meta itemprop="datePublished" content="2023-11-28T17:00:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -481,8 +485,8 @@
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ distribution</span><span class="o">=</span><span class="si">$(</span><span class="nb">.</span> /etc/os-release<span class="p">;</span><span class="nb">echo</span> <span class="nv">$ID$VERSION_ID</span> | <span class="nb">sed</span> <span class="nt">-e</span> <span class="s1">'s/\.//g'</span><span class="si">)</span>
  <span class="nv">$ </span>wget https://developer.download.nvidia.com/compute/cuda/repos/<span class="nv">$distribution</span>/x86_64/cuda-keyring_1.0-1_all.deb
  <span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> cuda-keyring_1.0-1_all.deb
- <span class="nv">$ </span><span class="nb">sudo </span>apt-get update
- <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nt">-y</span> <span class="nb">install </span>cuda-drivers <span class="nt">--no-install-recommends</span>
+ <span class="nv">$ </span><span class="nb">sudo </span>apt update
+ <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nt">-y</span> <span class="nb">install </span>cuda-drivers <span class="nt">--no-install-recommends</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -506,10 +510,10 @@
  <span class="nv">$ distribution</span><span class="o">=</span><span class="si">$(</span><span class="nb">.</span> /etc/os-release<span class="p">;</span><span class="nb">echo</span> <span class="nv">$ID$VERSION_ID</span> | <span class="nb">sed</span> <span class="nt">-e</span> <span class="s1">'s/\.//g'</span><span class="si">)</span>
  <span class="nv">$ </span>wget https://developer.download.nvidia.com/compute/cuda/repos/<span class="nv">$distribution</span>/x86_64/cuda-keyring_1.1-1_all.deb
  <span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> cuda-keyring_1.1-1_all.deb
- <span class="nv">$ </span><span class="nb">sudo </span>apt-get update
- <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> cuda
- <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> nvidia-gds
- <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-fabricmanager
+ <span class="nv">$ </span><span class="nb">sudo </span>apt update
+ <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-11-8
+ <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> nvidia-gds-11-8
+ <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-fabricmanager
  <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nvidia-fabricmanager
 </code></pre></div>    </div>
   </li>
@@ -529,13 +533,18 @@
 
 <ol>
   <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>CUDA Samples</strong> をインストールします。</p>
+    <p>以下Webサイトにサクセスし、CUDA 11.8用のCUDA SamplesのソースコードをGPUインスタンスのubuntuユーザのホームディレクトリにダウンロードします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> cmake
- <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/usr/local/cuda-12.2/bin</span><span class="se">\$</span><span class="s2">{PATH:+:</span><span class="se">\$</span><span class="s2">{PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
+    <p><a href="https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v11.8.zip">https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v11.8.zip</a></p>
+  </li>
+  <li>
+    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>CUDA Samples</strong> をビルドします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cmake
+ <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/usr/local/cuda-11.8/bin</span><span class="se">\$</span><span class="s2">{PATH:+:</span><span class="se">\$</span><span class="s2">{PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
  <span class="nv">$ </span><span class="nb">source</span> ~/.bash_profile
- <span class="nv">$ </span>git clone https://github.com/nvidia/cuda-samples
- <span class="nv">$ </span><span class="nb">cd </span>cuda-samples<span class="p">;</span> make
+ <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ~/cuda-samples-11.8.tar.gz
+ <span class="nv">$ </span><span class="nb">cd </span>cuda-samples-11.8<span class="p">;</span> make
 </code></pre></div>    </div>
   </li>
   <li>
@@ -568,7 +577,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-22T15:49:03+09:00">November 22, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-28T17:00:11+09:00">November 28, 2023</time></p>
 
 
       </footer>
@@ -589,7 +598,7 @@
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/" class="pagination--pager" title="オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法
+      <a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/" class="pagination--pager" title="Slurmによるリソース管理・ジョブ管理システム構築方法
 ">前へ</a>
     
     

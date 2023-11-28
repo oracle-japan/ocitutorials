@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-22T15:49:03+09:00">
+  <meta property="article:published_time" content="2023-11-28T17:00:11+09:00">
 
 
 
@@ -294,6 +294,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -322,6 +324,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
         
       </ul>
@@ -337,7 +341,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="pdshで効率的にクラスタ管理オペレーションを実行">
     <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-11-22T15:49:03+09:00">
+    <meta itemprop="datePublished" content="2023-11-28T17:00:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -387,11 +391,14 @@
 
 <p>ただこの場合、全てのノードで指定したRPMが想定するバージョンになっているかを確認するため、ノード数分の出力を全て確認する必要が生じます。</p>
 
+<p>また、管理対象ノードが異なる構成を持つグループに変われていてコマンド実行対象ノードを特定のグループに限定する場合、これを意識してコマンドを打ちなおす必要があります。</p>
+
 <p><strong>pdsh</strong> は、このような課題を解決する以下の機能を持っています。</p>
 
 <ul>
   <li>管理対象ノードに並列にコマンドを実行</li>
   <li>管理対象ノードからのコマンド出力が同一だった場合これをグルーピングして出力（ユーティリティーツール <strong>dshbak</strong> の機能）</li>
+  <li>管理対象ノードをグループ分けしグループ名で指定</li>
   <li>管理対象ノードに並列にファイルを転送（ユーティリティーツール <strong>pdcp</strong> の機能）</li>
   <li>管理対象ノードから並列にファイルをクラスタ管理ノードに転送（ユーティリティーツール <strong>rpdcp</strong> の機能）</li>
 </ul>
@@ -400,8 +407,7 @@
 本テクニカルTipsでは、クラスタ管理ノードと管理対象ノードのOSに <strong>Oracle Linux</strong> を使用し、クラスタ管理ノードから管理対象ノードにopcユーザ（sudoで管理者権限昇格が可能なユーザ）でパスフレーズ無しでSSHコマンドを実行できる環境を前提としています。<br />
 この環境は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> カテゴリや <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> カテゴリに含まれるチュートリアルを元に構築するHPC/GPUクラスタに於いては、クラスタ管理ノードに相当するBastionノードのopcユーザから管理対象ノードに相当する計算/GPUノードにパスフレーズ無しでSSHコマンドが実行できるよう構築されるため、改めて実施する必要はありません。</p>
 
-<p>また <strong>pdsh</strong> は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用します。<br />
-このホストリストファイルは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照して作成し、これをクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
+<p>また <strong>pdsh</strong> は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-f5fra-x9-ol8
 inst-3ktpe-x9-ol8
@@ -421,7 +427,7 @@ inst-dixqy-x9-ol8
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
 <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
-<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh
+<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh pdsh-mod-dshgroup
 <span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
 </code></pre></div></div>
 
@@ -433,7 +439,9 @@ inst-dixqy-x9-ol8
 
 <p>次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> の動作を確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">date
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PDSH_RCMD_TYPE=ssh"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
+<span class="nv">$ </span><span class="nb">source</span> ~/.bash_profile
+<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">date
 </span>inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
@@ -445,10 +453,37 @@ inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 <p>なお、クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの <strong>pdcp</strong> や <strong>rpdcp</strong> を使用する場合、管理対象ノードにも <strong>pdsh</strong> がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに <strong>pdsh</strong> をインストールします。<br />
 この際、管理対象ノードの <strong>Oracle Linux</strong> バージョンに応じて実行するコマンドが異なる点に注意します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
-<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
-<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh
-<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
+<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
+<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh
+<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
+</code></pre></div></div>
+
+<p>次に、 <strong>pdsh</strong> で利用するグループを登録するため、グループ設定ファイルを作成します。<br />
+このグループ設定ファイルは、事前にクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で作成したホストリストファイルを基作成する、 <strong>.dsh/group</strong> ディレクトリに配置されるグループ名をファイル名とするテキストファイルです。</p>
+
+<p>例えば以下のファイルを配置すると、全てのノードを含むグループ <strong>all</strong> 、inst-f5fra-x9-ol8とinst-3ktpe-x9-ol8を含むグループ <strong>comp1</strong>、及びinst-6pvpq-x9-ol8とinst-dixqy-x9-ol8を含むグループ <strong>comp2</strong> を利用できるようになります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>~/.dsh/group/all
+inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8
+inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8
+<span class="nv">$ </span>~/.dsh/group/comp1
+inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8
+<span class="nv">$ </span>~/.dsh/group/comp2
+inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8
+</code></pre></div></div>
+
+<p>これらのグループは、以下のように <strong>-g</strong> オプションと共に管理対象ノードを指定する際に利用することが出来ます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">date
+</span>inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 </code></pre></div></div>
 
 <hr />
@@ -461,7 +496,7 @@ inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
     <p>複数のコマンドを纏めて一度の <strong>pdsh</strong> で実行する場合<br />
 管理対象ノードに対して複数のコマンドを一度の <strong>pdsh</strong> で実行する場合、これらのコマンド群を以下のように <strong>‘</strong> （シングルクォート）で囲みます。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'date; hostname'</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'date; hostname'</span>
 inst-f5fra-x9-ol8: Fri Jul 28 16:56:45 JST 2023
 inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
 inst-3ktpe-x9-ol8: Fri Jul 28 16:56:45 JST 2023
@@ -477,7 +512,7 @@ inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
 <strong>pdsh</strong> は、管理対象ノードに対して並列にコマンドを発行しますが、これらのコマンド出力が表示される順序は、クラスタ管理ノードに到着した順になります。<br />
 このため、コマンド出力が複数行に亘る場合、異なる管理対象ノードの出力が以下のように入り乱れる状況が発生します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'hostname; sleep 1; hostname'</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'hostname; sleep 1; hostname'</span>
 inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
 inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
 inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
@@ -492,7 +527,7 @@ inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
 これは、 <strong>pdsh</strong> の並列実行数を制御するオプション <strong>-f</strong> に <strong>1</strong> を指定し、以下のように実行します。<br />
 なおデフォルトの並列実行数は、 <strong>32</strong> です。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nt">-f</span> 1 <span class="s1">'hostname; sleep 1; hostname'</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nt">-f</span> 1 <span class="s1">'hostname; sleep 1; hostname'</span>
 inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
 inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
 inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
@@ -511,7 +546,7 @@ inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
 
     <p>[一度だけ <strong>Ctrl-C</strong> を入力した場合]</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^./hostlist.txt <span class="nb">sleep </span>60
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">sleep </span>60
 ^Cpdsh@bastion: interrupt <span class="o">(</span>one more within 1 sec to abort<span class="o">)</span>
 pdsh@bastion:  <span class="o">(</span>^Z within 1 sec to cancel pending threads<span class="o">)</span>
 pdsh@bastion: inst-f5fra-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
@@ -522,7 +557,7 @@ pdsh@bastion: inst-dixqy-x9-ol8: <span class="nb">command </span><span class="k"
 
     <p>[二度連続して1秒以内に <strong>Ctrl-C</strong> を入力した場合]</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^./hostlist.txt <span class="nb">sleep </span>60
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">sleep </span>60
 ^Cpdsh@bastion: interrupt <span class="o">(</span>one more within 1 sec to abort<span class="o">)</span>
 pdsh@bastion:  <span class="o">(</span>^Z within 1 sec to cancel pending threads<span class="o">)</span>
 pdsh@bastion: inst-f5fra-x9-ol8: <span class="nb">command </span><span class="k">in </span>progress
@@ -547,12 +582,12 @@ pdsh@bastion: interrupt, aborting.
 この場合、これらコマンドへの指示をオプションで指定することが可能であれば、これを使用することで問題を回避することが可能です。<br />
 RPMパッケージをインストールするdnfコマンドは、このための <strong>-y</strong> オプションを用意しており、以下のようにこの問題を回避することが出来ます。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo dnf install -y httpd'</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo dnf install -y httpd'</span>
 </code></pre></div>    </div>
 
     <p>また、以下のようにパイプを介して当該コマンドの標準入力に指示を渡すことで、これを回避することも出来ます。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'echo yes | sudo dnf install httpd'</span>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'echo yes | sudo dnf install httpd'</span>
 </code></pre></div>    </div>
   </li>
 </ul>
@@ -571,12 +606,12 @@ RPMパッケージをインストールするdnfコマンドは、このため�
 
 <p>この場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>dnf upgrade <span class="nt">--refresh</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">sudo </span>dnf upgrade <span class="nt">--refresh</span>
 </code></pre></div></div>
 
 <p>なお <strong>pdsh</strong> の並列実行数は、 <strong>-f</strong> オプションで変更することが出来、デフォルトの32より大きなサイズのクラスタで全管理対象ノードに一斉にアップデートを行う場合は、以下のように実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nt">-f</span> 128 <span class="nb">sudo </span>dnf upgrade <span class="nt">--refresh</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nt">-f</span> 128 <span class="nb">sudo </span>dnf upgrade <span class="nt">--refresh</span>
 </code></pre></div></div>
 
 <p>但しこのOSアップデートのように、実行するコマンドからの出力が多くなる場合は、全ての管理対象ノードでコマンドが正常に完了したかどうかの判断が難しくなるため、以降で説明するような別の工夫が必要です。</p>
@@ -588,7 +623,7 @@ RPMパッケージをインストールするdnfコマンドは、このため�
 
 <p>この場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">grep </span>PRETTY /etc/os-release | dshbak <span class="nt">-c</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">grep </span>PRETTY /etc/os-release | dshbak <span class="nt">-c</span>
 <span class="nt">----------------</span>
 inst-1phjn-x9-ol8,inst-iwhce-x9-ol8,inst-ot9zd-x9-ol8
 <span class="nt">----------------</span>
@@ -603,7 +638,7 @@ inst-lzgde-x9-ol8
 
 <p>また、標準エラー出力を含めて管理対象ノードのコマンド出力を判別する場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'ls /tmp/hosts 2&gt;&amp;1'</span> | dshbak <span class="nt">-c</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'ls /tmp/hosts 2&gt;&amp;1'</span> | dshbak <span class="nt">-c</span>
 pdsh@bastion: inst-odzeg-x9-ol8: ssh exited with <span class="nb">exit </span>code 2
 <span class="nt">----------------</span>
 inst-cnspy-x9-ol8,inst-dw5fd-x9-ol8,inst-slz8n-x9-ol8
@@ -619,7 +654,7 @@ inst-odzeg-x9-ol8
 
 <p>また、OSアップデートが正常に完了したかどうかを確認する場合等、コマンド出力を無視してコマンドのリターンコードのみを確認する場合、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo dnf upgrade --refresh &gt; /dev/null 2&gt;&amp;1; echo $?'</span> | dshbak <span class="nt">-c</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo dnf upgrade --refresh &gt; /dev/null 2&gt;&amp;1; echo $?'</span> | dshbak <span class="nt">-c</span>
 <span class="nt">----------------</span>
 inst-slz8n-x9-ol8
 <span class="nt">----------------</span>
@@ -634,7 +669,7 @@ inst-cnspy-x9-ol8,inst-dw5fd-x9-ol8,inst-odzeg-x9-ol8
 
 <p>また <strong>dshbak</strong> は、クラスタ管理ノードの指定したディレクトリに、管理対象ノードからの出力をそのホスト名をファイル名として格納する機能があり、この場合以下のように実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo dnf install -y mysql'</span> | dshbak <span class="nt">-d</span> <span class="nb">.</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo dnf install -y mysql'</span> | dshbak <span class="nt">-d</span> <span class="nb">.</span>
 <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
 total 16
 <span class="nt">-rw-rw-r--</span><span class="nb">.</span> 1 opc opc 2504 Aug  1 11:56 inst-cnspy-x9-ol8
@@ -654,19 +689,19 @@ total 16
 
 <p>クラスタ管理ノードのファイル/etc/hostsを全ての管理対象ノードの/tmpにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /etc/hosts /tmp
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-g</span> all /etc/hosts /tmp
 </code></pre></div></div>
 
 <p>なお <strong>pdcp</strong> は、sudoによる権限昇格を適用することが出来ないため、上記例で直接管理対象ノードの/etc/hostsファイルを上書きすることが出来ません。<br />
 この場合、以下のように <strong>pdsh</strong> コマンドを併用してこれを実現することが可能です。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /etc/hosts /tmp
-<span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo cp</span> /tmp/hosts /etc/
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-g</span> all /etc/hosts /tmp
+<span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">sudo cp</span> /tmp/hosts /etc/
 </code></pre></div></div>
 
 <p>また、全ての管理対象ノードのファイル/etc/hostsをクラスタ管理ノードのカレントディレクトリにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rpdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /etc/hosts <span class="nb">.</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rpdcp <span class="nt">-g</span> all /etc/hosts <span class="nb">.</span>
 <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
 total 16
 <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 230 Aug  1 15:49 hosts.inst-cnspy-x9-ol8
@@ -680,8 +715,8 @@ total 16
 <p>先の <strong>pdcp</strong> と同様 <strong>rpdcp</strong> は、sudoによる権限昇格を適用することが出来ないため、管理者にのみ読み取り権限が付与された管理対象ノードのファイルをクラスタ管理ノードにコピーすることが出来ません。<br />
 この場合、以下のように <strong>pdsh</strong> コマンドを併用してこれを実現することが可能です。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="s1">'sudo cp /var/log/messages /tmp/; sudo chmod 644 /tmp/messages'</span>
-<span class="nv">$ </span>rpdcp <span class="nt">-R</span> ssh <span class="nt">-w</span> ^/home/opc/hostlist.txt /tmp/messages <span class="nb">.</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo cp /var/log/messages /tmp/; sudo chmod 644 /tmp/messages'</span>
+<span class="nv">$ </span>rpdcp <span class="nt">-g</span> all /tmp/messages <span class="nb">.</span>
 <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span>
 total 1964
 drwxrwxr-x. 2 opc opc    142 Aug  1 15:57 <span class="nb">.</span>
@@ -704,7 +739,7 @@ drwx------. 4 opc opc   4096 Aug  1 11:54 ..
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-22T15:49:03+09:00">November 22, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-28T17:00:11+09:00">November 28, 2023</time></p>
 
 
       </footer>
