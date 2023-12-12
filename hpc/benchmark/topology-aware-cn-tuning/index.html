@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-28T17:00:11+09:00">
+  <meta property="article:published_time" content="2023-12-12T14:34:24+09:00">
 
 
 
@@ -290,7 +290,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
@@ -324,9 +324,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
         
       </ul>
     </li>
@@ -341,7 +343,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法">
     <meta itemprop="description" content="クラスタ・ネットワークは、業界標準のRoCEv2を採用する高帯域・低遅延のRDMA対応インターコネクトネットワークサービスで、そのトポロジーがFat treeのため同一リーフスイッチに接続するノード間とスパインスイッチを介して異なるリーフスイッチに接続するノード間で、ノード間通信のレイテンシが大きく異なります。このため、この特性を意識して適切な計算/GPUノードにジョブを配置することで、レイテンシに影響を受け易いワークロードの性能や高並列実行時のスケーラビリティを改善できる場合があります。本パフォーマンス関連Tipsは、このクラスタ・ネットワークのレイテンシ特性を生かしてマルチノードジョブをクラスタ内に配置することで、ノード間通信性性能を最適化する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-11-28T17:00:11+09:00">
+    <meta itemprop="datePublished" content="2023-12-12T14:34:24+09:00">
     
 
     <div class="page__inner-wrap">
@@ -367,7 +369,7 @@
 
 <p>この <strong>クラスタ・ネットワーク</strong> は、下図のような2階層スパイン・リーフトポロジーを有し、デプロイ時点のデータセンターリソース状況に応じて何れかのリーフスイッチ配下にインスタンスを接続します。</p>
 
-<p><img src="topology.png" alt="画面ショット" /></p>
+<p><img src="cn_topology.png" alt="画面ショット" /></p>
 
 <p>このためノード間通信性能は、通信する2ノードがどのリーフスイッチ配下に接続されているかにより、特にレイテンシが大きく異なります。<br />
 最もレイテンシ性能が良いノードの組合せは、同一リーフスイッチ配下に接続するノード同士で、異なるリーフスイッチ配下に接続するノード同士は、その間のホップ数増加により同一リーフスイッチ配下のノード間と比較してレイテンシが増大します。</p>
@@ -548,7 +550,8 @@ $
 <span class="c">#SBATCH -o no_block.out</span>
 <span class="nb">echo</span> <span class="s2">"Dispatched hosts are </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2">"</span>
 <span class="nb">echo
-export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+<span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 0:1 PingPong | <span class="nb">grep</span> <span class="nt">-A1</span> repetitions
 </code></pre></div></div>
 
@@ -577,7 +580,8 @@ Dispatched hosts are inst-el428-x9,inst-nzy6b-x9
 <span class="c">#SBATCH -o block_1min.out</span>
 <span class="nb">echo</span> <span class="s2">"Dispatched hosts are </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2">"</span>
 <span class="nb">echo
-export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+<span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 0:1 PingPong | <span class="nb">grep</span> <span class="nt">-A1</span> repetitions
 </code></pre></div></div>
 
@@ -624,7 +628,8 @@ Dispatched hosts are inst-91oup-x9,inst-nzy6b-x9
 <span class="c">#SBATCH -o block_3min.out</span>
 <span class="nb">echo</span> <span class="s2">"Dispatched hosts are </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2">"</span>
 <span class="nb">echo
-export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
+<span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 0:1 PingPong | <span class="nb">grep</span> <span class="nt">-A1</span> repetitions
 </code></pre></div></div>
 
@@ -667,7 +672,7 @@ Dispatched hosts are inst-el428-x9,inst-nzy6b-x9
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-28T17:00:11+09:00">November 28, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-12-12T14:34:24+09:00">December 12, 2023</time></p>
 
 
       </footer>

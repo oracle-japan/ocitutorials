@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-28T17:00:11+09:00">
+  <meta property="article:published_time" content="2023-12-12T14:34:24+09:00">
 
 
 
@@ -290,7 +290,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
@@ -324,9 +324,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
         
       </ul>
     </li>
@@ -341,7 +343,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法">
     <meta itemprop="description" content="クラスタ・ネットワークに接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレースから提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。本テクニカルTipsは、クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8を使用するインスタンスをOracle Linux以外のOSでクラスタ・ネットワークに接続する方法を解説します。">
-    <meta itemprop="datePublished" content="2023-11-28T17:00:11+09:00">
+    <meta itemprop="datePublished" content="2023-12-12T14:34:24+09:00">
     
 
     <div class="page__inner-wrap">
@@ -360,7 +362,7 @@
         <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだOSイメージが <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> として <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレース</a></strong> から提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。<br />
 本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> 対応シェイプの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> や <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を使用するインスタンスを <strong>Oracle Linux</strong> 以外のOSで <strong>クラスタ・ネットワーク</strong> に接続する方法を解説します。</p>
 
-<p><strong>注意 :</strong> テクニカルTips内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
@@ -369,7 +371,7 @@
 
 <ul>
   <li><strong>クラスタ・ネットワーク</strong> 対応シェイプ（※1）を使用している</li>
-  <li>同一の <strong>クラスタ・ネットワーク</strong> と共にデプロイしている</li>
+  <li><strong>クラスタ・ネットワーク</strong> のデプロイに伴ってデプロイされている</li>
   <li><strong>クラスタ・ネットワーク</strong> 接続のための以下ソフトウェアがインストールされている
     <ul>
       <li>Mellanox OFED</li>
@@ -402,7 +404,34 @@
   <li><strong>インスタンス構成</strong> を指定した <strong>クラスタ・ネットワーク</strong> 作成</li>
 </ul>
 
-<p>以降は、HPCワークロード向けベアメタルシェイプの <strong>BM.Optimized3.36</strong> にRocky Linux 9.1、CentOS 7.9、又はubuntu 20.04を、機械学習ワークロード向けベアメタルシェイプの <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> にUbuntu 20.04を使用し、これらのインスタンスをクラスタ・ネットワークに接続する方法を解説します。</p>
+<p>以降は、下表の組み合わせのベアメタルシェイプとOSでデプロイしたインスタンスを使用し、これらを <strong>クラスタ・ネットワーク</strong> に接続する方法を解説します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">ベアメタルシェイプ</th>
+      <th style="text-align: center">OS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>BM.Optimized3.36</strong></td>
+      <td style="text-align: center"><strong>Rocky Linux</strong> 9.1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><strong>CentOS</strong> 7.9</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><strong>Ubuntu</strong> 20.04</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong></td>
+      <td style="text-align: center"><strong>Ubuntu</strong> 20.04</td>
+    </tr>
+  </tbody>
+</table>
 
 <hr />
 <h1 id="1-カスタムイメージ取得用2ノードhpcgpuクラスタ構築">1. カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築</h1>
@@ -1202,7 +1231,7 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-28T17:00:11+09:00">November 28, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-12-12T14:34:24+09:00">December 12, 2023</time></p>
 
 
       </footer>

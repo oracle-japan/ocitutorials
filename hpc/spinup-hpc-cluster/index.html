@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2023-11-28T17:00:11+09:00">
+  <meta property="article:published_time" content="2023-12-12T14:34:24+09:00">
 
 
 
@@ -280,7 +280,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
         
@@ -314,9 +314,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
         
       </ul>
     </li>
@@ -331,7 +333,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(スタティッククラスタ自動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルを終了すると、HPC向けIntel Ice Lakeプロセッサを搭載したベアメタル計算ノードをRoCEv2インターコネクトで接続した典型的な構成のHPCクラスタを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2023-11-28T17:00:11+09:00">
+    <meta itemprop="datePublished" content="2023-12-12T14:34:24+09:00">
     
 
     <div class="page__inner-wrap">
@@ -342,107 +344,129 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-hpcクラスタスタックの概要">0. HPCクラスタスタックの概要</a></li><li><a href="#1-スタックの作成">1. スタックの作成</a></li><li><a href="#2-スタックの計画">2. スタックの計画</a></li><li><a href="#3-スタックの適用">3. スタックの適用</a></li><li><a href="#4-hpcクラスタの確認">4. HPCクラスタの確認</a></li><li><a href="#5-ldapユーザ作成">5. LDAPユーザ作成</a></li><li><a href="#6-mpiプログラム実行2ノード編">6. MPIプログラム実行（2ノード編）</a></li><li><a href="#7-計算ノード追加">7. 計算ノード追加</a></li><li><a href="#8-mpiプログラム実行4ノード編">8. MPIプログラム実行（4ノード編）</a></li><li><a href="#9-計算ノード入れ替え">9. 計算ノード入れ替え</a></li><li><a href="#10-スタックの破棄">10. スタックの破棄</a></li></ul>
+              <ul class="toc__menu"><li><a href="#1-hpcクラスタ作成">1. HPCクラスタ作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-iamポリシー作成">1-1. IAMポリシー作成</a></li><li><a href="#1-2-スタックの作成">1-2. スタックの作成</a></li><li><a href="#1-3-スタックの計画">1-3. スタックの計画</a></li><li><a href="#1-4-スタックの適用">1-4. スタックの適用</a></li></ul></li><li><a href="#2-hpcクラスタ確認">2. HPCクラスタ確認</a></li><li><a href="#3-ldapユーザ作成">3. LDAPユーザ作成</a></li><li><a href="#4-mpiプログラム実行2ノード編">4. MPIプログラム実行（2ノード編）</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-ジョブスクリプト作成">4-1. ジョブスクリプト作成</a></li><li><a href="#4-2-ジョブ投入">4-2. ジョブ投入</a></li><li><a href="#4-3-ジョブ結果確認">4-3. ジョブ結果確認</a></li></ul></li><li><a href="#5-計算ノード追加">5. 計算ノード追加</a></li><li><a href="#6-mpiプログラム実行4ノード編">6. MPIプログラム実行（4ノード編）</a><ul><li><a href="#6-0-概要">6-0. 概要</a></li><li><a href="#6-1-ジョブスクリプト作成">6-1. ジョブスクリプト作成</a></li><li><a href="#6-2-ジョブ投入">6-2. ジョブ投入</a></li><li><a href="#6-3-ジョブ結果確認">6-3. ジョブ結果確認</a></li></ul></li><li><a href="#7-計算ノード入れ替え">7. 計算ノード入れ替え</a></li><li><a href="#8-hpcクラスタ削除">8. HPCクラスタ削除</a></li></ul>
 
             </nav>
           </aside>
         
-        <p>Oracle Cloud Infrastructure（以降OCIと記載）は、以下の特徴からHPCワークロードを実行するHPCクラスタを構築するには最適なクラウトサービスです。</p>
-<ul>
-  <li>仮想化オーバーヘッドの無いHPC用途に特化したベアメタルシェイプ</li>
-  <li><strong>RoCEv2</strong> を使用する高帯域・低レイテンシRDMAインターコネクトネットワーク</li>
-</ul>
+        <p>Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバーヘッドの無いHPC用途に特化したベアメタルシェイプと、これらを高速・低遅延で接続するインターコネクトネットワークサービスの <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を提供しており、HPCワークロードを実行するHPCクラスタを構築するには最適なクラウドサービスです。</p>
 
-<p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無償で利用可能な <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を利用し、以下構成の典型的なHPCクラスタを構築、そのインターコネクト性能を検証します。</p>
+<p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無償で利用可能な <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を利用し、以下構成の典型的なHPCクラスタを構築します。</p>
+
 <ul>
-  <li>HPC向け <strong>Intel Ice Lake</strong> プロセッサ搭載計算ノード（ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> ）</li>
-  <li>100 Gbps <strong>RoCEv2</strong> RDMAインターコネクト（※1）</li>
+  <li>計算ノード： HPCワークロード向けIntel Ice Lakeプロセッサ搭載ベアメタルシェイプの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong></li>
+  <li>インターコネクトネットワーク: <strong>クラスタ・ネットワーク</strong> （ノード当たり100 Gbps x 1）</li>
   <li>インターネットからSSH接続可能なBastionノード</li>
   <li>OS: <strong>Oracle Linux</strong> 8</li>
-  <li>ジョブスケジューラ: <strong>Slurm</strong></li>
-  <li>OCI <strong>ファイルストレージ</strong> によるHPCクラスタ内ホームディレクトリ共有</li>
-  <li>LDAPによるクラスタ内ユーザ統合管理</li>
+  <li>ジョブスケジューラ: <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong></li>
+  <li>クラスタ内ホームディレクトリ共有： <strong>ファイル・ストレージ</strong></li>
+  <li>クラスタ内ユーザ統合管理： LDAP</li>
 </ul>
-
-<p>※1：OCIでは、このインターコネクトネットワークを <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm">クラスタ・ネットワーク</a></strong> と呼称します。</p>
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
-<p><strong>HPCクラスタスタック</strong> を利用すると、通常であれば数日かかるようなHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択するだけで実施することが可能になります。</p>
+<p>またこのチュートリアルは、デプロイしたHPCクラスタのインターコネクト性能を <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmark</a></strong> で確認します。</p>
 
 <p>またこのチュートリアルでは、クラスタ構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存のクラスタに計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。</p>
 
+<p>本チュートリアルで使用する <strong>HPCクラスタスタック</strong> は、通常であれば数日かかるHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択するだけで実施することを可能にします。</p>
+
 <p><strong>所要時間 :</strong> 約1時間</p>
 
-<p><strong>前提条件 :</strong> HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。具体的には、以下ページの <strong>Policies to deploy the stack:</strong> に記載のポリシーが付与されていること。</p>
+<p><strong>前提条件 :</strong> HPCクラスタを収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)が作成されていること。</p>
 
-<p><a href="https://cloud.oracle.com/marketplace/application/67628143/usageInformation">https://cloud.oracle.com/marketplace/application/67628143/usageInformation</a></p>
-
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用する <strong>HPCクラスタスタック</strong> のバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。</p>
-
-<hr />
-<h1 id="0-hpcクラスタスタックの概要">0. HPCクラスタスタックの概要</h1>
-
-<p>本チュートリアルで使用する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> は、クラスタ構築を大きく2つのステップに分けて実行しており、前半は <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> を使用したOCIレベルのリソース構築フェーズで、後半は <strong>Terraform</strong> から起動される <strong>Ansible</strong> によるOSレベルのカスタマイズフェーズです。</p>
-
-<p>具体的には、以下のような処理が行われます。</p>
-
-<p>［ <strong>Terraform</strong> によるOCIリソース構築フェーズ］</p>
-
-<ul>
-  <li>VCNと関連するネットワークリソース構築</li>
-  <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm">クラスタ・ネットワーク</a></strong> と関連リソース構築</li>
-  <li>Bastionノードインスタンス構築</li>
-  <li>計算ノードインスタンス構築</li>
-  <li><strong>ファイルストレージ</strong> 構築</li>
-  <li><strong>Ansible</strong> 関連ソフトウェアインストール</li>
-</ul>
-
-<p>[ <strong>Ansible</strong> によるOSレベルカスタマイズフェーズ]</p>
-
-<ul>
-  <li>firewalld停止</li>
-  <li>NVMe SSDローカルディスクファイルシステム構築</li>
-  <li>/etc/hostsファイル生成</li>
-  <li>NFSファイル共有環境構築</li>
-  <li>LDAPユーザ統合環境構築</li>
-  <li>RDMAインタフェース構築</li>
-  <li><strong>Slurm</strong> 環境構築</li>
-</ul>
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。<br />
+また使用する <strong>HPCクラスタスタック</strong> のバージョンが異なる場合も、画面ショットが異なる場合があります。</p>
 
 <hr />
-<h1 id="1-スタックの作成">1. スタックの作成</h1>
+<h1 id="1-hpcクラスタ作成">1. HPCクラスタ作成</h1>
 
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から提供される <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を元に、前述のHPCクラスタ環境を構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。このチュートリアルで使用する <strong>HPCクラスタスタック</strong> は、バージョン2.10.1.1です。</p>
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を利用し、HPCクラスタ環境を作成します。<br />
+<strong>HPCクラスタスタック</strong> は、 <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に作成する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> からHPCクラスタを構築するため、これを許可する <strong>IAMポリシー</strong> が必要です。<br />
+よって本章では、以下の手順でHPCクラスタ環境を作成します。</p>
+
+<ul>
+  <li><strong>IAMポリシー</strong> 作成</li>
+  <li><strong>スタック</strong> の作成</li>
+  <li><strong>スタック</strong> の計画</li>
+  <li><strong>スタック</strong> の適用</li>
+</ul>
+
+<h2 id="1-1-iamポリシー作成">1-1. IAMポリシー作成</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に作成する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> からHPCクラスタを作成するための <strong>IAMポリシー</strong> を作成します。</p>
 
 <ol>
   <li>
-    <p>以下 <strong>マーケット・プレース</strong> の <strong>HPCクラスタスタック</strong> ページにアクセスします。</p>
+    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>xxxxコンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。<br />
+この際、 <strong>コンパートメント</strong> プルダウンメニューがHPCクラスタを作成する <strong>コンパートメント</strong> と異なる場合は、これを修正します。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
+      <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
+      <li>
+        <p><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow service compute_management to use tag-namespace <span class="k">in </span>compartment compartment_name
+allow service compute_management to manage compute-management-family <span class="k">in </span>compartment compartment_name
+allow service compute_management to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>compartment compartment_name
+allow group group_name to manage all-resources <span class="k">in </span>compartment compartment_name
+</code></pre></div>        </div>
+        <p>※1: <strong>コンパートメント</strong> 名は、自身のものに置き換えます。<br />
+※2: 4行目の <strong>グループ</strong> 名は、自身のものに置き換えます。</p>
+      </li>
+    </ul>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="1-2-スタックの作成">1-2. スタックの作成</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を基に、前述のHPCクラスタを構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。<br />
+このチュートリアルで使用する <strong>HPCクラスタスタック</strong> は、バージョン <strong>2.10.3</strong> です。</p>
+
+<ol>
+  <li>
+    <p>以下 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> の <strong>HPCクラスタスタック</strong> のページにアクセスします。</p>
 
     <p><a href="https://cloud.oracle.com/marketplace/application/67628143/">https://cloud.oracle.com/marketplace/application/67628143/</a></p>
-  </li>
-  <li>
+
     <p>OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。</p>
   </li>
-  <li>
-    <p>表示される以下画面の右上で、 <strong>スタック</strong> をデプロイするリージョンを選択し、 <strong>HPCクラスタスタック</strong> の <strong>バージョン</strong> を確認後、 <strong>コンパートメント</strong> を <strong>HPCクラスタスタック</strong> をデプロイするコンパートメントに指定、<strong>使用許諾</strong> チェックボックスをチェックし、 <strong>スタックの起動</strong> ボタンをクリックします。</p>
+  <li>表示される以下画面で、以下情報の入力と <strong>オラクル社標準の条件および規則を確認した上でこれに同意します。</strong> チェックボックスのチェックを行い、 <strong>スタックの起動</strong> ボタンをクリックします。
+    <ul>
+      <li><strong>リージョン :</strong> オンデマンドHPCクラスタをデプロイする <strong>リージョン</strong></li>
+      <li><strong>バージョン :</strong> v2.10.3</li>
+      <li><strong>コンパートメント :</strong> <strong>スタック</strong> を作成する <strong>コンパートメント</strong></li>
+    </ul>
 
     <p><img src="market_place.png" alt="画面ショット" /></p>
   </li>
-  <li>表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。
+  <li>表示される以下 <strong>スタック情報</strong> 画面で、各フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。
     <ul>
-      <li><strong>名前 :</strong> <strong>スタック</strong> に付与する名前（任意）</li>
-      <li><strong>説明 :</strong> <strong>スタック</strong> に付与する説明（任意）</li>
+      <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
+      <li><strong>説明 :</strong> スタックに付与する説明（任意）</li>
     </ul>
 
     <p><img src="stack_page01.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+    <p>表示される <strong>変数の構成</strong> 画面で、各フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
-    <p>5.1 <strong>Cluster configuration</strong> フィールド</p>
+    <p>4.1 <strong>Cluster configuration</strong></p>
     <ul>
-      <li><strong>Public SSH key :</strong> Bastionにログインする際使用するSSH秘密鍵に対応する公開鍵
+      <li><strong>Public SSH key :</strong> （Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵）
         <ul>
           <li>公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能</li>
         </ul>
@@ -451,48 +475,64 @@
 
     <p><img src="stack_page02.png" alt="画面ショット" /></p>
 
-    <p>5.2 <strong>Headnode options</strong> フィールド</p>
+    <p>4.2 <strong>Headnode options</strong></p>
     <ul>
-      <li><strong>Availability Domain :</strong> BastionノードをデプロイするAD</li>
+      <li><strong>Availability Domain :</strong> （Bastionノードをデプロイする <strong>可用性ドメイン</strong> ）</li>
+      <li><strong>Enable boot volume backup :</strong> チェックオフ</li>
+      <li><strong>Create Object Storage PAR :</strong> チェックオフ</li>
     </ul>
 
     <p><img src="stack_page03.png" alt="画面ショット" /></p>
 
-    <p>5.3 <strong>Compute node options</strong> フィールド</p>
+    <p>4.3 <strong>Compute node options</strong></p>
     <ul>
-      <li><strong>Availability Domain :</strong> 計算ノードをデプロイするAD</li>
+      <li><strong>Availability Domain :</strong> （計算ノードをデプロイする <strong>可用性ドメイン</strong> ）</li>
       <li><strong>Shape of the Compute Nodes :</strong> <strong>BM.Optimized3.36</strong></li>
-      <li><strong>Initial cluster size :</strong> 計算ノードのノード数（デフォルト：2）</li>
-      <li><strong>Image version :</strong> HPC_OL8</li>
+      <li><strong>Hyperthreading enabled :</strong> チェックオフ</li>
+      <li><strong>Image version :</strong> HPC_OL8（※1）</li>
     </ul>
+
+    <p>※1）<strong>Oracle Linux</strong> 8ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong></p>
 
     <p><img src="stack_page04.png" alt="画面ショット" /></p>
 
-    <p>5.4 <strong>Additional file system</strong> フィールド</p>
+    <p>4.4 <strong>Additional Login Node</strong></p>
+    <ul>
+      <li><strong>Login Node :</strong> チェックオフ</li>
+    </ul>
+
+    <p><img src="stack_page04-2.png" alt="画面ショット" /></p>
+
+    <p>4.5 <strong>Additional file system</strong></p>
     <ul>
       <li><strong>Add another NFS filesystem :</strong> チェック</li>
       <li><strong>Create FSS :</strong> チェック</li>
-      <li><strong>NFS Path :</strong> /mnt/home（※2）</li>
-      <li><strong>NFS server Path :</strong> /mnt/home（※2）</li>
+      <li><strong>NFS Path :</strong> /mnt/nfs（※2）</li>
+      <li><strong>NFS server Path :</strong> /mnt/nfs（※2）</li>
+      <li><strong>FSS Availability Domain :</strong> （ <strong>ファイル・ストレージ</strong> をデプロイする <strong>可用性ドメイン</strong> ）</li>
     </ul>
 
-    <p>※2：ここで指定するパスは、 <strong>ファイルストレージ</strong> 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user1のLDAPユーザのホームディレクトリは、/mnt/home/user1となります。</p>
+    <p>※2) ここで指定するパスは、 <strong>ファイル・ストレージ</strong> 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。例えばユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/nfs/home/user_nameとなります。</p>
 
     <p><img src="stack_page04-1.png" alt="画面ショット" /></p>
 
-    <p>5.5 <strong>Advanced storage options</strong> フィールド</p>
+    <p>4.6 <strong>Advanced storage options</strong></p>
     <ul>
       <li><strong>Show advanced storage options :</strong> チェック</li>
-      <li>
-        <p><strong>Shared NFS scratch space from NVME or Block volume :</strong> チェックオフ</p>
-
-        <ul>
-          <li>計算ノードのNVMe SSDローカルディスク領域をNFS共有するかの指定（本チュートリアルでは共有しない）</li>
-        </ul>
-      </li>
+      <li><strong>Shared NFS scratch space from NVME or Block volume :</strong> チェックオフ（※3）</li>
+      <li><strong>Redundancy :</strong> チェックオフ</li>
     </ul>
 
+    <p>※3）計算ノードの <strong>NVMe SSD</strong> ローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。</p>
+
     <p><img src="stack_page05.png" alt="画面ショット" /></p>
+
+    <p>4.7 <strong>Software</strong></p>
+    <ul>
+      <li><strong>Create Rack aware topology :</strong> チェックオフ</li>
+    </ul>
+
+    <p><img src="stack_page05-1.png" alt="画面ショット" /></p>
   </li>
   <li>
     <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
@@ -503,18 +543,17 @@
   </li>
 </ol>
 
-<p>これで、以下画面のとおり <strong>スタック</strong> が作成されました。</p>
+<p>これで、以下画面のとおりHPCクラスタを作成する <strong>スタック</strong> が作成されました。</p>
 
 <p><img src="stack_page07.png" alt="画面ショット" /></p>
 
-<hr />
-<h1 id="2-スタックの計画">2. スタックの計画</h1>
+<h2 id="1-3-スタックの計画">1-3. スタックの計画</h2>
 
 <p>本章は、完成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を計画し、どのようなリソースがデプロイされるか確認します。</p>
 
 <ol>
   <li>
-    <p>作成した <strong>スタック</strong> の以下 <strong>スタックの詳細</strong> 画面で、 <strong>計画</strong> ボタンをクリックします。</p>
+    <p>作成したスタックの以下 <strong>スタックの詳細</strong> 画面で、 <strong>計画</strong> ボタンをクリックします。</p>
 
     <p><img src="stack_page08.png" alt="画面ショット" /></p>
   </li>
@@ -524,7 +563,7 @@
     <p><img src="stack_page09.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> → <strong>成功</strong> と遷移すれば、 <strong>スタック</strong> の計画が終了しています。</p>
+    <p>表示される以下 <strong>ジョブの詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> → <strong>成功</strong> と遷移すれば、 <strong>スタック</strong> の計画が終了しています。</p>
 
     <p><img src="stack_page10.png" alt="画面ショット" /></p>
 
@@ -534,8 +573,7 @@
   </li>
 </ol>
 
-<hr />
-<h1 id="3-スタックの適用">3. スタックの適用</h1>
+<h2 id="1-4-スタックの適用">1-4. スタックの適用</h2>
 
 <p>本章は、計画で作成されるリソースに問題が無いことを確認した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> に対し、適用を行いHPCクラスタをデプロイします。</p>
 
@@ -566,7 +604,7 @@
 </ol>
 
 <hr />
-<h1 id="4-hpcクラスタの確認">4. HPCクラスタの確認</h1>
+<h1 id="2-hpcクラスタ確認">2. HPCクラスタ確認</h1>
 
 <p>本章は、デプロイされたHPCクラスタにログインし、環境を確認します。</p>
 
@@ -574,23 +612,24 @@
   <li>
     <p>Bastionノードログイン</p>
 
-    <p>Bastionへのログインは、 <strong>スタック</strong> 適用時の以下 <strong>ログ</strong> フィールドの最後に表示されているBastionのIPアドレスを使用し、インターネットを介してopcユーザでSSHログインします。</p>
+    <p>Bastionノードへのログインは、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> 適用時の以下 <strong>ログ</strong> フィールドの最後に表示されているBastionノードのIPアドレスを使用し、インターネットを介してopcユーザでSSHログインします。</p>
 
     <p><img src="stack_page15.png" alt="画面ショット" /></p>
 
-    <p>このSSH接続では、スタックに指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+    <p>このSSH接続では、 <strong>スタック</strong> に指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
 </code></pre></div>    </div>
   </li>
   <li>
     <p>Bastionノードファイルシステム確認</p>
 
-    <p>Bastionノードは、以下のようにファイルストレージの/mnt/homeがマウントされています。この/mnt/homeは、HPCクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。</p>
+    <p>Bastionノードは、以下のようにファイルストレージの/mnt/nfsがマウントされています。この/mnt/nfsは、HPCクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/home
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/nfs
 Filesystem        Size  Used Avail Use% Mounted on
 FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
+<span class="err">$</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -598,89 +637,104 @@ FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
 
     <p>計算ノードは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードを経由してログインします。</p>
 
-    <p>計算ノードのホスト名は、Bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm">クラスタ・ネットワーク</a></strong> サブネット接続に使用するIPアドレスに対応するホスト名です。このため、Bastionノードから計算ノードへのログインは、hostfile.tcpファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。</p>
+    <p>計算ノードのホスト名は、Bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続と <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> サブネット接続に使用するIPアドレスに対応するホスト名です。<br />
+このため、Bastionノードから計算ノードへのログインは、hostfile.tcpファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp 
-inst-ecrs7-massive-coyote
-inst-mnykj-massive-coyote
-<span class="o">&gt;</span> ssh inst-ecrs7-massive-coyote
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> /etc/opt/oci-hpc/hostfile.tcp 
+compute-permanent-node-392
+compute-permanent-node-170
+<span class="nv">$ </span>ssh compute-permanent-node-392
+Activate the web console with: systemctl <span class="nb">enable</span> <span class="nt">--now</span> cockpit.socket
+
+Last login: Mon Dec 11 06:31:17 2023 from 172.16.0.187
+<span class="err">$</span>
 </code></pre></div>    </div>
   </li>
   <li>
     <p>計算ノードファイルシステム確認</p>
 
-    <p>計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。</p>
+    <p>計算ノードは、以下のようにNVMe SSD領域が/mnt/localdiskにマウントされています。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/nvme0n1p1  3.5T   33M  3.5T   1% /mnt/localdisk
+<span class="err">$</span>
 </code></pre></div>    </div>
 
-    <p>また、以下のようにBasionノードの/homeと/export/clusterが全ての計算ノードでマウントされています。これらの領域は、Bastionノードの/homeをopcユーザのホームディレクトリ領域に、/export/clusterをHPCクラスタ内で共有する任意のデータを格納する領域に、それぞれ使用します。</p>
+    <p>また、以下のようにBasionノードの/homeと/export/clusterが全ての計算ノードでマウントされています。<br />
+これらの領域は、Bastionノードの/homeをopcユーザのホームディレクトリ領域に、/export/clusterをHPCクラスタ内で共有する任意のデータを格納する領域に、それぞれ使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /home /nfs/cluster
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /home /nfs/cluster
 Filesystem                   Size  Used Avail Use% Mounted on
 Bastion_ip:/home             42G   13G   29G  32% /home
 Bastion_ip:/export/cluster   42G   13G   29G  32% /nfs/cluster
+<span class="err">$</span>
 </code></pre></div>    </div>
 
-    <p>また、以下のようにファイルストレージの/mnt/homeが全ての計算ノードでマウントされています。</p>
+    <p>また、以下のようにファイルストレージの/mnt/nfsが全ての計算ノードでマウントされています。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/home
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/nfs
 Filesystem        Size  Used Avail Use% Mounted on
-FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
+FSS_ip:/mnt/nfs   8.0E     0  8.0E   0% /mnt/nfs
+<span class="err">$</span>
 </code></pre></div>    </div>
   </li>
 </ol>
 
 <hr />
-<h1 id="5-ldapユーザ作成">5. LDAPユーザ作成</h1>
+<h1 id="3-ldapユーザ作成">3. LDAPユーザ作成</h1>
 
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> が作成したHPCクラスタ内のLDAP統合ユーザ管理環境に於いて、LDAPユーザを作成しこのユーザでHPCクラスタにログイン出来ることを確認します。</p>
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> が作成したLDAP統合ユーザ管理環境にLDAPユーザを作成し、このユーザでインターネットからBastionノードにSSHログイン出来ることを確認します。</p>
 
-<p>このLDAP統合ユーザ管理環境は、BastionノードがLDAPサーバで計算ノードがLDAPクライアントです。</p>
+<p>このLDAP統合ユーザ管理環境は、BastionノードがLDAPサーバ兼クライアントで計算ノードがLDAPクライアントです。</p>
 
 <ol>
   <li>
     <p>LDAPユーザ作成</p>
 
-    <p>LDAPサーバであるBastionノードは、ユーザ管理のためのclusterコマンドが用意されています。</p>
+    <p>LDAPサーバであるBastionノードは、LDAPユーザ管理のためのclusterコマンドが用意されています。</p>
 
-    <p>このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。</p>
+    <p>このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリである <strong>ファイル・ストレージ</strong> の/mnt/nfs/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/home\//g'</span> /usr/bin/cluster
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/\/home\//\/mnt\/nfs\/home\//g'</span> /usr/bin/cluster
 </code></pre></div>    </div>
 
-    <p>次に、以下コマンドをBastionノードのopcユーザで実行し、LDAPユーザを作成します。</p>
+    <p>次に、以下コマンドをBastionノードのopcユーザで実行し、LDAPユーザを作成します。<br />
+なおこのユーザは、この後の稼働確認に使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> cluster user add user_name
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cluster user add user_name
 Password:  &lt;- Password <span class="k">for </span>user_name
 Repeat <span class="k">for </span>confirmation: &lt;- Password <span class="k">for </span>user_name
 Full Name: full_name &lt;- Full name <span class="k">for </span>user_name
 Creating group
+<span class="nv">$ </span><span class="nb">id </span>user_name
+<span class="nv">uid</span><span class="o">=</span>10001<span class="o">(</span>user_name<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>9876<span class="o">(</span>privilege<span class="o">)</span>
+<span class="err">$</span>
 </code></pre></div>    </div>
 
     <p>ここで指定するパスワードは、HPCクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。</p>
 
     <p>次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
-public_key_for_user_name
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'public_key_for_user_name'</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> ~user_name/.ssh/authorized_keys
 </code></pre></div>    </div>
   </li>
   <li>
     <p>LDAPユーザログイン</p>
 
-    <p>先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。<br />
-このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+    <p>先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
+    <p>このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
 </code></pre></div>    </div>
   </li>
 </ol>
 
 <hr />
-<h1 id="6-mpiプログラム実行2ノード編">6. MPIプログラム実行（2ノード編）</h1>
+<h1 id="4-mpiプログラム実行2ノード編">4. MPIプログラム実行（2ノード編）</h1>
+
+<h2 id="4-0-概要">4-0. 概要</h2>
 
 <p>本章は、先に作成したLDAPユーザを使ってMPIプログラムを <strong>Slurm</strong> を介してバッチジョブとして投入し、構築したHPCクラスタのインターコネクト性能を <strong>Intel MPI Benchmark</strong> で確認します。</p>
 
@@ -691,61 +745,52 @@ public_key_for_user_name
   <li>レイテンシ：約1.7 μs</li>
 </ul>
 
-<p>以降の手順は、先に作成したLDAPユーザで実施します。</p>
+<h2 id="4-1-ジョブスクリプト作成">4-1. ジョブスクリプト作成</h2>
 
-<ol>
-  <li>
-    <p>バッチジョブスクリプト作成</p>
+<p>BastionノードのLDAPユーザで、以下のジョブスクリプトをファイル名 <strong>pingpong.sh</strong> で作成します。</p>
 
-    <p>以下のバッチジョブ投入用スクリプトをBastionノードのホームディレクトリ下に作成します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>submit.sh
-<span class="c">#!/bin/bash</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#SBATCH -p compute</span>
 <span class="c">#SBATCH -n 2</span>
 <span class="c">#SBATCH -N 2</span>
-<span class="c">#SBATCH -J ping_ping</span>
+<span class="c">#SBATCH -J ping_pong</span>
 <span class="c">#SBATCH -o stdout.%J</span>
 <span class="c">#SBATCH -e stderr.%J</span>
-   
-<span class="c"># Only for BM.Optimized3.36</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
-   
-<span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-   
-mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>バッチジョブ投入</p>
+srun <span class="nt">--mpi</span><span class="o">=</span>pmix /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
+</code></pre></div></div>
 
-    <p>作成したスクリプトをバッチジョブとして投入します。</p>
+<h2 id="4-2-ジョブ投入">4-2. ジョブ投入</h2>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> sbatch submit.sh 
-Submitted batch job 2
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>バッチジョブ結果確認</p>
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、作成したジョブスクリプトを <strong>Slurm</strong> に投入します。</p>
 
-    <p>投入したバッチジョブの結果を確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch pingpong.sh 
+Submitted batch job 1
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>stdout.2 
+<h2 id="4-3-ジョブ結果確認">4-3. ジョブ結果確認</h2>
+
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブ完了を確認した後、その出力結果を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>squeue
+          JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+<span class="nv">$ </span><span class="nb">cat </span>stdout.1
 <span class="c">#------------------------------------------------------------</span>
 <span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
 <span class="c">#------------------------------------------------------------</span>
-<span class="c"># Date                  : Mon Apr 10 08:08:45 2023</span>
+<span class="c"># Date                  : Mon Dec 11 07:00:24 2023</span>
 <span class="c"># Machine               : x86_64</span>
 <span class="c"># System                : Linux</span>
-<span class="c"># Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64</span>
-<span class="c"># Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022</span>
+<span class="c"># Release               : 4.18.0-425.13.1.el8_7.x86_64</span>
+<span class="c"># Version               : #1 SMP Tue Feb 21 15:09:05 PST 2023</span>
 <span class="c"># MPI Version           : 3.1</span>
 <span class="c"># MPI Thread Environment: </span>
 
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong</span>
+<span class="c"># /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong</span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   268435456</span>
@@ -764,49 +809,23 @@ Submitted batch job 2
 <span class="c"># Benchmarking PingPong </span>
 <span class="c"># #processes = 2 </span>
 <span class="c">#---------------------------------------------------</span>
-    <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
-         0         1000         1.67         0.00
-         8         1000         1.68         4.78
-        16         1000         1.68         9.55
-        32         1000         1.72        18.61
-        64         1000         1.84        34.82
-       128         1000         1.89        67.72
-       256         1000         2.14       119.51
-       512         1000         2.21       231.44
-      1024         1000         2.33       438.64
-      2048         1000         3.04       673.29
-      4096         1000         3.77      1085.28
-      8192         1000         4.87      1683.00
-     16384         1000         6.73      2432.75
-     32768         1000         9.26      3540.00
-     65536          640        10.87      6029.75
-    131072          320        16.36      8013.06
-    262144          160        28.70      9133.90
-    524288           80        50.18     10448.62
-   1048576           40        92.93     11283.11
-   2097152           20       178.58     11743.24
-   4194304           10       349.85     11988.82
-   8388608            5       692.99     12104.99
-  16777216            2      1378.36     12171.85
-  33554432            1      2750.49     12199.42
-  67108864            1      5491.94     12219.51
- 134217728            1     10972.51     12232.18
- 268435456            1     21945.08     12232.15
+       <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+            0         1000         1.68         0.00
+    134217728            1     10971.08     12233.78
+    268435456            1     21937.28     12236.50
 
 
 <span class="c"># All processes entering MPI_Finalize</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+</code></pre></div></div>
 
 <hr />
-<h1 id="7-計算ノード追加">7. 計算ノード追加</h1>
+<h1 id="5-計算ノード追加">5. 計算ノード追加</h1>
 
 <p>本章は、構築した2ノードクラスタに計算ノードを2ノード追加して4ノードクラスタに拡張します。</p>
 
 <p>この計算ノード追加は、OCIコンソールから実施する追加2ノード分のOCIリソース構築フェーズと、Bastionノードのコマンドラインから実施する <strong>Ansible</strong> のOSレベルカスタマイズフェーズを、個別に実行することで行います。</p>
 
-<p>OCIリソース構築フェーズは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす">2. ノード数を増やす</a></strong> 手順を実施します。</p>
+<p>OCIリソース構築フェーズは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす">2. ノード数を増やす</a></strong> の手順を実施します。</p>
 
 <p>OCIリソース構築フェーズが終了した段階は、追加した計算ノード用インスタンスのデプロイが完了し既存 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に物理的に接続されOSが起動した状態で、未だ <strong>クラスタ・ネットワーク</strong> を利用可能な状態になっていません。</p>
 
@@ -814,9 +833,9 @@ Submitted batch job 2
 
 <ol>
   <li>
-    <p>Bastionノードにログインし、 <strong>Ansible</strong> のインベントリファイル/etc/ansible/hostsの <strong>compute</strong> セクションの最後に、追加された計算ノードのホスト名とIPアドレスの記述を、以下のように追加します。</p>
+    <p>Bastionノードの <strong>Ansible</strong> インベントリファイル/etc/ansible/hostsの <strong>compute_configured</strong> セクションの最後に、追加された計算ノードのホスト名とIPアドレスの記述を以下のように追加します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>compute]
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>compute_configured]
 inst-gxosv-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.6.51 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
 inst-mdu0w-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.6.187 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
 <span class="c">#</span>
@@ -827,11 +846,10 @@ inst-jow40-relevant-owl <span class="nv">ansible_host</span><span class="o">=</s
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>本ステップで実行するコマンドは、Bastionから計算ノードへのSSH接続を使用するため、全ての計算ノードがSSH接続可能な状態まで起動されていることを確認します。</p>
+    <p>本ステップで実行するコマンドは、Bastionノードから計算ノードへのSSH接続を使用するため、全ての計算ノードがSSH接続可能な状態まで起動されていることを確認します。<br />
+Bastionノードのopcユーザで以下コマンドを実行し、追加された計算ノードに対する <strong>Ansible</strong> のOSレベルカスタマイズを起動、最後の <strong>PLAY RECAP</strong> フィールドの出力で <strong>failed</strong> や <strong>unreachable</strong> の項目が無いことで、正常に終了していることを確認します。</p>
 
-    <p>以下コマンドを実行し、追加された計算ノードに対する <strong>Ansible</strong> のOSレベルカスタマイズを起動、最後の <strong>PLAY RECAP</strong> フィールドの出力で <strong>failed</strong> や <strong>unreachable</strong> の項目が無いことで、正常に終了していることを確認します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nv">ANSIBLE_HOST_KEY_CHECKING</span><span class="o">=</span>False ansible-playbook /opt/oci-hpc/playbooks/site.yml
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ ANSIBLE_HOST_KEY_CHECKING</span><span class="o">=</span>False ansible-playbook /opt/oci-hpc/playbooks/site.yml
    :
    :
    :
@@ -841,7 +859,7 @@ inst-jow40-relevant-owl    : <span class="nv">ok</span><span class="o">=</span>8
 inst-mdu0w-relevant-owl    : <span class="nv">ok</span><span class="o">=</span>83   <span class="nv">changed</span><span class="o">=</span>13   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>57   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
 inst-yzgqv-relevant-owl    : <span class="nv">ok</span><span class="o">=</span>85   <span class="nv">changed</span><span class="o">=</span>51   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>56   <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0   
 relevant-owl-bastion       : <span class="nv">ok</span><span class="o">=</span>112  <span class="nv">changed</span><span class="o">=</span>21   <span class="nv">unreachable</span><span class="o">=</span>0    <span class="nv">failed</span><span class="o">=</span>0    <span class="nv">skipped</span><span class="o">=</span>115  <span class="nv">rescued</span><span class="o">=</span>0    <span class="nv">ignored</span><span class="o">=</span>0
-<span class="o">&gt;</span>
+<span class="err">$</span>
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -849,54 +867,45 @@ relevant-owl-bastion       : <span class="nv">ok</span><span class="o">=</span>1
 <p>以上で、 <strong>Ansible</strong> のOSレベルカスタマイズフェーズは完了し、4ノードのHPCクラスタが利用可能になります。</p>
 
 <hr />
-<h1 id="8-mpiプログラム実行4ノード編">8. MPIプログラム実行（4ノード編）</h1>
+<h1 id="6-mpiプログラム実行4ノード編">6. MPIプログラム実行（4ノード編）</h1>
+
+<h2 id="6-0-概要">6-0. 概要</h2>
 
 <p>本章は、先に作成したLDAPユーザを使ってMPIプログラムを <strong>Slurm</strong> を介してバッチジョブとして投入し、追加後の4ノードHPCクラスタのインターコネクト性能を <strong>Intel MPI Benchmark</strong> で確認します。</p>
 
 <p>ここでは、4ノードの <strong>Alltoall</strong> 性能を計測しています。</p>
 
-<p>以降の手順は、先に作成したLDAPユーザで実施します。</p>
+<h2 id="6-1-ジョブスクリプト作成">6-1. ジョブスクリプト作成</h2>
 
-<ol>
-  <li>
-    <p>バッチジョブスクリプト作成</p>
+<p>BastionノードのLDAPユーザで、以下のジョブスクリプトをファイル名 <strong>alltoall.sh</strong> で作成します。</p>
 
-    <p>以下のバッチジョブ投入用スクリプトをBastionノードのホームディレクトリ以下に作成します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>submit_4nodes.sh
-<span class="c">#!/bin/bash</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#SBATCH -p compute</span>
 <span class="c">#SBATCH -n 4</span>
 <span class="c">#SBATCH -N 4</span>
 <span class="c">#SBATCH -J all_to_all</span>
 <span class="c">#SBATCH -o stdout.%J</span>
 <span class="c">#SBATCH -e stderr.%J</span>
-   
-<span class="c"># Only for BM.Optimized3.36</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
-   
-<span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-   
-mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-mem</span> 4 Alltoall
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>バッチジョブ投入</p>
+srun <span class="nt">--mpi</span><span class="o">=</span>pmix /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 <span class="nt">-mem</span> 4 alltoall
+</code></pre></div></div>
 
-    <p>作成したスクリプトをバッチジョブとして投入します。</p>
+<h2 id="6-2-ジョブ投入">6-2. ジョブ投入</h2>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> sbatch submit_4nodes.sh 
-Submitted batch job 3
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>バッチジョブ結果確認</p>
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、作成したジョブスクリプトを <strong>Slurm</strong> に投入します。</p>
 
-    <p>投入したバッチジョブの結果を確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch alltoall.sh
+Submitted batch job 2
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">cat </span>stderr.3
-Loading mpi version 2021.3.0
-<span class="o">&gt;</span> <span class="nb">cat </span>stdout.3
+<h2 id="6-3-ジョブ結果確認">6-3. ジョブ結果確認</h2>
+
+<p>BastionノードのLDAPユーザで以下コマンドを実行し、ジョブ完了を確認した後、その出力結果を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>squeue
+          JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+<span class="nv">$ </span><span class="nb">cat </span>stdout.2
 <span class="c">#----------------------------------------------------------------</span>
 <span class="c">#    Intel(R) MPI Benchmarks 2021.2, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
@@ -989,18 +998,17 @@ Loading mpi version 2021.3.0
 
 
 <span class="c"># All processes entering MPI_Finalize</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="err">$</span>
+</code></pre></div></div>
 
 <hr />
-<h1 id="9-計算ノード入れ替え">9. 計算ノード入れ替え</h1>
+<h1 id="7-計算ノード入れ替え">7. 計算ノード入れ替え</h1>
 
 <p>本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。</p>
 
 <p>この計算ノード入れ替えは、OCIコンソールから実施するOCIリソースレベルの計算ノード入れ替えフェーズと、Bastionノードのコマンドラインから実施する <strong>Ansible</strong> によるOSレベルの新計算ノードカスタマイズフェーズを、個別に実行することで行います。</p>
 
-<p>OCIリソースレベルの計算ノード入れ替えフェーズは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える">3. ノードを置き換える</a></strong> 手順を実施します。</p>
+<p>OCIリソースレベルの計算ノード入れ替えフェーズは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える">3. ノードを置き換える</a></strong> の手順を実施します。</p>
 
 <p>OCIリソースレベルの計算ノード入れ替えフェーズが終了した段階は、置き換え後の新計算ノード用インスタンスのデプロイが完了し既存 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に物理的に接続されOSが起動した状態で、未だ <strong>クラスタ・ネットワーク</strong> を利用可能な状態になっていません。</p>
 
@@ -1008,9 +1016,9 @@ Loading mpi version 2021.3.0
 
 <ol>
   <li>
-    <p>Bastionノードにログインし、 <strong>Ansible</strong> のインベントリファイル/etc/ansible/hostsの <strong>compute</strong> セクションで、置き換えられた計算ノードのホスト名とIPアドレスの記述を、置き換えた計算ノードのものに書き換えます。なお、置き換えられた計算ノードが <strong>nfs</strong> セクションにも記載がある場合、これを以下のようにコメントアウトします。</p>
+    <p>Bastionノードの <strong>Ansible</strong> インベントリファイル/etc/ansible/hostsの <strong>compute_configured</strong> セクションで、置き換えられた計算ノードのホスト名とIPアドレスの記述を置き換えた計算ノードのものに書き換えます。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>compute]
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>compute_configured]
 inst-gxosv-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.6.51 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
 inst-mdu0w-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.6.187 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
 <span class="c">#</span>
@@ -1022,15 +1030,11 @@ inst-yzgqv-relevant-owl <span class="nv">ansible_host</span><span class="o">=</s
 inst-sz0pd-relevant-owl <span class="nv">ansible_host</span><span class="o">=</span>172.16.5.15 <span class="nv">ansible_user</span><span class="o">=</span>opc <span class="nv">role</span><span class="o">=</span>compute
 <span class="c">#</span>
 <span class="c">#</span>
-
-<span class="o">[</span>nfs]
-<span class="c">#inst-jow40-relevant-owl ansible_host=172.16.5.11 ansible_user=opc role=compute</span>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>本ステップで実行するコマンドは、Bastionから計算ノードへのSSH接続を使用するため、置き換えた計算ノードがSSH接続可能な状態まで起動されていることを確認します。</p>
-
-    <p>以下コマンドを実行し、置き換えた計算ノードに対する <strong>Ansible</strong> のOSレベルカスタマイズを起動、最後の <strong>PLAY RECAP</strong> フィールドの出力で <strong>failed</strong> や <strong>unreachable</strong> の項目が無いことで、正常に終了していることを確認します。</p>
+    <p>本ステップで実行するコマンドは、Bastionノードから計算ノードへのSSH接続を使用するため、置き換えた計算ノードがSSH接続可能な状態まで起動されていることを確認します。<br />
+Bastionノードのopcユーザで以下コマンドを実行し、置き換えた計算ノードに対する <strong>Ansible</strong> のOSレベルカスタマイズを起動、最後の <strong>PLAY RECAP</strong> フィールドの出力で <strong>failed</strong> や <strong>unreachable</strong> の項目が無いことで、正常に終了していることを確認します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nv">ANSIBLE_HOST_KEY_CHECKING</span><span class="o">=</span>False ansible-playbook /opt/oci-hpc/playbooks/site.yml
    :
@@ -1049,14 +1053,14 @@ relevant-owl-bastion     : <span class="nv">ok</span><span class="o">=</span>112
 
 <p>以上で、 <strong>Ansible</strong> のOSレベルカスタマイズフェーズは完了し、計算ノードの置き換えは完了です。</p>
 
-<p>再度 <strong>8. MPIプログラム実行（4ノード編）</strong> に従い <strong>Intel MPI Benchmark</strong> を実行し、インターコネクト性能が十分出ていることを確認します。</p>
+<p>再度 <strong><a href="#6-mpiプログラム実行4ノード編">6. MPIプログラム実行（4ノード編）</a></strong> に従い <strong>Intel MPI Benchmark</strong> を実行し、インターコネクト性能が十分出ていることを確認します。</p>
 
 <hr />
-<h1 id="10-スタックの破棄">10. スタックの破棄</h1>
+<h1 id="8-hpcクラスタ削除">8. HPCクラスタ削除</h1>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を破棄することで、構築したHPCクラスタを削除します。</p>
 
-<p>以下の手順は、本チュートリアルで作成したOCI上のリソースをすべて削除します。</p>
+<p>以降の手順は、本チュートリアルで作成したOCI上のリソースをすべて削除するため、 <strong>LDAPユーザのホームディレクトリ用途で作成したファイル・ストレージに格納されているデータが全て消失</strong> します。</p>
 
 <ol>
   <li>
@@ -1096,7 +1100,7 @@ relevant-owl-bastion     : <span class="nv">ok</span><span class="o">=</span>112
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-11-28T17:00:11+09:00">November 28, 2023</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2023-12-12T14:34:24+09:00">December 12, 2023</time></p>
 
 
       </footer>
