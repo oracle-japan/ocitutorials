@@ -1,6 +1,6 @@
 ---
 title: "HPCクラスタを構築する(オンデマンドクラスタ自動構築編)"
-excerpt:  "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタをSlurmと連動してデプロイするオンデマンドHPCクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。"
+excerpt:  "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタをSlurmと連動してデプロイするオンデマンドHPCクラスタを、リソース・マネージャから自動構築出来るようになります。"
 order: "1140"
 layout: single
 header:
@@ -10,162 +10,150 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバーヘッドの無いHPC用途に特化したベアメタルシェイプとこれらを接続する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を提供しており、HPCワークロードを実行するHPCクラスタを構築するには最適なクラウドサービスです。
+Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバーヘッドの無いHPC用途に特化したベアメタルシェイプと、これらを高速・低遅延で接続するインターコネクトネットワークサービスの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を提供しており、HPCワークロードを実行するHPCクラスタを構築するには最適なクラウドサービスです。
 
 このチュートリアルは、 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から無償で利用可能な **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を利用し、以下構成のオンデマンドHPCクラスタを構築します。
 
-- HPC向けIntel Ice Lakeプロセッサ搭載計算ノード（ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** ）
-- インターコネクト: **クラスタ・ネットワーク** （ノード当たり100 Gbps x 1）
+- 計算ノード： HPCワークロード向けIntel Ice Lakeプロセッサ搭載ベアメタルシェイプの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
+- インターコネクトネットワーク: **クラスタ・ネットワーク** （ノード当たり100 Gbps x 1）
 - インターネットからSSH接続可能なBastionノード
 - OS: **Oracle Linux** 8
-- ジョブスケジューラ: **Slurm**
+- ジョブスケジューラ: **[Slurm](https://slurm.schedmd.com/)**
 - オンデマンドクラスタ機能： **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)**
-- **ファイル・ストレージ** によるHPCクラスタ内ホームディレクトリ共有
-- LDAPによるクラスタ内ユーザ統合管理
+- クラスタ内ホームディレクトリ共有： **ファイル・ストレージ**
+- クラスタ内ユーザ統合管理： LDAP
 
 ![システム構成図](architecture_diagram.png)
 
-またこのチュートリアルは、デプロイしたHPCクラスタのインターコネクト性能を **Intel MPI Benchmark** で確認します。
+またこのチュートリアルは、デプロイしたHPCクラスタのインターコネクト性能を **[Intel MPI Benchmark](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** で確認します。
 
-オンデマンドHPCクラスタにおけるワークロード実行は、 **Slurm** にジョブを投入することで行い、 **クラスタオートスケーリング** がジョブ実行に必要な計算ノードを **クラスタ・ネットワーク** と共に動的に起動、構築されたクラスタに **Slurm** がジョブをディスパッチします。  
-また **クラスタオートスケーリング** は、ジョブが実行されない状態が一定時間経過すると、自動的にクラスタを削除します。
+オンデマンドHPCクラスタにおけるワークロード実行は、 **Slurm** にジョブを投入することで行い、 **クラスタオートスケーリング** がジョブ実行に必要な計算ノードを **クラスタ・ネットワーク** と共に動的にデプロイし、構築されたクラスタに **Slurm** がジョブをディスパッチします。  
+また **クラスタオートスケーリング** は、ジョブが実行されない状態が一定時間経過すると、自動的に計算ノードを **クラスタ・ネットワーク** と共に削除します。
 
-本チュートリアルで使用する **HPCクラスタスタック** は、通常であれば数日かかるオンデマンドHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択した後、1クリックで自動的に実施することを可能とします。
+本チュートリアルで使用する **HPCクラスタスタック** は、通常であれば数日かかるオンデマンドHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択するだけで実施することを可能にします。
 
 **所要時間 :** 約2時間
 
 **前提条件 :** オンデマンドHPCクラスタを収容する **コンパートメント** ( **ルート・コンパートメント** でもOKです)が作成されていること。
 
-**注意 :** チュートリアル内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。また使用する **HPCクラスタスタック** のバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。  
+また使用する **HPCクラスタスタック** のバージョンが異なる場合も、画面ショットが異なる場合があります。
 
 ***
-# 1. HPCクラスタスタック
+# 1. オンデマンドクラスタ作成
 
 ## 1-0. 概要
 
-本チュートリアルで使用する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** は、大きく2つのステップに分けて構築を実施しており、前半は **[Terraform](/ocitutorials/hpc/#5-12-terraform)** によるOCIリソース構築フェーズで、後半は **Terraform** から起動される **Ansible** が行うOSレベルのカスタマイズフェーズです。
-
-具体的には、以下のような処理が行われます。
-
-［ **Terraform** によるOCIリソース構築フェーズ］
-
-- **VCN** と関連するネットワークリソース構築
-- **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** と関連リソース構築
-- Bastionノードインスタンス構築
-- **ファイル・ストレージ** 構築
-- **Ansible** 関連ソフトウェアインストール
-
-[ **Ansible** によるOSレベルカスタマイズフェーズ]
-
-- NFSファイル共有環境構築
-- LDAPユーザ統合環境構築
-- **Slurm** 環境構築
--  **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** ツール群インストール
-
-また **クラスタオートスケーリング** は、Bastionノードから **Terraform** CLIを使用して動的にHPCクラスタを構築するため、 **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証の設定を予め行います。
-
-以上より本章では、以下の手順でHPCクラスタ構築のための  **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
+本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を利用し、オンデマンドクラスタ環境を作成します。  
+**HPCクラスタスタック** は、オンデマンドクラスタ機能を **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** で実現しており、 Bastionノードから **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用して動的にHPCクラスタを構築するため、 **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証を予め設定します。  
+よって本章では、以下の手順でオンデマンドクラスタ環境を作成します。
 
 - **インスタンス・プリンシパル** 認証関連設定
-- スタックの作成
-- スタックの計画
-- スタックの適用
+- **スタック** の作成
+- **スタック** の計画
+- **スタック** の適用
 
 ## 1-1. インスタンス・プリンシパル認証関連設定
 
 本章は、Bastionノードから **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用して動的にHPCクラスタを構築するための **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定を行います。
 
-**インスタンス・プリンシパル** 認証の設定は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[ここ](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従います。  
-この際、 **[動的グループ](/ocitutorials/hpc/#5-16-動的グループ)** に含めるインスタンスは、Bastionノードとします。
+**インスタンス・プリンシパル** 認証の設定は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従います。  
+この際、Bastionノードをクラスタ管理ノードとします。
 
 ## 1-2. スタックの作成
 
-本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を元に、前述の環境構築のための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。このチュートリアルで使用する **HPCクラスタスタック** は、バージョン **2.10.2.1** です。
+本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を基に、前述の環境構築のための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。  
+このチュートリアルで使用する **HPCクラスタスタック** は、バージョン **2.10.3** です。
 
 1. 以下 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** の **HPCクラスタスタック** のページにアクセスします。
 
    [https://cloud.oracle.com/marketplace/application/67628143/](https://cloud.oracle.com/marketplace/application/67628143/)
 
-2. OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。
+   OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。
 
-3. 表示される以下画面で、以下の情報を入力し、 **スタックの起動** ボタンをクリックします。
-    - **リージョン :** オンデマンドHPCクラスタをデプロイするリージョン
-    - **バージョン :** v2.10.2.1
-    - **コンパートメント :** **スタック** を作成するコンパートメント
+2. 表示される以下画面で、以下情報の入力と **オラクル社標準の条件および規則を確認した上でこれに同意します。** チェックボックスのチェックを行い、 **スタックの起動** ボタンをクリックします。
+    - **リージョン :** オンデマンドHPCクラスタをデプロイする **リージョン**
+    - **バージョン :** v2.10.3
+    - **コンパートメント :** **スタック** を作成する **コンパートメント**
 
    ![画面ショット](market_place.png)
 
-4. 表示される以下 **スタック情報** 画面で、以下の情報を入力し、下部の **次** ボタンをクリックします。
+3. 表示される以下 **スタック情報** 画面で、各フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。
     - **名前 :** スタックに付与する名前（任意）
     - **説明 :** スタックに付与する説明（任意）
 
    ![画面ショット](stack_page01.png)
 
-5. 表示される **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
+4. 表示される **変数の構成** 画面で、各フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
-   5.1 **Cluster configuration** フィールド
+   4.1 **Cluster configuration**
     - **Public SSH key :** （Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵）
       - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
 
    ![画面ショット](stack_page02.png)
 
-    5.2 **Headnode options** フィールド
-    - **Availability Domain :** （Bastionノードをデプロイする可用性ドメイン）
+   4.2 **Headnode options**
+    - **Availability Domain :** （Bastionノードをデプロイする **可用性ドメイン** ）
+    - **Enable boot volume backup :** チェックオフ
+    - **Create Object Storage PAR :** チェックオフ
 
    ![画面ショット](stack_page03.png)
 
-   5.3 **Compute node options** フィールド
-    - **Availability Domain :** （計算ノードをデプロイする可用性ドメイン）
-    - **Shape of the Compute Nodes :** **BM.Optimized3.36** （計算ノードに使用するシェイプ）
-    - **Initial cluster size :** 0 (*1)
-    - **Image version :** HPC_OL8（計算ノードのOSイメージ）
+   4.3 **Compute node options**
+    - **Availability Domain :** （計算ノードをデプロイする **可用性ドメイン** ）
+    - **Shape of the Compute Nodes :** **BM.Optimized3.36**
+    - **Initial cluster size :** 0（※1）
+    - **Hyperthreading enabled :** チェックオフ
+    - **Image version :** HPC_OL8（※2）
    
-   *1) このフィールドは、スタティックに常時起動しておく計算ノードのノード数を指定しますが、本チュートリアルはオンデマンドでのみ計算ノードをデプロイするため、このフィールドを **0** とします。
+   ※1）このフィールドは、スタティックに常時起動しておく計算ノードのノード数を指定しますが、本チュートリアルはオンデマンドでのみ計算ノードをデプロイするため、このフィールドを **0** とします。  
+   ※2）**Oracle Linux** 8ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** 
 
    ![画面ショット](stack_page04.png)
 
-   5.4 **Autoscaling** フィールド
+   4.4 **Additional Login Node**
+    - **Login Node :** チェックオフ
+
+   ![画面ショット](stack_page04-2.png)
+
+   4.5 **Autoscaling**
     - **Scheduler based autoscaling :** チェック
+    - **RDMA Latency check :** チェックオフ
 
    ![画面ショット](stack_page04-0.png)
 
-   5.5 **API authencication, needed for autoscaling** フィールド
-    - **Use Instance Princopal instead of configuration file :** チェックオフ
-    - **API User OCID :** ユーザOCID（※2）
-    - **API fingerprint :** **APIキー** のフィンガープリント（※3）
-    - **API private key :** **APIキー** の秘密鍵（ **参照** ボタンをクリックしてアップロード）（※4）
-
-   ※2) ユーザOCIDの確認は、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five)** の手順を参照して下さい。     
-   ※3) **[APIキーの作成・登録](#1-1-apiキーの作成・登録)** で作成した **APIキー** のフィンガープリント  
-   ※4) **[APIキーの作成・登録](#1-1-apiキーの作成・登録)** で作成した **APIキー** の秘密鍵
-
-   ![画面ショット](stack_page04-3.png)
-
-   5.6 **Additional file system** フィールド
+   4.6 **Additional file system**
     - **Add another NFS filesystem :** チェック
     - **Create FSS :** チェック
-    - **NFS Path :** /mnt/home（※5）
-    - **NFS server Path :** /mnt/home（※5）
+    - **NFS Path :** /mnt/nfs（※3）
+    - **NFS server Path :** /mnt/nfs（※3）
+    - **FSS Availability Domain :** （ **ファイル・ストレージ** をデプロイする **可用性ドメイン** ）
 
-   ※5) ここで指定するパスは、 **ファイル・ストレージ** 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。よって、ユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/home/user_nameとなります。
+   ※3) ここで指定するパスは、 **ファイル・ストレージ** 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。例えばユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/nfs/home/user_nameとなります。
 
    ![画面ショット](stack_page04-1.png)
 
-   5.7 **Advanced storage options** フィールド
+   4.7 **Advanced storage options**
     - **Show advanced storage options :** チェック
-    - **Shared NFS scratch space from NVME or Block volume :** チェックオフ（※6）
+    - **Shared NFS scratch space from NVME or Block volume :** チェックオフ（※4）
+    - **Redundancy :** チェックオフ
 
-   *6) 計算ノードの **NVMe SSD** ローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。
+   ※4）計算ノードの **NVMe SSD** ローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。
 
    ![画面ショット](stack_page05.png)
 
-6. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
+   4.8 **Software**
+    - **Create Rack aware topology :** チェックオフ
+
+   ![画面ショット](stack_page05-1.png)
+
+5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
    ![画面ショット](stack_page06.png)
 
-   ここで **適用の実行** をチェックした場合、 **作成** ボタンのクリックと同時にスタックの適用が開始され、オンデマンドHPCクラスタのデプロイが始まりますが、このチュートリアルではスタックの計画を実行してから適用を行います。
+   ここで **適用の実行** をチェックした場合、 **作成** ボタンのクリックと同時に **スタック** の適用が開始され、オンデマンドHPCクラスタのデプロイが始まりますが、このチュートリアルでは **スタック** の計画を実行してから適用を行います。
 
-これで、以下画面のとおりオンデマンドHPCクラスタを構築する **スタック** が作成されました。
+これで、以下画面のとおりオンデマンドHPCクラスタを作成する **スタック** が作成されました。
 
 ![画面ショット](stack_page07.png)
 
@@ -209,7 +197,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    ![画面ショット](stack_page11.png)
 
-   この適用が完了するまでの所要時間は、15分程度です。
+   この適用が完了するまでの所要時間は、10分程度です。
 
    ステータスが **成功** となれば、オンデマンドHPCクラスタのデプロイが完了しています。
 
@@ -232,16 +220,17 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
 2. Bastionノードファイルシステム確認
 
-   Bastionノードは、以下のように **ファイル・ストレージ** の/mnt/homeがマウントされています。この/mnt/homeは、オンデマンドHPCクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。
+   Bastionノードは、以下のように **ファイル・ストレージ** の/mnt/nfsがマウントされています。  
+   この/mnt/nfsは、オンデマンドHPCクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。
 
    ```sh
-   $ df -h /mnt/home
+   $ df -h /mnt/nfs
    Filesystem        Size  Used Avail Use% Mounted on
-   FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
+   FSS_ip:/mnt/nfs  8.0E     0  8.0E   0% /mnt/nfs
    ```
 
 ***
-# 3. LDAPユーザ作成・確認
+# 3. LDAPユーザ作成
 
 本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** が作成したLDAP統合ユーザ管理環境にLDAPユーザを作成し、このユーザでインターネットからBastionノードにSSHログイン出来ることを確認します。
 
@@ -251,10 +240,10 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    LDAPサーバであるBastionノードは、LDAPユーザ管理のためのclusterコマンドが用意されています。
    
-   このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリである **ファイル・ストレージ** の/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。
+   このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリである **ファイル・ストレージ** の/mnt/nfs/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。
 
    ```sh
-   $ sudo sed -i 's/\/home\//\/mnt\/home\//g' /usr/bin/cluster
+   $ sudo sed -i 's/\/home\//\/mnt\/nfs\/home\//g' /usr/bin/cluster
    ```
 
    次に、以下コマンドをBastionノードのopcユーザで実行し、LDAPユーザを作成します。  
@@ -267,7 +256,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
    Full Name: full_name <- Full name for user_name
    Creating group
    $ id user_name
-   uid=10001(user_name) gid=10006(user_name) groups=10006(user_name)
+   uid=10001(user_name) gid=9876(privilege) groups=9876(privilege)
+   $
    ```
 
    ここで指定するパスワードは、オンデマンドHPCクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。
@@ -276,7 +266,6 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    ```sh
    $ echo 'public_key_for_user_name' | sudo tee -a ~user_name/.ssh/authorized_keys
-   public_key_for_user_name
    ```
 
 2. LDAPユーザログイン
@@ -290,11 +279,16 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
    ```
 
 ***
-# 34 オンデマンドHPCクラスタ稼働確認（Intel MPI Benchmark性能検証）
+# 4. オンデマンドクラスタ確認
 
 ## 4-0. 概要
 
 本章は、 **Intel MPI Benchmark** 性能検証用のジョブを使用し、オンデマンドHPCクラスタがジョブの投入・終了に伴い自動的にHPCクラスタを作成・削除することを確認し、その後HPCクラスタのインターコネクト性能を検証します。
+
+ここでは、2ノードの **Ping-Pong** 性能を計測しており、以下性能が出ています。
+
+- 帯域：約12 GB/s（インタフェース物理帯域100 Gbpsに対し96 Gbpsを計測）
+- レイテンシ：約1.7 μs
 
 ## 4-1. ジョブスクリプト作成
 
@@ -308,13 +302,8 @@ BastionノードのLDAPユーザで、以下のジョブスクリプトをファ
 #SBATCH -J ping_pong
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
-
-# Only for BM.Optimized3.36
 export UCX_NET_DEVICES=mlx5_2:1
-
-source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-
-mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+srun --mpi=pmix /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
 ```
 
 ## 4-2. ジョブ投入
@@ -327,7 +316,7 @@ Submitted batch job 1
 $ squeue 
    JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
        1   compute ping_pon user_nam PD       0:00      2 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
-
+$
 ```
 
 この時点では、ジョブを実行するための計算ノードが存在しないため、ジョブのステータスがPDの状態です。
@@ -339,6 +328,7 @@ $ squeue
 ```sh
 $ crontab -l | grep autoscale_slurm
 * * * * * /opt/oci-hpc/autoscaling/crontab/autoscale_slurm.sh >> /opt/oci-hpc/logs/crontab_slurm_`date '+\%Y\%m\%d'`.log 2>&1
+$
 ```
 
 このため、先の手順のジョブ投入から最大で1分以上経過すると、自動的に2ノードの計算ノードとこれらを接続する **クラスタ・ネットワーク** のデプロイを開始します。  
@@ -359,18 +349,18 @@ $ cat stdout.1
 #------------------------------------------------------------
 #    Intel (R) MPI Benchmarks 2018, MPI-1 part    
 #------------------------------------------------------------
-# Date                  : Tue May 16 06:38:34 2023
+# Date                  : Thu Dec  7 07:11:37 2023
 # Machine               : x86_64
 # System                : Linux
-# Release               : 4.18.0-372.26.1.0.1.el8_6.x86_64
-# Version               : #1 SMP Tue Sep 13 21:44:27 PDT 2022
+# Release               : 3.10.0-1160.90.1.0.1.el7.x86_64
+# Version               : #1 SMP Tue Apr 25 14:56:13 PDT 2023
 # MPI Version           : 3.1
 # MPI Thread Environment: 
 
 
 # Calling sequence was: 
 
-# /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+# /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
 
 # Minimum message length in bytes:   0
 # Maximum message length in bytes:   268435456
@@ -391,35 +381,12 @@ $ cat stdout.1
 #---------------------------------------------------
        #bytes #repetitions      t[usec]   Mbytes/sec
             0         1000         1.67         0.00
-            8         1000         1.66         4.81
-           16         1000         1.66         9.62
-           32         1000         1.73        18.54
-           64         1000         1.83        34.92
-          128         1000         1.88        68.05
-          256         1000         2.14       119.35
-          512         1000         2.20       232.63
-         1024         1000         2.33       439.71
-         2048         1000         3.05       672.50
-         4096         1000         3.76      1088.19
-         8192         1000         4.87      1682.36
-        16384         1000         6.73      2433.40
-        32768         1000         9.27      3536.08
-        65536          640        10.87      6027.71
-       131072          320        16.32      8032.19
-       262144          160        28.67      9142.25
-       524288           80        50.10     10465.36
-      1048576           40        92.88     11289.03
-      2097152           20       178.64     11739.66
-      4194304           10       349.87     11988.22
-      8388608            5       692.62     12111.44
-     16777216            2      1378.23     12173.04
-     33554432            1      2750.67     12198.62
-     67108864            1      5491.25     12221.06
-    134217728            1     10974.52     12229.94
-    268435456            1     21942.87     12233.38
+    134217728            1     10977.34     12226.80
+    268435456            1     21940.51     12234.69
 
 
 # All processes entering MPI_Finalize
+$
 ```
 
 ## 4-5. HPCクラスタ削除確認
@@ -428,7 +395,7 @@ $ cat stdout.1
 OCIコンソールで、想定通りHPCクラスタが削除されていることを確認します。 
 
 ***
-# 5. スタックの破棄
+# 5. オンデマンドクラスタ削除
 
 本章は、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を破棄することで、オンデマンドHPCクラスタを削除します。
 
