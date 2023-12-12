@@ -11,6 +11,8 @@ header:
 ノード数が多くなるHPCクラスタやGPUクラスタの計算/GPUノードの名前解決は、どのように行うのが効果的でしょうか。  
 本テクニカルTipsは、 **仮想クラウド・ネットワーク** のDNSを使用した効果的な計算/GPUノードの名前解決方法を解説します。
 
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
+
 ***
 # 0. 概要
 
@@ -129,7 +131,6 @@ $
 $ sudo rm /etc/resolv.conf
 $ sudo cp /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 $ sudo sed -i '/^search/s/$/ subnet_src.vcn_name.oraclevcn.com subnet_dst.vcn_name.oraclevcn.com/g' /etc/resolv.conf
-$
 ```
 
 以上の手順で、vcn_nameに指定した **仮想クラウド・ネットワーク** のsubnet_srcとsubnet_dstに指定したサブネットに接続されるインスタンスのインスタンス名による名前解決が可能になります。

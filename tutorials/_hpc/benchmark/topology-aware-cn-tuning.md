@@ -18,7 +18,7 @@ header:
 
 この **クラスタ・ネットワーク** は、下図のような2階層スパイン・リーフトポロジーを有し、デプロイ時点のデータセンターリソース状況に応じて何れかのリーフスイッチ配下にインスタンスを接続します。
 
-![画面ショット](topology.png)
+![画面ショット](cn_topology.png)
 
 このためノード間通信性能は、通信する2ノードがどのリーフスイッチ配下に接続されているかにより、特にレイテンシが大きく異なります。  
 最もレイテンシ性能が良いノードの組合せは、同一リーフスイッチ配下に接続するノード同士で、異なるリーフスイッチ配下に接続するノード同士は、その間のホップ数増加により同一リーフスイッチ配下のノード間と比較してレイテンシが増大します。
@@ -149,6 +149,7 @@ $ scontrol reconfigure
 #SBATCH -o no_block.out
 echo "Dispatched hosts are $SLURM_JOB_NODELIST"
 echo
+source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
 export UCX_NET_DEVICES=mlx5_2:1
 mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 0:1 PingPong | grep -A1 repetitions
 ```
@@ -180,6 +181,7 @@ $
 #SBATCH -o block_1min.out
 echo "Dispatched hosts are $SLURM_JOB_NODELIST"
 echo
+source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
 export UCX_NET_DEVICES=mlx5_2:1
 mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 0:1 PingPong | grep -A1 repetitions
 ```
@@ -230,6 +232,7 @@ $
 #SBATCH -o block_3min.out
 echo "Dispatched hosts are $SLURM_JOB_NODELIST"
 echo
+source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
 export UCX_NET_DEVICES=mlx5_2:1
 mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 0:1 PingPong | grep -A1 repetitions
 ```

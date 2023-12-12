@@ -1,6 +1,6 @@
 ---
-title: "パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法"
-excerpt: "OCIのベア・メタル・インスタンスは、デプロイする際にBIOSの設定を指定することが可能です。これらの設定は、NPS (NUMA nodes per socket) やSMT (Simultanious Multi Threading) といった、当該インスタンスの性能に影響するものが少なくありません。本パフォーマンス関連Tipsは、これらのBIOS設定を指定してHPC/GPUクラスタを構築する方法を解説します。"
+title: "パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法"
+excerpt: "OCIのベアメタルインスタンスは、デプロイする際にBIOSの設定を指定することが可能です。これらの設定は、NPS (NUMA nodes per socket) やSMT (Simultanious Multi Threading) といった、当該インスタンスの性能に影響するものが少なくありません。本パフォーマンス関連Tipsは、これらのBIOS設定を指定してHPC/GPUクラスタを構築する方法を解説します。"
 order: "221"
 layout: single
 header:
@@ -8,14 +8,14 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-OCIのベア・メタル・インスタンスは、デプロイする際にBIOSの設定を指定することが可能です。  
+ベアメタルインスタンスは、デプロイする際にBIOSの設定を指定することが可能です。  
 これらの設定は、 **NPS** (NUMA nodes per socket) や **SMT** (Simultanious Multi Threading) といった、当該インスタンスの性能に影響するものが少なくありません。  
 本パフォーマンス関連Tipsは、これらのBIOS設定を指定してHPC/GPUクラスタを構築する方法を解説します。
 
 ***
 # 0. 概要
 
-OCIのベア・メタル・インスタンスは、デプロイ時にBIOS設定を指定することが可能ですが、この中にはHPCワークロードの実行時パフォーマンスに影響する以下の項目が含まれます。
+ベアメタルインスタンスは、デプロイ時にBIOS設定を指定することが可能ですが、この中にはHPCワークロードの実行時パフォーマンスに影響する以下の項目が含まれます。
 
 - **NPS** (NUMA nodes per socket)  
   **NPS** は、CPUソケット当たりの **NUMA** (Non-Umiform Memory Access) ノード数を指定するBIOS設定です。  
@@ -27,7 +27,7 @@ OCIのベア・メタル・インスタンスは、デプロイ時にBIOS設定�
 
   そこで **NPS** を4に設定することで、最も距離の近い3個の **UMC** のグループ内にメモリインターリーブを限定します。
 
-  指定可能な **NPS** 値は、対象のシェイプ毎に異なり、HPCワークロード向けベア・メタル・シェイプでは下表のようになっています。
+  指定可能な **NPS** 値は、対象のシェイプ毎に異なり、HPCワークロード向けベアメタルシェイプでは下表のようになっています。
 
     | シェイプ               | サポートする **NPS**          |
     | ------------------ | ----------------------- |
@@ -45,18 +45,18 @@ OCIのベア・メタル・インスタンスは、デプロイ時にBIOS設定�
 
   BIOS設定上 **SMT** を有効化してインスタンスをデプロイした場合でも、OS設定でこれを無効化することが出来ますが、BIOS設定上 **SMT** を無効化してインスタンスをデプロイした場合、 **SMT** を有効化するためにはインスタンスを再作成する必要があります。
 
-以降では、 **NPS** と **SMT** のBIOS設定を指定して、計算/GPUノード用途のベア・メタル・インスタンスをデプロイする方法を解説します。
+以降では、 **NPS** と **SMT** のBIOS設定を指定して、計算/GPUノード用途のベアメタルインスタンスをデプロイする方法を解説します。
 
-また、デプロイしたベア・メタル・インスタンスのBIOS設定を確認する方法も解説します。
+また、デプロイしたベアメタルインスタンスのBIOS設定を確認する方法も解説します。
 
-ベア・メタル・インスタンスデプロイ時のBIOS設定に関するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/bios-settings.htm#bios-settings)** を参照ください。
+ベアメタルインスタンスデプロイ時のBIOS設定に関するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/bios-settings.htm#bios-settings)** を参照ください。
 
 ***
-# 1. BIOS設定を指定したベア・メタル・インスタンスのデプロイ
+# 1. BIOS設定を指定したベアメタルインスタンスのデプロイ
 
 ## 1-0. 概要
 
-本章は、ベア・メタル・インスタンスのデプロイ時、どのようにBIOS設定を指定するかを解説します。
+本章は、ベアメタルインスタンスのデプロイ時、どのようにBIOS設定を指定するかを解説します。
 
 インスタンスのBIOS設定は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** で解説している構築手法を前提としたHPC/GPUクラスタの計算/GPUノードの場合、以下の方法で指定します。
 
@@ -94,11 +94,11 @@ OCIのベア・メタル・インスタンスは、デプロイ時にBIOS設定�
 詳細は、HPCクラスタの場合は **OCI HPCチュートリアル集** の **[HPCクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** の **[スタック作成](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-1-2-スタック作成)** ( **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する場合)か **[Terraformスクリプト作成](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-2-2-terraformスクリプト作成)** ( **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する場合) を、GPUクラスタの場合は **OCI HPCチュートリアル集** の **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の **[スタック作成](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-1-2-スタック作成)** ( **リソース・マネージャ** を使用する場合)か **[Terraformスクリプト作成](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-2-terraformスクリプト作成)** ( **Terraform** CLIを使用する場合) を参照ください。
 
 ***
-# 2. デプロイしたベア・メタル・インスタンスのBIOS設定確認
+# 2. デプロイしたベアメタルインスタンスのBIOS設定確認
 
-本章は、デプロイしたベア・メタル・インスタンスのBIOS設定を確認します。
+本章は、デプロイしたベアメタルインスタンスのBIOS設定を確認します。
 
-OCIコンソールで当該ベア・メタル・インスタンスの以下 **インスタンスの詳細** 画面を表示し、 **BIOS設定** タブを選択します。
+OCIコンソールで当該ベアメタルインスタンスの以下 **インスタンスの詳細** 画面を表示し、 **BIOS設定** タブを選択します。
 
 ![画面ショット](console_page04.png)
 

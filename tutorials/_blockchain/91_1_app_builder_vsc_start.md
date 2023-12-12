@@ -12,7 +12,7 @@ header:
 
 この文書は Oracle Blockchain Platform付属のChaincode開発・テスト・デプロイ補助ツールであるBlockchain App BuilderのVisual Studio Code拡張版について、ダウンロードとインストールの方法から、Chaincode仕様の作成方法やChaincodeコードの生成方法など、基本的な使い方を紹介するチュートリアルです。
 
-この文書は、2022年11月時点での最新バージョン(22.3.2)を元に作成されています。
+この文書は、2023年12月時点での最新バージョン(Blockchain App Builder 23.4.1)を元に作成されています。
 
 - **前提 :**
 
@@ -47,26 +47,42 @@ Blockchain App Builder（Visual Studio Code拡張版）のインストールに�
 ### 対応OS
 
   - Mac OS
-  - Oracle Enterprise Linux 7.7 or 7.8
+  - Oracle Enterprise Linux 8.0 or 9.0
   - Windows 10 or 11
 
-### Mac OSおよびLinuxでの前提条件
+### Mac OSでの前提条件
 
-- Docker: v18.09.0以降のバージョン（```docker --version```で確認）
-- Docker Compose: v1.23.0以降のバージョン（```docker-compose --version```で確認）
-- Node.js: v12.xの最新のバージョン（```node --version```で確認）<br>
-  Node.js v12以外（~v11/v13~）のバージョンは利用不可
-- npm: v6.x（```npm --version```で確認）
-- ＜GoのChaincodeを開発する場合に必要＞Go: v1.15 or v1.16（```go version```で確認）
+- Rancher Desktop: v1.4.1で検証済<br>
+  ※Dockerでも動作は可能<br>
+  ※既にDockerがインストールされている環境にRancher Desktopを構成する場合、Rancher Desktopのインストール前にDockerを完全にアンインストールすることを推奨。また、Rancher Desktopインストール後、コンテナランタイムがdockerd (moby)に設定されていることを確認すること（Kubernetes Settingsー＞Container Runtimeで確認可能）
+- Node.js: v18.xの最新のバージョン（```node --version```で確認）
+- npm: v8.x or v9.x（```npm --version```で確認）<br>
+  ※nvmやnodenvなどの管理ツールを用いている場合、default/globalバージョンをセットしてVisual Studio Codeを再起動すること
+- Go: v1.20.10（```go version```で確認）<br>
+  ※環境変数GOPATH、PATHの設定も必要
+- Visual Studio Code v1.66.0以降（```code --version```で確認）
+
+### Linuxでの前提条件
+
+- Docker: v18.09.0以降
+- Docker Compose: v1.23.0以降
+- Node.js: v18.xの最新のバージョン（```node --version```で確認）
+- npm: v8.x or v9.x（```npm --version```で確認）<br>
+  ※nvmやnodenvなどの管理ツールを用いている場合、default/globalバージョンをセットしてVisual Studio Codeを再起動すること
+- Go: v1.20.10（```go version```で確認）<br>
+  ※環境変数GOPATH、PATHの設定も必要
 - Visual Studio Code v1.66.0以降（```code --version```で確認）
 
 ### Windowsでの前提条件
 
-- Docker Desktop for Windows: v2.x
-- Node.js: v12.xの最新のバージョン（```node --version```で確認）<br>
-  Node.js v12以外（~v11/v13~）のバージョンは利用不可
-- npm: v6.x（```npm --version```で確認）
-- ＜GoのChaincodeを開発する場合に必要＞Go: v1.15 or v1.16（```go version```で確認）
+- Rancher Desktop: v1.4.1で検証済<br>
+  ※Dockerでも動作は可能<br>
+  ※既にDockerがインストールされている環境にRancher Desktopを構成する場合、Rancher Desktopのインストール前にDockerを完全にアンインストールすることを推奨。また、Rancher Desktopインストール後、コンテナランタイムがdockerd (moby)に設定されていることを確認すること（Kubernetes Settingsー＞Container Runtimeで確認可能）
+- Node.js: v18.xの最新のバージョン（```node --version```で確認）
+- npm: v8.x or v9.x（```npm --version```で確認）<br>
+  ※nvmやnodenvなどの管理ツールを用いている場合、default/globalバージョンをセットしてVisual Studio Codeを再起動すること
+- Go: v1.20.10（```go version```で確認）<br>
+  ※ホームディレクトリ内にgoフォルダの作成が必要　例：C:\Users\{username}\go
 - Visual Studio Code v1.66.0以降（```code --version```で確認）
 
 ## 1.2 Blockchain App Builderインストーラのダウンロード

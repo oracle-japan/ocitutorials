@@ -12,6 +12,8 @@ header:
 オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、 **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証が用意されています。  
 本テクニカルTipsは、オンデマンドクラスタを念頭とした **インスタンス・プリンシパル** 認証の設定方法を解説します。
 
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
+
 ***
 # 0. 概要
 
@@ -48,13 +50,14 @@ HPC/GPUクラスタを動的に作成・終了させるソフトウェア（以�
 
     ![画面ショット](console_page02.png)
 
-5. 表示される以下 **動的グループの作成** 画面で、各フィールドに以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
+5. 表示される以下 **動的グループの作成** 画面で、各フィールドに以下の情報を入力し **作成** ボタンをクリックします。  
+なお、ここに記載のないフィールドは、デフォルトのままとします。
 
-    - **名前** フィールド： **動的グループ** に付与する名前
-    - **ルール1** フィールド： **動的グループ** に含めるクラスタ管理ノード用インスタンスのOCIDを指定する以下構文
+    - **名前** ： **動的グループ** に付与する名前
+    - **ルール1** ： **動的グループ** に含めるクラスタ管理ノード用インスタンスが存在するコンパートメントのOCIDを指定する以下構文
 
       ```sh
-      Any {instance.id = 'instance_ocid'}
+      Any {instance.compartment.id = 'compartment_ocid'}
       ```
 
    ![画面ショット](console_page03.png)
@@ -65,28 +68,31 @@ HPC/GPUクラスタを動的に作成・終了させるソフトウェア（以�
 
 1. OCIコンソールにログインし、 **アイデンティティとセキュリティ** → **ポリシー** とメニューを辿ります。
 
-2. 表示される以下 **xxxx（ルート）コンパートメント内のポリシー** 画面で、 **ポリシーの作成** ボタンをクリックします。  
+2. 表示される以下 **xxxxコンパートメント内のポリシー** 画面で、 **ポリシーの作成** ボタンをクリックします。  
+この際、 **コンパートメント** プルダウンメニューがクラスタ管理ノード用インスタンスの存在する **コンパートメント** と異なる場合は、これを修正します。
 
     ![画面ショット](console_page04.png)
 
 3. 表示される以下 **ポリシーの作成** 画面で、各フィールドに以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
 
-    - **名前** フィールド： **IAMポリシー** に付与する名前
-    - **ポリシー・ビルダー** フィールド： 作成する **IAMポリシー** を指定する以下構文（ **手動エディタの表示** ボタンをクリックして表示）
+    - **名前** ： **IAMポリシー** に付与する名前
+    - **説明** ： **IAMポリシー** に付与する説明（用途等）
+    - **ポリシー・ビルダー** ： 作成する **IAMポリシー** を指定する以下構文（ **手動エディタの表示** ボタンをクリックして表示）
 
       ```sh
-      allow service compute_management to use tag-namespace in tenancy
-      allow service compute_management to manage compute-management-family in tenancy
-      allow service compute_management to read app-catalog-listing in tenancy
-      allow dynamic-group dynamic_group_name to manage all-resources in tenancy
+      allow service compute_management to use tag-namespace in compartment compartment_name
+      allow service compute_management to manage compute-management-family in compartment compartment_name
+      allow service compute_management to read app-catalog-listing in compartment compartment_name
+      allow group group_name to manage all-resources in compartment compartment_name
+      allow dynamic-group dynamicgroup_name to read app-catalog-listing in tenancy
+      allow dynamic-group dynamicgroup_name to use tag-namespace in tenancy
+      allow dynamic-group dynamicgroup_name to manage all-resources in compartment compartment_name
       ```
-      ※1: 4行目の **動的グループ** 名は、先に作成したものに置き換えます。
-      
-      ※2: 最初の3行のポリシーは、  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を伴うリソースを  **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIから利用する場合に必要です。
-      
-      ※3: 最後の1行のポリシーは、 **動的グループ** に対するリソース管理権限を付与するものです。  
-      
-      ※4: この例は、全て **ルート・コンパートメント** を対象に **IAMポリシー** を設定していますが、クラスタ管理ノードや動的にリソースを作成・削除する **コンパートメント** を特定の **コンパートメント** とする場合は、この **コンパートメント** を指定することも可能です。
+      ※1: 1-4行目と7行目の **コンパートメント** 名は、自身のものに置き換えます。  
+      ※2: 4行目の **グループ** 名は、自身のものに置き換えます。  
+      ※3: 5-7行目の **動的グループ** 名は、先に作成したものに置き換えます。  
+      ※4: 最初の4行のポリシーは、  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を伴うリソースを  **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIから利用する場合に必要です。  
+      ※5: 最後の3行のポリシーは、クラスタ管理ノードに必要なリソース管理権限を付与します。  
 
    ![画面ショット](console_page05.png)
 
