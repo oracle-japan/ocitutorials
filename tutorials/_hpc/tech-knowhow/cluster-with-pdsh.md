@@ -42,7 +42,7 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 
 ただこの場合、全てのノードで指定したRPMが想定するバージョンになっているかを確認するため、ノード数分の出力を全て確認する必要が生じます。
 
-また、管理対象ノードが異なる構成を持つグループに変われていてコマンド実行対象ノードを特定のグループに限定する場合、これを意識してコマンドを打ちなおす必要があります。
+また、管理対象ノードが異なるシステム構成の複数のグループからなり、コマンド実行対象ノードを特定のグループに限定する場合、何らかの工夫が必要になります。
 
 **pdsh** は、このような課題を解決する以下の機能を持っています。
 
@@ -72,75 +72,75 @@ inst-dixqy-x9-ol8
 
 本章は、 **pdsh** をインストール・セットアップします。
 
-以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
+1. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
-```sh
-$ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-$ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
-$ sudo yum install -y pdsh pdsh-mod-dshgroup
-$ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
-```
+   ```sh
+   $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
+   $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
+   $ sudo yum install -y pdsh pdsh-mod-dshgroup
+   $ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
+   ```
 
-次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH **known_hosts** ファイルに登録します。  
+2. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH **known_hosts** ファイルに登録します。  
 このステップは、後の **pdsh** の実行のために必要です。
 
-```sh
-$ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
-```
+   ```sh
+   $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
+   ```
 
-次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
+3. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
 
-```sh
-$ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
-$ source ~/.bash_profile
-$ pdsh -w ^/home/opc/hostlist.txt date
-inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-```
+   ```sh
+   $ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
+   $ source ~/.bash_profile
+   $ pdsh -w ^/home/opc/hostlist.txt date
+   inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   ```
 
-**pdsh** の出力は、第一フィールドが対象ノードのホスト名、第2フィールド以降が対象ノードからのコマンド出力です。
+   **pdsh** の出力は、第一フィールドが対象ノードのホスト名、第2フィールド以降が対象ノードからのコマンド出力です。
 
-なお、クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの **pdcp** や **rpdcp** を使用する場合、管理対象ノードにも **pdsh** がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに **pdsh** をインストールします。  
+4. クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの **pdcp** や **rpdcp** を使用する場合、管理対象ノードにも **pdsh** がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに **pdsh** をインストールします。  
 この際、管理対象ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
-```sh
-$ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-$ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
-$ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh
-$ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
-```
+   ```sh
+   $ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
+   $ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
+   $ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh
+   $ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
+   ```
 
-次に、 **pdsh** で利用するグループを登録するため、グループ設定ファイルを作成します。  
-このグループ設定ファイルは、事前にクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で作成したホストリストファイルを基作成する、 **.dsh/group** ディレクトリに配置されるグループ名をファイル名とするテキストファイルです。
-
+5. **pdsh** で利用するグループを登録するため、グループ設定ファイルを作成します。  
+このグループ設定ファイルは、事前にクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で作成したホストリストファイルを基に作成する、 **.dsh/group** ディレクトリに配置されるグループ名をファイル名とするテキストファイルです。  
 例えば以下のファイルを配置すると、全てのノードを含むグループ **all** 、inst-f5fra-x9-ol8とinst-3ktpe-x9-ol8を含むグループ **comp1**、及びinst-6pvpq-x9-ol8とinst-dixqy-x9-ol8を含むグループ **comp2** を利用できるようになります。
 
-```sh
-$ ~/.dsh/group/all
-inst-f5fra-x9-ol8
-inst-3ktpe-x9-ol8
-inst-6pvpq-x9-ol8
-inst-dixqy-x9-ol8
-$ ~/.dsh/group/comp1
-inst-f5fra-x9-ol8
-inst-3ktpe-x9-ol8
-$ ~/.dsh/group/comp2
-inst-6pvpq-x9-ol8
-inst-dixqy-x9-ol8
-```
+   ```sh
+   $ cat ~/.dsh/group/all
+   inst-f5fra-x9-ol8
+   inst-3ktpe-x9-ol8
+   inst-6pvpq-x9-ol8
+   inst-dixqy-x9-ol8
+   $ cat ~/.dsh/group/comp1
+   inst-f5fra-x9-ol8
+   inst-3ktpe-x9-ol8
+   $ cat ~/.dsh/group/comp2
+   inst-6pvpq-x9-ol8
+   inst-dixqy-x9-ol8
+   $
+   ```
 
-これらのグループは、以下のように **-g** オプションと共に管理対象ノードを指定する際に利用することが出来ます。
+   これらのグループは、以下のように **-g** オプションと共に管理対象ノードを指定する際に利用することが出来ます。
 
-```sh
-$ pdsh -g all date
-inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-```
+   ```sh
+   $ pdsh -g all date
+   inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+   ```
 
 ***
 # 2. pdsh使用時の留意点
