@@ -12,7 +12,7 @@ header:
 <a id="anchor0"></a>
 
 # はじめに
-**Oracle Cloud Infrastructure Database Migration Service (DMS)** は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。
+**Oracle Cloud Infrastructure Database Migration Service (DMS)** は、オンプレミスまたはOCI上のOracle DatabaseからOCI上のデータベースに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。
 
 DMSでは下記の2つの論理的移行が可能です。
 + **オフライン移行** - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。
