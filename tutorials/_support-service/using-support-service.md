@@ -1,11 +1,11 @@
 ---
 title: "トラブル解決に向けた技術サポート(SR)活用のコツ"
-excerpt: "技術サポート（SR）を最適に利用するためのポイント、記載項目、注意事項をまとめました"
+excerpt: "本文書によって、トラブル解決にできるだけ早く近づくための技術サポート（SR）を効果的に利用するためのポイントがわかります"
 order: "010"
 layout: single
 header:
-  teaser: "/support-service/tips-support-cust-success/img1mos.png"
-  overlay_image: "/support-service/tips-support-cust-success/img1mos.png"
+  teaser: "/support-service/using-support-service/img1mos.png"
+  overlay_image: "/support-service/using-support-service/img1mos.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 ---
 
@@ -43,13 +43,13 @@ header:
 
 目の前で発生している「問題事象」を解決するためには、まず当然ながら、その「被疑箇所」を特定し、発生原因を明らかにします。その後、暫定的な回避策を適用し、同時に恒久的な対策が有効であることを確認・実施して、トラブルを解決できたと言えます
 
-   ![トラブル解決とは](tips-support-cust-success/01-Troubleshooting.png)
+   ![トラブル解決とは](using-support-service/01-Troubleshooting.png)
 
 ## 1.2  トラブル解決までの流れ
 
 「問題事象の切り分け」や「ログ取得」などの各工程は、解決後に振り返ると一本道の活動のように見えるかもしれません。実際には、解決の過程において、ログを読み込み・分析し、さまざまな可能性を推定しながら疑義箇所を絞り込み・判断するなど、原因が特定できるまでは、追加調査や再調査が必要で、反復的な工程が含まれることがあります
 
- ![トラブル解決までの流れ](tips-support-cust-success/02-Flow.png)
+ ![トラブル解決までの流れ](using-support-service/02-Flow.png)
 
 ## 1.3 関係者の役割分担と相互協力
 
@@ -61,7 +61,7 @@ header:
 {: .notice--info}
 
 
- ![役割分担と相互協力](tips-support-cust-success/03-Roles.png)
+ ![役割分担と相互協力](using-support-service/03-Roles.png)
 
 1. **「Oracleサポート」の主な役割と役割分担の考え方** 
    -  **「Oracleサポート」** は、お客様が提起したSRに対して、解決への道筋として「ログ取得」をお客様に依頼します。しかし、「切り分け」や「ログ取得」の段階では、一度の作業で「原因の特定」に至ることは必ずしもありません。そのため、 **お互いに協力的な調査と対応を行うための双方向のコミュニケーション** が、早期解決のカギとなります
