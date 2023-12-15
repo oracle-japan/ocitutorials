@@ -13,6 +13,7 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
+
 Oracle Cloud Infrastructure を使い始めるにあたって、コンソール画面にアクセスし、ログインを行います。
 
 また、Oracle Cloud Infrastructure のサービスを利用するのにあたって必要なサービス・リミット、コンパートメントやポリシーなどのIAMリソースおよびリージョンについて、コンセプトをコンソール画面の操作を通じて学習し、理解します。

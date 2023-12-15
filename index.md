@@ -31,52 +31,56 @@ toc_label: "目次"
 
 ## チュートリアルコンテンツ一覧
 
-- **[OCI入門編](/ocitutorials/beginners/)**
+- **[サポート・サービス活用編](/ocitutorials/support-service/)**  
+オラクル・サポート、カスタマーサクセスサービスによりトラブル解決をご支援します。トラブル解決にできるだけ早く近づくための技術サポート（SR）を効果的に利用するポイントを解説しています。
+
+- **[OCI入門編](/ocitutorials/beginners/)**  
 OCIの入門編チュートリアルです。  
 OCIコンソールの基本的な操作方法やネットワーク、ストレージなどの基本的なサービスについてを学習できます。
 
-- **[OCI応用編](/ocitutorials/intermediates/)**
+- **[OCI応用編](/ocitutorials/intermediates/)**  
 OCIの応用編チュートリアルです。  
 LoadBalancerや証明書サービスなどをはじめとした各OCIサービスの応用的な使い方を学習できます。　　
 
-- **[Oracle Database編](/ocitutorials/database/)**
+- **[Oracle Database編](/ocitutorials/database/)**  
 Oracle Database関連サービスのチュートリアルです。  
 自律型データベースサービスであるAutonomous Databaseや Exadata Database Service on Dedicated Infrastructureなどを学習できます。
 
-- **[MySQL Database Service編](/ocitutorials/mysql/)**
+- **[MySQL Database Service編](/ocitutorials/mysql/)**  
 Oracle MySQLチームが開発、管理およびサポートするOCI上で提供されるMySQL Database Serviceを学習できます。
 
-- **[Cloud Native編](/ocitutorials/cloud-native/)**
+- **[Cloud Native編](/ocitutorials/cloud-native/)**  
 OCIで提供するCloud Native関連サービスのチュートリアルです。    
 マネージドのKubernetesサービスであるOKEやマネージドのFaaS(Functions as a Service)であるOracle Functionsを学習できます。
 
-- **[コンテンツ管理編](/ocitutorials/content-management/)**
+- **[コンテンツ管理編](/ocitutorials/content-management/)**  
 セキュアな情報共有とインテリジェントなコンテンツ管理基盤であるOracle Content Management（OCM）を学習できます。
 
-- **[ブロックチェーン編](/ocitutorials/blockchain/)**
+- **[ブロックチェーン編](/ocitutorials/blockchain/)**  
 オープン・ソースのHyperledger Fabric上に構築された業界をリードするマネージド・エンタープライズ・ブロックチェーン・サービスであるOracle Blockchain Platform Cloud Serviceを学習できます。
 
-- **[インテグレーション編](/ocitutorials/integration/)**
+- **[インテグレーション編](/ocitutorials/integration/)**  
 アプリケーション、ビジネス・プロセス、API、およびデータを迅速にモダナイズするためのエンタープライズ連携および自動化プラットフォームであるOracle Integration Cloudを学習できます。
 
-- **[データサイエンス/ビッグデータ編](/ocitutorials/datascience/)**
+- **[データサイエンス/ビッグデータ編](/ocitutorials/datascience/)**  
 Oracle Cloud Infrastructure(OCI)のデータサイエンス/ビッグデータ関連サービスのチュートリアルです。  
 Oracleが提供するマネージドの機械学習環境Data Science ServiceやマネージドのSpark環境であるOCI Data Flowを学習できます。 
 
-- **[アイデンティティとセキュリティ編](/ocitutorials/id-security/)**
+- **[アイデンティティとセキュリティ編](/ocitutorials/id-security/)**  
 OCIにおける各種ID管理、セキュリティ関連サービスについて学習できるチュートリアルです。
 
-- **[監視・管理編](/ocitutorials/management/)**
+- **[監視・管理編](/ocitutorials/management/)**  
 OCIにおける各種運用・管理関連サービスについて学習できるチュートリアルです。
 
-- **[OpenSearch編](/ocitutorials/opensearch/)** OCI Search Service with OpenSearchに関して学習できます。
+- **[OpenSearch編](/ocitutorials/opensearch/)**  
+OCI Search Service with OpenSearchに関して学習できます。
 
-- **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)**
+- **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)**  
 OCI上にHPCシステムを構築するためのチュートリアルです。  
 OCIが提供するベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等を活用し、様々な用途のHPCシステムをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築する方法を学習します。  
 構築するHPCクラスタは、NFS、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、DockerやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。
 
-- **[Oracle Cloud VMware Solution編](/ocitutorials/vmware/)**
+- **[Oracle Cloud VMware Solution編](/ocitutorials/vmware/)**  
 このページは、Oracle Cloud VMware Solution (OCVS) 関連のチュートリアル、ガイド、ブログなどへのリンク集です。
 Oracle Cloud VMware Solution(OCVS)は、OCI(Oracle Cloud Infrastructure)上でVMwareの仮想化基盤を利用することができるクラウドサービスです。コンピュート、データベース(Oracle DBCS)などのOCIネイティブサービス群と同じく顧客テナンシのVCN上のベアメタル・インスタンスに直接デプロイされるため、ESXi、vCenterなどVMware製品の使い勝手はそのままに、OCIが備える高性能なコンピュート、低遅延のネットワーク、耐久性のあるブロック・ボリュームなどを利用し、オンプレミスVMware環境のシームレスなクラウド移行や、リソース拡張先として活用することができます。
 
