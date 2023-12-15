@@ -1,14 +1,13 @@
 ---
 title: "トラブル解決に向けた技術サポート(SR)活用のコツ"
-excerpt: "本文書によって、トラブル解決にできるだけ早く近づくための技術サポート（SR）を効果的に利用するためのポイントがわかります"
+excerpt: "オラクル・サポート、カスタマーサクセスサービスによりトラブル解決をご支援します。トラブル解決にできるだけ早く近づくための技術サポート（SR）を効果的に利用するポイントを解説しています。"
 order: "010"
 layout: single
-tags:
-  - beginner
 header:
-  teaser: "/support-service/using-support-service/img1mos.png"
-  overlay_image: "/support-service/using-support-service/img1mos.png"
+  teaser: "/support-service/tips-support-cust-success/img1mos.png"
+  overlay_image: "/support-service/tips-support-cust-success/img1mos.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
+#link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
 <a id="anchor0"></a>
@@ -17,11 +16,11 @@ header:
 **前提条件 :** OCIを利用するお客様・パートナー様のエンジニア向け。ただし技術サポートツールの「操作方法」については本文書には含みませんので、下記各種ガイドをご参照ください
 
 
-([製品別サポート窓口／ご利用ガイド](hhttps://www.oracle.com/jp/support/support-services-list/ "製品別サポート窓口／ご利用ガイド"))
+([製品別サポート窓口／ご利用ガイド](https://www.oracle.com/jp/support/support-services-list/ "製品別サポート窓口／ご利用ガイド"){:target="_blank"})
 
-([My Oracle Support サービス・リクエスト作成ガイド](https://www.oracle.com/jp/a/ocom/docs/mos-sr-guide.pdf "My Oracle Support サービス・リクエスト作成ガイド"))
+([My Oracle Support サービス・リクエスト作成ガイド](https://www.oracle.com/jp/a/ocom/docs/mos-sr-guide.pdf "My Oracle Support サービス・リクエスト作成ガイド"){:target="_blank"})
 
-([Oracle Cloud Supportご利用ガイド](https://www.oracle.com/jp/a/ocom/docs/cloud-1stguide-sr-2765641-ja.pdf "Oracle Cloud Supportご利用ガイド"))
+([Oracle Cloud Supportご利用ガイド](https://www.oracle.com/jp/a/ocom/docs/cloud-1stguide-sr-2765641-ja.pdf "Oracle Cloud Supportご利用ガイド"){:target="_blank"})
 
 <br>
 
