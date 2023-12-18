@@ -55,7 +55,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 ## Network Firewallチュートリアル
 
-+ **[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall/)**  
++ **[OCI Network Firewallを構築する](/ocitutorials/id-security/networkfirewall/)**  
    本チュートリアルでは、OCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。
 
 + **[OCI Network FirewallのIDS/IPS機能を検証する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall-ips/)**  
