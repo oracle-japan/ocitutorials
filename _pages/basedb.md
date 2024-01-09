@@ -1,6 +1,6 @@
 ---
 title: "Oracle Database編 - Base Database Service (BaseDB) を使ってみよう"
-excerpt: "Oracle Databaseをシンプルにお使いいただけるBase Database Service (BaseDB)を学ぶチュートリアルです。インスタンスの作成から、運用管理までを一通り体験します。"
+excerpt: "Oracle Databaseをシンプルにお使いいただける Base Database Service (BaseDB)を学ぶチュートリアルです。インスタンスの作成から、運用管理までを一通り体験します。"
 permalink: /basedb
 layout: single
 tags: "Database"
