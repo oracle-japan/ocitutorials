@@ -26,7 +26,7 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 まずはベーシックなBase Database インスタンスを作ってみましょう。
 
 
-## 「BaseDBを使ってみよう」チュートリアル一覧は[こちら](/_pages/basedb.md)
+## 「BaseDBを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/basedb)
 
 <br/>
 
@@ -38,7 +38,11 @@ Oracle Databaseを動かすための最適な基盤として、リリースか�
 OCIであればExadataもサブスクリプションで使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 
+<<<<<<< HEAD
 ## 「ExaDB-Dを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/exadbd)
+=======
+## 「ExaDB-Dを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/exadbd)
+>>>>>>> 5abbdfa7f96f6d712163b42ddc3d4f571d6a4b27
 
 <br/>
 
