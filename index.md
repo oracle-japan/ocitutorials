@@ -42,7 +42,7 @@ OCIコンソールの基本的な操作方法やネットワーク、ストレ�
 OCIの応用編チュートリアルです。  
 LoadBalancerや証明書サービスなどをはじめとした各OCIサービスの応用的な使い方を学習できます。　　
 
-- **[Oracle Database編](/_pages/database.md)**  
+- **[Oracle Database編](/ocitutorials/database)**  
 Oracle Database関連サービスのチュートリアルです。  
 自律型データベースサービスであるAutonomous DatabaseやBase Database Service、Exadata Database Service on Dedicated InfrastructureなどOCIのデータベース・サービスを学習できます。
 
