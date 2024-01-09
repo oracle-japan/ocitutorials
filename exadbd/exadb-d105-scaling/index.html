@@ -1,0 +1,722 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>105 : スケーリングしよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ExaDB-D上でOCPU数またはインフラストラクチャ(データベース・サーバー、ストレージ・サーバー)をスケーリングする手順について紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="105 : スケーリングしよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d105-scaling/">
+
+
+  <meta property="og:description" content="ExaDB-D上でOCPU数またはインフラストラクチャ(データベース・サーバー、ストレージ・サーバー)をスケーリングする手順について紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/exadb-d105-backup-restore/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-09T17:04:53+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d105-scaling/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/exadb-d105-backup-restore/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          105 : スケーリングしよう
+
+        
+      </h1>
+      
+        <p class="page__lead">ExaDB-D上でOCPU数またはインフラストラクチャ(データベース・サーバー、ストレージ・サーバー)をスケーリングする手順について紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/exadbd" itemprop="item"><span itemprop="name">Exadbd</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">105 : スケーリングしよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Exadata Database Service -Dedicated Infrastructure</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d101-create-exadb-d/">101 : ExaDB-Dを使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d102-manage-pdb/">102 : ExaDB-D上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d103-automatic-backup/">103 : 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d104-backup-restore/">104 : バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d105-scaling/" class="active">105 : スケーリングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d106-dbversion/">106 : データベースのバージョンを指定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d107-patch/">107 : パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d108-dataguard/">108 : Data Guardを構成しよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="105 : スケーリングしよう">
+    <meta itemprop="description" content="ExaDB-D上でOCPU数またはインフラストラクチャ(データベース・サーバー、ストレージ・サーバー)をスケーリングする手順について紹介します。">
+    <meta itemprop="datePublished" content="2024-01-09T17:04:53+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-ocpuのスケーリング">1. OCPUのスケーリング</a></li><li><a href="#2-cliでのocpuのスケーリング">2. CLIでのOCPUのスケーリング</a></li><li><a href="#3-インフラストラクチャのスケーリング">3. インフラストラクチャのスケーリング</a><ul><li><a href="#データベースサーバーの追加">データベース・サーバーの追加</a></li><li><a href="#ストレージサーバーの追加">ストレージ・サーバーの追加</a></li></ul></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p><strong>Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)</strong> のスケーリングの対象は、2種類あります。１つは、割り当てられているH/Wリソース内で利用可能な、OCPU数のスケール・アップ/ダウン。データベースや仮想マシンを再起動することなく、処理を継続したままオンラインで変更可能です。また、VMクラスタ全体に対しての変更になります。そのため、例えばノード毎にCPUコア数を変えることはできないので、仮想マシン数の倍数が指定可能になります。もう１つは、インフラストラクチャー部分のデータベース・サーバーとストレージ・サーバーのスケール・アップ(ダウンは不可)。こちらは、X8M以降のモデルで可能で、CPU・メモリ・ストレージなどH/W的に割り当てられている専有リソースを増やしたい場合に、オンラインで追加が可能です。</p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#1-ocpuのスケーリング">1. OCPUのスケーリング</a></li>
+  <li><a href="#2-cliでのocpuのスケーリング">2. CLIでのOCPUのスケーリング</a></li>
+  <li><a href="#3-インフラストラクチャのスケーリング">3. インフラストラクチャのスケーリング</a>
+    <ul>
+      <li><a href="#anchor3-1">データベース・サーバーの追加</a></li>
+      <li><a href="#anchor3-2">ストレージ・サーバーの追加</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li><a href="/ocitutorials/database/exadb-d101-create-exadb-d">101 : ExaDB-Dを使おう</a>を通じてExaDB-Dの作成が完了していること</li>
+  <li><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm">Oracle Cloud Infrastructure Documentation &gt; コマンド・ライン・インターフェース &gt; クイックスタート</a>を通じてOCI CLIのセットアップが完了していること</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約6時間（待ち時間を含む）※環境によって異なるため、参考値です</p>
+
+<p><br /></p>
+
+<h1 id="1-ocpuのスケーリング">1. OCPUのスケーリング</h1>
+
+<p>まずはコンソール上の操作でのOCPUスケーリングからです。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p>利用したいコンパートメントを<strong>リスト範囲</strong>の<strong>コンパートメント</strong>から選択します。</p>
+
+    <p><img src="2022-11-15-16-30-05.png" alt="" /></p>
+  </li>
+  <li>
+    <p>利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、<strong>リージョン</strong>の一覧から選択します。</p>
+
+    <p><img src="2022-11-15-16-32-47.png" alt="" /></p>
+  </li>
+  <li>
+    <p>スケーリングしたい<strong>Exadata VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2022-07-05-17-14-07.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>VMクラスタ情報</strong>で<strong>有効なOCPU</strong>を確認します。表示されている値は現在有効なクラスタ内の仮想マシンに割り当てられたすべてのOCPUの合計です。(本ガイドでは4OCPU(各2OCPUのVMが2ノード・クラスタ構成で有効なOCPUは4OCPU))</p>
+
+    <p><img src="2022-11-01-17-04-43.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>VMクラスタのスケーリング</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-17-05-08.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>VMクラスタのスケーリング</strong>ダイアログの<strong>VM当たりのOCPU数</strong>で現在のOCPU数から変更したいOCPU数を指定します。(本ガイドでは4OCPU(VMあたり4OCPU)を指定)</p>
+
+    <p><img src="2023-04-01-00-33-16.png" alt="" /></p>
+
+    <p>設定後、<strong>変更の保存</strong>をクリックします。</p>
+
+    <p><img src="2023-04-01-00-36-40.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ステータスが<strong>更新中</strong>から<strong>使用可能</strong>になり、<strong>VMクラスタ情報</strong>の<strong>有効なOCPU</strong>が指定した値に変更されているか確認します。(本ガイドでは仮想マシン当たり4OCPUと指定したため、<strong>有効なOCPU</strong>の値は8OCPU(各4OCPUのVMが2ノード・クラスタ構成で有効なOCPUは8OCPU))</p>
+
+    <p><img src="2022-11-01-17-06-20.png" alt="" /></p>
+
+    <p>なお、オンラインでのスケーリングなので、ステータスがスケーリング進行中でもサービスの使用は可能です。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="2-cliでのocpuのスケーリング">2. CLIでのOCPUのスケーリング</h1>
+
+<p>CLI(OCI CLI/REST/Terraformなど)でもスケール・アップ/ダウンは可能です。今回は、OCI CLIでの方法を紹介します。</p>
+
+<p>本ガイドではOCI CLIのセットアップが完了していることを前提として進めます。セットアップされていない方は<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm">Oracle Cloud Infrastructure Documentation &gt; コマンド・ライン・インターフェース &gt; クイックスタート</a>をご参考にセットアップしてください。OCI CLIは別途VMを立ててセットアップをします。</p>
+
+<ol>
+  <li>
+    <p>現在のCPUコア数(現在有効なクラスタ内の仮想マシンに割り当てられたすべてのOCPUの合計)を確認します。以下のコマンドを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> oci db cloud-vm-cluster get --cloud-vm-cluster-id &lt;スケーリングしたいVMクラスタのOCID&gt; --query 'data.{"1.Name":"display-name","2.shape":"shape","3.cpu-core-count": "cpu-core-count"}'
+</code></pre></div>    </div>
+
+    <p>※VMクラスタのOCIDは<strong>Exadata VMクラスタの詳細</strong>の<strong>VMクラスタ情報</strong>から確認できます。
+ <img src="2022-11-01-17-08-08.png" alt="" /></p>
+
+    <p>実行結果例：</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> {
+ "1.Name": "VMCluster-1",
+ "2.shape": "Exadata.X9M",
+ "3.cpu-core-count": 4
+ }
+</code></pre></div>    </div>
+    <p>結果から、CPUコア数が4(各2OCPUのVMが2ノード・クラスタ構成で有効なOCPUは4OCPU)ということがわかります。</p>
+  </li>
+  <li>
+    <p>OCI CLIでスケール・アップを実行します。以下のコマンドを実行します。(本ガイドではCPUコア数を8(各4OCPUのVMが2ノード・クラスタ構成で有効なOCPUは8OCPU)に変更するように実行します。)</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> oci db cloud-vm-cluster update --cpu-core-count 8 --cloud-vm-cluster-id &lt;スケーリングしたいVMクラスタのOCID&gt;
+</code></pre></div>    </div>
+
+    <p>コンソール画面でスケーリングをしたVMクラスタのステータスが<strong>更新中</strong>に切り替わっていることを確認します。</p>
+
+    <p><img src="2022-11-01-17-08-33.png" alt="" /></p>
+
+    <p>約3分後に<strong>使用可能</strong>に切り替わります。</p>
+
+    <p><img src="2022-11-01-17-08-52.png" alt="" /></p>
+  </li>
+  <li>
+    <p>現在のCPUコア数を確認します。以下のコマンドを実行します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> oci db cloud-vm-cluster get --cloud-vm-cluster-id &lt;VMクラスタのOCID&gt; --query 'data.{"1.Name":"display-name","2.shape":"shape","3.cpu-core-count": "cpu-core-count"}'
+</code></pre></div>    </div>
+
+    <p>実行結果例：</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> {
+ "1.Name": "VMCluster-1",
+ "2.shape": "Exadata.X9M",
+ "3.cpu-core-count": 8
+ }
+</code></pre></div>    </div>
+
+    <p>CPUコア数が8(各4OCPUのVMが2ノード・クラスタ構成で有効なOCPUは8OCPU)に変更されているため、スケール・アップが成功したことが確認できました。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="3-インフラストラクチャのスケーリング">3. インフラストラクチャのスケーリング</h1>
+
+<p><a id="anchor3-1"></a></p>
+
+<h2 id="データベースサーバーの追加">データベース・サーバーの追加</h2>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Exadataインフラストラクチャ</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-32-41.png" alt="" /></p>
+  </li>
+  <li>
+    <p>スケーリングするExadataインフラストラクチャの表示名をクリックします。</p>
+
+    <p><img src="2022-11-01-11-34-10.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>インフラストラクチャのスケーリング</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-34-24.png" alt="" /></p>
+  </li>
+  <li><strong>Exadata Infrastructureのスケーリング</strong>ダイアログで以下のように設定します。
+    <ul>
+      <li><strong>データベース・サーバー</strong>を選択します。</li>
+      <li><strong>データベース・サーバー</strong> - データベース・サーバーの合計台数を入力します。一回のスケーリング操作で追加できるのは最大4台までです。（本ガイドでは、3台とします。）</li>
+    </ul>
+
+    <p>設定後、<strong>スケール</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-35-34.png" alt="" /></p>
+
+    <p>Exadataインフラストラクチャの状態が<strong>更新中</strong>となります。</p>
+
+    <p><img src="2022-11-01-11-38-43.png" alt="" /></p>
+
+    <p>3分ほど経過すると、Exadataインフラストラクチャの状態が<strong>使用可能</strong>となり、<strong>Exadataインフラストラクチャの情報</strong>にある<strong>DBサーバー</strong>の情報が反映されていることを確認します。</p>
+
+    <p><img src="2022-11-01-11-40-17.png" alt="" /></p>
+  </li>
+  <li>
+    <p>容量を追加したい<strong>Exadata VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2022-11-01-11-41-55.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>VMクラスタのスケーリング</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-52-43.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>VMクラスタのスケーリング</strong>ダイアログの<strong>容量を追加</strong>にチェックを付け、現在のリソースとスケーリング後のリソースを確認し、<strong>更新</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-53-39.png" alt="" /></p>
+
+    <p>VMクラスタの<strong>作業リクエスト</strong>の<strong>Scale Cloud VM Cluster Compute</strong>の状態が<strong>成功</strong>となったら完了です。(完了まで5時間程かかります。※環境によって異なるため、参考値です)</p>
+
+    <p><img src="2022-11-01-11-54-24.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3-2"></a></p>
+
+<h2 id="ストレージサーバーの追加">ストレージ・サーバーの追加</h2>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Exadataインフラストラクチャ</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-32-41.png" alt="" /></p>
+  </li>
+  <li>
+    <p>スケーリングするExadataインフラストラクチャの表示名をクリックします。</p>
+
+    <p><img src="2022-11-01-11-34-10.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>インフラストラクチャのスケーリング</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-34-24.png" alt="" /></p>
+  </li>
+  <li><strong>Exadata Infrastructureのスケーリング</strong>ダイアログで以下のように設定します。
+    <ul>
+      <li><strong>ストレージ・サーバー</strong>を選択します。</li>
+      <li><strong>ストレージ・サーバー</strong> - ストレージ・サーバーの合計台数を入力します。一回のスケーリング操作で追加できるのは最大6台までです。（本ガイドでは、4台とします。）</li>
+    </ul>
+
+    <p>設定後、<strong>スケール</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-11-56-56.png" alt="" /></p>
+
+    <p>Exadataインフラストラクチャの状態が<strong>更新中</strong>となります。</p>
+
+    <p><img src="2022-11-01-11-57-23.png" alt="" /></p>
+
+    <p>3分ほど経過すると、Exadataインフラストラクチャの状態が<strong>使用可能</strong>となり、<strong>Exadataインフラストラクチャの情報</strong>にある<strong>DBサーバー</strong>の情報が反映されていることを確認します。</p>
+
+    <p><img src="2022-11-01-11-58-59.png" alt="" /></p>
+  </li>
+  <li>
+    <p>容量を追加したい<strong>Exadata VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2022-11-01-12-00-55.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>VMクラスタのスケーリング</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-12-01-42.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>VMクラスタのスケーリング</strong>ダイアログの<strong>容量を追加</strong>にチェックを付け、現在のリソースとスケーリング後のリソースを確認し、<strong>更新</strong>をクリックします。</p>
+
+    <p><img src="2022-11-01-12-02-22.png" alt="" /></p>
+
+    <p>VMクラスタの<strong>作業リクエスト</strong>の<strong>Scale Cloud VM Cluster Storage</strong>の状態が<strong>成功</strong>となったら完了です。(完了まで1時間程かかります。※環境によって異なるため、参考値です)
+ <img src="2022-11-01-14-46-31.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><br />
+以上で、この章の作業は完了です。</p>
+
+<p><a id="anchor11"></a></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li><a href="https://docs.oracle.com/en-us/iaas/exadatacloud/index.html">Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure</a></li>
+  <li><a href="https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail">Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-09T17:04:53+09:00">January 9, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=105+%3A+%E3%82%B9%E3%82%B1%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%B0%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d105-scaling%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d105-scaling%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d105-scaling%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/exadbd/exadb-d104-backup-restore/" class="pagination--pager" title="104 : バックアップからリストアしよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/exadbd/exadb-d106-dbversion/" class="pagination--pager" title="106 : データベースのバージョンを指定しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

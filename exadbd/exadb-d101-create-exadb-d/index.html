@@ -1,0 +1,1019 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>101 : ExaDB-Dを使おう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle CloudでExadataが利用可能なサービスであるExaDB-Dの作成方法について紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="101 : ExaDB-Dを使おう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d101-create-exadb-d/">
+
+
+  <meta property="og:description" content="Oracle CloudでExadataが利用可能なサービスであるExaDB-Dの作成方法について紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/database/exadb-d101-create-exadb-d/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-09T17:04:53+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d101-create-exadb-d/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/database/exadb-d101-create-exadb-d/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          101 : ExaDB-Dを使おう
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle CloudでExadataが利用可能なサービスであるExaDB-Dの作成方法について紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/exadbd" itemprop="item"><span itemprop="name">Exadbd</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">101 : ExaDB-Dを使おう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Exadata Database Service -Dedicated Infrastructure</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d101-create-exadb-d/" class="active">101 : ExaDB-Dを使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d102-manage-pdb/">102 : ExaDB-D上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d103-automatic-backup/">103 : 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d104-backup-restore/">104 : バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d105-scaling/">105 : スケーリングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d106-dbversion/">106 : データベースのバージョンを指定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d107-patch/">107 : パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d108-dataguard/">108 : Data Guardを構成しよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="101 : ExaDB-Dを使おう">
+    <meta itemprop="description" content="Oracle CloudでExadataが利用可能なサービスであるExaDB-Dの作成方法について紹介します。">
+    <meta itemprop="datePublished" content="2024-01-09T17:04:53+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-exadata-infrastructureの作成">1. Exadata Infrastructureの作成</a></li><li><a href="#2-exadata-vmクラスタの作成">2. Exadata VMクラスタの作成</a></li><li><a href="#3-データベースの作成">3. データベースの作成</a></li><li><a href="#4-dbシステムへのアクセス">4. DBシステムへのアクセス</a></li><li><a href="#5-データベースpdbへのアクセス">5. データベース(PDB)へのアクセス</a></li><li><a href="#6-pdb上のスキーマへのアクセス">6. PDB上のスキーマへのアクセス</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p><strong>Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)</strong> は、Oracle Databaseが高い可用性を備えつつ高いパフォーマンスを発揮できる<strong>Oracle Exadata Database Machine (Exadata)</strong>が利用可能なサービスです。同じようにOCI上でExadataを利用可能なサービスとしては、Autonomous Data WarehouseやAutonomous Transaction Processing などのAutonomous Databaseのサービスがありますが、ExaDB-D が他のサービスと大きく違うところは、全オプションが使える<strong>専有型のUser-Managedサービス</strong>であるということです。</p>
+
+<ul>
+  <li><strong>専有型</strong> : H/Wもユーザー専有となり、他のユーザーの環境と分離されるため、セキュリティ・性能を担保できます。</li>
+  <li><strong>User-Managed サービス</strong> : OS以上は顧客管理。OS上の構築・運用・管理に有効な機能を、クラウドのツールでも提供。パッチ適用やメンテナンスの実施判断・作業タイミングは顧客判。OSログインが可能でこれまで同様の管理方法を用いることができる (OS権限が必要な変更作業、サード・パーティのAgentの導入、ローカルにログやダンプファイルの配置など)ので、別途インスタンスやストレージサービスを立てる必要はありません。</li>
+</ul>
+
+<p>また、オンライン・スケーリング (停止なし)での1時間単位での柔軟な価格体系、デフォルトでの可用性構成や容易に高可用性構成が組めること、PaaSとしてのプロビジョニングや管理面などのメリットがあります。</p>
+
+<p><img src="2022-06-27-13-37-50.png" alt="" /></p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#1-exadata-infrastructureの作成">1. Exadata Infrastructureの作成</a></li>
+  <li><a href="#2-exadata-vmクラスタの作成">2. Exadata VMクラスタの作成</a></li>
+  <li><a href="#3-データベースの作成">3. データベースの作成</a></li>
+  <li><a href="#4-dbシステムへのアクセス">4. DBシステムへのアクセス</a></li>
+  <li><a href="#5-データベースpdbへのアクセス">5. データベース(PDB)へのアクセス</a></li>
+  <li><a href="#6-pdb上のスキーマへのアクセス">6. PDB上のスキーマへのアクセス</a></li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>
+    <p><strong>シェイプの確認</strong></p>
+
+    <p>ExaDB-Dで利用したいシェイプ名を事前に確認しましょう。ExaDB-Dで利用可能なシェイプについては<a href="https://docs.oracle.com/en-us/iaas/exadatacloud/exacs/exa-service-desc.html#GUID-9E090174-5C57-4EB1-9243-B470F9F10D6B">Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure Description</a>を参照ください。</p>
+  </li>
+  <li>
+    <p><strong>サービス制限の確認・引き上げのリクエスト</strong></p>
+
+    <p>ExaDB-Dを利用するには、まずサービス制限を引き上げる必要があります。サービス制限については<a href="https://blogs.oracle.com/otnjp/post/minamin-cloud-016-servicelimits">もしもみなみんがDBをクラウドで動かしてみたら - 第16回 サービス制限について</a>を参照ください。</p>
+  </li>
+  <li>
+    <p><strong>テナント内の準備</strong></p>
+
+    <p>次に、環境作成する前に必要な環境確認やインフラレイヤーでの準備を、下記のチュートリアルをみながら準備しましょう。</p>
+    <ul>
+      <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/getting-started/">OCIコンソールにアクセスして基本を理解する</a></li>
+      <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">クラウドに仮想ネットワーク(VCN)を作る</a></li>
+    </ul>
+
+    <p>ExaDB-D用のVCN内の設定として、前提条件は下記のようなものがあります。</p>
+    <ul>
+      <li>ExaDB-Dでは、２つのサブネット(クライアント・サブネットとバックアップ・サブネット)が必要なので２つ作成</li>
+      <li>クライアント・サブネット内では全てのノード間で、TCPとICMPの疎通が必要なのでセキュリティ・リストを設定</li>
+      <li>IPアドレス・スペースの要件
+        <ul>
+          <li>
+            <p>Exadata Database Cloudで利用するサブネットは下記と重複しないこと</p>
+
+            <p>X8以前： 192.168.*(特に192.168.128.0/20)</p>
+
+            <p>X8M以降： 100.64.0.0/10</p>
+          </li>
+          <li>クライアント・サブネットで192.168.16.16/28と重複しないこと</li>
+          <li>複数システムを利用する場合、相互のIPアドレスが重複しないこと</li>
+          <li>シェイプ(ラック・サイズ)に応じて、必要なアドレス数を用意 (<a href="https://docs.oracle.com/en-us/iaas/exadatacloud/exacs/ecs-network-setup.html#vcn-subnets">Oracle Cloud Infrastructure Documentation - Network Setup for Exadata Cloud Infrastructure Instances</a>を参照ください。)
+  <img src="2022-06-27-17-38-01.png" alt="" /></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約6時間</p>
+
+<p><br /></p>
+
+<h1 id="1-exadata-infrastructureの作成">1. Exadata Infrastructureの作成</h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p>利用したいコンパートメントを<strong>リスト範囲</strong>の<strong>コンパートメント</strong>から選択します。</p>
+
+    <p><img src="2022-11-15-16-30-05.png" alt="" /></p>
+  </li>
+  <li>
+    <p>利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、<strong>リージョン</strong>の一覧から選択します。</p>
+
+    <p><img src="2022-11-15-16-32-47.png" alt="" /></p>
+  </li>
+  <li>
+    <p>画面左の <strong>専用インフラストラクチャ上のOracle Exadata Database Service</strong> の下の <strong>Exadata Infrastructure</strong> をクリックします。</p>
+
+    <p><img src="2022-07-21-15-16-25.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Exadata Infrastructureの作成</strong> をクリックします。</p>
+
+    <p><img src="2022-07-05-14-44-12.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Exadata Infrastructureの作成</strong> の各項目は以下のように設定します。その他の設定はデフォルトのままにします。</p>
+    <ul>
+      <li><strong>Exadataインフラストラクチャの基本情報の指定</strong>
+        <ul>
+          <li><strong>コンパートメント</strong> - 利用したいコンパートメントを選択します。</li>
+          <li><strong>表示名</strong> - 任意</li>
+        </ul>
+      </li>
+      <li><strong>可用性ドメインの選択</strong> - 利用する可用性ドメインを選択します。 (東京や大阪の場合は1つしかありません。)</li>
+      <li><strong>Exadataクラウド・インフラストラクチャ・モデルの選択</strong> - 利用するシェイプ (ExadataのRackモデル)を選択します。（本チュートリアルではX9M-2を選択します。）</li>
+      <li><strong>コンピュートおよびストレージ構成</strong> (X8M-2およびX9M-2を選択した場合。※Exadataベース、X6-2、X7-2、X8-2を選択した場合は設定が異なります。)
+        <ul>
+          <li><strong>データベース・サーバー</strong> - 使用したいデータベース・サーバーの台数を指定します。 (最低2台)</li>
+          <li><strong>ストレージ・サーバー</strong> - 使用したいストレージ・サーバーの台数を指定します。 (最低3台)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="2022-07-05-16-56-55.png" alt="" /></p>
+
+    <ul>
+      <li><strong>システム構成の選択</strong> (X6-2、X7-2、X8-2を選択した場合) - 使用したいシステム構成を選択します。</li>
+    </ul>
+
+    <p><img src="2022-07-05-15-03-15.png" alt="" /></p>
+
+    <p>設定後、<strong>Exadata Infrastructureの作成</strong>をクリックします。作成まで1分ほどかかります。</p>
+
+    <p><img src="2022-07-05-15-04-26.png" alt="" /></p>
+
+    <p><img src="2022-07-05-17-16-41.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="2-exadata-vmクラスタの作成">2. Exadata VMクラスタの作成</h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>Exadata VMクラスタの作成</strong> をクリックします。</p>
+
+    <p><img src="2022-07-05-15-09-51.png" alt="" /></p>
+
+    <p><a id="anchor1"></a></p>
+  </li>
+  <li>
+    <p><strong>Exadata VMクラスタの作成</strong> の各項目は以下のように設定します。その他の設定はデフォルトのままにします。</p>
+    <ul>
+      <li><strong>コンパートメント</strong> - 利用したいコンパートメントを選択します。</li>
+      <li><strong>表示名</strong> - 任意</li>
+      <li><strong>クラスタ名</strong> - 任意もしくはなしでも可能</li>
+      <li><strong>[コンパートメント名]のExadataインフラストラクチャの選択</strong> - <a href="#1-exadata-infrastructureの作成">1. Exadata Infrastructureの作成</a>で作成したExadataインフラストラクチャを選択します。</li>
+      <li><strong>VMクラスタの構成</strong>
+        <ul>
+          <li><strong>仮想マシン当たりのOCPU数を指定</strong> - 仮想マシン当たりで利用したいOCPU数を指定します。　(本ガイドではデフォルトの2を選択します。)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="2022-07-05-16-46-28.png" alt="" /></p>
+
+    <ul>
+      <li><strong>SSHキーの追加</strong> - <strong>ペアの生成</strong>、<strong>SSHキー・ファイルのアップロード</strong>、<strong>SSHキーの貼付け</strong>のいずれかの選択肢よりSSHキーを追加します。</li>
+    </ul>
+
+    <p><img src="2022-07-05-16-51-28.png" alt="" /></p>
+
+    <ul>
+      <li><strong>ネットワーク設定の構成</strong>
+        <ul>
+          <li><strong>[コンパートメント名]の仮想クラウド・ネットワークの選択</strong> - 前提条件で用意したVCNを指定します。</li>
+          <li><strong>[コンパートメント名]のクライアントのサブネットの選択</strong> - 前提条件で用意したクライアント用のサブネットを選択します。</li>
+          <li><strong>[コンパートメント名]のバックアップ・サブネットの選択</strong> - 前提条件で用意したバックアップ用のサブネットを選択します。</li>
+          <li><strong>ホスト名接頭辞</strong> - 任意</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="2022-09-15-16-11-38.png" alt="" /></p>
+
+    <ul>
+      <li><strong>ライセンス・タイプの選択</strong> - <strong>含まれるライセンス</strong>、<strong>ライセンス持ち込み(BYOL)</strong> のいずれかを選択します。</li>
+      <li><strong>拡張オプション</strong> (※こちらの設定はオプションです。)
+        <ul>
+          <li><strong>管理</strong>
+            <ul>
+              <li><strong>タイムゾーン</strong> - Asia/Tokyo (ブラウザ検出済み)を選択</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="2022-09-15-16-19-30.png" alt="" /></p>
+
+    <p>設定後、<strong>Exadata VMクラスタの作成</strong> をクリックします。作成まで3~4時間ほどかかります。</p>
+
+    <p><img src="2022-07-05-17-01-38.png" alt="" /></p>
+
+    <p><img src="2022-07-05-17-18-08.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="3-データベースの作成">3. <strong>データベースの作成</strong></h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><a href="#2-exadata-vmクラスタの作成">2. Exadata VMクラスタの作成</a>で作成した<strong>Exadata VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2022-07-05-17-14-07.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベースの作成</strong> をクリックします。</p>
+
+    <p><img src="2022-07-05-17-19-52.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベースの作成</strong> の各項目は以下のように設定します。その他の設定はデフォルトのままにします。</p>
+    <ul>
+      <li><strong>データベースの基本情報</strong>
+        <ul>
+          <li><strong>データベース名</strong> - 任意</li>
+          <li><strong>一意のデータベース名</strong> - 任意もしくはなしでも可能</li>
+          <li><strong>データベースのバージョン</strong> - 利用したいデータベースのバージョンを選択します。</li>
+          <li><strong>PDB名</strong> - 任意もしくはなしでも可能 (なしの場合、デフォルトでPDB1と設定されます。)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="2022-07-05-17-24-24.png" alt="" /></p>
+
+    <ul>
+      <li><strong>データベース・ホームの指定</strong>
+        <ul>
+          <li><strong>データベース・ホームの表示名</strong> - 任意</li>
+          <li><strong>データベース・イメージ</strong> - データベース・イメージの変更をクリックします。
+  <strong>データベース・ソフトウェア・イメージ</strong>の選択画面で、使用したい<strong>イメージ・タイプ</strong>と<strong>Oracle Databaseバージョン</strong>選択します。</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><img src="2022-07-05-17-27-52.png" alt="" /></p>
+
+    <p>設定後、<strong>選択</strong>をクリックします。</p>
+
+    <p><img src="2022-07-05-17-29-59.png" alt="" /></p>
+
+    <ul>
+      <li><strong>管理者資格証明の作成</strong>
+        <ul>
+          <li><strong>パスワード</strong> - 任意 (sysスキーマのパスワードです。後から使用しますので、忘れずにメモしておいてください。)</li>
+          <li><strong>パスワードの確認</strong> - 任意 (sysスキーマのパスワードです。後から使用しますので、忘れずにメモしておいてください。)</li>
+        </ul>
+      </li>
+      <li><strong>ワークロード・タイプの選択</strong> - <strong>トランザクション処理</strong>か<strong>データ・ウェアハウス</strong>のいずれかを選択します。</li>
+      <li><strong>データベース・バックアップの構成</strong></li>
+      <li><strong>自動バックアップの有効化</strong> からチェックを外します。自動バックアップは作成後に有効化可能です。この章ではチェックを外します。</li>
+    </ul>
+
+    <p><img src="2022-07-05-17-35-33.png" alt="" /></p>
+
+    <p>設定後、<strong>データベースの作成</strong> をクリックします。作成まで40分ほどかかります。</p>
+
+    <p><img src="2022-07-08-17-27-33.png" alt="" /></p>
+
+    <p><img src="2022-07-05-17-37-53.png" alt="" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="4-dbシステムへのアクセス">4. <strong>DBシステムへのアクセス</strong></h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><a href="#2-exadata-vmクラスタの作成">2. Exadata VMクラスタの作成</a>で作成した<strong>Exadata VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2022-07-05-17-14-07.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong>の一覧から<strong>仮想マシン</strong>をクリックします。</p>
+
+    <p><img src="2022-07-05-17-41-13.png" alt="" /></p>
+  </li>
+  <li>
+    <p>接続したいノードの<strong>パブリックIPアドレス</strong>に表示されているIPアドレスをメモします。</p>
+
+    <p><img src="2022-07-05-17-42-17.png" alt="" /></p>
+  </li>
+  <li>任意のターミナルソフトを起動し、以下の情報でssh接続します。
+    <ul>
+      <li><strong>IPアドレス</strong> - 上記ステップで確認したインスタンスの <strong>パブリックIPアドレス</strong></li>
+      <li><strong>ポート</strong> - 22 (デフォルト)</li>
+      <li><strong>ユーザー</strong> - opc (DBシステムは、接続用に予め opc というユーザーが用意されています)</li>
+      <li><strong>SSH鍵</strong> - <a href="#anchor1">2. Exadata VMクラスタの作成の3.</a>で追加した公開鍵と対になる秘密鍵を使用します。</li>
+      <li><strong>パスフレーズ</strong> - 秘密鍵にパスフレーズが設定されている場合は指定してください。
+ 下記は Tera Term を利用した場合の接続の設定例です。</li>
+    </ul>
+
+    <p><img src="2022-07-05-17-52-20.png" alt="" /></p>
+
+    <p><img src="2022-07-05-17-54-10.png" alt="" /></p>
+
+    <p>接続が成功すると以下のように表示されます。</p>
+
+    <p><img src="2022-07-05-17-55-08.png" alt="" /></p>
+  </li>
+  <li>
+    <p>oracleユーザーにログインします。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo su -　oracle
+</code></pre></div>    </div>
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@exa1-tmhmo1 ~]$ sudo su - oracle
+ Last login: Fri Jul  8 17:30:15 JST 2022
+ [oracle@exa1-tmhmo1 ~]$
+</code></pre></div>    </div>
+
+    <p>ログアウトせず、そのまま次に進んでください。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="5-データベースpdbへのアクセス">5. <strong>データベース(PDB)へのアクセス</strong></h1>
+
+<p><a id="anchor3"></a></p>
+
+<ol>
+  <li>
+    <p>環境変数設定ファイルの読み込み</p>
+
+    <p>oracleユーザーのホーム・ディレクトリ(/home/oracle)に環境変数設定ファイルが自動で生成されていて、そのファイルの中身を読み込むことで簡単に環境変数が設定され、データベースの接続が簡素化されます。</p>
+
+    <p>以下のように環境変数設定ファイルを確認し、読み込みます。また、環境変数の設定が反映されたか確認します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ls
+ . &lt;データベース名&gt; .env
+ env | grep ORACLE
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [oracle@exa1-tmhmo1 ~]$ ls
+ DB.env
+ [oracle@exa1-tmhmo1 ~]$ . DB.env
+ [oracle@exa1-tmhmo1 ~]$ env | grep ORACLE
+ ORACLE_UNQNAME=DB_bkc_kix
+ ORACLE_SID=DB1
+ ORACLE_BASE=/u02/app/oracle
+ ORACLE_HOSTNAME=exa1-tmhmo1.sub07160524340.testvcn.oraclevcn.com
+ ORACLE_HOME=/u02/app/oracle/product/19.0.0.0/dbhome_1
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>データベース(CDB)に接続する</p>
+
+    <p>以下のコマンドを用いて<a href="#3-データベースの作成">3. データベースの作成</a>で作成したデータベースのコンテナ・データベース (CDB)に対してsysユーザでSQL*Plusから接続します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus / as sysdba
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [oracle@exa1-tmhmo1 ~]$ sqlplus / as sysdba
+
+ SQL*Plus: Release 19.0.0.0.0 - Production on Mon Jul 4 22:15:37 2022
+ Version 19.15.0.0.0
+
+ Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+ Connected to:
+ Oracle Database 19c EE Extreme Perf Release 19.0.0.0.0 - Production
+ Version 19.15.0.0.0
+
+ SQL&gt;
+</code></pre></div>    </div>
+
+    <p>接続しているデータベースのデータベース名とコンテナ名を確認します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">show</span> <span class="k">parameter</span> <span class="n">db_name</span>
+ <span class="k">show</span> <span class="n">con_name</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; show parameter db_name
+
+ NAME                                 TYPE        VALUE
+ ------------------------------------ ----------- ------------------------------
+ db_name                              string      DB
+ SQL&gt; show con_name
+
+ CON_NAME
+ ------------------------------
+ CDB$ROOT
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>PDBに接続する</p>
+
+    <p>デフォルトで作成されているPDBを確認し、PDBインスタンスに接続します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">show</span> <span class="n">pdbs</span>
+ <span class="k">alter</span> <span class="k">session</span> <span class="k">set</span> <span class="n">container</span> <span class="o">=</span> <span class="n">PDB</span> <span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; show pdbs
+
+     CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+ ---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 PDB                            READ WRITE NO
+ SQL&gt; alter session set container = PDB ;
+
+ Session altered.
+
+ SQL&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>PDB上にスキーマを作成します。</p>
+
+    <p>尚、ここでは便宜上、最低限必要な権限を付与していますが、要件に応じて権限・ロールを付与するようにしてください。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">create</span> <span class="k">user</span> <span class="n">TESTUSER</span> <span class="n">identified</span> <span class="k">by</span> <span class="o">&lt;</span><span class="err">任意のパスワード</span><span class="o">&gt;</span> <span class="p">;</span>
+ <span class="k">grant</span> <span class="k">CREATE</span> <span class="k">SESSION</span><span class="p">,</span> <span class="k">CONNECT</span><span class="p">,</span><span class="n">RESOURCE</span><span class="p">,</span><span class="n">UNLIMITED</span> <span class="n">TABLESPACE</span> <span class="k">to</span> <span class="n">TESTUSER</span> <span class="p">;</span>
+ <span class="n">exit</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; create user TESTUSER identified by Welcome1 ;
+
+ User created.
+
+ SQL&gt; grant CREATE SESSION, CONNECT,RESOURCE,UNLIMITED TABLESPACE to TESTUSER ;
+
+ Grant succeeded.
+    
+ SQL&gt; exit
+ Disconnected from Oracle Database 19c EE Extreme Perf Release 19.0.0.0.0 - Production
+ Version 19.15.0.0.0
+ [oracle@exa1-tmhmo1 ~]$
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="6-pdb上のスキーマへのアクセス">6. <strong>PDB上のスキーマへのアクセス</strong></h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud上のExadata</strong> に移動します。</p>
+
+    <p><img src="2022-07-21-15-15-09.png" alt="" /></p>
+  </li>
+  <li>
+    <p><a href="#2-exadata-vmクラスタの作成">2. Exadata VMクラスタの作成</a>で作成した<strong>Exadata VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2022-07-05-17-14-07.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベース</strong>の一覧から<a href="#3-データベースの作成">3. データベースの作成</a>で作成したデータベースの名前をクリックします。</p>
+
+    <p><img src="2022-07-05-17-59-15.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong>の一覧から<strong>プラガブル・データベース</strong>をクリックします。</p>
+
+    <p><img src="2022-07-05-18-00-11.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>プラガブル・データベース</strong>の一覧から接続したいPDBの名前をクリックします。</p>
+
+    <p><img src="2022-07-05-18-06-35.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>PDB接続</strong>をクリックします。</p>
+
+    <p><img src="2022-07-05-18-07-21.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>簡易接続</strong>の接続文字列の右にある<strong>コピー</strong>をクリックし、メモします。</p>
+
+    <p><img src="2022-07-05-18-08-16.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ダイアログを閉じます。</p>
+
+    <p><img src="2022-07-05-18-09-40.png" alt="" /></p>
+  </li>
+  <li>
+    <p>DBシステムへアクセスしてoracleユーザとしてログインします。(<a href="#anchor2">4. DBシステムへのアクセス</a>を参照ください。)</p>
+  </li>
+  <li>
+    <p>環境変数設定ファイルを読み込みます。(<a href="#anchor3">5. データベース(PDB)へのアクセスの1.</a>を参照ください。)</p>
+  </li>
+  <li>
+    <p>PDB上のスキーマに接続します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus &lt;スキーマ名&gt;/&lt;パスワード&gt;@&lt;8.でメモした接続文字列&gt;
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [oracle@exa1-tmhmo1 ~]$ sqlplus testuser/Welcome1@exa1-tmhmo-scan.sub07160524340.testvcn.oraclevcn.com:1521/DB_PDB.paas.oracle.com
+
+ SQL*Plus: Release 19.0.0.0.0 - Production on Tue Jul 5 10:00:30 2022
+ Version 19.15.0.0.0
+
+ Copyright (c) 1982, 2022, Oracle.  All rights reserved.
+
+
+ Connected to:
+ Oracle Database 19c EE Extreme Perf Release 19.0.0.0.0 - Production
+ Version 19.15.0.0.0
+
+ SQL&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>接続情報を確認します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">show</span> <span class="n">con_name</span>
+ <span class="k">show</span> <span class="k">user</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; show con_name
+
+ CON_NAME
+ ------------------------------
+ PDB
+ SQL&gt; show user
+ USER is "TESTUSER"
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>以上で この章の作業は完了です。</p>
+
+<p><br /></p>
+
+<p><a id="anchor11"></a></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li><a href="https://docs.oracle.com/en-us/iaas/exadatacloud/index.html">Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure</a></li>
+  <li><a href="https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail">Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-09T17:04:53+09:00">January 9, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=101+%3A+ExaDB-D%E3%82%92%E4%BD%BF%E3%81%8A%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d101-create-exadb-d%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d101-create-exadb-d%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d101-create-exadb-d%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/exadbd/exadb-d102-manage-pdb/" class="pagination--pager" title="102 : ExaDB-D上のPDBを管理しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
