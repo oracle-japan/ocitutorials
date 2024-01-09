@@ -26,21 +26,21 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 ## 基礎編
 
-+ **[101: Oracle Cloud で Oracle Database を使おう](/ocitutorials/database/dbcs101-create-db/){:target="_blank"}**
++ **[101: Oracle Cloud で Oracle Database を使おう](/ocitutorials/basedb/dbcs101-create-db/){:target="_blank"}**
 
-+ **[102: BaseDB上のPDBを管理しよう](/ocitutorials/database/dbcs102-managing-pdb/){:target="_blank"}**  
++ **[102: BaseDB上のPDBを管理しよう](/ocitutorials/basedb/dbcs102-managing-pdb/){:target="_blank"}**  
 
-+ **[103: パッチを適用しよう](/ocitutorials/database/dbcs103-patch/){:target="_blank"}**  
++ **[103: パッチを適用しよう](/ocitutorials/basedb/dbcs103-patch/){:target="_blank"}**  
 
-+ **[104: 自動バックアップを設定しよう](/ocitutorials/database/dbcs104-backup/){:target="_blank"}**
++ **[104: 自動バックアップを設定しよう](/ocitutorials/basedb/dbcs104-backup/){:target="_blank"}**
 
-+ **[105: バックアップからリストアしよう](/ocitutorials/database/dbcs105-restore/){:target="_blank"}**
++ **[105: バックアップからリストアしよう](/ocitutorials/basedb/dbcs105-restore/){:target="_blank"}**
 
-+ **[106: Data Guardを構成しよう](/ocitutorials/database/dbcs106-dataguard/){:target="_blank"}**
++ **[106: Data Guardを構成しよう](/ocitutorials/basedb/dbcs106-dataguard/){:target="_blank"}**
 
 ## データ移行編
 
-+ **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/database/dbcs201-pdb-plug/){:target="_blank"}**
++ **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/basedb/dbcs201-pdb-plug/){:target="_blank"}**
 
 <br/>
 

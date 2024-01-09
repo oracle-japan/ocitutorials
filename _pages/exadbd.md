@@ -25,21 +25,21 @@ Oracle Databaseを動かすための最適な基盤として、リリースか�
 OCIであればExadataもサブスクリプションで使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 
-+ **[101: ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/){:target="_blank"}**   
++ **[101: ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/){:target="_blank"}**   
 
-+ **[102: ExaDB-D上のPDBを管理しよう](/ocitutorials/database/exadb-d102-manage-pdb/){:target="_blank"}** 
++ **[102: ExaDB-D上のPDBを管理しよう](/ocitutorials/exadbd/exadb-d102-manage-pdb/){:target="_blank"}** 
 
-+ **[103: 自動バックアップを設定しよう](/ocitutorials/database/exadb-d103-automatic-backup/){:target="_blank"}**
++ **[103: 自動バックアップを設定しよう](/ocitutorials/exadbd/exadb-d103-automatic-backup/){:target="_blank"}**
 
-+ **[104: バックアップからリストアしよう](/ocitutorials/database/exadb-d104-backup-restore/){:target="_blank"}**
++ **[104: バックアップからリストアしよう](/ocitutorials/exadbd/exadb-d104-backup-restore/){:target="_blank"}**
 
-+ **[105: スケーリングしよう](/ocitutorials/database/exadb-d105-scaling/){:target="_blank"}**	
++ **[105: スケーリングしよう](/ocitutorials/exadbd/exadb-d105-scaling/){:target="_blank"}**	
 
-+ **[106: データベースのバージョンを指定しよう](/ocitutorials/database/exadb-d106-dbversion/){:target="_blank"}**
++ **[106: データベースのバージョンを指定しよう](/ocitutorials/exadbd/exadb-d106-dbversion/){:target="_blank"}**
 
-+ **[107: パッチを適用しよう](/ocitutorials/database/exadb-d107-patch/){:target="_blank"}**
++ **[107: パッチを適用しよう](/ocitutorials/exadbd/exadb-d107-patch/){:target="_blank"}**
 
-+ **[108: Data Guardを構成しよう](/ocitutorials/database/exadb-d108-dataguard/){:target="_blank"}**
++ **[108: Data Guardを構成しよう](/ocitutorials/exadbd/exadb-d108-dataguard/){:target="_blank"}**
 
 <br/>
 
