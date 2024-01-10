@@ -72,7 +72,23 @@ inst-dixqy-x9-ol8
 
 本章は、 **pdsh** をインストール・セットアップします。
 
-1. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
+1. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** を提供するyumレポジトリを追加します。  
+この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
+
+   ```sh
+   $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
+   $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
+   ```
+
+    なお、クラスタ管理ノードで **Oracle Cloud Agent** のOS管理を使用している（以下当該インスタンスの **Oracle Cloud Agent** タブで **OS管理サービス・エージェント** が有効となっている）場合、
+
+   ![画面ショット](console_page01.png)
+
+    **[ここ](https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms)** の **管理対象インスタンスのソフトウェア・ソースを選択するには** の手順に従い、以下の **ソフトウェア・ソース** （yumレポジトリ） **Oracle Linux 8 EPEL Packages for Development** を追加します。
+
+   ![画面ショット](console_page02.png)
+
+2. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
    ```sh
@@ -82,14 +98,14 @@ inst-dixqy-x9-ol8
    $ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
    ```
 
-2. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH **known_hosts** ファイルに登録します。  
+3. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH **known_hosts** ファイルに登録します。  
 このステップは、後の **pdsh** の実行のために必要です。
 
    ```sh
    $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
    ```
 
-3. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
+4. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
 
    ```sh
    $ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
@@ -103,7 +119,7 @@ inst-dixqy-x9-ol8
 
    **pdsh** の出力は、第一フィールドが対象ノードのホスト名、第2フィールド以降が対象ノードからのコマンド出力です。
 
-4. クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの **pdcp** や **rpdcp** を使用する場合、管理対象ノードにも **pdsh** がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに **pdsh** をインストールします。  
+5. クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの **pdcp** や **rpdcp** を使用する場合、管理対象ノードにも **pdsh** がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに **pdsh** をインストールします。  
 この際、管理対象ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
    ```sh
@@ -113,7 +129,7 @@ inst-dixqy-x9-ol8
    $ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
    ```
 
-5. **pdsh** で利用するグループを登録するため、グループ設定ファイルを作成します。  
+6. **pdsh** で利用するグループを登録するため、グループ設定ファイルを作成します。  
 このグループ設定ファイルは、事前にクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で作成したホストリストファイルを基に作成する、 **.dsh/group** ディレクトリに配置されるグループ名をファイル名とするテキストファイルです。  
 例えば以下のファイルを配置すると、全てのノードを含むグループ **all** 、inst-f5fra-x9-ol8とinst-3ktpe-x9-ol8を含むグループ **comp1**、及びinst-6pvpq-x9-ol8とinst-dixqy-x9-ol8を含むグループ **comp2** を利用できるようになります。
 

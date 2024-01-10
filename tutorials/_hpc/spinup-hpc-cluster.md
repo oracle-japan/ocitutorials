@@ -140,7 +140,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
     - **NFS server Path :** /mnt/nfs（※2）
     - **FSS Availability Domain :** （ **ファイル・ストレージ** をデプロイする **可用性ドメイン** ）
 
-   ※2) ここで指定するパスは、 **ファイル・ストレージ** 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。例えばユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/nfs/home/user_nameとなります。
+   ※2）ここで指定するパスは、 **ファイル・ストレージ** 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。例えばユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/nfs/home/user_nameとなります。
 
    ![画面ショット](stack_page04-1.png)
 
