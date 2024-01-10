@@ -1,0 +1,947 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>203: 分析系クエリの実行(Star Schema Benchmark) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ADBインスタンスにデフォルトで入っているDWH系・分析系のサンプルスキーマ(SHやSSB)に対して、重いSQLを実行し、OCPU数別にその処理時間の違いを体感して頂きます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="203: 分析系クエリの実行(Star Schema Benchmark)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb203-bulk-query/">
+
+
+  <meta property="og:description" content="ADBインスタンスにデフォルトで入っているDWH系・分析系のサンプルスキーマ(SHやSSB)に対して、重いSQLを実行し、OCPU数別にその処理時間の違いを体感して頂きます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb203-bulk-query/img0.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-10T17:29:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb203-bulk-query/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb203-bulk-query/img0.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          203: 分析系クエリの実行(Star Schema Benchmark)
+
+        
+      </h1>
+      
+        <p class="page__lead">ADBインスタンスにデフォルトで入っているDWH系・分析系のサンプルスキーマ(SHやSSB)に対して、重いSQLを実行し、OCPU数別にその処理時間の違いを体感して頂きます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">203: 分析系クエリの実行(Star Schema Benchmark)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/" class="active">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="203: 分析系クエリの実行(Star Schema Benchmark)">
+    <meta itemprop="description" content="ADBインスタンスにデフォルトで入っているDWH系・分析系のサンプルスキーマ(SHやSSB)に対して、重いSQLを実行し、OCPU数別にその処理時間の違いを体感して頂きます。">
+    <meta itemprop="datePublished" content="2024-01-10T17:29:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-ssbスキーマを確認しよう">1. SSBスキーマを確認しよう</a><ul><li><a href="#データモデラーによる構成確認">データ・モデラーによる構成確認</a></li><li><a href="#各表の件数確認">各表の件数確認</a></li></ul></li><li><a href="#2-ocpu数の違いによる処理時間の差を確認しよう">2. OCPU数の違いによる処理時間の差を確認しよう</a><ul><li><a href="#ocpu1の場合">OCPU=1の場合</a></li><li><a href="#ocpu8の場合">OCPU=8の場合</a></li></ul></li><li><a href="#3-性能調査に使えるツールのご紹介">3. 性能調査に使えるツールのご紹介</a><ul><li><a href="#データベースダッシュボード">データベース・ダッシュボード</a></li><li><a href="#パフォーマンスハブ">パフォーマンス・ハブ</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>この章ではAutonomous Databaseにおける分析系クエリの性能を確認します。</p>
+
+<p>特に、インスタンスのOCPU数を増やした前後でのパフォーマンスを比較することで、簡単に性能が向上することをみていきます。</p>
+
+<p>また、SQLの実行状況を確認するために、サービス・コンソールを操作いただきます。</p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. SSBスキーマを確認しよう</a>
+    <ul>
+      <li><a href="#anchor1-1">データ・モデラーによる構成確認</a></li>
+      <li><a href="#anchor1-2">各表の件数確認</a></li>
+    </ul>
+  </li>
+  <li><a href="#anchor2">2. OCPU数の違いによる処理時間の差を確認しよう</a>
+    <ul>
+      <li><a href="#anchor2-1">OCPU=1の場合</a></li>
+      <li><a href="#anchor2-2">OCPU=8の場合</a></li>
+    </ul>
+  </li>
+  <li><a href="#anchor3">3. 性能調査に使えるツールのご紹介</a>
+    <ul>
+      <li><a href="#anchor3-1">データベース・ダッシュボード</a></li>
+      <li><a href="#anchor3-2">パフォーマンス・ハブ</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間:</strong> 約40分</p>
+
+<p><strong>Star-Schema-Benchmark（SSB）とは？</strong></p>
+
+<p>ADBのインスタンスには、DWH系・分析系のサンプルスキーマとして以下が同梱されています。</p>
+
+<ul>
+  <li>Oracle Sales History（SHスキーマ）</li>
+  <li>Star Schema Benchmark（SSBスキーマ）</li>
+</ul>
+
+<p><b>上記のサンプルスキーマの特長</b></p>
+
+<ul>
+  <li>約1TB、約60億行のファクト表と、複数のディメンション表から構成</li>
+  <li>マニュアルには動作確認用のサンプルSQLも記載されている</li>
+  <li>ADW、ATPの双方で利用可能（2022/10時点）- 本ガイドでは前の章で作成したAutonomous Transaction Processing(ATP) インスタンスの利用を前提に記載していますが、SSBのような分析系・DWH系のアプリケーションの場合、Autonomous Data Warehouse(ADW) をご選択いただくことを推奨しています。</li>
+</ul>
+
+<p>※サンプルスキーマの詳細については<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/autonomous-sample-data.html#GUID-4BB2B49B-0C20-4E38-BCC7-A61D3F45390B">こちら</a>を参照ください。</p>
+
+<p><strong>作業の流れ</strong></p>
+
+<ul>
+  <li>SSBスキーマを確認しよう</li>
+  <li>OCPU数の違いによる処理時間の差を確認しよう</li>
+  <li>サービスコンソール/SQL Monitorで処理内容を確認しよう</li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-ssbスキーマを確認しよう">1. SSBスキーマを確認しよう</h1>
+
+<p><a id="anchor1-1"></a></p>
+
+<h2 id="データモデラーによる構成確認">データ・モデラーによる構成確認</h2>
+
+<ol>
+  <li>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。<strong>ツール</strong>タブから、<strong>データベース・アクションを開く</strong>をクリックしてください。</p>
+
+    <p><img src="img1.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>Database Actionsのランディングページのデータ・ツールから　<strong>データ・モデラー</strong> を選択し、SSBスキーマの構造を確認していきましょう。</p>
+
+    <p><img src="img40.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>データ・モデラーのランディングページです。画面左上のナビゲータに<strong>SSB</strong>と入力し、SSBスキーマの下記の5つの表を確認します。</p>
+
+    <ul>
+      <li>CUSTOMER表</li>
+      <li>DWDATE表</li>
+      <li>LINEORDER表</li>
+      <li>PART表</li>
+      <li>SUPPLIER表</li>
+    </ul>
+
+    <p><img src="img41.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>SSBスキーマの5つの表を画面中央の<strong>ダイアグラム</strong>に追加します。追加方法は下記の２通りあります。</p>
+
+    <ul>
+      <li>表を右クリックし、<strong>オブジェクトをダイアグラムに追加</strong>をクリック</li>
+      <li>表を<strong>ドラッグ&amp;ドロップ</strong>で中央に移動する</li>
+    </ul>
+
+    <p><img src="img42.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>SSBスキーマの構造がER図で表示されました。画面中央上の<strong>セーブマーク</strong> をクリックし、ダイアグラムを保存します。
+<br />※図が重なってしまっている場合は、ドラッグして適宜移動してみてください。</p>
+
+    <p><img src="img43.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ダイアグラム・プロパティの<strong>名前</strong>(例:SSB diagram)を入力し、<strong>OK</strong>をクリックします。</p>
+
+    <p><img src="img44.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ダイアグラムが保存されました。<strong>OK</strong> をクリックします。</p>
+
+    <p><img src="img45.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>保存したダイアグラム(例:SSB diagram)を確認していきます。画面左上 ナビゲータの隣の<strong>ダイアグラム</strong>タブをクリックします。保存したダイアグラム(例:SSB diagram)を選択後、<strong>開く</strong>をクリックします。</p>
+
+    <p><img src="img46.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>画面右上赤枠のボタンをクリックするとスキーマの<strong>DDL文</strong>を確認することができます。</p>
+
+    <p><img src="img47.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>DDL文のプレビュー</strong>になります。</p>
+
+    <p><img src="img48.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>画面右上赤枠のボタンをクリックすると<strong>スキーマ・レポート</strong>を確認することができます。</p>
+
+    <p><img src="img49.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>スキーマ・レポート</strong>になります。</p>
+
+    <p><img src="img50.png" alt="画面ショット1-1" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor1-2"></a></p>
+
+<h2 id="各表の件数確認">各表の件数確認</h2>
+
+<ol>
+  <li>
+    <p>Database Actionsのランディングページに戻り、データ・ツールから<strong>SQL</strong> を選択します。</p>
+
+    <p><img src="img2.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>ワークシートの画面左上からスキーマ<strong>SSB</strong> を選択します。</p>
+
+    <p><img src="img3.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>以下のスクリプトを実行して、各表の件数を確認します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select count(1) from ssb.dwdate;
+select count(1) from ssb.part;
+select count(1) from ssb.supplier;
+select count(1) from ssb.customer;
+select count(1) from ssb.lineorder;
+</code></pre></div>    </div>
+
+    <p><img src="img4.png" alt="画面ショット1-1" /></p>
+
+    <p>以上でSSBスキーマの構成、および各表に含まれる件数が確認できました。DWHとして理想的なスター・スキーマで構成されており、データサイズとしても比較的規模の大きな構成であることがご確認いただけたかと思います。</p>
+
+    <p>次は、OCPU数を変えて、同じSQL文を実行することで、処理の違いを体験していきましょう。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-ocpu数の違いによる処理時間の差を確認しよう">2. OCPU数の違いによる処理時間の差を確認しよう</h1>
+
+<p>次にもう少し複雑なクエリを実行してみます。OCPU数を変えることで、高速に処理できることを確認していきましょう。</p>
+
+<p>次のクエリをコピーして、Database Actionsのワークシートに貼り付けて実行してみましょう。
+   <br />すべてのOCPU数で同じクエリを実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="k">SELECT</span>
+      <span class="k">SUM</span><span class="p">(</span><span class="n">LO_REVENUE</span><span class="p">),</span>
+      <span class="n">D_YEAR</span><span class="p">,</span>
+      <span class="n">P_BRAND1</span>
+   <span class="k">FROM</span>
+      <span class="n">SSB</span><span class="p">.</span><span class="n">LINEORDER</span><span class="p">,</span>
+      <span class="n">SSB</span><span class="p">.</span><span class="n">DWDATE</span><span class="p">,</span>
+      <span class="n">SSB</span><span class="p">.</span><span class="n">PART</span><span class="p">,</span>
+      <span class="n">SSB</span><span class="p">.</span><span class="n">SUPPLIER</span>
+   <span class="k">WHERE</span>
+      <span class="n">LO_ORDERDATE</span> <span class="o">=</span> <span class="n">D_DATEKEY</span>
+      <span class="k">AND</span> <span class="n">LO_PARTKEY</span> <span class="o">=</span> <span class="n">P_PARTKEY</span>
+      <span class="k">AND</span> <span class="n">LO_SUPPKEY</span> <span class="o">=</span> <span class="n">S_SUPPKEY</span>
+      <span class="k">AND</span> <span class="n">P_BRAND1</span> <span class="k">BETWEEN</span> <span class="s1">'MFGR#2221'</span> <span class="k">AND</span> <span class="s1">'MFGR#2228'</span>
+      <span class="k">AND</span> <span class="n">S_REGION</span> <span class="o">=</span> <span class="s1">'ASIA'</span>
+   <span class="k">GROUP</span> <span class="k">BY</span>
+      <span class="n">D_YEAR</span><span class="p">,</span>
+      <span class="n">P_BRAND1</span>
+   <span class="k">ORDER</span> <span class="k">BY</span>
+      <span class="n">D_YEAR</span><span class="p">,</span>
+      <span class="n">P_BRAND1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>本編ではOCPU=1および8の場合を記載しておりますが、ぜひOCPU=2,4,6と細かく変更し、OCPUが大きくなればElaped Timeが短くなることをご確認ください。</p>
+
+<blockquote>
+  <p><strong>注意</strong></p>
+
+  <p>ここではOCPU数を段階的に増やし、性能が向上することをご確認いただきますが、クレジット消費も比例して大きくなりますので、ご注意ください。</p>
+
+</blockquote>
+
+<blockquote>
+  <p><strong>補足</strong></p>
+
+  <p>Autonomous Databaseのマニュアルでは、上に記載しているサンプルSQL以外にも動作確認用のサンプルSQLをご用意しております。
+<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/sample-queries.html#GUID-431A16E8-4C4D-4786-BE5C-30029AC1EFD8">こちら</a>を参照ください。</p>
+
+</blockquote>
+
+<p><br /></p>
+
+<p><a id="anchor2-1"></a></p>
+
+<h2 id="ocpu1の場合">OCPU=1の場合</h2>
+
+<ol>
+  <li>
+    <p>画面右上の接続サービスを<strong>LOW</strong>から<strong>MEDIUM</strong>に変更し、以下のスクリプトを実行します。</p>
+
+    <p>現在のOCPU数は、<strong>1</strong>です。</p>
+
+    <p><img src="img5_new.png" alt="画面ショット1-1" /></p>
+
+    <p>処理にかかった時間は、<strong>00:01:30.110</strong>でした。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2-2"></a></p>
+
+<h2 id="ocpu8の場合">OCPU=8の場合</h2>
+
+<ol>
+  <li>
+    <p>ここでATPの詳細画面に遷移し、<strong>スケール・アップ/ダウン</strong>を選択してください。OCPU数をスケールさせていきます。</p>
+
+    <p><img src="img6.jpg" alt="画面ショット1-1" /></p>
+
+    <blockquote>
+      <p><strong>注意</strong></p>
+
+      <p>自動スケーリングの有無は任意で結構です。
+<br />自動スケーリングは複数のクエリが同時に走っているときにその効果が発揮されます。今回のように１つのクエリを走らせる分には有効にしてもしなくても性能に影響はありません。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>OCPU数に<strong>8</strong>を入力し、<strong>更新</strong>をクリックしてください。</p>
+
+    <p><img src="img7.jpg" alt="画面ショット1-1" /></p>
+
+    <p>ATPの詳細画面で<strong>スケールアップの完了</strong>を確認後、Database Actionsの<strong>SQLワークシート</strong>に戻ります。</p>
+  </li>
+  <li>
+    <p>画面右上の接続サービスを<strong>MEDIUM</strong>から<strong>HIGH</strong>に変更し、クエリを実行します。現在のOCPU数は、<strong>8</strong>です。</p>
+
+    <blockquote>
+      <p><strong>NOTE</strong></p>
+
+      <p>重たいクエリの多いDWH系のシステムでは、単一SQLを複数のコアで処理できるパラレル・クエリーが効果的です。ここからは、割り当てられたOCPUを全て利用できる接続サービスであるHIGHを選択します。
+<br /><strong>MEDIUM</strong>接続でもパラレル処理が可能ですが、同時実行性も担保するために利用できるOCPU数を<strong>4</strong>までに制限しているため、ここからは8OCPU以上を利用できる<strong>HIGH</strong>接続に切り替えてスケールアップの効果を確認します。</p>
+    </blockquote>
+
+    <p><img src="img8_new.png" alt="画面ショット1-1" /></p>
+
+    <p>処理にかかった時間は、<strong>00:00:12.698</strong>でした。</p>
+  </li>
+</ol>
+
+<p>ここまでで、OCPU＝1および8のときのElapsed Timeが確認できたと思います。<br />Autonomous Databaseでは利用可能なコア数だけでなく、割り当てメモリのサイズやIO帯域もOCPU数に比例する形で増加します。今回試したDWH系のクエリは一般的に非常に多くのリソースを消費しますが、Autonomous Databaseでは必要に応じてOCPU数を調整することで性能を担保することが可能です。</p>
+
+<blockquote>
+  <p><strong>NOTE</strong></p>
+
+  <p>その他、ADBでは、パーティション やHCC圧縮、マテリアライド・ビューといったOracle Database / Exadata のパフォーマンスに寄与する各種オプションも追加費用なくご利用いただけます。</p>
+</blockquote>
+
+<p>次の表は、OCPU数を細かく増やしていったときのElapsed Timeをまとめたものです。
+<br />このようにOCPUが大きくなれば性能が向上していることが分かります。</p>
+
+<table width="70%">
+  <tr>
+    <th>接続サービス</th>　<th>OCPU数</th> <th>Elapsed Time</th>
+  </tr>
+  <tr>
+    <td rowspan="3">MEDIUM</td> <td>1</td> <td>00:01:30.110</td>
+  </tr>
+  <tr>
+    <td>2</td> <td>00:00:58.209</td>
+  </tr>
+    <tr>
+    <td>4</td> <td>00:00:27.212</td>
+  </tr>
+  <tr>
+    <td rowspan="4">HIGH</td> <td>8</td> <td>00:00:12.698</td>
+  </tr>
+    <tr>
+    <td>16</td> <td>00:00:08.113</td>
+  </tr>
+  <tr>
+    <td>32</td> <td>00:00:05.324</td>
+  </tr>
+    <tr>
+    <td>64</td> <td>00:00:05.102</td>
+  </tr>
+</table>
+
+<p>※Elapsed Timeにはブレがありますので、あくまでも参考値としてご認識ください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-性能調査に使えるツールのご紹介">3. 性能調査に使えるツールのご紹介</h1>
+
+<p>ここからは実際にADBにて性能調査を行う際にどう言ったツールが利用できるのかをみていきたいと思います。</p>
+
+<p>サービスコンソールおよびパフォーマンスハブでは次のような機能をご利用いただけます。</p>
+
+<div style="text-align: center"><img src="slide.jpg" /></div>
+
+<p><a id="anchor3-1"></a></p>
+
+<h2 id="データベースダッシュボード">データベース・ダッシュボード</h2>
+
+<p>ADBではインスタンスの稼働状況をDatabase Actionsのデータベース・ダッシュボードを介して確認できます。
+   データベース・ダッシュボードからは、リソースの利用状況(CPUやストレージは十分か？どのくらい使われているか？等)を確認する時に活用します。</p>
+
+<ol>
+  <li>
+    <p>ATPの詳細画面の<strong>Database Actions</strong>をクリックしてください。</p>
+
+    <p><img src="img20.jpg" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>Database Actionsの起動パッドから<strong>データベース・ダッシュボード</strong>をクリックします。</p>
+
+    <p><img src="img21.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>概要</strong>では、ストレージの使用状況やCPU使用率、その他、実行されたSQL数や平均レスポンス時間等をご確認いただけます。</p>
+
+    <p><img src="img22.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>モニター</strong>を選択します。ここではデータベース内の待機イベントの状況、各接続サービス毎のCPU使用率などを、リアルタイムにご確認いただけます。</p>
+
+    <p><img src="img23.png" alt="画面ショット1-1" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3-2"></a></p>
+
+<h2 id="パフォーマンスハブ">パフォーマンス・ハブ</h2>
+
+<p>一方、単一のSQLで時間のかかるものを監視、調査する場合はSQL Monitorが有用です。アプリケーションの性能調査においてポイントとなる、待機イベントの確認やSQL Monitorの確認、AWRの出力はパフォーマンス・ハブを利用することで簡単に確認することができます。</p>
+
+<ol>
+  <li>
+    <p>ATPの詳細画面の<strong>パフォーマンス・ハブ</strong>をクリックしてください。</p>
+
+    <p><img src="img30.jpg" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>パフォーマンス・ハブ</strong>のランディングページです。このページでは、特定の期間に使用可能なすべてのパフォーマンス・データを表示できます。 期間を選択すると、データベースのパフォーマンスが表示されます。ワークシートで実行したSQLを確認するため、<strong>SQLモニタリング</strong>をクリックします。</p>
+
+    <p><img src="img31.jpg" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>アクティビティ・サマリー</strong>の時間指定範囲に目的のSQL文がないため、SQLが見つかりません。画面左上の<strong>クイック選択</strong>から、任意の期間を選択してください。</p>
+
+    <p><img src="img32.jpg" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p>期間変更後、<strong>アクティビティ・サマリー</strong>上に多くのCPUを使用している箇所が見られました。<strong>アクティビティ・サマリー</strong>の<strong>期間ウィンドウ</strong>を合わせてください。SQL文が見つかりました。青文字になっている<strong>SQL ID</strong>をクリックしてください。</p>
+
+    <p><img src="img33.jpg" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>パフォーマンス・ハブ: リアルタイムSQLモニタリングページ</strong>にて、クリックしたSQLの詳細を確認することができます。</p>
+
+    <p>こちらのページの<strong>詳細</strong>セクションでは以下のことを確認できます。</p>
+
+    <p>・<strong>計画統計</strong>: 選択したSQLの実行計画</p>
+
+    <p>・<strong>SQL</strong>: 実行したSQL文</p>
+
+    <p>・<strong>アクティブ・セッション</strong>: 選択したSQLのアクティブセッション履歴</p>
+
+    <p>・<strong>メトリック</strong>: 選択したSQLにおけるパフォーマンスを、<strong>使用中のCPU</strong>、<strong>メモリー</strong>、<strong>I/Oスループット</strong>、<strong>I/Oリクエスト数</strong>の観点から確認することが可能です。</p>
+
+    <p>また、画面右上の<strong>レポートの保存</strong>をクリックすると、AWRレポートをhtml形式でダウンロードすることができ、簡単にブラウザで確認・共有することができます。</p>
+
+    <p><img src="img34.jpg" alt="画面ショット1-1" /></p>
+  </li>
+</ol>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-10T17:29:32+09:00">January 10, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=203%3A+%E5%88%86%E6%9E%90%E7%B3%BB%E3%82%AF%E3%82%A8%E3%83%AA%E3%81%AE%E5%AE%9F%E8%A1%8C%28Star+Schema+Benchmark%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb203-bulk-query%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb203-bulk-query%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb203-bulk-query%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/" class="pagination--pager" title="202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb204-setup-VM/" class="pagination--pager" title="204: 開発者向け仮想マシンのセットアップ方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

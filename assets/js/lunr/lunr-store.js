@@ -1,45 +1,333 @@
 var store = [{
+        "title": "101: ADBインスタンスを作成してみよう",
+        "excerpt":"はじめに この章はまずAutonomous Database(ADB) を構成するために必要なリージョンおよびコンパートメントを設定いただきます。 その上で、ADBインスタンスを作成、データベース・ユーザー（スキーマ）を作成し、Database Actionsを使用してアクセスしてみます。 目次 1. リージョンを設定し、コンパートメントを用意しよう 2. ADBインスタンスを作成してみよう 3. Database Actionsで操作してみよう 所要時間 : 約20分 1. リージョンを設定し、コンパートメントを用意しよう 1-1. サービス画面へのアクセス まず初めにOracle Cloud Infrastructure のコンソール画面から、ADBのサービス画面にアクセスします。 ブラウザから https://www.oracle.com/jp/index.html にアクセスし、ページ上部の アカウントを表示 をクリックし、クラウドにサインイン をクリックします。 本手順書ではFirefoxを前提に記載しています。英語表記の場合は Sign in to Cloud をクリックしてください。 お手持ちのクラウドテナント名（アカウント名）を入力し、 Continue をクリックします。（ここでは例としてテナント名に「SampleAccount」を入力しています。） クラウドユーザー名 と パスワード を入力し、 Sign In をクリックしてログインします。 （ここでは例として「SampleName」を入力しています。） 以下のようなダッシュボード画面が表示されればOKです。 補足...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb101-provisioning/",
+        "teaser": "/ocitutorials/adb/adb101-provisioning/img11.png"
+      },{
+        "title": "102: ADBにデータをロードしよう(Database Actions)",
+        "excerpt":"はじめに この章ではDatabase Actions（SQL Developer Webの後継機能）を利用して、サンプルデータをADBインスタンスにデータをアップロードします。 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること サンプルデータファイルのダウンロードリンク 目次 1. 手元のPCからCSVデータをロードしてみよう 2. クラウド・ストレージからデータをロードしてみよう 3. クラウド・ストレージのデータをフィードしてみよう 所要時間 : 約20分 1. 手元のPCからCSVデータをロードしてみよう まず手元のPC上のデータをADBインスタンスにロードしてみましょう。サンプルデータとしてsales_channels.csvファイルを利用します。 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 Database Actionsのランディングページのデータ・ツールから　データ・ロード を選択します。 データの処理には、データのロード を選択し、データの場所には、ローカル・ファイル を選択して 次 をクリックします。 ファイルの選択をクリックし、ダウンロードして解凍した sales_channels.csv を選択します。 sales_channels.csvがロードできる状態になりました。 ロード前にペンアイコンをクリックし、詳細設定を確認・変更できます。 sales_channels.csvの表定義等のデータのプレビューを確認したら 閉じる をクリックします。 緑色の実行ボタンをクリックし、データのロードを開始します。 データ・ロード・ジョブの実行を確認するポップアップが表示されるので、実行 をクリックします。 sales_channels.csvに緑色のチェックマークが付き、ロードが完了しました。完了をクリックします。 補足...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb102-dataload/",
+        "teaser": "/ocitutorials/adb/adb102-dataload/adb2-1_1.png"
+      },{
+        "title": "103: Oracle LiveLabsのご紹介",
+        "excerpt":"はじめに Oracle LiveLabs とはOracle Cloud Infrastructure上でお試しいただける様々なワークショップをまとめたサイトです。2022/11現在600種類を超える数のワークショップが登録されています。 ワークショップの実行には、ご利用いただいているOracle Cloud環境およびAlways Free/トライアル環境をお使いいただけます。またワークショップによっては、Oracle LiveLabsで時間制限を設けた一時利用環境も提供しております。 この章では、Autonomous Databaseのワークショップで一時利用環境を利用する方法について紹介します。 なお、Livelabsは英語での提供ではありますが、ブラウザの翻訳機能をご利用いただくことで十分に進めることができます。 前提条件 Oracleアカウントが作成済みであること(一時利用環境の場合は必須) 目次 1.ワークショップの検索 2.ワークショップ詳細の確認と開始 3.ワークショップの実行 4.ワークショップの時間延長 5.ワークショップの終了 所要時間 : 約10分（ワークショップ実行時間は含みません） 1.ワークショップの検索 Livelabsのトップページ にある View All Workshops ボタンをクリックするとファセット検索の画面へ遷移します。ワークショップの各カードにはワークショップのタイトルと概要、所要時間が表示されます。 ファセット検索で指定できる条件には以下があります。 Level : 対象レベル Beginner(初心者)/Intermediate(中級者)/Advanced(上級者) Workshop Type : ワークショップの提供タイプ Paid Credits(有料クレジット)/Sprints(スプリント)/Run on Livelabs(Livelabs一次利用環境)/Run on Gov Cloud/ADB for Free(Always Free環境)...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb103-livelabs/",
+        "teaser": "/ocitutorials/adb/adb103-livelabs/labimage.png"
+      },{
+        "title": "104: クレデンシャル・ウォレットを利用して接続してみよう",
+        "excerpt":"はじめに Autonomous Database にはさまざまなツールが同梱されており、簡単にご利用いただけますが、 一方で、これまでお使いのアプリケーションからの接続するときはどのように接続するのでしょうか？ Autonomous Databaseには暗号化およびSSL相互認証を利用した接続が前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。 本章ではこのクレデンシャル・ウォレットを使用した接続方法について確認していきます。 尚、クレデンシャル・ウォレットの扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 SQL Developerを使用した接続を行いたい場合には、当該クライアントツールがインストール済みであること。インストールはこちらから 目次 1. クレデンシャル・ウォレットのダウンロード 2. 設定ファイルの編集 3. ADBに接続 3-1. SQL*Plus を使った接続 3-2. SQLcl を使った接続 3-3. SQL Developer を使った接続 3-4. Database Actions を使った接続 所要時間 : 約20分 1. クレデンシャル・ウォレットのダウンロード ウォレットを利用したADBインスタンスへの接続には、対象インスタンスへの接続情報が格納された クレデンシャル・ウォレット を利用する必要があります。 （より高いセキュリティを担保するために、ADBインスタンスはcredential.ssoファイルを利用した接続のみを受け入れます。） まず、ADBへの接続情報が格納されるCredential.zipファイルをお手元のPCにダウンロードしましょう。 OCIのコンソールにアクセスし、左上のメニューから Oracle Database...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb104-connect-using-wallet/",
+        "teaser": "/ocitutorials/adb/adb104-connect-using-wallet/img1_3.png"
+      },{
+        "title": "105: ADBの付属ツールで簡易アプリを作成しよう(APEX)",
+        "excerpt":"はじめに この章ではADBインスタンスは作成済みであることを前提に、APEXコンソールの起動から簡単なアプリケーション作成までを体験いただきます。 サンプルとして、これまでExcelで管理していた受発注データを利用して、簡単なアプリケーションを作ってみましょう。 Autonomous Databaseはインスタンスを作成するとすぐにWebアプリ開発基盤であるOracle APEXを利用できるようになります。追加コストは不要です。 Oracle APEXは分かりやすいインターフェースで、コーディングと言った専門的な知識専門的な知識がなくてもアプリケーションを開発できるため非常に人気があります。 Autonomous Database上でAPEXを利用すると、バックアップや可用性、セキュリティ等のインフラの面倒は全てオラクルに任せて、アプリケーションだけに集中できます。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 目次 1. スプレッドシートのサンプルを用意 2. APEXのワークスペースの作成 3. APEXコンソールの起動 4. スプレッドシートから簡易アプリケーションの作成 5. アプリケーションの実行 6. 実行確認 所要時間 : 約10分 1. スプレッドシートのサンプルを用意 サンプルとして受発注データ(orders.csv)を用意します。 下記のリンクをクリックし、サンプルファイル(orders.zip)を手元のPCにダウンロードして展開してください。 orders.csvをダウンロード 受発注データは次のような表になっており、ORDER_KEY(注文番号)、ORDER_STATUS(注文状況)、UNITS(個数) …etc などの列から構成される、5247行の表となっています。 2. APEXのワークスペースの作成 アプリケーションを作成するためには、ワークペースを作成する必要があります。 最初にADMINユーザで管理画面にログインします。 ADBインスタンスの詳細画面を表示します。メニュー画面上部の ツール タブを選択し、APEXを開く をクリックします。 ログイン画面が表示されるので、下部の言語欄から 日本語 を選択しておきます。（初回は英語表示ですが、日本語を含めた他言語表示に変更することが可能です） ADBインスタンス作成時に指定したADMINユーザのパスワード（本ガイドを参考に作成した方のパスワードは「Welcome12345#」）を入力し、サインインします。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb105-create-apex-app/",
+        "teaser": "/ocitutorials/adb/adb105-create-apex-app/img3_2.png"
+      },{
+        "title": "106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）",
+        "excerpt":"はじめに コンバージド・データベースとは、あらゆるデータをサポートするマルチモデルを採用し、あらゆるワークロードをサポートしていくこと、また様々なツールをDBに統合し開発生産性に貢献していくという、Oracle Databaseのコンセプトの一つです。 Autonomous Databaseもコンバージド・データベースとして、RDBのフォーマットだけでなく、JSON、Text、Spatial、Graphといった様々なフォーマットを格納しご利用いただけます。 格納されるデータの種類ごとにデータベースを用意するのではないため、データの重複や整合性に関する懸念は不要であり、またそのためのETLツールを検討する必要もなく、結果的にコストを抑えることが可能です。 では、実際にどのように操作するのでしょうか？このページではJSONを例にその操作方法の一例を紹介します。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 目次 1.データを格納してみよう 2.SODA APIでアクセスしてみよう 3.SQLでアクセスしてみよう 所要時間 : 約20分 1. データを格納してみよう まずはJSONデータをADBインスタンスに登録し、登録したデータを確認しましょう。ここではSODA APIを実行できるDatabase Actionsを利用します。 SODA APIは、Simple Oracle Document Accessの略で、オラクルが用意するJSONデータにアクセスする際のAPIです。新たにJSONコレクションを作成する、挿入、検索、変更や削除にご利用いただけます。SQLで言えばDDL、DMLに当たります。 このSODA APIはJavaScriptはもちろん、JavaやPython, PL/SQLなどからCallして利用することが可能ですし、SQLclやDatabase Actionsではデフォルトでインストールされています。 （参考資料: Autonomous JSON Database 技術概要 ） Database Actionsにアクセスし、SQLを選択します ドキュメントを格納するコレクションempを作成します。以下のスクリプトをワークシートに貼り付け、緑色のボタンで実行してください （コレクションとはRDBMSで言う表に相当し、内部的には一つの表を作成しています。） soda create emp コレクションempが作成されたことを確認します soda list JSONのドキュメントをempコレクションに格納します。以下のSODAコマンドを貼り付け...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb106-json/",
+        "teaser": "/ocitutorials/adb/adb106-json/img00.png"
+      },{
+        "title": "107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)",
+        "excerpt":"はじめに この章では、Autonomous Databaseの複数の付属ツール(Database Actions、OML AutoML UI、OML Notebook、Oracle Application Express(APEX))を活用し、ワンストップの機械学習環境を体感していただきます。今回は、機械学習の題材として、タイタニック問題を扱います。タイタニックの乗客情報から乗客の生存予測を行うモデルを作成します。モデル作成後、そのモデルに実際に予測をさせて、更にその予測をアプリケーションでのレポートまで行います。データベースの中で機械学習のプロセスが完結しているOracleの機械学習へのアプローチを体験していただけると思います。 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされているZipファイルをダウンロードし、解凍していること OMLチュートリアルで資料するファイル 目次 1. OMLユーザ新規作成 2. Database Actionsでデータロード 3. OML AutoML UIで生存予測モデル作成 4. OML Notebookで予測をかける 5. APEXで予測結果をレポート 6. まとめ 7. 参考資料 所要時間 : 約60分 1. OMLユーザ新規作成 まずOMLを利用する権限を持つユーザをDatabase Actionsで新規作成していきます。 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 管理 &gt; データベース・ユーザーをクリックしてください。 +ユーザの作成をクリックしてください。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb107-machine-learning/",
+        "teaser": "/ocitutorials/adb/adb107-machine-learning/img72.png"
+      },{
+        "title": "108: 接続文字列を利用して接続してみよう",
+        "excerpt":"はじめに Autonomous Database への接続には、104: クレデンシャル・ウォレットを利用して接続してみよう でご紹介した通り、ウォレットファイルを利用した証明書認証・SSL暗号化接続がデフォルトになっています。 しかし特定の条件下では、このウォレットを利用しないでセキュアに接続することが可能です。 本章では、ADBにおけるネットワーク・アクセスの種類とウォレットを利用しない接続方式について確認していきます。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 目次 1. ADBにおけるネットワーク・アクセスの種類 2. TLS接続の前提条件 3. TLS接続 3-1. 仮想マシン作成 3-2. ACLの定義 3-3. DB接続文字列の確認 3-4. ADB接続 所要時間 : 約30分 1. ADBにけるネットワーク・アクセスの種類 ADBでは、プロビジョニング時に以下の3つの中からネットワーク・アクセス・タイプを選択することができます。 すべての場所からのセキュア・アクセス（パブリック・エンドポイント） データベース資格証明（ウォレット）を持っているユーザーであれば、インターネット上の全てのIPアドレスから接続できる方式です。 許可されたIPおよびVCN限定のセキュア・アクセス（パブリック・エンドポイント） 上の[すべての場所からのセキュア・アクセス]に、特定のIPアドレス、CIDRブロック、VCNからのアクセスに限定するようアクセス制御リスト(ACL)を設定する方式です。 プライベート・エンドポイント・アクセスのみ（プライベート・エンドポイント） ADBインスタンスにパブリックIPを持たせず、プライベートIPを持たせる場合に選択します。すでに作成済みのVCN、サブネット内にADBインスタンスを配置します。指定したVCNからのトラフィックのみ許可され、アクセス制御はサブネットのセキュリティ・リスト(SL)またはネットワーク・セキュリティ・グループ(NSG)で行います。 なお、ウォレットの差し替えが必要ですが、インスタンス作成後でもエンドポイントの変更は可能です。 また、接続経路は以下の3つの方法があります。 インターネット接続 IPsec VPNを介した接続 FastConnect(Private Peering / Public Peering)を利用した接続 2....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb108-walletless/",
+        "teaser": "/ocitutorials/adb/adb108-walletless/walletless_teaser.png"
+      },{
+        "title": "109: プライベート・エンドポイントのADBを作成してみよう",
+        "excerpt":"はじめに Autonomous Databaseでは、パブリック・エンドポイントとプライベート・エンドポイントを選択できます。 プライベート・エンドポイントの場合は指定したVCN内のサブネット上にエンドポイントを配置することができます。 アクセス制御は指定したVCNのサブネットのセキュリティ・リスト、もしくはネットワーク・セキュリティ・グループ(NSG)を利用して行います。 目次 1. プライベート・エンドポイントのADBへの接続 1-1. ネットワーク構成図の確認 1-2. ADBの作成 1-3. ADBへの接続 2. Database Actionsへの接続 2-1. パブリック・エンドポイントでACLを定義している 2-2. プライベート・エンドポイントでInternetから接続 2-3. プライベート・エンドポイントでプライベート・ネットワークから接続 所要時間 : 約30分 1. プライベート・エンドポイントのADBへの接続 1-1. ネットワーク構成の確認 プライベート・エンドポイントのAutonomous Database への接続方法は、IPsec VPN やFastConnect からアクセスする方法が一般的ですが、本章ではインターネットからの接続方法をご紹介します。 ネットワーク構成は上記のようにしています。各Security List の設定を以下に示します。 プライベート・サブネットsub_pri1は、パブリック・サブネットsub_pubからのSSHのみ許可、sub_pri2は、sub_pri1からのTCP接続(1521ポート)のみ許可しています。 本章では、パブリック・サブネットに踏み台サーバーを置いて利用しますが、インターネット側からアクセスする場合には、Bastionサービスも利用できます。 1-2. ADBの作成 プライベート・エンドポイントのADBを作成するには、ADBの作成ページの[ネットワーク・アクセスの選択]でプライベート・エンドポイント・アクセスのみを選択します。 以下の画像のようにADBを配置する仮想クラウド・ネットワークとサブネットを指定します。 なお、VCNのセキュリティ・リストのルールによるアクセス制御が設定されている場合、ネットワーク・セキュリティ・グループによるアクセス制御はオプションになります。 1-3. ADBへの接続 パブリック・サブネットの踏み台サーバー経由でプライベート・サブネットのコンピュート・インスタンスに接続します。 プライベート・エンドポイント・アクセスのみの場合は、ウォレットなし接続が可能です。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb109-private-endpoint/",
+        "teaser": "/ocitutorials/adb/adb109-private-endpoint/private-endpoint_teaser.png"
+      },{
+        "title": "110: Oracle Analytics Desktopを使ってデータを見える化してみよう",
+        "excerpt":"はじめに Autonomous Database (ADB) にはさまざまなツールが同梱されており、簡単にご利用いただけますが、 Oracle Analytics Desktop を使うと、ユーザーのPC上から Autonomous Database のデータを見える化できます。 Oracle Analytics Desktop は、デスクトップ・アプリケーションであり、データの探索および見える化するためのツールです。複数のソースからサンプル・データを簡単に検索したり、ローカルのデータセットを分析したり調査することが可能です。 Autonomous Database は暗号化およびSSL相互認証を利用した接続を前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。 本章ではこのOracle Analytics Desktopを使用した Autonomous Database の見える化について確認していきます。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、101:ADBインスタンスを作成してみよう をご参照ください。 クレデンシャル・ウォレットを取得済みであること ※クレデンシャル・ウォレットの取得については、104:クレデンシャル・ウォレットを利用して接続してみよう を参照ください。 Oracle Analytics Desktop は、Windows OS用とMac OS用がありますが、本章ではWindows OS用 を使って説明します。 Oracle Analytics Desktop をインストールするPCから、プロキシ・サーバーを経由せずに、直接、インターネットに繋がること。 ※Oracle Analytics Desktop はプロキシ対応できません。 目次 1....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb110-analyze-using-oad/",
+        "teaser": "/ocitutorials/adb/adb110-analyze-using-oad/img3_13_1.png"
+      },{
+        "title": "201: 接続サービスの理解",
+        "excerpt":"Autonomous Database では、事前に定義済の接続サービスが用意されています。 本章では、接続サービスの概要をご紹介します。 所要時間 : 約10分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 目次： 1. 接続サービスとは？ 2. Database ActionsのResource Managerの設定画面にアクセスしよう 3. CPU/IOの優先度の変更しよう 4. 処理時間/利用IOの上限を設定しよう 5. 同時実行セッション数の制限が変更できることを確認しよう 1. 接続サービスとは？ 接続サービスの選択 インスタンスに接続する際、Autonomous Databaseはアプリケーションの特性に応じて適切な「接続サービス」を選択する必要があります。 この「接続サービス」は、パラレル実行・同時実行セッション数・リソース割り当てなどの制御について事前定義されたもので、ユーザーは接続サービスを選択するだけで、CPUの割当や並列処理をコントロールできます。 選択可能な接続サービスの種類は、次の通りです。 Autonomous Data Warehouse(ADW) では３種類、Autonomous Transaction Processing(ATP)では5種類あり、ワークロード適したものを選択します。 使い分けの指針、スタートポイント 代表的なワークロードを「OLTP系」と「バッチ系/DWH系」の２つのカテゴリに分類し、それぞれの処理の特性と適応する接続サービスについてまとめました。 OLTP系 バッチ系・DWH 特徴 少量の行しかアクセスしない 大量のユーザが同時に実行する 一般的なオーダーとしてはミリ秒レベル 大量の行にアクセスし、一括で処理する ユーザ数は少ない 一般的なオーダーとしては秒～分レベル...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb201-service-names/",
+        "teaser": "/ocitutorials/adb/adb201-service-names/image_top.png"
+      },{
+        "title": "202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)",
+        "excerpt":"はじめに 大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。 サンプルデータファイル(customers.csv)のダウンロードリンク 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 目次 1. Database Actionsに接続 2. DBMS_CLOUDパッケージの実行 所要時間 : 約10分 1. Database Actionsに接続 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 DBMS_CLOUDパッケージを使ったデータロードをワークシートで実行していきます。SQLをクリックしてください。 2. DBMS_CLOUDパッケージの実行 以下の1～5までの例を参考にコマンドを作成し、ワークシートに貼り付けスクリプトの実行をクリックし、データをロードします（集合ハンズオンセミナーでは講師の指示に従ってください) クレデンシャル情報の登録 クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、ADBにデータをロードしてみよう(Database Actions)の記事内のクラウド・ストレージからデータをロードしてみようを参照ください。 credential_name: DBに保存した認証情報を識別するための名前、任意 username: 上記で取得したOracle Object Storageにアクセスするための ユーザ名 password: 取得したAuth Token BEGIN DBMS_CLOUD.CREATE_CREDENTIAL( CREDENTIAL_NAME =&gt; 'USER_CRED', USERNAME =&gt; 'myUsername',...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb202-dataload-dbms-cloud/",
+        "teaser": "/ocitutorials/adb/adb202-dataload-dbms-cloud/img2.png"
+      },{
+        "title": "203: 分析系クエリの実行(Star Schema Benchmark)",
+        "excerpt":"はじめに この章ではAutonomous Databaseにおける分析系クエリの性能を確認します。 特に、インスタンスのOCPU数を増やした前後でのパフォーマンスを比較することで、簡単に性能が向上することをみていきます。 また、SQLの実行状況を確認するために、サービス・コンソールを操作いただきます。 目次 1. SSBスキーマを確認しよう データ・モデラーによる構成確認 各表の件数確認 2. OCPU数の違いによる処理時間の差を確認しよう OCPU=1の場合 OCPU=8の場合 3. 性能調査に使えるツールのご紹介 データベース・ダッシュボード パフォーマンス・ハブ 所要時間: 約40分 Star-Schema-Benchmark（SSB）とは？ ADBのインスタンスには、DWH系・分析系のサンプルスキーマとして以下が同梱されています。 Oracle Sales History（SHスキーマ） Star Schema Benchmark（SSBスキーマ） 上記のサンプルスキーマの特長 約1TB、約60億行のファクト表と、複数のディメンション表から構成 マニュアルには動作確認用のサンプルSQLも記載されている ADW、ATPの双方で利用可能（2022/10時点）- 本ガイドでは前の章で作成したAutonomous Transaction Processing(ATP) インスタンスの利用を前提に記載していますが、SSBのような分析系・DWH系のアプリケーションの場合、Autonomous Data Warehouse(ADW) をご選択いただくことを推奨しています。 ※サンプルスキーマの詳細についてはこちらを参照ください。 作業の流れ SSBスキーマを確認しよう OCPU数の違いによる処理時間の差を確認しよう サービスコンソール/SQL Monitorで処理内容を確認しよう 1. SSBスキーマを確認しよう データ・モデラーによる構成確認 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb203-bulk-query/",
+        "teaser": "/ocitutorials/adb/adb203-bulk-query/img0.png"
+      },{
+        "title": "204: 開発者向け仮想マシンのセットアップ方法",
+        "excerpt":"はじめに 後続のチュートリアルで利用する開発環境をセットアップしましょう。 Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージを提供しています。 本ページではその中から、開発者向けのLinux仮想マシンである Oracle Linux Cloud Developer イメージ をセットアップする手順を記載しています。 Oracle Linux Cloud Developer イメージは、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。 尚、Oracle Linux Cloud Developer イメージの詳細については こちら を参照ください。 またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の その3 - インスタンスを作成する の手順も併せてご確認ください。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること ※クレデンシャルウォレットのダウンロード方法については、104: ウォレットを利用してADBに接続してみよう の、1. クレデンシャル・ウォレットのダウンロード をご確認ください。 目次...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb204-setup-VM/",
+        "teaser": "/ocitutorials/adb/adb204-setup-VM/image_top.png"
+      },{
+        "title": "205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)",
+        "excerpt":"はじめに Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析系の処理だけでなく、バッチ処理、OLTP（オンライン・トランザクション）処理といった様々なワークロードに対応可能です。 この章ではOracle Databaseのベンチマークツールとして利用されることの多いSwingbenchを利用し、OLTP処理をATPで動かしてみます。 併せて、データベースの負荷状況に応じて自動的にCPUをスケールさせる、自動スケーリング（Auto Scaling）の動作を確認します。 目次 1.Swingbenchをセットアップしよう Swingbenchをダウンロード、データ生成 生成されたスキーマ・オブジェクトの確認 2.Swingbenchを実行し、OCPUをスケールアップしてみよう OCPU=1 (自動スケーリング無効) OCPU=4 (自動スケーリング無効) OCPU=4 (自動スケーリング有効) 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間: 約1時間30分 1.Swingbenchをセットアップしよう Swingbenchをダウンロード、データ生成 まずはSwingbenchを仮想マシン上にダウンロードし、ベンチマーク・データをADBインスタンス内に生成しましょう。 OCIで仮想マシンを作成する場合は、こちらの204: 開発者向け仮想マシンのセットアップ方法を参考にしてください。 Terminalを起動し、仮想マシンにopcユーザでログイン後、oracleユーザに切り替えます。 ssh -i &lt;秘密鍵のパス&gt; opc@&lt;仮想マシンのIPアドレス&gt; sudo su - oracle 作業用ディレクトリを作成します。 mkdir -p labs/swingbench 作業用ディレクトリに移動します。 cd labs/swingbench Swingbenchをダウンロードします。wgetもしくはcurlコマンドをご利用ください。（数分程度かかります。） wget https://github.com/domgiles/swingbench-public/releases/download/production/swingbench30092022.zip...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb205-swingbench/",
+        "teaser": "/ocitutorials/adb/adb205-swingbench/img0.jpg"
+      },{
+        "title": "206: Node.jsによるADB上でのアプリ開発",
+        "excerpt":"Node.jsはサーバサイドでJavaScript言語を実行するオープンソースの実行環境です。 node-oracledbドライバを利用することで、Autonomous Databaseに簡単に接続できます。 尚、JavaScriptのコーディングやNode.js自体の使い方を説明するものではありません。 所要時間 : 約20分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること labs.zip を手元のPCにダウンロード アップロード方法については こちら をご確認ください。 仮想マシン上に直接ダウンロードする場合は、次のコマンドを実行します。 wget https://oracle-japan.github.io/ocitutorials/adb/adb-data/labs.zip 目次 1. 事前準備 2. Node.js環境の確認 3. ADBに接続してみよう 4. ADB上のデータを操作してみよう 1. 事前準備 ネットワークセキュリティの設定変更 本章ではお手元のPCからインターネットを介して、Node.jsのアプリにポート3030で接続します（3030は変更可能）。 OCIではセキュリティ・リストと呼ばれる仮想ファイアウォールの役割を担うリソースがありますが、このセキュリティ・リストのデフォルトの設定では、こちらの接続は拒否されます。 ポート3030からの接続を可能にするには、事前に外部インターネットからこの接続を受け入れるためのイングレス・ルール(インバウンド・ルール)の設定、およびNode.jsが配置される仮想マシンのOSのFirewallの設定を行う必要があります。 ※ セキュリティ・リストに関する詳細な情報はこちら - イングレス・ルールの設定 メニューから ネットワーキング、仮想クラウド・ネットワーク を選択します。 作成済みの仮想クラウド・ネットワーク（ vcn01 ）を選択します。 （こちらの画面では、ADB_HOL_DEV_VCNとなっています） ※該当するVCNが表示されない場合は、適切なリージョンおよびコンパートメントが選択されていることをご確認ください。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb206-appdev-nodejs/",
+        "teaser": null
+      },{
+        "title": "207: PythonによるADB上でのアプリ開発",
+        "excerpt":"Pythonとは、汎用のプログラミング言語である。コードがシンプルで扱いやすく設計されており、C言語などに比べて、さまざまなプログラムを分かりやすく、少ないコード行数で書けるといった特徴がある。（ウィキペディアより引用） PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジュールを利用します。 尚、Python言語自体の使い方を説明するものではありません。 所要時間 : 約10分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること labs.zip をダウンロード アップロード方法については こちら をご確認ください。 目次 1. ADBに接続してみよう 2. ADB上のデータを操作してみよう 1. ADBに接続してみよう まずPythonでADBに接続し、ADBのバージョンを確認してみます。 尚、事前にこちらを実施し、SQL*plusで接続できていることを前提に記載しています。 Tera Termを利用してopcユーザで仮想マシンにログインします。 oracleユーザにスイッチします。一旦rootユーザに切り替えてから、oracleユーザに切り替えます。 -- rootユーザにスイッチ sudo -s -- oracleユーザにスイッチ sudo su - oracle ADBへの接続情報をOS環境変数として設定します。 export TNS_ADMIN=/home/oracle/labs/wallets export ORAUSER=admin export ORAPASS=Welcome12345# export...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb207-appdev-python/",
+        "teaser": null
+      },{
+        "title": "208: Oracle Machine Learningで機械学習をしよう",
+        "excerpt":"はじめに この章ではOracle Machine Learning(OML)の製品群の1つである、OML Notebookを利用して、DB内でデータの移動が完結した機械学習を体験して頂きます。 事前に前提条件にリンクされているサンプルデータのCSVファイルをお手元のPC上にダウンロードください。 （集合ハンズオンセミナーでは講師の指示に従ってください） 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされているファイルをダウンロードしていること liquid.csv order_items.csv 目次 準備編 OMLユーザを作成する 作成したOMLユーザのRESTサービスを有効化する データセットをADBにロードする liquid.csvをDatabase Actionsからロード order_items.csvをObject Storageにアップロード 機械学習編 OML Notebookを使い始める 機械学習モデルをビルド・評価する 所要時間: 約40分 準備編 OMLユーザを作成する ツールタブのOracle MLユーザ管理で、MLユーザを作成していきましょう。 ADBのADMINユーザの情報を入力し、サインインをクリックして下さい。 。。 +作成ボタンをクリックし、機械学習用のユーザを作成します。 ユーザーの情報を入力し、画面右上作成ボタンをクリックして下さい。 ユーザOMLが作成されたことを確認し、ADW詳細画面へ戻ります。 作成したOMLユーザのRESTサービスを有効化する 後述のデータロードをステップで、OMLユーザでDatabase Actionsを活用していきます。 OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにログインできないので、OMLユーザのRESTを有効化していきましょう。 ADBインスタンスを作成しようで学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。ツールタブから、データベース・アクションを開くをクリックしてください。 ADMINユーザでサインインして下さい。 Database Actionsのランディングページからデータベース・ユーザ...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb208-oml-notebook/",
+        "teaser": "/ocitutorials/adb/adb208-oml-notebook/img12.jpg"
+      },{
+        "title": "209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装",
+        "excerpt":"はじめに Autonomous Databaseの特権ユーザであるADMINユーザはデータベースの管理だけでなくデータベースの全データを参照することができます。しかし、セキュリティ面でそれを許可したくない場合もあります。 Oracle Database Vaultは職務分掌と最小権限の原則を実施し、アクセスポリシーを作成する専用ユーザとアカウント管理専用ユーザを設け、特権ユーザからそれらの管理権限を分離します。 それにより、特権ユーザであってもアクセスポリシーの操作やアカウント管理操作ができず、許可された場合のみしか別アカウントのデータへのアクセスができなくなります。 Oracle Database Vaultの詳細については、Oracle Database Vaultホームページやドキュメントをご覧ください。 本文書では、Autonomous DatabaseでOracle Database Vaultを有効化し、特権ユーザであるADMINユーザが他のユーザのデータにアクセスできないように設定をしてみます。 目次 : 1.テスト用の表を作成 2.Oracle Database Vaultの有効化 3.特権ユーザーの権限はく奪 4.アクセス制御の設定 5.動作確認 6.Oracle Database Vaultの無効化 前提条件 : テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、「101:ADBインスタンスを作成してみよう」 で作成したユーザADBUSERを利用しています。 SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Databasee Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、「204:マーケットプレイスからの仮想マシンのセットアップ方法」で作成できます。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。 使用パッケージの引数についての説明は記載していません。詳細はドキュメント『Oracle Database Vault管理者ガイド』（リンクは19c版です）をご参照くださいますようお願いいたします。 所要時間 : 約20分 1.テスト用の表を作成 サンプルスキーマのSSBスキーマのSUPPLIER表の一部を利用して、「101:ADBインスタンスを作成してみよう」 で作成したADBUSERスキーマにテスト用の表を作成します。 SQL*Plusを起動して以下を実行してください。 -- ADBUSERで接続する CONNECT...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb209-DV/",
+        "teaser": "/ocitutorials/adb/adb209-DV/DatabaseVault.png"
+      },{
+        "title": "210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装",
+        "excerpt":"はじめに Oracle DatabaseのEnterprise Editionでは、表単位より細やかな行や列単位でのアクセス制御をおこなうために、仮想プライベートデータベース(VPD：Virtual Private Database)というソリューションを提供しています。 たとえばひとつの表に複数のユーザーのデータがまとめて入っているような場合でも、それぞれのユーザーが表に全件検索を実施した時に自分のデータしか結果としてもどらないようにすることが可能です。 では、どのような仕組みでそれを実現しているのでしょうか。 実は、内部でSQLに対して自動的に動的な条件を付加しています。イメージで示してみましょう。 部門(Group)が経理部(FIN)の人と営業部(SALES)の人が同じ人事データの表（HR_DETAIL表）に対して同じSQLで検索を行います。しかし、データベース内部では、そのSQLに自動的にユーザーの属性にあわせた条件(Where句(赤字))を付加して実行しています。その結果、それぞれの所属部門に適した異なる結果が表示されるというわけです。 VPDはAutonomous Databaseでも利用できる機能です。基本的な設定、動作を試してみましょう。　　 目次 : 1.テスト用の表を作成 2.ユーザーを作成 3.VPDファンクションの作成 4.VPDファンクションをVPDポリシーとして適用 5.動作確認 6.VPDポリシーの削除 前提条件 : テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、「101:ADBインスタンスを作成してみよう」 で作成したユーザADBUSERを利用しています。 SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、「204:マーケットプレイスからの仮想マシンのセットアップ方法」で作成できます。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。 使用パッケージの引数についての説明は記載していません。詳細はドキュメント『PL/SQLパッケージ及びタイプ・リファレンス』（リンクは19c版です）をご参照くださいますようお願いいたします。 所要時間 : 約20分 1. テスト用の表を作成 サンプルスキーマのSSBスキーマのCUSTOMER表の一部を利用して、「101:ADBインスタンスを作成してみよう」 で作成したADBUSERスキーマにテスト用の表を作成します。 SQL*Plusを起動して以下を実行してください。 -- ADBUSERで接続する CONNECT adbuser/Welcome12345##@atp01_low -- SSB.CUSTEOMER表から新しくVPD_CUSTOMER表を作成する CREATE TABLE adbuser.vpd_customer AS SELECT *...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb210-VPD/",
+        "teaser": "/ocitutorials/adb/adb210-vpd/vpd.png"
+      },{
+        "title": "211: クローン機能を活用しよう",
+        "excerpt":"Autonomous Databaseのクローン機能を利用することにより、テスト/検証/分析用途の環境複製を、すぐに簡単に作成することができます。 本章では、このクローン機能についてフォーカスしていきます。 所要時間 : 約20分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 構成済みのADBインスタンスへ接続できることが確認できていること 目次： 1. ADBにおけるクローニングの概要 2. 事前準備 3. クローン環境を作成してみよう 4. クローン環境を確認してみよう 1. ADBにおけるクローニングの概要 ADBのクローニング機能は、コンソールまたはAPIを使用して利用することができます。 クローニング機能を使用することで、テスト・開発・分析などの目的でADBのポイントインタイム・コピーを作成できます。 ADBのクローンを作成する際には、クローンタイプ、クローン元のソースの選択、クローンのスペックや配置場所の決定などを行う必要があります。 各項目で設定する内容を順にご紹介します。 クローンタイプについて フルクローン：データベース全体の複製 ソース・データベースのメタデータとデータを含むデータベースが作成されます。 メタデータ・クローン：データベースのメタデータのみの複製 このオプションでは、ソース・データベースのメタデータのみを含むデータベースが作成されます。 メタデータ・クローンでは、格納されるデータはコピーしませんが、表定義や索引定義といったスキーマ定義、オブジェクト構成を引き継ぐクローンを作成します。 メタデータのみをコピーし、データはサンプルデータなどに置き換えることでOCPU数やストレージの使用を抑え、コストを削減することができます。 リフレッシュ可能クローン：更新可能なクローンの作成 ソース・データベースの変更を使用して、簡単に更新できるクローンが作成されます。 クローンを作成後にソース・データベースの任意の時間の状態に更新することができるクローンです。 任意の時間の状態に更新するには、バックアップから新しいクローンを作成するという方法もありますが、バックアップからデータをリストアする時間が必要であったり、新しいデータベースをプロビジョニングしなくてはならないなど手間や時間がかかってしまいます。リフレッシュ可能クローンを使用することにより、手軽に任意の時間の状態のクローンを取得することが可能です。 補足 その他、リフレッシュ可能クローンは次のような特長があります： 実⾏中インスタンスの更新を引き継ぐクローンを作成可能 1つのインスタンスに対して複数の更新可能クローンの作成が可能 他の部⾨、コンパートメント跨ぎでの共有が可能であり、コストの分散が可能（クエリ・オフロード） 1週間以内の更新が必要（1週間(168時間)を経過すると更新不可） そのまま読み取り専⽤のDBとして利⽤するか、ソースから切断して通常のR/W可能なインスタンスとしての利⽤が可能 ※詳細については マニュアル を参照ください。 クローンするソースについて...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb211-clone/",
+        "teaser": null
+      },{
+        "title": "212: Autonomous Data Guardを構成してみよう",
+        "excerpt":"はじめに Autonomous Databaseでは、Autonomous Data Guardと呼ばれる機能を使用して、スタンバイ・データベースを有効にする事ができます。これによって、Autonomous Databaseインスタンスにデータ保護およびディザスタ・リカバリを実現可能です。Autonomous Data Guardが有効になっている場合、フェイルオーバーやスイッチオーバーが可能なスタンバイ・データベースを提供します。 目次 Autonomous Data Guardの有効化 Autonomous Data Guardのスイッチオーバー 所要時間: 約30分 Autonomous Data Guardの有効化 Autonomous Databaseの詳細画面のAutonomous Data Guardのステータスが無効になっているのを確認後、有効化をクリックします。 Autonomous Data Guardの有効化をクリックします。 画面左上のATPマークが黄色に変化しました。Autonomous Data Guardにピアの状態が出現し、プロビジョニング中であることが確認できます。完了するまで待ってみましょう。 プロビジョニングが完了しました。ADB詳細画面のADB名の横にプライマリというステータスが確認できます。Autonomous Data Guardのところに記載されているピアの状態が、使用可能になりました。 ここで、ターミナルからADBにSQL Plusでログインしましょう。現在のプライマリDBの情報を下記のSQL文で確認します。 sqlplus admin/&lt;ADMINユーザのパスワード&gt;@&lt;ADBの接続サービス&gt; SELECT DBID, NAME, DB_UNIQUE_NAME FROM V$DATABASE; スイッチオーバーの前後でDBID、NAME、DB_UNIQUE_NAMEが変化することを確認したいと思うので、SQLの出力結果をメモ帳などにメモしておいてください。 Autonomous Data Guardのスイッチオーバー ADB詳細画面に戻り、スイッチオーバーをしていきます。Autonomous Data Guardからスイッチオーバーをクリックして下さい。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb212-audg/",
+        "teaser": "/ocitutorials/adb/adb212-audg/img1.jpg"
+      },{
+        "title": "213 : Application Continuityを設定しよう",
+        "excerpt":"はじめに Application ContinuityとはOracle Databaseの高可用性機能の一つであり、トランザクション実行中にエラーが発生した際に、そのエラーをアプリケーションに戻すことなく透過的にトランザクションを再実行する仕組みです。 Autonomous Database では接続サービス毎にApplication Continuity(AC)、もしくはTransparent Application Continuity(TAC)を有効化することができます。 クライアント側がAC/TACに対応していれば、障害発生時にクライアントとサーバーが独自にやり取りをしてCommit済みのトランザクションかどうかを判断し、もしCommitが完了していなければ自動的に再実行します。 尚、AC/TACに関する技術詳細は「こちら」をご参照ください。更新処理の途中で異常終了してしまったら何が起こるのか？と言った動作の詳細から対応可能なエラー、または対応するクライアントの種類やアプリケーションの実装方式について詳細に解説しています。 それでは、Autonomous DatabaseにおけるApplication Continuityの設定方法と具体的にエラーを発生させながらその動作について見ていきましょう。 尚、本チュートリアルで利用するSQL*PlusはAC/TACに対応しているクライアントの一つです。 本来であればRAC構成としてインスタンス障害やメンテナンスによる瞬断を想定したいところですが、ADBにおいてはそのような操作・設定はできないため、本チュートリアルでは接続中のセッションに対してAlter system kill session コマンドにて擬似的に障害を発生させ、動作確認を行います。 目次 : 1.事前準備 2.デフォルトの状態での動作確認 3.Application Continuityの有効化 4.有効化した状態での動作確認 5.Application Continuityの無効化 前提条件 : 「101:ADBインスタンスを作成してみよう」 を参考に、ADBインスタンス、およびADBUSERが作成済みであること SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL*Plusの環境は、「204:マーケットプレイスからの仮想マシンのセットアップ方法」で作成できます。 チュートリアルの便宜上、インスタンス名は「atp01」、各ユーザのパスワードはすべて「Welcome12345#」とします。 所要時間 : 約30分 1. 事前準備 動作確認のためTeraterm等の端末を2つ用意してください。それぞれADBUSERおよびADMINで作業します。 まず端末1でADBUSERにログインし、動作確認用の表を一つ作成しておきます。 sqlplus adbuser/Welcome12345##@atp01_tp --テスト表を削除（初回はエラーになります） drop table...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb213-tac/",
+        "teaser": "/ocitutorials/adb/adb213-tac/tac001.png"
+      },{
+        "title": "214 : Spatial Studio で地理情報を扱おう",
+        "excerpt":"はじめに Oracle Spatial Studio (Spatial Studioとも呼ばれます)は、Oracle Database のSpatial機能によって保存および管理されている地理空間データに対して接続、視覚化、調査および分析を行うためのフリー・ツールです。Spatial Studioは従来、Spatial and Graphとして有償オプションでしたが、現在はOracle Databaseの標準機能として追加費用なくご利用いただけます。 本記事では Spatial機能を用いた地理空間データの活用の方法をご紹介します。 目次 : 1. Oracle Spatial Studioのクラウド上での構築 2. 地理空間データを含むCSV形式ファイルのデータベースへのロード 3. 政府統計データのダウンロードとロード 4. Spatial Studioを用いた分析 おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約80分 1. Oracle Spatial Studioのクラウド上での構築 まず、Spatial Studioのメタデータを格納するリポジトリとなるデータベース・スキーマを作成します。これは、データセット、分析、プロジェクトの定義など、Spatial Studioで行う作業を格納するスキーマです。 1-1. リポジトリ用にスキーマを作成する OCIコンソールからDatabase ActionsでADMINユーザーとしてSpatial Studioリポジトリに使用するADBに接続します。 以下のコマンドでリポジトリ・スキーマを作成します。スキーマには任意の名前を付けることができます。ここではstudio_repoという名前で作成します。後の手順で使用するため、設定したパスワードをメモしておきます。 CREATE...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb214-spatial-studio/",
+        "teaser": "/ocitutorials/adb/adb214-spatial-studio/tokyo_boundary_image.jpg"
+      },{
+        "title": "215 : Graph Studioで金融取引の分析を行う",
+        "excerpt":"はじめに この記事は“Graph Studio: Finding Circular Payment Chains using Graph Queries Workshop” の記事と補足事項を日本語で解説した内容になります。 Graph Studioとは Autonomous Databaseには、2021年の5月ごろより、プロパティグラフを取り扱うことのできるGraph Studioが標準機能として搭載されました。 Graph Studioでは下記のような機能を利用可能です。 データベースに存在するグラフをメモリに読み込んで分析 リレーショナル表からグラフのモデルを作成するための自動変換 SQLのようにクエリができるPGQLでの分析アルゴリズム グラフの可視化機能 上記のような機能がGraph Studioには搭載されているため、簡単にクラウドのUI上で完結する形でプロパティグラフの作成や分析が可能になっています。 この記事で確認できること CSVファイルのデータをAutonomous Databaseにアップロードする方法(SQL Developer Web (Database Actions SQL)) Graph Studioへの接続方法 PGQLクエリ(グラフクエリ言語)を用いたグラフ作成方法 Graph Studioの分析用ノートブックの作成方法 PGQLクエリを使ってノートブック上でグラフをクエリ&amp;可視化方法 具体的な題材として、今回は金融トランザクションから、循環的な資金の流れを見つける分析を行います。 リレーショナル表からプロパティグラフへのデータの変換では、変換をほぼ自動で行ってくれる Graph Studio の機能を活用します。 目次 : 1.Graph Studio用のユーザーを作成 2.データの準備(取込み) 3.データの準備(整形)...","categories": [],
+        "tags": ["graph","PGQL","oraclecloud","autonomous_database"],
+        "url": "/ocitutorials/adb/adb215-graph/",
+        "teaser": null
+      },{
+        "title": "216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション",
+        "excerpt":"はじめに Autonomous Database(ADB)は、事前定義されたメンテナンス・ウィンドウの中でデータベースに自動的にパッチを適用します。ADBではこのパッチ適用によって性能劣化が生じない仕組みが実装されています。 それでもアプリケーションの性能劣化に不安がある場合に利用できるのが、先行してパッチを適用できるearly patchという機能です。パッチは毎週もしくは隔週で一斉に当てられますが、このearly patchでは通常より1週早く同じパッチが当てられます。テスト環境用ADBをearly patchで作成しておくことで、本番環境適用前にパッチ適用の影響テストを行うことができます。 ※early patchは、Ashburn・Phoenix・London・Frankfurtリージョンでのみ利用可能な機能です。(2022/1時点) 東京や大阪リージョンで利用したい場合は、担当営業までご相談ください。 また、ADBでは、Oracle Databaseオプション「Real Application Testing(RAT)」に含まれる機能の1つであるSQL Performance Analyzer(SPA)を使用することができます。 SPAを利用すると、システム変更前後のSQLワークロードの実行統計を比較して変更の影響を測定することができます。詳細はこちらをご覧ください。 Real Application Testing 参考資料 マニュアル：SQL Performance Analyzer 本記事では、early patchとSPAを併用することで、本番環境へのパッチ適用の影響をテスト環境で事前に確認する手順をご紹介します。 目次 : 1.環境の準備 2.SQLチューニングセット(STS)の作成 3.テスト環境用ADBのクローニング 4.STSの分析、レポートの作成 5.パッチ適用の事前通知（参考） 6.クリーンアップ（参考） 7.おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約60分 1. 環境の準備 1-1. 本番環境用ADBの作成 まずは本番環境用ADBであるATPprodを作成します。ADBの構成は以下になります。なお、本記事ではADBをはじめとする各リソースは全てAshburnリージョンで作成します。 ワークロード・タイプ：トランザクション処理 デプロイメント・タイプ：サーバーレス...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb216-patch-spa/",
+        "teaser": "/ocitutorials/adb/adb216-patch-spa/teaser.png"
+      },{
+        "title": "217: Database Actions を使ってみよう",
+        "excerpt":"はじめに この章はまずAutonomous Database(ADB) のツールである Database Actions の機能の中から、データ分析、データ・インサイト、カタログの機能を確認します。 Database Actions を使う前に、セキュリティを高めるため、実務と同じように、データベース管理者とは別の新しいユーザー（スキーマ）を作り、そのユーザーから Database Actions を使います。 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 以下にリンクされている売上実績サンプルデータのファイルをダウンロードしていること Days_Months.xlsx + Devices.xlsx + Countries.csv Movie_Sales_2020.csv 目次 1. 分析用のデータベース・ユーザーを作成しよう 2. ワークショップで使うデータを準備しよう 3. Database Actionsで操作してみよう 3-1. データ分析してみよう 3-2. データインサイトを生成しよう 3-3. カタログを使ってみよう 所要時間 : 約50分 1. 分析用のデータベース・ユーザーを作成しよう(Database Actions) ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、Database Actions を操作するデータベース・ユーザーを作成します。 ここではADBにおけるデータベース・ユーザーの作成してみます。 Database Actionsの起動パッドで...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb217-use-database-actions/",
+        "teaser": "/ocitutorials/adb/adb217-use-database-actions/img0_0.png"
+      },{
+        "title": "218 : リフレッシュ可能クローンを活用しよう",
+        "excerpt":"Autonomous Databaseのリフレッシュ可能クローンを利用すると、本番環境のデータを用いてリフレッシュすることができる、更新可能なテスト/検証/分析用途の環境を簡単に作成することができます。 本章では、リフレッシュ可能クローンの作成方法と動作について確認します。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本チュートリアルの 101:ADBインスタンスを作成してみよう を参照ください。 構成済みのADBインスタンスへの接続が可能であること 目次： 1. ADBにおけるリフレッシュ可能クローンの概要 2. 事前準備 3. リフレッシュ可能クローンを作成してみよう 4. 作成したリフレッシュ可能クローンを確認してみよう 5. リフレッシュ可能クローンのリフレッシュ動作を確認してみよう 6. リフレッシュ可能クローンをソース・データベースから切断してみよう 7. リフレッシュ可能クローンをソース・データベースに再接続してみよう 1. ADBにおけるリフレッシュ可能クローンの概要 ADBのリフレッシュ可能クローンは、コンソールまたはAPIを使用して作成することができます。 リフレッシュ可能クローンを使用することで、リフレッシュ操作によってソース・データベースの変更内容を反映することが可能なADBのクローンを作成できます。 ADBのリフレッシュ可能クローンは以下のような特徴があります。 実行中のAutonomous Databaseから作成可能（バックアップからの作成は不可） ソースとなるAutonomous Databaseと異なるコンパートメントに作成可能 ソースとなるAutonomous Databaseに接続している間は読み取り専用データベースとして利用可能 コンソールまたはAPIを使用したリフレッシュ操作により、ソース・データベースの変更内容を反映可能 リフレッシュ中は利用不可（ソース・データベースはリフレッシュ中も利用可能） リフレッシュ可能期間は、クローン作成後または前回のリフレッシュから1週間以内 1週間以上リフレッシュしなかった場合はリフレッシュできなくなる リフレッシュ可能期間を超えた場合は、そのまま読み取り専用DBとして利用するかソース・データベースから切断して通常の読み取り/書き込み可能なDBとして利用する ソースとなるAutonomous Databaseから一時的に切断し、再接続することが可能 切断後は読み取り/書き込み可能 再接続操作は切断後24時間以内のみ可能 再接続すると切断中のクローンに対する更新内容は破棄される 再接続後は切断前と同様に、リフレッシュ操作によりソース・データベースの変更内容を反映可能...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb218-refreshable-clone/",
+        "teaser": "/ocitutorials/adb/adb218-refreshable-clone/teaser.png"
+      },{
+        "title": "219: Automatic Indexingを体験してみよう ",
+        "excerpt":"はじめに 索引を手動で作成するには、データモデル、アプリケーションの動作、データベース内のデータの特性などに関する専門的な知識が必要です。 以前は、DBAがどの索引を作成するかの選択を担当しており、修正や保守を行っていました。しかし、データベースが変更されても保守しきれないこともあり、不要な索引を使用することが性能上の障害となる可能性がありました。 Autonomous Databaseではワークロードを監視して、自動的に索引の作成や削除などの管理を行う機能であるAutomatic Indexingが利用できます。 本記事では、ATPを作成したのちAutomatic Indexingを利用してみます。 前提条件： ATPインスタンスが構成済みであること ※ATPンタンスの作成方法については、ADBインスタンスを作成してみよう を参照してください。 ワークロード・タイプ： トランザクション処理 OCPU数： 1 ストレージ(TB)： 1 CPU Auto Scaling： 無効 それ以外の項目については、ご自身の環境や目的に合わせて選択してください。 目次： 1. スキーマ作成とAutomatic Indexingの有効化 2. ワークロードの実行 3. 自動索引のレポートを確認する 4. 自動索引の削除とAutomatic Indexingの無効化 おわりに 所要時間 : 約1時間 1. スキーマ作成とAutomatic Indexingの有効化 ここではテストスキーマを作成し、自動索引を有効化します。 1-1. SQL*PlusでADBに接続する SQL＊Plusを使った接続を参考に、TeraTerm上でSQL＊Plusを用いて、ATPインスタンスに接続してください。 接続する際のスキーマ名はADMINとしてください。 ここで、以前本チュートリアルを実施したことがある場合は、本章の4-1の手順2自動索引の削除を行ってください。初めて行う場合は、次のステップに進んでください。 1-2. 索引作成の対象になる表の作成と登録 （本チュートリアルを初めて実施する場合は、次のステップに進んでください。)...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb219-autoindexing/",
+        "teaser": "/ocitutorials/adb/adb219-autoindexing/adb219_3.png"
+      },{
+        "title": "301 : 移行元となるデータベースを作成しよう",
+        "excerpt":"はじめに 既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？ 従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは移行編としてそれらの方法をご紹介しています。 Autonomous Database を使ってみよう（移行編） 301: 移行元となるデータベースを作成しよう（本章） 302: スキーマ・アドバイザを活用しよう 303: Data Pumpを利用してデータを移行しよう [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）] 本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しBaseDBインスタンスを作成します。 目次 : 1.移行元となるBaseDBインスタンスの作成 2.移行対象となるサンプルスキーマ(HR)をインストール 3.サンプルスキーマ(HR)への接続、スキーマの確認 所要時間 : 約150分 (BaseDBインスタンスの作成時間を含む) 1. 移行元となるBaseDBインスタンスの作成 まず、「Oracle Cloud で Oracle Database を使おう(BaseDB)」 を参考に、BaseDBインスタンスを作成してください。 TeraTermを起動しBaseDBインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。 以降では、BaseDBインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です） ホスト名接頭辞 : dbcs01 データベースのバージョン：12.2 パスワード：WelCome123#123# PDBの名前：pdb1 2. 移行対象となるHRスキーマをインストール 次に作成したBaseDBインスタンス内に、移行対象となるHRスキーマを作成します。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb301-create-source-db/",
+        "teaser": "/ocitutorials/adb/adb301-tac/sa00x.png"
+      },{
+        "title": "302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう",
+        "excerpt":"はじめに Autonomous Databaseでは性能・可用性・セキュリティの観点から特定のデータベースオブジェクトの作成が制限されています。 具体的な制限事項はマニュアルに記載がございますが、これら制限対象のオブジェクトを利用しているかなどを確認するために、オラクルはCloud Premigration Advisor Tool(CPAT)というツールを提供しています。 この章では先の301: 移行元となるデータベースを作成しようにて事前に作成しておいたDBCSインスタンスを利用して、CPATの使い方を紹介します。 目次 : 1.Cloud Premigration Advisor Tool(CPAT)とは？ 2.事前準備 2-1.CPATを実行するホストの準備 2-2.ツールのダウンロード 2-3.環境変数の設定 3.実行と結果確認 前提条件 : My Oracle Supportへのログイン・アカウントを保有していること 301: 移行元となるデータベースを作成しようを完了していること 所要時間 : 約30分 1. Cloud Premigraiton Advisor Tool (CPAT) とは？ Oracle DatabaseインスタンスをOracleクラウドに移行する際に、問題になる可能性があるコンテンツや移行を妨げる可能性があるその他の要因をチェックするJavaベースのツールです。移行チェックのツールとして以前提供されていたスキーマ・アドバイザの後継となります。 スキーマ・アドバイザはデータベースにPL/SQLパッケージのインストールが必要でしたが、CPATは読み取り専用でデータベースに対して変更を与えることはありません。 サポート対象となるOracle Databaseのバージョンは11.2.0.4以降です（2022/3時点）。 また、現時点では物理移行のチェックはサポートされておらず、デフォルトでDataPumpによる移行が想定されています。 2. 事前準備 2-1. CPATを実行するホストの準備 ソース、ターゲットにネットワーク接続できるホストを準備します。CPATはWindowsプラットフォーム、Unixプラットフォームのどちらでも実行することができますが、Javaベースのツールとなるため、Java実行環境(JRE)が必要となります。最小バージョンはJava7です。 このチュートリアルでは作成済みのDBCSインスタンスをホストとして利用します。 2-2....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb302-cpat/",
+        "teaser": "/ocitutorials/adb/adb302-xxx/sa00x.png"
+      },{
+        "title": "303 : Data Pumpを利用してデータを移行しよう",
+        "excerpt":"はじめに Oracle Databaseのデータ移行として、ここでは従来からよく利用されるData Pumpを利用してAutonomous Databaseに移行する手順をご紹介します。 先の「301 : 移行元となるデータベースを作成しよう」にて事前に作成しておいたBaseDBインスタンス上のHRスキーマを、以下の流れに沿ってAutonomous Databaseに移行してみたいと思います。 目次 : 1.移行対象のスキーマをエクスポート 2.オブジェクトストレージへのアクセストークンを取得 3.ダンプファイルをオブジェクトストレージにアップロード 4.Autonomous Databaseへのインポート 補足 チュートリアルを実施する上で、BaseDBインスタンスを用意できない場合や、どうしてもエクスポートが成功しないと言った場合は、以下よりエクスポート済みのダンプファイルを配置しておりますので、適宜ダウンロードください。 上記ステップ2から実施いただくことが可能です。 ダンプファイル(export_hr_01.dmp)のダウンロード ダンプファイル(export_hr_02.dmp)のダウンロード ダンプファイル(export_hr_03.dmp)のダウンロード ダンプファイル(export_hr_04.dmp)のダウンロード 前提条件 : 「204: マーケットプレイスからの仮想マシンのセットアップ方法」を完了していること 「301 : 移行元となるデータベースを作成しよう」を完了していること 所要時間 : 約30分 1. 移行対象のスキーマをエクスポート HRスキーマをData Pumpを利用してBaseDBインスタンスのOS上のファイルシステムにエクスポートします。 （補足） 本チュートリアルではOCI BaseDBにプリインストールされているData Pumpを利用しますが、12.2.0.1以前のOracle Clientを利用する場合や、その他詳細情報についてはマニュアル（ADW / ATP）を参照ください。 パラレルオプションを利用する場合、ソースDBがEnterprise Editionである必要があります。 圧縮オプションを利用する場合、ソースDBが11g以上でありAdvanced Compression Optionが必要になります。 1-1....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb303-datapump/",
+        "teaser": "/ocitutorials/adb/adb303-xxx/img00x.png"
+      },{
+        "title": "304 : OCI Database Migration Serviceを使用したデータベース移行の前準備",
+        "excerpt":"はじめに Oracle Cloud Infrastructure Database Migration Service (DMS) は、オンプレミスまたはOCI上のOracle DatabaseからOCI上のデータベースに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。 DMSでは下記の2つの論理的移行が可能です。 オフライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。 オンライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。 DMSに関するチュートリアルは304 : OCI Database Migration Serviceを使用したデータベース移行の前準備、305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行、306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行の計3章を含めた3部構成となっています。 DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。 305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行または306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行を実施する前に必ず304 :...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb304-database-migration-prep/",
+        "teaser": "/ocitutorials/adb/adb304-database-migration-prep/teaser.png"
+      },{
+        "title": "305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行",
+        "excerpt":"はじめに Oracle Cloud Infrastructure Database Migration Service (DMS) は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。 DMSでは下記の2つの論理的移行が可能です。 オフライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。 オンライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。 DMSに関するチュートリアルは304 : OCI Database Migration Serviceを使用したデータベース移行の前準備、305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行、306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行の計3章を含めた3部構成となっています。 DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。 305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行または306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行を実施する前に必ず304...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb305-database-migration-offline/",
+        "teaser": "/ocitutorials/adb/adb305-database-migration-prep/teaser.png"
+      },{
+        "title": "306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行",
+        "excerpt":"はじめに Oracle Cloud Infrastructure Database Migration Service (DMS) は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。 DMSでは下記の2つの論理的移行が可能です。 オフライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。 オンライン移行 - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。 DMSに関するチュートリアルは304 : OCI Database Migration Serviceを使用したデータベース移行の前準備、305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行、306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行の計3章を含めた3部構成となっています。 DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。 305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行または306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行を実施する前に必ず304...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb306-database-migration-online/",
+        "teaser": "/ocitutorials/adb/adb306-database-migration-prep/teaser.png"
+      },{
+        "title": "401 : OCI GoldenGateによるBaseDBからADBへのデータ連携",
+        "excerpt":"はじめに Oracle Cloud Infrastructure (OCI) GoldenGateはフルマネージド型のリアルタイムデータ連携サービスとなっています。 OCI GoldenGateサービスは、構成、ワークロード・スケーリング、パッチ適用などの多くの機能を自動化しており、従量課金制で利用することが可能です。そのため時間や場所を選ばずに、低コストでデータの連携、分析ができるようになります。 この章では、OCI GoldenGateの作成とBaseDBからADBへのデータ連携の設定について紹介します。 目次 : 1.ソース・データベースの設定 2.ターゲット・データベースの設定 3.OCI GGデプロイメントの作成 4.データベースの登録 5.Extractの作成 6.チェックポイント表の作成 7.Replicatの作成 8.データ連携の確認 前提条件 : 本チュートリアルではBaseDB、ADBともにデータベースの作成が完了しており、初期データとしてHRスキーマがそれぞれのデータベースにロードされていることを前提にしています。 各データベースの作成方法やデータロードの方法は下記手順をご確認ください。 BaseDBの作成については、「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」 をご参照ください。 データ連携用のサンプルデータはHRスキーマを使用しています。BaseDBでのHRスキーマ作成方法は、「301: 移行元となるデータベースを作成しよう」 をご参照ください。 ADBの作成については、「101:ADBインスタンスを作成してみよう」 をご参照ください。 ADBの初期データロードについては、「303 : Data Pumpを利用してデータを移行しよう」 をご参照ください。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、BaseDBを含めて各ユーザのパスワードはすべて「Welcome#1Welcome#1」とします。 所要時間 : 約60分 1. ソース・データベースの設定...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb401-oci-goldengate/",
+        "teaser": "/ocitutorials/adb/adb401-oci-goldengate/instancetop.png"
+      },{
+        "title": "402 : Database Linkによるデータ連携",
+        "excerpt":"はじめに 従来からOracle Databaseをご利用の方にはお馴染みのDatabase Linkですが、Autonomous Database でもこのDatabase Linkをお使いいただくことが可能です。 Database Linkは、他のOracle Database インスタンスからデータを移行・連携・収集するための便利な機能です。 Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。 本文書では2のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、 他のOracle Database（リンク先）にアクセスする手順を記載します。 その後、補足と言う形でパターン1, 3についても記載します。 なお、本文書ではパブリックIPアドレスを持つBaseDBを前提としています。プライベートIPアドレスへのDatabase Link作成については、こちらの記事 で紹介しています。 ご不明な点がございましたら、担当営業までお問い合わせください。 目次 : 1.BaseDBインスタンスの作成およびスキーマのインポート 2.BaseDBにてTCPS認証（SSL認証）を有効化 3.BaseDBのウォレットファイルをADBに渡す 4.VCNのイングレス・ルールを更新 5.ADBにてDatabase Linkを作成 6.エラーへの対応例 7.その他のパターン 8.おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約100分（BaseDBのインスタンスの作成時間を含む） 1. BaseDBインスタンスの作成およびスキーマのインポート まず、サンプル・データベースとして、Database Linkのリンク先となるBaseDBインスタンスを作成します。 301 :...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb402-database-link/",
+        "teaser": "/ocitutorials/adb/adb402-database-link/DatabaseLink_teaser.jpg"
+      },{
+        "title": "403 : Data Transformsを使ってみよう",
+        "excerpt":"はじめに Data Transformsは、Autonomous Databaseに組み込まれているデータ統合ツールです。Database Actionsからアクセス可能で、異種のソースからAutonomous Databaseにデータをロードして変換するためのツールです。ドラッグアンドドロップ、ノーコードで簡単に操作できます。データウェアハウスの構築や分析アプリケーションへのデータ供給など、あらゆるデータ統合のニーズに対応できます。 Data TransformsはOracle Data Integratorをベースにしています。オンプレミスおよびOCIの両方で、多くのお客様において高性能なデータ統合アーキテクチャとして証明されている、ELT(Extract/Load/Transform)手法を使用しています。 本章ではAutonomous Databaseの付属ツールであるData Transformsを用いて、少ない労力でデータを変換する方法を紹介します。 所要時間 : 約60分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本チュートリアルの 101:ADBインスタンスを作成してみよう を参照ください。 構成済みのADBインスタンスへの接続が可能であること 下記リンクからダウンロードできるMovie Sales 2020.csv(売上実績のサンプルデータ)がローカルPC上にあること 217: クレデンシャル・ウォレットを利用して接続してみよう 目次： 1. 事前準備 2. Dara Transformsの起動 3. Data Transformsを使ってみる 4. おわりに 1. 事前準備 実際にData Transformsを使用する前に、起動したADBインスタンスから新しいユーザー(QTEAM)を作成し、本チュートリアルで使用するサンプルデータ(Movie Sales 2020.csv)をロードします。 次の手順に従って、QTEAMユーザーを作成します。すでに作っている場合は、ステップ2に進んでください。 下記のリンクを参考に、QTEAMユーザーを作成します。 分析用のデータベース・ユーザーを作成しよう(Database Actions) *ユーザーを作成の際に、付与されたロールから以下の2つのユーザーロールを、以下の画像のように有効にします。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb403-data-transforms/",
+        "teaser": "/ocitutorials/adb/adb403-data-transforms/adb403_2_4.png"
+      },{
+        "title": "501: OCICLIを利用したインスタンス操作",
+        "excerpt":"ここまでの章で、ADBインスタンスの作成やOCPU数の変更等、様々な操作を実施いただきましたが、これら一連の操作を自動化するにはどうしたら良いでしょうか？ ADBはOracle Cloud Infrastructure(OCI)の他のサービスと同様、REST APIを介した各種操作が可能であり、それらを呼び出すコマンド・ライン・インタフェース（OCI CLI）を利用した操作も可能です。 この章ではOCI CLIを利用してADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。 これらコマンドを利用しスクリプトを組めば、例えば夜間はあまり使わないからOCPUをスケールダウンさせておき、朝になったらスケールアップしよう。といった自動化が可能となります。 尚、本ガイドではOCI CLIがインストールされたOCI Developer Image を利用することを前提に記載しています。 OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを参照ください。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスに接続可能な仮想マシンを構成済みであること ※仮想マシンの作成方法については、本ハンズオンガイドの 204:マーケットプレイスからの仮想マシンのセットアップ方法 を参照ください。 目次： 1. OCI CLIをセットアップしよう 2. OCI CLIを使ってみよう 3. OCI CLIでインスタンスを操作しよう 1. OCI CLIをセットアップしよう まずはOCI CLIにクラウド環境の情報を登録します。 Tera Termを起動し、仮想マシンにログインします。 oracleユーザに切り替えます。 sudo su...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb501-ocicli/",
+        "teaser": null
+      },{
+        "title": "502: 各種設定の確認、レポートの取得",
+        "excerpt":"Autonomous Databaseは初期化パラメータを初め、多くの設定は変更することはできません。 （そもそも自律型DBとして、それらを気にする必要はない、というコンセプト） しかしながら、Oracle Databaseに詳しい方にとっては、これまでのOracle Databaseと何が違うのか？など、より詳細を知りたいと思われるかと思います。 この章ではそういった方々のために、初期化パラメータの確認やAWRレポート等の取得方法をご確認いただき、普段お使いのOracleデータベースと同様に扱えることを見ていただきます。 尚、Autonomous Databaseにおける制限事項については、次のマニュアルを参照ください。 経験豊富なOracle Databaseユーザー用のAutonomous Database (英語版) 経験豊富なOracle Databaseユーザー用のAutonomous Database (日本語版) ※最新の情報については英語版をご確認ください。 本章ではアラートログやトレースログの取得方法も扱いますが、ADBを利用するに際して何か問題が生じた場合は、弊社サポートサービスに対してサービスリクエスト（SR）の発行を優先ください。 SRの発行方法については、本チュートリアルガイドの 506: サポートサービスへの問い合わせ を参照ください。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスに接続可能な仮想マシンを構成済みであること ※仮想マシンの作成方法については、本ハンズオンガイドの 204:マーケットプレイスからの仮想マシンのセットアップ方法 を参照ください。 初期化パラメータ・各種レポート・ログの取得方法は、次の目次に示す３つの方法があります： 目次： 1. コマンドライン(SQL*Plus)で確認しよう 1-1. 初期化パラメータの確認 1-2. AWRレポートの確認 1-3. アラート・ログの確認 1-4. トレース・ログの確認 2. SQL...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb502-report/",
+        "teaser": null
+      },{
+        "title": "503 : ADBインスタンスの監視設定をしてみよう",
+        "excerpt":"はじめに Autonomous Databaseはデータベースの様々な管理タスクをADB自身、もしくはOracleが行う自律型データベースですが、ユーザーが実行したり、ユーザーがOracleに実行の方法やタイミングの指示を出すタスクもあります。それがデータベースのパフォーマンス監視/アラート監視です。本記事ではADBインスタンスに対する監視設定をいくつかご紹介します。 目次 : 1.技術概要 2.単体インスタンスの監視 3.複数のインスタンスをまとめて監視 おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 なお本記事では、後続の章でCPU使用率が閾値を超えた際の挙動を確認するため、OCPU数は1、auto scalingは無効 で作成しています。 所要時間 : 約40分 1. 技術概要 Autonomous Databaseに対する監視・通知を行うツールはいくつか存在します。環境やユーザーによって、適切なツールを選択します。以下はそれらの監視ツールの比較表です。 本記事ではこの中から、OCIモニタリング、サービス・コンソール、Oracle Enterprise Manager(EM)、Oracle Management Cloud(OMC)による監視設定をご紹介します。 2. 単体インスタンスの監視 単体のADBインスタンスに対しては、OCIモニタリングとサービス・コンソールを使ってメトリック監視/イベント監視をすることができます。 2-1. アラームの通知先の作成 監視設定の前に通知先を作成しておく必要があります。こちら を参考に、トピックの作成・サブスクリプションの作成を行います。 2-2. OCIモニタリングによるメトリック監視 OCIモニタリングでは、OCI上の各種リソースの性能や状態の監視、カスタムのメトリック監視を行うことが可能です。また、アラームで事前定義した条件に合致した際には、管理者に通知を行うことで管理者はタイムリーに適切な対処を行うことができます。 今回は、ADBのCPUの閾値を超えた際に通知が来るよう設定し、その挙動を確認します。 まずはこちらの記事 を参考に、アラームの通知先の作成をします。 次にアラームの定義の作成をします。ハンバーガーメニューのObservability &amp; Management の [アラーム定義] をクリックします。 [アラームの作成] をクリックします。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb503-monitoring/",
+        "teaser": "/ocitutorials/adb/adb503-monitoring/monitoring_teaser.png"
+      },{
+        "title": "504 : 監査をしてみよう",
+        "excerpt":"はじめに Oracle Databaseではデータベースに対する操作を記録する監査機能が提供されています。12cからは従来の監査機能（DBA監査、標準監査、ファイングレイン監査）を統合した統合監査が利用できるようになりました。 データベース監査機能についての詳細はこちらのドキュメントをご覧ください。 Autonomous Databaseは、統合監査を利用した、いくつかの監査設定があらかじめ行われています。また必要に応じて任意の監査設定を追加できます。 この章では、Autonomous Databaseの監査設定と監査レコードの管理について紹介します。 目次 : 1.デフォルトの監査設定の確認 2.任意の監査設定の追加 3.監査対象の操作を実行（監査レコードの生成） 4.監査レコードの確認 5.任意の監査設定の無効化 6.監査レコードの削除 前提条件 : 監査対象の表は任意のスキーマの表でも構いませんが、ここでは、「102:ADBにデータをロードしよう(Database Actions)」 で作成したADBUSERスキーマのSALES_CHANNELS表を利用しています。 SQLコマンドを実行するユーザー・インタフェースは、接続の切り替えが容易なので、SQL*Plusを利用していますが、Database Actionsでも実行可能です。ユーザーでの接続をログインに読み替え、必要なユーザーでログインしなおしてください。なお、 SQL*Plusの環境は、「204:マーケットプレイスからの仮想マシンのセットアップ方法」で作成できます。 チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。 使用パッケージの引数の説明は記載していません。詳細はドキュメント『PL/SQLパッケージ及びタイプ・リファレンス』（リンクは19c版です）をご参照ください。 所要時間 : 約20分 1. デフォルトの監査設定の確認 統合監査では、監査対象を監査ポリシーで定義し、定義された監査ポリシーを有効化することで監査レコードが生成されます。 Autonomous Databaseにはよく利用される監査対象用に事前定義済みの監査ポリシーがあり、そのうち4つがデフォルトで有効化されています。 作成済みの監査ポリシーはUNIFIED_AUDIT_POLICIESビュー、有効化された監査ポリシーはAUDIT_UNIFIED_ENABLED_POLICIESビューで確認することができます。 SQL*Plusを起動して以下を実行してください。 -- ADMINで接続する CONNECT admin/Welcome12345##@atp01_low -- SQL*Plusのフォーマット用コマンド set pages 100 set lines 200 col...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb504-audit/",
+        "teaser": "/ocitutorials/adb/adb504-audit/unifiedaudit.png"
+      },{
+        "title": "505 : Autonomous Databaseのバックアップとリストアを体感しよう",
+        "excerpt":"はじめに Autonomous Databaseでは自動的バックアップがオンラインで取得され、60日間保持されます。自動バックアップは、60日ごとに完全バックアップ、週次累積バックアップ、日次増分バックアップです。インスタンス構成時にデフォルトで有効化されており、無効化することはできません。また、Autonomous Databaseの自動バックアップはオブジェクトストアに出力されますが、それに対する課金はございません。 ユーザ自身がGUIやAPIを介して特定時点にリストアすることが可能です。本チュートリアルにおいても、Point-in-timeリカバリを実施いたします。 （補足） バックアップ操作中は、データベースは使用可能なままです。ただし、データベースの停止、スケーリング、終了などのライフサイクル管理操作は無効化されます。 目次 : 自動バックアップの確認 データベースに表を新規作成 タイムスタンプをUTCで確認 Point-in-timeリカバリ おわりに 前提条件 ADBインスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約30分 自動バックアップの確認 Autonomousa Databaseの詳細画面 下にスクロールして、画面左側のタブのバックアップをクリックし、これまでバックアップ履歴を確認します。 自動バックアップが日時で取られているのが確認できます。 特に設定を行わずとも、自動バックアップが構成されています。 全て増分バックアップになっており、60日ごと取得されているフルバックアップが無いのでは？と思われたかもしれませんが、こちらは誤りではなく、フルバックアップはRMANでは増分バックアップのLevel0となるので、この一覧では全て増分バックアップとして表示されております。 なお、Autonomous Databaseでは、1分ごとにアーカイブログがバックアップされています。(ADB-Dでは15分ごと) 60日前までの任意のタイミングにタイミングにリストア・リカバリが可能になっています。 RMANを利用しており、ブロック破損のチェックも同時に行われているため信頼できるバックアップになっています。 また、Autonomous Databaseでは、これらのバックアップを格納しておくストレージストレージの追加コストは不要です。 データベースに表を新規作成 では、この段階で新規でEmployee表を作成し、１行をインサートしてみます。 データベースの詳細画面のデータベース・アクションをクリックします。 開発のSQLをクリックします。 SQLワークシートにて、下記のSQLを実行し、Employees表を新規作成します。 CREATE TABLE EMPLOYEES ( FIRST_NAME VARCHAR(100), LAST_NAME VARCHAR(100) ); SQLワークシートにて、下記のSQLを実行し、Employees表に新規で行インサートします。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb505-backup/",
+        "teaser": "/ocitutorials/adb/adb505-backup/img2.png"
+      },{
+        "title": "506: サポートサービスへの問い合わせ(Service Requestの起票)",
+        "excerpt":"はじめに Oracle Cloud 製品をご利用のお客様は、ポータルサイト「My Oracle Support (Cloud Support)」 を介して、Oracle製品に関するナレッジの検索や、製品仕様の確認、不具合に関するお問い合わせを行っていただけます。 本ページでは、Autonomous Databaseを例に、そういった各種お問い合わせのためのサービス・リクエスト（Service Request ：SR）の作成フローをご紹介します。 尚、実際の利用に際しては本ページ後半の参考資料に記載しております、弊社サポート部門からのガイドをご確認いただくようお願いいたします。 Oracle Cloudでは通常契約の他に無償でお試しいただけるFree Tierを用意しています。Free Tierには期間/利用クレジットが限定される「30日間無償トライアル」とAlways Freeリソースを対象とした「常時無償サービス」が含まれますが、「常時無償サービス」のみご利用の場合はOracle Supportの対象にならず、問い合わせを上げることはできません。詳細はOracle Cloud Free Tierに関するFAQにて “ Oracle Cloud Free Tierにはサービス・レベル契約（SLA）とテクニカル・サポートが含まれていますか? “ をご覧ください。 2021年初頭のサービス・アップデートにより、OCIコンソール画面からもSRを作成、閲覧、更新ができるようになりました。OCIコンソール画面からのSR起票については別の文書でご案内する予定です。本ページでは「My Oracle Support (Cloud Support)」を利用したSR起票について説明します。 目次 1.Cloud Supportのアカウントを用意する 2.問い合わせ対象のAutonomous Databaseの情報を確認する Domain name/Cloud Account nameの確認 Data Center Location、Database Name、Database OCID、Tenancy OCIDの確認...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb506-sr/",
+        "teaser": "/ocitutorials/adb/adb506-sr/img1.jpg"
+      },{
+        "title": "601: ADWでMovieStreamデータのロード・更新をしよう",
+        "excerpt":"はじめに データのロード、変換、管理、そして分析まで、全てを1つのデータベースで行うことができるのが、Autonomous Data Warehouseです。このチュートリアルを参考に、ぜひ一度”完全自律型データベース“を体験してみてください。 本記事では、MovieStreamデータを使い、データのロード・処理方法を実際のビジネスシナリオに近い形でご紹介します。 想定シナリオ： Oracle MovieStreamは、架空の映画ストリーミングサービスです。 MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適切な提供価格などのデータ分析を行いたいと考えています。 前提条件： ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 目次： 1. ADWへのMovie Salesデータのロード 2. Movie Salesデータの更新 おわりに 所要時間 : 約1時間 1. ADWへのMovie Salesデータのロード 1-1. ADWインスタンスの作成 まずはADWインスタンスを作成します。101:ADBインスタンスを作成してみよう を参考にしながら、以下の条件で作成します。 ワークロード・タイプ： データ・ウェアハウス OCPU数： 8 ストレージ(TB)： 1 CPU Auto Scaling： 許可 それ以外の項目については、ご自身の環境や目的に合わせて選択してください。 1-2. Movie Salesデータのロード ADWでは、ニーズに応じて様々な方法でデータをロードすることができます。本記事では、簡単なスクリプトを使用してオブジェクトストレージからデータをロードします。 ADWに接続サービスHIGHで接続し、以下のスクリプトを実行します。実行すると、MOVIE_SALES_FACT表が作成されます。 CREATE TABLE MOVIE_SALES_FACT...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb601-moviestream-load/",
+        "teaser": "/ocitutorials/adb/adb601-moviestream-load/teaser.png"
+      },{
+        "title": "602: ADWでMovieStreamデータの分析をしよう",
+        "excerpt":"はじめに データのロード、変換、管理、そして分析まで、全てを1つのデータベースで行うことができるのが、Autonomous Data Warehouseです。このチュートリアルを参考に、ぜひ一度”完全自律型データベース“を体験してみてください。 本記事では、MovieStreamデータを使い、データの分析方法を実際のビジネスシナリオに近い形でご紹介します。 想定シナリオ： Oracle MovieStreamは、架空の映画ストリーミングサービスです。 MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適切な提供価格などのデータ分析を行いたいと考えています。 前提条件： ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、101:ADBインスタンスを作成してみよう を参照ください。 601: ADWでMovieStreamデータのロード・更新をしようのチュートリアルを完了していること 目次： 1. Movie Salesデータの分析 2. 半構造化データの処理 3. テキスト文字列の処理 4. 最も重要な顧客の発掘 5. パターンマッチング機能の利用 6. 機械学習モデルのご紹介 おわりに 所要時間 : 約1.5時間 1. Movie Salesデータの分析 1-1. 結果キャッシュによる実行時間の短縮 まずは、年と四半期ごとの映画の総売上高を調べるシンプルなクエリを実行してみましょう。 SELECT year, quarter_name, SUM(quantity_sold * actual_price) FROM movie_sales_fact WHERE YEAR =...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb602-moviestream-analysis/",
+        "teaser": "/ocitutorials/adb/adb602-moviestream-analysis/teaser.png"
+      },{
+        "title": "603 : データ・カタログを使ってメタデータを収集しよう",
+        "excerpt":"はじめに 昨今、多くの企業が自社の持つデータを分析してビジネスに役立てようとしています。しかし実際のところ、分析シナリオに最適なデータ準備やデータの把握、管理が困難で、データマネジメントには多くの課題が存在しています。 Oracle Cloud Infrastructure Data Catalogは、そのような企業データのフルマネージドのデータ検出および管理を行うソリューションです。Data Catalogを使うと、技術、ビジネスおよび運用に役立つメタデータを管理するための単一のコラボレーション環境を作成できます。データを必要とする誰もが、単一のインタフェースから、専門知識不要でデータを検索することができます。 Data Catalogの主要な機能 メタデータの収集：カタログ化したいデータストア（データベースやオブジェクトストレージ）を指定し、Data Catalogの中にメタデータを抽出します。定期的にスケジュール実行も可能です。 データへのタグ付け：表や列、ファイルなどのデータを論理的に識別するためのキーワード（自由書式）を設定できます。これにより、特定のキーワードでタグ付けされた全てのデータを検索することができます。 ビジネス用語集：組織内であらかじめ決められた用語を使って、データに検索、分類のための目印を付与することができます。 データの検索：SQLやRESTではなくキーワードでの検索、表名・列名・ファイル名での検索、特定のタグやビジネス用語に合致するデータの検索を全て行うことができます。 目次 : 1.データの準備 2.データ・カタログの作成 3.Autonomous Databaseからメタデータを収集 4.Object Storageからメタデータを収集 5.ビジネス用語集とカスタム・プロパティの作成 6.メタデータの補完 7.データの検索 8.おわりに 前提条件 Autonomous Data Warehouse(ADW)インスタンスが構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 Data Catalogを使用するためのユーザーグループ、ポリシーが設定済みであること ※本チュートリアルを進めるうえで必要なポリシーはこちらを参照ください。 所要時間 : 約2時間 1. データの準備 データ・カタログのタスクを行うために必要なデータベース・オブジェクトをSQLスクリプトを実行することで作成します。 ADMINユーザーでADWに接続し、以下のスクリプトを実行して、sales_historyというユーザーを作成します。 CREATE USER sales_history IDENTIFIED BY Welcome12345#;...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb603-data-catalog/",
+        "teaser": "/ocitutorials/adb/adb603-data-catalog/3-1.png"
+      },{
+        "title": "ADB-Dの環境を作成してみよう",
+        "excerpt":"目次 1. Autonomous Database Dedicated (ADB-D)とは？) 2. 環境を作成してみよう 2-1. 利用イメージ（構成図） 2-2. Exadata Infrastructureの作成 2-3. ネットワーク設定 2-4. Autonomous Exadata VMクラスタの作成 2-5. Autonomous Container Databasesの作成 2-6. Autonomous Databaseの作成 3. 作成したADBに接続してみよう 所要時間 : 約6時間程程度　※プロビジョニング時間を含みます 1. Autonomous Database Dedicated (ADB-D)とは？ Autonomous Databaseは共有型・専有型の２つのデプロイメント方式をご用意しています。 共有型のShared Exadata Infrastructure(ADB-S)はインフラストラクチャとなるExadataを共有する環境、専有型のDedicated Exadata Infrastructure(ADB-D)はExadataをお客様が専有する環境です。 ADB-Dは、複数のADBを利用するような大規模なシステムや、セキュリティ上の制約によって他のお客様との同居が許されないようなシステムで使用されることが多くなっています。 さらにADB-Dでは専有環境の持ち方として、OCIにデプロイする方式とお客様データセンターに配置できるCloud@Customer(C@C)を利用したデプロイメント方式があります。 Cloud@Customerは、データをパブリッククラウドに持ち出すことができなかったり、アプリケーションからのネットワークレイテンシが問題となるようなお客様にご利用いただくことの多いデプロイメント方式です。 本チュートリアルでは、OCI上にADB-Dのデプロイメントを行います。 ADB-Sとの違いは？ ADB-SもADB-DもAutonomous Databaseを使用している点は同じなので、その特徴である高性能・高可用性・高いセキュリティというところは変わりません。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb701-adbd/",
+        "teaser": null
+      },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(BaseDB)",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから Oracle Database → Oracle Base Database (VM, BM)...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs101-create-db/",
-        "teaser": "/ocitutorials/database/dbcs101-create-db/img11.png"
+        "teaser": "/ocitutorials/basedb/dbcs101-create-db/img11.png"
       },{
         "title": "102: BaseDB上のPDBを管理しよう",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure の上で稼働する Oracle Database の PDB を OCI コンソールから停止したり、起動したり、既存 PDB からクローンするなどの操作が簡単に行う事が可能です。この章では実際にどのように操作するのか確認していきます。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. PDB を起動・停止してみよう 2. PDB を新規作成してみよう 3. 既存 PDB からクローン PDB を作成してみよう 所要時間 : 約15分 1. PDB を起動・停止してみよう まずは、コンソール上で作成済みの PDB を確認する画面への遷移、および...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs102-managing-pdb/",
-        "teaser": "/ocitutorials/database/dbcs102-managing-pdb/img13.png"
+        "teaser": "/ocitutorials/basedb/dbcs102-managing-pdb/img13.png"
       },{
         "title": "103: パッチを適用しよう",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)では、OS以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。 ここでは、DatabaseとGrid Infrastructureに対するそれぞれのパッチ適用方法についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること パッチ適用対象の Oracle Database に対して最新RU/RURが適用されていないこと 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. 現在のバージョンを確認しよう 2. Grid Infrastructure にパッチを適用しよう 3. Database にパッチを適用しよう 所要時間 : 約15分 1. 現在のバージョンを確認しよう まずは、コンソール上で作成済みの Database と Grid Infrastructure のバージョンを確認していきましょう。 コンソールメニューから Oracle Database → Oracle Base Database...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs103-patch/",
-        "teaser": "/ocitutorials/database/dbcs103-patch/img11.png"
+        "teaser": "/ocitutorials/basedb/dbcs103-patch/img11.png"
       },{
         "title": "104: 自動バックアップを設定しよう",
         "excerpt":"はじめに サービスを利用していくにあたり、利用している環境のインスタンスやデータが壊れてしまった場合や、過去の時点にデータを戻したい場合など、何か起きた時のデータ復旧のためにバックアップやリカバリについての検討は重要です。 BaseDB では、RMANを利用した自動バックアップ機能が利用可能で、リカバリも最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。 ここでは、OCI コンソールから自動バックアップを構成するまでの手順についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. 自動バックアップの前提条件を確認する 2. 自動バックアップの設定をしよう 3. 自動バックアップの設定を変更しよう 4. オンデマンド・バックアップを取得しよう 5. 取得したバックアップを確認しよう 所要時間 : 約30分 1. 自動バックアップの前提条件を確認する まずは設定するにあたり前提条件を確認してみましょう。 オブジェクト・ストレージに取得することを前提にまとめています。DBシステム内(FRA)にとる場合など、CLI(dbcli)で設定する場合には、バックアップはコンソールからの管理対象外となります。 必要なエディション 自動バックアップ機能は全エディションで利用可能 並列実行(チャネル数やセクション・サイズの指定など)や高速増分バックアップなどを使う場合にはEnterprise Edition以上が必要 ※特にリストア時間(RTO)の観点で、並列処理でのリストアができることはメリットになります。RTOが厳しい場合には、Enterprise Edition以上をおすすめします。 Oracle Cloudのインフラ側の前提条件 管理ユーザーのIAMサービス・ポリシーでの権限が付与済 DBシステムからオブジェクト・ストレージへのアクセス設定(VCNでサービス・ゲートウェイの利用がおすすめ) DBシステムとデータベースの状態 自動バックアップの機能が動作するためには、データベースが下記の状態である必要があります。下記の状態ではない場合、バックアップジョブが失敗する可能性があるのでご注意ください。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs104-backup/",
-        "teaser": "/ocitutorials/database/dbcs104-backup/11.PNG"
+        "teaser": "/ocitutorials/basedb/dbcs104-backup/11.PNG"
       },{
         "title": "105: バックアップからリストアしよう",
         "excerpt":"はじめに BaseDB では、自動バックアップ機能やオンデマンドバックアップにて取得したバックアップを利用する事で、最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。 また、バックアップ元のデータベースに対してリストアするだけでなく、別DBシステム上にリストアする事も可能です。 ここでは、OCI コンソールからリストアする手順についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 自動バックアップを設定しよう を通じてバックアップを取得していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. バックアップ元のデータベースに対してリストア 2. バックアップから新規データベースとしてリストア 3. オンデマンドバックアップを使用したリストア 所要時間 : 約30分 1. バックアップ元のデータベースに対してリストア まずはバックアップ元のデータベースに対してリストアしてみましょう。 リストア方法には下記3つがありますので、リストアしたい地点に応じてどのリストア方法を利用するか検討してください。 最新にリストア データ損失の可能性が最も低い、直近の正常な状態にデータベースをリストアします。 タイムスタンプにリストア 指定した日時にデータベースをリストアします。 SCNにリストア SCNを使用してデータベースをリストアします。 有効なSCNを指定する必要がありますので、データベース・ホストにアクセスして問い合せるか、オンラインまたはアーカイブ・ログにアクセスして使用するSCN番号を確認してください。 コンソールメニューから Oracle Database → Oracle Base Database...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs105-restore/",
-        "teaser": "/ocitutorials/database/dbcs105-restore/restore00.png"
+        "teaser": "/ocitutorials/basedb/dbcs105-restore/restore00.png"
       },{
         "title": "106: Data Guardを構成しよう",
         "excerpt":"はじめに Data Guardは、Oracle Database自身が持つレプリケーション機能です。 プライマリDBの更新情報（REDOログ）をスタンバイDBに転送し、そのREDOログを使ってリカバリし続けることでプライマリDBと同じ状態を維持します。 リアルタイムに複製データベースを持つ事ができる為、データベース障害やリージョン障害などのRTO/RPOを短くすることができ、広範囲な計画停止(メンテナンス)においても切り替えることによって停止時間を極小化することが可能で、災害対策(DR)としてのデータ保護はもちろんのこと、移行やアップグレードの停止時間短縮といった利用用途もあります。 また、参照専用として利用可能なActive Data Guardにしたり、一時的に読み書き可能なスナップショット・スタンバイとして利用したりと、普段から利用可能なスタンバイDBを持つことができます。 ここでは、OCI コンソールから Data Guard を構成するまでの手順についてご紹介します。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. OCI上でのData Guard構成パターン 2. Data Guardを構成する為の前提条件 3. Data Guardの構成手順 4. Data Guardの切り替え 5. Data Guard構成に含まれるDBの削除方法 所要時間 : 約60分 1. OCI上でのData Guard構成パターン Oracle Cloud上でData Guardを利用する際の基本的な構成については、大きく分けて３つのパターンがあります。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs106-dataguard/",
-        "teaser": "/ocitutorials/database/dbcs106-dataguard/dataguard08.png"
+        "teaser": "/ocitutorials/basedb/dbcs106-dataguard/dataguard08.png"
       },{
         "title": "201: オンプレミスのPDBをBaseDBに移動しよう",
         "excerpt":"はじめに Base Database Service (BaseDB)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。 CDBで構成されているオンプレミスのデータベースからBaseDBへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。 ここでは、オンプレミスのデータベース(19.12.0.0.0)からBaseDB(19.12.0.0.0)へPDBを移行する手順をご紹介します。 前提条件 : 移行元のデータベースがCDBで構成されていること Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 目次 1. 移行元のデータベースからPDBをアンプラグする 2. BaseDBにPDBをプラグする 3. 表領域の暗号化を行う 所要時間 : 約1時間30分 1. 移行元のデータベースからPDBをアンプラグする まずは移行元のデータベースから、移行対象のPDBをアンプラグします。 アンプラグはDatabase Configuration Assistantツールを使って行う事も可能ですが、今回はコマンドでの実施手順を紹介します。 対象PDBの構成確認します PDBの移動にあたってデータファイルをBaseDBに持っていく必要があります。 まずは下記SELECT文にて対象PDBで使用しているデータファイルのディレクトリを確認します。 alter session set container=&lt;pdb_name&gt;; select tablespace_name, file_name from dba_data_files; （作業イメージ） 対象PDBをクローズします...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs201-pdb-plug/",
-        "teaser": "/ocitutorials/database/dbcs201-pdb-plug/pdb-plug05.png"
+        "teaser": "/ocitutorials/basedb/dbcs201-pdb-plug/pdb-plug05.png"
       },{
         "title": "準備 - Oracle Cloud 無料トライアルを申し込む",
         "excerpt":"Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。 ※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)      Oracle Cloud 無料トライアル サインアップガイド   Oracle Cloud Free Tierに関するFAQ  ","categories": [],
@@ -609,49 +897,49 @@ var store = [{
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) は、Oracle Databaseが高い可用性を備えつつ高いパフォーマンスを発揮できるOracle Exadata Database Machine (Exadata)が利用可能なサービスです。同じようにOCI上でExadataを利用可能なサービスとしては、Autonomous Data WarehouseやAutonomous Transaction Processing などのAutonomous Databaseのサービスがありますが、ExaDB-D が他のサービスと大きく違うところは、全オプションが使える専有型のUser-Managedサービスであるということです。 専有型 : H/Wもユーザー専有となり、他のユーザーの環境と分離されるため、セキュリティ・性能を担保できます。 User-Managed サービス : OS以上は顧客管理。OS上の構築・運用・管理に有効な機能を、クラウドのツールでも提供。パッチ適用やメンテナンスの実施判断・作業タイミングは顧客判。OSログインが可能でこれまで同様の管理方法を用いることができる (OS権限が必要な変更作業、サード・パーティのAgentの導入、ローカルにログやダンプファイルの配置など)ので、別途インスタンスやストレージサービスを立てる必要はありません。 また、オンライン・スケーリング (停止なし)での1時間単位での柔軟な価格体系、デフォルトでの可用性構成や容易に高可用性構成が組めること、PaaSとしてのプロビジョニングや管理面などのメリットがあります。 目次 : 1. Exadata Infrastructureの作成 2. Exadata VMクラスタの作成 3. データベースの作成 4. DBシステムへのアクセス 5. データベース(PDB)へのアクセス 6. PDB上のスキーマへのアクセス...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/",
-        "teaser": "/ocitutorials/database/exadb-d101-create-exadb-d/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
       },{
         "title": "102 : ExaDB-D上のPDBを管理しよう",
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、Oracle Cloud Infrastructureの上で稼働するOracle DatabaseのPDBをOCIコンソールから停止したり、起動したり、既存PDBからクローンするなどの操作が簡単に行うことが可能です。この章では実際にどのように操作するのか確認していきます。 目次 : 1. PDBの起動・停止 2. PDBの新規作成 3. PDBクローンの作成 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること 所要時間 : 約1時間 1. PDBの起動・停止 OCIコンソール・メニューから Oracle Database → Oracle Public Cloud上のExadata に移動します。 利用したいコンパートメントをリスト範囲のコンパートメントから選択します。 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、リージョンの一覧から選択します。 操作したいPDBを持つExadata VMクラスタの表示名をクリックします。 データベースの一覧から対象のデータベースの名前をクリックします。 リソースの一覧からプラガブル・データベースをクリックします。 操作したいPDBの右側にある・・・メニューをクリックして、停止をクリックします。 確認画面が表示されたら、PDBの停止をクリックします。 操作したPDBの状態が更新中に変化します。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d102-manage-pdb/",
-        "teaser": "/ocitutorials/database/exadb-d102-manage-pdb/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d102-manage-pdb/teaser.png"
       },{
         "title": "103 : 自動バックアップを設定しよう",
         "excerpt":"はじめに サービスを利用していくにあたり、利用している環境のインスタンスやデータが壊れてしまった場合や、過去の時点にデータを戻したい場合など、何か起きた時のデータ復旧のためにバックアップやリカバリについての検討は重要です。 Oracle Databaseのバックアップ操作に対して次の3つのオプションが提供されます。ただし、これらのオプションの混在はサポートされていません。 オプション1：Oracle管理バックアップ 1回かぎりの構成に基づいて、ExaDB-Dによって完全に管理されます。完全に統合されたintoExaDB-DであるControl Planeに加えて、OCI APIを介してバックアップにアクセスすることもできます。Oracleではこちらのオプションをお薦めしています。 オプション2：ユーザ構成バックアップ お客様は、dbaascli database backupおよびdbaascli database recoverコマンドを使用してホストからバックアップを構成することができます。ただし、バックアップはControl Planeと同期されず、OCI APIと統合されません。また、バックアップに対する管理操作もライフサイクル操作は、サービス・コントロール・プレーン・コンソールからサポートされていません。 オプション3：RMANを使用したバックアップ お客様が所有するカスタマイズ・スクリプトとともにRMANを使用してバックアップを直接取得できます。RMANを使用してバックアップする場合は、バックアップ自動化からデータベースの登録を解除する必要があります。 以上のオプションについての詳細はバックアップおよびリカバリ操作を実行するためのOracle推奨オプションを参照してください。 Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、RMANを利用した自動バックアップ機能が利用可能で、リカバリも最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。 ここでは、OCIコンソールから自動バックアップを構成するまでの手順についてご紹介します。 目次 : 1. 自動バックアップの前提条件を確認する 2. 自動バックアップの設定をしよう 3. 自動バックアップの設定を変更しよう 4. オンデマンド・バックアップを取得しよう 5. 取得したバックアップを確認しよう 前提条件 : 101 :...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d103-automatic-backup/",
-        "teaser": "/ocitutorials/database/exadb-d103-automatic-backup/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d103-automatic-backup/teaser.png"
       },{
         "title": "104 : バックアップからリストアしよう",
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、自動バックアップ機能やオンデマンドバックアップにて取得したバックアップを利用する事で、最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。 また、バックアップ元のデータベースに対してリストアするだけでなく、別DBシステム上にリストアする事も可能です。 ここでは、OCI コンソールからリストアする手順についてご紹介します。 目次 : 1. バックアップ元のデータベースに対してリストア 2. バックアップから新規データベースとしてリストア 3. オンデマンド・バックアップを使用したリストア 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること 103 : 自動バックアップを設定しようを通じてバックアップを取得していること 所要時間 : 約1時間　※環境によって異なるため、参考値です 1. バックアップ元のデータベースに対してリストア まずはバックアップ元のデータベースに対してリストアしてみましょう。 リストア方法には下記3つがありますので、リストアしたい地点に応じてどのリストア方法を利用するか検討してください。 最新にリストア データ損失の可能性が最も低い、直近の正常な状態にデータベースをリストアします。 タイムスタンプにリストア 指定した日時にデータベースをリストアします。 SCNにリストア SCNを使用してデータベースをリストアします。 有効なSCNを指定する必要がありますので、データベース・ホストにアクセスして問い合せるか、オンラインまたはアーカイブ・ログにアクセスして使用するSCN番号を確認してください。 OCIコンソール・メニューから Oracle...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d104-backup-restore/",
-        "teaser": "/ocitutorials/database/exadb-d104-backup-restore/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d104-backup-restore/teaser.png"
       },{
         "title": "105 : スケーリングしよう",
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) のスケーリングの対象は、2種類あります。１つは、割り当てられているH/Wリソース内で利用可能な、OCPU数のスケール・アップ/ダウン。データベースや仮想マシンを再起動することなく、処理を継続したままオンラインで変更可能です。また、VMクラスタ全体に対しての変更になります。そのため、例えばノード毎にCPUコア数を変えることはできないので、仮想マシン数の倍数が指定可能になります。もう１つは、インフラストラクチャー部分のデータベース・サーバーとストレージ・サーバーのスケール・アップ(ダウンは不可)。こちらは、X8M以降のモデルで可能で、CPU・メモリ・ストレージなどH/W的に割り当てられている専有リソースを増やしたい場合に、オンラインで追加が可能です。 目次 : 1. OCPUのスケーリング 2. CLIでのOCPUのスケーリング 3. インフラストラクチャのスケーリング データベース・サーバーの追加 ストレージ・サーバーの追加 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること Oracle Cloud Infrastructure Documentation &gt; コマンド・ライン・インターフェース &gt; クイックスタートを通じてOCI CLIのセットアップが完了していること 所要時間 : 約6時間（待ち時間を含む）※環境によって異なるため、参考値です 1. OCPUのスケーリング まずはコンソール上の操作でのOCPUスケーリングからです。 OCIコンソール・メニューから Oracle Database → Oracle Public Cloud上のExadata に移動します。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d105-scaling/",
-        "teaser": "/ocitutorials/database/exadb-d105-backup-restore/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d105-backup-restore/teaser.png"
       },{
         "title": "106 : データベースのバージョンを指定しよう",
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、VMクラスタ上で作成するデータベースのバージョンを指定したり、ユーザーの個別の用途や要求に合わせるようにカスタム・イメージを作成して指定することを簡単に行うことが可能です。この章ではデータベース・ホームおよびカスタム・イメージの作成方法について紹介します。 目次 : 1. データベース・ホームの作成 2. カスタム・イメージを使用したデータベース・ホームの作成 カスタム・イメージの作成 データベース・ホームの作成 3. 確認作業 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること 所要時間 : 約30分　※環境によって異なるため、参考値です。 1. データベース・ホームの作成 OCIコンソール・メニューから Oracle Database → Oracle Public Cloud上のExadata に移動します。 利用したいコンパートメントをリスト範囲のコンパートメントから選択します。 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、リージョンの一覧から選択します。 操作したいExadata VMクラスタの表示名をクリックします。 リソースの一覧からデータベース・ホームをクリックします。 データベース・ホームの作成をクリックします。 データベース・ホームの作成ダイアログで以下の操作を行います。 データベース・ホームの表示名に任意の名前を入力します。 データベース・イメージの変更をクリックします。 イメージ・タイプはOracle...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d106-dbversion/",
-        "teaser": "/ocitutorials/database/exadb-d106-dbversion/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d106-dbversion/teaser.png"
       },{
         "title": "107 : パッチを適用しよう",
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、OS以上がユーザー管理となるため、OS以上のOS、Grid Infrastructure、Database、そしてPaaSサービスの管理のためのクラウド・ツールに対するパッチ適用は、ユーザー側でパッチ適用の計画と適用実施が可能です。ここでは、それぞれのパッチ適用方法についてご紹介します。 目次 : 1. Grid Infrastructure(GI)のパッチ適用 2. データベースのパッチ適用 Out-of-place Patching In-place Patching 3. クラウド・ツール(dbaascli)のパッチ適用 4. OSのパッチ適用 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること 104 : バックアップからリストアしようを通じてデータベースのバックアップが完了していること 所要時間 : 約2時間　※環境によって異なるため、参考値です。 1. Grid Infrastructure(GI)のパッチ適用 OCIコンソール・メニューから Oracle Database → Oracle Exadata Database Service...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d107-patch/",
-        "teaser": "/ocitutorials/database/exadb-d107-patch/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d107-patch/teaser.png"
       },{
         "title": "108 : Data Guardを構成しよう",
         "excerpt":"はじめに Oracle Data Guardとは、変更履歴(REDO)を利用して自動でリアルタイム・データベース複製を持つことが出来る機能です。この機能を利用することによって、データベース障害やリージョン障害などのRTO/RPOを短くすることができ、広範囲な計画停止(メンテナンス)においてもスタンバイをプライマリに切り替えることによって停止時間を極小化することが可能です。バックアップを取得していても、有事の際の復旧において、大量データのリストアが必要になる場合ではRTOを満たせないケースもあります。こういったケースに備えて、バックアップだけでなく、すぐに切り替えられるスタンバイを持つことは重要です。災害対策(DR)としてのデータ保護はもちろんのこと、移行やアップグレードの停止時間短縮といった利用用途もあります。また、参照専用として利用可能なActive Data Guardにしたり、一時的に読み書き可能なスナップショット・スタンバイとして利用したりと、普段から利用できるスタンバイ・データベースを持つことができます。参照処理をオフロードしたり、この仕組みを応用してデータ破損が検知された場合にクライアントにエラーを返すことなく自動修復をしてくれる自動メディア・ブロックリカバリ機能も使えるため、Data Guardであればスタンバイのリソースも有効活用してROIを高めつつ、きちんと切り替えられるスタンバイを持つということが可能です。 ここでは、OCIコンソールからExaDB-Dで別リージョン間(東京、大阪)でのData Guardを構成する手順について紹介します。東京をプライマリ、大阪をスタンバイとして構成します。使用するリージョンは任意です。 目次 : 1. Data Guardの構成 2. Data Guardの切り替え スイッチオーバー フェイルオーバー 回復 3. Data Guard構成に含まれるDBの削除方法 前提条件 : 101 : ExaDB-Dを使おうを通じて、プライマリ・データベースのリージョン（本ガイドでは東京リージョン）でExaDB-Dの作成が完了していること。 その2 - クラウドに仮想ネットワーク(VCN)を作るを通じて、スタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）でVCNの作成が完了していること。 プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）間でリモートVCNピアリングの設定が完了していること。設定方法については、Oracle Cloud Infrasturctureドキュメント - DRGを介した異なるリージョン内のVCNのピアリングをご参照ください。 プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）のそれぞれのVCNのセキュリティ・リストの設定でポート1521を開く。設定方法については、Oracle Cloud Infrastructureドキュメント - セキュリティ・リストをご参照ください。 所要時間 : 約2時間　※環境によって異なるため、参考値です。 1. Data Guardの構成 OCIコンソール・メニューから Oracle Database...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d108-dataguard/",
-        "teaser": "/ocitutorials/database/exadb-d108-dataguard/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d108-dataguard/teaser.png"
       },{
         "title": "HPCクラスタを構築する(基礎インフラ手動構築編)",
         "excerpt":"このチュートリアルは、HPC向けIntel Ice Lakeプロセッサを搭載する BM.Optimized3.36 を クラスタ・ネットワーク を使用してノード間接続し、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを構築、そのインターコネクト性能を検証します。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は OCI HPCチュートリアル集 の HPCクラスタを構築する(スタティッククラスタ自動構築編) を参照ください。 またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存のクラスタ・ネットワークに計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。 所要時間 : 約1時間 前提条件 : クラスタ・ネットワークを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。 注意 : チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。 0. HPCクラスタ作成事前作業 0-0. 概要 HPCクラスタを構成する クラスタ・ネットワーク と計算ノードは、OCIコンソールからクラスタ・ネットワークを作成することで、計算ノードをクラスタ・ネットワークに接続したHPCクラスタとしてデプロイされます。 このため、この計算ノードをTCP接続するVCNと、インターネットから直接アクセス出来ないプライベートサブネットに通常接続される計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意する必要があります。 本章は、これらHPCクラスタ作成の前提となるリソースを作成します。 0-1. VCN作成 本章は、計算ノードをTCP接続するVCNを作成します。 VCNの作成は、以下チュートリアルページ クラウドに仮想ネットワーク(VCN)を作る の手順通りに実行し、 https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn 以下のリソースを作成します。 VCN（10.0.0.0/16） パブリックサブネット（10.0.0.0/24） プライベートサブネット（10.0.1.0/24） インターネット・ゲートウェイ（パブリックサブネットにアタッチ） NATゲートウェイ（プライベートサブネットにアタッチ） サービス・ゲートウェイ（プライベートサブネットにアタッチ） ルート表...","categories": [],

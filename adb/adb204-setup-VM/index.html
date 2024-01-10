@@ -1,0 +1,908 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>204: 開発者向け仮想マシンのセットアップ方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Linux Cloud Developer イメージから仮想マシンをセットアップする方法をご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="204: 開発者向け仮想マシンのセットアップ方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/">
+
+
+  <meta property="og:description" content="Oracle Linux Cloud Developer イメージから仮想マシンをセットアップする方法をご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/img1_3.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-10T17:29:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb204-setup-VM/img1_3.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          204: 開発者向け仮想マシンのセットアップ方法
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Linux Cloud Developer イメージから仮想マシンをセットアップする方法をご紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">204: 開発者向け仮想マシンのセットアップ方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/" class="active">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="204: 開発者向け仮想マシンのセットアップ方法">
+    <meta itemprop="description" content="Oracle Linux Cloud Developer イメージから仮想マシンをセットアップする方法をご紹介します。">
+    <meta itemprop="datePublished" content="2024-01-10T17:29:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-仮想マシンの作成">1. 仮想マシンの作成</a></li><li><a href="#2-仮想マシンへのアクセス">2. 仮想マシンへのアクセス</a></li><li><a href="#3-後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置">3. 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置</a></li><li><a href="#4-adbに接続するための設定ファイルの編集">4. ADBに接続するための設定ファイルの編集</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>後続のチュートリアルで利用する開発環境をセットアップしましょう。</p>
+
+<p>Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージを提供しています。
+本ページではその中から、開発者向けのLinux仮想マシンである <strong><code class="language-plaintext highlighter-rouge">Oracle Linux Cloud Developer イメージ</code></strong> をセットアップする手順を記載しています。</p>
+
+<p><strong><code class="language-plaintext highlighter-rouge">Oracle Linux Cloud Developer イメージ</code></strong>は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。</p>
+
+<p>尚、Oracle Linux Cloud Developer イメージの詳細については <a href="https://docs.oracle.com/ja-jp/iaas/oracle-linux/developer/index.htm#x86-components" target="_blank">こちら</a> を参照ください。<br />
+またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の <a href="/ocitutorials/beginners/creating-compute-instance/" target="_blank">その3 - インスタンスを作成する</a> の手順も併せてご確認ください。</p>
+
+<p><br /></p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <li>ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること
+  <br />※クレデンシャルウォレットのダウンロード方法については、<a href="/ocitutorials/adb/adb104-connect-using-wallet" target="_blank">104: ウォレットを利用してADBに接続してみよう</a> の、<a href="/ocitutorials/adb/adb104-connect-using-wallet#anchor1" target="_blank">1. クレデンシャル・ウォレットのダウンロード</a> をご確認ください。</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. 仮想マシンの作成</a></li>
+  <li><a href="#anchor2">2. 仮想マシンへのアクセス</a></li>
+  <li><a href="#anchor3">3. 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置</a></li>
+  <li><a href="#anchor4">4. ADBに接続するための設定ファイルの編集</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約30分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-仮想マシンの作成">1. 仮想マシンの作成</h1>
+
+<ol>
+  <li>
+    <p>メニューバーから <strong><code class="language-plaintext highlighter-rouge">コンピュート</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong> をクリックします。
+ <img src="img1_1.png" alt="img1_1.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">インスタンスの作成</code></strong> をクリックします。
+ <img src="img1_2.png" alt="img1_2.png" /></p>
+  </li>
+  <li>
+    <p>インスタンス名を入力します。例 :  devIns01</p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">配置、イメージとシェイプ、ネットワークキング</code></strong> の項目を入力していきます。</p>
+
+    <ul>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">配置</code></strong>
+ <br />仮想マシンを、リージョン内のどの可用性ドメイン（AD）に配置するかを指定します。
+ 任意の可用性ドメインを選択してください。<br />
+ <img src="img1_5_1.png" alt="img1_5_1.png" /></p>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">イメージとシェイプ</code></strong>
+ <br />イメージ：<strong><code class="language-plaintext highlighter-rouge">Oracle Linux Cloud Developer</code></strong>
+  <br /><strong><code class="language-plaintext highlighter-rouge">イメージの変更</code></strong> をクリックし、<strong><code class="language-plaintext highlighter-rouge">Oracle Linux Cloud Developer</code></strong>にチェックを入れます。
+  <br /><img src="img1_3.png" alt="img1_3.png" />
+<br />シェイプ：<strong><code class="language-plaintext highlighter-rouge">VM.Standard2.1（仮想マシン）</code></strong>
+  <br /><strong><code class="language-plaintext highlighter-rouge">シェイプの変更</code></strong> から変更します。
+        <ul>
+          <li>インスタンス・タイプ：<strong><code class="language-plaintext highlighter-rouge">仮想マシン</code></strong></li>
+          <li>シェイプ・シリーズ：<strong><code class="language-plaintext highlighter-rouge">Intel VM.Standard2.1</code></strong>
+  <br /><img src="img1_5_2.png" alt="img1_5_2.png" /></li>
+        </ul>
+      </li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong>
+        <ul>
+          <li>ネットワーク：どの仮想クラウド・ネットワーク（VCN）上に配置するかを指定します。
+ <br />既存のVCNを選択するか、新規のVCNの作成します。どちらでも結構です。ここでは、既存のVCN「ADB_HOL_DEV_VCN」を選択しています。
+            <ul>
+              <li>サブネット：任意の <strong><code class="language-plaintext highlighter-rouge">パブリック・サブネット</code></strong> を選択してください。
+<br />※インスタンスにssh接続するため、パブリック・サブネットである必要があります。</li>
+              <li>パブリックIPアドレスの割当てを選択
+<br />※パブリックIPアドレスの割当てを有効にしないと、インスタンスにssh接続することができません。
+<br /><img src="img1_5_3.png" alt="img1_5_3.png" /></li>
+            </ul>
+          </li>
+        </ul>
+
+        <blockquote>
+          <p><strong>Note</strong></p>
+
+          <p>用意したコンパートメントに仮想クラウド・ネットワーク（VCN）が存在しない場合、VCNが自動的に作成されます。</p>
+
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>SSHキーを追加します。
+  <br />SSHキーはこちらの画面で生成する・既存の公開キーを選択することが可能です。
+  <br />生成する場合は <strong><code class="language-plaintext highlighter-rouge">秘密キーの保存</code></strong> と <strong><code class="language-plaintext highlighter-rouge">公開キーの保存</code></strong> を必ずクリックしてください。（後から生成することはできません）
+  <br />お手持ちのSSHキーを使いたい場合は、<strong><code class="language-plaintext highlighter-rouge">公開キー・ファイル(.pub)のアップロード</code></strong> または <strong><code class="language-plaintext highlighter-rouge">公開キーの貼付け</code></strong> を選択し、アップロードまたは貼り付けしてください。
+  <br />※ SSHキーの作成方法の詳細は <a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingkeypairs.htm" target="_blank">こちら</a> を参照ください
+  <br />※ 集合ハンズオン・セミナーの場合は講師から指示される鍵を使用してください。
+ <img src="img1_5_5.png" alt="img1_5_5.png" /></p>
+  </li>
+  <li>
+    <p>最後に <strong><code class="language-plaintext highlighter-rouge">作成</code></strong> をクリックします。（オレンジ色の <strong><code class="language-plaintext highlighter-rouge">プロビジョニング中</code></strong> から緑色の <strong><code class="language-plaintext highlighter-rouge">起動中</code></strong> に変われば作成完了です。数分かかります）</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-仮想マシンへのアクセス">2. 仮想マシンへのアクセス</h1>
+
+<p>上記で作成した仮想マシンにSSHで接続してみましょう。ここではTera Termの利用を前提に記載しています。</p>
+
+<ol>
+  <li>
+    <p>仮想マシンのパブリックIPアドレスを確認します。
+ <img src="img2_1.png" alt="img2_1.png" /></p>
+  </li>
+  <li>Tera Term を起動し、以下の記載例を参考に各項目を入力し、OK をクリックします。
+    <ul>
+      <li>ホスト：<strong><code class="language-plaintext highlighter-rouge">先程のステップで確認したパブリックIPアドレス</code></strong></li>
+      <li>TCPポート：<strong><code class="language-plaintext highlighter-rouge">22</code></strong> (デフォルト)</li>
+      <li>サービス：<strong><code class="language-plaintext highlighter-rouge">SSH</code></strong>
+ <img src="img2_2.png" alt="img2_2.png" />
+ <br />※ 初めて接続するホストの場合、セキュリティ警告が表示されることがあります。問題がなければ「続行」をクリックしてください。</li>
+    </ul>
+  </li>
+  <li>以下の記載例を参考に各項目を入力し、OK をクリックします。
+    <ul>
+      <li>ユーザー：<strong><code class="language-plaintext highlighter-rouge">opc</code></strong></li>
+      <li>パスフレーズ：（秘密鍵にパスフレーズが設定されている場合は指定してください）
+ <br />※集合ハンズオンセミナーの場合はパスフレーズは設定していないので、未入力にします。</li>
+      <li>秘密鍵：インスタンスを作成する際に使用した公開鍵と対になる <strong><code class="language-plaintext highlighter-rouge">秘密鍵</code></strong>
+ <br />※ 集合ハンズオンセミナーの場合は講師から指示される鍵を使用してください。<br />
+ <img src="img2_3.png" alt="img2_3.png" /></li>
+    </ul>
+  </li>
+  <li>ログインできたことを確認します。（次のようになればOKです。このまま次のステップに進んでください）<br />
+ <img src="img2_4.png" alt="img2_4.png" /></li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置">3. 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置</h1>
+
+<p>次に後続のハンズオンで利用するファイルを仮想マシン上に用意・配置します。</p>
+
+<ol>
+  <li>
+    <p>必要なファイルをまとめたlabs.zipというファイルをこちらでご用意しています。
+ログインした仮想マシン上で次のコマンドを実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> wget https://oracle-japan.github.io/ocitutorials/adb/adb-data/labs.zip
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>labs.zip がダウンロードされたことを確認します。（ファイルが存在すればOKです。）</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">ls</span>
+</code></pre></div>    </div>
+    <blockquote>
+
+      <p><strong>補足</strong></p>
+
+      <p>上記の方法で上手くダウンロードできなかった方は、手元のPCにダウンロードしてからアップロードする方法をお試しください。</p>
+
+      <p><br />※ここではTera Termを前提に記載しています。</p>
+
+      <ol>
+        <li>下記のリンクより、labs.zipを手元のPCにダウンロードします。
+          <ul>
+            <li><a href="/ocitutorials/adb/adb-data/labs.zip">labs.zip をダウンロード</a></li>
+          </ul>
+        </li>
+        <li>
+          <p>labs.zipをTera Termのウィンドウ画面上にドラッグ・アンド・ドロップします。</p>
+        </li>
+        <li>
+          <p>Tera Termでは転送先に指定するディレクトリパスを指定できますが、特に指定せずそのまま <strong><code class="language-plaintext highlighter-rouge">OK</code></strong> をクリックします。
+    <br />
+    <img src="img3_2_3.png" alt="img3_2_3.png" /></p>
+
+          <p>※ Tera Termではなく、手元の端末から仮想マシンにサインインしている方は次のコマンドをご利用ください。
+<br />手元の環境にダウンロードしてきたファイルを、ssh接続先の仮想マシンにアップロードするコマンドです。</p>
+          <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp <span class="nt">-i</span> <span class="o">[</span>秘密鍵のパス] <span class="o">[</span>転送したファイルのパス] opc@[転送先のPublic IP]:[転送先での保存先のパス]
+</code></pre></div>          </div>
+        </li>
+      </ol>
+
+      <p><br /></p>
+    </blockquote>
+  </li>
+  <li>
+    <p>アップロードしたlabs.zipをoracleユーザの配下に移動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo mv </span>labs.zip /home/oracle/labs.zip
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>zipファイルを解凍します</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>unzip /home/oracle/labs.zip <span class="nt">-d</span> /home/oracle
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ファイルの所有者を変更します。次のコマンドを順に実行しましょう。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo chown </span>oracle:oinstall /home/oracle/labs.zip
+</code></pre></div>    </div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo chown</span> <span class="nt">-R</span> oracle:oinstall /home/oracle/labs
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>展開後のファイルを確認してください。(nodeやpythonといったディレクトリやファイルが存在していればOKです)</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo ls</span> /home/oracle/labs
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-adbに接続するための設定ファイルの編集">4. ADBに接続するための設定ファイルの編集</h1>
+
+<p>ADBに接続するためには、クレデンシャル・ウォレット（Credential.zipファイル）を仮想マシン上に配置する必要があります。
+クレデンシャルウォレットのダウンロード方法については、<a href="/ocitutorials/adb/adb104-connect-using-wallet" target="_blank">101: ウォレットを利用してADBに接続してみよう</a> の、<a href="/ocitutorials/adb/adb104-connect-using-wallet#anchor1" target="_blank">1. クレデンシャル・ウォレットのダウンロード</a> をご確認ください。</p>
+
+<ol>
+  <li>
+    <p>仮想マシンにopcユーザでログインします。</p>
+  </li>
+  <li>
+    <p>クレデンシャル・ファイルを仮想マシン上にアップロードします。</p>
+
+    <p>※ここではTeratermを前提に記載しています。</p>
+
+    <p>2-1. Tera Term を起動し、仮想マシンにopcユーザでログインします。</p>
+
+    <p>2-2. クレデンシャル・ファイル（wallet_atp01.zip）をTera Termのウィンドウ画面上にドラッグ・アンド・ドロップします。</p>
+
+    <p>2-3. Tera Termでは転送先に指定するディレクトリパスを指定できますが、特に指定せずそのまま <strong><code class="language-plaintext highlighter-rouge">OK</code></strong> をクリックします。</p>
+
+    <p><img src="img3_2_3.png" alt="img3_2_3.png" /></p>
+
+    <p>2-4. opcユーザのホームディレクトリを確認し、Wallet_atp01.zip が転送されたことを確認します。（ファイルが存在すればOKです。）</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nb">ls</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>先ほどアップロードしたクレデンシャル・ファイルをoracleユーザの配下に移動し、ファイルの所有者をoracleユーザに変更します。
+<br />（本ハンズオンラボでは特に指定のない限りoracleユーザを利用して各種操作を体験いただきます。）
+<br />次のコマンドを順に実行しましょう。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo mv </span>Wallet_atp01.zip /home/oracle/labs/wallets_atp01/.
+</code></pre></div>    </div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo chown </span>oracle:oinstall /home/oracle/labs/wallets_atp01/Wallet_atp01.zip
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>oracleユーザにスイッチします。
+<br />次のコマンドを順に実行しましょう。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo</span> <span class="nt">-s</span>
+</code></pre></div>    </div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su - oracle
+</code></pre></div>    </div>
+    <p>（一旦rootユーザにスイッチしてから、oracleユーザにスイッチしています）</p>
+  </li>
+  <li>
+    <p>zipファイルをディレクトリ「wallet_atp01」の下に展開します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unzip  /home/oracle/labs/wallets_atp01/Wallet_atp01.zip <span class="nt">-d</span> ~/labs/wallets_atp01
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>TNS_ADMIN環境変数をディレクトリ「wallet_atp01」に設定します。
+<br />TNS_ADMINは、ウォレットの格納場所を表す環境変数です。アップロードしてきたクレデンシャルウォレットの格納場所を設定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets_atp01
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>アプリ毎に接続するインスタンスを切り替えたい場合は、インスタンス毎に wallets_atp01 といったようにディレクトリを定義し、アプリ毎に環境変数TNS_ADMINのパスを切り替えると簡単です。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>$HOME/wallets ディレクトリに移動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd</span> ~/labs/wallets_atp01/
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>解凍されたファイルの中にある sqlnet.ora ファイルの環境変数 WALLET_LOCATION を編集します。
+<br />sqlnet.oraファイルでは、クライアントとなるマシンからADBサーバへ接続する際に使用する、サーバーのアドレスやリスナーのポート番号を解決するための方法を指定しています。
+<br />sqlnet.oraに含まれるWALLET_LOCATIONには、クレデンシャルウォレットの格納場所を指定します。この格納場所はすでにTNS_ADMINに設定済みであるため、格納先のパスを指定するDIRECTORYに環境変数TNS_ADMINを参照するように設定します。</p>
+
+    <p>編集前：</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> WALLET_LOCATION <span class="o">=</span> <span class="o">(</span>SOURCE <span class="o">=</span> <span class="o">(</span>METHOD <span class="o">=</span> file<span class="o">)</span> <span class="o">(</span>METHOD_DATA <span class="o">=</span> <span class="o">(</span><span class="nv">DIRECTORY</span><span class="o">=</span><span class="s2">"?/network/admin"</span><span class="o">)))</span>
+</code></pre></div>    </div>
+    <p>編集後：</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> WALLET_LOCATION <span class="o">=</span> <span class="o">(</span>SOURCE <span class="o">=</span> <span class="o">(</span>METHOD <span class="o">=</span> file<span class="o">)</span> <span class="o">(</span>METHOD_DATA <span class="o">=</span> <span class="o">(</span><span class="nv">DIRECTORY</span><span class="o">=</span><span class="nv">$TNS_ADMIN</span><span class="o">)))</span>
+</code></pre></div>    </div>
+
+    <p>編集方法の一例として、viを使用した操作方法は次の通りです。</p>
+
+    <p>8-1. sqlnet.ora をviで開く。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> vi sqlnet.ora
+</code></pre></div>    </div>
+    <p>8-2. 次の操作方法を参考に、WALLET_LOCATION の値を編集します。</p>
+
+    <blockquote>
+      <p><strong>viの操作方法</strong></p>
+
+      <table>
+<tr>
+<th>キー入力</th>
+<th>動作</th>
+</tr>
+<tr>
+<td>上下左右キー</td>
+<td>カーソルの場所を移動する</td>
+</tr>
+<tr>
+<td>i</td>
+<td>カーソルの場所から編集する（InsertModeに入る）</td>
+</tr>
+<tr>
+<td>ESCキー</td>
+<td>InsertModeを抜ける</td>
+</tr>
+<tr>
+<td>x</td>
+<td>カーソルの場所を一文字消す</td>
+</tr>
+<tr>
+<td>:wq</td>
+<td>ファイルを保存して閉じる</td>
+</tr>
+<tr>
+<td>:q</td>
+<td>ファイルを閉じる（それまでの編集は破棄される）</td>
+</tr>
+<tr>
+<td>:q!</td>
+<td>強制的に終了する</td>
+</tr>
+</table>
+      <p><br /></p>
+    </blockquote>
+  </li>
+</ol>
+
+<blockquote>
+  <p><strong>Note</strong></p>
+
+  <p>上記は接続端末としてTeratermを利用しましたが、OCIに付属するCloud Shellを使用して設定ファイルの編集をすることも可能です。
+Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザ・ベースのターミナルです。こちらを利用すると、ブラウザだけで仮想マシンにアクセスできますので、是非お試しください。
+<br />手順は、本ハンズオンガイドの <a href="/ocitutorials/adb/adb104-connect-using-wallet" target="_blank">104: ウォレットを利用してADBに接続してみよう</a> の、<a href="/ocitutorials/adb/adb104-connect-using-wallet#anchor2" target="_blank">2. 設定ファイルの編集</a> をご確認ください。</p>
+</blockquote>
+
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<blockquote>
+  <p><strong>Note</strong></p>
+
+  <p>設定ファイルの編集が完了した後に、ADBインスタンスに接続する手順は本ハンズオンガイドの <a href="/ocitutorials/adb/adb104-connect-using-wallet" target="_blank">104: ウォレットを利用してADBに接続してみよう</a> の、<a href="/ocitutorials/adb/adb104-connect-using-wallet#anchor3" target="_blank">3. ADBに接続</a> をご確認ください。</p>
+</blockquote>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-10T17:29:32+09:00">January 10, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=204%3A+%E9%96%8B%E7%99%BA%E8%80%85%E5%90%91%E3%81%91%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb204-setup-VM%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb204-setup-VM%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb204-setup-VM%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb203-bulk-query/" class="pagination--pager" title="203: 分析系クエリの実行(Star Schema Benchmark)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb205-swingbench/" class="pagination--pager" title="205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

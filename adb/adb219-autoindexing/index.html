@@ -1,0 +1,908 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>219: Automatic Indexingを体験してみよう  | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="219: Automatic Indexingを体験してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb219-autoindexing/">
+
+
+  <meta property="og:description" content="Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb219-autoindexing/adb219_3.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-10T17:29:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb219-autoindexing/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb219-autoindexing/adb219_3.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          219: Automatic Indexingを体験してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">219: Automatic Indexingを体験してみよう </li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/" class="active">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="219: Automatic Indexingを体験してみよう">
+    <meta itemprop="description" content="Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。">
+    <meta itemprop="datePublished" content="2024-01-10T17:29:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-スキーマ作成とautomatic-indexingの有効化">1. スキーマ作成とAutomatic Indexingの有効化</a><ul><li><a href="#1-1-sqlplusでadbに接続する">1-1. SQL*PlusでADBに接続する</a></li><li><a href="#1-2-索引作成の対象になる表の作成と登録">1-2. 索引作成の対象になる表の作成と登録</a></li><li><a href="#1-3-autonomous-indexingの有効化">1-3. Autonomous Indexingの有効化</a></li></ul></li><li><a href="#2-ワークロードの実行">2. ワークロードの実行</a><ul><li><a href="#2-1-ワークロードの実行">2-1. ワークロードの実行</a></li><li><a href="#2-2-ワークロードの完了を待つ">2-2. ワークロードの完了を待つ</a></li></ul></li><li><a href="#3-自動索引のレポートを確認する">3. 自動索引のレポートを確認する</a><ul><li><a href="#3-1-automatic-indexingの完了を待つ">3-1. Automatic Indexingの完了を待つ</a></li><li><a href="#3-2-自動索引のレポートの作成">3-2. 自動索引のレポートの作成</a></li><li><a href="#3-3-自動索引のレポートを見る">3-3. 自動索引のレポートを見る</a></li></ul></li><li><a href="#4-自動索引の削除とautomatic-indexingの無効化">4. 自動索引の削除とAutomatic Indexingの無効化</a><ul><li><a href="#4-1-自動索引の削除">4-1. 自動索引の削除</a></li><li><a href="#4-2-automatic-indexingを無効化する">4-2. Automatic Indexingを無効化する</a></li></ul></li><li><a href="#おわりに">おわりに</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>索引を手動で作成するには、データモデル、アプリケーションの動作、データベース内のデータの特性などに関する専門的な知識が必要です。
+以前は、DBAがどの索引を作成するかの選択を担当しており、修正や保守を行っていました。しかし、データベースが変更されても保守しきれないこともあり、不要な索引を使用することが性能上の障害となる可能性がありました。<br />
+Autonomous Databaseではワークロードを監視して、自動的に索引の作成や削除などの管理を行う機能であるAutomatic Indexingが利用できます。
+<br />
+本記事では、ATPを作成したのちAutomatic Indexingを利用してみます。</p>
+
+<p><br /></p>
+
+<p><strong>前提条件：</strong></p>
+<ul>
+  <li>ATPインスタンスが構成済みであること
+  <br />※ATPンタンスの作成方法については、<a href="/ocitutorials/adb/adb101-provisioning" target="_blank">ADBインスタンスを作成してみよう</a> を参照してください。</li>
+  <li><strong>ワークロード・タイプ：</strong> トランザクション処理</li>
+  <li><strong>OCPU数：</strong> 1</li>
+  <li><strong>ストレージ(TB)：</strong> 1</li>
+  <li><strong>CPU Auto Scaling：</strong> 無効</li>
+</ul>
+
+<p>それ以外の項目については、ご自身の環境や目的に合わせて選択してください。</p>
+
+<p><br /></p>
+
+<p><strong>目次：</strong></p>
+<ul>
+  <li><a href="#anchor1">1. スキーマ作成とAutomatic Indexingの有効化</a></li>
+  <li><a href="#anchor2">2. ワークロードの実行</a></li>
+  <li><a href="#anchor3">3. 自動索引のレポートを確認する</a></li>
+  <li><a href="#anchor4">4. 自動索引の削除とAutomatic Indexingの無効化</a></li>
+  <li><a href="#おわりに">おわりに</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約1時間</p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-スキーマ作成とautomatic-indexingの有効化">1. スキーマ作成とAutomatic Indexingの有効化</h1>
+<p>ここではテストスキーマを作成し、自動索引を有効化します。</p>
+
+<h2 id="1-1-sqlplusでadbに接続する">1-1. SQL*PlusでADBに接続する</h2>
+
+<ol>
+  <li>
+    <p><a href="/ocitutorials/adb/adb104-connect-using-wallet/#anchor3-1" target="_blank">SQL＊Plusを使った接続</a>を参考に、TeraTerm上でSQL＊Plusを用いて、ATPインスタンスに接続してください。<br />
+接続する際のスキーマ名は<strong>ADMIN</strong>としてください。</p>
+
+    <p>ここで、以前本チュートリアルを実施したことがある場合は、本章の4-1の手順2<a href="/ocitutorials/adb/adb219-autoindexing/#anchor4-1-2" target="_blank">自動索引の削除</a>を行ってください。初めて行う場合は、次のステップに進んでください。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="1-2-索引作成の対象になる表の作成と登録">1-2. 索引作成の対象になる表の作成と登録</h2>
+<ol>
+  <li>
+    <p>（本チュートリアルを初めて実施する場合は、次のステップに進んでください。)<br />すでに本チュートリアルを実施したことがあり、索引の作成の対象になる表が存在する場合は削除してください。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">declare</span>
+     <span class="n">ORA_00942</span> <span class="n">exception</span><span class="p">;</span> <span class="n">pragma</span> <span class="n">Exception_Init</span><span class="p">(</span><span class="n">ORA_00942</span><span class="p">,</span> <span class="o">-</span><span class="mi">00942</span><span class="p">);</span>
+ <span class="k">begin</span>
+     <span class="k">execute</span> <span class="k">immediate</span> <span class="s1">'drop table AUTO_INDEX_TEST_TABLE purge'</span><span class="p">;</span>
+     <span class="n">exception</span> <span class="k">when</span> <span class="n">ORA_00942</span> <span class="k">then</span> <span class="k">null</span><span class="p">;</span>
+ <span class="k">end</span><span class="p">;</span>
+ <span class="o">/</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>表を作成し、自動索引を作成する準備をします。これは3分程度かかります。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">create</span> <span class="k">table</span> <span class="n">AUTO_INDEX_TEST_TABLE</span> <span class="k">as</span>
+ <span class="k">select</span> <span class="mi">1</span>                <span class="n">sum_col</span><span class="p">,</span>
+     <span class="n">rownum</span>              <span class="n">f1</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">100000</span><span class="p">)</span>  <span class="n">f2</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">1000000</span><span class="p">)</span> <span class="n">f3</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">500000</span><span class="p">)</span>  <span class="n">f4</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">200000</span><span class="p">)</span>  <span class="n">f5</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">100000</span><span class="p">)</span>  <span class="n">f6</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">10000</span><span class="p">)</span>   <span class="n">f7</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">5000</span><span class="p">)</span>    <span class="n">f8</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>    <span class="n">f9</span><span class="p">,</span>
+     <span class="k">mod</span><span class="p">(</span><span class="n">rownum</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>     <span class="n">f10</span><span class="p">,</span>
+     <span class="k">pad</span>
+ <span class="k">from</span>   <span class="p">(</span><span class="k">select</span> <span class="n">dbms_random</span><span class="p">.</span><span class="n">string</span><span class="p">(</span><span class="s1">'u'</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> <span class="k">pad</span> <span class="k">from</span> <span class="n">dual</span> <span class="k">connect</span> <span class="k">by</span> <span class="k">level</span><span class="o">&lt;=</span><span class="mi">100</span><span class="p">)</span> <span class="n">a</span><span class="p">,</span>
+     <span class="p">(</span><span class="k">select</span> <span class="mi">1</span> <span class="k">c</span> <span class="k">from</span> <span class="n">dual</span> <span class="k">connect</span> <span class="k">by</span> <span class="k">level</span><span class="o">&lt;=</span><span class="mi">100000</span><span class="p">)</span> <span class="n">b</span><span class="p">;</span>
+
+ <span class="c1">-- 統計情報は上記の表の作成時に生成されますが、統計情報を確実に最新のものにするため、以下を実行します。。</span>
+ <span class="c1">-- 自動索引は、統計情報が古くなった表に対する新しい索引を考慮しません。</span>
+
+ <span class="k">exec</span> <span class="n">dbms_stats</span><span class="p">.</span><span class="n">gather_table_stats</span><span class="p">(</span><span class="s1">'ADMIN'</span><span class="p">,</span><span class="s1">'AUTO_INDEX_TEST_TABLE'</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="1-3-autonomous-indexingの有効化">1-3. Autonomous Indexingの有効化</h2>
+<ol>
+  <li>
+    <p>自動索引にはモードに種類があり、<strong>IMPLEMENT</strong>, <strong>REPORT ONLY</strong>, <strong>OFF</strong>の3つとなっております。ここではモードをIMPLEMENTに設定して、自動索引を有効化します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">exec</span> <span class="n">dbms_auto_index</span><span class="p">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">'AUTO_INDEX_MODE'</span><span class="p">,</span> <span class="s1">'IMPLEMENT'</span><span class="p">)</span>
+</code></pre></div>    </div>
+    <p><br />
+DBMS_AUTO_INDEXパッケージの詳細については、<a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admin/managing-indexes.html#GUID-A8B4BB05-2711-497A-8276-127076DAA518" target="_blank">Database Administrator’s Guide, 21.7.3 Configuring Automatic Indexing in an Oracle Database</a>をご確認ください。
+<br /></p>
+
+    <blockquote>
+      <p><strong>参考</strong></p>
+
+      <p>現在Automatic Indexingが無効か有効かを確認するSQL文は、以下のようになります。無効の場合はAUTO_INDEX_MODEがOFFになっています。</p>
+      <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">set</span> <span class="n">linesize</span> <span class="mi">250</span>
+<span class="k">column</span> <span class="n">parameter_name</span> <span class="k">for</span> <span class="n">a35</span>
+<span class="k">column</span> <span class="n">parameter_value</span>  <span class="k">for</span> <span class="n">a20</span>
+<span class="k">column</span> <span class="n">last_modified</span>  <span class="k">for</span> <span class="n">a30</span>
+<span class="k">column</span> <span class="n">modified_by</span>  <span class="k">for</span> <span class="n">a15</span>
+<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">dba_auto_index_config</span><span class="p">;</span>
+</code></pre></div>      </div>
+      <p><br /></p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-ワークロードの実行">2. ワークロードの実行</h1>
+
+<p>Automatic IndexingはワークロードのSQL文を実行し、新しい索引のパフォーマンスの効果を測定します。ここでは、このテストが動作するようにワークロードを生成します。</p>
+
+<h2 id="2-1-ワークロードの実行">2-1. ワークロードの実行</h2>
+<ol>
+  <li>
+    <p>ワークロードをAUTO_INDEX_TEST_TABLEの表で実行します。このSQL文では様々な条件を使用し、そのうちのいくつかは索引アクセスの恩恵を受けます。自動索引は、新しいワークロードのSQL文をなるべく早くテストし、少なくとも30日間は再度テストしません。SQL文を早くテストするため、以前本チュートリアルを実施した場合でも、以下のPL/SQLブロックで実行するたびに一意のSQL文を生成します。これは、タイムスタンプを組み込んだ表の別名を使って実行するためです。<br />
+このワークロード用のSQL文は自動索引を作成させるために、複数回実行する必要があります。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">set</span> <span class="n">serveroutput</span> <span class="k">on</span>
+ <span class="k">declare</span>
+     <span class="n">qry</span> <span class="n">varchar2</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+     <span class="n">talias</span>  <span class="n">varchar2</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+     <span class="n">n1</span>  <span class="n">number</span><span class="p">;</span>
+     <span class="n">n2</span>  <span class="n">number</span><span class="p">;</span>
+ <span class="k">begin</span>
+     <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="p">..</span><span class="mi">10</span>
+     <span class="n">loop</span>
+         <span class="n">talias</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'T'</span><span class="o">||</span><span class="n">to_char</span><span class="p">(</span><span class="n">sysdate</span><span class="p">,</span><span class="s1">'YYYYMMDDHH24MISS'</span><span class="p">);</span>
+         <span class="n">qry</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'select /* AUTO_INDEX_TEST_QUERY */ f10,sum(sum_col) from AUTO_INDEX_TEST_TABLE '</span><span class="o">||</span><span class="n">talias</span><span class="o">||</span><span class="s1">' where f'</span><span class="o">||</span><span class="n">i</span><span class="o">||</span><span class="s1">' = 1 group by f10'</span><span class="p">;</span>
+         <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+         <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+         <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+         <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'QRY = '</span><span class="o">||</span><span class="n">qry</span><span class="p">);</span>
+         <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'SUM = '</span><span class="o">||</span><span class="n">n2</span><span class="p">);</span>
+     <span class="k">end</span> <span class="n">loop</span><span class="p">;</span>
+     <span class="n">qry</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'select /* AUTO_INDEX_TEST_QUERY */ f10,sum(sum_col) from AUTO_INDEX_TEST_TABLE '</span><span class="o">||</span><span class="n">talias</span><span class="o">||</span><span class="s1">' where f1 = 1 and f2 = 1 group by f10'</span><span class="p">;</span>
+     <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+     <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+     <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+     <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'QRY = '</span><span class="o">||</span><span class="n">qry</span><span class="p">);</span>
+     <span class="n">qry</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'select /* AUTO_INDEX_TEST_QUERY */ f10,sum(sum_col) from AUTO_INDEX_TEST_TABLE '</span><span class="o">||</span><span class="n">talias</span><span class="o">||</span><span class="s1">' where f1 = 1 and f2 = 1 group by f10'</span><span class="p">;</span>
+     <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+     <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+     <span class="k">execute</span> <span class="k">immediate</span> <span class="n">qry</span> <span class="k">into</span> <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">;</span>
+     <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'QRY = '</span><span class="o">||</span><span class="n">qry</span><span class="p">);</span>
+ <span class="k">end</span><span class="p">;</span>
+ <span class="o">/</span>
+ <span class="k">set</span> <span class="n">serveroutput</span> <span class="k">off</span>
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<h2 id="2-2-ワークロードの完了を待つ">2-2. ワークロードの完了を待つ</h2>
+<p>Autonomous Databaseは、定期的（15分ごと）にAuto STS Capture Taskというメンテナンス・タスクで、ワークロードのSQL文をSYS_AUTO_STSというSQLチューニングセットに格納します。
+このSQLチューニングセットは自動SQLチューニングセット（Automatic SQL Tuining Set(ASTS)）と呼ばれ、Automatic Indexingプロセスの対象となります。このプロセスはすべて自動で管理されており、新しい索引が表示されるのを待ちます。ワークロードが実行されるとどうなるのか、もう少し詳しく見てみましょう。</p>
+
+<ol>
+  <li>
+    <p>次の文を使用して、Auto STS Capture Taskがいつ実行されたかを確認します。ワークロードのクエリが実行された後、Auto STS Capture Taskが実行されるまで待ちます。これには最大で15分かかります。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="k">current_timestamp</span> <span class="n">now</span> <span class="k">from</span> <span class="n">dual</span><span class="p">;</span>
+
+ <span class="k">select</span> <span class="n">task_name</span><span class="p">,</span>
+         <span class="n">status</span><span class="p">,</span>
+         <span class="n">enabled</span><span class="p">,</span>
+         <span class="n">interval</span><span class="p">,</span>
+         <span class="n">last_schedule_time</span><span class="p">,</span> 
+         <span class="n">systimestamp</span><span class="o">-</span><span class="n">last_schedule_time</span> <span class="n">ago</span> 
+ <span class="k">from</span> <span class="n">dba_autotask_schedule_control</span> 
+ <span class="k">where</span> <span class="n">dbid</span> <span class="o">=</span> <span class="n">sys_context</span><span class="p">(</span><span class="s1">'userenv'</span><span class="p">,</span><span class="s1">'con_dbid'</span><span class="p">)</span> 
+ <span class="k">and</span>   <span class="n">task_name</span> <span class="k">like</span> <span class="s1">'%STS%'</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>上記のクエリを何回か実行し、”LAST_SCHEDULE_TIME”の列を見て、Auto STS Capture Taskが実行された時刻が変化するのを待ちます。あるいは”AGO”の列の値を見て、数秒前にタスクが実行されたことが表示されるまで待ちます。間隔は900秒なので、最大で15分待つ必要があります。</p>
+
+    <p><img src="adb219_1.png" alt="LAST_SCHEDULE_TIMEを監視しているイメージ" /></p>
+
+    <p>上記画像に記載の時刻は例です。</p>
+  </li>
+  <li>
+    <p>しばらく待つと、自動SQLチューニングセットにワークロードのSQL文が格納されます。以下のクエリで確認できます。なお、以前本チュートリアルを実施したことがあれば、最新のSQL文だけでなく以前のワークロードのSQL文も表示されます。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="n">sql_text</span> 
+ <span class="k">from</span>   <span class="n">dba_sqlset_statements</span> 
+ <span class="k">where</span>  <span class="n">sql_text</span> <span class="k">like</span> <span class="s1">'%AUTO_INDEX_TEST_QUERY%'</span>
+ <span class="k">and</span>    <span class="n">sqlset_name</span> <span class="o">=</span> <span class="s1">'SYS_AUTO_STS'</span><span class="p">;</span>
+</code></pre></div>    </div>
+    <p><img src="adb219_2.png" alt="ワークロードのクエリを実行を確認しているイメージ" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-自動索引のレポートを確認する">3. 自動索引のレポートを確認する</h1>
+
+<p>Automatic Indexingのプロセスはすべて自動で管理されるため、ワークロードのSQL文がキャプチャされた後、新しい索引が作成されるのを待ちます。
+その後に自動索引のレポートを確認します。</p>
+
+<h2 id="3-1-automatic-indexingの完了を待つ">3-1. Automatic Indexingの完了を待つ</h2>
+<ol>
+  <li>
+    <p>Automatic IndexingのプロセスはAuto Index Taskというタスクで実行されます。以下のクエリを使用して、Auto Index Taskが最近実行されたかどうかを確認できます。
+ワークロードのクエリが取り込まれた後、タスクが実行されるまで待つ必要があります。これには最大で15分かかります。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="k">current_timestamp</span> <span class="n">now</span> <span class="k">from</span> <span class="n">dual</span><span class="p">;</span>
+
+ <span class="k">select</span> <span class="n">task_name</span><span class="p">,</span>
+         <span class="n">status</span><span class="p">,</span>
+         <span class="n">enabled</span><span class="p">,</span>
+         <span class="n">interval</span><span class="p">,</span>
+         <span class="n">last_schedule_time</span><span class="p">,</span> 
+         <span class="n">systimestamp</span><span class="o">-</span><span class="n">last_schedule_time</span> <span class="n">ago</span> 
+ <span class="k">from</span> <span class="n">dba_autotask_schedule_control</span> 
+ <span class="k">where</span> <span class="n">dbid</span> <span class="o">=</span> <span class="n">sys_context</span><span class="p">(</span><span class="s1">'userenv'</span><span class="p">,</span><span class="s1">'con_dbid'</span><span class="p">)</span> 
+ <span class="k">and</span>   <span class="n">task_name</span> <span class="o">=</span> <span class="s1">'Auto Index Task'</span><span class="p">;</span>
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<h2 id="3-2-自動索引のレポートの作成">3-2. 自動索引のレポートの作成</h2>
+<ol>
+  <li>レポートの作成は、最後に実行されたAuto Index Taskを対象にするか、または対象の期間を指定して実行することができます。
+この例では最後に実行されたAuto Index Taskを対象に、すべてのセクションの詳細まで含むレポートを生成します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">set</span> <span class="n">linesize</span> <span class="mi">300</span>
+ <span class="k">set</span> <span class="n">trims</span> <span class="k">on</span>
+ <span class="k">set</span> <span class="n">pagesize</span> <span class="mi">1000</span>
+ <span class="k">set</span> <span class="n">long</span> <span class="mi">10000000</span>
+ <span class="k">column</span> <span class="n">report</span> <span class="n">format</span> <span class="n">a120</span>
+ <span class="n">var</span> <span class="n">rep</span> <span class="k">clob</span>
+
+ <span class="k">exec</span> <span class="p">:</span><span class="n">rep</span> <span class="p">:</span><span class="o">=</span> <span class="n">dbms_auto_index</span><span class="p">.</span><span class="n">report_last_activity</span><span class="p">(</span><span class="n">section</span><span class="o">=&gt;</span><span class="s1">'ALL'</span><span class="p">,</span><span class="k">level</span><span class="o">=&gt;</span><span class="s1">'ALL'</span><span class="p">)</span> 
+ <span class="n">spool</span> <span class="n">report</span>
+ <span class="k">select</span> <span class="p">:</span><span class="n">rep</span> <span class="n">report</span> <span class="k">from</span> <span class="n">dual</span><span class="p">;</span>
+ <span class="n">spool</span> <span class="k">off</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次は期間を指定した例です。この場合は2日間をさかのぼって見ることができます。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">set</span> <span class="n">linesize</span> <span class="mi">300</span>
+ <span class="k">set</span> <span class="n">trims</span> <span class="k">on</span>
+ <span class="k">set</span> <span class="n">pagesize</span> <span class="mi">1000</span>
+ <span class="k">set</span> <span class="n">long</span> <span class="mi">10000000</span>
+ <span class="k">column</span> <span class="n">report_hist</span> <span class="n">format</span> <span class="n">a120</span>
+ <span class="n">var</span> <span class="n">rep</span> <span class="k">clob</span>
+
+ <span class="k">exec</span> <span class="p">:</span><span class="n">rep</span> <span class="p">:</span><span class="o">=</span> <span class="n">dbms_auto_index</span><span class="p">.</span><span class="n">report_activity</span><span class="p">(</span><span class="n">activity_start</span><span class="o">=&gt;</span><span class="n">sysdate</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">section</span><span class="o">=&gt;</span><span class="s1">'ALL'</span><span class="p">,</span><span class="k">level</span><span class="o">=&gt;</span><span class="s1">'ALL'</span><span class="p">)</span> 
+ <span class="n">spool</span> <span class="n">report_hist</span>
+ <span class="k">select</span> <span class="p">:</span><span class="n">rep</span> <span class="n">report</span> <span class="k">from</span> <span class="n">dual</span><span class="p">;</span>
+ <span class="n">spool</span> <span class="k">off</span>
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<h2 id="3-3-自動索引のレポートを見る">3-3. 自動索引のレポートを見る</h2>
+<ol>
+  <li>
+    <p>レポートの概要は、次のようになります。</p>
+
+    <p><img src="adb219_3.png" alt="レポートの概要のイメージ" /></p>
+
+    <p>結果は測定されたワークロードのパフォーマンスに依存し、相対的なSQL文のパフォーマンスは時間の経過とともに変化する可能性があるため、レポートによって相違がある場合があります。</p>
+
+    <p>上記のレポートでは、例えば以下のことが確認できます。</p>
+
+    <p>・10個の索引（上記画像のSUMMARYの1行目)の候補が挙がっています。Automatic Indexingでは、クエリの条件で使用される表の列が特定されます。これらの列は索引の作成の候補となります。一般に、Automatic Indexingでは多くの候補を生成します。</p>
+
+    <p>・ワークロードのうちの20個のクエリ(上記画像のSUMMARYの下から3行目)で、新しい索引による性能の向上が見られます。</p>
+
+    <p>・ワークロードのクエリによっては、新しいAutomatic Indexingが原因でパフォーマンスが低下する可能性があります。これを防止するために、SQL文の実行計画のベースラインが2つ(上記画像のSUMMARYの下から2行目)作成されています。</p>
+  </li>
+  <li>
+    <p>作成された索引はレポートに記載されます。</p>
+
+    <p><img src="adb219_4.png" alt="作成された索引のイメージ" /></p>
+
+    <p>自動索引の索引名はSYS_AI_～から始まります。</p>
+  </li>
+  <li>
+    <p>詳細のレポートではSQL文の実行計画など、個々のSQL文のパフォーマンスの向上が一覧で表示されます。</p>
+
+    <p><img src="adb219_5.png" alt="詳細のレポートのイメージ1" /></p>
+
+    <p><img src="adb219_6.png" alt="詳細のレポートのイメージ2" /></p>
+  </li>
+  <li>
+    <p>レポートにはSQL文の実行計画のベースラインの詳細と、エラーのセクションが含まれています。最終セクションで ORA-00942: table or view does not exist のエラーが発生することがよくあります。これは正常で、表やビューに対するワークロードのクエリが読み込まれた後に対象となる表やビューが削除されたことを表しています。</p>
+
+    <p><img src="adb219_7.png" alt="詳細のレポートのイメージ3" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-自動索引の削除とautomatic-indexingの無効化">4. 自動索引の削除とAutomatic Indexingの無効化</h1>
+
+<h2 id="4-1-自動索引の削除">4-1. 自動索引の削除</h2>
+<ol>
+  <li>
+    <p>以下のクエリを使用し、作成された自動索引を確認することができます。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">set</span> <span class="n">linesize</span> <span class="mi">250</span> <span class="n">trims</span> <span class="k">on</span>
+ <span class="k">column</span> <span class="k">column_name</span> <span class="n">format</span> <span class="n">a20</span>
+ <span class="k">column</span> <span class="k">table_name</span> <span class="n">format</span> <span class="n">a25</span>
+ <span class="k">column</span> <span class="n">table_owner</span> <span class="n">format</span> <span class="n">a30</span>
+ <span class="k">column</span> <span class="n">index_name</span> <span class="n">format</span> <span class="n">a30</span>
+
+ <span class="n">break</span> <span class="k">on</span> <span class="n">index_name</span>
+ <span class="k">SELECT</span> <span class="k">c</span><span class="p">.</span><span class="n">index_name</span><span class="p">,</span><span class="k">c</span><span class="p">.</span><span class="k">table_name</span><span class="p">,</span><span class="k">c</span><span class="p">.</span><span class="k">column_name</span><span class="p">,</span><span class="k">c</span><span class="p">.</span><span class="n">column_position</span><span class="p">,</span> <span class="n">i</span><span class="p">.</span><span class="n">visibility</span><span class="p">,</span> <span class="n">i</span><span class="p">.</span><span class="n">status</span>
+ <span class="k">FROM</span>   <span class="n">user_ind_columns</span> <span class="k">c</span> <span class="p">,</span> <span class="n">user_indexes</span> <span class="n">i</span>
+ <span class="k">WHERE</span>  <span class="k">c</span><span class="p">.</span><span class="n">index_name</span> <span class="o">=</span> <span class="n">i</span><span class="p">.</span><span class="n">index_name</span>
+ <span class="k">AND</span>    <span class="n">i</span><span class="p">.</span><span class="n">auto</span> <span class="o">=</span> <span class="s1">'YES'</span>
+ <span class="k">ORDER</span> <span class="k">BY</span> <span class="k">c</span><span class="p">.</span><span class="k">table_name</span><span class="p">,</span><span class="k">c</span><span class="p">.</span><span class="n">index_name</span><span class="p">,</span><span class="k">c</span><span class="p">.</span><span class="n">column_position</span><span class="p">;</span>
+</code></pre></div>    </div>
+    <p><a id="anchor4-1-2"></a></p>
+  </li>
+  <li>
+    <p>作成された自動索引をすべて削除します。自動索引の削除にDROP INDEX文は使用できません。DBMS_AUTO_INDEXパッケージを使用する必要があります。allow_recreateをTRUEに設定すると（3番目のパラメータ）、ワークロードにメリットがある場合、同じ列索引を再び作成できます。本チュートリアルを再度実施する場合、このコマンドを実行する必要があります。ここでFALSEを使用しても、後からTRUEに変更できます。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">exec</span> <span class="n">dbms_auto_index</span><span class="p">.</span><span class="n">drop_auto_indexes</span><span class="p">(</span><span class="s1">'ADMIN'</span><span class="p">,</span><span class="k">null</span><span class="p">,</span><span class="k">true</span><span class="p">)</span>
+</code></pre></div>    </div>
+    <blockquote>
+      <p><strong>補足</strong></p>
+
+      <p>なお、個別で自動索引を指定して削除することも可能です。<a href="https://docs.oracle.com/cd/F19136_01/arpls/DBMS_AUTO_INDEX.html" target="_blank">PL/SQLパッケージおよびタイプ・リファレンス, 30 DBMS_AUTO_INDEDX</a>をご確認ください。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h2 id="4-2-automatic-indexingを無効化する">4-2. Automatic Indexingを無効化する</h2>
+<ol>
+  <li>Automatic Indexingを無効化します。
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">exec</span> <span class="n">dbms_auto_index</span><span class="p">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">'AUTO_INDEX_MODE'</span><span class="p">,</span> <span class="s1">'OFF'</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><a id="おわりに"></a></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>本チュートリアルでは、Automatic Indexingの利用方法を紹介しました。
+専門的な知識がなくても、効率的に索引の管理ができることが体験できました。この機能を使うことで、性能向上が期待できる索引の自動作成、および不要な索引を使用することによる性能上の障害を防ぐことが可能になります。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li>
+    <p>LiveLabs <a href="https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/run-workshop?p210_wid=3328&amp;p210_wec=&amp;session=16116036714220" target="_blank">Automatic Indexing for Oracle Autonomous Database</a></p>
+
+    <p>このLivelabsのLab5: View Automatic Indexing Detailsでは、本チュートリアルでは行わなかったスキーマ指定の方法や、作成された自動索引の詳細確認、Automatic Indexingのアクション詳細確認にも触れています。</p>
+  </li>
+  <li>
+    <p><a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/admin/managing-indexes.html#GUID-D1285CD5-95C0-4E74-8F26-A02018EA7999" target="_blank">Database Administrator’s Guide, 21.7 Managing Automatic Indexes</a></p>
+  </li>
+</ul>
+
+<p>以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-10T17:29:32+09:00">January 10, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=219%3A+Automatic+Indexing%E3%82%92%E4%BD%93%E9%A8%93%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86+%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb219-autoindexing%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb219-autoindexing%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb219-autoindexing%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb218-refreshable-clone/" class="pagination--pager" title="218 : リフレッシュ可能クローンを活用しよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb301-create-source-db/" class="pagination--pager" title="301 : 移行元となるデータベースを作成しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

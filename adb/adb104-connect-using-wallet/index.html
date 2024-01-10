@@ -1,0 +1,984 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>104: クレデンシャル・ウォレットを利用して接続してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クレデンシャル・ウォレットを使ってADBに接続してみましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="104: クレデンシャル・ウォレットを利用して接続してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">
+
+
+  <meta property="og:description" content="クレデンシャル・ウォレットを使ってADBに接続してみましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/img1_3.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-10T17:29:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb104-connect-using-wallet/img1_3.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          104: クレデンシャル・ウォレットを利用して接続してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">クレデンシャル・ウォレットを使ってADBに接続してみましょう。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">104: クレデンシャル・ウォレットを利用して接続してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/" class="active">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="104: クレデンシャル・ウォレットを利用して接続してみよう">
+    <meta itemprop="description" content="クレデンシャル・ウォレットを使ってADBに接続してみましょう。">
+    <meta itemprop="datePublished" content="2024-01-10T17:29:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-クレデンシャルウォレットのダウンロード">1. クレデンシャル・ウォレットのダウンロード</a></li><li><a href="#2-設定ファイルの編集">2. 設定ファイルの編集</a></li><li><a href="#3-adbに接続">3. ADBに接続</a><ul><li><a href="#3-1-sqlplus-を使った接続">3-1. SQL*Plus を使った接続</a></li><li><a href="#3-2-sqlcl-を使った接続">3-2. SQLcl を使った接続</a></li><li><a href="#3-3-sql-developer-を使った接続">3-3. SQL Developer を使った接続</a></li><li><a href="#3-4-database-actions-を使った接続">3-4. Database Actions を使った接続</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>Autonomous Database にはさまざまなツールが同梱されており、簡単にご利用いただけますが、
+一方で、これまでお使いのアプリケーションからの接続するときはどのように接続するのでしょうか？</p>
+
+<p>Autonomous Databaseには暗号化およびSSL相互認証を利用した接続が前提としており、そのため接続する際はクレデンシャル・ウォレット（Credential.zipファイル）を利用する必要があります。</p>
+
+<p>本章ではこのクレデンシャル・ウォレットを使用した接続方法について確認していきます。
+尚、クレデンシャル・ウォレットの扱いに慣れてしまえば、Autonomous だからと言って特別なことはありません。</p>
+
+<p><br /></p>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスを作成方法については、<a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <li>SQL Developerを使用した接続を行いたい場合には、当該クライアントツールがインストール済みであること。インストールは<a href="https://www.oracle.com/jp/tools/downloads/sqldev-downloads.html" target="_blank">こちら</a>から<br /></li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. クレデンシャル・ウォレットのダウンロード</a></li>
+  <li><a href="#anchor2">2. 設定ファイルの編集</a></li>
+  <li><a href="#anchor3">3. ADBに接続</a>
+    <ul>
+      <li><a href="#anchor3-1">3-1. SQL*Plus を使った接続</a></li>
+      <li><a href="#anchor3-2">3-2. SQLcl を使った接続</a></li>
+      <li><a href="#anchor3-3">3-3. SQL Developer を使った接続</a></li>
+      <li><a href="#anchor3-4">3-4. Database Actions を使った接続</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約20分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-クレデンシャルウォレットのダウンロード">1. クレデンシャル・ウォレットのダウンロード</h1>
+<p>ウォレットを利用したADBインスタンスへの接続には、対象インスタンスへの接続情報が格納された <strong>クレデンシャル・ウォレット</strong> を利用する必要があります。
+（より高いセキュリティを担保するために、ADBインスタンスはcredential.ssoファイルを利用した接続のみを受け入れます。）
+まず、ADBへの接続情報が格納されるCredential.zipファイルをお手元のPCにダウンロードしましょう。</p>
+
+<ol>
+  <li>
+    <p>OCIのコンソールにアクセスし、左上のメニューから <strong>Oracle Database</strong> を選択します。Oracle Databaseのメニュー一覧が表示されたら、 <strong>Autonomous Database</strong> の <strong>Autonomous Transaction Processing</strong> をクリックします。
+ <img src="img1_1.png" alt="img1_1.png" /></p>
+  </li>
+  <li>
+    <p>作成したATPインスタンスをクリックし、ATPインスタンスの詳細画面を表示します。</p>
+
+    <p>詳細画面の <strong>DB接続</strong> をクリックします.</p>
+
+    <p><img src="img1_2.png" alt="img1_2.png" /></p>
+  </li>
+  <li>
+    <p>ダウンロードウィザードが起動するので、 <strong>ウォレットのダウンロード</strong> をクリックします。</p>
+
+    <p><img src="img1_3.png" width="80%" /></p>
+
+    <p>【ウォレットの選択について】</p>
+
+    <p>「ウォレット・タイプ」で、２種類のタイプから１つ選択することができます。今回はデフォルトの「インスタンス・ウォレット」を選択します。</p>
+    <ul>
+      <li>インスタンス・ウォレット
+        <ul>
+          <li>特定のインスタンスの資格証明のみが記載</li>
+          <li>アプリケーションからの接続はこちらの利用を推奨</li>
+        </ul>
+      </li>
+      <li>リージョナル・ウォレット
+        <ul>
+          <li>選択されたリージョン内の全てのインスタンスの資格証明が記載</li>
+          <li>他のインスタンスへの接続時も利用できるため、主に管理目的での利用に限定ください</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>ウォレットファイルに付与するパスワードを入力し、ダウンロードをクリックして、お手元のPCの任意の場所に保存してください。
+ （本ハンズオンガイドでは便宜上、パスワードは <strong>Welcome12345#</strong> に統一ください）</p>
+
+    <p><img src="img1_4.png" width="80%" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-設定ファイルの編集">2. 設定ファイルの編集</h1>
+
+<p>作成したADBインスタンスに接続するためには、接続に使用するクライアントの設定ファイルの編集を行う必要があります。この設定を <strong><code class="language-plaintext highlighter-rouge">OCI Cloud Shell</code></strong> で行う手順をご紹介します。</p>
+
+<p>Cloud Shellは、Oracle CloudコンソールからアクセスできるWebブラウザ・ベースのターミナルで、Oracle Cloud Infrastructureの全ユーザーが利用可能です。
+ローカルの端末にOCI-CLIをインストールせずとも、コンソール上でコマンドベースの操作が可能になります。</p>
+
+<ol>
+  <li>
+    <p>Cloud Shellを開いてみましょう。Oracle Cloud Infrastructureのテナンシにサインインし、コンソールのヘッダーにあるコマンド・プロンプト・アイコンをクリックします。</p>
+
+    <p><img src="img3_5_1.png" alt="img3_5_1.png" /></p>
+
+    <p>Cloud Shell環境が作成され、コマンドを実行したりAutonomous Databaseに接続したりすることが可能になります。
+ Cloud Shellの起動には、約1分ほどの時間がかかります。</p>
+
+    <p><img src="img3_5_2.png" alt="img3_5_2.png" /></p>
+
+    <blockquote>
+
+      <p><strong>Note</strong></p>
+
+      <p>次のようにURLを作成してクラウド・シェルを直接開くという方法もあります。この場合、&lt;region&gt;と&lt;tenancy&gt;には実際の値を入れる必要があります。</p>
+
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://console.us-&lt;region&gt;-1.oraclecloud.com/a/&lt;tenancy&gt;?cloudshell<span class="o">=</span><span class="nb">true</span>
+</code></pre></div>      </div>
+    </blockquote>
+  </li>
+  <li>
+    <p>ADB WalletをCloud Shell上にアップロードします。
+Cloud Shellの左上のメニューをクリックし、「アップロード」をクリックします。
+<a href="#1-クレデンシャル・ウォレットのダウンロード">1. クレデンシャル・ウォレットのダウンロード</a> でダウンロードしたファイルを”Drag &amp; Drop”します。
+<br />Cloud Shellの画面に、ファイルを直接”Drag &amp; Drop”してアップロードすることも可能です。</p>
+
+    <p><img src="img3_5_2_1.png" alt="img3_5_2_1.png" /></p>
+
+    <p>lsコマンドで、ファイルが正しくアップロードされていることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">ls</span>
+</code></pre></div>    </div>
+    <p>「Wallet_atp01.zip」が存在していればOKです。</p>
+  </li>
+  <li>
+    <p>格納用のディレクトリを作成し、ウォレットファイルを$HOME/network/admin 配下に移動します。</p>
+
+    <p>格納用のディレクトリを作成します。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">mkdir</span> <span class="nt">-p</span> ~/network/admin
+</code></pre></div>    </div>
+    <p>ウォレットファイル Wallet_atp01.zip を移動します。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">mv </span>Wallet_atp01.zip ~/network/admin
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>作成したディレクトリに移動し、圧縮されたウォレットファイルを展開します。</p>
+
+    <p>作成したディレクトリに移動します。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">cd</span> ~/network/admin
+</code></pre></div>    </div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unzip Wallet_atp01.zip
+</code></pre></div>    </div>
+
+    <p>lsコマンドでadminディレクトリ内のファイルを一覧し、次のようなファイルが揃っていればOKです。</p>
+
+    <p><img src="img3_5_2_4.png" alt="img3_5_2_4.png" /></p>
+  </li>
+  <li>
+    <p>TNS_ADMIN 環境変数にウォレットの保存先を設定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>~/network/admin
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p><strong>Note</strong></p>
+
+      <p>アプリ毎に接続するインスタンスを切り替えたい場合は、インスタンス毎に　wallets_atp01　といったようにディレクトリを定義し、アプリ毎に環境変数TNS_ADMINのパスを切り替えると簡単です。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>sqlnet.ora の下記の行を編集し、ウォレットの保存先を置き換えます。前の手順で、保存先をTNS_ADMIN環境変数に格納しているため、こちらを使います。</p>
+
+    <p>編集前：</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> WALLET_LOCATION <span class="o">=</span> <span class="o">(</span>SOURCE <span class="o">=</span> <span class="o">(</span>METHOD <span class="o">=</span> file<span class="o">)</span> <span class="o">(</span>METHOD_DATA <span class="o">=</span> <span class="o">(</span><span class="nv">DIRECTORY</span><span class="o">=</span><span class="s2">"?/network/admin"</span><span class="o">)))</span>
+</code></pre></div>    </div>
+
+    <p>編集後：</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> WALLET_LOCATION <span class="o">=</span> <span class="o">(</span>SOURCE <span class="o">=</span> <span class="o">(</span>METHOD <span class="o">=</span> file<span class="o">)</span> <span class="o">(</span>METHOD_DATA <span class="o">=</span> <span class="o">(</span><span class="nv">DIRECTORY</span><span class="o">=</span><span class="nv">$TNS_ADMIN</span><span class="o">)))</span>
+</code></pre></div>    </div>
+
+    <p>編集方法の一例として、viを使用した操作方法は次の通りです。</p>
+
+    <p>5-1. sqlnet.ora をviで開く。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> vi sqlnet.ora
+</code></pre></div>    </div>
+    <p>5-2. 次の操作方法を参考に、WALLET_LOCATION の値を編集します。</p>
+
+    <blockquote>
+      <p><strong>【参考】 viの操作方法</strong></p>
+
+      <table>
+<tr>
+<th>キー入力</th>
+<th>動作</th>
+</tr>
+<tr>
+<td>上下左右キー</td>
+<td>カーソルの場所を移動する</td>
+</tr>
+<tr>
+<td>i</td>
+<td>カーソルの場所から編集する（InsertModeに入る）</td>
+</tr>
+<tr>
+<td>ESCキー</td>
+<td>InsertModeを抜ける</td>
+</tr>
+<tr>
+<td>x</td>
+<td>カーソルの場所を一文字消す</td>
+</tr>
+<tr>
+<td>:wq</td>
+<td>ファイルを保存して閉じる</td>
+</tr>
+<tr>
+<td>:q</td>
+<td>ファイルを閉じる（それまでの編集は破棄される）</td>
+</tr>
+<tr>
+<td>:q!</td>
+<td>強制的に終了する</td>
+</tr>
+</table>
+      <p><br /></p>
+    </blockquote>
+  </li>
+  <li>
+    <p>環境変数”ORACLE_HOME”を設定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">export </span><span class="nv">ORACLE_HOME</span><span class="o">=</span>~
+</code></pre></div>    </div>
+
+    <p>echoコマンドで中身を確認し、/home/[username] が出力されればOKです。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">echo</span> <span class="nv">$ORACLE_HOME</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>tnsnames.oraから、接続用のサービス情報を確認します。
+ 次にように４つの接続サービスがあることが分かります。</p>
+
+    <p><img src="img3_5_8.png" alt="img3_5_8.png" /></p>
+
+    <p><br /></p>
+
+    <blockquote>
+      <p><strong>Note</strong><br />
+ Cloud Shellから接続する場合、SQL*Plus (<a href="#anchor3-1">3-1</a>) およびSQLcl (<a href="#anchor3-1">3-2</a>) を使用して接続することができます。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-adbに接続">3. ADBに接続</h1>
+
+<p><a id="anchor3-1"></a></p>
+
+<h2 id="3-1-sqlplus-を使った接続">3-1. SQL*Plus を使った接続</h2>
+
+<p>Cloud Shellには、SQL Plusのクライアントが実装されているため、OCI上のADBに簡単に接続することができます。</p>
+
+<ol>
+  <li>
+    <p>次のコマンドをCloud Shellのターミナルに入力し、ADBにSQL*Plusを起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本ハンズオンガイドを参考にADBインスタンスをお作りいただいた方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01_low
+</code></pre></div>    </div>
+
+    <table>
+  <tr>
+   <td>username</td>
+   <td>admin</td>
+  </tr>
+  <tr>
+   <td>password</td>
+   <td>Welcome12345#（インスタンス作成時に指定した値）</td>
+  </tr>
+  <tr>
+   <td>conn_string</td>
+   <td>atp01_low （接続サービス名 ）</td>
+  </tr>
+ </table>
+
+    <p>※ 接続サービスに関する詳細は <a href="https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi">ADB-S技術詳細資料</a> を参照ください。</p>
+
+    <p><br /></p>
+
+    <p><a id="anchorerr"></a></p>
+
+    <blockquote>
+      <p><strong>補足</strong></p>
+
+      <p>SQL*Plusを起動した際に以下のエラーが出てしまった場合は、sqlplusの共有ライブラリを参照できるようにパスを設定してください。<br />
+<code>sqlplus: error while loading shared libraries: libsqlplus.so: cannot open shared object file: No such file or directory</code></p>
+
+      <p><br />libsqlplus.soファイルが配置されているパスを環境変数LD_LIBRARY_PATHに格納します。
+次のようにして、locateコマンドで得られたパスを環境変数LD_LIBRARY_PATHに格納します。</p>
+
+      <p>locateコマンドで、libsqlplus.soファイルが配置されている場所を確認します。</p>
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>locate libsqlplus.so
+</code></pre></div>      </div>
+
+      <p>exportコマンドで、得られたパスを環境変数LD_LIBRARY_PATHに格納します。
+例えば、<code>locate libsqlplus.so</code> の出力結果が <code>/usr/lib/oracle/21/client64/lib/libsqlplus.so</code> だった場合は次のようになります。</p>
+
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/usr/lib/oracle/21/client64/lib
+</code></pre></div>      </div>
+      <p>正しく格納できているかをechoコマンドで確認します。指定した通りのパスが表示されればOKです。</p>
+      <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$LD_LIBRARY_PATH</span>
+</code></pre></div>      </div>
+
+    </blockquote>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3-2"></a></p>
+
+<h2 id="3-2-sqlcl-を使った接続">3-2. SQLcl を使った接続</h2>
+
+<p>SQLclは、無料のコマンドラインツールです。（SQLclについては<a href="https://www.oracle.com/jp/database/technologies/appdev/sqlcl.html">こちら</a>）<br />
+SQL＊Plusに似ていますがSQL*Plusよりも多くの機能が備わっており、Autonomous Databaseにも簡単に接続できるようになっています。</p>
+
+<ol>
+  <li>
+    <p>SQLclを起動します。次のコマンドをCloud Shellのターミナルに入力してみましょう。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sql /nolog
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>クレデンシャル・ウォレットを指定します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">set</span> <span class="n">cloudconfig</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">oracle</span><span class="o">/</span><span class="n">labs</span><span class="o">/</span><span class="n">wallets</span><span class="o">/</span><span class="n">Wallet_atp01</span><span class="p">.</span><span class="n">zip</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>インスタンスに接続します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">connect</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
+</code></pre></div>    </div>
+    <p><br /></p>
+  </li>
+</ol>
+
+<p><a id="anchor3-3"></a></p>
+
+<h2 id="3-3-sql-developer-を使った接続">3-3. SQL Developer を使った接続</h2>
+
+<p>手元のPCにインストールしたクライアントツールを利用してアクセスします。
+SQL Developerを起動し、管理者アカウント(ADMIN)でADBへ接続します。</p>
+
+<ol>
+  <li>
+    <p>SQL Developerを起動後、画面左上の接続アイコンをクリックします。</p>
+
+    <p><img src="img3_3_1.png" alt="img3_3_1.png" /></p>
+  </li>
+  <li>
+    <p>以下の記載例を参考に各項目を入力し、ADBインスタンスへの接続設定を行います。</p>
+
+    <ol>
+      <li>各項目に接続情報を入力します。
+        <table>
+    <tr>
+    <td>Name</td>
+    <td>atp01_high_admin<br />（"high"は接続サービスの一つ）</td>
+    </tr>
+    <tr>
+    <td>ユーザー名</td>
+    <td>admin</td>
+    </tr>
+    <tr>
+    <td>パスワード</td>
+    <td>Welcome12345#<br />（インスタンス作成時に設定したADMINユーザーのパスワード）</td>
+    </tr>
+    <tr>
+    <td>パスワードの保存</td>
+    <td>チェックあり<br />（実際の運用に際しては、セキュリティ要件を踏まえ設定ください）</td>
+    </tr>
+    <tr>
+    <td>接続タイプ</td>
+    <td>クラウド・ウォレット</td>
+    </tr>
+    <tr>
+    <td>構成ファイル</td>
+    <td>（事前にダウンロードしておいたウォレットファイルを選択）</td>
+    </tr>
+ </table>
+        <p><br /></p>
+      </li>
+      <li>
+        <p>サービス：<strong><code class="language-plaintext highlighter-rouge">atp01_high</code></strong> を選択（接続サービスに相当。詳細は にて扱います）</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">テスト</code></strong> をクリックし、正しく接続できるか確認します。（正しく接続出来れば、左下のステータスに <strong><code class="language-plaintext highlighter-rouge">成功</code></strong> と表示されます。）</p>
+      </li>
+      <li>
+        <p>テストに成功したことを確認し、<strong><code class="language-plaintext highlighter-rouge">保存</code></strong>をクリックします。（左上の接続リストに表示され、次回以降の登録作業をスキップできます。）</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">接続</code></strong>をクリックします。</p>
+
+        <p><img src="img3_3_2.png" alt="img3_3_2.png" /></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>ワークシートが起動しますので、サンプルクエリを実行してADBインスタンスに正しく接続できているか確認します。</p>
+
+    <ol>
+      <li>
+        <p>SQL Developerにてご自身で作成した接続を選択します。</p>
+      </li>
+      <li>
+        <p>以下のクエリをワークシートに貼り付けます。</p>
+
+        <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">SELECT</span> <span class="n">USERNAME</span> <span class="k">FROM</span> <span class="n">USER_USERS</span><span class="p">;</span>
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>スクリプトの実行 ボタンをクリックし実行します（左隣の 文の実行 ボタンで実行しても構いません）</p>
+      </li>
+      <li>
+        <p>エラーなく実行結果が返ってくれば確認完了です</p>
+
+        <p><img src="img3_3_3.png" alt="img3_3_3.png" /></p>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3-4"></a></p>
+
+<h2 id="3-4-database-actions-を使った接続">3-4. Database Actions を使った接続</h2>
+
+<p>Database Actionsを使った接続については、<a href="/ocitutorials/adb/adb101-provisioning/">こちら</a>をご確認ください。</p>
+
+<p><br /></p>
+
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-10T17:29:32+09:00">January 10, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=104%3A+%E3%82%AF%E3%83%AC%E3%83%87%E3%83%B3%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%BB%E3%82%A6%E3%82%A9%E3%83%AC%E3%83%83%E3%83%88%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%A6%E6%8E%A5%E7%B6%9A%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb104-connect-using-wallet%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb104-connect-using-wallet%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb104-connect-using-wallet%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb103-livelabs/" class="pagination--pager" title="103: Oracle LiveLabsのご紹介
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb105-create-apex-app/" class="pagination--pager" title="105: ADBの付属ツールで簡易アプリを作成しよう(APEX)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

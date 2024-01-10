@@ -1,0 +1,1075 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>218 : リフレッシュ可能クローンを活用しよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Autonomous Databaseを複製し、リフレッシュ操作によってソース・データベースの変更内容を反映することができる、リフレッシュ可能クローンについてご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="218 : リフレッシュ可能クローンを活用しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb218-refreshable-clone/">
+
+
+  <meta property="og:description" content="Autonomous Databaseを複製し、リフレッシュ操作によってソース・データベースの変更内容を反映することができる、リフレッシュ可能クローンについてご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb218-refreshable-clone/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-10T17:29:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb218-refreshable-clone/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb218-refreshable-clone/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          218 : リフレッシュ可能クローンを活用しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Autonomous Databaseを複製し、リフレッシュ操作によってソース・データベースの変更内容を反映することができる、リフレッシュ可能クローンについてご紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">218 : リフレッシュ可能クローンを活用しよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/" class="active">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="218 : リフレッシュ可能クローンを活用しよう">
+    <meta itemprop="description" content="Autonomous Databaseを複製し、リフレッシュ操作によってソース・データベースの変更内容を反映することができる、リフレッシュ可能クローンについてご紹介します。">
+    <meta itemprop="datePublished" content="2024-01-10T17:29:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-adbにおけるリフレッシュ可能クローンの概要">1. ADBにおけるリフレッシュ可能クローンの概要</a></li><li><a href="#2-事前準備">2. 事前準備</a></li><li><a href="#3-リフレッシュ可能クローンを作成してみよう">3. リフレッシュ可能クローンを作成してみよう</a></li><li><a href="#4-リフレッシュ可能クローンを確認してみよう">4. リフレッシュ可能クローンを確認してみよう</a></li><li><a href="#5-リフレッシュ可能クローンのリフレッシュ動作を確認してみよう">5. リフレッシュ可能クローンのリフレッシュ動作を確認してみよう</a></li><li><a href="#6-リフレッシュ可能クローンをソースデータベースから切断してみよう">6. リフレッシュ可能クローンをソース・データベースから切断してみよう</a></li><li><a href="#7-リフレッシュ可能クローンをソースデータベースに再接続してみよう">7. リフレッシュ可能クローンをソース・データベースに再接続してみよう</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<p>Autonomous Databaseのリフレッシュ可能クローンを利用すると、本番環境のデータを用いてリフレッシュすることができる、更新可能なテスト/検証/分析用途の環境を簡単に作成することができます。<br />
+本章では、リフレッシュ可能クローンの作成方法と動作について確認します。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li>ADBインスタンスが構成済みであること
+ <br />※ADBインタンスを作成方法については、本チュートリアルの <a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <li>構成済みのADBインスタンスへの接続が可能であること</li>
+</ul>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. ADBにおけるリフレッシュ可能クローンの概要</a></li>
+  <li><a href="#anchor2">2. 事前準備</a></li>
+  <li><a href="#anchor3">3. リフレッシュ可能クローンを作成してみよう</a></li>
+  <li><a href="#anchor4">4. 作成したリフレッシュ可能クローンを確認してみよう</a></li>
+  <li><a href="#anchor5">5. リフレッシュ可能クローンのリフレッシュ動作を確認してみよう</a></li>
+  <li><a href="#anchor6">6. リフレッシュ可能クローンをソース・データベースから切断してみよう</a></li>
+  <li><a href="#anchor7">7. リフレッシュ可能クローンをソース・データベースに再接続してみよう</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-adbにおけるリフレッシュ可能クローンの概要">1. ADBにおけるリフレッシュ可能クローンの概要</h1>
+
+<p>ADBのリフレッシュ可能クローンは、コンソールまたはAPIを使用して作成することができます。
+<br />リフレッシュ可能クローンを使用することで、リフレッシュ操作によってソース・データベースの変更内容を反映することが可能なADBのクローンを作成できます。
+<br />
+<br />
+ADBのリフレッシュ可能クローンは以下のような特徴があります。
+<br /></p>
+<ul>
+  <li>実行中のAutonomous Databaseから作成可能（バックアップからの作成は不可）</li>
+  <li>ソースとなるAutonomous Databaseと異なるコンパートメントに作成可能</li>
+  <li>ソースとなるAutonomous Databaseに接続している間は読み取り専用データベースとして利用可能</li>
+  <li>コンソールまたはAPIを使用したリフレッシュ操作により、ソース・データベースの変更内容を反映可能</li>
+  <li>リフレッシュ中は利用不可（ソース・データベースはリフレッシュ中も利用可能）</li>
+  <li>リフレッシュ可能期間は、クローン作成後または前回のリフレッシュから1週間以内</li>
+  <li>1週間以上リフレッシュしなかった場合はリフレッシュできなくなる</li>
+  <li>リフレッシュ可能期間を超えた場合は、そのまま読み取り専用DBとして利用するかソース・データベースから切断して通常の読み取り/書き込み可能なDBとして利用する</li>
+  <li>ソースとなるAutonomous Databaseから一時的に切断し、再接続することが可能</li>
+  <li>切断後は読み取り/書き込み可能</li>
+  <li>再接続操作は切断後24時間以内のみ可能</li>
+  <li>再接続すると切断中のクローンに対する更新内容は破棄される</li>
+  <li>再接続後は切断前と同様に、リフレッシュ操作によりソース・データベースの変更内容を反映可能
+<br /></li>
+</ul>
+
+<p>リフレッシュ可能クローンに関する詳細な情報は<a href="https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/clone-autonomous-database.html">マニュアル</a>を参照ください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-事前準備">2. 事前準備</h1>
+
+<p>実際にリフレッシュ可能クローンを作成する前に、ソース・データベースとなるAutonomous Databaseに対してサンプルスクリプトを実行し、データを挿入します。
+<br />ここではある会社の部門の情報を含む、DEPARTMENT表という簡単な表を作成していきます。</p>
+
+<ol>
+  <li>
+    <p>次の手順に従って、SQL*Plusを使用してリフレッシュ可能クローンのソースとなるADBに接続します。</p>
+
+    <p>1-1. SQL*Plusがインストールされている仮想マシンにssh接続します。
+   <br />仮想マシンの作成およびセットアップ方法は<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/">こちら</a></p>
+
+    <p>1-2. 下記のコマンドを参考に、oracleユーザに切り替えます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo</span> <span class="nt">-s</span>
+</code></pre></div>    </div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su - oracle
+</code></pre></div>    </div>
+    <p>（一旦rootユーザにスイッチしてから、oracleユーザにスイッチしています）</p>
+
+    <p>1-3. 下記のコマンドを参考に、SQL*PlusからADBに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にADBインスタンスを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01_low
+</code></pre></div>    </div>
+
+    <p>SQL*Plusを使用したADBへの接続方法の詳細については、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a> をご確認ください。</p>
+  </li>
+  <li>
+    <p>次のサンプルスクリプトを実行し、DEPARTMENT表を作成します。</p>
+
+    <p>こちらのスクリプトをコピーし、SQL*Plusにペーストします。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">department</span> <span class="k">CASCADE</span> <span class="k">CONSTRAINTS</span> <span class="n">PURGE</span><span class="p">;</span>
+    
+ <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">department</span> <span class="p">(</span>
+   <span class="n">dept_id</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+   <span class="n">dept_name</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+   <span class="n">mgr_id</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+   <span class="n">last_update</span> <span class="nb">DATE</span> <span class="k">NOT</span> <span class="k">NULL</span>
+ <span class="p">);</span>
+
+ <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'ADMINISTRATION'</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'HUMAN RESOURCE'</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'LEGAL OFFICE'</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'ACCOUNTING'</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'MARKETING'</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSELECT文を実行し、表が正しく作成されているかを確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">SESSION</span> <span class="k">SET</span> <span class="n">NLS_DATE_FORMAT</span> <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+ <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">department</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img2_1.png" alt="img2_1.png" /></p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-リフレッシュ可能クローンを作成してみよう">3. リフレッシュ可能クローンを作成してみよう</h1>
+
+<p>ADB（atp01）のリフレッシュ可能クローンを作成します。</p>
+
+<ol>
+  <li>ソースとなるAutunomous Databaseの詳細画面から「クローンを作成」をクリックします。</li>
+</ol>
+
+<p><img src="img3_1.png" alt="img2_1.png" /></p>
+
+<ol>
+  <li>
+    <p>クローンの作成画面が表示されます。</p>
+
+    <p>作成するクローンの設定を行います。<br />
+ 下記を参考に設定してみましょう。</p>
+  </li>
+</ol>
+
+<ul>
+  <li>
+    <p>クローン・タイプ：<strong>リフレッシュ可能クローン</strong>
+  <br />ソース・データベースのメタデータとデータが複製され、ソース・データベースのデータでリフレッシュ可能な読み取り専用のフルクローンを作成します。</p>
+  </li>
+  <li>Autonomous Databaseクローンの基本情報の指定
+    <ul>
+      <li>コンパートメント：<strong>任意のコンパートメントを指定</strong></li>
+      <li>ソース・データベース名：<strong>atp01（変更できません）</strong></li>
+      <li>表示名：<strong>Refreshable-Clone-of-atp01</strong>（任意の名前でOKです）</li>
+      <li>データベース名：<strong>atp01RefClone</strong>（任意の名前でOKです）</li>
+    </ul>
+
+    <p><img src="img3_2.png" alt="img3_2.png" /></p>
+  </li>
+  <li>データベースの構成
+    <ul>
+      <li>OCPU数：<strong>2</strong>（任意の値でOKです）</li>
+    </ul>
+
+    <p><img src="img3_3.png" alt="img3_3.png" /></p>
+  </li>
+  <li>ネットワーク・アクセスの選択：<strong>すべての場所からのセキュア・アクセス</strong></li>
+  <li>ライセンス・タイプの選択：<strong>ライセンス込み</strong></li>
+  <li>
+    <p>連絡先の電子メール：<strong>任意のメールアドレス</strong></p>
+
+    <p><img src="img3_4.png" alt="img3_4.png" /></p>
+  </li>
+</ul>
+
+<p>最後に「<strong>Autonomous Databaseのクローンの作成</strong>」をクリックすると、プロビジョニングが始まります。
+  <br />指定したコンパートメント内にリフレッシュ可能クローンが作成されていることをご確認ください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-リフレッシュ可能クローンを確認してみよう">4. リフレッシュ可能クローンを確認してみよう</h1>
+
+<p>作成したリフレッシュ可能クローンに接続してみましょう。
+<br />また、正しくクローンされているかを確認するために、リフレッシュ可能クローン内にソース・データベースに作成したDEPARTMENT表が存在し、DEPARTMENT表内にソース・データベースと同じデータが入っていることを確認します。</p>
+
+<ol>
+  <li>
+    <p>次の手順に従って、リフレッシュ可能クローンに接続してみましょう。</p>
+
+    <p>詳細は、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a> の <a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/#anchor1">1. クレデンシャル・ウォレットのダウンロード</a> を参照ください。</p>
+
+    <p>1-1. リフレッシュ可能クローンのウォレットをダウンロードします。
+   <br />OCIコンソールからリフレッシュ可能クローンの詳細画面に移動します。
+   <br />手順は次の通りです：
+   <br /><strong>「DB接続」→インスタンスタイプのウォレットをダウンロード→ウォレットに設定するパスワードを入力</strong></p>
+
+    <p>1-2. リフレッシュ可能クローンへの接続に使用するクライアントの設定ファイルを編集します。
+ <br />設定ファイルの編集方法についての詳細は、次のリンク先をご確認ください：</p>
+
+    <ul>
+      <li>接続用の仮想マシン上で編集する方法
+<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#4-adb%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B7%A8%E9%9B%86">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li>
+    </ul>
+
+    <blockquote>
+      <p><strong>補足</strong></p>
+
+      <p>１つの接続用の仮想マシンから複数のAutonomous Databaseに接続する場合は、それぞれのウォレットごとにディレクトリを作成し、どのAutonomous Databaseに接続したいかによって環境変数TNS_ADMINが参照するウォレットの場所を切り替えるとスムーズに接続することができます。</p>
+
+      <p>または、<strong>リージョナル・ウォレット</strong>というクレデンシャルウォレットを活用するとより簡単に接続することが可能になります。
+リージョナル・ウォレットには、同一コンパートメント内のすべてのADBに関する資格情報が含まれているため、DBを切り替えるたびにウォレットの場所などを意識することなくご利用いただけます。
+ADBの資格証明に関する詳細な情報は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Database/Tasks/adbconnecting.htm#credentials">こちら</a>を参照ください。</p>
+
+    </blockquote>
+  </li>
+  <li>
+    <p>先ほど同様に、SQL*Plusを使用してリフレッシュ可能クローンに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にリフレッシュ可能クローンを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01RefClone_low
+</code></pre></div>    </div>
+
+    <p>※接続サービス名にご注意ください。ソース・データベースと名称が異なります。</p>
+  </li>
+  <li>
+    <p>次のSELECT文を使用し、先ほどソース・データベースで作成したDEPARTMENT表の内容が表示されることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ALTER SESSION SET NLS_DATE_FORMAT <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+ SELECT <span class="k">*</span> FROM department<span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img4_1.png" alt="img4_1.png" /></p>
+
+    <p>リフレッシュ可能クローンを作成すると、メタデータだけでなくデータもクローンされていることが確認できました。</p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-リフレッシュ可能クローンのリフレッシュ動作を確認してみよう">5. リフレッシュ可能クローンのリフレッシュ動作を確認してみよう</h1>
+
+<p>ソース・データベースにデータを追加し、リフレッシュ操作を行なって、ソース・データベースの変更内容がリフレッシュ可能クローンに反映されることを確認します。</p>
+
+<ol>
+  <li>
+    <p>SQL*Plusからソース・データベースに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にADBインスタンスを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01_low
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSQL文を実行し、ソース・データベースのDEPARTMENT表にデータを追加します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'SALES'</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSELECT文を実行し、データが正しく追加されているかを確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">SESSION</span> <span class="k">SET</span> <span class="n">NLS_DATE_FORMAT</span> <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+ <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">department</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img5_1.png" alt="img5_1.png" /></p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>リフレッシュ可能クローンのリフレッシュを実行します。</p>
+
+    <p>リフレッシュ可能クローンの詳細画面から「クローンのリフレッシュ」をクリックします。</p>
+
+    <p><img src="img5_2.png" alt="img5_2.png" /></p>
+
+    <p>リフレッシュ・ポイントのタイムスタンプを入力する画面が表示されます。<br /> 
+現在時刻の1分前の時刻をUTCで入力し、「<strong>クローンのリフレッシュ</strong>」をクリックします。</p>
+
+    <p><img src="img5_3.png" alt="img5_3.png" /></p>
+  </li>
+  <li>
+    <p>SQL*Plusからリフレッシュ可能クローンに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にリフレッシュ可能クローンを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01RefClone_low
+</code></pre></div>    </div>
+
+    <p>※接続サービス名にご注意ください。ソース・データベースと名称が異なります。</p>
+  </li>
+  <li>
+    <p>次のSELECT文を実行し、ソース・データベースの変更内容がリフレッシュ可能クローンに反映されていることを確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">SESSION</span> <span class="k">SET</span> <span class="n">NLS_DATE_FORMAT</span> <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+ <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">department</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img5_4.png" alt="img5_4.png" /></p>
+
+    <p>リフレッシュ操作によって、ソース・データベースの変更内容がリフレッシュ可能クローンに反映されていることが確認できました。</p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="6-リフレッシュ可能クローンをソースデータベースから切断してみよう">6. リフレッシュ可能クローンをソース・データベースから切断してみよう</h1>
+
+<p>リフレッシュ可能クローンをソース・データベースから切断し、読み書き可能になったリフレッシュ可能クローンのデータを変更します。</p>
+
+<ol>
+  <li>
+    <p>リフレッシュ可能クローンをソース・データベースから切断します。</p>
+
+    <p>リフレッシュ可能クローンの詳細画面から「切断」をクリックします。</p>
+
+    <p><img src="img6_1.png" alt="img6_1.png" /></p>
+
+    <p>リフレッシュ可能クローンの切断の画面が表示されます。</p>
+
+    <p>ソース・データベース名を入力し、「<strong>リフレッシュ可能クローンの切断</strong>」をクリックします。</p>
+
+    <p><img src="img6_2.png" alt="img6_2.png" /></p>
+  </li>
+  <li>
+    <p>SQL*Plusからリフレッシュ可能クローンに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にリフレッシュ可能クローンを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01RefClone_low
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSQL文を実行し、リフレッシュ可能クローンのDEPARTMENT表にデータを追加します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">'TEST DEVELOPMENT'</span><span class="p">,</span> <span class="mi">17000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'TEST ENGINEERING'</span><span class="p">,</span> <span class="mi">18000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">UPDATE</span> <span class="n">department</span> <span class="k">SET</span> <span class="n">mgr_id</span> <span class="o">=</span> <span class="mi">1111</span><span class="p">,</span> <span class="n">last_update</span> <span class="o">=</span> <span class="n">sysdate</span> <span class="k">WHERE</span> <span class="n">dept_id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+ <span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSELECT文を実行し、リフレッシュ可能クローンのDEPARTMENT表のデータが正しく追加、変更されているかを確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">SESSION</span> <span class="k">SET</span> <span class="n">NLS_DATE_FORMAT</span> <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+ <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">department</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img6_3.png" alt="img6_3.png" /></p>
+
+    <p>リフレッシュ可能クローンをソース・データベースから切断すると、読み書き可能（更新可能）になることが確認できました</p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor7"></a></p>
+
+<h1 id="7-リフレッシュ可能クローンをソースデータベースに再接続してみよう">7. リフレッシュ可能クローンをソース・データベースに再接続してみよう</h1>
+
+<p>リフレッシュ可能クローンをソース・データベースに再接続し、リフレッシュ操作を行なって、ソース・データベースの変更内容をリフレッシュ可能クローンに反映します。</p>
+
+<ol>
+  <li>
+    <p>SQL*Plusからソース・データベースに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にADBインスタンスを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01_low
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSQL文を実行し、ソース・データベースのDEPARTMENT表にデータを追加します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">'DEVELOPMENT'</span><span class="p">,</span> <span class="mi">7000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">department</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'ENGINEERING'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">);</span>
+ <span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSELECT文を実行し、ソース・データベースのDEPARTMENT表にデータが正しく追加されているかを確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">SESSION</span> <span class="k">SET</span> <span class="n">NLS_DATE_FORMAT</span> <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+ <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">department</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img7_1.png" alt="img7_1.png" /></p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>リフレッシュ可能クローンをソース・データベースに再接続します。</p>
+
+    <p>リフレッシュ可能クローンの詳細画面から「リフレッシュ可能クローンの再接続」をクリックします。</p>
+
+    <p><img src="img7_2.png" alt="img7_2.png" /></p>
+
+    <p>リフレッシュ可能クローンの再接続の画面が表示されます。<br />
+ ソース・データベース名を入力し、「<strong>リフレッシュ可能クローンの再接続</strong>」をクリックします。</p>
+
+    <p><img src="img7_3.png" alt="img7_3.png" /></p>
+  </li>
+  <li>
+    <p>SQL*Plusからリフレッシュ可能クローンに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にリフレッシュ可能クローンを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01RefClone_low
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>次のSELECT文を実行し、リフレッシュ可能クローンのDEPARTMENT表の内容を確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">ALTER</span> <span class="k">SESSION</span> <span class="k">SET</span> <span class="n">NLS_DATE_FORMAT</span> <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+ <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">department</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img7_4.png" alt="img7_4.png" /></p>
+
+    <p>リフレッシュ可能クローンをソース・データベースに再接続すると、リフレッシュ可能クローンの内容はソース・データベースから切断した時点の状態になっていることが確認できました。</p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>リフレッシュ可能クローンのリフレッシュを実行します。</p>
+
+    <p>リフレッシュ可能クローンの詳細画面から「クローンのリフレッシュ」をクリックします。</p>
+
+    <p><img src="img7_5.png" alt="img7_5.png" /></p>
+
+    <p>リフレッシュ・ポイントのタイムスタンプを入力する画面が表示されます。<br />
+ 現在時刻の1分前の時刻をUTCで入力し、「<strong>クローンのリフレッシュ</strong>」をクリックします。</p>
+
+    <p><img src="img7_6.png" alt="img7_6.png" /></p>
+  </li>
+  <li>
+    <p>SQL*Plusからリフレッシュ可能クローンに接続します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
+</code></pre></div>    </div>
+
+    <p>本チュートリアルを参考にリフレッシュ可能クローンを作成された方は、次のようなコマンドになります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus admin/Welcome12345#@atp01RefClone_low
+</code></pre></div>    </div>
+
+    <p>※接続サービス名にご注意ください。ソース・データベースと名称が異なります。</p>
+  </li>
+  <li>
+    <p>次のSELECT文を実行し、ソース・データベースの変更内容がリフレッシュ可能クローンに反映されていることを確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">SESSION</span> <span class="k">SET</span> <span class="n">NLS_DATE_FORMAT</span> <span class="o">=</span> <span class="s1">'YYYY/MM/DD HH24:MI:SS'</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">department</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>次のような結果になっていればOKです。</p>
+
+    <p><img src="img7_7.png" alt="img7_7.png" /></p>
+
+    <p>再接続後のリフレッシュ操作によって、ソース・データベースの変更内容がリフレッシュ可能クローンに反映されていることが確認できました。</p>
+  </li>
+  <li>
+    <p>SQL*Plusを終了します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">exit</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-10T17:29:32+09:00">January 10, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=218+%3A+%E3%83%AA%E3%83%95%E3%83%AC%E3%83%83%E3%82%B7%E3%83%A5%E5%8F%AF%E8%83%BD%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%B3%E3%82%92%E6%B4%BB%E7%94%A8%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb218-refreshable-clone%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb218-refreshable-clone%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb218-refreshable-clone%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb217-use-database-actions/" class="pagination--pager" title="217: Database Actions を使ってみよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb219-autoindexing/" class="pagination--pager" title="219: Automatic Indexingを体験してみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

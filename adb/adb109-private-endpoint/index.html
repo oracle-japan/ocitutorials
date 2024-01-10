@@ -1,0 +1,660 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>109: プライベート・エンドポイントのADBを作成してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ADBでは、パブリックIPを持つパブリック・エンドポイントとプライベートIPを持つプライベート・エンドポイントを選択できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="109: プライベート・エンドポイントのADBを作成してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb109-private-endpoint/">
+
+
+  <meta property="og:description" content="ADBでは、パブリックIPを持つパブリック・エンドポイントとプライベートIPを持つプライベート・エンドポイントを選択できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb109-private-endpoint/private-endpoint_teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-10T17:29:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb109-private-endpoint/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb109-private-endpoint/private-endpoint_teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          109: プライベート・エンドポイントのADBを作成してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">ADBでは、パブリックIPを持つパブリック・エンドポイントとプライベートIPを持つプライベート・エンドポイントを選択できます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">109: プライベート・エンドポイントのADBを作成してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/" class="active">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="109: プライベート・エンドポイントのADBを作成してみよう">
+    <meta itemprop="description" content="ADBでは、パブリックIPを持つパブリック・エンドポイントとプライベートIPを持つプライベート・エンドポイントを選択できます。">
+    <meta itemprop="datePublished" content="2024-01-10T17:29:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-プライベートエンドポイントのadbへの接続">1. プライベート・エンドポイントのADBへの接続</a><ul><li><a href="#1-1-ネットワーク構成の確認">1-1. ネットワーク構成の確認</a></li><li><a href="#1-2-adbの作成">1-2. ADBの作成</a></li><li><a href="#1-3-adbへの接続">1-3. ADBへの接続</a></li></ul></li><li><a href="#2-database-actionsへの接続">2. Database Actionsへの接続</a><ul><li><a href="#2-1-パブリックエンドポイントでaclを定義済み">2-1. パブリック・エンドポイントでACLを定義済み</a></li><li><a href="#2-2-プライベートエンドポイントでinternetから接続">2-2. プライベート・エンドポイントでInternetから接続</a></li><li><a href="#2-3-プライベートエンドポイントでプライベートネットワークから接続">2-3. プライベート・エンドポイントでプライベート・ネットワークから接続</a></li></ul></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>Autonomous Databaseでは、パブリック・エンドポイントとプライベート・エンドポイントを選択できます。
+プライベート・エンドポイントの場合は指定したVCN内のサブネット上にエンドポイントを配置することができます。
+アクセス制御は指定したVCNのサブネットのセキュリティ・リスト、もしくはネットワーク・セキュリティ・グループ(NSG)を利用して行います。</p>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. プライベート・エンドポイントのADBへの接続</a>
+    <ul>
+      <li><a href="#anchor1-1">1-1. ネットワーク構成図の確認</a></li>
+      <li><a href="#anchor1-2">1-2. ADBの作成</a></li>
+      <li><a href="#anchor1-3">1-3. ADBへの接続</a></li>
+    </ul>
+  </li>
+  <li><a href="#anchor2">2. Database Actionsへの接続</a>
+    <ul>
+      <li><a href="#anchor2-1">2-1. パブリック・エンドポイントでACLを定義している</a></li>
+      <li><a href="#anchor2-2">2-2. プライベート・エンドポイントでInternetから接続</a></li>
+      <li><a href="#anchor2-3">2-3. プライベート・エンドポイントでプライベート・ネットワークから接続</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-プライベートエンドポイントのadbへの接続">1. プライベート・エンドポイントのADBへの接続</h1>
+<p><a id="anchor1-1"></a></p>
+
+<h2 id="1-1-ネットワーク構成の確認">1-1. ネットワーク構成の確認</h2>
+<p>プライベート・エンドポイントのAutonomous Database への接続方法は、IPsec VPN やFastConnect からアクセスする方法が一般的ですが、本章ではインターネットからの接続方法をご紹介します。</p>
+
+<p><img src="network-layout.png" alt="network-layout.png" /></p>
+
+<p>ネットワーク構成は上記のようにしています。各Security List の設定を以下に示します。</p>
+
+<p><img src="security-list.png" alt="security-list.png" /></p>
+
+<p>プライベート・サブネット<strong>sub_pri1</strong>は、パブリック・サブネット<strong>sub_pub</strong>からのSSHのみ許可、<strong>sub_pri2</strong>は、<strong>sub_pri1</strong>からのTCP接続(1521ポート)のみ許可しています。
+本章では、パブリック・サブネットに踏み台サーバーを置いて利用しますが、インターネット側からアクセスする場合には、<a href="https://oracle-japan.github.io/ocitutorials/intermediates/bastion/" target="_blank">Bastionサービス</a>も利用できます。</p>
+
+<p><br />
+<a id="anchor1-2"></a></p>
+
+<h2 id="1-2-adbの作成">1-2. ADBの作成</h2>
+<p>プライベート・エンドポイントのADBを作成するには、ADBの作成ページの[ネットワーク・アクセスの選択]で<strong>プライベート・エンドポイント・アクセスのみ</strong>を選択します。
+以下の画像のようにADBを配置する仮想クラウド・ネットワークとサブネットを指定します。</p>
+
+<p><img src="network-access.png" alt="network-access.png" /></p>
+
+<p>なお、VCNのセキュリティ・リストのルールによるアクセス制御が設定されている場合、ネットワーク・セキュリティ・グループによるアクセス制御はオプションになります。</p>
+
+<p><br />
+<a id="anchor1-3"></a></p>
+
+<h2 id="1-3-adbへの接続">1-3. ADBへの接続</h2>
+<p>パブリック・サブネットの踏み台サーバー経由でプライベート・サブネットのコンピュート・インスタンスに接続します。
+プライベート・エンドポイント・アクセスのみの場合は、ウォレットなし接続が可能です。
+ウォレットなし接続の手順については、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb108-walletless/" target="_blank">こちら</a>をご参照ください。
+もちろんウォレットを使用した接続も可能です。</p>
+
+<p><img src="adb-access.png" alt="adb-access.png" /></p>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-database-actionsへの接続">2. Database Actionsへの接続</h1>
+<p>Database Actions は、データベースの操作をGUI上で行うことができるツールです。
+ADBのネットワーク構成によって、アクセス方法が異なります。
+ネットワーク・アクセス・タイプに<strong>すべての場所からのセキュア・アクセス</strong> を選択している場合は、特に何も設定せずOCIコンソール画面からアクセスできます。</p>
+
+<p><img src="network-access-Internet.png" alt="network-access-Internet.png" /></p>
+
+<p><img src="db-action-button.png" alt="db-action-button.png" /></p>
+
+<p>それ以外のパターンについて見ていきます。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2-1"></a></p>
+
+<h2 id="2-1-パブリックエンドポイントでaclを定義済み">2-1. パブリック・エンドポイントでACLを定義済み</h2>
+<p>まずは、パブリック・エンドポイントでアクセス制御リスト(ACL)を定義している場合です。
+[ネットワーク・アクセスの選択]では、<strong>許可されたIPおよびVCN限定のセキュア・アクセス</strong>を選択します。</p>
+
+<p><img src="ACL-configuration.png" alt="ACL-configuration.png" /></p>
+
+<p>この設定の場合、インターネットからDatabase Actionsにアクセスするためには、自分のIPアドレスを追加する必要があります。</p>
+
+<p><img src="edit-ACL.png" alt="edit-ACL.png" /></p>
+
+<p><strong>自分のIPアドレスを追加</strong>ボタンがあるので、こちらをクリックするとすぐに自分のIPアドレスからのアクセスを許可できます。
+ACLを更新後、OCIコンソール画面からアクセスできるようになります。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2-2"></a></p>
+
+<h2 id="2-2-プライベートエンドポイントでinternetから接続">2-2. プライベート・エンドポイントでInternetから接続</h2>
+<p>プライベート・エンドポイントで作成しているADBは、OCIコンソールの[データベース・アクション]をクリックすると以下のような表示が出ます。</p>
+
+<p><img src="database-action.png" alt="database-action.png" /></p>
+
+<p>インターネットからアクセスする場合は、上の画像の記載のように、<strong>VCN内にコンピュート・インスタンスを1台置きそちらのブラウザを使用する</strong>ようにしてください。もしくは<strong>エンドポイントの443番ポートをlocalhostの443番ポートにポートフォワードする</strong>ことでも使用可能です。</p>
+
+<p>また、OCIのBastion Serviceを使用してアクセスすることもできます。
+詳しい手順は、<a href="https://qiita.com/500InternalServerError/items/d09dc910c9f115035225" target="_blank">こちらの記事</a>をご参照ください。</p>
+
+<p><br /></p>
+
+<p><a id="anchor2-3"></a></p>
+
+<h2 id="2-3-プライベートエンドポイントでプライベートネットワークから接続">2-3. プライベート・エンドポイントでプライベート・ネットワークから接続</h2>
+<p>オンプレミスのデータセンターなどからプライベート・ネットワークでDatabase Actionsに接続する場合です。
+この場合、FastConnectを使用して、オンプレミスからOCIのVCNに接続する方法が一般的です。なお、トラフィックはインターネットを経由しません。
+詳しい手順については、<a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Concepts/fastconnectoverview.htm" target="_blank">マニュアル</a>をご参照ください。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<ul>
+  <li><a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/security-restrict-private-endpoint.html#GUID-D12F124A-9B71-4B83-B157-63F1057072FF" target="_blank">プライベート・エンドポイントの概要</a></li>
+</ul>
+
+<p>以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-10T17:29:32+09:00">January 10, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=109%3A+%E3%83%97%E3%83%A9%E3%82%A4%E3%83%99%E3%83%BC%E3%83%88%E3%83%BB%E3%82%A8%E3%83%B3%E3%83%89%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E3%81%AEADB%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb109-private-endpoint%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb109-private-endpoint%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb109-private-endpoint%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb108-walletless/" class="pagination--pager" title="108: 接続文字列を利用して接続してみよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb110-analyze-using-oad/" class="pagination--pager" title="110: Oracle Analytics Desktopを使ってデータを見える化してみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

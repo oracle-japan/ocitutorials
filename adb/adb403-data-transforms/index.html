@@ -1,0 +1,944 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>403 : Data Transformsを使ってみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Autonomous Databaseに組み込まれているデータ統合ツールであるData Transformsを使い、簡単な操作でサンプルデータの変換ができることを体験してみましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="403 : Data Transformsを使ってみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb403-data-transforms/">
+
+
+  <meta property="og:description" content="Autonomous Databaseに組み込まれているデータ統合ツールであるData Transformsを使い、簡単な操作でサンプルデータの変換ができることを体験してみましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb403-data-transforms/adb403_2_4.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-10T17:29:32+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb403-data-transforms/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb403-data-transforms/adb403_2_4.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          403 : Data Transformsを使ってみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Autonomous Databaseに組み込まれているデータ統合ツールであるData Transformsを使い、簡単な操作でサンプルデータの変換ができることを体験してみましょう。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">403 : Data Transformsを使ってみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/" class="active">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="403 : Data Transformsを使ってみよう">
+    <meta itemprop="description" content="Autonomous Databaseに組み込まれているデータ統合ツールであるData Transformsを使い、簡単な操作でサンプルデータの変換ができることを体験してみましょう。">
+    <meta itemprop="datePublished" content="2024-01-10T17:29:32+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-事前準備">1. 事前準備</a></li><li><a href="#2-data-transformsの起動">2. Data Transformsの起動</a></li><li><a href="#3-data-transformsを使ってみる">3. Data Transformsを使ってみる</a><ul><li><a href="#3-1-autonomous-databaseへの接続">3-1. Autonomous Databaseへの接続</a></li><li><a href="#3-2-データベース内のデータをインポートする">3-2. データベース内のデータをインポートする</a></li><li><a href="#3-3-data-flowを作成する">3-3. Data Flowを作成する</a></li><li><a href="#3-4-jobの詳細を確認する">3-4. Jobの詳細を確認する</a></li></ul></li><li><a href="#おわりに">おわりに</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>Data Transformsは、Autonomous Databaseに組み込まれているデータ統合ツールです。Database Actionsからアクセス可能で、異種のソースからAutonomous Databaseにデータをロードして変換するためのツールです。ドラッグアンドドロップ、ノーコードで簡単に操作できます。データウェアハウスの構築や分析アプリケーションへのデータ供給など、あらゆるデータ統合のニーズに対応できます。</p>
+
+<p>Data TransformsはOracle Data Integratorをベースにしています。オンプレミスおよびOCIの両方で、多くのお客様において高性能なデータ統合アーキテクチャとして証明されている、ELT(Extract/Load/Transform)手法を使用しています。</p>
+
+<p>本章ではAutonomous Databaseの付属ツールであるData Transformsを用いて、少ない労力でデータを変換する方法を紹介します。<br /></p>
+
+<p><strong>所要時間 :</strong> 約60分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li>ADBインスタンスが構成済みであること
+ <br />※ADBインタンスを作成方法については、本チュートリアルの <a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+  <li>構成済みのADBインスタンスへの接続が可能であること</li>
+  <li>
+    <p>下記リンクからダウンロードできる<strong>Movie Sales 2020.csv</strong>(売上実績のサンプルデータ)がローカルPC上にあること<br /></p>
+
+    <p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" target="_blank">217: クレデンシャル・ウォレットを利用して接続してみよう</a></p>
+  </li>
+</ul>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. 事前準備</a></li>
+  <li><a href="#anchor2">2. Dara Transformsの起動</a></li>
+  <li><a href="#anchor3">3. Data Transformsを使ってみる</a></li>
+  <li><a href="#anchor4">4. おわりに</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-事前準備">1. 事前準備</h1>
+
+<p>実際にData Transformsを使用する前に、起動したADBインスタンスから新しいユーザー(<strong>QTEAM</strong>)を作成し、本チュートリアルで使用するサンプルデータ(<strong>Movie Sales 2020.csv</strong>)をロードします。</p>
+
+<p>次の手順に従って、QTEAMユーザーを作成します。すでに作っている場合は、<a href="/ocitutorials/adb/adb403-data-transforms/#anchor1_2" target="_blank">ステップ2</a>に進んでください。</p>
+
+<ol>
+  <li>
+    <p>下記のリンクを参考に、QTEAMユーザーを作成します。<br />
+ <a href="https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#1-%E5%88%86%E6%9E%90%E7%94%A8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%82%88%E3%81%86database-actions" target="_blank">分析用のデータベース・ユーザーを作成しよう(Database Actions)</a></p>
+
+    <p>*ユーザーを作成の際に、付与されたロールから以下の2つのユーザーロールを、以下の画像のように有効にします。<br />
+ ・DWROLE <br />
+ ・DATA_TRANSFORMS_USER</p>
+
+    <p><img src="adb403_1_1.png" alt="QTEAMを作成する際の付与されたロールの選択1" /></p>
+
+    <p><img src="adb403_1_2.png" alt="QTEAMを作成する際の付与されたロールの選択2" /></p>
+
+    <p>※［付与済］と［デフォルト］の両方のボックスにチェックをつけてください。</p>
+
+    <p><a id="anchor1_2"></a></p>
+  </li>
+  <li>
+    <p>QTEAMユーザーが作成されたことを確認したら、QTEAMユーザーカードの右下にある<strong>新しいタブで開く</strong>アイコン(赤枠)をクリックして、QTEAMユーザーでログインし直します。</p>
+
+    <p><img src="adb403_1_3.png" alt="QTEAMユーザーが作成された画面" /></p>
+  </li>
+  <li>
+    <p>下記のリンク参考に、Movie Sales 2020.csvをロードします。<br />
+<a href="https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/#anchor1" target="_blank">手元のPCからCSVデータをロードしてみよう</a></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-data-transformsの起動">2. Data Transformsの起動</h1>
+
+<ol>
+  <li>
+    <p>QTEAMユーザーでDatabase Actionsにログインした状態で、起動パッドを開きます。</p>
+
+    <p><img src="adb403_2_1.png" alt="Database Avtionsの起動パッド" /></p>
+  </li>
+  <li>
+    <p>Data Transforms(データ変換)の項目をクリックし、データベースのユーザー名(QTEAM)とパスワード(例: Welcome12345#)を入力します。</p>
+
+    <p><img src="adb403_2_2.png" alt="Data Transformsのログイン画面1" /></p>
+  </li>
+  <li>
+    <p>Data Transformsが立ち上がるまで、1～2分程度かかります。</p>
+
+    <p><img src="adb403_2_3.png" alt="Data Transformsのログイン画面2" /></p>
+
+    <p>ログインができると、ホーム画面はこのようになります。</p>
+
+    <p><img src="adb403_2_4.png" alt="Data Transformsのホーム画面" /></p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-data-transformsを使ってみる">3. Data Transformsを使ってみる</h1>
+
+<h2 id="3-1-autonomous-databaseへの接続">3-1. Autonomous Databaseへの接続</h2>
+
+<ol>
+  <li>
+    <p>Data Transformsのメインページで、画面左のConnectionsをクリックします。デフォルトのConnectionがすでに設定されています。以下の画像のように、すでに作成したADBインスタンスの名前になっているかと思います。本チュートリアルではデフォルトのConnectionではなく、新規にConnectionを作成する手順を踏みたいので、Create Connectionをクリックしてください。
+ <img src="adb403_2_5.png" alt="Create Connectionの説明1" /></p>
+  </li>
+  <li>
+    <p>Create Connectionに、必要な情報を入力していきます。</p>
+
+    <p>・Name: MovieStream　<br />
+ ・Connection Type: Oracle <br />
+ とし、Nextを押します。</p>
+
+    <p><img src="adb403_2_6.png" alt="Create Connectionの説明2" /></p>
+  </li>
+  <li>
+    <p>Use Credential Fileのトグルをオンにして有効にし、ウォレットファイルを選択します。サービス(データベース名_low, 例:atp01_low)を選び、ユーザーとパスワードを入力します。<br />
+ Test Connectionを押して、接続テストをします。成功したら、以下のような通知が画面右上に表示されます。</p>
+
+    <p><img src="adb403_2_6_1.png" alt="Create Connectionの説明3" /></p>
+  </li>
+  <li>
+    <p>接続に成功したのを確認したら、Createをクリックして、Autonomous Databaseへの接続を作成します。</p>
+
+    <p><img src="adb403_2_7.png" alt="Create Connectionの説明4" /></p>
+  </li>
+  <li>
+    <p>Data Transformsを使用している間、操作に関する通知のうち、重要なものが記載されます。これらの通知を表示するには、画面上部のベルのアイコンをクリックします。</p>
+
+    <p><img src="adb403_2_8.png" alt="Data Transformsの通知機能" /></p>
+  </li>
+</ol>
+
+<h2 id="3-2-データベース内のデータをインポートする">3-2. データベース内のデータをインポートする</h2>
+
+<ol>
+  <li>
+    <p>ここで、QTEAMのスキーマにある表をインポートする必要があります。Data Entities(画面左)、Import Data Entitiesの順にクリックします。</p>
+
+    <p><img src="adb403_2_9.png" alt="データのインポートの説明1" /></p>
+  </li>
+  <li>
+    <p>以下のようなダイアログが表示されます。データをロードするConnection名とスキーマ名を入力し、Startをクリックします。インポートのジョブの通知が表示されます。ジョブが終了するまでには数分かかります。</p>
+
+    <p><img src="adb403_2_10.png" alt="データのインポートの説明2" /></p>
+  </li>
+  <li>
+    <p>インポートされたか表示されます(ジョブが終了するまで数分待ち、表示されない場合は更新してください)。<br />
+しばらくすると、movie_sales_2020がリストされます。必要に応じて、画面左下のFiltersで検索をかける(例: Nameにmoviesと入力)こともできます。<br />
+リストされた表の右側にある3つの点をクリックし、Previewを選択します。</p>
+
+    <p><img src="adb403_2_11.png" alt="インポートしたデータの確認1" /></p>
+  </li>
+  <li>
+    <p>2020年の全ての月のデータがありますが、本チュートリアルでは、第2四半期のデータのみを分析します。<br />
+表の中身を見ると、DAYの値が大文字のものもあれば、最初の1文字のみ大文字のものもあります。これは、システムにデータをロードする時によく起こることで、データのエラーを修正する必要があります。そのため、データの変換機能がAutonomous Data Warehouseに組み込まれていることは、利便性の上で非常に重要です。
+ <img src="adb403_2_12.png" alt="インポートしたデータの確認2" /></p>
+
+    <p>画面右上の×をクリックして、プレビュー画面を閉じます。</p>
+  </li>
+</ol>
+
+<p><a id="anchor3"></a></p>
+
+<h2 id="3-3-data-flowを作成する">3-3. Data Flowを作成する</h2>
+
+<ol>
+  <li>
+    <p>Projects(画面左)をクリックし、Create Data Flowをクリックします。</p>
+
+    <p><img src="adb403_3_1.png" alt="Data Flowの作成1" /></p>
+  </li>
+  <li>
+    <p>Data Transformsのツールでは、Data FlowはProjectsの中で構成されています。まだどちらも作っていないため、表示されるダイアログで1度に両方を定義することができます。ダイアログで以下のように指定し、Createをクリックします。</p>
+
+    <p>・Name: MovieStream_Q2FY2020 <br />
+ ・Create new Project　ラジオボタンがすでに選択されていると思われます。<br />
+ ・Project Name: MovieStream <br />
+ ・Description: Extract &amp; fix data for Q2 FY2020</p>
+
+    <p><img src="adb403_3_2.png" alt="Data Flowの作成2" /></p>
+  </li>
+  <li>
+    <p>続いて、Add a Schemaを入力する画面が出てきます。これは、自動で以下のように入力されるので、特に変更せずにOKボタンをクリックしてください。</p>
+
+    <p><img src="adb403_3_3.png" alt="Data Flowの作成3" /></p>
+  </li>
+  <li>
+    <p>Data Flowの詳細画面が表示されます。以下のように、画面は大きく4つのセクションに分かれています。</p>
+
+    <p><img src="adb403_3_4.png" alt="Data Flowの詳細画面1" /></p>
+
+    <p>ここからは、次のようにData Flowを定義します。</p>
+
+    <p>・MOVIE_SALES_2020にフィルタを適用して、Q2以外の月のデータを削除します。</p>
+
+    <p>・DAY列におけるエラーを修正します。</p>
+
+    <p>・結果を、新しい表のMOVIE_SALES_2020Q2に適用します。<br /></p>
+
+    <p><br /></p>
+  </li>
+  <li>
+    <p>次の手順で、Data Flowを構築します。</p>
+
+    <ol>
+      <li>
+        <p>画面左側のData Entitiesの上部にある更新ボタン(円形矢印)をクリックします。</p>
+      </li>
+      <li>
+        <p>QTEAMスキーマを展開して、表のリストを表示します。</p>
+      </li>
+      <li>
+        <p>表示されたリストから、MOVIE_SALES_2020をクリックします。</p>
+      </li>
+      <li>
+        <p>MOVIE_SALES_2020をキャンバスにドラッグアンドドロップします。</p>
+      </li>
+      <li>
+        <p>ツール・パレットから、DATA TRANSFORMタブをクリックします.</p>
+      </li>
+      <li>
+        <p>フィルタをキャンバスにドラッグアンドドロップします。</p>
+      </li>
+      <li>
+        <p>キャンバスに表示されているフィルタをクリックして選択します。</p>
+      </li>
+      <li>
+        <p>画面右側のプロパティの部分で、名前をQ2_Onlyと入力します。</p>
+      </li>
+      <li>
+        <p>キャンバス上で、MOVIE_SALES_2020をクリックします。</p>
+      </li>
+      <li>
+        <p>MOVIE_SALES_2020の右側の矢印を引き延ばして、フィルタに接続します。</p>
+      </li>
+    </ol>
+
+    <p><img src="adb403_3_5.png" alt="Data Flowを構築する手順" /></p>
+  </li>
+  <li>
+    <p>上記の手順が完了したら、キャンバス上でフィルタを選択します。</p>
+
+    <p><img src="adb403_3_6.png" alt="Filterを選択するイメージ" /></p>
+  </li>
+  <li>
+    <p>次に、フィルタのプロパティを定義します。フィルタを選択した状態でフィルタのConditionをクリックし、編集ボタン(鉛筆マーク)をクリックします。</p>
+
+    <p><img src="adb403_3_7.png" alt="Filterを選択するイメージ" /></p>
+  </li>
+  <li>
+    <p>表示されたエディターで、フィルタの条件を完成させます。以下の作業をエディターで行います。</p>
+
+    <ol>
+      <li>
+        <p>Sourcesのタブで、表を展開します。</p>
+      </li>
+      <li>
+        <p>列MONTHをExpressionにドラッグアンドドロップします。</p>
+      </li>
+      <li>
+        <p>以下の式を追加します。<br /></p>
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> in ('April','May','June')
+</code></pre></div>        </div>
+      </li>
+    </ol>
+
+    <p><img src="adb403_3_8.png" alt="Filterから月を絞り込むイメージ" /></p>
+  </li>
+  <li>
+    <p>このステップでは、列 MOVIE_SALES_2020.DAYのデータのエラーを修正します。</p>
+
+    <ol>
+      <li>
+        <p>ツール・パレットで、DATA PREPARATIONタブをクリックします。</p>
+      </li>
+      <li>
+        <p>Data Cleanseをキャンバスにドラッグアンドドロップします。</p>
+      </li>
+      <li>
+        <p>先ほど作成したフィルタをクリックし、そこから Data Cleanseまで矢印を引き延ばします。</p>
+      </li>
+      <li>
+        <p>Data Cleanseをクリックして選択します。</p>
+      </li>
+      <li>
+        <p>Nameに”Fix_AllCap_Days”、Descriptionに”Convert all values in column DAY to Title Case.”を入力します。</p>
+      </li>
+    </ol>
+
+    <p><img src="adb403_3_9.png" alt="列 MOVIE_SALES_2020.DAYのデータを修正するイメージ" /></p>
+  </li>
+  <li>
+    <p>右上の拡大ボタンをクリックします。</p>
+
+    <p><img src="adb403_3_10.png" alt="列 MOVIE_SALES_2020.DAYのデータを修正し、プロパティを開くイメージ" /></p>
+  </li>
+  <li>
+    <p>表示されたプロパティ画面の中央の、Attributesタブをクリックします。</p>
+
+    <p><img src="adb403_3_11.png" alt="プロパティを開いて、Attributesを押す画面" /></p>
+  </li>
+  <li>
+    <p>MOVIE_SALES_2020.DAY列のデータから、先頭と末尾の空白を削除し、Title Case(最初の1文字のみを大文字)に変換し、データを修正する必要があります。以下のように、オプションを選択してください。</p>
+
+    <p><img src="adb403_3_12.png" alt="プロパティから、実際にデータを修正する画面" /></p>
+  </li>
+  <li>
+    <p>完了したら、右上の折りたたみボタン(2本の斜めの矢印マーク)をクリックして、プロパティを閉じます。</p>
+  </li>
+  <li>
+    <p>最後に、フィルタリングおよび修正後のデータをロードするための表を作成します。</p>
+
+    <p>Data Cleans(Fix_AllCap_Days)を選択し、枠の右上にあるグリッド状の表のアイコンをクリックします。</p>
+
+    <p><img src="adb403_3_13.png" alt="キャンバス上で Data Cleansに表アイコンをクリックする画面" /></p>
+  </li>
+  <li>
+    <p>以下のような表作成のダイアログが表示されます。表の名前を<strong>MOVIE_SALES_2020Q2</strong>と指定します。(末尾がQ2であることを確認して下さい。)Aliasの入力は特に変更せずに、Saveをクリックします。</p>
+
+    <p><img src="adb403_3_14.png" alt="MOVIE_SALES_2020Q2の表作成のダイアログ" /></p>
+  </li>
+  <li>
+    <p>MOVIE_SALES_2020Q2を選択し、画面右側のプロパティから拡張ボタンをクリックします。</p>
+
+    <p><img src="adb403_3_15.png" alt="MOVIE_SALES_2020Q2を選択し、プロパティ画面を開く画面" /></p>
+  </li>
+  <li>
+    <p>展開されたプロパティには、様々なタブがあります。デフォルトではAttributesが開かれていますが、以下のようにColumn Mappingタブをクリックします。</p>
+
+    <p><img src="adb403_3_16.png" alt="プロパティ画面を開いて、Column Mappingをクリックすした画面" /></p>
+  </li>
+  <li>
+    <p>このData Flowをまだ実行しておらず、表は存在しないので、プレビューで見るものは何もありません</p>
+
+    <p>Optionsを選択して、次のようなダイアログを表示させます。表がまだ存在しないので、Create target tableがTrueになっていることを確認してください。</p>
+
+    <p><img src="adb403_3_17.png" alt="プロパティ画面を開いて、Optionsを押した画面" /></p>
+  </li>
+  <li>
+    <p>右上の折りたたみボタンをクリックします。</p>
+
+    <p><img src="adb403_3_18.png" alt="プロパティ画面を閉じる画面" /></p>
+
+    <p>Data Flowのメイン画面に戻り、完成したData Flowを見ることができます。</p>
+  </li>
+  <li>
+    <p>Data Flowを実行します。</p>
+    <ol>
+      <li>
+        <p>Save(フロッピーディスクのアイコン)をクリックします。</p>
+      </li>
+      <li>
+        <p>実行ボタン(緑色の三角のアイコン)をクリックします。</p>
+      </li>
+    </ol>
+
+    <p><img src="adb403_3_19.png" alt="Data Flowを実行する画面" /></p>
+
+    <p>これまでのステップを完了すると、4月、5月、6月のデータのみを持つ表である、MOVIE_SALES_2020Q2が作成されます。日付は全て、最初の1文字のみ大文字に変更されています。</p>
+  </li>
+</ol>
+
+<h2 id="3-4-jobの詳細を確認する">3-4. Jobの詳細を確認する</h2>
+
+<ol>
+  <li>
+    <p>Data Flowを実行すると、以下のような画面が出ます。</p>
+
+    <p><img src="adb403_3_20.png" alt="Data Flowを実行したあとの画面" /></p>
+
+    <p>ここでOKボタンを押しても構いません。また、表示されているリンクを踏むと、作成したJobの詳細画面に遷移し、データ変換のプロセスを見ることができます。</p>
+
+    <p><img src="adb403_3_21.png" alt="Jobの詳細画面" /></p>
+
+    <p>この画面では、Jobが2つのステップで実装されていることが分かります。</p>
+
+    <p>・Create target table</p>
+
+    <p>・Insert new rows</p>
+  </li>
+  <li>
+    <p>Insert new rows-Load MOVIE_SALES_2020Q2のリンクを押すと、画面右側にこのステップの詳細を示すパネルが表示されます。上部にあるTarget Connectionタブを押すと、Data Flowの各ステップがどのように実装されたかが分かります。</p>
+
+    <p>・Filter Q2_2020は、WHERE句で実装されています。<br />
+ <strong>MONTH IN (‘April’,’May’,’June’)</strong></p>
+
+    <p>・Data Cleanse操作のFix_AllCap_Daysは、<strong>INITCAP(TRIM(MOVIE_SALES_2020.DAY))</strong>で実装されています。
+ <img src="adb403_3_22.png" alt="Jobの詳細画面からステップの詳細を示すパネルを表示した画面" /></p>
+  </li>
+  <li>
+    <p>Closeをクリックして、画面左上のパンくずリストのJobsから、Data Transformsのメインページに戻ってください。</p>
+
+    <p><img src="adb403_3_23.png" alt="ホーム画面に戻る" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>本チュートリアルではData Transformsを使って、サンプルデータをトリミングしたり、修正したりしました。Data Transformsを使えば、Autonomous Databaseにすでにあるデータを簡単に変換できることが体験できたかと思います。また、他のソースからデータをロードして変換することも可能です。データ変換のためにSQL文を書いたり、外部のデータ統合ツールを使用する必要はありません。
+<br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li>
+    <p>LiveLabs <a href="https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/run-workshop?p210_wid=832&amp;p210_wec=&amp;session=113561614505947" target="_blank">Oracle Data Integrator Web Edition - Intro to Data Transforms</a></p>
+
+    <p>このLivelabsのLab5のTask4, 5では、本チュートリアルでは行わなかったWork Flowやスケジュールの作成方法に触れていますので、ご興味のある方はお試しください。</p>
+  </li>
+  <li>
+    <p><a href="https://blogs.oracle.com/post/introducing-data-transforms-built-in-data-integration-for-autonomous-database" target="_blank">Oracle Blogs, Introducing Data Transforms: Built in Data Integration for Autonomous Database</a></p>
+  </li>
+</ul>
+
+<p>以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-10T17:29:32+09:00">January 10, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=403+%3A+Data+Transforms%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb403-data-transforms%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb403-data-transforms%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb403-data-transforms%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb402-database-link/" class="pagination--pager" title="402 : Database Linkによるデータ連携
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb501-ocicli/" class="pagination--pager" title="501: OCICLIを利用したインスタンス操作
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
