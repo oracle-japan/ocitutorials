@@ -4,8 +4,8 @@ excerpt: "Oracle CloudでExadataが利用可能なサービスであるExaDB-D�
 order: "2_101"
 layout: single
 header:
-  teaser: "/database/exadb-d101-create-exadb-d/teaser.png"
-  overlay_image: "/database/exadb-d101-create-exadb-d/teaser.png"
+  teaser: "/exadbd/exadb-d101-create-exadb-d/teaser.png"
+  overlay_image: "/exadbd/exadb-d101-create-exadb-d/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---

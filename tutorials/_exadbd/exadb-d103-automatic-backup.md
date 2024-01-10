@@ -4,8 +4,8 @@ excerpt: "ExaDB-Dで自動バックアップを取得する方法について紹
 order: "2_103"
 layout: single
 header:
-  teaser: "/database/exadb-d103-automatic-backup/teaser.png"
-  overlay_image: "/database/exadb-d103-automatic-backup/teaser.png"
+  teaser: "/exadbd/exadb-d103-automatic-backup/teaser.png"
+  overlay_image: "/exadbd/exadb-d103-automatic-backup/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -40,7 +40,7 @@ Oracle Databaseのバックアップ操作に対して次の3つのオプショ�
 + [5. 取得したバックアップを確認しよう](#5-取得したバックアップを確認しよう)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
 
 **所要時間 :** 約1時間　※環境によって異なるため、参考値です
 
@@ -66,7 +66,7 @@ Exadata Cloud Infrastructureのバックアップの前提条件：
 自動バックアップはデータベース作成時もしくはデータベース作成後に構成する事ができます。
 
 1. データベース作成時に構成する場合
-**データベースの作成** ダイアログの **データベース・バックアップの構成** の項目で **自動バックアップの有効化** にチェックを入れます。データベースの作成方法についての手順は[101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)の**3.データベースの作成**をご参照ください。
+**データベースの作成** ダイアログの **データベース・バックアップの構成** の項目で **自動バックアップの有効化** にチェックを入れます。データベースの作成方法についての手順は[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**3.データベースの作成**をご参照ください。
 
     ![](2022-09-09-16-27-52.png)
 

@@ -4,8 +4,8 @@ excerpt: "ExaDB-D上でOCPU数またはインフラストラクチャ(データ�
 order: "2_105"
 layout: single
 header:
-  teaser: "/database/exadb-d105-backup-restore/teaser.png"
-  overlay_image: "/database/exadb-d105-backup-restore/teaser.png"
+  teaser: "/exadbd/exadb-d105-backup-restore/teaser.png"
+  overlay_image: "/exadbd/exadb-d105-backup-restore/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -23,7 +23,7 @@ header:
     - [ストレージ・サーバーの追加](#anchor3-2)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
 + [Oracle Cloud Infrastructure Documentation > コマンド・ライン・インターフェース > クイックスタート](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm)を通じてOCI CLIのセットアップが完了していること
 
 **所要時間 :** 約6時間（待ち時間を含む）※環境によって異なるため、参考値です

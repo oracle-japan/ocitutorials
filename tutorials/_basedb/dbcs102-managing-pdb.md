@@ -3,8 +3,8 @@ title: "102: BaseDB上のPDBを管理しよう"
 excerpt: "Oracle Base Database Service(BaseDB)では、OCI コンソールから Oracle Cloud Infrastructure 上の PDB を 起動・停止だけでなく、PDB のクローンを簡単に実施する事が可能です。"
 order: "1_102"
 header:
-  teaser: "/database/dbcs102-managing-pdb/img13.png"
-  overlay_image: "/database/dbcs102-managing-pdb/img13.png"
+  teaser: "/basedb/dbcs102-managing-pdb/img13.png"
+  overlay_image: "/basedb/dbcs102-managing-pdb/img13.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/

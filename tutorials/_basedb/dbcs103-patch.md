@@ -3,8 +3,8 @@ title: "103: パッチを適用しよう"
 excerpt: "Database と Grid Infrastructureに対するパッチ適用方法についてご紹介します。"
 order: "1_103"
 header:
-  teaser: "/database/dbcs103-patch/img11.png"
-  overlay_image: "/database/dbcs103-patch/img11.png"
+  teaser: "/basedb/dbcs103-patch/img11.png"
+  overlay_image: "/basedb/dbcs103-patch/img11.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/

@@ -4,8 +4,8 @@ excerpt: "ExaDB-DでData Guardを構成する方法について紹介します�
 order: "2_108"
 layout: single
 header:
-  teaser: "/database/exadb-d108-dataguard/teaser.png"
-  overlay_image: "/database/exadb-d108-dataguard/teaser.png"
+  teaser: "/exadbd/exadb-d108-dataguard/teaser.png"
+  overlay_image: "/exadbd/exadb-d108-dataguard/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -27,7 +27,7 @@ header:
 
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じて、プライマリ・データベースのリージョン（本ガイドでは東京リージョン）でExaDB-Dの作成が完了していること。
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じて、プライマリ・データベースのリージョン（本ガイドでは東京リージョン）でExaDB-Dの作成が完了していること。
 + [その2 - クラウドに仮想ネットワーク(VCN)を作る](/ocitutorials/beginners/creating-vcn/)を通じて、スタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）でVCNの作成が完了していること。
 + プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）間でリモートVCNピアリングの設定が完了していること。設定方法については、[Oracle Cloud Infrasturctureドキュメント - DRGを介した異なるリージョン内のVCNのピアリング](https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/scenario_e.htm#scenario_e)をご参照ください。
 + プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）のそれぞれのVCNのセキュリティ・リストの設定でポート1521を開く。設定方法については、[Oracle Cloud Infrastructureドキュメント - セキュリティ・リスト](https://docs.oracle.com/ja-jp/iaas/Content/Network/Concepts/securitylists.htm)をご参照ください。

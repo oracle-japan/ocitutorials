@@ -3,8 +3,8 @@ title: "104: 自動バックアップを設定しよう"
 excerpt: "Base Database Service (BaseDB) 上の自動バックアップについて紹介します。"
 order: "1_104"
 header:
-  teaser: "/database/dbcs104-backup/11.PNG"
-  overlay_image: "/database/dbcs104-backup/11.PNG"
+  teaser: "/basedb/dbcs104-backup/11.PNG"
+  overlay_image: "/basedb/dbcs104-backup/11.PNG"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/
