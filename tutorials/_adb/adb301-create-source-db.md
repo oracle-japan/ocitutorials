@@ -4,8 +4,8 @@ excerpt: "まずは準備作業として、現行ご利用いただいているO
 order: "3_301"
 layout: single
 header:
-  teaser: "/database/adb301-tac/sa00x.png"
-  overlay_image: "/database/adb301-tac/sa00x.png"
+  teaser: "/adb/adb301-tac/sa00x.png"
+  overlay_image: "/adb/adb301-tac/sa00x.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -18,9 +18,9 @@ header:
 
 ----
 **Autonomous Database を使ってみよう（移行編）**
-  * [301: 移行元となるデータベースを作成しよう（本章）](/ocitutorials/database/adb301-create-source-db){:target="_blank"} 
-  * [302: スキーマ・アドバイザを活用しよう](/ocitutorials/database/adb302-schema-adviser){:target="_blank"} 
-  * [303: Data Pumpを利用してデータを移行しよう](/ocitutorials/database/adb303-datapump){:target="_blank"} 
+  * [301: 移行元となるデータベースを作成しよう（本章）](/ocitutorials/adb/adb301-create-source-db){:target="_blank"} 
+  * [302: スキーマ・アドバイザを活用しよう](/ocitutorials/adb/adb302-schema-adviser){:target="_blank"} 
+  * [303: Data Pumpを利用してデータを移行しよう](/ocitutorials/adb/adb303-datapump){:target="_blank"} 
   * [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）]
 <br/>
 
@@ -51,7 +51,7 @@ header:
 
 # 1. 移行元となるBaseDBインスタンスの作成 
 
-まず、[「Oracle Cloud で Oracle Database を使おう(BaseDB)」](/ocitutorials/database/dbcs101-create-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成してください。
+まず、[「Oracle Cloud で Oracle Database を使おう(BaseDB)」](/ocitutorials/basedb/dbcs101-create-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成してください。
 TeraTermを起動しBaseDBインスタンスにSSHでアクセスするところから、PDB上のスキーマにアクセスするところまで一通り実施いただくとスムーズです。
 
 以降では、BaseDBインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です）
@@ -128,7 +128,7 @@ exit
 ```sh
 vi $ORACLE_HOME/network/admin/tnsnames.ora
 ```
-以下を追記します。（必要に応じて[「Oracle Cloud で Oracle Database を使おう(BaseDB)」](/ocitutorials/database/dbcs101-create-db/)を参考に**ホスト名（HOST）**、**ポート番号（PORT）**、**サービス名（SERVICE_NAME）** を変更ください）  
+以下を追記します。（必要に応じて[「Oracle Cloud で Oracle Database を使おう(BaseDB)」](/ocitutorials/basedb/dbcs101-create-db/)を参考に**ホスト名（HOST）**、**ポート番号（PORT）**、**サービス名（SERVICE_NAME）** を変更ください）  
 ```
 PDB1 =
   (DESCRIPTION =

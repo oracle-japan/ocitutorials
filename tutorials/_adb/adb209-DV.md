@@ -4,8 +4,8 @@ excerpt: "データベースの特権ユーザはデフォルトではすべて�
 order: "3_209"
 layout: single
 header:
-  teaser: "/database/adb209-DV/DatabaseVault.png"
-  overlay_image: "/database/adb209-DV/DatabaseVault.png"
+  teaser: "/adb/adb209-DV/DatabaseVault.png"
+  overlay_image: "/adb/adb209-DV/DatabaseVault.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -34,8 +34,8 @@ Oracle Database Vaultの詳細については、[Oracle Database Vaultホーム�
 + [6.Oracle Database Vaultの無効化](#anchor6)
 
 **前提条件 :**
- + テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/) で作成したユーザADBUSERを利用しています。
- + SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL\*Plusを利用しています。Databasee Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL\*Plusの環境は、[「204:マーケットプレイスからの仮想マシンのセットアップ方法」](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/)で作成できます。
+ + テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/) で作成したユーザADBUSERを利用しています。
+ + SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL\*Plusを利用しています。Databasee Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL\*Plusの環境は、[「204:マーケットプレイスからの仮想マシンのセットアップ方法」](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/)で作成できます。
  + チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。
  + 使用パッケージの引数についての説明は記載していません。詳細はドキュメント[『Oracle Database Vault管理者ガイド』](https://docs.oracle.com/cd/F19136_01/dvadm/index.html)（リンクは19c版です）をご参照くださいますようお願いいたします。
 
@@ -48,7 +48,7 @@ Oracle Database Vaultの詳細については、[Oracle Database Vaultホーム�
 
 # 1.テスト用の表を作成
 
-サンプルスキーマのSSBスキーマのSUPPLIER表の一部を利用して、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/) で作成したADBUSERスキーマにテスト用の表を作成します。  
+サンプルスキーマのSSBスキーマのSUPPLIER表の一部を利用して、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/) で作成したADBUSERスキーマにテスト用の表を作成します。  
 
 SQL*Plusを起動して以下を実行してください。
 
@@ -349,7 +349,7 @@ Oracle Database Vault で特権ユーザーであっても機密データにア�
 
 # 参考資料
 + 『Using Oracle Autonomous Database on Shared Exadata Infrastructureutonomous Data Warehouse』  
- "[Oracle Database VaultとAutonomous Databaseの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/autonomous-database-vault.html)" 
+ "[Oracle Database VaultとAutonomous Databaseの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-adb/adbsa/autonomous-database-vault.html)" 
 
 + Oracle Database 19c
 『[Oracle Database Vault管理者ガイド](https://docs.oracle.com/cd/F19136_01/dvadm/index.html )』

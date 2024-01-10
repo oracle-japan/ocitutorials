@@ -4,8 +4,8 @@ excerpt: "ExaDB-Dでパッチを適用する方法について紹介します。
 order: "2_107"
 layout: single
 header:
-  teaser: "/database/exadb-d107-patch/teaser.png"
-  overlay_image: "/database/exadb-d107-patch/teaser.png"
+  teaser: "/exadbd/exadb-d107-patch/teaser.png"
+  overlay_image: "/exadbd/exadb-d107-patch/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -25,9 +25,9 @@ header:
 
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
 
-+ [104 : バックアップからリストアしよう](/ocitutorials/database/exadb-d104-backup-restore)を通じてデータベースのバックアップが完了していること
++ [104 : バックアップからリストアしよう](/ocitutorials/exadbd/exadb-d104-backup-restore)を通じてデータベースのバックアップが完了していること
 
 **所要時間 :** 約2時間　※環境によって異なるため、参考値です。
 
@@ -57,7 +57,7 @@ header:
 
     ![](2023-11-21-05.png)
 
-    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
     以下のようにgridユーザにログインして、コマンドを実行します。
 
@@ -114,7 +114,7 @@ header:
 
     ![](2023-11-21-15.png)
 
-    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
     以下のようにgridユーザにログインして、コマンドを実行します。
 
@@ -174,7 +174,7 @@ header:
 
     ![](2023-03-31-17-53-03.png)
 
-    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
     以下のようにoracleユーザにログインして、コマンドを実行します。
 
@@ -208,7 +208,7 @@ header:
     OPatch succeeded.
     ```
 
-1. アップグレードしたいデータベースのバージョンのデータベース・ホームを作成します。データベース・ホームの作成は[106 : データベースのバージョンを指定しよう](/ocitutorials/database/exadb-d106-dbversion)の**1. データベース・ホームの作成**をご参照ください。
+1. アップグレードしたいデータベースのバージョンのデータベース・ホームを作成します。データベース・ホームの作成は[106 : データベースのバージョンを指定しよう](/ocitutorials/exadbd/exadb-d106-dbversion)の**1. データベース・ホームの作成**をご参照ください。
 
     作成が完了すると、以下のように**Exadata VMクラスタの詳細**ページのデータベース・ホームの一覧に**データベースの数**が0のデータベース・ホームが追加されます。
     ![](2023-03-31-23-24-12.png)
@@ -249,7 +249,7 @@ header:
 
     ![](2023-03-31-23-50-17.png)
 
-    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
     以下のようにoracleユーザにログインして、コマンドを実行します。
 
@@ -303,7 +303,7 @@ header:
 
     ![](2023-11-21-21.png)
 
-    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
     以下のようにoracleユーザにログインして、コマンドを実行します。
 
@@ -350,7 +350,7 @@ header:
 
     ![](2023-11-21-28.png)
 
-    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
     以下のようにoracleユーザにログインして、コマンドを実行します。
 
@@ -387,7 +387,7 @@ header:
 
 ExaDB-Dのクラウド・ツールであるdbaascliユーティリティを使用して、ExaDB-D上の様々なデータベースの管理操作をコマンドラインベースで実行できます。クラウド・ツールは、新しいリリースが使用可能になり次第、最新バージョンへアップデート可能です。dbaascliは自動でアップデートされますが、ここでは手動でのdbaascliのパッチの適用方法を紹介します。
 
-1. ExaDB-Dにアクセスします。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+1. ExaDB-Dにアクセスします。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
 1. 以下のようにrootユーザにログインします。
 
@@ -565,7 +565,7 @@ ExaDB-Dのクラウド・ツールであるdbaascliユーティリティを使�
 
     ![](2023-11-21-38.png)
 
-    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
+    opatchコマンドでも確認が可能です。仮想マシンへのアクセス方法は[101：ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d/)の**4.DBシステムへのアクセス**をご参照ください。
 
     以下のようにrootユーザにログインして、コマンドを実行します。
 

@@ -3,8 +3,8 @@ title: "106: Data Guardを構成しよう"
 excerpt: "Base Database Service (BaseDB) でData Guardを構成する手順について紹介します。"
 order: "1_106"
 header:
-  teaser: "/database/dbcs106-dataguard/dataguard08.png"
-  overlay_image: "/database/dbcs106-dataguard/dataguard08.png"
+  teaser: "/basedb/dbcs106-dataguard/dataguard08.png"
+  overlay_image: "/basedb/dbcs106-dataguard/dataguard08.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/

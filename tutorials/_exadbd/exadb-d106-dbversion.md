@@ -4,8 +4,8 @@ excerpt: "ExaDB-D上のデータベース・ホームおよびカスタム・イ
 order: "2_106"
 layout: single
 header:
-  teaser: "/database/exadb-d106-dbversion/teaser.png"
-  overlay_image: "/database/exadb-d106-dbversion/teaser.png"
+  teaser: "/exadbd/exadb-d106-dbversion/teaser.png"
+  overlay_image: "/exadbd/exadb-d106-dbversion/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -23,7 +23,7 @@ header:
 + [3. 確認作業](#3-確認作業)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
 
 **所要時間 :** 約30分　※環境によって異なるため、参考値です。
 

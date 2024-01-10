@@ -4,8 +4,8 @@ excerpt: "ネットワークの瞬断等の予期せぬエラーからアプリ�
 order: "3_213"
 layout: single
 header:
-  teaser: "/database/adb213-tac/tac001.png"
-  overlay_image: "/database/adb213-tac/tac001.png"
+  teaser: "/adb/adb213-tac/tac001.png"
+  overlay_image: "/adb/adb213-tac/tac001.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -38,8 +38,8 @@ Autonomous Database では接続サービス毎にApplication Continuity(AC)、�
   + [5.Application Continuityの無効化](#anchor5)
 
 **前提条件 :**
- + [「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/) を参考に、ADBインスタンス、およびADBUSERが作成済みであること
- + SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL\*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL\*Plusの環境は、[「204:マーケットプレイスからの仮想マシンのセットアップ方法」](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/)で作成できます。
+ + [「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/) を参考に、ADBインスタンス、およびADBUSERが作成済みであること
+ + SQLコマンドを実行するユーザインタフェースは、接続の切り替えが容易なので、SQL\*Plusを利用しています。Database Actionsでも実行可能ですが、ユーザでの接続をログインに読み替え、ログインしなおす必要があります。なお、 SQL\*Plusの環境は、[「204:マーケットプレイスからの仮想マシンのセットアップ方法」](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/)で作成できます。
  + チュートリアルの便宜上、インスタンス名は「atp01」、各ユーザのパスワードはすべて「Welcome12345#」とします。
 
 

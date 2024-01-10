@@ -4,8 +4,8 @@ excerpt: "Oracle Machine Learningで液体の品質の予測や、同時購入�
 order: "3_208"
 layout: single
 header:
-  teaser: "/database/adb208-oml-notebook/img12.jpg"
-  overlay_image: "/database/adb208-oml-notebook/img12.jpg"
+  teaser: "/adb/adb208-oml-notebook/img12.jpg"
+  overlay_image: "/adb/adb208-oml-notebook/img12.jpg"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -23,10 +23,10 @@ header:
 **前提条件** 
 
 * ADBインスタンスが構成済みであること
-    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
 * 以下にリンクされているファイルをダウンロードしていること
-	+ [liquid.csv](/ocitutorials/database/adb208-oml-notebook/ADB-OML-Tutorial/liquid.csv)
-	+ [order_items.csv](/ocitutorials/database/adb208-oml-notebook/ADB-OML-Tutorial/order_items.csv)
+	+ [liquid.csv](/ocitutorials/adb/adb208-oml-notebook/ADB-OML-Tutorial/liquid.csv)
+	+ [order_items.csv](/ocitutorials/adb/adb208-oml-notebook/ADB-OML-Tutorial/order_items.csv)
 
 <br>
 
@@ -80,7 +80,7 @@ header:
 後述のデータロードをステップで、OMLユーザでDatabase Actionsを活用していきます。
 OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにログインできないので、OMLユーザのRESTを有効化していきましょう。
 
-1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツール**タブから、**データベース・アクションを開く**をクリックしてください。
+1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツール**タブから、**データベース・アクションを開く**をクリックしてください。
 
    ![画面ショット1-1](img19.png)
 
@@ -163,7 +163,7 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
 
 ### order_items.csvをObject Storageにアップロード
 
-1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)で学習した**オブジェクトストレージへのデータアップロード** を参照し、**order_items.csv**を**Object Storage**にアップロードして下さい。
+1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)で学習した**オブジェクトストレージへのデータアップロード** を参照し、**order_items.csv**を**Object Storage**にアップロードして下さい。
 
    ![image.png](img29.jpg)
 
@@ -244,12 +244,12 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
 
 また、以下のリンクから直接資料をダウンロードすることも可能です。
 
-+ [Autonomous Database MLハンズオン資料](/ocitutorials/database/adb208-oml-notebook/ML_HOL_20200325.pdf)
++ [Autonomous Database MLハンズオン資料](/ocitutorials/adb/adb208-oml-notebook/ML_HOL_20200325.pdf)
 
 資料内で使用するSQLは、下記の**Handson_SQL.txt**を確認することが可能です。
 手入力ではなくコピー＆ペーストして学習を進めていくことができます。
 
-+ [Handson_SQL.txt](/ocitutorials/database/adb208-oml-notebook/ADB-OML-Tutorial/Handson_SQL.txt)
++ [Handson_SQL.txt](/ocitutorials/adb/adb208-oml-notebook/ADB-OML-Tutorial/Handson_SQL.txt)
 
 <br>
 

@@ -4,8 +4,8 @@ excerpt: "ExaDB-D上で取得したバックアップからリストアする手
 order: "2_104"
 layout: single
 header:
-  teaser: "/database/exadb-d104-backup-restore/teaser.png"
-  overlay_image: "/database/exadb-d104-backup-restore/teaser.png"
+  teaser: "/exadbd/exadb-d104-backup-restore/teaser.png"
+  overlay_image: "/exadbd/exadb-d104-backup-restore/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -23,9 +23,9 @@ header:
 + [3. オンデマンド・バックアップを使用したリストア](#3-オンデマンドバックアップを使用したリストア)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
 
-+ [103 : 自動バックアップを設定しよう](/ocitutorials/database/exadb-d103-automatic-backup)を通じてバックアップを取得していること
++ [103 : 自動バックアップを設定しよう](/ocitutorials/exadbd/exadb-d103-automatic-backup)を通じてバックアップを取得していること
 
 **所要時間 :** 約1時間　※環境によって異なるため、参考値です
 

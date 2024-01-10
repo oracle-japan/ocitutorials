@@ -4,8 +4,8 @@ excerpt: "データ・カタログを使えば、技術、ビジネスおよび�
 order: "3_603"
 layout: single
 header:
-  teaser: "/database/adb603-data-catalog/3-1.png"
-  overlay_image: "/database/adb603-data-catalog/3-1.png"
+  teaser: "/adb/adb603-data-catalog/3-1.png"
+  overlay_image: "/adb/adb603-data-catalog/3-1.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -40,7 +40,7 @@ Oracle Cloud Infrastructure Data Catalogは、そのような企業データの�
 **前提条件**
 + Autonomous Data Warehouse(ADW)インスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
-    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 
 + Data Catalogを使用するためのユーザーグループ、ポリシーが設定済みであること
     <br>※本チュートリアルを進めるうえで必要なポリシーは[こちら](https://oracle.github.io/learning-library/data-management-library/data-catalog/workshops/freetier/?lab=prerequisites#:~:text=Create%20a%20Compartment-,Task%203%3A%20Create%20User%20Group%20and%20Policies,-To%20create%20a){:target="_blank"}を参照ください。

@@ -4,8 +4,8 @@ excerpt: "ADBを簡単に複製することができる、クローニング機�
 order: "3_211"
 layout: single
 #header:
-#  teaser: "/database/adb211-clone/image_top.png"
-#  overlay_image: "/database/adb211-clone/img_top.png"
+#  teaser: "/adb/adb211-clone/image_top.png"
+#  overlay_image: "/adb/adb211-clone/img_top.png"
 #  overlay_filter: rgba(34, 66, 55, 0.7)
 ---
 
@@ -19,7 +19,7 @@ Autonomous Databaseのクローン機能を利用することにより、テス�
 **前提条件 :**
 
 * ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 * 構成済みのADBインスタンスへ接続できることが確認できていること
 
 
@@ -113,7 +113,7 @@ ADBのクローンを作成する際には、**クローンタイプ**、**ク�
   <br>接続方法はOCI CLIを使用する方法や、別の仮想マシンからssh接続する方法がありますが、こちらでは後者の方法で進めていきます。
 
     1-1. 作成した仮想マシンにssh接続します。
-      <br>仮想マシンの作成およびセットアップ方法は[こちら](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/)
+      <br>仮想マシンの作成およびセットアップ方法は[こちら](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/)
 
     1-2. 下記のコマンドを参考に、oracleユーザに切り替えます。
     
@@ -137,7 +137,7 @@ ADBのクローンを作成する際には、**クローンタイプ**、**ク�
     sqlplus admin/Welcome12345#@atp01_low
     ```
 
-    SQL*Plusへの接続方法の詳細については、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/) をご確認ください。
+    SQL*Plusへの接続方法の詳細については、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/) をご確認ください。
 
 2. 次のサンプルスクリプトを流し、テーブルを作成します。
   <br>こちらのスクリプトをコピーし、SQL*Plusのターミナルにペーストします。
@@ -181,7 +181,7 @@ ADBのクローンを作成する際には、**クローンタイプ**、**ク�
     COMMIT;
       ```
 
-    +  [上記のサンプルデータをダウンロード](/ocitutorials/database/adb-data/department.sql)
+    +  [上記のサンプルデータをダウンロード](/ocitutorials/adb/adb-data/department.sql)
 
 
   3. 次のSELECT文を実行し、表が正しく作成されているかを確認します。
@@ -264,7 +264,7 @@ ADB（atp01）のフルクローンを作成していきます。
 <br>また、正しくクローンされているかを確認するために、2で作成したデータと同様のデータが入っているかを確認します。
 
 1. 次の手順に従って、クローンADBに接続してみましょう。
-  <br>詳細は、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/) の [1. クレデンシャル・ウォレットのダウンロード](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/#anchor1) を参照ください。
+  <br>詳細は、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/) の [1. クレデンシャル・ウォレットのダウンロード](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/#anchor1) を参照ください。
 
     1-1. クローンADBのウォレットをダウンロードします。
       <br>OCIコンソールからクローンADBの詳細画面に移動します。
@@ -275,9 +275,9 @@ ADB（atp01）のフルクローンを作成していきます。
     <br>設定ファイルを編集する方法は、OCI CLIを使用した編集方法、接続用の仮想マシンで編集する方法があります。
     <br>それぞれの編集方法は次のリンク先をご確認ください：
       + OCI CLIを使用して編集する方法
-        [104: クレデンシャル・ウォレットを利用して接続してみよう - 2. 設定ファイルの編集](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/#anchor2)
+        [104: クレデンシャル・ウォレットを利用して接続してみよう - 2. 設定ファイルの編集](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/#anchor2)
       + 接続用の仮想マシン上で編集する方法
-        [204: マーケットプレイスからの仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/#4-adb%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B7%A8%E9%9B%86)
+        [204: マーケットプレイスからの仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#4-adb%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B7%A8%E9%9B%86)
         
     > **補足**
     >

@@ -4,8 +4,8 @@ excerpt: "Oracle Spatialを使用すると、開発者は基本的な空間検�
 order: "3_214"
 layout: single
 header:
-  teaser: "/database/adb214-spatial-studio/tokyo_boundary_image.jpg"
-  overlay_image: "/database/adb214-spatial-studio/tokyo_boundary_image.jpg"
+  teaser: "/adb/adb214-spatial-studio/tokyo_boundary_image.jpg"
+  overlay_image: "/adb/adb214-spatial-studio/tokyo_boundary_image.jpg"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -25,7 +25,7 @@ Oracle Spatial Studio (Spatial Studioとも呼ばれます)は、Oracle Database
 **前提条件**
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
-    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
 
 <BR>
 
@@ -76,7 +76,7 @@ TO studio_repo;
 
 ## 1-4. ウォレットのダウンロード
 Spatial Studioが、作成したADBリポジトリ用スキーマに接続するには、ウォレットが必要です。
-[104 : クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/){:target="_blank"} を参考に、ウォレットをダウンロードします。
+[104 : クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/adb/adb104-connect-using-wallet/){:target="_blank"} を参考に、ウォレットをダウンロードします。
 
 ## 1-5. マーケットプレイスからSpatial Studioを選択する
 1. 左上のハンバーガーメニューをクリックして、[マーケットプレイス]を選択します。
@@ -138,7 +138,7 @@ Spatial Studioが、作成したADBリポジトリ用スキーマに接続する
 1. 『1-4. ウォレットのダウンロード』で保存したウォレットファイルを選択（またはドラッグ＆ドロップ）します。読み込み後、[OK]をクリックします。
 ![upload_walletイメージ](upload_wallet.jpg)
 
-1. 『1-1. リポジトリ用にスキーマを作成する』で作成したユーザー名（studio_repo）とパスワード、およびサービスを入力します。今回は、サービスレベルはmediumに設定しておきます。接続サービスについては、[こちら](https://oracle-japan.github.io/ocitutorials/database/adb201-service-names/){:target="_blank"}もご参照ください。以下の画像のように入力し、[OK]をクリックします。
+1. 『1-1. リポジトリ用にスキーマを作成する』で作成したユーザー名（studio_repo）とパスワード、およびサービスを入力します。今回は、サービスレベルはmediumに設定しておきます。接続サービスについては、[こちら](https://oracle-japan.github.io/ocitutorials/adb/adb201-service-names/){:target="_blank"}もご参照ください。以下の画像のように入力し、[OK]をクリックします。
     <div style="text-align: center"><img src="specify_metadata_schema.jpg"></div> 
 1. Spatial Studioがスキーマへの初期接続を行い、いくつかのメタデータ・テーブルを作成します。完了すると、Getting Started情報とともにSpatial Studioが開きます。以下の画像のように表示されれば、ログイン成功です。
 ![getting_startedイメージ](getting_started.jpg)
@@ -298,7 +298,7 @@ group by b.station_name;
 ```
 
 + sdo_anyinteract：表内のジオメトリに、特定のジオメトリとの位相関係があるかどうかを確認する、つまり東京都の小地域の空間データと駅の座標位置になんらかの位相関係があればTRUEを返します。
-+ sdo_geometry：Oracleのデータベース上に点やポリゴンを収容するオブジェクト型です。引数の2001は二次元の点を表し、8307はWGS84経度/緯度座標系に関連付けられています。詳しくは[こちら](https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm#SPATL489){:target="_blank"} をご参照ください。
++ sdo_geometry：Oracleのデータベース上に点やポリゴンを収容するオブジェクト型です。引数の2001は二次元の点を表し、8307はWGS84経度/緯度座標系に関連付けられています。詳しくは[こちら](https://docs.oracle.com/adb/121/SPATL/sdo_geometry-object-type.htm#SPATL489){:target="_blank"} をご参照ください。
 + sdo_point_type：点ジオメトリの座標を格納するオブジェクト型です。
 
 10秒ほど待つと、以下のような結果が返されます。東京都の各駅周辺の地域の年齢階層別の人口が表示されています。

@@ -4,8 +4,8 @@ excerpt: "Autonomous Databaseを任意のバックアップからリストアを
 order: "3_505"
 layout: single
 header:
-  teaser: "/database/adb505-backup/img2.png"
-  overlay_image: "/database/adb505-backup/img2.png"
+  teaser: "/adb/adb505-backup/img2.png"
+  overlay_image: "/adb/adb505-backup/img2.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -29,7 +29,7 @@ Autonomous Databaseでは自動的バックアップがオンラインで取得�
 **前提条件**
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
-    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
 
 <BR>
 

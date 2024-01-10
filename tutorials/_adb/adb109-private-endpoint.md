@@ -4,8 +4,8 @@ excerpt: "ADBでは、パブリックIPを持つパブリック・エンドポ�
 order: "3_109"
 layout: single
 header:
-  teaser: "/database/adb109-private-endpoint/private-endpoint_teaser.png"
-  overlay_image: "/database/adb109-private-endpoint/private-endpoint_teaser.png"
+  teaser: "/adb/adb109-private-endpoint/private-endpoint_teaser.png"
+  overlay_image: "/adb/adb109-private-endpoint/private-endpoint_teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 
 #link: https://community.oracle.com/tech/welcome/discussion/4474310
@@ -72,7 +72,7 @@ Autonomous Databaseでは、パブリック・エンドポイントとプライ�
 ## 1-3. ADBへの接続
 パブリック・サブネットの踏み台サーバー経由でプライベート・サブネットのコンピュート・インスタンスに接続します。
 プライベート・エンドポイント・アクセスのみの場合は、ウォレットなし接続が可能です。
-ウォレットなし接続の手順については、[こちら](https://oracle-japan.github.io/ocitutorials/database/adb108-walletless/){:target="_blank"}をご参照ください。
+ウォレットなし接続の手順については、[こちら](https://oracle-japan.github.io/ocitutorials/adb/adb108-walletless/){:target="_blank"}をご参照ください。
 もちろんウォレットを使用した接続も可能です。
 
 ![adb-access.png](adb-access.png)
@@ -130,13 +130,13 @@ ACLを更新後、OCIコンソール画面からアクセスできるように�
 ## 2-3. プライベート・エンドポイントでプライベート・ネットワークから接続
 オンプレミスのデータセンターなどからプライベート・ネットワークでDatabase Actionsに接続する場合です。
 この場合、FastConnectを使用して、オンプレミスからOCIのVCNに接続する方法が一般的です。なお、トラフィックはインターネットを経由しません。
-詳しい手順については、[マニュアル](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/network-private-endpoint-examples.html#GUID-9F6401C4-6306-4212-88FD-95E536B730B1:~:text=%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%E3%80%82-,%E4%BE%8B%3A%20%E3%83%87%E3%83%BC%E3%82%BF%E3%83%BB%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC%E3%81%8B%E3%82%89Autonomous%20Database%E3%81%B8%E3%81%AE%E6%8E%A5%E7%B6%9A,-%E3%82%AA%E3%83%B3%E3%83%97%E3%83%AC%E3%83%9F%E3%82%B9%E3%83%BB%E3%83%87%E3%83%BC%E3%82%BF%E3%83%BB%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC){:target="_blank"}をご参照ください。
+詳しい手順については、[マニュアル](https://docs.oracle.com/ja-jp/iaas/Content/Network/Concepts/fastconnectoverview.htm){:target="_blank"}をご参照ください。
 
 <br>
 
 # 参考資料
 
-* [プライベート・エンドポイントを使用したネットワーク・アクセスの構成](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/private-endpoints-autonomous.html#GUID-60FE6BFD-B05C-4C97-8B4A-83285F31D575){:target="_blank"}
+* [プライベート・エンドポイントの概要](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/security-restrict-private-endpoint.html#GUID-D12F124A-9B71-4B83-B157-63F1057072FF){:target="_blank"}
 
 
 以上で、この章は終了です。  

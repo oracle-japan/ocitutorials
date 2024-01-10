@@ -504,7 +504,7 @@ ADB-Dを配置するネットワーク環境を作成します。
 
 2. Autonomous Databaseを作成します。
 <br>設定項目は次の通り入力してください。
-<br>※Autonomous Databaseの作成方法については [101: ADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/){:target="_blank"} で詳細に説明していますので、重複する部分の説明は割愛します。デプロイメント・タイプのみ異なることにご注意ください。
+<br>※Autonomous Databaseの作成方法については [101: ADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/){:target="_blank"} で詳細に説明していますので、重複する部分の説明は割愛します。デプロイメント・タイプのみ異なることにご注意ください。
 
    <table>
     <thead>
@@ -588,7 +588,7 @@ ADB-Dを配置するネットワーク環境を作成します。
 
     ![3-3-1.png](3-3-1.png)
 
-2. ADBに接続します。接続を行う仮想マシンの設定は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/){:target="_blank"}を参照ください。TLSがついている接続サービスはADB-Sに接続する場合と同様の方法で接続ができます。またTLSがついていない接続サービスはウォレットなしで接続することが可能です。
+2. ADBに接続します。接続を行う仮想マシンの設定は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}を参照ください。TLSがついている接続サービスはADB-Sに接続する場合と同様の方法で接続ができます。またTLSがついていない接続サービスはウォレットなしで接続することが可能です。
 
 
 # 参考資料

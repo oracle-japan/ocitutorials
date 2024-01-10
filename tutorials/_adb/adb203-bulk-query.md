@@ -4,8 +4,8 @@ excerpt: "ADBインスタンスにデフォルトで入っているDWH系・分�
 order: "3_203"
 layout: single
 header:
-  teaser: "/database/adb203-bulk-query/img0.png"
-  overlay_image: "/database/adb203-bulk-query/img0.png"
+  teaser: "/adb/adb203-bulk-query/img0.png"
+  overlay_image: "/adb/adb203-bulk-query/img0.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -67,7 +67,7 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 
 ## データ・モデラーによる構成確認
 
-1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツール**タブから、**データベース・アクションを開く**をクリックしてください。
+1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツール**タブから、**データベース・アクションを開く**をクリックしてください。
 
    ![画面ショット1-1](img1.png)
 

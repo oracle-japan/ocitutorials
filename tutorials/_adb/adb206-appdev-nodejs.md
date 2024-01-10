@@ -5,8 +5,8 @@ excerpt: "この章では開発言語としてNode.jsを想定し、Autonomous D
 order: "3_206"
 layout: single
 #header:
-#  teaser: "/database/adb206-appdev-nodejs/image_top.png"
-#  overlay_image: "/database/adb206-appdev-nodejs/img_top.png"
+#  teaser: "/adb/adb206-appdev-nodejs/image_top.png"
+#  overlay_image: "/adb/adb206-appdev-nodejs/img_top.png"
 #  overlay_filter: rgba(34, 66, 55, 0.7)
 
 #link: https://community.oracle.com/tech/welcome/discussion/4474308
@@ -23,14 +23,14 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
 **前提条件 :**
 
 * ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning) を参照ください。
+   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning) を参照ください。
 * 開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること
 * 仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること
-    +  [labs.zip を手元のPCにダウンロード](/ocitutorials/database/adb-data/labs.zip)
-    <br>アップロード方法については [こちら](/ocitutorials/database/adb204-setup-VM#anchor3) をご確認ください。
+    +  [labs.zip を手元のPCにダウンロード](/ocitutorials/adb/adb-data/labs.zip)
+    <br>アップロード方法については [こちら](/ocitutorials/adb/adb204-setup-VM#anchor3) をご確認ください。
     + 仮想マシン上に直接ダウンロードする場合は、次のコマンドを実行します。
         ```sh
-        wget https://oracle-japan.github.io/ocitutorials/database/adb-data/labs.zip
+        wget https://oracle-japan.github.io/ocitutorials/adb/adb-data/labs.zip
         ```
 
 <br>
@@ -108,7 +108,7 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
 
 ## - Firewallの設定
 
-1. 仮想マシンにopcユーザでログインします。ログイン方法は [204: マーケットプレイスからの仮想マシンのセットアップ方法 2. 仮想マシンへのアクセス](/ocitutorials/database/adb204-setup-VM#anchor2) を参照ください。
+1. 仮想マシンにopcユーザでログインします。ログイン方法は [204: マーケットプレイスからの仮想マシンのセットアップ方法 2. 仮想マシンへのアクセス](/ocitutorials/adb/adb204-setup-VM#anchor2) を参照ください。
 
     ![img1_firewall_1.png](img1_firewall_1.png)
 
@@ -244,7 +244,7 @@ node-oracledbドライバを利用することで、Autonomous Databaseに簡単
 
 次にNode.jsのアプリからADBに接続し、ADB上のデータを手元のブラウザ経由で確認します。
 
-尚、事前に [104: クレデンシャル・ウォレットを利用して接続してみよう 3-1. SQL*Plus を使った接続](/ocitutorials/database/adb104-connect-using-wallet#anchor3-1) を実施し、
+尚、事前に [104: クレデンシャル・ウォレットを利用して接続してみよう 3-1. SQL*Plus を使った接続](/ocitutorials/adb/adb104-connect-using-wallet#anchor3-1) を実施し、
 
 SQL*plusで接続できていることを前提に以下を記載しています。
 
@@ -404,7 +404,7 @@ SQL*plusで接続できていることを前提に以下を記載しています
     >
     > ![img3_err.png](img3_err.png)
     >
-    > 設定方法は [こちら](/ocitutorials/database/adb104-connect-using-wallet#anchorerr) を参照ください。
+    > 設定方法は [こちら](/ocitutorials/adb/adb104-connect-using-wallet#anchorerr) を参照ください。
     >
 
 <br>

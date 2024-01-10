@@ -4,8 +4,8 @@ excerpt: "OCI GoldenGateのインスタンス作成から対象のデータべ�
 order: "3_401"
 layout: single
 header:
-  teaser: "/database/adb401-oci-goldengate/instancetop.png"
-  overlay_image: "/database/adb401-oci-goldengate/instancetop.png"
+  teaser: "/adb/adb401-oci-goldengate/instancetop.png"
+  overlay_image: "/adb/adb401-oci-goldengate/instancetop.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -34,10 +34,10 @@ OCI GoldenGateサービスは、構成、ワークロード・スケーリング
 本チュートリアルではBaseDB、ADBともにデータベースの作成が完了しており、初期データとしてHRスキーマがそれぞれのデータベースにロードされていることを前提にしています。
 各データベースの作成方法やデータロードの方法は下記手順をご確認ください。
 
- + BaseDBの作成については、[「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」](https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/) をご参照ください。
- + データ連携用のサンプルデータはHRスキーマを使用しています。BaseDBでのHRスキーマ作成方法は、[「301: 移行元となるデータベースを作成しよう」](https://oracle-japan.github.io/ocitutorials/database/adb301-create-source-db/) をご参照ください。
- + ADBの作成については、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/) をご参照ください。
- + ADBの初期データロードについては、[「303 : Data Pumpを利用してデータを移行しよう」](https://oracle-japan.github.io/ocitutorials/database/adb303-datapump/) をご参照ください。
+ + BaseDBの作成については、[「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」](https://oracle-japan.github.io/ocitutorials/basedb/dbcs101-create-db/) をご参照ください。
+ + データ連携用のサンプルデータはHRスキーマを使用しています。BaseDBでのHRスキーマ作成方法は、[「301: 移行元となるデータベースを作成しよう」](https://oracle-japan.github.io/ocitutorials/adb/adb301-create-source-db/) をご参照ください。
+ + ADBの作成については、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/) をご参照ください。
+ + ADBの初期データロードについては、[「303 : Data Pumpを利用してデータを移行しよう」](https://oracle-japan.github.io/ocitutorials/adb/adb303-datapump/) をご参照ください。
  + チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、BaseDBを含めて各ユーザのパスワードはすべて「Welcome#1Welcome#1」とします。
 
 **所要時間 :** 約60分

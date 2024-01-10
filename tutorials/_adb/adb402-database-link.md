@@ -4,8 +4,8 @@ excerpt: "Database Linkを使えば、あるデータベースから別のデー
 order: "3_402"
 layout: single
 header:
-  teaser: "/database/adb402-database-link/DatabaseLink_teaser.jpg"
-  overlay_image: "/database/adb402-database-link/DatabaseLink_teaser.jpg"
+  teaser: "/adb/adb402-database-link/DatabaseLink_teaser.jpg"
+  overlay_image: "/adb/adb402-database-link/DatabaseLink_teaser.jpg"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -44,7 +44,7 @@ Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成�
 **前提条件**
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
-    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 
 <BR>
 
@@ -57,7 +57,7 @@ Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成�
 # 1. BaseDBインスタンスの作成およびスキーマのインポート
 
 まず、サンプル・データベースとして、Database Linkのリンク先となるBaseDBインスタンスを作成します。
-[301 : 移行元となるデータベースを作成しよう](/ocitutorials/database/adb301-create-source-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成し、HRスキーマを作成してください。
+[301 : 移行元となるデータベースを作成しよう](/ocitutorials/adb/adb301-create-source-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成し、HRスキーマを作成してください。
 
 <BR>
 
@@ -357,7 +357,7 @@ chmod 604 /tmp/cwallet.sso
 
 ## 3-2. Object Storageへのウォレットのアップロード
 
-[102:ADBにデータをロードしよう(Database Actions)](/ocitutorials/database/adb102-dataload/){:target="_blank"}の「2.OCIオブジェクトストレージへのデータアップロード」を参考に、ダウンロードしたウォレットをObject Storageにアップロードします。
+[102:ADBにデータをロードしよう(Database Actions)](/ocitutorials/adb/adb102-dataload/){:target="_blank"}の「2.OCIオブジェクトストレージへのデータアップロード」を参考に、ダウンロードしたウォレットをObject Storageにアップロードします。
 
 <br>
 
@@ -380,7 +380,7 @@ END;
 * credential_name: データベースに保存した認証情報を識別するための名前、任意
 * username: Oracle Object Storageにアクセスするためのユーザー名
 * password: 認証トークン
-ユーザー名、認証トークンの生成については、[102:ADBにデータをロードしよう(Database Actions)](/ocitutorials/database/adb102-dataload/){:target="_blank"}の「1.OCIオブジェクトストレージへのアクセス情報を取得」を参考にしてください。
+ユーザー名、認証トークンの生成については、[102:ADBにデータをロードしよう(Database Actions)](/ocitutorials/adb/adb102-dataload/){:target="_blank"}の「1.OCIオブジェクトストレージへのアクセス情報を取得」を参考にしてください。
 
 1. Object Storageにアップロードしたウォレットをディレクトリ・オブジェクトに配置します。
 ```

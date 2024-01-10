@@ -15,7 +15,7 @@ toc: true
 **特記事項**  
 + チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
 + [OCIチュートリアル入門編](/ocitutorials/beginners/)の、準備からその1、その2、その3、その7を実施しておくと、理解がスムーズです。  
-+ より詳しく知りたい方は、[OCI活用資料集](https://oracle-japan.github.io/ocidocs/services/database/)も併せてご確認ください。それぞれのサービスに関する技術詳細資料をまとめ紹介しています。
++ より詳しく知りたい方は、[OCI活用資料集](https://oracle-japan.github.io/ocidocs/services/database/)も併せてご確認ください。それぞれのサービスに関する技術詳細資料をまとめ紹介しています。
 
 <br/>
 
@@ -38,11 +38,7 @@ Oracle Databaseを動かすための最適な基盤として、リリースか�
 OCIであればExadataもサブスクリプションで使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 
-<<<<<<< HEAD
 ## 「ExaDB-Dを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/exadbd)
-=======
-## 「ExaDB-Dを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/exadbd)
->>>>>>> 5abbdfa7f96f6d712163b42ddc3d4f571d6a4b27
 
 <br/>
 

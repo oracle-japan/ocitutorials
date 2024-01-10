@@ -4,8 +4,8 @@ excerpt: "Oracle Base Database Serviceは、Oracle Cloud Infrastructure の上�
 
 order: "1_101"
 header:
-  teaser: "/database/dbcs101-create-db/img11.png"
-  overlay_image: "/database/dbcs101-create-db/img11.png"
+  teaser: "/basedb/dbcs101-create-db/img11.png"
+  overlay_image: "/basedb/dbcs101-create-db/img11.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/

@@ -3,8 +3,8 @@ title: "105: バックアップからリストアしよう"
 excerpt: "Base Database Service (BaseDB) 上で取得したバックアップからリストアする手順について紹介します。"
 order: "1_105"
 header:
-  teaser: "/database/dbcs105-restore/restore00.png"
-  overlay_image: "/database/dbcs105-restore/restore00.png"
+  teaser: "/basedb/dbcs105-restore/restore00.png"
+  overlay_image: "/basedb/dbcs105-restore/restore00.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/

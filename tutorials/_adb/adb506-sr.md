@@ -4,8 +4,8 @@ excerpt: "サービス・リクエストを挙げる手順や、スムーズな�
 order: "3_506"
 layout: single
 header:
-  teaser: "/database/adb506-sr/img1.jpg"
-  overlay_image: "/database/adb506-sr/img1.jpg"
+  teaser: "/adb/adb506-sr/img1.jpg"
+  overlay_image: "/adb/adb506-sr/img1.jpg"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---

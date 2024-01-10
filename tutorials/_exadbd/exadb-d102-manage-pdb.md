@@ -4,8 +4,8 @@ excerpt: "OCIコンソールからExaDB-DのPDBを管理する方法について
 order: "2_102"
 layout: single
 header:
-  teaser: "/database/exadb-d102-manage-pdb/teaser.png"
-  overlay_image: "/database/exadb-d102-manage-pdb/teaser.png"
+  teaser: "/exadbd/exadb-d102-manage-pdb/teaser.png"
+  overlay_image: "/exadbd/exadb-d102-manage-pdb/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -21,7 +21,7 @@ header:
 + [3. PDBクローンの作成](#3-pdbクローンの作成)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
 
 **所要時間 :** 約1時間
 
@@ -109,7 +109,7 @@ header:
 
 1. **プラガブル・データベースの作成**ダイアログに以下の情報を入力します。
     + **PDB名の入力** - 任意の名前を入力します。
-    + **データベースのTDEウォレット・パスワード** - データベースを作成した際に設定したsysスキーマのパスワード。[101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)の**3. データベースの作成**で設定したパスワードです。
+    + **データベースのTDEウォレット・パスワード** - データベースを作成した際に設定したsysスキーマのパスワード。[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**3. データベースの作成**で設定したパスワードです。
 
     設定後、**プラガブル・データベースの作成**をクリックします。
 
@@ -132,7 +132,7 @@ header:
 
 # 3. **PDBクローンの作成**
 
-1. [101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)の**6. PDB上のスキーマへのアクセス**でPDB上に作成したスキーマに接続します。スキーマを作成していない場合は[101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)の**5. データベース(PDB)へのアクセス**を参照ください。
+1. [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**6. PDB上のスキーマへのアクセス**でPDB上に作成したスキーマに接続します。スキーマを作成していない場合は[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**5. データベース(PDB)へのアクセス**を参照ください。
 
 1. スキーマ上にサンプル・データを追加します。
 
@@ -176,10 +176,10 @@ header:
 1. **PDBのクローニング**ダイアログに以下の情報を入力します。
     + **[コンパートメント名]のExadata VMクラスタ** - クローン先のVMクラスタを選択します。
     + **宛先データベース** - PDBクローンの作成先を指定します。
-    + **ソース・データベースの管理パスワード** - 本ガイドのようにローカルのCDBに作成する場合は入力不要です。リモートのCDBに作成する場合入力が必須となります。データベースを作成した際に設定したsysスキーマのパスワードです。[101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)の**3. データベースの作成**で設定したパスワードです。
+    + **ソース・データベースの管理パスワード** - 本ガイドのようにローカルのCDBに作成する場合は入力不要です。リモートのCDBに作成する場合入力が必須となります。データベースを作成した際に設定したsysスキーマのパスワードです。[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**3. データベースの作成**で設定したパスワードです。
     + **新規PDBの構成**
         + **PDB名** - 任意の名前を入力します。
-        + **データベースのTDEウォレット・パスワード** - データベースを作成した際に設定したsysスキーマのパスワードです。[101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)の**3. データベースの作成**で設定したパスワードです。
+        + **データベースのTDEウォレット・パスワード** - データベースを作成した際に設定したsysスキーマのパスワードです。[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**3. データベースの作成**で設定したパスワードです。
 
     設定後、**PDBのクローニング**をクリックします。
 
@@ -195,7 +195,7 @@ header:
 
     ![](2022-09-13-10-27-46.png)
 
-1. クローン元(PDB1)で作成されていたスキーマ(TESTUSER)とサンプルデータ(EMPLOYEE表)がクローン(PDB3)に存在することをデータベースにSQL*Plusから接続して確認します。接続方法は[101 : ExaDB-Dを使おう](/ocitutorials/database/exadb-d101-create-exadb-d)の**5. データベース(PDB)へのアクセス**を参照ください。
+1. クローン元(PDB1)で作成されていたスキーマ(TESTUSER)とサンプルデータ(EMPLOYEE表)がクローン(PDB3)に存在することをデータベースにSQL*Plusから接続して確認します。接続方法は[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**5. データベース(PDB)へのアクセス**を参照ください。
 
     データベースに接続して以下のように確認します。
 

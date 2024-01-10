@@ -3,8 +3,8 @@ title: "201: オンプレミスのPDBをBaseDBに移動しよう"
 excerpt: "オンプレミスのDatabaseがマルチテナント構成の場合、PDBの移動（アンプラグ・プラグ）でBase Database Service (BaseDB)へ移行する手順について紹介します。"
 order: "1_201"
 header:
-  teaser: "/database/dbcs201-pdb-plug/pdb-plug05.png"
-  overlay_image: "/database/dbcs201-pdb-plug/pdb-plug05.png"
+  teaser: "/basedb/dbcs201-pdb-plug/pdb-plug05.png"
+  overlay_image: "/basedb/dbcs201-pdb-plug/pdb-plug05.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/

@@ -4,8 +4,8 @@ excerpt: "まずはシンプルにData Pumpを利用した移行方法につい�
 order: "3_303"
 layout: single
 header:
-  teaser: "/database/adb303-xxx/img00x.png"
-  overlay_image: "/database/adb303-xxx/img00x.png"
+  teaser: "/adb/adb303-xxx/img00x.png"
+  overlay_image: "/adb/adb303-xxx/img00x.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -15,7 +15,7 @@ header:
 
 Oracle Databaseのデータ移行として、ここでは従来からよく利用されるData Pumpを利用してAutonomous Databaseに移行する手順をご紹介します。
 
-先の[「301 : 移行元となるデータベースを作成しよう」](/ocitutorials/database/adb301-create-source-db){:target="_blank"}にて事前に作成しておいたBaseDBインスタンス上のHRスキーマを、以下の流れに沿ってAutonomous Databaseに移行してみたいと思います。
+先の[「301 : 移行元となるデータベースを作成しよう」](/ocitutorials/adb/adb301-create-source-db){:target="_blank"}にて事前に作成しておいたBaseDBインスタンス上のHRスキーマを、以下の流れに沿ってAutonomous Databaseに移行してみたいと思います。
 
 ![イメージ](img100.png)
 
@@ -33,16 +33,16 @@ Oracle Databaseのデータ移行として、ここでは従来からよく利�
 > 補足
 チュートリアルを実施する上で、BaseDBインスタンスを用意できない場合や、どうしてもエクスポートが成功しないと言った場合は、以下よりエクスポート済みのダンプファイルを配置しておりますので、適宜ダウンロードください。
 上記ステップ2から実施いただくことが可能です。
-* [ダンプファイル(export_hr_01.dmp)のダウンロード](/ocitutorials/database/adb303-datapump/export_hr_01.dmp)
-* [ダンプファイル(export_hr_02.dmp)のダウンロード](/ocitutorials/database/adb303-datapump/export_hr_02.dmp)
-* [ダンプファイル(export_hr_03.dmp)のダウンロード](/ocitutorials/database/adb303-datapump/export_hr_03.dmp)
-* [ダンプファイル(export_hr_04.dmp)のダウンロード](/ocitutorials/database/adb303-datapump/export_hr_04.dmp)
+* [ダンプファイル(export_hr_01.dmp)のダウンロード](/ocitutorials/adb/adb303-datapump/export_hr_01.dmp)
+* [ダンプファイル(export_hr_02.dmp)のダウンロード](/ocitutorials/adb/adb303-datapump/export_hr_02.dmp)
+* [ダンプファイル(export_hr_03.dmp)のダウンロード](/ocitutorials/adb/adb303-datapump/export_hr_03.dmp)
+* [ダンプファイル(export_hr_04.dmp)のダウンロード](/ocitutorials/adb/adb303-datapump/export_hr_04.dmp)
 
 <BR>
 
 **前提条件 :**
-+ [「204: マーケットプレイスからの仮想マシンのセットアップ方法」](/ocitutorials/database/adb204-setup-VM/){:target="_blank"}を完了していること
-+ [「301 : 移行元となるデータベースを作成しよう」](/ocitutorials/database/adb301-create-source-db){:target="_blank"}を完了していること
++ [「204: マーケットプレイスからの仮想マシンのセットアップ方法」](/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}を完了していること
++ [「301 : 移行元となるデータベースを作成しよう」](/ocitutorials/adb/adb301-create-source-db){:target="_blank"}を完了していること
 
 
 
@@ -182,7 +182,7 @@ chmod +x expdp_hr.sh
 # 2. オブジェクトストレージへのアクセストークンを取得
 次に、オブジェクトストレージへのアクセストークンを取得します。（尚、既にトークンを取得済みであれば本手順はスキップ可能です）
 
-[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor2){:target="_blank"}から、**「1. OCIオブジェクトストレージへのアクセス情報を取得」**を参考に実施してください。
+[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/#anchor2){:target="_blank"}から、**「1. OCIオブジェクトストレージへのアクセス情報を取得」**を参考に実施してください。
 
 <BR>
 
@@ -192,7 +192,7 @@ chmod +x expdp_hr.sh
 
 次に、手元にコピーしてきたダンプファイル(export_hr_xx.dmp)をオブジェクト・ストレージの任意のバケットにアップロードし、アクセスURLを取得します。
 
-[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor2){:target="_blank"}から、**「2. OCIオブジェクトストレージへのデータアップロード」**を参考に実施してください。
+[**「クラウド・ストレージからデータをロードしてみよう」**](https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/#anchor2){:target="_blank"}から、**「2. OCIオブジェクトストレージへのデータアップロード」**を参考に実施してください。
 
 
 > * 通常Data Pumpを利用する場合、ディレクトリ・オブジェクトを作成しそこからインポートしますが、ADBは仕様上OS領域にアクセスできないため、オブジェクトストレージ経由でロードする必要があります。
@@ -205,7 +205,7 @@ chmod +x expdp_hr.sh
 # 4. Autonomous Databaseへのインポート
 
 それではオブジェクトストレージ上のダンプファイルをADBインスタンスにインポートしてみましょう。
-以降では[「204: マーケットプレイスからの仮想マシンのセットアップ方法 」](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/){:target="_blank"}にて作成した仮想マシンにログインして実施します。
+以降では[「204: マーケットプレイスからの仮想マシンのセットアップ方法 」](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}にて作成した仮想マシンにログインして実施します。
   
 （ここまでの手順にて、移行元データベースとして利用していたBaseDBインスタンスではないことにご注意ください。）
 
