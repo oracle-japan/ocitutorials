@@ -4,8 +4,8 @@ excerpt: "監査を利用すると、データベースに対して「いつ」�
 order: "3_504"
 layout: single
 header:
-  teaser: "/database/adb504-audit/unifiedaudit.png"
-  overlay_image: "/database/adb504-audit/unifiedaudit.png"
+  teaser: "/adb/adb504-audit/unifiedaudit.png"
+  overlay_image: "/adb/adb504-audit/unifiedaudit.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -32,8 +32,8 @@ Autonomous Databaseは、統合監査を利用した、いくつかの監査設�
   + [6.監査レコードの削除](#6-監査レコードの削除)
   
 **前提条件 :**
- + 監査対象の表は任意のスキーマの表でも構いませんが、ここでは、[「102:ADBにデータをロードしよう(Database Actions)」](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/) で作成したADBUSERスキーマのSALES_CHANNELS表を利用しています。
- + SQLコマンドを実行するユーザー・インタフェースは、接続の切り替えが容易なので、SQL\*Plusを利用していますが、Database Actionsでも実行可能です。ユーザーでの接続をログインに読み替え、必要なユーザーでログインしなおしてください。なお、 SQL\*Plusの環境は、[「204:マーケットプレイスからの仮想マシンのセットアップ方法」](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/)で作成できます。
+ + 監査対象の表は任意のスキーマの表でも構いませんが、ここでは、[「102:ADBにデータをロードしよう(Database Actions)」](https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/) で作成したADBUSERスキーマのSALES_CHANNELS表を利用しています。
+ + SQLコマンドを実行するユーザー・インタフェースは、接続の切り替えが容易なので、SQL\*Plusを利用していますが、Database Actionsでも実行可能です。ユーザーでの接続をログインに読み替え、必要なユーザーでログインしなおしてください。なお、 SQL\*Plusの環境は、[「204:マーケットプレイスからの仮想マシンのセットアップ方法」](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/)で作成できます。
  + チュートリアルの便宜上Autonomous Databaseへの接続文字列は「atp01_low」、各ユーザのパスワードはすべて「Welcome12345#」とします。
  + 使用パッケージの引数の説明は記載していません。詳細はドキュメント[『PL/SQLパッケージ及びタイプ・リファレンス』](https://docs.oracle.com/cd/F19136_01/arpls/DBMS_RLS.html#GUID-27507923-FF74-4193-B55D-6ECB11B58FCC)（リンクは19c版です）をご参照ください。
 
@@ -74,7 +74,7 @@ SELECT * FROM AUDIT_UNIFIED_ENABLED_POLICIES;
 # 2. 任意の監査設定の追加
 
 次に監査対象となる操作を指定して監査ポリシーを作成してみましょう。  
-[「102:ADBにデータをロードしよう(Database Actions)」](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/) で作成したADBUSERスキーマのSALES_CHANNELS表への操作を監査対象にします。  
+[「102:ADBにデータをロードしよう(Database Actions)」](https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/) で作成したADBUSERスキーマのSALES_CHANNELS表への操作を監査対象にします。  
 ADMINユーザで以下を実行してください。
 
 ```sql

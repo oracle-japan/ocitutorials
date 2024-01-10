@@ -4,8 +4,8 @@ excerpt: "Autonomous Databaseはコンバージド・データベースとして
 order: "3_106"
 layout: single
 header:
-  teaser: "/database/adb106-json/img00.png"
-  overlay_image: "/database/adb106-json/img00.png"
+  teaser: "/adb/adb106-json/img00.png"
+  overlay_image: "/adb/adb106-json/img00.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -29,7 +29,7 @@ Autonomous Databaseもコンバージド・データベースとして、RDBの�
 
 **前提条件**
 + ADBインスタンスが構成済みであること
-    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。 
+    <br>※ADBインタンスの作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。 
 
 <br>
 

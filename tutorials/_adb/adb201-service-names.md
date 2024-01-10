@@ -5,8 +5,8 @@ excerpt: "インスタンスに接続する際に選択する「接続サービ�
 order: "3_201"
 layout: single
 header:
-  teaser: "/database/adb201-service-names/image_top.png"
-  overlay_image: "/database/adb201-service-names/img_top.png"
+  teaser: "/adb/adb201-service-names/image_top.png"
+  overlay_image: "/adb/adb201-service-names/img_top.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 
 #link: https://community.oracle.com/tech/welcome/discussion/4474310
@@ -21,7 +21,7 @@ Autonomous Database では、事前に定義済の接続サービスが用意さ
 **前提条件 :**
 
 * ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning) を参照ください。
+   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning) を参照ください。
 
 **目次：**
 

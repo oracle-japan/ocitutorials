@@ -4,8 +4,8 @@ excerpt: "Autonomous Data Warehouseでは、ビジネスの成長にかかせな
 order: "3_602"
 layout: single
 header:
-  teaser: "/database/adb602-moviestream-analysis/teaser.png"
-  overlay_image: "/database/adb602-moviestream-analysis/teaser.png"
+  teaser: "/adb/adb602-moviestream-analysis/teaser.png"
+  overlay_image: "/adb/adb602-moviestream-analysis/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 
 #link: https://community.oracle.com/tech/welcome/discussion/4474310
@@ -30,9 +30,9 @@ MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適
 
 **前提条件：**
 + ADBインスタンスが構成済みであること
-    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
 
-+ [601: ADWでMovieStreamデータのロード・更新をしよう](/ocitutorials/database/adb601-moviestream-load){:target="_blank"}のチュートリアルを完了していること
++ [601: ADWでMovieStreamデータのロード・更新をしよう](/ocitutorials/adb/adb601-moviestream-load){:target="_blank"}のチュートリアルを完了していること
 
 <br>
 
@@ -491,7 +491,7 @@ order by mr.customer_id, first_quarter, family_movies, sf_movies;
 <a id="anchor6"></a>
 
 # 6. 機械学習モデルの適用
-Autonomous Data Warehouseには、機械学習アルゴリズムが組み込まれています。ここでは、ビジネス上の問題を解決するための機械学習モデルの使用について簡単にご紹介します。ADWでの機械学習については、[こちら](/ocitutorials/database/adb107-machine-learning/){:target="_blank"}もご参照ください。
+Autonomous Data Warehouseには、機械学習アルゴリズムが組み込まれています。ここでは、ビジネス上の問題を解決するための機械学習モデルの使用について簡単にご紹介します。ADWでの機械学習については、[こちら](/ocitutorials/adb/adb107-machine-learning/){:target="_blank"}もご参照ください。
 
 本記事では、自分のアカウントに対して「残高不足」になる可能性の高い顧客を人口統計学的に特定します。これが特定できれば、顧客がアカウントをよりよく管理できるようになります。
 
@@ -573,7 +573,7 @@ ORDER BY RANK;
 <br>
 
 # おわりに
-本記事では、[601: ADWでMovieStreamデータのロード・更新をしよう](/ocitutorials/database/adb601-moviestream-load){:target="_blank"}に続く内容として、MOVIE_SALESデータの分析の手法をいくつかご紹介しました。今回ご紹介した方法以外にも、Autonomous Data Warehouseにはデータ分析に有用な機能が多数備わっています。データのロード、変換、管理、そして分析まで、全てを1つのデータベースで行うことができるのはAutonomous Data Warehouseならでは、と言えます。このチュートリアルを参考に、ぜひ一度"**完全自律型データベース**"を体験してみてください。
+本記事では、[601: ADWでMovieStreamデータのロード・更新をしよう](/ocitutorials/adb/adb601-moviestream-load){:target="_blank"}に続く内容として、MOVIE_SALESデータの分析の手法をいくつかご紹介しました。今回ご紹介した方法以外にも、Autonomous Data Warehouseにはデータ分析に有用な機能が多数備わっています。データのロード、変換、管理、そして分析まで、全てを1つのデータベースで行うことができるのはAutonomous Data Warehouseならでは、と言えます。このチュートリアルを参考に、ぜひ一度"**完全自律型データベース**"を体験してみてください。
 
 <br>
 

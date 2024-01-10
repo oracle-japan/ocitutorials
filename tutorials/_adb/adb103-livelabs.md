@@ -4,8 +4,8 @@ excerpt: "ワークショップでAutonomous DatabaseをはじめとするOracle
 order: "3_103"
 layout: single
 header:
-  teaser: "/database/adb103-livelabs/labimage.png"
-  overlay_image: "/database/adb103-livelabs/labimage.png"
+  teaser: "/adb/adb103-livelabs/labimage.png"
+  overlay_image: "/adb/adb103-livelabs/labimage.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---

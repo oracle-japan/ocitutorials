@@ -4,8 +4,8 @@ excerpt: "数100GB、数TB規模のデータをロードするにはどうした
 order: "3_202"
 layout: single
 header:
-  teaser: "/database/adb202-dataload-dbms-cloud/img2.png"
-  overlay_image: "/database/adb202-dataload-dbms-cloud/img2.png"
+  teaser: "/adb/adb202-dataload-dbms-cloud/img2.png"
+  overlay_image: "/adb/adb202-dataload-dbms-cloud/img2.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -17,13 +17,13 @@ header:
 大量データをAutonomous Databaseにロードするために、DBMS_CLOUDパッケージを活用したデータのロード方法を確認していきましょう。
 下記のサンプルデータ(customers.csv)をローカルデバイスに事前にダウンロードして下さい。
 
-+ [サンプルデータファイル(customers.csv)のダウンロードリンク](/ocitutorials/database/adb202-dataload-dbms-cloud/customers.csv)
++ [サンプルデータファイル(customers.csv)のダウンロードリンク](/ocitutorials/adb/adb202-dataload-dbms-cloud/customers.csv)
 
 <br>
 
 **前提条件**
 + ADBインスタンスが構成済みであること
-    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。 
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。 
 
 <br>
 
@@ -40,7 +40,7 @@ header:
 
 # 1. Database Actionsに接続
 
-1. [ADBインスタンスを作成しよう](/ocitutorials/database/adb101-provisioning)で学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツールタブ**から、**データベース・アクションを開く**をクリックしてください。  
+1. [ADBインスタンスを作成しよう](/ocitutorials/adb/adb101-provisioning)で学習したDatabase Actionsを利用したインスタンスへの接続 を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツールタブ**から、**データベース・アクションを開く**をクリックしてください。  
     
     ![img0.png](img0.png)
 
@@ -58,7 +58,7 @@ header:
 
 1. **クレデンシャル情報の登録**
 
-    クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/database/adb102-dataload)の記事内の*クラウド・ストレージからデータをロードしてみよう*を参照ください。
+    クレデンシャル情報の登録に必要な認証情報を手に入れる手順は、[ADBにデータをロードしてみよう(Database Actions)](/ocitutorials/adb/adb102-dataload)の記事内の*クラウド・ストレージからデータをロードしてみよう*を参照ください。
 
     ***credential_name***: DBに保存した認証情報を識別するための名前、任意
 

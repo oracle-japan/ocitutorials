@@ -4,8 +4,8 @@ excerpt: "データベースの運用にかかせない監視・通知設定。A
 order: "3_503"
 layout: single
 header:
-  teaser: "/database/adb503-monitoring/monitoring_teaser.png"
-  overlay_image: "/database/adb503-monitoring/monitoring_teaser.png"
+  teaser: "/adb/adb503-monitoring/monitoring_teaser.png"
+  overlay_image: "/adb/adb503-monitoring/monitoring_teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -22,7 +22,7 @@ Autonomous Databaseはデータベースの様々な管理タスクをADB自身�
 **前提条件**
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
-    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
     なお本記事では、後続の章でCPU使用率が閾値を超えた際の挙動を確認するため、**OCPU数は1、auto scalingは無効** で作成しています。
 
 <BR>

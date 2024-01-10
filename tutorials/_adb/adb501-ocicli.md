@@ -6,8 +6,8 @@ order: "3_501"
 layout: single
 
 #header:
-#  teaser: "/database/adb501-ocicli/image_top.png"
-#  overlay_image: "/database/adb501-ocicli/img_top.png"
+#  teaser: "/adb/adb501-ocicli/image_top.png"
+#  overlay_image: "/adb/adb501-ocicli/img_top.png"
 #  overlay_filter: rgba(34, 66, 55, 0.7)
 
 #link: https://community.oracle.com/tech/welcome/discussion/4474315
@@ -31,10 +31,10 @@ OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを
 **前提条件 :**
 
 * ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning) を参照ください。
+   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning) を参照ください。
 
 * ADBインスタンスに接続可能な仮想マシンを構成済みであること
-   <br>※仮想マシンの作成方法については、本ハンズオンガイドの [204:マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/database/adb204-setup-VM) を参照ください。
+   <br>※仮想マシンの作成方法については、本ハンズオンガイドの [204:マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/adb/adb204-setup-VM) を参照ください。
 
 **目次：**
 

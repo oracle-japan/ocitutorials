@@ -4,8 +4,8 @@ excerpt: "OCI Database Migration Serviceの使用に必要なネットワーク�
 order: "3_304"
 layout: single
 header:
-  teaser: "/database/adb304-database-migration-prep/teaser.png"
-  overlay_image: "/database/adb304-database-migration-prep/teaser.png"
+  teaser: "/adb/adb304-database-migration-prep/teaser.png"
+  overlay_image: "/adb/adb304-database-migration-prep/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
@@ -18,10 +18,10 @@ DMSでは下記の2つの論理的移行が可能です。
 + **オフライン移行** - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。
 + **オンライン移行** - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。
 
-DMSに関するチュートリアルは[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/database/adb304-database-migration-prep)、[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline)、[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online)の計3章を含めた3部構成となっています。
+DMSに関するチュートリアルは[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/adb/adb304-database-migration-prep)、[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/adb/adb305-database-migration-offline)、[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/adb/adb306-database-migration-online)の計3章を含めた3部構成となっています。
 DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。
 
-[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline)または[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online)を実施する前に必ず[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/database/adb304-database-migration-prep)を実施するようにしてください。
+[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/adb/adb305-database-migration-offline)または[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/adb/adb306-database-migration-online)を実施する前に必ず[304 : OCI Database Migration Serviceを使用したデータベース移行の前準備](/ocitutorials/adb/adb304-database-migration-prep)を実施するようにしてください。
 
 この章では、DMSを使用したデータベース移行の前準備について紹介します。
 ![](2022-03-24-10-00-25.png)
@@ -43,8 +43,8 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 **前提条件 :**
 + [「その2 - クラウドに仮想ネットワーク(VCN)を作る」](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/)を参考に、VCNが作成されていること。
-+ [「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」](https://oracle-japan.github.io/ocitutorials/database/dbcs101-create-db/)を参考に、BaseDBでデータベースとスキーマの作成が完了していること。本チュートリアルではデータベース・バージョンは19.13.0.0.0を使用しています。また、DMSではSSH秘密鍵はRSA形式のみサポートしています。（OPENSSH形式は使用できません）
-+ [「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)を参考に、ADBの作成が完了していること。
++ [「101: Oracle Cloud で Oracle Database を使おう(BaseDB)」](https://oracle-japan.github.io/ocitutorials/basedb/dbcs101-create-db/)を参考に、BaseDBでデータベースとスキーマの作成が完了していること。本チュートリアルではデータベース・バージョンは19.13.0.0.0を使用しています。また、DMSではSSH秘密鍵はRSA形式のみサポートしています。（OPENSSH形式は使用できません）
++ [「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)を参考に、ADBの作成が完了していること。
 + [「Oracle Cloud Infrastructure Database移行サービスの使用 - 2 Oracle Cloud Infrastructure Database移行の開始 - データベース移行ユーザーへの権限の付与」](https://docs.oracle.com/cd/E83857_01/paas/database-migration/dmsus/getting-started-oracle-cloud-infrastructure-database-migration.html#GUID-478467C2-662A-4C06-8077-EBB5A9F94E64)を参考に、データベース移行ユーザへ権限が付与されていること。権限が付与されていない場合、DMSの利用ができません。
 
 **所要時間 :** 約40分
@@ -369,8 +369,8 @@ exit;
 
 以上で **DMSを使用したデータベース移行の前準備** は終了です。
 
-オフライン移行を実行したい場合は、[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/database/adb305-database-migration-offline)にお進みください。
-オンライン移行を実行したい場合は、[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/database/adb306-database-migration-online)にお進みください。
+オフライン移行を実行したい場合は、[305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/adb/adb305-database-migration-offline)にお進みください。
+オンライン移行を実行したい場合は、[306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/adb/adb306-database-migration-online)にお進みください。
 
 <BR>
 

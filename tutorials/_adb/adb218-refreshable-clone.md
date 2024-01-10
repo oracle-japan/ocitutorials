@@ -4,8 +4,8 @@ excerpt: "Autonomous Databaseを複製し、リフレッシュ操作によって
 order: "3_218"
 layout: single
 header:
-  teaser: "/database/adb218-refreshable-clone/teaser.png"
-  overlay_image: "/database/adb218-refreshable-clone/teaser.png"
+  teaser: "/adb/adb218-refreshable-clone/teaser.png"
+  overlay_image: "/adb/adb218-refreshable-clone/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 ---
 
@@ -19,7 +19,7 @@ Autonomous Databaseのリフレッシュ可能クローンを利用すると、�
 **前提条件 :**
 
 * ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本チュートリアルの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+   <br>※ADBインタンスを作成方法については、本チュートリアルの [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 * 構成済みのADBインスタンスへの接続が可能であること
 
 
@@ -61,7 +61,7 @@ ADBのリフレッシュ可能クローンは以下のような特徴があり�
 * 再接続後は切断前と同様に、リフレッシュ操作によりソース・データベースの変更内容を反映可能
 <br>
 
-リフレッシュ可能クローンに関する詳細な情報は[マニュアル](https://docs.oracle.com/ja-jp/iaas/autonomous-database-shared/doc/clone-autonomous-database.html)を参照ください。
+リフレッシュ可能クローンに関する詳細な情報は[マニュアル](https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/clone-autonomous-database.html)を参照ください。
 
 <br>
 
@@ -76,7 +76,7 @@ ADBのリフレッシュ可能クローンは以下のような特徴があり�
 1. 次の手順に従って、SQL*Plusを使用してリフレッシュ可能クローンのソースとなるADBに接続します。
 
     1-1. SQL*Plusがインストールされている仮想マシンにssh接続します。
-      <br>仮想マシンの作成およびセットアップ方法は[こちら](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/)
+      <br>仮想マシンの作成およびセットアップ方法は[こちら](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/)
 
     1-2. 下記のコマンドを参考に、oracleユーザに切り替えます。
     
@@ -100,7 +100,7 @@ ADBのリフレッシュ可能クローンは以下のような特徴があり�
     sqlplus admin/Welcome12345#@atp01_low
     ```
 
-    SQL*Plusを使用したADBへの接続方法の詳細については、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/) をご確認ください。
+    SQL*Plusを使用したADBへの接続方法の詳細については、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/) をご確認ください。
 
 2. 次のサンプルスクリプトを実行し、DEPARTMENT表を作成します。
 
@@ -194,7 +194,7 @@ ADB（atp01）のリフレッシュ可能クローンを作成します。
 
 1. 次の手順に従って、リフレッシュ可能クローンに接続してみましょう。
 
-    詳細は、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/) の [1. クレデンシャル・ウォレットのダウンロード](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/#anchor1) を参照ください。
+    詳細は、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/) の [1. クレデンシャル・ウォレットのダウンロード](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/#anchor1) を参照ください。
 
     1-1. リフレッシュ可能クローンのウォレットをダウンロードします。
       <br>OCIコンソールからリフレッシュ可能クローンの詳細画面に移動します。
@@ -205,7 +205,7 @@ ADB（atp01）のリフレッシュ可能クローンを作成します。
     <br>設定ファイルの編集方法についての詳細は、次のリンク先をご確認ください：
      
       + 接続用の仮想マシン上で編集する方法
-        [204: マーケットプレイスからの仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/#4-adb%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B7%A8%E9%9B%86)
+        [204: マーケットプレイスからの仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#4-adb%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B7%A8%E9%9B%86)
         
     > **補足**
     >

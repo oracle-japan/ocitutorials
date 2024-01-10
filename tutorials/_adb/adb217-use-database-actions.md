@@ -4,8 +4,8 @@ excerpt: "Database Actions の内、データ分析、データ・インサイ�
 order: "3_217"
 layout: single
 header:
-  teaser: "/database/adb217-use-database-actions/img0_0.png"
-  overlay_image: "/database/adb217-use-database-actions/img0_0.png"
+  teaser: "/adb/adb217-use-database-actions/img0_0.png"
+  overlay_image: "/adb/adb217-use-database-actions/img0_0.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474304
 ---
@@ -19,7 +19,7 @@ Database Actions を使う前に、セキュリティを高めるため、実務
 
 **前提条件**
 + ADBインスタンスが構成済みであること
-    <br>※ADBインタンスの作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+    <br>※ADBインタンスの作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
 + 以下にリンクされている売上実績サンプルデータのファイルをダウンロードしていること
 	+ [Days_Months.xlsx](https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Days_Months.xlsx)
    	+ [Devices.xlsx](https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Devices.xlsx)
@@ -117,7 +117,7 @@ ADBインスタンスを作成すると、デフォルトでADMINユーザが作
 サンプルデータとして、架空の動画配信サービスの売上実績を使います。
 
 1. このワークショップで使うために、上記にある事前準備で用意した４つのファイルを、データを新しい **データベース・ユーザー(QTEAM)** でロードします。
-    <br>※ファイルをロードする詳しい手順は、[102: ADBにデータをロードしよう](/ocitutorials/database/adb102-dataload/#anchor1){:target="_blank"} をご参照ください。
+    <br>※ファイルをロードする詳しい手順は、[102: ADBにデータをロードしよう](/ocitutorials/adb/adb102-dataload/#anchor1){:target="_blank"} をご参照ください。
 
     <img src="img2_1.png" width="80%">
 

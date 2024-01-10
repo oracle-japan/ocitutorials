@@ -4,8 +4,8 @@ excerpt: "OCPU数を増やす、もしくは自動スケーリングを設定す
 order: "3_205"
 layout: single
 header:
-  teaser: "/database/adb205-swingbench/img0.jpg"
-  overlay_image: "/database/adb205-swingbench/img0.jpg"
+  teaser: "/adb/adb205-swingbench/img0.jpg"
+  overlay_image: "/adb/adb205-swingbench/img0.jpg"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -33,7 +33,7 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 **前提条件**
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
-    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 
 <br>
 
@@ -50,7 +50,7 @@ Oracle Exadataをベースに構成されるAutonomous Database(ADB)は、分析
 ## Swingbenchをダウンロード、データ生成
 
 まずはSwingbenchを仮想マシン上にダウンロードし、ベンチマーク・データをADBインスタンス内に生成しましょう。
-OCIで仮想マシンを作成する場合は、こちらの[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/){:target="_blank"}を参考にしてください。
+OCIで仮想マシンを作成する場合は、こちらの[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}を参考にしてください。
 
 1. Terminalを起動し、仮想マシンに**opcユーザ**で**ログイン**後、**oracleユーザ**に切り替えます。
 

@@ -4,8 +4,8 @@ excerpt: "Autonomous Databaseに組み込まれているデータ統合ツール
 order: "3_403"
 layout: single
 header:
-  teaser: "/database/adb403-data-transforms/adb403_2_4.png"
-  overlay_image: "/database/adb403-data-transforms/adb403_2_4.png"
+  teaser: "/adb/adb403-data-transforms/adb403_2_4.png"
+  overlay_image: "/adb/adb403-data-transforms/adb403_2_4.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 ---
 
@@ -23,11 +23,11 @@ Data TransformsはOracle Data Integratorをベースにしています。オン�
 **前提条件 :**
 
 * ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本チュートリアルの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+   <br>※ADBインタンスを作成方法については、本チュートリアルの [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 * 構成済みのADBインスタンスへの接続が可能であること
 * 下記リンクからダウンロードできる**Movie Sales 2020.csv**(売上実績のサンプルデータ)がローカルPC上にあること<br>
 
-    [217: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb217-use-database-actions/#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB){:target="_blank"}
+    [217: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB){:target="_blank"}
 
 
 
@@ -47,10 +47,10 @@ Data TransformsはOracle Data Integratorをベースにしています。オン�
 
 実際にData Transformsを使用する前に、起動したADBインスタンスから新しいユーザー(**QTEAM**)を作成し、本チュートリアルで使用するサンプルデータ(**Movie Sales 2020.csv**)をロードします。
 
-次の手順に従って、QTEAMユーザーを作成します。すでに作っている場合は、[ステップ2](/ocitutorials/database/adb403-data-transforms/#anchor1_2){:target="_blank"}に進んでください。  
+次の手順に従って、QTEAMユーザーを作成します。すでに作っている場合は、[ステップ2](/ocitutorials/adb/adb403-data-transforms/#anchor1_2){:target="_blank"}に進んでください。  
 
 1. 下記のリンクを参考に、QTEAMユーザーを作成します。<br>
-    [分析用のデータベース・ユーザーを作成しよう(Database Actions)](https://oracle-japan.github.io/ocitutorials/database/adb217-use-database-actions/#1-%E5%88%86%E6%9E%90%E7%94%A8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%82%88%E3%81%86database-actions){:target="_blank"}
+    [分析用のデータベース・ユーザーを作成しよう(Database Actions)](https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#1-%E5%88%86%E6%9E%90%E7%94%A8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%82%88%E3%81%86database-actions){:target="_blank"}
     
     *ユーザーを作成の際に、付与されたロールから以下の2つのユーザーロールを、以下の画像のように有効にします。<br>
     ・DWROLE <br>
@@ -70,7 +70,7 @@ Data TransformsはOracle Data Integratorをベースにしています。オン�
     ![QTEAMユーザーが作成された画面](adb403_1_3.png)
 
 1.  下記のリンク参考に、Movie Sales 2020.csvをロードします。<br>
-    [手元のPCからCSVデータをロードしてみよう](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor1){:target="_blank"}
+    [手元のPCからCSVデータをロードしてみよう](https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/#anchor1){:target="_blank"}
 
 <br>
 

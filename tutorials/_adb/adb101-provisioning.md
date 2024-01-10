@@ -4,8 +4,8 @@ excerpt: "簡単すぐにハイエンドなデータベースを構成できる�
 order: "3_101"
 layout: single
 header:
-  teaser: "/database/adb101-provisioning/img11.png"
-  overlay_image: "/database/adb101-provisioning/img11.png"
+  teaser: "/adb/adb101-provisioning/img11.png"
+  overlay_image: "/adb/adb101-provisioning/img11.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474304
 ---

@@ -4,8 +4,8 @@ excerpt: "DRを構成するにはどうしたら良いでしょうか？ADBで�
 order: "3_212"
 layout: single
 header:
-  teaser: "/database/adb212-audg/img1.jpg"
-  overlay_image: "/database/adb212-audg/img1.jpg"
+  teaser: "/adb/adb212-audg/img1.jpg"
+  overlay_image: "/adb/adb212-audg/img1.jpg"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---

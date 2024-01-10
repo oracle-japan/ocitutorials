@@ -5,8 +5,8 @@ excerpt: ""
 order: "3_502"
 layout: single
 #header:
-#  teaser: "/database/adb502-report/image_top.png"
-#  overlay_image: "/database/adb502-report/img_top.png"
+#  teaser: "/adb/adb502-report/image_top.png"
+#  overlay_image: "/adb/adb502-report/img_top.png"
 #  overlay_filter: rgba(34, 66, 55, 0.7)
 
 #link: https://community.oracle.com/tech/welcome/discussion/4474316
@@ -31,7 +31,7 @@ Autonomous Databaseは初期化パラメータを初め、多くの設定は変�
 
 本章ではアラートログやトレースログの取得方法も扱いますが、ADBを利用するに際して何か問題が生じた場合は、弊社サポートサービスに対してサービスリクエスト（SR）の発行を優先ください。
 
-SRの発行方法については、本チュートリアルガイドの [506: サポートサービスへの問い合わせ](/ocitutorials/database/adb506-sr) を参照ください。
+SRの発行方法については、本チュートリアルガイドの [506: サポートサービスへの問い合わせ](/ocitutorials/adb/adb506-sr) を参照ください。
 
 
 **所要時間 :** 約30分
@@ -39,10 +39,10 @@ SRの発行方法については、本チュートリアルガイドの [506: �
 **前提条件 :**
 
 * ADBインスタンスが構成済みであること
-   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning) を参照ください。
+   <br>※ADBインタンスを作成方法については、本ハンズオンガイドの [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning) を参照ください。
 
 * ADBインスタンスに接続可能な仮想マシンを構成済みであること
-   <br>※仮想マシンの作成方法については、本ハンズオンガイドの [204:マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/database/adb204-setup-VM) を参照ください。
+   <br>※仮想マシンの作成方法については、本ハンズオンガイドの [204:マーケットプレイスからの仮想マシンのセットアップ方法](/ocitutorials/adb/adb204-setup-VM) を参照ください。
 
 
 初期化パラメータ・各種レポート・ログの取得方法は、次の目次に示す３つの方法があります：
@@ -70,7 +70,7 @@ SRの発行方法については、本チュートリアルガイドの [506: �
 
 では早速、コマンドラインで確認する方法をご紹介します。
 <br>コマンドラインを使った方法は、スクリプト化が可能であり便利な手法の一つです。
-<br>まずはSQL*Plusに接続しましょう。詳細な手順は[こちら](/ocitutorials/database/adb204-setup-VM/#anchor2)を参照ください。
+<br>まずはSQL*Plusに接続しましょう。詳細な手順は[こちら](/ocitutorials/adb/adb204-setup-VM/#anchor2)を参照ください。
 
 1. Tera Termを起動し、仮想マシンにログインします。
 
@@ -362,7 +362,7 @@ DB上で発生したエラーや障害の情報は、アラートファイルと
     >  </tr>
     >  </table>
     >
-    > <br>※詳細は、本ハンズオンガイドの [104: クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/database/adb104-connect-using-wallet/){:target="_blank"} の、[3-3. SQL Developer を使った接続](/ocitutorials/database/adb104-connect-using-wallet#anchor3-3) を参照ください。
+    > <br>※詳細は、本ハンズオンガイドの [104: クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/adb/adb104-connect-using-wallet/){:target="_blank"} の、[3-3. SQL Developer を使った接続](/ocitutorials/adb/adb104-connect-using-wallet#anchor3-3) を参照ください。
     > 
 
 2. 表示から**DBA**をクリックし、画面左下にDBAビューを表示します。
@@ -472,7 +472,7 @@ DB上で発生したエラーや障害の情報は、アラートファイルと
 # 3. OCIコンソール上のパフォーマンスハブで確認しよう
 
 OCIコンソール上のパフォーマンスハブから、AWRレポートを取得することも可能です。
-取得方法については[こちら](/ocitutorials/database/adb203-bulk-query/#anchor3-2)を参照ください。
+取得方法については[こちら](/ocitutorials/adb/adb203-bulk-query/#anchor3-2)を参照ください。
 <br>また、パフォーマンスハブのマニュアルは[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Database/Tasks/perfhub.htm)を参照ください。
 
 

@@ -4,8 +4,8 @@ excerpt: "ADBでは、ウォレットを利用したmTLS接続の他に、特定
 order: "3_108"
 layout: single
 header:
-  teaser: "/database/adb108-walletless/walletless_teaser.png"
-  overlay_image: "/database/adb108-walletless/walletless_teaser.png"
+  teaser: "/adb/adb108-walletless/walletless_teaser.png"
+  overlay_image: "/adb/adb108-walletless/walletless_teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 
 #link: https://community.oracle.com/tech/welcome/discussion/4474310
@@ -15,14 +15,14 @@ header:
 
 # はじめに
 
-Autonomous Database への接続には、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/){:target="_blank"} でご紹介した通り、ウォレットファイルを利用した証明書認証・SSL暗号化接続がデフォルトになっています。
+Autonomous Database への接続には、[104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/){:target="_blank"} でご紹介した通り、ウォレットファイルを利用した証明書認証・SSL暗号化接続がデフォルトになっています。
 しかし特定の条件下では、このウォレットを利用しないでセキュアに接続することが可能です。
 本章では、ADBにおけるネットワーク・アクセスの種類とウォレットを利用しない接続方式について確認していきます。
 <br>
 
 **前提条件**
 + ADBインスタンスが構成済みであること
-    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+    <br>※ADBインタンスの作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 <br>
 
 **目次**
@@ -117,7 +117,7 @@ TLS認証では、クライアントは信頼できる認証局(CA)のリスト�
 <a id="anchor3-1"></a>
 
 ## 3-1. 仮想マシン作成
-まずはクライアントとして仮想マシンを一台作成します。TLS接続がサポートされているクライアントがインストール済みの**Oracle Linux Cloud Developer イメージ**で作成します。詳しい手順は[こちら](https://oracle-japan.github.io/ocitutorials/database/adb204-setup-VM/){:target="_blank"}をご参照ください。
+まずはクライアントとして仮想マシンを一台作成します。TLS接続がサポートされているクライアントがインストール済みの**Oracle Linux Cloud Developer イメージ**で作成します。詳しい手順は[こちら](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}をご参照ください。
 
 <br>
 

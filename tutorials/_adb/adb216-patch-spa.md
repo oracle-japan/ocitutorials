@@ -4,8 +4,8 @@ excerpt: "Autonomous Databaseでは自動でパッチが適用されます。パ
 order: "3_216"
 layout: single
 header:
-  teaser: "/database/adb216-patch-spa/teaser.png"
-  overlay_image: "/database/adb216-patch-spa/teaser.png"
+  teaser: "/adb/adb216-patch-spa/teaser.png"
+  overlay_image: "/adb/adb216-patch-spa/teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -42,7 +42,7 @@ SPAを利用すると、システム変更前後のSQLワークロードの実�
 **前提条件**
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
-    [101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。
+    [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 
 <BR>
 
@@ -58,7 +58,7 @@ SPAを利用すると、システム変更前後のSQLワークロードの実�
 まずは本番環境用ADBである**ATPprod**を作成します。ADBの構成は以下になります。なお、本記事ではADBをはじめとする各リソースは全てAshburnリージョンで作成します。
 
 + **ワークロード・タイプ**：トランザクション処理
-+ **デプロイメント・タイプ**：共有インフラストラクチャ
++ **デプロイメント・タイプ**：サーバーレス
 + **OCPU数**：1
 + **ストレージ(TB)**：1
 + **ネットワーク・アクセスの選択**：すべての場所からのセキュア・アクセス
@@ -362,7 +362,7 @@ select distinct(sql_id) from MYSH.STG_TABLE order by 1;
 ## 6-3. 本番環境ADBで資格情報（クレデンシャル）の作成
 続いて`expdp`を使用してオブジェクト・ストレージにエクスポートします。最初に認証トークンを使用してADBインスタンスに資格情報を作成し、ADBインスタンスがバケットに直接アクセスしてエクスポートできるようにする必要があります。
 
-こちらの手順については、[「クラウド・ストレージからデータをロードしてみよう」](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#anchor2){:target="_blank"}から、**「1. OCIオブジェクトストレージへのアクセス情報を取得」**を参考に実施してください。
+こちらの手順については、[「クラウド・ストレージからデータをロードしてみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/#anchor2){:target="_blank"}から、**「1. OCIオブジェクトストレージへのアクセス情報を取得」**を参考に実施してください。
 
 ```sql
 BEGIN
@@ -381,7 +381,7 @@ ALTER DATABASE PROPERTY SET DEFAULT_CREDENTIAL = 'ADMIN.ATPprod_CRED';
 ```
 
 ## 6-4. オブジェクト・ストレージのバケットの作成
-dmpファイルを格納する先であるバケットを作成しておきます。手順については、[OCIオブジェクトストレージへのデータアップロード](https://oracle-japan.github.io/ocitutorials/database/adb102-dataload/#2-2-oci%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%81%B8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89){:target="_blank"}をご参照ください。今回バケットはAshburnリージョンで作成しています。
+dmpファイルを格納する先であるバケットを作成しておきます。手順については、[OCIオブジェクトストレージへのデータアップロード](https://oracle-japan.github.io/ocitutorials/adb/adb102-dataload/#2-2-oci%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%81%B8%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A2%E3%83%83%E3%83%97%E3%83%AD%E3%83%BC%E3%83%89){:target="_blank"}をご参照ください。今回バケットはAshburnリージョンで作成しています。
 
 ## 6-5. ステージングテーブルのエクスポート
 `expdp`を使用してエクスポートを実行します。SPAでワークロードを実行するときに、試行モードをTEST EXECUTEにする場合、スキーマ全体のエクスポートが必要です。
