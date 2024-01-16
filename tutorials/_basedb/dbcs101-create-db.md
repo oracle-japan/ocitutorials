@@ -55,12 +55,14 @@ Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で�
 
     ![image.png](20240116-2.png)
 
-1. <p style="align-items:center; display:flex;">立ち上がった <strong>DBシステムの作成</strong> ウィンドウの入力欄に、以下の項目を入力します。※<img src="coin.png" alt="coin" width="20" />がついている入力項目は課金に関係する項目です。</p>
+1. 立ち上がった **DBシステムの作成** ウィンドウの入力欄に、以下の項目を入力します。
+
+   ※<img src="coin.png" alt="coin" width="50" />がついている入力項目は課金に関係する項目です。
 
    - **コンパートメント** - 任意 (集合ハンズオン環境を利用している場合は講師の指示に従って選択してください)。
    - **DBシステムの名前** - 任意 (以降では dbcs01 として記載しています)。プロビジョニング後の変更はできません。
    - **可用性ドメイン** - 任意 (集合ハンズオン環境を利用している場合は講師の指示に従って選択してください)
-   - **シェイプの構成** <img src="coin.png" alt="coin" width="20" />- 任意 (集合ハンズオン環境を利用している場合は VM.Standard2.1 を選択してください)
+   - **シェイプの構成** <img src="coin.png" alt="coin" width="50" />- 任意 (集合ハンズオン環境を利用している場合は VM.Standard2.1 を選択してください)
       >**SHAPE**の選択時には、使用している環境のサービス・リミットに注意してください。初期状態ではサービス・リミットが0に設定されていて作成できないデータベース・サービスのシェイプも存在します。
       サービス・リミットについて不明な方は [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../../beginners/getting-started){:target="_blank"} をご確認ください。<br>
 
@@ -68,18 +70,18 @@ Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で�
   
    - **ストレージの構成**  - 任意 <br>
      ※ハンズオンでは作業時間短縮のため、**論理ボリューム・マネージャ** を選択ください<br>　それ以外の場合、もしくは後続のAutonomous Databaseのチュートリアルを実施される場合は **Oracle Grid Infrastructure** を選択ください。プロビジョニング後の変更はできません。
-   - **ストレージ・パフォーマンスの構成** <img src="coin.png" alt="coin" width="20" /> - 任意の**ストレージ・ボリュームのパフォーマンス**、**使用可能なデータ・ストレージ** <img src="coin.png" alt="coin" width="20" /> は**256** を選択してください。プロビジョニング後は変更できません。
+   - **ストレージ・パフォーマンスの構成** <img src="coin.png" alt="coin" width="50" /> - 任意の**ストレージ・ボリュームのパフォーマンス**、**使用可能なデータ・ストレージ** <img src="coin.png" alt="coin" width="50" /> は**256** を選択してください。プロビジョニング後は変更できません。
 
        ![image.png](20240116-3.png)
 
-   - **DBシステムの構成** <img src="coin.png" alt="coin" width="20" /> - **合計ノード数**は**1**、任意の**Oracle Databaseソフトウェア・エディション**を選択してください。どちらもプロビジョニング後の変更はできません。
+   - **DBシステムの構成** <img src="coin.png" alt="coin" width="50" /> - **合計ノード数**は**1**、任意の**Oracle Databaseソフトウェア・エディション**を選択してください。どちらもプロビジョニング後の変更はできません。
       >RACを利用したい場合はノード数を2に選択ください
 
    - **SSHキー・ペアの生成/SSHキー・ファイルのアップロード/SSHキーの貼付け** - いずれかの選択肢よりSSHキーを追加します
 
        ![image.png](20240116-4.png)
 
-   - **ライセンス・タイプ** <img src="coin.png" alt="coin" width="20" /> - 任意
+   - **ライセンス・タイプ** <img src="coin.png" alt="coin" width="50" /> - 任意
    - **仮想クラウド・ネットワーク** - 第2章で作成した仮想クラウド・ネットワークを選択。プロビジョニング後の変更はできません。
    - **クライアントのサブネット**  - 任意のサブネットを選択（本ハンズオンでは、パブリック・サブネット（リージョン）を選択ください）プロビジョニング後の変更はできません。
    - **ホスト名接頭辞** - 任意 プロビジョニング後の変更はできません。
@@ -102,7 +104,7 @@ Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で�
 
        ![image.png](20240116-7.png)
 
-    - **自動バックアップの構成** <img src="coin.png" alt="coin" width="20" /> - 任意（ハンズオンでは選択なしのままで良いです）
+    - **自動バックアップの構成** <img src="coin.png" alt="coin" width="50" /> - 任意（ハンズオンでは選択なしのままで良いです）
     - **拡張オプションの表示** - 任意（文字コードを選択できることを確認ください。）
 
         ![image.png](20240116-8.png)   
