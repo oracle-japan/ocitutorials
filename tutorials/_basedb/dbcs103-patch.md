@@ -19,7 +19,7 @@ Oracle Base Database Service(BaseDB)では、OS以上がユーザー管理とな
 <br>
 
 **前提条件 :**
-+ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
++ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db){:target="_blank"} を通じて Oracle Database の作成が完了していること
 
 + パッチ適用対象の Oracle Database に対して最新RU/RURが適用されていないこと
 

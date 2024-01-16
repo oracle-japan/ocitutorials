@@ -27,10 +27,10 @@ header:
 
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じて、プライマリ・データベースのリージョン（本ガイドでは東京リージョン）でExaDB-Dの作成が完了していること。
-+ [その2 - クラウドに仮想ネットワーク(VCN)を作る](/ocitutorials/beginners/creating-vcn/)を通じて、スタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）でVCNの作成が完了していること。
-+ プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）間でリモートVCNピアリングの設定が完了していること。設定方法については、[Oracle Cloud Infrasturctureドキュメント - DRGを介した異なるリージョン内のVCNのピアリング](https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/scenario_e.htm#scenario_e)をご参照ください。
-+ プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）のそれぞれのVCNのセキュリティ・リストの設定でポート1521を開く。設定方法については、[Oracle Cloud Infrastructureドキュメント - セキュリティ・リスト](https://docs.oracle.com/ja-jp/iaas/Content/Network/Concepts/securitylists.htm)をご参照ください。
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d){:target="_blank"}を通じて、プライマリ・データベースのリージョン（本ガイドでは東京リージョン）でExaDB-Dの作成が完了していること。
++ [その2 - クラウドに仮想ネットワーク(VCN)を作る](/ocitutorials/beginners/creating-vcn/){:target="_blank"}を通じて、スタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）でVCNの作成が完了していること。
++ プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）間でリモートVCNピアリングの設定が完了していること。設定方法については、[Oracle Cloud Infrasturctureドキュメント - DRGを介した異なるリージョン内のVCNのピアリング](https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/scenario_e.htm#scenario_e){:target="_blank"}をご参照ください。
++ プライマリ・データベースのリージョン（本ガイドでは東京リージョン）とスタンバイ・データベースのリージョン（本ガイドでは大阪リージョン）のそれぞれのVCNのセキュリティ・リストの設定でポート1521を開く。設定方法については、[Oracle Cloud Infrastructureドキュメント - セキュリティ・リスト](https://docs.oracle.com/ja-jp/iaas/Content/Network/Concepts/securitylists.htm){:target="_blank"}をご参照ください。
 
 **所要時間 :** 約2時間　※環境によって異なるため、参考値です。
 
@@ -207,8 +207,8 @@ Data Guardアソシエーションに含まれるデータベースもしくはD
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html)
-+ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail)
++ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html){:target="_blank"}
++ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail){:target="_blank"}
 
 <BR>
 

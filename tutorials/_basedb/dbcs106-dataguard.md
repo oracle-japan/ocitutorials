@@ -23,7 +23,7 @@ Data Guardは、Oracle Database自身が持つレプリケーション機能で�
 <br>
 
 **前提条件 :**
-+ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
++ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db){:target="_blank"} を通じて Oracle Database の作成が完了していること
 
 <br>
 
@@ -52,7 +52,7 @@ Oracle Cloud上でData Guardを利用する際の基本的な構成について�
 クラウドの画面上からは「同一リージョン内」と「別リージョン間でのData Guard」構成が簡単に構築・管理が可能です。<br>
 ハイブリッドの場合は手動で構成が必要となりますので、手順を解説したホワイト・ペーパーをご参照ください。
 
-BaseDB : Hybrid Data Guard to Oracle Cloud Infrastructure [英語](https://www.oracle.com/technetwork/database/availability/hybrid-dg-to-oci-5444327.pdf) / [日本語](https://www.oracle.com/technetwork/jp/database/availability/hybrid-dg-to-oci-5444327-ja.pdf)
+BaseDB : Hybrid Data Guard to Oracle Cloud Infrastructure [英語](https://www.oracle.com/technetwork/database/availability/hybrid-dg-to-oci-5444327.pdf){:target="_blank"} / [日本語](https://www.oracle.com/technetwork/jp/database/availability/hybrid-dg-to-oci-5444327-ja.pdf){:target="_blank"}
 
 # 2. Data Guardを構成する為の前提条件
 
@@ -122,7 +122,7 @@ Data Guardを構成するにあたり前提条件を確認してみましょう�
     <img width="1000" alt="dataguard04.png" src="dataguard04.png" style="border: 1px black solid;">
     </div>
     <br>
-    コマンドの詳細は [データベースCLIでのOracle Data Guardの使用](https://docs.oracle.com/ja-jp/iaas/Content/Database/Tasks/usingDG.htm) をご確認ください。
+    コマンドの詳細は [データベースCLIでのOracle Data Guardの使用](https://docs.oracle.com/ja-jp/iaas/Content/Database/Tasks/usingDG.htm){:target="_blank"} をご確認ください。
 
 <br>
 

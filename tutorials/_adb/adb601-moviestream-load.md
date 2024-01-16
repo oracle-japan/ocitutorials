@@ -485,7 +485,7 @@ GROUP BY segment_name;
 <br>
 
 # 参考資料
-+ LiveLabs [Load and update MovieStream data in Oracle Autonomous Database using SQL Workshop](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/workshop-attendee-2?p210_workshop_id=838&p210_type=1&session=5003451975700){:target="_blank"}
++ LiveLabs [Load and update MovieStream data in Oracle Autonomous Database using SQL Workshop](https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=838){:target="_blank"}
 + [Loading Data with Autonomous Database](https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/load-data.html#GUID-1351807C-E3F7-4C6D-AF83-2AEEADE2F83E){:target="_blank"}
 
 

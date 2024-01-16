@@ -24,7 +24,7 @@ Autonomous Databaseは初期化パラメータを初め、多くの設定は変�
 
 * [経験豊富なOracle Databaseユーザー用のAutonomous Database (英語版)](https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/experienced-database-users.html#GUID-58EE6599-6DB4-4F8E-816D-0422377857E5)
 
-* [経験豊富なOracle Databaseユーザー用のAutonomous Database (日本語版)](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/experienced-database-users.html#GUID-58EE6599-6DB4-4F8E-816D-0422377857E5)
+* [経験豊富なOracle Databaseユーザー用のAutonomous Database (日本語版)](https://docs.oracle.com/cd//E83857_01/paas/autonomous-database/serverless/adbsb/experienced-database-users.html#GUID-58EE6599-6DB4-4F8E-816D-0422377857E5)
 
 ※最新の情報については英語版をご確認ください。
 
