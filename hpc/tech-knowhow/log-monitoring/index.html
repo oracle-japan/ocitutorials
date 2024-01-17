@@ -1,0 +1,987 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、OCIロギングとGrafanaを統合したログ監視は、Grafanaの多彩な機能を活用できる点で有力な選択肢です。本テクニカルTipsは、OCIロギングとGrafanaを使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/log-monitoring/">
+
+
+  <meta property="og:description" content="ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、OCIロギングとGrafanaを統合したログ監視は、Grafanaの多彩な機能を活用できる点で有力な選択肢です。本テクニカルTipsは、OCIロギングとGrafanaを使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-17T11:57:34+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/log-monitoring/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法
+
+        
+      </h1>
+      
+        <p class="page__lead">ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、OCIロギングとGrafanaを統合したログ監視は、Grafanaの多彩な機能を活用できる点で有力な選択肢です。本テクニカルTipsは、OCIロギングとGrafanaを使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/" class="active">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法">
+    <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、OCIロギングとGrafanaを統合したログ監視は、Grafanaの多彩な機能を活用できる点で有力な選択肢です。本テクニカルTipsは、OCIロギングとGrafanaを使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。">
+    <meta itemprop="datePublished" content="2024-01-17T11:57:34+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-rsyslog設定">1. rsyslog設定</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-ログサーバのrsyslog設定">1-1. ログサーバのrsyslog設定</a></li><li><a href="#1-2-ログクライアントのrsyslog設定">1-2. ログクライアントのrsyslog設定</a></li></ul></li><li><a href="#2-統合モニタリングエージェント設定">2. 統合モニタリング・エージェント設定</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-ログサーバの統合モニタリングエージェント有効化">2-1. ログサーバの統合モニタリング・エージェント有効化</a></li><li><a href="#2-2-grafanaサーバの統合モニタリングエージェント無効化">2-2. Grafanaサーバの統合モニタリング・エージェント無効化</a></li></ul></li><li><a href="#3-インスタンスプリンシパル認証設定">3. インスタンス・プリンシパル認証設定</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-動的グループ作成">3-1. 動的グループ作成</a></li><li><a href="#3-2-iamポリシー作成">3-2. IAMポリシー作成</a></li></ul></li><li><a href="#4-ociロギングリソース作成">4. OCIロギングリソース作成</a></li><li><a href="#5-grafanaインストール設定">5. Grafanaインストール・設定</a></li><li><a href="#6-ログ監視機能設定">6. ログ監視機能設定</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。<br />
+OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/home.htm">OCIロギング</a></strong> と <strong><a href="https://grafana.com/">Grafana</a></strong> を統合したログ監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br />
+本テクニカルTipsは、 <strong>OCIロギング</strong> と <strong>Grafana</strong> を使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。</p>
+
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>本テクニカルTipsで構築するHPC/GPUクラスタのログ監視フレームワークは、以下のサブシステムから構成されます。</p>
+
+<ul>
+  <li>Grafanaサーバ（1ノード）<br />
+<strong>OCIロギング</strong> から計算/GPUノードの監視対象ログを収集し、ウェブブラウザに対してこれを表示します。<br />
+本テクニカルTipsでは、インターネットに接続する端末からSSHのポートフォワードで <strong>Grafana</strong> のGUIにアクセスするため、パブリックサブネットに接続します。</li>
+  <li>ログサーバ（1ノード）<br />
+ログクライアントから監視対象ログを収集し、 <strong>OCIロギング</strong> にこれを送信します。<br />
+本テクニカルTipsでは、インターネットからの不正アクセスを防止するため、ログクライアントとTCP/IP接続可能なプライベートサブネットに接続します。</li>
+  <li>ログクライアント（1ノード以上の任意のノード数）<br />
+HPC/GPUクラスタに於ける計算/GPUノードに相当し、監視対象のログをログサーバに送信します。<br />
+本テクニカルTipsでは、計算/GPUノードがログクライアントになることを想定し、ログサーバとTCP/IP接続可能なプライベートサブネットに接続します。</li>
+</ul>
+
+<p>またこのログ監視フレームワークは、以下のOCIサービスやソフトウェアを組合せて実現します。</p>
+
+<ul>
+  <li><strong>OCIロギング</strong><br />
+OCIリソースから生成されるあらゆるログをスケーラブルに扱うことを可能にする、マネージドログサービスです。<br />
+本テクニカルTipsでは、インスタンス上のログファイルを <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/Concepts/custom_logs.htm">カスタム・ログ</a></strong> として取り込んで使用します。</li>
+  <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/Concepts/agent_management.htm">統合モニタリング・エージェント</a></strong><br />
+インスタンス上の任意のログを <strong>カスタム・ログ</strong> として <strong>OCIロギング</strong> に送信する <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloudエージェント</a></strong> のプラグインで、ログサーバで稼働します。</li>
+  <li>Grafana with OCI logs plugin<br />
+<strong>OCIロギング</strong> からログを読み込むための <strong><a href="https://grafana.com/grafana/plugins/oci-logs-datasource/">OCI Logs</a></strong> プラグインをインストールした <strong>Grafana</strong> で、Grafanaサーバで稼働します。</li>
+  <li><strong><a href="https://www.rsyslog.com/">rsyslog</a></strong><br />
+主要なLinuxディストリビューションで動作し、IPネットワーク上で高速・セキュアにログを転送するオープンソースソフトウェアのログ管理ソフトウェアで、 <strong>rsyslog</strong> サーバとして構成されたものがログサーバで、 <strong>rsyslog</strong> クライアントとして構成されたものがログクライアントで稼働します。</li>
+</ul>
+
+<p><img src="architecture_diagram.png" alt="画面ショット" /></p>
+
+<p><strong>OCIロギング</strong> は、 <strong>統合モニタリング・エージェント</strong> がログを注入し、 <strong>Grafana</strong> の <strong>OCI Logs</strong> プラグインがログを読み込むため、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証でこれらソフトウェアが動作するインスタンスに必要な権限を付与します。</p>
+
+<p>以上より本ログ監視フレームワークの構築は、以下の手順に沿って行います。</p>
+
+<ol>
+  <li><strong>rsyslog</strong> 設定</li>
+  <li><strong>統合モニタリング・エージェント</strong> 設定</li>
+  <li><strong>インスタンス・プリンシパル</strong> 認証設定</li>
+  <li><strong>OCIロギング</strong> リソース作成</li>
+  <li><strong>Grafana</strong> インストール・設定</li>
+</ol>
+
+<p>本テクニカルTipsで構築するログ監視フレームワークは、HPC/GPUクラスタ内で発生するログを <strong>Grafana</strong> のあらゆる機能を駆使して監視することが出来ますが、代表的な監視方法は対象のログ発生件数を以下のように時系列グラフで確認することです。</p>
+
+<p><img src="grafana_page11.png" alt="画面ショット" /></p>
+
+<p>以降では、Grafanaサーバ・ログサーバ・ログクライアントとなるインスタンスが既にデプロイされていることを前提とし、前述の手順に沿ってOCIサービスやこれらインスタンスへのソフトウェアのインストール・設定を実施、その後前述のログ監視を <strong>Grafana</strong> に設定する方法を解説します。</p>
+
+<hr />
+<h1 id="1-rsyslog設定">1. rsyslog設定</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、ログサーバとログクライアントで <strong>rsyslog</strong> の設定を行います。</p>
+
+<p>本テクニカルTipsでは、ログクライアントで発生するファシリティが <strong>authpriv</strong> となる任意のプライオリティのsyslogをログサーバのUDPポート514番に送信し、これをログサーバ上のログファイル <strong>/var/log/secure</strong> に格納します。<br />
+このため、このログクライアント・ログサーバ間通信を許可するよう、 <strong>セキュリティー・リスト</strong> やログサーバのファイアーウォールを予め適切に設定しておきます。</p>
+
+<p>なお、ログサーバとログクライアントのOSは、 <strong>Oracle Linux</strong> 8を前提に解説します。</p>
+
+<h2 id="1-1-ログサーバのrsyslog設定">1-1. ログサーバのrsyslog設定</h2>
+
+<p>本章は、ログクライアントから送信されるsyslogを受信するため、ログサーバの <strong>rsyslog</strong> を設定します。</p>
+
+<ol>
+  <li>
+    <p><strong>/etc/rsyslog.conf</strong> を以下のように修正します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff rsyslog.conf_org rsyslog.conf
+ 19,20c19,20
+ &lt; <span class="c">#module(load="imudp") # needs to be done just once</span>
+ &lt; <span class="c">#input(type="imudp" port="514")</span>
+ <span class="nt">---</span>
+ <span class="o">&gt;</span> module<span class="o">(</span><span class="nv">load</span><span class="o">=</span><span class="s2">"imudp"</span><span class="o">)</span> <span class="c"># needs to be done just once</span>
+ <span class="o">&gt;</span> input<span class="o">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"imudp"</span> <span class="nv">port</span><span class="o">=</span><span class="s2">"514"</span><span class="o">)</span>
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>opcユーザで以下コマンドを実行し、先の設定ファイル修正を反映します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl restart rsyslog.service
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="1-2-ログクライアントのrsyslog設定">1-2. ログクライアントのrsyslog設定</h2>
+
+<p>本章は、ログサーバにsyslogを送信するため、ログクライアントの <strong>rsyslog</strong> を設定します。</p>
+
+<ol>
+  <li>
+    <p><strong>/etc/rsyslog.conf</strong> を以下のように修正します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>diff /etc/rsyslog.conf_org /etc/rsyslog.conf
+ 49c49
+ &lt; authpriv.<span class="k">*</span>                                              /var/log/secure
+ <span class="nt">---</span>
+ <span class="o">&gt;</span> authpriv.<span class="k">*</span>                                              @logserver_ip:514
+ <span class="err">$</span>
+</code></pre></div>    </div>
+    <p>※1）ログサーバのIPアドレスは、自身の環境に合わせて置き換えます。</p>
+  </li>
+  <li>
+    <p>opcユーザで以下コマンドを実行し、先の設定ファイル修正を反映します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl restart rsyslog.service
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="2-統合モニタリングエージェント設定">2. 統合モニタリング・エージェント設定</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本章は、ログサーバで <strong>統合モニタリング・エージェント</strong> を有効化します。</p>
+
+<p>また、Grafanaサーバで <strong>統合モニタリング・エージェント</strong> が有効になっている場合は、これを無効化します。<br />
+これは、後の <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証設定で <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> にGrafanaサーバを含めたため、 <strong>統合モニタリング・エージェント</strong> が動作しているとGrafanaサーバのログも <strong>OCIロギング</strong> に注入されてしまうため、これを防止するために必要です。</p>
+
+<h2 id="2-1-ログサーバの統合モニタリングエージェント有効化">2-1. ログサーバの統合モニタリング・エージェント有効化</h2>
+
+<p>本章は、ログサーバの <strong>統合モニタリング・エージェント</strong> を有効化します。</p>
+
+<p>OCIコンソールにログインし、以下ログサーバの <strong>インスタンスの詳細</strong> 画面で <strong>Oracle Cloudエージェント</strong> タブをクリックし、 <strong>カスタム・ログのモニタリング</strong> プラグインを <strong>有効</strong> にします。</p>
+
+<p><img src="console_page06.png" alt="画面ショット" /></p>
+
+<p>以下画面のように、 <strong>カスタム・ログのモニタリング</strong> プラグインのステータスが <strong>実行中</strong> となれば、有効化が完了しています。<br />
+ステータスが <strong>実行中</strong> となるまで、10分程度の時間を要します。<br />
+なお、既にステータスが <strong>実行中</strong> となっている場合は、本手順をスキップします。</p>
+
+<p><img src="console_page08.png" alt="画面ショット" /></p>
+
+<h2 id="2-2-grafanaサーバの統合モニタリングエージェント無効化">2-2. Grafanaサーバの統合モニタリング・エージェント無効化</h2>
+
+<p>本章は、Grafanaサーバの <strong>統合モニタリング・エージェント</strong> を無効化します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、以下Grafanaサーバの <strong>インスタンスの詳細</strong> 画面で <strong>Oracle Cloudエージェント</strong> タブをクリックし、 <strong>カスタム・ログのモニタリング</strong> プラグインを <strong>無効</strong> にします。<br />
+なお、既にステータスが <strong>無効</strong> になっている場合は、本手順をスキップします。</p>
+
+    <p><img src="console_page07.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>Grafanaサーバのopcユーザで以下コマンドを実行し、 <strong>統合モニタリング・エージェント</strong> 関連のSystemdサービスを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent.service
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_config_downloader.timer
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_config_downloader.service
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_restarter.path
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="3-インスタンスプリンシパル認証設定">3. インスタンス・プリンシパル認証設定</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、ログサーバで動作する <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入し、Grafanaサーバで動作する <strong>Grafana</strong> の <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むため、 <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> と <strong>IAMポリシー</strong> を作成して <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証を設定します。</p>
+
+<h2 id="3-1-動的グループ作成">3-1. 動的グループ作成</h2>
+
+<p>本章は、ログサーバとGrafanaサーバを含む <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> を作成します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ドメイン</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>xxxx（ルート）コンパートメント内のドメイン</strong> 画面で、 <strong>インスタンス・プリンシパル</strong> 認証を設定する <strong>アイデンティティ・ドメイン</strong> を選択します。（複数の <strong>アイデンティティ・ドメイン</strong> を運用していなければ、通常”Default”です。）</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される画面左側の <strong>動的グループ</strong> メニューを選択します。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>Defaultドメイン内の動的グループ</strong> 画面で、 <strong>動的グループの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>動的グループの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ： <strong>動的グループ</strong> に付与する名前</li>
+      <li><strong>説明</strong> ： <strong>動的グループ</strong> に付与する説明（用途等）</li>
+      <li>
+        <p><strong>ルール1</strong> ： <strong>動的グループ</strong> に含めるログサーバのインスタンスのOCIDを指定する以下構文</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Any <span class="o">{</span>instance.id <span class="o">=</span> <span class="s1">'log_server_ocid'</span><span class="o">}</span>
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p><strong>ルール2</strong> ： <strong>動的グループ</strong> に含めるGrafanaサーバのインスタンスのOCIDを指定する以下構文</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Any <span class="o">{</span>instance.id <span class="o">=</span> <span class="s1">'grafana_server_ocid'</span><span class="o">}</span>
+</code></pre></div>        </div>
+      </li>
+    </ul>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="3-2-iamポリシー作成">3-2. IAMポリシー作成</h2>
+
+<p>本章は、作成した <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> に対する <strong>IAMポリシー</strong> を作成します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>xxxxコンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。<br />
+この際、 <strong>コンパートメント</strong> プルダウンメニューで <strong>ルート・コンパートメント</strong> を指定します。</p>
+
+    <p><img src="console_page04.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
+      <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
+      <li>
+        <p><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow dynamic-group dynamicgroup_name to <span class="nb">read </span>compartments <span class="k">in </span>tenancy
+allow dynamic-group dynamicgroup_name to <span class="nb">read </span>audit-events <span class="k">in </span>tenancy
+allow dynamic-group dynamicgroup_name to <span class="nb">read </span>log-groups <span class="k">in </span>tenancy
+allow dynamic-group dynamicgroup_name to <span class="nb">read </span>log-content <span class="k">in </span>tenancy
+allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in </span>compartment comp_name_log_reside
+</code></pre></div>        </div>
+
+        <p>※2）<strong>動的グループ</strong> 名は、先に作成したものに置き換えます。<br />
+※3）5行目の <strong>コンパートメント</strong> 名は、後に作成する <strong>OCIロギング</strong> 関連リソースを格納する <strong>コンパートメント</strong> 名に置き換えます。<br />
+※4）最初の4行のポリシーは、Grafanaサーバの <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むために必要です。<br />
+※5）最後の1行のポリシーは、ログサーバの <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入するために必要です。</p>
+      </li>
+    </ul>
+
+    <p><img src="console_page05.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="4-ociロギングリソース作成">4. OCIロギングリソース作成</h1>
+
+<p>本章は、以下の <strong>OCIロギング</strong> 関連リソースを作成し、ログクライアントとログサーバのSyslogが <strong>OCIロギング</strong> に取り込まれることを確認します。</p>
+
+<ul>
+  <li><strong>カスタム・ログ</strong></li>
+  <li><strong>ログ・グループ</strong></li>
+  <li><strong>エージェント構成</strong></li>
+</ul>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、 <strong>監視および管理</strong> → <strong>ログ</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>xxxxコンパートメント内のログ</strong> 画面で、左下の <strong>コンパートメント</strong> プルダウンメニューで <strong>OCIロギング</strong> 関連リソースを作成する <strong>コンパートメント</strong> を指定し、 <strong>カスタム・ログの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page10.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>カスタム・ログの作成</strong> 画面で、 <strong>新規グループの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page11.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ログ・グループの作成</strong> サイドバーで、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ： <strong>ログ・グループ</strong> に付与する名前</li>
+    </ul>
+
+    <p><img src="console_page12.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>カスタム・ログの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>カスタム・ログの作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>カスタム・ログ名</strong> ： <strong>カスタム・ログ</strong> に付与する名前</li>
+    </ul>
+
+    <p><img src="console_page13.png" alt="画面ショット" /></p>
+
+    <p>※6）ここで作成する <strong>カスタム・ログ</strong> の保持期限はデフォルトで1か月のため、これを変更する場合は <strong>追加オプションの表示</strong> ボタンをクリックして変更します。</p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>エージェント構成の作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>エージェント構成の作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>構成名</strong> ： <strong>エージェント構成</strong> に付与する名前</li>
+      <li><strong>説明</strong> ： <strong>エージェント構</strong> に付与する説明（用途等）</li>
+      <li><strong>グループ</strong> ： 先に作成した <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong></li>
+      <li><strong>入力タイプ</strong> ： <strong>ログ・パス</strong></li>
+      <li><strong>名前の入力</strong> ： <strong>ログ入力</strong> の名前</li>
+      <li><strong>ファイル・パス</strong> ： ログサーバ上の <strong>OCIロギング</strong> に注入するログファイルのパス（ここでは <strong>/var/log/secure</strong>）</li>
+      <li><strong>パーサー</strong> ： <strong>SYSLOG</strong>（※7）</li>
+    </ul>
+
+    <p><img src="console_page14.png" alt="画面ショット" /><br />
+ <img src="console_page15.png" alt="画面ショット" /></p>
+
+    <p>※7）<strong>高度なパーサー・オプション</strong> ボタンをクリックして表示される以下 <strong>高度なパーサー・オプション</strong> サイドバーで <strong>パーサー</strong> プルダウンメニューの <strong>SYSLOG</strong> を選択して <strong>変更の保存</strong> ボタンをクリック</p>
+
+    <p><img src="console_page15-1.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>OCIコンソールで <strong>監視および管理</strong> → <strong>ログ・グループ</strong> とメニューを辿り、先に作成した <strong>ログ・グループ</strong> を選択します。</p>
+  </li>
+  <li>
+    <p>表示される <strong>ログ・グループの探索</strong> フィールドで、以下のようにログクライアントとログサーバのSyslogが表示されることを確認します。<br />
+なお、 <strong>OCIロギング</strong> にログが取り込まれるまでに10分程度の時間を要するため、適切な時間経過後にブラウザのリロードボタンでログが取り込まれることを確認します。</p>
+
+    <p><img src="console_page16.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="5-grafanaインストール設定">5. Grafanaインストール・設定</h1>
+
+<p>本章は、Grafanaサーバで <strong>Grafana</strong> のインストールとその設定を行い、監視端末のブラウザから <strong>Grafana</strong> にアクセスしてその稼働を確認します。</p>
+
+<p>なおGrafanaサーバのOSは、 <strong>Oracle Linux</strong> 8を前提に解説します。</p>
+
+<ol>
+  <li>
+    <p>opcユーザで以下コマンドを実行し、 <strong>Grafana</strong> と <strong>OCI Logs</strong> プラグインをインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>wget <span class="nt">-q</span> <span class="nt">-O</span> gpg.key https://rpm.grafana.com/gpg.key
+ <span class="nv">$ </span><span class="nb">sudo </span>rpm <span class="nt">--import</span> gpg.key
+ <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> grafana
+ <span class="nv">$ </span><span class="nb">sudo </span>grafana-cli plugins <span class="nb">install </span>oci-logs-datasource
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>opcユーザで以下コマンドを実行し、 <strong>Grafana</strong> を起動します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ sudo systemctl enable --now grafana-server
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>監視端末で以下コマンドを実行し、Grafanaサーバの <strong>Grafana</strong> にアクセスするためのSSHポートフォワードを作成します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ssh opc@grafana_ip <span class="nt">-L</span> 3000:localhost:3000
+</code></pre></div>    </div>
+    <p>※8）GrafanaサーバのIPアドレスは、自身の環境に合わせて置き換えます。</p>
+  </li>
+  <li>
+    <p>監視端末のブラウザのアドレスバーに以下を入力し、 <strong>Grafana</strong> にアクセスします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> http://localhost:3000/
+</code></pre></div>    </div>
+
+    <p>以下ログイン画面が表示されたら、ユーザ名 <strong>admin</strong> 初期パスワード <strong>admin</strong> でログインし、パスワードを変更します。</p>
+
+    <p><img src="grafana_page00.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面の <strong>Data sources</strong> メニューをクリックします。</p>
+
+    <p><img src="grafana_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面の <strong>Add data source</strong> ボタンをクリックします。</p>
+
+    <p><img src="grafana_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面のサーチフィールドに <strong>oracle</strong> と入力し、表示される <strong>Oracle Cloud Infrastructure Logs</strong> ボタンをクリックします。</p>
+
+    <p><img src="grafana_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面の <strong>Authentication Provider</strong> プルダウンメニューで <strong>OCI Instance</strong> を選択し、 <strong>Save &amp; test</strong> ボタンをクリックし、</p>
+
+    <p><img src="grafana_page04.png" alt="画面ショット" /></p>
+
+    <p>以下画面のように <strong>Success</strong> と表示されれば、 <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> にアクセスすることが確認出来ます。</p>
+
+    <p><img src="grafana_page05.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="6-ログ監視機能設定">6. ログ監視機能設定</h1>
+
+<p>本章は、 <strong>Grafana</strong> のダッシュボードにログ発生件数を時系列グラフとして表示するパネルを作成します。</p>
+
+<ol>
+  <li>
+    <p>監視端末のブラウザで <strong>Grafana</strong> にログインし、以下画面の <strong>New dashboard</strong> メニューをクリックします。</p>
+
+    <p><img src="grafana_page06.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面の <strong>Add a new panel</strong> ボタンをクリックします。</p>
+
+    <p><img src="grafana_page07.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面で、各フィールドに以下の情報を入力して <strong>Query</strong> ボタンをクリックし、</p>
+
+    <ul>
+      <li><strong>REGION</strong> プルダウンメニュー： <strong>OCIロギング</strong> 関連リソースを作成した <strong>リージョン</strong></li>
+      <li>
+        <p><strong>Enter a Cloud Logging query</strong> フィールド： 以下 <strong>ロギング問合せ言語</strong> 文</p>
+
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  search <span class="s2">"compartment_ocid/loggroup_name"</span> | summarize count<span class="o">()</span> as cnt by rounddown<span class="o">(</span>datetime,  <span class="s1">'1m'</span><span class="o">)</span> as interval
+</code></pre></div>        </div>
+        <p>※9）<strong>コンパートメント</strong> のOCIDと <strong>ログ・グループ</strong> 名は、自身のものに置き換えます。</p>
+      </li>
+    </ul>
+
+    <p><img src="grafana_page08.png" alt="画面ショット" /></p>
+
+    <p>以下画面のように、指定した <strong>ログ・グループ</strong> のログが <strong>Grafana</strong> に取り込まれてログ発生件数の時系列グラフが表示されることを確認します。</p>
+
+    <p><img src="grafana_page09.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面で、 <strong>Graph styles</strong> フィールドを以下のように設定し、時系列グラフを完成します。</p>
+
+    <ul>
+      <li><strong>Style</strong> ボタン： <strong>Bars</strong></li>
+      <li><strong>Full opacity</strong> フィールド： 100</li>
+    </ul>
+
+    <p><img src="grafana_page10.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<p>先の時系列グラフは、ログクライアントとログサーバの全てのログ発生件数を表示していますが、先の <strong>ロギング問合せ言語</strong> 文にフィルターを追加することで、特定の条件を満たすログを抽出することが可能です。<br />
+このフィルターは、search文とsummarize文の間に <strong>|</strong> でフィルター構文を挟み込むことで、これを実現します。</p>
+
+<p>例1） 対象のログをホスト名が <strong>comp</strong> で始まるインスタンスが出力したものに限定</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search <span class="s2">"compartment_ocid/loggroup_name"</span> | where data.host <span class="o">=</span> <span class="s1">'comp*'</span> | summarize count<span class="o">()</span> as cnt by rounddown<span class="o">(</span>datetime,  <span class="s1">'1m'</span><span class="o">)</span> as interval
+</code></pre></div></div>
+
+<p>例2） 対象のログをsshdが出力した <strong>session opened for user opc</strong> というメッセージを含むものに限定</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search <span class="s2">"compartment_ocid/loggroup_name"</span> | where data.ident <span class="o">=</span> <span class="s1">'sshd'</span> | where data.message <span class="o">=</span> <span class="s1">'*session opened for user opc*'</span> | summarize count<span class="o">()</span> as cnt by rounddown<span class="o">(</span>datetime,  <span class="s1">'1m'</span><span class="o">)</span> as interval
+</code></pre></div></div>
+
+<p>また先の時系列グラフは、ログ発生件数を1分の時間間隔で集計していますが、 <strong>rounddown</strong> 関数の第2引数を変更することで、任意の時間間隔を設定することができます。</p>
+
+<p>例3） ログ発生件数を集計する時間間隔を5分に指定</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search <span class="s2">"compartment_ocid/loggroup_name"</span> | summarize count<span class="o">()</span> as cnt by rounddown<span class="o">(</span>datetime,  <span class="s1">'5m'</span><span class="o">)</span> as interval
+</code></pre></div></div>
+
+<p><strong>ロギング問合せ言語</strong> のOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/Reference/query_language_specification.htm">ここ</a></strong> を参照ください。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-17T11:57:34+09:00">January 17, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI%E3%83%AD%E3%82%AE%E3%83%B3%E3%82%B0%E3%81%A8Grafana%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%9FHPC%2FGPU%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%81%AE%E3%83%AD%E3%82%B0%E7%9B%A3%E8%A6%96%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Flog-monitoring%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Flog-monitoring%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Flog-monitoring%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/" class="pagination--pager" title="オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/" class="pagination--pager" title="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

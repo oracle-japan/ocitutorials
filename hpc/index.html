@@ -756,6 +756,13 @@ table, th, td {
  オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証が用意されています。<br />
  本テクニカルTipsは、オンデマンドクラスタを念頭とした <strong>インスタンス・プリンシパル</strong> 認証の設定方法を解説します。</p>
   </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></strong></p>
+
+    <p>ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。<br />
+ OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、 <strong>OCIロギング</strong> と <strong>Grafana</strong> を統合したログ監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br />
+ 本テクニカルTipsは、 <strong>OCIロギング</strong> と <strong>Grafana</strong> を使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。</p>
+  </li>
 </ul>
 
 <h2 id="3-4-機械学習">3-4. 機械学習</h2>
@@ -1058,7 +1065,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 この <strong>IAM</strong> の認証・認可を管理する単位は、 <strong>インスタンス・プリンシパル</strong> の他に、OCIコンソールにログインする際に使用する <strong>ユーザ・プリンシパル</strong> が存在します。</p>
 
 <p><strong>インスタンス・プリンシパル</strong> を使用する <strong>IAM</strong> 認証・認可の仕組みは、 <strong>インスタンス・プリンシパル</strong> 認証と呼ばれ、動的にHPC/GPUクラスタのライフサイクルを管理するソリューションに適用することが可能です。<br />
-このソリューションでは、クラスタ管理ノードを <strong>インスタンス・プリンシパル</strong> として <strong>動的グループ</strong> に登録（認証）し、これに対して <strong>IAMポリシー</strong> でこのAPIコールを許可（認可）することで、クラスタ管理ノードから <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用してHPC/GPUクラスタのライフサイクルを動的に管理することを可能にします。<br />
+このソリューションでは、クラスタ管理ノードを <strong>インスタンス・プリンシパル</strong> として <strong>動的グループ</strong> に登録（認証）し、このクラスタ管理ノードから発行するAPIコールを <strong>IAMポリシー</strong> で許可（認可）することで、クラスタ管理ノードからHPC/GPUクラスタのライフサイクルを動的に管理することを可能にします。<br />
 <strong><a href="#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> で紹介している <strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> を使用するオンデマンドクラスタソリューションは、この仕組みを使用しています。</p>
 
 <p>このオンデマンドクラスタ実現のための <strong>インスタンス・プリンシパル</strong> 認証の設定方法は、 <strong><a href="#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> を参照ください。</p>
