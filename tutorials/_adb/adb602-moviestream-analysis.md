@@ -578,7 +578,7 @@ ORDER BY RANK;
 <br>
 
 # 参考資料
-+ LiveLabs [Analyze MovieStream data in Oracle Autonomous Database using SQL Workshop](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/workshop-attendee-2?p210_workshop_id=852&p210_type=1&session=116317841275694){:target="_blank"}
++ LiveLabs [Analyze MovieStream data in Oracle Autonomous Database using SQL Workshop](https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=852){:target="_blank"}
 + Oracle Big Data Blog [Structured vs. Unstructured Data](https://blogs.oracle.com/bigdata/post/structured-vs-unstructured-data){:target="_blank"}
 
 

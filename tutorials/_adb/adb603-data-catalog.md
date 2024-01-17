@@ -548,9 +548,9 @@ OCI Object Storageに対してAPIコールを行うことを許可するポリ�
 <br>
 
 # 参考資料
-
-* [Get started with Oracle Cloud Infrastructure Data Catalog](https://oracle.github.io/learning-library/data-management-library/data-catalog/workshops/freetier/?lab=introduction){:target="_blank"}
-
+<!--
+* [Get started with Oracle Cloud Infrastructure Data Catalog](https://oracle.github.io/learning-library/data-management-library/data-catalog/workshops/freetier/?lab=introduction){:target="_blank"} 
+-->
 * [データ・カタログの概要ドキュメント](https://docs.oracle.com/ja-jp/iaas/data-catalog/using/overview.htm){:target="_blank"}
 
 <br/>

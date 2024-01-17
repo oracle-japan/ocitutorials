@@ -19,7 +19,7 @@ Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure の上�
 <br>
 
 **前提条件 :**
-+ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
++ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db){:target="_blank"}を通じて Oracle Database の作成が完了していること
 
 <br>
 
@@ -93,7 +93,7 @@ Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure の上�
 1. 立ち上がった **プラガブル・データベースの作成** ウィンドウに以下の項目を入力します
 - **PDBの名前入力** - 任意（例 :pdb1）
 - **PDB管理パスワード** - 任意（例 : WelCome123#123#)
-- **データベースのTDEウォレット・パスワード** -  [101: Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db)で **データベース情報の入力欄** に設定したパスワードを入力  
+- **データベースのTDEウォレット・パスワード** -  [101: Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db){:target="_blank"}で **データベース情報の入力欄** に設定したパスワードを入力  
     <div align="center">
     <img width="700" alt="img6.png" src="img6.png" style="border: 1px black solid;">
     </div>

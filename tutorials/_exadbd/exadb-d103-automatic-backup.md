@@ -26,7 +26,7 @@ Oracle Databaseのバックアップ操作に対して次の3つのオプショ�
 - **オプション3：RMANを使用したバックアップ** <br>
 お客様が所有するカスタマイズ・スクリプトとともにRMANを使用してバックアップを直接取得できます。RMANを使用してバックアップする場合は、バックアップ自動化からデータベースの登録を解除する必要があります。
 
-    以上のオプションについての詳細は[バックアップおよびリカバリ操作を実行するためのOracle推奨オプション](https://docs.oracle.com/cd/F56555_01/ecscm/ecs-managing-db-backup-and-recovery.html#GUID-9AC7EB70-20AC-41BB-8550-5D80C0C7D4CE)を参照してください。
+    以上のオプションについての詳細は[バックアップおよびリカバリ操作を実行するためのOracle推奨オプション](https://docs.oracle.com/cd/F56555_01/ecscm/ecs-managing-db-backup-and-recovery.html#GUID-9AC7EB70-20AC-41BB-8550-5D80C0C7D4CE){:target="_blank"}を参照してください。
 
 **Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)** では、RMANを利用した自動バックアップ機能が利用可能で、リカバリも最新時点やPoint in Time Recovery(PITR)の任意の時点まで復旧ができます。
 
@@ -40,7 +40,7 @@ Oracle Databaseのバックアップ操作に対して次の3つのオプショ�
 + [5. 取得したバックアップを確認しよう](#5-取得したバックアップを確認しよう)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d){:target="_blank"}を通じてExaDB-Dの作成が完了していること
 
 **所要時間 :** 約1時間　※環境によって異なるため、参考値です
 
@@ -55,7 +55,7 @@ Exadata Cloud Infrastructureのバックアップの前提条件：
 
 ![](2022-11-15-12-21-55.png)
 
-参照：[Exadata Cloud Infrastructureのバックアップの前提条件](https://docs.oracle.com/cd/F56555_01/ecscm/ecs-managing-db-backup-and-recovery.html#GUID-41586B8E-FF2F-44B7-827B-D9122289C8AE)
+参照：[Exadata Cloud Infrastructureのバックアップの前提条件](https://docs.oracle.com/cd/F56555_01/ecscm/ecs-managing-db-backup-and-recovery.html#GUID-41586B8E-FF2F-44B7-827B-D9122289C8AE){:target="_blank"}
 
 
 <BR>
@@ -66,7 +66,7 @@ Exadata Cloud Infrastructureのバックアップの前提条件：
 自動バックアップはデータベース作成時もしくはデータベース作成後に構成する事ができます。
 
 1. データベース作成時に構成する場合
-**データベースの作成** ダイアログの **データベース・バックアップの構成** の項目で **自動バックアップの有効化** にチェックを入れます。データベースの作成方法についての手順は[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)の**3.データベースの作成**をご参照ください。
+**データベースの作成** ダイアログの **データベース・バックアップの構成** の項目で **自動バックアップの有効化** にチェックを入れます。データベースの作成方法についての手順は[101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d){:target="_blank"}の**3.データベースの作成**をご参照ください。
 
     ![](2022-09-09-16-27-52.png)
 
@@ -150,8 +150,8 @@ RESTORE DATABASE VALIDATE CHECK LOGICAL;
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html)
-+ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail)
++ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html){:target="_blank"}
++ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail){:target="_blank"}
 
 <BR>
 

@@ -20,7 +20,7 @@ header:
 
 **前提条件 :**  
 + ADBインスタンスが構成済みであること
-    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/database/adb101-provisioning){:target="_blank"} を参照ください。  
+    <br>※ADBインタンスを作成方法については、[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
 + 以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること
 	+ [サンプルデータファイルのダウンロードリンク](/ocitutorials/adb/adb102-dataload/sales_channels.csv)
 

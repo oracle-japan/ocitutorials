@@ -337,7 +337,7 @@ Data TransformsはOracle Data Integratorをベースにしています。オン�
     このLivelabsのLab5のTask4, 5では、本チュートリアルでは行わなかったWork Flowやスケジュールの作成方法に触れていますので、ご興味のある方はお試しください。
 
 
-+ [Oracle Blogs, Introducing Data Transforms: Built in Data Integration for Autonomous Database](https://blogs.oracle.com/post/introducing-data-transforms-built-in-data-integration-for-autonomous-database){:target="_blank"}
++ [Oracle Blogs, Introducing Data Transforms: Built in Data Integration for Autonomous Database](https://blogs.oracle.com/datawarehousing/post/introducing-data-transforms-built-in-data-integration-for-autonomous-database){:target="_blank"}
 
 
 以上で、この章は終了です。  

@@ -24,7 +24,7 @@ CDBで構成されているオンプレミスのデータベースからBaseDB�
 **前提条件 :**
 + 移行元のデータベースが**CDBで構成されている**こと
 
-+ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
++ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db){:target="_blank"} を通じて Oracle Database の作成が完了していること
 
 <br>
 

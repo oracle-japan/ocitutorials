@@ -22,7 +22,7 @@ BaseDB では、RMANを利用した自動バックアップ機能が利用可能
 <br>
 
 **前提条件 :**
-+ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
++ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db){:target="_blank"} を通じて Oracle Database の作成が完了していること
 
 <br>
 

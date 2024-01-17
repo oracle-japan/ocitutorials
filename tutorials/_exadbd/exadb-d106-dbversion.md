@@ -23,7 +23,7 @@ header:
 + [3. 確認作業](#3-確認作業)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d){:target="_blank"}を通じてExaDB-Dの作成が完了していること
 
 **所要時間 :** 約30分　※環境によって異なるため、参考値です。
 
@@ -113,7 +113,7 @@ header:
         + **データベースのバージョン** - 利用したいデータベースのバージョンを選択します。
         + **パッチ・セット更新、プロアクティブ・バンドル・パッチまたはリリース更新を選択します** - 利用したいソフトウェア更新を選択します。
         + **個別パッチ番号を入力します** - 適用したい個別パッチの番号を入力します。（こちらはオプションです。）
-        + **Oracleホーム・インベントリのアップロード** - ホーム・インベントリのファイルをアップロードします。ホーム・インベントリのアップロードについての説明は[Oracleホームに適用されたパッチを検証するためのOPatch lsinventoryコマンドの使用](https://docs.oracle.com/cd/F56555_01/ecscm/ecc-manage-images.html#GUID-FAE28963-27F2-45B8-9068-A9D0FCB36665)をご参照ください。（こちらはオプションです。）
+        + **Oracleホーム・インベントリのアップロード** - ホーム・インベントリのファイルをアップロードします。ホーム・インベントリのアップロードについての説明は[Oracleホームに適用されたパッチを検証するためのOPatch lsinventoryコマンドの使用](https://docs.oracle.com/cd/F56555_01/ecscm/ecc-manage-images.html#GUID-FAE28963-27F2-45B8-9068-A9D0FCB36665){:target="_blank"}をご参照ください。（こちらはオプションです。）
 
     ![](2022-11-04-18-47-16.png)
 
@@ -165,8 +165,8 @@ header:
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html)
-+ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail)
++ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html){:target="_blank"}
++ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail){:target="_blank"}
 
 <BR>
 

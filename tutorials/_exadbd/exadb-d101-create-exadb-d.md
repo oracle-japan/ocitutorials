@@ -33,15 +33,15 @@ header:
 **前提条件 :**
 + **シェイプの確認**
     
-    ExaDB-Dで利用したいシェイプ名を事前に確認しましょう。ExaDB-Dで利用可能なシェイプについては[Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure Description](https://docs.oracle.com/en-us/iaas/exadatacloud/exacs/exa-service-desc.html#GUID-9E090174-5C57-4EB1-9243-B470F9F10D6B)を参照ください。
+    ExaDB-Dで利用したいシェイプ名を事前に確認しましょう。ExaDB-Dで利用可能なシェイプについては[Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure Description](https://docs.oracle.com/en-us/iaas/exadatacloud/exacs/exa-service-desc.html#GUID-9E090174-5C57-4EB1-9243-B470F9F10D6B){:target="_blank"}を参照ください。
 + **サービス制限の確認・引き上げのリクエスト**
     
-    ExaDB-Dを利用するには、まずサービス制限を引き上げる必要があります。サービス制限については[もしもみなみんがDBをクラウドで動かしてみたら - 第16回 サービス制限について](https://blogs.oracle.com/otnjp/post/minamin-cloud-016-servicelimits)を参照ください。
+    ExaDB-Dを利用するには、まずサービス制限を引き上げる必要があります。サービス制限については[もしもみなみんがDBをクラウドで動かしてみたら - 第16回 サービス制限について](https://blogs.oracle.com/otnjp/post/minamin-cloud-016-servicelimits){:target="_blank"}を参照ください。
 + **テナント内の準備**
     
     次に、環境作成する前に必要な環境確認やインフラレイヤーでの準備を、下記のチュートリアルをみながら準備しましょう。
-    + [OCIコンソールにアクセスして基本を理解する](https://oracle-japan.github.io/ocitutorials/beginners/getting-started/)
-    + [クラウドに仮想ネットワーク(VCN)を作る](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/)
+    + [OCIコンソールにアクセスして基本を理解する](https://oracle-japan.github.io/ocitutorials/beginners/getting-started/){:target="_blank"}
+    + [クラウドに仮想ネットワーク(VCN)を作る](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/){:target="_blank"}
 
     ExaDB-D用のVCN内の設定として、前提条件は下記のようなものがあります。
     + ExaDB-Dでは、２つのサブネット(クライアント・サブネットとバックアップ・サブネット)が必要なので２つ作成
@@ -55,7 +55,7 @@ header:
 
         + クライアント・サブネットで192.168.16.16/28と重複しないこと
         + 複数システムを利用する場合、相互のIPアドレスが重複しないこと
-        + シェイプ(ラック・サイズ)に応じて、必要なアドレス数を用意 ([Oracle Cloud Infrastructure Documentation - Network Setup for Exadata Cloud Infrastructure Instances](https://docs.oracle.com/en-us/iaas/exadatacloud/exacs/ecs-network-setup.html#vcn-subnets)を参照ください。)
+        + シェイプ(ラック・サイズ)に応じて、必要なアドレス数を用意 ([Oracle Cloud Infrastructure Documentation - Network Setup for Exadata Cloud Infrastructure Instances](https://docs.oracle.com/en-us/iaas/exadatacloud/exacs/ecs-network-setup.html#vcn-subnets){:target="_blank"}を参照ください。)
         ![](2022-06-27-17-38-01.png)
 
 **所要時間 :** 約6時間
@@ -488,8 +488,8 @@ header:
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html)
-+ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail)
++ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html){:target="_blank"}
++ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail){:target="_blank"}
 
 <BR>
 

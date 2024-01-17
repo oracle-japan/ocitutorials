@@ -230,7 +230,7 @@ SELECT count(*) FROM unified_audit_trail;
 <BR>
 
 # 参考資料
-+ 共有Exadataインフラストラクチャ上のOracle Autonomous Databaseの使用 ["35 Autonomous Databaseの監査"](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/adb-audit.html#GUID-76742693-33D2-46D3-8B13-CC838818B036)
++ Oracle Autonomous Databaseサーバーレスの使用 ["35 Autonomous Databaseの監査"](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/adb-audit.html#GUID-76742693-33D2-46D3-8B13-CC838818B036)
 + Oracle Database 19c
 『Oracle Database セキュリティ・ガイド』["第VI部 監査を使用したデータベース・アクティビティの管理"](https://docs.oracle.com/cd/F19136_01/dbseg/part_6.html)
 

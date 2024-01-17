@@ -23,8 +23,8 @@ header:
     - [ストレージ・サーバーの追加](#anchor3-2)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
-+ [Oracle Cloud Infrastructure Documentation > コマンド・ライン・インターフェース > クイックスタート](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm)を通じてOCI CLIのセットアップが完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d){:target="_blank"}を通じてExaDB-Dの作成が完了していること
++ [Oracle Cloud Infrastructure Documentation > コマンド・ライン・インターフェース > クイックスタート](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm){:target="_blank"}を通じてOCI CLIのセットアップが完了していること
 
 **所要時間 :** 約6時間（待ち時間を含む）※環境によって異なるため、参考値です
 
@@ -78,7 +78,7 @@ header:
 
 CLI(OCI CLI/REST/Terraformなど)でもスケール・アップ/ダウンは可能です。今回は、OCI CLIでの方法を紹介します。
 
-本ガイドではOCI CLIのセットアップが完了していることを前提として進めます。セットアップされていない方は[Oracle Cloud Infrastructure Documentation > コマンド・ライン・インターフェース > クイックスタート](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm)をご参考にセットアップしてください。OCI CLIは別途VMを立ててセットアップをします。
+本ガイドではOCI CLIのセットアップが完了していることを前提として進めます。セットアップされていない方は[Oracle Cloud Infrastructure Documentation > コマンド・ライン・インターフェース > クイックスタート](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm){:target="_blank"}をご参考にセットアップしてください。OCI CLIは別途VMを立ててセットアップをします。
 
 1. 現在のCPUコア数(現在有効なクラスタ内の仮想マシンに割り当てられたすべてのOCPUの合計)を確認します。以下のコマンドを実行します。
 
@@ -244,8 +244,8 @@ CLI(OCI CLI/REST/Terraformなど)でもスケール・アップ/ダウンは可�
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html)
-+ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail)
++ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html){:target="_blank"}
++ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail){:target="_blank"}
 
 <BR>
 

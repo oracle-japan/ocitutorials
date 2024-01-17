@@ -23,9 +23,9 @@ header:
 + [3. オンデマンド・バックアップを使用したリストア](#3-オンデマンドバックアップを使用したリストア)
 
 **前提条件 :**
-+ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d)を通じてExaDB-Dの作成が完了していること
++ [101 : ExaDB-Dを使おう](/ocitutorials/exadbd/exadb-d101-create-exadb-d){:target="_blank"}を通じてExaDB-Dの作成が完了していること
 
-+ [103 : 自動バックアップを設定しよう](/ocitutorials/exadbd/exadb-d103-automatic-backup)を通じてバックアップを取得していること
++ [103 : 自動バックアップを設定しよう](/ocitutorials/exadbd/exadb-d103-automatic-backup){:target="_blank"}を通じてバックアップを取得していること
 
 **所要時間 :** 約1時間　※環境によって異なるため、参考値です
 
@@ -139,8 +139,8 @@ SCNを使用してデータベースをリストアします。<br>
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html)
-+ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail)
++ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html){:target="_blank"}
++ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail){:target="_blank"}
 
 <BR>
 
