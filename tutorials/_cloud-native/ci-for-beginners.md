@@ -31,21 +31,20 @@ OCI Container Instances上でWordPress環境を構築して、実際にアプリ
 
 ![](003.png)
 
-`コンテナ・インスタンスの作成`ボタンをクリックします。
+`Create container instance`ボタンをクリックします。
 
 ![](004.png)
 
-以下画像赤枠の箇所を変更します。それ以外はデフォルト値にしています。
+以下画像赤枠の箇所を変更します。それ以外はデフォルト値です。
 
-- 「名前」：container-instance-wordpress
-- 「メモリー量（GB）を選択します」：4
+- 「Name」：container-instance-wordpress
 
 ![](005.png)
 
-以下画像赤枠の箇所を変更します。それ以外はデフォルト値にしています。
+Networkingの下にある`Show advanced options`をクリックします。
+「Container restart policy」を以下の設定にします。
 
-- 「ホスト名 オプション」：wordpress
-- 「コンテナ再起動ポリシー」：常時
+- 「Container restart policy」：always
 
 ![](006.png)
 
@@ -53,66 +52,70 @@ OCI Container Instances上でWordPress環境を構築して、実際にアプリ
 
 ![](007.png)
 
-WordPress のデータベースを構成する MySQL イメージを設定します。最初に、`Name オプション`を`db`と入力します。そして、`イメージの選択`ボタンをクリックします。
+WordPress のデータベースを構成する MySQL イメージを設定します。最初に、`Name オプション`を`db`と入力します。そして、`Select image`ボタンをクリックします。
 
 - 「Name オプション」：db
 
 ![](008.png)
 
-`外部レジストリ`タブを選択して、以下の設定を行います。
+`External registry`タブを選択して、以下の設定を行います。
 
-- 「イメージ」：mysql
-- 「タグ」：8.0.30
+- 「Registry hostname」：docker.io
+- 「Repository」：mysql
+- 「Tag オプション」：8.0.30
 
-タブですが、`OCIコンテナ・レジストリ`は、OCI のコンテナレジストリ（OCIR）に格納されているイメージを設定できます。`外部レジストリ`は、パブリックサービスなどのコンテナレジストリを設定できます。デフォルトでは、Docker Hub となっています。
-`別のレジストリを選択してください`のチェックボックスを有効にすると Docker Hub 以外のコンテナ・レジストリを設定できます。ここでは、`別のレジストリを選択してください`のチェックボックスを無効として、デフォルトの Docker Hub にある MySQL の公式コンテナイメージを使用します。
+タブですが、`OCI Container Registry`は、OCI のコンテナレジストリ（OCIR）に格納されているイメージを設定できます。`External registry`は、パブリックサービスなどのコンテナレジストリを設定できます。
+ここでは、 Docker Hub にある MySQL の公式コンテナイメージを使用します。
 
 ![](009.png)
 
-`イメージの選択`ボタンをクリックします。
+`Select image`ボタンをクリックします。
 
 ![](010.png)
 
-以下の環境変数を設定します。WordPress 用のデータベース設定です。最初に、「+ 別の変数」ボタンを3回クリックして、その後設定値を入力します。
+以下の環境変数を設定します。WordPress 用のデータベース設定です。最初に、「+ Another variable」ボタンを3回クリックして、その後設定値を入力します。
 
 - 「MYSQL_ROOT_PASSWORD」：somewordpress
 - 「MYSQL_DATABASE」：wordpress
 - 「MYSQL_USER」：wordpress
 - 「MYSQL_PASSWORD」：wordpress
 
-次に`拡張オプションの表示`テキストをクリックします。
+次に`Show advanced options`テキストをクリックします。
 
 ![](011.png)
 
-`リソース`タブでは、コンテナで消費されるリソース量を指定できます。ここでは、デフォルト値とします。次に`起動オプション`タブを選択します。
+`Resources`タブでは、コンテナで消費されるリソース量を指定できます。ここでは、デフォルト値とします。次に`Startup options`タブを選択します。
 
 ![](012.png)
 
 MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証方式がデフォルトとなりました。ここでは、従来の認証方式のプラグイン mysql_native_password に変更します。
 
-- 「エントリポイント引数」：--default-authentication-plugin=mysql_native_password
+- 「Command arguments」：--default-authentication-plugin=mysql_native_password
+
+※defaultの前はハイフン2個です。
 
 ![](013.png)
 
-`+ 別のコンテナ` ボタンをクリックします。
+`+ Another container` ボタンをクリックします。
 
 ![](014.png)
 
-次は、wordpress アプリケーションのコンテナイメージの設定を行います。`Name オプション`を`app`と入力します。そして、`イメージの選択`ボタンをクリックします。
+次は、wordpress アプリケーションのコンテナイメージの設定を行います。`Name オプション`を`app`と入力します。そして、`Select image`ボタンをクリックします。
 
 - 「Name オプション」：app
 
 ![](015.png)
 
-`外部レジストリ`タブを選択して、以下の設定を行います。WordPress は latest のコンテナイメージを利用するため、タグの指定はしません。
+`External registry`タブを選択して、以下の設定を行います。WordPress は latest のコンテナイメージを利用するため、タグの指定はしません。
 
-- 「イメージ」：wordpress
+- 「Registry hostname」：docker.io
+- 「Repository」：wordpress
 
-`イメージの選択`ボタンをクリックします。
+`Select image`ボタンをクリックします。
 
 ![](016.png)
 
-以下の環境変数を設定します。WordPress アプリケーションが MySQL に接続するために必要な設定です。最初に、`+ 別の変数`ボタンを3回クリックして、その後設定値を入力します。
+以下の環境変数を設定します。WordPress アプリケーションが MySQL に接続するために必要な設定です。最初に、`+ Another variable`ボタンを3回クリックして、その後設定値を入力します。
 
 - 「WORDPRESS_DB_HOST」：127.0.0.1
 - 「WORDPRESS_DB_USER」：wordpress
@@ -129,7 +132,7 @@ MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証�
 
 ![](019.png)
 
-`作成`ボタンをクリックします。
+`Create`ボタンをクリックします。
 
 ![](020.png)
 
@@ -169,7 +172,7 @@ MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証�
 
 ![](027.png)
 
-`次`ボタンをクリックします。
+`Next`ボタンをクリックします。
 
 ![](028.png)
 
@@ -205,15 +208,15 @@ MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証�
 
 ![](034.png)
 
-`編集`リンクテキストをクリックします。
+`Edit`リンクテキストをクリックします。
 
 ![](035.png)
 
-作成したネットワーク・セキュリティ・グループ`container-instances`を選択して、`変更の保存`ボタンをクリックします。
+作成したネットワーク・セキュリティ・グループ`container-instances`を選択して、`Save changes`ボタンをクリックします。
 
 ![](036.png)
 
-`パブリックIPアドレス`の`コピー`リンクテキストをクリックします。
+`Public IP address`の`コピー`リンクテキストをクリックします。
 
 ![](037.png)
 
@@ -232,7 +235,7 @@ MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証�
 
 - サイトのタイトル: Container Instances
 - ユーザ名: wordpress
-- パスワード: Or@cleCI
+- パスワード: Or@cleCI123@
 - メールアドレス: test@test.oracle.com
 
 ![](040.png)

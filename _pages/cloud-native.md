@@ -62,7 +62,16 @@ lastmod: "2022-04-06"
 
 <br />
 
-# 3. Oracle Functionsチュートリアル
+# 3. OCI Container Instancesチュートリアル
+
+## 初級編
+
++ **[OCI Container Instances をプロビジョニングしよう](/ocitutorials/cloud-native/ci-for-beginners/)**
+    OCI Container InstancesでWordPress環境を構築します。【所要時間:約20分】
+
+<br />
+
+# 4. Oracle Functionsチュートリアル
 
 ## 初級編
 
@@ -95,7 +104,7 @@ lastmod: "2022-04-06"
 
 <br />
 
-# 4. OCI API Gatewayチュートリアル
+# 5. OCI API Gatewayチュートリアル
 
 ## 初級編
 
@@ -104,7 +113,7 @@ lastmod: "2022-04-06"
 
 <br />
 
-# 5. Oracle Cloud Infrastructure Service Meshチュートリアル
+# 6. Oracle Cloud Infrastructure Service Meshチュートリアル
 
 ## 初級編
 
@@ -113,7 +122,7 @@ lastmod: "2022-04-06"
 
 <br />
 
-# 6. Helidonチュートリアル
+# 7. Helidonチュートリアル
 
 ## 初級編
 
@@ -125,7 +134,7 @@ lastmod: "2022-04-06"
 
 <br />
 
-# 7. WebLogic Server on OCIチュートリアル
+# 8. WebLogic Server on OCIチュートリアル
 
 + **[WebLogic Server for OCIをプロビジョニングしてみよう](/ocitutorials/cloud-native/wls-for-oci-provisioning/)**  
     WebLogic Server for OCI は、Oracleが提供するアプリケーションサーバーのWebLogic ServerをOCI上で簡単に構築できるオファリングです。こちらのハンズオンでは、WebLogic Server for OCIのプロビジョニング、アプリケーションのデプロイを学んでいただけるコンテンツになります。【所要時間:約1時間】
@@ -136,7 +145,7 @@ lastmod: "2022-04-06"
 + **[WebLogic Server for OKEをプロビジョニングしてみよう](/ocitutorials/cloud-native/wls-for-oke-provisioning/)**  
     WebLogic Server for OKE は、WebLogic Serverのコンテナ化を簡単に実現できるオファリングです。こちらのハンズオンでは、WebLogic Server for OKEのプロビジョニング、ドメインの作成を学んでいただけるコンテンツになります。【所要時間:約1時間】
 
-# 8. Oracle Transaction Manager for Microservices(MicroTx)チュートリアル
+# 9. Oracle Transaction Manager for Microservices(MicroTx)チュートリアル
 
 + **[Oracle Transaction Manager for Microservicesハンズオン](/ocitutorials/cloud-native/microtx-for-beginners/)**  
     Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。【所要時間:約2時間】
