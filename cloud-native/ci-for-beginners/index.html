@@ -1,0 +1,744 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Container Instances をプロビジョニングしよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、Container InstancesにWordPressをインストールします。まずはここから始めましょう。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Container Instances をプロビジョニングしよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/ci-for-beginners/">
+
+
+  <meta property="og:description" content="Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、Container InstancesにWordPressをインストールします。まずはここから始めましょう。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-01-31T11:27:43+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/ci-for-beginners/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Container Instances をプロビジョニングしよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、Container InstancesにWordPressをインストールします。まずはここから始めましょう。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Container Instances をプロビジョニングしよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ci-for-beginners/" class="active">OCI Container Instances をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/">WebLogic Server for OKEをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Container Instances をプロビジョニングしよう">
+    <meta itemprop="description" content="Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、Container InstancesにWordPressをインストールします。まずはここから始めましょう。">
+    <meta itemprop="datePublished" content="2024-01-31T11:27:43+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオン環境のイメージ">ハンズオン環境のイメージ</a></li><li><a href="#1oci-container-instancesのプロビジョニング">1.OCI Container Instancesのプロビジョニング</a></li><li><a href="#2netowrk-security-groupの作成">2.Netowrk Security Groupの作成</a></li><li><a href="#3wordpressのセットアップ">3.WordPressのセットアップ</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>OCI Container Instances は、コンテナ用に最適化されたサーバレス・コンピューティングでアプリケーションを実行できます。OCIの管理コンソールからコンピュートシェイプ、リソース割り当て、ネットワーク構成をプロビジョニングして、複数のコンテナをローンチできます。Kubernetes をはじめとするコンテナ・オーケストレーション・プラットフォームを必要としないコンテナベースのワークロードに適したサービスです。</p>
+
+<p>OCI Container Instances上でWordPress環境を構築して、実際にアプリケーションを動かす流れを体験します。</p>
+
+<h2 id="前提条件">前提条件</h2>
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloudのアカウントを取得済みであること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ハンズオン環境のイメージ">ハンズオン環境のイメージ</h2>
+<p><img src="001.png" alt="" /></p>
+
+<h2 id="1oci-container-instancesのプロビジョニング">1.OCI Container Instancesのプロビジョニング</h2>
+<p>ここでは、OCI Container Instancesのプロビジョニングを行います。</p>
+
+<p>ハンバーガーメニューをクリックします。</p>
+
+<p><img src="002.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">開発者サービス</code>-<code class="language-plaintext highlighter-rouge">コンテナ・インスタンス</code>を選択します。</p>
+
+<p><img src="003.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Create container instance</code>ボタンをクリックします。</p>
+
+<p><img src="004.png" alt="" /></p>
+
+<p>以下画像赤枠の箇所を変更します。それ以外はデフォルト値です。</p>
+
+<ul>
+  <li>「Name」：container-instance-wordpress</li>
+</ul>
+
+<p><img src="005.png" alt="" /></p>
+
+<p>Networkingの下にある<code class="language-plaintext highlighter-rouge">Show advanced options</code>をクリックします。
+「Container restart policy」を以下の設定にします。</p>
+
+<ul>
+  <li>「Container restart policy」：always</li>
+</ul>
+
+<p><img src="006.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">次</code>ボタンをクリックします。</p>
+
+<p><img src="007.png" alt="" /></p>
+
+<p>WordPress のデータベースを構成する MySQL イメージを設定します。最初に、<code class="language-plaintext highlighter-rouge">Name オプション</code>を<code class="language-plaintext highlighter-rouge">db</code>と入力します。そして、<code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
+
+<ul>
+  <li>「Name オプション」：db</li>
+</ul>
+
+<p><img src="008.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">External registry</code>タブを選択して、以下の設定を行います。</p>
+
+<ul>
+  <li>「Registry hostname」：docker.io</li>
+  <li>「Repository」：mysql</li>
+  <li>「Tag オプション」：8.0.30</li>
+</ul>
+
+<p>タブですが、<code class="language-plaintext highlighter-rouge">OCI Container Registry</code>は、OCI のコンテナレジストリ（OCIR）に格納されているイメージを設定できます。<code class="language-plaintext highlighter-rouge">External registry</code>は、パブリックサービスなどのコンテナレジストリを設定できます。
+ここでは、 Docker Hub にある MySQL の公式コンテナイメージを使用します。</p>
+
+<p><img src="009.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<p>以下の環境変数を設定します。WordPress 用のデータベース設定です。最初に、「+ Another variable」ボタンを3回クリックして、その後設定値を入力します。</p>
+
+<ul>
+  <li>「MYSQL_ROOT_PASSWORD」：somewordpress</li>
+  <li>「MYSQL_DATABASE」：wordpress</li>
+  <li>「MYSQL_USER」：wordpress</li>
+  <li>「MYSQL_PASSWORD」：wordpress</li>
+</ul>
+
+<p>次に<code class="language-plaintext highlighter-rouge">Show advanced options</code>テキストをクリックします。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Resources</code>タブでは、コンテナで消費されるリソース量を指定できます。ここでは、デフォルト値とします。次に<code class="language-plaintext highlighter-rouge">Startup options</code>タブを選択します。</p>
+
+<p><img src="012.png" alt="" /></p>
+
+<p>MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証方式がデフォルトとなりました。ここでは、従来の認証方式のプラグイン mysql_native_password に変更します。</p>
+
+<ul>
+  <li>「Command arguments」：–default-authentication-plugin=mysql_native_password</li>
+</ul>
+
+<p>※defaultの前はハイフン2個です。</p>
+
+<p><img src="013.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">+ Another container</code> ボタンをクリックします。</p>
+
+<p><img src="014.png" alt="" /></p>
+
+<p>次は、wordpress アプリケーションのコンテナイメージの設定を行います。<code class="language-plaintext highlighter-rouge">Name オプション</code>を<code class="language-plaintext highlighter-rouge">app</code>と入力します。そして、<code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
+
+<ul>
+  <li>「Name オプション」：app</li>
+</ul>
+
+<p><img src="015.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">External registry</code>タブを選択して、以下の設定を行います。WordPress は latest のコンテナイメージを利用するため、タグの指定はしません。</p>
+
+<ul>
+  <li>「Registry hostname」：docker.io</li>
+  <li>「Repository」：wordpress</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
+
+<p><img src="016.png" alt="" /></p>
+
+<p>以下の環境変数を設定します。WordPress アプリケーションが MySQL に接続するために必要な設定です。最初に、<code class="language-plaintext highlighter-rouge">+ Another variable</code>ボタンを3回クリックして、その後設定値を入力します。</p>
+
+<ul>
+  <li>「WORDPRESS_DB_HOST」：127.0.0.1</li>
+  <li>「WORDPRESS_DB_USER」：wordpress</li>
+  <li>「WORDPRESS_DB_PASSWORD」：wordpress</li>
+  <li>「WORDPRESS_DB_NAME」：wordpress</li>
+</ul>
+
+<p><img src="017.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">次</code>ボタンをクリックします。</p>
+
+<p><img src="018.png" alt="" /></p>
+
+<p>設定内容を確認します。</p>
+
+<p><img src="019.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Create</code>ボタンをクリックします。</p>
+
+<p><img src="020.png" alt="" /></p>
+
+<p>設定した app と db のコンテナが作成されます。</p>
+
+<p><img src="021.png" alt="" /></p>
+
+<h2 id="2netowrk-security-groupの作成">2.Netowrk Security Groupの作成</h2>
+
+<p>デフォルトでは、80ポートを使用したWebアクセスが許可されていないので、ネットワーク・セキュリティ・グループを作成して、ブラウザからアクセスできるように設定します。</p>
+
+<p>ハンバーガーメニューをクリックします。</p>
+
+<p><img src="022.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">ネットワーキング</code>-<code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code>を選択します。</p>
+
+<p><img src="023.png" alt="" /></p>
+
+<p>対象の VCN を選択します。</p>
+
+<p><img src="024.png" alt="" /></p>
+
+<p>左にあるリソースメニューから<code class="language-plaintext highlighter-rouge">ネットワーク・セキュリティ・グループ</code>を選択します。</p>
+
+<p><img src="025.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">ネットワーク・セキュリティ・グループの作成</code>ボタンをクリックします。</p>
+
+<p><img src="026.png" alt="" /></p>
+
+<p>以下の設定を行います。</p>
+
+<ul>
+  <li>「名前」：container-instances</li>
+</ul>
+
+<p><img src="027.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Next</code>ボタンをクリックします。</p>
+
+<p><img src="028.png" alt="" /></p>
+
+<p>以下の設定を行います。</p>
+
+<ul>
+  <li>「ソース・タイプ」：CIDR</li>
+  <li>「ソースCIDR」：0.0.0.0/0</li>
+  <li>「IPプロトコル」：TCP</li>
+  <li>「ソース・ポート範囲」：All</li>
+  <li>「宛先ポート範囲」：80</li>
+</ul>
+
+<p><img src="029.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">作成</code>ボタンをクリックします。</p>
+
+<p><img src="030.png" alt="" /></p>
+
+<p>設定されたことを確認します。</p>
+
+<p><img src="031.png" alt="" /></p>
+
+<p>作成したコンテナ・インスタンスに、このネットワーク・セキュリティ・グループを適用します。</p>
+
+<p>ハンバーガーメニューをクリックします。</p>
+
+<p><img src="032.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">開発者サービス</code>-<code class="language-plaintext highlighter-rouge">コンテナ・インスタンス</code>を選択します。</p>
+
+<p><img src="033.png" alt="" /></p>
+
+<p>対象のコンテナ・インスタンスを選択します。</p>
+
+<p><img src="034.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Edit</code>リンクテキストをクリックします。</p>
+
+<p><img src="035.png" alt="" /></p>
+
+<p>作成したネットワーク・セキュリティ・グループ<code class="language-plaintext highlighter-rouge">container-instances</code>を選択して、<code class="language-plaintext highlighter-rouge">Save changes</code>ボタンをクリックします。</p>
+
+<p><img src="036.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Public IP address</code>の<code class="language-plaintext highlighter-rouge">コピー</code>リンクテキストをクリックします。</p>
+
+<p><img src="037.png" alt="" /></p>
+
+<p>ブラウザを起動してコピーしたパブリックIPアドレスにアクセスして、WordPress 初期セットアップ画面が表示されることを確認します。</p>
+
+<p><img src="038.png" alt="" /></p>
+
+<h2 id="3wordpressのセットアップ">3.WordPressのセットアップ</h2>
+
+<p><code class="language-plaintext highlighter-rouge">日本語</code>を選択して、<code class="language-plaintext highlighter-rouge">次へ</code>ボタンをクリックします。</p>
+
+<p><img src="039.png" alt="" /></p>
+
+<p>任意の情報を設定して、「WordPress をインストール」ボタンをクリックします。</p>
+
+<ul>
+  <li>サイトのタイトル: Container Instances</li>
+  <li>ユーザ名: wordpress</li>
+  <li>パスワード: Or@cleCI123@</li>
+  <li>メールアドレス: test@test.oracle.com</li>
+</ul>
+
+<p><img src="040.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">ログイン</code>ボタンをクリックします。</p>
+
+<p><img src="041.png" alt="" /></p>
+
+<p>設定した、ユーザー名とパスワードを入力して、<code class="language-plaintext highlighter-rouge">ログイン</code>ボタンをクリックします。</p>
+
+<p><img src="042.png" alt="" /></p>
+
+<p>以下の画面が表示されれば完了です。</p>
+
+<p><img src="043.png" alt="" /></p>
+
+<p>再度パブリックIPアドレスにブラウザでアクセスすると、デフォルトのブログ画面が表示されます。</p>
+
+<p><img src="044.png" alt="" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-01-31T11:27:43+09:00">January 31, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Container+Instances+%E3%82%92%E3%83%97%E3%83%AD%E3%83%93%E3%82%B8%E3%83%A7%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fci-for-beginners%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fci-for-beginners%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fci-for-beginners%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/devops-for-beginners-functions/" class="pagination--pager" title="Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/oke-for-commons/" class="pagination--pager" title="Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
