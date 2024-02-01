@@ -1187,6 +1187,12 @@ var store = [{
         "url": "/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/",
         "teaser": "/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/architecture_diagram.png"
       },{
+        "title": "OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する",
+        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。 所要時間 : 約20分 前提条件 : OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築するを参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIのLogging AnalyticsでOCIの監査ログを可視化・分析するもしくは、ドキュメントをご参照ください。 ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細はドキュメントをご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. ログ・グループの作成 WAFポリシーのログの転送先となるLogging Analyticsの「ログ・グループ」を作成します。 Logging Analyticsではログを「ログ・グループ」単位で管理することができます。 OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理 → ログ・グループ → 「ログ・グループの作成」ボタンをクリックします。 表示された「ログ・グループの作成」画面にて、任意のログ・グループ名を入力し、「作成」ボタンをクリックします。...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/id-security/waf-v2-log/",
+        "teaser": "/ocitutorials/id-security/web-application-firewall-v2/wafv2-19.png"
+      },{
         "title": "OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する",
         "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、OCIのLoad Balancerに直接デプロイする”WAFポリシー”を作成し、実際のWAFの動作を確認します。 所要時間 : 約1時間 前提条件 : 応用編 - ロードバランサーでWebサーバーを負荷分散するを参考に、WebサーバーおよびOCIのロードバランサ―が構成されていること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Web Application Firewallを使用するためには、操作を実行するユーザーに以下のポリシーが付与されている必要があります。 allow group &lt;IAMグループ名&gt; to manage waas-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage web-app-firewall in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage waf-policy in tenancy/compartment &lt;コンパートメント名&gt;...","categories": [],
         "tags": ["intermediate"],

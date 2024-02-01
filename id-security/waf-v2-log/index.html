@@ -1,0 +1,696 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、WAFポリシーのログをLogging Analyticsに転送して分析する手順を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/id-security/waf-v2-log/">
+
+
+  <meta property="og:description" content="本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、WAFポリシーのログをLogging Analyticsに転送して分析する手順を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/id_security/web-application-firewall-v2/wafv2-19.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-02-01T09:46:41+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/id-security/waf-v2-log/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66,55, 0.7), rgba(34, 66,55, 0.7)), url('/ocitutorials/id_security/web-application-firewall-v2/wafv2-19.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する
+
+        
+      </h1>
+      
+        <p class="page__lead">本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、WAFポリシーのログをLogging Analyticsに転送して分析する手順を紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/id-security" itemprop="item"><span itemprop="name">Id security</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">アイデンティティとセキュリティ編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/id-security/waf-v2-log/" class="active">OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/web-application-firewall-v2/">OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/waf-edge-policy/">OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/networkfirewall-ips/">OCI Network FirewallのIPS/IDS機能を検証する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/networkfirewall-la/">OCI Network Firewallのログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vault-basedatabase/">Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vault-compute/">Vaultサービスを使ってコンピュート・インスタンスのブート・ボリュームをユーザー管理の暗号鍵で暗号化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vault-objectstorage/">Vaultサービスを使ってObject Storageをユーザー管理の暗号鍵で暗号化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomains-AzureAD/">OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomain-apex-sso/">OCI IAM Identity DomainでAPEXで作成したアプリケーションに認証と認可をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/identitydomain-mfa/">OCI IAM Identity DomainでユーザーのMFAを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/security-zone/">Security Zoneを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/id-security/vulnerability-scanning/">Vulnerability Scanning Serviceを設定する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する">
+    <meta itemprop="description" content="本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、WAFポリシーのログをLogging Analyticsに転送して分析する手順を紹介します。">
+    <meta itemprop="datePublished" content="2024-02-01T09:46:41+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-ロググループの作成">1. ログ・グループの作成</a></li><li><a href="#2-サービスコネクタの作成">2. サービス・コネクタの作成</a></li><li><a href="#3wafログのダッシュボード定義のインポート">3.　WAFログのダッシュボード定義のインポート</a></li><li><a href="#4-ログの分析">4. ログの分析</a><ul><li><a href="#4-1-wafへのアクセス元地域を世界地図で表示する例1">4-1. WAFへのアクセス元地域を世界地図で表示する（例1）</a></li><li><a href="#4-2-wafによるアクションを確認する例2">4-2. WAFによるアクションを確認する（例2）</a></li><li><a href="#4-3-ダッシュボードを利用する例3">4-3. ダッシュボードを利用する（例3）</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。
+本チュートリアルでは、「<a href="/ocitutorials/id_security/web-application-firewall-v2">OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する</a>」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li><a href="/ocitutorials/id_security/web-application-firewall-v2">OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築する</a>を参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること</li>
+  <li>Logging Analyticsが有効化されていること</li>
+  <li>OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
+<img src="nfwla5.png" alt="画面キャプチャ0" /></li>
+  <li>ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は<a href="https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a>もしくは、<a href="https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html">ドキュメント</a>をご参照ください。</li>
+  <li>ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/serviceconnectorhubpolicyreference.htm">ドキュメント</a>をご参照ください。</li>
+</ul>
+
+<p><strong>注意 :</strong>
+※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</p>
+
+<p><br /></p>
+
+<h1 id="1-ロググループの作成">1. ログ・グループの作成</h1>
+
+<p>WAFポリシーのログの転送先となるLogging Analyticsの「ログ・グループ」を作成します。
+Logging Analyticsではログを「ログ・グループ」単位で管理することができます。</p>
+
+<p>OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理 → ログ・グループ → 「ログ・グループの作成」ボタンをクリックします。</p>
+
+<p>表示された「ログ・グループの作成」画面にて、任意のログ・グループ名を入力し、「作成」ボタンをクリックします。</p>
+
+<p><img src="waflog01.png" alt="画面ショット1" /></p>
+
+<p><br /></p>
+
+<h1 id="2-サービスコネクタの作成">2. サービス・コネクタの作成</h1>
+
+<p>Service Connector Hubというサービスを使用して、Loggingサービスに保管されているWAFポリシーのログを、手順1で作成したLogging Analyticsのログ・グループに転送します。</p>
+
+<p>Logging Analyticsでは200種類以上のログに対応したログの解析文（パーサー）があらかじめ定義されているため、解析文が事前定義されているログはLogging Analyticsに取り込むことですぐに分析することが可能です。
+また、解析文が定義されていないログも、ユーザーがカスタムで解析文を作成することが可能です。</p>
+
+<p>本チュートリアルで分析するWAFポリシーのログも解析文がオラクルによってあらかじめ定義されているので、ログをLogging Analyticsに転送します。</p>
+
+<p>OCIコンソール画面左上のメニュー → 監視および管理 → ロギング → サービス・コネクタ → 「サービス・コネクタ」の作成ボタンをクリックします。</p>
+
+<p>表示された「サービス・コネクタの作成」画面にて、以下項目を入力し、「作成」ボタンをクリックします。</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">コネクタ名</code></strong> - 任意 例）WAFLog Connector</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意 例）WAFログの転送</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">リソース・コンパートメント</code></strong> - WAFポリシーのログが保管されているLoggingサービスのコンパートメントを選択</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ソース</code></strong> - ロギング</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット</code></strong> - ログ・アナリティクス</li>
+</ul>
+
+<p><img src="waflog02.png" alt="画面ショット2" /></p>
+
+<p><strong>ソースの構成</strong></p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">ログ・グループ</code></strong> - WAFポリシーのログを有効化したLoggingサービスのログ・グループを選択</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ログ</code></strong> - 有効化したWAFポリシーのログを選択</li>
+</ul>
+
+<p><img src="waflog03.png" alt="画面ショット3" /></p>
+
+<p><strong>ターゲットの構成</strong></p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> - 手順1でLogging Analyticsのログ・グループを作成したコンパートメントを選択</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ログ・グループ</code></strong> - 手順1で作成したログ・グループを選択</li>
+  <li><strong>このサービス・コネクタによるコンパートメント○○のログ・アナリティクスへの書き込みを許可するデフォルト・ポリシーを作成します</strong> の「作成」ボタンをクリック
+ <img src="waflog04.png" alt="画面ショット4" /></li>
+</ul>
+
+<p>「サービス・コネクタの作成」画面一番下の「作成」ボタンをクリックしたら、以上でサービス・コネクタの作成は完了です。</p>
+
+<p><br /></p>
+
+<h1 id="3wafログのダッシュボード定義のインポート">3.　WAFログのダッシュボード定義のインポート</h1>
+
+<p>本チュートリアルでは、カスタムで予め作成されたダッシュボード定義をエクスポートしたjsonファイルを、各自環境にインポートします。</p>
+
+<p>※ログの出力フォーマットは変更する可能性があります。Github上にあるダッシュボード定義は2023年12月時点のWAFログに対応したものになります。<br />
+WAFログのダッシュボード定義ファイルは以下Githubにあリます。</p>
+
+<ul>
+  <li><a href="https://github.com/jennylia3/oci-waf-tutorials/blob/main/WAF%20Dashboard%20-%20JP.json">ダッシュボード定義</a></li>
+</ul>
+
+<p>OCIコンソール画面左上のメニュー → 監視及び管理 → ログ・アナリティクス → ダッシュボードをクリックします。
+ダッシュボード画面の「Import Dashboards」をクリックし、GitHubからダウンロードしたJSONファイルを選択します。</p>
+
+<p><img src="waflog05.png" alt="画面ショット5" /></p>
+
+<p>表示された「Import Dashboards」の画面にて、それぞれ以下を選択します。</p>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">Compartments for dashboards</code></strong> - 「Specify a compartment for all dashboards」を選択</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">Choose a Compartment</code></strong> - 手順1でロググループを作成したコンパートメントを選択</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">Compartments for saved searches</code></strong> - 「Specify a compartment for all saved searches」を選択</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">Choose a Compartment</code></strong> - 手順1でログ・グループを作成したコンパートメントを選択</li>
+</ul>
+
+<p><img src="waflog06.png" alt="画面ショット6" /></p>
+
+<p>以上の情報を入力したら、「Import」ボタンをクリックします。<br />
+ダッシュボード画面にて、「WAF Dashboard」ダッシュボードが作成されていることを確認します。</p>
+
+<p><img src="waflog07.png" alt="画面ショット7" /></p>
+
+<p><br /></p>
+
+<h1 id="4-ログの分析">4. ログの分析</h1>
+
+<p>OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → ログ・エクスプローラーにて、「OCI WAF Logs」をクリックすると、WAFのログが一覧で表示されます。</p>
+
+<p><img src="waflog08.png" alt="画面ショット8" /></p>
+
+<p>一覧で表示されたログコンテンツを更に拡張表示し、ログの解析文（ログ・パーサー）によってログの中身のフィールドが識別されていることを確認します。</p>
+
+<p><img src="waflog09.png" alt="画面ショット9" /></p>
+
+<p>Logging Analyticsでは、解析文によって定義されている「フィールド」に基づいて、ログを可視化、分析することができます。</p>
+
+<h2 id="4-1-wafへのアクセス元地域を世界地図で表示する例1">4-1. WAFへのアクセス元地域を世界地図で表示する（例1）</h2>
+
+<p>ビジュアライゼーションメニューのドロップダウンボックスをクリックし、地球儀のマークを選択します。</p>
+
+<p><img src="waflog10.png" alt="画面ショット10" /></p>
+
+<p>WAFへのアクセス元のクライアント情報を基に、世界地図上でどの国からアクセスがあったかを確認することができます。
+ <img src="waflog11.png" alt="画面ショット11" /></p>
+
+<p>世界地図下に表示されているリストで、「logrecords」の隣の▼をクリックすると、リストをログレコード数の昇順/降順表示に切り替えることができます。<br />
+以下スクリーンショットでは、アメリカのアリゾナ州からのアクセスが最も多いことが分かります。</p>
+
+<p><img src="waflog12.png" alt="画面ショット12" /></p>
+
+<p><br /></p>
+
+<h2 id="4-2-wafによるアクションを確認する例2">4-2. WAFによるアクションを確認する（例2）</h2>
+
+<p>Logging Analyticsでは、WAFによって取られたアクションを「WAF Status Code」というフィールド名にて確認することができます。<br />
+WAFを通過したリクエストのうち、WAFによって取られた各アクションの内訳を確認します。</p>
+
+<p>ビジュアライゼーションメニューのドロップダウンボックスをクリックし、円グラフのマークをクリックします。</p>
+
+<p><img src="waflog13.png" alt="画面ショット13" /></p>
+
+<p>続いて、フィールドメニューの「その他」を拡張し、「WAF Status Code」の右に表示される3つの点をクリックします。<br />
+「グループ化基準に追加」をクリックします。</p>
+
+<p><img src="waflog14.png" alt="画面ショット14" /></p>
+
+<p>ビジュアライゼーションメニューの「グループ化基準」に「WAF Status Code」が追加されていることを確認したら、下の「適用」ボタンをクリックします。</p>
+
+<p><img src="waflog15.png" alt="画面ショット15" /></p>
+
+<p>WAFのリクエスト全体でWAFによるレスポンスコードの内訳が表示されます。<br />
+下のスクリーンショットの例では、HTTPコード400が最も多く返却されていることが分かります。</p>
+
+<p><img src="waflog16.png" alt="画面ショット16" /></p>
+
+<p>円グラフの中から特定のステータスコードをクリックすることで、更にログを絞り込むことも可能です。</p>
+
+<p><img src="waflog17.png" alt="画面ショット17" />
+ <img src="waflog18.png" alt="画面ショット18" /></p>
+
+<p><br /></p>
+
+<h2 id="4-3-ダッシュボードを利用する例3">4-3. ダッシュボードを利用する（例3）</h2>
+
+<p>OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → ダッシュボードを選択し、手順3でインポートしたダッシュボードを選択します。
+ <img src="waflog07.png" alt="画面ショット7" /></p>
+
+<p>以下のようなダッシュボードが表示されます。
+ <img src="waflog19.png" alt="画面ショット19" /></p>
+
+<p>WAFのダッシュボードは大きく以下の3つのセクションに分かれています。</p>
+<ul>
+  <li>WAF全体概要</li>
+  <li>WAFアクセス制限&amp;レート制限</li>
+  <li>WAF保護ルール</li>
+</ul>
+
+<p>WAF全体概要では、WAFを通過したリクエストに関する情報を可視化することができます。</p>
+
+<ul>
+  <li><strong>例1. WAF OCIDと強制ポイントごとのWAFレスポンスコード内訳</strong></li>
+</ul>
+
+<p><img src="waflog20.png" alt="画面ショット20" /></p>
+
+<ul>
+  <li><strong>例2. WAFソースIPアドレス Top10</strong><br />
+WAFを通過したリクエストのクライアントIPアドレスのTop10を円グラフ、リストで確認することができます。</li>
+</ul>
+
+<p><img src="waflog21.png" alt="画面ショット21" /></p>
+
+<ul>
+  <li><strong>例3. WAFアクセス数 Top10 By 国コード</strong><br />
+WAFを通過したリクエストのクライアントの位置情報を基に、最もアクセス数の多い国Top10を確認することができます。</li>
+</ul>
+
+<p><img src="waflog22.png" alt="画面ショット22" /></p>
+
+<p>また、必要に応じてダッシュボードの中身は編集することができます。
+ログ・エクスプローラーにてダッシュボードに追加したい検索結果を表示し、画面左上の「アクション」→ 「名前をつけて保存」をクリックします。</p>
+
+<p><img src="waflog23.png" alt="画面ショット23" /></p>
+
+<p>「検索の保存」画面にて、任意の検索名を入力し「ダッシュボードに追加」にチェックを入れます。
+追加先のダッシュボードを選択し、「保存」することで既存のダッシュボードに新しいビューを追加することができます。</p>
+
+<p><img src="waflog24.png" alt="画面ショット24" /></p>
+
+<p>また、ダッシュボード画面の左上の「Action」から、「Edit」を選択することで、ダッシュボードの中身のウィジェットを削除したり、位置を編集することも可能です。</p>
+
+<p><img src="waflog25.png" alt="画面ショット25" /></p>
+
+<p>以上で、OCI WAFのログをLogging Analyticsに転送して分析する手順は完了です。
+是非、ダッシュボードを実運用に合わせてカスタマイズしてご活用ください。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-01T09:46:41+09:00">February 1, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Load+Balancer%E3%81%AB%E7%9B%B4%E6%8E%A5%E3%82%A2%E3%82%BF%E3%83%83%E3%83%81%E3%81%99%E3%82%8B%E3%82%BF%E3%82%A4%E3%83%97%E3%81%AEWeb+Application+Firewall%E3%81%AE%E3%83%AD%E3%82%B0%E3%82%92%E5%88%86%E6%9E%90%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fid-security%2Fwaf-v2-log%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fid-security%2Fwaf-v2-log%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fid-security%2Fwaf-v2-log%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/id-security/web-application-firewall-v2/" class="pagination--pager" title="OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
