@@ -52,13 +52,16 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 + **[OCI Load BalancerにアタッチするタイプのWeb Application Firewallを構築する](https://oracle-japan.github.io/ocitutorials/id-security/web-application-firewall-v2/)**  
    本チュートリアルでは、OCIのLoad Balancerに直接アタッチする「WAFポリシー」を作成し、実際のWAFポリシーの動作を確認します。
 
++ **[OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する](/ocitutorials/id-security/waf-v2-log)**  
+   本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、WAFポリシーのログをLogging Analyticsに転送して分析する手順を紹介します。
+
 
 ## Network Firewallチュートリアル
 
 + **[OCI Network Firewallを構築する](/ocitutorials/id-security/networkfirewall/)**  
    本チュートリアルでは、OCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。
 
-+ **[OCI Network FirewallのIDS/IPS機能を検証する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall-ips/)**  
++ **[OCI Network FirewallのIDS/IPS機能を検証する](/ocitutorials/id-security/networkfirewall-ips/)**  
    本チュートリアルでは、「OCI Network Firewallを構築する」の続編として、IDS/IPSの設定および動作を確認します。IDS/IPSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。
 
 + **[OCI Network Firewallのログを分析する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall-la/)**  
