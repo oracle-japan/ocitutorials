@@ -7,6 +7,11 @@ header:
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
+<style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
 
 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージが **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** として **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から提供されています。  
 本テクニカルTipsは、この **クラスタネットワーキングイメージ** の適切な選び方を解説します。
@@ -14,55 +19,103 @@ header:
 ***
 # 0. 概要
 
-**[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** は、ベースOSにOracle Linuxを採用し、シェイプがBM.HPC2.36/ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** の場合そのバージョンは7.9と8から選択でき、 **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** の場合7.9のみ選択可能です。  
-なお、2023年6月29日時点のバージョン8系 **クラスタネットワーキングイメージ** の最新は、8.7です。
+**[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** は、ベースOSに **Oracle Linux** を採用し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** への接続に必要な以下のソフトウェアが予めインストールされています。
 
-下表は、クラスタ・ネットワークに対応したシェイプと対応する **クラスタネットワーキングイメージ** の組み合わせを示しています。  
+- Mellanox OFED  
+**クラスタ・ネットワーク** にインスタンスを接続するNIC（**NVIDIA Mellanox ConnectX**）のドライバーソフトウェアです。
+- wpa_supplicant  
+インスタンスが **クラスタ・ネットワーク** に接続する際行われる802.1X認証（※1）のクライアントソフトウェアです。
+- 802.1X認証関連ユーティリティソフトウェア  
+インスタンスが **クラスタ・ネットワーク** に接続する際行われる802.1X認証に必要な機能を提供するユーティリティソフトウェアです。
+- **クラスタ・ネットワーク** 設定ユーティリティソフトウェア  
+**クラスタ・ネットワーク** 接続用ネットワークインターフェースのIPアドレス設定等の機能を提供するユーティリティソフトウェアです。
 
-| シェイプ             | OSイメージ名                      | ベースOS            | OFED | マーケットプレイス<br>URL                                                             |
-| :--------------: | :--------------------------: | :--------------: | :--: | :--------------------------------------------------------------------------: |
-| BM.HPC2.36       | HPC Cluster Networking Image | Oracle Linux 7.9 | 5.4  | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)** （※1）  |
-|                  | HPC Cluster Networking Image | Oracle Linux 8   | 5.4  | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)** （※2）  |
-| BM.Optimized3.36 | HPC Cluster Networking Image | Oracle Linux 7.9 | 5.4  | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)** （※1）  |
-|                  | HPC Cluster Networking Image | Oracle Linux 8   | 5.4  | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)** （※2）  |
-| BM.GPU4.8        | GPU Cluster Networking Image | Oracle Linux 7.9 | 5.4  | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** （※3） |
-| BM.GPU.A100-v2.8 | GPU Cluster Networking Image | Oracle Linux 7.9 | 5.4  | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** （※3） |
+※1）802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。  
 
-※1）"バージョン"フィールドで、"OracleLinux-7"で始まる最新のイメージを選択します。  
-※2）"バージョン"フィールドで、"OracleLinux-8"で始まる最新のイメージを選択します。  
-※3）"バージョン"フィールドで、最新のイメージを選択します。
+また **クラスタネットワーキングイメージ** は、以下の観点で異なる用途のものが用意されています。
+
+- 802.1X認証関連ユーティリティソフトウェアと **クラスタ・ネットワーク** 設定ユーティリティソフトウェアの提供方法  
+**Oracle Cloud Agent** （以降 **OCA** と呼称）のプラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。  
+- 対象のシェイプ  
+HPCシェイプ（※1）用（HPC **クラスタネットワーキングイメージ** ）か、GPUシェイプ（※2）用（GPU **クラスタネットワーキングイメージ** ）かの違いで、GPU **クラスタネットワーキングイメージ** はNVIDIA GPUドライバがインストールされています。  
+- ベースOSの **Oracle Linux** バージョン  
+バージョン7系か、バージョン8系かによる違いです。  
+
+※1）**[BM.HPC2.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#previous-generation-shapes__previous-generation-bm)** と **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**  
+※2）**[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** と **[BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 
+
+以降では、用途毎に用意している **クラスタネットワーキングイメージ** の一覧と、選択した **クラスタネットワーキングイメージ** をインスタンスデプロイ時に指定する方法を解説します。
 
 ***
-# 1. クラスタ・ネットワーク対応OSイメージ指定方法
+# 1. クラスタネットワーキングイメージ一覧
 
-## 1-0. 概要
+本章は、前章で説明した用途毎に用意している **クラスタネットワーキングイメージ** の一覧を下表にまとめます。  
+自身の用途に合わせて適切なものを選択し、 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から入手します。  
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスのデプロイは、OCIコンソールを使用する方法と **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用する方法があります。
+|No.| 対象シェイプ  | **Oracle Linux**<br>バージョン | ユーティリティ<br>提供方法 | OFED | GPUドライバ | イメージ名の先頭           | **マーケットプレイス**<br>URL（※3）                                                    |
+| :-:|:-----: | :-----------------------: | :--------------: | :--: | :-----: | :----------------: | :---------------------------------------------------------------------: |
+|1| HPCシェイプ | 8.8                       | **OCA** プラグイン         | 5.8  | -       | OracleLinux-8-OCA  | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+|2|         | 8.7                       | 個別RPM            | 5.4  | -       | OracleLinux-8-RHCK | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+|3|         | 7.9                       | **OCA** プラグイン         | 5.8  | -       | OracleLinux-7-OCA  | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+|  4|       | 7.9                       | 個別RPM            | 5.4  | -       | OracleLinux-7-RHCK | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+| 5|GPUシェイプ | 8.8                       | **OCA** プラグイン         | 5.8  | 535     | OracleLinux-8-OCA  | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+|   6|      | 7.9                       | **OCA** プラグイン         | 5.8  | 535     | OracleLinux-7-OCA  | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+|     7|    | 7.9                       | 個別RPM            | 5.4  | 515     | OracleLinux-7-RHCK | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
 
-本章は、これらの方法で **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を適切に指定する方法を解説します。
+※3）OCIへのログインを要求された場合は、ログインを完了して下さい。
 
-## 1-1. OCIコンソールで指定
+***
+# 2. クラスタネットワーキングイメージ指定方法
 
-OCIコンソールを使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** を予め作成しますが、このインスタンス構成の **イメージとシェイプ** フィールドで **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を選択します。  
-以下 **イメージの選択** サイドバーで **Marketplace** を選択し検索フィールドに **hpc** （HPC Cluster Networking Image）か **gpu** （GPU Cluster Networking Image）と入力して表示される **Oracle Linux - HPC Cluster Networking Image** あるいは **Oracle Linux - GPU Cluster Networking Image** を選択し **イメージ・ビルド** フィールドで適切なOSイメージを選択（※4）し **イメージの選択** ボタンをクリックします。
+## 2-0. 概要
+
+本章は、前章の一覧から選択した **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** をインスタンスデプロイ時にどのように指定するかを解説します。
+
+**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスのデプロイ方法は、主に以下3種類が存在します。
+
+- OCIコンソールを使用する方法
+- **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用する方法
+-  **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用する方法
+
+本章は、選択した **クラスタネットワーキングイメージ** をどのように指定するか、これらのデプロイ方法毎に解説します。
+
+## 2-1. OCIコンソールを使用する方法
+
+OCIコンソールを使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** を予め作成しますが、この **インスタンス構成** の **イメージとシェイプ** フィールドで **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を選択します。
+
+以下 **イメージの選択** サイドバーで、 **Marketplace** を選択し検索フィールドに **hpc** （HPC **クラスタネットワーキングイメージ** ）か **gpu** （GPU **クラスタネットワーキングイメージ** ）と入力して表示される **Oracle Linux - HPC Cluster Networking Image** あるいは **Oracle Linux - GPU Cluster Networking Image** を選択して表示される **イメージ・ビルド** フィールドで適切なOSイメージを選択（※4）し、 **Oracle Standard Terms and Restrictionsを確認した上でこれに同意します** チェックボックスをチェックし **イメージの選択** ボタンをクリックします。
 
 ![画面ショット](console_page01.png)
 
-※4）"HPC_Cluster_Networking_Image_Oracle_Linux_7.9"の場合は"OracleLinux-7"で始まる最新のイメージを、"HPC_Cluster_Networking_Image_Oracle_Linux_8"の場合は"OracleLinux-8"で始まる最新のイメージ（※5）を、"GPU_Cluster_Networking_Image_Oracle_Linux_7.9"の場合は全ての中から最新のイメージを選択します。
+※4）前章一覧表中の **イメージ名の先頭** 列を参照し、適切な **イメージ・ビルド** を選択します。
 
-※5）2023年11月13日時点の最新は、8.7です。
+## 2-2. HPCクラスタスタックを使用する方法
 
-## 1-2. HPCクラスタスタックで指定
-
-**[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** メニュー中の以下 **Compute node options** フィールドの **Image version** プルダウンメニューで **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を選択します。  
+**[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** メニュー中の以下 **Compute node options** フィールドの **Image version** プルダウンメニューで適切な **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を選択します。
 
 ![画面ショット](console_page02.png)
 
 各選択肢は、以下の **クラスタネットワーキングイメージ** に対応しています。
 
-| メニュー名   | **クラスタネットワーキングイメージ**                              | 備考                     |
-| ------- | --------------------------------------------- | ---------------------- |
-| HPC_OL7 | HPC Cluster Networking Image Oracle Linux 7.9 | -                      |
-| HPC_OL8 | HPC Cluster Networking Image Oracle Linux 8   | 2023年11月13日時点のバージョンは8.7 |
-| GPU     | GPU Cluster Networking Image Oracle Linux 7.9 | -                      |
-|         |                                               |                        |
+| メニュー名   | 前章一覧表中のNo. |
+| :-----: | :--------: |
+| HPC_OL7 | 3          |
+| HPC_OL8 | 1          |
+| GPU_OL7 | 6          |
+| GPU_OL8 | 5          |
+
+## 2-3. Terraformスクリプトを使用する方法
+
+ **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、通常イメージのOCIDをスクリプト内に指定します。
+
+前章一覧表中の各 **クラスタネットワーキングイメージ** は、以下のOCIDに対応しています。
+
+| 前章一覧表中のNo. | OCID                                                                           |
+| :--------: | :----------------------------------------------------------------------------: |
+| 1          | ocid1.image.oc1..aaaaaaaajkzfwcucvqdui7rksrvgcaagoxutbh56pecbff7qz7gbfpruhzja  |
+| 2          | ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a |
+| 3          | ocid1.image.oc1..aaaaaaaalq4xqgkvjkrvvcvsfmfkbljgt6hfdqymyt6gpekuf622a6xktbcq |
+| 4          | ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa  |
+| 5          | ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq  |
+| 6          | ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia  |
+| 7          | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra  |

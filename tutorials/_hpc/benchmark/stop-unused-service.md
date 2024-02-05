@@ -1,6 +1,6 @@
 ---
 title: "不要サービス停止によるパフォーマンスチューニング方法"
-excerpt: "計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。"
+excerpt: "計算リソースを極限まで使用するHPCワークロードの実行は、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。"
 order: "222"
 layout: single
 header:
@@ -8,7 +8,7 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-計算リソースを極限まで使用するHPCワークロードの実行に於いては、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。  
+計算リソースを極限まで使用するHPCワークロードの実行は、些細な計算リソースを使用するOS常駐サービスがその性能に影響することがあります。  
 特に高並列実行時は、HPCクラスタ内の1ノードでこのようなサービスが稼働していることで、そのスケーラビリティに影響を及ぼします。  
 本パフォーマンス関連Tipsは、OS標準で稼働している常駐サービスの中でリソースを多く消費しているものを特定しこれを停止することで、OSレベルのパフォーマンスチューニングを実施する方法を解説します。
 
@@ -55,7 +55,7 @@ HPCワークロードの高並列実行に於けるスケーラビリティは�
 - unified-monitoring-agent
 - OSWatcher
 - dnf-makecache.timer
-- Oracle Cloud Agent
+- **Oracle Cloud Agent**
 - ksplice
 - firewalld
 - SELinux
@@ -247,7 +247,7 @@ HPCワークロードの高並列実行に於けるスケーラビリティは�
     $
     ```
 
-    7-2. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、プロセスIDが29067のプロセスがoci-wlpでこれがOracle Cloud Agentから実行されていることを特定します。
+    7-2. 以下コマンドを調査用HPCクラスタの計算ノードのopcユーザで実行し、プロセスIDが29067のプロセスがoci-wlpでこれが **Oracle Cloud Agent** から実行されていることを特定します。
 
     ```sh
     $ sudo lastcomm -f /var/account/pacct --pid | grep " 29067 "
@@ -257,9 +257,12 @@ HPCワークロードの高並列実行に於けるスケーラビリティは�
     $
     ```
 
-    Oracle Cloud Agentは、インスタンスのパッケージ管理、ログ管理、モニタリング等を行うエージェントサービスで、これらの機能を使用しないことを前提に不要サービスと判定します。
+    **Oracle Cloud Agent** は、インスタンスのパッケージ管理、ログ管理、モニタリング、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続等を行うエージェントサービスで、これらの機能を使用しないことを前提に不要サービスと判定します。
 
-    自身の環境に於けるOracle Cloud Agentの要・不要は、OCI公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** を参照してその判断を行ってください。
+    自身の環境に於ける **Oracle Cloud Agent** の要・不要は、OCI公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** を参照してその判断を行ってください。
+
+    なお、 **クラスタ・ネットワーク** 接続で **Oracle Cloud Agent** プラグインを使用する方法を採用している場合は、これを個別RPMの機能を利用する方法に変更することで、 **Oracle Cloud Agent** を不要サービスと判定することが可能です。  
+    この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** を参照ください。
 
 8. ステップ3. の結果から、対象期間中に消費されたCPU時間のうち2％程度をpython3が消費しており、このコマンドを実行した親プロセスを特定します。
 
@@ -324,7 +327,7 @@ HPCワークロードの高並列実行に於けるスケーラビリティは�
 - unified-monitoring-agent
 - OSWatcher
 - dnf-makecache.timer
-- Oracle Cloud Agent
+- **Oracle Cloud Agent**
 - ksplice
 - firewalld
 - SELinux
@@ -350,7 +353,7 @@ HPCワークロードの高並列実行に於けるスケーラビリティは�
     $ sudo systemctl disable --now dnf-makecache.timer
     ```
 
-4. 以下コマンドを計算ノードのopcユーザで実行し、Oracle Cloud Agentを停止します。
+4. 以下コマンドを計算ノードのopcユーザで実行し、 **Oracle Cloud Agent** を停止します。
 
     ```sh
     $ sudo systemctl disable --now oracle-cloud-agent
