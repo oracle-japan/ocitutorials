@@ -17,16 +17,18 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 - 計算ノード： HPCワークロード向けIntel Ice Lakeプロセッサ搭載ベアメタルシェイプの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
 - インターコネクトネットワーク: **クラスタ・ネットワーク** （ノード当たり100 Gbps x 1）
 - インターネットからSSH接続可能なBastionノード
-- OS: **Oracle Linux** 8
+- OS: **Oracle Linux** 8.8
 - ジョブスケジューラ: **[Slurm](https://slurm.schedmd.com/)**
 - クラスタ内ホームディレクトリ共有： **ファイル・ストレージ**
 - クラスタ内ユーザ統合管理： LDAP
 
 ![システム構成図](architecture_diagram.png)
 
-またこのチュートリアルは、デプロイしたHPCクラスタのインターコネクト性能を **[Intel MPI Benchmark](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** で確認します。
+またこのチュートリアルでは、構築したHPCクラスタに対して以下を実施し、その手順を解説します。
 
-またこのチュートリアルでは、クラスタ構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存のクラスタに計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。
+- **[Intel MPI Benchmark](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** によるインターコネクト性能確認
+- クラスタ構築後のワークロード増加を想定した計算ノード追加
+- ハードウェア障害の発生を想定した特定計算ノードの入れ替え
 
 本チュートリアルで使用する **HPCクラスタスタック** は、通常であれば数日かかるHPCクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択するだけで実施することを可能にします。
 
@@ -66,7 +68,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
     - **名前** ： **IAMポリシー** に付与する名前
     - **説明** ： **IAMポリシー** に付与する説明（用途等）
-    - **ポリシー・ビルダー** ： 作成する **IAMポリシー** を指定する以下構文（ **手動エディタの表示** ボタンをクリックして表示）
+    - **ポリシー・ビルダー** ： 作成する **IAMポリシー** を指定する以下構文  
+    （ **手動エディタの表示** ボタンをクリックして表示）
 
       ```sh
       allow service compute_management to use tag-namespace in compartment compartment_name
@@ -74,15 +77,15 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
       allow service compute_management to read app-catalog-listing in compartment compartment_name
       allow group group_name to manage all-resources in compartment compartment_name
       ```
-      ※1: **コンパートメント** 名は、自身のものに置き換えます。  
-      ※2: 4行目の **グループ** 名は、自身のものに置き換えます。  
+      ※1）**コンパートメント** 名は、自身のものに置き換えます。  
+      ※2）4行目の **グループ** 名は、自身のものに置き換えます。  
 
    ![画面ショット](console_page02.png)
 
 ## 1-2. スタックの作成
 
 本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を基に、前述のHPCクラスタを構築するための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。  
-このチュートリアルで使用する **HPCクラスタスタック** は、バージョン **2.10.3** です。
+このチュートリアルで使用する **HPCクラスタスタック** は、バージョン **2.10.4.1** です。
 
 1. 以下 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** の **HPCクラスタスタック** のページにアクセスします。
 
@@ -90,9 +93,9 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。
 
-2. 表示される以下画面で、以下情報の入力と **オラクル社標準の条件および規則を確認した上でこれに同意します。** チェックボックスのチェックを行い、 **スタックの起動** ボタンをクリックします。
+2. 表示される以下画面で、以下情報の入力と **オラクル社標準の条件および規則を確認した上でこれに同意します。** チェックボックスをチェックし、 **スタックの起動** ボタンをクリックします。
     - **リージョン :** オンデマンドHPCクラスタをデプロイする **リージョン**
-    - **バージョン :** v2.10.3
+    - **バージョン :** v2.10.4.1
     - **コンパートメント :** **スタック** を作成する **コンパートメント**
 
    ![画面ショット](market_place.png)
@@ -103,28 +106,29 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    ![画面ショット](stack_page01.png)
 
-4. 表示される **変数の構成** 画面で、各フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
+4. 表示される **変数の構成** 画面で、各フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。  
+なお、ここに記載のないフィールドは、デフォルトのままとします。
 
    4.1 **Cluster configuration**
-    - **Public SSH key :** （Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵）
-      - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
+    - **Public SSH key :** Bastionノードのログインに使用するSSH秘密鍵に対応する公開鍵  
+    （公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能）  
 
    ![画面ショット](stack_page02.png)
 
    4.2 **Headnode options**
-    - **Availability Domain :** （Bastionノードをデプロイする **可用性ドメイン** ）
+    - **Availability Domain :** Bastionノードをデプロイする **可用性ドメイン**
     - **Enable boot volume backup :** チェックオフ
     - **Create Object Storage PAR :** チェックオフ
 
    ![画面ショット](stack_page03.png)
 
    4.3 **Compute node options**
-    - **Availability Domain :** （計算ノードをデプロイする **可用性ドメイン** ）
+    - **Availability Domain :** 計算ノードをデプロイする **可用性ドメイン**
     - **Shape of the Compute Nodes :** **BM.Optimized3.36**
     - **Hyperthreading enabled :** チェックオフ
-    - **Image version :** HPC_OL8（※1）
+    - **Image version :** HPC_OL8（※3）
    
-   ※1）**Oracle Linux** 8ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** 
+   ※3）このイメージの詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[2-2. HPCクラスタスタックを使用する方法](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#2-2-hpcクラスタスタックを使用する方法)** を参照ください。
 
    ![画面ショット](stack_page04.png)
 
@@ -136,24 +140,29 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
    4.5 **Additional file system**
     - **Add another NFS filesystem :** チェック
     - **Create FSS :** チェック
-    - **NFS Path :** /mnt/nfs（※2）
-    - **NFS server Path :** /mnt/nfs（※2）
-    - **FSS Availability Domain :** （ **ファイル・ストレージ** をデプロイする **可用性ドメイン** ）
+    - **NFS Path :** /mnt/nfs（※4）
+    - **NFS server Path :** /mnt/nfs（※4）
+    - **FSS Availability Domain :** **ファイル・ストレージ** をデプロイする **可用性ドメイン**
 
-   ※2）ここで指定するパスは、 **ファイル・ストレージ** 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。例えばユーザ名user_nameのLDAPユーザのホームディレクトリは、/mnt/nfs/home/user_nameとなります。
+   ※4）ここで指定するパスは、 **ファイル・ストレージ** 領域に作成するLDAPユーザのホームディレクトリを格納するディレクトリを指定しています。例えばユーザ名 **user_name** のLDAPユーザのホームディレクトリは、 **/mnt/nfs/home/user_name** となります。
 
    ![画面ショット](stack_page04-1.png)
 
-   4.6 **Advanced storage options**
+   4.6 **Advanced bastion options**
+    - **Image version :** HPC_OL8
+
+   ![画面ショット](stack_page04-3.png)
+
+   4.7 **Advanced storage options**
     - **Show advanced storage options :** チェック
-    - **Shared NFS scratch space from NVME or Block volume :** チェックオフ（※3）
+    - **Shared NFS scratch space from NVME or Block volume :** チェックオフ（※5）
     - **Redundancy :** チェックオフ
 
-   ※3）計算ノードの **NVMe SSD** ローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。
+   ※5）計算ノードのNVMe SSDローカルディスク領域をNFS共有するかの指定で、本チュートリアルでは共有しません。
 
    ![画面ショット](stack_page05.png)
 
-   4.7 **Software**
+   4.8 **Software**
     - **Create Rack aware topology :** チェックオフ
 
    ![画面ショット](stack_page05-1.png)
@@ -208,7 +217,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    ![画面ショット](stack_page11.png)
 
-   この適用が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で15分程度です。
+   この適用が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で20分程度です。
 
    ステータスが **成功** となれば、HPCクラスタのデプロイが完了しています。
 
@@ -231,7 +240,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
 2. Bastionノードファイルシステム確認
 
-   Bastionノードは、以下のようにファイルストレージの/mnt/nfsがマウントされています。この/mnt/nfsは、HPCクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。
+   Bastionノードは、以下のように **ファイルストレージ** の/mnt/nfsがマウントされています。この/mnt/nfsは、HPCクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。
 
    ```sh
    $ df -h /mnt/nfs
@@ -244,8 +253,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    計算ノードは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードを経由してログインします。
 
-   計算ノードのホスト名は、Bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** サブネット接続に使用するIPアドレスに対応するホスト名です。  
-   このため、Bastionノードから計算ノードへのログインは、hostfile.tcpファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。
+   計算ノードのホスト名は、Bastionノードの **/etc/opt/oci-hpc** ディレクトリ以下のファイルに格納されており、 **hostfile.tcp** と **hostfile.rdma** がそれぞれプライベートサブネット接続と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** サブネット接続に使用するIPアドレスに対応するホスト名です。  
+   このため、Bastionノードから計算ノードへのログインは、 **hostfile.tcp** ファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。
 
    ```sh
    $ cat /etc/opt/oci-hpc/hostfile.tcp 
@@ -258,34 +267,55 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
    $
    ```
 
-4. 計算ノードファイルシステム確認
+4. **pdsh** インストール・セットアップ
 
-   計算ノードは、以下のようにNVMe SSD領域が/mnt/localdiskにマウントされています。
+   以降実施する計算ノードの確認作業を **[pdsh](https://github.com/chaos/pdsh)** を使用して効率よく進めるため、以下コマンドをBastionノードのopcユーザで実行し、 **pdsh** をインストール・セットアップします。  
+   **pdsh** の詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/)** を参照ください。  
+   なおこの手順は、該当する手順を全ての計算ノードで実施する場合、必要ありません。
 
    ```sh
-   $ df -h /mnt/localdisk
+   $ sudo dnf install -y pdsh-rcmd-ssh
+   $ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
+   $ source ~/.bash_profile
+   ```
+
+5. 計算ノードファイルシステム確認
+
+   以下コマンドをBastionノードのopcユーザで実行し、NVMe SSDローカルディスク領域が **/mnt/localdisk** にマウントされていることを確認します。
+
+   ```sh
+   $ pdsh -w ^/etc/opt/oci-hpc/hostfile.tcp 'df -h /mnt/localdisk' | dshbak -c
+   ----------------
+   compute-permanent-node-[545,936]
+   ----------------
    Filesystem      Size  Used Avail Use% Mounted on
-   /dev/nvme0n1p1  3.5T   33M  3.5T   1% /mnt/localdisk
+   /dev/nvme0n1p1  3.5T   25G  3.5T   1% /mnt/localdisk
    $
    ```
 
-   また、以下のようにBasionノードの/homeと/export/clusterが全ての計算ノードでマウントされています。  
-   これらの領域は、Bastionノードの/homeをopcユーザのホームディレクトリ領域に、/export/clusterをHPCクラスタ内で共有する任意のデータを格納する領域に、それぞれ使用します。
+   次に、以下コマンドをBastionノードのopcユーザで実行し、Basionノードの **/home** と **/export/cluster** が全ての計算ノードでマウントされていることを確認します。  
+   これらの領域は、Bastionノードの **/home** をopcユーザのホームディレクトリ領域に、 **/export/cluster** をHPCクラスタ内で共有する任意のデータを格納する領域に、それぞれ使用します。
 
    ```sh
-   $ df -h /home /nfs/cluster
-   Filesystem                   Size  Used Avail Use% Mounted on
-   Bastion_ip:/home             42G   13G   29G  32% /home
-   Bastion_ip:/export/cluster   42G   13G   29G  32% /nfs/cluster
+   $ pdsh -w ^/etc/opt/oci-hpc/hostfile.tcp 'df -h /home /nfs/cluster' | dshbak -c
+   ----------------
+   compute-permanent-node-[545,936]
+   ----------------
+   Filesystem                    Size  Used Avail Use% Mounted on
+   172.16.0.208:/home             89G   20G   69G  23% /home
+   172.16.0.208:/export/cluster   89G   20G   69G  23% /nfs/cluster
    $
    ```
 
-   また、以下のようにファイルストレージの/mnt/nfsが全ての計算ノードでマウントされています。
+   次に、以下コマンドをBastionノードのopcユーザで実行し、 **ファイルストレージ** の **/mnt/nfs** が全ての計算ノードでマウントされていることを確認します。
 
    ```sh
-   $ df -h /mnt/nfs
-   Filesystem        Size  Used Avail Use% Mounted on
-   FSS_ip:/mnt/nfs   8.0E     0  8.0E   0% /mnt/nfs
+   $ pdsh -w ^/etc/opt/oci-hpc/hostfile.tcp 'df -h /mnt/nfs' | dshbak -c
+   ----------------
+   compute-permanent-node-[545,936]
+   ----------------
+   Filesystem             Size  Used Avail Use% Mounted on
+   FSS_ip:/mnt/nfs  8.0E   21M  8.0E   1% /mnt/nfs
    $
    ```
 
@@ -300,7 +330,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
    LDAPサーバであるBastionノードは、LDAPユーザ管理のためのclusterコマンドが用意されています。
    
-   このコマンドは、作成するユーザのホームディレクトリを/home以下とするため、本環境のLDAPユーザ用ホームディレクトリである **ファイル・ストレージ** の/mnt/nfs/home以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。
+   このコマンドは、作成するユーザのホームディレクトリを **/home** 以下とするため、本環境のLDAPユーザ用ホームディレクトリである **ファイル・ストレージ** の **/mnt/nfs/home** 以下に作成するよう修正する必要があります。このため、以下コマンドをBastionノードのopcユーザで実行します。
 
    ```sh
    $ sudo sed -i 's/\/home\//\/mnt\/nfs\/home\//g' /usr/bin/cluster
@@ -345,10 +375,10 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 
 本章は、先に作成したLDAPユーザを使ってMPIプログラムを **Slurm** を介してバッチジョブとして投入し、構築したHPCクラスタのインターコネクト性能を **Intel MPI Benchmark** で確認します。
 
-ここでは、2ノードの **Ping-Pong** 性能を計測しており、以下性能が出ています。
+ここでは、2ノードのPing-Pong性能を計測しており、以下性能が出ています。
 
-- 帯域：約12 GB/s（インタフェース物理帯域100 Gbpsに対し96 Gbpsを計測）
-- レイテンシ：約1.7 μs
+- 帯域：12.2 GB/s（インタフェース物理帯域100 Gbpsに対し97.6 Gbpsを計測）
+- レイテンシ：1.7 μs
 
 ## 4-1. ジョブスクリプト作成
 
@@ -363,7 +393,7 @@ BastionノードのLDAPユーザで、以下のジョブスクリプトをファ
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
 export UCX_NET_DEVICES=mlx5_2:1
-srun --mpi=pmix /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+srun --mpi=pmix /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
 ```
 
 ## 4-2. ジョブ投入
@@ -435,11 +465,11 @@ $ cat stdout.1
 
 OCIリソース構築フェーズは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)** の **[2. ノード数を増やす](/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす)** の手順を実施します。
 
-OCIリソース構築フェーズが終了した段階は、追加した計算ノード用インスタンスのデプロイが完了し既存 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に物理的に接続されOSが起動した状態で、未だ **クラスタ・ネットワーク** を利用可能な状態になっていません。
+OCIリソース構築フェーズが終了した段階は、追加した計算ノード用インスタンスのデプロイが完了し既存 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に物理的に接続されOSが起動した状態で、未だ **Slurm** のジョブを実行可能な状態になっていません。
 
 次に、 **Ansible** によるOSレベルカスタマイズを行います。
 
-1. Bastionノードの **Ansible** インベントリファイル/etc/ansible/hostsの **compute_configured** セクションの最後に、追加された計算ノードのホスト名とIPアドレスの記述を以下のように追加します。
+1. Bastionノードの **Ansible** インベントリファイル **/etc/ansible/hosts** の **compute_configured** セクションの最後に、追加された計算ノードのホスト名とIPアドレスの記述を以下のように追加します。
 
    ```sh
    [compute_configured]
@@ -452,7 +482,7 @@ OCIリソース構築フェーズが終了した段階は、追加した計算�
    #
    ```
 
-2. 本ステップで実行するコマンドは、Bastionノードから計算ノードへのSSH接続を使用するため、全ての計算ノードがSSH接続可能な状態まで起動されていることを確認します。  
+2. 本ステップで実行するコマンドは、Bastionノードから計算ノードへのSSH接続を使用するため、全ての計算ノードがSSH接続可能な状態まで起動していることを確認します。  
 Bastionノードのopcユーザで以下コマンドを実行し、追加された計算ノードに対する **Ansible** のOSレベルカスタマイズを起動、最後の **PLAY RECAP** フィールドの出力で **failed** や **unreachable** の項目が無いことで、正常に終了していることを確認します。
 
    ```sh
@@ -478,7 +508,7 @@ Bastionノードのopcユーザで以下コマンドを実行し、追加され�
 
 本章は、先に作成したLDAPユーザを使ってMPIプログラムを **Slurm** を介してバッチジョブとして投入し、追加後の4ノードHPCクラスタのインターコネクト性能を **Intel MPI Benchmark** で確認します。
 
-ここでは、4ノードの **Alltoall** 性能を計測しています。
+ここでは、4ノードのAlltoall性能を計測しています。
 
 ## 6-1. ジョブスクリプト作成
 
@@ -493,7 +523,7 @@ BastionノードのLDAPユーザで、以下のジョブスクリプトをファ
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
 export UCX_NET_DEVICES=mlx5_2:1
-srun --mpi=pmix /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -mem 4 alltoall
+srun --mpi=pmix /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -mem 4 alltoall
 ```
 
 ## 6-2. ジョブ投入
@@ -618,11 +648,11 @@ $
 
 OCIリソースレベルの計算ノード入れ替えフェーズは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)** の **[3. ノードを置き換える](/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える)** の手順を実施します。
 
-OCIリソースレベルの計算ノード入れ替えフェーズが終了した段階は、置き換え後の新計算ノード用インスタンスのデプロイが完了し既存 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に物理的に接続されOSが起動した状態で、未だ **クラスタ・ネットワーク** を利用可能な状態になっていません。
+OCIリソースレベルの計算ノード入れ替えフェーズが終了した段階は、置き換え後の新計算ノード用インスタンスのデプロイが完了し既存 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に物理的に接続されOSが起動した状態で、未だ **Slurm** のジョブを実行可能な状態になっていません。
 
 次に、 **Ansible** によるOSレベルカスタマイズを行います。
 
-1. Bastionノードの **Ansible** インベントリファイル/etc/ansible/hostsの **compute_configured** セクションで、置き換えられた計算ノードのホスト名とIPアドレスの記述を置き換えた計算ノードのものに書き換えます。
+1. Bastionノードの **Ansible** インベントリファイル **/etc/ansible/hosts** の **compute_configured** セクションで、置き換えられた計算ノードのホスト名とIPアドレスの記述を置き換えた計算ノードのものに書き換えます。
 
    ```sh
    [compute_configured]
@@ -639,11 +669,11 @@ OCIリソースレベルの計算ノード入れ替えフェーズが終了し�
    #
    ```
 
-2. 本ステップで実行するコマンドは、Bastionノードから計算ノードへのSSH接続を使用するため、置き換えた計算ノードがSSH接続可能な状態まで起動されていることを確認します。  
+2. 本ステップで実行するコマンドは、Bastionノードから計算ノードへのSSH接続を使用するため、置き換えた計算ノードがSSH接続可能な状態まで起動していることを確認します。  
 Bastionノードのopcユーザで以下コマンドを実行し、置き換えた計算ノードに対する **Ansible** のOSレベルカスタマイズを起動、最後の **PLAY RECAP** フィールドの出力で **failed** や **unreachable** の項目が無いことで、正常に終了していることを確認します。
 
    ```sh
-   > ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook /opt/oci-hpc/playbooks/site.yml
+   $ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook /opt/oci-hpc/playbooks/site.yml
       :
       :
       :
@@ -653,7 +683,7 @@ Bastionノードのopcユーザで以下コマンドを実行し、置き換え�
    inst-mdu0w-relevant-owl : ok=98   changed=13   unreachable=0    failed=0    skipped=94   rescued=0    ignored=0   
    inst-sz0pd-relevant-owl : ok=102  changed=68   unreachable=0    failed=0    skipped=93   rescued=0    ignored=0   
    relevant-owl-bastion     : ok=112  changed=22   unreachable=0    failed=0    skipped=115  rescued=0    ignored=0 
-   >
+   $
    ```
 
 以上で、 **Ansible** のOSレベルカスタマイズフェーズは完了し、計算ノードの置き換えは完了です。

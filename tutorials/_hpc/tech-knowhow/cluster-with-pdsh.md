@@ -56,15 +56,6 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 本テクニカルTipsでは、クラスタ管理ノードと管理対象ノードのOSに **Oracle Linux** を使用し、クラスタ管理ノードから管理対象ノードにopcユーザ（sudoで管理者権限昇格が可能なユーザ）でパスフレーズ無しでSSHコマンドを実行できる環境を前提としています。  
 この環境は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** カテゴリや **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** カテゴリに含まれるチュートリアルを元に構築するHPC/GPUクラスタに於いては、クラスタ管理ノードに相当するBastionノードのopcユーザから管理対象ノードに相当する計算/GPUノードにパスフレーズ無しでSSHコマンドが実行できるよう構築されるため、改めて実施する必要はありません。
 
-また **pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
-
-```sh
-inst-f5fra-x9-ol8
-inst-3ktpe-x9-ol8
-inst-6pvpq-x9-ol8
-inst-dixqy-x9-ol8
-```
-
 以降では、 **pdsh** をインストール・セットアップし、典型的なクラスタ管理オペレーションを **pdsh** を使用して効率的に実行する方法を解説します。
 
 ***
@@ -72,7 +63,15 @@ inst-dixqy-x9-ol8
 
 本章は、 **pdsh** をインストール・セットアップします。
 
-1. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** を提供するyumレポジトリを追加します。  
+1. **pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
+
+   ```sh
+   inst-f5fra-x9-ol8
+   inst-3ktpe-x9-ol8
+   inst-6pvpq-x9-ol8
+   inst-dixqy-x9-ol8
+   ```
+2. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** を提供するyumレポジトリを追加します。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
    ```sh
@@ -88,7 +87,7 @@ inst-dixqy-x9-ol8
 
    ![画面ショット](console_page02.png)
 
-2. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
+3. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
    ```sh
@@ -98,14 +97,14 @@ inst-dixqy-x9-ol8
    $ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
    ```
 
-3. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH **known_hosts** ファイルに登録します。  
+4. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH **known_hosts** ファイルに登録します。  
 このステップは、後の **pdsh** の実行のために必要です。
 
    ```sh
    $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
    ```
 
-4. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
+5. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
 
    ```sh
    $ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
@@ -119,7 +118,7 @@ inst-dixqy-x9-ol8
 
    **pdsh** の出力は、第一フィールドが対象ノードのホスト名、第2フィールド以降が対象ノードからのコマンド出力です。
 
-5. クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの **pdcp** や **rpdcp** を使用する場合、管理対象ノードにも **pdsh** がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに **pdsh** をインストールします。  
+6. クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの **pdcp** や **rpdcp** を使用する場合、管理対象ノードにも **pdsh** がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに **pdsh** をインストールします。  
 この際、管理対象ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
    ```sh
@@ -129,7 +128,7 @@ inst-dixqy-x9-ol8
    $ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
    ```
 
-6. **pdsh** で利用するグループを登録するため、グループ設定ファイルを作成します。  
+7. **pdsh** で利用するグループを登録するため、グループ設定ファイルを作成します。  
 このグループ設定ファイルは、事前にクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で作成したホストリストファイルを基に作成する、 **.dsh/group** ディレクトリに配置されるグループ名をファイル名とするテキストファイルです。  
 例えば以下のファイルを配置すると、全てのノードを含むグループ **all** 、inst-f5fra-x9-ol8とinst-3ktpe-x9-ol8を含むグループ **comp1**、及びinst-6pvpq-x9-ol8とinst-dixqy-x9-ol8を含むグループ **comp2** を利用できるようになります。
 

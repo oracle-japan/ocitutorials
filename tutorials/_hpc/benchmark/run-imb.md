@@ -13,24 +13,24 @@ header:
 ***
 # 0. 概要
 
-本ドキュメントで解説する **Intel MPI Benchmark** の実行は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれる **OpenMPI** （本ドキュメントで使用するバージョンは4.1.2a1）と **Intel MPI Benchmark** を使用する方法と、 **[Intel oneAPI HPC Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html)** （本ドキュメントで使用するバージョンは2023.2）をインストールしてこれに含まれる **[Intel MPI Library](https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html)** （本ドキュメントで使用するバージョンは2021.10）と **Intel MPI Benchmark** を使用する方法を、それぞれ解説します。  
-また **Intel MPI Benchmark** は、2ノード間の **Ping-Pong** と4ノード間の **All-Reduce** の計測方法をそれぞれ解説します。
+本ドキュメントで解説する **Intel MPI Benchmark** の実行は、HPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **Intel MPI Benchmark** を使用する方法と、 **[Intel oneAPI HPC Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html)** （本ドキュメントで使用するバージョンは2023.2）をインストールしてこれに含まれる **[Intel MPI Library](https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html)** （本ドキュメントで使用するバージョンは2021.10）と **Intel MPI Benchmark** を使用する方法を、それぞれ解説します。  
+また **Intel MPI Benchmark** は、2ノード間のPing-Pongと4ノード間のAll-Reduceの計測方法をそれぞれ解説します。
 
 本ドキュメントで **Intel MPI Benchmark** を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** 4インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。  
-計算ノードのOSは、 **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （本ドキュメントで使用するバージョンは **Oracle Linux** 8.7ベース）を使用します。
+計算ノードのOSは、 **Oracle Linux** 8の **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用します。
 
-本ドキュメントは、以下の環境で **Intel MPI Benchmark** を実行しており、2ノード間の **Ping-Pong** で以下の性能が出ています。
+本ドキュメントは、以下の環境で **Intel MPI Benchmark** Ping-Pongを実行し、以下の性能が出ています。
 
 [実行環境]
 - シェイプ: **BM.Optimized3.36**
-- OS: **Oracle Linux** 8.7 (HPC **クラスタネットワーキングイメージ** )
-- MPI: **OpenMPI** （バージョン4.1.2a1）
+- OS: **Oracle Linux** 8.8 (HPC **クラスタネットワーキングイメージ** )
+- MPI: **OpenMPI** （バージョン4.1.5a1）
 - ノード数: 2
 - ノード間接続: **クラスタ・ネットワーク**
 
 [実行結果]
 - レイテンシ: 1.67 usec
-- 帯域幅（256 MiBメッセージサイズ）: 12,234 MB/s
+- 帯域幅（256 MiBメッセージサイズ）: 12,233 MB/s
 
 ***
 # 1. OpenMPIでIntel MPI Benchmarkを実行する場合
@@ -42,9 +42,9 @@ header:
 - OS再起動
 - **Intel MPI Benchmark** 実行
 
-※1）MPIを使用してIntel_MPI_Benchmarkを実行するため、この際に必要となる。
+※1）MPIを使用して **Intel MPI Benchmark** を実行するため、この際に必要となる。
 
-1. **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストを全計算ノードのopcユーザのホームディレクトリにファイル名hostlist.txtで作成します。
+1. **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストを全計算ノードのopcユーザのホームディレクトリにファイル名hostlist.txtで作成します。
 
     ```sh
     $ cat ~/hostlist.txt
@@ -52,6 +52,7 @@ header:
     inst-9wead-comp
     inst-u6i7v-comp
     inst-sgf5u-comp
+    $
     ```
 
 2. 以下コマンドを全計算ノードのopcユーザで実行し、OSを再起動します。
@@ -61,26 +62,26 @@ header:
     ```
 
 3. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
-   ここでは、2ノードを使用した **Ping-Pong** をメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,234.28 MB/s）を以ってその結果とします。
+   ここでは、2ノードを使用したPing-Pongをメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,232.55 MB/s）を以ってその結果とします。
 
     ```sh
-    $ source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-    $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+    $ source /usr/mpi/gcc/openmpi-4.1.5a1/bin/mpivars.sh
+    $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
     #------------------------------------------------------------
     #    Intel (R) MPI Benchmarks 2018, MPI-1 part    
     #------------------------------------------------------------
-    # Date                  : Tue Jul 18 20:53:47 2023
+    # Date                  : Fri Jan 26 06:53:08 2024
     # Machine               : x86_64
     # System                : Linux
-    # Release               : 4.18.0-425.13.1.el8_7.x86_64
-    # Version               : #1 SMP Tue Feb 21 15:09:05 PST 2023
+    # Release               : 4.18.0-477.27.1.el8_8.x86_64
+    # Version               : #1 SMP Wed Sep 27 11:14:47 PDT 2023
     # MPI Version           : 3.1
     # MPI Thread Environment: 
 
 
     # Calling sequence was: 
 
-    # /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+    # /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
 
     # Minimum message length in bytes:   0
     # Maximum message length in bytes:   268435456
@@ -99,45 +100,47 @@ header:
     # Benchmarking PingPong 
     # #processes = 2 
     #---------------------------------------------------
-       #bytes #repetitions      t[usec]   Mbytes/sec
-            0         1000         1.67         0.00
-            8         1000         1.67         4.80
-           16         1000         1.67         9.56
-           32         1000         1.71        18.76
-           64         1000         1.83        34.92
-          128         1000         1.88        67.99
-          256         1000         2.14       119.36
-          512         1000         2.22       230.59
-         1024         1000         2.33       439.99
-         2048         1000         3.06       669.66
-         4096         1000         3.78      1083.18
-         8192         1000         4.86      1684.54
-        16384         1000         6.75      2428.97
-        32768         1000         9.25      3543.37
-        65536          640        10.72      6111.17
-       131072          320        16.32      8029.48
-       262144          160        28.80      9103.05
-       524288           80        50.16     10453.17
-      1048576           40        92.90     11286.93
-      2097152           20       178.70     11735.89
-      4194304           10       349.94     11985.73
-      8388608            5       692.70     12109.99
-     16777216            2      1377.91     12175.80
-     33554432            1      2750.18     12200.83
-     67108864            1      5490.79     12222.08
-    134217728            1     10973.37     12231.22
-    268435456            1     21941.25     12234.28
+           #bytes #repetitions      t[usec]   Mbytes/sec
+                0         1000         1.67         0.00
+                8         1000         1.67         4.79
+               16         1000         1.67         9.56
+               32         1000         1.71        18.68
+               64         1000         1.82        35.09
+              128         1000         1.88        68.10
+              256         1000         2.13       120.09
+              512         1000         2.21       232.19
+             1024         1000         2.32       442.25
+             2048         1000         3.03       676.38
+             4096         1000         3.76      1088.83
+             8192         1000         4.87      1682.39
+            16384         1000         6.73      2433.61
+            32768         1000         9.22      3555.13
+            65536          640        10.80      6066.58
+           131072          320        16.33      8027.34
+           262144          160        28.72      9128.71
+           524288           80        50.17     10449.49
+          1048576           40        92.96     11279.41
+          2097152           20       178.56     11744.90
+          4194304           10       349.84     11989.14
+          8388608            5       693.07     12103.49
+         16777216            2      1379.28     12163.72
+         33554432            1      2749.08     12205.71
+         67108864            1      5489.58     12224.78
+        134217728            1     10972.75     12231.91
+        268435456            1     21944.35     12232.55
 
 
     # All processes entering MPI_Finalize
+
+    $
     ```
 
 4. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
-   ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用した **All-Reduce** の所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
+   ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAll-Reduceの所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
 
     ```sh
-    $ source /usr/mpi/gcc/openmpi-4.1.2a1/bin/mpivars.sh
-    $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 3:28 -npmin 144 allreduce
+    $ source /usr/mpi/gcc/openmpi-4.1.5a1/bin/mpivars.sh
+    $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 -npmin 144 allreduce
     #------------------------------------------------------------
     #    Intel (R) MPI Benchmarks 2018, MPI-1 part    
     #------------------------------------------------------------
@@ -202,6 +205,8 @@ header:
     
     
     # All processes entering MPI_Finalize
+    
+    $
     ```
 
 ***
