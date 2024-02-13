@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-05T11:19:56+09:00">
+  <meta property="article:published_time" content="2024-02-13T09:43:20+09:00">
 
 
 
@@ -296,6 +296,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -345,7 +347,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="計算/GPUノードの効果的な名前解決方法">
     <meta itemprop="description" content="ノード数が多くなるHPCクラスタやGPUクラスタの計算ノードの名前解決は、どのように行うのが効果的でしょうか。本テクニカルTipsは、仮想クラウドネットワークのDNSを使用した効果的な計算/GPUノードの名前解決方法を解説します。">
-    <meta itemprop="datePublished" content="2024-02-05T11:19:56+09:00">
+    <meta itemprop="datePublished" content="2024-02-13T09:43:20+09:00">
     
 
     <div class="page__inner-wrap">
@@ -370,26 +372,26 @@
 <h1 id="0-概要">0. 概要</h1>
 
 <p><strong>仮想クラウド・ネットワーク</strong> に接続するインスタンスは、 <strong>仮想クラウド・ネットワーク</strong> が提供するDNSサービスにインスタンス名とIPアドレスの正引き・逆引き情報がデプロイ時に自動的に登録され、インスタンス名を使用して名前解決することが可能です。<br />
-このため、ホスト名とIPアドレスの関係をシステム管理者がメンテナンスする/etc/hostsやNISと比較し、DNS名前解決を活用することでホスト名管理を省力化することが可能です。</p>
+このため、ホスト名とIPアドレスの関係をシステム管理者がメンテナンスする <strong>/etc/hosts</strong> を使用する方法やNISと比較し、DNS名前解決を活用することでホスト名管理を省力化することが可能です。</p>
 
 <p>ここで、 <strong>仮想クラウド・ネットワーク</strong> が提供するDNSサービスは、インスタンス名（compute1）、接続する <strong>仮想クラウド・ネットワーク</strong> 名（vcn）、及びサブネット名（private）を使用し、インスタンスのFQDNを以下のように登録します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>compute1.private.vcn.oraclevcn.com
 </code></pre></div></div>
 
-<p>このため、DNS名前解決対象のインスタンスが接続するサブネットのFQDNを/etc/resolv.confのsearch行に追加することで、インスタンス名によるDNS名前解決が可能になります。<br />
-例えば、 <strong>仮想クラウド・ネットワーク</strong> 名がvcn、サブネット名がpublicのサブネットに接続されるBastionノード上で、同じ <strong>仮想クラウド・ネットワーク</strong> のサブネット名がprivateのサブネットに接続される計算ノードをインスタンス名でDNS名前解決する場合、Bastionノードの/etc/resolv.confのsearch行が以下となっていれば良いことになります。</p>
+<p>このため、DNS名前解決対象のインスタンスが接続するサブネットのFQDNを <strong>/etc/resolv.conf</strong> のsearch行に追加することで、インスタンス名によるDNS名前解決が可能になります。<br />
+例えば、 <strong>仮想クラウド・ネットワーク</strong> 名がvcn、サブネット名が <strong>public</strong> のサブネットに接続されるBastionノード上で、同じ <strong>仮想クラウド・ネットワーク</strong> のサブネット名が <strong>private</strong> のサブネットに接続される計算ノードをインスタンス名でDNS名前解決する場合、Bastionノードの <strong>/etc/resolv.conf</strong> のsearch行が以下となっていれば良いことになります。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>search vcn.oraclevcn.com public.vcn.oraclevcn.com private.vcn.oraclevcn.com
 </code></pre></div></div>
 
-<p>ただ、この方針に沿って/etc/resolv.confを修正する際、このファイルがDHCPクライアントにより管理されており、DHCPのリース切れやOS再起動の際に修正が元に戻ってしまうことに注意する必要があります。</p>
+<p>ただ、この方針に沿って <strong>/etc/resolv.conf</strong> を修正する際、このファイルがDHCPクライアントにより管理されており、DHCPのリース切れやOS再起動の際に修正が元に戻ってしまうことに注意する必要があります。</p>
 
 <p>以上より、インスタンス名によるDNS名前解決は、以下の手順を経て行います。</p>
 
 <ul>
   <li>サブネットFQDN確認: DNS名前解決対象のインスタンスが接続するサブネットのFQDNの確認</li>
-  <li>resolv.confファイル修正: DNS名前解を行うインスタンスのresolv.confの修正</li>
+  <li><strong>/etc/resolv.conf</strong> 修正: DNS名前解を行うインスタンスの <strong>/etc/resolv.conf</strong> の修正</li>
 </ul>
 
 <hr />
@@ -415,12 +417,12 @@
 
 <h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>本章は、インスタンス名によるDNS名前解決を行いたいインスタンス上で、/etc/resolv.confファイルのsearch行を修正します。<br />
-この修正方法は、使用するOSがOracle Linux、Rocky linux、Ubuntuで異なるため、それぞれに分けてその修正方法を解説します。</p>
+<p>本章は、インスタンス名によるDNS名前解決を行いたいインスタンス上で、 <strong>/etc/resolv.conf</strong> のsearch行を修正します。<br />
+この修正方法は、使用するOSが <strong>Oracle Linux</strong> 、 <strong>Rocky linux</strong> 、 <strong>Ubuntu</strong> で異なるため、それぞれに分けてその修正方法を解説します。</p>
 
 <h2 id="2-1-oracle-linuxの場合">2-1. Oracle Linuxの場合</h2>
 
-<p>Oracle Linuxでデプロイしたインスタンスの/etc/resolv.confのsearch行は、接続する <strong>仮想クラウド・ネットワーク</strong> 名がvcn_nameでサブネット名がsubnet_srcの場合、以下のようになっています。</p>
+<p><strong>Oracle Linux</strong> でデプロイしたインスタンスの <strong>/etc/resolv.conf</strong> のsearch行は、接続する <strong>仮想クラウド・ネットワーク</strong> 名が <strong>vcn_name</strong> でサブネット名が <strong>subnet_src</strong> の場合、以下のようになっています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep</span> ^search /etc/resolv.conf 
 search vcn_name.oraclevcn.com subnet_src.vcn_name.oraclevcn.com
@@ -433,16 +435,16 @@ search vcn_name.oraclevcn.com subnet_src.vcn_name.oraclevcn.com
 <span class="nv">$ </span><span class="nb">sudo </span>chattr <span class="nt">-R</span> +i /etc/resolv.conf
 </code></pre></div></div>
 
-<p>以上の手順で、vcn_nameに指定した <strong>仮想クラウド・ネットワーク</strong> のsubnet_dstに指定したサブネットに接続されるインスタンスのインスタンス名による名前解決が可能になります。</p>
+<p>以上の手順で、 <strong>vcn_name</strong> に指定した <strong>仮想クラウド・ネットワーク</strong> の <strong>subnet_dst</strong> に指定したサブネットに接続されるインスタンスのインスタンス名による名前解決が可能になります。</p>
 
-<p>この状態は、ファイルシステムの拡張属性によりresolv.confの修正が出来ない状態になっているため、再度修正する場合は、以下コマンドをopcユーザで実行します。</p>
+<p>この状態は、ファイルシステムの拡張属性により <strong>/etc/resolv.conf</strong> の修正が出来ない状態になっているため、再度修正する場合は、以下コマンドをopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>chattr <span class="nt">-R</span> <span class="nt">-i</span> /etc/resolv.conf
 </code></pre></div></div>
 
 <h2 id="2-2-rocky-linuxの場合">2-2. Rocky Linuxの場合</h2>
 
-<p>Rocky Linuxでデプロイしたインスタンスの/etc/resolv.confのsearch行は、接続する <strong>仮想クラウド・ネットワーク</strong> 名がvcn_nameの場合、以下のようになっています。</p>
+<p><strong>Rocky linux</strong> でデプロイしたインスタンスの <strong>/etc/resolv.conf</strong> のsearch行は、接続する <strong>仮想クラウド・ネットワーク</strong> 名が <strong>vcn_name</strong> でサブネット名が <strong>subnet_src</strong> の場合、以下のようになっています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep</span> ^search /etc/resolv.conf 
 search vcn_name.oraclevcn.com
@@ -455,16 +457,16 @@ search vcn_name.oraclevcn.com
 <span class="nv">$ </span><span class="nb">sudo </span>chattr <span class="nt">-R</span> +i /etc/resolv.conf
 </code></pre></div></div>
 
-<p>以上の手順で、vcn_nameに指定した <strong>仮想クラウド・ネットワーク</strong> のsubnet_srcとsubnet_dstに指定したサブネットに接続されるインスタンスのインスタンス名による名前解決が可能になります。</p>
+<p>以上の手順で、<strong>vcn_name</strong> に指定した <strong>仮想クラウド・ネットワーク</strong> の <strong>subnet_src</strong> と <strong>subnet_dst</strong> に指定したサブネットに接続されるインスタンスのインスタンス名による名前解決が可能になります。</p>
 
-<p>この状態は、ファイルシステムの拡張属性によりresolv.confの修正が出来ない状態になっているため、再度修正する場合は、以下コマンドをrockyユーザで実行します。</p>
+<p>この状態は、ファイルシステムの拡張属性により <strong>/etc/resolv.conf</strong> の修正が出来ない状態になっているため、再度修正する場合は、以下コマンドをrockyユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>chattr <span class="nt">-R</span> <span class="nt">-i</span> /etc/resolv.conf
 </code></pre></div></div>
 
 <h2 id="2-3-ubuntuの場合">2-3. Ubuntuの場合</h2>
 
-<p>Ubuntuでデプロイしたインスタンスの/etc/resolv.confのsearch行は、接続する <strong>仮想クラウド・ネットワーク</strong> 名がvcn_nameの場合、以下のようになっています。</p>
+<p>Ubuntuでデプロイしたインスタンスの <strong>/etc/resolv.conf</strong> のsearch行は、接続する <strong>仮想クラウド・ネットワーク</strong> 名が <strong>vcn_name</strong> の場合、以下のようになっています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep</span> ^search /etc/resolv.conf 
 search vcn_name.oraclevcn.com
@@ -478,7 +480,7 @@ search vcn_name.oraclevcn.com
 <span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ subnet_src.vcn_name.oraclevcn.com subnet_dst.vcn_name.oraclevcn.com/g'</span> /etc/resolv.conf
 </code></pre></div></div>
 
-<p>以上の手順で、vcn_nameに指定した <strong>仮想クラウド・ネットワーク</strong> のsubnet_srcとsubnet_dstに指定したサブネットに接続されるインスタンスのインスタンス名による名前解決が可能になります。</p>
+<p>以上の手順で、 <strong>vcn_name</strong> に指定した <strong>仮想クラウド・ネットワーク</strong> の <strong>subnet_src</strong> と <strong>subnet_dst</strong> に指定したサブネットに接続されるインスタンスのインスタンス名による名前解決が可能になります。</p>
 
         
       </section>
@@ -490,7 +492,7 @@ search vcn_name.oraclevcn.com
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-05T11:19:56+09:00">February 5, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-13T09:43:20+09:00">February 13, 2024</time></p>
 
 
       </footer>

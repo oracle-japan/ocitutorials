@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-05T11:19:56+09:00">
+  <meta property="article:published_time" content="2024-02-13T09:43:20+09:00">
 
 
 
@@ -296,6 +296,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -345,7 +347,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法">
     <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、OCIロギングとGrafanaを統合したログ監視は、Grafanaの多彩な機能を活用できる点で有力な選択肢です。本テクニカルTipsは、OCIロギングとGrafanaを使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-02-05T11:19:56+09:00">
+    <meta itemprop="datePublished" content="2024-02-13T09:43:20+09:00">
     
 
     <div class="page__inner-wrap">
@@ -375,7 +377,7 @@ OCI上にこのフレームワークを構築する際、活用できるソフ�
 <ul>
   <li>Grafanaサーバ（1ノード）<br />
 <strong>OCIロギング</strong> から計算/GPUノードの監視対象ログを収集し、ウェブブラウザに対してこれを表示します。<br />
-本テクニカルTipsでは、インターネットに接続する端末からSSHのポートフォワードで <strong>Grafana</strong> のGUIにアクセスするため、パブリックサブネットに接続します。</li>
+本テクニカルTipsでは、インターネットに接続するログ監視端末からSSHのポートフォワードで <strong>Grafana</strong> のGUIにアクセスするため、パブリックサブネットに接続します。</li>
   <li>ログサーバ（1ノード）<br />
 ログクライアントから監視対象ログを収集し、 <strong>OCIロギング</strong> にこれを送信します。<br />
 本テクニカルTipsでは、インターネットからの不正アクセスを防止するため、ログクライアントとTCP/IP接続可能なプライベートサブネットに接続します。</li>
@@ -415,6 +417,13 @@ OCIリソースから生成されるあらゆるログをスケーラブルに�
 <p>本テクニカルTipsで構築するログ監視フレームワークは、HPC/GPUクラスタ内で発生するログを <strong>Grafana</strong> のあらゆる機能を駆使して監視することが出来ますが、代表的な監視方法は対象のログ発生件数を以下のように時系列グラフで確認することです。</p>
 
 <p><img src="grafana_page11.png" alt="画面ショット" /></p>
+
+<p>また、 <strong>Grafana</strong> に表示する監視対象ログの選別は、以下の2段階で行うことが可能で、この選別方法も解説します。</p>
+
+<ul>
+  <li>ログクライアントからログサーバに転送する段階でSyslogのファシリティとプライオリティで選別</li>
+  <li>Grafanaサーバから <strong>OCIロギング</strong> に問い合わせる <strong>ロギング問合せ言語</strong> で選別</li>
+</ul>
 
 <p>以降では、Grafanaサーバ・ログサーバ・ログクライアントとなるインスタンスが既にデプロイされていることを前提とし、前述の手順に沿ってOCIサービスやこれらインスタンスへのソフトウェアのインストール・設定を実施、その後前述のログ監視を <strong>Grafana</strong> に設定する方法を解説します。</p>
 
@@ -471,7 +480,8 @@ OCIリソースから生成されるあらゆるログをスケーラブルに�
  <span class="o">&gt;</span> authpriv.<span class="k">*</span>                                              @logserver_ip:514
  <span class="err">$</span>
 </code></pre></div>    </div>
-    <p>※1）ログサーバのIPアドレスは、自身の環境に合わせて置き換えます。</p>
+    <p>※1）ログサーバのIPアドレスは、自身の環境に合わせて置き換えます。<br />
+ ※2）選別するログのファシリティとプライオリティを変更する場合は、修正行の第一フィールドを変更します。</p>
   </li>
   <li>
     <p>opcユーザで以下コマンドを実行し、先の設定ファイル修正を反映します。</p>
@@ -611,10 +621,10 @@ allow dynamic-group dynamicgroup_name to <span class="nb">read </span>log-conten
 allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in </span>compartment comp_name_log_reside
 </code></pre></div>        </div>
 
-        <p>※2）<strong>動的グループ</strong> 名は、先に作成したものに置き換えます。<br />
-※3）5行目の <strong>コンパートメント</strong> 名は、後に作成する <strong>OCIロギング</strong> 関連リソースを格納する <strong>コンパートメント</strong> 名に置き換えます。<br />
-※4）最初の4行のポリシーは、Grafanaサーバの <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むために必要です。<br />
-※5）最後の1行のポリシーは、ログサーバの <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入するために必要です。</p>
+        <p>※3）<strong>動的グループ</strong> 名は、先に作成したものに置き換えます。<br />
+※4）5行目の <strong>コンパートメント</strong> 名は、後に作成する <strong>OCIロギング</strong> 関連リソースを格納する <strong>コンパートメント</strong> 名に置き換えます。<br />
+※5）最初の4行のポリシーは、Grafanaサーバの <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むために必要です。<br />
+※6）最後の1行のポリシーは、ログサーバの <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入するために必要です。</p>
       </li>
     </ul>
 
@@ -667,7 +677,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
     <p><img src="console_page13.png" alt="画面ショット" /></p>
 
-    <p>※6）ここで作成する <strong>カスタム・ログ</strong> の保持期限はデフォルトで1か月のため、これを変更する場合は <strong>追加オプションの表示</strong> ボタンをクリックして変更します。</p>
+    <p>※7）ここで作成する <strong>カスタム・ログ</strong> の保持期限はデフォルトで1か月のため、これを変更する場合は <strong>追加オプションの表示</strong> ボタンをクリックして変更します。</p>
   </li>
   <li>
     <p>表示される以下 <strong>エージェント構成の作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>エージェント構成の作成</strong> ボタンをクリックします。<br />
@@ -675,18 +685,18 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
     <ul>
       <li><strong>構成名</strong> ： <strong>エージェント構成</strong> に付与する名前</li>
-      <li><strong>説明</strong> ： <strong>エージェント構</strong> に付与する説明（用途等）</li>
+      <li><strong>説明</strong> ： <strong>エージェント構成</strong> に付与する説明（用途等）</li>
       <li><strong>グループ</strong> ： 先に作成した <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong></li>
       <li><strong>入力タイプ</strong> ： <strong>ログ・パス</strong></li>
       <li><strong>名前の入力</strong> ： <strong>ログ入力</strong> の名前</li>
       <li><strong>ファイル・パス</strong> ： ログサーバ上の <strong>OCIロギング</strong> に注入するログファイルのパス（ここでは <strong>/var/log/secure</strong>）</li>
-      <li><strong>パーサー</strong> ： <strong>SYSLOG</strong>（※7）</li>
+      <li><strong>パーサー</strong> ： <strong>SYSLOG</strong>（※8）</li>
     </ul>
 
     <p><img src="console_page14.png" alt="画面ショット" /><br />
  <img src="console_page15.png" alt="画面ショット" /></p>
 
-    <p>※7）<strong>高度なパーサー・オプション</strong> ボタンをクリックして表示される以下 <strong>高度なパーサー・オプション</strong> サイドバーで <strong>パーサー</strong> プルダウンメニューの <strong>SYSLOG</strong> を選択して <strong>変更の保存</strong> ボタンをクリック</p>
+    <p>※8）<strong>高度なパーサー・オプション</strong> ボタンをクリックして表示される以下 <strong>高度なパーサー・オプション</strong> サイドバーで <strong>パーサー</strong> プルダウンメニューの <strong>SYSLOG</strong> を選択して <strong>変更の保存</strong> ボタンをクリック</p>
 
     <p><img src="console_page15-1.png" alt="画面ショット" /></p>
   </li>
@@ -704,7 +714,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 <hr />
 <h1 id="5-grafanaインストール設定">5. Grafanaインストール・設定</h1>
 
-<p>本章は、Grafanaサーバで <strong>Grafana</strong> のインストールとその設定を行い、監視端末のブラウザから <strong>Grafana</strong> にアクセスしてその稼働を確認します。</p>
+<p>本章は、Grafanaサーバで <strong>Grafana</strong> のインストールとその設定を行い、ログ監視端末のブラウザから <strong>Grafana</strong> にアクセスしてその稼働を確認します。</p>
 
 <p>なおGrafanaサーバのOSは、 <strong>Oracle Linux</strong> 8を前提に解説します。</p>
 
@@ -725,14 +735,14 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>監視端末で以下コマンドを実行し、Grafanaサーバの <strong>Grafana</strong> にアクセスするためのSSHポートフォワードを作成します。</p>
+    <p>ログ監視端末で以下コマンドを実行し、Grafanaサーバの <strong>Grafana</strong> にアクセスするためのSSHポートフォワードを作成します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ssh opc@grafana_ip <span class="nt">-L</span> 3000:localhost:3000
 </code></pre></div>    </div>
-    <p>※8）GrafanaサーバのIPアドレスは、自身の環境に合わせて置き換えます。</p>
+    <p>※9）GrafanaサーバのIPアドレスは、自身の環境に合わせて置き換えます。</p>
   </li>
   <li>
-    <p>監視端末のブラウザのアドレスバーに以下を入力し、 <strong>Grafana</strong> にアクセスします。</p>
+    <p>ログ監視端末のブラウザのアドレスバーに以下を入力し、 <strong>Grafana</strong> にアクセスします。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> http://localhost:3000/
 </code></pre></div>    </div>
@@ -761,7 +771,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
     <p><img src="grafana_page04.png" alt="画面ショット" /></p>
 
-    <p>以下画面のように <strong>Success</strong> と表示されれば、 <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> にアクセスすることが確認出来ます。</p>
+    <p>以下画面のように <strong>Success</strong> と表示されれば、 <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> にアクセス可能であることを確認出来ます。</p>
 
     <p><img src="grafana_page05.png" alt="画面ショット" /></p>
   </li>
@@ -774,7 +784,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
 <ol>
   <li>
-    <p>監視端末のブラウザで <strong>Grafana</strong> にログインし、以下画面の <strong>New dashboard</strong> メニューをクリックします。</p>
+    <p>ログ監視端末のブラウザで <strong>Grafana</strong> にログインし、以下画面の <strong>New dashboard</strong> メニューをクリックします。</p>
 
     <p><img src="grafana_page06.png" alt="画面ショット" /></p>
   </li>
@@ -793,7 +803,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
         <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  search <span class="s2">"compartment_ocid/loggroup_name"</span> | summarize count<span class="o">()</span> as cnt by rounddown<span class="o">(</span>datetime,  <span class="s1">'1m'</span><span class="o">)</span> as interval
 </code></pre></div>        </div>
-        <p>※9）<strong>コンパートメント</strong> のOCIDと <strong>ログ・グループ</strong> 名は、自身のものに置き換えます。</p>
+        <p>※10）<strong>コンパートメント</strong> のOCIDと <strong>ログ・グループ</strong> 名は、自身のものに置き換えます。</p>
       </li>
     </ul>
 
@@ -847,7 +857,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-05T11:19:56+09:00">February 5, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-13T09:43:20+09:00">February 13, 2024</time></p>
 
 
       </footer>

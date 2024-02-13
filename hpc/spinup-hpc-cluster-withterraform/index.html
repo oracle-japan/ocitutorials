@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-05T11:19:56+09:00">
+  <meta property="article:published_time" content="2024-02-13T09:43:20+09:00">
 
 
 
@@ -286,6 +286,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -335,7 +337,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ自動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPCクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
-    <meta itemprop="datePublished" content="2024-02-05T11:19:56+09:00">
+    <meta itemprop="datePublished" content="2024-02-13T09:43:20+09:00">
     
 
     <div class="page__inner-wrap">
@@ -346,12 +348,18 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-事前準備">0. 事前準備</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a><ul><li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li></ul></li><li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a><ul><li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li><li><a href="#0-2-2-terraformスクリプト作成">0-2-2. Terraformスクリプト作成</a></li></ul></li></ul></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li><li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li></ul></li><li><a href="#2-hpcクラスタ確認">2. HPCクラスタ確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</a></li><li><a href="#2-4-計算ノードbios設定確認">2-4. 計算ノードBIOS設定確認</a></li></ul></li><li><a href="#3-mpiプログラム実行">3. MPIプログラム実行</a></li><li><a href="#4-hpcクラスタ削除">4. HPCクラスタ削除</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</a></li><li><a href="#4-2-terraform-cliの場合">4-2. Terraform CLIの場合</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-事前準備">0. 事前準備</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a><ul><li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li></ul></li><li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a><ul><li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li><li><a href="#0-2-2-terraformスクリプト概要">0-2-2. Terraformスクリプト概要</a></li><li><a href="#0-2-3-terraformスクリプト作成">0-2-3. Terraformスクリプト作成</a></li></ul></li></ul></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li><li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li></ul></li><li><a href="#2-hpcクラスタ確認">2. HPCクラスタ確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</a></li><li><a href="#2-4-計算ノードbios設定確認">2-4. 計算ノードBIOS設定確認</a></li></ul></li><li><a href="#3-mpiプログラム実行">3. MPIプログラム実行</a></li><li><a href="#4-hpcクラスタ削除">4. HPCクラスタ削除</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</a></li><li><a href="#4-2-terraform-cliの場合">4-2. Terraform CLIの場合</a></li></ul></li></ul>
 
             </nav>
           </aside>
         
-        <p>このチュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンス（本チュートリアルでは <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を使用）を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。<br />
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
+
+<p>このチュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンス（本チュートリアルでは <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を使用）を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。<br />
 この自動構築は、 <strong>Terraform</strong> スクリプトを <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に読み込ませて作成する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を使用する方法と、 <strong>Terraform</strong> 実行環境を用意して <strong>Terraform</strong> CLIを使用する方法から選択することが出来ます。</p>
 
 <p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br />
@@ -395,7 +403,7 @@
 
 <p><strong>前提条件 :</strong> HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。</p>
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-事前準備">0. 事前準備</h1>
@@ -444,7 +452,7 @@
     <ul>
       <li><strong>Terraformの構成のオリジン :</strong> ソース・コード制御システム</li>
       <li><strong>ソースコード管理タイプ :</strong> <strong>GitHub</strong></li>
-      <li><strong>構成ソース・プロバイダ :</strong> <strong><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></strong> で作成した <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong></li>
+      <li><strong>構成ソース・プロバイダ :</strong> 先に作成した <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong></li>
       <li><strong>リポジトリ :</strong> <strong>tutorial_cn</strong></li>
       <li><strong>ブランチ :</strong> <strong>master</strong></li>
       <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
@@ -456,61 +464,50 @@
   <li>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。<br />
 4.1 <strong>General options</strong> フィールド
     <ul>
-      <li><strong>Compartment :</strong> HPCクラスタをデプロイするコンパートメント</li>
-      <li><strong>Availability Domain :</strong> HPCクラスタをデプロイする可用性ドメイン</li>
-      <li><strong>SSH public key :</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
-        <ul>
-          <li>公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能</li>
-        </ul>
-      </li>
+      <li><strong>Compartment :</strong> HPCクラスタをデプロイする <strong>コンパートメント</strong></li>
+      <li><strong>Availability Domain :</strong> HPCクラスタをデプロイする <strong>可用性ドメイン</strong></li>
+      <li><strong>SSH public key :</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵<br />
+ （公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能）</li>
     </ul>
 
     <p><img src="stack_page02.png" alt="画面ショット" /><br />
 4.2 <strong>Compute/GPU node options</strong> フィールド</p>
     <ul>
-      <li><strong>Display name postfix :</strong> 計算ノードホスト名の接尾辞(*1)</li>
+      <li><strong>Display name postfix :</strong> 計算ノードホスト名の接尾辞（*1）</li>
       <li><strong>Shape :</strong> <strong>BM.Optimized3.36</strong></li>
       <li><strong>Node count :</strong> 計算ノードのノード数（デフォルト：2）</li>
-      <li><strong>Image OCID :</strong> 計算ノードのイメージOCID(*2)</li>
+      <li><strong>Image OCID :</strong> 計算ノードのイメージOCID（*2）</li>
       <li><strong>Boot volume size :</strong> 計算ノードのブートボリュームサイズ(GB)</li>
-      <li><strong>cloud-config :</strong> 計算ノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )(*3)</li>
-      <li><strong>NPS for BM.Optimized3.36 :</strong> 計算ノードの <strong>NPS</strong> 設定値 (デフォルト：NPS1) (*4)</li>
-      <li><strong>SMT :</strong> 計算ノードの <strong>SMT</strong> 設定値 (デフォルト：有効) (*4)</li>
+      <li><strong>cloud-config :</strong> 計算ノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )（*3）</li>
+      <li><strong>NPS for BM.Optimized3.36 :</strong> 計算ノードの <strong>NPS</strong> 設定値 (デフォルト：NPS1) （*4）</li>
+      <li><strong>SMT :</strong> 計算ノードの <strong>SMT</strong> 設定値 (デフォルト：有効) （*4）</li>
     </ul>
 
     <p><img src="stack_page03.png" alt="画面ショット" /></p>
 
-    <p>*1) 例えば <strong>x9-ol87</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol87</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
- *2) 以下のOCIDを指定します。</p>
+    <p>*1） 例えば <strong>x9-ol88</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol88</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
+ *2）以下のOCIDを指定します。</p>
 
     <table>
       <thead>
         <tr>
-          <th>Oracle Linuxバージョン</th>
-          <th>OCID</th>
-          <th> </th>
+          <th style="text-align: center"><strong>Oracle Linux</strong><br />バージョン</th>
+          <th style="text-align: center">OCID</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>7.9</td>
-          <td>ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
-          <td> </td>
+          <td style="text-align: center">7.9</td>
+          <td style="text-align: center">ocid1.image.oc1..aaaaaaaalq4xqgkvjkrvvcvsfmfkbljgt6hfdqymyt6gpekuf622a6xktbcq</td>
         </tr>
         <tr>
-          <td>8.7</td>
-          <td>ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
-          <td> </td>
-        </tr>
-        <tr>
-          <td> </td>
-          <td> </td>
-          <td> </td>
+          <td style="text-align: center">8.8</td>
+          <td style="text-align: center">ocid1.image.oc1..aaaaaaaajkzfwcucvqdui7rksrvgcaagoxutbh56pecbff7qz7gbfpruhzja</td>
         </tr>
       </tbody>
     </table>
 
-    <p>*3) 以下の <strong>cloud-config</strong> を使用します。これをテキストファイルとして保存し、ブラウザで読み込みます。</p>
+    <p>*3）以下をテキストファイルとして保存し、ブラウザから読み込みます。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
 timezone: Asia/Tokyo
@@ -519,8 +516,6 @@ runcmd:
 <span class="c"># Mount NVMe local storage</span>
   - parted <span class="nt">-s</span> /dev/nvme0n1 mklabel gpt
   - parted <span class="nt">-s</span> /dev/nvme0n1 <span class="nt">--</span> mkpart primary xfs 1 <span class="nt">-1</span>
-<span class="c"># To ensure partition is really created before mkfs phase</span>
-  - <span class="nb">sleep </span>60
   - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme0n1p1
   - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
   - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
@@ -532,9 +527,6 @@ runcmd:
 <span class="c"># Expand root file system to those set by instance configuration</span>
   - /usr/libexec/oci-growfs <span class="nt">-y</span>
 <span class="c">#</span>
-<span class="c"># Set up cluster network interface</span>
-  - systemctl start oci-rdma-configure
-<span class="c">#</span>
 <span class="c"># Add public subnet to DNS search</span>
   - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
   - chattr <span class="nt">-R</span> +i /etc/resolv.conf
@@ -544,7 +536,7 @@ runcmd:
   - mount /home
 </code></pre></div>    </div>
 
-    <p>*4) 詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
+    <p>*4）詳細は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
   </li>
   <li>
     <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
@@ -584,7 +576,7 @@ runcmd:
 <p>具体的な <strong>Terraform</strong> 実行環境構築手順は、チュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/#2terraform%E7%92%B0%E5%A2%83%E3%81%AE%E6%A7%8B%E7%AF%89">2. Terraform環境の構築</a></strong> を参照ください。<br />
 また、関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm">ここ</a></strong> を参照ください。</p>
 
-<h3 id="0-2-2-terraformスクリプト作成">0-2-2. Terraformスクリプト作成</h3>
+<h3 id="0-2-2-terraformスクリプト概要">0-2-2. Terraformスクリプト概要</h3>
 
 <p>本チュートリアルで使用するHPCクラスタ構築用の <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトは、そのひな型を <strong>GitHub</strong> のパブリックレポジトリで公開しており、以下のファイル群で構成されています。</p>
 
@@ -618,197 +610,178 @@ runcmd:
     </tr>
     <tr>
       <td>provider.tf</td>
-      <td>テナント・ユーザ・リージョンの定義</td>
+      <td><strong>テナンシ</strong> ・ユーザ・ <strong>リージョン</strong> の定義</td>
     </tr>
     <tr>
       <td>vcn.tf</td>
-      <td>VCNと関連するネットワークリソースの定義</td>
+      <td><strong>仮想クラウド・ネットワーク</strong> と関連するネットワークリソースの定義</td>
     </tr>
   </tbody>
 </table>
 
-<p>これらのうち自身の環境に合わせて修正する箇所は、 <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> に集約しています。</p>
+<p>これらのうち自身の環境に合わせて修正する箇所は、基本的に <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> に集約しています。</p>
 
-<p>また、これらのファイルと同じディレクトリに <strong>user_data</strong> ディレクトリが存在し、 <strong>cloud-config</strong> ファイル群を格納しています。<br />
+<p>また、これらのファイルと同じディレクトリに <strong>user_data</strong> ディレクトリが存在し、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を格納しています。<br />
 この <strong>cloud-config</strong> を修正することで、構築するHPCクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することも可能でます。</p>
 
-<p><strong>Terraform</strong> スクリプトの作成は、まず以下の <strong>GitHub</strong> レポジトリからひな型となる <strong>Terraform</strong> スクリプトを <strong>Terraform</strong> 実行環境にダウンロードしますが、</p>
+<h3 id="0-2-3-terraformスクリプト作成">0-2-3. Terraformスクリプト作成</h3>
 
-<p><strong><a href="https://github.com/fwiw6430/tutorial_cn">https://github.com/fwiw6430/tutorial_cn</a></strong></p>
+<ol>
+  <li>
+    <p><strong>Terraform</strong> スクリプトの作成は、まず以下の <strong>GitHub</strong> レポジトリからひな型となる <strong>Terraform</strong> スクリプトを <strong>Terraform</strong> 実行環境にダウンロードしますが、</p>
 
-<p>これには以下コマンドを <strong>Terraform</strong> 実行環境で実行するか、</p>
+    <p><strong><a href="https://github.com/fwiw6430/tutorial_cn">https://github.com/fwiw6430/tutorial_cn</a></strong></p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/fwiw6430/tutorial_cn
-</code></pre></div></div>
+    <p>これには以下コマンドを <strong>Terraform</strong> 実行環境で実行するか、</p>
 
-<p><strong>GitHub</strong> の <strong>Terraform</strong> スクリプトレポジトリのページからzipファイルを <strong>Terraform</strong> 実行環境にダウンロード・展開することで行います。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>git clone https://github.com/fwiw6430/tutorial_cn
+</code></pre></div>    </div>
 
-<p>次に、ダウンロードした <strong>Terraform</strong> スクリプトのうち <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> 内の以下 <strong>Terraform</strong> 変数を自身の環境に合わせて修正します。<br />
-この際、ひな型ファイル内のこれら <strong>Terraform</strong> 変数は、予めコメント( <strong>#</strong> で始まる行)として埋め込まれているため、このコメント行を有効化して修正します。特に <strong>provider.tf</strong> のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、 <strong>Terraform</strong>変数を設定します。</p>
+    <p><strong>GitHub</strong> の <strong>Terraform</strong> スクリプトレポジトリのページからzipファイルを <strong>Terraform</strong> 実行環境にダウンロード・展開することで行います。</p>
+  </li>
+  <li>
+    <p>ダウンロードした <strong>Terraform</strong> スクリプトのうち、 <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> 内の以下 <strong>Terraform</strong> 変数を自身の環境に合わせて修正します。<br />
+この際、ひな型ファイル内のこれら <strong>Terraform</strong> 変数は、予めコメント（ <strong>#</strong> で始まる行）として埋め込まれているため、このコメント行を有効化して修正します。特に <strong>provider.tf</strong> のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、 <strong>Terraform</strong>変数を設定します。</p>
 
-<p>[ <strong>provider.tf</strong> ]</p>
+    <p>[ <strong>provider.tf</strong> ]</p>
 
-<table>
-  <thead>
-    <tr>
-      <th>変数名</th>
-      <th>設定値</th>
-      <th>確認方法</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>tenancy_ocid</td>
-      <td>使用するテナントのOCID</td>
-      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
-    </tr>
-    <tr>
-      <td>user_ocid</td>
-      <td>使用するユーザのOCID</td>
-      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
-    </tr>
-    <tr>
-      <td>private_key_path</td>
-      <td>OCIに登録したAPIキーの秘密キーのパス</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>fingerprint</td>
-      <td>OCIに登録したAPIキーのフィンガープリント</td>
-      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#four">ここ</a></strong> を参照</td>
-    </tr>
-    <tr>
-      <td>region</td>
-      <td>HPCクラスタをデプロイするリージョン識別子</td>
-      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm">ここ</a></strong> を参照</td>
-    </tr>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>変数名</th>
+          <th>設定値</th>
+          <th>確認方法</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>tenancy_ocid</td>
+          <td>使用する <strong>テナンシ</strong> のOCID</td>
+          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+        </tr>
+        <tr>
+          <td>user_ocid</td>
+          <td>使用するユーザのOCID</td>
+          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+        </tr>
+        <tr>
+          <td>private_key_path</td>
+          <td>OCIに登録したAPIキーの秘密キーのパス</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>fingerprint</td>
+          <td>OCIに登録したAPIキーのフィンガープリント</td>
+          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#four">ここ</a></strong> を参照</td>
+        </tr>
+        <tr>
+          <td>region</td>
+          <td>HPCクラスタをデプロイする <strong>リージョン</strong> 識別子</td>
+          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm">ここ</a></strong> を参照</td>
+        </tr>
+      </tbody>
+    </table>
 
-<p>[ <strong>terraform.tfvars</strong> ]</p>
+    <p>[ <strong>terraform.tfvars</strong> ]</p>
 
-<table>
-  <thead>
-    <tr>
-      <th>変数名</th>
-      <th>設定値</th>
-      <th>確認方法</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>sc_compartment_ocid</td>
-      <td>HPCクラスタをデプロイするコンパートメントのOCID</td>
-      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm">ここ</a></strong> を参照</td>
-    </tr>
-    <tr>
-      <td>sc_ad</td>
-      <td>HPCクラスタをデプロイする可用性ドメイン識別子</td>
-      <td>(*5)</td>
-    </tr>
-    <tr>
-      <td>sc_ssh_key</td>
-      <td>Bastionノードログインに使用するSSH秘密鍵に対する公開鍵</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>sc_cn_display_name</td>
-      <td>計算ノードホスト名の接尾辞</td>
-      <td>(*6)</td>
-    </tr>
-    <tr>
-      <td>sc_cn_shape</td>
-      <td>計算ノードに使用するシェイプ<br />・ <strong>BM.Optimized3.36</strong></td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>sc_cn_node_count</td>
-      <td>計算ノードのノード数</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>sc_cn_image</td>
-      <td>計算ノードに使用するOSイメージのOCID</td>
-      <td>(*7)</td>
-    </tr>
-    <tr>
-      <td>sc_cn_boot_vol_size</td>
-      <td>ブートボリュームのサイズ（GB）</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>sc_cn_cloud_config</td>
-      <td><strong>cloud-config</strong> ファイルをbase64エンコードした文字列</td>
-      <td>(*8)</td>
-    </tr>
-    <tr>
-      <td>sc_cn_nps_x9</td>
-      <td>計算ノードの <strong>NPS</strong> BIOS設定値</td>
-      <td>(*9)</td>
-    </tr>
-    <tr>
-      <td>sc_cn_smt</td>
-      <td>計算ノードの <strong>SMT</strong> BIOS設定値</td>
-      <td>(*9)</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td> </td>
-      <td> </td>
-    </tr>
-  </tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>変数名</th>
+          <th>設定値</th>
+          <th style="text-align: center">確認方法</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>sc_compartment_ocid</td>
+          <td>HPCクラスタをデプロイする <strong>コンパートメント</strong> のOCID</td>
+          <td style="text-align: center"><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm">ここ</a></strong> を参照</td>
+        </tr>
+        <tr>
+          <td>sc_ad</td>
+          <td>HPCクラスタをデプロイする <strong>可用性ドメイン</strong> 識別子</td>
+          <td style="text-align: center">（*5）</td>
+        </tr>
+        <tr>
+          <td>sc_ssh_key</td>
+          <td>Bastionノードログインに使用するSSH秘密鍵に対する公開鍵</td>
+          <td style="text-align: center">-</td>
+        </tr>
+        <tr>
+          <td>sc_cn_display_name</td>
+          <td>計算ノードホスト名の接尾辞</td>
+          <td style="text-align: center">（*6）</td>
+        </tr>
+        <tr>
+          <td>sc_cn_shape</td>
+          <td>計算ノードに使用するシェイプ<br />・ <strong>BM.Optimized3.36</strong></td>
+          <td style="text-align: center">-</td>
+        </tr>
+        <tr>
+          <td>sc_cn_node_count</td>
+          <td>計算ノードのノード数</td>
+          <td style="text-align: center">-</td>
+        </tr>
+        <tr>
+          <td>sc_cn_image</td>
+          <td>計算ノードに使用するOSイメージのOCID</td>
+          <td style="text-align: center">（*7）</td>
+        </tr>
+        <tr>
+          <td>sc_cn_boot_vol_size</td>
+          <td><strong>ブートボリューム</strong> のサイズ（GB）</td>
+          <td style="text-align: center">-</td>
+        </tr>
+        <tr>
+          <td>sc_cn_cloud_config</td>
+          <td><strong>user_data</strong> ディレクトリに格納する計算ノード用 <strong>cloud-config</strong> ファイル名<br />・ <strong>cloud-init_cnhpc.cfg</strong></td>
+          <td style="text-align: center">-</td>
+        </tr>
+        <tr>
+          <td>sc_cn_nps_x9</td>
+          <td>計算ノードの <strong>NPS</strong> BIOS設定値</td>
+          <td style="text-align: center">（*8）</td>
+        </tr>
+        <tr>
+          <td>sc_cn_smt</td>
+          <td>計算ノードの <strong>SMT</strong> BIOS設定値</td>
+          <td style="text-align: center">（*8）</td>
+        </tr>
+      </tbody>
+    </table>
 
-<p>*5) OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
+    <p>*5）OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
 
-<p><img src="console_page01.png" alt="画面ショット" /></p>
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
 
-<p>*6) 例えば <strong>x9-ol87</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol87</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）</p>
+    <p>*6）例えば <strong>x9-ol88</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol88</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
+ *7）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDをコメントアウトして使用します。<br />
+ *8）詳細は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
+  </li>
+  <li>
+    <p>ダウンロードした <strong>Terraform</strong> スクリプトのうち、 <strong>cn.tf</strong> を以下のように修正します。</p>
 
-<p>*7) 以下のOCIDを指定します。（ダウンロードした <strong>Terraform</strong> スクリプトの <strong>terraform.tfvars</strong> に以下のOCIDがコメントとして埋め込まれています）</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Oracle Linuxバージョン</th>
-      <th>OCID</th>
-      <th> </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>7.9</td>
-      <td>ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td>8.7</td>
-      <td>ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td> </td>
-      <td> </td>
-    </tr>
-  </tbody>
-</table>
-
-<p>*8) 以下コマンドの出力を使用します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>tutorial_cn
-<span class="nv">$ </span><span class="nb">base64</span> ./user_data/cloud-init_cnhpc.cfg | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">'\n'</span><span class="p">;</span> <span class="nb">echo</span>
-</code></pre></div></div>
-
-<p>*9) 詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff cn.tf_org cn.tf
+ 13,14c13,14
+ &lt; <span class="c">#        user_data               = "${base64encode(file("./user_data/${var.sc_cn_cloud_config}"))}"</span>
+ &lt;         user_data               <span class="o">=</span> var.sc_cn_cloud_config
+ <span class="nt">---</span>
+ <span class="o">&gt;</span>         user_data               <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">base64encode</span><span class="p">(file(</span><span class="s2">"./user_data/</span><span class="k">${</span><span class="nv">var</span><span class="p">.sc_cn_cloud_config</span><span class="k">}</span><span class="s2">"</span><span class="p">))</span><span class="k">}</span><span class="s2">"</span>
+ <span class="o">&gt;</span> <span class="c">#        user_data               = var.sc_cn_cloud_config</span>
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
 
 <hr />
 <h1 id="1-hpcクラスタ構築">1. HPCクラスタ構築</h1>
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、HPCクラスタを構築します。<br />
-この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
+<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、HPCクラスタを構築します。</p>
+
+<p>この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
 
 <h2 id="1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</h2>
 
@@ -926,13 +899,14 @@ ECDSA key fingerprint is SHA256:jWTGqZjG0dAyrbP04JGC8jJX+uqDwMFotLXirA7L+AA.
 Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
 </span>Warning: Permanently added <span class="s1">'inst-wf3wx-x9-ol8,10.0.2.31'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
 status: <span class="k">done</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
 <p>ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 
 <h2 id="2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</h2>
 
-<p>計算ノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが/mnt/localdiskにマウントされ、Bastionノードの/homeが/homeとしてマウントされています。</p>
+<p>計算ノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが <strong>/mnt/localdisk</strong> にマウントされ、Bastionノードの <strong>/home</strong> が <strong>/home</strong> としてマウントされています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"df -h / /mnt/localdisk /home"</span><span class="p">;</span> <span class="k">done
 </span>inst-kicav-x9-ol8
@@ -945,6 +919,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
 /dev/mapper/ocivolume-root   89G   15G   74G  17% /
 /dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
 bastion:/home                36G  8.5G   28G  24% /home
+<span class="err">$</span>
 </code></pre></div></div>
 
 <h2 id="2-4-計算ノードbios設定確認">2-4. 計算ノードBIOS設定確認</h2>
@@ -962,24 +937,26 @@ Thread<span class="o">(</span>s<span class="o">)</span> per core:  2
 NUMA node<span class="o">(</span>s<span class="o">)</span>:        2
 NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-17,36-53
 NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
+<span class="err">$</span>
 </code></pre></div></div>
 
 <hr />
 <h1 id="3-mpiプログラム実行">3. MPIプログラム実行</h1>
 
-<p>本章は、計算ノードの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれる <strong>OpenMPI</strong> と <strong>Intel MPI Benchmark</strong> を使用し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> のノード間インターコネクト性能を確認します。</p>
+<p>本章は、計算ノードの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれる <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> と <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmark</a></strong> を使用し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> のノード間インターコネクト性能を確認します。</p>
 
-<p>ここでは、 <strong>Intel MPI Benchmark</strong> の <strong>Ping-Pong</strong> を実行します。</p>
+<p>ここでは、 <strong>Intel MPI Benchmark</strong> のPing-Pongを実行します。</p>
 
-<p><strong><a href="/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法">標準ベンチマーク実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、 <strong>Ping-Pong</strong> を実行します。</p>
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、2ノードを使用するPing-Pongを実行します。</p>
 
 <hr />
 <h1 id="4-hpcクラスタ削除">4. HPCクラスタ削除</h1>
 
 <h2 id="4-0-概要">4-0. 概要</h2>
 
-<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、HPCクラスタを削除します。<br />
-この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
+<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、HPCクラスタを削除します。</p>
+
+<p>この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
 
 <h2 id="4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</h2>
 
@@ -1035,7 +1012,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-05T11:19:56+09:00">February 5, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-13T09:43:20+09:00">February 13, 2024</time></p>
 
 
       </footer>

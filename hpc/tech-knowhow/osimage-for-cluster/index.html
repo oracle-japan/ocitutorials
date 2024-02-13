@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-05T11:19:56+09:00">
+  <meta property="article:published_time" content="2024-02-13T09:43:20+09:00">
 
 
 
@@ -296,6 +296,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/" class="active">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -345,7 +347,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタネットワーキングイメージの選び方">
     <meta itemprop="description" content="クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレイスから提供されています。本テクニカルTipsは、このクラスタネットワーキングイメージの適切な選び方を解説します。">
-    <meta itemprop="datePublished" content="2024-02-05T11:19:56+09:00">
+    <meta itemprop="datePublished" content="2024-02-13T09:43:20+09:00">
     
 
     <div class="page__inner-wrap">
@@ -356,105 +358,179 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-クラスタネットワーク対応osイメージ指定方法">1. クラスタ・ネットワーク対応OSイメージ指定方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-ociコンソールで指定">1-1. OCIコンソールで指定</a></li><li><a href="#1-2-hpcクラスタスタックで指定">1-2. HPCクラスタスタックで指定</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></li><li><a href="#2-クラスタネットワーキングイメージ指定方法">2. クラスタネットワーキングイメージ指定方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-ociコンソールを使用する方法">2-1. OCIコンソールを使用する方法</a></li><li><a href="#2-2-hpcクラスタスタックを使用する方法">2-2. HPCクラスタスタックを使用する方法</a></li><li><a href="#2-3-terraformスクリプトを使用する方法">2-3. Terraformスクリプトを使用する方法</a></li></ul></li></ul>
 
             </nav>
           </aside>
         
-        <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージが <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> として <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から提供されています。<br />
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
+
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージが <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> として <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から提供されています。<br />
 本テクニカルTipsは、この <strong>クラスタネットワーキングイメージ</strong> の適切な選び方を解説します。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p><strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> は、ベースOSにOracle Linuxを採用し、シェイプがBM.HPC2.36/ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> の場合そのバージョンは7.9と8から選択でき、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> の場合7.9のみ選択可能です。<br />
-なお、2023年6月29日時点のバージョン8系 <strong>クラスタネットワーキングイメージ</strong> の最新は、8.7です。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> は、ベースOSに <strong>Oracle Linux</strong> を採用し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> への接続に必要な以下のソフトウェアが予めインストールされています。</p>
 
-<p>下表は、クラスタ・ネットワークに対応したシェイプと対応する <strong>クラスタネットワーキングイメージ</strong> の組み合わせを示しています。</p>
+<ul>
+  <li>Mellanox OFED<br />
+<strong>クラスタ・ネットワーク</strong> にインスタンスを接続するNIC（<strong>NVIDIA Mellanox ConnectX</strong>）のドライバーソフトウェアです。</li>
+  <li>wpa_supplicant<br />
+インスタンスが <strong>クラスタ・ネットワーク</strong> に接続する際行われる802.1X認証（※1）のクライアントソフトウェアです。</li>
+  <li>802.1X認証関連ユーティリティソフトウェア<br />
+インスタンスが <strong>クラスタ・ネットワーク</strong> に接続する際行われる802.1X認証に必要な機能を提供するユーティリティソフトウェアです。</li>
+  <li><strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェア<br />
+<strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェースのIPアドレス設定等の機能を提供するユーティリティソフトウェアです。</li>
+</ul>
+
+<p>※1）802.1X認証の仕組みは、 <strong><a href="https://www.infraexpert.com/study/wireless14.html">ここ</a></strong> のサイトが参考になります。</p>
+
+<p>また <strong>クラスタネットワーキングイメージ</strong> は、以下の観点で異なる用途のものが用意されています。</p>
+
+<ul>
+  <li>802.1X認証関連ユーティリティソフトウェアと <strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェアの提供方法<br />
+<strong>Oracle Cloud Agent</strong> （以降 <strong>OCA</strong> と呼称）のプラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。</li>
+  <li>対象のシェイプ<br />
+HPCシェイプ（※1）用（HPC <strong>クラスタネットワーキングイメージ</strong> ）か、GPUシェイプ（※2）用（GPU <strong>クラスタネットワーキングイメージ</strong> ）かの違いで、GPU <strong>クラスタネットワーキングイメージ</strong> はNVIDIA GPUドライバがインストールされています。</li>
+  <li>ベースOSの <strong>Oracle Linux</strong> バージョン<br />
+バージョン7系か、バージョン8系かによる違いです。</li>
+</ul>
+
+<p>※1）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#previous-generation-shapes__previous-generation-bm">BM.HPC2.36</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong><br />
+※2）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU.A100-v2.8</a></strong></p>
+
+<p>以降では、用途毎に用意している <strong>クラスタネットワーキングイメージ</strong> の一覧と、選択した <strong>クラスタネットワーキングイメージ</strong> をインスタンスデプロイ時に指定する方法を解説します。</p>
+
+<hr />
+<h1 id="1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</h1>
+
+<p>本章は、前章で説明した用途毎に用意している <strong>クラスタネットワーキングイメージ</strong> の一覧を下表にまとめます。<br />
+自身の用途に合わせて適切なものを選択し、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から入手します。</p>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: center">シェイプ</th>
-      <th style="text-align: center">OSイメージ名</th>
-      <th style="text-align: center">ベースOS</th>
+      <th style="text-align: center">No.</th>
+      <th style="text-align: center">対象シェイプ</th>
+      <th style="text-align: center"><strong>Oracle Linux</strong><br />バージョン</th>
+      <th style="text-align: center">ユーティリティ<br />提供方法</th>
       <th style="text-align: center">OFED</th>
-      <th style="text-align: center">マーケットプレイス<br />URL</th>
+      <th style="text-align: center">GPUドライバ</th>
+      <th style="text-align: center">イメージ名の先頭</th>
+      <th style="text-align: center"><strong>マーケットプレイス</strong><br />URL（※3）</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center">BM.HPC2.36</td>
-      <td style="text-align: center">HPC Cluster Networking Image</td>
-      <td style="text-align: center">Oracle Linux 7.9</td>
-      <td style="text-align: center">5.4</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong> （※1）</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">HPCシェイプ</td>
+      <td style="text-align: center">8.8</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-8-OCA</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
+      <td style="text-align: center">2</td>
       <td style="text-align: center"> </td>
-      <td style="text-align: center">HPC Cluster Networking Image</td>
-      <td style="text-align: center">Oracle Linux 8</td>
+      <td style="text-align: center">8.7</td>
+      <td style="text-align: center">個別RPM</td>
       <td style="text-align: center">5.4</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong> （※2）</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-8-RHCK</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
-      <td style="text-align: center">BM.Optimized3.36</td>
-      <td style="text-align: center">HPC Cluster Networking Image</td>
-      <td style="text-align: center">Oracle Linux 7.9</td>
-      <td style="text-align: center">5.4</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong> （※1）</td>
-    </tr>
-    <tr>
+      <td style="text-align: center">3</td>
       <td style="text-align: center"> </td>
-      <td style="text-align: center">HPC Cluster Networking Image</td>
-      <td style="text-align: center">Oracle Linux 8</td>
-      <td style="text-align: center">5.4</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong> （※2）</td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-7-OCA</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
-      <td style="text-align: center">BM.GPU4.8</td>
-      <td style="text-align: center">GPU Cluster Networking Image</td>
-      <td style="text-align: center">Oracle Linux 7.9</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center">個別RPM</td>
       <td style="text-align: center">5.4</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong> （※3）</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-7-RHCK</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
-      <td style="text-align: center">BM.GPU.A100-v2.8</td>
-      <td style="text-align: center">GPU Cluster Networking Image</td>
-      <td style="text-align: center">Oracle Linux 7.9</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">GPUシェイプ</td>
+      <td style="text-align: center">8.8</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">535</td>
+      <td style="text-align: center">OracleLinux-8-OCA</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">535</td>
+      <td style="text-align: center">OracleLinux-7-OCA</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center">個別RPM</td>
       <td style="text-align: center">5.4</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong> （※3）</td>
+      <td style="text-align: center">515</td>
+      <td style="text-align: center">OracleLinux-7-RHCK</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
     </tr>
   </tbody>
 </table>
 
-<p>※1）”バージョン”フィールドで、”OracleLinux-7”で始まる最新のイメージを選択します。<br />
-※2）”バージョン”フィールドで、”OracleLinux-8”で始まる最新のイメージを選択します。<br />
-※3）”バージョン”フィールドで、最新のイメージを選択します。</p>
+<p>※3）OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
 <hr />
-<h1 id="1-クラスタネットワーク対応osイメージ指定方法">1. クラスタ・ネットワーク対応OSイメージ指定方法</h1>
+<h1 id="2-クラスタネットワーキングイメージ指定方法">2. クラスタネットワーキングイメージ指定方法</h1>
 
-<h2 id="1-0-概要">1-0. 概要</h2>
+<h2 id="2-0-概要">2-0. 概要</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスのデプロイは、OCIコンソールを使用する方法と <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用する方法があります。</p>
+<p>本章は、前章の一覧から選択した <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> をインスタンスデプロイ時にどのように指定するかを解説します。</p>
 
-<p>本章は、これらの方法で <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を適切に指定する方法を解説します。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスのデプロイ方法は、主に以下3種類が存在します。</p>
 
-<h2 id="1-1-ociコンソールで指定">1-1. OCIコンソールで指定</h2>
+<ul>
+  <li>OCIコンソールを使用する方法</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用する方法</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用する方法</li>
+</ul>
 
-<p>OCIコンソールを使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を予め作成しますが、このインスタンス構成の <strong>イメージとシェイプ</strong> フィールドで <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を選択します。<br />
-以下 <strong>イメージの選択</strong> サイドバーで <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> （HPC Cluster Networking Image）か <strong>gpu</strong> （GPU Cluster Networking Image）と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> あるいは <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択し <strong>イメージ・ビルド</strong> フィールドで適切なOSイメージを選択（※4）し <strong>イメージの選択</strong> ボタンをクリックします。</p>
+<p>本章は、選択した <strong>クラスタネットワーキングイメージ</strong> をどのように指定するか、これらのデプロイ方法毎に解説します。</p>
+
+<h2 id="2-1-ociコンソールを使用する方法">2-1. OCIコンソールを使用する方法</h2>
+
+<p>OCIコンソールを使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を予め作成しますが、この <strong>インスタンス構成</strong> の <strong>イメージとシェイプ</strong> フィールドで <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を選択します。</p>
+
+<p>以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> （HPC <strong>クラスタネットワーキングイメージ</strong> ）か <strong>gpu</strong> （GPU <strong>クラスタネットワーキングイメージ</strong> ）と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> あるいは <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで適切なOSイメージを選択（※4）し、 <strong>Oracle Standard Terms and Restrictionsを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>イメージの選択</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page01.png" alt="画面ショット" /></p>
 
-<p>※4）”HPC_Cluster_Networking_Image_Oracle_Linux_7.9”の場合は”OracleLinux-7”で始まる最新のイメージを、”HPC_Cluster_Networking_Image_Oracle_Linux_8”の場合は”OracleLinux-8”で始まる最新のイメージ（※5）を、”GPU_Cluster_Networking_Image_Oracle_Linux_7.9”の場合は全ての中から最新のイメージを選択します。</p>
+<p>※4）前章一覧表中の <strong>イメージ名の先頭</strong> 列を参照し、適切な <strong>イメージ・ビルド</strong> を選択します。</p>
 
-<p>※5）2023年11月13日時点の最新は、8.7です。</p>
+<h2 id="2-2-hpcクラスタスタックを使用する方法">2-2. HPCクラスタスタックを使用する方法</h2>
 
-<h2 id="1-2-hpcクラスタスタックで指定">1-2. HPCクラスタスタックで指定</h2>
-
-<p><strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> メニュー中の以下 <strong>Compute node options</strong> フィールドの <strong>Image version</strong> プルダウンメニューで <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を選択します。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> メニュー中の以下 <strong>Compute node options</strong> フィールドの <strong>Image version</strong> プルダウンメニューで適切な <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を選択します。</p>
 
 <p><img src="console_page02.png" alt="画面ショット" /></p>
 
@@ -463,31 +539,71 @@
 <table>
   <thead>
     <tr>
-      <th>メニュー名</th>
-      <th><strong>クラスタネットワーキングイメージ</strong></th>
-      <th>備考</th>
+      <th style="text-align: center">メニュー名</th>
+      <th style="text-align: center">前章一覧表中のNo.</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>HPC_OL7</td>
-      <td>HPC Cluster Networking Image Oracle Linux 7.9</td>
-      <td>-</td>
+      <td style="text-align: center">HPC_OL7</td>
+      <td style="text-align: center">3</td>
     </tr>
     <tr>
-      <td>HPC_OL8</td>
-      <td>HPC Cluster Networking Image Oracle Linux 8</td>
-      <td>2023年11月13日時点のバージョンは8.7</td>
+      <td style="text-align: center">HPC_OL8</td>
+      <td style="text-align: center">1</td>
     </tr>
     <tr>
-      <td>GPU</td>
-      <td>GPU Cluster Networking Image Oracle Linux 7.9</td>
-      <td>-</td>
+      <td style="text-align: center">GPU_OL7</td>
+      <td style="text-align: center">6</td>
     </tr>
     <tr>
-      <td> </td>
-      <td> </td>
-      <td> </td>
+      <td style="text-align: center">GPU_OL8</td>
+      <td style="text-align: center">5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="2-3-terraformスクリプトを使用する方法">2-3. Terraformスクリプトを使用する方法</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、通常イメージのOCIDをスクリプト内に指定します。</p>
+
+<p>前章一覧表中の各 <strong>クラスタネットワーキングイメージ</strong> は、以下のOCIDに対応しています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">前章一覧表中のNo.</th>
+      <th style="text-align: center">OCID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaajkzfwcucvqdui7rksrvgcaagoxutbh56pecbff7qz7gbfpruhzja</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaalq4xqgkvjkrvvcvsfmfkbljgt6hfdqymyt6gpekuf622a6xktbcq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra</td>
     </tr>
   </tbody>
 </table>
@@ -502,7 +618,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-05T11:19:56+09:00">February 5, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-13T09:43:20+09:00">February 13, 2024</time></p>
 
 
       </footer>

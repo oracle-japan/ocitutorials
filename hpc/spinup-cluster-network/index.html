@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-05T11:19:56+09:00">
+  <meta property="article:published_time" content="2024-02-13T09:43:20+09:00">
 
 
 
@@ -286,6 +286,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
@@ -335,7 +337,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-02-05T11:19:56+09:00">
+    <meta itemprop="datePublished" content="2024-02-13T09:43:20+09:00">
     
 
     <div class="page__inner-wrap">
@@ -346,58 +348,54 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-hpcクラスタ作成事前作業">0. HPCクラスタ作成事前作業</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-vcn作成">0-1. VCN作成</a></li><li><a href="#0-2-bastionノード作成">0-2. Bastionノード作成</a></li></ul></li><li><a href="#1-hpcクラスタ作成">1. HPCクラスタ作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-cloud-config作成">1-1. cloud-config作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-計算ノード確認">2. 計算ノード確認</a><ul><li><a href="#2-1-計算ノードログイン">2-1. 計算ノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</a></li></ul></li><li><a href="#3-mpiプログラム実行2ノード編">3. MPIプログラム実行（2ノード編）</a><ul><li><a href="#3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</a></li><li><a href="#3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</a></li></ul></li><li><a href="#4-計算ノード追加">4. 計算ノード追加</a></li><li><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a><ul><li><a href="#5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</a></li><li><a href="#5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#5-2-intel-mpi-benchmark-all-reduce実行">5-2. Intel MPI Benchmark All-Reduce実行</a></li></ul></li><li><a href="#6-計算ノード入れ替え">6. 計算ノード入れ替え</a></li><li><a href="#7-クラスタネットワークの終了">7. クラスタ・ネットワークの終了</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-hpcクラスタ作成事前作業">0. HPCクラスタ作成事前作業</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-仮想クラウドネットワーク作成">0-1. 仮想クラウド・ネットワーク作成</a></li><li><a href="#0-2-bastionノード作成">0-2. Bastionノード作成</a></li></ul></li><li><a href="#1-hpcクラスタ作成">1. HPCクラスタ作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-cloud-config作成">1-1. cloud-config作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-計算ノード確認">2. 計算ノード確認</a><ul><li><a href="#2-1-計算ノードログイン">2-1. 計算ノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-タイムゾーン確認">2-3. タイムゾーン確認</a></li><li><a href="#2-4-nvmeローカルディスクファイルシステム確認">2-4. NVMeローカルディスクファイルシステム確認</a></li><li><a href="#2-5-ファイアーウォール停止確認">2-5. ファイアーウォール停止確認</a></li><li><a href="#2-6-クラスタネットワーク接続用ネットワークインターフェース確認">2-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認</a></li></ul></li><li><a href="#3-mpiプログラム実行2ノード編">3. MPIプログラム実行（2ノード編）</a><ul><li><a href="#3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</a></li><li><a href="#3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</a></li></ul></li><li><a href="#4-計算ノード追加">4. 計算ノード追加</a></li><li><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a><ul><li><a href="#5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</a></li><li><a href="#5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</a></li><li><a href="#5-2-intel-mpi-benchmark-all-reduce実行">5-2. Intel MPI Benchmark All-Reduce実行</a></li></ul></li><li><a href="#6-計算ノード入れ替え">6. 計算ノード入れ替え</a></li><li><a href="#7-クラスタネットワークの終了">7. クラスタ・ネットワークの終了</a></li></ul>
 
             </nav>
           </aside>
         
         <p>このチュートリアルは、HPC向けIntel Ice Lakeプロセッサを搭載する <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を使用してノード間接続し、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを構築、そのインターコネクト性能を検証します。</p>
 
-<p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。
+<p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br />
 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> も利用可能で、詳細は <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> を参照ください。</p>
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
-<p>またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存のクラスタ・ネットワークに計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。</p>
+<p>またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存の <strong>クラスタ・ネットワーク</strong> に計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。</p>
 
 <p><strong>所要時間 :</strong> 約1時間</p>
 
-<p><strong>前提条件 :</strong> クラスタ・ネットワークを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
+<p><strong>前提条件 :</strong> <strong>クラスタ・ネットワーク</strong> を収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)の作成と、この <strong>コンパートメント</strong> に対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。</p>
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-hpcクラスタ作成事前作業">0. HPCクラスタ作成事前作業</h1>
 
 <h2 id="0-0-概要">0-0. 概要</h2>
 
-<p>HPCクラスタを構成する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と計算ノードは、OCIコンソールからクラスタ・ネットワークを作成することで、計算ノードをクラスタ・ネットワークに接続したHPCクラスタとしてデプロイされます。</p>
+<p>HPCクラスタを構成する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> と計算ノードは、OCIコンソールから <strong>クラスタ・ネットワーク</strong> を作成することでデプロイします。</p>
 
-<p>このため、この計算ノードをTCP接続するVCNと、インターネットから直接アクセス出来ないプライベートサブネットに通常接続される計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意する必要があります。</p>
+<p>このため、この計算ノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> と、インターネットから直接アクセス出来ないプライベートサブネットに通常接続される計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意する必要があります。</p>
 
 <p>本章は、これらHPCクラスタ作成の前提となるリソースを作成します。</p>
 
-<h2 id="0-1-vcn作成">0-1. VCN作成</h2>
+<h2 id="0-1-仮想クラウドネットワーク作成">0-1. 仮想クラウド・ネットワーク作成</h2>
 
-<p>本章は、計算ノードをTCP接続するVCNを作成します。<br />
-VCNの作成は、以下チュートリアルページ <strong>クラウドに仮想ネットワーク(VCN)を作る</strong> の手順通りに実行し、</p>
-
-<p><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn</a></p>
-
-<p>以下のリソースを作成します。</p>
+<p>本章は、計算ノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> を作成します。<br />
+ <strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> の手順通りに実行し、以下のリソースを作成します。</p>
 
 <ul>
-  <li>VCN（10.0.0.0/16）</li>
+  <li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16）</li>
   <li>パブリックサブネット（10.0.0.0/24）</li>
   <li>プライベートサブネット（10.0.1.0/24）</li>
-  <li>インターネット・ゲートウェイ（パブリックサブネットにアタッチ）</li>
-  <li>NATゲートウェイ（プライベートサブネットにアタッチ）</li>
-  <li>サービス・ゲートウェイ（プライベートサブネットにアタッチ）</li>
-  <li>ルート表 x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
-  <li>セキュリティリスト x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
+  <li><strong>インターネット・ゲートウェイ</strong> （パブリックサブネットにアタッチ）</li>
+  <li><strong>NATゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
+  <li><strong>サービス・ゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
+  <li><strong>ルート表</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
+  <li><strong>セキュリティリスト</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
 </ul>
 
-<p>このVCNは、セキュリティリストで以下のアクセス制限が掛けられています。</p>
+<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> で以下のアクセス制限が掛けられています。</p>
 
 <ul>
   <li>インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定</li>
@@ -406,21 +404,17 @@ VCNの作成は、以下チュートリアルページ <strong>クラウドに�
 
 <h2 id="0-2-bastionノード作成">0-2. Bastionノード作成</h2>
 
-<p>本章は、計算ノードにログインする際の踏み台となるbastinノードを作成します。
-Bastionノードの作成は、以下チュートリアルページ <strong>インスタンスを作成する</strong> の手順を参考に、</p>
-
-<p><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance</a></p>
-
-<p>ご自身の要件に沿ったインスタンスを、先の手順でVCNを作成したコンパートメントとパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
+<p>本章は、計算ノードにログインする際の踏み台となるBastinノードを作成します。<br />
+Bastionノードの作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で <strong>仮想クラウド・ネットワーク</strong> を作成した <strong>コンパートメント</strong> とパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
 
 <ul>
-  <li><strong>イメージ　:</strong> Oracle Linux 8</li>
-  <li><strong>シェイプ　:</strong> VM.Optimized3.Flex（1 OCPU）</li>
-  <li><strong>SSHキーの追加　:</strong> Bastionノードへのログインで使用するSSH秘密鍵に対応する公開鍵</li>
+  <li><strong>イメージ　:</strong> <strong>Oracle Linux</strong> 8</li>
+  <li><strong>シェイプ　:</strong> <strong>VM.Optimized3.Flex</strong> （1 OCPU）</li>
+  <li><strong>SSHキーの追加　:</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
 </ul>
 
-<p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。
-先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。</p>
+<p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。<br />
+先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 作成手順で指定します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen
 Generating public/private rsa key pair.
@@ -445,49 +439,57 @@ The keys randomart image is:
 +----[SHA256]-----+
 <span class="nv">$ </span><span class="nb">cat</span> .ssh/id_rsa.pub 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
+<span class="err">$</span>
 </code></pre></div></div>
 
 <p>次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></strong> の手順を実施します。</p>
+
+<p>次に、以降作成する計算ノードで実施する手順を <strong><a href="https://github.com/chaos/pdsh">pdsh</a></strong> を使用して効率よく進めるため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ">1. pdshインストール・セットアップ</a></strong> の手順を実施し、 <strong>pdsh</strong> をインストール・セットアップします。<br />
+なおこの手順は、該当する手順を全ての計算ノードで実施する場合、必要ありません。</p>
 
 <hr />
 <h1 id="1-hpcクラスタ作成">1. HPCクラスタ作成</h1>
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> は、作成時に指定する <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> に基づいて <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a></strong> が作成時に指定するノード数の計算ノードをデプロイし、これをクラスタ・ネットワークに接続します。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> は、作成時に指定する <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> に基づいて作成時に指定するノード数の計算ノードを <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a></strong> がデプロイし、これを <strong>クラスタ・ネットワーク</strong> に接続します。</p>
 
-<p>クラスタ・ネットワークに接続する計算ノードは、OS起動時点でクラスタ・ネットワークに接続するネットワークインターフェースが作成されていないため、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> でこの作成を行います。また本チュートリアルでは、計算ノードに使用するBM.Optimized3.36に装備されるNVMeローカルディスクのファイルシステム作成も、cloud-initから行います。</p>
+<p>計算ノードに使用する <strong>BM.Optimized3.36</strong> に装備されるNVMeローカルディスクは、OS起動時点でファイルシステムが作成されていないため、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> でこの作成を行います。</p>
 
-<p>以上より、HPCクラスタの作成は、以下の手順を経て行います。</p>
+<p>以上よりHPCクラスタの作成は、以下の手順を経て行います。</p>
 
 <ul>
-  <li>cloud-init設定ファイル（cloud-config）作成</li>
+  <li><strong>cloud-init</strong> 設定ファイル（cloud-config）作成</li>
   <li>インスタンス構成作成</li>
   <li>クラスタ・ネットワーク作成</li>
 </ul>
+
+<p>なお計算ノードのOSは、HPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> の <strong>Oracle Linux</strong> 8を使用します。</p>
 
 <h2 id="1-1-cloud-config作成">1-1. cloud-config作成</h2>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（cloud-config）を作成します。</p>
 
-<p>本チュートリアルは、cloud-initを以下の目的で使用します。</p>
+<p>本チュートリアルは、 <strong>cloud-init</strong> を以下の目的で使用します。</p>
 
 <ul>
+  <li>タイムゾーンをJSTに変更</li>
   <li>NVMeローカルディスクファイルシステム作成</li>
   <li>firewalld停止</li>
-  <li><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用ネットワークインターフェース起動</li>
 </ul>
 
-<p>以下は、本チュートリアルで使用するBM.Optimized3.36用のcloud-configで、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
+<p>以下は、本チュートリアルで使用する <strong>BM.Optimized3.36</strong> 用のcloud-configで、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
+<span class="c">#</span>
+<span class="c"># Change time zone to JST</span>
+timezone: Asia/Tokyo
+
 runcmd:
 <span class="c">#</span>
 <span class="c"># Mount NVMe local storage</span>
   - parted <span class="nt">-s</span> /dev/nvme0n1 mklabel gpt
   - parted <span class="nt">-s</span> /dev/nvme0n1 <span class="nt">--</span> mkpart primary xfs 1 <span class="nt">-1</span>
-<span class="c"># To ensure partition is really created before mkfs phase</span>
-  - <span class="nb">sleep </span>60
   - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme0n1p1
   - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
   - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
@@ -496,12 +498,7 @@ runcmd:
 <span class="c"># Stop firewalld</span>
   - systemctl stop firewalld
   - systemctl disable firewalld
-<span class="c">#</span>
-<span class="c"># Set up cluster network interface</span>
-  - systemctl start oci-rdma-configure
 </code></pre></div></div>
-
-<p>このcloud-configで行っているクラスタ・ネットワーク接続用ネットワークインターフェース起動は、クラスタ・ネットワーク対応OSイメージに含まれるsystemdのサービス <strong>oci-rdma-configure</strong> を使用しますが、この詳細はテクニカルTips <strong><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></strong> を参照ください。</p>
 
 <h2 id="1-2-インスタンス構成作成">1-2. インスタンス構成作成</h2>
 
@@ -509,7 +506,7 @@ runcmd:
 
 <ol>
   <li>
-    <p>OCIコンソールにログインし、HPCクラスタをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス構成</strong> とメニューを辿ります。</p>
+    <p>OCIコンソールにログインし、HPCクラスタをデプロイする <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス構成</strong> とメニューを辿ります。</p>
   </li>
   <li>
     <p>表示される以下画面で、<strong>インスタンス構成の作成</strong> ボタンをクリックします。</p>
@@ -517,24 +514,25 @@ runcmd:
     <p><img src="console_page02.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される <strong>インスタンス構成の作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+    <p>表示される <strong>インスタンス構成の作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
     <p>3.1 <strong>インスタンス構成情報</strong> フィールド</p>
 
     <ul>
-      <li><strong>名前</strong> ：インスタンス構成に付与する名前</li>
-      <li><strong>コンパートメントに作成</strong> ：インスタンス構成を作成するコンパートメント</li>
+      <li><strong>名前</strong> ：<strong>インスタンス構成</strong> に付与する名前</li>
+      <li><strong>コンパートメントに作成</strong> ：<strong>インスタンス構成</strong> を作成する <strong>コンパートメント</strong></li>
     </ul>
 
     <p><img src="console_page03.png" alt="画面ショット" /></p>
 
-    <p>3.2 <strong>インスタンスの作成先のコンパートメント</strong> フィールド：クラスタ・ネットワークをデプロイするコンパートメント</p>
+    <p>3.2 <strong>インスタンスの作成先のコンパートメント</strong> フィールド：計算ノードをデプロイする <strong>コンパートメント</strong></p>
 
     <p><img src="console_page04.png" alt="画面ショット" /></p>
 
     <p>3.3 <strong>配置</strong> フィールド</p>
     <ul>
-      <li><strong>可用性ドメイン</strong> ：クラスタ・ネットワークをデプロイする可用性ドメイン</li>
+      <li><strong>可用性ドメイン</strong> ：計算ノードをデプロイする <strong>可用性ドメイン</strong></li>
     </ul>
 
     <p><img src="console_page05.png" alt="画面ショット" /></p>
@@ -544,28 +542,30 @@ runcmd:
     <p><img src="console_page06.png" alt="画面ショット" /></p>
 
     <ul>
-      <li><strong>イメージ</strong> ：Oracle Linux - HPC Cluster Networking Image (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで、バージョン7.9系を使用する場合は <strong>OracleLinux-7</strong> で始まる最新を、バージョン8系を使用する場合は <strong>OracleLinux-8</strong> で始まる最新を選択し、 <strong>イメージの選択</strong> ボタンをクリック。）</li>
+      <li><strong>イメージ</strong> ：Oracle Linux - HPC Cluster Networking Image<br />
+ （ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>OracleLinux-8-OCA</strong> で始まる最新を選択し、 <strong>Oracle Standard Terms and Restrictionsを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>イメージの選択</strong> ボタンをクリック。）</li>
     </ul>
 
     <p><img src="console_page08.png" alt="画面ショット" /></p>
 
     <ul>
-      <li><strong>Shape</strong> ：BM.Optimized3.36 (<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.Optimized3.36</strong> を選択し <strong>シェイプの選択</strong> ボタンをクリック）</li>
+      <li><strong>Shape</strong> ：<strong>BM.Optimized3.36</strong><br />
+  （<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.Optimized3.36</strong> を選択し <strong>シェイプの選択</strong> ボタンをクリック。）</li>
     </ul>
 
     <p><img src="console_page07.png" alt="画面ショット" /></p>
 
-    <p>3.5 <strong>ネットワーキング</strong> フィールド</p>
+    <p>3.5 <strong>プライマリVNIC情報</strong> フィールド</p>
     <ul>
-      <li><strong>プライマリ・ネットワーク</strong> ： 先に作成したVCNを選択</li>
-      <li><strong>サブネット</strong> ：先に作成したプライベートサブネットを選択</li>
+      <li><strong>プライマリ・ネットワーク</strong> ： 先に作成した <strong>仮想クラウド・ネットワーク</strong> とプライベートサブネットを選択</li>
     </ul>
 
     <p><img src="console_page09.png" alt="画面ショット" /></p>
 
     <p>3.6 <strong>SSHキーの追加</strong> フィールド</p>
     <ul>
-      <li><strong>SSHキー</strong> ：先にBastionノードで作成したSSH鍵の公開鍵（ <strong>公開キーの貼付け</strong> を選択することで入力フィールドを表示）</li>
+      <li><strong>SSHキー</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵<br />
+ （ <strong>公開キーの貼付け</strong> を選択することで入力フィールドを表示）</li>
     </ul>
 
     <p><img src="console_page10.png" alt="画面ショット" /></p>
@@ -575,10 +575,20 @@ runcmd:
     <p><img src="console_page11.png" alt="画面ショット" /></p>
 
     <ul>
-      <li><strong>cloud-initスクリプト</strong> ：先に作成したcloud-init設定ファイル（cloud-config）を選択（ <strong>参照</strong> ボタンでファイルを選択）</li>
+      <li><strong>cloud-initスクリプト</strong> ：先に作成した <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（cloud-config）を選択<br />
+ （ <strong>参照</strong> ボタンでファイルを選択）</li>
     </ul>
 
     <p><img src="console_page12.png" alt="画面ショット" /></p>
+
+    <p>3.8 <strong>Oracle Cloudエージェント</strong> フィールド（以下 <strong>Oracle Cloudエージェント</strong> タブを選択して表示）</p>
+
+    <ul>
+      <li><strong>Compute HPC RDMA Auto-Configuration</strong> ：チェック</li>
+      <li><strong>Compute HPC RDMA Authentication</strong> ：チェック</li>
+    </ul>
+
+    <p><img src="console_page12-1.png" alt="画面ショット" /></p>
   </li>
 </ol>
 
@@ -588,7 +598,7 @@ runcmd:
 
 <ol>
   <li>
-    <p>OCIコンソールにログインし、HPCクラスタをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> とメニューを辿ります。</p>
+    <p>OCIコンソールにログインし、HPCクラスタをデプロイする <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> とメニューを辿ります。</p>
   </li>
   <li>
     <p>表示される以下画面で、<strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。</p>
@@ -596,86 +606,148 @@ runcmd:
     <p><img src="console_page13.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される <strong>クラスタ・ネットワークの作成</strong> 画面で、以下の情報を入力し <strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+    <p>表示される <strong>クラスタ・ネットワークの作成</strong> 画面で、以下の情報を入力し <strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
-    <p>3.1 <strong>名前</strong> フィールド：クラスタ・ネットワークに付与する名前</p>
+    <p>3.1 <strong>名前</strong> フィールド：<strong>クラスタ・ネットワーク</strong> に付与する名前</p>
 
     <p><img src="console_page14.png" alt="画面ショット" /></p>
 
-    <p>3.2 <strong>コンパートメントに作成</strong> フィールド：クラスタ・ネットワークを作成するコンパートメント</p>
+    <p>3.2 <strong>コンパートメントに作成</strong> フィールド：<strong>クラスタ・ネットワーク</strong> を作成する <strong>コンパートメント</strong></p>
 
     <p><img src="console_page15.png" alt="画面ショット" /></p>
 
-    <p>3.2 <strong>可用性ドメイン</strong> フィールド：クラスタ・ネットワークをデプロイする可用性ドメイン</p>
+    <p>3.3 <strong>可用性ドメイン</strong> フィールド：<strong>クラスタ・ネットワーク</strong> をデプロイする <strong>可用性ドメイン</strong></p>
 
     <p><img src="console_page16.png" alt="画面ショット" /></p>
 
-    <p>3.3 <strong>ネットワーキングの構成</strong> フィールド</p>
+    <p>3.4 <strong>ネットワーキングの構成</strong> フィールド</p>
 
     <ul>
-      <li><strong>仮想クラウド・ネットワーク</strong> ：先に作成したVCNを選択</li>
+      <li><strong>仮想クラウド・ネットワーク</strong> ：先に作成した <strong>仮想クラウドネットワーク</strong> を選択</li>
       <li><strong>サブネット</strong> ：先に作成したプライベートサブネットを選択</li>
     </ul>
 
     <p><img src="console_page17.png" alt="画面ショット" /></p>
 
-    <p>3.4 <strong>インスタンス・プールの構成</strong> フィールド</p>
+    <p>3.5 <strong>インスタンス・プールの構成</strong> フィールド</p>
 
     <ul>
-      <li><strong>インスタンス・プール名</strong> ：作成されるインスタンス・プールに付与する名前</li>
+      <li><strong>インスタンス・プール名</strong> ：作成される <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a></strong> に付与する名前</li>
       <li><strong>インスタンス数</strong> ：デプロイする計算ノードのノード数</li>
-      <li><strong>インスタンス構成</strong> ：先に作成したインスタンス構成</li>
+      <li><strong>インスタンス構成</strong> ：先に作成した <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong></li>
     </ul>
 
     <p><img src="console_page18.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>クラスタ・ネットワーク作業リクエスト</strong> 画面で、左上のステータスが <strong>プロビジョニング中</strong> と表示されれば、クラスタ・ネットワークと計算ノードの作成が実施されています。</p>
+    <p>表示される以下 <strong>クラスタ・ネットワークの詳細</strong> 画面で、ステータスが <strong>プロビジョニング中</strong> と表示されれば、 <strong>クラスタ・ネットワーク</strong> と計算ノードの作成が実施されています。</p>
 
     <p><img src="console_page19.png" alt="画面ショット" /></p>
 
-    <p>ステータスが <strong>実行中</strong> となれば、クラスタ・ネットワークと計算ノードの作成が完了しています。</p>
+    <p>ステータスが <strong>実行中</strong> となれば、 <strong>クラスタ・ネットワーク</strong> と計算ノードの作成が完了しています。<br />
+作成が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で10分程度です。</p>
   </li>
 </ol>
 
 <hr />
 <h1 id="2-計算ノード確認">2. 計算ノード確認</h1>
 
-<p>本章は、デプロイされた計算ノードにログインし、環境を確認します。</p>
+<p>本章は、デプロイされた計算ノードの環境を確認します。</p>
 
 <h2 id="2-1-計算ノードログイン">2-1. 計算ノードログイン</h2>
 
 <p>計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。Bastionノードから計算ノードへのログインは、計算ノードのインスタンス名を使用します。</p>
 
-<p>計算ノードのインスタンス名は、OCIコンソールで計算ノードをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。</p>
-
-<p>またこの画面は、計算ノードのIPアドレスも表示されており、これを使用してBastionノードからSSHログインすることも可能です。</p>
+<p>計算ノードのインスタンス名は、OCIコンソールで計算ノードをデプロイした <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。<br />
+またこの画面は、計算ノードのIPアドレスも表示しており、これを使用してBastionノードからSSHログインすることも可能です。</p>
 
 <p><img src="console_page20.png" alt="画面ショット" /></p>
 
 <p>計算ノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh inst-wyr6m-comp
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh inst-ijeeq-x9
 </code></pre></div></div>
 
 <h2 id="2-2-cloud-init完了確認">2-2. cloud-init完了確認</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 <strong>done</strong> となっていることでcloud-initの処理完了を確認します。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。<br />
+ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 
-<p>ステータスが <strong>running</strong> の場合は、cloud-initの処理が継続中のため、処理が完了するまで待ちます。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>cloud-init status
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo cloud-init status'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-ijeeq-x9,inst-mpdri-x9
+<span class="nt">----------------</span>
 status: <span class="k">done</span>
 <span class="err">$</span>
 </code></pre></div></div>
 
-<h2 id="2-3-計算ノードファイルシステム確認">2-3. 計算ノードファイルシステム確認</h2>
+<h2 id="2-3-タイムゾーン確認">2-3. タイムゾーン確認</h2>
 
-<p>計算ノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。</p>
+<p>以下コマンドをBastionノードのopcユーザで実行し、タイムゾーンがJSTになっていることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-k</span> /mnt/localdisk
-Filesystem                  1K-blocks     Used  Available Use% Mounted on
-/dev/nvme0n1p1             3748905484    32976 3748872508   1% /mnt/localdisk
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'date'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-ijeeq-x9,inst-mpdri-x9
+<span class="nt">----------------</span>
+Mon Jan 29 12:08:00 JST 2024
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="2-4-nvmeローカルディスクファイルシステム確認">2-4. NVMeローカルディスクファイルシステム確認</h2>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、NVMeローカルディスク領域が/mnt/localdiskにマウントされていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo df -h /mnt/localdisk'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-ijeeq-x9,inst-mpdri-x9
+<span class="nt">----------------</span>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1  3.5T   25G  3.5T   1% /mnt/localdisk
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="2-5-ファイアーウォール停止確認">2-5. ファイアーウォール停止確認</h2>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo systemctl status firewalld | grep Active'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-ijeeq-x9,inst-mpdri-x9
+<span class="nt">----------------</span>
+   Active: inactive <span class="o">(</span>dead<span class="o">)</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="2-6-クラスタネットワーク接続用ネットワークインターフェース確認">2-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認</h2>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェース（ens800f0np0）に10.224.0.0/24のネットワークアドレスに属するIPアドレスが設定されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> comp <span class="s1">'ifconfig ens800f0np0'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-mpdri-x9
+<span class="nt">----------------</span>
+ens800f0np0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 4220
+        inet 10.224.0.128  netmask 255.255.255.0  broadcast 10.224.0.255
+        inet6 fe80::966d:aeff:fe02:a3f0  prefixlen 64  scopeid 0x20&lt;<span class="nb">link</span><span class="o">&gt;</span>
+        ether 94:6d:ae:02:a3:f0  txqueuelen 20000  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 50  bytes 14280 <span class="o">(</span>13.9 KiB<span class="o">)</span>
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 94  bytes 21801 <span class="o">(</span>21.2 KiB<span class="o">)</span>
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+<span class="nt">----------------</span>
+inst-ijeeq-x9
+<span class="nt">----------------</span>
+ens800f0np0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 4220
+        inet 10.224.0.16  netmask 255.255.255.0  broadcast 10.224.0.255
+        inet6 fe80::966d:aeff:fe0b:8354  prefixlen 64  scopeid 0x20&lt;<span class="nb">link</span><span class="o">&gt;</span>
+        ether 94:6d:ae:0b:83:54  txqueuelen 20000  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 50  bytes 14280 <span class="o">(</span>13.9 KiB<span class="o">)</span>
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 92  bytes 21629 <span class="o">(</span>21.1 KiB<span class="o">)</span>
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
 <span class="err">$</span>
 </code></pre></div></div>
 
@@ -684,65 +756,64 @@ Filesystem                  1K-blocks     Used  Available Use% Mounted on
 
 <h2 id="3-0-mpiプログラム実行2ノード編概要">3-0. MPIプログラム実行（2ノード編）概要</h2>
 
-<p>本章は、計算ノードのHPCイメージに含まれるOpenMPIとIntel MPI Benchmarkを使用し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> のノード間インターコネクト性能を確認します。</p>
+<p>本章は、計算ノードのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれる <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> と <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmark</a></strong> を使用し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> のノード間インターコネクト性能を確認します。</p>
 
-<p>OpenMPIを計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）からOpenMPI実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。</p>
+<p><strong>OpenMPI</strong> を計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）から <strong>OpenMPI</strong> 実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。</p>
 
-<p>またOpenMPIの実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、先に作成したプライベートサブネットのセキュリティリストを修正する必要があります。</p>
+<p>また <strong>OpenMPI</strong> の実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、先に作成したプライベートサブネットのセキュリティリストを修正する必要があります。</p>
 
-<p>以上より、本章で実施するIntel MPI BenchmarkによるMPIプログラム実行は、以下の手順を経て行います。</p>
+<p>以上より、本章で実施する <strong>Intel MPI Benchmark</strong> によるMPIプログラム実行は、以下の手順を経て行います。</p>
 
 <ul>
   <li>計算ノード間SSH接続環境構築</li>
-  <li>プライベートサブネットセキュリティリスト修正</li>
-  <li>Intel MPI Benchmark Ping-Pong実行</li>
+  <li>プライベートサブネット <strong>セキュリティリスト</strong> 修正</li>
+  <li><strong>Intel MPI Benchmark</strong> Ping-Pong実行</li>
 </ul>
 
 <h2 id="3-1-計算ノード間ssh接続環境構築">3-1. 計算ノード間SSH接続環境構築</h2>
 
 <p>本章は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でopcユーザのパスフレーズ無しSSH接続環境を構築します。</p>
 
-<p>まず初めに、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをBastionノードのopcユーザのホームディレクトリにファイル名hostlist.txtで作成します。</p>
+<ol>
+  <li>
+    <p>以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全計算ノードにコピーします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/hostlist.txt
-inst-wyr6m-comp
-inst-9wead-comp
-<span class="err">$</span>
-</code></pre></div></div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nt">-p</span> ~/.ssh/id_rsa <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをBastionノードのopcユーザで実行し、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを全計算ノードにコピーします。</p>
 
-<p>次に、以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全計算ノードにコピーします。</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをBastionノードのopcユーザで実行し、後の <strong>Intel MPI Benchmark</strong> Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。<br />
+なお、ホスト名リストを作成していない場合は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nt">-p</span> ~/.ssh/id_rsa <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
-</code></pre></div></div>
-
-<p>次に、以下コマンドをBastionノードのopcユーザで実行し、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを全計算ノードにコピーします。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
-</code></pre></div></div>
-
-<p>次に、以下コマンドをBastionノードのopcユーザで実行し、後のIntel MPI Benchmark Ping-Pongを実行する際に使用する先に作成したホスト名リストを全計算ノードにコピーします。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
-</code></pre></div></div>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
 
 <h2 id="3-2-プライベートサブネットセキュリティリスト修正">3-2. プライベートサブネットセキュリティリスト修正</h2>
 
-<p>本章は、プライベートサブネットのセキュリティリストを以下の手順で修正します。</p>
+<p>本章は、プライベートサブネットの <strong>セキュリティリスト</strong> を以下の手順で修正します。</p>
 
 <ol>
   <li>
     <p>OCIコンソールにログインし、計算ノードをデプロイしたリージョンを選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿ります。</p>
   </li>
   <li>
-    <p>表示される画面で、先に作成した仮想クラウド・ネットワークをクリックします。</p>
+    <p>表示される画面で、先に作成した <strong>仮想クラウド・ネットワーク</strong> をクリックします。</p>
   </li>
   <li>
     <p>表示される以下 <strong>サブネット</strong> フィールドで、先に作成したプライベートサブネットをクリックします。</p>
 
-    <p><img src="console_page20-2.png" alt="画面ショット" /></p>
+    <p><img src="console_page20-1.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>セキュリティ・リスト</strong> フィールドで、プライベートサブネットに適用されているセキュリティリストをクリックします。</p>
+    <p>表示される以下 <strong>セキュリティ・リスト</strong> フィールドで、プライベートサブネットに適用されている <strong>セキュリティリスト</strong> をクリックします。</p>
 
     <p><img src="console_page21.png" alt="画面ショット" /></p>
   </li>
@@ -757,7 +828,7 @@ inst-9wead-comp
     <p><img src="console_page23.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>イングレス・ルール</strong> フィールドで、変更したルールの <strong>IPプロトコル</strong> が <strong>すべてのプロトコル</strong> に変更されたことを確認します。</p>
+    <p>表示される以下 <strong>イングレス・ルール</strong> フィールドで、変更したルールの <strong>IPプロトコル</strong> が <strong>すべてのプロトコル</strong> に変更されていることを確認します。</p>
 
     <p><img src="console_page24.png" alt="画面ショット" /></p>
   </li>
@@ -765,23 +836,23 @@ inst-9wead-comp
 
 <h2 id="3-3-intel-mpi-benchmark-ping-pong実行">3-3. Intel MPI Benchmark Ping-Pong実行</h2>
 
-<p>本章は、 <strong>Intel MPI Benchmark</strong> の <strong>Ping-Pong</strong> を実行します。</p>
+<p>本章は、 <strong>Intel MPI Benchmark</strong> のPing-Pongを実行します。</p>
 
-<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、 <strong>Ping-Pong</strong> を実行します。</p>
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、2ノードを使用するPing-Pongを実行します。</p>
 
 <hr />
 <h1 id="4-計算ノード追加">4. 計算ノード追加</h1>
 
 <p>本章は、作成した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する計算ノードを2ノード追加して4ノードに拡張します。</p>
 
-<p>この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす">2. ノード数を増やす</a></strong> 手順を実施します。</p>
+<p>この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす">2. ノード数を増やす</a></strong> の手順に従い、計算ノードを2ノードから4ノードに拡張します。</p>
 
 <hr />
 <h1 id="5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</h1>
 
 <h2 id="5-0-mpiプログラム実行4ノード編概要">5-0. MPIプログラム実行（4ノード編）概要</h2>
 
-<p>本章は、追加した2ノードを含めた計4ノードで <strong>Intel MPI Benchmark</strong> の <strong>All-Reduce</strong> を実行します。</p>
+<p>本章は、追加した2ノードを含めた計4ノードで <strong>Intel MPI Benchmark</strong> のAll-Reduceを実行します。</p>
 
 <h2 id="5-1-計算ノード間ssh接続環境構築">5-1. 計算ノード間SSH接続環境構築</h2>
 
@@ -791,14 +862,16 @@ inst-9wead-comp
 
 <h2 id="5-2-intel-mpi-benchmark-all-reduce実行">5-2. Intel MPI Benchmark All-Reduce実行</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcベンチマーク情報">OCI HPCベンチマーク情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、 <strong>All-Reduce</strong> を実行します。</p>
+<p>本章は、 <strong>Intel MPI Benchmark</strong> のAll-Reduceを実行します。</p>
+
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">OpenMPIでIntel MPI Benchmarkを実行する場合</a></strong> の手順に従い、4ノードを使用するAll-Reduceを実行します。</p>
 
 <hr />
 <h1 id="6-計算ノード入れ替え">6. 計算ノード入れ替え</h1>
 
 <p>本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。</p>
 
-<p>この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える">ノードを置き換える</a></strong> 手順を実施します。</p>
+<p>この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算ノードの追加・削除・入れ替え方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える">ノードを置き換える</a></strong> の手順を実施します。</p>
 
 <p>再度 <strong><a href="#5-mpiプログラム実行4ノード編">5. MPIプログラム実行（4ノード編）</a></strong> に従い <strong>Intel MPI Benchmark</strong> を実行、インターコネクト性能が十分出ていることを確認します。</p>
 
@@ -809,13 +882,13 @@ inst-9wead-comp
 
 <ol>
   <li>
-    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> を選択し、表示される以下画面で作成したクラスタ・ネットワークの <strong>終了</strong> メニューをクリックします。</p>
+    <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> を選択し、表示される以下画面で作成した <strong>クラスタ・ネットワーク</strong> の <strong>終了</strong> メニューをクリックします。</p>
 
     <p><img src="console_page29.png" alt="画面ショット" /></p>
   </li>
 </ol>
 
-<p>クラスタ・ネットワークの <strong>状態</strong> が <strong>終了済</strong> となれば、削除が完了しています。</p>
+<p><strong>クラスタ・ネットワーク</strong> の <strong>状態</strong> が <strong>終了済</strong> となれば、削除が完了しています。</p>
 
 <p>これで、このチュートリアルは終了です。</p>
 
@@ -829,7 +902,7 @@ inst-9wead-comp
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-05T11:19:56+09:00">February 5, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-13T09:43:20+09:00">February 13, 2024</time></p>
 
 
       </footer>
