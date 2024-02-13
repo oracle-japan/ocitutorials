@@ -35,14 +35,14 @@ table, th, td {
 また **クラスタネットワーキングイメージ** は、以下の観点で異なる用途のものが用意されています。
 
 - 802.1X認証関連ユーティリティソフトウェアと **クラスタ・ネットワーク** 設定ユーティリティソフトウェアの提供方法  
-**Oracle Cloud Agent** （以降 **OCA** と呼称）のプラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。  
+**[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）プラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。  
 - 対象のシェイプ  
-HPCシェイプ（※1）用（HPC **クラスタネットワーキングイメージ** ）か、GPUシェイプ（※2）用（GPU **クラスタネットワーキングイメージ** ）かの違いで、GPU **クラスタネットワーキングイメージ** はNVIDIA GPUドライバがインストールされています。  
+HPCシェイプ（※2）用（HPC **クラスタネットワーキングイメージ** ）か、GPUシェイプ（※3）用（GPU **クラスタネットワーキングイメージ** ）かの違いで、GPU **クラスタネットワーキングイメージ** はNVIDIA GPUドライバがインストールされています。  
 - ベースOSの **Oracle Linux** バージョン  
 バージョン7系か、バージョン8系かによる違いです。  
 
-※1）**[BM.HPC2.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#previous-generation-shapes__previous-generation-bm)** と **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**  
-※2）**[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** と **[BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 
+※2）**[BM.HPC2.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#previous-generation-shapes__previous-generation-bm)** と **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**  
+※3）**[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** と **[BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 
 
 以降では、用途毎に用意している **クラスタネットワーキングイメージ** の一覧と、選択した **クラスタネットワーキングイメージ** をインスタンスデプロイ時に指定する方法を解説します。
 
@@ -52,7 +52,7 @@ HPCシェイプ（※1）用（HPC **クラスタネットワーキングイメ�
 本章は、前章で説明した用途毎に用意している **クラスタネットワーキングイメージ** の一覧を下表にまとめます。  
 自身の用途に合わせて適切なものを選択し、 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から入手します。  
 
-|No.| 対象シェイプ  | **Oracle Linux**<br>バージョン | ユーティリティ<br>提供方法 | OFED | GPUドライバ | イメージ名の先頭           | **マーケットプレイス**<br>URL（※3）                                                    |
+|No.| 対象シェイプ  | **Oracle Linux**<br>バージョン | ユーティリティ<br>提供方法 | OFED | GPUドライバ | イメージ名の先頭           | **マーケットプレイス**<br>URL（※4）                                                    |
 | :-:|:-----: | :-----------------------: | :--------------: | :--: | :-----: | :----------------: | :---------------------------------------------------------------------: |
 |1| HPCシェイプ | 8.8                       | **OCA** プラグイン         | 5.8  | -       | OracleLinux-8-OCA  | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 |2|         | 8.7                       | 個別RPM            | 5.4  | -       | OracleLinux-8-RHCK | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
@@ -62,7 +62,7 @@ HPCシェイプ（※1）用（HPC **クラスタネットワーキングイメ�
 |   6|      | 7.9                       | **OCA** プラグイン         | 5.8  | 535     | OracleLinux-7-OCA  | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
 |     7|    | 7.9                       | 個別RPM            | 5.4  | 515     | OracleLinux-7-RHCK | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
 
-※3）OCIへのログインを要求された場合は、ログインを完了して下さい。
+※4）OCIへのログインを要求された場合は、ログインを完了して下さい。
 
 ***
 # 2. クラスタネットワーキングイメージ指定方法
@@ -83,11 +83,11 @@ HPCシェイプ（※1）用（HPC **クラスタネットワーキングイメ�
 
 OCIコンソールを使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** を予め作成しますが、この **インスタンス構成** の **イメージとシェイプ** フィールドで **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を選択します。
 
-以下 **イメージの選択** サイドバーで、 **Marketplace** を選択し検索フィールドに **hpc** （HPC **クラスタネットワーキングイメージ** ）か **gpu** （GPU **クラスタネットワーキングイメージ** ）と入力して表示される **Oracle Linux - HPC Cluster Networking Image** あるいは **Oracle Linux - GPU Cluster Networking Image** を選択して表示される **イメージ・ビルド** フィールドで適切なOSイメージを選択（※4）し、 **Oracle Standard Terms and Restrictionsを確認した上でこれに同意します** チェックボックスをチェックし **イメージの選択** ボタンをクリックします。
+以下 **イメージの選択** サイドバーで、 **Marketplace** を選択し検索フィールドに **hpc** （HPC **クラスタネットワーキングイメージ** ）か **gpu** （GPU **クラスタネットワーキングイメージ** ）と入力して表示される **Oracle Linux - HPC Cluster Networking Image** あるいは **Oracle Linux - GPU Cluster Networking Image** を選択して表示される **イメージ・ビルド** フィールドで適切なOSイメージを選択（※5）し、 **Oracle Standard Terms and Restrictionsを確認した上でこれに同意します** チェックボックスをチェックし **イメージの選択** ボタンをクリックします。
 
 ![画面ショット](console_page01.png)
 
-※4）前章一覧表中の **イメージ名の先頭** 列を参照し、適切な **イメージ・ビルド** を選択します。
+※5）前章一覧表中の **イメージ名の先頭** 列を参照し、適切な **イメージ・ビルド** を選択します。
 
 ## 2-2. HPCクラスタスタックを使用する方法
 

@@ -19,19 +19,17 @@ header:
 
 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスは、以下の条件を満たす必要があります。
 
-- **クラスタ・ネットワーク** 対応シェイプ（※1）を使用している
+- **クラスタ・ネットワーク** 対応シェイプ（ **[ここ](https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#supported-shapes)** を参照）を使用している
 - **クラスタ・ネットワーク** のデプロイに伴ってデプロイされている
 - **クラスタ・ネットワーク** 接続のための以下ソフトウェアがインストールされている
    - Mellanox OFED
-   - wpa_supplicant（※2）
-   - oci-cn-auth（※3）
+   - wpa_supplicant（※1）
+   - oci-cn-auth（※2）
 - **クラスタ・ネットワーク** 接続用ネットワークインターフェースがOS上で構築されている
 
-※1）**クラスタ・ネットワーク** 対応シェイプは、以下に記載があります。
-[https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#supported-shapes](https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#supported-shapes)  
-※2）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがwpa_supplicantです。802.1X認証の仕組みは、以下のサイトが参考になります。  
+※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがwpa_supplicantです。802.1X認証の仕組みは、以下のサイトが参考になります。  
 [https://www.infraexpert.com/study/wireless14.html](https://www.infraexpert.com/study/wireless14.html)  
-※3）**クラスタ・ネットワーク** に接続する際の802.1X認証で必要な認証処理機能を提供するユーティリティーソフトウェアで、GitHubから公開されています。
+※2）**クラスタ・ネットワーク** に接続する際の802.1X認証で必要な認証処理機能を提供するユーティリティーソフトウェアで、GitHubから公開されています。
 
 これらの条件の中で、 **クラスタ・ネットワーク** 接続のためのソフトウェアは、ベースOSに **Oracle Linux** を使用する **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** には予めインストールされていますが、OSによってはこれらのソフトウェアをインストールすることにより、 **クラスタ・ネットワーク** に接続することが可能です。
 
@@ -49,12 +47,14 @@ header:
 
 以降は、下表の組み合わせのベアメタルシェイプとOSでデプロイしたインスタンスを使用し、これらを **クラスタ・ネットワーク** に接続する方法を解説します。
 
-| ベアメタルシェイプ                      | OS                  |
-| :----------------------------: | :-----------------: |
-| **BM.Optimized3.36**           | **Rocky Linux** 9.1 |
-|                                | **CentOS** 7.9      |
-|                                | **Ubuntu** 20.04    |
-| **BM.GPU4.8/BM.GPU.A100-v2.8** | **Ubuntu** 20.04    |
+| ベアメタルシェイプ                      | OS                      |
+| :----------------------------: | :---------------------: |
+| **BM.Optimized3.36**           | **Rocky Linux** 8.7（※3） |
+|                                | **CentOS** 7.9          |
+|                                | **Ubuntu** 20.04        |
+| **BM.GPU4.8/BM.GPU.A100-v2.8** | **Ubuntu** 20.04        |
+
+※3）次章以降の手順のOSアップデートにより、最終的には8.9になります。
 
 ***
 # 1. カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築
@@ -67,33 +67,32 @@ header:
 
 この際、上記チュートリアルに対して、以下の点を変更して実施します。
 
-- cloud-config適用除外
-
-   **[1-1. cloud-config作成](/ocitutorials/hpc/spinup-cluster-network/#1-1-cloud-config作成)** （ **BM.Optimized3.36** の場合）/ **[1-1. cloud-config作成](/ocitutorials/hpc/spinup-gpu-cluster/#1-1-cloud-config作成)** （ **BM.GPU4.8/BM.GPU.A100-v2.8** の場合）で作成しているcloud-configは、その処理内容をカスタム・イメージ取得用の計算/GPUノードに適用する必要が無いため、作成しません。  
+- cloud-config適用除外  
+  **[1-1. cloud-config作成](/ocitutorials/hpc/spinup-cluster-network/#1-1-cloud-config作成)** （ **BM.Optimized3.36** の場合）/ **[1-1. cloud-config作成](/ocitutorials/hpc/spinup-gpu-cluster/#1-1-cloud-config作成)** （ **BM.GPU4.8/BM.GPU.A100-v2.8** の場合）で作成しているcloud-configは、その処理内容をカスタム・イメージ取得用の計算/GPUノードに適用する必要が無いため、作成しません。  
    またこれに伴い、後の **[1-2. インスタンス構成作成](/ocitutorials/hpc/spinup-cluster-network/#1-2-インスタンス構成作成)** の **3.7 管理フィールド** （ **BM.Optimized3.36** の場合）/  **[1-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#1-2-インスタンス構成作成)** の **3.8 管理フィールド** （ **BM.GPU4.8/BM.GPU.A100-v2.8** の場合）で指定しているcloud-configの適用も、実施しません。
 
-- イメージ変更
+- イメージ変更  
+  **[1-2. インスタンス構成作成](/ocitutorials/hpc/spinup-cluster-network/#1-2-インスタンス構成作成)** （ **BM.Optimized3.36** の場合）/  **[1-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#1-2-インスタンス構成作成)** （ **BM.GPU4.8/BM.GPU.A100-v2.8** の場合）の **3.4 イメージとシェイプ フィールド** で指定するイメージは、 使用するOSがRocky Linux 8.7、CentOS 7.9、又はUbuntu 20.04かに合わせて、以下を指定します。
 
-   **[1-2. インスタンス構成作成](/ocitutorials/hpc/spinup-cluster-network/#1-2-インスタンス構成作成)** （ **BM.Optimized3.36** の場合）/  **[1-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#1-2-インスタンス構成作成)** （ **BM.GPU4.8/BM.GPU.A100-v2.8** の場合）の **3.4 イメージとシェイプ フィールド** で指定するイメージは、 使用するOSがRocky Linux 9.1、CentOS 7.9、又はUbuntu 20.04かに合わせて、以下を指定します。
+  - **イメージ** ：Rocky Linux 8.7 - Free(x86_64) (**イメージの変更** ボタンをクリックして表示される以下 **Select an image** サイドバーで **Rocky Linux** を選択し表示される **Rocky Linux 8.7 - Free(x86_64)** を選択して表示される **イメージ・ビルド** フィールドで **8.7.3** を選択し **イメージの選択** ボタンをクリック）
 
-   - **イメージ** ：Rocky Linux 9.1 - Free(x86_64) (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Rocky Linux** を選択し表示される **Rocky Linux 9.1 - Free(x86_64)** を選択して表示される **イメージ・ビルド** フィールドで **9.1.2** を選択し **イメージの選択** ボタンをクリック）
+    ![画面ショット](console_page01.png)
+    ![画面ショット](console_page01-2.png)
 
-      ![画面ショット](console_page01.png)
+  - **イメージ** ：CentOS 7 (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **CentOS** を選択し表示される **CentOS 7** を選択して表示される **イメージ・ビルド** フィールドで **2023.04.20-0** を選択し **イメージの選択** ボタンをクリック）
 
-   - **イメージ** ：CentOS 7 (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **CentOS** を選択し表示される **CentOS 7** を選択して表示される **イメージ・ビルド** フィールドで **2023.04.20-0** を選択し **イメージの選択** ボタンをクリック）
+    ![画面ショット](console_page02.png)
 
-      ![画面ショット](console_page02.png)
+  - **イメージ** ：Canonical Ubuntu 20.04 (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Ubuntu** を選択し表示される **Canonical Ubuntu 20.04** を選択して表示される **イメージ・ビルド** フィールドで **2023.09.28-0** を選択し **イメージの選択** ボタンをクリック）
 
-   - **イメージ** ：Canonical Ubuntu 20.04 (**イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Ubuntu** を選択し表示される **Canonical Ubuntu 20.04** を選択して表示される **イメージ・ビルド** フィールドで **2023.09.28-0** を選択し **イメージの選択** ボタンをクリック）
-
-      ![画面ショット](console_page02-2.png)
+    ![画面ショット](console_page02-2.png)
 
 ***
 # 2. クラスタ・ネットワーク接続用ソフトウェアインストール
 
 ## 2-0. 概要
 
-本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するためのソフトウェアのインストールを、Rocky Linux 9.1、CentOS 7.9、及びUbuntu 20.04に分けて解説します。  
+本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するためのソフトウェアのインストールを、Rocky Linux 8.7、CentOS 7.9、及びUbuntu 20.04に分けて解説します。  
 以下は、その手順概要です。
 
 - **カスタム・イメージ** 取得用計算/GPUノードへのログインと事前準備
@@ -102,7 +101,7 @@ header:
 
 なお本章の作業は、最終的にMPIの稼働確認を行う必要から、2台の計算/GPUノードの何れにも実施します。
 
-## 2-1. Rocky Linux 9.1の場合
+## 2-1. Rocky Linux 8.7の場合
 
 ### 2-1-1. カスタム・イメージ取得用計算ノードへのログインと事前準備
 
@@ -134,26 +133,42 @@ Mellanox OFEDのダウンロードは、以下のサイトから行います。
 
 [https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/](https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/)
 
-この際、以下のメニューを選択し、ISOイメージ **MLNX_OFED_LINUX-5.9-0.5.6.0-rhel9.1-x86_64.iso** を入手し、このファイルを計算ノードのrockyユーザのホームディレクトリ直下にコピーします。
+この際、以下のメニューを選択し、ISOイメージ **MLNX_OFED_LINUX-23.10-1.1.9.0-rhel8.9-x86_64.iso** を入手し、このファイルを計算ノードのrockyユーザのホームディレクトリ直下にコピーします。
 
 ![画面ショット](OFED_download_rocky.png)
 
-次に、Mellanox OFEDをインストールするため、以下コマンドを計算ノードのrockyユーザで実行します。
+次に、以下コマンドを計算ノードのrockyユーザで実行し、Mellanox OFEDの前提パッケージをインストール後OSをアップデートします。
 
 ```sh
-$ sudo dnf install -y perl lsof tcsh gcc-gfortran tk pciutils tcl
-$ sudo mkdir /mnt/iso; sudo mount -o ro,loop ~/MLNX_OFED_LINUX-5.9-0.5.6.0-rhel9.1-x86_64.iso /mnt/iso
+$ sudo dnf install -y perl pciutils pkgconf-pkg-config lsof tk kernel-modules-extra tcl gcc-gfortran
+$ sudo dnf update -y
+```
+
+次に、以下コマンドを計算ノードのrockyユーザで実行し、アップデートしたOSを有効化するためにOSを再起動します。
+
+```sh
+$ sudo shutdown -r now
+```
+
+次に、以下コマンドを計算ノードのrockyユーザで実行し、Mellanox OFEDをインストールします。
+
+```sh
+$ sudo mkdir /mnt/iso; sudo mount -o ro,loop ~/MLNX_OFED_LINUX-23.10-1.1.9.0-rhel8.9-x86_64.iso /mnt/iso
 $ cd /mnt/iso; sudo ./mlnxofedinstall --without-fw-update -q
 ```
 
-次に、インストールしたMellanox OFEDを有効化するため、OSを再起動します。
+次に、以下コマンドを計算ノードのrockyユーザで実行し、インストールしたMellanox OFEDを有効化するためにOSを再起動します。
+
+```sh
+$ sudo shutdown -r now
+```
 
 ### 2-1-3. wpa_supplicant・oci-cn-authインストール
 
 wpa_supplicantとoci-cn-authをインストールするため、以下コマンドを計算ノードのrockyユーザで実行します。
 
 ```sh
-$ sudo dnf install -y wpa_supplicant ruby rpm-build python3-psutil git
+$ sudo dnf install -y wpa_supplicant ruby rpm-build python3-psutil python3-pyOpenSSL git
 $ sudo gem install fpm
 $ git clone https://github.com/MarcinZablocki/oci-cn-auth
 $ cd oci-cn-auth; make
@@ -289,7 +304,7 @@ $ sudo dpkg -i ./oci-cn-auth_0.2.11-4_all.deb
 
 ## 3-0. 概要
 
-本章は、計算/GPUノードの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** への接続に必要な設定を行い、Mellanox OFEDに含まれるOpenMPIと **[Intel MPI Benchmark](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を使用してその性能を確認します。
+本章は、計算/GPUノードの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** への接続に必要な設定を行い、Mellanox OFEDに含まれる **[OpenMPI](https://www.open-mpi.org/)** と **[Intel MPI Benchmark](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を使用してその性能を確認します。  
 以下は、その手順概要です。
 
 - **クラスタ・ネットワーク** 接続用ネットワークインターフェース作成
@@ -297,21 +312,21 @@ $ sudo dpkg -i ./oci-cn-auth_0.2.11-4_all.deb
 
 なお、ネットワークインターフェース作成は、使用するOSやシェイプによってその手順が異なるため、以下のパターンに分けてそれぞれ解説します。
 
-- Rocky Linux 9.1 on **BM.Optimized3.36**
+- Rocky Linux 8.7 on **BM.Optimized3.36**
 - CentOS 7.9 on **BM.Optimized3.36**
 - Ubuntu 20.04 on **BM.Optimized3.36**
 - Ubuntu 20.04 on **BM.GPU4.8/BM.GPU.A100-v2.8**
 
 ## 3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成
 
-### 3-1-1. Rocky Linux 9.1 on BM.Optimized3.36の場合
+### 3-1-1. Rocky Linux 8.7 on BM.Optimized3.36の場合
 
 本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェースを作成し、 **クラスタ・ネットワーク** への接続を確認します。  
 この作業は、2台の計算ノードの何れにも実施します。
 
-**クラスタ・ネットワーク** 接続用のネットワークインターフェースを作成するため、以下のスクリプトを計算ノードのrockyユーザのホームディレクトリに作成し実行権を与えます。  
+**クラスタ・ネットワーク** 接続用のネットワークインターフェースを作成するため、以下のスクリプト（※4）を計算ノードのrockyユーザのホームディレクトリに作成し実行権を与えます。  
 
-[oci-rdma-configure-rh9.sh]
+[oci-rdma-configure.sh]
 ```sh
 #!/bin/bash
 nmcli connection add con-name cluster-network ifname eth2 type ethernet
@@ -319,11 +334,12 @@ nmcli connection modify cluster-network ipv4.addresses 192.168.0.`ip a s dev eth
 nmcli connection modify cluster-network ipv4.method manual
 nmcli connection up cluster-network
 ```
+※4）本スクリプトは、 **仮想クラウド・ネットワーク** に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作します。
 
 次に、以下コマンドを計算ノードのrockyユーザで実行します。
 
 ```sh
-$ sudo ~/oci-rdma-configure-rh9.sh
+$ sudo ~/oci-rdma-configure.sh
 $ sudo systemctl enable --now oci-cn-auth.timer
 ```
 
@@ -525,9 +541,9 @@ $
 ## 3-2. Intel MPI Benchmark実行
 
 本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続した計算/GPUノードで十分なインターコネクト性能が出ていることを確認するため、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[3. MPIプログラム実行（2ノード編）](/ocitutorials/hpc/spinup-cluster-network/#3-mpiプログラム実行2ノード編)** の手順を実行し、結果を確認します。  
-この際、使用するOSがRocky Linux 9.1かUbuntu 20.04の場合、 **[3-1. 計算ノード間SSH接続環境構築](/ocitutorials/hpc/spinup-cluster-network/#3-1-計算ノード間ssh接続環境構築)** で実行しているコマンドを以下に置き換えて実行します。   
+この際、使用するOSがRocky Linux 8.7かUbuntu 20.04の場合、 **[3-1. 計算ノード間SSH接続環境構築](/ocitutorials/hpc/spinup-cluster-network/#3-1-計算ノード間ssh接続環境構築)** で実行しているコマンドを以下に置き換えて実行します。   
 
-[Rocky Linux 9.1]
+[Rocky Linux 8.7]
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -oStrictHostKeyChecking=accept-new -p ~/.ssh/id_rsa rocky@$hname:~/.ssh/; done
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts rocky@$hname:~/.ssh/; done
@@ -543,10 +559,10 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/hostlist.txt ubunt
 
 また、 **[3-3. Intel MPI Benchmark Ping-Pong実行](/ocitutorials/hpc/spinup-cluster-network/#3-3-intel-mpi-benchmark-ping-pong実行)** で実行しているコマンドを使用するOSやシェイプにあわせて以下に置き換えて実行します。
 
-[Rocky Linux 9.1]
+[Rocky Linux 8.7]
 ```sh
-$ source /usr/mpi/gcc/openmpi-4.1.5rc2/bin/mpivars.sh
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5rc2/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+$ source /usr/mpi/gcc/openmpi-4.1.7a1/bin/mpivars.sh
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
 ```
 
 [Ubuntu 20.04 on BM.Optimized3.36]
@@ -587,7 +603,7 @@ $ for i in `seq 0 3; seq 6 17`; do echo $i; mpirun -n 2 -N 1 -hostfile ~/hostlis
 以上より、 **クラスタ・ネットワーク** 用ネットワークインターフェース設定を削除します。  
 この方法は、使用するOSやシェイプにより異なります。
 
-- Rocky Linux 9.1の場合
+- Rocky Linux 8.7の場合
 
   以下コマンドを計算ノードのrockyユーザで実行します。
 
@@ -653,12 +669,12 @@ $ for i in `seq 0 3; seq 6 17`; do echo $i; mpirun -n 2 -N 1 -hostfile ~/hostlis
 - **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用ネットワークインターフェース作成
 
 ここで作成するcloud-configは、使用するOSやシェイプにあわせて以下から選択します。
-- Rocky Linux 9.1 on **BM.Optimized3.36**
+- Rocky Linux 8.7 on **BM.Optimized3.36**
 - CentOS 7.9 on **BM.Optimized3.36**
 - Ubuntu 20.04 on **BM.Optimized3.36**
 - Ubuntu 20.04 on **BM.GPU4.8/BM.GPU.A100-v2.8**
 
-[Rocky Linux 9.1 on **BM.Optimized3.36**]
+[Rocky Linux 8.7 on **BM.Optimized3.36**]
 ```sh
 #cloud-config
 runcmd:
