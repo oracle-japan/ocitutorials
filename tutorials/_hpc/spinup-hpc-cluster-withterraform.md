@@ -260,7 +260,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
     ![画面ショット](console_page01.png)
 
     *6）例えば **x9-ol88** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol88** となります。（ **xxxxx** はランダムな文字列）  
-    *7）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDをコメントアウトして使用します。  
+    *7）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。  
     *8）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照ください。
 
 3. ダウンロードした **Terraform** スクリプトのうち、 **cn.tf** を以下のように修正します。

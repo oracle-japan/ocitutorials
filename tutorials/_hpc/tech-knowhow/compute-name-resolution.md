@@ -40,7 +40,7 @@ search vcn.oraclevcn.com public.vcn.oraclevcn.com private.vcn.oraclevcn.com
 - **/etc/resolv.conf** 修正: DNS名前解を行うインスタンスの **/etc/resolv.conf** の修正
 
 ***
-# 1.サブネットFQDN確認
+# 1. サブネットFQDN確認
 
 本章は、インスタンス名でDNS名前解決を行いたいインスタンスが接続されるサブネットのFQDNを確認します。
 
