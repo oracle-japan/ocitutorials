@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-13T09:43:20+09:00">
+  <meta property="article:published_time" content="2024-02-16T13:01:50+09:00">
 
 
 
@@ -306,6 +306,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
@@ -328,6 +330,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
@@ -347,7 +351,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタネットワーキングイメージの選び方">
     <meta itemprop="description" content="クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレイスから提供されています。本テクニカルTipsは、このクラスタネットワーキングイメージの適切な選び方を解説します。">
-    <meta itemprop="datePublished" content="2024-02-13T09:43:20+09:00">
+    <meta itemprop="datePublished" content="2024-02-16T13:01:50+09:00">
     
 
     <div class="page__inner-wrap">
@@ -394,15 +398,15 @@ table, th, td {
 
 <ul>
   <li>802.1X認証関連ユーティリティソフトウェアと <strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェアの提供方法<br />
-<strong>Oracle Cloud Agent</strong> （以降 <strong>OCA</strong> と呼称）のプラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。</li>
+<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloud Agent</a></strong> （以降 <strong>OCA</strong> と呼称）プラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。</li>
   <li>対象のシェイプ<br />
-HPCシェイプ（※1）用（HPC <strong>クラスタネットワーキングイメージ</strong> ）か、GPUシェイプ（※2）用（GPU <strong>クラスタネットワーキングイメージ</strong> ）かの違いで、GPU <strong>クラスタネットワーキングイメージ</strong> はNVIDIA GPUドライバがインストールされています。</li>
+HPCシェイプ（※2）用（HPC <strong>クラスタネットワーキングイメージ</strong> ）か、GPUシェイプ（※3）用（GPU <strong>クラスタネットワーキングイメージ</strong> ）かの違いで、GPU <strong>クラスタネットワーキングイメージ</strong> はNVIDIA GPUドライバがインストールされています。</li>
   <li>ベースOSの <strong>Oracle Linux</strong> バージョン<br />
 バージョン7系か、バージョン8系かによる違いです。</li>
 </ul>
 
-<p>※1）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#previous-generation-shapes__previous-generation-bm">BM.HPC2.36</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong><br />
-※2）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU.A100-v2.8</a></strong></p>
+<p>※2）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#previous-generation-shapes__previous-generation-bm">BM.HPC2.36</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong><br />
+※3）<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU.A100-v2.8</a></strong></p>
 
 <p>以降では、用途毎に用意している <strong>クラスタネットワーキングイメージ</strong> の一覧と、選択した <strong>クラスタネットワーキングイメージ</strong> をインスタンスデプロイ時に指定する方法を解説します。</p>
 
@@ -422,7 +426,7 @@ HPCシェイプ（※1）用（HPC <strong>クラスタネットワーキング�
       <th style="text-align: center">OFED</th>
       <th style="text-align: center">GPUドライバ</th>
       <th style="text-align: center">イメージ名の先頭</th>
-      <th style="text-align: center"><strong>マーケットプレイス</strong><br />URL（※3）</th>
+      <th style="text-align: center"><strong>マーケットプレイス</strong><br />URL（※4）</th>
     </tr>
   </thead>
   <tbody>
@@ -499,7 +503,7 @@ HPCシェイプ（※1）用（HPC <strong>クラスタネットワーキング�
   </tbody>
 </table>
 
-<p>※3）OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
+<p>※4）OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
 <hr />
 <h1 id="2-クラスタネットワーキングイメージ指定方法">2. クラスタネットワーキングイメージ指定方法</h1>
@@ -522,11 +526,11 @@ HPCシェイプ（※1）用（HPC <strong>クラスタネットワーキング�
 
 <p>OCIコンソールを使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するインスタンスをデプロイする場合、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を予め作成しますが、この <strong>インスタンス構成</strong> の <strong>イメージとシェイプ</strong> フィールドで <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を選択します。</p>
 
-<p>以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> （HPC <strong>クラスタネットワーキングイメージ</strong> ）か <strong>gpu</strong> （GPU <strong>クラスタネットワーキングイメージ</strong> ）と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> あるいは <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで適切なOSイメージを選択（※4）し、 <strong>Oracle Standard Terms and Restrictionsを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>イメージの選択</strong> ボタンをクリックします。</p>
+<p>以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> （HPC <strong>クラスタネットワーキングイメージ</strong> ）か <strong>gpu</strong> （GPU <strong>クラスタネットワーキングイメージ</strong> ）と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> あるいは <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで適切なOSイメージを選択（※5）し、 <strong>Oracle Standard Terms and Restrictionsを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>イメージの選択</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page01.png" alt="画面ショット" /></p>
 
-<p>※4）前章一覧表中の <strong>イメージ名の先頭</strong> 列を参照し、適切な <strong>イメージ・ビルド</strong> を選択します。</p>
+<p>※5）前章一覧表中の <strong>イメージ名の先頭</strong> 列を参照し、適切な <strong>イメージ・ビルド</strong> を選択します。</p>
 
 <h2 id="2-2-hpcクラスタスタックを使用する方法">2-2. HPCクラスタスタックを使用する方法</h2>
 
@@ -618,7 +622,7 @@ HPCシェイプ（※1）用（HPC <strong>クラスタネットワーキング�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-13T09:43:20+09:00">February 13, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-16T13:01:50+09:00">February 16, 2024</time></p>
 
 
       </footer>

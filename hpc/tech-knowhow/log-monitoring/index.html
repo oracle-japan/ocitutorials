@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-13T09:43:20+09:00">
+  <meta property="article:published_time" content="2024-02-16T13:01:50+09:00">
 
 
 
@@ -306,6 +306,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
@@ -328,6 +330,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/" class="active">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
@@ -347,7 +351,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法">
     <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、OCIロギングとGrafanaを統合したログ監視は、Grafanaの多彩な機能を活用できる点で有力な選択肢です。本テクニカルTipsは、OCIロギングとGrafanaを使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-02-13T09:43:20+09:00">
+    <meta itemprop="datePublished" content="2024-02-16T13:01:50+09:00">
     
 
     <div class="page__inner-wrap">
@@ -358,7 +362,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-rsyslog設定">1. rsyslog設定</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-ログサーバのrsyslog設定">1-1. ログサーバのrsyslog設定</a></li><li><a href="#1-2-ログクライアントのrsyslog設定">1-2. ログクライアントのrsyslog設定</a></li></ul></li><li><a href="#2-統合モニタリングエージェント設定">2. 統合モニタリング・エージェント設定</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-ログサーバの統合モニタリングエージェント有効化">2-1. ログサーバの統合モニタリング・エージェント有効化</a></li><li><a href="#2-2-grafanaサーバの統合モニタリングエージェント無効化">2-2. Grafanaサーバの統合モニタリング・エージェント無効化</a></li></ul></li><li><a href="#3-インスタンスプリンシパル認証設定">3. インスタンス・プリンシパル認証設定</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-動的グループ作成">3-1. 動的グループ作成</a></li><li><a href="#3-2-iamポリシー作成">3-2. IAMポリシー作成</a></li></ul></li><li><a href="#4-ociロギングリソース作成">4. OCIロギングリソース作成</a></li><li><a href="#5-grafanaインストール設定">5. Grafanaインストール・設定</a></li><li><a href="#6-ログ監視機能設定">6. ログ監視機能設定</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-rsyslog設定">1. rsyslog設定</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-ログサーバのrsyslog設定">1-1. ログサーバのrsyslog設定</a></li><li><a href="#1-2-ログクライアントのrsyslog設定">1-2. ログクライアントのrsyslog設定</a></li></ul></li><li><a href="#2-インスタンスプリンシパル認証設定">2. インスタンス・プリンシパル認証設定</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-動的グループ作成">2-1. 動的グループ作成</a></li><li><a href="#2-2-iamポリシー作成">2-2. IAMポリシー作成</a></li></ul></li><li><a href="#3-統合モニタリングエージェント設定">3. 統合モニタリング・エージェント設定</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-ログサーバの統合モニタリングエージェント有効化">3-1. ログサーバの統合モニタリング・エージェント有効化</a></li><li><a href="#3-2-grafanaサーバの統合モニタリングエージェント無効化">3-2. Grafanaサーバの統合モニタリング・エージェント無効化</a></li></ul></li><li><a href="#4-ociロギングリソース作成">4. OCIロギングリソース作成</a></li><li><a href="#5-grafanaインストール設定">5. Grafanaインストール・設定</a></li><li><a href="#6-ログ監視機能設定">6. ログ監視機能設定</a></li></ul>
 
             </nav>
           </aside>
@@ -372,15 +376,21 @@ OCI上にこのフレームワークを構築する際、活用できるソフ�
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本テクニカルTipsで構築するHPC/GPUクラスタのログ監視フレームワークは、以下のサブシステムから構成されます。</p>
+<p>本テクニカルTipsで構築するHPC/GPUクラスタのログ監視フレームワークは、以下のサブシステムから構成されます。<br />
+これらのサブシステムのOSは、 <strong>Oracle Linux</strong> 8を前提に解説します。</p>
 
 <ul>
   <li>Grafanaサーバ（1ノード）<br />
 <strong>OCIロギング</strong> から計算/GPUノードの監視対象ログを収集し、ウェブブラウザに対してこれを表示します。<br />
 本テクニカルTipsでは、インターネットに接続するログ監視端末からSSHのポートフォワードで <strong>Grafana</strong> のGUIにアクセスするため、パブリックサブネットに接続します。</li>
-  <li>ログサーバ（1ノード）<br />
+  <li>
+    <p>ログサーバ（1ノード）<br />
 ログクライアントから監視対象ログを収集し、 <strong>OCIロギング</strong> にこれを送信します。<br />
-本テクニカルTipsでは、インターネットからの不正アクセスを防止するため、ログクライアントとTCP/IP接続可能なプライベートサブネットに接続します。</li>
+本テクニカルTipsでは、インターネットからの不正アクセスを防止するため、ログクライアントとTCP/IP接続可能なプライベートサブネットに接続します。<br />
+この際、ログサーバから <strong>OCIロギング</strong> にログデータを送信する経路として、このプライベートサブネットに <strong>サービス・ゲートウェイ</strong> を適切な <strong>ルート表</strong> と共に作成しておく必要があります。これらのリソースは、ウィザードで <strong>仮想クラウド・ネットワーク</strong> を作成した場合、自動的に作成されます。（※1）</p>
+
+    <p>※1）この詳細は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> を参照ください。</p>
+  </li>
   <li>ログクライアント（1ノード以上の任意のノード数）<br />
 HPC/GPUクラスタに於ける計算/GPUノードに相当し、監視対象のログをログサーバに送信します。<br />
 本テクニカルTipsでは、計算/GPUノードがログクライアントになることを想定し、ログサーバとTCP/IP接続可能なプライベートサブネットに接続します。</li>
@@ -393,23 +403,25 @@ HPC/GPUクラスタに於ける計算/GPUノードに相当し、監視対象の
 OCIリソースから生成されるあらゆるログをスケーラブルに扱うことを可能にする、マネージドログサービスです。<br />
 本テクニカルTipsでは、インスタンス上のログファイルを <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/Concepts/custom_logs.htm">カスタム・ログ</a></strong> として取り込んで使用します。</li>
   <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/Concepts/agent_management.htm">統合モニタリング・エージェント</a></strong><br />
-インスタンス上の任意のログを <strong>カスタム・ログ</strong> として <strong>OCIロギング</strong> に送信する <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloudエージェント</a></strong> のプラグインで、ログサーバで稼働します。</li>
-  <li>Grafana with OCI logs plugin<br />
-<strong>OCIロギング</strong> からログを読み込むための <strong><a href="https://grafana.com/grafana/plugins/oci-logs-datasource/">OCI Logs</a></strong> プラグインをインストールした <strong>Grafana</strong> で、Grafanaサーバで稼働します。</li>
+インスタンス上の任意のログを <strong>カスタム・ログ</strong> として <strong>OCIロギング</strong> に送信する <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloud Agent</a></strong> のプラグインで、ログサーバで動作します。</li>
+  <li><strong>Grafana</strong> with <strong>OCI Logs</strong> plugin<br />
+<strong>OCIロギング</strong> からログを読み込むための <strong><a href="https://grafana.com/grafana/plugins/oci-logs-datasource/">OCI Logs</a></strong> プラグインをインストールした <strong>Grafana</strong> で、Grafanaサーバで動作します。<br />
+本テクニカルTipsで使用するバージョンは、 <strong>Grafana</strong> が <strong>9.2.10</strong> で <strong>OCI Logs</strong> プラグインが <strong>4.0.0</strong> です。</li>
   <li><strong><a href="https://www.rsyslog.com/">rsyslog</a></strong><br />
-主要なLinuxディストリビューションで動作し、IPネットワーク上で高速・セキュアにログを転送するオープンソースソフトウェアのログ管理ソフトウェアで、 <strong>rsyslog</strong> サーバとして構成されたものがログサーバで、 <strong>rsyslog</strong> クライアントとして構成されたものがログクライアントで稼働します。</li>
+主要なLinuxディストリビューションで動作し、IPネットワーク上で高速・セキュアにログを転送するオープンソースソフトウェアのログ管理ソフトウェアで、 <strong>rsyslog</strong> サーバとして構成されたものがログサーバで、 <strong>rsyslog</strong> クライアントとして構成されたものがログクライアントで動作します。</li>
 </ul>
 
 <p><img src="architecture_diagram.png" alt="画面ショット" /></p>
 
-<p><strong>OCIロギング</strong> は、 <strong>統合モニタリング・エージェント</strong> がログを注入し、 <strong>Grafana</strong> の <strong>OCI Logs</strong> プラグインがログを読み込むため、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証でこれらソフトウェアが動作するインスタンスに必要な権限を付与します。</p>
+<p>ログサーバは、ここで動作する <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入するため、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証で必要な権限を付与しておく必要があります。<br />
+またGrafanaサーバは、ここで動作する <strong>Grafana</strong> の <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むため、やはり <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証で必要な権限を付与しておく必要があります。</p>
 
 <p>以上より本ログ監視フレームワークの構築は、以下の手順に沿って行います。</p>
 
 <ol>
   <li><strong>rsyslog</strong> 設定</li>
-  <li><strong>統合モニタリング・エージェント</strong> 設定</li>
   <li><strong>インスタンス・プリンシパル</strong> 認証設定</li>
+  <li><strong>統合モニタリング・エージェント</strong> 設定</li>
   <li><strong>OCIロギング</strong> リソース作成</li>
   <li><strong>Grafana</strong> インストール・設定</li>
 </ol>
@@ -436,8 +448,6 @@ OCIリソースから生成されるあらゆるログをスケーラブルに�
 
 <p>本テクニカルTipsでは、ログクライアントで発生するファシリティが <strong>authpriv</strong> となる任意のプライオリティのsyslogをログサーバのUDPポート514番に送信し、これをログサーバ上のログファイル <strong>/var/log/secure</strong> に格納します。<br />
 このため、このログクライアント・ログサーバ間通信を許可するよう、 <strong>セキュリティー・リスト</strong> やログサーバのファイアーウォールを予め適切に設定しておきます。</p>
-
-<p>なお、ログサーバとログクライアントのOSは、 <strong>Oracle Linux</strong> 8を前提に解説します。</p>
 
 <h2 id="1-1-ログサーバのrsyslog設定">1-1. ログサーバのrsyslog設定</h2>
 
@@ -480,8 +490,8 @@ OCIリソースから生成されるあらゆるログをスケーラブルに�
  <span class="o">&gt;</span> authpriv.<span class="k">*</span>                                              @logserver_ip:514
  <span class="err">$</span>
 </code></pre></div>    </div>
-    <p>※1）ログサーバのIPアドレスは、自身の環境に合わせて置き換えます。<br />
- ※2）選別するログのファシリティとプライオリティを変更する場合は、修正行の第一フィールドを変更します。</p>
+    <p>※2）ログサーバのIPアドレスは、自身の環境に合わせて置き換えます。<br />
+ ※3）選別するログのファシリティとプライオリティを変更する場合は、修正行の第一フィールドを変更します。</p>
   </li>
   <li>
     <p>opcユーザで以下コマンドを実行し、先の設定ファイル修正を反映します。</p>
@@ -492,59 +502,13 @@ OCIリソースから生成されるあらゆるログをスケーラブルに�
 </ol>
 
 <hr />
-<h1 id="2-統合モニタリングエージェント設定">2. 統合モニタリング・エージェント設定</h1>
+<h1 id="2-インスタンスプリンシパル認証設定">2. インスタンス・プリンシパル認証設定</h1>
 
 <h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>本章は、ログサーバで <strong>統合モニタリング・エージェント</strong> を有効化します。</p>
-
-<p>また、Grafanaサーバで <strong>統合モニタリング・エージェント</strong> が有効になっている場合は、これを無効化します。<br />
-これは、後の <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証設定で <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> にGrafanaサーバを含めたため、 <strong>統合モニタリング・エージェント</strong> が動作しているとGrafanaサーバのログも <strong>OCIロギング</strong> に注入されてしまうため、これを防止するために必要です。</p>
-
-<h2 id="2-1-ログサーバの統合モニタリングエージェント有効化">2-1. ログサーバの統合モニタリング・エージェント有効化</h2>
-
-<p>本章は、ログサーバの <strong>統合モニタリング・エージェント</strong> を有効化します。</p>
-
-<p>OCIコンソールにログインし、以下ログサーバの <strong>インスタンスの詳細</strong> 画面で <strong>Oracle Cloudエージェント</strong> タブをクリックし、 <strong>カスタム・ログのモニタリング</strong> プラグインを <strong>有効</strong> にします。</p>
-
-<p><img src="console_page06.png" alt="画面ショット" /></p>
-
-<p>以下画面のように、 <strong>カスタム・ログのモニタリング</strong> プラグインのステータスが <strong>実行中</strong> となれば、有効化が完了しています。<br />
-ステータスが <strong>実行中</strong> となるまで、10分程度の時間を要します。<br />
-なお、既にステータスが <strong>実行中</strong> となっている場合は、本手順をスキップします。</p>
-
-<p><img src="console_page08.png" alt="画面ショット" /></p>
-
-<h2 id="2-2-grafanaサーバの統合モニタリングエージェント無効化">2-2. Grafanaサーバの統合モニタリング・エージェント無効化</h2>
-
-<p>本章は、Grafanaサーバの <strong>統合モニタリング・エージェント</strong> を無効化します。</p>
-
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、以下Grafanaサーバの <strong>インスタンスの詳細</strong> 画面で <strong>Oracle Cloudエージェント</strong> タブをクリックし、 <strong>カスタム・ログのモニタリング</strong> プラグインを <strong>無効</strong> にします。<br />
-なお、既にステータスが <strong>無効</strong> になっている場合は、本手順をスキップします。</p>
-
-    <p><img src="console_page07.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>Grafanaサーバのopcユーザで以下コマンドを実行し、 <strong>統合モニタリング・エージェント</strong> 関連のSystemdサービスを停止します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent.service
- <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_config_downloader.timer
- <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_config_downloader.service
- <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_restarter.path
-</code></pre></div>    </div>
-  </li>
-</ol>
-
-<hr />
-<h1 id="3-インスタンスプリンシパル認証設定">3. インスタンス・プリンシパル認証設定</h1>
-
-<h2 id="3-0-概要">3-0. 概要</h2>
-
 <p>本章は、ログサーバで動作する <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入し、Grafanaサーバで動作する <strong>Grafana</strong> の <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むため、 <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> と <strong>IAMポリシー</strong> を作成して <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証を設定します。</p>
 
-<h2 id="3-1-動的グループ作成">3-1. 動的グループ作成</h2>
+<h2 id="2-1-動的グループ作成">2-1. 動的グループ作成</h2>
 
 <p>本章は、ログサーバとGrafanaサーバを含む <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> を作成します。</p>
 
@@ -590,7 +554,7 @@ OCIリソースから生成されるあらゆるログをスケーラブルに�
   </li>
 </ol>
 
-<h2 id="3-2-iamポリシー作成">3-2. IAMポリシー作成</h2>
+<h2 id="2-2-iamポリシー作成">2-2. IAMポリシー作成</h2>
 
 <p>本章は、作成した <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> に対する <strong>IAMポリシー</strong> を作成します。</p>
 
@@ -612,23 +576,75 @@ OCIリソースから生成されるあらゆるログをスケーラブルに�
       <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
       <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
       <li>
-        <p><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</p>
+        <p><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文<br />
+ （ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</p>
 
         <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow dynamic-group dynamicgroup_name to <span class="nb">read </span>compartments <span class="k">in </span>tenancy
 allow dynamic-group dynamicgroup_name to <span class="nb">read </span>audit-events <span class="k">in </span>tenancy
 allow dynamic-group dynamicgroup_name to <span class="nb">read </span>log-groups <span class="k">in </span>tenancy
 allow dynamic-group dynamicgroup_name to <span class="nb">read </span>log-content <span class="k">in </span>tenancy
-allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in </span>compartment comp_name_log_reside
+allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in </span>compartment <span class="nb">id </span>comp_ocid_log_reside
 </code></pre></div>        </div>
 
-        <p>※3）<strong>動的グループ</strong> 名は、先に作成したものに置き換えます。<br />
-※4）5行目の <strong>コンパートメント</strong> 名は、後に作成する <strong>OCIロギング</strong> 関連リソースを格納する <strong>コンパートメント</strong> 名に置き換えます。<br />
-※5）最初の4行のポリシーは、Grafanaサーバの <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むために必要です。<br />
-※6）最後の1行のポリシーは、ログサーバの <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入するために必要です。</p>
+        <p>※4）<strong>動的グループ</strong> 名は、先に作成したものに置き換えます。<br />
+※5）5行目の <strong>コンパートメント</strong> OCIDは、後に作成する <strong>OCIロギング</strong> 関連リソースを格納する <strong>コンパートメント</strong> のOCIDに置き換えます。<br />
+※6）最初の4行のポリシーは、Grafanaサーバの <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> からログを読み込むために必要です。<br />
+※7）5行目のポリシーは、ログサーバの <strong>統合モニタリング・エージェント</strong> が <strong>OCIロギング</strong> にログを注入するために必要です。</p>
       </li>
     </ul>
 
     <p><img src="console_page05.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="3-統合モニタリングエージェント設定">3. 統合モニタリング・エージェント設定</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、ログサーバで <strong>統合モニタリング・エージェント</strong> を有効化します。</p>
+
+<p>また、Grafanaサーバで <strong>統合モニタリング・エージェント</strong> が有効になっている場合は、これを無効化します。<br />
+これは、後の <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証設定で <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> にGrafanaサーバを含めるため、 <strong>統合モニタリング・エージェント</strong> が動作しているとGrafanaサーバのログも <strong>OCIロギング</strong> に注入されてしまうので、これを防止するために必要です。</p>
+
+<h2 id="3-1-ログサーバの統合モニタリングエージェント有効化">3-1. ログサーバの統合モニタリング・エージェント有効化</h2>
+
+<p>本章は、ログサーバの <strong>統合モニタリング・エージェント</strong> を有効化します。<br />
+なお、 <strong>Oracle Cloud Agent</strong> がインストールされていない場合は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm#install-agent">ここ</a></strong> の手順でインストールします。</p>
+
+<p>OCIコンソールにログインし、以下ログサーバの <strong>インスタンスの詳細</strong> 画面で <strong>Oracle Cloudエージェント</strong> タブをクリックし、 <strong>カスタム・ログのモニタリング</strong> プラグインを <strong>有効</strong> にします。</p>
+
+<p><img src="console_page06.png" alt="画面ショット" /></p>
+
+<p>以下画面のように、 <strong>カスタム・ログのモニタリング</strong> プラグインのステータスが <strong>実行中</strong> となれば、有効化が完了しています。<br />
+ステータスが <strong>実行中</strong> となるまで、10分程度の時間を要します。</p>
+
+<p><img src="console_page08.png" alt="画面ショット" /></p>
+
+<p>なお、既にプラグインが <strong>有効</strong> となっている場合は、本手順をスキップしますが、この場合先の <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定を有効化するため、ログサーバのopcユーザで以下コマンドを実行し、 <strong>OCA</strong> を再起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl restart oracle-cloud-agent
+</code></pre></div></div>
+
+<h2 id="3-2-grafanaサーバの統合モニタリングエージェント無効化">3-2. Grafanaサーバの統合モニタリング・エージェント無効化</h2>
+
+<p>本章は、Grafanaサーバの <strong>統合モニタリング・エージェント</strong> を無効化します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、以下Grafanaサーバの <strong>インスタンスの詳細</strong> 画面で <strong>Oracle Cloudエージェント</strong> タブをクリックし、 <strong>カスタム・ログのモニタリング</strong> プラグインを <strong>無効</strong> にします。<br />
+なお、既にプラグインが <strong>無効</strong> になっている場合は、本手順をスキップします。</p>
+
+    <p><img src="console_page07.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>Grafanaサーバのopcユーザで以下コマンドを実行し、 <strong>統合モニタリング・エージェント</strong> 関連のSystemdサービスを停止します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent.service
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_config_downloader.timer
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_config_downloader.service
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unified-monitoring-agent_restarter.path
+</code></pre></div>    </div>
   </li>
 </ol>
 
@@ -677,7 +693,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
     <p><img src="console_page13.png" alt="画面ショット" /></p>
 
-    <p>※7）ここで作成する <strong>カスタム・ログ</strong> の保持期限はデフォルトで1か月のため、これを変更する場合は <strong>追加オプションの表示</strong> ボタンをクリックして変更します。</p>
+    <p>※8）ここで作成する <strong>カスタム・ログ</strong> の保持期限はデフォルトで1か月のため、これを変更する場合は <strong>追加オプションの表示</strong> ボタンをクリックして変更します。</p>
   </li>
   <li>
     <p>表示される以下 <strong>エージェント構成の作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>エージェント構成の作成</strong> ボタンをクリックします。<br />
@@ -690,13 +706,13 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
       <li><strong>入力タイプ</strong> ： <strong>ログ・パス</strong></li>
       <li><strong>名前の入力</strong> ： <strong>ログ入力</strong> の名前</li>
       <li><strong>ファイル・パス</strong> ： ログサーバ上の <strong>OCIロギング</strong> に注入するログファイルのパス（ここでは <strong>/var/log/secure</strong>）</li>
-      <li><strong>パーサー</strong> ： <strong>SYSLOG</strong>（※8）</li>
+      <li><strong>パーサー</strong> ： <strong>SYSLOG</strong>（※9）</li>
     </ul>
 
     <p><img src="console_page14.png" alt="画面ショット" /><br />
  <img src="console_page15.png" alt="画面ショット" /></p>
 
-    <p>※8）<strong>高度なパーサー・オプション</strong> ボタンをクリックして表示される以下 <strong>高度なパーサー・オプション</strong> サイドバーで <strong>パーサー</strong> プルダウンメニューの <strong>SYSLOG</strong> を選択して <strong>変更の保存</strong> ボタンをクリック</p>
+    <p>※9）<strong>高度なパーサー・オプション</strong> ボタンをクリックして表示される以下 <strong>高度なパーサー・オプション</strong> サイドバーで <strong>パーサー</strong> プルダウンメニューの <strong>SYSLOG</strong> を選択して <strong>変更の保存</strong> ボタンをクリック</p>
 
     <p><img src="console_page15-1.png" alt="画面ショット" /></p>
   </li>
@@ -716,22 +732,13 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
 <p>本章は、Grafanaサーバで <strong>Grafana</strong> のインストールとその設定を行い、ログ監視端末のブラウザから <strong>Grafana</strong> にアクセスしてその稼働を確認します。</p>
 
-<p>なおGrafanaサーバのOSは、 <strong>Oracle Linux</strong> 8を前提に解説します。</p>
-
 <ol>
   <li>
-    <p>opcユーザで以下コマンドを実行し、 <strong>Grafana</strong> と <strong>OCI Logs</strong> プラグインをインストールします。</p>
+    <p>opcユーザで以下コマンドを実行し、 <strong>Grafana</strong> と <strong>OCI Logs</strong> プラグインをインストール・起動します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>wget <span class="nt">-q</span> <span class="nt">-O</span> gpg.key https://rpm.grafana.com/gpg.key
- <span class="nv">$ </span><span class="nb">sudo </span>rpm <span class="nt">--import</span> gpg.key
- <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> grafana
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> grafana
  <span class="nv">$ </span><span class="nb">sudo </span>grafana-cli plugins <span class="nb">install </span>oci-logs-datasource
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>opcユーザで以下コマンドを実行し、 <strong>Grafana</strong> を起動します。</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ sudo systemctl enable --now grafana-server
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> grafana-server
 </code></pre></div>    </div>
   </li>
   <li>
@@ -739,7 +746,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ssh opc@grafana_ip <span class="nt">-L</span> 3000:localhost:3000
 </code></pre></div>    </div>
-    <p>※9）GrafanaサーバのIPアドレスは、自身の環境に合わせて置き換えます。</p>
+    <p>※10）GrafanaサーバのIPアドレスは、自身の環境に合わせて置き換えます。</p>
   </li>
   <li>
     <p>ログ監視端末のブラウザのアドレスバーに以下を入力し、 <strong>Grafana</strong> にアクセスします。</p>
@@ -771,7 +778,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
     <p><img src="grafana_page04.png" alt="画面ショット" /></p>
 
-    <p>以下画面のように <strong>Success</strong> と表示されれば、 <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> にアクセス可能であることを確認出来ます。</p>
+    <p>以下画面のように <strong>Success</strong> と表示されれば、 <strong>OCI Logs</strong> プラグインが <strong>OCIロギング</strong> にアクセス可能であることを確認することが出来ます。</p>
 
     <p><img src="grafana_page05.png" alt="画面ショット" /></p>
   </li>
@@ -803,7 +810,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
         <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  search <span class="s2">"compartment_ocid/loggroup_name"</span> | summarize count<span class="o">()</span> as cnt by rounddown<span class="o">(</span>datetime,  <span class="s1">'1m'</span><span class="o">)</span> as interval
 </code></pre></div>        </div>
-        <p>※10）<strong>コンパートメント</strong> のOCIDと <strong>ログ・グループ</strong> 名は、自身のものに置き換えます。</p>
+        <p>※11）<strong>コンパートメント</strong> のOCIDと <strong>ログ・グループ</strong> 名は、自身のものに置き換えます。</p>
       </li>
     </ul>
 
@@ -857,7 +864,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-13T09:43:20+09:00">February 13, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-16T13:01:50+09:00">February 16, 2024</time></p>
 
 
       </footer>
@@ -882,7 +889,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/" class="pagination--pager" title="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法
+      <a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/" class="pagination--pager" title="OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法
 ">次へ</a>
     
   </nav>
