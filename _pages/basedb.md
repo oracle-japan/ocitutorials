@@ -38,9 +38,13 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[106: Data Guardを構成しよう](/ocitutorials/basedb/dbcs106-dataguard/){:target="_blank"}**
 
++ **[107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/basedb/dbcs107-zrcv/){:target="_blank"}**
+
 ## データ移行編
 
 + **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/basedb/dbcs201-pdb-plug/){:target="_blank"}**
+
++ **[202: DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう](/ocitutorials/basedb/dbcs202-dbms-cloud/){:target="_blank"}**
 
 <br/>
 
