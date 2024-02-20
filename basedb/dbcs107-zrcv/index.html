@@ -1,0 +1,939 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="自動バックアップの取得先としてAutonomous Recovery Service (RCV/ZRCV) をBase Database Service (BaseDB) に設定する方法を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/basedb/dbcs107-zrcv/">
+
+
+  <meta property="og:description" content="自動バックアップの取得先としてAutonomous Recovery Service (RCV/ZRCV) をBase Database Service (BaseDB) に設定する方法を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/basedb/dbcs107-zrcv/zrcv01.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-02-20T13:11:44+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/basedb/dbcs107-zrcv/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/basedb/dbcs107-zrcv/zrcv01.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう
+
+        
+      </h1>
+      
+        <p class="page__lead">自動バックアップの取得先としてAutonomous Recovery Service (RCV/ZRCV) をBase Database Service (BaseDB) に設定する方法を紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/basedb" itemprop="item"><span itemprop="name">Basedb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Base Database Service</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(BaseDB)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs102-managing-pdb/">102: BaseDB上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs104-backup/">104: 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs105-restore/">105: バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs107-zrcv/" class="active">107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs201-pdb-plug/">201: オンプレミスのPDBをBaseDBに移動しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/">202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう </a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう">
+    <meta itemprop="description" content="自動バックアップの取得先としてAutonomous Recovery Service (RCV/ZRCV) をBase Database Service (BaseDB) に設定する方法を紹介します。">
+    <meta itemprop="datePublished" content="2024-02-20T13:11:44+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-サービス制限の引き上げリクエスト">1. サービス制限の引き上げリクエスト</a></li><li><a href="#2-iam-ポリシーを設定しよう">2. IAM ポリシーを設定しよう</a></li><li><a href="#3-サブネットおよびセキュリティルールを設定しよう">3. サブネットおよびセキュリティ・ルールを設定しよう</a></li><li><a href="#4-リカバリサービスサブネットを登録しよう">4. リカバリ・サービス・サブネットを登録しよう</a></li><li><a href="#5--保護ポリシーを作成しよう">5.  保護ポリシーを作成しよう</a></li><li><a href="#6-basedbでリカバリサービスを有効化しよう">6. BaseDBでリカバリ・サービスを有効化しよう</a><ul><li><a href="#aデータベースサービスを新規作成すると同時にリカバリサービスも有効化">A：データベース・サービスを新規作成すると同時に、リカバリ・サービスも有効化</a></li><li><a href="#b既存のデータベースサービスにリカバリサービスを有効化">B：既存のデータベース・サービスにリカバリ・サービスを有効化</a></li></ul></li><li><a href="#7-保護されたデータベースの詳細を確認しよう">7. 保護されたデータベースの詳細を確認しよう</a></li><li><a href="#8-保護されたデータベースの一覧を確認しよう">8. 保護されたデータベースの一覧を確認しよう</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>Oracle Database Autonomous Recovery Service（以下、リカバリ・サービス）は、Oracle Cloud Infrastructure (OCI) で実行するOracle Database向けのフル・マネージド型データ保護サービスです。<br />
+独自の自動化機能が、Oracle Databaseの変更をリアルタイムで保護し、本番データベースのオーバーヘッドなしでバックアップを検証するほか、任意の時点への高速で予測可能なリカバリを実現します。</p>
+
+<p>このチュートリアルでは、BaseDBにリカバリ・サービスを設定する手順についてご紹介します。<br />
+このチュートリアルを完了すると、以下のような構成図となります。</p>
+
+<p><img src="zrcv01.png" alt="img" /></p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>
+    <p><a href="../dbcs101-create-db" target="_blank">Oracle CloudでOracle Databaseを使おう</a> を通じて Oracle Database の作成が完了していること</p>
+  </li>
+  <li>
+    <p>Autonomous Recovery Service(RCV)を利用する場合、Oracle Database 19.16 以上</p>
+  </li>
+  <li>
+    <p>Zero Data Loss Autonomous Recovery Service (ZRCV) を利用する場合、Oracle Database 19.18 以上</p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>注意</strong> チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。</p>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#1-サービス制限の引き上げリクエスト">1. サービス制限の引き上げリクエスト</a></li>
+  <li><a href="#2-iam-ポリシーを設定しよう">2. IAM ポリシーを設定しよう</a></li>
+  <li><a href="#3-サブネットおよびセキュリティ・ルールを設定しよう">3.  サブネットおよびセキュリティ・ルールを設定しよう</a></li>
+  <li><a href="#4-リカバリ・サービス・サブネットを登録しよう">4. リカバリ・サービス・サブネットを登録しよう</a></li>
+  <li><a href="#5-保護ポリシーを作成しよう">5. 保護ポリシーを作成しよう</a></li>
+  <li><a href="#6-basedbでリカバリ・サービスを有効化しよう">6. BaseDBでリカバリ・サービスを有効化しよう</a></li>
+  <li><a href="#7-保護されたデータベースの詳細を確認しよう">7. 護されたデータベースの詳細を確認しよう</a></li>
+  <li><a href="#8-保護されたデータベースの一覧を確認しよう">8. 保護されたデータベースの一覧を確認しよう</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約40分
+<br /></p>
+
+<h1 id="1-サービス制限の引き上げリクエスト">1. サービス制限の引き上げリクエスト</h1>
+
+<p class="notice--info"><strong>サービス制限について</strong><br />
+Autonomous Recovery Service (RCV/ZRCV) は全リージョンにデフォルトで以下のサービス制限が付与されています。
+これらの容量以上にリソースが必要な場合は<a href="#1-サービス制限設定">1. サービス制限設定</a>を実行してください。デフォルト付与される以上のリソースが必要でない場合、次のセクションは飛ばしてください。</p>
+
+<p><strong>デフォルト付与されるサービス制限</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>説明</th>
+      <th>制限名</th>
+      <th>サービス制限</th>
+      <th>内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Space Used for Recovery Window (GB)</td>
+      <td>protected-database-backup-storage-gb</td>
+      <td>10,240</td>
+      <td>データベースの回復ウィンドウに必要なGB容量</td>
+    </tr>
+    <tr>
+      <td>Protected Database Count</td>
+      <td>protected-database-count</td>
+      <td>10</td>
+      <td>保護されたデータベース数</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /></p>
+
+<p><strong>サービス制限設定</strong><br />
+リカバリ・サービスのサービス制限の引き上げリクエストを申請します。</p>
+
+<p>まず、OCIコンソールのナビゲーション・メニューで、ガバンスと管理をクリックし、[制限、割当ておよび使用状況]をクリックします。</p>
+
+<p><img src="zrcv02.png" alt="img" /></p>
+
+<p>次に、タイトルの下の文章に埋め込まれている「サービス制限の引き上げ」をクリックします。
+<img src="zrcv26.png" alt="img" />
+<br /></p>
+
+<p>クリックすると、サービス制限の更新リクエストを申請するフォームに遷移します。
+以下の項目を選択し、必要な数の制限を申請します。</p>
+
+<ul>
+  <li>Service Category：Autonomous Recovery Service</li>
+  <li>Resource：Protected Database Count</li>
+  <li>Resource：Space Used for Recovery Window (GB)</li>
+</ul>
+
+<p><img src="zrcv27.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="2-iam-ポリシーを設定しよう">2. IAM ポリシーを設定しよう</h1>
+
+<p>次に、リカバリ・サービスおよび関連リソースへのアクセスを有効にするポリシーを設定します。</p>
+
+<p>この設定をすると、サポートされているOCIデータベース・サービスでデータ保護にリカバリ・サービスを使用できるようになります。</p>
+
+<p><strong>リカバリ・サービスの使用に必要なポリシー・ステートメント</strong><br />
+以下のポリシーを設定してきます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th>ポリシー・ステートメント</th>
+      <th>作成場所</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Allow group <グループ名> to manage all-resources in compartment <コンパートメント></コンパートメント></グループ名></td>
+      <td> </td>
+      <td>コンパートメント管理者ポリシー</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Allow service database to manage recovery-service-family in tenancy</td>
+      <td>Root Compartment</td>
+      <td>リカバリ・サービス作成に必要なポリシー。OCI Databaseサービスは、コンパートメント内の保護されたデータベース、保護ポリシーおよびリカバリ・サービス・サブネットにアクセスできます。</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Allow service database to manage tagnamespace in tenancy</td>
+      <td>Root Compartment</td>
+      <td>リカバリ・サービス作成に必要なポリシー。OCI Databaseサービスでテナンシのタグ・ネームスペースにアクセスできます。</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Allow service rcs to manage recovery-service-family in tenancy</td>
+      <td>Root Compartment</td>
+      <td>リカバリ・サービス作成に必要なポリシー。リカバリ・サービスが、コンパートメント内の保護されたデータベース、リカバリ・サービス・サブネットおよび保護ポリシーにアクセスして管理できるようにします。　</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Allow service rcs to manage virtual-network-family in tenancy</td>
+      <td>Root Compartment</td>
+      <td>リカバリ・サービス作成に必要なポリシー。リカバリ・サービスがコンパートメント内の各データベースVCN内のプライベート・サブネットにアクセスして管理できるようにします。</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Allow group <グループ名> to manage recovery-service-family in tenancy</グループ名></td>
+      <td>Root Compartment</td>
+      <td>指定したグループのユーザーがすべてのリカバリ・サービス・リソースにアクセスできるようにします。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /></p>
+
+<p><strong>ポリシー画面</strong></p>
+
+<p>「ナビゲーション・メニュー」の「アイデンティティとセキュリティ」を選択し、「アイデンティティ」の「ポリシー」をクリックします。</p>
+
+<p><img src="zrcv28.png" alt="img" /></p>
+
+<p>「ポリシーの作成」ボタンをクリックし、ポリシーの作成をします。</p>
+
+<ul>
+  <li>名前：任意（スペースは使用できません。英字、数字、ハイフン、ピリオドまたはアンダースコアのみです。）</li>
+  <li>説明：任意</li>
+  <li>ポリシー・ビルダー：「手動エディタの表示」を有効化し、以下のポリシーを入力します。</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;グループ名&gt; to manage all-resources <span class="k">in </span>compartment &lt;コンパートメント&gt;
+Allow service database to manage recovery-service-family <span class="k">in </span>tenancy
+Allow service database to manage tagnamespace <span class="k">in </span>tenancy
+Allow service rcs to manage recovery-service-family <span class="k">in </span>tenancy
+Allow service rcs to manage virtual-network-family <span class="k">in </span>tenancy
+Allow group &lt;グループ名&gt; to manage recovery-service-family <span class="k">in </span>tenancy
+</code></pre></div></div>
+<p class="notice--warning">リカバリ・サービスの使用に必要なポリシー・ステートメントは<strong>Root Compartment</strong>へ作成する必要があることに注意してください。</p>
+
+<p><img src="zrcv04.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="3-サブネットおよびセキュリティルールを設定しよう">3. サブネットおよびセキュリティ・ルールを設定しよう</h1>
+
+<p>リカバリ・サービスはリカバリ・サービス・サブネットという専用のサブネットを使用します。新規、既存、どちらのサブネットでもリカバリ・サービス・サブネットとして利用できます。</p>
+
+<p>まず、データベースとリカバリ・サービス間のバックアップ・トラフィックを許可するために、データベースのVCNに以下のイングレス・ルールを追加します。
+<br /></p>
+
+<p><strong>リカバリ・サービスで使用されるプライベート・サブネットのサブネット・サイズ要件およびイングレス・ルール</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>イングレス・ルール</th>
+      <th>ソースCIDR</th>
+      <th>IPプロトコル</th>
+      <th>ソース・ポート範囲</th>
+      <th>宛先ポート範囲</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ZRVからのHTTPSトラフィック許可</td>
+      <td>データベースが存在するVCNのCIDR</td>
+      <td>TCP</td>
+      <td>All</td>
+      <td>8005</td>
+    </tr>
+    <tr>
+      <td>ZRVからのSQLNetトラフィック許可</td>
+      <td>データベースが存在するVCNのCIDR</td>
+      <td>TCP</td>
+      <td>ALL</td>
+      <td>2484</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /></p>
+
+<p><strong>セキュリティ・リスト画面</strong>
+<img src="zrcv05.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="4-リカバリサービスサブネットを登録しよう">4. リカバリ・サービス・サブネットを登録しよう</h1>
+
+<p>次に、先ほどのVCNのサブネットをリカバリ・サービス・サブネットとして、リカバリ・サービス側に登録します。</p>
+
+<p>複数の保護されたデータベースを作成したい場合は、リカバリ・サービス専用のサブネットを新規作成し、それを利用することを検討します。</p>
+
+<p>まず、ナビゲーション・メニューで、[Oracle Database]をクリックし、[データベース・バックアップ]を選択します。</p>
+
+<p><img src="zrcv06.png" alt="img" /></p>
+
+<p>[データベース・バックアップ]ページが表示されたら、左のメニュー・バーにある[リカバリ・サービス・サブネット]をクリックします。
+そして、「リカバリ・サービス・サブネットの登録」をクリックします。</p>
+
+<p><img src="zrcv07.png" alt="img" /></p>
+
+<p>次の内容を入力し、[登録]をクリックします。</p>
+
+<ul>
+  <li>名前：任意　リカバリ・サービス・サブネットの名前を入力します</li>
+  <li>コンパートメント：リカバリ・サービス・サブネットを作成するコンパートメントを選択します</li>
+  <li>仮想クラウド・ネットワーク：使用したいサブネットが存在するデータベースVCNを選択します</li>
+  <li>サブネット：データベースVCNのリカバリ・サービス操作に対して構成したプライベート・サブネットを選択します</li>
+</ul>
+
+<p><img src="zrcv08.png" alt="img" /></p>
+
+<p>リカバリ・サービス・サブネットの登録が完了すると、このような画面に遷移します。</p>
+
+<p><img src="zrcv10.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="5--保護ポリシーを作成しよう">5.  保護ポリシーを作成しよう</h1>
+
+<p>次に、保護ポリシーを作成していきます。
+保護ポリシーは、リカバリ・サービスによって作成されたバックアップを保持する最大期間(日数)を決定します。ビジネス要件に基づいて、保護されているデータベースごとに個別のポリシーを割り当てるか、VCN内のすべての保護されているデータベースにまたがって単一のポリシーを使用できます。
+<br /></p>
+
+<p>[データベース・バックアップ]画面の [保護ポリシー]を開き、[保護ポリシーの作成]をクリックします</p>
+
+<p><img src="zrcv11.png" alt="img" /></p>
+
+<p>次の項目を入力し、[作成]をクリックします。</p>
+
+<ul>
+  <li>名前：任意　ポリシーの名前を指定します</li>
+  <li>コンパートメントに作成：保護ポリシーを作成するコンパートメントを選択します</li>
+  <li>バックアップ保持期間(日)：このポリシーを使用してバックアップを保持する最大日数を指定します。最小14日間～最大95日間を指定できます。</li>
+</ul>
+
+<p><img src="zrcv12.png" alt="img" /></p>
+
+<p>作成が終わると、保護ポリシーが表示されます。</p>
+
+<p><img src="zrcv13.png" alt="img" /></p>
+
+<p>保護ポリシーの一覧を確認することもできます。</p>
+
+<p><img src="zrcv14.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="6-basedbでリカバリサービスを有効化しよう">6. BaseDBでリカバリ・サービスを有効化しよう</h1>
+
+<p>コンソールを使用して、データベース・サービスに対して自動増分バックアップの有効化、オンデマンドでのフル・バックアップの作成、管理されたバックアップのリストの表示を行うことができます。
+<br /></p>
+
+<p>データベース・サービスにリカバリ・サービスを設定する方法は以下の2つあります。</p>
+
+<p><strong>A：</strong>データベース・サービスを新規作成すると同時に、リカバリ・サービスも有効化
+<strong>B：</strong>既存のデータベース・サービスにリカバリ・サービスを有効化
+<br /></p>
+
+<p>今回のチュートリアルではBの手順を行いますが、参考としてAの方法もご紹介します。
+<br /></p>
+
+<h2 id="aデータベースサービスを新規作成すると同時にリカバリサービスも有効化">A：データベース・サービスを新規作成すると同時に、リカバリ・サービスも有効化</h2>
+
+<p>データベース・サービスを新規作成する際に、リカバリ・サービスを設定し、有効化することが可能です。
+<br /></p>
+
+<p>データベース・サービスの作成画面の自動バックアップの有効化でリカバリ・サービスの設定をすることができます。この設定はプロビジョニング後でも変更可能です。</p>
+
+<p>※前半でご紹介したリカバリ・サービス・サブネットやネットワークの事前準備が完了している必要があります。</p>
+
+<p><img src="zrcv19.png" alt="img" /></p>
+
+<p>データベース・サービスの新規作成方法は<a href="../dbcs101-create-db" target="_blank">Oracle CloudでOracle Databaseを使おう</a>で学習できます。
+<br /></p>
+
+<h2 id="b既存のデータベースサービスにリカバリサービスを有効化">B：既存のデータベース・サービスにリカバリ・サービスを有効化</h2>
+
+<p>既存のデータベース・サービスの自動バックアップの取得先として、リカバリ・サービスを指定します。
+<br /></p>
+
+<p>ナビゲーション・メニューの「Oracle Database」をクリックし、「Oracleベース・データベース・サービスをクリックします。</p>
+
+<p><img src="zrcv15.png" alt="img" />
+<br /></p>
+
+<p>リカバリ・サービスを設定したいDBシステムを選択し、データベース詳細画面に遷移します。</p>
+
+<p>そして、「自動バックアップの構成」をクリックします。</p>
+
+<p><img src="zrcv16.png" alt="img" />
+<br /></p>
+
+<p>次に、以下項目を入力し、[変更の保存]をクリックします。
+<br />
+<img src="zrcv17.png" alt="img" />
+<br /></p>
+
+<p><strong>入力項目と入力内容</strong></p>
+<ul>
+  <li>自動バックアップの有効化: 有効化するためにチェック</li>
+  <li>バックアップの保存先：「自律型リカバリ・サービス(推奨)」（デフォルト）を選択します</li>
+  <li>保護ポリシー：事前設定された保持期間のポリシー、または、事前定義したカスタム・ポリシーを選択します</li>
+  <li>リアルタイム・データ保護：<img src="coin.png" alt="coin" width="30" /> REDO転送オプションの有無を選択します。</li>
+</ul>
+
+<p class="notice--info"><strong>REDO転送オプションについて</strong><br />
+リカバリ・サービスには2種類のタイプがあります。Autonomous Recovery Service (RCV) とZero Data Loss Autonomous Recovery Service (ZRCV) です。
+この2種類の違いは、REDO転送オプションの有無です。RCVはREDO転送オプション無し、ZRCVがREDO転送オプションありのタイプです。
+REDO転送オプションを有効化すると、リアルタイムREDO転送が実施されるため、DBストレージ上のREDOログを損失する障害においても、0に近いリカバリ・ポイント目標(RPO)が提供されます。</p>
+
+<p><img src="zrcv22.png" alt="img" /></p>
+<blockquote>
+  <ul>
+    <li>チェックボックスにチェックあり ＝ Zero Data Loss Autonomous Recovery Service (ZRCV) を利用</li>
+    <li>チェックボックスにチェックなし ＝Autonomous Recovery Service(RCV) を利用
+<br /></li>
+  </ul>
+</blockquote>
+
+<ul>
+  <li>データベース終了後の削除オプション：データベースの終了後に保護されたデータベース・バックアップを保持するために使用できるオプション。データベースに偶発的または悪意のある障害が発生した場合にバックアップからデータベースをリストアする場合にも役立ちます。</li>
+  <li>日次バックアップのスケジュール時間(UTC)：増分バックアップが開始される時間ウィンドウを指定します。</li>
+  <li>最初のバックアップをすぐに作成します：最初の完全バックアップを延期することを選択した場合、データベース障害が発生してもデータベースがリカバリできない可能性があります。</li>
+</ul>
+
+<p>[変更の保存]をクリック後、データベースの詳細画面に入力した内容が表示されます。</p>
+
+<p><img src="zrcv21.png" alt="img" /></p>
+
+<p>「最初のバックアップをすぐに作成します」のチェックボックスにチェックを入れた場合、すぐにバックアップが開始されます。</p>
+
+<p>また、「リアルタイム・データ保護: 有効」になっていると データ損失の危険性の項目は0秒になります。</p>
+
+<p><img src="zrcv18.png" alt="img" />
+<br /></p>
+
+<p>初期バックアップが完了すると、取得されたバックアップが「リソース」の「バックアップ」に表示されます</p>
+
+<p><img src="zrcv20.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="7-保護されたデータベースの詳細を確認しよう">7. 保護されたデータベースの詳細を確認しよう</h1>
+
+<p>リカバリ・サービスの有効後、保護されたデータベースの詳細を確認することができます。</p>
+
+<p>データベースの詳細画面の「バックアップ」にある「自律型リカバリ・サービス」をクリックすると、保護されたデータベースの詳細画面に遷移します。</p>
+
+<p><img src="zrcv21.png" alt="img" />
+<br /></p>
+
+<p><strong>保護されたデータベースの詳細画面</strong><br />
+保護されたデータベースの詳細画面には以下の項目が表示されます。
+<br /></p>
+
+<p><strong>保護サマリー</strong></p>
+<ul>
+  <li>ヘルス：保護されたデータベースのステータス</li>
+  <li>リアルタイム保護：REDO転送オプションの有無</li>
+  <li>データ損失の可能性：最後の有効なバックアップ以降の時間（データ損失の可能性がある期間）</li>
+  <li>保護ポリシー：適用されている保護ポリシー</li>
+  <li>現在のリカバリ・ウィンドウ：現在の時刻から開始して、遡ってデータベースをリカバリできる期間
+<br /></li>
+</ul>
+
+<p><strong>データベース・バックアップのサマリー</strong></p>
+<ul>
+  <li>最後に失敗したバックアップ：最後にバックアップに失敗した時刻</li>
+  <li>最後に完了したバックアップ：最後に完了したバックアップを取得した時刻</li>
+  <li>最終バックアップ期間：バックアップにかかった時間
+<br /></li>
+</ul>
+
+<p><strong>保護されたデータベース</strong></p>
+<ul>
+  <li>データベース詳細：保護されたデータベースの名前</li>
+  <li>一意のデータベース名：保護されたデータベースの一意のデータベース名</li>
+  <li>データベースのバージョン：保護されたデータベースのバージョン</li>
+  <li>コンパートメント：保護されたデータベースが存在するコンパートメント
+<br /></li>
+</ul>
+
+<p><strong>領域使用量</strong></p>
+<ul>
+  <li>リカバリ・ウィンドウに使用された領域：現在から遡ってデータベースをリカバリできる期間を満たすために、使用された領域
+<br /></li>
+</ul>
+
+<p>※「リカバリ・ウィンドウに使用された領域」は現在と保護ポリシーに基づいた予測の2種類表示されます。</p>
+
+<p class="notice--info"><strong>リカバリ・サービスの領域使用量に必要な要素な次のようなものがあります。</strong><br />
+1) データベースのサイズ: 保護されたデータベースのサイズ<br />
+2) 週次仮想フルバックアップ: ZRCVのデータ保持期間の週数分のフルバックアップのサイズ<br />
+3) Redoログサイズ: 随時出力される Redoサイズ<br />
+4) 日次増分バックアップ: 日次増分バックアップの日数分のサイズ</p>
+
+<p><img src="zrcv23.png" alt="img" /></p>
+
+<p>保護されたデータベースの詳細画面を下にスクロールすると、「メトリック」が確認できます。
+<br /></p>
+
+<p><strong>メトリック</strong></p>
+<ul>
+  <li>リカバリ・ウィンドウに使用された領域：保護されたデータベースのリカバリ・ウィンドウの目標を満たすために現在使用されているストレージ領域の量</li>
+  <li>保護されたデータベースのサイズ：保護されたデータベースによって消費されたストレージ領域の合計</li>
+  <li>保護されたデータベース・ヘルス：データベースの現在の保護ステータス</li>
+  <li>データ損失の危険性：最後の有効なバックアップ以降の時間(データ損失の可能性がある期間)</li>
+</ul>
+
+<p><img src="zrcv24.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="8-保護されたデータベースの一覧を確認しよう">8. 保護されたデータベースの一覧を確認しよう</h1>
+
+<p>同一コンパートメント内で保護されているデータベースの一覧を見ることができます。</p>
+
+<p>保護されたデータベースの詳細画面の左上にある「保護されたデータベース」をクリックします。</p>
+
+<p><img src="zrcv29.png" alt="img" /></p>
+
+<p>すると、コンパートメント内で保護されているデータベースの一覧表示されます。
+複数の保護されたデータベースの保護状態を1つの画面で確認できます。</p>
+
+<p><img src="zrcv30.png" alt="img" />
+<br /></p>
+
+<p><br />
+以上で、この章の作業は完了です。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<ul>
+  <li>
+    <p>[マニュアル] <a href="https://docs.oracle.com/cd/E83857_01/paas/recovery-service/index.html" target="_blank">Oracle Database Autonomous Recovery Service</a></p>
+  </li>
+  <li>
+    <p>[ブログ] <a href="https://qiita.com/shirok/items/c257d52984442a7977f8" target="_blank">Zero Data Loss Autonomous Recovery Service (ZRCV) を Exadata Cloud Service へ設定してみてみた</a></p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-20T13:11:44+09:00">February 20, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=107%3A+Autonomous+Recovery+Service+%28RCV%2FZRCV%29+%E3%82%92%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs107-zrcv%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs107-zrcv%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs107-zrcv%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/basedb/dbcs106-dataguard/" class="pagination--pager" title="106: Data Guardを構成しよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/basedb/dbcs201-pdb-plug/" class="pagination--pager" title="201: オンプレミスのPDBをBaseDBに移動しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

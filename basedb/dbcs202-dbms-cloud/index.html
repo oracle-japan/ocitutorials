@@ -1,0 +1,1744 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう  | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="DBMS_CLOUD PL/SQLパッケージを利用して、Object StorageのデータをBase Database Service (BaseDB)へ取り込む手順について紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/basedb/dbcs202-dbms-cloud/">
+
+
+  <meta property="og:description" content="DBMS_CLOUD PL/SQLパッケージを利用して、Object StorageのデータをBase Database Service (BaseDB)へ取り込む手順について紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/basedb/dbcs202-dbms-cloud/dbms-cloud01.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-02-20T13:11:44+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/basedb/dbcs202-dbms-cloud/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/basedb/dbcs202-dbms-cloud/dbms-cloud01.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう
+
+        
+      </h1>
+      
+        <p class="page__lead">DBMS_CLOUD PL/SQLパッケージを利用して、Object StorageのデータをBase Database Service (BaseDB)へ取り込む手順について紹介します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/basedb" itemprop="item"><span itemprop="name">Basedb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう </li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Base Database Service</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs101-create-db/">101: Oracle Cloud で Oracle Database を使おう(BaseDB)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs102-managing-pdb/">102: BaseDB上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs103-patch/">103: パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs104-backup/">104: 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs105-restore/">105: バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs107-zrcv/">107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs201-pdb-plug/">201: オンプレミスのPDBをBaseDBに移動しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/" class="active">202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう </a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう">
+    <meta itemprop="description" content="DBMS_CLOUD PL/SQLパッケージを利用して、Object StorageのデータをBase Database Service (BaseDB)へ取り込む手順について紹介します。">
+    <meta itemprop="datePublished" content="2024-02-20T13:11:44+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-事前準備">1. 事前準備　</a><ul><li><a href="#1-関連ファイルのダウンロードと保存先の作成">1. 関連ファイルのダウンロードと保存先の作成</a></li><li><a href="#2-ociユーザ確認と認証トークンの作成">2. OCIユーザ確認と認証トークンの作成</a></li></ul></li><li><a href="#2-dbms_cloud-plsqlパッケージのインストール">2. DBMS_CLOUD PL/SQLパッケージのインストール</a><ul><li><a href="#1-dbms_cloud-plsqlパッケージをインストールします">1. DBMS_CLOUD PL/SQLパッケージをインストールします。</a></li><li><a href="#2-インストール時に問題が起こっていないことを確認します">2. インストール時に問題が起こっていないことを確認します。</a></li><li><a href="#3-cdbに接続しインストール後の結果を確認します">3. CDBに接続し、インストール後の結果を確認します。</a></li><li><a href="#4-pdbでも同じように確認します">4. PDBでも同じように確認します。</a></li></ul></li><li><a href="#3-walletの作成">3. Walletの作成</a><ul><li><a href="#1-次にhttpsでオブジェクトストレージにアクセスするためwalletファイルを準備します">1. 次にHTTPSでオブジェクトストレージにアクセスするため、Walletファイルを準備します。</a></li><li><a href="#2-tarファイル解凍後以下のコマンドを実施し事前準備で作成したwallet格納用のディレクトリにwalletファイルを作成します">2. tarファイル解凍後、以下のコマンドを実施し、事前準備で作成したWallet格納用のディレクトリにWalletファイルを作成します。</a></li><li><a href="#3-以下のコマンドを実行しtarファイルの証明書をwalletに追加していきます">3. 以下のコマンドを実行し、tarファイルの証明書をWalletに追加していきます。</a></li><li><a href="#4-作成されたwalletを確認します">4. 作成されたWalletを確認します。</a></li></ul></li><li><a href="#4-walletの場所の設定">4. Walletの場所の設定</a></li><li><a href="#5-acesaccess-control-entriesの作成">5. ACEs(Access Control Entries)の作成</a></li><li><a href="#6-dbms_cloudの設定を検証">6. DBMS_CLOUDの設定を検証</a></li><li><a href="#7-ユーザロールへの権限付与">7. ユーザ・ロールへの権限付与</a><ul><li><a href="#7-1-ユーザへの権限付与">7-1. ユーザへの権限付与</a></li><li><a href="#7-2-ロールへの権限付与">7-2. ロールへの権限付与</a></li></ul></li><li><a href="#8-ユーザロールのためのacesを設定">8. ユーザ・ロールのためのACEsを設定</a><ul><li><a href="#8-1-ユーザへのaces設定">8-1. ユーザへのACEs設定</a></li><li><a href="#8-2-ロールへのaces設定">8-2. ロールへのACEs設定</a></li></ul></li><li><a href="#9-クレデンシャルの作成と検証">9. クレデンシャルの作成と検証</a></li><li><a href="#10-object-storageからcsvファイルをbasedbにコピー">10. Object StorageからCSVファイルをBaseDBにコピー</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>DBMS_CLOUDはオブジェクト・ストレージのデータを操作するための包括的なサポートを提供するPL/SQLパッケージです。</p>
+
+<p>DBMS_CLOUDはAutonomous Database (ADB) に実装されているPL/SQLパッケージですが、手動インストールすることでBaseDBでも利用可能です。</p>
+
+<p>ADBでDBMS_CLOUDを利用する方法は<a href="../../adb/adb202-dataload-dbms-cloud" target="_blank">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a>で学ぶことができます。</p>
+
+<p>ここでは、DBMS_CLOUDパッケージを利用してObject StorageのデータをBase Database Service (BaseDB)へ取り込む手順をご紹介します。　　</p>
+
+<p>このチュートリアルで実行する内容のイメージは以下の通りです。
+<img src="dbms-cloud01.png" alt="image" /></p>
+
+<p><br /></p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>
+    <p>Oracle Database 19.9以上 もしくは　Oracle Database 21.3以上</p>
+  </li>
+  <li>
+    <p><a href="../dbcs101-create-db" target="_blank">101: Oracle Cloud で Oracle Database を使おう</a> を通じて Oracle Database の作成が完了していること</p>
+  </li>
+  <li>以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること
+    <ul>
+      <li><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/sales_channels.csv">サンプルデータファイルのダウンロードリンク</a></li>
+    </ul>
+  </li>
+  <li><a href="../../beginners/object-storage" target="_blank">その7 - オブジェクト・ストレージを使う</a> を通じてバケットの作成・データファイル(CSV)のアップロードが完了していること</li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#1-事前準備">1. 事前準備</a></li>
+  <li><a href="#2-dbms_cloud-plsqlパッケージのインストール">2. DBMS_CLOUD PL/SQLパッケージのダウンロード</a></li>
+  <li><a href="#3-walletの作成">3. Walletの作成</a></li>
+  <li><a href="#4-walletの場所の設定">4. Walletの場所の設定</a></li>
+  <li><a href="#5-acesaccess-control-entriesの作成">5. ACEs(Access Control Entries)の作成</a></li>
+  <li><a href="#6-dbms_cloudの設定を検証">6. DBMS_CLOUDの設定を検証</a></li>
+  <li><a href="#7-ユーザ・ロールへの権限付与">7. ユーザ・ロールへの権限付与</a>
+    <ul>
+      <li><a href="#7-1-ユーザへの権限付与">7-1. ユーザへの権限付与</a></li>
+      <li><a href="#7-2-ロールへの権限付与">7-2. ロールへの権限付与</a></li>
+    </ul>
+  </li>
+  <li><a href="#8-ユーザ・ロールのためのACEsを設定">8. ユーザ・ロールのためのACEsを設定</a>
+    <ul>
+      <li><a href="#8-1-ユーザへのACEs設定">8-1. ユーザへのACEs設定</a></li>
+      <li><a href="#8-2-ロールへのACEs設定">8-2. ロールへのACEs設定</a></li>
+    </ul>
+  </li>
+  <li><a href="#9-クレデンシャルの作成と検証">9. クレデンシャルの作成と検証</a></li>
+  <li><a href="#10-object-storageからcsvファイルをbasedbにコピー">10. Object StorageからCSVファイルをBaseDBにコピー</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約1時間30分
+<br /></p>
+
+<h1 id="1-事前準備">1. 事前準備　</h1>
+
+<h2 id="1-関連ファイルのダウンロードと保存先の作成">1. 関連ファイルのダウンロードと保存先の作成</h2>
+
+<p>まずは使用するファイルとそれらの保存先を作成します。<br />
+以下の表に従ってoracleユーザでファイルを保存するディレクトリを用意します。</p>
+
+<p><strong>関連ファイルの保存先</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th>パス</th>
+      <th>格納するもの</th>
+      <th>目的</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>/home/oracle/dbc (作成要)</td>
+      <td>作成した8個のSQLファイル(下記)</td>
+      <td>SQLスクリプト格納先</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>/home/oracle/cert (作成要)</td>
+      <td>dbc_certs.tar</td>
+      <td>証明書格納先</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>/opt/oracle/dcs/commonstore/wallets/ssl (作成要)</td>
+      <td>Wallet格納先</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>$ORACLE_HOME/network/admin</td>
+      <td>sqlnet.ora</td>
+      <td>　</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>次に以下のファイルを作成します。<br />
+ダウンロード・リンクからスクリプトをダウンロードし、各ファイルを作成します。<br />
+証明書のダウンロードリンクをクリックすると後程認証で使用する証明書がダウンロードされます。</p>
+
+<p><strong>作成する関連ファイル</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th>ファイル名</th>
+      <th>目的</th>
+      <th>ダウンロード・リンク</th>
+      <th>格納先</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>dbms_cloud_install.sql</td>
+      <td>DBMS_CLOUDのインストール</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/dbms_cloud_install.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>dbc_aces.sql</td>
+      <td>Access Control Entries (ACEs)の設定</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/dbc_aces.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>verify_aces.sql</td>
+      <td>ACEs設定後の確認</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/verify_aces.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>grant_user.sql</td>
+      <td>指定ユーザに権限を付与</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/grant_user.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>grant_role.sql</td>
+      <td>指定ユーザにロールを付与</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/grant_role.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>config_aces_for_user.sql</td>
+      <td>指定ユーザにACEsを設定</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/config_aces_for_user.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>config_aces_for_role.sql</td>
+      <td>指定ロールにACEsを設定</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/config_aces_for_role.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>validate_user_config.sql</td>
+      <td>設定した権限を検証</td>
+      <td><a href="/ocitutorials/basedb/dbcs202-dbms-cloud/validate_user_config.sql">ダウンロード</a></td>
+      <td>/home/oracle/dbc</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>dbc_certs.tar</td>
+      <td>証明書</td>
+      <td><a href="https://objectstorage.us-phoenix-1.oraclecloud.com/p/QsLX1mx9A-vnjjohcC7TIK6aTDFXVKr0Uogc2DAN-Rd7j6AagsmMaQ3D3Ti4a9yU/n/adwcdemo/b/CERTS/o/dbc_certs.tar">ダウンロード</a></td>
+      <td>/home/oracle/cert</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="notice--info"><strong>参考</strong>
+スクリプトは<a href="https://github.com/oracle-devrel/technology-engineering/tree/main/data-platform/core-converged-db/dbms_cloud" target="_blank">SQLサンプル(GitHub)</a>からもダウンロード可能です。</p>
+
+<h2 id="2-ociユーザ確認と認証トークンの作成">2. OCIユーザ確認と認証トークンの作成</h2>
+
+<p>OCIのコンソールに移り、画面右上の人型のマークが表示されている箇所をクリックします。<br />
+<br />
+さらに、展開されたメニューの「プロファイル」の下のユーザ名部分をクリックします。</p>
+
+<p><img src="dbms-cloud02.png" alt="image" /></p>
+
+<p>遷移した画面の一番上にある文字列がOCIユーザのIDです。これをコピーし、手元のテキストエディタなどにペーストしておきます。</p>
+
+<p><img src="dbms-cloud03.png" alt="image" /></p>
+
+<p>次に、認証トークンを作成します。</p>
+
+<p>ユーザの詳細画面を下にスクロールし、左側の「リソース」メニューで、”認証トークン”をクリックします。そして、”トークンの生成”をクリックします。
+<img src="dbms-cloud04.png" alt="image" /></p>
+
+<p>“説明”に”DBMS_CLOUD用トークン”と入力し、”トークンの生成”をクリックします。</p>
+
+<p><img src="dbms-cloud05.png" alt="image" /></p>
+
+<p>以下の画面が表示されるので、”コピー”をクリックし、これを手元のテキストエディタなどにペーストしておきます。</p>
+
+<p><img src="dbms-cloud06.png" alt="image" /></p>
+
+<p><br /></p>
+
+<h1 id="2-dbms_cloud-plsqlパッケージのインストール">2. DBMS_CLOUD PL/SQLパッケージのインストール</h1>
+
+<h2 id="1-dbms_cloud-plsqlパッケージをインストールします">1. DBMS_CLOUD PL/SQLパッケージをインストールします。</h2>
+
+<p><strong>実行コマンド</strong>　　</p>
+
+<p>以下のコマンドは、DBMS_CLOUD PL/SQLパッケージをインストールするコマンドです。ここでは、SYSユーザのパスワードが必要です。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ORACLE_HOME</span>/perl/bin/perl <span class="nv">$ORACLE_HOME</span>/rdbms/admin/catcon.pl <span class="nt">-u</span> <span class="k">**</span>sys/&lt;your_sys_password&gt;<span class="k">**</span> <span class="nt">--force_pdb_mode</span> <span class="s1">'READ WRITE'</span> <span class="nt">-b</span> dbms_cloud_install <span class="nt">-d</span> /home/oracle/dbc <span class="nt">-l</span> /home/oracle/dbc dbms_cloud_install.sql
+</code></pre></div></div>
+<p>※&lt;your_sys_password&gt;にSYSユーザのパスワードを入れてください。
+<br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo dbc]<span class="nv">$ </span><span class="nb">pwd</span>
+/home/oracle/dbc
+<span class="o">[</span>oracle@data-momo dbc]<span class="nv">$ </span> <span class="nv">$ORACLE_HOME</span>/perl/bin/perl <span class="nv">$ORACLE_HOME</span>/rdbms/admin/catcon.pl <span class="nt">-u</span> sys/OUtk2022#OUtk2022# <span class="nt">--force_pdb_mode</span> <span class="s1">'READ WRITE'</span> <span class="nt">-b</span> dbms_cloud_install <span class="nt">-d</span> /home/oracle/dbc <span class="nt">-l</span> /home/oracle/dbc dbms_cloud_install.sql
+catcon::set_log_file_base_path: ALL catcon-related output will be written to <span class="o">[</span>/home/oracle/dbc/dbms_cloud_install_catcon_23512.lst]
+
+catcon::set_log_file_base_path: catcon: See <span class="o">[</span>/home/oracle/dbc/dbms_cloud_install<span class="k">*</span>.log] files <span class="k">for </span>output generated by scripts
+
+catcon::set_log_file_base_path: catcon: See <span class="o">[</span>/home/oracle/dbc/dbms_cloud_install_<span class="k">*</span>.lst] files <span class="k">for </span>spool files, <span class="k">if </span>any
+
+catcon.pl: completed successfully
+</code></pre></div></div>
+<p><br /></p>
+
+<h2 id="2-インストール時に問題が起こっていないことを確認します">2. インストール時に問題が起こっていないことを確認します。</h2>
+
+<p><code class="language-plaintext highlighter-rouge">/home/oracle/dbc</code>配下に以下のログファイルが作成されているので、これらを開きエラーが無いことを確認します。</p>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下のコマンドは、/home/oracle/dbc配下のログファイルにエラーが出力されているか確認するコマンドです。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">grep</span> <span class="nt">-i</span> error dbms<span class="k">*</span>.log dbms<span class="k">*</span>.lst
+</code></pre></div></div>
+<p><br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo dbc]<span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-i</span> error dbms<span class="k">*</span>.log dbms<span class="k">*</span>.lst
+dbms_cloud_install0.log:No errors.
+dbms_cloud_install0.log:No errors.
+　　　&lt;省略&gt;
+dbms_cloud_install0.log:No errors.
+<span class="o">[</span>oracle@data-momo dbc]<span class="err">$</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<h2 id="3-cdbに接続しインストール後の結果を確認します">3. CDBに接続し、インストール後の結果を確認します。</h2>
+
+<p><strong>実行コマンド</strong>　　</p>
+
+<p>SQL*PlusでCDBにrootユーザで接続し、以下のコマンドを実行します。以下のコマンドはcdb_objectsから’DBMS_CLOUD’というオブジェクトを検索・表示するコマンドです。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select </span>con_id, owner, object_name, status, sharing, oracle_maintained from cdb_objects where object_name <span class="o">=</span> <span class="s1">'DBMS_CLOUD'</span> order by con_id<span class="p">;</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo dbc]<span class="nv">$ </span>sqlplus / as sysdba
+
+SQL<span class="k">*</span>Plus: Release 19.0.0.0.0 - Production on Tue Dec 19 10:51:36 2023
+Version 19.21.0.0.0
+
+Copyright <span class="o">(</span>c<span class="o">)</span> 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c EE High Perf Release 19.0.0.0.0 - Production
+Version 19.21.0.0.0
+
+SQL&gt; show con_name<span class="p">;</span>
+
+CON_NAME
+<span class="nt">------------------------------</span>
+CDB<span class="nv">$ROOT</span>
+
+SQL&gt; <span class="k">select </span>con_id, owner, object_name, status, sharing, oracle_maintained from cdb_objects where object_name <span class="o">=</span> <span class="s1">'DBMS_CLOUD'</span> order by con_id<span class="p">;</span>
+
+    CON_ID OWNER                OBJECT_NAME     STATUS  SHARING            O
+<span class="nt">----------</span> <span class="nt">--------------------</span> <span class="nt">---------------</span> <span class="nt">-------</span> <span class="nt">------------------</span> -
+         1 PUBLIC               DBMS_CLOUD      VALID   METADATA LINK      Y
+         1 C##CLOUD<span class="nv">$SERVICE</span>     DBMS_CLOUD      VALID   METADATA LINK      Y
+         1 C##CLOUD<span class="nv">$SERVICE</span>     DBMS_CLOUD      VALID   METADATA LINK      Y
+         3 PUBLIC               DBMS_CLOUD      VALID   METADATA LINK      Y
+         3 C##CLOUD<span class="nv">$SERVICE</span>     DBMS_CLOUD      VALID   METADATA LINK      Y
+         3 C##CLOUD<span class="nv">$SERVICE</span>     DBMS_CLOUD      VALID   METADATA LINK      Y
+
+6 rows selected.
+</code></pre></div></div>
+<p><br />
+DBMS_CLOUDが正常にインストールされていると<code class="language-plaintext highlighter-rouge">STAUS</code>カラムに<code class="language-plaintext highlighter-rouge">VALID</code>と表示されます。
+<br /></p>
+
+<h2 id="4-pdbでも同じように確認します">4. PDBでも同じように確認します。</h2>
+
+<p><strong>実行コマンド</strong>　　</p>
+
+<p>CDBで実施した確認をPDBでも行います。
+rootユーザでCDBからPDBに接続先を切り替え、以下のコマンドはを実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select </span>owner, object_name, status, sharing, oracle_maintained from dba_objects where object_name <span class="o">=</span> <span class="s1">'DBMS_CLOUD'</span><span class="p">;</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SQL&gt; alter session <span class="nb">set </span><span class="nv">container</span><span class="o">=</span>DB1218_pdb1<span class="p">;</span>
+
+Session altered.
+
+SQL&gt; show con_name<span class="p">;</span>
+
+CON_NAME
+<span class="nt">------------------------------</span>
+DB1218_PDB1
+
+SQL&gt; <span class="k">select </span>owner, object_name, status, sharing, oracle_maintained from dba_objects where object_name <span class="o">=</span> <span class="s1">'DBMS_CLOUD'</span><span class="p">;</span>
+
+OWNER                OBJECT_NAME     STATUS  SHARING            O
+<span class="nt">--------------------</span> <span class="nt">---------------</span> <span class="nt">-------</span> <span class="nt">------------------</span> -
+PUBLIC               DBMS_CLOUD      VALID   METADATA LINK      Y
+C##CLOUD<span class="nv">$SERVICE</span>     DBMS_CLOUD      VALID   METADATA LINK      Y
+C##CLOUD<span class="nv">$SERVICE</span>     DBMS_CLOUD      VALID   METADATA LINK      Y
+
+SQL&gt;
+</code></pre></div></div>
+
+<p>DBMS_CLOUDが正常にインストールされていると<code class="language-plaintext highlighter-rouge">STAUS</code>カラムに<code class="language-plaintext highlighter-rouge">VALID</code>と表示されます。
+<br /></p>
+
+<p>確認が出来たら、SQL*Plusを一度出ます。</p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SQL&gt;exit
+</code></pre></div></div>
+<p><br /></p>
+
+<h1 id="3-walletの作成">3. Walletの作成</h1>
+
+<h2 id="1-次にhttpsでオブジェクトストレージにアクセスするためwalletファイルを準備します">1. 次にHTTPSでオブジェクトストレージにアクセスするため、Walletファイルを準備します。</h2>
+
+<p>こちらの<a href="https://objectstorage.us-phoenix-1.oraclecloud.com/p/QsLX1mx9A-vnjjohcC7TIK6aTDFXVKr0Uogc2DAN-Rd7j6AagsmMaQ3D3Ti4a9yU/n/adwcdemo/b/CERTS/o/dbc_certs.tar">ダウンロードリンク</a>から証明書をダウンロードし、解凍します。
+<br /></p>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下のコマンドで証明書を格納するディレクトリ(/home/oracle/cert)まで移動します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /home/oracle/cert
+</code></pre></div></div>
+<p>以下のコマンドはダウンロードから証明書が入っているファイル(圧縮済み)をダウンロードするコマンドです。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://objectstorage.us-phoenix-1.oraclecloud.com/p/QsLX1mx9A-vnjjohcC7TIK6aTDFXVKr0Uogc2DAN-Rd7j6AagsmMaQ3D3Ti4a9yU/n/adwcdemo/b/CERTS/o/dbc_certs.tar
+</code></pre></div></div>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo cert]<span class="nv">$ </span>wget https://objectstorage.us-phoenix-1.oraclecloud.com/p/QsLX1mx9A-vnjjohcC7TIK6aTDFXVKr0Uogc2DAN-Rd7j6AagsmMaQ3D3Ti4a9yU/n/adwcdemo/b/CERTS/o/dbc_certs.tar
+<span class="nt">--2023-12-19</span> 10:56:13--  https://objectstorage.us-phoenix-1.oraclecloud.com/p/QsLX1mx9A-vnjjohcC7TIK6aTDFXVKr0Uogc2DAN-Rd7j6AagsmMaQ3D3Ti4a9yU/n/adwcdemo/b/CERTS/o/dbc_certs.tar
+Resolving objectstorage.us-phoenix-1.oraclecloud.com <span class="o">(</span>objectstorage.us-phoenix-1.oraclecloud.com<span class="o">)</span>... 134.70.16.1, 134.70.12.1, 134.70.8.1
+Connecting to objectstorage.us-phoenix-1.oraclecloud.com <span class="o">(</span>objectstorage.us-phoenix-1.oraclecloud.com<span class="o">)</span>|134.70.16.1|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 235520 <span class="o">(</span>230K<span class="o">)</span> <span class="o">[</span>application/x-tar]
+Saving to: edbc_certs.tarf
+
+dbc_certs.tar                         100%[<span class="o">========================================================================&gt;]</span> 230.00K   452KB/s    <span class="k">in </span>0.5s
+
+2023-12-19 10:56:14 <span class="o">(</span>452 KB/s<span class="o">)</span> - edbc_certs.tarf saved <span class="o">[</span>235520/235520]
+</code></pre></div></div>
+
+<p>ファイルのダウンロードが完了したら、解凍します。</p>
+
+<p><strong>実行コマンド</strong>　　</p>
+
+<p>以下のコマンドでファイルがダウンロードされていることを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ll
+</code></pre></div></div>
+<p>そして、以下のコマンドで圧縮されているファイルを解凍します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">tar </span>xvf dbc_certs.tar
+</code></pre></div></div>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo cert]<span class="nv">$ </span>ll
+total 232
+<span class="nt">-rw-r--r--</span> 1 oracle oinstall 235520 May 13  2022 dbc_certs.tar
+<span class="o">[</span>oracle@data-momo cert]<span class="nv">$ </span><span class="nb">tar </span>xvf dbc_certs.tar
+Actalis.cer
+AddTrust1.cer
+AddTrust2.cer
+　&lt;省略&gt;
+VeriSign7.cer
+XRamp.cer
+<span class="o">[</span>oracle@data-momo cert]<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="2-tarファイル解凍後以下のコマンドを実施し事前準備で作成したwallet格納用のディレクトリにwalletファイルを作成します">2. tarファイル解凍後、以下のコマンドを実施し、<a href="#1-事前準備">事前準備</a>で作成したWallet格納用のディレクトリにWalletファイルを作成します。</h2>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下のコマンドでWalletを格納するディレクトリ(/opt/oracle/dcs/commonstore/wallets/ssl)に移動します。　</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /opt/oracle/dcs/commonstore/wallets/ssl
+</code></pre></div></div>
+<p>そして、以下のコマンドでディレクトリにWalletを作成します。<my_password>にはWallet用のご自身のパスワードを入力してください。</my_password></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>orapki wallet create <span class="nt">-wallet</span> <span class="nb">.</span> <span class="nt">-pwd</span> <span class="k">**</span>&lt;my_password&gt;<span class="k">**</span> <span class="nt">-auto_login</span>
+</code></pre></div></div>
+<p><br />
+&lt;my_password&gt;にはWalletに使用するパスワード入力します。
+<br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo cert]<span class="nv">$ </span><span class="nb">cd</span> /opt/oracle/dcs/commonstore/wallets/ssl
+<span class="o">[</span>oracle@data-momo ssl]<span class="nv">$ </span>orapki wallet create <span class="nt">-wallet</span> <span class="nb">.</span> <span class="nt">-pwd</span>  <span class="nt">-auto_login</span>
+Oracle PKI Tool Release 19.0.0.0.0 - Production
+Version 19.4.0.0.0
+Copyright <span class="o">(</span>c<span class="o">)</span> 2004, 2023, Oracle and/or its affiliates. All rights reserved.
+
+Operation is successfully completed.
+</code></pre></div></div>
+<p><br />
+Walletが作成されました。
+<br /></p>
+
+<h2 id="3-以下のコマンドを実行しtarファイルの証明書をwalletに追加していきます">3. 以下のコマンドを実行し、tarファイルの証明書をWalletに追加していきます。</h2>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下コマンドを実行すると、dbc_certs.tarに入っている証明書を自動で先ほど作成したWalletに追加されます。
+実行はWalletがある/opt/oracle/dcs/commonstore/wallets/sslで実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#! /bin/bash</span>
+<span class="k">for </span>i <span class="k">in</span> /home/oracle/cert/<span class="k">*</span>.cer
+<span class="k">do
+</span>orapki wallet add <span class="nt">-wallet</span> <span class="nb">.</span> <span class="nt">-trusted_cert</span> <span class="nt">-cert</span> <span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span> <span class="nt">-pwd</span> <span class="k">**</span>&lt;my_password&gt;<span class="k">**</span>
+<span class="k">done</span>
+</code></pre></div></div>
+<p><br />
+&lt;my_password&gt;にはWalletのパスワードを入力します。
+<br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo ssl]<span class="nv">$ </span><span class="c">#! /bin/bash</span>
+<span class="o">[</span>oracle@data-momo ssl]<span class="nv">$ </span><span class="k">for </span>i <span class="k">in</span> /home/oracle/cert/<span class="k">*</span>.cer
+<span class="o">&gt;</span> <span class="k">do</span>
+<span class="o">&gt;</span> orapki wallet add <span class="nt">-wallet</span> <span class="nb">.</span> <span class="nt">-trusted_cert</span> <span class="nt">-cert</span> <span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span> <span class="nt">-pwd</span> &lt;my_password&gt;
+<span class="o">&gt;</span> <span class="k">done
+</span>Oracle PKI Tool Release 19.0.0.0.0 - Production
+Version 19.4.0.0.0
+Copyright <span class="o">(</span>c<span class="o">)</span> 2004, 2023, Oracle and/or its affiliates. All rights reserved.
+
+Operation is successfully completed.
+Oracle PKI Tool Release 19.0.0.0.0 - Production
+Version 19.4.0.0.0
+Copyright <span class="o">(</span>c<span class="o">)</span> 2004, 2023, Oracle and/or its affiliates. All rights reserved.
+
+Operation is successfully completed.
+Oracle PKI Tool Release 19.0.0.0.0 - Production
+Version 19.4.0.0.0
+Copyright <span class="o">(</span>c<span class="o">)</span> 2004, 2023, Oracle and/or its affiliates. All rights reserved.
+
+Operation is successfully completed.
+
+&lt;省略&gt;
+
+Could not <span class="nb">install </span>trusted cert at/home/oracle/cert/VeriSign7.cer
+PKI-04003: The trusted certificate is already present <span class="k">in </span>the wallet.
+Oracle PKI Tool Release 19.0.0.0.0 - Production
+Version 19.4.0.0.0
+Copyright <span class="o">(</span>c<span class="o">)</span> 2004, 2023, Oracle and/or its affiliates. All rights reserved.
+
+Operation is successfully completed.
+</code></pre></div></div>
+
+<p>証明書の数が多いので、全て追加し終わるまで少し時間がかかります。</p>
+
+<h2 id="4-作成されたwalletを確認します">4. 作成されたWalletを確認します。</h2>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下のコマンドでWalletの中を表示し、証明書が追加されていることを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>orapki wallet display <span class="nt">-wallet</span> <span class="nb">.</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo ssl]<span class="nv">$ </span><span class="nb">pwd</span>
+/opt/oracle/dcs/commonstore/wallets/ssl
+<span class="o">[</span>oracle@data-momo ssl]<span class="nv">$ </span>orapki wallet display <span class="nt">-wallet</span> <span class="nb">.</span>
+Oracle PKI Tool Release 19.0.0.0.0 - Production
+Version 19.4.0.0.0
+Copyright <span class="o">(</span>c<span class="o">)</span> 2004, 2023, Oracle and/or its affiliates. All rights reserved.
+
+Requested Certificates:
+User Certificates:
+Trusted Certificates:
+&lt;省略&gt;
+Subject:        <span class="nv">CN</span><span class="o">=</span>Starfield Services Root Certificate Authority - G2,O<span class="o">=</span>Starfield Technologies<span class="se">\,</span> Inc.,L<span class="o">=</span>Scottsdale,ST<span class="o">=</span>Arizona,C<span class="o">=</span>US
+</code></pre></div></div>
+<p><br /></p>
+
+<h1 id="4-walletの場所の設定">4. Walletの場所の設定</h1>
+
+<p>sqlnet.oraの以下の箇所を編集し、作成されたWalletファイルを利用出来るようにします。</p>
+
+<p>※RACの場合、全ノードで実施してください。
+<br /></p>
+
+<p><strong>実行コマンド</strong>
+以下のコマンドで/u01/app/oracle/product/19.0.0.0/dbhome_1/network/adminに移動します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin
+</code></pre></div></div>
+<p>そして、以下のコマンドでsqlnet.oraを開き、編集します。</p>
+
+<p><strong>sqlnet.oraの編集(追加)箇所</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nano sqlnet.ora
+</code></pre></div></div>
+<p>以下をsqlnet.oraに追記します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">WALLET_LOCATION</span><span class="o">=(</span><span class="nv">SOURCE</span><span class="o">=(</span><span class="nv">METHOD</span><span class="o">=</span>FILE<span class="o">)(</span><span class="nv">METHOD_DATA</span><span class="o">=(</span><span class="nv">DIRECTORY</span><span class="o">=</span>/opt/oracle/dcs/commonstore/wallets/ssl<span class="o">)))</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo admin]<span class="nv">$ </span><span class="nb">pwd</span>
+/u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin
+<span class="o">[</span>oracle@data-momo admin]<span class="nv">$ </span><span class="nb">cat </span>sqlnet.ora
+<span class="nv">WALLET_LOCATION</span><span class="o">=(</span><span class="nv">SOURCE</span><span class="o">=(</span><span class="nv">METHOD</span><span class="o">=</span>FILE<span class="o">)(</span><span class="nv">METHOD_DATA</span><span class="o">=(</span><span class="nv">DIRECTORY</span><span class="o">=</span>/opt/oracle/dcs/commonstore/wallets/ssl<span class="o">)))</span>
+<span class="c">#ENCRYPTION_WALLET_LOCATION=(SOURCE=(METHOD=FILE)(METHOD_DATA=(DIRECTORY=/opt/oracle/dcs/commonstore/wallets/tde/$ORACLE_UNQNAME)))</span>
+&lt;省略&gt;
+</code></pre></div></div>
+<p><br /></p>
+
+<h1 id="5-acesaccess-control-entriesの作成">5. ACEs(Access Control Entries)の作成</h1>
+
+<p>HTTPSでオブジェクト・ストレージとの通信を許可するため、ACEsの作成をします。
+ACEsを作成するには、dbc_aces.sqlで以下の箇所を編集してから、スクリプトを実行します。
+<br /></p>
+
+<p><strong>dbc_aces.sqlの編集個所</strong><br />
+<a href="#1-関連ファイルのダウンロードと保存先の作成">関連ファイルのダウンロードと保存先の作成</a>からdbc_aces.sqlをダウンロードし、以下の箇所を編集します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>編集前</th>
+      <th>編集後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=&lt;Set SSL Wallet Directory&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+編集後、SYSでCDBにログインし、dbc_aces.sqlを実行します。
+Proxyを使わないは空欄のままEnterキーを押してください
+<br /></p>
+
+<p><strong>実行コマンド</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus / as sysdba
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@dbc_aces.sql
+</code></pre></div></div>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo dbc]<span class="nv">$ </span>sqlplus / as sysdba
+
+SQL<span class="k">*</span>Plus: Release 19.0.0.0.0 - Production on Thu Dec 21 02:18:39 2023
+Version 19.21.0.0.0
+
+Copyright <span class="o">(</span>c<span class="o">)</span> 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c EE High Perf Release 19.0.0.0.0 - Production
+Version 19.21.0.0.0
+
+SQL&gt; show con_name
+
+CON_NAME
+<span class="nt">------------------------------</span>
+CDB<span class="nv">$ROOT</span>
+SQL&gt; sho user
+USER is <span class="s2">"SYS"</span>
+
+SQL&gt; @dbc_aces.sql
+
+Session altered.
+
+old   9: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'&amp;clouduser'</span><span class="o">)</span>,
+new   9: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'C##CLOUD$SERVICE'</span><span class="o">)</span>,
+Enter value <span class="k">for </span>proxy_host:
+old  16: <span class="nt">--</span> host <span class="o">=&gt;</span><span class="s1">'&amp;proxy_host'</span>,
+new  16: <span class="nt">--</span> host <span class="o">=&gt;</span><span class="s1">''</span>,
+Enter value <span class="k">for </span>proxy_low_port:
+old  17: <span class="nt">--</span> lower_port <span class="o">=&gt;</span> &amp;proxy_low_port,
+new  17: <span class="nt">--</span> lower_port <span class="o">=&gt;</span> ,
+Enter value <span class="k">for </span>proxy_high_port:
+old  18: <span class="nt">--</span> upper_port <span class="o">=&gt;</span> &amp;proxy_high_port,
+new  18: <span class="nt">--</span> upper_port <span class="o">=&gt;</span> ,
+old  21: <span class="nt">--</span> principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'&amp;clouduser'</span><span class="o">)</span>,
+new  21: <span class="nt">--</span> principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'C##CLOUD$SERVICE'</span><span class="o">)</span>,
+old  29: wallet_path <span class="o">=&gt;</span> <span class="s1">'file:&amp;sslwalletdir'</span>,
+new  29: wallet_path <span class="o">=&gt;</span> <span class="s1">'file:/opt/oracle/dcs/commonstore/wallets/ssl'</span>,
+old  32: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'&amp;clouduser'</span><span class="o">)</span>,
+new  32: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'C##CLOUD$SERVICE'</span><span class="o">)</span>,
+
+PL/SQL procedure successfully completed.
+
+old   4: execute immediate <span class="s1">'alter database property set ssl_wallet=''&amp;sslwalletdir'''</span><span class="p">;</span>
+new   4: execute immediate <span class="s1">'alter database property set ssl_wallet=''/opt/oracle/dcs/commonstore/wallets/ssl'''</span><span class="p">;</span>
+Enter value <span class="k">for </span>proxy_uri:
+old   8: <span class="nt">--</span> execute immediate <span class="s1">'alter database property set http_proxy=''&amp;proxy_uri'''</span><span class="p">;</span>
+new   8: <span class="nt">--</span> execute immediate <span class="s1">'alter database property set http_proxy='''''</span><span class="p">;</span>
+
+PL/SQL procedure successfully completed.
+
+
+Session altered.
+</code></pre></div></div>
+
+<p>実行後、設定内容を確認します。</p>
+
+<p><strong>実行コマンド</strong>
+以下のコマンドで設定内を確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="k">*</span> from database_properties where property_name <span class="k">in</span> <span class="o">(</span><span class="s1">'SSL_WALLET'</span>,<span class="s1">'HTTP_PROXY'</span><span class="o">)</span><span class="p">;</span>
+</code></pre></div></div>
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SQL&gt; <span class="k">select</span> <span class="k">*</span> from database_properties where property_name <span class="k">in</span> <span class="o">(</span><span class="s1">'SSL_WALLET'</span>,<span class="s1">'HTTP_PROXY'</span><span class="o">)</span><span class="p">;</span>
+
+PROPERTY_NAME   PROPERTY_VALUE                           DESCRIPTION
+<span class="nt">---------------</span> <span class="nt">----------------------------------------</span> <span class="nt">------------------------------</span>
+SSL_WALLET      /opt/oracle/dcs/commonstore/wallets/ssl  Location of SSL Wallet
+</code></pre></div></div>
+<p><br /></p>
+
+<h1 id="6-dbms_cloudの設定を検証">6. DBMS_CLOUDの設定を検証</h1>
+
+<p>ここまで、Walletの作成とACEsの設定を実施したので、それらが正しく設定されているかどうかを検証します。
+検証にはverify_aces.sqlを使用します。
+<br /></p>
+
+<p><strong>verify_aces.sqlの編集個所</strong> 
+<a href="#1-関連ファイルのダウンロードと保存先の作成">関連ファイルのダウンロードと保存先の作成</a>からverify_aces.sqlをダウンロードし、以下の箇所を編集します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>編集前</th>
+      <th>編集後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=&lt;Set SSL Wallet Directory&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletpwd=&lt;Set SSL Wallet password&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletpwd=&lt;Wallet作成時、指定したパスワード&gt;</code></td>
+    </tr>
+    <tr>
+      <td>GET_PAGE(‘https://objectstorage.eu-frankfurt-1.oci.customer-oci.com’);</td>
+      <td>GET_PAGE(‘https://&lt;$namespace&gt;.objectorage.&lt;$oci_region&gt;.oci.customer-oci.com’);</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+※<code class="language-plaintext highlighter-rouge">&lt;$namespace&gt;</code>はオブジェクト・ネームスペースに置き換えます。<br />
+オブジェクト・ストレージ・ネームスペースは以下の手順で確認できます。
+<br /></p>
+
+<p>OCIのコンソールに移り、「プロファイル」の「テナンシ」をクリックします。</p>
+
+<p><img src="dbms-cloud07.png" alt="image" /></p>
+
+<p>テナンシ詳細の右下にオブジェクト・ストレージ・ネームスペースがあります。</p>
+
+<p><img src="dbms-cloud08.png" alt="image" /></p>
+
+<p>※<code class="language-plaintext highlighter-rouge">&lt;$oci_region&gt;</code>はリージョン識別子に置き換えます。
+各リージョンのリージョン識別子は<a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm" target="_blank">リージョンおよび可用性ドメインについて</a>から確認できます。
+環境に合ったものを使用してください。</p>
+
+<p>編集後、SYSユーザでCDBかPDBにログインし、verify_aces.sqlを実行します。
+<br />
+<strong>実行コマンド</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus / as sysdba
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@verify_aces.sql
+</code></pre></div></div>
+
+<p><strong>実行例</strong>
+※実行例はCDBで実行しています。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo dbc]<span class="nv">$ </span>sqlplus / as sysdba
+
+SQL<span class="k">*</span>Plus: Release 19.0.0.0.0 - Production on Thu Dec 21 02:36:49 2023
+Version 19.21.0.0.0
+
+Copyright <span class="o">(</span>c<span class="o">)</span> 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c EE High Perf Release 19.0.0.0.0 - Production
+Version 19.21.0.0.0
+
+SQL&gt; show con_name
+
+CON_NAME
+<span class="nt">------------------------------</span>
+CDB<span class="nv">$ROOT</span>
+SQL&gt; sho user
+USER is <span class="s2">"SYS"</span>
+
+SQL&gt; @verify_aces.sql
+old   1: CREATE OR REPLACE PROCEDURE &amp;clouduser..GET_PAGE<span class="o">(</span>url IN VARCHAR2<span class="o">)</span> AS
+new   1: CREATE OR REPLACE PROCEDURE C##CLOUD<span class="nv">$SERVICE</span>.GET_PAGE<span class="o">(</span>url IN VARCHAR2<span class="o">)</span> AS
+old  13: wallet_path <span class="o">=&gt;</span> <span class="s1">'file:&amp;sslwalletdir'</span>,
+new  13: wallet_path <span class="o">=&gt;</span> <span class="s1">'file:/opt/oracle/dcs/commonstore/wallets/ssl'</span>,
+old  14: wallet_password <span class="o">=&gt;</span> <span class="s1">'&amp;sslwalletpwd'</span><span class="o">)</span><span class="p">;</span>
+new  14: wallet_password <span class="o">=&gt;</span> <span class="s1">'&lt;my_password&gt;'</span><span class="o">)</span><span class="p">;</span>
+
+Procedure created.
+
+old   2: &amp;clouduser..GET_PAGE<span class="o">(</span><span class="s1">'https://objectstorage.eu-frankfurt-1.oci.customer-oci.com'</span><span class="o">)</span><span class="p">;</span>
+new   2: C##CLOUD<span class="nv">$SERVICE</span>.GET_PAGE<span class="o">(</span><span class="s1">'https://orasejapan.objectstorage.ap-osaka-1.oci.customer-oci.com'</span><span class="o">)</span><span class="p">;</span>
+valid response
+
+PL/SQL procedure successfully completed.
+
+old   1: drop procedure &amp;clouduser..GET_PAGE
+new   1: drop procedure C##CLOUD<span class="nv">$SERVICE</span>.GET_PAGE
+
+Procedure dropped.
+
+SQL&gt;
+</code></pre></div></div>
+<p><br />
+実行の結果、<strong>“valid response”</strong>が表示されるのを確認します。</p>
+
+<p>確認出来たら、DBMS_CLOUDのインストールと設定は完了です。</p>
+
+<p><br /></p>
+
+<h1 id="7-ユーザロールへの権限付与">7. ユーザ・ロールへの権限付与</h1>
+
+<p>次に、対象ユーザへの権限付与を行います。
+<br /></p>
+
+<p>対象ユーザへ権限付与をする方法は2つあります。 <br />
+以下、どちらかを選択してください。</p>
+
+<p class="notice--warning">※選択する方法によって使用するスクリプトが異なるので注意してください。</p>
+
+<p><strong>A：</strong> 直接対象ユーザにDBMS_CLOUDの利用権限を付与(grant_user.sqlを実行)　→ <a href="#7-1-ユーザへの権限付与">7-1. ユーザへの権限付与</a>へ</p>
+
+<p><strong>B：</strong> 対象ユーザに付与されたロールに、DBMS_CLOUDの利用権限を付与(grant_role.sqlを実行)　→ <a href="#7-2-ロールへの権限付与">7-2. ロールへの権限付与</a>へ</p>
+
+<p><br /></p>
+
+<h2 id="7-1-ユーザへの権限付与">7-1. ユーザへの権限付与</h2>
+
+<p>A. 直接対象ユーザにDBMS_CLOUDの利用権限を付与(grant_user.sqlを実行)を実行する場合、以下の操作を行います。</p>
+
+<p><br />
+まず、DBMS_CLOUDを利用するユーザとして、PDBにUSER1を作成します。そして、user1に権限を付与します。
+USER1に権限付与をするために、grant_user.sqlの以下の箇所を編集します。
+<br /></p>
+
+<p><strong>grant_user.sqlの編集個所</strong></p>
+
+<p><a href="#1-関連ファイルのダウンロードと保存先の作成">関連ファイルのダウンロードと保存先の作成</a>からgrant_user.sqlをダウンロードし、以下の箇所を編集します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>編集前</th>
+      <th>編集後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>define username=’SCOTT’</td>
+      <td>define username=’USER1’</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+編集後、SYSかSYSTEMユーザでPDBにログインし、grant_user.sqlを実行します。
+<br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@data-momo dbc]<span class="nv">$ </span>sqlplus / as sysdba
+
+SQL<span class="k">*</span>Plus: Release 19.0.0.0.0 - Production on Tue Dec 19 12:02:26 2023
+Version 19.21.0.0.0
+
+Copyright <span class="o">(</span>c<span class="o">)</span> 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c EE High Perf Release 19.0.0.0.0 - Production
+Version 19.21.0.0.0
+
+SQL&gt; alter session <span class="nb">set </span><span class="nv">container</span><span class="o">=</span>DB1218_pdb1<span class="p">;</span>
+
+Session altered.
+
+SQL&gt; show con_name
+
+CON_NAME
+<span class="nt">------------------------------</span>
+DB1218_PDB1
+SQL&gt; show user
+USER is <span class="s2">"SYS"</span>
+
+SQL&gt; @grant_user.sql
+
+Role created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+SQL&gt;
+</code></pre></div></div>
+<p><br /></p>
+
+<h2 id="7-2-ロールへの権限付与">7-2. ロールへの権限付与</h2>
+
+<p>B. 対象ユーザに付与されたロールに、DBMS_CLOUDの利用権限を付与(grant_role.sqlを実行)を実行する場合、以下の操作を行います。</p>
+
+<p>まず、DBMS_CLOUDを利用するユーザとして、PDBにUSER1を作成します。そして、ロールを作成し、USER1にロールを付与します。
+ロールを作成し、USER1にロールを付与するために、grant_role.sqlの以下の箇所を編集します。
+<br /></p>
+
+<p><strong>grant_role.sqlの編集個所</strong></p>
+
+<p><a href="#1-関連ファイルのダウンロードと保存先の作成">関連ファイルのダウンロードと保存先の作成</a>からgrant_role.sqlをダウンロードし、以下の箇所を編集します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>編集前</th>
+      <th>編集後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define userrole='CLOUD_USER'</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define userrole='&lt;dbms-cloud-role&gt;'</code></td>
+    </tr>
+    <tr>
+      <td>define username=’SCOTT’</td>
+      <td>define username=’USER1’</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※&lt;dbms-cloud-role&gt;にはDBMS_CLOUDに利用するロール名を入力します。</p>
+
+<p>編集後、SYSかSYSTEMユーザでPDBにログインし、grant_role.sqlを実行します。</p>
+
+<p><br /></p>
+
+<h1 id="8-ユーザロールのためのacesを設定">8. ユーザ・ロールのためのACEsを設定</h1>
+
+<p>Access Control Entries (ACEs) の設定をユーザ・ロールにします。設定方法は2つあります。</p>
+
+<p>「7.ユーザ・ロールへの権限付与」で選択した方法に応じて、どちらかを選択してください。</p>
+
+<ul>
+  <li>
+    <p><a href="#7-1-ユーザへの権限付与">7-1. ユーザへの権限付与</a>を実行した場合、config_aces_for_user.sqlを編集・実行し、ACEsを設定します　→　<a href="#8-1-ユーザへのACEs設定">8-1. ユーザへのACEs設定</a>へ</p>
+  </li>
+  <li>
+    <p><a href="#7-2-ロールへの権限付与">7-2. ロールへの権限付与</a>を実行した場合、config_aces_for_role.sqlを編集・実行し、ACEsを設定します。→　<a href="#8-2-ロールへのACEs設定">8-2. ロールへのACEs設定</a>へ</p>
+  </li>
+</ul>
+
+<h2 id="8-1-ユーザへのaces設定">8-1. ユーザへのACEs設定</h2>
+
+<p><a href="#7-1-ユーザへの権限付与">7-1. ユーザへの権限付与</a>を実行した場合、以下の操作を行いACEsを設定します。</p>
+
+<p>対象ユーザにACEsの設定をするために、config_aces_for_user.sqlを編集します。
+<br /></p>
+
+<p><strong>config_aces_for_user.sqlの編集箇所</strong></p>
+
+<p><a href="#1-関連ファイルのダウンロードと保存先の作成">関連ファイルのダウンロードと保存先の作成</a>からconfig_aces_for_user.sqlをダウンロードし、以下の箇所を編集します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>編集前</th>
+      <th>編集後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>define username=’SCOTT’</td>
+      <td>define username=’USER1’</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=&lt;Set SSL Wallet Directory&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>編集後、SYSかSYSTEMユーザでPDBにログインし、config_aces_for_user.sqlを実行します。
+<br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SQL<span class="k">*</span>Plus: Release 19.0.0.0.0 - Production on Tue Dec 19 12:02:26 2023
+Version 19.21.0.0.0
+
+Copyright <span class="o">(</span>c<span class="o">)</span> 1982, 2022, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c EE High Perf Release 19.0.0.0.0 - Production
+Version 19.21.0.0.0
+
+SQL&gt; alter session <span class="nb">set </span>container <span class="o">=</span> DB1218_pdb1<span class="p">;</span>
+
+Session altered.
+
+SQL&gt; show con_name
+
+CON_NAME
+<span class="nt">------------------------------</span>
+DB1218_PDB1
+SQL&gt; show user
+USER is <span class="s2">"SYS"</span>
+
+SQL&gt; @config_aces_for_user.sql
+
+Session altered.
+
+old   9: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'&amp;clouduser'</span><span class="o">)</span>,
+new   9: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'USER1'</span><span class="o">)</span>,
+old  17: <span class="nt">--</span> host <span class="o">=&gt;</span><span class="s1">'&amp;proxy_host'</span>,
+new  17: <span class="nt">--</span> host <span class="o">=&gt;</span><span class="s1">'&lt;your'</span>,
+old  18: <span class="nt">--</span> lower_port <span class="o">=&gt;</span> &amp;proxy_low_port,
+new  18: <span class="nt">--</span> lower_port <span class="o">=&gt;</span> &lt;your_proxy_low_port&gt;,
+old  19: <span class="nt">--</span> upper_port <span class="o">=&gt;</span> &amp;proxy_high_port,
+new  19: <span class="nt">--</span> upper_port <span class="o">=&gt;</span> &lt;your_proxy_high_port&gt;,
+old  22: <span class="nt">--</span> principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'&amp;clouduser'</span><span class="o">)</span>,
+new  22: <span class="nt">--</span> principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'USER1'</span><span class="o">)</span>,
+old  30: wallet_path <span class="o">=&gt;</span> <span class="s1">'file:&amp;sslwalletdir'</span>,
+new  30: wallet_path <span class="o">=&gt;</span> <span class="s1">'file:/opt/oracle/dcs/commonstore/wallets/ssl'</span>,
+old  33: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'&amp;clouduser'</span><span class="o">)</span>,
+new  33: principal_name <span class="o">=&gt;</span> upper<span class="o">(</span><span class="s1">'USER1'</span><span class="o">)</span>,
+
+PL/SQL procedure successfully completed.
+
+
+Session altered.
+</code></pre></div></div>
+<p><br /></p>
+
+<h2 id="8-2-ロールへのaces設定">8-2. ロールへのACEs設定</h2>
+
+<p><a href="#7-2-ロールへの権限付与">7-2. ロールへの権限付与</a>を実行した場合、以下の操作を行いACEsを設定します。</p>
+
+<p>対象ロールにACEsの設定をするために、config_aces_for_role.sqlを編集します。
+<br /></p>
+
+<p><strong>config_aces_for_role.sqlの編集箇所</strong></p>
+
+<p><a href="#1-関連ファイルのダウンロードと保存先の作成">関連ファイルのダウンロードと保存先の作成</a>からconfig_aces_for_role.sqlをダウンロードし、以下の箇所を編集します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>編集前</th>
+      <th>編集後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define cloudrole=CLOUD_USER</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define cloudrole=&lt;dbms-cloud-role&gt;</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=&lt;Set SSL Wallet Directory&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※&lt;dbms-cloud-role&gt;にはDBMS_CLOUDに利用するロール名を入力します。</p>
+
+<p>編集後、SYSかSYSTEMユーザでPDBにログインし、config_aces_for_user.sqlを実行します。</p>
+
+<p><br /></p>
+
+<h1 id="9-クレデンシャルの作成と検証">9. クレデンシャルの作成と検証</h1>
+
+<p>DBMS_CLOUDを利用し、クレデンシャルを作成します。
+<br />
+クレデンシャルはOCIオブジェクト・ストレージ上のデータをアクセスするために使用します。 
+<br /></p>
+
+<p class="notice--warning"><strong>DBMS_CLOUD利用時の権限</strong><br />
+DBMS_CLOUDを使う権限が正しく付与されていない場合、クレデンシャルは作れません。<br />
+クレデンシャルが作成できない場合は、DBMS_CLOUDの権限を確認してください。</p>
+
+<p>ここでは、<a href="#1-事前準備">1 事前準備</a>で確認した、<strong>OCIユーザID</strong>と<strong>認証トークン</strong>が必要です。</p>
+
+<p>対象ユーザ(USER1)でPDBにログインし、以下のスクリプトを実行してクレデンシャルを作成します。
+<br /></p>
+
+<p><strong>実行コマンド</strong>
+以下はDBMS_CLOUDを利用して、クレデンシャルを作成するスクリプトです。
+<code class="language-plaintext highlighter-rouge">&lt;your credential name&gt;</code>、<code class="language-plaintext highlighter-rouge">&lt;OCI user name&gt;</code>、<code class="language-plaintext highlighter-rouge">&lt;auth token generated for OCI user&gt;</code>はご自身の情報を入力してください。
+各項目の情報の取得方法は実行例の下に記載しています。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+<span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span><span class="p">(</span>
+<span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'&lt;your credential name&gt;'</span><span class="p">,</span>
+<span class="n">username</span> <span class="o">=&gt;</span> <span class="s1">'&lt;OCI user name&gt;'</span><span class="p">,</span>
+<span class="n">password</span> <span class="o">=&gt;</span> <span class="s1">'&lt;auth token generated for OCI user&gt;'</span>
+<span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><strong>実行例</strong>
+以下の実行例ではSCOTTユーザでPDBにログインし、MY_CREDという名前のクレデンシャルを作成しています。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">oracle</span><span class="o">@</span><span class="k">data</span><span class="o">-</span><span class="n">momo</span> <span class="n">dbc</span><span class="p">]</span><span class="err">$</span> <span class="n">sqlplus</span> <span class="n">SCOTT</span><span class="o">/&lt;</span><span class="n">SCOTT</span><span class="err">のパスワード</span><span class="o">&gt;@</span><span class="n">DB1218_pdb1</span>
+
+<span class="k">SQL</span><span class="o">*</span><span class="n">Plus</span><span class="p">:</span> <span class="n">Release</span> <span class="mi">19</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">Production</span> <span class="k">on</span> <span class="n">Fri</span> <span class="nb">Dec</span> <span class="mi">22</span> <span class="mi">05</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">11</span> <span class="mi">2023</span>
+<span class="k">Version</span> <span class="mi">19</span><span class="p">.</span><span class="mi">21</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+
+<span class="n">Copyright</span> <span class="p">(</span><span class="k">c</span><span class="p">)</span> <span class="mi">1982</span><span class="p">,</span> <span class="mi">2022</span><span class="p">,</span> <span class="n">Oracle</span><span class="p">.</span>  <span class="k">All</span> <span class="n">rights</span> <span class="n">reserved</span><span class="p">.</span>
+
+<span class="k">Last</span> <span class="n">Successful</span> <span class="n">login</span> <span class="nb">time</span><span class="p">:</span> <span class="n">Fri</span> <span class="nb">Dec</span> <span class="mi">22</span> <span class="mi">2023</span> <span class="mi">05</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">01</span> <span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+
+<span class="n">Connected</span> <span class="k">to</span><span class="p">:</span>
+<span class="n">Oracle</span> <span class="k">Database</span> <span class="mi">19</span><span class="k">c</span> <span class="n">EE</span> <span class="n">High</span> <span class="n">Perf</span> <span class="n">Release</span> <span class="mi">19</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">Production</span>
+<span class="k">Version</span> <span class="mi">19</span><span class="p">.</span><span class="mi">21</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span> <span class="k">show</span> <span class="k">user</span>
+<span class="k">USER</span> <span class="k">is</span> <span class="nv">"SCOTT"</span>
+<span class="k">SQL</span><span class="o">&gt;</span> <span class="k">show</span> <span class="n">con_name</span>
+
+<span class="n">CON_NAME</span>
+<span class="c1">------------------------------</span>
+<span class="n">DB1218_PDB1</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span> <span class="k">BEGIN</span>
+  <span class="mi">2</span>  <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span><span class="p">(</span>
+  <span class="mi">3</span>  <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'MY_CRED'</span><span class="p">,</span>
+  <span class="mi">4</span>  <span class="n">username</span> <span class="o">=&gt;</span> <span class="s1">'&lt;my_OCI user name&gt;'</span><span class="p">,</span>
+  <span class="mi">5</span>  <span class="n">password</span> <span class="o">=&gt;</span> <span class="s1">'&lt;my_token&gt;'</span>
+  <span class="mi">6</span>  <span class="p">);</span>
+  <span class="mi">7</span>  <span class="k">END</span><span class="p">;</span>
+  <span class="mi">8</span>  <span class="o">/</span>
+
+<span class="n">PL</span><span class="o">/</span><span class="k">SQL</span> <span class="k">procedure</span> <span class="n">successfully</span> <span class="n">completed</span><span class="p">.</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p><br />
+クレデンシャルが作成されました。　　
+クレデンシャルの作成後、以下のコマンドでOCI上のバケットをアクセスし、オブジェクトの一覧を取得します。
+<br /></p>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下は、先ほど作成したクレデンシャルを利用し、オブジェクト・ストレージのバケットにアクセスするコマンドです。　　
+このコマンドで、バケットの中に正常にアクセスできるか確認します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">dbms_cloud</span><span class="p">.</span><span class="n">list_objects</span><span class="p">(</span><span class="o">&lt;</span><span class="s1">'CredentialName'</span><span class="o">&gt;</span><span class="p">,</span><span class="s1">'https://&lt;$namespace&gt;.objectorage.&lt;$oci_region&gt;.oci.customer-oci.com/n/ObjectStorageNameSpace/b/BucketName/o/'</span><span class="p">);</span>
+</code></pre></div></div>
+<p>URLは「オブジェクト・ストレージ」→ 「バケットの詳細」→ 「オブジェクトの詳細」から確認できます。</p>
+
+<p><img src="dbms-cloud09.png" alt="image" />
+<br /></p>
+
+<p><strong>実行例</strong></p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">dbms_cloud</span><span class="p">.</span><span class="n">list_objects</span><span class="p">(</span><span class="s1">'MOMO_CRED2'</span><span class="p">,</span><span class="s1">'https://objectstorage.ap-osaka-1.oci.customer-oci.com/n/orasejapan/b/bucket-20231222-1601-momo/o/'</span><span class="p">);</span>
+
+<span class="n">OBJECT_NAME</span>          <span class="n">BYTES</span> <span class="n">CHECKSUM</span>                            <span class="n">CREATED</span>    <span class="n">LAST_MODIFIED</span>
+<span class="c1">--------------- ---------- ----------------------------------- ---------- ----------------------------------------</span>
+<span class="n">REVENUE</span><span class="p">.</span><span class="n">csv</span>       <span class="mi">14181117</span> <span class="mi">8</span><span class="n">e43423b407a2424abbbb10ed0b95357</span>               <span class="mi">22</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">23</span> <span class="mi">07</span><span class="p">.</span><span class="mi">02</span><span class="p">.</span><span class="mi">52</span><span class="p">.</span><span class="mi">882000</span> <span class="n">AM</span> <span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+</code></pre></div></div>
+
+<p>バケットの中に、REVENUE.csvというオブジェクトがあることが確認できました。</p>
+
+<p>さらに、今のユーザの設定を検証するためにvalidate_user_config.sqlの内容を編集してから、実行します。</p>
+
+<p><strong>validate_user_config.sqlの編集箇所</strong></p>
+
+<p><a href="#1-関連ファイルのダウンロードと保存先の作成">関連ファイルのダウンロードと保存先の作成</a>からvalidate_user_config.sqlをダウンロードし、以下の箇所を編集します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>編集前</th>
+      <th>編集後</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>define username=’SCOTT’</td>
+      <td>define username=’USER1’</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=&lt;Set SSL Wallet Directory&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletpwd=&lt;Set SSL Wallet password&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">define sslwalletpwd=&lt;Walletのパスワード&gt;</code></td>
+    </tr>
+    <tr>
+      <td>GET_PAGE(‘https://objectstorage.eu-frankfurt-1.customer-oci.com’);</td>
+      <td>GET_PAGE(‘https://&lt;$namespace&gt;.objectorage.&lt;$oci_region&gt;.oci.customer-oci.com’);</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>編集後、USER1ユーザでPDBにログインし、validate_user_config.sqlを実行します。
+<br /></p>
+
+<p><strong>実行例</strong>
+以下の実行例ではSCOTTユーザでPDBにログインし、validate_user_config.sqlを実行しています。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">oracle</span><span class="o">@</span><span class="k">data</span><span class="o">-</span><span class="n">momo</span> <span class="n">dbc</span><span class="p">]</span><span class="err">$</span> <span class="n">sqlplus</span> <span class="n">SCOTT</span><span class="o">/&lt;</span><span class="n">SCOTT</span><span class="err">のパスワード</span><span class="o">&gt;@</span><span class="n">DB1218_pdb1</span>
+
+<span class="k">SQL</span><span class="o">*</span><span class="n">Plus</span><span class="p">:</span> <span class="n">Release</span> <span class="mi">19</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">Production</span> <span class="k">on</span> <span class="n">Fri</span> <span class="nb">Dec</span> <span class="mi">22</span> <span class="mi">05</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">11</span> <span class="mi">2023</span>
+<span class="k">Version</span> <span class="mi">19</span><span class="p">.</span><span class="mi">21</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+
+<span class="n">Copyright</span> <span class="p">(</span><span class="k">c</span><span class="p">)</span> <span class="mi">1982</span><span class="p">,</span> <span class="mi">2022</span><span class="p">,</span> <span class="n">Oracle</span><span class="p">.</span>  <span class="k">All</span> <span class="n">rights</span> <span class="n">reserved</span><span class="p">.</span>
+
+<span class="k">Last</span> <span class="n">Successful</span> <span class="n">login</span> <span class="nb">time</span><span class="p">:</span> <span class="n">Fri</span> <span class="nb">Dec</span> <span class="mi">22</span> <span class="mi">2023</span> <span class="mi">05</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">01</span> <span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
+
+<span class="n">Connected</span> <span class="k">to</span><span class="p">:</span>
+<span class="n">Oracle</span> <span class="k">Database</span> <span class="mi">19</span><span class="k">c</span> <span class="n">EE</span> <span class="n">High</span> <span class="n">Perf</span> <span class="n">Release</span> <span class="mi">19</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">Production</span>
+<span class="k">Version</span> <span class="mi">19</span><span class="p">.</span><span class="mi">21</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span> <span class="k">show</span> <span class="k">user</span>
+<span class="k">USER</span> <span class="k">is</span> <span class="nv">"SCOTT"</span>
+<span class="k">SQL</span><span class="o">&gt;</span> <span class="o">@</span><span class="n">validate_user_config</span><span class="p">.</span><span class="k">sql</span>
+<span class="k">old</span>   <span class="mi">1</span><span class="p">:</span> <span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">PROCEDURE</span> <span class="o">&amp;</span><span class="n">clouduser</span><span class="p">..</span><span class="n">GET_PAGE</span><span class="p">(</span><span class="n">url</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">AS</span>
+<span class="k">new</span>   <span class="mi">1</span><span class="p">:</span> <span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">PROCEDURE</span> <span class="n">SCOTT</span><span class="p">.</span><span class="n">GET_PAGE</span><span class="p">(</span><span class="n">url</span> <span class="k">IN</span> <span class="n">VARCHAR2</span><span class="p">)</span> <span class="k">AS</span>
+<span class="k">old</span>  <span class="mi">13</span><span class="p">:</span> <span class="n">wallet_path</span> <span class="o">=&gt;</span> <span class="s1">'file:&amp;sslwalletdir'</span><span class="p">,</span>
+<span class="k">new</span>  <span class="mi">13</span><span class="p">:</span> <span class="n">wallet_path</span> <span class="o">=&gt;</span> <span class="s1">'file:/opt/oracle/dcs/commonstore/wallets/ssl'</span><span class="p">,</span>
+<span class="k">old</span>  <span class="mi">14</span><span class="p">:</span> <span class="n">wallet_password</span> <span class="o">=&gt;</span> <span class="s1">'&amp;sslwalletpwd'</span><span class="p">);</span>
+<span class="k">new</span>  <span class="mi">14</span><span class="p">:</span> <span class="n">wallet_password</span> <span class="o">=&gt;</span> <span class="s1">'&lt;my_password&gt;'</span><span class="p">);</span>
+
+<span class="k">Procedure</span> <span class="n">created</span><span class="p">.</span>
+
+<span class="k">old</span>   <span class="mi">2</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">clouduser</span><span class="p">..</span><span class="n">GET_PAGE</span><span class="p">(</span><span class="s1">'https://objectstorage.ap-osaka-1.oraclecloud.com'</span><span class="p">);</span>
+<span class="k">new</span>   <span class="mi">2</span><span class="p">:</span> <span class="n">SCOTT</span><span class="p">.</span><span class="n">GET_PAGE</span><span class="p">(</span><span class="s1">'https://objectstorage.ap-osaka-1.oraclecloud.com'</span><span class="p">);</span>
+<span class="k">valid</span> <span class="n">response</span>
+
+<span class="n">PL</span><span class="o">/</span><span class="k">SQL</span> <span class="k">procedure</span> <span class="n">successfully</span> <span class="n">completed</span><span class="p">.</span>
+
+<span class="k">old</span>   <span class="mi">1</span><span class="p">:</span> <span class="k">drop</span> <span class="k">procedure</span> <span class="o">&amp;</span><span class="n">clouduser</span><span class="p">..</span><span class="n">GET_PAGE</span>
+<span class="k">new</span>   <span class="mi">1</span><span class="p">:</span> <span class="k">drop</span> <span class="k">procedure</span> <span class="n">SCOTT</span><span class="p">.</span><span class="n">GET_PAGE</span>
+
+<span class="k">Procedure</span> <span class="n">dropped</span><span class="p">.</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p>スクリプトの結果、<strong>“valid response”</strong>が表示されるのを確認します。</p>
+
+<p>これでユーザの設定が正常にされていることが確認できました。
+<br /></p>
+
+<h1 id="10-object-storageからcsvファイルをbasedbにコピー">10. Object StorageからCSVファイルをBaseDBにコピー</h1>
+
+<p>今回は以下のバケットに格納されているSCVファイルをBaseDBに取り込みます。
+<br /></p>
+
+<p><strong>バケット情報</strong></p>
+<ul>
+  <li>
+    <p>バケット名：TutorialBucket1</p>
+  </li>
+  <li>
+    <p>オブジェクト名：sales_channels.csv</p>
+  </li>
+  <li>
+    <p>オブジェクトの中身：
+<br /></p>
+  </li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"CHANNEL_ID"</span>,<span class="s2">"CHANNEL_DESC"</span>,<span class="s2">"CHANNEL_CLASS"</span>,<span class="s2">"CHANNEL_CLASS_ID"</span>,<span class="s2">"CHANNEL_TOTAL"</span>,<span class="s2">"CHANNEL_TOTAL_ID"</span>
+3,<span class="s2">"Direct Sales"</span>,<span class="s2">"Direct"</span>,12,<span class="s2">"Channel total"</span>,1
+9,<span class="s2">"Tele Sales"</span>,<span class="s2">"Direct"</span>,12,<span class="s2">"Channel total"</span>,1
+5,<span class="s2">"Catalog"</span>,<span class="s2">"Indirect"</span>,13,<span class="s2">"Channel total"</span>,1
+4,<span class="s2">"Internet"</span>,<span class="s2">"Indirect"</span>,13,<span class="s2">"Channel total"</span>,1
+2,<span class="s2">"Partners"</span>,<span class="s2">"Others"</span>,14,<span class="s2">"Channel total"</span>,1
+
+</code></pre></div></div>
+<p>事前にBaseDBにテーブルを作成しておきます。(ユーザ”USER1”)</p>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下のコマンドでCHANNELS表を作成します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">CHANNELS</span> <span class="p">(</span>
+    <span class="n">CHANNEL_ID</span> <span class="n">NUMBER</span><span class="p">,</span>
+    <span class="n">CHANNEL_DESC</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+    <span class="n">CHANNEL_CLASS</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
+    <span class="n">CHANNEL_CLASS_ID</span> <span class="n">NUMBER</span><span class="p">,</span>
+    <span class="n">CHANNEL_TOTAL</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
+    <span class="n">CHANNEL_TOTAL_ID</span> <span class="n">NUMBER</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>次にDBMS_CLOUD.COPY_DATAを利用し、データをコピーします。
+<br /></p>
+
+<p><strong>実行コマンド</strong></p>
+
+<p>以下のコマンドで、DBMS_CLOUD.COPY_DATAを利用して、オブジェクト・ストレージのバケットからデータをコピーします。
+<code class="language-plaintext highlighter-rouge">&lt;your credential name&gt;</code>、<code class="language-plaintext highlighter-rouge">&lt;$namespace&gt;</code>、<code class="language-plaintext highlighter-rouge">&lt;$oci_region&gt;</code>はご自身の情報に置き換えてください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+<span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span><span class="p">(</span>
+<span class="k">table_name</span> <span class="o">=&gt;</span><span class="s1">'CHANNELS'</span><span class="p">,</span>
+<span class="n">credential_name</span> <span class="o">=&gt;</span><span class="s1">'&lt;your credential name&gt;'</span><span class="p">,</span>
+<span class="n">file_uri_list</span> <span class="o">=&gt;</span><span class="s1">'https://&lt;$namespace&gt;.objectorage.&lt;$oci_region&gt;.oci.customer-oci.com/n/ObjectStorageNameSpace/b/BucketName/o/'</span><span class="p">,</span>
+<span class="n">format</span> <span class="o">=&gt;</span> <span class="n">json_object</span><span class="p">(</span><span class="s1">'delimiter'</span> <span class="n">value</span> <span class="s1">','</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p><strong>実施例</strong></p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">BEGIN</span>
+  <span class="mi">2</span>  <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span><span class="p">(</span>
+  <span class="mi">3</span>  <span class="k">table_name</span> <span class="o">=&gt;</span><span class="s1">'CHANNELS'</span><span class="p">,</span>
+  <span class="mi">4</span>  <span class="n">credential_name</span> <span class="o">=&gt;</span><span class="s1">'MY_CRED'</span><span class="p">,</span>
+  <span class="mi">5</span>  <span class="n">file_uri_list</span> <span class="o">=&gt;</span><span class="s1">'https://orasejapan.objectstorage.ap-osaka-1.oci.customer-oci.com/n/orasejapan/b/TutorialBucket1/o/sales_channels.csv'</span><span class="p">,</span>
+  <span class="mi">6</span>  <span class="n">format</span> <span class="o">=&gt;</span> <span class="n">json_object</span><span class="p">(</span><span class="s1">'delimiter'</span> <span class="n">value</span> <span class="s1">','</span><span class="p">)</span>
+  <span class="mi">7</span>  <span class="p">);</span>
+  <span class="mi">8</span>  <span class="k">END</span><span class="p">;</span>
+  <span class="mi">9</span>  <span class="o">/</span>
+
+<span class="n">PL</span><span class="o">/</span><span class="k">SQL</span> <span class="k">procedure</span> <span class="n">successfully</span> <span class="n">completed</span><span class="p">.</span>
+
+<span class="k">SQL</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p><br /></p>
+
+<p>コピー後、テーブルの中にデータが入っていることを確認します。</p>
+
+<p>以上で、この章の作業は完了です。</p>
+
+<p><br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<ul>
+  <li>
+    <p>[マニュアル] <a href="https://docs.oracle.com/cd/F19136_01/arpls/DBMS_CLOUD.html#GUID-6CCC322D-26A9-47E7-8FF5-5FF23807C968" target="_blank">PL/SQLパッケージおよびタイプ・リファレンス：37 DBMS_CLOUD</a></p>
+  </li>
+  <li>
+    <p>[ブログ] <a href="https://blogs.oracle.com/oracle4engineer/post/ja-oracle-object-storage-access-for-all-oracle-databases-with-dbmscloud" target="_blank">全てのデータベース・サービスからオブジェクト・ストレージへのアクセスを可能にするDBMS_CLOUD</a></p>
+  </li>
+  <li>
+    <p>[MOS note] インストールガイド：How To Setup And Use DBMS_CLOUD Package (Doc ID 2748362.1)</p>
+  </li>
+  <li>
+    <p>[MOS note] トラブルシューティング：Troubleshooting Of DBMS_CLOUD (Doc ID 2778782.1)</p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-20T13:11:44+09:00">February 20, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=202%3ADBMS_CLOUD%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6Object+Storage%E3%81%8B%E3%82%89BaseDB%E3%81%AB%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E7%A7%BB%E8%A1%8C%E3%81%97%E3%82%88%E3%81%86+%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs202-dbms-cloud%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs202-dbms-cloud%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs202-dbms-cloud%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/basedb/dbcs201-pdb-plug/" class="pagination--pager" title="201: オンプレミスのPDBをBaseDBに移動しよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>

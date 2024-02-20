@@ -323,11 +323,23 @@ var store = [{
         "url": "/ocitutorials/basedb/dbcs106-dataguard/",
         "teaser": "/ocitutorials/basedb/dbcs106-dataguard/dataguard08.png"
       },{
+        "title": "107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう",
+        "excerpt":"はじめに Oracle Database Autonomous Recovery Service（以下、リカバリ・サービス）は、Oracle Cloud Infrastructure (OCI) で実行するOracle Database向けのフル・マネージド型データ保護サービスです。 独自の自動化機能が、Oracle Databaseの変更をリアルタイムで保護し、本番データベースのオーバーヘッドなしでバックアップを検証するほか、任意の時点への高速で予測可能なリカバリを実現します。 このチュートリアルでは、BaseDBにリカバリ・サービスを設定する手順についてご紹介します。 このチュートリアルを完了すると、以下のような構成図となります。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること Autonomous Recovery Service(RCV)を利用する場合、Oracle Database 19.16 以上 Zero Data Loss Autonomous Recovery Service (ZRCV) を利用する場合、Oracle Database 19.18 以上 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. サービス制限の引き上げリクエスト 2. IAM ポリシーを設定しよう 3....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/basedb/dbcs107-zrcv/",
+        "teaser": "/ocitutorials/basedb/dbcs107-zrcv/zrcv01.png"
+      },{
         "title": "201: オンプレミスのPDBをBaseDBに移動しよう",
         "excerpt":"はじめに Base Database Service (BaseDB)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。 CDBで構成されているオンプレミスのデータベースからBaseDBへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。 ここでは、オンプレミスのデータベース(19.12.0.0.0)からBaseDB(19.12.0.0.0)へPDBを移行する手順をご紹介します。 前提条件 : 移行元のデータベースがCDBで構成されていること Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 目次 1. 移行元のデータベースからPDBをアンプラグする 2. BaseDBにPDBをプラグする 3. 表領域の暗号化を行う 所要時間 : 約1時間30分 1. 移行元のデータベースからPDBをアンプラグする まずは移行元のデータベースから、移行対象のPDBをアンプラグします。 アンプラグはDatabase Configuration Assistantツールを使って行う事も可能ですが、今回はコマンドでの実施手順を紹介します。 対象PDBの構成確認します PDBの移動にあたってデータファイルをBaseDBに持っていく必要があります。 まずは下記SELECT文にて対象PDBで使用しているデータファイルのディレクトリを確認します。 alter session set container=&lt;pdb_name&gt;; select tablespace_name, file_name from dba_data_files; （作業イメージ） 対象PDBをクローズします...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs201-pdb-plug/",
         "teaser": "/ocitutorials/basedb/dbcs201-pdb-plug/pdb-plug05.png"
+      },{
+        "title": "202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう ",
+        "excerpt":"はじめに DBMS_CLOUDはオブジェクト・ストレージのデータを操作するための包括的なサポートを提供するPL/SQLパッケージです。 DBMS_CLOUDはAutonomous Database (ADB) に実装されているPL/SQLパッケージですが、手動インストールすることでBaseDBでも利用可能です。 ADBでDBMS_CLOUDを利用する方法は202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)で学ぶことができます。 ここでは、DBMS_CLOUDパッケージを利用してObject StorageのデータをBase Database Service (BaseDB)へ取り込む手順をご紹介します。　　 このチュートリアルで実行する内容のイメージは以下の通りです。 前提条件 : Oracle Database 19.9以上 もしくは　Oracle Database 21.3以上 101: Oracle Cloud で Oracle Database を使おう を通じて Oracle Database の作成が完了していること 以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること サンプルデータファイルのダウンロードリンク その7 - オブジェクト・ストレージを使う を通じてバケットの作成・データファイル(CSV)のアップロードが完了していること 目次 1. 事前準備 2. DBMS_CLOUD PL/SQLパッケージのダウンロード 3. Walletの作成 4. Walletの場所の設定 5....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/basedb/dbcs202-dbms-cloud/",
+        "teaser": "/ocitutorials/basedb/dbcs202-dbms-cloud/dbms-cloud01.png"
       },{
         "title": "準備 - Oracle Cloud 無料トライアルを申し込む",
         "excerpt":"Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。 ※認証のためにSMSが受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)      Oracle Cloud 無料トライアル サインアップガイド   Oracle Cloud Free Tierに関するFAQ  ","categories": [],
