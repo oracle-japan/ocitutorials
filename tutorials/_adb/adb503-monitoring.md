@@ -23,7 +23,7 @@ Autonomous Databaseはデータベースの様々な管理タスクをADB自身�
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
     [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。  
-    なお本記事では、後続の章でCPU使用率が閾値を超えた際の挙動を確認するため、**OCPU数は1、auto scalingは無効** で作成しています。
+    なお本記事では、後続の章でCPU使用率が閾値を超えた際の挙動を確認するため、**ECPU数は4、auto scalingは無効** で作成しています。
 
 <BR>
 
@@ -32,10 +32,9 @@ Autonomous Databaseはデータベースの様々な管理タスクをADB自身�
 <BR>
 
 # 1. 技術概要
-Autonomous Databaseに対する監視・通知を行うツールはいくつか存在します。環境やユーザーによって、適切なツールを選択します。以下はそれらの監視ツールの比較表です。
-![tool_comparisonイメージ](tool_comparison.png)
+Autonomous Databaseに対する監視・通知を行うツールはいくつか存在します。環境やユーザーによって、適切なツールを選択します。
 
-本記事ではこの中から、OCIモニタリング、サービス・コンソール、Oracle Enterprise Manager(EM)、Oracle Management Cloud(OMC)による監視設定をご紹介します。
+本記事ではOCIモニタリング、サービス・コンソール、Oracle Enterprise Manager(EM)、Oracle Cloud Observability and Management Platform（O&M）Database Managementによる監視設定をご紹介します。
 
 <BR>
 
@@ -205,10 +204,10 @@ Autonomous Databaseサービス関連の問題について、以下の手順で�
 <br>
 
 # 3. 複数のインスタンスをまとめて監視
-複数のADBインスタンスをまとめて監視するには、Oracle Enterprise Manager(EM)とOracle Management Cloud(OMC)が有用です。
+複数のADBインスタンスをまとめて監視するには、Oracle Enterprise Manager(EM)と Database Managementが有用です。
 
-## 3-1. EM, OMCによる監視項目
-EM, OMCのどちらにも一般的なデータベース監視に必要な項目が多数用意されています。
+## 3-1. EM, Database Managementによる監視項目
+EM, Database Managementのどちらにも一般的なデータベース監視に必要な項目が多数用意されています。
 主な項目は以下です。
 - データベースのアクティビティ
 - SQLの平均レスポンスタイム
@@ -226,15 +225,12 @@ ADBに対する使用手順は[Enterprise Manager Cloud Control 『Oracle Autono
 
 <br>
 
-## 3-3. OMCによる監視設定
-Oracle Management Cloudでは、一般的なデータベース監視に必要な項目が多数用意されています。
-なお、ADBを監視する範囲内ではOMCは**無償** になっています。
+## 3-3. Database Managementによる監視設定
+Database Managementでは、オンプレミスおよびクラウドデータベースの監視、パフォーマンス管理、チューニング、および業務管理ができます。高度なデータベースフリート診断とチューニングを使用し、問題のトラブルシューティングとパフォーマンスの最適化を行うことができます。リアルタイムSQL監視でSQLを最適化し、データベース構成を簡素化します。
 
-![omc_sampleイメージ](omc_sample.png)
+![database_managementイメージ](database_management.png)
 
-設定手順については、[こちらの記事](https://qiita.com/western24/items/2d191e041429c26f96b9){:target="_blank"} をご参照ください。
-
-合わせて[Oracle Management Cloudスタート・ガイド](https://docs.oracle.com/cd/E83857_01/paas/management-cloud/omcgs/index.html){:target="_blank"} もご参照ください。
+設定手順については、[こちら](https://docs.oracle.com/ja-jp/iaas/database-management/doc/enable-database-management-autonomous-databases.html){:target="_blank"} をご参照ください。
 
 <br>
 
