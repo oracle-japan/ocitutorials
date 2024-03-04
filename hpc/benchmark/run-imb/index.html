@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-02-26T14:41:22+09:00">
+  <meta property="article:published_time" content="2024-03-04T21:36:39+09:00">
 
 
 
@@ -340,6 +340,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
       </ul>
     </li>
   </ul>
@@ -353,7 +355,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Intel MPI Benchmark実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarkを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-02-26T14:41:22+09:00">
+    <meta itemprop="datePublished" content="2024-03-04T21:36:39+09:00">
     
 
     <div class="page__inner-wrap">
@@ -375,12 +377,12 @@
 <h1 id="0-概要">0. 概要</h1>
 
 <p>本ドキュメントで解説する <strong>Intel MPI Benchmark</strong> の実行は、HPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれる <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> と <strong>Intel MPI Benchmark</strong> を使用する方法と、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html">Intel oneAPI HPC Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）をインストールしてこれに含まれる <strong><a href="https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html">Intel MPI Library</a></strong> （本ドキュメントで使用するバージョンは2021.10）と <strong>Intel MPI Benchmark</strong> を使用する方法を、それぞれ解説します。<br />
-また <strong>Intel MPI Benchmark</strong> は、2ノード間のPing-Pongと4ノード間のAll-Reduceの計測方法をそれぞれ解説します。</p>
+また <strong>Intel MPI Benchmark</strong> は、2ノード間のPingPongと4ノード間のAllreduceの計測方法をそれぞれ解説します。</p>
 
 <p>本ドキュメントで <strong>Intel MPI Benchmark</strong> を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> 4インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。<br />
 計算ノードのOSは、 <strong>Oracle Linux</strong> 8の <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用します。</p>
 
-<p>本ドキュメントは、以下の環境で <strong>Intel MPI Benchmark</strong> Ping-Pongを実行し、以下の性能が出ています。</p>
+<p>本ドキュメントは、以下の環境で <strong>Intel MPI Benchmark</strong> PingPongを実行し、以下の性能が出ています。</p>
 
 <p>[実行環境]</p>
 <ul>
@@ -431,10 +433,10 @@
   </li>
   <li>
     <p>以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。<br />
-ここでは、2ノードを使用したPing-Pongをメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,232.55 MB/s）を以ってその結果とします。</p>
+ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,232.55 MB/s）を以ってその結果とします。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.5a1/bin/mpivars.sh
- <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
+ <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 pingpong
  <span class="c">#------------------------------------------------------------</span>
  <span class="c">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
  <span class="c">#------------------------------------------------------------</span>
@@ -449,7 +451,7 @@
 
  <span class="c"># Calling sequence was: </span>
 
- <span class="c"># /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong</span>
+ <span class="c"># /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 pingpong</span>
 
  <span class="c"># Minimum message length in bytes:   0</span>
  <span class="c"># Maximum message length in bytes:   268435456</span>
@@ -505,7 +507,7 @@
   </li>
   <li>
     <p>以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。<br />
-ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAll-Reduceの所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。</p>
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.5a1/bin/mpivars.sh
  <span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 3:28 <span class="nt">-npmin</span> 144 allreduce
@@ -620,10 +622,10 @@
   </li>
   <li>
     <p>以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。<br />
-ここでは、2ノードを使用した <strong>Ping-Pong</strong> をメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.71 usec）、帯域幅は256 MiBメッセージの帯域幅（12,240.91 MB/s）を以ってその結果とします。</p>
+ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.71 usec）、帯域幅は256 MiBメッセージの帯域幅（12,240.91 MB/s）を以ってその結果とします。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
- <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-ppn</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-genv</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 IMB-MPI1 <span class="nt">-msglog</span> 3:28 PingPong
+ <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-ppn</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-genv</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 IMB-MPI1 <span class="nt">-msglog</span> 3:28 pingpong
  <span class="c">#----------------------------------------------------------------</span>
  <span class="c">#    Intel(R) MPI Benchmarks 2021.6, MPI-1 part</span>
  <span class="c">#----------------------------------------------------------------</span>
@@ -638,7 +640,7 @@
     
  <span class="c"># Calling sequence was: </span>
     
- <span class="c"># IMB-MPI1 -msglog 3:28 PingPong </span>
+ <span class="c"># IMB-MPI1 -msglog 3:28 pingpong </span>
     
  <span class="c"># Minimum message length in bytes:   0</span>
  <span class="c"># Maximum message length in bytes:   268435456</span>
@@ -692,7 +694,7 @@
   </li>
   <li>
     <p>以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。<br />
-ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用した <strong>All-Reduce</strong> の所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。</p>
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
  <span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-ppn</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-genv</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 IMB-MPI1 <span class="nt">-msglog</span> 3:28 <span class="nt">-npmin</span> 144 allreduce
@@ -774,7 +776,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-02-26T14:41:22+09:00">February 26, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-04T21:36:39+09:00">March 4, 2024</time></p>
 
 
       </footer>

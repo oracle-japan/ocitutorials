@@ -250,7 +250,7 @@ HPC/機械学習ワークロードを実行する際のパフォーマンス関�
   <li>
     <p><strong><a href="#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong><br />
 HPC/機械学習ワークロードを実行する際に有益なテクニカルTipsを集めてます。<br />
-提供されるテクニカルTipsは、以下5カテゴリに分かれています。</p>
+提供されるテクニカルTipsは、以下6カテゴリに分かれています。</p>
 
     <ul>
       <li><strong><a href="#3-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong></li>
@@ -307,7 +307,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   </li>
 </ul>
 
-<p>各カテゴリは、利用目的や構築手法の異なるチュートリアルを複数用意しており、自身の要件に合わせて以下の観点で使用するチュートリアルを選択します。</p>
+<p><strong><a href="#1-1-hpcクラスタ">HPCクラスタ</a></strong> と <strong><a href="#1-2-機械学習環境">機械学習環境</a></strong> のカテゴリは、利用目的や構築手法の異なるチュートリアルを複数用意しており、自身の要件に合わせて以下の観点で使用するチュートリアルを選択します。</p>
 
 <ul>
   <li>
@@ -315,45 +315,42 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     <p>構築手法は、 <strong><a href="#5-5-マーケットプレイス">マーケットプレース</a></strong> 提供の <strong><a href="#5-3-スタック">スタック</a></strong> を使用する自動構築、予め用意された <strong><a href="#5-12-terraform">Terraform</a></strong> スクリプトを使用する自動構築、及びOCIコンソールから各リソースを順次構築する手動構築に分かれ、それぞれ以下の利点・欠点があります。<br />
  なお、ここで紹介する自動構築（スタック）に分類されるチュートリアルの多くは、 <strong><a href="#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を活用しています。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center"> </th>
+          <th>利点</th>
+          <th>欠点</th>
+          <th>備考</th>
+          <th> </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center">自動構築<br />（スタック）</td>
+          <td>ユーザの作業時間（※1）が短い<br />GUIによる操作（※2）が可能</td>
+          <td>構築手順のブラックボックス化<br />　・システム構成の変更が難しい<br />　・問題発生時原因究明難</td>
+          <td>※1）スタックメニュー選択の時間<br />※2）OCIコンソール</td>
+          <td> </td>
+        </tr>
+        <tr>
+          <td style="text-align: center">自動構築<br />（Terraform）</td>
+          <td>ユーザの作業時間（※3）が短い<br />CLI/GUI（※4）を選択可能</td>
+          <td>Terraform実行環境（※5）が必要</td>
+          <td>※3）スタックメニュー選択の時間<br />or<br />Terraformスクリプト内変数修正<br />に要する時間<br />※4）Terraform CLI/OCIコンソール<br />※5）Terraform CLIを選択した場合</td>
+          <td> </td>
+        </tr>
+        <tr>
+          <td style="text-align: center">手動構築<br />（OCIコンソール）</td>
+          <td>構築手順が明確<br />　・システム構成の変更が容易<br />　・問題発生時原因究明容易<br />GUIによる操作（※6）が可能</td>
+          <td>ユーザの作業時間が長い</td>
+          <td>※6）OCIコンソール操作</td>
+          <td> </td>
+        </tr>
+      </tbody>
+    </table>
   </li>
-</ul>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center"> </th>
-      <th>利点</th>
-      <th>欠点</th>
-      <th>備考</th>
-      <th> </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">自動構築<br />（スタック）</td>
-      <td>ユーザの作業時間（※1）が短い<br />GUIによる操作（※2）が可能</td>
-      <td>構築手順のブラックボックス化<br />　・システム構成の変更が難しい<br />　・問題発生時原因究明難</td>
-      <td>※1）スタックメニュー選択の時間<br />※2）OCIコンソール</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td style="text-align: center">自動構築<br />（Terraform）</td>
-      <td>ユーザの作業時間（※3）が短い<br />CLI/GUI（※4）を選択可能</td>
-      <td>Terraform実行環境（※5）が必要</td>
-      <td>※3）スタックメニュー選択の時間<br />or<br />Terraformスクリプト内変数修正<br />に要する時間<br />※4）Terraform CLI/OCIコンソール<br />※5）Terraform CLIを選択した場合</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td style="text-align: center">手動構築<br />（OCIコンソール）</td>
-      <td>構築手順が明確<br />　・システム構成の変更が容易<br />　・問題発生時原因究明容易<br />GUIによる操作（※6）が可能</td>
-      <td>ユーザの作業時間が長い</td>
-      <td>※6）OCIコンソール操作</td>
-      <td> </td>
-    </tr>
-  </tbody>
-</table>
-
-<ul>
   <li>
     <p>クラスタ管理機能の有無</p>
 
@@ -853,6 +850,13 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     <p>カーネルダンプは、Linuxカーネルに関連する問題を解析する際に重要な情報ですが、ルートファイルシステムを含む <strong>ブート・ボリューム</strong> をiSCSI接続する <strong>ベアメタル・インスタンス</strong> は、 <strong>仮想マシン・インスタンス</strong> と比較してその取得に特別な準備が必要です。<br />
  本テクニカルTipsは、 <strong>ベアメタル・インスタンス</strong> でカーネルダンプを取得し、これをcrashコマンドで読み込むまでの手順を解説します。</p>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></strong></p>
+
+    <p>HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。<br />
+ 例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。<br />
+ 本テクニカルTipsは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/managingIPsec.htm">サイト間VPN</a></strong> を使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。</p>
   </li>
 </ul>
 

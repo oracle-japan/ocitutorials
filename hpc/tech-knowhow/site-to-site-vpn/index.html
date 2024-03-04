@@ -1,0 +1,1318 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>サイト間VPNによるOCIとの拠点間接続方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="サイト間VPNによるOCIとの拠点間接続方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">
+
+
+  <meta property="og:description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-03-04T21:36:39+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          サイト間VPNによるOCIとの拠点間接続方法
+
+        
+      </h1>
+      
+        <p class="page__lead">HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">サイト間VPNによるOCIとの拠点間接続方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/" class="active">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="サイト間VPNによるOCIとの拠点間接続方法">
+    <meta itemprop="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
+    <meta itemprop="datePublished" content="2024-03-04T21:36:39+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-左側サイト用ネットワーク関連リソース作成">1. 左側サイト用ネットワーク関連リソース作成</a></li><li><a href="#2-右側サイト用仮想クラウドネットワークと関連リソース作成">2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</a></li><li><a href="#3-libreswan用インスタンスとその他インスタンスデプロイ">3. Libreswan用インスタンスとその他インスタンスデプロイ</a></li><li><a href="#4-libreswan用インスタンスセットアップ">4. Libreswan用インスタンスセットアップ</a></li><li><a href="#5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</a></li><li><a href="#6-libreswanインストールセットアップ">6. Libreswanインストール・セットアップ</a></li><li><a href="#7-ライセンスサーバ計算ノード間疎通確認">7. ライセンスサーバ・計算ノード間疎通確認</a></li><li><a href="#参考情報">参考情報</a><ul><li><a href="#cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
+
+<p>HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。<br />
+例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。<br />
+本テクニカルTipsは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/managingIPsec.htm">サイト間VPN</a></strong> を使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。</p>
+
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p><strong>サイト間VPN</strong> は、IPsecのトンネルモードでオンプレミスのネットワークとOCIの <strong>仮想クラウド・ネットワーク</strong> をIP層で拠点間接続するため、以下のような利用形態をシームレスに実現することが可能です。</p>
+
+<ol>
+  <li>OCIで稼働する計算ノードでオンプレミスのライセンスサーバから有償CAEアプリケーションのライセンスを取得する</li>
+  <li>オンプレミスの端末からOCIで稼働するログインノードにログインしインタラクティブ処理を行う</li>
+  <li>オンプレミスの端末からOCIで稼働するログインノードにシミュレーションに必要なファイルを転送する</li>
+  <li>OCIで稼働するログインノードからシミュレーションの結果ファイルをオンプレミスの端末に転送する</li>
+</ol>
+
+<p>また <strong>サイト間VPN</strong> は、サービス自体は無償のサービスでパブリックインターネットを拠点間接続回線に利用するため、OCIからオンプレミスに向けた転送データ量が少ないケースでは、他の有料専用線サービスと比較し、コスト効果の高い拠点間接続が可能です。<br />
+なお <strong>サイト間VPN</strong> を介する拠点間の通信帯域は、使用するインターネット接続回線に十分な性能がある場合、サービス自体の性能上限として250Mbps程度を期待することが出来ます。（詳細は、 <strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/interconnecting-clouds-with-oracle-cloud-infrastructure">ここ</a></strong> を参照ください。）このため、前述の利用形態 <strong>1.</strong> や <strong>2.</strong> のケースに於いては、最もコストパフォーマンスの良い拠点間接続方法であると言えます。</p>
+
+<p>ここでオンプレミス側のVPN接続機器は、どのように用意したらよいでしょうか。<br />
+これには、以下の選択肢があります。</p>
+
+<ol>
+  <li>VPNアプライアンス製品（※1）を使用する</li>
+  <li>サーバ上で動作するIPSec実装（※2）を使用する</li>
+</ol>
+
+<p>※1） <strong>サイト間VPN</strong> サービスで検証された <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Reference/CPElist.htm">ここ</a></strong> に記載のVPNアプライアンスから選択します。<br />
+※2） <strong>サイト間VPN</strong> サービスで検証された <strong><a href="https://libreswan.org/">Libreswan</a></strong> か <strong><a href="https://www.strongswan.org/">strongSwan</a></strong> から選択します。</p>
+
+<p>このため、オンプレミスで既に <strong>サイト間VPN</strong> サービスで検証されたVPNアプライアンス製品が稼働している場合は選択肢 <strong>1.</strong> を採用し、それ以外であれば選択肢 <strong>2.</strong> が有力な候補となります。</p>
+
+<p>本テクニカルTipsは、VPN接続機器にサーバ上で動作する <strong>Libreswan</strong> を使用し、これをオンプレミスのネットワークに模したOCIの <strong>仮想クラウド・ネットワーク</strong> （以降”左側サイト”と呼称）にデプロイ、左側サイトとは異なるリージョンにデプロイする <strong>仮想クラウド・ネットワーク</strong> （以降”右側サイト”と呼称）を <strong>サイト間VPN</strong> で拠点間接続する手順を解説します。<br />
+このため、本テクニカルTipsの左側サイトに関連する構築手順をオンプレミスのネットワークと選択肢 <strong>1.</strong> で採用するVPN接続機器の該当する手順に置き換えることで、自身の環境に合わせたOCIとの拠点間接続構築手順に応用することが出来ます。</p>
+
+<p>以下は、本テクニカルTipsで想定するシステム構成図です。</p>
+
+<p><img src="architecture_diagram.png" alt="画面ショット" /></p>
+
+<p>記載されるネットワークアドレス等は、自身の環境のものに読みかえてご利用ください。</p>
+
+<p>また本テクニカルTipsは、拠点間が想定通り接続されていることを確認するため、左側サイトのプライベートネットワークに接続するライセンスサーバ相当のインスタンスと右側サイトのプライベートサブネットに接続する計算ノード相当のインスタンス間でpingとSSHによる疎通確認を行います。</p>
+
+<p>次章以降では、以下の順に解説を進めます。</p>
+
+<ol>
+  <li>左側サイト用ネットワーク関連リソース作成</li>
+  <li>右側サイト用 <strong>仮想クラウド・ネットワーク</strong> と関連リソース作成</li>
+  <li>Libreswan用インスタンスとその他インスタンスデプロイ</li>
+  <li>Libreswan用インスタンスセットアップ</li>
+  <li>拠点間接続関連リソース作成</li>
+  <li><strong>Libreswan</strong> インストール・セットアップ</li>
+  <li>ライセンスサーバ・計算ノード間疎通確認</li>
+</ol>
+
+<p>なお、VPN接続機器にVPNアプライアンス製品を使用する場合は、手順 <strong>3.</strong> のLibreswan用インスタンスのデプロイと手順 <strong>4.</strong> をスキップし、手順 <strong>6.</strong> を自身のVPNアプライアンス製品の手順に置き換えて実施します。<br />
+このVPNアプライアンス製品の構成手順は、以下の情報が参考になります。</p>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/CPEconfigurationhelper.htm">CPE構成ヘルパー</a></strong><br />
+VPNアプライアンス製品を構成するために必要な、手順 <strong>5.</strong> で作成したOCI関連リソース情報をOCIコンソールから収集するヘルパーツールです。利用方法は、 <strong><a href="#cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</a></strong> を参照してください。</li>
+  <li>各VPNアプライアンス製品毎に用意されているOCIドキュメント<br />
+<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Reference/CPElist.htm">ここ</a></strong> の該当するVPNアプライアンス製品の構成列とビデオ列の情報を参照してください。</li>
+</ul>
+
+<hr />
+<h1 id="1-左側サイト用ネットワーク関連リソース作成">1. 左側サイト用ネットワーク関連リソース作成</h1>
+
+<p>本章は、以下の左側サイト用ネットワーク関連リソースを作成します。<br />
+ここで本テクニカルTipsの左側サイトのネットワーク関連リソースは、右側サイトと同一テナンシーの異なるリージョンにデプロイする <strong>仮想クラウド・ネットワーク</strong> と関連するリソースでこれを模しており、適宜オンプレミスのネットワークとこれを構成するネットワーク機器での手順に置き換えて作成して下さい。</p>
+
+<ol>
+  <li><strong>仮想クラウド・ネットワーク</strong> （192.168.0.0/16）</li>
+  <li>パブリックサブネット（192.168.1.0/24）</li>
+  <li>プライベートサブネット（192.168.2.0/24）</li>
+  <li><strong>インターネット・ゲートウェイ</strong></li>
+  <li>パブリックサブネット用 <strong>ルート表</strong></li>
+  <li>プライベートサブネット用 <strong>ルート表</strong></li>
+  <li>パブリックサブネット用 <strong>セキュリティ・リスト</strong></li>
+  <li>プライベートサブネット用 <strong>セキュリティ・リスト</strong></li>
+</ol>
+
+<p><strong>ルート表</strong> に含める <strong>ルート・ルール</strong> は、下表のとおりです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">対象サブネット</th>
+      <th style="text-align: center">Destination</th>
+      <th style="text-align: center">Gateway</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center"><strong>インターネット・ゲートウェイ</strong></td>
+      <td>右側サイトへのトラフィック</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">10.0.2.0/24</td>
+      <td style="text-align: center">192.168.1.42 （※3）</td>
+      <td>右側サイトプライベートサブネットへのトラフィック</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※3）Libreswan用インスタンスのパブリックサブネット接続プライベートIPアドレスです。<strong><a href="#3-libreswan用インスタンスとその他インスタンスデプロイ">3. Libreswan用インスタンスとその他インスタンスデプロイ</a></strong> を実施してIPアドレスを確定、 <strong><a href="#4-libreswan用インスタンスセットアップ">4. Libreswan用インスタンスセットアップ</a></strong> のステップ <strong>1.</strong> を実施後、この <strong>ルート・ルール</strong> を作成します。</p>
+
+<p>また <strong>セキュリティ・リスト</strong> は、下表のとおりです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">対象サブネット</th>
+      <th style="text-align: center">Direction</th>
+      <th style="text-align: center">Source/<br />Destination</th>
+      <th style="text-align: center">Protocol</th>
+      <th style="text-align: center">Stateless</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">192.168.2.0/24</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>左側サイトプライベートサブネットからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Egress</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No<br />（※4）</td>
+      <td>左側サイトプライベートサブネットへのアクセス<br />右側サイトへのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">192.168.1.0/24</td>
+      <td style="text-align: center">ALL</td>
+      <td style="text-align: center">No</td>
+      <td>左側サイトパブリックサブネットからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">10.0.2.0/24</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>右側サイトプライベートサブネットからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Egress</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>左側サイトパブリックサブネットへのアクセス<br />右側サイトプライベートサブネットへのサクセス</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※4）<strong>IPSec接続</strong> 作成時 <strong>Libreswan</strong> が <strong>ステートフル・エグレス</strong> ルールで右側サイトからのアクセスを受け入れるために必要です。</p>
+
+<hr />
+<h1 id="2-右側サイト用仮想クラウドネットワークと関連リソース作成">2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</h1>
+
+<p>本章は、以下の右側サイト用 <strong>仮想クラウド・ネットワーク</strong> と関連リソースを作成します。</p>
+
+<ol>
+  <li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16）</li>
+  <li>パブリックサブネット（10.0.1.0/24）</li>
+  <li>プライベートサブネット（10.0.2.0/24）</li>
+  <li><strong>インターネット・ゲートウェイ</strong></li>
+  <li><strong>NATゲートウェイ</strong></li>
+  <li>パブリックサブネット用 <strong>ルート表</strong></li>
+  <li>プライベートサブネット用 <strong>ルート表</strong></li>
+  <li>パブリックサブネット用 <strong>セキュリティ・リスト</strong></li>
+  <li>プライベートサブネット用 <strong>セキュリティ・リスト</strong></li>
+</ol>
+
+<p><strong>ルート表</strong> に含める <strong>ルート・ルール</strong> は、下表のとおりです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">対象サブネット</th>
+      <th style="text-align: center">Destination</th>
+      <th style="text-align: center">Gateway</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center"><strong>インターネット・ゲートウェイ</strong></td>
+      <td>インターネットへのトラフィック</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center"><strong>NATゲートウェイ</strong></td>
+      <td>インターネットへのトラフィック</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">192.168.2.0/24</td>
+      <td style="text-align: center"><strong>動的ルーティング・ゲートウェイ</strong><br />（※5）</td>
+      <td>左側サイトプライベートサブネットへのトラフィック</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※5）<strong><a href="#5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</a></strong> のステップ <strong>1.</strong> で <strong>動的ルーティング・ゲートウェイ</strong> を作成後、この <strong>ルート・ルール</strong> を追加します。</p>
+
+<p>また <strong>セキュリティ・リスト</strong> は、下表のとおりです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">対象サブネット</th>
+      <th style="text-align: center">Direction</th>
+      <th style="text-align: center">Source/<br />Destination</th>
+      <th style="text-align: center">Protocol</th>
+      <th style="text-align: center">Stateless</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">10.0.2.0/24</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>右側サイトプライベートサブネットからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">TCP:22</td>
+      <td style="text-align: center">No</td>
+      <td>インターネットからのSSHアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Egress</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>右側サイトプライベートサブネットへのアクセス<br />インターネットへのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">10.0.1.0/24</td>
+      <td style="text-align: center">ALL</td>
+      <td style="text-align: center">No</td>
+      <td>右側サイトパブリックサブネットからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">192.168.2.0/24</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>左側サイトプライベートサブネットからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Egress</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>右側サイトパブリックサブネットへのアクセス<br />左側サイトプライベートサブネットへのサクセス</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これらのリソース作成方法は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> を参照ください。</p>
+
+<hr />
+<h1 id="3-libreswan用インスタンスとその他インスタンスデプロイ">3. Libreswan用インスタンスとその他インスタンスデプロイ</h1>
+
+<p>本章は、拠点間接続を実現・検証するために必要な下表の4インスタンスをデプロイします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">インスタンス</th>
+      <th style="text-align: center">用途</th>
+      <th style="text-align: center">デプロイするサイト</th>
+      <th style="text-align: center">接続するサブネット</th>
+      <th style="text-align: center">firewalld停止</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Libreswan</td>
+      <td style="text-align: center">Libreswan稼働用</td>
+      <td style="text-align: center">左側</td>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">未適用</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">lic-srv</td>
+      <td style="text-align: center">オンプレミスライセンスサーバ相当</td>
+      <td style="text-align: center">左側</td>
+      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">適用</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Bastion</td>
+      <td style="text-align: center">Computeインスタンスへの踏み台</td>
+      <td style="text-align: center">右側</td>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">未適用</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Compute</td>
+      <td style="text-align: center">計算ノード相当</td>
+      <td style="text-align: center">右側</td>
+      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">適用</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>本テクニカルTipsでは、これらのインスタンスにOSを <strong>Oracle Linux</strong> 8.9とする任意の <strong>仮想マシン・インスタンス</strong> を使用します。<br />
+この際、後の疎通確認を行うため、表中に記載の該当するインスタンスでfirewalldサービスを停止します。</p>
+
+<hr />
+<h1 id="4-libreswan用インスタンスセットアップ">4. Libreswan用インスタンスセットアップ</h1>
+
+<p>本章は、Libreswan用インスタンスをVPN接続装置として機能させるために必要なセットアップ作業を行います。<br />
+具体的には、以下の手順を実施します。</p>
+
+<ul>
+  <li>ソース/宛先チェックのスキップ（※6）</li>
+  <li>パケット転送を許可するためのカーネルパラメータ設定追加</li>
+  <li>拠点間接続で接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可</li>
+</ul>
+
+<p>※6）デフォルトで許可されていない <strong>VNIC</strong> のパケット転送設定を変更し、これを許可します。</p>
+
+<ol>
+  <li>
+    <p>ソース/宛先チェックのスキップ<br />
+OCIコンソールにログインし、Libreswan用インスタンスの <strong>インスタンスの詳細</strong> 画面左側の <strong>アタッチされたVNIC</strong> メニューをクリックし、表示される以下 <strong>アタッチされたVNIC</strong> 画面の <strong>プライマリVNIC</strong> の <strong>VNICの編集</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>VNICの編集</strong> サイドバーで、 <strong>ソース/宛先チェックのスキップ</strong> チェックボックスをチェックし、 <strong>変更の保存</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>パケット転送を許可するためのカーネルパラメータ設定追加<br />
+Libreswan用インスタンスで <strong>/etc/sysctl.conf</strong> に以下の行を追加します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff /etc/sysctl.conf_org /etc/sysctl.conf
+ 13a14,24
+ <span class="o">&gt;</span> 
+ <span class="o">&gt;</span> net.ipv4.ip_forward <span class="o">=</span> 1
+ <span class="o">&gt;</span> net.ipv4.conf.all.accept_redirects <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.all.send_redirects <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.default.send_redirects <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.ens3.send_redirects <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.default.accept_redirects <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.ens3.accept_redirects <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.all.rp_filter <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.default.rp_filter <span class="o">=</span> 0
+ <span class="o">&gt;</span> net.ipv4.conf.ens3.rp_filter <span class="o">=</span> 0
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>Libreswan用インスタンスのopcユーザで以下コマンドを実行し、先の変更を有効化します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>sysctl <span class="nt">-p</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>拠点間接続で接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可<br />
+Libreswan用インスタンスのopcユーザで以下コマンドを実行し、拠点間接続で接続する右側サイトのサブネットアドレス（ここではプライベートサブネットの <strong>10.0.2.0/24</strong>）からのアクセスをfirewalldに許可し、その設定を確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-service</span><span class="o">=</span><span class="s2">"ipsec"</span>
+ success
+ <span class="nv">$ </span><span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--zone</span><span class="o">=</span>trusted <span class="nt">--add-source</span><span class="o">=</span>10.0.2.0/24
+ success
+ <span class="nv">$ </span><span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+ success
+ <span class="nv">$ </span><span class="nb">sudo </span>firewall-cmd <span class="nt">--zone</span><span class="o">=</span>trusted <span class="nt">--list-all</span>
+ trusted <span class="o">(</span>active<span class="o">)</span>
+ target: ACCEPT
+ icmp-block-inversion: no
+ interfaces: 
+ sources: 10.0.2.0/24
+ services: 
+ ports: 
+ protocols: 
+ forward: no
+ masquerade: no
+ forward-ports: 
+ source-ports: 
+ icmp-blocks: 
+ rich rules: 
+ <span class="nv">$ </span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</h1>
+
+<p>本章は、以下の拠点間接続関連リソースを右側サイトに作成します。</p>
+
+<ul>
+  <li><strong>動的ルーティング・ゲートウェイ</strong></li>
+  <li><strong>仮想クラウド・ネットワーク・アタッチメント</strong></li>
+  <li><strong>顧客構内機器</strong> （CPE）</li>
+  <li><strong>IPSec接続</strong></li>
+</ul>
+
+<ol>
+  <li>
+    <p><strong>動的ルーティング・ゲートウェイ</strong> 作成<br />
+OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>顧客接続性</strong> 画面で、 <strong>動的ルーティング・ゲートウェイ</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page04.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>動的ルーティング・ゲートウェイ</strong> 画面で、 <strong>動的ルーティング・ゲートウェイの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page05.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>動的ルーティング・ゲートウェイの作成</strong> サイドバーで、 <strong>名前</strong> フィールドに付与する名称を入力して <strong>動的ルーティング・ゲートウェイの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page06.png" alt="画面ショット" /></p>
+
+    <p>作成した <strong>動的ルーティング・ゲートウェイ</strong> は、 <strong><a href="#2-右側サイト用仮想クラウドネットワークと関連リソース作成">2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</a></strong> で作成したプライベートサブネット用 <strong>ルート表</strong> のGatewayとし、この <strong>ルート・ルール</strong> を作成します。</p>
+  </li>
+  <li>
+    <p><strong>仮想クラウド・ネットワーク・アタッチメント</strong> 作成<br />
+表示される以下 <strong>仮想クラウド・ネットワーク・アタッチメント</strong> フィールドで、 <strong>仮想クラウド・ネットワーク・アタッチメントの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page07.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>仮想クラウド・ネットワーク・アタッチメント作成</strong> サイドバーで、 <strong>仮想クラウド・ネットワーク</strong> プルダウンメニューに先に作成した右側サイトの <strong>仮想クラウド・ネットワーク</strong> を選択し、 <strong>仮想クラウド・ネットワーク・アタッチメントの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page08.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>顧客構内機器</strong> 作成<br />
+OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>顧客接続性</strong> 画面で、 <strong>顧客構内機器</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page09.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>顧客構内機器</strong> 画面で、 <strong>CPEの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page10.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>CPEの作成</strong> 画面で、以下の情報を入力し <strong>CPEの作成</strong> ボタンをクリックします。<br />
+ なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ：<strong>顧客構内機器</strong> に付与する名前</li>
+      <li><strong>IPアドレス</strong> ：Libreswan用インスタンスに付与されたグローバルIPアドレス（※7）</li>
+      <li><strong>ベンダー</strong> ：<strong>Libreswan</strong>（※8）</li>
+      <li><strong>プラットフォームバージョン</strong> ：<strong>3.18 or later</strong>（※8）</li>
+    </ul>
+
+    <p>※7）VPNアプライアンス製品を利用する場合は、VPN接続機器のグローバルIPアドレスを指定します。<br />
+ ※8）VPNアプライアンス製品を利用する場合は、利用する機器に合わせて選択します。</p>
+
+    <p><img src="console_page11.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>IPSec接続</strong> 作成<br />
+OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>顧客接続性</strong> 画面で、 <strong>サイト間VPN</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page12.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>サイト間VPN</strong> 画面で、 <strong>IPSec接続の作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page13.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>IPSec接続の作成</strong> サイドバーで、以下の情報を入力し <strong>IPSec接続の作成</strong> ボタンをクリックします。<br />
+ なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ：<strong>IPSec接続</strong> に付与する名前</li>
+      <li><strong>顧客構内機器</strong> ：先に作成した <strong>顧客構内機器</strong></li>
+      <li><strong>動的ルーティング・ゲートウェイ</strong> ：先に作成した <strong>動的ルーティング・ゲートウェイ</strong></li>
+      <li><strong>オンプレミス・ネットワークへのルート</strong> ：<strong>192.168.2.0/24</strong>（※9）</li>
+      <li><strong>トンネル1</strong> の <strong>ルーティング・タイプ</strong> ：<strong>静的ルーティング</strong></li>
+      <li><strong>トンネル2</strong> の <strong>ルーティング・タイプ</strong> ：<strong>静的ルーティング</strong></li>
+    </ul>
+
+    <p>※9）作成する <strong>IPSec接続</strong> を介して通信する左側サイトのサブネット（ここではプライベートサブネットの <strong>192.168.2.0/24</strong>）を指定します。</p>
+
+    <p><img src="console_page14.png" alt="画面ショット" />
+ <img src="console_page15.png" alt="画面ショット" />
+ <img src="console_page16.png" alt="画面ショット" /></p>
+
+    <p>表示される以下画面の <strong>トンネル</strong> フィールドで、 <strong>名前</strong> 列の末尾が1と2になっているトンネル1とトンネル2が作成され、 <strong>ライフサイクル状態</strong> 列が何れも <strong>使用可能</strong> で <strong>IPSecステータス</strong> 列が何れも <strong>停止</strong> となることを確認します。<br />
+ この <strong>IPSecステータス</strong> 列は、 <strong><a href="#6-libreswanインストールセットアップ">6. Libreswanインストール・セットアップ</a></strong> の手順が完了すると、 <strong>稼働中</strong> となります。<br />
+ また、 <strong>Oracle VPN IPアドレス</strong> 列の各トンネルのグローバルIPアドレスを後の手順のために記録します。</p>
+
+    <p><img src="console_page17.png" alt="画面ショット" /></p>
+
+    <p>前の画面の <strong>名前</strong> 列のトンネル1をクリックし、表示される以下画面の <strong>トンネル情報</strong> タブの <strong>共有シークレット</strong> フィールドの <strong>表示</strong> ボタンをクリックし、表示されるトンネル1の共有シークレットを記録します。</p>
+
+    <p><img src="console_page18.png" alt="画面ショット" /></p>
+
+    <p>また同様に、トンネル2の共有シークレットを記録します。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="6-libreswanインストールセットアップ">6. Libreswanインストール・セットアップ</h1>
+
+<p>本章は、Libreswan用インスタンスに <strong>Libreswan</strong> をインストール・セットアップし、IPSec接続を確立します。</p>
+
+<ol>
+  <li>
+    <p><strong>Libreswan</strong> インストール<br />
+Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 <strong>Libreswan</strong> をインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> libreswan
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Libreswan</strong> 設定ファイル作成<br />
+Libreswan用インスタンスで、以下2個の <strong>Libreswan</strong> 設定ファイルを作成します。</p>
+
+    <p>[/etc/ipsec.d/oci-ipsec.conf]</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> conn oracle-tunnel-1
+     <span class="nv">left</span><span class="o">=</span>192.168.1.42
+     <span class="nv">leftid</span><span class="o">=</span>CPE_global_IP
+     <span class="nv">right</span><span class="o">=</span>Tunnel1_global_IP
+     <span class="nv">authby</span><span class="o">=</span>secret
+     <span class="nv">leftsubnet</span><span class="o">=</span>192.168.2.0/24
+     <span class="nv">rightsubnet</span><span class="o">=</span>10.0.2.0/24
+     <span class="nv">auto</span><span class="o">=</span>start
+     <span class="nv">mark</span><span class="o">=</span>5/0xffffffff <span class="c"># Needs to be unique across all tunnels</span>
+     vti-interface<span class="o">=</span>vti01
+     vti-routing<span class="o">=</span>no
+     <span class="nv">ikev2</span><span class="o">=</span>no <span class="c"># To use IKEv2, change to ikev2=insist</span>
+     <span class="nv">ike</span><span class="o">=</span>aes_cbc256-sha2_384<span class="p">;</span>modp1536
+     <span class="nv">phase2alg</span><span class="o">=</span>aes_gcm256<span class="p">;</span>modp1536
+     <span class="nv">encapsulation</span><span class="o">=</span><span class="nb">yes
+     </span><span class="nv">ikelifetime</span><span class="o">=</span>28800s
+     <span class="nv">salifetime</span><span class="o">=</span>3600s
+ conn oracle-tunnel-2
+     <span class="nv">left</span><span class="o">=</span>192.168.1.42
+     <span class="nv">leftid</span><span class="o">=</span>CPE_global_IP
+     <span class="nv">right</span><span class="o">=</span>Tunnel2_global_IP
+     <span class="nv">authby</span><span class="o">=</span>secret
+     <span class="nv">leftsubnet</span><span class="o">=</span>192.168.2.0/24
+     <span class="nv">rightsubnet</span><span class="o">=</span>10.0.2.0/24
+     <span class="nv">auto</span><span class="o">=</span>start
+     <span class="nv">mark</span><span class="o">=</span>6/0xffffffff <span class="c"># Needs to be unique across all tunnels</span>
+     vti-interface<span class="o">=</span>vti02
+     vti-routing<span class="o">=</span>no
+     <span class="nv">ikev2</span><span class="o">=</span>no <span class="c"># To use IKEv2, change to ikev2=insist</span>
+     <span class="nv">ike</span><span class="o">=</span>aes_cbc256-sha2_384<span class="p">;</span>modp1536
+     <span class="nv">phase2alg</span><span class="o">=</span>aes_gcm256<span class="p">;</span>modp1536
+     <span class="nv">encapsulation</span><span class="o">=</span><span class="nb">yes
+     </span><span class="nv">ikelifetime</span><span class="o">=</span>28800s
+     <span class="nv">salifetime</span><span class="o">=</span>3600s
+</code></pre></div>    </div>
+    <p>※10）下表のファイル中の主要な変数を参考に、自身の環境に合わせて修正します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center">変数名</th>
+          <th>設定値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center">left</td>
+          <td>Libreswan用インスタンスのパブリックサブネット接続用プライベートIPアドレス</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">leftid</td>
+          <td>Libreswan用インスタンスのパブリックIPアドレス</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">right</td>
+          <td><strong>IPSec接続</strong> の各トンネルに割り当てられたグローバルIPアドレス</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">leftsubnet</td>
+          <td>拠点間接続で接続する左側サイトのサブネットアドレス</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">rightsubnet</td>
+          <td>拠点間接続で接続する右側サイトのサブネットアドレス</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>[/etc/ipsec.d/oci-ipsec.secrets]</p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> CPE_global_IP Tunnel1_global_IP: PSK <span class="s2">"Shared_secret_tunnel1"</span>
+ CPE_global_IP Tunnel2_global_IP: PSK <span class="s2">"Shared_secret_tunnel1"</span>
+</code></pre></div>    </div>
+
+    <p>※11）下表の各行・各列の設定項目を参考に、自身の環境に合わせて修正します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center"> </th>
+          <th style="text-align: center">1列目</th>
+          <th style="text-align: center">2列目</th>
+          <th style="text-align: center">3列目</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center">1行目</td>
+          <td style="text-align: center">Libreswan用インスタンスの<br />パブリックIPアドレス</td>
+          <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1に<br />割り当てられたグローバルIPアドレス</td>
+          <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1用共有シークレット</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">2行目</td>
+          <td style="text-align: center">Libreswan用インスタンスの<br />パブリックIPアドレス</td>
+          <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2に<br />割り当てられたグローバルIPアドレス</td>
+          <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2用共有シークレット</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>Systemdサービス設定ファイル修正<br />
+<strong>Libreswan</strong> をSystemdサービスに登録している設定ファイルを以下のように修正し、この修正を反映します。<br />
+なお、ここで追加している行に含まれるサブネットは、拠点間接続で左側サイトから通信したい右側サイトのサブネット（ここではプライベートサブネットの <strong>10.0.2.0/24</strong>）を指定します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff /usr/lib/systemd/system/ipsec.service_org /usr/lib/systemd/system/ipsec.service
+ 33a34
+ <span class="o">&gt;</span> <span class="nv">ExecStartPost</span><span class="o">=</span>/bin/bash <span class="nt">-c</span> <span class="s1">'sleep 30; ip route add 10.0.2.0/24 nexthop dev vti01 nexthop dev vti02'</span>
+ 37a39
+ <span class="o">&gt;</span> <span class="nv">ExecStopPost</span><span class="o">=</span>/bin/bash <span class="nt">-c</span> <span class="s1">'ip route del 10.0.2.0/24'</span>
+ <span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Libreswan</strong> 起動・接続確認<br />
+Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 <strong>Libreswan</strong> を起動、拠点間接続が確立されていることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> ipsec.service
+ Created symlink /etc/systemd/system/multi-user.target.wants/ipsec.service → /usr/lib/systemd/system/ipsec.service.
+ <span class="nv">$ </span><span class="nb">sudo </span>ipsec verify
+ Verifying installed system and configuration files
+
+ Version check and ipsec on-path                   	<span class="o">[</span>OK]
+ Libreswan 4.12
+ Checking <span class="k">for </span>IPsec support <span class="k">in </span>kernel              	<span class="o">[</span>OK]
+ NETKEY: Testing XFRM related proc values
+         ICMP default/send_redirects              	<span class="o">[</span>OK]
+         ICMP default/accept_redirects            	<span class="o">[</span>OK]
+         XFRM larval drop                         	<span class="o">[</span>OK]
+ Pluto ipsec.conf syntax                           	<span class="o">[</span>OK]
+ Checking rp_filter                                	<span class="o">[</span>OK]
+ Checking that pluto is running                    	<span class="o">[</span>OK]
+ Pluto listening <span class="k">for </span>IKE on udp 500               	<span class="o">[</span>OK]
+ Pluto listening <span class="k">for </span>IKE/NAT-T on udp 4500        	<span class="o">[</span>OK]
+ Pluto ipsec.secret syntax                        	<span class="o">[</span>OK]
+ Checking <span class="s1">'ip'</span> <span class="nb">command</span>                             	<span class="o">[</span>OK]
+ Checking <span class="s1">'iptables'</span> <span class="nb">command</span>                       	<span class="o">[</span>OK]
+ Checking <span class="s1">'prelink'</span> <span class="nb">command </span>does not interfere with FIPS	<span class="o">[</span>OK]
+ Checking <span class="k">for </span>obsolete ipsec.conf options          	<span class="o">[</span>OK]
+ <span class="nv">$ </span><span class="nb">sudo </span>ipsec status | <span class="nb">grep </span>active
+ 000 Total IPsec connections: loaded 2, active 2
+ <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>また、 <strong><a href="#5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</a></strong> のステップ <strong>4.</strong> で確認した <strong>IPSecステータス</strong> 列が <strong>稼働中</strong> となっていることを確認します。</p>
+  </li>
+</ol>
+
+<hr />
+<h1 id="7-ライセンスサーバ計算ノード間疎通確認">7. ライセンスサーバ・計算ノード間疎通確認</h1>
+
+<p>本章は、左側サイトのライセンスサーバに相当するインスタンスの <strong>lic-srv</strong> と右側サイトの計算ノードに相当するインスタンスの <strong>Compute</strong> を使用し、これらインスタンス間のpingとSSHによる疎通を確認、拠点間で通信可能であることを確認します。</p>
+
+<ol>
+  <li>
+    <p>ライセンスサーバ -&gt; 計算ノード方向疎通確認<br />
+インスタンス <strong>lic-srv</strong> のopcユーザで以下コマンドを実行し、疎通を確認します。<br />
+ここでIPアドレスは、自身のインスタンス <strong>Compute</strong> のIPアドレスに置き換えて実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ping <span class="nt">-c</span> 1 10.0.2.74
+ PING 10.0.2.74 <span class="o">(</span>10.0.2.74<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+ 64 bytes from 10.0.2.74: <span class="nv">icmp_seq</span><span class="o">=</span>1 <span class="nv">ttl</span><span class="o">=</span>60 <span class="nb">time</span><span class="o">=</span>163 ms
+
+ <span class="nt">---</span> 10.0.2.74 ping statistics <span class="nt">---</span>
+ 1 packets transmitted, 1 received, 0% packet loss, <span class="nb">time </span>0ms
+ rtt min/avg/max/mdev <span class="o">=</span> 163.047/163.047/163.047/0.000 ms
+ <span class="nv">$ </span>ssh 10.0.2.74 <span class="nb">hostname
+ </span>compute
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>計算ノード -&gt; ライセンスサーバ方向疎通確認<br />
+インスタンス <strong>Compute</strong> のopcユーザで以下コマンドを実行し、疎通を確認します。<br />
+ここでIPアドレスは、自身のインスタンス <strong>lic-srv</strong> のIPアドレスに置き換えて実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ping <span class="nt">-c</span> 1 192.168.2.124
+ PING 192.168.2.124 <span class="o">(</span>192.168.2.124<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+ 64 bytes from 192.168.2.124: <span class="nv">icmp_seq</span><span class="o">=</span>1 <span class="nv">ttl</span><span class="o">=</span>61 <span class="nb">time</span><span class="o">=</span>168 ms
+
+ <span class="nt">---</span> 192.168.2.124 ping statistics <span class="nt">---</span>
+ 1 packets transmitted, 1 received, 0% packet loss, <span class="nb">time </span>0ms
+ rtt min/avg/max/mdev <span class="o">=</span> 168.001/168.001/168.001/0.000 ms
+ <span class="nv">$ </span>ssh 192.168.2.124 <span class="nb">hostname
+ </span>lic-srv
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="参考情報">参考情報</h1>
+
+<h2 id="cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</h2>
+
+<p>本章は、VPNアプライアンス製品を構成するために必要なOCIリソース情報をOCIコンソールから収集する、 <strong>CPE構成ヘルパー</strong> の利用方法を解説します。</p>
+
+<p>ここでは、 <strong><a href="#5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</a></strong> のステップ <strong>3.</strong> で作成する <strong>顧客構内機器</strong> が以下の場合を例に記載します。</p>
+
+<ul>
+  <li>ベンダー： Juniper</li>
+  <li>プラットフォーム/バージョン: MX Series - JunOS 15.1 or later</li>
+</ul>
+
+<ol>
+  <li>
+    <p><strong>CPE構成ヘルパー</strong> の起動<br />
+OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>顧客接続性</strong> 画面で、 <strong>サイト間VPN</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page12.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>サイト間VPN</strong> 画面で、 <strong><a href="#5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</a></strong> のステップ <strong>4.</strong> で作成した <strong>IPSec接続</strong> をクリックします。</p>
+
+    <p><img src="console_page19.png" alt="画面ショット" /></p>
+
+    <p>表示される以下画面で、 <strong>CPU構成ヘルパーを開く</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page20.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>構成情報の取得<br />
+表示される以下 <strong>CPE構成ヘルパー</strong> サイドバーで、 <strong>コンテンツの作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page21.png" alt="画面ショット" /></p>
+
+    <p>表示される以下 <strong>CPE構成ヘルパー</strong> サイドバーで、 <strong>構成のダウンロード</strong> ボタンをクリックし、構成情報が記載されたテキストファイルをダウンロードします。</p>
+
+    <p><img src="console_page22.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-04T21:36:39+09:00">March 4, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%B5%E3%82%A4%E3%83%88%E9%96%93VPN%E3%81%AB%E3%82%88%E3%82%8BOCI%E3%81%A8%E3%81%AE%E6%8B%A0%E7%82%B9%E9%96%93%E6%8E%A5%E7%B6%9A%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fsite-to-site-vpn%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fsite-to-site-vpn%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fsite-to-site-vpn%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/" class="pagination--pager" title="ベアメタル・インスタンスのカーネルダンプ取得方法
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
