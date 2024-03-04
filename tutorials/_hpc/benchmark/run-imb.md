@@ -14,12 +14,12 @@ header:
 # 0. 概要
 
 本ドキュメントで解説する **Intel MPI Benchmark** の実行は、HPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **Intel MPI Benchmark** を使用する方法と、 **[Intel oneAPI HPC Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html)** （本ドキュメントで使用するバージョンは2023.2）をインストールしてこれに含まれる **[Intel MPI Library](https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html)** （本ドキュメントで使用するバージョンは2021.10）と **Intel MPI Benchmark** を使用する方法を、それぞれ解説します。  
-また **Intel MPI Benchmark** は、2ノード間のPing-Pongと4ノード間のAll-Reduceの計測方法をそれぞれ解説します。
+また **Intel MPI Benchmark** は、2ノード間のPingPongと4ノード間のAllreduceの計測方法をそれぞれ解説します。
 
 本ドキュメントで **Intel MPI Benchmark** を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** 4インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。  
 計算ノードのOSは、 **Oracle Linux** 8の **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用します。
 
-本ドキュメントは、以下の環境で **Intel MPI Benchmark** Ping-Pongを実行し、以下の性能が出ています。
+本ドキュメントは、以下の環境で **Intel MPI Benchmark** PingPongを実行し、以下の性能が出ています。
 
 [実行環境]
 - シェイプ: **BM.Optimized3.36**
@@ -62,11 +62,11 @@ header:
     ```
 
 3. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
-   ここでは、2ノードを使用したPing-Pongをメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,232.55 MB/s）を以ってその結果とします。
+   ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.67 usec）、帯域幅は256 MiBメッセージの帯域幅（12,232.55 MB/s）を以ってその結果とします。
 
     ```sh
     $ source /usr/mpi/gcc/openmpi-4.1.5a1/bin/mpivars.sh
-    $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+    $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 pingpong
     #------------------------------------------------------------
     #    Intel (R) MPI Benchmarks 2018, MPI-1 part    
     #------------------------------------------------------------
@@ -81,7 +81,7 @@ header:
 
     # Calling sequence was: 
 
-    # /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 PingPong
+    # /usr/mpi/gcc/openmpi-4.1.5a1/tests/imb/IMB-MPI1 -msglog 3:28 pingpong
 
     # Minimum message length in bytes:   0
     # Maximum message length in bytes:   268435456
@@ -136,7 +136,7 @@ header:
     ```
 
 4. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
-   ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAll-Reduceの所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
+   ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
 
     ```sh
     $ source /usr/mpi/gcc/openmpi-4.1.5a1/bin/mpivars.sh
@@ -246,11 +246,11 @@ header:
     ```
 
 4. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
-   ここでは、2ノードを使用した **Ping-Pong** をメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.71 usec）、帯域幅は256 MiBメッセージの帯域幅（12,240.91 MB/s）を以ってその結果とします。
+   ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトから256 MiBまで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.71 usec）、帯域幅は256 MiBメッセージの帯域幅（12,240.91 MB/s）を以ってその結果とします。
 
     ```sh
     $ source /opt/intel/oneapi/setvars.sh
-    $ mpirun -n 2 -ppn 1 -hostfile ~/hostlist.txt -genv UCX_NET_DEVICES=mlx5_2:1 IMB-MPI1 -msglog 3:28 PingPong
+    $ mpirun -n 2 -ppn 1 -hostfile ~/hostlist.txt -genv UCX_NET_DEVICES=mlx5_2:1 IMB-MPI1 -msglog 3:28 pingpong
     #----------------------------------------------------------------
     #    Intel(R) MPI Benchmarks 2021.6, MPI-1 part
     #----------------------------------------------------------------
@@ -265,7 +265,7 @@ header:
     
     # Calling sequence was: 
     
-    # IMB-MPI1 -msglog 3:28 PingPong 
+    # IMB-MPI1 -msglog 3:28 pingpong 
     
     # Minimum message length in bytes:   0
     # Maximum message length in bytes:   268435456
@@ -318,7 +318,7 @@ header:
     ```
 
 5. 以下コマンドを計算ノードのどれか1ノードでopcユーザで実行します。  
-   ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用した **All-Reduce** の所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
+   ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトから256 MiBまで計測しています。
 
 
     ```sh
