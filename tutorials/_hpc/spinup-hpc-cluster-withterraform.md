@@ -183,7 +183,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 - ご自身が使用する **Windows** / **Mac** パソコン
 - ご自身が使用する **Windows** / **Mac** パソコンで動作する **Linux** ゲストOS
 
-本チュートリアルは、この **Terraform** 実行環境のOSに **Linux** を使用します。
+本チュートリアルは、この **Terraform** 実行環境のOSに **Oracle Linux** 8を使用します。
 
 **Terraform** 実行環境は、以下のステップを経て構築します。
 
@@ -218,9 +218,10 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
     **[https://github.com/fwiw6430/tutorial_cn](https://github.com/fwiw6430/tutorial_cn)**
 
-    これには以下コマンドを **Terraform** 実行環境で実行するか、
+    これには、以下コマンドを **Terraform** 実行環境のopcユーザで実行するか、
 
     ```sh
+    $ sudo dnf install -y git
     $ git clone https://github.com/fwiw6430/tutorial_cn
     ```
 
