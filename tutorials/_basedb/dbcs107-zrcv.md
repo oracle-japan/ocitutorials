@@ -102,7 +102,7 @@ Protected Database Count | protected-database-count | 10 | 保護されたデー
 -|-|-|-
  1 | Allow group <グループ名> to manage all-resources in compartment <コンパートメント> |  | コンパートメント管理者ポリシー |
  2 | Allow service database to manage recovery-service-family in tenancy | Root Compartment | リカバリ・サービス作成に必要なポリシー。OCI Databaseサービスは、コンパートメント内の保護されたデータベース、保護ポリシーおよびリカバリ・サービス・サブネットにアクセスできます。 |
- 3 | Allow service database to manage tagnamespace in tenancy | Root Compartment | リカバリ・サービス作成に必要なポリシー。OCI Databaseサービスでテナンシのタグ・ネームスペースにアクセスできます。 |
+ 3 | Allow service database to manage tag-namespaces in tenancy | Root Compartment | リカバリ・サービス作成に必要なポリシー。OCI Databaseサービスでテナンシのタグ・ネームスペースにアクセスできます。 |
  4 | Allow service rcs to manage recovery-service-family in tenancy | Root Compartment | リカバリ・サービス作成に必要なポリシー。リカバリ・サービスが、コンパートメント内の保護されたデータベース、リカバリ・サービス・サブネットおよび保護ポリシーにアクセスして管理できるようにします。　|
  5 | Allow service rcs to manage virtual-network-family in tenancy | Root Compartment | リカバリ・サービス作成に必要なポリシー。リカバリ・サービスがコンパートメント内の各データベースVCN内のプライベート・サブネットにアクセスして管理できるようにします。 | 
  6 | Allow group <グループ名> to manage recovery-service-family in tenancy | Root Compartment | 指定したグループのユーザーがすべてのリカバリ・サービス・リソースにアクセスできるようにします。 | 
@@ -125,7 +125,7 @@ Protected Database Count | protected-database-count | 10 | 保護されたデー
 ```sh
 Allow group <グループ名> to manage all-resources in compartment <コンパートメント>
 Allow service database to manage recovery-service-family in tenancy
-Allow service database to manage tagnamespace in tenancy
+Allow service database to manage tag-namespaces in tenancy
 Allow service rcs to manage recovery-service-family in tenancy
 Allow service rcs to manage virtual-network-family in tenancy
 Allow group <グループ名> to manage recovery-service-family in tenancy
