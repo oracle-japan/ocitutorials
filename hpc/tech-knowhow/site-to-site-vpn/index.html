@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>サイト間VPNによるOCIとの拠点間接続方法 | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
+<meta name="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、オンプレミス側の有償CAEアプリケーション用ライセンスサーバにOCI側の計算ノードからライセンス取得のためにアクセスするケースや、オンプレミス側の端末からOCI側のログインノードにログインしインタラクティブ処理を行うケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -26,7 +26,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">
 
 
-  <meta property="og:description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
+  <meta property="og:description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、オンプレミス側の有償CAEアプリケーション用ライセンスサーバにOCI側の計算ノードからライセンス取得のためにアクセスするケースや、オンプレミス側の端末からOCI側のログインノードにログインしインタラクティブ処理を行うケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
 
 
 
@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-03-08T17:22:39+09:00">
+  <meta property="article:published_time" content="2024-03-13T16:14:27+09:00">
 
 
 
@@ -164,7 +164,7 @@
         
       </h1>
       
-        <p class="page__lead">HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。
+        <p class="page__lead">HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、オンプレミス側の有償CAEアプリケーション用ライセンスサーバにOCI側の計算ノードからライセンス取得のためにアクセスするケースや、オンプレミス側の端末からOCI側のログインノードにログインしインタラクティブ処理を行うケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。
 </p>
       
       
@@ -354,8 +354,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="サイト間VPNによるOCIとの拠点間接続方法">
-    <meta itemprop="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
-    <meta itemprop="datePublished" content="2024-03-08T17:22:39+09:00">
+    <meta itemprop="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、オンプレミス側の有償CAEアプリケーション用ライセンスサーバにOCI側の計算ノードからライセンス取得のためにアクセスするケースや、オンプレミス側の端末からOCI側のログインノードにログインしインタラクティブ処理を行うケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
+    <meta itemprop="datePublished" content="2024-03-13T16:14:27+09:00">
     
 
     <div class="page__inner-wrap">
@@ -366,7 +366,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-左側サイト用ネットワーク関連リソース作成">1. 左側サイト用ネットワーク関連リソース作成</a></li><li><a href="#2-右側サイト用仮想クラウドネットワークと関連リソース作成">2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</a></li><li><a href="#3-libreswan用インスタンスとその他インスタンス作成">3. Libreswan用インスタンスとその他インスタンス作成</a></li><li><a href="#4-libreswan用インスタンスセットアップ">4. Libreswan用インスタンスセットアップ</a></li><li><a href="#5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</a><ul><li><a href="#5-0-概要">5-0. 概要</a></li><li><a href="#5-1-動的ルーティングゲートウェイ作成">5-1. 動的ルーティング・ゲートウェイ作成</a></li><li><a href="#5-2-仮想クラウドネットワークアタッチメント作成">5-2. 仮想クラウド・ネットワーク・アタッチメント作成</a></li><li><a href="#5-3-顧客構内機器作成">5-3. 顧客構内機器作成</a></li><li><a href="#5-4-ipsec接続作成">5-4. IPSec接続作成</a></li><li><a href="#5-4-0-概要">5-4-0. 概要</a></li><li><a href="#5-4-1-静的ルーティングの場合">5-4-1. 静的ルーティングの場合</a></li><li><a href="#5-4-2-bgp動的ルーティングの場合">5-4-2. BGP動的ルーティングの場合</a></li></ul></li><li><a href="#6-libreswanfrrインストールセットアップ">6. Libreswan・FRRインストール・セットアップ</a><ul><li><a href="#6-0-概要">6-0. 概要</a></li><li><a href="#6-1-libreswanインストールセットアップ">6-1. Libreswanインストール・セットアップ</a></li><li><a href="#6-2-frrインストールセットアップ">6-2. FRRインストール・セットアップ</a></li></ul></li><li><a href="#7-ライセンスサーバ計算ノード間疎通確認">7. ライセンスサーバ・計算ノード間疎通確認</a></li><li><a href="#参考情報">参考情報</a><ul><li><a href="#cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-接続形態の決定">1. 接続形態の決定</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-オンプレミス側vpn接続機器の決定">1-1. オンプレミス側VPN接続機器の決定</a></li><li><a href="#1-2-オンプレミス側vpn接続機器のネットワーク接続形態の決定">1-2. オンプレミス側VPN接続機器のネットワーク接続形態の決定</a></li><li><a href="#1-3-オンプレミスoci間ルーティン情報交換方式の決定">1-3. オンプレミス・OCI間ルーティン情報交換方式の決定</a></li></ul></li><li><a href="#2-拠点間接続の作成">2. 拠点間接続の作成</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-左側サイト用ネットワーク関連リソース作成">2-1. 左側サイト用ネットワーク関連リソース作成</a></li><li><a href="#2-2-右側サイト用仮想クラウドネットワークと関連リソース作成">2-2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</a></li><li><a href="#2-3-疎通確認用インスタンス作成">2-3. 疎通確認用インスタンス作成</a></li><li><a href="#2-4-libreswan用インスタンス作成セットアップ">2-4. Libreswan用インスタンス作成・セットアップ</a></li><li><a href="#2-5-拠点間接続関連ociリソース作成">2-5. 拠点間接続関連OCIリソース作成</a><ul><li><a href="#2-5-0-概要">2-5-0. 概要</a></li><li><a href="#2-5-1-動的ルーティングゲートウェイ作成">2-5-1. 動的ルーティング・ゲートウェイ作成</a></li><li><a href="#2-5-2-仮想クラウドネットワークアタッチメント作成">2-5-2. 仮想クラウド・ネットワーク・アタッチメント作成</a></li><li><a href="#2-5-3-顧客構内機器作成">2-5-3. 顧客構内機器作成</a></li></ul></li><li><a href="#2-6-ipsec接続作成">2-6. IPSec接続作成</a><ul><li><a href="#2-6-0-概要">2-6-0. 概要</a></li><li><a href="#2-6-1-パターン1の場合">2-6-1. パターン1の場合</a></li><li><a href="#2-6-2-パターン2の場合">2-6-2. パターン2の場合</a></li><li><a href="#2-6-3-パターン3の場合">2-6-3. パターン3の場合</a></li><li><a href="#2-6-4-パターン4の場合">2-6-4. パターン4の場合</a></li></ul></li><li><a href="#2-7-vpn接続機器セットアップ">2-7. VPN接続機器セットアップ</a><ul><li><a href="#2-7-0-概要">2-7-0. 概要</a></li><li><a href="#2-7-1-パターン1の場合">2-7-1. パターン1の場合</a></li><li><a href="#2-7-2-パターン2の場合">2-7-2. パターン2の場合</a></li><li><a href="#2-7-3-パターン3の場合">2-7-3. パターン3の場合</a></li></ul></li></ul></li><li><a href="#3-ライセンスサーバ計算ノード間疎通確認">3. ライセンスサーバ・計算ノード間疎通確認</a></li><li><a href="#参考情報">参考情報</a><ul><li><a href="#cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</a></li></ul></li></ul>
 
             </nav>
           </aside>
@@ -378,7 +378,7 @@ table, th, td {
 </style>
 
 <p>HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。<br />
-例えば、有償CAEアプリケーションのライセンスサーバがオンプレミス側に存在し、OCI側で稼働する計算ノードでこのライセンスサーバからライセンスを取得するケースです。<br />
+例えば、オンプレミス側の有償CAEアプリケーション用ライセンスサーバにOCI側の計算ノードからライセンス取得のためにアクセスするケースや、オンプレミス側の端末からOCI側のログインノードにログインしインタラクティブ処理を行うケースです。<br />
 本テクニカルTipsは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/managingIPsec.htm">サイト間VPN</a></strong> を使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。</p>
 
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
@@ -386,7 +386,7 @@ table, th, td {
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p><strong>サイト間VPN</strong> は、IPSecのトンネルモードでオンプレミスのネットワークとOCIの <strong>仮想クラウド・ネットワーク</strong> をIP層で拠点間接続するため、以下のような利用形態をシームレスに実現することが可能です。</p>
+<p><strong>サイト間VPN</strong> は、IPSecのトンネルモードを使用するOCIのマネージドVPN接続サービスで、オンプレミスのネットワークとOCIの <strong>仮想クラウド・ネットワーク</strong> をIP層で拠点間接続するため、以下のような利用形態をセキュアでシームレスに実現することが可能です。</p>
 
 <ol>
   <li>OCIで稼働する計算ノードでオンプレミスのライセンスサーバから有償CAEアプリケーションのライセンスを取得する</li>
@@ -396,10 +396,57 @@ table, th, td {
 </ol>
 
 <p>また <strong>サイト間VPN</strong> は、サービス自体は無償のサービスでパブリックインターネットを拠点間接続回線に利用するため、OCIからオンプレミスに向けた転送データ量が少ない利用形態 <strong>1.</strong> から <strong>3.</strong> のケースでは、他の有料専用線サービスと比較し、価格を抑えた拠点間接続が可能です。<br />
-また <strong>サイト間VPN</strong> を介する拠点間の通信帯域は、使用するインターネット接続回線に十分な性能がある場合、サービス自体の性能上限として250Mbps程度を期待することが出来ます。（詳細は、 <strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/interconnecting-clouds-with-oracle-cloud-infrastructure">ここ</a></strong> を参照ください。）このため、高い通信帯域を必要としない前述の利用形態 <strong>1.</strong> や <strong>2.</strong> のケースに於いては、パフォーマンス的にも十分な拠点間接続方法であると言えます。</p>
+また <strong>サイト間VPN</strong> を介する拠点間の通信帯域は、使用するインターネット接続回線に十分な余力がある場合、サービス自体の性能上限として250Mbps程度を期待することが出来ます。（詳細は、 <strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/interconnecting-clouds-with-oracle-cloud-infrastructure">ここ</a></strong> を参照ください。）このため、高い通信帯域を必要としない前述の利用形態 <strong>1.</strong> や <strong>2.</strong> のケースに於いては、パフォーマンス的にも十分な拠点間接続方法であると言えます。</p>
 
-<p>ここでオンプレミス側のVPN接続機器は、どのように用意したらよいでしょうか。<br />
-これには、以下の選択肢があります。</p>
+<p>ここで <strong>サイト間VPN</strong> によるオンプレミスとOCIの拠点間接続は、いくつかの接続形態が用意されており、オンプレミス側の現状や各接続形態の特徴を考慮し、接続作業の第一ステップとしてどの接続形態を採用するかを決定する必要があります。</p>
+
+<p>また本テクニカルTipsは、拠点間が想定通り接続されていることを確認するため、オンプレミス側のプライベートネットワークに接続するライセンスサーバ相当のインスタンスとOCI側のプライベートサブネットに接続する計算ノード相当のインスタンス間でpingとSSHによる疎通確認を行います。</p>
+
+<p>次章以降では、以下の順に解説を進めます。</p>
+
+<ol>
+  <li>接続形態の決定</li>
+  <li>拠点間接続の作成</li>
+  <li>ライセンスサーバ・計算ノード間疎通確認</li>
+</ol>
+
+<hr />
+<h1 id="1-接続形態の決定">1. 接続形態の決定</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、以下の観点からオンプレミスとOCIの拠点間接続形態を決定します。</p>
+
+<ol>
+  <li>オンプレミス側のVPN接続機器に何を使用するか</li>
+  <li>オンプレミス側のVPN接続機器をどのネットワーク（パブリック/プライベート）に接続するか</li>
+  <li>オンプレミスとOCIのルーティング情報交換を静的に行うか動的（BGP）に行うか</li>
+</ol>
+
+<p>ここで、観点 <strong>1.</strong> と観点 <strong>2.</strong> の組み合わせを考慮すると、以下3種類の接続形態が存在します。</p>
+
+<p><img src="connection_type.png" alt="画面ショット" /></p>
+
+<p>また、この3種類の接続形態に観点 <strong>3.</strong> の選択肢（静的ルーティング / BGP動的ルーティング）が加わり、最終的には以下6種類の接続形態が存在します。</p>
+
+<ul>
+  <li>接続形態1-静的ルーティング</li>
+  <li>接続形態1-BGP動的ルーティング</li>
+  <li>接続形態2-静的ルーティング</li>
+  <li>接続形態2-BGP動的ルーティング</li>
+  <li>接続形態3-静的ルーティング</li>
+  <li>接続形態3-BGP動的ルーティング</li>
+</ul>
+
+<p>以降では、 <strong>1.</strong> から <strong>3.</strong> の観点を順に考察し、これら6種類から最適な接続形態を選択する方法を解説します。</p>
+
+<p>接続形態が確定したら、 <strong><a href="#2-拠点間接続の作成">2. 拠点間接続の作成</a></strong> に進み、各接続形態毎に用意されている手順にしたがい拠点間を接続します。</p>
+
+<h2 id="1-1-オンプレミス側vpn接続機器の決定">1-1. オンプレミス側VPN接続機器の決定</h2>
+
+<p>本章は、オンプレミス側のVPN接続機器を決定します。</p>
+
+<p><strong>サイト間VPN</strong> と接続するオンプレミス側のVPN接続機器は、以下の選択肢があります。</p>
 
 <ol>
   <li>VPNアプライアンス製品（※1）を使用する</li>
@@ -408,7 +455,7 @@ table, th, td {
 
 <p>※1） <strong>サイト間VPN</strong> サービスで検証された <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Reference/CPElist.htm">ここ</a></strong> に記載のVPNアプライアンス製品から選択します。<br />
 ※2） <strong>サイト間VPN</strong> サービスで検証された <strong><a href="https://libreswan.org/">Libreswan</a></strong> か <strong><a href="https://www.strongswan.org/">strongSwan</a></strong> から選択します。<br />
-※3）本テクニカルTipsは、サイト間のルーティングに静的ルーティングとBGP動的ルーティングの2通りの方法を紹介し、それぞれで以下のオープンソースのソフトウェア実装を使用します。</p>
+※3）本テクニカルTipsは、それぞれで以下のオープンソースのソフトウェア実装を使用します。</p>
 
 <table>
   <thead>
@@ -432,64 +479,129 @@ table, th, td {
   </tbody>
 </table>
 
-<p>このため、オンプレミスで既に <strong>サイト間VPN</strong> サービスで検証されたVPNアプライアンス製品が稼働している場合は選択肢 <strong>1.</strong> を採用し、それ以外であれば選択肢 <strong>2.</strong> が有力な候補となります。</p>
+<p>このため、 <strong>サイト間VPN</strong> サービスで検証されたVPNアプライアンス製品が既にオンプレミスで稼働している場合は選択肢 <strong>1.</strong> を採用し、それ以外であれば選択肢 <strong>2.</strong> を採用します。</p>
 
-<p>本テクニカルTipsは、VPN接続機器に選択肢 <strong>2.</strong> を使用し、これをオンプレミスのネットワークに模したOCIの <strong>仮想クラウド・ネットワーク</strong> （以降”左側サイト”と呼称）に作成、左側サイトとは異なるリージョンに作成する <strong>仮想クラウド・ネットワーク</strong> （以降”右側サイト”と呼称）を <strong>サイト間VPN</strong> で拠点間接続する手順を解説します。<br />
-このため、本テクニカルTipsの左側サイトに関連する構築手順をオンプレミスのネットワークと選択肢 <strong>1.</strong> で採用するVPNアプライアンス製品の該当する手順に置き換えることで、自身の環境に合わせたOCIとの拠点間接続構築手順に応用することが出来ます。</p>
+<p>ここで、選択肢 <strong>1.</strong> を採用すると接続形態1となり、 <strong><a href="#1-3-オンプレミスoci間ルーティン情報交換方式の決定">1-3. オンプレミス・OCI間ルーティン情報交換方式の決定</a></strong> に進みます。<br />
+また選択肢 <strong>2.</strong> を採用する場合は、 <strong><a href="#1-2-オンプレミス側vpn接続機器のネットワーク接続形態の決定">1-2. オンプレミス側VPN接続機器のネットワーク接続形態の決定</a></strong> に進み、接続形態2と接続形態3のどちらを採用するかを判断します。</p>
 
-<p>以下は、本テクニカルTipsで想定するシステム構成図です。</p>
+<h2 id="1-2-オンプレミス側vpn接続機器のネットワーク接続形態の決定">1-2. オンプレミス側VPN接続機器のネットワーク接続形態の決定</h2>
 
-<p><img src="architecture_diagram_st.png" alt="画面ショット" />
+<p>本章は、オンプレミス側VPN接続機器にサーバ上で動作するIPSec/BGP実装を採用した場合、このサーバをどのようにオンプレミスのネットワークに接続するかを決定します。</p>
+
+<p>オンプレミス側VPN接続機器は、パブリックサブネットに接続する接続形態2とプライベートサブネットに接続する接続形態3から選択することが可能で、以下の各接続形態の必要条件を自身のオンプレミス環境に照らし合わせて、どちらを採用するか判断します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">接続形態</th>
+      <th>必要条件</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td>・VPN接続機器をパブリックサブネットに接続<br />・このパブリックサブネットを拠点間通信対象のプライベートサブネットとルーティング<br />・VPN接続機器に固定パブリックIPアドレスを付与</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td>・VPN接続機器をNAT経由IPSecで外部アクセス可能なプライベートサブネットに接続<br />・このプライベートサブネットを拠点間通信対象のプライベートサブネットとルーティング<br />・NATのインターネット側パブリックIPアドレスが自明<br />・NATのインターネット側パブリックIPアドレスが固定</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>接続形態2と接続形態3のどちらを採用するかを決定したら、 <strong><a href="#1-3-オンプレミスoci間ルーティン情報交換方式の決定">1-3. オンプレミス・OCI間ルーティン情報交換方式の決定</a></strong> に進みます。</p>
+
+<h2 id="1-3-オンプレミスoci間ルーティン情報交換方式の決定">1-3. オンプレミス・OCI間ルーティン情報交換方式の決定</h2>
+
+<p>本章は、オンプレミスとOCIのルーティング情報交換方式を決定します。</p>
+
+<p>この交換方式は、静的ルーティングとBGP動的ルーティングが選択でき、以下の利点・欠点があります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th>利点</th>
+      <th>欠点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">静的</td>
+      <td>・BGP動的と比較して初期構築手順が簡素</td>
+      <td>・オンプレミス側ルーティング情報変更時OCI側の設定変更が必要</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">BGP<br />動的</td>
+      <td>・オンプレミス側ルーティング情報変更時OCI側の対応不要</td>
+      <td>・静的と比較して初期構築手順が煩雑</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これより、拠点間で通信する必要のあるサブネットが運用中に追加・変更される頻度により、どちらを採用するかを決定します。</p>
+
+<hr />
+<h1 id="2-拠点間接続の作成">2. 拠点間接続の作成</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本章は、 <strong><a href="#1-接続形態の決定">1. 接続形態の決定</a></strong> で確定した接続形態毎に用意された手順にしたがい、拠点間接続を作成します。</p>
+
+<p>本テクニカルTipsは、検証に使用できるリソースの制約から、VPN接続機器に選択肢 <strong>2.</strong> のサーバ上で動作するIPSec/BGP実装を使用し、これをオンプレミスのネットワークに模したOCIの <strong>仮想クラウド・ネットワーク</strong> （以降”左側サイト”と呼称）に作成、左側サイトとは異なるリージョンに作成する <strong>仮想クラウド・ネットワーク</strong> （以降”右側サイト”と呼称）を <strong>サイト間VPN</strong> で拠点間接続する手順を解説します。<br />
+このため、本テクニカルTipsの左側サイトに関連する手順をオンプレミスのネットワークに置き換え、またVPN接続機器の選択肢 <strong>2.</strong> に関連する手順を選択肢 <strong>1.</strong> のVPNアプライアンス製品のものに置き換えることで、自身の環境に合わせた拠点間接続構築手順とします。</p>
+
+<p>以下は、本テクニカルTipsで想定する各接続形態ごとのシステム構成図です。</p>
+
+<p><img src="archi_diagram_type2_static.png" alt="画面ショット" />
 <br />
 <br />
 <br />
-<img src="architecture_diagram_dy.png" alt="画面ショット" /></p>
+<img src="archi_diagram_type2_dynamic.png" alt="画面ショット" />
+<br />
+<br />
+<br />
+<img src="archi_diagram_type3_static.png" alt="画面ショット" />
+<br />
+<br />
+<br />
+<img src="archi_diagram_type3_dynamic.png" alt="画面ショット" /></p>
 
 <p>記載されるネットワークアドレス等は、自身の環境のものに読みかえてご利用ください。</p>
-
-<p>また本テクニカルTipsは、拠点間が想定通り接続されていることを確認するため、左側サイトのプライベートネットワークに接続するライセンスサーバ相当のインスタンスと右側サイトのプライベートサブネットに接続する計算ノード相当のインスタンス間でpingとSSHによる疎通確認を行います。</p>
 
 <p>次章以降では、以下の順に解説を進めます。</p>
 
 <ol>
   <li>左側サイト用ネットワーク関連リソース作成</li>
   <li>右側サイト用 <strong>仮想クラウド・ネットワーク</strong> と関連リソース作成</li>
-  <li>Libreswan用インスタンスとその他インスタンス作成</li>
-  <li>Libreswan用インスタンスセットアップ</li>
-  <li>拠点間接続関連リソース作成</li>
-  <li><strong>Libreswan</strong> ・ <strong>FRR</strong>インストール・セットアップ</li>
-  <li>ライセンスサーバ・計算ノード間疎通確認</li>
+  <li>疎通確認用インスタンス作成</li>
+  <li>Libreswan用インスタンス作成・セットアップ</li>
+  <li>拠点間接続関連OCIリソース作成</li>
+  <li>IPSec接続作成</li>
+  <li>VPN接続機器セットアップ</li>
 </ol>
 
-<p>なお、VPN接続機器にVPNアプライアンス製品を使用する場合は、手順 <strong>3.</strong> のLibreswan用インスタンスの作成と手順 <strong>4.</strong> をスキップし、手順 <strong>6.</strong> を自身のVPNアプライアンス製品の手順に置き換えて実施します。</p>
+<p>なお接続形態1を採用する場合は、手順 <strong>4.</strong> をスキップします。</p>
 
-<p><strong>サイト間VPN</strong> サービスで検証されたVPNアプライアンス製品での接続手順は、以下の情報が参考になります。</p>
-
-<ul>
-  <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/CPEconfigurationhelper.htm">CPE構成ヘルパー</a></strong><br />
-VPNアプライアンス製品を構成するために必要な、手順 <strong>5.</strong> で作成したOCI関連リソース情報をOCIコンソールから収集するヘルパーツールです。利用方法は、 <strong><a href="#cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</a></strong> を参照してください。</li>
-  <li>各VPNアプライアンス製品毎に用意されているOCIドキュメント<br />
-<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Reference/CPElist.htm">ここ</a></strong> の該当するVPNアプライアンス製品の構成列とビデオ列の情報を参照してください。</li>
-</ul>
-
-<hr />
-<h1 id="1-左側サイト用ネットワーク関連リソース作成">1. 左側サイト用ネットワーク関連リソース作成</h1>
+<h2 id="2-1-左側サイト用ネットワーク関連リソース作成">2-1. 左側サイト用ネットワーク関連リソース作成</h2>
 
 <p>本章は、以下の左側サイト用ネットワーク関連リソースを作成します。<br />
-ここで本テクニカルTipsの左側サイトのネットワーク関連リソースは、右側サイトと同一テナンシーの異なるリージョンに作成する <strong>仮想クラウド・ネットワーク</strong> と関連するリソースでこれを模しており、適宜オンプレミスのネットワークとこれを構成するネットワーク機器での手順に置き換えて作成してください。</p>
+ここで本テクニカルTipsの左側サイトのネットワーク関連リソースは、右側サイトと同一テナンシーの異なるリージョンに作成する <strong>仮想クラウド・ネットワーク</strong> と関連するリソースでこれを模しており、適宜オンプレミスのネットワークでの手順に置き換えて作成してください。</p>
 
 <ol>
   <li><strong>仮想クラウド・ネットワーク</strong> （192.168.0.0/16）</li>
-  <li>パブリックサブネット（192.168.1.0/24）</li>
-  <li>プライベートサブネット（192.168.2.0/24）</li>
-  <li><strong>インターネット・ゲートウェイ</strong></li>
-  <li>パブリックサブネット用 <strong>ルート表</strong></li>
+  <li>パブリックサブネット（192.168.1.0/24）（接続形態2）</li>
+  <li>プライベートサブネット1-3（192.168.2-4.0/24）</li>
+  <li><strong>インターネット・ゲートウェイ</strong> （接続形態2） / <strong>NATゲートウェイ</strong> （接続形態3）</li>
+  <li>パブリックサブネット用 <strong>ルート表</strong> （接続形態1・2）</li>
   <li>プライベートサブネット用 <strong>ルート表</strong></li>
-  <li>パブリックサブネット用 <strong>セキュリティ・リスト</strong></li>
+  <li>パブリックサブネット用 <strong>セキュリティ・リスト</strong> （接続形態1・2）</li>
   <li>プライベートサブネット用 <strong>セキュリティ・リスト</strong></li>
 </ol>
 
-<p><strong>ルート表</strong> に含める <strong>ルート・ルール</strong> は、下表のとおりです。</p>
+<p><strong>ルート表</strong> に含める <strong>ルート・ルール</strong> と <strong>セキュリティ・リスト</strong> は、下表のとおりです。</p>
+
+<p>[接続形態1・2]</p>
 
 <table>
   <thead>
@@ -508,17 +620,13 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td>右側サイトとのトラフィック</td>
     </tr>
     <tr>
-      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">プライベート2・3</td>
       <td style="text-align: center">10.0.0.0/16</td>
       <td style="text-align: center">192.168.1.42 （※4）</td>
-      <td>右側サイトプライベートサブネットとのトラフィック</td>
+      <td>右側サイトとのトラフィック</td>
     </tr>
   </tbody>
 </table>
-
-<p>※4）Libreswan用インスタンスのパブリックサブネット接続プライベートIPアドレスです。<strong><a href="#3-libreswan用インスタンスとその他インスタンス作成">3. Libreswan用インスタンスとその他インスタンス作成</a></strong> を実施してIPアドレスを確定、 <strong><a href="#4-libreswan用インスタンスセットアップ">4. Libreswan用インスタンスセットアップ</a></strong> のステップ <strong>1.</strong> を実施後、この <strong>ルート・ルール</strong> を作成します。</p>
-
-<p>また <strong>セキュリティ・リスト</strong> は、下表のとおりです。</p>
 
 <table>
   <thead>
@@ -538,7 +646,7 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">192.168.0.0/16</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>左側サイトプライベートサブネットからのアクセス</td>
+      <td>左側サイトからのアクセス</td>
     </tr>
     <tr>
       <td style="text-align: center"> </td>
@@ -546,15 +654,15 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">0.0.0.0/0</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No<br />（※5）</td>
-      <td>左側サイトプライベートサブネットへのアクセス<br />右側サイトへのアクセス</td>
+      <td>左側サイトへのアクセス<br />右側サイトへのアクセス</td>
     </tr>
     <tr>
-      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">プライベート2・3</td>
       <td style="text-align: center">Ingress</td>
       <td style="text-align: center">192.168.0.0/16</td>
-      <td style="text-align: center">ALL</td>
+      <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>左側サイトパブリックサブネットからのアクセス</td>
+      <td>左側サイトからのアクセス</td>
     </tr>
     <tr>
       <td style="text-align: center"> </td>
@@ -562,7 +670,7 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">10.0.0.0/16</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>右側サイトプライベートサブネットからのアクセス</td>
+      <td>右側サイトからのアクセス</td>
     </tr>
     <tr>
       <td style="text-align: center"> </td>
@@ -570,20 +678,106 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">0.0.0.0/0</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>左側サイトパブリックサブネットへのアクセス<br />右側サイトプライベートサブネットへのサクセス</td>
+      <td>左側サイトへのアクセス<br />右側サイトへのサクセス</td>
     </tr>
   </tbody>
 </table>
 
-<p>※5）<strong>IPSec接続</strong> 作成時 <strong>Libreswan</strong> が <strong>ステートフル・エグレス</strong> ルールで右側サイトからのアクセスを受け入れるために必要です。</p>
+<p>※4）VPN接続機器のプライベートIPアドレスです。接続形態2の場合は、 <strong><a href="#2-4-libreswan用インスタンス作成セットアップ">2-4. Libreswan用インスタンス作成・セットアップ</a></strong> でインスタンスを作成してIPアドレスを確定した後ステップ <strong>1.</strong> を実施し、この <strong>ルート・ルール</strong> を作成します。<br />
+※5）<strong>IPSec接続</strong> 作成時VPN接続機器が <strong>ステートフル・エグレス</strong> ルールで右側サイトからのアクセスを受け入れるために必要です。</p>
 
-<hr />
-<h1 id="2-右側サイト用仮想クラウドネットワークと関連リソース作成">2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</h1>
+<p>[接続形態3]</p>
 
-<p>本章は、以下の右側サイト用 <strong>仮想クラウド・ネットワーク</strong> と関連リソースを作成します。</p>
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">対象サブネット</th>
+      <th style="text-align: center">Destination</th>
+      <th style="text-align: center">Gateway</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">プライベート1</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center"><strong>NATゲートウェイ</strong></td>
+      <td>右側サイトとのトラフィック</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート2・3</td>
+      <td style="text-align: center">10.0.0.0/16</td>
+      <td style="text-align: center">192.168.2.42 （※6）</td>
+      <td>右側サイトとのトラフィック</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">対象サブネット</th>
+      <th style="text-align: center">Direction</th>
+      <th style="text-align: center">Source/<br />Destination</th>
+      <th style="text-align: center">Protocol</th>
+      <th style="text-align: center">Stateless</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">プライベート1</td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">192.168.0.0/16</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>左側サイトからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Egress</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No<br />（※7）</td>
+      <td>左側サイトへのアクセス<br />右側サイトへのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート2・3</td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">192.168.0.0/16</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>左側サイトからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Ingress</td>
+      <td style="text-align: center">10.0.0.0/16</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>右側サイトからのアクセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">Egress</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">No</td>
+      <td>左側サイトへのアクセス<br />右側サイトへのサクセス</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※6）Libreswan用インスタンスのプライベートIPアドレスです。 <strong><a href="#2-4-libreswan用インスタンス作成セットアップ">2-4. Libreswan用インスタンス作成・セットアップ</a></strong> でインスタンスを作成してIPアドレスを確定した後ステップ <strong>1.</strong> を実施し、この <strong>ルート・ルール</strong> を作成します。  <br />
+※7）<strong>IPSec接続</strong> 作成時 <strong>Libreswan</strong> が <strong>ステートフル・エグレス</strong> ルールで右側サイトからのアクセスを受け入れるために必要です。</p>
+
+<h2 id="2-2-右側サイト用仮想クラウドネットワークと関連リソース作成">2-2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</h2>
+
+<p>本章は、以下の右側サイト用 <strong>仮想クラウド・ネットワーク</strong> と関連リソースを作成します。<br />
+本テクニカルTipsで使用しているCIDRレンジやIPアドレスは、自身の環境にあわせて読みかえてください。</p>
 
 <ol>
-  <li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16）</li>
+  <li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16（※8））</li>
   <li>パブリックサブネット（10.0.1.0/24）</li>
   <li>プライベートサブネット（10.0.2.0/24）</li>
   <li><strong>インターネット・ゲートウェイ</strong></li>
@@ -594,7 +788,9 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
   <li>プライベートサブネット用 <strong>セキュリティ・リスト</strong></li>
 </ol>
 
-<p><strong>ルート表</strong> に含める <strong>ルート・ルール</strong> は、下表のとおりです。</p>
+<p>※8）左側サイトのサブネットと重複が無いCIDRレンジを選定します。</p>
+
+<p><strong>ルート表</strong> に含める <strong>ルート・ルール</strong> と <strong>セキュリティ・リスト</strong> は、下表のとおりです。</p>
 
 <table>
   <thead>
@@ -621,15 +817,11 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
     <tr>
       <td style="text-align: center"> </td>
       <td style="text-align: center">192.168.0.0/16</td>
-      <td style="text-align: center"><strong>動的ルーティング・ゲートウェイ</strong><br />（※6）</td>
-      <td>左側サイトプライベートサブネットとのトラフィック</td>
+      <td style="text-align: center"><strong>動的ルーティング・ゲートウェイ</strong><br />（※9）</td>
+      <td>左側サイトとのトラフィック</td>
     </tr>
   </tbody>
 </table>
-
-<p>※6）<strong><a href="#5-1-動的ルーティングゲートウェイ作成">5-1. 動的ルーティング・ゲートウェイ作成</a></strong> で <strong>動的ルーティング・ゲートウェイ</strong> を作成後、この <strong>ルート・ルール</strong> を追加します。</p>
-
-<p>また <strong>セキュリティ・リスト</strong> は、下表のとおりです。</p>
 
 <table>
   <thead>
@@ -649,7 +841,7 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">10.0.0.0/16</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>右側サイトプライベートサブネットからのアクセス</td>
+      <td>右側サイトからのアクセス</td>
     </tr>
     <tr>
       <td style="text-align: center"> </td>
@@ -665,7 +857,7 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">0.0.0.0/0</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>右側サイトプライベートサブネットへのアクセス<br />インターネットへのアクセス</td>
+      <td>右側サイトへのアクセス<br />インターネットへのアクセス</td>
     </tr>
     <tr>
       <td style="text-align: center">プライベート</td>
@@ -673,7 +865,7 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">10.0.0.0/16</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>右側サイトパブリックサブネットからのアクセス</td>
+      <td>右側サイトからのアクセス</td>
     </tr>
     <tr>
       <td style="text-align: center"> </td>
@@ -681,7 +873,7 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">192.168.0.0/16</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>左側サイトプライベートサブネットからのアクセス</td>
+      <td>左側サイトからのアクセス</td>
     </tr>
     <tr>
       <td style="text-align: center"> </td>
@@ -689,17 +881,18 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
       <td style="text-align: center">0.0.0.0/0</td>
       <td style="text-align: center">All</td>
       <td style="text-align: center">No</td>
-      <td>右側サイトパブリックサブネットへのアクセス<br />左側サイトプライベートサブネットへのサクセス</td>
+      <td>右側サイトへのアクセス<br />左側サイトへのサクセス</td>
     </tr>
   </tbody>
 </table>
 
+<p>※9）<strong><a href="#2-5-1-動的ルーティングゲートウェイ作成">2-5-1. 動的ルーティング・ゲートウェイ作成</a></strong> で <strong>動的ルーティング・ゲートウェイ</strong> を作成後、この <strong>ルート・ルール</strong> を追加します。</p>
+
 <p>これらのリソース作成方法は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> を参照してください。</p>
 
-<hr />
-<h1 id="3-libreswan用インスタンスとその他インスタンス作成">3. Libreswan用インスタンスとその他インスタンス作成</h1>
+<h2 id="2-3-疎通確認用インスタンス作成">2-3. 疎通確認用インスタンス作成</h2>
 
-<p>本章は、拠点間接続を実現・検証するために必要な下表の4インスタンスを作成します。</p>
+<p>本章は、拠点間接続の疎通確認に使用する下表のインスタンスを作成します。</p>
 
 <table>
   <thead>
@@ -713,28 +906,21 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center">Libreswan</td>
-      <td style="text-align: center">Libreswan稼働用</td>
-      <td style="text-align: center">左側</td>
-      <td style="text-align: center">パブリック</td>
-      <td style="text-align: center">未適用</td>
-    </tr>
-    <tr>
       <td style="text-align: center">lic-srv</td>
-      <td style="text-align: center">オンプレミスライセンスサーバ相当</td>
+      <td style="text-align: center">ライセンスサーバ相当</td>
       <td style="text-align: center">左側</td>
       <td style="text-align: center">プライベート</td>
       <td style="text-align: center">適用</td>
     </tr>
     <tr>
-      <td style="text-align: center">Bastion</td>
-      <td style="text-align: center">Computeインスタンスへの踏み台</td>
+      <td style="text-align: center">bastion</td>
+      <td style="text-align: center">computeインスタンスへの踏み台</td>
       <td style="text-align: center">右側</td>
       <td style="text-align: center">パブリック</td>
       <td style="text-align: center">未適用</td>
     </tr>
     <tr>
-      <td style="text-align: center">Compute</td>
+      <td style="text-align: center">compute</td>
       <td style="text-align: center">計算ノード相当</td>
       <td style="text-align: center">右側</td>
       <td style="text-align: center">プライベート</td>
@@ -745,22 +931,25 @@ VPNアプライアンス製品を構成するために必要な、手順 <strong
 
 <p>これらインスタンスの作成方法は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> を参照してください。</p>
 
-<p>本テクニカルTipsでは、これらのインスタンスにOSを <strong>Oracle Linux</strong> 8.9とする任意の <strong>仮想マシン・インスタンス</strong> を使用します。<br />
+<p>本テクニカルTipsでは、これらのインスタンスにOSを <strong>Oracle Linux</strong> とする任意の <strong>仮想マシン・インスタンス</strong> を使用します。<br />
 この際、後の疎通確認を行うため、表中に記載の該当するインスタンスでfirewalldサービスを停止します。</p>
 
-<hr />
-<h1 id="4-libreswan用インスタンスセットアップ">4. Libreswan用インスタンスセットアップ</h1>
+<h2 id="2-4-libreswan用インスタンス作成セットアップ">2-4. Libreswan用インスタンス作成・セットアップ</h2>
 
-<p>本章は、Libreswan用インスタンスをVPN接続装置として機能させるために必要なセットアップ作業を行います。<br />
-具体的には、以下の手順を実施します。</p>
+<p>本章は、Libreswan用インスタンスを作成し、作成したインスタンスにVPN接続装置として機能させるために必要なセットアップ作業を行います。<br />
+なお接続形態1を採用する場合は、本章の手順をスキップします。</p>
+
+<p>本テクニカルTipsでは、作成するインスタンスにOSを <strong>Oracle Linux</strong> 8.9とする任意の <strong>仮想マシン・インスタンス</strong> を使用します。<br />
+インスタンス作成後、以下の手順を実施します。</p>
 
 <ul>
-  <li>ソース/宛先チェックのスキップ（※7）</li>
+  <li>ソース/宛先チェックのスキップ（※10）</li>
   <li>パケット転送を許可するためのカーネルパラメータ設定追加</li>
-  <li>拠点間接続で接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可</li>
+  <li>接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可（※11）</li>
 </ul>
 
-<p>※7）デフォルトで許可されていない <strong>VNIC</strong> のパケット転送設定を変更し、これを許可します。</p>
+<p>※10）デフォルトで許可されていない <strong>VNIC</strong> のパケット転送設定を変更し、これを許可します。なおこの手順は、OCIのインスタンスでの手順のため、オンプレミスで使用するサーバでの手順に置き換えて実施します。<br />
+※11）接続形態3でプライベートサブネット接続であることを理由に、firewalldを停止することでも代用可能です。</p>
 
 <ol>
   <li>
@@ -775,7 +964,8 @@ OCIコンソールにログインし、Libreswan用インスタンスの <strong
   </li>
   <li>
     <p>パケット転送を許可するためのカーネルパラメータ設定追加<br />
-Libreswan用インスタンスで <strong>/etc/sysctl.conf</strong> に以下の行を追加します。</p>
+Libreswan用インスタンスで <strong>/etc/sysctl.conf</strong> に以下の行を追加します。<br />
+なお、設定ファイル中のネットワークインターフェース名（ens3）は、実際のインターフェース名に置き換えます。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff /etc/sysctl.conf_org /etc/sysctl.conf
  13a14,24
@@ -799,7 +989,7 @@ Libreswan用インスタンスで <strong>/etc/sysctl.conf</strong> に以下の
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>拠点間接続で接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可<br />
+    <p>接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可<br />
 Libreswan用インスタンスのopcユーザで以下コマンドを実行し、拠点間接続で接続する右側サイトのサブネットアドレス（ここではプライベートサブネットの <strong>10.0.2.0/24</strong>）からのアクセスをfirewalldに許可し、その設定を確認します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-service</span><span class="o">=</span><span class="s2">"ipsec"</span>
@@ -828,22 +1018,19 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
 </ol>
 
-<hr />
-<h1 id="5-拠点間接続関連リソース作成">5. 拠点間接続関連リソース作成</h1>
+<h2 id="2-5-拠点間接続関連ociリソース作成">2-5. 拠点間接続関連OCIリソース作成</h2>
 
-<h2 id="5-0-概要">5-0. 概要</h2>
+<h3 id="2-5-0-概要">2-5-0. 概要</h3>
 
-<p>本章は、以下の拠点間接続関連リソースを右側サイトに作成します。<br />
-なお <strong>IPSec接続</strong> は、静的ルーティングとBGP動的ルーティングの2種類の作成手順を記載していますので、自身の環境に応じて選択して実施します。</p>
+<p>本章は、以下の拠点間接続に関連するOCIリソースを右側サイトに作成します。</p>
 
 <ul>
   <li><strong>動的ルーティング・ゲートウェイ</strong></li>
   <li><strong>仮想クラウド・ネットワーク・アタッチメント</strong></li>
   <li><strong>顧客構内機器</strong> （CPE）</li>
-  <li><strong>IPSec接続</strong></li>
 </ul>
 
-<h2 id="5-1-動的ルーティングゲートウェイ作成">5-1. 動的ルーティング・ゲートウェイ作成</h2>
+<h3 id="2-5-1-動的ルーティングゲートウェイ作成">2-5-1. 動的ルーティング・ゲートウェイ作成</h3>
 
 <p>本章は、 <strong>動的ルーティング・ゲートウェイ</strong> を作成します。</p>
 
@@ -869,11 +1056,11 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
     <p><img src="console_page06.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>作成した <strong>動的ルーティング・ゲートウェイ</strong> は、 <strong><a href="#2-右側サイト用仮想クラウドネットワークと関連リソース作成">2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</a></strong> で作成したプライベートサブネット用 <strong>ルート表</strong> のGatewayとし、この <strong>ルート・ルール</strong> を作成します。</p>
+    <p>作成した <strong>動的ルーティング・ゲートウェイ</strong> は、 <strong><a href="#2-2-右側サイト用仮想クラウドネットワークと関連リソース作成">2-2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</a></strong> で作成したプライベートサブネット用 <strong>ルート表</strong> のGatewayとし、この <strong>ルート・ルール</strong> を作成します。</p>
   </li>
 </ol>
 
-<h2 id="5-2-仮想クラウドネットワークアタッチメント作成">5-2. 仮想クラウド・ネットワーク・アタッチメント作成</h2>
+<h3 id="2-5-2-仮想クラウドネットワークアタッチメント作成">2-5-2. 仮想クラウド・ネットワーク・アタッチメント作成</h3>
 
 <p>本章は、先に作成した <strong>動的ルーティング・ゲートウェイ</strong> を  <strong>仮想クラウド・ネットワーク</strong> に接続する、 <strong>仮想クラウド・ネットワーク・アタッチメント</strong> 作成します。</p>
 
@@ -890,7 +1077,7 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
 </ol>
 
-<h2 id="5-3-顧客構内機器作成">5-3. 顧客構内機器作成</h2>
+<h3 id="2-5-3-顧客構内機器作成">2-5-3. 顧客構内機器作成</h3>
 
 <p>本章は、 <strong>顧客構内機器</strong> を作成します。</p>
 
@@ -916,28 +1103,61 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
 
     <ul>
       <li><strong>名前</strong> ：<strong>顧客構内機器</strong> に付与する名前</li>
-      <li><strong>IPアドレス</strong> ：Libreswan用インスタンスに付与されたグローバルIPアドレス（※8）</li>
-      <li><strong>ベンダー</strong> ：<strong>Libreswan</strong>（※9）</li>
-      <li><strong>プラットフォームバージョン</strong> ：<strong>3.18 or later</strong>（※9）</li>
+      <li><strong>IPアドレス</strong> ：左側サイトがIPSec接続に使用するパブリックIPアドレス（※12）</li>
+      <li><strong>ベンダー</strong> ：<strong>Libreswan</strong>（※13）</li>
+      <li><strong>プラットフォームバージョン</strong> ：<strong>3.18 or later</strong>（※13）</li>
     </ul>
 
-    <p>※8）VPNアプライアンス製品を利用する場合は、VPN接続機器のグローバルIPアドレスを指定します。<br />
- ※9）VPNアプライアンス製品を利用する場合は、利用する機器に合わせて選択します。</p>
+    <p>※12）接続形態1と接続形態2の場合はVPN接続機器に割り当てられるパブリックIPアドレス、接続形態3の場合はNATに割り当てられるパブリックIPアドレスを指定します。<br />
+ ※13）接続形態1の場合は、利用するVPNアプライアンス製品に合わせて選択します。</p>
 
     <p><img src="console_page11.png" alt="画面ショット" /></p>
   </li>
 </ol>
 
-<h2 id="5-4-ipsec接続作成">5-4. IPSec接続作成</h2>
+<h2 id="2-6-ipsec接続作成">2-6. IPSec接続作成</h2>
 
-<h2 id="5-4-0-概要">5-4-0. 概要</h2>
+<h3 id="2-6-0-概要">2-6-0. 概要</h3>
 
-<p>本章は、 <strong>IPSec接続</strong> を作成します。<br />
-自身の環境に合わせて、静的ルーティングの手順とBGP動的ルーティングの手順から選択して実施します。</p>
+<p>本章は、 <strong>IPSec接続</strong> を作成します。</p>
 
-<h2 id="5-4-1-静的ルーティングの場合">5-4-1. 静的ルーティングの場合</h2>
+<p><strong>IPSec接続</strong> の作成手順は、接続形態3かそれ以外で異なり、また静的ルーティングかBGP動的ルーティングかで異なるため、自身の選択した接続形態に合わせて下表から実施する手順を決定します。</p>
 
-<p>本章は、静的ルーティング用の <strong>IPSec接続</strong> を作成します。</p>
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">パターン</th>
+      <th style="text-align: center">接続形態</th>
+      <th style="text-align: center">ルーティング</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">1または2</td>
+      <td style="text-align: center">静的</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">BGP動的</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">静的</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">BGP動的</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="2-6-1-パターン1の場合">2-6-1. パターン1の場合</h3>
+
+<p>本章は、接続形態1または接続形態2の静的ルーティング用 <strong>IPSec接続</strong> を作成します。</p>
 
 <ol>
   <li>
@@ -963,12 +1183,12 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
       <li><strong>名前</strong> ：<strong>IPSec接続</strong> に付与する名前</li>
       <li><strong>顧客構内機器</strong> ：先に作成した <strong>顧客構内機器</strong></li>
       <li><strong>動的ルーティング・ゲートウェイ</strong> ：先に作成した <strong>動的ルーティング・ゲートウェイ</strong></li>
-      <li><strong>オンプレミス・ネットワークへのルート</strong> ：<strong>192.168.2.0/24</strong>（※10）</li>
+      <li><strong>オンプレミス・ネットワークへのルート</strong> ：<strong>192.168.3.0/24</strong>（※14）</li>
       <li><strong>トンネル1</strong> の <strong>ルーティング・タイプ</strong> ：<strong>静的ルーティング</strong></li>
       <li><strong>トンネル2</strong> の <strong>ルーティング・タイプ</strong> ：<strong>静的ルーティング</strong></li>
     </ul>
 
-    <p>※10）作成する <strong>IPSec接続</strong> を介して通信する左側サイトのサブネット（ここではプライベートサブネットの <strong>192.168.2.0/24</strong>）を指定します。</p>
+    <p>※14）作成する <strong>IPSec接続</strong> を介して通信する左側サイトのサブネット（ここではプライベートサブネットの <strong>192.168.3.0/24</strong>）を指定します。複数のサブネットを指定することが可能です。</p>
 
     <p><img src="console_page14.png" alt="画面ショット" /><br />
  <img src="console_page15.png" alt="画面ショット" /><br />
@@ -976,8 +1196,8 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
   <li>
     <p>表示される以下画面の <strong>トンネル</strong> フィールドで、 <strong>名前</strong> 列の末尾が1と2になっているトンネル1とトンネル2が作成され、 <strong>ライフサイクル状態</strong> 列が何れも <strong>使用可能</strong> で <strong>IPSecステータス</strong> 列が何れも <strong>停止</strong> となることを確認します。<br />
-この <strong>IPSecステータス</strong> 列は、 <strong><a href="#6-1-libreswanインストールセットアップ">6-1. Libreswanインストール・セットアップ</a></strong> の手順が完了すると、 <strong>稼働中</strong> になります。<br />
-また、 <strong>Oracle VPN IPアドレス</strong> 列の各トンネルのグローバルIPアドレスを後の手順のために記録します。</p>
+この <strong>IPSecステータス</strong> 列は、 <strong><a href="#2-7-vpn接続機器セットアップ">2-7. VPN接続機器セットアップ</a></strong> の手順が完了すると、 <strong>稼働中</strong> になります。<br />
+また、 <strong>Oracle VPN IPアドレス</strong> 列の各トンネルのパブリックIPアドレスを後の手順のために記録します。</p>
 
     <p><img src="console_page17.png" alt="画面ショット" /></p>
   </li>
@@ -991,9 +1211,9 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
 </ol>
 
-<h2 id="5-4-2-bgp動的ルーティングの場合">5-4-2. BGP動的ルーティングの場合</h2>
+<h3 id="2-6-2-パターン2の場合">2-6-2. パターン2の場合</h3>
 
-<p>本章は、BGP動的ルーティング用の <strong>IPSec接続</strong> を作成します。</p>
+<p>本章は、接続形態1または接続形態2のBGP動的ルーティング用 <strong>IPSec接続</strong> を作成します。</p>
 
 <ol>
   <li>
@@ -1019,17 +1239,17 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
       <li><strong>名前</strong> ：<strong>IPSec接続</strong> に付与する名前</li>
       <li><strong>顧客構内機器</strong> ：先に作成した <strong>顧客構内機器</strong></li>
       <li><strong>動的ルーティング・ゲートウェイ</strong> ：先に作成した <strong>動的ルーティング・ゲートウェイ</strong></li>
-      <li><strong>トンネル1</strong> の <strong>BGP ASN</strong> ：左側サイトのAS番号（※11）</li>
-      <li><strong>トンネル1</strong> の <strong>IPv4トンネル内インタフェース - CPE</strong> ： <strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※12）</li>
-      <li><strong>トンネル1</strong> の <strong>IPv4トンネル内インタフェース - Oracle</strong> ： <strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※12）</li>
-      <li><strong>トンネル2</strong> の <strong>BGP ASN</strong> ：左側サイトのAS番号（※11）</li>
-      <li><strong>トンネル2</strong> の <strong>IPv4トンネル内インタフェース - CPE</strong> ： <strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※13）</li>
-      <li><strong>トンネル2</strong> の <strong>IPv4トンネル内インタフェース - Oracle</strong> ： <strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※13）</li>
+      <li><strong>トンネル1</strong> の <strong>BGP ASN</strong> ：左側サイトのAS番号（※15）</li>
+      <li><strong>トンネル1</strong> の <strong>IPv4トンネル内インタフェース - CPE</strong> ： <strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※16）</li>
+      <li><strong>トンネル1</strong> の <strong>IPv4トンネル内インタフェース - Oracle</strong> ： <strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※16）</li>
+      <li><strong>トンネル2</strong> の <strong>BGP ASN</strong> ：左側サイトのAS番号（※15）</li>
+      <li><strong>トンネル2</strong> の <strong>IPv4トンネル内インタフェース - CPE</strong> ： <strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※17）</li>
+      <li><strong>トンネル2</strong> の <strong>IPv4トンネル内インタフェース - Oracle</strong> ： <strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※17）</li>
     </ul>
 
-    <p>※11）本テクニカルTipsでは、プライベートAS番号である <strong>65000</strong> を使用しますが、自身の環境に合わせて変更します。<br />
- ※12）30ビットか31ビットのサブネットマスクを持つ同一セグメント内の任意のIPアドレスが使用できますが、特に理由が無ければ以下を指定します。
- ※13）30ビットか31ビットのサブネットマスクを持つ同一セグメント内の任意のIPアドレスが使用できますが、特に理由が無ければ以下を指定します。</p>
+    <p>※15）本テクニカルTipsでは、プライベートAS番号である <strong>65000</strong> を使用しますが、自身の環境に合わせて変更します。<br />
+ ※16）30ビットか31ビットのサブネットマスクを持つ同一セグメント内の任意のIPアドレスが使用できますが、特に理由が無ければ以下を指定します。<br />
+ ※17）30ビットか31ビットのサブネットマスクを持つ同一セグメント内の任意のIPアドレスが使用できますが、特に理由が無ければ以下を指定します。</p>
 
     <table>
       <thead>
@@ -1061,8 +1281,8 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
   <li>
     <p>表示される以下画面の <strong>トンネル</strong> フィールドで、 <strong>名前</strong> 列の末尾が1と2になっているトンネル1とトンネル2が作成され、 <strong>ライフサイクル状態</strong> 列が何れも <strong>使用可能</strong> 、 <strong>IPSecステータス</strong> 列が何れも <strong>停止</strong> 、及び <strong>IPv4 BGPステータス</strong> 列が何れも <strong>稼働中</strong> となることを確認します。<br />
-この <strong>IPSecステータス</strong> 列は、 <strong><a href="#6-1-libreswanインストールセットアップ">6-1. Libreswanインストール・セットアップ</a></strong> の手順が完了すると、 <strong>稼働中</strong> になります。<br />
-また、 <strong>Oracle VPN IPアドレス</strong> 列の各トンネルのグローバルIPアドレスを後の手順のために記録します。</p>
+この <strong>IPSecステータス</strong> 列は、 <strong><a href="#2-7-vpn接続機器セットアップ">2-7. VPN接続機器セットアップ</a></strong> の手順が完了すると、 <strong>稼働中</strong> になります。<br />
+また、 <strong>Oracle VPN IPアドレス</strong> 列の各トンネルのパブリックIPアドレスを後の手順のために記録します。</p>
 
     <p><img src="console_page17-2.png" alt="画面ショット" /></p>
   </li>
@@ -1076,20 +1296,205 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
 </ol>
 
-<hr />
-<h1 id="6-libreswanfrrインストールセットアップ">6. Libreswan・FRRインストール・セットアップ</h1>
+<h3 id="2-6-3-パターン3の場合">2-6-3. パターン3の場合</h3>
 
-<h2 id="6-0-概要">6-0. 概要</h2>
+<p>本章は、接続形態3の静的ルーティング用 <strong>IPSec接続</strong> を作成します。</p>
 
-<p>本章は、Libreswan用インスタンスに <strong>Libreswan</strong> をインストール・セットアップし、IPSecの接続を確立します。<br />
-この手順は、静的ルーティング・BGP動的ルーティングの何れを使用するかにかかわらず実施しますが、静的ルーティングにのみ実施する手順や静的ルーティングとBGP動的ルーティングで手順の異なる箇所があるため留意します。</p>
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
 
-<p>またBGP動的ルーティングを使用する場合は、 <strong>FRR</strong> をインストール・セットアップし、BGPによるルーティング情報の配布を開始します。</p>
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>顧客接続性</strong> 画面で、 <strong>サイト間VPN</strong> メニューをクリックします。</p>
 
-<h2 id="6-1-libreswanインストールセットアップ">6-1. Libreswanインストール・セットアップ</h2>
+    <p><img src="console_page12.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>サイト間VPN</strong> 画面で、 <strong>IPSec接続の作成</strong> ボタンをクリックします。</p>
 
-<p>本章は、 <strong>Libreswan</strong> をインストール・セットアップします。<br />
-この際、 <strong>ステップ 2.</strong> は静的ルーティングとBGP動的ルーティングで手順が異なり、 <strong>ステップ 3.</strong> は静的ルーティングの場合のみ実施します。</p>
+    <p><img src="console_page13.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>IPSec接続の作成</strong> サイドバーで、以下の情報を入力し <strong>IPSec接続の作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ：<strong>IPSec接続</strong> に付与する名前</li>
+      <li><strong>顧客構内機器</strong> ：先に作成した <strong>顧客構内機器</strong></li>
+      <li><strong>このCPEはNATデバイスの背後にあります</strong> ：チェック</li>
+      <li><strong>CPE IKE識別子</strong> ：LibreswanインスタンスのプライベートIPアドレス</li>
+      <li><strong>動的ルーティング・ゲートウェイ</strong> ：先に作成した <strong>動的ルーティング・ゲートウェイ</strong></li>
+      <li><strong>オンプレミス・ネットワークへのルート</strong> ：<strong>192.168.3.0/24</strong>（※18）</li>
+      <li><strong>トンネル1</strong> の <strong>ルーティング・タイプ</strong> ：<strong>静的ルーティング</strong></li>
+      <li><strong>トンネル2</strong> の <strong>ルーティング・タイプ</strong> ：<strong>静的ルーティング</strong></li>
+    </ul>
+
+    <p>※18）作成する <strong>IPSec接続</strong> を介して通信する左側サイトのサブネット（ここではプライベートサブネットの <strong>192.168.3.0/24</strong>）を指定します。複数のサブネットを指定することが可能です。</p>
+
+    <p><img src="console_page14-3.png" alt="画面ショット" /><br />
+ <img src="console_page14-4.png" alt="画面ショット" /><br />
+ <img src="console_page15.png" alt="画面ショット" /><br />
+ <img src="console_page16.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面の <strong>トンネル</strong> フィールドで、 <strong>名前</strong> 列の末尾が1と2になっているトンネル1とトンネル2が作成され、 <strong>ライフサイクル状態</strong> 列が何れも <strong>使用可能</strong> で <strong>IPSecステータス</strong> 列が何れも <strong>停止</strong> となることを確認します。<br />
+この <strong>IPSecステータス</strong> 列は、 <strong><a href="#2-7-vpn接続機器セットアップ">2-7. VPN接続機器セットアップ</a></strong> の手順が完了すると、 <strong>稼働中</strong> になります。<br />
+また、 <strong>Oracle VPN IPアドレス</strong> 列の各トンネルのパブリックIPアドレスを後の手順のために記録します。</p>
+
+    <p><img src="console_page17.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>前の画面の <strong>名前</strong> 列のトンネル1をクリックし、表示される以下画面の <strong>トンネル情報</strong> タブの <strong>共有シークレット</strong> フィールドの <strong>表示</strong> ボタンをクリックし、表示されるトンネル1の共有シークレットを記録します。</p>
+
+    <p><img src="console_page18.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>同様に、トンネル2の共有シークレットを記録します。</p>
+  </li>
+</ol>
+
+<h3 id="2-6-4-パターン4の場合">2-6-4. パターン4の場合</h3>
+
+<p>本章は、接続形態3のBGP動的ルーティング用 <strong>IPSec接続</strong> を作成します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>顧客接続性</strong> 画面で、 <strong>サイト間VPN</strong> メニューをクリックします。</p>
+
+    <p><img src="console_page12.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>サイト間VPN</strong> 画面で、 <strong>IPSec接続の作成</strong> ボタンをクリックします。</p>
+
+    <p><img src="console_page13.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>IPSec接続の作成</strong> サイドバーで、以下の情報を入力し <strong>IPSec接続の作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ：<strong>IPSec接続</strong> に付与する名前</li>
+      <li><strong>顧客構内機器</strong> ：先に作成した <strong>顧客構内機器</strong></li>
+      <li><strong>このCPEはNATデバイスの背後にあります</strong> ：チェック</li>
+      <li><strong>CPE IKE識別子</strong> ：LibreswanインスタンスのプライベートIPアドレス</li>
+      <li><strong>動的ルーティング・ゲートウェイ</strong> ：先に作成した <strong>動的ルーティング・ゲートウェイ</strong></li>
+      <li><strong>トンネル1</strong> の <strong>BGP ASN</strong> ：左側サイトのAS番号（※19）</li>
+      <li><strong>トンネル1</strong> の <strong>IPv4トンネル内インタフェース - CPE</strong> ： <strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※20）</li>
+      <li><strong>トンネル1</strong> の <strong>IPv4トンネル内インタフェース - Oracle</strong> ： <strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※20）</li>
+      <li><strong>トンネル2</strong> の <strong>BGP ASN</strong> ：左側サイトのAS番号（※19）</li>
+      <li><strong>トンネル2</strong> の <strong>IPv4トンネル内インタフェース - CPE</strong> ： <strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※21）</li>
+      <li><strong>トンネル2</strong> の <strong>IPv4トンネル内インタフェース - Oracle</strong> ： <strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※21）</li>
+    </ul>
+
+    <p>※19）本テクニカルTipsでは、プライベートAS番号である <strong>65000</strong> を使用しますが、自身の環境に合わせて変更します。<br />
+ ※20）30ビットか31ビットのサブネットマスクを持つ同一セグメント内の任意のIPアドレスが使用できますが、特に理由が無ければ以下を指定します。<br />
+ ※21）30ビットか31ビットのサブネットマスクを持つ同一セグメント内の任意のIPアドレスが使用できますが、特に理由が無ければ以下を指定します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center">トンネル</th>
+          <th style="text-align: center">CPE側IPアドレス</th>
+          <th style="text-align: center">動的ルーティング・ゲートウェイ側<br />IPアドレス</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: center">1</td>
+          <td style="text-align: center">192.168.254.1/30</td>
+          <td style="text-align: center">192.168.254.2/30</td>
+        </tr>
+        <tr>
+          <td style="text-align: center">2</td>
+          <td style="text-align: center">192.168.254.5/30</td>
+          <td style="text-align: center">192.168.254.6/30</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="console_page14-3.png" alt="画面ショット" /><br />
+ <img src="console_page14-5.png" alt="画面ショット" /><br />
+ <img src="console_page15-2.png" alt="画面ショット" /><br />
+ <img src="console_page15-3.png" alt="画面ショット" /><br />
+ <img src="console_page16-2.png" alt="画面ショット" /><br />
+ <img src="console_page16-3.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面の <strong>トンネル</strong> フィールドで、 <strong>名前</strong> 列の末尾が1と2になっているトンネル1とトンネル2が作成され、 <strong>ライフサイクル状態</strong> 列が何れも <strong>使用可能</strong> 、 <strong>IPSecステータス</strong> 列が何れも <strong>停止</strong> 、及び <strong>IPv4 BGPステータス</strong> 列が何れも <strong>稼働中</strong> となることを確認します。<br />
+この <strong>IPSecステータス</strong> 列は、 <strong><a href="#2-7-vpn接続機器セットアップ">2-7. VPN接続機器セットアップ</a></strong> の手順が完了すると、 <strong>稼働中</strong> になります。<br />
+また、 <strong>Oracle VPN IPアドレス</strong> 列の各トンネルのパブリックIPアドレスを後の手順のために記録します。</p>
+
+    <p><img src="console_page17-2.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>前の画面の <strong>名前</strong> 列のトンネル1をクリックし、表示される以下画面の <strong>トンネル情報</strong> タブの <strong>共有シークレット</strong> フィールドの <strong>表示</strong> ボタンをクリックし、表示されるトンネル1の共有シークレットを記録します。</p>
+
+    <p><img src="console_page18-2.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>同様に、トンネル2の共有シークレットを記録します。</p>
+  </li>
+</ol>
+
+<h2 id="2-7-vpn接続機器セットアップ">2-7. VPN接続機器セットアップ</h2>
+
+<h3 id="2-7-0-概要">2-7-0. 概要</h3>
+
+<p>本章は、VPN接続機器をセットアップします。</p>
+
+<p>VPN接続機器のセットアップ手順は、接続形態1かそれ以外で異なり、また静的ルーティングかBGP動的ルーティングかで異なるため、自身の選択した接続形態に合わせて下表から実施する手順を決定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">パターン</th>
+      <th style="text-align: center">接続形態</th>
+      <th style="text-align: center">ルーティング</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2または3</td>
+      <td style="text-align: center">静的</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">BGP動的</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="2-7-1-パターン1の場合">2-7-1. パターン1の場合</h3>
+
+<p>本章は、接続形態1のVPN接続機器（VPNアプライアンス製品）をセットアップします。</p>
+
+<p>VPNアプライアンス製品の接続手順は、以下の情報を参考に実施します。</p>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/CPEconfigurationhelper.htm">CPE構成ヘルパー</a></strong><br />
+VPNアプライアンス製品を構成するために必要な、 <strong><a href="#2-6-ipsec接続作成">2-6. IPSec接続作成</a></strong> で作成したIPSec接続情報をOCIコンソールから収集するヘルパーツールです。 <br />
+利用方法は、 <strong><a href="#cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</a></strong> を参照してください。</li>
+  <li>各VPNアプライアンス製品毎に用意されているOCIドキュメント<br />
+<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Network/Reference/CPElist.htm">ここ</a></strong> の該当するVPNアプライアンス製品の構成列とビデオ列の情報を参照してください。</li>
+</ul>
+
+<h3 id="2-7-2-パターン2の場合">2-7-2. パターン2の場合</h3>
+
+<p>本章は、接続形態2または接続形態3の静的ルーティング用のVPN接続機器として、Libreswan用インスタンスに <strong>Libreswan</strong> をインストール・セットアップし、IPSecの接続を確立します。</p>
 
 <ul>
   <li>
@@ -1101,19 +1506,18 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
   <li>
     <p><strong>Libreswan</strong> 設定ファイル作成<br />
-Libreswan用インスタンスで、以下2個の <strong>Libreswan</strong> 設定ファイルを作成します。<br />
-なお <strong>oci-ipsec.conf</strong> は、静的ルーティングとBGP動的ルーティングで異なるファイルを使用します。</p>
+Libreswan用インスタンスで、以下2個の <strong>Libreswan</strong> 設定ファイルを作成します。</p>
   </li>
 </ul>
 
-<p>[/etc/ipsec.d/oci-ipsec.conf（静的ルーティング用）]</p>
+<p>[/etc/ipsec.d/oci-ipsec.conf]</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conn oracle-tunnel-1
-     <span class="nv">left</span><span class="o">=</span>192.168.1.42
-     <span class="nv">leftid</span><span class="o">=</span>CPE_global_IP
-     <span class="nv">right</span><span class="o">=</span>Tunnel1_global_IP
+     <span class="nv">left</span><span class="o">=</span>%defaultroute
+     <span class="nv">leftid</span><span class="o">=</span>CPE_IP
+     <span class="nv">right</span><span class="o">=</span>Tunnel1_public_IP
      <span class="nv">authby</span><span class="o">=</span>secret
-     <span class="nv">leftsubnet</span><span class="o">=</span>192.168.2.0/24
+     <span class="nv">leftsubnet</span><span class="o">=</span>192.168.3.0/24
      <span class="nv">rightsubnet</span><span class="o">=</span>10.0.2.0/24
      <span class="nv">auto</span><span class="o">=</span>start
      <span class="nv">mark</span><span class="o">=</span>5/0xffffffff <span class="c"># Needs to be unique across all tunnels</span>
@@ -1126,11 +1530,11 @@ Libreswan用インスタンスで、以下2個の <strong>Libreswan</strong> 設
      </span><span class="nv">ikelifetime</span><span class="o">=</span>28800s
      <span class="nv">salifetime</span><span class="o">=</span>3600s
 conn oracle-tunnel-2
-     <span class="nv">left</span><span class="o">=</span>192.168.1.42
-     <span class="nv">leftid</span><span class="o">=</span>CPE_global_IP
-     <span class="nv">right</span><span class="o">=</span>Tunnel2_global_IP
+     <span class="nv">left</span><span class="o">=</span>%defaultroute
+     <span class="nv">leftid</span><span class="o">=</span>CPE_IP
+     <span class="nv">right</span><span class="o">=</span>Tunnel2_public_IP
      <span class="nv">authby</span><span class="o">=</span>secret
-     <span class="nv">leftsubnet</span><span class="o">=</span>192.168.2.0/24
+     <span class="nv">leftsubnet</span><span class="o">=</span>192.168.3.0/24
      <span class="nv">rightsubnet</span><span class="o">=</span>10.0.2.0/24
      <span class="nv">auto</span><span class="o">=</span>start
      <span class="nv">mark</span><span class="o">=</span>6/0xffffffff <span class="c"># Needs to be unique across all tunnels</span>
@@ -1144,7 +1548,7 @@ conn oracle-tunnel-2
      <span class="nv">salifetime</span><span class="o">=</span>3600s
 </code></pre></div></div>
 
-<p>※14）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
+<p>※22）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
 
 <table>
   <thead>
@@ -1155,16 +1559,12 @@ conn oracle-tunnel-2
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center">left</td>
-      <td>Libreswan用インスタンスのパブリックサブネット接続用プライベートIPアドレス</td>
-    </tr>
-    <tr>
       <td style="text-align: center">leftid</td>
-      <td>Libreswan用インスタンスのパブリックIPアドレス</td>
+      <td>Libreswan用インスタンスの<br />・パブリックIPアドレス（接続形態2）<br />・プライベートIPアドレス（接続形態3）</td>
     </tr>
     <tr>
       <td style="text-align: center">right</td>
-      <td><strong>IPSec接続</strong> の各トンネルに割り当てられたグローバルIPアドレス</td>
+      <td><strong>IPSec接続</strong> の各トンネルに割り当てられたパブリックIPアドレス</td>
     </tr>
     <tr>
       <td style="text-align: center">leftsubnet</td>
@@ -1177,123 +1577,19 @@ conn oracle-tunnel-2
   </tbody>
 </table>
 
-<p>[/etc/ipsec.d/oci-ipsec.conf（BGP動的ルーティング用）]</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conn oracle-tunnel-1
-     <span class="nv">left</span><span class="o">=</span>%defaultroute
-     <span class="nv">leftid</span><span class="o">=</span>CPE_global_IP
-     <span class="nv">right</span><span class="o">=</span>Tunnel1_global_IP
-     <span class="nv">rightid</span><span class="o">=</span>Tunnel1_global_IP
-     <span class="nv">authby</span><span class="o">=</span>secret
-     <span class="nv">leftsubnet</span><span class="o">=</span>0.0.0.0/0
-     <span class="nv">rightsubnet</span><span class="o">=</span>0.0.0.0/0
-     <span class="nv">auto</span><span class="o">=</span>start
-     <span class="nv">mark</span><span class="o">=</span>5/0xffffffff
-     vti-interface<span class="o">=</span>vti01
-     vti-routing<span class="o">=</span>no
-     <span class="nv">leftvti</span><span class="o">=</span>192.168.254.1/30
-     <span class="nv">ikev2</span><span class="o">=</span>no
-     <span class="nv">ike</span><span class="o">=</span>aes_cbc256-sha2_384<span class="p">;</span>modp1536
-     <span class="nv">phase2alg</span><span class="o">=</span>aes_gcm256<span class="p">;</span>modp1536
-     <span class="nv">encapsulation</span><span class="o">=</span><span class="nb">yes
-     </span><span class="nv">ikelifetime</span><span class="o">=</span>28800s
-     <span class="nv">salifetime</span><span class="o">=</span>3600s
-conn oracle-tunnel-2
-     <span class="nv">left</span><span class="o">=</span>%defaultroute
-     <span class="nv">leftid</span><span class="o">=</span>CPE_global_IP
-     <span class="nv">right</span><span class="o">=</span>Tunnel2_global_IP
-     <span class="nv">rightid</span><span class="o">=</span>Tunnel2_global_IP
-     <span class="nv">authby</span><span class="o">=</span>secret
-     <span class="nv">leftsubnet</span><span class="o">=</span>0.0.0.0/0
-     <span class="nv">rightsubnet</span><span class="o">=</span>0.0.0.0/0
-     <span class="nv">auto</span><span class="o">=</span>start
-     <span class="nv">mark</span><span class="o">=</span>6/0xffffffff
-     vti-interface<span class="o">=</span>vti02
-     vti-routing<span class="o">=</span>no
-     <span class="nv">leftvti</span><span class="o">=</span>192.168.254.5/30
-     <span class="nv">ikev2</span><span class="o">=</span>no
-     <span class="nv">ike</span><span class="o">=</span>aes_cbc256-sha2_384<span class="p">;</span>modp1536
-     <span class="nv">phase2alg</span><span class="o">=</span>aes_gcm256<span class="p">;</span>modp1536
-     <span class="nv">encapsulation</span><span class="o">=</span><span class="nb">yes
-     </span><span class="nv">ikelifetime</span><span class="o">=</span>28800s
-     <span class="nv">salifetime</span><span class="o">=</span>3600s
-</code></pre></div></div>
-
-<p>※15）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">変数名</th>
-      <th style="text-align: center">設定値</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">left</td>
-      <td style="text-align: center">%defaultroute</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">leftid</td>
-      <td style="text-align: center">Libreswan用インスタンスのパブリックIPアドレス</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">right</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> の各トンネルに割り当てられたグローバルIPアドレス</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">rightid</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> の各トンネルに割り当てられたグローバルIPアドレス</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">leftsubnet</td>
-      <td style="text-align: center">0.0.0.0/0</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">rightsubnet</td>
-      <td style="text-align: center">0.0.0.0/0</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">leftvti</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> の各トンネルのBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※16）</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>※16）本テクニカルTipsでは、以下を設定します。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">トンネル</th>
-      <th style="text-align: center">IPアドレス</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">1</td>
-      <td style="text-align: center">192.168.254.1/30</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">2</td>
-      <td style="text-align: center">192.168.254.5/30</td>
-    </tr>
-  </tbody>
-</table>
-
 <p>[/etc/ipsec.d/oci-ipsec.secrets]</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CPE_global_IP Tunnel1_global_IP: PSK <span class="s2">"Shared_secret_tunnel1"</span>
-CPE_global_IP Tunnel2_global_IP: PSK <span class="s2">"Shared_secret_tunnel2"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CPE_IP Tunnel1_public_IP: PSK <span class="s2">"Shared_secret_tunnel1"</span>
+CPE_IP Tunnel2_public_IP: PSK <span class="s2">"Shared_secret_tunnel2"</span>
 </code></pre></div></div>
 
-<p>※17）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
+<p>※23）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
 
 <table>
   <thead>
     <tr>
       <th style="text-align: center"> </th>
-      <th style="text-align: center">1列目</th>
+      <th>1列目</th>
       <th style="text-align: center">2列目</th>
       <th style="text-align: center">4列目</th>
     </tr>
@@ -1301,14 +1597,14 @@ CPE_global_IP Tunnel2_global_IP: PSK <span class="s2">"Shared_secret_tunnel2"</s
   <tbody>
     <tr>
       <td style="text-align: center">1行目</td>
-      <td style="text-align: center">Libreswan用インスタンスの<br />パブリックIPアドレス</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1に<br />割り当てられたグローバルIPアドレス</td>
+      <td>Libreswan用インスタンスの<br />・パブリックIPアドレス（接続形態2）<br />・プライベートIPアドレス（接続形態3）</td>
+      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1に<br />割り当てられたパブリックIPアドレス</td>
       <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1用共有シークレット</td>
     </tr>
     <tr>
       <td style="text-align: center">2行目</td>
-      <td style="text-align: center">Libreswan用インスタンスの<br />パブリックIPアドレス</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2に<br />割り当てられたグローバルIPアドレス</td>
+      <td>Libreswan用インスタンスの<br />・パブリックIPアドレス（接続形態2）<br />・プライベートIPアドレス（接続形態3</td>
+      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2に<br />割り当てられたパブリックIPアドレス</td>
       <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2用共有シークレット</td>
     </tr>
   </tbody>
@@ -1316,7 +1612,7 @@ CPE_global_IP Tunnel2_global_IP: PSK <span class="s2">"Shared_secret_tunnel2"</s
 
 <ul>
   <li>
-    <p>Systemdサービス設定ファイル修正（静的ルーティングのみ実施）<br />
+    <p>Systemdサービス設定ファイル修正<br />
 <strong>Libreswan</strong> をSystemdサービスに登録している設定ファイルを以下のように修正し、この修正を反映します。<br />
 なお、ここで追加している行に含まれるサブネットは、拠点間接続で左側サイトから通信したい右側サイトのサブネット（ここではプライベートサブネットの <strong>10.0.2.0/24</strong>）を指定します。</p>
 
@@ -1360,15 +1656,181 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   <span class="err">$</span>
 </code></pre></div>    </div>
 
-    <p>また、 <strong><a href="#5-4-ipsec接続作成">5-4. IPSec接続作成</a></strong> のステップ <strong>5.</strong> で確認した <strong>IPSecステータス</strong> 列が <strong>稼働中</strong> となっていることを確認します。</p>
+    <p>また、 <strong><a href="#2-6-ipsec接続作成">2-6. IPSec接続作成</a></strong> のステップ <strong>5.</strong> で確認した <strong>IPSecステータス</strong> 列が <strong>稼働中</strong> となっていることを確認します。</p>
   </li>
 </ul>
 
-<h2 id="6-2-frrインストールセットアップ">6-2. FRRインストール・セットアップ</h2>
+<h3 id="2-7-3-パターン3の場合">2-7-3. パターン3の場合</h3>
 
-<p>本章は、 <strong>FRR</strong> をインストール・セットアップします。</p>
+<p>本章は、接続形態2または接続形態3のBGP動的ルーティング用のVPN接続機器として、Libreswan用インスタンスに <strong>Libreswan</strong> と <strong>FRR</strong> をインストール・セットアップし、IPSec接続の確立とBGPによるルーティング情報の配布を開始します。</p>
 
 <ul>
+  <li>
+    <p><strong>Libreswan</strong> インストール<br />
+Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 <strong>Libreswan</strong> をインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> libreswan
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Libreswan</strong> 設定ファイル作成<br />
+Libreswan用インスタンスで、以下2個の <strong>Libreswan</strong> 設定ファイルを作成します。</p>
+  </li>
+</ul>
+
+<p>[/etc/ipsec.d/oci-ipsec.conf]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conn oracle-tunnel-1
+     <span class="nv">left</span><span class="o">=</span>%defaultroute
+     <span class="nv">leftid</span><span class="o">=</span>CPE_IP
+     <span class="nv">right</span><span class="o">=</span>Tunnel1_public_IP
+     <span class="nv">authby</span><span class="o">=</span>secret
+     <span class="nv">leftsubnet</span><span class="o">=</span>0.0.0.0/0
+     <span class="nv">rightsubnet</span><span class="o">=</span>0.0.0.0/0
+     <span class="nv">auto</span><span class="o">=</span>start
+     <span class="nv">mark</span><span class="o">=</span>5/0xffffffff
+     vti-interface<span class="o">=</span>vti01
+     vti-routing<span class="o">=</span>no
+     <span class="nv">leftvti</span><span class="o">=</span>192.168.254.1/30
+     <span class="nv">ikev2</span><span class="o">=</span>no
+     <span class="nv">ike</span><span class="o">=</span>aes_cbc256-sha2_384<span class="p">;</span>modp1536
+     <span class="nv">phase2alg</span><span class="o">=</span>aes_gcm256<span class="p">;</span>modp1536
+     <span class="nv">encapsulation</span><span class="o">=</span><span class="nb">yes
+     </span><span class="nv">ikelifetime</span><span class="o">=</span>28800s
+     <span class="nv">salifetime</span><span class="o">=</span>3600s
+conn oracle-tunnel-2
+     <span class="nv">left</span><span class="o">=</span>%defaultroute
+     <span class="nv">leftid</span><span class="o">=</span>CPE_IP
+     <span class="nv">right</span><span class="o">=</span>Tunnel2_public_IP
+     <span class="nv">authby</span><span class="o">=</span>secret
+     <span class="nv">leftsubnet</span><span class="o">=</span>0.0.0.0/0
+     <span class="nv">rightsubnet</span><span class="o">=</span>0.0.0.0/0
+     <span class="nv">auto</span><span class="o">=</span>start
+     <span class="nv">mark</span><span class="o">=</span>6/0xffffffff
+     vti-interface<span class="o">=</span>vti02
+     vti-routing<span class="o">=</span>no
+     <span class="nv">leftvti</span><span class="o">=</span>192.168.254.5/30
+     <span class="nv">ikev2</span><span class="o">=</span>no
+     <span class="nv">ike</span><span class="o">=</span>aes_cbc256-sha2_384<span class="p">;</span>modp1536
+     <span class="nv">phase2alg</span><span class="o">=</span>aes_gcm256<span class="p">;</span>modp1536
+     <span class="nv">encapsulation</span><span class="o">=</span><span class="nb">yes
+     </span><span class="nv">ikelifetime</span><span class="o">=</span>28800s
+     <span class="nv">salifetime</span><span class="o">=</span>3600s
+</code></pre></div></div>
+
+<p>※24）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">変数名</th>
+      <th>設定値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">leftid</td>
+      <td>Libreswan用インスタンスの<br />・パブリックIPアドレス（接続形態2）<br />・プライベートIPアドレス（接続形態3）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">right</td>
+      <td><strong>IPSec接続</strong> の各トンネルに割り当てられたパブリックIPアドレス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">leftvti</td>
+      <td><strong>IPSec接続</strong> の各トンネルのBGPピア接続に使用する <strong>CPE</strong> 側のIPアドレス（※25）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※25）本テクニカルTipsでは、以下を設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">トンネル</th>
+      <th style="text-align: center">IPアドレス</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">192.168.254.1/30</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">192.168.254.5/30</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>[/etc/ipsec.d/oci-ipsec.secrets]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CPE_IP Tunnel1_public_IP: PSK <span class="s2">"Shared_secret_tunnel1"</span>
+CPE_IP Tunnel2_public_IP: PSK <span class="s2">"Shared_secret_tunnel2"</span>
+</code></pre></div></div>
+
+<p>※26）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th>1列目</th>
+      <th style="text-align: center">2列目</th>
+      <th style="text-align: center">4列目</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1行目</td>
+      <td>Libreswan用インスタンスの<br />・パブリックIPアドレス（接続形態2）<br />・プライベートIPアドレス（接続形態3）</td>
+      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1に<br />割り当てられたパブリックIPアドレス</td>
+      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1用共有シークレット</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2行目</td>
+      <td>Libreswan用インスタンスの<br />・パブリックIPアドレス（接続形態2）<br />・プライベートIPアドレス（接続形態3）</td>
+      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2に<br />割り当てられたパブリックIPアドレス</td>
+      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2用共有シークレット</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>
+    <p><strong>Libreswan</strong> 起動・接続確認<br />
+Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 <strong>Libreswan</strong> を起動、拠点間接続が確立されていることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> ipsec.service
+  Created symlink /etc/systemd/system/multi-user.target.wants/ipsec.service → /usr/lib/systemd/system/ipsec.service.
+  <span class="nv">$ </span><span class="nb">sudo </span>ipsec verify
+  Verifying installed system and configuration files
+
+  Version check and ipsec on-path                   	<span class="o">[</span>OK]
+  Libreswan 4.12
+  Checking <span class="k">for </span>IPsec support <span class="k">in </span>kernel              	<span class="o">[</span>OK]
+  NETKEY: Testing XFRM related proc values
+          ICMP default/send_redirects              	<span class="o">[</span>OK]
+          ICMP default/accept_redirects            	<span class="o">[</span>OK]
+          XFRM larval drop                         	<span class="o">[</span>OK]
+  Pluto ipsec.conf syntax                           	<span class="o">[</span>OK]
+  Checking rp_filter                                	<span class="o">[</span>OK]
+  Checking that pluto is running                    	<span class="o">[</span>OK]
+  Pluto listening <span class="k">for </span>IKE on udp 500               	<span class="o">[</span>OK]
+  Pluto listening <span class="k">for </span>IKE/NAT-T on udp 4500        	<span class="o">[</span>OK]
+  Pluto ipsec.secret syntax                        	<span class="o">[</span>OK]
+  Checking <span class="s1">'ip'</span> <span class="nb">command</span>                             	<span class="o">[</span>OK]
+  Checking <span class="s1">'iptables'</span> <span class="nb">command</span>                       	<span class="o">[</span>OK]
+  Checking <span class="s1">'prelink'</span> <span class="nb">command </span>does not interfere with FIPS	<span class="o">[</span>OK]
+  Checking <span class="k">for </span>obsolete ipsec.conf options          	<span class="o">[</span>OK]
+  <span class="nv">$ </span><span class="nb">sudo </span>ipsec status | <span class="nb">grep </span>active
+  000 Total IPsec connections: loaded 2, active 2
+  <span class="err">$</span>
+</code></pre></div>    </div>
+
+    <p>また、 <strong><a href="#2-6-ipsec接続作成">2-6. IPSec接続作成</a></strong> のステップ <strong>5.</strong> で確認した <strong>IPSecステータス</strong> 列が <strong>稼働中</strong> となっていることを確認します。</p>
+  </li>
   <li>
     <p><strong>FRR</strong> インストール<br />
 Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 <strong>FRR</strong> をインストールします。</p>
@@ -1400,8 +1862,8 @@ Libreswan用インスタンスで、以下のBGP用設定ファイルを新規�
  neighbor 192.168.254.2 remote-as 31898
  neighbor 192.168.254.6 remote-as 31898
  address-family ipv4 unicast
-  network 192.168.2.0/24
   network 192.168.3.0/24
+  network 192.168.4.0/24
   neighbor 192.168.254.2 next-hop-self
   neighbor 192.168.254.2 soft-reconfiguration inbound
   neighbor 192.168.254.2 route-map ALLOW-ALL <span class="k">in
@@ -1412,8 +1874,8 @@ Libreswan用インスタンスで、以下のBGP用設定ファイルを新規�
   </span>neighbor 192.168.254.6 route-map BGP-ADVERTISE-OUT out
  exit-address-family
 <span class="o">!</span>
-ip prefix-list BGP-OUT permit 192.168.2.0/24
 ip prefix-list BGP-OUT permit 192.168.3.0/24
+ip prefix-list BGP-OUT permit 192.168.4.0/24
 <span class="o">!</span>
 route-map BGP-ADVERTISE-OUT permit 10
  match ip address prefix-list BGP-OUT
@@ -1421,81 +1883,87 @@ route-map BGP-ADVERTISE-OUT permit 10
 route-map ALLOW-ALL permit 100
 </code></pre></div></div>
 
-<p>※18）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
+<p>※27）下表を参考に、設定ファイル中の設定値を自身の環境に合わせて修正します。</p>
 
 <table>
   <thead>
     <tr>
       <th style="text-align: center">行</th>
       <th style="text-align: center">フィールド</th>
-      <th style="text-align: center">設定値</th>
+      <th>設定値</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align: center">1</td>
       <td style="text-align: center">3</td>
-      <td style="text-align: center">左側サイトのAS番号（※19）</td>
+      <td>左側サイトのAS番号（※28）</td>
     </tr>
     <tr>
       <td style="text-align: center">2</td>
       <td style="text-align: center">2</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※20）</td>
+      <td><strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※29）</td>
     </tr>
     <tr>
       <td style="text-align: center">2</td>
       <td style="text-align: center">4</td>
-      <td style="text-align: center">OCIのAS番号である <strong>31898</strong></td>
+      <td>OCIのAS番号である <strong>31898</strong></td>
     </tr>
     <tr>
       <td style="text-align: center">3</td>
       <td style="text-align: center">2</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※21）</td>
+      <td><strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※30）</td>
     </tr>
     <tr>
       <td style="text-align: center">3</td>
       <td style="text-align: center">4</td>
-      <td style="text-align: center">OCIのAS番号である <strong>31898</strong></td>
+      <td>OCIのAS番号である <strong>31898</strong></td>
     </tr>
     <tr>
       <td style="text-align: center">5 - 6</td>
       <td style="text-align: center">2</td>
-      <td style="text-align: center">BGPで右側サイトに配布するサブネット（※22）</td>
+      <td>BGPで右側サイトに配布するサブネット（※31）</td>
     </tr>
     <tr>
       <td style="text-align: center">7 - 10</td>
       <td style="text-align: center">2</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※20）</td>
+      <td><strong>IPSec接続</strong> のトンネル1内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※29）</td>
     </tr>
     <tr>
       <td style="text-align: center">11 - 14</td>
       <td style="text-align: center">2</td>
-      <td style="text-align: center"><strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※21）</td>
+      <td><strong>IPSec接続</strong> のトンネル2内のBGPピア接続に使用する <strong>動的ルーティング・ゲートウェイ</strong> 側のIPアドレス（※30）</td>
     </tr>
     <tr>
       <td style="text-align: center">17 - 18</td>
       <td style="text-align: center">5</td>
-      <td style="text-align: center">BGPで右側サイトに配布するサブネット（※22）</td>
+      <td>BGPで右側サイトに配布するサブネット（※31）</td>
     </tr>
   </tbody>
 </table>
 
-<p>※19）本テクニカルTipsでは、プライベートAS番号である <strong>65000</strong> を指定しますが、自身の環境に合わせて変更します。<br />
-※20）本テクニカルTipsでは、 <strong>192.168.254.2</strong> を指定します。<br />
-※21）本テクニカルTipsでは、 <strong>192.168.254.6</strong> を指定します。<br />
-※22）本テクニカルTipsでは、左側サイトのプライベートサブネット <strong>192.168.2.0/24</strong> と <strong>192.168.3.0/24</strong> を指定します。配布するサブネットは、この行を増やすことで追加することが出来ます。</p>
+<p>※28）本テクニカルTipsでは、プライベートAS番号である <strong>65000</strong> を指定しますが、自身の環境に合わせて変更します。<br />
+※29）本テクニカルTipsでは、 <strong>192.168.254.2</strong> を指定します。<br />
+※30）本テクニカルTipsでは、 <strong>192.168.254.6</strong> を指定します。<br />
+※31）本テクニカルTipsでは、左側サイトのプライベートサブネット <strong>192.168.2.0/24</strong> と <strong>192.168.3.0/24</strong> を指定します。配布するサブネットは、この行を増やすことで追加することが出来ます。</p>
 
 <ul>
   <li>配布ルート設定ファイル作成<br />
 Libreswan用インスタンスで、BGPで右側サイトに配布するルート情報を記載した以下の設定ファイルを新規作成します。<br />
-この設定ファイルは、左側サイトのプライベートサブネットへのルートがLibreswan用インスタンスから見てパブリックサブネットのデフォルトルートのゲートウェイである <strong>192.168.1.1</strong> を経由するものであることを示しています。<br />
+この設定ファイルは、左側サイトのプライベートサブネットへのルートがLibreswan用インスタンスから見て接続するサブネットのデフォルトルートのゲートウェイである <strong>192.168.1.1</strong> （接続形態2） / <strong>192.168.2.1</strong> （接続形態3）を経由するものであることを示しています。<br />
 配布するサブネットは、この行を増やすことで追加することが出来ます。</li>
 </ul>
 
-<p>[/etc/frr/staticd.conf]</p>
+<p>[/etc/frr/staticd.conf（接続形態2用）]</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip route 192.168.2.0/24 192.168.1.1
-ip route 192.168.3.0/24 192.168.1.1
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip route 192.168.3.0/24 192.168.1.1
+ip route 192.168.4.0/24 192.168.1.1
+</code></pre></div></div>
+
+<p>[/etc/frr/staticd.conf（接続形態3用）]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip route 192.168.3.0/24 192.168.2.1
+ip route 192.168.4.0/24 192.168.2.1
 </code></pre></div></div>
 
 <ul>
@@ -1542,22 +2010,22 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
 
     <p><img src="console_page25.png" alt="画面ショット" /></p>
 
-    <p>表示される以下画面の <strong>受信したBGPルート</strong> フィールドで、左側サイトのプライベートサブネットへのルート（ここでは <strong>192.168.2.0/24</strong> と <strong>192.168.3.0/24</strong> ）が配布されていることを確認します。</p>
+    <p>表示される以下画面の <strong>受信したBGPルート</strong> フィールドで、左側サイトのプライベートサブネットへのルート（ここでは <strong>192.168.3.0/24</strong> と <strong>192.168.4.0/24</strong> ）が配布されていることを確認します。</p>
 
     <p><img src="console_page26.png" alt="画面ショット" /></p>
   </li>
 </ul>
 
 <hr />
-<h1 id="7-ライセンスサーバ計算ノード間疎通確認">7. ライセンスサーバ・計算ノード間疎通確認</h1>
+<h1 id="3-ライセンスサーバ計算ノード間疎通確認">3. ライセンスサーバ・計算ノード間疎通確認</h1>
 
-<p>本章は、左側サイトのライセンスサーバに相当するインスタンスの <strong>lic-srv</strong> と右側サイトの計算ノードに相当するインスタンスの <strong>Compute</strong> を使用し、これらインスタンス間のpingとSSHによる疎通を確認、拠点間で通信可能であることを確認します。</p>
+<p>本章は、左側サイトのライセンスサーバに相当するインスタンスの <strong>lic-srv</strong> と右側サイトの計算ノードに相当するインスタンスの <strong>compute</strong> を使用し、これらインスタンス間のpingとSSHによる疎通を確認、拠点間が想定通り接続されていることを検証します。</p>
 
 <ol>
   <li>
     <p>ライセンスサーバ -&gt; 計算ノード方向疎通確認<br />
 インスタンス <strong>lic-srv</strong> のopcユーザで以下コマンドを実行し、疎通を確認します。<br />
-ここでIPアドレスは、自身のインスタンス <strong>Compute</strong> のIPアドレスに置き換えて実行します。</p>
+ここでIPアドレスは、自身のインスタンス <strong>compute</strong> のIPアドレスに置き換えて実行します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ping <span class="nt">-c</span> 1 10.0.2.74
  PING 10.0.2.74 <span class="o">(</span>10.0.2.74<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
@@ -1573,17 +2041,17 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   </li>
   <li>
     <p>計算ノード -&gt; ライセンスサーバ方向疎通確認<br />
-インスタンス <strong>Compute</strong> のopcユーザで以下コマンドを実行し、疎通を確認します。<br />
+インスタンス <strong>compute</strong> のopcユーザで以下コマンドを実行し、疎通を確認します。<br />
 ここでIPアドレスは、自身のインスタンス <strong>lic-srv</strong> のIPアドレスに置き換えて実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ping <span class="nt">-c</span> 1 192.168.2.124
- PING 192.168.2.124 <span class="o">(</span>192.168.2.124<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
- 64 bytes from 192.168.2.124: <span class="nv">icmp_seq</span><span class="o">=</span>1 <span class="nv">ttl</span><span class="o">=</span>61 <span class="nb">time</span><span class="o">=</span>168 ms
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ping <span class="nt">-c</span> 1 192.168.3.124
+ PING 192.168.3.124 <span class="o">(</span>192.168.3.124<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+ 64 bytes from 192.168.3.124: <span class="nv">icmp_seq</span><span class="o">=</span>1 <span class="nv">ttl</span><span class="o">=</span>61 <span class="nb">time</span><span class="o">=</span>168 ms
 
- <span class="nt">---</span> 192.168.2.124 ping statistics <span class="nt">---</span>
+ <span class="nt">---</span> 192.168.3.124 ping statistics <span class="nt">---</span>
  1 packets transmitted, 1 received, 0% packet loss, <span class="nb">time </span>0ms
  rtt min/avg/max/mdev <span class="o">=</span> 168.001/168.001/168.001/0.000 ms
- <span class="nv">$ </span>ssh 192.168.2.124 <span class="nb">hostname
+ <span class="nv">$ </span>ssh 192.168.3.124 <span class="nb">hostname
  </span>lic-srv
  <span class="err">$</span>
 </code></pre></div>    </div>
@@ -1595,9 +2063,9 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
 
 <h2 id="cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</h2>
 
-<p>本章は、VPNアプライアンス製品を構成するために必要なOCIリソース情報をOCIコンソールから収集する、 <strong>CPE構成ヘルパー</strong> の利用方法を解説します。</p>
+<p>本章は、VPNアプライアンス製品を構成するために必要な <strong>IPSec接続</strong> 情報をOCIコンソールから収集する、 <strong>CPE構成ヘルパー</strong> の利用方法を解説します。</p>
 
-<p>ここでは、 <strong><a href="#5-3-顧客構内機器作成">5-3. 顧客構内機器作成</a></strong> で作成する <strong>顧客構内機器</strong> が以下の場合を例に記載します。</p>
+<p>ここでは、 <strong><a href="#2-5-3-顧客構内機器作成">2-5-3. 顧客構内機器作成</a></strong> で作成する <strong>顧客構内機器</strong> が以下の場合を例に記載します。</p>
 
 <ul>
   <li>ベンダー： Juniper</li>
@@ -1616,7 +2084,7 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
     <p><img src="console_page12.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>サイト間VPN</strong> 画面で、 <strong><a href="#5-4-ipsec接続作成">5-4. IPSec接続作成</a></strong> で作成した <strong>IPSec接続</strong> をクリックします。</p>
+    <p>表示される以下 <strong>サイト間VPN</strong> 画面で、 <strong><a href="#2-6-ipsec接続作成">2-6. IPSec接続作成</a></strong> で作成した <strong>IPSec接続</strong> をクリックします。</p>
 
     <p><img src="console_page19.png" alt="画面ショット" /></p>
   </li>
@@ -1647,7 +2115,7 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-08T17:22:39+09:00">March 8, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-13T16:14:27+09:00">March 13, 2024</time></p>
 
 
       </footer>
