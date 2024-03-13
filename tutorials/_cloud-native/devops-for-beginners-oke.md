@@ -1252,9 +1252,9 @@ trivyはオープンソースで開発されているコンテナイメージの
 
 ```yaml
 outputArtifacts:
-  - name: fn-hello-image
+  - name: handson_image
     type: DOCKER_IMAGE
-    location: fn-hello
+    location: handson_image:latest
 ```
 
 の部分で`handson_image`という名前のコンテナイメージ(`type: DOCKER_IMAGE`)として出力しています。  
