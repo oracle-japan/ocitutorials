@@ -218,6 +218,7 @@ OCI_DevOps_Dynamic_Group_Compute|instance.compartment.id = 'コンパートメ�
 -|-
 Allow dynamic-group OCI_DevOps_Dynamic_Group_Compute to use instance-agent-command-execution-family in compartment id コンパートメントOCID|対象Computeに対するコマンド実行を許可するポリシー
 Allow dynamic-group OCI_DevOps_Dynamic_Group_Compute to manage instance-agent-command-family in compartment id コンパートメントOCID|対象Computeに対するコマンド実行を許可するポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group_Compute to read instance-family in compartment id コンパートメントOCID|Computeの参照を許可するポリシー
 
 #### 2-2-3 ポリシーの設定
 

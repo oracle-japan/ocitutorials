@@ -517,7 +517,7 @@ shell: bash
 env:
   variables:
     function_name: fn-hello
-    function_version: 0.0.2
+    function_version: 0.0.3
   exportedVariables:
     - tag
 
