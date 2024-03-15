@@ -180,13 +180,13 @@ OCIコンソール画面のハンバーガメニューから`ネットワーキ�
 Cloud Shellを起動し、以下のコマンドを実行します。  
 
 ```sh
-wget https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/oci-devops-handson/o/compute%2Foci-devops-compute.zip
+wget https://orasejapan.objectstorage.ap-tokyo-1.oci.customer-oci.com/n/orasejapan/b/oci-devops-handson/o/compute%2Foci-devops-compute.zip
 ```
 
 解凍します。
 
 ```sh
-unzip compute%2Foci-devops-compute.zip
+unzip compute_oci-devops-compute.zip
 ```
 
 これでサンプルアプリケーションと関連資材の取得は完了です。  

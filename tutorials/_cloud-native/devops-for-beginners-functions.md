@@ -59,13 +59,13 @@ Cloud Shell を開きます。OCI Console 右上の **Cloud Shell** を押しま
 
 ```bash
 cd ~; \
-wget -O devops-template-for-oracle-functions.zip https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/oci-devops-handson/o/functions%2Fdevops-template-for-oracle-functions.zip
+wget -O devops-template-for-oracle-functions.zip https://orasejapan.objectstorage.ap-tokyo-1.oci.customer-oci.com/n/orasejapan/b/oci-devops-handson/o/functions%2Fdevops-template-for-oracle-functions.zip
 ```
 
 zip を解答します。
 
 ```bash
-unzip devops-template-for-oracle-functions.zip 
+unzip functions_devops-template-for-oracle-functions.zip 
 ```
 
 ダウンロードした資材には以下が含まれています。
