@@ -48,7 +48,7 @@ header:
 
 また、デプロイしたベアメタルインスタンスのBIOS設定を確認する方法も解説します。
 
-ベアメタルインスタンスデプロイ時のBIOS設定に関するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/bios-settings.htm#bios-settings)** を参照ください。
+ベアメタルインスタンスデプロイ時のBIOS設定に関するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/bios-settings.htm#bios-settings)** を参照してください。
 
 ***
 # 1. BIOS設定を指定したベアメタルインスタンスのデプロイ
@@ -68,13 +68,19 @@ header:
 
 なお、 **OCI HPCチュートリアル集** の **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用する自動構築でHPC/GPUクラスタを構築する場合、 **HPCクラスタスタック** がBIOS設定に対応していないため、計算/GPUノードのBIOS設定を変更することが出来ません。
 
-以降では、 **インスタンス構成** でBIOS設定を指定する方法と、 **Terraform** スクリプトでBIOS設定を指定する方法を解説します
+また単一インスタンスをOCIコンソールからデプロイする場合は、インスタンス作成画面でBIOS設定を指定します。
+
+以降では、BIOS設定の指定方法を以下3タイプに分けて解説します。
+
+- **インスタンス構成** で指定
+- **Terraform** スクリプトで指定
+- 単一インスタンス作成時にOCIコンソールで指定
 
 ## 1-1. インスタンス構成でBIOS設定を指定する方法
 
 本章は、 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** でBIOS設定を指定する方法を解説します。
 
-**インスタンス構成** でBIOS設定を指定するには、 **インスタンス構成の作成** 画面の以下 **イメージとシェイプ** フィールドで、
+**インスタンス構成の作成** 画面の以下 **イメージとシェイプ** フィールドで、
 
 ![画面ショット](console_page01.png)
 
@@ -82,7 +88,7 @@ header:
 
 ![画面ショット](console_page02.png)
 
-表示される以下のBIOS設定フィールドで **NPS** と **SMT** の値を所望の値に設定し、 **シェイプの選択** ボタンをクリックします。
+表示される以下のBIOS設定フィールドで **NPS** と **SMT** を所望の値に設定し、 **シェイプの選択** ボタンをクリックします。
 
 ![画面ショット](console_page03.png)
 
@@ -91,6 +97,22 @@ header:
 本章は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[Terraform](/ocitutorials/hpc/#5-12-terraform)** を使用する自動構築でHPC/GPUクラスタを構築するHPC/GPUノードにBIOS設定を適用する方法を解説します。
 
 詳細は、HPCクラスタの場合は **OCI HPCチュートリアル集** の **[HPCクラスタを構築する（基礎インフラ自動構築編）](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** の **[0-1-2. スタック作成](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-1-2-スタック作成)**（**[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する場合）か **[0-2-3. Terraformスクリプト作成](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-2-3-terraformスクリプト作成)**（**[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する場合）を、GPUクラスタの場合は **OCI HPCチュートリアル集** の **[GPUクラスタを構築する（基礎インフラ自動構築編）](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の **[0-1-2. スタック作成](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-1-2-スタック作成)** （ **リソース・マネージャ** を使用する場合）か **[0-2-2. Terraformスクリプト作成](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-2-terraformスクリプト作成)** （ **Terraform** CLIを使用する場合）を参照してください。
+
+## 1-3. 単一インスタンス作成時にOCIコンソールで指定する方法
+
+本章は、インスタンスを単体でOCIコンソールから作成する場合にBIOS設定を指定する方法を解説します。
+
+**コンピュート・インスタンスの作成** 画面の以下 **イメージとシェイプ** フィールドで、
+
+![画面ショット](console_page01.png)
+
+**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで、 **ベア・メタル・マシン** をクリックして表示される所望のシェイプ（ここでは **BM.Optimized3.36**）を選択し **Show advanced BIOS settings**  ボタンをクリックし、
+
+![画面ショット](console_page02.png)
+
+表示される以下のBIOS設定フィールドで **NPS** と **SMT** を所望の値に設定し、 **シェイプの選択** ボタンをクリックします。
+
+![画面ショット](console_page03.png)
 
 ***
 # 2. デプロイしたベアメタルインスタンスのBIOS設定確認
