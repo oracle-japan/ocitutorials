@@ -185,11 +185,11 @@ NAME          STATUS   ROLES   AGE     VERSION
 起動後、以下コマンドを実行します。
 
 ```sh
-wget https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/oci-devops-handson/o/oke%2Foci-devops-oke.zip
+wget https://orasejapan.objectstorage.ap-tokyo-1.oci.customer-oci.com/n/orasejapan/b/oci-devops-handson/o/oke%2Foci-devops-oke.zip
 ```
 ***コマンド結果***
 ```sh
---2021-12-06 07:41:06--  https://objectstorage.uk-london-1.oraclecloud.com/p/NHrjAcamTrUsDXrJybmjKYxDdEH5qus9HMDlnh9lGRIp0GOELTK-wScn3aAehiMX/n/orasejapan/b/devday2021/o/oci-devops-oke.zip
+--2021-12-06 07:41:06--  https://orasejapan.objectstorage.ap-tokyo-1.oci.customer-oci.com/n/orasejapan/b/oci-devops-handson/o/oke%2Foci-devops-oke.zip
 Resolving objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)... 134.70.60.1, 134.70.64.1, 134.70.56.1
 Connecting to objectstorage.uk-london-1.oraclecloud.com (objectstorage.uk-london-1.oraclecloud.com)|134.70.60.1|:443... connected.
 HTTP request sent, awaiting response... 200 OK
@@ -204,7 +204,7 @@ Saving to: ‘oke%2Foci-devops-oke.zip’
 ダウンロードしたzipファイルを解凍します。
 
 ```sh
-unzip oke%2Foci-devops-oke.zip
+unzip oke_oci-devops-oke.zip
 ```
 
 「oci-devops-oke」というディレクトリがあることを確認します。
