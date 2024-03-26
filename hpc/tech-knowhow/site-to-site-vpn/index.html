@@ -30,13 +30,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/connection_type.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2024-03-15T16:31:11+09:00">
+  <meta property="article:published_time" content="2024-03-26T12:32:31+09:00">
 
 
 
@@ -153,7 +153,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/connection_type.png');"
 >
   
     <div class="wrapper">
@@ -338,6 +338,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/" class="active">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
@@ -355,7 +357,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="サイト間VPNによるOCIとの拠点間接続方法">
     <meta itemprop="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、オンプレミス側の有償CAEアプリケーション用ライセンスサーバにOCI側の計算ノードからライセンス取得のためにアクセスするケースや、オンプレミス側の端末からOCI側のログインノードにログインしインタラクティブ処理を行うケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
-    <meta itemprop="datePublished" content="2024-03-15T16:31:11+09:00">
+    <meta itemprop="datePublished" content="2024-03-26T12:32:31+09:00">
     
 
     <div class="page__inner-wrap">
@@ -396,13 +398,20 @@ table, th, td {
 </ol>
 
 <p>また <strong>サイト間VPN</strong> は、サービス自体は無償のサービスでパブリックインターネットを拠点間接続回線に利用するため、OCIからオンプレミスに向けた転送データ量が少ない利用形態 <strong>1.</strong> から <strong>3.</strong> のケースでは、他の有料専用線サービスと比較し、価格を抑えた拠点間接続が可能です。<br />
-また <strong>サイト間VPN</strong> を介する拠点間の通信帯域は、使用するインターネット接続回線に十分な余力がある場合、サービス自体の性能上限として250Mbps程度を期待することが出来ます。（詳細は、 <strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/interconnecting-clouds-with-oracle-cloud-infrastructure">ここ</a></strong> を参照ください。）このため、高い通信帯域を必要としない前述の利用形態 <strong>1.</strong> や <strong>2.</strong> のケースに於いては、パフォーマンス的にも十分な拠点間接続方法であると言えます。</p>
+また <strong>サイト間VPN</strong> を介する拠点間の通信帯域は、使用するインターネット接続回線に十分な余力がある場合、サービス自体の性能上限として250Mbps程度を期待することが出来ます。（詳細は、 <strong><a href="https://blogs.oracle.com/cloud-infrastructure/post/interconnecting-clouds-with-oracle-cloud-infrastructure">ここ</a></strong> を参照してください。）このため、高い通信帯域を必要としない前述の利用形態 <strong>1.</strong> や <strong>2.</strong> のケースに於いては、パフォーマンス的にも十分な拠点間接続方法であると言えます。<br />
+また <strong>サイト間VPN</strong> を使用する拠点間接続の冗長性は、以下の観点で考慮する必要がありますが、本テクニカルTipsの手順で作成する拠点間接続は、観点 <strong>1.</strong> のみ実施（以降の <strong><a href="#2-6-ipsec接続作成">2-6. IPSec接続作成</a></strong> で作成する2個のトンネルがそれぞれVPNヘッドエンドを持ちます。）されてます。観点 <strong>2.</strong> と <strong>3.</strong> の冗長化が必要な場合は、 <strong><a href="https://speakerdeck.com/ocise/ociji-shu-zi-liao-wai-bu-jie-sok-vpnjie-sok-xiang-xi?slide=10">ここ</a></strong> の情報が参考になります。</p>
+
+<ol>
+  <li>OCI側VPNヘッドエンドの冗長化</li>
+  <li>オンプレミス側VPN接続機器の冗長化</li>
+  <li>オンプレミス側インターネット接続回線の冗長化</li>
+</ol>
 
 <p>ここで <strong>サイト間VPN</strong> によるオンプレミスとOCIの拠点間接続は、いくつかの接続形態が用意されており、オンプレミス側の現状や各接続形態の特徴を考慮し、接続作業の第一ステップとしてどの接続形態を採用するかを決定する必要があります。</p>
 
 <p>また本テクニカルTipsは、拠点間が想定通り接続されていることを確認するため、オンプレミス側のプライベートネットワークに接続するライセンスサーバ相当のインスタンスとOCI側のプライベートサブネットに接続する計算ノード相当のインスタンス間でpingとSSHによる疎通確認を行います。</p>
 
-<p>次章以降では、以下の順に解説を進めます。</p>
+<p>以上より、次章以降では以下の順に解説を進めます。</p>
 
 <ol>
   <li>接続形態の決定</li>
@@ -418,16 +427,19 @@ table, th, td {
 <p>本章は、以下の観点からオンプレミスとOCIの拠点間接続形態を決定します。</p>
 
 <ol>
-  <li>オンプレミス側のVPN接続機器に何を使用するか</li>
-  <li>オンプレミス側のVPN接続機器をどのネットワーク（パブリック/プライベート）に接続するか</li>
-  <li>オンプレミスとOCIのルーティング情報交換を静的に行うか動的（BGP）に行うか</li>
+  <li>オンプレミス側のVPN接続機器に何を使用するか<br />
+（VPNアプライアンス製品かIPSecのソフトウェア実装（Libreswan）か）</li>
+  <li>オンプレミス側のVPN接続機器をどのネットワークに接続するか<br />
+（パブリックネットワーク接続かプライベートネットワーク接続か）</li>
+  <li>オンプレミスとOCIのルーティング情報をどのように交換するか<br />
+（静的ルーティングかBGP動的ルーティングか）</li>
 </ol>
 
 <p>ここで、観点 <strong>1.</strong> と観点 <strong>2.</strong> の組み合わせを考慮すると、以下3種類の接続形態が存在します。</p>
 
 <p><img src="connection_type.png" alt="画面ショット" /></p>
 
-<p>また、この3種類の接続形態に観点 <strong>3.</strong> の選択肢（静的ルーティング / BGP動的ルーティング）が加わり、最終的には以下6種類の接続形態が存在します。</p>
+<p>また、この3種類の接続形態に観点 <strong>3.</strong> の選択肢が加わり、最終的には以下6種類の接続形態が存在します。</p>
 
 <ul>
   <li>接続形態1-静的ルーティング</li>
@@ -569,16 +581,17 @@ table, th, td {
 
 <p>記載されるネットワークアドレス等は、自身の環境のものに読みかえてご利用ください。</p>
 
-<p>次章以降では、以下の順に解説を進めます。</p>
+<p>次章以降では、以下の順に解説を進めます。<br />
+括弧内の記述は、対象の手順をどちらのサイトで実施するかを示しています。</p>
 
 <ol>
-  <li>左側サイト用ネットワーク関連リソース作成</li>
-  <li>右側サイト用 <strong>仮想クラウド・ネットワーク</strong> と関連リソース作成</li>
-  <li>疎通確認用インスタンス作成</li>
-  <li>Libreswan用インスタンス作成・セットアップ</li>
-  <li>拠点間接続関連OCIリソース作成</li>
-  <li>IPSec接続作成</li>
-  <li>VPN接続機器セットアップ</li>
+  <li>左側サイト用ネットワーク関連リソース作成（左側サイト）</li>
+  <li>右側サイト用 <strong>仮想クラウド・ネットワーク</strong> と関連リソース作成（右側サイト）</li>
+  <li>疎通確認用インスタンス作成（左側サイト・右側サイト）</li>
+  <li>Libreswan用インスタンス作成・セットアップ（左側サイト）</li>
+  <li>拠点間接続関連OCIリソース作成（右側サイト）</li>
+  <li>IPSec接続作成（右側サイト）</li>
+  <li>VPN接続機器セットアップ（左側サイト）</li>
 </ol>
 
 <p>なお接続形態1を採用する場合は、手順 <strong>4.</strong> をスキップします。</p>
@@ -948,7 +961,7 @@ table, th, td {
   <li>接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可（※11）</li>
 </ul>
 
-<p>※10）デフォルトで許可されていない <strong>VNIC</strong> のパケット転送設定を変更し、これを許可します。なおこの手順は、OCIのインスタンスでの手順のため、オンプレミスで使用するサーバでの手順に置き換えて実施します。<br />
+<p>※10）デフォルトで許可されていない <strong>VNIC</strong> のパケット転送設定を変更し、これを許可します。このソース/宛先チェックのスキップは、OCIでインスタンスを作成する際に実施する手順のため、オンプレミスで使用するサーバでの手順に置き換えて実施します。<br />
 ※11）接続形態3でプライベートサブネット接続であることを理由に、firewalldを停止することでも代用可能です。</p>
 
 <ol>
@@ -1463,7 +1476,7 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
     <tr>
       <td style="text-align: center">1</td>
       <td style="text-align: center">1</td>
-      <td style="text-align: center">-</td>
+      <td style="text-align: center">静的 または BGP動的</td>
     </tr>
     <tr>
       <td style="text-align: center">2</td>
@@ -1945,7 +1958,7 @@ route-map ALLOW-ALL permit 100
 <p>※28）本テクニカルTipsでは、プライベートAS番号である <strong>65000</strong> を指定しますが、自身の環境に合わせて変更します。<br />
 ※29）本テクニカルTipsでは、 <strong>192.168.254.2</strong> を指定します。<br />
 ※30）本テクニカルTipsでは、 <strong>192.168.254.6</strong> を指定します。<br />
-※31）本テクニカルTipsでは、左側サイトのプライベートサブネット <strong>192.168.2.0/24</strong> と <strong>192.168.3.0/24</strong> を指定します。配布するサブネットは、この行を増やすことで追加することが出来ます。</p>
+※31）本テクニカルTipsでは、左側サイトのプライベートサブネット <strong>192.168.3.0/24</strong> と <strong>192.168.4.0/24</strong> を指定します。配布するサブネットは、この行を増やすことで追加することが出来ます。</p>
 
 <ul>
   <li>配布ルート設定ファイル作成<br />
@@ -1968,13 +1981,18 @@ ip route 192.168.4.0/24 192.168.2.1
 
 <ul>
   <li>
-    <p><strong>FRR</strong> 起動・ルート情報配布確認<br />
-Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 <strong>FRR</strong> を起動、左側サイトのルート情報が右側サイトに配布されていることを確認します。このルート情報配布は、 <strong>Up/Down</strong> 列に配布開始からの時間が表示されることで確認します。<br />
-なお、ルート情報が配布されるまで数分程度の時間を要します。</p>
+    <p><strong>FRR</strong> 起動<br />
+Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 <strong>FRR</strong> を起動します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> frr.service
-  Created symlink /etc/systemd/system/multi-user.target.wants/frr.service → /usr/lib/systemd/system/frr.service.
-  <span class="nv">$ </span><span class="nb">sudo </span>vtysh <span class="nt">-c</span> <span class="s2">"show bgp summary"</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>BGPピア接続確立確認<br />
+Libreswan用インスタンスのopcユーザで以下コマンドを実行し、コマンド出力の <strong>Up/Down</strong> 列に時間が表示されていることをもって、オンプレミスとOCIのBGPピア接続が確立されていることを確認します。<br />
+なお、 <strong>FRR</strong> を起動してからBGPピア接続が確立されるまで、数分程度の時間を要します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">$ </span><span class="nb">sudo </span>vtysh <span class="nt">-c</span> <span class="s2">"show bgp summary"</span>
 
   IPv4 Unicast Summary:
   BGP router identifier 192.168.254.5, <span class="nb">local </span>AS number 65000 vrf-id 0
@@ -1989,8 +2007,10 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
   Total number of neighbors 2
   <span class="err">$</span>
 </code></pre></div>    </div>
-
-    <p>OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
+  </li>
+  <li>
+    <p>ルート情報の配布確認<br />
+OCIコンソールにログインし、右側サイトをデプロイする <strong>リージョン</strong> を選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿り、表示される以下画面で <strong>顧客接続性</strong> メニューをクリックします。</p>
 
     <p><img src="console_page03.png" alt="画面ショット" /></p>
 
@@ -2115,7 +2135,7 @@ Libreswan用インスタンスのopcユーザで以下コマンドを実行し�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-15T16:31:11+09:00">March 15, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-26T12:32:31+09:00">March 26, 2024</time></p>
 
 
       </footer>

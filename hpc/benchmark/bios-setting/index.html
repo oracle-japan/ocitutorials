@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-03-15T16:31:11+09:00">
+  <meta property="article:published_time" content="2024-03-26T12:32:31+09:00">
 
 
 
@@ -338,6 +338,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
@@ -355,7 +357,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法">
     <meta itemprop="description" content="OCIのベアメタルインスタンスは、デプロイする際にBIOSの設定を指定することが可能です。これらの設定は、NPS（NUMA nodes per socket）やSMT（Simultanious Multi Threading）といった、当該インスタンスの性能に影響するものが少なくありません。本パフォーマンス関連Tipsは、これらのBIOS設定を指定してHPC/GPUクラスタを構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-03-15T16:31:11+09:00">
+    <meta itemprop="datePublished" content="2024-03-26T12:32:31+09:00">
     
 
     <div class="page__inner-wrap">
@@ -366,7 +368,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bios設定を指定したベアメタルインスタンスのデプロイ">1. BIOS設定を指定したベアメタルインスタンスのデプロイ</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-インスタンス構成でbios設定を指定する方法">1-1. インスタンス構成でBIOS設定を指定する方法</a></li><li><a href="#1-2-terraformスクリプトでbios設定を指定する方法">1-2. TerraformスクリプトでBIOS設定を指定する方法</a></li></ul></li><li><a href="#2-デプロイしたベアメタルインスタンスのbios設定確認">2. デプロイしたベアメタルインスタンスのBIOS設定確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bios設定を指定したベアメタルインスタンスのデプロイ">1. BIOS設定を指定したベアメタルインスタンスのデプロイ</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-インスタンス構成でbios設定を指定する方法">1-1. インスタンス構成でBIOS設定を指定する方法</a></li><li><a href="#1-2-terraformスクリプトでbios設定を指定する方法">1-2. TerraformスクリプトでBIOS設定を指定する方法</a></li><li><a href="#1-3-単一インスタンス作成時にociコンソールで指定する方法">1-3. 単一インスタンス作成時にOCIコンソールで指定する方法</a></li></ul></li><li><a href="#2-デプロイしたベアメタルインスタンスのbios設定確認">2. デプロイしたベアメタルインスタンスのBIOS設定確認</a></li></ul>
 
             </nav>
           </aside>
@@ -436,7 +438,7 @@ HPCワークロードにみられるCPUインテンシブなアプリケーシ�
 
 <p>また、デプロイしたベアメタルインスタンスのBIOS設定を確認する方法も解説します。</p>
 
-<p>ベアメタルインスタンスデプロイ時のBIOS設定に関するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/bios-settings.htm#bios-settings">ここ</a></strong> を参照ください。</p>
+<p>ベアメタルインスタンスデプロイ時のBIOS設定に関するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/bios-settings.htm#bios-settings">ここ</a></strong> を参照してください。</p>
 
 <hr />
 <h1 id="1-bios設定を指定したベアメタルインスタンスのデプロイ">1. BIOS設定を指定したベアメタルインスタンスのデプロイ</h1>
@@ -461,13 +463,21 @@ HPCワークロードにみられるCPUインテンシブなアプリケーシ�
 
 <p>なお、 <strong>OCI HPCチュートリアル集</strong> の <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を使用する自動構築でHPC/GPUクラスタを構築する場合、 <strong>HPCクラスタスタック</strong> がBIOS設定に対応していないため、計算/GPUノードのBIOS設定を変更することが出来ません。</p>
 
-<p>以降では、 <strong>インスタンス構成</strong> でBIOS設定を指定する方法と、 <strong>Terraform</strong> スクリプトでBIOS設定を指定する方法を解説します</p>
+<p>また単一インスタンスをOCIコンソールからデプロイする場合は、インスタンス作成画面でBIOS設定を指定します。</p>
+
+<p>以降では、BIOS設定の指定方法を以下3タイプに分けて解説します。</p>
+
+<ul>
+  <li><strong>インスタンス構成</strong> で指定</li>
+  <li><strong>Terraform</strong> スクリプトで指定</li>
+  <li>単一インスタンス作成時にOCIコンソールで指定</li>
+</ul>
 
 <h2 id="1-1-インスタンス構成でbios設定を指定する方法">1-1. インスタンス構成でBIOS設定を指定する方法</h2>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> でBIOS設定を指定する方法を解説します。</p>
 
-<p><strong>インスタンス構成</strong> でBIOS設定を指定するには、 <strong>インスタンス構成の作成</strong> 画面の以下 <strong>イメージとシェイプ</strong> フィールドで、</p>
+<p><strong>インスタンス構成の作成</strong> 画面の以下 <strong>イメージとシェイプ</strong> フィールドで、</p>
 
 <p><img src="console_page01.png" alt="画面ショット" /></p>
 
@@ -475,7 +485,7 @@ HPCワークロードにみられるCPUインテンシブなアプリケーシ�
 
 <p><img src="console_page02.png" alt="画面ショット" /></p>
 
-<p>表示される以下のBIOS設定フィールドで <strong>NPS</strong> と <strong>SMT</strong> の値を所望の値に設定し、 <strong>シェイプの選択</strong> ボタンをクリックします。</p>
+<p>表示される以下のBIOS設定フィールドで <strong>NPS</strong> と <strong>SMT</strong> を所望の値に設定し、 <strong>シェイプの選択</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page03.png" alt="画面ショット" /></p>
 
@@ -484,6 +494,22 @@ HPCワークロードにみられるCPUインテンシブなアプリケーシ�
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> を使用する自動構築でHPC/GPUクラスタを構築するHPC/GPUノードにBIOS設定を適用する方法を解説します。</p>
 
 <p>詳細は、HPCクラスタの場合は <strong>OCI HPCチュートリアル集</strong> の <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する（基礎インフラ自動構築編）</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-1-2-スタック作成">0-1-2. スタック作成</a></strong>（<strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する場合）か <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-2-3-terraformスクリプト作成">0-2-3. Terraformスクリプト作成</a></strong>（<strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIを使用する場合）を、GPUクラスタの場合は <strong>OCI HPCチュートリアル集</strong> の <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する（基礎インフラ自動構築編）</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-1-2-スタック作成">0-1-2. スタック作成</a></strong> （ <strong>リソース・マネージャ</strong> を使用する場合）か <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-2-terraformスクリプト作成">0-2-2. Terraformスクリプト作成</a></strong> （ <strong>Terraform</strong> CLIを使用する場合）を参照してください。</p>
+
+<h2 id="1-3-単一インスタンス作成時にociコンソールで指定する方法">1-3. 単一インスタンス作成時にOCIコンソールで指定する方法</h2>
+
+<p>本章は、インスタンスを単体でOCIコンソールから作成する場合にBIOS設定を指定する方法を解説します。</p>
+
+<p><strong>コンピュート・インスタンスの作成</strong> 画面の以下 <strong>イメージとシェイプ</strong> フィールドで、</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p><strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで、 <strong>ベア・メタル・マシン</strong> をクリックして表示される所望のシェイプ（ここでは <strong>BM.Optimized3.36</strong>）を選択し <strong>Show advanced BIOS settings</strong>  ボタンをクリックし、</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>表示される以下のBIOS設定フィールドで <strong>NPS</strong> と <strong>SMT</strong> を所望の値に設定し、 <strong>シェイプの選択</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
 
 <hr />
 <h1 id="2-デプロイしたベアメタルインスタンスのbios設定確認">2. デプロイしたベアメタルインスタンスのBIOS設定確認</h1>
@@ -508,7 +534,7 @@ HPCワークロードにみられるCPUインテンシブなアプリケーシ�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-15T16:31:11+09:00">March 15, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-26T12:32:31+09:00">March 26, 2024</time></p>
 
 
       </footer>
