@@ -1385,6 +1385,18 @@ var store = [{
         "url": "/ocitutorials/integration/app-integration-for-beginners-3-sfdc/",
         "teaser": null
       },{
+        "title": "Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)",
+        "excerpt":"OCI Process Automation(OPA) の機能を利用して、簡単なワークフローの作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 ここでは、従業員が休暇取得の申請を提出し、その上司が申請内容を承認 or 却下するシンプルな休暇申請ワークフローを作成します。 前提条件 OPA インスタンスの作成 が完了していること または Oracle Integration 3 Enterprise Edition インスタンスを作成し、OPA を有効化していること(OPAはOIC3 Enterprise Editionにも含まれています) アクセスの管理とロールの割当が完了していること OPA で簡単なワークフローを作成する OPA インスタンスにアクセスする Web ブラウザを開き、提供された OPA インスタンスのURLを入力します。もしくはOCIのコンソールから「開発者サービス」－「アプケーション統合」－「Process Automation」から作成済みのOPAインスタンスを選択し、「Open console」からOPAコンソールを開きます。 TIPS 画面を開く際、OCIにログインしていない場合はログインしてください。 OPA のホーム画面が開きます。 プロセス・アプリケーションを作成する 最初に大枠であるプロセス・アプリケーションを作成します。 「Create」をクリックします。 「Create process application」をクリックします。 Title、Descriptionを入力します、ここでは以下を入力します。「Create」をクリックします。 入力項目 入力する値 Title LeaveRequestApplication Description 休暇取得申請業務のアプリケーション LeaveRequestApplication...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/integration/opa-for-beginners-1-designer/",
+        "teaser": null
+      },{
+        "title": "Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)",
+        "excerpt":"OCI Process Automation(OPA) の機能を利用して、作成編で作成したワークフローを実行する手順を紹介するチュートリアルです。 前提条件 OPA インスタンスの作成 が完了していること または Oracle Integration 3 Enterprise Edition インスタンスを作成し、OPA を有効化していること(OPAはOIC3 Enterprise Editionにも含まれています) アクセスの管理とロールの割当が完了していること Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)が完了していること OPA workspaceでワークフローを実行する OPA ではワークフローをdesignの画面で作成し、workspaceの画面で申請、承認などを実行します。 OPA workspaceにアクセスする Web ブラウザを開き、提供された OPA workspaceのURLを入力します。もしくはOPAのdesign画面から左のメニューで「workspace」をクリックして遷移します。 TIPS 画面を開く際、OCIにログインしていない場合はログインしてください。 OIC workspaceのホーム画面が開きます。 プロセス・アプリケーションの申請を開始する Start Requestsの画面ではアクティベートされたプロセス・アプリケーションが一覧で表示されています。 その中からOracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)で作成したアプリケーションを探してクリックします。手順の通りであればLeaveRequestApplicationの名前のアプリケーションです。 任意の項目を入力して「Submit」をクリックします。 これで申請が完了しました。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/integration/opa-for-beginners-1-workspace/",
+        "teaser": null
+      },{
         "title": "Oracle Integration - Process で簡単なワークフローを作成してみよう",
         "excerpt":"Oracle Integration(OIC) のプロセス自動化 (Process Automation) 機能を利用して、簡単なワークフローの作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 ここでは、従業員が休暇取得の申請を提出し、その上司が申請内容を承認 or 却下するシンプルな休暇申請ワークフローを作成します。 前提条件 Oracle Integration Cloud インスタンスの作成 が完了していること Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。 この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。 OIC インスタンス作成時のエディションが ENTERPRISE であること OIC インスタンスの ServiceAdministrator ロールが付与されたユーザーが準備されていること (参考) Oracle Integration Roles and Privileges https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34 Process Automation で簡単なワークフローを作成する OIC インスタンスにアクセスする Web ブラウザを開き、提供された OIC インスタンスのURLを入力します。もしくはOCIのコンソールから「開発者サービス」－「アプケーション統合」から作成済みのOICインスタンスを選択し、「サービス・コンソール」からOICコンソールを開きます。 TIPS OCIにログインしていない場合はユーザー名とパスワードを入力し、サイン・インをクリックします。 OIC...","categories": [],
         "tags": [],

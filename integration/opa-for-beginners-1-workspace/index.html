@@ -1,0 +1,669 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Process Automation を理解するなら、ここから始めましょう。作成したワークフローを使って申請～承認の一連の手順を体験できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/opa-for-beginners-1-workspace/">
+
+
+  <meta property="og:description" content="OCI Process Automation を理解するなら、ここから始めましょう。作成したワークフローを使って申請～承認の一連の手順を体験できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-03-27T14:59:16+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/opa-for-beginners-1-workspace/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://oracle-japan.github.io/ocitutorials/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7">チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a href="/ocitutorials/about/">このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Process Automation を理解するなら、ここから始めましょう。作成したワークフローを使って申請～承認の一連の手順を体験できます。
+</p>
+      
+      
+
+
+      
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="https://oracle-japan.github.io/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance-id/">OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/opa-for-beginners-1-designer/">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/opa-for-beginners-1-workspace/" class="active">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-1/">Oracle Integration - Visual Builder で簡単なWebアプリケーションを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-2-vbs/">Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-3-rest/">REST APIで取得したデータを一覧表示する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-4-linechart/">ビジネス・オブジェクトのデータを折れ線グラフで表示する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-5-gmap/">住所の値を基に地図上にピンマークを設置する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)">
+    <meta itemprop="description" content="OCI Process Automation を理解するなら、ここから始めましょう。作成したワークフローを使って申請～承認の一連の手順を体験できます。">
+    <meta itemprop="datePublished" content="2024-03-27T14:59:16+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#opa-workspaceでワークフローを実行する">OPA workspaceでワークフローを実行する</a><ul><li><a href="#opa-workspaceにアクセスする">OPA workspaceにアクセスする</a></li><li><a href="#プロセスアプリケーションの申請を開始する">プロセス・アプリケーションの申請を開始する</a></li><li><a href="#申請の状況を確認する">申請の状況を確認する</a></li><li><a href="#申請を拒否する">申請を拒否する</a></li><li><a href="#申請を再提出する">申請を再提出する</a></li><li><a href="#申請を承認する">申請を承認する</a></li><li><a href="#終了したプロセスアプリケーションを確認する">終了したプロセス・アプリケーションを確認する</a></li></ul></li></ul>
+
+            </nav>
+          </aside>
+        
+        <p>OCI Process Automation(OPA) の機能を利用して、作成編で作成したワークフローを実行する手順を紹介するチュートリアルです。</p>
+
+<p><img src="000.png" alt="" /></p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.oracle.com/ja-jp/iaas/process-automation/oci-process-automation/provision-process-automation-instance.html">OPA インスタンスの作成</a> が完了していること または Oracle Integration 3 Enterprise Edition インスタンスを作成し、<a href="https://docs.oracle.com/ja-jp/iaas/process-automation/oci-process-automation/enable-process-automation-oracle-integration-3.html">OPA を有効化</a>していること(OPAはOIC3 Enterprise Editionにも含まれています)</p>
+  </li>
+  <li>
+    <p><a href="https://docs.oracle.com/ja-jp/iaas/process-automation/oci-process-automation/manage-access-and-assign-roles.html">アクセスの管理とロールの割当</a>が完了していること</p>
+  </li>
+  <li>
+    <p><a href="../opa-for-beginners-1-designer/">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)</a>が完了していること</p>
+  </li>
+</ul>
+
+<h2 id="opa-workspaceでワークフローを実行する">OPA workspaceでワークフローを実行する</h2>
+
+<p>OPA ではワークフローをdesignの画面で作成し、workspaceの画面で申請、承認などを実行します。</p>
+
+<h3 id="opa-workspaceにアクセスする">OPA workspaceにアクセスする</h3>
+<p>Web ブラウザを開き、提供された OPA workspaceのURLを入力します。もしくはOPAのdesign画面から左のメニューで「workspace」をクリックして遷移します。</p>
+
+<p><img src="001.png" alt="" /></p>
+
+<div class="notice--warning">
+  <p><strong>TIPS</strong> <br />
+画面を開く際、OCIにログインしていない場合はログインしてください。</p>
+
+</div>
+
+<p>OIC workspaceのホーム画面が開きます。
+<img src="002.png" alt="" /></p>
+
+<h3 id="プロセスアプリケーションの申請を開始する">プロセス・アプリケーションの申請を開始する</h3>
+
+<p>Start Requestsの画面ではアクティベートされたプロセス・アプリケーションが一覧で表示されています。 <br />
+その中から<a href="../opa-for-beginners-1-designer/">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)</a>で作成したアプリケーションを探してクリックします。手順の通りであればLeaveRequestApplicationの名前のアプリケーションです。</p>
+
+<p><img src="003.png" alt="" /></p>
+
+<p>任意の項目を入力して「Submit」をクリックします。</p>
+
+<p><img src="004.png" alt="" /></p>
+
+<p>これで申請が完了しました。</p>
+
+<h3 id="申請の状況を確認する">申請の状況を確認する</h3>
+
+<p>次に申請したアプリケーションの状況を確認します。</p>
+
+<p>左上のメニューから「Tracking」をクリックします。</p>
+
+<p><img src="005.png" alt="" /></p>
+
+<p>先ほど開始した申請が表示されるのでクリックして詳細を開きます。</p>
+
+<p><img src="006.png" alt="" /></p>
+
+<p>ここでは申請の状況が確認できます。Auditをクリックするとどこまで申請が進んでいるか確認することができます。</p>
+
+<p><img src="007.png" alt="" /></p>
+
+<p>また、進行中のタスクではアサインされているロールやユーザーを確認することができます。</p>
+
+<p><img src="009.png" alt="" /></p>
+
+<p>「View input and output」を押すと申請や承認時に入力された値を確認することができます。</p>
+
+<p><img src="008.png" alt="" /></p>
+
+<p>申請・承認時にコメントのやり取りが必要な場合は「Comment」の機能を使ってコメントのやり取りをすることができます。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<p>ドキュメントを添付する機能もあります。</p>
+
+<p><img src="011.png" alt="" /></p>
+
+<p>また、Trackingの画面からは以下の操作を実行することもできます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>操作</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Terminate</td>
+      <td>強制的にプロセスを終了します。Terminate状態は、プロセスに関連付けられたすべてのタスクが正常に完了することなく、プロセスが突然停止されたことを示します。</td>
+    </tr>
+    <tr>
+      <td>Suspend</td>
+      <td>一時停止状態にする操作です。プロセスは、ユーザーアクションまたは REST API によって手動で一時停止できます。一時停止状態では承認、拒否などの操作を進めることができません。ユーザーは、一時停止状態にあるプロセスを終了または再開できます。再開されると、一時停止されたプロセスはアクティブ状態に移行します。</td>
+    </tr>
+    <tr>
+      <td>Alter Flow</td>
+      <td>フローを強制的に任意のタスクまで進めたり戻したりする操作です。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="申請を拒否する">申請を拒否する</h3>
+
+<p>先ほど申請を開始したので、今は承認のタスクに進んでいます。</p>
+
+<p><img src="000_1.png" alt="" /></p>
+
+<p>次は自分が割り当てられているタスクを確認し、処理します。 <br />
+こちらの手順では最初に拒否の動作を確認した後、再申請で承認する手順を実行します。</p>
+
+<p>左上のメニューから「Tasks」をクリックします。</p>
+
+<p><img src="013.png" alt="" /></p>
+
+<p>「Team Task」のタブをクリックすると、先ほど申請したプロセス・アプリケーションが表示されます。
+クリックして詳細を開きます。</p>
+
+<p><img src="013.png" alt="" /></p>
+
+<p class="notice--info"><strong>My tasksとTeam tasksについて</strong> <br />
+タスクが個人単位でアサインされている場合、My tasksに表示されます。タスクにアサインしているのがRoleの場合はTeam tasksにタスクが表示されます。今回の場合はApproveというRoleをタスクに割り当てているのでTeam tasksからタスクが確認できます。</p>
+
+<p>詳細が開かれます。 <br />
+Trakingの画面と同様のコメントやドキュメントの添付などはこちらの詳細画面からも実施できます。 <br />
+詳細画面から「拒否」をクリックします。</p>
+
+<p><img src="016.png" alt="" /></p>
+
+<p>また、承認、拒否の他に以下の操作を実行することができます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>操作</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Withdraw</td>
+      <td>このタスクをスキップします。</td>
+    </tr>
+    <tr>
+      <td>Escalate</td>
+      <td>他のユーザー、グループにタスクをエスカレートします。エスカレートされたタスクはステータスがエスカレートになります。この機能は主にタスクの重要度を上げる際に使用し、タスクが一定期間処理されなかった場合に自動的にタスクを他のメンバーに割り当てるということも可能です。</td>
+    </tr>
+    <tr>
+      <td>Claim</td>
+      <td>複数のユーザー、グループが割り当てられている場合にタスクを占有します。占有されたタスクはMy tasks空のみ確認でき、Team tasksに表示されなくなります。</td>
+    </tr>
+    <tr>
+      <td>Reassagin</td>
+      <td>他のユーザー、グループにタスクを再アサインします。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="申請を再提出する">申請を再提出する</h3>
+
+<p>先ほど申請は拒否されたので、今は再申請のタスクに進んでいます。</p>
+
+<p><img src="000_2.png" alt="" /></p>
+
+<p>次は再申請します。 <br />
+左のメニューから「Tasks」－「Team Tasks」を選択し、先ほど拒否をしたプロセスが「休暇取得申請の再提出を入力」という名前で表示されます。 <br />
+クリックして開きます。</p>
+
+<p><img src="017.png" alt="" /></p>
+
+<p>適当な項目を変更し、「送信」をクリックします。</p>
+
+<p><img src="018.png" alt="" /></p>
+
+<h3 id="申請を承認する">申請を承認する</h3>
+
+<p>先ほど申請を再提出したので、今は再度承認のタスクに進んでいます。</p>
+
+<p><img src="000_1.png" alt="" /></p>
+
+<p>今度は申請を承認します。 <br />
+Task一覧の画面を表示し、「休暇取得申請の承認」をクリックします。</p>
+
+<p><img src="019.png" alt="" /></p>
+
+<p>先ほど編集した内容が反映されていることを確認し、「承認」をクリックします。</p>
+
+<p><img src="020.png" alt="" /></p>
+
+<h3 id="終了したプロセスアプリケーションを確認する">終了したプロセス・アプリケーションを確認する</h3>
+
+<p>承認が完了したのでプロセス・アプリケーションは既に終了しています。</p>
+
+<p><img src="000_3.png" alt="" /></p>
+
+<p>最後に終了したプロセスを確認します。
+左のメニューから「Tracking」をクリックします。</p>
+
+<p><img src="021.png" alt="" /></p>
+
+<p>Completedをクリックすると、既に終了したプロセスを確認することができます。 <br />
+先ほど承認されたプロセスが表示されるのでクリックして開きます。</p>
+
+<p><img src="022.png" alt="" /></p>
+
+<p>Auditを開いてどのような処理が実行されたか確認します。 <br />
+今回は申請→拒否→再申請→承認というルートで実行されたことがわかります。</p>
+
+<p><img src="023.png" alt="" /></p>
+
+<p>添付されたドキュメントやコメントもこちらから確認することができます。</p>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-27T14:59:16+09:00">March 27, 2024</time></p>
+
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Cloud+Infrastructure+Process+Automation+%E3%81%A7%E7%B0%A1%E5%8D%98%E3%81%AA%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%28%E5%AE%9F%E8%A1%8C%E7%B7%A8%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fopa-for-beginners-1-workspace%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fopa-for-beginners-1-workspace%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fopa-for-beginners-1-workspace%2F" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/integration/opa-for-beginners-1-designer/" class="pagination--pager" title="Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/integration/process-for-beginners-1-wf/" class="pagination--pager" title="Oracle Integration - Process で簡単なワークフローを作成してみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h4 class="page__related-title">関連記事</h4>
+      <div class="grid__wrapper">
+        
+      </div>
+    </div>
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 Oracle Cloud Infrastructure チュートリアル. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+
+  </body>
+</html>
