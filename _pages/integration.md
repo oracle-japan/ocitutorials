@@ -40,6 +40,18 @@ OIC を利用するユーザーを追加する手順について説明します�
 
 ### 初級編
 
+## Process Automation チュートリアル
+
+### 初級編(OCI Process Automation)
+
+**[Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)](./opa-for-beginners-1-designer)**   
+OCI Process Automation を理解するなら、ここから始めましょう。1段階承認のシンプルなワークフロー(休暇取得承認ワークフロー)をゼロから開発し、一連の開発サイクルを体験できます。
+
+**[Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)](./opa-for-beginners-1-workspace)**   
+OCI Process Automation を使って作成したワークフローで申請～承認の一連の手順を体験できます。
+
+### 初級編(OIC Process)
+
 **[Process で簡単なワークフローを作成してみよう](./process-for-beginners-1-wf)**   
 OIC-Process を理解するなら、ここから始めましょう。1段階承認のシンプルなワークフロー（休暇取得承認ワークフロー）をゼロから開発し、検証・公開までの一連の開発サイクルを体験できます。
 
