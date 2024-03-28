@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-03-27T14:59:16+09:00">
+  <meta property="article:published_time" content="2024-03-28T18:17:26+09:00">
 
 
 
@@ -296,6 +296,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
@@ -357,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurm環境での利用を前提とするOpenMPI構築方法">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。本テクニカルTipsは、PMIxを使用するSlurm環境での利用を前提とするOpenMPI構築方法を解説します。">
-    <meta itemprop="datePublished" content="2024-03-27T14:59:16+09:00">
+    <meta itemprop="datePublished" content="2024-03-28T18:17:26+09:00">
     
 
     <div class="page__inner-wrap">
@@ -401,7 +403,7 @@
 <p>各ソフトウェアは、以下のバージョンを前提としています。</p>
 
 <ul>
-  <li>OS ： <strong>Oracle Linux 8</strong></li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.9</li>
   <li>MPI ： <strong>OpenMPI</strong> 5.0.0</li>
   <li>PMIx ： <strong><a href="https://openpmix.github.io/">OpenPMIx</a></strong> 4.2.7</li>
 </ul>
@@ -423,13 +425,11 @@
 <span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./libevent-2.1.12-stable.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>libevent-2.1.12-stable<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/libevent
-<span class="nv">$ </span>make
-<span class="nv">$ </span><span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 <span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://download.open-mpi.org/release/hwloc/v2.9/hwloc-2.9.3.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./hwloc-2.9.3.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>hwloc-2.9.3<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/hwloc
-<span class="nv">$ </span>make
-<span class="nv">$ </span><span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -438,8 +438,7 @@
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://github.com/openpmix/openpmix/releases/download/v4.2.7/pmix-4.2.7.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./pmix-4.2.7.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>pmix-4.2.7<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc
-<span class="nv">$ </span>make
-<span class="nv">$ </span><span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -451,21 +450,26 @@
 
 <ol>
   <li>
+    <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>OpenMPI</strong> の前提となるソフトウェアをインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> gcc-c++ gcc-gfortran
+</code></pre></div>    </div>
+  </li>
+  <li>
     <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>OpenMPI</strong> をインストールします。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.0.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./openmpi-5.0.0.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>openmpi-5.0.0<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/openmpi-5.0.0 <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc <span class="nt">--with-pmix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-slurm</span>
-<span class="nv">$ </span>make all
-<span class="nv">$ </span><span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div>    </div>
   </li>
   <li>
     <p>以下コマンドを当該ノードの <strong>OpenMPI</strong> を利用するユーザで実行し、必要な環境設定を行います。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=</span><span class="se">\$</span><span class="s2">PATH:/opt/openmpi-5.0.0/bin"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export MANPATH=</span><span class="se">\$</span><span class="s2">MANPATH:/opt/openmpi-5.0.0/man"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
-<span class="nv">$ </span><span class="nb">source</span> ~/.bash_profile
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=</span><span class="se">\$</span><span class="s2">PATH:/opt/openmpi-5.0.0/bin"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export MANPATH=</span><span class="se">\$</span><span class="s2">MANPATH:/opt/openmpi-5.0.0/man"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
+<span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
 </code></pre></div>    </div>
   </li>
 </ol>
@@ -480,15 +484,15 @@
     <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>Intel MPI Benchmark</strong> をインストールします。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git
-<span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> git clone https://github.com/intel/mpi-benchmarks
+<span class="nv">$ </span>git clone https://github.com/intel/mpi-benchmarks
 <span class="nv">$ </span><span class="nb">cd </span>mpi-benchmarks<span class="p">;</span> <span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi-5.0.0/bin/mpicxx<span class="p">;</span> <span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi-5.0.0/bin/mpicc<span class="p">;</span> make all
 <span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/openmpi-5.0.0/tests/imb
 <span class="nv">$ </span><span class="nb">sudo cp</span> ./IMB<span class="k">*</span> /opt/openmpi-5.0.0/tests/imb/
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Intel MPI Benchmark</strong> を実行するノード間でパスフレーズ無しでSSHアクセスが出来るよう設定します。<br />
-ノード間でホームディレクトリを共有している場合、1台のノードで当該ユーザで以下コマンドを実行することで、その設定が可能です。<br />
+    <p>以下コマンドを当該ノードの <strong>OpenMPI</strong> を利用するユーザで実行し、<strong>Intel MPI Benchmark</strong> を実行するノード間でこのユーザがパスフレーズ無しでSSHアクセス出来るよう設定します。<br />
+ノード間でホームディレクトリを共有している場合、1台のノードで以下コマンドを実行することで、その設定が完了します。<br />
 なお、ホスト名を記載したホストリストファイルを、当該ユーザのホームディレクトリ直下に <strong>hostlist.txt</strong> として予め作成しておきます。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> <span class="nb">mkdir</span> .ssh<span class="p">;</span> <span class="nb">chmod </span>700 .ssh
@@ -517,7 +521,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-27T14:59:16+09:00">March 27, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-28T18:17:26+09:00">March 28, 2024</time></p>
 
 
       </footer>
