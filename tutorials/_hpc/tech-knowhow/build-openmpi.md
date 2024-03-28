@@ -31,7 +31,7 @@ header:
 
 各ソフトウェアは、以下のバージョンを前提としています。
 
-- OS ： **Oracle Linux 8**
+- OS ： **Oracle Linux** 8.9
 - MPI ： **OpenMPI** 5.0.0
 - PMIx ： **[OpenPMIx](https://openpmix.github.io/)** 4.2.7
 
@@ -51,13 +51,11 @@ header:
    $ cd ~; wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
    $ tar -xvf ./libevent-2.1.12-stable.tar.gz
    $ cd libevent-2.1.12-stable; ./configure --prefix=/opt/libevent
-   $ make
-   $ sudo make install
+   $ make && sudo make install
    $ cd ~; wget https://download.open-mpi.org/release/hwloc/v2.9/hwloc-2.9.3.tar.gz
    $ tar -xvf ./hwloc-2.9.3.tar.gz
    $ cd hwloc-2.9.3; ./configure --prefix=/opt/hwloc
-   $ make
-   $ sudo make install
+   $ make && sudo make install
    ```
 
 2. 以下コマンドを当該ノードのopcユーザで実行し、 **OpenPMIx** をインストールします。
@@ -66,8 +64,7 @@ header:
    $ cd ~; wget https://github.com/openpmix/openpmix/releases/download/v4.2.7/pmix-4.2.7.tar.gz
    $ tar -xvf ./pmix-4.2.7.tar.gz
    $ cd pmix-4.2.7; ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-   $ make
-   $ sudo make install
+   $ make && sudo make install
    ```
 
 ***
@@ -75,22 +72,27 @@ header:
 
 本章は、 **OpenMPI** を **/opt** ディレクトリにインストールし、利用に必要な環境設定を行います。
 
-1. 以下コマンドを当該ノードのopcユーザで実行し、 **OpenMPI** をインストールします。
+1. 以下コマンドを当該ノードのopcユーザで実行し、 **OpenMPI** の前提となるソフトウェアをインストールします。
+
+   ```sh
+   $ sudo dnf install -y gcc-c++ gcc-gfortran
+   ```
+
+2. 以下コマンドを当該ノードのopcユーザで実行し、 **OpenMPI** をインストールします。
 
    ```sh
    $ cd ~; wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.0.tar.gz
    $ tar -xvf ./openmpi-5.0.0.tar.gz
    $ cd openmpi-5.0.0; ./configure --prefix=/opt/openmpi-5.0.0 --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-slurm
-   $ make all
-   $ sudo make install
+   $ make all && sudo make install
    ```
 
-2. 以下コマンドを当該ノードの **OpenMPI** を利用するユーザで実行し、必要な環境設定を行います。
+3. 以下コマンドを当該ノードの **OpenMPI** を利用するユーザで実行し、必要な環境設定を行います。
 
    ```sh
-   $ echo "export PATH=\$PATH:/opt/openmpi-5.0.0/bin" | tee -a ~/.bash_profile
-   $ echo "export MANPATH=\$MANPATH:/opt/openmpi-5.0.0/man" | tee -a ~/.bash_profile
-   $ source ~/.bash_profile
+   $ echo "export PATH=\$PATH:/opt/openmpi-5.0.0/bin" | tee -a ~/.bashrc
+   $ echo "export MANPATH=\$MANPATH:/opt/openmpi-5.0.0/man" | tee -a ~/.bashrc
+   $ source ~/.bashrc
    ```
 
 ***
@@ -102,14 +104,14 @@ header:
 
    ```sh
    $ sudo dnf install -y git
-   $ cd ~; git clone https://github.com/intel/mpi-benchmarks
+   $ git clone https://github.com/intel/mpi-benchmarks
    $ cd mpi-benchmarks; export CXX=/opt/openmpi-5.0.0/bin/mpicxx; export CC=/opt/openmpi-5.0.0/bin/mpicc; make all
    $ sudo mkdir -p /opt/openmpi-5.0.0/tests/imb
    $ sudo cp ./IMB* /opt/openmpi-5.0.0/tests/imb/
    ```
 
-2. **Intel MPI Benchmark** を実行するノード間でパスフレーズ無しでSSHアクセスが出来るよう設定します。  
-ノード間でホームディレクトリを共有している場合、1台のノードで当該ユーザで以下コマンドを実行することで、その設定が可能です。  
+2. 以下コマンドを当該ノードの **OpenMPI** を利用するユーザで実行し、**Intel MPI Benchmark** を実行するノード間でこのユーザがパスフレーズ無しでSSHアクセス出来るよう設定します。  
+ノード間でホームディレクトリを共有している場合、1台のノードで以下コマンドを実行することで、その設定が完了します。  
 なお、ホスト名を記載したホストリストファイルを、当該ユーザのホームディレクトリ直下に **hostlist.txt** として予め作成しておきます。
 
    ```sh

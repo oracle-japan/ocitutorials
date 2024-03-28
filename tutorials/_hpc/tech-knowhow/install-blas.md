@@ -44,7 +44,7 @@ HPCワークロードを実行する際、行列やベクトルの線形代数�
 ***
 # 1. BLAS・OpenBLASインストール・セットアップ
 
-本章は、 **BLAS** と **OpenBLAS** をインストールします。  
+本章は、 **BLAS** と **OpenBLAS** をインストールし、利用に必要な環境設定を行います。  
 なお **OpenBLAS** は、以降のインストール手順を実施する際に環境に合わせたライブラリの構築を行うため、本手順をコンパイル・実行する環境（本テクニカルTipsでは **BM.Optimized3.36** ）以外で実施（いわゆるクロスコンパイル）した場合、想定通りに動作しない場合があることに留意します。
 
 1. 以下コマンドをopcユーザで実行し、 **BLAS** を提供するyumレポジトリを追加します。
@@ -53,11 +53,11 @@ HPCワークロードを実行する際、行列やベクトルの線形代数�
     $ sudo yum-config-manager --enable ol8_codeready_builder
     ```
 
-    なお、 **Oracle Cloud Agent** のOS管理を使用している（以下当該インスタンスの **Oracle Cloudエージェント** タブで **OS管理サービス・エージェント** が有効となっている）場合、
+    なお、 **Oracle Cloud Agent** のOS管理を使用している（以下当該インスタンスの **Oracle Cloudエージェント** タブで **OS管理サービス・エージェント** が有効となっている）場合、前述のコマンドが失敗するため、
 
    ![画面ショット](console_page01.png)
 
-    **[ここ](https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms)** の **管理対象インスタンスのソフトウェア・ソースを選択するには** の手順に従い、以下の **ソフトウェア・ソース** （yumレポジトリ） **Oracle Linux 8 CodeReady Builder (x86_64) - Unsupported** を追加します。
+    その代わりに **[ここ](https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms)** の **管理対象インスタンスのソフトウェア・ソースを選択するには** の手順に従い、以下の **ソフトウェア・ソース** （yumレポジトリ） **Oracle Linux 8 CodeReady Builder (x86_64) - Unsupported** を追加します。
 
    ![画面ショット](console_page02.png)
 
