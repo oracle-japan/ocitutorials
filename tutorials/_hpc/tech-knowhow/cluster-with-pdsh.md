@@ -79,11 +79,11 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
    $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
    ```
 
-    なお、クラスタ管理ノードで **Oracle Cloud Agent** のOS管理を使用している（以下当該インスタンスの **Oracle Cloud Agent** タブで **OS管理サービス・エージェント** が有効となっている）場合、
+    なお、クラスタ管理ノードで **Oracle Cloud Agent** のOS管理を使用している（以下当該インスタンスの **Oracle Cloud Agent** タブで **OS管理サービス・エージェント** が有効となっている）場合、前述のコマンドが失敗するため、
 
    ![画面ショット](console_page01.png)
 
-    **[ここ](https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms)** の **管理対象インスタンスのソフトウェア・ソースを選択するには** の手順に従い、以下の **ソフトウェア・ソース** （yumレポジトリ） **Oracle Linux 8 EPEL Packages for Development** を追加します。
+    その代わりに **[ここ](https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms)** の **管理対象インスタンスのソフトウェア・ソースを選択するには** の手順に従い、以下の **ソフトウェア・ソース** （yumレポジトリ） **Oracle Linux 8 EPEL Packages for Development** を追加します。
 
    ![画面ショット](console_page02.png)
 
