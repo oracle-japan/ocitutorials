@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-03-28T18:17:26+09:00">
+  <meta property="article:published_time" content="2024-04-04T20:43:05+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法">
     <meta itemprop="description" content="機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-03-28T18:17:26+09:00">
+    <meta itemprop="datePublished" content="2024-04-04T20:43:05+09:00">
     
 
     <div class="page__inner-wrap">
@@ -389,8 +389,10 @@
 <ul>
   <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">NVIDIA Driver</a></strong> : NVIDIA製GPUドライバソフトウェア</li>
   <li><strong><a href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html">NVIDIA CUDA</a></strong> : CUDAライブラリ</li>
-  <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html">NVIDIA Fabric Manager</a></strong> : <strong>NVSwitch</strong> （ <strong>BM.GPU4.8</strong> / <strong>BM.GPU.A100-v2.8</strong> に搭載）管理ソフトウェア</li>
+  <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html">NVIDIA Fabric Manager</a></strong> : <strong>NVSwitch</strong> （ <strong>BM.GPU4.8</strong> / <strong>BM.GPU.A100-v2.8</strong> に搭載）管理ソフトウェア（※1）</li>
 </ul>
+
+<p>※1）<strong>NVSwitch</strong> を搭載するシェイプの場合のみインストールします。</p>
 
 <p>本テクニカルTipsは、これらのソフトウェアをインストールし <strong><a href="https://github.com/nvidia/cuda-samples">CUDA Samples</a></strong> でその動作確認を行う手順を、GPUシェイプ <strong>BM.GPU4.8</strong> とUbuntu 20.04を例に解説します。</p>
 
@@ -522,7 +524,7 @@
 
 <ol>
   <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA CUDA</strong> と <strong>NVIDIA Fabric Manager</strong> をインストールします。</p>
+    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA CUDA</strong> をインストールします。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>apt-key del 7fa2af80
  <span class="nv">$ distribution</span><span class="o">=</span><span class="si">$(</span><span class="nb">.</span> /etc/os-release<span class="p">;</span><span class="nb">echo</span> <span class="nv">$ID$VERSION_ID</span> | <span class="nb">sed</span> <span class="nt">-e</span> <span class="s1">'s/\.//g'</span><span class="si">)</span>
@@ -530,7 +532,13 @@
  <span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> cuda-keyring_1.1-1_all.deb
  <span class="nv">$ </span><span class="nb">sudo </span>apt update
  <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-11-8
- <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> nvidia-gds-11-8
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA Fabric Manager</strong> をインストール・セットアップします。<br />
+この手順は、 <strong>NVSwitch</strong> を搭載するシェイプの場合のみ実施します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> nvidia-gds-11-8
  <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-fabricmanager
  <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nvidia-fabricmanager
 </code></pre></div>    </div>
@@ -595,7 +603,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-28T18:17:26+09:00">March 28, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-04T20:43:05+09:00">April 4, 2024</time></p>
 
 
       </footer>

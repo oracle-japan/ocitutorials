@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-03-28T18:17:26+09:00">
+  <meta property="article:published_time" content="2024-04-04T20:43:05+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="線形代数演算ライブラリインストール・利用方法">
     <meta itemprop="description" content="HPCワークロードを実行する際、行列やベクトルの線形代数演算を高速に実行する必要が生じます。これらの演算は、ソースコードを自作することで対応することも出来ますが、オープンソースで配布されている線形代数演算ライブラリであるBLASやOpenBLASを利用することで、開発工数の削減、保証された計算精度、高速な演算の実行等、様々なメリットを享受することが可能です。本テクニカルTipsは、BLASとOpenBLASをHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、Fortranのサンプルコードからこれを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-03-28T18:17:26+09:00">
+    <meta itemprop="datePublished" content="2024-04-04T20:43:05+09:00">
     
 
     <div class="page__inner-wrap">
@@ -378,8 +378,6 @@
         <p>HPCワークロードを実行する際、行列やベクトルの線形代数演算を高速に実行する必要が生じます。<br />
 これらの演算は、ソースコードを自作することで対応することも出来ますが、オープンソースで配布されている線形代数演算ライブラリである <strong><a href="https://www.netlib.org/blas/">BLAS</a></strong> や <strong><a href="https://github.com/OpenMathLib/OpenBLAS/wiki">OpenBLAS</a></strong> を利用することで、開発工数の削減、保証された計算精度、高速な演算の実行等、様々なメリットを享受することが可能です。<br />
 本テクニカルTipsは、BLASとOpenBLASをHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、Fortranのサンプルコードからこれを利用する方法を解説します。</p>
-
-<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
@@ -444,13 +442,18 @@
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder
 </code></pre></div>    </div>
 
-    <p>なお、 <strong>Oracle Cloud Agent</strong> のOS管理を使用している（以下当該インスタンスの <strong>Oracle Cloudエージェント</strong> タブで <strong>OS管理サービス・エージェント</strong> が有効となっている）場合、前述のコマンドが失敗するため、</p>
+    <p>なお、上記コマンド実行時に以下のメッセージが出力される場合、</p>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> This system is receiving updates from OSMS server.
+ Error: No matching repo to modify: ol8_developer_EPEL.
+</code></pre></div>    </div>
 
-    <p>その代わりに <strong><a href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms">ここ</a></strong> の <strong>管理対象インスタンスのソフトウェア・ソースを選択するには</strong> の手順に従い、以下の <strong>ソフトウェア・ソース</strong> （yumレポジトリ） <strong>Oracle Linux 8 CodeReady Builder (x86_64) - Unsupported</strong> を追加します。</p>
+    <p>OSのパッケージ管理が <strong><a href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html">OS管理サービス</a></strong> で行われているため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。<br />
+ ここで実施する <strong>OS管理サービス</strong> の解除は、10分程度の時間が経過すると自動的に <strong>OS管理サービス</strong> 管理に戻ります。</p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>osms unregister
+ <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder
+</code></pre></div>    </div>
   </li>
   <li>
     <p>以下コマンドをopcユーザで実行し、 <strong>BLAS</strong> をインストールします。</p>
@@ -675,7 +678,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-03-28T18:17:26+09:00">March 28, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-04T20:43:05+09:00">April 4, 2024</time></p>
 
 
       </footer>
