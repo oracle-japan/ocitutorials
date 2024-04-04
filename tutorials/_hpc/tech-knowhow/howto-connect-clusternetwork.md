@@ -17,6 +17,8 @@ table, th, td {
 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 対応シェイプを使用するインスタンスは、デプロイ時のイメージに **Oracle Linux** をベースOSとする **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用することで、 **クラスタ・ネットワーク** 接続に必要なソフトウェアのインストールやセットアップ等の作業を大幅に簡素化することが可能です。  
 本テクニカルTipsは、この **クラスタ・ネットワーキングイメージ** を使用してインスタンスを **クラスタ・ネットワーク** に接続する方法を解説します。
 
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
+
 ***
 # 0. 概要
 
@@ -79,7 +81,17 @@ table, th, td {
 この際、一覧表の **ユーティリティ提供方法** 列が **OCAプラグイン** となっているものから選択します。
 
 2. 特定した **クラスタ・ネットワーキングイメージ** を指定したインスタンスのデプロイ  
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[2. クラスタネットワーキングイメージ指定方法](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#2-クラスタネットワーキングイメージ指定方法)** を参照し、特定した **クラスタ・ネットワーキングイメージ** を指定してインスタンスをデプロイします。
+**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[2. クラスタネットワーキングイメージ指定方法](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#2-クラスタネットワーキングイメージ指定方法)** を参照し、特定した **クラスタ・ネットワーキングイメージ** を指定してインスタンスをデプロイします。  
+この際 **[2-1. OCIコンソールを使用する方法](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#2-1-ociコンソールを使用する方法)** の場合は、ここで作成する **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** の以下 **インスタンス構成の作成** 画面の **拡張オプションの表示** ボタンをクリックし、
+
+    ![画面ショット](console_page01.png)
+
+    表示される画面の **Oracle Cloudエージェント** タブをクリックし、表示される以下 **Oracle Cloudエージェント** タブで以下の項目をチェックします。
+
+    - **Compute HPC RDMA Auto-Configuration**
+    - **Compute HPC RDMA Authentication**
+
+    ![画面ショット](console_page02.png)
 
 ***
 # 2. 個別RPMを使用してクラスタ・ネットワークに接続する方法

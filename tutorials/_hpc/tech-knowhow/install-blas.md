@@ -12,8 +12,6 @@ HPCワークロードを実行する際、行列やベクトルの線形代数�
 これらの演算は、ソースコードを自作することで対応することも出来ますが、オープンソースで配布されている線形代数演算ライブラリである **[BLAS](https://www.netlib.org/blas/)** や **[OpenBLAS](https://github.com/OpenMathLib/OpenBLAS/wiki)** を利用することで、開発工数の削減、保証された計算精度、高速な演算の実行等、様々なメリットを享受することが可能です。  
 本テクニカルTipsは、BLASとOpenBLASをHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、Fortranのサンプルコードからこれを利用する方法を解説します。
 
-**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
-
 ***
 # 0. 概要
 
@@ -53,13 +51,20 @@ HPCワークロードを実行する際、行列やベクトルの線形代数�
     $ sudo yum-config-manager --enable ol8_codeready_builder
     ```
 
-    なお、 **Oracle Cloud Agent** のOS管理を使用している（以下当該インスタンスの **Oracle Cloudエージェント** タブで **OS管理サービス・エージェント** が有効となっている）場合、前述のコマンドが失敗するため、
+    なお、上記コマンド実行時に以下のメッセージが出力される場合、
 
-   ![画面ショット](console_page01.png)
+    ```sh
+    This system is receiving updates from OSMS server.
+    Error: No matching repo to modify: ol8_developer_EPEL.
+    ```
 
-    その代わりに **[ここ](https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms)** の **管理対象インスタンスのソフトウェア・ソースを選択するには** の手順に従い、以下の **ソフトウェア・ソース** （yumレポジトリ） **Oracle Linux 8 CodeReady Builder (x86_64) - Unsupported** を追加します。
+    OSのパッケージ管理が **[OS管理サービス](https://docs.oracle.com/ja-jp/iaas/os-management/index.html)** で行われているため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。  
+    ここで実施する **OS管理サービス** の解除は、10分程度の時間が経過すると自動的に **OS管理サービス** 管理に戻ります。
 
-   ![画面ショット](console_page02.png)
+    ```sh
+    $ sudo osms unregister
+    $ sudo yum-config-manager --enable ol8_codeready_builder
+    ```
 
 2. 以下コマンドをopcユーザで実行し、 **BLAS** をインストールします。
 
