@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-04-04T20:43:05+09:00">
+  <meta property="article:published_time" content="2024-04-05T17:04:08+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタネットワーキングイメージの選び方">
     <meta itemprop="description" content="クラスタ・ネットワークを使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレイスから提供されています。本テクニカルTipsは、このクラスタネットワーキングイメージの適切な選び方を解説します。">
-    <meta itemprop="datePublished" content="2024-04-04T20:43:05+09:00">
+    <meta itemprop="datePublished" content="2024-04-05T17:04:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -377,7 +377,7 @@
         
         <style>
 table, th, td {
-    font-size: 80%;
+    font-size: 70%;
 }
 </style>
 
@@ -394,12 +394,12 @@ table, th, td {
 <ul>
   <li>Mellanox OFED<br />
 <strong>クラスタ・ネットワーク</strong> にインスタンスを接続するNIC（<strong>NVIDIA Mellanox ConnectX</strong>）のドライバーソフトウェアです。</li>
-  <li>wpa_supplicant<br />
+  <li>WPAサプリカント<br />
 インスタンスが <strong>クラスタ・ネットワーク</strong> に接続する際行われる802.1X認証（※1）のクライアントソフトウェアです。</li>
   <li>802.1X認証関連ユーティリティソフトウェア<br />
 インスタンスが <strong>クラスタ・ネットワーク</strong> に接続する際行われる802.1X認証に必要な機能を提供するユーティリティソフトウェアです。</li>
   <li><strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェア<br />
-<strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェースのIPアドレス設定等の機能を提供するユーティリティソフトウェアです。</li>
+<strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェース作成等の機能を提供するユーティリティソフトウェアです。</li>
 </ul>
 
 <p>※1）802.1X認証の仕組みは、 <strong><a href="https://www.infraexpert.com/study/wireless14.html">ここ</a></strong> のサイトが参考になります。</p>
@@ -433,8 +433,8 @@ HPCシェイプ（※2）用（HPC <strong>クラスタネットワーキング�
       <th style="text-align: center">対象シェイプ</th>
       <th style="text-align: center"><strong>Oracle Linux</strong><br />バージョン</th>
       <th style="text-align: center">ユーティリティ<br />提供方法</th>
-      <th style="text-align: center">OFED</th>
-      <th style="text-align: center">GPUドライバ</th>
+      <th style="text-align: center">OFED<br />バージョン</th>
+      <th style="text-align: center">GPU/CUDA<br />バージョン</th>
       <th style="text-align: center">イメージ名の先頭</th>
       <th style="text-align: center"><strong>マーケットプレイス</strong><br />URL（※4）</th>
     </tr>
@@ -443,71 +443,131 @@ HPCシェイプ（※2）用（HPC <strong>クラスタネットワーキング�
     <tr>
       <td style="text-align: center">1</td>
       <td style="text-align: center">HPCシェイプ</td>
-      <td style="text-align: center">8.8</td>
+      <td style="text-align: center">8.9</td>
       <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
-      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">23.10</td>
       <td style="text-align: center">-</td>
-      <td style="text-align: center">OracleLinux-8-OCA</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-23.10</td>
       <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
       <td style="text-align: center">2</td>
       <td style="text-align: center"> </td>
-      <td style="text-align: center">8.7</td>
-      <td style="text-align: center">個別RPM</td>
-      <td style="text-align: center">5.4</td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">23.10</td>
       <td style="text-align: center">-</td>
-      <td style="text-align: center">OracleLinux-8-RHCK</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-23.10</td>
       <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
       <td style="text-align: center">3</td>
       <td style="text-align: center"> </td>
-      <td style="text-align: center">7.9</td>
+      <td style="text-align: center">8.8</td>
       <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
       <td style="text-align: center">5.8</td>
       <td style="text-align: center">-</td>
-      <td style="text-align: center">OracleLinux-7-OCA</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27</td>
       <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
       <td style="text-align: center">4</td>
       <td style="text-align: center"> </td>
       <td style="text-align: center">7.9</td>
-      <td style="text-align: center">個別RPM</td>
-      <td style="text-align: center">5.4</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">5.8</td>
       <td style="text-align: center">-</td>
-      <td style="text-align: center">OracleLinux-7-RHCK</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27</td>
       <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
       <td style="text-align: center">5</td>
-      <td style="text-align: center">GPUシェイプ</td>
-      <td style="text-align: center">8.8</td>
-      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
-      <td style="text-align: center">5.8</td>
-      <td style="text-align: center">535</td>
-      <td style="text-align: center">OracleLinux-8-OCA</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">8.7</td>
+      <td style="text-align: center">個別RPM</td>
+      <td style="text-align: center">5.4</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-8-RHCK-OFED-5.4-3.6.8.1-2023.05.18</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
       <td style="text-align: center">6</td>
       <td style="text-align: center"> </td>
       <td style="text-align: center">7.9</td>
-      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
-      <td style="text-align: center">5.8</td>
-      <td style="text-align: center">535</td>
-      <td style="text-align: center">OracleLinux-7-OCA</td>
-      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+      <td style="text-align: center">個別RPM</td>
+      <td style="text-align: center">5.4</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-2023.05.18</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">Link</a></strong></td>
     </tr>
     <tr>
       <td style="text-align: center">7</td>
+      <td style="text-align: center">GPUシェイプ</td>
+      <td style="text-align: center">8.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">535/12.4</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.4</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">535/12.4</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.4</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">8.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">535/12.2</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.2</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">23.10</td>
+      <td style="text-align: center">535/12.2</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.2</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">8.8</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">535/12.2</td>
+      <td style="text-align: center">OracleLinux-8-OCA-RHCK-OFED-5.8</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center"><strong>OCA</strong> プラグイン</td>
+      <td style="text-align: center">5.8</td>
+      <td style="text-align: center">535/12.2</td>
+      <td style="text-align: center">OracleLinux-7-OCA-RHCK-OFED-5.8</td>
+      <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">13</td>
       <td style="text-align: center"> </td>
       <td style="text-align: center">7.9</td>
       <td style="text-align: center">個別RPM</td>
       <td style="text-align: center">5.4</td>
-      <td style="text-align: center">515</td>
-      <td style="text-align: center">OracleLinux-7-RHCK</td>
+      <td style="text-align: center">515/11.7</td>
+      <td style="text-align: center">OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.05.18</td>
       <td style="text-align: center"><strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">Link</a></strong></td>
     </tr>
   </tbody>
@@ -560,19 +620,27 @@ HPCシェイプ（※2）用（HPC <strong>クラスタネットワーキング�
   <tbody>
     <tr>
       <td style="text-align: center">HPC_OL7</td>
-      <td style="text-align: center">3</td>
+      <td style="text-align: center">2</td>
     </tr>
     <tr>
       <td style="text-align: center">HPC_OL8</td>
       <td style="text-align: center">1</td>
     </tr>
     <tr>
-      <td style="text-align: center">GPU_OL7</td>
-      <td style="text-align: center">6</td>
+      <td style="text-align: center">GPU_OL7_CUDA12.2</td>
+      <td style="text-align: center">10</td>
     </tr>
     <tr>
-      <td style="text-align: center">GPU_OL8</td>
-      <td style="text-align: center">5</td>
+      <td style="text-align: center">GPU_OL8_CUDA12.2</td>
+      <td style="text-align: center">9</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GPU_OL7_CUDA12.4</td>
+      <td style="text-align: center">8</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GPU_OL8_CUDA12.4</td>
+      <td style="text-align: center">7</td>
     </tr>
   </tbody>
 </table>
@@ -595,30 +663,54 @@ HPCシェイプ（※2）用（HPC <strong>クラスタネットワーキング�
   <tbody>
     <tr>
       <td style="text-align: center">1</td>
-      <td style="text-align: center">ocid1.image.oc1..aaaaaaaajkzfwcucvqdui7rksrvgcaagoxutbh56pecbff7qz7gbfpruhzja</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaxiqlqer2ycd7hgto7in7raojq7v5kud6wlakmm7u7q64ai352tzq</td>
     </tr>
     <tr>
       <td style="text-align: center">2</td>
-      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaano7btfbh7cvbaygka4fehemtsal7f7l2qx6oqvbwua6xnszdvaha</td>
     </tr>
     <tr>
       <td style="text-align: center">3</td>
-      <td style="text-align: center">ocid1.image.oc1..aaaaaaaalq4xqgkvjkrvvcvsfmfkbljgt6hfdqymyt6gpekuf622a6xktbcq</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2irxaj3eqti6nlggadyo2avsinc6cscxrphsldiuqebcaljlqomq</td>
     </tr>
     <tr>
       <td style="text-align: center">4</td>
-      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaabjywapqbljm2hqmpcf6rl2xsc7miz4ilx2bb6o2iwcaf37smyxqa</td>
     </tr>
     <tr>
       <td style="text-align: center">5</td>
-      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a</td>
     </tr>
     <tr>
       <td style="text-align: center">6</td>
-      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa</td>
     </tr>
     <tr>
       <td style="text-align: center">7</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2uaq7zbntzrc5hwoyytmpifjmrjhcfgbotyb5gbfq4cnro46cn3q</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaacvmchv5h7zp54vyntetzkia3hrtr5tyz7j6oiairdfjw3rutgb3q</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaay27hzfz2iscv3mbhqk6ukccgz7zuir3jdmm2eomfomuu3wkcgg6q</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaay67em3mfvgtzzbxxkgl73t4zxcbmx7njpinkdkxxb6fwcgfg5s5q</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">13</td>
       <td style="text-align: center">ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra</td>
     </tr>
   </tbody>
@@ -634,7 +726,7 @@ HPCシェイプ（※2）用（HPC <strong>クラスタネットワーキング�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-04T20:43:05+09:00">April 4, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-05T17:04:08+09:00">April 5, 2024</time></p>
 
 
       </footer>

@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-04-04T20:43:05+09:00">
+  <meta property="article:published_time" content="2024-04-05T17:04:08+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法">
     <meta itemprop="description" content="クラスタ・ネットワークに接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレースから提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。本テクニカルTipsは、クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8を使用するインスタンスをOracle Linux以外のOSでクラスタ・ネットワークに接続する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-04-04T20:43:05+09:00">
+    <meta itemprop="datePublished" content="2024-04-05T17:04:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -370,7 +370,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-カスタムイメージ取得用2ノードhpcgpuクラスタ構築">1. カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築</a></li><li><a href="#2-クラスタネットワーク接続用ソフトウェアインストール">2. クラスタ・ネットワーク接続用ソフトウェアインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-rocky-linux-87の場合">2-1. Rocky Linux 8.7の場合</a><ul><li><a href="#2-1-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-1-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-1-2-mellanox-ofedダウンロードインストール">2-1-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-1-3--wpaサプリメントoci-cn-authインストール">2-1-3.  WPAサプリメント・oci-cn-authインストール</a></li></ul></li><li><a href="#2-2-centos-79の場合">2-2. CentOS 7.9の場合</a><ul><li><a href="#2-2-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-2-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-2-2-mellanox-ofedダウンロードインストール">2-2-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-2-3-oci-cn-authインストール">2-2-3. oci-cn-authインストール</a></li></ul></li><li><a href="#2-3-ubuntu-2004の場合">2-3. Ubuntu 20.04の場合</a><ul><li><a href="#2-3-1-カスタムイメージ取得用計算gpuノードへのログインと事前準備">2-3-1. カスタム・イメージ取得用計算/GPUノードへのログインと事前準備</a></li><li><a href="#2-3-2-mellanox-ofedダウンロードインストール">2-3-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-3-3-wpaサプリカントインストールocaプラグイン有効化">2-3-3. WPAサプリカントインストール・OCAプラグイン有効化</a></li></ul></li></ul></li><li><a href="#3-クラスタネットワーク接続確認">3. クラスタ・ネットワーク接続・確認</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</a><ul><li><a href="#3-1-1-rocky-linux-87-on-bmoptimized336の場合">3-1-1. Rocky Linux 8.7 on BM.Optimized3.36の場合</a></li><li><a href="#3-1-2-centos-79-on-bmoptimized336の場合">3-1-2. CentOS 7.9 on BM.Optimized3.36の場合</a></li><li><a href="#3-1-3-ubuntu-2004-on-bmoptimized336の場合">3-1-3. Ubuntu 20.04 on BM.Optimized3.36の場合</a></li><li><a href="#3-1-4-ubuntu-2004-on-bmgpu48bmgpua100-v28の場合">3-1-4. Ubuntu 20.04 on BM.GPU4.8/BM.GPU.A100-v2.8の場合</a></li></ul></li><li><a href="#3-2-intel-mpi-benchmark実行">3-2. Intel MPI Benchmark実行</a></li></ul></li><li><a href="#4-カスタムイメージ取得">4. カスタム・イメージ取得</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-カスタムイメージ使用時問題となる設定修正">4-1. カスタム・イメージ使用時問題となる設定修正</a></li><li><a href="#4-2-カスタムイメージ取得">4-2. カスタム・イメージ取得</a></li></ul></li><li><a href="#5-cloud-config作成">5. cloud-config作成</a></li><li><a href="#6-インスタンス構成作成">6. インスタンス構成作成</a></li><li><a href="#7-クラスタネットワーク作成">7. クラスタ・ネットワーク作成</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-カスタムイメージ取得用2ノードhpcgpuクラスタ構築">1. カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築</a></li><li><a href="#2-クラスタネットワーク接続用ソフトウェアインストール">2. クラスタ・ネットワーク接続用ソフトウェアインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-rocky-linux-87の場合">2-1. Rocky Linux 8.7の場合</a><ul><li><a href="#2-1-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-1-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-1-2-mellanox-ofedダウンロードインストール">2-1-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-1-3--wpaサプリカントoci-cn-authインストール">2-1-3.  WPAサプリカント・oci-cn-authインストール</a></li></ul></li><li><a href="#2-2-centos-79の場合">2-2. CentOS 7.9の場合</a><ul><li><a href="#2-2-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-2-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-2-2-mellanox-ofedダウンロードインストール">2-2-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-2-3-oci-cn-authインストール">2-2-3. oci-cn-authインストール</a></li></ul></li><li><a href="#2-3-ubuntu-2004の場合">2-3. Ubuntu 20.04の場合</a><ul><li><a href="#2-3-1-カスタムイメージ取得用計算gpuノードへのログインと事前準備">2-3-1. カスタム・イメージ取得用計算/GPUノードへのログインと事前準備</a></li><li><a href="#2-3-2-mellanox-ofedダウンロードインストール">2-3-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-3-3-wpaサプリカントインストールocaプラグイン有効化">2-3-3. WPAサプリカントインストール・OCAプラグイン有効化</a></li></ul></li></ul></li><li><a href="#3-クラスタネットワーク接続確認">3. クラスタ・ネットワーク接続・確認</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</a><ul><li><a href="#3-1-1-rocky-linux-87-on-bmoptimized336の場合">3-1-1. Rocky Linux 8.7 on BM.Optimized3.36の場合</a></li><li><a href="#3-1-2-centos-79-on-bmoptimized336の場合">3-1-2. CentOS 7.9 on BM.Optimized3.36の場合</a></li><li><a href="#3-1-3-ubuntu-2004-on-bmoptimized336の場合">3-1-3. Ubuntu 20.04 on BM.Optimized3.36の場合</a></li><li><a href="#3-1-4-ubuntu-2004-on-bmgpu48bmgpua100-v28の場合">3-1-4. Ubuntu 20.04 on BM.GPU4.8/BM.GPU.A100-v2.8の場合</a></li></ul></li><li><a href="#3-2-intel-mpi-benchmark実行">3-2. Intel MPI Benchmark実行</a></li></ul></li><li><a href="#4-カスタムイメージ取得">4. カスタム・イメージ取得</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-カスタムイメージ使用時問題となる設定修正">4-1. カスタム・イメージ使用時問題となる設定修正</a></li><li><a href="#4-2-カスタムイメージ取得">4-2. カスタム・イメージ取得</a></li></ul></li><li><a href="#5-cloud-config作成">5. cloud-config作成</a></li><li><a href="#6-インスタンス構成作成">6. インスタンス構成作成</a></li><li><a href="#7-クラスタネットワーク作成">7. クラスタ・ネットワーク作成</a></li></ul>
 
             </nav>
           </aside>
@@ -393,12 +393,12 @@
   <li><strong>クラスタ・ネットワーク</strong> 接続に必要な以下ソフトウェアがインストールされている
     <ol>
       <li>Mellanox OFED</li>
-      <li>WPAサプリメント（※1）</li>
+      <li>WPAサプリカント（※1）</li>
       <li>802.1X認証関連ユーティリティソフトウェア</li>
       <li><strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェア</li>
     </ol>
 
-    <p>※1）<strong>クラスタ・ネットワーク</strong> は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリメントです。802.1X認証の仕組みは、 <strong><a href="https://www.infraexpert.com/study/wireless14.html">ここ</a></strong> のサイトが参考になります。</p>
+    <p>※1）<strong>クラスタ・ネットワーク</strong> は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリカントです。802.1X認証の仕組みは、 <strong><a href="https://www.infraexpert.com/study/wireless14.html">ここ</a></strong> のサイトが参考になります。</p>
   </li>
 </ol>
 
@@ -517,7 +517,7 @@
   <li><strong>カスタム・イメージ</strong> 取得用計算/GPUノードへのログインと事前準備</li>
   <li>Mellanox OFEDダウンロード・インストール</li>
   <li>WPAサプリカントインストール・OCAプラグイン有効化（OSが <strong>Ubuntu</strong> 20.04の場合）</li>
-  <li>WPAサプリメント・oci-cn-authインストール（OSが <strong>Ubuntu</strong> 20.04以外の場合）</li>
+  <li>WPAサプリカント・oci-cn-authインストール（OSが <strong>Ubuntu</strong> 20.04以外の場合）</li>
 </ul>
 
 <p>なお本章の作業は、最終的にMPIの稼働確認を行う必要から、2台の計算/GPUノードの何れにも実施します。</p>
@@ -587,9 +587,9 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
 </code></pre></div></div>
 
-<h3 id="2-1-3--wpaサプリメントoci-cn-authインストール">2-1-3.  WPAサプリメント・oci-cn-authインストール</h3>
+<h3 id="2-1-3--wpaサプリカントoci-cn-authインストール">2-1-3.  WPAサプリカント・oci-cn-authインストール</h3>
 
-<p>以下コマンドを計算ノードのrockyユーザで実行し、WPAサプリメントとoci-cn-authをインストールします。</p>
+<p>以下コマンドを計算ノードのrockyユーザで実行し、WPAサプリカントとoci-cn-authをインストールします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> wpa_supplicant ruby rpm-build python3-psutil python3-pyOpenSSL git
 <span class="nv">$ </span><span class="nb">sudo </span>gem <span class="nb">install </span>fpm
@@ -1254,7 +1254,7 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-04T20:43:05+09:00">April 4, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-05T17:04:08+09:00">April 5, 2024</time></p>
 
 
       </footer>
