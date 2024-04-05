@@ -25,12 +25,12 @@ header:
 2. **クラスタ・ネットワーク** のデプロイに伴ってデプロイされている
 3. **クラスタ・ネットワーク** 接続に必要な以下ソフトウェアがインストールされている
     1. Mellanox OFED
-    2. WPAサプリメント（※1）
+    2. WPAサプリカント（※1）
     3. 802.1X認証関連ユーティリティソフトウェア
     4. **クラスタ・ネットワーク** 設定ユーティリティソフトウェア
 
-    ※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリメントです。802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。  
-    
+    ※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリカントです。802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。
+
 [接続処理]
 
 1. **クラスタ・ネットワーク** との802.1X認証（**接続条件 3-3.** が実施）
@@ -109,7 +109,7 @@ header:
 - **カスタム・イメージ** 取得用計算/GPUノードへのログインと事前準備
 - Mellanox OFEDダウンロード・インストール
 - WPAサプリカントインストール・OCAプラグイン有効化（OSが **Ubuntu** 20.04の場合）
-- WPAサプリメント・oci-cn-authインストール（OSが **Ubuntu** 20.04以外の場合）
+- WPAサプリカント・oci-cn-authインストール（OSが **Ubuntu** 20.04以外の場合）
 
 なお本章の作業は、最終的にMPIの稼働確認を行う必要から、2台の計算/GPUノードの何れにも実施します。
 
@@ -177,9 +177,9 @@ $ cd /mnt/iso; sudo ./mlnxofedinstall --without-fw-update -q
 $ sudo shutdown -r now
 ```
 
-### 2-1-3.  WPAサプリメント・oci-cn-authインストール
+### 2-1-3.  WPAサプリカント・oci-cn-authインストール
 
-以下コマンドを計算ノードのrockyユーザで実行し、WPAサプリメントとoci-cn-authをインストールします。
+以下コマンドを計算ノードのrockyユーザで実行し、WPAサプリカントとoci-cn-authをインストールします。
 
 ```sh
 $ sudo dnf install -y wpa_supplicant ruby rpm-build python3-psutil python3-pyOpenSSL git
