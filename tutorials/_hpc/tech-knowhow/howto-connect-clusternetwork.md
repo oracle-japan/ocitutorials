@@ -43,16 +43,16 @@ table, th, td {
 
 ここで **接続条件 3.** は、全てのソフトウェアを予めインストールした **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** が用意されており、これを利用することでそのインストールを省略することが可能です。  
 この **クラスタ・ネットワーキングイメージ** は、 **接続条件 3-3.** と **接続条件 3-4.** のユーティリティソフトウェアの提供方法について、 **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）プラグインを使用するイメージと個別RPMとしてインストールされているイメージが存在し、これらのユーティリティソフトウェアが実施する **接続処理 1.** と **接続処理 2.** の実行方法が異なります。  
-**クラスタネットワーキングイメージ** を適切に選択する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照ください。
+**クラスタネットワーキングイメージ** を適切に選択する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照してください。
 
-下表は、 **OCA** プラグインを使用する場合と個別RPMの機能を利用する場合の **クラスタ・ネットワーク** 接続方法をまとめています。
+下表は、 **OCA** プラグインを使用する場合と個別RPMの機能を使用する場合の **クラスタ・ネットワーク** 接続方法をまとめています。
 
 |   |  使用する **OCA** プラグイン | 使用するRPM・<br>Systemdサービス | 使用する<br>**クラスタ・ネットワーキングイメージ** 名<br>の先頭（※1）                            | 
 | :-: | :-: |:------------------------: | :---------------------------: | 
-|  **OCA**<br>プラグイン    | Compute HPC RDMA Authentication<br>Compute HPC RDMA Auto-Configuration                         |oracle-cloud-agent         | OracleLinux-8-OCA<br>OracleLinux-7-OCA              |
-| 個別RPM   | -                         | oci-cn-auth<br>（oci-cn-auth-renew）<br>oci-rdma-configure<br>oci-hpc-dapl-configure<br>oci-hpc-mlx-configure |OracleLinux-8-RHCK<br>OracleLinux-7-RHCK |
+|  **OCA**<br>プラグイン    | Compute HPC RDMA Authentication<br>Compute HPC RDMA Auto-Configuration                         |oracle-cloud-agent<br>oracle-cloud-agent-updater         | OracleLinux-8-OCA<br>OracleLinux-7-OCA              |
+| 個別RPM   | -                         | oci-cn-auth<br>oci-cn-auth-renew<br>oci-rdma-configure<br>oci-hpc-dapl-configure<br>oci-hpc-mlx-configure |OracleLinux-8-RHCK<br>OracleLinux-7-RHCK |
 
-※1）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照ください。
+※1）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照してください。
 
 また下表は、それぞれの接続方法の利得表で、自身の要件に合わせてどちらの方法を使用するかを判断します。  
 特別な要件が無ければ、 **OCA** プラグインを使用する方法を選択します。
@@ -62,8 +62,7 @@ table, th, td {
 | **OCA**<br>プラグイン | インスタンスデプロイ後に接続完了              | **OCA** 常駐によるCPUリソース消費（※2） |
 | 個別RPM   | **OCA** 停止によるCPUリソース消費抑止が可能（※2） | インスタンスデプロイ後に接続処理が必要                |
 
-※2）計算/GPUノード上で **OCA** がCPUリソースを消費するため、これによるアプリケーションのスケーラビリティへの影響を指しています。  
-この詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[不要サービス停止によるパフォーマンスチューニング方法](/ocitutorials/hpc/benchmark/stop-unused-service/)** を参照ください。
+※2）計算/GPUノード上で **OCA** がCPUリソースを消費するため、これによるアプリケーションのスケーラビリティへの影響を指しています。この詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[不要サービス停止によるパフォーマンスチューニング方法](/ocitutorials/hpc/benchmark/stop-unused-service/)** を参照ください。
 
 なお、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** カテゴリのチュートリアルは、全て **OCA** プラグインを使用する方法を採用しています。
 
@@ -74,9 +73,9 @@ table, th, td {
 
 本章は、 **OCA** プラグインを使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する手順を解説します。
 
-以下の手順が完了すると、デプロイしたインスタンス上で **クラスタ・ネットワーク** との802.1X認証と **クラスタ・ネットワーク** 接続用ネットワークインターフェースへのIPアドレス付与が完了し、 **クラスタ・ネットワーク** に接続された状態となります。
+以下の手順が完了すると、デプロイしたインスタンス上で **クラスタ・ネットワーク** との802.1X認証と **クラスタ・ネットワーク** 接続用ネットワークインターフェース作成が完了し、 **クラスタ・ネットワーク** に接続された状態となります。
 
-この際、 **クラスタ・ネットワーク** 用のネットワークインターフェースは、 **10.224.0.0/xx** のIPアドレス範囲が割当てられます。ここで **xx** のサブネットマスクは、 **仮想クラウド・ネットワーク** にプライマリVNICで接続するネットワークインターフェースに使用するものと同じものが使用されます。
+この際、 **クラスタ・ネットワーク** 用のネットワークインターフェースは、 **192.168.0.0/xx** のIPアドレス範囲が割当てられます。ここで **xx** のサブネットマスクは、 **仮想クラウド・ネットワーク** にプライマリVNICで接続するネットワークインターフェースに使用するものと同じものが使用されます。
 
 1. **OCA** プラグイン対応 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** の特定  
 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照し、使用する **クラスタ・ネットワーキングイメージ** を特定します。  
