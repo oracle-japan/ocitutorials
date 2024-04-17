@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-04-12T10:33:44+09:00">
+  <meta property="article:published_time" content="2024-04-17T15:30:33+09:00">
 
 
 
@@ -293,7 +293,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Network Firewallを構築する">
     <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
-    <meta itemprop="datePublished" content="2024-04-12T10:33:44+09:00">
+    <meta itemprop="datePublished" content="2024-04-17T15:30:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -347,7 +347,7 @@
   <li><strong>各サブネットとルート表について</strong></li>
 </ul>
 
-<p>インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。Network Firewallによって検査されたトラフィックは「NFW Subnetルート表」のルールにより、Public Subnet内のインスタンスへ転送されます。
+<p>インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。その後Network Firewallによって検査されたトラフィックはPublic Subnet内のインスタンスへ転送されます。
  Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network Firewallによって検査されたアウトバウンド通信はInternet Gatewayを介してインターネットに出ます。
 <br /></p>
 
@@ -969,18 +969,15 @@ VCN詳細画面左下のリソースから「ルート表」をクリックし�
 <p><img src="nfw26.png" alt="画面ショット26" /></p>
 
 <p>ルート表の詳細画面にて、「ルート・ルールの追加」ボタンをクリックします。
-表示された「ルート・ルールの追加」画面にて、以下2つのルート・ルールを作成し、画面左下の「ルート・ルールの追加」ボタンをクリックします。</p>
+表示された「ルート・ルールの追加」画面にて、以下のルート・ルールを作成し、画面左下の「ルート・ルールの追加」ボタンをクリックします。</p>
+
 <ul>
-  <li><strong>ルート・ルール1</strong></li>
   <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> - インターネット・ゲートウェイ</li>
   <li><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong> - 0.0.0.0/0</li>
   <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・インターネット・ゲートウェイ</code></strong> - 手順1-2で作成したInternet Gatewayを選択</li>
-  <li><strong>ルート・ルール2</strong></li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> -プライベートIP</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong> - コンピュートインスタンスを配置するサブネットのCIDRを入力 例）10.0.1.0/24</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット選択</code></strong> - Network FirewallインスタンスのプライベートIPアドレスを入力
- <img src="nfw27.png" alt="画面ショット27" /></li>
 </ul>
+
+<p><img src="nfw27.png" alt="画面ショット27" /></p>
 
 <p><br /></p>
 
@@ -1290,7 +1287,7 @@ Windowsのホーム画面左下のメニューから「Server Manager」を選�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-12T10:33:44+09:00">April 12, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-17T15:30:33+09:00">April 17, 2024</time></p>
 
 
       </footer>
