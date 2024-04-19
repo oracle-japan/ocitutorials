@@ -36,7 +36,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-04-17T15:30:33+09:00">
+  <meta property="article:published_time" content="2024-04-19T15:45:03+09:00">
 
 
 
@@ -305,7 +305,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。OCIのオブザバビリティサービスであるMonitoring、Logging、Application Performance Monitoring、Notificationsを利用します。">
-    <meta itemprop="datePublished" content="2024-04-17T15:30:33+09:00">
+    <meta itemprop="datePublished" content="2024-04-19T15:45:03+09:00">
     
 
     <div class="page__inner-wrap">
@@ -1154,25 +1154,20 @@ Secretリソースについては<a href="https://kubernetes.io/docs/concepts/co
 基本的には、<code class="language-plaintext highlighter-rouge">pom.xml</code>に以下の依存関係を追加するだけで利用可能です。(アプリケーション側の変更は必要ありません)<br />
 また、必要に応じて<code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/microprofile-config.properties</code>に設定値を追加します。</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span> 
+            <span class="nt">&lt;groupId&gt;</span>io.helidon.microprofile.tracing<span class="nt">&lt;/groupId&gt;</span> 
+            <span class="nt">&lt;artifactId&gt;</span>helidon-microprofile-tracing<span class="nt">&lt;/artifactId&gt;</span> 
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>com.oracle.apm.agent.java<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>apm-java-agent-helidon<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>RELEASE<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>apm-java-agent-helidon3<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>[1.8.3326,)<span class="nt">&lt;/version&gt;</span>
         <span class="nt">&lt;/dependency&gt;</span>
         <span class="nt">&lt;dependency&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>com.oracle.apm.agent.java<span class="nt">&lt;/groupId&gt;</span>
             <span class="nt">&lt;artifactId&gt;</span>apm-java-agent-tracer<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>RELEASE<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;version&gt;</span>[1.8.3326,)<span class="nt">&lt;/version&gt;</span>
         <span class="nt">&lt;/dependency&gt;</span>
-    <span class="nt">&lt;/dependencies&gt;</span>
-
-    <span class="nt">&lt;repositories&gt;</span>
-        <span class="nt">&lt;repository&gt;</span>
-            <span class="nt">&lt;id&gt;</span>oci<span class="nt">&lt;/id&gt;</span>
-            <span class="nt">&lt;name&gt;</span>OCI Object Store<span class="nt">&lt;/name&gt;</span>
-            <span class="nt">&lt;url&gt;</span>https://objectstorage.us-ashburn-1.oraclecloud.com/n/idhph4hmky92/b/prod-agent-binaries/o<span class="nt">&lt;/url&gt;</span>
-        <span class="nt">&lt;/repository&gt;</span>
-    <span class="nt">&lt;/repositories&gt;</span>
 </code></pre></div></div>
 
 <p>今回、<code class="language-plaintext highlighter-rouge">microprofile-config.properties</code>については以下のように設定しています。(フロントエンドアプリケーションの場合)</p>
@@ -2508,7 +2503,7 @@ frontend-app-56f7cfcb74-gpqh8     1/1     Running   0          23h
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-17T15:30:33+09:00">April 17, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time datetime="2024-04-19T15:45:03+09:00">April 19, 2024</time></p>
 
 
       </footer>
