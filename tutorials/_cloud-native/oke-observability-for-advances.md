@@ -679,25 +679,20 @@ secret/apm-secret created
 また、必要に応じて`src/main/resources/META-INF/microprofile-config.properties`に設定値を追加します。  
 
   ```xml
+        <dependency> 
+            <groupId>io.helidon.microprofile.tracing</groupId> 
+            <artifactId>helidon-microprofile-tracing</artifactId> 
+        </dependency>
         <dependency>
             <groupId>com.oracle.apm.agent.java</groupId>
-            <artifactId>apm-java-agent-helidon</artifactId>
-            <version>RELEASE</version>
+            <artifactId>apm-java-agent-helidon3</artifactId>
+            <version>[1.8.3326,)</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.apm.agent.java</groupId>
             <artifactId>apm-java-agent-tracer</artifactId>
-            <version>RELEASE</version>
+            <version>[1.8.3326,)</version>
         </dependency>
-    </dependencies>
-
-    <repositories>
-        <repository>
-            <id>oci</id>
-            <name>OCI Object Store</name>
-            <url>https://objectstorage.us-ashburn-1.oraclecloud.com/n/idhph4hmky92/b/prod-agent-binaries/o</url>
-        </repository>
-    </repositories>
   ```
 
   今回、`microprofile-config.properties`については以下のように設定しています。(フロントエンドアプリケーションの場合)
