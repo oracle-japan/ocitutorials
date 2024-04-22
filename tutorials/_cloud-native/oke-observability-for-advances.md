@@ -1621,28 +1621,28 @@ Complete!
 JMeterをダウンロードします。
 
 ```sh
-wget https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.6.2.tgz
+wget hhttps://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
 ```
 
 ***コマンド結果***
 
 ```sh
---2022-02-07 08:33:34--  https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.6.2.tgz
-Resolving ftp.jaist.ac.jp (ftp.jaist.ac.jp)... 150.65.7.130, 2001:df0:2ed:feed::feed
-Connecting to ftp.jaist.ac.jp (ftp.jaist.ac.jp)|150.65.7.130|:443... connected.
+--2024-04-22 03:51:11--  https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
+Resolving dlcdn.apache.org (dlcdn.apache.org)... 151.101.2.132, 2a04:4e42::644
+Connecting to dlcdn.apache.org (dlcdn.apache.org)|151.101.2.132|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 70796171 (68M) [application/x-gzip]
-Saving to: ‘apache-jmeter-5.6.2.tgz’
+Length: 87414762 (83M) [application/x-gzip]
+Saving to: ‘apache-jmeter-5.6.3.tgz’
 
-100%[=======================================================================================>] 70,796,171  5.71MB/s   in 12s    
+apache-jmeter-5.6.3.tgz                   100%[====================================================================================>]  83.36M   350MB/s    in 0.2s    
 
-2022-02-07 08:33:47 (5.49 MB/s) - ‘apache-jmeter-5.6.2.tgz’ saved [70796171/70796171]
+2024-04-22 03:51:11 (350 MB/s) - ‘apache-jmeter-5.6.3.tgz’ saved [87414762/87414762]
 ```
 
 アーカイブを展開します。
 
 ```sh
-tar -zxvf apache-jmeter-5.6.2.tgz
+tar -zxvf apache-jmeter-5.6.3.tgz
 ```
 
 作業ディレクトリを作成します。
@@ -1721,7 +1721,7 @@ vim testplan.jmx
 負荷をかけます。止める場合は、「Ctrl + C」で停止できます。
 
 ```sh
-JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
 
 途中でエラーで停止する場合は、以下コマンドで「testplan.jtl」ファイルを削除して、負荷をかけなおしてください。
@@ -1731,7 +1731,7 @@ rm -rf testplan.jtl
 ```
 
 ```sh
-JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
 
 {% capture notice %}**Jmeter起動時のエラーについて**  
