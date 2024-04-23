@@ -1621,7 +1621,7 @@ Complete!
 JMeterをダウンロードします。
 
 ```sh
-wget hhttps://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
+wget https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
 ```
 
 ***コマンド結果***
