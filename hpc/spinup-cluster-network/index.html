@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-04-23T14:32:43+09:00">
+  <meta property="article:published_time" content="2024-04-23T18:43:13+09:00">
 
 
 
@@ -288,6 +288,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-PとCubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
@@ -349,7 +351,7 @@
   <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-04-23T14:32:43+09:00">
+    <meta itemprop="datePublished" content="2024-04-23T18:43:13+09:00">
     
 
     <div class="page__inner-wrap">
@@ -398,8 +400,8 @@
 
 <ul>
   <li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16）</li>
-  <li>パブリックサブネット（10.0.0.0/24）</li>
-  <li>プライベートサブネット（10.0.1.0/24）</li>
+  <li>パブリックサブネット（10.0.1.0/24）</li>
+  <li>プライベートサブネット（10.0.2.0/24）</li>
   <li><strong>インターネット・ゲートウェイ</strong> （パブリックサブネットにアタッチ）</li>
   <li><strong>NATゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
   <li><strong>サービス・ゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
@@ -421,10 +423,12 @@ Bastionノードの作成は、 <strong><a href="https://oracle-japan.github.io/
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
 
 <ul>
-  <li><strong>イメージ　:</strong> <strong>Oracle Linux</strong> 8</li>
-  <li><strong>シェイプ　:</strong> <strong>VM.Optimized3.Flex</strong> （1 OCPU）</li>
-  <li><strong>SSHキーの追加　:</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
+  <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
+  <li><strong>シェイプ</strong> ： <strong>VM.Optimized3.Flex</strong> （任意のコア数・メモリ容量）</li>
+  <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
 </ul>
+
+<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
 
 <p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。<br />
 先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 作成手順で指定します。</p>
@@ -509,8 +513,7 @@ runcmd:
   - mount /mnt/localdisk
 <span class="c">#</span>
 <span class="c"># Stop firewalld</span>
-  - systemctl stop firewalld
-  - systemctl disable firewalld
+  - systemctl disable <span class="nt">--now</span> firewalld
 </code></pre></div></div>
 
 <h2 id="1-2-インスタンス構成作成">1-2. インスタンス構成作成</h2>
@@ -724,10 +727,11 @@ Filesystem      Size  Used Avail Use% Mounted on
 
 <p>以下コマンドをBastionノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo systemctl status firewalld | grep Active'</span> | dshbak <span class="nt">-c</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo systemctl status firewalld | grep -e Active -e disabled'</span> | dshbak <span class="nt">-c</span>
 <span class="nt">----------------</span>
 inst-ijeeq-x9,inst-mpdri-x9
 <span class="nt">----------------</span>
+   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
    Active: inactive <span class="o">(</span>dead<span class="o">)</span>
 <span class="err">$</span>
 </code></pre></div></div>
@@ -736,29 +740,29 @@ inst-ijeeq-x9,inst-mpdri-x9
 
 <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェース（ens800f0np0）に10.224.0.0/24のネットワークアドレスに属するIPアドレスが設定されていることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> comp <span class="s1">'ifconfig ens800f0np0'</span> | dshbak <span class="nt">-c</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'ifconfig rdma0'</span> | dshbak <span class="nt">-c</span>
 <span class="nt">----------------</span>
 inst-mpdri-x9
 <span class="nt">----------------</span>
-ens800f0np0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 4220
-        inet 10.224.0.128  netmask 255.255.255.0  broadcast 10.224.0.255
-        inet6 fe80::966d:aeff:fe02:a3f0  prefixlen 64  scopeid 0x20&lt;<span class="nb">link</span><span class="o">&gt;</span>
-        ether 94:6d:ae:02:a3:f0  txqueuelen 20000  <span class="o">(</span>Ethernet<span class="o">)</span>
-        RX packets 50  bytes 14280 <span class="o">(</span>13.9 KiB<span class="o">)</span>
+rdma0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 4220
+        inet 192.168.0.36  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::966d:aeff:fe00:63a0  prefixlen 64  scopeid 0x20&lt;<span class="nb">link</span><span class="o">&gt;</span>
+        ether 94:6d:ae:00:63:a0  txqueuelen 20000  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 24  bytes 5200 <span class="o">(</span>5.0 KiB<span class="o">)</span>
         RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 94  bytes 21801 <span class="o">(</span>21.2 KiB<span class="o">)</span>
+        TX packets 57  bytes 9952 <span class="o">(</span>9.7 KiB<span class="o">)</span>
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 <span class="nt">----------------</span>
 inst-ijeeq-x9
 <span class="nt">----------------</span>
-ens800f0np0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 4220
-        inet 10.224.0.16  netmask 255.255.255.0  broadcast 10.224.0.255
-        inet6 fe80::966d:aeff:fe0b:8354  prefixlen 64  scopeid 0x20&lt;<span class="nb">link</span><span class="o">&gt;</span>
-        ether 94:6d:ae:0b:83:54  txqueuelen 20000  <span class="o">(</span>Ethernet<span class="o">)</span>
-        RX packets 50  bytes 14280 <span class="o">(</span>13.9 KiB<span class="o">)</span>
+rdma0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 4220
+        inet 192.168.0.87  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::966d:aeff:fe00:9fc0  prefixlen 64  scopeid 0x20&lt;<span class="nb">link</span><span class="o">&gt;</span>
+        ether 94:6d:ae:00:9f:c0  txqueuelen 20000  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 29  bytes 5500 <span class="o">(</span>5.3 KiB<span class="o">)</span>
         RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 92  bytes 21629 <span class="o">(</span>21.1 KiB<span class="o">)</span>
+        TX packets 62  bytes 10565 <span class="o">(</span>10.3 KiB<span class="o">)</span>
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 <span class="err">$</span>
@@ -915,7 +919,7 @@ ens800f0np0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BRO
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-04-23T14:32:43+09:00">April 23, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-04-23T18:43:13+09:00">April 23, 2024</time></p>
 
       </footer>
 
