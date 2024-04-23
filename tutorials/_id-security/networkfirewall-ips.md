@@ -1,5 +1,5 @@
 ---
-title: "OCI Network FirewallのIPS/IDS機能を検証する"
+title: "OCI Network FirewallのIDS/IPS機能を検証する"
 excerpt: "本チュートリアルは「OCI Network Firewallを構築する」の続編として、IDS/IPS機能の動作確認を行います"
 order: "120"
 layout: single
@@ -13,9 +13,9 @@ header:
 ---
 
 パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。
-本チュートリアルは[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)の続編として、IPS/IDSの設定および動作を確認します。
+本チュートリアルは[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)の続編として、IDS/IPSの設定および動作を確認します。
 
-IPS/IDSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。
+IDS/IPSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。
 Kali Linuxでは、Network Firewallインスタンスに保護されたWindowsのコンピュートインスタンスに侵入テストを実施します。
 Eicarファイルを使用する際は、Network Firewallインスタンスに保護されたLinuxのコンピュートインスタンスにWebサーバーを構築し、Webサーバーを使用して動作を検証します。
 
@@ -76,7 +76,7 @@ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-jap
 
 + **`名前`** - 任意 例）others
 + **`プロトコル`** - TCP
-+ **`ポート範囲`** - 1-9999
++ **`ポート範囲`** - 1-65535
  
  ![画面ショット46](nfwips46.png)
 
