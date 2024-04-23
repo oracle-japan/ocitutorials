@@ -42,8 +42,8 @@ HPCクラスタを構成する **[クラスタ・ネットワーク](/ocitutoria
  **仮想クラウド・ネットワーク** の作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その2 - クラウドに仮想ネットワーク(VCN)を作る](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn)** の手順通りに実行し、以下のリソースを作成します。
 
 -  **仮想クラウド・ネットワーク** （10.0.0.0/16）
-- パブリックサブネット（10.0.0.0/24）
-- プライベートサブネット（10.0.1.0/24）
+- パブリックサブネット（10.0.1.0/24）
+- プライベートサブネット（10.0.2.0/24）
 - **インターネット・ゲートウェイ** （パブリックサブネットにアタッチ）
 - **NATゲートウェイ** （プライベートサブネットにアタッチ）
 - **サービス・ゲートウェイ** （プライベートサブネットにアタッチ）
@@ -61,9 +61,11 @@ HPCクラスタを構成する **[クラスタ・ネットワーク](/ocitutoria
 Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で **仮想クラウド・ネットワーク** を作成した **コンパートメント** とパブリックサブネットを指定して作成します。  
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
-- **イメージ　:** **Oracle Linux** 8
-- **シェイプ　:** **VM.Optimized3.Flex** （1 OCPU）
-- **SSHキーの追加　:** Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
+- **イメージ** ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- **シェイプ** ： **VM.Optimized3.Flex** （任意のコア数・メモリ容量）
+- **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
+
+※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
 
 次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。  
 先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 作成手順で指定します。
@@ -146,8 +148,7 @@ runcmd:
   - mount /mnt/localdisk
 #
 # Stop firewalld
-  - systemctl stop firewalld
-  - systemctl disable firewalld
+  - systemctl disable --now firewalld
 ```
 
 ## 1-2. インスタンス構成作成
@@ -333,10 +334,11 @@ $
 以下コマンドをBastionノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。
 
 ```sh
-$ pdsh -g all 'sudo systemctl status firewalld | grep Active' | dshbak -c
+$ pdsh -g all 'sudo systemctl status firewalld | grep -e Active -e disabled' | dshbak -c
 ----------------
 inst-ijeeq-x9,inst-mpdri-x9
 ----------------
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled; vendor preset: enabled)
    Active: inactive (dead)
 $
 ```
@@ -346,29 +348,29 @@ $
 以下コマンドをBastionノードのopcユーザで実行し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェース（ens800f0np0）に10.224.0.0/24のネットワークアドレスに属するIPアドレスが設定されていることを確認します。
 
 ```sh
-$ pdsh -g comp 'ifconfig ens800f0np0' | dshbak -c
+$ pdsh -g all 'ifconfig rdma0' | dshbak -c
 ----------------
 inst-mpdri-x9
 ----------------
-ens800f0np0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 4220
-        inet 10.224.0.128  netmask 255.255.255.0  broadcast 10.224.0.255
-        inet6 fe80::966d:aeff:fe02:a3f0  prefixlen 64  scopeid 0x20<link>
-        ether 94:6d:ae:02:a3:f0  txqueuelen 20000  (Ethernet)
-        RX packets 50  bytes 14280 (13.9 KiB)
+rdma0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 4220
+        inet 192.168.0.36  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::966d:aeff:fe00:63a0  prefixlen 64  scopeid 0x20<link>
+        ether 94:6d:ae:00:63:a0  txqueuelen 20000  (Ethernet)
+        RX packets 24  bytes 5200 (5.0 KiB)
         RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 94  bytes 21801 (21.2 KiB)
+        TX packets 57  bytes 9952 (9.7 KiB)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 ----------------
 inst-ijeeq-x9
 ----------------
-ens800f0np0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 4220
-        inet 10.224.0.16  netmask 255.255.255.0  broadcast 10.224.0.255
-        inet6 fe80::966d:aeff:fe0b:8354  prefixlen 64  scopeid 0x20<link>
-        ether 94:6d:ae:0b:83:54  txqueuelen 20000  (Ethernet)
-        RX packets 50  bytes 14280 (13.9 KiB)
+rdma0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 4220
+        inet 192.168.0.87  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::966d:aeff:fe00:9fc0  prefixlen 64  scopeid 0x20<link>
+        ether 94:6d:ae:00:9f:c0  txqueuelen 20000  (Ethernet)
+        RX packets 29  bytes 5500 (5.3 KiB)
         RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 92  bytes 21629 (21.1 KiB)
+        TX packets 62  bytes 10565 (10.3 KiB)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 $
