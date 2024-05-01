@@ -14,7 +14,7 @@ header:
 
 # はじめに
 Oracle Database Autonomous Recovery Service（以下、リカバリ・サービス）は、Oracle Cloud Infrastructure (OCI) で実行するOracle Database向けのフル・マネージド型データ保護サービスです。  
-独自の自動化機能が、Oracle Databaseの変更をリアルタイムで保護し、本番データベースのオーバーヘッドなしでバックアップを検証するほか、任意の時点への高速で予測可能なリカバリを実現します。
+オンプレミス製品のZero Data Loss Recovery Appliance (RA) のデータ保護技術をベースとしながら、クラウドならではの自動化機能も兼ね備えています。リカバリ・サービスはOracle Databaseの変更をリアルタイムで保護し、本番データベースのオーバーヘッドなしでバックアップを検証するほか、任意の時点への高速で予測可能なリカバリを実現します。
 
 このチュートリアルでは、BaseDBにリカバリ・サービスを設定する手順についてご紹介します。  
 このチュートリアルを完了すると、以下のような構成図となります。
@@ -148,8 +148,8 @@ Allow group <グループ名> to manage recovery-service-family in tenancy
 
  イングレス・ルール | ソースCIDR | IPプロトコル | ソース・ポート範囲 | 宛先ポート範囲 |
 -|-|-|-|-
- ZRVからのHTTPSトラフィック許可 | データベースが存在するVCNのCIDR | TCP | All |8005|
- ZRVからのSQLNetトラフィック許可 | データベースが存在するVCNのCIDR | TCP | ALL | 2484 |
+ リカバリ・サービスからのHTTPSトラフィック許可 | データベースが存在するVCNのCIDR | TCP | All |8005|
+ リカバリ・サービスからのSQLNetトラフィック許可 | データベースが存在するVCNのCIDR | TCP | ALL | 2484 |
 
 <br>
 
@@ -223,8 +223,9 @@ Allow group <グループ名> to manage recovery-service-family in tenancy
 
 データベース・サービスにリカバリ・サービスを設定する方法は以下の2つあります。
 
-**A：**データベース・サービスを新規作成すると同時に、リカバリ・サービスも有効化
-**B：**既存のデータベース・サービスにリカバリ・サービスを有効化
+**A：** データベース・サービスを新規作成すると同時に、リカバリ・サービスも有効化
+
+**B：** 既存のデータベース・サービスにリカバリ・サービスを有効化
 <br>
 
 今回のチュートリアルではBの手順を行いますが、参考としてAの方法もご紹介します。
@@ -281,7 +282,7 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
 
 ![img](zrcv22.png)
 > - チェックボックスにチェックあり ＝ Zero Data Loss Autonomous Recovery Service (ZRCV) を利用  
-> - チェックボックスにチェックなし ＝Autonomous Recovery Service(RCV) を利用
+> - チェックボックスにチェックなし ＝Autonomous Recovery Service (RCV) を利用
 <br>
 
 - データベース終了後の削除オプション：データベースの終了後に保護されたデータベース・バックアップを保持するために使用できるオプション。データベースに偶発的または悪意のある障害が発生した場合にバックアップからデータベースをリストアする場合にも役立ちます。 
@@ -391,10 +392,13 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
 
 # 参考資料
 
+* [製品サイト] [Oracle Database Autonomous Recovery Service](https://www.oracle.com/jp/database/zero-data-loss-autonomous-recovery-service/){:target="_blank"} 
+
 * [マニュアル] [Oracle Database Autonomous Recovery Service](https://docs.oracle.com/cd/E83857_01/paas/recovery-service/index.html){:target="_blank"} 
 
 * [ブログ] [Zero Data Loss Autonomous Recovery Service (ZRCV) を Exadata Cloud Service へ設定してみてみた](https://qiita.com/shirok/items/c257d52984442a7977f8){:target="_blank"} 
 
+* [ブログ] [Autonomous Recovery Service セットアップ・チェックリスト](https://blogs.oracle.com/oracle4engineer/post/autonomous-recovery-servicercvzrcv){:target="_blank"} 
 <br>
 
 <br>
