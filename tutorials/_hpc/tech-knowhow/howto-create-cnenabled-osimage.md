@@ -122,13 +122,14 @@ header:
 - SELinux無効化
 - インスタンス名による名前解決設定適用
 
-計算ノードへのログインは、 **[2-1. 計算ノードログイン](/ocitutorials/hpc/spinup-cluster-network/#2-1-計算ノードログイン)** の手順に従い実施しますが、この際Rocky Linuxのインストール時に作成されるログインユーザが **rocky** であることを考慮し、以下のようにBastionノードからrockyユーザでSSHログインします。
+1. 計算ノードログイン  
+**[2-1. 計算ノードログイン](/ocitutorials/hpc/spinup-cluster-network/#2-1-計算ノードログイン)** の手順に従い実施しますが、この際Rocky Linuxのインストール時に作成されるログインユーザが **rocky** であることを考慮し、以下のようにBastionノードからrockyユーザでSSHログインします。
 
-```sh
-$ ssh rocky@inst-wyr6m-comp
-```
+    ```sh
+    $ ssh rocky@inst-wyr6m-comp
+    ```
 
-1. SELinux無効化  
+2. SELinux無効化  
 以下コマンドを計算ノードのrockyユーザで実行し、SELinuxを無効化します。
 
     ```sh
@@ -136,7 +137,7 @@ $ ssh rocky@inst-wyr6m-comp
     $ sudo sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
     ```
 
-2. インスタンス名による名前解決設定適用  
+3. インスタンス名による名前解決設定適用  
 以降作成する計算ノードの名前解決をインスタンス名で行うため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)** の手順を計算ノードに適用します。
 
 ### 2-1-2. Mellanox OFEDダウンロード・インストール
@@ -147,7 +148,7 @@ Mellanox OFEDのダウンロードは、以下のサイトから行います。
 
 [https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/](https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/)
 
-この際、以下のメニューを選択し、ISOイメージ **MLNX_OFED_LINUX-23.10-1.1.9.0-rhel8.9-x86_64.iso** を入手し、このファイルを計算ノードのrockyユーザのホームディレクトリ直下にコピーします。
+この際、以下のメニューを選択し、ISOイメージ **MLNX_OFED_LINUX-23.10-2.1.3.1-rhel8.9-x86_64.iso** を入手し、このファイルを計算ノードのrockyユーザのホームディレクトリ直下にコピーします。
 
 ![画面ショット](OFED_download_rocky.png)
 
@@ -167,7 +168,7 @@ $ sudo shutdown -r now
 次に、以下コマンドを計算ノードのrockyユーザで実行し、Mellanox OFEDをインストールします。
 
 ```sh
-$ sudo mkdir /mnt/iso; sudo mount -o ro,loop ~/MLNX_OFED_LINUX-23.10-1.1.9.0-rhel8.9-x86_64.iso /mnt/iso
+$ sudo mkdir /mnt/iso; sudo mount -o ro,loop ~/MLNX_OFED_LINUX-23.10-2.1.3.1-rhel8.9-x86_64.iso /mnt/iso
 $ cd /mnt/iso; sudo ./mlnxofedinstall --without-fw-update -q
 ```
 
@@ -183,7 +184,8 @@ $ sudo shutdown -r now
 
 ```sh
 $ sudo dnf install -y wpa_supplicant ruby rpm-build python3-psutil python3-pyOpenSSL git
-$ sudo gem install fpm
+$ gem install dotenv -v 2.8.1
+$ gem install fpm
 $ git clone https://github.com/MarcinZablocki/oci-cn-auth
 $ cd oci-cn-auth; make
 $ sudo rpm -ivh ./oci-cn-auth-0.2.11-4.el8.noarch.rpm
@@ -367,22 +369,20 @@ $
 本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェースを作成し、 **クラスタ・ネットワーク** への接続を確認します。  
 この作業は、2台の計算ノードの何れにも実施します。
 
-**クラスタ・ネットワーク** 接続用のネットワークインターフェースを作成するため、以下のスクリプト（※4）を計算ノードのrockyユーザのホームディレクトリに作成し実行権を与えます。  
+**クラスタ・ネットワーク** 接続用のネットワークインターフェースを作成するため、以下コマンド群（※4）を計算ノードのrockyユーザで実行します。  
 
-[oci-rdma-configure.sh]
 ```sh
-#!/bin/bash
-nmcli connection add con-name cluster-network ifname eth2 type ethernet
-nmcli connection modify cluster-network ipv4.addresses 192.168.0.`ip a s dev eth0 | grep 'inet ' | awk '{print $2}' | awk -F/ '{print $1}' | awk -F. '{print $4}'`/24
-nmcli connection modify cluster-network ipv4.method manual
-nmcli connection up cluster-network
+$ sudo nmcli connection add con-name cluster-network ifname eth2 type ethernet
+$ sudo nmcli connection modify cluster-network ipv4.addresses 192.168.0.`ip a s dev eth0 | grep 'inet ' | awk '{print $2}' | awk -F/ '{print $1}' | awk -F. '{print $4}'`/24
+$ sudo nmcli connection modify cluster-network ipv4.method manual
+$ sudo nmcli connection up cluster-network
 ```
-※4）本スクリプトは、 **仮想クラウド・ネットワーク** に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作します。
+
+※4）本コマンド群は、 **仮想クラウド・ネットワーク** に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作します。
 
 次に、以下コマンドを計算ノードのrockyユーザで実行します。
 
 ```sh
-$ sudo ~/oci-rdma-configure.sh
 $ sudo systemctl enable --now oci-cn-auth.timer
 ```
 
@@ -658,6 +658,7 @@ runcmd:
   - nmcli connection up cluster-network
   - systemctl start oci-cn-auth.service
 ```
+※5）本cloud-configは、 仮想クラウド・ネットワーク に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作します。
 
 [CentOS 7.9 on **BM.Optimized3.36**]
 ```sh
@@ -691,6 +692,7 @@ runcmd:
   - echo "NM_CONTROLLED=\"no\"" >> /etc/sysconfig/network-scripts/ifcfg-ens800f0
   - ifup ens800f0
 ```
+※6）本cloud-configは、 仮想クラウド・ネットワーク に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作します。
 
 [Ubuntu 20.04 on **BM.Optimized3.36**]
 ```sh
