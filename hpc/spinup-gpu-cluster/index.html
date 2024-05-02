@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Minimal Mistakes Jekyll Theme 4.25.0 by Michael Rose
+  Minimal Mistakes Jekyll Theme 4.25.1 by Michael Rose
   Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
   Free for personal and commercial use under the MIT license
   https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-04-23T20:44:41+09:00">
+  <meta property="article:published_time" content="2024-05-02T13:46:33+09:00">
 
 
 
@@ -71,9 +71,6 @@
 
 
   <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
-
-
-<!-- https://t.co/dKP3o1e -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script>
@@ -351,7 +348,7 @@
   <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-04-23T20:44:41+09:00">
+    <meta itemprop="datePublished" content="2024-05-02T13:46:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -363,7 +360,6 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu"><li><a href="#0-gpuクラスタ作成事前作業">0. GPUクラスタ作成事前作業</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-vcn作成">0-1. VCN作成</a></li><li><a href="#0-2-bastionノード作成">0-2. Bastionノード作成</a></li></ul></li><li><a href="#1-gpuクラスタ作成">1. GPUクラスタ作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-cloud-config作成">1-1. cloud-config作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-gpuノード確認">2. GPUノード確認</a><ul><li><a href="#21-gpuノードログイン">2.1. GPUノードログイン</a></li><li><a href="#22-cloud-init完了確認">2.2. cloud-init完了確認</a></li><li><a href="#23-gpuノードファイルシステム確認">2.3. GPUノードファイルシステム確認</a></li><li><a href="#24-dockerコンテナイメージ確認">2.4. Dockerコンテナイメージ確認</a></li></ul></li><li><a href="#3-horovodを使用するgpuクラスタ環境構築">3. Horovodを使用するGPUクラスタ環境構築</a><ul><li><a href="#3-1-dockerコンテナ環境構築">3-1. Dockerコンテナ環境構築</a><ul><li><a href="#3-1-0-概要">3-1-0. 概要</a></li><li><a href="#3-1-1-コンテナ間ssh接続環境構築">3-1-1. コンテナ間SSH接続環境構築</a></li><li><a href="#3-1-2-プライベートサブネットセキュリティリスト修正">3-1-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-1-3-horovod用dockerコンテナ起動">3-1-3. Horovod用Dockerコンテナ起動</a></li></ul></li><li><a href="#3-2-nccl通信性能検証">3-2. NCCL通信性能検証</a><ul><li><a href="#3-2-0-概要">3-2-0. 概要</a></li><li><a href="#3-2-1-ncclアップデート">3-2-1. NCCLアップデート</a></li><li><a href="#3-2-2-nccl-testsビルド">3-2-2. NCCL Testsビルド</a></li><li><a href="#3-2-3-nccl-tests実行">3-2-3. NCCL Tests実行</a></li></ul></li><li><a href="#3-3-horovodサンプルプログラム実行">3-3. Horovodサンプルプログラム実行</a><ul><li><a href="#3-3-0-概要">3-3-0. 概要</a></li><li><a href="#3-3-1-horovodサンプルプログラム実行">3-3-1. Horovodサンプルプログラム実行</a></li></ul></li></ul></li><li><a href="#4-multiworkermirroredstrategyを使用するgpuクラスタ環境構築">4. MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築</a><ul><li><a href="#4-1-dockerコンテナ環境構築">4-1. Dockerコンテナ環境構築</a><ul><li><a href="#4-1-0-概要">4-1-0. 概要</a></li><li><a href="#4-1-1-コンテナ間ssh接続環境構築">4-1-1. コンテナ間SSH接続環境構築</a></li><li><a href="#4-1-2-プライベートサブネットセキュリティリスト修正">4-1-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#4-1-3-dockerコンテナ起動">4-1-3. Dockerコンテナ起動</a></li><li><a href="#4-1-4-sshdインストール起動">4-1-4. sshdインストール・起動</a></li></ul></li><li><a href="#4-2-nccl通信性能検証">4-2. NCCL通信性能検証</a><ul><li><a href="#4-2-0-概要">4-2-0. 概要</a></li><li><a href="#4-2-1-nccl-testsビルド">4-2-1. NCCL Testsビルド</a></li><li><a href="#4-2-2-nccl-tests実行">4-2-2. NCCL Tests実行</a></li></ul></li><li><a href="#4-3-multiworkermirroredstrategyサンプルプログラム実行">4-3. MultiWorkerMirroredStrategyサンプルプログラム実行</a><ul><li><a href="#4-3-0-概要">4-3-0. 概要</a></li><li><a href="#4-3-1-multiworkermirroredstrategyサンプルプログラム作成">4-3-1. MultiWorkerMirroredStrategyサンプルプログラム作成</a></li><li><a href="#4-3-2-multiworkermirroredstrategyサンプルプログラム実行">4-3-2. MultiWorkerMirroredStrategyサンプルプログラム実行</a></li></ul></li></ul></li><li><a href="#5-gpuクラスタの削除">5. GPUクラスタの削除</a></li></ul>
-
             </nav>
           </aside>
         
@@ -1425,7 +1421,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-04-23T20:44:41+09:00">April 23, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-02T13:46:33+09:00">May 2, 2024</time></p>
 
       </footer>
 
@@ -1462,14 +1458,19 @@ Epoch 3/3
   
   
     <div class="page__related">
-      <h2 class="page__related-title">関連記事</h2>
-      <div class="grid__wrapper">
-        
-      </div>
-    </div>
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+    
+    
+  </div>
+</div>
+
   
 </div>
 
+      
     </div>
 
     
@@ -1557,7 +1558,6 @@ Epoch 3/3
   
     <script src="/ocitutorials/assets/js/sidebar.js"></script>
   
-
 
 
   </body>

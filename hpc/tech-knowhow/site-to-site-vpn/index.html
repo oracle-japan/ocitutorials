@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Minimal Mistakes Jekyll Theme 4.25.0 by Michael Rose
+  Minimal Mistakes Jekyll Theme 4.25.1 by Michael Rose
   Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
   Free for personal and commercial use under the MIT license
   https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-04-23T20:44:41+09:00">
+  <meta property="article:published_time" content="2024-05-02T13:46:33+09:00">
 
 
 
@@ -71,9 +71,6 @@
 
 
   <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
-
-
-<!-- https://t.co/dKP3o1e -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script>
@@ -361,7 +358,7 @@
   <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="サイト間VPNによるOCIとの拠点間接続方法">
     <meta itemprop="description" content="HPC/機械学習ワークロードをオンプレミスからOCIに移行する際、多くのケースでオンプレミスとOCIを拠点間接続する必要が生じます。例えば、オンプレミス側の有償CAEアプリケーション用ライセンスサーバにOCI側の計算ノードからライセンス取得のためにアクセスするケースや、オンプレミス側の端末からOCI側のログインノードにログインしインタラクティブ処理を行うケースです。本テクニカルTipsは、サイト間VPNを使用してIPSecのトンネルモードでオンプレミスとOCIを拠点間接続し、OCI側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。">
-    <meta itemprop="datePublished" content="2024-04-23T20:44:41+09:00">
+    <meta itemprop="datePublished" content="2024-05-02T13:46:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -373,7 +370,6 @@
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
               <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-接続形態の決定">1. 接続形態の決定</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-オンプレミス側vpn接続機器の決定">1-1. オンプレミス側VPN接続機器の決定</a></li><li><a href="#1-2-オンプレミス側vpn接続機器のネットワーク接続形態の決定">1-2. オンプレミス側VPN接続機器のネットワーク接続形態の決定</a></li><li><a href="#1-3-オンプレミスoci間ルーティン情報交換方式の決定">1-3. オンプレミス・OCI間ルーティン情報交換方式の決定</a></li></ul></li><li><a href="#2-拠点間接続の作成">2. 拠点間接続の作成</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-左側サイト用ネットワーク関連リソース作成">2-1. 左側サイト用ネットワーク関連リソース作成</a></li><li><a href="#2-2-右側サイト用仮想クラウドネットワークと関連リソース作成">2-2. 右側サイト用仮想クラウド・ネットワークと関連リソース作成</a></li><li><a href="#2-3-疎通確認用インスタンス作成">2-3. 疎通確認用インスタンス作成</a></li><li><a href="#2-4-libreswan用インスタンス作成セットアップ">2-4. Libreswan用インスタンス作成・セットアップ</a></li><li><a href="#2-5-拠点間接続関連ociリソース作成">2-5. 拠点間接続関連OCIリソース作成</a><ul><li><a href="#2-5-0-概要">2-5-0. 概要</a></li><li><a href="#2-5-1-動的ルーティングゲートウェイ作成">2-5-1. 動的ルーティング・ゲートウェイ作成</a></li><li><a href="#2-5-2-仮想クラウドネットワークアタッチメント作成">2-5-2. 仮想クラウド・ネットワーク・アタッチメント作成</a></li><li><a href="#2-5-3-顧客構内機器作成">2-5-3. 顧客構内機器作成</a></li></ul></li><li><a href="#2-6-ipsec接続作成">2-6. IPSec接続作成</a><ul><li><a href="#2-6-0-概要">2-6-0. 概要</a></li><li><a href="#2-6-1-パターン1の場合">2-6-1. パターン1の場合</a></li><li><a href="#2-6-2-パターン2の場合">2-6-2. パターン2の場合</a></li><li><a href="#2-6-3-パターン3の場合">2-6-3. パターン3の場合</a></li><li><a href="#2-6-4-パターン4の場合">2-6-4. パターン4の場合</a></li></ul></li><li><a href="#2-7-vpn接続機器セットアップ">2-7. VPN接続機器セットアップ</a><ul><li><a href="#2-7-0-概要">2-7-0. 概要</a></li><li><a href="#2-7-1-パターン1の場合">2-7-1. パターン1の場合</a></li><li><a href="#2-7-2-パターン2の場合">2-7-2. パターン2の場合</a></li><li><a href="#2-7-3-パターン3の場合">2-7-3. パターン3の場合</a></li></ul></li></ul></li><li><a href="#3-ライセンスサーバ計算ノード間疎通確認">3. ライセンスサーバ・計算ノード間疎通確認</a></li><li><a href="#参考情報">参考情報</a><ul><li><a href="#cpe構成ヘルパー利用方法">CPE構成ヘルパー利用方法</a></li></ul></li></ul>
-
             </nav>
           </aside>
         
@@ -2139,7 +2135,7 @@ OCIコンソールにログインし、右側サイトをデプロイする <str
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-04-23T20:44:41+09:00">April 23, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-02T13:46:33+09:00">May 2, 2024</time></p>
 
       </footer>
 
@@ -2175,14 +2171,19 @@ OCIコンソールにログインし、右側サイトをデプロイする <str
   
   
     <div class="page__related">
-      <h2 class="page__related-title">関連記事</h2>
-      <div class="grid__wrapper">
-        
-      </div>
-    </div>
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+    
+    
+  </div>
+</div>
+
   
 </div>
 
+      
     </div>
 
     
@@ -2270,7 +2271,6 @@ OCIコンソールにログインし、右側サイトをデプロイする <str
   
     <script src="/ocitutorials/assets/js/sidebar.js"></script>
   
-
 
 
   </body>
