@@ -117,10 +117,10 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 | チュートリアル名                                                                                      | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | 計算ノードOS                |
 | :-------------------------------------------------------------------------------------------: | :-----------------: | :----------: | :---------------: | :--------------------: |
-| **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)**                | 手動構築  | 無し           | スタティック            | **Oracle Linux** 7.9/8.8 |
-| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**      | 自動構築<br>（Terraform） | 無し           | スタティック            | **Oracle Linux** 7.9/8.8 |
-| **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**                 | 自動構築<br>（スタック）      | 有り           | スタティック            | **Oracle Linux** 7.9/8.8 |
-| **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)** | 自動構築<br>（スタック）      | 有り           | オンデマンド            | **Oracle Linux** 7.9/8.8 |
+| **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)**                | 手動構築  | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**      | 自動構築<br>（Terraform） | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**                 | 自動構築<br>（スタック）      | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
+| **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)** | 自動構築<br>（スタック）      | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
 
 ## 1-2. 機械学習環境
 
@@ -128,11 +128,11 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 | チュートリアル名                                                                                       | GPUノード数 | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナ<br>ランタイム     | GPUノードOS             |
 | :--------------------------------------------------------------------------------------------: | :--------: | :-----------------: | :----------: | :---------------: | :-----------: | :------------------: |
-| **[GPUインスタンスで<br>機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                            | 単一         | 手動構築                | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8.8 |
-| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 複数         | 手動構築                | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8.8 |
-| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数         | 自動構築<br>（Terraform） | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8.8 |
-| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 複数         | 自動構築<br>（スタック）      | 有り           | スタティック            | **Enroot**    | **Oracle Linux** 7.9/8.8 |
-| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)** | 複数         | 自動構築<br>（スタック）      | 有り           | オンデマンド            | **Enroot**    | **Oracle Linux** 7.9/8.8 |
+| **[GPUインスタンスで<br>機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                            | 単一         | 手動構築                | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8 |
+| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 複数         | 手動構築                | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8 |
+| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数         | 自動構築<br>（Terraform） | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8 |
+| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 複数         | 自動構築<br>（スタック）      | 有り           | スタティック            | **Enroot**    | **Oracle Linux** 7.9/8 |
+| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)** | 複数         | 自動構築<br>（スタック）      | 有り           | オンデマンド            | **Enroot**    | **Oracle Linux** 7.9/8 |
 | **[GPUクラスタを構築する<br>(Ubuntu OS編)](/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/)**           | 複数         | 手動構築                  | 無し           | スタティック            | -             | **Ubuntu** 20.04     |
 
 ## 1-3. ファイル共有ストレージ
@@ -461,10 +461,10 @@ OCIリソースとしての **クラスタ・ネットワーク** は、共に�
 
 **クラスタ・ネットワーク** に接続するインスタンスは、 **[ここ](https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#supported-shapes)** に記載の **クラスタ・ネットワーク** 対応シェイプで、以下のソフトウェアがインストールされている必要があります。
 
-    - Mellanox OFED
-    - wpa_supplicant
-    - 802.1X認証関連ユーティリティソフトウェア
-    - **クラスタ・ネットワーク** 設定ユーティリティソフトウェア
+- Mellanox OFED
+- wpa_supplicant
+- 802.1X認証関連ユーティリティソフトウェア
+- **クラスタ・ネットワーク** 設定ユーティリティソフトウェア
 
 これらの **クラスタ・ネットワーク** 接続に必要なソフトウェアは、自身でインストールすることも出来ますが、これらが予めインストールされた **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** も用意されています。
 

@@ -21,8 +21,6 @@ table, th, td {
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[GPUクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack)** を参照してください。
 
-![システム構成図](architecture_diagram.png)
-
 本チュートリアルで作成するGPUクラスタ構築用の **Terraform** スクリプトは、そのひな型が **GitHub** のパブリックレポジトリから公開されており、適用すると以下の処理を行います。
 
 - VCNと関連するネットワークリソース構築
@@ -32,6 +30,19 @@ table, th, td {
 - GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布
 - GPUノードの全ホスト名を記載したホストリストファイル（/home/opc/hostlist.txt）作成
 - 構築したBastionノード・GPUノードのホスト名・IPアドレス出力
+
+Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。
+
+- インターネット経由ログイン -> パブリックサブネット接続
+- 拠点間接続経由ログイン > プライベートサブネット接続
+
+※1）構築方法に **Terraform** CLIを採用する場合は、パブリックサブネット接続のみ選択可能です。
+
+![システム構成図（パブリック）](architecture_diagram.png)
+<br>
+<br>
+<br>
+![システム構成図（プライベート）](architecture_diagram_private.png)
 
 Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がBastionノードデプロイ時に以下の処理を行います。
 
@@ -51,7 +62,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 - BastionノードのDNS名前解決をショートホスト名で行うための **resolv.conf** 修正
 - Bastionノードホームディレクトリ領域のNFSマウント
 
-**所要時間 :** 約1時間
+**所要時間 :** 約2時間
 
 **前提条件 :** GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
@@ -97,7 +108,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
     - **Terraformの構成のオリジン :** ソース・コード制御システム
     - **ソースコード管理タイプ :** **GitHub**
     - **構成ソース・プロバイダ :** **[0-1-1. 構成ソース・プロバイダ作成](#0-1-1-構成ソースプロバイダ作成)** で作成した **構成ソース・プロバイダ**
-    - **リポジトリ :** **tutorial_cn**
+    - **リポジトリ :** **tutorial_cn_rm**
     - **ブランチ :** **master**
     - **名前 :** スタックに付与する名前（任意）
     - **説明 :** スタックに付与する説明（任意）
@@ -110,30 +121,32 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
     - **Availability Domain :** GPUクラスタをデプロイする可用性ドメイン
     - **SSH public key :** Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
       - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
+    - **Private bastion :** Bastionノードをプライベートサブネットに接続するかどうかを指定（デフォルト：パブリックサブネット接続）  
+    （パブリックサブネットに接続する場合はチェックオフ/プライベートサブネットに接続する場合はチェック）
 
    ![画面ショット](stack_page02.png)  
 4.2 **Compute/GPU node options** フィールド
-    - **Display name postfix :** GPUノードホスト名の接尾辞(※1)
+    - **Display name postfix :** GPUノードホスト名の接尾辞（※2）
     - **Shape :** **BM.GPU4.8**
     - **Node count :** GPUノードのノード数（デフォルト：2）
-    - **Image OCID :** GPUノードのイメージOCID(※2)
-    - **Boot volume size :** GPUノードのブートボリュームサイズ(GB)
-    - **cloud-config :** GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )(※3)
-    - **NPS for BM.GPU4.8 :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) (※4)
-    - **SMT :** GPUノードの **SMT** 設定値 (デフォルト：有効) (※4)
+    - **Image OCID :** GPUノードのイメージOCID（※3）
+    - **Boot volume size :** GPUノードのブートボリュームサイズ（デフォルト：100GB）
+    - **cloud-config :** GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※4）
+    - **NPS for BM.GPU4.8 :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) （※5）
+    - **SMT :** GPUノードの **SMT** 設定値 (デフォルト：有効) （※5）
 
    ![画面ショット](stack_page03.png)
 
-    ※1） 例えば **gpu4-ol79** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol79** となります。（ **xxxxx** はランダムな文字列）  
-    ※2）以下のOCIDを指定します。
+    ※2） 例えば **gpu4-ol79** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol79** となります。（ **xxxxx** はランダムな文字列）  
+    ※3）以下のOCIDを指定します。
 
-    | No.<br>（※5） | **Oracle Linux**<br>バージョン | OCID                                                                          |
+    | No.<br>（※6） | **Oracle Linux**<br>バージョン | OCID                                                                          |
     | :---------: | :-----------------------: | :---------------------------------------------------------------------------: |
     | 7           | 8.9                       | ocid1.image.oc1..aaaaaaaa2uaq7zbntzrc5hwoyytmpifjmrjhcfgbotyb5gbfq4cnro46cn3q |
     | 11           | 8.8                       | ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq |
     | 8           | 7.9                       | ocid1.image.oc1..aaaaaaaacvmchv5h7zp54vyntetzkia3hrtr5tyz7j6oiairdfjw3rutgb3q |
 
-    ※3）以下をテキストファイルとして保存し、ブラウザから読み込みます。
+    ※4）以下をテキストファイルとして保存し、ブラウザから読み込みます。
 
    ```sh
    #cloud-config
@@ -197,9 +210,9 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
      - mount /home
    ```
 
-    ※4）詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+    ※5）詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
-    ※5）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
+    ※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
 
 5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
@@ -268,7 +281,7 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
     **GitHub** の **Terraform** スクリプトレポジトリのページからzipファイルを **Terraform** 実行環境にダウンロード・展開することで行います。  
 
 2. ダウンロードした **Terraform** スクリプトのうち、 **terraform.tfvars** と **provider.tf** 内の以下 **Terraform** 変数を自身の環境に合わせて修正します。  
-この際、ひな型ファイル内のこれら **Terraform** 変数は、予めコメント（ **#** で始まる行）として埋め込まれているため、このコメント行を有効化して修正します。特に **provider.tf** のひな型はファイルは、全行がコメントとなっているため、これらを全て有効化した上で、 **Terraform**変数を設定します。
+この際、これらファイル内の **Terraform** 変数は、予めコメント（ **#** で始まる行）として埋め込まれていたり、キーワード **xxxx** で仮の値が入力されているため、コメント行を有効化して自身の値に置き換える、等の修正を行います。
 
     [ **provider.tf** ]
 
@@ -282,42 +295,29 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
     [ **terraform.tfvars** ]
 
-    | 変数名                 | 設定値                                                                                   | 確認方法                                                                                                                             |
-    | ------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-    | sc_compartment_ocid | GPUクラスタをデプロイするコンパートメントのOCID                                                           | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
-    | sc_ad               | GPUクラスタをデプロイする可用性ドメイン識別子                                                              | (※6)                                                                                                                             |
-    | sc_ssh_key          | Bastionノードログインに使用するSSH秘密鍵に対する公開鍵                                                      | -                                                                                                                                |
-    | sc_cn_display_name  | GPUノードホスト名の接尾辞                                                                        | (※7)                                                                                                                             |
-    | sc_cn_shape         | GPUノードに使用するシェイプ<br>・ **BM.GPU4.8**                                                    | -                                                                                                                                |
-    | sc_cn_node_count    | GPUノードのノード数                                                                           | -                                                                                                                                |
-    | sc_cn_image         | GPUノードに使用するOSイメージのOCID                                                                | (※8)                                                                                                                             |
-    | sc_cn_boot_vol_size | ブートボリュームのサイズ（GB）                                                                      | -                                                                                                                                |
-    | sc_cn_cloud_config  | **user_data** ディレクトリに格納するGPUノード用 **cloud-config** ファイル名<br>・ **cloud-init_cngpu.cfg** | -                                                                                                                                |
-    | sc_cn_nps_gpu40     | GPUノード ( **BM.GPU4.8** の場合) の **NPS** BIOS設定値                                         | (※9)                                                                                                                            |
-    | sc_cn_nps_gpu80     | GPUノード ( **BM.GPU.A100-v2.8** の場合) の **NPS** BIOS設定値                                  | (※9)                                                                                                                            |
-    | sc_cn_smt           | 計算ノードの **SMT** BIOS設定値                                                                | (※9)                                                                                                                            |
-    |                     |                                                                                       |                                                                                                                                  |
+    | 変数名                | 設定値                                                                                   | 確認方法                                                                                                                             |
+    | ------------------ | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+    | compartment_ocid   | GPUクラスタをデプロイするコンパートメントのOCID                                                           | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
+    | ad                 | GPUクラスタをデプロイする可用性ドメイン識別子                                                              | (※7)                                                                                                                             |
+    | ssh_key            | Bastionノードログインに使用するSSH秘密鍵に対する公開鍵                                                      | -                                                                                                                                |
+    | cn_display_name    | GPUノードホスト名の接尾辞                                                                        | (※8)                                                                                                                             |
+    | comp_shape         | GPUノードに使用するシェイプ<br>・ **BM.GPU4.8**                                                    | -                                                                                                                                |
+    | cn_node_count      | GPUノードのノード数                                                                           | -                                                                                                                                |
+    | comp_image         | GPUノードに使用するOSイメージのOCID                                                                | (※9)                                                                                                                             |
+    | comp_boot_vol_size | GPUノードのブートボリュームのサイズ（GB）                                                               | -                                                                                                                                |
+    | comp_cloud_config  | **user_data** ディレクトリに格納するGPUノード用 **cloud-config** ファイル名<br>・ **cloud-init_cngpu.cfg** | -                                                                                                                                |
+    | comp_nps_gpu40     | GPUノード ( **BM.GPU4.8** の場合) の **NPS** BIOS設定値                                         | (※10)                                                                                                                             |
+    | comp_nps_gpu80     | GPUノード ( **BM.GPU.A100-v2.8** の場合) の **NPS** BIOS設定値                                  | (※10)                                                                                                                             |
+    | comp_smt           | GPUノードの **SMT** BIOS設定値                                                               | (※10)                                                                                                                             |
+    |                    |                                                                                       |                                                                                                                                  |
 
-    ※6）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
+    ※7）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
 
     ![画面ショット](console_page01.png)
 
-    ※7）例えば **gpu4-ol79** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol79** となります。（ **xxxxx** はランダムな文字列）  
-    ※8）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。  
-    ※9）詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
-
-3. ダウンロードした **Terraform** スクリプトのうち、 **cn.tf** を以下のように修正します。
-
-    ```sh
-    $ diff cn.tf_org cn.tf
-    13,14c13,14
-    < #        user_data               = "${base64encode(file("./user_data/${var.sc_cn_cloud_config}"))}"
-    <         user_data               = var.sc_cn_cloud_config
-    ---
-    >         user_data               = "${base64encode(file("./user_data/${var.sc_cn_cloud_config}"))}"
-    > #        user_data               = var.sc_cn_cloud_config
-    $
-    ```
+    ※8）例えば **gpu4-ol79** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol79** となります。（ **xxxxx** はランダムな文字列）  
+    ※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
+    ※10）詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
 ***
 # 1. GPUクラスタ構築
@@ -417,7 +417,7 @@ Compute_in_cn_created = {
 
 ## 2-1. Bastionノードログイン
 
-Bastionノードは、GPUクラスタ構築完了時に表示されるパブリックIPアドレスに対し、指定したSSH公開鍵に対応する秘密鍵を使用し、以下コマンドでインターネット経由ログインします。
+Bastionノードは、パブリックサブネット接続の場合はGPUクラスタ構築完了時に表示されるパブリックIPアドレスに対してインターネット経由SSHログインし、プライベートサブネット接続の場合はGPUクラスタ構築完了時に表示されるプライベートIPアドレスに対して拠点間接続経由SSHログインしますが、これには構築時に指定したSSH公開鍵に対応する秘密鍵を使用して以下コマンドで行います。
 
 ```sh
 $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
@@ -442,13 +442,14 @@ ECDSA key fingerprint is SHA256:jWTGqZjG0dAyrbP04JGC8jJX+uqDwMFotLXirA7L+AA.
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added 'inst-wf3wx-gpu4-ol79,10.0.2.31' (ECDSA) to the list of known hosts.
 status: done
+$
 ```
 
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
 ## 2-3. GPUノードファイルシステム確認
 
-GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが/mnt/localdiskにマウントされ、Bastionノードの/homeが/homeとしてマウントされています。
+GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが **/mnt/localdisk** にマウントされ、Bastionノードの **/home** が **/home** としてマウントされています。
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "df -h / /mnt/localdisk /home"; done
@@ -462,6 +463,7 @@ Filesystem              Size  Used Avail Use% Mounted on
 /dev/sda3               192G   23G  170G  12% /
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
 bastion:/home            36G  9.1G   27G  26% /home
+$
 ```
 
 ## 2-4. GPUノードBIOS設定確認
@@ -470,16 +472,17 @@ bastion:/home            36G  9.1G   27G  26% /home
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "lscpu | grep -i -e numa -e thread"; done
-inst-e0tw0-x9-ol87
+inst-kicav-gpu4-ol79
 Thread(s) per core:  2
-NUMA node(s):        2
+NUMA node(s):        8
 NUMA node0 CPU(s):   0-17,36-53
 NUMA node1 CPU(s):   18-35,54-71
-inst-uyopv-x9-ol87
+inst-0vdz8-gpu4-ol79
 Thread(s) per core:  2
-NUMA node(s):        2
+NUMA node(s):        8
 NUMA node0 CPU(s):   0-17,36-53
 NUMA node1 CPU(s):   18-35,54-71
+$
 ```
 
 ***
