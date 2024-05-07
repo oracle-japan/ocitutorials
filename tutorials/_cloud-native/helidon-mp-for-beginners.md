@@ -329,7 +329,7 @@ metrics.rest-request.enabled=false
 ```
 
 この部分は、その他のプロパティを指定します。  
-上から、自動スキーマ生成の設定、DDLスクリプトのパス、O/RマッパーとしてHibernateを利用する旨の設定です。  
+今回は、自動スキーマ生成の設定、DDLスクリプトのパスなどの設定を定義しています。    
 ここでは、他にも永続化に関する柔軟な設定を行うことができます。  
 詳細は[こちら](https://docs.oracle.com/cd/F23552_01/toplink/12.2.1.4/jpa-extensions-reference/persistence-property-extensions-reference.html#GUID-2E535D07-446F-44F0-9D8D-89E7FFCF8225)でご確認ください。
 
