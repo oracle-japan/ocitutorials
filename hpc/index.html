@@ -234,33 +234,40 @@ table, th, td {
 <ol>
   <li>
     <p><strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> <br />
-HPC/機械学習ワークロードの実行に最適なベアメタルインスタンス、GPUインスタンス、 <strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 等の各種IaaSサービスを組み合わせて、様々な用途のHPC/GPUクラスタを構築する手順を解説するチュートリアル集で、自身の要件に合わせて利用するチュートリアルを選択できるようになっています。<br />
-その構築手法は、 <strong><a href="#5-2-リソースマネージャ">リソース・マネージャ</a></strong> 、 <strong><a href="#5-12-terraform">Terraform</a></strong> 、 <strong>Ansible</strong> を駆使する <strong><a href="#5-5-マーケットプレイス">マーケットプレース</a></strong> 提供の <strong><a href="#5-3-スタック">スタック</a></strong> や予め用意された <strong><a href="#5-12-terraform">Terraform</a></strong> スクリプトを使用する自動構築と、OCIのコンソールから各ステップを自身で確認・実行しながら実施する手動構築から選択出来、また構築するHPCシステムは、クラスタ管理機能の有無や利用できるソフトウェアから選択することが可能です。</p>
+HPC/機械学習ワークロードの実行に最適なベアメタルインスタンス、GPUインスタンス、 <strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 等の各種IaaSサービスを組み合わせて、様々な用途のHPC/GPUクラスタを構築する手順を解説するチュートリアル集です。<br />
+提供するチュートリアルは、以下のカテゴリに分かれています。</p>
+
+    <ol>
+      <li><strong><a href="#1-1-hpcクラスタ">HPCクラスタ</a></strong></li>
+      <li><strong><a href="#1-2-機械学習環境">機械学習環境</a></strong></li>
+      <li><strong><a href="#1-3-ファイル共有ストレージ">ファイル共有ストレージ</a></strong></li>
+      <li><strong><a href="#1-4-チュートリアルを組み合わせた実践的hpcシステム構築">チュートリアルを組み合わせた実践的HPCシステム構築</a></strong></li>
+    </ol>
   </li>
   <li>
     <p><strong><a href="#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong><br />
 HPC/機械学習ワークロードを実行する際のパフォーマンス関連情報を提供します。<br />
 提供するパフォーマンス関連情報は、以下のカテゴリに分かれています。</p>
 
-    <ul>
+    <ol>
       <li><strong><a href="#2-1-標準ベンチマーク実行方法">標準ベンチマーク実行方法</a></strong></li>
       <li><strong><a href="#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong></li>
       <li><strong><a href="#2-3-プロファイリング関連tips集">プロファイリング関連Tips集</a></strong></li>
-    </ul>
+    </ol>
   </li>
   <li>
     <p><strong><a href="#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong><br />
 HPC/機械学習ワークロードを実行する際に有益なテクニカルTipsを集めてます。<br />
 提供するテクニカルTipsは、以下のカテゴリに分かれています。</p>
 
-    <ul>
+    <ol>
       <li><strong><a href="#3-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong></li>
       <li><strong><a href="#3-2-ストレージ">ストレージ</a></strong></li>
       <li><strong><a href="#3-3-クラスタ管理">クラスタ管理</a></strong></li>
       <li><strong><a href="#3-4-機械学習">機械学習</a></strong></li>
       <li><strong><a href="#3-5-ソフトウェア環境">ソフトウェア環境</a></strong></li>
       <li><strong><a href="#3-6-その他">その他</a></strong></li>
-    </ul>
+    </ol>
   </li>
   <li>
     <p><strong><a href="#4-oci-hpc関連情報リンク集">OCI HPC関連情報リンク集</a></strong><br />
@@ -958,6 +965,13 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     <p>HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、 <strong>ブロック・ボリューム</strong> とベアメタルインスタンスの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を組み合わせてNFSでサービスすることで、コストパフォーマンスを最大化することが可能です。<br />
   その理由は、このシェイプが50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の <strong>ブロック・ボリューム</strong> アクセス用途とNFSクライアントへのNFSサービス用途に割当ててこれらを同時に使用することで、NFSサービスに50 Gbpsの帯域をフルに使用することが可能となるためです。<br />
   本ブログは、 <strong>ブロック・ボリューム</strong> と <strong>BM.Optimized3.36</strong> を組み合わせたNFSサーバに対し、IORとmdtestを使用したIO性能と信頼性の評価を行い、その結果を解説しています。</p>
+  </li>
+  <li>
+    <p><strong><a href="https://github.com/oss-tsukuba/incus-auto/tree/main/example/gfarm-terraform-oci">Gfarm development environment on OCI managed by Terraform and Ansible</a></strong></p>
+
+    <p><strong><a href="http://oss-tsukuba.org/software/gfarm">Gfarmファイルシステム</a></strong> は、 <strong><a href="http://oss-tsukuba.org/">NPO法人つくばOSS技術支援センター</a></strong> が技術支援を提供し、オープンソースとして利用可能な大容量、高信頼、高性能なストレージを低コストで提供する、分散ファイルシステムです。<br />
+  <strong>Gfarmファイルシステム</strong> は、ファイルサーバとして機能するファイルシステムノードを複数用意し、これらのノードにデータを複製として分散配置することで、高い帯域幅と可能性を実現します。<br />
+  本GitHubサイトは、 <strong>Gfarm</strong> 環境をOCI上に <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> と <strong>Ansible</strong> で自動構築するスクリプト群を提供し、トップページの構築手順に従うことでその構築作業を大幅に簡素化します。</p>
   </li>
 </ul>
 
