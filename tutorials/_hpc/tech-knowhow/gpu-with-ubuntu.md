@@ -21,7 +21,9 @@ header:
 
 - **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html)** : NVIDIA製GPUドライバソフトウェア
 - **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** : CUDAライブラリ
-- **[NVIDIA Fabric Manager](https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html)** : **NVSwitch** （ **BM.GPU4.8** / **BM.GPU.A100-v2.8** に搭載）管理ソフトウェア
+- **[NVIDIA Fabric Manager](https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html)** : **NVSwitch** （ **BM.GPU4.8** / **BM.GPU.A100-v2.8** に搭載）管理ソフトウェア（※1）
+
+※1）**NVSwitch** を搭載するシェイプの場合のみインストールします。
 
 本テクニカルTipsは、これらのソフトウェアをインストールし **[CUDA Samples](https://github.com/nvidia/cuda-samples)** でその動作確認を行う手順を、GPUシェイプ **BM.GPU4.8** とUbuntu 20.04を例に解説します。
 
@@ -122,7 +124,7 @@ header:
 
 本章は、GPUインスタンスに **NVIDIA CUDA** と **NVIDIA Fabric Manager** をインストールします。
 
-1. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **NVIDIA CUDA** と **NVIDIA Fabric Manager** をインストールします。
+1. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **NVIDIA CUDA** をインストールします。
 
     ```sh
     $ sudo apt-key del 7fa2af80
@@ -131,12 +133,18 @@ header:
     $ sudo dpkg -i cuda-keyring_1.1-1_all.deb
     $ sudo apt update
     $ sudo apt install -y cuda-11-8
+    ```
+
+2. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **NVIDIA Fabric Manager** をインストール・セットアップします。  
+この手順は、 **NVSwitch** を搭載するシェイプの場合のみ実施します。
+
+    ```sh
     $ sudo apt install -y nvidia-gds-11-8
     $ sudo apt install -y cuda-drivers-fabricmanager
     $ sudo systemctl enable --now nvidia-fabricmanager
     ```
 
-2. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、OSを再起動します。  
+3. 以下コマンドをGPUインスタンスのubuntuユーザで実行し、OSを再起動します。  
 この再起動は、起動後SSHログインできるまでに20分程度かかります。
 
     ```sh

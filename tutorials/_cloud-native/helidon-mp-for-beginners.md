@@ -19,18 +19,65 @@ MicroProfileは、マイクロサービス環境下で複数言語との相互�
 
 前提条件
 ----
-* [こちら](/ocitutorials/database/adb101-provisioning/)の手順が完了していること
+* [こちら](/ocitutorials/adb/adb101-provisioning/#2-adbインスタンスを作成してみよう)の手順が完了していること
   * このチュートリアルでは、データベースとしてOracle Cloud Infrastructure上の自律型データベースであるAutonomous Transaction Processing(以降、ATPとします)を利用します
-* [こちら](/ocitutorials/database/adb104-connect-using-wallet/)の`1. クレデンシャル・ウォレットのダウンロード`の手順が完了していること
+* [こちら](/ocitutorials/adb/adb104-connect-using-wallet/#1-クレデンシャルウォレットのダウンロード)の手順が完了していること
   * このチュートリアルでは、ATPに接続するためにクレデンシャル・ウォレットを利用します。事前にクレデンシャル・ウォレットをダウンロードしてください
   * 実施する手順は`1. クレデンシャル・ウォレットのダウンロード`のみで問題ありません
-* ハンズオン環境に[Apache Maven](https://maven.apache.org/)がインストールされていること(バージョン3以上)
-* ハンズオン環境にJDK 11以上がインストールされていること
-  * 合わせて環境変数(JAVA_HOME)にJDK 11のパスが設定されていること
+* ハンズオン環境のVMイメージに[Oracle Linux Cloud Developer image](https://docs.oracle.com/en-us/iaas/oracle-linux/developer/index.htm)を利用すること
+  * Oracle Linux Cloud Developer imageには、このチュートリアルで利用するJDK 21とGitコマンドがインストールされています
 
 **Helidonのビルドおよび動作環境について**  
-Helidon2.xをビルドおよび動作させるにはJDK 11以上が必要です。
+Helidon4.xをビルドおよび動作させるにはJDK 21以上が必要です。
 {: .notice--info}
+
+事前準備
+---
+ここでは、このチュートリアルを実施するための事前準備を行います。  
+予め、Oracle Linux Cloud Developer imageでVMが作成されていることを前提とします。  
+
+### Mavenのインストール
+
+アプリケーションのプロジェクト作成やビルドに必要なMavenコマンドをインストールします。  
+
+Mavenのバイナリをダウンロードします。  
+
+```sh
+wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.zip
+```
+
+ダウンロードしたバイナリを解凍します。
+
+```sh
+unzip apache-maven-3.9.6-bin.zip
+```
+
+PATHを通します。
+
+```sh
+sudo mv apache-maven-3.9.6 /usr/bin
+```
+
+```sh
+export PATH="$PATH:/usr/bin/apache-maven-3.9.6/bin"
+```
+
+mavenコマンドが実行できることを確認します。  
+
+```sh
+mvn --version
+```
+
+以下のように表示されれば問題ありません。
+
+```sh
+[opc@helidon ~]$ mvn --version
+Apache Maven 3.9.6 (bc0240f3c744dd6b6ec2920b3cd08dcc295161ae)
+Maven home: /usr/bin/apache-maven-3.9.6
+Java version: 21.0.2, vendor: Oracle Corporation, runtime: /usr/lib64/graalvm/graalvm-java21
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "5.15.0-203.146.5.1.el8uek.x86_64", arch: "amd64", family: "unix"
+```
 
 1.Helidon CLIでベースプロジェクトを作成してみよう
 ----
@@ -50,7 +97,7 @@ chmod +x ./helidon
 ```
 
 ```sh
-sudo mv ./helidon /usr/local/bin/
+sudo mv ./helidon /usr/bin/
 ```
 
 これで、Helidon CLIのインストールは完了です！
@@ -67,36 +114,88 @@ helidon init
 
 |  項目  |  入力パラメータ  | 備考|
 | ---- | ---- |---- |
-| Helidon flavor  |  2  | EditionとしてMPを選択
-| Select archetype  |  3  | databaseを選択(JAX-RS + JPA/JTA)
-| Project name  |  (そのままEnter)  | プロジェクト名。今回はデフォルト。
-| Project groupId  |  (そのままEnter)   |　プロジェクトグループID。今回はデフォルト。
-| Project artifactId  |  (そのままEnter)   |　プロジェクトのアーティファクトID。今回はデフォルト。
-| Project version  |  (そのままEnter)   |　プロジェクトのバージョン。今回はデフォルト。
-| Java package name  |  (そのままEnter)   | Javaのパッケージ名。今回はデフォルト。
+| Helidon versions  |  1  | 最新の`4.0.8`
+| Helidon Flavor  |  2  | mp
+| Application Type  |  2  | databse
+| Media Support  |  1   |Jackson
+| JPA Implementation  |  (そのままEnter)   |Hibernate
+| Connection Pool  |  (そのままEnter)   |HikariCP
+| Database Server |  3    | Oracle DB
+| Auto DDL |  yes   | DDLの作成
+| Persistence Unit Name |  test    | JPAのユニット名
+| Datasource Name |  test    | データベース名
+| Project groupId |  com.example.handson.helidon    | プロジェクトのグループID
+| Project artifactId |  helidon-handson    | Jarファイル名
+| Project version |  (そのままEnter)    | アプリのバージョン
+| Java package name |  com.example.handson.helidon    | Javaのパッケージ名
 | Start development loop  |  n   | 開発モードで起動するかどうか
 
 
 ```sh
-user@client > helidon init
-Using Helidon version 2.2.1
-Helidon flavor
-  (1) SE 
-  (2) MP 
-Enter selection (Default: 1): 2
-Select archetype
-  (1) bare | Minimal Helidon MP project suitable to start from scratch 
-  (2) quickstart | Sample Helidon MP project that includes multiple REST operations 
-  (3) database | Helidon MP application that uses JPA with an in-memory H2 database 
-Enter selection (Default: 1): 3
-Project name (Default: database-mp): 
-Project groupId (Default: me.helidon): 
-Project artifactId (Default: database-mp): 
-Project version (Default: 1.0-SNAPSHOT): 
-Java package name (Default: me.test.mp.database): 
-Switch directory to /users/database-mp to use CLI
-
-Start development loop? (Default: n): n
+[opc@helidon ~]$ helidon init
+Helidon versions
+  (1) 4.0.8 
+  (2) 3.2.8 
+  (3) 2.6.7 
+  (4) Show all versions 
+Enter selection (default: 1): 1    
+
+Helidon version: 4.0.8
+
+| Helidon Flavor
+
+Select a Flavor
+  (1) se | Helidon SE
+  (2) mp | Helidon MP
+Enter selection (default: 1): 2
+
+| Application Type
+
+Select an Application Type
+  (1) quickstart | Quickstart
+  (2) database   | Database
+  (3) custom     | Custom
+  (4) oci        | OCI
+Enter selection (default: 1): 2
+
+| Media Support
+
+Select a JSON library
+  (1) jackson | Jackson
+  (2) jsonb   | JSON-B
+Enter selection (default: 2): 1
+
+| Database
+
+Select a JPA Implementation
+  (1) hibernate   | Hibernate
+  (2) eclipselink | EclipseLink
+Enter selection (default: 1): 1
+Select a Connection Pool
+  (1) hikaricp | HikariCP
+  (2) ucp      | UCP
+Enter selection (default: 1): 1
+Select a Database Server
+  (1) h2       | H2
+  (2) mysql    | MySQL
+  (3) oracledb | Oracle DB
+Enter selection (default: 1): 3
+Auto DDL (yes/no) (default: no): yes
+Persistence Unit Name (default: pu1): test
+Datasource Name (default: ds1): test
+
+| Customize Project
+
+Project groupId (default: me.opc-helidon): com.example.handson.helidon
+Project artifactId (default: database-mp): helidon-handson
+Project version (default: 1.0-SNAPSHOT): 
+Java package name (default: me.opc.mp.database): com.example.handson.helidon
+
+Directory /home/opc/helidon-handson already exists, generating unique name
+Switch directory to /home/opc/helidon-handson-2 to use CLI
+
+Start development loop? (default: n): n
+[opc@helidon ~]$ 
 ```
 
 **Helidon CLIについて**  
@@ -175,9 +274,9 @@ git clone https://github.com/oracle-japan/helidon-handson.git
 
 ```yaml
 # Datasource properties
-javax.sql.DataSource.test.dataSourceClassName=
-javax.sql.DataSource.test.dataSource.url=
-javax.sql.DataSource.test.dataSource.user=
+javax.sql.DataSource.test.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
+javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@
+javax.sql.DataSource.test.dataSource.user=admin
 javax.sql.DataSource.test.dataSource.password=
 ```
 
@@ -223,14 +322,14 @@ metrics.rest-request.enabled=false
 
 ```xml
     <properties>
-      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-      <property name="javax.persistence.sql-load-script-source" value="META-INF/init_script.sql"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
+        <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+        <property name="hibernate.column_ordering_strategy" value="legacy"/>
+        <property name="jakarta.persistence.sql-load-script-source" value="META-INF/init_script.sql"/>
     </properties>
 ```
 
 この部分は、その他のプロパティを指定します。  
-上から、自動スキーマ生成の設定、DDLスクリプトのパス、O/RマッパーとしてHibernateを利用する旨の設定です。  
+今回は、自動スキーマ生成の設定、DDLスクリプトのパスなどの設定を定義しています。    
 ここでは、他にも永続化に関する柔軟な設定を行うことができます。  
 詳細は[こちら](https://docs.oracle.com/cd/F23552_01/toplink/12.2.1.4/jpa-extensions-reference/persistence-property-extensions-reference.html#GUID-2E535D07-446F-44F0-9D8D-89E7FFCF8225)でご確認ください。
 
@@ -489,7 +588,7 @@ javax.sql.DataSource.test.dataSource.url=jdbc:oracle:thin:@atp01_high?TNS_ADMIN=
 
 ```yaml
 javax.sql.DataSource.test.dataSource.user=admin
-javax.sql.DataSource.test.dataSource.password=
+javax.sql.DataSource.test.dataSource.password=Welcome12345#
 ```
 
 最後にデータベースユーザ名とパスワードを設定します。  
@@ -536,10 +635,11 @@ java -jar target/helidon-handson.jar
 起動すると以下のようなログがコンソール上に出力されます。(一部抜粋しています)
 
 ```sh
-2021.04.23 11:21:48 情報 io.helidon.microprofile.server.ServerCdiExtension Thread[main,5,main]: Registering JAX-RS Application: HelidonMP
-2021.04.23 11:21:49 情報 io.helidon.webserver.NettyWebServer Thread[nioEventLoopGroup-2-1,10,main]: Channel '@default' started: [id: 0x7767538b, L:/0:0:0:0:0:0:0:0:8080]
-2021.04.23 11:21:49 情報 io.helidon.microprofile.server.ServerCdiExtension Thread[main,5,main]: Server started on http://localhost:8080 (and all other host addresses) in 2734 milliseconds (since JVM startup).
-2021.04.23 11:21:49 情報 io.helidon.common.HelidonFeatures Thread[features-thread,5,main]: Helidon MP 2.2.2 features: [CDI, Config, Fault Tolerance, Health, JAX-RS, JPA, JTA, Metrics, Open API, REST Client, Security, Server, Tracing]
+2024.05.06 12:53:53 INFO io.helidon.microprofile.server.ServerCdiExtension Thread[#1,main,5,main]: Registering JAX-RS Application: HelidonMP
+2024.05.06 12:53:53 INFO io.helidon.webserver.ServerListener VirtualThread[#45,start @default (/0.0.0.0:8080)]/runnable@ForkJoinPool-1-worker-1: [0x0ed438ea] http://0.0.0.0:8080 bound for socket '@default'
+2024.05.06 12:53:53 INFO io.helidon.webserver.LoomServer Thread[#1,main,5,main]: Started all channels in 13 milliseconds. 7411 milliseconds since JVM startup. Java 21.0.2+13-LTS-jvmci-23.1-b30
+2024.05.06 12:53:53 INFO io.helidon.microprofile.server.ServerCdiExtension Thread[#1,main,5,main]: Server started on http://localhost:8080 (and all other host addresses) in 7416 milliseconds (since JVM startup).
+2024.05.06 12:53:53 INFO io.helidon.common.features.HelidonFeatures Thread[#48,features-thread,5,main]: Helidon MP 4.0.8 features: [CDI, Config, Health, JPA, JTA, Metrics, Server]
 ```
 
 **アプリケーションの起動ついて**  
@@ -667,15 +767,15 @@ curl http://localhost:8080/prefecture/1
 ```java
 package com.example.handson.helidon;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 
 @Entity(name = "XXXXXX")
 @Table(name = "XXXXXX")
@@ -746,12 +846,12 @@ package com.example.handson.helidon;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("XXXXXX")
 public class PrefectureAreaResource {
@@ -777,7 +877,7 @@ public class PrefectureAreaResource {
 `Prefecture.java`を開きます。
 
 ```java
-    @JsonbTransient
+    @JsonIgnore
     private PrefectureArea prefectureArea;
 
     private String area;
@@ -794,7 +894,7 @@ public class PrefectureAreaResource {
 * 都道府県エリア(ID)  
 
 `都道府県エリア(ID)`の情報を取得しても、実際にどのエリアなのかは判断できないため、今回は`setPrefectureArea()`メソッドを利用して`都道府県エリア名`を設定できるようにします。  
-だたし、今回は`PrefectureArea`は`Prefecture`情報のレスポンスとしては含めたくない(含めたいのは`都道府県エリア名`のみ)なので、`@JsonbTransient`アノテーションを付与します。  
+だたし、今回は`PrefectureArea`は`Prefecture`情報のレスポンスとしては含めたくない(含めたいのは`都道府県エリア名`のみ)なので、`@JsonIgnore`アノテーションを付与します。  
 これは、レスポンス時のJSONに含めたくない(マッピングさせたくない)フィールドに対して定義するアノテーションです。  
 
 次に、追加したフィールドへのgetter/setterを定義します。
@@ -831,9 +931,9 @@ public class PrefectureAreaResource {
 上記で追加した実装について必要なimport文を追加します。
 
 ```java
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 ```
 
 最後に、都道府県エリアについては、本手順の冒頭の説明で、都道府県エリア(ID)ではなく、都道府県エリア名を設定できるようにするということを説明しました。  

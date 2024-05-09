@@ -415,7 +415,7 @@ vim code-at-customer-handson/olympic_frontend_apm/src/main/resources/web/index.h
 
 ***コマンド結果***
 
-```
+``` 
 ~~~
     <script>
       window.apmrum = (window.apmrum || {}); 
@@ -679,25 +679,20 @@ secret/apm-secret created
 また、必要に応じて`src/main/resources/META-INF/microprofile-config.properties`に設定値を追加します。  
 
   ```xml
+        <dependency> 
+            <groupId>io.helidon.microprofile.tracing</groupId> 
+            <artifactId>helidon-microprofile-tracing</artifactId> 
+        </dependency>
         <dependency>
             <groupId>com.oracle.apm.agent.java</groupId>
-            <artifactId>apm-java-agent-helidon</artifactId>
-            <version>RELEASE</version>
+            <artifactId>apm-java-agent-helidon3</artifactId>
+            <version>[1.8.3326,)</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.apm.agent.java</groupId>
             <artifactId>apm-java-agent-tracer</artifactId>
-            <version>RELEASE</version>
+            <version>[1.8.3326,)</version>
         </dependency>
-    </dependencies>
-
-    <repositories>
-        <repository>
-            <id>oci</id>
-            <name>OCI Object Store</name>
-            <url>https://objectstorage.us-ashburn-1.oraclecloud.com/n/idhph4hmky92/b/prod-agent-binaries/o</url>
-        </repository>
-    </repositories>
   ```
 
   今回、`microprofile-config.properties`については以下のように設定しています。(フロントエンドアプリケーションの場合)
@@ -829,7 +824,255 @@ OCIにはリソース監視を行うOCI Monitoringがあり、OCI Notifications�
 
 このように、OCI APMを利用すると詳細なトレーシングの取得と確認およびアプリケーションサーバのメトリクス監視を行うことができます。  
 
-### 2-8 OCI APMでのリアルユーザモニタリング(RUM)
+### 2.8 （オプション）OCI APMおよびOpenTelemetryを利用したコンテナアプリケーションのトレーシング、メトリクス監視
+
+**[2-7　OCI APMでのアプリケーションサーバのメトリクス監視](#2-7-oci-apmでのアプリケーションサーバのメトリクス監視)でのトレーシング**  
+[2-7　OCI APMでのアプリケーションサーバのメトリクス監視](#2-7-oci-apmでのアプリケーションサーバのメトリクス監視)では、`apm-java-agent-helidon`および`apm-java-agent-tracer`というライブラリを利用したトレーシングでした。  
+ここでは、トレーシング、メトリクス監視を実現する他の手段の一つとして、OpenTelemetryを利用したOCI APMでのトレーシングをご紹介します。
+{: .notice--info}
+
+OpenTelemetryは、OTelとも呼ばれ、ベンダーニュートラルなオープンソースの可観測性フレームワークです。  
+metrics、traces、logsなどのデータを検出、生成、収集、およびエクスポートするために使用されます。  
+
+ここでは、OKEクラスタにGo言語で開発したサンプル・アプリケーションをデプロイし、OCIのAPMとOpenTelemetryを使用して、Goのサンプル・アプリケーションのmetricsとtracesを収集及び表示する方法について説明します。  
+
+**OpenTelemetryとサポート言語について**  
+OpenTelemetryはさまざまな言語に対応していますが、まだ開発段階のものや実験段階のものも多々あります。  
+それぞれの言語がOpenTelemetryに対応しているかどうかは[こちら](https://opentelemetry.io/docs/languages/)をご確認ください。
+{: .notice--info}
+
+#### 2.8-1 OpenTelemetryのインストールとデプロイ
+
+OpenTelemetryを実装するには、Collector(DaemonSet CollectorとDeployment Collector)が必要です。
+
+これらのインストールはHelmを利用して実施します。  
+HelmはすでにCloud Shellにインストールされています。
+
+#### 2.8-2 DaemonSet Collectorのインストール
+
+DaemonSet CollectorはDaemonSet(各Nodeに必ず1つだけ配置されるコンテナ)で実行されるで実行されるCollectorです。  
+
+DaemonSet Collectorには、以下のコンポーネントが含まれています：
+
+- [OTLP Receiver](https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver)：アプリケーションのtraces、metrics、logsを収集する
+- [Kubernetes Attributes Processor](https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-attributes-processor)：Kubernetesのメタデータをテレメトりデータ(監視データ)に追加する
+- [Kubeletstats Receiver](https://opentelemetry.io/docs/kubernetes/collector/components/#kubeletstats-receiver)：kubeletのAPIサーバーからNode、Pod、コンテナのメトリクスを取得する
+- [Filelog Receiver](https://opentelemetry.io/docs/kubernetes/collector/components/#filelog-receiver)：Kubernetesのログおよびアプリケーションログを標準出力/標準エラー出力に書き込む。
+
+インストールにはvalues.yamlファイルが必要で、以下のように構成されます。
+
+- 設定ファイル内のエンドポイント・アドレスとAuthorizationのプライベートキーを、ご自身の情報に置き換えてください。
+- Authorizationは`dataKey + " " + プライベートキー`の形式で構成されます。
+- エンドポイント・アドレスとプライベートキーの取得方法は、[2-3 APMドメインの作成](#2-3-apmドメインの作成)をご確認ください。
+
+{% capture notice %}**values.yamlに設定するAPMエンドポイント**  
+各Collectorのインストール時に設定する`values.yaml`にはデータの投げ先であるexport先を指定できます。  
+OpenTelemetryでは、このエクスポート先を切り替えることによってOpenTelemetryをサポートする監視系SaaSやクラウドサービスを利用できます。  
+ここでは、OCI APMが持つAPMエンドポイントを指定します。  
+APMではメトリクスとトレースそれぞれに以下の2つのエンドポイントを提供します。  
+`/metrics`と`/traces`はCollector側でそれぞれ自動的に付与して、アップロードします。  
+  - https://<データ・アップロード・エンドポイント>/20200101/opentelemetry/metrics
+  - https://<データ・アップロード・エンドポイント>/20200101/opentelemetry/traces
+{% endcapture %}
+<div class="notice--info">
+  {{ notice | markdownify }}
+</div>
+
+```yaml
+mode: daemonset
+  
+presets:
+  # enables the k8sattributesprocessor and adds it to the traces, metrics, and logs pipelines
+  kubernetesAttributes:
+    enabled: true
+  # enables the kubeletstatsreceiver and adds it to the metrics pipelines
+  kubeletMetrics:
+    enabled: true
+
+
+config:
+  exporters:
+    otlphttp:
+      endpoint: "https://<データ・アップロード・エンドポイント>/20200101/opentelemetry"
+      headers:
+        Authorization: "dataKey <「データ・キー」の「プライベート」キー>"
+  service:
+    pipelines:
+      metrics:
+        exporters: [ otlphttp ]
+      traces:
+        exporters: [ otlphttp ]
+```
+
+以下のコマンドを実行して、DaemonSet Collectorをインストールします。
+
+```sh
+helm install otel-collector open-telemetry/opentelemetry-collector --values values.yaml
+```
+
+これで、DaemonSet Collectorをインストールは完了です。
+
+#### 2.8-3 Deployment Collectorのインストール
+
+ここでは、Deployment Collectorのインストールを実施します。  
+
+Deployment Collectorには、以下のコンポーネントが含まれています。
+
+- [Kubernetes Cluster Receiver](https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-cluster-receiver)：クラスタ全体のmetricsとeventsを収集する
+- [Kubernetes Objects Receiver](https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-objects-receiver)：Kubernetes APIサーバーからobjectsを収集する
+
+インストールにはvalues-cluster.yaml（values.yamlと区別するために違う名称を使用）が必要で、以下のように構成されます。
+
+- 設定ファイル内のエンドポイント・アドレスとAuthorizationのプライベートキーを、実際の情報に置き換えてください。
+- Authorizationは`dataKey + " " + プライベートキー`の形式で構成されます。
+- エンドポイント・アドレスとプライベートキーの取得方法は、[2-3 APMドメインの作成](#2-3-apmドメインの作成)をご確認ください。
+
+
+```yaml
+mode: deployment
+  
+# We only want one of these collectors - any more and we'd produce duplicate data
+replicaCount: 1
+
+presets:
+  # enables the k8sclusterreceiver and adds it to the metrics pipelines
+  clusterMetrics:
+    enabled: true
+  # enables the k8sobjectsreceiver to collect events only and adds it to the logs pipelines
+  kubernetesEvents:
+    enabled: true
+## The chart only includes the loggingexporter by default
+## If you want to send your data somewhere you need to
+## configure an exporter, such as the otlpexporter
+config:
+  exporters:
+   otlphttp:
+     endpoint: "https://<データ・アップロード・エンドポイント>/20200101/opentelemetry"
+     headers:
+        Authorization: "dataKey <「データ・キー」の「プライベート」キー>"
+  service:
+    pipelines:
+      metrics:
+        exporters: [ otlphttp ]
+      traces:
+        exporters: [ otlphttp ]
+```
+
+以下のコマンドを実行して、Deployment Collectorをインストールします。
+
+```sh
+helm install otel-collector-cluster open-telemetry/opentelemetry-collector --values values-cluster.yaml
+```
+
+これで、Deployment Collectorをインストールは完了です。  
+
+#### 2.8-4 インストール結果の確認
+
+インストール結果を確認します。  
+以下の2つのpodが正常に稼働されていることを確認します。(末尾のハッシュ値は異なっていて問題ありません)
+
+```sh
+# kubectl get pod|grep otel
+otel-collector-cluster-opentelemetry-collector-6f68f78f9c-2qsjn   1/1     Running   1              2d
+otel-collector-opentelemetry-collector-agent-zthfv                1/1     Running   1              2d1h
+```
+
+これらのPodの起動により、メトリクスがOCI Monitoringにアップロードされ始めます。
+
+実際に確認してみましょう。  
+
+OCI 監視および管理のメトリック・エクスプローラに移動して、metrics情報を確認します。
+
+![](option1.png)
+
+開始時間・終了時間及びご使用するコンパートメントを選択して、`namespace`では`oracle-apm-monitoring`を選択してください。
+
+![](option2.png)
+
+#### 2.8-5 Goのサンプル・アプリケーションのデプロイと動作確認
+
+最後に、OKEクラスタにGo言語で開発したサンプル・アプリケーションをデプロイし、メトリクスが取得できることを確認します。  
+
+サンプル・アプリケーション[ochacafe-faststart-go](https://github.com/oracle-japan/ochacafe-faststart-go)を例として、OKEクラスタにデプロイします。
+
+このサンプル・アプリケーションにはトレースデータをOCIのAPIエンドポイントにエクスポートするサンプル・コードが含まれています。
+
+![](option13.png)
+
+このサンプルアプリケーションはGo言語で実装され、OCIのマネージドなPostgreSQLサービスであるOCI Database with PostgreSQLをデータベースとするアプリケーションです。
+
+このアプリケーションのセットアップ手順は[README.md](https://github.com/oracle-japan/ochacafe-faststart-go/blob/main/README.md)をご確認ください。
+
+セットアップが完了すると、プロジェクトに含まれる[app.yaml](https://github.com/oracle-japan/ochacafe-faststart-go/blob/main/k8s/app.yaml)を使用して、Goのサンプル・アプリケーションをデプロイできます。  
+
+```sh
+kubectl apply -f app.yaml
+```
+
+しばらく待ってから、Service EXTERNAL-IPのIPアドレスが取得されます。
+
+```sh
+# kubectl get svc golang-demo-lb
+NAME            TYPE           CLUSTER-IP        EXTERNAL-IP       PORT(S)        AGE
+golang-demo-lb  LoadBalancer   xxx.xxx.xxx.xxx   xxx.xxx.xxx.xxx   80:32344/TCP   10m
+```
+
+ブラウザで`http://EXTERNAL-IP`に移動して、メトリクスとトレースの情報を作成するために、ページを何度かリフレッシュします。
+
+![](option14.png)
+
+OCIコンソールのAPMでトレース情報を確認します。 
+
+![](option3.png)
+
+APMドメインと時間帯を選択します。 
+
+![](option4.png)
+
+対応するレコードを選択すると、サービスの詳細が表示されます。 
+
+![](option5.png)
+
+現在、メトリクスとトレーシングはそれぞれMonitoringとAPMの2つのサービスで確認できます。
+
+統一的に監視するために、APMのダッシュボードでカスタム監視ダッシュボードを作成することができます。 
+
+OCI コンソールで"ダッシュボード"を選択して、"ダッシュボードの作成"をクリックします。 
+
+![](option6.png)
+
+"ウィジェット"を選択し、"ウィジェットの作成"をクリックします。 
+
+![](option7.png)
+
+"+"をクリックして、データを追加します。
+
+![](option8.png)
+
+Namespaceでoracle-apm-monitoringを選択します。 
+
+![](option9.png)
+左側に必要なmetricsをドラッグして、"Y axis"の右側に移動し、"適用"をクリックします。 
+
+
+![](option10.png)
+
+トレースデータを追加するには、上記の手順を繰り返して、APM Widgetsで関係するオプションを選択します。
+
+下図のように表示されます。
+
+![](option11.png)
+
+これで、同一インターフェースでメトリクスとトレースデータが表示されるようになります。
+下図のように、ここではコンテナのmetricsやアプリケーションのトレース情報を確認できます。
+
+![](option12.png)
+
+**ログについて**  
+ここではGoで実装されたサンプルアプリケーションでのトレーシングとメトリクスの監視方法について見てきましたが、ログについては、後続の[3.Logging](#3logging)に記載の方法で同様に確認できます。
+{: .notice--info}
+
+### 2-9 OCI APMでのリアルユーザモニタリング(RUM)
 
 ここでは、OCI APMのAPM Browser Agentを利用したリアルユーザモニタリング(RUM)について見ていきたいと思います。
 
@@ -872,7 +1115,7 @@ Satisfiedを1点、Toleratingを0.5点、Frustratedを0点としてその平均�
 
 このように、OCI APMでは、APM Browser Agentを利用したリアルユーザモニタリング(RUM)を行うことができます。  
 
-### 2-9 OCI APMでの合成モニタリング(Synthetic Monitoring)
+### 2-10 OCI APMでの合成モニタリング(Synthetic Monitoring)
 
 ここでは、OCI APMを利用した合成モニタリング(Synthetic Monitoring)について見ていきたいと思います。
 
@@ -1378,28 +1621,28 @@ Complete!
 JMeterをダウンロードします。
 
 ```sh
-wget https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.6.2.tgz
+wget https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
 ```
 
 ***コマンド結果***
 
 ```sh
---2022-02-07 08:33:34--  https://ftp.jaist.ac.jp/pub/apache/jmeter/binaries/apache-jmeter-5.6.2.tgz
-Resolving ftp.jaist.ac.jp (ftp.jaist.ac.jp)... 150.65.7.130, 2001:df0:2ed:feed::feed
-Connecting to ftp.jaist.ac.jp (ftp.jaist.ac.jp)|150.65.7.130|:443... connected.
+--2024-04-22 03:51:11--  https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
+Resolving dlcdn.apache.org (dlcdn.apache.org)... 151.101.2.132, 2a04:4e42::644
+Connecting to dlcdn.apache.org (dlcdn.apache.org)|151.101.2.132|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 70796171 (68M) [application/x-gzip]
-Saving to: ‘apache-jmeter-5.6.2.tgz’
+Length: 87414762 (83M) [application/x-gzip]
+Saving to: ‘apache-jmeter-5.6.3.tgz’
 
-100%[=======================================================================================>] 70,796,171  5.71MB/s   in 12s    
+apache-jmeter-5.6.3.tgz                   100%[====================================================================================>]  83.36M   350MB/s    in 0.2s    
 
-2022-02-07 08:33:47 (5.49 MB/s) - ‘apache-jmeter-5.6.2.tgz’ saved [70796171/70796171]
+2024-04-22 03:51:11 (350 MB/s) - ‘apache-jmeter-5.6.3.tgz’ saved [87414762/87414762]
 ```
 
 アーカイブを展開します。
 
 ```sh
-tar -zxvf apache-jmeter-5.6.2.tgz
+tar -zxvf apache-jmeter-5.6.3.tgz
 ```
 
 作業ディレクトリを作成します。
@@ -1478,7 +1721,7 @@ vim testplan.jmx
 負荷をかけます。止める場合は、「Ctrl + C」で停止できます。
 
 ```sh
-JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
 
 途中でエラーで停止する場合は、以下コマンドで「testplan.jtl」ファイルを削除して、負荷をかけなおしてください。
@@ -1488,7 +1731,7 @@ rm -rf testplan.jtl
 ```
 
 ```sh
-JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.2/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
+JVM_ARGS="-Xms12G -Xmx12G"  ../apache-jmeter-5.6.3/bin/jmeter -n -t ./testplan.jmx -l ./testplan.jtl -e -o html_repo_testplan
 ```
 
 {% capture notice %}**Jmeter起動時のエラーについて**  

@@ -17,6 +17,8 @@ table, th, td {
 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 対応シェイプを使用するインスタンスは、デプロイ時のイメージに **Oracle Linux** をベースOSとする **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用することで、 **クラスタ・ネットワーク** 接続に必要なソフトウェアのインストールやセットアップ等の作業を大幅に簡素化することが可能です。  
 本テクニカルTipsは、この **クラスタ・ネットワーキングイメージ** を使用してインスタンスを **クラスタ・ネットワーク** に接続する方法を解説します。
 
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
+
 ***
 # 0. 概要
 
@@ -28,27 +30,29 @@ table, th, td {
 2. **クラスタ・ネットワーク** のデプロイに伴ってデプロイされている
 3. **クラスタ・ネットワーク** 接続に必要な以下ソフトウェアがインストールされている
     1. Mellanox OFED
-    2. wpa_supplicant
+    2. WPAサプリカント（※1）
     3. 802.1X認証関連ユーティリティソフトウェア
     4. **クラスタ・ネットワーク** 設定ユーティリティソフトウェア
+
+    ※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリカントです。802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。
 
 [接続処理]
 
 1. **クラスタ・ネットワーク** との802.1X認証（**接続条件 3-3.** が実施）
-2. **クラスタ・ネットワーク** 接続用ネットワークインターフェースへのIPアドレス付与（**接続条件 3-4.** が実施）
+2. **クラスタ・ネットワーク** 接続用ネットワークインターフェース作成（**接続条件 3-4.** が実施）
 
 ここで **接続条件 3.** は、全てのソフトウェアを予めインストールした **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** が用意されており、これを利用することでそのインストールを省略することが可能です。  
 この **クラスタ・ネットワーキングイメージ** は、 **接続条件 3-3.** と **接続条件 3-4.** のユーティリティソフトウェアの提供方法について、 **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）プラグインを使用するイメージと個別RPMとしてインストールされているイメージが存在し、これらのユーティリティソフトウェアが実施する **接続処理 1.** と **接続処理 2.** の実行方法が異なります。  
-**クラスタネットワーキングイメージ** を適切に選択する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照ください。
+**クラスタネットワーキングイメージ** を適切に選択する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照してください。
 
-下表は、 **OCA** プラグインを使用する場合と個別RPMの機能を利用する場合の **クラスタ・ネットワーク** 接続方法をまとめています。
+下表は、 **OCA** プラグインを使用する場合と個別RPMの機能を使用する場合の **クラスタ・ネットワーク** 接続方法をまとめています。
 
 |   |  使用する **OCA** プラグイン | 使用するRPM・<br>Systemdサービス | 使用する<br>**クラスタ・ネットワーキングイメージ** 名<br>の先頭（※1）                            | 
 | :-: | :-: |:------------------------: | :---------------------------: | 
-|  **OCA**<br>プラグイン    | Compute HPC RDMA Authentication<br>Compute HPC RDMA Auto-Configuration                         |oracle-cloud-agent         | OracleLinux-8-OCA<br>OracleLinux-7-OCA              |
-| 個別RPM   | -                         | oci-cn-auth<br>（oci-cn-auth-renew）<br>oci-rdma-configure<br>oci-hpc-dapl-configure<br>oci-hpc-mlx-configure |OracleLinux-8-RHCK<br>OracleLinux-7-RHCK |
+|  **OCA**<br>プラグイン    | Compute HPC RDMA Authentication<br>Compute HPC RDMA Auto-Configuration                         |oracle-cloud-agent<br>oracle-cloud-agent-updater         | OracleLinux-8-OCA<br>OracleLinux-7-OCA              |
+| 個別RPM   | -                         | oci-cn-auth<br>oci-cn-auth-renew<br>oci-rdma-configure<br>oci-hpc-dapl-configure<br>oci-hpc-mlx-configure |OracleLinux-8-RHCK<br>OracleLinux-7-RHCK |
 
-※1）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照ください。
+※1）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照してください。
 
 また下表は、それぞれの接続方法の利得表で、自身の要件に合わせてどちらの方法を使用するかを判断します。  
 特別な要件が無ければ、 **OCA** プラグインを使用する方法を選択します。
@@ -58,8 +62,7 @@ table, th, td {
 | **OCA**<br>プラグイン | インスタンスデプロイ後に接続完了              | **OCA** 常駐によるCPUリソース消費（※2） |
 | 個別RPM   | **OCA** 停止によるCPUリソース消費抑止が可能（※2） | インスタンスデプロイ後に接続処理が必要                |
 
-※2）計算/GPUノード上で **OCA** がCPUリソースを消費するため、これによるアプリケーションのスケーラビリティへの影響を指しています。  
-この詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[不要サービス停止によるパフォーマンスチューニング方法](/ocitutorials/hpc/benchmark/stop-unused-service/)** を参照ください。
+※2）計算/GPUノード上で **OCA** がCPUリソースを消費するため、これによるアプリケーションのスケーラビリティへの影響を指しています。この詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[不要サービス停止によるパフォーマンスチューニング方法](/ocitutorials/hpc/benchmark/stop-unused-service/)** を参照ください。
 
 なお、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** カテゴリのチュートリアルは、全て **OCA** プラグインを使用する方法を採用しています。
 
@@ -70,16 +73,26 @@ table, th, td {
 
 本章は、 **OCA** プラグインを使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する手順を解説します。
 
-以下の手順が完了すると、デプロイしたインスタンス上で **クラスタ・ネットワーク** との802.1X認証と **クラスタ・ネットワーク** 接続用ネットワークインターフェースへのIPアドレス付与が完了し、 **クラスタ・ネットワーク** に接続された状態となります。
+以下の手順が完了すると、デプロイしたインスタンス上で **クラスタ・ネットワーク** との802.1X認証と **クラスタ・ネットワーク** 接続用ネットワークインターフェース作成が完了し、 **クラスタ・ネットワーク** に接続された状態となります。
 
-この際、 **クラスタ・ネットワーク** 用のネットワークインターフェースは、 **10.224.0.0/xx** のIPアドレス範囲が割当てられます。ここで **xx** のサブネットマスクは、 **仮想クラウド・ネットワーク** にプライマリVNICで接続するネットワークインターフェースに使用するものと同じものが使用されます。
+この際、 **クラスタ・ネットワーク** 用のネットワークインターフェースは、 **192.168.0.0/xx** のIPアドレス範囲が割当てられます。ここで **xx** のサブネットマスクは、 **仮想クラウド・ネットワーク** にプライマリVNICで接続するネットワークインターフェースに使用するものと同じものが使用されます。
 
 1. **OCA** プラグイン対応 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** の特定  
 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照し、使用する **クラスタ・ネットワーキングイメージ** を特定します。  
 この際、一覧表の **ユーティリティ提供方法** 列が **OCAプラグイン** となっているものから選択します。
 
 2. 特定した **クラスタ・ネットワーキングイメージ** を指定したインスタンスのデプロイ  
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[2. クラスタネットワーキングイメージ指定方法](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#2-クラスタネットワーキングイメージ指定方法)** を参照し、特定した **クラスタ・ネットワーキングイメージ** を指定してインスタンスをデプロイします。
+**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[2. クラスタネットワーキングイメージ指定方法](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#2-クラスタネットワーキングイメージ指定方法)** を参照し、特定した **クラスタ・ネットワーキングイメージ** を指定してインスタンスをデプロイします。  
+この際 **[2-1. OCIコンソールを使用する方法](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#2-1-ociコンソールを使用する方法)** の場合は、ここで作成する **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** の以下 **インスタンス構成の作成** 画面の **拡張オプションの表示** ボタンをクリックし、
+
+    ![画面ショット](console_page01.png)
+
+    表示される画面の **Oracle Cloudエージェント** タブをクリックし、表示される以下 **Oracle Cloudエージェント** タブで以下の項目をチェックします。
+
+    - **Compute HPC RDMA Auto-Configuration**
+    - **Compute HPC RDMA Authentication**
+
+    ![画面ショット](console_page02.png)
 
 ***
 # 2. 個別RPMを使用してクラスタ・ネットワークに接続する方法

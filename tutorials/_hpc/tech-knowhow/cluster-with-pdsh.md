@@ -74,25 +74,31 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 2. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** を提供するyumレポジトリを追加します。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
-   ```sh
-   $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-   $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
-   ```
+    ```sh
+    $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
+    $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
+    ```
 
-    なお、クラスタ管理ノードで **Oracle Cloud Agent** のOS管理を使用している（以下当該インスタンスの **Oracle Cloud Agent** タブで **OS管理サービス・エージェント** が有効となっている）場合、
+    なお、上記コマンド実行時に以下のメッセージが出力される場合、
 
-   ![画面ショット](console_page01.png)
+    ```sh
+    This system is receiving updates from OSMS server.
+    Error: No matching repo to modify: ol8_developer_EPEL.
+    ```
 
-    **[ここ](https://docs.oracle.com/ja-jp/iaas/os-management/index.html#using-console-osms)** の **管理対象インスタンスのソフトウェア・ソースを選択するには** の手順に従い、以下の **ソフトウェア・ソース** （yumレポジトリ） **Oracle Linux 8 EPEL Packages for Development** を追加します。
+    OSのパッケージ管理が **[OS管理サービス](https://docs.oracle.com/ja-jp/iaas/os-management/index.html)** で行われているため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。  
+    ここで実施する **OS管理サービス** の解除は、10分程度の時間が経過すると自動的に **OS管理サービス** 管理に戻ります。
 
-   ![画面ショット](console_page02.png)
+    ```sh
+    $ sudo osms unregister
+    $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
+    $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
+    ```
 
 3. 以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
    ```sh
-   $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-   $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
    $ sudo yum install -y pdsh pdsh-mod-dshgroup
    $ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
    ```
