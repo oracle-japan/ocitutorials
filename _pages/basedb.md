@@ -8,6 +8,10 @@ show_excerpts: true
 toc: true
 ---
   
+**Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
+<br/>
+
+----
 **前提条件**  
 + Oracle Cloud Infrastructure の環境と、ユーザーアカウントがあること(トライアル環境でも実施いただける内容となっています。)
 + 適切なコンパートメントと、そこに対する適切な権限がユーザーに付与されていること
@@ -16,10 +20,11 @@ toc: true
 + チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
 + [OCIチュートリアル入門編](/ocitutorials/beginners/)の、準備からその1、その2、その3、その7を実施しておくと、理解がスムーズです。  
 + より詳しく知りたい方は、[OCI活用資料集](https://oracle-japan.github.io/ocidocs/services/database/)も併せてご確認ください。それぞれのサービスに関する技術詳細資料をまとめ紹介しています。
-
 <br/>
 
+----
 
+<br/>
 # <span style="color: brown; ">■ Base Database Service (BaseDB) を使ってみよう</span>
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!!  
 まずはベーシックなBase Database インスタンスを作ってみましょう！
@@ -48,7 +53,8 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 <br/>
 
-
+**Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
+<br/>
 
 <!-- 
 
