@@ -300,7 +300,7 @@ var store = [{
         "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
       },{
         "title": "103 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう",
-        "excerpt":"Coming soon…  ","categories": [],
+        "excerpt":"Coming Soon…  ","categories": [],
         "tags": [],
         "url": "/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/",
         "teaser": "/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/teaser.png"
