@@ -287,6 +287,30 @@ var store = [{
         "url": "/ocitutorials/adb/adb701-adbd/",
         "teaser": null
       },{
+        "title": "101 : Always Freeで23aiのADBインスタンスを作成してみよう",
+        "excerpt":"はじめに Always Freeクラウド・サービスは、期間の制限なく無料で使用できるサービスです。 Always Freeではコンピュート、ストレージ、ロード・バランサ、そしてAutonomous Database (ADB) 等を使用可能です。 Always FreeのADBでは、2024年5月にリリースとなったOracle Database 23aiを使用し、新機能を試す事が出来ます。 この章では、Always FreeのADBインスタンスの作成方法をご紹介します。 BaseDBでのインスタンスの作成方法は101: Oracle Cloud で Oracle Database を使おう(BaseDB) を参考にしてください。 目次 1. リージョンの確認 2. ADBインスタンスを作成してみよう 所要時間 : 約5分 1. リージョンの確認 Always Free Autonomous Database上でのOracle Database 23aiは、 現時点では、以下の4リージョンのみでご利用いただけます： Ashburn Phoenix Frankfurt London お使いのテナンシーのホーム・リージョンが上記のリージョンのいずれか、 かつ、ホーム・リージョンでADBのインスタンスを作成する必要があります。 【補足】 ホーム・リージョンの確認方法は、その1 - OCIコンソールにアクセスして基本を理解するの 6....","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/",
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/ai-vector101-teaser.png"
+      },{
+        "title": "102 : Oracle AI Vector Searchを使おう",
+        "excerpt":"   Coming Soon…  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector102-ai-vector-search-basics/",
+        "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
+      },{
+        "title": "103 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう",
+        "excerpt":"Coming soon…  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/",
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/teaser.png"
+      },{
+        "title": "104 : Multi Vector Searchを使おう",
+        "excerpt":"   Coming Soon…  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector104-multi-mector-search/",
+        "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
+      },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(BaseDB)",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから Oracle Database → Oracleベース・データベース・サービス を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった...","categories": [],
         "tags": [],

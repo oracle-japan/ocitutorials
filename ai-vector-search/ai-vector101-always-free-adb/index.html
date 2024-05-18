@@ -1,0 +1,601 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.1 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>101 : Always Freeで23aiのADBインスタンスを作成してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Always Freeで23aiのADBインスタンスを作成する方法をご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="101 : Always Freeで23aiのADBインスタンスを作成してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/">
+
+
+  <meta property="og:description" content="Always Freeで23aiのADBインスタンスを作成する方法をご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/ai-vector101-teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-05-18T11:00:22+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/ai-vector101-teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          101 : Always Freeで23aiのADBインスタンスを作成してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Always Freeで23aiのADBインスタンスを作成する方法をご紹介します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/ai-vector-search" itemprop="item"><span itemprop="name">Ai vector search</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">101 : Always Freeで23aiのADBインスタンスを作成してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - AI Vector Search</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/" class="active">101 : Always Freeで23aiのADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector102-ai-vector-search-basics/">102 : Oracle AI Vector Searchを使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/">103 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector104-multi-mector-search/">104 : Multi Vector Searchを使おう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="101 : Always Freeで23aiのADBインスタンスを作成してみよう">
+    <meta itemprop="description" content="Always Freeで23aiのADBインスタンスを作成する方法をご紹介します。">
+    <meta itemprop="datePublished" content="2024-05-18T11:00:22+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-リージョンの確認">1. リージョンの確認</a></li><li><a href="#2-adbインスタンスを作成してみよう">2. ADBインスタンスを作成してみよう</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p><strong>Always Freeクラウド・サービス</strong>は、期間の制限なく無料で使用できるサービスです。
+<br />Always Freeではコンピュート、ストレージ、ロード・バランサ、そして<strong>Autonomous Database (ADB)</strong> 等を使用可能です。</p>
+
+<p>Always FreeのADBでは、2024年5月にリリースとなった<strong>Oracle Database 23ai</strong>を使用し、新機能を試す事が出来ます。
+<br />この章では、Always FreeのADBインスタンスの作成方法をご紹介します。</p>
+
+<p>BaseDBでのインスタンスの作成方法は<a href="/ocitutorials/basedb/dbcs101-create-db/" target="_blank">101: Oracle Cloud で Oracle Database を使おう(BaseDB)</a> を参考にしてください。</p>
+
+<p><br />
+<strong>目次</strong></p>
+
+<ul>
+  <li><a href="#1-リージョンの確認">1. リージョンの確認</a></li>
+  <li><a href="#2-adbインスタンスを作成してみよう">2. ADBインスタンスを作成してみよう</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約5分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-リージョンの確認">1. リージョンの確認</h1>
+
+<p>Always Free Autonomous Database上でのOracle Database 23aiは、
+  <br />現時点では、以下の4リージョンのみでご利用いただけます：</p>
+<ul>
+  <li>Ashburn</li>
+  <li>Phoenix</li>
+  <li>Frankfurt</li>
+  <li>London</li>
+</ul>
+
+<p>お使いのテナンシーの<strong>ホーム・リージョン</strong>が上記のリージョンのいずれか、
+  <br />かつ、<strong>ホーム・リージョン</strong>でADBのインスタンスを作成する必要があります。</p>
+
+<blockquote>
+  <p><strong>【補足】</strong></p>
+
+  <p>ホーム・リージョンの確認方法は、<a href="/ocitutorials/beginners/getting-started" target="_blank">その1 - OCIコンソールにアクセスして基本を理解する</a>の 6. リージョンの確認を参考にして下さい。</p>
+</blockquote>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="2-adbインスタンスを作成してみよう">2. ADBインスタンスを作成してみよう</h1>
+
+<ol>
+  <li>
+    <p>ナビゲーション・メニューから、「<strong>Oracle Database</strong>」»「<strong>Autonomous Database</strong>」 を選択し、ADBのサービス画面を表示します。</p>
+
+    <p><img src="ai-vector101-1.png" alt="img" /></p>
+  </li>
+  <li>
+    <p><strong>Autonomous Database の作成</strong> をクリックすると作成ウィンドウが立ち上がります。</p>
+
+    <p><img src="ai-vector101-2.png" alt="img" /></p>
+  </li>
+  <li>
+    <p>立ち上がった <strong>Autonomous Database の作成</strong> ウィンドウの入力欄に、以下の項目を入力します。</p>
+
+    <ul>
+      <li><strong>コンパートメント</strong> - 任意（有効な管理権限を持つコンパートメントを選択して下さい）。</li>
+      <li><strong>表示名</strong> - 任意（以降では <span style="color: red; "><b>adb23ai01</b></span> として記載しています）。サービスメニュー画面での表示用です。</li>
+      <li><strong>データベース名</strong> - 任意（以降では <span style="color: red; "><b>adb23ai01</b></span> として記載しています）。インスタンスへの接続時に利用します。</li>
+    </ul>
+
+    <p><img src="ai-vector101-3.png" alt="img" /></p>
+
+    <ul>
+      <li><strong>ワークロード・タイプの選択</strong> - <span style="color: red; "><b>トランザクション処理 </b></span>
+        <blockquote>
+          <p><strong>【補足】</strong></p>
+          <ul>
+            <li>システムが分析用途であればデータ・ウェアハウス（ADW）を選択</li>
+            <li>JSON 中心のアプリケーション開発にはJSONを選択</li>
+            <li>APEX アプリケーション開発にはAPEXを選択</li>
+            <li>それ以外はトランザクション処理（ATP）を選択（本ハンズオンではこちらを選択ください。）</li>
+          </ul>
+        </blockquote>
+      </li>
+      <li><strong>デプロイメント・タイプの選択</strong>  -  <span style="color: red; "><b>サーバーレス</b></span></li>
+    </ul>
+
+    <p><img src="ai-vector101-4.png" alt="img" /></p>
+
+    <ul>
+      <li><strong>Always Free</strong> - Always Freeの構成オプションのみを表示を<span style="color: red; "><b>オン</b></span></li>
+      <li><strong>データベース・バージョンの選択</strong> - <span style="color: red; "><b>23ai</b></span></li>
+    </ul>
+
+    <p><img src="ai-vector101-5.png" alt="img" /></p>
+
+    <ul>
+      <li><strong>Username</strong> - <span style="color: red; "><b>（固定値 / 変更不可）</b></span><br />
+        <blockquote>
+          <p><strong>【補足】</strong>
+ADMINスキーマはインスタンスを管理するためのユーザーです。他のユーザーの作成等、さまざまな管理業務を実行できます。</p>
+        </blockquote>
+      </li>
+      <li><strong>Password</strong> - <span style="color: red; "><b>Welcome12345#</b></span></li>
+    </ul>
+
+    <p><img src="ai-vector101-6.png" alt="img" /></p>
+
+    <ul>
+      <li><strong>ネットワーク・アクセスの選択</strong> - <span style="color: red; "><b>すべての場所からのセキュアアクセスを許可</b></span><br />
+        <blockquote>
+          <p><strong>【補足】</strong></p>
+          <ul>
+            <li>アクセス制御ルールの構成にチェックを入れると、特定のIPレンジ、CIDR、VCNからのアクセスのみを許可するようホワイトリストを設定できます。今回はなしでOKです。</li>
+            <li>ADBに接続する際に利用可能な認証方法は<strong>相互TLS接続</strong>と<strong>TLS接続</strong>の２種類があり、選択したアクセス・タイプにより利用可能な認証方法が次のように異なります：</li>
+          </ul>
+          <table>
+ <tr>
+  <td><b>アクセス・タイプ</b></td>
+  <td><b>相互TLS認証の要否</b></td>
+   </tr>
+  <tr>
+  <td>すべての場所からのセキュア・アクセス</td>
+  <td><b>必須</b><br />相互TLS認証のみ利用可</td>
+   </tr>
+  <tr>
+  <td>許可されたIPおよびVCN限定のセキュア・アクセス</td>
+  <td rowspan="2" valign="middle"><b>任意</b><br />相互TLS認証およびTLS認証から選択可</td>
+   </tr>
+  <tr>
+  <td>プライベート・エンドポイント・アクセスのみ</td>
+   </tr>
+  </table>
+        </blockquote>
+      </li>
+    </ul>
+
+    <p><img src="ai-vector101-7.png" alt="img" /></p>
+
+    <ul>
+      <li><strong>ライセンスタイプの選択</strong> - <span style="color: red; "><b>ライセンス込み</b></span>
+        <blockquote>
+          <p><strong>【補足】</strong></p>
+          <ul>
+            <li>ライセンス持込み（BYOL)：　すでにお持ちのDBライセンスをCloudに持ち込んで利用する場合に選択します(Bring Your Own License)。有効なDBライセンスをお持ちでなくこちらのタイプを選択するとライセンス違反となりますのでご注意ください。</li>
+            <li>ライセンス込み： 　DBソフトウェアの利用料やサポート費用を含め全てサブスクリプション形式で利用する場合に選択します。</li>
+          </ul>
+        </blockquote>
+      </li>
+      <li><strong>通知およびお知らせ用の連絡先</strong> - 任意（通知やお知らせ用の連絡先）。</li>
+    </ul>
+
+    <p><img src="ai-vector101-8.png" alt="img" /></p>
+  </li>
+  <li>
+    <p>全て入力できたことを確認し、<strong>Autonomous Databaseの作成</strong> をクリックします。<br />
+  （インスタンス作成が完了すると、茶色のプロビジョニング中から緑色の使用可能に変わります。緑色になればOKです！）</p>
+
+    <p><img src="ai-vector101-9.png" alt="img" /></p>
+
+    <blockquote>
+      <p><strong>【補足】</strong>
+ADBへの接続方法については<a href="/ocitutorials/adb/adb104-connect-using-wallet" target="_blank">104: クレデンシャル・ウォレットを利用して接続してみよう</a>を参考にして下さい。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p><br />
+以上で、この章は終了です。<br />
+次の章にお進みください。</p>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-18T11:00:22+09:00">May 18, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=101+%3A+Always+Free%E3%81%A723ai%E3%81%AEADB%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector101-always-free-adb%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector101-always-free-adb%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/ai-vector-search/ai-vector102-ai-vector-search-basics/" class="pagination--pager" title="102 : Oracle AI Vector Searchを使おう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
