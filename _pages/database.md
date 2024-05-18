@@ -56,7 +56,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 Always Free ADBを利用してOracle Database 23ai注目機能のOracle AI Vector Searchを体験してみましょう！
 
 
-+ **「Oracle AI Vector Search」チュートリアル一覧は[こちら](/ocitutorials/ai-vector-search/){:target="_blank"}**
++ **「Oracle AI Vector Search」チュートリアル一覧は[こちら](/ocitutorials/ai-vector-search){:target="_blank"}**
 <br/>
 
 <!-- 
