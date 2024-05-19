@@ -53,7 +53,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 # <span style="color: brown; ">■ Oracle AI Vector Searchを使ってみよう</span>
 
 生成AIを拡張するために必要なベクトル検索や顧客や商品に関するビジネス・データを結合する問合せを高性能かつセキュアに実現するOracle AI Vector Search !  
-Always Free ADBを利用してOracle Database 23ai注目機能のOracle AI Vector Searchを体験してみましょう！
+Always Free ADB / Oracle Database 23ai Freeを利用してOracle Database 23ai注目機能のOracle AI Vector Searchを体験してみましょう！
 
 
 + **「Oracle AI Vector Search」チュートリアル一覧は[こちら](/ocitutorials/ai-vector-search){:target="_blank"}**
