@@ -1,0 +1,788 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.1 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>105: マルチベクトル検索で複数のドキュメントを検索してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="AI Vector Searchのマルチベクトル検索では、複数のドキュメントをグルーピングすることで、最も一致する上位Ｋ個のベクトルを同時に取得することができます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="105: マルチベクトル検索で複数のドキュメントを検索してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/">
+
+
+  <meta property="og:description" content="AI Vector Searchのマルチベクトル検索では、複数のドキュメントをグルーピングすることで、最も一致する上位Ｋ個のベクトルを同時に取得することができます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/ai-vector105-teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-05-19T11:50:16+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/ai-vector105-teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          105: マルチベクトル検索で複数のドキュメントを検索してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">AI Vector Searchのマルチベクトル検索では、複数のドキュメントをグルーピングすることで、最も一致する上位Ｋ個のベクトルを同時に取得することができます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/ai-vector-search" itemprop="item"><span itemprop="name">Ai vector search</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">105: マルチベクトル検索で複数のドキュメントを検索してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - AI Vector Search</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/">101 : Always Freeで23aiのADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector103-ai-vector-search-basics/">103 : Oracle AI Vector Searchを使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/">104 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/" class="active">105: マルチベクトル検索で複数のドキュメントを検索してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="105: マルチベクトル検索で複数のドキュメントを検索してみよう">
+    <meta itemprop="description" content="AI Vector Searchのマルチベクトル検索では、複数のドキュメントをグルーピングすることで、最も一致する上位Ｋ個のベクトルを同時に取得することができます。">
+    <meta itemprop="datePublished" content="2024-05-19T11:50:16+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-事前準備">1. 事前準備</a></li><li><a href="#2-ファイルの格納">2. ファイルの格納</a></li><li><a href="#3-テキストへの変換">3. テキストへの変換</a></li><li><a href="#4-チャンクへの分割">4. チャンクへの分割</a></li><li><a href="#5-ベクトル化">5. ベクトル化</a></li><li><a href="#6-シングルベクトル検索の実行">6. シングルベクトル検索の実行</a></li><li><a href="#7-マルチベクトル検索の実行">7. マルチベクトル検索の実行</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>マルチベクトル検索は、データの特徴に基づくパーティションを用いたグルーピング基準を使って、最も一致する上位K個のベクトルを取得する手法です。
+本章では、実際にサンプルデータを使って通常のベクトル検索と、マルチベクトル検索の違いやその有用性を確認します。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ul>
+  <li>
+    <p>Oracle Database 23ai Freeをインストールする済みであること
+ <br />※インストール方法については、<a href="/ocitutorials/ai-vector-search/ai-vector102-23aifree-install" target="_blank">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a> を参照ください。</p>
+  </li>
+  <li>
+    <p>AI Vector Searchの基本的な操作を学習済みであること
+ <br /><a href="">103 ~</a>を参照ください。</p>
+  </li>
+  <li>
+    <p>OCI Generative AI Serviceを使用できること</p>
+    <ul>
+      <li>
+        <p>OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。</p>
+      </li>
+      <li>OCI アカウントのAPI署名キーの生成は完了であること
+<br />以下の情報を取得してください。必要があれば、<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two">API署名キーの生成方法</a>をご参照ください。
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">user</code> - キー・ペアが追加されるユーザーのOCID。</li>
+          <li><code class="language-plaintext highlighter-rouge">fingerprint</code> - 追加されたキーのフィンガープリント。</li>
+          <li><code class="language-plaintext highlighter-rouge">tenancy</code> - テナンシのOCID。</li>
+          <li><code class="language-plaintext highlighter-rouge">region</code> - コンソールで現在選択されているリージョン。</li>
+          <li><code class="language-plaintext highlighter-rouge">key_file</code> - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。</li>
+        </ul>
+      </li>
+      <li><code class="language-plaintext highlighter-rouge">compartment_ocid</code> - 利用するコンパートメントのOCIDを取得してください。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>目次：</strong></p>
+
+<ul>
+  <li><a href="#1-事前準備">1. 事前準備</a></li>
+  <li><a href="#2-ファイルの格納">2. ファイルの格納</a></li>
+  <li><a href="#3-テキストへの変換">3. テキストへの変換</a></li>
+  <li><a href="#4-チャンクへの分割">4. チャンクへの分割</a></li>
+  <li><a href="#5-ベクトル化">5. ベクトル化</a></li>
+  <li><a href="#6-シングルベクトル検索の実行">6. シングルベクトル検索の実行</a></li>
+  <li><a href="#7-マルチベクトル検索の実行">7. マルチベクトル検索の実行</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-事前準備">1. 事前準備</h1>
+
+<p>SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザーで接続します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sqlplus</span> <span class="n">sys</span><span class="o">@</span><span class="n">localhost</span><span class="p">:</span><span class="mi">1521</span><span class="o">/</span><span class="n">freepdb1</span> <span class="k">as</span> <span class="n">sysdba</span>
+</code></pre></div></div>
+
+<p>テストユーザー(multi_vector)を作成し、必要な権限を付与します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">connect</span><span class="p">,</span> <span class="n">ctxapp</span><span class="p">,</span> <span class="n">unlimited</span> <span class="n">tablespace</span><span class="p">,</span> <span class="k">create</span> <span class="n">credential</span><span class="p">,</span> <span class="k">create</span> <span class="k">procedure</span><span class="p">,</span> <span class="k">create</span> <span class="k">table</span> <span class="k">to</span> <span class="n">multi_vector</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">multi_vector</span><span class="p">;</span>
+<span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">sys</span><span class="p">.</span><span class="n">dmutil_lib</span> <span class="k">to</span> <span class="n">multi_vector</span><span class="p">;</span>
+<span class="k">grant</span> <span class="k">create</span> <span class="n">mining</span> <span class="n">model</span> <span class="k">to</span> <span class="n">multi_vector</span><span class="p">;</span>
+
+<span class="k">BEGIN</span>
+  <span class="n">DBMS_NETWORK_ACL_ADMIN</span><span class="p">.</span><span class="n">APPEND_HOST_ACE</span><span class="p">(</span>
+    <span class="k">host</span> <span class="o">=&gt;</span> <span class="s1">'*'</span><span class="p">,</span>
+    <span class="n">ace</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">ace_type</span><span class="p">(</span><span class="n">privilege_list</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">name_list</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">),</span>
+                       <span class="n">principal_name</span> <span class="o">=&gt;</span> <span class="s1">'multi_vector'</span><span class="p">,</span>
+                       <span class="n">principal_type</span> <span class="o">=&gt;</span> <span class="n">xs_acl</span><span class="p">.</span><span class="n">ptype_db</span><span class="p">));</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span> 
+</code></pre></div></div>
+
+<p>サーバー上にローカルディレクトリを作成します(サンプルPDFドキュメント格納用)。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">create</span> <span class="k">or</span> <span class="k">replace</span> <span class="n">directory</span> <span class="n">VEC_DUMP</span> <span class="k">as</span> <span class="s1">'/home/oracle/data/vec_dump'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>必要な権限を付与します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">read</span><span class="p">,</span> <span class="k">write</span> <span class="k">on</span> <span class="n">directory</span> <span class="n">VEC_DUMP</span> <span class="k">to</span> <span class="n">multi_vector</span><span class="p">;</span>
+<span class="k">commit</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>一度ログアウトします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exit
+</code></pre></div></div>
+
+<p>サンプルデータをダウンロードします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /home/oracle/data/vec_dump
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/sample_data.zip
+unzip sample_data.zip
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">MULTI_VECTOR</code>でDBに接続します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sqlplus</span> <span class="n">multi_vector</span><span class="o">/</span><span class="n">multi_vector</span><span class="o">@</span><span class="n">freepdb1</span>
+</code></pre></div></div>
+
+<p>SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定を行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SET ECHO ON
+SET FEEDBACK 1
+SET NUMWIDTH 10
+SET LINESIZE 80
+SET TRIMSPOOL ON
+SET TAB OFF
+SET PAGESIZE 10000
+SET LONG 10000
+SET TIMING ON
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="2-ファイルの格納">2. ファイルの格納</h1>
+<p>テーブル<code class="language-plaintext highlighter-rouge">documentation_tab</code>を作成し、そのテーブル内にサンプル・ドキュメントを格納します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">documentation_tab</span> <span class="p">(</span><span class="n">id</span> <span class="n">number</span><span class="p">,</span> <span class="k">data</span> <span class="nb">blob</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">documentation_tab</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">to_blob</span><span class="p">(</span><span class="n">bfilename</span><span class="p">(</span><span class="s1">'VEC_DUMP'</span><span class="p">,</span> <span class="s1">'sample_data1.docx'</span><span class="p">)));</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">documentation_tab</span> <span class="k">values</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">to_blob</span><span class="p">(</span><span class="n">bfilename</span><span class="p">(</span><span class="s1">'VEC_DUMP'</span><span class="p">,</span> <span class="s1">'sample_data2.docx'</span><span class="p">)));</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">documentation_tab</span> <span class="k">values</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">to_blob</span><span class="p">(</span><span class="n">bfilename</span><span class="p">(</span><span class="s1">'VEC_DUMP'</span><span class="p">,</span> <span class="s1">'sample_data3.docx'</span><span class="p">)));</span>
+<span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>正しくロードされているか確認するため、<code class="language-plaintext highlighter-rouge">documentation_tab</code>表の<code class="language-plaintext highlighter-rouge">data</code>列に格納されているLOBデータの長さをバイト単位で取得します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">dbms_lob</span><span class="p">.</span><span class="n">getlength</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span> <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>以下のように表示されればOKです。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DBMS_LOB.GETLENGTH(DT.DATA) 
+--------------------------- 
+                      17796
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="3-テキストへの変換">3. テキストへの変換</h1>
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_TEXT</code>を実行してサンプルドキュメントをテキスト形式に変換します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span> <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>以下のように表示されればOKです。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DBMS_VECTOR_CHAIN.UTL_TO_TEXT(DT.DATA)
+------------------------------------------------------------ 
+彼は新しいプロジェクトの提案で成功を収めました。
+
+美術館では現代アートの展示会が開催されています。
+
+...
+1行が選択されました。
+</code></pre></div></div>
+
+<p>クエリ結果が????と表示される場合は以下で<code class="language-plaintext highlighter-rouge">NLS_LANG</code>の設定をしたうえで実行してください。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NLS_LANG</span><span class="o">=</span>Japanese_Japan.AL32UTF8
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="4-チャンクへの分割">4. チャンクへの分割</h1>
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>を実行して、テキストをチャンクに分割します。</p>
+
+<p>今回は、カスタマイズしたパラメータ <code class="language-plaintext highlighter-rouge">{"max": "35", "overlap": "0", "language": "JAPANESE", "normalize": "all"}</code> で実行します。ほかのドキュメントを使用する場合、必要に応じて、パラメータを調整してください。チャンクについての詳細説明は<a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240">こちら</a>をご参照ください。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">ct</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "35", "overlap": "0", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">ct</span> <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>以下のように表示されればOKです。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>COLUMN_VALUE
+-------------------------------------------------------------------------------------
+{"chunk_id":1,"chunk_offset":5,"chunk_length":28,"chunk_data":"彼は新しいプロジェクトの提案で成功を収めました。"}             
+
+...
+
+{"chunk_id":10,"chunk_offset":285,"chunk_length":37,"chunk_data":"伝統的な工芸品を現代のデザインで再解釈する動きが注目されています。"} 
+
+10行が選択されました。
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="5-ベクトル化">5. ベクトル化</h1>
+<p>まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">declare</span>
+ <span class="n">jo</span> <span class="n">json_object_t</span><span class="p">;</span>
+<span class="k">begin</span>
+ <span class="n">jo</span> <span class="p">:</span><span class="o">=</span> <span class="n">json_object_t</span><span class="p">();</span>
+ <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'user_ocid'</span><span class="p">,</span> <span class="s1">'user ocid value'</span><span class="p">);</span>
+ <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'tenancy_ocid'</span><span class="p">,</span> <span class="s1">'tenancy ocid value'</span><span class="p">);</span>
+ <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'compartment_ocid'</span><span class="p">,</span> <span class="s1">'compartment ocid value'</span><span class="p">);</span>
+ <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'private_key'</span><span class="p">,</span> <span class="s1">'private key value'</span><span class="p">);</span>
+ <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'fingerprint'</span><span class="p">,</span> <span class="s1">'fingerprint value'</span><span class="p">);</span>
+ <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">);</span>
+ <span class="n">dbms_vector</span><span class="p">.</span><span class="n">create_credential</span><span class="p">(</span>
+   <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span>
+   <span class="n">params</span>          <span class="o">=&gt;</span> <span class="n">json</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">));</span>
+<span class="k">end</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p>本チュートリアルでは2つのテーブルを使用します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">doc_queries</span> <span class="p">(</span>
+    <span class="n">query</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+    <span class="n">embedding</span> <span class="n">VECTOR</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">doc_chunks</span> <span class="p">(</span>
+    <span class="n">doc_id</span> <span class="n">NUMBER</span><span class="p">,</span>
+    <span class="n">embed_id</span> <span class="n">NUMBER</span><span class="p">,</span>
+    <span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">),</span>
+    <span class="n">embed_vector</span> <span class="n">VECTOR</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">UTL_TO_EMBEDDINGS</code>を実行して、各チャンクをベクトルデータに変換して、<code class="language-plaintext highlighter-rouge">doc_chunks</code>テーブルに保存します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">doc_chunks</span><span class="p">(</span><span class="n">doc_id</span><span class="p">,</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">embed_data</span><span class="p">)</span> 
+<span class="k">select</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_data</span> <span class="k">as</span> <span class="n">embed_data</span>
+<span class="k">from</span>
+  <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+    <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> 
+    <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "35", "overlap": "0", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">chunk_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.chunk_id'</span><span class="p">,</span> <span class="n">chunk_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.chunk_data'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+
+<span class="k">UPDATE</span> <span class="n">doc_chunks</span>
+<span class="k">SET</span> <span class="n">embed_vector</span> <span class="o">=</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embedding</span><span class="p">(</span><span class="n">embed_data</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">doc_queries</code>テーブルにサンプル・データを登録します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">doc_queries</span> <span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">embedding</span><span class="p">)</span>
+<span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="n">embed_data</span> <span class="n">query</span><span class="p">,</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="n">embedding</span>
+<span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'彼は新しいプロジェクトの提案で成功を収めました。'</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span> <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="6-シングルベクトル検索の実行">6. シングルベクトル検索の実行</h1>
+<p>まずは通常のシングルベクター検索を実行してみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">embed_data</span>
+<span class="k">FROM</span> <span class="n">doc_chunks</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">vector_distance</span><span class="p">(</span><span class="n">embed_vector</span><span class="p">,</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">embedding</span> <span class="k">FROM</span> <span class="n">doc_queries</span> <span class="k">WHERE</span> <span class="n">query</span> <span class="o">=</span> <span class="s1">'彼は新しいプロジェクトの提案で成功を収めました。'</span><span class="p">),</span> <span class="n">COSINE</span><span class="p">)</span>
+<span class="k">FETCH</span> <span class="k">FIRST</span> <span class="mi">10</span> <span class="k">ROWS</span> <span class="k">ONLY</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    DOC_ID   EMBED_ID
+---------- ----------
+EMBED_DATA
+--------------------------------------------------------------------------------
+         1          1
+彼は新しいプロジェクトの提案で成功を収めました。
+
+         1          8
+彼女は環境保護活動に積極的に参加しています。
+
+         1         10
+伝統的な工芸品を現代のデザインで再解釈する動きが注目されています。
+
+         2          6
+この小説は心温まるストーリーが特徴です。
+
+         2          2
+新しいカフェが駅前にオープンしました。
+
+         3          2
+素敵なレストランを見つけました! ぜひ行ってみてください!
+
+...
+
+         2          4
+世界各国から観光客がこの歴史的な建物を訪れます。
+
+10行が選択されました。
+</code></pre></div></div>
+
+<p>この例ではDOC_IDが1, 2, 3のチャンクの内から、「彼は新しいプロジェクトの提案で成功を収めました。」に意味的に近いチャンクが結果として出力されています。</p>
+
+<p><br /></p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="7-マルチベクトル検索の実行">7. マルチベクトル検索の実行</h1>
+<p>続いてマルチベクター検索を実行してみます。</p>
+
+<p>たとえば、最初の2つの最も関連する文書の中で、最初の10つの最も関連する文章を見つけるために、次のSQL文を使用できます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">embed_data</span>
+<span class="k">FROM</span> <span class="n">doc_chunks</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">vector_distance</span><span class="p">(</span><span class="n">embed_vector</span><span class="p">,</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">embedding</span> <span class="k">FROM</span> <span class="n">doc_queries</span> <span class="k">WHERE</span> <span class="n">query</span> <span class="o">=</span> <span class="s1">'彼は新しいプロジェクトの提案で成功を収めました。'</span><span class="p">),</span> <span class="n">COSINE</span><span class="p">)</span>
+<span class="k">FETCH</span> <span class="k">FIRST</span> <span class="mi">2</span> <span class="n">PARTITIONS</span> <span class="k">BY</span> <span class="n">doc_id</span><span class="p">,</span> <span class="mi">10</span> <span class="k">ROWS</span> <span class="k">ONLY</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    DOC_ID   EMBED_ID
+---------- ----------
+EMBED_DATA
+--------------------------------------------------------------------------------
+         1          1
+彼は新しいプロジェクトの提案で成功を収めました。
+
+         1          8
+彼女は環境保護活動に積極的に参加しています。
+
+         1         10
+伝統的な工芸品を現代のデザインで再解釈する動きが注目されています。
+
+         2          6
+この小説は心温まるストーリーが特徴です。
+
+...
+
+         2          9
+スマートフォンの使用が睡眠に与える影響が研究されています。
+
+20行が選択されました。
+</code></pre></div></div>
+
+<p>この例では<code class="language-plaintext highlighter-rouge">FETCH FIRST 2 PARTITIONS BY DOC_ID</code>と指定することで、DOC_IDが1, 2の各チャンクから「彼は新しいプロジェクトの提案で成功を収めました。」に意味的に近いチャンクをそれぞれ10個ずつ検索するため、結果は20行として返されます。
+DOC_IDが3のチャンクは出力されません。</p>
+
+<p>なお、特定のDOC_IDの各チャンクから検索したい場合、WHERE句でDOC_IDを絞り込むことができます。</p>
+
+<p>例: DOC_IDが2, 3のチャンクの中から「彼は新しいプロジェクトの提案で成功を収めました。」に意味的に近い文章を10個ずつ検索</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT doc_id, embed_id, embed_data
+FROM doc_chunks
+WHERE DOC_ID IN (2, 3)
+ORDER BY vector_distance(embed_vector, (SELECT embedding FROM doc_queries WHERE query = '彼は新しいプロジェクトの提案で成功を収めました。'), COSINE)
+FETCH FIRST 2 PARTITIONS BY doc_id, 10 ROWS ONLY;
+</code></pre></div></div>
+
+<p>このようにマルチベクター検索を使用することで、「1人の個人に関する複数の写真がある表に対して、最も一致する上位K枚の写真を返す。ただしそれらは異なる人物の写真である。」というような条件を加えたクエリを実行することができます。
+また、複数の異なる文書データの中から確実にX個ずつ検索したい場合に有効に働きます。</p>
+
+<p><br /></p>
+
+<p><a id="anchor7"></a></p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-19T11:50:16+09:00">May 19, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=105%3A+%E3%83%9E%E3%83%AB%E3%83%81%E3%83%99%E3%82%AF%E3%83%88%E3%83%AB%E6%A4%9C%E7%B4%A2%E3%81%A7%E8%A4%87%E6%95%B0%E3%81%AE%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88%E3%82%92%E6%A4%9C%E7%B4%A2%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector105-multi-vector-search%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector105-multi-vector-search%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/" class="pagination--pager" title="104 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

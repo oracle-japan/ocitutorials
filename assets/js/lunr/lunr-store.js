@@ -293,23 +293,29 @@ var store = [{
         "url": "/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/",
         "teaser": "/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/ai-vector101-teaser.png"
       },{
-        "title": "102 : Oracle AI Vector Searchを使おう",
+        "title": "102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう",
+        "excerpt":"はじめに Oracle Database 23ai Freeは、Oracle Database 23aiを使いやすく、簡単にダウンロードできるようにパッケージ化され、無料で提供されています。Oracle Database 23ai Freeの概要はこちらをご参照ください。 Oracle Database 23ai Freeでは、一部リソース制限がありますが、AI Vector Searchの基本的な使い方を体験することができます。 本チュートリアルでは、Oracle Database 23ai Freeを仮想マシンインスタンスへインストールする方法をご紹介します。 前提条件 : Oracle Database 23ai Freeをインストールする仮想マシンインスタンスがプロビジョニング済みであること ※Oracle Cloud Infrastructure上でプロビジョニングする場合は、入門編-その3 - インスタンスを作成する を参照ください。 システム要件を満たしていることをご確認ください。 本チュートリアルはOracle Linux 8を前提にしています。 目次 はじめに 1. Oracle Database 23ai Freeのインストール 2. Oracle Database 23ai Freeへの接続 所要時間 :...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/",
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/ai-vector102-teaser.png"
+      },{
+        "title": "103 : Oracle AI Vector Searchを使おう",
         "excerpt":"   Coming Soon…  ","categories": [],
         "tags": [],
-        "url": "/ocitutorials/ai-vector-search/ai-vector102-ai-vector-search-basics/",
+        "url": "/ocitutorials/ai-vector-search/ai-vector103-ai-vector-search-basics/",
         "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
       },{
-        "title": "103 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう",
+        "title": "104 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう",
         "excerpt":"Coming Soon…  ","categories": [],
         "tags": [],
-        "url": "/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/",
-        "teaser": "/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/teaser.png"
-      },{
-        "title": "104 : Multi Vector Searchを使おう",
-        "excerpt":"   Coming Soon…  ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/ai-vector-search/ai-vector104-multi-mector-search/",
+        "url": "/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/",
         "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
+      },{
+        "title": "105: マルチベクトル検索で複数のドキュメントを検索してみよう",
+        "excerpt":"マルチベクトル検索は、データの特徴に基づくパーティションを用いたグルーピング基準を使って、最も一致する上位K個のベクトルを取得する手法です。 本章では、実際にサンプルデータを使って通常のベクトル検索と、マルチベクトル検索の違いやその有用性を確認します。 所要時間 : 約30分 前提条件 : Oracle Database 23ai Freeをインストールする済みであること ※インストール方法については、102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう を参照ください。 AI Vector Searchの基本的な操作を学習済みであること 103 ~を参照ください。 OCI Generative AI Serviceを使用できること OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。 OCI アカウントのAPI署名キーの生成は完了であること 以下の情報を取得してください。必要があれば、API署名キーの生成方法をご参照ください。 user - キー・ペアが追加されるユーザーのOCID。 fingerprint - 追加されたキーのフィンガープリント。 tenancy - テナンシのOCID。 region - コンソールで現在選択されているリージョン。 key_file - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。 compartment_ocid...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/",
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/ai-vector105-teaser.png"
       },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(BaseDB)",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから Oracle Database → Oracleベース・データベース・サービス を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった...","categories": [],
