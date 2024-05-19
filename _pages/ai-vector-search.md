@@ -38,13 +38,16 @@ Oracle AI Vector Searchを使用すると、ビジネス・データにベクト
 
 
 + **[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/){:target="_blank"}**   
+
 <!--
 + **[103 : AI Vector Searchを使おう](/ocitutorials/ai-vector-search/ai-vector103-ai-vector-search-basics/){:target="_blank"}**
-+ 
+
 + **[104 : File to Embeddingを使おう](/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/){:target="_blank"}** 
+
 -->
 
-+ **[105 : Multi Vector Searchを使おう](/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/){:target="_blank"}**
++ **[105 : マルチベクトル検索で複数のドキュメントを検索してみよう](/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/){:target="_blank"}**
+
 <br/>
 
 
