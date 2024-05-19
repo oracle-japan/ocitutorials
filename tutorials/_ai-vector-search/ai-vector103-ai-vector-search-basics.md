@@ -1,7 +1,7 @@
 ---
-title: "102 : Oracle AI Vector Searchを使おう"
+title: "103 : Oracle AI Vector Searchを使おう"
 excerpt: "Always Free ADBを利用してAI Vector Searchを使う方法について紹介します。"
-order: "4_102"
+order: "4_103"
 layout: single
 header:
   teaser: "/exadbd/exadb-d101-create-exadb-d/teaser.png"

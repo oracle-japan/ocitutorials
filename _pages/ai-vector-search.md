@@ -31,25 +31,21 @@ Oracle AI Vector Search機能は、ドキュメント、画像、その他の非
 Oracle AI Vector Searchを使用すると、ビジネス・データにベクトル検索を追加してCohereやChatGPTなどのジェネレーティブAIと組み合わせながら精度の高い分析が可能になります。
 <br/>
 
-以下のチュートリアルではAlways Free ADBの作り方から、Oracle AI Vector Searchの様々な使い方を学んでいただける内容になっています。
+以下のチュートリアルではAlways Free ADBの作り方/仮想マシンへのOracle Database 23ai Freeのインストール方法から、Oracle AI Vector Searchの様々な使い方を学んでいただける内容になっています。
 <br/>
 
 + **[101 : Always Freeで23aiのADBインスタンスを作成してみよう](/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/){:target="_blank"}**   
 
+
++ **[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/){:target="_blank"}**   
 <!--
-+ **[102 : AI Vector Searchを使おう](/ocitutorials/ai-vector-search/ai-vector102-ai-vector-search-basics/){:target="_blank"}**   
-
-+ **[103 : File to Embeddingを使おう](/ocitutorials/ai-vector-search/ai-vector103-file-to-embedding/){:target="_blank"}** 
-
- + **[104 : Multi Vector Searchを使おう](/ocitutorials/ai-vector-search/ai-vector104-multi-mector-search/){:target="_blank"}**
-<br/>
++ **[103 : AI Vector Searchを使おう](/ocitutorials/ai-vector-search/ai-vector103-ai-vector-search-basics/){:target="_blank"}**
++ 
++ **[104 : File to Embeddingを使おう](/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/){:target="_blank"}** 
 -->
 
-
++ **[105 : Multi Vector Searchを使おう](/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/){:target="_blank"}**
 <br/>
-
-
-
 
 
 **Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
