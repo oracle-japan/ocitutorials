@@ -23,13 +23,13 @@ header:
    <br>※インストール方法については、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](/ocitutorials/ai-vector-search/ai-vector102-23aifree-install){:target="_blank"} を参照ください。
 
 * AI Vector Searchの基本的な操作を学習済みであること
-   <br>[103 ~]()を参照ください。
+   <br>[103 ~](/ocitutorials/ai-vector-search/ai-vector103-basics/){:target="_blank"}を参照ください。
 
 * OCI Generative AI Serviceを使用できること
   - OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。
 
   - OCI アカウントのAPI署名キーの生成は完了であること
-  <br>以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two)をご参照ください。
+  <br>以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two){:target="_blank"}をご参照ください。
     - `user` - キー・ペアが追加されるユーザーのOCID。
     - `fingerprint` - 追加されたキーのフィンガープリント。
     - `tenancy` - テナンシのOCID。

@@ -13,7 +13,7 @@ header:
 
 # はじめに
 
-Oracle Database 23ai Freeは、Oracle Database 23aiを使いやすく、簡単にダウンロードできるようにパッケージ化され、無料で提供されています。Oracle Database 23ai Freeの概要は[こちら](https://www.oracle.com/jp/database/free/)をご参照ください。
+Oracle Database 23ai Freeは、Oracle Database 23aiを使いやすく、簡単にダウンロードできるようにパッケージ化され、無料で提供されています。Oracle Database 23ai Freeの概要は[こちら](https://www.oracle.com/jp/database/free/){:target="_blank"} をご参照ください。
 
 Oracle Database 23ai Freeでは、一部リソース制限がありますが、AI Vector Searchの基本的な使い方を体験することができます。
 
@@ -24,7 +24,7 @@ Oracle Database 23ai Freeでは、一部リソース制限がありますが、A
 **前提条件 :**  
 + Oracle Database 23ai Freeをインストールする仮想マシンインスタンスがプロビジョニング済みであること
     <br>※Oracle Cloud Infrastructure上でプロビジョニングする場合は、[入門編-その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance){:target="_blank"} を参照ください。
-    <br>[システム要件](https://docs.oracle.com/en/database/oracle/oracle-database/23/xeinl/requirements.html#GUID-427FACD2-F623-4BFA-AB3E-4FE283396547)を満たしていることをご確認ください。
+    <br>[システム要件](https://docs.oracle.com/en/database/oracle/oracle-database/23/xeinl/requirements.html#GUID-427FACD2-F623-4BFA-AB3E-4FE283396547){:target="_blank"}を満たしていることをご確認ください。
     <br>**本チュートリアルはOracle Linux 8を前提にしています。**
 
 
