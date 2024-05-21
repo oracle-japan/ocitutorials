@@ -25,7 +25,7 @@ header:
 + [6. その他のベクトル関数](#6-その他のベクトル関数)
 
 **前提条件 :**
-+ [101:Always Freeで23aiのADBインスタンスを作成してみよう](ai-vector-search/ai-vector101-always-free-adb/)もしくは、[102:仮想マシンへOracle Database 23ai Freeをインストールしてみよう](ai-vector-search/ai-vector102-23aifree-install/)の記事を参考に、Oracle Database 23aiの準備が完了していること。
++ [101:Always Freeで23aiのADBインスタンスを作成してみよう](/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/){:target="_blank"}もしくは、[102:仮想マシンへOracle Database 23ai Freeをインストールしてみよう](/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/){:target="_blank"}の記事を参考に、Oracle Database 23aiの準備が完了していること。
 
 
 **所要時間 :** 約90分
@@ -36,7 +36,7 @@ header:
 
 # 1. ベクトル・データを扱ったDDL、DMLを含んだSQLクエリの実行
 
-## 1-1 ユーザに接続
+**1-1 ユーザに接続**
 AI Vector Searchを操作するユーザに接続します。
 
 実行コマンド:
@@ -46,7 +46,7 @@ AI Vector Searchを操作するユーザに接続します。
 sqlplus vector/[パスワード]＠[接続文字列]
 ```
 
-## 1-2 ベクトル・データ型を含んだ表の作成
+**1-2 ベクトル・データ型を含んだ表の作成**
 
 実行コマンド:
 
@@ -64,7 +64,7 @@ DESC t1
 
 ![](2024-05-17-17-14-31.png)
 
-## 1-3 ベクトル表にベクトル・データをInsertする
+**1-3 ベクトル表にベクトル・データをInsertする**
 
 実行コマンド:
 
@@ -83,7 +83,7 @@ INSERT INTO t1 VALUES ('[1.1, 2.7, 3.141592653589793238]'),
 
 ![](2024-05-17-17-15-49.png)
 
-## 1-4 ベクトル・データの値をSelectする
+**1-4 ベクトル・データの値をSelectする**
 
 実行コマンド:
 
@@ -96,7 +96,7 @@ SELECT * FROM t1;
 
 ![](2024-05-19-21-23-23.png)
 
-## 1-5 ベクトル・データの値をUpdateする
+**1-5 ベクトル・データの値をUpdateする**
 
 実行コマンド:
 
@@ -116,7 +116,7 @@ SELECT * FROM t1;
 
 ![](2024-05-19-21-28-16.png)
 
-## 1-6 ベクトル・データに対してDML操作を実行する
+**1-6 ベクトル・データに対してDML操作を実行する**
 
 **ステップ1**
 
@@ -211,7 +211,7 @@ SELECT * FROM t2;
 
 ![](2024-05-19-22-04-51.png)
 
-## 1-7 複数のベクトル・データを含む表の作成
+**1-7 複数のベクトル・データを含む表の作成**
 
 **ステップ1**
 
@@ -266,7 +266,7 @@ SELECT * FROM t3;
 
 ![](2024-05-19-22-13-48.png)
 
-## 1-8 次元数が固定値であるベクトル・データの操作
+**1-8 次元数が固定値であるベクトル・データの操作**
 
 **ステップ1**
 
@@ -311,7 +311,7 @@ INSERT INTO t4 VALUES ('[1.4, 2.5, a]');
 後半3つのInsert
 ![](2024-05-19-22-50-47.png)
 
-## 1-9 ベクトル・データに対してDDL操作を実行する
+**1-9 ベクトル・データに対してDDL操作を実行する**
 
 **ステップ1**
 
@@ -397,7 +397,7 @@ SELECT * FROM t7;
 
 ![](2024-05-19-23-11-27.png)
 
-## 1-10 ベクトル・データベースで不可能な操作
+**1-10 ベクトル・データベースで不可能な操作**
 
 実行コマンド:
 
@@ -446,7 +446,7 @@ SELECT TO_NUMBER(VECTOR_DISTANCE(
 
 # 3. 類似性検索
 
-## 3-1 サンプル表の作成
+**3-1 サンプル表の作成**
 
 **ステップ1**
 
@@ -535,7 +535,7 @@ SELECT * FROM vt1;
 ![](2024-05-20-11-27-55.png)
 
 
-## 3-2 類似性検索の実行
+**3-2 類似性検索の実行**
 
 ベクトル・データq(7,-5)に近い5つのベクトルを検索します。
 ![](2024-05-20-11-36-13.png)
@@ -560,7 +560,7 @@ SELECT id
 
 # 4. 属性フィルタリング
 
-## 4-1 サンプル表の作成
+**4-1 サンプル表の作成**
 
 以下のようなイメージで、[3. 類似性検索](#anchor3)で作成したVT1表からVT2表を作成し、各項目(形、色、サイズ)でベクトル・データをそれぞれマッピングする。
 ![](2024-05-20-13-42-36.png)
@@ -693,7 +693,7 @@ GROUP  BY shape;
 
 ![](2024-05-20-14-09-47.png)
 
-## 4-2 属性フィルタリングを使用した類似性検索
+**4-2 属性フィルタリングを使用した類似性検索
 
 **ステップ1**
 
@@ -741,7 +741,7 @@ FETCH FIRST 10 ROWS ONLY;
 
 # 5. その他の距離関数
 
-## 5-1 サンプル表の作成
+**5-1 サンプル表の作成**
 
 [4. 属性フィルタリング](#anchor4)で作成したVT2表を元にVT3表を作成します。
 
@@ -765,7 +765,7 @@ SELECT * FROM vt3 ORDER BY 1;
 
 ![](2024-05-20-15-05-07.png)
 
-## 5-2 vector_distance関数の様々な距離計算手法を使用する
+**5-2 vector_distance関数の様々な距離計算手法を使用する**
 
 COSINE, EUCLIDEAN, DOT, MANHATTAN, HAMMINGの5つの手法を使用して、ベクトル(16,4)に最も近い4つのベクトル・データを検索します。
 
@@ -828,7 +828,7 @@ MANHATTAN
 HAMMING
 ![](2024-05-20-15-22-58.png)
 
-## 5-3 vector_distance関数の代替関数
+**5-3 vector_distance関数の代替関数**
 
 5-2で紹介したvector_distance関数の他に、L1_DISTANCE, L2_DISTANCE, COSINE_DISTANCE, INNER_PRODUCTという関数で指定することができ、関数の表記を簡略化することができます。
 それぞれ以下のような関係があります。
@@ -888,7 +888,7 @@ INNER_PRODUCT
 ![](2024-05-20-15-56-25.png)
 
 
-## 5-4 vector_distance関数の代替記法
+**5-4 vector_distance関数の代替記法**
 
 5-3で紹介した関数の他にも距離関数の表記を短縮できる代替記法があります。"<->", "<=>", "<#>"です。それぞれ以下のような関係があります。
 + <-> = L2_DISTANCE = EUCLIDEAN
@@ -1045,8 +1045,8 @@ from_vector()
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle AI Vector Search User`s Guide](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/index.html)
-+ [SQL Language Reference](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/index.html)
++ [Oracle AI Vector Search User`s Guide](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/index.html){:target="_blank"}
++ [SQL Language Reference](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/index.html){:target="_blank"}
 
 <BR>
 

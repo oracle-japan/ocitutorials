@@ -19,43 +19,43 @@ header:
 ファイルからテキストへ変換する関数セット(UTL_TO_TEXTおよびDBMS_VECTOR_CHAIN)を使用して、テキストをチャンク(UTL_TO_CHUNKS)に分割し、次にベクトル化モデルを使ってそれぞれのチャンクのベクトル(UTL_TO_EMBEDDINGS)を作成します。
 
 ![image1](image1.png)
+
+
 ## 0. 前提条件
 
 ベクトル化処理ではOCI GenAIのサービスを使用しますので、下記の前提条件を満たせる必要があります。
 
 - Oracle Database 23ai Freeをインストールする済みであること
-※インストール方法については、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/) を参照ください。
+※インストール方法については、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/){:target="_blank"} を参照ください。
 - OCI GenAIのサービスをご利用いただけるChicagoのRegionはサブスクリプション済みであること。
 
-- OCI アカウントのAPI署名キーの生成は完了であること、以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two)をご参照ください。
+- OCI アカウントのAPI署名キーの生成は完了であること、以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two){:target="_blank"}をご参照ください。
   - `user` - キー・ペアが追加されるユーザーのOCID。
   - `fingerprint` - 追加されたキーのフィンガープリント。
   - `tenancy` - テナンシのOCID。
   - `region` - コンソールで現在選択されているリージョン。
   - `key_file` - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。
 - `compartment_ocid` - 利用するコンパートメントのOCIDを取得してください。
-
 <br>
 
 **目次：**
-- [1. 事前準備(ドキュメントの準備)](#anchor1)
-- [2. ファイルの格納](#anchor2)
-- [3. テキストへの変換](#anchor3)
-- [4. チャンクへの分割](#anchor4)
-- [5. ベクトルデータへの変換](#anchor5)
-- [6. ベクトル検索の実行](#anchor6)
+- [0. 前提条件](#0-前提条件)
+- [1. 事前準備(ドキュメントの準備)](#1-事前準備ドキュメントの準備)
+- [2. ファイルの格納](#2-ファイルの格納)
+- [3. テキストへの変換](#3-テキストへの変換)
+- [4. チャンクへの分割](#4-チャンクへの分割)
+- [5. ベクトルデータへの変換](#5-ベクトルデータへの変換)
+- [6. ベクトル検索の実行](#6-ベクトル検索の実行)
 - [おわりに](#おわりに)
 
 <br>
-
 **所要時間 :** 約1時間
-
 <a id="anchor1"></a>
 
 ##  1. 事前準備(ドキュメントの準備)
 
 1つのサンプルPDFドキュメントを準備してください。
-  このチュートリアルで、[corporate-governance-202209-jp.pdf (oracle.com)](https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf)というサンプルPDFドキュメントを使用しています。
+  このチュートリアルで、[corporate-governance-202209-jp.pdf (oracle.com)](https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf){:target="_blank"}というサンプルPDFドキュメントを使用しています。
 
   ほかのファイルをご使用する場合、コマンドの中にあるファイル名を実際のファイル名へ変更してください。
 
