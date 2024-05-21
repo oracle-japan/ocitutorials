@@ -294,22 +294,22 @@ var store = [{
         "teaser": "/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/ai-vector101-teaser.png"
       },{
         "title": "102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう",
-        "excerpt":"はじめに Oracle Database 23ai Freeは、Oracle Database 23aiを使いやすく、簡単にダウンロードできるようにパッケージ化され、無料で提供されています。Oracle Database 23ai Freeの概要はこちらをご参照ください。 Oracle Database 23ai Freeでは、一部リソース制限がありますが、AI Vector Searchの基本的な使い方を体験することができます。 本チュートリアルでは、Oracle Database 23ai Freeを仮想マシンインスタンスへインストールする方法をご紹介します。 前提条件 : Oracle Database 23ai Freeをインストールする仮想マシンインスタンスがプロビジョニング済みであること ※Oracle Cloud Infrastructure上でプロビジョニングする場合は、入門編-その3 - インスタンスを作成する を参照ください。 システム要件を満たしていることをご確認ください。 本チュートリアルはOracle Linux 8を前提にしています。 目次 はじめに 1. Oracle Database 23ai Freeのインストール 2. Oracle Database 23ai Freeへの接続 所要時間 :...","categories": [],
+        "excerpt":"はじめに Oracle Database 23ai Freeは、Oracle Database 23aiを使いやすく、簡単にダウンロードできるようにパッケージ化され、無料で提供されています。Oracle Database 23ai Freeの概要はこちら をご参照ください。 Oracle Database 23ai Freeでは、一部リソース制限がありますが、AI Vector Searchの基本的な使い方を体験することができます。 本チュートリアルでは、Oracle Database 23ai Freeを仮想マシンインスタンスへインストールする方法をご紹介します。 前提条件 : Oracle Database 23ai Freeをインストールする仮想マシンインスタンスがプロビジョニング済みであること ※Oracle Cloud Infrastructure上でプロビジョニングする場合は、入門編-その3 - インスタンスを作成する を参照ください。 システム要件を満たしていることをご確認ください。 本チュートリアルはOracle Linux 8を前提にしています。 目次 はじめに 1. Oracle Database 23ai Freeのインストール 2. Oracle Database 23ai Freeへの接続 所要時間...","categories": [],
         "tags": [],
         "url": "/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/",
         "teaser": "/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/ai-vector102-teaser.png"
       },{
-        "title": "103 : Oracle AI Vector Searchを使おう",
-        "excerpt":"   Coming Soon…  ","categories": [],
+        "title": "103 : Oracle AI Vector Searchの基本操作を試してみよう",
+        "excerpt":"はじめに Oracle AI Vector Search は、Oracle Database 23aiから追加されている、ベクトル・データを活用したセマンティック検索機能です。機能としては、新たなベクトルデータ型、ベクトル索引、ベクトル検索のSQL演算子が含まれております。これらにより、Oracle Databaseは、文書、画像、その他の非構造化データのセマンティック・コンテンツをベクトルとして格納し、それを活用して迅速な類似性クエリを実行することが可能になります。この機能は、大規模言語モデル(LLM)とプライベートのビジネス・データを組みわせて、ビジネス基準のセキュリティ、性能レベルを満たすためのワークフローであるRetrieval Augmented Generation(RAG)に対応することができ、エンタープライズ向けの高度で強力な検索を可能にします。 この章では、ベクトル列を含んだテーブルの作成、ベクトル列でのDDLおよびDML操作、関数を使用した類似性検索、リレーショナル・データベース上でベクトル・データを扱った操作など、基本的なOracle AI Vector Searchにおけるベクトル・データの操作についてご紹介します。 目次 : 1. ベクトル・データを扱ったDDL、DMLを含んだSQLクエリの実行 2. ベクトルの距離計算 3. 類似性検索 4. 属性フィルタリング 5. その他の距離関数 6. その他のベクトル関数 前提条件 : 101:Always Freeで23aiのADBインスタンスを作成してみようもしくは、102:仮想マシンへOracle Database 23ai Freeをインストールしてみようの記事を参考に、Oracle Database 23aiの準備が完了していること。 所要時間 : 約90分 1. ベクトル・データを扱ったDDL、DMLを含んだSQLクエリの実行 1-1 ユーザに接続 AI Vector Searchを操作するユーザに接続します。 実行コマンド: ユーザに接続...","categories": [],
         "tags": [],
-        "url": "/ocitutorials/ai-vector-search/ai-vector103-ai-vector-search-basics/",
-        "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
+        "url": "/ocitutorials/ai-vector-search/ai-vector103-basics/",
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector103-basics/teaser.png"
       },{
-        "title": "104 : ファイル→テキスト→チャンク→Embeddingsへの変換およびベクトル検索を使おう",
-        "excerpt":"Coming Soon…  ","categories": [],
+        "title": "104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう",
+        "excerpt":"はじめに このチュートリアルでは、ファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について、ステップバイステップでの実行する方法をご紹介します。 ファイルからテキストへ変換する関数セット(UTL_TO_TEXTおよびDBMS_VECTOR_CHAIN)を使用して、テキストをチャンク(UTL_TO_CHUNKS)に分割し、次にベクトル化モデルを使ってそれぞれのチャンクのベクトル(UTL_TO_EMBEDDINGS)を作成します。 0. 前提条件 ベクトル化処理ではOCI GenAIのサービスを使用しますので、下記の前提条件を満たせる必要があります。 Oracle Database 23ai Freeをインストールする済みであること ※インストール方法については、102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう を参照ください。 OCI GenAIのサービスをご利用いただけるChicagoのRegionはサブスクリプション済みであること。 OCI アカウントのAPI署名キーの生成は完了であること、以下の情報を取得してください。必要があれば、API署名キーの生成方法をご参照ください。 user - キー・ペアが追加されるユーザーのOCID。 fingerprint - 追加されたキーのフィンガープリント。 tenancy - テナンシのOCID。 region - コンソールで現在選択されているリージョン。 key_file - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。 compartment_ocid - 利用するコンパートメントのOCIDを取得してください。 目次： 0. 前提条件 1. 事前準備(ドキュメントの準備) 2. ファイルの格納 3. テキストへの変換 4....","categories": [],
         "tags": [],
         "url": "/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/",
-        "teaser": "/ocitutorials/exadbd/exadb-d101-create-exadb-d/teaser.png"
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/ai-vector104-file-to-embedding-teaser.png"
       },{
         "title": "105: マルチベクトル検索で複数のドキュメントを検索してみよう",
         "excerpt":"マルチベクトル検索は、データの特徴に基づくパーティションを用いたグルーピング基準を使って、最も一致する上位K個のベクトルを取得する手法です。 本章では、実際にサンプルデータを使って通常のベクトル検索と、マルチベクトル検索の違いやその有用性を確認します。 所要時間 : 約30分 前提条件 : Oracle Database 23ai Freeをインストールする済みであること ※インストール方法については、102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう を参照ください。 AI Vector Searchの基本的な操作を学習済みであること 103 ~を参照ください。 OCI Generative AI Serviceを使用できること OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。 OCI アカウントのAPI署名キーの生成は完了であること 以下の情報を取得してください。必要があれば、API署名キーの生成方法をご参照ください。 user - キー・ペアが追加されるユーザーのOCID。 fingerprint - 追加されたキーのフィンガープリント。 tenancy - テナンシのOCID。 region - コンソールで現在選択されているリージョン。 key_file - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。 compartment_ocid...","categories": [],
