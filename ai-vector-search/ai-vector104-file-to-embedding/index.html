@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-05-21T17:55:18+09:00">
+  <meta property="article:published_time" content="2024-05-23T12:45:09+09:00">
 
 
 
@@ -261,7 +261,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう">
     <meta itemprop="description" content="23ai freeを利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
-    <meta itemprop="datePublished" content="2024-05-21T17:55:18+09:00">
+    <meta itemprop="datePublished" content="2024-05-23T12:45:09+09:00">
     
 
     <div class="page__inner-wrap">
@@ -292,11 +292,11 @@
 
 <ul>
   <li>Oracle Database 23ai Freeをインストールする済みであること
-※インストール方法については、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/" target="_blank">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a> を参照ください。</li>
+※インストール方法については、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a> を参照ください。</li>
   <li>
     <p>OCI GenAIのサービスをご利用いただけるChicagoのRegionはサブスクリプション済みであること。</p>
   </li>
-  <li>OCI アカウントのAPI署名キーの生成は完了であること、以下の情報を取得してください。必要があれば、<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two" target="_blank">API署名キーの生成方法</a>をご参照ください。
+  <li>OCI アカウントのAPI署名キーの生成は完了であること、以下の情報を取得してください。必要があれば、<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two">API署名キーの生成方法</a>をご参照ください。
     <ul>
       <li><code class="language-plaintext highlighter-rouge">user</code> - キー・ペアが追加されるユーザーのOCID。</li>
       <li><code class="language-plaintext highlighter-rouge">fingerprint</code> - 追加されたキーのフィンガープリント。</li>
@@ -305,30 +305,32 @@
       <li><code class="language-plaintext highlighter-rouge">key_file</code> - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。</li>
     </ul>
   </li>
-  <li><code class="language-plaintext highlighter-rouge">compartment_ocid</code> - 利用するコンパートメントのOCIDを取得してください。
-<br /></li>
+  <li><code class="language-plaintext highlighter-rouge">compartment_ocid</code> - 利用するコンパートメントのOCIDを取得してください。</li>
 </ul>
+
+<p><br /></p>
 
 <p><strong>目次：</strong></p>
 <ul>
-  <li><a href="#0-前提条件">0. 前提条件</a></li>
-  <li><a href="#1-事前準備ドキュメントの準備">1. 事前準備(ドキュメントの準備)</a></li>
-  <li><a href="#2-ファイルの格納">2. ファイルの格納</a></li>
-  <li><a href="#3-テキストへの変換">3. テキストへの変換</a></li>
-  <li><a href="#4-チャンクへの分割">4. チャンクへの分割</a></li>
-  <li><a href="#5-ベクトルデータへの変換">5. ベクトルデータへの変換</a></li>
-  <li><a href="#6-ベクトル検索の実行">6. ベクトル検索の実行</a></li>
+  <li><a href="#anchor1">1. 事前準備(ドキュメントの準備)</a></li>
+  <li><a href="#anchor2">2. ファイルの格納</a></li>
+  <li><a href="#anchor3">3. テキストへの変換</a></li>
+  <li><a href="#anchor4">4. チャンクへの分割</a></li>
+  <li><a href="#anchor5">5. ベクトルデータへの変換</a></li>
+  <li><a href="#anchor6">6. ベクトル検索の実行</a></li>
   <li><a href="#おわりに">おわりに</a></li>
 </ul>
 
-<p><br />
-<strong>所要時間 :</strong> 約1時間
-<a id="anchor1"></a></p>
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約1時間</p>
+
+<p><a id="anchor1"></a></p>
 
 <h2 id="1-事前準備ドキュメントの準備">1. 事前準備(ドキュメントの準備)</h2>
 
 <p>1つのサンプルPDFドキュメントを準備してください。
-  このチュートリアルで、<a href="https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf" target="_blank">corporate-governance-202209-jp.pdf (oracle.com)</a>というサンプルPDFドキュメントを使用しています。</p>
+  このチュートリアルで、<a href="https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf">corporate-governance-202209-jp.pdf (oracle.com)</a>というサンプルPDFドキュメントを使用しています。</p>
 
 <p>ほかのファイルをご使用する場合、コマンドの中にあるファイル名を実際のファイル名へ変更してください。</p>
 
@@ -336,7 +338,13 @@
   Tera Term等を使い、コンピュートインスタンスに接続したあと、以下を実行します。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  sudo su - oracle
-  wget https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf
+  --以下でNLS_LANGの設定をします。本チュートリアルでは日本語のデータセットを使用するので、以下を実行しSQL*Plusの文字コードを変更してください。
+  export NLS_LANG=Japanese_Japan.AL32UTF8
+</code></pre></div></div>
+
+<p>サンプルPDFドキュメントを取得します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  wget https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf
 </code></pre></div></div>
 
 <p>また、取り込み用のディレクトリを作成して、サンプルPDFドキュメントをコピーしてください。</p>
@@ -534,7 +542,8 @@
 
 <h2 id="5-ベクトルデータへの変換">5. ベクトルデータへの変換</h2>
 
-<p>チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。</p>
+<p>チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
+冒頭で取得したの文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを記入して実行してください。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  -- 初回の実行では必要なし
   -- exec dbms_vector.drop_credential('OCI_CRED');
@@ -619,7 +628,7 @@
     documentation_tab dt,
     dbms_vector_chain.utl_to_embeddings(
       dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')), json('{"provider": "ocigenai", "credential_name": "OCI_CRED2", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t
+      json('{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')), json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t
   where dt.id = 1)
   select t_chunk.doc_id doc_id, t_chunk.embed_id as embed_id, t_chunk.embed_data as embed_data, t_embed.embed_vector as embed_vector
   from t_chunk
@@ -686,7 +695,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-21T17:55:18+09:00">May 21, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-23T12:45:09+09:00">May 23, 2024</time></p>
 
       </footer>
 
