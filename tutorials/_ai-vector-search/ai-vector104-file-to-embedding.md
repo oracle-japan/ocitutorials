@@ -18,6 +18,8 @@ header:
 
 ファイルからテキストへ変換する関数セット(UTL_TO_TEXTおよびDBMS_VECTOR_CHAIN)を使用して、テキストをチャンク(UTL_TO_CHUNKS)に分割し、次にベクトル化モデルを使ってそれぞれのチャンクのベクトル(UTL_TO_EMBEDDINGS)を作成します。
 
+ ![image1](image1.png)
+
 ## 0. 前提条件
 
 ベクトル化処理ではOCI GenAIのサービスを使用しますので、下記の前提条件を満たせる必要があります。
@@ -63,7 +65,7 @@ header:
 
   ```
   sudo su - oracle
-  --以下でNLS_LANGの設定をします。
+  --以下でNLS_LANGの設定をします。本チュートリアルでは日本語のデータセットを使用するので、以下を実行しSQL*Plusの文字コードを変更してください。
   export NLS_LANG=Japanese_Japan.AL32UTF8
   ```
 
