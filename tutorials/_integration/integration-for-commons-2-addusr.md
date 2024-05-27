@@ -2,7 +2,7 @@
 title: "OIC インスタンスにユーザーを追加する"
 excerpt: "このハンズオンでは Oracle Integration(OIC) インスタンスを利用するユーザーの登録方法、およびロールの割り当て方法を ステップ・バイ・ステップで紹介します。"
 layout: single
-order: "002"
+order: "001"
 tags:
 ---
 このハンズオンでは Oracle Integration(OIC) インスタンスを利用するユーザーの登録方法、およびロールの割り当て方法を ステップ・バイ・ステップで紹介します。
