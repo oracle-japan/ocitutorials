@@ -1397,16 +1397,16 @@ var store = [{
         "url": "/ocitutorials/integration/integration-for-commons-1-instance/",
         "teaser": null
       },{
-        "title": "OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編",
-        "excerpt":"Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。 OIC インスタンスの作成前に確認すること OIC インスタンスを作成する前の確認事項について説明します。 1. Oracle Cloud アカウントの準備 Oracle Cloud のアカウントを準備します。無料のトライアル環境（フリートライアル）と有料のクラウド・アカウントのご利用が可能です。 無料のトライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です。詳細は下記URLのページをご確認ください。 Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 2. 作成可能なリージョンの確認 OIC インスタンスを作成可能なリージョンを確認します。詳細はこちらのマニュアルをご確認ください。 3. 制限事項の確認 クラウド・アカウントの発行時期により、作成可能な OIC インスタンスの種類が異なります。こちらのマニュアルに、OCI コンソールから作成する OIC Generation 2 インスタンスの作成条件が記載されています。 4. エディションの確認 (Standard or Enterprise) OIC は、2つのエディション(Standard...","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/integration/integration-for-commons-1-instance-id/",
-        "teaser": null
-      },{
         "title": "OIC インスタンスにユーザーを追加する",
         "excerpt":"このハンズオンでは Oracle Integration(OIC) インスタンスを利用するユーザーの登録方法、およびロールの割り当て方法を ステップ・バイ・ステップで紹介します。 前提条件 OIC インスタンスを作成するが実施済みであること IDCS の Identity Domain Administrator ロールが付与されたユーザーであること OIC インスタンスにユーザーを追加する OIC インスタンスを利用するユーザーは、IDCS ユーザーとして登録します。 ここでは、以下の手順で IDCS ユーザーを OIC インスタンスの事前定義済アプリケーションロールの ServiceUser に割り当てる手順を説明します。 IDCS の管理コンソールを開く IDCS グループを作成する IDCS グループを OIC インスタンスのアプリケーションロールに割り当てる IDCS ユーザーを作成し、IDCS グループに割り当てる OIC の事前定義済アプリケーションロールについて OIC の事前定義済アプリケーションロール（以降、事前定義済ロールと省略）は、OIC のさまざまな機能へのアクセスを制御します。事前定義済ロールに対して、IDCS で作成したユーザーおよびグループを割り当てることができます。Oracle Integration の事前定義済ロールと、そのロールを割り当てられたユーザーが実行できる一般的なタスクについては、下記ドキュメントをご確認ください。 Oracle Integration Roles and Privileges...","categories": [],
         "tags": [],
         "url": "/ocitutorials/integration/integration-for-commons-2-addusr/",
+        "teaser": null
+      },{
+        "title": "OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編",
+        "excerpt":"Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。 OIC インスタンスの作成前に確認すること OIC インスタンスを作成する前の確認事項について説明します。 1. Oracle Cloud アカウントの準備 Oracle Cloud のアカウントを準備します。無料のトライアル環境（フリートライアル）と有料のクラウド・アカウントのご利用が可能です。 無料のトライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です。詳細は下記URLのページをご確認ください。 Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 2. 作成可能なリージョンの確認 OIC インスタンスを作成可能なリージョンを確認します。詳細はこちらのマニュアルをご確認ください。 3. 制限事項の確認 クラウド・アカウントの発行時期により、作成可能な OIC インスタンスの種類が異なります。こちらのマニュアルに、OCI コンソールから作成する OIC Generation 2 インスタンスの作成条件が記載されています。 4. エディションの確認 (Standard or Enterprise) OIC は、2つのエディション(Standard...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/integration/integration-for-commons-1-instance-id/",
         "teaser": null
       },{
         "title": "ファイル・サーバーの有効化",
@@ -1415,16 +1415,34 @@ var store = [{
         "url": "/ocitutorials/integration/app-integration-for-beginners-1-filesv/",
         "teaser": null
       },{
+        "title": "ファイル・サーバーの有効化(OIC3)",
+        "excerpt":"このチュートリアルは、Oracle Integration Cloud が提供する SFTP に対応したファイル・サーバーを有効化する手順について説明します。 前提条件 このチュートリアルでは、Oracle Integration Cloud のインスタンスがすでに作成されていることを前提としています。 Oracle Integration Cloud のインスタンスをまだ作成していない場合は、次のページを参考に作成してください。 OIC インスタンスを作成するが実施済みであること ファイル・サーバーの有効化 Oracle Integration Cloud が提供している File Server は、インスタンスの作成直後は有効化されていません。 OCI コンソールを使用して、管理者が明示的に有効にする必要があります。 OCI コンソールにログインします。 サブスクライブしているリージョンの URL を使用します。 OCI コンソールの画面左上にあるハンバーガー・メニューをクリックし、 「開発者サービス」 カテゴリにある 「アプリケーション統合」 をクリックします。 OCI コンソールの画面左側のリストから、Oracle Integration Cloud のインスタンスを作成したコンパートメントを選択し、ファイル・サーバーを有効化するOracle Integration Cloudのインスタンスをクリックします。 Oracle Integration Cloud インスタンスの詳細ページが表示されます。 「統合インスタンス情報」...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/integration/app-integration3-for-beginners-1-filesv/",
+        "teaser": null
+      },{
         "title": "CSV ファイルから JSON ファイルへの変換",
         "excerpt":"このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。 前提条件 このチュートリアルでは、Oracle Integration Cloud のインスタンスが作成されており、サービス・コンソールにログインできることを前提としています。 Oracle Integration Cloud のインスタンスをまだ作成していない場合は、次のページを参考に作成してください。 Oracle Integration Cloud インスタンスの作成 Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。 この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。 また、Oracle Integration Cloud が提供している SFTP ファイル・サーバーを使用します。 Oracle Integration Cloud のファイル・サーバーは、次のページの手順にしたがって有効化する必要があります。 Oracle Integration Cloud チュートリアル - ファイル・サーバーの有効化 このチュートリアルは、Oracle Integration Cloud が提供する...","categories": [],
         "tags": [],
         "url": "/ocitutorials/integration/app-integration-for-beginners-2-csvjson/",
         "teaser": null
       },{
+        "title": "CSV ファイルから JSON ファイルへの変換(OIC3)",
+        "excerpt":"このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。 前提条件 このチュートリアルでは、Oracle Integration Cloud のインスタンスが作成されており、サービス・コンソールにログインできることを前提としています。 Oracle Integration Cloud のインスタンスをまだ作成していない場合は、次のページを参考に作成してください。 Oracle Integration Cloud インスタンスの作成 Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。 この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。 また、Oracle Integration Cloud が提供している SFTP ファイル・サーバーを使用します。 Oracle Integration Cloud のファイル・サーバーは、次のページの手順にしたがって有効化する必要があります。 Oracle Integration Cloud チュートリアル - ファイル・サーバーの有効化 このチュートリアルは、Oracle Integration Cloud が提供する...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/integration/app-integration3-for-beginners-2-csvjson/",
+        "teaser": null
+      },{
         "title": "SFDCからアウトバンドメッセージを受信する",
         "excerpt":"このチュートリアルは、Salesforce(SFDC)側で新規商談(Opportunity)が登録されたら、SFDCのアウトバウンドメッセージが送信され、OIC の統合が起動される一連の動作を確認します。 このハンズオンを通じて、以下のポイントを理解することができます。 SFDC アダプターの実装方法 SFDC アダプター経由で SFDC アウトバンドメッセージを受信する方法 アプリケーション主導のオーケストレーションの実装 ロガーによるログ出力方法 前提条件 バージョン このハンズオンの内容は、Oracle Integration 21.2.3.0.0 (210505.1400.40951) 時点の内容で作成されています。最新の UI とは異なっている場合があります。最新情報については、製品マニュアルをご参照ください。 Oracle Integration https://docs.oracle.com/en/cloud/paas/integration-cloud/books.html https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/books.html (日本語翻訳版) インスタンスの作成 Oracle Integration インスタンスの作成済であること。OIC インスタンスの作成方法は、以下の製品マニュアルや日本語チュートリアルをご確認ください。 OIC インスタンスを作成する(Oracle Integration チュートリアル) Provisioning and Administering Oracle Integration and Oracle Integration for SaaS, Generation 2 https://docs.oracle.com/en/cloud/paas/integration-cloud/oracle-integration-oci/index.html https://docs.oracle.com/cd/E83857_01/paas/integration-cloud/oracle-integration-oci/index.html (日本語翻訳版) 事前準備...","categories": [],
         "tags": [],
         "url": "/ocitutorials/integration/app-integration-for-beginners-3-sfdc/",
+        "teaser": null
+      },{
+        "title": "RESAS-API のデータを Oracle ADW に保存する(OIC3)",
+        "excerpt":"このチュートリアルは、 Oracle Integration Cloud を使用して RESAS-API が提供する市区町村データ を、Oracle ADW 上の CITIES という名前の表に保存してみます。 前提 このチュートリアルに沿って作業を進めるためには、次の設定が完了している必要があります。 Oracle Integration Cloud と Oracle Autononmous Database (ADW) のインスタンス作成 市区町村データを格納する Oracle ADW の表の作成 RESAS-API の API キーの取得 インスタンスの作成 このチュートリアルは、Oracle Integration Cloud と Oracle ADW のインスタンスの作成が完了し、コンソールにログインていることを前提としています。 まだインスタンスを作成していない場合は、次のページを参照してインスタンスを作成してください。 Oracle Integration Cloud インスタンスの作成 または OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編 Oracle ADW インスタンスの作成...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/integration/app-integration3-for-beginners-4-resas2adw/",
         "teaser": null
       },{
         "title": "Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)",

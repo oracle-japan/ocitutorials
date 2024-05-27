@@ -1,0 +1,1107 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.1 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>CSV ファイルから JSON ファイルへの変換(OIC3) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="CSV ファイルから JSON ファイルへの変換(OIC3)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/app-integration3-for-beginners-2-csvjson/">
+
+
+  <meta property="og:description" content="このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-05-27T18:02:46+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/app-integration3-for-beginners-2-csvjson/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          CSV ファイルから JSON ファイルへの変換(OIC3)
+
+        
+      </h1>
+      
+        <p class="page__lead">このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">CSV ファイルから JSON ファイルへの変換(OIC3)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance-id/">OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration3-for-beginners-1-filesv/">ファイル・サーバーの有効化(OIC3)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration3-for-beginners-2-csvjson/" class="active">CSV ファイルから JSON ファイルへの変換(OIC3)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration3-for-beginners-4-resas2adw/">RESAS-API のデータを Oracle ADW に保存する(OIC3)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/opa-for-beginners-1-designer/">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/opa-for-beginners-1-workspace/">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-1/">Oracle Integration - Visual Builder で簡単なWebアプリケーションを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-2-vbs/">Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-3-rest/">REST APIで取得したデータを一覧表示する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-4-linechart/">ビジネス・オブジェクトのデータを折れ線グラフで表示する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-5-gmap/">住所の値を基に地図上にピンマークを設置する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="CSV ファイルから JSON ファイルへの変換(OIC3)">
+    <meta itemprop="description" content="このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。">
+    <meta itemprop="datePublished" content="2024-05-27T18:02:46+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#接続の作成">接続の作成</a><ul><li><a href="#ファイルサーバーの動作環境の確認">ファイル・サーバーの動作環境の確認</a></li><li><a href="#ftp-アダプタ接続の作成">FTP アダプタ接続の作成</a></li></ul></li><li><a href="#統合の作成">統合の作成</a><ul><li><a href="#新規の統合の作成">新規の統合の作成</a></li><li><a href="#csv-ファイルの読み取りの設定">CSV ファイルの読み取りの設定</a></li><li><a href="#json-ファイルの書き込みの設定">JSON ファイルの書き込みの設定</a></li><li><a href="#csv-ファイルから-json-ファイルへのデータのマッピングの設定">CSV ファイルから JSON ファイルへのデータのマッピングの設定</a></li><li><a href="#トラッキングの設定">トラッキングの設定</a></li></ul></li><li><a href="#作成した統合の動作確認">作成した統合の動作確認</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルは、Oracle Integration Cloud の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。</p>
+
+<h2 id="前提条件">前提条件</h2>
+<p>このチュートリアルでは、Oracle Integration Cloud のインスタンスが作成されており、サービス・コンソールにログインできることを前提としています。 Oracle Integration Cloud のインスタンスをまだ作成していない場合は、次のページを参考に作成してください。</p>
+
+<ul>
+  <li><a href="../integration-for-commons-1-instance/">Oracle Integration Cloud インスタンスの作成</a><br />
+Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。 この文書は OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介するチュートリアルです。</li>
+</ul>
+
+<p>また、Oracle Integration Cloud が提供している SFTP ファイル・サーバーを使用します。 Oracle Integration Cloud のファイル・サーバーは、次のページの手順にしたがって有効化する必要があります。</p>
+
+<ul>
+  <li><a href="../app-integration3-for-beginners-1-filesv">Oracle Integration Cloud チュートリアル - ファイル・サーバーの有効化</a><br />
+このチュートリアルは、Oracle Integration Cloud が提供する SFTP に対応したファイル・サーバーを有効化する手順について説明します。</li>
+</ul>
+
+<h2 id="接続の作成">接続の作成</h2>
+<p>Oracle Integration Cloud は、さまざまなアプリケーションやサービスに対応した “アダプタ” を提供しています。 アダプタは、対応したアプリケーションやサービスに接続する際に必要な固有の手続きをカプセル化します。</p>
+
+<p>“接続” は、アダプタに基づいて作成します。 実際のアプリケーションやサービスにアクセスするために必要なアドレスやポート番号、ユーザー認証などセキュリティの情報を指定します。 これにより、アクセス先のアドレスやパスワードが変更になった場合でも、接続の情報を変更するだけで対応が可能です。</p>
+
+<p>このチュートリアルでは、Oracle Integration Cloud 組み込みの SFTP ファイル・サーバーにアクセスするため、FTP アダプタに基づく接続を作成します。</p>
+
+<h3 id="ファイルサーバーの動作環境の確認">ファイル・サーバーの動作環境の確認</h3>
+<p>FTP アダプタ接続を作成するためには、FTP サーバーのホスト名または IP アドレスとポート番号が必要です。 Oracle Integration Cloud 組み込みの SFTP サーバーの IP アドレスとポート番号は、次の手順で確認できます。</p>
+
+<p>Oracle Integration Cloud のサービス・コンソールにログインします。</p>
+
+<p><img src="001.png" alt="" /></p>
+
+<p>画面左上のハンバーガ・メニュー・アイコンをクリックします。 画面左側に表示されるナビゲーション・ペインで、「設定」 をクリックします。</p>
+
+<p><img src="002.png" alt="" /></p>
+
+<p>「設定」 メニューが表示されます。 「ファイル・サーバー」 をクリックします。</p>
+
+<p><img src="003.png" alt="" /></p>
+
+<p>「File Server」 メニューが表示されます。 「Settings」 をクリックします。</p>
+
+<p><img src="004.png" alt="" /></p>
+
+<p>ファイル・サーバーの設定ページが表示されます。 「一般」 セクションの 「IPおよびポート情報」 で、ファイル・サーバーが稼働している IP アドレスとポート番号を確認することができます。</p>
+
+<p><img src="005.png" alt="" /></p>
+
+<h3 id="ftp-アダプタ接続の作成">FTP アダプタ接続の作成</h3>
+<p>このチュートリアルでは、FTP アダプタ接続を作成します。</p>
+
+<p>Oracle Integration Cloud のサービス・コンソールにログインします。 画面左上のハンバーガー・メニュー・アイコンをクリックしてナビゲーション・ペインを開きます。</p>
+
+<p class="notice--info">ファイル・サーバーの 「設定」 ページを開いている場合は、ナビゲーション・ペインの左上の 「&lt;」 アイコンを2回クリックして、 「Oracle Integration」 メニューを表示させ、 「設計」 をクリックします。</p>
+
+<p><img src="006.png" alt="" /></p>
+
+<p>「設計」 メニュー の 「接続」 をクリックします。</p>
+
+<p><img src="007.png" alt="" /></p>
+
+<p>「接続」 ページが表示されます。 画面右上にある 「接続」 ボタンをクリックします。</p>
+
+<p><img src="008.png" alt="" /></p>
+
+<p>「接続の作成 - アダプタの選択」 ボックスが表示されます。</p>
+
+<p><img src="009.png" alt="" /></p>
+
+<p>「検索」 フィールドに ftp と入力して、表示を絞り込みます。 表示された 「FTP」 アイコンをクリックしてから右下の 「選択」 ボタンをクリックします。</p>
+
+<p><img src="010.png" alt="" /></p>
+
+<p>「接続の作成」 ボックスが表示されます。 作成する接続の名前と識別子を入力します（他のフィールドはデフォルトのままにします）。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「名前」</td>
+      <td>OIC SFTP Server</td>
+    </tr>
+    <tr>
+      <td>「識別子」</td>
+      <td>OIC_SFTP_SERVER （「名前」を入力すると自動的に設定されます）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="011.png" alt="" /></p>
+
+<p>接続の詳細を入力するページが表示されます。 「接続プロパティ」 セクションでは、次の３つのフィールドに値を入力します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「FTPサーバー・ホスト・アドレス」</td>
+      <td>Oracle Integration Cloud 埋め込みファイル・サーバーの IP アドレスを入力</td>
+    </tr>
+    <tr>
+      <td>「FTPサーバー・ポート」</td>
+      <td>Oracle Integration Cloud 埋め込みファイル・サーバーのポート番号を入力</td>
+    </tr>
+    <tr>
+      <td>「SFTP接続」</td>
+      <td>「はい」 を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="012.png" alt="" /></p>
+
+<p>「セキュリティ」 セクションでは、「セキュリティ・ポリシー」 で 「FTPサーバー・アクセス・ポリシー」 を選択します。 次に、ファイル・サーバーにアクセスするユーザーのユーザー名とパスワードを入力します。</p>
+
+<p><img src="013.png" alt="" /></p>
+
+<p>アクセスできることを確認するために、ページの右上にある 「テスト」 ボタンをクリックします。</p>
+
+<p><img src="014.png" alt="" /></p>
+
+<p>「接続をテストしますか。」 というボックスが表示されたら、 「テスト」 ボタンをクリックします。</p>
+
+<p><img src="015.png" alt="" /></p>
+
+<p>「接続 <接続名> が正常にテストされました。」 というメッセージが表示されることを確認します。</接続名></p>
+
+<p><img src="016.png" alt="" /></p>
+
+<p>「保存」 ボタンをクリックします。</p>
+
+<p><img src="018.png" alt="" /></p>
+
+<p>保存できたら、ページの左上に表示されている 「&lt;」 （戻る）アイコンをクリックして、 「接続」 ページに戻ります。作成した接続のステータスが 「構成済」 になっていることを確認します。</p>
+
+<p><img src="019.png" alt="" /></p>
+
+<h2 id="統合の作成">統合の作成</h2>
+<p>Oracle Integration Cloud の “統合” は、アプリケーションやサービスの間の連携のステップを定義したものです。 このチュートリアルで作成する統合は、次の処理を実行します。</p>
+
+<ol>
+  <li>Oracle Integration Cloud のファイル・サーバーから CSV ファイルを取得し読み取る</li>
+  <li>読み取ったファイルを、事前定義された形式の JSON ファイルに変換する</li>
+  <li>変換された JSON ファイルを Oracle Integration Cloud のファイル・サーバーに書き出す</li>
+</ol>
+
+<p>これを実装する統合は、次の手順で作成します。</p>
+
+<ol>
+  <li>新規の統合を作成する</li>
+  <li>FTP アダプタ接続を使用して、ファイル・サーバーから CSV ファイルを読取る設定を行う</li>
+  <li>FTP アダプタ接続を使用して、ファイルサーバーに JSON ファイルを書込む設定を行う</li>
+  <li>CSV ファイルと JSON ファイル間のデータのマッピングの設定を行う</li>
+</ol>
+
+<h3 id="新規の統合の作成">新規の統合の作成</h3>
+<p>Oralce Integration Cloud にログインします。 「接続」 ページを開いている場合は、ナビゲーション・ペインで 「統合」 をクリックします。</p>
+
+<p><img src="020.png" alt="" /></p>
+
+<p>「ようこそ」 または 「ホーム」 ページを開いている場合は、ナビゲーション・ペインで 「統合」 をクリックして 「統合」 のメニューを開き、 「統合」 を選択します。</p>
+
+<p>「統合」 ページが表示されたら、ページの右上にある 「作成」 ボタンをクリックします。</p>
+
+<p><img src="021.png" alt="" /></p>
+
+<p>「統合スタイルの選択」 ボックスが表示されます。 「スケジュール」 をクリックします。</p>
+
+<p><img src="022.png" alt="" /></p>
+
+<p>「統合の作成」 ボックスが表示されます。 次の情報を入力する必要があります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「統合にどのような名前をつけますか。」</td>
+      <td>CSV to JSON</td>
+    </tr>
+    <tr>
+      <td>「識別子」</td>
+      <td>CSV_TO_JSON (CSV to JSON と名前をつけると自動的に設定される)</td>
+    </tr>
+    <tr>
+      <td>「バージョン」</td>
+      <td>01.00.0000 （初期状態で入力されている値をそのまま使用）</td>
+    </tr>
+    <tr>
+      <td>「この統合はどのパッケージに属しますか。」</td>
+      <td>oic-csv2json</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="023.png" alt="" /></p>
+
+<p>入力したら右下の 「作成」 ボタンをクリックします。</p>
+
+<p>統合が作成されると、キャンバス・ビューで表示されます。 「レイアウト」 を初期状態の 「垂直」 から 「水平」 に変更します。</p>
+
+<p><img src="024.png" alt="" /></p>
+
+<h3 id="csv-ファイルの読み取りの設定">CSV ファイルの読み取りの設定</h3>
+<p>キャンバス・ビューの右端に表示されている 呼び出し アイコンをクリックします。</p>
+
+<p><img src="025.png" alt="" /></p>
+
+<p>ロールが呼び出しに設定されている接続のリストが表示されます。 「FTP」 をクリックして、作成しておいた FTP アダプタ接続を見つけます。</p>
+
+<p>作成した接続を、キャンバス・ビューの 「スケジュール」 アイコンから 「停止」 アイコンに向けられた矢印の上にドラッグし、表示された 「＋」 マークの上でドロップします。</p>
+
+<p><img src="026.png" alt="" /></p>
+
+<p>「基本情報の構成」ダイアログ が表示されます。  <br />
+次のように入力し、「続行」ボタンをクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「エンドポイントにどのような名前をつけますか。」</td>
+      <td>ReadCSV</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="027.png" alt="" /></p>
+
+<p>次に「操作の構成」 では、FTP エンドポイントに対して実行する操作とパラメータを指定します。 <br />
+次のように入力し、「続行」ボタンをクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「操作の選択」</td>
+      <td>「ファイルの読取り」 を選択</td>
+    </tr>
+    <tr>
+      <td>「転送モードの選択」</td>
+      <td>「バイナリ」 を選択</td>
+    </tr>
+    <tr>
+      <td>「入力ディレクトリ」</td>
+      <td>/home/users/<ユーザー名>/csv2json/input</ユーザー名></td>
+    </tr>
+    <tr>
+      <td>「ファイル名」</td>
+      <td>input.csv</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="028.png" alt="" /></p>
+
+<p>次に「スキーマの構成」 では、読取る CSV ファイルのデータの構造の指定方法を選択します。
+次のように入力し、「続行」ボタンをクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「ファイルのコンテンツの構造を指定しますか。」</td>
+      <td>「はい」 を選択</td>
+    </tr>
+    <tr>
+      <td>「次の選択肢の中のどれをファイル・コンテンツの構造の説明に使用しますか。」</td>
+      <td>「サンプル区切りドキュメント(例: CSV)」 を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="029.png" alt="" /></p>
+
+<p>次に「ファイル・コンテンツ - 定義の構成」 では、CSV ファイルの書式の設定を行います。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「レコード名の入力」</td>
+      <td>Wifiスポット</td>
+    </tr>
+    <tr>
+      <td>「レコードセット名の入力」</td>
+      <td>WifiSpotsBook</td>
+    </tr>
+    <tr>
+      <td>「フィールドの区切り文字の選択」</td>
+      <td>「Comma (,)」 を選択</td>
+    </tr>
+    <tr>
+      <td>「文字セット」</td>
+      <td>「MS932」 を選択</td>
+    </tr>
+    <tr>
+      <td>「囲み文字（オプション）」</td>
+      <td>「”」 を選択 （初期値）</td>
+    </tr>
+    <tr>
+      <td>「Terminated By」</td>
+      <td>「${eol}」 を選択 （初期値）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="030.png" alt="" /></p>
+
+<p>次に CSV ファイルに含まれるデータの設定を行います。</p>
+
+<p><a href="https://raw.githubusercontent.com/oracle-japan/oic-csv2json/master/samples/input-1.csv">サンプル CSV ファイル</a> をローカルにダウンロードします。 「ドラッグ・アンド・ドロップ」をクリックしてファイルを選択するか、直接ドラッグ・アンド・ドロップしてダウンロードしたサンプル CSV ファイル (input-1.csv) をアップロードします。</p>
+
+<p><img src="031.png" alt="" /></p>
+
+<p>アップロードするとCSV ファイルの各列のデータの設定がダイアログの下の方にテーブル形式で表示されます。</p>
+
+<p><img src="032_0.png" alt="" /></p>
+
+<p>テーブルを右方向にスクロールし、次の２つの列の設定を変更します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>列名</th>
+      <th>変更内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>WIFI_AREA</td>
+      <td>「Mandatory」 を 「Optional」 に変更</td>
+    </tr>
+    <tr>
+      <td>LAST_UPDATED</td>
+      <td>・「String」 を 「Date」 に変更<br />・「Mandatory」 を 「Optional」 に変更</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="032.png" alt="" /></p>
+
+<p><img src="033.png" alt="" /></p>
+
+<p>設定の変更が終わったら、 「続行」 ボタンをクリックします。</p>
+
+<p><img src="034.png" alt="" /></p>
+
+<p>「Oracleアダプタ・エンドポイント構成ウィザード」 の 「サマリー」 が表示されるので、 「終了」 ボタンをクリックします。</p>
+
+<p><img src="035.png" alt="" /></p>
+
+<p>キャンバス・ビューに 「マップ ReadCSV」 と 「呼出し ReadCSV」 の2つが追加されています。</p>
+
+<ul>
+  <li>「マップ ReadCSV」 は、FTP アダプタ接続を呼び出す時のパラメータ（読取るファイル名やディレクトリ名など）を指定する場合に使用するマッピングです。 このチュートリアルでは、このマッピングは使用しません。</li>
+  <li>「呼出し ReadCSV」 は、FTP アダプタ接続によるファイルの読取りの設定です。</li>
+</ul>
+
+<p><img src="036_0.png" alt="" /></p>
+
+<p>画面の右上にある 「保存」 ボタンをクリックして、ここまでの設定を保存します。</p>
+
+<p><img src="036.png" alt="" /></p>
+
+<h3 id="json-ファイルの書き込みの設定">JSON ファイルの書き込みの設定</h3>
+<p>キャンバス・ビューの右端に表示されている 呼び出し アイコンをクリックします。 「FTP」 をクリックして、作成しておいた FTP アダプタ接続を見つけます。</p>
+
+<p>キャンバス・ビューの 「ReadCSV」 アイコンから出る右向きの矢印にカーソルを合わせると「＋」マークが出てくるのでクリックして表示されるリストから「OIC SFTP Server」をクリックします。</p>
+
+<p class="notice--info">ReadCSVを配置した手順と同様に右の呼び出し（◎のアイコン）から「OIC SFTP Server」をドラッグ・アンド・ドロップで配置することも可能です。</p>
+
+<p><img src="037.png" alt="" /></p>
+
+<p>ダイアログが表示されます。「基本情報の構成」 で次のように入力し、「続行」をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「エンドポイントにどのような名前をつけますか。」</td>
+      <td>WriteJSON</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="038_0.png" alt="" /></p>
+
+<p>「操作の構成」 では、FTP エンドポイントに対して実行する操作とパラメータを指定します。 <br />
+次のように入力し、「続行」をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「操作の選択」</td>
+      <td>「ファイルの書き込み」 を選択</td>
+    </tr>
+    <tr>
+      <td>「転送モードの選択」</td>
+      <td>「バイナリ」 を選択</td>
+    </tr>
+    <tr>
+      <td>「入力ディレクトリ」</td>
+      <td>/home/users/<ユーザー名>/csv2json/output</ユーザー名></td>
+    </tr>
+    <tr>
+      <td>「ファイル名」</td>
+      <td>output-%SEQ%.json</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="038.png" alt="" /></p>
+
+<p>「スキーマの構成」 では、書込む JSON ファイルのデータの構造の指定方法を選択します。
+次のように入力し、「続行」をクリックします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>入力項目</th>
+      <th>入力する値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>「ファイルのコンテンツの構造を指定しますか。」</td>
+      <td>「はい」 を選択</td>
+    </tr>
+    <tr>
+      <td>「次の選択肢の中のどれをファイル・コンテンツの構造の説明に使用しますか。」</td>
+      <td>「サンプルJSONドキュメント」 を選択</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="039.png" alt="" /></p>
+
+<p>「ファイル・コンテンツ - 定義の構成」 では、書込む JSON ファイルのサンプルをアップロードします。</p>
+
+<p><a href="https://raw.githubusercontent.com/oracle-japan/oic-csv2json/master/samples/output-1.json">サンプル JSON ファイル</a> をローカルにダウンロードします。 「ドラッグ・アンド・ドロップ」をクリックしてファイルを選択するか、直接ドラッグ・アンド・ドロップしてダウンロードしたサンプル JSON ファイル (output-1.json) をアップロードします。 <br />
+できたら「続行」をクリックします。</p>
+
+<p><img src="040.png" alt="" /></p>
+
+<p>「サマリーの構成」 が表示されたら、「終了」 ボタンをクリックします。</p>
+
+<p><img src="041.png" alt="" /></p>
+
+<p>キャンバス・ビューに 「マップ先 WriteJSON」 と 「WriteJSON」 の2つが追加されています。</p>
+
+<p><img src="042_0.png" alt="" /></p>
+
+<ul>
+  <li>「マップ先 WriteJSON」 は、 「ReadCSV」 によって読込んだ CSV ファイルのデータを、JSON 形式に変換するための、データのマッピングを設定します。</li>
+  <li>「WriteJSON」 は、FTP アダプタ接続によるファイルの書込みの設定です。</li>
+</ul>
+
+<p>画面の右上にある 「保存」 ボタンをクリックして、ここまでの設定を保存します。</p>
+
+<p><img src="042.png" alt="" /></p>
+
+<h3 id="csv-ファイルから-json-ファイルへのデータのマッピングの設定">CSV ファイルから JSON ファイルへのデータのマッピングの設定</h3>
+<p>読取った CSV ファイルのデータを JSON ファイルに変換する際の、データのマッピングの設定を行います。</p>
+
+<p>キャンバス・ビューで、 「マップ WriteJSON」 を選択します。 表示される 「編集」 アイコンをクリックします。</p>
+
+<p><img src="043.png" alt="" /></p>
+
+<p>データのマッピングの設定を行うためのマッパーが表示されます。 マッパーの画面左側に表示されている 「Sources」 ペインの 「ReadCSV Response (FTP)」 → 「SyncReadResponse」 → 「FireReadResponse」 → 「WifiSpotsBook」 → 「Wifi」 を、画面右側に表示されている 「Target」 ペインの 「WriteJSON Request (FTP)」 → 「Request Wrapper」 → 「Free Wifi Spots」 にドラッグ＆ドロップでマップします。</p>
+
+<p><img src="044.png" alt="" /></p>
+
+<p>同様に次のデータ項目をドラッグ＆ドロップでマップします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CITY_CODE</td>
+      <td>City Code</td>
+    </tr>
+    <tr>
+      <td>WIFI_NO</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>WIFI_NAME</td>
+      <td>Name</td>
+    </tr>
+    <tr>
+      <td>WIFI_NAME_KANA</td>
+      <td>Kana</td>
+    </tr>
+    <tr>
+      <td>WIFI_ADDRESSS</td>
+      <td>Address</td>
+    </tr>
+    <tr>
+      <td>SSID</td>
+      <td>Ssid</td>
+    </tr>
+    <tr>
+      <td>WIFI_AREA</td>
+      <td>Area</td>
+    </tr>
+    <tr>
+      <td>WIFI_URL</td>
+      <td>Url</td>
+    </tr>
+    <tr>
+      <td>LAST_UPDATED</td>
+      <td>Last Updated</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>マッパーは次のような表示になります。</p>
+
+<p><img src="045.png" alt="" /></p>
+
+<p>画面右上の 「検証」 ボタンをクリックします。</p>
+
+<p><img src="046.png" alt="" /></p>
+
+<p>「マップ先 WriteJSONは正常に検証されました。」 というメッセージが表示されたら、 「&lt;」 ボタンをクリックしてへ戻ります。</p>
+
+<p><img src="047.png" alt="" /></p>
+
+<h3 id="トラッキングの設定">トラッキングの設定</h3>
+<p>Oracle Integration Cloud では、作成した統合の実行状況をトラッキングするための設定を行う必要があります。 トラッキングの設定は次の手順で行います。</p>
+
+<p>統合キャンバスの右上にある ビジネス識別子アイコン(I)をクリックします。</p>
+
+<p><img src="048.png" alt="" /></p>
+
+<p>「ビジネス識別子」と「入力ソース」 ボックスが表示されます。 左側の「入力ボックス」のSourcesツリーから 「schedule」 の下の 「startTime」 を、ボックスの右側に表示されているテーブルの 「ビジネス識別子フィールド」 列の1行目にドラッグ＆ドロップします。</p>
+
+<p><img src="049.png" alt="" /></p>
+
+<p>ページの右上にある 「保存」 ボタンをクリックします。</p>
+
+<p><img src="050.png" alt="" /></p>
+
+<p>保存が完了したメッセージが表示されたら、 「&lt;」 ボタンをクリックし、 「統合」 の一覧が表示されるページに戻ります。</p>
+
+<p><img src="051.png" alt="" /></p>
+
+<h2 id="作成した統合の動作確認">作成した統合の動作確認</h2>
+<p>作成した統合を実行してみましょう。</p>
+
+<p>Oracle Integration Cloud のファイル・サーバーに CSV ファイルをアップロードします。
+Cloud Shellで以下のコマンドを実行するか、FTPツールを使うなどしてファイルをアップロードしてください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sftp -P &lt;ポート番号&gt; &lt;ユーザー名&gt;@&lt;IPアドレス&gt;
+
+mkdir csv2json
+cd csv2json
+mkdir input
+cd input
+put &lt;パス&gt;/input-1.csv ./input.csv
+</code></pre></div></div>
+
+<p>Oracle Integration Cloud で作成した統合を実行するには、アクティブ化します。 実行する統合にマウス・ポインタを合わせ、表示された 「アクティブ化」 アイコンをクリックします。</p>
+
+<p><img src="052.png" alt="" /></p>
+
+<p>「統合のアクティブ化」 ボックスが表示されます。 「トレース・レベルの選択」を「デバッグ(非推奨)」にチェックし、右下に表示されている 「アクティブ化」 ボタンをクリックします。</p>
+
+<p><img src="053.png" alt="" /></p>
+
+<p>「アクティブ状態のリフレッシュ」 アイコンをクリックして、統合のステータスが 「アクティブ」 に変更されていることを確認します。</p>
+
+<p><img src="054.png" alt="" /></p>
+
+<p><img src="055.png" alt="" /></p>
+
+<p>実行する統合にマウスポインタを合わせ、表示された 「…」から「実行」をクリックします。</p>
+
+<p><img src="056.png" alt="" /></p>
+
+<p>「実行」 をクリックします。</p>
+
+<p><img src="057.png" alt="" /></p>
+
+<p>実行するとそのまま右側に「アクティビティ・ストリーム」というボックスが表示されリアルタイムで実行結果が確認できます。アクティビティ・ストリーム内の「👁」のマークを押すと実行された処理の詳細が確認できます。 <br />
+視覚的に統合処理がどこまで進んでいるか確認するためにはトラッキングの画面に遷移します。ボックス上部に表示されている「インスタンスID」のリンクをクリックします。</p>
+
+<p><img src="058.png" alt="" /></p>
+
+<p>遷移するとトラッキングの画面に遷移し、視覚的に処理の流れとアクティビティ・ストリームで詳細を確認できます。</p>
+
+<p><img src="059.png" alt="" /></p>
+
+<p>こちらの画面へはメニューの「可観測性」－「インスタンス」からも遷移することができます。</p>
+
+<p><img src="060.png" alt="" /></p>
+
+<p>最後にSFTP サーバーにログインして、/home/users/<ユーザー名>/csv2json/output/output-1.json をダウンロードして、生成されたファイルを確認します。</ユーザー名></p>
+
+<p><img src="061.png" alt="" /></p>
+
+<p>お疲れ様でした。 以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-27T18:02:46+09:00">May 27, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=CSV+%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%8B%E3%82%89+JSON+%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%B8%E3%81%AE%E5%A4%89%E6%8F%9B%28OIC3%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fapp-integration3-for-beginners-2-csvjson%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fapp-integration3-for-beginners-2-csvjson%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/integration/app-integration3-for-beginners-2-csvjson/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/" class="pagination--pager" title="CSV ファイルから JSON ファイルへの変換
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/" class="pagination--pager" title="SFDCからアウトバンドメッセージを受信する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
