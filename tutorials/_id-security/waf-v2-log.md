@@ -7,18 +7,18 @@ tags:
  - intermediate
 header:
  teaser: "/id-security/web-application-firewall-v2/wafv2-19.png"
- overlay_image: "/id_security/web-application-firewall-v2/wafv2-19.png"
+ overlay_image: "/id-security/web-application-firewall-v2/wafv2-19.png"
  overlay_filter: rgba(34, 66,55, 0.7)
 
 ---
 
 OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。
-本チュートリアルでは、「[OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/id_security/web-application-firewall-v2)」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。
+本チュートリアルでは、「[OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/id-security/web-application-firewall-v2)」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。
 
 **所要時間 :** 約20分
 
 **前提条件 :**
-+ [OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/id_security/web-application-firewall-v2)を参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること
++ [OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/id-security/web-application-firewall-v2)を参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること
 + Logging Analyticsが有効化されていること
 - OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
 ![画面キャプチャ0](nfwla5.png)
