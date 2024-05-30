@@ -1,5 +1,5 @@
 ---
-title: "OCIのDBCSでOperations Insightsを有効化する"
+title: "OCIのBase Database ServiceでOperations Insightsを有効化する"
 excerpt: "パフォーマンスの悪いSQL文の特定や、Oracle DatabaseのCPU、メモリーの割当てなどのリソース配分の意思決定に時間がかかっていませんか？Operations Insightsを使用すると、問題のあるSQL文やOracle Databaseのリソースの使用状況、需要予測などを行うことが出来ます。"
 order: "150"
 layout: single
@@ -13,14 +13,14 @@ header:
 ---
 
 OCI Observability & Managementのサービスの1つ、Operations Insightsでは、Oracle Databaseのデータを長期保存し、機械学習による分析でリソースの需要分析と将来値の予測、パフォーマンス問題を検出することができます。Operations Insightsを利用することで、リソース配分の最適化によるコストの削減、パフォーマンスの向上などを図ることが可能です。
-この章では、Oracle CloudのDatabase Cloud ServiceでOperations Insightsを有効化する手順をご紹介します。Operations Insightsを有効化するためにエージェントなどをインストールする必要はなく、OCIコンソールからの操作で有効化することができます。
+この章では、OCIのBase Database Service（以下BaseDB）でOperations Insightsを有効化する手順をご紹介します。Operations Insightsを有効化するためにエージェントなどをインストールする必要はなく、OCIコンソールからの操作で有効化することができます。
 
 
 **所要時間 :** 約20分
 
 
 **前提条件 :**
-+ [101: Oracle CloudでOracle Databaseを使おう（DBCS）](/ocitutorials/database/dbcs101-create-db)を通じて、DBCSインスタンスの作成が完了していること
++ [101: Oracle CloudでOracle Databaseを使おう（BaseDB）](/ocitutorials/database/dbcs101-create-db)を通じて、BaseDBインスタンスの作成が完了していること
 
 
 **注意 :**
@@ -43,10 +43,10 @@ allow service operations-insights to read secret-family in tenancy/compartment <
 
 
 # 2. DBユーザーの権限設定
-Operations Insightsを有効化するには、Operations InsightsがOracle Databaseにアクセスできること、および情報の取得のために必要な権限をDatabaseユーザーに付与する必要があります。
-今回はOracle Databaseの監視に使用されるDBSNMPユーザーに必要な権限を付与します。
+Operations Insightsを有効化するには、Operations InsightsがBaseDBにアクセスできること、および情報の取得のために必要な権限をDatabaseユーザーに付与する必要があります。
+今回はBaseDBの監視に使用されるDBSNMPユーザーに必要な権限を付与します。
 
-Operations Insightsを有効化するDatabaseにアクセスし、以下SQLコマンドを実行してください。
+Operations Insightsを有効化するBaseDBにアクセスし、以下SQLコマンドを実行してください。
 
 ```
 SQL> alter user dbsnmp account unlock;
@@ -57,7 +57,7 @@ SQL> GRANT SELECT ANY DICTIONARY, SELECT_CATALOG_ROLE TO DBSNMP;
 
 
 # 3. Vaultとシークレットの作成
-DBSNMPユーザーのパスワードと権限を設定したら、Operations InsightsがDBSNMPユーザーの資格証明を使用してOracle Databaseにアクセスできるように、OCI VaultサービスにDBSNMPユーザーのパスワードを登録します。
+DBSNMPユーザーのパスワードと権限を設定したら、Operations InsightsがDBSNMPユーザーの資格証明を使用してBaseDBにアクセスできるように、OCI VaultサービスにDBSNMPユーザーのパスワードを登録します。
 IAMポリシーによる権限設定で、Operations Insightsはシークレットの情報を読み取ることができるようになります。
 
 
@@ -123,8 +123,8 @@ OCIコンソールのメニュー→ネットワーキング→仮想クラウ�
 
 <br>
 
-## 4-2. DBCSにNetwork Security Groupの割当て
-OCIコンソールのメニュー→Oracle Database→ベア・メタル、VMおよびExadata→Operations Insightsを有効化したいDBCS→DBCSの詳細画面のDBシステム情報の「ネットワーク・セキュリティ・グループ：編集」をクリックします。
+## 4-2. BaseDBにNetwork Security Groupの割当て
+OCIコンソールのメニュー→Oracle Database→ベア・メタル、VMおよびExadata→Operations Insightsを有効化したいBaseDB→BaseDBの詳細画面のDBシステム情報の「ネットワーク・セキュリティ・グループ：編集」をクリックします。
     ![画面ショット6](DB_OperationsInsights08.png)
 
 
@@ -139,7 +139,7 @@ OCIコンソールのメニュー→監視および管理→オペレーショ�
 + **`名前`** - 任意
 + **`説明`** - 任意
 + **`コンパートメント`** -プライベート・エンドポイントを作成したいコンパートメントを選択
-+ **`仮想クラウド・ネットワークの場所`** -Operations Insightsを有効化したいDBCSが配置されているVCNを選択
++ **`仮想クラウド・ネットワークの場所`** -Operations Insightsを有効化したいBaseDBが配置されているVCNを選択
 + **`サブネットの場所`** -Operations Insightsを有効化したいDBCSが配置されているサブネットを選択
 + **`ネットワーク・セキュリティ・グループ`** -手順4で作成したネットワーク・セキュリティ・グループを選択
     ![画面ショット8](DB_OperationsInsights10.png)
@@ -151,11 +151,11 @@ OCIコンソールのメニュー→監視および管理→オペレーショ�
 オペレーション・インサイトへのデータベース追加画面から以下情報を入力したら、画面下部の「データベースの追加」ボタンをクリックします。
 + **`テレメトリ`** - Cloud Infrastructure
 + **`クラウド・データベース・タイプ`** - Bare Metal, Virtual Machine and Exadata
-+ **`データベース・システムの場所`** - Operations Insightsを有効化したいDBCSインスタンス名を選択
-+ **`データベース・ホーム`** - DBCSの情報が自動的に表示されます。
-+ **`データベース`** - DBCSの情報が自動的に表示されます。
++ **`データベース・システムの場所`** - Operations Insightsを有効化したいBaseDBインスタンス名を選択
++ **`データベース・ホーム`** - BaseDBの情報が自動的に表示されます。
++ **`データベース`** - BaseDBの情報が自動的に表示されます。
 + **`プラガブル・データベース`** - すべて、もしくは特定の一部のPDBだけ有効化したい場合はプルダウンボックスから該当PDBを選択
-+ **`サービス名`** - DBCSの情報が自動的に表示されます。
++ **`サービス名`** - BaseDBの情報が自動的に表示されます。
      ![画面ショット9](DB_OperationsInsights11.png)
 
 + **`共通データベース・ユーザー`** - dbsnmp
@@ -167,7 +167,7 @@ OCIコンソールのメニュー→監視および管理→オペレーショ�
 
 
 # 7. Operations Insightsの利用
-以上の手順で、正常にOperations Insightsが有効化された場合、OCIコンソールのメニュー→監視および管理→オペレーション・インサイト→データベース・フリートにて、有効化したDBCSの状態が「アクティブ」として表示されます。
+以上の手順で、正常にOperations Insightsが有効化された場合、OCIコンソールのメニュー→監視および管理→オペレーション・インサイト→データベース・フリートにて、有効化したBaseDBの状態が「アクティブ」として表示されます。
     ![画面ショット11](DB_OperationsInsights13.png)
 
 
@@ -200,5 +200,5 @@ OCIコンソールのメニュー→監視および管理→オペレーショ�
 
 
 このように、Operations InsightsではSQL文のパフォーマンスの問題の特定や、Oracle Databaseのリソース使用率の傾向分析、予測などを行うことができます。
-Oracle Cloud のDatabase Cloud Serviceだけでなく、Autonomous Database、オンプレミスのOracle DatabaseでもOperations Insightsを有効化することができるので、是非試してみてください。
+BaseDBだけでなく、Autonomous Database、オンプレミスのOracle DatabaseでもOperations Insightsを有効化することができるので、是非試してみてください。
 Autonomous Databaseや、オンプレミスのOracle DatabaseでのOperations Insightsの有効化については[ドキュメント](https://docs.oracle.com/ja-jp/iaas/operations-insights/doc/get-started-operations-insights.html#OOPSI-GUID-853EF638-94FE-44DC-BC29-116EB068E736)をご参照ください。

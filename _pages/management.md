@@ -37,10 +37,10 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 + **[Logging AnalyticsでAutonomous Databaseのログを収集する](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_adb_log/)**
 
 ## Database Management
-+ **[OCI Database Cloud ServiceでDatabase Managementを有効化する](https://oracle-japan.github.io/ocitutorials/management/dbcs-database-management/)**
++ **[OCI Base Database ServiceでDatabase Managementを有効化する](https://oracle-japan.github.io/ocitutorials/management/dbcs-database-management/)**
 
 ## Operations Insights
-+ **[OCIのDBCSでOperations Insightsを有効化する](https://oracle-japan.github.io/ocitutorials/management/dbcs_operations_insights/)**
++ **[OCI Base Database ServiceでOperations Insightsを有効化する](https://oracle-japan.github.io/ocitutorials/management/dbcs_operations_insights/)**
 
 ## その他
 + **[Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集](https://oracle-japan.github.io/ocitutorials/management/monitoring_prometheus/)**
