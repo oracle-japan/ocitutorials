@@ -8,16 +8,12 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-**[OpenMPI](https://www.open-mpi.org/)** は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。  
-**OpenMPI** で作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラが **[Slurm](https://slurm.schedmd.com/)** の場合、 **[PMIx](https://pmix.github.io/)** を使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。  
-本テクニカルTipsは、 **PMIx** を使用する **Slurm** 環境での利用を前提とする **OpenMPI** 構築方法を解説します。
-
 ***
 # 0. 概要
 
-**Slurm** 環境で **OpenMPI** のアプリケーションを実行する場合、その動作モードには以下の選択肢があります。
+**[Slurm](https://slurm.schedmd.com/)** 環境で **[OpenMPI](https://www.open-mpi.org/)** のアプリケーションを実行する場合、その動作モードには以下の選択肢があります。
 
-1. 計算リソースの確保、アプリケーション起動、及び **PMIx** を介したプロセス間通信の初期化処理を全て **Slurm** が行う。
+1. 計算リソースの確保、アプリケーション起動、及び **[PMIx](https://pmix.github.io/)** を介したプロセス間通信の初期化処理を全て **Slurm** が行う。
 2. 計算リソースの確保を **Slurm** が行い、アプリケーション起動はSSHを介して起動される **OpenMPI** のprtedが行う。
 
 ここで1.の動作モードは、2.に対して以下の利点があります。
@@ -34,9 +30,11 @@ header:
 
 各ソフトウェアは、以下のバージョンを前提とします。
 
-- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)**
+- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
 - MPI ： **OpenMPI** 5.0.3
 - PMIx ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.2
+
+※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
 
 またこれらをインストールするインスタンスは、**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を前提とし、稼働確認を行うために少なくとも2ノード用意します。  
 この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** が参考になります。
