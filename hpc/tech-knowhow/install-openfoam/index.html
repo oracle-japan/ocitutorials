@@ -1,0 +1,844 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.1 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OpenFOAMインストール・利用方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OpenFOAMインストール・利用方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-openfoam/">
+
+
+  <meta property="og:description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-05-31T07:36:15+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-openfoam/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OpenFOAMインストール・利用方法
+
+        
+      </h1>
+      
+        <p class="page__lead">OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OpenFOAMインストール・利用方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/" class="active">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
+    <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
+    <meta itemprop="datePublished" content="2024-05-31T07:36:15+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-cfd解析ノードデプロイ">1. CFD解析ノードデプロイ</a></li><li><a href="#2-インストール事前準備">2. インストール事前準備</a></li><li><a href="#3-paraviewインストール">3. ParaViewインストール</a></li><li><a href="#4-openfoamインストール">4. OpenFOAMインストール</a></li><li><a href="#5-openfoam実行">5. OpenFOAM実行</a></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p><strong><a href="https://www.openfoam.com/">OpenFOAM</a></strong> は、プリ処理・解析処理・ポスト処理の全てのCFD解析フローを様々なオープンソースのツール類と連携し、自身の解析用途に合わせた最適な流体解析シミュレーションを実施することが可能です。<br />
+この際、外部のツールと連携して <strong>OpenFOAM</strong> を利用するためには、ビルド時にこれを意識した構築手順を踏む必要があります。</p>
+
+<p>本テクニカルTipsは、以下の外部ツールと連係動作する <strong>OpenFOAM</strong> を構築します。</p>
+
+<ul>
+  <li><strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong><br />
+MPI言語規格に準拠するMPI実装</li>
+  <li><strong><a href="https://www.mcs.anl.gov/petsc/">PETSc</a></strong><br />
+偏微分方程式で記述された問題をMPIで並列計算するための数値計算ライブラリ</li>
+  <li><strong><a href="http://www.fftw.org/">FFTW</a></strong><br />
+高速フーリエ変換ライブラリ</li>
+  <li><strong><a href="http://www.paraview.org/">ParaView</a></strong><br />
+計算結果の可視化ツール</li>
+  <li><strong><a href="https://vtk.org/">VTK</a></strong><br />
+<strong>ParaView</strong> がモデルの描画を行う際に使用する可視化ツールキット</li>
+  <li><strong><a href="https://www.paraview.org/insitu/">ParaView Catalyst</a></strong><br />
+<strong>ParaView</strong> でin-situシミュレーションを行うためのツールキット</li>
+  <li><strong><a href="https://www.mesa3d.org/">MESA</a></strong><br />
+<strong>ParaView</strong> でOff-screenレンダリングを行うためのグラフィックライブラリ</li>
+  <li><strong><a href="http://glaros.dtc.umn.edu/gkhome/metis/metis/overview">METIS</a></strong><br />
+メッシュを並列計算用に領域分割するツール</li>
+  <li><strong><a href="https://www.labri.fr/perso/pelegrin/scotch/">SCOTCH</a></strong><br />
+メッシュを並列計算用に領域分割するツール</li>
+  <li><strong><a href="https://kahip.github.io/">KaHIP </a></strong><br />
+メッシュを並列計算用に領域分割するツール</li>
+  <li><strong><a href="https://www.cgal.org/">CGAL</a></strong><br />
+幾何形状を取り扱うライブラリー</li>
+  <li><strong><a href="https://csmd.ornl.gov/adios">ADIOS</a></strong><br />
+大規模データを効率よく可視化・解析するためのフレームワーク</li>
+</ul>
+
+<p>また本テクニカルTipsは、 <strong>OpenFOAM</strong> に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行します。</p>
+
+<p>構築する環境は、以下を前提とします。</p>
+
+<ul>
+  <li>CFD解析ノードシェイプ ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong></li>
+  <li>CFD解析ノードOS ： <strong>Oracle Linux</strong> 8.9 または <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
+  <li><strong>OpenFOAM</strong> ： v2312</li>
+  <li><strong>OpenMPI</strong> ：5.0.3</li>
+  <li><strong>ParaView</strong> ： 5.11.2</li>
+</ul>
+
+<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
+
+<p>なお、 <strong>ParaView</strong> がX11ベースのアプリケーションのため、この操作画面を表示するXサーバの稼働する <strong>ParaView</strong> 操作端末を用意します。</p>
+
+<p>以降では、以下の順に <strong>OpenFOAM</strong> のインストール・利用方法を解説します。</p>
+
+<ol>
+  <li>CFD解析ノードデプロイ</li>
+  <li>インストール事前準備</li>
+  <li><strong>ParaView</strong> インストール</li>
+  <li><strong>OpenFOAM</strong> インストール</li>
+  <li><strong>OpenFOAM</strong> 実行</li>
+</ol>
+
+<hr />
+<h1 id="1-cfd解析ノードデプロイ">1. CFD解析ノードデプロイ</h1>
+
+<p>本章は、 <strong>OpenFOAM</strong> を実行するCFD解析ノードを以下の仕様でデプロイします。</p>
+
+<ul>
+  <li>シェイプ ： <strong>BM.Optimized3.36</strong></li>
+  <li><strong>ブート・ボリューム</strong> サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）</li>
+  <li>SMT : 無効（※2）</li>
+</ul>
+
+<p>※2）SMTを無効化する方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+
+<hr />
+<h1 id="2-インストール事前準備">2. インストール事前準備</h1>
+
+<p>本章は、 <strong>OpenFOAM</strong> と外部ツールをインストールするための事前準備として、以下の作業を実施します。</p>
+
+<ul>
+  <li>前提条件のRPMパッケージ・ソフトウェアのをインストール</li>
+  <li><strong>OpenFOAM</strong> と外部ツールのソースプログラムのダウンロード・展開</li>
+</ul>
+
+<p>以降の手順は、CFD解析ノードで実行します。</p>
+
+<ol>
+  <li>
+    <p><strong>OpenMPI</strong> をインストール・セットアップします。<br />
+この方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></strong> を参照してください。</p>
+  </li>
+  <li>
+    <p>以下コマンドをopcユーザで実行し、前提条件のRPMパッケージを提供するyumレポジトリを追加します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer_EPEL
+</code></pre></div>    </div>
+
+    <p>なお、上記コマンド実行時に以下のメッセージが出力される場合、</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> This system is receiving updates from OSMS server.
+ Error: No matching repo to modify: ol8_developer_EPEL.
+</code></pre></div>    </div>
+
+    <p>OSのパッケージ管理が <strong><a href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html">OS管理サービス</a></strong> で行われているため、以下コマンドをopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。<br />
+ ここで実施する <strong>OS管理サービス</strong> の解除は、10分程度の時間が経過すると自動的に <strong>OS管理サービス</strong> 管理に戻ります。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>osms unregister
+ <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer_EPEL
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをopcユーザで実行し、前提条件のRPMパッケージをインストールします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> と外部ツールをダウンロード・展開します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">mkdir</span> /opt/OpenFOAM <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /opt/OpenFOAM
+ <span class="nv">$ </span>wget https://dl.openfoam.com/source/v2312/OpenFOAM-v2312.tgz
+ <span class="nv">$ </span>wget https://dl.openfoam.com/source/v2312/ThirdParty-v2312.tgz
+ <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./OpenFOAM-v2312.tgz
+ <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./ThirdParty-v2312.tgz
+ <span class="nv">$ </span><span class="nb">cd </span>ThirdParty-v2312/sources
+ <span class="nv">$ </span>wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
+ <span class="nv">$ </span>wget https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
+ <span class="nv">$ </span>wget https://download.qt.io/archive/qt/5.12/5.12.11/single/qt-everywhere-src-5.12.11.tar.xz
+ <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./metis-5.1.0.tar.gz
+ <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./petsc-lite-3.19.2.tar.gz
+ <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./qt-everywhere-src-5.12.11.tar.xz
+ <span class="nv">$ </span><span class="nb">mv </span>qt-everywhere-src-5.12.11 qt-everywhere-opensource-src-5.12.11
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをrootユーザで実行し、 <strong>PETSc</strong> をインストールします。<br />
+この際、以下コマンド出力で正しくインストールされたことを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/opt/openmpi-5.0.3/bin
+ <span class="nv">$ </span><span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
+ No completions <span class="k">for</span> /home/opc/OpenFOAM-v2312/platforms/linux64GccDPInt32Opt/bin
+ <span class="o">[</span>ignore <span class="k">if </span>OpenFOAM is not yet compiled]
+ <span class="nv">$ </span><span class="nb">cd</span> ..
+ <span class="nv">$ </span>./makePETSC
+     :
+     :
+     :
+ Installed: petsc-3.19.2   &lt;<span class="nt">---</span> この出力
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="3-paraviewインストール">3. ParaViewインストール</h1>
+
+<p>本章は、 <strong>ParaView</strong> をCFD解析ノードにインストールします。</p>
+
+<ol>
+  <li>
+    <p>以下コマンドをrootユーザで実行し、 <strong>ParaView</strong> の前提ソフトウェアである <strong><a href="https://www.qt.io/">Qt</a></strong> をインストールします。<br />
+この際、以下コマンド出力で正しくインストールされたことを確認します。<br />
+本手順は、15分程度を要します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>./makeQt 5.12.11
+     :
+     :
+     :
+ Built: qt-5.12.11   &lt;<span class="nt">---</span> この出力
+ Create/Edit files to ease later relocation of a QT installation
+     created qt.conf
+ Adjust pkgconfig locations : /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11
+     lib/pkgconfig/<span class="k">*</span>.pc  <span class="o">(</span>edited 62<span class="o">)</span>
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをrootユーザで実行し、 <strong>ParaView</strong> をインストールします。<br />
+この際、以下コマンド出力で正しくインストールされたことを確認します。<br />
+本手順は、15分程度を要します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>./makeParaView <span class="nt">-qt-5</span>.12.11 <span class="nt">-mpi</span> <span class="nt">-python3</span>
+     :
+     :
+     :
+ Installation <span class="nb">complete </span><span class="k">for </span>paraview-5.11.2 with qt-5.12.11   &lt;<span class="nt">---</span> この出力
+     <span class="nv">ParaView_DIR</span><span class="o">=</span>/opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/ParaView-5.11.2
+
+ You may need to update the OpenFOAM environment by running:
+     wmRefresh
+
+ Your LD_LIBRARY_PATH may require adjustment to include the following:
+     /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11/lib
+ <span class="o">====</span>
+
+ Done
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="4-openfoamインストール">4. OpenFOAMインストール</h1>
+
+<p>本章は、 <strong>OpenFOAM</strong> をCFD解析ノードにインストールします。</p>
+
+<ol>
+  <li>
+    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> のインストール条件を満たしていることを確認します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>foamSystemCheck
+
+ Checking basic system...
+ <span class="nt">-------------------------------------------------------------------------------</span>
+ Shell:       bash
+ Host:        openfoam
+ OS:          Linux version 5.15.0-205.149.5.1.el8uek.x86_64
+
+ System check: PASS
+ <span class="o">==================</span>
+ Can <span class="k">continue </span>to OpenFOAM installation.
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> をインストールします。<br />
+この際、最後に実行するコマンドの出力を注意深く確認し、 <strong><a href="#0-概要">0. 概要</a></strong> にリストアップされている外部ツールが <strong>OpenFOAM</strong> に組み込まれたことを確認します。なおこのコマンド出力は、カレントディレクトリにファイル名 <strong>log.linux64GccDPInt32Opt</strong> としても出力されます。<br />
+本手順は、30分程度を要します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">ParaView_DIR</span><span class="o">=</span><span class="nv">$WM_THIRD_PARTY_DIR</span>/platforms/linux64Gcc/ParaView-5.11.2
+ <span class="nv">$ </span><span class="nb">export </span><span class="nv">Qt5_DIR</span><span class="o">=</span><span class="nv">$WM_THIRD_PARTY_DIR</span>/platforms/linux64Gcc/qt-5.12.11
+ <span class="nv">$ </span><span class="nb">cd</span> /opt/OpenFOAM/OpenFOAM-v2312
+ <span class="nv">$ </span>./Allwmake <span class="nt">-j</span> <span class="nt">-s</span> <span class="nt">-q</span> <span class="nt">-l</span>
+     :
+     :
+     :
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> のインストールをテストします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>foamInstallationTest
+     :
+     :
+     :
+ Summary
+ <span class="nt">-------------------------------------------------------------------------------</span>
+ Base configuration ok.
+ Critical systems ok.
+
+ Done
+
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+<h1 id="5-openfoam実行">5. OpenFOAM実行</h1>
+
+<p>本章は、 <strong>OpenFOAM</strong> に同梱されるチュートリアルのうちL字管内流れのシミュレーション（<strong>incompressible/icoFoam/elbow</strong>）を使用し、CFD解析ノードでプリ処理・解析処理・ポスト処理のCFD解析フローを実行します。<br />
+なお本章の作業は、実際にCFD解析フローを実行するユーザで実施しますが、ここではopcを使用します。</p>
+
+<ol>
+  <li>
+    <p>Xサーバの稼働する <strong>ParaView</strong> 操作端末から、Xフォワードを有効にしてCFD解析ノードにSSHでログインします。</p>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、 <strong>OpenFOAM</strong> に同梱されているチュートリアルをコピーします。<br />
+これにより、チュートリアルに含まれるファイルが <strong>~/OpenFOAM/user_name-v2312/run/tutorials</strong> にコピーされます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
+ <span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$FOAM_RUN</span> <span class="o">&amp;&amp;</span> <span class="nb">cp</span> <span class="nt">-r</span> <span class="nv">$FOAM_TUTORIALS</span> <span class="nv">$FOAM_RUN</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、L字管内流れの解析フローのうち、プリ処理と解析処理を実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cd </span>OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow/
+ <span class="nv">$ </span>foamRunTutorials
+ Restore 0/ from 0.orig/
+ Running fluentMeshToFoam on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
+ Running icoFoam on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
+ Running foamMeshToFluent on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
+ Running foamDataToFluent on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、解析結果を読み込んで <strong>ParaView</strong> を起動します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>paraFoam 
+ Created temporary <span class="s1">'elbow.OpenFOAM'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下 <strong>ParaView</strong> 画面で、 <strong>Apply</strong> ボタンをクリックします。</p>
+
+    <p><img src="paraviewgui_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下 <strong>ParaView</strong> 画面で、メニュから速度を選択します。</p>
+
+    <p><img src="paraviewgui_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下 <strong>ParaView</strong> 画面で、シミュレーション結果を再生します。</p>
+
+    <p><img src="paraviewgui_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下 <strong>ParaView</strong> 画面で、シミュレーション時間が1から10まで進むことを確認します。</p>
+
+    <p><img src="paraviewgui_page04.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-31T07:36:15+09:00">May 31, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OpenFOAM%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%83%BB%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Finstall-openfoam%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Finstall-openfoam%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-openfoam/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/install-blas/" class="pagination--pager" title="線形代数演算ライブラリインストール・利用方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/" class="pagination--pager" title="ベアメタル・インスタンスのカーネルダンプ取得方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-05-30T20:05:26+09:00">
+  <meta property="article:published_time" content="2024-05-31T07:36:15+09:00">
 
 
 
@@ -340,6 +340,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
@@ -357,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurm環境での利用を前提とするOpenMPI構築方法">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。本テクニカルTipsは、PMIxを使用するSlurm環境での利用を前提とするOpenMPI構築方法を解説します。">
-    <meta itemprop="datePublished" content="2024-05-30T20:05:26+09:00">
+    <meta itemprop="datePublished" content="2024-05-31T07:36:15+09:00">
     
 
     <div class="page__inner-wrap">
@@ -372,17 +374,13 @@
             </nav>
           </aside>
         
-        <p><strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。<br />
-<strong>OpenMPI</strong> で作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラが <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> の場合、 <strong><a href="https://pmix.github.io/">PMIx</a></strong> を使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。<br />
-本テクニカルTipsは、 <strong>PMIx</strong> を使用する <strong>Slurm</strong> 環境での利用を前提とする <strong>OpenMPI</strong> 構築方法を解説します。</p>
-
-<hr />
+        <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p><strong>Slurm</strong> 環境で <strong>OpenMPI</strong> のアプリケーションを実行する場合、その動作モードには以下の選択肢があります。</p>
+<p><strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> 環境で <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> のアプリケーションを実行する場合、その動作モードには以下の選択肢があります。</p>
 
 <ol>
-  <li>計算リソースの確保、アプリケーション起動、及び <strong>PMIx</strong> を介したプロセス間通信の初期化処理を全て <strong>Slurm</strong> が行う。</li>
+  <li>計算リソースの確保、アプリケーション起動、及び <strong><a href="https://pmix.github.io/">PMIx</a></strong> を介したプロセス間通信の初期化処理を全て <strong>Slurm</strong> が行う。</li>
   <li>計算リソースの確保を <strong>Slurm</strong> が行い、アプリケーション起動はSSHを介して起動される <strong>OpenMPI</strong> のprtedが行う。</li>
 </ol>
 
@@ -405,10 +403,12 @@
 <p>各ソフトウェアは、以下のバージョンを前提とします。</p>
 
 <ul>
-  <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong></li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
   <li>MPI ： <strong>OpenMPI</strong> 5.0.3</li>
   <li>PMIx ： <strong><a href="https://openpmix.github.io/">OpenPMIx</a></strong> 5.0.2</li>
 </ul>
+
+<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
 
 <p>またこれらをインストールするインスタンスは、<strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を前提とし、稼働確認を行うために少なくとも2ノード用意します。<br />
 この構築手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> が参考になります。</p>
@@ -626,7 +626,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-30T20:05:26+09:00">May 30, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-05-31T07:36:15+09:00">May 31, 2024</time></p>
 
       </footer>
 
