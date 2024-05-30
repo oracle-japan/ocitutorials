@@ -7,7 +7,7 @@ tags:
  - intermediate
 header:
  teaser: "/id-security/web-application-firewall-v2/wafv2-19.png"
- overlay_image: "/id_security/web-application-firewall-v2/wafv2-19.png"
+ overlay_image: "/id-security/web-application-firewall-v2/wafv2-19.png"
  overlay_filter: rgba(34, 66,55, 0.7)
 
 ---

@@ -52,6 +52,9 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 + **[OCI Load BalancerにアタッチするタイプのWeb Application Firewallを構築する](https://oracle-japan.github.io/ocitutorials/id-security/web-application-firewall-v2/)**  
    本チュートリアルでは、OCIのLoad Balancerに直接アタッチする「WAFポリシー」を作成し、実際のWAFポリシーの動作を確認します。
 
++ **[エッジポリシーのWeb Application Firewallのログを分析する](https://oracle-japan.github.io/ocitutorials/id-security/waf-edge-log-analytics/)**
+   本チュートリアルでは、「OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する」の続編として、エッジポリシーのログをLogging Analyticsに転送して分析する手順を紹介します。
+
 + **[OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する](/ocitutorials/id-security/waf-v2-log)**  
    本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、WAFポリシーのログをLogging Analyticsに転送して分析する手順を紹介します。
 
