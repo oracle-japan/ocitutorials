@@ -3,14 +3,15 @@ title: "監視・管理チュートリアル"
 excerpt: "OCIにおける監視・管理サービスについて学習できるチュートリアルです。"
 permalink: /management/
 layout: single
+show_excerpts: true
+toc: true
+
+# layout: collection
 # collection: management
 # entries_layout: grid
-# tags: "management"
-show_excerpts: true
+# show_excerpts: true
 # classes: wide
-toc: true
-# date: "2022-10-11"
-# lastmod: "2022-10-11"
+
 ---
 
 OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに最適化された監視・管理のためのサービスがあり、OCI上のリソースの監視・管理を自動化することができます。また、エージェントを利用することでオンプレミスや外部クラウド環境にあるリソースの監視も可能ですので、ハイブリッド環境やマルチクラウド環境の監視にも対応できます。
@@ -21,6 +22,7 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 + **[モニタリング機能でOCIのリソースを監視する](https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/)**
 
 ## Stack Monitoring
++ **[Stack Monitoring オンボーディング](https://oracle-japan.github.io/ocitutorials/management/stack_monitoring_onboarding/)**
 + **[Stack Monitoring を使用して OCI Compute のメトリックを可視化する](https://oracle-japan.github.io/ocitutorials/management/stack_monitoring_install/)**
 
 ## Logging
