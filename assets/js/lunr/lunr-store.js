@@ -1787,6 +1787,12 @@ var store = [{
         "url": "/ocitutorials/management/stack_monitoring_install/",
         "teaser": null
       },{
+        "title": "Stack Monitoring オンボーディング",
+        "excerpt":"チュートリアル概要 :  このチュートリアルでは、Stack Monitoringのオンボーディングプロセスについて説明します。 この機能を使うことで、ポリシーやグループの作成などを省力化でき、すぐにStack Monitoringを開始できます。   所要時間 : 約10分    1. オンボーディングプロセスの実行   OCIコンソールの画面左上ハンバーガーメニューから「監視および管理」を選択し、以下のように進みます。     アプリケーション・パフォーマンス・モニタリング &gt; スタック・モニタリング          Stack Monitoringで監視したいコンパートメントを選択します。（テナント全体であればルートを選択） 「エンタープライズ・サマリー」の画面にある「スタック・モニタリングの有効化」をクリックします。        以下の画面が表示されるので「次」へ進んで「設定」をクリックします。        以上で、Stack Monitoringを開始するための準備は完了しました。   2. 作成されたリソースの確認   OCIコンソールの画面左上ハンバーガーメニューから以下のように進みます。     アイデンティティとセキュリティ &gt; ポリシー     オンボーディングを実行したコンパートメントに「StackMonitoringPolicyEasyOnboarding」という名前のポリシーが作成されています。        内容を確認すると、オンボーディングで作成されたポリシーが定義されています。        OCIコンソールの画面左上ハンバーガーメニューから以下のように進みます。     アイデンティティとセキュリティ &gt; ドメイン &gt; Default (現在のドメイン) &gt; 動的グループ     動的グループが2つ作成されています。        その他、ユーザーグループも作成されていますが、ユーザーポリシー同様使用については任意のため、必要に応じて利用してください。   ","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/stack_monitoring_onboarding/",
+        "teaser": null
+      },{
         "title": "Base Database ServiceでDatabase Managementを有効化する",
         "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Base DBでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのBaseDBが1インスタンス作成されていること BaseDBのインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のBaseDBがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE database-family in tenancy/compartment...","categories": [],
         "tags": ["management"],
