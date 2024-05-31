@@ -13,9 +13,6 @@ table, th, td {
 }
 </style>
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージが **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** として **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から提供されています。  
-本テクニカルTipsは、この **クラスタネットワーキングイメージ** の適切な選び方を解説します。
-
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
 ***
@@ -56,8 +53,8 @@ HPCシェイプ（※2）用（HPC **クラスタネットワーキングイメ�
 
 | No. | 対象シェイプ  | **Oracle Linux**<br>バージョン | ユーティリティ<br>提供方法 | OFED<br>バージョン | GPU/CUDA<br>バージョン | イメージ名の先頭                                                      | **マーケットプレイス**<br>URL（※4）                                                |
 | :-: | :-----: | :-----------------------: | :-------------: | :-----------: | :---------------: | :-----------------------------------------------------------: | :---------------------------------------------------------------------: |
-| 1   | HPCシェイプ | 8.9                       | **OCA** プラグイン   | 23.10         | -                 | OracleLinux-8-OCA-RHCK-OFED-23.10                             | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
-| 2   |         | 7.9                       | **OCA** プラグイン   | 23.10         | -                 | OracleLinux-7-OCA-RHCK-OFED-23.10                             | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+| 1   | HPCシェイプ | 8.9                       | **OCA** プラグイン   | 23.10         | -                 | OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-2024.03.15-0                             | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+| 2   |         | 7.9                       | **OCA** プラグイン   | 23.10         | -                 | OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-2024.03.15-0                             | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 | 3   |         | 8.8                       | **OCA** プラグイン   | 5.8           | -                 | OracleLinux-8-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27            | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 | 4   |         | 7.9                       | **OCA** プラグイン   | 5.8           | -                 | OracleLinux-7-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27            | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 | 5   |         | 8.7                       | 個別RPM           | 5.4           | -                 | OracleLinux-8-RHCK-OFED-5.4-3.6.8.1-2023.05.18                | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
