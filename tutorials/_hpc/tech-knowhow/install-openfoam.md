@@ -41,50 +41,63 @@ MPI言語規格に準拠するMPI実装
 - **[ADIOS](https://csmd.ornl.gov/adios)**  
 大規模データを効率よく可視化・解析するためのフレームワーク
 
-また本テクニカルTipsは、 **OpenFOAM** に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行します。
+また本テクニカルTipsは、 **OpenFOAM** に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行します。  
+この際、プリ処理・解析処理の実行を計算ノードで、ポスト処理をフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノードが1ノードの小規模構成と、複数ノードに跨るワークロードを想定する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続された2ノード以上の計算ノードを持つ大規模構成から選択します。
 
 構築する環境は、以下を前提とします。
 
-- CFD解析ノードシェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- CFD解析ノードOS ： **Oracle Linux** 8.9 または **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- 計算ノードシェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
+- Bastionノードシェイプ ： 任意のVMシェイプ
+- 計算ノードOS ： **Oracle Linux** 8.9（※1）/ **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※2）
+- BastionノードOS ： **Oracle Linux** 8.9
 - **OpenFOAM** ： v2312
 - **OpenMPI** ：5.0.3
 - **ParaView** ： 5.11.2
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
+※1）小規模構成の場合  
+※2）大規模構成の場合で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
 
 なお、 **ParaView** がX11ベースのアプリケーションのため、この操作画面を表示するXサーバの稼働する **ParaView** 操作端末を用意します。
 
+![システム構成図](architecture_diagram.png)
+
 以降では、以下の順に **OpenFOAM** のインストール・利用方法を解説します。
 
-1. CFD解析ノードデプロイ
+1. HPCクラスタ構築
 2. インストール事前準備
 3. **ParaView** インストール
 4. **OpenFOAM** インストール
 5. **OpenFOAM** 実行
 
 ***
-# 1. CFD解析ノードデプロイ
+# 1. HPCクラスタ構築
 
-本章は、 **OpenFOAM** を実行するCFD解析ノードを以下の仕様でデプロイします。
+本章は、本テクニカルTipsで使用するHPCクラスタを構築します。
 
-- シェイプ ： **BM.Optimized3.36**
-- **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
-- SMT : 無効（※2）
+この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の手順に従い実施します。  
+なお小規模構成の場合は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** をデプロイする代わりに単一の計算ノードをデプロイします。
 
-※2）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+この際、計算ノードとBastionノードを以下のように構成します。
+
+- 計算ノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
+- Bastionノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
+- 計算ノードSMT : 無効（※3）
+
+※3）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+
+また、Bastionノードと全計算ノードの **/home** は、NFSで共有します。
 
 ***
 # 2. インストール事前準備
 
 本章は、 **OpenFOAM** と外部ツールをインストールするための事前準備として、以下の作業を実施します。
 
-- 前提条件のRPMパッケージ・ソフトウェアのをインストール
+- 前提条件のRPMパッケージ・ソフトウェアのインストール
 - **OpenFOAM** と外部ツールのソースプログラムのダウンロード・展開
 
-以降の手順は、CFD解析ノードで実行します。
+以降の手順は、Bastionノードと全ての計算ノードで実行します。
 
-1. **OpenMPI** をインストール・セットアップします。  
+1. 前提条件ソフトウェアの **OpenMPI** をインストール・セットアップします。  
 この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
 
 2. 以下コマンドをopcユーザで実行し、前提条件のRPMパッケージを提供するyumレポジトリを追加します。
@@ -152,11 +165,11 @@ MPI言語規格に準拠するMPI実装
 ***
 # 3. ParaViewインストール
 
-本章は、 **ParaView** をCFD解析ノードにインストールします。
+本章は、 **ParaView** をBastionノードと全ての計算ノードにインストールします。
 
 1. 以下コマンドをrootユーザで実行し、 **ParaView** の前提ソフトウェアである **[Qt](https://www.qt.io/)** をインストールします。  
 この際、以下コマンド出力で正しくインストールされたことを確認します。  
-本手順は、15分程度を要します。
+本手順は、8コアのVMインスタンスで15分程度を要します。
 
     ```sh
     $ ./makeQt 5.12.11
@@ -173,7 +186,7 @@ MPI言語規格に準拠するMPI実装
 
 2. 以下コマンドをrootユーザで実行し、 **ParaView** をインストールします。  
 この際、以下コマンド出力で正しくインストールされたことを確認します。  
-本手順は、15分程度を要します。
+本手順は、8コアのVMインスタンスで20分程度を要します。
 
     ```sh
     $ ./makeParaView -qt-5.12.11 -mpi -python3
@@ -197,7 +210,7 @@ MPI言語規格に準拠するMPI実装
 ***
 # 4. OpenFOAMインストール
 
-本章は、 **OpenFOAM** をCFD解析ノードにインストールします。
+本章は、 **OpenFOAM** をBastionノードと全ての計算ノードにインストールします。
 
 1. 以下コマンドをrootユーザで実行し、 **OpenFOAM** のインストール条件を満たしていることを確認します。
 
@@ -218,17 +231,13 @@ MPI言語規格に準拠するMPI実装
 
 2. 以下コマンドをrootユーザで実行し、 **OpenFOAM** をインストールします。  
 この際、最後に実行するコマンドの出力を注意深く確認し、 **[0. 概要](#0-概要)** にリストアップされている外部ツールが **OpenFOAM** に組み込まれたことを確認します。なおこのコマンド出力は、カレントディレクトリにファイル名 **log.linux64GccDPInt32Opt** としても出力されます。  
-本手順は、30分程度を要します。
+本手順は、8コアのVMインスタンスで45分程度を要します。
 
     ```sh
     $ export ParaView_DIR=$WM_THIRD_PARTY_DIR/platforms/linux64Gcc/ParaView-5.11.2
     $ export Qt5_DIR=$WM_THIRD_PARTY_DIR/platforms/linux64Gcc/qt-5.12.11
     $ cd /opt/OpenFOAM/OpenFOAM-v2312
     $ ./Allwmake -j -s -q -l
-        :
-        :
-        :
-    $
     ```
 
 3. 以下コマンドをrootユーザで実行し、 **OpenFOAM** のインストールをテストします。
@@ -251,51 +260,177 @@ MPI言語規格に準拠するMPI実装
 ***
 # 5. OpenFOAM実行
 
-本章は、 **OpenFOAM** に同梱されるチュートリアルのうちL字管内流れのシミュレーション（**incompressible/icoFoam/elbow**）を使用し、CFD解析ノードでプリ処理・解析処理・ポスト処理のCFD解析フローを実行します。  
-なお本章の作業は、実際にCFD解析フローを実行するユーザで実施しますが、ここではopcを使用します。
+## 5-0. 概要
 
-1. Xサーバの稼働する **ParaView** 操作端末から、Xフォワードを有効にしてCFD解析ノードにSSHでログインします。
+本章は、 **OpenFOAM** に同梱されるチュートリアルのうちバックステップ乱流のシミュレーション（**incompressible/simpleFoam/pitzDaily**）を使用し、計算ノードでプリ処理・解析処理を、Bastionノードでポスト処理を実行します。  
+この際の解析処理は、以下の3パターンに分けてその実行方法を解説します。
 
-2. 以下コマンドを実行し、 **OpenFOAM** に同梱されているチュートリアルをコピーします。  
-これにより、チュートリアルに含まれるファイルが **~/OpenFOAM/user_name-v2312/run/tutorials** にコピーされます。
+- 1コアを使用する非並列実行
+- 1ノード36コアを使用するノード内並列実行
+- 2ノード72コアを使用するノード間並列実行
+
+本章の作業は、実際にCFD解析フローを実行するユーザで実施しますが、ここではopcを使用します。
+
+## 5-1. 事前準備
+
+本章は、CFD解析フロー実行のための事前準備を行います。
+
+1. Bastionノードを経由して計算ノードのうちの1ノードにSSHでログインします。
+
+2. **.bashrc** ファイルの最後に、以下の1行を追加します。
 
     ```sh
-    $ source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
-    $ mkdir -p $FOAM_RUN && cp -r $FOAM_TUTORIALS $FOAM_RUN
-    ```
-
-3. 以下コマンドを実行し、L字管内流れの解析フローのうち、プリ処理と解析処理を実行します。
-
-    ```sh
-    $ cd OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow/
-    $ foamRunTutorials
-    Restore 0/ from 0.orig/
-    Running fluentMeshToFoam on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
-    Running icoFoam on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
-    Running foamMeshToFluent on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
-    Running foamDataToFluent on /home/opc/OpenFOAM/opc-v2312/run/tutorials/incompressible/icoFoam/elbow
+    $ diff ~/.bashrc_org ~/.bashrc
+    xxaxx
+    > source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
     $
     ```
 
-4. 以下コマンドを実行し、解析結果を読み込んで **ParaView** を起動します。
+3. 以下コマンドを実行し、 **OpenFOAM** の環境設定を読み込みます。
 
     ```sh
-    $ paraFoam 
-    Created temporary 'elbow.OpenFOAM'
+    $ source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
     ```
 
-5. 以下 **ParaView** 画面で、 **Apply** ボタンをクリックします。
+4. 以下コマンドを実行し、 **OpenFOAM** に同梱されているチュートリアルのうち **pitzDaily** のディレクトリを作業ディレクトリにコピーします。
+
+    ```sh
+    $ mkdir -p $FOAM_RUN
+    $ run
+    $ cp -r $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily ./
+    ```
+
+## 5-2. プリ処理
+
+本章は、プリ処理を計算ノードで実行します。
+
+1. 以下コマンドを実行し、プリ処理を実行します。
+
+    ```sh
+    $ cd ./pitzDaily
+    $ blockMesh
+    ```
+
+## 5-3. 解析処理
+
+## 5-3-0. 概要
+
+本章は、解析処理を計算ノードで実行します。  
+この際、非並列・ノード内並列・ノード間並列に分けて実行方法を解説します。
+
+## 5-3-1. 非並列実行
+
+1. 以下コマンドを実行し、解析処理を非並列で実行します。
+
+    ```sh
+    $ simpleFoam
+    ```
+
+## 5-3-2. ノード内並列実行
+
+1. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
+
+    ```sh
+    $ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
+    ```
+
+2. コピーしたファイルを以下のように修正し、先に生成したメッシュを36個の領域に分割します。
+
+    ```sh
+    $ diff system/decomposeParDict_org system/decomposeParDict
+    17c17
+    < numberOfSubdomains 4;
+    ---
+    > numberOfSubdomains 36;
+    23c23
+    <     n           (2 2 1);
+    ---
+    >     n           (6 6 1);
+    $ decomposePar
+        :
+        :
+        :
+    Processor 35: field transfer
+
+    End
+
+    $
+    ```
+
+3. 以下コマンドを実行し、 **BM.Optimized3.36** に搭載する36コアを使用するノード内並列の解析処理を実行します。  
+この際、モデルの規模が小さいため、並列化による実行時間短縮の効果は得られないことに留意します。
+
+    ```sh
+    $ mpirun -n 36 -mca coll_hcoll_enable 0 simpleFoam -parallel
+    $ reconstructPar
+    ```
+
+## 5-3-3. ノード間並列実行
+
+1. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
+
+    ```sh
+    $ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
+    ```
+
+2. コピーしたファイルを以下のように修正し、先に生成したメッシュを72個の領域に分割します。
+
+    ```sh
+    $ diff system/decomposeParDict_org system/decomposeParDict
+    17c17
+    < numberOfSubdomains 4;
+    ---
+    > numberOfSubdomains 72;
+    23c23
+    <     n           (2 2 1);
+    ---
+    >     n           (9 8 1);
+    $ decomposePar
+        :
+        :
+        :
+    Processor 71: field transfer
+
+    End
+
+    $
+    ```
+
+3. 以下コマンドを実行し、2ノードの **BM.Optimized3.36** に搭載する72コアを使用するノード間並列の解析処理を実行します。  
+この際、モデルの規模が小さいため、並列化による実行時間短縮の効果は得られないことに留意します。
+
+    ```sh
+    $ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 simpleFoam -parallel
+    $ reconstructPar
+    ```
+
+## 5-4. ポスト処理
+
+本章は、ポスト処理をBastionノードで実行します。
+
+1. Xサーバの稼働する **ParaView** 操作端末から、Xフォワードを有効にしてBastionノードにSSHでログインします。
+
+2. 以下コマンドを実行し、解析結果を読み込んで **ParaView** を起動します。
+
+    ```sh
+    $ run
+    $ cd ./pitzDaily 
+    $ paraFoam 
+    Created temporary 'pitzDaily.OpenFOAM'
+    ```
+
+3. 以下 **ParaView** 画面で、 **Apply** ボタンをクリックします。
 
     ![画面ショット](paraviewgui_page01.png)
 
-6. 以下 **ParaView** 画面で、メニュから速度を選択します。
+4. 以下 **ParaView** 画面で、メニューから速度を選択します。
 
     ![画面ショット](paraviewgui_page02.png)
 
-7. 以下 **ParaView** 画面で、シミュレーション結果を再生します。
+5. 以下 **ParaView** 画面で、再生ボタンをクリックしてシミュレーション結果を再生します。
 
     ![画面ショット](paraviewgui_page03.png)
 
-8. 以下 **ParaView** 画面で、シミュレーション時間が1から10まで進むことを確認します。
+6. 以下 **ParaView** 画面で、シミュレーション時間が進むことを確認します。
 
     ![画面ショット](paraviewgui_page04.png)
