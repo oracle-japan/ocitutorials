@@ -79,25 +79,28 @@ ADB-Dならではの特長は、Exadataを専有することにより可能な�
 >        </tr>
 >       <tr>
 >			<td>料金体系</td>
->			<td>OCPU + Storage</td>
->           <td>OCPU + Infrastructure</td>
+>			<td>OCPU/ECPU + Storage</td>
+>           <td>OCPU/ECPU + Infrastructure</td>
 >        </tr>
 >       <tr>
 >			<td>課金単位</td>
->			<td>秒</td>
->           <td>時間</td>
+            <td>OCPU/ECPU：秒
+            <br><b>Storage：秒</b></td>
+>           <td>OCPU/ECPU：秒
+>			<br><b>Infrastructure：時間</b></td>
 >        </tr>
 >        <tr>
 >			<td>最低利用期間</td>
->			<td>OCPU/Storage：1分</td>
->            <td>OCPU：1時間
+>			<td>OCPU/ECPU：1分
+            <br><b>Storage：1分</b></td>
+>           <td>OCPU/ECPU：1分
 >			<br><b>Infrastructure：48時間</b></td>
 >        </tr>
 >        <tr>
 >			<td>課金時間</td>
->			<td>OCPU：起動している間
+>			<td>OCPU/ECPU：起動している間
 >			<br>Storage：終了するまで</td>
->            <td>OCPU：1時間
+>            <td>OCPU/ECPU：起動している間
 >			<br><b>Infrastructure：終了するまで</b></td>
 >        </tr>
 >      </tbody>
@@ -372,15 +375,15 @@ ADB-Dを配置するネットワーク環境を作成します。
         <tr>
             <td rowspan="4">Autonomous VMクラスタ・リソースの構成</td>
         	<td><b>Maximum number of Autonomous Container Database:</b>
-            <br>AVMで作成可能なACD数の上限。設定できる値は後のノード当たりのOCPU数に依存します</td>
+            <br>AVMで作成可能なACD数の上限。設定できる値は後のノード当たりのOCPU/ECPU数に依存します</td>
             <td>任意</td>
         </tr>
         <tr>
-			<td><b>ノード当たりのOCPU数</b></td>            
+			<td><b>ノード当たりのOCPU/ECPU数</b></td>            
             <td>任意</td>
         </tr>
         <tr>
-			<td><b>OCPU当たりのデータベース・メモリー(GB)</b></td>
+			<td><b>OCPU/ECPU当たりのデータベース・メモリー(GB)</b></td>
             <td>任意</td>
         </tr>
         <tr>
@@ -543,11 +546,11 @@ ADB-Dを配置するネットワーク環境を作成します。
         </tr>
 		<tr>
             <td rowspan="3">データベースの構成</td>
-			<td><b>OCPU数</b></td>
+			<td><b>OCPU/ECPU数</b></td>
             <td>任意</td>
         </tr>
 		<tr>
-			<td><b>OCPU自動スケーリングの有効化</b></td>
+			<td><b>OCPU/ECPU自動スケーリングの有効化</b></td>
 			<td>任意</td>
 		</tr>
 		<tr>

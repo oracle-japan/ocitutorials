@@ -51,7 +51,7 @@ MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適
 ## 1-1. ADWインスタンスの作成
 まずはADWインスタンスを作成します。[101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参考にしながら、以下の条件で作成します。
 - **ワークロード・タイプ：** データ・ウェアハウス
-- **OCPU数：** 8
+- **ECPU数：** 32
 - **ストレージ(TB)：** 1
 - **CPU Auto Scaling：** 許可
 
@@ -143,7 +143,7 @@ define uri_ms_oss_bucket = 'https://objectstorage.ap-tokyo-1.oraclecloud.com/n/d
 define csv_format_string = '{"type":"csv","skipheaders":"1"}';
 ```
 
-1. 2018年から2020年までの映画売上データをインポートするためのスクリプトを実行します。データファイルは、35個に分かれています。8 OCPUの場合、35ヶ月分の映画販売データをロードするのに、ロードには約4分かかります。
+1. 2018年から2020年までの映画売上データをインポートするためのスクリプトを実行します。データファイルは、35個に分かれています。32 ECPUの場合、35ヶ月分の映画販売データをロードするのに、ロードには約4分かかります。
 ```sql
 BEGIN
 DBMS_CLOUD.COPY_DATA (table_name => 'MOVIE_SALES_FACT',

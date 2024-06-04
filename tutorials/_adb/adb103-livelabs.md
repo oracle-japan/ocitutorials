@@ -14,7 +14,7 @@ header:
 
 # はじめに
 
-[Oracle LiveLabs](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home){:target="_blank"} とはOracle Cloud Infrastructure上でお試しいただける様々なワークショップをまとめたサイトです。2022/11現在600種類を超える数のワークショップが登録されています。
+[Oracle LiveLabs](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/home){:target="_blank"} とはOracle Cloud Infrastructure上でお試しいただける様々なワークショップをまとめたサイトです。2024/6現在900種類を超える数のワークショップが登録されています。
 
    ![livelabs](livelabs.png)  
 
