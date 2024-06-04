@@ -268,7 +268,7 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
     <th>接続サービス</th>　<th>ECPU数</th> <th>Elapsed Time</th>
   </tr>
   <tr>
-    <td rowspan="3">MEDIUM</td> <td>2</td> <td>00:01:24.915</td>
+    <td rowspan="4">MEDIUM</td> <td>2</td> <td>00:01:24.915</td>
   </tr>
   <tr>
     <td>4</td> <td>00:00:57.807</td>
