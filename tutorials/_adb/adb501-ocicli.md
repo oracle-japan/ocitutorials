@@ -13,13 +13,13 @@ layout: single
 #link: https://community.oracle.com/tech/welcome/discussion/4474315
 ---
 
-ここまでの章で、ADBインスタンスの作成やOCPU数の変更等、様々な操作を実施いただきましたが、これら一連の操作を自動化するにはどうしたら良いでしょうか？
+ここまでの章で、ADBインスタンスの作成やECPU数の変更等、様々な操作を実施いただきましたが、これら一連の操作を自動化するにはどうしたら良いでしょうか？
 
 ADBはOracle Cloud Infrastructure(OCI)の他のサービスと同様、REST APIを介した各種操作が可能であり、それらを呼び出すコマンド・ライン・インタフェース（OCI CLI）を利用した操作も可能です。
 
 この章ではOCI CLIを利用してADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。
 
-これらコマンドを利用しスクリプトを組めば、例えば夜間はあまり使わないからOCPUをスケールダウンさせておき、朝になったらスケールアップしよう。といった自動化が可能となります。
+これらコマンドを利用しスクリプトを組めば、例えば夜間はあまり使わないからECPUをスケールダウンさせておき、朝になったらスケールアップしよう。といった自動化が可能となります。
 
 尚、本ガイドではOCI CLIがインストールされたOCI Developer Image を利用することを前提に記載しています。
 
@@ -308,11 +308,11 @@ oci compute instance launch --availability-domain "EMIr:PHX-AD-1" -c ocid1.compa
 
 では実際に操作してみましょう。
 
-ここでは、**OCPU数の変更**、**インスタンスの停止**、**起動**、および**インスタンスを新規に作成**します。
+ここでは、**ECPU数の変更**、**インスタンスの停止**、**起動**、および**インスタンスを新規に作成**します。
 
-1. インスタンスのスケールアップ・ダウン（OCPU数の変更）
+1. インスタンスのスケールアップ・ダウン（ECPU数の変更）
 
-    ここでは前の章でスケールアップしたインスタンスのOCPUを1に戻してみましょう。
+    ここでは前の章でスケールアップしたインスタンスのECPUを2に戻してみましょう。
     <br>（OCI CLIであってもオンラインで実施可能です。**アプリケーションの停止は不要**です。）
 
     1-1. 対象となるADBインスタンスのOCIDを確認するため、以下のlistコマンドを実行しOCIDを取得します。
@@ -325,24 +325,24 @@ oci compute instance launch --availability-domain "EMIr:PHX-AD-1" -c ocid1.compa
 
     ![img3_1_1.png](img3_1_1.png)
 
-    合わせて、現在のOCPU数 (cpu-core-count) を確認します。
+    合わせて、現在のECPU数 (compute-count) を確認します。
 
-    ![img3_1_1_2.png](img3_1_1_2.png)
+    ![img3_1_1_2.png](img3_1_1_2_new.png)
 
 
-    1-2. 下記のコマンドを実行し、OCPUを1に変更します。（＜取得したADBインスタンスのOCID＞を1-1で取得したOCIDに置き換えてください）
+    1-2. 下記のコマンドを実行し、ECPUを2に変更します。（＜取得したADBインスタンスのOCID＞を1-1で取得したOCIDに置き換えてください）
 
     ```sh
-    oci db autonomous-database update --autonomous-database-id "＜取得したADBインスタンスのOCID＞" --cpu-core-count 1
+    oci db autonomous-database update --autonomous-database-id "＜取得したADBインスタンスのOCID＞" --compute-count 2
     ```
 
     lifecycle-state 列が **SCALE_IN_PROGRESS** になっていればOKです。
 
     ![img3_1_3.png](img3_1_3.png)
 
-    しばらく経ってから、GUIツール（WEB画面）、もしくはlistコマンドにてOCPU=1(cpu-core-count=1)にスケールダウンしたことをご確認ください。
+    しばらく経ってから、GUIツール（WEB画面）、もしくはlistコマンドにてECPU=2(compute-count=2)にスケールダウンしたことをご確認ください。
 
-    ![img3_1_2.png](img3_1_2.png)
+    ![img3_1_2.png](img3_1_2_new.png)
 
 
 2. 次にこのインスタンスを**停止・起動**してみましょう
@@ -383,7 +383,8 @@ oci compute instance launch --availability-domain "EMIr:PHX-AD-1" -c ocid1.compa
     3-1. 以下の記載例を参考にインスタンスを作成します。
 
     ```sh
-    oci db autonomous-database create --display-name=atpXXb --db-name=atp01b --db-workload=OLTP --cpu-core-count=1 --data-storage-size-in-tbs=1 --admin-password="Welcome12345#" --license-model=LICENSE_INCLUDED
+    oci db autonomous-database create --display-name=atpXXb --db-name=atp01b --db-workload=OLTP --compute-count=2 --compute-model=ECPU --data-storage-size-in-tbs=1 --admin-password=
+    "Welcome12345#" --license-model=LICENSE_INCLUDED
     ```
 
     どのようなインスタンスを作成するかはオプションで指定することができます。今回作成するインスタンスの詳細は次の通りです。
@@ -409,8 +410,12 @@ oci compute instance launch --availability-domain "EMIr:PHX-AD-1" -c ocid1.compa
     <td>ADBのワークロードタイプ（AJD/APEX/DW/OLTPの中から指定）をOLTPに指定</td>
     </tr>
     <tr>
-    <td>--cpu-core-count=1</td>
-    <td>使用するOCPU数を1に指定</td>
+    <td>--compute-count=2</td>
+    <td>使用するECPU数を2に指定</td>
+    </tr>
+    <tr>
+    <td>--compute-model=ECPU</td>
+    <td>コンピュート・モデルをECPUに指定</td>
     </tr>
     <tr>
     <td>--data-storage-size-in-tbs=1</td>

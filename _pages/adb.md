@@ -76,13 +76,13 @@ toc: true
     * 大規模なCSVデータを想定し、オブジェクト・ストレージからDBMS_CLOUDパッケージを利用してロードします
     
 + **[203: 分析系クエリの実行(Star Schema Benchmark)](/ocitutorials/adb/adb203-bulk-query/){:target="_blank"}**
-    * SSBスキーマに対して重いクエリ処理を実行し、OCPU数をスケールすることで高速化できること確認します
+    * SSBスキーマに対して重いクエリ処理を実行し、ECPU数をスケールすることで高速化できること確認します
 
 + **[204: 開発者向け仮想マシンのセットアップ方法](/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}**  
     * 開発用の仮想マシンイメージを利用して、開発環境を作成しましょう。後続のチュートリアルにて利用します
 
 + **[205: オンライン・トランザクション系のアプリを実行してみよう（Swingbench)](/ocitutorials/adb/adb205-swingbench/){:target="_blank"}**
-    * OCPU数と自動スケーリング設定に応じてADBのTPS(Transaction per second)が向上していく流れをSwingbenchを通して体験します
+    * ECPU数と自動スケーリング設定に応じてADBのTPS(Transaction per second)が向上していく流れをSwingbenchを通して体験します
 
 + **[206: Node.jsによるADB上でのアプリ開発](/ocitutorials/adb/adb206-appdev-nodejs/){:target="_blank"}**  
     * Node.jsにてADBに接続し、簡易アプリを実行してみます
