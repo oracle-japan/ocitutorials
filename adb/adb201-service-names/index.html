@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-03T14:02:21+09:00">
+  <meta property="article:published_time" content="2024-06-04T13:20:01+09:00">
 
 
 
@@ -347,7 +347,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="201: 接続サービスの理解">
     <meta itemprop="description" content="インスタンスに接続する際に選択する「接続サービス」についてご紹介します。CPUの割当優先度や並列処理、キューイングの有無を選択するだけでコントロールできます。">
-    <meta itemprop="datePublished" content="2024-06-03T14:02:21+09:00">
+    <meta itemprop="datePublished" content="2024-06-04T13:20:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -399,7 +399,7 @@
 <p>選択可能な接続サービスの種類は、次の通りです。
 <br />Autonomous Data Warehouse(ADW) では３種類、Autonomous Transaction Processing(ATP)では5種類あり、ワークロード適したものを選択します。</p>
 
-<div style="text-align: center"><img src="img_service.jpg" /></div>
+<p><img src="img_service.png" alt="img_service.png" /></p>
 
 <h2 id="使い分けの指針スタートポイント">使い分けの指針、スタートポイント</h2>
 
@@ -448,7 +448,7 @@
       <li><b>TP</b>を利用
         <ul>
             <li>単一のCPUコアで処理させるため</li>
-            <li>手動でパラレル度を制御したい場合、もしくは最優先したい特別な処理の場合は、<b>TPURGENT</b>を推奨</li>
+            <li>手動でパラレル度を制御したい場合、もしくは最優先したい特別な処理の場合は、<b>TPURGENT</b>を推奨</li>
         </ul>
     　</li>
     <br /><div style="text-align: center"><img src="img_oltp.png" /></div>
@@ -461,7 +461,7 @@
       <li><b>MEDIUM</b>を利用
         <ul>
             <li>複数のCPUコアで処理させるため</li>
-            <li>動的にパラレル処理されるだけでなく、キューイングも実装されているため、効率よく処理できる</li>
+            <li>動的にパラレル処理されるだけでなく、キューイングも実装されているため、効率よく処理できる</li>
             <li>同時実行セッション数が3よりも少ない場合は<b>HIGH</b>を推奨</li>
         </ul>
       </li>
@@ -611,7 +611,7 @@
 事前定義されたサービスの1つを選択すると、ほとんどのアプリケーションで適切に機能する同時実行セッション数が提供されます。<br />
 しかし、デフォルトのサービスの1つを選択してもアプリケーションのパフォーマンスのニーズが満たされない場合は、<strong><code class="language-plaintext highlighter-rouge">MEDIUM</code></strong> サービスのみ同時実行性の制限を変更することができます。<br /></p>
 
-<p>同時実行制限を変更すると、OCPUの数と選択した同時実行制限に基づいて、 <strong><code class="language-plaintext highlighter-rouge">並列度（DOP）</code></strong> が再計算されます。
+<p>同時実行制限を変更すると、ECPUの数と選択した同時実行制限に基づいて、 <strong><code class="language-plaintext highlighter-rouge">並列度（DOP）</code></strong> が再計算されます。
 ※ 並列度は、単一の処理に対応付けられるパラレル実行サーバーの数で表される値です。</p>
 
 <p><br />ATPにおける各接続サービスのデフォルトの同時ステートメント数は、次の法則に従って定義されます。</p>
@@ -624,11 +624,11 @@
     </tr>
     <tr>
       <td>tpurgent</td>
-      <td>300×OCPU数</td>
+      <td>75×ECPU数</td>
     </tr>
     <tr>
       <td>tp</td>
-      <td>300×OCPU数</td>
+      <td>75×ECPU数</td>
     </tr>
     <tr>
       <td>high</td>
@@ -636,16 +636,16 @@
     </tr>
     <tr>
       <td><div style="color:#c74634"><b>medium</b></div></td>
-      <td><div style="color:#c74634"><b>1 ~ 3×OCPU数 の間で調整可能</b></div></td>
+      <td><div style="color:#c74634"><b>0.125~0.75×ECPU数の間で調整可能</b></div></td>
     </tr>
     <tr>
       <td>low</td>
-      <td>300×OCPU数</td>
+      <td>75×ECPU数</td>
     </tr>
   </table>
   </div>
 
-<p><br />ただし、MEDIUMサービスにおける同時実行制限の変更は、2つ以上のOCPUを持つインスタンスでのみ許可されます。</p>
+<p><br />ただし、MEDIUMサービスにおける同時実行制限の変更は、4つ以上のECPUを持つインスタンスでのみ許可されます。</p>
 
 <p>サービスの同時実効性についての詳細は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/manage-service-concurrency.html">こちら</a>を参照ください。</p>
 
@@ -653,17 +653,17 @@
   <li>
     <p><strong><code class="language-plaintext highlighter-rouge">同時実効性の制限</code></strong> タブをクリックします。</p>
 
-    <p><img src="img5_1.png" alt="img5_1.png" /></p>
+    <p><img src="img5_1_new.png" alt="img5_1.png" /></p>
   </li>
   <li>
     <p>MEDIUMの同時実効性の制限を変更します。
   デフォルト設定を確認し、数値を変更できることをご確認ください。
   変更の保存はせず、デフォルト値のままで結構です。</p>
 
-    <p><img src="img5_2.png" alt="img5_2.png" /></p>
+    <p><img src="img5_2_new.png" alt="img5_2.png" /></p>
 
-    <p>OCPU数を2に設定しているため、同時実効性の制限を 1 ~ 6の間で変更することができます。
- なお、OCPU数はADBの実行中にも変更可能です。</p>
+    <p>ECPU数を8に設定しているため、同時実効性の制限を1~6の間で変更することができます。
+ なお、ECPU数はADBの実行中にも変更可能です。</p>
   </li>
 </ol>
 
@@ -681,7 +681,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-03T14:02:21+09:00">June 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-04T13:20:01+09:00">June 4, 2024</time></p>
 
       </footer>
 

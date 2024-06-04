@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-03T14:02:21+09:00">
+  <meta property="article:published_time" content="2024-06-04T13:20:01+09:00">
 
 
 
@@ -347,7 +347,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="601: ADWでMovieStreamデータのロード・更新をしよう">
     <meta itemprop="description" content="Autonomous Data Warehouseにおける、大規模データの高速ロード・更新方法をご紹介します。">
-    <meta itemprop="datePublished" content="2024-06-03T14:02:21+09:00">
+    <meta itemprop="datePublished" content="2024-06-04T13:20:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -407,7 +407,7 @@ MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適
 <p>まずはADWインスタンスを作成します。<a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参考にしながら、以下の条件で作成します。</p>
 <ul>
   <li><strong>ワークロード・タイプ：</strong> データ・ウェアハウス</li>
-  <li><strong>OCPU数：</strong> 8</li>
+  <li><strong>ECPU数：</strong> 32</li>
   <li><strong>ストレージ(TB)：</strong> 1</li>
   <li><strong>CPU Auto Scaling：</strong> 許可</li>
 </ul>
@@ -499,7 +499,7 @@ MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適
 <span class="n">define</span> <span class="n">csv_format_string</span> <span class="o">=</span> <span class="s1">'{"type":"csv","skipheaders":"1"}'</span><span class="p">;</span>
 </code></pre></div>    </div>
   </li>
-  <li>2018年から2020年までの映画売上データをインポートするためのスクリプトを実行します。データファイルは、35個に分かれています。8 OCPUの場合、35ヶ月分の映画販売データをロードするのに、ロードには約4分かかります。
+  <li>2018年から2020年までの映画売上データをインポートするためのスクリプトを実行します。データファイルは、35個に分かれています。32 ECPUの場合、35ヶ月分の映画販売データをロードするのに、ロードには約4分かかります。
     <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
 <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span> <span class="p">(</span><span class="k">table_name</span> <span class="o">=&gt;</span> <span class="s1">'MOVIE_SALES_FACT'</span><span class="p">,</span>
 <span class="n">file_uri_list</span> <span class="o">=&gt;</span> <span class="s1">'&amp;uri_ms_oss_bucket/d801_movie_sales_fact_m-*.csv'</span><span class="p">,</span>
@@ -862,7 +862,7 @@ MovieStreamはビジネスを成長させるため、顧客の視聴傾向や適
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-03T14:02:21+09:00">June 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-04T13:20:01+09:00">June 4, 2024</time></p>
 
       </footer>
 
