@@ -4,6 +4,8 @@ excerpt: "OpenFOAMは、CAE分野で多くの利用実績を持つオープン�
 order: "354"
 layout: single
 header:
+  teaser: "/hpc/tech-knowhow/install-openfoam/architecture_diagram.png"
+  overlay_image: "/hpc/tech-knowhow/install-openfoam/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -41,23 +43,25 @@ MPI言語規格に準拠するMPI実装
 - **[ADIOS](https://csmd.ornl.gov/adios)**  
 大規模データを効率よく可視化・解析するためのフレームワーク
 
-また本テクニカルTipsは、 **OpenFOAM** に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行します。  
-この際、プリ処理・解析処理の実行を計算ノードで、ポスト処理をフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノードが1ノードの小規模構成と、複数ノードに跨るワークロードを想定する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続された2ノード以上の計算ノードを持つ大規模構成から選択します。
+また本テクニカルTipsは、 **OpenFOAM** に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行する手順を解説します。  
+この際、 **OpenFOAM** が提供するツールによるプリ処理と **OpenFOAM** が提供するソルバーによる解析処理を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 対応のベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** でデプロイする計算ノードで、 **ParaView** によるポスト処理を **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** でデプロイするフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。
 
 構築する環境は、以下を前提とします。
 
-- 計算ノードシェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- Bastionノードシェイプ ： 任意のVMシェイプ
+- 計算ノードシェイプ ： **BM.Optimized3.36**
+- Bastionノードシェイプ ： **VM.Optimized3.Flex**
 - 計算ノードOS ： **Oracle Linux** 8.9（※1）/ **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※2）
 - BastionノードOS ： **Oracle Linux** 8.9
 - **OpenFOAM** ： v2312
 - **OpenMPI** ：5.0.3
 - **ParaView** ： 5.11.2
+- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※3）でBastionノード・全計算ノードの **/home** をNFSでファイル共有
 
 ※1）小規模構成の場合  
-※2）大規模構成の場合で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
+※2）大規模構成の場合で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
+※3）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
-なお、 **ParaView** がX11ベースのアプリケーションのため、この操作画面を表示するXサーバの稼働する **ParaView** 操作端末を用意します。
+なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
 
 ![システム構成図](architecture_diagram.png)
 
@@ -67,7 +71,8 @@ MPI言語規格に準拠するMPI実装
 2. インストール事前準備
 3. **ParaView** インストール
 4. **OpenFOAM** インストール
-5. **OpenFOAM** 実行
+5. VNC接続環境構築
+6. CFD解析フロー実行
 
 ***
 # 1. HPCクラスタ構築
@@ -81,9 +86,9 @@ MPI言語規格に準拠するMPI実装
 
 - 計算ノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
 - Bastionノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
-- 計算ノードSMT : 無効（※3）
+- 計算ノードSMT : 無効（※4）
 
-※3）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+※4）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
 また、Bastionノードと全計算ノードの **/home** は、NFSで共有します。
 
@@ -124,7 +129,7 @@ MPI言語規格に準拠するMPI実装
 3. 以下コマンドをopcユーザで実行し、前提条件のRPMパッケージをインストールします。
 
     ```sh
-    $ sudo dnf install -y cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel
+    $ sudo dnf install -y cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel python36-devel
     ```
 
 4. 以下コマンドをrootユーザで実行し、 **OpenFOAM** と外部ツールをダウンロード・展開します。
@@ -258,7 +263,82 @@ MPI言語規格に準拠するMPI実装
     ```
 
 ***
-# 5. OpenFOAM実行
+# 5. VNC接続環境構築
+
+本章は、BastionノードとParaView操作端末で以下の作業を実施し、ParaView操作端末からBastionノードにVNC接続します。
+
+1. GNOMEデスクトップインストール・セットアップ
+2. VNCサーバインストール・セットアップ
+3. SSHポートフォワードセッション確立
+4. VCN接続
+
+なお、 **1.** と **2.** はBastionノードで実施し、 **3.** と **4.** はParaView操作端末から実施します。  
+また本テクニカルTipsでは、VCNサーバに **[TigerVNC](https://tigervnc.org/)** 、VCNクライアントにWindowsで動作する **[UltraVNC](https://uvnc.com/)** を使用します。
+
+1. 以下コマンドをopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを起動します。  
+なお、最初のインストールコマンドは、15分程度を要します。
+
+    ```sh
+    $ sudo dnf groupinstall -y "Server with GUI"
+    $ sudo systemctl set-default graphical
+    $ sudo sed -i 's/^#WaylandEnable=false/WaylandEnable=false/g' /etc/gdm/custom.conf
+    $ sudo shutdown -r now
+    ```
+
+2. 以下コマンドをopcユーザで実行し、 **TigerVNC** をインストール・セットアップします。  
+
+    ```sh
+    $ sudo dnf install -y tigervnc-server tigervnc-server-module
+        :
+        :
+        :
+    $ vncpasswd 
+    Password:   <--- VNCサーバ接続に使用するパスワードを入力
+    Verify:   <--- VNCサーバ接続に使用するパスワードを再入力
+    Would you like to enter a view-only password (y/n)? n   <--- "n" を入力
+    A view-only password is not used
+    $ echo :1=opc | sudo tee -a /etc/tigervnc/vncserver.users
+    :1=opc
+    $ echo geometry=1280x1024 | sudo tee -a /etc/tigervnc/vncserver-config-defaults
+    geometry=1280x1024
+    $
+    ```
+
+    次に、 **TigerVNC** のsystemd設定ファイルを以下のように修正します。  
+
+    ```sh
+    $ diff /usr/lib/systemd/system/vncserver@.service_org /usr/lib/systemd/system/vncserver@.service
+    41a42
+    > Restart=on-success
+    $
+    ```
+
+    次に、以下コマンドをopcユーザで実行し、 **TigerVNC** を起動します。  
+
+    ```sh
+    $ sudo systemctl daemon-reload
+    $ sudo systemctl enable --now vncserver@:1.service
+    ```
+
+3. 以下コマンドをParaView操作端末のSSHクライアントで実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートに対してSSHポートフォワードセッションを確立します。
+
+    ```sh
+    $ ssh -L 5901:localhost:5901 opc@xxx.yyy.zzz.www
+    ```
+
+4. 以下のようにParaView操作端末でVCNクライアントを起動し、接続先に **localhost:5901** を指定して接続します。
+
+    ![画面ショット](ultravcn_page01.png)
+
+    次に、以下画面で先の手順 **2.** で設定したVCN接続用パスワードを入力してログインを完了すると、
+
+    ![画面ショット](ultravcn_page02.png)
+
+    以下画面のようにGNOMEのデスクトップ画面にopcユーザでログインが完了します。
+
+    ![画面ショット](ultravcn_page03.png)
+
+# 6. CFD解析フロー実行
 
 ## 5-0. 概要
 
@@ -357,8 +437,7 @@ MPI言語規格に準拠するMPI実装
     $
     ```
 
-3. 以下コマンドを実行し、 **BM.Optimized3.36** に搭載する36コアを使用するノード内並列の解析処理を実行します。  
-この際、モデルの規模が小さいため、並列化による実行時間短縮の効果は得られないことに留意します。
+3. 以下コマンドを実行し、 **BM.Optimized3.36** に搭載する36コアを使用するノード内並列の解析処理を実行します。
 
     ```sh
     $ mpirun -n 36 -mca coll_hcoll_enable 0 simpleFoam -parallel
@@ -396,8 +475,7 @@ MPI言語規格に準拠するMPI実装
     $
     ```
 
-3. 以下コマンドを実行し、2ノードの **BM.Optimized3.36** に搭載する72コアを使用するノード間並列の解析処理を実行します。  
-この際、モデルの規模が小さいため、並列化による実行時間短縮の効果は得られないことに留意します。
+3. 以下コマンドを実行し、2ノードの **BM.Optimized3.36** に搭載する72コアを使用するノード間並列の解析処理を実行します。
 
     ```sh
     $ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 simpleFoam -parallel
@@ -408,29 +486,43 @@ MPI言語規格に準拠するMPI実装
 
 本章は、ポスト処理をBastionノードで実行します。
 
-1. Xサーバの稼働する **ParaView** 操作端末から、Xフォワードを有効にしてBastionノードにSSHでログインします。
+1. 先にBastionノードでVNC接続したGNOMEデスクトップ画面で、以下のメニューを辿り、
 
-2. 以下コマンドを実行し、解析結果を読み込んで **ParaView** を起動します。
+    ![画面ショット](ultravcn_page04.png)
+
+    以下のようターミナルを開きます。
+
+    ![画面ショット](ultravcn_page05.png)
+
+2. 開いたターミナルで以下コマンドを実行し、 **ParaView** を起動します。
 
     ```sh
     $ run
     $ cd ./pitzDaily 
-    $ paraFoam 
-    Created temporary 'pitzDaily.OpenFOAM'
+    $ touch para.foam
+    $ paraview
     ```
 
-3. 以下 **ParaView** 画面で、 **Apply** ボタンをクリックします。
+3. 以下 **ParaView** 画面で、 **Open** ボタンをクリックします。
 
     ![画面ショット](paraviewgui_page01.png)
 
-4. 以下 **ParaView** 画面で、メニューから速度を選択します。
+4. 以下 **Open File** 画面で、先に作成したファイル（ **para.foam** ）を選択し、 **OK** ボタンをクリックします。
+
+    ![画面ショット](paraviewgui_page01-2.png)
+
+5. 以下 **ParaView** 画面で、 **Apply** ボタンをクリックします。
+
+    ![画面ショット](paraviewgui_page01-3.png)
+
+6. 以下 **ParaView** 画面で、メニューから速度を選択します。
 
     ![画面ショット](paraviewgui_page02.png)
 
-5. 以下 **ParaView** 画面で、再生ボタンをクリックしてシミュレーション結果を再生します。
+7. 以下 **ParaView** 画面で、再生ボタンをクリックしてシミュレーション結果を再生します。
 
     ![画面ショット](paraviewgui_page03.png)
 
-6. 以下 **ParaView** 画面で、シミュレーション時間が進むことを確認します。
+8. 以下 **ParaView** 画面で、シミュレーション時間が進むことを確認します。
 
     ![画面ショット](paraviewgui_page04.png)
