@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-06T21:02:41+09:00">
+  <meta property="article:published_time" content="2024-06-09T21:10:22+09:00">
 
 
 
@@ -269,7 +269,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう">
     <meta itemprop="description" content="DBMS_CLOUD PL/SQLパッケージを利用して、Object StorageのデータをBase Database Service (BaseDB)へ取り込む手順について紹介します。">
-    <meta itemprop="datePublished" content="2024-06-06T21:02:41+09:00">
+    <meta itemprop="datePublished" content="2024-06-09T21:10:22+09:00">
     
 
     <div class="page__inner-wrap">
@@ -1377,30 +1377,37 @@ DBMS_CLOUDを使う権限が正しく付与されていない場合、クレデ�
 <span class="k">SQL</span><span class="o">&gt;</span>
 </code></pre></div></div>
 <p><br />
-クレデンシャルが作成されました。　　
+クレデンシャルが作成されました。
+<br />
 クレデンシャルの作成後、以下のコマンドでOCI上のバケットをアクセスし、オブジェクトの一覧を取得します。
 <br /></p>
 
 <p><strong>実行コマンド</strong></p>
 
-<p>以下は、先ほど作成したクレデンシャルを利用し、オブジェクト・ストレージのバケットにアクセスするコマンドです。　　
-このコマンドで、バケットの中に正常にアクセスできるか確認します。</p>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">dbms_cloud</span><span class="p">.</span><span class="n">list_objects</span><span class="p">(</span><span class="o">&lt;</span><span class="s1">'CredentialName'</span><span class="o">&gt;</span><span class="p">,</span><span class="s1">'https://&lt;$namespace&gt;.objectorage.&lt;$oci_region&gt;.oci.customer-oci.com/n/ObjectStorageNameSpace/b/BucketName/o/'</span><span class="p">);</span>
+<p>以下は、先ほど作成したクレデンシャルを利用し、オブジェクト・ストレージのバケットにアクセスするコマンドです。
+<br />
+このコマンドで、バケットの中に正常にアクセスできるか確認します。
+URIの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/autonomous-database/doc/cloud-storage-uris.html" target="_blank">こちら</a></p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">dbms_cloud</span><span class="p">.</span><span class="n">list_objects</span><span class="p">(</span><span class="o">&lt;</span><span class="s1">'CredentialName'</span><span class="o">&gt;</span><span class="p">,</span><span class="s1">'https://objectstorage.&lt;region&gt;.oraclecloud.com/n/&lt;namespace-string&gt;/b/&lt;bucket&gt;/o/'</span><span class="p">);</span>
 </code></pre></div></div>
 <p>URLは「オブジェクト・ストレージ」→ 「バケットの詳細」→ 「オブジェクトの詳細」から確認できます。</p>
 
 <p><img src="dbms-cloud09.png" alt="image" />
 <br /></p>
 
-<p><strong>実行例</strong></p>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">dbms_cloud</span><span class="p">.</span><span class="n">list_objects</span><span class="p">(</span><span class="s1">'MOMO_CRED2'</span><span class="p">,</span><span class="s1">'https://objectstorage.ap-osaka-1.oci.customer-oci.com/n/orasejapan/b/bucket-20231222-1601-momo/o/'</span><span class="p">);</span>
+<p class="notice--warning">オブジェクト・ストレージへアクセスする際はOracle Cloud Infrastructure Object StorageのネイティブURI形式をご利用ください。
+DBMS_CLOUDパッケージではオブジェクト・ストレージの専用エンドポイントはサポートされていません。</p>
 
-<span class="n">OBJECT_NAME</span>          <span class="n">BYTES</span> <span class="n">CHECKSUM</span>                            <span class="n">CREATED</span>    <span class="n">LAST_MODIFIED</span>
-<span class="c1">--------------- ---------- ----------------------------------- ---------- ----------------------------------------</span>
-<span class="n">REVENUE</span><span class="p">.</span><span class="n">csv</span>       <span class="mi">14181117</span> <span class="mi">8</span><span class="n">e43423b407a2424abbbb10ed0b95357</span>               <span class="mi">22</span><span class="o">-</span><span class="nb">DEC</span><span class="o">-</span><span class="mi">23</span> <span class="mi">07</span><span class="p">.</span><span class="mi">02</span><span class="p">.</span><span class="mi">52</span><span class="p">.</span><span class="mi">882000</span> <span class="n">AM</span> <span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>
-</code></pre></div></div>
+<!-- **実行例**
+```sql
+SQL> select * from dbms_cloud.list_objects('MOMO_CRED2','https://objectstorage.ap-osaka-1.oci.customer-oci.com/n/orasejapan/b/bucket-20231222-1601-momo/o/');
 
-<p>バケットの中に、REVENUE.csvというオブジェクトがあることが確認できました。</p>
+OBJECT_NAME          BYTES CHECKSUM                            CREATED    LAST_MODIFIED
+--------------- ---------- ----------------------------------- ---------- ----------------------------------------
+REVENUE.csv       14181117 8e43423b407a2424abbbb10ed0b95357               22-DEC-23 07.02.52.882000 AM +00:00
+```
+
+バケットの中に、REVENUE.csvというオブジェクトがあることが確認できました。-->
 
 <p>さらに、今のユーザの設定を検証するためにvalidate_user_config.sqlの内容を編集してから、実行します。</p>
 
@@ -1430,7 +1437,7 @@ DBMS_CLOUDを使う権限が正しく付与されていない場合、クレデ�
     </tr>
     <tr>
       <td>GET_PAGE(‘https://objectstorage.eu-frankfurt-1.customer-oci.com’);</td>
-      <td>GET_PAGE(‘https://&lt;$namespace&gt;.objectorage.&lt;$oci_region&gt;.oci.customer-oci.com’);</td>
+      <td>GET_PAGE(‘https://objectstorage.ap-osaka-1.oci.customer-oci.com’);</td>
     </tr>
   </tbody>
 </table>
@@ -1537,7 +1544,7 @@ DBMS_CLOUDを使う権限が正しく付与されていない場合、クレデ�
 <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">COPY_DATA</span><span class="p">(</span>
 <span class="k">table_name</span> <span class="o">=&gt;</span><span class="s1">'CHANNELS'</span><span class="p">,</span>
 <span class="n">credential_name</span> <span class="o">=&gt;</span><span class="s1">'&lt;your credential name&gt;'</span><span class="p">,</span>
-<span class="n">file_uri_list</span> <span class="o">=&gt;</span><span class="s1">'https://&lt;$namespace&gt;.objectorage.&lt;$oci_region&gt;.oci.customer-oci.com/n/ObjectStorageNameSpace/b/BucketName/o/'</span><span class="p">,</span>
+<span class="n">file_uri_list</span> <span class="o">=&gt;</span><span class="s1">'https://objectstorage.&lt;region&gt;.oraclecloud.com/n/&lt;namespace-string&gt;/b/&lt;bucket&gt;/o/'</span><span class="p">,</span>
 <span class="n">format</span> <span class="o">=&gt;</span> <span class="n">json_object</span><span class="p">(</span><span class="s1">'delimiter'</span> <span class="n">value</span> <span class="s1">','</span><span class="p">)</span>
 <span class="p">);</span>
 <span class="k">END</span><span class="p">;</span>
@@ -1600,7 +1607,7 @@ DBMS_CLOUDを使う権限が正しく付与されていない場合、クレデ�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-06T21:02:41+09:00">June 6, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-09T21:10:22+09:00">June 9, 2024</time></p>
 
       </footer>
 
