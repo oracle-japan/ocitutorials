@@ -958,23 +958,30 @@ PL/SQL procedure successfully completed.
 SQL>
 ```
 <br>
-クレデンシャルが作成されました。　　
+クレデンシャルが作成されました。
+<br>
 クレデンシャルの作成後、以下のコマンドでOCI上のバケットをアクセスし、オブジェクトの一覧を取得します。
 <br>
 
 **実行コマンド**
 
-以下は、先ほど作成したクレデンシャルを利用し、オブジェクト・ストレージのバケットにアクセスするコマンドです。　　
+以下は、先ほど作成したクレデンシャルを利用し、オブジェクト・ストレージのバケットにアクセスするコマンドです。
+<br>
 このコマンドで、バケットの中に正常にアクセスできるか確認します。
+URIの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/autonomous-database/doc/cloud-storage-uris.html){:target="_blank"}
 ```sql
-select * from dbms_cloud.list_objects(<'CredentialName'>,'https://<$namespace>.objectorage.<$oci_region>.oci.customer-oci.com/n/ObjectStorageNameSpace/b/BucketName/o/');
+select * from dbms_cloud.list_objects(<'CredentialName'>,'https://objectstorage.<region>.oraclecloud.com/n/<namespace-string>/b/<bucket>/o/');
 ```
 URLは「オブジェクト・ストレージ」→ 「バケットの詳細」→ 「オブジェクトの詳細」から確認できます。
 
 ![image](dbms-cloud09.png)
 <br>
 
-**実行例**
+オブジェクト・ストレージへアクセスする際はOracle Cloud Infrastructure Object StorageのネイティブURI形式をご利用ください。
+DBMS_CLOUDパッケージではオブジェクト・ストレージの専用エンドポイントはサポートされていません。
+{: .notice--warning}
+
+<!-- **実行例**
 ```sql
 SQL> select * from dbms_cloud.list_objects('MOMO_CRED2','https://objectstorage.ap-osaka-1.oci.customer-oci.com/n/orasejapan/b/bucket-20231222-1601-momo/o/');
 
@@ -983,7 +990,7 @@ OBJECT_NAME          BYTES CHECKSUM                            CREATED    LAST_M
 REVENUE.csv       14181117 8e43423b407a2424abbbb10ed0b95357               22-DEC-23 07.02.52.882000 AM +00:00
 ```
 
-バケットの中に、REVENUE.csvというオブジェクトがあることが確認できました。
+バケットの中に、REVENUE.csvというオブジェクトがあることが確認できました。-->
 
 さらに、今のユーザの設定を検証するためにvalidate_user_config.sqlの内容を編集してから、実行します。
 
@@ -996,7 +1003,7 @@ REVENUE.csv       14181117 8e43423b407a2424abbbb10ed0b95357               22-DEC
 define username='SCOTT'|define username='USER1'
 `define sslwalletdir=<Set SSL Wallet Directory>`|`define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl`
 `define sslwalletpwd=<Set SSL Wallet password>`|`define sslwalletpwd=<Walletのパスワード>`
-GET_PAGE('https://objectstorage.eu-frankfurt-1.customer-oci.com');|GET_PAGE('https://<$namespace>.objectorage.<$oci_region>.oci.customer-oci.com');
+GET_PAGE('https://objectstorage.eu-frankfurt-1.customer-oci.com');|GET_PAGE('https://objectstorage.ap-osaka-1.oci.customer-oci.com');
 
 編集後、USER1ユーザでPDBにログインし、validate_user_config.sqlを実行します。
 <br>
@@ -1098,7 +1105,7 @@ BEGIN
 DBMS_CLOUD.COPY_DATA(
 table_name =>'CHANNELS',
 credential_name =>'<your credential name>',
-file_uri_list =>'https://<$namespace>.objectorage.<$oci_region>.oci.customer-oci.com/n/ObjectStorageNameSpace/b/BucketName/o/',
+file_uri_list =>'https://objectstorage.<region>.oraclecloud.com/n/<namespace-string>/b/<bucket>/o/',
 format => json_object('delimiter' value ',')
 );
 END;
