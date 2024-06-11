@@ -49,7 +49,7 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/basedb/dbcs201-pdb-plug/){:target="_blank"}**
 
-+ **[202: DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう](/ocitutorials/basedb/dbcs202-dbms-cloud/){:target="_blank"}**
++ **[202: DBMS_CLOUDを使ってObject StorageのデータをBaseDBから参照しよう](/ocitutorials/basedb/dbcs202-dbms-cloud/){:target="_blank"}**
 
 <br/>
 
