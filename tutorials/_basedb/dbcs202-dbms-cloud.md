@@ -1,10 +1,10 @@
 ---
-title: "202:DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう "
-excerpt: "DBMS_CLOUD PL/SQLパッケージを利用して、Object StorageのデータをBase Database Service (BaseDB)へ取り込む手順について紹介します。"
+title: "202:DBMS_CLOUDを使ってObject StorageのデータをBaseDBから参照しよう"
+excerpt: "DBMS_CLOUD PL/SQLパッケージを利用して、Object StorageのデータをBase Database Service (BaseDB)から参照する手順について紹介します。"
 order: "1_202"
 header:
-  teaser: "/basedb/dbcs202-dbms-cloud/dbms-cloud01.png"
-  overlay_image: "/basedb/dbcs202-dbms-cloud/dbms-cloud01.png"
+  teaser: "/basedb/dbcs202-dbms-cloud/External-table.png"
+  overlay_image: "/basedb/dbcs202-dbms-cloud/External-table.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
   
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/
@@ -19,7 +19,7 @@ DBMS_CLOUDはAutonomous Database (ADB) に実装されているPL/SQLパッケ�
 
 ADBでDBMS_CLOUDを利用する方法は[202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)](../../adb/adb202-dataload-dbms-cloud){:target="_blank"}で学ぶことができます。  
 
-ここでは、DBMS_CLOUDパッケージを利用してObject StorageのデータをBase Database Service (BaseDB)へ取り込む手順をご紹介します。　　
+ここでは、DBMS_CLOUDパッケージを利用してObject StorageのデータをBase Database Service (BaseDB)から外部表として参照する手順をご紹介します。　　
 
 このチュートリアルで実行する内容のイメージは以下の通りです。
 ![image](dbms-cloud01.png)
@@ -29,10 +29,12 @@ ADBでDBMS_CLOUDを利用する方法は[202: コマンドラインから大量�
 **前提条件 :**
 + Oracle Database 19.9以上 もしくは　Oracle Database 21.3以上
 
++ PDBにユーザーが作成されていて、そのユーザーに接続可能であること
+
 + [101: Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db){:target="_blank"} を通じて Oracle Database の作成が完了していること
 
 + 以下にリンクされているサンプルデータのCSVファイルをダウンロードしていること
-	+ [サンプルデータファイルのダウンロードリンク](/ocitutorials/basedb/dbcs202-dbms-cloud/sales_channels.csv)
+	+ [サンプルデータファイルのダウンロードリンク](/ocitutorials/_basedb/dbcs202-dbms-cloud/ocitutorials_sales.csv)
 
 + [その7 - オブジェクト・ストレージを使う](../../beginners/object-storage){:target="_blank"} を通じてバケットの作成・データファイル(CSV)のアップロードが完了していること
    
@@ -54,7 +56,7 @@ ADBでDBMS_CLOUDを利用する方法は[202: コマンドラインから大量�
     - [8-1. ユーザへのACEs設定](#8-1-ユーザへのACEs設定)
     - [8-2. ロールへのACEs設定](#8-2-ロールへのACEs設定)
 - [9. クレデンシャルの作成と検証](#9-クレデンシャルの作成と検証)
-- [10. Object StorageからCSVファイルをBaseDBにコピー](#10-object-storageからcsvファイルをbasedbにコピー)
+- [10. 外部表を作成しオブジェクトストレージのファイルを参照する](#10-外部表を作成しオブジェクトストレージのファイルを参照する)
 
 <br>
 **所要時間 :** 約1時間30分
@@ -343,7 +345,7 @@ cd /opt/oracle/dcs/commonstore/wallets/ssl
 ```
 そして、以下のコマンドでディレクトリにWalletを作成します。<my_password>にはWallet用のご自身のパスワードを入力してください。
 ```sh
-orapki wallet create -wallet . -pwd **<my_password>** -auto_login
+orapki wallet create -wallet . -pwd <my_password> -auto_login
 ```
 <br>
 \<my_password>にはWalletに使用するパスワード入力します。
@@ -352,7 +354,7 @@ orapki wallet create -wallet . -pwd **<my_password>** -auto_login
 **実行例**
 ```sh
 [oracle@data-momo cert]$ cd /opt/oracle/dcs/commonstore/wallets/ssl
-[oracle@data-momo ssl]$ orapki wallet create -wallet . -pwd  -auto_login
+[oracle@data-momo ssl]$ orapki wallet create -wallet . -pwd <my_password> -auto_login
 Oracle PKI Tool Release 19.0.0.0.0 - Production
 Version 19.4.0.0.0
 Copyright (c) 2004, 2023, Oracle and/or its affiliates. All rights reserved.
@@ -459,7 +461,7 @@ cd /u01/app/oracle/product/19.0.0.0/dbhome_1/network/admin
 
 **sqlnet.oraの編集(追加)箇所**
 ```sh
-nano sqlnet.ora
+vi sqlnet.ora
 ```
 以下をsqlnet.oraに追記します。
 ```sh
@@ -592,22 +594,11 @@ SSL_WALLET      /opt/oracle/dcs/commonstore/wallets/ssl  Location of SSL Wallet
 -|-
 `define sslwalletdir=<Set SSL Wallet Directory>` | `define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl` |
 `define sslwalletpwd=<Set SSL Wallet password>` | `define sslwalletpwd=<Wallet作成時、指定したパスワード>` |
- GET_PAGE('https://objectstorage.eu-frankfurt-1.oci.customer-oci.com'); | GET_PAGE('https://<$namespace>.objectorage.<$oci_region>.oci.customer-oci.com'); |
+ GET_PAGE('https://objectstorage.eu-frankfurt-1.oci.customer-oci.com'); | GET_PAGE('https://objectstorage.<リージョン識別子>.oci.customer-oci.com'); |
 
 <br>
-※`<$namespace>`はオブジェクト・ネームスペースに置き換えます。  
-オブジェクト・ストレージ・ネームスペースは以下の手順で確認できます。
-<br>
 
-OCIのコンソールに移り、「プロファイル」の「テナンシ」をクリックします。
-
-![image](dbms-cloud07.png)
-
-テナンシ詳細の右下にオブジェクト・ストレージ・ネームスペースがあります。
-
-![image](dbms-cloud08.png)
-
-※`<$oci_region>`はリージョン識別子に置き換えます。
+※`<リージョン識別子>`はリージョン識別子に置き換えます。
 各リージョンのリージョン識別子は[リージョンおよび可用性ドメインについて](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm){:target="_blank"}から確認できます。
 環境に合ったものを使用してください。
 
@@ -655,7 +646,7 @@ new  14: wallet_password => '<my_password>');
 Procedure created.
 
 old   2: &clouduser..GET_PAGE('https://objectstorage.eu-frankfurt-1.oci.customer-oci.com');
-new   2: C##CLOUD$SERVICE.GET_PAGE('https://orasejapan.objectstorage.ap-osaka-1.oci.customer-oci.com');
+new   2: C##CLOUD$SERVICE.GET_PAGE('https://objectstorage.ap-osaka-1.oci.customer-oci.com');
 valid response
 
 PL/SQL procedure successfully completed.
@@ -700,7 +691,7 @@ A. 直接対象ユーザにDBMS_CLOUDの利用権限を付与(grant_user.sqlを�
 USER1に権限付与をするために、grant_user.sqlの以下の箇所を編集します。
 <br>
 
-**grant_user.sqlの編集個所**
+**grant_user.sqlの編集k**
 
 [関連ファイルのダウンロードと保存先の作成](#1-関連ファイルのダウンロードと保存先の作成)からgrant_user.sqlをダウンロードし、以下の箇所を編集します。 
 
@@ -758,7 +749,7 @@ SQL>
 ```
 <br>
 
-## 7-2. ロールへの権限付与
+## 7-2. **A** ロールへの権限付与
 
 B. 対象ユーザに付与されたロールに、DBMS_CLOUDの利用権限を付与(grant_role.sqlを実行)を実行する場合、以下の操作を行います。
 
@@ -782,19 +773,19 @@ define username='SCOTT'|define username='USER1'
 
 <br>
 
-# 8. ユーザ・ロールのためのACEsを設定
+# 8.  **B** ユーザ・ロールのためのACEsを設定
 
 Access Control Entries (ACEs) の設定をユーザ・ロールにします。設定方法は2つあります。
 
 「7.ユーザ・ロールへの権限付与」で選択した方法に応じて、どちらかを選択してください。
 
 
-- [7-1. ユーザへの権限付与](#7-1-ユーザへの権限付与)を実行した場合、config_aces_for_user.sqlを編集・実行し、ACEsを設定します　→　[8-1. ユーザへのACEs設定](#8-1-ユーザへのACEs設定)へ
+**A：** [7-1. ユーザへの権限付与](#7-1-ユーザへの権限付与)を実行した場合、config_aces_for_user.sqlを編集・実行し、ACEsを設定します　→　[8-1. ユーザへのACEs設定](#8-1-ユーザへのACEs設定)へ
 
-- [7-2. ロールへの権限付与](#7-2-ロールへの権限付与)を実行した場合、config_aces_for_role.sqlを編集・実行し、ACEsを設定します。→　[8-2. ロールへのACEs設定](#8-2-ロールへのACEs設定)へ
+**B：** [7-2. ロールへの権限付与](#7-2-ロールへの権限付与)を実行した場合、config_aces_for_role.sqlを編集・実行し、ACEsを設定します。→　[8-2. ロールへのACEs設定](#8-2-ロールへのACEs設定)へ
 
 
-## 8-1. ユーザへのACEs設定
+## 8-1.  **A**ユーザへのACEs設定
 
 [7-1. ユーザへの権限付与](#7-1-ユーザへの権限付与)を実行した場合、以下の操作を行いACEsを設定します。
 
@@ -863,7 +854,7 @@ Session altered.
 ```
 <br>
 
-## 8-2. ロールへのACEs設定
+## 8-2.  **B** ロールへのACEs設定
 
 [7-2. ロールへの権限付与](#7-2-ロールへの権限付与)を実行した場合、以下の操作を行いACEsを設定します。
 
@@ -911,9 +902,9 @@ DBMS_CLOUDを使う権限が正しく付与されていない場合、クレデ�
 ```sql
 BEGIN
 DBMS_CLOUD.CREATE_CREDENTIAL(
-credential_name => '<your credential name>',
-username => '<OCI user name>',
-password => '<auth token generated for OCI user>'
+credential_name => '<クレデンシャルの名前（任意の名前）>',
+username => '<OCIユーザーID>',
+password => '<認証トークン>'
 );
 END;
 /
@@ -967,7 +958,7 @@ SQL>
 
 以下は、先ほど作成したクレデンシャルを利用し、オブジェクト・ストレージのバケットにアクセスするコマンドです。
 <br>
-このコマンドで、バケットの中に正常にアクセスできるか確認します。
+このコマンドで、バケットの中に正常にアクセスできるか確認します。※ファイル名は必要ありません。
 URIの詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/autonomous-database/doc/cloud-storage-uris.html){:target="_blank"}
 ```sql
 select * from dbms_cloud.list_objects(<'CredentialName'>,'https://objectstorage.<region>.oraclecloud.com/n/<namespace-string>/b/<bucket>/o/');
@@ -981,16 +972,16 @@ URLは「オブジェクト・ストレージ」→ 「バケットの詳細」�
 DBMS_CLOUDパッケージではオブジェクト・ストレージの専用エンドポイントはサポートされていません。
 {: .notice--warning}
 
-<!-- **実行例**
+**実行例**
 ```sql
-SQL> select * from dbms_cloud.list_objects('MOMO_CRED2','https://objectstorage.ap-osaka-1.oci.customer-oci.com/n/orasejapan/b/bucket-20231222-1601-momo/o/');
+SQL> select * from dbms_cloud.list_objects('MOMO_CRED','https://objectstorage.ap-osaka-1.oraclecloud.com/n/orasejapan/b/TutorialBucket1/o/');
 
-OBJECT_NAME          BYTES CHECKSUM                            CREATED    LAST_MODIFIED
---------------- ---------- ----------------------------------- ---------- ----------------------------------------
-REVENUE.csv       14181117 8e43423b407a2424abbbb10ed0b95357               22-DEC-23 07.02.52.882000 AM +00:00
+OBJECT_NAME                         BYTES CHECKSUM                                 CREATED              LAST_MODIFIED
+------------------------------ ---------- ---------------------------------------- -------------------- -----------------------------------
+tutorial_sales.csv               14181117 9456446e42e14bc199f2054b5bc1ef99                              30-JAN-24 09.47.04.270000 AM +00:00
 ```
 
-バケットの中に、REVENUE.csvというオブジェクトがあることが確認できました。-->
+バケットの中に、tutorial_sales.csvというオブジェクトがあることが確認できました。
 
 さらに、今のユーザの設定を検証するためにvalidate_user_config.sqlの内容を編集してから、実行します。
 
@@ -1003,7 +994,11 @@ REVENUE.csv       14181117 8e43423b407a2424abbbb10ed0b95357               22-DEC
 define username='SCOTT'|define username='USER1'
 `define sslwalletdir=<Set SSL Wallet Directory>`|`define sslwalletdir=/opt/oracle/dcs/commonstore/wallets/ssl`
 `define sslwalletpwd=<Set SSL Wallet password>`|`define sslwalletpwd=<Walletのパスワード>`
-GET_PAGE('https://objectstorage.eu-frankfurt-1.customer-oci.com');|GET_PAGE('https://objectstorage.ap-osaka-1.oci.customer-oci.com');
+GET_PAGE('https://objectstorage.eu-frankfurt-1.customer-oci.com');|GET_PAGE('https://objectstorage.<リージョン識別子>.oci.customer-oci.com');
+
+※`<リージョン識別子>`はリージョン識別子に置き換えます。
+各リージョンのリージョン識別子は[リージョンおよび可用性ドメインについて](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm){:target="_blank"}から確認できます。
+環境に合ったものを使用してください。
 
 編集後、USER1ユーザでPDBにログインし、validate_user_config.sqlを実行します。
 <br>
@@ -1054,7 +1049,7 @@ SQL>
 これでユーザの設定が正常にされていることが確認できました。
 <br>
 
-# 10. Object StorageからCSVファイルをBaseDBにコピー
+# 10. 外部表を作成し、オブジェクト・ストレージのファイルを参照する
 
 今回は以下のバケットに格納されているSCVファイルをBaseDBに取り込みます。
 <br>
@@ -1062,50 +1057,36 @@ SQL>
 **バケット情報**
 - バケット名：TutorialBucket1
 
-- オブジェクト名：sales_channels.csv
+- オブジェクト名：tutorial_sales.csv　※サンプルデータは**前提条件**からダウンロード可能です。
 
 - オブジェクトの中身：
 <br>
 
 ```sh
-"CHANNEL_ID","CHANNEL_DESC","CHANNEL_CLASS","CHANNEL_CLASS_ID","CHANNEL_TOTAL","CHANNEL_TOTAL_ID"
-3,"Direct Sales","Direct",12,"Channel total",1
-9,"Tele Sales","Direct",12,"Channel total",1
-5,"Catalog","Indirect",13,"Channel total",1
-4,"Internet","Indirect",13,"Channel total",1
-2,"Partners","Others",14,"Channel total",1
-
+"C","CHANNEL_LONG","CHANNEL_CLASS"
+S,"Direct Sales"
+T,"Tele Sales","Direct"
+C,"Catalog","Indirect"
+I,"Internet","Indirect"
+P,"Partners","Others"
 ```
 事前にBaseDBにテーブルを作成しておきます。(ユーザ"USER1")
 
-**実行コマンド**
 
-以下のコマンドでCHANNELS表を作成します。
-```sql
-CREATE TABLE CHANNELS (
-    CHANNEL_ID NUMBER,
-    CHANNEL_DESC VARCHAR2(255),
-    CHANNEL_CLASS VARCHAR2(50),
-    CHANNEL_CLASS_ID NUMBER,
-    CHANNEL_TOTAL VARCHAR2(50),
-    CHANNEL_TOTAL_ID NUMBER
-);
-```
 
-次にDBMS_CLOUD.COPY_DATAを利用し、データをコピーします。
+次にDBMS_CLOUD.CREATE_EXTERNAL_TABLEを利用し、外部表としてObject Storage上のファイルを参照・定義します。
 <br>
 
 **実行コマンド**
 
-以下のコマンドで、DBMS_CLOUD.COPY_DATAを利用して、オブジェクト・ストレージのバケットからデータをコピーします。
-`<your credential name>`、`<$namespace>`、`<$oci_region>`はご自身の情報に置き換えてください。
+以下のコマンドで、DBMS_CLOUD.CREATE_EXTERNAL_TABLEを利用して、外部表としてObject Storage上のファイルを参照・定義します。
 
 ```sql
 BEGIN
 DBMS_CLOUD.COPY_DATA(
 table_name =>'CHANNELS',
 credential_name =>'<your credential name>',
-file_uri_list =>'https://objectstorage.<region>.oraclecloud.com/n/<namespace-string>/b/<bucket>/o/',
+file_uri_list =>'<オブジェクト・ストレージ上のファイルのパス>',
 format => json_object('delimiter' value ',')
 );
 END;
@@ -1113,17 +1094,21 @@ END;
 ```
 <br>
 
+※`<オブジェクト・ストレージ上のファイルのパス>`は「オブジェクト・ストレージ」→ 「バケットの詳細」→ 「オブジェクトの詳細」から確認できます。ファイル名までURLに含めてください。
+
+![image](dbms-cloud09.png)
+<br>
+
 **実施例**
 ```sql
-SQL> BEGIN
-  2  DBMS_CLOUD.COPY_DATA(
-  3  table_name =>'CHANNELS',
-  4  credential_name =>'MY_CRED',
-  5  file_uri_list =>'https://orasejapan.objectstorage.ap-osaka-1.oci.customer-oci.com/n/orasejapan/b/TutorialBucket1/o/sales_channels.csv',
-  6  format => json_object('delimiter' value ',')
-  7  );
-  8  END;
-  9  /
+credential_name => 'MOMO_CRED',
+file_uri_list => 'https://objectstorage.ap-osaka-1.oraclecloud.com/n/orasejapan/b/TutorialBucket1/o/ocitutorial_sales.csv',
+format => json_object('delimiter' value ',' ),
+column_list =>'channel_short varchar2(1),
+channel_long varchar2(20),
+channel_class varchar2(20)');
+end;
+/
 
 PL/SQL procedure successfully completed.
 
@@ -1131,7 +1116,56 @@ SQL>
 ```
 <br>
 
-コピー後、テーブルの中にデータが入っていることを確認します。
+次に、データのロードを正常に行えるように以下のコマンドを実行します。
+
+**実行コマンド**
+```sql
+ <テーブル名> REJECT LIMIT UNLIMITED;
+```
+
+`<テーブル名>`には作成した表を指定します。
+
+**実施例**
+
+```sql
+SQL> ALTER TABLE TUTORIAL_SALES REJECT LIMIT UNLIMITED;
+
+Table altered.
+
+SQL>
+```
+
+最後にテーブルの中にデータが入っていることを確認します。
+
+**実行コマンド**
+
+```sql
+SELECT * FROM <テーブル名>;
+```
+
+`<テーブル名>`には作成した表を指定します。
+
+**実施例**
+
+```sql
+SQL> SELECT * FROM TUTORIAL_SALES;
+
+C CHANNEL_LONG         CHANNEL_CLASS
+- -------------------- --------------------
+C CHANNEL_LONG         CHANNEL_CLASS
+S Direct Sales         Direct
+T Table Sales          Direct
+C Catalog              Indirect
+I Internet             Indirect
+P Partners             Others</code>
+
+6 rows selected.
+```
+
+オブジェクト・ストレージ上のファイルのデータを確認できました！
+
+DBMS_CLOUDパッケージにはデータをBaseDBにコピーする機能もあります。
+詳しくはこちらの[リンク](https://docs.oracle.com/cd/F19136_01/arpls/DBMS_CLOUD.html){:target="_blank"} をご参照ください。
 
 以上で、この章の作業は完了です。
 
