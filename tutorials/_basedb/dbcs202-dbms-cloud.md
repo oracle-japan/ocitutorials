@@ -22,7 +22,7 @@ ADBでDBMS_CLOUDを利用する方法は[202: コマンドラインから大量�
 ここでは、DBMS_CLOUDパッケージを利用してObject StorageのデータをBase Database Service (BaseDB)から外部表として参照する手順をご紹介します。　　
 
 このチュートリアルで実行する内容のイメージは以下の通りです。
-![image](dbms-cloud01.png)
+![image](External-table.png)
 
 <br>
 
@@ -375,7 +375,7 @@ Walletが作成されました。
 #! /bin/bash
 for i in /home/oracle/cert/*.cer
 do
-orapki wallet add -wallet . -trusted_cert -cert "$i" -pwd **<my_password>**
+orapki wallet add -wallet . -trusted_cert -cert "$i" -pwd <my_password>
 done
 ```
 <br>
@@ -1164,9 +1164,10 @@ P Partners             Others</code>
 
 オブジェクト・ストレージ上のファイルのデータを確認できました！
 
-DBMS_CLOUDパッケージにはデータをBaseDBにコピーする機能もあります。
-詳しくはこちらの[リンク](https://docs.oracle.com/cd/F19136_01/arpls/DBMS_CLOUD.html){:target="_blank"} をご参照ください。
-
+DBMS_CLOUDパッケージではデータをBaseDBにコピーする機能もご利用いただけます。
+<br>
+DBMS_CLOUDパッケージの詳しい機能はこちらの[マニュアル](https://docs.oracle.com/cd/F19136_01/arpls/DBMS_CLOUD.html){:target="_blank"} をご参照ください。
+<br>
 以上で、この章の作業は完了です。
 
 <br>
