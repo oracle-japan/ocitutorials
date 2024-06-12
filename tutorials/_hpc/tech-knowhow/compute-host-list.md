@@ -8,8 +8,7 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-ノード数が多くなるHPCクラスタやGPUクラスタは、全ての計算/GPUノードのホスト名の一覧を記載したホスト名リストを作成することで、構築・運用作業を効率的に進めることが可能になります。  
-本テクニカルTipsは、HPC/GPUクラスタの計算/GPUノードのホスト名リストを効果的に作成する方法を解説します。
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
 ***
 # 0. 概要
@@ -27,22 +26,21 @@ inst-afnzx-comp
 例えば、以下のようにこのホスト名リストを使用することで、全ての計算ノードのOSバージョンを確認することが可能です。
 
 ```sh
-> for hname in `cat ./hostlist.txt`; do echo $hname; ssh $hname "grep -i pretty /etc/os-release"; done
+$ for hname in `cat ./hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname "grep -i pretty /etc/os-release"; done
 inst-0giw2-comp
 PRETTY_NAME="Oracle Linux Server 8.6"
 inst-ael72-comp
 PRETTY_NAME="Oracle Linux Server 8.6"
+$
 ```
 
 このホスト名リストは、以下のような方法で効率的に作成することが可能です。
 
-- OCIコンソールを活用する方法
-
+1. OCIコンソールを活用する方法  
   この方法は、OCIコンソールの **インスタンス** メニューに表示される計算/GPUノードのインスタンス名を活用する方法です。  
   この **インスタンス** メニューは、1ページに50インスタンスまでしか表示できないため、50ノードを超える場合は、複数ページにわたってコピー・ペーストを行う必要があり、後述の **OCI CLI** を使用する方法が効率的にホスト名リストを作成できます。
 
-- **OCI CLI** を活用する方法
-
+2. **OCI CLI** を活用する方法  
   この方法は、 **OCI CLI** の **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に含まれるインスタンスをリストする機能を活用し、コマンド一発でホスト名リストを作成する方法です。  
   **OCI CLI** は、これを利用可能にするための事前準備が必要なため、ノード数が少ないケースでは、前述の **OCIコンソールを活用する方法** が手軽にホスト名リストを作成出来ます。
 
@@ -58,50 +56,53 @@ PRETTY_NAME="Oracle Linux Server 8.6"
 
 本章は、OCIコンソールを活用してホスト名リストを作成します。
 
-OCIコンソールの **インスタンス** メニューは、デフォルトで **作成日** 列の古い順にインスタンスをリストします。  
+1. OCIコンソールにログインし、HPC/GPUノードをデプロイした **リージョン** を選択後、 **コンピュート** → **インスタンス** とメニューを辿ります。
+
+2. OCIコンソールの **インスタンス** メニューは、デフォルトで **作成日** 列の古い順にインスタンスをリストします。  
 そこで、作成した計算/GPUノードのインスタンスを上位に表示するため、以下画面の上向き矢印をクリックし、新しい順にインスタンスを並べ替えます。
 
-![画面ショット](console_page01.png)
+    ![画面ショット](console_page01.png)
 
-次に、以下画面の **表の設定** ボタンをクリックし、
+3. 以下画面の **表の設定** ボタンをクリックし、
 
-![画面ショット](console_page02.png)
+    ![画面ショット](console_page02.png)
 
-表示される以下 **表の列の構成** サイドバーの **表示** フィールドで、 **名前** 以外のチェックボックスを全てクリックしてこれらを非表示に設定し、 **変更の保存** ボタンをクリックします。
+    表示される以下 **表の列の構成** サイドバーの **表示** フィールドで、 **名前** 以外のチェックボックスを全てクリックしてこれらを非表示に設定し、 **変更の保存** ボタンをクリックします。
 
-![画面ショット](console_page03.png)
+    ![画面ショット](console_page03.png)
 
-表示される以下画面右下で、1ページに表示するインスタンス数を選択できる最大（最大でも50インスタンス）の値に設定します。
+4. 表示される以下画面右下で、1ページに表示するインスタンス数を選択できる最大（最大でも50インスタンス）の値に設定します。
 
-![画面ショット](console_page04.png)
+    ![画面ショット](console_page04.png)
 
-表示される以下画面で、対象のインスタンスを選択し、これらのホスト名をクリップボードにコピーします。
+5. 表示される以下画面で、対象のインスタンスを選択し、これらのホスト名をクリップボードにコピーします。
 
-![画面ショット](console_page05.png)
+    ![画面ショット](console_page05.png)
 
-次に、ホスト名リストを使用するインスタンスでエディターを起動し、クリップボードの内容を張り付けてホスト名リストを作成します。  
+6. ホスト名リストを使用するインスタンスでエディターを起動し、クリップボードの内容を張り付けてホスト名リストを作成します。  
 この時点のホスト名リストは、以下のようにホスト間に空行が含まれています。
 
-```sh
-inst-hyqxm-comp
+    ```sh
+    inst-hyqxm-comp
 
-inst-ihmnl-comp
+    inst-ihmnl-comp
 
-inst-hrsmf-comp
+    inst-hrsmf-comp
 
-inst-afnzx-comp
-```
+    inst-afnzx-comp
+    ```
 
-そこで、以下のコマンドでこの空行を除去します。
+    そこで、以下のコマンドでこの空行を除去します。
 
-```
-> grep -v "^$" hostlist_tmp.txt > hostlist.txt
-> cat hostlist.txt 
-inst-hyqxm-comp
-inst-ihmnl-comp
-inst-hrsmf-comp
-inst-afnzx-comp
-```
+    ```
+    $ grep -v "^$" hostlist_tmp.txt > hostlist.txt
+    $ cat hostlist.txt 
+    inst-hyqxm-comp
+    inst-ihmnl-comp
+    inst-hrsmf-comp
+    inst-afnzx-comp
+    $
+    ```
 
 ***
 # 2. OCI CLIを活用する方法
@@ -111,17 +112,29 @@ inst-afnzx-comp
 **OCI CLI** は、事前にインストール・セットアップする必要があります。  
 作成するホスト名リストは、通常HPC/GPUクラスタを管理する役割を担う管理ノードで使用するため、 **OCI CLI** のインストール・セットアップも、この管理ノードで行います。
 
-**OCI CLI** のインストール・セットアップは、以下のOCI公式マニュアルに従って実施します。
+1. 以下のOCI公式マニュアルに従い、管理ノードに **OCI CLI** をインストール・セットアップします。
 
-**[https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm)**
+    **[https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm)**
 
-**OCI CLI** が利用可能になったら、計算/GPUノードを含む **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** とコンパートメントのOCIDを指定し、以下のコマンドでホスト名リストを作成します。
+2. OCIコンソールにログインし、HPC/GPUノードをデプロイした **リージョン** を選択後、 **コンピュート** → **クラスタ・ネットワーク** とメニューを辿ります。
 
-```sh
-> oci compute-management cluster-network list-instances --all --cluster-network-id cn_ocid -c comp_ocid | jq -r '.data[]."display-name"'  > hostlist.txt
-> cat hostlist.txt 
-inst-hyqxm-comp
-inst-ihmnl-comp
-inst-hrsmf-comp
-inst-afnzx-comp
-```
+3. 表示される以下画面で、HPC/GPUノードをデプロイする際に作成した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** をクリックします。
+
+    ![画面ショット](console_page06.png)
+
+4. 表示される以下画面で、 **OCID** フィールドの **コピー** ボタンをクリックし、 **クラスタ・ネットワーク** のOCIDをクリップボードにコピーします。
+
+    ![画面ショット](console_page07.png)
+
+5. 以下コマンドを管理ノードの **OCI CLI** をセットアップしたユーザで実行し、ホスト名リストを作成します。  
+この際、 **cn_ocid** は先にクリップボードにコピーした **クラスタ・ネットワーク** のOCIDを、 **comp_ocid** は **クラスタ・ネットワーク** をデプロイした **コンパートメント** のOCIDに置き換えます。
+
+    ```sh
+    $ oci compute-management cluster-network list-instances --all --cluster-network-id cn_ocid -c comp_ocid | jq -r '.data[]."display-name"'  > hostlist.txt
+    $ cat hostlist.txt 
+    inst-hyqxm-comp
+    inst-ihmnl-comp
+    inst-hrsmf-comp
+    inst-afnzx-comp
+    $
+    ```
