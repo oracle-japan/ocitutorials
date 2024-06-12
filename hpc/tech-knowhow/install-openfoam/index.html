@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-11T18:56:57+09:00">
+  <meta property="article:published_time" content="2024-06-12T19:04:21+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-06-11T18:56:57+09:00">
+    <meta itemprop="datePublished" content="2024-06-12T19:04:21+09:00">
     
 
     <div class="page__inner-wrap">
@@ -370,7 +370,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a></li><li><a href="#2-インストール事前準備">2. インストール事前準備</a></li><li><a href="#3-paraviewインストール">3. ParaViewインストール</a></li><li><a href="#4-openfoamインストール">4. OpenFOAMインストール</a></li><li><a href="#5-vnc接続環境構築">5. VNC接続環境構築</a></li><li><a href="#6-cfd解析フロー実行">6. CFD解析フロー実行</a><ul><li><a href="#5-0-概要">5-0. 概要</a></li><li><a href="#5-1-事前準備">5-1. 事前準備</a></li><li><a href="#5-2-プリ処理">5-2. プリ処理</a></li><li><a href="#5-3-解析処理">5-3. 解析処理</a></li><li><a href="#5-3-0-概要">5-3-0. 概要</a></li><li><a href="#5-3-1-非並列実行">5-3-1. 非並列実行</a></li><li><a href="#5-3-2-ノード内並列実行">5-3-2. ノード内並列実行</a></li><li><a href="#5-3-3-ノード間並列実行">5-3-3. ノード間並列実行</a></li><li><a href="#5-4-ポスト処理">5-4. ポスト処理</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a></li><li><a href="#2-インストール事前準備">2. インストール事前準備</a></li><li><a href="#3-paraviewインストール">3. ParaViewインストール</a></li><li><a href="#4-openfoamインストール">4. OpenFOAMインストール</a></li><li><a href="#5-vnc接続環境構築">5. VNC接続環境構築</a></li><li><a href="#6-cfd解析フロー実行">6. CFD解析フロー実行</a><ul><li><a href="#6-0-概要">6-0. 概要</a></li><li><a href="#6-1-事前準備">6-1. 事前準備</a></li><li><a href="#6-2-プリ処理">6-2. プリ処理</a></li><li><a href="#6-3-解析処理">6-3. 解析処理</a></li><li><a href="#6-3-0-概要">6-3-0. 概要</a></li><li><a href="#6-3-1-非並列実行">6-3-1. 非並列実行</a></li><li><a href="#6-3-2-ノード内並列実行">6-3-2. ノード内並列実行</a></li><li><a href="#6-3-3-ノード間並列実行">6-3-3. ノード間並列実行</a></li><li><a href="#6-3-4-ノード間並列実行でローカルディスクを活用">6-3-4. ノード間並列実行でローカルディスクを活用</a></li><li><a href="#6-4-ポスト処理">6-4. ポスト処理</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -410,24 +410,34 @@ MPI言語規格に準拠するMPI実装</li>
 </ul>
 
 <p>また本テクニカルTipsは、 <strong>OpenFOAM</strong> に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行する手順を解説します。<br />
-この際、 <strong>OpenFOAM</strong> が提供するツールによるプリ処理と <strong>OpenFOAM</strong> が提供するソルバーによる解析処理を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応のベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> でデプロイする計算ノードで、 <strong>ParaView</strong> によるポスト処理を <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible">VM.Optimized3.Flex</a></strong> でデプロイするフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。</p>
+この際、 <strong>OpenFOAM</strong> が提供するツールによるプリ処理と <strong>OpenFOAM</strong> が提供するソルバーによる解析処理を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応のベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> でデプロイする計算ノードで、 <strong>ParaView</strong> によるポスト処理を <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible">VM.Optimized3.Flex</a></strong> でデプロイするフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。<br />
+また計算ノードで実行する解析処理は、以下4パターンの実行方法を解説します。</p>
+
+<ol>
+  <li>非並列実行（小規模構成・大規模構成の何れでも可能）</li>
+  <li>ノード内並列実行（小規模構成・大規模構成の何れでも可能）</li>
+  <li>ノード間並列実行（大規模構成で可能）</li>
+  <li>ノード間並列実行でローカルディスクを活用（※1）（大規模構成で可能）</li>
+</ol>
+
+<p>※1） <strong>BM.Optimized3.36</strong> が内蔵するNVMe SSDのローカルディスクに計算結果を書き込む方法で、特に並列数を大きくした場合、 <strong>3.</strong> のNFSによるファイル共有ストレージを使用する方法と比較して、スケーラビリティを改善出来る場合があります。</p>
 
 <p>構築する環境は、以下を前提とします。</p>
 
 <ul>
   <li>計算ノードシェイプ ： <strong>BM.Optimized3.36</strong></li>
   <li>Bastionノードシェイプ ： <strong>VM.Optimized3.Flex</strong></li>
-  <li>計算ノードOS ： <strong>Oracle Linux</strong> 8.9（※1）/ <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※2）</li>
+  <li>計算ノードOS ： <strong>Oracle Linux</strong> 8.9（※2）/ <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※3）</li>
   <li>BastionノードOS ： <strong>Oracle Linux</strong> 8.9</li>
   <li><strong>OpenFOAM</strong> ： v2312</li>
   <li><strong>OpenMPI</strong> ：5.0.3</li>
   <li><strong>ParaView</strong> ： 5.11.2</li>
-  <li>ファイル共有ストレージ ： <strong>ブロック・ボリューム</strong> NFSサーバ / <strong>ファイル・ストレージ</strong> （※3）でBastionノード・全計算ノードの <strong>/home</strong> をNFSでファイル共有</li>
+  <li>ファイル共有ストレージ ： <strong>ブロック・ボリューム</strong> NFSサーバ / <strong>ファイル・ストレージ</strong> （※4）でBastionノード・全計算ノードの <strong>/home</strong> をNFSでファイル共有</li>
 </ul>
 
-<p>※1）小規模構成の場合<br />
-※2）大規模構成の場合で、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。<br />
-※3）詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></strong> を参照してください。</p>
+<p>※2）小規模構成の場合<br />
+※3）大規模構成の場合で、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。<br />
+※4）詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></strong> を参照してください。</p>
 
 <p>なお、ポスト処理に使用するX11ベースの <strong>ParaView</strong> は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。</p>
 
@@ -457,10 +467,10 @@ MPI言語規格に準拠するMPI実装</li>
 <ul>
   <li>計算ノード <strong>ブート・ボリューム</strong> サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）</li>
   <li>Bastionノード <strong>ブート・ボリューム</strong> サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）</li>
-  <li>計算ノードSMT : 無効（※4）</li>
+  <li>計算ノードSMT : 無効（※5）</li>
 </ul>
 
-<p>※4）SMTを無効化する方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+<p>※5）SMTを無効化する方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
 
 <p>また、Bastionノードと全計算ノードの <strong>/home</strong> は、NFSで共有します。</p>
 
@@ -721,25 +731,48 @@ MPI言語規格に準拠するMPI実装</li>
     <p>以下画面のようにGNOMEのデスクトップ画面にopcユーザでログインが完了します。</p>
 
     <p><img src="ultravcn_page03.png" alt="画面ショット" /></p>
+
+    <p>次に、以下GNOMEデスクトップ画面で、GNOMEの設定画面を表示するボタンをクリックします。</p>
+
+    <p><img src="GNOME_page01.png" alt="画面ショット" /></p>
+
+    <p>次に、表示される以下GNOME設定画面で、前の画面に戻るボタンをクリックします。</p>
+
+    <p><img src="GNOME_page02.png" alt="画面ショット" /></p>
+
+    <p>次に、以下GNOME設定画面で、 <strong>Privacy</strong> メニューをクリックします。</p>
+
+    <p><img src="GNOME_page03.png" alt="画面ショット" /></p>
+
+    <p>次に、以下GNOME設定画面で、 <strong>Screen Lock</strong> メニューをクリックします。</p>
+
+    <p><img src="GNOME_page04.png" alt="画面ショット" /></p>
+
+    <p>次に、表示される以下 <strong>Screen Lock</strong> 画面で、 <strong>Automatic Screen Lock</strong> ボタンをクリックして <strong>OFF</strong> に設定します。</p>
+
+    <p><img src="GNOME_page05.png" alt="画面ショット" /></p>
+
+    <p>この設定は、GNOMEデスクトップのログインに使用するopcユーザがパスワード認証を無効にしているため、スクリーンロックがかかった場合にロック解除が出来なくなることを防止します。</p>
   </li>
 </ol>
 
 <h1 id="6-cfd解析フロー実行">6. CFD解析フロー実行</h1>
 
-<h2 id="5-0-概要">5-0. 概要</h2>
+<h2 id="6-0-概要">6-0. 概要</h2>
 
 <p>本章は、 <strong>OpenFOAM</strong> に同梱されるチュートリアルのうちバックステップ乱流のシミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）を使用し、計算ノードでプリ処理・解析処理を、Bastionノードでポスト処理を実行します。<br />
-この際の解析処理は、以下の3パターンに分けてその実行方法を解説します。</p>
+この際の解析処理は、以下の4パターンに分けてその実行方法を解説します。</p>
 
-<ul>
+<ol>
   <li>1コアを使用する非並列実行</li>
   <li>1ノード36コアを使用するノード内並列実行</li>
   <li>2ノード72コアを使用するノード間並列実行</li>
-</ul>
+  <li>2ノード72コアを使用するノード間並列実行でローカルディスクを活用</li>
+</ol>
 
 <p>本章の作業は、実際にCFD解析フローを実行するユーザで実施しますが、ここではopcを使用します。</p>
 
-<h2 id="5-1-事前準備">5-1. 事前準備</h2>
+<h2 id="6-1-事前準備">6-1. 事前準備</h2>
 
 <p>本章は、CFD解析フロー実行のための事前準備を行います。</p>
 
@@ -763,18 +796,28 @@ MPI言語規格に準拠するMPI実装</li>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>以下コマンドを実行し、 <strong>OpenFOAM</strong> に同梱されているチュートリアルのうち <strong>pitzDaily</strong> のディレクトリを作業ディレクトリにコピーします。</p>
+    <p>以下コマンドを実行し、 <strong>OpenFOAM</strong> に同梱されているチュートリアルのうち <strong>pitzDaily</strong> のディレクトリを作業ディレクトリにコピーします。<br />
+この手順は、ローカルディスクを活用する方法かそれ以外（ファイル共有ストレージを活用する方法）で異なる手順を実施します。<br />
+なお、ローカルディスクを活用する方法の場合は、ローカルディスクが <strong>/mnt/localdisk</strong> にマウントされており、この直下にCFD解析フロー実行ユーザをオーナーとするディレクトリ <strong>openfoam</strong> が全ての計算ノードで作成されているものとします。</p>
+
+    <p>[ファイル共有ストレージを活用する方法]</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$FOAM_RUN</span>
  <span class="nv">$ </span>run
- <span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-r</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDaily ./
+ <span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDaily ./
+</code></pre></div>    </div>
+
+    <p>[ローカルディスクを活用する方法]</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cd</span> /mnt/localdisk/openfoam
+ <span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDaily ./
 </code></pre></div>    </div>
   </li>
 </ol>
 
-<h2 id="5-2-プリ処理">5-2. プリ処理</h2>
+<h2 id="6-2-プリ処理">6-2. プリ処理</h2>
 
-<p>本章は、プリ処理を計算ノードで実行します。</p>
+<p>本章は、 <strong><a href="#6-1-事前準備">6-1. 事前準備</a></strong> を行った計算ノードでプリ処理を実行します。</p>
 
 <ol>
   <li>
@@ -786,14 +829,14 @@ MPI言語規格に準拠するMPI実装</li>
   </li>
 </ol>
 
-<h2 id="5-3-解析処理">5-3. 解析処理</h2>
+<h2 id="6-3-解析処理">6-3. 解析処理</h2>
 
-<h2 id="5-3-0-概要">5-3-0. 概要</h2>
+<h2 id="6-3-0-概要">6-3-0. 概要</h2>
 
-<p>本章は、解析処理を計算ノードで実行します。<br />
-この際、非並列・ノード内並列・ノード間並列に分けて実行方法を解説します。</p>
+<p>本章は、 <strong><a href="#6-1-事前準備">6-1. 事前準備</a></strong> を行った計算ノードで解析処理を実行します。<br />
+この際、 <strong>非並列・ノード内並列・ノード間並列・ノード間並列でローカルディスクを活用</strong> に分けて実行方法を解説します。</p>
 
-<h2 id="5-3-1-非並列実行">5-3-1. 非並列実行</h2>
+<h2 id="6-3-1-非並列実行">6-3-1. 非並列実行</h2>
 
 <ol>
   <li>
@@ -804,7 +847,7 @@ MPI言語規格に準拠するMPI実装</li>
   </li>
 </ol>
 
-<h2 id="5-3-2-ノード内並列実行">5-3-2. ノード内並列実行</h2>
+<h2 id="6-3-2-ノード内並列実行">6-3-2. ノード内並列実行</h2>
 
 <ol>
   <li>
@@ -840,12 +883,17 @@ MPI言語規格に準拠するMPI実装</li>
     <p>以下コマンドを実行し、 <strong>BM.Optimized3.36</strong> に搭載する36コアを使用するノード内並列の解析処理を実行します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-mca</span> coll_hcoll_enable 0 simpleFoam <span class="nt">-parallel</span>
- <span class="nv">$ </span>reconstructPar
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、各プロセスが作成した解析結果を統合します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>reconstructPar
 </code></pre></div>    </div>
   </li>
 </ol>
 
-<h2 id="5-3-3-ノード間並列実行">5-3-3. ノード間並列実行</h2>
+<h2 id="6-3-3-ノード間並列実行">6-3-3. ノード間並列実行</h2>
 
 <ol>
   <li>
@@ -881,12 +929,94 @@ MPI言語規格に準拠するMPI実装</li>
     <p>以下コマンドを実行し、2ノードの <strong>BM.Optimized3.36</strong> に搭載する72コアを使用するノード間並列の解析処理を実行します。</p>
 
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpirun <span class="nt">-n</span> 72 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-mca</span> coll_hcoll_enable 0 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
- <span class="nv">$ </span>reconstructPar
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、計算結果を統合します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>reconstructPar
 </code></pre></div>    </div>
   </li>
 </ol>
 
-<h2 id="5-4-ポスト処理">5-4. ポスト処理</h2>
+<h2 id="6-3-4-ノード間並列実行でローカルディスクを活用">6-3-4. ノード間並列実行でローカルディスクを活用</h2>
+
+<ol>
+  <li>
+    <p>以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>コピーしたファイルを以下のように修正し、先に生成したメッシュを72個の領域に分割します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
+ 17c17
+ &lt; numberOfSubdomains 4<span class="p">;</span>
+ <span class="nt">---</span>
+ <span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
+ 23c23
+ &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
+ <span class="nt">---</span>
+ <span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
+ 24a25,101
+ <span class="o">&gt;</span> 
+ <span class="o">&gt;</span> distributed  <span class="nb">yes</span><span class="p">;</span>
+ <span class="o">&gt;</span> roots
+ <span class="o">&gt;</span>     71
+ <span class="o">&gt;</span>     <span class="o">(</span>
+ <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+ <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+     :
+     :  71行続きます
+     :
+ <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+ <span class="o">&gt;</span>     <span class="o">)</span><span class="p">;</span>
+ <span class="nv">$ </span>decomposePar
+     :
+     :
+     :
+ Processor 71: field transfer
+
+ End
+
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、ここまで作成したケースディレクトリ <strong>pitzDaily</strong> を他の計算ノードに配布します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">grep</span> <span class="nt">-v</span> <span class="se">\`</span><span class="nb">hostname</span><span class="se">\`</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> rsync <span class="nt">-a</span> ./ <span class="nv">$hname</span>:/mnt/localdisk/openfoam/pitzDaily/<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、2ノードの <strong>BM.Optimized3.36</strong> に搭載する72コアを使用するノード間並列の解析処理を実行します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpirun <span class="nt">-n</span> 72 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-mca</span> coll_hcoll_enable 0 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、他の計算ノードの計算結果をマージします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">grep</span> <span class="nt">-v</span> <span class="se">\`</span><span class="nb">hostname</span><span class="se">\`</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> rsync <span class="nt">-a</span> <span class="nv">$hname</span>:/mnt/localdisk/openfoam/pitzDaily/ ./<span class="p">;</span> <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、計算結果を統合します。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>reconstructPar
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>以下コマンドを実行し、後のポスト処理に備えてケースディレクトリ <strong>pitzDaily</strong> をファイル共有ストレージにコピーします。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> <span class="nb">cp</span> <span class="nt">-pR</span> ./pitzDaily <span class="nv">$FOAM_RUN</span>/
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="6-4-ポスト処理">6-4. ポスト処理</h2>
 
 <p>本章は、ポスト処理をBastionノードで実行します。</p>
 
@@ -951,7 +1081,7 @@ MPI言語規格に準拠するMPI実装</li>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-11T18:56:57+09:00">June 11, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-12T19:04:21+09:00">June 12, 2024</time></p>
 
       </footer>
 

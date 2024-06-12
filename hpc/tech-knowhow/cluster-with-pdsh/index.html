@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-11T18:56:57+09:00">
+  <meta property="article:published_time" content="2024-06-12T19:04:21+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="pdshで効率的にクラスタ管理オペレーションを実行">
     <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-06-11T18:56:57+09:00">
+    <meta itemprop="datePublished" content="2024-06-12T19:04:21+09:00">
     
 
     <div class="page__inner-wrap">
@@ -374,10 +374,7 @@
             </nav>
           </aside>
         
-        <p>ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。<br />
-本テクニカルTipsは、 <strong><a href="https://github.com/chaos/pdsh">pdsh</a></strong> を使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。</p>
-
-<hr />
+        <hr />
 <h1 id="0-概要">0. 概要</h1>
 
 <p>HPC/GPUクラスタの運用管理を任されるシステム管理者は、管理するクラスタに含まれる計算/GPUノードに対して、以下のような管理オペレーションを実施する必要が頻繁に発生します。</p>
@@ -410,7 +407,7 @@
 
 <p>また、管理対象ノードが異なるシステム構成の複数のグループからなり、コマンド実行対象ノードを特定のグループに限定する場合、何らかの工夫が必要になります。</p>
 
-<p><strong>pdsh</strong> は、このような課題を解決する以下の機能を持っています。</p>
+<p><strong><a href="https://github.com/chaos/pdsh">pdsh</a></strong> は、このような課題を解決する以下の機能を持っています。</p>
 
 <ul>
   <li>管理対象ノードに並列にコマンドを実行</li>
@@ -569,7 +566,7 @@ inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
 inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
 </code></pre></div>    </div>
 
-    <p>このような状況が問題となる場合、 <strong>pdsh</strong> の特徴である並列実行を敢えて無効化し、ホストリストファイル記載の順に順次管理対象ノードにコマンドを発行することが出来ます。<br />
+    <p>このような状況が問題となる場合、 <strong>pdsh</strong> の特徴である並列実行を敢えて無効化し、ホストリストファイル記載の順に管理対象ノードにコマンドを発行することが出来ます。<br />
 これは、 <strong>pdsh</strong> の並列実行数を制御するオプション <strong>-f</strong> に <strong>1</strong> を指定し、以下のように実行します。<br />
 なおデフォルトの並列実行数は、 <strong>32</strong> です。</p>
 
@@ -733,19 +730,19 @@ total 16
   <li><strong>rpdcp</strong>: 管理対象ノードからクラスタ管理ノードに並列にファイル転送</li>
 </ul>
 
-<p>クラスタ管理ノードのファイル/etc/hostsを全ての管理対象ノードの/tmpにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+<p>クラスタ管理ノードのファイル <strong>/etc/hosts</strong> を全ての管理対象ノードの <strong>/tmp</strong> にコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-g</span> all /etc/hosts /tmp
 </code></pre></div></div>
 
-<p>なお <strong>pdcp</strong> は、sudoによる権限昇格を適用することが出来ないため、上記例で直接管理対象ノードの/etc/hostsファイルを上書きすることが出来ません。<br />
+<p>なお <strong>pdcp</strong> は、sudoによる権限昇格を適用することが出来ないため、上記例で直接管理対象ノードの <strong>/etc/hosts</strong> ファイルを上書きすることが出来ません。<br />
 この場合、以下のように <strong>pdsh</strong> コマンドを併用してこれを実現することが可能です。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdcp <span class="nt">-g</span> all /etc/hosts /tmp
 <span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">sudo cp</span> /tmp/hosts /etc/
 </code></pre></div></div>
 
-<p>また、全ての管理対象ノードのファイル/etc/hostsをクラスタ管理ノードのカレントディレクトリにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
+<p>また、全ての管理対象ノードのファイル <strong>/etc/hosts</strong> をクラスタ管理ノードのカレントディレクトリにコピーするには、以下コマンドをクラスタ管理ノードのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rpdcp <span class="nt">-g</span> all /etc/hosts <span class="nb">.</span>
 <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
@@ -785,7 +782,7 @@ drwx------. 4 opc opc   4096 Aug  1 11:54 ..
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-11T18:56:57+09:00">June 11, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-12T19:04:21+09:00">June 12, 2024</time></p>
 
       </footer>
 

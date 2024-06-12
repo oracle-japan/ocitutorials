@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-11T18:56:57+09:00">
+  <meta property="article:published_time" content="2024-06-12T19:04:21+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="計算/GPUノードのホスト名リスト作成方法">
     <meta itemprop="description" content="ノード数が多くなるHPCクラスタやGPUクラスタは、全ての計算/GPUノードのホスト名の一覧を記載したホスト名リストを作成することで、構築・運用作業を効率的に進めることが可能になります。本テクニカルTipsは、HPC/GPUクラスタの計算/GPUノードのホスト名リストを効果的に作成する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-06-11T18:56:57+09:00">
+    <meta itemprop="datePublished" content="2024-06-12T19:04:21+09:00">
     
 
     <div class="page__inner-wrap">
@@ -374,8 +374,7 @@
             </nav>
           </aside>
         
-        <p>ノード数が多くなるHPCクラスタやGPUクラスタは、全ての計算/GPUノードのホスト名の一覧を記載したホスト名リストを作成することで、構築・運用作業を効率的に進めることが可能になります。<br />
-本テクニカルTipsは、HPC/GPUクラスタの計算/GPUノードのホスト名リストを効果的に作成する方法を解説します。</p>
+        <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
@@ -391,29 +390,28 @@ inst-afnzx-comp
 
 <p>例えば、以下のようにこのホスト名リストを使用することで、全ての計算ノードのOSバージョンを確認することが可能です。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ./hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"grep -i pretty /etc/os-release"</span><span class="p">;</span> <span class="k">done
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ./hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> <span class="s2">"grep -i pretty /etc/os-release"</span><span class="p">;</span> <span class="k">done
 </span>inst-0giw2-comp
 <span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">"Oracle Linux Server 8.6"</span>
 inst-ael72-comp
 <span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">"Oracle Linux Server 8.6"</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
 <p>このホスト名リストは、以下のような方法で効率的に作成することが可能です。</p>
 
-<ul>
+<ol>
   <li>
-    <p>OCIコンソールを活用する方法</p>
-
-    <p>この方法は、OCIコンソールの <strong>インスタンス</strong> メニューに表示される計算/GPUノードのインスタンス名を活用する方法です。<br />
-この <strong>インスタンス</strong> メニューは、1ページに50インスタンスまでしか表示できないため、50ノードを超える場合は、複数ページにわたってコピー・ペーストを行う必要があり、後述の <strong>OCI CLI</strong> を使用する方法が効率的にホスト名リストを作成できます。</p>
+    <p>OCIコンソールを活用する方法<br />
+  この方法は、OCIコンソールの <strong>インスタンス</strong> メニューに表示される計算/GPUノードのインスタンス名を活用する方法です。<br />
+  この <strong>インスタンス</strong> メニューは、1ページに50インスタンスまでしか表示できないため、50ノードを超える場合は、複数ページにわたってコピー・ペーストを行う必要があり、後述の <strong>OCI CLI</strong> を使用する方法が効率的にホスト名リストを作成できます。</p>
   </li>
   <li>
-    <p><strong>OCI CLI</strong> を活用する方法</p>
-
-    <p>この方法は、 <strong>OCI CLI</strong> の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に含まれるインスタンスをリストする機能を活用し、コマンド一発でホスト名リストを作成する方法です。<br />
-<strong>OCI CLI</strong> は、これを利用可能にするための事前準備が必要なため、ノード数が少ないケースでは、前述の <strong>OCIコンソールを活用する方法</strong> が手軽にホスト名リストを作成出来ます。</p>
+    <p><strong>OCI CLI</strong> を活用する方法<br />
+  この方法は、 <strong>OCI CLI</strong> の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に含まれるインスタンスをリストする機能を活用し、コマンド一発でホスト名リストを作成する方法です。<br />
+  <strong>OCI CLI</strong> は、これを利用可能にするための事前準備が必要なため、ノード数が少ないケースでは、前述の <strong>OCIコンソールを活用する方法</strong> が手軽にホスト名リストを作成出来ます。</p>
   </li>
-</ul>
+</ol>
 
 <p>以上の観点を自身のHPC/GPUクラスタに照らし合わせ、どちらの手法を利用するかを決定します。</p>
 
@@ -427,48 +425,60 @@ inst-ael72-comp
 
 <p>本章は、OCIコンソールを活用してホスト名リストを作成します。</p>
 
-<p>OCIコンソールの <strong>インスタンス</strong> メニューは、デフォルトで <strong>作成日</strong> 列の古い順にインスタンスをリストします。<br />
+<ol>
+  <li>
+    <p>OCIコンソールにログインし、HPC/GPUノードをデプロイした <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>OCIコンソールの <strong>インスタンス</strong> メニューは、デフォルトで <strong>作成日</strong> 列の古い順にインスタンスをリストします。<br />
 そこで、作成した計算/GPUノードのインスタンスを上位に表示するため、以下画面の上向き矢印をクリックし、新しい順にインスタンスを並べ替えます。</p>
 
-<p><img src="console_page01.png" alt="画面ショット" /></p>
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下画面の <strong>表の設定</strong> ボタンをクリックし、</p>
 
-<p>次に、以下画面の <strong>表の設定</strong> ボタンをクリックし、</p>
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
 
-<p><img src="console_page02.png" alt="画面ショット" /></p>
+    <p>表示される以下 <strong>表の列の構成</strong> サイドバーの <strong>表示</strong> フィールドで、 <strong>名前</strong> 以外のチェックボックスを全てクリックしてこれらを非表示に設定し、 <strong>変更の保存</strong> ボタンをクリックします。</p>
 
-<p>表示される以下 <strong>表の列の構成</strong> サイドバーの <strong>表示</strong> フィールドで、 <strong>名前</strong> 以外のチェックボックスを全てクリックしてこれらを非表示に設定し、 <strong>変更の保存</strong> ボタンをクリックします。</p>
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面右下で、1ページに表示するインスタンス数を選択できる最大（最大でも50インスタンス）の値に設定します。</p>
 
-<p><img src="console_page03.png" alt="画面ショット" /></p>
+    <p><img src="console_page04.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、対象のインスタンスを選択し、これらのホスト名をクリップボードにコピーします。</p>
 
-<p>表示される以下画面右下で、1ページに表示するインスタンス数を選択できる最大（最大でも50インスタンス）の値に設定します。</p>
-
-<p><img src="console_page04.png" alt="画面ショット" /></p>
-
-<p>表示される以下画面で、対象のインスタンスを選択し、これらのホスト名をクリップボードにコピーします。</p>
-
-<p><img src="console_page05.png" alt="画面ショット" /></p>
-
-<p>次に、ホスト名リストを使用するインスタンスでエディターを起動し、クリップボードの内容を張り付けてホスト名リストを作成します。<br />
+    <p><img src="console_page05.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>ホスト名リストを使用するインスタンスでエディターを起動し、クリップボードの内容を張り付けてホスト名リストを作成します。<br />
 この時点のホスト名リストは、以下のようにホスト間に空行が含まれています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-hyqxm-comp
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> inst-hyqxm-comp
 
-inst-ihmnl-comp
+ inst-ihmnl-comp
 
-inst-hrsmf-comp
+ inst-hrsmf-comp
 
-inst-afnzx-comp
-</code></pre></div></div>
+ inst-afnzx-comp
+</code></pre></div>    </div>
 
-<p>そこで、以下のコマンドでこの空行を除去します。</p>
+    <p>そこで、以下のコマンドでこの空行を除去します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; grep -v "^$" hostlist_tmp.txt &gt; hostlist.txt
-&gt; cat hostlist.txt 
-inst-hyqxm-comp
-inst-ihmnl-comp
-inst-hrsmf-comp
-inst-afnzx-comp
-</code></pre></div></div>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ grep -v "^$" hostlist_tmp.txt &gt; hostlist.txt
+ $ cat hostlist.txt 
+ inst-hyqxm-comp
+ inst-ihmnl-comp
+ inst-hrsmf-comp
+ inst-afnzx-comp
+ $
+</code></pre></div>    </div>
+  </li>
+</ol>
 
 <hr />
 <h1 id="2-oci-cliを活用する方法">2. OCI CLIを活用する方法</h1>
@@ -478,19 +488,39 @@ inst-afnzx-comp
 <p><strong>OCI CLI</strong> は、事前にインストール・セットアップする必要があります。<br />
 作成するホスト名リストは、通常HPC/GPUクラスタを管理する役割を担う管理ノードで使用するため、 <strong>OCI CLI</strong> のインストール・セットアップも、この管理ノードで行います。</p>
 
-<p><strong>OCI CLI</strong> のインストール・セットアップは、以下のOCI公式マニュアルに従って実施します。</p>
+<ol>
+  <li>
+    <p>以下のOCI公式マニュアルに従い、管理ノードに <strong>OCI CLI</strong> をインストール・セットアップします。</p>
 
-<p><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm">https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm</a></strong></p>
+    <p><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm">https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm</a></strong></p>
+  </li>
+  <li>
+    <p>OCIコンソールにログインし、HPC/GPUノードをデプロイした <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> とメニューを辿ります。</p>
+  </li>
+  <li>
+    <p>表示される以下画面で、HPC/GPUノードをデプロイする際に作成した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> をクリックします。</p>
 
-<p><strong>OCI CLI</strong> が利用可能になったら、計算/GPUノードを含む <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> とコンパートメントのOCIDを指定し、以下のコマンドでホスト名リストを作成します。</p>
+    <p><img src="console_page06.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下画面で、 <strong>OCID</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>クラスタ・ネットワーク</strong> のOCIDをクリップボードにコピーします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> oci compute-management cluster-network list-instances <span class="nt">--all</span> <span class="nt">--cluster-network-id</span> cn_ocid <span class="nt">-c</span> comp_ocid | jq <span class="nt">-r</span> <span class="s1">'.data[]."display-name"'</span>  <span class="o">&gt;</span> hostlist.txt
-<span class="o">&gt;</span> <span class="nb">cat </span>hostlist.txt 
-inst-hyqxm-comp
-inst-ihmnl-comp
-inst-hrsmf-comp
-inst-afnzx-comp
-</code></pre></div></div>
+    <p><img src="console_page07.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>以下コマンドを管理ノードの <strong>OCI CLI</strong> をセットアップしたユーザで実行し、ホスト名リストを作成します。<br />
+この際、 <strong>cn_ocid</strong> は先にクリップボードにコピーした <strong>クラスタ・ネットワーク</strong> のOCIDを、 <strong>comp_ocid</strong> は <strong>クラスタ・ネットワーク</strong> をデプロイした <strong>コンパートメント</strong> のOCIDに置き換えます。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>oci compute-management cluster-network list-instances <span class="nt">--all</span> <span class="nt">--cluster-network-id</span> cn_ocid <span class="nt">-c</span> comp_ocid | jq <span class="nt">-r</span> <span class="s1">'.data[]."display-name"'</span>  <span class="o">&gt;</span> hostlist.txt
+ <span class="nv">$ </span><span class="nb">cat </span>hostlist.txt 
+ inst-hyqxm-comp
+ inst-ihmnl-comp
+ inst-hrsmf-comp
+ inst-afnzx-comp
+ <span class="err">$</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
 
         
       </section>
@@ -502,7 +532,7 @@ inst-afnzx-comp
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-11T18:56:57+09:00">June 11, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-12T19:04:21+09:00">June 12, 2024</time></p>
 
       </footer>
 
