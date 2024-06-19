@@ -1,12 +1,12 @@
 <!doctype html>
 <!--
-  Minimal Mistakes Jekyll Theme 4.26.1 by Michael Rose
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
   Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
   Free for personal and commercial use under the MIT license
   https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
 -->
 
-<html lang="ja" class="no-js">
+<html lang="ja-JP" class="no-js">
   <head>
     <meta charset="utf-8">
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-13T12:26:11+09:00">
+  <meta property="article:published_time" content="2024-06-19T14:32:15+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法">
     <meta itemprop="description" content="高速スクラッチ領域として利用することを想定したNVMe SSDディスクを内蔵するHPCクラスタ向けベアメタルシェイプBM.Optimized3.36やGPUクラスタ向けベアメタルシェイプBM.GPU4.8/BM.GPU.GM4.8は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。本テクニカルTipsは、このファイルシステム作成方法を解説します。">
-    <meta itemprop="datePublished" content="2024-06-13T12:26:11+09:00">
+    <meta itemprop="datePublished" content="2024-06-19T14:32:15+09:00">
     
 
     <div class="page__inner-wrap">
@@ -374,51 +374,51 @@
             </nav>
           </aside>
         
-        <p>高速スクラッチ領域として利用することを想定したNVMe SSDを内蔵するHPCクラスタ向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> やGPUクラスタ向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.GM4.8</a></strong> は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。<br />
-本テクニカルTipsは、このファイルシステム作成方法を解説します。</p>
-
-<hr />
+        <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>内蔵NVMe SSDドライブにファイルシステムを作成する方法は、搭載するドライブ数が異なるBM.Optimized3.36とBM.GPU4.8/BM.GPU.GM4.8でその手順が異なり、それぞれの手順を以降で解説します。</p>
+<p>内蔵NVMe SSDドライブにファイルシステムを作成する方法は、搭載するドライブ数が異なる <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.GM4.8</a></strong> でその手順が異なり、それぞれの手順を以降で解説します。</p>
+
+<p>本テクニカルTipsが前提とするOSは、 <strong>Oracle Linux</strong> です。</p>
 
 <p>なお 、ここで解説するファイルシステム作成手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> で紹介する構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。</p>
 
 <hr />
 <h1 id="1-bmoptimized336用ファイルシステム作成手順">1. BM.Optimized3.36用ファイルシステム作成手順</h1>
 
-<p>BM.Optimized3.36は、3.84 TBのNVMe SSDディスクを1ドライブ内蔵するため、以下の手順を該当するノードのrootで実行し、ファイルシステムを作成します。</p>
+<p><strong>BM.Optimized3.36</strong> は、3.84 TBのNVMe SSDディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> parted <span class="nt">-s</span> /dev/nvme0n1 mklabel gpt
-<span class="o">&gt;</span> parted <span class="nt">-s</span> /dev/nvme0n1 <span class="nt">--</span> mkpart primary xfs 1 <span class="nt">-1</span>
-<span class="o">&gt;</span> mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme0n1p1
-<span class="o">&gt;</span> <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
-<span class="o">&gt;</span> <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-<span class="o">&gt;</span> mount /mnt/localdisk
-<span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>parted <span class="nt">-s</span> /dev/nvme0n1 mklabel gpt
+<span class="nv">$ </span><span class="nb">sudo </span>parted <span class="nt">-s</span> /dev/nvme0n1 <span class="nt">--</span> mkpart primary xfs 1 <span class="nt">-1</span>
+<span class="nv">$ </span><span class="nb">sudo </span>mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme0n1p1
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /mnt/localdisk
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/fstab
+<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/localdisk
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/nvme0n1p1  3.5T   33M  3.5T   1% /mnt/localdisk
+<span class="err">$</span>
 </code></pre></div></div>
 
-<p>この手順は、NVMe SSDディスク全領域を1パーティションで区画し、ラベル名”localscratch”でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で/mnt/localdiskにマウントします。</p>
+<p>この手順は、NVMe SSDディスク全領域を1パーティションで区画し、ラベル名 <strong>localscratch</strong> でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で <strong>/mnt/localdisk</strong> にマウントします。</p>
 
 <hr />
 <h1 id="2-bmgpu48bmgpugm48用ファイルシステム作成手順">2. BM.GPU4.8/BM.GPU.GM4.8用ファイルシステム作成手順</h1>
 
-<p>BM.GPU4.8/BM.GPU.GM4.8は、6.4 TBのNVMe SSDディスクを4ドライブ内蔵するため、以下の手順を該当するノードのrootで実行し、ファイルシステムを作成します。</p>
+<p><strong>BM.GPU4.8/BM.GPU.GM4.8</strong> は、6.4 TBのNVMe SSDディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
-<span class="o">&gt;</span> lvcreate <span class="nt">-l</span> 100%FREE nvme
-<span class="o">&gt;</span> mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
-<span class="o">&gt;</span> <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
-<span class="o">&gt;</span> <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-<span class="o">&gt;</span> mount /mnt/localdisk
-<span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
+<span class="nv">$ </span><span class="nb">sudo </span>lvcreate <span class="nt">-l</span> 100%FREE nvme
+<span class="nv">$ </span><span class="nb">sudo </span>mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /mnt/localdisk
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/fstab
+<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/localdisk
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
 Filesystem              Size  Used Avail Use% Mounted on
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
 </code></pre></div></div>
 
-<p>この手順は、4ドライブのNVMe SSDディスクをまとめて1個の論理ボリュームを作成し、ラベル名”localscratch”でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で/mnt/localdiskにマウントします。</p>
+<p>この手順は、4ドライブのNVMe SSDディスクをまとめて1個の論理ボリュームとして作成し、ラベル名 <strong>localscratch</strong> でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で <strong>/mnt/localdisk</strong> にマウントします。</p>
 
         
       </section>
@@ -430,7 +430,7 @@ Filesystem              Size  Used Avail Use% Mounted on
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-13T12:26:11+09:00">June 13, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-19T14:32:15+09:00">June 19, 2024</time></p>
 
       </footer>
 
