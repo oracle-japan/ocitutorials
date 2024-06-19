@@ -52,22 +52,31 @@ MPI言語規格に準拠するMPI実装
 3. ノード間並列実行（大規模構成で可能）
 4. ノード間並列実行でローカルディスクを活用（※1）（大規模構成で可能）
 
-※1） **BM.Optimized3.36** が内蔵するNVMe SSDのローカルディスクに計算結果を書き込む方法で、特に並列数を大きくした場合、 **3.** のNFSによるファイル共有ストレージを使用する方法と比較して、スケーラビリティを改善出来る場合があります。
+※1） **BM.Optimized3.36** が内蔵するNVMe SSDのローカルディスクに計算結果を書き込む方法で、特に並列数を大きくした場合、 **3.** のNFSによるファイル共有ストレージを使用する方法と比較して、解析処理のスケーラビリティを改善出来る場合があります。
 
 構築する環境は、以下を前提とします。
 
-- 計算ノードシェイプ ： **BM.Optimized3.36**
-- Bastionノードシェイプ ： **VM.Optimized3.Flex**
-- 計算ノードOS ： **Oracle Linux** 8.9（※2）/ **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※3）
-- BastionノードOS ： **Oracle Linux** 8.9
+[計算ノード]
+- シェイプ ： **BM.Optimized3.36**
+- OS ： **Oracle Linux** 8.9（※2）/ **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※3）
+- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードの **/home** をNFSでファイル共有
+- ローカルディスクマウントポイント ： **/mnt/localdisk** （※5）
+
+[Bastionノード]
+- シェイプ ： **VM.Optimized3.Flex**
+- OS ： **Oracle Linux** 8.9
+- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードの **/home** をNFSでファイル共有
+
+[ソフトウェア]
 - **OpenFOAM** ： v2312
-- **OpenMPI** ：5.0.3
+- **OpenMPI** ： 5.0.3
 - **ParaView** ： 5.11.2
-- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノード・全計算ノードの **/home** をNFSでファイル共有
 
 ※2）小規模構成の場合  
 ※3）大規模構成の場合で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
-※4）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
+※4）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
+※5）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)** を参照してください。  
+  
 
 なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
 
@@ -94,9 +103,9 @@ MPI言語規格に準拠するMPI実装
 
 - 計算ノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
 - Bastionノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
-- 計算ノードSMT : 無効（※5）
+- 計算ノードSMT : 無効（※6）
 
-※5）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+※6）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
 また、Bastionノードと全計算ノードの **/home** は、NFSで共有します。
 
@@ -405,7 +414,7 @@ MPI言語規格に準拠するMPI実装
 
 4. 以下コマンドを実行し、 **OpenFOAM** に同梱されているチュートリアルのうち **pitzDaily** のディレクトリを作業ディレクトリにコピーします。  
 この手順は、ローカルディスクを活用する方法かそれ以外（ファイル共有ストレージを活用する方法）で異なる手順を実施します。  
-なお、ローカルディスクを活用する方法の場合は、ローカルディスクが **/mnt/localdisk** にマウントされており、この直下にCFD解析フロー実行ユーザをオーナーとするディレクトリ **openfoam** が全ての計算ノードで作成されているものとします。
+ローカルディスクを活用する方法の場合は、CFD解析フロー実行ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。
 
     [ファイル共有ストレージを活用する方法]
 
@@ -578,7 +587,7 @@ MPI言語規格に準拠するMPI実装
     $
     ```
 
-3. 以下コマンドを実行し、ここまで作成したケースディレクトリ **pitzDaily** を他の計算ノードに配布します。
+3. 以下コマンドを実行し、ここまで作成したケースディレクトリ **pitzDaily** を他の計算ノードのローカルディスクに配布します。
 
     ```sh
     $ for hname in `grep -v \`hostname\` ~/hostlist.txt`; do echo $hname; rsync -a ./ $hname:/mnt/localdisk/openfoam/pitzDaily/; done
@@ -602,7 +611,7 @@ MPI言語規格に準拠するMPI実装
     $ reconstructPar
     ```
 
-7. 以下コマンドを実行し、後のポスト処理に備えてケースディレクトリ **pitzDaily** をファイル共有ストレージにコピーします。
+7. 以下コマンドを実行し、後のポスト処理に備えてローカルディスクに存在するケースディレクトリ **pitzDaily** をファイル共有ストレージにコピーします。
 
     ```sh
     $ cd .. && cp -pR ./pitzDaily $FOAM_RUN/
