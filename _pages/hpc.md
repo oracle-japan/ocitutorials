@@ -192,7 +192,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 - **HPL**
 - **STREAM**
-- **Intel MPI Benchmark**
+- **Intel MPI Benchmarks**
 - **NCCL Tests**
 
 各ベンチマークの実行方法は、下表の対象シェイプ部分のリンクをクリックして参照下さい。
@@ -201,7 +201,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 | :---------------------: | :--------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------: |
 | **HPL**                 | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-hpl-e5/)**       |
 | **STREAM**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-stream-e5/)** |
-| **Intel MPI Benchmark** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-imb/)**                                                                            |
+| **Intel MPI Benchmarks** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-imb/)**                                                                            |
 | **NCCL Tests**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           | **[BM.GPU.A100-v2.8/BM.GPU4.8](/ocitutorials/hpc/benchmark/run-nccltests/)**                                                            |
 
 ## 2-2. パフォーマンス関連Tips集

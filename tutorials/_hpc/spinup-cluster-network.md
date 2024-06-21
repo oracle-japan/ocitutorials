@@ -145,6 +145,7 @@ runcmd:
   - mkfs.xfs -L localscratch /dev/nvme0n1p1
   - mkdir -p /mnt/localdisk
   - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
+  - systemctl daemon-reload
   - mount /mnt/localdisk
 #
 # Stop firewalld
