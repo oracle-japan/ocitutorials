@@ -1091,8 +1091,8 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/run-stream-e5/",
         "teaser": null
       },{
-        "title": "Intel MPI Benchmark実行方法",
-        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の クラスタ・ネットワーク でHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークの Intel MPI Benchmark を実行する方法を解説します。 0. 概要 本ドキュメントで解説する Intel MPI Benchmark の実行は、HPC クラスタネットワーキングイメージ に含まれる OpenMPI と Intel MPI Benchmark を使用する方法と、 Intel oneAPI HPC Toolkit （本ドキュメントで使用するバージョンは2023.2）をインストールしてこれに含まれる Intel MPI Library （本ドキュメントで使用するバージョンは2021.10）と Intel MPI Benchmark を使用する方法を、それぞれ解説します。 また Intel MPI Benchmark は、2ノード間のPingPongと4ノード間のAllreduceの計測方法をそれぞれ解説します。 本ドキュメントで Intel MPI Benchmark を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 4インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI...","categories": [],
+        "title": "Intel MPI Benchmarks実行方法",
+        "excerpt":"0. 概要 本ドキュメントで解説する Intel MPI Benchmarks の実行は、 GitHub から提供される Intel MPI Benchmarks を OpenMPI で実行する方法と、 Intel oneAPI HPC Toolkit に含まれる Intel MPI Benchmarks と Intel MPI Library を使用する方法を解説します。 また Intel MPI Benchmarks は、2ノード間のPingPongと4ノード間のAllreduceの計測方法をそれぞれ解説します。 本ドキュメントで Intel MPI Benchmarks を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 4インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ HPCクラスタ のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。 本ドキュメントは、以下の環境で Intel MPI...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-imb/",
         "teaser": null
@@ -1248,13 +1248,13 @@ var store = [{
         "teaser": null
       },{
         "title": "Slurm環境での利用を前提とするOpenMPI構築方法",
-        "excerpt":"0. 概要 Slurm 環境で OpenMPI のアプリケーションを実行する場合、その動作モードには以下の選択肢があります。 計算リソースの確保、アプリケーション起動、及び PMIx を介したプロセス間通信の初期化処理を全て Slurm が行う。 計算リソースの確保を Slurm が行い、アプリケーション起動はSSHを介して起動される OpenMPI のprtedが行う。 ここで1.の動作モードは、2.に対して以下の利点があります。 高並列アプリケーションを高速に起動することが可能 アフィニティや終了処理等のプロセス管理を Slurm に統合することが可能 精度の高いアカウンティング情報を Slurm に提供することが可能 Slurm クラスタ内のSSHパスフレーズ無しアクセス設定が不要 以上の利点を享受するべく本テクニカルTipsは、 Slurm 環境でMPIアプリケーションを1.の動作モードで実行することを想定した OpenMPI のインストール手順を解説し、インストールした OpenMPI のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。 Intel MPI Benchmark NAS Parallel Benchmarks 各ソフトウェアは、以下のバージョンを前提とします。 OS ： Oracle Linux 8.9ベースのHPC クラスタネットワーキングイメージ （※1） MPI ： OpenMPI...","categories": [],
+        "excerpt":"0. 概要 Slurm 環境で OpenMPI のアプリケーションを実行する場合、その動作モードには以下の選択肢があります。 計算リソースの確保、アプリケーション起動、及び PMIx を介したプロセス間通信の初期化処理を全て Slurm が行う。 計算リソースの確保を Slurm が行い、アプリケーション起動はSSHを介して起動される OpenMPI のprtedが行う。 ここで1.の動作モードは、2.に対して以下の利点があります。 高並列アプリケーションを高速に起動することが可能 アフィニティや終了処理等のプロセス管理を Slurm に統合することが可能 精度の高いアカウンティング情報を Slurm に提供することが可能 Slurm クラスタ内のSSHパスフレーズ無しアクセス設定が不要 以上の利点を享受するべく本テクニカルTipsは、 Slurm 環境でMPIアプリケーションを1.の動作モードで実行することを想定した OpenMPI のインストール手順を解説し、インストールした OpenMPI のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。 Intel MPI Benchmarks NAS Parallel Benchmarks 本テクニカルTipsは、以下の環境を前提とします。 シェイプ ： BM.Optimized3.36 OS ： Oracle Linux 8.9ベースのHPC クラスタネットワーキングイメージ （※1）...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/build-openmpi/",
         "teaser": null
       },{
         "title": "Slurmによるリソース管理・ジョブ管理システム構築方法",
-        "excerpt":"HPC/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラ Slurm は、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。 本テクニカルTipsは、HPC/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスの クラスタ・ネットワーク で接続するHPC/GPUクラスタで、リソース管理・ジョブ管理システムを Slurm で構築する手順を解説します。 本テクニカルTipsは、次章で説明する前提システムが予めデプロイされており、このシステム上に Slurm 環境を構築する手順にフォーカスします。 また Slurm のバージョンは、 23.11.0 を前提とします。 0. 前提システム 本章は、本テクニカルTipsで解説する Slurm 環境構築手順の前提となるシステムを解説します。 0-1. サブシステム構成 本システムは、以下4種類のサブシステムから構成されます。 サブシステム 使用するシェイプ OS ノード数 接続 サブネット 役割 Slurm マネージャ 任意の仮想マシン （※1） Oracle Linux 8 1 プライベート slurmctld と slurmdbd が稼働するSlurm管理ノード Slurm クライアント 任意の仮想マシン （※1） Oracle Linux...","categories": [],
+        "excerpt":"0. 概要 Slurm は、超大規模並列アプリケーションの運用を想定して開発されているジョブスケジューラで、この際に問題となる初期化処理（MPIの場合 MPI_Init ）時間の増大等の大規模並列ジョブ特有の問題に対し、プラグインとして取り込む PMIx の以下機能（※1）で、これらの問題に対処しています。 Direct-connect Direct-connect UCX Direct-connect early wireup ※1）これら機能の詳細は、SC17で発表された以下のスライドで紹介されています。 https://slurm.schedmd.com/SC17/Mellanox_Slurm_pmix_UCX_backend_v4.pdf ここでMPIのオープンソース実装である OpenMPI は、 PMIx をプラグインとして取り込んだ Slurm 環境でそのアプリケーションを実行する場合、OpenMPI のprtedを使用する起動方法（ mpirun を使用する起動方法）に対して、先の PMIx の初期化処理を含む以下の利点を享受することが可能です。 高並列アプリケーションを高速に起動することが可能 アフィニティや終了処理等のプロセス管理を Slurm に統合することが可能 精度の高いアカウンティング情報を Slurm に提供することが可能 Slurm クラスタ内のSSHパスフレーズ無しアクセス設定が不要 以上の利点を享受するべく本テクニカルTipsは、 OpenMPI のMPI並列アプリケーションを PMIx を使用して起動することを念頭に、 PMIx のオープンソース実装である OpenPMIx と UCX を取り込んだ Slurm 環境を構築し、初期化処理時間に対する...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/",
         "teaser": "/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/architecture_diagram.png"

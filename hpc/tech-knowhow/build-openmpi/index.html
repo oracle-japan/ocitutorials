@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-19T14:32:15+09:00">
+  <meta property="article:published_time" content="2024-06-21T16:43:46+09:00">
 
 
 
@@ -282,7 +282,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmark実行方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
         
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurm環境での利用を前提とするOpenMPI構築方法">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。本テクニカルTipsは、PMIxを使用するSlurm環境での利用を前提とするOpenMPI構築方法を解説します。">
-    <meta itemprop="datePublished" content="2024-06-19T14:32:15+09:00">
+    <meta itemprop="datePublished" content="2024-06-21T16:43:46+09:00">
     
 
     <div class="page__inner-wrap">
@@ -370,7 +370,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-openpmixインストール">1. OpenPMIxインストール</a></li><li><a href="#2-openmpiインストール">2. OpenMPIインストール</a></li><li><a href="#3-openmpi稼働確認">3. OpenMPI稼働確認</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-intel-mpi-benchmark実行">3-1. Intel MPI Benchmark実行</a></li><li><a href="#3-2-nas-parallel-benchmarks実行">3-2. NAS Parallel Benchmarks実行</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-インストールセットアップ">1. インストール・セットアップ</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-前提ソフトウェアインストール">1-1. 前提ソフトウェアインストール</a></li><li><a href="#1-2-openpmixインストール">1-2. OpenPMIxインストール</a></li><li><a href="#1-3-openmpiインストール">1-3. OpenMPIインストール</a></li><li><a href="#1-4-セットアップ">1-4. セットアップ</a></li></ul></li><li><a href="#2-稼働確認">2. 稼働確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-intel-mpi-benchmarks実行">2-1. Intel MPI Benchmarks実行</a></li><li><a href="#2-2-nas-parallel-benchmarks実行">2-2. NAS Parallel Benchmarks実行</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -396,36 +396,41 @@
 <p>以上の利点を享受するべく本テクニカルTipsは、 <strong>Slurm</strong> 環境でMPIアプリケーションを1.の動作モードで実行することを想定した <strong>OpenMPI</strong> のインストール手順を解説し、インストールした <strong>OpenMPI</strong> のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。</p>
 
 <ul>
-  <li><strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmark</a></strong></li>
+  <li><strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmarks</a></strong></li>
   <li><strong><a href="https://www.nas.nasa.gov/software/npb.html">NAS Parallel Benchmarks</a></strong></li>
 </ul>
 
-<p>各ソフトウェアは、以下のバージョンを前提とします。</p>
+<p>本テクニカルTipsは、以下の環境を前提とします。</p>
 
 <ul>
+  <li>シェイプ ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong></li>
   <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
-  <li>MPI ： <strong>OpenMPI</strong> 5.0.3</li>
-  <li>PMIx ： <strong><a href="https://openpmix.github.io/">OpenPMIx</a></strong> 5.0.2</li>
+  <li><strong>OpenMPI</strong> ： 5.0.3</li>
+  <li><strong>PMIx</strong> ： <strong><a href="https://openpmix.github.io/">OpenPMIx</a></strong> 4.2.9</li>
 </ul>
 
 <p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
 
-<p>またこれらをインストールするインスタンスは、<strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を前提とし、稼働確認を行うために少なくとも2ノード用意します。<br />
+<p>またこれらをインストールする <strong>BM.Optimized3.36</strong> のインスタンスは、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間を接続し、稼働確認を行うために少なくとも4ノード用意します。<br />
 この構築手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> が参考になります。</p>
 
 <p>なお、ここで構築する <strong>OpenMPI</strong> と連携する <strong>Slurm</strong> の構築方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> を参照してください。</p>
 
 <hr />
-<h1 id="1-openpmixインストール">1. OpenPMIxインストール</h1>
+<h1 id="1-インストールセットアップ">1. インストール・セットアップ</h1>
 
-<p>本章は、 <strong>OpenPMIx</strong> とその前提ソフトウェアの <strong>libevent</strong> ・ <strong>hwloc</strong> を <strong>/opt</strong> ディレクトリ以下にインストールします。</p>
+<h2 id="1-0-概要">1-0. 概要</h2>
 
-<ol>
-  <li>
-    <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>OpenPMIx</strong> の前提となるソフトウェアをインストールします。<br />
+<p>本章は、予めデプロイしている <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する <strong>BM.Optimized3.36</strong> のインスタンスに <strong>OpenMPI</strong> 、 <strong>OpenPMIx</strong> 、及びこれらの前提ソフトウェアをインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。</p>
+
+<p>以降の作業は、MPIプログラムのコンパイル・実行を行う全てのノードで実施します。</p>
+
+<h2 id="1-1-前提ソフトウェアインストール">1-1. 前提ソフトウェアインストール</h2>
+
+<p>以下コマンドをopcユーザで実行し、前提ソフトウェアのRPMのインストールと <strong>libevent</strong> ・ <strong>hwloc</strong> の <strong>/opt</strong> ディレクトリへのインストールを実施します。<br />
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ncurses-devel openssl-devel
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ncurses-devel openssl-devel gcc-c++ gcc-gfortran
 <span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./libevent-2.1.12-stable.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>libevent-2.1.12-stable<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/libevent
@@ -434,187 +439,153 @@
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./hwloc-2.10.0.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>hwloc-2.10.0<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/hwloc
 <span class="nv">$ </span>make <span class="nt">-j</span> 36 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>OpenPMIx</strong> をインストールします。<br />
+</code></pre></div></div>
+
+<h2 id="1-2-openpmixインストール">1-2. OpenPMIxインストール</h2>
+
+<p>以下コマンドをopcユーザで実行し、 <strong>OpenPMIx</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.2/pmix-5.0.2.tar.gz
-<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./pmix-5.0.2.tar.gz
-<span class="nv">$ </span><span class="nb">cd </span>pmix-5.0.2<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://github.com/openpmix/openpmix/releases/download/v4.2.9/pmix-4.2.9.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./pmix-4.2.9.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>pmix-4.2.9<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc
 <span class="nv">$ </span>make <span class="nt">-j</span> 36 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+</code></pre></div></div>
 
-<hr />
-<h1 id="2-openmpiインストール">2. OpenMPIインストール</h1>
+<h2 id="1-3-openmpiインストール">1-3. OpenMPIインストール</h2>
 
-<p>本章は、 <strong>OpenMPI</strong> を <strong>/opt</strong> ディレクトリにインストールし、利用に必要な環境設定を行います。</p>
-
-<ol>
-  <li>
-    <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>OpenMPI</strong> の前提となるソフトウェアをインストールします。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> gcc-c++ gcc-gfortran
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>OpenMPI</strong> をインストールします。<br />
+<p>以下コマンドをopcユーザで実行し、 <strong>OpenMPI</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.3.tar.gz
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.3.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./openmpi-5.0.3.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>openmpi-5.0.3<span class="p">;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/openmpi-5.0.3 <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc <span class="nt">--with-pmix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-slurm</span>
 <span class="nv">$ </span>make <span class="nt">-j</span> 36 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを当該ノードの <strong>OpenMPI</strong> を利用するユーザで実行し、必要な環境設定を行います。</p>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=</span><span class="se">\$</span><span class="s2">PATH:/opt/openmpi-5.0.3/bin"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
+<h2 id="1-4-セットアップ">1-4. セットアップ</h2>
+
+<p>本章は、 <strong>OpenMPI</strong> を利用するユーザがMPIプログラムをコンパイル・実行するために必要な環境のセットアップを行います。<br />
+ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで <strong>OpenMPI</strong> を利用するユーザで実施します。</p>
+
+<p>以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=</span><span class="se">\$</span><span class="s2">PATH:/opt/openmpi-5.0.3/bin"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
 <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export MANPATH=</span><span class="se">\$</span><span class="s2">MANPATH:/opt/openmpi-5.0.3/man"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
 <span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
-</code></pre></div>    </div>
-  </li>
-</ol>
+</code></pre></div></div>
+
+<p>次に、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に <strong>hostlist.txt</strong> として作成します。</p>
+
+<p>次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るよう設定します。（※2）</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> <span class="nb">mkdir</span> .ssh<span class="p">;</span> <span class="nb">chmod </span>700 .ssh
+<span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-N</span> <span class="s2">""</span> <span class="nt">-f</span> .ssh/id_rsa
+<span class="nv">$ </span><span class="nb">cd</span> .ssh<span class="p">;</span> <span class="nb">cat</span> ./id_rsa.pub <span class="o">&gt;&gt;</span> ./authorized_keys<span class="p">;</span> <span class="nb">chmod </span>600 ./authorized_keys
+<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> :<span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<p>※2）パスフレーズ無しのSSHアクセスは、 <strong>OpenMPI</strong> 単独での稼働確認を行うため実施しますが、<strong>PMIx</strong> を使用する <strong>Slurm</strong> 環境ではこの必要はありません。</p>
 
 <hr />
-<h1 id="3-openmpi稼働確認">3. OpenMPI稼働確認</h1>
+<h1 id="2-稼働確認">2. 稼働確認</h1>
 
-<h2 id="3-0-概要">3-0. 概要</h2>
+<h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>本章は、インストールした <strong>OpenMPI</strong> を稼働確認するため、 <strong>Intel MPI Benchmark</strong> と <strong>NAS Parallel Benchmarks</strong> を実行します。</p>
+<p>本章は、インストールした <strong>OpenMPI</strong> を稼働確認するため、 <strong>Intel MPI Benchmarks</strong> と <strong>NAS Parallel Benchmarks</strong> を実行します。</p>
 
-<h2 id="3-1-intel-mpi-benchmark実行">3-1. Intel MPI Benchmark実行</h2>
+<h2 id="2-1-intel-mpi-benchmarks実行">2-1. Intel MPI Benchmarks実行</h2>
 
-<ol>
-  <li>
-    <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>Intel MPI Benchmark</strong> をインストールします。<br />
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarkを実行する場合">1. OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、 <strong>Intel MPI Benchmarks</strong> を <strong>OpenMPI</strong> を利用するユーザで実行、その結果を確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git
- <span class="nv">$ </span>git clone https://github.com/intel/mpi-benchmarks
- <span class="nv">$ </span><span class="nb">cd </span>mpi-benchmarks<span class="p">;</span> <span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi-5.0.3/bin/mpicxx<span class="p">;</span> <span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi-5.0.3/bin/mpicc<span class="p">;</span> make <span class="nt">-j</span> 36 all
- <span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/openmpi-5.0.3/tests/imb
- <span class="nv">$ </span><span class="nb">sudo cp</span> ./IMB<span class="k">*</span> /opt/openmpi-5.0.3/tests/imb/
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを当該ノードの <strong>OpenMPI</strong> を利用するユーザで実行し、<strong>Intel MPI Benchmark</strong> を実行するノード間でこのユーザがパスフレーズ無しでSSHアクセス出来るよう設定します。<br />
-ノード間でホームディレクトリを共有している場合、1台のノードで以下コマンドを実行することで、その設定が完了します。<br />
-なお、ホスト名を記載したホストリストファイルを、当該ユーザのホームディレクトリ直下に <strong>hostlist.txt</strong> として予め作成しておきます。</p>
+<h2 id="2-2-nas-parallel-benchmarks実行">2-2. NAS Parallel Benchmarks実行</h2>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> <span class="nb">mkdir</span> .ssh<span class="p">;</span> <span class="nb">chmod </span>700 .ssh
- <span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-N</span> <span class="s2">""</span> <span class="nt">-f</span> .ssh/id_rsa
- <span class="nv">$ </span><span class="nb">cd</span> .ssh<span class="p">;</span> <span class="nb">cat</span> ./id_rsa.pub <span class="o">&gt;&gt;</span> ./authorized_keys<span class="p">;</span> <span class="nb">chmod </span>600 ./authorized_keys
- <span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> :<span class="p">;</span> <span class="k">done</span>
-</code></pre></div>    </div>
+<p>以下コマンドを全てのノードのopcユーザで実行し、 <strong>NAS Parallel Benchmarks</strong> をインストールします。</p>
 
-    <p>ここでは <strong>OpenMPI</strong> 単独での稼働確認を行うためパスフレーズ無しのSSHアクセスを必要としますが、<strong>PMIx</strong> を使用する <strong>Slurm</strong> 環境ではこの必要はありません。</p>
-  </li>
-  <li>
-    <p>以下コマンドを当該ノードのうちの1ノードで <strong>OpenMPI</strong> を利用するユーザで実行し、 <strong>Intel MPI Benchmark</strong> を実行、その結果を確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://www.nas.nasa.gov/assets/npb/NPB3.4.2-MZ.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./NPB3.4.2-MZ.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>NPB3.4.2-MZ/NPB3.4-MZ-MPI
+<span class="nv">$ </span><span class="nb">cp </span>config/make.def.template config/make.def
+<span class="nv">$ </span>make bt-mz <span class="nv">CLASS</span><span class="o">=</span>C
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
-</code></pre></div>    </div>
-  </li>
-</ol>
+<p>次に、以下コマンドを <strong>OpenMPI</strong> を利用するユーザで何れか1ノードで実行し、 <strong>NAS Parallel Benchmarks</strong> を実行、その結果を確認します。</p>
 
-<h2 id="3-2-nas-parallel-benchmarks実行">3-2. NAS Parallel Benchmarks実行</h2>
-
-<ol>
-  <li>
-    <p>以下コマンドを当該ノードのopcユーザで実行し、 <strong>NAS Parallel Benchmarks</strong> をインストールします。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>wget https://www.nas.nasa.gov/assets/npb/NPB3.4.2-MZ.tar.gz
- <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./NPB3.4.2-MZ.tar.gz
- <span class="nv">$ </span><span class="nb">cd </span>NPB3.4.2-MZ/NPB3.4-MZ-MPI
- <span class="nv">$ </span><span class="nb">cp </span>config/make.def.template config/make.def
- <span class="nv">$ </span>make bt-mz <span class="nv">CLASS</span><span class="o">=</span>C
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを当該ノードのうちの1ノードで <strong>OpenMPI</strong> を利用するユーザで実行し、 <strong>NAS Parallel Benchmarks</strong> を実行、その結果を確認します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-N</span> 18 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>2 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 <span class="nt">--bind-to</span> none ./bin/bt-mz.C.x
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-N</span> 18 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>2 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 <span class="nt">--bind-to</span> none ./bin/bt-mz.C.x
 
 
- NAS Parallel Benchmarks <span class="o">(</span>NPB3.4-MZ MPI+OpenMP<span class="o">)</span> - BT-MZ Benchmark
+NAS Parallel Benchmarks <span class="o">(</span>NPB3.4-MZ MPI+OpenMP<span class="o">)</span> - BT-MZ Benchmark
 
- Number of zones:  16 x  16
- Total mesh size:   480 x   320 x  28
- Iterations: 200    dt:   0.000100
- Number of active processes:     36
+Number of zones:  16 x  16
+Total mesh size:   480 x   320 x  28
+Iterations: 200    dt:   0.000100
+Number of active processes:     36
 
- Use the default load factors
- Total number of threads:     72  <span class="o">(</span>  2.0 threads/process<span class="o">)</span>
+Use the default load factors
+Total number of threads:     72  <span class="o">(</span>  2.0 threads/process<span class="o">)</span>
 
- Calculated speedup <span class="o">=</span>     70.51
+Calculated speedup <span class="o">=</span>     70.51
 
- Time step    1
- Time step   20
- Time step   40
- Time step   60
- Time step   80
- Time step  100
- Time step  120
- Time step  140
- Time step  160
- Time step  180
- Time step  200
- Verification being performed <span class="k">for </span>class C
- accuracy setting <span class="k">for </span>epsilon <span class="o">=</span>  0.1000000000000E-07
- Comparison of RMS-norms of residual
-         1 0.3457703287806E+07 0.3457703287806E+07 0.1089509278487E-12
-         2 0.3213621375929E+06 0.3213621375929E+06 0.1320422658492E-12
-         3 0.7002579656870E+06 0.7002579656870E+06 0.1512841667693E-13
-         4 0.4517459627471E+06 0.4517459627471E+06 0.2280652586031E-13
-         5 0.2818715870791E+07 0.2818715870791E+07 0.1486830094937E-14
- Comparison of RMS-norms of solution error
-         1 0.2059106993570E+06 0.2059106993570E+06 0.1540627820550E-12
-         2 0.1680761129461E+05 0.1680761129461E+05 0.2136344671269E-12
-         3 0.4080731640795E+05 0.4080731640795E+05 0.3102425585186E-13
-         4 0.2836541076778E+05 0.2836541076778E+05 0.1026032398931E-12
-         5 0.2136807610771E+06 0.2136807610771E+06 0.2333146948798E-12
- Verification Successful
-
-
- BT-MZ Benchmark Completed.
- Class           <span class="o">=</span>                        C
- Size            <span class="o">=</span>            480x  320x 28
- Iterations      <span class="o">=</span>                      200
- Time <span class="k">in </span>seconds <span class="o">=</span>                     7.82
- Total processes <span class="o">=</span>                       36
- Total threads   <span class="o">=</span>                       72
- Mop/s total     <span class="o">=</span>                310414.25
- Mop/s/thread    <span class="o">=</span>                  4311.31
- Operation <span class="nb">type</span>  <span class="o">=</span>           floating point
- Verification    <span class="o">=</span>               SUCCESSFUL
- Version         <span class="o">=</span>                    3.4.2
- Compile <span class="nb">date</span>    <span class="o">=</span>              22 Apr 2024
-
- Compile options:
-     FC           <span class="o">=</span> mpif90
-     FLINK        <span class="o">=</span> <span class="si">$(</span>FC<span class="si">)</span>
-     F_LIB        <span class="o">=</span> <span class="o">(</span>none<span class="o">)</span>
-     F_INC        <span class="o">=</span> <span class="o">(</span>none<span class="o">)</span>
-     FFLAGS       <span class="o">=</span> <span class="nt">-O3</span> <span class="nt">-fopenmp</span>
-     FLINKFLAGS   <span class="o">=</span> <span class="si">$(</span>FFLAGS<span class="si">)</span>
-     RAND         <span class="o">=</span> <span class="o">(</span>none<span class="o">)</span>
+Time step    1
+Time step   20
+Time step   40
+Time step   60
+Time step   80
+Time step  100
+Time step  120
+Time step  140
+Time step  160
+Time step  180
+Time step  200
+Verification being performed <span class="k">for </span>class C
+accuracy setting <span class="k">for </span>epsilon <span class="o">=</span>  0.1000000000000E-07
+Comparison of RMS-norms of residual
+        1 0.3457703287806E+07 0.3457703287806E+07 0.1089509278487E-12
+        2 0.3213621375929E+06 0.3213621375929E+06 0.1320422658492E-12
+        3 0.7002579656870E+06 0.7002579656870E+06 0.1512841667693E-13
+        4 0.4517459627471E+06 0.4517459627471E+06 0.2280652586031E-13
+        5 0.2818715870791E+07 0.2818715870791E+07 0.1486830094937E-14
+Comparison of RMS-norms of solution error
+        1 0.2059106993570E+06 0.2059106993570E+06 0.1540627820550E-12
+        2 0.1680761129461E+05 0.1680761129461E+05 0.2136344671269E-12
+        3 0.4080731640795E+05 0.4080731640795E+05 0.3102425585186E-13
+        4 0.2836541076778E+05 0.2836541076778E+05 0.1026032398931E-12
+        5 0.2136807610771E+06 0.2136807610771E+06 0.2333146948798E-12
+Verification Successful
 
 
- Please send all errors/feedbacks to:
+BT-MZ Benchmark Completed.
+Class           <span class="o">=</span>                        C
+Size            <span class="o">=</span>            480x  320x 28
+Iterations      <span class="o">=</span>                      200
+Time <span class="k">in </span>seconds <span class="o">=</span>                     7.82
+Total processes <span class="o">=</span>                       36
+Total threads   <span class="o">=</span>                       72
+Mop/s total     <span class="o">=</span>                310414.25
+Mop/s/thread    <span class="o">=</span>                  4311.31
+Operation <span class="nb">type</span>  <span class="o">=</span>           floating point
+Verification    <span class="o">=</span>               SUCCESSFUL
+Version         <span class="o">=</span>                    3.4.2
+Compile <span class="nb">date</span>    <span class="o">=</span>              22 Apr 2024
 
- NPB Development Team
- npb@nas.nasa.gov
+Compile options:
+    FC           <span class="o">=</span> mpif90
+    FLINK        <span class="o">=</span> <span class="si">$(</span>FC<span class="si">)</span>
+    F_LIB        <span class="o">=</span> <span class="o">(</span>none<span class="o">)</span>
+    F_INC        <span class="o">=</span> <span class="o">(</span>none<span class="o">)</span>
+    FFLAGS       <span class="o">=</span> <span class="nt">-O3</span> <span class="nt">-fopenmp</span>
+    FLINKFLAGS   <span class="o">=</span> <span class="si">$(</span>FFLAGS<span class="si">)</span>
+    RAND         <span class="o">=</span> <span class="o">(</span>none<span class="o">)</span>
 
 
- <span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+Please send all errors/feedbacks to:
+
+NPB Development Team
+npb@nas.nasa.gov
+
+
+<span class="nv">$ </span>
+</code></pre></div></div>
 
         
       </section>
@@ -626,7 +597,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-19T14:32:15+09:00">June 19, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-21T16:43:46+09:00">June 21, 2024</time></p>
 
       </footer>
 
