@@ -45,27 +45,27 @@ MPI言語規格に準拠するMPI実装
 
 また本テクニカルTipsは、 **OpenFOAM** に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行する手順を解説します。  
 この際、 **OpenFOAM** が提供するツールによるプリ処理と **OpenFOAM** が提供するソルバーによる解析処理を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 対応のベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** でデプロイする計算ノードで、 **ParaView** によるポスト処理を **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** でデプロイするフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。  
-また計算ノードで実行する解析処理は、以下4パターンの実行方法を解説します。
+また計算ノードで実行するプリ処理と解析処理は、インタラクティブ実行と **[Slurm](https://slurm.schedmd.com/)** 環境でのバッチ実行を念頭に置いて、以下4パターンを解説します。
 
-1. 非並列実行（小規模構成・大規模構成の何れでも可能）
-2. ノード内並列実行（小規模構成・大規模構成の何れでも可能）
-3. ノード間並列実行（大規模構成で可能）
-4. ノード間並列実行でローカルディスクを活用（※1）（大規模構成で可能）
+- 非並列実行（小規模構成・大規模構成の何れでも可能）
+- ノード内並列実行（小規模構成・大規模構成の何れでも可能）
+- ノード間並列実行（大規模構成で可能）
+- ノード間並列実行でローカルディスクを活用（※1）（大規模構成で可能）
 
-※1） **BM.Optimized3.36** が内蔵するNVMe SSDのローカルディスクに計算結果を書き込む方法で、特に並列数を大きくした場合、 **3.** のNFSによるファイル共有ストレージを使用する方法と比較して、解析処理のスケーラビリティを改善出来る場合があります。
+※1） **BM.Optimized3.36** が内蔵するNVMe SSDのローカルディスクをデータ領域として使用する方法で、他のファイル共有ストレージを使用する方法と比較して、並列数を大きくした場合のスケーラビリティを改善出来る場合があります。
 
 構築する環境は、以下を前提とします。
 
 [計算ノード]
 - シェイプ ： **BM.Optimized3.36**
 - OS ： **Oracle Linux** 8.9（※2）/ **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※3）
-- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードの **/home** をNFSでファイル共有
+- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードのCFD解析ユーザのホームディレクトリをNFSでファイル共有
 - ローカルディスクマウントポイント ： **/mnt/localdisk** （※5）
 
 [Bastionノード]
 - シェイプ ： **VM.Optimized3.Flex**
 - OS ： **Oracle Linux** 8.9
-- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードの **/home** をNFSでファイル共有
+- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードのCFD解析ユーザのホームディレクトリをNFSでファイル共有
 
 [ソフトウェア]
 - **OpenFOAM** ： v2312
@@ -75,7 +75,7 @@ MPI言語規格に準拠するMPI実装
 ※2）小規模構成の場合  
 ※3）大規模構成の場合で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 ※4）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
-※5）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)** を参照してください。  
+※5）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。
   
 
 なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
@@ -85,11 +85,9 @@ MPI言語規格に準拠するMPI実装
 以降では、以下の順に **OpenFOAM** のインストール・利用方法を解説します。
 
 1. HPCクラスタ構築
-2. インストール事前準備
-3. **ParaView** インストール
-4. **OpenFOAM** インストール
-5. VNC接続環境構築
-6. CFD解析フロー実行
+2. **OpenFOAM** インストール
+3. VNC接続環境構築
+4. CFD解析フロー実行
 
 ***
 # 1. HPCクラスタ構築
@@ -107,22 +105,33 @@ MPI言語規格に準拠するMPI実装
 
 ※6）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
-また、Bastionノードと全計算ノードの **/home** は、NFSで共有します。
+なお、バッチ実行の場合の **Slurm** 環境は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築されたものとします。
 
 ***
-# 2. インストール事前準備
+# 2. OpenFOAMインストール
 
-本章は、 **OpenFOAM** と外部ツールをインストールするための事前準備として、以下の作業を実施します。
+## 2-0. 概要
 
-- 前提条件のRPMパッケージ・ソフトウェアのインストール
+本章は、 **OpenFOAM** のインストールを以下の順に実施します。
+
+- インストール事前準備
+- **ParaView** インストール
+- **OpenFOAM** インストール
+
+これらの手順は、Bastionノードと全ての計算ノードで実施します。  
+なお、バッチ実行の場合の **Slurm** 環境に於けるSlurmクライアントも、これらの手順を実施します。
+
+## 2-1. インストール事前準備
+
+本章は、 **OpenFOAM** をインストールするための事前準備として、以下の作業を実施します。
+
+- 前提となるソフトウェア・rpmパッケージのインストール
 - **OpenFOAM** と外部ツールのソースプログラムのダウンロード・展開
-
-以降の手順は、Bastionノードと全ての計算ノードで実行します。
 
 1. 前提条件ソフトウェアの **OpenMPI** をインストール・セットアップします。  
 この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
 
-2. 以下コマンドをopcユーザで実行し、前提条件のRPMパッケージを提供するyumレポジトリを追加します。
+2. 以下コマンドをopcユーザで実行し、前提条件のrpmパッケージを提供するyumレポジトリを追加します。
 
     ```sh
     $ sudo yum-config-manager --enable ol8_codeready_builder ol8_developer_EPEL
@@ -143,7 +152,7 @@ MPI言語規格に準拠するMPI実装
     $ sudo yum-config-manager --enable ol8_codeready_builder ol8_developer_EPEL
     ```
 
-3. 以下コマンドをopcユーザで実行し、前提条件のRPMパッケージをインストールします。
+3. 以下コマンドをopcユーザで実行し、前提条件のrpmパッケージをインストールします。
 
     ```sh
     $ sudo dnf install -y cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel python36-devel
@@ -184,10 +193,9 @@ MPI言語規格に準拠するMPI実装
     $
     ```
 
-***
-# 3. ParaViewインストール
+## 2-2. ParaViewインストール
 
-本章は、 **ParaView** をBastionノードと全ての計算ノードにインストールします。
+本章は、 **ParaView** をインストールします。
 
 1. 以下コマンドをrootユーザで実行し、 **ParaView** の前提ソフトウェアである **[Qt](https://www.qt.io/)** をインストールします。  
 この際、以下コマンド出力で正しくインストールされたことを確認します。  
@@ -229,10 +237,9 @@ MPI言語規格に準拠するMPI実装
     $
     ```
 
-***
-# 4. OpenFOAMインストール
+## 2-3. OpenFOAMインストール
 
-本章は、 **OpenFOAM** をBastionノードと全ての計算ノードにインストールします。
+本章は、 **OpenFOAM** をインストールします。
 
 1. 以下コマンドをrootユーザで実行し、 **OpenFOAM** のインストール条件を満たしていることを確認します。
 
@@ -280,19 +287,18 @@ MPI言語規格に準拠するMPI実装
     ```
 
 ***
-# 5. VNC接続環境構築
+# 3. VNC接続環境構築
 
 本章は、BastionノードとParaView操作端末で以下の作業を実施し、ParaView操作端末からBastionノードにVNC接続します。
 
-1. GNOMEデスクトップインストール・セットアップ
-2. VNCサーバインストール・セットアップ
-3. SSHポートフォワードセッション確立
-4. VCN接続
+1. GNOMEデスクトップインストール・セットアップ（Bastionノード）
+2. VNCサーバインストール・セットアップ（Bastionノード）
+3. SSHポートフォワードセッション確立（ParaView操作端末）
+4. VCN接続（ParaView操作端末）
 
-なお、 **1.** と **2.** はBastionノードで実施し、 **3.** と **4.** はParaView操作端末から実施します。  
-また本テクニカルTipsでは、VCNサーバに **[TigerVNC](https://tigervnc.org/)** 、VCNクライアントにWindowsで動作する **[UltraVNC](https://uvnc.com/)** を使用します。
+本テクニカルTipsは、VCNサーバに **[TigerVNC](https://tigervnc.org/)** 、VCNクライアントにWindowsで動作する **[UltraVNC](https://uvnc.com/)** を使用します。
 
-1. 以下コマンドをopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを起動します。  
+1. 以下コマンドをopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを有効化します。  
 なお、最初のインストールコマンドは、15分程度を要します。
 
     ```sh
@@ -302,23 +308,24 @@ MPI言語規格に準拠するMPI実装
     $ sudo shutdown -r now
     ```
 
-2. 以下コマンドをopcユーザで実行し、 **TigerVNC** をインストール・セットアップします。  
+2. 以下コマンドをopcユーザで実行し、 **TigerVNC** をインストールします。  
 
     ```sh
     $ sudo dnf install -y tigervnc-server tigervnc-server-module
-        :
-        :
-        :
-    $ vncpasswd 
-    Password:   <--- VNCサーバ接続に使用するパスワードを入力
-    Verify:   <--- VNCサーバ接続に使用するパスワードを再入力
-    Would you like to enter a view-only password (y/n)? n   <--- "n" を入力
-    A view-only password is not used
-    $ echo :1=opc | sudo tee -a /etc/tigervnc/vncserver.users
-    :1=opc
+    ```
+
+    次に、以下コマンドをopcユーザで実行し、 **TigerVNC** にユーザを登録します。  
+    このユーザは、VNC接続時に使用するユーザであり、CFD解析ユーザでもあります。  
+    ここでは、 **usera** を1番で登録しており、このユーザはOSのユーザとして予め存在している必要があります。
+
+    ```sh
+    $ echo :1=usera | sudo tee -a /etc/tigervnc/vncserver.users
+    ```
+
+    次に、以下コマンドをopcユーザで実行し、VNC接続時の解像度を設定します。  
+
+    ```sh
     $ echo geometry=1280x1024 | sudo tee -a /etc/tigervnc/vncserver-config-defaults
-    geometry=1280x1024
-    $
     ```
 
     次に、 **TigerVNC** のsystemd設定ファイルを以下のように修正します。  
@@ -331,27 +338,35 @@ MPI言語規格に準拠するMPI実装
     ```
 
     次に、以下コマンドをopcユーザで実行し、 **TigerVNC** を起動します。  
+    なお、systemdサービスを起動する際のサービス名に含まれる番号は、先に作成したVNC接続ユーザ登録時に指定した番号に一致させます。この番号をユーザ登録時の番号に合わせることで、複数のVNCユーザ向けのサービスを起動することが可能です。
 
     ```sh
     $ sudo systemctl daemon-reload
     $ sudo systemctl enable --now vncserver@:1.service
     ```
 
-3. 以下コマンドをParaView操作端末のSSHクライアントで実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートに対してSSHポートフォワードセッションを確立します。
+3. 以下コマンドを実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートに対してSSHポートフォワードセッションを確立、その後このユーザのVNC接続パスワードを設定します。  
+なおこのポート番号の1桁目は、先に登録したVNCユーザの番号に一致します。（例：2番のユーザ用ポート番号は、5902番です。）
 
     ```sh
-    $ ssh -L 5901:localhost:5901 opc@xxx.yyy.zzz.www
+    $ ssh -L 5901:localhost:5901 usera@xxx.yyy.zzz.www
+    $ vncpasswd 
+    Password:   <--- VNC接続に使用するパスワードを入力
+    Verify:   <--- VNC接続に使用するパスワードを再入力
+    Would you like to enter a view-only password (y/n)? n   <--- "n" を入力
+    A view-only password is not used
+    $
     ```
 
 4. 以下のようにParaView操作端末でVCNクライアントを起動し、接続先に **localhost:5901** を指定して接続します。
 
     ![画面ショット](ultravcn_page01.png)
 
-    次に、以下画面で先の手順 **2.** で設定したVCN接続用パスワードを入力してログインを完了すると、
+    次に、以下画面で先の手順 **3.** で設定したVCN接続用パスワードを入力してログインを完了すると、
 
     ![画面ショット](ultravcn_page02.png)
 
-    以下画面のようにGNOMEのデスクトップ画面にopcユーザでログインが完了します。
+    以下画面のようにGNOMEデスクトップへのログインが完了します。
 
     ![画面ショット](ultravcn_page03.png)
 
@@ -375,27 +390,22 @@ MPI言語規格に準拠するMPI実装
 
     ![画面ショット](GNOME_page05.png)
 
-    この設定は、GNOMEデスクトップのログインに使用するopcユーザがパスワード認証を無効にしているため、スクリーンロックがかかった場合にロック解除が出来なくなることを防止します。
+    この設定は、GNOMEデスクトップのログインに使用するユーザがパスワード認証を無効にしている場合、スクリーンロックがかかった場合にロック解除が出来なくなることを防止します。
 
-# 6. CFD解析フロー実行
+# 4. CFD解析フロー実行
 
-## 6-0. 概要
+## 4-0. 概要
 
 本章は、 **OpenFOAM** に同梱されるチュートリアルのうちバックステップ乱流のシミュレーション（**incompressible/simpleFoam/pitzDaily**）を使用し、計算ノードでプリ処理・解析処理を、Bastionノードでポスト処理を実行します。  
-この際の解析処理は、以下の4パターンに分けてその実行方法を解説します。
+この際計算ノードで実施するプリ処理・解析処理は、計算ノードにログインしてインタラクティブに実行する方法と、 **Slurm** 環境でバッチで実行する方法に分けて解説します。
 
-1. 1コアを使用する非並列実行
-2. 1ノード36コアを使用するノード内並列実行
-3. 2ノード72コアを使用するノード間並列実行
-4. 2ノード72コアを使用するノード間並列実行でローカルディスクを活用
+本章の作業は、CFD解析ユーザで実施します。
 
-本章の作業は、実際にCFD解析フローを実行するユーザで実施しますが、ここではopcを使用します。
+## 4-1. 事前準備
 
-## 6-1. 事前準備
+本章は、インタラクティブ・バッチの何れの実行方法にも共通する事前準備を行います。
 
-本章は、CFD解析フロー実行のための事前準備を行います。
-
-1. Bastionノードを経由して計算ノードのうちの1ノードにSSHでログインします。
+1. Bastionノードを経由して計算ノードのうちの1ノード（バッチジョブの場合はSlurmクライアント）にCFD解析ユーザでSSHログインします。
 
 2. **.bashrc** ファイルの最後に、以下の1行を追加します。
 
@@ -412,11 +422,7 @@ MPI言語規格に準拠するMPI実装
     $ source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
     ```
 
-4. 以下コマンドを実行し、 **OpenFOAM** に同梱されているチュートリアルのうち **pitzDaily** のディレクトリを作業ディレクトリにコピーします。  
-この手順は、ローカルディスクを活用する方法かそれ以外（ファイル共有ストレージを活用する方法）で異なる手順を実施します。  
-ローカルディスクを活用する方法の場合は、CFD解析フロー実行ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。
-
-    [ファイル共有ストレージを活用する方法]
+4. 以下コマンドを実行し、 **OpenFOAM** に同梱されているチュートリアルのうち **pitzDaily** のディレクトリを作業ディレクトリにコピーします。
 
     ```sh
     $ mkdir -p $FOAM_RUN
@@ -424,48 +430,50 @@ MPI言語規格に準拠するMPI実装
     $ cp -pR $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily ./
     ```
 
-    [ローカルディスクを活用する方法]
+## 4-2. プリ処理・解析処理のインタラクティブ実行
 
-    ```sh
-    $ cd /mnt/localdisk/openfoam
-    $ cp -pR $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily ./
-    ```
+### 4-2-0. 概要
 
-## 6-2. プリ処理
+本章は、 **[6-1. 事前準備](#6-1-事前準備)** を行った計算ノードでインタラクティブにプリ処理・解析処理を実行します。  
+この際の解析処理は、以下3種類の方法を解説します。
 
-本章は、 **[6-1. 事前準備](#6-1-事前準備)** を行った計算ノードでプリ処理を実行します。
+1. 1コアを使用する非並列実行
+2. 1ノード36コアを使用するノード内並列実行
+3. 2ノード72コアを使用するノード間並列実行
+
+### 4-2-1. 1コアを使用する非並列実行
 
 1. 以下コマンドを実行し、プリ処理を実行します。
 
     ```sh
+    $ run
     $ cd ./pitzDaily
     $ blockMesh
     ```
 
-## 6-3. 解析処理
-
-## 6-3-0. 概要
-
-本章は、 **[6-1. 事前準備](#6-1-事前準備)** を行った計算ノードで解析処理を実行します。  
-この際、 **非並列・ノード内並列・ノード間並列・ノード間並列でローカルディスクを活用** に分けて実行方法を解説します。
-
-## 6-3-1. 非並列実行
-
-1. 以下コマンドを実行し、解析処理を非並列で実行します。
+2. 以下コマンドを実行し、解析処理を実行します。
 
     ```sh
     $ simpleFoam
     ```
 
-## 6-3-2. ノード内並列実行
+### 4-2-2. 1ノード36コアを使用するノード内並列実行
 
-1. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
+1. 以下コマンドを実行し、プリ処理を実行します。
+
+    ```sh
+    $ run
+    $ cd ./pitzDaily
+    $ blockMesh
+    ```
+
+2. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
 
     ```sh
     $ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
     ```
 
-2. コピーしたファイルを以下のように修正し、先に生成したメッシュを36個の領域に分割します。
+3. コピーしたファイルを以下のように修正し、先に生成したメッシュを36個の領域に分割します。
 
     ```sh
     $ diff system/decomposeParDict_org system/decomposeParDict
@@ -488,27 +496,35 @@ MPI言語規格に準拠するMPI実装
     $
     ```
 
-3. 以下コマンドを実行し、 **BM.Optimized3.36** に搭載する36コアを使用するノード内並列の解析処理を実行します。
+4. 以下コマンドを実行し、 **BM.Optimized3.36** に搭載する36コアを使用するノード内並列の解析処理を実行します。
 
     ```sh
     $ mpirun -n 36 -mca coll_hcoll_enable 0 simpleFoam -parallel
     ```
 
-4. 以下コマンドを実行し、各プロセスが作成した解析結果を統合します。
+5. 以下コマンドを実行し、各プロセスが作成した解析結果を統合します。
 
     ```sh
     $ reconstructPar
     ```
 
-## 6-3-3. ノード間並列実行
+### 4-2-3. 2ノード72コアを使用するノード間並列実行
 
-1. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
+1. 以下コマンドを実行し、プリ処理を実行します。
+
+    ```sh
+    $ run
+    $ cd ./pitzDaily
+    $ blockMesh
+    ```
+
+2. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
 
     ```sh
     $ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
     ```
 
-2. コピーしたファイルを以下のように修正し、先に生成したメッシュを72個の領域に分割します。
+3. コピーしたファイルを以下のように修正し、先に生成したメッシュを72個の領域に分割します。
 
     ```sh
     $ diff system/decomposeParDict_org system/decomposeParDict
@@ -531,27 +547,34 @@ MPI言語規格に準拠するMPI実装
     $
     ```
 
-3. 以下コマンドを実行し、2ノードの **BM.Optimized3.36** に搭載する72コアを使用するノード間並列の解析処理を実行します。
+4. 以下コマンドを実行し、2ノードの **BM.Optimized3.36** に搭載する72コアを使用するノード間並列の解析処理を実行します。
 
     ```sh
     $ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 simpleFoam -parallel
     ```
 
-4. 以下コマンドを実行し、計算結果を統合します。
+5. 以下コマンドを実行し、計算結果を統合します。
 
     ```sh
     $ reconstructPar
     ```
 
-## 6-3-4. ノード間並列実行でローカルディスクを活用
+## 4-3. プリ処理・解析処理のバッチ実行
+
+本章は、プリ処理・解析処理をバッチ実行します。  
+この際の解析処理は、 **BM.Optimized3.36** の2ノード72コアを使用するノード間並列で実行し、内蔵するNVMe SSDのローカルディスクをデータ領域に使用します。
+
+以下手順は、CFD解析ユーザでSlurmクライアントで実行します。
 
 1. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
 
     ```sh
+    $ run
+    $ cd ./pitzDaily
     $ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
     ```
 
-2. コピーしたファイルを以下のように修正し、先に生成したメッシュを72個の領域に分割します。
+2. コピーしたファイルを以下のように修正します。
 
     ```sh
     $ diff system/decomposeParDict_org system/decomposeParDict
@@ -576,48 +599,66 @@ MPI言語規格に準拠するMPI実装
         :
     >        "/mnt/localdisk/openfoam"
     >     );
-    $ decomposePar
-        :
-        :
-        :
-    Processor 71: field transfer
-
-    End
-
     $
     ```
 
-3. 以下コマンドを実行し、ここまで作成したケースディレクトリ **pitzDaily** を他の計算ノードのローカルディスクに配布します。
+3. 以下のジョブスクリプトをファイル名 **submit.sh** で作成します。
+
+```sh
+#!/bin/bash
+#SBATCH -p sltest
+#SBATCH -n 72
+#SBATCH -N 2
+#SBATCH -J pitzDaily
+#SBATCH -o pitzDaily_out.%J
+#SBATCH -e pitzDaily_err.%J
+
+# Set model directories for shared storage and NVMe local disk
+model_dir="pitzDaily"
+local_disk="/mnt/localdisk/openfoam"
+shared_dir=$FOAM_RUN/$model_dir/
+local_dir=$local_disk/$model_dir/
+
+# Set OCI specific environment variables
+export UCX_NET_DEVICES=mlx5_2:1
+export OMPI_MCA_coll_hcoll_enable=0
+
+# Get head node host name
+head_node=`hostname`
+
+# Copy model files from shared storage to NVMe local disk on head node
+rsync -ae "ssh -o StrictHostKeyChecking=no" $shared_dir $local_dir
+
+# Create mesh and decompse partition on head node
+cd $local_dir
+blockMesh
+decomposePar
+
+# Sync model files on head node NVMe local disk with others
+for remote_node in `scontrol show hostnames | grep  -v $head_node`; do rsync -ae "ssh -o StrictHostKeyChecking=no" $local_dir $remote_node:$local_dir; done
+
+# Run solver in parallel
+srun simpleFoam -parallel
+
+# Sync model files on other node NVMe local disk to head node's
+for remote_node in `scontrol show hostnames | grep  -v $head_node`; do rsync -ae "ssh -o StrictHostKeyChecking=no" $remote_node:$local_dir $local_dir; done
+
+# Reconstruct decomposed partitions on head node NVMe local disk
+reconstructPar
+
+# Sync model files on head node NVMe local disk to shared storage
+rsync -ae "ssh -o StrictHostKeyChecking=no" $local_dir $shared_dir
+```
+
+4. 以下コマンドを実行し、バッチジョブを投入します。
 
     ```sh
-    $ for hname in `grep -v \`hostname\` ~/hostlist.txt`; do echo $hname; rsync -a ./ $hname:/mnt/localdisk/openfoam/pitzDaily/; done
+    $ sbatch submit.sh
     ```
 
-4. 以下コマンドを実行し、2ノードの **BM.Optimized3.36** に搭載する72コアを使用するノード間並列の解析処理を実行します。
+5. ジョブの標準出力・標準エラー出力は、ジョブを投入したディレクトリにファイル名 **pitzDaily_out.xxx** と **pitzDaily_err.xxx** で出力されます。
 
-    ```sh
-    $ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 simpleFoam -parallel
-    ```
-
-5. 以下コマンドを実行し、他の計算ノードの計算結果をマージします。
-
-    ```sh
-    $ for hname in `grep -v \`hostname\` ~/hostlist.txt`; do echo $hname; rsync -a $hname:/mnt/localdisk/openfoam/pitzDaily/ ./; done
-    ```
-
-6. 以下コマンドを実行し、計算結果を統合します。
-
-    ```sh
-    $ reconstructPar
-    ```
-
-7. 以下コマンドを実行し、後のポスト処理に備えてローカルディスクに存在するケースディレクトリ **pitzDaily** をファイル共有ストレージにコピーします。
-
-    ```sh
-    $ cd .. && cp -pR ./pitzDaily $FOAM_RUN/
-    ```
-
-## 6-4. ポスト処理
+# 5. ポスト処理
 
 本章は、ポスト処理をBastionノードで実行します。
 
