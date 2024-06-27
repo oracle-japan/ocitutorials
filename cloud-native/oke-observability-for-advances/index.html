@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-06-25T17:27:20+09:00">
+  <meta property="article:published_time" content="2024-06-27T11:04:40+09:00">
 
 
 
@@ -301,7 +301,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルマイクロサービスアプリケーションのデプロイおよびオブザバビリティを体験していただけるコンテンツです。OCIのオブザバビリティサービスであるMonitoring、Logging、Application Performance Monitoring、Notificationsを利用します。">
-    <meta itemprop="datePublished" content="2024-06-25T17:27:20+09:00">
+    <meta itemprop="datePublished" content="2024-06-27T11:04:40+09:00">
     
 
     <div class="page__inner-wrap">
@@ -1304,7 +1304,10 @@ OpenTelemetryはさまざまな言語に対応していますが、まだ開発�
 <p>OpenTelemetryを実装するには、Collector(DaemonSet CollectorとDeployment Collector)が必要です。</p>
 
 <p>これらのインストールはHelmを利用して実施します。<br />
-HelmはすでにCloud Shellにインストールされています。</p>
+HelmはすでにCloud Shellにインストールされていますので、OpenTelemetry Collectorをインストールするためのレポジトリを追加しておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+</code></pre></div></div>
 
 <h4 id="28-2-daemonset-collectorのインストール">2.8-2 DaemonSet Collectorのインストール</h4>
 
@@ -1351,6 +1354,13 @@ APMではメトリクスとトレースそれぞれに以下の2つのエンド�
   <span class="na">kubeletMetrics</span><span class="pi">:</span>
     <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
 
+<span class="na">image</span><span class="pi">:</span>
+  <span class="na">repository</span><span class="pi">:</span> <span class="s2">"</span><span class="s">otel/opentelemetry-collector-k8s"</span>
+
+<span class="na">resources</span><span class="pi">:</span>
+  <span class="na">limits</span><span class="pi">:</span>
+    <span class="na">cpu</span><span class="pi">:</span> <span class="s">250m</span>
+    <span class="na">memory</span><span class="pi">:</span> <span class="s">512Mi</span>
 
 <span class="na">config</span><span class="pi">:</span>
   <span class="na">exporters</span><span class="pi">:</span>
@@ -1394,8 +1404,7 @@ APMではメトリクスとトレースそれぞれに以下の2つのエンド�
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">mode</span><span class="pi">:</span> <span class="s">deployment</span>
   
-<span class="c1"># We only want one of these collectors - any more and we'd produce duplicate data</span>
-<span class="na">replicaCount</span><span class="pi">:</span> <span class="m">1</span>
+<span class="na">replicaCount</span><span class="pi">:</span> <span class="m">3</span>
 
 <span class="na">presets</span><span class="pi">:</span>
   <span class="c1"># enables the k8sclusterreceiver and adds it to the metrics pipelines</span>
@@ -1404,14 +1413,20 @@ APMではメトリクスとトレースそれぞれに以下の2つのエンド�
   <span class="c1"># enables the k8sobjectsreceiver to collect events only and adds it to the logs pipelines</span>
   <span class="na">kubernetesEvents</span><span class="pi">:</span>
     <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
-<span class="c1">## The chart only includes the loggingexporter by default</span>
-<span class="c1">## If you want to send your data somewhere you need to</span>
-<span class="c1">## configure an exporter, such as the otlpexporter</span>
+  
+<span class="na">image</span><span class="pi">:</span>
+  <span class="na">repository</span><span class="pi">:</span> <span class="s2">"</span><span class="s">otel/opentelemetry-collector-k8s"</span>
+
+<span class="na">resources</span><span class="pi">:</span>
+  <span class="na">limits</span><span class="pi">:</span>
+    <span class="na">cpu</span><span class="pi">:</span> <span class="s">250m</span>
+    <span class="na">memory</span><span class="pi">:</span> <span class="s">512Mi</span>
+
 <span class="na">config</span><span class="pi">:</span>
   <span class="na">exporters</span><span class="pi">:</span>
-   <span class="na">otlphttp</span><span class="pi">:</span>
-     <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;データ・アップロード・エンドポイント&gt;/20200101/opentelemetry"</span>
-     <span class="na">headers</span><span class="pi">:</span>
+    <span class="na">otlphttp</span><span class="pi">:</span>
+      <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;データ・アップロード・エンドポイント&gt;/20200101/opentelemetry"</span>
+      <span class="na">headers</span><span class="pi">:</span>
         <span class="na">Authorization</span><span class="pi">:</span> <span class="s2">"</span><span class="s">dataKey</span><span class="nv"> </span><span class="s">&lt;「データ・キー」の「プライベート」キー&gt;"</span>
   <span class="na">service</span><span class="pi">:</span>
     <span class="na">pipelines</span><span class="pi">:</span>
@@ -1438,7 +1453,7 @@ otel-collector-cluster-opentelemetry-collector-6f68f78f9c-2qsjn   1/1     Runnin
 otel-collector-opentelemetry-collector-agent-zthfv                1/1     Running   1              2d1h
 </code></pre></div></div>
 
-<p>これらのPodの起動により、メトリクスがOCI Monitoringにアップロードされ始めます。</p>
+<p>これらのPodの起動により、メトリクスがOCI APMにアップロードされ始めます。</p>
 
 <p>実際に確認してみましょう。</p>
 
@@ -2498,7 +2513,7 @@ frontend-app-56f7cfcb74-gpqh8     1/1     Running   0          23h
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-25T17:27:20+09:00">June 25, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-06-27T11:04:40+09:00">June 27, 2024</time></p>
 
       </footer>
 
