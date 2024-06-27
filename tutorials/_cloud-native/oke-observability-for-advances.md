@@ -846,7 +846,11 @@ OpenTelemetryはさまざまな言語に対応していますが、まだ開発�
 OpenTelemetryを実装するには、Collector(DaemonSet CollectorとDeployment Collector)が必要です。
 
 これらのインストールはHelmを利用して実施します。  
-HelmはすでにCloud Shellにインストールされています。
+HelmはすでにCloud Shellにインストールされていますので、OpenTelemetry Collectorをインストールするためのレポジトリを追加しておきます。  
+
+```sh
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+```
 
 #### 2.8-2 DaemonSet Collectorのインストール
 
@@ -889,6 +893,13 @@ presets:
   kubeletMetrics:
     enabled: true
 
+image:
+  repository: "otel/opentelemetry-collector-k8s"
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 512Mi
 
 config:
   exporters:
@@ -931,8 +942,7 @@ Deployment Collectorには、以下のコンポーネントが含まれていま
 ```yaml
 mode: deployment
   
-# We only want one of these collectors - any more and we'd produce duplicate data
-replicaCount: 1
+replicaCount: 3
 
 presets:
   # enables the k8sclusterreceiver and adds it to the metrics pipelines
@@ -941,14 +951,20 @@ presets:
   # enables the k8sobjectsreceiver to collect events only and adds it to the logs pipelines
   kubernetesEvents:
     enabled: true
-## The chart only includes the loggingexporter by default
-## If you want to send your data somewhere you need to
-## configure an exporter, such as the otlpexporter
+  
+image:
+  repository: "otel/opentelemetry-collector-k8s"
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 512Mi
+
 config:
   exporters:
-   otlphttp:
-     endpoint: "https://<データ・アップロード・エンドポイント>/20200101/opentelemetry"
-     headers:
+    otlphttp:
+      endpoint: "https://<データ・アップロード・エンドポイント>/20200101/opentelemetry"
+      headers:
         Authorization: "dataKey <「データ・キー」の「プライベート」キー>"
   service:
     pipelines:
@@ -977,7 +993,7 @@ otel-collector-cluster-opentelemetry-collector-6f68f78f9c-2qsjn   1/1     Runnin
 otel-collector-opentelemetry-collector-agent-zthfv                1/1     Running   1              2d1h
 ```
 
-これらのPodの起動により、メトリクスがOCI Monitoringにアップロードされ始めます。
+これらのPodの起動により、メトリクスがOCI APMにアップロードされ始めます。
 
 実際に確認してみましょう。  
 
