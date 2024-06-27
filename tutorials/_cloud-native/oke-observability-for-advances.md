@@ -942,7 +942,7 @@ Deployment Collectorには、以下のコンポーネントが含まれていま
 ```yaml
 mode: deployment
   
-replicaCount: 3
+replicaCount: 1
 
 presets:
   # enables the k8sclusterreceiver and adds it to the metrics pipelines
