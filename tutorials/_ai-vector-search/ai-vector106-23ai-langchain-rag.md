@@ -23,9 +23,7 @@ header:
 - ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(embed-multilingual-v3.0)
 - ベクトルデータベース: Oracle Database 23ai Free(OCI Compute Serviceにインストール)
 
-※LangChainって何？という方は下記の記事をご参照ください。
-
-https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain
+※LangChainって何？という方は[こちらの記事](https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain) をご参照ください。
 
 
 ## ドキュメントデータ
@@ -50,9 +48,7 @@ https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain
 
 ## 1. Oracle Database 23ai Freeをインストールする
 
-下記のインストールマニュアルに従ってOracle Database 23ai Freeをインストールします。
-
-[https://docs.oracle.com/en/database/oracle/oracle-database/23/xeinl/installing-oracle-database-free.html#GUID-46EA860A-AAC4-453F-8EEE-42CC55A4FAD5](https://docs.oracle.com/en/database/oracle/oracle-database/23/xeinl/installing-oracle-database-free.html#GUID-46EA860A-AAC4-453F-8EEE-42CC55A4FAD5)
+[こちら](https://docs.oracle.com/en/database/oracle/oracle-database/23/xeinl/installing-oracle-database-free.html#GUID-46EA860A-AAC4-453F-8EEE-42CC55A4FAD5)のインストールマニュアルに従ってOracle Database 23ai Freeをインストールします。
 
 簡単に手順を記載しておきます。基本は下記3ステップでインストールからデフォルトPDBの作成完了。数分の処理です。
 
@@ -132,7 +128,7 @@ END;
 
 ## 2. ドキュメントをベクトルデータベースにロードする
 
-ここからは、PDFファイルをテキストチャンクに分割し、埋め込みモデルでベクトルデータベースにロードする処理です。下図のようなフローでPDFファイルを最終的にベクトルデータベースにロードしてゆきます。前回のフルスクラッチでのRAGの実装とは異なり、今回はLangChainを利用するためこの過程は非常にシンプルなコードとなります。
+ここからは、PDFファイルをテキストチャンクに分割し、埋め込みモデルでベクトルデータベースにロードする処理です。下図のようなフローでPDFファイルを最終的にベクトルデータベースにロードしてゆきます。前回のフルスクラッチでのRAGの実装とは異なり、今回はLangChainを利用するためこの過程は非常にシンプルなコードとなります。[本チュートリアルで使用するPDFファイル](/ocitutorials/ai-vector-search/adb106-23ai-langchain-rag/rocket.pdf)
 
 ![image.png](3.png)
 
