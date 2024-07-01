@@ -45,6 +45,8 @@ Oracle AI Vector Searchを使用すると、ビジネス・データにベクト
 
 + **[105 : マルチベクトル検索で複数のドキュメントを検索してみよう](/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/){:target="_blank"}**
 
++ **[106 : Oracle Database 23aiとLangChainでRAGを構成してみよう](/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/){:target="_blank"}**
+
 <br/>
 
 
