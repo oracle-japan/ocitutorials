@@ -1,6 +1,6 @@
 ---
-title: "ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法"
-excerpt: "高速スクラッチ領域として利用することを想定したNVMe SSDディスクを内蔵するHPCクラスタ向けベアメタルシェイプBM.Optimized3.36やGPUクラスタ向けベアメタルシェイプBM.GPU4.8/BM.GPU.GM4.8は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。本テクニカルTipsは、このファイルシステム作成方法を解説します。"
+title: "ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法"
+excerpt: "高速スクラッチ領域として利用することを想定したNVMe SSDローカルディスクを内蔵するHPCクラスタ向けベアメタルシェイプBM.Optimized3.36やGPUクラスタ向けベアメタルシェイプBM.GPU4.8/BM.GPU.GM4.8は、NVMe SSDローカルディスクをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。本テクニカルTipsは、このファイルシステム作成方法を解説します。"
 order: "321"
 layout: single
 header:
@@ -11,7 +11,7 @@ header:
 ***
 # 0. 概要
 
-内蔵NVMe SSDドライブにファイルシステムを作成する方法は、搭載するドライブ数が異なる **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** と **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** でその手順が異なり、それぞれの手順を以降で解説します。
+NVMe SSDローカルディスクにファイルシステムを作成する方法は、搭載するドライブ数が異なる **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** と **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** でその手順が異なり、それぞれの手順を以降で解説します。
 
 本テクニカルTipsが前提とするOSは、 **Oracle Linux** です。
 
@@ -20,7 +20,7 @@ header:
 ***
 # 1. BM.Optimized3.36用ファイルシステム作成手順
 
-**BM.Optimized3.36** は、3.84 TBのNVMe SSDディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。
+**BM.Optimized3.36** は、3.84 TBのNVMe SSDローカルディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。
 
 ```sh
 $ sudo parted -s /dev/nvme0n1 mklabel gpt
@@ -35,12 +35,12 @@ Filesystem      Size  Used Avail Use% Mounted on
 $
 ```
 
-この手順は、NVMe SSDディスク全領域を1パーティションで区画し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
+この手順は、NVMe SSDローカルディスク全領域を1パーティションで区画し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
 
 ***
 # 2. BM.GPU4.8/BM.GPU.GM4.8用ファイルシステム作成手順
 
-**BM.GPU4.8/BM.GPU.GM4.8** は、6.4 TBのNVMe SSDディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。
+**BM.GPU4.8/BM.GPU.GM4.8** は、6.4 TBのNVMe SSDローカルディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。
 
 ```sh
 $ sudo vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
@@ -54,4 +54,4 @@ Filesystem              Size  Used Avail Use% Mounted on
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
 ```
 
-この手順は、4ドライブのNVMe SSDディスクをまとめて1個の論理ボリュームとして作成し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
+この手順は、4ドライブのNVMe SSDローカルディスクをまとめて1個の論理ボリュームとして作成し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
