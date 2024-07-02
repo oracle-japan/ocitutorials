@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-02T00:00:51+09:00">
+  <meta property="article:published_time" content="2024-07-02T13:47:00+09:00">
 
 
 
@@ -308,7 +308,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
         
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurm環境での利用を前提とするOpenMPI構築方法">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。本テクニカルTipsは、PMIxを使用するSlurm環境での利用を前提とするOpenMPI構築方法を解説します。">
-    <meta itemprop="datePublished" content="2024-07-02T00:00:51+09:00">
+    <meta itemprop="datePublished" content="2024-07-02T13:47:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -370,7 +370,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-インストールセットアップ">1. インストール・セットアップ</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-前提ソフトウェアインストール">1-1. 前提ソフトウェアインストール</a></li><li><a href="#1-2-openpmixインストール">1-2. OpenPMIxインストール</a></li><li><a href="#1-3-openmpiインストール">1-3. OpenMPIインストール</a></li><li><a href="#1-4-セットアップ">1-4. セットアップ</a></li></ul></li><li><a href="#2-稼働確認">2. 稼働確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-intel-mpi-benchmarks実行">2-1. Intel MPI Benchmarks実行</a></li><li><a href="#2-2-nas-parallel-benchmarks実行">2-2. NAS Parallel Benchmarks実行</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-インストールセットアップ">1. インストール・セットアップ</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-前提ソフトウェアrpmパッケージインストール">1-1. 前提ソフトウェア・rpmパッケージインストール</a></li><li><a href="#1-2-openpmixインストール">1-2. OpenPMIxインストール</a></li><li><a href="#1-3-openmpiインストール">1-3. OpenMPIインストール</a></li><li><a href="#1-4-セットアップ">1-4. セットアップ</a></li></ul></li><li><a href="#2-稼働確認">2. 稼働確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-intel-mpi-benchmarks実行">2-1. Intel MPI Benchmarks実行</a></li><li><a href="#2-2-nas-parallel-benchmarks実行">2-2. NAS Parallel Benchmarks実行</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -421,13 +421,13 @@
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本章は、予めデプロイしている <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する <strong>BM.Optimized3.36</strong> のインスタンスに <strong>OpenMPI</strong> 、 <strong>OpenPMIx</strong> 、及びこれらの前提ソフトウェアをインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。</p>
+<p>本章は、予めデプロイしている <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する <strong>BM.Optimized3.36</strong> のインスタンスに <strong>OpenMPI</strong> 、 <strong>OpenPMIx</strong> 、及びこれらの前提ソフトウェア・rpmパッケージをインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。</p>
 
 <p>以降の作業は、MPIプログラムのコンパイル・実行を行う全てのノードで実施します。</p>
 
-<h2 id="1-1-前提ソフトウェアインストール">1-1. 前提ソフトウェアインストール</h2>
+<h2 id="1-1-前提ソフトウェアrpmパッケージインストール">1-1. 前提ソフトウェア・rpmパッケージインストール</h2>
 
-<p>以下コマンドをopcユーザで実行し、前提ソフトウェアのRPMのインストールと <strong>libevent</strong> ・ <strong>hwloc</strong> の <strong>/opt</strong> ディレクトリへのインストールを実施します。<br />
+<p>以下コマンドをopcユーザで実行し、前提rpmパッケージのインストールと前提ソフトウェアである <strong>libevent</strong> ・ <strong>hwloc</strong> の <strong>/opt</strong> ディレクトリへのインストールを実施します。<br />
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ncurses-devel openssl-devel gcc-c++ gcc-gfortran
@@ -597,7 +597,7 @@ npb@nas.nasa.gov
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-02T00:00:51+09:00">July 2, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-02T13:47:00+09:00">July 2, 2024</time></p>
 
       </footer>
 

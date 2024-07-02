@@ -1032,7 +1032,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster/architecture_diagram.png"
       },{
         "title": "GPUクラスタを構築する(基礎インフラ自動構築編)",
-        "excerpt":"このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは BM.GPU4.8 を使用）を クラスタ・ネットワーク でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、Dockerコンテナ上で NCCL（NVIDIA Collective Communication Library） のGPU間通信性能を NCCL Tests で検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は GPUクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するGPUクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCNと関連するネットワークリソース構築 Bastionノード構築 GPUノード用 インスタンス構成 作成 クラスタ・ネットワーク とGPUノード構築 GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 GPUノードの全ホスト名を記載したホストリストファイル（/home/opc/hostlist.txt）作成 構築したBastionノード・GPUノードのホスト名・IPアドレス出力 Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。 インターネット経由ログイン -&gt;...","categories": [],
+        "excerpt":"このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは BM.GPU4.8 を使用）を クラスタ・ネットワーク でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、Dockerコンテナ上で NCCL（NVIDIA Collective Communication Library） のGPU間通信性能を NCCL Tests で検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は GPUクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するGPUクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCNと関連するネットワークリソース構築 Bastionノード構築 GPUノード用 インスタンス構成 作成 クラスタ・ネットワーク とGPUノード構築 GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 GPUノードの全ホスト名を記載したホストリストファイル（ /home/opc/hostlist.txt ）作成 構築したBastionノード・GPUノードのホスト名・IPアドレス出力 Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-gpu-cluster-withterraform/",
         "teaser": "/ocitutorials/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png"
@@ -1104,7 +1104,7 @@ var store = [{
         "teaser": null
       },{
         "title": "NCCL Tests実行方法",
-        "excerpt":"本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の クラスタ・ネットワーク でGPUワークロード向けベアメタルインスタンスをノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリ NCCL（NVIDIA Collective Communication Library） の標準ベンチマークである NCCL Tests を実行する方法を解説します。 0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたDockerコンテナ実行環境で、 NGC Catalog から提供される TensorFlow NGC Container （本ドキュメントで使用するバージョンは23.06-tf2-py3）を起動し、このコンテナに含まれる NCCL （本ドキュメントで使用するバージョンは2.17.1）とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ BM.GPU4.8 または BM.GPU.A100-v2.8 2インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ...","categories": [],
+        "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で、 NGC Catalog から提供される TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ BM.GPU4.8 または BM.GPU.A100-v2.8 2インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、GPUノード上で Docker Community...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-nccltests/",
         "teaser": null
@@ -1175,8 +1175,8 @@ var store = [{
         "url": "/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/",
         "teaser": null
       },{
-        "title": "ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法",
-        "excerpt":"0. 概要 内蔵NVMe SSDドライブにファイルシステムを作成する方法は、搭載するドライブ数が異なる BM.Optimized3.36 と BM.GPU4.8/BM.GPU.GM4.8 でその手順が異なり、それぞれの手順を以降で解説します。 本テクニカルTipsが前提とするOSは、 Oracle Linux です。 なお 、ここで解説するファイルシステム作成手順は、 OCI HPCチュートリアル集 で紹介する構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。 1. BM.Optimized3.36用ファイルシステム作成手順 BM.Optimized3.36 は、3.84 TBのNVMe SSDディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。 $ sudo parted -s /dev/nvme0n1 mklabel gpt $ sudo parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1 $ sudo mkfs.xfs -L localscratch /dev/nvme0n1p1 $ sudo mkdir...","categories": [],
+        "title": "ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法",
+        "excerpt":"0. 概要 NVMe SSDローカルディスクにファイルシステムを作成する方法は、搭載するドライブ数が異なる BM.Optimized3.36 と BM.GPU4.8/BM.GPU.GM4.8 でその手順が異なり、それぞれの手順を以降で解説します。 本テクニカルTipsが前提とするOSは、 Oracle Linux です。 なお 、ここで解説するファイルシステム作成手順は、 OCI HPCチュートリアル集 で紹介する構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。 1. BM.Optimized3.36用ファイルシステム作成手順 BM.Optimized3.36 は、3.84 TBのNVMe SSDローカルディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。 $ sudo parted -s /dev/nvme0n1 mklabel gpt $ sudo parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1 $ sudo mkfs.xfs -L localscratch /dev/nvme0n1p1 $ sudo mkdir...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/nvme-filesystem/",
         "teaser": null

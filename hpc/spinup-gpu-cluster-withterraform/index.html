@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-02T00:00:51+09:00">
+  <meta property="article:published_time" content="2024-07-02T13:47:00+09:00">
 
 
 
@@ -298,7 +298,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
         
@@ -349,7 +349,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
-    <meta itemprop="datePublished" content="2024-07-02T00:00:51+09:00">
+    <meta itemprop="datePublished" content="2024-07-02T13:47:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -360,7 +360,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-事前準備">0. 事前準備</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a><ul><li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li></ul></li><li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a><ul><li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li><li><a href="#0-2-2-terraformスクリプト概要">0-2-2. Terraformスクリプト概要</a></li><li><a href="#0-2-3-terraformスクリプト作成">0-2-3. Terraformスクリプト作成</a></li></ul></li></ul></li><li><a href="#1-gpuクラスタ構築">1. GPUクラスタ構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li><li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li></ul></li><li><a href="#2-gpuクラスタ確認">2. GPUクラスタ確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-gpuノードファイルシステム確認">2-3. GPUノードファイルシステム確認</a></li><li><a href="#2-4-gpuノードbios設定確認">2-4. GPUノードBIOS設定確認</a></li></ul></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a></li><li><a href="#4-gpuクラスタ削除">4. GPUクラスタ削除</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</a></li><li><a href="#4-2-terraform-cliの場合">4-2. Terraform CLIの場合</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-事前準備">0. 事前準備</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a><ul><li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li></ul></li><li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a><ul><li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li><li><a href="#0-2-2-terraformスクリプト概要">0-2-2. Terraformスクリプト概要</a></li><li><a href="#0-2-3-terraformスクリプト作成">0-2-3. Terraformスクリプト作成</a></li></ul></li></ul></li><li><a href="#1-gpuクラスタ構築">1. GPUクラスタ構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li><li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li></ul></li><li><a href="#2-gpuクラスタ確認">2. GPUクラスタ確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li><li><a href="#2-3-gpuノードファイルシステム確認">2-3. GPUノードファイルシステム確認</a></li><li><a href="#2-4-gpuノードbios設定確認">2-4. GPUノードBIOS設定確認</a></li><li><a href="#2-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認">2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認</a></li></ul></li><li><a href="#3-コンテナ環境構築">3. コンテナ環境構築</a></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a></li><li><a href="#4-gpuクラスタ削除">4. GPUクラスタ削除</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-リソースマネージャを使用する方法">4-1. リソース・マネージャを使用する方法</a></li><li><a href="#4-2-terraform-cliの場合">4-2. Terraform CLIの場合</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -384,7 +384,7 @@ table, th, td {
   <li>GPUノード用 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> 作成</li>
   <li><strong>クラスタ・ネットワーク</strong> とGPUノード構築</li>
   <li>GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布</li>
-  <li>GPUノードの全ホスト名を記載したホストリストファイル（/home/opc/hostlist.txt）作成</li>
+  <li>GPUノードの全ホスト名を記載したホストリストファイル（ <strong>/home/opc/hostlist.txt</strong> ）作成</li>
   <li>構築したBastionノード・GPUノードのホスト名・IPアドレス出力</li>
 </ul>
 
@@ -396,6 +396,14 @@ table, th, td {
 </ul>
 
 <p>※1）構築方法に <strong>Terraform</strong> CLIを採用する場合は、パブリックサブネット接続のみ選択可能です。</p>
+
+<p>またVCNと関連するネットワークリソースは、既に構築してあるものを活用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。</p>
+
+<ul>
+  <li>プライベートサブネットが存在する</li>
+  <li>パブリックサブネットが存在する（Bastionノードパブリック接続の場合）</li>
+  <li>パブリックサブネット・プライベートサブネット間で <strong>セキュリティ・リスト</strong> によりアクセスが制限されていない（Bastionノードパブリック接続の場合）</li>
+</ul>
 
 <p><img src="architecture_diagram.png" alt="システム構成図（パブリック）" />
 <br />
@@ -415,12 +423,9 @@ table, th, td {
 
 <ul>
   <li>タイムゾーンをJSTに変更</li>
-  <li><strong>Docker Community Edition</strong> インストール</li>
-  <li><strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> インストール</li>
   <li>NVMe SSDローカルディスク領域ファイルシステム作成</li>
   <li><strong>firewalld</strong> 停止</li>
   <li>ルートファイルシステム拡張</li>
-  <li><strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェース作成</li>
   <li>BastionノードのDNS名前解決をショートホスト名で行うための <strong>resolv.conf</strong> 修正</li>
   <li>Bastionノードホームディレクトリ領域のNFSマウント</li>
 </ul>
@@ -441,7 +446,7 @@ table, th, td {
 
 <p>[ <strong>リソース・マネージャ</strong> を使用する方法]</p>
 <ul>
-  <li><strong>構成ソース・プロバイダ</strong> 作成</li>
+  <li><strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong> 作成</li>
   <li><strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> 作成</li>
 </ul>
 
@@ -478,7 +483,7 @@ table, th, td {
     <ul>
       <li><strong>Terraformの構成のオリジン :</strong> ソース・コード制御システム</li>
       <li><strong>ソースコード管理タイプ :</strong> <strong>GitHub</strong></li>
-      <li><strong>構成ソース・プロバイダ :</strong> <strong><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></strong> で作成した <strong>構成ソース・プロバイダ</strong></li>
+      <li><strong>構成ソース・プロバイダ :</strong> 先に作成した <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong></li>
       <li><strong>リポジトリ :</strong> <strong>tutorial_cn_rm</strong></li>
       <li><strong>ブランチ :</strong> <strong>master</strong></li>
       <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
@@ -490,15 +495,14 @@ table, th, td {
   <li>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。<br />
 4.1 <strong>General options</strong> フィールド
     <ul>
-      <li><strong>Compartment :</strong> GPUクラスタをデプロイするコンパートメント</li>
-      <li><strong>Availability Domain :</strong> GPUクラスタをデプロイする可用性ドメイン</li>
-      <li><strong>SSH public key :</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
-        <ul>
-          <li>公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能</li>
-        </ul>
-      </li>
+      <li><strong>Compartment :</strong> GPUクラスタをデプロイする <strong>コンパートメント</strong></li>
+      <li><strong>Availability Domain :</strong> GPUクラスタをデプロイする <strong>可用性ドメイン</strong></li>
+      <li><strong>SSH public key :</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵<br />
+ （公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能）</li>
       <li><strong>Private bastion :</strong> Bastionノードをプライベートサブネットに接続するかどうかを指定（デフォルト：パブリックサブネット接続）<br />
  （パブリックサブネットに接続する場合はチェックオフ/プライベートサブネットに接続する場合はチェック）</li>
+      <li><strong>Use existing VCN :</strong> 既存のVCNを使用するかどうかを指定（デフォルト：VCNを新規作成）<br />
+ （既存のVCNを使用する場合は、チェックすると表示されるVCN・パブリックサブネット・プライベートサブネットの各フィールドにOCIDを指定します。）</li>
     </ul>
 
     <p><img src="stack_page02.png" alt="画面ショット" /><br />
@@ -508,7 +512,7 @@ table, th, td {
       <li><strong>Shape :</strong> <strong>BM.GPU4.8</strong></li>
       <li><strong>Node count :</strong> GPUノードのノード数（デフォルト：2）</li>
       <li><strong>Image OCID :</strong> GPUノードのイメージOCID（※3）</li>
-      <li><strong>Boot volume size :</strong> GPUノードのブートボリュームサイズ（デフォルト：100GB）</li>
+      <li><strong>Boot volume size :</strong> GPUノードのブートボリュームサイズ（200GB以上）</li>
       <li><strong>cloud-config :</strong> GPUノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )（※4）</li>
       <li><strong>NPS for BM.GPU4.8 :</strong> GPUノードの <strong>NPS</strong> 設定値 (デフォルト：NPS4) （※5）</li>
       <li><strong>SMT :</strong> GPUノードの <strong>SMT</strong> 設定値 (デフォルト：有効) （※5）</li>
@@ -516,8 +520,8 @@ table, th, td {
 
     <p><img src="stack_page03.png" alt="画面ショット" /></p>
 
-    <p>※2） 例えば <strong>gpu4-ol79</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol79</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
- ※3）以下のOCIDを指定します。</p>
+    <p>※2） 例えば <strong>gpu4-ol89</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
+ ※3）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。</p>
 
     <table>
       <thead>
@@ -531,83 +535,49 @@ table, th, td {
         <tr>
           <td style="text-align: center">7</td>
           <td style="text-align: center">8.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2uaq7zbntzrc5hwoyytmpifjmrjhcfgbotyb5gbfq4cnro46cn3q</td>
+          <td style="text-align: center">ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna</td>
         </tr>
         <tr>
-          <td style="text-align: center">11</td>
+          <td style="text-align: center">9</td>
           <td style="text-align: center">8.8</td>
           <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
         </tr>
         <tr>
           <td style="text-align: center">8</td>
           <td style="text-align: center">7.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaacvmchv5h7zp54vyntetzkia3hrtr5tyz7j6oiairdfjw3rutgb3q</td>
+          <td style="text-align: center">ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq</td>
         </tr>
       </tbody>
     </table>
 
     <p>※4）以下をテキストファイルとして保存し、ブラウザから読み込みます。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
-timezone: Asia/Tokyo
-yum_repos:
-<span class="c">#</span>
-<span class="c"># To install docker community edition</span>
-  ol7_developer:
-    name: Oracle Linux <span class="nv">$releasever</span> Development Packages <span class="o">(</span><span class="nv">$basearch</span><span class="o">)</span>
-    baseurl: https://yum<span class="nv">$ociregion</span>.<span class="nv">$ocidomain</span>/repo/OracleLinux/OL7/developer/<span class="nv">$basearch</span>/
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-  docker-ce-stable:
-    name: Docker CE Stable - <span class="nv">$basearch</span>
-    baseurl: https://download.docker.com/linux/centos/<span class="nv">$releasever</span>/<span class="nv">$basearch</span>/stable
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: https://download.docker.com/linux/centos/gpg
-<span class="c">#</span>
-<span class="c"># To install NVIDIA container toolkit</span>
-  libnvidia-container:
-    name: libnvidia-container
-    baseurl: https://nvidia.github.io/libnvidia-container/stable/centos7/<span class="nv">$basearch</span>
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
-  libnvidia-container-experimental:
-    name: libnvidia-container-experimental
-    baseurl: https://nvidia.github.io/libnvidia-container/experimental/centos7/<span class="nv">$basearch</span>
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
-packages:
-<span class="c">#</span>
-<span class="c"># Install Docker community edition and NVIDIA container toolkit</span>
-  - docker-ce
-  - nvidia-container-toolkit
-runcmd:
-<span class="c">#</span>
-<span class="c"># Mount NVMe local storage</span>
-  - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
-  - lvcreate <span class="nt">-l</span> 100%FREE nvme
-  - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
-  - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
-  - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-  - systemctl daemon-reload
-  - mount /mnt/localdisk
-<span class="c">#</span>
-<span class="c"># Stop firewalld</span>
-  - systemctl disable <span class="nt">--now</span> firewalld
-<span class="c">#</span>
-<span class="c"># Expand root file system to those set by instance configuration</span>
-  - /usr/libexec/oci-growfs <span class="nt">-y</span>
-<span class="c">#</span>
-<span class="c"># Add public subnet to DNS search</span>
-  - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
-  - chattr <span class="nt">-R</span> +i /etc/resolv.conf
-<span class="c">#</span>
-<span class="c"># NFS mount setting</span>
-  - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-  - mount /home
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c">#cloud-config</span>
+ timezone: Asia/Tokyo
+ runcmd:
+ <span class="c">#</span>
+ <span class="c"># Mount NVMe local storage</span>
+     - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
+     - lvcreate <span class="nt">-l</span> 100%FREE nvme
+     - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
+     - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
+     - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+     - systemctl daemon-reload
+     - mount /mnt/localdisk
+ <span class="c">#</span>
+ <span class="c"># Stop firewalld</span>
+     - systemctl disable <span class="nt">--now</span> firewalld
+ <span class="c">#</span>
+ <span class="c"># Expand root file system to those set by instance configuration</span>
+     - /usr/libexec/oci-growfs <span class="nt">-y</span>
+ <span class="c">#</span>
+ <span class="c"># Add public subnet to DNS search</span>
+     - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
+     - chattr <span class="nt">-R</span> +i /etc/resolv.conf
+ <span class="c">#</span>
+ <span class="c"># NFS mount setting</span>
+     - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+     - mount /home
 </code></pre></div>    </div>
 
     <p>※5）詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。</p>
@@ -640,7 +610,7 @@ runcmd:
   <li>ご自身が使用する <strong>Windows</strong> / <strong>Mac</strong> パソコンで動作する <strong>Linux</strong> ゲストOS</li>
 </ul>
 
-<p>本チュートリアルは、この <strong>Terraform</strong> 実行環境のOSに <strong>Oracle Linux</strong> 8を使用します。</p>
+<p>本チュートリアルは、この <strong>Terraform</strong> 実行環境のOSに <strong>Oracle Linux</strong> 8.9を使用します。</p>
 
 <p><strong>Terraform</strong> 実行環境は、以下のステップを経て構築します。</p>
 
@@ -702,159 +672,167 @@ runcmd:
 
 <h3 id="0-2-3-terraformスクリプト作成">0-2-3. Terraformスクリプト作成</h3>
 
-<ol>
-  <li>
-    <p><strong>Terraform</strong> スクリプトの作成は、まず以下の <strong>GitHub</strong> レポジトリからひな型となる <strong>Terraform</strong> スクリプトを <strong>Terraform</strong> 実行環境にダウンロードしますが、</p>
+<p><strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトの作成は、まず以下の <strong>GitHub</strong> レポジトリからひな型となる <strong>Terraform</strong> スクリプトを <strong>Terraform</strong> 実行環境にダウンロードしますが、</p>
 
-    <p><strong><a href="https://github.com/fwiw6430/tutorial_cn">https://github.com/fwiw6430/tutorial_cn</a></strong></p>
+<p><strong><a href="https://github.com/fwiw6430/tutorial_cn">https://github.com/fwiw6430/tutorial_cn</a></strong></p>
 
-    <p>これには、以下コマンドを <strong>Terraform</strong> 実行環境のopcユーザで実行するか、</p>
+<p>これには、以下コマンドを <strong>Terraform</strong> 実行環境のopcユーザで実行するか、</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git
- <span class="nv">$ </span>git clone https://github.com/fwiw6430/tutorial_cn
-</code></pre></div>    </div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git
+<span class="nv">$ </span>git clone https://github.com/fwiw6430/tutorial_cn
+</code></pre></div></div>
 
-    <p><strong>GitHub</strong> の <strong>Terraform</strong> スクリプトレポジトリのページからzipファイルを <strong>Terraform</strong> 実行環境にダウンロード・展開することで行います。</p>
-  </li>
-  <li>
-    <p>ダウンロードした <strong>Terraform</strong> スクリプトのうち、 <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> 内の以下 <strong>Terraform</strong> 変数を自身の環境に合わせて修正します。<br />
-この際、これらファイル内の <strong>Terraform</strong> 変数は、予めコメント（ <strong>#</strong> で始まる行）として埋め込まれていたり、キーワード <strong>xxxx</strong> で仮の値が入力されているため、コメント行を有効化して自身の値に置き換える、等の修正を行います。</p>
+<p><strong>GitHub</strong> の <strong>Terraform</strong> スクリプトレポジトリのページからzipファイルを <strong>Terraform</strong> 実行環境にダウンロード・展開することで行います。</p>
 
-    <p>[ <strong>provider.tf</strong> ]</p>
+<p>次に、ダウンロードした <strong>Terraform</strong> スクリプトのうち、 <strong>terraform.tfvars</strong> と <strong>provider.tf</strong> 内の以下 <strong>Terraform</strong> 変数を自身の環境に合わせて修正します。<br />
+この際、これらファイル内の <strong>Terraform</strong> 変数は、予めコメント（ <strong>#</strong> で始まる行）として埋め込まれていたり、キーワード <strong>xxxx</strong> で仮の値が入力されているため、コメント行を有効化して自身の値に置き換える等の修正を行います。</p>
 
-    <table>
-      <thead>
-        <tr>
-          <th>変数名</th>
-          <th>設定値</th>
-          <th>確認方法</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>tenancy_ocid</td>
-          <td>使用するテナントのOCID</td>
-          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
-        </tr>
-        <tr>
-          <td>user_ocid</td>
-          <td>使用するユーザのOCID</td>
-          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
-        </tr>
-        <tr>
-          <td>private_key_path</td>
-          <td>OCIに登録したAPIキーの秘密キーのパス</td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>fingerprint</td>
-          <td>OCIに登録したAPIキーのフィンガープリント</td>
-          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#four">ここ</a></strong> を参照</td>
-        </tr>
-        <tr>
-          <td>region</td>
-          <td>GPUクラスタをデプロイするリージョン識別子</td>
-          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm">ここ</a></strong> を参照</td>
-        </tr>
-      </tbody>
-    </table>
+<p>[ <strong>provider.tf</strong> ]</p>
 
-    <p>[ <strong>terraform.tfvars</strong> ]</p>
+<table>
+  <thead>
+    <tr>
+      <th>変数名</th>
+      <th>設定値</th>
+      <th>確認方法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tenancy_ocid</td>
+      <td>使用するテナントのOCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>user_ocid</td>
+      <td>使用するユーザのOCID</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#five">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>private_key_path</td>
+      <td>OCIに登録したAPIキーの秘密キーのパス</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>fingerprint</td>
+      <td>OCIに登録したAPIキーのフィンガープリント</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#four">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>region</td>
+      <td>GPUクラスタをデプロイするリージョン識別子</td>
+      <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm">ここ</a></strong> を参照</td>
+    </tr>
+  </tbody>
+</table>
 
-    <table>
-      <thead>
-        <tr>
-          <th>変数名</th>
-          <th>設定値</th>
-          <th>確認方法</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>compartment_ocid</td>
-          <td>GPUクラスタをデプロイするコンパートメントのOCID</td>
-          <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm">ここ</a></strong> を参照</td>
-        </tr>
-        <tr>
-          <td>ad</td>
-          <td>GPUクラスタをデプロイする可用性ドメイン識別子</td>
-          <td>(※7)</td>
-        </tr>
-        <tr>
-          <td>ssh_key</td>
-          <td>Bastionノードログインに使用するSSH秘密鍵に対する公開鍵</td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>cn_display_name</td>
-          <td>GPUノードホスト名の接尾辞</td>
-          <td>(※8)</td>
-        </tr>
-        <tr>
-          <td>comp_shape</td>
-          <td>GPUノードに使用するシェイプ<br />・ <strong>BM.GPU4.8</strong></td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>cn_node_count</td>
-          <td>GPUノードのノード数</td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>comp_image</td>
-          <td>GPUノードに使用するOSイメージのOCID</td>
-          <td>(※9)</td>
-        </tr>
-        <tr>
-          <td>comp_boot_vol_size</td>
-          <td>GPUノードのブートボリュームのサイズ（GB）</td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>comp_cloud_config</td>
-          <td><strong>user_data</strong> ディレクトリに格納するGPUノード用 <strong>cloud-config</strong> ファイル名<br />・ <strong>cloud-init_cngpu.cfg</strong></td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>comp_nps_gpu40</td>
-          <td>GPUノード ( <strong>BM.GPU4.8</strong> の場合) の <strong>NPS</strong> BIOS設定値</td>
-          <td>(※10)</td>
-        </tr>
-        <tr>
-          <td>comp_nps_gpu80</td>
-          <td>GPUノード ( <strong>BM.GPU.A100-v2.8</strong> の場合) の <strong>NPS</strong> BIOS設定値</td>
-          <td>(※10)</td>
-        </tr>
-        <tr>
-          <td>comp_smt</td>
-          <td>GPUノードの <strong>SMT</strong> BIOS設定値</td>
-          <td>(※10)</td>
-        </tr>
-        <tr>
-          <td> </td>
-          <td> </td>
-          <td> </td>
-        </tr>
-      </tbody>
-    </table>
+<p>[ <strong>terraform.tfvars</strong> ]</p>
 
-    <p>※7）OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
+<table>
+  <thead>
+    <tr>
+      <th>変数名</th>
+      <th>設定値</th>
+      <th style="text-align: center">確認方法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>compartment_ocid</td>
+      <td>GPUクラスタをデプロイする <strong>コンパートメント</strong> のOCID</td>
+      <td style="text-align: center"><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm">ここ</a></strong> を参照</td>
+    </tr>
+    <tr>
+      <td>ad</td>
+      <td>GPUクラスタをデプロイする <strong>可用性ドメイン</strong> 識別子</td>
+      <td style="text-align: center">（※7）</td>
+    </tr>
+    <tr>
+      <td>ssh_key</td>
+      <td>Bastionノードログインに使用するSSH秘密鍵に対する公開鍵</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td>exist_vcn</td>
+      <td>既存のVCNを使用するかどうかの指定（true/false）</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td>vcn_ocid</td>
+      <td>既存のVCNを使用する場合のVCNのOCID（※11）</td>
+      <td style="text-align: center">（※12）</td>
+    </tr>
+    <tr>
+      <td>public_ocid</td>
+      <td>既存のVCNを使用する場合のパブリックサブネットのOCID（※11）</td>
+      <td style="text-align: center">（※12）</td>
+    </tr>
+    <tr>
+      <td>private_ocid</td>
+      <td>既存のVCNを使用する場合のプライベートサブネットのOCID（※11）</td>
+      <td style="text-align: center">（※12）</td>
+    </tr>
+    <tr>
+      <td>comp_shape</td>
+      <td>GPUノードに使用するシェイプ<br />・ <strong>BM.GPU4.8</strong></td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td>comp_image</td>
+      <td>GPUノードに使用するOSイメージのOCID</td>
+      <td style="text-align: center">（※8）</td>
+    </tr>
+    <tr>
+      <td>comp_boot_vol_size</td>
+      <td>GPUノードの <strong>ブートボリューム</strong> のサイズ（GB）（最低200GB）</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td>comp_cloud_config</td>
+      <td><strong>user_data</strong> ディレクトリに格納するGPUノード用 <strong>cloud-config</strong> ファイル名<br />・ <strong>cloud-init_cngpu.cfg</strong></td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td>comp_nps_gpu40</td>
+      <td>GPUノードの <strong>NPS</strong> BIOS設定値</td>
+      <td style="text-align: center">（※9）</td>
+    </tr>
+    <tr>
+      <td>comp_smt</td>
+      <td>GPUノードの <strong>SMT</strong> BIOS設定値</td>
+      <td style="text-align: center">（※9）</td>
+    </tr>
+    <tr>
+      <td>cn_display_name</td>
+      <td>GPUノードホスト名の接尾辞</td>
+      <td style="text-align: center">（※10）</td>
+    </tr>
+    <tr>
+      <td>cn_node_count</td>
+      <td>GPUノードのノード数</td>
+      <td style="text-align: center">-</td>
+    </tr>
+  </tbody>
+</table>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
+<p>※7）OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
 
-    <p>※8）例えば <strong>gpu4-ol79</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol79</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
- ※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> を参照してください。<br />
- ※10）詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。</p>
-  </li>
-</ol>
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>※8）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> を参照してください。<br />
+※9）詳細は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。<br />
+※10）例えば <strong>gpu4-ol89</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
+※11）既存のVCNを使用する場合のみコメントを外して指定します。<br />
+※12）OCIコンソール上で当該VCN・サブネットの詳細画面を表示して確認します。</p>
 
 <hr />
 <h1 id="1-gpuクラスタ構築">1. GPUクラスタ構築</h1>
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、GPUクラスタを構築します。<br />
-この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
+<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> / <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを使用し、GPUクラスタを構築します。</p>
+
+<p>この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
 
 <h2 id="1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</h2>
 
@@ -878,7 +856,7 @@ runcmd:
 
     <p><img src="stack_page09.png" alt="画面ショット" /></p>
 
-    <p>この適用が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で10分程度です。</p>
+    <p>この適用が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で15分程度です。</p>
 
     <p>ステータスが <strong>成功</strong> となれば、GPUクラスタのデプロイが完了しており、以下のように <strong>ログ</strong> フィールドの最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
 
@@ -890,12 +868,12 @@ runcmd:
    <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
  <span class="o">}</span>
  Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
-   <span class="s2">"inst-9fhuq-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
-     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol79"</span>
+   <span class="s2">"inst-9fhuq-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
+     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol89"</span>
      <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
    <span class="o">}</span>
-   <span class="s2">"inst-dz99s-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
-     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol79"</span>
+   <span class="s2">"inst-dz99s-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
+     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol89"</span>
      <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
    <span class="o">}</span>
  <span class="o">}</span>
@@ -912,7 +890,7 @@ runcmd:
 <span class="nv">$ </span>terraform apply <span class="nt">--auto-approve</span>
 </code></pre></div></div>
 
-<p>最後のコマンドによる <strong>Terraform</strong> スクリプトの適用完了までの所要時間は、GPUノードのノード数が2ノードの場合で10分程度です。</p>
+<p>最後のコマンドによる <strong>Terraform</strong> スクリプトの適用完了までの所要時間は、GPUノードのノード数が2ノードの場合で15分程度です。</p>
 
 <p><strong>Terraform</strong> スクリプトの適用が正常に完了すると、以下のようにコマンド出力の最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
 
@@ -926,12 +904,12 @@ Bastion_instances_created <span class="o">=</span> <span class="o">{</span>
   <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
 <span class="o">}</span>
 Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
-  <span class="s2">"inst-9fhuq-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol79"</span>
+  <span class="s2">"inst-9fhuq-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol89"</span>
     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
   <span class="o">}</span>
-  <span class="s2">"inst-dz99s-gpu4-ol79"</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol79"</span>
+  <span class="s2">"inst-dz99s-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol89"</span>
     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -956,21 +934,14 @@ Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
 
 <h2 id="2-2-cloud-init完了確認">2-2. cloud-init完了確認</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。<br />
-この際、ノード数分の接続するかどうかの確認に対して全て <strong>yes</strong> を入力します。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo cloud-init status"</span><span class="p">;</span> <span class="k">done
-</span>inst-zvc5c-gpu4-ol79
-The authenticity of host <span class="s1">'inst-zvc5c-gpu4-ol79 (10.0.2.159)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:6zl4kIFKqpBrRlw/JCfStS05rdCu7Eif/4e3OWvbOsc.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-zvc5c-gpu4-ol79,10.0.2.159'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh  <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> <span class="s2">"sudo cloud-init status"</span><span class="p">;</span> <span class="k">done
+</span>inst-xxxxx-gpu4-ol89
+Warning: Permanently added <span class="s1">'inst-xxxxx-gpu4-ol89,10.0.2.117'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
 status: <span class="k">done
-</span>inst-wf3wx-gpu4-ol79
-The authenticity of host <span class="s1">'inst-wf3wx-gpu4-ol79 (10.0.2.31)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:jWTGqZjG0dAyrbP04JGC8jJX+uqDwMFotLXirA7L+AA.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-wf3wx-gpu4-ol79,10.0.2.31'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+</span>inst-yyyyy-gpu4-ol89
+Warning: Permanently added <span class="s1">'inst-yyyyy-gpu4-ol89,10.0.2.17'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
 status: <span class="k">done</span>
 <span class="err">$</span>
 </code></pre></div></div>
@@ -982,12 +953,12 @@ status: <span class="k">done</span>
 <p>GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが <strong>/mnt/localdisk</strong> にマウントされ、Bastionノードの <strong>/home</strong> が <strong>/home</strong> としてマウントされています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"df -h / /mnt/localdisk /home"</span><span class="p">;</span> <span class="k">done
-</span>inst-kicav-gpu4-ol79
+</span>inst-xxxxx-gpu4-ol89
 Filesystem              Size  Used Avail Use% Mounted on
 /dev/sda3               192G   23G  170G  12% /
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
 bastion:/home            36G  9.1G   27G  26% /home
-inst-0vdz8-gpu4-ol79
+inst-yyyyy-gpu4-ol89
 Filesystem              Size  Used Avail Use% Mounted on
 /dev/sda3               192G   23G  170G  12% /
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
@@ -1000,16 +971,147 @@ bastion:/home            36G  9.1G   27G  26% /home
 <p>以下コマンドをBastionノードのopcユーザで実行し、GPUノードのBIOSで指定した <strong>NPS</strong> と <strong>SMT</strong> 設定が指定したとおりになっていることを確認します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"lscpu | grep -i -e numa -e thread"</span><span class="p">;</span> <span class="k">done
-</span>inst-kicav-gpu4-ol79
+</span>inst-xxxxx-gpu4-ol89
 Thread<span class="o">(</span>s<span class="o">)</span> per core:  2
 NUMA node<span class="o">(</span>s<span class="o">)</span>:        8
-NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-17,36-53
-NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
-inst-0vdz8-gpu4-ol79
+NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-7,64-71
+NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   8-15,72-79
+NUMA node2 CPU<span class="o">(</span>s<span class="o">)</span>:   16-23,80-87
+NUMA node3 CPU<span class="o">(</span>s<span class="o">)</span>:   24-31,88-95
+NUMA node4 CPU<span class="o">(</span>s<span class="o">)</span>:   32-39,96-103
+NUMA node5 CPU<span class="o">(</span>s<span class="o">)</span>:   40-47,104-111
+NUMA node6 CPU<span class="o">(</span>s<span class="o">)</span>:   48-55,112-119
+NUMA node7 CPU<span class="o">(</span>s<span class="o">)</span>:   56-63,120-127
+inst-yyyyy-gpu4-ol89
 Thread<span class="o">(</span>s<span class="o">)</span> per core:  2
 NUMA node<span class="o">(</span>s<span class="o">)</span>:        8
-NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-17,36-53
-NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
+NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-7,64-71
+NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   8-15,72-79
+NUMA node2 CPU<span class="o">(</span>s<span class="o">)</span>:   16-23,80-87
+NUMA node3 CPU<span class="o">(</span>s<span class="o">)</span>:   24-31,88-95
+NUMA node4 CPU<span class="o">(</span>s<span class="o">)</span>:   32-39,96-103
+NUMA node5 CPU<span class="o">(</span>s<span class="o">)</span>:   40-47,104-111
+NUMA node6 CPU<span class="o">(</span>s<span class="o">)</span>:   48-55,112-119
+NUMA node7 CPU<span class="o">(</span>s<span class="o">)</span>:   56-63,120-127
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="2-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認">2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認</h2>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、GPUノードの <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続に使用する16個のネットワークインターフェースに正しくIPアドレスが設定されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"ip a | grep rdma | grep inet"</span><span class="p">;</span> <span class="k">done
+</span>inst-xxxxx-gpu4-ol89
+    inet 10.224.0.117/12 brd 10.239.255.255 scope global noprefixroute rdma0
+    inet 10.224.1.117/12 brd 10.239.255.255 scope global noprefixroute rdma1
+    inet 10.224.2.117/12 brd 10.239.255.255 scope global noprefixroute rdma2
+    inet 10.224.3.117/12 brd 10.239.255.255 scope global noprefixroute rdma3
+    inet 10.224.4.117/12 brd 10.239.255.255 scope global noprefixroute rdma4
+    inet 10.224.5.117/12 brd 10.239.255.255 scope global noprefixroute rdma5
+    inet 10.224.6.117/12 brd 10.239.255.255 scope global noprefixroute rdma6
+    inet 10.224.7.117/12 brd 10.239.255.255 scope global noprefixroute rdma7
+    inet 10.224.8.117/12 brd 10.239.255.255 scope global noprefixroute rdma8
+    inet 10.224.9.117/12 brd 10.239.255.255 scope global noprefixroute rdma9
+    inet 10.224.10.117/12 brd 10.239.255.255 scope global noprefixroute rdma10
+    inet 10.224.11.117/12 brd 10.239.255.255 scope global noprefixroute rdma11
+    inet 10.224.12.117/12 brd 10.239.255.255 scope global noprefixroute rdma12
+    inet 10.224.13.117/12 brd 10.239.255.255 scope global noprefixroute rdma13
+    inet 10.224.14.117/12 brd 10.239.255.255 scope global noprefixroute rdma14
+    inet 10.224.15.117/12 brd 10.239.255.255 scope global noprefixroute rdma15
+inst-yyyyy-gpu4-ol89
+    inet 10.224.0.17/12 brd 10.239.255.255 scope global noprefixroute rdma0
+    inet 10.224.1.17/12 brd 10.239.255.255 scope global noprefixroute rdma1
+    inet 10.224.2.17/12 brd 10.239.255.255 scope global noprefixroute rdma2
+    inet 10.224.3.17/12 brd 10.239.255.255 scope global noprefixroute rdma3
+    inet 10.224.4.17/12 brd 10.239.255.255 scope global noprefixroute rdma4
+    inet 10.224.5.17/12 brd 10.239.255.255 scope global noprefixroute rdma5
+    inet 10.224.6.17/12 brd 10.239.255.255 scope global noprefixroute rdma6
+    inet 10.224.7.17/12 brd 10.239.255.255 scope global noprefixroute rdma7
+    inet 10.224.8.17/12 brd 10.239.255.255 scope global noprefixroute rdma8
+    inet 10.224.9.17/12 brd 10.239.255.255 scope global noprefixroute rdma9
+    inet 10.224.10.17/12 brd 10.239.255.255 scope global noprefixroute rdma10
+    inet 10.224.11.17/12 brd 10.239.255.255 scope global noprefixroute rdma11
+    inet 10.224.12.17/12 brd 10.239.255.255 scope global noprefixroute rdma12
+    inet 10.224.13.17/12 brd 10.239.255.255 scope global noprefixroute rdma13
+    inet 10.224.14.17/12 brd 10.239.255.255 scope global noprefixroute rdma14
+    inet 10.224.15.17/12 brd 10.239.255.255 scope global noprefixroute rdma15
+<span class="err">$</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="3-コンテナ環境構築">3. コンテナ環境構築</h1>
+
+<p>本章は、 <strong>NCCL Tests</strong> を実行するためのコンテナ環境を構築します。</p>
+
+<p>以下コマンドを全てのGPUノードのopcユーザで実行し、 <strong>Docker Community Edition</strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> をインストール・起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--add-repo</span> https://download.docker.com/linux/centos/docker-ce.repo
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> docker-ce nvidia-container-toolkit
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> docker
+</code></pre></div></div>
+
+<p>次に、以下コマンドを全てのGPUノードのopcユーザで実行し、コンテナ上で <strong>BM.GPU4.8</strong> が搭載する8個のGPUにアクセスできることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>docker run <span class="nt">--rm</span> <span class="nt">--gpus</span> all nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
+Unable to find image <span class="s1">'nvcr.io/nvidia/base/ubuntu:22.04_20240212'</span> locally
+22.04_20240212: Pulling from nvidia/base/ubuntu
+d66d6a6a3687: Pull <span class="nb">complete 
+</span>24c2d4f7ea40: Pull <span class="nb">complete 
+</span>9d30336abbd7: Pull <span class="nb">complete 
+</span>feb1277c15aa: Pull <span class="nb">complete 
+</span>3cf0dbeda93a: Pull <span class="nb">complete 
+</span>99fc1e9ef206: Pull <span class="nb">complete 
+</span>a8f7f8dfd4e2: Pull <span class="nb">complete 
+</span>Digest: sha256:2a9f71d82aa4daac444c1b4b74d5d7b01f93eb23662c1236f89d817f083abecd
+Status: Downloaded newer image <span class="k">for </span>nvcr.io/nvidia/base/ubuntu:22.04_20240212
+Mon Jul  1 02:58:34 2024       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|<span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span>|
+|   0  NVIDIA A100-SXM4-40GB          On  |   00000000:0F:00.0 Off |                    0 |
+| N/A   38C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-40GB          On  |   00000000:15:00.0 Off |                    0 |
+| N/A   37C    P0             85W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
+| N/A   34C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-40GB          On  |   00000000:54:00.0 Off |                    0 |
+| N/A   36C    P0             82W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA A100-SXM4-40GB          On  |   00000000:8D:00.0 Off |                    0 |
+| N/A   35C    P0             79W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA A100-SXM4-40GB          On  |   00000000:92:00.0 Off |                    0 |
+| N/A   35C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA A100-SXM4-40GB          On  |   00000000:D6:00.0 Off |                    0 |
+| N/A   34C    P0             78W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA A100-SXM4-40GB          On  |   00000000:DA:00.0 Off |                    0 |
+| N/A   36C    P0             85W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|<span class="o">=========================================================================================</span>|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
 <span class="err">$</span>
 </code></pre></div></div>
 
@@ -1018,17 +1120,7 @@ NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
 
 <p>本章は、 <strong><a href="https://catalog.ngc.nvidia.com/">NGC Catalog</a></strong> から提供される <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、Dockerコンテナ上で <strong>NCCL</strong> のGPU間通信性能を <strong>NCCL Tests</strong> で検証します。</p>
 
-<ol>
-  <li>
-    <p>全GPUノードのrootユーザで以下コマンドを実行し、Dockerランタイムを起動します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>systemctl start docker
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p><strong><a href="/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法">標準ベンチマーク実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></strong> の手順に従い、 <strong>NCCL Tests</strong> を実行します。</p>
-  </li>
-</ol>
+<p>この <strong>NCCL Tests</strong> 実行方法は、 <strong><a href="/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法">標準ベンチマーク実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></strong> を参照してください。</p>
 
 <hr />
 <h1 id="4-gpuクラスタ削除">4. GPUクラスタ削除</h1>
@@ -1092,7 +1184,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-02T00:00:51+09:00">July 2, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-02T13:47:00+09:00">July 2, 2024</time></p>
 
       </footer>
 
