@@ -403,22 +403,15 @@ $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
 
 ## 2-2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。  
-この際、ノード数分の接続するかどうかの確認に対して全て **yes** を入力します。
+**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
 
 ```sh
-$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "sudo cloud-init status"; done
-inst-zvc5c-x9-ol8
-The authenticity of host 'inst-zvc5c-x9-ol8 (10.0.2.159)' cannot be established.
-ECDSA key fingerprint is SHA256:6zl4kIFKqpBrRlw/JCfStS05rdCu7Eif/4e3OWvbOsc.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'inst-zvc5c-x9-ol8,10.0.2.159' (ECDSA) to the list of known hosts.
+$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname "sudo cloud-init status"; done
+inst-xxxxx-x9-ol8
+Warning: Permanently added 'inst-xxxxx-x9-ol8,10.0.2.159' (ECDSA) to the list of known hosts.
 status: done
-inst-wf3wx-x9-ol8
-The authenticity of host 'inst-wf3wx-x9-ol8 (10.0.2.31)' cannot be established.
-ECDSA key fingerprint is SHA256:jWTGqZjG0dAyrbP04JGC8jJX+uqDwMFotLXirA7L+AA.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'inst-wf3wx-x9-ol8,10.0.2.31' (ECDSA) to the list of known hosts.
+inst-yyyyy-x9-ol8
+Warning: Permanently added 'inst-yyyyy-x9-ol8,10.0.2.31' (ECDSA) to the list of known hosts.
 status: done
 $
 ```

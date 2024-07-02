@@ -52,7 +52,7 @@ MPI言語規格に準拠するMPI実装
 - ノード間並列実行（大規模構成で可能）
 - ノード間並列実行でローカルディスクを活用（※1）（大規模構成で可能）
 
-※1） **BM.Optimized3.36** が内蔵するNVMe SSDのローカルディスクをデータ領域として使用する方法で、他のファイル共有ストレージを使用する方法と比較して、並列数を大きくした場合のスケーラビリティを改善出来る場合があります。
+※1） **BM.Optimized3.36** が内蔵するNVMe SSDローカルディスクをデータ領域として使用する方法で、他のファイル共有ストレージを使用する方法と比較して、並列数を大きくした場合のスケーラビリティを改善出来る場合があります。
 
 構築する環境は、以下を前提とします。
 
@@ -75,7 +75,7 @@ MPI言語規格に準拠するMPI実装
 ※2）小規模構成の場合  
 ※3）大規模構成の場合で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 ※4）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
-※5）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。
+※5）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。
   
 
 なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
@@ -94,7 +94,7 @@ MPI言語規格に準拠するMPI実装
 
 本章は、本テクニカルTipsで使用するHPCクラスタを構築します。
 
-この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の手順に従い実施します。  
+この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** か **[HPCクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** の手順に従い実施します。  
 なお小規模構成の場合は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** をデプロイする代わりに単一の計算ノードをデプロイします。
 
 この際、計算ノードとBastionノードを以下のように構成します。
@@ -125,13 +125,13 @@ MPI言語規格に準拠するMPI実装
 
 本章は、 **OpenFOAM** をインストールするための事前準備として、以下の作業を実施します。
 
-- 前提となるソフトウェア・rpmパッケージのインストール
+- 前提ソフトウェア・rpmパッケージのインストール
 - **OpenFOAM** と外部ツールのソースプログラムのダウンロード・展開
 
-1. 前提条件ソフトウェアの **OpenMPI** をインストール・セットアップします。  
+1. 前提ソフトウェアの **OpenMPI** をインストール・セットアップします。  
 この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
 
-2. 以下コマンドをopcユーザで実行し、前提条件のrpmパッケージを提供するyumレポジトリを追加します。
+2. 以下コマンドをopcユーザで実行し、前提rpmパッケージを提供するyumレポジトリを追加します。
 
     ```sh
     $ sudo yum-config-manager --enable ol8_codeready_builder ol8_developer_EPEL
@@ -152,7 +152,7 @@ MPI言語規格に準拠するMPI実装
     $ sudo yum-config-manager --enable ol8_codeready_builder ol8_developer_EPEL
     ```
 
-3. 以下コマンドをopcユーザで実行し、前提条件のrpmパッケージをインストールします。
+3. 以下コマンドをopcユーザで実行し、前提rpmパッケージをインストールします。
 
     ```sh
     $ sudo dnf install -y cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel python36-devel
@@ -316,7 +316,7 @@ MPI言語規格に準拠するMPI実装
 
     次に、以下コマンドをopcユーザで実行し、 **TigerVNC** にユーザを登録します。  
     このユーザは、VNC接続時に使用するユーザであり、CFD解析ユーザでもあります。  
-    ここでは、 **usera** を1番で登録しており、このユーザはOSのユーザとして予め存在している必要があります。
+    ここでは、 **usera** を1番で登録しており、このユーザをOSのユーザとして予め登録しインターネット経由でSSHログインできるようにしておきます。
 
     ```sh
     $ echo :1=usera | sudo tee -a /etc/tigervnc/vncserver.users
@@ -345,7 +345,7 @@ MPI言語規格に準拠するMPI実装
     $ sudo systemctl enable --now vncserver@:1.service
     ```
 
-3. 以下コマンドを実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートに対してSSHポートフォワードセッションを確立、その後このユーザのVNC接続パスワードを設定します。  
+3. 以下コマンドを実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートにインターネット経由でSSHポートフォワードセッションを確立、その後このユーザのVNC接続パスワードを設定します。  
 なおこのポート番号の1桁目は、先に登録したVNCユーザの番号に一致します。（例：2番のユーザ用ポート番号は、5902番です。）
 
     ```sh
@@ -434,7 +434,7 @@ MPI言語規格に準拠するMPI実装
 
 ### 4-2-0. 概要
 
-本章は、 **[6-1. 事前準備](#6-1-事前準備)** を行った計算ノードでインタラクティブにプリ処理・解析処理を実行します。  
+本章は、 **[4-1. 事前準備](#4-1-事前準備)** を行った計算ノードでインタラクティブにプリ処理・解析処理を実行します。  
 この際の解析処理は、以下3種類の方法を解説します。
 
 1. 1コアを使用する非並列実行
@@ -562,9 +562,9 @@ MPI言語規格に準拠するMPI実装
 ## 4-3. プリ処理・解析処理のバッチ実行
 
 本章は、プリ処理・解析処理をバッチ実行します。  
-この際の解析処理は、 **BM.Optimized3.36** の2ノード72コアを使用するノード間並列で実行し、内蔵するNVMe SSDのローカルディスクをデータ領域に使用します。
+この際の解析処理は、 **BM.Optimized3.36** の2ノード72コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをデータ領域に使用します。
 
-以下手順は、CFD解析ユーザでSlurmクライアントで実行します。
+以下手順は、Slurmクライアントで実行します。
 
 1. 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
 
@@ -604,51 +604,51 @@ MPI言語規格に準拠するMPI実装
 
 3. 以下のジョブスクリプトをファイル名 **submit.sh** で作成します。
 
-```sh
-#!/bin/bash
-#SBATCH -p sltest
-#SBATCH -n 72
-#SBATCH -N 2
-#SBATCH -J pitzDaily
-#SBATCH -o pitzDaily_out.%J
-#SBATCH -e pitzDaily_err.%J
+    ```sh
+    #!/bin/bash
+    #SBATCH -p sltest
+    #SBATCH -n 72
+    #SBATCH -N 2
+    #SBATCH -J pitzDaily
+    #SBATCH -o pitzDaily_out.%J
+    #SBATCH -e pitzDaily_err.%J
 
-# Set model directories for shared storage and NVMe local disk
-model_dir="pitzDaily"
-local_disk="/mnt/localdisk/openfoam"
-shared_dir=$FOAM_RUN/$model_dir/
-local_dir=$local_disk/$model_dir/
+    # Set model directories for shared storage and NVMe local disk
+    model_dir="pitzDaily"
+    local_disk="/mnt/localdisk/openfoam"
+    shared_dir=$FOAM_RUN/$model_dir/
+    local_dir=$local_disk/$model_dir/
 
-# Set OCI specific environment variables
-export UCX_NET_DEVICES=mlx5_2:1
-export OMPI_MCA_coll_hcoll_enable=0
+    # Set OCI specific environment variables
+    export UCX_NET_DEVICES=mlx5_2:1
+    export OMPI_MCA_coll_hcoll_enable=0
 
-# Get head node host name
-head_node=`hostname`
+    # Get head node host name
+    head_node=`hostname`
 
-# Copy model files from shared storage to NVMe local disk on head node
-rsync -ae "ssh -o StrictHostKeyChecking=no" $shared_dir $local_dir
+    # Copy model files from shared storage to NVMe local disk on head node
+    rsync -a $shared_dir $local_dir
 
-# Create mesh and decompse partition on head node
-cd $local_dir
-blockMesh
-decomposePar
+    # Create mesh and decompse partition on head node
+    cd $local_dir
+    blockMesh
+    decomposePar
 
-# Sync model files on head node NVMe local disk with others
-for remote_node in `scontrol show hostnames | grep  -v $head_node`; do rsync -ae "ssh -o StrictHostKeyChecking=no" $local_dir $remote_node:$local_dir; done
+    # Sync model files on head node NVMe local disk with others
+    for remote_node in `scontrol show hostnames | grep  -v $head_node`; do rsync -ae "ssh -o StrictHostKeyChecking=no" $local_dir $remote_node:$local_dir; done
 
-# Run solver in parallel
-srun simpleFoam -parallel
+    # Run solver in parallel
+    srun simpleFoam -parallel
 
-# Sync model files on other node NVMe local disk to head node's
-for remote_node in `scontrol show hostnames | grep  -v $head_node`; do rsync -ae "ssh -o StrictHostKeyChecking=no" $remote_node:$local_dir $local_dir; done
+    # Sync model files on other node NVMe local disk with head node's
+    for remote_node in `scontrol show hostnames | grep  -v $head_node`; do rsync -ae "ssh -o StrictHostKeyChecking=no" $remote_node:$local_dir $local_dir; done
 
-# Reconstruct decomposed partitions on head node NVMe local disk
-reconstructPar
+    # Reconstruct decomposed partitions on head node NVMe local disk
+    reconstructPar
 
-# Sync model files on head node NVMe local disk to shared storage
-rsync -ae "ssh -o StrictHostKeyChecking=no" $local_dir $shared_dir
-```
+    # Sync model files on head node NVMe local disk with shared storage
+    rsync -ae "ssh -o StrictHostKeyChecking=no" $local_dir $shared_dir
+    ```
 
 4. 以下コマンドを実行し、バッチジョブを投入します。
 
@@ -658,7 +658,7 @@ rsync -ae "ssh -o StrictHostKeyChecking=no" $local_dir $shared_dir
 
 5. ジョブの標準出力・標準エラー出力は、ジョブを投入したディレクトリにファイル名 **pitzDaily_out.xxx** と **pitzDaily_err.xxx** で出力されます。
 
-# 5. ポスト処理
+## 4-4. ポスト処理
 
 本章は、ポスト処理をBastionノードで実行します。
 

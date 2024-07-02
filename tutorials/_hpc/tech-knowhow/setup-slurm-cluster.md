@@ -287,7 +287,7 @@ $ make -j 36 all && sudo make install
 
 本章は、Slurmマネージャでrpmパッケージを作成します。
 
-1. 以下コマンドをSlurmマネージャのopcユーザで実行し、前提となるrpmパッケージをインストールします。
+1. 以下コマンドをSlurmマネージャのopcユーザで実行し、前提rpmパッケージをインストールします。
 
    ```
    $ sudo dnf install -y rpm-build pam-devel perl readline-devel autoconf automake

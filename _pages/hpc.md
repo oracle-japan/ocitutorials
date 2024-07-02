@@ -123,7 +123,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 | チュートリアル名                                                                                      | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | 計算ノードOS                |
 | :-------------------------------------------------------------------------------------------: | :-----------------: | :----------: | :---------------: | :--------------------: |
 | **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)**                | 手動構築  | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
-| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**      | 自動構築<br>（Terraform） | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**      | 自動構築<br>（Terraform CLI<br>/スタック） | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
 | **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**                 | 自動構築<br>（スタック）      | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
 | **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)** | 自動構築<br>（スタック）      | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
 
@@ -131,11 +131,11 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 本章は、機械学習環境を構築するチュートリアルを集めています。自身の要件に合わせてチュートリアルを選んだら、そのチュートリアル名をクリックします。
 
-| チュートリアル名                                                                                       | GPUノード数 | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナ<br>ランタイム     | GPUノードOS             |
+| チュートリアル名                                                                                       | GPU<br>ノード数 | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナ<br>ランタイム     | GPUノードOS             |
 | :--------------------------------------------------------------------------------------------: | :--------: | :-----------------: | :----------: | :---------------: | :-----------: | :------------------: |
 | **[GPUインスタンスで<br>機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                            | 単一         | 手動構築                | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8 |
 | **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 複数         | 手動構築                | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8 |
-| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数         | 自動構築<br>（Terraform） | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8 |
+| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数         | 自動構築<br>（Terraform CLI<br>/スタック） | 無し           | スタティック            | **Docker CE** | **Oracle Linux** 7.9/8 |
 | **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 複数         | 自動構築<br>（スタック）      | 有り           | スタティック            | **Enroot**    | **Oracle Linux** 7.9/8 |
 | **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)** | 複数         | 自動構築<br>（スタック）      | 有り           | オンデマンド            | **Enroot**    | **Oracle Linux** 7.9/8 |
 | **[GPUクラスタを構築する<br>(Ubuntu OS編)](/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/)**           | 複数         | 手動構築                  | 無し           | スタティック            | -             | **Ubuntu** 20.04     |
@@ -306,9 +306,9 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 ## 3-2. ストレージ
 
-- **[ベアメタルインスタンスの内蔵NVMe SSD領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)**
+- **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)**
 
-    高速スクラッチ領域として利用することを想定したNVMe SSDを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
+    高速スクラッチ領域として利用することを想定したNVMe SSDローカルディスクを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDローカルディスクをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
     本テクニカルTipsは、このファイルシステム作成方法を解説します。
 
 - **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)**
@@ -616,7 +616,7 @@ OCIコンソールの **インスタンス・プール** メニューは、 **[�
 [ **Ansible** によるOSレベルカスタマイズフェーズ]
 
 - firewalld停止
-- NVMe SSD領域ファイルシステム構築
+- NVMe SSDローカルディスク領域ファイルシステム構築
 - /etc/hostsファイル生成
 - NFSファイル共有環境構築
 - LDAPユーザ統合環境構築
@@ -644,7 +644,7 @@ runcmd:
   - systemctl disable firewalld
 ```
 
-**cloud-init** によるOSカスタマイズは、基本的にインスタンスデプロイ後に一度だけ実施されるため、HPC/機械学習ワークロード向けベアメタルインスタンスをデプロイする際に必須となるNVMeローカルディスク領域ファイルシステム作成や、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 用ネットワークインターフェース設定を実施するのに最適です。
+**cloud-init** によるOSカスタマイズは、基本的にインスタンスデプロイ後に一度だけ実施されるため、HPC/機械学習ワークロード向けベアメタルインスタンスをデプロイする際に必須となるNVMe SSDローカルディスク領域ファイルシステム作成や、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 用ネットワークインターフェース設定を実施するのに最適です。
 
 **cloud-init** は、 **クラスタ・ネットワーク** 作成時に指定する **インスタンス構成** と紐づけることで、 **クラスタ・ネットワーク** に接続する全ての計算ノードやGPUノードに一斉にOSカスタマイズを適用することを可能にします。
 
