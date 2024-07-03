@@ -590,21 +590,21 @@ $
 
 
 ***
-# 3. NCCL Tests実行
+# 4. NCCL Tests実行
 
 本章は、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、Dockerコンテナ上で **NCCL** のGPU間通信性能を **NCCL Tests** で検証します。
 
 この **NCCL Tests** 実行方法は、 **[標準ベンチマーク実行方法](/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法)** の **[NCCL Tests実行方法](/ocitutorials/hpc/benchmark/run-nccltests/)** を参照してください。
 
 ***
-# 4. GPUクラスタ削除
+# 5. GPUクラスタ削除
 
-## 4-0. 概要
+## 5-0. 概要
 
 本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、GPUクラスタを削除します。  
 この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
-## 4-1. リソース・マネージャを使用する方法
+## 5-1. リソース・マネージャを使用する方法
 
 1. 以下 **スタックの詳細** 画面で、 **破棄** ボタンをクリックします。
 
@@ -626,7 +626,7 @@ $
 
    ステータスが **成功** となれば、GPUクラスタの削除が完了しています。
 
-## 4-2. Terraform CLIの場合
+## 5-2. Terraform CLIの場合
 
 本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **Terraform** CLIで破棄し、GPUクラスタを削除します。
 

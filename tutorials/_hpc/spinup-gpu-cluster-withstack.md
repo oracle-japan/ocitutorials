@@ -10,19 +10,34 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
+***
+# 0. 概要
+
 Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。
 - **RoCE v2** 採用の高帯域・低レイテンシRDMAインターコネクトの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**
-- 8枚の **NVIDIA A100** 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ **BM.GPU4.8/BM.GPU.GM4.8**
+- 8枚の **NVIDIA A100** 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
 
-このチュートリアルは、 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から無償で利用可能な **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を利用し、以下構成のGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行します。
-- **NVIDIA A100** 40 GBを8枚搭載するGPUノード（ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** ）
-- インターコネクト: **クラスタ・ネットワーク** （ノード当たり100 Gbps x 16）
-- インターネットからSSH接続可能なBastionノード
-- OS: **Oracle Linux** 7.9
-- コンテナランタイム: **Enroot**
-- ジョブスケジューラ: **Slurm** + **Pyxis**
+本チュートリアルは、 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から無償で利用可能な **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を利用し、以下構成のGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証後、分散機械学習のサンプルプログラムを実行します。
+
+[GPUノード]
+- シェイプ ： **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
+- インターコネクト ： **クラスタ・ネットワーク** （ノード当たり100 Gbps x 16）
+- OS ： **Oracle Linux** 8.9ベースのGPU **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+
+[Bastionノード]
+- シェイプ ： **[VM.Standard.E4.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)**
+- OS ： **Oracle Linux** 8.9ベースのGPU **クラスタネットワーキングイメージ** （※1）
+
+[ソフトウェア]
+- コンテナランタイム ： **Enroot**
+- ジョブスケジューラ ： **Slurm** + **Pyxis**
+- コンテナ ： **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** 24.06-tf2-py3 from **[NGC Catalog](https://catalog.ngc.nvidia.com/)**
+
+[クラスタ管理]
 - **ファイルストレージ** によるGPUクラスタ内ホームディレクトリ共有
 - LDAPによるクラスタ内ユーザ統合管理
+
+※1） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.7** です。  
 
 ![システム構成図](architecture_diagram.png)
 
@@ -30,95 +45,119 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
 この実行環境は、コンテナランタイムに **[Enroot](https://github.com/NVIDIA/enroot/)** 、ジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を採用し、コンテナの操作（インポート・起動・終了等）をジョブスケジューラからコンテナランタイムに指示することを可能にするため、 **Slurm** のプラグインである **[Pyxis](https://github.com/NVIDIA/pyxis)** を使用します。
 
-またこの実行環境は、コンテナ環境からGPUやNICをRDMAで利用可能とする **NVIDIA Container Toolkit** を含むソフトウェア群もインストールされるため、ノードを跨ぐGPU間通信を高帯域・低遅延にコンテナ上から実行することが可能です。この通信性能詳細は、 **[6-0. NCCL通信性能検証](#6-0-nccl通信性能検証概要)** を参照ください。
+またこの実行環境は、コンテナ環境からGPUやNICをRDMAで利用可能とする **NVIDIA Container Toolkit** を含むソフトウェア群もインストールされるため、ノードを跨ぐGPU間通信を高帯域・低遅延にコンテナ上から実行することが可能です。  
+この通信性能詳細は、 **[4-0. 概要](#4-0-概要)** を参照ください。
 
 ![ソフトウェアスタック](software_stack.png)
 
-また、本チュートリアルで使用する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** は、通常であれば数日かかるようなGPUクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択した後、1クリックで自動的に行います。
+また、本チュートリアルで使用する **HPCクラスタスタック** は、通常であれば数日かかるようなGPUクラスタ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択した後、1クリックで自動的に行います。
 
-このチュートリアルで作成する環境は、前述のとおり **Slurm** と **Enroot** を使用するコンテナ環境ですが、これらの必要なソフトウェア環境は自身で整備するのでそれらを構築する際の基礎インフラストラクチャとなるGPUクラスタを構築する場合は、本チュートリアルの姉妹編である **[GPUクラスタを構築する（基礎インフラ手動構築編）](https://oracle-japan.github.io/ocitutorials/intermediates/spinup-gpu-cluster)** を参照ください。
+このチュートリアルで作成する環境は、前述のとおり **Slurm** と **Enroot** を使用するコンテナ環境ですが、これらの必要なソフトウェア環境は自身で整備するのでそれらを構築する際の基礎インフラストラクチャとなるGPUクラスタを構築する場合は、本チュートリアルの姉妹編である **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する（基礎インフラ自動構築編）](/ocitutorials/hpc/spinup-gpu-cluster-withterraform)** を参照ください。
 
 **所要時間 :** 約1時間
 
-**前提条件 :** HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。具体的には、以下ページの **Policies to deploy the stack:** に記載のポリシーが付与されていること。
+**前提条件 :** HPCクラスタを収容する **コンパートメント** ( **ルート・コンパートメント** でもOKです)が作成されていること。
 
-[https://cloud.oracle.com/marketplace/application/67628143/usageInformation](https://cloud.oracle.com/marketplace/application/67628143/usageInformation)
-
-**注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用するGPUクラスタ構築用スタックのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。
-
-***
-# 0. HPCクラスタスタックの概要
-
-本チュートリアルで使用する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** は、クラスタ構築を大きく2つのステップに分けて実行しており、前半は **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用したOCIリソース構築フェーズで、後半は **リソース・マネージャ** から起動される **Ansible** が行うOSレベルのカスタマイズフェーズです。
-
-具体的には、以下のような処理が行われます。
-
-［ **リソース・マネージャ** によるOCIリソース構築フェーズ］
-
-- VCNと関連するネットワークリソース構築
-- **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** と関連リソース構築
-- Bastionノードインスタンス構築
-- GPUノードインスタンス構築
-- **ファイルストレージ** 構築
-- **Ansible** 関連ソフトウェアインストール
-
-[ **Ansible** によるOSレベルカスタマイズフェーズ]
-
-- firewalld停止
-- **NVMe SSD** ローカルディスク領域ファイルシステム構築
-- /etc/hostsファイル生成
-- NFSファイル共有環境構築
-- LDAPユーザ統合環境構築
-- RDMAインタフェース構築
-- **Enroot** 環境構築
-- **Slurm** 環境構築
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。  
+また使用する **HPCクラスタスタック** のバージョンが異なる場合も、画面ショットが異なる場合があります。
 
 ***
-# 1. スタックの作成
+# 1. GPUクラスタ作成
 
-**[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** でリソースをデプロイする場合、まずそのための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成する必要があります。
+## 1-0. 概要
 
-本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を元に、前述のGPUクラスタ環境を構築するための **スタック** を作成します。このチュートリアルで使用する **HPCクラスタスタック** は、バージョン **2.10.2.1** です。
+本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を利用し、GPUクラスタを作成します。  
+**HPCクラスタスタック** は、 **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** からGPUクラスタを作成するため、これを許可する **IAMポリシー** が必要です。  
+よって本章では、以下の手順でGPUクラスタを作成します。
+
+- **IAMポリシー** 作成
+- **スタック** の作成
+- **スタック** の計画
+- **スタック** の適用
+
+## 1-1. IAMポリシー作成
+
+本章は、 **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** からGPUクラスタを作成するための **IAMポリシー** を作成します。
+
+1. OCIコンソールにログインし、 **アイデンティティとセキュリティ** → **ポリシー** とメニューを辿ります。
+
+2. 表示される以下 **xxxxコンパートメント内のポリシー** 画面で、 **ポリシーの作成** ボタンをクリックします。  
+この際、 **コンパートメント** プルダウンメニューがGPUクラスタを作成する **コンパートメント** と異なる場合は、これを修正します。
+
+    ![画面ショット](console_page01.png)
+
+3. 表示される以下 **ポリシーの作成** 画面で、各フィールドに以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
+
+    - **名前** ： **IAMポリシー** に付与する名前
+    - **説明** ： **IAMポリシー** に付与する説明（用途等）
+    - **ポリシー・ビルダー** ： 作成する **IAMポリシー** を指定する以下構文  
+    （ **手動エディタの表示** ボタンをクリックして表示）（※2）
+
+      ```sh
+      allow service compute_management to use tag-namespace in compartment compartment_name
+      allow service compute_management to manage compute-management-family in compartment compartment_name
+      allow service compute_management to read app-catalog-listing in compartment compartment_name
+      allow group group_name to manage all-resources in compartment compartment_name
+      ```
+      ※2）**コンパートメント** 名と4行目の **グループ** 名は、自身のものに置き換えます。
+
+   ![画面ショット](console_page02.png)
+
+## 1-2. スタックの作成
+
+本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を元に、前述のGPUクラスタ環境を構築するための **スタック** を作成します。  
+このチュートリアルで使用する **HPCクラスタスタック** は、バージョン **2.10.6** です。
 
 1. 以下 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** の **HPCクラスタスタック** ページにアクセスします。
 
    [https://cloud.oracle.com/marketplace/application/67628143/](https://cloud.oracle.com/marketplace/application/67628143/)
 
-2. OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。
+   OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。
 
-3. 表示される以下画面の右上で、 **スタック** をデプロイするリージョンを選択し、 **HPCクラスタスタック** の **バージョン** を確認後、 **コンパートメント** を **スタック** をデプロイするコンパートメントに指定、**使用許諾** チェックボックスをチェックし、 **スタックの起動** ボタンをクリックします。
+2. 表示される以下画面で、以下情報の入力と **オラクル社標準の条件および規則を確認した上でこれに同意します。** チェックボックスをチェックし、 **スタックの起動** ボタンをクリックします。
+    - **リージョン :** GPUクラスタをデプロイする **リージョン**
+    - **バージョン :** v2.10.6
+    - **コンパートメント :** **スタック** を作成する **コンパートメント**
 
    ![画面ショット](market_place.png)
 
-4. 表示される以下 **スタック情報** 画面で、以下の情報を入力し、下部の **次** ボタンをクリックします。
-    - **名前 :** **スタック** に付与する名前（任意）
-    - **説明 :** **スタック** に付与する説明（任意）
+3. 表示される以下 **スタック情報** 画面で、各フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。
+    - **名前 :** スタックに付与する名前（任意）
+    - **説明 :** スタックに付与する説明（任意）
 
    ![画面ショット](stack_page01.png)
 
-5. 表示される **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
+4. 表示される **変数の構成** 画面で、各フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。  
+なお、ここに記載のないフィールドは、デフォルトのままとします。
 
-   5.1 **Cluster configuration** フィールド
-    - **Public SSH key :** （bastionにログインする際使用するSSH秘密鍵に対応する公開鍵）
+   4.1 **Cluster configuration** フィールド
+    - **Public SSH key :** （Bastionにログインする際使用するSSH秘密鍵に対応する公開鍵）
       - 公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能  
 
    ![画面ショット](stack_page02.png)
 
-    5.2 **Headnode options** フィールド
+   4.2 **Headnode options** フィールド
     - **Availability Domain :** （BastionノードをデプロイするAD）
+    - **Enable boot volume backup :** チェックオフ
+    - **Create Object Storage PAR :** チェックオフ
 
    ![画面ショット](stack_page03.png)
 
-   5.3 **Compute node options** フィールド
+   4.3 **Compute node options** フィールド
     - **Availability Domain :** （GPUノードをデプロイする可用性ドメイン）
-    - **Shape of the Compute Nodes :** **BM.GPU4.8** （GPUノードに使用するシェイプ）
+    - **Shape of the Compute Nodes :** **BM.GPU4.8**
     - **Initial cluster size :** 2（GPUノードのノード数、デフォルトのまま）
     - **Size of the boot volume in GB :** 200（GPUノードのブート・ボリュームサイズ）
-    - **Image version :** GPU（GPUノードのイメージ）
+    - **Image version :** GPU_OL8_NV550（GPUノードのイメージ）
    
    ![画面ショット](stack_page04.png)
 
-   5.4 **Additional file system** フィールド
+   4.4 **Additional Login Node** フィールド
+    - **Login Node :** チェックオフ
+
+   ![画面ショット](stack_page04-2.png)
+
+   4.5 **Additional file system** フィールド
     - **Add another NFS filesystem :** チェック
     - **Create FSS :** チェック
     - **NFS Path :** /mnt/home（※3）
@@ -128,21 +167,20 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
    ![画面ショット](stack_page04-1.png)
 
-   5.5 **Advanced storage options** フィールド
+   4.6 **Advanced storage options** フィールド
     - **Show advanced storage options :** チェック
-    - **Shared NFS scratch space from NVME or Block volume :** チェックオフ
-
-      - 計算ノードの **NVMe SSDローカル** ディスク領域をNFS共有するかの指定（本チュートリアルでは共有しない）
+    - **Redundancy :** チェックオフ
 
    ![画面ショット](stack_page05.png)
 
-   5.6 **Software** フィールド
-    - **Install Nvidia Pyxis plugin for Slurm :** チェック
+   4.7 **Software** フィールド
+    - **Create Rack aware topology :** チェックオフ
     - **Install Nvidia Enroot for containerized GPU workloads :** チェック
+    - **Install Nvidia Pyxis plugin for Slurm :** チェック
 
    ![画面ショット](stack_page05-1.png)
 
-6. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
+5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
    ![画面ショット](stack_page06.png)
 
@@ -152,8 +190,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
 ![画面ショット](stack_page07.png)
 
-***
-# 2. スタックの計画
+## 1-3. スタックの計画
 
 本章は、完成した **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** の **[スタック](/ocitutorials/hpc/#5-3-スタック)** を計画し、どのようなリソースがデプロイされるか確認します。
 
@@ -173,8 +210,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
    ![画面ショット](stack_page11.png)
 
-***
-# 3. スタックの適用
+## 1-4. スタックの適用
 
 本章は、計画で作成されるリソースに問題が無いことを確認した **[スタック](/ocitutorials/hpc/#5-3-スタック)** に対し、適用を行いGPUクラスタをデプロイします。
 
@@ -199,9 +235,9 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
    ステータスが **成功** となれば、GPUクラスタのデプロイが完了しています。
 
 ***
-# 4. GPUクラスタの確認・設定変更
+# 2. GPUクラスタ確認
 
-本章は、デプロイされたGPUクラスタにログインして環境の確認を行うとともに、ジョブスケジューラの設定を一部変更します。
+本章は、デプロイされたGPUクラスタにログインして環境の確認を行うとともに、 **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** をGPUノードにインストールします。
 
 1. Bastionノードログイン
 
@@ -217,76 +253,74 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
 2. Bastionノードファイルシステム確認
 
-   Bastionノードは、以下のようにファイルストレージの/mnt/homeがマウントされています。この/mnt/homeは、GPUクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。
+   Bastionノードは、以下のようにファイルストレージの **/mnt/home** がマウントされています。この **/mnt/home** は、GPUクラスタ内で共有するLDAPユーザのホームディレクトリに使用します。
 
    ```sh
    $ df -h /mnt/home
    Filesystem        Size  Used Avail Use% Mounted on
    FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
+   $
    ```
 
 3. GPUノードログイン
 
    GPUノードは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードを経由してログインします。
 
-   GPUノードのホスト名は、Bastionノードの/etc/opt/oci-hpcディレクトリ以下のファイルに格納されており、hostfile.tcpとhostfile.rdmaがそれぞれプライベートサブネット接続と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** サブネット接続に使用するIPアドレスに対応するホスト名です。このため、BastionノードからGPUノードへのログインは、hostfile.tcpファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。
+   GPUノードのホスト名は、Bastionノードの **/etc/opt/oci-hpc** ディレクトリ以下のファイルに格納されており、 **hostfile.tcp** と **hostfile.rdma** がそれぞれプライベートサブネット接続と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** サブネット接続に使用するIPアドレスに対応するホスト名です。  
+   このため、BastionノードからGPUノードへのログインは、 **hostfile.tcp** ファイルに格納されているホスト名を使用し、opcユーザでSSHログインします。
 
    ```sh
    $ cat /etc/opt/oci-hpc/hostfile.tcp
    compute-permanent-node-789
    compute-permanent-node-844
    $ ssh compute-permanent-node-844
+   Activate the web console with: systemctl enable --now cockpit.socket
+
+   Last login: Wed Jul  3 05:37:00 2024 from 172.16.0.238
+   $
    ```
 
 4. GPUノードファイルシステム確認
 
-   GPUノードは、以下のように **NVMe SSD** ローカルディスク領域が/mnt/localdiskにマウントされています。
+	GPUノードは、以下のようにNVMe SSDローカルディスクに作成したファイルシステムが **/mnt/localdisk** にマウントされています。
 
-   ```sh
-   $ df -h /mnt/localdisk
-   Filesystem      Size  Used Avail Use% Mounted on
-   /dev/nvme0n1p1  6.2T   33M  6.2T   1% /mnt/localdisk
-   ```
+	```sh
+	$ df -h /mnt/localdisk
+	Filesystem      Size  Used Avail Use% Mounted on
+	/dev/nvme0n1p1  6.2T   33M  6.2T   1% /mnt/localdisk
+	$
+	```
 
-   また、以下のようにBasionノードの/homeがGPUノードでマウントされています。この領域は、sudoコマンドを利用することで管理者権限を有するopcユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。
+	また、以下のようにBasionノードの **/home** がGPUノードでマウントされています。  
+	この領域は、sudoコマンドを利用することで管理者権限を有するopcユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。
 
-   ```sh
-   $ df -h /home
-   Filesystem                   Size  Used Avail Use% Mounted on
-   bastion_ip:/home             42G   13G   29G  32% /home
-   ```
+	```sh
+	$ df -h /home
+	Filesystem          Size  Used Avail Use% Mounted on
+	Bastion_ip:/home   89G   21G   69G  23% /home
+	$
+	```
 
-   また、以下のようにファイルストレージの/mnt/homeがマウントされています。この領域は、LDAPに作成する一般ユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。
+	また、以下のようにファイル・ストレージの **/mnt/home** がマウントされています。  
+	この領域は、LDAPに作成する一般ユーザに対して、ホームディレクトリをGPUクラスタ内で共有するために使用します。
 
-   ```sh
-   $ df -h /mnt/home
-   Filesystem        Size  Used Avail Use% Mounted on
-   FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
-   ```
+	```sh
+	$ df -h /mnt/home
+	Filesystem        Size  Used Avail Use% Mounted on
+	FSS_ip:/mnt/home  8.0E     0  8.0E   0% /mnt/home
+	$
+	```
 
-5. **Slurm** 設定変更
+5. **NVIDIA Container Toolkit** インストール
 
-   **Pxys** を介して **Slurm** から **Enroot** 上のコンテナを利用する場合、デフォルトの挙動はジョブ終了後にインポートしたコンテナを削除します。  
-   ジョブ終了後もコンテナを保持するため、Bastionノードで以下のように **Slurm** の設定ファイルを修正します。
-   
-   ```sh
-   $ diff /etc/slurm/plugstack.conf_org /etc/slurm/plugstack.conf
-   1c1
-   < required /usr/local/lib/slurm/spank_pyxis.so
-   ---
-   > required /usr/local/lib/slurm/spank_pyxis.so container_scope=global
-   ```
-   
-   次に、この設定変更を反映するため、Bastionノードのopcユーザで以下コマンドを実行し、 **Slurm** を再起動します。
+	以下コマンドを全てのGPUノードのopcユーザで実行し、 **NVIDIA Container Toolkit** をインストールします。
 
-   ```sh
-   $ for hname in `cat /etc/opt/oci-hpc/hostfile.tcp`; do echo $hname; ssh $hname "sudo systemctl stop slurmd"; done
-   $ sudo systemctl restart slurmctld slurmdbd
-   $ for hname in `cat /etc/opt/oci-hpc/hostfile.tcp`; do echo $hname; ssh $hname "sudo systemctl start slurmd"; done
-   ```
+	```sh
+	$ sudo dnf install -y nvidia-container-toolkit
+	```
 
 ***
-# 5. LDAPユーザ作成
+# 3. LDAPユーザ作成
 
 本章は、 **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** が作成したGPUクラスタ内のLDAP統合ユーザ管理環境にLDAPユーザを作成し、このユーザでGPUクラスタにログイン後、 **Slurm** から起動するコンテナ上で簡単なコマンドが実行出来ることを確認します。
 
@@ -294,75 +328,79 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
 1. LDAPユーザ作成
 
-   LDAPサーバであるBastionノードは、ユーザ管理のためのclusterコマンドが用意されています。
-   
-   このコマンドは、作成するユーザのホームディレクトリを/home以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの/mnt/home以下に作成するよう修正する必要があります。このため、以下コマンドをbastionのopcユーザで実行します。
+	LDAPサーバであるBastionノードは、ユーザ管理のためのclusterコマンドが用意されています。
 
-   ```sh
-   $ sudo sed -i 's/\/home\//\/mnt\/home\//g' /usr/bin/cluster
-   ```
+	このコマンドは、作成するユーザのホームディレクトリを **/home** 以下に作成するため、本環境のLDAPユーザ用ホームディレクトリであるファイルストレージの **/mnt/home** 以下に作成するよう修正する必要があります。このため、以下コマンドをBastionのopcユーザで実行します。
 
-   次に、以下コマンドをBastionノードのopcユーザで実行し、イニシャルグループが **privilege** （グループIDが9876で、そのメンバーにコンテナ実行権限が付与される。）のLDAPユーザを作成します。
+	```sh
+	$ sudo sed -i 's/\/home\//\/mnt\/home\//g' /usr/bin/cluster
+	```
 
-   ```sh
-   $ cluster user add user_name --gid 9876
-   Password:  <- Password for user_name
-   Repeat for confirmation: <- Password for user_name
-   Full Name: full_name <- Full name for user_name
-   $ id user_name
-   uid=10001(user_name) gid=9876(privilege) groups=9876(privilege)
-   ```
+	次に、以下コマンドをBastionノードのopcユーザで実行し、イニシャルグループが **privilege** （グループIDが9876で、そのメンバーにコンテナ実行権限が付与される。）のLDAPユーザを作成します。
 
-   ここで指定するパスワードは、GPUクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。
+	```sh
+	$ cluster user add user_name --gid 9876
+	Password:  <- Password for user_name
+	Repeat for confirmation: <- Password for user_name
+	Full Name: full_name <- Full name for user_name
+	$ id user_name
+	uid=10001(user_name) gid=9876(privilege) groups=9876(privilege)
+	$
+	```
 
-   次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。
+	ここで指定するパスワードは、GPUクラスタ内の認証にパスワード認証を使用しないため、任意のパスワードで構いません。
 
-   ```sh
-   $ echo 'public_key_for_user_name' | sudo tee -a ~user_name/.ssh/authorized_keys
-   public_key_for_user_name
-   ```
+	次に、このユーザがインターネットからBastionノードにSSHログインする際に使用するSSH秘密鍵に対応する公開鍵を登録するため、以下コマンドをBastionノードのopcユーザで実行します。
+
+	```sh
+	$ echo 'public_key_for_user_name' | sudo tee -a ~user_name/.ssh/authorized_keys
+	public_key_for_user_name
+	```
 
 2. LDAPユーザログイン
 
-   先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。
+	先に作成したLDAPユーザを使用したインターネットを介したBastionノードへのログインは、以下コマンドでSSHログインします。
 
-   このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。
+	このSSH接続では、先のLDAPユーザ作成で指定したSSH公開鍵に対応する秘密鍵を使用します。
 
-   ```sh 
-   $ ssh -i path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
-   ```
+	```sh 
+	$ ssh -i path_to_ssh_secret_key_for_user_name user_name@123.456.789.123
+	```
 
-   またこのユーザは、以下のようにGPUクラスタ内の全てのGPUノードにパスフレーズ無し鍵認証によるSSHログインが可能になっています。
+	またこのユーザは、以下のようにGPUクラスタ内の全てのGPUノードにパスフレーズ無し鍵認証によるSSHログインが可能になっています。
 
-   ```sh
-   $ cat /etc/opt/oci-hpc/hostfile.tcp 
-   compute-permanent-node-789
-   compute-permanent-node-844
-   $ ssh compute-permanent-node-789
-   ```
+	```sh
+	$ cat /etc/opt/oci-hpc/hostfile.tcp 
+	compute-permanent-node-789
+	compute-permanent-node-844
+	$ ssh compute-permanent-node-789
+	Activate the web console with: systemctl enable --now cockpit.socket
+
+	$
+	```
 
 3. コンテナ起動確認
 
-   BastionノードのLDAPユーザで以下コマンドを実行し、 **Slurm** から **Enroot** 上にコンテナを起動できることを確認します。
+	BastionノードのLDAPユーザで以下コマンドを実行し、 **Slurm** から **Enroot** 上にコンテナを起動できることを確認します。
 
-   ```sh 
-   $ srun -N 2 --ntasks-per-node 1 --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --container-name=tensorflow bash -c "hostname; grep PRETTY /etc/os-release"
-   pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
-   pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
-   compute-permanent-node-789
-   PRETTY_NAME="Ubuntu 20.04.5 LTS"
-   compute-permanent-node-844
-   PRETTY_NAME="Ubuntu 20.04.5 LTS"
-   ```
+	```sh 
+	$ srun -N 2 --ntasks-per-node 1 --container-image=nvcr.io#nvidia/tensorflow:24.06-tf2-py3 --container-name=tensorflow bash -c "hostname; grep PRETTY /etc/os-release"
+	pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
+	pyxis: imported docker image: nvcr.io#nvidia/tensorflow:22.11-tf2-py3
+	compute-permanent-node-789
+	PRETTY_NAME="Ubuntu 22.04.4 LTS"
+	compute-permanent-node-844
+	PRETTY_NAME="Ubuntu 22.04.4 LTS"
+	```
 
-   ここで起動しているコンテナは、 **NVIDIA GPU Cloud** から **TensorFlow** のコンテナをインポート・起動し、その後起動したコンテナ内でhostname等のコマンドを実行していますが、このコンテナサイズが大きいため、コマンドの完了まで20分程度を要します。
+	ここで起動しているコンテナは、**NGC Catalog**から **TensorFlow** のコンテナをインポート・起動し、その後起動したコンテナ内でhostname等のコマンドを実行していますが、このコンテナサイズが大きいため、コマンドの完了まで20分程度を要します。
 
-   但し、一度インポートが完了すると、次回以降はダウンロードしたコンテナイメージを再利用するため、同じコンテナを2回目以降起動する際は、短時間で完了します。
+	但し、一度インポートが完了すると、次回以降はダウンロードしたコンテナイメージを再利用するため、同じコンテナを2回目以降起動する際は、短時間で完了します。
 
 ***
-# 6. NCCL通信性能検証
+# 4. NCCL通信性能検証
 
-## 6-0. 概要
+## 4-0. 概要
 
 本章は、 **NCCL Tests** を使用し、GPUクラスタ内の **NCCL** によるGPU間通信性能を確認します。
 
@@ -377,83 +415,63 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
 - 帯域（busbw）：約 165 GB/s（メッセージサイズ10 GiB）
 
-## 6-1. NCCL Testsビルド
+## 4-1. NCCL Testsビルド
 
 本章は、コンテナ上で **NCCL Tests** プログラムをビルドします。
 
-BastionノードのLDAPユーザで以下コマンドを実行し、 **TensorFlow** のコンテナ上で **NCCL Tests** をビルドします。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
+BastionノードのLDAPユーザで以下コマンドを実行し、 **NCCL Tests** のソースコードをダウンロードしてコンテナ上でビルドするために必要な修正を適用します。
 
 ```sh
-$ srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" bash -c "cd /mnt/home/user_name; git clone https://github.com/NVIDIA/nccl-tests.git; cd nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu"
-Cloning into 'nccl-tests'...
-make -C src build BUILDDIR=/mnt/home/user_name/nccl-tests/build
-make[1]: Entering directory '/mnt/home/user_name/nccl-tests/src'
-Compiling  timer.cc                            > /mnt/home/user_name/nccl-tests/build/timer.o
-Compiling /mnt/home/user_name/nccl-tests/build/verifiable/verifiable.o
-Compiling  all_reduce.cu                       > /mnt/home/user_name/nccl-tests/build/all_reduce.o
-Compiling  common.cu                           > /mnt/home/user_name/nccl-tests/build/common.o
-Linking  /mnt/home/user_name/nccl-tests/build/all_reduce.o > /mnt/home/user_name/nccl-tests/build/all_reduce_perf
-Compiling  all_gather.cu                       > /mnt/home/user_name/nccl-tests/build/all_gather.o
-Linking  /mnt/home/user_name/nccl-tests/build/all_gather.o > /mnt/home/user_name/nccl-tests/build/all_gather_perf
-Compiling  broadcast.cu                        > /mnt/home/user_name/nccl-tests/build/broadcast.o
-Linking  /mnt/home/user_name/nccl-tests/build/broadcast.o > /mnt/home/user_name/nccl-tests/build/broadcast_perf
-Compiling  reduce_scatter.cu                   > /mnt/home/user_name/nccl-tests/build/reduce_scatter.o
-Linking  /mnt/home/user_name/nccl-tests/build/reduce_scatter.o > /mnt/home/user_name/nccl-tests/build/reduce_scatter_perf
-Compiling  reduce.cu                           > /mnt/home/user_name/nccl-tests/build/reduce.o
-Linking  /mnt/home/user_name/nccl-tests/build/reduce.o > /mnt/home/user_name/nccl-tests/build/reduce_perf
-Compiling  alltoall.cu                         > /mnt/home/user_name/nccl-tests/build/alltoall.o
-Linking  /mnt/home/user_name/nccl-tests/build/alltoall.o > /mnt/home/user_name/nccl-tests/build/alltoall_perf
-Compiling  scatter.cu                          > /mnt/home/user_name/nccl-tests/build/scatter.o
-Linking  /mnt/home/user_name/nccl-tests/build/scatter.o > /mnt/home/user_name/nccl-tests/build/scatter_perf
-Compiling  gather.cu                           > /mnt/home/user_name/nccl-tests/build/gather.o
-Linking  /mnt/home/user_name/nccl-tests/build/gather.o > /mnt/home/user_name/nccl-tests/build/gather_perf
-Compiling  sendrecv.cu                         > /mnt/home/user_name/nccl-tests/build/sendrecv.o
-Linking  /mnt/home/user_name/nccl-tests/build/sendrecv.o > /mnt/home/user_name/nccl-tests/build/sendrecv_perf
-Compiling  hypercube.cu                        > /mnt/home/user_name/nccl-tests/build/hypercube.o
-Linking  /mnt/home/user_name/nccl-tests/build/hypercube.o > /mnt/home/user_name/nccl-tests/build/hypercube_perf
-make[1]: Leaving directory '/mnt/home/user_name/nccl-tests/src'
+$ cd ~ && git clone https://github.com/NVIDIA/nccl-tests.git
+$ sed -i 's/which/type/g' nccl-tests/src/Makefile
 ```
 
-ここでは、先のコンテナ稼働確認で使用した **TensorFlow** のコンテナを起動する際、GPUノードのLDAPユーザuser_nameのホームディレクトリをコンテナにマウントし、その直下に **NCCL Tests** のソースツリーをクローンしてビルドを行っています。
+次に、BastionノードのLDAPユーザで以下コマンドを実行し、 **TensorFlow** のコンテナ上で **NCCL Tests** をビルドします。  
+ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
 
+```sh
+$ srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" bash -c "cd /mnt/home/user_name/nccl-tests && make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu"
+```
+ここでは、先のコンテナ稼働確認で使用した **TensorFlow** のコンテナを起動する際、GPUノードのLDAPユーザuser_nameのホームディレクトリをコンテナにマウントし、その直下で **NCCL Tests** のソースツリーをビルドします。  
 これにより、ビルドした **NCCL Tests** のバイナリがGPUノードのファイルシステムに保存され、以降のコンテナ起動時にも永続的にアクセスできるようになります。
 
-## 6-2. NCCL Tests実行
+## 4-2. NCCL Tests実行
 
 本章は、 **NCCL Tests** を実行します。
 
-BastionノードのLDAPユーザで以下コマンドを実行し、ジョブスケジューラが割当てた1ノードのGPUノード上で **TensorFlow** のコンテナを起動し、このコンテナ上で8枚のGPUを使用した **NCCL** の **All-Reduce** 通信性能を計測します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
+BastionノードのLDAPユーザで以下コマンドを実行し、ジョブスケジューラが割当てた1ノードのGPUノード上で **TensorFlow** のコンテナを起動し、このコンテナ上で8枚のGPUを使用した **NCCL** の **All-Reduce** 通信性能を計測します。  
+ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
 
 ```sh
-$ srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" --mpi pmi2 --gpus-per-node=8 bash -c "cd /mnt/home/user_name/nccl-tests; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
-compute-permanent-node-789
-# nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+$ srun --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" --mpi pmi2 --gpus-per-node=8 bash -c "cd /mnt/home/user_name/nccl-tests && ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
+# nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 1048576(bytes) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
-#  Rank  0 Group  0 Pid 125938 on compute-permanent-node-789 device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid 125938 on compute-permanent-node-789 device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid 125938 on compute-permanent-node-789 device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid 125938 on compute-permanent-node-789 device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid 125938 on compute-permanent-node-789 device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid 125938 on compute-permanent-node-789 device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid 125938 on compute-permanent-node-789 device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid 125938 on compute-permanent-node-789 device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  0 Group  0 Pid 258189 on compute-permanent-node-454 device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid 258189 on compute-permanent-node-454 device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid 258189 on compute-permanent-node-454 device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid 258189 on compute-permanent-node-454 device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid 258189 on compute-permanent-node-454 device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid 258189 on compute-permanent-node-454 device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid 258189 on compute-permanent-node-454 device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid 258189 on compute-permanent-node-454 device  7 [0xda] NVIDIA A100-SXM4-40GB
 #
 #                                                              out-of-place                       in-place          
 #       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
 #        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
- 10737418240    2684354560     float     sum      -1    79813  134.53  235.43      0    79759  134.62  235.59      0
+ 10737418240    2684354560     float     sum      -1    80706  133.04  232.83      0    80644  133.15  233.00      0
 # Out of bounds values : 0 OK
-# Avg bus bandwidth    : 235.511 
+# Avg bus bandwidth    : 232.915 
 #
+
+$
 ```
 
-次に、BastionノードのLDAPユーザで以下コマンドを実行し、2ノードのGPUノード上で1個づつ **TensorFlow** のコンテナを起動し、このコンテナ上で2ノード全16枚のGPUを使用した **NCCL** の **All-Reduce** 通信性能を計測します。ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
+次に、BastionノードのLDAPユーザで以下コマンドを実行し、2ノードのGPUノード上で1個づつ **TensorFlow** のコンテナを起動し、このコンテナ上で2ノード全16枚のGPUを使用した **NCCL** の **All-Reduce** 通信性能を計測します。  
+ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。
 
 ```sh
 $ srun -N 2 --ntasks-per-node 1 --container-name=tensorflow --container-mounts "/mnt/home/user_name:/mnt/home/user_name" --mpi pmi2 --gpus-per-node=8 bash -c "cd /mnt/home/user_name/nccl-tests; export NCCL_IB_QPS_PER_CONNECTION=4; export NCCL_IB_GID_INDEX=3; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
-compute-permanent-node-789
-compute-permanent-node-844
 # nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
@@ -486,9 +504,9 @@ compute-permanent-node-844
 srunコマンド内で指定している **NCCL_IB_** で始まる環境変数は、 **NCCL Tests** の **All-Reduce** 通信性能向上を目的として指定しています。
 
 ***
-# 7. MultiWorkerMirroredStrategyサンプルプログラム実行
+# 5. MultiWorkerMirroredStrategyサンプルプログラム実行
 
-## 7-0. MultiWorkerMirroredStrategyサンプルプログラム実行概要
+## 5-0. MultiWorkerMirroredStrategyサンプルプログラム実行概要
 
 本章は、MultiWorkerMirroredStrategyサンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。
 
@@ -496,7 +514,7 @@ srunコマンド内で指定している **NCCL_IB_** で始まる環境変数�
 
 [https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras)
 
-## 7-1. MultiWorkerMirroredStrategyサンプルプログラム作成
+## 5-1. MultiWorkerMirroredStrategyサンプルプログラム作成
 
 本章は、MultiWorkerMirroredStrategyサンプルプログラムを作成します。
 
@@ -631,7 +649,7 @@ with strategy.scope():
 multi_worker_model.fit(multi_worker_dataset, epochs=3, steps_per_epoch=70)
 ```
 
-## 7-2. MultiWorkerMirroredStrategyサンプルプログラム実行
+## 5-2. MultiWorkerMirroredStrategyサンプルプログラム実行
 
 本章は、MultiWorkerMirroredStrategyサンプルプログラムを実行します。
 
@@ -669,8 +687,9 @@ Epoch 2/3
 Epoch 3/3
 70/70 [==============================] - 4s 63ms/step - loss: 2.0625 - accuracy: 0.4879
 ```
+
 ***
-# 8. スタックの破棄
+# 6. GPUクラスタ削除
 
 本章は、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を破棄することで、構築したGPUクラスタを削除します。
 
