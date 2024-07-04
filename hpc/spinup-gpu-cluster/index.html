@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-04T16:12:23+09:00">
+  <meta property="article:published_time" content="2024-07-04T22:38:28+09:00">
 
 
 
@@ -248,6 +248,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-wihorovod/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/" class="active">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
@@ -349,7 +351,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-07-04T16:12:23+09:00">
+    <meta itemprop="datePublished" content="2024-07-04T22:38:28+09:00">
     
 
     <div class="page__inner-wrap">
@@ -360,127 +362,140 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-gpuクラスタ作成事前作業">0. GPUクラスタ作成事前作業</a><ul><li><a href="#0-0-概要">0-0. 概要</a></li><li><a href="#0-1-vcn作成">0-1. VCN作成</a></li><li><a href="#0-2-bastionノード作成">0-2. Bastionノード作成</a></li></ul></li><li><a href="#1-gpuクラスタ作成">1. GPUクラスタ作成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-cloud-config作成">1-1. cloud-config作成</a></li><li><a href="#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></li><li><a href="#1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#2-gpuノード確認">2. GPUノード確認</a><ul><li><a href="#21-gpuノードログイン">2.1. GPUノードログイン</a></li><li><a href="#22-cloud-init完了確認">2.2. cloud-init完了確認</a></li><li><a href="#23-gpuノードファイルシステム確認">2.3. GPUノードファイルシステム確認</a></li><li><a href="#24-dockerコンテナイメージ確認">2.4. Dockerコンテナイメージ確認</a></li></ul></li><li><a href="#3-horovodを使用するgpuクラスタ環境構築">3. Horovodを使用するGPUクラスタ環境構築</a><ul><li><a href="#3-1-dockerコンテナ環境構築">3-1. Dockerコンテナ環境構築</a><ul><li><a href="#3-1-0-概要">3-1-0. 概要</a></li><li><a href="#3-1-1-コンテナ間ssh接続環境構築">3-1-1. コンテナ間SSH接続環境構築</a></li><li><a href="#3-1-2-プライベートサブネットセキュリティリスト修正">3-1-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#3-1-3-horovod用dockerコンテナ起動">3-1-3. Horovod用Dockerコンテナ起動</a></li></ul></li><li><a href="#3-2-nccl通信性能検証">3-2. NCCL通信性能検証</a><ul><li><a href="#3-2-0-概要">3-2-0. 概要</a></li><li><a href="#3-2-1-ncclアップデート">3-2-1. NCCLアップデート</a></li><li><a href="#3-2-2-nccl-testsビルド">3-2-2. NCCL Testsビルド</a></li><li><a href="#3-2-3-nccl-tests実行">3-2-3. NCCL Tests実行</a></li></ul></li><li><a href="#3-3-horovodサンプルプログラム実行">3-3. Horovodサンプルプログラム実行</a><ul><li><a href="#3-3-0-概要">3-3-0. 概要</a></li><li><a href="#3-3-1-horovodサンプルプログラム実行">3-3-1. Horovodサンプルプログラム実行</a></li></ul></li></ul></li><li><a href="#4-multiworkermirroredstrategyを使用するgpuクラスタ環境構築">4. MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築</a><ul><li><a href="#4-1-dockerコンテナ環境構築">4-1. Dockerコンテナ環境構築</a><ul><li><a href="#4-1-0-概要">4-1-0. 概要</a></li><li><a href="#4-1-1-コンテナ間ssh接続環境構築">4-1-1. コンテナ間SSH接続環境構築</a></li><li><a href="#4-1-2-プライベートサブネットセキュリティリスト修正">4-1-2. プライベートサブネットセキュリティリスト修正</a></li><li><a href="#4-1-3-dockerコンテナ起動">4-1-3. Dockerコンテナ起動</a></li><li><a href="#4-1-4-sshdインストール起動">4-1-4. sshdインストール・起動</a></li></ul></li><li><a href="#4-2-nccl通信性能検証">4-2. NCCL通信性能検証</a><ul><li><a href="#4-2-0-概要">4-2-0. 概要</a></li><li><a href="#4-2-1-nccl-testsビルド">4-2-1. NCCL Testsビルド</a></li><li><a href="#4-2-2-nccl-tests実行">4-2-2. NCCL Tests実行</a></li></ul></li><li><a href="#4-3-multiworkermirroredstrategyサンプルプログラム実行">4-3. MultiWorkerMirroredStrategyサンプルプログラム実行</a><ul><li><a href="#4-3-0-概要">4-3-0. 概要</a></li><li><a href="#4-3-1-multiworkermirroredstrategyサンプルプログラム作成">4-3-1. MultiWorkerMirroredStrategyサンプルプログラム作成</a></li><li><a href="#4-3-2-multiworkermirroredstrategyサンプルプログラム実行">4-3-2. MultiWorkerMirroredStrategyサンプルプログラム実行</a></li></ul></li></ul></li><li><a href="#5-gpuクラスタの削除">5. GPUクラスタの削除</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-gpuクラスタ作成事前作業">1. GPUクラスタ作成事前作業</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</a></li><li><a href="#1-2-bastionノード作成">1-2. Bastionノード作成</a></li></ul></li><li><a href="#2-gpuクラスタ作成">2. GPUクラスタ作成</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-cloud-config作成">2-1. cloud-config作成</a></li><li><a href="#2-2-インスタンス構成作成">2-2. インスタンス構成作成</a></li><li><a href="#2-3-クラスタネットワーク作成">2-3. クラスタ・ネットワーク作成</a></li></ul></li><li><a href="#3-gpuノード確認">3. GPUノード確認</a><ul><li><a href="#30-概要">3.0. 概要</a></li><li><a href="#31-gpuノードログイン">3.1. GPUノードログイン</a></li><li><a href="#32-cloud-init完了確認">3.2. cloud-init完了確認</a></li><li><a href="#3-3-タイムゾーン確認">3-3. タイムゾーン確認</a></li><li><a href="#3-4-ファイルシステム確認">3-4. ファイルシステム確認</a></li><li><a href="#3-5-ファイアーウォール停止確認">3-5. ファイアーウォール停止確認</a></li><li><a href="#3-6-クラスタネットワーク接続用ネットワークインターフェース確認">3-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認</a></li></ul></li><li><a href="#4-コンテナ環境構築">4. コンテナ環境構築</a></li><li><a href="#5-nccl-tests実行">5. NCCL Tests実行</a></li><li><a href="#6-multiworkermirroredstrategyサンプルプログラム実行">6. MultiWorkerMirroredStrategyサンプルプログラム実行</a></li><li><a href="#7-gpuクラスタの削除">7. GPUクラスタの削除</a></li></ul>
             </nav>
           </aside>
         
-        <p>このチュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40/80 GB 8枚と100 GbpsのRDMA対応ネットワークインタフェースを16ポート搭載するGPUノード（ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> ）を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模なAI・機械学習ワークロードを実行するための分散機械学習に対応したDockerコンテナ実行環境を <strong>Docker Community Edition</strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> でGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> テストプログラム（ <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> ）で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。</p>
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
 
-<p>このチュートリアルは、分散機械学習フレームワークに以下2種類を取り上げ、それぞれ3章と4章でこれらを解説しています。該当する章を参照することで、自身のワークロードに合わせた環境構築が可能です。</p>
+<p>本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上にデプロイしてその上でソフトウェア環境を手動で構築する方法で、 <strong>Docker Community Edition</strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> を使用する分散機械学習に対応するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> で検証後、分散機械学習の稼働確認として <strong>TensorFlow</strong> の <strong>MultiWorkerMirroredStrategy</strong> を使用するサンプルプログラムを実行、その性能を検証します。</p>
 
+<p>本チュートリアルで構築するGPUクラスタの構成を以下に示します。</p>
+
+<p>[GPUノード]</p>
 <ul>
-  <li>
-    <p>Horovod（ <strong><a href="#3-horovodを使用するgpuクラスタ環境構築">3.Horovodを使用するGPUクラスタ環境構築</a></strong> ）</p>
-  </li>
-  <li>
-    <p>MultiWorkerMirroredStrategy（ <strong><a href="#4-multiworkermirroredstrategyを使用するgpuクラスタ環境構築">4.MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築</a></strong> ）</p>
-  </li>
+  <li>シェイプ ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
+  <li>インターコネクト ： <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong></li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのGPU <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
 </ul>
 
-<p>よって本チュートリアルの進め方は、まず自身のワークロードに合わせて上記2種類からどちらを使用するか選択し、0章 → 1章 → 2章 → 3章 or 4章 → 5章と進めます。</p>
+<p>[Bastionノード]</p>
+<ul>
+  <li>シェイプ ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible">VM.Standard.E4.Flex</a></strong></li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.9</li>
+</ul>
+
+<p>[ソフトウェア]</p>
+<ul>
+  <li>コンテナランタイム ： <strong>Docker Community Edition</strong> 26.1.3</li>
+  <li>コンテナ ： <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> 24.06-tf2-py3 from <strong><a href="https://catalog.ngc.nvidia.com/">NGC Catalog</a></strong></li>
+</ul>
+
+<p>[クラスタ管理]</p>
+<ul>
+  <li>共有ストレージ ： BastionノードをNFSサーバとするGPUクラスタ内ホームディレクトリ共有</li>
+</ul>
+
+<p>※1） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.7</strong> です。</p>
+
+<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
 <p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有、プログラム開発環境、コンテナオーケストレーション等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br />
 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> も利用可能で、詳細は <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> のチュートリアルでクラスタ管理機能が有りとなっているチュートリアルを参照ください。</p>
 
-<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
-
 <p><strong>所要時間 :</strong> 約2時間</p>
 
-<p><strong>前提条件 :</strong> GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
+<p><strong>前提条件 :</strong> GPUクラスタを収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
-<h1 id="0-gpuクラスタ作成事前作業">0. GPUクラスタ作成事前作業</h1>
+<h1 id="1-gpuクラスタ作成事前作業">1. GPUクラスタ作成事前作業</h1>
 
-<h2 id="0-0-概要">0-0. 概要</h2>
+<h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>GPUクラスタを構成する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> とGPUノードは、OCIコンソールからクラスタ・ネットワークを作成することで、GPUノードをクラスタ・ネットワークに接続したGPUクラスタとしてデプロイされます。</p>
+<p>本章は、GPUノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> と、インターネットから直接アクセス出来ないプライベートサブネットに接続するGPUノードにログインする際の踏み台となるBastionノードを、GPUクラスタ作成前に予め用意します。</p>
 
-<p>このため、このGPUノードをTCP接続するVCNと、インターネットから直接アクセス出来ないプライベートサブネットに通常接続されるGPUノードにログインする際の踏み台となるBastionノードを、GPUクラスタ作成前に予め用意する必要があります。</p>
+<h2 id="1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</h2>
 
-<p>本章は、これらGPUクラスタ作成の前提となるリソースを作成します。</p>
-
-<h2 id="0-1-vcn作成">0-1. VCN作成</h2>
-
-<p>本章は、GPUノードをTCP接続するVCNを作成します。
-VCNの作成は、以下チュートリアルページ <strong>クラウドに仮想ネットワーク(VCN)を作る</strong> の手順通りに実行し、</p>
-
-<p><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn</a></p>
-
-<p>以下のリソースを作成します。</p>
+<p>本章は、GPUノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> を作成します。<br />
+<strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> の手順に従い、以下のリソースを作成します。</p>
 
 <ul>
-  <li>VCN（10.0.0.0/16）</li>
-  <li>パブリックサブネット（10.0.0.0/24）</li>
-  <li>プライベートサブネット（10.0.1.0/24）</li>
-  <li>インターネット・ゲートウェイ（パブリックサブネットにアタッチ）</li>
-  <li>NATゲートウェイ（プライベートサブネットにアタッチ）</li>
-  <li>サービス・ゲートウェイ（プライベートサブネットにアタッチ）</li>
-  <li>ルート表 x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
-  <li>セキュリティリスト x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
+  <li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16）</li>
+  <li>パブリックサブネット（10.0.1.0/24）</li>
+  <li>プライベートサブネット（10.0.2.0/24）</li>
+  <li><strong>インターネット・ゲートウェイ</strong> （パブリックサブネットにアタッチ）</li>
+  <li><strong>NATゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
+  <li><strong>サービス・ゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
+  <li><strong>ルート表</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
+  <li><strong>セキュリティリスト</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
 </ul>
 
-<p>このVCNは、セキュリティリストで以下のアクセス制限が掛けられています。</p>
+<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> で以下のアクセス制限が掛けられています。</p>
 
 <ul>
   <li>インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定</li>
   <li>インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能</li>
 </ul>
 
-<h2 id="0-2-bastionノード作成">0-2. Bastionノード作成</h2>
+<h2 id="1-2-bastionノード作成">1-2. Bastionノード作成</h2>
 
-<p>本章は、GPUノードにログインする際の踏み台となるBastionノードを作成します。
-Bastionノードの作成は、以下チュートリアルページ <strong>インスタンスを作成する</strong> の手順を参考に、</p>
+<p>本章は、GPUノードにログインする際の踏み台となるBastinノードを作成し、必要なセットアップ作業を実施します。</p>
 
-<p><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance</a></p>
-
-<p>ご自身の要件に沿ったインスタンスを、先の手順で作成したVCNとパブリックサブネットを指定して作成します。本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
+<p>Bastionノードの作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で <strong>仮想クラウド・ネットワーク</strong> を作成した <strong>コンパートメント</strong> とパブリックサブネットを指定して作成します。<br />
+本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
 
 <ul>
-  <li><strong>イメージ　:</strong> Oracle Linux 7.9</li>
-  <li><strong>シェイプ　:</strong> VM.Optimized3.Flex（1 OCPU）</li>
-  <li><strong>SSHキーの追加　:</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
+  <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.9</li>
+  <li><strong>シェイプ</strong> ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible">VM.Standard.E4.Flex</a></strong> （任意のコア数・メモリ容量）</li>
+  <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
 </ul>
 
-<p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、BastionノードからGPUノードにログインする際に使用します。
-先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従いBastionノードにopcユーザでSSHログインし、以下のコマンドで全ての問いにエンターキーを入力（パスフレーズ無し・デフォルトの格納場所）してSSH鍵ペアを作成、作成された公開鍵を後のクラスタ・ネットワーク作成手順で指定します。</p>
+<p>次に、作成したBastionノードにopcユーザでSSHログインして以下コマンドを実行、SSH鍵ペアを作成してこの公開鍵を <strong>authorized_keys</strong> に登録します。<br />
+このSSH鍵は、BastionノードからGPUノードにログインする際や、GPUノード間のMPIプログラム実行時に使用します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh-keygen
-Generating public/private rsa key pair.
-Enter file <span class="k">in </span>which to save the key <span class="o">(</span>/home/opc/.ssh/id_rsa<span class="o">)</span>: 
-Enter passphrase <span class="o">(</span>empty <span class="k">for </span>no passphrase<span class="o">)</span>: 
-Enter same passphrase again: 
-Your identification has been saved <span class="k">in</span> /home/opc/.ssh/id_rsa.
-Your public key has been saved <span class="k">in</span> /home/opc/.ssh/id_rsa.pub.
-The key fingerprint is:
-SHA256:Ska1aH1fQkN+Ahzi6xnqICSEHN8HUKDlujhEagu2Uc8 opc@bastion
-The keys randomart image is:
-+---[RSA 2048]----+
-| <span class="nb">.</span> ++o  o.oo+    |
-|o <span class="k">*</span> <span class="nb">.</span> .<span class="o">=</span> o.+ <span class="nb">.</span>   |
-|.<span class="o">=</span> + .+.+ <span class="nb">.</span> + o  |
-|+ o oo.  o <span class="nb">.</span> <span class="o">=</span>   |
-|+<span class="k">*</span><span class="nb">.</span>  Eo S   <span class="nb">.</span>    |
-|<span class="k">*</span><span class="nv">o</span><span class="o">=</span>  o + o       |
-|o+. <span class="nb">.</span> o o        |
-| <span class="nb">.</span> <span class="nb">.</span> o           |
-|      <span class="nb">.</span>          |
-+----[SHA256]-----+
-<span class="o">&gt;</span> <span class="nb">cat</span> ~/.ssh/id_rsa.pub 
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Lna2m3TPiPKL/lHNK4GK2bkADRzm4674uwO9PHUqEPKVv+HBhTZ+zHOPSkYsOEubgeB9xpuKe+Z7ats0RbdXzT1bDWxcsvrMOdUVHQ9zv54eBSz+wEJO08zuxCjetQ2//6NRlYzoBs5/T1+DWg7lJuNadeyqXf1IaZGxRyfbCyXPzOnhL3TS/S7ydN0/313PsqAYj7PBNlx86WT/0qeNYsefjVmn54PKp1waNDQbOkiXi9Emx9uIKA1TCMCVSauZEI274P6orPvwggbX/HZ5Q8eRta2uw3LmzSRJUlrLBxi5xzhVOSNOXl29y2+U5+Q5/F2AxGSxUbW18AdOihuX opc@bastion
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-N</span> <span class="s2">""</span> <span class="nt">-f</span> ~/.ssh/id_rsa
+<span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa.pub | <span class="nb">tee</span> <span class="nt">-a</span> ~/.ssh/authorized_keys
 </code></pre></div></div>
 
-<p>次に、以降作成するGPUノードの名前解決をインスタンス名で行うため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></strong> の手順を実施します。</p>
+<p>次に、以降作成するGPUノードの名前解決をインスタンス名で行うため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></strong> の手順を実施します。</p>
+
+<p>次に、以降作成するGPUノードで実施する手順を <strong><a href="https://github.com/chaos/pdsh">pdsh</a></strong> を使用して効率よく進めるため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ">1. pdshインストール・セットアップ</a></strong> の手順を実施し、 <strong>pdsh</strong> をインストール・セットアップします。<br />
+なおこの手順は、該当する手順を全てのGPUノードで実施する場合、必要ありません。</p>
+
+<p>次に、以下コマンドをopcユーザで実行し、GPUクラスタ内でホームディレクトリをNFS共有するためNFSサーバとして構成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"/home 10.0.0.0/16(rw,sync,no_root_squash)"</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/exports
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nfs-server rpcbind
+</code></pre></div></div>
+
+<p>次に、以下のファイルを新規に作成後</p>
+
+<p>[ <strong>/etc/firewalld/zones/trusted.xml</strong> ]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>?&gt;
+&lt;zone <span class="nv">target</span><span class="o">=</span><span class="s2">"ACCEPT"</span><span class="o">&gt;</span>
+  &lt;short&gt;Trusted&lt;/short&gt;
+  &lt;description&gt;All network connections are accepted.&lt;/description&gt;
+  &lt;<span class="nb">source </span><span class="nv">address</span><span class="o">=</span><span class="s2">"10.0.0.0/16"</span>/&gt;
+&lt;/zone&gt;
+</code></pre></div></div>
+
+<p>opcユーザで以下コマンドを実行し、プライベートサブネットからのNFSアクセスをファイアーウォールに許可します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl restart firewalld
+</code></pre></div></div>
 
 <hr />
-<h1 id="1-gpuクラスタ作成">1. GPUクラスタ作成</h1>
+<h1 id="2-gpuクラスタ作成">2. GPUクラスタ作成</h1>
 
-<h2 id="1-0-概要">1-0. 概要</h2>
+<h2 id="2-0-概要">2-0. 概要</h2>
 
 <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> は、作成時に指定する <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> とノード数を基に <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a></strong> がGPUノードをデプロイし、これを <strong>クラスタ・ネットワーク</strong> に接続します。</p>
 
-<p><strong>クラスタ・ネットワーク</strong> に接続するGPUノードは、OS起動時点で <strong>クラスタ・ネットワーク</strong> に接続するネットワークインターフェースが作成されていないため、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> でこの作成を行います。また本チュートリアルは、GPUノードに装備されるNVMeローカルディスクのファイルシステム作成も、この <strong>cloud-init</strong> から行います。</p>
+<p>またGPUノードのOSレベルのカスタマイズは、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> を使用して自動化することで、デプロイ後の作業を軽減します。</p>
 
 <p>以上より、GPUクラスタの作成は、以下の手順を経て行います。</p>
 
@@ -490,59 +505,30 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Lna2m3TPiPKL/lHNK4GK2bkADRzm4674uwO9PHUq
   <li><strong>クラスタ・ネットワーク</strong> 作成</li>
 </ul>
 
-<p>本チュートリアルは、2ノードの <strong>BM.GPU4.8</strong> を使用してGPUクラスタを構築しますが、 <strong>BM.GPU.A100-v2.8</strong> をGPUノードとするGPUクラスタを構築する場合は、シェイプ指定のみ変更します。</p>
-
-<h2 id="1-1-cloud-config作成">1-1. cloud-config作成</h2>
+<h2 id="2-1-cloud-config作成">2-1. cloud-config作成</h2>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を作成します。</p>
 
 <p>本チュートリアルは、 <strong>cloud-init</strong> を以下の目的で使用します。</p>
 
 <ul>
-  <li><strong>Docker Community Edition</strong> インストール</li>
-  <li><strong>NVIDIA Container Toolkit</strong> インストール</li>
-  <li>NVMeローカルディスクファイルシステム作成</li>
+  <li>タイムゾーンをJSTに変更</li>
+  <li>NVMe SSDローカルディスク領域ファイルシステム作成</li>
   <li>firewalld停止</li>
-  <li><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用ネットワークインターフェース起動</li>
   <li>ルートファイルシステム拡張</li>
-  <li>Dockerイメージプル</li>
+  <li>パブリックサブネットのドメイン名を <strong>search</strong> 行に追加</li>
+  <li>BastionノードのホームディレクトリをNFSマウント</li>
 </ul>
 
-<p>以下は、本チュートリアルで使用する <strong>BM.GPU4.8</strong> 用の <strong>cloud-config</strong> で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
+<p>以下は、本チュートリアルで使用する <strong>cloud-config</strong> で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
-yum_repos:
-<span class="c"># To install docker community edition</span>
-  ol7_developer:
-    name: Oracle Linux <span class="nv">$releasever</span> Development Packages <span class="o">(</span><span class="nv">$basearch</span><span class="o">)</span>
-    baseurl: https://yum<span class="nv">$ociregion</span>.<span class="nv">$ocidomain</span>/repo/OracleLinux/OL7/developer/<span class="nv">$basearch</span>/
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-  docker-ce-stable:
-    name: Docker CE Stable - <span class="nv">$basearch</span>
-    baseurl: https://download.docker.com/linux/centos/<span class="nv">$releasever</span>/<span class="nv">$basearch</span>/stable
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: https://download.docker.com/linux/centos/gpg
-<span class="c"># To install NVIDIA container</span>
-  libnvidia-container:
-    name: libnvidia-container
-    baseurl: https://nvidia.github.io/libnvidia-container/stable/centos7/<span class="nv">$basearch</span>
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
-  libnvidia-container-experimental:
-    name: libnvidia-container-experimental
-    baseurl: https://nvidia.github.io/libnvidia-container/experimental/centos7/<span class="nv">$basearch</span>
-    enabled: <span class="nb">true
-    </span>gpgcheck: <span class="nb">true
-    </span>gpgkey: https://nvidia.github.io/libnvidia-container/gpgkey
-packages:
-<span class="c"># Install Docker community edition and NVIDIA container toolkit</span>
-  - docker-ce
-  - nvidia-container-toolkit
+<span class="c">#</span>
+<span class="c"># Change time zone to JST</span>
+timezone: Asia/Tokyo
+
 runcmd:
+<span class="c">#</span>
 <span class="c"># NVMe local storage setting</span>
   - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
   - lvcreate <span class="nt">-l</span> 100%FREE nvme
@@ -550,23 +536,23 @@ runcmd:
   - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
   - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
   - mount /mnt/localdisk
+<span class="c">#</span>
 <span class="c"># Stop firewalld</span>
-  - systemctl stop firewalld
-  - systemctl disable firewalld
-<span class="c"># Set up cluster network interface</span>
-  - systemctl start oci-rdma-configure
+  - systemctl disable <span class="nt">--now</span> firewalld
+<span class="c">#</span>
 <span class="c"># Expand root file system to those set by instance configuration</span>
   - /usr/libexec/oci-growfs <span class="nt">-y</span>
-<span class="c"># Pull Horovod/TensorFlow docker images</span>
-  - systemctl start docker
-  - systemctl <span class="nb">enable </span>docker
-  - docker pull horovod/horovod:latest
-  - docker pull nvcr.io/nvidia/tensorflow:22.11-tf2-py3
+<span class="c">#</span>
+<span class="c"># Add public subnet to DNS search</span>
+  - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
+  - chattr <span class="nt">-R</span> +i /etc/resolv.conf
+<span class="c">#</span>
+<span class="c"># NFS mount setting</span>
+  - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+  - mount /home
 </code></pre></div></div>
 
-<p>この <strong>cloud-config</strong> で行っている <strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェース起動は、 <strong>GPU<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれるsystemdのサービス <strong>oci-rdma-configure</strong> を使用しますが、この詳細は <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></strong> を参照ください。</p>
-
-<h2 id="1-2-インスタンス構成作成">1-2. インスタンス構成作成</h2>
+<h2 id="2-2-インスタンス構成作成">2-2. インスタンス構成作成</h2>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を作成します。</p>
 
@@ -607,16 +593,17 @@ runcmd:
     <p><img src="console_page05.png" alt="画面ショット" /></p>
 
     <ul>
-      <li><strong>イメージ</strong> ：Oracle Linux 7 - GPU Cluster Networking Image (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Marketplace</strong> アイコンを選択し検索フィールドに <strong>gpu</strong> と入力して表示される <strong>Oracle Linux 7 - GPU Cluster Networking Image</strong> を選択し <strong>イメージ・ビルド</strong> フィールドで最新のイメージを選択し <strong>イメージの選択</strong> ボタンをクリック）</li>
+      <li>
+        <p><strong>イメージ</strong> ：Oracle Linux - GPU Cluster Networking Image (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Marketplace</strong> アイコンを選択し検索フィールドに <strong>gpu</strong> と入力して表示される <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択し <strong>イメージ・ビルド</strong> フィールドで <strong>OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4-2024.05.08-0</strong> を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
+
+        <p><img src="console_page06.png" alt="画面ショット" /></p>
+      </li>
+      <li>
+        <p><strong>Shape</strong> ：<strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> （ <strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック）</p>
+
+        <p><img src="console_page07.png" alt="画面ショット" /></p>
+      </li>
     </ul>
-
-    <p><img src="console_page06.png" alt="画面ショット" /></p>
-
-    <ul>
-      <li><strong>Shape</strong> ：<strong>BM.GPU4.8</strong> (<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック）</li>
-    </ul>
-
-    <p><img src="console_page07.png" alt="画面ショット" /></p>
 
     <p>3.5 <strong>ネットワーキング</strong> フィールド</p>
     <ul>
@@ -635,18 +622,16 @@ runcmd:
 
     <p>3.7 <strong>ブート・ボリューム</strong> フィールド</p>
     <ul>
-      <li><strong>ブート・ボリューム・サイズ(GB)</strong> ：GPUノードの <strong>ブート・ボリューム</strong> サイズ
+      <li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※2）
         <ul>
           <li><strong>カスタム・ブート・ボリューム・サイズを指定します</strong> チェックボックスをチェックすると指定可能</li>
         </ul>
       </li>
     </ul>
 
-    <p><img src="console_page09.png" alt="画面ショット" /></p>
-
-    <p>※ 通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
-
     <p><img src="console_page27.png" alt="画面ショット" /></p>
+
+    <p>※2）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
 
     <p>3.8 <strong>管理</strong> フィールド（以下 <strong>拡張オプションの表示</strong> ボタンを選択して表示）</p>
 
@@ -657,10 +642,19 @@ runcmd:
     </ul>
 
     <p><img src="console_page11.png" alt="画面ショット" /></p>
+
+    <p>3.9 <strong>Oracle Cloudエージェント</strong> フィールド（以下 <strong>Oracle Cloudエージェント</strong> タブを選択して表示）</p>
+
+    <ul>
+      <li><strong>Compute HPC RDMA Auto-Configuration</strong> ：チェック</li>
+      <li><strong>Compute HPC RDMA Authentication</strong> ：チェック</li>
+    </ul>
+
+    <p><img src="console_page12-1.png" alt="画面ショット" /></p>
   </li>
 </ol>
 
-<h2 id="1-3-クラスタネットワーク作成">1-3. クラスタ・ネットワーク作成</h2>
+<h2 id="2-3-クラスタネットワーク作成">2-3. クラスタ・ネットワーク作成</h2>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を作成します。</p>
 
@@ -717,586 +711,289 @@ runcmd:
 </ol>
 
 <hr />
-<h1 id="2-gpuノード確認">2. GPUノード確認</h1>
+<h1 id="3-gpuノード確認">3. GPUノード確認</h1>
+
+<h2 id="30-概要">3.0. 概要</h2>
 
 <p>本章は、デプロイされたGPUノードにログインし、環境を確認します。</p>
 
-<h2 id="21-gpuノードログイン">2.1. GPUノードログイン</h2>
+<h2 id="31-gpuノードログイン">3.1. GPUノードログイン</h2>
 
-<p>GPUノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。BastionノードからGPUノードへのログインは、GPUノードのインスタンス名を使用します。</p>
+<p>GPUノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。<br />
+BastionノードからGPUノードへのログインは、GPUノードのインスタンス名を使用します。</p>
 
-<p>GPUノードのインスタンス名は、OCIコンソールでGPUノードをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。</p>
-
-<p>またこの画面は、GPUノードのIPアドレスも表示しており、これを使用してBastionノードからSSHログインすることも可能です。</p>
+<p>GPUノードのインスタンス名は、OCIコンソールでGPUノードをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。<br />
+またこの画面は、GPUノードのIPアドレスも表示しており、これを使用してBastionノードからSSHログインすることも可能です。</p>
 
 <p><img src="console_page19.png" alt="画面ショット" /></p>
 
 <p>GPUノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh inst-d5ige-comp
-The authenticity of host <span class="s1">'inst-d5ige-comp (10.0.2.67)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:Iro630ws/Fm3gbc3VNPp9BQ+AJnN9K5fcC2ZbzjJVXs.
-ECDSA key fingerprint is MD5:2d:52:32:d9:43:24:5a:85:85:a9:aa:08:12:bf:fa:bb.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-d5ige-comp,10.0.2.67'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new inst-xxxxx-gpu4-ol89
 </code></pre></div></div>
 
-<h2 id="22-cloud-init完了確認">2.2. cloud-init完了確認</h2>
+<h2 id="32-cloud-init完了確認">3.2. cloud-init完了確認</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。<br />
+ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 
-<p>ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>cloud-init status
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo cloud-init status'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
 status: <span class="k">done</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
-<h2 id="23-gpuノードファイルシステム確認">2.3. GPUノードファイルシステム確認</h2>
+<h2 id="3-3-タイムゾーン確認">3-3. タイムゾーン確認</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> が完了したGPUノードは、以下のようにNVMe領域が/mnt/localdiskにマウントされています。</p>
+<p>以下コマンドをBastionノードのopcユーザで実行し、タイムゾーンがJSTになっていることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/localdisk
-Filesystem              Size  Used Avail Use% Mounted on
-/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'date'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
+Mon Jan 29 12:08:00 JST 2024
+<span class="err">$</span>
 </code></pre></div></div>
 
-<h2 id="24-dockerコンテナイメージ確認">2.4. Dockerコンテナイメージ確認</h2>
+<h2 id="3-4-ファイルシステム確認">3-4. ファイルシステム確認</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> が完了したGPUノードは、以下のように2種類のDockerコンテナイメージがプルされています。</p>
+<p>以下コマンドをBastionノードのopcユーザで実行し、ルートファイルシステムが指定のサイズとなっていること、Bastionノードの <strong>/home</strong> がNFSで <strong>/home</strong> にマウントされていること、及びNVMe SSDローカルディスクが <strong>/mnt/localdisk</strong> にマウントされていることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>docker images
-REPOSITORY                  TAG             IMAGE ID       CREATED        SIZE
-nvcr.io/nvidia/tensorflow   22.11-tf2-py3   a88317ae0b1b   3 weeks ago    14.4GB
-horovod/horovod             latest          f16647de3f02   2 months ago   14.2GB
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo df -h / /home /mnt/localdisk'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ocivolume-root  189G   39G  151G  21% /
+bastion:/home                36G   11G   25G  31% /home
+/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-5-ファイアーウォール停止確認">3-5. ファイアーウォール停止確認</h2>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo systemctl status firewalld | grep -e Active -e disabled'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
+   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
+   Active: inactive <span class="o">(</span>dead<span class="o">)</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-6-クラスタネットワーク接続用ネットワークインターフェース確認">3-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認</h2>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（rdmax）にTCP/IP接続用のネットワークインターフェース（eth0）と4フィールド目が同じ10.224.[0 - 15].x/12のIPアドレスが設定されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'ip a | grep -e eth0 -e rdma'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89
+<span class="nt">----------------</span>
+6: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 9000 qdisc mq state UP group default qlen 1000
+    inet 10.0.2.125/24 brd 10.0.2.255 scope global dynamic eth0
+22: rdma0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.0.125/12 brd 10.239.255.255 scope global noprefixroute rdma0
+23: rdma1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.1.125/12 brd 10.239.255.255 scope global noprefixroute rdma1
+26: rdma2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.2.125/12 brd 10.239.255.255 scope global noprefixroute rdma2
+27: rdma3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.3.125/12 brd 10.239.255.255 scope global noprefixroute rdma3
+30: rdma4: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.4.125/12 brd 10.239.255.255 scope global noprefixroute rdma4
+31: rdma5: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.5.125/12 brd 10.239.255.255 scope global noprefixroute rdma5
+34: rdma6: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.6.125/12 brd 10.239.255.255 scope global noprefixroute rdma6
+35: rdma7: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.7.125/12 brd 10.239.255.255 scope global noprefixroute rdma7
+38: rdma8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.8.125/12 brd 10.239.255.255 scope global noprefixroute rdma8
+39: rdma9: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.9.125/12 brd 10.239.255.255 scope global noprefixroute rdma9
+42: rdma10: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.10.125/12 brd 10.239.255.255 scope global noprefixroute rdma10
+43: rdma11: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.11.125/12 brd 10.239.255.255 scope global noprefixroute rdma11
+46: rdma12: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.12.125/12 brd 10.239.255.255 scope global noprefixroute rdma12
+47: rdma13: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.13.125/12 brd 10.239.255.255 scope global noprefixroute rdma13
+50: rdma14: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.14.125/12 brd 10.239.255.255 scope global noprefixroute rdma14
+51: rdma15: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.15.125/12 brd 10.239.255.255 scope global noprefixroute rdma15
+
+<span class="nt">----------------</span>
+inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
+6: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 9000 qdisc mq state UP group default qlen 1000
+    inet 10.0.2.25/24 brd 10.0.2.255 scope global dynamic eth0
+22: rdma0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.0.25/12 brd 10.239.255.255 scope global noprefixroute rdma0
+23: rdma1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.1.25/12 brd 10.239.255.255 scope global noprefixroute rdma1
+26: rdma2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.2.25/12 brd 10.239.255.255 scope global noprefixroute rdma2
+27: rdma3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.3.25/12 brd 10.239.255.255 scope global noprefixroute rdma3
+30: rdma4: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.4.25/12 brd 10.239.255.255 scope global noprefixroute rdma4
+31: rdma5: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.5.25/12 brd 10.239.255.255 scope global noprefixroute rdma5
+34: rdma6: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.6.25/12 brd 10.239.255.255 scope global noprefixroute rdma6
+35: rdma7: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.7.25/12 brd 10.239.255.255 scope global noprefixroute rdma7
+38: rdma8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.8.25/12 brd 10.239.255.255 scope global noprefixroute rdma8
+39: rdma9: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.9.25/12 brd 10.239.255.255 scope global noprefixroute rdma9
+42: rdma10: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.10.25/12 brd 10.239.255.255 scope global noprefixroute rdma10
+43: rdma11: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.11.25/12 brd 10.239.255.255 scope global noprefixroute rdma11
+46: rdma12: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.12.25/12 brd 10.239.255.255 scope global noprefixroute rdma12
+47: rdma13: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.13.25/12 brd 10.239.255.255 scope global noprefixroute rdma13
+50: rdma14: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.14.25/12 brd 10.239.255.255 scope global noprefixroute rdma14
+51: rdma15: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
+    inet 10.224.15.25/12 brd 10.239.255.255 scope global noprefixroute rdma15
+
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>なお、後に実行する <strong>NCCL Tests</strong> の起動コマンドで設定している <strong>NCCL_IB_HCA</strong> 環境変数に指定のRDMAリンク名（ <strong>mlx5_xx</strong> ）は、以下のように先の <strong>クラスタ・ネットワーク</strong> 接続用のネットワークインターフェースに対応しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'rdma link show | grep rdma'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
+<span class="nb">link </span>mlx5_6/1 state ACTIVE physical_state LINK_UP netdev rdma0 
+<span class="nb">link </span>mlx5_7/1 state ACTIVE physical_state LINK_UP netdev rdma1 
+<span class="nb">link </span>mlx5_8/1 state ACTIVE physical_state LINK_UP netdev rdma2 
+<span class="nb">link </span>mlx5_9/1 state ACTIVE physical_state LINK_UP netdev rdma3 
+<span class="nb">link </span>mlx5_0/1 state ACTIVE physical_state LINK_UP netdev rdma4 
+<span class="nb">link </span>mlx5_1/1 state ACTIVE physical_state LINK_UP netdev rdma5 
+<span class="nb">link </span>mlx5_2/1 state ACTIVE physical_state LINK_UP netdev rdma6 
+<span class="nb">link </span>mlx5_3/1 state ACTIVE physical_state LINK_UP netdev rdma7 
+<span class="nb">link </span>mlx5_14/1 state ACTIVE physical_state LINK_UP netdev rdma8 
+<span class="nb">link </span>mlx5_15/1 state ACTIVE physical_state LINK_UP netdev rdma9 
+<span class="nb">link </span>mlx5_16/1 state ACTIVE physical_state LINK_UP netdev rdma10 
+<span class="nb">link </span>mlx5_17/1 state ACTIVE physical_state LINK_UP netdev rdma11 
+<span class="nb">link </span>mlx5_10/1 state ACTIVE physical_state LINK_UP netdev rdma12 
+<span class="nb">link </span>mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
+<span class="nb">link </span>mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
+<span class="nb">link </span>mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
 </code></pre></div></div>
 
 <hr />
-<h1 id="3-horovodを使用するgpuクラスタ環境構築">3. Horovodを使用するGPUクラスタ環境構築</h1>
+<h1 id="4-コンテナ環境構築">4. コンテナ環境構築</h1>
 
-<h2 id="3-1-dockerコンテナ環境構築">3-1. Dockerコンテナ環境構築</h2>
+<p>本章は、 <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> を使用し、GPU利用可能なコンテナ環境を構築します。</p>
 
-<h3 id="3-1-0-概要">3-1-0. 概要</h3>
+<p>以下コマンドをBastionノードのopcユーザで実行し、 <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> を全てのGPUノードにインストールしこれを起動します。</p>
 
-<p>本章は、後の章で実行する <strong>NCCL Tests</strong> と <strong>Horovod</strong> のサンプルプログラムを実行する <strong>Horovod</strong> 用Dockerコンテナを起動するため、必要な環境構築作業を行います。</p>
-
-<p><strong>NCCL Tests</strong> と <strong>Horovod</strong> のサンプルプログラムは、コンテナを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、 <strong>Horovod</strong> 用Dockerコンテナに予め含まれる、 <strong>OpenMPI</strong> です。</p>
-
-<p><strong>OpenMPI</strong> をコンテナ間で実行するためには、MPIプログラムをmpirun等で起動するコンテナ（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナにパスフレーズ無しでSSH接続できる必要があります。</p>
-
-<p>また <strong>OpenMPI</strong> の実行は、これを実行するコンテナ間で必要なポートにアクセス出来る必要があるため、GPUノードが接続されるプライベートサブネットのセキュリティリストを修正する必要があります。</p>
-
-<p>以上より、本章で実施するDockerコンテナ環境構築は、以下の手順を経て行います。</p>
-
-<ul>
-  <li>コンテナ間SSH接続環境構築</li>
-  <li>プライベートサブネットセキュリティリスト修正</li>
-  <li><strong>Horovod</strong> 用Dockerコンテナ起動</li>
-</ul>
-
-<h3 id="3-1-1-コンテナ間ssh接続環境構築">3-1-1. コンテナ間SSH接続環境構築</h3>
-
-<p>本章は、先にBastionノードで作成したSSH秘密鍵を含む <strong>.ssh</strong> ディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。</p>
-
-<p>まず初めに、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全てのGPUノードのホスト名を含むホスト名リストをBastionノード上にファイル名 <strong>hostlist.txt</strong> で作成します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-d5ige-comp
-inst-swgen-comp
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
+Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
+<span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo dnf install -y docker-ce nvidia-container-toolkit &gt; /dev/null 2&gt;&amp;1; echo $?'</span> | dshbak <span class="nt">-c</span>
+<span class="nt">----------------</span>
+inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+<span class="nt">----------------</span>
+0
+<span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'sudo systemctl enable --now docker 2&gt; /dev/null'</span> | dshbak <span class="nt">-c</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
-<p>次にこのホスト名リストを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含む <strong>known_hosts</strong> ファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに <strong>yes</strong> を入力します。</p>
+<p>次に、以下コマンドを全てのGPUノードのopcユーザで実行し、コンテナ上で <strong>BM.GPU4.8</strong> が搭載する8個のGPUにアクセスできることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="nb">hostname</span><span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-inst-d5ige-comp
-inst-swgen-comp
-The authenticity of host <span class="s1">'inst-swgen-comp (10.0.2.242)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:koWs+bKLzf78RQsZ+mQhvwxEQTu/72St2DiVyVqmtl4.
-ECDSA key fingerprint is MD5:68:b4:e0:37:f1:9a:36:c7:a5:3c:69:9f:91:d5:e0:34.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-swgen-comp,10.0.2.242'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
-inst-swgen-comp
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>docker run <span class="nt">--rm</span> <span class="nt">--gpus</span> all nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
+Unable to find image <span class="s1">'nvcr.io/nvidia/base/ubuntu:22.04_20240212'</span> locally
+22.04_20240212: Pulling from nvidia/base/ubuntu
+d66d6a6a3687: Pull <span class="nb">complete 
+</span>24c2d4f7ea40: Pull <span class="nb">complete 
+</span>9d30336abbd7: Pull <span class="nb">complete 
+</span>feb1277c15aa: Pull <span class="nb">complete 
+</span>3cf0dbeda93a: Pull <span class="nb">complete 
+</span>99fc1e9ef206: Pull <span class="nb">complete 
+</span>a8f7f8dfd4e2: Pull <span class="nb">complete 
+</span>Digest: sha256:2a9f71d82aa4daac444c1b4b74d5d7b01f93eb23662c1236f89d817f083abecd
+Status: Downloaded newer image <span class="k">for </span>nvcr.io/nvidia/base/ubuntu:22.04_20240212
+Mon Jul  1 02:58:34 2024       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|<span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span>|
+|   0  NVIDIA A100-SXM4-40GB          On  |   00000000:0F:00.0 Off |                    0 |
+| N/A   38C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-40GB          On  |   00000000:15:00.0 Off |                    0 |
+| N/A   37C    P0             85W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
+| N/A   34C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-40GB          On  |   00000000:54:00.0 Off |                    0 |
+| N/A   36C    P0             82W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA A100-SXM4-40GB          On  |   00000000:8D:00.0 Off |                    0 |
+| N/A   35C    P0             79W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA A100-SXM4-40GB          On  |   00000000:92:00.0 Off |                    0 |
+| N/A   35C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA A100-SXM4-40GB          On  |   00000000:D6:00.0 Off |                    0 |
+| N/A   34C    P0             78W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA A100-SXM4-40GB          On  |   00000000:DA:00.0 Off |                    0 |
+| N/A   36C    P0             85W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|<span class="o">=========================================================================================</span>|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+<span class="err">$</span>
 </code></pre></div></div>
-
-<p>次に、Bastionノードのopcユーザで以下コマンドを実行、Bastionノードで作成した秘密鍵を使ったSSHログインを許可します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa.pub <span class="o">&gt;&gt;</span> ~/.ssh/authorized_keys
-</code></pre></div></div>
-
-<p>次に、Bastionノードのopcユーザで以下コマンドを実行、 <strong>~opc/.ssh</strong> ディレクトリをアーカイブしてこれを全GPUノードにコピーします。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~
-<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-cvf</span> /tmp/ssh.tar ./.ssh
-./.ssh/
-./.ssh/id_rsa
-./.ssh/known_hosts
-./.ssh/id_rsa.pub
-./.ssh/authorized_keys
-<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp /tmp/ssh.tar <span class="nv">$hname</span>:/tmp/<span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-ssh.tar                                                                100%   10KB   9.0MB/s   00:00    
-inst-swgen-comp
-ssh.tar                                                                100%   10KB  11.5MB/s   00:00
-</code></pre></div></div>
-
-<p>次に、Bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの <strong>/horovod</strong> ディレクトリに展開します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo mkdir /horovod"</span><span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-inst-swgen-comp
-<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo tar --no-same-owner -xvf /tmp/ssh.tar -C /horovod/"</span><span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-./.ssh/
-./.ssh/id_rsa
-./.ssh/id_rsa.pub
-./.ssh/authorized_keys
-./.ssh/known_hosts
-inst-swgen-comp
-./.ssh/
-./.ssh/id_rsa
-./.ssh/id_rsa.pub
-./.ssh/authorized_keys
-./.ssh/known_hosts
-</code></pre></div></div>
-
-<h3 id="3-1-2-プライベートサブネットセキュリティリスト修正">3-1-2. プライベートサブネットセキュリティリスト修正</h3>
-
-<p>本章は、プライベートサブネットのセキュリティリストを以下の手順で修正します。</p>
-
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、GPUノードをデプロイしたリージョンを選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される画面で、先に作成した仮想クラウド・ネットワークをクリックします。</p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>サブネット</strong> フィールドで、先に作成したプライベートサブネットをクリックします。</p>
-
-    <p><img src="console_page21.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>セキュリティ・リスト</strong> フィールドで、プライベートサブネットに適用されているセキュリティリストをクリックします。</p>
-
-    <p><img src="console_page22.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>イングレス・ルール</strong> フィールドで、SSHアクセスを許可しているルールの <strong>編集</strong> メニューをクリックします。</p>
-
-    <p><img src="console_page23.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>イングレス・ルールの編集</strong> サイドバーで、 <strong>IPプロトコル</strong> フィールドを <strong>すべてのプロトコル</strong> に変更し、 <strong>変更の保存</strong> ボタンをクリックします。</p>
-
-    <p><img src="console_page24.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>イングレス・ルール</strong> フィールドで、変更したルールの <strong>IPプロトコル</strong> が <strong>すべてのプロトコル</strong> に変更されたことを確認します。</p>
-
-    <p><img src="console_page25.png" alt="画面ショット" /></p>
-  </li>
-</ol>
-
-<h3 id="3-1-3-horovod用dockerコンテナ起動">3-1-3. Horovod用Dockerコンテナ起動</h3>
-
-<p>本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）で <strong>Horovod</strong> 用Dockerコンテナを起動します。</p>
-
-<p>以下コマンドをマスターノードのrootユーザで実行し、マスターノード上で <strong>Horovod</strong> 用Dockerコンテナを起動します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--privileged</span> <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--network</span><span class="o">=</span>host <span class="nt">-v</span> /horovod:/root <span class="nt">-v</span> /mnt/localdisk:/scratch horovod/horovod:latest
-</code></pre></div></div>
-
-<p>次に、以下コマンドをスレーブノードのrootユーザで実行し、スレーブノード上でポート番号22222でSSH接続を受け付ける <strong>Horovod</strong> 用Dockerコンテナを起動します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--privileged</span> <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--network</span><span class="o">=</span>host <span class="nt">-v</span> /horovod:/root <span class="nt">-v</span> /mnt/localdisk:/scratch horovod/horovod:latest bash <span class="nt">-c</span> <span class="s2">"/usr/sbin/sshd -p 22222; bash"</span>
-</code></pre></div></div>
-
-<h2 id="3-2-nccl通信性能検証">3-2. NCCL通信性能検証</h2>
-
-<h3 id="3-2-0-概要">3-2-0. 概要</h3>
-
-<p>本章は、 <strong>NCCL Tests</strong> を使用し、GPUクラスタ内の <strong>NCCL</strong> によるGPU間通信性能を確認します。</p>
-
-<p>ここで使用する <strong>NCCL</strong> は、 <strong>Horovod</strong> 用Dockerコンテナに予め含まれるものを本環境に合うバージョンにアップデートし、 <strong>NCCL Tests</strong> はコンテナ内でソースコードからビルドします。</p>
-
-<p>以上より、本章で実施する <strong>NCCL</strong> 通信性能検証は、以下の手順を経て行います。</p>
-
-<ul>
-  <li><strong>NCCL</strong> アップデート</li>
-  <li><strong>NCCL Tests</strong> ビルド</li>
-  <li><strong>NCCL Tests</strong> 実行</li>
-</ul>
-
-<p>本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用した <strong>NCCL</strong> のAll-Reduce通信性能をコンテナ環境から計測し、以下性能が出ています。</p>
-
-<ul>
-  <li>帯域（busbw）：約 221 GB/s</li>
-</ul>
-
-<h3 id="3-2-1-ncclアップデート">3-2-1. NCCLアップデート</h3>
-
-<p>本章は、 <strong>Horovod</strong> 用Dockerコンテナに含まれる <strong>NCCL</strong> をアップデートします。</p>
-
-<p>マスターノードとスレーブノードのそれぞれで、起動したコンテナ上のrootユーザで、以下のコマンドを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apt update
-<span class="nv">$ </span>apt <span class="nb">install</span> <span class="nt">-y</span> <span class="nt">--allow-change-held-packages</span> <span class="nv">libnccl2</span><span class="o">=</span>2.15.5-1+cuda11.8 libnccl-dev<span class="o">=</span>2.15.5-1+cuda11.8
-</code></pre></div></div>
-
-<h3 id="3-2-2-nccl-testsビルド">3-2-2. NCCL Testsビルド</h3>
-
-<p>本章は、 <strong>NCCL Tests</strong> を <strong>GitHub</strong> からダウンロード、ビルドします。</p>
-
-<p>マスターノードとスレーブノードのそれぞれで、起動したコンテナ上のrootユーザで、以下のコマンドを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /root
-<span class="nv">$ </span>git clone https://github.com/NVIDIA/nccl-tests.git
-<span class="nv">$ </span><span class="nb">cd </span>nccl-tests
-<span class="nv">$ </span>make <span class="nv">MPI</span><span class="o">=</span>1 <span class="nv">MPI_HOME</span><span class="o">=</span>/usr/local <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda <span class="nv">NCCL_HOME</span><span class="o">=</span>/usr/lib/x86_64-linux-gnu
-</code></pre></div></div>
-
-<h3 id="3-2-3-nccl-tests実行">3-2-3. NCCL Tests実行</h3>
-
-<p>本章は、 <strong>NCCL Tests</strong> プログラムを実行します。</p>
-
-<p>マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る <strong>NCCL</strong> のAll-Reduce通信性能を計測します。ここで、 <strong>-H</strong> オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 2 <span class="nt">-H</span> inst-d5ige-comp:1,inst-swgen-comp:1 <span class="nt">-mca</span> plm_rsh_args <span class="s2">"-p 22222"</span> <span class="nt">--mca</span> btl_tcp_if_exclude docker0,lo <span class="nt">-x</span> <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4 <span class="nt">-x</span> <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>enp45s0f0 <span class="nt">-x</span> <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span> ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-t</span> 1 <span class="nt">-g</span> 8
-<span class="c"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
-<span class="c">#</span>
-<span class="c"># Using devices</span>
-<span class="c">#  Rank  0 Group  0 Pid    417 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  1 Group  0 Pid    418 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  2 Group  0 Pid    419 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  3 Group  0 Pid    420 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  4 Group  0 Pid    421 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  5 Group  0 Pid    422 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  6 Group  0 Pid    425 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  7 Group  0 Pid    429 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  8 Group  0 Pid    371 on inst-swgen-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  9 Group  0 Pid    372 on inst-swgen-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 10 Group  0 Pid    373 on inst-swgen-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 11 Group  0 Pid    374 on inst-swgen-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 12 Group  0 Pid    375 on inst-swgen-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 13 Group  0 Pid    376 on inst-swgen-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 14 Group  0 Pid    377 on inst-swgen-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 15 Group  0 Pid    380 on inst-swgen-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#</span>
-<span class="c">#                                                              out-of-place                       in-place          </span>
-<span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
-<span class="c">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
- 10737418240    2684354560     float     <span class="nb">sum</span>      <span class="nt">-1</span>    90330  118.87  222.88      0    91945  116.78  218.96      0
-<span class="c"># Out of bounds values : 0 OK</span>
-<span class="c"># Avg bus bandwidth    : 220.921 </span>
-<span class="c">#</span>
-</code></pre></div></div>
-
-<h2 id="3-3-horovodサンプルプログラム実行">3-3. Horovodサンプルプログラム実行</h2>
-
-<h3 id="3-3-0-概要">3-3-0. 概要</h3>
-
-<p>本章は、 <strong>Horovod</strong> サンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。</p>
-
-<p>ここで使用する <strong>Horovod</strong> サンプルプログラムは、 <strong>Horovod</strong> 用Dockerコンテナに予め含まれる、 <strong>TensorFlow</strong> 2でダミーデータを用いて <strong>ResNet-50</strong> モデルを訓練するベンチマークプログラムです。</p>
-
-<h3 id="3-3-1-horovodサンプルプログラム実行">3-3-1. Horovodサンプルプログラム実行</h3>
-
-<p>本章は、 <strong>Horovod</strong> サンプルプログラムを実行します。</p>
-
-<p>マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードの8枚のGPUを使用して <strong>Horovod</strong> サンプルプログラムを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /horovod/examples/
-<span class="nv">$ </span>horovodrun <span class="nt">-np</span> 8 <span class="nt">-H</span> localhost:8 python tensorflow2/tensorflow2_synthetic_benchmark.py
-   :
-<span class="o">[</span>1,0]&lt;stdout&gt;:Model: ResNet50
-<span class="o">[</span>1,0]&lt;stdout&gt;:Batch size: 32
-<span class="o">[</span>1,0]&lt;stdout&gt;:Number of GPUs: 8
-<span class="o">[</span>1,0]&lt;stdout&gt;:Running warmup...
-   :
-<span class="o">[</span>1,0]&lt;stdout&gt;:Running benchmark...
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#0: 592.3 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#1: 599.6 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#2: 600.7 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#3: 600.2 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#4: 601.0 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#5: 601.3 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#6: 601.8 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#7: 601.0 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#8: 602.2 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Iter <span class="c">#9: 601.7 img/sec per GPU</span>
-<span class="o">[</span>1,0]&lt;stdout&gt;:Img/sec per GPU: 600.2 +-5.3
-<span class="o">[</span>1,0]&lt;stdout&gt;:Total img/sec on 8 GPU<span class="o">(</span>s<span class="o">)</span>: 4801.4 +-42.7
-</code></pre></div></div>
-
-<p>最後の行に出力される実行結果から、8枚のGPUを使用した実行時のスコアが4,800程度であることを確認します。</p>
-
-<p>次に、マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUを使用して、2ノードのGPUノードに跨って <strong>Horovod</strong> サンプルプログラムを実行します。ここで、 <strong>-H</strong> オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 16 <span class="nt">-H</span> inst-d5ige-comp:8,inst-swgen-comp:8 <span class="nt">-mca</span> plm_rsh_args <span class="s2">"-p 22222"</span> <span class="nt">--mca</span> btl_tcp_if_exclude docker0,lo <span class="nt">-x</span> <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4 <span class="nt">-x</span> <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>enp45s0f0 <span class="nt">-x</span> <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span> python tensorflow2/tensorflow2_synthetic_benchmark.py
-   :
-Model: ResNet50
-Batch size: 32
-Number of GPUs: 16
-Running warmup...
-   :
-Running benchmark...
-Iter <span class="c">#0: 577.9 img/sec per GPU</span>
-Iter <span class="c">#1: 578.8 img/sec per GPU</span>
-Iter <span class="c">#2: 577.8 img/sec per GPU</span>
-Iter <span class="c">#3: 580.1 img/sec per GPU</span>
-Iter <span class="c">#4: 579.2 img/sec per GPU</span>
-Iter <span class="c">#5: 580.7 img/sec per GPU</span>
-Iter <span class="c">#6: 581.0 img/sec per GPU</span>
-Iter <span class="c">#7: 581.6 img/sec per GPU</span>
-Iter <span class="c">#8: 581.2 img/sec per GPU</span>
-Iter <span class="c">#9: 581.6 img/sec per GPU</span>
-Img/sec per GPU: 580.0 +-2.8
-Total img/sec on 16 GPU<span class="o">(</span>s<span class="o">)</span>: 9279.7 +-44.2
-</code></pre></div></div>
-
-<p>最後の行に出力される実行結果から、2ノード16枚のGPUを使用した実行時のスコアが9,300程度で、先の1ノード8枚のGPUで実行したスコアからほぼリニアにスケールしていることを確認します。</p>
 
 <hr />
-<h1 id="4-multiworkermirroredstrategyを使用するgpuクラスタ環境構築">4. MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築</h1>
+<h1 id="5-nccl-tests実行">5. NCCL Tests実行</h1>
 
-<h2 id="4-1-dockerコンテナ環境構築">4-1. Dockerコンテナ環境構築</h2>
+<p>本章は、 <strong>NGC Catalog</strong> から提供される <strong>TensorFlow NGC Container</strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、Dockerコンテナ上で <strong>NCCL</strong> のGPU間通信性能を <strong>NCCL Tests</strong> で検証します。</p>
 
-<h3 id="4-1-0-概要">4-1-0. 概要</h3>
+<p>この <strong>NCCL Tests</strong> 実行方法は、 <strong><a href="/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法">標準ベンチマーク実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></strong> を参照してください。</p>
 
-<p>本章は、後の章で実行する <strong>NCCL Tests</strong> と <strong>MultiWorkerMirroredStrategy</strong> のサンプルプログラムを実行するDockerコンテナを起動するため、必要な環境構築作業を行います。</p>
-
-<p><strong>NCCL Tests</strong> は、コンテナを跨るプログラム実行のコントローラとしてMPIを使用します。ここで使用するMPIは、Dockerコンテナに予め含まれる、 <strong>OpenMPI</strong> です。</p>
-
-<p><strong>OpenMPI</strong> をコンテナ間で実行するためには、MPIプログラムをmpirun等で起動するコンテナ（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナにパスフレーズ無しでSSH接続できる必要があります。</p>
-
-<p>またここで使用するDockerコンテナは、sshdがインストールされていないため、ヘッドノード以外のコンテナでこれをインストールする必要があります。</p>
-
-<p>またOpenMPIの実行は、これを実行するコンテナ間で必要なポートにアクセス出来る必要があるため、GPUノードが接続されるプライベートサブネットのセキュリティリストを修正する必要があります。</p>
-
-<p>以上より、本章で実施するDockerコンテナ環境構築は、以下の手順を経て行います。</p>
-
-<ul>
-  <li>コンテナ間SSH接続環境構築</li>
-  <li>プライベートサブネットセキュリティリスト修正</li>
-  <li>Dockerコンテナ起動</li>
-  <li>sshdインストール・起動</li>
-</ul>
-
-<h3 id="4-1-1-コンテナ間ssh接続環境構築">4-1-1. コンテナ間SSH接続環境構築</h3>
-
-<p>本章は、先にBastionノードで作成したSSH秘密鍵を含む <strong>.ssh</strong> ディレクトリをGPUノードにコピーし、後のコンテナ起動時にこのディレクトリをコンテナにマウントすることで、コンテナ間のパスフレーズ無しSSH接続環境を実現します。</p>
-
-<p>まず初めに、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全てのGPUノードのホスト名を含むホスト名リストをBastionノード上にファイル名 <strong>hostlist.txt</strong> で作成します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-d5ige-comp
-inst-swgen-comp
-</code></pre></div></div>
-
-<p>次にこのホスト名リストを使用し、Bastionノードのopcユーザで以下コマンドを実行、全GPUノードのホストキーを含む <strong>known_hosts</strong> ファイルを作成します。この際、GPUノード毎に接続確認を求められるため、全てに <strong>yes</strong> を入力します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="nb">hostname</span><span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-inst-d5ige-comp
-inst-swgen-comp
-The authenticity of host <span class="s1">'inst-swgen-comp (10.0.2.242)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:koWs+bKLzf78RQsZ+mQhvwxEQTu/72St2DiVyVqmtl4.
-ECDSA key fingerprint is MD5:68:b4:e0:37:f1:9a:36:c7:a5:3c:69:9f:91:d5:e0:34.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'inst-swgen-comp,10.0.2.242'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
-inst-swgen-comp
-</code></pre></div></div>
-
-<p>次に、Bastionノードのopcユーザで以下コマンドを実行、Bastionノードで作成した秘密鍵を使ったSSHログインを許可します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.ssh/id_rsa.pub <span class="o">&gt;&gt;</span> ~/.ssh/authorized_keys
-</code></pre></div></div>
-
-<p>次に、Bastionノードのopcユーザで以下コマンドを実行、 <strong>~opc/.ssh</strong> ディレクトリをアーカイブしてこれを全GPUノードにコピーします。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~
-<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-cvf</span> /tmp/ssh.tar ./.ssh
-./.ssh/
-./.ssh/id_rsa
-./.ssh/known_hosts
-./.ssh/id_rsa.pub
-./.ssh/authorized_keys
-<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp /tmp/ssh.tar <span class="nv">$hname</span>:/tmp/<span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-ssh.tar                                                                100%   10KB   9.0MB/s   00:00    
-inst-swgen-comp
-ssh.tar                                                                100%   10KB  11.5MB/s   00:00
-</code></pre></div></div>
-
-<p>次に、Bastionノードのopcユーザで以下コマンドを実行、先のアーカイブをGPUノードの <strong>/TF</strong> ディレクトリに展開します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo mkdir /TF"</span><span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-inst-swgen-comp
-<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo tar --no-same-owner -xvf /tmp/ssh.tar -C /TF/"</span><span class="p">;</span> <span class="k">done
-</span>inst-d5ige-comp
-./.ssh/
-./.ssh/id_rsa
-./.ssh/id_rsa.pub
-./.ssh/authorized_keys
-./.ssh/known_hosts
-inst-swgen-comp
-./.ssh/
-./.ssh/id_rsa
-./.ssh/id_rsa.pub
-./.ssh/authorized_keys
-./.ssh/known_hosts
-</code></pre></div></div>
-
-<h3 id="4-1-2-プライベートサブネットセキュリティリスト修正">4-1-2. プライベートサブネットセキュリティリスト修正</h3>
-
-<p>本章は、プライベートサブネットのセキュリティリストを以下の手順で修正します。</p>
-
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、GPUノードをデプロイしたリージョンを選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される画面で、先に作成した仮想クラウド・ネットワークをクリックします。</p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>サブネット</strong> フィールドで、先に作成したプライベートサブネットをクリックします。</p>
-
-    <p><img src="console_page21.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>セキュリティ・リスト</strong> フィールドで、プライベートサブネットに適用されているセキュリティリストをクリックします。</p>
-
-    <p><img src="console_page22.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>イングレス・ルール</strong> フィールドで、SSHアクセスを許可しているルールの <strong>編集</strong> メニューをクリックします。</p>
-
-    <p><img src="console_page23.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>イングレス・ルールの編集</strong> サイドバーで、 <strong>IPプロトコル</strong> フィールドを <strong>すべてのプロトコル</strong> に変更し、 <strong>変更の保存</strong> ボタンをクリックします。</p>
-
-    <p><img src="console_page24.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>イングレス・ルール</strong> フィールドで、変更したルールの <strong>IPプロトコル</strong> が <strong>すべてのプロトコル</strong> に変更されたことを確認します。</p>
-
-    <p><img src="console_page25.png" alt="画面ショット" /></p>
-  </li>
-</ol>
-
-<h3 id="4-1-3-dockerコンテナ起動">4-1-3. Dockerコンテナ起動</h3>
-
-<p>本章は、2ノードのGPUノード（以降、このうち1台をマスターノード、残りの1台をスレーブノードと呼称。）でDockerコンテナを起動します。</p>
-
-<p>以下コマンドをマスターノードとスレーブノードのrootユーザでそれぞれ実行し、Dockerコンテナを起動します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--privileged</span> <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--network</span><span class="o">=</span>host <span class="nt">--ipc</span><span class="o">=</span>host <span class="nt">--ulimit</span> <span class="nv">memlock</span><span class="o">=</span><span class="nt">-1</span> <span class="nt">--ulimit</span> <span class="nv">stack</span><span class="o">=</span>67108864 <span class="nt">-v</span> /TF:/root <span class="nt">-v</span> /mnt/localdisk:/scratch nvcr.io/nvidia/tensorflow:22.11-tf2-py3
-</code></pre></div></div>
-
-<h3 id="4-1-4-sshdインストール起動">4-1-4. sshdインストール・起動</h3>
-
-<p>本章は、マスターノードで実行するmpirunによるSSH接続をスレーブノードで受け付けるため、スレーブノードでsshdをインストールし、このsshdをポート番号22222で起動します。</p>
-
-<p>以下コマンドをスレーブノードで起動したコンテナ上のrootユーザで実行し、sshdをインストール・起動します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apt update
-<span class="nv">$ </span>apt <span class="nb">install</span> <span class="nt">-y</span> openssh-server
-<span class="nv">$ </span><span class="nb">mkdir</span> /run/sshd
-<span class="nv">$ </span>/usr/sbin/sshd <span class="nt">-p</span> 22222
-</code></pre></div></div>
-
-<p>次に、以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、スレーブノードにSSH接続できることを確認します。この際、接続を継続するかどうかの問いに <strong>yes</strong> と入力し、 <strong>known_hosts</strong> にスレーブノードのホストキーを登録します。これは、この後のmpirunを実行するために必要です。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-p</span> 22222 inst-swgen-comp <span class="nb">hostname
-</span>The authenticity of host <span class="s1">'[inst-swgen-comp]:22222 ([10.0.2.242]:22222)'</span> cannot be established.
-ECDSA key fingerprint is SHA256:KiuvF9QMILkeDOJnr3RFcteAGbTVCkxBZ4gBEJgNqYE.
-Are you sure you want to <span class="k">continue </span>connecting <span class="o">(</span><span class="nb">yes</span>/no/[fingerprint]<span class="o">)</span>? <span class="nb">yes
-</span>Warning: Permanently added <span class="s1">'[inst-swgen-comp]:22222,[10.0.2.242]:22222'</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
-inst-swgen-comp
-</code></pre></div></div>
-
-<h2 id="4-2-nccl通信性能検証">4-2. NCCL通信性能検証</h2>
-
-<h3 id="4-2-0-概要">4-2-0. 概要</h3>
-
-<p>本章は、 <strong>NCCL Tests</strong> を使用し、GPUクラスタ内の <strong>NCCL</strong> によるGPU間通信性能を確認します。</p>
-
-<p>ここで使用する <strong>NCCL</strong> は、起動したDockerコンテナに予め含まれますが、 <strong>NCCL Tests</strong> はコンテナ内でソースコードからビルドします。</p>
-
-<p>以上より、本章で実施するNCCL通信性能検証は、以下の手順を経て行います。</p>
-
-<ul>
-  <li><strong>NCCL Tests</strong> ビルド</li>
-  <li><strong>NCCL Tests</strong> 実行</li>
-</ul>
-
-<p>本チュートリアルは、2ノードに跨る全16枚のGPUで全16ポートのRDMAインタフェースを使用した <strong>NCCL</strong> のAll-Reduce通信性能をコンテナ環境から計測し、以下性能が出ています。</p>
-
-<ul>
-  <li>帯域（busbw）：約 172 GB/s</li>
-</ul>
-
-<h3 id="4-2-1-nccl-testsビルド">4-2-1. NCCL Testsビルド</h3>
-
-<p>本章は、 <strong>NCCL Tests</strong> プログラムを <strong>GitHub</strong> からダウンロード、ビルドします。</p>
-
-<p>マスターノードとスレーブノードのそれぞれで、起動したコンテナ上のrootユーザで、以下のコマンドを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /root
-<span class="nv">$ </span>git clone https://github.com/NVIDIA/nccl-tests.git
-<span class="nv">$ </span><span class="nb">cd </span>nccl-tests
-<span class="nv">$ </span>make <span class="nv">MPI</span><span class="o">=</span>1 <span class="nv">MPI_HOME</span><span class="o">=</span>/usr/local/mpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda <span class="nv">NCCL_HOME</span><span class="o">=</span>/usr/lib/x86_64-linux-gnu
-</code></pre></div></div>
-
-<h3 id="4-2-2-nccl-tests実行">4-2-2. NCCL Tests実行</h3>
-
-<p>本章は、 <strong>NCCL Tests</strong> プログラムを実行します。</p>
-
-<p>マスターノードで起動したコンテナ上のrootユーザで以下のコマンドを実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る <strong>NCCL</strong> のAll-Reduce通信性能を計測します。ここで、 <strong>-H</strong> オプションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 2 <span class="nt">-H</span> inst-d5ige-comp:1,inst-swgen-comp:1 <span class="nt">-mca</span> plm_rsh_args <span class="s2">"-p 22222"</span> <span class="nt">--mca</span> btl_tcp_if_exclude docker0,lo <span class="nt">-x</span> <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4 <span class="nt">-x</span> <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>enp45s0f0 <span class="nt">-x</span> <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span> ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-t</span> 1 <span class="nt">-g</span> 8
-<span class="c"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
-<span class="c">#</span>
-<span class="c"># Using devices</span>
-<span class="c">#  Rank  0 Group  0 Pid    417 on inst-d5ige-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  1 Group  0 Pid    418 on inst-d5ige-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  2 Group  0 Pid    419 on inst-d5ige-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  3 Group  0 Pid    420 on inst-d5ige-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  4 Group  0 Pid    421 on inst-d5ige-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  5 Group  0 Pid    422 on inst-d5ige-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  6 Group  0 Pid    425 on inst-d5ige-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  7 Group  0 Pid    429 on inst-d5ige-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  8 Group  0 Pid    371 on inst-swgen-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  9 Group  0 Pid    372 on inst-swgen-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 10 Group  0 Pid    373 on inst-swgen-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 11 Group  0 Pid    374 on inst-swgen-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 12 Group  0 Pid    375 on inst-swgen-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 13 Group  0 Pid    376 on inst-swgen-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 14 Group  0 Pid    377 on inst-swgen-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 15 Group  0 Pid    380 on inst-swgen-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#</span>
-<span class="c">#                                                              out-of-place                       in-place          </span>
-<span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
-<span class="c">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
- 10737418240    2684354560     float     <span class="nb">sum</span>      <span class="nt">-1</span>   118569   90.56  169.80      0   115501   92.96  174.31      0
-<span class="c"># Out of bounds values : 0 OK</span>
-<span class="c"># Avg bus bandwidth    : 172.052 </span>
-<span class="c">#</span>
-</code></pre></div></div>
-
-<h2 id="4-3-multiworkermirroredstrategyサンプルプログラム実行">4-3. MultiWorkerMirroredStrategyサンプルプログラム実行</h2>
-
-<h3 id="4-3-0-概要">4-3-0. 概要</h3>
+<hr />
+<h1 id="6-multiworkermirroredstrategyサンプルプログラム実行">6. MultiWorkerMirroredStrategyサンプルプログラム実行</h1>
 
 <p>本章は、 <strong>MultiWorkerMirroredStrategy</strong> サンプルプログラムを使用し、構築したGPUクラスタで分散機械学習プログラムを実行します。</p>
 
 <p>ここで使用する <strong>MultiWorkerMirroredStrategy</strong> サンプルプログラムは、以下 <strong>TensorFlow</strong> 公式ドキュメントページのチュートリアルで使用されている、MNISTデータセットを使用した訓練を行うプログラムです。</p>
 
 <p><a href="https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras">https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras</a></p>
-
-<h3 id="4-3-1-multiworkermirroredstrategyサンプルプログラム作成">4-3-1. MultiWorkerMirroredStrategyサンプルプログラム作成</h3>
-
-<p>本章は、 <strong>MultiWorkerMirroredStrategy</strong> サンプルプログラムを作成します。</p>
 
 <p>マスターノードとスレーブノードで起動した双方のコンテナ上のrootユーザで、以下のプログラムを作成します。</p>
 
@@ -1345,32 +1042,33 @@ with strategy.scope<span class="o">()</span>:
 multi_worker_model.fit<span class="o">(</span>multi_worker_dataset, <span class="nv">epochs</span><span class="o">=</span>3, <span class="nv">steps_per_epoch</span><span class="o">=</span>70<span class="o">)</span>
 </code></pre></div></div>
 
-<h3 id="4-3-2-multiworkermirroredstrategyサンプルプログラム実行">4-3-2. MultiWorkerMirroredStrategyサンプルプログラム実行</h3>
+<p>次に、マスターノードで起動したコンテナ上のrootユーザで以下コマンドを実行し、環境変数 <strong>TF_CONFIG</strong> を設定・確認します。<br />
+ここで、 <strong>worker</strong> セクションに指定するマスターノード（inst-xxxxx-gpu4-ol89）とスレーブノード（inst-yyyyy-gpu4-ol89）のホスト名は、自身の環境に合わせて修正します。</p>
 
-<p>本章は、 <strong>MultiWorkerMirroredStrategy</strong> サンプルプログラムを実行します。</p>
-
-<p>マスターノードで起動したコンテナ上のrootユーザで、以下コマンドを実行し <strong>TF_CONFIG</strong> 環境変数を設定・確認します。ここで、 <strong>worker</strong> セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">TF_CONFIG</span><span class="o">=</span><span class="s2">"{</span><span class="se">\"</span><span class="s2">cluster</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">: [</span><span class="se">\"</span><span class="s2">inst-d5ige-comp:12345</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">inst-swgen-comp:23456</span><span class="se">\"</span><span class="s2">]}, </span><span class="se">\"</span><span class="s2">task</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">index</span><span class="se">\"</span><span class="s2">: 0}}"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">TF_CONFIG</span><span class="o">=</span><span class="s2">"{</span><span class="se">\"</span><span class="s2">cluster</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">: [</span><span class="se">\"</span><span class="s2">inst-xxxxx-gpu4-ol89:12345</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">inst-yyyyy-gpu4-ol89:23456</span><span class="se">\"</span><span class="s2">]}, </span><span class="se">\"</span><span class="s2">task</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">index</span><span class="se">\"</span><span class="s2">: 0}}"</span>
 <span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$TF_CONFIG</span>
-<span class="o">{</span><span class="s2">"cluster"</span>: <span class="o">{</span><span class="s2">"worker"</span>: <span class="o">[</span><span class="s2">"inst-d5ige-comp:12345"</span>, <span class="s2">"inst-swgen-comp:23456"</span><span class="o">]}</span>, <span class="s2">"task"</span>: <span class="o">{</span><span class="s2">"type"</span>: <span class="s2">"worker"</span>, <span class="s2">"index"</span>: 0<span class="o">}}</span>
+<span class="o">{</span><span class="s2">"cluster"</span>: <span class="o">{</span><span class="s2">"worker"</span>: <span class="o">[</span><span class="s2">"inst-xxxxx-gpu4-ol89:12345"</span>, <span class="s2">"inst-yyyyy-gpu4-ol89:23456"</span><span class="o">]}</span>, <span class="s2">"task"</span>: <span class="o">{</span><span class="s2">"type"</span>: <span class="s2">"worker"</span>, <span class="s2">"index"</span>: 0<span class="o">}}</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
-<p>次に、マスターノードで起動したコンテナ上のrootユーザで、以下コマンドを実行します。この時点では、スレーブノードの実行を待っている状態で、以下の出力で停止します。</p>
+<p>次に、マスターノードで起動したコンテナ上のrootユーザで以下コマンドを実行します。<br />
+この時点では、スレーブノードの実行を待っている状態で、以下の出力で停止します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>python mnist.py
    :
 2022-12-15 08:48:49.404772: I tensorflow/core/distributed_runtime/coordination/coordination_service_agent.cc:281] Coordination agent has successfully connected.
 </code></pre></div></div>
 
-<p>次に、スレーブノードで起動したコンテナ上のrootユーザで、以下のコマンドを実行し <strong>TF_CONFIG</strong> 環境変数を設定・確認します。ここで、 <strong>worker</strong> セクションに指定するマスターノード（inst-d5ige-comp）とスレーブノード（inst-swgen-comp）のホスト名は、自身の環境に合わせて修正します。</p>
+<p>次に、スレーブノードで起動したコンテナ上のrootユーザで以下コマンドを実行し、環境変数 <strong>TF_CONFIG</strong> を設定・確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">TF_CONFIG</span><span class="o">=</span><span class="s2">"{</span><span class="se">\"</span><span class="s2">cluster</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">: [</span><span class="se">\"</span><span class="s2">inst-d5ige-comp:12345</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">inst-swgen-comp:23456</span><span class="se">\"</span><span class="s2">]}, </span><span class="se">\"</span><span class="s2">task</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">index</span><span class="se">\"</span><span class="s2">: 1}}"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">TF_CONFIG</span><span class="o">=</span><span class="s2">"{</span><span class="se">\"</span><span class="s2">cluster</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">: [</span><span class="se">\"</span><span class="s2">inst-xxxxx-gpu4-ol89:12345</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">inst-yyyyy-gpu4-ol89:23456</span><span class="se">\"</span><span class="s2">]}, </span><span class="se">\"</span><span class="s2">task</span><span class="se">\"</span><span class="s2">: {</span><span class="se">\"</span><span class="s2">type</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">worker</span><span class="se">\"</span><span class="s2">, </span><span class="se">\"</span><span class="s2">index</span><span class="se">\"</span><span class="s2">: 1}}"</span>
 <span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$TF_CONFIG</span>
-<span class="o">{</span><span class="s2">"cluster"</span>: <span class="o">{</span><span class="s2">"worker"</span>: <span class="o">[</span><span class="s2">"inst-d5ige-comp:12345"</span>, <span class="s2">"inst-swgen-comp:23456"</span><span class="o">]}</span>, <span class="s2">"task"</span>: <span class="o">{</span><span class="s2">"type"</span>: <span class="s2">"worker"</span>, <span class="s2">"index"</span>: 1<span class="o">}}</span>
+<span class="o">{</span><span class="s2">"cluster"</span>: <span class="o">{</span><span class="s2">"worker"</span>: <span class="o">[</span><span class="s2">"inst-xxxxx-gpu4-ol89:12345"</span>, <span class="s2">"inst-yyyyy-gpu4-ol89:23456"</span><span class="o">]}</span>, <span class="s2">"task"</span>: <span class="o">{</span><span class="s2">"type"</span>: <span class="s2">"worker"</span>, <span class="s2">"index"</span>: 1<span class="o">}}</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
-<p>次に、スレーブノードで起動したコンテナ上のrootユーザで、以下のコマンドを実行します。これにより、待機していたマスターノードのワーカーとスレーブノードのワーカーが全16枚のGPUを使用してプログラムを実行します。</p>
+<p>次に、スレーブノードで起動したコンテナ上のrootユーザで以下のコマンドを実行します。<br />
+これにより、待機していたマスターノードのワーカーとスレーブノードのワーカーが全16枚のGPUを使用してプログラムを実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>＄ python mnist.py
 2022-12-19 09:38:23.383751: I tensorflow/core/platform/cpu_feature_guard.cc:194] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library <span class="o">(</span>oneDNN<span class="o">)</span> to use the following CPU instructions <span class="k">in </span>performance-critical operations:  SSE3 SSE4.1 SSE4.2 AVX
@@ -1396,7 +1094,7 @@ Epoch 3/3
 </code></pre></div></div>
 
 <hr />
-<h1 id="5-gpuクラスタの削除">5. GPUクラスタの削除</h1>
+<h1 id="7-gpuクラスタの削除">7. GPUクラスタの削除</h1>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を終了することで、作成した <strong>クラスタ・ネットワーク</strong> とGPUノードを削除します。</p>
 
@@ -1422,7 +1120,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-04T16:12:23+09:00">July 4, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-04T22:38:28+09:00">July 4, 2024</time></p>
 
       </footer>
 
@@ -1442,7 +1140,7 @@ Epoch 3/3
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/spinup-ml-instance/" class="pagination--pager" title="GPUインスタンスで機械学習にトライ
+      <a href="/ocitutorials/hpc/spinup-gpu-cluster-wihorovod/" class="pagination--pager" title="GPUクラスタを構築する(基礎インフラ手動構築編)
 ">前へ</a>
     
     

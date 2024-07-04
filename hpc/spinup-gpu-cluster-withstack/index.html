@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-04T16:12:23+09:00">
+  <meta property="article:published_time" content="2024-07-04T22:38:28+09:00">
 
 
 
@@ -248,6 +248,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-wihorovod/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
@@ -349,7 +351,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(スタティッククラスタ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、リソース・マネージャから1クリックで自動構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-07-04T16:12:23+09:00">
+    <meta itemprop="datePublished" content="2024-07-04T22:38:28+09:00">
     
 
     <div class="page__inner-wrap">
@@ -367,18 +369,12 @@
         <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。</p>
-<ul>
-  <li><strong>RoCE v2</strong> 採用の高帯域・低レイテンシRDMAインターコネクトの <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong></li>
-  <li>8枚の <strong>NVIDIA A100</strong> 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
-</ul>
-
 <p>本チュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無償で利用可能な <strong><a href="/ocitutorials/hpc/#5-10-hpcクラスタスタック">HPCクラスタスタック</a></strong> を利用し、以下構成のGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> で検証後、分散機械学習のサンプルプログラムを実行します。</p>
 
 <p>[GPUノード]</p>
 <ul>
-  <li>シェイプ ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong></li>
-  <li>インターコネクト ： <strong>クラスタ・ネットワーク</strong> （ノード当たり100 Gbps x 16）</li>
+  <li>シェイプ ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
+  <li>インターコネクト ： <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong></li>
   <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのGPU <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
 </ul>
 
@@ -397,8 +393,8 @@
 
 <p>[クラスタ管理]</p>
 <ul>
-  <li><strong>ファイルストレージ</strong> によるGPUクラスタ内ホームディレクトリ共有</li>
-  <li>LDAPによるクラスタ内ユーザ統合管理</li>
+  <li>共有ストレージ ： <strong>ファイルストレージ</strong> によるGPUクラスタ内ホームディレクトリ共有</li>
+  <li>ユーザ管理 ： LDAP</li>
 </ul>
 
 <p>※1） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.7</strong> です。</p>
@@ -420,7 +416,7 @@
 
 <p><strong>所要時間 :</strong> 約1時間</p>
 
-<p><strong>前提条件 :</strong> HPCクラスタを収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)が作成されていること。</p>
+<p><strong>前提条件 :</strong> GPUクラスタを収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。<br />
 また使用する <strong>HPCクラスタスタック</strong> のバージョンが異なる場合も、画面ショットが異なる場合があります。</p>
@@ -1142,7 +1138,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-04T16:12:23+09:00">July 4, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-04T22:38:28+09:00">July 4, 2024</time></p>
 
       </footer>
 
