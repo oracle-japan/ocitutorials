@@ -512,7 +512,7 @@ $
 ***
 # 3. コンテナ環境構築
 
-本章は、 **NCCL Tests** を実行するためのコンテナ環境を構築します。
+本章は、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用し、GPU利用可能なコンテナ環境を構築します。
 
 以下コマンドを全てのGPUノードのopcユーザで実行し、 **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** をインストール・起動します。
 
@@ -587,7 +587,6 @@ Mon Jul  1 02:58:34 2024
 +-----------------------------------------------------------------------------------------+
 $
 ```
-
 
 ***
 # 4. NCCL Tests実行
