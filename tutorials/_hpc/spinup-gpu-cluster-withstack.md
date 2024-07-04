@@ -13,15 +13,11 @@ header:
 ***
 # 0. 概要
 
-Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービスを提供することから、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行する、GPUクラスタを構築するには最適なクラウドサービスです。
-- **RoCE v2** 採用の高帯域・低レイテンシRDMAインターコネクトの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**
-- 8枚の **NVIDIA A100** 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
-
 本チュートリアルは、 **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から無償で利用可能な **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を利用し、以下構成のGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証後、分散機械学習のサンプルプログラムを実行します。
 
 [GPUノード]
-- シェイプ ： **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
-- インターコネクト ： **クラスタ・ネットワーク** （ノード当たり100 Gbps x 16）
+- シェイプ ： **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
+- インターコネクト ： **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**
 - OS ： **Oracle Linux** 8.9ベースのGPU **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
 
 [Bastionノード]
@@ -34,8 +30,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 - コンテナ ： **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** 24.06-tf2-py3 from **[NGC Catalog](https://catalog.ngc.nvidia.com/)**
 
 [クラスタ管理]
-- **ファイルストレージ** によるGPUクラスタ内ホームディレクトリ共有
-- LDAPによるクラスタ内ユーザ統合管理
+- 共有ストレージ ： **ファイルストレージ** によるGPUクラスタ内ホームディレクトリ共有
+- ユーザ管理 ： LDAP
 
 ※1） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.7** です。  
 
@@ -56,7 +52,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、以下のサービス�
 
 **所要時間 :** 約1時間
 
-**前提条件 :** HPCクラスタを収容する **コンパートメント** ( **ルート・コンパートメント** でもOKです)が作成されていること。
+**前提条件 :** GPUクラスタを収容する **コンパートメント** ( **ルート・コンパートメント** でもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。  
 また使用する **HPCクラスタスタック** のバージョンが異なる場合も、画面ショットが異なる場合があります。

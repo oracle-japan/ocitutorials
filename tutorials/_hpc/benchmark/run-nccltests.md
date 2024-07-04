@@ -13,7 +13,7 @@ header:
 
 本ドキュメントで解説する **[NCCL Tests](https://github.com/nvidia/nccl-tests)** の実行は、GPUクラスタ上に **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** で構築されたコンテナ実行環境で、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** とコンテナ上でビルドする **NCCL Tests** を使用します。
 
-本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、GPUワークロード向けベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** または **[BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、GPUノード上で **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
+本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、GPUノード上で **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
 
 以上より、本ドキュメントで解説する **NCCL Tests** の実行は、以下の手順を経て行います。
 
@@ -25,18 +25,17 @@ header:
 
 - シェイプ ： **BM.GPU4.8**
 - OS ： **Oracle Linux** 8.9ベースのGPU **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
-- コンテナランタイム ： **Docker Community Edition** 26.1.3（※2）
-- **NVIDIA Container Toolkit** ： 1.15.0（※2）
+- コンテナランタイム ： **Docker Community Edition** 26.1.3
+- **NVIDIA Container Toolkit** ： 1.15.0
 - コンテナ ： **TensorFlow NGC Container** 24.06-tf2-py3
-- **NCCL** ： 2.21.5（※3）
-- MPI ： **[OpenMPI](https://www.open-mpi.org/)** 4.1.7a1（※3）
+- **NCCL** ： 2.21.5（※2）
+- MPI ： **[OpenMPI](https://www.open-mpi.org/)** 4.1.7a1（※2）
 - ノード数 ： 2
 - GPU数 ： **NVIDIA A100 40GB** x 16
-- ノード間接続 ： **クラスタ・ネットワーク** （100 Gbps x 16ポート）
+- ノード間接続 ： **クラスタ・ネットワーク**
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.7** です。  
-※2）使用するOSイメージに含まれるものを使用します。  
-※3）使用するコンテナに含まれるものを使用します。
+※2）使用するコンテナに含まれるものを使用します。
 
 ***
 # 1. コンテナ環境構築
@@ -63,8 +62,7 @@ header:
 以下コマンドを2ノードのGPUノードのうち1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称。）のopcユーザで実行します。
 
 ```sh
-$ sudo mkdir -p /TF/.ssh
-$ sudo chmod 600 /TF/.ssh
+$ sudo mkdir -p /TF/.ssh && sudo chmod 600 /TF/.ssh
 $ sudo ssh-keygen -f /TF/.ssh/id_rsa -N ""
 $ sudo cp /TF/.ssh/id_rsa.pub /TF/.ssh/authorized_keys
 $ cd / && sudo tar -cvf /tmp/TF.tar ./TF
