@@ -19,12 +19,13 @@ header:
 Always FreeのADBでは、2024年5月にリリースとなった**Oracle Database 23ai**を使用し、新機能を試す事が出来ます。
 <br>この章では、Always FreeのADBインスタンスの作成方法をご紹介します。
 
-BaseDBでのインスタンスの作成方法は[101: Oracle Cloud で Oracle Database を使おう(BaseDB)](/ocitutorials/basedb/dbcs101-create-db/){:target="_blank"} を参考にしてください。
+なお、BaseDBでのインスタンスの作成方法は[101: Oracle Cloud で Oracle Database を使おう(BaseDB)](/ocitutorials/basedb/dbcs101-create-db/){:target="_blank"} を参考にしてください。
 
 
 <br>
 **目次**
 
+- [はじめに](#はじめに)
 - [1. リージョンの確認](#1-リージョンの確認)
 - [2. ADBインスタンスを作成してみよう](#2-adbインスタンスを作成してみよう)
 
@@ -39,9 +40,10 @@ BaseDBでのインスタンスの作成方法は[101: Oracle Cloud で Oracle Da
 
   Always Free Autonomous Database上でのOracle Database 23aiは、
   <br>現時点では、以下の4リージョンのみでご利用いただけます：
+  - Tokyo
   - Ashburn
   - Phoenix
-  - Frankfurt
+  - Paris
   - London
 
   お使いのテナンシーの**ホーム・リージョン**が上記のリージョンのいずれか、
