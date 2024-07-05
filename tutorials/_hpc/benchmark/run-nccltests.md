@@ -28,7 +28,7 @@ header:
 - コンテナランタイム ： **Docker Community Edition** 26.1.3
 - **NVIDIA Container Toolkit** ： 1.15.0
 - コンテナ ： **TensorFlow NGC Container** 24.06-tf2-py3
-- **NCCL** ： 2.21.5（※2）
+- **NCCL** ： 21.5.1（※2）
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 4.1.7a1（※2）
 - ノード数 ： 2
 - GPU数 ： **NVIDIA A100 40GB** x 16
@@ -139,7 +139,7 @@ $ cd nccl-tests && make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda 
 ここで、 **-H** オプションに指定するマスターノード（inst-xxxxx-gpu4-ol89）とスレーブノード（inst-yyyyy-gpu4-ol89）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-$ mpirun --allow-run-as-root -np 2 -H inst-xxxxx-gpu4-ol89:1,inst-yyyyy-gpu4-ol89:1 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=eth0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8
+$ mpirun --allow-run-as-root -np 2 -H inst-xxxxx-gpu4-ol89:1,inst-yyyyy-gpu4-ol89:1 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=eth0 -x NCCL_IB_HCA="=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices

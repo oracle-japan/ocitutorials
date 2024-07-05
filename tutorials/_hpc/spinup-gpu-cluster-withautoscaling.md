@@ -350,6 +350,7 @@ BastionノードのLDAPユーザで、以下のジョブスクリプトをファ
 #SBATCH --gpus-per-node=8
 export NCCL_IB_QPS_PER_CONNECTION=4
 export NCCL_IB_GID_INDEX=3
+export NCCL_IB_HCA="=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"
 srun --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --container-name=tensorflow --mpi pmi2 bash -c "cd /tmp; git clone https://github.com/NVIDIA/nccl-tests.git; cd ./nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu; sleep 60; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
 ```
 
