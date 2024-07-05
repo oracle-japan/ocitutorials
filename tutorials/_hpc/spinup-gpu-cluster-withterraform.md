@@ -471,8 +471,9 @@ $
 以下コマンドをBastionノードのopcユーザで実行し、GPUノードの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に使用する16個のネットワークインターフェースに正しくIPアドレスが設定されていることを確認します。  
 
 ```sh
-$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "ip a | grep rdma | grep inet"; done
+$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "ip a | grep -e eth0 -e rdma | grep inet"; done
 inst-xxxxx-gpu4-ol89
+    inet 10.0.2.117/24 brd 10.0.2.255 scope global dynamic eth0
     inet 10.224.0.117/12 brd 10.239.255.255 scope global noprefixroute rdma0
     inet 10.224.1.117/12 brd 10.239.255.255 scope global noprefixroute rdma1
     inet 10.224.2.117/12 brd 10.239.255.255 scope global noprefixroute rdma2
@@ -490,6 +491,7 @@ inst-xxxxx-gpu4-ol89
     inet 10.224.14.117/12 brd 10.239.255.255 scope global noprefixroute rdma14
     inet 10.224.15.117/12 brd 10.239.255.255 scope global noprefixroute rdma15
 inst-yyyyy-gpu4-ol89
+    inet 10.0.2.17/24 brd 10.0.2.255 scope global dynamic eth0
     inet 10.224.0.17/12 brd 10.239.255.255 scope global noprefixroute rdma0
     inet 10.224.1.17/12 brd 10.239.255.255 scope global noprefixroute rdma1
     inet 10.224.2.17/12 brd 10.239.255.255 scope global noprefixroute rdma2
@@ -507,6 +509,46 @@ inst-yyyyy-gpu4-ol89
     inet 10.224.14.17/12 brd 10.239.255.255 scope global noprefixroute rdma14
     inet 10.224.15.17/12 brd 10.239.255.255 scope global noprefixroute rdma15
 $
+```
+
+なお、後に実行する **NCCL Tests** の起動コマンドで設定している **NCCL_IB_HCA** 環境変数に指定のRDMAリンク名（ **mlx5_xx** ）は、以下のように先の **クラスタ・ネットワーク** 接続用のネットワークインターフェースに対応しています。
+
+```sh
+$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "rdma link show | grep rdma"; done
+inst-xxxxx-gpu4-ol89
+link mlx5_6/1 state ACTIVE physical_state LINK_UP netdev rdma0 
+link mlx5_7/1 state ACTIVE physical_state LINK_UP netdev rdma1 
+link mlx5_8/1 state ACTIVE physical_state LINK_UP netdev rdma2 
+link mlx5_9/1 state ACTIVE physical_state LINK_UP netdev rdma3 
+link mlx5_0/1 state ACTIVE physical_state LINK_UP netdev rdma4 
+link mlx5_1/1 state ACTIVE physical_state LINK_UP netdev rdma5 
+link mlx5_2/1 state ACTIVE physical_state LINK_UP netdev rdma6 
+link mlx5_3/1 state ACTIVE physical_state LINK_UP netdev rdma7 
+link mlx5_14/1 state ACTIVE physical_state LINK_UP netdev rdma8 
+link mlx5_15/1 state ACTIVE physical_state LINK_UP netdev rdma9 
+link mlx5_16/1 state ACTIVE physical_state LINK_UP netdev rdma10 
+link mlx5_17/1 state ACTIVE physical_state LINK_UP netdev rdma11 
+link mlx5_10/1 state ACTIVE physical_state LINK_UP netdev rdma12 
+link mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
+link mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
+link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
+inst-yyyyy-gpu4-ol89
+link mlx5_6/1 state ACTIVE physical_state LINK_UP netdev rdma0 
+link mlx5_7/1 state ACTIVE physical_state LINK_UP netdev rdma1 
+link mlx5_8/1 state ACTIVE physical_state LINK_UP netdev rdma2 
+link mlx5_9/1 state ACTIVE physical_state LINK_UP netdev rdma3 
+link mlx5_0/1 state ACTIVE physical_state LINK_UP netdev rdma4 
+link mlx5_1/1 state ACTIVE physical_state LINK_UP netdev rdma5 
+link mlx5_2/1 state ACTIVE physical_state LINK_UP netdev rdma6 
+link mlx5_3/1 state ACTIVE physical_state LINK_UP netdev rdma7 
+link mlx5_14/1 state ACTIVE physical_state LINK_UP netdev rdma8 
+link mlx5_15/1 state ACTIVE physical_state LINK_UP netdev rdma9 
+link mlx5_16/1 state ACTIVE physical_state LINK_UP netdev rdma10 
+link mlx5_17/1 state ACTIVE physical_state LINK_UP netdev rdma11 
+link mlx5_10/1 state ACTIVE physical_state LINK_UP netdev rdma12 
+link mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
+link mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
+link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
 ```
 
 ***
