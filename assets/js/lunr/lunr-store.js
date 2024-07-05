@@ -1026,12 +1026,6 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-ml-instance/architecture_diagram.png"
       },{
         "title": "GPUクラスタを構築する(基礎インフラ手動構築編)",
-        "excerpt":"*** # 0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次作成する方法で、 **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用する分散機械学習に対応したコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証後、分散機械学習のサンプルプログラムを実行、その性能を検証します。 このチュートリアルは、分散機械学習フレームワークに以下2種類を取り上げ、それぞれ3章と4章でこれらを解説しています。該当する章を参照することで、自身のワークロードに合わせた環境構築が可能です。 - Horovod（ **[3.Horovodを使用するGPUクラスタ環境構築](#3-horovodを使用するgpuクラスタ環境構築)** ） - MultiWorkerMirroredStrategy（ **[4.MultiWorkerMirroredStrategyを使用するGPUクラスタ環境構築](#4-multiworkermirroredstrategyを使用するgpuクラスタ環境構築)** ） よって本チュートリアルの進め方は、まず自身のワークロードに合わせて上記2種類からどちらを使用するか選択し、0章 → 1章 → 2章 → 3章 or 4章 → 5章と進めます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有、プログラム開発環境、コンテナオーケストレーション等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアルでクラスタ管理機能が有りとなっているチュートリアルを参照ください。...","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/hpc/spinup-gpu-cluster-wihorovod/",
-        "teaser": "/ocitutorials/hpc/spinup-gpu-cluster/architecture_diagram.png"
-      },{
-        "title": "GPUクラスタを構築する(基礎インフラ手動構築編)",
         "excerpt":"0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上にデプロイしてその上でソフトウェア環境を手動で構築する方法で、 Docker Community Edition と NVIDIA Container Toolkit を使用する分散機械学習に対応するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム NCCL Tests で検証後、分散機械学習の稼働確認として TensorFlow の MultiWorkerMirroredStrategy を使用するサンプルプログラムを実行、その性能を検証します。 本チュートリアルで構築するGPUクラスタの構成を以下に示します。 [GPUノード] シェイプ ： BM.GPU4.8/BM.GPU.A100-v2.8 インターコネクト ： クラスタ・ネットワーク OS ： Oracle Linux 8.9ベースのGPU クラスタネットワーキングイメージ （※1） [Bastionノード] シェイプ ： VM.Standard.E4.Flex OS ： Oracle Linux 8.9 [ソフトウェア] コンテナランタイム ：...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-gpu-cluster/",

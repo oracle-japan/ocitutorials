@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-04T22:38:28+09:00">
+  <meta property="article:published_time" content="2024-07-05T17:21:20+09:00">
 
 
 
@@ -248,8 +248,6 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-wihorovod/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
@@ -351,7 +349,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(スタティッククラスタ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、リソース・マネージャから1クリックで自動構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-07-04T22:38:28+09:00">
+    <meta itemprop="datePublished" content="2024-07-05T17:21:20+09:00">
     
 
     <div class="page__inner-wrap">
@@ -882,7 +880,7 @@ Last login: Wed Jul  3 05:37:00 2024 from 172.16.0.238
 <p>次に、BastionノードのLDAPユーザで以下コマンドを実行し、2ノードのGPUノード上で1個づつ <strong>TensorFlow</strong> のコンテナを起動し、このコンテナ上で2ノード全16枚のGPUを使用した <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。<br />
 ここで、ユーザのホームディレクトリに含まれるuser_nameは、自身の環境に合わせて修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">-N</span> 2 <span class="nt">--ntasks-per-node</span> 1 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nt">--mpi</span> pmi2 <span class="nt">--gpus-per-node</span><span class="o">=</span>8 bash <span class="nt">-c</span> <span class="s2">"cd /mnt/home/user_name/nccl-tests; export NCCL_IB_QPS_PER_CONNECTION=4; export NCCL_IB_GID_INDEX=3; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">-N</span> 2 <span class="nt">--ntasks-per-node</span> 1 <span class="nt">--container-name</span><span class="o">=</span>tensorflow <span class="nt">--container-mounts</span> <span class="s2">"/mnt/home/user_name:/mnt/home/user_name"</span> <span class="nt">--mpi</span> pmi2 <span class="nt">--gpus-per-node</span><span class="o">=</span>8 bash <span class="nt">-c</span> <span class="s1">'cd /mnt/home/user_name/nccl-tests; export NCCL_IB_QPS_PER_CONNECTION=4; export NCCL_IB_GID_INDEX=3; export NCCL_IB_HCA="=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8'</span>
 <span class="c"># nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
 <span class="c">#</span>
 <span class="c"># Using devices</span>
@@ -1138,7 +1136,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-04T22:38:28+09:00">July 4, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-05T17:21:20+09:00">July 5, 2024</time></p>
 
       </footer>
 
