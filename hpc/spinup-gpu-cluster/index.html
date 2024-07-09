@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-05T17:21:20+09:00">
+  <meta property="article:published_time" content="2024-07-09T09:37:07+09:00">
 
 
 
@@ -349,7 +349,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-07-05T17:21:20+09:00">
+    <meta itemprop="datePublished" content="2024-07-09T09:37:07+09:00">
     
 
     <div class="page__inner-wrap">
@@ -387,7 +387,8 @@
 <p>[ソフトウェア]</p>
 <ul>
   <li>コンテナランタイム ： <strong>Docker Community Edition</strong> 26.1.3</li>
-  <li>コンテナ ： <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> 24.06-tf2-py3 from <strong><a href="https://catalog.ngc.nvidia.com/">NGC Catalog</a></strong></li>
+  <li><strong>NVIDIA Container Toolkit</strong> ： 1.15.0</li>
+  <li>コンテナ ： <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> 24.06-tf2-py3</li>
 </ul>
 
 <p>[クラスタ管理]</p>
@@ -787,83 +788,47 @@ inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
 
 <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（rdmax）にTCP/IP接続用のネットワークインターフェース（eth0）と4フィールド目が同じ10.224.[0 - 15].x/12のIPアドレスが設定されていることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'ip a | grep -e eth0 -e rdma'</span> | dshbak <span class="nt">-c</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'ip a | grep -e eth0 -e rdma | grep inet'</span> | dshbak <span class="nt">-c</span>
 <span class="nt">----------------</span>
 inst-xxxxx-gpu4-ol89
 <span class="nt">----------------</span>
-6: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 9000 qdisc mq state UP group default qlen 1000
-    inet 10.0.2.125/24 brd 10.0.2.255 scope global dynamic eth0
-22: rdma0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.0.125/12 brd 10.239.255.255 scope global noprefixroute rdma0
-23: rdma1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.1.125/12 brd 10.239.255.255 scope global noprefixroute rdma1
-26: rdma2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.2.125/12 brd 10.239.255.255 scope global noprefixroute rdma2
-27: rdma3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.3.125/12 brd 10.239.255.255 scope global noprefixroute rdma3
-30: rdma4: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.4.125/12 brd 10.239.255.255 scope global noprefixroute rdma4
-31: rdma5: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.5.125/12 brd 10.239.255.255 scope global noprefixroute rdma5
-34: rdma6: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.6.125/12 brd 10.239.255.255 scope global noprefixroute rdma6
-35: rdma7: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.7.125/12 brd 10.239.255.255 scope global noprefixroute rdma7
-38: rdma8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.8.125/12 brd 10.239.255.255 scope global noprefixroute rdma8
-39: rdma9: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.9.125/12 brd 10.239.255.255 scope global noprefixroute rdma9
-42: rdma10: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.10.125/12 brd 10.239.255.255 scope global noprefixroute rdma10
-43: rdma11: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.11.125/12 brd 10.239.255.255 scope global noprefixroute rdma11
-46: rdma12: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.12.125/12 brd 10.239.255.255 scope global noprefixroute rdma12
-47: rdma13: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.13.125/12 brd 10.239.255.255 scope global noprefixroute rdma13
-50: rdma14: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.14.125/12 brd 10.239.255.255 scope global noprefixroute rdma14
-51: rdma15: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.15.125/12 brd 10.239.255.255 scope global noprefixroute rdma15
-
+    inet 10.0.2.117/24 brd 10.0.2.255 scope global dynamic eth0
+    inet 10.224.0.117/12 brd 10.239.255.255 scope global noprefixroute rdma0
+    inet 10.224.1.117/12 brd 10.239.255.255 scope global noprefixroute rdma1
+    inet 10.224.2.117/12 brd 10.239.255.255 scope global noprefixroute rdma2
+    inet 10.224.3.117/12 brd 10.239.255.255 scope global noprefixroute rdma3
+    inet 10.224.4.117/12 brd 10.239.255.255 scope global noprefixroute rdma4
+    inet 10.224.5.117/12 brd 10.239.255.255 scope global noprefixroute rdma5
+    inet 10.224.6.117/12 brd 10.239.255.255 scope global noprefixroute rdma6
+    inet 10.224.7.117/12 brd 10.239.255.255 scope global noprefixroute rdma7
+    inet 10.224.8.117/12 brd 10.239.255.255 scope global noprefixroute rdma8
+    inet 10.224.9.117/12 brd 10.239.255.255 scope global noprefixroute rdma9
+    inet 10.224.10.117/12 brd 10.239.255.255 scope global noprefixroute rdma10
+    inet 10.224.11.117/12 brd 10.239.255.255 scope global noprefixroute rdma11
+    inet 10.224.12.117/12 brd 10.239.255.255 scope global noprefixroute rdma12
+    inet 10.224.13.117/12 brd 10.239.255.255 scope global noprefixroute rdma13
+    inet 10.224.14.117/12 brd 10.239.255.255 scope global noprefixroute rdma14
+    inet 10.224.15.117/12 brd 10.239.255.255 scope global noprefixroute rdma15
 <span class="nt">----------------</span>
 inst-yyyyy-gpu4-ol89
 <span class="nt">----------------</span>
-6: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 9000 qdisc mq state UP group default qlen 1000
-    inet 10.0.2.25/24 brd 10.0.2.255 scope global dynamic eth0
-22: rdma0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.0.25/12 brd 10.239.255.255 scope global noprefixroute rdma0
-23: rdma1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.1.25/12 brd 10.239.255.255 scope global noprefixroute rdma1
-26: rdma2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.2.25/12 brd 10.239.255.255 scope global noprefixroute rdma2
-27: rdma3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.3.25/12 brd 10.239.255.255 scope global noprefixroute rdma3
-30: rdma4: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.4.25/12 brd 10.239.255.255 scope global noprefixroute rdma4
-31: rdma5: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.5.25/12 brd 10.239.255.255 scope global noprefixroute rdma5
-34: rdma6: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.6.25/12 brd 10.239.255.255 scope global noprefixroute rdma6
-35: rdma7: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.7.25/12 brd 10.239.255.255 scope global noprefixroute rdma7
-38: rdma8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.8.25/12 brd 10.239.255.255 scope global noprefixroute rdma8
-39: rdma9: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.9.25/12 brd 10.239.255.255 scope global noprefixroute rdma9
-42: rdma10: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.10.25/12 brd 10.239.255.255 scope global noprefixroute rdma10
-43: rdma11: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.11.25/12 brd 10.239.255.255 scope global noprefixroute rdma11
-46: rdma12: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.12.25/12 brd 10.239.255.255 scope global noprefixroute rdma12
-47: rdma13: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.13.25/12 brd 10.239.255.255 scope global noprefixroute rdma13
-50: rdma14: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.14.25/12 brd 10.239.255.255 scope global noprefixroute rdma14
-51: rdma15: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 4220 qdisc mq state UP group default qlen 20000
-    inet 10.224.15.25/12 brd 10.239.255.255 scope global noprefixroute rdma15
-
+    inet 10.0.2.17/24 brd 10.0.2.255 scope global dynamic eth0
+    inet 10.224.0.17/12 brd 10.239.255.255 scope global noprefixroute rdma0
+    inet 10.224.1.17/12 brd 10.239.255.255 scope global noprefixroute rdma1
+    inet 10.224.2.17/12 brd 10.239.255.255 scope global noprefixroute rdma2
+    inet 10.224.3.17/12 brd 10.239.255.255 scope global noprefixroute rdma3
+    inet 10.224.4.17/12 brd 10.239.255.255 scope global noprefixroute rdma4
+    inet 10.224.5.17/12 brd 10.239.255.255 scope global noprefixroute rdma5
+    inet 10.224.6.17/12 brd 10.239.255.255 scope global noprefixroute rdma6
+    inet 10.224.7.17/12 brd 10.239.255.255 scope global noprefixroute rdma7
+    inet 10.224.8.17/12 brd 10.239.255.255 scope global noprefixroute rdma8
+    inet 10.224.9.17/12 brd 10.239.255.255 scope global noprefixroute rdma9
+    inet 10.224.10.17/12 brd 10.239.255.255 scope global noprefixroute rdma10
+    inet 10.224.11.17/12 brd 10.239.255.255 scope global noprefixroute rdma11
+    inet 10.224.12.17/12 brd 10.239.255.255 scope global noprefixroute rdma12
+    inet 10.224.13.17/12 brd 10.239.255.255 scope global noprefixroute rdma13
+    inet 10.224.14.17/12 brd 10.239.255.255 scope global noprefixroute rdma14
+    inet 10.224.15.17/12 brd 10.239.255.255 scope global noprefixroute rdma15
 <span class="err">$</span>
 </code></pre></div></div>
 
@@ -1118,7 +1083,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-05T17:21:20+09:00">July 5, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-09T09:37:07+09:00">July 9, 2024</time></p>
 
       </footer>
 

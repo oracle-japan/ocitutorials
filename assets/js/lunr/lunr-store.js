@@ -1104,7 +1104,7 @@ var store = [{
         "teaser": null
       },{
         "title": "NCCL Tests実行方法",
-        "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で、 NGC Catalog から提供される TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、GPUノード上で Docker Community Edition と...","categories": [],
+        "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、GPUノード上で Docker Community Edition と NVIDIA Container Toolkit...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-nccltests/",
         "teaser": null
