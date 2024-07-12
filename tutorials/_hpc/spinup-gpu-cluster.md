@@ -29,7 +29,6 @@ header:
 [ソフトウェア]
 - コンテナランタイム ： **Docker Community Edition** 26.1.3
 - **NVIDIA Container Toolkit** ： 1.15.0
-- コンテナ ： **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** 24.06-tf2-py3
 
 [クラスタ管理]
 - 共有ストレージ ： BastionノードをNFSサーバとするGPUクラスタ内ホームディレクトリ共有
