@@ -57,7 +57,7 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 |                           | 構成                                                                                  | 月額定価<br>(2023年9月時点)                              | スループット              | IOPS            |     |
 | :-----------------------: | :---------------------------------------------------------------------------------: | -----------------------------------------------: | ------------------: | --------------: | --- |
 | **ファイル・ストレージ**            | マウント・ターゲット x 1, ファイルシステム x 1（15 TB)<br>-                                            | **630,000** 円<br>(\*5, 6)                        | 983 MB/s<br>(\*1)   | 25.0 k<br>(\*2) |     |
-| **ブロック・ボリューム** <br>NFSサーバ | **ブロック・ボリューム** （Balanced）1 TB x 15ボリューム<br>BM.Optimized3.36 x 1インスタンス<br>Total<br>- | 89,250円<br>273,370円<br>**362,620** 円<br>(\*5, 6) | 2,040 MB/s<br>(\*3) | 33.3 k<br>(\*4) |     |
+| **ブロック・ボリューム** <br>NFSサーバ | **ブロック・ボリューム** （Balanced）1 TB x 15ボリューム<br>**BM.Optimized3.36** x 1インスタンス<br>Total<br>- | 89,250円<br>273,370円<br>**362,620** 円<br>(\*5, 6) | 2,040 MB/s<br>(\*3) | 33.3 k<br>(\*4) |     |
 
 *1) 以下URLで公開されている **ファイル・ストレージ** の性能情報11ページ目に記載の、  
 [https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf](https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf)  
@@ -67,11 +67,11 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 [https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf](https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf)  
 1マウント・ターゲット32 KiBブロックサイズreadのIOPS値を使用しています。
 
-*3) **ファイル・ストレージ** と同様、VM.Standard2.16で構築したNFSクライアントから1 MiBブロックサイズreadでfioを使用して計測したスループット値です。
+*3) **ファイル・ストレージ** と同様、 **VM.Standard2.16** で構築したNFSクライアントから1 MiBブロックサイズreadでfioを使用して計測したスループット値です。
 
-*4) **ファイル・ストレージ** と同様、VM.Standard2.16で構築したNFSクライアントから32 KiBブロックサイズreadでfioを使用して計測したIOPS値です。
+*4) **ファイル・ストレージ** と同様、 **VM.Standard2.16** で構築したNFSクライアントから32 KiBブロックサイズreadでfioを使用して計測したIOPS値です。
 
-*5) 総容量15TBの **ブロック・ボリューム** NFSサーバの構成は、価格の大部分をBM.Optimized3.36が占めるため、総容量がこれより大きくなると、下表のように **ファイル・ストレージ** に対する価格優位性が拡大します。
+*5) 総容量15TBの **ブロック・ボリューム** NFSサーバの構成は、価格の大部分を **BM.Optimized3.36** が占めるため、総容量がこれより大きくなると、下表のように **ファイル・ストレージ** に対する価格優位性が拡大します。
 
 | 総容量（TB） | **ファイル・ストレージ**<br>月額定価 | **ブロック・ボリューム** NFSサーバ<br>月額定価 |
 | ------: | ---------------------: | ----------------------------: |
