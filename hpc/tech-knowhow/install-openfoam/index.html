@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-09T09:37:07+09:00">
+  <meta property="article:published_time" content="2024-07-12T17:45:31+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-07-09T09:37:07+09:00">
+    <meta itemprop="datePublished" content="2024-07-12T17:45:31+09:00">
     
 
     <div class="page__inner-wrap">
@@ -370,7 +370,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a></li><li><a href="#2-openfoamインストール">2. OpenFOAMインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-インストール事前準備">2-1. インストール事前準備</a></li><li><a href="#2-2-paraviewインストール">2-2. ParaViewインストール</a></li><li><a href="#2-3-openfoamインストール">2-3. OpenFOAMインストール</a></li></ul></li><li><a href="#3-vnc接続環境構築">3. VNC接続環境構築</a></li><li><a href="#4-cfd解析フロー実行">4. CFD解析フロー実行</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-事前準備">4-1. 事前準備</a></li><li><a href="#4-2-プリ処理解析処理のインタラクティブ実行">4-2. プリ処理・解析処理のインタラクティブ実行</a><ul><li><a href="#4-2-0-概要">4-2-0. 概要</a></li><li><a href="#4-2-1-1コアを使用する非並列実行">4-2-1. 1コアを使用する非並列実行</a></li><li><a href="#4-2-2-1ノード36コアを使用するノード内並列実行">4-2-2. 1ノード36コアを使用するノード内並列実行</a></li><li><a href="#4-2-3-2ノード72コアを使用するノード間並列実行">4-2-3. 2ノード72コアを使用するノード間並列実行</a></li></ul></li><li><a href="#4-3-プリ処理解析処理のバッチ実行">4-3. プリ処理・解析処理のバッチ実行</a></li><li><a href="#4-4-ポスト処理">4-4. ポスト処理</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a></li><li><a href="#2-openfoamインストール">2. OpenFOAMインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-インストール事前準備">2-1. インストール事前準備</a></li><li><a href="#2-2-paraviewインストール">2-2. ParaViewインストール</a></li><li><a href="#2-3-openfoamインストール">2-3. OpenFOAMインストール</a></li></ul></li><li><a href="#3-vnc接続環境構築">3. VNC接続環境構築</a></li><li><a href="#4-cfd解析フロー実行">4. CFD解析フロー実行</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-事前準備">4-1. 事前準備</a></li><li><a href="#4-2-プリ処理解析処理のインタラクティブ実行">4-2. プリ処理・解析処理のインタラクティブ実行</a><ul><li><a href="#4-2-0-概要">4-2-0. 概要</a></li><li><a href="#4-2-1-1コアを使用する非並列実行">4-2-1. 1コアを使用する非並列実行</a></li><li><a href="#4-2-2-1ノード36コアを使用するノード内並列実行">4-2-2. 1ノード36コアを使用するノード内並列実行</a></li><li><a href="#4-2-3-2ノード72コアを使用するノード間並列実行">4-2-3. 2ノード72コアを使用するノード間並列実行</a></li></ul></li><li><a href="#4-3-プリ処理解析処理のバッチ実行">4-3. プリ処理・解析処理のバッチ実行</a><ul><li><a href="#4-3-0-概要">4-3-0. 概要</a></li><li><a href="#4-31-バックステップ乱流シミュレーションのバッチ実行">4-3.1. バックステップ乱流シミュレーションのバッチ実行</a></li><li><a href="#4-32-オートバイ走行時乱流シミュレーションのバッチ実行">4-3.2. オートバイ走行時乱流シミュレーションのバッチ実行</a></li></ul></li><li><a href="#4-4-ポスト処理">4-4. ポスト処理</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -380,7 +380,7 @@
 <p><strong><a href="https://www.openfoam.com/">OpenFOAM</a></strong> は、プリ処理・解析処理・ポスト処理の全てのCFD解析フローを様々なオープンソースのツール類と連携し、自身の解析用途に合わせた最適な流体解析シミュレーションを実施することが可能です。<br />
 この際、外部のツールと連携して <strong>OpenFOAM</strong> を利用するためには、ビルド時にこれを意識した構築手順を踏む必要があります。</p>
 
-<p>本テクニカルTipsは、以下の外部ツールと連係動作する <strong>OpenFOAM</strong> を構築します。</p>
+<p>本テクニカルTipsは、以下の外部ツールと連係動作する <strong>OpenFOAM</strong> 実行環境を構築します。</p>
 
 <ul>
   <li><strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong><br />
@@ -787,8 +787,8 @@ MPI言語規格に準拠するMPI実装</li>
 
 <h2 id="4-0-概要">4-0. 概要</h2>
 
-<p>本章は、 <strong>OpenFOAM</strong> に同梱されるチュートリアルのうちバックステップ乱流のシミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）を使用し、計算ノードでプリ処理・解析処理を、Bastionノードでポスト処理を実行します。<br />
-この際計算ノードで実施するプリ処理・解析処理は、計算ノードにログインしてインタラクティブに実行する方法と、 <strong>Slurm</strong> 環境でバッチで実行する方法に分けて解説します。</p>
+<p>本章は、 <strong>OpenFOAM</strong> に同梱されるチュートリアルのうちバックステップ乱流シミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）とオートバイ走行時乱流シミュレーション（<strong>incompressible/simpleFoam/motorBike</strong>）を使用し、計算ノードでプリ処理・解析処理を、Bastionノードでポスト処理を実行します。<br />
+この際計算ノードで実施するプリ処理・解析処理は、計算ノードにログインしてインタラクティブに実行する方法と、 <strong>Slurm</strong> 環境でバッチジョブとして実行する方法に分けて解説します。</p>
 
 <p>本章の作業は、CFD解析ユーザで実施します。</p>
 
@@ -796,34 +796,28 @@ MPI言語規格に準拠するMPI実装</li>
 
 <p>本章は、インタラクティブ・バッチの何れの実行方法にも共通する事前準備を行います。</p>
 
-<ol>
-  <li>
-    <p>Bastionノードを経由して計算ノードのうちの1ノード（バッチジョブの場合はSlurmクライアント）にCFD解析ユーザでSSHログインします。</p>
-  </li>
-  <li>
-    <p><strong>.bashrc</strong> ファイルの最後に、以下の1行を追加します。</p>
+<p>Bastionノードを経由して計算ノードのうちの1ノード（バッチジョブの場合はSlurmクライアント）にCFD解析ユーザでSSHログインします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff ~/.bashrc_org ~/.bashrc
- xxaxx
- <span class="o">&gt;</span> <span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、 <strong>OpenFOAM</strong> の環境設定を読み込みます。</p>
+<p>次に、<strong>.bashrc</strong> ファイルの最後に以下の1行を追加します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、 <strong>OpenFOAM</strong> に同梱されているチュートリアルのうち <strong>pitzDaily</strong> のディレクトリを作業ディレクトリにコピーします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff ~/.bashrc_org ~/.bashrc
+xxaxx
+<span class="o">&gt;</span> <span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$FOAM_RUN</span>
- <span class="nv">$ </span>run
- <span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDaily ./
-</code></pre></div>    </div>
-  </li>
-</ol>
+<p>次に、以下コマンドを実行して <strong>OpenFOAM</strong> の環境設定を読み込みます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行して <strong>OpenFOAM</strong> に同梱されているチュートリアルのうち <strong>pitzDaily</strong> と <strong>motorBike</strong> のディレクトリを作業ディレクトリにコピーします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$FOAM_RUN</span>
+<span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDaily <span class="nb">.</span>
+<span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/motorBike <span class="nb">.</span>
+</code></pre></div></div>
 
 <h2 id="4-2-プリ処理解析処理のインタラクティブ実行">4-2. プリ処理・解析処理のインタラクティブ実行</h2>
 
@@ -838,290 +832,387 @@ MPI言語規格に準拠するMPI実装</li>
   <li>2ノード72コアを使用するノード間並列実行</li>
 </ol>
 
+<p>本章のインタラクティブ実行は、バックステップ乱流シミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）を使用して解説します。</p>
+
 <h3 id="4-2-1-1コアを使用する非並列実行">4-2-1. 1コアを使用する非並列実行</h3>
 
-<ol>
-  <li>
-    <p>以下コマンドを実行し、プリ処理を実行します。</p>
+<p>以下コマンドを実行し、プリ処理を実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>run
- <span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
- <span class="nv">$ </span>blockMesh
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、解析処理を実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
+<span class="nv">$ </span>blockMesh
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>simpleFoam
-</code></pre></div>    </div>
-  </li>
-</ol>
+<p>次に、以下コマンドを実行して解析処理を実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>simpleFoam
+</code></pre></div></div>
 
 <h3 id="4-2-2-1ノード36コアを使用するノード内並列実行">4-2-2. 1ノード36コアを使用するノード内並列実行</h3>
 
-<ol>
-  <li>
-    <p>以下コマンドを実行し、プリ処理を実行します。</p>
+<p>以下コマンドを実行し、プリ処理を実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>run
- <span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
- <span class="nv">$ </span>blockMesh
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
+<span class="nv">$ </span>blockMesh
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>コピーしたファイルを以下のように修正し、先に生成したメッシュを36個の領域に分割します。</p>
+<p>次に、以下コマンドを実行してメッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
- 17c17
- &lt; numberOfSubdomains 4<span class="p">;</span>
- <span class="nt">---</span>
- <span class="o">&gt;</span> numberOfSubdomains 36<span class="p">;</span>
- 23c23
- &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
- <span class="nt">---</span>
- <span class="o">&gt;</span>     n           <span class="o">(</span>6 6 1<span class="o">)</span><span class="p">;</span>
- <span class="nv">$ </span>decomposePar
-     :
-     :
-     :
- Processor 35: field transfer
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
+</code></pre></div></div>
 
- End
+<p>次に、コピーしたファイルを以下のように修正して先に生成したメッシュを36個の領域に分割します。</p>
 
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、 <strong>BM.Optimized3.36</strong> に搭載する36コアを使用するノード内並列の解析処理を実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
+17c17
+&lt; numberOfSubdomains 4<span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> numberOfSubdomains 36<span class="p">;</span>
+23c23
+&lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>6 6 1<span class="o">)</span><span class="p">;</span>
+<span class="nv">$ </span>decomposePar
+    :
+    :
+    :
+Processor 35: field transfer
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-mca</span> coll_hcoll_enable 0 simpleFoam <span class="nt">-parallel</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、各プロセスが作成した解析結果を統合します。</p>
+End
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>reconstructPar
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行して <strong>BM.Optimized3.36</strong> に搭載する36コアを使用するノード内並列の解析処理を実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-mca</span> coll_hcoll_enable 0 simpleFoam <span class="nt">-parallel</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行して各プロセスが作成した解析結果を統合します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>reconstructPar
+</code></pre></div></div>
 
 <h3 id="4-2-3-2ノード72コアを使用するノード間並列実行">4-2-3. 2ノード72コアを使用するノード間並列実行</h3>
 
-<ol>
-  <li>
-    <p>以下コマンドを実行し、プリ処理を実行します。</p>
+<p>以下コマンドを実行し、プリ処理を実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>run
- <span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
- <span class="nv">$ </span>blockMesh
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
+<span class="nv">$ </span>blockMesh
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>コピーしたファイルを以下のように修正し、先に生成したメッシュを72個の領域に分割します。</p>
+<p>次に、以下コマンドを実行してメッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
- 17c17
- &lt; numberOfSubdomains 4<span class="p">;</span>
- <span class="nt">---</span>
- <span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
- 23c23
- &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
- <span class="nt">---</span>
- <span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
- <span class="nv">$ </span>decomposePar
-     :
-     :
-     :
- Processor 71: field transfer
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
+</code></pre></div></div>
 
- End
+<p>次に、コピーしたファイルを以下のように修正して先に生成したメッシュを72個の領域に分割します。</p>
 
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、2ノードの <strong>BM.Optimized3.36</strong> に搭載する72コアを使用するノード間並列の解析処理を実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
+17c17
+&lt; numberOfSubdomains 4<span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
+23c23
+&lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
+<span class="nv">$ </span>decomposePar
+    :
+    :
+    :
+Processor 71: field transfer
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpirun <span class="nt">-n</span> 72 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-mca</span> coll_hcoll_enable 0 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、計算結果を統合します。</p>
+End
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>reconstructPar
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行して2ノードの <strong>BM.Optimized3.36</strong> に搭載する72コアを使用するノード間並列の解析処理を実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 72 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-mca</span> coll_hcoll_enable 0 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行して計算結果を統合します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>reconstructPar
+</code></pre></div></div>
 
 <h2 id="4-3-プリ処理解析処理のバッチ実行">4-3. プリ処理・解析処理のバッチ実行</h2>
 
-<p>本章は、プリ処理・解析処理をバッチ実行します。<br />
-この際の解析処理は、 <strong>BM.Optimized3.36</strong> の2ノード72コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをデータ領域に使用します。</p>
+<h3 id="4-3-0-概要">4-3-0. 概要</h3>
 
-<p>以下手順は、Slurmクライアントで実行します。</p>
+<p>本章は、 <strong>OpenFOAM</strong> にチュートリアルとして付属しているバックステップ乱流シミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）とオートバイ走行時乱流シミュレーション（<strong>incompressible/simpleFoam/motorBike</strong>）を使用し、これらをバッチジョブとして実行する手順を解説します。<br />
+この際、並列化に対応している解析ステップは、 <strong>BM.Optimized3.36</strong> の2ノード72コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをストレージ領域に活用します。</p>
+
+<p>ここでバッチ実行するプリ処理・解析処理は、以下のような流れで共有ストレージとNMVe SSDローカルディスク間でrsyncによる同期を行い、ストレージ領域へのアクセス時に高速なNMVe SSDローカルディスクを極力使用するよう配慮します。</p>
 
 <ol>
-  <li>
-    <p>以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>run
- <span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
- <span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>コピーしたファイルを以下のように修正します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
- 17c17
- &lt; numberOfSubdomains 4<span class="p">;</span>
- <span class="nt">---</span>
- <span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
- 23c23
- &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
- <span class="nt">---</span>
- <span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
- 24a25,101
- <span class="o">&gt;</span> 
- <span class="o">&gt;</span> distributed  <span class="nb">yes</span><span class="p">;</span>
- <span class="o">&gt;</span> roots
- <span class="o">&gt;</span>     71
- <span class="o">&gt;</span>     <span class="o">(</span>
- <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
- <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
-     :
-     :  71行続きます
-     :
- <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
- <span class="o">&gt;</span>     <span class="o">)</span><span class="p">;</span>
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下のジョブスクリプトをファイル名 <strong>submit.sh</strong> で作成します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c">#!/bin/bash</span>
- <span class="c">#SBATCH -p sltest</span>
- <span class="c">#SBATCH -n 72</span>
- <span class="c">#SBATCH -N 2</span>
- <span class="c">#SBATCH -J pitzDaily</span>
- <span class="c">#SBATCH -o pitzDaily_out.%J</span>
- <span class="c">#SBATCH -e pitzDaily_err.%J</span>
-
- <span class="c"># Set model directories for shared storage and NVMe local disk</span>
- <span class="nv">model_dir</span><span class="o">=</span><span class="s2">"pitzDaily"</span>
- <span class="nv">local_disk</span><span class="o">=</span><span class="s2">"/mnt/localdisk/openfoam"</span>
- <span class="nv">shared_dir</span><span class="o">=</span><span class="nv">$FOAM_RUN</span>/<span class="nv">$model_dir</span>/
- <span class="nv">local_dir</span><span class="o">=</span><span class="nv">$local_disk</span>/<span class="nv">$model_dir</span>/
-
- <span class="c"># Set OCI specific environment variables</span>
- <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
- <span class="nb">export </span><span class="nv">OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>0
-
- <span class="c"># Get head node host name</span>
- <span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
-
- <span class="c"># Copy model files from shared storage to NVMe local disk on head node</span>
- rsync <span class="nt">-a</span> <span class="nv">$shared_dir</span> <span class="nv">$local_dir</span>
-
- <span class="c"># Create mesh and decompse partition on head node</span>
- <span class="nb">cd</span> <span class="nv">$local_dir</span>
- blockMesh
- decomposePar
-
- <span class="c"># Sync model files on head node NVMe local disk with others</span>
- <span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-ae</span> <span class="s2">"ssh -o StrictHostKeyChecking=no"</span> <span class="nv">$local_dir</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
-
- <span class="c"># Run solver in parallel</span>
- srun simpleFoam <span class="nt">-parallel</span>
-
- <span class="c"># Sync model files on other node NVMe local disk with head node's</span>
- <span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-ae</span> <span class="s2">"ssh -o StrictHostKeyChecking=no"</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span> <span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
-
- <span class="c"># Reconstruct decomposed partitions on head node NVMe local disk</span>
- reconstructPar
-
- <span class="c"># Sync model files on head node NVMe local disk with shared storage</span>
- rsync <span class="nt">-ae</span> <span class="s2">"ssh -o StrictHostKeyChecking=no"</span> <span class="nv">$local_dir</span> <span class="nv">$shared_dir</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、バッチジョブを投入します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>sbatch submit.sh
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>ジョブの標準出力・標準エラー出力は、ジョブを投入したディレクトリにファイル名 <strong>pitzDaily_out.xxx</strong> と <strong>pitzDaily_err.xxx</strong> で出力されます。</p>
-  </li>
+  <li>ヘッドノードで “共有ストレージ -&gt; NVMe SSDローカルディスク” 方向のデータ同期</li>
+  <li>ヘッドノードのNVMe SSDローカルディスク上でプリ処理</li>
+  <li>“ヘッドノードのNVMe SSDローカルディスク -&gt; その他ノードのNVMe SSDローカルディスク” 方向のデータ同期</li>
+  <li>各ノードのNVMe SSDローカルディスクを使用して並列実行で解析処理</li>
+  <li>“その他ノードのNVMe SSDローカルディスク -&gt; ヘッドノードのNVMe SSDローカルディスク” 方向のデータ同期</li>
+  <li>ヘッドノードのNVMe SSDローカルディスク上で解析結果統合処理</li>
+  <li>ヘッドノードで “NVMe SSDローカルディスク -&gt; 共有ストレージ” 方向のデータ同期（※7）</li>
 </ol>
+
+<p>※7）この同期は、72個のMPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間を短縮します。</p>
+
+<p>このように、ストレージ領域にNVMe SSDローカルディスクを活用することで、共有ストレージ（ <strong>ファイル・ストレージ</strong> サービスを使用した場合）のみを使用する場合と比較して、以降でその実行方法を解説するオートバイ走行時乱流シミュレーションの例で、バッチジョブ実行時間を <strong>20パーセント</strong> 程度短縮することが可能です。<br />
+また、本ケースよりストレージ領域への負荷が高いシミュレーションモデルの場合は、更なる性能向上が期待出来ます。</p>
+
+<h3 id="4-31-バックステップ乱流シミュレーションのバッチ実行">4-3.1. バックステップ乱流シミュレーションのバッチ実行</h3>
+
+<p>以降の手順は、Slurmクライアントで実行します。</p>
+
+<p>以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily
+<span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
+</code></pre></div></div>
+
+<p>次に、コピーしたファイルを以下のように修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
+17c17
+&lt; numberOfSubdomains 4<span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
+23c23
+&lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
+24a25,101
+<span class="o">&gt;</span> 
+<span class="o">&gt;</span> distributed  <span class="nb">yes</span><span class="p">;</span>
+<span class="o">&gt;</span> roots
+<span class="o">&gt;</span>     71
+<span class="o">&gt;</span>     <span class="o">(</span>
+<span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+<span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+    :
+    :  71行続きます
+    :
+<span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+<span class="o">&gt;</span>     <span class="o">)</span><span class="p">;</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下のジョブスクリプトをファイル名 <strong>submit_pitzDaily.sbatch</strong> で作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH -p sltest</span>
+<span class="c">#SBATCH -n 72</span>
+<span class="c">#SBATCH -N 2</span>
+<span class="c">#SBATCH -J pitzDaily</span>
+<span class="c">#SBATCH -o pitzDaily_out.%J</span>
+<span class="c">#SBATCH -e pitzDaily_err.%J</span>
+
+<span class="c"># Set model directories for shared storage and NVMe local disk</span>
+<span class="nv">model_dir</span><span class="o">=</span><span class="s2">"pitzDaily"</span>
+<span class="nv">local_disk</span><span class="o">=</span><span class="s2">"/mnt/localdisk/openfoam"</span>
+<span class="nv">shared_dir</span><span class="o">=</span><span class="nv">$FOAM_RUN</span>/<span class="nv">$model_dir</span>/
+<span class="nv">local_dir</span><span class="o">=</span><span class="nv">$local_disk</span>/<span class="nv">$model_dir</span>/
+
+<span class="c"># Set OCI specific environment variables</span>
+<span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+<span class="nb">export </span><span class="nv">OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>0
+
+<span class="c"># Get head node host name</span>
+<span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
+
+<span class="c"># Copy model files from shared storage to NVMe local disk on head node</span>
+rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="nv">$shared_dir</span> <span class="nv">$local_dir</span>
+
+<span class="c"># Pre-process on head node NVMe local disk</span>
+<span class="nb">cd</span> <span class="nv">$local_dir</span>
+blockMesh
+decomposePar
+
+<span class="c"># Sync model files on head node NVMe local disk with others</span>
+<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-ae</span> <span class="s2">"ssh -oStrictHostKeyChecking=accept-new"</span> <span class="nt">--delete</span> <span class="nv">$local_dir</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c"># Run solver in parallel</span>
+srun simpleFoam <span class="nt">-parallel</span>
+
+<span class="c"># Sync model files on other node NVMe local disk with head node's</span>
+<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-au</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span> <span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c"># Reconstruct decomposed partitions on head node NVMe local disk</span>
+reconstructPar
+
+<span class="c"># Sync model files necessary for post process on head node NVMe local disk with shared storage</span>
+rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="nt">--exclude</span><span class="o">=</span><span class="s1">'processor*/'</span> <span class="nv">$local_dir</span> <span class="nv">$shared_dir</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行し、バッチジョブを投入します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch submit_pitzDaily.sbatch
+</code></pre></div></div>
+
+<p>ジョブの標準出力・標準エラー出力は、ジョブを投入したディレクトリにファイル名 <strong>pitzDaily_out.xxx</strong> と <strong>pitzDaily_err.xxx</strong> で出力されます。</p>
+
+<h3 id="4-32-オートバイ走行時乱流シミュレーションのバッチ実行">4-3.2. オートバイ走行時乱流シミュレーションのバッチ実行</h3>
+
+<p>以降の手順は、Slurmクライアントで実行します。</p>
+
+<p>以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">cd</span> ./motorBike
+<span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/decomposeParDict_nvme.72
+</code></pre></div></div>
+
+<p>次に、コピーしたファイルを以下のように修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_nvme.72_org system/decomposeParDict_nvme.72
+17c17
+&lt; numberOfSubdomains 4<span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
+23c23
+&lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
+24a25,101
+<span class="o">&gt;</span> 
+<span class="o">&gt;</span> distributed  <span class="nb">yes</span><span class="p">;</span>
+<span class="o">&gt;</span> roots
+<span class="o">&gt;</span>     71
+<span class="o">&gt;</span>     <span class="o">(</span>
+<span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+<span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+    :
+    :  71行続きます
+    :
+<span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
+<span class="o">&gt;</span>     <span class="o">)</span><span class="p">;</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下のジョブスクリプトをファイル名 <strong>submit_motorBike.sbatch</strong> で作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH -p sltest</span>
+<span class="c">#SBATCH -n 72</span>
+<span class="c">#SBATCH -N 2</span>
+<span class="c">#SBATCH -J motorBike</span>
+<span class="c">#SBATCH -o motorBike_out.%J</span>
+<span class="c">#SBATCH -e motorBike_err.%J</span>
+ 
+<span class="c"># Set model directories for shared storage and NVMe local disk</span>
+<span class="nv">model_dir</span><span class="o">=</span><span class="s2">"motorBike"</span>
+<span class="nv">local_disk</span><span class="o">=</span><span class="s2">"/mnt/localdisk/openfoam"</span>
+<span class="nv">shared_dir</span><span class="o">=</span><span class="nv">$FOAM_RUN</span>/<span class="nv">$model_dir</span>/
+<span class="nv">local_dir</span><span class="o">=</span><span class="nv">$local_disk</span>/<span class="nv">$model_dir</span>/
+ 
+<span class="c"># Set alternative decomposeParDict name</span>
+<span class="nv">decompDict</span><span class="o">=</span><span class="s2">"-decomposeParDict system/decomposeParDict_nvme.72"</span>
+ 
+<span class="c"># Set OCI specific environment variables</span>
+<span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+<span class="nb">export </span><span class="nv">OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>0
+ 
+<span class="c"># Read tutorial run functions</span>
+<span class="nb">.</span> <span class="k">${</span><span class="nv">WM_PROJECT_DIR</span>:?<span class="k">}</span>/bin/tools/RunFunctions
+
+<span class="c"># Get job infomation</span>
+<span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
+<span class="nv">num_nodes</span><span class="o">=</span><span class="nv">$SLURM_JOB_NUM_NODES</span>
+
+<span class="c"># Copy motorbike surface from resources directory to shared storage</span>
+<span class="nb">cd</span> <span class="nv">$shared_dir</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> constant/triSurface <span class="o">&amp;&amp;</span> <span class="nb">cp</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$FOAM_TUTORIALS</span><span class="s2">"</span>/resources/geometry/motorBike.obj.gz constant/triSurface/
+
+<span class="c"># Copy model files from shared storage to NVMe local disk on head node</span>
+rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="nv">$shared_dir</span> <span class="nv">$local_dir</span>
+
+<span class="c"># Pre-process on head node NVMe local disk</span>
+<span class="nb">cd</span> <span class="nv">$local_dir</span>
+runApplication surfaceFeatureExtract
+runApplication blockMesh
+runApplication <span class="nv">$decompDict</span> decomposePar
+
+<span class="c"># Sync model files on head node NVMe local disk with others</span>
+<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-ae</span> <span class="s2">"ssh -oStrictHostKeyChecking=accept-new"</span> <span class="nt">--delete</span> <span class="nv">$local_dir</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c"># Pre-process stage 2 in parallel</span>
+srun snappyHexMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-overwrite</span>
+srun topoSet <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
+srun <span class="nt">-n</span> <span class="nv">$num_nodes</span> <span class="nt">--ntasks-per-node</span><span class="o">=</span>1 bash <span class="nt">-c</span> <span class="s2">". </span><span class="k">${</span><span class="nv">WM_PROJECT_DIR</span>:?<span class="k">}</span><span class="s2">/bin/tools/RunFunctions; restore0Dir -processor"</span>
+srun patchSummary <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
+srun potentialFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-writephi</span>
+srun checkMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-writeFields</span> <span class="s1">'(nonOrthoAngle)'</span> <span class="nt">-constant</span>
+
+<span class="c"># Run solver in parallel</span>
+srun simpleFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
+
+<span class="c"># Sync model files on other node NVMe local disk with head node's</span>
+<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-au</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span> <span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c"># Reconstruct decomposed partitions on head node NVMe local disk</span>
+runApplication reconstructParMesh <span class="nt">-constant</span>
+runApplication reconstructPar
+
+<span class="c"># Sync model files necessary for post process on head node NVMe local disk with shared storage</span>
+rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="nt">--exclude</span><span class="o">=</span><span class="s1">'processor*/'</span> <span class="nv">$local_dir</span> <span class="nv">$shared_dir</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行し、バッチジョブを投入します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch submit_motorBike.sbatch
+</code></pre></div></div>
+
+<p>ジョブの標準出力・標準エラー出力は、ジョブを投入したディレクトリにファイル名 <strong>motorBike_out.xxx</strong> と <strong>motorBike_err.xxx</strong> で出力されます。</p>
 
 <h2 id="4-4-ポスト処理">4-4. ポスト処理</h2>
 
-<p>本章は、ポスト処理をBastionノードで実行します。</p>
+<p>本章は、ポスト処理をBastionノードで実行します。<br />
+ここでは、バックステップ乱流シミュレーションの結果を使用し、ポスト処理の手順を解説します。</p>
 
-<ol>
-  <li>
-    <p>先にBastionノードでVNC接続したGNOMEデスクトップ画面で、以下のメニューを辿り、</p>
+<p>先にBastionノードにVNC接続したGNOMEデスクトップ画面で、以下のメニューを辿り、</p>
 
-    <p><img src="ultravcn_page04.png" alt="画面ショット" /></p>
+<p><img src="ultravcn_page04.png" alt="画面ショット" /></p>
 
-    <p>以下のようターミナルを開きます。</p>
+<p>以下のようターミナルを開きます。</p>
 
-    <p><img src="ultravcn_page05.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>開いたターミナルで以下コマンドを実行し、 <strong>ParaView</strong> を起動します。</p>
+<p><img src="ultravcn_page05.png" alt="画面ショット" /></p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>run
- <span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily 
- <span class="nv">$ </span><span class="nb">touch </span>para.foam
- <span class="nv">$ </span>paraview
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下 <strong>ParaView</strong> 画面で、 <strong>Open</strong> ボタンをクリックします。</p>
+<p>次に、開いたターミナルで以下コマンドを実行し、 <strong>ParaView</strong> を起動します。</p>
 
-    <p><img src="paraviewgui_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>以下 <strong>Open File</strong> 画面で、先に作成したファイル（ <strong>para.foam</strong> ）を選択し、 <strong>OK</strong> ボタンをクリックします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">cd</span> ./pitzDaily 
+<span class="nv">$ </span><span class="nb">touch </span>para.foam
+<span class="nv">$ </span>paraview
+</code></pre></div></div>
 
-    <p><img src="paraviewgui_page01-2.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>以下 <strong>ParaView</strong> 画面で、 <strong>Apply</strong> ボタンをクリックします。</p>
+<p>次に、以下 <strong>ParaView</strong> 画面で、 <strong>Open</strong> ボタンをクリックします。</p>
 
-    <p><img src="paraviewgui_page01-3.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>以下 <strong>ParaView</strong> 画面で、メニューから速度を選択します。</p>
+<p><img src="paraviewgui_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="paraviewgui_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>以下 <strong>ParaView</strong> 画面で、再生ボタンをクリックしてシミュレーション結果を再生します。</p>
+<p>次に、以下 <strong>Open File</strong> 画面で、先に作成したファイル（ <strong>para.foam</strong> ）を選択し、 <strong>OK</strong> ボタンをクリックします。</p>
 
-    <p><img src="paraviewgui_page03.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>以下 <strong>ParaView</strong> 画面で、シミュレーション時間が進むことを確認します。</p>
+<p><img src="paraviewgui_page01-2.png" alt="画面ショット" /></p>
 
-    <p><img src="paraviewgui_page04.png" alt="画面ショット" /></p>
-  </li>
-</ol>
+<p>次に、以下 <strong>ParaView</strong> 画面で、 <strong>Apply</strong> ボタンをクリックします。</p>
+
+<p><img src="paraviewgui_page01-3.png" alt="画面ショット" /></p>
+
+<p>次に、以下 <strong>ParaView</strong> 画面で、メニューから速度を選択します。</p>
+
+<p><img src="paraviewgui_page02.png" alt="画面ショット" /></p>
+
+<p>次に、以下 <strong>ParaView</strong> 画面で、再生ボタンをクリックしてシミュレーション結果を再生します。</p>
+
+<p><img src="paraviewgui_page03.png" alt="画面ショット" /></p>
+
+<p>次に、以下 <strong>ParaView</strong> 画面で、シミュレーション時間が進むことを確認します。</p>
+
+<p><img src="paraviewgui_page04.png" alt="画面ショット" /></p>
 
         
       </section>
@@ -1133,7 +1224,7 @@ MPI言語規格に準拠するMPI実装</li>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-09T09:37:07+09:00">July 9, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-12T17:45:31+09:00">July 12, 2024</time></p>
 
       </footer>
 
