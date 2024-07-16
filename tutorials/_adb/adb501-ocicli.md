@@ -38,9 +38,9 @@ OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを
 
 **目次：**
 
-- [1. OCI CLIをセットアップしよう](#anchor1)
-- [2. OCI CLIを使ってみよう](#anchor2)
-- [3. OCI CLIでインスタンスを操作しよう](#anchor3)
+- [1. OCI CLIをセットアップしよう](#1-oci-cliをセットアップしよう)
+- [2. OCI CLIを使ってみよう](#2-oci-cliを使ってみよう)
+- [3. OCI CLIでインスタンスを操作しよう](#3-oci-cliでインスタンスを操作しよう)
 
 <br>
 
@@ -61,7 +61,7 @@ OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを
 
     ![img1_2.png](img1_2.png)
 
-3. OCI CLIがセットアップされていることを確認するために、バージョンを確認します。（ 2.18.XXが出力されればOKです。）
+3. OCI CLIがセットアップされていることを確認するために、バージョンを確認します。（ バージョン情報が出力されればOKです。）
 
     ```sh
     oci -v
@@ -138,7 +138,11 @@ OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを
     </tr>
     <tr>
     <td>passphrase for your private key</td>
-    <td>（そのままでENTER）</td>
+    <td>（任意のパスフレーズを入力）</td>
+    </tr>
+    <tr>
+    <td>write your passphrase to the config file</td>
+    <td>Y</td>
     </tr>
     </table>
 

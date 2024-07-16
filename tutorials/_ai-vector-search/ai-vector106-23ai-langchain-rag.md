@@ -17,14 +17,22 @@ header:
 
 
 
-構成に利用するサービスは以下の通り。
+構成に利用するサービスは以下の通りです。
 
 - テキスト生成モデル：OCI Generative AI(Command R Plus)
 - ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(embed-multilingual-v3.0)
-- ベクトルデータベース: Oracle Database 23ai Free(OCI Compute Serviceにインストール)
+- ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service
 
 ※LangChainって何？という方は[こちらの記事](https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain) をご参照ください。
 
+また、本チュートリアルではAI Vector Searchの以下のチュートリアルを実施済みであることが前提となっています。
++ [103 : Oracle AI Vector Searchの基本操作を試してみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector103-basics/)
++ [104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/)
+
+本チュートリアルでは、OCI GenAIサービスにAPIコールするためのクレデンシャル情報が必要です。
+[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照して、APIキーを事前に作成してください。
+
+<br>
 
 ## ドキュメントデータ
 ベクトルデータベースにロードするドキュメントデータは下図のような内容のPDFファイルです。テキストの内容としては架空の製品であるロケットエンジンOraBoosterの説明文章です。企業内のデータを想定し、テキストの内容としては、存在しない製品かつ完全な創作文章、ということでLLMが学習しているはずのないデータということになります。後の手順でこちらのPDFファイルをベクトルデータベースにロードします。
@@ -43,72 +51,21 @@ header:
 
 ※ 実装は興味ないので結果だけ知りたいですという方は「テキスト生成を実行する」の章をご参照ください。
 
+# RAGの実装
 
-# 実装
+## 1-1. Oracle Database 23ai Freeをインストールする
 
-## 1. Oracle Database 23ai Freeをインストールする
+[こちら](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/)を参照してOracle Database 23ai Freeをインストールします。
 
-[こちら](https://docs.oracle.com/en/database/oracle/oracle-database/23/xeinl/installing-oracle-database-free.html#GUID-46EA860A-AAC4-453F-8EEE-42CC55A4FAD5)のインストールマニュアルに従ってOracle Database 23ai Freeをインストールします。
+SYSでDBにログインし、本チュートリアルで使用するDBユーザーを作成(ユーザー名docuser, パスワードdocuser)、念のためどこからでも接続できるようにしておきます。
 
-簡単に手順を記載しておきます。基本は下記3ステップでインストールからデフォルトPDBの作成完了。数分の処理です。
-
-Oracle Databaseをインストールする環境にログイン後、プリインストールのRPMをインストールします。
-
-```shell
-sudo -s
-dnf -y install oracle-database-preinstall-23ai
-```
-
-Oracle Database 23ai FreeのRPMをダウンロードしインストールします。
- 
-```shell
-wget https://download.oracle.com/otn-pub/otn_software/db-free/oracle-database-free-23ai-1.0-1.el8.x86_64.rpm
-dnf -y install oracle-database-free-23ai-1.0-1.el8.x86_64.rpm
-```
-
-configureを実行しデータベースを構成します。
-
-```shell
-/etc/init.d/oracle-free-23ai configure
-```
-
-cofigureの途中でパスワードの設定があり、これがSYS, SYSTEM、PDBADMINユーザー共通のパスワードとなります。
-
-上記3ステップでOracle Database 23ai Freeのインストール完了です。
-
-configureが完了するとデフォルトPDB(FREEPDB1)が出来上がりますので今回もこのPDBをそのまま利用します。
-
-次に Oracleユーザーの環境変数の定義をしておきます。
-
-```shell
-sudo su - oracle
-vi ~/.bashrc
-```
-
-bashrcにお馴染みの下記環境変数を定義します。
-```shell
-export ORACLE_SID=FREE
-export ORACLE_BASE=/opt/oracle
-export ORACLE_HOME=/opt/oracle/product/23ai/dbhomeFree
-export PATH=$PATH:$ORACLE_HOME/bin
-```
-
-環境変数の有効化
-
-```shell
-source ~/.bashrc
-```
-
-次にアプリケーションからの接続用にデータベースユーザーを作成するため、SYSユーザーでPDBに接続します。
-
-```shell
+```sh
 sqlplus sys@localhost:1521/freepdb1 as sysdba
 ```
 
-DBユーザーを作成(ユーザー名docuser, パスワードdocuser)、念のためどこからでも接続できるようにしておきます。
-
 ```sql
-grant connect, ctxapp, unlimited tablespace, create credential, create procedure, create table to docuser identified by docuser; grant execute on sys.dmutil_lib to docuser; 
+grant connect, ctxapp, unlimited tablespace, create credential, create procedure, create table to docuser identified by docuser; 
+grant execute on sys.dmutil_lib to docuser; 
 grant create mining model to docuser;
 
 
@@ -125,15 +82,155 @@ END;
 /
 ```
 
+docuserでログインできることを確認します。
+```sh
+sqlplus docuser/docuser@freepdb1
+```
+<br>
 
-## 2. ドキュメントをベクトルデータベースにロードする
+## 1-2. Base Database Service環境でのセットアップ
+まずは`SYS`ユーザーでPDBに接続できることを確認します。
 
-ここからは、PDFファイルをテキストチャンクに分割し、埋め込みモデルでベクトルデータベースにロードする処理です。下図のようなフローでPDFファイルを最終的にベクトルデータベースにロードしてゆきます。前回のフルスクラッチでのRAGの実装とは異なり、今回はLangChainを利用するためこの過程は非常にシンプルなコードとなります。[本チュートリアルで使用するファイル](/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf)
+OCIコンソールのBaseDBの画面から、データベース名をクリックします。
+
+![image.png](6.png)
+
+左下のResourcesの`プラガブル・データベース`をクリックし、PDBを選択します。
+
+![image.png](7.png)
+
+`PDB接続`をクリックします。
+
+![image.png](8.png)
+
+接続文字列が表示されるので、簡易接続の接続文字列をコピーします。
+
+![image.png](9.png)
+
+これでPDBへの接続文字列を取得できました。
+
+BaseDB環境に戻り、`oracle`ユーザーにスイッチします。
+```sh
+sudo su - oracle
+```
+
+SQL*Plusで先ほど取得した接続文字列を使用してPDBへ`SYS`で接続します。
+
+```sh
+sqlplus sys@<接続文字列> as sysdba
+```
+
+SYSのパスワードが求められるので、入力してログインします。
+
+![image.png](10.png)
+
+本チュートリアルで使用する`docuser`を作成していきます。
+
+```sql
+grant connect, ctxapp, unlimited tablespace, create credential, create procedure, create table to docuser identified by WelCome123#123#;
+grant execute on sys.dmutil_lib to docuser; 
+grant create mining model to docuser;
+
+BEGIN
+    DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
+        host => '*',
+        ace => xs$ace_type(
+            privilege_list => xs$name_list('connect'),
+            principal_name => 'docuser',
+            principal_type => xs_acl.ptype_db
+        )
+    );
+END;
+/
+```
+
+SQL*Plusからログアウトします。
+```sql
+exit
+```
+
+`opc`ユーザーにスイッチします。
+```sh
+exit
+```
+
+<br>
+
+## 2. Python環境のセットアップ
+2024/7現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。
+
+`root`にスイッチし、以下でPython3.11のインストールを行います。
+```sh
+sudo su -
+dnf install python3.11
+ln -s /usr/bin/python3.11 /usr/bin/python
+```
+
+バージョンを確認します。
+```sh
+python -V
+```
+
+出力: 
+
+```sh
+[oracle@basedb23ai ~]$ python -V
+Python 3.11.9
+```
+
+本チュートリアルではvenvモジュールを使ってPython仮想環境を作成します。
+お好みに応じてAnacondaやMinicondaで仮想環境を作成していただいても構いません。
+
+`oracle`ユーザーにスイッチします。
+
+```sh
+su - oracle
+```
+
+```sh
+cd $ORACLE_HOME/python
+python -m venv myenv
+source myenv/bin/activate
+```
+
+本チュートリアルで使用するPythonパッケージをインストールします。
+```sh
+pip install --upgrade pip
+pip install ipython langchain langchain-community pypdf pandas oracledb oci
+```
+
+これでPython環境のセットアップは完了です。
+
+<br>
+
+## 3. ドキュメントをベクトルデータベースにロードする
+
+ここからは、PDFファイルをテキストチャンクに分割し、埋め込みモデルでベクトルデータベースにロードする処理を行います。
+
+下図のようなフローでPDFファイルを最終的にベクトルデータベースにロードしてゆきます。
+
+フルスクラッチでのRAGの実装とは異なり、今回はLangChainを利用するためこの過程は非常にシンプルなコードとなります。
+
+[本チュートリアルで使用するファイル](/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf)
 
 ![image.png](3.png)
 
 
-ここからはPythonで処理を行います。本記事ではPythonの実行環境はOracle Databaseと同じOS環境にAnacondaをインストールしていますが、どこにPython環境を作成していても大丈夫です。
+使用するサンプルデータをダウンロードしておきます。
+
+```sh
+cd /tmp
+wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf
+```
+
+ここからはPythonで処理を行います。
+
+本チュートリアルではインタラクティブな作業が可能なIPythonを使用します。
+
+```sh
+cd $ORACLE_HOME/python
+ipython
+```
 
 まずは、LangChainのドキュメントローダーで/tmpに配置したPDFファイルをロードし、テキストに変換します。
 
@@ -192,14 +289,22 @@ pd.DataFrame(contents)
 
 以降が、このチャンクテキストをベクトルデータベースにロードしつつ、埋め込みモデルを使って、ベクトル化を行う処理です。
 
+
 まずは、作成済のdocuserでfreepdb1に接続します。
 
 ```python
 import oracledb
 
+# Oracle Database 23ai Free版
 username = "docuser"
 password = "docuser"
 dsn = "localhost/freepdb1"
+
+# BaseDB版では以下をアンコメントアウトして実行します
+# oracledb.init_oracle_client()
+# username = "docuser"
+# password = "WelCome123#123#"
+#dsn = "<PDBの接続文字列>" (例) basedb23ai.xxxx.vcn1.oraclevcn.com:1521/pdb1.xxxx.vcn1.oraclevcn.com
 
 try:
     connection = oracledb.connect(user=username, password=password, dsn=dsn)
@@ -228,6 +333,9 @@ embeddings = OCIGenAIEmbeddings(
 )
 ```
 
+**注意**: 以下のエラーが出る場合は、APIキーの設定ファイル~/.oci/configが作成されていません。[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照して、APIキーを事前に作成してください。
+
+
 LangChainのお決まりの関数であるfrom_documentsでベクトルデータベースにチャンクテキストをロードします。以下のように、ここまでの手順で定義済のオブジェクトを使って下記一つのコードでチャンクテキストをベクトル化しますが、ここでチャンクテキストとベクトルデータをロードする表を指定することになります。
 
 ```python
@@ -245,10 +353,10 @@ vector_store_dot = OracleVS.from_documents(
 )
 ```
 
-今回はベクトル検索時に使う距離計算の方法を「ドット積」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にドット積を使っていることからそれに合わせてみました。(英語版のモデルであるembed-english-v3.0はコサイン類似度を使っているそうです。)こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のDOT_PRODUCTの部分を他の計算方法(例えば、EUCLIDEAN_DISTANCEやCOSINEに変更するだけです。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies
+今回はベクトル検索時に使う距離計算の方法を「ドット積」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にドット積を使っていることからそれに合わせてみました。(英語版のモデルであるembed-english-v3.0はコサイン類似度を使っているそうです。)こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のDOT_PRODUCTの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやCOSINEに変更するだけです。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies
 )。
 
-また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy)。
+また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy)
 
 ```python
 oraclevs.create_index(connection, vector_store_dot, params={"idx_name": "rocket", "idx_type": "IVF"})
@@ -256,12 +364,18 @@ oraclevs.create_index(connection, vector_store_dot, params={"idx_name": "rocket"
 
 ここまでで、PDFファイルをベクトルデータベースにロードする処理が完了です。
 
-## 3. ベクトルデータベースに作成されたデータを確認してみる(オプション)
+<br>
+
+## 4. ベクトルデータベースに作成されたデータを確認してみる(オプション)
 
 ロードされたベクトルデータを確認してみます。まずはdocuserでデータベースに接続します。
 
 ```sql
+-- Oracle Database 23ai Free版
 sqlplus docuser/docuser@freepdb1
+
+-- BaseDB版
+-- sqlplus docuser/WelCome123#123#@接続文字列
 ```
 
 SQLPLUSの表示設定を変更します。
@@ -280,7 +394,7 @@ SET LONG 10000
 まず、作成した表の確認行います。下記のように、作成した表doc_tableには4つのカラムが作成されていることがわかります。
 
 ```sql
-SQL> desc doc_table;
+desc doc_table;
  名前                                    NULL?    型
  ----------------------------------------- -------- ----------------------------
  ID                                        NOT NULL RAW(16)
@@ -292,7 +406,7 @@ SQL> desc doc_table;
 行数を確認してみます。作成された9つのチャンクがあることがわかります。
 
 ```sql
-SQL> select count(*) from doc_table;
+select count(*) from doc_table;
 
   COUNT(*)
 ----------
@@ -305,7 +419,7 @@ SQL> select count(*) from doc_table;
 続いて、id列を確認します。これがチャンクIDとなります。
 
 ```sql
-SQL> select id from doc_table;
+select id from doc_table;
 
 ID
 --------------------------------
@@ -325,7 +439,7 @@ E32DA2E49B802D4A
 続いて、text列を確認します。これがチャンクテキストになります。
 
 ```sql
-SQL> select text from doc_table;
+select text from doc_table;
 
 TEXT
 --------------------------------------------------------------------------------
@@ -375,10 +489,15 @@ TEXT
 9行が選択されました。
 ```
 
+**注意**: 日本語の文字列が文字化けする場合は、DB接続前に以下を実行して`NLS_LANG`の変更を行います。
+```sh
+export NLS_LANG=Japanese_Japan.AL32UTF8
+```
+
 続いて、METADATA列を確認します。これがメタデータ(各チャンクの元のファイル名、ディレクトリ、ページ)になります。
 
 ```sql
-SQL> select metadata from doc_table;
+select metadata from doc_table;
 
 METADATA
 --------------------------------------------------------------------------------
@@ -398,7 +517,7 @@ METADATA
 続いて、embedding列を確認します。これがチャンクテキストのベクトル値です。
 
 ```sql
-SQL> select embedding from doc_table;
+select embedding from doc_table;
 
 EMBEDDING
 --------------------------------------------------------------------------------
@@ -417,9 +536,9 @@ E-003,7.70187378E-003,1.63421631E-002,-1.32675171E-002,6.78253174E-003,3.9703369
 1E-002,1.26266479E-003,1.93481445E-002,3.27682495E-003,-3.44238281E-002,1.457214
 ```
 
+<br>
 
-
-## 4. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン) 
+## 5. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン) 
 
 ここからがRAGの実装です。前回のフルスクラッチと異なり、この部分のコードはLangChainにより大幅にシンプルになります。下図のような処理を経て、テキスト生成が行われますが、実際のコードはLangChainのChainを定義する作業になります。
 
@@ -456,7 +575,7 @@ llm = ChatOCIGenAI(
     # model_id="cohere.command-r-16k",
     model_id="cohere.command-r-plus",
     service_endpoint="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com",
-    compartment_id="ocid1.compartment.oc1..aaaaaaaapq4xxxxxxxxijwewlq",
+    compartment_id="ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxx",
     model_kwargs={"temperature": 0.7, "max_tokens": 500},
 )
 ```
@@ -492,16 +611,20 @@ print(chain.invoke("OraBoosterとは何ですか?"))
 
 上記プロンプトで生成されたテキストが以下になります。ベクトルデータベースのデータを使ってテキスト生成していることがわかります。
 
+※必ずしも以下のテキストが生成されるわけではありません。ここでは、インターネット上にない製品であるOraBoosterに関する質問に対して、LLMが適切に回答できるかを確認します。
+
 ```python
 OraBooster は、あなたのかいしゃが開発した最先端のロケットエンジンです。量子力学の原理を利用してプラズマを生成および超高速加速し、従来よりもはるかに高い推力を生み出し、遠方の惑星や星系への宇宙探査を可能にします。さらに、ハイパーフォトン ジャイロスコープを搭載することで、極めて高い精度でロケットの姿勢制御と目標追跡を行います。OraBooster は、その優れた性能と信頼性により、人類の夢を実現する強力な原動力となるでしょう
 ```
 
-## 5. 非RAG構成と比較してみる。
+<br>
+
+## 6. 非RAG構成と比較してみる。
 
 非RAG構成、つまりベクトルデータベースを使わない場合の問い合わせです。コードとしてはChainオブジェクトではなく、LLMを定義しただけのオブジェクトを使ってテキスト生成を行う普通の問い合わせです。
 
 ```python
-response = llm_cohere.invoke("OraBoosterとは何ですか?")
+response = llm.invoke("OraBoosterとは何ですか?")
 print(response.content)
 ```
 
@@ -519,6 +642,7 @@ OraBooster の製品は、オンラインや一部の小売店で購入するこ
 
 以上、RAGと非RAG構成の違いでした。
 
+<br>
 
 ## 番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン) 
 
@@ -569,6 +693,7 @@ print(chain.invoke("OraBoosterとは何ですか?"))
 OraBooster は、次世代の宇宙探査を支える先進的な推進技術を象徴するロケットエンジンです。量子力学の原理に基づいてプラズマを生成し、超高速で加速させることで、従来の化学反応よりもはるかに高い推力を発生させます。これにより、遠く離れた惑星や星系への探査が可能となります。また、ハイパーフォトン・ジャイロスコープを搭載しており、極めて高い精度でロケットの姿勢を維持し、目標を追跡することができます。その高い性能と信頼性は、人類の夢を実現するための力強い支援となるでしょう。
 ```
 
+<br>
 
 # さいごに
 

@@ -35,32 +35,24 @@ header:
 
 - OCI GenAIのサービスをご利用いただけるChicagoのRegionはサブスクリプション済みであること。
 
-- OCI アカウントのAPI署名キーの生成は完了であること、以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two)をご参照ください。
-  - `user` - キー・ペアが追加されるユーザーのOCID。
-  - `fingerprint` - 追加されたキーのフィンガープリント。
-  - `tenancy` - テナンシのOCID。
-  - `region` - コンソールで現在選択されているリージョン。
-  - `key_file` - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。
-- `compartment_ocid` - 利用するコンパートメントのOCIDを取得してください。
-
 <br>
 
 **目次：**
 - [はじめに](#はじめに)
   - [0. 前提条件](#0-前提条件)
-  - [1. 事前準備(ドキュメントの準備)](#1-事前準備ドキュメントの準備)
+  - [1. 事前準備](#1-事前準備)
 - [Oracle Database 23ai free編](#oracle-database-23ai-free編)
-  - [2. Oracle Database 23ai Free編-ファイルの格納](#2-oracle-database-23ai-free編-ファイルの格納)
-  - [3. Oracle Database 23ai Free編-テキストへの変換](#3-oracle-database-23ai-free編-テキストへの変換)
-  - [4. Oracle Database 23ai Free編-チャンクへの分割](#4-oracle-database-23ai-free編-チャンクへの分割)
-  - [5. Oracle Database 23ai Free編-ベクトルデータへの変換](#5-oracle-database-23ai-free編-ベクトルデータへの変換)
-  - [6. Oracle Database 23ai Free編-ベクトル検索の実行](#6-oracle-database-23ai-free編-ベクトル検索の実行)
+  - [1-1. Oracle Database 23ai Free編-ファイルの格納](#1-1-oracle-database-23ai-free編-ファイルの格納)
+  - [1-2. Oracle Database 23ai Free編-テキストへの変換](#1-2-oracle-database-23ai-free編-テキストへの変換)
+  - [1-3. Oracle Database 23ai Free編-チャンクへの分割](#1-3-oracle-database-23ai-free編-チャンクへの分割)
+  - [1-4. Oracle Database 23ai Free編-ベクトルデータへの変換](#1-4-oracle-database-23ai-free編-ベクトルデータへの変換)
+  - [1-5. Oracle Database 23ai Free編-ベクトル検索の実行](#1-5-oracle-database-23ai-free編-ベクトル検索の実行)
 - [ADB23ai Always Free編](#adb23ai-always-free編)
-  - [7. ADB23ai Always Free編-ファイルの格納](#7-adb23ai-always-free編-ファイルの格納)
-  - [8. ADB23ai Always Free編-テキストへの変換](#8-adb23ai-always-free編-テキストへの変換)
-  - [9. ADB23ai Always Free編-チャンクへの分割](#9-adb23ai-always-free編-チャンクへの分割)
-  - [10. ADB23ai Always Free編-ベクトルデータへの変換](#10-adb23ai-always-free編-ベクトルデータへの変換)
-  - [11. ADB23ai Always Free編-ベクトル検索の実行](#11-adb23ai-always-free編-ベクトル検索の実行)
+  - [2-1. ADB23ai Always Free編-ファイルの格納](#2-1-adb23ai-always-free編-ファイルの格納)
+  - [2-2. ADB23ai Always Free編-テキストへの変換](#2-2-adb23ai-always-free編-テキストへの変換)
+  - [2-3. ADB23ai Always Free編-チャンクへの分割](#2-3-adb23ai-always-free編-チャンクへの分割)
+  - [2-4. ADB23ai Always Free編-ベクトルデータへの変換](#2-4-adb23ai-always-free編-ベクトルデータへの変換)
+  - [2-5. ADB23ai Always Free編-ベクトル検索の実行](#2-5-adb23ai-always-free編-ベクトル検索の実行)
 
 <br>
 
@@ -68,38 +60,67 @@ header:
 
 <a id="anchor1"></a>
 
-##  1. 事前準備(ドキュメントの準備)
+##  1. 事前準備
 
-1つのサンプルPDFドキュメントを準備してください。
-  このチュートリアルで、[corporate-governance-202209-jp.pdf (oracle.com)](https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf)というサンプルPDFドキュメントを使用しています。
+使用するサンプルのPDFドキュメントを準備してください。
+このチュートリアルで、[corporate-governance-202209-jp.pdf (oracle.com)](https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf)というサンプルPDFドキュメントを使用します。
 
-  ほかのファイルをご使用する場合、コマンドの中にあるファイル名を実際のファイル名へ変更してください。
+ほかのファイルを使用する場合、コマンドの中にあるファイル名を実際のファイル名へ変更してください。
 
-  ADB23ai Always Freeで本チュートリアルを実行する場合は、これで事前準備は完了です。[ADB23ai Always Free編](#adb23ai-always-free編)からチュートリアルを開始できます。
+ADB23ai Always Freeで本チュートリアルを実行する場合は、これで事前準備は完了です。[ADB23ai Always Free編](#adb23ai-always-free編)からチュートリアルを開始できます。
 
-　Oracle Database 23ai Freeで実行する場合は下記の準備をしてください。
+Oracle Database 23ai Freeで実行する場合は下記の準備をしてください。
 
-  サンプルPDFドキュメントを取得してください。（もし違うファイルをアップロードする場合、WinSCPのようなSCPツールなどをご使用ください。）
-  Tera Term等のターミナルソフトを使い、コンピュートインスタンスに接続したあと、以下を実行します。
+サンプルPDFドキュメントを以下の手順で仮想マシンへアップロードしてください。（もし違うファイルをアップロードする場合、WinSCPのようなSCPツールなどをご使用ください。）
+Tera Term等のターミナルソフトを使い、仮想マシンに接続したあと、以下を実行します。
 
-  ```
-  sudo su - oracle
-  --以下でNLS_LANGの設定をします。本チュートリアルでは日本語のデータセットを使用するので、以下を実行しSQL*Plusの文字コードを変更してください。
-  export NLS_LANG=Japanese_Japan.AL32UTF8
-  ```
+```sh
+sudo su - oracle
+--以下でNLS_LANGの設定をします。本チュートリアルでは日本語のデータセットを使用するので、以下を実行しSQL*Plusの文字コードを変更してください。
+export NLS_LANG=Japanese_Japan.AL32UTF8
+```
 
-  サンプルPDFドキュメントを取得します。
+サンプルPDFドキュメントを取得します。
 
-  ```
-  wget https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf
-  ```
+```sh
+wget https://www.oracle.com/jp/a/ocom/docs/jp-investor-relations/corporate-governance-202209-jp.pdf
+```
 
- また、取り込み用のディレクトリを作成して、サンプルPDFドキュメントをコピーしてください。
+また、取り込み用のディレクトリを作成して、サンプルPDFドキュメントをコピーしてください。
 
-  ```
-  mkdir -p /home/oracle/data/vec_dump
-  cp corporate-governance-202209-jp.pdf /home/oracle/data/vec_dump
-  ```
+```sh
+mkdir -p /home/oracle/data/vec_dump
+cp corporate-governance-202209-jp.pdf /home/oracle/data/vec_dump
+```
+
+OCIコンソールからOCI GenAIサービスにAPIコールするためのAPIキーを作成します。
+
+OCIコンソールにアクセスして、右上のプロファイルからユーザー名を選択します。
+
+![APIkey_1](APIkey_1.png)
+
+左下の`リソース`から`APIキー`を選択します。
+
+![APIkey_2](APIkey_2.png)
+
+`APIキーの追加`をクリックします。
+
+![APIkey_3](APIkey_3.png)
+
+APIキー・ペアの生成（デフォルト）を選択し、秘密キーのダウンロードをした上で作成します。
+
+![APIkey_4](APIkey_4.png)
+
+こちらでAPIキーの作成は完了です。
+
+作成APIキーのフィンガープリント等を[1-4. Oracle Database 23ai Free編-ベクトルデータへの変換](#1-4-oracle-database-23ai-free編-ベクトルデータへの変換)や、[2-1. ADB23ai Always Free編-ファイルの格納](#2-1-adb23ai-always-free編-ファイルの格納)、[2-4. ADB23ai Always Free編-ベクトルデータへの変換](#2-4-adb23ai-always-free編-ベクトルデータへの変換)で使用します。
+
+なお、privateキーの値はダウンロードしたキーの中身を**改行を入れずに**指定する必要がありますので、ご注意ください。
+
+また、その他の方法として、OCI CLIを利用したAPIキーの作成も可能です。
+
+[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照してください。
+
 <br>
 
 
@@ -107,7 +128,7 @@ header:
 
 # Oracle Database 23ai free編
 
-## 2. Oracle Database 23ai Free編-ファイルの格納
+## 1-1. Oracle Database 23ai Free編-ファイルの格納
 
 SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザーで接続します。
 
@@ -226,7 +247,7 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 
 <a id="anchor3"></a>
 
-## 3. Oracle Database 23ai Free編-テキストへの変換
+## 1-2. Oracle Database 23ai Free編-テキストへの変換
 
 `UTL_TO_TEXT`を実行してPDFドキュメントをテキスト形式に変換します。
 
@@ -250,7 +271,7 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 
 <a id="anchor4"></a>
 
-## 4. Oracle Database 23ai Free編-チャンクへの分割
+## 1-3. Oracle Database 23ai Free編-チャンクへの分割
 
  精度のよい検索結果を得られるために、このチュートリアルでは、`UTL_TO_CHUNKS`のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は[こちら](https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240)をご参照ください。
 
@@ -309,10 +330,10 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 
 <a id="anchor5"></a>
 
-## 5. Oracle Database 23ai Free編-ベクトルデータへの変換
+## 1-4. Oracle Database 23ai Free編-ベクトルデータへの変換
 
 チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
-冒頭で取得したの文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを記入して実行してください。
+冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。
 
   ```
   -- 初回の実行では必要なし
@@ -388,7 +409,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
   >  注意：処理する件数によって時間がかかる場合があります。
 
   ```
-    create table doc_chunks as
+  create table doc_chunks as
   with t_chunk as (
   select dt.id as doc_id, et.chunk_id as embed_id, et.chunk_data as embed_data
   from
@@ -419,7 +440,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
 
 <a id="anchor6"></a>
 
-## 6. Oracle Database 23ai Free編-ベクトル検索の実行
+## 1-5. Oracle Database 23ai Free編-ベクトル検索の実行
 
  ベクトル検索を実行します。
 
@@ -463,7 +484,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
 
 # ADB23ai Always Free編
 
-## 7. ADB23ai Always Free編-ファイルの格納
+## 2-1. ADB23ai Always Free編-ファイルの格納
 
 ここからはADB23aiを使って、チュートリアルの内容を行います。
 
@@ -481,16 +502,16 @@ Database Actionsからのユーザー作成方法については、[101: ADBイ�
 * Webアクセス：トグルをON
 
 Database Actionsの開発カテゴリのSQLのツールにて以下のように設定し、DOCUSERに対して必要な権限を付与します。
-  ```
-  grant connect, ctxapp, create credential, create procedure, create table to docuser;
-  grant grant execute on DBMS_CLOUD_AI, DBMS_VECTOR, DBMS_VECTOR_CHAIN to docuser;
-  grant create mining model to docuser;
-
+  ```sql
+  grant connect, ctxapp, create credential, dwrole to docuser;
+  grant execute on DBMS_CLOUD_AI to docuser;
+  grant execute on DBMS_VECTOR to docuser;
+  grant execute on DBMS_VECTOR_CHAIN to docuser;
   ```
 
   出力:
 
-  ```
+  ```sh
   権限付与が成功しました。
   ```
 
@@ -501,7 +522,7 @@ Database ActionsにDOCUSERユーザーとして接続します。
 冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintを記入して実行してください。
 
 
- ```
+ ```sql
   -- 初回の実行では必要なし
   -- drop table documentation_tab purge;
 
@@ -520,7 +541,7 @@ Database ActionsにDOCUSERユーザーとして接続します。
 
   出力:
 
-  ```
+  ```sh
   表が作成されました。
   PL/SQLプロシージャが正常に完了しました。
   ```
@@ -528,7 +549,7 @@ Database ActionsにDOCUSERユーザーとして接続します。
 PDFドキュメントをDBMS_CLOUD.GET_OBJECTでBLOBとしてGETし、documentation_tabテーブル内に格納します。
 object_uriには前に手順でメモをしたURLパスを入力します。
 
- ```
+ ```sql
     DECLARE
     l_blob BLOB := NULL;
     BEGIN
@@ -542,20 +563,20 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
   出力:
 
-  ```
+  ```sh
   1行が作成されました。
   コミットが完了しました。
   ```
 
 `documentation_tab`テーブルの`data`列に格納されているLOBデータの長さをバイト単位で取得します。
 
-  ```
+  ```sql
   SELECT dbms_lob.getlength(t.data) from documentation_tab t;
   ```
 
   出力:
 
-  ```
+  ```sh
   DBMS_LOB.GETLENGTH(T.DATA)
   --------------------------
                       310454
@@ -567,17 +588,17 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
 <a id="anchor8"></a>
 
-## 8. ADB23ai Always Free編-テキストへの変換
+## 2-2. ADB23ai Always Free編-テキストへの変換
 
 `UTL_TO_TEXT`を実行してPDFドキュメントをテキスト形式に変換します。
 
-  ```
+  ```sql
   SELECT dbms_vector_chain.utl_to_text(dt.data) from documentation_tab dt;
   ```
 
   出力:
 
-  ```
+  ```sh
   DBMS_VECTOR_CHAIN.UTL_TO_TEXT(DT.DATA)
   --------------------------------------------------------------------------------
   コーポレートガバナンス
@@ -591,25 +612,25 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
 <a id="anchor9"></a>
 
-## 9. ADB23ai Always Free編-チャンクへの分割
+## 2-3. ADB23ai Always Free編-チャンクへの分割
 
  精度のよい検索結果を得られるために、このチュートリアルでは、`UTL_TO_CHUNKS`のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は[こちら](https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240)をご参照ください。
 
   ```
-  {"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}
+  {"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}
   ```
 
 `UTL_TO_CHUNKS`を実行して、テキストドキュメントをチャンクに分割します。
 
-  ```
+  ```sql
   -- （オプション）デフォルトのパラメータで実行する。
   -- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;
-  SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')) ct;
+  SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) ct;
   ```
 
   出力:
 
-  ```
+  ```sh
   COLUMN_VALUE
   --------------------------------------------------------------------------------
   {"chunk_id":1,"chunk_offset":14,"chunk_length":619,"chunk_da
@@ -650,12 +671,12 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
 <a id="anchor10"></a>
 
-## 10. ADB23ai Always Free編-ベクトルデータへの変換
+## 2-4. ADB23ai Always Free編-ベクトルデータへの変換
 
 チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
-冒頭で取得したの文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを記入して実行してください。
+冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。
 
-  ```
+  ```sql
   -- 初回の実行では必要なし
   -- exec dbms_vector.drop_credential('OCI_CRED');
   declare
@@ -678,7 +699,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
   出力:
 
-  ```
+  ```sh
   PL/SQLプロシージャが正常に完了しました。
   ```
 
@@ -686,7 +707,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
   >  注意：処理する件数によって時間がかかる場合があります。
 
-  ```
+  ```sql
   create table doc_chunks as
     with t_chunk as (
     select dt.id as doc_id, et.chunk_id as embed_id, et.chunk_data as embed_data
@@ -710,7 +731,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
   出力:
 
-  ```
+  ```sh
   表が作成されました。
   ```
 
@@ -718,11 +739,11 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
 <a id="anchor11"></a>
 
-## 11. ADB23ai Always Free編-ベクトル検索の実行
+## 2-5. ADB23ai Always Free編-ベクトル検索の実行
 
  ベクトル検索を実行します。
 
-  ```
+  ```sql
   SELECT doc_id, embed_id, embed_data
   FROM doc_chunks
   ORDER BY vector_distance(embed_vector , (SELECT to_vector(et.embed_vector) embed_vector
@@ -737,7 +758,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
   出力:
 
-  ```
+  ```sh
       DOC_ID   EMBED_ID
   ---------- ----------
   EMBED_DATA
