@@ -9,6 +9,11 @@ header:
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
+<style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
 
 ***
 # 0. 概要
@@ -391,7 +396,8 @@ $
 
 ## 3-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認
 
-以下コマンドをBastionノードのopcユーザで実行し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用の16個のネットワークインターフェース（rdmax）にTCP/IP接続用のネットワークインターフェース（eth0）と4フィールド目が同じ10.224.[0 - 15].x/12のIPアドレスが設定されていることを確認します。
+以下コマンドをBastionノードのopcユーザで実行し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用の16個のネットワークインターフェース（rdmax）にTCP/IP接続用のネットワークインターフェース（eth0）と4フィールド目が同じ10.224.[0 - 15].x/12のIPアドレスが設定されていることを確認します。  
+なお、このIPアドレス設定が完了するまで、GPUノードにログイン可能となってから10分程度を要します。
 
 ```sh
 $ pdsh -g all 'ip a | grep -e eth0 -e rdma | grep inet' | dshbak -c
