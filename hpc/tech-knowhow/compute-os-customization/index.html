@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-16T11:39:34+09:00">
+  <meta property="article:published_time" content="2024-07-16T14:34:11+09:00">
 
 
 
@@ -359,7 +359,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法">
     <meta itemprop="description" content="ノード数が多くなるHPCクラスタやGPUクラスタの計算/GPUノードは、デプロイ時に実施するOSカスタマイズをどのように行うのが効果的でしょうか。本テクニカルTipsは、計算/GPUノードデプロイ時のOSカスタマイズ方法の選択肢と、それぞれの利用方法について解説します。">
-    <meta itemprop="datePublished" content="2024-07-16T11:39:34+09:00">
+    <meta itemprop="datePublished" content="2024-07-16T14:34:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -379,9 +379,6 @@ table, th, td {
     font-size: 80%;
 }
 </style>
-
-<p>ノード数が多くなるHPCクラスタやGPUクラスタの計算/GPUノードは、デプロイ時に実施するOSカスタマイズをどのように行うのが効果的でしょうか。<br />
-本テクニカルTipsは、計算/GPUノードデプロイ時のOSカスタマイズ方法の選択肢と、それぞれの利用方法について解説します。</p>
 
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
@@ -565,11 +562,11 @@ status: <span class="k">done</span>
 <p>以上より、カスタム・イメージ取得前に以下の修正を適用します。</p>
 
 <ul>
-  <li><strong>/etc/fstab</strong> 内NVMeローカルディスク用ファイルシステム設定コメント化</li>
-  <li><strong>/etc/sysconfig/network-scripts/ifcfg-ens800f0</strong> 削除</li>
+  <li><strong>/etc/fstab</strong> 内NVMe SSDローカルディスク領域ファイルシステム設定部削除</li>
+  <li><strong>/etc/sysconfig/network-scripts/ifcfg-rdmaxx</strong> 削除</li>
 </ul>
 
-<p>なお、カスタム・イメージによるクラスタデプロイ時にここで削除した設定を適用し直すには、 <strong><a href="#1-cloud-initを使用したosカスタマイズ">cloud-initを使用したOSカスタマイズ</a></strong> の手法を使用することが出来ます。</p>
+<p>なお、カスタム・イメージによるクラスタデプロイ時にここで削除した設定を適用し直すには、NVMe SSDローカルディスク領域ファイルシステム設定の場合は <strong><a href="#1-cloud-initを使用したosカスタマイズ">cloud-initを使用したOSカスタマイズ</a></strong> の手法を、 <strong>クラスタ・ネットワーク</strong> 用ネットワークインターフェース設定の場合は <strong>Oracle Cloud Agent</strong> を使用することが出来ます。</p>
 
 <h2 id="2-3-カスタムイメージ取得">2-3. カスタム・イメージ取得</h2>
 
@@ -615,7 +612,7 @@ status: <span class="k">done</span>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T11:39:34+09:00">July 16, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T14:34:11+09:00">July 16, 2024</time></p>
 
       </footer>
 

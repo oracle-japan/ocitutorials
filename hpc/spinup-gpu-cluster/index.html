@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-16T11:39:34+09:00">
+  <meta property="article:published_time" content="2024-07-16T14:34:11+09:00">
 
 
 
@@ -349,7 +349,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-07-16T11:39:34+09:00">
+    <meta itemprop="datePublished" content="2024-07-16T14:34:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -364,7 +364,13 @@
             </nav>
           </aside>
         
-        <hr />
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
+
+<hr />
 <h1 id="0-概要">0. 概要</h1>
 
 <p>本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上にデプロイしてその上でソフトウェア環境を手動で構築する方法で、 <strong>Docker Community Edition</strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> を使用する分散機械学習に対応するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> で検証後、分散機械学習の稼働確認として <strong>TensorFlow</strong> の <strong>MultiWorkerMirroredStrategy</strong> を使用するサンプルプログラムを実行、その性能を検証します。</p>
@@ -843,7 +849,8 @@ inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
 
 <h2 id="3-6-クラスタネットワーク接続用ネットワークインターフェース確認">3-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認</h2>
 
-<p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（rdmax）にTCP/IP接続用のネットワークインターフェース（eth0）と4フィールド目が同じ10.224.[0 - 15].x/12のIPアドレスが設定されていることを確認します。</p>
+<p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（rdmax）にTCP/IP接続用のネットワークインターフェース（eth0）と4フィールド目が同じ10.224.[0 - 15].x/12のIPアドレスが設定されていることを確認します。<br />
+なお、このIPアドレス設定が完了するまで、GPUノードにログイン可能となってから10分程度を要します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'ip a | grep -e eth0 -e rdma | grep inet'</span> | dshbak <span class="nt">-c</span>
 <span class="nt">----------------</span>
@@ -1140,7 +1147,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T11:39:34+09:00">July 16, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T14:34:11+09:00">July 16, 2024</time></p>
 
       </footer>
 
