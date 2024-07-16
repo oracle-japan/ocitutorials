@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-12T17:45:31+09:00">
+  <meta property="article:published_time" content="2024-07-16T09:22:05+09:00">
 
 
 
@@ -349,7 +349,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-07-12T17:45:31+09:00">
+    <meta itemprop="datePublished" content="2024-07-16T09:22:05+09:00">
     
 
     <div class="page__inner-wrap">
@@ -431,12 +431,70 @@
   <li><strong>セキュリティリスト</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
 </ul>
 
-<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> で以下のアクセス制限が掛けられています。</p>
+<p>作成後、 <strong>セキュリティリスト</strong> が以下となるように修正します。</p>
 
-<ul>
-  <li>インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定</li>
-  <li>インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能</li>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">サブネット</th>
+      <th style="text-align: center">通信方向</th>
+      <th style="text-align: center">ステートレス</th>
+      <th style="text-align: center">ソース</th>
+      <th style="text-align: center">IPプロトコル</th>
+      <th style="text-align: center">ソース・ポート範囲</th>
+      <th style="text-align: center">宛先ポート範囲</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">イングレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">0.0.0.0/0<br />（※2）</td>
+      <td style="text-align: center">TCP</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">22</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">10.0.0.0/16</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">イグレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート</td>
+      <td style="text-align: center">イングレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">10.0.0.0/16</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">イグレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※2）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可していますが、これを自身のサイトのIPアドレスに限定することで、不正アクセスを防ぐことが可能です。</p>
 
 <h2 id="1-2-bastionノード作成">1-2. Bastionノード作成</h2>
 
@@ -1082,7 +1140,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-12T17:45:31+09:00">July 12, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T09:22:05+09:00">July 16, 2024</time></p>
 
       </footer>
 
