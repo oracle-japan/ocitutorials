@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-16T09:22:05+09:00">
+  <meta property="article:published_time" content="2024-07-16T10:44:24+09:00">
 
 
 
@@ -263,7 +263,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="106 : Oracle Database 23aiとLangChainでRAGを構成してみよう">
     <meta itemprop="description" content="LangChainを使ったRAG構成をステップバイステップでご紹介します。">
-    <meta itemprop="datePublished" content="2024-07-16T09:22:05+09:00">
+    <meta itemprop="datePublished" content="2024-07-16T10:44:24+09:00">
     
 
     <div class="page__inner-wrap">
@@ -274,7 +274,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#ragの構成とシナリオ">RAGの構成とシナリオ</a><ul><li><a href="#ragの構成">RAGの構成</a></li><li><a href="#ドキュメントデータ">ドキュメントデータ</a></li><li><a href="#シナリオ">シナリオ</a></li></ul></li><li><a href="#実装">実装</a><ul><li><a href="#1-oracle-database-23ai-freeをインストールする">1. Oracle Database 23ai Freeをインストールする</a></li><li><a href="#2-ドキュメントをベクトルデータベースにロードする">2. ドキュメントをベクトルデータベースにロードする</a></li><li><a href="#3-ベクトルデータベースに作成されたデータを確認してみるオプション">3. ベクトルデータベースに作成されたデータを確認してみる(オプション)</a></li><li><a href="#4-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン">4. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン)</a></li><li><a href="#5-非rag構成と比較してみる">5. 非RAG構成と比較してみる。</a></li><li><a href="#番外編ragを実装するcohere社-command-r-plusのパターン">番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン)</a></li></ul></li><li><a href="#さいごに">さいごに</a></li></ul>
+              <ul class="toc__menu"><li><a href="#ragの構成とシナリオ">RAGの構成とシナリオ</a><ul><li><a href="#ragの構成">RAGの構成</a></li><li><a href="#ドキュメントデータ">ドキュメントデータ</a></li><li><a href="#シナリオ">シナリオ</a></li></ul></li><li><a href="#ragの実装">RAGの実装</a><ul><li><a href="#1-1-oracle-database-23ai-freeをインストールする">1-1. Oracle Database 23ai Freeをインストールする</a></li><li><a href="#1-2-base-database-service環境でのセットアップ">1-2. Base Database Service環境でのセットアップ</a></li><li><a href="#2-python環境のセットアップ">2. Python環境のセットアップ</a></li><li><a href="#3-ドキュメントをベクトルデータベースにロードする">3. ドキュメントをベクトルデータベースにロードする</a></li><li><a href="#4-ベクトルデータベースに作成されたデータを確認してみるオプション">4. ベクトルデータベースに作成されたデータを確認してみる(オプション)</a></li><li><a href="#5-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン">5. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン)</a></li><li><a href="#6-非rag構成と比較してみる">6. 非RAG構成と比較してみる。</a></li><li><a href="#番外編ragを実装するcohere社-command-r-plusのパターン">番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン)</a></li></ul></li><li><a href="#さいごに">さいごに</a></li></ul>
             </nav>
           </aside>
         
@@ -284,15 +284,26 @@
 
 <p><img src="1.png" alt="image.png" /></p>
 
-<p>構成に利用するサービスは以下の通り。</p>
+<p>構成に利用するサービスは以下の通りです。</p>
 
 <ul>
   <li>テキスト生成モデル：OCI Generative AI(Command R Plus)</li>
   <li>ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(embed-multilingual-v3.0)</li>
-  <li>ベクトルデータベース: Oracle Database 23ai Free(OCI Compute Serviceにインストール)</li>
+  <li>ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service</li>
 </ul>
 
 <p>※LangChainって何？という方は<a href="https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain">こちらの記事</a> をご参照ください。</p>
+
+<p>また、本チュートリアルではAI Vector Searchの以下のチュートリアルを実施済みであることが前提となっています。</p>
+<ul>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector103-basics/">103 : Oracle AI Vector Searchの基本操作を試してみよう</a></li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/">104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</a></li>
+</ul>
+
+<p>本チュートリアルでは、OCI GenAIサービスにAPIコールするためのクレデンシャル情報が必要です。
+<a href="https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a>を参照して、APIキーを事前に作成してください。</p>
+
+<p><br /></p>
 
 <h2 id="ドキュメントデータ">ドキュメントデータ</h2>
 <p>ベクトルデータベースにロードするドキュメントデータは下図のような内容のPDFファイルです。テキストの内容としては架空の製品であるロケットエンジンOraBoosterの説明文章です。企業内のデータを想定し、テキストの内容としては、存在しない製品かつ完全な創作文章、ということでLLMが学習しているはずのないデータということになります。後の手順でこちらのPDFファイルをベクトルデータベースにロードします。</p>
@@ -316,63 +327,19 @@
 
 <p>※ 実装は興味ないので結果だけ知りたいですという方は「テキスト生成を実行する」の章をご参照ください。</p>
 
-<h1 id="実装">実装</h1>
+<h1 id="ragの実装">RAGの実装</h1>
 
-<h2 id="1-oracle-database-23ai-freeをインストールする">1. Oracle Database 23ai Freeをインストールする</h2>
+<h2 id="1-1-oracle-database-23ai-freeをインストールする">1-1. Oracle Database 23ai Freeをインストールする</h2>
 
-<p><a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/xeinl/installing-oracle-database-free.html#GUID-46EA860A-AAC4-453F-8EEE-42CC55A4FAD5">こちら</a>のインストールマニュアルに従ってOracle Database 23ai Freeをインストールします。</p>
+<p><a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">こちら</a>を参照してOracle Database 23ai Freeをインストールします。</p>
 
-<p>簡単に手順を記載しておきます。基本は下記3ステップでインストールからデフォルトPDBの作成完了。数分の処理です。</p>
+<p>SYSでDBにログインし、本チュートリアルで使用するDBユーザーを作成(ユーザー名docuser, パスワードdocuser)、念のためどこからでも接続できるようにしておきます。</p>
 
-<p>Oracle Databaseをインストールする環境にログイン後、プリインストールのRPMをインストールします。</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo</span> <span class="nt">-s</span>
-dnf <span class="nt">-y</span> <span class="nb">install </span>oracle-database-preinstall-23ai
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus sys@localhost:1521/freepdb1 as sysdba
 </code></pre></div></div>
 
-<p>Oracle Database 23ai FreeのRPMをダウンロードしインストールします。</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://download.oracle.com/otn-pub/otn_software/db-free/oracle-database-free-23ai-1.0-1.el8.x86_64.rpm
-dnf <span class="nt">-y</span> <span class="nb">install </span>oracle-database-free-23ai-1.0-1.el8.x86_64.rpm
-</code></pre></div></div>
-
-<p>configureを実行しデータベースを構成します。</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/init.d/oracle-free-23ai configure
-</code></pre></div></div>
-
-<p>cofigureの途中でパスワードの設定があり、これがSYS, SYSTEM、PDBADMINユーザー共通のパスワードとなります。</p>
-
-<p>上記3ステップでOracle Database 23ai Freeのインストール完了です。</p>
-
-<p>configureが完了するとデフォルトPDB(FREEPDB1)が出来上がりますので今回もこのPDBをそのまま利用します。</p>
-
-<p>次に Oracleユーザーの環境変数の定義をしておきます。</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su - oracle
-vi ~/.bashrc
-</code></pre></div></div>
-
-<p>bashrcにお馴染みの下記環境変数を定義します。</p>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">ORACLE_SID</span><span class="o">=</span>FREE
-<span class="nb">export </span><span class="nv">ORACLE_BASE</span><span class="o">=</span>/opt/oracle
-<span class="nb">export </span><span class="nv">ORACLE_HOME</span><span class="o">=</span>/opt/oracle/product/23ai/dbhomeFree
-<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$ORACLE_HOME</span>/bin
-</code></pre></div></div>
-
-<p>環境変数の有効化</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ~/.bashrc
-</code></pre></div></div>
-
-<p>次にアプリケーションからの接続用にデータベースユーザーを作成するため、SYSユーザーでPDBに接続します。</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus sys@localhost:1521/freepdb1 as sysdba
-</code></pre></div></div>
-
-<p>DBユーザーを作成(ユーザー名docuser, パスワードdocuser)、念のためどこからでも接続できるようにしておきます。</p>
-
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">connect</span><span class="p">,</span> <span class="n">ctxapp</span><span class="p">,</span> <span class="n">unlimited</span> <span class="n">tablespace</span><span class="p">,</span> <span class="k">create</span> <span class="n">credential</span><span class="p">,</span> <span class="k">create</span> <span class="k">procedure</span><span class="p">,</span> <span class="k">create</span> <span class="k">table</span> <span class="k">to</span> <span class="n">docuser</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">docuser</span><span class="p">;</span> <span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">sys</span><span class="p">.</span><span class="n">dmutil_lib</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span> 
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">connect</span><span class="p">,</span> <span class="n">ctxapp</span><span class="p">,</span> <span class="n">unlimited</span> <span class="n">tablespace</span><span class="p">,</span> <span class="k">create</span> <span class="n">credential</span><span class="p">,</span> <span class="k">create</span> <span class="k">procedure</span><span class="p">,</span> <span class="k">create</span> <span class="k">table</span> <span class="k">to</span> <span class="n">docuser</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">docuser</span><span class="p">;</span> 
+<span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">sys</span><span class="p">.</span><span class="n">dmutil_lib</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span> 
 <span class="k">grant</span> <span class="k">create</span> <span class="n">mining</span> <span class="n">model</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
 
 
@@ -389,13 +356,140 @@ vi ~/.bashrc
 <span class="o">/</span>
 </code></pre></div></div>
 
-<h2 id="2-ドキュメントをベクトルデータベースにロードする">2. ドキュメントをベクトルデータベースにロードする</h2>
+<p>docuserでログインできることを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus docuser/docuser@freepdb1
+</code></pre></div></div>
+<p><br /></p>
 
-<p>ここからは、PDFファイルをテキストチャンクに分割し、埋め込みモデルでベクトルデータベースにロードする処理です。下図のようなフローでPDFファイルを最終的にベクトルデータベースにロードしてゆきます。前回のフルスクラッチでのRAGの実装とは異なり、今回はLangChainを利用するためこの過程は非常にシンプルなコードとなります。<a href="/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf">本チュートリアルで使用するファイル</a></p>
+<h2 id="1-2-base-database-service環境でのセットアップ">1-2. Base Database Service環境でのセットアップ</h2>
+<p>まずは<code class="language-plaintext highlighter-rouge">SYS</code>ユーザーでPDBに接続できることを確認します。</p>
+
+<p>OCIコンソールのBaseDBの画面から、データベース名をクリックします。</p>
+
+<p><img src="6.png" alt="image.png" /></p>
+
+<p>左下のResourcesの<code class="language-plaintext highlighter-rouge">プラガブル・データベース</code>をクリックし、PDBを選択します。</p>
+
+<p><img src="7.png" alt="image.png" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">PDB接続</code>をクリックします。</p>
+
+<p><img src="8.png" alt="image.png" /></p>
+
+<p>接続文字列が表示されるので、簡易接続の接続文字列をコピーします。</p>
+
+<p><img src="9.png" alt="image.png" /></p>
+
+<p>これでPDBへの接続文字列を取得できました。</p>
+
+<p>BaseDB環境に戻り、<code class="language-plaintext highlighter-rouge">oracle</code>ユーザーにスイッチします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su - oracle
+</code></pre></div></div>
+
+<p>SQL*Plusで先ほど取得した接続文字列を使用してPDBへ<code class="language-plaintext highlighter-rouge">SYS</code>で接続します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus sys@&lt;接続文字列&gt; as sysdba
+</code></pre></div></div>
+
+<p>SYSのパスワードが求められるので、入力してログインします。</p>
+
+<p><img src="10.png" alt="image.png" /></p>
+
+<p>本チュートリアルで使用する<code class="language-plaintext highlighter-rouge">docuser</code>を作成していきます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">grant</span> <span class="k">connect</span><span class="p">,</span> <span class="n">ctxapp</span><span class="p">,</span> <span class="n">unlimited</span> <span class="n">tablespace</span><span class="p">,</span> <span class="k">create</span> <span class="n">credential</span><span class="p">,</span> <span class="k">create</span> <span class="k">procedure</span><span class="p">,</span> <span class="k">create</span> <span class="k">table</span> <span class="k">to</span> <span class="n">docuser</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">WelCome123</span><span class="o">#</span><span class="mi">123</span><span class="o">#</span><span class="p">;</span>
+<span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">sys</span><span class="p">.</span><span class="n">dmutil_lib</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span> 
+<span class="k">grant</span> <span class="k">create</span> <span class="n">mining</span> <span class="n">model</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+
+<span class="k">BEGIN</span>
+    <span class="n">DBMS_NETWORK_ACL_ADMIN</span><span class="p">.</span><span class="n">APPEND_HOST_ACE</span><span class="p">(</span>
+        <span class="k">host</span> <span class="o">=&gt;</span> <span class="s1">'*'</span><span class="p">,</span>
+        <span class="n">ace</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">ace_type</span><span class="p">(</span>
+            <span class="n">privilege_list</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">name_list</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">),</span>
+            <span class="n">principal_name</span> <span class="o">=&gt;</span> <span class="s1">'docuser'</span><span class="p">,</span>
+            <span class="n">principal_type</span> <span class="o">=&gt;</span> <span class="n">xs_acl</span><span class="p">.</span><span class="n">ptype_db</span>
+        <span class="p">)</span>
+    <span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p>SQL*Plusからログアウトします。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">exit</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">opc</code>ユーザーにスイッチします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">exit</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h2 id="2-python環境のセットアップ">2. Python環境のセットアップ</h2>
+<p>2024/7現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。</p>
+
+<p><code class="language-plaintext highlighter-rouge">root</code>にスイッチし、以下でPython3.11のインストールを行います。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su -
+dnf <span class="nb">install </span>python3.11
+<span class="nb">ln</span> <span class="nt">-s</span> /usr/bin/python3.11 /usr/bin/python
+</code></pre></div></div>
+
+<p>バージョンを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-V</span>
+</code></pre></div></div>
+
+<p>出力:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>oracle@basedb23ai ~]<span class="nv">$ </span>python <span class="nt">-V</span>
+Python 3.11.9
+</code></pre></div></div>
+
+<p>本チュートリアルではvenvモジュールを使ってPython仮想環境を作成します。
+お好みに応じてAnacondaやMinicondaで仮想環境を作成していただいても構いません。</p>
+
+<p><code class="language-plaintext highlighter-rouge">oracle</code>ユーザーにスイッチします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su - oracle
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> <span class="nv">$ORACLE_HOME</span>/python
+python <span class="nt">-m</span> venv myenv
+<span class="nb">source </span>myenv/bin/activate
+</code></pre></div></div>
+
+<p>本チュートリアルで使用するPythonパッケージをインストールします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install</span> <span class="nt">--upgrade</span> pip
+pip <span class="nb">install </span>ipython langchain langchain-community pypdf pandas oracledb oci
+</code></pre></div></div>
+
+<p>これでPython環境のセットアップは完了です。</p>
+
+<p><br /></p>
+
+<h2 id="3-ドキュメントをベクトルデータベースにロードする">3. ドキュメントをベクトルデータベースにロードする</h2>
+
+<p>ここからは、PDFファイルをテキストチャンクに分割し、埋め込みモデルでベクトルデータベースにロードする処理を行います。</p>
+
+<p>下図のようなフローでPDFファイルを最終的にベクトルデータベースにロードしてゆきます。</p>
+
+<p>フルスクラッチでのRAGの実装とは異なり、今回はLangChainを利用するためこの過程は非常にシンプルなコードとなります。</p>
+
+<p><a href="/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf">本チュートリアルで使用するファイル</a></p>
 
 <p><img src="3.png" alt="image.png" /></p>
 
-<p>ここからはPythonで処理を行います。本記事ではPythonの実行環境はOracle Databaseと同じOS環境にAnacondaをインストールしていますが、どこにPython環境を作成していても大丈夫です。</p>
+<p>使用するサンプルデータをダウンロードしておきます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /tmp
+wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf
+</code></pre></div></div>
+
+<p>ここからはPythonで処理を行います。</p>
+
+<p>本チュートリアルではインタラクティブな作業が可能なIPythonを使用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> <span class="nv">$ORACLE_HOME</span>/python
+ipython
+</code></pre></div></div>
 
 <p>まずは、LangChainのドキュメントローダーで/tmpに配置したPDFファイルをロードし、テキストに変換します。</p>
 
@@ -452,10 +546,17 @@ vi ~/.bashrc
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">oracledb</span>
 
-<span class="n">username</span> <span class="o">=</span> <span class="s">"docuser"</span>
+<span class="c1"># Oracle Database 23ai Free版
+</span><span class="n">username</span> <span class="o">=</span> <span class="s">"docuser"</span>
 <span class="n">password</span> <span class="o">=</span> <span class="s">"docuser"</span>
 <span class="n">dsn</span> <span class="o">=</span> <span class="s">"localhost/freepdb1"</span>
 
+<span class="c1"># BaseDB版では以下をアンコメントアウトして実行します
+# oracledb.init_oracle_client()
+# username = "docuser"
+# password = "WelCome123#123#"
+#dsn = "&lt;PDBの接続文字列&gt;" (例) basedb23ai.xxxx.vcn1.oraclevcn.com:1521/pdb1.xxxx.vcn1.oraclevcn.com
+</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">)</span>
     <span class="k">print</span><span class="p">(</span><span class="s">"Connection successful!"</span><span class="p">)</span>
@@ -481,6 +582,8 @@ vi ~/.bashrc
 <span class="p">)</span>
 </code></pre></div></div>
 
+<p><strong>注意</strong>: 以下のエラーが出る場合は、APIキーの設定ファイル~/.oci/configが作成されていません。<a href="https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a>を参照して、APIキーを事前に作成してください。</p>
+
 <p>LangChainのお決まりの関数であるfrom_documentsでベクトルデータベースにチャンクテキストをロードします。以下のように、ここまでの手順で定義済のオブジェクトを使って下記一つのコードでチャンクテキストをベクトル化しますが、ここでチャンクテキストとベクトルデータをロードする表を指定することになります。</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">vector_store_dot</span> <span class="o">=</span> <span class="n">OracleVS</span><span class="p">.</span><span class="n">from_documents</span><span class="p">(</span>
@@ -497,20 +600,26 @@ vi ~/.bashrc
 <span class="p">)</span>
 </code></pre></div></div>
 
-<p>今回はベクトル検索時に使う距離計算の方法を「ドット積」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にドット積を使っていることからそれに合わせてみました。(英語版のモデルであるembed-english-v3.0はコサイン類似度を使っているそうです。)こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のDOT_PRODUCTの部分を他の計算方法(例えば、EUCLIDEAN_DISTANCEやCOSINEに変更するだけです。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies">こちら</a>。</p>
+<p>今回はベクトル検索時に使う距離計算の方法を「ドット積」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にドット積を使っていることからそれに合わせてみました。(英語版のモデルであるembed-english-v3.0はコサイン類似度を使っているそうです。)こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のDOT_PRODUCTの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやCOSINEに変更するだけです。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies">こちら</a>。</p>
 
-<p>また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy">こちら</a>。</p>
+<p>また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy">こちら</a></p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oraclevs</span><span class="p">.</span><span class="n">create_index</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">vector_store_dot</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">"idx_name"</span><span class="p">:</span> <span class="s">"rocket"</span><span class="p">,</span> <span class="s">"idx_type"</span><span class="p">:</span> <span class="s">"IVF"</span><span class="p">})</span>
 </code></pre></div></div>
 
 <p>ここまでで、PDFファイルをベクトルデータベースにロードする処理が完了です。</p>
 
-<h2 id="3-ベクトルデータベースに作成されたデータを確認してみるオプション">3. ベクトルデータベースに作成されたデータを確認してみる(オプション)</h2>
+<p><br /></p>
+
+<h2 id="4-ベクトルデータベースに作成されたデータを確認してみるオプション">4. ベクトルデータベースに作成されたデータを確認してみる(オプション)</h2>
 
 <p>ロードされたベクトルデータを確認してみます。まずはdocuserでデータベースに接続します。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sqlplus</span> <span class="n">docuser</span><span class="o">/</span><span class="n">docuser</span><span class="o">@</span><span class="n">freepdb1</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Oracle Database 23ai Free版</span>
+<span class="n">sqlplus</span> <span class="n">docuser</span><span class="o">/</span><span class="n">docuser</span><span class="o">@</span><span class="n">freepdb1</span>
+
+<span class="c1">-- BaseDB版</span>
+<span class="c1">-- sqlplus docuser/WelCome123#123#@接続文字列</span>
 </code></pre></div></div>
 
 <p>SQLPLUSの表示設定を変更します。</p>
@@ -527,7 +636,7 @@ vi ~/.bashrc
 
 <p>まず、作成した表の確認行います。下記のように、作成した表doc_tableには4つのカラムが作成されていることがわかります。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">desc</span> <span class="n">doc_table</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">desc</span> <span class="n">doc_table</span><span class="p">;</span>
  <span class="err">名前</span>                                    <span class="k">NULL</span><span class="o">?</span>    <span class="err">型</span>
  <span class="c1">----------------------------------------- -------- ----------------------------</span>
  <span class="n">ID</span>                                        <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">RAW</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
@@ -538,7 +647,7 @@ vi ~/.bashrc
 
 <p>行数を確認してみます。作成された9つのチャンクがあることがわかります。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
 
   <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
 <span class="c1">----------</span>
@@ -550,7 +659,7 @@ vi ~/.bashrc
 
 <p>続いて、id列を確認します。これがチャンクIDとなります。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">id</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">id</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
 
 <span class="n">ID</span>
 <span class="c1">--------------------------------</span>
@@ -569,7 +678,7 @@ vi ~/.bashrc
 
 <p>続いて、text列を確認します。これがチャンクテキストになります。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="nb">text</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="nb">text</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
 
 <span class="nb">TEXT</span>
 <span class="c1">--------------------------------------------------------------------------------</span>
@@ -619,9 +728,13 @@ vi ~/.bashrc
 <span class="mi">9</span><span class="err">行が選択されました。</span>
 </code></pre></div></div>
 
+<p><strong>注意</strong>: 日本語の文字列が文字化けする場合は、DB接続前に以下を実行して<code class="language-plaintext highlighter-rouge">NLS_LANG</code>の変更を行います。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NLS_LANG</span><span class="o">=</span>Japanese_Japan.AL32UTF8
+</code></pre></div></div>
+
 <p>続いて、METADATA列を確認します。これがメタデータ(各チャンクの元のファイル名、ディレクトリ、ページ)になります。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">metadata</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">metadata</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
 
 <span class="n">METADATA</span>
 <span class="c1">--------------------------------------------------------------------------------</span>
@@ -640,7 +753,7 @@ vi ~/.bashrc
 
 <p>続いて、embedding列を確認します。これがチャンクテキストのベクトル値です。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SQL</span><span class="o">&gt;</span> <span class="k">select</span> <span class="n">embedding</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">embedding</span> <span class="k">from</span> <span class="n">doc_table</span><span class="p">;</span>
 
 <span class="n">EMBEDDING</span>
 <span class="c1">--------------------------------------------------------------------------------</span>
@@ -659,7 +772,9 @@ vi ~/.bashrc
 <span class="mi">1</span><span class="n">E</span><span class="o">-</span><span class="mi">002</span><span class="p">,</span><span class="mi">1</span><span class="p">.</span><span class="mi">26266479</span><span class="n">E</span><span class="o">-</span><span class="mi">003</span><span class="p">,</span><span class="mi">1</span><span class="p">.</span><span class="mi">93481445</span><span class="n">E</span><span class="o">-</span><span class="mi">002</span><span class="p">,</span><span class="mi">3</span><span class="p">.</span><span class="mi">27682495</span><span class="n">E</span><span class="o">-</span><span class="mi">003</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">.</span><span class="mi">44238281</span><span class="n">E</span><span class="o">-</span><span class="mi">002</span><span class="p">,</span><span class="mi">1</span><span class="p">.</span><span class="mi">457214</span>
 </code></pre></div></div>
 
-<h2 id="4-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン">4. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン)</h2>
+<p><br /></p>
+
+<h2 id="5-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン">5. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン)</h2>
 
 <p>ここからがRAGの実装です。前回のフルスクラッチと異なり、この部分のコードはLangChainにより大幅にシンプルになります。下図のような処理を経て、テキスト生成が行われますが、実際のコードはLangChainのChainを定義する作業になります。</p>
 
@@ -691,7 +806,7 @@ vi ~/.bashrc
     <span class="c1"># model_id="cohere.command-r-16k",
 </span>    <span class="n">model_id</span><span class="o">=</span><span class="s">"cohere.command-r-plus"</span><span class="p">,</span>
     <span class="n">service_endpoint</span><span class="o">=</span><span class="s">"https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"</span><span class="p">,</span>
-    <span class="n">compartment_id</span><span class="o">=</span><span class="s">"ocid1.compartment.oc1..aaaaaaaapq4xxxxxxxxijwewlq"</span><span class="p">,</span>
+    <span class="n">compartment_id</span><span class="o">=</span><span class="s">"ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxx"</span><span class="p">,</span>
     <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">"temperature"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s">"max_tokens"</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
 <span class="p">)</span>
 </code></pre></div></div>
@@ -723,14 +838,18 @@ vi ~/.bashrc
 
 <p>上記プロンプトで生成されたテキストが以下になります。ベクトルデータベースのデータを使ってテキスト生成していることがわかります。</p>
 
+<p>※必ずしも以下のテキストが生成されるわけではありません。ここでは、インターネット上にない製品であるOraBoosterに関する質問に対して、LLMが適切に回答できるかを確認します。</p>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">OraBooster</span> <span class="n">は</span><span class="err">、</span><span class="n">あなたのかいしゃが開発した最先端のロケットエンジンです</span><span class="err">。</span><span class="n">量子力学の原理を利用してプラズマを生成および超高速加速し</span><span class="err">、</span><span class="n">従来よりもはるかに高い推力を生み出し</span><span class="err">、</span><span class="n">遠方の惑星や星系への宇宙探査を可能にします</span><span class="err">。</span><span class="n">さらに</span><span class="err">、</span><span class="n">ハイパーフォトン</span> <span class="n">ジャイロスコープを搭載することで</span><span class="err">、</span><span class="n">極めて高い精度でロケットの姿勢制御と目標追跡を行います</span><span class="err">。</span><span class="n">OraBooster</span> <span class="n">は</span><span class="err">、</span><span class="n">その優れた性能と信頼性により</span><span class="err">、</span><span class="n">人類の夢を実現する強力な原動力となるでしょう</span>
 </code></pre></div></div>
 
-<h2 id="5-非rag構成と比較してみる">5. 非RAG構成と比較してみる。</h2>
+<p><br /></p>
+
+<h2 id="6-非rag構成と比較してみる">6. 非RAG構成と比較してみる。</h2>
 
 <p>非RAG構成、つまりベクトルデータベースを使わない場合の問い合わせです。コードとしてはChainオブジェクトではなく、LLMを定義しただけのオブジェクトを使ってテキスト生成を行う普通の問い合わせです。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span> <span class="o">=</span> <span class="n">llm_cohere</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="s">"OraBoosterとは何ですか?"</span><span class="p">)</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span> <span class="o">=</span> <span class="n">llm</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="s">"OraBoosterとは何ですか?"</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">content</span><span class="p">)</span>
 </code></pre></div></div>
 
@@ -746,6 +865,8 @@ vi ~/.bashrc
 </code></pre></div></div>
 
 <p>以上、RAGと非RAG構成の違いでした。</p>
+
+<p><br /></p>
 
 <h2 id="番外編ragを実装するcohere社-command-r-plusのパターン">番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン)</h2>
 
@@ -793,6 +914,8 @@ vi ~/.bashrc
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">OraBooster</span> <span class="n">は</span><span class="err">、</span><span class="n">次世代の宇宙探査を支える先進的な推進技術を象徴するロケットエンジンです</span><span class="err">。</span><span class="n">量子力学の原理に基づいてプラズマを生成し</span><span class="err">、</span><span class="n">超高速で加速させることで</span><span class="err">、</span><span class="n">従来の化学反応よりもはるかに高い推力を発生させます</span><span class="err">。</span><span class="n">これにより</span><span class="err">、</span><span class="n">遠く離れた惑星や星系への探査が可能となります</span><span class="err">。</span><span class="n">また</span><span class="err">、</span><span class="n">ハイパーフォトン</span><span class="err">・</span><span class="n">ジャイロスコープを搭載しており</span><span class="err">、</span><span class="n">極めて高い精度でロケットの姿勢を維持し</span><span class="err">、</span><span class="n">目標を追跡することができます</span><span class="err">。</span><span class="n">その高い性能と信頼性は</span><span class="err">、</span><span class="n">人類の夢を実現するための力強い支援となるでしょう</span><span class="err">。</span>
 </code></pre></div></div>
 
+<p><br /></p>
+
 <h1 id="さいごに">さいごに</h1>
 
 <p>ベクトルデータベースに今回と同じOracle Database 23aiを使った<a href="https://qiita.com/ksonoda/items/c300e734a5b1bef7b872">以前の記事</a>ではフルスクラッチでRAGの実装をしてみました。そして今回はLangChainを使っての実装です。</p>
@@ -813,7 +936,7 @@ vi ~/.bashrc
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T09:22:05+09:00">July 16, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T10:44:24+09:00">July 16, 2024</time></p>
 
       </footer>
 
