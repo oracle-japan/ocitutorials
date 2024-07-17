@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-16T14:34:11+09:00">
+  <meta property="article:published_time" content="2024-07-17T17:48:32+09:00">
 
 
 
@@ -342,6 +342,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
@@ -359,7 +361,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法">
     <meta itemprop="description" content="ノード数が多くなるHPCクラスタやGPUクラスタの計算/GPUノードは、デプロイ時に実施するOSカスタマイズをどのように行うのが効果的でしょうか。本テクニカルTipsは、計算/GPUノードデプロイ時のOSカスタマイズ方法の選択肢と、それぞれの利用方法について解説します。">
-    <meta itemprop="datePublished" content="2024-07-16T14:34:11+09:00">
+    <meta itemprop="datePublished" content="2024-07-17T17:48:32+09:00">
     
 
     <div class="page__inner-wrap">
@@ -415,29 +417,29 @@ Playbookは、条件分岐や反復処理を記述することが可能で、clo
   <tbody>
     <tr>
       <td>難易度</td>
-      <td>高(*1)</td>
-      <td>中(*2)</td>
+      <td>高（※1）</td>
+      <td>中（※2）</td>
       <td>低</td>
-      <td>*1) 管理ノード構築要<br />　　Playbook・インベントリファイル等構文習得要<br />*2) cloud-config構文習得要</td>
+      <td>※1） 管理ノード構築要<br />　　Playbook・インベントリファイル等構文習得要<br />※2） cloud-config構文習得要</td>
     </tr>
     <tr>
       <td>カスタマイズ柔軟性</td>
-      <td>高(*3)</td>
-      <td>中(*4)</td>
-      <td>低(*5)</td>
-      <td>*3) 条件分岐や反復を使用した柔軟なカスタマイズ可<br />*4) 様々なモジュールを使用した柔軟なカスタマイズ可<br />*5) 作成時に適用されているカスタマイズに限定</td>
+      <td>高（※3）</td>
+      <td>中（※4）</td>
+      <td>低（※5）</td>
+      <td>※3） 条件分岐や反復を使用した柔軟なカスタマイズ可<br />※4） 様々なモジュールを使用した柔軟なカスタマイズ可<br />※5） 作成時に適用されているカスタマイズに限定</td>
     </tr>
     <tr>
       <td>デプロイ時カスタマイズ</td>
       <td>必要</td>
       <td>必要</td>
-      <td>不要(*6)</td>
-      <td>*6) カスタマイズ適用済のためデプロイ時間短縮可</td>
+      <td>不要（※6）</td>
+      <td>※6） カスタマイズ適用済のためデプロイ時間短縮可</td>
     </tr>
   </tbody>
 </table>
 
-<p>以上を踏まえて次章以降は、cloud-initとカスタム・イメージを使用した計算/GPUノードのOSカスタマイズの手順を解説します。<br />
+<p>以上を踏まえて次章以降は、 <strong>cloud-init</strong> と <strong>カスタム・イメージ</strong> を使用した計算/GPUノードのOSカスタマイズの手順を解説します。<br />
 なおAnsibleは、オープンソースでインターネットから様々な情報を入手することが可能なため、ここでは解説しません。</p>
 
 <hr />
@@ -448,45 +450,49 @@ Playbookは、条件分岐や反復処理を記述することが可能で、clo
 <p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> を使用した計算/GPUノードのOSカスタマイズは、以下の手順で実施します。</p>
 
 <ul>
-  <li>cloud-init設定ファイル（cloud-config）作成</li>
+  <li><strong>cloud-init</strong> 設定ファイル（cloud-config）作成</li>
   <li>cloud-configを指定した <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> 作成</li>
-  <li>インスタンス構成を指定した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 作成</li>
-  <li>cloud-init完了確認</li>
+  <li><strong>インスタンス構成</strong> を指定した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 作成</li>
+  <li><strong>cloud-init</strong> 完了確認</li>
 </ul>
 
 <h2 id="1-1-cloud-conifg作成">1-1. cloud-conifg作成</h2>
 
 <p>本章は、OSカスタマイズの内容に沿った <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（cloud-config）を作成します。</p>
 
-<p>以下は、BM.Optimized3.36向けに以下のカスタマイズを適用するためのcloud-config例で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
+<p>以下は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> 向けに以下のカスタマイズを適用するためのcloud-config例で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
 
 <ul>
-  <li>NVMeローカルディスクファイルシステム作成</li>
-  <li><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用ネットワークインターフェース起動</li>
+  <li>タイムゾーンをJSTに変更</li>
+  <li>NVMe SSDローカルディスク領域ファイルシステム作成</li>
+  <li>firewalld停止</li>
 </ul>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
+<span class="c">#</span>
+<span class="c"># Change time zone to JST</span>
+timezone: Asia/Tokyo
+
 runcmd:
 <span class="c">#</span>
 <span class="c"># Mount NVMe local storage</span>
   - parted <span class="nt">-s</span> /dev/nvme0n1 mklabel gpt
   - parted <span class="nt">-s</span> /dev/nvme0n1 <span class="nt">--</span> mkpart primary xfs 1 <span class="nt">-1</span>
-<span class="c"># To ensure partition is really created before mkfs phase</span>
-  - <span class="nb">sleep </span>60
   - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme0n1p1
   - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
   - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+  - systemctl daemon-reload
   - mount /mnt/localdisk
 <span class="c">#</span>
-<span class="c"># Set up cluster network interface</span>
-  - systemctl start oci-rdma-configure
+<span class="c"># Stop firewalld</span>
+  - systemctl disable <span class="nt">--now</span> firewalld
 </code></pre></div></div>
 
 <h2 id="1-2-インスタンス構成作成">1-2. インスタンス構成作成</h2>
 
 <p>本章は、先に作成したcloud-configを使用して <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を作成します。</p>
 
-<p>インスタンス構成を作成する際のcloud-config指定は、OCIコンソールのインスタンス構成作成画面で以下 <strong>拡張オプションの表示</strong> ボタンを選択し、</p>
+<p><strong>インスタンス構成</strong> を作成する際のcloud-config指定は、OCIコンソールのインスタンス構成作成画面で以下 <strong>拡張オプションの表示</strong> ボタンを選択し、</p>
 
 <p><img src="console_page01.png" alt="画面ショット" /></p>
 
@@ -498,18 +504,19 @@ runcmd:
 
 <p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を作成します。</p>
 
-<p>クラスタ・ネットワークを作成する際のインスタンス構成指定は、OCIコンソールのクラスタ・ネットワーク作成画面で表示される以下 <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a> の構成</strong> フィールドで、 <strong>インスタンス構成</strong> メニューに先に作成したインスタンス構成を選択します。</p>
+<p><strong>クラスタ・ネットワーク</strong> を作成する際の <strong>インスタンス構成</strong> 指定は、OCIコンソールの <strong>クラスタ・ネットワーク</strong> 作成画面で表示される以下 <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a> の構成</strong> フィールドで、 <strong>インスタンス構成</strong> メニューに先に作成した <strong>インスタンス構成</strong> を選択します。</p>
 
 <p><img src="console_page03.png" alt="画面ショット" /></p>
 
 <h2 id="1-4-cloud-init完了確認">1-4. cloud-init完了確認</h2>
 
-<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、適用したインスタンスが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドを当該インスタンスのrootで実行し、ステータスが <strong>done</strong> となっていることでcloud-initの処理完了を確認します。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、適用したインスタンスが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドを当該インスタンスのopcユーザで実行し、ステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。</p>
 
-<p>ステータスが <strong>running</strong> の場合は、cloud-initの処理が継続中のため、処理が完了するまで待ちます。</p>
+<p>ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> cloud-init status
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cloud-init status
 status: <span class="k">done</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
 <hr />
@@ -520,27 +527,27 @@ status: <span class="k">done</span>
 <p><strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用した計算/GPUノードのOSカスタマイズは、以下の手順で実施します。</p>
 
 <ul>
-  <li>カスタム・イメージ作成用インスタンス起動</li>
-  <li>カスタマイズ適用</li>
-  <li>カスタム・イメージ使用時問題となる設定修正</li>
-  <li>カスタム・イメージ取得</li>
-  <li>カスタム・イメージを指定した <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> 作成</li>
-  <li>インスタンス構成を指定した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 作成</li>
+  <li><strong>カスタム・イメージ</strong> 作成用インスタンス起動</li>
+  <li><strong>カスタマイズ</strong> 適用</li>
+  <li><strong>カスタム・イメージ</strong> 使用時問題となる設定修正</li>
+  <li><strong>カスタム・イメージ</strong> 取得</li>
+  <li><strong>カスタム・イメージ</strong> を指定した <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> 作成</li>
+  <li><strong>インスタンス構成</strong> を指定した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 作成</li>
 </ul>
 
 <h2 id="2-1-カスタムイメージ作成用インスタンス起動カスタマイズ適用">2-1. カスタム・イメージ作成用インスタンス起動・カスタマイズ適用</h2>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を作成するためのインスタンスを起動します。</p>
 
-<p>通常カスタム・イメージを作成する場合、組み込むカスタマイズの内容が正しく動作しているかを確認する必要があるため、最終的に構築するHPCクラスタやGPUクラスタの規模のみを縮小した同一構成のものを使用します。<br />
-例えば、16ノードのクラスタ構築に使用するカスタムイメージであれば、同じシェイプとOSを使用した2ノードのクラスタをデプロイします。<br />
+<p>通常 <strong>カスタム・イメージ</strong> を作成する場合、組み込むカスタマイズの内容が正しく動作しているかを確認する必要があるため、最終的に構築するHPCクラスタやGPUクラスタの規模のみを縮小した同一構成のものを使用します。<br />
+例えば、16ノードのクラスタ構築に使用する <strong>カスタムイメージ</strong> であれば、同じシェイプとOSを使用した2ノードのクラスタをデプロイします。<br />
 この手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> が参考になります。</p>
 
 <p>このクラスタがデプロイ出来たら、必要なカスタマイズを適用してその動作を確認します。</p>
 
 <h2 id="2-2-カスタムイメージ使用時問題となる設定修正">2-2. カスタム・イメージ使用時問題となる設定修正</h2>
 
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用してクラスタをデプロイする際に問題となる設定を、カスタム・イメージ取得前に除去します。</p>
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用してクラスタをデプロイする際に問題となる設定を、 <strong>カスタム・イメージ</strong> 取得前に除去します。</p>
 
 <p>問題となる設定で代表的なものは、以下の2項目です。</p>
 
@@ -548,49 +555,49 @@ status: <span class="k">done</span>
   <li>
     <p>NVMeローカルディスク領域ファイルシステム設定</p>
 
-    <p>HPC用途のベアメタルインスタンスに搭載されるNVMeローカルディスクは、カスタム・イメージを使用する場合でも、デプロイ時にファイルシステムとしフォーマットしマウントする必要があります。<br />
-このため、カスタム・イメージ取得前にこのファイルシステム設定を削除し、カスタム・イメージを使用してインスタンスをデプロイする際に改めてこの設定を追加します。</p>
+    <p>HPC/機械学習用途のベアメタルインスタンスに搭載されるNVMeローカルディスクは、 <strong>カスタム・イメージ</strong> を使用する場合でも、デプロイ時にファイルシステムとしフォーマットしマウントする必要があります。<br />
+このため、 <strong>カスタム・イメージ</strong> 取得前にこのファイルシステム設定を削除し、 <strong>カスタム・イメージ</strong> を使用してインスタンスをデプロイする際に改めてこの設定を追加します。</p>
   </li>
   <li>
     <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 用ネットワークインターフェース設定</p>
 
-    <p>クラスタ・ネットワークのネットワークインターフェース設定は、カスタム・イメージ取得インスタンス用の静的IPアドレスを含んでおり、そのままカスタム・イメージを取得すると、これを使用してデプロイしたインスタンスで全て同じIPアドレスが設定され、クラスタ・ネットワークに接続することが出来ません。
-このため、カスタム・イメージ取得前にこのネットワークインターフェース設定を削除し、カスタム・イメージを使用してインスタンスをデプロイする際に改めてこの設定を追加します。</p>
+    <p><strong>クラスタ・ネットワーク</strong> のネットワークインターフェース設定は、 <strong>カスタム・イメージ</strong> 取得インスタンス用の静的IPアドレスを含んでおり、そのまま <strong>カスタム・イメージ</strong> を取得すると、これを使用してデプロイしたインスタンスで全て同じIPアドレスが設定され、 <strong>クラスタ・ネットワーク</strong> に接続することが出来ません。
+このため、 <strong>カスタム・イメージ</strong> 取得前にこのネットワークインターフェース設定を削除し、<strong>カスタム・イメージ</strong> を使用してインスタンスをデプロイする際に改めてこの設定を追加します。</p>
   </li>
 </ul>
 
-<p>以上より、カスタム・イメージ取得前に以下の修正を適用します。</p>
+<p>以上より、 <strong>カスタム・イメージ</strong> 取得前に以下の修正を適用します。</p>
 
 <ul>
-  <li><strong>/etc/fstab</strong> 内NVMe SSDローカルディスク領域ファイルシステム設定部削除</li>
+  <li><strong>/etc/fstab</strong> 内NVMe SSDローカルディスク領域ファイルシステムマウント設定削除</li>
   <li><strong>/etc/sysconfig/network-scripts/ifcfg-rdmaxx</strong> 削除</li>
 </ul>
 
-<p>なお、カスタム・イメージによるクラスタデプロイ時にここで削除した設定を適用し直すには、NVMe SSDローカルディスク領域ファイルシステム設定の場合は <strong><a href="#1-cloud-initを使用したosカスタマイズ">cloud-initを使用したOSカスタマイズ</a></strong> の手法を、 <strong>クラスタ・ネットワーク</strong> 用ネットワークインターフェース設定の場合は <strong>Oracle Cloud Agent</strong> を使用することが出来ます。</p>
+<p>なお、 <strong>カスタム・イメージ</strong> によるクラスタデプロイ時にここで削除した設定を適用し直すには、NVMe SSDローカルディスク領域ファイルシステム設定の場合は <strong><a href="#1-cloud-initを使用したosカスタマイズ">1. cloud-initを使用したOSカスタマイズ</a></strong> の手法を、 <strong>クラスタ・ネットワーク</strong> 用ネットワークインターフェース設定の場合は <strong>Oracle Cloud Agent</strong> を使用します。</p>
 
 <h2 id="2-3-カスタムイメージ取得">2-3. カスタム・イメージ取得</h2>
 
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> 取得用インスタンスでカスタム・イメージを取得します。</p>
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> 取得用インスタンスで <strong>カスタム・イメージ</strong> を取得します。</p>
 
-<p>カスタム・イメージの取得は、当該インスタンスの以下 <strong>インスタンスの詳細</strong> ページで <strong>他のアクション</strong> プルダウンメニューから <strong>カスタム・イメージの作成</strong> メニューを選択し、</p>
+<p><strong>カスタム・イメージ</strong> の取得は、当該インスタンスの以下 <strong>インスタンスの詳細</strong> ページで <strong>他のアクション</strong> プルダウンメニューから <strong>カスタム・イメージの作成</strong> メニューを選択し、</p>
 
 <p><img src="console_page04.png" alt="画面ショット" /></p>
 
-<p>表示される以下画面で <strong>名前</strong> フィールドにカスタム・イメージに付与する名前を指定し、 <strong>カスタム・イメージの作成</strong> ボタンをクリックします。</p>
+<p>表示される以下画面で <strong>名前</strong> フィールドに <strong>カスタム・イメージ</strong> に付与する名前を指定し、 <strong>カスタム・イメージの作成</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page05.png" alt="画面ショット" /></p>
 
-<p>なお、カスタム・イメージ取得中は、当該インスタンスが停止します。</p>
+<p>なお、 <strong>カスタム・イメージ</strong> 取得中は、当該インスタンスが停止します。</p>
 
 <h2 id="2-4-インスタンス構成作成">2-4. インスタンス構成作成</h2>
 
-<p>本章は、先に作成したカスタム・イメージを使用して <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を作成します。</p>
+<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用して <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を作成します。</p>
 
-<p>インスタンス構成を作成する際のカスタム・イメージ指定は、OCIコンソールのインスタンス構成作成画面の以下 <strong>イメージとシェイプ</strong> フィールドで <strong>イメージの変更</strong> ボタンをクリックし、</p>
+<p><strong>インスタンス構成</strong> を作成する際の <strong>カスタム・イメージ</strong> 指定は、OCIコンソールの <strong>インスタンス構成</strong> 作成画面の以下 <strong>イメージとシェイプ</strong> フィールドで <strong>イメージの変更</strong> ボタンをクリックし、</p>
 
 <p><img src="console_page06.png" alt="画面ショット" /></p>
 
-<p>表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>マイ・イメージ</strong> を選択し表示される先に作成したカスタム・イメージを選択し <strong>イメージの選択</strong> ボタンをクリックします。</p>
+<p>表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>マイ・イメージ</strong> を選択し表示される先に作成した <strong>カスタム・イメージ</strong> を選択し <strong>イメージの選択</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page07.png" alt="画面ショット" /></p>
 
@@ -598,7 +605,7 @@ status: <span class="k">done</span>
 
 <p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を作成します。</p>
 
-<p>クラスタ・ネットワークを作成する際のインスタンス構成指定は、OCIコンソールのクラスタ・ネットワーク作成画面で表示される以下 <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a> の構成</strong> フィールドで、 <strong>インスタンス構成</strong> メニューに先に作成したインスタンス構成を選択します。</p>
+<p><strong>クラスタ・ネットワーク</strong> を作成する際の <strong>インスタンス構成</strong> 指定は、OCIコンソールの <strong>クラスタ・ネットワーク</strong> 作成画面で表示される以下 <strong><a href="/ocitutorials/hpc/#5-8-インスタンスプール">インスタンス・プール</a> の構成</strong> フィールドで、 <strong>インスタンス構成</strong> メニューに先に作成した <strong>インスタンス構成</strong> を選択します。</p>
 
 <p><img src="console_page03.png" alt="画面ショット" /></p>
 
@@ -612,7 +619,7 @@ status: <span class="k">done</span>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-16T14:34:11+09:00">July 16, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-17T17:48:32+09:00">July 17, 2024</time></p>
 
       </footer>
 
