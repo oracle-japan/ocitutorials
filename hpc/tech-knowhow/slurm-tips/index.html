@@ -11,7 +11,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>Slurmによるリソース管理・ジョブ管理システム運用Tips | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するためのテクニカルなTipsを解説します。">
+<meta name="description" content="オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/slurm-tips/">
 
 
-  <meta property="og:description" content="オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するためのテクニカルなTipsを解説します。">
+  <meta property="og:description" content="オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-22T14:51:27+09:00">
+  <meta property="article:published_time" content="2024-07-22T16:55:51+09:00">
 
 
 
@@ -158,7 +158,7 @@
         
       </h1>
       
-        <p class="page__lead">オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するためのテクニカルなTipsを解説します。
+        <p class="page__lead">オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。
 </p>
       
       
@@ -284,7 +284,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8版）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
@@ -360,8 +362,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム運用Tips">
-    <meta itemprop="description" content="オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するためのテクニカルなTipsを解説します。">
-    <meta itemprop="datePublished" content="2024-07-22T14:51:27+09:00">
+    <meta itemprop="description" content="オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
+    <meta itemprop="datePublished" content="2024-07-22T16:55:51+09:00">
     
 
     <div class="page__inner-wrap">
@@ -390,7 +392,7 @@
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本章は、ジョブ実行の前後で <strong>Slurm</strong> が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境にセットアップする方法を解説します。</p>
+<p>本Tipsは、ジョブ実行の前後で <strong>Slurm</strong> が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境にセットアップする方法を解説します。</p>
 
 <p>ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。</p>
 
@@ -401,17 +403,17 @@
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 
-<span class="nv">log_dir</span><span class="o">=</span>/var/log/slurm/clean_memory.log
+<span class="nv">log_file</span><span class="o">=</span>/var/log/slurm/clean_memory.log
 
-/bin/date <span class="o">&gt;&gt;</span> <span class="nv">$log_dir</span>
-/bin/echo <span class="s2">"Before"</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_dir</span>
-/bin/free <span class="nt">-h</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_dir</span>
+/bin/date <span class="o">&gt;&gt;</span> <span class="nv">$log_file</span>
+/bin/echo <span class="s2">"Before"</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_file</span>
+/bin/free <span class="nt">-h</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_file</span>
 
 /bin/sync<span class="p">;</span> /bin/echo 3 <span class="o">&gt;</span> /proc/sys/vm/drop_caches
 
-/bin/echo <span class="o">&gt;&gt;</span> <span class="nv">$log_dir</span>
-/bin/echo <span class="s2">"After"</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_dir</span>
-/bin/free <span class="nt">-h</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_dir</span>
+/bin/echo <span class="o">&gt;&gt;</span> <span class="nv">$log_file</span>
+/bin/echo <span class="s2">"After"</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_file</span>
+/bin/free <span class="nt">-h</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_file</span>
 </code></pre></div></div>
 
 <ul>
@@ -425,26 +427,20 @@
 
 <h2 id="1-1-セットアップ手順">1-1. セットアップ手順</h2>
 
-<ol>
-  <li>Slurmサーバと全ての計算ノードの <strong>/opt/slurm/etc/slurm.conf</strong> に以下の記述を追加します。</li>
-</ol>
+<p>Slurmサーバと全ての計算ノードの <strong>/opt/slurm/etc/slurm.conf</strong> に以下の記述を追加します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PrologFlags</span><span class="o">=</span>Alloc
 <span class="nv">Prolog</span><span class="o">=</span>/opt/slurm/etc/scripts/prolog.d/<span class="k">*</span>
 <span class="nv">Epilog</span><span class="o">=</span>/opt/slurm/etc/scripts/epilog.d/<span class="k">*</span>
 </code></pre></div></div>
 
-<ol>
-  <li>全ての計算ノードのopcユーザで以下コマンドを実行し、Prolog/Epilogのスクリプトを格納するディレクトリを作成します。</li>
-</ol>
+<p>次に、全ての計算ノードのopcユーザで以下コマンドを実行し、Prolog/Epilogのスクリプトを格納するディレクトリを作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/slurm/etc/scripts/prolog.d
 <span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/slurm/etc/scripts/epilog.d
 </code></pre></div></div>
 
-<ol>
-  <li>全ての計算ノードで、 <strong><a href="#1-0-概要">1-0. 概要</a></strong> に記載のProlog/Epilog用スクリプトをそれぞれ <strong>10_clean_memory.sh</strong> と <strong>10_clean_nvme.sh</strong> として先に作成したディレクトリに格納し、以下のようにスクリプトファイルのオーナーとパーミッションを設定します。</li>
-</ol>
+<p>次に、全ての計算ノードで、 <strong><a href="#1-0-概要">1-0. 概要</a></strong> に記載のProlog/Epilog用スクリプトをそれぞれ <strong>10_clean_memory.sh</strong> と <strong>10_clean_nvme.sh</strong> として先に作成したディレクトリに格納し、以下のようにスクリプトファイルのオーナーとパーミッションを設定します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> /opt/slurm/etc/scripts/<span class="k">*</span>/
 /opt/slurm/etc/scripts/epilog.d/:
@@ -457,9 +453,9 @@ total 4
 <span class="err">$</span>
 </code></pre></div></div>
 
-<ol>
-  <li>Slurmサーバのopcユーザで以下のコマンドを実行し、 <strong>slurm.conf</strong> ファイルの変更を反映、その結果を確認します。</li>
-</ol>
+<p>なお、このディレクトリに2桁数字の接頭辞を持つスクリプトを複数格納することで、その数字の順番にスクリプトを実行することが出来ます。</p>
+
+<p>次に、Slurmサーバのopcユーザで以下のコマンドを実行し、 <strong>slurm.conf</strong> ファイルの変更を反映、その結果を確認します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol reconfigure"</span>
 <span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show config"</span> | <span class="nb">grep</span> <span class="nt">-i</span> <span class="nt">-e</span> ^epilog <span class="nt">-e</span> ^prolog | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nt">-i</span> <span class="nb">time
@@ -471,16 +467,12 @@ PrologFlags             <span class="o">=</span> Alloc
 
 <h2 id="1-2-稼働確認">1-2. 稼働確認</h2>
 
-<ol>
-  <li>以下コマンドを全ての計算ノードのopcユーザで実行し、テスト用のファイルを <strong>/mnt/localdisk</strong> ディレクトリに作成します。</li>
-</ol>
+<p>以下コマンドを全ての計算ノードのopcユーザで実行し、テスト用のファイルを <strong>/mnt/localdisk</strong> ディレクトリに作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo touch</span> /mnt/localdisk/test.txt
 </code></pre></div></div>
 
-<ol>
-  <li>以下コマンドをSlurmクライアントのopcユーザで実行し、テストジョブを実行します。</li>
-</ol>
+<p>次に、以下コマンドをSlurmクライアントのopcユーザで実行し、テストジョブを実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">-n</span> 2 <span class="nt">-N</span> 2 <span class="nb">hostname
 </span>inst-xxxxx-x9-ol89
@@ -488,24 +480,22 @@ inst-yyyyy-x9-ol89
 <span class="err">$</span>
 </code></pre></div></div>
 
-<ol>
-  <li>以下コマンドを全ての計算ノードのopcユーザで実行し、先に作成したテスト用のファイルが削除されていること、Linuxカーネルのキャッシュを開放した際のログが記録されていることで、想定通りにProlog/Epilogのスクリプトが実行されたことを確認します。</li>
-</ol>
+<p>次に、以下コマンドを全ての計算ノードのopcユーザで実行し、先に作成したテスト用のファイルが削除されていること、Linuxカーネルのキャッシュを開放した際のログが記録されていることで、想定通りにProlog/Epilogのスクリプトが実行されたことを確認します。</p>
 
-<p>```sh
-$ ls /mnt/localdisk/
-$ tail /var/log/slurm/clean_memory.log
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> /mnt/localdisk/
+<span class="nv">$ </span><span class="nb">tail</span> /var/log/slurm/clean_memory.log
 Wed Jul 17 16:53:14 JST 2024
 Before
               total        used        free      shared  buff/cache   available
 Mem:          503Gi       6.3Gi       494Gi        29Mi       2.0Gi       493Gi
-Swap:         7.6Gi          0B       7.6Gi</p>
+Swap:         7.6Gi          0B       7.6Gi
 
-<p>After
+After
               total        used        free      shared  buff/cache   available
 Mem:          503Gi       6.3Gi       496Gi        29Mi       353Mi       494Gi
 Swap:         7.6Gi          0B       7.6Gi
-$</p>
+<span class="err">$</span>
+</code></pre></div></div>
 
         
       </section>
@@ -517,7 +507,7 @@ $</p>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-22T14:51:27+09:00">July 22, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-22T16:55:51+09:00">July 22, 2024</time></p>
 
       </footer>
 

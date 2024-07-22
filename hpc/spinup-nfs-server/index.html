@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-22T14:51:27+09:00">
+  <meta property="article:published_time" content="2024-07-22T16:55:51+09:00">
 
 
 
@@ -274,7 +274,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8版）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
@@ -351,7 +353,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームでNFSサーバを構築する">
     <meta itemprop="description" content="ブロック・ボリュームでNFSサーバを構築してみましょう。このチュートリアルを終了すると、OCIのブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSサーバを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-07-22T14:51:27+09:00">
+    <meta itemprop="datePublished" content="2024-07-22T16:55:51+09:00">
     
 
     <div class="page__inner-wrap">
@@ -362,165 +364,213 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-ファイル共有ストレージ環境構築用スタックの概要">0. ファイル共有ストレージ環境構築用スタックの概要</a></li><li><a href="#1-スタックの作成">1. スタックの作成</a></li><li><a href="#2-スタックの計画">2. スタックの計画</a></li><li><a href="#3-スタックの適用">3. スタックの適用</a></li><li><a href="#4-bastionノードnfsサーバnfsクライアントの確認">4. Bastionノード・NFSサーバ・NFSクライアントの確認</a></li><li><a href="#5-ファイルシステムベンチマーク">5. ファイルシステムベンチマーク</a><ul><li><a href="#5-0-ファイルシステムベンチマーク概要">5-0. ファイルシステムベンチマーク概要</a></li><li><a href="#5-1-openmpiインストール">5-1. OpenMPIインストール</a></li><li><a href="#5-2-sshのpath設定にopenmpiツール群格納ディレクトリを追加">5-2. SSHのPATH設定にOpenMPIツール群格納ディレクトリを追加</a></li><li><a href="#5-3-io500インストール">5-3. IO500インストール</a></li><li><a href="#5-4-ファイルシステムベンチマーク実行">5-4. ファイルシステムベンチマーク実行</a></li></ul></li><li><a href="#6-スタックの破棄">6. スタックの破棄</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-ファイル共有ストレージ環境構築">1. ファイル共有ストレージ環境構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-iamポリシー作成">1-1. IAMポリシー作成</a></li><li><a href="#1-2-スタックの作成">1-2. スタックの作成</a></li><li><a href="#1-3-スタックの計画">1-3. スタックの計画</a></li><li><a href="#1-4-スタックの適用">1-4. スタックの適用</a></li></ul></li><li><a href="#2-ファイル共有ストレージ環境確認">2. ファイル共有ストレージ環境確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li><li><a href="#2-2-nfsサーバ確認">2-2. NFSサーバ確認</a></li><li><a href="#2-5-nfsクライアント確認">2-5. NFSクライアント確認</a></li></ul></li><li><a href="#3-ファイルシステムベンチマーク">3. ファイルシステムベンチマーク</a><ul><li><a href="#3-0-ファイルシステムベンチマーク概要">3-0. ファイルシステムベンチマーク概要</a></li><li><a href="#3-1-openmpiインストール">3-1. OpenMPIインストール</a></li><li><a href="#3-2-sshのpath設定にopenmpiツール群格納ディレクトリを追加">3-2. SSHのPATH設定にOpenMPIツール群格納ディレクトリを追加</a></li><li><a href="#3-3-io500インストール">3-3. IO500インストール</a></li><li><a href="#3-4-ファイルシステムベンチマーク実行">3-4. ファイルシステムベンチマーク実行</a></li></ul></li><li><a href="#4-スタックの破棄">4. スタックの破棄</a></li></ul>
             </nav>
           </aside>
         
-        <p>Oracle Cloud Infrastructure（以降OCIと記載）のブロック・ボリュームは、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。</p>
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>Oracle Cloud Infrastructure（以降OCIと記載）の <strong>ブロック・ボリューム</strong> は、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。</p>
 <ul>
-  <li>同一可用性ドメイン内の異なるフォルト・ドメインに複数のレプリカを持ち高い可用性を実現</li>
+  <li>同一 <strong>可用性ドメイン</strong> 内の異なる <strong>フォルト・ドメイン</strong> に複数のレプリカを持ち高い可用性を実現</li>
   <li>ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現</li>
 </ul>
 
-<p>また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong>  は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。</p>
+<p>また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong>  は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の <strong>ブロック・ボリューム</strong> アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。</p>
 
-<p>OCIは、NFSのマネージドサービスであるファイル・ストレージも提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけてブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、ファイル・ストレージよりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。<br />
-ファイル・ストレージとブロック・ボリュームNFSサーバの比較詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></strong> を参照ください。</p>
+<p>OCIは、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> も提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけて <strong>ブロック・ボリューム</strong> とベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、 <strong>ファイル・ストレージ</strong> よりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。<br />
+<strong>ファイル・ストレージ</strong> とブロック・ボリュームNFSサーバの比較詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></strong> を参照してください。</p>
 
-<p>このチュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無料で利用可能なファイル共有ストレージ環境を構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> から自動構築、構築したNFSファイルシステム性能をIORとmdtestで検証します。</p>
+<p>以上を踏まえて本チュートリアルは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無料で利用可能なファイル共有ストレージ環境を構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> から自動構築、構築したNFSファイルシステム性能をIORとmdtestで検証します。</p>
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
 <table>
   <thead>
     <tr>
-      <th> </th>
-      <th>利用する<br />OCIサービス</th>
-      <th>構成</th>
-      <th>用途</th>
-      <th> </th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center">利用するサービス</th>
+      <th style="text-align: center">構成</th>
+      <th style="text-align: center">用途</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>NFSディスク領域</td>
-      <td>ブロック・ボリューム</td>
-      <td>1 TB Balanced x 15</td>
-      <td>ファイル共有ストレージ領域</td>
-      <td> </td>
+      <td style="text-align: center">ストレージ</td>
+      <td style="text-align: center"><strong>ブロック・ボリューム</strong></td>
+      <td style="text-align: center">1 TB Balanced x 15</td>
+      <td style="text-align: center">ファイル共有ストレージ領域</td>
     </tr>
     <tr>
-      <td>NFSサーバ</td>
-      <td>ベアメタルインスタンス</td>
-      <td>BM.Optimized3.36 x 1</td>
-      <td>NFSサーバ</td>
-      <td> </td>
+      <td style="text-align: center">NFSサーバ</td>
+      <td style="text-align: center">ベアメタルインスタンス</td>
+      <td style="text-align: center"><strong>BM.Optimized3.36</strong> x 1</td>
+      <td style="text-align: center">NFSサーバ</td>
     </tr>
     <tr>
-      <td>NFSクライアント</td>
-      <td>VMインスタンス</td>
-      <td>VM.Standard2.24 x 4</td>
-      <td>ファイルシステムベンチマーク用<br />NFSクライアント</td>
-      <td> </td>
+      <td style="text-align: center">NFSクライアント</td>
+      <td style="text-align: center">VMインスタンス</td>
+      <td style="text-align: center"><strong>VM.Standard2.24</strong> x 4</td>
+      <td style="text-align: center">ファイルシステムベンチマーク用<br />NFSクライアント</td>
     </tr>
     <tr>
-      <td>Bastionノード</td>
-      <td>VMインスタンス</td>
-      <td>VM.Standard2.2 x 1</td>
-      <td>インターネットからのログイン用<br />ゲートウェイ</td>
-      <td> </td>
+      <td style="text-align: center">Bastionノード</td>
+      <td style="text-align: center">VMインスタンス</td>
+      <td style="text-align: center"><strong>VM.Standard2.2</strong> x 1</td>
+      <td style="text-align: center">インターネットからのログイン用<br />ゲートウェイ</td>
     </tr>
   </tbody>
 </table>
 
-<p>このファイル共有ストレージ環境構築用スタックを利用すると、通常であれば数日かかるようなファイル共有ストレージ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択するだけで実施することが可能になります。</p>
+<p>このファイル共有ストレージ環境構築用 <strong>スタック</strong> を利用すると、通常であれば数日かかるようなファイル共有ストレージ構築作業を、OCIコンソールのGUIから10項目程度のメニューを選択するだけで実施することが可能になります。</p>
 
 <p><strong>所要時間 :</strong> 約1時間</p>
 
 <p><strong>前提条件 :</strong> ファイル共有ストレージを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。また使用するファイル共有ストレージ環境構築用スタックのバージョンが異なる場合も、チュートリアル内の画面ショットが異なる場合があります。</p>
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。<br />
+また使用するファイル共有ストレージ環境構築用 <strong>スタック</strong> のバージョンが異なる場合も、画面ショットが異なる場合があります。</p>
 
 <hr />
-<h1 id="0-ファイル共有ストレージ環境構築用スタックの概要">0. ファイル共有ストレージ環境構築用スタックの概要</h1>
+<h1 id="1-ファイル共有ストレージ環境構築">1. ファイル共有ストレージ環境構築</h1>
 
-<p>本チュートリアルで使用するファイル共有ストレージ環境構築用スタックは、構築を大きく2つのステップに分けて実行しており、前半はTerraformを使用したOCIレベルのリソース構築フェーズで、後半はTerraformから起動されるAnsibleによるOSレベルのカスタマイズフェーズです。</p>
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、ファイル共有ストレージ環境構築用 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用し、ファイル共有ストレージ環境を構築します。</p>
+
+<p>ファイル共有ストレージ環境構築用 <strong>スタック</strong> は、構築を大きく2つのステップに分けて実行しており、前半は <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> を使用したOCIレベルのリソース構築フェーズで、後半は <strong>Terraform</strong> から起動される <strong>Ansible</strong> によるOSレベルのカスタマイズフェーズです。</p>
 
 <p>具体的には、以下のような処理が行われます。</p>
 
-<p>[TerraformによるOCIリソース構築フェーズ]</p>
+<p>[ <strong>Terraform</strong> によるOCIリソース構築フェーズ]</p>
 
 <ul>
-  <li>VCNと関連するネットワークリソース構築</li>
+  <li><strong>仮想クラウド・ネットワーク</strong> と関連するネットワークリソース構築</li>
   <li>Bastionノードインスタンス構築</li>
   <li>NFSサーバインスタンス構築</li>
   <li>NFSクライアントインスタンス構築</li>
-  <li>ブロック・ボリューム構築</li>
-  <li>Ansible関連ソフトウェアインストール</li>
+  <li><strong>ブロック・ボリューム</strong> 構築</li>
+  <li><strong>Ansible</strong> 関連ソフトウェアインストール</li>
 </ul>
 
-<p>[AnsibleによるOSレベルカスタマイズフェーズ]</p>
+<p>[ <strong>Ansible</strong> によるOSレベルカスタマイズフェーズ]</p>
 
 <ul>
   <li>firewalld停止</li>
   <li>SELinux無効化</li>
-  <li>ブロック・ボリューム領域ファイルシステム構築</li>
-  <li>/etc/hostsファイル生成</li>
+  <li><strong>ブロック・ボリューム</strong> 領域ファイルシステム構築</li>
+  <li><strong>/etc/hosts</strong> ファイル生成</li>
   <li>NFSサーバのセカンダリVNIC設定</li>
   <li>NFSファイル共有環境構築</li>
 </ul>
 
-<hr />
-<h1 id="1-スタックの作成">1. スタックの作成</h1>
+<p>またこの <strong>スタック</strong> は、 <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に作成する <strong>スタック</strong> からファイル共有ストレージ環境を作成するため、これを許可する <strong>IAMポリシー</strong> が必要です。<br />
+よって本章では、以下の手順でファイル共有ストレージ環境を作成します。</p>
 
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無料で利用可能なファイル共有ストレージ環境構築用 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を元に、前述のファイル共有ストレージ環境を構築するためのスタックを作成します。</p>
+<ul>
+  <li><strong>IAMポリシー</strong> 作成</li>
+  <li><strong>スタック</strong> の作成</li>
+  <li><strong>スタック</strong> の計画</li>
+  <li><strong>スタック</strong> の適用</li>
+</ul>
+
+<h2 id="1-1-iamポリシー作成">1-1. IAMポリシー作成</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に作成する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> からファイル共有ストレージ環境を作成するための <strong>IAMポリシー</strong> を作成します。</p>
 
 <ol>
   <li>
-    <p>以下マーケットプレイスのファイル共有ストレージ環境構築用スタックページにアクセスします。</p>
-
-    <p><a href="https://cloud.oracle.com/marketplace/application/82147253/">https://cloud.oracle.com/marketplace/application/82147253</a></p>
+    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
   </li>
   <li>
+    <p>表示される以下 <strong>xxxxコンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。<br />
+この際、 <strong>コンパートメント</strong> プルダウンメニューがファイル共有ストレージ環境を作成する <strong>コンパートメント</strong> と異なる場合は、これを修正します。</p>
+
+    <p><img src="console_page01.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p>表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+    <ul>
+      <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
+      <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
+      <li><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文<br />
+ （ <strong>手動エディタの表示</strong> ボタンをクリックして表示）（※1）</li>
+    </ul>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> allow service compute_management to use tag-namespace <span class="k">in </span>compartment compartment_name
+ allow service compute_management to manage compute-management-family <span class="k">in </span>compartment compartment_name
+ allow service compute_management to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>compartment compartment_name
+ allow group group_name to manage all-resources <span class="k">in </span>compartment compartment_name
+</code></pre></div>    </div>
+    <p>※1）<strong>コンパートメント</strong> 名と4行目の <strong>グループ</strong> 名は、自身のものに置き換えます。</p>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<h2 id="1-2-スタックの作成">1-2. スタックの作成</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレイス</a></strong> から無料で利用可能なファイル共有ストレージ環境構築用 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を元に、前述のファイル共有ストレージ環境を構築するための <strong>スタック</strong> を作成します。</p>
+
+<ol>
+  <li>
+    <p>以下マーケットプレイスのファイル共有ストレージ環境構築用 <strong>スタック</strong> ページにアクセスします。</p>
+
+    <p><a href="https://cloud.oracle.com/marketplace/application/82147253/">https://cloud.oracle.com/marketplace/application/82147253</a></p>
+
     <p>OCIコンソールへのログイン画面が表示された場合（まだログインしていない場合）、ログインを完了します。</p>
   </li>
   <li>
-    <p>表示される以下画面の右上で、スタックをデプロイするリージョンを選択し、 <strong>使用許諾</strong> チェックボックスをチェックし、 <strong>スタックの起動</strong> ボタンをクリックします。</p>
+    <p>表示される以下画面の右上で、 <strong>スタック</strong> をデプロイする <strong>リージョン</strong> を選択し、 <strong>オラクル社標準の条件および規制を確認した上でこれに同意します。</strong> チェックボックスをチェックし、 <strong>スタックの起動</strong> ボタンをクリックします。</p>
 
     <p><img src="market_place.png" alt="画面ショット" /></p>
   </li>
   <li>表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力・確認し、下部の <strong>次</strong> ボタンをクリックします。
     <ul>
-      <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
-      <li><strong>説明 :</strong> スタックに付与する説明（任意）</li>
-      <li><strong>コンパートメントに作成 :</strong> スタックを作成するコンパートメント(*4)</li>
+      <li><strong>名前 :</strong> <strong>スタック</strong> に付与する名前（任意）</li>
+      <li><strong>説明 :</strong> <strong>スタック</strong> に付与する説明（任意）</li>
+      <li><strong>コンパートメントに作成 :</strong> <strong>スタック</strong> を作成する <strong>コンパートメント</strong> (※2)</li>
     </ul>
 
-    <p>*4) OCIコンソールで最後に使用していたコンパートメントが引き継がれるため、意図したコンパートメントでない場合は、ファイル共有ストレージ環境構築用スタックページにアクセスする前に、予め所望のコンパートメントを選択しておきます。</p>
+    <p>※2）OCIコンソールで最後に使用していた <strong>コンパートメント</strong> が引き継がれるため、意図した <strong>コンパートメント</strong> でない場合は、ファイル共有ストレージ環境構築用 <strong>スタック</strong> ページにアクセスする前に、予め所望の <strong>コンパートメント</strong> を選択しておきます。</p>
 
     <p><img src="stack_page01.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+    <p>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
-    <p>5.1 <strong>General Deployment Configuration</strong> フィールド</p>
+    <p>4.1 <strong>General Deployment Configuration</strong> フィールド</p>
     <ul>
-      <li><strong>SSH Public Key :</strong> Bastionにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
+      <li><strong>SSH Public Key :</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
       <li><strong>Availability Domain :</strong> ファイル共有ストレージ環境をデプロイするAD</li>
     </ul>
 
     <p><img src="stack_page02.png" alt="画面ショット" /></p>
 
-    <p>5.2 <strong>NFS Server Instance Configuration</strong> フィールド</p>
+    <p>4.2 <strong>NFS Server Instance Configuration</strong> フィールド</p>
     <ul>
-      <li><strong>NFS Storage Server Compute Shape :</strong> BM.Optimized3.36</li>
+      <li><strong>NFS Storage Server Compute Shape :</strong> <strong>BM.Optimized3.36</strong></li>
     </ul>
 
     <p><img src="stack_page03.png" alt="画面ショット" /></p>
 
-    <p>5.3 <strong>NFS Storage Configuration</strong> フィールド</p>
+    <p>4.3 <strong>NFS Storage Configuration</strong> フィールド</p>
     <ul>
       <li><strong>XFS-1: Build file system using either Higher/Balanced/Lower Cost Perfomrance Block Volumes :</strong> チェック</li>
       <li><strong>Block Volume Storage Performance tier :</strong> Balanced</li>
       <li><strong>Number of block volumes :</strong> 15</li>
-      <li><strong>Block volume size :</strong> (*5)</li>
+      <li><strong>Block volume size :</strong> (※3)</li>
     </ul>
 
-    <p>*5) NFSディスク領域の総容量を本チュートリアルで使用する15 TBより増やす場合は、必要な総容量を15で割った値をこのフィールドに指定します。</p>
+    <p>※3） NFSディスク領域の総容量を本チュートリアルで使用する15 TBより増やす場合は、必要な総容量を15で割った値をこのフィールドに指定します。</p>
 
     <p><img src="stack_page04.png" alt="画面ショット" /></p>
 
-    <p>5.4 <strong>NFS Client Instance Configuration - Optional</strong> フィールド</p>
+    <p>4.4 <strong>NFS Client Instance Configuration - Optional</strong> フィールド</p>
     <ul>
       <li><strong>Create Compute Nodes :</strong> チェック</li>
       <li><strong>Number of clients :</strong> 4</li>
@@ -533,22 +583,21 @@
 
     <p><img src="stack_page06.png" alt="画面ショット" /></p>
 
-    <p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時にスタックの適用が開始され、ファイル共有ストレージ環境のデプロイが始まりますが、このチュートリアルではスタックの計画を実行してから適用を行います。</p>
+    <p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時に <strong>スタック</strong> の適用が開始され、ファイル共有ストレージ環境のデプロイが始まりますが、このチュートリアルでは <strong>スタック</strong> の計画を実行してから適用を行います。</p>
   </li>
 </ol>
 
-<p>これで、以下画面のとおりファイル共有ストレージ環境構築用スタックが作成されました。</p>
+<p>これで、以下画面のとおりファイル共有ストレージ環境構築用 <strong>スタック</strong> が作成されました。</p>
 
 <p><img src="stack_page07.png" alt="画面ショット" /></p>
 
-<hr />
-<h1 id="2-スタックの計画">2. スタックの計画</h1>
+<h2 id="1-3-スタックの計画">1-3. スタックの計画</h2>
 
-<p>本章は、完成したリソース・マネージャのスタックを計画し、どのようなリソースがデプロイされるか確認します。</p>
+<p>本章は、完成したリソース・マネージャの <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を計画し、どのようなリソースがデプロイされるか確認します。</p>
 
 <ol>
   <li>
-    <p>作成したスタックの以下 <strong>スタックの詳細</strong> 画面で、 <strong>計画</strong> ボタンをクリックします。</p>
+    <p>作成した <strong>スタック</strong> の以下 <strong>スタックの詳細</strong> 画面で、 <strong>計画</strong> ボタンをクリックします。</p>
 
     <p><img src="stack_page08.png" alt="画面ショット" /></p>
   </li>
@@ -558,7 +607,7 @@
     <p><img src="stack_page09.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> → <strong>成功</strong> と遷移すれば、スタックの計画が終了しています。</p>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> → <strong>成功</strong> と遷移すれば、 <strong>スタック</strong> の計画が終了しています。</p>
 
     <p><img src="stack_page10.png" alt="画面ショット" /></p>
 
@@ -568,10 +617,9 @@
   </li>
 </ol>
 
-<hr />
-<h1 id="3-スタックの適用">3. スタックの適用</h1>
+<h2 id="1-4-スタックの適用">1-4. スタックの適用</h2>
 
-<p>本章は、計画で作成されるリソースに問題が無いことを確認したスタックに対し、適用を行いファイル共有ストレージ環境をデプロイします。</p>
+<p>本章は、計画で作成されるリソースに問題が無いことを確認した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> に対し、適用を行いファイル共有ストレージ環境をデプロイします。</p>
 
 <ol>
   <li>
@@ -585,7 +633,7 @@
     <p><img src="stack_page13.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、スタックの適用が実施されています。</p>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の適用が実施されています。</p>
 
     <p><img src="stack_page14.png" alt="画面ショット" /></p>
 
@@ -600,57 +648,53 @@
 </ol>
 
 <hr />
-<h1 id="4-bastionノードnfsサーバnfsクライアントの確認">4. Bastionノード・NFSサーバ・NFSクライアントの確認</h1>
+<h1 id="2-ファイル共有ストレージ環境確認">2. ファイル共有ストレージ環境確認</h1>
 
-<p>本章は、デプロイされたBastionノード、NFSサーバ、及びNFSクライアントにログインし、環境を確認します。</p>
+<h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>なお、このファイル共有ストレージ環境構築用スタックでデプロイした各インスタンスは、/etc/hostsファイルを使用して以下のホスト名でお互いを名前解決できるようになっています。</p>
+<p>本章は、デプロイされたBastionノード、NFSサーバ、及びNFSクライアントにログインし、ファイル共有ストレージ環境を確認します。</p>
+
+<p>なお、このファイル共有ストレージ環境構築用 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> でデプロイした各インスタンスは、 <strong>/etc/hosts</strong> を使用して以下のホスト名でお互いを名前解決できるようになっています。</p>
 
 <table>
   <thead>
     <tr>
-      <th>Bastionノード</th>
-      <th>NFSサーバ</th>
-      <th>NFSクライアント</th>
+      <th style="text-align: center">Bastionノード</th>
+      <th style="text-align: center">NFSサーバ</th>
+      <th style="text-align: center">NFSクライアント</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>bastion-1</td>
-      <td>nfs-server-1</td>
-      <td>client-[1-4]</td>
+      <td style="text-align: center">bastion-1</td>
+      <td style="text-align: center">nfs-server-1</td>
+      <td style="text-align: center">client-[1-4]</td>
     </tr>
   </tbody>
 </table>
 
-<ol>
-  <li>
-    <p>Bastionノードログイン</p>
+<h2 id="2-1-bastionノードログイン">2-1. Bastionノードログイン</h2>
 
-    <p>Bastionノードへのログインは、スタック適用時の以下 <strong>ログ</strong> フィールドの最後に表示されているIPアドレスを使用し、インターネットを介してopcユーザでSSHログインします。</p>
+<p>Bastionノードへのログインは、 <strong>スタック</strong> 適用時の以下 <strong>ログ</strong> フィールドの最後に表示されているIPアドレスを使用し、インターネットを介してopcユーザでSSHログインします。</p>
 
-    <p><img src="stack_page15.png" alt="画面ショット" /></p>
+<p><img src="stack_page15.png" alt="画面ショット" /></p>
 
-    <p>このSSH接続では、スタックに指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
+<p>このSSH接続では、 <strong>スタック</strong> に指定したSSH公開鍵に対応する秘密鍵を使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>NFSサーバログイン</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> path_to_ssh_secret_key opc@123.456.789.123
+</code></pre></div></div>
 
-    <p>NFSサーバは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードのopcユーザから以下のようにSSHログインします。</p>
+<h2 id="2-2-nfsサーバ確認">2-2. NFSサーバ確認</h2>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh nfs-server-1
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>NFSサーバファイルシステム確認</p>
+<p>NFSサーバは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードのopcユーザから以下のようにSSHログインします。</p>
 
-    <p>NFSサーバは、以下のようにボリューム・サイズ1 TBの15個のブロック・ボリュームがそれぞれ物理ボリュームとして存在し、これらが全て1個のボリュームグループ（vg_nfs_disk）に組み込まれています。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh nfs-server-1
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>pvdisplay | <span class="nb">grep</span> <span class="nt">-A3</span> <span class="s2">"Physical volume"</span>
-  <span class="nt">---</span> Physical volume <span class="nt">---</span>
+<p>次に、以下コマンドをNFSサーバのopcユーザで実行し、ボリューム・サイズ1 TBの15個の <strong>ブロック・ボリューム</strong> がそれぞれ物理ボリュームとして存在し、これらが全て1個のボリュームグループ（ <strong>vg_nfs_disk</strong> ）に組み込まれていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>pvdisplay | <span class="nb">grep</span> <span class="nt">-A3</span> <span class="s2">"Physical volume"</span>
+<span class="nt">---</span> Physical volume <span class="nt">---</span>
 PV Name               /dev/sdg
 VG Name               vg_nfs_disk
 PV Size               1000.00 GiB / not usable 4.00 MiB
@@ -724,87 +768,85 @@ PV Size               1000.00 GiB / not usable 4.00 MiB
 PV Name               /dev/sdj
 VG Name               vg_nfs_disk
 PV Size               1000.00 GiB / not usable 4.00 MiB
-</code></pre></div>    </div>
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p>また、以下のようにこのボリュームグループに論理ボリューム（disk）が作成されています。</p>
+<p>次に、以下コマンドをNFSサーバのopcユーザで実行し、先のボリュームグループに論理ボリューム（ <strong>disk</strong> ）が作成されていることを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>vgdisplay <span class="nt">-v</span> vg_nfs_disk | <span class="nb">grep</span> <span class="nt">-A2</span> <span class="s2">"Logical volume"</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>vgdisplay <span class="nt">-v</span> vg_nfs_disk | <span class="nb">grep</span> <span class="nt">-A2</span> <span class="s2">"Logical volume"</span>
 <span class="nt">---</span> Logical volume <span class="nt">---</span>
 LV Path                /dev/vg_nfs_disk/disk
 LV Name                disk
-</code></pre></div>    </div>
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p>また、以下のようにこの論理ボリュームがXFSファイルシステムとして/mnt/nfsshareにマウントされ、その容量が15 TBであることがわかります。</p>
+<p>次に、以下コマンドをNFSサーバのopcユーザで実行し、先の論理ボリュームがXFSファイルシステムとして <strong>/mnt/nfsshare</strong> にマウントされ、その容量が15 TBであることを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">grep</span> /dev/vg_nfs_disk/disk /etc/fstab
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep</span> /dev/vg_nfs_disk/disk /etc/fstab
 /dev/vg_nfs_disk/disk  /mnt/nfsshare   xfs     defaults,_netdev,nofail,noatime,inode64,uquota,prjquota        0 2
-<span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/nfsshare
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/nfsshare
 Filesystem                    Size  Used Avail Use% Mounted on
 /dev/mapper/vg_nfs_disk-disk   15T   34M   15T   1% /mnt/nfsshare
-</code></pre></div>    </div>
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p>また、以下のように/mnt/nfsshare/exportsディレクトリがこのスタックでデプロイした3個のサブネットに対してNFSエクスポートされていることがわかります。</p>
+<p>次に、以下コマンドをNFSサーバのopcユーザで実行し、 <strong>/mnt/nfsshare/exports</strong> ディレクトリがこの <strong>スタック</strong> でデプロイした3個のサブネットに対してNFSエクスポートされていることを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>exportfs
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>exportfs
 /mnt/nfsshare/exports
-      10.0.3.0/255.255.255.0
+        10.0.3.0/255.255.255.0
 /mnt/nfsshare/exports
-      10.0.0.0/255.255.255.0
+        10.0.0.0/255.255.255.0
 /mnt/nfsshare/exports
-      10.0.6.0/255.255.255.0
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>NFSサーバサービス起動設定</p>
+        10.0.6.0/255.255.255.0
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p>デプロイ直後のNFSサーバは、OS再起動時にNFSディスク領域の論理ボリュームとNFSファイルサービスをアクティブ化しないように設定されています。<br />
-そのため、OS再起動を行った場合以下のコマンドでサービスを開始します。</p>
+<p>デプロイ直後のNFSサーバは、OS再起動時にNFSディスク領域の論理ボリュームとNFSファイルサービスをアクティブ化しないように設定されています。<br />
+そのため、OS再起動を行った場合は、以下コマンドをNFSサーバのopcユーザで実行し、NFSファイルサービスを開始します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>lvchange <span class="nt">-ay</span> /dev/vg_nfs_disk/disk
-<span class="o">&gt;</span> <span class="nb">sudo </span>systemctl start nfs
-</code></pre></div>    </div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>lvchange <span class="nt">-ay</span> /dev/vg_nfs_disk/disk
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl start nfs
+</code></pre></div></div>
 
-    <p>OS起動時に自動的にこれらをアクティブ化するには、以下のように/etc/lvm/lvm.confファイルを修正しsystemdのNFSサービス起動設定を変更します。</p>
+<p>OS起動時に自動的にこれらをアクティブ化するには、以下のように <strong>/etc/lvm/lvm.conf</strong> を修正しsystemdのNFSサービス起動設定を変更します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>diff /etc/lvm/lvm.conf_sv /etc/lvm/lvm.conf
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>diff /etc/lvm/lvm.conf_sv /etc/lvm/lvm.conf
 1298c1298
 &lt; auto_activation_volume_list <span class="o">=</span> <span class="o">[]</span>
 <span class="nt">---</span>
 <span class="o">&gt;</span> <span class="c">#auto_activation_volume_list = []</span>
-<span class="o">&gt;</span> <span class="nb">sudo </span>systemctl <span class="nb">enable </span>nfs
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>NFSクライアントログイン</p>
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable </span>nfs
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p>NFSクライアントは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードのopcユーザから以下のようにSSHログインします。</p>
+<h2 id="2-5-nfsクライアント確認">2-5. NFSクライアント確認</h2>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> ssh client-1
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>NFSクライアントファイルシステム確認</p>
+<p>NFSクライアントは、プライベートサブネットに接続されており、インターネット経由ログインすることが出来ないため、Bastionノードのopcユーザから以下のようにSSHログインします。</p>
 
-    <p>NFSクライアントは、以下のようにNFSサーバのエクスポートする/mnt/nfsshare/exports領域を、NFSバージョン3とNFSバージョン4でそれぞれ/mnt/nfsと/mnt/nfsv4にマウントしています。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh client-1
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">grep </span>nfsshare /etc/fstab
+<p>次に、以下コマンドをNFSクライアントのopcユーザで実行し、NFSサーバのエクスポートする <strong>/mnt/nfsshare/exports</strong> 領域を、NFSバージョン3とNFSバージョン4でそれぞれ <strong>/mnt/nfs</strong> と <strong>/mnt/nfsv4</strong> にマウントしていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep </span>nfsshare /etc/fstab
 10.0.6.87:/mnt/nfsshare/exports /mnt/nfs nfs <span class="nv">vers</span><span class="o">=</span>3,defaults,noatime,nodiratime,bg,timeo<span class="o">=</span>100,ac,actimeo<span class="o">=</span>120,nocto,rsize<span class="o">=</span>1048576,wsize<span class="o">=</span>1048576,nolock,local_lock<span class="o">=</span>none,proto<span class="o">=</span>tcp,sec<span class="o">=</span>sys,_netdev 0 0
 10.0.6.87:/mnt/nfsshare/exports /mnt/nfsv4 nfs <span class="nv">vers</span><span class="o">=</span>4,defaults,noatime,nodiratime,bg,timeo<span class="o">=</span>100,ac,actimeo<span class="o">=</span>120,nocto,rsize<span class="o">=</span>1048576,wsize<span class="o">=</span>1048576,nolock,local_lock<span class="o">=</span>none,proto<span class="o">=</span>tcp,sec<span class="o">=</span>sys,_netdev 0 0
-<span class="o">&gt;</span> <span class="nb">df</span> <span class="nt">-h</span> /mnt/nfs /mnt/nfsv4
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/nfs /mnt/nfsv4
 Filesystem                       Size  Used Avail Use% Mounted on
 10.0.6.94:/mnt/nfsshare/exports   15T   33M   15T   1% /mnt/nfs
 10.0.6.94:/mnt/nfsshare/exports   15T   33M   15T   1% /mnt/nfsv4
-</code></pre></div>    </div>
-    <p>このNFSファイルシステム構成は、パスによるNFSサーバ領域アクセスに使用するNFSプロトコルバージョンの切り替えを可能にしています。</p>
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p>この/etc/fstabのエントリをコピーすることで、同一VCN内のインスタンスからNFSサーバ領域をマウントすることが出来ます。</p>
-  </li>
-</ol>
+<p>このNFSファイルシステム構成は、NFSサーバ領域にアクセスする際使用するNFSプロトコルバージョンを、使用するパスで切り替えることを可能にしています。</p>
+
+<p>この <strong>/etc/fstab</strong> のエントリをコピーすることで、同一 <strong>仮想クラウド・ネットワーク</strong> 内のインスタンスからNFSサーバ領域をマウントすることが出来ます。</p>
 
 <hr />
-<h1 id="5-ファイルシステムベンチマーク">5. ファイルシステムベンチマーク</h1>
+<h1 id="3-ファイルシステムベンチマーク">3. ファイルシステムベンチマーク</h1>
 
-<h2 id="5-0-ファイルシステムベンチマーク概要">5-0. ファイルシステムベンチマーク概要</h2>
+<h2 id="3-0-ファイルシステムベンチマーク概要">3-0. ファイルシステムベンチマーク概要</h2>
 
 <p>本章は、ファイルシステムベンチマークツールである <strong>IOR</strong> と <strong>mdtest</strong> をNFSクライアントからNFSファイルシステム領域に対して実行し、その性能を検証します。</p>
 
@@ -826,89 +868,89 @@ Filesystem                       Size  Used Avail Use% Mounted on
 <table>
   <thead>
     <tr>
-      <th>Test</th>
-      <th style="text-align: right">Result (*6)</th>
+      <th style="text-align: center">Test</th>
+      <th style="text-align: right">Result (※3)</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>IOR write</td>
+      <td style="text-align: center">IOR write</td>
       <td style="text-align: right">3,720  MiB/s</td>
     </tr>
     <tr>
-      <td>IOR read</td>
+      <td style="text-align: center">IOR read</td>
       <td style="text-align: right">4,938 MiB/s</td>
     </tr>
     <tr>
-      <td>mdtest create</td>
+      <td style="text-align: center">mdtest create</td>
       <td style="text-align: right">3,796</td>
     </tr>
     <tr>
-      <td>mdtest stat</td>
+      <td style="text-align: center">mdtest stat</td>
       <td style="text-align: right">23,860</td>
     </tr>
     <tr>
-      <td>mdtest delete</td>
+      <td style="text-align: center">mdtest delete</td>
       <td style="text-align: right">3,818</td>
     </tr>
   </tbody>
 </table>
 
-<p>*6) 3回実行した平均値です。</p>
+<p>※3）3回実行した平均値です。</p>
 
-<h2 id="5-1-openmpiインストール">5-1. OpenMPIインストール</h2>
+<h2 id="3-1-openmpiインストール">3-1. OpenMPIインストール</h2>
 
 <p>本章は、OpenMPIをインストールします。</p>
 
 <p>以下コマンドをBastionノードのopcユーザで実行し、全NFSクライアントにOpenMPIをインストールします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo yum -y install openmpi3 openmpi3-devel"</span><span class="p">;</span> <span class="k">done</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo yum -y install openmpi3 openmpi3-devel"</span><span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
-<h2 id="5-2-sshのpath設定にopenmpiツール群格納ディレクトリを追加">5-2. SSHのPATH設定にOpenMPIツール群格納ディレクトリを追加</h2>
+<h2 id="3-2-sshのpath設定にopenmpiツール群格納ディレクトリを追加">3-2. SSHのPATH設定にOpenMPIツール群格納ディレクトリを追加</h2>
 
 <p>本章は、SSHのPATH設定にOpenMPIツール群格納ディレクトリを追加後、OpenMPIの稼働確認を行います。</p>
 
 <p>以下コマンドをBastionノードのopcユーザで実行し、全NFSクライアントのopcユーザのSSHのPATH設定にOpenMPIツール群格納ディレクトリ”/usr/lib64/openmpi3/bin”を追加します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo sed -i 's/#PermitUserEnvironment no/PermitUserEnvironment yes/g' /etc/ssh/sshd_config"</span><span class="p">;</span> <span class="k">done</span>
-<span class="o">&gt;</span> <span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo systemctl restart sshd"</span><span class="p">;</span> <span class="k">done</span>
-<span class="o">&gt;</span> <span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"echo </span><span class="se">\"</span><span class="s2">PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/opc/.local/bin:/home/opc/bin:/usr/lib64/openmpi3/bin</span><span class="se">\"</span><span class="s2"> &gt; ~/.ssh/environment"</span><span class="p">;</span> <span class="k">done</span>
-
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo sed -i 's/#PermitUserEnvironment no/PermitUserEnvironment yes/g' /etc/ssh/sshd_config"</span><span class="p">;</span> <span class="k">done</span>
+<span class="nv">$ </span><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"sudo systemctl restart sshd"</span><span class="p">;</span> <span class="k">done</span>
+<span class="nv">$ </span><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 4<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">hname</span><span class="o">=</span><span class="s2">"client-"</span><span class="nv">$i</span><span class="p">;</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">"echo </span><span class="se">\"</span><span class="s2">PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/opc/.local/bin:/home/opc/bin:/usr/lib64/openmpi3/bin</span><span class="se">\"</span><span class="s2"> &gt; ~/.ssh/environment"</span><span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
 <p>次に、NFSクライアントclient-1にopcユーザでSSHログインし、以下のように全てのNFSクライアントのイニシャルホスト名を含むファイルをNFSファイルシステム以下に作成し、これを使用してOpenMPIの稼働確認を行います。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">pwd</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span>
 /mnt/nfs/io500
-<span class="o">&gt;</span> <span class="nb">cat</span> ./hostlist.txt 
+<span class="nv">$ </span><span class="nb">cat</span> ./hostlist.txt 
 client-1
 client-2
 client-3
 client-4
-<span class="o">&gt;</span> module load mpi/openmpi3-x86_64
-<span class="o">&gt;</span> mpirun <span class="nt">-n</span> 4 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> hostlist.txt /bin/hostname
+<span class="nv">$ </span>module load mpi/openmpi3-x86_64
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 4 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> hostlist.txt /bin/hostname
 client-1
 client-3
 client-4
 client-2
+<span class="err">$</span>
 </code></pre></div></div>
 
-<h2 id="5-3-io500インストール">5-3. IO500インストール</h2>
+<h2 id="3-3-io500インストール">3-3. IO500インストール</h2>
 
 <p>本章は、IO500をインストールします。</p>
 
 <p>以下コマンドをNFSクライアントclient-1のopcユーザで実行し、IO500をNFSファイルシステム以下にインストールします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> git autoconf automake
-<span class="o">&gt;</span> <span class="nb">pwd</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> git autoconf automake
+<span class="nv">$ </span><span class="nb">pwd</span>
 /mnt/nfs/io500
-<span class="o">&gt;</span> git clone https://github.com/IO500/io500.git <span class="nt">-b</span> io500-isc20
-<span class="o">&gt;</span> <span class="nb">cd </span>io500
-<span class="o">&gt;</span> ./prepare.sh
+<span class="nv">$ </span>git clone https://github.com/IO500/io500.git <span class="nt">-b</span> io500-isc20
+<span class="nv">$ </span><span class="nb">cd </span>io500
+<span class="nv">$ </span>./prepare.sh
 </code></pre></div></div>
 
-<h2 id="5-4-ファイルシステムベンチマーク実行">5-4. ファイルシステムベンチマーク実行</h2>
+<h2 id="3-4-ファイルシステムベンチマーク実行">3-4. ファイルシステムベンチマーク実行</h2>
 
 <p>本章は、ファイルシステムベンチマークを実行します。</p>
 
@@ -970,15 +1012,15 @@ client-2
 <p>次に、以下コマンドをNFSクライアントclient-1のopcユーザで実行し、スクリプトの出力から性能値を確認します。<br />
 この実行に要する時間は、一時間半程度です。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">pwd</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span>
 /mnt/nfs/io500
-<span class="o">&gt;</span> ./io500_easy.sh
+<span class="nv">$ </span>./io500_easy.sh
 </code></pre></div></div>
 
 <hr />
-<h1 id="6-スタックの破棄">6. スタックの破棄</h1>
+<h1 id="4-スタックの破棄">4. スタックの破棄</h1>
 
-<p>本章は、スタックを破棄することで、構築したファイル共有ストレージ環境を削除します。</p>
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を破棄することで、構築したファイル共有ストレージ環境を削除します。</p>
 
 <p>以下の手順は、本チュートリアルで作成したOCI上のリソースをすべて削除するため、 <strong>ブロック・ボリューム上に作成したNFSサーバの共有ストレージ領域に格納されているデータが全て消失</strong> します。</p>
 
@@ -994,7 +1036,7 @@ client-2
     <p><img src="stack_page17.png" alt="画面ショット" /></p>
   </li>
   <li>
-    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、スタックの破棄が実施されています。</p>
+    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の破棄が実施されています。</p>
 
     <p><img src="stack_page18.png" alt="画面ショット" /></p>
 
@@ -1020,7 +1062,7 @@ client-2
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-22T14:51:27+09:00">July 22, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-22T16:55:51+09:00">July 22, 2024</time></p>
 
       </footer>
 

@@ -1056,7 +1056,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/architecture_diagram.png"
       },{
         "title": "ブロック・ボリュームでNFSサーバを構築する",
-        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）のブロック・ボリュームは、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。 同一可用性ドメイン内の異なるフォルト・ドメインに複数のレプリカを持ち高い可用性を実現 ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現 また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ BM.Optimized3.36 は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続のブロック・ボリュームアクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。 OCIは、NFSのマネージドサービスであるファイル・ストレージも提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけてブロック・ボリュームとベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、ファイル・ストレージよりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。 ファイル・ストレージとブロック・ボリュームNFSサーバの比較詳細は、 パフォーマンス関連Tips集 の コストパフォーマンスの良いファイル共有ストレージ構築方法 を参照ください。 このチュートリアルは、 マーケットプレイス から無料で利用可能なファイル共有ストレージ環境を構築するための スタック を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を リソース・マネージャ から自動構築、構築したNFSファイルシステム性能をIORとmdtestで検証します。   利用する OCIサービス 構成 用途   NFSディスク領域 ブロック・ボリューム 1 TB Balanced x 15 ファイル共有ストレージ領域   NFSサーバ ベアメタルインスタンス BM.Optimized3.36 x 1 NFSサーバ   NFSクライアント VMインスタンス VM.Standard2.24...","categories": [],
+        "excerpt":"0. 概要 Oracle Cloud Infrastructure（以降OCIと記載）の ブロック・ボリューム は、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。 同一 可用性ドメイン 内の異なる フォルト・ドメイン に複数のレプリカを持ち高い可用性を実現 ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現 また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ BM.Optimized3.36 は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の ブロック・ボリューム アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。 OCIは、NFSのマネージドサービスである ファイル・ストレージ も提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけて ブロック・ボリューム とベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、 ファイル・ストレージ よりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。 ファイル・ストレージ とブロック・ボリュームNFSサーバの比較詳細は、 OCI HPCテクニカルTips集 の コストパフォーマンスの良いファイル共有ストレージ構築方法 を参照してください。 以上を踏まえて本チュートリアルは、 マーケットプレイス から無料で利用可能なファイル共有ストレージ環境を構築するための スタック を利用し、以下構成の典型的なNFSのファイル共有ストレージ環境を リソース・マネージャ から自動構築、構築したNFSファイルシステム性能をIORとmdtestで検証します。   利用するサービス 構成 用途 ストレージ ブロック・ボリューム 1...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-nfs-server/",
         "teaser": "/ocitutorials/hpc/spinup-nfs-server/architecture_diagram.png"
@@ -1103,7 +1103,13 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/run-imb/",
         "teaser": null
       },{
-        "title": "NCCL Tests実行方法",
+        "title": "NCCL Tests実行方法（BM.GPU.H100.8版）",
+        "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU.H100.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、 Docker Community Edition と NVIDIA Container Toolkit...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-nccltests-h100/",
+        "teaser": null
+      },{
+        "title": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）",
         "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、 Docker Community Edition と NVIDIA Container Toolkit...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-nccltests/",
@@ -1278,7 +1284,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/tech-knowhow/install-openfoam/architecture_diagram.png"
       },{
         "title": "Slurmによるリソース管理・ジョブ管理システム運用Tips",
-        "excerpt":"0. 概要 本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を Slurm で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。 Prolog/Epilog セットアップ方法 1. Prolog/Epilogセットアップ方法 1-0. 概要 本章は、ジョブ実行の前後で Slurm が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境にセットアップする方法を解説します。 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。 Prolog 以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。 #!/bin/bash log_dir=/var/log/slurm/clean_memory.log /bin/date &gt;&gt; $log_dir /bin/echo \"Before\" &gt;&gt; $log_dir /bin/free -h &gt;&gt; $log_dir /bin/sync; /bin/echo 3 &gt; /proc/sys/vm/drop_caches /bin/echo &gt;&gt; $log_dir /bin/echo \"After\" &gt;&gt; $log_dir /bin/free...","categories": [],
+        "excerpt":"0. 概要 本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を Slurm で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。 Prolog/Epilog セットアップ方法 1. Prolog/Epilogセットアップ方法 1-0. 概要 本Tipsは、ジョブ実行の前後で Slurm が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境にセットアップする方法を解説します。 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。 Prolog 以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。 #!/bin/bash log_file=/var/log/slurm/clean_memory.log /bin/date &gt;&gt; $log_file /bin/echo \"Before\" &gt;&gt; $log_file /bin/free -h &gt;&gt; $log_file /bin/sync; /bin/echo 3 &gt; /proc/sys/vm/drop_caches /bin/echo &gt;&gt; $log_file /bin/echo \"After\" &gt;&gt; $log_file /bin/free...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/slurm-tips/",
         "teaser": null
