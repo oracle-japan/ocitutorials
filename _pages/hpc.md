@@ -202,7 +202,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 | **HPL**                 | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-hpl-e5/)**       |
 | **STREAM**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-stream-e5/)** |
 | **Intel MPI Benchmarks** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-imb/)**                                                                            |
-| **NCCL Tests**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           | **[BM.GPU.A100-v2.8/BM.GPU4.8](/ocitutorials/hpc/benchmark/run-nccltests/)**                                                            |
+| **NCCL Tests**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           | **[BM.GPU.A100-v2.8/BM.GPU4.8](/ocitutorials/hpc/benchmark/run-nccltests/)**<br>**[BM.GPU.H100.8](/ocitutorials/hpc/benchmark/run-nccltests-h100/)**                                                 |
 
 ## 2-2. パフォーマンス関連Tips集
 
@@ -407,7 +407,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 - **[Slurmによるリソース管理・ジョブ管理システム運用Tips](/ocitutorials/hpc/tech-knowhow/slurm-tips/)**
 
     オープンソースの **[Slurm](https://slurm.schedmd.com/)** は、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。  
-    本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を **Slurm** で効果的に運用するためのテクニカルなTipsを解説します。
+    本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を **Slurm** で効果的に運用するための様々なテクニカルTipsをご紹介します。
 
 ## 3-6. その他
 

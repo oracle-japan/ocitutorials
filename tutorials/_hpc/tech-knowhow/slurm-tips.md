@@ -1,6 +1,6 @@
 ---
 title: "Slurmによるリソース管理・ジョブ管理システム運用Tips"
-excerpt: "オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するためのテクニカルなTipsを解説します。"
+excerpt: "オープンソースのSlurmは、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。"
 order: "355"
 layout: single
 header:
@@ -20,7 +20,7 @@ header:
 
 ## 1-0. 概要
 
-本章は、ジョブ実行の前後で **Slurm** が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **Slurm** 環境にセットアップする方法を解説します。
+本Tipsは、ジョブ実行の前後で **Slurm** が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **Slurm** 環境にセットアップする方法を解説します。
 
 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。
 
@@ -30,17 +30,17 @@ header:
 ```sh
 #!/bin/bash
 
-log_dir=/var/log/slurm/clean_memory.log
+log_file=/var/log/slurm/clean_memory.log
 
-/bin/date >> $log_dir
-/bin/echo "Before" >> $log_dir
-/bin/free -h >> $log_dir
+/bin/date >> $log_file
+/bin/echo "Before" >> $log_file
+/bin/free -h >> $log_file
 
 /bin/sync; /bin/echo 3 > /proc/sys/vm/drop_caches
 
-/bin/echo >> $log_dir
-/bin/echo "After" >> $log_dir
-/bin/free -h >> $log_dir
+/bin/echo >> $log_file
+/bin/echo "After" >> $log_file
+/bin/free -h >> $log_file
 ```
 
 - Epilog  
@@ -53,7 +53,7 @@ log_dir=/var/log/slurm/clean_memory.log
 
 ## 1-1. セットアップ手順
 
-1. Slurmサーバと全ての計算ノードの **/opt/slurm/etc/slurm.conf** に以下の記述を追加します。
+Slurmサーバと全ての計算ノードの **/opt/slurm/etc/slurm.conf** に以下の記述を追加します。
 
 ```sh
 PrologFlags=Alloc
@@ -61,14 +61,14 @@ Prolog=/opt/slurm/etc/scripts/prolog.d/*
 Epilog=/opt/slurm/etc/scripts/epilog.d/*
 ```
 
-2. 全ての計算ノードのopcユーザで以下コマンドを実行し、Prolog/Epilogのスクリプトを格納するディレクトリを作成します。
+次に、全ての計算ノードのopcユーザで以下コマンドを実行し、Prolog/Epilogのスクリプトを格納するディレクトリを作成します。
 
 ```sh
 $ sudo mkdir -p /opt/slurm/etc/scripts/prolog.d
 $ sudo mkdir -p /opt/slurm/etc/scripts/epilog.d
 ```
 
-3. 全ての計算ノードで、 **[1-0. 概要](#1-0-概要)** に記載のProlog/Epilog用スクリプトをそれぞれ **10_clean_memory.sh** と **10_clean_nvme.sh** として先に作成したディレクトリに格納し、以下のようにスクリプトファイルのオーナーとパーミッションを設定します。
+次に、全ての計算ノードで、 **[1-0. 概要](#1-0-概要)** に記載のProlog/Epilog用スクリプトをそれぞれ **10_clean_memory.sh** と **10_clean_nvme.sh** として先に作成したディレクトリに格納し、以下のようにスクリプトファイルのオーナーとパーミッションを設定します。
 
 ```sh
 $ ls -l /opt/slurm/etc/scripts/*/
@@ -82,7 +82,9 @@ total 4
 $
 ```
 
-4. Slurmサーバのopcユーザで以下のコマンドを実行し、 **slurm.conf** ファイルの変更を反映、その結果を確認します。
+なお、このディレクトリに2桁数字の接頭辞を持つスクリプトを複数格納することで、その数字の順番にスクリプトを実行することが出来ます。
+
+次に、Slurmサーバのopcユーザで以下のコマンドを実行し、 **slurm.conf** ファイルの変更を反映、その結果を確認します。
 
 ```sh
 $ sudo su - slurm -c "scontrol reconfigure"
@@ -95,13 +97,13 @@ $
 
 ## 1-2. 稼働確認
 
-1. 以下コマンドを全ての計算ノードのopcユーザで実行し、テスト用のファイルを **/mnt/localdisk** ディレクトリに作成します。
+以下コマンドを全ての計算ノードのopcユーザで実行し、テスト用のファイルを **/mnt/localdisk** ディレクトリに作成します。
 
 ```sh
 $ sudo touch /mnt/localdisk/test.txt
 ```
 
-2. 以下コマンドをSlurmクライアントのopcユーザで実行し、テストジョブを実行します。
+次に、以下コマンドをSlurmクライアントのopcユーザで実行し、テストジョブを実行します。
 
 ```sh
 $ srun -n 2 -N 2 hostname
@@ -110,7 +112,7 @@ inst-yyyyy-x9-ol89
 $
 ```
 
-3. 以下コマンドを全ての計算ノードのopcユーザで実行し、先に作成したテスト用のファイルが削除されていること、Linuxカーネルのキャッシュを開放した際のログが記録されていることで、想定通りにProlog/Epilogのスクリプトが実行されたことを確認します。
+次に、以下コマンドを全ての計算ノードのopcユーザで実行し、先に作成したテスト用のファイルが削除されていること、Linuxカーネルのキャッシュを開放した際のログが記録されていることで、想定通りにProlog/Epilogのスクリプトが実行されたことを確認します。
 
 ```sh
 $ ls /mnt/localdisk/
@@ -126,3 +128,4 @@ After
 Mem:          503Gi       6.3Gi       496Gi        29Mi       353Mi       494Gi
 Swap:         7.6Gi          0B       7.6Gi
 $
+```

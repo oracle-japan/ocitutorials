@@ -1,6 +1,6 @@
 ---
-title: "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）"
-excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
+title: "NCCL Tests実行方法（BM.GPU.H100.8版）"
+excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU.H100.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
 order: "2140"
 layout: single
 header:
@@ -13,7 +13,7 @@ header:
 
 本ドキュメントで解説する **[NCCL Tests](https://github.com/nvidia/nccl-tests)** の実行は、GPUクラスタ上に **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** で構築されたコンテナ実行環境で **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** とコンテナ上でビルドする **NCCL Tests** を使用します。
 
-本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
+本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ **[BM.GPU.H100.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
 
 以上より、本ドキュメントで解説する **NCCL Tests** の実行は、以下の手順を経て行います。
 
@@ -21,9 +21,9 @@ header:
 - **NCCL Tests** ビルド
 - **NCCL Tests** 実行
 
-本ドキュメントでは、以下の環境で **NCCL Tests** の **All-Reduce** 通信性能をコンテナ環境から計測し、10 GiBのメッセージサイズで **219 GB/s** の帯域（busbw）性能が出ています。
+本ドキュメントでは、以下の環境で **NCCL Tests** の **All-Reduce** 通信性能をコンテナ環境から計測し、16 GiBのメッセージサイズで **465 GB/s** の帯域（busbw）性能が出ています。
 
-- シェイプ ： **BM.GPU4.8**
+- シェイプ ： **BM.GPU.H100.8**
 - OS ： **Oracle Linux** 8.9ベースのGPU **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
 - コンテナランタイム ： **Docker Community Edition** 26.1.3
 - **NVIDIA Container Toolkit** ： 1.15.0
@@ -31,7 +31,7 @@ header:
 - **NCCL** ： 2.21.5（※2）
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 4.1.7a1（※2）
 - ノード数 ： 2
-- GPU数 ： **NVIDIA A100 40GB** x 16
+- GPU数 ： **NVIDIA H100 80GB** x 16
 - ノード間接続 ： **クラスタ・ネットワーク**
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.7** です。  
@@ -109,12 +109,12 @@ $ mkdir /run/sshd && /usr/sbin/sshd -p 22222
 ```
 
 次に、以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、スレーブノードにSSH接続できることを確認します。  
-ここで、スレーブノード（inst-yyyyy-gpu4-ol89）のホスト名は、自身の環境に合わせて修正します。
+ここで、スレーブノード（inst-yyyyy-h100-ol89）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-$ ssh -p 22222 -oStrictHostKeyChecking=accept-new inst-yyyyy-gpu4-ol89 hostname
-Warning: Permanently added '[inst-yyyyy-gpu4-ol89]:22222' (ED25519) to the list of known hosts.
-inst-yyyyy-gpu4-ol89
+$ ssh -p 22222 -oStrictHostKeyChecking=accept-new inst-yyyyy-h100-ol89 hostname
+Warning: Permanently added '[inst-yyyyy-h100-ol89]:22222' (ED25519) to the list of known hosts.
+inst-yyyyy-h100-ol89
 $
 ```
 
@@ -136,36 +136,40 @@ $ cd nccl-tests && make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda 
 本章は、 **NCCL Tests** を実行します。
 
 以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** の **All-Reduce** 通信性能を計測します。  
-ここで、 **-H** オプションに指定するマスターノード（inst-xxxxx-gpu4-ol89）とスレーブノード（inst-yyyyy-gpu4-ol89）のホスト名は、自身の環境に合わせて修正します。
+ここで、 **-H** オプションに指定するマスターノード（inst-xxxxx-h100-ol89）とスレーブノード（inst-yyyyy-h100-ol89）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-$ mpirun --allow-run-as-root -np 2 -H inst-xxxxx-gpu4-ol89:1,inst-yyyyy-gpu4-ol89:1 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=eth0 -x NCCL_IB_HCA="=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8
-# nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+$ mpirun --allow-run-as-root -n 16 -H inst-xxxxx-h100-ol89:8,inst-yyyyy-h100-ol89:8 -mca plm_rsh_args "-p 22222" --mca btl_tcp_if_exclude docker0,lo --bind-to numa -x NCCL_CUMEM_ENABLE=0 -x NCCL_IB_SPLIT_DATA_ON_QPS=0 -x NCCL_IB_GID_INDEX=3 -x NCCL_IB_TC=41 -x NCCL_NET_PLUGIN=none -x NCCL_IGNORE_CPU_AFFINITY=1 -x NCCL_SOCKET_IFNAME=eth0 -x UCX_NET_DEVICES=eth0 -x NCCL_IB_HCA="=mlx5_0,mlx5_1,mlx5_3,mlx5_4,mlx5_5,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 1G -e 16G -f 2
+# nThread 1 nGpus 1 minBytes 1073741824 maxBytes 17179869184 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
-#  Rank  0 Group  0 Pid    417 on inst-xxxxx-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid    418 on inst-xxxxx-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid    419 on inst-xxxxx-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid    420 on inst-xxxxx-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid    421 on inst-xxxxx-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid    422 on inst-xxxxx-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid    425 on inst-xxxxx-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid    429 on inst-xxxxx-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
-#  Rank  8 Group  0 Pid    371 on inst-yyyyy-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  9 Group  0 Pid    372 on inst-yyyyy-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank 10 Group  0 Pid    373 on inst-yyyyy-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank 11 Group  0 Pid    374 on inst-yyyyy-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank 12 Group  0 Pid    375 on inst-yyyyy-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank 13 Group  0 Pid    376 on inst-yyyyy-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank 14 Group  0 Pid    377 on inst-yyyyy-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank 15 Group  0 Pid    380 on inst-yyyyy-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  0 Group  0 Pid   1274 on instance-20240722-0952 device  0 [0x0f] NVIDIA H100 80GB HBM3
+#  Rank  1 Group  0 Pid   1275 on instance-20240722-0952 device  1 [0x2d] NVIDIA H100 80GB HBM3
+#  Rank  2 Group  0 Pid   1276 on instance-20240722-0952 device  2 [0x44] NVIDIA H100 80GB HBM3
+#  Rank  3 Group  0 Pid   1277 on instance-20240722-0952 device  3 [0x5b] NVIDIA H100 80GB HBM3
+#  Rank  4 Group  0 Pid   1278 on instance-20240722-0952 device  4 [0x89] NVIDIA H100 80GB HBM3
+#  Rank  5 Group  0 Pid   1279 on instance-20240722-0952 device  5 [0xa8] NVIDIA H100 80GB HBM3
+#  Rank  6 Group  0 Pid   1280 on instance-20240722-0952 device  6 [0xc0] NVIDIA H100 80GB HBM3
+#  Rank  7 Group  0 Pid   1281 on instance-20240722-0952 device  7 [0xd8] NVIDIA H100 80GB HBM3
+#  Rank  8 Group  0 Pid   2315 on instance-20240722-0955 device  0 [0x0f] NVIDIA H100 80GB HBM3
+#  Rank  9 Group  0 Pid   2316 on instance-20240722-0955 device  1 [0x2d] NVIDIA H100 80GB HBM3
+#  Rank 10 Group  0 Pid   2317 on instance-20240722-0955 device  2 [0x44] NVIDIA H100 80GB HBM3
+#  Rank 11 Group  0 Pid   2318 on instance-20240722-0955 device  3 [0x5b] NVIDIA H100 80GB HBM3
+#  Rank 12 Group  0 Pid   2319 on instance-20240722-0955 device  4 [0x89] NVIDIA H100 80GB HBM3
+#  Rank 13 Group  0 Pid   2320 on instance-20240722-0955 device  5 [0xa8] NVIDIA H100 80GB HBM3
+#  Rank 14 Group  0 Pid   2321 on instance-20240722-0955 device  6 [0xc0] NVIDIA H100 80GB HBM3
+#  Rank 15 Group  0 Pid   2322 on instance-20240722-0955 device  7 [0xd8] NVIDIA H100 80GB HBM3
 #
 #                                                              out-of-place                       in-place          
 #       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
 #        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
- 10737418240    2684354560     float     sum      -1    90330  118.87  222.88      0    91945  116.78  218.96      0
+  1073741824     268435456     float     sum      -1   4511.2  238.02  446.28      0   4520.9  237.50  445.32      0
+  2147483648     536870912     float     sum      -1   8825.9  243.31  456.22      0   8827.8  243.26  456.12      0
+  4294967296    1073741824     float     sum      -1    17437  246.31  461.83      0    17446  246.18  461.60      0
+  8589934592    2147483648     float     sum      -1    34719  247.41  463.90      0    34720  247.41  463.89      0
+ 17179869184    4294967296     float     sum      -1    69338  247.77  464.57      0    69305  247.89  464.79      0
 # Out of bounds values : 0 OK
-# Avg bus bandwidth    : 220.921 
+# Avg bus bandwidth    : 458.452 
 #
 $
 ```
