@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-22T20:28:37+09:00">
+  <meta property="article:published_time" content="2024-07-23T18:30:05+09:00">
 
 
 
@@ -263,7 +263,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="106 : Oracle Database 23aiとLangChainでRAGを構成してみよう">
     <meta itemprop="description" content="LangChainを使ったRAG構成をステップバイステップでご紹介します。">
-    <meta itemprop="datePublished" content="2024-07-22T20:28:37+09:00">
+    <meta itemprop="datePublished" content="2024-07-23T18:30:05+09:00">
     
 
     <div class="page__inner-wrap">
@@ -274,7 +274,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#ragの構成とシナリオ">RAGの構成とシナリオ</a><ul><li><a href="#ragの構成">RAGの構成</a></li><li><a href="#ドキュメントデータ">ドキュメントデータ</a></li><li><a href="#シナリオ">シナリオ</a></li></ul></li><li><a href="#ragの実装">RAGの実装</a><ul><li><a href="#1-1-oracle-database-23ai-freeをインストールする">1-1. Oracle Database 23ai Freeをインストールする</a></li><li><a href="#1-2-base-database-service環境でのセットアップ">1-2. Base Database Service環境でのセットアップ</a></li><li><a href="#2-python環境のセットアップ">2. Python環境のセットアップ</a></li><li><a href="#3-ドキュメントをベクトルデータベースにロードする">3. ドキュメントをベクトルデータベースにロードする</a></li><li><a href="#4-ベクトルデータベースに作成されたデータを確認してみるオプション">4. ベクトルデータベースに作成されたデータを確認してみる(オプション)</a></li><li><a href="#5-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン">5. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン)</a></li><li><a href="#6-非rag構成と比較してみる">6. 非RAG構成と比較してみる。</a></li><li><a href="#番外編ragを実装するcohere社-command-r-plusのパターン">番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン)</a></li></ul></li><li><a href="#さいごに">さいごに</a></li></ul>
+              <ul class="toc__menu"><li><a href="#ragの構成とシナリオ">RAGの構成とシナリオ</a><ul><li><a href="#ragの構成">RAGの構成</a></li><li><a href="#ドキュメントデータ">ドキュメントデータ</a></li><li><a href="#シナリオ">シナリオ</a></li></ul></li><li><a href="#ragの実装">RAGの実装</a><ul><li><a href="#1-1-oracle-database-23ai-free環境でのセットアップ">1-1. Oracle Database 23ai Free環境でのセットアップ</a></li><li><a href="#1-2-base-database-service環境でのセットアップ">1-2. Base Database Service環境でのセットアップ</a></li><li><a href="#1-3-autonomous-database-23ai-free環境でのセットアップ">1-3. Autonomous Database 23ai Free環境でのセットアップ</a></li><li><a href="#2-python環境のセットアップ">2. Python環境のセットアップ</a></li><li><a href="#3-ドキュメントをベクトルデータベースにロードする">3. ドキュメントをベクトルデータベースにロードする</a></li><li><a href="#4-ベクトルデータベースに作成されたデータを確認してみるオプション">4. ベクトルデータベースに作成されたデータを確認してみる(オプション)</a></li><li><a href="#5-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン">5. RAGを実装する(Generative AI ServiceのCommand-R-Plusのパターン)</a></li><li><a href="#6-非rag構成と比較してみる">6. 非RAG構成と比較してみる。</a></li><li><a href="#番外編ragを実装するcohere社-command-r-plusのパターン">番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン)</a></li></ul></li><li><a href="#さいごに">さいごに</a></li></ul>
             </nav>
           </aside>
         
@@ -289,7 +289,7 @@
 <ul>
   <li>テキスト生成モデル：OCI Generative AI(Command R Plus)</li>
   <li>ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(embed-multilingual-v3.0)</li>
-  <li>ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service</li>
+  <li>ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service、Autonomous Database(Always Free)</li>
 </ul>
 
 <p>※LangChainって何？という方は<a href="https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain">こちらの記事</a> をご参照ください。</p>
@@ -329,9 +329,8 @@
 
 <h1 id="ragの実装">RAGの実装</h1>
 
-<h2 id="1-1-oracle-database-23ai-freeをインストールする">1-1. Oracle Database 23ai Freeをインストールする</h2>
-
-<p><a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">こちら</a>を参照してOracle Database 23ai Freeをインストールします。</p>
+<h2 id="1-1-oracle-database-23ai-free環境でのセットアップ">1-1. Oracle Database 23ai Free環境でのセットアップ</h2>
+<p>Oracle Database 23ai Free環境でチュートリアルを行う場合は、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a>を参考に、Oracle Database 23ai Freeをインストールします。既に作成済みの場合はスキップして下さい。</p>
 
 <p>SYSでDBにログインし、本チュートリアルで使用するDBユーザーを作成(ユーザー名docuser, パスワードdocuser)、念のためどこからでも接続できるようにしておきます。</p>
 
@@ -362,7 +361,7 @@
 <p><br /></p>
 
 <h2 id="1-2-base-database-service環境でのセットアップ">1-2. Base Database Service環境でのセットアップ</h2>
-<p>まずは<code class="language-plaintext highlighter-rouge">SYS</code>ユーザーでPDBに接続できることを確認します。</p>
+<p>Base Database Service環境でチュートリアルを行う場合は、まず、<code class="language-plaintext highlighter-rouge">SYS</code>ユーザーでPDBに接続できることを確認します。</p>
 
 <p>OCIコンソールのBaseDBの画面から、データベース名をクリックします。</p>
 
@@ -424,8 +423,66 @@
 
 <p><br /></p>
 
+<h2 id="1-3-autonomous-database-23ai-free環境でのセットアップ">1-3. Autonomous Database 23ai Free環境でのセットアップ</h2>
+<p>Autonomous Database 23ai Free環境でチュートリアルを行う場合は、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/" target="_blank">104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</a>の<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor2" target="_blank">2-1. ADB23ai Always Free編-ファイルの格納</a>を参考に、Database Actionsからユーザーの作成、権限の付与を行います。</p>
+
+<p>DOCUSERに追加で権限を付与します。
+ADMINとしてDatabase ActionsのSQLのツールにアクセスし、DOCUSERに以下の権限を付与します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">BEGIN</span>
+    <span class="n">DBMS_NETWORK_ACL_ADMIN</span><span class="p">.</span><span class="n">APPEND_HOST_ACE</span><span class="p">(</span>
+        <span class="k">host</span> <span class="o">=&gt;</span> <span class="s1">'*'</span><span class="p">,</span>
+        <span class="n">ace</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">ace_type</span><span class="p">(</span>
+            <span class="n">privilege_list</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">name_list</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">),</span>
+            <span class="n">principal_name</span> <span class="o">=&gt;</span> <span class="s1">'docuser'</span><span class="p">,</span>
+            <span class="n">principal_type</span> <span class="o">=&gt;</span> <span class="n">xs_acl</span><span class="p">.</span><span class="n">ptype_db</span>
+        <span class="p">)</span>
+    <span class="p">);</span>
+    <span class="k">END</span><span class="p">;</span>
+    <span class="o">/</span>
+</code></pre></div></div>
+
+<p>本ハンズオンではPython環境を用意する必要があります。ADBではComputeやBaseDBのようにOSログインできないため、別のコンピュート・インスタンスやノートブック環境を用意してください。
+Pythonの実行環境を持っていない場合は<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/" target="_blank">204: 開発者向け仮想マシンのセットアップ方法</a>の<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor1" target="_blank">仮想マシンの作成</a>、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor2" target="_blank">仮想マシンへのアクセス</a>を参考にコンピュート・インスタンスを作成します。</p>
+
+<p>作成した仮想マシンのIPアドレスはメモしておきます。
+<img src="14.png" alt="image.png" /></p>
+
+<p>OCIコンソールのAutonomous Databaseの画面で、<strong>Autonomous Database情報&gt;ネットワーク&gt;アクセス制御リスト</strong>を編集します。
+<img src="13.png" alt="image.png" /></p>
+
+<p>以下の通りに入力します。</p>
+<ul>
+  <li><strong>IP表記法タイプ</strong>：IPアドレス</li>
+  <li><strong>値</strong>：先程メモをした仮想マシンのIPアドレス、自分のIPアドレス(Database Actionsアクセス用)</li>
+</ul>
+
+<p><img src="15.png" alt="image.png" /></p>
+
+<p><strong>Autonomous Database情報&gt;ネットワーク&gt;相互TLS(mTLS)</strong>を編集します。
+<img src="16.png" alt="image.png" /></p>
+
+<p><strong>相互TLS認証が必要</strong>をオフにし、保存します。
+<img src="17.png" alt="image.png" /></p>
+
+<p>再度Autonomous Databaseの画面に戻り、<strong>データベース接続</strong>をクリックします。
+<img src="11.png" alt="image.png" /></p>
+
+<p><strong>TLS認証</strong>をTLSに変更し、<strong>接続文字列</strong>をメモしておきます。後程Python環境からAutonomous Databaseへ接続する際に使用します。
+<img src="12.png" alt="image.png" /></p>
+
+<p>これでTLS接続でAutonomous Databaseに接続する準備が出来ました。</p>
+
+<blockquote>
+  <p><strong>【補足】</strong>
+TLS接続については<a href="/ocitutorials/adb/adb108-walletless" target="_blank">108: 接続文字列を利用して接続してみよう</a>をご参照下さい。</p>
+</blockquote>
+
+<p><br /></p>
+
 <h2 id="2-python環境のセットアップ">2. Python環境のセットアップ</h2>
 <p>2024/7現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。</p>
+
+<p>Autonomous Database環境の場合は、先程作成したコンピュート・インスタンスにログインします。</p>
 
 <p><code class="language-plaintext highlighter-rouge">root</code>にスイッチし、以下でPython3.11のインストールを行います。</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su -
@@ -542,7 +599,9 @@ ipython
 
 <p>以降が、このチャンクテキストをベクトルデータベースにロードしつつ、埋め込みモデルを使って、ベクトル化を行う処理です。</p>
 
-<p>まずは、作成済のdocuserでfreepdb1に接続します。</p>
+<p>まずは、作成済のdocuserでデータベースに接続します。</p>
+
+<p>Autonomous Database 23ai Free、若しくはBaseDBを使用している場合は、先程取得した接続文字列をdsnに貼り付けます。</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">oracledb</span>
 
@@ -551,11 +610,16 @@ ipython
 <span class="n">password</span> <span class="o">=</span> <span class="s">"docuser"</span>
 <span class="n">dsn</span> <span class="o">=</span> <span class="s">"localhost/freepdb1"</span>
 
-<span class="c1"># BaseDB版では以下をアンコメントアウトして実行します
+<span class="c1"># BaseDB版では以下をコメントアウトして実行します
 # oracledb.init_oracle_client()
 # username = "docuser"
 # password = "WelCome123#123#"
 #dsn = "&lt;PDBの接続文字列&gt;" (例) basedb23ai.xxxx.vcn1.oraclevcn.com:1521/pdb1.xxxx.vcn1.oraclevcn.com
+</span>
+<span class="c1"># Autonomous Database 23ai Free版では以下をコメントアウトして実行します
+# username = "docuser"
+# password = "Welcome12345#"
+# dsn = "&lt;ADBの接続文字列&gt;" (例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
 </span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">)</span>
@@ -582,7 +646,13 @@ ipython
 <span class="p">)</span>
 </code></pre></div></div>
 
-<p><strong>注意</strong>: 以下のエラーが出る場合は、APIキーの設定ファイル~/.oci/configが作成されていません。<a href="https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a>を参照して、APIキーを事前に作成してください。</p>
+<p><strong>注意</strong>: 以下のエラーが出る場合は、APIキーの設定ファイル<code class="language-plaintext highlighter-rouge">~/.oci/config</code>が作成されていません。<a href="https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a>を参照して、APIキーを事前に作成してください。</p>
+
+<p>OCIコンソールからAPIキーの作成を行った場合は、<code class="language-plaintext highlighter-rouge">~/.oci</code>ディレクトリを作成し、<code class="language-plaintext highlighter-rouge">config</code>ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ValidationError: 1 validation error for OCIGenAIEmbeddings
+__root__
+  Could not authenticate with OCI client. Please check if ~/.oci/config exists. If INSTANCE_PRINCIPLE or RESOURCE_PRINCIPLE is used, Please check the specified auth_profile and auth_type are valid. (type=value_error)
+</code></pre></div></div>
 
 <p>LangChainのお決まりの関数であるfrom_documentsでベクトルデータベースにチャンクテキストをロードします。以下のように、ここまでの手順で定義済のオブジェクトを使って下記一つのコードでチャンクテキストをベクトル化しますが、ここでチャンクテキストとベクトルデータをロードする表を指定することになります。</p>
 
@@ -615,12 +685,18 @@ ipython
 
 <p>ロードされたベクトルデータを確認してみます。まずはdocuserでデータベースに接続します。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Oracle Database 23ai Free版</span>
-<span class="n">sqlplus</span> <span class="n">docuser</span><span class="o">/</span><span class="n">docuser</span><span class="o">@</span><span class="n">freepdb1</span>
+<ul>
+  <li><strong>Autonomous Databaseの場合</strong>：
+  Database ActionsのSQLにdocuserとしてログイン</li>
+  <li><strong>Oracle Database 23ai Free、若しくはBaseDBの場合</strong>：
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- Oracle Database 23ai Free版</span>
+  <span class="n">sqlplus</span> <span class="n">docuser</span><span class="o">/</span><span class="n">docuser</span><span class="o">@</span><span class="n">freepdb1</span>
 
-<span class="c1">-- BaseDB版</span>
-<span class="c1">-- sqlplus docuser/WelCome123#123#@接続文字列</span>
-</code></pre></div></div>
+  <span class="c1">-- BaseDB版</span>
+  <span class="c1">-- sqlplus docuser/WelCome123#123#@接続文字列</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
 
 <p>SQLPLUSの表示設定を変更します。</p>
 
@@ -936,7 +1012,7 @@ ipython
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-22T20:28:37+09:00">July 22, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-23T18:30:05+09:00">July 23, 2024</time></p>
 
       </footer>
 
