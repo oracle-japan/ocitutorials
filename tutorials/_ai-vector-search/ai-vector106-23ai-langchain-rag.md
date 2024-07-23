@@ -21,7 +21,7 @@ header:
 
 - テキスト生成モデル：OCI Generative AI(Command R Plus)
 - ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(embed-multilingual-v3.0)
-- ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service
+- ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service、Autonomous Database(Always Free)
 
 ※LangChainって何？という方は[こちらの記事](https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain) をご参照ください。
 
@@ -53,9 +53,8 @@ header:
 
 # RAGの実装
 
-## 1-1. Oracle Database 23ai Freeをインストールする
-
-[こちら](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/)を参照してOracle Database 23ai Freeをインストールします。
+## 1-1. Oracle Database 23ai Free環境でのセットアップ
+Oracle Database 23ai Free環境でチュートリアルを行う場合は、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/)を参考に、Oracle Database 23ai Freeをインストールします。既に作成済みの場合はスキップして下さい。
 
 SYSでDBにログインし、本チュートリアルで使用するDBユーザーを作成(ユーザー名docuser, パスワードdocuser)、念のためどこからでも接続できるようにしておきます。
 
@@ -89,7 +88,7 @@ sqlplus docuser/docuser@freepdb1
 <br>
 
 ## 1-2. Base Database Service環境でのセットアップ
-まずは`SYS`ユーザーでPDBに接続できることを確認します。
+Base Database Service環境でチュートリアルを行う場合は、まず、`SYS`ユーザーでPDBに接続できることを確認します。
 
 OCIコンソールのBaseDBの画面から、データベース名をクリックします。
 
@@ -156,8 +155,71 @@ exit
 
 <br>
 
+## 1-3. Autonomous Database 23ai Free環境でのセットアップ
+Autonomous Database 23ai Free環境でチュートリアルを行う場合は、[104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/){:target="_blank"}の[2-1. ADB23ai Always Free編-ファイルの格納](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor2){:target="_blank"}を参考に、Database Actionsからユーザーの作成、権限の付与を行います。
+
+DOCUSERに追加で権限を付与します。
+ADMINとしてDatabase ActionsのSQLのツールにアクセスし、DOCUSERに以下の権限を付与します。
+  ```sql
+  BEGIN
+    DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
+        host => '*',
+        ace => xs$ace_type(
+            privilege_list => xs$name_list('connect'),
+            principal_name => 'docuser',
+            principal_type => xs_acl.ptype_db
+        )
+    );
+    END;
+    /
+  ```
+
+
+本ハンズオンではPython環境を用意する必要があります。ADBではComputeやBaseDBのようにOSログインできないため、別のコンピュート・インスタンスやノートブック環境を用意してください。
+Pythonの実行環境を持っていない場合は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}の[仮想マシンの作成](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor1){:target="_blank"}、[仮想マシンへのアクセス](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor2){:target="_blank"}を参考にコンピュート・インスタンスを作成します。
+
+
+作成した仮想マシンのIPアドレスはメモしておきます。
+![image.png](14.png)
+
+
+OCIコンソールのAutonomous Databaseの画面で、**Autonomous Database情報>ネットワーク>アクセス制御リスト**を編集します。
+![image.png](13.png)
+
+
+以下の通りに入力します。
+- **IP表記法タイプ**：IPアドレス
+- **値**：先程メモをした仮想マシンのIPアドレス、自分のIPアドレス(Database Actionsアクセス用)
+
+![image.png](15.png)
+
+
+**Autonomous Database情報>ネットワーク>相互TLS(mTLS)**を編集します。
+![image.png](16.png)
+
+
+**相互TLS認証が必要**をオフにし、保存します。
+![image.png](17.png)
+
+
+再度Autonomous Databaseの画面に戻り、**データベース接続**をクリックします。
+![image.png](11.png)
+
+
+**TLS認証**をTLSに変更し、**接続文字列**をメモしておきます。後程Python環境からAutonomous Databaseへ接続する際に使用します。
+![image.png](12.png)
+
+これでTLS接続でAutonomous Databaseに接続する準備が出来ました。
+
+>**【補足】**
+>TLS接続については[108: 接続文字列を利用して接続してみよう](/ocitutorials/adb/adb108-walletless){:target="_blank"}をご参照下さい。
+
+<br>
+
 ## 2. Python環境のセットアップ
 2024/7現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。
+
+Autonomous Database環境の場合は、先程作成したコンピュート・インスタンスにログインします。
 
 `root`にスイッチし、以下でPython3.11のインストールを行います。
 ```sh
@@ -290,7 +352,9 @@ pd.DataFrame(contents)
 以降が、このチャンクテキストをベクトルデータベースにロードしつつ、埋め込みモデルを使って、ベクトル化を行う処理です。
 
 
-まずは、作成済のdocuserでfreepdb1に接続します。
+まずは、作成済のdocuserでデータベースに接続します。
+
+Autonomous Database 23ai Free、若しくはBaseDBを使用している場合は、先程取得した接続文字列をdsnに貼り付けます。
 
 ```python
 import oracledb
@@ -300,11 +364,16 @@ username = "docuser"
 password = "docuser"
 dsn = "localhost/freepdb1"
 
-# BaseDB版では以下をアンコメントアウトして実行します
+# BaseDB版では以下をコメントアウトして実行します
 # oracledb.init_oracle_client()
 # username = "docuser"
 # password = "WelCome123#123#"
 #dsn = "<PDBの接続文字列>" (例) basedb23ai.xxxx.vcn1.oraclevcn.com:1521/pdb1.xxxx.vcn1.oraclevcn.com
+
+# Autonomous Database 23ai Free版では以下をコメントアウトして実行します
+# username = "docuser"
+# password = "Welcome12345#"
+# dsn = "<ADBの接続文字列>" (例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
 
 try:
     connection = oracledb.connect(user=username, password=password, dsn=dsn)
@@ -333,7 +402,14 @@ embeddings = OCIGenAIEmbeddings(
 )
 ```
 
-**注意**: 以下のエラーが出る場合は、APIキーの設定ファイル~/.oci/configが作成されていません。[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照して、APIキーを事前に作成してください。
+**注意**: 以下のエラーが出る場合は、APIキーの設定ファイル`~/.oci/config`が作成されていません。[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照して、APIキーを事前に作成してください。
+
+OCIコンソールからAPIキーの作成を行った場合は、`~/.oci`ディレクトリを作成し、`config`ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。
+```
+ValidationError: 1 validation error for OCIGenAIEmbeddings
+__root__
+  Could not authenticate with OCI client. Please check if ~/.oci/config exists. If INSTANCE_PRINCIPLE or RESOURCE_PRINCIPLE is used, Please check the specified auth_profile and auth_type are valid. (type=value_error)
+```
 
 
 LangChainのお決まりの関数であるfrom_documentsでベクトルデータベースにチャンクテキストをロードします。以下のように、ここまでの手順で定義済のオブジェクトを使って下記一つのコードでチャンクテキストをベクトル化しますが、ここでチャンクテキストとベクトルデータをロードする表を指定することになります。
@@ -370,13 +446,16 @@ oraclevs.create_index(connection, vector_store_dot, params={"idx_name": "rocket"
 
 ロードされたベクトルデータを確認してみます。まずはdocuserでデータベースに接続します。
 
-```sql
--- Oracle Database 23ai Free版
-sqlplus docuser/docuser@freepdb1
+- **Autonomous Databaseの場合**：
+    Database ActionsのSQLにdocuserとしてログイン
+- **Oracle Database 23ai Free、若しくはBaseDBの場合**：
+    ```sql
+    -- Oracle Database 23ai Free版
+    sqlplus docuser/docuser@freepdb1
 
--- BaseDB版
--- sqlplus docuser/WelCome123#123#@接続文字列
-```
+    -- BaseDB版
+    -- sqlplus docuser/WelCome123#123#@接続文字列
+    ```
 
 SQLPLUSの表示設定を変更します。
 
