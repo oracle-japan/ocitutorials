@@ -507,6 +507,15 @@ Database Actionsの開発カテゴリのSQLのツールにて以下のように�
   grant execute on DBMS_CLOUD_AI to docuser;
   grant execute on DBMS_VECTOR to docuser;
   grant execute on DBMS_VECTOR_CHAIN to docuser;
+  
+  BEGIN
+    DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
+      host => '*',
+      ace => xs$ace_type(privilege_list => xs$name_list('connect'),
+                        principal_name => 'docuser',
+                        principal_type => xs_acl.ptype_db));
+  END;
+  /
   ```
 
   出力:
