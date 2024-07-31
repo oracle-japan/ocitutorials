@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-30T11:48:53+09:00">
+  <meta property="article:published_time" content="2024-07-31T18:08:45+09:00">
 
 
 
@@ -284,9 +284,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8版）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
@@ -363,7 +363,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-07-30T11:48:53+09:00">
+    <meta itemprop="datePublished" content="2024-07-31T18:08:45+09:00">
     
 
     <div class="page__inner-wrap">
@@ -374,7 +374,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a></li><li><a href="#2-openfoamインストール">2. OpenFOAMインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-インストール事前準備">2-1. インストール事前準備</a></li><li><a href="#2-2-paraviewインストール">2-2. ParaViewインストール</a></li><li><a href="#2-3-openfoamインストール">2-3. OpenFOAMインストール</a></li></ul></li><li><a href="#3-vnc接続環境構築">3. VNC接続環境構築</a></li><li><a href="#4-cfd解析フロー実行">4. CFD解析フロー実行</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-事前準備">4-1. 事前準備</a></li><li><a href="#4-2-プリ処理解析処理のインタラクティブ実行">4-2. プリ処理・解析処理のインタラクティブ実行</a><ul><li><a href="#4-2-0-概要">4-2-0. 概要</a></li><li><a href="#4-2-1-1コアを使用する非並列実行">4-2-1. 1コアを使用する非並列実行</a></li><li><a href="#4-2-2-1ノード36コアを使用するノード内並列実行">4-2-2. 1ノード36コアを使用するノード内並列実行</a></li><li><a href="#4-2-3-2ノード72コアを使用するノード間並列実行">4-2-3. 2ノード72コアを使用するノード間並列実行</a></li></ul></li><li><a href="#4-3-プリ処理解析処理のバッチ実行">4-3. プリ処理・解析処理のバッチ実行</a><ul><li><a href="#4-3-0-概要">4-3-0. 概要</a></li><li><a href="#4-31-バックステップ乱流シミュレーションのバッチ実行">4-3.1. バックステップ乱流シミュレーションのバッチ実行</a></li><li><a href="#4-32-オートバイ走行時乱流シミュレーションのバッチ実行">4-3.2. オートバイ走行時乱流シミュレーションのバッチ実行</a></li></ul></li><li><a href="#4-4-ポスト処理">4-4. ポスト処理</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a></li><li><a href="#2-openfoamインストール">2. OpenFOAMインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-インストール事前準備">2-1. インストール事前準備</a></li><li><a href="#2-2-paraviewインストール">2-2. ParaViewインストール</a></li><li><a href="#2-3-openfoamインストール">2-3. OpenFOAMインストール</a></li></ul></li><li><a href="#3-vnc接続環境構築">3. VNC接続環境構築</a></li><li><a href="#4-cfd解析フロー実行">4. CFD解析フロー実行</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-事前準備">4-1. 事前準備</a></li><li><a href="#4-2-プリ処理解析処理のインタラクティブ実行">4-2. プリ処理・解析処理のインタラクティブ実行</a><ul><li><a href="#4-2-0-概要">4-2-0. 概要</a></li><li><a href="#4-2-1-1コアを使用する非並列実行">4-2-1. 1コアを使用する非並列実行</a></li><li><a href="#4-2-2-1ノード32コアを使用するノード内並列実行">4-2-2. 1ノード32コアを使用するノード内並列実行</a></li><li><a href="#4-2-3-4ノード128コアを使用するノード間並列実行">4-2-3. 4ノード128コアを使用するノード間並列実行</a></li></ul></li><li><a href="#4-3-プリ処理解析処理のバッチ実行">4-3. プリ処理・解析処理のバッチ実行</a><ul><li><a href="#4-3-0-概要">4-3-0. 概要</a></li><li><a href="#4-31-バックステップ乱流シミュレーションのバッチ実行">4-3.1. バックステップ乱流シミュレーションのバッチ実行</a></li><li><a href="#4-32-オートバイ走行時乱流シミュレーションのバッチ実行">4-3.2. オートバイ走行時乱流シミュレーションのバッチ実行</a></li></ul></li><li><a href="#4-4-ポスト処理">4-4. ポスト処理</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -513,171 +513,152 @@ MPI言語規格に準拠するMPI実装</li>
   <li><strong>OpenFOAM</strong> と外部ツールのソースプログラムのダウンロード・展開</li>
 </ul>
 
-<ol>
-  <li>
-    <p>前提ソフトウェアの <strong>OpenMPI</strong> をインストール・セットアップします。<br />
+<p>前提ソフトウェアの <strong>OpenMPI</strong> をインストール・セットアップします。<br />
 この方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></strong> を参照してください。</p>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、前提rpmパッケージを提供するyumレポジトリを追加します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer_EPEL
-</code></pre></div>    </div>
+<p>次に、以下コマンドをopcユーザで実行し、前提rpmパッケージを提供するyumレポジトリを追加します。</p>
 
-    <p>なお、上記コマンド実行時に以下のメッセージが出力される場合、</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer_EPEL
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> This system is receiving updates from OSMS server.
- Error: No matching repo to modify: ol8_developer_EPEL.
-</code></pre></div>    </div>
+<p>なお、上記コマンド実行時に以下のメッセージが出力される場合、</p>
 
-    <p>OSのパッケージ管理が <strong><a href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html">OS管理サービス</a></strong> で行われているため、以下コマンドをopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。<br />
- ここで実施する <strong>OS管理サービス</strong> の解除は、10分程度の時間が経過すると自動的に <strong>OS管理サービス</strong> 管理に戻ります。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This system is receiving updates from OSMS server.
+Error: No matching repo to modify: ol8_developer_EPEL.
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>osms unregister
- <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer_EPEL
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、前提rpmパッケージをインストールします。</p>
+<p>OSのパッケージ管理が <strong><a href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html">OS管理サービス</a></strong> で行われているため、以下コマンドをopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。<br />
+ここで実施する <strong>OS管理サービス</strong> の解除は、10分程度の時間が経過すると自動的に <strong>OS管理サービス</strong> 管理に戻ります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel python36-devel
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> と外部ツールをダウンロード・展開します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>osms unregister
+<span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer_EPEL
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">mkdir</span> /opt/OpenFOAM <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /opt/OpenFOAM
- <span class="nv">$ </span>wget https://dl.openfoam.com/source/v2312/OpenFOAM-v2312.tgz
- <span class="nv">$ </span>wget https://dl.openfoam.com/source/v2312/ThirdParty-v2312.tgz
- <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./OpenFOAM-v2312.tgz
- <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./ThirdParty-v2312.tgz
- <span class="nv">$ </span><span class="nb">cd </span>ThirdParty-v2312/sources
- <span class="nv">$ </span>wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
- <span class="nv">$ </span>wget https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
- <span class="nv">$ </span>wget https://download.qt.io/archive/qt/5.12/5.12.11/single/qt-everywhere-src-5.12.11.tar.xz
- <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./metis-5.1.0.tar.gz
- <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./petsc-lite-3.19.2.tar.gz
- <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./qt-everywhere-src-5.12.11.tar.xz
- <span class="nv">$ </span><span class="nb">mv </span>qt-everywhere-src-5.12.11 qt-everywhere-opensource-src-5.12.11
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをrootユーザで実行し、 <strong>PETSc</strong> をインストールします。<br />
+<p>次に、以下コマンドをopcユーザで実行し、前提rpmパッケージをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel python36-devel
+</code></pre></div></div>
+
+<p>次に、以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> と外部ツールをダウンロード・展開します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> /opt/OpenFOAM <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /opt/OpenFOAM
+<span class="nv">$ </span>wget https://dl.openfoam.com/source/v2312/OpenFOAM-v2312.tgz
+<span class="nv">$ </span>wget https://dl.openfoam.com/source/v2312/ThirdParty-v2312.tgz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./OpenFOAM-v2312.tgz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./ThirdParty-v2312.tgz
+<span class="nv">$ </span><span class="nb">cd </span>ThirdParty-v2312/sources
+<span class="nv">$ </span>wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
+<span class="nv">$ </span>wget https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
+<span class="nv">$ </span>wget https://download.qt.io/archive/qt/5.12/5.12.11/single/qt-everywhere-src-5.12.11.tar.xz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./metis-5.1.0.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./petsc-lite-3.19.2.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./qt-everywhere-src-5.12.11.tar.xz
+<span class="nv">$ </span><span class="nb">mv </span>qt-everywhere-src-5.12.11 qt-everywhere-opensource-src-5.12.11
+</code></pre></div></div>
+
+<p>次に、以下コマンドをrootユーザで実行し、 <strong>PETSc</strong> をインストールします。<br />
 この際、以下コマンド出力で正しくインストールされたことを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/opt/openmpi-5.0.3/bin
- <span class="nv">$ </span><span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
- No completions <span class="k">for</span> /home/opc/OpenFOAM-v2312/platforms/linux64GccDPInt32Opt/bin
- <span class="o">[</span>ignore <span class="k">if </span>OpenFOAM is not yet compiled]
- <span class="nv">$ </span><span class="nb">cd</span> ..
- <span class="nv">$ </span>./makePETSC
-     :
-     :
-     :
- Installed: petsc-3.19.2   &lt;<span class="nt">---</span> この出力
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/opt/openmpi-5.0.3/bin
+<span class="nv">$ </span><span class="nb">source</span> /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
+No completions <span class="k">for</span> /home/opc/OpenFOAM-v2312/platforms/linux64GccDPInt32Opt/bin
+<span class="o">[</span>ignore <span class="k">if </span>OpenFOAM is not yet compiled]
+<span class="nv">$ </span><span class="nb">cd</span> ..
+<span class="nv">$ </span>./makePETSC
+    :
+    :
+    :
+Installed: petsc-3.19.2   &lt;<span class="nt">---</span> この出力
+<span class="err">$</span>
+</code></pre></div></div>
 
 <h2 id="2-2-paraviewインストール">2-2. ParaViewインストール</h2>
 
 <p>本章は、 <strong>ParaView</strong> をインストールします。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをrootユーザで実行し、 <strong>ParaView</strong> の前提ソフトウェアである <strong><a href="https://www.qt.io/">Qt</a></strong> をインストールします。<br />
+<p>以下コマンドをrootユーザで実行し、 <strong>ParaView</strong> の前提ソフトウェアである <strong><a href="https://www.qt.io/">Qt</a></strong> をインストールします。<br />
 この際、以下コマンド出力で正しくインストールされたことを確認します。<br />
 本手順は、8コアのVMインスタンスで15分程度を要します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>./makeQt 5.12.11
-     :
-     :
-     :
- Built: qt-5.12.11   &lt;<span class="nt">---</span> この出力
- Create/Edit files to ease later relocation of a QT installation
-     created qt.conf
- Adjust pkgconfig locations : /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11
-     lib/pkgconfig/<span class="k">*</span>.pc  <span class="o">(</span>edited 62<span class="o">)</span>
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをrootユーザで実行し、 <strong>ParaView</strong> をインストールします。<br />
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./makeQt 5.12.11
+    :
+    :
+    :
+Built: qt-5.12.11   &lt;<span class="nt">---</span> この出力
+Create/Edit files to ease later relocation of a QT installation
+    created qt.conf
+Adjust pkgconfig locations : /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11
+    lib/pkgconfig/<span class="k">*</span>.pc  <span class="o">(</span>edited 62<span class="o">)</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをrootユーザで実行し、 <strong>ParaView</strong> をインストールします。<br />
 この際、以下コマンド出力で正しくインストールされたことを確認します。<br />
 本手順は、8コアのVMインスタンスで20分程度を要します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>./makeParaView <span class="nt">-qt-5</span>.12.11 <span class="nt">-mpi</span> <span class="nt">-python3</span>
-     :
-     :
-     :
- Installation <span class="nb">complete </span><span class="k">for </span>paraview-5.11.2 with qt-5.12.11   &lt;<span class="nt">---</span> この出力
-     <span class="nv">ParaView_DIR</span><span class="o">=</span>/opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/ParaView-5.11.2
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./makeParaView <span class="nt">-qt-5</span>.12.11 <span class="nt">-mpi</span> <span class="nt">-python3</span>
+    :
+    :
+    :
+Installation <span class="nb">complete </span><span class="k">for </span>paraview-5.11.2 with qt-5.12.11   &lt;<span class="nt">---</span> この出力
+    <span class="nv">ParaView_DIR</span><span class="o">=</span>/opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/ParaView-5.11.2
 
- You may need to update the OpenFOAM environment by running:
-     wmRefresh
+You may need to update the OpenFOAM environment by running:
+    wmRefresh
 
- Your LD_LIBRARY_PATH may require adjustment to include the following:
-     /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11/lib
- <span class="o">====</span>
+Your LD_LIBRARY_PATH may require adjustment to include the following:
+    /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11/lib
+<span class="o">====</span>
 
- Done
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+Done
+<span class="err">$</span>
+</code></pre></div></div>
 
 <h2 id="2-3-openfoamインストール">2-3. OpenFOAMインストール</h2>
 
 <p>本章は、 <strong>OpenFOAM</strong> をインストールします。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> のインストール条件を満たしていることを確認します。</p>
+<p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> のインストール条件を満たしていることを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>foamSystemCheck
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>foamSystemCheck
 
- Checking basic system...
- <span class="nt">-------------------------------------------------------------------------------</span>
- Shell:       bash
- Host:        openfoam
- OS:          Linux version 5.15.0-205.149.5.1.el8uek.x86_64
+Checking basic system...
+<span class="nt">-------------------------------------------------------------------------------</span>
+Shell:       bash
+Host:        openfoam
+OS:          Linux version 5.15.0-205.149.5.1.el8uek.x86_64
 
- System check: PASS
- <span class="o">==================</span>
- Can <span class="k">continue </span>to OpenFOAM installation.
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> をインストールします。<br />
+System check: PASS
+<span class="o">==================</span>
+Can <span class="k">continue </span>to OpenFOAM installation.
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> をインストールします。<br />
 この際、最後に実行するコマンドの出力を注意深く確認し、 <strong><a href="#0-概要">0. 概要</a></strong> にリストアップされている外部ツールが <strong>OpenFOAM</strong> に組み込まれたことを確認します。なおこのコマンド出力は、カレントディレクトリにファイル名 <strong>log.linux64GccDPInt32Opt</strong> としても出力されます。<br />
 本手順は、8コアのVMインスタンスで45分程度を要します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">ParaView_DIR</span><span class="o">=</span><span class="nv">$WM_THIRD_PARTY_DIR</span>/platforms/linux64Gcc/ParaView-5.11.2
- <span class="nv">$ </span><span class="nb">export </span><span class="nv">Qt5_DIR</span><span class="o">=</span><span class="nv">$WM_THIRD_PARTY_DIR</span>/platforms/linux64Gcc/qt-5.12.11
- <span class="nv">$ </span><span class="nb">cd</span> /opt/OpenFOAM/OpenFOAM-v2312
- <span class="nv">$ </span>./Allwmake <span class="nt">-j</span> <span class="nt">-s</span> <span class="nt">-q</span> <span class="nt">-l</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> のインストールをテストします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">ParaView_DIR</span><span class="o">=</span><span class="nv">$WM_THIRD_PARTY_DIR</span>/platforms/linux64Gcc/ParaView-5.11.2
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">Qt5_DIR</span><span class="o">=</span><span class="nv">$WM_THIRD_PARTY_DIR</span>/platforms/linux64Gcc/qt-5.12.11
+<span class="nv">$ </span><span class="nb">cd</span> /opt/OpenFOAM/OpenFOAM-v2312
+<span class="nv">$ </span>./Allwmake <span class="nt">-j</span> <span class="nt">-s</span> <span class="nt">-q</span> <span class="nt">-l</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>foamInstallationTest
-     :
-     :
-     :
- Summary
- <span class="nt">-------------------------------------------------------------------------------</span>
- Base configuration ok.
- Critical systems ok.
+<p>次に、以下コマンドをrootユーザで実行し、 <strong>OpenFOAM</strong> のインストールをテストします。</p>
 
- Done
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>foamInstallationTest
+    :
+    :
+    :
+Summary
+<span class="nt">-------------------------------------------------------------------------------</span>
+Base configuration ok.
+Critical systems ok.
 
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+Done
+
+<span class="err">$</span>
+</code></pre></div></div>
 
 <hr />
 <h1 id="3-vnc接続環境構築">3. VNC接続環境構築</h1>
@@ -693,99 +674,92 @@ MPI言語規格に準拠するMPI実装</li>
 
 <p>本テクニカルTipsは、VCNサーバに <strong><a href="https://tigervnc.org/">TigerVNC</a></strong> 、VCNクライアントにWindowsで動作する <strong><a href="https://uvnc.com/">UltraVNC</a></strong> を使用します。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを有効化します。<br />
+<p>以下コマンドをopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを有効化します。<br />
 なお、最初のインストールコマンドは、15分程度を要します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf groupinstall <span class="nt">-y</span> <span class="s2">"Server with GUI"</span>
- <span class="nv">$ </span><span class="nb">sudo </span>systemctl set-default graphical
- <span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/^#WaylandEnable=false/WaylandEnable=false/g'</span> /etc/gdm/custom.conf
- <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、 <strong>TigerVNC</strong> をインストールします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf groupinstall <span class="nt">-y</span> <span class="s2">"Server with GUI"</span>
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl set-default graphical
+<span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/^#WaylandEnable=false/WaylandEnable=false/g'</span> /etc/gdm/custom.conf
+<span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> tigervnc-server tigervnc-server-module
-</code></pre></div>    </div>
+<p>次に、以下コマンドをopcユーザで実行し、 <strong>TigerVNC</strong> をインストールします。</p>
 
-    <p>次に、以下コマンドをopcユーザで実行し、 <strong>TigerVNC</strong> にユーザを登録します。<br />
- このユーザは、VNC接続時に使用するユーザであり、CFD解析ユーザでもあります。<br />
- ここでは、 <strong>usera</strong> を1番で登録しており、このユーザをOSのユーザとして予め登録しインターネット経由でSSHログインできるようにしておきます。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> tigervnc-server tigervnc-server-module
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">echo</span> :1<span class="o">=</span>usera | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/tigervnc/vncserver.users
-</code></pre></div>    </div>
+<p>次に、以下コマンドをopcユーザで実行し、 <strong>TigerVNC</strong> にユーザを登録します。<br />
+このユーザは、VNC接続時に使用するユーザであり、CFD解析ユーザでもあります。<br />
+ここでは、 <strong>usera</strong> を1番で登録しており、このユーザをOSのユーザとして予め登録しインターネット経由でSSHログインできるようにしておきます。</p>
 
-    <p>次に、以下コマンドをopcユーザで実行し、VNC接続時の解像度を設定します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> :1<span class="o">=</span>usera | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/tigervnc/vncserver.users
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">echo </span><span class="nv">geometry</span><span class="o">=</span>1280x1024 | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/tigervnc/vncserver-config-defaults
-</code></pre></div>    </div>
+<p>次に、以下コマンドをopcユーザで実行し、VNC接続時の解像度を設定します。</p>
 
-    <p>次に、 <strong>TigerVNC</strong> のsystemd設定ファイルを以下のように修正します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo </span><span class="nv">geometry</span><span class="o">=</span>1280x1024 | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/tigervnc/vncserver-config-defaults
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff /usr/lib/systemd/system/vncserver@.service_org /usr/lib/systemd/system/vncserver@.service
- 41a42
- <span class="o">&gt;</span> <span class="nv">Restart</span><span class="o">=</span>on-success
- <span class="err">$</span>
-</code></pre></div>    </div>
+<p>次に、 <strong>TigerVNC</strong> のsystemd設定ファイルを以下のように修正します。</p>
 
-    <p>次に、以下コマンドをopcユーザで実行し、 <strong>TigerVNC</strong> を起動します。<br />
- なお、systemdサービスを起動する際のサービス名に含まれる番号は、先に作成したVNC接続ユーザ登録時に指定した番号に一致させます。この番号をユーザ登録時の番号に合わせることで、複数のVNCユーザ向けのサービスを起動することが可能です。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff /usr/lib/systemd/system/vncserver@.service_org /usr/lib/systemd/system/vncserver@.service
+41a42
+<span class="o">&gt;</span> <span class="nv">Restart</span><span class="o">=</span>on-success
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
- <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> vncserver@:1.service
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートにインターネット経由でSSHポートフォワードセッションを確立、その後このユーザのVNC接続パスワードを設定します。<br />
+<p>次に、以下コマンドをopcユーザで実行し、 <strong>TigerVNC</strong> を起動します。<br />
+なお、systemdサービスを起動する際のサービス名に含まれる番号は、先に作成したVNC接続ユーザ登録時に指定した番号に一致させます。この番号をユーザ登録時の番号に合わせることで、複数のVNCユーザ向けのサービスを起動することが可能です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> vncserver@:1.service
+</code></pre></div></div>
+
+<p>次に、以下コマンドを実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートにインターネット経由でSSHポートフォワードセッションを確立、その後このユーザのVNC接続パスワードを設定します。<br />
 なおこのポート番号の1桁目は、先に登録したVNCユーザの番号に一致します。（例：2番のユーザ用ポート番号は、5902番です。）</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ssh <span class="nt">-L</span> 5901:localhost:5901 usera@xxx.yyy.zzz.www
- <span class="nv">$ </span>vncpasswd 
- Password:   &lt;<span class="nt">---</span> VNC接続に使用するパスワードを入力
- Verify:   &lt;<span class="nt">---</span> VNC接続に使用するパスワードを再入力
- Would you like to enter a view-only password <span class="o">(</span>y/n<span class="o">)</span>? n   &lt;<span class="nt">---</span> <span class="s2">"n"</span> を入力
- A view-only password is not used
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下のようにParaView操作端末でVCNクライアントを起動し、接続先に <strong>localhost:5901</strong> を指定して接続します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-L</span> 5901:localhost:5901 usera@xxx.yyy.zzz.www
+<span class="nv">$ </span>vncpasswd 
+Password:   &lt;<span class="nt">---</span> VNC接続に使用するパスワードを入力
+Verify:   &lt;<span class="nt">---</span> VNC接続に使用するパスワードを再入力
+Would you like to enter a view-only password <span class="o">(</span>y/n<span class="o">)</span>? n   &lt;<span class="nt">---</span> <span class="s2">"n"</span> を入力
+A view-only password is not used
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p><img src="ultravcn_page01.png" alt="画面ショット" /></p>
+<p>次に、以下のようにParaView操作端末でVCNクライアントを起動し、接続先に <strong>localhost:5901</strong> を指定して接続します。</p>
 
-    <p>次に、以下画面で先の手順 <strong>3.</strong> で設定したVCN接続用パスワードを入力してログインを完了すると、</p>
+<p><img src="ultravcn_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="ultravcn_page02.png" alt="画面ショット" /></p>
+<p>次に、以下画面で先の手順 <strong>3.</strong> で設定したVCN接続用パスワードを入力してログインを完了すると、</p>
 
-    <p>以下画面のようにGNOMEデスクトップへのログインが完了します。</p>
+<p><img src="ultravcn_page02.png" alt="画面ショット" /></p>
 
-    <p><img src="ultravcn_page03.png" alt="画面ショット" /></p>
+<p>以下画面のようにGNOMEデスクトップへのログインが完了します。</p>
 
-    <p>次に、以下GNOMEデスクトップ画面で、GNOMEの設定画面を表示するボタンをクリックします。</p>
+<p><img src="ultravcn_page03.png" alt="画面ショット" /></p>
 
-    <p><img src="GNOME_page01.png" alt="画面ショット" /></p>
+<p>次に、以下GNOMEデスクトップ画面で、GNOMEの設定画面を表示するボタンをクリックします。</p>
 
-    <p>次に、表示される以下GNOME設定画面で、前の画面に戻るボタンをクリックします。</p>
+<p><img src="GNOME_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="GNOME_page02.png" alt="画面ショット" /></p>
+<p>次に、表示される以下GNOME設定画面で、前の画面に戻るボタンをクリックします。</p>
 
-    <p>次に、以下GNOME設定画面で、 <strong>Privacy</strong> メニューをクリックします。</p>
+<p><img src="GNOME_page02.png" alt="画面ショット" /></p>
 
-    <p><img src="GNOME_page03.png" alt="画面ショット" /></p>
+<p>次に、以下GNOME設定画面で、 <strong>Privacy</strong> メニューをクリックします。</p>
 
-    <p>次に、以下GNOME設定画面で、 <strong>Screen Lock</strong> メニューをクリックします。</p>
+<p><img src="GNOME_page03.png" alt="画面ショット" /></p>
 
-    <p><img src="GNOME_page04.png" alt="画面ショット" /></p>
+<p>次に、以下GNOME設定画面で、 <strong>Screen Lock</strong> メニューをクリックします。</p>
 
-    <p>次に、表示される以下 <strong>Screen Lock</strong> 画面で、 <strong>Automatic Screen Lock</strong> ボタンをクリックして <strong>OFF</strong> に設定します。</p>
+<p><img src="GNOME_page04.png" alt="画面ショット" /></p>
 
-    <p><img src="GNOME_page05.png" alt="画面ショット" /></p>
+<p>次に、表示される以下 <strong>Screen Lock</strong> 画面で、 <strong>Automatic Screen Lock</strong> ボタンをクリックして <strong>OFF</strong> に設定します。</p>
 
-    <p>この設定は、GNOMEデスクトップのログインに使用するユーザがパスワード認証を無効にしている場合、スクリーンロックがかかった場合にロック解除が出来なくなることを防止します。</p>
-  </li>
-</ol>
+<p><img src="GNOME_page05.png" alt="画面ショット" /></p>
+
+<p>この設定は、GNOMEデスクトップのログインに使用するユーザがパスワード認証を無効にしている場合、スクリーンロックがかかった場合にロック解除が出来なくなることを防止します。</p>
 
 <h1 id="4-cfd解析フロー実行">4. CFD解析フロー実行</h1>
 
@@ -823,6 +797,42 @@ xxaxx
 <span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/motorBike <span class="nb">.</span>
 </code></pre></div></div>
 
+<p>次に、バッチ実行のヘッドノードとその他ノードのNVMe SSDローカルディスクのデータ同期に使用するスクリプト <strong>rsync_inneed.sh</strong> を以下の内容で作成し、</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$1</span> | <span class="nb">cut</span> <span class="nt">-d</span>, <span class="nt">-f</span> 1<span class="sb">`</span>
+<span class="nv">child_lst</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$1</span> | <span class="nb">cut</span> <span class="nt">-d</span>, <span class="nt">-f</span> 2-<span class="sb">`</span>
+<span class="nv">my_hostname</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
+<span class="nv">proc_pernode</span><span class="o">=</span><span class="nv">$2</span>
+<span class="nv">cur_mpirank</span><span class="o">=</span><span class="nv">$2</span>
+<span class="k">for </span>node <span class="k">in</span> <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$child_lst</span> | <span class="nb">sed</span> <span class="s1">'s/,/ /g'</span><span class="sb">`</span>
+<span class="k">do
+  if</span> <span class="o">[</span> <span class="nv">$node</span> <span class="o">==</span> <span class="nv">$my_hostname</span> <span class="o">]</span>
+  <span class="k">then
+    </span><span class="nv">sta_mpirank</span><span class="o">=</span><span class="nv">$cur_mpirank</span>
+    <span class="nv">end_mpirank</span><span class="o">=</span><span class="si">$(</span><span class="nb">expr</span> <span class="nv">$cur_mpirank</span> + <span class="nv">$proc_pernode</span> - 1<span class="si">)</span>
+    <span class="nb">break
+  </span><span class="k">else
+    </span><span class="nv">cur_mpirank</span><span class="o">=</span><span class="si">$(</span><span class="nb">expr</span> <span class="nv">$cur_mpirank</span> + <span class="nv">$proc_pernode</span><span class="si">)</span>
+  <span class="k">fi
+done
+</span><span class="nv">incl_opt</span><span class="o">=</span><span class="s2">"--include=</span><span class="se">\"</span><span class="s2">/*</span><span class="se">\"</span><span class="s2">"</span>
+<span class="k">for </span>mpirank <span class="k">in</span> <span class="sb">`</span><span class="nb">seq</span> <span class="nv">$sta_mpirank</span> <span class="nv">$end_mpirank</span><span class="sb">`</span>
+<span class="k">do
+  </span><span class="nv">incl_opt</span><span class="o">=</span><span class="nv">$incl_opt</span><span class="s2">" --include=</span><span class="se">\"</span><span class="s2">processor"</span><span class="nv">$mpirank</span><span class="s2">"/**</span><span class="se">\"</span><span class="s2">"</span>
+<span class="k">done
+</span><span class="nv">rsync_cmd</span><span class="o">=</span><span class="s2">"rsync -au </span><span class="nv">$incl_opt</span><span class="s2"> --exclude=</span><span class="se">\"</span><span class="s2">*</span><span class="se">\"</span><span class="s2"> </span><span class="nv">$3</span><span class="s2"> </span><span class="nv">$head_node</span><span class="s2">:</span><span class="nv">$3</span><span class="s2">"</span>
+<span class="nb">eval</span> <span class="nv">$rsync_cmd</span>
+</code></pre></div></div>
+
+<p>これを以下のディレクトリに配置します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
+<span class="nv">$ </span><span class="nb">ls </span>rsync_inneed.sh
+rsync_inneed.sh
+<span class="err">$</span>
+</code></pre></div></div>
+
 <h2 id="4-2-プリ処理解析処理のインタラクティブ実行">4-2. プリ処理・解析処理のインタラクティブ実行</h2>
 
 <h3 id="4-2-0-概要">4-2-0. 概要</h3>
@@ -832,8 +842,8 @@ xxaxx
 
 <ol>
   <li>1コアを使用する非並列実行</li>
-  <li>1ノード36コアを使用するノード内並列実行</li>
-  <li>2ノード72コアを使用するノード間並列実行</li>
+  <li>1ノード32コアを使用するノード内並列実行</li>
+  <li>4ノード128コアを使用するノード間並列実行</li>
 </ol>
 
 <p>本章のインタラクティブ実行は、バックステップ乱流シミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）を使用して解説します。</p>
@@ -852,7 +862,7 @@ xxaxx
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>simpleFoam
 </code></pre></div></div>
 
-<h3 id="4-2-2-1ノード36コアを使用するノード内並列実行">4-2-2. 1ノード36コアを使用するノード内並列実行</h3>
+<h3 id="4-2-2-1ノード32コアを使用するノード内並列実行">4-2-2. 1ノード32コアを使用するノード内並列実行</h3>
 
 <p>以下コマンドを実行し、プリ処理を実行します。</p>
 
@@ -866,31 +876,31 @@ xxaxx
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
 </code></pre></div></div>
 
-<p>次に、コピーしたファイルを以下のように修正して先に生成したメッシュを36個の領域に分割します。</p>
+<p>次に、コピーしたファイルを以下のように修正して先に生成したメッシュを32個の領域に分割します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
 17c17
 &lt; numberOfSubdomains 4<span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span> numberOfSubdomains 36<span class="p">;</span>
+<span class="o">&gt;</span> numberOfSubdomains 32<span class="p">;</span>
 23c23
 &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span>     n           <span class="o">(</span>6 6 1<span class="o">)</span><span class="p">;</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>8 4 1<span class="o">)</span><span class="p">;</span>
 <span class="nv">$ </span>decomposePar
     :
     :
     :
-Processor 35: field transfer
+Processor 31: field transfer
 
 End
 
 <span class="err">$</span>
 </code></pre></div></div>
 
-<p>次に、以下コマンドを実行して <strong>BM.Optimized3.36</strong> に搭載する36コアを使用するノード内並列の解析処理を実行します。</p>
+<p>次に、以下コマンドを実行して <strong>BM.Optimized3.36</strong> に搭載する32コアを使用するノード内並列の解析処理を実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-mca</span> coll_hcoll_enable 0 simpleFoam <span class="nt">-parallel</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 32 <span class="nt">-mca</span> coll_hcoll_enable 0 simpleFoam <span class="nt">-parallel</span>
 </code></pre></div></div>
 
 <p>次に、以下コマンドを実行して各プロセスが作成した解析結果を統合します。</p>
@@ -898,7 +908,7 @@ End
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>reconstructPar
 </code></pre></div></div>
 
-<h3 id="4-2-3-2ノード72コアを使用するノード間並列実行">4-2-3. 2ノード72コアを使用するノード間並列実行</h3>
+<h3 id="4-2-3-4ノード128コアを使用するノード間並列実行">4-2-3. 4ノード128コアを使用するノード間並列実行</h3>
 
 <p>以下コマンドを実行し、プリ処理を実行します。</p>
 
@@ -912,31 +922,31 @@ End
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
 </code></pre></div></div>
 
-<p>次に、コピーしたファイルを以下のように修正して先に生成したメッシュを72個の領域に分割します。</p>
+<p>次に、コピーしたファイルを以下のように修正して先に生成したメッシュを128個の領域に分割します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_org system/decomposeParDict
 17c17
 &lt; numberOfSubdomains 4<span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
+<span class="o">&gt;</span> numberOfSubdomains 128<span class="p">;</span>
 23c23
 &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>16 8 1<span class="o">)</span><span class="p">;</span>
 <span class="nv">$ </span>decomposePar
     :
     :
     :
-Processor 71: field transfer
+Processor 127: field transfer
 
 End
 
 <span class="err">$</span>
 </code></pre></div></div>
 
-<p>次に、以下コマンドを実行して2ノードの <strong>BM.Optimized3.36</strong> に搭載する72コアを使用するノード間並列の解析処理を実行します。</p>
+<p>次に、以下コマンドを実行して4ノードの <strong>BM.Optimized3.36</strong> に搭載する128コアを使用するノード間並列の解析処理を実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 72 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-mca</span> coll_hcoll_enable 0 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 128 <span class="nt">-N</span> 32 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-mca</span> coll_hcoll_enable 0 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
 </code></pre></div></div>
 
 <p>次に、以下コマンドを実行して計算結果を統合します。</p>
@@ -949,24 +959,27 @@ End
 <h3 id="4-3-0-概要">4-3-0. 概要</h3>
 
 <p>本章は、 <strong>OpenFOAM</strong> にチュートリアルとして付属しているバックステップ乱流シミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）とオートバイ走行時乱流シミュレーション（<strong>incompressible/simpleFoam/motorBike</strong>）を使用し、これらをバッチジョブとして実行する手順を解説します。<br />
-この際、並列化に対応している解析ステップは、 <strong>BM.Optimized3.36</strong> の2ノード72コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをストレージ領域に活用します。</p>
+この際、並列化に対応している解析ステップは、 <strong>BM.Optimized3.36</strong> の4ノード128コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをストレージ領域に活用します。</p>
 
-<p>ここでバッチ実行するプリ処理・解析処理は、以下のような流れで共有ストレージとNMVe SSDローカルディスク間でrsyncによる同期を行い、ストレージ領域へのアクセス時に高速なNMVe SSDローカルディスクを極力使用するよう配慮します。</p>
+<p>ここでバッチ実行するプリ処理・解析処理は、以下のステップを経て共有ストレージとNMVe SSDローカルディスク間でrsyncによる同期を行いながら実行し、ストレージ領域へのアクセス時に高速なNMVe SSDローカルディスクを極力使用するよう配慮します。</p>
 
 <ol>
   <li>ヘッドノードで “共有ストレージ -&gt; NVMe SSDローカルディスク” 方向のデータ同期</li>
   <li>ヘッドノードのNVMe SSDローカルディスク上でプリ処理</li>
-  <li>“ヘッドノードのNVMe SSDローカルディスク -&gt; その他ノードのNVMe SSDローカルディスク” 方向のデータ同期</li>
+  <li>“ヘッドノードのNVMe SSDローカルディスク -&gt; その他ノードのNVMe SSDローカルディスク” 方向のデータ同期（※7）</li>
   <li>各ノードのNVMe SSDローカルディスクを使用して並列実行で解析処理</li>
-  <li>“その他ノードのNVMe SSDローカルディスク -&gt; ヘッドノードのNVMe SSDローカルディスク” 方向のデータ同期</li>
+  <li>“その他ノードのNVMe SSDローカルディスク -&gt; ヘッドノードのNVMe SSDローカルディスク” 方向のデータ同期（※7）（※8）</li>
   <li>ヘッドノードのNVMe SSDローカルディスク上で解析結果統合処理</li>
-  <li>ヘッドノードで “NVMe SSDローカルディスク -&gt; 共有ストレージ” 方向のデータ同期（※7）</li>
+  <li>ヘッドノードで “NVMe SSDローカルディスク -&gt; 共有ストレージ” 方向のデータ同期（※9）</li>
 </ol>
 
-<p>※7）この同期は、72個のMPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間を短縮します。</p>
+<p>※7）この同期は、その他ノードのノード数（本テクニカルTipsでは3ノード）分だけ同時に実行することで、所要時間の短縮を図ります。<br />
+※8）この同期は、128個のMPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルのうち、当該ノード上で計算されたもののみ同期することで、所要時間を短縮します。<br />
+※9）この同期は、128個のMPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間を短縮します。</p>
 
-<p>このように、ストレージ領域にNVMe SSDローカルディスクを活用することで、共有ストレージ（ <strong>ファイル・ストレージ</strong> サービスを使用した場合）のみを使用する場合と比較して、以降でその実行方法を解説するオートバイ走行時乱流シミュレーションの例で、バッチジョブ実行時間を <strong>20パーセント</strong> 程度短縮することが可能です。<br />
-また、本ケースよりストレージ領域への負荷が高いシミュレーションモデルの場合は、更なる性能向上が期待出来ます。</p>
+<p>このように、ストレージ領域にNVMe SSDローカルディスクを活用することで、共有ストレージ（ <strong>ファイル・ストレージ</strong> サービスを使用した場合）のみを使用する場合と比較して、特に大規模並列実行のケースやシミュレーション結果の書き込み頻度が高いケースで、シミュレーション所要時間を短縮することが可能になります。</p>
+
+<p>なお、ヘッドノードとその他ノードのNVMe SSDローカルディスクのデータ同期をその他ノードのノード数分だけ同時実行する際 <strong><a href="https://github.com/chaos/pdsh">pdsh</a></strong> を使用するため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ">1. pdshインストール・セットアップ</a></strong> の手順を実施し、予め全ての計算ノードに <strong>pdsh</strong> をインストール・セットアップします。</p>
 
 <h3 id="4-31-バックステップ乱流シミュレーションのバッチ実行">4-3.1. バックステップ乱流シミュレーションのバッチ実行</h3>
 
@@ -985,21 +998,21 @@ End
 17c17
 &lt; numberOfSubdomains 4<span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
+<span class="o">&gt;</span> numberOfSubdomains 128<span class="p">;</span>
 23c23
 &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>16 8 1<span class="o">)</span><span class="p">;</span>
 24a25,101
 <span class="o">&gt;</span> 
 <span class="o">&gt;</span> distributed  <span class="nb">yes</span><span class="p">;</span>
 <span class="o">&gt;</span> roots
-<span class="o">&gt;</span>     71
+<span class="o">&gt;</span>     127
 <span class="o">&gt;</span>     <span class="o">(</span>
 <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
 <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
     :
-    :  71行続きます
+    :  127行続きます
     :
 <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
 <span class="o">&gt;</span>     <span class="o">)</span><span class="p">;</span>
@@ -1010,24 +1023,30 @@ End
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#SBATCH -p sltest</span>
-<span class="c">#SBATCH -n 72</span>
-<span class="c">#SBATCH -N 2</span>
+<span class="c">#SBATCH -n 128</span>
+<span class="c">#SBATCH -N 4</span>
+<span class="c">#SBATCH --ntasks-per-node=32</span>
 <span class="c">#SBATCH -J pitzDaily</span>
 <span class="c">#SBATCH -o pitzDaily_out.%J</span>
 <span class="c">#SBATCH -e pitzDaily_err.%J</span>
 
-<span class="c"># Set model directories for shared storage and NVMe local disk</span>
+<span class="c"># Change the following variables according to your environment</span>
 <span class="nv">model_dir</span><span class="o">=</span><span class="s2">"pitzDaily"</span>
 <span class="nv">local_disk</span><span class="o">=</span><span class="s2">"/mnt/localdisk/openfoam"</span>
+
+<span class="c"># Set file/directroy variables</span>
 <span class="nv">shared_dir</span><span class="o">=</span><span class="nv">$FOAM_RUN</span>/<span class="nv">$model_dir</span>/
 <span class="nv">local_dir</span><span class="o">=</span><span class="nv">$local_disk</span>/<span class="nv">$model_dir</span>/
+<span class="nv">rsync_script</span><span class="o">=</span><span class="nv">$FOAM_RUN</span><span class="s2">"/rsync_inneed.sh"</span> 
 
 <span class="c"># Set OCI specific environment variables</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 <span class="nb">export </span><span class="nv">OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>0
 
-<span class="c"># Get head node host name</span>
+<span class="c"># Get job infomation</span>
 <span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
+<span class="nv">proc_pernode</span><span class="o">=</span><span class="si">$(</span><span class="nb">expr</span> <span class="nv">$SLURM_NTASKS</span> / <span class="nv">$SLURM_JOB_NUM_NODES</span><span class="si">)</span>
+<span class="nv">child_node_list</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$SLURM_JOB_NODELIST</span> | <span class="nb">cut</span> <span class="nt">-d</span>, <span class="nt">-f</span> 2-<span class="sb">`</span>
 
 <span class="c"># Copy model files from shared storage to NVMe local disk on head node</span>
 rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="nv">$shared_dir</span> <span class="nv">$local_dir</span>
@@ -1037,14 +1056,16 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 blockMesh
 decomposePar
 
-<span class="c"># Sync model files on head node NVMe local disk with others</span>
-<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-ae</span> <span class="s2">"ssh -oStrictHostKeyChecking=accept-new"</span> <span class="nt">--delete</span> <span class="nv">$local_dir</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+<span class="c"># Concurrently sync model files on head node NVMe local disk with others</span>
+<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> 'rsync -a --delete </span><span class="nv">$head_node</span><span class="s2">:</span><span class="nv">$local_dir</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
+<span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Run solver in parallel</span>
 srun simpleFoam <span class="nt">-parallel</span>
 
-<span class="c"># Sync model files on other node NVMe local disk with head node's</span>
-<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-au</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span> <span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+<span class="c"># Concurrently sync model files on other node NVMe local disk with head node's</span>
+<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> '</span><span class="nv">$rsync_script</span><span class="s2"> </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2"> </span><span class="nv">$proc_pernode</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
+<span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Reconstruct decomposed partitions on head node NVMe local disk</span>
 reconstructPar
@@ -1068,30 +1089,30 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>run
 <span class="nv">$ </span><span class="nb">cd</span> ./motorBike
-<span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/decomposeParDict_nvme.72
+<span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/decomposeParDict_nvme.128
 </code></pre></div></div>
 
 <p>次に、コピーしたファイルを以下のように修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_nvme.72_org system/decomposeParDict_nvme.72
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff system/decomposeParDict_nvme.128_org system/decomposeParDict_nvme.128
 17c17
 &lt; numberOfSubdomains 4<span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span> numberOfSubdomains 72<span class="p">;</span>
+<span class="o">&gt;</span> numberOfSubdomains 128<span class="p">;</span>
 23c23
 &lt;     n           <span class="o">(</span>2 2 1<span class="o">)</span><span class="p">;</span>
 <span class="nt">---</span>
-<span class="o">&gt;</span>     n           <span class="o">(</span>9 8 1<span class="o">)</span><span class="p">;</span>
+<span class="o">&gt;</span>     n           <span class="o">(</span>16 8 1<span class="o">)</span><span class="p">;</span>
 24a25,101
 <span class="o">&gt;</span> 
 <span class="o">&gt;</span> distributed  <span class="nb">yes</span><span class="p">;</span>
 <span class="o">&gt;</span> roots
-<span class="o">&gt;</span>     71
+<span class="o">&gt;</span>     127
 <span class="o">&gt;</span>     <span class="o">(</span>
 <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
 <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
     :
-    :  71行続きます
+    :  127行続きます
     :
 <span class="o">&gt;</span>        <span class="s2">"/mnt/localdisk/openfoam"</span>
 <span class="o">&gt;</span>     <span class="o">)</span><span class="p">;</span>
@@ -1102,21 +1123,23 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#SBATCH -p sltest</span>
-<span class="c">#SBATCH -n 72</span>
-<span class="c">#SBATCH -N 2</span>
+<span class="c">#SBATCH -n 128</span>
+<span class="c">#SBATCH -N 4</span>
+<span class="c">#SBATCH --ntasks-per-node=32</span>
 <span class="c">#SBATCH -J motorBike</span>
 <span class="c">#SBATCH -o motorBike_out.%J</span>
 <span class="c">#SBATCH -e motorBike_err.%J</span>
  
-<span class="c"># Set model directories for shared storage and NVMe local disk</span>
+<span class="c"># Change the following variables according to your environment</span>
 <span class="nv">model_dir</span><span class="o">=</span><span class="s2">"motorBike"</span>
 <span class="nv">local_disk</span><span class="o">=</span><span class="s2">"/mnt/localdisk/openfoam"</span>
+
+<span class="c"># Set file/directroy variables</span>
 <span class="nv">shared_dir</span><span class="o">=</span><span class="nv">$FOAM_RUN</span>/<span class="nv">$model_dir</span>/
 <span class="nv">local_dir</span><span class="o">=</span><span class="nv">$local_disk</span>/<span class="nv">$model_dir</span>/
- 
-<span class="c"># Set alternative decomposeParDict name</span>
-<span class="nv">decompDict</span><span class="o">=</span><span class="s2">"-decomposeParDict system/decomposeParDict_nvme.72"</span>
- 
+<span class="nv">decompDict</span><span class="o">=</span><span class="s2">"-decomposeParDict system/decomposeParDict_nvme.128"</span>
+<span class="nv">rsync_script</span><span class="o">=</span><span class="nv">$FOAM_RUN</span><span class="s2">"/rsync_inneed.sh"</span> 
+
 <span class="c"># Set OCI specific environment variables</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 <span class="nb">export </span><span class="nv">OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>0
@@ -1127,6 +1150,8 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 <span class="c"># Get job infomation</span>
 <span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
 <span class="nv">num_nodes</span><span class="o">=</span><span class="nv">$SLURM_JOB_NUM_NODES</span>
+<span class="nv">proc_pernode</span><span class="o">=</span><span class="si">$(</span><span class="nb">expr</span> <span class="nv">$SLURM_NTASKS</span> / <span class="nv">$SLURM_JOB_NUM_NODES</span><span class="si">)</span>
+<span class="nv">child_node_list</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$SLURM_JOB_NODELIST</span> | <span class="nb">cut</span> <span class="nt">-d</span>, <span class="nt">-f</span> 2-<span class="sb">`</span>
 
 <span class="c"># Copy motorbike surface from resources directory to shared storage</span>
 <span class="nb">cd</span> <span class="nv">$shared_dir</span>
@@ -1141,8 +1166,9 @@ runApplication surfaceFeatureExtract
 runApplication blockMesh
 runApplication <span class="nv">$decompDict</span> decomposePar
 
-<span class="c"># Sync model files on head node NVMe local disk with others</span>
-<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-ae</span> <span class="s2">"ssh -oStrictHostKeyChecking=accept-new"</span> <span class="nt">--delete</span> <span class="nv">$local_dir</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+<span class="c"># Concurrently sync model files on head node NVMe local disk with others</span>
+<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> 'rsync -a --delete </span><span class="nv">$head_node</span><span class="s2">:</span><span class="nv">$local_dir</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
+<span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Pre-process stage 2 in parallel</span>
 srun snappyHexMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-overwrite</span>
@@ -1155,8 +1181,9 @@ srun checkMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</s
 <span class="c"># Run solver in parallel</span>
 srun simpleFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
 
-<span class="c"># Sync model files on other node NVMe local disk with head node's</span>
-<span class="k">for </span>remote_node <span class="k">in</span> <span class="sb">`</span>scontrol show hostnames | <span class="nb">grep</span>  <span class="nt">-v</span> <span class="nv">$head_node</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span>rsync <span class="nt">-au</span> <span class="nv">$remote_node</span>:<span class="nv">$local_dir</span> <span class="nv">$local_dir</span><span class="p">;</span> <span class="k">done</span>
+<span class="c"># Concurrently sync model files on other node NVMe local disk with head node's</span>
+<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> '</span><span class="nv">$rsync_script</span><span class="s2"> </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2"> </span><span class="nv">$proc_pernode</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
+<span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Reconstruct decomposed partitions on head node NVMe local disk</span>
 runApplication reconstructParMesh <span class="nt">-constant</span>
@@ -1228,7 +1255,7 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-30T11:48:53+09:00">July 30, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-31T18:08:45+09:00">July 31, 2024</time></p>
 
       </footer>
 

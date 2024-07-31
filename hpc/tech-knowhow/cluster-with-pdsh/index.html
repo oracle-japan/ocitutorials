@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-30T11:48:53+09:00">
+  <meta property="article:published_time" content="2024-07-31T18:08:45+09:00">
 
 
 
@@ -284,9 +284,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8版）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
@@ -363,7 +363,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="pdshで効率的にクラスタ管理オペレーションを実行">
     <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用して計算/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-07-30T11:48:53+09:00">
+    <meta itemprop="datePublished" content="2024-07-31T18:08:45+09:00">
     
 
     <div class="page__inner-wrap">
@@ -432,83 +432,68 @@
 
 <p>本章は、 <strong>pdsh</strong> をインストール・セットアップします。</p>
 
-<ol>
-  <li>
-    <p><strong>pdsh</strong> は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
+<p><strong>pdsh</strong> は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-f5fra-x9-ol8
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inst-f5fra-x9-ol8
 inst-3ktpe-x9-ol8
 inst-6pvpq-x9-ol8
 inst-dixqy-x9-ol8
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> を提供するyumレポジトリを追加します。<br />
+</code></pre></div></div>
+
+<p>次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> を提供するyumレポジトリを追加します。<br />
 この際、クラスタ管理ノードの <strong>Oracle Linux</strong> バージョンに応じて実行するコマンドが異なる点に注意します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
- <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
-</code></pre></div>    </div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
+<span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
+</code></pre></div></div>
 
-    <p>なお、上記コマンド実行時に以下のメッセージが出力される場合、</p>
+<p>なお、上記コマンド実行時に以下のメッセージが出力される場合、</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> This system is receiving updates from OSMS server.
- Error: No matching repo to modify: ol8_developer_EPEL.
-</code></pre></div>    </div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This system is receiving updates from OSMS server.
+Error: No matching repo to modify: ol8_developer_EPEL.
+</code></pre></div></div>
 
-    <p>OSのパッケージ管理が <strong><a href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html">OS管理サービス</a></strong> で行われているため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。<br />
- ここで実施する <strong>OS管理サービス</strong> の解除は、10分程度の時間が経過すると自動的に <strong>OS管理サービス</strong> 管理に戻ります。</p>
+<p>OSのパッケージ管理が <strong><a href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html">OS管理サービス</a></strong> で行われているため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。<br />
+ここで実施する <strong>OS管理サービス</strong> の解除は、10分程度の時間が経過すると自動的に <strong>OS管理サービス</strong> 管理に戻ります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>osms unregister
- <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
- <span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> をインストールします。<br />
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>osms unregister
+<span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
+<span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> をインストールします。<br />
 この際、クラスタ管理ノードの <strong>Oracle Linux</strong> バージョンに応じて実行するコマンドが異なる点に注意します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh pdsh-mod-dshgroup
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh pdsh-mod-dshgroup
 <span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH <strong>known_hosts</strong> ファイルに登録します。<br />
+</code></pre></div></div>
+
+<p>次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH <strong>known_hosts</strong> ファイルに登録します。<br />
 このステップは、後の <strong>pdsh</strong> の実行のために必要です。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> :<span class="p">;</span> <span class="k">done</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> の動作を確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> :<span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PDSH_RCMD_TYPE=ssh"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
+<p>次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 <strong>pdsh</strong> の動作を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PDSH_RCMD_TYPE=ssh"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
+<span class="nb">export </span><span class="nv">PDSH_RCMD_TYPE</span><span class="o">=</span>ssh
 <span class="nv">$ </span><span class="nb">source</span> ~/.bash_profile
 <span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">date
 </span>inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-</code></pre></div>    </div>
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p><strong>pdsh</strong> の出力は、第一フィールドが対象ノードのホスト名、第2フィールド以降が対象ノードからのコマンド出力です。</p>
-  </li>
-  <li>
-    <p>クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの <strong>pdcp</strong> や <strong>rpdcp</strong> を使用する場合、管理対象ノードにも <strong>pdsh</strong> がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに <strong>pdsh</strong> をインストールします。<br />
-この際、管理対象ノードの <strong>Oracle Linux</strong> バージョンに応じて実行するコマンドが異なる点に注意します。</p>
+<p><strong>pdsh</strong> の出力は、第一フィールドが対象ノードのホスト名、第2フィールド以降が対象ノードからのコマンド出力です。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
-<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
-<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh
-<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p><strong>pdsh</strong> で利用するグループを登録するため、グループ設定ファイルを作成します。<br />
+<p>次に、 <strong>pdsh</strong> で利用するグループを登録するため、グループ設定ファイルを作成します。<br />
 このグループ設定ファイルは、事前にクラスタ管理ノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で作成したホストリストファイルを基に作成する、 <strong>.dsh/group</strong> ディレクトリに配置されるグループ名をファイル名とするテキストファイルです。<br />
 例えば以下のファイルを配置すると、全てのノードを含むグループ <strong>all</strong> 、inst-f5fra-x9-ol8とinst-3ktpe-x9-ol8を含むグループ <strong>comp1</strong>、及びinst-6pvpq-x9-ol8とinst-dixqy-x9-ol8を含むグループ <strong>comp2</strong> を利用できるようになります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.dsh/group/all
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/.dsh/group/all
 inst-f5fra-x9-ol8
 inst-3ktpe-x9-ol8
 inst-6pvpq-x9-ol8
@@ -520,18 +505,35 @@ inst-3ktpe-x9-ol8
 inst-6pvpq-x9-ol8
 inst-dixqy-x9-ol8
 <span class="err">$</span>
-</code></pre></div>    </div>
+</code></pre></div></div>
 
-    <p>これらのグループは、以下のように <strong>-g</strong> オプションと共に管理対象ノードを指定する際に利用することが出来ます。</p>
+<p>これらのグループは、以下のように <strong>-g</strong> オプションと共に管理対象ノードを指定する際に利用することが出来ます。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">date
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nb">date
 </span>inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-6pvpq-x9-ol8: Fri Jul 28 16:04:47 JST 2023
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>また、グループ内の特定のノードのみ対象から除外する場合は、以下のように <strong>-x</strong> オプションと共に除外するノードを指定します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="nt">-x</span> inst-6pvpq-x9-ol8 <span class="nb">date
+</span>inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>クラスタ管理ノードと管理対象ノードの間で並列にファイル転送を行うユーティリティーツールの <strong>pdcp</strong> や <strong>rpdcp</strong> を使用する場合、管理対象ノードにも <strong>pdsh</strong> がインストールされている必要があるため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、全ての管理対象ノードに <strong>pdsh</strong> をインストールします。<br />
+この際、管理対象ノードの <strong>Oracle Linux</strong> バージョンに応じて実行するコマンドが異なる点に注意します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL <span class="c"># If Oracle Linux 8</span>
+<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol7_developer_EPEL <span class="c"># If Oracle Linux 7.9</span>
+<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh
+<span class="nv">$ </span>pdsh <span class="nt">-w</span> ^/home/opc/hostlist.txt <span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> pdsh-rcmd-ssh <span class="c"># If Oracle Linux 8</span>
+</code></pre></div></div>
 
 <hr />
 <h1 id="2-pdsh使用時の留意点">2. pdsh使用時の留意点</h1>
@@ -786,7 +788,7 @@ drwx------. 4 opc opc   4096 Aug  1 11:54 ..
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-30T11:48:53+09:00">July 30, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-31T18:08:45+09:00">July 31, 2024</time></p>
 
       </footer>
 

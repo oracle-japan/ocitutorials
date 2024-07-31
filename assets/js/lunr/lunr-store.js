@@ -1103,16 +1103,16 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/run-imb/",
         "teaser": null
       },{
-        "title": "NCCL Tests実行方法（BM.GPU.H100.8版）",
-        "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU.H100.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、 Docker Community Edition と NVIDIA Container Toolkit...","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/hpc/benchmark/run-nccltests-h100/",
-        "teaser": null
-      },{
-        "title": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）",
+        "title": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）",
         "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、 Docker Community Edition と NVIDIA Container Toolkit...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-nccltests/",
+        "teaser": null
+      },{
+        "title": "NCCL Tests実行方法（BM.GPU.H100.8編）",
+        "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU.H100.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、 Docker Community Edition と NVIDIA Container Toolkit...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-nccltests-h100/",
         "teaser": null
       },{
         "title": "パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法",
@@ -1182,7 +1182,7 @@ var store = [{
         "teaser": null
       },{
         "title": "ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法",
-        "excerpt":"0. 概要 NVMe SSDローカルディスクにファイルシステムを作成する方法は、搭載するドライブ数が異なる BM.Optimized3.36 と BM.GPU4.8/BM.GPU.GM4.8 でその手順が異なり、それぞれの手順を以降で解説します。 本テクニカルTipsが前提とするOSは、 Oracle Linux です。 なお 、ここで解説するファイルシステム作成手順は、 OCI HPCチュートリアル集 で紹介する構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。 1. BM.Optimized3.36用ファイルシステム作成手順 BM.Optimized3.36 は、3.84 TBのNVMe SSDローカルディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。 $ sudo parted -s /dev/nvme0n1 mklabel gpt $ sudo parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1 $ sudo mkfs.xfs -L localscratch /dev/nvme0n1p1 $ sudo mkdir...","categories": [],
+        "excerpt":"0. 概要 NVMe SSDローカルディスクにファイルシステムを作成する方法は、搭載するドライブ数が異なる BM.Optimized3.36 、 BM.GPU4.8/BM.GPU.A100-v2.8 、及び、 BM.GPU.H100.8 でその手順が異なり、以降ではそれぞれの手順を解説します。 本テクニカルTipsが前提とするOSは、 Oracle Linux です。 なお 、ここで解説するファイルシステム作成手順は、 OCI HPCチュートリアル集 で紹介する構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。 1. BM.Optimized3.36用ファイルシステム作成手順 BM.Optimized3.36 は、3.84 TBのNVMe SSDローカルディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。 $ sudo parted -s /dev/nvme0n1 mklabel gpt $ sudo parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1 $ sudo mkfs.xfs -L localscratch /dev/nvme0n1p1 $...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/nvme-filesystem/",
         "teaser": null
@@ -1284,7 +1284,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/tech-knowhow/install-openfoam/architecture_diagram.png"
       },{
         "title": "Slurmによるリソース管理・ジョブ管理システム運用Tips",
-        "excerpt":"0. 概要 本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を Slurm で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。 Prolog/Epilog セットアップ方法 1. Prolog/Epilogセットアップ方法 1-0. 概要 本Tipsは、ジョブ実行の前後で Slurm が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境にセットアップする方法を解説します。 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。 Prolog 以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。 #!/bin/bash log_file=/var/log/slurm/clean_memory.log /bin/date &gt;&gt; $log_file /bin/echo \"Before\" &gt;&gt; $log_file /bin/free -h &gt;&gt; $log_file /bin/sync; /bin/echo 3 &gt; /proc/sys/vm/drop_caches /bin/echo &gt;&gt; $log_file /bin/echo \"After\" &gt;&gt; $log_file /bin/free...","categories": [],
+        "excerpt":"0. 概要 本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を Slurm で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。 Prolog/Epilog セットアップ方法 メンテナンスを考慮した計算/GPUノードの ステータス 変更方法 1. Prolog/Epilogセットアップ方法 1-0. 概要 本Tipsは、ジョブ実行の前後で Slurm が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境にセットアップする方法を解説します。 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。 Prolog 以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。 #!/bin/bash log_file=/var/log/slurm/clean_memory.log /bin/date &gt;&gt; $log_file /bin/echo \"Before\" &gt;&gt; $log_file /bin/free -h &gt;&gt; $log_file /bin/sync; /bin/echo 3 &gt; /proc/sys/vm/drop_caches /bin/echo &gt;&gt; $log_file /bin/echo \"After\"...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/slurm-tips/",
         "teaser": null

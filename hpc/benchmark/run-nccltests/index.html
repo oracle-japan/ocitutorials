@@ -10,7 +10,7 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版） | Oracle Cloud Infrastructure チュートリアル</title>
+<!-- begin _includes/seo.html --><title>NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編） | Oracle Cloud Infrastructure チュートリアル</title>
 <meta name="description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
 
 
@@ -23,7 +23,7 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）">
+<meta property="og:title" content="NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-nccltests/">
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-07-30T11:48:53+09:00">
+  <meta property="article:published_time" content="2024-07-31T18:08:45+09:00">
 
 
 
@@ -153,7 +153,7 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）
+          NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）
 
         
       </h1>
@@ -214,7 +214,7 @@
     
       
       
-        <li class="current">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）</li>
+        <li class="current">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</li>
       
     
   </ol>
@@ -284,9 +284,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8版）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/" class="active">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/" class="active">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
         
@@ -361,9 +361,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）">
+    <meta itemprop="headline" content="NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）">
     <meta itemprop="description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-07-30T11:48:53+09:00">
+    <meta itemprop="datePublished" content="2024-07-31T18:08:45+09:00">
     
 
     <div class="page__inner-wrap">
@@ -387,11 +387,11 @@
 
 <p>以上より、本ドキュメントで解説する <strong>NCCL Tests</strong> の実行は、以下の手順を経て行います。</p>
 
-<ul>
+<ol>
   <li>コンテナ環境構築</li>
   <li><strong>NCCL Tests</strong> ビルド</li>
   <li><strong>NCCL Tests</strong> 実行</li>
-</ul>
+</ol>
 
 <p>本ドキュメントでは、以下の環境で <strong>NCCL Tests</strong> の <strong>All-Reduce</strong> 通信性能をコンテナ環境から計測し、10 GiBのメッセージサイズで <strong>219 GB/s</strong> の帯域（busbw）性能が出ています。</p>
 
@@ -426,12 +426,12 @@
 
 <p>以上より、本章で実施するコンテナ環境構築は、以下の手順を経て行います。</p>
 
-<ul>
+<ol>
   <li>コンテナ間SSH接続環境構築</li>
   <li>MPI実行を妨げる設定の修正</li>
-  <li>コンテナ起動</li>
-  <li>sshdインストール・起動</li>
-</ul>
+  <li>コンテナ起動
+ sshdインストール・起動</li>
+</ol>
 
 <h2 id="1-1-コンテナ間ssh接続環境構築">1-1. コンテナ間SSH接続環境構築</h2>
 
@@ -514,22 +514,22 @@ inst-yyyyy-gpu4-ol89
 <span class="c"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
 <span class="c">#</span>
 <span class="c"># Using devices</span>
-<span class="c">#  Rank  0 Group  0 Pid    417 on inst-xxxxx-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  1 Group  0 Pid    418 on inst-xxxxx-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  2 Group  0 Pid    419 on inst-xxxxx-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  3 Group  0 Pid    420 on inst-xxxxx-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  4 Group  0 Pid    421 on inst-xxxxx-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  5 Group  0 Pid    422 on inst-xxxxx-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  6 Group  0 Pid    425 on inst-xxxxx-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  7 Group  0 Pid    429 on inst-xxxxx-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  8 Group  0 Pid    371 on inst-yyyyy-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank  9 Group  0 Pid    372 on inst-yyyyy-comp device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 10 Group  0 Pid    373 on inst-yyyyy-comp device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 11 Group  0 Pid    374 on inst-yyyyy-comp device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 12 Group  0 Pid    375 on inst-yyyyy-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 13 Group  0 Pid    376 on inst-yyyyy-comp device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 14 Group  0 Pid    377 on inst-yyyyy-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
-<span class="c">#  Rank 15 Group  0 Pid    380 on inst-yyyyy-comp device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  0 Group  0 Pid    417 on inst-xxxxx-gpu4-ol89 device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  1 Group  0 Pid    418 on inst-xxxxx-gpu4-ol89 device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  2 Group  0 Pid    419 on inst-xxxxx-gpu4-ol89 device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  3 Group  0 Pid    420 on inst-xxxxx-gpu4-ol89 device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  4 Group  0 Pid    421 on inst-xxxxx-gpu4-ol89 device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  5 Group  0 Pid    422 on inst-xxxxx-gpu4-ol89 device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  6 Group  0 Pid    425 on inst-xxxxx-gpu4-ol89 device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  7 Group  0 Pid    429 on inst-xxxxx-gpu4-ol89 device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  8 Group  0 Pid    371 on inst-yyyyy-gpu4-ol89 device  0 [0x0f] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  9 Group  0 Pid    372 on inst-yyyyy-gpu4-ol89 device  1 [0x15] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 10 Group  0 Pid    373 on inst-yyyyy-gpu4-ol89 device  2 [0x51] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 11 Group  0 Pid    374 on inst-yyyyy-gpu4-ol89 device  3 [0x54] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 12 Group  0 Pid    375 on inst-yyyyy-gpu4-ol89 device  4 [0x8d] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 13 Group  0 Pid    376 on inst-yyyyy-gpu4-ol89 device  5 [0x92] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 14 Group  0 Pid    377 on inst-yyyyy-gpu4-ol89 device  6 [0xd6] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank 15 Group  0 Pid    380 on inst-yyyyy-gpu4-ol89 device  7 [0xda] NVIDIA A100-SXM4-40GB</span>
 <span class="c">#</span>
 <span class="c">#                                                              out-of-place                       in-place          </span>
 <span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
@@ -551,7 +551,7 @@ inst-yyyyy-gpu4-ol89
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-30T11:48:53+09:00">July 30, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-07-31T18:08:45+09:00">July 31, 2024</time></p>
 
       </footer>
 
@@ -560,7 +560,7 @@ inst-yyyyy-gpu4-ol89
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=NCCL+Tests%E5%AE%9F%E8%A1%8C%E6%96%B9%E6%B3%95%EF%BC%88BM.GPU4.8%2FBM.GPU.A100-v2.8%E7%89%88%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-nccltests%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=NCCL+Tests%E5%AE%9F%E8%A1%8C%E6%96%B9%E6%B3%95%EF%BC%88BM.GPU4.8%2FBM.GPU.A100-v2.8%E7%B7%A8%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-nccltests%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Frun-nccltests%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
@@ -571,11 +571,11 @@ inst-yyyyy-gpu4-ol89
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/" class="pagination--pager" title="NCCL Tests実行方法（BM.GPU.H100.8版）
+      <a href="/ocitutorials/hpc/benchmark/run-imb/" class="pagination--pager" title="Intel MPI Benchmarks実行方法
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/benchmark/bios-setting/" class="pagination--pager" title="パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法
+      <a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/" class="pagination--pager" title="NCCL Tests実行方法（BM.GPU.H100.8編）
 ">次へ</a>
     
   </nav>
