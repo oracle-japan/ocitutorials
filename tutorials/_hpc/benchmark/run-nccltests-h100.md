@@ -1,7 +1,7 @@
 ---
-title: "NCCL Tests実行方法（BM.GPU.H100.8版）"
+title: "NCCL Tests実行方法（BM.GPU.H100.8編）"
 excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU.H100.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
-order: "2140"
+order: "2141"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)
@@ -17,9 +17,9 @@ header:
 
 以上より、本ドキュメントで解説する **NCCL Tests** の実行は、以下の手順を経て行います。
 
-- コンテナ環境構築
-- **NCCL Tests** ビルド
-- **NCCL Tests** 実行
+1. コンテナ環境構築
+2. **NCCL Tests** ビルド
+3. **NCCL Tests** 実行
 
 本ドキュメントでは、以下の環境で **NCCL Tests** の **All-Reduce** 通信性能をコンテナ環境から計測し、16 GiBのメッセージサイズで **465 GB/s** の帯域（busbw）性能が出ています。
 
@@ -52,10 +52,10 @@ header:
 
 以上より、本章で実施するコンテナ環境構築は、以下の手順を経て行います。
 
-- コンテナ間SSH接続環境構築
-- MPI実行を妨げる設定の修正
-- コンテナ起動
-- sshdインストール・起動
+1. コンテナ間SSH接続環境構築
+2. MPI実行を妨げる設定の修正
+3. コンテナ起動
+4. sshdインストール・起動
 
 ## 1-1. コンテナ間SSH接続環境構築
 
@@ -143,22 +143,22 @@ $ mpirun --allow-run-as-root -n 16 -H inst-xxxxx-h100-ol89:8,inst-yyyyy-h100-ol8
 # nThread 1 nGpus 1 minBytes 1073741824 maxBytes 17179869184 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
-#  Rank  0 Group  0 Pid   1274 on instance-20240722-0952 device  0 [0x0f] NVIDIA H100 80GB HBM3
-#  Rank  1 Group  0 Pid   1275 on instance-20240722-0952 device  1 [0x2d] NVIDIA H100 80GB HBM3
-#  Rank  2 Group  0 Pid   1276 on instance-20240722-0952 device  2 [0x44] NVIDIA H100 80GB HBM3
-#  Rank  3 Group  0 Pid   1277 on instance-20240722-0952 device  3 [0x5b] NVIDIA H100 80GB HBM3
-#  Rank  4 Group  0 Pid   1278 on instance-20240722-0952 device  4 [0x89] NVIDIA H100 80GB HBM3
-#  Rank  5 Group  0 Pid   1279 on instance-20240722-0952 device  5 [0xa8] NVIDIA H100 80GB HBM3
-#  Rank  6 Group  0 Pid   1280 on instance-20240722-0952 device  6 [0xc0] NVIDIA H100 80GB HBM3
-#  Rank  7 Group  0 Pid   1281 on instance-20240722-0952 device  7 [0xd8] NVIDIA H100 80GB HBM3
-#  Rank  8 Group  0 Pid   2315 on instance-20240722-0955 device  0 [0x0f] NVIDIA H100 80GB HBM3
-#  Rank  9 Group  0 Pid   2316 on instance-20240722-0955 device  1 [0x2d] NVIDIA H100 80GB HBM3
-#  Rank 10 Group  0 Pid   2317 on instance-20240722-0955 device  2 [0x44] NVIDIA H100 80GB HBM3
-#  Rank 11 Group  0 Pid   2318 on instance-20240722-0955 device  3 [0x5b] NVIDIA H100 80GB HBM3
-#  Rank 12 Group  0 Pid   2319 on instance-20240722-0955 device  4 [0x89] NVIDIA H100 80GB HBM3
-#  Rank 13 Group  0 Pid   2320 on instance-20240722-0955 device  5 [0xa8] NVIDIA H100 80GB HBM3
-#  Rank 14 Group  0 Pid   2321 on instance-20240722-0955 device  6 [0xc0] NVIDIA H100 80GB HBM3
-#  Rank 15 Group  0 Pid   2322 on instance-20240722-0955 device  7 [0xd8] NVIDIA H100 80GB HBM3
+#  Rank  0 Group  0 Pid   1274 on inst-xxxxx-h100-ol89 device  0 [0x0f] NVIDIA H100 80GB HBM3
+#  Rank  1 Group  0 Pid   1275 on inst-xxxxx-h100-ol89 device  1 [0x2d] NVIDIA H100 80GB HBM3
+#  Rank  2 Group  0 Pid   1276 on inst-xxxxx-h100-ol89 device  2 [0x44] NVIDIA H100 80GB HBM3
+#  Rank  3 Group  0 Pid   1277 on inst-xxxxx-h100-ol89 device  3 [0x5b] NVIDIA H100 80GB HBM3
+#  Rank  4 Group  0 Pid   1278 on inst-xxxxx-h100-ol89 device  4 [0x89] NVIDIA H100 80GB HBM3
+#  Rank  5 Group  0 Pid   1279 on inst-xxxxx-h100-ol89 device  5 [0xa8] NVIDIA H100 80GB HBM3
+#  Rank  6 Group  0 Pid   1280 on inst-xxxxx-h100-ol89 device  6 [0xc0] NVIDIA H100 80GB HBM3
+#  Rank  7 Group  0 Pid   1281 on inst-xxxxx-h100-ol89 device  7 [0xd8] NVIDIA H100 80GB HBM3
+#  Rank  8 Group  0 Pid   2315 on inst-yyyyy-h100-ol89 device  0 [0x0f] NVIDIA H100 80GB HBM3
+#  Rank  9 Group  0 Pid   2316 on inst-yyyyy-h100-ol89 device  1 [0x2d] NVIDIA H100 80GB HBM3
+#  Rank 10 Group  0 Pid   2317 on inst-yyyyy-h100-ol89 device  2 [0x44] NVIDIA H100 80GB HBM3
+#  Rank 11 Group  0 Pid   2318 on inst-yyyyy-h100-ol89 device  3 [0x5b] NVIDIA H100 80GB HBM3
+#  Rank 12 Group  0 Pid   2319 on inst-yyyyy-h100-ol89 device  4 [0x89] NVIDIA H100 80GB HBM3
+#  Rank 13 Group  0 Pid   2320 on inst-yyyyy-h100-ol89 device  5 [0xa8] NVIDIA H100 80GB HBM3
+#  Rank 14 Group  0 Pid   2321 on inst-yyyyy-h100-ol89 device  6 [0xc0] NVIDIA H100 80GB HBM3
+#  Rank 15 Group  0 Pid   2322 on inst-yyyyy-h100-ol89 device  7 [0xd8] NVIDIA H100 80GB HBM3
 #
 #                                                              out-of-place                       in-place          
 #       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
