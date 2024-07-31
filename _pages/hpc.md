@@ -308,7 +308,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 - **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)**
 
-    高速スクラッチ領域として利用することを想定したNVMe SSDローカルディスクを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDローカルディスクをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
+    高速スクラッチ領域として利用することを想定したNVMe SSDローカルディスクを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8/BM.GPU.H100.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDローカルディスクをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
     本テクニカルTipsは、このファイルシステム作成方法を解説します。
 
 - **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)**
@@ -406,7 +406,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 - **[Slurmによるリソース管理・ジョブ管理システム運用Tips](/ocitutorials/hpc/tech-knowhow/slurm-tips/)**
 
-    オープンソースの **[Slurm](https://slurm.schedmd.com/)** は、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。  
+    オープンソースの **[Slurm](https://slurm.schedmd.com/)** は、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。  
     本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を **Slurm** で効果的に運用するための様々なテクニカルTipsをご紹介します。
 
 ## 3-6. その他
