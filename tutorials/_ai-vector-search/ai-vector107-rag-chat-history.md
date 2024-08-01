@@ -42,6 +42,17 @@ RAGのフローや上述した会話履歴データベースの参照処理な�
 
 ![image.png](3.png)
 
+[106 : Oracle Database 23aiとLangChainでRAGを構成してみよう](/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag){:target="_blank"}で使用したPDFファイルと同じものになっているので、すでに実施済みの方はダウンロードしなくて結構です。
+
+[本チュートリアルで使用するファイル](/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf)
+
+106を実施していない方は、以下で`/tmp`ディレクトリにこちらのPDFをダウンロードしてください。
+
+```sh
+cd /tmp
+wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/rocket.pdf
+```
+
 # 実装
 
 ## Python環境のセットアップ
@@ -58,7 +69,7 @@ pip install -Uq oracledb pypdf cohere langchain langchain-community langchain-co
 ## Oracle Database へのデータ・ロード
 次に、データベースへ接続し、pdfファイルの埋め込みとロードを行います。[106 : Oracle Database 23aiとLangChainでRAGを構成してみよう](/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag){:target="_blank"}と同じ処理内容です。
 
-DBへの接続
+Oracle Database へ接続します。利用するサービスによって、接続文字列が変わりますので以下のサンプルを使って接続してください。
 
 ```python
 import oracledb
@@ -87,7 +98,7 @@ except Exception as e:
     print("Connection failed!")
 ```
 
-pdfファイルをロードしテキストに変換
+PDFファイルをロードしテキストに変換します。
 
 ```python
 from langchain.document_loaders import PyPDFLoader
@@ -103,7 +114,7 @@ print(documents)
 [Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の\n象徴です。その独自の設計は、高性能と革新性を融合させ、人類の宇宙進出を加速させるための革命的\nな一歩となります。\nこのエンジンの核となるのは、量子ダイナミックス・プラズマ・ブースターです。このブースターは、\n量子力学の原理に基づいてプラズマを生成し、超高速で加速させます。その結果、従来の化学反応より\nもはるかに高い推力を発生し、遠く離れた惑星や星系への探査を可能にします。\nさらに、エンジンの外殻にはナノファイバー製の超軽量かつ超強度の素材が使用されています。この素\n材は、宇宙空間の過酷な環境に耐え、高速での飛行中に生じる熱や衝撃からロケットを守ります。\nまた、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維\n持し、目標を追跡します。これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、\nミッションの成功を確保します。\nさらに、バイオニック・リアクション・レスポンダーが統合されています。このシステムは、人工知能\nと生体認識技術を組み合わせ、ロケットの異常な振動や動きを検知し、自己修復機能を活性化します。\n総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た\nな時代を切り開くことでしょう。その高い性能と信頼性は、人類の夢を実現するための力強い支援とな\nることでしょう。')]
 ```
 
-変換されたテキストをチャンクに区切る
+変換されたテキストをチャンクに区切ります。
 
 ```python
 from langchain.text_splitter import CharacterTextSplitter
@@ -118,7 +129,7 @@ print(docs)
 [Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の\n象徴です'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='その独自の設計は、高性能と革新性を融合させ、人類の宇宙進出を加速させるための革命的\nな一歩となります。\nこのエンジンの核となるのは、量子ダイナミックス・プラズマ・ブースターです'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='このブースターは、\n量子力学の原理に基づいてプラズマを生成し、超高速で加速させます。その結果、従来の化学反応より\nもはるかに高い推力を発生し、遠く離れた惑星や星系への探査を可能にします'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='さらに、エンジンの外殻にはナノファイバー製の超軽量かつ超強度の素材が使用されています。この素\n材は、宇宙空間の過酷な環境に耐え、高速での飛行中に生じる熱や衝撃からロケットを守ります'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維\n持し、目標を追跡します'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、\nミッションの成功を確保します。\nさらに、バイオニック・リアクション・レスポンダーが統合されています'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='このシステムは、人工知能\nと生体認識技術を組み合わせ、ロケットの異常な振動や動きを検知し、自己修復機能を活性化します'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た\nな時代を切り開くことでしょう'), Document(metadata={'source': '/tmp/rocket.pdf', 'page': 0}, page_content='その高い性能と信頼性は、人類の夢を実現するための力強い支援とな\nることでしょう')]
 ```
 
-区切ったチャンクテキストを埋め込みモデル(OCI Generative AI Serviceのembed-multilingual-v3.0)でベクトルに変換し、ベクトルデータベースにロード
+区切ったチャンクテキストを埋め込みモデル(OCI Generative AI Serviceのembed-multilingual-v3.0)でベクトルに変換し、ベクトル・データベースにロードします。
 
 ```python
 from langchain_community.vectorstores.oraclevs import OracleVS
@@ -140,7 +151,16 @@ vector_store_dot = OracleVS.from_documents(
 )
 ```
 
-特にエラーが出なけれ、ドキュメントがベクトルデータベースにロードされた状態です。
+特にエラーが出なければ、ドキュメントがベクトル・データベースにロードされた状態です。
+
+**注意**: 以下のエラーが出る場合は、APIキーの設定ファイル`~/.oci/config`が作成されていません。[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照して、APIキーを事前に作成してください。
+
+OCIコンソールからAPIキーの作成を行った場合は、`~/.oci`ディレクトリを作成し、`config`ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。
+```
+ValidationError: 1 validation error for OCIGenAIEmbeddings
+__root__
+  Could not authenticate with OCI client. Please check if ~/.oci/config exists. If INSTANCE_PRINCIPLE or RESOURCE_PRINCIPLE is used, Please check the specified auth_profile and auth_type are valid. (type=value_error)
+```
 
 <br>
 
@@ -150,7 +170,7 @@ vector_store_dot = OracleVS.from_documents(
 
 以降の処理はデータベースへの接続と会話履歴をロードする表の作成の2つです。
 
-データベースへの接続
+Python用のPostgreSQL接続ドライバ`psycopg`を使って、PostgreSQLへ接続します。
 
 ```python
 import psycopg
@@ -180,7 +200,7 @@ PostgresChatMessageHistory.create_tables(sync_connection, table_name)
 
 念のためPostgreSQLに接続し、表が作成されていることの確認と、その表定義を確認してみます。
 
-PostgreSQLクライアント(psql)で接続
+PostgreSQLクライアント(psql)で接続します。
 ```sql
 $ psql -h <ip address> -p 5432 -U <user_name> -d <database_name>
 
@@ -191,15 +211,16 @@ SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, compress
 Type "help" for help. 
 ```
 
-作成した表(message_store)を確認
+作成した表(message_store)を確認してみます。
 
+以下のように出力されれば、表が作成されています。
 ```sql
 postgres=> \dt
 
             List of relations
  Schema |     Name      | Type  |  Owner  
 --------+---------------+-------+---------
- public | message_store | table | ksonoda
+ public | message_store | table | xxxx
 (1 row)
 ```
 
@@ -214,7 +235,7 @@ postgres=> select * from message_store;
 (0 rows)
 ```
 
-ここまでで、ベクトルデータベース(Oracle Database)と会話履歴保持用データベース(PostgreSQL)の準備が完了しました。
+ここまでで、ベクトル・データベース(Oracle Database)と会話履歴保持用データベース(PostgreSQL)の準備が完了しました。
 
 <br>
 
@@ -236,7 +257,7 @@ llm = ChatOCIGenAI(
 )
 ```
 
-次に、会話コンテキストに沿って回答をするために、もとのプロンプトを変換するためのretrieverを定義します。この実装により、仮に主語が省略されたプロンプトが入力されたりしても、内部的に、以前の会話のコンテキストに沿ったプロンプトに変換されます。冒頭で説明した図はかなり簡略化したもので、これ以降の処理は[こちら](https://python.langchain.com/v0.1/docs/use_cases/question_answering/chat_history/#tying-it-together){:target="_blank"}のLangChainの処理フローと一緒に確認するとコードの理解が進みやすいです。
+次に、会話コンテキストに沿って回答をするために、もとのプロンプトを変換するためのretrieverを定義します。この実装により、仮に主語が省略されたプロンプトが入力されたりしても、内部的に以前の会話のコンテキストに沿ったプロンプトに変換されます。冒頭で説明した図はかなり簡略化したもので、これ以降の処理は[こちら](https://python.langchain.com/v0.1/docs/use_cases/question_answering/chat_history/#tying-it-together){:target="_blank"}のLangChainの処理フローと一緒に確認するとコードの理解が進みやすいです。
 
 
 ```python
@@ -262,8 +283,6 @@ history_aware_retriever = create_history_aware_retriever(
     llm, retriever, contextualize_q_prompt
 )
 ```
-
-
 
 そして次が質問応答用のプロンプトの定義で、定義したプロンプトとLLMをチェーンにしているLangChainのお決まりのコードです。
 
@@ -364,15 +383,10 @@ print(response)
 
 ```sql
 postgres=> select * from message_store;
- id |              session_id              |                                                                                                                             
-                                                                         message                                                                                         
-                                                                                                              |          created_at           
-----+--------------------------------------+-----------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------+-------------------------------
+ id |              session_id              |                 message                                                            |          created_at           
+----+--------------------------------------+------------------------------------------------------------------------------------+----------------------------
   1 | 5e2a952c-59a4-40e1-9355-f688a3dbf27e | {"data": {"id": null, "name": null, "type": "human", "content": "OraBoosterとは何ですか？", "example": false, "additional_kw
-args": {}, "response_metadata": {}}, "type": "human"}                                                                                                                    
-                                                                                                              | 2024-07-24 07:01:39.320933+00
+args": {}, "response_metadata": {}}, "type": "human"}    | 2024-07-24 07:01:39.320933+00
   2 | 5e2a952c-59a4-40e1-9355-f688a3dbf27e | {"data": {"id": null, "name": null, "type": "ai", "content": "OraBooster は、次世代の宇宙探査を支える先進的な推進技術を備え
 ロケットエンジンです。高い性能と信頼性、そしてハイパーフォトン・ジャイロスコープによる極めて高い姿勢制御精度を特長とします。", "example": false, "tool_calls": [], "usage
 _metadata": null, "additional_kwargs": {}, "response_metadata": {}, "invalid_tool_calls": []}, "type": "ai"} | 2024-07-24 07:01:39.320933+00
@@ -406,25 +420,14 @@ historyでこの一つ前のプロンプトと応答が履歴として参照さ�
 
 ```sql
 postgres=> select * from message_store;
- id |              session_id              |                                                                                                                                                            
-                             message                                                                                                                                                                    
-                     |          created_at           
-----+--------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------+-------------------------------
-  1 | e8b3a9c2-28de-4f18-947a-2e0d7057cf2e | {"data": {"id": null, "name": null, "type": "human", "content": "OraBoosterとは何ですか？", "example": false, "additional_kwargs": {}, "response_metadata":
- {}}, "type": "human"}                                                                                                                                                                                  
-                     | 2024-07-28 22:54:45.934184+00
+ id |    session_id              |         message                                                         |          created_at           
+----+----------------------------+-------------------------------------------------------------------------+-------------------------------------
+  1 | e8b3a9c2-28de-4f18-947a-2e0d7057cf2e | {"data": {"id": null, "name": null, "type": "human", "content": "OraBoosterとは何ですか？", "example": false, "additional_kwargs": {},"response_metadata":{}}, "type":"human"} | 2024-07-28 22:54:45.934184+00
   2 | e8b3a9c2-28de-4f18-947a-2e0d7057cf2e | {"data": {"id": null, "name": null, "type": "ai", "content": "OraBoosterは、次世代の宇宙探査を支える先進的な推進技術を誇るロケットエンジンです。高い性能と
-頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。", "example": false, "tool_calls": [], "usage_metadata": null, "additional_kwargs": {}, "response_metadata": {}, "invalid_tool_calls":
- []}, "type": "ai"} | 2024-07-28 22:54:45.934184+00
-  3 | e8b3a9c2-28de-4f18-947a-2e0d7057cf2e | {"data": {"id": null, "name": null, "type": "human", "content": "実在するものですか？", "example": false, "additional_kwargs": {}, "response_metadata": {}}
-, "type": "human"}                                                                                                                                                                                      
-                     | 2024-07-28 22:55:59.114845+00
-  4 | e8b3a9c2-28de-4f18-947a-2e0d7057cf2e | {"data": {"id": null, "name": null, "type": "ai", "content": "いいえ、OraBooster は架空のロケットエンジンです。", "example": false, "tool_calls": [], "usag
-e_metadata": null, "additional_kwargs": {}, "response_metadata": {}, "invalid_tool_calls": []}, "type": "ai"}                                                                                           
-                     | 2024-07-28 22:55:59.114845+00
-                     
+頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。", "example": false, "tool_calls": [], "usage_metadata": null, "additional_kwargs": {}, "response_metadata": {}, "invalid_tool_calls":[]}, "type": "ai"} | 2024-07-28 22:54:45.934184+00
+  3 | e8b3a9c2-28de-4f18-947a-2e0d7057cf2e | {"data": {"id": null, "name": null, "type": "human", "content": "実在するものですか？", "example": false, "additional_kwargs": {}, "response_metadata": {}},"type":"human"} | 2024-07-28 22:55:59.114845+00
+  4 | e8b3a9c2-28de-4f18-947a-2e0d7057cf2e | {"data": {"id": null, "name": null, "type": "ai", "content": "いいえ、OraBooster は架空のロケットエンジンです。", "example": false, "tool_calls": [], "usage_metadata": null, "additional_kwargs": {}, "response_metadata": {}, "invalid_tool_calls": []},"type":"ai"} | 2024-07-28 22:55:59.114845+00
+(4 rows)
 ```
 
 次は主語を「それ」(指示代名詞)に変更してみます。
