@@ -1,6 +1,6 @@
 ---
 title: "Oracle Database編 - Exadata Database Service on Exascale Infrastructure (ExaDB-XS) を使ってみよう"
-excerpt: "文章考えるExadata Database Service on Exascale Infrastructure (ExaDB-XS)を学ぶチュートリアルです。インスタンスの作成から、運用管理までを一通り体験します。"
+excerpt: "Exadata Database Service on Exascale Infrastructure (ExaDB-XS)を学ぶチュートリアルです。インスタンスの作成から、運用管理までを一通り体験します。"
 permalink: /exadb-xs
 layout: single
 tags: "Database"
@@ -27,13 +27,16 @@ toc: true
 
 <br/>
 # <span style="color: brown; ">■ Exadata Database Service on Dedicated Infrastructure (ExaDB-D) を使ってみよう</span>
-Oracle Databaseを動かすための最適な基盤として、リリースから10年以上経過し、多くのミッションクリティカルなシステムを支えるExadata !
-OCIであればExadataもサブスクリプションで使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
+規模やワークロードに関係なく、あらゆる業界のあらゆる組織にExadataのメリットを提供するExadata Database Service on Dedicated Infrastructure !
+インテリジェンスと最新のクラウドのあらゆる利点を組み合わせたオラクルの画期的なマルチテナント・アーキテクチャを体験してみましょう !
+インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 
 + **[101: ExaDB-XSを使おう](/ocitutorials/exadb-xs/exadb-xs101-create-exadb-xs/){:target="_blank"}**   
 
 <br/>
+
+----
 
 **Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
 <br/>

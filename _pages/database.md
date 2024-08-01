@@ -42,7 +42,7 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 <br/>
 # <span style="color: brown; ">■ Exadata Database Service on Exascale Infrastructure (ExaDB-XS) を使ってみよう</span>
 
-文章考える
+Exadata Database Serviceのメリットを、小規模ながら重要度の劣らないデータベース向けに、より低いエントリーコストでご利用いただけるExadata Database Service on Exascale Infrastructure !
 インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 + **「ExaDB-XSを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/exadb-xs){:target="_blank"}**

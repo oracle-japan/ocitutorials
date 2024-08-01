@@ -13,16 +13,23 @@ header:
 <a id="anchor0"></a>
 
 # はじめに
-**Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)** は、Oracle Databaseが高い可用性を備えつつ高いパフォーマンスを発揮できる**Oracle Exadata Database Machine (Exadata)**が利用可能なサービスです。同じようにOCI上でExadataを利用可能なサービスとしては、Autonomous Data WarehouseやAutonomous Transaction Processing などのAutonomous Databaseのサービスがありますが、ExaDB-D が他のサービスと大きく違うところは、全オプションが使える**専有型のUser-Managedサービス**であるということです。
+**Oracle Exadata Database Service on Exascale Infrastructure (ExaDB-XS)** は、Oracle Databaseが高い可用性を備えつつ高いパフォーマンスを発揮できる**Oracle Exadata Database Machine (Exadata)**を、より低いエントリーコストでご利用いただけるサービスです。ExaDB-XSは、Exadata Database Service on Dedicated Infrastructure (ExaDB-D)と同じ強力な自動化機能を使用して VM クラスタとデータベースを管理しますが、物理的なコンピュートとストレージはサービスから抽象化されます。VMクラスタとデータベースをデプロイするだけで、その上で実行されるオラクル管理のインフラストラクチャを意識する必要はありません。データベースはVMクラスタに分離され、完全に管理下に置かれます。VMイメージはExascaleブロック・ストレージに保存されるため、ローカル・ドライブのサイズ制限がなく、障害発生時の移行も容易です。
 
-+ **専有型** : H/Wもユーザー専有となり、他のユーザーの環境と分離されるため、セキュリティ・性能を担保できます。
-+ **User-Managed サービス** : OS以上は顧客管理。OS上の構築・運用・管理に有効な機能を、クラウドのツールでも提供。パッチ適用やメンテナンスの実施判断・作業タイミングは顧客判。OSログインが可能でこれまで同様の管理方法を用いることができる (OS権限が必要な変更作業、サード・パーティのAgentの導入、ローカルにログやダンプファイルの配置など)ので、別途インスタンスやストレージサービスを立てる必要はありません。
+![](introduction_01.png)
 
-また、オンライン・スケーリング (停止なし)での1時間単位での柔軟な価格体系、デフォルトでの可用性構成や容易に高可用性構成が組めること、PaaSとしてのプロビジョニングや管理面などのメリットがあります。
++ **パワフル** :  Exascaleインフラストラクチャは、極めて高いパフォーマンス、信頼性、可用性、セキュリティを実現するExadataのすべての機能を継承しています。AI、アナリティクス、ミッションクリティカルなOLTPワークロードは、Exascaleのクラウド向けインテリジェント・データ・アーキテクチャによって高速化されます。
++ **超低コスト** : Exascaleのインフラストラクチャでは、データベースが使用するコンピュートとストレージのリソースに対してのみ支払いが発生します。IOPSに対する追加料金は発生しないため、コストを予測しやすくなります。
++ **スケーラブルなプール・リソース** : エクサスケールインフラストラクチャは、共有インテリジェントストレージとコンピューティングのプールを活用することで、ダウンタイムやサーバーベースのサイズ制限、破壊的なマイグレーションを心配することなく、データベースを容易に拡張することができます。
++ **俊敏な開発** : Exascaleインフラストラクチャは、Exadataネイティブのパフォーマンスで迅速かつ効率的にデータベースのシンクローンを作成する機能を備えているため、ストレージコストを削減し、開発者の俊敏性を高めることができます。
 
-![](2022-06-27-13-37-50.png)
+<BR>
 
-+ [プロビジョニングチュートリアル](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html){:target="_blank"}
+# VMクラスタおよびデータベースの作成
+[プロビジョニングチュートリアル](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html){:target="_blank"}を参考に、ExaDB-XSのVMクラスタを作成し、その上にコンテナ・データベースをプロビジョニングします。
+
+> バックアップ先の文章考える
+<BR>
+> ![](console_01.png)
 
 <BR>
 
