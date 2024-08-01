@@ -1643,6 +1643,12 @@ var store = [{
         "url": "/ocitutorials/intermediates/protecting-web-servers-with-waf/",
         "teaser": null
       },{
+        "title": "Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う",
+        "excerpt":"チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル OCI Web Application Acceleration（WAA）はフレキシブル・ロードバランサ（FLB）に紐づけるコンポーネントで、コンテンツ・キャッシュ機能とコンテンツのGZIP（GNU zip）による圧縮機能を提供します。これにより、クライアントへのレスポンス高速化、ひいてはアプリケーションのユーザーエクスペリエンス向上が期待できます。本チュートリアルでは、WebブラウザからGETメソッドのHTTPリクエストを行ったとき、WAAによりHTMLファイルのコンテンツ・キャッシュとGZIP圧縮が行われる様子を観察します（下図; 検証環境はOCIチュートリアル中級編『ロードバランサーでWebサーバーを負荷分散する』で作成したFLBと、Apacheをインストールしたバックエンドサーバー1台を再利用して構成します）。 Note 本チュートリアルを行うにあたっては、プロキシが挙動に影響を与える可能性がございます。クライアントPCがVPNに接続している場合は切断されることをお勧めします。 所要時間 : 約30分 前提条件 : 『OCIチュートリアル中級編『ロードバランサーでWebサーバーを負荷分散する』を完遂していること Google Chromeウェブブラウザを用いること 注意 : チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります 目次 : バックエンド・サーバーにて検証用Webサイトを構築する WAAの設定を行う ブラウザからWebサイトにアクセスし、WAAの働きを確認する 1. バックエンド・サーバーにて検証用Webサイトを構築する この章では、FLBのバックエンド・セットのWebサーバ・インスタンスにて、WAAのキャッシュ機能を活用するためのApacheの設定と、圧縮機能を試すためのHTMLファイルの作成を行います。 本チュートリアルの前提条件を完遂すると、FLB専用サブネットおよびFLB、パブリック・サブネットに配置された二台のバックエンド・Webサーバ・インスタンスが作成されます(図)。今回、そのうちの一台の設定を編集しますので、まずはSSH接続のためのパブリック・サブネットのルーティングとセキュリティの設定を行います。 コンソール・メニューから ネットワーキング&gt;仮想クラウドネットワークを選択します（図） 仮想クラウド・ネットワークの一覧から TutorialVCNのデフォルト・ルート表である、Default Route Table for TutorialVCN を選択します（図） 遷移先、Default Route Table for TutorialVCNの詳細画面にて、ルート・ルールの追加（図、青色のボタン）をクリックします 表示されるウィザードにて、次の設定を行い、ルートルールの追加ボタン（図、青色のボタン）をクリックします ターゲット・タイプ...","categories": [],
+        "tags": ["intermediate","network"],
+        "url": "/ocitutorials/intermediates/web-application-acceleration/",
+        "teaser": "/ocitutorials/intermediates/web-application-acceleration/overview_architecture.png"
+      },{
         "title": "OCIのDBCSでOperations Insightsを有効化する",
         "excerpt":" ","categories": [],
         "tags": ["management"],
