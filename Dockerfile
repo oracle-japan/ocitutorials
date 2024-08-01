@@ -1,4 +1,4 @@
-FROM jekyll/jekyll:4.1.0
+FROM jekyll/jekyll
 
 WORKDIR /pages
 
