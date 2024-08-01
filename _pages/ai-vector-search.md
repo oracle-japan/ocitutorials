@@ -47,8 +47,9 @@ Oracle AI Vector Searchを使用すると、ビジネス・データにベクト
 
 + **[106 : Oracle Database 23aiとLangChainでRAGを構成してみよう](/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/){:target="_blank"}**
 
-<br/>
++ **[107 : 会話履歴保持の仕組みを取り入れたRAGの実装をしてみよう](/ocitutorials/ai-vector-search/ai-vector107-rag-chat-history/){:target="_blank"}**
 
+<br/>
 
 **Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
 <br/>
