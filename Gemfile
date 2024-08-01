@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "jekyll"
+gem "jekyll" "~> 4.2.0"
 gem "minimal-mistakes-jekyll"
 gem "jemoji"
 gem "webrick"
