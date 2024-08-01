@@ -1,6 +1,6 @@
 ---
 title: "Oracle Database編"
-excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Base Database Service (BaseDB) から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
+excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Base Database Service (BaseDB) から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、文章考えるまたは一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
 permalink: /database/
 layout: single
 tags: "Database"
@@ -37,6 +37,15 @@ Oracle Databaseを動かすための最適な基盤として、リリースか�
 OCIであればExadataもサブスクリプションで使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 + **「ExaDB-Dを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/exadbd){:target="_blank"}**
+<br/>
+
+<br/>
+# <span style="color: brown; ">■ Exadata Database Service on Exascale Infrastructure (ExaDB-XS) を使ってみよう</span>
+
+文章考える
+インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
+
++ **「ExaDB-XSを使ってみよう」チュートリアル一覧は[こちら](/ocitutorials/exadb-xs){:target="_blank"}**
 <br/>
 
 <br/>
