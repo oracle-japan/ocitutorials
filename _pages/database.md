@@ -1,6 +1,6 @@
 ---
 title: "Oracle Database編"
-excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Base Database Service (BaseDB) から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、文章考えるまたは一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
+excerpt: "Oracle Cloud Infrastructure (OCI) で利用可能な3つのOracle Databaseのサービスに関するチュートリアルを纏めています。まずはベーシックなOracle Base Database Service (BaseDB) から、ミッションクリティカルなシステムで豊富な実績を持つ Exadata をパブリック・クラウド上で利用できる Oracle Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 、Exadataを共有環境でより柔軟に活用できるExadata Database Service on Exascale Infrastructure (ExaDB-XS) 、または一歩先を行くフルマネージドサービスである Autonomous Database (ADB) について基本的な機能、操作方法を学習できます"
 permalink: /database/
 layout: single
 tags: "Database"

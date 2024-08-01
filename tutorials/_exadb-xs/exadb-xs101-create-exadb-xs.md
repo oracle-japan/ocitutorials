@@ -22,7 +22,7 @@ header:
 
 ![](2022-06-27-13-37-50.png)
 
-+ [プロビジョニングチュートリアル](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html#introduction){:target="_blank"}
++ [プロビジョニングチュートリアル](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html){:target="_blank"}
 
 <BR>
 
