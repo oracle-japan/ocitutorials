@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-01T10:20:44+09:00">
+  <meta property="article:published_time" content="2024-08-01T23:32:12+09:00">
 
 
 
@@ -265,7 +265,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="106 : Oracle Database 23aiとLangChainでRAGを構成してみよう">
     <meta itemprop="description" content="LangChainを使ったRAG構成をステップバイステップでご紹介します。">
-    <meta itemprop="datePublished" content="2024-08-01T10:20:44+09:00">
+    <meta itemprop="datePublished" content="2024-08-01T23:32:12+09:00">
     
 
     <div class="page__inner-wrap">
@@ -552,47 +552,47 @@ ipython
 
 <p>まずは、LangChainのドキュメントローダーで/tmpに配置したPDFファイルをロードし、テキストに変換します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.document_loaders</span> <span class="kn">import</span> <span class="n">PyPDFLoader</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.document_loaders</span> <span class="kn">import</span> <span class="n">PyPDFLoader</span>
 
-<span class="n">loader</span> <span class="o">=</span> <span class="n">PyPDFLoader</span><span class="p">(</span><span class="s">"/tmp/rocket.pdf"</span><span class="p">)</span>
-<span class="n">documents</span> <span class="o">=</span> <span class="n">loader</span><span class="p">.</span><span class="n">load_and_split</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+<span class="n">loader</span> <span class="o">=</span> <span class="nc">PyPDFLoader</span><span class="p">(</span><span class="sh">"</span><span class="s">/tmp/rocket.pdf</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">documents</span> <span class="o">=</span> <span class="n">loader</span><span class="p">.</span><span class="nf">load_and_split</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>下記のようにPDFファイルドキュメントローダーにより構造解析されて、テキストに変換されます。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の</span><span class="se">\n</span><span class="s">象徴です。その独自の設計は、高性能と革新性を融合させ、人類の宇宙進出を加速させるための革命的</span><span class="se">\n</span><span class="s">な一歩となります。</span><span class="se">\n</span><span class="s">このエンジンの核となるのは、量子ダイナミックス・プラズマ・ブースターです。このブースターは、</span><span class="se">\n</span><span class="s">量子力学の原理に基づいてプラズマを生成し、超高速で加速させます。その結果、従来の化学反応より</span><span class="se">\n</span><span class="s">もはるかに高い推力を発生し、遠く離れた惑星や星系への探査を可能にします。</span><span class="se">\n</span><span class="s">さらに、エンジンの外殻にはナノファイバー製の超軽量かつ超強度の素材が使用されています。この素</span><span class="se">\n</span><span class="s">材は、宇宙空間の過酷な環境に耐え、高速での飛行中に生じる熱や衝撃からロケットを守ります。</span><span class="se">\n</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します。これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています。このシステムは、人工知能</span><span class="se">\n</span><span class="s">と生体認識技術を組み合わせ、ロケットの異常な振動や動きを検知し、自己修復機能を活性化します。</span><span class="se">\n</span><span class="s">総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう。その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう。'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">})]</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の</span><span class="se">\n</span><span class="s">象徴です。その独自の設計は、高性能と革新性を融合させ、人類の宇宙進出を加速させるための革命的</span><span class="se">\n</span><span class="s">な一歩となります。</span><span class="se">\n</span><span class="s">このエンジンの核となるのは、量子ダイナミックス・プラズマ・ブースターです。このブースターは、</span><span class="se">\n</span><span class="s">量子力学の原理に基づいてプラズマを生成し、超高速で加速させます。その結果、従来の化学反応より</span><span class="se">\n</span><span class="s">もはるかに高い推力を発生し、遠く離れた惑星や星系への探査を可能にします。</span><span class="se">\n</span><span class="s">さらに、エンジンの外殻にはナノファイバー製の超軽量かつ超強度の素材が使用されています。この素</span><span class="se">\n</span><span class="s">材は、宇宙空間の過酷な環境に耐え、高速での飛行中に生じる熱や衝撃からロケットを守ります。</span><span class="se">\n</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します。これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています。このシステムは、人工知能</span><span class="se">\n</span><span class="s">と生体認識技術を組み合わせ、ロケットの異常な振動や動きを検知し、自己修復機能を活性化します。</span><span class="se">\n</span><span class="s">総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう。その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう。</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">})]</span>
 </code></pre></div></div>
 
 <p>上記のテキストをLangChainのテキストスプリッターでチャンクテキストに分割します。今回もとりあえずCharacterTextSplitterで固定長で区切ってみます。(LangChainにはほかにもいくつかのテキストスプリッターがありますので興味ある方はいろいろためしてみてください。)</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.text_splitter</span> <span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.text_splitter</span> <span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
 
-<span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="n">separator</span><span class="o">=</span><span class="s">"。"</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">docs</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="p">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="n">text_splitter</span> <span class="o">=</span> <span class="nc">CharacterTextSplitter</span><span class="p">(</span><span class="n">separator</span><span class="o">=</span><span class="sh">"</span><span class="s">。</span><span class="sh">"</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="p">.</span><span class="nf">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>下記の9つのチャンクテキストに分割されたことがわかります。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の</span><span class="se">\n</span><span class="s">象徴です'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'その独自の設計は、高性能と革新性を融合させ、人類の宇宙進出を加速させるための革命的</span><span class="se">\n</span><span class="s">な一歩となります。</span><span class="se">\n</span><span class="s">このエンジンの核となるのは、量子ダイナミックス・プラズマ・ブースターです'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'このブースターは、</span><span class="se">\n</span><span class="s">量子力学の原理に基づいてプラズマを生成し、超高速で加速させます。その結果、従来の化学反応より</span><span class="se">\n</span><span class="s">もはるかに高い推力を発生し、遠く離れた惑星や星系への探査を可能にします'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'さらに、エンジンの外殻にはナノファイバー製の超軽量かつ超強度の素材が使用されています。この素</span><span class="se">\n</span><span class="s">材は、宇宙空間の過酷な環境に耐え、高速での飛行中に生じる熱や衝撃からロケットを守ります'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'このシステムは、人工知能</span><span class="se">\n</span><span class="s">と生体認識技術を組み合わせ、ロケットの異常な振動や動きを検知し、自己修復機能を活性化します'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
-<span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">})]</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の</span><span class="se">\n</span><span class="s">象徴です</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その独自の設計は、高性能と革新性を融合させ、人類の宇宙進出を加速させるための革命的</span><span class="se">\n</span><span class="s">な一歩となります。</span><span class="se">\n</span><span class="s">このエンジンの核となるのは、量子ダイナミックス・プラズマ・ブースターです</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">このブースターは、</span><span class="se">\n</span><span class="s">量子力学の原理に基づいてプラズマを生成し、超高速で加速させます。その結果、従来の化学反応より</span><span class="se">\n</span><span class="s">もはるかに高い推力を発生し、遠く離れた惑星や星系への探査を可能にします</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">さらに、エンジンの外殻にはナノファイバー製の超軽量かつ超強度の素材が使用されています。この素</span><span class="se">\n</span><span class="s">材は、宇宙空間の過酷な環境に耐え、高速での飛行中に生じる熱や衝撃からロケットを守ります</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">このシステムは、人工知能</span><span class="se">\n</span><span class="s">と生体認識技術を組み合わせ、ロケットの異常な振動や動きを検知し、自己修復機能を活性化します</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}),</span> 
+<span class="nc">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">})]</span>
 </code></pre></div></div>
 
 <p>見にくいので少し整形します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
 <span class="n">contents</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-    <span class="n">contents</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">.</span><span class="n">page_content</span><span class="p">)</span>
-<span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+    <span class="n">contents</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">doc</span><span class="p">.</span><span class="n">page_content</span><span class="p">)</span>
+<span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>下記9つのチャンクテキストです。</p>
@@ -605,12 +605,12 @@ ipython
 
 <p>Autonomous Database 23ai Free、若しくはBaseDBを使用している場合は、先程取得した接続文字列をdsnに貼り付けます。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">oracledb</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">oracledb</span>
 
 <span class="c1"># Oracle Database 23ai Free版
-</span><span class="n">username</span> <span class="o">=</span> <span class="s">"docuser"</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s">"docuser"</span>
-<span class="n">dsn</span> <span class="o">=</span> <span class="s">"localhost/freepdb1"</span>
+</span><span class="n">username</span> <span class="o">=</span> <span class="sh">"</span><span class="s">docuser</span><span class="sh">"</span>
+<span class="n">password</span> <span class="o">=</span> <span class="sh">"</span><span class="s">docuser</span><span class="sh">"</span>
+<span class="n">dsn</span> <span class="o">=</span> <span class="sh">"</span><span class="s">localhost/freepdb1</span><span class="sh">"</span>
 
 <span class="c1"># BaseDB版では以下をコメントアウトして実行します
 # oracledb.init_oracle_client()
@@ -624,27 +624,27 @@ ipython
 # dsn = "&lt;ADBの接続文字列&gt;" (例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
 </span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Connection successful!"</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Connection successful!</span><span class="sh">"</span><span class="p">)</span>
 <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Connection failed!"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Connection failed!</span><span class="sh">"</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>必要なライブラリをimportします。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_community.vectorstores</span> <span class="kn">import</span> <span class="n">oraclevs</span>
-<span class="kn">from</span> <span class="nn">langchain_community.vectorstores.oraclevs</span> <span class="kn">import</span> <span class="n">OracleVS</span>
-<span class="kn">from</span> <span class="nn">langchain_community.vectorstores.utils</span> <span class="kn">import</span> <span class="n">DistanceStrategy</span>
-<span class="kn">from</span> <span class="nn">langchain_core.documents</span> <span class="kn">import</span> <span class="n">Document</span>
-<span class="kn">from</span> <span class="nn">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">OCIGenAIEmbeddings</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_community.vectorstores</span> <span class="kn">import</span> <span class="n">oraclevs</span>
+<span class="kn">from</span> <span class="n">langchain_community.vectorstores.oraclevs</span> <span class="kn">import</span> <span class="n">OracleVS</span>
+<span class="kn">from</span> <span class="n">langchain_community.vectorstores.utils</span> <span class="kn">import</span> <span class="n">DistanceStrategy</span>
+<span class="kn">from</span> <span class="n">langchain_core.documents</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="n">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">OCIGenAIEmbeddings</span>
 </code></pre></div></div>
 
 <p>利用する埋め込みモデルを定義します。今回はOCI Generative AI Serviceのembed-multilingual-v3.0というモデルを利用します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">embeddings</span> <span class="o">=</span> <span class="n">OCIGenAIEmbeddings</span><span class="p">(</span>
-    <span class="n">model_id</span><span class="o">=</span><span class="s">"cohere.embed-multilingual-v3.0"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="s">"https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"</span><span class="p">,</span>
-    <span class="n">compartment_id</span><span class="o">=</span><span class="s">"ocid1.compartment.oc1..aaaaaaaxxxxxxx"</span><span class="p">,</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">embeddings</span> <span class="o">=</span> <span class="nc">OCIGenAIEmbeddings</span><span class="p">(</span>
+    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.embed-multilingual-v3.0</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">ocid1.compartment.oc1..aaaaaaaxxxxxxx</span><span class="sh">"</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
@@ -658,7 +658,7 @@ __root__
 
 <p>LangChainのお決まりの関数であるfrom_documentsでベクトルデータベースにチャンクテキストをロードします。以下のように、ここまでの手順で定義済のオブジェクトを使って下記一つのコードでチャンクテキストをベクトル化しますが、ここでチャンクテキストとベクトルデータをロードする表を指定することになります。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">vector_store_dot</span> <span class="o">=</span> <span class="n">OracleVS</span><span class="p">.</span><span class="n">from_documents</span><span class="p">(</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">vector_store_dot</span> <span class="o">=</span> <span class="n">OracleVS</span><span class="p">.</span><span class="nf">from_documents</span><span class="p">(</span>
     <span class="c1"># 作成済のチャンクテキスト
 </span>    <span class="n">docs</span><span class="p">,</span>
     <span class="c1"># 定義済の埋め込みモデル
@@ -666,7 +666,7 @@ __root__
     <span class="c1"># 定義済のデータベースのconnectionオブジェクト
 </span>    <span class="n">client</span><span class="o">=</span><span class="n">connection</span><span class="p">,</span>
     <span class="c1"># 新規作成する表の名前を任意で指定
-</span>    <span class="n">table_name</span><span class="o">=</span><span class="s">"doc_table"</span><span class="p">,</span>
+</span>    <span class="n">table_name</span><span class="o">=</span><span class="sh">"</span><span class="s">doc_table</span><span class="sh">"</span><span class="p">,</span>
     <span class="c1"># ベクトル検索時に使う距離計算の方法
 </span>    <span class="n">distance_strategy</span><span class="o">=</span><span class="n">DistanceStrategy</span><span class="p">.</span><span class="n">DOT_PRODUCT</span><span class="p">,</span>
 <span class="p">)</span>
@@ -676,7 +676,7 @@ __root__
 
 <p>また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy">こちら</a></p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oraclevs</span><span class="p">.</span><span class="n">create_index</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">vector_store_dot</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">"idx_name"</span><span class="p">:</span> <span class="s">"rocket"</span><span class="p">,</span> <span class="s">"idx_type"</span><span class="p">:</span> <span class="s">"IVF"</span><span class="p">})</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">oraclevs</span><span class="p">.</span><span class="nf">create_index</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">vector_store_dot</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">idx_name</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">rocket</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">idx_type</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">IVF</span><span class="sh">"</span><span class="p">})</span>
 </code></pre></div></div>
 
 <p>ここまでで、PDFファイルをベクトルデータベースにロードする処理が完了です。</p>
@@ -862,48 +862,48 @@ __root__
 
 <p>まずは下記コードでプロンプトテンプレートを作成します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
-<span class="kn">from</span> <span class="nn">langchain_core.messages</span> <span class="kn">import</span> <span class="n">AIMessage</span><span class="p">,</span> <span class="n">HumanMessage</span><span class="p">,</span> <span class="n">SystemMessage</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
+<span class="kn">from</span> <span class="n">langchain_core.messages</span> <span class="kn">import</span> <span class="n">AIMessage</span><span class="p">,</span> <span class="n">HumanMessage</span><span class="p">,</span> <span class="n">SystemMessage</span>
 
 
 <span class="c1"># promptの作成
-</span><span class="n">template</span> <span class="o">=</span> <span class="s">"""contextに従って回答してください:
+</span><span class="n">template</span> <span class="o">=</span> <span class="sh">"""</span><span class="s">contextに従って回答してください:
 {context}
 
 質問: {question}
-"""</span>
+</span><span class="sh">"""</span>
 
-<span class="n">prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="p">.</span><span class="n">from_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="p">.</span><span class="nf">from_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>次にテキスト生成モデルを指定します。まずはGenerative AI Serviceの command-r-plusです。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_community.chat_models.oci_generative_ai</span> <span class="kn">import</span> <span class="n">ChatOCIGenAI</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_community.chat_models.oci_generative_ai</span> <span class="kn">import</span> <span class="n">ChatOCIGenAI</span>
 
-<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOCIGenAI</span><span class="p">(</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="nc">ChatOCIGenAI</span><span class="p">(</span>
     <span class="c1"># model_id="cohere.command-r-16k",
-</span>    <span class="n">model_id</span><span class="o">=</span><span class="s">"cohere.command-r-plus"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="s">"https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"</span><span class="p">,</span>
-    <span class="n">compartment_id</span><span class="o">=</span><span class="s">"ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxx"</span><span class="p">,</span>
-    <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">"temperature"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s">"max_tokens"</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
+</span>    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.command-r-plus</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxx</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">temperature</span><span class="sh">"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="sh">"</span><span class="s">max_tokens</span><span class="sh">"</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
 <p>ベクトル検索を実行するベクトルデータベースを定義します。もちろんここでは事前に定義したvector_store_dotを指定します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">retriever</span> <span class="o">=</span> <span class="n">vector_store_dot</span><span class="p">.</span><span class="n">as_retriever</span><span class="p">()</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">retriever</span> <span class="o">=</span> <span class="n">vector_store_dot</span><span class="p">.</span><span class="nf">as_retriever</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>これでChainを作る必要なパーツが全て定義できました。これまで定義したオブジェクトを全て使い、下記のようにChainを定義します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.schema.runnable</span> <span class="kn">import</span> <span class="n">RunnablePassthrough</span>
-<span class="kn">from</span> <span class="nn">langchain.schema.output_parser</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.schema.runnable</span> <span class="kn">import</span> <span class="n">RunnablePassthrough</span>
+<span class="kn">from</span> <span class="n">langchain.schema.output_parser</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
 
 <span class="n">chain</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">{</span><span class="s">"context"</span><span class="p">:</span> <span class="n">retriever</span><span class="p">,</span> <span class="s">"question"</span><span class="p">:</span> <span class="n">RunnablePassthrough</span><span class="p">()}</span>
+    <span class="p">{</span><span class="sh">"</span><span class="s">context</span><span class="sh">"</span><span class="p">:</span> <span class="n">retriever</span><span class="p">,</span> <span class="sh">"</span><span class="s">question</span><span class="sh">"</span><span class="p">:</span> <span class="nc">RunnablePassthrough</span><span class="p">()}</span>
     <span class="o">|</span> <span class="n">prompt</span>
     <span class="o">|</span> <span class="n">llm</span>
-    <span class="o">|</span> <span class="n">StrOutputParser</span><span class="p">()</span>
+    <span class="o">|</span> <span class="nc">StrOutputParser</span><span class="p">()</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
@@ -911,7 +911,7 @@ __root__
 
 <p>RAGが実装できましたので、テキスト生成を行います。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="s">"OraBoosterとは何ですか?"</span><span class="p">))</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">print</span><span class="p">(</span><span class="n">chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="sh">"</span><span class="s">OraBoosterとは何ですか?</span><span class="sh">"</span><span class="p">))</span>
 </code></pre></div></div>
 
 <p>上記プロンプトで生成されたテキストが以下になります。ベクトルデータベースのデータを使ってテキスト生成していることがわかります。</p>
@@ -927,8 +927,8 @@ __root__
 
 <p>非RAG構成、つまりベクトルデータベースを使わない場合の問い合わせです。コードとしてはChainオブジェクトではなく、LLMを定義しただけのオブジェクトを使ってテキスト生成を行う普通の問い合わせです。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span> <span class="o">=</span> <span class="n">llm</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="s">"OraBoosterとは何ですか?"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">content</span><span class="p">)</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span> <span class="o">=</span> <span class="n">llm</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="sh">"</span><span class="s">OraBoosterとは何ですか?</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">content</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>ベクトルデータベースを参照しないため、ハルシネーション満載のテキストが生成されます。しかも前回同様、口腔衛生用品としてテキスト生成がされています。これはOraBoosterという単語が Oral Careの単語に類似しているからだと思われます。</p>
@@ -950,41 +950,41 @@ __root__
 
 <p>その他のモデルとしてCohere社のCommand-R-Plusを使ったパターンです。llm定義の部分をcohereに挿げ替えるだけで、その他のコードは全く同じです。LangChainを使うメリットですね。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.schema.output_parser</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
-<span class="kn">from</span> <span class="nn">langchain.schema.runnable</span> <span class="kn">import</span> <span class="n">RunnablePassthrough</span>
-<span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.schema.output_parser</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
+<span class="kn">from</span> <span class="n">langchain.schema.runnable</span> <span class="kn">import</span> <span class="n">RunnablePassthrough</span>
+<span class="kn">from</span> <span class="n">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
 
-<span class="n">template</span> <span class="o">=</span> <span class="s">"""
+<span class="n">template</span> <span class="o">=</span> <span class="sh">"""</span><span class="s">
 次のコンテキストに基づいて日本語で回答してください。: {context}
  
 質問: {question}
-"""</span>
-<span class="n">prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">.</span><span class="n">from_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+</span><span class="sh">"""</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">.</span><span class="nf">from_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">getpass</span>
+<span class="kn">import</span> <span class="n">os</span>
+<span class="kn">import</span> <span class="n">getpass</span>
 
-<span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="s">"COHERE_API_KEY"</span><span class="p">]</span> <span class="o">=</span> <span class="n">getpass</span><span class="p">.</span><span class="n">getpass</span><span class="p">(</span><span class="s">"Cochere API Key:"</span><span class="p">)</span>
+<span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">"</span><span class="s">COHERE_API_KEY</span><span class="sh">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">getpass</span><span class="p">.</span><span class="nf">getpass</span><span class="p">(</span><span class="sh">"</span><span class="s">Cochere API Key:</span><span class="sh">"</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">langchain_cohere</span> <span class="kn">import</span> <span class="n">ChatCohere</span>
+<span class="kn">from</span> <span class="n">langchain_cohere</span> <span class="kn">import</span> <span class="n">ChatCohere</span>
 
-<span class="n">llm_cohere</span> <span class="o">=</span> <span class="n">ChatCohere</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s">"command-r-plus"</span><span class="p">)</span>
+<span class="n">llm_cohere</span> <span class="o">=</span> <span class="nc">ChatCohere</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="sh">"</span><span class="s">command-r-plus</span><span class="sh">"</span><span class="p">)</span>
 
 <span class="n">ベクトル検索を実行するベクトルデータベースを定義します</span><span class="err">。</span><span class="n">もちろんここでは事前に定義したvector_store_dotを指定します</span><span class="err">。</span>
 
-<span class="n">retriever</span> <span class="o">=</span> <span class="n">vector_store_dot</span><span class="p">.</span><span class="n">as_retriever</span><span class="p">()</span>
+<span class="n">retriever</span> <span class="o">=</span> <span class="n">vector_store_dot</span><span class="p">.</span><span class="nf">as_retriever</span><span class="p">()</span>
 
 <span class="n">chain</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">{</span><span class="s">"context"</span><span class="p">:</span> <span class="n">retriever</span><span class="p">,</span> <span class="s">"question"</span><span class="p">:</span> <span class="n">RunnablePassthrough</span><span class="p">()}</span>
+    <span class="p">{</span><span class="sh">"</span><span class="s">context</span><span class="sh">"</span><span class="p">:</span> <span class="n">retriever</span><span class="p">,</span> <span class="sh">"</span><span class="s">question</span><span class="sh">"</span><span class="p">:</span> <span class="nc">RunnablePassthrough</span><span class="p">()}</span>
     <span class="o">|</span> <span class="n">prompt</span>
     <span class="o">|</span> <span class="n">llm_cohere</span>
-    <span class="o">|</span> <span class="n">StrOutputParser</span><span class="p">()</span>
+    <span class="o">|</span> <span class="nc">StrOutputParser</span><span class="p">()</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
 <p>テキスト生成してみます。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="s">"OraBoosterとは何ですか?"</span><span class="p">))</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">print</span><span class="p">(</span><span class="n">chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="sh">"</span><span class="s">OraBoosterとは何ですか?</span><span class="sh">"</span><span class="p">))</span>
 </code></pre></div></div>
 
 <p>御覧の通り出力結果はほぼ同一です。</p>
@@ -1014,7 +1014,7 @@ __root__
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-01T10:20:44+09:00">August 1, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-01T23:32:12+09:00">August 1, 2024</time></p>
 
       </footer>
 

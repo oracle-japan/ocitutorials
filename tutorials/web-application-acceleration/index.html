@@ -1,0 +1,637 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Web Application Acceleration（WAA）により、フレキシブル・ロード・バランサにコンテンツ・キャッシュおよびコンテンツ圧縮機能を持たせ、アプリケーションの応答速度向上を図れます">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/tutorials/web-application-acceleration/">
+
+
+  <meta property="og:description" content="Web Application Acceleration（WAA）により、フレキシブル・ロード・バランサにコンテンツ・キャッシュおよびコンテンツ圧縮機能を持たせ、アプリケーションの応答速度向上を図れます">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/web-application-acceleration/overview_architecture.png">
+
+
+
+
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/tutorials/web-application-acceleration/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/web-application-acceleration/overview_architecture.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う
+
+        
+      </h1>
+      
+        <p class="page__lead">Web Application Acceleration（WAA）により、フレキシブル・ロード・バランサにコンテンツ・キャッシュおよびコンテンツ圧縮機能を持たせ、アプリケーションの応答速度向上を図れます
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tutorials" itemprop="item"><span itemprop="name">Tutorials</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う">
+    <meta itemprop="description" content="Web Application Acceleration（WAA）により、フレキシブル・ロード・バランサにコンテンツ・キャッシュおよびコンテンツ圧縮機能を持たせ、アプリケーションの応答速度向上を図れます">
+    
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-バックエンドサーバーにて検証用webサイトを構築する">1. バックエンド・サーバーにて検証用Webサイトを構築する</a></li><li><a href="#2-waaの設定を行う">2. WAAの設定を行う</a></li><li><a href="#3-ブラウザからwebサイトにアクセスしwaaの働きを確認する">3. ブラウザからWebサイトにアクセスし、WAAの働きを確認する</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a>
+<br /></p>
+
+<p>OCI Web Application Acceleration（WAA）はフレキシブル・ロードバランサ（FLB）に紐づけるコンポーネントで、コンテンツ・キャッシュ機能とコンテンツのGZIP（GNU zip）による圧縮機能を提供します。これにより、クライアントへのレスポンス高速化、ひいてはアプリケーションのユーザーエクスペリエンス向上が期待できます。本チュートリアルでは、WebブラウザからGETメソッドのHTTPリクエストを行ったとき、WAAによりHTMLファイルのコンテンツ・キャッシュとGZIP圧縮が行われる様子を観察します（下図; 検証環境はOCIチュートリアル中級編『ロードバランサーでWebサーバーを負荷分散する』で作成したFLBと、Apacheをインストールしたバックエンドサーバー1台を再利用して構成します）。</p>
+
+<p><img src="overview_architecture.png" alt="overview_architecture.png" /></p>
+
+<blockquote>
+  <p><strong><em>Note</em></strong></p>
+
+  <p>本チュートリアルを行うにあたっては、プロキシが挙動に影響を与える可能性がございます。クライアントPCがVPNに接続している場合は切断されることをお勧めします。</p>
+</blockquote>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ol>
+  <li>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/intermediates/using-load-balancer/">『OCIチュートリアル中級編『ロードバランサーでWebサーバーを負荷分散する』</a>を完遂していること</p>
+  </li>
+  <li>
+    <p>Google Chromeウェブブラウザを用いること</p>
+  </li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次 :</strong></p>
+<ol>
+  <li><a href="#anchor1">バックエンド・サーバーにて検証用Webサイトを構築する</a></li>
+  <li><a href="#anchor2">WAAの設定を行う</a></li>
+  <li><a href="#anchor3">ブラウザからWebサイトにアクセスし、WAAの働きを確認する</a></li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-バックエンドサーバーにて検証用webサイトを構築する">1. バックエンド・サーバーにて検証用Webサイトを構築する</h1>
+<p>この章では、FLBのバックエンド・セットのWebサーバ・インスタンスにて、WAAのキャッシュ機能を活用するためのApacheの設定と、圧縮機能を試すためのHTMLファイルの作成を行います。</p>
+
+<p>本チュートリアルの前提条件を完遂すると、FLB専用サブネットおよびFLB、パブリック・サブネットに配置された二台のバックエンド・Webサーバ・インスタンスが作成されます(図)。今回、そのうちの一台の設定を編集しますので、まずはSSH接続のためのパブリック・サブネットのルーティングとセキュリティの設定を行います。
+    <img src="assumption-architecture.png" alt="assumption-architecture.png" /></p>
+
+<ol>
+  <li>
+    <p>コンソール・メニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong>&gt;<strong><code class="language-plaintext highlighter-rouge">仮想クラウドネットワーク</code></strong>を選択します（図）
+  <img src="choose-vcn-from-console-menu.png" alt="choose-vcn-from-console-menu.png" /></p>
+  </li>
+  <li>
+    <p>仮想クラウド・ネットワークの一覧から <strong><code class="language-plaintext highlighter-rouge">TutorialVCN</code></strong>のデフォルト・ルート表である、<strong><code class="language-plaintext highlighter-rouge">Default Route Table for TutorialVCN</code></strong> を選択します（図）
+  <img src="choosing-DefoRouteTab-TutorialVCN.png" alt="choosing-DefoRouteTab-TutorialVCN.png" /></p>
+  </li>
+  <li>
+    <p>遷移先、<strong><code class="language-plaintext highlighter-rouge">Default Route Table for TutorialVCN</code></strong>の詳細画面にて、ルート・ルールの追加（図、青色のボタン）をクリックします
+ <img src="add-route-rule.png" alt="add-route-rule.png" /></p>
+  </li>
+  <li>表示されるウィザードにて、次の設定を行い、ルートルールの追加ボタン（図、青色のボタン）をクリックします
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> - インターネット・ゲートウェイ</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong> - 0.0.0.0/0</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名] のターゲット・インターネット・ゲートウェイ</code></strong> - インターネット・ゲートウェイ-TutorialVCN</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意
+  <img src="set-route-rule.png" alt="set-route-rule.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p>新しいルート・ルールが追加されていればルーティングの設定は完了です
+  <img src="confirm-new-route-rule.png" alt="confirm-new-route-rule.png" /></p>
+  </li>
+  <li>
+    <p>次はセキュリティ・リストの設定を行っていきます。コンソール・メニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong>&gt;<strong><code class="language-plaintext highlighter-rouge">仮想クラウドネットワーク</code></strong>&gt;<strong><code class="language-plaintext highlighter-rouge">TutorialVCN</code></strong>を選択し、詳細画面から <strong><code class="language-plaintext highlighter-rouge">パブリック・サブネット-TutorialVCN</code></strong>を選択します（図）。
+  <img src="choose-public-subnet.png" alt="choose-public-subnet.png" /></p>
+  </li>
+  <li>
+    <p>遷移先、<strong><code class="language-plaintext highlighter-rouge">パブリック・サブネット-TutorialVCN</code></strong>の詳細画面にて、<strong><code class="language-plaintext highlighter-rouge">Default Security List for TutorialVCN</code></strong>をクリックします（図）
+  <img src="go-to-security-list.png" alt="go-to-security-list.png" /></p>
+  </li>
+  <li>
+    <p>遷移先、<strong><code class="language-plaintext highlighter-rouge">Default Security List for TutorialVCN</code></strong>の詳細画面にて、<strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>をクリックします（図）
+  <img src="click-add-security-rule.png" alt="click-add-security-rule.png" /></p>
+  </li>
+  <li>表示されるウィザードで次のように項目を設定し、<strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの追加</code></strong>ボタン（図中青色のボタン）をクリックします
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">ステートレス</code></strong> - チェックなし</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - TCP</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">ソース・ポート範囲</code></strong> - All（デフォルト）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong> - 22</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意
+  <img src="setting-port-22.png" alt="setting-port-22.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p>イングレス・ルールが追加されていればセキュリティ・リストの設定は完了です（図）
+  <img src="confirm-new-security-rule.png" alt="confirm-new-security-rule.png" /></p>
+  </li>
+  <li>
+    <p>コンソールメニューから、<strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> &gt; <strong><code class="language-plaintext highlighter-rouge">ロード・バランサ</code></strong>を選択して（図）、ロード・バランサの一覧画面を表示します
+  <img src="select-LB.png" alt="select-LB.png" /></p>
+  </li>
+  <li>Tutorial_LBを選択します（図）
+  <img src="LB-list.png" alt="LB-list.png" />
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>後ほど作成するWebページにアクセスする際に用いるので、Tutorial_LBのパブリックIPアドレスはここで控えておくことをお勧めします</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>表示される詳細画面の左側、リソースメニューから <strong><code class="language-plaintext highlighter-rouge">バックエンド・セット</code></strong>をクリックします。さらに、表示されるバックエンドセット名をクリックします（図）
+  <img src="go-to-backend.png" alt="go-to-backend.png" /></p>
+  </li>
+  <li>
+    <p>遷移先の画面のリソースメニューから、<strong><code class="language-plaintext highlighter-rouge">バックエンド</code></strong>を選択し、二台ある内の一台にチェックマークを付けます。その後、<strong><code class="language-plaintext highlighter-rouge">アクション</code></strong>&gt;<strong><code class="language-plaintext highlighter-rouge">削除</code></strong>を選択します（図）
+  <img src="delete-one-from-backendset.png" alt="delete-one-from-backendset.png" /></p>
+  </li>
+  <li>
+    <p>バックエンドとして残した方のインスタンスのIPアドレスを確認し、コンソールメニューから、<strong><code class="language-plaintext highlighter-rouge">コンピュート</code></strong>&gt;<strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong>を選択し、インスタンスの一覧画面に移動します（図）
+  <img src="goto-instance-page.png" alt="goto-instance-page.png" /></p>
+  </li>
+  <li>遷移先で、前項で確認したプライベートIPアドレスに対応するパブリックIPアドレスを確認し、次のコマンドでSSH接続を行います（図、コマンド）
+  <img src="confirm-public-ip.png" alt="confirm-public-ip.png" />
+  <br />
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ssh <span class="nt">-i</span> <span class="o">[</span>秘密鍵へのパス] opc@[パブリックIPアドレス]
+</code></pre></div>    </div>
+  </li>
+  <li>SSH接続が出来たら、次のコマンドでApacheの設定ファイルにキャッシュ保持の設定を書き込みます
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nb">sudo </span>sh <span class="nt">-c</span> <span class="s1">'echo Header set Cache-Control \"Public, max-age=604800\" &gt;&gt; /etc/httpd/conf/httpd.conf'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>さらに次のコマンドで、約5MBのHTMLファイルを作成します（少々時間がかかります）
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nb">sudo seq </span>1 64934 | xargs <span class="nt">-I</span> num sh <span class="nt">-c</span> <span class="s1">'if [ "num" = 1 ]; then echo "&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;title&gt;TEST-page for WAA&lt;/title&gt;&lt;/head&gt;&lt;h1&gt;このコンテンツが作成された時間: "`date`"&lt;/h1&gt;"; else echo "&lt;li&gt;WAAでコンテンツのキャッシュと圧縮ができます&lt;/li&gt;&lt;br&gt;";fi'</span> | <span class="nb">sudo tee</span> /var/www/html/index.html <span class="o">&gt;</span> /dev/null
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="2-waaの設定を行う">2. WAAの設定を行う</h1>
+<p><a id="anchor2"></a>
+ここからはWAAの設定を行っていきます。</p>
+
+<ol>
+  <li>
+    <p>まずコンソール・メニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> &gt; <strong><code class="language-plaintext highlighter-rouge">Webアプリケーション・アクセラレーション</code></strong> を選択します（図）
+  <img src="goto-waa-page.png" alt="goto-waa-page.png" /></p>
+  </li>
+  <li>
+    <p>遷移先の画面、<strong><code class="language-plaintext highlighter-rouge">WAAポリシーの作成</code></strong> ボタンをクリックします（図）
+  <img src="click-make-waa-policy.png" alt="click-make-waa-policy.png" /></p>
+  </li>
+  <li>以下の設定を行ったうえ、<strong><code class="language-plaintext highlighter-rouge">WAAポリシーの作成</code></strong>ボタンをクリックします（図）
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - TutorialWAA</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> - 任意</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">キャッシング</code></strong> - チェックあり（デフォルト）</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">圧縮</code></strong> - チェックあり</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">[コンパートメント名]のロード・バランサ</code></strong> - Tutorial_LB
+  <img src="setting-waa-policy.png" alt="setting-waa-policy.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p>詳細画面にて一つのアクセラレーションが紐づいており、ステータスがアクティブになっていることを確認できれば設定は完了です（図）
+  <img src="confirm-waa-activation.png" alt="confirm-waa-activation.png" /></p>
+  </li>
+  <li>
+    <p>最後に、自分のみがFLBへのアクセスできるようにセキュリティ・リスト絞っていきます。自身のクライアントPCが使用しているグローバルIPアドレスを調べられるサイトを利用して、表示されるアドレスをメモをしましょう</p>
+  </li>
+  <li>
+    <p>1章6項を参考に、<strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong>&gt;<strong><code class="language-plaintext highlighter-rouge">仮想クラウドネットワーク</code></strong>&gt;<strong><code class="language-plaintext highlighter-rouge">TutorialVCN</code></strong>を選択し、詳細画面から <strong><code class="language-plaintext highlighter-rouge">パブリック・サブネット-TutorialVCN</code></strong>を選択します。今回は、その中からLB_Subnetを選択し、紐づいているセキュリティ・リスト（FLB専用のセキュリティ・リスト）のイングレス・ルール一覧を表示します</p>
+  </li>
+  <li>
+    <p>FLBのセキュリティ・リストは、ソースを問わない宛先ポートが80番のセキュリティ・ルールが一行書き込まれています。そのルールの右端のトリコロンをクリックし、表示された <strong><code class="language-plaintext highlighter-rouge">編集</code></strong>をクリックします（図）
+<img src="goto-edit-security-rule.png" alt="goto-edit-security-rule.png" /></p>
+  </li>
+  <li>
+    <p>表示される <strong><code class="language-plaintext highlighter-rouge">イングレス・ルールの編集</code></strong>画面でソースCIDRを、自身のクライアントPCのグローバルIPアドレスに書き換えます。このときプレフィックス長は32bitにします。したがって、ソースCIDRはxxx.xxx.xxx.xxx/32のように記述します(図)
+<img src="edit-ingress-rule.png" alt="edit-ingress-rule.png" /></p>
+  </li>
+  <li>セキュリティ・ルールが追加されていれば完了です（図）
+  <img src="confirm-security-rule-after-edit.png" alt="confirm-security-rule-after-edit.png" /></li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="3-ブラウザからwebサイトにアクセスしwaaの働きを確認する">3. ブラウザからWebサイトにアクセスし、WAAの働きを確認する</h1>
+<p><a id="anchor3"></a>
+この章ではいよいよ作成したWebページにアクセスして、WAAの働きを確認していきます。</p>
+
+<ol>
+  <li>
+    <p>アクセラレーションの名前をクリックして詳細画面に移動します（図）
+  <img src="goto-waa-metrics.png" alt="goto-waa-metrics.png" /></p>
+  </li>
+  <li>
+    <p>HTTPリクエスト、レスポンス・サイズ（バイト）、バックエンド・レスポン・サイズ（バイト）、圧縮率、圧縮の入力サイズ、圧縮からの出力バイトの六つのメトリックが表示されており、全ての項目で0がプロットされ続けていることをご覧いただけます（図）
+  <img src="confirm-initial-metrics.png" alt="confirm-initial-metrics.png" /></p>
+  </li>
+  <li>
+    <p>アクセラレーションメニューから、<strong><code class="language-plaintext highlighter-rouge">ログ</code></strong>をクリックします（図）
+  <img src="goto-log.png" alt="goto-log.png" /></p>
+  </li>
+  <li>
+    <p>遷移先の詳細画面にて、カテゴリ <strong><code class="language-plaintext highlighter-rouge">All Logs</code></strong>の一行があるので、無効になっているログをトグルボタンで有効化します（図）
+  <img src="activate-log.png" alt="activate-log.png" /></p>
+  </li>
+  <li>
+    <p>デフォルトの設定のままで <strong><code class="language-plaintext highlighter-rouge">ログの有効化</code></strong>ボタンをクリックします（図）
+  <img src="activate-log-detail.png" alt="activate-log-detail.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">ステータス</code></strong> が <strong><code class="language-plaintext highlighter-rouge">アクティブ</code></strong>に変わったことを確認します（図）
+  <img src="confirm-log-activation.png" alt="confirm-log-activation.png" /></p>
+  </li>
+  <li>
+    <p>Ctrl+Shift+Nでシークレットウィンドウを開きます。後にブラウザが保持するキャッシュを消去する際、他のウィンドウのキャッシュまで削除しないようにWebページへのアクセスはシークレットウィンドウから行います</p>
+  </li>
+  <li>
+    <p>シークレットウィンドウの検索窓にFLBのIPパブリック・アドレスを入力し、Enterキーを押します。すると、Webページが返ってきます（図）
+  <img src="get-web-page.png" alt="get-web-page.png" /></p>
+  </li>
+  <li>
+    <p>少し時間をおいてメトリックを確認します。一件のHTTPリクエストが届いていることと、そのときのレスポンス・サイズが確認できます。バックエンド・レスポンスは5MBですが、圧縮が行われた場合、圧縮率に0より大きい値がプロットされ、圧縮の入力サイズと圧縮からの出力バイトを確認できます。このとき、レスポンス・サイズはバックエンド・レスポンスより小さくなっていることも確認できます(図)
+  <img src="metrics_after_first_request.png" alt="metrics_after_first_request.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">アクセラレーション</code></strong>メニューから<strong><code class="language-plaintext highlighter-rouge">ログ</code></strong>を選択し、<strong><code class="language-plaintext highlighter-rouge">ログ名</code></strong>のリンクをクリックします（図）
+  <img src="goto-log-detail.png" alt="goto-log-detail.png" /></p>
+  </li>
+  <li>
+    <p>表示されるログの探索画面で、時間によるフィルタの選択リストをデフォルトの過去5分から過去1時間に変更します（図）
+  <img src="setting-log-time-filter.png" alt="setting-log-time-filter.png" /></p>
+  </li>
+  <li>
+    <p>メトリクスで確認したリクエストとレスポンスに対応するログが一行記録されているので、右端の下矢印をクリックし詳細をドリルダウンします。さらに、表示された”request”と”response”の左のプラスマークもクリックしてドリルダウンします（図）
+  <img src="drill-down.png" alt="drill-down.png" />
+  <img src="detail-drill-down.png" alt="detail-drill-down.png" /></p>
+  </li>
+  <li>
+    <p>GETメソッドのリクエストに対して、200番のステータスコードでページを返したことが確認できます。初めてのレスポンスであるため、cacheStatusキーの値は”Miss”であり、WAAからキャッシュを返したわけではないことが分かります（図）
+  <img src="cache-miss.png" alt="cache-miss.png" /></p>
+  </li>
+  <li>再び、ブラウザのシークレットウィンドウに戻ります。Ctrl+Shift+Iで開発者モードを開き、左上の更新ボタンを右クリックします。表示される三つの選択肢の内の最下段、「キャッシュの消去とハード再読み込み」を選択してリロードします（図）。読み込みが終わってページが返ってきたことを確認したら再び「キャッシュの消去とハード再読み込み」をクリックし、これを何度か繰り返します。
+  <img src="cache-delete-and-reload.png" alt="cache-delete-and-reload.png" />
+    <blockquote>
+      <p><strong><em>Note</em></strong></p>
+
+      <p>消去しているのはWAAが保持するキャッシュではなく、ブラウザが保持するキャッシュです。</p>
+    </blockquote>
+  </li>
+  <li>少し時間をおいてログを確認してみます。先ほどと同様に最新のログを確認してみると、今度はcacheStatusキーの値が”Hit”となっており、WAAからキャッシュを返したことが分かります(図)
+  <img src="cache-hit.png" alt="cache-hit.png" />
+<br /></li>
+</ol>
+
+<p>以上で本チュートリアルは終わりです。
+WAAを活用することでFLBにキャッシュ機能と圧縮機能を持たせることができます。本チュートリアルでは、同一のクライアントからWebページをリロードする中でWAAの挙動を確認しました。実際のWebアプリケーションの運用では、異なるクライアントからの大量のリクエストを受け付けることになり、その際のレスポンス速度はユーザーエクスペリエンスの要になります。Webサーバのレスポンス速度でお困りの際は是非WAAの使用をご検討下さい。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item p-category" rel="tag">intermediate</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#network" class="page__taxonomy-item p-category" rel="tag">network</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Web+Application+Acceleration%E3%82%92%E7%94%A8%E3%81%84%E3%81%A6%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E3%83%BB%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%81%A8%E5%9C%A7%E7%B8%AE%E3%82%92%E8%A1%8C%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Ftutorials%2Fweb-application-acceleration%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Ftutorials%2Fweb-application-acceleration%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/tutorials/web-application-acceleration/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

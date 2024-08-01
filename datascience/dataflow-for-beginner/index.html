@@ -846,44 +846,44 @@ Spandau 124     12.0    400.0   58.233870967741936
 # Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
 #------------------------------------------------------------------------------
 </span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="n">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="n">sys</span>
 
-<span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkConf</span>
-<span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">VectorAssembler</span>
-<span class="kn">from</span> <span class="nn">pyspark.ml.regression</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SQLContext</span><span class="p">,</span> <span class="n">SparkSession</span>
+<span class="kn">from</span> <span class="n">pyspark</span> <span class="kn">import</span> <span class="n">SparkConf</span>
+<span class="kn">from</span> <span class="n">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">VectorAssembler</span>
+<span class="kn">from</span> <span class="n">pyspark.ml.regression</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span> <span class="n">pyspark.sql</span> <span class="kn">import</span> <span class="n">SQLContext</span><span class="p">,</span> <span class="n">SparkSession</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">appName</span><span class="p">(</span><span class="s">"dataflow"</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
-    <span class="n">sql_context</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">spark</span><span class="p">)</span>
+    <span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="nf">appName</span><span class="p">(</span><span class="sh">"</span><span class="s">dataflow</span><span class="sh">"</span><span class="p">).</span><span class="nf">getOrCreate</span><span class="p">()</span>
+    <span class="n">sql_context</span> <span class="o">=</span> <span class="nc">SQLContext</span><span class="p">(</span><span class="n">spark</span><span class="p">)</span>
 
     <span class="c1"># Prep the data.
 </span>    <span class="c1"># We eliminate nulls and zero values as they would skew the model.
-</span>    <span class="n">listings_df</span> <span class="o">=</span> <span class="n">sql_context</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">).</span><span class="n">load</span><span class="p">(</span><span class="n">sys</span><span class="p">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># ... 1
-</span>    <span class="n">listings_df</span><span class="p">.</span><span class="n">createGlobalTempView</span><span class="p">(</span><span class="s">"listings"</span><span class="p">)</span> <span class="c1"># ... 2
-</span>    <span class="n">clean_df</span> <span class="o">=</span> <span class="n">sql_context</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"select id, name, square_feet, price from global_temp.listings where square_feet &gt; 0 and price &gt; 0"</span><span class="p">)</span> <span class="c1"># ... 3
+</span>    <span class="n">listings_df</span> <span class="o">=</span> <span class="n">sql_context</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="sh">'</span><span class="s">parquet</span><span class="sh">'</span><span class="p">).</span><span class="nf">load</span><span class="p">(</span><span class="n">sys</span><span class="p">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># ... 1
+</span>    <span class="n">listings_df</span><span class="p">.</span><span class="nf">createGlobalTempView</span><span class="p">(</span><span class="sh">"</span><span class="s">listings</span><span class="sh">"</span><span class="p">)</span> <span class="c1"># ... 2
+</span>    <span class="n">clean_df</span> <span class="o">=</span> <span class="n">sql_context</span><span class="p">.</span><span class="nf">sql</span><span class="p">(</span><span class="sh">"</span><span class="s">select id, name, square_feet, price from global_temp.listings where square_feet &gt; 0 and price &gt; 0</span><span class="sh">"</span><span class="p">)</span> <span class="c1"># ... 3
 </span>
     <span class="c1"># Prepare the data to feed into the model.
-</span>    <span class="n">assembler</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">(</span><span class="n">inputCols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'square_feet'</span><span class="p">],</span> <span class="n">outputCol</span> <span class="o">=</span> <span class="s">'features'</span><span class="p">)</span> <span class="c1"># ... 4
-</span>    <span class="n">assembled</span> <span class="o">=</span> <span class="n">assembler</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">clean_df</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">assembled</span><span class="p">.</span><span class="n">select</span><span class="p">([</span><span class="s">'id'</span><span class="p">,</span> <span class="s">'name'</span><span class="p">,</span> <span class="s">'features'</span><span class="p">,</span> <span class="s">'price'</span><span class="p">])</span>
+</span>    <span class="n">assembler</span> <span class="o">=</span> <span class="nc">VectorAssembler</span><span class="p">(</span><span class="n">inputCols</span> <span class="o">=</span> <span class="p">[</span><span class="sh">'</span><span class="s">square_feet</span><span class="sh">'</span><span class="p">],</span> <span class="n">outputCol</span> <span class="o">=</span> <span class="sh">'</span><span class="s">features</span><span class="sh">'</span><span class="p">)</span> <span class="c1"># ... 4
+</span>    <span class="n">assembled</span> <span class="o">=</span> <span class="n">assembler</span><span class="p">.</span><span class="nf">transform</span><span class="p">(</span><span class="n">clean_df</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">assembled</span><span class="p">.</span><span class="nf">select</span><span class="p">([</span><span class="sh">'</span><span class="s">id</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">features</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">price</span><span class="sh">'</span><span class="p">])</span>
 
     <span class="c1"># Train the model.
-</span>    <span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">(</span><span class="n">featuresCol</span> <span class="o">=</span> <span class="s">'features'</span><span class="p">,</span> <span class="n">labelCol</span><span class="o">=</span><span class="s">'price'</span><span class="p">)</span> <span class="c1"># ... 5
-</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">lr</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</span>    <span class="n">lr</span> <span class="o">=</span> <span class="nc">LinearRegression</span><span class="p">(</span><span class="n">featuresCol</span> <span class="o">=</span> <span class="sh">'</span><span class="s">features</span><span class="sh">'</span><span class="p">,</span> <span class="n">labelCol</span><span class="o">=</span><span class="sh">'</span><span class="s">price</span><span class="sh">'</span><span class="p">)</span> <span class="c1"># ... 5
+</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">lr</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
     <span class="c1"># Make predictions.
-</span>    <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="c1"># ... 6
+</span>    <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="c1"># ... 6
 </span>
     <span class="c1"># Sort by the gap between prediction and price.
-</span>    <span class="n">predictions</span><span class="p">.</span><span class="n">createGlobalTempView</span><span class="p">(</span><span class="s">"predictions"</span><span class="p">)</span>
-    <span class="n">values</span> <span class="o">=</span> <span class="n">sql_context</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">'select *, price - prediction as value from global_temp.predictions order by price - prediction'</span><span class="p">)</span> <span class="c1"># ... 7
-</span>    <span class="n">values</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</span>    <span class="n">predictions</span><span class="p">.</span><span class="nf">createGlobalTempView</span><span class="p">(</span><span class="sh">"</span><span class="s">predictions</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">sql_context</span><span class="p">.</span><span class="nf">sql</span><span class="p">(</span><span class="sh">'</span><span class="s">select *, price - prediction as value from global_temp.predictions order by price - prediction</span><span class="sh">'</span><span class="p">)</span> <span class="c1"># ... 7
+</span>    <span class="n">values</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="nf">main</span><span class="p">()</span>
 
 </code></pre></div></div>
 

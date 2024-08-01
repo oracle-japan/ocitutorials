@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-01T10:20:44+09:00">
+  <meta property="article:published_time" content="2024-08-01T23:32:12+09:00">
 
 
 
@@ -265,7 +265,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="107 : 会話履歴保持の仕組みを取り入れたRAGの実装をしてみよう">
     <meta itemprop="description" content="シンプルな検索拡張生成(RAG)の実装に、チャット会話履歴を保持する仕組みを取り入れた構成をご紹介します。">
-    <meta itemprop="datePublished" content="2024-08-01T10:20:44+09:00">
+    <meta itemprop="datePublished" content="2024-08-01T23:32:12+09:00">
     
 
     <div class="page__inner-wrap">
@@ -345,12 +345,12 @@ wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-2
 
 <p>Oracle Database へ接続します。利用するサービスによって、接続文字列が変わりますので以下のサンプルを使って接続してください。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">oracledb</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">oracledb</span>
 
 <span class="c1"># Oracle Database 23ai Free版
-</span><span class="n">username</span> <span class="o">=</span> <span class="s">"docuser"</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s">"docuser"</span>
-<span class="n">dsn</span> <span class="o">=</span> <span class="s">"localhost/freepdb1"</span>
+</span><span class="n">username</span> <span class="o">=</span> <span class="sh">"</span><span class="s">docuser</span><span class="sh">"</span>
+<span class="n">password</span> <span class="o">=</span> <span class="sh">"</span><span class="s">docuser</span><span class="sh">"</span>
+<span class="n">dsn</span> <span class="o">=</span> <span class="sh">"</span><span class="s">localhost/freepdb1</span><span class="sh">"</span>
 
 <span class="c1"># BaseDB版では以下をコメントアウトして実行します
 # oracledb.init_oracle_client()
@@ -365,20 +365,20 @@ wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-2
 # dsn = "&lt;ADBの接続文字列&gt;" (例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
 </span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Connection successful!"</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Connection successful!</span><span class="sh">"</span><span class="p">)</span>
 <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Connection failed!"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Connection failed!</span><span class="sh">"</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>PDFファイルをロードしテキストに変換します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.document_loaders</span> <span class="kn">import</span> <span class="n">PyPDFLoader</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.document_loaders</span> <span class="kn">import</span> <span class="n">PyPDFLoader</span>
 
-<span class="n">loader</span> <span class="o">=</span> <span class="n">PyPDFLoader</span><span class="p">(</span><span class="s">"/tmp/rocket.pdf"</span><span class="p">)</span>
-<span class="n">documents</span> <span class="o">=</span> <span class="n">loader</span><span class="p">.</span><span class="n">load_and_split</span><span class="p">()</span>
+<span class="n">loader</span> <span class="o">=</span> <span class="nc">PyPDFLoader</span><span class="p">(</span><span class="sh">"</span><span class="s">/tmp/rocket.pdf</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">documents</span> <span class="o">=</span> <span class="n">loader</span><span class="p">.</span><span class="nf">load_and_split</span><span class="p">()</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -387,11 +387,11 @@ wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-2
 
 <p>変換されたテキストをチャンクに区切ります。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.text_splitter</span> <span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.text_splitter</span> <span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
 
-<span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="n">separator</span><span class="o">=</span><span class="s">"。"</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">docs</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="p">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="n">text_splitter</span> <span class="o">=</span> <span class="nc">CharacterTextSplitter</span><span class="p">(</span><span class="n">separator</span><span class="o">=</span><span class="sh">"</span><span class="s">。</span><span class="sh">"</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="p">.</span><span class="nf">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -400,21 +400,21 @@ wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-2
 
 <p>区切ったチャンクテキストを埋め込みモデル(OCI Generative AI Serviceのembed-multilingual-v3.0)でベクトルに変換し、ベクトル・データベースにロードします。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_community.vectorstores.oraclevs</span> <span class="kn">import</span> <span class="n">OracleVS</span>
-<span class="kn">from</span> <span class="nn">langchain_community.vectorstores.utils</span> <span class="kn">import</span> <span class="n">DistanceStrategy</span>
-<span class="kn">from</span> <span class="nn">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">OCIGenAIEmbeddings</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_community.vectorstores.oraclevs</span> <span class="kn">import</span> <span class="n">OracleVS</span>
+<span class="kn">from</span> <span class="n">langchain_community.vectorstores.utils</span> <span class="kn">import</span> <span class="n">DistanceStrategy</span>
+<span class="kn">from</span> <span class="n">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">OCIGenAIEmbeddings</span>
 
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">OCIGenAIEmbeddings</span><span class="p">(</span>
-    <span class="n">model_id</span><span class="o">=</span><span class="s">"cohere.embed-multilingual-v3.0"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="s">"https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"</span><span class="p">,</span>
-    <span class="n">compartment_id</span><span class="o">=</span><span class="s">"&lt;compartmentのOCID&gt;"</span><span class="p">,</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="nc">OCIGenAIEmbeddings</span><span class="p">(</span>
+    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.embed-multilingual-v3.0</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">&lt;compartmentのOCID&gt;</span><span class="sh">"</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">vector_store_dot</span> <span class="o">=</span> <span class="n">OracleVS</span><span class="p">.</span><span class="n">from_documents</span><span class="p">(</span>
+<span class="n">vector_store_dot</span> <span class="o">=</span> <span class="n">OracleVS</span><span class="p">.</span><span class="nf">from_documents</span><span class="p">(</span>
     <span class="n">docs</span><span class="p">,</span>
     <span class="n">embeddings</span><span class="p">,</span>
     <span class="n">client</span><span class="o">=</span><span class="n">connection</span><span class="p">,</span>
-    <span class="n">table_name</span><span class="o">=</span><span class="s">"doc_table"</span><span class="p">,</span>
+    <span class="n">table_name</span><span class="o">=</span><span class="sh">"</span><span class="s">doc_table</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">distance_strategy</span><span class="o">=</span><span class="n">DistanceStrategy</span><span class="p">.</span><span class="n">DOT_PRODUCT</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div></div>
@@ -438,28 +438,28 @@ __root__
 
 <p>Python用のPostgreSQL接続ドライバ<code class="language-plaintext highlighter-rouge">psycopg</code>を使って、PostgreSQLへ接続します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">psycopg</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">psycopg</span>
 
 <span class="n">conn_info</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s">"postgresql://&lt;user&gt;:&lt;passwd&gt;@&lt;id adress&gt;/&lt;database name&gt;"</span>
-    <span class="s">"?sslmode=require"</span>
-    <span class="s">"&amp;sslrootcert=/home/opc/postgre/CaCertificate-postgresql.pub"</span>
+    <span class="sh">"</span><span class="s">postgresql://&lt;user&gt;:&lt;passwd&gt;@&lt;id adress&gt;/&lt;database name&gt;</span><span class="sh">"</span>
+    <span class="sh">"</span><span class="s">?sslmode=require</span><span class="sh">"</span>
+    <span class="sh">"</span><span class="s">&amp;sslrootcert=/home/opc/postgre/CaCertificate-postgresql.pub</span><span class="sh">"</span>
 <span class="p">)</span>
 
 <span class="c1"># PostgreSQLに接続
 </span><span class="k">try</span><span class="p">:</span>
-    <span class="n">sync_connection</span> <span class="o">=</span> <span class="n">psycopg</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">conn_info</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"Connection successful!"</span><span class="p">)</span>
+    <span class="n">sync_connection</span> <span class="o">=</span> <span class="n">psycopg</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">conn_info</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Connection successful!</span><span class="sh">"</span><span class="p">)</span>
 <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Connection failed!: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Connection failed!: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>次に履歴を保存する表を作成します。LangChainで用意されているPostgresChatMessageHistoryクラスのcreate_tables関数で簡単に表が作成できます。今回はPostgreSQLを使いましたが、その他の様々なデータベース用にたくさんのクラスがあります。このクラスの他の関数でベクトルデータベースを更新したり検索したりすることができ、後の処理で再度利用します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_postgres</span> <span class="kn">import</span> <span class="n">PostgresChatMessageHistory</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_postgres</span> <span class="kn">import</span> <span class="n">PostgresChatMessageHistory</span>
 
-<span class="n">table_name</span> <span class="o">=</span> <span class="s">"message_store"</span>
-<span class="n">PostgresChatMessageHistory</span><span class="p">.</span><span class="n">create_tables</span><span class="p">(</span><span class="n">sync_connection</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span>
+<span class="n">table_name</span> <span class="o">=</span> <span class="sh">"</span><span class="s">message_store</span><span class="sh">"</span>
+<span class="n">PostgresChatMessageHistory</span><span class="p">.</span><span class="nf">create_tables</span><span class="p">(</span><span class="n">sync_connection</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>念のためPostgreSQLに接続し、表が作成されていることの確認と、その表定義を確認してみます。</p>
@@ -506,47 +506,47 @@ __root__
 
 <p>まずはテキスト生成モデルの定義です。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_community.chat_models.oci_generative_ai</span> <span class="kn">import</span> <span class="n">ChatOCIGenAI</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_community.chat_models.oci_generative_ai</span> <span class="kn">import</span> <span class="n">ChatOCIGenAI</span>
 
-<span class="n">llm</span> <span class="o">=</span> <span class="n">ChatOCIGenAI</span><span class="p">(</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="nc">ChatOCIGenAI</span><span class="p">(</span>
     <span class="c1">#model_id="cohere.command-r-16k",
-</span>    <span class="n">model_id</span><span class="o">=</span><span class="s">"cohere.command-r-plus"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="s">"https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"</span><span class="p">,</span>
-    <span class="n">compartment_id</span><span class="o">=</span><span class="s">"&lt;compartmentのOCID&gt;"</span><span class="p">,</span>
-    <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">"temperature"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s">"max_tokens"</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
+</span>    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.command-r-plus</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">&lt;compartmentのOCID&gt;</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">temperature</span><span class="sh">"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="sh">"</span><span class="s">max_tokens</span><span class="sh">"</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
 <p>次に、会話コンテキストに沿って回答をするために、もとのプロンプトを変換するためのretrieverを定義します。この実装により、仮に主語が省略されたプロンプトが入力されたりしても、内部的に以前の会話のコンテキストに沿ったプロンプトに変換されます。冒頭で説明した図はかなり簡略化したもので、これ以降の処理は<a href="https://python.langchain.com/v0.1/docs/use_cases/question_answering/chat_history/#tying-it-together" target="_blank">こちら</a>のLangChainの処理フローと一緒に確認するとコードの理解が進みやすいです。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span><span class="p">,</span> <span class="n">MessagesPlaceholder</span>
-<span class="kn">from</span> <span class="nn">langchain.chains</span> <span class="kn">import</span> <span class="n">create_history_aware_retriever</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.prompts</span> <span class="kn">import</span> <span class="n">ChatPromptTemplate</span><span class="p">,</span> <span class="n">MessagesPlaceholder</span>
+<span class="kn">from</span> <span class="n">langchain.chains</span> <span class="kn">import</span> <span class="n">create_history_aware_retriever</span>
 
-<span class="n">contextualize_q_system_prompt</span> <span class="o">=</span> <span class="s">"""</span><span class="se">\
+<span class="n">contextualize_q_system_prompt</span> <span class="o">=</span> <span class="sh">"""</span><span class="se">\
 </span><span class="s">以下は、ユーザとQAアシスタントの会話です。この会話履歴を考慮して、ベクトルデータベースを検索するための自然言語クエリを生成してください。
-"""</span>
+</span><span class="sh">"""</span>
 
-<span class="n">contextualize_q_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="p">.</span><span class="n">from_messages</span><span class="p">(</span>
+<span class="n">contextualize_q_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="p">.</span><span class="nf">from_messages</span><span class="p">(</span>
     <span class="p">[</span>
-        <span class="p">(</span><span class="s">"system"</span><span class="p">,</span> <span class="n">contextualize_q_system_prompt</span><span class="p">),</span>
-        <span class="n">MessagesPlaceholder</span><span class="p">(</span><span class="s">"history"</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">"human"</span><span class="p">,</span> <span class="s">"{input}"</span><span class="p">),</span>
+        <span class="p">(</span><span class="sh">"</span><span class="s">system</span><span class="sh">"</span><span class="p">,</span> <span class="n">contextualize_q_system_prompt</span><span class="p">),</span>
+        <span class="nc">MessagesPlaceholder</span><span class="p">(</span><span class="sh">"</span><span class="s">history</span><span class="sh">"</span><span class="p">),</span>
+        <span class="p">(</span><span class="sh">"</span><span class="s">human</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">{input}</span><span class="sh">"</span><span class="p">),</span>
         
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">retriever</span> <span class="o">=</span> <span class="n">vector_store_dot</span><span class="p">.</span><span class="n">as_retriever</span><span class="p">(</span><span class="n">search_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">"k"</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
+<span class="n">retriever</span> <span class="o">=</span> <span class="n">vector_store_dot</span><span class="p">.</span><span class="nf">as_retriever</span><span class="p">(</span><span class="n">search_kwargs</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">k</span><span class="sh">"</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
 
-<span class="n">history_aware_retriever</span> <span class="o">=</span> <span class="n">create_history_aware_retriever</span><span class="p">(</span>
+<span class="n">history_aware_retriever</span> <span class="o">=</span> <span class="nf">create_history_aware_retriever</span><span class="p">(</span>
     <span class="n">llm</span><span class="p">,</span> <span class="n">retriever</span><span class="p">,</span> <span class="n">contextualize_q_prompt</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
 <p>そして次が質問応答用のプロンプトの定義で、定義したプロンプトとLLMをチェーンにしているLangChainのお決まりのコードです。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.chains.combine_documents</span> <span class="kn">import</span> <span class="n">create_stuff_documents_chain</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.chains.combine_documents</span> <span class="kn">import</span> <span class="n">create_stuff_documents_chain</span>
 
-<span class="n">qa_system_prompt</span> <span class="o">=</span> <span class="s">"""</span><span class="se">\
+<span class="n">qa_system_prompt</span> <span class="o">=</span> <span class="sh">"""</span><span class="se">\
 </span><span class="s">あなたは質問応答タスクのアシスタントです。
 検索された以下のコンテキストの一部を使って質問に丁寧に答えてください。
 答えがわからなければ、わからないと答えてください。
@@ -556,36 +556,36 @@ __root__
 ====
 {context}
 ====</span><span class="se">\
-</span><span class="s">"""</span>
+</span><span class="sh">"""</span>
 
-<span class="n">qa_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="p">.</span><span class="n">from_messages</span><span class="p">(</span>
+<span class="n">qa_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="p">.</span><span class="nf">from_messages</span><span class="p">(</span>
     <span class="p">[</span>
-        <span class="p">(</span><span class="s">"system"</span><span class="p">,</span> <span class="n">qa_system_prompt</span><span class="p">),</span>
-        <span class="n">MessagesPlaceholder</span><span class="p">(</span><span class="s">"history"</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">"human"</span><span class="p">,</span> <span class="s">"{input}"</span><span class="p">),</span>
+        <span class="p">(</span><span class="sh">"</span><span class="s">system</span><span class="sh">"</span><span class="p">,</span> <span class="n">qa_system_prompt</span><span class="p">),</span>
+        <span class="nc">MessagesPlaceholder</span><span class="p">(</span><span class="sh">"</span><span class="s">history</span><span class="sh">"</span><span class="p">),</span>
+        <span class="p">(</span><span class="sh">"</span><span class="s">human</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">{input}</span><span class="sh">"</span><span class="p">),</span>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">question_answer_chain</span> <span class="o">=</span> <span class="n">create_stuff_documents_chain</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">qa_prompt</span><span class="p">)</span>
+<span class="n">question_answer_chain</span> <span class="o">=</span> <span class="nf">create_stuff_documents_chain</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">qa_prompt</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>ここまで定義したプロンプト変換用のretrieverと質問応答チェーンを一つにまとめるチェーンを定義します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain.chains</span> <span class="kn">import</span> <span class="n">create_retrieval_chain</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.chains</span> <span class="kn">import</span> <span class="n">create_retrieval_chain</span>
 
-<span class="n">rag_chain</span> <span class="o">=</span> <span class="n">create_retrieval_chain</span><span class="p">(</span><span class="n">history_aware_retriever</span><span class="p">,</span> <span class="n">question_answer_chain</span><span class="p">)</span>
+<span class="n">rag_chain</span> <span class="o">=</span> <span class="nf">create_retrieval_chain</span><span class="p">(</span><span class="n">history_aware_retriever</span><span class="p">,</span> <span class="n">question_answer_chain</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>会話セッションのIDを定義(乱数)し、チャット履歴検索を実行する関数get_session_historyを定義します。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_core.chat_history</span> <span class="kn">import</span> <span class="n">BaseChatMessageHistory</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_core.chat_history</span> <span class="kn">import</span> <span class="n">BaseChatMessageHistory</span>
+<span class="kn">import</span> <span class="n">uuid</span>
 
 <span class="c1"># 会話セッションのIDを設定
-</span><span class="n">session_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="p">.</span><span class="n">uuid4</span><span class="p">())</span>
+</span><span class="n">session_id</span> <span class="o">=</span> <span class="nf">str</span><span class="p">(</span><span class="n">uuid</span><span class="p">.</span><span class="nf">uuid4</span><span class="p">())</span>
 
 <span class="k">def</span> <span class="nf">get_session_history</span><span class="p">(</span><span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseChatMessageHistory</span><span class="p">:</span>
-   <span class="k">return</span> <span class="n">PostgresChatMessageHistory</span><span class="p">(</span>
+   <span class="k">return</span> <span class="nc">PostgresChatMessageHistory</span><span class="p">(</span>
         <span class="n">table_name</span><span class="p">,</span>
         <span class="n">session_id</span><span class="p">,</span>
         <span class="n">sync_connection</span><span class="o">=</span><span class="n">sync_connection</span>
@@ -594,25 +594,25 @@ __root__
 
 <p>ここまで定義した、チェーン(rag_chain)と上記のget_session_history関数をRunnableWithMessageHistoryでまとめて完成です。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">langchain_core.runnables.history</span> <span class="kn">import</span> <span class="n">RunnableWithMessageHistory</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_core.runnables.history</span> <span class="kn">import</span> <span class="n">RunnableWithMessageHistory</span>
 
-<span class="n">conversational_rag_chain</span> <span class="o">=</span> <span class="n">RunnableWithMessageHistory</span><span class="p">(</span>
+<span class="n">conversational_rag_chain</span> <span class="o">=</span> <span class="nc">RunnableWithMessageHistory</span><span class="p">(</span>
     <span class="n">rag_chain</span><span class="p">,</span>
     <span class="n">get_session_history</span><span class="p">,</span>
-    <span class="n">input_messages_key</span><span class="o">=</span><span class="s">"input"</span><span class="p">,</span>
-    <span class="n">history_messages_key</span><span class="o">=</span><span class="s">"history"</span><span class="p">,</span>
-    <span class="n">output_messages_key</span><span class="o">=</span><span class="s">"answer"</span><span class="p">,</span>
+    <span class="n">input_messages_key</span><span class="o">=</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">history_messages_key</span><span class="o">=</span><span class="sh">"</span><span class="s">history</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">output_messages_key</span><span class="o">=</span><span class="sh">"</span><span class="s">answer</span><span class="sh">"</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
 <p>まずはシンプルに質問してみます。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span> <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"OraBoosterとは何ですか？"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span> <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>出力はこちらの普通のRAGの応答です。まずベクトルデータベースを参照して応答するというRAGのパイプラインがちゃんと実行され返答されていることがわかります。
@@ -624,12 +624,12 @@ __root__
   <li>answer : 最終的な返答のテキスト</li>
 </ul>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'OraBoosterとは何ですか？'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の</span><span class="se">\n</span><span class="s">象徴です'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'OraBooster は、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、そしてハイパーフォトン・ジャイロスコープによる高精度の姿勢制御を特長とします。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">当社が開発したロケットエンジンである OraBooster は、次世代の宇宙探査を支える先進的な推進技術の</span><span class="se">\n</span><span class="s">象徴です</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">OraBooster は、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、そしてハイパーフォトン・ジャイロスコープによる高精度の姿勢制御を特長とします。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>ここでPostgreSQLにクエリを実行して会話履歴を確認してみます。
@@ -648,23 +648,23 @@ _metadata"</span><span class="p">:</span> <span class="k">null</span><span class
 
 <p>次に、oraboosterという主語を省略して質問してみます。(主語を「それ」という指示代名詞に変換した質問でもいいと思います。)</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"実在するものですか？"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">実在するものですか？</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>historyでこの一つ前のプロンプトと応答が履歴として参照されていることがわかります。これにより、プロンプトで省略されている主語が「Orabooster」であること判断され、正しい応答がされていることがわかります。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'実在するものですか？'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterとは何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。'</span><span class="p">)],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'いいえ、OraBooster は架空のテクノロジーです。架空の設定に基づいた説明文です。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">実在するものですか？</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">いいえ、OraBooster は架空のテクノロジーです。架空の設定に基づいた説明文です。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>再度PostgreSQLでクエリ実行すると2回目のinputとanswerが追加されていることがわかります。</p>
@@ -682,169 +682,169 @@ _metadata"</span><span class="p">:</span> <span class="k">null</span><span class
 
 <p>次は主語を「それ」(指示代名詞)に変更してみます。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"それはいつ開発されましたか"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">それはいつ開発されましたか</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>主語が「Orabooster」であることをチャット履歴から補完し、最終的なテキストを生成していることがわかります。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'それはいつ開発されましたか'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterとは何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'実在するものですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。'</span><span class="p">)],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'OraBoosterはまだ開発されていない架空のロケットエンジンなので、開発時期はありません。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">それはいつ開発されましたか</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">実在するものですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">OraBoosterはまだ開発されていない架空のロケットエンジンなので、開発時期はありません。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>その他、いくつかの質問をしてみます。</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"いつ使われる予定ですか？"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">いつ使われる予定ですか？</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>返答</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'いつ使われる予定ですか？'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterとは何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'実在するものですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'それはいつ開発されましたか'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster はまだ開発されていません。これから生み出される未来の技術です。'</span><span class="p">)],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">いつ使われる予定ですか？</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">実在するものですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">それはいつ開発されましたか</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster はまだ開発されていません。これから生み出される未来の技術です。</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">総じて、この新開発のロケットエンジンは、革新的な技術と未来志向の設計によって、宇宙探査の新た</span><span class="se">\n</span><span class="s">な時代を切り開くことでしょう</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>質問</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"重量はどれくらいですか？"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">重量はどれくらいですか？</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>返答</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'重量はどれくらいですか？'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterとは何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'実在するものですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'それはいつ開発されましたか'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster はまだ開発されていません。これから生み出される未来の技術です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いつ使われる予定ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。'</span><span class="p">)],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">重量はどれくらいですか？</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">実在するものですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">それはいつ開発されましたか</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster はまだ開発されていません。これから生み出される未来の技術です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いつ使われる予定ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>質問</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"姿勢制御に使われている技術は何ですか？"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">姿勢制御に使われている技術は何ですか？</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>返答</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'姿勢制御に使われている技術は何ですか？'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterとは何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'実在するものですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'それはいつ開発されましたか'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster はまだ開発されていません。これから生み出される未来の技術です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いつ使われる予定ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'重量はどれくらいですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。'</span><span class="p">)],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'姿勢制御にはハイパーフォトン・ジャイロスコープ技術が使用されています。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">姿勢制御に使われている技術は何ですか？</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">実在するものですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">それはいつ開発されましたか</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster はまだ開発されていません。これから生み出される未来の技術です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いつ使われる予定ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">重量はどれくらいですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">姿勢制御にはハイパーフォトン・ジャイロスコープ技術が使用されています。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>質問</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"重要なものですか？"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">重要なものですか？</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>返答</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'重要なものですか？'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterとは何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'実在するものですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'それはいつ開発されましたか'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster はまだ開発されていません。これから生み出される未来の技術です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いつ使われる予定ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'重量はどれくらいですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'姿勢制御に使われている技術は何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'姿勢制御にはハイパーフォトン・ジャイロスコープ技術が使用されています。'</span><span class="p">)],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'はい、重要な技術です。ロケットの正確な姿勢制御と目標追跡を可能にし、ミッションの成功に大きく貢献します。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">重要なものですか？</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">実在するものですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">それはいつ開発されましたか</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster はまだ開発されていません。これから生み出される未来の技術です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いつ使われる予定ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">重量はどれくらいですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">姿勢制御に使われている技術は何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">姿勢制御にはハイパーフォトン・ジャイロスコープ技術が使用されています。</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">はい、重要な技術です。ロケットの正確な姿勢制御と目標追跡を可能にし、ミッションの成功に大きく貢献します。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>質問</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span>
-   <span class="p">{</span><span class="s">"input"</span><span class="p">:</span> <span class="s">"それがないと何が起こりますか？"</span><span class="p">},</span>
-   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s">"configurable"</span><span class="p">:</span> <span class="p">{</span><span class="s">"session_id"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span>  <span class="o">=</span> <span class="n">conversational_rag_chain</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span>
+   <span class="p">{</span><span class="sh">"</span><span class="s">input</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">それがないと何が起こりますか？</span><span class="sh">"</span><span class="p">},</span>
+   <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">configurable</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">session_id</span><span class="sh">"</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}},</span>
 <span class="p">)</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>返答</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">'input'</span><span class="p">:</span> <span class="s">'それがないと何が起こりますか？'</span><span class="p">,</span>
- <span class="s">'history'</span><span class="p">:</span> <span class="p">[</span><span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterとは何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'実在するものですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'それはいつ開発されましたか'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster はまだ開発されていません。これから生み出される未来の技術です。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'いつ使われる予定ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'重量はどれくらいですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'姿勢制御に使われている技術は何ですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'姿勢制御にはハイパーフォトン・ジャイロスコープ技術が使用されています。'</span><span class="p">),</span>
-  <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'重要なものですか？'</span><span class="p">),</span>
-  <span class="n">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s">'はい、重要な技術です。ロケットの正確な姿勢制御と目標追跡を可能にし、ミッションの成功に大きく貢献します。'</span><span class="p">)],</span>
- <span class="s">'context'</span><span class="p">:</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています'</span><span class="p">),</span>
-  <span class="n">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s">'source'</span><span class="p">:</span> <span class="s">'/tmp/rocket.pdf'</span><span class="p">,</span> <span class="s">'page'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="s">'また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します'</span><span class="p">)],</span>
- <span class="s">'answer'</span><span class="p">:</span> <span class="s">'ロケットは宇宙空間で正確な姿勢制御ができなくなり、軌道が不安定になる可能性があります。その結果、ミッションの失敗や宇宙飛行士の生命の危険につながる恐れがあります。'</span><span class="p">}</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">それがないと何が起こりますか？</span><span class="sh">'</span><span class="p">,</span>
+ <span class="sh">'</span><span class="s">history</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterとは何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBoosterは、次世代の宇宙探査を支えるために開発された先進的なロケットエンジンです。高い性能と信頼性、ハイパーフォトン・ジャイロスコープによる姿勢制御が特徴です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">実在するものですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いいえ、OraBooster は架空のテクノロジーです。宇宙探査の未来を想像してください。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">それはいつ開発されましたか</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster はまだ開発されていません。これから生み出される未来の技術です。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">いつ使われる予定ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster の使用時期は未定です。これからの開発次第で、将来の宇宙探査を支える存在となるでしょう。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">重量はどれくらいですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">OraBooster の重量は不明です。軽量化素材や推進システムの効率によって変動するでしょう。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">姿勢制御に使われている技術は何ですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">姿勢制御にはハイパーフォトン・ジャイロスコープ技術が使用されています。</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">重要なものですか？</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">AIMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sh">'</span><span class="s">はい、重要な技術です。ロケットの正確な姿勢制御と目標追跡を可能にし、ミッションの成功に大きく貢献します。</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> <span class="p">[</span><span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">その高い性能と信頼性は、人類の夢を実現するための力強い支援とな</span><span class="se">\n</span><span class="s">ることでしょう</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">これにより、長時間にわたる宇宙飛行中でも安定した飛行軌道を維持し、</span><span class="se">\n</span><span class="s">ミッションの成功を確保します。</span><span class="se">\n</span><span class="s">さらに、バイオニック・リアクション・レスポンダーが統合されています</span><span class="sh">'</span><span class="p">),</span>
+  <span class="nc">Document</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">source</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">/tmp/rocket.pdf</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">page</span><span class="sh">'</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="n">page_content</span><span class="o">=</span><span class="sh">'</span><span class="s">また、ハイパーフォトン・ジャイロスコープが搭載されており、極めて高い精度でロケットの姿勢を維</span><span class="se">\n</span><span class="s">持し、目標を追跡します</span><span class="sh">'</span><span class="p">)],</span>
+ <span class="sh">'</span><span class="s">answer</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">ロケットは宇宙空間で正確な姿勢制御ができなくなり、軌道が不安定になる可能性があります。その結果、ミッションの失敗や宇宙飛行士の生命の危険につながる恐れがあります。</span><span class="sh">'</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p>主語を省略したり、代名詞に置き換えても、過去の会話履歴からそのコンテキストを理解し、返答できることが確認できました。</p>
@@ -860,7 +860,7 @@ _metadata"</span><span class="p">:</span> <span class="k">null</span><span class
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-01T10:20:44+09:00">August 1, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-01T23:32:12+09:00">August 1, 2024</time></p>
 
       </footer>
 

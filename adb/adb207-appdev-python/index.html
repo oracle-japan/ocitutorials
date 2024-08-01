@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-01T10:20:44+09:00">
+  <meta property="article:published_time" content="2024-08-01T23:32:12+09:00">
 
 
 
@@ -347,7 +347,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="207: PythonによるADB上でのアプリ開発">
     <meta itemprop="description" content="この章では開発言語としてpythonを想定し、Autonomous Databaseに対して接続する方法、およびデータベース操作を実行する方法を学びます。">
-    <meta itemprop="datePublished" content="2024-08-01T10:20:44+09:00">
+    <meta itemprop="datePublished" content="2024-08-01T23:32:12+09:00">
     
 
     <div class="page__inner-wrap">
@@ -444,18 +444,18 @@
     <p>接続に必要なモジュール(os、oracledb)をロード、定義された環境変数に従いADBに対する接続を作成、ADBのバージョンを取得する という内容です。
  <br />※python_connect.pyの中身は次の通りです。</p>
 
-    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kn">import</span> <span class="nn">os</span>
- <span class="kn">import</span> <span class="nn">oracledb</span>
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kn">import</span> <span class="n">os</span>
+ <span class="kn">import</span> <span class="n">oracledb</span>
 
- <span class="n">un</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ORAUSER'</span><span class="p">)</span>
- <span class="n">pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ORAPASS'</span><span class="p">)</span>
- <span class="n">cs</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ORATNS'</span><span class="p">)</span>
- <span class="n">wallet_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'TNS_ADMIN'</span><span class="p">)</span>
- <span class="n">wallet_pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'WALLETPASS'</span><span class="p">)</span>
+ <span class="n">un</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">ORAUSER</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">ORAPASS</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">cs</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">ORATNS</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">wallet_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">TNS_ADMIN</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">wallet_pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">WALLETPASS</span><span class="sh">'</span><span class="p">)</span>
 
- <span class="n">conn</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">un</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">pw</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">cs</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_location</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_password</span><span class="o">=</span><span class="n">wallet_pw</span><span class="p">)</span>
- <span class="k">print</span><span class="p">(</span><span class="n">conn</span><span class="p">.</span><span class="n">version</span><span class="p">)</span>
- <span class="n">conn</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+ <span class="n">conn</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">un</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">pw</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">cs</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_location</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_password</span><span class="o">=</span><span class="n">wallet_pw</span><span class="p">)</span>
+ <span class="nf">print</span><span class="p">(</span><span class="n">conn</span><span class="p">.</span><span class="n">version</span><span class="p">)</span>
+ <span class="n">conn</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -503,18 +503,18 @@
     <p>ADBへの接続処理、分析系のクエリを実行、結果セットの表示、接続のクローズ処理といった一連の流れを実行しています。
  <br />※python_resultset.pyの中身は次の通りです。</p>
 
-    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kn">import</span> <span class="nn">os</span>
- <span class="kn">import</span> <span class="nn">oracledb</span>
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kn">import</span> <span class="n">os</span>
+ <span class="kn">import</span> <span class="n">oracledb</span>
 
- <span class="n">un</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ORAUSER'</span><span class="p">)</span>
- <span class="n">pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ORAPASS'</span><span class="p">)</span>
- <span class="n">cs</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ORATNS'</span><span class="p">)</span>
- <span class="n">wallet_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'TNS_ADMIN'</span><span class="p">)</span>
- <span class="n">wallet_pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'WALLETPASS'</span><span class="p">)</span>
+ <span class="n">un</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">ORAUSER</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">ORAPASS</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">cs</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">ORATNS</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">wallet_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">TNS_ADMIN</span><span class="sh">'</span><span class="p">)</span>
+ <span class="n">wallet_pw</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">WALLETPASS</span><span class="sh">'</span><span class="p">)</span>
 
  <span class="k">try</span><span class="p">:</span>
-  <span class="n">conn</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">un</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">pw</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">cs</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_location</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_password</span><span class="o">=</span><span class="n">wallet_pw</span><span class="p">)</span>
-  <span class="n">sql</span><span class="o">=</span><span class="s">"""SELECT channel_desc, TO_CHAR(SUM(amount_sold),'9,999,999,999') SALES$,
+  <span class="n">conn</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">un</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">pw</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">cs</span><span class="p">,</span> <span class="n">config_dir</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_location</span><span class="o">=</span><span class="n">wallet_dir</span><span class="p">,</span> <span class="n">wallet_password</span><span class="o">=</span><span class="n">wallet_pw</span><span class="p">)</span>
+  <span class="n">sql</span><span class="o">=</span><span class="sh">"""</span><span class="s">SELECT channel_desc, TO_CHAR(SUM(amount_sold),</span><span class="sh">'</span><span class="s">9,999,999,999</span><span class="sh">'</span><span class="s">) SALES$,
     RANK() OVER (ORDER BY SUM(amount_sold)) AS default_rank,
     RANK() OVER (ORDER BY SUM(amount_sold) DESC NULLS LAST) AS custom_rank
     FROM sh.sales, sh.products, sh.customers, sh.times, sh.channels, sh.countries
@@ -523,25 +523,25 @@
     AND customers.country_id = countries.country_id
     AND sales.time_id = times.time_id
     AND sales.channel_id = channels.channel_id
-    AND times.calendar_month_desc IN ('2000-09','2000-10')
+    AND times.calendar_month_desc IN (</span><span class="sh">'</span><span class="s">2000-09</span><span class="sh">'</span><span class="s">,</span><span class="sh">'</span><span class="s">2000-10</span><span class="sh">'</span><span class="s">)
     AND country_iso_code = :country_code
-    GROUP BY channel_desc"""</span>
-  <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
-  <span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">country_code</span> <span class="o">=</span> <span class="s">'US'</span><span class="p">)</span>
+    GROUP BY channel_desc</span><span class="sh">"""</span>
+  <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="p">.</span><span class="nf">cursor</span><span class="p">()</span>
+  <span class="n">cursor</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">country_code</span> <span class="o">=</span> <span class="sh">'</span><span class="s">US</span><span class="sh">'</span><span class="p">)</span>
 
-  <span class="k">print</span><span class="p">(</span><span class="s">"CHANNEL_DESC            SALES          DEFAULT_RANK  CUSTOM_RANK"</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="s">"----------------------  -------------  ------------  -----------"</span><span class="p">)</span>
-  <span class="k">for</span> <span class="n">column_1</span><span class="p">,</span> <span class="n">column_2</span><span class="p">,</span> <span class="n">column_3</span><span class="p">,</span> <span class="n">column_4</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">.</span><span class="n">fetchall</span><span class="p">():</span>
-     <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">column_1</span><span class="p">).</span><span class="n">ljust</span><span class="p">(</span><span class="mi">22</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">column_2</span><span class="p">).</span><span class="n">rjust</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="s">"  "</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">column_3</span><span class="p">).</span><span class="n">rjust</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s">"  "</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">column_4</span><span class="p">).</span><span class="n">rjust</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span>
+  <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">CHANNEL_DESC            SALES          DEFAULT_RANK  CUSTOM_RANK</span><span class="sh">"</span><span class="p">)</span>
+  <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----------------------  -------------  ------------  -----------</span><span class="sh">"</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">column_1</span><span class="p">,</span> <span class="n">column_2</span><span class="p">,</span> <span class="n">column_3</span><span class="p">,</span> <span class="n">column_4</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">.</span><span class="nf">fetchall</span><span class="p">():</span>
+     <span class="nf">print</span><span class="p">(</span><span class="nf">str</span><span class="p">(</span><span class="n">column_1</span><span class="p">).</span><span class="nf">ljust</span><span class="p">(</span><span class="mi">22</span><span class="p">),</span> <span class="nf">str</span><span class="p">(</span><span class="n">column_2</span><span class="p">).</span><span class="nf">rjust</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="sh">"</span><span class="s">  </span><span class="sh">"</span><span class="p">,</span> <span class="nf">str</span><span class="p">(</span><span class="n">column_3</span><span class="p">).</span><span class="nf">rjust</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="sh">"</span><span class="s">  </span><span class="sh">"</span><span class="p">,</span> <span class="nf">str</span><span class="p">(</span><span class="n">column_4</span><span class="p">).</span><span class="nf">rjust</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span>
 
  <span class="k">except</span> <span class="n">oracledb</span><span class="p">.</span><span class="n">DatabaseError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
    <span class="n">err</span><span class="p">,</span> <span class="o">=</span> <span class="n">exc</span><span class="p">.</span><span class="n">args</span>
-   <span class="k">print</span><span class="p">(</span><span class="s">"Oracle-Error-Code:"</span><span class="p">,</span> <span class="n">err</span><span class="p">.</span><span class="n">code</span><span class="p">)</span>
-   <span class="k">print</span><span class="p">(</span><span class="s">"Oracle-Error-Message:"</span><span class="p">,</span> <span class="n">err</span><span class="p">.</span><span class="n">message</span><span class="p">)</span>
+   <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Oracle-Error-Code:</span><span class="sh">"</span><span class="p">,</span> <span class="n">err</span><span class="p">.</span><span class="n">code</span><span class="p">)</span>
+   <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Oracle-Error-Message:</span><span class="sh">"</span><span class="p">,</span> <span class="n">err</span><span class="p">.</span><span class="n">message</span><span class="p">)</span>
 
  <span class="k">finally</span><span class="p">:</span>
-   <span class="n">cursor</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
-   <span class="n">conn</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+   <span class="n">cursor</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span>
+   <span class="n">conn</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span>
 </code></pre></div>    </div>
   </li>
   <li>
@@ -570,7 +570,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-01T10:20:44+09:00">August 1, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-01T23:32:12+09:00">August 1, 2024</time></p>
 
       </footer>
 

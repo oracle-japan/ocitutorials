@@ -411,187 +411,187 @@ OCIコンソール画面右上のプロファイル・アイコンをクリッ�
 <p>ここは、構成を実行し、接続をセットアップします。</p>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#CONFIG_FILENAME = "/Users/USERNAME/.oci/config"
-</span><span class="n">SERVICE_ENDPOINT</span><span class="o">=</span><span class="s">"https://anomalydetection.aiservice.us-ashburn-1.oci.oraclecloud.com"</span> 
-<span class="n">NAMESPACE</span> <span class="o">=</span> <span class="s">"idkebl0fuyfa"</span>
-<span class="n">BUCKET_NAME</span> <span class="o">=</span> <span class="s">"bucket-ivy01-FAAS"</span>
-<span class="n">training_file_name</span><span class="o">=</span><span class="s">"demo-training-data.csv"</span>
-<span class="n">compartment_id</span> <span class="o">=</span> <span class="s">"ocid1.compartment.oc1..aaaaaaaaaeys377iq4vzvrefmr6srfxt3tkaw4hhi3zd2nni2zm7umkjhuca"</span>
+</span><span class="n">SERVICE_ENDPOINT</span><span class="o">=</span><span class="sh">"</span><span class="s">https://anomalydetection.aiservice.us-ashburn-1.oci.oraclecloud.com</span><span class="sh">"</span> 
+<span class="n">NAMESPACE</span> <span class="o">=</span> <span class="sh">"</span><span class="s">idkebl0fuyfa</span><span class="sh">"</span>
+<span class="n">BUCKET_NAME</span> <span class="o">=</span> <span class="sh">"</span><span class="s">bucket-ivy01-FAAS</span><span class="sh">"</span>
+<span class="n">training_file_name</span><span class="o">=</span><span class="sh">"</span><span class="s">demo-training-data.csv</span><span class="sh">"</span>
+<span class="n">compartment_id</span> <span class="o">=</span> <span class="sh">"</span><span class="s">ocid1.compartment.oc1..aaaaaaaaaeys377iq4vzvrefmr6srfxt3tkaw4hhi3zd2nni2zm7umkjhuca</span><span class="sh">"</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#config = from_file(CONFIG_FILENAME)
-</span><span class="n">config</span> <span class="o">=</span> <span class="n">oci</span><span class="p">.</span><span class="n">config</span><span class="p">.</span><span class="n">from_file</span><span class="p">(</span><span class="s">'~/.oci/config'</span><span class="p">)</span>
-<span class="n">ad_client</span> <span class="o">=</span> <span class="n">AnomalyDetectionClient</span><span class="p">(</span><span class="n">config</span><span class="p">,</span><span class="n">service_endpoint</span><span class="o">=</span><span class="n">SERVICE_ENDPOINT</span><span class="p">)</span>
+</span><span class="n">config</span> <span class="o">=</span> <span class="n">oci</span><span class="p">.</span><span class="n">config</span><span class="p">.</span><span class="nf">from_file</span><span class="p">(</span><span class="sh">'</span><span class="s">~/.oci/config</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">ad_client</span> <span class="o">=</span> <span class="nc">AnomalyDetectionClient</span><span class="p">(</span><span class="n">config</span><span class="p">,</span><span class="n">service_endpoint</span><span class="o">=</span><span class="n">SERVICE_ENDPOINT</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>プロジェクトを作成します。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">proj_details</span> <span class="o">=</span> <span class="n">CreateProjectDetails</span><span class="p">(</span><span class="n">display_name</span><span class="o">=</span><span class="s">"Test-Project"</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s">"Project description"</span><span class="p">,</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,)</span>
-<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">create_project</span><span class="p">(</span><span class="n">create_project_details</span><span class="o">=</span><span class="n">proj_details</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----CREATING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">proj_details</span> <span class="o">=</span> <span class="nc">CreateProjectDetails</span><span class="p">(</span><span class="n">display_name</span><span class="o">=</span><span class="sh">"</span><span class="s">Test-Project</span><span class="sh">"</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">Project description</span><span class="sh">"</span><span class="p">,</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,)</span>
+<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">create_project</span><span class="p">(</span><span class="n">create_project_details</span><span class="o">=</span><span class="n">proj_details</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----CREATING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">project_id</span> <span class="o">=</span> <span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nb">id</span>
 </code></pre></div></div>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get_proj</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">get_project</span><span class="p">(</span><span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----READING---"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_proj</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get_proj</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">get_project</span><span class="p">(</span><span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----READING---</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">get_proj</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">list_proj</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">list_projects</span><span class="p">(</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----LISTING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">list_proj</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">list_proj</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">list_projects</span><span class="p">(</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----LISTING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">list_proj</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>データ・アセットを作成します。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"-*-*-*-DATA ASSET-*-*-*-"</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">-*-*-*-DATA ASSET-*-*-*-</span><span class="sh">"</span><span class="p">)</span>
 
-<span class="n">dDetails</span> <span class="o">=</span> <span class="n">DataSourceDetails</span><span class="p">(</span><span class="n">data_source_type</span><span class="o">=</span><span class="s">"ORACLE_OBJECT_STORAGE"</span><span class="p">)</span>
+<span class="n">dDetails</span> <span class="o">=</span> <span class="nc">DataSourceDetails</span><span class="p">(</span><span class="n">data_source_type</span><span class="o">=</span><span class="sh">"</span><span class="s">ORACLE_OBJECT_STORAGE</span><span class="sh">"</span><span class="p">)</span>
 
-<span class="n">dObjDeatils</span> <span class="o">=</span> <span class="n">DataSourceDetailsObjectStorage</span><span class="p">(</span>
+<span class="n">dObjDeatils</span> <span class="o">=</span> <span class="nc">DataSourceDetailsObjectStorage</span><span class="p">(</span>
     <span class="n">namespace</span><span class="o">=</span><span class="n">NAMESPACE</span><span class="p">,</span>
     <span class="n">bucket_name</span><span class="o">=</span><span class="n">BUCKET_NAME</span><span class="p">,</span>
     <span class="n">object_name</span><span class="o">=</span><span class="n">training_file_name</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">da_details</span> <span class="o">=</span> <span class="n">CreateDataAssetDetails</span><span class="p">(</span>
-    <span class="n">display_name</span><span class="o">=</span><span class="s">"Test-DataAsset"</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s">"DataAsset Description"</span><span class="p">,</span>
+<span class="n">da_details</span> <span class="o">=</span> <span class="nc">CreateDataAssetDetails</span><span class="p">(</span>
+    <span class="n">display_name</span><span class="o">=</span><span class="sh">"</span><span class="s">Test-DataAsset</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">DataAsset Description</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span>
     <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">,</span>
     <span class="n">data_source_details</span><span class="o">=</span><span class="n">dObjDeatils</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">create_data_asset</span><span class="p">(</span><span class="n">create_data_asset_details</span><span class="o">=</span><span class="n">da_details</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----CREATING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">create_data_asset</span><span class="p">(</span><span class="n">create_data_asset_details</span><span class="o">=</span><span class="n">da_details</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----CREATING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 <span class="n">da_id</span> <span class="o">=</span> <span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nb">id</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># READ CALL
-</span><span class="n">get_da</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">get_data_asset</span><span class="p">(</span><span class="n">data_asset_id</span><span class="o">=</span><span class="n">da_id</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----READING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_da</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+</span><span class="n">get_da</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">get_data_asset</span><span class="p">(</span><span class="n">data_asset_id</span><span class="o">=</span><span class="n">da_id</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----READING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">get_da</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 
 <span class="c1"># LIST CALL
-</span><span class="n">list_da</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">list_data_assets</span><span class="p">(</span>
+</span><span class="n">list_da</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">list_data_assets</span><span class="p">(</span>
     <span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span>
 <span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----LISTING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">list_da</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----LISTING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">list_da</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>トレーニング・モデルを作成します。</p>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># MODEL
-</span><span class="k">print</span><span class="p">(</span><span class="s">"-*-*-*-MODEL-*-*-*-"</span><span class="p">)</span>
+</span><span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">-*-*-*-MODEL-*-*-*-</span><span class="sh">"</span><span class="p">)</span>
 <span class="c1"># CREATE CALL
 </span><span class="n">dataAssetIds</span> <span class="o">=</span> <span class="p">[</span><span class="n">da_id</span><span class="p">]</span>
-<span class="n">mTrainDetails</span> <span class="o">=</span> <span class="n">ModelTrainingDetails</span><span class="p">(</span>
+<span class="n">mTrainDetails</span> <span class="o">=</span> <span class="nc">ModelTrainingDetails</span><span class="p">(</span>
     <span class="n">target_fap</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">training_fraction</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">data_asset_ids</span><span class="o">=</span><span class="n">dataAssetIds</span>
 <span class="p">)</span>
-<span class="n">mDetails</span> <span class="o">=</span> <span class="n">CreateModelDetails</span><span class="p">(</span>
-    <span class="n">display_name</span><span class="o">=</span><span class="s">"Test-Model"</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s">"Model description"</span><span class="p">,</span>
+<span class="n">mDetails</span> <span class="o">=</span> <span class="nc">CreateModelDetails</span><span class="p">(</span>
+    <span class="n">display_name</span><span class="o">=</span><span class="sh">"</span><span class="s">Test-Model</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">Model description</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span>
     <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">,</span>
     <span class="n">model_training_details</span><span class="o">=</span><span class="n">mTrainDetails</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">create_model_details</span><span class="o">=</span><span class="n">mDetails</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----CREATING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">create_model</span><span class="p">(</span><span class="n">create_model_details</span><span class="o">=</span><span class="n">mDetails</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----CREATING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 <span class="n">model_id</span> <span class="o">=</span> <span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nb">id</span>
 
 <span class="c1"># READ CALL
-</span><span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----READING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----READING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="k">while</span> <span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">lifecycle_state</span> <span class="o">==</span> <span class="n">Model</span><span class="p">.</span><span class="n">LIFECYCLE_STATE_CREATING</span><span class="p">:</span>
-    <span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
-    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">lifecycle_state</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">lifecycle_state</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 
 <span class="c1"># LIST CALL
-</span><span class="n">list_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">list_models</span><span class="p">(</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----LISTING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">list_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span class="n">list_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">list_models</span><span class="p">(</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----LISTING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">list_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># MODEL
-</span><span class="k">print</span><span class="p">(</span><span class="s">"-*-*-*-MODEL-*-*-*-"</span><span class="p">)</span>
+</span><span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">-*-*-*-MODEL-*-*-*-</span><span class="sh">"</span><span class="p">)</span>
 <span class="c1"># CREATE CALL
 </span><span class="n">dataAssetIds</span> <span class="o">=</span> <span class="p">[</span><span class="n">da_id</span><span class="p">]</span>
-<span class="n">mTrainDetails</span> <span class="o">=</span> <span class="n">ModelTrainingDetails</span><span class="p">(</span>
+<span class="n">mTrainDetails</span> <span class="o">=</span> <span class="nc">ModelTrainingDetails</span><span class="p">(</span>
     <span class="n">target_fap</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">training_fraction</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">data_asset_ids</span><span class="o">=</span><span class="n">dataAssetIds</span>
 <span class="p">)</span>
-<span class="n">mDetails</span> <span class="o">=</span> <span class="n">CreateModelDetails</span><span class="p">(</span>
-    <span class="n">display_name</span><span class="o">=</span><span class="s">"Test-Model"</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s">"Model description"</span><span class="p">,</span>
+<span class="n">mDetails</span> <span class="o">=</span> <span class="nc">CreateModelDetails</span><span class="p">(</span>
+    <span class="n">display_name</span><span class="o">=</span><span class="sh">"</span><span class="s">Test-Model</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">Model description</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span>
     <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">,</span>
     <span class="n">model_training_details</span><span class="o">=</span><span class="n">mTrainDetails</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">create_model_details</span><span class="o">=</span><span class="n">mDetails</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----CREATING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">create_res</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">create_model</span><span class="p">(</span><span class="n">create_model_details</span><span class="o">=</span><span class="n">mDetails</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----CREATING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 <span class="n">model_id</span> <span class="o">=</span> <span class="n">create_res</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nb">id</span>
 
 <span class="c1"># READ CALL
-</span><span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----READING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----READING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="k">while</span> <span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">lifecycle_state</span> <span class="o">==</span> <span class="n">Model</span><span class="p">.</span><span class="n">LIFECYCLE_STATE_CREATING</span><span class="p">:</span>
-    <span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
-    <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">lifecycle_state</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">get_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">get_model</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">)</span>
+    <span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">lifecycle_state</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">get_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 
 <span class="c1"># LIST CALL
-</span><span class="n">list_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="n">list_models</span><span class="p">(</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"----LISTING----"</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">list_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
-<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span class="n">list_model</span> <span class="o">=</span> <span class="n">ad_client</span><span class="p">.</span><span class="nf">list_models</span><span class="p">(</span><span class="n">compartment_id</span><span class="o">=</span><span class="n">compartment_id</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">----LISTING----</span><span class="sh">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">list_model</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>モデルを利用し、異常を検出します。</p>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># DETECT
-</span><span class="k">print</span><span class="p">(</span><span class="s">"-*-*-*-DETECT-*-*-*-"</span><span class="p">)</span>
+</span><span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">-*-*-*-DETECT-*-*-*-</span><span class="sh">"</span><span class="p">)</span>
 <span class="c1">## Method 1: Load the data from a csv file with first column as timestamp
 # df = pd.read_csv(filename)
 # signalNames = [e for e in df.columns if e != 'timestamp']
 </span>
 <span class="c1">## Method 2: create a random dataframe with the appropriate header
 </span><span class="n">num_rows</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">signalNames</span> <span class="o">=</span> <span class="p">[</span><span class="s">"temperature_1"</span><span class="p">,</span> <span class="s">"temperature_2"</span><span class="p">,</span> <span class="s">"temperature_3"</span><span class="p">,</span> <span class="s">"temperature_4"</span><span class="p">,</span> <span class="s">"temperature_5"</span><span class="p">,</span> <span class="s">"pressure_1"</span><span class="p">,</span> <span class="s">"pressure_2"</span><span class="p">,</span> <span class="s">"pressure_3"</span><span class="p">,</span> <span class="s">"pressure_4"</span><span class="p">,</span> <span class="s">"pressure_5"</span><span class="p">]</span>
+<span class="n">signalNames</span> <span class="o">=</span> <span class="p">[</span><span class="sh">"</span><span class="s">temperature_1</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">temperature_2</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">temperature_3</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">temperature_4</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">temperature_5</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">pressure_1</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">pressure_2</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">pressure_3</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">pressure_4</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">pressure_5</span><span class="sh">"</span><span class="p">]</span>
 <span class="c1"># df = pd.DataFrame(np.random.rand(num_rows, len(signalNames)), columns=signalNames)
-</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">0.00000000000000001</span><span class="p">,</span><span class="o">-</span><span class="mf">1.5588250424377889</span><span class="p">,</span><span class="o">-</span><span class="mf">2.3941492028804823</span><span class="p">,</span><span class="mf">2.593357112443483</span><span class="p">,</span><span class="o">-</span><span class="mf">1.6094973523998164</span><span class="p">,</span><span class="o">-</span><span class="mf">1.8641932916192756</span><span class="p">,</span><span class="o">-</span><span class="mf">1.4677973361129089</span><span class="p">,</span><span class="o">-</span><span class="mf">2.7708583572138727</span><span class="p">,</span><span class="o">-</span><span class="mf">2.9587694388165655</span><span class="p">,</span><span class="mi">1000000000000000</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="n">signalNames</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">0.00000000000000001</span><span class="p">,</span><span class="o">-</span><span class="mf">1.5588250424377889</span><span class="p">,</span><span class="o">-</span><span class="mf">2.3941492028804823</span><span class="p">,</span><span class="mf">2.593357112443483</span><span class="p">,</span><span class="o">-</span><span class="mf">1.6094973523998164</span><span class="p">,</span><span class="o">-</span><span class="mf">1.8641932916192756</span><span class="p">,</span><span class="o">-</span><span class="mf">1.4677973361129089</span><span class="p">,</span><span class="o">-</span><span class="mf">2.7708583572138727</span><span class="p">,</span><span class="o">-</span><span class="mf">2.9587694388165655</span><span class="p">,</span><span class="mi">1000000000000000</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="n">signalNames</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="c1">#df.insert(0, 'timestamp', pd.date_range(start=date_today, periods=num_rows, freq='min')) # ID05042022.o
-</span><span class="n">df</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">'timestamp'</span><span class="p">,</span> <span class="n">pd</span><span class="p">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">date</span><span class="p">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">periods</span><span class="o">=</span><span class="n">num_rows</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s">'min'</span><span class="p">))</span> <span class="c1"># ID05042022.n
+</span><span class="n">df</span><span class="p">.</span><span class="nf">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="n">pd</span><span class="p">.</span><span class="nf">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">date</span><span class="p">.</span><span class="nf">today</span><span class="p">(),</span> <span class="n">periods</span><span class="o">=</span><span class="n">num_rows</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="sh">'</span><span class="s">min</span><span class="sh">'</span><span class="p">))</span> <span class="c1"># ID05042022.n
 </span>
 <span class="c1">#print(df)
 </span>
-<span class="n">df</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">'%Y-%m-%dT%H:%M:%SZ'</span><span class="p">))</span>
+<span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="sh">'</span><span class="s">%Y-%m-%dT%H:%M:%SZ</span><span class="sh">'</span><span class="p">))</span>
 
 <span class="c1"># Now create the Payload from the dataframe
 #print(df)
 </span>
 
 <span class="n">payloadData</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">.</span><span class="n">iterrows</span><span class="p">():</span>
-    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">],</span> <span class="s">"%Y-%m-%dT%H:%M:%SZ"</span><span class="p">)</span>
-    <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">signalNames</span><span class="p">])</span>
-    <span class="n">dItem</span> <span class="o">=</span> <span class="n">DataItem</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
-    <span class="n">payloadData</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">dItem</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">.</span><span class="nf">iterrows</span><span class="p">():</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strptime</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">],</span> <span class="sh">"</span><span class="s">%Y-%m-%dT%H:%M:%SZ</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">signalNames</span><span class="p">])</span>
+    <span class="n">dItem</span> <span class="o">=</span> <span class="nc">DataItem</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">payloadData</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">dItem</span><span class="p">)</span>
     
 
 
@@ -602,7 +602,7 @@ OCIコンソール画面右上のプロファイル・アイコンをクリッ�
 # ID05052022.eo
 </span>
 
-<span class="n">inline</span> <span class="o">=</span> <span class="n">InlineDetectAnomaliesRequest</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span> <span class="n">request_type</span><span class="o">=</span><span class="s">"INLINE"</span><span class="p">,</span> <span class="n">signal_names</span><span class="o">=</span><span class="n">signalNames</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payloadData</span><span class="p">)</span>
+<span class="n">inline</span> <span class="o">=</span> <span class="nc">InlineDetectAnomaliesRequest</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span> <span class="n">request_type</span><span class="o">=</span><span class="sh">"</span><span class="s">INLINE</span><span class="sh">"</span><span class="p">,</span> <span class="n">signal_names</span><span class="o">=</span><span class="n">signalNames</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payloadData</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h2 id="生データを前処理する方法">生データを前処理する方法</h2>
@@ -634,25 +634,25 @@ OCIコンソール画面右上のプロファイル・アイコンをクリッ�
 
 <p>CSV ファイルからデータ・フレームを使用してデータをロードします。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="n">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="n">json</span>
+<span class="kn">import</span> <span class="n">os</span>
 
 <span class="c1"># ...
 </span>
 <span class="c1"># Please specify the data path of the files you downloaded
-</span><span class="n">DATA_PATH</span> <span class="o">=</span> <span class="s">'/home/datascience/files/'</span>
+</span><span class="n">DATA_PATH</span> <span class="o">=</span> <span class="sh">'</span><span class="s">/home/datascience/files/</span><span class="sh">'</span>
 
-<span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s">'example.csv'</span>
-<span class="k">print</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+<span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="sh">'</span><span class="s">example.csv</span><span class="sh">'</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 
-<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">'%Y-%m-%dT%H:%M:%SZ'</span><span class="p">)</span>
-<span class="n">example_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
-<span class="n">example_df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="sh">'</span><span class="s">%Y-%m-%dT%H:%M:%SZ</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">example_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
+<span class="n">example_df</span><span class="p">.</span><span class="nf">head</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>結果は以下となります。</p>
@@ -665,11 +665,11 @@ OCIコンソール画面右上のプロファイル・アイコンをクリッ�
 Cassandra または InfluxDB の場合、データ・セットには、タイムスタンプ、センサー名 (キー)、センサー値 (値)3 つ以上の列がある場合があります。そのような場合、データ・ファイルを適切に正規化して、タイムスタンプと属性を持たせる必要があります。
 building_temperature.csvは、建物 1 と建物 2の温度情報を含みます。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s">'building_temperature.csv'</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="sh">'</span><span class="s">building_temperature.csv</span><span class="sh">'</span>
 
-<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">'%Y-%m-%dT%H:%M:%SZ'</span><span class="p">)</span>
-<span class="n">raw_temerature_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
-<span class="n">raw_temerature_df</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="sh">'</span><span class="s">%Y-%m-%dT%H:%M:%SZ</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">raw_temerature_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
+<span class="n">raw_temerature_df</span><span class="p">.</span><span class="nf">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timestamp</span>	<span class="n">building_name</span>	<span class="n">sensor_name</span>	<span class="n">sensor_value</span>
@@ -682,11 +682,11 @@ building_temperature.csvは、建物 1 と建物 2の温度情報を含みます
 
 <p>building_pressure.csvは、建物 1 と建物 2 の圧力情報を含みます。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s">'building_pressure.csv'</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="sh">'</span><span class="s">building_pressure.csv</span><span class="sh">'</span>
 
-<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">'%Y-%m-%dT%H:%M:%SZ'</span><span class="p">)</span>
-<span class="n">raw_pressure_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
-<span class="n">raw_pressure_df</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="sh">'</span><span class="s">%Y-%m-%dT%H:%M:%SZ</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">raw_pressure_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
+<span class="n">raw_pressure_df</span><span class="p">.</span><span class="nf">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="n">timestamp</span>	<span class="n">building_name</span>	<span class="n">sensor_name</span>	<span class="n">sensor_value</span>
@@ -701,16 +701,16 @@ building_temperature.csvは、建物 1 と建物 2の温度情報を含みます
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">convert_df_to_sensor_columns</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
     <span class="c1"># Assume the building name is always same in this df
-</span>    <span class="n">df_multidx</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="bp">False</span><span class="p">).</span><span class="n">set_index</span><span class="p">([</span><span class="s">'timestamp'</span><span class="p">,</span> <span class="s">'building_name'</span><span class="p">,</span> <span class="s">'sensor_name'</span><span class="p">])[:]</span>
-    <span class="n">newdf</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df_multidx</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span> <span class="n">index</span><span class="o">=</span><span class="n">df_multidx</span><span class="p">.</span><span class="n">index</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'sensor_value'</span><span class="p">])</span>
-    <span class="n">newdf</span> <span class="o">=</span> <span class="n">newdf</span><span class="p">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">level</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">newdf</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">newdf</span><span class="p">.</span><span class="n">columns</span><span class="p">]</span> <span class="c1"># No need 2-tuple name for column name
-</span>    <span class="n">newdf</span><span class="p">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># Get timestamp and building_name as regular column
+</span>    <span class="n">df_multidx</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="bp">False</span><span class="p">).</span><span class="nf">set_index</span><span class="p">([</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">building_name</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">sensor_name</span><span class="sh">'</span><span class="p">])[:]</span>
+    <span class="n">newdf</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="nc">Series</span><span class="p">(</span><span class="n">df_multidx</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="nf">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span> <span class="n">index</span><span class="o">=</span><span class="n">df_multidx</span><span class="p">.</span><span class="n">index</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor_value</span><span class="sh">'</span><span class="p">])</span>
+    <span class="n">newdf</span> <span class="o">=</span> <span class="n">newdf</span><span class="p">.</span><span class="nf">unstack</span><span class="p">(</span><span class="n">level</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">newdf</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="nf">for </span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">newdf</span><span class="p">.</span><span class="n">columns</span><span class="p">]</span> <span class="c1"># No need 2-tuple name for column name
+</span>    <span class="n">newdf</span><span class="p">.</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># Get timestamp and building_name as regular column
 </span>    <span class="k">return</span> <span class="n">newdf</span>
 
-<span class="n">new_temperature_df</span> <span class="o">=</span> <span class="n">convert_df_to_sensor_columns</span><span class="p">(</span><span class="n">raw_temerature_df</span><span class="p">)</span>
-<span class="n">new_pressure_df</span> <span class="o">=</span> <span class="n">convert_df_to_sensor_columns</span><span class="p">(</span><span class="n">raw_pressure_df</span><span class="p">)</span>
-<span class="n">new_pressure_df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+<span class="n">new_temperature_df</span> <span class="o">=</span> <span class="nf">convert_df_to_sensor_columns</span><span class="p">(</span><span class="n">raw_temerature_df</span><span class="p">)</span>
+<span class="n">new_pressure_df</span> <span class="o">=</span> <span class="nf">convert_df_to_sensor_columns</span><span class="p">(</span><span class="n">raw_pressure_df</span><span class="p">)</span>
+<span class="n">new_pressure_df</span><span class="p">.</span><span class="nf">head</span><span class="p">()</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timestamp</span>	<span class="n">building_name</span>	<span class="n">pressure_1</span>	<span class="n">pressure_2</span>	<span class="n">pressure_3</span>	<span class="n">pressure_4</span>	<span class="n">pressure_5</span>
@@ -723,10 +723,10 @@ building_temperature.csvは、建物 1 と建物 2の温度情報を含みます
 
 <p>2 つのデータ・フレームを結合します。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">new_combined_df</span> <span class="o">=</span> <span class="n">new_temperature_df</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_pressure_df</span><span class="p">.</span><span class="n">set_index</span><span class="p">([</span><span class="s">'timestamp'</span><span class="p">,</span> <span class="s">'building_name'</span><span class="p">]),</span> 
-                                          <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">,</span> <span class="s">'building_name'</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s">'outer'</span><span class="p">)</span>
-<span class="n">new_combined_df</span> <span class="o">=</span> <span class="n">new_combined_df</span><span class="p">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s">'timestamp'</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">new_combined_df</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">new_combined_df</span> <span class="o">=</span> <span class="n">new_temperature_df</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">new_pressure_df</span><span class="p">.</span><span class="nf">set_index</span><span class="p">([</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">building_name</span><span class="sh">'</span><span class="p">]),</span> 
+                                          <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">building_name</span><span class="sh">'</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="sh">'</span><span class="s">outer</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">new_combined_df</span> <span class="o">=</span> <span class="n">new_combined_df</span><span class="p">.</span><span class="nf">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">new_combined_df</span><span class="p">.</span><span class="nf">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timestamp</span>	<span class="n">building_name</span>	<span class="n">temperature_1</span>	<span class="n">temperature_2</span>	<span class="n">temperature_3</span>	<span class="n">temperature_4</span>	<span class="n">temperature_5</span>	<span class="n">pressure_1</span>	<span class="n">pressure_2</span>	<span class="n">pressure_3</span>	<span class="n">pressure_4</span>	<span class="n">pressure_5</span>
@@ -742,9 +742,9 @@ building_temperature.csvは、建物 1 と建物 2の温度情報を含みます
 <p>場合によっては、データを別々に維持し、後で個別の異常検出モデルを構築する必要があります。その理由は、多変量異常検出アルゴリズムが、トレーニング・データ内の属性間のダイナミクスと相関関係を学習することを目的としているからです。たとえば、大学キャンパス内の複数の建物をサポートする大規模な HVAC 監視システムでは、センサーを異なる建物に別々に分割して、異なるモデルをトレーニングすることは明らかです。これらのセンサーを 1 つのモデルに組み合わせると、モデルのパフォーマンスが低下する可能性があります。<br />
 上記の場合、2 つの異なる建物があり、圧力と温度の測定値は建物間で独立しているようです。データを分割して別のモデルをトレーニングします。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">combined_building1_df</span> <span class="o">=</span> <span class="n">new_combined_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">building_name</span> <span class="o">==</span> <span class="s">'building1'</span><span class="p">][:].</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">combined_building2_df</span> <span class="o">=</span> <span class="n">new_combined_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">building_name</span> <span class="o">==</span> <span class="s">'building2'</span><span class="p">][:].</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">combined_building2_df</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">combined_building1_df</span> <span class="o">=</span> <span class="n">new_combined_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">building_name</span> <span class="o">==</span> <span class="sh">'</span><span class="s">building1</span><span class="sh">'</span><span class="p">][:].</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">combined_building2_df</span> <span class="o">=</span> <span class="n">new_combined_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">building_name</span> <span class="o">==</span> <span class="sh">'</span><span class="s">building2</span><span class="sh">'</span><span class="p">][:].</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">combined_building2_df</span><span class="p">.</span><span class="nf">head</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timestamp</span>	<span class="n">building_name</span>	<span class="n">temperature_1</span>	<span class="n">temperature_2</span>	<span class="n">temperature_3</span>	<span class="n">temperature_4</span>	<span class="n">temperature_5</span>	<span class="n">pressure_1</span>	<span class="n">pressure_2</span>	<span class="n">pressure_3</span>	<span class="n">pressure_4</span>	<span class="n">pressure_5</span>
@@ -766,16 +766,16 @@ building_temperature.csvは、建物 1 と建物 2の温度情報を含みます
 Oracleのアルゴリズムまたサービスは欠損値もサポートしているため、ユーザーは一部のタイムスタンプの欠損値をそのままにしておくこともできます。</p>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Drop no-use attributes
-</span><span class="n">combined_building1_df</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">'building_name'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span class="n">combined_building1_df</span><span class="p">.</span><span class="nf">drop</span><span class="p">([</span><span class="sh">'</span><span class="s">building_name</span><span class="sh">'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Backfill missing values due to timestamp are not aligned
-</span><span class="n">combined_building1_df</span><span class="p">.</span><span class="n">bfill</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># Note, this step may not be needed, as our algorithm can also fill missing values
+</span><span class="n">combined_building1_df</span><span class="p">.</span><span class="nf">bfill</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># Note, this step may not be needed, as our algorithm can also fill missing values
 </span>
 <span class="c1"># Add a key to help remove row with duplicated days
-</span><span class="n">combined_building1_df</span><span class="p">[</span><span class="s">'date_till_hour'</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_building1_df</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">'%Y-%m-%d %H'</span><span class="p">))</span>
-<span class="n">combined_building1_df</span><span class="p">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s">'date_till_hour'</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="s">'first'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">combined_building1_df</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">'date_till_hour'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">combined_building1_df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</span><span class="n">combined_building1_df</span><span class="p">[</span><span class="sh">'</span><span class="s">date_till_hour</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">combined_building1_df</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="sh">'</span><span class="s">%Y-%m-%d %H</span><span class="sh">'</span><span class="p">))</span>
+<span class="n">combined_building1_df</span><span class="p">.</span><span class="nf">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="sh">'</span><span class="s">date_till_hour</span><span class="sh">'</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="sh">'</span><span class="s">first</span><span class="sh">'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">combined_building1_df</span><span class="p">.</span><span class="nf">drop</span><span class="p">([</span><span class="sh">'</span><span class="s">date_till_hour</span><span class="sh">'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">combined_building1_df</span><span class="p">.</span><span class="nf">head</span><span class="p">()</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timestamp</span>	<span class="n">temperature_1</span>	<span class="n">temperature_2</span>	<span class="n">temperature_3</span>	<span class="n">temperature_4</span>	<span class="n">temperature_5</span>	<span class="n">pressure_1</span>	<span class="n">pressure_2</span>	<span class="n">pressure_3</span>	<span class="n">pressure_4</span>	<span class="n">pressure_5</span>
@@ -791,14 +791,14 @@ Oracleのアルゴリズムまたサービスは欠損値もサポートして�
 <p>データが読み込まれた後、データを探索し、潜在的な問題を特定します。データ探索には多くの方法があり、特定のビジネス・シナリオに大きく依存する場合があります。
 ここでは、時系列データに適したいくつかの基本的な方法のみを紹介します。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s">'example.csv'</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file_name</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="sh">'</span><span class="s">example.csv</span><span class="sh">'</span>
 
-<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">'%Y-%m-%dT%H:%M:%SZ'</span><span class="p">)</span>
-<span class="n">example_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s">'timestamp'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
-<span class="n">example_df</span><span class="p">.</span><span class="n">info</span><span class="p">()</span>
+<span class="n">dateparse</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="sh">'</span><span class="s">%Y-%m-%dT%H:%M:%SZ</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">example_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">],</span> <span class="n">date_parser</span><span class="o">=</span><span class="n">dateparse</span><span class="p">)</span>
+<span class="n">example_df</span><span class="p">.</span><span class="nf">info</span><span class="p">()</span>
 </code></pre></div></div>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">pandas</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">DataFrame</span><span class="s">'&gt;
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">pandas</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">DataFrame</span><span class="sh">'</span><span class="s">&gt;
 RangeIndex: 500 entries, 0 to 499
 Data columns (total 14 columns):
  #   Column     Non-Null Count  Dtype         
@@ -821,7 +821,7 @@ dtypes: datetime64[ns](1), float64(11), object(2)
 memory usage: 54.8+ KB
 </span></code></pre></div></div>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="n">describe</span><span class="p">()</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="nf">describe</span><span class="p">()</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="n">sensor1</span>	<span class="n">sensor2</span>	<span class="n">sensor3</span>	<span class="n">sensor4</span>	<span class="n">sensor5</span>	<span class="n">sensor6</span>	<span class="n">sensor7</span>	<span class="n">sensor8</span>	<span class="n">sensor9</span>	<span class="n">sensor10</span>	<span class="n">sensor11</span>
@@ -839,7 +839,7 @@ memory usage: 54.8+ KB
 1 つの属性に多数の欠損値がある場合は、その理由を考えて、それを削除するか、有効な値で埋める必要があります。
 この例では、sensor11 には 25 個の値 があり(他は欠損値) 、使用によってこのセンサーを削除したり、欠落している理由を特定したりできます。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="n">count</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">example_df</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="nf">count</span><span class="p">()</span> <span class="o">/</span> <span class="nf">len</span><span class="p">(</span><span class="n">example_df</span><span class="p">)</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timestamp</span>    <span class="mf">1.000</span>
@@ -859,22 +859,22 @@ memory usage: 54.8+ KB
 <span class="n">dtype</span><span class="p">:</span> <span class="n">float64</span>
 </code></pre></div></div>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">'sensor11'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="nf">drop</span><span class="p">([</span><span class="sh">'</span><span class="s">sensor11</span><span class="sh">'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h4 id="属性の分布プロット">属性の分布プロット</h4>
 
 <p>すべての属性の分布をプロットし、値の範囲と分布を確認します。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sensor_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">example_df</span><span class="p">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="s">'timestamp'</span><span class="p">]</span>
-<span class="n">example_df</span><span class="p">[</span><span class="n">sensor_cols</span><span class="p">].</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sensor_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">example_df</span><span class="p">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">e</span> <span class="o">!=</span> <span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">]</span>
+<span class="n">example_df</span><span class="p">[</span><span class="n">sensor_cols</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 </code></pre></div></div>
 
 <p>sensor10 は他のものよりもはるかに広い範囲を持っているように見えます。</p>
 
 <p><img src="image48.png" alt="image48" /></p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">[[</span><span class="s">'sensor10'</span><span class="p">]].</span><span class="nb">apply</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">.</span><span class="n">value_counts</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">[[</span><span class="sh">'</span><span class="s">sensor10</span><span class="sh">'</span><span class="p">]].</span><span class="nf">apply</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">.</span><span class="n">value_counts</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sensor10</span>
@@ -887,7 +887,7 @@ memory usage: 54.8+ KB
 
 <p>[-60, -5] の範囲にいくつかの極端な値があるように見えますが、ドメインの知識に基づいてそれらを除外できます。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'sensor10'</span><span class="p">]</span><span class="o">&lt;-</span><span class="mi">5</span><span class="p">][:].</span><span class="n">head</span><span class="p">()</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor10</span><span class="sh">'</span><span class="p">]</span><span class="o">&lt;-</span><span class="mi">5</span><span class="p">][:].</span><span class="nf">head</span><span class="p">()</span>
 </code></pre></div></div>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">timestamp</span>	<span class="n">sensor1</span>	<span class="n">sensor2</span>	<span class="n">sensor3</span>	<span class="n">sensor4</span>	<span class="n">sensor5</span>	<span class="n">sensor6</span>	<span class="n">sensor7</span>	<span class="n">sensor8</span>	<span class="n">sensor9</span>	<span class="n">sensor10</span>	<span class="n">location</span>	<span class="n">status</span>
@@ -900,7 +900,7 @@ memory usage: 54.8+ KB
 
 <p>時系列データの場合、タイムスタンプ軸に各属性をプロットして、データの傾向、ギャップ、またはその他の問題を確認する必要があります。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'timestamp'</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="c1"># Plot all numeric data
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="c1"># Plot all numeric data
 </span></code></pre></div></div>
 
 <p><img src="image52.png" alt="image52" /></p>
@@ -914,7 +914,7 @@ memory usage: 54.8+ KB
 
 <p>時系列のグラフに基づいて、単調な属性を特定できますが、これはモデルのトレーニングには役に立たない可能性があり、削除することができます</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">[[</span><span class="s">'timestamp'</span><span class="p">,</span> <span class="s">'sensor8'</span><span class="p">,</span> <span class="s">'sensor9'</span><span class="p">]].</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'timestamp'</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="c1"># Plot individual column
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">example_df</span><span class="p">[[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">sensor8</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">sensor9</span><span class="sh">'</span><span class="p">]].</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="c1"># Plot individual column
 </span></code></pre></div></div>
 
 <p><img src="image54.png" alt="image54" /></p>
@@ -927,21 +927,21 @@ memory usage: 54.8+ KB
 
 <p>シグナルや属性間の相関を計算し、それらをドメイン知識でチェックして、その一貫性を検証することです。 これにより、モデルをトレーニングする前にデータの問題を特定できる可能性もあります。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">corr</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">.</span><span class="n">corr</span><span class="p">()</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">corr</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">.</span><span class="nf">corr</span><span class="p">()</span>
 
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
+<span class="kn">import</span> <span class="n">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
 
 
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 
 <span class="c1"># plot the heatmap
-</span><span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+</span><span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 
-<span class="n">sns</span><span class="p">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corr</span><span class="p">.</span><span class="nb">abs</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'BuGn'</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">'.2f'</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="s">'Correlation Heatmap'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">sns</span><span class="p">.</span><span class="nf">heatmap</span><span class="p">(</span><span class="n">corr</span><span class="p">.</span><span class="nf">abs</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="sh">'</span><span class="s">BuGn</span><span class="sh">'</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="sh">'</span><span class="s">.2f</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">yticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">'</span><span class="s">Correlation Heatmap</span><span class="sh">'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p><img src="image56.png" alt="image56" /></p>
@@ -955,9 +955,9 @@ memory usage: 54.8+ KB
 <p>センサー属性のほとんどが NULL または NAN 値 (たとえば、50% 以上) である場合は、それらを削除することも検討する必要があります。</p>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Example of removing all null columns
-</span><span class="n">null_cols</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">.</span><span class="n">columns</span><span class="p">[</span><span class="n">example_df</span><span class="p">.</span><span class="n">isnull</span><span class="p">().</span><span class="nb">all</span><span class="p">()]</span> <span class="c1"># identify columns thare all null
-</span><span class="k">print</span><span class="p">(</span><span class="n">null_cols</span><span class="p">)</span>
-<span class="n">example_df</span><span class="p">.</span><span class="n">drop</span><span class="p">(</span><span class="n">null_cols</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> <span class="c1"># drop nan columns in place
+</span><span class="n">null_cols</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">.</span><span class="n">columns</span><span class="p">[</span><span class="n">example_df</span><span class="p">.</span><span class="nf">isnull</span><span class="p">().</span><span class="nf">all</span><span class="p">()]</span> <span class="c1"># identify columns thare all null
+</span><span class="nf">print</span><span class="p">(</span><span class="n">null_cols</span><span class="p">)</span>
+<span class="n">example_df</span><span class="p">.</span><span class="nf">drop</span><span class="p">(</span><span class="n">null_cols</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> <span class="c1"># drop nan columns in place
 </span></code></pre></div></div>
 
 <h4 id="タイムスタンプと数値データを保持">タイムスタンプと数値データを保持</h4>
@@ -966,27 +966,27 @@ memory usage: 54.8+ KB
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Example of keeping only the timestamp and numeric columns
 # Only keep timestamp, and numeric sensor columns
-</span><span class="n">valid_sensor_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">example_df</span><span class="p">.</span><span class="n">dtypes</span><span class="p">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="s">'timestamp'</span><span class="p">)</span> <span class="ow">or</span> 
-                        <span class="p">(</span><span class="n">typ</span> <span class="o">==</span> <span class="s">'float64'</span> <span class="ow">or</span> <span class="n">typ</span> <span class="o">==</span> <span class="s">'float32'</span> <span class="ow">or</span> <span class="n">typ</span> <span class="o">==</span> <span class="s">'int64'</span><span class="p">)</span> <span class="p">]</span>
-<span class="n">data_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="n">valid_sensor_columns</span><span class="p">].</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">data_df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</span><span class="n">valid_sensor_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">example_df</span><span class="p">.</span><span class="n">dtypes</span><span class="p">.</span><span class="nf">items</span><span class="p">()</span> <span class="nf">if </span><span class="p">(</span><span class="n">col</span> <span class="o">==</span> <span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">)</span> <span class="ow">or</span> 
+                        <span class="p">(</span><span class="n">typ</span> <span class="o">==</span> <span class="sh">'</span><span class="s">float64</span><span class="sh">'</span> <span class="ow">or</span> <span class="n">typ</span> <span class="o">==</span> <span class="sh">'</span><span class="s">float32</span><span class="sh">'</span> <span class="ow">or</span> <span class="n">typ</span> <span class="o">==</span> <span class="sh">'</span><span class="s">int64</span><span class="sh">'</span><span class="p">)</span> <span class="p">]</span>
+<span class="n">data_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="n">valid_sensor_columns</span><span class="p">].</span><span class="nf">copy</span><span class="p">()</span>
+<span class="n">data_df</span><span class="p">.</span><span class="nf">head</span><span class="p">()</span>
 </code></pre></div></div>
 
 <h4 id="無効な観測の削除">無効な観測の削除</h4>
 
 <p>分布分析に基づいて、特定の属性の一部の値が、データ収集の問題、またはサービスが利用できないために有効でない場合、それらの観察を削除できます。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clean_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">~</span><span class="n">pd</span><span class="p">.</span><span class="n">isna</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'sensor10'</span><span class="p">])][:]</span> <span class="c1"># remove missing value rows
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clean_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">~</span><span class="n">pd</span><span class="p">.</span><span class="nf">isna</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor10</span><span class="sh">'</span><span class="p">])][:]</span> <span class="c1"># remove missing value rows
 </span>
-<span class="n">clean_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'sensor4'</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">][:]</span> <span class="c1"># remove observations with negative values in sensor4
+<span class="n">clean_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor4</span><span class="sh">'</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">][:]</span> <span class="c1"># remove observations with negative values in sensor4
 </span>
-<span class="n">clean_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'sensor1'</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'sensor2'</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="p">][:]</span> 
+<span class="n">clean_df</span> <span class="o">=</span> <span class="n">example_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor1</span><span class="sh">'</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor2</span><span class="sh">'</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="p">][:]</span> 
 <span class="c1"># remove observations with negative values in column1 and positive values in column2
 </span></code></pre></div></div>
 
 <p>たとえば、sensor10 にはいくつかの極端な値があり、無効と見なされ、削除する必要があります。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clean_df</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'sensor10'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'sensor10'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)][:]</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clean_df</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor10</span><span class="sh">'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor10</span><span class="sh">'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)][:]</span>
 <span class="n">clean_df</span><span class="p">.</span><span class="n">shape</span>
 </code></pre></div></div>
 
@@ -995,9 +995,9 @@ memory usage: 54.8+ KB
 <p>上記のさまざまな分析アプローチで、ユーザーが調査またはドメイン知識によって既知の外れ値を見つけた場合は、モデルのトレーニングの前に外れ値を削除することをお勧めします。 テスト・データの場合、結果を検証したり、モデルのパフォーマンスを確認したりするために、これらの外れ値をそのまま保持できます。
 以下のように、センサー1の値が2より大きい場合、異常だと判断し、削除できます。</p>
 
-<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clean_df</span> <span class="o">=</span> <span class="n">clean_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'sensor1'</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">][:]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">clean_df</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">clean_df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">clean_df</span> <span class="o">=</span> <span class="n">clean_df</span><span class="p">[</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="sh">'</span><span class="s">sensor1</span><span class="sh">'</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">][:]</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">clean_df</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">clean_df</span><span class="p">.</span><span class="nf">head</span><span class="p">()</span>
 </code></pre></div></div>
 
 <h4 id="削除クリーニングするデータの量">削除／クリーニングするデータの量</h4>
@@ -1016,10 +1016,10 @@ memory usage: 54.8+ KB
 <p>完全なパターンを学習し、高性能モデルをトレーニングするには、トレーニング ・セットにすべての属性の値の範囲全体が含まれている必要があります。ユーザーはタイムスタンプを選択してデータを分割できます。たとえば、トレーニングとテストの比率を 70%と30%、または最大 90%と10% に維持できます。</p>
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">split_ratio</span> <span class="o">=</span> <span class="mf">0.9</span>
-<span class="n">split_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">combined_building1_df</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">split_ratio</span><span class="p">)</span>
+<span class="n">split_idx</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">combined_building1_df</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">split_ratio</span><span class="p">)</span>
 <span class="n">train_building1_df</span> <span class="o">=</span> <span class="n">combined_building1_df</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">split_idx</span><span class="p">]</span>
 <span class="n">test_building1_df</span> <span class="o">=</span> <span class="n">combined_building1_df</span><span class="p">[</span><span class="n">split_idx</span><span class="p">:]</span>
-<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"training set size: </span><span class="si">{</span><span class="n">train_building1_df</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="s">, testing set size: </span><span class="si">{</span><span class="n">test_building1_df</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">training set size: </span><span class="si">{</span><span class="n">train_building1_df</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="s">, testing set size: </span><span class="si">{</span><span class="n">test_building1_df</span><span class="p">.</span><span class="n">shape</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h4 id="データフォーマット">データ・フォーマット</h4>
@@ -1065,18 +1065,18 @@ JSON 形式も簡単で、すべての属性名をリストするキー （signa
 
 <div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">convert_df_to_json</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">outfile_name</span><span class="p">):</span>
 <span class="c1"># NOTE: Assume the first column or the index in dataframe is the timestamp, will force to change it as timestamp in output
-</span>    <span class="n">out_json</span> <span class="o">=</span> <span class="p">{</span><span class="s">'requestType'</span><span class="p">:</span> <span class="s">'INLINE'</span><span class="p">,</span> <span class="s">'columnLabels'</span><span class="p">:</span> <span class="p">[],</span> <span class="s">'data'</span><span class="p">:</span> <span class="p">[]}</span>
-    <span class="n">column_0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span>    <span class="n">out_json</span> <span class="o">=</span> <span class="p">{</span><span class="sh">'</span><span class="s">requestType</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">INLINE</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">columnLabels</span><span class="sh">'</span><span class="p">:</span> <span class="p">[],</span> <span class="sh">'</span><span class="s">data</span><span class="sh">'</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">column_0</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">df</span><span class="p">.</span><span class="n">index</span><span class="p">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">df</span><span class="p">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_0</span><span class="p">]</span>
-        <span class="n">df</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="n">column_0</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">out_json</span><span class="p">[</span><span class="s">'columnLabels'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">)</span>
-    <span class="n">out_json</span><span class="p">[</span><span class="s">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s">'timestamp'</span><span class="p">:</span> <span class="n">index</span><span class="p">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">'%Y-%m-%dT%H:%M:%S.000Z'</span><span class="p">),</span> <span class="s">'value'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">row</span><span class="p">.</span><span class="n">values</span><span class="p">)}</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> 
-                        <span class="ow">in</span> <span class="n">df</span><span class="p">.</span><span class="n">iterrows</span><span class="p">()]</span>
+        <span class="n">df</span><span class="p">.</span><span class="nf">drop</span><span class="p">([</span><span class="n">column_0</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">out_json</span><span class="p">[</span><span class="sh">'</span><span class="s">columnLabels</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">out_json</span><span class="p">[</span><span class="sh">'</span><span class="s">data</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">:</span> <span class="n">index</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="sh">'</span><span class="s">%Y-%m-%dT%H:%M:%S.000Z</span><span class="sh">'</span><span class="p">),</span> <span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">:</span> <span class="nf">list</span><span class="p">(</span><span class="n">row</span><span class="p">.</span><span class="n">values</span><span class="p">)}</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> 
+                        <span class="ow">in</span> <span class="n">df</span><span class="p">.</span><span class="nf">iterrows</span><span class="p">()]</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile_name</span><span class="p">,</span> <span class="s">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
-        <span class="nb">file</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">out_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"JSON output file save to </span><span class="si">{</span><span class="n">outfile_name</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="n">outfile_name</span><span class="p">,</span> <span class="sh">'</span><span class="s">w</span><span class="sh">'</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
+        <span class="nb">file</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="nf">dumps</span><span class="p">(</span><span class="n">out_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">JSON output file save to </span><span class="si">{</span><span class="n">outfile_name</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out_json</span>
 </code></pre></div></div>
 
