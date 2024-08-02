@@ -25,10 +25,13 @@ header:
 <BR>
 
 # VMクラスタおよびデータベースの作成
-[プロビジョニングチュートリアル](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html){:target="_blank"}を参考に、ExaDB-XSのVMクラスタを作成し、その上にコンテナ・データベースをプロビジョニングします。
+[ExascaleインフラストラクチャでのOracle Exadata Database Serviceのプロビジョニング](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html){:target="_blank"}を参考に、ExaDB-XSのVMクラスタを作成し、その上にコンテナ・データベースをプロビジョニングします。
 
-> バックアップ先の文章考える
+> タスク2：コンテナ・データベースのプロビジョニングのステップ3の「データベース・バックアップの構成」でバックアップ保存先を設定する際、デフォルト設定のAutonomous Recovery Serviceを使用する場合は、[Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/basedb/dbcs107-zrcv/){:target="_blank"}を参考に、セットアップを行ってください。
+> 保存先をOCIオブジェクト・ストレージを選択する場合は、セットアップ作業は不要です。
+
 <BR>
+
 > ![](console_01.png)
 
 <BR>
