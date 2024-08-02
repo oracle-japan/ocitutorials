@@ -1,6 +1,6 @@
 ---
 title: "101 : ExaDB-XSを使おう"
-excerpt: "文章考えるExaDB-XSの作成方法について紹介します。"
+excerpt: "あらゆる業界のあらゆる組織にExadataのメリットを提供するExaDB-XSの作成方法について紹介します。"
 order: "2_101"
 layout: single
 header:
@@ -22,26 +22,25 @@ header:
 + **スケーラブルなプール・リソース** : エクサスケールインフラストラクチャは、共有インテリジェントストレージとコンピューティングのプールを活用することで、ダウンタイムやサーバーベースのサイズ制限、破壊的なマイグレーションを心配することなく、データベースを容易に拡張することができます。
 + **俊敏な開発** : Exascaleインフラストラクチャは、Exadataネイティブのパフォーマンスで迅速かつ効率的にデータベースのシンクローンを作成する機能を備えているため、ストレージコストを削減し、開発者の俊敏性を高めることができます。
 
-<BR>
+<br/>
 
 # VMクラスタおよびデータベースの作成
 [ExascaleインフラストラクチャでのOracle Exadata Database Serviceのプロビジョニング](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html){:target="_blank"}を参考に、ExaDB-XSのVMクラスタを作成し、その上にコンテナ・データベースをプロビジョニングします。
 
-> タスク2：コンテナ・データベースのプロビジョニングのステップ3の「データベース・バックアップの構成」でバックアップ保存先を設定する際、デフォルト設定のAutonomous Recovery Serviceを使用する場合は、[Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/basedb/dbcs107-zrcv/){:target="_blank"}を参考に、セットアップを行ってください。
-> 保存先をOCIオブジェクト・ストレージを選択する場合は、セットアップ作業は不要です。
-
-<BR>
-
+> **タスク2：コンテナ・データベースのプロビジョニング**のステップ3の**「データベース・バックアップの構成」**でバックアップ保存先を設定します。
+> その際、デフォルト設定の Autonomous Recovery Service を使用する場合は、[ Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/basedb/dbcs107-zrcv/){:target="_blank"}を参考に、セットアップを行ってください。
+> オブジェクト・ストレージを選択する場合は、セットアップ作業は不要です。
+>
 > ![](console_01.png)
 
-<BR>
+<br/>
 
 <a id="anchor11"></a>
 
 # 参考資料
-+ [Oracle Cloud Infrastructure Documentation - Oracle Exadata Database Service on Dedicated Infrastructure](https://docs.oracle.com/en-us/iaas/exadatacloud/index.html){:target="_blank"}
-+ [Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) サービス詳細](https://speakerdeck.com/oracle4engineer/exadata-database-cloud-technical-detail){:target="_blank"}
++ [Oracle Exadata Database Service on Exascale Infrastructureの紹介](https://blogs.oracle.com/oracle4engineer/post/ja-introducing-oracle-exadata-database-service-on-exascale-infrastructure){:target="_blank"}
++ [ExascaleインフラストラクチャでのOracle Exadata Database Serviceのプロビジョニング](https://docs.oracle.com/ja/learn/exadb-xs-db/index.html){:target="_blank"}
 
-<BR>
+<br/>
 
 [ページトップへ戻る](#anchor0)

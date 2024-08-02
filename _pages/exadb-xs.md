@@ -32,7 +32,9 @@ toc: true
 インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 
-+ **[101: ExaDB-XSを使おう](/ocitutorials/exadb-xs/exadb-xs101-create-exadb-xs/){:target="_blank"}**   
++ **[101: ExaDB-XSを使おう](/ocitutorials/exadb-xs/exadb-xs101-create-exadb-xs/){:target="_blank"}**
+
+※コンテンツは順次追加予定です
 
 <br/>
 
