@@ -26,8 +26,8 @@ toc: true
 ----
 
 <br/>
-# <span style="color: brown; ">■ Exadata Database Service on Dedicated Infrastructure (ExaDB-D) を使ってみよう</span>
-規模やワークロードに関係なく、あらゆる業界のあらゆる組織にExadataのメリットを提供するExadata Database Service on Dedicated Infrastructure !
+# <span style="color: brown; ">■ Exadata Database Service on Exascale Infrastructure (ExaDB-XS) を使ってみよう</span>
+規模やワークロードに関係なく、あらゆる業界のあらゆる組織にExadataのメリットを提供するExadata Database Service on Exascale Infrastructure !
 インテリジェンスと最新のクラウドのあらゆる利点を組み合わせたオラクルの画期的なマルチテナント・アーキテクチャを体験してみましょう !
 インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
