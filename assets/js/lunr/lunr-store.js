@@ -953,6 +953,12 @@ var store = [{
         "url": "/ocitutorials/enterprise/using-oracle-exadata/",
         "teaser": null
       },{
+        "title": "101 : ExaDB-XSを使おう",
+        "excerpt":"はじめに Oracle Exadata Database Service on Exascale Infrastructure (ExaDB-XS) は、Oracle Databaseが高い可用性を備えつつ高いパフォーマンスを発揮できるOracle Exadata Database Machine (Exadata)を、より低いエントリーコストでご利用いただけるサービスです。 ExaDB-XSは、Exadata Database Service on Dedicated Infrastructure (ExaDB-D)と同じ強力な自動化機能を使用して VM クラスタとデータベースを管理しますが、物理的なコンピュートとストレージはサービスから抽象化されます。VMクラスタとデータベースをデプロイするだけで、その上で実行されるオラクル管理のインフラストラクチャを意識する必要はありません。 この章では、ExaDB-XSのVMクラスタとデータベースの作成を行います。 VMクラスタおよびデータベースの作成 ExascaleインフラストラクチャでのOracle Exadata Database Serviceのプロビジョニングを参考に、ExaDB-XSのVMクラスタを作成し、その上にコンテナ・データベースをプロビジョニングします。 タスク2：コンテナ・データベースのプロビジョニングのステップ3の「データベース・バックアップの構成」でバックアップ保存先を設定します。 その際、デフォルト設定の Autonomous Recovery Service を使用する場合は、 Autonomous Recovery Service (RCV/ZRCV) をセットアップしようを参考に、セットアップを行ってください。 オブジェクト・ストレージを選択する場合は、セットアップ作業は不要です。 参考資料 Oracle Exadata Database Service on Exascale Infrastructureの紹介...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/exadb-xs/exadb-xs101-create-exadb-xs/",
+        "teaser": "/ocitutorials/exadb-xs/exadb-xs101-create-exadb-xs/teaser.png"
+      },{
         "title": "101 : ExaDB-Dを使おう",
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) は、Oracle Databaseが高い可用性を備えつつ高いパフォーマンスを発揮できるOracle Exadata Database Machine (Exadata)が利用可能なサービスです。同じようにOCI上でExadataを利用可能なサービスとしては、Autonomous Data WarehouseやAutonomous Transaction Processing などのAutonomous Databaseのサービスがありますが、ExaDB-D が他のサービスと大きく違うところは、全オプションが使える専有型のUser-Managedサービスであるということです。 専有型 : H/Wもユーザー専有となり、他のユーザーの環境と分離されるため、セキュリティ・性能を担保できます。 User-Managed サービス : OS以上は顧客管理。OS上の構築・運用・管理に有効な機能を、クラウドのツールでも提供。パッチ適用やメンテナンスの実施判断・作業タイミングは顧客判。OSログインが可能でこれまで同様の管理方法を用いることができる (OS権限が必要な変更作業、サード・パーティのAgentの導入、ローカルにログやダンプファイルの配置など)ので、別途インスタンスやストレージサービスを立てる必要はありません。 また、オンライン・スケーリング (停止なし)での1時間単位での柔軟な価格体系、デフォルトでの可用性構成や容易に高可用性構成が組めること、PaaSとしてのプロビジョニングや管理面などのメリットがあります。 目次 : 1. Exadata Infrastructureの作成 2. Exadata VMクラスタの作成 3. データベースの作成 4. DBシステムへのアクセス 5. データベース(PDB)へのアクセス 6. PDB上のスキーマへのアクセス...","categories": [],
         "tags": [],

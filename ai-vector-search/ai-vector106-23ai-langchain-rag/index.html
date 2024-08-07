@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-02T00:22:37+09:00">
+  <meta property="article:published_time" content="2024-08-07T15:51:17+09:00">
 
 
 
@@ -265,7 +265,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="106 : Oracle Database 23aiとLangChainでRAGを構成してみよう">
     <meta itemprop="description" content="LangChainを使ったRAG構成をステップバイステップでご紹介します。">
-    <meta itemprop="datePublished" content="2024-08-02T00:22:37+09:00">
+    <meta itemprop="datePublished" content="2024-08-07T15:51:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -327,9 +327,12 @@
   <li>前回同様ベクトルデータベースへのChainを使わずに、LLMにクエリしテキスト生成を行い、上記「2」で生成されたテキストと比較しRAGの有効性を確認します。</li>
 </ol>
 
-<p>※ 実装は興味ないので結果だけ知りたいですという方は「テキスト生成を実行する」の章をご参照ください。</p>
+<p>※ 実装は興味ないので結果だけ知りたいですという方は<a href="#5-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン">5. RAGを実装する</a> の章をご参照ください。</p>
 
 <h1 id="ragの実装">RAGの実装</h1>
+<p>本チュートリアルではベクトル・データベースとして、Oracle Database 23ai Free(Computeインスタンスにインストール)、Base Database Service、Autonomous Database(23ai) のどれかを使用します。</p>
+
+<p>使用するサービスによってセットアップ方法が異なるので、それぞれのサービスごとの設定手順を参照してください。</p>
 
 <h2 id="1-1-oracle-database-23ai-free環境でのセットアップ">1-1. Oracle Database 23ai Free環境でのセットアップ</h2>
 <p>Oracle Database 23ai Free環境でチュートリアルを行う場合は、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a>を参考に、Oracle Database 23ai Freeをインストールします。既に作成済みの場合はスキップして下さい。</p>
@@ -360,6 +363,9 @@
 <p>docuserでログインできることを確認します。</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus docuser/docuser@freepdb1
 </code></pre></div></div>
+
+<p>これ以降の手順は、<a href="#-2.python環境のセットアップ">2. Python環境のセットアップ</a> をご参照ください。</p>
+
 <p><br /></p>
 
 <h2 id="1-2-base-database-service環境でのセットアップ">1-2. Base Database Service環境でのセットアップ</h2>
@@ -423,6 +429,8 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">exit</span>
 </code></pre></div></div>
 
+<p>これ以降の手順は、<a href="#-2.python環境のセットアップ">2. Python環境のセットアップ</a> をご参照ください。</p>
+
 <p><br /></p>
 
 <h2 id="1-3-autonomous-database-23ai-free環境でのセットアップ">1-3. Autonomous Database 23ai Free環境でのセットアップ</h2>
@@ -482,9 +490,9 @@ TLS接続については<a href="/ocitutorials/adb/adb108-walletless" target="_b
 <p><br /></p>
 
 <h2 id="2-python環境のセットアップ">2. Python環境のセットアップ</h2>
-<p>2024/7現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。</p>
+<p>2024/8現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。</p>
 
-<p>Autonomous Database環境の場合は、先程作成したコンピュート・インスタンスにログインします。</p>
+<p>Autonomous Database(23ai)環境の場合は、先程作成したコンピュート・インスタンスにログインします。</p>
 
 <p><code class="language-plaintext highlighter-rouge">root</code>にスイッチし、以下でPython3.11のインストールを行います。</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su -
@@ -603,7 +611,7 @@ ipython
 
 <p>まずは、作成済のdocuserでデータベースに接続します。</p>
 
-<p>Autonomous Database 23ai Free、若しくはBaseDBを使用している場合は、先程取得した接続文字列をdsnに貼り付けます。</p>
+<p>Autonomous Database(23ai)、もしくはBaseDBを使用している場合は、セットアップ手順で取得した接続文字列をdsnに貼り付けます。</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">oracledb</span>
 
@@ -650,10 +658,33 @@ ipython
 
 <p><strong>注意</strong>: 以下のエラーが出る場合は、APIキーの設定ファイル<code class="language-plaintext highlighter-rouge">~/.oci/config</code>が作成されていません。<a href="https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a>を参照して、APIキーを事前に作成してください。</p>
 
-<p>OCIコンソールからAPIキーの作成を行った場合は、<code class="language-plaintext highlighter-rouge">~/.oci</code>ディレクトリを作成し、<code class="language-plaintext highlighter-rouge">config</code>ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ValidationError: 1 validation error for OCIGenAIEmbeddings
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ValidationError: 1 validation error <span class="k">for </span>OCIGenAIEmbeddings
 __root__
-  Could not authenticate with OCI client. Please check if ~/.oci/config exists. If INSTANCE_PRINCIPLE or RESOURCE_PRINCIPLE is used, Please check the specified auth_profile and auth_type are valid. (type=value_error)
+  Could not authenticate with OCI client. Please check <span class="k">if</span> ~/.oci/config exists. If INSTANCE_PRINCIPLE or RESOURCE_PRINCIPLE is used, Please check the specified auth_profile and auth_type are valid. <span class="o">(</span><span class="nb">type</span><span class="o">=</span>value_error<span class="o">)</span>
+</code></pre></div></div>
+
+<p>OCIコンソールからAPIキーの作成を行った場合は、<code class="language-plaintext highlighter-rouge">~/.oci</code>ディレクトリを作成し、<code class="language-plaintext highlighter-rouge">config</code>ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。</p>
+
+<p>以下のように設定ファイルが作成されているか確認してください。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> ~/.oci/config
+</code></pre></div></div>
+
+<p>出力:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>DEFAULT]
+<span class="nv">user</span><span class="o">=</span>ocid1.user.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="nv">fingerprint</span><span class="o">=</span>xx:xx:xx:xx:xx:xx:xx:xx:xx:xx
+<span class="nv">tenancy</span><span class="o">=</span>ocid1.tenancy.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+<span class="nv">region</span><span class="o">=</span>ap-tokyo-1
+<span class="nv">key_file</span><span class="o">=</span>~/.oci/oci_api_key.pem
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> ~/.oci/oci_api_key.pem
+</code></pre></div></div>
+
+<p>出力:</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">-----BEGIN</span> PRIVATE KEY-----
+MIIExxxx
+<span class="nt">-----END</span> PRIVATE KEY-----
 </code></pre></div></div>
 
 <p>LangChainのお決まりの関数であるfrom_documentsでベクトルデータベースにチャンクテキストをロードします。以下のように、ここまでの手順で定義済のオブジェクトを使って下記一つのコードでチャンクテキストをベクトル化しますが、ここでチャンクテキストとベクトルデータをロードする表を指定することになります。</p>
@@ -1014,7 +1045,7 @@ __root__
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-02T00:22:37+09:00">August 2, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-07T15:51:17+09:00">August 7, 2024</time></p>
 
       </footer>
 
