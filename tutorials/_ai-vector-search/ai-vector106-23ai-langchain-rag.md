@@ -49,9 +49,12 @@ header:
     - もとのプロンプトと類似検索で取得したチャンクテキストををテキスト生成モデルに入力しテキストを生成
 3. 前回同様ベクトルデータベースへのChainを使わずに、LLMにクエリしテキスト生成を行い、上記「2」で生成されたテキストと比較しRAGの有効性を確認します。
 
-※ 実装は興味ないので結果だけ知りたいですという方は「テキスト生成を実行する」の章をご参照ください。
+※ 実装は興味ないので結果だけ知りたいですという方は[5. RAGを実装する](#5-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン) の章をご参照ください。
 
 # RAGの実装
+本チュートリアルではベクトル・データベースとして、Oracle Database 23ai Free(Computeインスタンスにインストール)、Base Database Service、Autonomous Database(23ai) のどれかを使用します。
+
+使用するサービスによってセットアップ方法が異なるので、それぞれのサービスごとの設定手順を参照してください。
 
 ## 1-1. Oracle Database 23ai Free環境でのセットアップ
 Oracle Database 23ai Free環境でチュートリアルを行う場合は、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/)を参考に、Oracle Database 23ai Freeをインストールします。既に作成済みの場合はスキップして下さい。
@@ -85,6 +88,9 @@ docuserでログインできることを確認します。
 ```sh
 sqlplus docuser/docuser@freepdb1
 ```
+
+これ以降の手順は、[2. Python環境のセットアップ](#-2.python環境のセットアップ) をご参照ください。
+
 <br>
 
 ## 1-2. Base Database Service環境でのセットアップ
@@ -153,6 +159,8 @@ exit
 exit
 ```
 
+これ以降の手順は、[2. Python環境のセットアップ](#-2.python環境のセットアップ) をご参照ください。
+
 <br>
 
 ## 1-3. Autonomous Database 23ai Free環境でのセットアップ
@@ -217,9 +225,9 @@ OCIコンソールのAutonomous Databaseの画面で、**Autonomous Database情�
 <br>
 
 ## 2. Python環境のセットアップ
-2024/7現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。
+2024/8現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。
 
-Autonomous Database環境の場合は、先程作成したコンピュート・インスタンスにログインします。
+Autonomous Database(23ai)環境の場合は、先程作成したコンピュート・インスタンスにログインします。
 
 `root`にスイッチし、以下でPython3.11のインストールを行います。
 ```sh
@@ -354,7 +362,7 @@ pd.DataFrame(contents)
 
 まずは、作成済のdocuserでデータベースに接続します。
 
-Autonomous Database 23ai Free、若しくはBaseDBを使用している場合は、先程取得した接続文字列をdsnに貼り付けます。
+Autonomous Database(23ai)、もしくはBaseDBを使用している場合は、セットアップ手順で取得した接続文字列をdsnに貼り付けます。
 
 ```python
 import oracledb
@@ -404,11 +412,38 @@ embeddings = OCIGenAIEmbeddings(
 
 **注意**: 以下のエラーが出る場合は、APIキーの設定ファイル`~/.oci/config`が作成されていません。[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照して、APIキーを事前に作成してください。
 
-OCIコンソールからAPIキーの作成を行った場合は、`~/.oci`ディレクトリを作成し、`config`ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。
-```
+```sh
 ValidationError: 1 validation error for OCIGenAIEmbeddings
 __root__
   Could not authenticate with OCI client. Please check if ~/.oci/config exists. If INSTANCE_PRINCIPLE or RESOURCE_PRINCIPLE is used, Please check the specified auth_profile and auth_type are valid. (type=value_error)
+```
+
+OCIコンソールからAPIキーの作成を行った場合は、`~/.oci`ディレクトリを作成し、`config`ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。
+
+以下のように設定ファイルが作成されているか確認してください。
+```sh
+cat ~/.oci/config
+```
+
+出力:
+```sh
+[DEFAULT]
+user=ocid1.user.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+fingerprint=xx:xx:xx:xx:xx:xx:xx:xx:xx:xx
+tenancy=ocid1.tenancy.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+region=ap-tokyo-1
+key_file=~/.oci/oci_api_key.pem
+```
+
+```sh
+cat ~/.oci/oci_api_key.pem
+```
+
+出力:
+```sh
+-----BEGIN PRIVATE KEY-----
+MIIExxxx
+-----END PRIVATE KEY-----
 ```
 
 
