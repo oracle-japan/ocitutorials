@@ -284,7 +284,7 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
   ```
   -- （オプション）デフォルトのパラメータで実行する。
   -- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;
-  SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')) ct;
+  SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) ct;
   ```
 
   出力:
