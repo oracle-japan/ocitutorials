@@ -568,6 +568,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
     INSERT INTO documentation_tab values(1, l_blob);
     commit;
     END;
+    /
  ```
 
   出力:

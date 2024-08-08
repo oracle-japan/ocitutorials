@@ -164,24 +164,7 @@ exit
 <br>
 
 ## 1-3. Autonomous Database 23ai Free環境でのセットアップ
-Autonomous Database 23ai Free環境でチュートリアルを行う場合は、[104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/){:target="_blank"}の[2-1. ADB23ai Always Free編-ファイルの格納](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor2){:target="_blank"}を参考に、Database Actionsからユーザーの作成、権限の付与を行います。
-
-DOCUSERに追加で権限を付与します。
-ADMINとしてDatabase ActionsのSQLのツールにアクセスし、DOCUSERに以下の権限を付与します。
-  ```sql
-  BEGIN
-    DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
-        host => '*',
-        ace => xs$ace_type(
-            privilege_list => xs$name_list('connect'),
-            principal_name => 'docuser',
-            principal_type => xs_acl.ptype_db
-        )
-    );
-    END;
-    /
-  ```
-
+Autonomous Database 23ai Free環境でチュートリアルを行う場合は、[104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/){:target="_blank"}の[2-1. ADB23ai Always Free編-ファイルの格納](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor7){:target="_blank"}を参考に、Database Actionsからユーザーの作成、権限の付与を行います。
 
 本ハンズオンではPython環境を用意する必要があります。ADBではComputeやBaseDBのようにOSログインできないため、別のコンピュート・インスタンスやノートブック環境を用意してください。
 Pythonの実行環境を持っていない場合は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}の[仮想マシンの作成](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor1){:target="_blank"}、[仮想マシンへのアクセス](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor2){:target="_blank"}を参考にコンピュート・インスタンスを作成します。
@@ -460,11 +443,11 @@ vector_store_dot = OracleVS.from_documents(
     # 新規作成する表の名前を任意で指定
     table_name="doc_table",
     # ベクトル検索時に使う距離計算の方法
-    distance_strategy=DistanceStrategy.DOT_PRODUCT,
+    distance_strategy=DistanceStrategy.COSINE,
 )
 ```
 
-今回はベクトル検索時に使う距離計算の方法を「ドット積」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にドット積を使っていることからそれに合わせてみました。(英語版のモデルであるembed-english-v3.0はコサイン類似度を使っているそうです。)こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のDOT_PRODUCTの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやCOSINEに変更するだけです。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies
+今回はベクトル検索時に使う距離計算の方法を「コサイン類似度」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にコサイン類似度を使っていることからそれに合わせてみました。こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のCOSINEの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやDOT_PRODUCTに変更するだけです。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies
 )。
 
 また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy)
