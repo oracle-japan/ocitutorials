@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-07T15:51:17+09:00">
+  <meta property="article:published_time" content="2024-08-08T09:28:52+09:00">
 
 
 
@@ -265,7 +265,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="106 : Oracle Database 23aiとLangChainでRAGを構成してみよう">
     <meta itemprop="description" content="LangChainを使ったRAG構成をステップバイステップでご紹介します。">
-    <meta itemprop="datePublished" content="2024-08-07T15:51:17+09:00">
+    <meta itemprop="datePublished" content="2024-08-08T09:28:52+09:00">
     
 
     <div class="page__inner-wrap">
@@ -434,22 +434,7 @@
 <p><br /></p>
 
 <h2 id="1-3-autonomous-database-23ai-free環境でのセットアップ">1-3. Autonomous Database 23ai Free環境でのセットアップ</h2>
-<p>Autonomous Database 23ai Free環境でチュートリアルを行う場合は、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/" target="_blank">104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</a>の<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor2" target="_blank">2-1. ADB23ai Always Free編-ファイルの格納</a>を参考に、Database Actionsからユーザーの作成、権限の付与を行います。</p>
-
-<p>DOCUSERに追加で権限を付与します。
-ADMINとしてDatabase ActionsのSQLのツールにアクセスし、DOCUSERに以下の権限を付与します。</p>
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">BEGIN</span>
-    <span class="n">DBMS_NETWORK_ACL_ADMIN</span><span class="p">.</span><span class="n">APPEND_HOST_ACE</span><span class="p">(</span>
-        <span class="k">host</span> <span class="o">=&gt;</span> <span class="s1">'*'</span><span class="p">,</span>
-        <span class="n">ace</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">ace_type</span><span class="p">(</span>
-            <span class="n">privilege_list</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">name_list</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">),</span>
-            <span class="n">principal_name</span> <span class="o">=&gt;</span> <span class="s1">'docuser'</span><span class="p">,</span>
-            <span class="n">principal_type</span> <span class="o">=&gt;</span> <span class="n">xs_acl</span><span class="p">.</span><span class="n">ptype_db</span>
-        <span class="p">)</span>
-    <span class="p">);</span>
-    <span class="k">END</span><span class="p">;</span>
-    <span class="o">/</span>
-</code></pre></div></div>
+<p>Autonomous Database 23ai Free環境でチュートリアルを行う場合は、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/" target="_blank">104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</a>の<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor7" target="_blank">2-1. ADB23ai Always Free編-ファイルの格納</a>を参考に、Database Actionsからユーザーの作成、権限の付与を行います。</p>
 
 <p>本ハンズオンではPython環境を用意する必要があります。ADBではComputeやBaseDBのようにOSログインできないため、別のコンピュート・インスタンスやノートブック環境を用意してください。
 Pythonの実行環境を持っていない場合は<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/" target="_blank">204: 開発者向け仮想マシンのセットアップ方法</a>の<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor1" target="_blank">仮想マシンの作成</a>、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor2" target="_blank">仮想マシンへのアクセス</a>を参考にコンピュート・インスタンスを作成します。</p>
@@ -699,11 +684,11 @@ MIIExxxx
     <span class="c1"># 新規作成する表の名前を任意で指定
 </span>    <span class="n">table_name</span><span class="o">=</span><span class="sh">"</span><span class="s">doc_table</span><span class="sh">"</span><span class="p">,</span>
     <span class="c1"># ベクトル検索時に使う距離計算の方法
-</span>    <span class="n">distance_strategy</span><span class="o">=</span><span class="n">DistanceStrategy</span><span class="p">.</span><span class="n">DOT_PRODUCT</span><span class="p">,</span>
+</span>    <span class="n">distance_strategy</span><span class="o">=</span><span class="n">DistanceStrategy</span><span class="p">.</span><span class="n">COSINE</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div></div>
 
-<p>今回はベクトル検索時に使う距離計算の方法を「ドット積」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にドット積を使っていることからそれに合わせてみました。(英語版のモデルであるembed-english-v3.0はコサイン類似度を使っているそうです。)こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のDOT_PRODUCTの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやCOSINEに変更するだけです。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies">こちら</a>。</p>
+<p>今回はベクトル検索時に使う距離計算の方法を「コサイン類似度」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にコサイン類似度を使っていることからそれに合わせてみました。こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のCOSINEの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやDOT_PRODUCTに変更するだけです。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies">こちら</a>。</p>
 
 <p>また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は<a href="https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy">こちら</a></p>
 
@@ -1045,7 +1030,7 @@ MIIExxxx
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-07T15:51:17+09:00">August 7, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-08T09:28:52+09:00">August 8, 2024</time></p>
 
       </footer>
 
