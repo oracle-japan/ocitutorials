@@ -503,7 +503,7 @@ Database Actionsからのユーザー作成方法については、[101: ADBイ�
 
 Database Actionsの開発カテゴリのSQLのツールにて以下のように設定し、DOCUSERに対して必要な権限を付与します。
   ```sql
-  grant connect, ctxapp, create credential, dwrole to docuser;
+  grant connect, ctxapp, dwrole to docuser;
   grant execute on DBMS_CLOUD_AI to docuser;
   grant execute on DBMS_VECTOR to docuser;
   grant execute on DBMS_VECTOR_CHAIN to docuser;
@@ -556,7 +556,7 @@ Database ActionsにDOCUSERユーザーとして接続します。
   ```
 
 PDFドキュメントをDBMS_CLOUD.GET_OBJECTでBLOBとしてGETし、documentation_tabテーブル内に格納します。
-object_uriには前に手順でメモをしたURLパスを入力します。
+object_uriには前に手順でメモをしたURIパスを入力します。
 
  ```sql
     DECLARE
@@ -568,6 +568,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
     INSERT INTO documentation_tab values(1, l_blob);
     commit;
     END;
+    /
  ```
 
   出力:
