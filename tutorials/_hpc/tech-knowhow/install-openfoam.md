@@ -431,7 +431,7 @@ $ cp -pR $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily .
 $ cp -pR $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike .
 ```
 
-次に、バッチ実行のヘッドノードとその他ノードのNVMe SSDローカルディスクのデータ同期に使用するスクリプト **rsync_inneed.sh** を以下の内容で作成し、
+次に、バッチ実行の際に使用する、ヘッドノードとその他ノードのNVMe SSDローカルディスクのデータを同期させるスクリプト **rsync_inneed.sh** を以下の内容で作成し、
 
 ```sh
 #!/bin/bash
@@ -607,7 +607,7 @@ $ reconstructPar
 本章は、 **OpenFOAM** にチュートリアルとして付属しているバックステップ乱流シミュレーション（**incompressible/simpleFoam/pitzDaily**）とオートバイ走行時乱流シミュレーション（**incompressible/simpleFoam/motorBike**）を使用し、これらをバッチジョブとして実行する手順を解説します。  
 この際、並列化に対応している解析ステップは、 **BM.Optimized3.36** の4ノード128コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをストレージ領域に活用します。
 
-ここでバッチ実行するプリ処理・解析処理は、以下のステップを経て共有ストレージとNMVe SSDローカルディスク間でrsyncによる同期を行いながら実行し、ストレージ領域へのアクセス時に高速なNMVe SSDローカルディスクを極力使用するよう配慮します。
+これらの処理は、共有ストレージとNMVe SSDローカルディスクの間でrsyncを使用してデータを同期しながら以下のステップで実行し、ストレージ領域へのアクセスに高速なNMVe SSDローカルディスクを極力使用するよう配慮します。
 
 1. ヘッドノードで "共有ストレージ -> NVMe SSDローカルディスク" 方向のデータ同期
 2. ヘッドノードのNVMe SSDローカルディスク上でプリ処理
@@ -618,7 +618,7 @@ $ reconstructPar
 7. ヘッドノードで "NVMe SSDローカルディスク -> 共有ストレージ" 方向のデータ同期（※9）
 
 ※7）この同期は、その他ノードのノード数（本テクニカルTipsでは3ノード）分だけ同時に実行することで、所要時間の短縮を図ります。  
-※8）この同期は、128個のMPIプロセスが解析結果を格納する **processorxx** ディレクトリとその配下のファイルのうち、当該ノード上で計算されたもののみ同期することで、所要時間を短縮します。  
+※8）この同期は、128個のMPIプロセスが解析結果を格納する **processorxx** ディレクトリとその配下のファイルのうち、当該ノード上で計算されたもののみ同期させるため、事前に用意したスクリプト **rsync_inneed.sh** を使用します。  
 ※9）この同期は、128個のMPIプロセスが解析結果を格納する **processorxx** ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間を短縮します。
 
 このように、ストレージ領域にNVMe SSDローカルディスクを活用することで、共有ストレージ（ **ファイル・ストレージ** サービスを使用した場合）のみを使用する場合と比較して、特に大規模並列実行のケースやシミュレーション結果の書き込み頻度が高いケースで、シミュレーション所要時間を短縮することが可能になります。
@@ -708,7 +708,7 @@ pdsh_cmd="pdsh -w $child_node_list 'rsync -a --delete $head_node:$local_dir $loc
 eval $pdsh_cmd
 
 # Run solver in parallel
-srun simpleFoam -parallel
+srun --cpu-bind=verbose,cores simpleFoam -parallel
 
 # Concurrently sync model files on other node NVMe local disk with head node's
 pdsh_cmd="pdsh -w $child_node_list '$rsync_script $SLURM_JOB_NODELIST $proc_pernode $local_dir'"
@@ -800,7 +800,6 @@ export OMPI_MCA_coll_hcoll_enable=0
 
 # Get job infomation
 head_node=`hostname`
-num_nodes=$SLURM_JOB_NUM_NODES
 proc_pernode=$(expr $SLURM_NTASKS / $SLURM_JOB_NUM_NODES)
 child_node_list=`echo $SLURM_JOB_NODELIST | cut -d, -f 2-`
 
@@ -822,15 +821,15 @@ pdsh_cmd="pdsh -w $child_node_list 'rsync -a --delete $head_node:$local_dir $loc
 eval $pdsh_cmd
 
 # Pre-process stage 2 in parallel
-srun snappyHexMesh -parallel $decompDict -overwrite
-srun topoSet -parallel $decompDict
-srun -n $num_nodes --ntasks-per-node=1 bash -c ". ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions; restore0Dir -processor"
-srun patchSummary -parallel $decompDict
-srun potentialFoam -parallel $decompDict -writephi
-srun checkMesh -parallel $decompDict -writeFields '(nonOrthoAngle)' -constant
+srun --cpu-bind=verbose,cores snappyHexMesh -parallel $decompDict -overwrite
+srun --cpu-bind=verbose,cores topoSet -parallel $decompDict
+srun -n $SLURM_JOB_NUM_NODES --ntasks-per-node=1 bash -c ". ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions; restore0Dir -processor"
+srun --cpu-bind=verbose,cores patchSummary -parallel $decompDict
+srun --cpu-bind=verbose,cores potentialFoam -parallel $decompDict -writephi
+srun --cpu-bind=verbose,cores checkMesh -parallel $decompDict -writeFields '(nonOrthoAngle)' -constant
 
 # Run solver in parallel
-srun simpleFoam -parallel $decompDict
+srun --cpu-bind=verbose,cores impleFoam -parallel $decompDict
 
 # Concurrently sync model files on other node NVMe local disk with head node's
 pdsh_cmd="pdsh -w $child_node_list '$rsync_script $SLURM_JOB_NODELIST $proc_pernode $local_dir'"

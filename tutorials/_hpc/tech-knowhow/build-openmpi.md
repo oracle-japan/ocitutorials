@@ -11,19 +11,26 @@ header:
 ***
 # 0. 概要
 
-**[Slurm](https://slurm.schedmd.com/)** 環境で **[OpenMPI](https://www.open-mpi.org/)** のアプリケーションを実行する場合、その動作モードには以下の選択肢があります。
+**[Slurm](https://slurm.schedmd.com/)** 環境で **[OpenMPI](https://www.open-mpi.org/)** のアプリケーションを実行する場合、その動作モードは以下の選択肢があります。
 
-1. 計算リソースの確保、アプリケーション起動、及び **[PMIx](https://pmix.github.io/)** を介したプロセス間通信の初期化処理を全て **Slurm** が行う。
-2. 計算リソースの確保を **Slurm** が行い、アプリケーション起動はSSHを介して起動される **OpenMPI** のprtedが行う。
+1. 計算リソースの確保、MPIプロセスの起動、及びMPIプロセス間通信の初期化処理を **Slurm** と **[PMIx](https://pmix.github.io/)** が行う。
+2. 計算リソースの確保を **Slurm** が行い、MPIプロセスの起動とMPIプロセス間通信の初期化処理は **Slurm** と **[PRRTE](https://docs.prrte.org/en/latest/)** が行う。
+3. 計算リソースの確保を **Slurm** が行い、MPIプロセスの起動とMPIプロセス間通信の初期化処理は **PRRTE** が行う。
 
-ここで1.の動作モードは、2.に対して以下の利点があります。
+それぞれの動作モードは、MPIアプリケーションの起動に以下のコマンドを使用します。
+
+1. **Slurm** に付属する **srun**
+2. **Slurm** と連携するように構築された **OpenMPI** に付属する **mpirun**
+3. **Slurm** と連携するように構築されていない **OpenMPI** に付属する **mpirun** （パスフレーズ無しで計算ノード間をSSHアクセス出来る必要があります。）
+
+ここで **1.** の動作モードは、その他の動作モードに対して以下の利点があります。
 
 - 高並列アプリケーションを高速に起動することが可能
-- アフィニティや終了処理等のプロセス管理を **Slurm** に統合することが可能
+- プロセスバインディングや終了処理等のプロセス管理を **Slurm** に統合することが可能
 - 精度の高いアカウンティング情報を **Slurm** に提供することが可能
-- **Slurm** クラスタ内のSSHパスフレーズ無しアクセス設定が不要
+- **Slurm** クラスタ内のパスフレーズ無しSSHアクセス設定が不要
 
-以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを1.の動作モードで実行することを想定した **OpenMPI** のインストール手順を解説し、インストールした **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
+以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **1.** の動作モードで実行することを想定した **OpenMPI** のインストール手順を解説し、インストールした **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
 
 -  **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)**
 - **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)**
@@ -37,7 +44,7 @@ header:
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
 
-またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも4ノード用意します。  
+またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
 この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** が参考になります。
 
 なお、ここで構築する **OpenMPI** と連携する **Slurm** の構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** を参照してください。  
