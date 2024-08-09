@@ -27,16 +27,16 @@ table, th, td {
 ※1）これら機能の詳細は、SC17で発表された以下のスライドで紹介されています。  
 **[https://slurm.schedmd.com/SC17/Mellanox_Slurm_pmix_UCX_backend_v4.pdf](https://slurm.schedmd.com/SC17/Mellanox_Slurm_pmix_UCX_backend_v4.pdf)**
 
-ここでMPIのオープンソース実装である **[OpenMPI](https://www.open-mpi.org/)** は、 **PMIx** をプラグインとして取り込んだ **Slurm** 環境でそのアプリケーションを実行する場合、**OpenMPI** のprtedを使用する起動方法（ **mpirun** を使用する起動方法）に対して、先の **PMIx** の初期化処理を含む以下の利点を享受することが可能です。
+ここでMPIのオープンソース実装である **[OpenMPI](https://www.open-mpi.org/)** は、 **PMIx** をプラグインとして取り込んだ **Slurm** 環境で **Slurm** が提供するジョブ実行コマンド **srun** を使用してそのアプリケーションを実行する場合、 **[PRRTE](https://docs.prrte.org/en/latest/)** を使用する起動方法（ **mpirun** / **mpiexec** を起動コマンドに使用する方法）に対して、先の **PMIx** の初期化処理を含む以下の利点を享受することが出来ます。
 
 - 高並列アプリケーションを高速に起動することが可能
-- アフィニティや終了処理等のプロセス管理を **Slurm** に統合することが可能
+- プロセスバインディングや終了処理等のプロセス管理を **Slurm** に統合することが可能
 - 精度の高いアカウンティング情報を **Slurm** に提供することが可能
 - **Slurm** クラスタ内のSSHパスフレーズ無しアクセス設定が不要
 
-以上の利点を享受するべく本テクニカルTipsは、 **OpenMPI** のMPI並列アプリケーションを **PMIx** を使用して起動することを念頭に、 **PMIx** のオープンソース実装である **[OpenPMIx](https://openpmix.github.io/)** と **[UCX](https://openucx.org/)** を取り込んだ **Slurm** 環境を構築し、初期化処理時間に対する **PMIx** の効果を検証すべく、 **PMIx** を使用する場合と使用しない場合で **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** PingPongのレイテンシを比較します。
+以上の利点を享受するべく本テクニカルTipsは、 **OpenMPI** のMPI並列アプリケーションを **PMIx** の大規模並列ジョブに対する利点を生かして実行することを念頭に、 **PMIx** のオープンソース実装である **[OpenPMIx](https://openpmix.github.io/)** と **[UCX](https://openucx.org/)** を取り込んだ **Slurm** 環境を構築し、初期化処理時間の効果を検証すべく、 **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** PingPongのレイテンシに着目して比較・検証します。
 
-なお、 **PMIx** に対応する **OpenMPI** を構築する方法は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
+なお、本テクニカルTipsで使用する **OpenMPI** を構築する方法は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
 
 # 1. 前提システム
 
@@ -130,138 +130,137 @@ table, th, td {
 
 ## 2-1. munge インストール・セットアップ
 
-本章は、Slurmマネージャ、Slurmクライアント、及び計算ノードに **munge** をインストール・セットアップします。
+本章は、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードに **munge** をインストール・セットアップします。
 
-1. 以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** プロセス起動ユーザを作成します。
+以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** プロセス起動ユーザを作成します。
 
-   ```
-   $ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
-   ```
+```
+$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
+```
 
-2. 以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** をインストールします。
+次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** をインストールします。
 
-   ```sh
-   $ sudo yum-config-manager --enable ol8_codeready_builder
-   $ sudo dnf install -y munge munge-libs munge-devel
-   ```
+```sh
+$ sudo yum-config-manager --enable ol8_codeready_builder
+$ sudo dnf install -y munge munge-libs munge-devel
+```
 
-3. 以下コマンドをSlurmマネージャのopcユーザで実行し、 **munge** キーファイル（ **munge.key** ）を作成します。
+次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **munge** キーファイル（ **munge.key** ）を作成します。
 
-   ```sh
-   $ sudo /usr/sbin/create-munge-key
-   Generating a pseudo-random key using /dev/urandom completed.
-   $ sudo ls -la /etc/munge
-   total 16
-   drwx------.   2 munge munge   23 Nov 24 14:34 .
-   drwxr-xr-x. 115 root  root  8192 Nov 24 14:33 ..
-   -r--------.   1 munge munge 1024 Nov 24 14:34 munge.key
-   $ 
-   ```
+```sh
+$ sudo /usr/sbin/create-munge-key
+Generating a pseudo-random key using /dev/urandom completed.
+$ sudo ls -la /etc/munge
+total 16
+drwx------.   2 munge munge   23 Nov 24 14:34 .
+drwxr-xr-x. 115 root  root  8192 Nov 24 14:33 ..
+-r--------.   1 munge munge 1024 Nov 24 14:34 munge.key
+$ 
+```
 
-4. 先にSlurmマネージャで作成した **munge** キーファイルを、Slurmクライアントと計算ノードに同一パス・ファイル名でコピーします。  
+次に、先にSlurmマネージャで作成した **munge** キーファイルを、Slurmクライアントと全ての計算ノードに同一パス・ファイル名でコピーします。  
 この際、ファイルのオーナーとパーミッションがSlurmマネージャのキーファイルと同じとなるよう配慮します。
 
-5. 以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** サービスを起動します。
+次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** サービスを起動します。
 
-   ```sh
-   $ sudo systemctl enable --now munge.service
-   ```
+```sh
+$ sudo systemctl enable --now munge.service
+```
 
-6. 以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** が全てのノードで正常に動作していることを確認します。
+次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** が全てのノードで正常に動作していることを確認します。
 
-   ```sh
-   $ munge -n | unmunge | grep STATUS
-   STATUS:           Success (0)
-   $
-   ```
+```sh
+$ munge -n | unmunge | grep STATUS
+STATUS:           Success (0)
+$
+```
 
 ## 2-2. MariaDB インストール・セットアップ
 
 本章は、Slurmマネージャに **MariaDB** をインストール・セットアップします。
 
-1. 以下コマンドをopcユーザで実行し、 **MariaDB** をインストールします。
+以下コマンドをopcユーザで実行し、 **MariaDB** をインストールします。
 
-   ```
-   $ sudo dnf install -y mariadb-server mariadb-devel
-   ```
+```
+$ sudo dnf install -y mariadb-server mariadb-devel
+```
 
-2. **MariaDB** の設定ファイル（ **mariadb-server.cnf** ）の[mysqld]フィールドに以下の記述を追加します。
+次に、 **MariaDB** の設定ファイル（ **mariadb-server.cnf** ）の[mysqld]フィールドに以下の記述を追加します。
 
-   ```sh
-   $ sudo diff /etc/my.cnf.d/mariadb-server.cnf_org /etc/my.cnf.d/mariadb-server.cnf
-   20a21,22
-   > innodb_buffer_pool_size=4096M
-   > innodb_lock_wait_timeout=900
-   $
-   ```
+```sh
+$ sudo diff /etc/my.cnf.d/mariadb-server.cnf_org /etc/my.cnf.d/mariadb-server.cnf
+20a21,22
+> innodb_buffer_pool_size=4096M
+> innodb_lock_wait_timeout=900
+$
+```
 
-3. 以下コマンドをopcユーザで実行し、 **MariaDB** サービスを起動します。
+次に、以下コマンドをopcユーザで実行し、 **MariaDB** サービスを起動します。
 
-   ```sh
-   $ sudo systemctl enable --now mariadb
-   ```
+```sh
+$ sudo systemctl enable --now mariadb
+```
 
+次に、 **MariaDB** のデータベースに以下の登録を行うため、
 
-4. **MariaDB** のデータベースに以下の登録を行うため、
+- データベース（slurm_acct_db）
+- ユーザ（slurm）
+- ユーザ（slurm）のパスワード
+- ユーザ（slurm）に対するデータベース（slurm_acct_db）への全権限付与
 
-   - データベース（slurm_acct_db）
-   - ユーザ（slurm）
-   - ユーザ（slurm）のパスワード
-   - ユーザ（slurm）に対するデータベース（slurm_acct_db）への全権限付与
+以下コマンドをopcユーザで実行します。  
+なお、 **MariaDB** に対して入力するコマンドは、 **MariaDB** のプロンプト（ **MariaDB [(none)]>** ）に続く文字列です。
 
-   以下コマンドをopcユーザで実行します。  
-   なお、 **MariaDB** に対して入力するコマンドは、 **MariaDB** のプロンプト（ **MariaDB [(none)]>** ）に続く文字列です。
+```sh
+$ sudo mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 8
+Server version: 10.3.39-MariaDB MariaDB Server
 
-   ```sh
-   $ sudo mysql
-   Welcome to the MariaDB monitor.  Commands end with ; or \g.
-   Your MariaDB connection id is 8
-   Server version: 10.3.39-MariaDB MariaDB Server
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
 
-   Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
-   Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+MariaDB [(none)]> create database slurm_acct_db;
+Query OK, 1 row affected (0.000 sec)
 
-   MariaDB [(none)]> create database slurm_acct_db;
-   Query OK, 1 row affected (0.000 sec)
+MariaDB [(none)]> create user 'slurm'@'localhost' identified by 'SLURM';
+Query OK, 0 rows affected (0.000 sec)
 
-   MariaDB [(none)]> create user 'slurm'@'localhost' identified by 'SLURM';
-   Query OK, 0 rows affected (0.000 sec)
+MariaDB [(none)]> set password for slurm@localhost = password('passcord');
+Query OK, 0 rows affected (0.000 sec)
 
-   MariaDB [(none)]> set password for slurm@localhost = password('passcord');
-   Query OK, 0 rows affected (0.000 sec)
+MariaDB [(none)]> grant all on slurm_acct_db.* TO 'slurm'@'localhost';
+Query OK, 0 rows affected (0.000 sec)
 
-   MariaDB [(none)]> grant all on slurm_acct_db.* TO 'slurm'@'localhost';
-   Query OK, 0 rows affected (0.000 sec)
+MariaDB [(none)]> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.000 sec)
 
-   MariaDB [(none)]> FLUSH PRIVILEGES;
-   Query OK, 0 rows affected (0.000 sec)
+MariaDB [(none)]> Ctrl-C -- exit!
+Aborted
+$
+```
 
-   MariaDB [(none)]> Ctrl-C -- exit!
-   Aborted
-   $
-   ```
+なお、コマンド中の **passcord** は、自身の設定するパスワードに置き換えます。
 
-    なお、コマンド中の **passcord** は、自身の設定するパスワードに置き換えます。
+次に、以下コマンドをopcユーザで実行し、先に登録したデータベースとユーザが正しく登録されていることを確認します。
 
-5. 以下コマンドをopcユーザで実行し、先に登録したデータベースとユーザが正しく登録されていることを確認します。
+```sh
+$ mysql --user=slurm --password=passcord slurm_acct_db -e 'show databases;'
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| slurm_acct_db      |
++--------------------+
+$
+```
 
-   ```sh
-   $ mysql --user=slurm --password=passcord slurm_acct_db -e 'show databases;'
-   +--------------------+
-   | Database           |
-   +--------------------+
-   | information_schema |
-   | slurm_acct_db      |
-   +--------------------+
-   $
-   ```
-
-    なお、コマンド中の **passcord** は、自身の設定したパスワードに置き換えます。
+なお、コマンド中の **passcord** は、自身の設定したパスワードに置き換えます。
 
 ## 2-3. OpenMPIインストール
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、Slurmクライアントと計算ノードに **OpenMPI** をインストールします。  
+**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、Slurmクライアントと全ての計算ノードに **OpenMPI** をインストールします。  
 これにより、これらのノードに **OpenPMIx** もインストールされます。
 
 ## 2-4. OpenPMIxインストール
@@ -270,7 +269,7 @@ table, th, td {
 
 ## 2-5. UCXインストール
 
-本章は、Slurmマネージャと計算ノードに **UCX** をインストールします。
+本章は、Slurmマネージャと全ての計算ノードに **UCX** をインストールします。
 
 以下コマンドを対象となる全ノードのopcユーザで実行し、 **UCX** をインストールします。  
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
@@ -287,80 +286,80 @@ $ make -j 36 all && sudo make install
 
 本章は、Slurmマネージャでrpmパッケージを作成します。
 
-1. 以下コマンドをSlurmマネージャのopcユーザで実行し、前提rpmパッケージをインストールします。
+以下コマンドをSlurmマネージャのopcユーザで実行し、前提rpmパッケージをインストールします。
 
    ```
    $ sudo dnf install -y rpm-build pam-devel perl readline-devel autoconf automake
    ```
 
-2. 以下コマンドをSlurmマネージャのopcユーザで実行し、 **Slurm** rpmパッケージを作成します。
+次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **Slurm** rpmパッケージを作成します。
 
-   ```
-   $ cd ~; wget https://download.schedmd.com/slurm/slurm-24.05.0.tar.bz2
-   $ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-24.05.0.tar.bz2
-   ```
+```
+$ cd ~; wget https://download.schedmd.com/slurm/slurm-24.05.0.tar.bz2
+$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-24.05.0.tar.bz2
+```
 
-   作成されたパッケージは、以下のディレクトリに配置されるので、これらの全ファイルを他のサブシステムにコピーします。
+作成されたパッケージは、以下のディレクトリに配置されるので、これらの全ファイルを他のサブシステムにコピーします。
 
-   ```
-   $ ls -1 rpmbuild/RPMS/x86_64/
-   slurm-24.05.0-1.el8.x86_64.rpm
-   slurm-contribs-24.05.0-1.el8.x86_64.rpm
-   slurm-devel-24.05.0-1.el8.x86_64.rpm
-   slurm-example-configs-24.05.0-1.el8.x86_64.rpm
-   slurm-libpmi-24.05.0-1.el8.x86_64.rpm
-   slurm-openlava-24.05.0-1.el8.x86_64.rpm
-   slurm-pam_slurm-24.05.0-1.el8.x86_64.rpm
-   slurm-perlapi-24.05.0-1.el8.x86_64.rpm
-   slurm-sackd-24.05.0-1.el8.x86_64.rpm
-   slurm-slurmctld-24.05.0-1.el8.x86_64.rpm
-   slurm-slurmd-24.05.0-1.el8.x86_64.rpm
-   slurm-slurmdbd-24.05.0-1.el8.x86_64.rpm
-   slurm-torque-24.05.0-1.el8.x86_64.rpm
-   $
-   ```
+```
+$ ls -1 rpmbuild/RPMS/x86_64/
+slurm-24.05.0-1.el8.x86_64.rpm
+slurm-contribs-24.05.0-1.el8.x86_64.rpm
+slurm-devel-24.05.0-1.el8.x86_64.rpm
+slurm-example-configs-24.05.0-1.el8.x86_64.rpm
+slurm-libpmi-24.05.0-1.el8.x86_64.rpm
+slurm-openlava-24.05.0-1.el8.x86_64.rpm
+slurm-pam_slurm-24.05.0-1.el8.x86_64.rpm
+slurm-perlapi-24.05.0-1.el8.x86_64.rpm
+slurm-sackd-24.05.0-1.el8.x86_64.rpm
+slurm-slurmctld-24.05.0-1.el8.x86_64.rpm
+slurm-slurmd-24.05.0-1.el8.x86_64.rpm
+slurm-slurmdbd-24.05.0-1.el8.x86_64.rpm
+slurm-torque-24.05.0-1.el8.x86_64.rpm
+$
+```
 
 ## 2-7. Slurm rpmパッケージインストール・セットアップ
 
 本章は、先に作成した **Slurm** rpmパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。
 
-1. 以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
+以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
 
-   ```
-   $ cd ~/rpmbuild/RPMS/x86_64
-   $ sudo rpm -ivh ./slurm-24.05.0-1.el8.x86_64.rpm ./slurm-slurmctld-24.05.0-1.el8.x86_64.rpm ./slurm-slurmdbd-24.05.0-1.el8.x86_64.rpm ./slurm-perlapi-24.05.0-1.el8.x86_64.rpm
-   $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-   $ sudo mkdir /var/spool/slurmctld; sudo chown slurm:slurm /var/spool/slurmctld
-   $ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-   $ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-   $ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
-   $ sudo su - slurm
-   $ echo "export PATH=\$PATH:/opt/slurm/sbin:/opt/slurm/bin" | tee -a ~/.bash_profile
-   $ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bash_profile
-   $ source ~/.bash_profile
-   ```
+```
+$ cd ~/rpmbuild/RPMS/x86_64
+$ sudo rpm -ivh ./slurm-24.05.0-1.el8.x86_64.rpm ./slurm-slurmctld-24.05.0-1.el8.x86_64.rpm ./slurm-slurmdbd-24.05.0-1.el8.x86_64.rpm ./slurm-perlapi-24.05.0-1.el8.x86_64.rpm
+$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
+$ sudo mkdir /var/spool/slurmctld; sudo chown slurm:slurm /var/spool/slurmctld
+$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+$ sudo su - slurm
+$ echo "export PATH=\$PATH:/opt/slurm/sbin:/opt/slurm/bin" | tee -a ~/.bash_profile
+$ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bash_profile
+$ source ~/.bash_profile
+```
 
-2. 以下コマンドを計算ノードのopcユーザで **Slurm** rpmパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
+次に、以下コマンドを全ての計算ノードのopcユーザで **Slurm** rpmパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
 
-   ```
-   $ sudo dnf install -y mariadb-devel
-   $ sudo rpm -ivh ./slurm-24.05.0-1.el8.x86_64.rpm ./slurm-slurmd-24.05.0-1.el8.x86_64.rpm ./slurm-perlapi-24.05.0-1.el8.x86_64.rpm
-   $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-   $ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-   $ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-   $ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
-   ```
+```
+$ sudo dnf install -y mariadb-devel
+$ sudo rpm -ivh ./slurm-24.05.0-1.el8.x86_64.rpm ./slurm-slurmd-24.05.0-1.el8.x86_64.rpm ./slurm-perlapi-24.05.0-1.el8.x86_64.rpm
+$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
+$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+```
 
-3. 以下コマンドをSlurmクライアントのopcユーザで **Slurm** rpmパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
+次に、以下コマンドをSlurmクライアントのopcユーザで **Slurm** rpmパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
 
-   ```
-   $ sudo dnf install -y mariadb-devel
-   $ sudo rpm -ivh ./slurm-24.05.0-1.el8.x86_64.rpm ./slurm-perlapi-24.05.0-1.el8.x86_64.rpm
-   $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-   $ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
-   $ echo '* soft memlock unlimited' | sudo tee -a /etc/security/limits.conf
-   $ echo '* hard memlock unlimited' | sudo tee -a /etc/security/limits.conf
-   ```
+```
+$ sudo dnf install -y mariadb-devel
+$ sudo rpm -ivh ./slurm-24.05.0-1.el8.x86_64.rpm ./slurm-perlapi-24.05.0-1.el8.x86_64.rpm
+$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
+$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+$ echo '* soft memlock unlimited' | sudo tee -a /etc/security/limits.conf
+$ echo '* hard memlock unlimited' | sudo tee -a /etc/security/limits.conf
+```
 
 ## 2-8. Slurm設定ファイル作成
 
@@ -398,6 +397,7 @@ MpiDefault=pmix
 NodeName=DEFAULT CPUs=72 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=2 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
 NodeName=inst-aaaaa-x9,inst-bbbbb-x9
 PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+TaskPlugin=task/affinity
 ```
 
 なお、 **SlurmctldHost** 、 **AccountingStorageHost** 、及び **NodeName** の設定値は、自身の環境に合わせて修正します。  
@@ -452,41 +452,41 @@ PMIxNetDevicesUCX=mlx5_2:1
 
 本章は、 **Slurm** の各systemdサービスを対象のサブシステムで起動します。
 
-1. 以下コマンドを計算ノードのopcユーザで実行し、 **slurmd** を起動します。
+以下コマンドを全ての計算ノードのopcユーザで実行し、 **slurmd** を起動します。
 
-   ```
-   $ sudo systemctl enable --now slurmd
-   ```
+```
+$ sudo systemctl enable --now slurmd
+```
 
-2. 以下コマンドをSlurmマネージャのopcユーザで実行し、 **slurmdbd** と **slurmctld** を起動します。
+次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **slurmdbd** と **slurmctld** を起動します。
 
-   ```
-   $ sudo systemctl enable --now slurmdbd
-   $ sudo systemctl start slurmctld
-   ```
-   **slurmctld** は、計算ノードの **slurmd** 起動完了後に起動する必要があるため、手動起動を想定して自動起動設定は行いません。
+```
+$ sudo systemctl enable --now slurmdbd
+$ sudo systemctl start slurmctld
+```
+**slurmctld** は、全ての計算ノードの **slurmd** 起動完了後に起動する必要があるため、手動起動を想定して自動起動設定は行いません。
 
-3. 以下コマンドをSlurmマネージャのslurmユーザで実行し、計算ノードがアイドルになっていることを確認します。
+次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。
 
-   ```
-   $ sinfo
-   PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-   sltest*      up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
-   $
-   ```
+```
+$ sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+sltest*      up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
+$
+```
 
-4. 以下コマンドをSlurmマネージャのslurmユーザで実行し、 **OpenPMIx** が利用可能になっていることを確認します。
+次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、 **OpenPMIx** が利用可能になっていることを確認します。
 
-   ```
-   $ srun --mpi=list
-   MPI plugin types are...
-      none
-      cray_shasta
-      pmi2
-      pmix
-   specific pmix plugin versions available: pmix_v4
-   $
-   ```
+```
+$ srun --mpi=list
+MPI plugin types are...
+    none
+    cray_shasta
+    pmi2
+    pmix
+specific pmix plugin versions available: pmix_v4
+$
+```
 
 ## 2-10. Slurm利用に必要な環境変数設定
 
@@ -500,10 +500,10 @@ $ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bash_profile
 ***
 # 3. 稼働確認
 
-本章は、構築した **Slurm** 環境の稼働確認と **PMIx** の効果を確認するため、ジョブ投入ユーザで **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を実行するバッチジョブを **PMIx** 利用有無で2種類実行し、その結果を確認します。  
+本章は、構築した **Slurm** 環境の稼働確認と **PMIx** の効果を確認するため、ジョブ投入ユーザで **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を実行するバッチジョブを **srun** で起動する場合と **mpirun** で起動する場合の2種類実行し、その結果を比較します。  
 またこのジョブの終了後、そのアカウンティング情報を取得できることを確認します。
 
-**PMIx** を利用する場合（ **srun.sh** ）と利用しない場合（ **mpirun.sh** ）で、以下のように**Intel MPI Benchmarks** を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。
+**srun** を利用する場合（ **srun.sh** ）と **mpiexec** を利用する場合（ **mpirun.sh** ）で、以下のように**Intel MPI Benchmarks** を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。
 
 [ **srun.sh** ]
 ```sh
@@ -551,7 +551,7 @@ $ grep -A 3 usec stdout.4
 $
 ```
 
-この結果より、 **PMIx** を利用することでMPI通信の初期化処理に要する時間が短縮され、レイテンシが **0.2 μ秒** 改善されていることがわかります。
+この結果より、 **srun** を利用することでMPI通信の初期化処理に要する時間が短縮され、レイテンシが **0.2 μ秒** 改善されていることがわかります。
 
 次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、終了したジョブのアカウンティング情報を取得できることを確認します。
 

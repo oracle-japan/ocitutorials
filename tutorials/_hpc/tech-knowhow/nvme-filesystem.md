@@ -20,7 +20,7 @@ NVMe SSDローカルディスクにファイルシステムを作成する方法
 ***
 # 1. BM.Optimized3.36用ファイルシステム作成手順
 
-**BM.Optimized3.36** は、3.84 TBのNVMe SSDローカルディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。
+**BM.Optimized3.36** は、3.84 TBのNVMe SSDローカルディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
 
 ```sh
 $ sudo parted -s /dev/nvme0n1 mklabel gpt
@@ -29,6 +29,11 @@ $ sudo mkfs.xfs -L localscratch /dev/nvme0n1p1
 $ sudo mkdir -p /mnt/localdisk
 $ echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" | sudo tee -a /etc/fstab
 $ sudo mount /mnt/localdisk
+```
+
+作成後、以下のコマンドを該当するノードのopcユーザで実行し、作成したファイルシステムを確認します。
+
+```sh
 $ df -h /mnt/localdisk
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/nvme0n1p1  3.5T   33M  3.5T   1% /mnt/localdisk
@@ -40,7 +45,7 @@ $
 ***
 # 2. BM.GPU4.8/BM.GPU.A100-v2.8用ファイルシステム作成手順
 
-**BM.GPU4.8/BM.GPU.A100-v2.8** は、6.4 TBのNVMe SSDローカルディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。
+**BM.GPU4.8/BM.GPU.A100-v2.8** は、6.4 TBのNVMe SSDローカルディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
 
 ```sh
 $ sudo vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
@@ -49,9 +54,15 @@ $ sudo mkfs.xfs -L localscratch /dev/nvme/lvol0
 $ sudo mkdir -p /mnt/localdisk
 $ echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" | sudo tee -a /etc/fstab
 $ sudo mount /mnt/localdisk
+```
+
+作成後、以下のコマンドを該当するノードのopcユーザで実行し、作成したファイルシステムを確認します。
+
+```sh
 $ df -h /mnt/localdisk
 Filesystem              Size  Used Avail Use% Mounted on
 /dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
+$
 ```
 
 この手順は、4ドライブのNVMe SSDローカルディスクをまとめて1個の論理ボリュームとして作成し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
@@ -59,7 +70,7 @@ Filesystem              Size  Used Avail Use% Mounted on
 ***
 # 3. BM.GPU.H100.8用ファイルシステム作成手順
 
-**BM.GPU.H100.8** は、3.84 TBのNVMe SSDローカルディスクを16ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成します。
+**BM.GPU.H100.8** は、3.84 TBのNVMe SSDローカルディスクを16ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
 
 ```sh
 $ sudo vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1 /dev/nvme4n1 /dev/nvme5n1 /dev/nvme6n1 /dev/nvme7n1 /dev/nvme8n1 /dev/nvme9n1 /dev/nvme10n1 /dev/nvme11n1 /dev/nvme12n1 /dev/nvme13n1 /dev/nvme14n1 /dev/nvme15n1
@@ -68,9 +79,15 @@ $ sudo mkfs.xfs -L localscratch /dev/nvme/lvol0
 $ sudo mkdir -p /mnt/localdisk
 $ echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" | sudo tee -a /etc/fstab
 $ sudo mount /mnt/localdisk
+```
+
+作成後、以下のコマンドを該当するノードのopcユーザで実行し、作成したファイルシステムを確認します。
+
+```sh
 $ df -h /mnt/localdisk
 Filesystem              Size  Used Avail Use% Mounted on
 /dev/mapper/nvme-lvol0   61T   34M   61T   1% /mnt/localdisk
+$
 ```
 
 この手順は、16ドライブのNVMe SSDローカルディスクをまとめて1個の論理ボリュームとして作成し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
