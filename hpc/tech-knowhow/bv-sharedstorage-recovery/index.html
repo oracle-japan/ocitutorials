@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-08T18:41:48+09:00">
+  <meta property="article:published_time" content="2024-08-09T17:08:01+09:00">
 
 
 
@@ -294,6 +294,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -304,7 +306,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
@@ -363,7 +365,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法">
     <meta itemprop="description" content="ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベアメタルインスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。">
-    <meta itemprop="datePublished" content="2024-08-08T18:41:48+09:00">
+    <meta itemprop="datePublished" content="2024-08-09T17:08:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -378,15 +380,13 @@
             </nav>
           </aside>
         
-        <p><strong>ブロック・ボリューム</strong> とベアメタルインスタンスを組み合わせたNFSサーバ（以降” <strong>ブロック・ボリューム</strong> NFSサーバ”と呼称）は、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベアメタルインスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。<br />
-本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。</p>
-
-<hr />
+        <hr />
 <h1 id="0-概要">0. 概要</h1>
 
 <p>HPC/GPUクラスタで必須となるファイル共有ストレージを <strong>ブロック・ボリューム</strong> NFSサーバで構築・運用する場合、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> の <strong>マウント・ターゲット</strong> がHA化され可用性が担保されているのに対し、NFSサーバのベアメタルインスタンスが単一障害点となるため、インスタンスが障害で起動しなくなった場合、NFSサーバのデータ領域にアクセスすることが出来なくなります。<br />
-ただこの場合でも、起動しなくなったベアメタルインスタンスと同一構成の新たなインスタンスをデプロイし、このインスタンスに既存の <strong>ブロック・ボリューム</strong> をアタッチしてファイルシステムとしてマウントすることで、復旧作業時間に相当する数時間程度のサービス停止を経て、障害発生前のデータ領域のままNFSサービスを再開することが可能です。<br />
-この復旧シナリオの前提は、 <strong>ブロック・ボリューム</strong> でサービスするNFSデータ領域がLinuxの論理ボリュームマネージャで構築されていることです。論理ボリュームマネージャは、物理ボリューム・ボリュームグループ・論理ボリューム等のメタデータをOS上には持たず（キャッシュ情報は除く）に <strong>ブロック・ボリューム</strong> 上に保持するため、論理ボリュームマネージャをサポートするOSが稼働する別のインスタンスにアタッチすることで、データ領域にアクセスできるようになります。</p>
+ただこの場合でも、起動しなくなったベアメタルインスタンスと同一構成の新たなインスタンスをデプロイし、このインスタンスに既存の <strong>ブロック・ボリューム</strong> をアタッチしてファイルシステムとしてマウントすることで、復旧作業時間に相当する数時間程度のサービス停止を経て、障害発生前のデータ領域のままNFSサービスを再開することが可能です。</p>
+
+<p>この復旧シナリオの前提は、 <strong>ブロック・ボリューム</strong> でサービスするNFSデータ領域がLinuxの論理ボリュームマネージャで構築されていることです。論理ボリュームマネージャは、物理ボリューム・ボリュームグループ・論理ボリューム等のメタデータをOS上には持たず（キャッシュ情報は除く）に <strong>ブロック・ボリューム</strong> 上に保持するため、論理ボリュームマネージャをサポートするOSが稼働する別のインスタンスにアタッチすることで、データ領域にアクセスできるようになります。</p>
 
 <p>また本復旧シナリオは、障害時に既存の代替となるNFSサーバインスタンスをデプロイする際、 <strong>ブロック・ボリューム</strong> NFSサーバ構築直後に取得するNFSサーバインスタンスの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を活用し、復旧に要する時間を短縮するよう配慮します。</p>
 
@@ -399,8 +399,13 @@
 
 <p>以上より、本テクニカルTipsで解説する復旧シナリオは、以下のステップを経て行います。</p>
 
+<p>[障害発生前]</p>
 <ul>
   <li>代替NFSサーバインスタンス事前準備</li>
+</ul>
+
+<p>[障害発生後]</p>
+<ul>
   <li>代替NFSサーバインスタンスデプロイ</li>
   <li><strong>ブロック・ボリューム</strong> の既存NFSサーバインスタンスからのデタッチ</li>
   <li><strong>ブロック・ボリューム</strong> の代替NFSサーバインスタンスへのアタッチ</li>
@@ -410,7 +415,7 @@
 
 <p>以降の章は、このステップに沿って具体的な復旧手順を解説します。</p>
 
-<p>なお、本構成の <strong>ブロック・ボリューム</strong> NFSサーバは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレース</a></strong> から無料で利用可能な <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用して自動構築する事が可能で、詳細は <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></strong> を参照ください。</p>
+<p>なお、本構成の <strong>ブロック・ボリューム</strong> NFSサーバは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレース</a></strong> から無料で利用可能な <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用して自動構築する事が可能で、詳細は <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></strong> を参照してください。</p>
 
 <hr />
 <h1 id="1-復旧手順">1. 復旧手順</h1>
@@ -439,8 +444,9 @@
 <h3 id="1-1-0-概要">1-1-0. 概要</h3>
 
 <p>本章は、代替NFSサーバインスタンスが早期にNFSサービスを開始できることを目的とし、既存NFSサーバインスタンスから <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得します。<br />
-この際、代替NFSサーバインスタンスをデプロイした直後は、 <strong>ブロック・ボリューム</strong> をアタッチするまでNFSデータ領域ファイルシステムをマウント出来ないことを考慮し、必要な修正を行った後に <strong>カスタム・イメージ</strong> を取得します。<br />
-具体的には、以下の手順を実施します。</p>
+この際、代替NFSサーバインスタンスをデプロイした直後は、 <strong>ブロック・ボリューム</strong> をアタッチするまでNFSデータ領域ファイルシステムをマウント出来ないことを考慮し、必要な修正を行った後に <strong>カスタム・イメージ</strong> を取得します。</p>
+
+<p>具体的には、以下の手順を実施します。</p>
 
 <ul>
   <li>NFSサービス停止</li>
@@ -458,118 +464,101 @@
 
 <p>本章は、既存NFSサーバインスタンスで <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得します。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSサービスを停止します。</p>
+<p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSサービスを停止します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> nfs-server
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをアンマウントします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> nfs-server
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>umount /mnt/a
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p><strong>nfs-srv-1</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+<p>次に、以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをアンマウントします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>umount /mnt/a
+</code></pre></div></div>
+
+<p>次に、 <strong>nfs-srv-1</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
 32c32
 &lt; /dev/vg1/lv01	/mnt/a	xfs	defaults	0	0
 <span class="nt">---</span>
 <span class="o">&gt;</span> <span class="c">#/dev/vg1/lv01	/mnt/a	xfs	defaults	0	0</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+<p>次に、OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+<p>次に、表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
 
-    <p><img src="console_page12.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>デタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+<p><img src="console_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page11.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-1</strong> のopcユーザで実行し、物理ボリューム <strong>sdb</strong> がlsblkコマンドの出力に表示されないことを確認します。</p>
+<p>次に、表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.4:3260 <span class="nt">-u</span>
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page12.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>デタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page11.png" alt="画面ショット" /></p>
+
+<p>次に、クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-1</strong> のopcユーザで実行し、物理ボリューム <strong>sdb</strong> がlsblkコマンドの出力に表示されないことを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.4:3260 <span class="nt">-u</span>
 Logging out of session <span class="o">[</span>sid: 3, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.4,3260]
 Logout of <span class="o">[</span>sid: 3, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.4,3260] successful.
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> delete <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.4:3260
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>lsblk
+<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> delete <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.4:3260
+<span class="nv">$ </span>lsblk
 NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                  8:0    0   50G  0 disk 
 ├─sda1               8:1    0  100M  0 part /boot/efi
 ├─sda2               8:2    0    1G  0 part /boot
 └─sda3               8:3    0 48.9G  0 part 
-  ├─ocivolume-root 252:0    0 38.9G  0 lvm  /
-  └─ocivolume-oled 252:1    0   10G  0 lvm  /var/oled
+   ├─ocivolume-root 252:0    0 38.9G  0 lvm  /
+   └─ocivolume-oled 252:1    0   10G  0 lvm  /var/oled
 sdc                  8:16   0    1T  0 disk 
 └─vg1-lv01         252:2    0    2T  0 lvm  
 nvme0n1            259:1    0  3.5T  0 disk 
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
-  </li>
-  <li>
-    <p>4.から9.の手順を同様に <strong>bv2</strong> に対して実行してこれをデタッチし、物理ボリューム <strong>sdc</strong> がlsblkコマンドの出力に表示されないことを確認します。</p>
-  </li>
-  <li>
-    <p><strong>nfs-srv-1</strong> の <strong>カスタムイメージ</strong> を取得します。</p>
+<p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
 
-    <p><strong>カスタム・イメージ</strong> の取得方法は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm">ここ</a></strong> を参照ください。</p>
+<p>次に、以上の <strong>bv1</strong> に対して実施した手順を <strong>bv2</strong> に対して実行してこれをデタッチし、物理ボリューム <strong>sdc</strong> がlsblkコマンドの出力に表示されないことを確認します。</p>
 
-    <p>なお <strong>カスタム・イメージ</strong> 取得中は、当該インスタンスが停止することに留意します。</p>
-  </li>
-  <li>
-    <p>OCIコンソールで、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+<p>次に、 <strong>nfs-srv-1</strong> の <strong>カスタムイメージ</strong> を取得します。</p>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+<p><strong>カスタム・イメージ</strong> の取得方法は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm">ここ</a></strong> を参照ください。</p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+<p>なお <strong>カスタム・イメージ</strong> 取得中は、当該インスタンスが停止することに留意します。</p>
 
-    <p><img src="console_page12.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>アタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+<p>次に、OCIコンソールで、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
 
-    <p><img src="console_page10.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-1</strong> のopcユーザで実行し、lsblkコマンドの出力に物理ボリューム <strong>sdb</strong> が含まれることを確認します。</p>
+<p>次に、表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> new <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page12.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>アタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page10.png" alt="画面ショット" /></p>
+
+<p>次に、クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-1</strong> のopcユーザで実行し、lsblkコマンドの出力に物理ボリューム <strong>sdb</strong> が含まれることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> new <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260
 New iSCSI node <span class="o">[</span>tcp:[hw<span class="o">=</span>,ip<span class="o">=</span>,net_if<span class="o">=</span>,iscsi_if<span class="o">=</span>default] 169.254.2.2,3260,-1 iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3] added
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> update <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-n</span> node.startup <span class="nt">-v</span> automatic
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260 <span class="nt">-l</span>
+<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> update <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-n</span> node.startup <span class="nt">-v</span> automatic
+<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260 <span class="nt">-l</span>
 Logging <span class="k">in </span>to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260]
 Login to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260] successful.
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>lsblk
+<span class="nv">$ </span>lsblk
 NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                  8:0    0   50G  0 disk 
 ├─sda1               8:1    0  100M  0 part /boot/efi
@@ -579,54 +568,50 @@ sda                  8:0    0   50G  0 disk
 └─ocivolume-oled 252:1    0   10G  0 lvm  /var/oled
 sdb                  8:16   0    1T  0 disk 
 nvme0n1            259:1    0  3.5T  0 disk 
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
-  </li>
-  <li>
-    <p>12.から17.の手順を同様に <strong>bv2</strong> に対して実行してこれをアタッチし、lsblkコマンドの出力に物理ボリューム <strong>sdc</strong> が含まれることを確認します。</p>
-  </li>
-  <li>
-    <p><strong>nfs-srv-1</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+<p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+<p>次に、以上の <strong>bv1</strong> に対して実施した手順を <strong>bv2</strong> に対して実行してこれをアタッチし、lsblkコマンドの出力に物理ボリューム <strong>sdc</strong> が含まれることを確認します。</p>
+
+<p>次に、 <strong>nfs-srv-1</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
 31c31
 &lt; <span class="c">#/dev/vg1/lv01	/mnt/a	xfs	defaults	0	0</span>
 <span class="nt">---</span>
 <span class="o">&gt;</span> /dev/vg1/lv01	/mnt/a	xfs	defaults	0	0
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをマウントし、障害発生前のデータが存在していることを確認します。</p>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/a
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/a
+<p>次に、以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをマウントし、作業開始前のデータが存在していることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/a
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/a
 Filesystem            Size  Used Avail Use% Mounted on
 /dev/mapper/vg1-lv01  2.0T   15G  2.0T   1% /mnt/a
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> /mnt/a
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> /mnt/a
 total 4
 drwxr-xr-x  2 root root  22 Sep 29 12:32 <span class="nb">.</span>
 drwxr-xr-x. 3 root root  15 Sep 29 10:12 ..
 <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 root root 210 Sep 29 10:24 test.txt
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行してNFSサービスを開始し、 <strong>/mnt/a</strong> がエクスポートされていることを確認します。</p>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nfs-server
+<p>次に、以下コマンドを <strong>nfs-srv-1</strong> のopcユーザで実行してNFSサービスを開始し、 <strong>/mnt/a</strong> がエクスポートされていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nfs-server
 Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service → /usr/lib/systemd/system/nfs-server.service.
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span><span class="nb">sudo </span>exportfs
+<span class="nv">$ </span><span class="nb">sudo </span>exportfs
 /mnt/a        	10.0.0.0/16
-<span class="o">[</span>opc@nfs-srv-1 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
 <h2 id="1-2-代替nfsサーバインスタンスデプロイ">1-2. 代替NFSサーバインスタンスデプロイ</h2>
+
+<p>本章以降の手順は、既存NFSサーバに障害が発生したことを想定し、代替NFSサーバによる復旧作業を行います。</p>
 
 <p>本章は、先に取得した <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用し、既存NFSサーバインスタンスと同一のシェイプで代替NFSサーバインスタンスを <strong>nfs-srv-2</strong> としてデプロイします。</p>
 
@@ -636,106 +621,83 @@ Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service �
 
 <p>本章は、 <strong>ブロック・ボリューム</strong> の <strong>bv1</strong> と <strong>bv2</strong> を <strong>nfs-srv-1</strong> からデタッチします。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+<p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+<p>次に、表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>インスタンスからのデタッチ</strong> メニューをクリックします。</p>
+<p><img src="console_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page03.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>ブロック・ボリュームのデタッチ</strong> 画面で、 <strong>デタッチの続行</strong> ボタンをクリックします。</p>
+<p>次に、表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
 
-    <p><img src="console_page04.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>ブロック・ボリュームのデタッチ</strong> 画面で、 <strong>デタッチ</strong> ボタンをクリックし、暫くしてデタッチが完了することを確認します。</p>
+<p><img src="console_page02.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page05.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>1.から6.の手順を <strong>bv2</strong> に対して実行し、これをデタッチします。</p>
-  </li>
-</ol>
+<p>次に、表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-1</strong> の <strong>インスタンスからのデタッチ</strong> メニューをクリックします。</p>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>ブロック・ボリュームのデタッチ</strong> 画面で、 <strong>デタッチの続行</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page04.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>ブロック・ボリュームのデタッチ</strong> 画面で、 <strong>デタッチ</strong> ボタンをクリックし、暫くしてデタッチが完了することを確認します。</p>
+
+<p><img src="console_page05.png" alt="画面ショット" /></p>
+
+<p>次に、以上の <strong>bv1</strong> に対して実施した手順を <strong>bv2</strong> に対して実行し、これをデタッチします。</p>
 
 <h2 id="1-4-ブロックボリュームの代替nfsサーバインスタンスへのアタッチ">1-4. ブロック・ボリュームの代替NFSサーバインスタンスへのアタッチ</h2>
 
 <p>本章は、 <strong>ブロック・ボリューム</strong> の <strong>bv1</strong> と <strong>bv2</strong> を <strong>nfs-srv-2</strong> にアタッチします。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+<p>OCIコンソールにログインし、 <strong>ブロック・ボリューム</strong> NFSサーバの存在するリージョンを選択後、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+<p>次に、表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>インスタンスにアタッチ</strong> ボタンをクリックします。</p>
+<p><img src="console_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page06.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>インスタンスにアタッチ</strong> サイドバーの <strong>インスタンス</strong> フィールドで <strong>nfs-srv-2</strong> を選択し、 <strong>アタッチ</strong> ボタンをクリックします。</p>
+<p>次に、表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
 
-    <p><img src="console_page07.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>インスタンスにアタッチ</strong> 画面で、 <strong>閉じる</strong> ボタンをクリックし、暫くしてアタッチが完了することを確認します。</p>
+<p><img src="console_page02.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page08.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>OCIコンソールで、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+<p>次に、表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>インスタンスにアタッチ</strong> ボタンをクリックします。</p>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+<p><img src="console_page06.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-2</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+<p>次に、表示される以下 <strong>インスタンスにアタッチ</strong> サイドバーの <strong>インスタンス</strong> フィールドで <strong>nfs-srv-2</strong> を選択し、 <strong>アタッチ</strong> ボタンをクリックします。</p>
 
-    <p><img src="console_page09.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>アタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+<p><img src="console_page07.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page10.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-2</strong> のopcユーザで実行し、lsblkコマンドの出力に物理ボリューム <strong>sdb</strong> が含まれることを確認します。</p>
+<p>次に、表示される以下 <strong>インスタンスにアタッチ</strong> 画面で、 <strong>閉じる</strong> ボタンをクリックし、暫くしてアタッチが完了することを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> new <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260
+<p><img src="console_page08.png" alt="画面ショット" /></p>
+
+<p>次に、OCIコンソールで、 <strong>ストレージ</strong> → <strong>ブロック・ボリューム</strong> とメニューを辿ります。</p>
+
+<p>次に、表示される以下画面で、<strong>bv1</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下画面で、 <strong>アタッチされたインスタンス</strong> メニューをクリックします。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>アタッチされたインスタンス</strong> フィールドで、 <strong>nfs-srv-2</strong> の <strong>iSCSIコマンドおよび情報</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page09.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>iSCSIコマンドおよび情報</strong> 画面で、 <strong>アタッチ・コマンド</strong> フィールドの <strong>コピー</strong> ボタンをクリックし、 <strong>閉じる</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page10.png" alt="画面ショット" /></p>
+
+<p>次に、クリップボードにコピーされたコマンドを以下のように <strong>nfs-srv-2</strong> のopcユーザで実行し、lsblkコマンドの出力に物理ボリューム <strong>sdb</strong> が含まれることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> new <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260
 New iSCSI node <span class="o">[</span>tcp:[hw<span class="o">=</span>,ip<span class="o">=</span>,net_if<span class="o">=</span>,iscsi_if<span class="o">=</span>default] 169.254.2.2,3260,-1 iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3] added
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> update <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-n</span> node.startup <span class="nt">-v</span> automatic
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260 <span class="nt">-l</span>
+<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-o</span> update <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-n</span> node.startup <span class="nt">-v</span> automatic
+<span class="nv">$ </span><span class="nb">sudo </span>iscsiadm <span class="nt">-m</span> node <span class="nt">-T</span> iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3 <span class="nt">-p</span> 169.254.2.2:3260 <span class="nt">-l</span>
 Logging <span class="k">in </span>to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260]
 Login to <span class="o">[</span>iface: default, target: iqn.2015-12.com.oracleiaas:1f513b3e-dab5-4374-a21d-f3c8ebdc44c3, portal: 169.254.2.2,3260] successful.
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>lsblk
+<span class="nv">$ </span>lsblk
 NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                  8:0    0   50G  0 disk 
 ├─sda1               8:1    0  100M  0 part /boot/efi
@@ -745,15 +707,12 @@ sda                  8:0    0   50G  0 disk
 └─ocivolume-oled 252:1    0   10G  0 lvm  /var/oled
 sdb                  8:16   0    1T  0 disk 
 nvme0n1            259:1    0  3.5T  0 disk 
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
-  </li>
-  <li>
-    <p>1.から12.の手順を同様に <strong>bv2</strong> に対して実行してこれをアタッチし、lsblkコマンドの出力に物理ボリューム <strong>sdc</strong> が含まれることを確認します。</p>
-  </li>
-</ol>
+<p>なお上記コマンドは、本テクニカルTipsを作成する際に使用している環境に於けるもので、実際には自身がOCIコンソールからクリップボードにコピーしたコマンドを使用します。</p>
+
+<p>次に、以上の <strong>bv1</strong> に対して実施した手順を <strong>bv2</strong> に対して実行してこれをアタッチし、lsblkコマンドの出力に物理ボリューム <strong>sdc</strong> が含まれることを確認します。</p>
 
 <h2 id="1-5-代替nfsサーバインスタンスでの復旧作業">1-5. 代替NFSサーバインスタンスでの復旧作業</h2>
 
@@ -765,45 +724,39 @@ nvme0n1            259:1    0  3.5T  0 disk
   <li>NFSサービス開始</li>
 </ul>
 
-<ol>
-  <li>
-    <p><strong>nfs-srv-2</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+<p><strong>nfs-srv-2</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
 31c31
 &lt; <span class="c">#/dev/vg1/lv01	/mnt/a	xfs	defaults	0	0</span>
 <span class="nt">---</span>
 <span class="o">&gt;</span> /dev/vg1/lv01	/mnt/a	xfs	defaults	0	0
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>nfs-srv-2</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをマウントし、障害発生前のデータが存在していることを確認します。</p>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/a
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/a
+<p>次に、以下コマンドを <strong>nfs-srv-2</strong> のopcユーザで実行し、NFSデータ領域ファイルシステムをマウントし、障害発生前のデータが存在していることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/a
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/a
 Filesystem            Size  Used Avail Use% Mounted on
 /dev/mapper/vg1-lv01  2.0T   15G  2.0T   1% /mnt/a
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> /mnt/a
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> /mnt/a
 total 4
 drwxr-xr-x  2 root root  22 Sep 29 12:32 <span class="nb">.</span>
 drwxr-xr-x. 3 root root  15 Sep 29 10:12 ..
 <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 root root 210 Sep 29 10:24 test.txt
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>nfs-srv-2</strong> のopcユーザで実行してNFSサービスを開始し、 <strong>/mnt/a</strong> がエクスポートされていることを確認します。</p>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nfs-server
+<p>次に、以下コマンドを <strong>nfs-srv-2</strong> のopcユーザで実行してNFSサービスを開始し、 <strong>/mnt/a</strong> がエクスポートされていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nfs-server
 Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service → /usr/lib/systemd/system/nfs-server.service.
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span><span class="nb">sudo </span>exportfs
+<span class="nv">$ </span><span class="nb">sudo </span>exportfs
 /mnt/a        	10.0.0.0/16
-<span class="o">[</span>opc@nfs-srv-2 ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
 <h2 id="1-6-nfsクライアントでの復旧作業">1-6. NFSクライアントでの復旧作業</h2>
 
@@ -814,36 +767,30 @@ Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service �
   <li>NFSクライアント再起動</li>
 </ul>
 
-<ol>
-  <li>
-    <p><strong>nfs-cli</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
+<p><strong>nfs-cli</strong> の/etc/fstabファイルを以下のとおり修正します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
 32c32
 &lt; nfs-srv-1:/mnt/a	/mnt/nfs/a	nfs	defaults	0	0
 <span class="nt">---</span>
 <span class="o">&gt;</span> nfs-srv-2:/mnt/a	/mnt/nfs/a	nfs	defaults	0	0
-<span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>既存NFSサーバが障害でダウンした場合、NFSクライアントで既存NFSサーバのNFS領域をマウントしたままとなっており、代替NFSサーバのNFS領域をマウントできないため、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、OS再起動によりこの問題を解消します。</p>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>OS起動後、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、 <strong>nfs-srv-2</strong> のNFSファイルシステムがマウントされ、障害発生前のデータにアクセスできることを確認します。</p>
+<p>次に、既存NFSサーバが障害でダウンした場合、NFSクライアントで既存NFSサーバのNFS領域をマウントしたままとなっており、代替NFSサーバのNFS領域をマウントできないため、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、OS再起動によりこの問題を解消します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/nfs/a
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div></div>
+
+<p>次に、OS起動後、以下コマンドを <strong>nfs-cli</strong> のopcユーザで実行し、 <strong>nfs-srv-2</strong> のNFSファイルシステムがマウントされ、障害発生前のデータにアクセスできることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/nfs/a
 Filesystem        Size  Used Avail Use% Mounted on
 nfs-srv-2:/mnt/a  2.0T   15G  2.0T   1% /mnt/nfs/a
-<span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span><span class="nb">cat</span> /mnt/nfs/a/test.txt 
+<span class="nv">$ </span><span class="nb">cat</span> /mnt/nfs/a/test.txt 
 This is a <span class="nb">test </span>file.
-<span class="o">[</span>opc@nfs-cli ~]<span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="nv">$ </span>
+</code></pre></div></div>
 
         
       </section>
@@ -855,7 +802,7 @@ This is a <span class="nb">test </span>file.
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-08T18:41:48+09:00">August 8, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-09T17:08:01+09:00">August 9, 2024</time></p>
 
       </footer>
 

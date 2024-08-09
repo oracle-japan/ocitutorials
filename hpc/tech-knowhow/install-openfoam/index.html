@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-08T18:41:48+09:00">
+  <meta property="article:published_time" content="2024-08-09T17:08:01+09:00">
 
 
 
@@ -294,6 +294,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -304,7 +306,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
@@ -363,7 +365,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-08-08T18:41:48+09:00">
+    <meta itemprop="datePublished" content="2024-08-09T17:08:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -797,7 +799,7 @@ xxaxx
 <span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> <span class="nv">$FOAM_TUTORIALS</span>/incompressible/simpleFoam/motorBike <span class="nb">.</span>
 </code></pre></div></div>
 
-<p>次に、バッチ実行のヘッドノードとその他ノードのNVMe SSDローカルディスクのデータ同期に使用するスクリプト <strong>rsync_inneed.sh</strong> を以下の内容で作成し、</p>
+<p>次に、バッチ実行の際に使用する、ヘッドノードとその他ノードのNVMe SSDローカルディスクのデータを同期させるスクリプト <strong>rsync_inneed.sh</strong> を以下の内容で作成し、</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$1</span> | <span class="nb">cut</span> <span class="nt">-d</span>, <span class="nt">-f</span> 1<span class="sb">`</span>
@@ -961,7 +963,7 @@ End
 <p>本章は、 <strong>OpenFOAM</strong> にチュートリアルとして付属しているバックステップ乱流シミュレーション（<strong>incompressible/simpleFoam/pitzDaily</strong>）とオートバイ走行時乱流シミュレーション（<strong>incompressible/simpleFoam/motorBike</strong>）を使用し、これらをバッチジョブとして実行する手順を解説します。<br />
 この際、並列化に対応している解析ステップは、 <strong>BM.Optimized3.36</strong> の4ノード128コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをストレージ領域に活用します。</p>
 
-<p>ここでバッチ実行するプリ処理・解析処理は、以下のステップを経て共有ストレージとNMVe SSDローカルディスク間でrsyncによる同期を行いながら実行し、ストレージ領域へのアクセス時に高速なNMVe SSDローカルディスクを極力使用するよう配慮します。</p>
+<p>これらの処理は、共有ストレージとNMVe SSDローカルディスクの間でrsyncを使用してデータを同期しながら以下のステップで実行し、ストレージ領域へのアクセスに高速なNMVe SSDローカルディスクを極力使用するよう配慮します。</p>
 
 <ol>
   <li>ヘッドノードで “共有ストレージ -&gt; NVMe SSDローカルディスク” 方向のデータ同期</li>
@@ -974,7 +976,7 @@ End
 </ol>
 
 <p>※7）この同期は、その他ノードのノード数（本テクニカルTipsでは3ノード）分だけ同時に実行することで、所要時間の短縮を図ります。<br />
-※8）この同期は、128個のMPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルのうち、当該ノード上で計算されたもののみ同期することで、所要時間を短縮します。<br />
+※8）この同期は、128個のMPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルのうち、当該ノード上で計算されたもののみ同期させるため、事前に用意したスクリプト <strong>rsync_inneed.sh</strong> を使用します。<br />
 ※9）この同期は、128個のMPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間を短縮します。</p>
 
 <p>このように、ストレージ領域にNVMe SSDローカルディスクを活用することで、共有ストレージ（ <strong>ファイル・ストレージ</strong> サービスを使用した場合）のみを使用する場合と比較して、特に大規模並列実行のケースやシミュレーション結果の書き込み頻度が高いケースで、シミュレーション所要時間を短縮することが可能になります。</p>
@@ -1061,7 +1063,7 @@ decomposePar
 <span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Run solver in parallel</span>
-srun simpleFoam <span class="nt">-parallel</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores simpleFoam <span class="nt">-parallel</span>
 
 <span class="c"># Concurrently sync model files on other node NVMe local disk with head node's</span>
 <span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> '</span><span class="nv">$rsync_script</span><span class="s2"> </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2"> </span><span class="nv">$proc_pernode</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
@@ -1149,7 +1151,6 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
 <span class="c"># Get job infomation</span>
 <span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
-<span class="nv">num_nodes</span><span class="o">=</span><span class="nv">$SLURM_JOB_NUM_NODES</span>
 <span class="nv">proc_pernode</span><span class="o">=</span><span class="si">$(</span><span class="nb">expr</span> <span class="nv">$SLURM_NTASKS</span> / <span class="nv">$SLURM_JOB_NUM_NODES</span><span class="si">)</span>
 <span class="nv">child_node_list</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$SLURM_JOB_NODELIST</span> | <span class="nb">cut</span> <span class="nt">-d</span>, <span class="nt">-f</span> 2-<span class="sb">`</span>
 
@@ -1171,15 +1172,15 @@ runApplication <span class="nv">$decompDict</span> decomposePar
 <span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Pre-process stage 2 in parallel</span>
-srun snappyHexMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-overwrite</span>
-srun topoSet <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
-srun <span class="nt">-n</span> <span class="nv">$num_nodes</span> <span class="nt">--ntasks-per-node</span><span class="o">=</span>1 bash <span class="nt">-c</span> <span class="s2">". </span><span class="k">${</span><span class="nv">WM_PROJECT_DIR</span>:?<span class="k">}</span><span class="s2">/bin/tools/RunFunctions; restore0Dir -processor"</span>
-srun patchSummary <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
-srun potentialFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-writephi</span>
-srun checkMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-writeFields</span> <span class="s1">'(nonOrthoAngle)'</span> <span class="nt">-constant</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores snappyHexMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-overwrite</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores topoSet <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
+srun <span class="nt">-n</span> <span class="nv">$SLURM_JOB_NUM_NODES</span> <span class="nt">--ntasks-per-node</span><span class="o">=</span>1 bash <span class="nt">-c</span> <span class="s2">". </span><span class="k">${</span><span class="nv">WM_PROJECT_DIR</span>:?<span class="k">}</span><span class="s2">/bin/tools/RunFunctions; restore0Dir -processor"</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores patchSummary <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores potentialFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-writephi</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores checkMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-writeFields</span> <span class="s1">'(nonOrthoAngle)'</span> <span class="nt">-constant</span>
 
 <span class="c"># Run solver in parallel</span>
-srun simpleFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores impleFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
 
 <span class="c"># Concurrently sync model files on other node NVMe local disk with head node's</span>
 <span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> '</span><span class="nv">$rsync_script</span><span class="s2"> </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2"> </span><span class="nv">$proc_pernode</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
@@ -1255,7 +1256,7 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-08T18:41:48+09:00">August 8, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-09T17:08:01+09:00">August 9, 2024</time></p>
 
       </footer>
 

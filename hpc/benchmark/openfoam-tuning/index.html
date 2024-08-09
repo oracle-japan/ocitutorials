@@ -1,0 +1,643 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36をクラスタ・ネットワークでノード間接続するHPCクラスタでOpenFOAMを使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openfoam-tuning/">
+
+
+  <meta property="og:description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36をクラスタ・ネットワークでノード間接続するHPCクラスタでOpenFOAMを使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-08-09T17:08:01+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openfoam-tuning/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips
+
+        
+      </h1>
+      
+        <p class="page__lead">OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36をクラスタ・ネットワークでノード間接続するHPCクラスタでOpenFOAMを使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/benchmark" itemprop="item"><span itemprop="name">Benchmark</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/" class="active">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips">
+    <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36をクラスタ・ネットワークでノード間接続するHPCクラスタでOpenFOAMを使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。">
+    <meta itemprop="datePublished" content="2024-08-09T17:08:01+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-ノード内並列とマルチノード並列に於けるmpiプロセス配置を最適化する方法">1. ノード内並列とマルチノード並列に於けるMPIプロセス配置を最適化する方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li></ul></li><li><a href="#2-nvme-ssdローカルディスクをストレージ領域に活用する方法">2. NVMe SSDローカルディスクをストレージ領域に活用する方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-実行方法">2-1. 実行方法</a></li><li><a href="#2-2-実行結果とその考察">2-2. 実行結果とその考察</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>本パフォーマンス関連Tipsは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタで <strong><a href="https://www.openfoam.com/">OpenFOAM</a></strong> を使用する際、特定のモデルを使用するCFD解析フローをコストパフォーマンス良く実行するという観点で、以下のTipsを解説します。</p>
+
+<ol>
+  <li>ノード内並列とマルチノード並列に於けるMPIプロセス配置を最適化する方法</li>
+  <li>NVMe SSDローカルディスクをストレージ領域に活用する方法</li>
+</ol>
+
+<p>本パフォーマンス関連Tipsの性能計測は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></strong> に従って構築された <strong>OpenFOAM</strong> 実行環境を使用し、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境でバッチジョブとして計測しています。</p>
+
+<p>また、計算ノードに使用する <strong>BM.Optimized3.36</strong> は、 <strong>OpenFOAM</strong> がメモリ帯域幅依存でハイパースレッディングによる効果は期待できないため、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> の手順に従い <strong>SMT</strong> を無効化しています。</p>
+
+<hr />
+<h1 id="1-ノード内並列とマルチノード並列に於けるmpiプロセス配置を最適化する方法">1. ノード内並列とマルチノード並列に於けるMPIプロセス配置を最適化する方法</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本Tipsは、 <strong>OpenFOAM</strong> のの実行性能がメモリ帯域幅に大きく影響されることを念頭に、メモリ性能に影響する以下のパラメータを調整することでどのように性能が変化するか、また最も性能の良いパラメータは何かという観点で性能を計測します。</p>
+
+<ol>
+  <li><strong>NPS</strong> （Numa node Per Socket）</li>
+  <li>NUMAノードを意識したノード内プロセス配置とノード当たりプロセス数</li>
+</ol>
+
+<p>以降は、現在作成中です。</p>
+
+<hr />
+<h1 id="2-nvme-ssdローカルディスクをストレージ領域に活用する方法">2. NVMe SSDローカルディスクをストレージ領域に活用する方法</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本Tipsは、 <strong>OpenFOAM</strong> が実行中に計算結果をファイルシステムに書き出す際、 <strong>BM.Optimized3.36</strong> が搭載する高速なNVMe SSDローカルディスク上に作成したファイルシステムをその対象領域とすることで、CFD解析フロー全体の所要時間を短縮し解析コストを削減する方法を解説します。</p>
+
+<p><strong>OpenFOAM</strong> が実行中に作成するファイルは、総容量のみならず総ファイル数が多いため、NFSでサービスする共有ストレージに対して高いIOPS性能を持つNVMe SSDローカルディスクが有効で、特に高並列実行のケースや計算結果の出力頻度が高いケースでその効果を顕著に得ることが出来ます。</p>
+
+<p>本Tipsで実行例として使用する解析モデルは、 <strong>OpenFOAM</strong> に同梱されるチュートリアルのオートバイ走行時乱流シミュレーションをベンチマーク用に大規模化した、 <strong><a href="https://develop.openfoam.com/committees/hpc">OpenFOAM HPC Benchmark Suite</a></strong> に含まれる <strong>HPC_Motorbike</strong> です。</p>
+
+<p>本TipsのNVMe SSDローカルディスクの使用方法は、 <strong>OpenFOAM</strong> のケースディレクトリがCFD解析フロー開始時点で通常共有ストレージに存在することを考慮し、共有ストレージ・NMVe SSDローカルディスク間でrsyncを使用してデータを同期しながら以下のステップで実行、 <strong>OpenFOAM</strong> がストレージ領域にアクセスする際、NMVe SSDローカルディスクを極力使用するよう配慮します。</p>
+
+<ol>
+  <li>ヘッドノードで “共有ストレージ -&gt; NVMe SSDローカルディスク” 方向のケースディレクトリ内全ファイルの同期</li>
+  <li>ヘッドノードのNVMe SSDローカルディスク上で <strong>decomposePar</strong> を実行</li>
+  <li>“ヘッドノードのNVMe SSDローカルディスク -&gt; その他ノードのNVMe SSDローカルディスク” 方向のケースディレクトリ内全ファイルの同期</li>
+  <li>全ノードがNVMe SSDローカルディスクを使用して <strong>potentialFoam</strong> を並列実行</li>
+  <li>全ノードがNVMe SSDローカルディスクを使用して <strong>simpleFoam</strong> を並列実行</li>
+  <li>“その他ノードのNVMe SSDローカルディスク -&gt; ヘッドノードのNVMe SSDローカルディスク” 方向のケースディレクトリ内一部ファイルの同期</li>
+  <li>ヘッドノードで “NVMe SSDローカルディスク -&gt; 共有ストレージ” 方向のケースディレクトリ内一部ファイルの同期</li>
+</ol>
+
+<p>ここで <strong>ステップ 3.</strong> と <strong>ステップ 6.</strong> の同期は、その他ノードのノード数（並列計算に使用する総ノード数マイナス1）分だけ同時に実行することで、NVMe SSDローカルディスクの高いIOPS性能（ここでは特にヘッドノードのNVMe SSDローカルディスク）を有効に活用して所要時間の短縮を図ります。</p>
+
+<p>また <strong>ステップ 6.</strong> の同期は、ファイルの同期を同時実行することによるヘッドノード上でのファイル競合を避けるため、各MPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルは、当該ノードに割り当てられたプロセスディレクトリのみを対象とします。</p>
+
+<p>また <strong>ステップ 7.</strong> の同期は、各MPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間の短縮を図ります。</p>
+
+<p>共有ストレージを使用する実行方法は、 <strong>ステップ 1.</strong> ・ <strong>ステップ 3.</strong> ・ <strong>ステップ 6.</strong> ・ <strong>ステップ 7.</strong> に時間を消費しませんが、NVMe SSDローカルディスクを使用する実行方法が共有ストレージを使用する実行方法に対して <strong>ステップ 2.</strong> ・ <strong>ステップ 4.</strong> ・ <strong>ステップ 5.</strong> で所要時間を短縮することが出来るため、トータルの実行時間はNVMe SSDローカルディスクを使用する実行方法が短くなります。</p>
+
+<p>本Tipsは、以下の環境・条件で <strong>OpenFOAM</strong> を実行し、CFD解析フローの所要時間（所要コスト）を  <strong>26.2 %</strong> 短縮しています。</p>
+
+<ul>
+  <li>シェイプ ： <strong>BM.Optimized3.36</strong></li>
+  <li>BIOS設定 ：SMT無効・NPS2</li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
+  <li>ノード数 ： 8</li>
+  <li>ノード間接続 ：  <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong></li>
+  <li>比較対象の共有ストレージ ： <strong>ファイル・ストレージ</strong> （NFS）</li>
+  <li><strong>OpenFOAM</strong> ： v2312</li>
+  <li>MPI ： <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 5.0.3</li>
+  <li>MPIプロセス数 ： 288（36プロセス / ノード）</li>
+  <li>解析対象モデル ： <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデル<br />
+（ <strong>hpc/incompressible/simpleFoam/HPC_motorbike/Small/v1912/HPC_motorbike/Small/v1912</strong> ）</li>
+  <li>計算結果の出力頻度（ <strong>writeInterval</strong> ） ： 10タイムステップ（デフォルト値：1,000タイムステップ）</li>
+</ul>
+
+<p>※1） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
+
+<h2 id="2-1-実行方法">2-1. 実行方法</h2>
+
+<p>本章は、NVMe SSDローカルディスクをストレージ領域に活用して <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデルを実行する方法を解説します。</p>
+
+<p>この方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行">4. CFD解析フロー実行</a></strong> を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデルにこれを適用します。</p>
+
+<p>この際、 <strong>system/controlDict</strong> の <strong>writeInterval</strong> を <strong>10</strong> に変更します。<br />
+この値がデフォルト値 <strong>1,000</strong> のままの場合、計算結果を出力しないため、NVMe SSDローカルディスクの効果を得ることが出来ません。</p>
+
+<h2 id="2-2-実行結果とその考察">2-2. 実行結果とその考察</h2>
+
+<p>本章は、解析対象モデルを共有ストレージを使用した場合とNVMe SSDローカルディスクを使用した場合で実行し、その結果を比較・検証します。</p>
+
+<p>本Tipsは、 <strong><a href="#1-0-概要">1.0. 概要</a></strong> に記載の7ステップにかかる時間を個別に取得出来るようにした上で、共有ストレージを使用した場合とNVMe SSDローカルディスクを使用した場合でそれぞれ5回計測してその平均値を求めました。</p>
+
+<p>この結果をグラフ化したものを以下に示します。</p>
+
+<p><img src="graph_01.png" alt="実行結果" /></p>
+
+<p>このグラフから、NVMe SSDローカルディスクを使用する実行方法は、共有ストレージを使用する実行方法に対して、</p>
+
+<ul>
+  <li><strong>simpleFoam</strong> の実行時間が <strong>40.4 %</strong> 短い</li>
+  <li><strong>decomposePar</strong> の実行時間が <strong>34.2 %</strong> 短い</li>
+  <li>rsyncのデータ転送に <strong>46 秒</strong> 必要</li>
+  <li>以上増減の結果総実行時間が <strong>26.2 %</strong> 短い（計算ノードの所要コストが <strong>26.2 %</strong> 安価）</li>
+</ul>
+
+<p>という事がわかります。</p>
+
+<p>以上より、共有ストレージを使用する実行方法と比較して、NVMe SSDローカルディスクを使用する実行方法は、実行方法にひと手間掛けることで、CFD解析フローのコストを大幅に低減可能であることがわかります。<br />
+またこのコストダウンは、高並列実行のケースや計算結果の出力頻度が高いケースでより大きな効果を得ることが出来ます。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-09T17:08:01+09:00">August 9, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=CFD%E8%A7%A3%E6%9E%90%E3%83%95%E3%83%AD%E3%83%BC%E3%81%AE%E3%82%B3%E3%82%B9%E3%83%88%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%92%E5%90%91%E4%B8%8A%E3%81%95%E3%81%9B%E3%82%8BOpenFOAM%E9%96%A2%E9%80%A3Tips%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fopenfoam-tuning%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fopenfoam-tuning%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openfoam-tuning/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/" class="pagination--pager" title="クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/benchmark/papi-profiling/" class="pagination--pager" title="PAPIでHPCアプリケーションをプロファイリング
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

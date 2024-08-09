@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-08T18:41:48+09:00">
+  <meta property="article:published_time" content="2024-08-09T17:08:01+09:00">
 
 
 
@@ -294,6 +294,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -304,7 +306,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
         
@@ -363,7 +365,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム運用Tips">
     <meta itemprop="description" content="オープンソースのSlurmは、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
-    <meta itemprop="datePublished" content="2024-08-08T18:41:48+09:00">
+    <meta itemprop="datePublished" content="2024-08-09T17:08:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -374,7 +376,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-prologepilogセットアップ方法">1. Prolog/Epilogセットアップ方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-セットアップ手順">1-1. セットアップ手順</a></li><li><a href="#1-2-稼働確認">1-2. 稼働確認</a></li></ul></li><li><a href="#2-メンテナンスを考慮した計算gpuノードのステータス変更方法">2. メンテナンスを考慮した計算/GPUノードのステータス変更方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-計算gpuノードのステータスをオフラインに変更">2-1. 計算/GPUノードのステータスをオフラインに変更</a></li><li><a href="#2-2-計算gpuノードのステータスをオンラインに変更">2-2. 計算/GPUノードのステータスをオンラインに変更</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-prologepilogセットアップ方法">1. Prolog/Epilogセットアップ方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-セットアップ手順">1-1. セットアップ手順</a></li><li><a href="#1-2-稼働確認">1-2. 稼働確認</a></li></ul></li><li><a href="#2-メンテナンスを考慮した計算gpuノードのステータス変更方法">2. メンテナンスを考慮した計算/GPUノードのステータス変更方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-計算gpuノードのステータスをオフラインに変更">2-1. 計算/GPUノードのステータスをオフラインに変更</a></li><li><a href="#2-2-計算gpuノードのステータスをオンラインに変更">2-2. 計算/GPUノードのステータスをオンラインに変更</a></li></ul></li><li><a href="#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御">3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-slurmconf修正">3-1. slurm.conf修正</a></li><li><a href="#32-slurmconf修正の反映">3.2. slurm.conf修正の反映</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -386,21 +388,23 @@
 <ol>
   <li><strong><a href="https://slurm.schedmd.com/prolog_epilog.html">Prolog/Epilog</a></strong> セットアップ方法</li>
   <li>メンテナンスを考慮した計算/GPUノードの <strong><a href="https://slurm.schedmd.com/scontrol.html#OPT_State_2">ステータス</a></strong> 変更方法</li>
+  <li>ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</li>
 </ol>
+
+<p>これらのTipsは、全て <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境を前提に記載します。</p>
 
 <hr />
 <h1 id="1-prologepilogセットアップ方法">1. Prolog/Epilogセットアップ方法</h1>
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本Tipsは、ジョブ実行の前後で <strong>Slurm</strong> が自動的にスクリプトを実行する機能であるProlog/Epilogを、予め <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境にセットアップする方法を解説します。</p>
+<p>本Tipsは、ジョブ実行の前後で <strong>Slurm</strong> が自動的にスクリプトを実行する機能であるProlog/Epilogをセットアップする方法を解説します。</p>
 
 <p>ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。</p>
 
-<ul>
-  <li>Prolog<br />
-以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。</li>
-</ul>
+<p>[Prolog]</p>
+
+<p>以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 
@@ -417,10 +421,9 @@
 /bin/free <span class="nt">-h</span> <span class="o">&gt;&gt;</span> <span class="nv">$log_file</span>
 </code></pre></div></div>
 
-<ul>
-  <li>Epilog<br />
-以下のスクリプトを使用し、完了したジョブがNVMe SSDローカルディスク領域のファイルシステム（マウントポイント  <strong>/mnt/localdisk</strong> ）に残したファイルをジョブ完了直後に削除します。</li>
-</ul>
+<p>[Epilog]</p>
+
+<p>以下のスクリプトを使用し、完了したジョブがNVMe SSDローカルディスク領域のファイルシステム（マウントポイント  <strong>/mnt/localdisk</strong> ）に残したファイルをジョブ完了直後に全て削除します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 /bin/rm <span class="nt">-rf</span> /mnt/localdisk/<span class="k">*</span>
@@ -428,7 +431,7 @@
 
 <h2 id="1-1-セットアップ手順">1-1. セットアップ手順</h2>
 
-<p>Slurmサーバと全ての計算/GPUノードの <strong>/opt/slurm/etc/slurm.conf</strong> に以下の記述を追加します。</p>
+<p>Slurmマネージャと全ての計算/GPUノードの <strong>/opt/slurm/etc/slurm.conf</strong> に以下の記述を追加します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PrologFlags</span><span class="o">=</span>Alloc
 <span class="nv">Prolog</span><span class="o">=</span>/opt/slurm/etc/scripts/prolog.d/<span class="k">*</span>
@@ -456,7 +459,7 @@ total 4
 
 <p>なお、このディレクトリに2桁数字の接頭辞を持つスクリプトを複数格納することで、その数字の順番にスクリプトを実行することが出来ます。</p>
 
-<p>次に、Slurmサーバのopcユーザで以下のコマンドを実行し、 <strong>slurm.conf</strong> ファイルの変更を反映、その結果を確認します。</p>
+<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 <strong>slurm.conf</strong> ファイルの変更を反映、その結果を確認します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol reconfigure"</span>
 <span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show config"</span> | <span class="nb">grep</span> <span class="nt">-i</span> <span class="nt">-e</span> ^epilog <span class="nt">-e</span> ^prolog | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nt">-i</span> <span class="nb">time
@@ -505,8 +508,8 @@ Swap:         7.6Gi          0B       7.6Gi
 
 <p>HPC/GPUクラスタは、運用中に計算/GPUノードでハードウェア障害が発生したりソフトウェアのアップデートを行う必要が生じると、当該ノードへのジョブ割り当てを一時的に停止するオフライン化を実施する必要が生じます。</p>
 
-<p><strong>Slurm</strong> は、 <strong>Slurmd</strong> が動作す計算/GPUノードのステータスに於いて、以降のジョブを受け付ける状態の <strong>IDLE</strong> と受け付けない状態の <strong>DRAIN</strong> が存在し、これを管理者が明示的に切り替えることで、この運用要件を実現することが可能です。<br />
-具体的には、以下のステップを経ることになります。</p>
+<p><strong>Slurm</strong> は、 <strong>Slurmd</strong> が動作する計算/GPUノードのステータスに於いて、以降のジョブを受け付ける状態の <strong>IDLE</strong> と受け付けない状態の <strong>DRAIN</strong> が存在し、これを管理者が明示的に切り替えることで、この運用要件を実現することが可能です。<br />
+具体的には、以下のステップでこれを実施します。</p>
 
 <ul>
   <li>ステータスを <strong>DRAIN</strong> に変更</li>
@@ -516,13 +519,14 @@ Swap:         7.6Gi          0B       7.6Gi
   <li>新たなジョブが割当てられることを確認</li>
 </ul>
 
-<p>本Tipsは、前述の運用要件を念頭に、予め <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境で、計算/GPUノードのステータスを変更する方法を解説します。</p>
+<p>本Tipsは、前述の運用要件を念頭に、計算/GPUノードのステータスを変更する方法を解説します。</p>
 
 <h2 id="2-1-計算gpuノードのステータスをオフラインに変更">2-1. 計算/GPUノードのステータスをオフラインに変更</h2>
 
 <p>本章は、ステータスが <strong>IDLE</strong> または <strong>ALLOCATED</strong> の計算/GPUノードを <strong>DRAIN</strong> に変更し、新たなジョブが以降割り当てられないオフラインの状態に変更する方法を解説します。</p>
 
-<p>Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスが <strong>IDLE</strong> または <strong>ALLOCATED</strong> であることを確認します。</p>
+<p>Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスが <strong>IDLE</strong> または <strong>ALLOCATED</strong> であることを確認します。<br />
+ここで、計算/GPUノードのホスト名（inst-xxxxx-x9）は、自身の環境に合わせて修正します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show node inst-xxxxx-x9"</span> | <span class="nb">grep</span> <span class="nt">-e</span> NodeName <span class="nt">-e</span> State
 <span class="nv">NodeName</span><span class="o">=</span>inst-xxxxx-x9 <span class="nv">Arch</span><span class="o">=</span>x86_64 <span class="nv">CoresPerSocket</span><span class="o">=</span>18 
@@ -531,7 +535,8 @@ Swap:         7.6Gi          0B       7.6Gi
 </code></pre></div></div>
 
 <p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスを変更、ステータスが <strong>IDLE+DRAIN</strong> または <strong>ALLOCATED+DRAIN</strong> に変更されたことを確認します。<br />
-この際、 <strong>reason=</strong> の指定は、ステータスを変更する理由を適宜指定します。</p>
+ここで、計算/GPUノードのホスト名（inst-xxxxx-x9）は、自身の環境に合わせて修正します。<br />
+また、 <strong>reason=</strong> の指定は、ステータスを変更する理由を適宜指定します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol update nodename=inst-xxxxx-x9 state=drain reason=maintenance"</span>
 <span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show node inst-xxxxx-x9"</span> | <span class="nb">grep</span> <span class="nt">-e</span> NodeName <span class="nt">-e</span> State
@@ -542,7 +547,7 @@ Swap:         7.6Gi          0B       7.6Gi
 
 <p>ステータスが <strong>ALLOCATED+DRAIN</strong> の場合は、実行中のジョブが終了するまで待機します。</p>
 
-<p>次に、対象の計算/GPUノードのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードでslurmdを停止します。</p>
+<p>次に、対象の計算/GPUノードのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードで <strong>slurmd</strong> を停止します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl stop slurmd
 </code></pre></div></div>
@@ -551,12 +556,13 @@ Swap:         7.6Gi          0B       7.6Gi
 
 <p>本章は、メンテナンス作業が終了したことを想定し、計算/GPUノードのステータスを <strong>DRAIN</strong> から <strong>IDLE</strong> に変更することで、新たなジョブが割り当てられるオンラインの状態にする方法を解説します。</p>
 
-<p>対象の計算/GPUノードのopcユーザで以下のコマンドを実行し、slurmdを起動します。</p>
+<p>対象の計算/GPUノードのopcユーザで以下のコマンドを実行し、 <strong>slurmd</strong> を起動します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl start slurmd
 </code></pre></div></div>
 
-<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスが <strong>DOWN+DRAIN</strong> であることを確認します。</p>
+<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスが <strong>DOWN+DRAIN</strong> であることを確認します。<br />
+ここで、計算/GPUノードのホスト名（inst-xxxxx-x9）は、自身の環境に合わせて修正します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show node inst-xxxxx-x9"</span> | <span class="nb">grep</span> <span class="nt">-e</span> NodeName <span class="nt">-e</span> State
 <span class="nv">NodeName</span><span class="o">=</span>inst-xxxxx-x9 <span class="nv">Arch</span><span class="o">=</span>x86_64 <span class="nv">CoresPerSocket</span><span class="o">=</span>18 
@@ -565,12 +571,80 @@ Swap:         7.6Gi          0B       7.6Gi
 </code></pre></div></div>
 
 <p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスを変更、ステータスが <strong>IDLE</strong> となっていることを確認します。<br />
-なお、この計算/GPUノードで実行可能なジョブが待機していた場合、ジョブが即座に実行を開始してステータスが <strong>ALLOCATED</strong> とになる場合もあります。</p>
+ここで、計算/GPUノードのホスト名（inst-xxxxx-x9）は、自身の環境に合わせて修正します。<br />
+なお、この計算/GPUノードで実行可能なジョブが待機していた場合、ジョブが即座に実行を開始してステータスが <strong>ALLOCATED</strong> となる場合もあります。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol update nodename=inst-xxxxx-x9 state=idle"</span>
 <span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show node inst-xxxxx-x9"</span> | <span class="nb">grep</span> <span class="nt">-e</span> NodeName <span class="nt">-e</span> State
 <span class="nv">NodeName</span><span class="o">=</span>inst-xxxxx-x9 <span class="nv">Arch</span><span class="o">=</span>x86_64 <span class="nv">CoresPerSocket</span><span class="o">=</span>18 
    <span class="nv">State</span><span class="o">=</span>IDLE <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">Weight</span><span class="o">=</span>1 <span class="nv">Owner</span><span class="o">=</span>N/A <span class="nv">MCS_label</span><span class="o">=</span>N/A
+<span class="err">$</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御">3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソースを有するヘテロジニアスな環境となることがあります。<br />
+この際、実行するジョブが想定するリソースを持つ計算/GPUノードで実行されることを保証する必要がありますが、 <strong>Slurm</strong> のパーティションに割り当てられる計算/GPUノードを適切に指定することで、この運用要件を実現することが可能です。</p>
+
+<p>本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで想定する計算/GPUノードに適切にジョブが割当てられる <strong>Slurm</strong> 環境を構築する方法を解説します。</p>
+
+<p>構築する <strong>Slurm</strong> 環境は、以下とします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">パーティション名</th>
+      <th style="text-align: center">割当てられる計算/GPUノード名</th>
+      <th style="text-align: center">デフォルトパーティション（※1）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">nps1</td>
+      <td style="text-align: center">inst-aaaaa-x9 inst-bbbbb-x9</td>
+      <td style="text-align: center">Yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">nps2</td>
+      <td style="text-align: center">inst-ccccc-x9 inst-ddddd-x9</td>
+      <td style="text-align: center">No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※1）パーティション名を指定せずに投入したジョブが割当てられるパーティションです。</p>
+
+<h2 id="3-1-slurmconf修正">3-1. slurm.conf修正</h2>
+
+<p>本章は、本Tipsの想定する運用要件を実現するよう <strong>slurm.conf</strong> を修正します。</p>
+
+<p>作成する <strong>slurm.conf</strong> は、 <strong>NodeName</strong> 行と <strong>PartitionName</strong> 行を以下に修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
+<span class="nv">PartitionName</span><span class="o">=</span>nps1 <span class="nv">Nodes</span><span class="o">=</span>inst-aaaaa-x9bbbbb <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+<span class="nv">PartitionName</span><span class="o">=</span>nps2 <span class="nv">Nodes</span><span class="o">=</span>inst-bbbbb-x9,inst-ddddd-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+</code></pre></div></div>
+
+<h2 id="32-slurmconf修正の反映">3.2. slurm.conf修正の反映</h2>
+
+<p>本章は、先に修正した <strong>slurm.conf</strong> を反映します。</p>
+
+<p>Slurmマネージャ、Slurmクライアント、及び計算/GPUノードノードで、先に修正した <strong>slurm.conf</strong> を <strong>/opt/slurm/etc</strong> ディレクトリにコピーします。</p>
+
+<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、修正した <strong>slurm.conf</strong> の内容を反映します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol reconfigure"</span>
+</code></pre></div></div>
+
+<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、修正した内容が反映されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+nps1<span class="k">*</span>        up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
+nps2         up   infinite      2   idle inst-ccccc-x9,inst-ddddd-x9
 <span class="err">$</span>
 </code></pre></div></div>
 
@@ -584,7 +658,7 @@ Swap:         7.6Gi          0B       7.6Gi
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-08T18:41:48+09:00">August 8, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-09T17:08:01+09:00">August 9, 2024</time></p>
 
       </footer>
 

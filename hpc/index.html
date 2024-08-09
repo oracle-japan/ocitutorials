@@ -615,7 +615,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   <li><strong>NCCL Tests</strong></li>
 </ul>
 
-<p>各ベンチマークの実行方法は、下表の対象シェイプ部分のリンクをクリックして参照下さい。</p>
+<p>各ベンチマークの実行方法は、下表の対象シェイプ部分のリンクをクリックして参照してください。</p>
 
 <table>
   <thead>
@@ -673,6 +673,12 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> は、業界標準のRoCEv2を採用する高帯域・低遅延のRDMA対応インターコネクトネットワークサービスで、そのトポロジーがFat treeのため同一リーフスイッチに接続するノード間とスパインスイッチを介して異なるリーフスイッチに接続するノード間で、ノード間通信のレイテンシが大きく異なります。このため、この特性を意識して適切な計算/GPUノードにジョブを配置することで、レイテンシに影響を受け易いワークロードの性能や高並列実行時のスケーラビリティを改善できる場合があります。<br />
   本パフォーマンス関連Tipsは、この <strong>クラスタ・ネットワーク</strong> のレイテンシ特性を生かしてマルチノードジョブをクラスタ内に配置することで、ノード間通信性能を最適化する方法を解説します。</p>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></strong></p>
+
+    <p><strong><a href="https://www.openfoam.com/">OpenFOAM</a></strong> は、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。<br />
+  本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンス <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタで <strong>OpenFOAM</strong> を使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。</p>
   </li>
 </ul>
 
@@ -757,7 +763,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   本テクニカルTipsは、この <strong>クラスタネットワーキングイメージ</strong> の適切な選び方を解説します。</p>
   </li>
   <li>
-    <p><strong><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法</a></strong></p>
+    <p><strong><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></strong></p>
 
     <p><strong>クラスタ・ネットワーク</strong> に接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだ <strong><a href="#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> が <strong><a href="#5-5-マーケットプレイス">マーケットプレース</a></strong> から提供されていますが、これらのベースとなるOSは、 <strong>Oracle Linux</strong> のみです。<br />
   本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> 対応シェイプの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> や <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を使用するインスタンスを <strong>Oracle Linux</strong> 以外のOSで <strong>クラスタ・ネットワーク</strong> に接続する方法を解説します。</p>
@@ -1026,9 +1032,9 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 </ul>
 
 <p>これらの処理は、前述の802.1X認証関連ユーティリティソフトウェアと <strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェアで行います。<br />
-この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> を参照下さい。</p>
+この手順は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> を参照してください。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm">ここ</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>クラスタ・ネットワーク</strong> メニューは、 <strong><a href="https://cloud.oracle.com/compute/cluster-networks">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1038,9 +1044,9 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 
 <p><strong>リソース・マネージャ</strong> は、様々なOCIサービスを組み合わせたシステム構築作業を、メニュー形式で予めオプションを選択して作成された <strong><a href="#5-3-スタック">スタック</a></strong> をOCIコンソールから適用・破棄することで、1クリックで実施することを可能にします。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm">ここ</a></strong> を参照してください。</p>
 
-<p><strong>リソース・マネージャ</strong> の利用方法は、チュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></strong> を参照下さい。</p>
+<p><strong>リソース・マネージャ</strong> の利用方法は、チュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>リソース・マネージャ</strong> メニューは、 <strong><a href="https://cloud.oracle.com/resourcemanager/overview">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1053,9 +1059,9 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 <p><strong>リソース・マネージャ</strong> から <strong>スタック</strong> を作成する代表的な方法は、予め用意した <strong>Terraform</strong> スクリプトと <strong>スキーマ・ドキュメント</strong> をアーカイブ・圧縮した <strong>スタック</strong> ファイルを <strong>リソース・マネージャ</strong> に読み込ませ、メニュー形式の選択肢を自身の要望に沿って選択して作成する方法です。<br />
 この <strong>スタック</strong> ファイルは、様々な環境構築向けのものが <strong><a href="#5-5-マーケットプレイス">マーケットプレース</a></strong> から提供されており、その多くが無償で利用可能です。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm#concepts">ここ</a></strong> の <strong>スタック</strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm#concepts">ここ</a></strong> の <strong>スタック</strong> を参照してください。</p>
 
-<p><strong>スタック</strong> の作成方法は、チュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></strong> を参照下さい。</p>
+<p><strong>スタック</strong> の作成方法は、チュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>スタック</strong> メニューは、 <strong><a href="https://cloud.oracle.com/resourcemanager/stacks">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1067,7 +1073,7 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 
 <p><strong>スキーマ・ドキュメント</strong> は、 <strong><a href="#5-5-マーケットプレイス">マーケットプレース</a></strong> から提供される様々な環境構築向け <strong>スタック</strong> ファイルに予め含まれているため、通常これをそのまま利用するだけですが、自身の環境向けにカスタマイズした <strong>スタック</strong> ファイルを作成する場合は、その構文を理解する必要があります。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/terraformconfigresourcemanager_topic-schema.htm#top">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/terraformconfigresourcemanager_topic-schema.htm#top">ここ</a></strong> を参照してください。</p>
 
 <h2 id="5-5-マーケットプレイス">5-5. マーケットプレイス</h2>
 
@@ -1075,7 +1081,7 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 
 <p><strong>マーケットプレイス</strong> から提供される <strong>スタック</strong> ファイルや <strong>カスタム・イメージ</strong> は、オラクルはもちろんそのパートナーが提供するものも含まれ、その多くが無料で提供されます。これら <strong>マーケットプレイス</strong> から提供されるリソースを活用することで、OCI上にHPCシステムを構築する作業工数を大幅に削減することが可能で、<strong><a href="#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> でもこれらを活用する方法が紹介されています。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm">ここ</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>マーケットプレイス</strong> メニューは、 <strong><a href="https://cloud.oracle.com/marketplace/home">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1087,7 +1093,7 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 
 <p><strong><a href="#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> は、 <strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するためのソフトウェア等を含む、 <strong>カスタム・イメージ</strong> として提供されます。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm">ここ</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>カスタム・イメージ</strong> メニューは、 <strong><a href="https://cloud.oracle.com/compute/images">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1097,7 +1103,7 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 
 <p><strong>インスタンス構成</strong> は、同じ構成のインスタンスを複製することを可能とし、HPCシステムの構築・管理に必須の機能です。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#config">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#config">ここ</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>インスタンス構成</strong> メニューは、 <strong><a href="https://cloud.oracle.com/compute/instance-configs">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1107,7 +1113,7 @@ OCIリソースとしての <strong>クラスタ・ネットワーク</strong> �
 
 <p><strong>インスタンス・プール</strong> は、 <strong><a href="#5-7-インスタンス構成">インスタンス構成</a></strong> を指定して作成し、新たなインスタンスをこのインスタンス構成に基づいてデプロイします。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#Instance">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#Instance">ここ</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>インスタンス・プール</strong> メニューは、 <strong><a href="https://cloud.oracle.com/compute/instance-pools">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1185,11 +1191,11 @@ runcmd:
   - systemctl disable firewalld
 </code></pre></div></div>
 
-<p><strong>cloud-init</strong> によるOSカスタマイズは、基本的にインスタンスデプロイ後に一度だけ実施されるため、HPC/機械学習ワークロード向けベアメタルインスタンスをデプロイする際に必須となるNVMe SSDローカルディスク領域ファイルシステム作成や、 <strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 用ネットワークインターフェース設定を実施するのに最適です。</p>
+<p><strong>cloud-init</strong> は、基本的にインスタンスデプロイ後に一度だけ実施されるため、NVMe SSDローカルディスクにファイルシステムを作成する等の、HPC/機械学習ワークロード向けベアメタルインスタンスをデプロイする際に必須となるようなOS上のカスタマイズを実施するのに最適です。</p>
 
 <p><strong>cloud-init</strong> は、 <strong>クラスタ・ネットワーク</strong> 作成時に指定する <strong>インスタンス構成</strong> と紐づけることで、 <strong>クラスタ・ネットワーク</strong> に接続する全ての計算ノードやGPUノードに一斉にOSカスタマイズを適用することを可能にします。</p>
 
-<p><strong>cloud-init</strong> 公式ドキュメントは、 <strong><a href="https://cloudinit.readthedocs.io/en/latest/">ここ</a></strong> を参照下さい。</p>
+<p><strong>cloud-init</strong> 公式ドキュメントは、 <strong><a href="https://cloudinit.readthedocs.io/en/latest/">ここ</a></strong> を参照してください。</p>
 
 <h2 id="5-12-terraform">5-12. Terraform</h2>
 
@@ -1225,9 +1231,9 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 <span class="err">$</span>
 </code></pre></div></div>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm">ここ</a></strong> を参照してください。</p>
 
-<p><strong>Terraform</strong> CLIを使用してOCI上にリソースを自動構築する方法は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCI チュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></strong> を参照下さい。</p>
+<p><strong>Terraform</strong> CLIを使用してOCI上にリソースを自動構築する方法は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCI チュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></strong> を参照してください。</p>
 
 <h2 id="5-13-クラスタネットワーキングイメージ">5-13. クラスタネットワーキングイメージ</h2>
 
@@ -1243,7 +1249,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 <p>802.1X認証関連ユーティリティソフトウェアと <strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェアは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloud Agent</a></strong> のプラグインとしてこれらを提供する <strong>クラスタネットワーキングイメージ</strong> と、個別のRPMパッケージとして提供する <strong>クラスタネットワーキングイメージ</strong> が存在します。<br />
 また対応するシェイプは、GPUを搭載するかどうかでHPC <strong>クラスタネットワーキングイメージ</strong> とGPU <strong>クラスタネットワーキングイメージ</strong> が存在します。<br />
 またベースOSの <strong>Oracle Linux</strong> は、バージョン7系と8系の <strong>クラスタネットワーキングイメージ</strong> が存在します。<br />
-これらの組み合わせから自身の用途に合わせて <strong>クラスタネットワーキングイメージ</strong> を適切に選択する方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> を参照下さい。</p>
+これらの組み合わせから自身の用途に合わせて <strong>クラスタネットワーキングイメージ</strong> を適切に選択する方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> を参照してください。</p>
 
 <p><strong>マーケットプレイス</strong> の <strong>クラスタネットワーキングイメージ</strong> は、HPC <strong>クラスタネットワーキングイメージ</strong> は <strong><a href="https://cloud.oracle.com/marketplace/application/63394796/">ここ</a></strong> 、GPU <strong>クラスタネットワーキングイメージ</strong> は  <strong><a href="https://cloud.oracle.com/marketplace/application/134254210/">ここ</a></strong> をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
@@ -1254,9 +1260,9 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 <p><strong>GitHub</strong> 等で公開されている <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを基にOCI上にHPC/GPUクラスタを構築する場合、まずこの <strong>構成ソース・プロバイダ</strong> を作成し、これを介して  <strong>Terraform</strong> スクリプトを <strong>GitHub</strong> 等から取り込んで <strong>リソース・マネージャ</strong> に <strong>スタック</strong> を作成、この <strong>スタック</strong> を適用してデプロイします。</p>
 
 <p><strong><a href="#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> で紹介する <strong>Terraform</strong> スクリプトを使用する手法は、ソースコード管理サービスに <strong>GitHub</strong> を使用しますが、 <strong>GitHub</strong> にアクセスするための <strong>構成ソース・プロバイダ</strong> の作成は、 <strong>GitHub</strong> のアカウントを持っておりこのアカウントで <strong>Personal access token</strong> を発行しておく必要があります。<br />
-<strong>GitHub</strong> のアカウント作成は <strong><a href="https://github.com/signup?ref_cta=Sign+up&amp;ref_loc=header+logged+out&amp;ref_page=%2F&amp;source=header-home">ここ</a></strong> 、 <strong>Personal access token</strong> の発行は <strong><a href="https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">ここ</a></strong> を参照下さい。</p>
+<strong>GitHub</strong> のアカウント作成は <strong><a href="https://github.com/signup?ref_cta=Sign+up&amp;ref_loc=header+logged+out&amp;ref_page=%2F&amp;source=header-home">ここ</a></strong> 、 <strong>Personal access token</strong> の発行は <strong><a href="https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">ここ</a></strong> を参照してください。</p>
 
-<p><strong>構成ソース・プロバイダ</strong> の作成手順は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top">ここ</a></strong> を参照下さい。<br />
+<p><strong>構成ソース・プロバイダ</strong> の作成手順は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top">ここ</a></strong> を参照してください。<br />
 <strong>OCI HPCチュートリアル集</strong> で使用する <strong>構成ソース・プロバイダ</strong> は、以下で作成します。</p>
 
 <ul>
@@ -1265,7 +1271,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
   <li><strong>サーバーURL :</strong> https://github.com/</li>
 </ul>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/managingconfigurationsourceproviders.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/managingconfigurationsourceproviders.htm">ここ</a></strong> を参照してください。</p>
 
 <h2 id="5-15-インスタンスプリンシパル">5-15. インスタンス・プリンシパル</h2>
 
@@ -1276,9 +1282,9 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 このソリューションでは、クラスタ管理ノードを <strong>インスタンス・プリンシパル</strong> として <strong>動的グループ</strong> に登録（認証）し、このクラスタ管理ノードから発行するAPIコールを <strong>IAMポリシー</strong> で許可（認可）することで、クラスタ管理ノードからHPC/GPUクラスタのライフサイクルを動的に管理することを可能にします。<br />
 <strong><a href="#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> で紹介している <strong><a href="/ocitutorials/hpc/#5-9-クラスタオートスケーリング">クラスタオートスケーリング</a></strong> を使用するオンデマンドクラスタソリューションは、この仕組みを使用しています。</p>
 
-<p>このオンデマンドクラスタ実現のための <strong>インスタンス・プリンシパル</strong> 認証の設定方法は、 <strong><a href="#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> を参照下さい。</p>
+<p>このオンデマンドクラスタ実現のための <strong>インスタンス・プリンシパル</strong> 認証の設定方法は、 <strong><a href="#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> を参照してください。</p>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm">ここ</a></strong> を参照してください。</p>
 
 <h2 id="5-16-動的グループ">5-16. 動的グループ</h2>
 
@@ -1294,7 +1300,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
   <li>特定の <strong>タグ・キー</strong> でタグ付けされたインスタンスをメンバーとする</li>
 </ul>
 
-<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm">ここ</a></strong> を参照下さい。</p>
+<p>関連するOCI公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm">ここ</a></strong> を参照してください。</p>
 
 <p>OCIコンソールの <strong>動的グループ</strong> メニューは、 <strong><a href="https://cloud.oracle.com/identity/domains/">ここ</a></strong> をクリックして表示される <strong>ルートコンパートメント内のドメイン</strong> フィールドで利用している <strong>ドメイン</strong> を選択し、左側の <strong>動的グループ</strong> メニューを選択します。OCIへのログインを要求された場合は、ログインを完了して下さい。</p>
 
