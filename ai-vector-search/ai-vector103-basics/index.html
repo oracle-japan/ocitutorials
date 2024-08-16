@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-16T12:14:47+09:00">
+  <meta property="article:published_time" content="2024-08-16T16:15:17+09:00">
 
 
 
@@ -265,7 +265,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="103 : Oracle AI Vector Searchの基本操作を試してみよう">
     <meta itemprop="description" content="Oracle AI Vector Searchによるベクトル列を含んだテーブルの作成、ベクトル列でのDDLおよびDML操作、関数を使用した類似性検索、リレーショナル・データベース上でベクトル・データを扱った操作など、基本的なベクトル・データベースの操作が体験できます。">
-    <meta itemprop="datePublished" content="2024-08-16T12:14:47+09:00">
+    <meta itemprop="datePublished" content="2024-08-16T16:15:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -276,7 +276,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-ベクトルデータを扱ったddldmlを含んだsqlクエリの実行">1. ベクトル・データを扱ったDDL、DMLを含んだSQLクエリの実行</a></li><li><a href="#2-ベクトルの距離計算">2. ベクトルの距離計算</a></li><li><a href="#3-類似性検索">3. 類似性検索</a></li><li><a href="#4-属性フィルタリング">4. 属性フィルタリング</a></li><li><a href="#5-その他の距離関数">5. その他の距離関数</a></li><li><a href="#6-その他のベクトル関数">6. その他のベクトル関数</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-ベクトルデータを扱ったddldmlを含んだsqlクエリの実行">1. ベクトル・データを扱ったDDL、DMLを含んだSQLクエリの実行</a></li><li><a href="#2-ベクトルの距離計算">2. ベクトルの距離計算</a></li><li><a href="#3-類似性検索">3. 類似性検索</a></li><li><a href="#4-属性フィルタリング">4. 属性フィルタリング</a><ul><li><a href="#4-1-サンプル表の作成">4-1 サンプル表の作成</a></li><li><a href="#4-2-属性フィルタリングを使用した類似性検索">4-2 属性フィルタリングを使用した類似性検索</a></li></ul></li><li><a href="#5-その他の距離関数">5. その他の距離関数</a></li><li><a href="#6-その他のベクトル関数">6. その他のベクトル関数</a></li><li><a href="#参考資料">参考資料</a></li></ul>
             </nav>
           </aside>
         
@@ -289,12 +289,19 @@
 
 <p><strong>目次 :</strong></p>
 <ul>
+  <li><a href="#はじめに">はじめに</a></li>
   <li><a href="#1-ベクトルデータを扱ったddldmlを含んだsqlクエリの実行">1. ベクトル・データを扱ったDDL、DMLを含んだSQLクエリの実行</a></li>
   <li><a href="#2-ベクトルの距離計算">2. ベクトルの距離計算</a></li>
   <li><a href="#3-類似性検索">3. 類似性検索</a></li>
-  <li><a href="#4-属性フィルタリング">4. 属性フィルタリング</a></li>
+  <li><a href="#4-属性フィルタリング">4. 属性フィルタリング</a>
+    <ul>
+      <li><a href="#4-1-サンプル表の作成">4-1 サンプル表の作成</a></li>
+      <li><a href="#4-2-属性フィルタリングを使用した類似性検索">4-2 属性フィルタリングを使用した類似性検索</a></li>
+    </ul>
+  </li>
   <li><a href="#5-その他の距離関数">5. その他の距離関数</a></li>
   <li><a href="#6-その他のベクトル関数">6. その他のベクトル関数</a></li>
+  <li><a href="#参考資料">参考資料</a></li>
 </ul>
 
 <p><strong>前提条件 :</strong></p>
@@ -795,7 +802,7 @@ COMMIT;
 
 <h1 id="4-属性フィルタリング">4. 属性フィルタリング</h1>
 
-<p><strong>4-1 サンプル表の作成</strong></p>
+<h2 id="4-1-サンプル表の作成">4-1 サンプル表の作成</h2>
 
 <p>以下のようなイメージで、<a href="#anchor3">3. 類似性検索</a>で作成したVT1表からVT2表を作成し、各項目(形、色、サイズ)でベクトル・データをそれぞれマッピングする。
 <img src="2024-05-20-13-42-36.png" alt="" /></p>
@@ -921,7 +928,9 @@ GROUP  BY shape;
 
 <p><img src="2024-05-20-14-09-47.png" alt="" /></p>
 
-<p>**4-2 属性フィルタリングを使用した類似性検索</p>
+<p><br /></p>
+
+<h2 id="4-2-属性フィルタリングを使用した類似性検索">4-2 属性フィルタリングを使用した類似性検索</h2>
 
 <p><strong>ステップ1</strong></p>
 
@@ -945,7 +954,7 @@ FETCH FIRST 3 ROWS ONLY;
 
 <p><strong>ステップ2</strong></p>
 
-<p>以下のように、ベクトル(6,8)に最も近い10件のベクトル・データで、色が”Red”で、形が”Oval”であるものを検索します。
+<p>以下の画像のベクトルデータの中から、ベクトル(6, 8)に最も近い10件のベクトル・データで、色が”Red”で、形が”Oval”であるものを検索します。
 <img src="2024-05-20-14-39-02.png" alt="" /></p>
 
 <p>実行コマンド:</p>
@@ -960,6 +969,8 @@ FETCH FIRST 10 ROWS ONLY;
 <p>実行結果:</p>
 
 <p><img src="2024-05-20-14-39-56.png" alt="" /></p>
+
+<p>形がOval(楕円形)のベクトル・データのみ出力されています。</p>
 
 <p><br /></p>
 
@@ -1272,7 +1283,7 @@ SELECT vector_dimension_format(vector('[34.6, 77.8, 9]', 3, float32));
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-16T12:14:47+09:00">August 16, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-16T16:15:17+09:00">August 16, 2024</time></p>
 
       </footer>
 
