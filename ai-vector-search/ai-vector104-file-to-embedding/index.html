@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-16T16:15:17+09:00">
+  <meta property="article:published_time" content="2024-08-20T14:03:19+09:00">
 
 
 
@@ -265,7 +265,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう">
     <meta itemprop="description" content="23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
-    <meta itemprop="datePublished" content="2024-08-16T16:15:17+09:00">
+    <meta itemprop="datePublished" content="2024-08-20T14:03:19+09:00">
     
 
     <div class="page__inner-wrap">
@@ -416,26 +416,26 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p>SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザーで接続します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  sqlplus sys@localhost:1521/freepdb1 as sysdba
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">sqlplus</span> <span class="n">sys</span><span class="o">@</span><span class="n">localhost</span><span class="p">:</span><span class="mi">1521</span><span class="o">/</span><span class="n">freepdb1</span> <span class="k">as</span> <span class="n">sysdba</span>
 </code></pre></div></div>
 
 <p>ローカルのテストユーザー(docuser)を作成し、必要な権限を付与します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  -- 初回の実行では必要なし
-  -- drop user docuser cascade;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
+  <span class="c1">-- drop user docuser cascade;</span>
 
-  grant connect, ctxapp, unlimited tablespace, create credential, create procedure, create table to docuser identified by docuser;
-  grant execute on sys.dmutil_lib to docuser;
-  grant create mining model to docuser;
+  <span class="k">grant</span> <span class="k">connect</span><span class="p">,</span> <span class="n">ctxapp</span><span class="p">,</span> <span class="n">unlimited</span> <span class="n">tablespace</span><span class="p">,</span> <span class="k">create</span> <span class="n">credential</span><span class="p">,</span> <span class="k">create</span> <span class="k">procedure</span><span class="p">,</span> <span class="k">create</span> <span class="k">table</span> <span class="k">to</span> <span class="n">docuser</span> <span class="n">identified</span> <span class="k">by</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">grant</span> <span class="k">execute</span> <span class="k">on</span> <span class="n">sys</span><span class="p">.</span><span class="n">dmutil_lib</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">grant</span> <span class="k">create</span> <span class="n">mining</span> <span class="n">model</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
 
-  BEGIN
-    DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
-      host =&gt; '*',
-      ace =&gt; xs$ace_type(privilege_list =&gt; xs$name_list('connect'),
-                        principal_name =&gt; 'docuser',
-                        principal_type =&gt; xs_acl.ptype_db));
-  END;
-  / 
+  <span class="k">BEGIN</span>
+    <span class="n">DBMS_NETWORK_ACL_ADMIN</span><span class="p">.</span><span class="n">APPEND_HOST_ACE</span><span class="p">(</span>
+      <span class="k">host</span> <span class="o">=&gt;</span> <span class="s1">'*'</span><span class="p">,</span>
+      <span class="n">ace</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">ace_type</span><span class="p">(</span><span class="n">privilege_list</span> <span class="o">=&gt;</span> <span class="n">xs</span><span class="err">$</span><span class="n">name_list</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">),</span>
+                        <span class="n">principal_name</span> <span class="o">=&gt;</span> <span class="s1">'docuser'</span><span class="p">,</span>
+                        <span class="n">principal_type</span> <span class="o">=&gt;</span> <span class="n">xs_acl</span><span class="p">.</span><span class="n">ptype_db</span><span class="p">));</span>
+  <span class="k">END</span><span class="p">;</span>
+  <span class="o">/</span> 
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -446,7 +446,7 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p>サーバー上にローカルディレクトリを作成します(サンプルPDFドキュメント格納用)。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  create or replace directory VEC_DUMP as '/home/oracle/data/vec_dump';
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">create</span> <span class="k">or</span> <span class="k">replace</span> <span class="n">directory</span> <span class="n">VEC_DUMP</span> <span class="k">as</span> <span class="s1">'/home/oracle/data/vec_dump'</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -456,8 +456,8 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p>必要な権限を付与します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  grant read, write on directory VEC_DUMP to docuser;
-  commit;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">grant</span> <span class="k">read</span><span class="p">,</span> <span class="k">write</span> <span class="k">on</span> <span class="n">directory</span> <span class="n">VEC_DUMP</span> <span class="k">to</span> <span class="n">docuser</span><span class="p">;</span>
+  <span class="k">commit</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -468,29 +468,29 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p>Oracle Databaseにテストユーザーとして接続します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  sqlplus docuser/docuser@freepdb1
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">sqlplus</span> <span class="n">docuser</span><span class="o">/</span><span class="n">docuser</span><span class="o">@</span><span class="n">freepdb1</span>
 </code></pre></div></div>
 
 <p>SQL<em>Plusの出力をよりわかりやすいように、SQL</em>Plusの環境設定を行います。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  SET ECHO ON
-  SET FEEDBACK 1
-  SET NUMWIDTH 10
-  SET LINESIZE 80
-  SET TRIMSPOOL ON
-  SET TAB OFF
-  SET PAGESIZE 10000
-  SET LONG 10000
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SET</span> <span class="n">ECHO</span> <span class="k">ON</span>
+  <span class="k">SET</span> <span class="n">FEEDBACK</span> <span class="mi">1</span>
+  <span class="k">SET</span> <span class="n">NUMWIDTH</span> <span class="mi">10</span>
+  <span class="k">SET</span> <span class="n">LINESIZE</span> <span class="mi">80</span>
+  <span class="k">SET</span> <span class="n">TRIMSPOOL</span> <span class="k">ON</span>
+  <span class="k">SET</span> <span class="n">TAB</span> <span class="k">OFF</span>
+  <span class="k">SET</span> <span class="n">PAGESIZE</span> <span class="mi">10000</span>
+  <span class="k">SET</span> <span class="n">LONG</span> <span class="mi">10000</span>
 </code></pre></div></div>
 
 <p>リレーショナルテーブル(<code class="language-plaintext highlighter-rouge">documentation_tab</code>)を作成し、そのテーブル内にPDFドキュメントを格納します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  -- 初回の実行では必要なし
-  -- drop table documentation_tab purge;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
+  <span class="c1">-- drop table documentation_tab purge;</span>
 
-  CREATE TABLE documentation_tab (id number, data blob);
-  INSERT INTO documentation_tab values(1, to_blob(bfilename('VEC_DUMP', 'corporate-governance-202209-jp.pdf')));
-  commit;
+  <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">documentation_tab</span> <span class="p">(</span><span class="n">id</span> <span class="n">number</span><span class="p">,</span> <span class="k">data</span> <span class="nb">blob</span><span class="p">);</span>
+  <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">documentation_tab</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">to_blob</span><span class="p">(</span><span class="n">bfilename</span><span class="p">(</span><span class="s1">'VEC_DUMP'</span><span class="p">,</span> <span class="s1">'corporate-governance-202209-jp.pdf'</span><span class="p">)));</span>
+  <span class="k">commit</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -502,7 +502,7 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p><code class="language-plaintext highlighter-rouge">documentation_tab</code>テーブルの<code class="language-plaintext highlighter-rouge">data</code>列に格納されているLOBデータの長さをバイト単位で取得します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  SELECT dbms_lob.getlength(t.data) from documentation_tab t;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">dbms_lob</span><span class="p">.</span><span class="n">getlength</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">t</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -522,7 +522,7 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p><code class="language-plaintext highlighter-rouge">UTL_TO_TEXT</code>を実行してPDFドキュメントをテキスト形式に変換します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  SELECT dbms_vector_chain.utl_to_text(dt.data) from documentation_tab dt;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">)</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -544,14 +544,14 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p>精度のよい検索結果を得られるために、このチュートリアルでは、<code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は<a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240">こちら</a>をご参照ください。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  {"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  {"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}
 </code></pre></div></div>
 
 <p><code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>を実行して、テキストドキュメントをチャンクに分割します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  -- （オプション）デフォルトのパラメータで実行する。
-  -- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;
-  SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) ct;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- （オプション）デフォルトのパラメータで実行する。</span>
+  <span class="c1">-- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;</span>
+  <span class="k">SELECT</span> <span class="n">ct</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">ct</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -601,24 +601,24 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 <p>チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
 冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  -- 初回の実行では必要なし
-  -- exec dbms_vector.drop_credential('OCI_CRED');
-  declare
-  jo json_object_t;
-  begin
-  -- create an OCI credential
-  jo := json_object_t();
-  jo.put('user_ocid', 'user ocid value');
-  jo.put('tenancy_ocid', 'tenancy ocid value');
-  jo.put('compartment_ocid', 'compartment ocid value');
-  jo.put('private_key', 'private key value');
-  jo.put('fingerprint', 'fingerprint value');
-  dbms_output.put_line(jo.to_string);
-  dbms_vector.create_credential(
-    credential_name =&gt; 'OCI_CRED',
-    params          =&gt; json(jo.to_string));
-  end;
-  /
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
+  <span class="c1">-- exec dbms_vector.drop_credential('OCI_CRED');</span>
+  <span class="k">declare</span>
+  <span class="n">jo</span> <span class="n">json_object_t</span><span class="p">;</span>
+  <span class="k">begin</span>
+  <span class="c1">-- create an OCI credential</span>
+  <span class="n">jo</span> <span class="p">:</span><span class="o">=</span> <span class="n">json_object_t</span><span class="p">();</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'user_ocid'</span><span class="p">,</span> <span class="s1">'user ocid value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'tenancy_ocid'</span><span class="p">,</span> <span class="s1">'tenancy ocid value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'compartment_ocid'</span><span class="p">,</span> <span class="s1">'compartment ocid value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'private_key'</span><span class="p">,</span> <span class="s1">'private key value'</span><span class="p">);</span>
+  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'fingerprint'</span><span class="p">,</span> <span class="s1">'fingerprint value'</span><span class="p">);</span>
+  <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">);</span>
+  <span class="n">dbms_vector</span><span class="p">.</span><span class="n">create_credential</span><span class="p">(</span>
+    <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span>
+    <span class="n">params</span>          <span class="o">=&gt;</span> <span class="n">json</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">));</span>
+  <span class="k">end</span><span class="p">;</span>
+  <span class="o">/</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -628,13 +628,13 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p>OCI GenAIサービスを利用するためのパラメータを設定します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  var embed_genai_params clob;
-  exec :embed_genai_params := '{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}';
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">var</span> <span class="n">embed_genai_params</span> <span class="k">clob</span><span class="p">;</span>
+  <span class="k">exec</span> <span class="p">:</span><span class="n">embed_genai_params</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>上記の設定を検証してみます。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  select et.* from dbms_vector_chain.utl_to_embeddings('hello', json(:embed_genai_params)) et;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">json</span><span class="p">(:</span><span class="n">embed_genai_params</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -653,10 +653,17 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
   <p>こちらのSQL文は単なく検索処理で、変換されたベクトル情報はテーブルに保存されません。</p>
 </blockquote>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  SELECT et.* from 
-  documentation_tab dt,
-  dbms_vector_chain.utl_to_embeddings(dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')), json(:embed_genai_params)) et;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> 
+  <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+  <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span> <span class="n">json</span><span class="p">(:</span><span class="n">embed_genai_params</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
 </code></pre></div></div>
+
+<blockquote>
+  <p>注意
+Oracle Database 23aiのバージョンが23.04.xxxの場合、”overlap”: “20%”と指定してください。</p>
+
+  <p>23.05以降の場合は、上記のSQL同様”overlap”: “20”と指定します。</p>
+</blockquote>
 
 <p>出力:</p>
 
@@ -670,25 +677,25 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
   <p>注意：処理する件数によって時間がかかる場合があります。</p>
 </blockquote>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  create table doc_chunks as
-  with t_chunk as (
-  select dt.id as doc_id, et.chunk_id as embed_id, et.chunk_data as embed_data
-  from
-    documentation_tab dt,
-      dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et
-  where dt.id = 1),
-  t_embed as (
-  select dt.id as doc_id, rownum as embed_id, to_vector(t.column_value) as embed_vector
-  from
-    documentation_tab dt,
-    dbms_vector_chain.utl_to_embeddings(
-      dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')), json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t
-  where dt.id = 1)
-  select t_chunk.doc_id doc_id, t_chunk.embed_id as embed_id, t_chunk.embed_data as embed_data, t_embed.embed_vector as embed_vector
-  from t_chunk
-  join t_embed on t_chunk.doc_id = t_embed.doc_id and t_chunk.embed_id = t_embed.embed_id;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">create</span> <span class="k">table</span> <span class="n">doc_chunks</span> <span class="k">as</span>
+  <span class="k">with</span> <span class="n">t_chunk</span> <span class="k">as</span> <span class="p">(</span>
+  <span class="k">select</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_data</span> <span class="k">as</span> <span class="n">embed_data</span>
+  <span class="k">from</span>
+    <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> 
+      <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">chunk_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.chunk_id'</span><span class="p">,</span> <span class="n">chunk_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.chunk_data'</span><span class="p">))</span> <span class="n">et</span>
+  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
+  <span class="n">t_embed</span> <span class="k">as</span> <span class="p">(</span>
+  <span class="k">select</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">rownum</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">)</span> <span class="k">as</span> <span class="n">embed_vector</span>
+  <span class="k">from</span>
+    <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+    <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span>
+      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> 
+      <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span>
+  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">select</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">doc_id</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_data</span> <span class="k">as</span> <span class="n">embed_data</span><span class="p">,</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">embed_vector</span> <span class="k">as</span> <span class="n">embed_vector</span>
+  <span class="k">from</span> <span class="n">t_chunk</span>
+  <span class="k">join</span> <span class="n">t_embed</span> <span class="k">on</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">doc_id</span> <span class="o">=</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">doc_id</span> <span class="k">and</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_id</span> <span class="o">=</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">embed_id</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -704,16 +711,16 @@ Tera Term等のターミナルソフトを使い、仮想マシンに接続し�
 
 <p>ベクトル検索を実行します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  SELECT doc_id, embed_id, embed_data
-  FROM doc_chunks
-  ORDER BY vector_distance(embed_vector , (SELECT to_vector(et.embed_vector) embed_vector
-  FROM
-  dbms_vector_chain.utl_to_embeddings('コーポレート・ガバナンスに関する基本的な考え方', JSON(:embed_genai_params)) t,
-  JSON_TABLE ( t.column_value, '$[*]'
-  COLUMNS (
-  embed_id NUMBER PATH '$.embed_id', embed_data VARCHAR2 ( 4000 ) PATH '$.embed_data', embed_vector CLOB PATH '$.embed_vector'
-  ))et), COSINE)
-  FETCH EXACT FIRST 4 ROWS ONLY;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">embed_data</span>
+  <span class="k">FROM</span> <span class="n">doc_chunks</span>
+  <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">vector_distance</span><span class="p">(</span><span class="n">embed_vector</span> <span class="p">,</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="n">embed_vector</span>
+  <span class="k">FROM</span>
+  <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'コーポレート・ガバナンスに関する基本的な考え方'</span><span class="p">,</span> <span class="n">JSON</span><span class="p">(:</span><span class="n">embed_genai_params</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span>
+  <span class="n">JSON_TABLE</span> <span class="p">(</span> <span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span>
+  <span class="n">COLUMNS</span> <span class="p">(</span>
+  <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span> <span class="n">embed_data</span> <span class="n">VARCHAR2</span> <span class="p">(</span> <span class="mi">4000</span> <span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span> <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span>
+  <span class="p">))</span><span class="n">et</span><span class="p">),</span> <span class="n">COSINE</span><span class="p">)</span>
+  <span class="k">FETCH</span> <span class="n">EXACT</span> <span class="k">FIRST</span> <span class="mi">4</span> <span class="k">ROWS</span> <span class="k">ONLY</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -874,7 +881,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
 <p>精度のよい検索結果を得られるために、このチュートリアルでは、<code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は<a href="https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240">こちら</a>をご参照ください。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  {"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="p">{</span><span class="nv">"max"</span><span class="p">:</span> <span class="nv">" 400"</span><span class="p">,</span> <span class="nv">"overlap"</span><span class="p">:</span> <span class="nv">"20"</span><span class="p">,</span> <span class="nv">"language"</span><span class="p">:</span> <span class="nv">"JAPANESE"</span><span class="p">,</span> <span class="nv">"normalize"</span><span class="p">:</span> <span class="nv">"all"</span><span class="p">}</span>
 </code></pre></div></div>
 
 <p><code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>を実行して、テキストドキュメントをチャンクに分割します。</p>
@@ -1043,7 +1050,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-16T16:15:17+09:00">August 16, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-20T14:03:19+09:00">August 20, 2024</time></p>
 
       </footer>
 
