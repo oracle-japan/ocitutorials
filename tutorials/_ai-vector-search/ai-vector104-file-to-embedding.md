@@ -421,7 +421,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
   from
     documentation_tab dt,
       dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et
+      json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et
   where dt.id = 1),
   t_embed as (
   select dt.id as doc_id, rownum as embed_id, to_vector(t.column_value) as embed_vector
