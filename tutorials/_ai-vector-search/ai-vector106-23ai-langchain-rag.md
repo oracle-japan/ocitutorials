@@ -389,6 +389,7 @@ from langchain_community.embeddings import OCIGenAIEmbeddings
 embeddings = OCIGenAIEmbeddings(
     model_id="cohere.embed-multilingual-v3.0",
     service_endpoint="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com",
+    # compartment_idはご自身が利用されているコンパートメントのOCIDを指定してください
     compartment_id="ocid1.compartment.oc1..aaaaaaaxxxxxxx",
 )
 ```
