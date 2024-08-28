@@ -29,106 +29,37 @@ OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズム�
 
 **前提条件 :**
 + OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します）
++ OCIチュートリアル[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。
 
 **注意 :**
 + ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。
 
 <br>
 
-# 1. IAMポリシーの作成
 
-Vaultサービスに格納された暗号鍵を指定してObject Storageを作成するには、Object StorageがVaultサービスにアクセスする権限が必要です。
-Object Storageを作成するコンパートメントにて、以下IAMポリシーを作成します。
+<br>
+
+# 1. Vaultの準備
+OCIチュートリアル[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。
+
+<br>
+
+# 2. IAMポリシーの作成
+Vaultサービスに格納された暗号鍵を指定してObject Storageを作成するには、Object StorageがVaultサービスにアクセスする権限が必要です。 Object Storageを作成するコンパートメントにて、以下IAMポリシーを作成します。
+
 
 ```
 allow service objectstorage-<リージョン名> to use keys in compartment <コンパートメント名>
+```
 
 例）大阪リージョンの場合
+```
 allow service objectstorage-ap-osaka-1 to use keys in compartment <コンパートメント名>
 ```
 
 <br>
 
-# 2. Vaultの作成
-
-OCIコンソール → アイデンティティとセキュリティ → ボールト → 「ボールトの作成」ボタンをクリックします。
-
- ![画面ショット1](vault-oss01.png)
-
-
-Vaultの作成画面で任意の名前を入力し、「ボールトの作成」ボタンをクリックします。
- 
- ![画面ショット2](vault-oss02.png)
-
-1~2分でボールトの作成が完了し、ステータスがアクティブになります。
-
-<br>
-
-# 3. 暗号鍵の作成とインポート
-
-作成したボールトの詳細画面の「キーの作成」ボタンをクリックします。
-
- ![画面ショット3](vault-oss03.png)
-
-「キーの作成」画面にて任意の名前を入力し、「外部キーのインポート」にチェックを入れます。
-
-※キーのシェイプ、アルゴリズムはデフォルトのAES, 256ビットのまま進めます。
- 
- ![画面ショット4](vault-oss04.png)
-
-
-ラッピング・キー情報が表示されるので、「公開ラッピング・キー」をコピーします。
-
- ![画面ショット5](vault-oss05.png)
-
-Cloud Shellなど、OpenSSLがインストールされている環境で公開ラッピング・キーをpemファイルとして保存します。
-
-```
-$ vi publickey.pem
------BEGIN PUBLIC KEY-----
-MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAtaBn6sRcgMK8n+pN7KMj
-tDXNWOBWi07dYu4yVucAD/HXd2PiE1b9EvwlIQvY1p6W0zD4ZQPA+jKXOmJ/Fpns
-XS7MhSOuzeTtmQdg9lovzETP8oAVXvXYNtIZkywzOvcH62GyVJdNwP7WtNVEeYGV
-MC2NoqSde5dn0tI64PQkLwyJSB6AMX2SGMw85DKXr/6oXhGXbZtulct3H/veD5yu
-R9LFWDjfGh/TULLyHeg+4c75z8HSCL+1sv00ZHyktC+9+eym7L7Po1L/61poGxAQ
-YbhvUKx2W6dTQBvzYKQ4tWMkFDIidNHQV3GnqTDA+cVKJAYVixh2HF6fR0P047vd
-vQsW3e7twwC+gHYYTDL/NZvpbRyfH4lakEVtVhQM6bv2DAl6sDyXRxz/BzgOinga
-S+2PmagF3AfF3cwhNsStC97hbGmVCk0fPlhvxsG977qD/sF+Aszq5vwWvAvAKz/C
-U/y0zQuSClX6+JCsR2dZY6PTxk6YWBjugVVXQXm8xCUSmxKwCP36YMuLQkw5JcSL
-JB5Zfw7If1ewP2Lqk7DbZr77dO5QqlOYTf58Uk8hAMMQVSni+UGDJQzXtNbeaxk4
-PtoiGjDvp38b9VzAH+/w0bPWCyK55eqvtHqjCFGHtGuMbmjv1yd+gmDHv032ukWG
-gpJ+zgur/GpC2rR+891hpxcCAwEAAQ==
------END PUBLIC KEY-----
-```
-
-以下コマンドで暗号鍵を作成し、公開ラッピング・キーで暗号鍵をラッピングします。
-
-```
-$ openssl rand 32 > aes_key.bin
-$ openssl pkeyutl -encrypt -in "aes_key.bin" -inkey "publickey.pem" -pubin -out "wrappedkey.bin" -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
-```
-ラッピングされた暗号鍵が「wrappedkey.bin」として出力されるので、ファイルをクライアント端末にダウンロードします。
-
-※Cloud Shellの場合、ターミナル右上のメニュー → ダウンロードから、ホームディレクトリにある任意のファイルをダウンロードすることが出来ます。
- 
- ![画面ショット11](vault-oss11.png)
-
-
-
-「キーの作成」画面に戻り、外部キーのデータ・ソースから、「wrappedkey.bin」を選択し、「キーの作成」ボタンをクリックします。
-
-※ラッピング・アルゴリズムはデフォルトの「RSA_OAEP_SHA256」のまま進めます。
- 
- ![画面ショット6](vault-oss06.png)
-
-
-以上の手順で暗号鍵の作成とインポートは完了です。
-インポートした暗号鍵は「マスター暗号化キー」としてOCI Vaultサービスに格納されます。
-
-<br>
-
-
-# 4. Object Storageの作成
+# 3. Object Storageの作成
 
 OCIコンソール → ストレージ → オブジェクト・ストレージとアーカイブ・ストレージ → バケット → 「バケットの作成」ボタンをクリックします。
 
@@ -152,5 +83,4 @@ OCIコンソール → ストレージ → オブジェクト・ストレージ�
  ![画面ショット10](vault-oss10.png)
 
 キーのローテーション時に、再度公開ラッピング・キーを使用して新しい暗号鍵をラッピングし、インポートすることも可能です。
-
 
