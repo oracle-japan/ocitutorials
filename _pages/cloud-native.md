@@ -149,3 +149,8 @@ lastmod: "2022-04-06"
 
 + **[Oracle Transaction Manager for Microservicesハンズオン](/ocitutorials/cloud-native/microtx-for-beginners/)**  
     Oracleが提供する分散トランザクションマネージャーであるOracle Transaction Manager for Microservices(MicroTx)を体験していただけるチュートリアルです。【所要時間:約2時間】
+
+# 10. OCI Cacheチュートリアル
+
++ **[OCI Cacheを使ってみよう](/ocitutorials/cloud-native/ocicache-for-beginners/)**  
+    Oracleが提供するフルマネージドのRedisサービスであるOCI Cacheを体験していただけるチュートリアルです。【所要時間:約1時間】
