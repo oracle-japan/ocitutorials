@@ -27,6 +27,7 @@ OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズム�
 
 **前提条件 :**
 + OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します）
++ OCIチュートリアル[Vaultを作成する](https://oracle-japan.github.io/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。
 
 **注意 :**
 + ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。
@@ -34,11 +35,8 @@ OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズム�
 
 <br>
 
-# 1. Vaultの作成
-
-OCIチュートリアル[Vaultサービスを使ってObject Storageをユーザー管理の暗号鍵で暗号化する](https://oracle-japan.github.io/ocitutorials/id-security/vault-objectstorage/)の手順2と手順3を参考にVaultと暗号鍵を作成し、インポートしてください。
-
-前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。
+# 1. Vaultの準備
+OCIチュートリアル[Vaultを作成する](https://oracle-japan.github.io/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。
 
 <br>
 
