@@ -132,13 +132,13 @@ APIキー・ペアの生成（デフォルト）を選択し、秘密キーの�
 
 SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザーで接続します。
 
-  ```
+  ```sql
   sqlplus sys@localhost:1521/freepdb1 as sysdba
   ```
 
 ローカルのテストユーザー(docuser)を作成し、必要な権限を付与します。
 
-  ```
+  ```sql
   -- 初回の実行では必要なし
   -- drop user docuser cascade;
 
@@ -165,7 +165,7 @@ SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザー�
 
 サーバー上にローカルディレクトリを作成します(サンプルPDFドキュメント格納用)。
 
-  ```
+  ```sql
   create or replace directory VEC_DUMP as '/home/oracle/data/vec_dump';
   ```
 
@@ -177,7 +177,7 @@ SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザー�
 
 必要な権限を付与します。
 
-  ```
+  ```sql
   grant read, write on directory VEC_DUMP to docuser;
   commit;
   ```
@@ -191,13 +191,13 @@ SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザー�
 
 Oracle Databaseにテストユーザーとして接続します。
 
-  ```
+  ```sql
   sqlplus docuser/docuser@freepdb1
   ```
 
 SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定を行います。
 
-  ```
+  ```sql
   SET ECHO ON
   SET FEEDBACK 1
   SET NUMWIDTH 10
@@ -210,7 +210,7 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 
 リレーショナルテーブル(`documentation_tab`)を作成し、そのテーブル内にPDFドキュメントを格納します。
 
-  ```
+  ```sql
   -- 初回の実行では必要なし
   -- drop table documentation_tab purge;
 
@@ -229,7 +229,7 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 
 `documentation_tab`テーブルの`data`列に格納されているLOBデータの長さをバイト単位で取得します。
 
-  ```
+  ```sql
   SELECT dbms_lob.getlength(t.data) from documentation_tab t;
   ```
 
@@ -251,7 +251,7 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 
 `UTL_TO_TEXT`を実行してPDFドキュメントをテキスト形式に変換します。
 
-  ```
+  ```sql
   SELECT dbms_vector_chain.utl_to_text(dt.data) from documentation_tab dt;
   ```
 
@@ -276,15 +276,15 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
  精度のよい検索結果を得られるために、このチュートリアルでは、`UTL_TO_CHUNKS`のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は[こちら](https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240)をご参照ください。
 
   ```
-  {"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}
+  {"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}
   ```
 
 `UTL_TO_CHUNKS`を実行して、テキストドキュメントをチャンクに分割します。
 
-  ```
+  ```sql
   -- （オプション）デフォルトのパラメータで実行する。
   -- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;
-  SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')) ct;
+  SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) ct;
   ```
 
   出力:
@@ -335,7 +335,7 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
 冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。
 
-  ```
+  ```sql
   -- 初回の実行では必要なし
   -- exec dbms_vector.drop_credential('OCI_CRED');
   declare
@@ -364,14 +364,14 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
 
 OCI GenAIサービスを利用するためのパラメータを設定します。
 
-  ```
+  ```sql
   var embed_genai_params clob;
   exec :embed_genai_params := '{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}';
   ```
 
 上記の設定を検証してみます。
 
-  ```
+  ```sql
   select et.* from dbms_vector_chain.utl_to_embeddings('hello', json(:embed_genai_params)) et;
   ```
 
@@ -390,11 +390,17 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
 
   > こちらのSQL文は単なく検索処理で、変換されたベクトル情報はテーブルに保存されません。
 
-  ```
+  ```sql
   SELECT et.* from 
   documentation_tab dt,
-  dbms_vector_chain.utl_to_embeddings(dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')), json(:embed_genai_params)) et;
+  dbms_vector_chain.utl_to_embeddings(dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')), json(:embed_genai_params)) et;
   ```
+
+  > 注意
+  > Oracle Database 23aiのバージョンが23.04.xxxの場合、"overlap": "20%"と指定してください。
+  >
+  > 23.05以降の場合は、上記のSQL同様"overlap": "20"と指定します。
+
 
   出力:
 
@@ -408,14 +414,14 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
 
   >  注意：処理する件数によって時間がかかる場合があります。
 
-  ```
+  ```sql
   create table doc_chunks as
   with t_chunk as (
   select dt.id as doc_id, et.chunk_id as embed_id, et.chunk_data as embed_data
   from
     documentation_tab dt,
       dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et
+      json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et
   where dt.id = 1),
   t_embed as (
   select dt.id as doc_id, rownum as embed_id, to_vector(t.column_value) as embed_vector
@@ -423,7 +429,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
     documentation_tab dt,
     dbms_vector_chain.utl_to_embeddings(
       dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20%", "language": "JAPANESE", "normalize": "all"}')), json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t
+      json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')), json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t
   where dt.id = 1)
   select t_chunk.doc_id doc_id, t_chunk.embed_id as embed_id, t_chunk.embed_data as embed_data, t_embed.embed_vector as embed_vector
   from t_chunk
@@ -444,7 +450,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
 
  ベクトル検索を実行します。
 
-  ```
+  ```sql
   SELECT doc_id, embed_id, embed_data
   FROM doc_chunks
   ORDER BY vector_distance(embed_vector , (SELECT to_vector(et.embed_vector) embed_vector
@@ -503,10 +509,19 @@ Database Actionsからのユーザー作成方法については、[101: ADBイ�
 
 Database Actionsの開発カテゴリのSQLのツールにて以下のように設定し、DOCUSERに対して必要な権限を付与します。
   ```sql
-  grant connect, ctxapp, create credential, dwrole to docuser;
+  grant connect, ctxapp, dwrole to docuser;
   grant execute on DBMS_CLOUD_AI to docuser;
   grant execute on DBMS_VECTOR to docuser;
   grant execute on DBMS_VECTOR_CHAIN to docuser;
+  
+  BEGIN
+    DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
+      host => '*',
+      ace => xs$ace_type(privilege_list => xs$name_list('connect'),
+                        principal_name => 'docuser',
+                        principal_type => xs_acl.ptype_db));
+  END;
+  /
   ```
 
   出力:
@@ -547,7 +562,7 @@ Database ActionsにDOCUSERユーザーとして接続します。
   ```
 
 PDFドキュメントをDBMS_CLOUD.GET_OBJECTでBLOBとしてGETし、documentation_tabテーブル内に格納します。
-object_uriには前に手順でメモをしたURLパスを入力します。
+object_uriには前に手順でメモをしたURIパスを入力します。
 
  ```sql
     DECLARE
@@ -559,6 +574,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
     INSERT INTO documentation_tab values(1, l_blob);
     commit;
     END;
+    /
  ```
 
   出力:
@@ -616,7 +632,7 @@ object_uriには前に手順でメモをしたURLパスを入力します。
 
  精度のよい検索結果を得られるために、このチュートリアルでは、`UTL_TO_CHUNKS`のデフォルトのパラメータを以下のように調整しました。チャンクについての詳細説明は[こちら](https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/dbms_vector_chain1.html#GUID-4E145629-7098-4C7C-804F-FC85D1F24240)をご参照ください。
 
-  ```
+  ```sql
   {"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}
   ```
 

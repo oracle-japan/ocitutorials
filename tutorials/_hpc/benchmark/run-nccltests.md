@@ -1,5 +1,5 @@
 ---
-title: "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8版）"
+title: "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）"
 excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
 order: "2140"
 layout: single
@@ -17,9 +17,9 @@ header:
 
 以上より、本ドキュメントで解説する **NCCL Tests** の実行は、以下の手順を経て行います。
 
-- コンテナ環境構築
-- **NCCL Tests** ビルド
-- **NCCL Tests** 実行
+1. コンテナ環境構築
+2. **NCCL Tests** ビルド
+3. **NCCL Tests** 実行
 
 本ドキュメントでは、以下の環境で **NCCL Tests** の **All-Reduce** 通信性能をコンテナ環境から計測し、10 GiBのメッセージサイズで **219 GB/s** の帯域（busbw）性能が出ています。
 
@@ -52,10 +52,10 @@ header:
 
 以上より、本章で実施するコンテナ環境構築は、以下の手順を経て行います。
 
-- コンテナ間SSH接続環境構築
-- MPI実行を妨げる設定の修正
-- コンテナ起動
-- sshdインストール・起動
+1. コンテナ間SSH接続環境構築
+2. MPI実行を妨げる設定の修正
+3. コンテナ起動
+ sshdインストール・起動
 
 ## 1-1. コンテナ間SSH接続環境構築
 
@@ -143,22 +143,22 @@ $ mpirun --allow-run-as-root -np 2 -H inst-xxxxx-gpu4-ol89:1,inst-yyyyy-gpu4-ol8
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
-#  Rank  0 Group  0 Pid    417 on inst-xxxxx-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid    418 on inst-xxxxx-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid    419 on inst-xxxxx-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid    420 on inst-xxxxx-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid    421 on inst-xxxxx-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid    422 on inst-xxxxx-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid    425 on inst-xxxxx-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid    429 on inst-xxxxx-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
-#  Rank  8 Group  0 Pid    371 on inst-yyyyy-comp device  0 [0x0f] NVIDIA A100-SXM4-40GB
-#  Rank  9 Group  0 Pid    372 on inst-yyyyy-comp device  1 [0x15] NVIDIA A100-SXM4-40GB
-#  Rank 10 Group  0 Pid    373 on inst-yyyyy-comp device  2 [0x51] NVIDIA A100-SXM4-40GB
-#  Rank 11 Group  0 Pid    374 on inst-yyyyy-comp device  3 [0x54] NVIDIA A100-SXM4-40GB
-#  Rank 12 Group  0 Pid    375 on inst-yyyyy-comp device  4 [0x8d] NVIDIA A100-SXM4-40GB
-#  Rank 13 Group  0 Pid    376 on inst-yyyyy-comp device  5 [0x92] NVIDIA A100-SXM4-40GB
-#  Rank 14 Group  0 Pid    377 on inst-yyyyy-comp device  6 [0xd6] NVIDIA A100-SXM4-40GB
-#  Rank 15 Group  0 Pid    380 on inst-yyyyy-comp device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  0 Group  0 Pid    417 on inst-xxxxx-gpu4-ol89 device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid    418 on inst-xxxxx-gpu4-ol89 device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid    419 on inst-xxxxx-gpu4-ol89 device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid    420 on inst-xxxxx-gpu4-ol89 device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid    421 on inst-xxxxx-gpu4-ol89 device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid    422 on inst-xxxxx-gpu4-ol89 device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid    425 on inst-xxxxx-gpu4-ol89 device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid    429 on inst-xxxxx-gpu4-ol89 device  7 [0xda] NVIDIA A100-SXM4-40GB
+#  Rank  8 Group  0 Pid    371 on inst-yyyyy-gpu4-ol89 device  0 [0x0f] NVIDIA A100-SXM4-40GB
+#  Rank  9 Group  0 Pid    372 on inst-yyyyy-gpu4-ol89 device  1 [0x15] NVIDIA A100-SXM4-40GB
+#  Rank 10 Group  0 Pid    373 on inst-yyyyy-gpu4-ol89 device  2 [0x51] NVIDIA A100-SXM4-40GB
+#  Rank 11 Group  0 Pid    374 on inst-yyyyy-gpu4-ol89 device  3 [0x54] NVIDIA A100-SXM4-40GB
+#  Rank 12 Group  0 Pid    375 on inst-yyyyy-gpu4-ol89 device  4 [0x8d] NVIDIA A100-SXM4-40GB
+#  Rank 13 Group  0 Pid    376 on inst-yyyyy-gpu4-ol89 device  5 [0x92] NVIDIA A100-SXM4-40GB
+#  Rank 14 Group  0 Pid    377 on inst-yyyyy-gpu4-ol89 device  6 [0xd6] NVIDIA A100-SXM4-40GB
+#  Rank 15 Group  0 Pid    380 on inst-yyyyy-gpu4-ol89 device  7 [0xda] NVIDIA A100-SXM4-40GB
 #
 #                                                              out-of-place                       in-place          
 #       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong

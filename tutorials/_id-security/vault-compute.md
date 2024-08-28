@@ -28,13 +28,20 @@ OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズム�
 
 **前提条件 :**
 + OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します）
++ OCIチュートリアル[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。
 
 **注意 :**
 + ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。
 
 <br>
 
-# 1. IAMポリシーの作成
+
+# 1. Vaultの準備
+OCIチュートリアル[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。
+
+<br>
+
+# 2. IAMポリシーの作成
 
 Vaultサービスに格納された暗号鍵を指定してブート・ボリュームを作成するには、ブート・ボリュームがVaultサービスにアクセスする権限が必要です。
 コンピュート・インスタンスを作成するコンパートメントにて、以下IAMポリシーを作成します。
@@ -42,14 +49,6 @@ Vaultサービスに格納された暗号鍵を指定してブート・ボリュ
 ```
 allow service blockstorage to use keys in compartment <コンパートメント名>
 ```
-
-<br>
-
-# 2. Vaultの作成
-
-OCIチュートリアル[Vaultサービスを使ってObject Storageをユーザー管理の暗号鍵で暗号化する](https://oracle-japan.github.io/ocitutorials/id-security/vault-objectstorage/)の手順2と手順3を参考にVaultと暗号鍵を作成し、インポートしてください。
-
-前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。
 
 <br>
 
@@ -99,4 +98,3 @@ OCIコンソール　→ ストレージ　→　ブロック・ストレージ�
 ![画面ショット8](vault-compute08.png)
 
 以上の手順で、既存のブート・ボリュームの暗号化に使用されている暗号鍵をOracle管理のものからユーザー管理のものに変更しました。
-

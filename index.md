@@ -44,7 +44,7 @@ LoadBalancerや証明書サービスなどをはじめとした各OCIサービ�
 
 - **[Oracle Database編](/ocitutorials/database)**  
 Oracle Database関連サービスのチュートリアルです。  
-自律型データベースサービスであるAutonomous DatabaseやBase Database Service、Exadata Database Service on Dedicated Infrastructure、AI Vector SearchなどOCIのデータベース・サービスを学習できます。
+自律型データベースサービスであるAutonomous DatabaseやBase Database Service、Exadata Database Service on Dedicated Infrastructure、Exadata Database Service on Exascale Infrastructure、AI Vector SearchなどOCIのデータベース・サービスを学習できます。
 
 - **[MySQL Database Service編](/ocitutorials/mysql/)**  
 Oracle MySQLチームが開発、管理およびサポートするOCI上で提供されるMySQL Database Serviceを学習できます。

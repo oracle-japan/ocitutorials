@@ -195,7 +195,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 - **Intel MPI Benchmarks**
 - **NCCL Tests**
 
-各ベンチマークの実行方法は、下表の対象シェイプ部分のリンクをクリックして参照下さい。
+各ベンチマークの実行方法は、下表の対象シェイプ部分のリンクをクリックして参照してください。
 
 | 名称                      | ベンチマークサイトURL                                                                                               | 対象シェイプ                                                                                                                                  |
 | :---------------------: | :--------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------: |
@@ -224,6 +224,11 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** は、業界標準のRoCEv2を採用する高帯域・低遅延のRDMA対応インターコネクトネットワークサービスで、そのトポロジーがFat treeのため同一リーフスイッチに接続するノード間とスパインスイッチを介して異なるリーフスイッチに接続するノード間で、ノード間通信のレイテンシが大きく異なります。このため、この特性を意識して適切な計算/GPUノードにジョブを配置することで、レイテンシに影響を受け易いワークロードの性能や高並列実行時のスケーラビリティを改善できる場合があります。  
     本パフォーマンス関連Tipsは、この **クラスタ・ネットワーク** のレイテンシ特性を生かしてマルチノードジョブをクラスタ内に配置することで、ノード間通信性能を最適化する方法を解説します。
+
+- **[CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips](/ocitutorials/hpc/benchmark/openfoam-tuning/)**
+
+    **[OpenFOAM](https://www.openfoam.com/)** は、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。  
+    本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンス **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **OpenFOAM** を使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。
 
 ## 2-3. プロファイリング関連Tips集
 
@@ -288,7 +293,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     **クラスタ・ネットワーク** を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージである **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されています。  
     本テクニカルTipsは、この **クラスタネットワーキングイメージ** の適切な選び方を解説します。
 
-- **[クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)**
+- **[クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)**
 
     **クラスタ・ネットワーク** に接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだ **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** が **[マーケットプレース](#5-5-マーケットプレイス)** から提供されていますが、これらのベースとなるOSは、 **Oracle Linux** のみです。  
     本テクニカルTipsは、 **クラスタ・ネットワーク** 対応シェイプの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** や **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用するインスタンスを **Oracle Linux** 以外のOSで **クラスタ・ネットワーク** に接続する方法を解説します。
@@ -308,7 +313,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 - **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)**
 
-    高速スクラッチ領域として利用することを想定したNVMe SSDローカルディスクを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.GM4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDローカルディスクをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
+    高速スクラッチ領域として利用することを想定したNVMe SSDローカルディスクを内蔵するHPCクラスタ向けベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** やGPUクラスタ向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8/BM.GPU.H100.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** は、NVMe SSDローカルディスクをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。  
     本テクニカルTipsは、このファイルシステム作成方法を解説します。
 
 - **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)**
@@ -406,7 +411,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 - **[Slurmによるリソース管理・ジョブ管理システム運用Tips](/ocitutorials/hpc/tech-knowhow/slurm-tips/)**
 
-    オープンソースの **[Slurm](https://slurm.schedmd.com/)** は、HPC/GPUクラスのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。  
+    オープンソースの **[Slurm](https://slurm.schedmd.com/)** は、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。  
     本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を **Slurm** で効果的に運用するための様々なテクニカルTipsをご紹介します。
 
 ## 3-6. その他
@@ -497,9 +502,9 @@ OCIリソースとしての **クラスタ・ネットワーク** は、共に�
 - **クラスタ・ネットワーク** 接続用ネットワークインターフェースへのIPアドレス付与
 
 これらの処理は、前述の802.1X認証関連ユーティリティソフトウェアと **クラスタ・ネットワーク** 設定ユーティリティソフトウェアで行います。  
-この手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** を参照下さい。
+この手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** を参照してください。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm)** を参照してください。
 
 OCIコンソールの **クラスタ・ネットワーク** メニューは、 **[ここ](https://cloud.oracle.com/compute/cluster-networks)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -509,9 +514,9 @@ OCIコンソールの **クラスタ・ネットワーク** メニューは、 *
 
 **リソース・マネージャ** は、様々なOCIサービスを組み合わせたシステム構築作業を、メニュー形式で予めオプションを選択して作成された **[スタック](#5-3-スタック)** をOCIコンソールから適用・破棄することで、1クリックで実施することを可能にします。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm)** を参照してください。
 
-**リソース・マネージャ** の利用方法は、チュートリアル **[リソース・マネージャを使ってサンプルアプリケーションをデプロイする](https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/)** を参照下さい。
+**リソース・マネージャ** の利用方法は、チュートリアル **[リソース・マネージャを使ってサンプルアプリケーションをデプロイする](https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/)** を参照してください。
 
 OCIコンソールの **リソース・マネージャ** メニューは、 **[ここ](https://cloud.oracle.com/resourcemanager/overview)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -524,9 +529,9 @@ OCIコンソールの **リソース・マネージャ** メニューは、 **[�
 **リソース・マネージャ** から **スタック** を作成する代表的な方法は、予め用意した **Terraform** スクリプトと **スキーマ・ドキュメント** をアーカイブ・圧縮した **スタック** ファイルを **リソース・マネージャ** に読み込ませ、メニュー形式の選択肢を自身の要望に沿って選択して作成する方法です。  
 この **スタック** ファイルは、様々な環境構築向けのものが **[マーケットプレース](#5-5-マーケットプレイス)** から提供されており、その多くが無償で利用可能です。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm#concepts)** の **スタック** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/resourcemanager.htm#concepts)** の **スタック** を参照してください。
 
-**スタック** の作成方法は、チュートリアル **[リソース・マネージャを使ってサンプルアプリケーションをデプロイする](https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/)** を参照下さい。
+**スタック** の作成方法は、チュートリアル **[リソース・マネージャを使ってサンプルアプリケーションをデプロイする](https://oracle-japan.github.io/ocitutorials/intermediates/resource-manager/)** を参照してください。
 
 OCIコンソールの **スタック** メニューは、 **[ここ](https://cloud.oracle.com/resourcemanager/stacks)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -538,7 +543,7 @@ OCIコンソールの **スタック** メニューは、 **[ここ](https://clo
 
 **スキーマ・ドキュメント** は、 **[マーケットプレース](#5-5-マーケットプレイス)** から提供される様々な環境構築向け **スタック** ファイルに予め含まれているため、通常これをそのまま利用するだけですが、自身の環境向けにカスタマイズした **スタック** ファイルを作成する場合は、その構文を理解する必要があります。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/terraformconfigresourcemanager_topic-schema.htm#top)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Concepts/terraformconfigresourcemanager_topic-schema.htm#top)** を参照してください。
 
 ## 5-5. マーケットプレイス
 
@@ -546,7 +551,7 @@ OCIコンソールの **スタック** メニューは、 **[ここ](https://clo
 
 **マーケットプレイス** から提供される **スタック** ファイルや **カスタム・イメージ** は、オラクルはもちろんそのパートナーが提供するものも含まれ、その多くが無料で提供されます。これら **マーケットプレイス** から提供されるリソースを活用することで、OCI上にHPCシステムを構築する作業工数を大幅に削減することが可能で、**[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** でもこれらを活用する方法が紹介されています。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Marketplace/Concepts/marketoverview.htm)** を参照してください。
 
 OCIコンソールの **マーケットプレイス** メニューは、 **[ここ](https://cloud.oracle.com/marketplace/home)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -558,7 +563,7 @@ HPCクラスタやGPUクラスタ構築の際、OSレベルのカスタマイズ
 
 **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** は、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** に接続するためのソフトウェア等を含む、 **カスタム・イメージ** として提供されます。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingcustomimages.htm)** を参照してください。
 
 OCIコンソールの **カスタム・イメージ** メニューは、 **[ここ](https://cloud.oracle.com/compute/images)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -568,7 +573,7 @@ OCIコンソールの **カスタム・イメージ** メニューは、 **[こ�
 
 **インスタンス構成** は、同じ構成のインスタンスを複製することを可能とし、HPCシステムの構築・管理に必須の機能です。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#config)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#config)** を参照してください。
 
 OCIコンソールの **インスタンス構成** メニューは、 **[ここ](https://cloud.oracle.com/compute/instance-configs)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -578,7 +583,7 @@ OCIコンソールの **インスタンス構成** メニューは、 **[ここ]
 
 **インスタンス・プール** は、 **[インスタンス構成](#5-7-インスタンス構成)** を指定して作成し、新たなインスタンスをこのインスタンス構成に基づいてデプロイします。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#Instance)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Concepts/instancemanagement.htm#Instance)** を参照してください。
 
 OCIコンソールの **インスタンス・プール** メニューは、 **[ここ](https://cloud.oracle.com/compute/instance-pools)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -649,11 +654,11 @@ runcmd:
   - systemctl disable firewalld
 ```
 
-**cloud-init** によるOSカスタマイズは、基本的にインスタンスデプロイ後に一度だけ実施されるため、HPC/機械学習ワークロード向けベアメタルインスタンスをデプロイする際に必須となるNVMe SSDローカルディスク領域ファイルシステム作成や、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 用ネットワークインターフェース設定を実施するのに最適です。
+**cloud-init** は、基本的にインスタンスデプロイ後に一度だけ実施されるため、NVMe SSDローカルディスクにファイルシステムを作成する等の、HPC/機械学習ワークロード向けベアメタルインスタンスをデプロイする際に必須となるようなOS上のカスタマイズを実施するのに最適です。
 
 **cloud-init** は、 **クラスタ・ネットワーク** 作成時に指定する **インスタンス構成** と紐づけることで、 **クラスタ・ネットワーク** に接続する全ての計算ノードやGPUノードに一斉にOSカスタマイズを適用することを可能にします。
 
-**cloud-init** 公式ドキュメントは、 **[ここ](https://cloudinit.readthedocs.io/en/latest/)** を参照下さい。
+**cloud-init** 公式ドキュメントは、 **[ここ](https://cloudinit.readthedocs.io/en/latest/)** を参照してください。
 
 ## 5-12. Terraform
 
@@ -690,9 +695,9 @@ Destroy complete! Resources: 9 destroyed.
 $
 ```
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm)** を参照してください。
 
-**Terraform** CLIを使用してOCI上にリソースを自動構築する方法は、 **[OCI チュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[TerraformでOCIの構築を自動化する](https://oracle-japan.github.io/ocitutorials/intermediates/terraform/)** を参照下さい。
+**Terraform** CLIを使用してOCI上にリソースを自動構築する方法は、 **[OCI チュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[TerraformでOCIの構築を自動化する](https://oracle-japan.github.io/ocitutorials/intermediates/terraform/)** を参照してください。
 
 ## 5-13. クラスタネットワーキングイメージ
 
@@ -706,7 +711,7 @@ $
 802.1X認証関連ユーティリティソフトウェアと **クラスタ・ネットワーク** 設定ユーティリティソフトウェアは、 **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** のプラグインとしてこれらを提供する **クラスタネットワーキングイメージ** と、個別のRPMパッケージとして提供する **クラスタネットワーキングイメージ** が存在します。  
 また対応するシェイプは、GPUを搭載するかどうかでHPC **クラスタネットワーキングイメージ** とGPU **クラスタネットワーキングイメージ** が存在します。  
 またベースOSの **Oracle Linux** は、バージョン7系と8系の **クラスタネットワーキングイメージ** が存在します。  
-これらの組み合わせから自身の用途に合わせて **クラスタネットワーキングイメージ** を適切に選択する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照下さい。
+これらの組み合わせから自身の用途に合わせて **クラスタネットワーキングイメージ** を適切に選択する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** を参照してください。
 
 **マーケットプレイス** の **クラスタネットワーキングイメージ** は、HPC **クラスタネットワーキングイメージ** は **[ここ](https://cloud.oracle.com/marketplace/application/63394796/)** 、GPU **クラスタネットワーキングイメージ** は  **[ここ](https://cloud.oracle.com/marketplace/application/134254210/)** をクリックしてアクセスします。OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -717,16 +722,16 @@ $
 **GitHub** 等で公開されている **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを基にOCI上にHPC/GPUクラスタを構築する場合、まずこの **構成ソース・プロバイダ** を作成し、これを介して  **Terraform** スクリプトを **GitHub** 等から取り込んで **リソース・マネージャ** に **スタック** を作成、この **スタック** を適用してデプロイします。
 
 **[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** で紹介する **Terraform** スクリプトを使用する手法は、ソースコード管理サービスに **GitHub** を使用しますが、 **GitHub** にアクセスするための **構成ソース・プロバイダ** の作成は、 **GitHub** のアカウントを持っておりこのアカウントで **Personal access token** を発行しておく必要があります。  
-**GitHub** のアカウント作成は **[ここ](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home)** 、 **Personal access token** の発行は **[ここ](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)** を参照下さい。
+**GitHub** のアカウント作成は **[ここ](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home)** 、 **Personal access token** の発行は **[ここ](https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)** を参照してください。
 
-**構成ソース・プロバイダ** の作成手順は、OCI公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top)** を参照下さい。  
+**構成ソース・プロバイダ** の作成手順は、OCI公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/create-csp-github.htm#top)** を参照してください。  
 **OCI HPCチュートリアル集** で使用する **構成ソース・プロバイダ** は、以下で作成します。
 
 - **パブリック・エンドポイント/プライベート・エンドポイント :** パブリック・エンドポイント
 - **タイプ :** **GitHub**
 - **サーバーURL :** https://github.com/
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/managingconfigurationsourceproviders.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/ResourceManager/Tasks/managingconfigurationsourceproviders.htm)** を参照してください。
 
 ## 5-15. インスタンス・プリンシパル
 
@@ -737,9 +742,9 @@ $
 このソリューションでは、クラスタ管理ノードを **インスタンス・プリンシパル** として **動的グループ** に登録（認証）し、このクラスタ管理ノードから発行するAPIコールを **IAMポリシー** で許可（認可）することで、クラスタ管理ノードからHPC/GPUクラスタのライフサイクルを動的に管理することを可能にします。  
 **[OCI HPCチュートリアル集](#1-oci-hpcチュートリアル集)** で紹介している **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)** を使用するオンデマンドクラスタソリューションは、この仕組みを使用しています。
 
-このオンデマンドクラスタ実現のための **インスタンス・プリンシパル** 認証の設定方法は、 **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** を参照下さい。
+このオンデマンドクラスタ実現のための **インスタンス・プリンシパル** 認証の設定方法は、 **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** を参照してください。
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm)** を参照してください。
 
 ## 5-16. 動的グループ
 
@@ -753,6 +758,6 @@ $
 - 特定のOCIDを持つ **コンパートメント** に属するインスタンスをメンバーとする
 - 特定の **タグ・キー** でタグ付けされたインスタンスをメンバーとする
 
-関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)** を参照下さい。
+関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)** を参照してください。
 
 OCIコンソールの **動的グループ** メニューは、 **[ここ](https://cloud.oracle.com/identity/domains/)** をクリックして表示される **ルートコンパートメント内のドメイン** フィールドで利用している **ドメイン** を選択し、左側の **動的グループ** メニューを選択します。OCIへのログインを要求された場合は、ログインを完了して下さい。

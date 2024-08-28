@@ -49,9 +49,12 @@ header:
     - もとのプロンプトと類似検索で取得したチャンクテキストををテキスト生成モデルに入力しテキストを生成
 3. 前回同様ベクトルデータベースへのChainを使わずに、LLMにクエリしテキスト生成を行い、上記「2」で生成されたテキストと比較しRAGの有効性を確認します。
 
-※ 実装は興味ないので結果だけ知りたいですという方は「テキスト生成を実行する」の章をご参照ください。
+※ 実装は興味ないので結果だけ知りたいですという方は[5. RAGを実装する](#5-ragを実装するgenerative-ai-serviceのcommand-r-plusのパターン) の章をご参照ください。
 
 # RAGの実装
+本チュートリアルではベクトル・データベースとして、Oracle Database 23ai Free(Computeインスタンスにインストール)、Base Database Service、Autonomous Database(23ai) のどれかを使用します。
+
+使用するサービスによってセットアップ方法が異なるので、それぞれのサービスごとの設定手順を参照してください。
 
 ## 1-1. Oracle Database 23ai Free環境でのセットアップ
 Oracle Database 23ai Free環境でチュートリアルを行う場合は、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/)を参考に、Oracle Database 23ai Freeをインストールします。既に作成済みの場合はスキップして下さい。
@@ -85,6 +88,9 @@ docuserでログインできることを確認します。
 ```sh
 sqlplus docuser/docuser@freepdb1
 ```
+
+これ以降の手順は、[2. Python環境のセットアップ](#-2.python環境のセットアップ) をご参照ください。
+
 <br>
 
 ## 1-2. Base Database Service環境でのセットアップ
@@ -153,27 +159,12 @@ exit
 exit
 ```
 
+これ以降の手順は、[2. Python環境のセットアップ](#-2.python環境のセットアップ) をご参照ください。
+
 <br>
 
 ## 1-3. Autonomous Database 23ai Free環境でのセットアップ
-Autonomous Database 23ai Free環境でチュートリアルを行う場合は、[104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/){:target="_blank"}の[2-1. ADB23ai Always Free編-ファイルの格納](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor2){:target="_blank"}を参考に、Database Actionsからユーザーの作成、権限の付与を行います。
-
-DOCUSERに追加で権限を付与します。
-ADMINとしてDatabase ActionsのSQLのツールにアクセスし、DOCUSERに以下の権限を付与します。
-  ```sql
-  BEGIN
-    DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
-        host => '*',
-        ace => xs$ace_type(
-            privilege_list => xs$name_list('connect'),
-            principal_name => 'docuser',
-            principal_type => xs_acl.ptype_db
-        )
-    );
-    END;
-    /
-  ```
-
+Autonomous Database 23ai Free環境でチュートリアルを行う場合は、[104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/){:target="_blank"}の[2-1. ADB23ai Always Free編-ファイルの格納](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#anchor7){:target="_blank"}を参考に、Database Actionsからユーザーの作成、権限の付与を行います。
 
 本ハンズオンではPython環境を用意する必要があります。ADBではComputeやBaseDBのようにOSログインできないため、別のコンピュート・インスタンスやノートブック環境を用意してください。
 Pythonの実行環境を持っていない場合は[204: 開発者向け仮想マシンのセットアップ方法](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}の[仮想マシンの作成](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor1){:target="_blank"}、[仮想マシンへのアクセス](https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#anchor2){:target="_blank"}を参考にコンピュート・インスタンスを作成します。
@@ -217,9 +208,9 @@ OCIコンソールのAutonomous Databaseの画面で、**Autonomous Database情�
 <br>
 
 ## 2. Python環境のセットアップ
-2024/7現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。
+2024/8現在、BaseDB環境ではPython3.6.8がデフォルトでインストールされていますが、本チュートリアルではPython3.11を前提に進めます。なお、OSはOracle Linux 8.8を前提としています。
 
-Autonomous Database環境の場合は、先程作成したコンピュート・インスタンスにログインします。
+Autonomous Database(23ai)環境の場合は、先程作成したコンピュート・インスタンスにログインします。
 
 `root`にスイッチし、以下でPython3.11のインストールを行います。
 ```sh
@@ -354,7 +345,7 @@ pd.DataFrame(contents)
 
 まずは、作成済のdocuserでデータベースに接続します。
 
-Autonomous Database 23ai Free、若しくはBaseDBを使用している場合は、先程取得した接続文字列をdsnに貼り付けます。
+Autonomous Database(23ai)、もしくはBaseDBを使用している場合は、セットアップ手順で取得した接続文字列をdsnに貼り付けます。
 
 ```python
 import oracledb
@@ -398,17 +389,45 @@ from langchain_community.embeddings import OCIGenAIEmbeddings
 embeddings = OCIGenAIEmbeddings(
     model_id="cohere.embed-multilingual-v3.0",
     service_endpoint="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com",
+    # compartment_idはご自身が利用されているコンパートメントのOCIDを指定してください
     compartment_id="ocid1.compartment.oc1..aaaaaaaxxxxxxx",
 )
 ```
 
 **注意**: 以下のエラーが出る場合は、APIキーの設定ファイル`~/.oci/config`が作成されていません。[501: OCICLIを利用したインスタンス操作](https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/)を参照して、APIキーを事前に作成してください。
 
-OCIコンソールからAPIキーの作成を行った場合は、`~/.oci`ディレクトリを作成し、`config`ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。
-```
+```sh
 ValidationError: 1 validation error for OCIGenAIEmbeddings
 __root__
   Could not authenticate with OCI client. Please check if ~/.oci/config exists. If INSTANCE_PRINCIPLE or RESOURCE_PRINCIPLE is used, Please check the specified auth_profile and auth_type are valid. (type=value_error)
+```
+
+OCIコンソールからAPIキーの作成を行った場合は、`~/.oci`ディレクトリを作成し、`config`ファイルに構成ファイルスニペットを貼り付け、秘密鍵ファイルへのパスを記述してください。
+
+以下のように設定ファイルが作成されているか確認してください。
+```sh
+cat ~/.oci/config
+```
+
+出力:
+```sh
+[DEFAULT]
+user=ocid1.user.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+fingerprint=xx:xx:xx:xx:xx:xx:xx:xx:xx:xx
+tenancy=ocid1.tenancy.oc1..aaaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+region=ap-tokyo-1
+key_file=~/.oci/oci_api_key.pem
+```
+
+```sh
+cat ~/.oci/oci_api_key.pem
+```
+
+出力:
+```sh
+-----BEGIN PRIVATE KEY-----
+MIIExxxx
+-----END PRIVATE KEY-----
 ```
 
 
@@ -425,11 +444,11 @@ vector_store_dot = OracleVS.from_documents(
     # 新規作成する表の名前を任意で指定
     table_name="doc_table",
     # ベクトル検索時に使う距離計算の方法
-    distance_strategy=DistanceStrategy.DOT_PRODUCT,
+    distance_strategy=DistanceStrategy.COSINE,
 )
 ```
 
-今回はベクトル検索時に使う距離計算の方法を「ドット積」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にドット積を使っていることからそれに合わせてみました。(英語版のモデルであるembed-english-v3.0はコサイン類似度を使っているそうです。)こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のDOT_PRODUCTの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやCOSINEに変更するだけです。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies
+今回はベクトル検索時に使う距離計算の方法を「コサイン類似度」にしています。Generative AIの埋め込みモデル(Cohereのembed-multilingual-v3.0)はモデルを学習させる際にコサイン類似度を使っていることからそれに合わせてみました。こちらはチューニングポイントになりますから様々な距離計算を試してみてください。上記のCOSINEの部分を他の計算方法、例えば、EUCLIDEAN_DISTANCEやDOT_PRODUCTに変更するだけです。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#using-ai-vector-search-create-a-bunch-of-vector-stores-with-different-distance-strategies
 )。
 
 また、今回はどちらでも構いませんが、以下のようにコードを実行すると索引も作成できます。下記の例ではIVF索引を作成しています。詳細は[こちら](https://python.langchain.com/v0.1/docs/integrations/vectorstores/oracle/#demonstrating-index-creation-with-specific-parameters-for-each-distance-strategy)
