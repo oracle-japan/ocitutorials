@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-08-21T10:57:47+09:00">
+  <meta property="article:published_time" content="2024-08-28T19:17:41+09:00">
 
 
 
@@ -79,6 +79,13 @@
     <!-- start custom head snippets -->
 
 <!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
 
 <!-- end custom head snippets -->
 
@@ -278,6 +285,8 @@
         
           <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-beginners/">OCI Cacheを使ってみよう</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
@@ -301,7 +310,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI API Gatewayハンズオン">
     <meta itemprop="description" content="OCI API GatewayはOCI上で提供されるマネージドのAPI管理サービスです。このハンズオンでは、OCI API Gatewayを利用して簡単にAPIを集約・公開する手順をご紹介します。">
-    <meta itemprop="datePublished" content="2024-08-21T10:57:47+09:00">
+    <meta itemprop="datePublished" content="2024-08-28T19:17:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -467,8 +476,8 @@ VCNを作成済みの方は1-2.イングレス・ルールの追加に進んで�
 <p class="notice--info"><strong>ハンズオンで利用するAPIエンドポイント</strong><br />
 今回のハンズオンでは単純化のために、公開されているAPIを利用して手順を作成しています。<br />
 異なる複数のエンドポイントをまとめ、一つのデプロイメントとして管理できるメリットをご体験ください。</p>
-
-<p>[1のルーティング]セクションで次を指定します。</p>
+<p>y
+[1のルーティング]セクションで次を指定します。</p>
 
 <ul>
   <li>パス：<code class="language-plaintext highlighter-rouge">/weather/{point}</code></li>
@@ -489,14 +498,15 @@ VCNを作成済みの方は1-2.イングレス・ルールの追加に進んで�
   <li>パス：<code class="language-plaintext highlighter-rouge">/cowsay/echo</code></li>
   <li>メソッド：<code class="language-plaintext highlighter-rouge">GET</code></li>
   <li>タイプ：<code class="language-plaintext highlighter-rouge">HTTP</code></li>
-  <li>URL：<code class="language-plaintext highlighter-rouge">https://api-public.ocha.cf/cowsay/say/msg/${request.query[msg]}</code></li>
+  <li>URL：<code class="language-plaintext highlighter-rouge">http://ocitutorials.paasdocs.work/cowsay/${request.query[msg]}</code></li>
+  <li>SSL検証の無効化： チェック</li>
 </ul>
 
 <p><img src="gateway06.jpg" alt="" /></p>
 
 <p class="notice--info"><strong>バックエンドサービスについて</strong><br />
-このバックエンドサービスはOKEハンズオンでも利用されているソースをAPIにして公開したものです。<code class="language-plaintext highlighter-rouge">?msg=&lt;任意の文字列&gt;</code>の形式で渡したパラメータを牛のアスキーアートが返します。
-<code class="language-plaintext highlighter-rouge">${request.query[msg]}</code>の形式で、パラメータを取得しURLに利用することができます。</p>
+このバックエンドサービスはOKEハンズオンでも利用されているソースをAPIにして公開したものです。<code class="language-plaintext highlighter-rouge">/cowsay/say</code>のエンドポイントにアクセスすると牛のアスキーアートが返されます。
+<code class="language-plaintext highlighter-rouge">${request.query[msg]}</code>の形式で渡した文字列をパラメータを取得しURLのクエリパラメータに利用することができます。</p>
 
 <p>新しいAPIデプロイメント用に入力した詳細を確認し、[作成]をクリックして作成します。</p>
 
@@ -527,13 +537,13 @@ VCNを作成済みの方は1-2.イングレス・ルールの追加に進んで�
 <img src="operation01.png" alt="" /></p>
 
 <p>デプロイメントのエンドポイントに、<code class="language-plaintext highlighter-rouge">cowsay/echo?msg=api-gateway</code>を付け足してください。以下のようになります。</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=api-gateway
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=say
 </code></pre></div></div>
 <p>以下の<code class="language-plaintext highlighter-rouge">curl</code>コマンドを実行します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -X GET "https://&lt;ご自身のAPIエンドポイント&gt;.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=api-gateway
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -X GET "https://&lt;ご自身のAPIエンドポイント&gt;.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=say
 </code></pre></div></div>
-<p>牛のアスキーアートがapi-gatewayという文言を返します。
+<p>牛のアスキーアートが<code class="language-plaintext highlighter-rouge">Moo!</code>という文言を返します。
 <img src="operation02.png" alt="" /></p>
 
 <p>これで、OCI API Gatewayとを利用してAPIのデプロイと公開ができました。<br />
@@ -551,7 +561,7 @@ VCNを作成済みの方は1-2.イングレス・ルールの追加に進んで�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-21T10:57:47+09:00">August 21, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-08-28T19:17:41+09:00">August 28, 2024</time></p>
 
       </footer>
 
