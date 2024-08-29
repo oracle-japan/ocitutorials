@@ -145,7 +145,7 @@ OCIコンソールにログインし、[開発者サービス]に移動して、
 今回のハンズオンでは単純化のために、公開されているAPIを利用して手順を作成しています。  
 異なる複数のエンドポイントをまとめ、一つのデプロイメントとして管理できるメリットをご体験ください。
 {: .notice--info}
-y
+
 [1のルーティング]セクションで次を指定します。
 
 + パス：`/weather/{point}`
@@ -165,14 +165,13 @@ y
 + パス：`/cowsay/echo`
 + メソッド：`GET`
 + タイプ：`HTTP`
-+ URL：`http://ocitutorials.paasdocs.work/cowsay/${request.query[msg]}`
-+ SSL検証の無効化： チェック
++ URL：`https://api-public.ocha.cf/cowsay/say/msg/${request.query[msg]}`
 
 ![](gateway06.jpg)
 
 **バックエンドサービスについて**  
-このバックエンドサービスはOKEハンズオンでも利用されているソースをAPIにして公開したものです。`/cowsay/say`のエンドポイントにアクセスすると牛のアスキーアートが返されます。
-`${request.query[msg]}`の形式で渡した文字列をパラメータを取得しURLのクエリパラメータに利用することができます。
+このバックエンドサービスはOKEハンズオンでも利用されているソースをAPIにして公開したものです。`?msg=<任意の文字列>`の形式で渡したパラメータを牛のアスキーアートが返します。
+`${request.query[msg]}`の形式で、パラメータを取得しURLに利用することができます。
 {: .notice--info}
 
 新しいAPIデプロイメント用に入力した詳細を確認し、[作成]をクリックして作成します。
@@ -209,14 +208,14 @@ Oracle本社付近の天気情報が取得できます。
 
 デプロイメントのエンドポイントに、`cowsay/echo?msg=api-gateway`を付け足してください。以下のようになります。
 ```
-https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=say
+https://xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=api-gateway
 ```
 以下の`curl`コマンドを実行します。
 
 ```
-curl -X GET "https://<ご自身のAPIエンドポイント>.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=say
+curl -X GET "https://<ご自身のAPIエンドポイント>.apigateway.ap-tokyo-1.oci.customer-oci.com/v1/cowsay/echo?msg=api-gateway
 ```
-牛のアスキーアートが`Moo!`という文言を返します。
+牛のアスキーアートがapi-gatewayという文言を返します。
 ![](operation02.png)
 
 これで、OCI API Gatewayとを利用してAPIのデプロイと公開ができました。  
