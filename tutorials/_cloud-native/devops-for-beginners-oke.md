@@ -619,6 +619,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend
+  annotations:
+    oci.oraclecloud.com/load-balancer-type: "lb"
+    service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "30"
 spec:
   type: LoadBalancer
   ports:
