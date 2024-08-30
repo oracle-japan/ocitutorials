@@ -168,6 +168,7 @@ y
 + URL：`https://ocitutorials.paasdocs.work/cowsay/${request.query[msg]}`
 + SSL検証の無効化： チェック
 
+
 ![](gateway06.jpg)
 
 **バックエンドサービスについて**  
