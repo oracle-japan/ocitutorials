@@ -84,11 +84,14 @@ Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で�
 以下の内容であることを確認します。
 
 * 名前：cluster1
+* コンパートメント：ご自身の対象コンパートメント
 * Kubernetes APIエンドポイント:パブリック・エンドポイント
+* ノード・タイプ:管理対象
 * Kubernetesワーカー・ノード:プライベート・ワーカー
-* シェイプ：VM Standard.E3.Flex
+* ノード・シェイプ：VM Standard.E3.Flex
 * OCPU数の選択: 1
 * メモリー量（GB）： 16
+* イメージ： Oracle Linux 8
 
 ![](1-004.png)
 
@@ -114,6 +117,21 @@ Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で�
 ![](1-008.png)
 
 ### 1-2 Cloud Shellを利用してクラスタを操作
+
+Cloud Shell は、ARM(aarch64)とX86_64のアーキテクチャを選択できます。こちらのチュートリアルは、X86_64をベースに構成されています。そのため、アーキテクチャのタイプを確認します。もし、ARM(aarch64)が選択されている場合は、X86_64に変更して、Cloud Shell を再起動します。
+
+最初に、「アクション」-「アーキテクチャ」選択します。
+
+![](01-02-03.png)
+
+「現在のアーキテクチャ」が ARM(aarch64) の場合は、X86_64 を選択して、「確認して再起動」ボタンをクリックします。  
+「現在のアーキテクチャ」が X86_64 の場合は、そのまま、「取消」を選択してください。
+
+![](01-02-04.png)
+
+Cloud Shell 再起動後、「アクション」-「アーキテクチャ」選択します。そして、X86_64 であることを確認して、「取消」を選択します。
+
+![](01-02-05.png)
 
 Cloud Shellを利用して、作成したKubernetesクラスタに接続します。
 
@@ -204,10 +222,22 @@ Saving to: ‘oke%2Foci-devops-oke.zip’
 ダウンロードしたzipファイルを解凍します。
 
 ```sh
-unzip oke_oci-devops-oke.zip
+unzip oke%2Foci-devops-oke.zip
+```
+以下のメッセージが表示された場合は、「N」を入力してEnterキーを押します。
+```sh
+Archive:  oke%2Foci-devops-oke.zip
+replace __MACOSX/._oci-devops-oke? [y]es, [n]o, [A]ll, [N]one, [r]ename: N
 ```
 
 「oci-devops-oke」というディレクトリがあることを確認します。
+
+```sh
+ls
+```
+```sh
+oci-devops-oke
+```
 
 4.ポリシーの設定
 ---------------------------------
@@ -218,7 +248,7 @@ unzip oke_oci-devops-oke.zip
 
 ポリシー|説明
 -|-
-Allow dynamic-group OCI_DevOps_Dynamic_Group_OKE to manage cluster-family in compartment id コンパートメントOCID|OCI DevOpsがOKEを管理できるようにするポリシー
+Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id コンパートメントOCID|OCI DevOpsがOKEを管理できるようにするポリシー
 
 今回のハンズオンでは、スクリプトを利用して、ポリシーを設定します。  
 スクリプトは先ほど解凍した関連資材に含まれています。  
