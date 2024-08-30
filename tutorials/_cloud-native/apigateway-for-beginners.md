@@ -165,7 +165,7 @@ y
 + パス：`/cowsay/echo`
 + メソッド：`GET`
 + タイプ：`HTTP`
-+ URL：`http://ocitutorials.paasdocs.work/cowsay/${request.query[msg]}`
++ URL：`https://ocitutorials.paasdocs.work/cowsay/${request.query[msg]}`
 + SSL検証の無効化： チェック
 
 ![](gateway06.jpg)
