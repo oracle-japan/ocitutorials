@@ -405,11 +405,14 @@ Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で�
 
 <ul>
   <li>名前：cluster1</li>
+  <li>コンパートメント：ご自身の対象コンパートメント</li>
   <li>Kubernetes APIエンドポイント:パブリック・エンドポイント</li>
+  <li>ノード・タイプ:管理対象</li>
   <li>Kubernetesワーカー・ノード:プライベート・ワーカー</li>
-  <li>シェイプ：VM Standard.E3.Flex</li>
+  <li>ノード・シェイプ：VM Standard.E3.Flex</li>
   <li>OCPU数の選択: 1</li>
   <li>メモリー量（GB）： 16</li>
+  <li>イメージ： Oracle Linux 8</li>
 </ul>
 
 <p><img src="1-004.png" alt="" /></p>
@@ -435,6 +438,21 @@ Oracle Container Engine for Kubernetesは、Oracle Cloud Infrastructure(OCI)で�
 <p><img src="1-008.png" alt="" /></p>
 
 <h3 id="1-2-cloud-shellを利用してクラスタを操作">1-2 Cloud Shellを利用してクラスタを操作</h3>
+
+<p>Cloud Shell は、ARM(aarch64)とX86_64のアーキテクチャを選択できます。こちらのチュートリアルは、X86_64をベースに構成されています。そのため、アーキテクチャのタイプを確認します。もし、ARM(aarch64)が選択されている場合は、X86_64に変更して、Cloud Shell を再起動します。</p>
+
+<p>最初に、「アクション」-「アーキテクチャ」選択します。</p>
+
+<p><img src="01-02-03.png" alt="" /></p>
+
+<p>「現在のアーキテクチャ」が ARM(aarch64) の場合は、X86_64 を選択して、「確認して再起動」ボタンをクリックします。<br />
+「現在のアーキテクチャ」が X86_64 の場合は、そのまま、「取消」を選択してください。</p>
+
+<p><img src="01-02-04.png" alt="" /></p>
+
+<p>Cloud Shell 再起動後、「アクション」-「アーキテクチャ」選択します。そして、X86_64 であることを確認して、「取消」を選択します。</p>
+
+<p><img src="01-02-05.png" alt="" /></p>
 
 <p>Cloud Shellを利用して、作成したKubernetesクラスタに接続します。</p>
 
@@ -518,10 +536,19 @@ Saving to: ‘oke%2Foci-devops-oke.zip’
 
 <p>ダウンロードしたzipファイルを解凍します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip oke_oci-devops-oke.zip
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip oke%2Foci-devops-oke.zip
+</code></pre></div></div>
+<p>以下のメッセージが表示された場合は、「N」を入力してEnterキーを押します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Archive:  oke%2Foci-devops-oke.zip
+replace __MACOSX/._oci-devops-oke? <span class="o">[</span>y]es, <span class="o">[</span>n]o, <span class="o">[</span>A]ll, <span class="o">[</span>N]one, <span class="o">[</span>r]ename: N
 </code></pre></div></div>
 
 <p>「oci-devops-oke」というディレクトリがあることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span>
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci-devops-oke
+</code></pre></div></div>
 
 <h2 id="4ポリシーの設定">4.ポリシーの設定</h2>
 
@@ -538,7 +565,7 @@ Saving to: ‘oke%2Foci-devops-oke.zip’
   </thead>
   <tbody>
     <tr>
-      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group_OKE to manage cluster-family in compartment id コンパートメントOCID</td>
+      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id コンパートメントOCID</td>
       <td>OCI DevOpsがOKEを管理できるようにするポリシー</td>
     </tr>
   </tbody>
@@ -885,6 +912,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend
+  annotations:
+    oci.oraclecloud.com/load-balancer-type: <span class="s2">"lb"</span>
+    service.beta.kubernetes.io/oci-load-balancer-shape: <span class="s2">"flexible"</span>
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: <span class="s2">"10"</span>
+    service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: <span class="s2">"30"</span>
 spec:
   <span class="nb">type</span>: LoadBalancer
   ports:
