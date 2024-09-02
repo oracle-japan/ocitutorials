@@ -250,18 +250,12 @@ takuya_nii@cloudshell:hello-java (ap-tokyo-1)$ fn invoke helloworld-app hello-ja
 Hello, world!
 ```
 
-3.ファンクションの作成
+【オプション】3.Podman環境で作業する場合
 ---------------------------------------------------
-ここでは、ファンクションの作成と動作確認を行います。  
-
-### 【オプション】3-0. Podman環境設定
-
-**この手順について**  
 この手順は、Dockerの代わりにPodmanがインストールされた環境向けの手順です。  
 Dockerを利用する方はこの手順は無視してください。  
 Cloud Shellを利用している方は、この手順は不要です。  
-なお、PodmanはFn Project CLI v0.6.12以降で利用可能です。　　
-{: .notice--warning}
+なお、PodmanはFn Project CLI v0.6.12以降で利用可能です。 
 
 Fn CLIのconfigを編集し、利用するコンテナエンジンを以下のようにPodmanに変更します。  
 
@@ -274,70 +268,3 @@ current-context: ap-tokyo-1
 ```
 
 以上で、Podman環境設定は完了です。
-
-### 3-1. ファンクションプロジェクトの作成
-
-まず、ファンクションプロジェクトを作成します。  
-作成するアプリケーションの言語は以下から選択することができます。
-
-- サポートする言語
-    * Go
-    * Java
-    * Node.js
-    * Python
-    * Ruby
-
-今回は、Javaでアプリケーションを作成します。  
-ここからは[1.Cloud Shellのセットアップ](#1cloud-shellのセットアップ)でセットアップしたCloud Shellを利用していきます。  
-まずは、`fn init`コマンドを使用してファンクションのひな形を作成します。  
-
-- `fn init`コマンド
-    * --runtime:使用する言語を指定します。今回はjavaを指定します。
-    * --trigger:HTTPのエンドポイントを追加するためのオプション
-
-以下のコマンドを実行し、ファンクションプロジェクトを作成します。
-
-    fn init --runtime java helloworld-func
-
-### 3-2. ファンクションのデプロイ
-4-1で作成したファンクションのデプロイを行います。  
-
-以下のコマンドを実行し、ファンクションプロジェクトに移動します。
-
-    cd helloworld-func
-
-以下のコマンドを実行し、ファンクションをデプロイします。  
---appでアプリケーション名を指定します。  
-指定するアプリケーションは、[2-4. Oracle Functionsのアプリケーションの作成](#2-4-oracle-functionsのアプリケーションの作成)で作成したアプリケーション名です。
-
-    fn deploy --app helloworld-app
-
-ファンクションがデプロイされていることを確認します。  
-OCIのコンソールに移り、"開発者サービス"の"コンテナ・レジストリ"をクリックします。
-![](04-01.png)
-
-OCIRのレジストリに先ほどデプロイしたファンクションがアップロードされていることを確認します。レジストリ上のファンクションは、[context名]/[Oracle Functionsプロジェクト名]になっています。  
-このハンズオンでは、"functions-handson/helloworld-func"になります。
-![](04-02.png)
-
-次にOracle Functionsアプリケーションにhelloworld-funcがデプロイされていることを確認します。
-OCIのコンソールに移り、"開発者サービス"の"ファンクション"をクリックします。
-![](03-12.png)
-
-"helloworld-app"をクリックします。  
-![](04-03.png)
-
-"機能"に"helloworld-func"が表示されていればデプロイ成功です。  
-![](04-04.png)
-
-### 3-3. Oracle Functionsの実行
-Oracle Functionsを実行します。
-
-以下のコマンドを実行し、ファンクションが実行されることを確認します。  
-引数は[Oracle Functionsアプリケーション名] [ファンクション名]の順に指定します。
-
-    fn invoke helloworld-app helloworld-func
-
-以下のように表示されれば成功です。
-
-    Hello, World!
