@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-02T18:29:40+09:00">
+  <meta property="article:published_time" content="2024-09-02T20:10:05+09:00">
 
 
 
@@ -314,7 +314,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Functions ハンズオン">
     <meta itemprop="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、Oracle Functionsを動かしながら、FaaSおよびOracle Functionsの特徴や使い方を学んでいただけるコンテンツになっています。">
-    <meta itemprop="datePublished" content="2024-09-02T18:29:40+09:00">
+    <meta itemprop="datePublished" content="2024-09-02T20:10:05+09:00">
     
 
     <div class="page__inner-wrap">
@@ -325,7 +325,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#条件">条件</a></li><li><a href="#事前準備">事前準備</a></li><li><a href="#1cloud-shellのセットアップ">1.Cloud Shellのセットアップ</a></li><li><a href="#2oracle-functions実行環境の構築">2.Oracle Functions実行環境の構築</a><ul><li><a href="#2-1-oracle-functionsが利用するvcnの作成">2-1. Oracle Functionsが利用するVCNの作成</a></li><li><a href="#2-2-oracle-functionsのアプリケーションの作成">2-2. Oracle Functionsのアプリケーションの作成</a></li><li><a href="#2-3-oci-functionsのサンプルアプリケーション実行">2-3. OCI Functionsのサンプルアプリケーション実行</a></li></ul></li><li><a href="#3ファンクションの作成">3.ファンクションの作成</a><ul><li><a href="#オプション3-0-podman環境設定">【オプション】3-0. Podman環境設定</a></li><li><a href="#3-1-ファンクションプロジェクトの作成">3-1. ファンクションプロジェクトの作成</a></li><li><a href="#3-2-ファンクションのデプロイ">3-2. ファンクションのデプロイ</a></li><li><a href="#3-3-oracle-functionsの実行">3-3. Oracle Functionsの実行</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#条件">条件</a></li><li><a href="#事前準備">事前準備</a></li><li><a href="#1cloud-shellのセットアップ">1.Cloud Shellのセットアップ</a></li><li><a href="#2oracle-functions実行環境の構築">2.Oracle Functions実行環境の構築</a><ul><li><a href="#2-1-oracle-functionsが利用するvcnの作成">2-1. Oracle Functionsが利用するVCNの作成</a></li><li><a href="#2-2-oracle-functionsのアプリケーションの作成">2-2. Oracle Functionsのアプリケーションの作成</a></li><li><a href="#2-3-oci-functionsのサンプルアプリケーション実行">2-3. OCI Functionsのサンプルアプリケーション実行</a></li></ul></li><li><a href="#オプション3podman環境で作業する場合">【オプション】3.Podman環境で作業する場合</a></li></ul>
             </nav>
           </aside>
         
@@ -676,16 +676,11 @@ Cloud Shellは開発専用ではなく、一時的にOCIコマンドを実行し
 Hello, world!
 </code></pre></div></div>
 
-<h2 id="3ファンクションの作成">3.ファンクションの作成</h2>
-<p>ここでは、ファンクションの作成と動作確認を行います。</p>
-
-<h3 id="オプション3-0-podman環境設定">【オプション】3-0. Podman環境設定</h3>
-
-<p class="notice--warning"><strong>この手順について</strong><br />
-この手順は、Dockerの代わりにPodmanがインストールされた環境向けの手順です。<br />
+<h2 id="オプション3podman環境で作業する場合">【オプション】3.Podman環境で作業する場合</h2>
+<p>この手順は、Dockerの代わりにPodmanがインストールされた環境向けの手順です。<br />
 Dockerを利用する方はこの手順は無視してください。<br />
 Cloud Shellを利用している方は、この手順は不要です。<br />
-なお、PodmanはFn Project CLI v0.6.12以降で利用可能です。　　</p>
+なお、PodmanはFn Project CLI v0.6.12以降で利用可能です。</p>
 
 <p>Fn CLIのconfigを編集し、利用するコンテナエンジンを以下のようにPodmanに変更します。</p>
 
@@ -699,88 +694,6 @@ Cloud Shellを利用している方は、この手順は不要です。<br />
 
 <p>以上で、Podman環境設定は完了です。</p>
 
-<h3 id="3-1-ファンクションプロジェクトの作成">3-1. ファンクションプロジェクトの作成</h3>
-
-<p>まず、ファンクションプロジェクトを作成します。<br />
-作成するアプリケーションの言語は以下から選択することができます。</p>
-
-<ul>
-  <li>サポートする言語
-    <ul>
-      <li>Go</li>
-      <li>Java</li>
-      <li>Node.js</li>
-      <li>Python</li>
-      <li>Ruby</li>
-    </ul>
-  </li>
-</ul>
-
-<p>今回は、Javaでアプリケーションを作成します。<br />
-ここからは<a href="#1cloud-shellのセットアップ">1.Cloud Shellのセットアップ</a>でセットアップしたCloud Shellを利用していきます。<br />
-まずは、<code class="language-plaintext highlighter-rouge">fn init</code>コマンドを使用してファンクションのひな形を作成します。</p>
-
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">fn init</code>コマンド
-    <ul>
-      <li>–runtime:使用する言語を指定します。今回はjavaを指定します。</li>
-      <li>–trigger:HTTPのエンドポイントを追加するためのオプション</li>
-    </ul>
-  </li>
-</ul>
-
-<p>以下のコマンドを実行し、ファンクションプロジェクトを作成します。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn init --runtime java helloworld-func
-</code></pre></div></div>
-
-<h3 id="3-2-ファンクションのデプロイ">3-2. ファンクションのデプロイ</h3>
-<p>4-1で作成したファンクションのデプロイを行います。</p>
-
-<p>以下のコマンドを実行し、ファンクションプロジェクトに移動します。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd helloworld-func
-</code></pre></div></div>
-
-<p>以下のコマンドを実行し、ファンクションをデプロイします。<br />
-–appでアプリケーション名を指定します。<br />
-指定するアプリケーションは、<a href="#2-4-oracle-functionsのアプリケーションの作成">2-4. Oracle Functionsのアプリケーションの作成</a>で作成したアプリケーション名です。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn deploy --app helloworld-app
-</code></pre></div></div>
-
-<p>ファンクションがデプロイされていることを確認します。<br />
-OCIのコンソールに移り、”開発者サービス”の”コンテナ・レジストリ”をクリックします。
-<img src="04-01.png" alt="" /></p>
-
-<p>OCIRのレジストリに先ほどデプロイしたファンクションがアップロードされていることを確認します。レジストリ上のファンクションは、[context名]/[Oracle Functionsプロジェクト名]になっています。<br />
-このハンズオンでは、”functions-handson/helloworld-func”になります。
-<img src="04-02.png" alt="" /></p>
-
-<p>次にOracle Functionsアプリケーションにhelloworld-funcがデプロイされていることを確認します。
-OCIのコンソールに移り、”開発者サービス”の”ファンクション”をクリックします。
-<img src="03-12.png" alt="" /></p>
-
-<p>“helloworld-app”をクリックします。<br />
-<img src="04-03.png" alt="" /></p>
-
-<p>“機能”に”helloworld-func”が表示されていればデプロイ成功です。<br />
-<img src="04-04.png" alt="" /></p>
-
-<h3 id="3-3-oracle-functionsの実行">3-3. Oracle Functionsの実行</h3>
-<p>Oracle Functionsを実行します。</p>
-
-<p>以下のコマンドを実行し、ファンクションが実行されることを確認します。<br />
-引数は[Oracle Functionsアプリケーション名] [ファンクション名]の順に指定します。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn invoke helloworld-app helloworld-func
-</code></pre></div></div>
-
-<p>以下のように表示されれば成功です。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello, World!
-</code></pre></div></div>
-
         
       </section>
 
@@ -791,7 +704,7 @@ OCIのコンソールに移り、”開発者サービス”の”ファンク�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-02T18:29:40+09:00">September 2, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-02T20:10:05+09:00">September 2, 2024</time></p>
 
       </footer>
 
