@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-02T20:10:05+09:00">
+  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
 
 
 
@@ -304,7 +304,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Network Firewallを構築する">
     <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
-    <meta itemprop="datePublished" content="2024-09-02T20:10:05+09:00">
+    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
     
 
     <div class="page__inner-wrap">
@@ -315,14 +315,18 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-ネットワークの構築">1. ネットワークの構築</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-internet-gatewayの作成">1-2. Internet Gatewayの作成</a></li><li><a href="#1-3-ルート表の作成">1-3. ルート表の作成</a></li><li><a href="#1-4-security-listの作成">1-4. Security Listの作成</a></li><li><a href="#1-5-oci-network-firewallインスタンスを配置するsubnetの作成">1-5. OCI Network Firewallインスタンスを配置するSubnetの作成</a></li><li><a href="#1-6-コンピュートインスタンスを配置するsubnetの作成">1-6. コンピュートインスタンスを配置するSubnetの作成</a></li></ul></li><li><a href="#2-network-firewallポリシーの作成">2. Network Firewallポリシーの作成</a><ul><li><a href="#2-1-基本情報の入力">2-1. 基本情報の入力</a></li><li><a href="#2-2-サービスリストの作成">2-2. サービス・リストの作成</a></li><li><a href="#2-3-urlリストの作成">2-3. URLリストの作成</a></li><li><a href="#2-4-セキュリティルールの作成">2-4. セキュリティ・ルールの作成</a></li><li><a href="#2-5-補足sslについて">2-5. (補足)SSLについて</a></li></ul></li><li><a href="#3-network-firewall-インスタンスの作成">3. Network Firewall インスタンスの作成</a></li><li><a href="#4-ルート表の編集">4. ルート表の編集</a><ul><li><a href="#4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</a></li><li><a href="#4-2-network-firewallインスタンスを作成したサブネットのルート表の編集">4-2. Network Firewallインスタンスを作成したサブネットのルート表の編集</a></li><li><a href="#4-3-コンピュートインスタンスを作成するサブネットのルート表の編集">4-3. コンピュートインスタンスを作成するサブネットのルート表の編集</a></li><li><a href="#4-4-internet-gateway用のルート表をinternet-gatewayに紐づけ">4-4. Internet Gateway用のルート表をInternet Gatewayに紐づけ</a></li></ul></li><li><a href="#5-security-listの編集">5. Security Listの編集</a><ul><li><a href="#5-1-コンピュートインスタンスを立ち上げる用のサブネットのsecurity-listの編集">5-1. コンピュートインスタンスを立ち上げる用のサブネットのSecurity Listの編集</a></li><li><a href="#5-2-network-firewallインスタンスを配置するサブネット用のsecurity-listの編集">5-2. Network Firewallインスタンスを配置するサブネット用のSecurity Listの編集</a></li></ul></li><li><a href="#6-コンピュートインスタンスの作成">6. コンピュートインスタンスの作成</a><ul><li><a href="#6-1-linuxのコンピュートインスタンスの作成">6-1. Linuxのコンピュート・インスタンスの作成</a></li><li><a href="#6-2-windowsのインスタンスの作成">6-2. Windowsのインスタンスの作成</a></li></ul></li><li><a href="#7-oci-network-firewallの動作確認">7. OCI Network Firewallの動作確認</a><ul><li><a href="#7-1-wgetコマンドでの確認">7-1. wgetコマンドでの確認</a></li><li><a href="#7-2-windowsのブラウザから確認">7-2. Windowsのブラウザから確認</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-network-firewallについて">0. Network Firewallについて</a><ul><li><a href="#各サブネットとルート表について">各サブネットとルート表について</a></li><li><a href="#アプリケーションリストについて">アプリケーション・リストについて</a></li><li><a href="#サービスリストについて">サービス・リストについて</a></li><li><a href="#urlリストについて">URLリストについて</a></li><li><a href="#アドレスリストについて">アドレス・リストについて</a></li><li><a href="#セキュリティルールについて">セキュリティ・ルールについて</a></li><li><a href="#ユーザーについて">ユーザーについて</a></li></ul></li><li><a href="#1-ネットワークの構築">1. ネットワークの構築</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-internet-gatewayの作成">1-2. Internet Gatewayの作成</a></li><li><a href="#1-3-ルート表の作成">1-3. ルート表の作成</a></li><li><a href="#1-4-security-listの作成">1-4. Security Listの作成</a></li><li><a href="#1-5-oci-network-firewallインスタンスを配置するsubnetの作成">1-5. OCI Network Firewallインスタンスを配置するSubnetの作成</a></li><li><a href="#1-6-コンピュートインスタンスを配置するsubnetの作成">1-6. コンピュートインスタンスを配置するSubnetの作成</a></li></ul></li><li><a href="#2-network-firewallポリシーの作成">2. Network Firewallポリシーの作成</a><ul><li><a href="#2-1-基本情報の入力">2-1. 基本情報の入力</a></li><li><a href="#2-2-サービスリストの作成">2-2. サービス・リストの作成</a></li><li><a href="#2-3-urlリストの作成">2-3. URLリストの作成</a></li><li><a href="#2-4-セキュリティルールの作成">2-4. セキュリティ・ルールの作成</a></li><li><a href="#2-5-補足sslについて">2-5. (補足)SSLについて</a></li></ul></li><li><a href="#3-network-firewall-インスタンスの作成">3. Network Firewall インスタンスの作成</a></li><li><a href="#4-ルート表の編集">4. ルート表の編集</a><ul><li><a href="#4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</a></li><li><a href="#4-2-network-firewallインスタンスを作成したサブネットのルート表の編集">4-2. Network Firewallインスタンスを作成したサブネットのルート表の編集</a></li><li><a href="#4-3-コンピュートインスタンスを作成するサブネットのルート表の編集">4-3. コンピュートインスタンスを作成するサブネットのルート表の編集</a></li><li><a href="#4-4-internet-gateway用のルート表をinternet-gatewayに紐づけ">4-4. Internet Gateway用のルート表をInternet Gatewayに紐づけ</a></li></ul></li><li><a href="#5-security-listの編集">5. Security Listの編集</a><ul><li><a href="#5-1-コンピュートインスタンスを立ち上げる用のサブネットのsecurity-listの編集">5-1. コンピュートインスタンスを立ち上げる用のサブネットのSecurity Listの編集</a></li><li><a href="#5-2-network-firewallインスタンスを配置するサブネット用のsecurity-listの編集">5-2. Network Firewallインスタンスを配置するサブネット用のSecurity Listの編集</a></li></ul></li><li><a href="#6-コンピュートインスタンスの作成">6. コンピュートインスタンスの作成</a><ul><li><a href="#6-1-linuxのコンピュートインスタンスの作成">6-1. Linuxのコンピュート・インスタンスの作成</a></li><li><a href="#6-2-windowsのインスタンスの作成">6-2. Windowsのインスタンスの作成</a></li></ul></li><li><a href="#7-oci-network-firewallの動作確認">7. OCI Network Firewallの動作確認</a><ul><li><a href="#7-1-wgetコマンドでの確認">7-1. wgetコマンドでの確認</a></li><li><a href="#7-2-windowsのブラウザから確認">7-2. Windowsのブラウザから確認</a></li></ul></li></ul>
             </nav>
           </aside>
         
         <p>パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。
 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。</p>
 
-<p><strong>所要時間 :</strong> 約70分</p>
+<p><strong>所要時間 :</strong></p>
+<ul>
+  <li>約70分<br />
+(Network Firewallインスタンスの作成に40分ほどかかります)</li>
+</ul>
 
 <p><strong>前提条件 :</strong></p>
 <ul>
@@ -341,65 +345,50 @@
 
 <p><img src="nfw0.png" alt="画面ショット0" /></p>
 
-<ul>
-  <li><strong>Network Firewallについて</strong></li>
-</ul>
+<h1 id="0-network-firewallについて">0. Network Firewallについて</h1>
 
 <p>Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。
  Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。
  Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。</p>
 <ul>
   <li>パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御</li>
-  <li>
-    <p>アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止
-<br /></p>
-  </li>
-  <li><strong>各サブネットとルート表について</strong></li>
+  <li>アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止
+<br /></li>
 </ul>
+
+<h2 id="各サブネットとルート表について">各サブネットとルート表について</h2>
 
 <p>インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。その後Network Firewallによって検査されたトラフィックはPublic Subnet内のインスタンスへ転送されます。
  Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network Firewallによって検査されたアウトバウンド通信はInternet Gatewayを介してインターネットに出ます。
 <br /></p>
 
-<ul>
-  <li><strong>アプリケーション・リストについて</strong></li>
-</ul>
+<h2 id="アプリケーションリストについて">アプリケーション・リストについて</h2>
 
 <p>Network Firewallポリシーのルールの作成時に使用できるICMPまたはICMPv6コードのリストを作成することができます。
 <br /></p>
 
-<ul>
-  <li><strong>サービス・リストについて</strong></li>
-</ul>
+<h2 id="サービスリストについて">サービス・リストについて</h2>
 
 <p>Network Firewallポリシーのルールの作成時に使用できるTCPまたはUDPのポート番号のリストを作成することができます。
 <br /></p>
 
-<ul>
-  <li><strong>URLリストについて</strong></li>
-</ul>
+<h2 id="urlリストについて">URLリストについて</h2>
 
 <p>Network Firewallポリシーのルールの作成時に使用できるURLのリストを作成することができます。
 <br /></p>
 
-<ul>
-  <li><strong>アドレス・リストについて</strong></li>
-</ul>
+<h2 id="アドレスリストについて">アドレス・リストについて</h2>
 
 <p>Network Firewallポリシーのルールの作成時に使用するIPv4, IPv6またはFQDNのリストを作成することができます。
 <br /></p>
 
-<ul>
-  <li><strong>セキュリティ・ルールについて</strong></li>
-</ul>
+<h2 id="セキュリティルールについて">セキュリティ・ルールについて</h2>
 
 <p>Network Firewallポリシーにて作成したアプリケーション・リスト、サービス・リスト、URLリスト、アドレス・リストを基にアクセスを許可/拒否、または脅威検知/脅威防御するよう設定することが可能です。<br />
  本チュートリアルではポート番号22, 3389, 443のアクセスと、URL「www.google.com」「www.google.com」のアクセスを許可します。一方「www.yahoo.co.jp」「www.facebook.com」のアクセスを拒否し、実際にコンピュートインスタンスから各URLへアクセスが許可/拒否されることを確認します。
 <br /></p>
 
-<ul>
-  <li><strong>ユーザーについて</strong></li>
-</ul>
+<h2 id="ユーザーについて">ユーザーについて</h2>
 
 <p>本チュートリアルでは、Network Firewallの環境を構築したらユーザーとしてSSHでPublic Subnet内のコンピュートインスタンスにアクセスし、コンピュートインスタンスからネットワーク・ファイアウォール・ポリシーで設定したURLへのアクセスが許可/拒否されることを確認します。
  URLのアクセス制御の動作確認方法として、wgetコマンドを用いる方法と、ブラウザを用いる方法の2つを紹介します。
@@ -1297,7 +1286,7 @@ Windowsのホーム画面左下のメニューから「Server Manager」を選�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-02T20:10:05+09:00">September 2, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
 
       </footer>
 
