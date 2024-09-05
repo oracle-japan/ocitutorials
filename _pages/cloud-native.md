@@ -154,3 +154,6 @@ lastmod: "2022-04-06"
 
 + **[OCI Cacheを使ってみよう](/ocitutorials/cloud-native/ocicache-for-beginners/)**  
     Oracleが提供するフルマネージドのRedisサービスであるOCI Cacheを体験していただけるチュートリアルです。【所要時間:約1時間】
+
++ **[OCI Cacheを使ってレスポンス・キャッシングをしてみよう](/ocitutorials/cloud-native/ocicache-for-commons/)**  
+    OCI Cacheをレスポンス・キャッシングのキャッシュサーバーとして使う方法を学んでいただけるチュートリアルです。【所要時間:約1.5時間】
