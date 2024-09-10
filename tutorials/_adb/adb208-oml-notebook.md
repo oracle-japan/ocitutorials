@@ -4,8 +4,8 @@ excerpt: "Oracle Machine Learningで液体の品質の予測や、同時購入�
 order: "3_208"
 layout: single
 header:
-  teaser: "/adb/adb208-oml-notebook/img12.jpg"
-  overlay_image: "/adb/adb208-oml-notebook/img12.jpg"
+  teaser: "/adb/adb208-oml-notebook/img20.png"
+  overlay_image: "/adb/adb208-oml-notebook/img20.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -33,11 +33,10 @@ header:
 **目次**
 
 - [準備編](#anchor1)
-    - [OMLユーザを作成する](#anchor1-1)
-    - [作成したOMLユーザのRESTサービスを有効化する](#anchor1-2)
-    - [データセットをADBにロードする](#anchor1-3)
-      - [liquid.csvをDatabase Actionsからロード](#anchor1-3-1)
-      - [order_items.csvをObject Storageにアップロード](#anchor1-3-2)
+    - [OML用のユーザを作成する](#anchor1-1)
+    - [データセットをADBにロードする](#anchor1-2)
+      - [liquid.csvをDatabase Actionsからロード](#anchor1-2-1)
+      - [order_items.csvをObject Storageにアップロード](#anchor1-2-2)
 - [機械学習編](#anchor2)
     - [OML Notebookを使い始める](#anchor2-1)
     - [機械学習モデルをビルド・評価する](#anchor2-2)
@@ -51,113 +50,76 @@ header:
 
 # 準備編
 
-## OMLユーザを作成する
+## OML用のユーザを作成する
 
-1. **ツール**タブの**Oracle MLユーザ管理**で、MLユーザを作成していきましょう。
+1. **Database Actions**から、MLユーザを作成していきましょう。
 
-   ![image.png](img0.jpg)
+   ![image.png](img0.png)
 
-1. ADBのADMINユーザの情報を入力し、**サインイン**をクリックして下さい。
+1. ADMINユーザーでDatabase Actionsにサインインできていることが確認できたら、**管理**から**データベース・ユーザー**をクリックします。
 
-   ![image.png](img0.5.jpg)。。
+   ![image.png](img1.png)
 
-1. **+作成ボタン**をクリックし、機械学習用のユーザを作成します。
+1. 以下のように設定して**ユーザーの作成**をクリックし、機械学習用のユーザを作成します。
+   * ユーザー名：**OMLUSER**
+   * パスワード：例：**Welcome12345#**
+   * 表領域の割り当て制限：**UNLIMITED**
+   * OML、Webアクセスのトグルを**ON**
+   ![image.png](img2.png)
 
-   ![image.png](img1.jpg)
+1. ユーザーが作成されました。
 
-1. ユーザーの情報を入力し、画面右上**作成ボタン**をクリックして下さい。
+   ![image.png](img3.png)
 
-   ![image.png](img2.jpg)
+1. Database Actionからサインアウトします。
 
-1. ユーザOMLが作成されたことを確認し、ADW詳細画面へ戻ります。
-
-   ![image.png](img3.jpg)
-
-<a id="anchor1-2"></a>
-
-## 作成したOMLユーザのRESTサービスを有効化する
-
-後述のデータロードをステップで、OMLユーザでDatabase Actionsを活用していきます。
-OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにログインできないので、OMLユーザのRESTを有効化していきましょう。
-
-1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)で学習した**Database Actionsを利用したインスタンスへの接続** を参照し、Database Actionsを起動し、Adminユーザーで接続してください。**ツール**タブから、**データベース・アクションを開く**をクリックしてください。
-
-   ![画面ショット1-1](img19.png)
-
-1. ADMINユーザで**サインイン**して下さい。
-
-   ![image.png](img40.png)
-
-1. Database Actionsのランディングページから**データベース・ユーザ** を選択します。
-
-   ![image.png](img41.png)
-
-1. 作成済の**OMLユーザ**を確認することができます。
-
-   ![image.png](img42.png)
-
-1. **OMLユーザ**の**オプションボタン**から**RESTの有効化**をクリックして下さい。
-
-   ![image.png](img43.png)
-
-1. **REST対応ユーザー**をクリックして下さい。
-
-   ![image.png](img44.png)
-
-1. **OMLユーザ**に**RESTの有効化の**マークを確認することができます。
+   ![image.png](img4.png)
 
 
-   ![image.png](img45.png)
+1. 作成済のOMLUSERユーザーで**サインイン**して下さい。
 
-1. 画面右上の**ADMIN**をクリックし表示されたドロップダウンメニュから、**サインアウト**をして下さい。
-
-   ![image.png](img46.png)
-
-1. 作成済のOMLユーザで**サインイン**して下さい。
-
-   ![image.png](img47.png)
+   ![image.png](img5.png)
 
 <br>
 
-<a id="anchor1-3"></a>
+<a id="anchor1-2"></a>
 
 ## データセットをADBにロードする
 
-<a id="anchor1-3-1"></a>
+<a id="anchor1-2-1"></a>
 
 ###  liquid.csvをDatabase Actionsからロード
 
-1. Database Actionsのランディングページのデータ・ツールから　**データ・ロード** を選択します。
+1. Database Actionsの起動パッドの**Data Stusio**から、**データ・ロード** を選択します。
 
-   ![image.png](img21.jpg)
+   ![image.png](img6.png)
 
-1. データの処理には、**データのロード** を選択し、データの場所には、**ローカル・ファイル** を選択して **次** をクリックします。
+1. **データのロード** > **ローカル・ファイル** を選択します。**ファイルの選択**をクリックし、ダウンロードして解凍した **liquid.csv** を選択します。
 
-   ![image.png](img22.jpg)
 
-1. **ファイルの選択**をクリックし、ダウンロードして解凍した **liquid.csv** を選択します。
+   ![image.png](img7.png)
+   ![image.png](img8.png)
 
-   ![image.png](img23.jpg)
 
 1. liquid.csvがロードできる状態になりました。ロード前に**ペンアイコン**をクリックし、詳細設定を確認・変更できます。
 
-   ![image.png](img24.jpg)
+   ![image.png](img9.png)
 
 1. liquid.csvの表定義等のデータのプレビューを確認したら **閉じる** をクリックします。
 
-   ![image.png](img25.jpg)
+   ![image.png](img10.png)
 
-1. **緑色の実行ボタン**をクリックし、データのロードを開始します。
+1. **開始**をクリック後、ポップアップの**実行**をクリックし、データのロードを開始します。
 
-   ![image.png](img26.jpg)
+   ![image.png](img11.png)
 
 1. データ・ロード・ジョブの実行を確認するポップアップが表示されるので、**実行** をクリックします。
 
-   ![image.png](img27.jpg)
+   ![image.png](img12.png)
 
-1. liquid.csvに**緑色のチェックマーク**が付き、ロードが完了しました。**完了**をクリックします。
+1. liquid.csvのロードが完了しました。
 
-   ![image.png](img28.jpg)
+   ![image.png](img13.png)
 
 <a id="anchor1-3-2"></a>
 
@@ -165,7 +127,7 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
 
 1. [ADBインスタンスを作成しよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)で学習した**オブジェクトストレージへのデータアップロード** を参照し、**order_items.csv**を**Object Storage**にアップロードして下さい。
 
-   ![image.png](img29.jpg)
+   ![image.png](img14.png)
 
 <br>
 
@@ -177,37 +139,25 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
 
 ## OML Notebookを使い始める
 
-1. ADW詳細画面の**サービス・コンソール**をクリックして下さい。
+1. ADB詳細画面の**ツール構成**タブから、OMLにアクセスするパブリック・アクセスURLをコピーし、別タブで開きます。
 
-   ![image.png](img4.jpg)
-
-1. サービスコンソール画面左の**開発**をクリックして下さい。
-
-   ![image.png](img5.jpg)
-
-1. サービスコンソール開発タブ内の、**Oracle Machine Learningノートブック**をクリックして下さい。
-
-   ![image.png](img6.jpg)
+   ![image.png](img15.png)
 
 1. 先ほどOMLユーザ管理で新規作成したユーザ(OML)で**サインイン**して下さい。
 
-   ![image.png](img7.jpg)
+   ![image.png](img16.png)
 
 1. クイック・アクションの**ノートブック**をクリックして下さい。
 
-   ![image.png](img8.jpg)
+   ![image.png](img17.png)
 
 1. 任意のノートブックの名前を入力後、**OK**をクリックして下さい。
 
-   ![image.png](img9.jpg)
+   ![image.png](img18.png)
 
-1. 新規作成した**ノートブック名**をクリックして下さい。
+1. ノートブックの画面に遷移します。
 
-   ![image.png](img10.jpg)
-
-1. ノートブックの画面に遷移して下さい。
-
-   ![image.png](img11.jpg)
+   ![image.png](img19.png)
 
 1. 作成したノートブックでスクリプトを書き始めることが可能になりました。
 
@@ -220,17 +170,17 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
    oml.isconnected()
    ```
 
-   ![image.png](img12.jpg)
+   ![image.png](img20.png)
 
    下記のコマンドで、同じノートブック内でSQLを使用したLiquid表へのクエリを実行してみましょう。
 
    ```
-   %python
+   %sql
 
    select * from liquid;
    ```
 
-   ![image.png](img50.jpg)
+   ![image.png](img21.png)
 
 <br>
 

@@ -61,7 +61,7 @@ header:
 > ![searchbox](searchbox.png)  
 
 
-今回は例として、レベルに **Begginer**、提供タイプ **Run on Livelabs**、シリーズに **Autonomous DB Shared**を選択し、表示される結果から **Load and Analyze Your Data with Autonomous Database**を選択します。
+今回は例として、レベルに **Beginner**、提供タイプ **Run on LiveLabs**、シリーズに **Autonomous DB Serverless**を選択し、表示される結果から **Load and Analyze Your Data with Autonomous Database**を選択します。
 
    ![faceted2](faceted2.png)  
 
@@ -80,7 +80,7 @@ header:
 
    ![reserve](reserve.png)  
 
-実行すると、**My Reservation** 画面でステータスを確認できます。今すぐ実行とした場合には、環境準備が行われ、完了するとStatusがAvailableとなります。その後 **Launch Workshop** をクリックすることでワークショップを開始できます。  
+実行すると、**My Reservation** 画面でステータスを確認できます。今すぐ実行とした場合には、環境準備が行われ、完了すると **Launch Workshop** をクリックすることができるようになります。  
    ![myreservation](myreservation.png)  
 
 スケジュールを設定した場合には、その予定が表示されます。
@@ -107,7 +107,7 @@ Reservation Infomationでは以下を確認できます。　　
    ![signin](signin.png)  
 
 
-最初のサインインの後はパスワードの変更画面が表示されます。パスワード要件に従った任意のパスワードに変更し、**Save New Password**をクリックします。
+最初のサインインの後はパスワードの変更画面が表示されます。パスワード要件に従った任意のパスワードに変更します。
 
    ![changepasswd](changepasswd.png)  
 

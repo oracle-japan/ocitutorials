@@ -4,8 +4,8 @@ excerpt: "まずは準備作業として、現行ご利用いただいているO
 order: "3_301"
 layout: single
 header:
-  teaser: "/adb/adb301-tac/sa00x.png"
-  overlay_image: "/adb/adb301-tac/sa00x.png"
+  teaser: "/adb/adb301-create-source-db/img103.png"
+  overlay_image: "/adb/adb301-create-source-db/img103.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -21,7 +21,11 @@ header:
   * [301: 移行元となるデータベースを作成しよう（本章）](/ocitutorials/adb/adb301-create-source-db){:target="_blank"} 
   * [302: スキーマ・アドバイザを活用しよう](/ocitutorials/adb/adb302-schema-adviser){:target="_blank"} 
   * [303: Data Pumpを利用してデータを移行しよう](/ocitutorials/adb/adb303-datapump){:target="_blank"} 
-  * [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう（準備中）]
+  * [304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう](/ocitutorials/adb/adb304-database-migration-prep){:target="_blank"}
+  * [305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行](/ocitutorials/adb/adb304-database-migration-prep){:target="_blank"}
+  * [306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行](/ocitutorials/adb/adb304-database-migration-prep){:target="_blank"}
+
+
 <br/>
 
 ----
@@ -57,7 +61,7 @@ TeraTermを起動しBaseDBインスタンスにSSHでアクセスするところ
 以降では、BaseDBインスタンスが以下の値で作成されていることを前提として記載しています。（その他、DBシステム名やシェイプ等は基本的に任意です）
 
 * ホスト名接頭辞 : **dbcs01**
-* データベースのバージョン：**12.2**
+* データベースのバージョン：**19.23**
 * パスワード：**WelCome123#123#**
 * PDBの名前：**pdb1**
 

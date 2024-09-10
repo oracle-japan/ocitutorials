@@ -102,7 +102,7 @@ toc: true
 + **[211: クローン機能を使ってみよう](/ocitutorials/adb/adb211-clone/){:target="_blank"}**  
     * ADBを簡単に複製することができる、クローニング機能についてご紹介します
 
-+ **[212: Autonomous Data Guardを構成してみよう](/ocitutorials/adb/adb212-audg/){:target="_blank"}**  
++ **[212: Autonomous Database を災害対策構成にしてみよう](/ocitutorials/adb/adb212-audg/){:target="_blank"}**  
     * たった数クリックでスタンバイ・データベースをプロビジョニングしDR構成を実現します
 
 + **[213 : Application Continuityを設定しよう](/ocitutorials/adb/adb213-tac/){:target="_blank"}**  

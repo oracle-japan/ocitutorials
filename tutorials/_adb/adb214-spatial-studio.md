@@ -298,7 +298,7 @@ group by b.station_name;
 ```
 
 + sdo_anyinteract：表内のジオメトリに、特定のジオメトリとの位相関係があるかどうかを確認する、つまり東京都の小地域の空間データと駅の座標位置になんらかの位相関係があればTRUEを返します。
-+ sdo_geometry：Oracleのデータベース上に点やポリゴンを収容するオブジェクト型です。引数の2001は二次元の点を表し、8307はWGS84経度/緯度座標系に関連付けられています。詳しくは[こちら](https://docs.oracle.com/adb/121/SPATL/sdo_geometry-object-type.htm#SPATL489){:target="_blank"} をご参照ください。
++ sdo_geometry：Oracleのデータベース上に点やポリゴンを収容するオブジェクト型です。引数の2001は二次元の点を表し、8307はWGS84経度/緯度座標系に関連付けられています。詳しくは[こちら](https://docs.oracle.com/cd/F19136_01/spatl/spatial-datatypes-metadata.html#GUID-683FF8C5-A773-4018-932D-2AF6EC8BC119){:target="_blank"} をご参照ください。
 + sdo_point_type：点ジオメトリの座標を格納するオブジェクト型です。
 
 10秒ほど待つと、以下のような結果が返されます。東京都の各駅周辺の地域の年齢階層別の人口が表示されています。
@@ -378,7 +378,7 @@ Oracle Spatial StudioはAutonomous Databaseに標準で含まれております�
 <BR/>
 
 # 参考資料
-+ 『共有Exadata InfrastructureでのOracle Autonomous Databaseの使用』 [14 Autonomous DatabaseでのOracle Spatialの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/spatial-autonomous-database.html#GUID-2090A775-E049-4695-B371-E583313A5F8C){:target="_blank"}
++ 『Oracle Autonomous Database Serverlessの使用』 [Autonomous DatabaseでのOracle Spatialの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/spatial-autonomous-database.html#GUID-2090A775-E049-4695-B371-E583313A5F8C){:target="_blank"}
 + Oracle Database 『開発者ガイド』 [20 空間演算子](https://docs.oracle.com/cd/E96517_01/spatl/spatial-operators-reference.html#GUID-85422854-5133-4F1D-BF0E-228CA6EDAF87){:target="_blank"}
 
 

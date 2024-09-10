@@ -1,6 +1,6 @@
 ---
-title: "402 : Database Linkによるデータ連携"
-excerpt: "Database Linkを使えば、あるデータベースから別のデータベースへのアクセスが可能になります。Autonomous DatabaseにおけるDatabase Link作成手順をご紹介します。"
+title: "402 : Database Linkによる他のデータベースとのデータ連携"
+excerpt: "Database Linkを使えば、あるデータベースから別のデータベースへのアクセスが可能になります。Autonomous Databaseと他のOracle Database とのDatabase Link作成手順をご紹介します。"
 order: "3_402"
 layout: single
 header:
@@ -19,57 +19,69 @@ header:
 
    ![DatabaseLinkイメージ](DatabaseLink.jpg)
 
-Autonomous Databaseでは以下の3つのパターンでDatabase Linkを作成いただくことができます。
-
-本文書では2のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、
-他のOracle Database（リンク先）にアクセスする手順を記載します。
-
-その後、補足と言う形でパターン1, 3についても記載します。
+Autonomous Database では以下の4つのパターンでDatabase Linkを作成いただくことができます。
 
    ![DatabaseLink_optionイメージ](DatabaseLink_option.png)
+  
+本チュートリアルでは2のパターンであるAutonomous Database（リンク元）にDatabase Linkを作成し、他のOracle Database（リンク先）にアクセスする手順を記載します。
 
-なお、本文書ではパブリックIPアドレスを持つBaseDBを前提としています。プライベートIPアドレスへのDatabase Link作成については、[こちらの記事](https://qiita.com/wahagon/items/7964b3ab19da625bfb39){:target="_blank"} で紹介しています。  
-ご不明な点がございましたら、担当営業までお問い合わせください。
+補足と言う形でパターン1、3、4については、[3.その他のパターン](#anchor3)にて記載しています。
+   
+本チュートリアルでは、リンク先である他のOracle Databaseとして、OCIのBase Database Serviceを使用します。手順としてはオンプレミスのOracle Databaseも同様になります。またパブリック・アクセスが可能なBaseDBと、プライベート・アクセスのみ可能なBaseDBへのDatabase Linkのそれぞれの手順を記載しています。
+
 
 **目次 :**
-  + [1.BaseDBインスタンスの作成およびスキーマのインポート](#anchor1)
-  + [2.BaseDBにてTCPS認証（SSL認証）を有効化](#anchor2)
-  + [3.BaseDBのウォレットファイルをADBに渡す](#anchor3)
-  + [4.VCNのイングレス・ルールを更新](#anchor4)
-  + [5.ADBにてDatabase Linkを作成](#anchor5)
-  + [6.エラーへの対応例](#anchor6)
-  + [7.その他のパターン](#anchor7)
-  + [8.おわりに](#anchor8)
+  + [1.パブリック・アクセス可能なOracle DatabaseへのDatabase Link](#anchor1)
+    + [1-1.BaseDBにてTCPS認証（SSL認証）を有効化](#anchor1-1)
+    + [1-2.BaseDBのウォレットファイルをADBに渡す](#anchor1-2)
+    + [1-3.VCNのイングレス・ルールを更新](#anchor1-3)
+    + [1-4.ADBにてDatabase Linkを作成](#anchor1-4)
+    + [1-5.エラーへの対応例](#anchor1-5)
+  + [2.プライベート・アクセスのみ可能なOracle DatabaseへのDatabase Link](#anchor2)
+  + [3.その他のパターン](#anchor3)
+  + [4.おわりに](#anchor4)
 
 **前提条件**
 + ADBインスタンスが構成済みであること
     <br>※ADBインタンスの作成方法については、
     [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 
-<BR>
++ BaseDBインスタンスを構成済み、かつサンプルスキーマをインストール済みであること
+    <br>※手順については、
+    [301 : 移行元となるデータベースを作成しよう](/ocitutorials/adb/adb301-create-source-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成し、HRスキーマを作成してください。
 
-**所要時間 :** 約100分（BaseDBのインスタンスの作成時間を含む）
+<br>
+
+ADBからのDatabase Linkは大きく分けて2種類の接続方法があります。
+
++ TCPS接続(SSL認証): ADBではデフォルトでウォレットを使ったTCPS接続を使用しているため、ターゲット・データベース(リンク先)もTCPS接続を使用するよう設定する必要があります。パブリック・アクセス可能なOracle Database へのDatabase Linkではこの方式を利用します。
++ TCP接続: こちらはウォレットを使用しない接続方式です。この接続方式を使用する場合、ターゲット・データベース(リンク先)がTCPS接続を使用するよう設定する必要はありません。プライベート・アクセス可能なOracle DatabaseへのDatabase Linkでは、TCPS接続に加え、この接続方式を利用できます。[2.プライベート・アクセスのみ可能なOracle DatabaseへのDatabase Link](#anchor2)ではこの方式を利用します。
+
+本チュートリアルでは上記2つの接続方式のそれぞれの手順を記載します。
+
+
+<br>
+
+**所要時間 :** 約60分（BaseDBのインスタンスの作成時間を含む）
 
 <BR>
 
 <a id="anchor1"></a>
 
-# 1. BaseDBインスタンスの作成およびスキーマのインポート
+# 1. TCPS接続（SSL認証）を使用したDatabase Link
+ここではADBのウォレットを使用して、ソースをADBとして、リンク先がBaseDBのTCPS接続のDatabase Linkを作成します。
 
-まず、サンプル・データベースとして、Database Linkのリンク先となるBaseDBインスタンスを作成します。
-[301 : 移行元となるデータベースを作成しよう](/ocitutorials/adb/adb301-create-source-db/){:target="_blank"} を参考に、BaseDBインスタンスを作成し、HRスキーマを作成してください。
+なおここではBaseDBはパブリックIPアドレスを持つインスタンスとして作成しています。プライベートなBaseDBへのDatabase Linkは[2.プライベート環境のBaseDBへのDatabase Link](#anchor2)に手順を記載しています。
 
 <BR>
 
-<a id="anchor2"></a>
+<a id="anchor1-1"></a>
 
-# 2. BaseDBにてTCPS認証（SSL認証）を有効化
-
-Autonomous Databaseは、すべての接続でSecure Sockets Layer (SSL)と証明書ベースの認証が使用されます。そのため、BaseDBにてTCPS 認証（SSL認証）を有効化する必要があります。   
+## 1-1. BaseDBにてTCPS認証（SSL認証）を有効化
 サーバーとクライアントの両サイドの認証を交換したウォレットをADBに渡すことで、これを実現します。
 
-## 2-1. ウォレット用のディレクトリの作成
-1. Tera Termを利用してBaseDBインスタンスに接続します。
+### 1-1-1. ウォレット用のディレクトリの作成
+1. Tera Term等のターミナルソフトを利用してBaseDBインスタンスに接続します。
 
 1. opcユーザーからrootユーザーにスイッチします。
   ```sh
@@ -89,7 +101,7 @@ chown -R oracle:oinstall /u01/certificate
 
 <br>
 
-## 2-2. サーバーのウォレットの作成
+### 1-1-2. サーバーのウォレットの作成
 1. oracleユーザーにスイッチします。
 ```sh
 sudo su - oracle
@@ -100,7 +112,7 @@ sudo su - oracle
 cd /u01/server/wallet/
 orapki wallet create -wallet ./ -pwd Oracle123456 -auto_login
 ```
-以降『2-4. 証明書の交換』まで、"Operation is successfully completed."となれば、OKです。エラーが発生する場合は、『4. サーバーのウォレットを作成します。』からやり直します。
+以降『1-1-4. 証明書の交換』まで、"Operation is successfully completed."となれば、OKです。エラーが発生する場合は、『1-1-2. サーバーのウォレットの作成』からやり直します。
 ![server_wallet_createイメージ](server_wallet_create.jpg)
 
 1. 自己署名証明書をウォレットに追加します。
@@ -109,7 +121,7 @@ orapki wallet add -wallet ./ -pwd Oracle123456 -dn "CN=dbcs" -keysize 1024 -self
 ```
 <br>
 
-## 2-3. クライアントのウォレットの作成
+### 1-1-3. クライアントのウォレットの作成
 1. ウォレットを作成します。
 ```sh
 cd /u01/client/wallet/
@@ -123,7 +135,7 @@ orapki wallet add -wallet ./ -pwd Oracle123456 -dn "CN=client" -keysize 1024 -se
 
 <br>
 
-## 2-4. 証明書の交換
+### 1-1-4. 証明書の交換
 サーバーとクライアントで証明書を交換します。
 
 1. サーバー証明書をエクスポートします。
@@ -165,7 +177,7 @@ chmod 640 cwallet.sso
 
 <br>
 
-## 2-5. ウォレット用のディレクトリの追加
+### 1-1-5. ウォレット用のディレクトリの追加
 サーバーのネットワークファイルに、ウォレットのディレクトリを追加します。
 
 1. gridユーザーにスイッチします。
@@ -220,7 +232,7 @@ cat $ORACLE_HOME/network/admin/sqlnet.ora
 
 <br>
 
-## 2-6. TCPS接続に使用する1522番ポートを解放
+### 1-1-6. TCPS接続に使用する1522番ポートを解放
 今回は、1522番ポートでTCPS接続をします。しかしBaseDBインスタンスでは、デフォルトで1522番ポートは開いていないため、開ける必要があります。
 1. rootユーザーにスイッチします。
 ```sh
@@ -249,7 +261,7 @@ service iptables restart
 
 <br>
 
-## 2-7. リスナーにTCPSエンドポイントを追加
+### 1-1-7. リスナーにTCPSエンドポイントを追加
 1. gridユーザーにスイッチします。
 ```sh
 sudo su - grid
@@ -333,11 +345,11 @@ The command completed successfully
 
 <br>
 
-<a id="anchor3"></a>
+<a id="anchor1-2"></a>
 
-# 3. BaseDBのウォレットファイルをADBに渡す
+## 1-2. BaseDBのウォレットファイルをADBに渡す
 
-## 3-1. ウォレットのダウンロード
+### 1-2-1. ウォレットのダウンロード
 /u01/client/walletにあるクライアントのウォレットcwallet.ssoを、ローカルにダウンロードします。
 
 1. oracleユーザーにスイッチします。
@@ -355,20 +367,20 @@ chmod 604 /tmp/cwallet.sso
 
 <br>
 
-## 3-2. Object Storageへのウォレットのアップロード
+### 1-2-2. Object Storageへのウォレットのアップロード
 
 [102:ADBにデータをロードしよう(Database Actions)](/ocitutorials/adb/adb102-dataload/){:target="_blank"}の「2.OCIオブジェクトストレージへのデータアップロード」を参考に、ダウンロードしたウォレットをObject Storageにアップロードします。
 
 <br>
 
-## 3-3. ADBへのウォレットの配置
-1. データベース・アクションでウォレット配置用のディレクトリ・オブジェクトを作成します。
-```
+### 1-2-3. ADBへのウォレットの配置
+1. ADMINユーザーでADBに接続し、ウォレット配置用のディレクトリ・オブジェクトを作成します。
+```sql
 CREATE DIRECTORY dblink_wallet_dir_dbcs AS 'walletdir';
 ```
 
 1. クレデンシャル情報を登録します。
-```
+```sql
 BEGIN
   DBMS_CLOUD.CREATE_CREDENTIAL(
   credential_name => 'WORKSHOP_CREDENTIAL',
@@ -383,7 +395,7 @@ END;
 ユーザー名、認証トークンの生成については、[102:ADBにデータをロードしよう(Database Actions)](/ocitutorials/adb/adb102-dataload/){:target="_blank"}の「1.OCIオブジェクトストレージへのアクセス情報を取得」を参考にしてください。
 
 1. Object Storageにアップロードしたウォレットをディレクトリ・オブジェクトに配置します。
-```
+```sql
 BEGIN
   DBMS_CLOUD.GET_OBJECT(
   credential_name => 'WORKSHOP_CREDENTIAL',
@@ -396,7 +408,7 @@ object_uri: Object StorageにアップロードしたファイルのURL(< region
 >  （補足）
 > - オブジェクトが見つからないエラー（ORA-20404: Object not found）が出る場合、オブジェクトストレージ上のバケットを一時的にPublic にして試してください。
 > - 作成済みのクレデンシャル情報を削除する場合は以下を実行ください。
-```
+```sql
 BEGIN  
   DBMS_CLOUD.DROP_CREDENTIAL(credential_name => 'WORKSHOP_CREDENTIAL');
 END;
@@ -404,16 +416,16 @@ END;
 ```
 
 1. 配置したウォレットを確認します。
-```
+```sql
 SELECT * FROM table(dbms_cloud.list_files('dblink_wallet_dir_dbcs')) WHERE object_name LIKE '%.sso';
 ```
 ![wallet_checkイメージ](wallet_check.png)
 
 <BR>
 
-<a id="anchor4"></a>
+<a id="anchor1-3"></a>
 
-# 4. VCNのイングレス・ルールの追加
+## 1-3. VCNのイングレス・ルールの追加
 1522番ポートを使用するようにしましたが、デフォルトでは許可されていません。そのためイングレス・ルールを追加する必要があります。  
 ADBには、Database Linkで連携する際やAPIを実行する際に利用されるパブリックIPアドレスである、OUTBOUND_IP_ADDRESSが割り当てられています。このIPアドレスをイングレス・ルールに設定することで、そのADBインスタンスからのアクセスに制限することができます。v$pdbsのCLOUD_IDENTITY列で確認可能です。
 
@@ -433,12 +445,12 @@ BaseDBを配置したパブリック・サブネットのセキュリティ・�
 
 <BR>
 
-<a id="anchor5"></a>
+<a id="anchor1-4"></a>
 
-# 5. ADBにてDatabase Linkを作成
+## 1-4. ADBにてDatabase Linkを作成
 
 1. BaseDBへ接続するためのクレデンシャルを作成します。
-```
+```sql
 BEGIN
  DBMS_CLOUD.CREATE_CREDENTIAL(
  credential_name => 'DBCS_DB_LINK_CRED',
@@ -450,12 +462,12 @@ END;
 ```
 **※ usernameは大文字'HR'で指定してください。**
 
-1. 新規 Database Linkを作成します。
-```
+1. 新規 Database Linkを作成します。ADMINユーザーで実行していますが、ADMIN以外のユーザーで以下を実行する場合、`DBMS_CLOUD_ADMIN.CREATE_DATABASE_LINK`の実行権限が必要です。
+```sql
 BEGIN
  DBMS_CLOUD_ADMIN.CREATE_DATABASE_LINK(
  db_link_name => 'HR_LINK',
- hostname => 'xxx.xxx.xxx.xxx',
+ hostname => 'dbcs.xxxx.vcn1.oraclevcn.com',
  port => '1522',
  service_name => '<pdb1>.<subnet>.<vcn>.oraclevcn.com',
  ssl_server_cert_dn => 'CN=dbcs',
@@ -464,29 +476,45 @@ BEGIN
 END;
 /
 ```
-* hostname: BaseDBインスタンスのパブリックIPアドレス  
-* service_name: tnsnames.oraに記載されているPDB1のサービス名
+   * hostname: BaseDBインスタンスのホスト名もしくはパブリックIPアドレス
+   * service_name: tnsnames.oraに記載されているPDB1のサービス名
+   * ssl_server_cert_dn: 『1-1-2. サーバーのウォレットの作成』で作成した自己署名証明書のCN(Common Name)
+
+   > ターゲット・データベース(リンク先)がRAC構成の場合
+   > 
+   > hostnameパラメータの代わりに、rac_hostnamesパラメータで一つ以上のホスト名を指定することが可能です。これにより、Oracle RACの高可用性機能を活用できます。ただし、rac_hostnamesの値にIPアドレス、SCAN IP、またはSCANホスト名を使用することはサポートされていません。
+   > そのため、以下のようにRACの各ノードのホスト名を設定します。
+
+   ```sql
+   BEGIN
+       DBMS_CLOUD_ADMIN.CREATE_DATABASE_LINK(
+           db_link_name => 'HR_LINK', 
+           rac_hostnames => '["sales1-svr1.example.adb.us-ashburn-1.oraclecloud.com", "sales1-svr2.example.adb.us-ashburn-1.oraclecloud.com", "sales1-svr3.example.adb.us-ashburn-1.oraclecloud.com"]', 
+           port => '1522',
+           service_name => '<pdb1>.<subnet>.<vcn>.oraclevcn.com',
+           ssl_server_cert_dn => 'CN=dbcs',
+           credential_name => 'DBCS_DB_LINK_CRED',
+           directory_name => 'dblink_wallet_dir_dbcs');
+   END;
+   /
+   ```
 
 1. Database Linkを使用して、BaseDBのテーブルを参照します。
-```
+```sql
 SELECT * FROM COUNTRIES@HR_LINK;
 ```
 正しく実行されると、以下のような結果が表示されます。
 HRスキーマのCOUNTRIES表にアクセスできていることがわかります。
 ![dblink_resultイメージ](dblink_result.png)
 ※ Database Linkを誤って作成した場合は、こちらのコマンドを実行します。
-```
+
+```sql
 execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 ```
-<BR>
+<br>
+<a id="anchor1-5"></a>
 
-以上で、この章の作業は終了です。
-
-<BR>
-
-<a id="anchor6"></a>
-
-# エラーへの対応例
+## 1-5. エラーへの対応例
 * 『ORA-12545: Connect failed because target host or object does not exist』が発生する場合
 
   DBMS_CLOUD_ADMIN.CREATE_DATABASE_LINKにて指定するオプションに誤りがないか確認します。
@@ -510,11 +538,80 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 
 ※ 上記は代表的なもののみを記載しており、全てのエラーを網羅しているものではありません。必要に応じてサポート・サービスもご活用ください。
 
-<BR>
+<br>
+<a id="anchor2"></a>
 
-<a id="anchor7"></a>
+# 2. プライベート・アクセスのみ可能なOracle DatabaseへのDatabase Link
+ここではプライベート・アクセスのみ可能なBaseDBへのDatabase Linkを作成します。こちらでは上記のTCPS接続に加え、ウォレットを使用しないTCP接続が可能なので、そちらの手順を確認します。
 
-# その他のパターン
+まずは以下の前提条件を確認してください。
+
+ターゲットDBは、ソースDBのOCI 仮想クラウドネットワーク(VCN)からアクセス可能でなければなりません。具体的には、以下の場合にターゲットDBに接続できます：
+
++ ソースDB(ここではADB)とターゲットDB(ここではBaseDB)が同じOCI VCN内にある
++ ソースDBとターゲットDBがペアリングされた異なるOCI VCNにある
++ ターゲットDBがオンプレミスで、FastConnectまたはVPNを使用してソースDBのOCI VCNに接続されている
+
+どの場合でも、ADBが配置されているVCNからターゲットDBへ疎通が可能であることが条件になります。またセキュリティリストの設定を以下のように許可する必要があります。
+
++ ソースDB(ADB)のサブネット・セキュリティ・リスト(SL)またはネットワーク・セキュリティ・グループ(NSG)内に、TCP上のトラフィックがターゲットDB(BaseDB)のIPアドレスとポート番号に対して許可されるような、Egress ruleを定義する。 
++ ターゲットDBのサブネット・セキュリティ・リストまたはネットワーク・セキュリティ・グループ内に、TCP上のトラフィックがソースDBのIPアドレスから宛先ポートに対して許可されるような、Ingress ruleを定義する。
+  
+それでは実際の手順を確認します。
+
+1. BaseDBへ接続するためのクレデンシャルを作成します。
+```sql
+BEGIN
+ DBMS_CLOUD.CREATE_CREDENTIAL(
+ credential_name => 'DBCS_DB_LINK_CRED',
+ username => 'HR',
+ password => 'WelCome123#123#'
+ );
+END;
+/
+```
+**※ usernameは大文字'HR'で指定してください。**
+
+1. Database Linkを作成します。ADMINユーザーで実行していますが、ADMIN以外のユーザーで以下を実行する場合、`DBMS_CLOUD_ADMIN.CREATE_DATABASE_LINK`の実行権限が必要です。
+```sql
+BEGIN
+ DBMS_CLOUD_ADMIN.CREATE_DATABASE_LINK(
+ db_link_name => 'HR_LINK',
+ hostname => 'dbcs.xxxx.vcn1.oraclevcn.com',
+ port => '1522',
+ service_name => '<pdb1>.<subnet>.<vcn>.oraclevcn.com',
+ ssl_server_cert_dn => NULL,
+ credential_name => 'DBCS_DB_LINK_CRED',
+ directory_name => NULL,
+ private_target => TRUE);
+END;
+/
+```
+
+   * hostname: BaseDBインスタンスのホスト名。ターゲットDBがプライベート・エンドポイントにある場合、IPアドレス、SCAN IP、またはSCANホスト名の使用はサポートされていないため、必ずFQDNで指定します。ターゲットDBがRAC構成の場合、rac_hostnamesパラメータを使用することも可能です。指定の仕方および注意事項は[1-4. ADBにてDatabase Linkを作成](#anchor1-4)をご参照ください。
+   * service_name: PDB1のサービス名
+   * ssl_server_cert_dn: NULLを指定
+   * directory_name: NULLを指定
+   * private_target: TRUEを指定
+
+   > プライベート・エンドポイントで構成されているADBでは、すべてのDatabase Linkの発信トラフィックをプライベート・エンドポイントVCNのEgress ruleに従うように指定することが可能です。
+   >
+   > この設定を以下のように有効化している場合、CREATE_DATABASE_LINKのprivate_targetをTRUEに指定する必要はありません。
+   >
+   > こちらの設定について、詳細は[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/private-endpoints-autonomous.html#GUID-9F76DD5E-85A3-4F5E-A88D-3D4D131FC2CA){:target="_blank"}をご参照ください。
+   ```sql
+   ALTER DATABASE PROPERTY SET ROUTE_OUTBOUND_CONNECTIONS = 'PRIVATE_ENDPOINT';
+   ```
+
+1. Database Linkを使用して、BaseDBのテーブルを参照します。
+```sql
+SELECT * FROM COUNTRIES@HR_LINK;
+```
+
+<br>
+<a id="anchor3"></a>
+
+# 3. その他のパターン
 ここまで、ADBからBaseDBインスタンスへのDatabase Link作成方法についてご説明しました。  
 『はじめに』でも記載した通り、その他にもADBでDatabase Linkを使用できるパターンがあります。
 
@@ -526,34 +623,47 @@ execute DBMS_CLOUD_ADMIN.DROP_DATABASE_LINK(db_link_name => 'HR_LINK');
 
 1. ADB1のバケットにcwallet.sso（ウォレット・ファイル）をアップロード
 
-    ここからは、[3. BaseDBのウォレットファイルをADBに渡す](#anchor3)の『手順3:Object StorageにアップロードしたWalletをADBのディレクトリ・オブジェクトに配置します。』以降の操作と同様になります。
+    ここからは、[1-2. BaseDBのウォレットファイルをADBに渡す](#anchor1-2)の『手順3:Object StorageにアップロードしたWalletをADBのディレクトリ・オブジェクトに配置します。』以降の操作と同様になります。
 
     詳細は『Autonomous Database Cloud 技術詳細』の「Database Linkによるデータ連携」の章でご確認ください。
 
-<BR>
+<br>
 
-* BaseDBインスタンスからADBへのDatabase Linkによる連携
+* Oracle Database(非ADB)からADBへのDatabase Linkによる連携
 
-  別のOracle DatabaseからAutonomous Databaseへのデータベース・リンクを作成できます。詳細な手順については、
-[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/database-links-inbound.html#GUID-EB369724-29CE-452E-8EC1-2E0B33AE0A49){:target="_blank"} を参照ください。
+  別のOracle Databaseをソースとして、ターゲットをAutonomous DatabaseにしたDatabase Linkを作成できます。詳細な手順については、[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/database-links-inbound.html#GUID-EB369724-29CE-452E-8EC1-2E0B33AE0A49){:target="_blank"} をご参照ください。
 
-<BR>
+<br>
 
-<a id="anchor8"></a>
+* ADBから非Oracle DatabaseへのDatabase Linkによる連携
 
-# おわりに
+  ADBではOracle Database以外のデータベースへDatabase Linkを作成できます。ここでは以下の2つの構成が可能です。
+  + Oracle管理の異機種間接続
+  
+    この構成ではOracle Database Gatewayを作成する必要はありません。2024/8現在、[Amazon Redshift](https://qiita.com/500InternalServerError/items/d6faad7bbadf3697ee76){:target="_blank"}、[MySQL](https://qiita.com/500InternalServerError/items/d5dc1268f0c8259146df){:target="_blank"}、[PostgreSQL](https://qiita.com/500InternalServerError/items/c6a85703c3e6454de2c0){:target="_blank"}、Snowflake、Google Bigquery、MongoDB等がサポートされています。またNW構成については、Oracle DatabaseとのDatabase Linkと同様に、パブリックもプライベート構成でも可能です。
+    
+    ターゲットDBのタイプによって、必須ポートやパラメータ設定が異なります。詳細の手順や制限事項については[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/database-links-other-databases-oracle-managed.html#GUID-51E46547-E6A3-4D12-8392-31723B37896B){:target="_blank"}をご参照ください。
+  + 顧客管理の異機種間接続
+
+    顧客管理の異機種間接続では、顧客がOracle Database Gatewayを作成する必要があります。2024/8現在、SQL Server等のデータベースへのDatabase Linkはこちらを利用する必要があります。詳細は[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/database-links-other-databases-customer-managed.html#GUID-DE1B1E26-0AB8-44CF-8A9E-D42E7628ADF2){:target="_blank"}をご参照ください。
+
+<br>
+
+<a id="anchor4"></a>
+
+# 4. おわりに
 ここではAutonomous DatabaseにDatabase Linkを作成して、別のBaseDBインスタンスからデータを収集する方法を紹介しました。  
 複数の異なるデータベースにアクセスする際には非常に便利ですので、ぜひ活用してみてください。
 
-<BR/>
+<br>
 
 # 参考資料
 
 * [Autonomous Database Cloud 技術詳細](https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi){:target="_blank"}
 
-<BR/>
+<br>
 以上でこの章は終了です。次の章にお進みください。
 
-<BR>
+<br>
 
 [ページトップへ戻る](#anchor0)
