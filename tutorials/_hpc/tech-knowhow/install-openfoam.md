@@ -829,7 +829,7 @@ srun --cpu-bind=verbose,cores potentialFoam -parallel $decompDict -writephi
 srun --cpu-bind=verbose,cores checkMesh -parallel $decompDict -writeFields '(nonOrthoAngle)' -constant
 
 # Run solver in parallel
-srun --cpu-bind=verbose,cores impleFoam -parallel $decompDict
+srun --cpu-bind=verbose,cores simpleFoam -parallel $decompDict
 
 # Concurrently sync model files on other node NVMe local disk with head node's
 pdsh_cmd="pdsh -w $child_node_list '$rsync_script $SLURM_JOB_NODELIST $proc_pernode $local_dir'"
