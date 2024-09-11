@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -279,7 +279,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
@@ -325,7 +329,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
@@ -376,7 +380,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -1191,7 +1195,7 @@ srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores pot
 srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores checkMesh <span class="nt">-parallel</span> <span class="nv">$decompDict</span> <span class="nt">-writeFields</span> <span class="s1">'(nonOrthoAngle)'</span> <span class="nt">-constant</span>
 
 <span class="c"># Run solver in parallel</span>
-srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores impleFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores simpleFoam <span class="nt">-parallel</span> <span class="nv">$decompDict</span>
 
 <span class="c"># Concurrently sync model files on other node NVMe local disk with head node's</span>
 <span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> '</span><span class="nv">$rsync_script</span><span class="s2"> </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2"> </span><span class="nv">$proc_pernode</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
@@ -1267,7 +1271,7 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

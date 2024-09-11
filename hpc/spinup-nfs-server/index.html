@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -269,7 +269,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/" class="active">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
@@ -315,7 +319,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
@@ -366,7 +370,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームでNFSサーバを構築する">
     <meta itemprop="description" content="ブロック・ボリュームでNFSサーバを構築してみましょう。このチュートリアルを終了すると、OCIのブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSサーバを、OCIコンソールから簡単に構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -384,13 +388,14 @@
         <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>Oracle Cloud Infrastructure（以降OCIと記載）の <strong>ブロック・ボリューム</strong> は、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。</p>
+<p><strong>ブロック・ボリューム</strong> は、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。</p>
+
 <ul>
   <li>同一 <strong>可用性ドメイン</strong> 内の異なる <strong>フォルト・ドメイン</strong> に複数のレプリカを持ち高い可用性を実現</li>
   <li>ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現</li>
 </ul>
 
-<p>また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong>  は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の <strong>ブロック・ボリューム</strong> アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。</p>
+<p>また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の <strong>ブロック・ボリューム</strong> アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。</p>
 
 <p>OCIは、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> も提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけて <strong>ブロック・ボリューム</strong> とベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、 <strong>ファイル・ストレージ</strong> よりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。<br />
 <strong>ファイル・ストレージ</strong> とブロック・ボリュームNFSサーバの比較詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></strong> を参照してください。</p>
@@ -876,7 +881,7 @@ Filesystem                       Size  Used Avail Use% Mounted on
   <li>IO500インストール</li>
 </ul>
 
-<p>ここでは、4ノードのNFSクライアントからIORとmdtestを実行し、以下性能が出ています。</p>
+<p>ここでは、4ノードのNFSクライアントからIORとmdtestを実行し、以下の性能が出ています。</p>
 
 <table>
   <thead>
@@ -888,7 +893,7 @@ Filesystem                       Size  Used Avail Use% Mounted on
   <tbody>
     <tr>
       <td style="text-align: center">IOR write</td>
-      <td style="text-align: right">3,720  MiB/s</td>
+      <td style="text-align: right">3,720 MiB/s</td>
     </tr>
     <tr>
       <td style="text-align: center">IOR read</td>
@@ -909,7 +914,7 @@ Filesystem                       Size  Used Avail Use% Mounted on
   </tbody>
 </table>
 
-<p>※3）3回実行した平均値です。</p>
+<p>※3）3回計測した平均値です。</p>
 
 <h2 id="3-1-openmpiインストール">3-1. OpenMPIインストール</h2>
 
@@ -1075,7 +1080,7 @@ client-2
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 
@@ -1095,11 +1100,11 @@ client-2
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/" class="pagination--pager" title="GPUクラスタを構築する(Ubuntu OS編)
+      <a href="/ocitutorials/hpc/spinup-nfs-server-fss/" class="pagination--pager" title="ファイル・ストレージでファイル共有ストレージを構築する
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/cluster-with-bv-base/" class="pagination--pager" title="ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる
+      <a href="/ocitutorials/hpc/spinup-nfs-server-nvme/" class="pagination--pager" title="短期保存データ用高速ファイル共有ストレージを構築する
 ">次へ</a>
     
   </nav>

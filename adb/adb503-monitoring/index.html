@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="503 : ADBインスタンスの監視設定をしてみよう">
     <meta itemprop="description" content="データベースの運用にかかせない監視・通知設定。Autonomous Databaseに対してはどのように行うのかご紹介します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -369,7 +369,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-技術概要">1. 技術概要</a></li><li><a href="#2-単体インスタンスの監視">2. 単体インスタンスの監視</a><ul><li><a href="#2-1-アラームの通知先の作成">2-1. アラームの通知先の作成</a></li><li><a href="#2-2-ociモニタリングによるメトリック監視">2-2. OCIモニタリングによるメトリック監視</a></li><li><a href="#2-3-サービスコンソールによるパフォーマンス監視">2-3. サービス・コンソールによるパフォーマンス監視</a></li><li><a href="#2-4-イベント監視">2-4. イベント監視</a></li><li><a href="#2-5-インスタンス管理者に対する通知設定">2-5. インスタンス管理者に対する通知設定</a></li></ul></li><li><a href="#3-複数のインスタンスをまとめて監視">3. 複数のインスタンスをまとめて監視</a><ul><li><a href="#3-1-em-database-managementによる監視項目">3-1. EM, Database Managementによる監視項目</a></li><li><a href="#3-2-emによる監視設定">3-2. EMによる監視設定</a></li><li><a href="#3-3-database-managementによる監視設定">3-3. Database Managementによる監視設定</a></li></ul></li><li><a href="#おわりに">おわりに</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-技術概要">1. 技術概要</a></li><li><a href="#2-単体インスタンスの監視">2. 単体インスタンスの監視</a><ul><li><a href="#2-1-アラームの通知先の作成">2-1. アラームの通知先の作成</a></li><li><a href="#2-2-ociモニタリングによるメトリック監視">2-2. OCIモニタリングによるメトリック監視</a></li><li><a href="#2-3-データベースダッシュボードとパフォーマンスハブによるパフォーマンス監視">2-3. データベース・ダッシュボードとパフォーマンスハブによるパフォーマンス監視</a></li><li><a href="#2-4-イベント監視">2-4. イベント監視</a></li><li><a href="#2-5-インスタンス管理者に対する通知設定">2-5. インスタンス管理者に対する通知設定</a></li></ul></li><li><a href="#3-複数のインスタンスをまとめて監視">3. 複数のインスタンスをまとめて監視</a><ul><li><a href="#3-1-em-database-managementによる監視項目">3-1. EM, Database Managementによる監視項目</a></li><li><a href="#3-2-emによる監視設定">3-2. EMによる監視設定</a></li><li><a href="#3-3-database-managementによる監視設定">3-3. Database Managementによる監視設定</a></li></ul></li><li><a href="#おわりに">おわりに</a></li><li><a href="#参考資料">参考資料</a></li></ul>
             </nav>
           </aside>
         
@@ -401,12 +401,12 @@
 <h1 id="1-技術概要">1. 技術概要</h1>
 <p>Autonomous Databaseに対する監視・通知を行うツールはいくつか存在します。環境やユーザーによって、適切なツールを選択します。</p>
 
-<p>本記事ではOCIモニタリング、サービス・コンソール、Oracle Enterprise Manager(EM)、Oracle Cloud Observability and Management Platform（O&amp;M）Database Managementによる監視設定をご紹介します。</p>
+<p>本記事ではOCIモニタリング、データベース・ダッシュボード、パフォーマンス・ハブ、Oracle Enterprise Manager(EM)、Oracle Cloud Observability and Management Platform（O&amp;M）Database Managementによる監視設定をご紹介します。</p>
 
 <p><br /></p>
 
 <h1 id="2-単体インスタンスの監視">2. 単体インスタンスの監視</h1>
-<p>単体のADBインスタンスに対しては、OCIモニタリングとサービス・コンソールを使ってメトリック監視/イベント監視をすることができます。</p>
+<p>単体のADBインスタンスに対しては、OCIモニタリングとOCI Eventsを使ってメトリック監視/イベント監視をすることができます。</p>
 
 <h2 id="2-1-アラームの通知先の作成">2-1. アラームの通知先の作成</h2>
 <p>監視設定の前に通知先を作成しておく必要があります。<a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank">こちら</a> を参考に、トピックの作成・サブスクリプションの作成を行います。</p>
@@ -420,7 +420,7 @@
 
 <ol>
   <li>
-    <p>まずは<a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank">こちらの記事</a> を参考に、アラームの通知先の作成をします。</p>
+    <p>まずは<a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank">こちら</a> を参考に、アラームの通知先の作成をします。</p>
   </li>
   <li>
     <p>次にアラームの定義の作成をします。ハンバーガーメニューの<strong>Observability &amp; Management</strong> の <strong>[アラーム定義]</strong> をクリックします。
@@ -511,8 +511,8 @@ ECPU数が8以上のADBインスタンスの場合、アラームの定義のCPU
 
 <p><br /></p>
 
-<h2 id="2-3-サービスコンソールによるパフォーマンス監視">2-3. サービス・コンソールによるパフォーマンス監視</h2>
-<p>OCIモニタリングは、事前定義されたメトリックを用いてOCIの各種リソースのモニタリングや通知ができる一方で、サービス・コンソールでは以下のようなADBのアクティビティ状況が把握できます。</p>
+<h2 id="2-3-データベースダッシュボードとパフォーマンスハブによるパフォーマンス監視">2-3. データベース・ダッシュボードとパフォーマンスハブによるパフォーマンス監視</h2>
+<p>OCIモニタリングは、事前定義されたメトリックを用いてOCIの各種リソースのモニタリングや通知ができる一方で、データベース・ダッシュボードでは以下のようなADBのアクティビティ状況が把握できます。</p>
 <ul>
   <li>ストレージ使用状況</li>
   <li>CPU使用率</li>
@@ -520,21 +520,40 @@ ECPU数が8以上のADBインスタンスの場合、アラームの定義のCPU
   <li>SQL実行数</li>
   <li>SQLの平均レスポンスタイム</li>
   <li>接続サービス毎の負荷状況</li>
-  <li>DBの待機イベント</li>
   <li>キューイングの状況</li>
 </ul>
 
-<p>以下のように、ADBの詳細画面から<strong>サービス・コンソール</strong> をクリックします。
-<img src="service_console1.png" alt="service_console1イメージ" /></p>
+<p>以下のように、ADBの詳細画面から<strong>データベース・アクション</strong> をクリックします。
+<img src="databaseactions.png" alt="databaseactionsイメージ" /></p>
 
-<p><strong>アクティビティ</strong> からデータベース・アクティビティやCPU使用率が確認できます。
-<img src="service_console2.png" alt="service_console2イメージ" /></p>
+<p>サインイン後、<strong>モニタリング</strong>をクリックし、<strong>データベース・ダッシュボード</strong>をクリックします。
+<img src="databasedashboard.png" alt="databasedashboardイメージ" /></p>
 
-<p><strong>モニター対象SQL</strong> からリアルタイムの個々のSQL監視をすることができます。
-<img src="service_console3.png" alt="service_console3イメージ" /></p>
+<p><strong>概要</strong>では、CPU使用率やSQLの平均レスポンスタイムが確認できます。</p>
 
-<p>SQLテキストを選択し、<strong>レポートのダウンロード</strong> をクリックすると、Enterprise ManagerのDatabase Active Reportが取得できます。
-<img src="service_console4.png" alt="service_console4イメージ" /></p>
+<p><strong>モニター</strong>からデータベース・アクティビティやCPU使用率が確認できます。
+<img src="databasedashboard_monitor.png" alt="databasedashboard_monitorイメージ" /></p>
+
+<p>またパフォーマンスハブでは、リアルタイムSQLモニタリングが可能です。</p>
+
+<p>以下のように、ADBの詳細画面から<strong>パフォーマンス・ハブ</strong> をクリックします。</p>
+
+<p><img src="performancehub1.png" alt="performancehub1イメージ" /></p>
+
+<p>ASH分析やADDMやSQLモニタリングがあります。ここではSQLモニタリングをクリックします。</p>
+
+<p><img src="performancehub2.png" alt="performancehub2イメージ" /></p>
+
+<p>実行しているSQL IDをクリックしてみます。</p>
+
+<p>DB時間や待機時間、I/Oなどのより詳しい情報が確認できます。</p>
+
+<p><img src="performancehub3.png" alt="performancehub3イメージ" /></p>
+
+<p><strong>レポートの保存</strong> をクリックすると、SQL Monitor Active Report(HTMLファイル)が取得できます。
+ここではPGAの使用量やI/Oスループットなどのメトリックを確認できます。</p>
+
+<p><img src="performancehub4.png" alt="performancehub4イメージ" /></p>
 
 <p><br /></p>
 
@@ -574,9 +593,13 @@ ECPU数が8以上のADBインスタンスの場合、アラームの定義のCPU
 
 <blockquote>
   <p>（補足）
-Autonomous Databaseにおけるイベント・タイプ一覧(※2021年12月時点)
-<img src="event_all.png" alt="event_allイメージ" />
-個別のイベント条件の詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Events/Reference/eventsproducers.htm#dbaasevents__AutoDB" target="_blank">こちら</a></p>
+Autonomous Databaseにおけるイベント・タイプ一覧(※2024年8月時点)</p>
+
+  <p>イベント・タイプ: Critical - ADMINパスワードの期限切れ通知、自動フェイルオーバー開始/終了、DBダウン開始/終了、DBアクセス負荷開始/終了、ログイン失敗通知、インスタンス再配置開始/終了、ウォレット失効通知</p>
+
+  <p>イベント・タイプ: Information - AJDストレージ超過、APEXアップグレード可能/開始/終了、新規DB接続、非アクティブDB接続超過、長期バックアップ開始/終了/スケジューリング、メンテンナンス開始/終了/設定、オペレーター・アクセス、ワークロード・キャプチャ開始/終了、ワークロード・リプレイ開始/終了</p>
+
+  <p>その他のイベント条件の詳細は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/autonomous-database-events.html#GUID-8DBAD1C3-55BE-49F8-AB43-AB3EA708AF03" target="_blank">こちら</a></p>
 </blockquote>
 
 <p>上記の手順に沿って、ADBに対してイベント・タイプCriticalのルールを作成しておくと、以下のようなメールが届くことがあります。<br />
@@ -688,7 +711,7 @@ OCIには他にもテナント管理者のみが受け取れる通知がいく�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

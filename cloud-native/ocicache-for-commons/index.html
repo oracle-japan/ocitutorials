@@ -1,0 +1,786 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Cacheを使ってレスポンス・キャッシングをしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Cacheをレスポンス・キャッシングのキャッシュサーバーとして使う方法を学んでいただけるチュートリアルです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Cacheを使ってレスポンス・キャッシングをしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/ocicache-for-commons/">
+
+
+  <meta property="og:description" content="OCI Cacheをレスポンス・キャッシングのキャッシュサーバーとして使う方法を学んでいただけるチュートリアルです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/ocicache-for-commons/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Cacheを使ってレスポンス・キャッシングをしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Cacheをレスポンス・キャッシングのキャッシュサーバーとして使う方法を学んでいただけるチュートリアルです。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Cacheを使ってレスポンス・キャッシングをしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ci-for-beginners/">OCI Container Instances をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">Oracle Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-beginners/">OCI Cacheを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-commons/" class="active">OCI Cacheを使ってレスポンス・キャッシングをしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/">WebLogic Server for OKEをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Cacheを使ってレスポンス・キャッシングをしてみよう">
+    <meta itemprop="description" content="OCI Cacheをレスポンス・キャッシングのキャッシュサーバーとして使う方法を学んでいただけるチュートリアルです。">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1前提条件">1.前提条件</a></li><li><a href="#2概要">2.概要</a></li><li><a href="#3必要なリソースの作成">3.必要なリソースの作成</a></li><li><a href="#3-1vcnの作成">3-1.VCNの作成</a></li><li><a href="#3-2oci-cacheの作成">3-2.OCI Cacheの作成</a></li><li><a href="#3-3ocirの作成">3-3.OCIRの作成</a></li><li><a href="#3-4oci-functionsの作成">3-4.OCI Functionsの作成</a></li><li><a href="#3-5vaultの作成">3-5.Vaultの作成</a></li><li><a href="#3-6api-gatewayの作成">3-6.API Gatewayの作成</a></li><li><a href="#4キャッシングを確認">4.キャッシングを確認</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルでは、Oracleが提供するフルマネージドのRedisサービスであるOCI Cacheを使った、リクエストのキャッシングを体験していただけます。</p>
+
+<h2 id="1前提条件">1.前提条件</h2>
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloudのアカウント（Free Trial）を取得済みであること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="2概要">2.概要</h2>
+<p>このチュートリアルでは、OCI Functionsに簡単なアプリケーションをデプロイし、そのAPIをAPI Gatewayで管理します。API Gatewayには「リクエストキャッシング」という機能があり、この機能を使うと、リクエストやレスポンスのデータを一時的に保存（キャッシング）できます。キャッシュにデータがあれば、それを使ってすぐに結果を返し、データがない場合にはアプリケーションから新たにデータを取得します。このキャッシュ機能には、OCI Cacheを使用します。</p>
+
+<p>このチュートリアルで作成されるリソースは以下のようになります。</p>
+
+<p><img src="image-40.png" alt="" /></p>
+
+<p>作成するリソースは、</p>
+<ul>
+  <li>VCN</li>
+  <li>OCI Cache</li>
+  <li>OCIR</li>
+  <li>OCI Functions</li>
+  <li>Vault</li>
+  <li>API Gateway</li>
+</ul>
+
+<p>になります。ここから順にこれらのリソースを作成していきます。</p>
+
+<h2 id="3必要なリソースの作成">3.必要なリソースの作成</h2>
+<h2 id="3-1vcnの作成">3-1.VCNの作成</h2>
+<p>まずは今回のリソースを配置するVCN（仮想クラウドネットワーク）を作成します。OCIコンソールの左上のハンバーガーメニューから、「ネットワーキング」を選択し、「仮想クラウド・ネットワーク」を選択します。</p>
+
+<p><img src="image.png" alt="" /></p>
+
+<p>今回は簡単にVCNを作成するため、「VCNウィザードの起動」を選択します。</p>
+
+<p><img src="image-1.png" alt="" /></p>
+
+<p>VCNウィザードの起動ページで、「インターネット接続性を持つVCNの作成」が選択されていることを確認し、「VCNウィザードの起動」を選択します。</p>
+
+<p><img src="image-2.png" alt="" /></p>
+
+<p>VCN名だけ任意の名前を入力して、後はデフォルトのまま作成します。ここではVCN名をcache-tutorialとします。</p>
+
+<p><img src="image-3.png" alt="" /></p>
+
+<p>VCNの作成が完了したら、作成したVCNの詳細ページの左下にある、セキュリティ・リストを選択し、「Default Security List for xxx」を選択します。</p>
+
+<p><img src="image-4.png" alt="" /></p>
+
+<p>「イングレスルールの追加」を選択します。</p>
+
+<p><img src="image-5.png" alt="" /></p>
+
+<p>本チュートリアルではHTTPS通信を行うため、ポート443の通信を許可します。ソースCIDRにはすべてのIPを許可するために0.0.0.0/0を入力し、宛先ポート範囲は443とします。これらを入力したら、「イングレス・ルールの追加」を選択します。</p>
+
+<p><img src="image-6.png" alt="" /></p>
+
+<p>以上でVCNの作成と準備は完了です。</p>
+
+<h2 id="3-2oci-cacheの作成">3-2.OCI Cacheの作成</h2>
+<p>次に、OCI Cacheを作成します。画面左上のハンバーガーメニューから、「データベース」を選択し、「OCIキャッシュ」の中の「クラスタ」を選択します。</p>
+
+<p><img src="image-7.png" alt="" /></p>
+
+<p>「クラスタの作成」を選択します。</p>
+
+<p><img src="image-8.png" alt="" /></p>
+
+<p>任意の名前を入力して次に進みます。ここではcache-tutorialという名前にしています。</p>
+
+<p><img src="image-9.png" alt="" /></p>
+
+<p>次に「ノード構成」のページが開きますが、ここはデフォルトで次に進みます。</p>
+
+<p>「ネットワーキングの構成」ページでは、VCNは先ほど作成したVCNを選択し、サブネットはパブリックサブネットを選択します。</p>
+
+<p><img src="image-10.png" alt="" />
+<img src="image-11.png" alt="" /></p>
+
+<p>以降はすべてデフォルトのままクラスタの作成まで進めます。</p>
+
+<p>クラスタの作成が完了したら、作成したクラスタの詳細ページからクラスタのエンドポイントを取得し、メモ帳等に控えておきます。</p>
+
+<p><img src="image-12.png" alt="" /></p>
+
+<p>以上でOCI Cacheの作成は完了です。</p>
+
+<h2 id="3-3ocirの作成">3-3.OCIRの作成</h2>
+<p>次に、OCI Functionsにデプロイするアプリケーションのコンテナイメージを格納するための、コンテナリポジトリの作成を行います。画面左上のハンバーガーメニューから、「開発者サービス」を選択し、「コンテナ・レジストリ」を選択します。</p>
+
+<p><img src="image-13.png" alt="" /></p>
+
+<p>「リポジトリの作成」を選択します。</p>
+
+<p><img src="image-14.png" alt="" /></p>
+
+<p>リポジトリの作成ページが開いたら、「アクセス」を「パブリック」にし、「リポジトリ名」をcache-tutorialとします。</p>
+
+<p><img src="image-15.png" alt="" /></p>
+
+<p>OCIRにアクセスするには、ユーザー名とパスワードが必要になります。OCIRではパスワードに認証トークンを利用しますので、認証トークンを作成しておきます。画面右上のユーザーアイコンを選択し、ご自身のプロフィール名を選択します。</p>
+
+<p><img src="image-16.png" alt="" /></p>
+
+<p>画面左下のリソースメニューから、「認証トークン」を選択します。</p>
+
+<p><img src="image-17.png" alt="" /></p>
+
+<p>「トークンの生成」を選択します。</p>
+
+<p><img src="image-18.png" alt="" /></p>
+
+<p>トークンの生成ページが開いたら、適当な説明文を入力して、「トークンの生成」を選択します。</p>
+
+<p><img src="image-19.png" alt="" /></p>
+
+<p>トークンが生成されたら、メモ帳等にコピーして控えておきます。</p>
+
+<p><img src="image-20.png" alt="" /></p>
+
+<p>以上でOCIRの作成と準備は終了です。</p>
+
+<h2 id="3-4oci-functionsの作成">3-4.OCI Functionsの作成</h2>
+<p>次に、アプリケーションをデプロイするOCI Functionsを作成します。画面左上のハンバーガーメニューから、「開発者サービス」を選択し、「ファンクション」の中の「アプリケーション」を選択します。</p>
+
+<p><img src="image-21.png" alt="" /></p>
+
+<p>「アプリケーションの作成」を選択します。</p>
+
+<p><img src="image-22.png" alt="" /></p>
+
+<p>アプリケーションの作成ページが開いたら、</p>
+<ul>
+  <li>名前：cache-tutorial</li>
+  <li>VCN：先ほど作成したもの</li>
+  <li>サブネット：パブリックサブネット</li>
+</ul>
+
+<p>を選択し、「作成」を選択します。</p>
+
+<p><img src="image-23.png" alt="" /></p>
+
+<p>Functionsを作成すると、下のような画面が表示されます。</p>
+
+<p><img src="image-24.png" alt="" /></p>
+
+<p>そのまま下にスクロールしていくと、スタートガイドが書いてありますので、この手順を実施してアプリケーションをデプロイします。</p>
+
+<p><img src="image-25.png" alt="" /></p>
+
+<p>なお、<code class="language-plaintext highlighter-rouge">fn update context registry</code>コマンドの<code class="language-plaintext highlighter-rouge">repo-name-prefix</code>は先ほど作成したOCIRのリポジトリ名になります。
+また、<code class="language-plaintext highlighter-rouge">docker login</code>コマンドで求められるパスワードは、先ほど生成した認証トークンになります。</p>
+
+<p class="notice--warning"><strong>うまくログインできない場合</strong><br />
+<code class="language-plaintext highlighter-rouge">docker login</code>コマンドでうまくログインできない場合、認証トークンを作成する際にアクセスしたユーザーのプロファイル画面上部にあるユーザー名を、<code class="language-plaintext highlighter-rouge">docker login</code>コマンドのユーザー名としてください。</p>
+
+<h2 id="3-5vaultの作成">3-5.Vaultの作成</h2>
+<p>次に、API Gatewayがキャッシュサーバーにアクセスする際のシークレットを保存するためのVaultを作成します。なお、2024年9月現在ではOCI Cacheはパスワード認証を行うことができないため、ここで作成するシークレットはダミーのデータになります。ダミーではありますが、API Gatewayの「レスポンスキャッシング」機能は、Vaultのシークレットの選択が必須となっているため本手順は必ず実施する必要があります。</p>
+
+<p>画面左上のハンバーガーメニューから、「アイデンティティとセキュリティ」を選択し、「キー管理とシークレット管理」の中にある、「ボールト」を選択します。</p>
+
+<p><img src="image-26.png" alt="" /></p>
+
+<p>「ボールトの作成」を選択します。</p>
+
+<p><img src="image-27.png" alt="" /></p>
+
+<p>ボールトの作成ページが開いたら、任意の名前を入力します。ここではmyVaultとします。名前を入力したら、Vaultを作成します。</p>
+
+<p><img src="image-28.png" alt="" /></p>
+
+<p>次に、Vaultのマスター暗号化キーを作成します。「キーの作成」を選択します。</p>
+
+<p><img src="image-29.png" alt="" /></p>
+
+<p>キーの作成ページが開いたら、名前を入力します。ここではcache-tutorialとします。</p>
+
+<p><img src="image-30.png" alt="" /></p>
+
+<p>次にシークレットを作成します。左下のリソース一覧から、「シークレット」を選択し、「シークレットの作成」を選択します。</p>
+
+<p><img src="image-31.png" alt="" /></p>
+
+<p>シークレットの作成ページが開いたら、以下の項目を設定します。設定が完了したら、「シークレットの作成」を選択します。</p>
+<ul>
+  <li>名前：cache-tutorial</li>
+  <li>説明：for OCI Cache</li>
+  <li>暗号化キー：cache-tutorial</li>
+  <li>手動シークレット生成を選択</li>
+  <li>シークレットタイプテンプレート：プレーン・テキスト</li>
+  <li>シークレットコンテンツ：{“username”: “default”, “password”: “cache-tutorial”}</li>
+</ul>
+
+<p><img src="image-32.png" alt="" /></p>
+
+<p>以上でVaultの設定は完了です。</p>
+
+<h2 id="3-6api-gatewayの作成">3-6.API Gatewayの作成</h2>
+<p>最後に、API Gatewayの作成を行います。画面左上のハンバーガーメニューから、「開発者サービス」を選択し、「API管理」の「ゲートウェイ」を選択します。</p>
+
+<p><img src="image-33.png" alt="" /></p>
+
+<p>「ゲートウェイの作成」を選択します。</p>
+
+<p><img src="image-34.png" alt="" /></p>
+
+<p>ゲートウェイの作成ページでは、以下の項目を設定します。</p>
+<ul>
+  <li>名前：cache-tutorial</li>
+  <li>タイプ：パブリック</li>
+  <li>仮想クラウドネットワーク：cache-tutorial</li>
+  <li>サブネット：パブリックサブネット</li>
+  <li>拡張オプションの表示を選択</li>
+  <li>レスポンスキャッシングの有効化を選択</li>
+  <li>キャッシュ・サーバーのホスト：控えておいたOCI Cacheのエンドポイント</li>
+  <li>キャッシュ・サーバーのポート: 6379</li>
+  <li>ボールト：myVault</li>
+  <li>ボールとシークレット：cache-tutorial</li>
+  <li>キャッシュサーバーへの接続設定を選択</li>
+  <li>リクエストのSSL/TLSを使用を選択</li>
+  <li>SSL/TLS証明書の検証を選択</li>
+</ul>
+
+<p><img src="image-35.png" alt="" /></p>
+
+<p><img src="image-36.png" alt="" /></p>
+
+<p><img src="image-37.png" alt="" /></p>
+
+<p>ここまで設定したら、作成を完了します。</p>
+
+<p>次に、デプロイメントを作成します。画面左下のリソース一覧から、「デプロイメント」を選択し、「デプロイメントの作成」を選択します。</p>
+
+<p><img src="image-38.png" alt="" /></p>
+
+<p>作成ページが開いたら、名前にcache-tutorial、パス接頭辞に/v1を入力します。入力が完了したら、「次」を選択します。</p>
+
+<p>認証のページではデフォルトのまま次に進みます。</p>
+
+<p>ルーティングのページでは、以下の項目を設定します。</p>
+<ul>
+  <li>パス：/hello</li>
+  <li>メソッド：GET</li>
+  <li>バックエンドタイプ：Oracleファンクション</li>
+  <li>アプリケーション：cache-tutorial</li>
+  <li>関数名：hello-java</li>
+  <li>レスポンス・キャッシング・ポリシーを表示を選択</li>
+  <li>このルートのキャッシングの有効化にチェック</li>
+  <li>キャッシュされたレスポンスのTTLに120を入力</li>
+</ul>
+
+<p>以上を設定したら、次に進んでそのまま作成します。</p>
+
+<p>デプロイメントの詳細ページを開いたら、エンドポイントをコピーしてメモ帳等に控えておきます。</p>
+
+<p><img src="image-39.png" alt="" /></p>
+
+<p>お疲れ様でした。以上でこのチュートリアルで必要なすべてのリソースを準備できました。</p>
+
+<h2 id="4キャッシングを確認">4.キャッシングを確認</h2>
+<p>ここからは、実際にキャッシングされているかどうかをCloud Shellを使って確認していきます。
+Cloud Shellを開き、以下のコマンドを実行します。</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">--dump-header</span> - &lt;Endpoint&gt;/hello
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">&lt;Endpoint&gt;</code>には、デプロイメントの詳細ページで控えて置いたエンドポイントを入力します。コマンドの実行結果は以下のようになるかと思います。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+Date: Thu, 05 Sep 2024 02:25:54 GMT
+Content-Type: text/plain
+Connection: keep-alive
+Content-Length: 13
+Server: Oracle API Gateway
+X-Cache-Status: MISS
+X-Content-Type-Options: nosniff
+X-Frame-Options: sameorigin
+X-XSS-Protection: 1<span class="p">;</span> <span class="nv">mode</span><span class="o">=</span>block
+Strict-Transport-Security: max-age<span class="o">=</span>31536000
+opc-request-id: /82C3A68C2887D582AC64D15AA313701E/8D52C50817DC55280F3E20CACC5FF8FE
+</code></pre></div></div>
+<p>この結果を見てみると、<code class="language-plaintext highlighter-rouge">X-Cache-Status</code>が<code class="language-plaintext highlighter-rouge">MISS</code>になっていることが分かります。これは、初めての問い合わせなのでキャッシュサーバーにキャッシュが存在せず、ヒットしなかったことを表しています。</p>
+
+<p>もう一度同じコマンドを実行してみます。すると、下記のような結果になります。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+Date: Thu, 05 Sep 2024 02:25:58 GMT
+Content-Type: text/plain
+Transfer-Encoding: chunked
+Connection: keep-alive
+Server: Oracle API Gateway
+X-Cache-Status: HIT
+X-Content-Type-Options: nosniff
+X-Frame-Options: sameorigin
+X-XSS-Protection: 1<span class="p">;</span> <span class="nv">mode</span><span class="o">=</span>block
+Strict-Transport-Security: max-age<span class="o">=</span>31536000
+opc-request-id: /808F39D18EBE55D0B292765191C812A3/F587676E53648414BDD37AF11014DF42
+</code></pre></div></div>
+<p>今回は<code class="language-plaintext highlighter-rouge">X-Cache-Status</code>が<code class="language-plaintext highlighter-rouge">HIT</code>になりました。これは、初回の問い合わせ結果がキャッシュサーバーに保存されたため、今回の問い合わせはキャッシュサーバーから取得したことを表しています。</p>
+
+<p>このように、API GatewayとOCI Cacheを使うことで比較的簡単にレスポンスのキャッシングを行うことができます。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Cache%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%83%AC%E3%82%B9%E3%83%9D%E3%83%B3%E3%82%B9%E3%83%BB%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B7%E3%83%B3%E3%82%B0%E3%82%92%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Focicache-for-commons%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Focicache-for-commons%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/cloud-native/ocicache-for-commons/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/ocicache-for-beginners/" class="pagination--pager" title="OCI Cacheを使ってみよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/helidon-se-for-beginners/" class="pagination--pager" title="Helidon(SE)を始めてみよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

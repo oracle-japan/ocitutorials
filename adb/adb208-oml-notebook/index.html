@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb208-oml-notebook/img12.jpg">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb208-oml-notebook/img20.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb208-oml-notebook/img12.jpg');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb208-oml-notebook/img20.png');"
 >
   
     <div class="wrapper">
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="208: Oracle Machine Learningで機械学習をしよう">
     <meta itemprop="description" content="Oracle Machine Learningで液体の品質の予測や、同時購入商品の予測していきます。Autonomous Databaseで始める堅牢なデータの蓄積とその利活用の世界をご体感頂けます。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -369,7 +369,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#準備編">準備編</a><ul><li><a href="#omlユーザを作成する">OMLユーザを作成する</a></li><li><a href="#作成したomlユーザのrestサービスを有効化する">作成したOMLユーザのRESTサービスを有効化する</a></li><li><a href="#データセットをadbにロードする">データセットをADBにロードする</a><ul><li><a href="#liquidcsvをdatabase-actionsからロード">liquid.csvをDatabase Actionsからロード</a></li><li><a href="#order_itemscsvをobject-storageにアップロード">order_items.csvをObject Storageにアップロード</a></li></ul></li></ul></li><li><a href="#機械学習編">機械学習編</a><ul><li><a href="#oml-notebookを使い始める">OML Notebookを使い始める</a></li><li><a href="#機械学習モデルをビルド評価する">機械学習モデルをビルド・評価する</a><ul><li><a href="#ハンズオンの内容">ハンズオンの内容</a></li></ul></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#準備編">準備編</a><ul><li><a href="#oml用のユーザを作成する">OML用のユーザを作成する</a></li><li><a href="#データセットをadbにロードする">データセットをADBにロードする</a><ul><li><a href="#liquidcsvをdatabase-actionsからロード">liquid.csvをDatabase Actionsからロード</a></li><li><a href="#order_itemscsvをobject-storageにアップロード">order_items.csvをObject Storageにアップロード</a></li></ul></li></ul></li><li><a href="#機械学習編">機械学習編</a><ul><li><a href="#oml-notebookを使い始める">OML Notebookを使い始める</a></li><li><a href="#機械学習モデルをビルド評価する">機械学習モデルをビルド・評価する</a><ul><li><a href="#ハンズオンの内容">ハンズオンの内容</a></li></ul></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -403,12 +403,11 @@
 <ul>
   <li><a href="#anchor1">準備編</a>
     <ul>
-      <li><a href="#anchor1-1">OMLユーザを作成する</a></li>
-      <li><a href="#anchor1-2">作成したOMLユーザのRESTサービスを有効化する</a></li>
-      <li><a href="#anchor1-3">データセットをADBにロードする</a>
+      <li><a href="#anchor1-1">OML用のユーザを作成する</a></li>
+      <li><a href="#anchor1-2">データセットをADBにロードする</a>
         <ul>
-          <li><a href="#anchor1-3-1">liquid.csvをDatabase Actionsからロード</a></li>
-          <li><a href="#anchor1-3-2">order_items.csvをObject Storageにアップロード</a></li>
+          <li><a href="#anchor1-2-1">liquid.csvをDatabase Actionsからロード</a></li>
+          <li><a href="#anchor1-2-2">order_items.csvをObject Storageにアップロード</a></li>
         </ul>
       </li>
     </ul>
@@ -430,141 +429,91 @@
 
 <h1 id="準備編">準備編</h1>
 
-<h2 id="omlユーザを作成する">OMLユーザを作成する</h2>
+<h2 id="oml用のユーザを作成する">OML用のユーザを作成する</h2>
 
 <ol>
   <li>
-    <p><strong>ツール</strong>タブの<strong>Oracle MLユーザ管理</strong>で、MLユーザを作成していきましょう。</p>
+    <p><strong>Database Actions</strong>から、MLユーザを作成していきましょう。</p>
 
-    <p><img src="img0.jpg" alt="image.png" /></p>
+    <p><img src="img0.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>ADBのADMINユーザの情報を入力し、<strong>サインイン</strong>をクリックして下さい。</p>
+    <p>ADMINユーザーでDatabase Actionsにサインインできていることが確認できたら、<strong>管理</strong>から<strong>データベース・ユーザー</strong>をクリックします。</p>
 
-    <p><img src="img0.5.jpg" alt="image.png" />。。</p>
+    <p><img src="img1.png" alt="image.png" /></p>
+  </li>
+  <li>以下のように設定して<strong>ユーザーの作成</strong>をクリックし、機械学習用のユーザを作成します。
+    <ul>
+      <li>ユーザー名：<strong>OMLUSER</strong></li>
+      <li>パスワード：例：<strong>Welcome12345#</strong></li>
+      <li>表領域の割り当て制限：<strong>UNLIMITED</strong></li>
+      <li>OML、Webアクセスのトグルを<strong>ON</strong>
+<img src="img2.png" alt="image.png" /></li>
+    </ul>
   </li>
   <li>
-    <p><strong>+作成ボタン</strong>をクリックし、機械学習用のユーザを作成します。</p>
+    <p>ユーザーが作成されました。</p>
 
-    <p><img src="img1.jpg" alt="image.png" /></p>
+    <p><img src="img3.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>ユーザーの情報を入力し、画面右上<strong>作成ボタン</strong>をクリックして下さい。</p>
+    <p>Database Actionからサインアウトします。</p>
 
-    <p><img src="img2.jpg" alt="image.png" /></p>
+    <p><img src="img4.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>ユーザOMLが作成されたことを確認し、ADW詳細画面へ戻ります。</p>
+    <p>作成済のOMLUSERユーザーで<strong>サインイン</strong>して下さい。</p>
 
-    <p><img src="img3.jpg" alt="image.png" /></p>
-  </li>
-</ol>
-
-<p><a id="anchor1-2"></a></p>
-
-<h2 id="作成したomlユーザのrestサービスを有効化する">作成したOMLユーザのRESTサービスを有効化する</h2>
-
-<p>後述のデータロードをステップで、OMLユーザでDatabase Actionsを活用していきます。
-OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにログインできないので、OMLユーザのRESTを有効化していきましょう。</p>
-
-<ol>
-  <li>
-    <p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>Database Actionsを利用したインスタンスへの接続</strong> を参照し、Database Actionsを起動し、Adminユーザーで接続してください。<strong>ツール</strong>タブから、<strong>データベース・アクションを開く</strong>をクリックしてください。</p>
-
-    <p><img src="img19.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>ADMINユーザで<strong>サインイン</strong>して下さい。</p>
-
-    <p><img src="img40.png" alt="image.png" /></p>
-  </li>
-  <li>
-    <p>Database Actionsのランディングページから<strong>データベース・ユーザ</strong> を選択します。</p>
-
-    <p><img src="img41.png" alt="image.png" /></p>
-  </li>
-  <li>
-    <p>作成済の<strong>OMLユーザ</strong>を確認することができます。</p>
-
-    <p><img src="img42.png" alt="image.png" /></p>
-  </li>
-  <li>
-    <p><strong>OMLユーザ</strong>の<strong>オプションボタン</strong>から<strong>RESTの有効化</strong>をクリックして下さい。</p>
-
-    <p><img src="img43.png" alt="image.png" /></p>
-  </li>
-  <li>
-    <p><strong>REST対応ユーザー</strong>をクリックして下さい。</p>
-
-    <p><img src="img44.png" alt="image.png" /></p>
-  </li>
-  <li>
-    <p><strong>OMLユーザ</strong>に<strong>RESTの有効化の</strong>マークを確認することができます。</p>
-
-    <p><img src="img45.png" alt="image.png" /></p>
-  </li>
-  <li>
-    <p>画面右上の<strong>ADMIN</strong>をクリックし表示されたドロップダウンメニュから、<strong>サインアウト</strong>をして下さい。</p>
-
-    <p><img src="img46.png" alt="image.png" /></p>
-  </li>
-  <li>
-    <p>作成済のOMLユーザで<strong>サインイン</strong>して下さい。</p>
-
-    <p><img src="img47.png" alt="image.png" /></p>
+    <p><img src="img5.png" alt="image.png" /></p>
   </li>
 </ol>
 
 <p><br /></p>
 
-<p><a id="anchor1-3"></a></p>
+<p><a id="anchor1-2"></a></p>
 
 <h2 id="データセットをadbにロードする">データセットをADBにロードする</h2>
 
-<p><a id="anchor1-3-1"></a></p>
+<p><a id="anchor1-2-1"></a></p>
 
 <h3 id="liquidcsvをdatabase-actionsからロード">liquid.csvをDatabase Actionsからロード</h3>
 
 <ol>
   <li>
-    <p>Database Actionsのランディングページのデータ・ツールから　<strong>データ・ロード</strong> を選択します。</p>
+    <p>Database Actionsの起動パッドの<strong>Data Stusio</strong>から、<strong>データ・ロード</strong> を選択します。</p>
 
-    <p><img src="img21.jpg" alt="image.png" /></p>
+    <p><img src="img6.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>データの処理には、<strong>データのロード</strong> を選択し、データの場所には、<strong>ローカル・ファイル</strong> を選択して <strong>次</strong> をクリックします。</p>
+    <p><strong>データのロード</strong> &gt; <strong>ローカル・ファイル</strong> を選択します。<strong>ファイルの選択</strong>をクリックし、ダウンロードして解凍した <strong>liquid.csv</strong> を選択します。</p>
 
-    <p><img src="img22.jpg" alt="image.png" /></p>
-  </li>
-  <li>
-    <p><strong>ファイルの選択</strong>をクリックし、ダウンロードして解凍した <strong>liquid.csv</strong> を選択します。</p>
-
-    <p><img src="img23.jpg" alt="image.png" /></p>
+    <p><img src="img7.png" alt="image.png" />
+<img src="img8.png" alt="image.png" /></p>
   </li>
   <li>
     <p>liquid.csvがロードできる状態になりました。ロード前に<strong>ペンアイコン</strong>をクリックし、詳細設定を確認・変更できます。</p>
 
-    <p><img src="img24.jpg" alt="image.png" /></p>
+    <p><img src="img9.png" alt="image.png" /></p>
   </li>
   <li>
     <p>liquid.csvの表定義等のデータのプレビューを確認したら <strong>閉じる</strong> をクリックします。</p>
 
-    <p><img src="img25.jpg" alt="image.png" /></p>
+    <p><img src="img10.png" alt="image.png" /></p>
   </li>
   <li>
-    <p><strong>緑色の実行ボタン</strong>をクリックし、データのロードを開始します。</p>
+    <p><strong>開始</strong>をクリック後、ポップアップの<strong>実行</strong>をクリックし、データのロードを開始します。</p>
 
-    <p><img src="img26.jpg" alt="image.png" /></p>
+    <p><img src="img11.png" alt="image.png" /></p>
   </li>
   <li>
     <p>データ・ロード・ジョブの実行を確認するポップアップが表示されるので、<strong>実行</strong> をクリックします。</p>
 
-    <p><img src="img27.jpg" alt="image.png" /></p>
+    <p><img src="img12.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>liquid.csvに<strong>緑色のチェックマーク</strong>が付き、ロードが完了しました。<strong>完了</strong>をクリックします。</p>
+    <p>liquid.csvのロードが完了しました。</p>
 
-    <p><img src="img28.jpg" alt="image.png" /></p>
+    <p><img src="img13.png" alt="image.png" /></p>
   </li>
 </ol>
 
@@ -576,7 +525,7 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
   <li>
     <p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">ADBインスタンスを作成しよう</a>で学習した<strong>オブジェクトストレージへのデータアップロード</strong> を参照し、<strong>order_items.csv</strong>を<strong>Object Storage</strong>にアップロードして下さい。</p>
 
-    <p><img src="img29.jpg" alt="image.png" /></p>
+    <p><img src="img14.png" alt="image.png" /></p>
   </li>
 </ol>
 
@@ -592,44 +541,29 @@ OMLユーザーは作成後、RESTを有効化しないとDatabase Actionsにロ
 
 <ol>
   <li>
-    <p>ADW詳細画面の<strong>サービス・コンソール</strong>をクリックして下さい。</p>
+    <p>ADB詳細画面の<strong>ツール構成</strong>タブから、OMLにアクセスするパブリック・アクセスURLをコピーし、別タブで開きます。</p>
 
-    <p><img src="img4.jpg" alt="image.png" /></p>
-  </li>
-  <li>
-    <p>サービスコンソール画面左の<strong>開発</strong>をクリックして下さい。</p>
-
-    <p><img src="img5.jpg" alt="image.png" /></p>
-  </li>
-  <li>
-    <p>サービスコンソール開発タブ内の、<strong>Oracle Machine Learningノートブック</strong>をクリックして下さい。</p>
-
-    <p><img src="img6.jpg" alt="image.png" /></p>
+    <p><img src="img15.png" alt="image.png" /></p>
   </li>
   <li>
     <p>先ほどOMLユーザ管理で新規作成したユーザ(OML)で<strong>サインイン</strong>して下さい。</p>
 
-    <p><img src="img7.jpg" alt="image.png" /></p>
+    <p><img src="img16.png" alt="image.png" /></p>
   </li>
   <li>
     <p>クイック・アクションの<strong>ノートブック</strong>をクリックして下さい。</p>
 
-    <p><img src="img8.jpg" alt="image.png" /></p>
+    <p><img src="img17.png" alt="image.png" /></p>
   </li>
   <li>
     <p>任意のノートブックの名前を入力後、<strong>OK</strong>をクリックして下さい。</p>
 
-    <p><img src="img9.jpg" alt="image.png" /></p>
+    <p><img src="img18.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>新規作成した<strong>ノートブック名</strong>をクリックして下さい。</p>
+    <p>ノートブックの画面に遷移します。</p>
 
-    <p><img src="img10.jpg" alt="image.png" /></p>
-  </li>
-  <li>
-    <p>ノートブックの画面に遷移して下さい。</p>
-
-    <p><img src="img11.jpg" alt="image.png" /></p>
+    <p><img src="img19.png" alt="image.png" /></p>
   </li>
   <li>
     <p>作成したノートブックでスクリプトを書き始めることが可能になりました。</p>
@@ -642,16 +576,16 @@ import oml
 oml.isconnected()
 </code></pre></div>    </div>
 
-    <p><img src="img12.jpg" alt="image.png" /></p>
+    <p><img src="img20.png" alt="image.png" /></p>
 
     <p>下記のコマンドで、同じノートブック内でSQLを使用したLiquid表へのクエリを実行してみましょう。</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%python
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%sql
 
 select * from liquid;
 </code></pre></div>    </div>
 
-    <p><img src="img50.jpg" alt="image.png" /></p>
+    <p><img src="img21.png" alt="image.png" /></p>
   </li>
 </ol>
 
@@ -710,7 +644,7 @@ select * from liquid;
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装">
     <meta itemprop="description" content="表やビューといったオブジェクト単位ではなく、行や列の単位でアクセス制御をかけたい場合に利用できるのが仮想プライベートデータベース(VPD)です。基本的な設定の流れを学習しましょう。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -390,12 +390,12 @@
 
 <p><strong>目次 :</strong></p>
 <ul>
-  <li><a href="#anchor1">1.テスト用の表を作成</a></li>
-  <li><a href="#anchor2">2.ユーザーを作成</a></li>
-  <li><a href="#anchor3">3.VPDファンクションの作成</a></li>
-  <li><a href="#anchor4">4.VPDファンクションをVPDポリシーとして適用</a></li>
-  <li><a href="#anchor5">5.動作確認</a></li>
-  <li><a href="#anchor6">6.VPDポリシーの削除</a></li>
+  <li><a href="#1-テスト用の表を作成">1.テスト用の表を作成</a></li>
+  <li><a href="#2-ユーザを作成">2.ユーザーを作成</a></li>
+  <li><a href="#3-vpdファンクションの作成">3.VPDファンクションの作成</a></li>
+  <li><a href="#4-vpdファンクションをvpdポリシーとして適用">4.VPDファンクションをVPDポリシーとして適用</a></li>
+  <li><a href="#5-動作確認">5.動作確認</a></li>
+  <li><a href="#6-vpdポリシーの削除">6.VPDポリシーの削除</a></li>
 </ul>
 
 <p><strong>前提条件 :</strong></p>
@@ -410,14 +410,12 @@
 
 <p><br /></p>
 
-<p><a id="anchor1"></a></p>
-
 <h1 id="1-テスト用の表を作成">1. テスト用の表を作成</h1>
 <p>サンプルスキーマのSSBスキーマのCUSTOMER表の一部を利用して、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">「101:ADBインスタンスを作成してみよう」</a> で作成したADBUSERスキーマにテスト用の表を作成します。<br />
 SQL*Plusを起動して以下を実行してください。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADBUSERで接続する</span>
-<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 <span class="c1">-- SSB.CUSTEOMER表から新しくVPD_CUSTOMER表を作成する</span>
 <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">AS</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">ssb</span><span class="p">.</span><span class="n">customer</span> <span class="k">WHERE</span> <span class="n">ROWNUM</span><span class="o">&lt;</span><span class="mi">10000</span><span class="p">;</span>
 </code></pre></div></div>
@@ -440,15 +438,13 @@ SQL*Plusを起動して以下を実行してください。</p>
 
 <p><br /></p>
 
-<p><a id="anchor2"></a></p>
-
 <h1 id="2-ユーザを作成">2. ユーザを作成</h1>
 <p>ADMINユーザで接続し、ASIA担当のユーザをわかりやすくASIAという名前で作成します。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADMINで接続する</span>
-<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 <span class="c1">-- ASIAユーザを作成する</span>
-<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">asia</span> <span class="n">IDENTIFIED</span> <span class="k">by</span> <span class="nv">"Welcome12345##"</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">USER</span> <span class="n">asia</span> <span class="n">IDENTIFIED</span> <span class="k">by</span> <span class="nv">"Welcome12345#"</span><span class="p">;</span>
 <span class="c1">-- 接続するためのCONNECTロールとADBUSER.VPD_CUSTOMER表への参照権限を付与</span>
 <span class="k">GRANT</span> <span class="k">CONNECT</span> <span class="k">TO</span> <span class="n">asia</span><span class="p">;</span>
 <span class="k">GRANT</span> <span class="k">SELECT</span> <span class="k">ON</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">TO</span> <span class="n">asia</span><span class="p">;</span>
@@ -457,7 +453,7 @@ SQL*Plusを起動して以下を実行してください。</p>
 <p>ASIAユーザで接続してADBUSER.VPD_CUSTOMER表に対して、1と同じSQLを実行します。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ASIAで接続する</span>
-<span class="k">CONNECT</span> <span class="n">asia</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="n">asia</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 <span class="c1">-- リージョンごとの数を確認する</span>
 <span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
 </code></pre></div></div>
@@ -469,8 +465,6 @@ SQL*Plusを起動して以下を実行してください。</p>
 
 <p><br /></p>
 
-<p><a id="anchor3"></a></p>
-
 <h1 id="3-vpdファンクションの作成">3. VPDファンクションの作成</h1>
 <p>SQLに付加する条件（Where句の内容）を戻すVPDファンクションを作成します。<br />
 言い換えると、このVPDファンクションでどのような場合にどのデータにアクセスさせるかというルールを記述するということになります。
@@ -479,7 +473,7 @@ SQL*Plusを起動して以下を実行してください。</p>
 <strong><font color="RED">このチュートリアルではADMINユーザで行っていますが、VPDファンクションの作成および後に続くVPDポリシーの定義はセキュリティ管理者として信頼できるスキーマで実行する必要があります。</font></strong></p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADMINで接続する</span>
-<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 
 <span class="c1">--ファンクションを作成する</span>
 <span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">FUNCTION</span> <span class="n">vpdfunc</span>
@@ -506,8 +500,6 @@ SQL*Plusを起動して以下を実行してください。</p>
 
 <p><br /></p>
 
-<p><a id="anchor4"></a></p>
-
 <h1 id="4-vpdファンクションをvpdポリシーとして適用">4. VPDファンクションをVPDポリシーとして適用</h1>
 <p>作成したファンクションををVPDポリシーとして対象のオブジェクト（表、ビューなど）に関連付けます。<br />
 ポリシーをオブジェクトに紐づけることで、ユーザがどのような方法でそのオブジェクトにアクセスしても同じポリシーが適用されます。<br />
@@ -516,7 +508,7 @@ VPDポリシーの構成や管理にはDBMS_RLSパッケージを利用します
 <p>ADMINユーザで接続し、以下を実行します。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADMINで接続する</span>
-<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 
 <span class="c1">-- VPDポリシーを対象のオブジェクトに追加する</span>
 <span class="k">BEGIN</span>
@@ -534,8 +526,6 @@ VPDポリシーの構成や管理にはDBMS_RLSパッケージを利用します
 
 <p><br /></p>
 
-<p><a id="anchor5"></a></p>
-
 <h1 id="5-動作確認">5. 動作確認</h1>
 <p>それでは実際にユーザー別に同じSQLで異なるデータが返ってくるかどうかを確認してみましょう。
 実行するSQLは1で利用したリージョンごとの数を表示させるものです。</p>
@@ -546,7 +536,7 @@ VPDポリシーの構成や管理にはDBMS_RLSパッケージを利用します
 <h2 id="adbuserで実行">ADBUSERで実行</h2>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADBUSERで接続する</span>
-<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="n">adbuser</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 <span class="c1">--確認</span>
 <span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
 </code></pre></div></div>
@@ -559,7 +549,7 @@ VPDポリシーの構成や管理にはDBMS_RLSパッケージを利用します
 <h2 id="asiaで実行">ASIAで実行</h2>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ASIAで接続する</span>
-<span class="k">CONNECT</span> <span class="n">asia</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="n">asia</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 <span class="c1">--確認</span>
 <span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
 </code></pre></div></div>
@@ -572,7 +562,7 @@ VPDポリシーの構成や管理にはDBMS_RLSパッケージを利用します
 <p>それでは、ADMINユーザではどうでしょうか。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">--ADMINユーザで接続</span>
-<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 <span class="c1">--確認</span>
 <span class="k">SELECT</span> <span class="n">c_region</span><span class="p">,</span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">adbuser</span><span class="p">.</span><span class="n">vpd_customer</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">c_region</span><span class="p">;</span>
 </code></pre></div></div>
@@ -585,14 +575,12 @@ VPDポリシーの構成や管理にはDBMS_RLSパッケージを利用します
 
 <p><br /></p>
 
-<p><a id="anchor6"></a></p>
-
 <h1 id="6-vpdポリシーの削除">6. VPDポリシーの削除</h1>
 <p>VPDポリシーの削除もDBMS_RLSパッケージを使用して行います。
 ADMINユーザで以下を実行します。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- ADMINで接続</span>
-<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">##@</span><span class="n">atp01_low</span>
+<span class="k">CONNECT</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="n">atp01_low</span>
 <span class="c1">-- ポリシーを削除する</span>
 <span class="k">BEGIN</span>
   <span class="n">DBMS_RLS</span><span class="p">.</span><span class="n">DROP_POLICY</span><span class="p">(</span>
@@ -609,7 +597,7 @@ ADMINユーザで以下を実行します。</p>
 <p><br /></p>
 
 <h1 id="おわりに">おわりに</h1>
-<p>このチュートリアルでは基本的な設定方法をお伝えするために簡単な例を用いましたが、VPDではファンクションでルールの記述を行うため、非常に柔軟で細やかなアクセス制御を実装させることが可能です。</p>
+<p>このチュートリアルでは基本的な設定方法をお伝えするために簡単な例を用いましたが、VPDではファンクションでルールの記述を行うため、柔軟で細やかなアクセス制御を実装させることが可能です。</p>
 
 <ul>
   <li>例
@@ -621,7 +609,7 @@ ADMINユーザで以下を実行します。</p>
   </li>
 </ul>
 
-<p>そのため、VPDを構成するときに最も重要な作業はアクセスのルールの設計、明確化となります。実環境でのご利用を検討されるときは、その点で抜け漏れがないか十二分にお気を付けください。</p>
+<p>そのため、VPDを構成するときに最も重要な作業はアクセスのルールの設計、明確化となります。実環境でのご利用を検討されるときは、その点で抜け漏れがないか十分ご注意ください。</p>
 
 <p>以上でこの章は終了です。次の章にお進みください。</p>
 
@@ -664,7 +652,7 @@ ADMINユーザで以下を実行します。</p>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

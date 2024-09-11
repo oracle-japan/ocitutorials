@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/" class="active">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="401 : OCI GoldenGateによるBaseDBからADBへのデータ連携">
     <meta itemprop="description" content="OCI GoldenGateのインスタンス作成から対象のデータべース登録、データ連携の設定までを紹介します。基本的な設定の流れを学習しましょう。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -491,12 +491,12 @@ ENABLE_GOLDENGATE_REPLICATIONパラメータを設定して、GGが利用する�
     <p>ターゲット・データベースであるADBのggadminユーザのアンロックを行います。</p>
 
     <p>Autonomous DatabaseにはGoldenGate実行用のユーザがデータベース作成時点から用意されています。初期状態ではこのユーザはロックされていますので、アンロックを行っていきます。Aunotomous Databaseのデータベース・アクションを開きます。
- <img src="userunlock0.png" alt="データベース・アクション" /></p>
+<img src="image-16.png" alt="alt text" /></p>
   </li>
   <li>
     <p>データベース・ユーザを選択します。</p>
 
-    <p><img src="userunlock1.png" alt="データベース・ユーザ" /></p>
+    <p><img src="image-14.png" alt="alt text" /></p>
   </li>
   <li>
     <p>データベースのユーザ一覧が表示されます。既存で用意されているggadminユーザを見つけてください。</p>
@@ -553,25 +553,43 @@ ENABLE_GOLDENGATE_REPLICATIONパラメータを設定して、GGが利用する�
     <ul>
       <li><strong>名前</strong> - 任意</li>
       <li><strong>説明</strong> - 任意</li>
+      <li><strong>タイプ</strong> - 開発またはテスト</li>
       <li><strong>OCPU数</strong> - 1から24までの値で選択してください。動作確認であれば1OCPUで構いません。<br />実運用の参考値としてREDO生成量 60GB/h 程度であれば4OCPU＋自動スケーリングを選択してください。</li>
       <li><strong>自動スケーリング</strong> - 選択したOCPU数の最大3倍までの間でOCPUの利用率によって自動的にスケーリングされます。スケーリングはダウンタイムなくオンラインで実行され、<br />1時間あたりに消費されたOCPUの実平均が課金対象となります。</li>
       <li><strong>サブネット</strong> - 任意</li>
       <li><strong>ライセンス・タイプの選択</strong> - 任意</li>
-      <li><strong>拡張オプションの表示</strong> - 任意（パブリック・エンドポイントの作成、エンドポイントのカスタマイズが可能であることをご確認ください。本チュートリアルではパプリック・エンドポイントにチェックを入れています。)
- <img src="deploy2.png" alt="デプロイメントの作成2" /></li>
+      <li><strong>GoldenGateコンソール・パブリック・アクセスの有効化</strong> - 任意（パブリック・エンドポイントの作成、エンドポイントのカスタマイズが可能であることをご確認ください。本チュートリアルではパプリック・エンドポイントにチェックを入れています。)</li>
     </ul>
-  </li>
-  <li>
-    <p><strong>次</strong> をクリックします。</p>
+
+    <p><img src="image-17.png" alt="alt text" />
+ <img src="image-18.png" alt="alt text" /></p>
+
+    <p><strong>Next</strong> をクリックします。</p>
   </li>
   <li>GoldenGateの詳細入力欄に、各項目を入力します。
     <ul>
-      <li><strong>GoldenGateインスタンス名</strong> - 任意</li>
+      <li><strong>デプロイメント・タイプ</strong> - データ・レプリケーション</li>
+      <li><strong>テクノロジ</strong> - Oracle Database</li>
+      <li><strong>GoldenGateインスタンス名</strong> - 任意（例：gginstance）</li>
+      <li><strong>資格証明ストア</strong> - GoldenGate</li>
       <li><strong>管理者ユーザ名</strong> - 任意 (例:oggadmin)</li>
-      <li><strong>名前管理者パスワード</strong> - 任意 (例:Welcome#1Welcome#1)</li>
-      <li><strong>名前管理者パスワードの確認</strong> - 任意
- <img src="deploy3.png" alt="デプロイメントの作成3" /></li>
+      <li><strong>パスワード・シークレット</strong> - 任意</li>
     </ul>
+
+    <p>パスワード・シークレットがない場合は、<strong>パスワード・シークレットの作成</strong> をクリックします。
+ 既にパスワード・シークレットがある場合は、次のステップはスキップします。</p>
+
+    <p><img src="image-20.png" alt="alt text" /></p>
+  </li>
+  <li>以下の記載例を参考に各項目を入力します。
+    <ul>
+      <li><strong>名前</strong> - 任意（LLSecret）</li>
+      <li><strong>ユーザー・パスワード</strong> - 任意</li>
+    </ul>
+
+    <p><strong>作成</strong> をクリックします。</p>
+
+    <p><img src="image-19.png" alt="alt text" /></p>
   </li>
   <li>
     <p><strong>作成</strong> をクリックするとデプロイメントの作成が開始されます。</p>
@@ -596,45 +614,37 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 
 <ol>
   <li>
-    <p>GoldenGateのサービス画面から <strong>登録済みデータベース</strong> を選択します。
- <img src="registDB1.png" alt="データベースの登録1" /></p>
+    <p>GoldenGateのサービス画面から <strong>接続</strong> を選択し、<strong>接続の作成</strong> をクリックします。
+ <img src="image-21.png" alt="alt text" /></p>
   </li>
-  <li>
-    <p><strong>データベースの登録</strong> を選択します。
- <img src="registDB2.png" alt="データベースの登録2" /></p>
-  </li>
-  <li>データベースの登録 詳細入力欄に、各項目を入力します。まずはソースDBとなるBaseDBの登録を行っていきます。
+  <li>一般情報入力欄に、各項目を入力します。まずはソースDBとなるBaseDBの登録を行っていきます。
     <ul>
       <li><strong>名前</strong> - 任意</li>
-      <li><strong>別名</strong> - 任意</li>
-      <li><strong>説明</strong> - 任意</li>
-      <li><strong>コンパートメント</strong> - 任意</li>
-      <li><strong>データベースの選択</strong>、<strong>データベース情報の入力</strong> - OCI上のデータベースを登録する場合には <strong>データベースの選択</strong> を選択します。オンプレミス上のデータベース等OCI上にあるデータベース以外を登録する場合には <strong>データベース情報の入力</strong> を選択します。
- どちらを選択するかによってこの後の入力欄が変化します。
- <br />
- 今回はOCI上のBaseDBをソースDBとして登録するため、<strong>データベースの選択</strong> を選択します。</li>
-      <li>
-        <p><strong>データベース・タイプ</strong> - OCI上のどのデータベースを登録するかを選択します。<br />
- 今回はOCI上のBaseDBをソースDBとして登録するため、<strong>DBシステム・データベース(ベア・メタル、VM、Exadata)</strong> を選択します。</p>
-      </li>
+      <li><strong>データベース・タイプ</strong> - OCI上のどのデータベースを登録するかを選択します。<br />
+ 今回はOCI上のBaseDBをソースDBとして登録するため、<strong>Oracle Database</strong> を選択します。</li>
+    </ul>
+
+    <p><img src="image-22.png" alt="alt text" /></p>
+
+    <ul>
+      <li><strong>データベース詳細</strong> -  データベースの選択</li>
       <li><strong>データベース・システム</strong> - 登録したいデータベース・システムを選択します。
  BaseDBの場合データベース・システムを選択することでデータベース接続文字列まで自動入力されます。</li>
       <li><strong>データベース・ホーム</strong> - 任意</li>
       <li><strong>データベース</strong> - 任意</li>
-      <li><strong>データベースFQDN</strong> - 任意</li>
-      <li><strong>データベース接続文字列</strong> - 任意（IPを指定することはできません。データベースFQDNで入力した名前を使用してください。TNS記述、簡易接続記述のどちらも使用可能です。）</li>
       <li><strong>データベース・ユーザ名</strong> - 任意<br />今回はあらかじめ作成しておいた <strong>c##oggadmin</strong> を指定します。</li>
       <li><strong>データベース・ユーザ・パスワード</strong> - 入力したデータベース・ユーザのパスワードを指定してください。</li>
       <li><strong>データベース・ウォレット</strong> - 任意</li>
-      <li><strong>データベース・IP</strong> - 登録したいデータベースのIPを入力してください。（2021/08現在SCAN IPを指定することはできません。RAC構成の場合はローカル・リスナーのVIPを入力してください。）</li>
-      <li><strong>サブネット</strong> - 任意
- <img src="registDB3.png" alt="データベースの登録3" /></li>
+      <li><strong>ネットワーク接続</strong> - 共有エンドポイント</li>
     </ul>
+
+    <p><img src="image-25.png" alt="alt text" /></p>
   </li>
   <li>
     <p>ターゲットとなるADBも同様にデータベースを登録します。</p>
 
-    <p><img src="registDB4.png" alt="データベースの登録4" /></p>
+    <p><img src="image-23.png" alt="alt text" />
+ <img src="image-24.png" alt="alt text" /></p>
   </li>
 </ol>
 
@@ -825,7 +835,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 
@@ -849,7 +859,7 @@ OCI上にデータベースを登録しておくことで、この後の工程�
 ">前へ</a>
     
     
-      <a href="/ocitutorials/adb/adb402-database-link/" class="pagination--pager" title="402 : Database Linkによるデータ連携
+      <a href="/ocitutorials/adb/adb402-database-link/" class="pagination--pager" title="402 : Database Linkによる他のデータベースとのデータ連携
 ">次へ</a>
     
   </nav>

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="109: プライベート・エンドポイントのADBを作成してみよう">
     <meta itemprop="description" content="ADBでは、パブリックIPを持つパブリック・エンドポイントとプライベートIPを持つプライベート・エンドポイントを選択できます。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -369,7 +369,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-プライベートエンドポイントのadbへの接続">1. プライベート・エンドポイントのADBへの接続</a><ul><li><a href="#1-1-ネットワーク構成の確認">1-1. ネットワーク構成の確認</a></li><li><a href="#1-2-adbの作成">1-2. ADBの作成</a></li><li><a href="#1-3-adbへの接続">1-3. ADBへの接続</a></li></ul></li><li><a href="#2-database-actionsへの接続">2. Database Actionsへの接続</a><ul><li><a href="#2-1-パブリックエンドポイントでaclを定義済み">2-1. パブリック・エンドポイントでACLを定義済み</a></li><li><a href="#2-2-プライベートエンドポイントでinternetから接続">2-2. プライベート・エンドポイントでInternetから接続</a></li><li><a href="#2-3-プライベートエンドポイントでプライベートネットワークから接続">2-3. プライベート・エンドポイントでプライベート・ネットワークから接続</a></li></ul></li><li><a href="#参考資料">参考資料</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-プライベートエンドポイントのadbへの接続">1. プライベート・エンドポイントのADBへの接続</a><ul><li><a href="#1-1-ネットワーク構成の確認">1-1. ネットワーク構成の確認</a></li><li><a href="#1-2-adbの作成">1-2. ADBの作成</a></li><li><a href="#1-3-adbへの接続">1-3. ADBへの接続</a></li><li><a href="#1-4-パブリックアクセスの許可">1-4. パブリック・アクセスの許可</a></li></ul></li><li><a href="#2-database-actionsへの接続">2. Database Actionsへの接続</a><ul><li><a href="#2-1-パブリックエンドポイントでaclを定義済み">2-1. パブリック・エンドポイントでACLを定義済み</a></li><li><a href="#2-2-プライベートエンドポイントでinternetから接続">2-2. プライベート・エンドポイントでInternetから接続</a></li><li><a href="#2-3-プライベートエンドポイントでプライベートネットワークから接続">2-3. プライベート・エンドポイントでプライベート・ネットワークから接続</a></li></ul></li><li><a href="#参考資料">参考資料</a></li></ul>
             </nav>
           </aside>
         
@@ -386,20 +386,23 @@
 <p><strong>目次</strong></p>
 
 <ul>
-  <li><a href="#anchor1">1. プライベート・エンドポイントのADBへの接続</a>
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-プライベートエンドポイントのadbへの接続">1. プライベート・エンドポイントのADBへの接続</a>
     <ul>
-      <li><a href="#anchor1-1">1-1. ネットワーク構成図の確認</a></li>
-      <li><a href="#anchor1-2">1-2. ADBの作成</a></li>
-      <li><a href="#anchor1-3">1-3. ADBへの接続</a></li>
+      <li><a href="#1-1-ネットワーク構成の確認">1-1. ネットワーク構成の確認</a></li>
+      <li><a href="#1-2-adbの作成">1-2. ADBの作成</a></li>
+      <li><a href="#1-3-adbへの接続">1-3. ADBへの接続</a></li>
+      <li><a href="#1-4-パブリックアクセスの許可">1-4. パブリック・アクセスの許可</a></li>
     </ul>
   </li>
-  <li><a href="#anchor2">2. Database Actionsへの接続</a>
+  <li><a href="#2-database-actionsへの接続">2. Database Actionsへの接続</a>
     <ul>
-      <li><a href="#anchor2-1">2-1. パブリック・エンドポイントでACLを定義している</a></li>
-      <li><a href="#anchor2-2">2-2. プライベート・エンドポイントでInternetから接続</a></li>
-      <li><a href="#anchor2-3">2-3. プライベート・エンドポイントでプライベート・ネットワークから接続</a></li>
+      <li><a href="#2-1-パブリックエンドポイントでaclを定義済み">2-1. パブリック・エンドポイントでACLを定義済み</a></li>
+      <li><a href="#2-2-プライベートエンドポイントでinternetから接続">2-2. プライベート・エンドポイントでInternetから接続</a></li>
+      <li><a href="#2-3-プライベートエンドポイントでプライベートネットワークから接続">2-3. プライベート・エンドポイントでプライベート・ネットワークから接続</a></li>
     </ul>
   </li>
+  <li><a href="#参考資料">参考資料</a></li>
 </ul>
 
 <p><br /></p>
@@ -447,9 +450,73 @@
 
 <p><img src="adb-access.png" alt="adb-access.png" /></p>
 
-<p><br /></p>
+<p><br />
+<a id="anchor1-4"></a></p>
 
-<p><a id="anchor2"></a></p>
+<h2 id="1-4-パブリックアクセスの許可">1-4. パブリック・アクセスの許可</h2>
+<p>プライベート・エンドポイントのADBでは、パブリック・アクセスを許可するオプションがあります。このオプションを使用すると、パブリック・エンドポイントが追加され、アクセス制御リストで許可されたパブリックIP、CIDR、VCNから接続することができるようになります。</p>
+
+<p>プライベート・エンドポイントで作成済みのADBにパブリック・アクセスを許可するには、ADBのネットワーク・アクセスを更新します。</p>
+
+<p>ADBの作成ページの[ネットワーク・アクセスの更新]をクリックします。</p>
+
+<p><img src="publicaccess1.png" alt="publicaccess1.png" /></p>
+
+<p>[パブリック・アクセスを許可]ボタンをクリックします。</p>
+
+<p><img src="publicaccess2.png" alt="publicaccess2.png" /></p>
+
+<p>IPアドレス、CIDRブロック、VCN名、VCNのOCIDを指定して、アクセス許可を行います。今回はADBが配置されているVCNとは異なるVCN内にあるコンピュート・インスタンスのパブリックIPを指定します。</p>
+
+<p>このとき接続用のウォレットにパブリック・エンドポイントにアクセスする接続文字列が追加されるので、確認してみます。
+ウォレットのダウンロード方法は<a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/#1-%E3%82%AF%E3%83%AC%E3%83%87%E3%83%B3%E3%82%B7%E3%83%A3%E3%83%AB%E3%82%A6%E3%82%A9%E3%83%AC%E3%83%83%E3%83%88%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89" target="_blank">こちら</a>をご参照ください。</p>
+
+<p>以下にように<em>DB名_public_コンシューマグループ</em>が追加されています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>atprd01_high <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>xxxx.adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_high.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span>no<span class="o">)))</span>
+atprd01_low <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>xxxx.adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_low.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span>no<span class="o">)))</span>
+atprd01_medium <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>xxxx.adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_medium.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span>no<span class="o">)))</span>
+atprd01_tp <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>xxxx.adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_tp.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span>no<span class="o">)))</span>
+atprd01_tpurgent <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>xxxx.adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_tpurgent.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span>no<span class="o">)))</span>
+atprd01_public_high <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_high.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span><span class="nb">yes</span><span class="o">)))</span>
+atprd01_public_low <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_low.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span><span class="nb">yes</span><span class="o">)))</span>
+atprd01_public_medium <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_medium.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span><span class="nb">yes</span><span class="o">)))</span>
+atprd01_public_tp <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_tp.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span><span class="nb">yes</span><span class="o">)))</span>
+atprd01_public_tpurgent <span class="o">=</span> <span class="o">(</span><span class="nv">description</span><span class="o">=</span> <span class="o">(</span><span class="nv">retry_count</span><span class="o">=</span>20<span class="o">)(</span><span class="nv">retry_delay</span><span class="o">=</span>3<span class="o">)(</span><span class="nv">address</span><span class="o">=(</span><span class="nv">protocol</span><span class="o">=</span>tcps<span class="o">)(</span><span class="nv">port</span><span class="o">=</span>1522<span class="o">)(</span><span class="nv">host</span><span class="o">=</span>adb.ap-tokyo-1.oraclecloud.com<span class="o">))(</span><span class="nv">connect_data</span><span class="o">=(</span><span class="nv">service_name</span><span class="o">=</span>xxxx_atprd01_tpurgent.adb.oraclecloud.com<span class="o">))(</span><span class="nv">security</span><span class="o">=(</span><span class="nv">ssl_server_dn_match</span><span class="o">=</span><span class="nb">yes</span><span class="o">)))</span>
+</code></pre></div></div>
+
+<p>ウォレットを使った接続の場合、上記のように更新されたウォレットを再ダウンロードし、<strong>atprd01_public_tp</strong>などの追加された接続サービスで接続すればパブリック・アクセスが可能になります。</p>
+
+<p>ウォレットを使わない接続の場合、OCIコンソールの[データベース接続]をクリックしパブリック・アクセス用の接続文字列を取得します。</p>
+
+<p><img src="publicaccess3.png" alt="publicaccess3.png" /></p>
+
+<p>[TLS認証]を<strong>TLS</strong>とし、[アクセス]を<strong>パブリック・エンドポイント</strong>とすると、<strong>atprd01_public_tp</strong>などの接続サービスの接続文字列が表示されるので、そのうちの1つをコピーします。</p>
+
+<p><img src="publicaccess4.png" alt="publicaccess4.png" /></p>
+
+<p>先ほどアクセス許可したパブリックIPのインスタンスから、SQLclで以下のように接続してみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">sql</span> <span class="k">admin</span><span class="o">/</span><span class="n">Welcome12345</span><span class="o">#@</span><span class="nv">"(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxx_atprd01_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))"</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SQLcl: Release 24.1 Production on Sun Aug 04 06:16:29 2024
+
+Copyright <span class="o">(</span>c<span class="o">)</span> 1982, 2024, Oracle.  All rights reserved.
+
+Last Successful login <span class="nb">time</span>: Sun Aug 04 2024 06:17:12 +00:00
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.24.0.1.0
+
+SQL&gt;
+</code></pre></div></div>
+
+<p>無事パブリック・アクセスができました。</p>
+
+<p><br />
+<a id="anchor2"></a></p>
 
 <h1 id="2-database-actionsへの接続">2. Database Actionsへの接続</h1>
 <p>Database Actions は、データベースの操作をGUI上で行うことができるツールです。
@@ -493,6 +560,34 @@ ACLを更新後、OCIコンソール画面からアクセスできるように�
 <p>また、OCIのBastion Serviceを使用してアクセスすることもできます。
 詳しい手順は、<a href="https://qiita.com/500InternalServerError/items/d09dc910c9f115035225" target="_blank">こちらの記事</a>をご参照ください。</p>
 
+<p><a href="#1-4-パブリックアクセスの許可">こちら</a>でパブリック・アクセスを許可している場合、Database ActionsなどのADB付属ツールへパブリック・アクセスが可能です。</p>
+
+<p>パブリック・アクセスを許可している場合、各ツールのアクセスURLがプライベートとパブリックの2種類表示されます。</p>
+
+<p><img src="publicaccess5.png" alt="publicaccess5.png" /></p>
+
+<p>例えばローカルからDatabase Actionsへパブリック・アクセスしてみます。</p>
+
+<p>ADBの詳細画面の[ネットワーク]の<strong>パブリック・アクセス</strong>の編集ボタンをクリックします。</p>
+
+<p><img src="publicaccess6.png" alt="publicaccess6.png" /></p>
+
+<p><strong>アクセス制御ルールの追加</strong>をクリックし、<strong>自分のIPアドレスを追加</strong>をクリックします。現在ローカルで使用しているIPが追加されます。</p>
+
+<p><img src="publicaccess7.png" alt="publicaccess7.png" /></p>
+
+<p>これでローカルからADBのパブリック・エンドポイントへのアクセスが許可されました。</p>
+
+<p>パブリック・アクセスを許可すると、ADBの詳細画面の<strong>データベース・アクション</strong>が以下のような表示になっています。このような表示になっておらず、クリックしてもプライベートIPでのアクセスURLしか表示されない場合は少し時間を置くか、ブラウザのリフレッシュを行ってください。クリックするとパブリック・エンドポイントのデータベース・アクションが起動します。</p>
+
+<p><img src="publicaccess8.png" alt="publicaccess8.png" /></p>
+
+<p>このようにデータベース・アクションの起動パッド画面になりました。</p>
+
+<p><img src="publicaccess9.png" alt="publicaccess9.png" /></p>
+
+<p>このようにプライベート・エンドポイントのADBでも、ローカルのIPをアクセス制御リストで許可することで、データベース・アクションへパブリック・アクセスすることができます。</p>
+
 <p><br /></p>
 
 <p><a id="anchor2-3"></a></p>
@@ -526,7 +621,7 @@ ACLを更新後、OCIコンソール画面からアクセスできるように�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

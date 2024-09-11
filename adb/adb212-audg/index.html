@@ -10,7 +10,7 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>212: Autonomous Data Guardを構成してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<!-- begin _includes/seo.html --><title>212: Autonomous Database を災害対策構成にしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
 <meta name="description" content="DRを構成するにはどうしたら良いでしょうか？ADBでは数回クリックするだけでスタンバイ・データベースを簡単にプロビジョニングできます。">
 
 
@@ -23,7 +23,7 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="212: Autonomous Data Guardを構成してみよう">
+<meta property="og:title" content="212: Autonomous Database を災害対策構成にしてみよう">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb212-audg/">
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -164,7 +164,7 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          212: Autonomous Data Guardを構成してみよう
+          212: Autonomous Database を災害対策構成にしてみよう
 
         
       </h1>
@@ -215,7 +215,7 @@
     
       
       
-        <li class="current">212: Autonomous Data Guardを構成してみよう</li>
+        <li class="current">212: Autonomous Database を災害対策構成にしてみよう</li>
       
     
   </ol>
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/" class="active">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/" class="active">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -356,9 +356,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="212: Autonomous Data Guardを構成してみよう">
+    <meta itemprop="headline" content="212: Autonomous Database を災害対策構成にしてみよう">
     <meta itemprop="description" content="DRを構成するにはどうしたら良いでしょうか？ADBでは数回クリックするだけでスタンバイ・データベースを簡単にプロビジョニングできます。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -369,7 +369,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#autonomous-data-guardの有効化">Autonomous Data Guardの有効化</a></li><li><a href="#autonomous-data-guardのスイッチオーバー">Autonomous Data Guardのスイッチオーバー</a></li><li><a href="#tips">Tips</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-autonomous-data-guard">1. Autonomous Data Guard</a><ul><li><a href="#1-1-ローカルautonomous-data-guard-の有効化">1-1. ローカルAutonomous Data Guard の有効化</a></li><li><a href="#1-2-autonomous-data-guard-のスイッチオーバー">1-2. Autonomous Data Guard のスイッチオーバー</a></li><li><a href="#1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</a></li><li><a href="#1-4-autonomous-data-guard-のその他の機能">1-4. Autonomous Data Guard のその他の機能</a></li></ul></li><li><a href="#2-バックアップベースのディザスタリカバリ">2. バックアップベースのディザスタ・リカバリ</a><ul><li><a href="#2-1-ローカルバックアップベースのディザスタリカバリ">2-1. ローカル・バックアップベースのディザスタ・リカバリ</a></li><li><a href="#2-2-クロスリージョンバックアップベースのディザスタリカバリ">2-2. クロスリージョン・バックアップベースのディザスタ・リカバリ</a></li></ul></li><li><a href="#おわりに">おわりに</a></li></ul>
             </nav>
           </aside>
         
@@ -377,15 +377,35 @@
 
 <h1 id="はじめに">はじめに</h1>
 
-<p>Autonomous Databaseでは、Autonomous Data Guardと呼ばれる機能を使用して、スタンバイ・データベースを有効にする事ができます。これによって、Autonomous Databaseインスタンスにデータ保護およびディザスタ・リカバリを実現可能です。Autonomous Data Guardが有効になっている場合、フェイルオーバーやスイッチオーバーが可能なスタンバイ・データベースを提供します。</p>
+<p>Autonomous Database ではReal Application Clusters(RAC)やAutomatic Storage Management(ASM)などの高可用性技術が事前構成済みです。そのため、単一のDBサーバー障害やストレージ障害については、RTO/RPOがほぼ0(SLO: サービスレベル目標)で復旧させることが可能です。</p>
+
+<p>それらに加え、有償オプションとして、大きく2種類の災害対策ソリューションが提供されています。</p>
+
+<p>それがAutonomous Data Guardとバックアップベースのディザスタ・リカバリです。Autonomous Data Guard は、本番環境用インスタンス(プライマリ・インスタンス)のスタンバイ・データベースを構成する事ができます。これによって、Autonomous Database インスタンスにデータ保護およびディザスタ・リカバリを実現可能です。Autonomous Data Guard が有効になっている場合、全ノード障害やリージョン障害などの大規模障害の際に、フェイルオーバーやスイッチオーバーが可能なスタンバイ・データベースを提供します。なおAutonomous Data Guard のスタンバイ・データベースへはデータ操作や接続ができません。</p>
+
+<p>バックアップベースのディザスタ・リカバリは、デフォルトで取得されている自動バックアップのコピーを、本番環境用インスタンスのリージョンと異なるリージョンに保管しておくことができます。こちらもAutonomous Data Guard と同様、リージョン障害時に別のリージョンで本番環境と同等の環境をバックアップから構成することで、ディザスタ・リカバリを実現可能です。</p>
 
 <p><br /></p>
 
 <p><strong>目次</strong></p>
 
 <ul>
-  <li><a href="#anchor1">Autonomous Data Guardの有効化</a></li>
-  <li><a href="#anchor2">Autonomous Data Guardのスイッチオーバー</a></li>
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-autonomous-data-guard">1. Autonomous Data Guard</a>
+    <ul>
+      <li><a href="#1-1-ローカルautonomous-data-guard-の有効化">1-1. ローカルAutonomous Data Guard の有効化</a></li>
+      <li><a href="#1-2-autonomous-data-guard-のスイッチオーバー">1-2. Autonomous Data Guard のスイッチオーバー</a></li>
+      <li><a href="#1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</a></li>
+      <li><a href="#1-4-autonomous-data-guard-のその他の機能">1-4. Autonomous Data Guard のその他の機能</a></li>
+    </ul>
+  </li>
+  <li><a href="#2-バックアップベースのディザスタリカバリ">2. バックアップベースのディザスタ・リカバリ</a>
+    <ul>
+      <li><a href="#2-1-ローカルバックアップベースのディザスタリカバリ">2-1. ローカル・バックアップベースのディザスタ・リカバリ</a></li>
+      <li><a href="#2-2-クロスリージョンバックアップベースのディザスタリカバリ">2-2. クロスリージョン・バックアップベースのディザスタ・リカバリ</a></li>
+    </ul>
+  </li>
+  <li><a href="#おわりに">おわりに</a></li>
 </ul>
 
 <p><br /></p>
@@ -396,101 +416,299 @@
 
 <p><a id="anchor1"></a></p>
 
-<h1 id="autonomous-data-guardの有効化">Autonomous Data Guardの有効化</h1>
+<h1 id="1-autonomous-data-guard">1. Autonomous Data Guard</h1>
+<p>まずはスタンバイ・データベースを構成するAutonomous Data Guard を有効化してみます。</p>
+
+<p>Autonomous Database は<strong>SLA 99.95%</strong>で提供されますが、Autonomous Data Guard構成時には<strong>SLA 99.995%</strong>で提供されます。</p>
+
+<p>Autonomous Data Guard には2種類あり、プライマリ・インスタンスと同じリージョンにスタンバイ・データベースを構成する<strong>ローカル Autonomous Data Guard</strong>と、異なるリージョンにスタンバイ・データベースを構成する<strong>クロス・リージョン Autonomous Data Guard</strong>があります。</p>
+
+<p><img src="AuDG1.jpg" alt="AuDG1" /></p>
+
+<p>ローカルとクロス・リージョンでは、対応できる障害やRPO/RTO、追加コストが異なります。以下をご参照ください。</p>
+
+<p><img src="AuDG2.jpg" alt="AuDG2" /></p>
+
+<p>なおローカルAutonomous Data Guard では、複数のAvailability Domain(AD)のあるリージョンでは、異なるAD上にプロビジョニングされ、1つのADのみあるリージョンでは、スタンバイ・データベースはプライマリと異なるFault Domain(異なるExadata環境)上にプロビジョニングされます。これにより、全ノード障害やストレージの完全な障害などの物理マシン全体が被害を受けるケースにおいても、スタンバイ・データベースは異なる環境にあるため復旧することが可能です。</p>
+
+<p>コストについて、例えばプライマリ・インスタンスを10ECPU、ストレージ1TBのADBで運用していた場合、それぞれの追加コストは以下のようになります。</p>
+<ul>
+  <li>ローカル Autonomous Data Guard: 10ECPU、ストレージ1TB</li>
+  <li>クロス・リージョン Autonomous Data Guard: 10ECPU、ストレージ2TB</li>
+</ul>
+
+<p>なおスタンバイ・データベースでは、プライマリ・インスタンスの自動スケーリングでスケールした分のCPU課金は発生しません。設定ECPUのみの課金となります。</p>
+
+<p><br />
+<a id="anchor1-1"></a></p>
+
+<h2 id="1-1-ローカルautonomous-data-guard-の有効化">1-1. ローカルAutonomous Data Guard の有効化</h2>
+<p>実際にAutonomous Data Guard を有効化してみます。</p>
 
 <ol>
   <li>
-    <p>Autonomous Databaseの詳細画面の<strong>Autonomous Data Guard</strong>のステータスが無効になっているのを確認後、<strong>有効化</strong>をクリックします。</p>
+    <p>Autonomous Databaseの詳細画面の[ディザスタ・リカバリ]の<strong>Autonomous Data Guardにアップグレード</strong>をクリックします。デフォルトではプライマリ・インスタンスと同じリージョンにバックアップが取得されているため、『ローカル: バックアップベース』と記載されています。</p>
 
-    <p><img src="img1.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG3.jpg" alt="AuDG3" /></p>
   </li>
   <li>
-    <p><strong>Autonomous Data Guardの有効化</strong>をクリックします。</p>
+    <p>今回プライマリ・インスタンスは東京リージョンに作成してあるため、リージョンは東京となっています。ディザスタ・リカバリ・タイプとして、Autonomous Data Guard とバックアップベースのディザスタ・リカバリの2種類表示されています。上記の通りローカルのバックアップベースのディザスタ・リカバリはデフォルトで構成されている自動バックアップと同義のため、こちらを選択しても構成に変更は起きません。Autonomous Data Guard を選択し、送信ボタンをクリックします。</p>
 
-    <p><img src="img2.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG4.jpg" alt="AuDG4" /></p>
+
+    <blockquote>
+      <p>（補足）
+データ損失制限(秒)のある自動フェイルオーバーについて</p>
+
+      <p>ローカル Autonomous Data Guard では障害発生時の自動フェイルオーバーがサポートされています。</p>
+
+      <p>プライマリ・インスタンスが利用できなくなり、ユーザーが接続できない場合、ローカルのスタンバイ・データベースが利用可能であれば自動的にスタンバイ・データベースにフェイルオーバーします。</p>
+
+      <p>自動フェイルオーバーを行うのは、データ損失が上記で0(デフォルト)~3600秒の間で設定した制限内であることを保証できる場合のみです。</p>
+
+      <p>例えばデータ損失制限を60秒と設定した場合に、データ損失が60秒以内であれば自動フェイルオーバーを実施しますが、60秒以上であれば自動フェイルオーバーは行いません。この場合はユーザーによる手動フェイルオーバーでの復旧が必要となります。</p>
+    </blockquote>
   </li>
   <li>
-    <p>画面左上のATPマークが黄色に変化しました。<strong>Autonomous Data Guard</strong>に<strong>ピアの状態</strong>が出現し、プロビジョニング中であることが確認できます。完了するまで待ってみましょう。</p>
+    <p>画面左上のステータスがオレンジ色の更新中に変化しました。完了するまで数分待ってみましょう。なおスタンバイ・データベースの構成中であっても、データベース操作に影響はなく、ダウンタイムは発生しません。</p>
 
-    <p><img src="img3.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG5.jpg" alt="AuDG5" /></p>
   </li>
   <li>
-    <p>プロビジョニングが完了しました。ADB詳細画面のADB名の横に<strong>プライマリ</strong>というステータスが確認できます。<strong>Autonomous Data Guard</strong>のところに記載されている<strong>ピアの状態</strong>が、<strong>使用可能</strong>になりました。</p>
+    <p>プロビジョニングが完了し、ステータスが緑色の使用可能に戻りました。ADBの詳細画面の[ディザスタ・リカバリ]は<strong>ローカル: Autonomous Data Guard</strong>に変更されています。また左下の[リソース]のディザスタ・リカバリをクリックすると、以下のようにDRタイプがAutonomous Data Guard表示になっています。</p>
 
-    <p><img src="img4.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG6.jpg" alt="AuDG6" /></p>
+
+    <p><img src="AuDG7.jpg" alt="AuDG7" /></p>
   </li>
   <li>
-    <p>ここで、ターミナルからADBにSQL Plusでログインしましょう。現在のプライマリDBの情報を下記のSQL文で確認します。</p>
+    <p>ここでターミナルからADBにSQL*Plusで接続してみます。現在のプライマリ・インスタンスの情報を下記のSQL文で確認します。</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus admin/&lt;ADMINユーザのパスワード&gt;@&lt;ADBの接続サービス&gt;
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sqlplus</span> <span class="k">admin</span><span class="o">/&lt;</span><span class="k">ADMIN</span><span class="err">ユーザのパスワード</span><span class="o">&gt;@&lt;</span><span class="n">ADB</span><span class="err">の接続サービス</span><span class="o">&gt;</span>
 </code></pre></div>    </div>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT 
-DBID, NAME, DB_UNIQUE_NAME
-FROM 
-V$DATABASE;
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> 
+<span class="n">DBID</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">DB_UNIQUE_NAME</span>
+<span class="k">FROM</span> 
+<span class="n">V</span><span class="err">$</span><span class="k">DATABASE</span><span class="p">;</span>
 </code></pre></div>    </div>
 
-    <p><img src="img4.5.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG8.jpg" alt="AuDG8" /></p>
 
     <p>スイッチオーバーの前後でDBID、NAME、DB_UNIQUE_NAMEが変化することを確認したいと思うので、SQLの出力結果をメモ帳などにメモしておいてください。</p>
   </li>
 </ol>
 
-<p><a id="anchor2"></a></p>
+<p><br />
+<a id="anchor1-2"></a></p>
 
-<h1 id="autonomous-data-guardのスイッチオーバー">Autonomous Data Guardのスイッチオーバー</h1>
+<h2 id="1-2-autonomous-data-guard-のスイッチオーバー">1-2. Autonomous Data Guard のスイッチオーバー</h2>
+<p>Autonomous Data Guard を有効化できたので、続いてスタンバイ・データベースにスイッチオーバーして、ロール変更します。
+スイッチオーバーは一般的に、実際の障害時のフェイルオーバーのテスト目的で行われます。スイッチオーバー後は、これまでのスタンバイ・データベースがプライマリに、これまでのプライマリ・インスタンスがスタンバイに変更されます。</p>
 
 <ol>
   <li>
-    <p>ADB詳細画面に戻り、スイッチオーバーをしていきます。<strong>Autonomous Data Guard</strong>から<strong>スイッチオーバー</strong>をクリックして下さい。</p>
+    <p>ADB詳細画面に戻り、スイッチオーバーをします。ADBの詳細画面の[ディザスタ・リカバリ]の<strong>スイッチオーバー</strong>をクリックして下さい。</p>
 
-    <p><img src="img4.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG9.jpg" alt="AuDG9" /></p>
   </li>
   <li>
-    <p>画面左上のATPマークが黄色に変化しました。<strong>Autonomous Data Guard</strong>のところに記載されている<strong>ピアの状態</strong>が、<strong>ロール変更進行中</strong>であることが確認できます。完了するまで待ってみましょう。</p>
+    <p>DB名の入力確認があるので、以下のように入力してスイッチオーバーします。</p>
 
-    <p><img src="img6.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG10.jpg" alt="AuDG10" /></p>
   </li>
   <li>
-    <p>スイッチオーバーが完了しました。<strong>Autonomous Data Guard</strong>のところに記載されている<strong>ピアの状態</strong>が、<strong>使用不可</strong>になり、スタンバイを準備している状態であることが確認できます。</p>
+    <p>数分でスイッチオーバーが完了しました。ここでターミナルからADBにSQL*Plusでログインしましょう。スイッチオーバー後のプライマリの情報を下記のSQL文でクエリします。</p>
 
-    <p><img src="img7.jpg" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>ここで、ターミナルからADBにSQL Plusでログインしましょう。スイッチオーバー後のプライマリDBの情報を下記のSQL文でクエリしていきます。</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus admin/&lt;ADMINユーザのパスワード&gt;@&lt;ADBの接続サービス&gt;
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sqlplus</span> <span class="k">admin</span><span class="o">/&lt;</span><span class="k">ADMIN</span><span class="err">ユーザのパスワード</span><span class="o">&gt;@&lt;</span><span class="n">ADB</span><span class="err">の接続サービス</span><span class="o">&gt;</span>
 </code></pre></div>    </div>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT 
-DBID, NAME, DB_UNIQUE_NAME
-FROM 
-V$DATABASE;
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> 
+<span class="n">DBID</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">DB_UNIQUE_NAME</span>
+<span class="k">FROM</span> 
+<span class="n">V</span><span class="err">$</span><span class="k">DATABASE</span><span class="p">;</span>
 </code></pre></div>    </div>
 
-    <p><img src="img7.5.jpg" alt="画面ショット1-1" /></p>
+    <p><img src="AuDG11.jpg" alt="AuDG11" /></p>
 
     <p>問合せたDBID、NAME、DB_UNIQUE_NAMEは、スイッチオーバー前に接続していたDBとは異なる情報です。適切にスイッチオーバーされたのが確認できます。</p>
-
-    <p><br /></p>
-
-    <h1 id="tips">Tips</h1>
-    <ul>
-      <li>スタンバイ・データベースはプライマリ・データベースと同じリージョン内に下記の様にプロビジョニングされます。</li>
-      <li>複数の可用性ドメインがあるリージョンでは、スタンバイ・データベースはプライマリ・データベースとは異なる可用性ドメイン(AD)に自動的にプロビジョニングされますす。</li>
-      <li>単一の可用性ドメインのリージョンでは、スタンバイ・データベースはプライマリ・データベースとは異なる物理マシンに自動的にプロビジョニングされます。</li>
-      <li>(2021/8) Cross-Regionにも対応しました</li>
-    </ul>
-
-    <p><br /></p>
   </li>
 </ol>
 
-<p>以上で、この章の作業は終了です。</p>
+<p><br />
+<a id="anchor1-3"></a></p>
+
+<h2 id="1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</h2>
+<p>続いてクロスリージョンでのAutonomous Data Guard を構成してみます。プライマリを東京に作成している場合、クロスリージョンでのスタンバイ・データベースの作成先としては、大阪・ソウルリージョンがあります。</p>
+
+<ol>
+  <li>
+    <p>ADBの詳細画面の左下、リソースの[ディザスタ・リカバリ]をクリックし、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+    <p><img src="AuDG12.jpg" alt="AuDG12" /></p>
+  </li>
+  <li>
+    <p>リージョンを選択すると、ディザスタ・リカバリ・タイプの選択ができます。<strong>Autonomous Data Guard</strong>を選択します。</p>
+
+    <p><img src="AuDG13.jpg" alt="AuDG13" /></p>
+
+    <blockquote>
+      <p>（補足）
+クロスリージョン・バックアップ・レプリケーションの有効化について</p>
+
+      <p>デフォルトではクロスリージョン・スタンバイ・データベースでは、プライマリと異なり自動バックアップが取得されません。そのためスタンバイ・データベースにスイッチオーバー/フェイルオーバーした直後は、自動バックアップを使用したリストアやクローニングが実行できません。</p>
+
+      <p>しかしこの機能を有効化すると、最大7日間までの自動バックアップがスタンバイ側リージョンにレプリケートされるため、最大7日間以内であれば、新プライマリ(旧スタンバイ)DBをリストア、クローニングすることができます。</p>
+
+      <p>なおレプリケートされたバックアップは、7日後もしくは自動バックアップの保持期間が7日未満の場合は、その保持期間の日数が経過すると削除されます。またレプリケートされたバックアップは、バックアップ分の追加コストが発生します。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>プライマリ・インスタンスのネットワーク・アクセス・タイプが<strong>プライベート・エンドポイント・アクセス</strong>の場合、スタンバイのネットワーク・アクセスを設定する必要があります。ここでは大阪側のVCNとサブネットを選択して、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+    <p><img src="AuDG14.jpg" alt="AuDG14" /></p>
+  </li>
+  <li>
+    <p>画面左上のステータスがオレンジ色の更新中に変化しました。完了するまで数分待ってみましょう。なおスタンバイ・データベースの構成中であっても、データベース操作に影響はなく、ダウンタイムは発生しません。</p>
+
+    <p><img src="AuDG5.jpg" alt="AuDG5" /></p>
+  </li>
+  <li>
+    <p>スタンバイ・データベースが構成されると、以下のように大阪リージョンに<em>DB名_KIX</em>というインスタンスが作成されます。</p>
+
+    <p><img src="AuDG15.jpg" alt="AuDG15" /></p>
+  </li>
+</ol>
+
+<p>クロスリージョンAutonomous Data Guard では、自動フェイルオーバーがサポートされていないため、ユーザーによる手動フェイルオーバーを行う必要があります。</p>
+
+<p>実際の障害時には、まずローカルAutonomous Data Guard と同じ要領でスイッチオーバーを試みます。スイッチオーバーが失敗した場合、OCIコンソール上にフェイルオーバーを行うリンクが表示されます。ここではデータ損失が発生し得る時間も同時に表示されます。以下がサンプルです。</p>
+
+<p><img src="adb_failover_manual.png" alt="adb_failover_manual" /></p>
+
+<p>Autonomous Database は、RTO: 15分、RPO: 1分というサービスレベル目標(SLO)を基準にフェイルオーバーを行います。</p>
 
 <p><br />
-<a href="#anchor0">ページトップへ戻る</a></p>
+<a id="anchor1-4"></a></p>
+
+<h2 id="1-4-autonomous-data-guard-のその他の機能">1-4. Autonomous Data Guard のその他の機能</h2>
+<p>Autonomous Data Guard には、本記事でご紹介した以外にもいくつか補足機能があります。</p>
+
+<ol>
+  <li>
+    <p>スナップショット・スタンバイ</p>
+
+    <p>Autonomous Data Guard で作成したスタンバイ・データベースは、データ操作はもちろんDB接続はできませんが、このスナップショット・スタンバイ機能を使用すれば、<strong>2日間まで</strong>であれば読み書き可能なインスタンスとしてスタンバイ・データベースを活用できます。スナップショット・スタンバイになっている間は、プライマリからのREDO(更新データ)は転送されるものの、適用はされません。ユーザーが明示的にスナップショット・スタンバイから通常のスタンバイ・データベースに戻すか2日間が経過すれば、プライマリに自動的に再接続されます。そしてスナップショット・スタンバイ中に更新されたデータは破棄され、REDOの適用が再開されます。</p>
+
+    <p>スタンバイ・データベースの詳細画面から、[その他のアクション]の<strong>スナップショット・スタンバイ・データベースへの変換</strong>をクリックします。</p>
+
+    <p><img src="AuDG16.jpg" alt="AuDG16" /></p>
+
+    <p>ソース・データベース名(プライマリ)を入力して変換を行います。</p>
+
+    <p><img src="AuDG17.jpg" alt="AuDG17" /></p>
+
+    <p>これでスタンバイ・データベースは最大2日間読み書き可能なインスタンスになりました。通常のスタンバイ・データベースに戻す際は、<strong>ディザスタ・リカバリ・ピア・データベースへの変換</strong>をクリックします。</p>
+
+    <p><img src="AuDG18.jpg" alt="AuDG18" /></p>
+  </li>
+  <li>
+    <p>クロステナンシのAutonomous Data Guard
+Autonomous Data Guard では、プライマリと異なるテナンシにスタンバイ・データベースを作成することができます。Autonomous Data Guard の本来の目的であるスイッチオーバー、フェイルオーバーを異なるテナンシにできることに加え、Autonomous Database を他のテナンシに移行する際にもこちらの機能を利用することができます。</p>
+
+    <p>具体的な手順については、<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/autonomous-data-guard-cross-tenancy.html#GUID-D53D86E6-9A6E-4E6D-8516-3394B3F1CB2C" target="_blank">こちら</a>をご参照ください。</p>
+  </li>
+  <li>
+    <p>スタンバイ・データベースに関するイベント通知
+Autonomous Data Guard でスタンバイ・データベースを構成する場合、OCI EventsやOCI Notificationsサービスと組み合わせて、以下のようなイベント通知をすることができます。ユーザーはこれらを受け取って、障害発生時の対応や状況確認をよりスムーズに行うことができます。</p>
+    <ul>
+      <li>自動フェイルオーバーの開始/終了(ローカルAutonomous Data Guard のみ)</li>
+      <li>Autonomous Data Guard の無効化の開始/終了</li>
+      <li>Autonomous Data Guard の有効化の開始/終了</li>
+      <li>手動フェイルオーバーの開始/終了</li>
+      <li>スイッチオーバーの開始/終了</li>
+    </ul>
+
+    <p>EventsやNotificationsとの連携方法については、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb503-monitoring/" target="_blank">こちら</a>をご参照ください。</p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor2"></a></p>
+
+<h1 id="2-バックアップベースのディザスタリカバリ">2. バックアップベースのディザスタ・リカバリ</h1>
+<p>ここではバックアップベースのディザスタ・リカバリを有効にしてみます。</p>
+
+<p><br />
+<a id="anchor2-1"></a></p>
+
+<h2 id="2-1-ローカルバックアップベースのディザスタリカバリ">2-1. ローカル・バックアップベースのディザスタ・リカバリ</h2>
+<p>ADBではデフォルトで自動バックアップが取得されています。自動バックアップがローカル(ADBインスタンスと同じリージョン)・バックアップコピーとして取得されています。そのため、追加コストとしては発生せず、自動バックアップ分の課金のみになります。</p>
+
+<p>ADBの詳細画面の[リソース]の<strong>ディザスタ・リカバリ</strong>をクリックすると、デフォルトでは以下のようになっています。</p>
+
+<p><img src="backupbase1.jpg" alt="backupbase1" /></p>
+
+<p>※ADBプロビジョニング直後など自動バックアップが取られていない場合、表示されないケースがあります。</p>
+
+<p>このバックアップコピーの右の3点リーダーをクリックすると、以下の項目が表示されます。</p>
+
+<p><img src="backupbase2.jpg" alt="backupbase2" /></p>
+
+<ul>
+  <li>
+    <p>スイッチオーバー: 現在プロビジョニングされているExadata環境と異なるExadata環境に、バックアップからインスタンス化することでスイッチオーバーします。スイッチオーバーまでの時間はADBストレージ量に比例して長くなります。
+ <img src="backup-based-dr-local.png" alt="backup-based-dr-local" /></p>
+  </li>
+  <li>ディザスタ・リカバリの更新: バックアップコピーからローカルAutonomous Data Guard にディザスタ・リカバリ・タイプを変更します。</li>
+  <li>ピアの無効化(クリック不可): ローカル・バックアップコピーは自動バックアップ同様無効化できません。</li>
+</ul>
+
+<p><br />
+<a id="anchor2-2"></a></p>
+
+<h2 id="2-2-クロスリージョンバックアップベースのディザスタリカバリ">2-2. クロスリージョン・バックアップベースのディザスタ・リカバリ</h2>
+<p>ローカルとは別に、ADBがプロビジョニングされているリージョンと異なるリージョンに、バックアップコピーを取っておくことができます。クロスリージョンの場合はローカルとは異なり、追加コストとしてコピーするバックアップ(プライマリで課金される自動バックアップに必要なストレージ)の2倍の課金がかかります。</p>
+
+<p><img src="backup-based-dr-cross-region.png" alt="backup-based-dr-cross-region" /></p>
+
+<p>それではクロスリージョンのバックアップベースのディザスタ・リカバリを有効にしてみます。</p>
+
+<p>ADBの詳細画面の[リソース]のディザスタ・リカバリをクリックして、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+<p><img src="backupbase3.jpg" alt="backupbase3" /></p>
+
+<p>次にリージョンを選択します。東京リージョンの場合、大阪リージョンとソウルリージョンが選択できます。ここでは大阪リージョンを選択します。</p>
+
+<p>ディザスタ・リカバリ・タイプの選択は、<strong>バックアップベース・ディザスタ・リカバリ</strong>を選択します。</p>
+
+<p><img src="backupbase4.jpg" alt="backupbase4" /></p>
+
+<p>クロスリージョン・バックアップ・レプリケーションの有効化については、<a href="#1-3-クロスリージョンautonomous-data-guard">1-3. クロスリージョンAutonomous Data Guard</a>に記載があるので、そちらをご参照ください。</p>
+
+<p>プライマリ・インスタンスのネットワーク・アクセス・タイプが<strong>プライベート・エンドポイント・アクセス</strong>の場合、スタンバイのネットワーク・アクセスを設定する必要があります。ここでは大阪側のVCNとサブネットを選択して、<strong>ピア・データベースの追加</strong>をクリックします。</p>
+
+<p><img src="AuDG14.jpg" alt="AuDG14" /></p>
+
+<p>少し待つと、大阪リージョン側に<em>DB名_KIX</em>が作成されます。</p>
+
+<p><img src="backupbase5.jpg" alt="backupbase5" /></p>
+
+<p>ロール: バックアップ・コピーとなっているため、このインスタンスに接続することはできません。</p>
+
+<p>Autonomous Data Guard と同様の手順で、スイッチオーバーや、プライマリ障害時にはこのバックアップ・コピーを用いたフェイルオーバーが可能です。</p>
+
+<p><br />
+<a id="おわりに"></a></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>このチュートリアルでは、ADBで設定可能な災害対策ソリューションについてご紹介しました。ADBではデフォルトで高可用性構成になっているものの、特にミッションクリティカルなシステムでは、広域障害への対策が必要になってきます。そのような場合に今回ご紹介したソリューションが使用可能です。それぞれのソリューションで、RTO/RPO、コストが変わってくるので、システムの要件に応じてご選択いただければと思います。</p>
+
+<p>以上で、この章の作業は終了です。</p>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
 
         
       </section>
@@ -502,7 +720,7 @@ V$DATABASE;
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 
@@ -511,7 +729,7 @@ V$DATABASE;
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=212%3A+Autonomous+Data+Guard%E3%82%92%E6%A7%8B%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb212-audg%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=212%3A+Autonomous+Database+%E3%82%92%E7%81%BD%E5%AE%B3%E5%AF%BE%E7%AD%96%E6%A7%8B%E6%88%90%E3%81%AB%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb212-audg%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb212-audg%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -279,7 +279,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
@@ -325,7 +329,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
@@ -376,7 +380,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36をクラスタ・ネットワークでノード間接続するHPCクラスタでOpenFOAMを使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -387,7 +391,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-メモリ帯域の有効利用を考慮した最適なノード内並列実行方法">1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-実行方法">1-1. 実行方法</a></li><li><a href="#1-2-実行結果とその考察">1-2. 実行結果とその考察</a></li></ul></li><li><a href="#2-ノード間並列スケーラビリティーを考慮した最適な実行方法">2. ノード間並列スケーラビリティーを考慮した最適な実行方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-実行方法">2-1. 実行方法</a></li><li><a href="#2-2-実行結果とその考察">2-2. 実行結果とその考察</a></li></ul></li><li><a href="#3-nvme-ssdローカルディスクをストレージ領域に活用する方法">3. NVMe SSDローカルディスクをストレージ領域に活用する方法</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-実行方法">3-1. 実行方法</a></li><li><a href="#3-2-実行結果とその考察">3-2. 実行結果とその考察</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-メモリ帯域の有効利用を考慮した最適なノード内並列実行方法">1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-実行方法">1-1. 実行方法</a></li><li><a href="#1-2-実行結果とその考察">1-2. 実行結果とその考察</a></li></ul></li><li><a href="#2-スケーラビリティーを考慮した最適なノード間並列実行方法">2. スケーラビリティーを考慮した最適なノード間並列実行方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-実行方法">2-1. 実行方法</a></li><li><a href="#2-2-実行結果とその考察">2-2. 実行結果とその考察</a></li></ul></li><li><a href="#3-nvme-ssdローカルディスクをストレージ領域に活用する方法">3. NVMe SSDローカルディスクをストレージ領域に活用する方法</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-実行方法">3-1. 実行方法</a></li><li><a href="#3-2-実行結果とその考察">3-2. 実行結果とその考察</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -399,7 +403,7 @@
 <ol>
   <li>メモリ帯域の有効利用を考慮した最適なノード内並列実行方法</li>
   <li>スケーラビリティーを考慮した最適なノード間並列実行方法</li>
-  <li>NVMe SSDローカルディスクをストレージ領域に活用するノード間並列実行方法</li>
+  <li>NVMe SSDローカルディスクをストレージ領域に活用する方法</li>
 </ol>
 
 <p>本パフォーマンス関連Tipsの性能計測は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></strong> に従って構築された <strong>OpenFOAM</strong> を使用し、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> 環境でバッチジョブとして計測しています。</p>
@@ -422,7 +426,7 @@
 
 <p><img src="process_binding.png" alt="プロセスバインディング" /></p>
 
-<p>本Tipsは、以下の環境・条件で <strong>OpenFOAM</strong> のCFD解析フローの総所要時間（所要コスト）を計測しています。</p>
+<p>本Tipsは、以下の環境・条件で <strong>OpenFOAM</strong> のCFD解析フローの総所要時間（計算ノードの総所要コスト）を計測しています。</p>
 
 <ul>
   <li>シェイプ ： <strong>BM.Optimized3.36</strong></li>
@@ -430,8 +434,7 @@
   <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※2）</li>
   <li><strong>OpenFOAM</strong> ： v2312</li>
   <li>MPI ： <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 5.0.3</li>
-  <li>解析対象モデル ： <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデル<br />
-（ <strong>hpc/incompressible/simpleFoam/HPC_motorbike/Small/v1912/HPC_motorbike/Small/v1912</strong> ）</li>
+  <li>解析対象モデル ： <strong><a href="https://develop.openfoam.com/committees/hpc">OpenFOAM HPC Benchmark Suite</a></strong> の <strong><a href="https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike">HPC_Motorbike</a></strong> の <strong><a href="https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912">Small</a></strong> モデル</li>
   <li>計算結果の出力頻度（ <strong>writeInterval</strong> ） ： 1,000タイムステップ（デフォルト）</li>
 </ul>
 
@@ -441,8 +444,8 @@
 <p>この結果、以下のことが判明しています。</p>
 
 <ul>
-  <li><strong>NPS2</strong> が <strong>NPS1</strong> に対して  <strong>1.8 %</strong> 総所要時間が短い（MPIプロセス数36の場合）</li>
-  <li>MPIプロセス数36の場合（計算ノードに搭載する全てのコアを使用する）が総所要時間が最も短い</li>
+  <li><strong>NPS2</strong> が <strong>NPS1</strong> に対して  <strong>1.8 %</strong> 総所要時間（計算ノードの総所要コスト）が短い（安価）</li>
+  <li>MPIプロセス数36の場合（計算ノードに搭載する全てのコアを使用する）が総所要時間（計算ノードの総所要コスト）が最も短い（安価）</li>
 </ul>
 
 <h2 id="1-1-実行方法">1-1. 実行方法</h2>
@@ -451,7 +454,7 @@
 
 <p>この方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行">4. CFD解析フロー実行</a></strong> を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデルにこれを適用します。</p>
 
-<p>この際 <strong>NPS2</strong> の場合は、 <strong>slurm.conf</strong> ファイルの <strong>NodeName=DEFAULT</strong> で始まる行を以下のように修正します。</p>
+<p>この際 <strong>NPS2</strong> の場合は、 <strong>Slurm</strong> の設定ファイル <strong>slurm.conf</strong> の <strong>NodeName=DEFAULT</strong> で始まる行を以下のように修正します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>DEFAULT <span class="nv">CPUs</span><span class="o">=</span>36 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>4 <span class="nv">CoresPerSocket</span><span class="o">=</span>9 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>500000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
 </code></pre></div></div>
@@ -543,16 +546,16 @@
 <h2 id="1-2-実行結果とその考察">1-2. 実行結果とその考察</h2>
 
 <p><strong>NPS</strong> とMPIプロセス数をパラメータとして実行した結果を以下に示します。<br />
-なお各計測値は、5回の計測結果の平均値です。</p>
+なお各値は、5回の計測値の平均値です。</p>
 
 <p><img src="graph_02.png" alt="実行結果" /></p>
 
-<p>この結果から、 <strong>NPS</strong> に着目すると以下のことがわかります。</p>
+<p>この結果から、 <strong>NPS</strong> に着目すると、以下のことがわかります。</p>
 
 <ul>
   <li>全てのMPIプロセス数で <strong>NPS2</strong> が <strong>NPS1</strong> より高速</li>
   <li>MPIプロセス数が増えるに従い <strong>NPS2</strong> と <strong>NPS1</strong> の差は縮小する</li>
-  <li>最も性能の良いMPIプロセス数36の場合で <strong>NPS2</strong> は <strong>NPS1</strong> より総所要時間が <strong>1.8 %</strong> 短い</li>
+  <li>最も性能の良いMPIプロセス数36の場合で <strong>NPS2</strong> は <strong>NPS1</strong> より総所要時間（計算ノードの総所要コスト）が <strong>1.8 %</strong> 短い（安価）</li>
 </ul>
 
 <p>以上より、本テストケースでは <strong>NPS2</strong> が有利であると結論付けることが出来るため、次に <strong>NPS2</strong> のMPIプロセス数によるスケーラビリティーに着目します。</p>
@@ -571,7 +574,7 @@
 <p>以上より、本テストケースをノード内並列実行する際コストパフォーマンスを最大化する実行方法は、 <strong>NPS2</strong> と <strong>MPIプロセス数36</strong> の組み合わせである、と判断できます。</p>
 
 <hr />
-<h1 id="2-ノード間並列スケーラビリティーを考慮した最適な実行方法">2. ノード間並列スケーラビリティーを考慮した最適な実行方法</h1>
+<h1 id="2-スケーラビリティーを考慮した最適なノード間並列実行方法">2. スケーラビリティーを考慮した最適なノード間並列実行方法</h1>
 
 <h2 id="2-0-概要">2-0. 概要</h2>
 
@@ -583,7 +586,7 @@
 
 <p><img src="process_binding2.png" alt="プロセスバインディング" /></p>
 
-<p>本Tipsは、以下の環境・条件で <strong>OpenFOAM</strong> のCFD解析フローの総所要時間（所要コスト）を計測しています。</p>
+<p>本Tipsは、以下の環境・条件で <strong>OpenFOAM</strong> のCFD解析フローの総所要時間（計算ノードの総所要コスト）を計測しています。</p>
 
 <ul>
   <li>シェイプ ： <strong>BM.Optimized3.36</strong></li>
@@ -592,8 +595,7 @@
   <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※4）</li>
   <li><strong>OpenFOAM</strong> ： v2312</li>
   <li>MPI ： <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 5.0.3</li>
-  <li>解析対象モデル ： <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデル<br />
-（ <strong>hpc/incompressible/simpleFoam/HPC_motorbike/Small/v1912/HPC_motorbike/Small/v1912</strong> ）</li>
+  <li>解析対象モデル ： <strong><a href="https://develop.openfoam.com/committees/hpc">OpenFOAM HPC Benchmark Suite</a></strong> の <strong><a href="https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike">HPC_Motorbike</a></strong> の <strong><a href="https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912">Small</a></strong> モデル</li>
   <li>計算結果の出力頻度（ <strong>writeInterval</strong> ） ： 1,000タイムステップ（デフォルト）</li>
 </ul>
 
@@ -612,7 +614,7 @@
 
 <p>この方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行">4. CFD解析フロー実行</a></strong> を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデルにこれを適用します。</p>
 
-<p>この際、 <strong>slurm.conf</strong> ファイルの <strong>NodeName=DEFAULT</strong> で始まる行を以下のように修正します。</p>
+<p>この際、 <strong>Slurm</strong> の設定ファイル <strong>slurm.conf</strong> の <strong>NodeName=DEFAULT</strong> で始まる行を以下のように修正します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>DEFAULT <span class="nv">CPUs</span><span class="o">=</span>36 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>4 <span class="nv">CoresPerSocket</span><span class="o">=</span>9 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>500000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
 </code></pre></div></div>
@@ -704,16 +706,16 @@
 <h2 id="2-2-実行結果とその考察">2-2. 実行結果とその考察</h2>
 
 <p>ノード当たりのMPIプロセス数とノード数をパラメータとして実行した結果を以下に示します。<br />
-なお各計測値は、5回の計測結果の平均値です。</p>
+なお各値は、5回の計測値の平均値です。</p>
 
 <p><img src="graph_04.png" alt="実行結果" /></p>
 
-<p>この結果から、ノード当たりのMPIプロセス数に着目すると以下のことがわかります。</p>
+<p>この結果から、ノード当たりのMPIプロセス数に着目すると、以下のことがわかります。</p>
 
 <ul>
   <li>4ノードまではMPIプロセス数36が高速で8ノードはMPIプロセス数32が高速</li>
   <li>ノード数が増えるに従いMPIプロセス数36と32の差が縮小する傾向を示し8ノードで逆転する</li>
-  <li>最も性能の良いノード数8の場合でMPIプロセス数32が36より総所要時間が <strong>1.3 %</strong> 短い</li>
+  <li>最も性能の良いノード数8の場合でMPIプロセス数32が36より総所要時間（計算ノードの総所要コスト）が <strong>1.3 %</strong> 短い（安価）</li>
 </ul>
 
 <p>以上より、8ノードでの差が1%程度であることから、本テストケースの8ノードまでの実行であれば総合的にノード当たりのMPIプロセス数36が有利であると結論付け、次にノード当たりのMPIプロセス数36のノード数によるスケーラビリティーに着目します。</p>
@@ -768,9 +770,9 @@
 
 <p>また <strong>ステップ 7.</strong> の同期は、各MPIプロセスが解析結果を格納する <strong>processorxx</strong> ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間の短縮を図ります。</p>
 
-<p>共有ストレージを使用する実行方法は、 <strong>ステップ 1.</strong> ・ <strong>ステップ 3.</strong> ・ <strong>ステップ 6.</strong> ・ <strong>ステップ 7.</strong> に時間を消費しませんが、NVMe SSDローカルディスクを使用する実行方法が共有ストレージを使用する実行方法に対して <strong>ステップ 2.</strong> ・ <strong>ステップ 4.</strong> ・ <strong>ステップ 5.</strong> で所要時間を短縮することが出来るため、トータルの実行時間はNVMe SSDローカルディスクを使用する実行方法が短くなります。</p>
+<p>共有ストレージを使用する実行方法は、 <strong>ステップ 1.</strong> ・ <strong>ステップ 3.</strong> ・ <strong>ステップ 6.</strong> ・ <strong>ステップ 7.</strong> に時間を消費しませんが、NVMe SSDローカルディスクを使用する実行方法が共有ストレージを使用する実行方法に対して <strong>ステップ 2.</strong> ・ <strong>ステップ 4.</strong> ・ <strong>ステップ 5.</strong> で所要時間を短縮するため、トータルの所要時間はNVMe SSDローカルディスクを使用する実行方法が短くなります。</p>
 
-<p>また、 <strong><a href="#1-メモリ帯域の有効利用を考慮した最適なノード内並列実行方法">1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法</a></strong> と <strong><a href="#2-ノード間並列スケーラビリティーを考慮した最適な実行方法">2. ノード間並列スケーラビリティーを考慮した最適な実行方法</a></strong> の結果と最もストレージ領域に負荷のかかる条件を選定するという観点から、以下の条件で計測します。</p>
+<p>また、 <strong><a href="#1-メモリ帯域の有効利用を考慮した最適なノード内並列実行方法">1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法</a></strong> と <strong><a href="#2-スケーラビリティーを考慮した最適なノード間並列実行方法">2. スケーラビリティーを考慮した最適なノード間並列実行方法</a></strong> の結果と、最もストレージ領域に負荷のかかる条件を選定するという観点から、以下の条件で計測します。</p>
 
 <ul>
   <li><strong>NPS</strong> ： <strong>NPS2</strong></li>
@@ -779,7 +781,7 @@
   <li>ノード数 ： 8</li>
 </ul>
 
-<p>本Tipsは、以下の環境・条件で <strong>OpenFOAM</strong> を実行し、CFD解析フローの所要時間（所要コスト）を計測しています。</p>
+<p>本Tipsは、以下の環境・条件で <strong>OpenFOAM</strong> を実行し、CFD解析フローの総所要時間（計算ノードの総所要コスト）を計測しています。</p>
 
 <ul>
   <li>シェイプ ： <strong>BM.Optimized3.36</strong></li>
@@ -789,8 +791,7 @@
   <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※6）</li>
   <li><strong>OpenFOAM</strong> ： v2312</li>
   <li>MPI ： <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 5.0.3</li>
-  <li>解析対象モデル ： <strong>OpenFOAM HPC Benchmark Suite</strong> の <strong>HPC_Motorbike</strong> の <strong>Small</strong> モデル<br />
-（ <strong>hpc/incompressible/simpleFoam/HPC_motorbike/Small/v1912/HPC_motorbike/Small/v1912</strong> ）</li>
+  <li>解析対象モデル ： <strong><a href="https://develop.openfoam.com/committees/hpc">OpenFOAM HPC Benchmark Suite</a></strong> の <strong><a href="https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike">HPC_Motorbike</a></strong> の <strong><a href="https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912">Small</a></strong> モデル</li>
   <li>計算結果の出力頻度（ <strong>writeInterval</strong> ） ： 10タイムステップ（デフォルト値：1,000タイムステップ）</li>
 </ul>
 
@@ -800,7 +801,7 @@
 <p>この結果、以下のことが判明しています。</p>
 
 <ul>
-  <li>NVMe SSDローカルディスクは共有ストレージに対して所要時間（所要コスト）が <strong>26.2 %</strong> 短い（安価）</li>
+  <li>NVMe SSDローカルディスクは共有ストレージに対して総所要時間（計算ノードの総所要コスト）が <strong>26.2 %</strong> 短い（安価）</li>
 </ul>
 
 <h2 id="3-1-実行方法">3-1. 実行方法</h2>
@@ -812,7 +813,7 @@
 <p>この際、 <strong>OpenFOAM</strong> の設定ファイル <strong>system/controlDict</strong> の <strong>writeInterval</strong> を <strong>10</strong> に変更します。<br />
 この値がデフォルト値 <strong>1,000</strong> のままの場合、計算結果を出力しないため、NVMe SSDローカルディスクの効果を得ることが出来ません。</p>
 
-<p>また、 <strong>Slurm</strong> の設定ファイル <strong>slurm.conf</strong> ファイルの <strong>NodeName=DEFAULT</strong> で始まる行を以下のように修正します。</p>
+<p>また、 <strong>Slurm</strong> の設定ファイル <strong>slurm.conf</strong> の <strong>NodeName=DEFAULT</strong> で始まる行を以下のように修正します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>DEFAULT <span class="nv">CPUs</span><span class="o">=</span>36 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>4 <span class="nv">CoresPerSocket</span><span class="o">=</span>9 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>500000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
 </code></pre></div></div>
@@ -838,12 +839,12 @@
   </tbody>
 </table>
 
-<p>また、 <strong><a href="#2-0-概要">2.0. 概要</a></strong> に記載の7ステップにかかる時間を個別に取得出来るようにした上で、結果の妥当性を確認するために各テストケースをそれぞれ5回計測します。</p>
+<p>また、 <strong><a href="#3-0-概要">3.0. 概要</a></strong> に記載の7ステップにかかる時間を個別に取得出来るようにした上で、結果の妥当性を確認するために各テストケースをそれぞれ5回計測します。</p>
 
 <h2 id="3-2-実行結果とその考察">3-2. 実行結果とその考察</h2>
 
 <p>共有ストレージを使用した場合とNVMe SSDローカルディスクを使用した場合の結果を以下に示します。<br />
-なお各計測値は、5回の計測結果の平均値です。</p>
+なお各値は、5回の計測値の平均値です。</p>
 
 <p><img src="graph_01.png" alt="実行結果" /></p>
 
@@ -857,7 +858,13 @@
 </ul>
 
 <p>以上より、NVMe SSDローカルディスクを使用するために実行方法をひと手間掛けることで、CFD解析フローのコストを大幅に削減可能であることがわかります。<br />
-またこのコスト削減は、高並列実行のケースや計算結果の出力頻度が高いケースでより大きな効果を得ることが出来ます。</p>
+またこのコスト削減は、本計測条件と比較して以下の条件に当てはまる場合、より大きな効果を得ることが出来ます。</p>
+
+<ul>
+  <li>解析対象モデルが大規模</li>
+  <li>高並列実行</li>
+  <li>計算結果の出力頻度が高い</li>
+</ul>
 
         
       </section>
@@ -869,7 +876,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

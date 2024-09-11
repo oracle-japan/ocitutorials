@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="304 : OCI Database Migration Serviceを使用したデータベース移行の前準備">
     <meta itemprop="description" content="OCI Database Migration Serviceの使用に必要なネットワークやストレージの設定、データベースの登録など事前に必要な設定について紹介します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -692,44 +692,39 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 <ol>
   <li>
-    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>登録済データベース</strong> を選択します。</p>
+    <p>OCIコンソール・メニューから <strong>移行とディザスタ・リカバリ</strong> → <strong>データベース接続</strong> を選択します。</p>
 
-    <p><img src="2022-02-28-19-02-00.png" alt="" /></p>
+    <p><img src="image.png" alt="alt text" /></p>
   </li>
   <li>
-    <p><strong>データベースの登録</strong> をクリックします。</p>
+    <p><strong>接続の作成</strong> をクリックします。</p>
 
-    <p><img src="2022-02-28-19-03-40.png" alt="" /></p>
+    <p><img src="image-1.png" alt="alt text" /></p>
   </li>
-  <li><strong>データベース詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+  <li><strong>一般情報</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     <ul>
       <li><strong>名前</strong> - 任意</li>
+      <li><strong>タイプ</strong> - Oracle Database</li>
       <li><strong>ボールト</strong> - 登録したいボールトを選択します。</li>
       <li><strong>暗号化キー</strong> - 登録したい暗号化キーを選択します。</li>
-      <li><strong>データベース・タイプ</strong> - DBシステム・データベース（ベア・メタル、VMおよびExadata）を選択します。</li>
-      <li><strong>データベース・システム</strong> - 登録したいデータベース・システムを選択します。</li>
-      <li><strong>データベース</strong> - 登録したいデータベースを選択します。</li>
-      <li><strong>接続文字列</strong> - <a href="#anchor21">2-1.ソース・データベースのCDBとPDBの接続情報の確認の5.</a>でメモ帳にコピーした接続文字列のホスト名部分をデータベース・ノードのプライベートIPアドレスと入れ替えて入力します。例：10.0.0.28:1521/sourcedb_phx1rp.sub01270428300.vcndms.oraclevcn.com</li>
-      <li><strong>サブネット</strong> - データベースが配置されているサブネットを選択します。</li>
     </ul>
 
-    <p>設定後、<strong>次</strong> をクリックします。</p>
+    <p>設定後、<strong>Next</strong> をクリックします。</p>
 
-    <p><img src="2022-03-10-17-48-28.png" alt="" /></p>
+    <p><img src="image-2.png" alt="alt text" /></p>
   </li>
   <li><strong>接続の詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     <ul>
-      <li><strong>データベース管理者ユーザー名</strong> - system</li>
-      <li><strong>データベース管理者のパスワード</strong> - ＜管理者パスワード＞</li>
-      <li><strong>SSHデータベース・サーバー・ホスト名</strong> - ＜データベース・ノードのプライベートIPアドレス＞</li>
-      <li><strong>SSH秘密キー</strong> - 秘密鍵ファイルを選択（DMSではRSA形式のみサポート。OPENSSH形式は使用できません。）</li>
-      <li><strong>SSHユーザー名</strong> - opc</li>
-      <li><strong>SSH Sudo</strong> - /usr/bin/sudo</li>
+      <li><strong>データベース詳細</strong> - データベース情報の入力</li>
+      <li><strong>接続文字列</strong> - <a href="#anchor21">2-1.ソース・データベースのCDBとPDBの接続情報の確認の5.</a>でメモ帳にコピーした接続文字列のホスト名部分をデータベース・ノードのプライベートIPアドレスと入れ替えて入力します。例：10.0.0.28:1521/sourcedb_phx1rp.sub01270428300.vcndms.oraclevcn.com</li>
+      <li><strong>初期ロード・データベース・ユーザー名</strong> - system</li>
+      <li><strong>初期ロード・データベース・パスワード</strong> - ＜管理者パスワード＞</li>
+      <li><strong>サブネット</strong> - データベースが配置されているサブネットを選択します。</li>
     </ul>
 
-    <p>設定後、<strong>登録</strong> をクリックします。</p>
+    <p>設定後、<strong>作成</strong> をクリックします。</p>
 
-    <p><img src="2022-02-28-19-13-34.png" alt="" /></p>
+    <p><img src="image-3.png" alt="alt text" /></p>
   </li>
 </ol>
 
@@ -739,44 +734,38 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 <ol>
   <li>
-    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>登録済データベース</strong> を選択します。</p>
+    <p>OCIコンソール・メニューから <strong>移行とディザスタ・リカバリ</strong> → <strong>データベース接続</strong> を選択します。</p>
 
-    <p><img src="2022-02-28-19-02-00.png" alt="" /></p>
+    <p><img src="image.png" alt="alt text" /></p>
   </li>
   <li>
-    <p><strong>データベースの登録</strong> をクリックします。</p>
+    <p><strong>接続の作成</strong> をクリックします。</p>
 
-    <p><img src="2022-02-28-19-03-40.png" alt="" /></p>
+    <p><img src="image-1.png" alt="alt text" /></p>
   </li>
-  <li><strong>データベース詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+  <li><strong>一般情報</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     <ul>
       <li><strong>名前</strong> - 任意</li>
+      <li><strong>タイプ</strong> - Oracle Database</li>
       <li><strong>ボールト</strong> - 登録したいボールトを選択します。</li>
       <li><strong>暗号化キー</strong> - 登録したい暗号化キーを選択します。</li>
-      <li><strong>データベース・タイプ</strong> - DBシステム・データベース（ベア・メタル、VMおよびExadata）</li>
-      <li><strong>データベース・システム</strong> - 登録したいデータベース・システムを選択します。</li>
-      <li><strong>データベース</strong> - 登録したいデータベースを選択します。</li>
-      <li><strong>接続文字列</strong> - 本チュートリアルの<a href="#anchor22">2-1.ソース・データベースのCDBとPDBの接続情報の確認の10.</a>でメモ帳にコピーした接続文字列のホスト名部分をデータベース・ノードのプライベートIPアドレスと入れ替えて入力します。例：10.0.0.28:1521/pdb.sub01270428300.vcndms.oraclevcn.com</li>
-      <li><strong>サブネット</strong> - データベースが配置されているサブネットを選択します。</li>
     </ul>
 
-    <p>設定後、<strong>次</strong> をクリックします。</p>
-
-    <p><img src="2022-03-10-17-48-57.png" alt="" /></p>
+    <p>設定後、<strong>Next</strong> をクリックします。
+ <img src="image-4.png" alt="alt text" /></p>
   </li>
   <li><strong>接続の詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     <ul>
-      <li><strong>データベース管理者ユーザー名</strong> - system</li>
-      <li><strong>データベース管理者のパスワード</strong> - ＜管理者パスワード＞</li>
-      <li><strong>SSHデータベース・サーバー・ホスト名</strong> - ＜データベース・ノードのプライベートIPアドレス＞</li>
-      <li><strong>SSH秘密キー</strong> - 秘密鍵ファイルを選択（DMSではRSA形式のみサポート。OPENSSH形式は使用できません。）</li>
-      <li><strong>SSHユーザー名</strong> - opc</li>
-      <li><strong>SSH Sudo</strong> - /usr/bin/sudo</li>
+      <li><strong>データベース詳細</strong> - データベース情報の入力</li>
+      <li><strong>接続文字列</strong> - 本チュートリアルの<a href="#anchor22">2-1.ソース・データベースのCDBとPDBの接続情報の確認の10.</a>でメモ帳にコピーした接続文字列のホスト名部分をデータベース・ノードのプライベートIPアドレスと入れ替えて入力します。例：10.0.0.28:1521/pdb.sub01270428300.vcndms.oraclevcn.com</li>
+      <li><strong>初期ロード・データベース・ユーザー名</strong> - system</li>
+      <li><strong>初期ロード・データベース・パスワード</strong> - ＜管理者パスワード＞</li>
+      <li><strong>サブネット</strong> - データベースが配置されているサブネットを選択します。</li>
     </ul>
 
-    <p>設定後、<strong>登録</strong> をクリックします。</p>
+    <p>設定後、<strong>作成</strong> をクリックします。</p>
 
-    <p><img src="2022-02-28-19-19-06.png" alt="" /></p>
+    <p><img src="image-5.png" alt="alt text" /></p>
   </li>
 </ol>
 
@@ -786,37 +775,37 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 <ol>
   <li>
-    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>登録済データベース</strong> を選択します。</p>
+    <p>OCIコンソール・メニューから <strong>移行とディザスタ・リカバリ</strong> → <strong>データベース接続</strong> を選択します。</p>
 
-    <p><img src="2022-02-28-19-02-00.png" alt="" /></p>
+    <p><img src="image.png" alt="alt text" /></p>
   </li>
   <li>
-    <p><strong>データベースの登録</strong> をクリックします。</p>
+    <p><strong>接続の作成</strong> をクリックします。</p>
 
-    <p><img src="2022-02-28-19-03-40.png" alt="" /></p>
+    <p><img src="image-1.png" alt="alt text" /></p>
   </li>
-  <li><strong>データベース詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+  <li><strong>一般情報</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     <ul>
       <li><strong>名前</strong> - 任意</li>
+      <li><strong>タイプ</strong> - Oracle Autonomous Database</li>
       <li><strong>ボールト</strong> - 登録したいボールトを選択します。</li>
       <li><strong>暗号化キー</strong> - 登録したい暗号化キーを選択します。</li>
-      <li><strong>データベース・タイプ</strong> - Autonomous Database</li>
-      <li><strong>データベース</strong> - 登録したいデータベースを選択します。</li>
     </ul>
 
-    <p>設定後、<strong>次</strong> をクリックします。</p>
+    <p>設定後、<strong>Next</strong> をクリックします。</p>
 
-    <p><img src="2022-03-10-17-49-22.png" alt="" /></p>
+    <p><img src="image-6.png" alt="alt text" /></p>
   </li>
   <li><strong>接続の詳細</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     <ul>
-      <li><strong>データベース管理者ユーザー名</strong> - admin</li>
-      <li><strong>データベース管理者のパスワード</strong> - ＜管理者パスワード＞</li>
+      <li><strong>データベース</strong> - 登録したいADBを選択します。</li>
+      <li><strong>初期ロード・データベース・ユーザー名</strong> - admin</li>
+      <li><strong>初期ロード・データベース・パスワード</strong> - ＜管理者パスワード＞</li>
     </ul>
 
-    <p>設定後、<strong>登録</strong> をクリックします。</p>
+    <p>設定後、<strong>作成</strong> をクリックします。</p>
 
-    <p><img src="2022-02-28-19-23-24.png" alt="" /></p>
+    <p><img src="image-7.png" alt="alt text" /></p>
   </li>
 </ol>
 
@@ -849,7 +838,7 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

@@ -11,7 +11,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>211: クローン機能を活用しよう | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="ADBを簡単に複製することができる、クローニング機能についてご紹介します。">
+<meta name="description" content="ADBを簡単に複製することができる、クローン機能についてご紹介します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb211-clone/">
 
 
-  <meta property="og:description" content="ADBを簡単に複製することができる、クローニング機能についてご紹介します。">
+  <meta property="og:description" content="ADBを簡単に複製することができる、クローン機能についてご紹介します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -169,7 +169,7 @@
         
       </h1>
       
-        <p class="page__lead">ADBを簡単に複製することができる、クローニング機能についてご紹介します。
+        <p class="page__lead">ADBを簡単に複製することができる、クローン機能についてご紹介します。
 </p>
       
       
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/" class="active">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -357,8 +357,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="211: クローン機能を活用しよう">
-    <meta itemprop="description" content="ADBを簡単に複製することができる、クローニング機能についてご紹介します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="description" content="ADBを簡単に複製することができる、クローン機能についてご紹介します。">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -369,372 +369,251 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-adbにおけるクローニングの概要">1. ADBにおけるクローニングの概要</a></li><li><a href="#2-事前準備">2. 事前準備</a></li><li><a href="#3-クローン環境を作成してみよう">3. クローン環境を作成してみよう</a></li><li><a href="#4-クローン環境を確認してみよう">4. クローン環境を確認してみよう</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-クローン環境を作成してみよう">1. クローン環境を作成してみよう</a><ul><li><a href="#クローンタイプの選択">クローン・タイプの選択</a></li><li><a href="#ソースのクローニング">ソースのクローニング</a></li><li><a href="#autonomous-databaseクローンの基本情報の指定">Autonomous Databaseクローンの基本情報の指定</a></li><li><a href="#ワークロードタイプの選択">ワークロード・タイプの選択</a></li><li><a href="#そのほかのクローンデータベースの設定">そのほかのクローン・データベースの設定</a></li></ul></li><li><a href="#2-作成したクローン環境を確認してみよう">2. 作成したクローン環境を確認してみよう</a></li><li><a href="#おわりに">おわりに</a></li><li><a href="#参考資料">参考資料</a></li><li><a href="#tips">Tips</a></li></ul>
             </nav>
           </aside>
         
         <p><a id="anchor0"></a></p>
 
-<p>Autonomous Databaseのクローン機能を利用することにより、テスト/検証/分析用途の環境複製を、すぐに簡単に作成することができます。
-本章では、このクローン機能についてフォーカスしていきます。</p>
+<style>
+table, th, td {
+    font-size: 95%;
+}
+</style>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>Autonomous Databaseのクローン機能を利用することにより、テスト/検証/分析用途の環境を素早く簡単に作成することができます。<br />
+ソース・データベースはオンライン、オフラインのどちらでも構わず、作成するクローンのタイプは次の3種類からの選択が可能です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>クローンのタイプ</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>フル・クローン</strong></td>
+      <td>ソース・データベースの<strong>メタデータとデータ</strong>を含むデータベース全体のクローンを作成します。</td>
+    </tr>
+    <tr>
+      <td><strong>メタデータ・クローン</strong></td>
+      <td>ソース・データベースの表や索引などのスキーマ定義やオブジェクト構成情報といった<strong>メタデータのみ</strong>のクローンを作成します。<strong>データは含みません</strong>。</td>
+    </tr>
+    <tr>
+      <td><strong>リフレッシュ可能クローン</strong></td>
+      <td>クローン作成後もソース・データベースの変更をリフレッシュで反映することができる<strong>更新可能な</strong>データベース全体のクローンを作成します。（クローン作成後または前回のリフレッシュから1週間以内のリフレッシュが必要）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>また、クローンは、サブスクライブしている任意のリージョンの任意のコンパートメント内に作成でき、ソースデータベースと異なるネットワーク（VCN・サブネット）に配置できます。バージョン・コア数・ストレージ容量などを含むスペックなどの変更も可能です。</p>
+
+<p>本チュートリアルでは、フル・クローンのタイプでクローンを作成します。</p>
 
 <p><strong>所要時間 :</strong> 約20分</p>
 
 <p><strong>前提条件 :</strong></p>
 
 <ul>
-  <li>ADBインスタンスが構成済みであること
- <br />※ADBインタンスを作成方法については、本ハンズオンガイドの <a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
-  <li>構成済みのADBインスタンスへ接続できることが確認できていること</li>
+  <li>以下のチュートリアルが完了していること
+    <ul>
+      <li><a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> で、ADBインスタンスが構成済みであること</li>
+      <li><a href="/ocitutorials/adb/adb102-dataload" target="_blank">102:ADBにデータをロードしよう(Database Actions)</a> でADMINユーザーでSALES_CHANNELS表が作成されていること</li>
+    </ul>
+  </li>
+  <li>チュートリアルの便宜上インスタンス名はatp01とします。</li>
+  <li>SQLコマンドを実行するユーザー・インタフェースは、Database Actionsを使用します。</li>
 </ul>
 
 <p><strong>目次：</strong></p>
+<ul>
+  <li><a href="#1-クローン環境を作成してみよう">1. クローン環境を作成してみよう</a></li>
+  <li><a href="#4-作成したクローン環境を確認してみよう">2. クローン環境を確認してみよう</a></li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-クローン環境を作成してみよう">1. クローン環境を作成してみよう</h1>
+
+<p>ソース・データベースのインスタンス詳細画面から <strong>「クローンを作成」</strong> をクリックします。</p>
+
+<p><img src="console.png" alt="console.png" /></p>
+
+<p>クローンの作成画面が表示されますので、下記を参考に設定していきます。</p>
+
+<h2 id="クローンタイプの選択">クローン・タイプの選択</h2>
+<p>今回は<strong>フル・クローン</strong>を選択します。ソース・データベースのメタデータとデータが複製されます。</p>
+
+<p><img src="clonetype.png" alt="clonetype.png" /></p>
+
+<h2 id="ソースのクローニング">ソースのクローニング</h2>
+<p>フル・クローンまたはメタデータ・クローンの場合、クローンのソースを選択するオプションがあります。</p>
 
 <ul>
-  <li><a href="#anchor1">1. ADBにおけるクローニングの概要</a></li>
-  <li><a href="#anchor2">2. 事前準備</a></li>
-  <li><a href="#anchor3">3. クローン環境を作成してみよう</a></li>
-  <li><a href="#anchor4">4. クローン環境を確認してみよう</a></li>
+  <li><strong>データベースインスタンスからのクローニング</strong> : 実行中のデータベースのクローンが作成されます。</li>
+  <li><strong>バックアップからのクローニング</strong> : バックアップリストからバックアップを指定してクローン、もしくは、過去の特定時点を指定してクローンします。</li>
 </ul>
 
-<p><br /></p>
+<p>今回は<strong>データベース・インスタンスからのクローニング</strong>を選択し、実行中のデータベースのクローンを作成します。</p>
 
-<p><a id="anchor1"></a></p>
+<p><img src="sourcecloning.png" alt="sourcecloning.png" /></p>
 
-<h1 id="1-adbにおけるクローニングの概要">1. ADBにおけるクローニングの概要</h1>
+<h2 id="autonomous-databaseクローンの基本情報の指定">Autonomous Databaseクローンの基本情報の指定</h2>
+<p>クローンを作成するリージョン、コンパートメントおよびクローンの名前を指定します。</p>
+<ul>
+  <li>リージョン : <strong>任意のリージョンから指定</strong></li>
+  <li>コンパートメント：<strong>任意のコンパートメントを指定</strong></li>
+  <li>ソース・データベース名：<strong>atp01</strong> ※ソース・データベース名が自動入力され変更は不可</li>
+  <li>表示名：<strong>Clone-of-atp01</strong> ※任意の名前で指定が可能です。</li>
+  <li>データベース名：<strong>atp01Clone</strong>　※任意の名前で指定が可能です。</li>
+</ul>
 
-<p>ADBのクローニング機能は、コンソールまたはAPIを使用して利用することができます。
-<br />クローニング機能を使用することで、テスト・開発・分析などの目的でADBの<strong>ポイントインタイム・コピー</strong>を作成できます。</p>
+<p><img src="clonebase.png" alt="clonebase.png" /></p>
 
-<p>ADBのクローンを作成する際には、<strong>クローンタイプ</strong>、<strong>クローン元のソースの選択</strong>、<strong>クローンのスペックや配置場所の決定</strong>などを行う必要があります。
-<br />各項目で設定する内容を順にご紹介します。</p>
+<h2 id="ワークロードタイプの選択">ワークロード・タイプの選択</h2>
+<p>ソース・データベースと異なるワークロード・タイプの選択も可能です。ただし、次の表のとおりソース・データベースによって選択できるタイプが制限されるのでご注意ください。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ソース</th>
+      <th>クローン</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ADW</td>
+      <td>ADW/ATP</td>
+    </tr>
+    <tr>
+      <td>ATP</td>
+      <td>ADW/ATP</td>
+    </tr>
+    <tr>
+      <td>AJD</td>
+      <td>ADW/ATP/AJD/APEX Service</td>
+    </tr>
+    <tr>
+      <td>APEX Service</td>
+      <td>ADW/ATP/APEX Service</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>今回はソース・データベースと同じ<strong>トランザクション処理</strong>を選択します。</p>
+
+<p><img src="workloadtype.png" alt="workloadtype.png" /></p>
+
+<h2 id="そのほかのクローンデータベースの設定">そのほかのクローン・データベースの設定</h2>
+
+<p>クローン・データベースの構成について必要な項目を設定していきます。<br />
+  今回は以下のように指定します。各項目については<a href="http://localhost:4000/ocitutorials/adb/adb101-provisioning/#2-adb%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86">2. ADBインスタンスを作成してみよう</a>の記載例をご確認ください。</p>
 
 <ul>
-  <li>
-    <p><strong>クローンタイプ</strong>について</p>
-
+  <li><strong>データベースの構成</strong>
     <ul>
-      <li>
-        <p><strong>フルクローン</strong>：データベース全体の複製
-  <br />ソース・データベースの<strong>メタデータとデータ</strong>を含むデータベースが作成されます。</p>
-      </li>
-      <li>
-        <p><strong>メタデータ・クローン</strong>：データベースのメタデータのみの複製
-  <br />このオプションでは、ソース・データベースのメタデータのみを含むデータベースが作成されます。
-  <br />メタデータ・クローンでは、格納されるデータはコピーしませんが、表定義や索引定義といったスキーマ定義、オブジェクト構成を引き継ぐクローンを作成します。
-  メタデータのみをコピーし、データはサンプルデータなどに置き換えることでECPU数やストレージの使用を抑え、コストを削減することができます。</p>
-      </li>
-      <li>
-        <p><strong>リフレッシュ可能クローン</strong>：更新可能なクローンの作成
-  <br />ソース・データベースの変更を使用して、簡単に更新できるクローンが作成されます。
-  <br />クローンを作成後にソース・データベースの任意の時間の状態に更新することができるクローンです。
-  <br />任意の時間の状態に更新するには、バックアップから新しいクローンを作成するという方法もありますが、バックアップからデータをリストアする時間が必要であったり、新しいデータベースをプロビジョニングしなくてはならないなど手間や時間がかかってしまいます。リフレッシュ可能クローンを使用することにより、手軽に任意の時間の状態のクローンを取得することが可能です。</p>
-      </li>
+      <li>データベース・バージョンの選択 : <strong>23ai</strong> ※ソースのバージョンよりも上である必要があります。</li>
+      <li>ECPU数 : <strong>2</strong></li>
+      <li>ストレージ、ストレージ単位サイズ : <strong>20GB</strong> ※指定できる最小ストレージは、ソース データベースの実際の使用領域を次の GB に切り上げた値です。</li>
+      <li>自動スケーリングの計算 : <strong>なし</strong></li>
+      <li>ストレージの自動スケーリング : <strong>なし</strong></li>
     </ul>
-
-    <blockquote>
-      <p><strong>補足</strong></p>
-
-      <p>その他、リフレッシュ可能クローンは次のような特長があります：</p>
-      <ul><li>実⾏中インスタンスの更新を引き継ぐクローンを作成可能</li>
-<li>1つのインスタンスに対して複数の更新可能クローンの作成が可能</li>
-<li>他の部⾨、コンパートメント跨ぎでの共有が可能であり、コストの分散が可能（クエリ・オフロード）</li>
-<li>1週間以内の更新が必要（1週間(168時間)を経過すると更新不可）</li>
-<li>そのまま読み取り専⽤のDBとして利⽤するか、ソースから切断して通常のR/W可能なインスタンスとしての利⽤が可能</li>
-</ul>
-      <p><br />※詳細については <a href="https://docs.oracle.com/ja-jp/iaas/adbrefreshableclone/autonomous-refreshable-clone.html">マニュアル</a> を参照ください。</p>
-    </blockquote>
-
-    <p><br /></p>
   </li>
-  <li>
-    <p><strong>クローンするソース</strong>について</p>
-
-    <p><strong>フルクローン</strong>または<strong>メタデータクローン</strong>を取得する場合、クローンソースを選択するオプションがあります。</p>
+  <li><strong>バックアップ保持</strong>
     <ul>
-      <li>
-        <p><strong>アクティブなデータベースインスタンスからクローンを作成</strong>
-  <br />
-  実行中のデータベースのクローンが作成されます。この場合、バックアップからのクローン作成と比較して、比較的短い時間でのクローンの作成が可能です。
-  ソースデータベースはオンラインのまま停止する必要はありませんが、もしデータの断面を取得したい場合は、アプリケーションを停止するか、ソースデータベースを停止してからクローンしてください。</p>
-
-        <blockquote>
-          <p><strong>補足</strong></p>
-
-          <p><br />ターゲット・インスタンスにはソース・インスタンスの断面と変更ログを転送しクローンが作成されます。また変更ログは可能な限り最新の断面となるよう直近まで転送、適用することで、ソース・インスタンスを再現します。
-<br />反対をいうと、アクティブなデータベースを元に作成されたクローンは、ピンポイントに特定の状態のクローンを取得したいときには向きません。そのようなクローンを作成したいときには、一旦ソースデータベースを停止させた状態でクローンを取得する、または次の項目でご紹介するバックアップからのクローンの取得が適切でしょう。</p>
-
-        </blockquote>
-      </li>
-      <li>
-        <p><strong>バックアップからクローンを作成</strong>
-<br />バックアップリストからバックアップを指定してクローン、もしくは、過去の特定時点を指定してクローンします。
-<br />前述の通りバックアップからクローンを作成する際は、オブジェクトストレージからデータをリストアする必要があるため、アクティブなインスタンスから作成する場合に比べ、時間がかかります。
-<br />また、バックアップから作成できるクローンタイプはフル・クローンおよびメタデータ・クローンのみです。バックアップから更新可能クローンを作成することができませんのでご注意ください。</p>
-      </li>
+      <li>自動バックアップ保持期間(日) : <strong>60</strong></li>
+    </ul>
+  </li>
+  <li><strong>管理者資格証明の作成</strong>
+    <ul>
+      <li>ユーザー名 : <strong>ADMIN</strong></li>
+      <li>パスワード : <strong>Welcome12345#</strong></li>
+    </ul>
+  </li>
+  <li><strong>ネットワーク・アクセスの選択</strong>
+    <ul>
+      <li>アクセス・タイプ : <strong>すべての場所からのセキュア・アクセス</strong>　</li>
     </ul>
   </li>
   <li>
-    <p><strong>クローン先の構成</strong>について</p>
-
-    <p>クローンは、サブスクライブしている任意のリージョンの任意のコンパートメント内に取得することが可能です。また、ネットワークに関しては、ソースデータベースと異なるVCN・サブネットに配置できます。
-<br />クローン環境を配置するコンパートメントや、クローン環境のバージョン・コア数・ストレージ容量などを含むスペックなどを決定します。</p>
+    <p><strong>ライセンスとOracle Databaseエディションの選択</strong> : <strong>ライセンス込み</strong></p>
   </li>
+  <li><strong>運用上の通知およびお知らせ用の連絡先</strong>
+    <ul>
+      <li>連絡先の電子メール : <strong>なし</strong></li>
+    </ul>
+  </li>
+  <li><strong>拡張オプションの表示</strong> : <strong>指定なし</strong></li>
 </ul>
 
-<p>その他、ADBのクローンに関する詳細な情報は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Database/Tasks/adbcloning.htm">マニュアル</a>を参照ください。</p>
+<p>最後に「<strong>Autonomous Databaseのクローンを作成</strong>」をクリックすると、プロビジョニングが始まります。<br />
+プロビジョニングが完了後、指定したコンパートメント内にクローン環境が作成されていることをご確認ください。クローンの場合、詳細の<strong>ソースのクローニング</strong> でソースのADBインスタンスのリンクが表示されます。</p>
+
+<p><img src="clone.png" alt="clone.png" /></p>
 
 <p><br /></p>
 
-<p><a id="anchor2"></a></p>
+<h1 id="2-作成したクローン環境を確認してみよう">2. 作成したクローン環境を確認してみよう</h1>
 
-<h1 id="2-事前準備">2. 事前準備</h1>
+<p>正しくフル・クローンされているか確認するため、作成したクローン環境にDatabase ActionsのSQLを使って、ADMINユーザーのSALES_CHANNEL表の存在とデータを検索します。
+クローンした環境でも付属ツールを利用することが可能です（クローン作成のときに拡張オプションでソースと異なるようにツールの構成の変更もできます）。</p>
 
-<p>実際にクローン環境を作成する前に、ソースデータベースとなるADBにサンプルスクリプトを流し、データを挿入します。
-<br />ここではある会社の部門の情報を含む、DEPARTMENT表という簡単な表を作成していきます。</p>
+<p>ADBインスタンスの詳細の<strong>データベース・アクション</strong>から<strong>SQL</strong>を選択します。</p>
 
-<ol>
-  <li>
-    <p>次の手順に従って、DBインスタンスのSQL*Plusに接続します。
-  <br />接続方法はOCI CLIを使用する方法や、別の仮想マシンからssh接続する方法がありますが、こちらでは後者の方法で進めていきます。</p>
+<p><img src="dbactions.png" alt="dbactions.png" /></p>
 
-    <p>1-1. 作成した仮想マシンにssh接続します。
-   <br />仮想マシンの作成およびセットアップ方法は<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/">こちら</a></p>
+<p>左側のナビゲータでSALES_CHANNELS表が表示され、メタデータがクローンされていることが確認できます。<br />
+次にデータがクローンされているかを確認します。SALES_CHANNELS表をワークシートにドラッグアンドドロップをすると、挿入のタイプが選択できます。</p>
 
-    <p>1-2. 下記のコマンドを参考に、oracleユーザに切り替えます。</p>
+<p><img src="sql1.png" alt="sql1.png" /></p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo</span> <span class="nt">-s</span>
-</code></pre></div>    </div>
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su - oracle
-</code></pre></div>    </div>
-    <p>（一旦rootユーザにスイッチしてから、oracleユーザにスイッチしています）</p>
+<p>選択を選んで適用をクリックすると、SQLが入力されます。そのまま実行してSALES_CHANNELS表を検索します。</p>
 
-    <p>1-3. 下記のコマンドを参考に、SQL*Plusに接続します。</p>
+<p><img src="sql2.png" alt="sql2.png" /></p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
-</code></pre></div>    </div>
+<p><img src="sql3.png" alt="sql3.png" /></p>
 
-    <p>本ハンズオンガイドを参考にADBインスタンスをお作りいただいた方は、次のようなコマンドになります。</p>
+<p>データが検索され、メタデータとデータが正しくクローンされていることが確認できました。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01_low
-</code></pre></div>    </div>
-
-    <p>SQL*Plusへの接続方法の詳細については、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a> をご確認ください。</p>
-  </li>
-  <li>
-    <p>次のサンプルスクリプトを流し、テーブルを作成します。
-  <br />こちらのスクリプトをコピーし、SQL*Plusのターミナルにペーストします。</p>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">DEPARTMENT</span> <span class="k">CASCADE</span> <span class="k">CONSTRAINTS</span> <span class="n">PURGE</span><span class="p">;</span>
- <span class="k">DROP</span> <span class="n">SEQUENCE</span> <span class="n">DEPT_ID_SEQ</span><span class="p">;</span>
- <span class="k">DROP</span> <span class="k">TRIGGER</span> <span class="n">DEPT_ID_TRIGGER</span><span class="p">;</span>
-    
- <span class="k">CREATE</span> <span class="n">SEQUENCE</span> <span class="n">DEPT_ID_SEQ</span>
- <span class="k">START</span> <span class="k">WITH</span>     <span class="mi">1</span>
- <span class="k">INCREMENT</span> <span class="k">BY</span>   <span class="mi">1</span>
- <span class="n">NOCACHE</span>
- <span class="n">NOCYCLE</span><span class="p">;</span>
-
-
- <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">DEPARTMENT</span> <span class="p">(</span>
-   <span class="n">DEPT_ID</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
-   <span class="n">DEPT_NAME</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-   <span class="n">MGR_ID</span> <span class="n">NUMBER</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span>
- <span class="p">);</span>
-
- <span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TRIGGER</span> <span class="n">DEPT_ID_TRIGGER</span>
-   <span class="k">BEFORE</span> <span class="k">INSERT</span>
-   <span class="k">ON</span> <span class="n">DEPARTMENT</span>
-   <span class="k">FOR</span> <span class="k">EACH</span> <span class="k">ROW</span>
-   <span class="k">WHEN</span> <span class="p">(</span><span class="k">NEW</span><span class="p">.</span><span class="n">DEPT_ID</span> <span class="k">IS</span> <span class="k">NULL</span><span class="p">)</span>
- <span class="k">BEGIN</span>
-   <span class="k">SELECT</span> <span class="n">DEPT_ID_SEQ</span><span class="p">.</span><span class="n">NEXTVAL</span> <span class="k">INTO</span> <span class="p">:</span><span class="k">NEW</span><span class="p">.</span><span class="n">DEPT_ID</span> <span class="k">FROM</span> <span class="n">DUAL</span><span class="p">;</span>
- <span class="k">END</span> <span class="n">DEPT_ID_TRIGGER</span><span class="p">;</span>
- <span class="o">/</span>
-
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'ADMINISTRATION'</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'HUMAN RESOURCE'</span><span class="p">,</span> <span class="mi">2000</span><span class="p">);</span>
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'LEGAL'</span><span class="p">,</span> <span class="mi">3000</span><span class="p">);</span>
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'ACCOUNTING'</span><span class="p">,</span> <span class="mi">4000</span><span class="p">);</span>
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'MARKETING'</span><span class="p">,</span> <span class="mi">5000</span><span class="p">);</span>
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'SALES'</span><span class="p">,</span> <span class="mi">6000</span><span class="p">);</span>
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'DEVELOPMENT'</span><span class="p">,</span> <span class="mi">7000</span><span class="p">);</span>
- <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPARTMENT</span> <span class="p">(</span><span class="n">DEPT_NAME</span><span class="p">,</span> <span class="n">MGR_ID</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'ENGINEERING'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">);</span>
- <span class="k">COMMIT</span><span class="p">;</span>
-</code></pre></div>    </div>
-
-    <ul>
-      <li><a href="/ocitutorials/adb/adb-data/department.sql">上記のサンプルデータをダウンロード</a></li>
-    </ul>
-  </li>
-  <li>
-    <p>次のSELECT文を実行し、表が正しく作成されているかを確認します。</p>
-
-    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">department</span><span class="p">;</span>
-</code></pre></div>    </div>
-
-    <p>次のような表が作成されていればOKです。</p>
-
-    <p><img src="img1_3.png" alt="img1_3.png" /></p>
-  </li>
-</ol>
-
-<p><br /></p>
-
-<p><a id="anchor3"></a></p>
-
-<h1 id="3-クローン環境を作成してみよう">3. クローン環境を作成してみよう</h1>
-
-<p>ADB（atp01）のフルクローンを作成していきます。</p>
-
-<ol>
-  <li>
-    <p>ソースのインスタンスの詳細画面から「クローンを作成」をクリックします。
-  <img src="img2_1.png" alt="img2_1.png" /></p>
-  </li>
-  <li>
-    <p>クローンの作成画面が表示されます。クローン環境を設定していきます。
-<br />下記を参考に設定してみましょう。</p>
-  </li>
-</ol>
-
-<ul>
-  <li>
-    <p>クローン・タイプ：<strong>フルクローン</strong>
-  <br />ソース・データベースのメタデータとデータが複製されます。</p>
-  </li>
-  <li>
-    <p>ソースのクローニング：<strong>データベース・インスタンスからのクローニング</strong>
-  <br />現在の状態のまま、実行中のデータベースのクローンを作成します。</p>
-
-    <p><img src="img2_2_1.png" alt="img2_2_1.png" /></p>
-  </li>
-  <li>Autonomous Databaseクローンの基本情報の指定
-    <ul>
-      <li>コンパートメント：<strong>任意のコンパートメントを指定</strong></li>
-      <li>ソース・データベース名：<strong>atp01（変更できません）</strong></li>
-      <li>表示名：<strong>Clone of atp01（デフォルト）</strong>
-<br />任意の名前で結構です。</li>
-      <li>データベース名：<strong>atp01Clone</strong>
-<br />任意の名前で結構です。</li>
-    </ul>
-
-    <p><img src="img2_2_2.png" alt="img2_2_2.png" /></p>
-  </li>
-  <li>データベースの構成
-    <ul>
-      <li>データベース・バージョン：<strong>19c（デフォルト）</strong>
-<br />任意のバージョンで結構です。</li>
-      <li>ECPU数：<strong>2</strong>
-<br />任意の値で結構です。</li>
-      <li>ストレージ：<strong>1024（デフォルト）</strong>
-<br />任意の値で結構です。</li>
-    </ul>
-
-    <p><img src="img2_2_3_new.png" alt="img2_2_3.png" /></p>
-  </li>
-  <li>管理者資格証明の作成
-    <ul>
-      <li>ユーザ名：<strong>ADMIN（変更できません）</strong></li>
-      <li>パスワード：<strong>Welcome12345#</strong>
-<br />次の要件を満たす任意のパスワードを設定ください
-        <ul>
-          <li>12文字から30文字</li>
-          <li>大文字、小文字および数字をそれぞれ1つ以上含む</li>
-          <li>二重引用符(“)文字またはユーザー名”admin”を含めることはできない</li>
-        </ul>
-      </li>
-    </ul>
-
-    <p><img src="img2_2_4.png" alt="img2_2_4.png" /></p>
-  </li>
-  <li>ネットワーク・アクセスの選択：<strong>すべての場所からのセキュア・アクセス</strong></li>
-  <li>
-    <p>ライセンス・タイプの選択：<strong>ライセンス込み</strong></p>
-
-    <p><img src="img2_2_5.png" alt="img2_2_5.png" /></p>
-  </li>
-</ul>
-
-<p>最後に「<strong>クローンを作成</strong>」をクリックすると、プロビジョニングが始まります。
-  <br />指定したコンパートメント内にクローン環境が作成されていることをご確認ください。</p>
-
-<p><br /></p>
-
-<p><a id="anchor4"></a></p>
-
-<h1 id="4-クローン環境を確認してみよう">4. クローン環境を確認してみよう</h1>
-
-<p>作成したクローン環境に接続してみましょう。
-<br />また、正しくクローンされているかを確認するために、2で作成したデータと同様のデータが入っているかを確認します。</p>
-
-<ol>
-  <li>
-    <p>次の手順に従って、クローンADBに接続してみましょう。
-  <br />詳細は、<a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a> の <a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/#anchor1">1. クレデンシャル・ウォレットのダウンロード</a> を参照ください。</p>
-
-    <p>1-1. クローンADBのウォレットをダウンロードします。
-   <br />OCIコンソールからクローンADBの詳細画面に移動します。
-   <br />手順は次の通りです：
-   <br /><strong>「DB接続」→インスタンスタイプのウォレットをダウンロード→ADMINに設定したパスワードを入力</strong></p>
-
-    <p>1-2. クローンADBへの接続に使用するクライアントの設定ファイルを編集します。
- <br />設定ファイルを編集する方法は、OCI CLIを使用した編集方法、接続用の仮想マシンで編集する方法があります。
- <br />それぞれの編集方法は次のリンク先をご確認ください：</p>
-    <ul>
-      <li>OCI CLIを使用して編集する方法
-<a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/#anchor2">104: クレデンシャル・ウォレットを利用して接続してみよう - 2. 設定ファイルの編集</a></li>
-      <li>接続用の仮想マシン上で編集する方法
-<a href="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#4-adb%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B7%A8%E9%9B%86">204: マーケットプレイスからの仮想マシンのセットアップ方法</a></li>
-    </ul>
-
-    <blockquote>
-      <p><strong>補足</strong></p>
-
-      <p>１つの接続用の仮想マシンから様々なDBに接続するようなことがある場合、それぞれのウォレットごとにディレクトリを作成し、どのDBに接続したいかによってTNS_ADMINが参照するウォレットの場所を切り替えるとスムーズに接続することができます。</p>
-
-      <p>または、<strong>リージョナル・ウォレット</strong>というクレデンシャルウォレットを活用するとより簡単に接続することが可能になります。
-リージョナル・ウォレットには、同一コンパートメント内のすべてのADBに関する資格情報が含まれているため、DBを切り替えるたびにウォレットの場所などを意識することなくご利用いただけます。
-ADBの資格証明に関する詳細な情報は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Database/Tasks/adbconnecting.htm#credentials">こちら</a>を参照ください。</p>
-
-    </blockquote>
-  </li>
-  <li>
-    <p>先ほど同様に、SQL*Plusに接続します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus <span class="o">[</span>username]/[password]@[接続サービス名]
-</code></pre></div>    </div>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus admin/Welcome12345#@atp01Clone_low
-</code></pre></div>    </div>
-
-    <p>※接続サービス名にご注意ください。ソース・データベースと名称が異なります。</p>
-  </li>
-  <li>
-    <p>SELECT文を使用し、先ほど作成したDEPARTMENT表が表示されていることを確認します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">select</span> <span class="k">*</span> from department<span class="p">;</span>
-</code></pre></div>    </div>
-    <p><img src="img1_3.png" alt="img1_3.png" /></p>
-
-    <p>このように、フルクローンではメタデータのみならずデータも取得されていることが分かります。</p>
-  </li>
-</ol>
-
-<blockquote>
-  <p><strong>補足</strong></p>
-
-  <p>ソースデータベースのメタデータのみをコピーするメタデータ・クローンを使用してatp01を複製した場合の出力結果は次のようになります。</p>
-
-  <p><img src="img4_3.png" alt="img4_3.png" /></p>
-
-  <p>DEPARTMENT表の行を表示するselect文の出力結果では、行が表示されません。表の中身が空であることが分かります。
-しかし、データベースオブジェクトの定義を表示するdesc文を実行すると、このように列名・データ型などの情報が取得されていることが分かります。</p>
-</blockquote>
+<h1 id="おわりに">おわりに</h1>
+<p>本チュートリアルでは簡単に既存のAutonomous Databaseからクローンを作成できることを体感いただきました。今回はフル・クローンでしたが、クローンのタイプにメタデータ・クローンを選択すると同様の手順でメタデータ・クローンの作成が可能です。リフレッシュ可能クローンは <a href="ocitutorials/adb/adb218-refreshable-clone" target="_blank">218 : リフレッシュ可能クローンを活用しよう</a> で手順をご確認ください。</p>
 
 <p><br />
 以上で、この章は終了です。<br />
 次の章にお進みください。</p>
+
+<h1 id="参考資料">参考資料</h1>
+<ul>
+  <li><a href="https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/clone-autonomous-database.html">Cloning and Moving an Autonomous Database</a></li>
+</ul>
+
+<h1 id="tips">Tips</h1>
+
+<ul>
+  <li>
+    <p><strong>データベースインスタンスからのクローニングとバックアップからのクローニングで違いはありますか？</strong></p>
+
+    <p>バックアップからのクローニングは、オブジェクトストレージからデータをリストアする必要があるため、アクティブなデータベースインスタンスからのクローニングに比べ、時間がかかります。また、バックアップから作成できるクローンタイプはフル・クローンおよびメタデータ・クローンのみです。バックアップから更新可能クローンを作成することができませんのでご注意ください。</p>
+  </li>
+  <li>
+    <p><strong>どのタイミングでクローンが作成されるのでしょうか?</strong></p>
+
+    <p>ターゲット・インスタンスにはソース・インスタンスの断面と変更ログを転送しクローンが作成されます。また変更ログは可能な限り最新の断面となるよう直近まで転送、適用することで、ソース・インスタンスを再現します。そのため、アクティブなデータベースを元に作成されたクローンは、ピンポイントに特定の状態のクローンを取得したいときには適切ではありません。そのようなクローンを作成したいときには、一旦ソースデータベースを停止させた状態でクローンを取得する、またはバックアップからのクローンの取得がよいでしょう。</p>
+  </li>
+  <li>
+    <p><strong>作成するクローンを制限することはできますか？</strong></p>
+
+    <p>可能です。グループがAutonomous Databaseのクローン作成のみ可能でAutonomous Databaseの作成はできないようにクローン作成権限を制限したり、特定のタイプのクローン(フル・クローン、メタデータ・クローン、またはリフレッシュ可能クローン)のみを作成するように権限をさらに制限することもできます。詳細と例については、<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/autonomous-database-iam-policies.html#GUID-4FDA9343-A721-4D9A-A48D-A2B7896E6085">「IAM Permissions and API Operations for Autonomous Database 」</a>を参照してください。</p>
+  </li>
+  <li>
+    <p><strong>テナンシーをまたいだクローンはできますか？</strong></p>
+
+    <p>可能です。ただし、CLIまたはREST APIでのみサポートされており、コンソールを使用した作成はできません。詳細は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/autonomous-clone-cross-tenancy.html#GUID-98C63A6A-BA44-4757-9BE3-6636732EA1A2">「Cross Tenancy and Cross-Region Cloning」</a> を参照してください。</p>
+  </li>
+</ul>
 
 <p><br />
 <a href="#anchor0">ページトップへ戻る</a></p>
@@ -749,7 +628,7 @@ ADBの資格証明に関する詳細な情報は<a href="https://docs.oracle.com
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 
@@ -773,7 +652,7 @@ ADBの資格証明に関する詳細な情報は<a href="https://docs.oracle.com
 ">前へ</a>
     
     
-      <a href="/ocitutorials/adb/adb212-audg/" class="pagination--pager" title="212: Autonomous Data Guardを構成してみよう
+      <a href="/ocitutorials/adb/adb212-audg/" class="pagination--pager" title="212: Autonomous Database を災害対策構成にしてみよう
 ">次へ</a>
     
   </nav>

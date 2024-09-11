@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb303-xxx/img00x.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb303-datapump/img101.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb303-xxx/img00x.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb303-datapump/img101.png');"
 >
   
     <div class="wrapper">
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="303 : Data Pumpを利用してデータを移行しよう">
     <meta itemprop="description" content="まずはシンプルにData Pumpを利用した移行方法についてご紹介します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -512,7 +512,7 @@
         <li>dumpfile句に指定するファイル名にはワイルドカード（%u）を付けてください。複数のファイルを同時に出力することで高速化が可能です。</li>
         <li>filesize句は5GBよりも小さい値を指定してください。ブラウザ経由でオブジェクトストレージに転送できるデータは1ファイル辺り最大5GBの制限があるためです。</li>
         <li>excludeオプションを利用することで、不要なオブジェクトを除いてエクスポートすることが可能です。例えばADWを利用するような分析系のアプリの場合において、性能観点で付与した索引はExadataを利用すると不要になることが多いため、IndexをExcludeの引数に指定します。</li>
-        <li>詳細は<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24" target="_blank">「マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)」</a>を参照ください。</li>
+        <li>詳細は<a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24" target="_blank">「マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)」</a>を参照ください。</li>
       </ul>
     </blockquote>
   </li>
@@ -579,7 +579,6 @@
 <p>（ここまでの手順にて、移行元データベースとして利用していたBaseDBインスタンスではないことにご注意ください。）</p>
 
 <h2 id="4-1-仮想マシンへのアクセス">4-1. 仮想マシンへのアクセス</h2>
-<p></p>
 <ol>
   <li>
     <p>TeraTermを起動し、仮想マシンにopcユーザーでログインします。</p>
@@ -596,7 +595,7 @@
 <ol>
   <li>ADBに接続するための環境変数の設定
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/usr/lib/oracle/21/client64/lib
-<span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets
+<span class="nb">export </span><span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets_atp01
 </code></pre></div>    </div>
   </li>
   <li>ADBインスタンスにSQL*Plusでログインします。
@@ -730,7 +729,7 @@
 
 <ul>
   <li><a href="https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi" target="_blank">Autonomous Database Cloud 技術詳細</a></li>
-  <li><a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24" target="_blank">マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)</a></li>
+  <li><a href="https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24" target="_blank">マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)</a></li>
 </ul>
 
 <p><br />
@@ -750,7 +749,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

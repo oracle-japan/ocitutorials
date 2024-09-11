@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装">
     <meta itemprop="description" content="データベースの特権ユーザはデフォルトではすべてのデータを参照できます。セキュリティのため、特権ユーザに対してもアクセス制御をかけたいという場合があります。Oracle DatabaseではDatabase Vaultというソリューションでそれを実現できます。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -390,12 +390,12 @@
 
 <p><strong>目次 :</strong></p>
 <ul>
-  <li><a href="#anchor1">1.テスト用の表を作成</a></li>
-  <li><a href="#anchor2">2.Oracle Database Vaultの有効化</a></li>
-  <li><a href="#anchor3">3.特権ユーザーの権限はく奪</a></li>
-  <li><a href="#anchor4">4.アクセス制御の設定</a></li>
-  <li><a href="#anchor5">5.動作確認</a></li>
-  <li><a href="#anchor6">6.Oracle Database Vaultの無効化</a></li>
+  <li><a href="#1テスト用の表を作成">1.テスト用の表を作成</a></li>
+  <li><a href="#2-oracle-database-vaultの有効化">2.Oracle Database Vaultの有効化</a></li>
+  <li><a href="#3-特権ユーザーの権限はく奪">3.特権ユーザーの権限はく奪</a></li>
+  <li><a href="#4-アクセス制御の設定">4.アクセス制御の設定</a></li>
+  <li><a href="#5-動作確認">5.動作確認</a></li>
+  <li><a href="#6-oracle-database-vaultの無効化">6.Oracle Database Vaultの無効化</a></li>
 </ul>
 
 <p><strong>前提条件 :</strong></p>
@@ -409,8 +409,6 @@
 <p><strong>所要時間 :</strong> 約20分</p>
 
 <p><br /></p>
-
-<p><a id="anchor1"></a></p>
 
 <h1 id="1テスト用の表を作成">1.テスト用の表を作成</h1>
 
@@ -436,8 +434,6 @@
 <p><img src="dv_supplier_count.png" alt="ADMINで件数を確認" /></p>
 
 <p><br /></p>
-
-<p><a id="anchor2"></a></p>
 
 <h1 id="2-oracle-database-vaultの有効化">2. Oracle Database Vaultの有効化</h1>
 <p>続けて、ADMINユーザでOracle Database Vaultを有効化するためのSQLを実行していきます。</p>
@@ -478,7 +474,7 @@ Autonomous Databaseでは、提供されているDBMS_CLOUD_MACADMパッケー�
 
 <p>有効化のコマンドが完了した後ログアウトし、Autonomous Databaseを再起動します。<br />
 Oracle Database Vaultの有効化、無効化を反映させるためにはAutonomous Databaseの再起動が必要なためです。<br />
-管理コンソールで、「他のアクション」プルダウンメニューから「再起動」を選択してください。　　</p>
+管理コンソールで、「More actions」プルダウンメニューから「再起動」を選択してください。　　</p>
 
 <p><img src="adb_console.png" alt="ADBコンソール画面" /></p>
 
@@ -501,8 +497,6 @@ Oracle Database Vaultの有効化、無効化を反映させるためにはAuton
 <p>なお、Oracle Database Vaultのデータディクショナリ・ビューの情報は<a href="https://docs.oracle.com/cd/F19136_01/dvadm/oracle-database-vault-data-dictionary-views.html#GUID-C0CEF4FC-DB4C-4AD5-9671-C0861A647183">『Oracle Database Vault管理者ガイド』</a>でご確認いただけます。</p>
 
 <p><br /></p>
-
-<p><a id="anchor3"></a></p>
 
 <h1 id="3-特権ユーザーの権限はく奪">3. 特権ユーザーの権限はく奪</h1>
 <p>特権ユーザであるADMINユーザはDatabase Vault所有者のロール(DV_OWNER)もアカウント管理専用ユーザのロール(DV_ACCTMGR)もデフォルトで持っています。<br />
@@ -531,8 +525,6 @@ ADMINユーザからそれらをはく奪します。</p>
 <p><img src="ora904.png" alt="ORA-904発生" /></p>
 
 <p><br /></p>
-
-<p><a id="anchor4"></a></p>
 
 <h1 id="4-アクセス制御の設定">4. アクセス制御の設定</h1>
 
@@ -598,8 +590,6 @@ ADMINユーザからそれらをはく奪します。</p>
 
 <p><br /></p>
 
-<p><a id="anchor5"></a></p>
-
 <h1 id="5-動作確認">5. 動作確認</h1>
 <p>では、設定が有効かADMINユーザとADBUSERユーザでADBUSERスキーマの表に再度アクセスしてみましょう。</p>
 
@@ -627,8 +617,6 @@ ADMINユーザからそれらをはく奪します。</p>
 <p>設定をすぐに有効化せず、テストできるシミュレーション・モードも提供されています。シミュレーション・モードの場合は、違反するSQLはエラーにはならず、シミュレーション・ログに記録されます。</p>
 
 <p><br /></p>
-
-<p><a id="anchor6"></a></p>
 
 <h1 id="6-oracle-database-vaultの無効化">6. Oracle Database Vaultの無効化</h1>
 
@@ -692,8 +680,8 @@ ADMINユーザで有効化のときと同じように確認しましょう。</p
 <h1 id="参考資料">参考資料</h1>
 <ul>
   <li>
-    <p>『Using Oracle Autonomous Database on Shared Exadata Infrastructureutonomous Data Warehouse』<br />
- “<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-adb/adbsa/autonomous-database-vault.html">Oracle Database VaultとAutonomous Databaseの使用</a>”</p>
+    <p>『Oracle Autonomous Databaseサーバーレスの使用』<br />
+ “<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/autonomous-database-vault.html#GUID-70F233AF-458F-44B7-9418-F9AF70CFDD15">Autonomous DatabaseでのOracle Database Vaultの使用</a>”</p>
   </li>
   <li>
     <p>Oracle Database 19c
@@ -715,7 +703,7 @@ ADMINユーザで有効化のときと同じように確認しましょう。</p
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

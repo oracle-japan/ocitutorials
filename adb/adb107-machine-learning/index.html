@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb107-machine-learning/img72.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb107-machine-learning/img48.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb107-machine-learning/img72.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb107-machine-learning/img48.png');"
 >
   
     <div class="wrapper">
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)">
     <meta itemprop="description" content="タイタニック号の乗客情報から生存予測モデルを作成し、アプリで予測結果のレポートまでADBの中で行います。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -425,7 +425,7 @@
   <li>
     <p><strong>管理 &gt; データベース・ユーザー</strong>をクリックしてください。</p>
 
-    <p><img src="img99.png" alt="画面ショット1-1" /></p>
+    <p><img src="img1.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p><strong>+ユーザの作成</strong>をクリックしてください。</p>
@@ -441,9 +441,9 @@
       <li>ユーザ名 = <strong>OML</strong></li>
       <li>パスワード = <strong>Welcome12345#</strong></li>
       <li>表領域の割り当て制限 = <strong>UNLIMITED</strong></li>
-      <li><strong>OML</strong>をチェック</li>
+      <li><strong>OML</strong>のトグルをON</li>
       <li>
-        <p><strong>Webアクセス</strong>をチェック</p>
+        <p><strong>Webアクセス</strong>のトグルをON</p>
       </li>
       <li><strong>ユーザの作成</strong>をクリック</li>
     </ul>
@@ -467,31 +467,33 @@
 
 <ol>
   <li>
-    <p>OMLユーザで<strong>サインイン</strong>した後、<strong>データ・ツール &gt; データ・ロード</strong>をクリックします。</p>
+    <p>OMLユーザで<strong>サインイン</strong>した後、<strong>Data Studio &gt; データ・ロード</strong>をクリックします。</p>
+
+    <p><img src="img6.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>データのロード</strong>を選択します。</p>
+
+    <p><img src="img7.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>ローカル・ファイル</strong>をクリックし、<strong>ファイルの選択</strong>をクリックします。
+端末から<strong>train.csv</strong>と<strong>test.csv</strong>を選択します。</p>
+
+    <p><img src="img8.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>開始</strong>をクリックします。
+<img src="img9.png" alt="画面ショット1-1" /></p>
+  </li>
+  <li>
+    <p><strong>実行</strong>をクリックします。</p>
 
     <p><img src="img10.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>データの処理 &gt; データ・ロード</strong>、<strong>データの処理 &gt; ローカル・ファイル</strong>を選択し、<strong>次</strong>をクリックします。</p>
-
-    <p><img src="img11.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p><strong>ファイルの選択</strong>をクリックし、端末から<strong>train.csv</strong>と<strong>test.csv</strong>を選択します。</p>
-
-    <p><img src="img12.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p><strong>緑色の実行ボタン</strong>をクリックし、データ・ロードの実行します。</p>
-
-    <p><img src="img13.png" alt="画面ショット1-1" /></p>
-
-    <p><img src="img14.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p><strong>完了</strong>をクリックします。</p>
-
-    <p><img src="img15.png" alt="画面ショット1-1" /></p>
+    <p>データ・ロードができました。
+<img src="img11.png" alt="画面ショット1-1" /></p>
   </li>
 </ol>
 
@@ -502,56 +504,57 @@
 
 <ol>
   <li>
-    <p>Autonomous Databaseの詳細画面へ遷移し、<strong>サービス・コンソール</strong>をクリックしてください。</p>
+    <p>Autonomous Databaseの詳細画面へ遷移し、<strong>ツール構成</strong>のタブから、OMLにアクセスするパブリック・アクセスURLをコピーします。</p>
 
-    <p><img src="img20.png" alt="画面ショット1-1" /></p>
+    <p><img src="img12.png" alt="画面ショット1-1" /></p>
+
+    <blockquote>
+      <p>ECPUモデルでADBを作成した場合は、<strong>ツール構成の編集</strong>より、ADBに同梱されているツールのステータスや、ECPU数、最大アイドル時間を設定することができます。
+<img src="img13.png" alt="画面ショット1-1" /></p>
+    </blockquote>
   </li>
   <li>
-    <p>サービス・コンソールの<strong>開発 &gt;</strong> <strong>Oracle Machine Learningユーザー・インターフェイス</strong>をクリックし、OMLユーザで<strong>サインイン</strong>して下さい。</p>
+    <p>Oracle Machine Learningにサインインします。</p>
 
-    <p><img src="img21.png" alt="画面ショット1-1" /></p>
+    <p><img src="img14.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>Oracle Machine Learningにサインイン後、画面左上の<strong>ハンバーガメニュ</strong>をクリックしてください。</p>
+    <p>画面左上のハンバーガメニューをクリックし、<strong>AutoML実験</strong>をクリックしてください。</p>
 
-    <p><img src="img22.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>ハンバーガメニュから<strong>AutoML</strong>をクリックしてください。</p>
-
-    <p><img src="img23.png" alt="画面ショット1-1" /></p>
+    <p><img src="img15.png" alt="画面ショット1-1" />
+<img src="img16.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p><strong>+作成ボタン</strong>をクリックしてください。</p>
 
-    <p><img src="img24.png" alt="画面ショット1-1" /></p>
+    <p><img src="img17.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>名前に<strong>Titanic Prediciton</strong>と入力後、<strong>データ・ソース</strong>をクリックして下さい。</p>
 
-    <p><img src="img25.png" alt="画面ショット1-1" /></p>
+    <p><img src="img18.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>ポップアップ画面で、スキーマには<strong>OML</strong>、表には<strong>TRAIN</strong>を選択した状態で<strong>OKを</strong>クリックしてください。</p>
+    <p>ポップアップ画面で、スキーマは<strong>OML</strong>、表は<strong>TRAIN</strong>を選択した状態で<strong>OK</strong>をクリックしてください。</p>
 
-    <p><img src="img26.png" alt="画面ショット1-1" /></p>
+    <p><img src="img19.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>予測で<strong>Survived</strong>を目的変数として選択し、予測タイプが<strong>分類</strong>になっていることを確認後、<strong>開始 &gt; より良い精度</strong>をクリックして下さい。</p>
 
-    <p><img src="img27.png" alt="画面ショット1-1" /></p>
+    <p><img src="img20.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>予測モデルが自動で作成されるのを待ちましょう。画面右側のポップアップで<strong>進捗</strong>を確認できます。</p>
 
-    <p><img src="img28.png" alt="画面ショット1-1" /></p>
+    <p><img src="img21.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>予測モデルが5つ自動で作成されました。後で使えるように、<strong>モデル名を1つコピーして任意の場所にペースト</strong>しておきましょう。</p>
+    <p>予測モデルが数個自動で作成されました。後で使えるように、<strong>モデル名を1つコピーして任意の場所にペースト</strong>しておきましょう。</p>
 
-    <p><img src="img29.png" alt="画面ショット1-1" /></p>
+    <p><img src="img22.png" alt="画面ショット1-1" /></p>
 
-    <p>(例)モデル名 : <strong>SVMG_FBC6D30E68</strong></p>
+    <p>(例)モデル名 : <strong>SVMG_E9D51544B5</strong></p>
   </li>
 </ol>
 
@@ -562,38 +565,33 @@
 
 <ol>
   <li>
-    <p>画面左上の<strong>ハンバーガメニュ</strong>をクリックしてください。</p>
+    <p>画面左上の<strong>ハンバーガーメニュー</strong>をクリックし、<strong>ノートブック</strong>をクリックしてください。</p>
 
-    <p><img src="img40.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>ハンバーガメニュから<strong>ノートブック</strong>をクリックしてください。</p>
-
-    <p><img src="img41.png" alt="画面ショット1-1" /></p>
+    <p><img src="img23.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>ノートブックの画面で、<strong>インポート</strong>をクリックして下さい。<strong>Titanic_OML_Notebook.json</strong>を端末から選択してください。</p>
 
-    <p><img src="img42.png" alt="画面ショット1-1" /></p>
+    <p><img src="img24.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>ノートブックの画面で、インポートした<strong>ノートブック名を</strong>クリックして、ノートブックを開きます。</p>
+    <p>ノートブックの画面で、インポートした<strong>ノートブック名</strong>をクリックして、ノートブックを開きます。</p>
 
-    <p><img src="img43.png" alt="画面ショット1-1" /></p>
+    <p><img src="img25.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>こちらが開いたノートブックの中身になります。下にスクロールして、<strong>未知のデータであるTEST表に予測モデルを適応したVIEWを作成</strong>という箇所に移動して下さい。</p>
 
-    <p><img src="img44.png" alt="画面ショット1-1" /></p>
+    <p><img src="img26.png" alt="画面ショット1-1" /></p>
 
     <p>↓</p>
 
-    <p><img src="img45.png" alt="画面ショット1-1" /></p>
+    <p><img src="img27.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>下記のSQL文の<モデル名>に、任意のペースト済みのAutoML UIで作成したモデル名をペーストした後、右上の再生ボタンをクリックしスクリプトを実行して下さい。</モデル名></p>
 
-    <p><img src="img46.png" alt="画面ショット1-1" /></p>
+    <p><img src="img28.png" alt="画面ショット1-1" /></p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE OR REPLACE VIEW TITANIC_PREDICTION AS
   SELECT
@@ -619,7 +617,7 @@
   <li>
     <p>先ほど作成したVIEWを確認します。TITANIC_PREDICTIONビューの下のパラグラフ内の、<strong>右上の再生ボタン</strong>をクリックしスクリプトを実行して下さい。</p>
 
-    <p><img src="img47.png" alt="画面ショット1-1" /></p>
+    <p><img src="img29.png" alt="画面ショット1-1" /></p>
   </li>
 </ol>
 
@@ -630,154 +628,129 @@
 
 <ol>
   <li>
-    <p>Autonomous Databaseの詳細画面へ遷移し、<strong>ツール &gt; Oracle Application Express &gt; APEXを開く</strong>をクリックしてください。</p>
+    <p>Autonomous Databaseの詳細画面へ遷移し、<strong>ツール構成</strong>のタブから、<strong>Oracle APEX</strong>のパブリック・アクセスURLをコピーしてください。</p>
 
-    <p><img src="img50.png" alt="画面ショット1-1" /></p>
+    <p><img src="img30.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>まずはADMINユーザでログインします。<strong>パスワード</strong>を入力し、<strong>Sign In to Administration</strong>をクリックしてください。</p>
+    <p>コピーしたURLをブラウザの別のタブから開きます。Oracle APEXの管理サービスにログインします。ADMINユーザーの<strong>パスワード</strong>を入力し、<strong>管理にサインイン</strong>をクリックしてください。</p>
 
-    <p><img src="img51.png" alt="画面ショット1-1" /></p>
+    <p><img src="img31.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>OMLユーザのためにワークスペースを作成します。<strong>Create Workspace</strong>をクリックしてください。</p>
+    <p>OMLユーザのためにワークスペースを作成します。<strong>ワークスペースの作成</strong>をクリックし、<strong>新規のスキーマ</strong>を選択します。</p>
 
-    <p><img src="img52.png" alt="画面ショット1-1" /></p>
+    <p><img src="img32.png" alt="画面ショット1-1" /></p>
+
+    <p><img src="img33.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>Database Userには<strong>OML</strong>、Workspace Nameにも<strong>OML</strong>を入力し、<strong>Create Workspace</strong>をクリックしてください。</p>
+    <p>データベース・ユーザーには<strong>OML</strong>、ワークスペース名にも<strong>OML</strong>を入力し、ワークススペース・ユーザー名には<strong>WSUSER</strong>、パスワード(例：Welcome12345#)を入力し、<strong>ワークスペースの作成</strong>をクリックしてください。</p>
 
-    <p><img src="img53.png" alt="画面ショット1-1" /></p>
+    <p><img src="img34.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>OMLユーザのためのワークスペースが作成されました。画面右上からADMINユーザを<strong>サインアウト</strong>してください。</p>
-
-    <p><img src="img54.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>OMLユーザとしてAPEXに<strong>サインイン</strong>します。Workspace Nameには<strong>OML</strong>、ユーザ名<strong>OML</strong>、<strong>パスワード</strong>を入力し、<strong>Sign In</strong>をクリックしてください。</p>
+    <p>OMLユーザとしてAPEXに<strong>サインイン</strong>します。ワークスペース名には<strong>OML</strong>、ユーザー名<strong>WSUSER</strong>、<strong>パスワード</strong>を入力し、<strong>サインイン</strong>をクリックしてください。</p>
 
-    <p><img src="img55.png" alt="画面ショット1-1" /></p>
+    <p><img src="img35.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>OMLユーザでサインインできました。最初のサインイン後APEX用のパスワードの設定を求められます。<strong>Set APEX Account Password</strong>をクリックしてください。</p>
+    <p><strong>アプリケーション・ビルダー</strong>をクリックします。</p>
 
-    <p><img src="img56.png" alt="画面ショット1-1" /></p>
+    <p><img src="img36.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>Email Addressに<strong>任意のメールアドレス</strong>を入力します。</p>
+    <p><em>*インポート</em>をクリックします。</p>
 
-    <p><img src="img57.png" alt="画面ショット1-1" /></p>
+    <p><img src="img37.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>Passwordの箇所を<strong>ブランク</strong>にしたまま、<strong>Apply Changes</strong>をクリックするとOMLユーザのパスワードをそのままAPEXのパスワードにすることができます。</p>
+    <p><strong>ドラッグ・アンド・ドロップ</strong>をクリックし、端末から<strong>Titanic_APEX_App.sql</strong>を選択してください。<strong>次</strong>をクリックします。</p>
 
-    <p><img src="img58.png" alt="画面ショット1-1" /></p>
+    <p><img src="img38.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>App Builder</strong>をクリックします。</p>
+    <p><strong>アプリケーションのインストール</strong>をクリックします。</p>
 
-    <p><img src="img59.png" alt="画面ショット1-1" /></p>
+    <p><img src="img39.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>Import</strong>をクリックします。</p>
+    <p>アプリケーションがインストールされました。インストールしただけでは、アプリケーションに対する権限がOMLユーザにはないので、付与していきます。<strong>アプリケーションの編集</strong>をクリックしてください。</p>
 
-    <p><img src="img60.png" alt="画面ショット1-1" /></p>
+    <p><img src="img40.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>Drag and Drop</strong>をクリックし、端末から<strong>Titanic_APEX_App.sql</strong>を選択してください。</p>
+    <p><strong>共有コンポーネント</strong>をクリックします。</p>
 
-    <p><img src="img61.png" alt="画面ショット1-1" /></p>
+    <p><img src="img41.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>Next</strong>をクリックします。</p>
+    <p><strong>アプリケーション・アクセス制御</strong>をクリックします。</p>
 
-    <p><img src="img62.png" alt="画面ショット1-1" /></p>
+    <p><img src="img42.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>Next</strong>をクリックします。</p>
+    <p><strong>ユーザー・ロール割当ての追加</strong>をクリックします。</p>
 
-    <p><img src="img63.png" alt="画面ショット1-1" /></p>
+    <p><img src="img43.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>Install Application</strong>をクリックします。</p>
+    <p>ユーザー名には<strong>WSUSER</strong>、アプリケーション・ロールの<strong>Administratorをチェック</strong>し、<strong>割当ての作成</strong>をクリックしてください。</p>
 
-    <p><img src="img64.png" alt="画面ショット1-1" /></p>
+    <p><img src="img44.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>アプリケーションがインストールされました。インストールしただけでは、アプリケーションに対する権限がOMLユーザにはないので、付与していきます。<strong>Edit Application</strong>をクリックしてください。</p>
+    <p>OMLユーザーにAdministratorが付与されたのを確認し、画面右上の三角の<strong>実行ボタン</strong>をクリックし、アプリケーションを実行します。</p>
 
-    <p><img src="img65.png" alt="画面ショット1-1" /></p>
+    <p><img src="img45.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>Shared Components</strong>をクリックします。</p>
+    <p>アプリケーションにWSUSERユーザーで<strong>サインイン</strong>します。</p>
 
-    <p><img src="img66.png" alt="画面ショット1-1" /></p>
+    <p><img src="img46.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p><strong>Application Access Control</strong>をクリックします。</p>
+    <p>アプリケーションのランディングページでは、OML Notebookで作成したView(TITANIC_PREDICTION)を表示しています。画面左上の<strong>ハンバーガーメニュー</strong>をクリックしてください。</p>
 
-    <p><img src="img67.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p><strong>Add User Role Assingment</strong>をクリックします。</p>
-
-    <p><img src="img68.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>User Nameには<strong>OML</strong>、Application Roleの<strong>Administratorをチェック</strong>し、<strong>Create Assignment</strong>をクリックしてください。</p>
-
-    <p><img src="img69.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>OMLユーザにAdministratorが付与されたのを確認し、画面右上の<strong>再生ボタン</strong>をクリックし、アプリケーションを実行します。</p>
-
-    <p><img src="img70.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>アプリケーションにOMLユーザで<strong>サインイン</strong>します。</p>
-
-    <p><img src="img71.png" alt="画面ショット1-1" /></p>
-  </li>
-  <li>
-    <p>アプリケーションのランディングページでは、OML Notebookで作成したView(TITANIC_PREDICTION)を表示しています。画面左上の<strong>ハンバーガメニュ</strong>をクリックしてください。</p>
-
-    <p><img src="img72.png" alt="画面ショット1-1" /></p>
+    <p><img src="img47.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p><strong>Editable Titanic Dataset</strong>をクリックしてください。</p>
 
-    <p><img src="img73.png" alt="画面ショット1-1" /></p>
+    <p><img src="img48.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>このページでは、タイタニックのデータセットの一つであるTEST表を表示しています。画面左上の<strong>新規データの登録</strong>をクリックし、TEST表に新規データをインサートしていきましょう。</p>
 
-    <p><img src="img74.png" alt="画面ショット1-1" /></p>
+    <p><img src="img49.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
-    <p>任意の情報を入力後、<strong>新規作成ボタン</strong>をクリックしてください。</p>
+    <p>任意の情報を入力後、<strong>新規作成</strong>ボタンをクリックしてください。</p>
 
-    <p><img src="img75.png" alt="画面ショット1-1" /></p>
+    <p><img src="img50.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>新規データがTEST表にインサートされました。</p>
 
-    <p><img src="img76.png" alt="画面ショット1-1" /></p>
+    <p><img src="img51.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>検索バーから<strong>新規データを検索</strong>することができます。</p>
 
-    <p><img src="img77.png" alt="画面ショット1-1" /></p>
+    <p><img src="img52.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>画面左上の<strong>ハンバーガメニュ</strong>から<strong>Home</strong>をクリックしてください。</p>
 
-    <p><img src="img78.png" alt="画面ショット1-1" /></p>
+    <p><img src="img53.png" alt="画面ショット1-1" /></p>
   </li>
   <li>
     <p>ランディングページのViewでも<strong>即座に新規データに対する予測</strong>がかかっているはずです。検索バーから新規データの検索、<strong>予測結果の確認</strong>を行うことができます。</p>
 
-    <p><img src="img79.png" alt="画面ショット1-1" /></p>
+    <p><img src="img54.png" alt="画面ショット1-1" /></p>
   </li>
 </ol>
 
@@ -815,7 +788,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行">
     <meta itemprop="description" content="OCI Database Migration Serviceの移行の作成、検証、実行、そして確認作業までのオフライン移行の一連の作業を紹介します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -455,25 +455,23 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 <ol>
   <li>
-    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>移行</strong> に移動します。</p>
+    <p>OCIコンソール・メニューから <strong>移行とディザスタ・リカバリ</strong> → <strong>移行</strong> に移動します。</p>
 
-    <p><img src="2022-03-04-13-55-12.png" alt="" /></p>
+    <p><img src="image-8.png" alt="alt text" /></p>
   </li>
   <li>
     <p><strong>移行の作成</strong> を選択します。</p>
 
     <p><img src="2022-03-04-13-57-08.png" alt="" /></p>
   </li>
-  <li><strong>詳細の追加</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
+  <li><strong>一般情報</strong> の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     <ul>
       <li><strong>名前</strong> - 任意 ※名前にスペースを含めると移行の作成に失敗します。</li>
-      <li><strong>ボールト</strong> - <strong>登録済みデータベース</strong> に登録されているボールトを選択します。</li>
-      <li><strong>暗号化キー</strong> - <strong>登録済みデータベース</strong> に登録されている暗号化キーを選択します。</li>
     </ul>
 
-    <p>設定後、<strong>次</strong> をクリックします。</p>
+    <p>設定後、<strong>Next</strong> をクリックします。</p>
 
-    <p><img src="2022-03-10-13-16-30.png" alt="" /></p>
+    <p><img src="image-9.png" alt="alt text" /></p>
   </li>
   <li><strong>データベースの選択</strong> の各項目は以下のように設定します。
     <ul>
@@ -483,25 +481,26 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
       <li><strong>ターゲット・データベース</strong> - 登録済みのターゲット・データベースを選択します。</li>
     </ul>
 
-    <p>設定後、<strong>次</strong> をクリックします。</p>
+    <p>設定後、<strong>Next</strong> をクリックします。</p>
 
-    <p><img src="2022-03-04-14-15-17.png" alt="" /></p>
+    <p><img src="image-10.png" alt="alt text" /></p>
   </li>
   <li><strong>移行オプション</strong> の各項目は以下のように設定します。
     <ul>
       <li><strong>初期ロード</strong> - オブジェクト・ストレージ経由のデータポンプを選択します。</li>
-      <li><strong>オブジェクト・ストレージ・バケット</strong> - 使用したいオブジェクト・ストレージ・バケットを選択します。</li>
-      <li><strong>ディレクトリ・オブジェクトのエクスポート</strong> -
+      <li><strong>ソース・データベース：</strong>
         <ul>
           <li>名前 - 任意</li>
           <li>パス - 任意</li>
+          <li>SSLウォレット・パス- 任意</li>
         </ul>
       </li>
+      <li><strong>オブジェクト・ストレージ・バケット</strong> - 使用したいオブジェクト・ストレージ・バケットを選択します。</li>
     </ul>
 
     <p>設定後、<strong>作成</strong> をクリックします。</p>
 
-    <p><img src="2022-03-04-14-17-50.png" alt="" /></p>
+    <p><img src="image-11.png" alt="alt text" /></p>
   </li>
   <li>
     <p>作成した移行の状態が <strong>アクティブ</strong> になるまで待ちます。（3分ほどかかります。）</p>
@@ -520,9 +519,9 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 <ol>
   <li>
-    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>移行</strong> に移動します。</p>
+    <p>OCIコンソール・メニューから <strong>移行とディザスタ・リカバリ</strong> → <strong>移行</strong> に移動します。</p>
 
-    <p><img src="2022-03-04-13-55-12.png" alt="" /></p>
+    <p><img src="image-8.png" alt="alt text" /></p>
   </li>
   <li>
     <p>検証する移行の名前をクリックします。</p>
@@ -580,9 +579,9 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 <ol>
   <li>
-    <p>OCIコンソール・メニューから <strong>移行</strong> → <strong>移行</strong> に移動します。</p>
+    <p>OCIコンソール・メニューから <strong>移行とディザスタ・リカバリ</strong> → <strong>移行</strong> に移動します。</p>
 
-    <p><img src="2022-03-04-13-55-12.png" alt="" /></p>
+    <p><img src="image-8.png" alt="alt text" /></p>
   </li>
   <li>
     <p>実行する移行の名前をクリックします。</p>
@@ -647,7 +646,7 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
   <li>
     <p><strong>SQL</strong> をクリックします。</p>
 
-    <p><img src="2022-03-04-15-30-32.png" alt="" /></p>
+    <p><img src="image-12.png" alt="alt text" /></p>
   </li>
   <li>
     <p>画面左にあるナビゲーターでソースPDBで作成したサンプル・データが格納されているスキーマがあることを確認し、選択します。</p>
@@ -703,7 +702,7 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 

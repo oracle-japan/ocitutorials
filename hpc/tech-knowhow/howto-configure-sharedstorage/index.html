@@ -10,8 +10,8 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>コストパフォーマンスの良いファイル共有ストレージ構築方法 | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベアメタルインスタンスを構成すればよいか、解説します。">
+<!-- begin _includes/seo.html --><title>HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢は、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、高帯域のネットワークポートを持つベア・メタル・インスタンスとストレージサービスを組合せてNFSサーバを自身で構築する方法があります。本テクニカルTipsは、コストパフォーマンス、可用性、構築・運用のしやすさ等を考慮し、最適なファイル共有ストレージ構築手法を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -23,11 +23,11 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="コストパフォーマンスの良いファイル共有ストレージ構築方法">
+<meta property="og:title" content="HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">
 
 
-  <meta property="og:description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベアメタルインスタンスを構成すればよいか、解説します。">
+  <meta property="og:description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢は、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、高帯域のネットワークポートを持つベア・メタル・インスタンスとストレージサービスを組合せてNFSサーバを自身で構築する方法があります。本テクニカルTipsは、コストパフォーマンス、可用性、構築・運用のしやすさ等を考慮し、最適なファイル共有ストレージ構築手法を解説します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -164,12 +164,12 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          コストパフォーマンスの良いファイル共有ストレージ構築方法
+          HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法
 
         
       </h1>
       
-        <p class="page__lead">HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベアメタルインスタンスを構成すればよいか、解説します。
+        <p class="page__lead">HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢は、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、高帯域のネットワークポートを持つベア・メタル・インスタンスとストレージサービスを組合せてNFSサーバを自身で構築する方法があります。本テクニカルTipsは、コストパフォーマンス、可用性、構築・運用のしやすさ等を考慮し、最適なファイル共有ストレージ構築手法を解説します。
 </p>
       
       
@@ -225,7 +225,7 @@
     
       
       
-        <li class="current">コストパフォーマンスの良いファイル共有ストレージ構築方法</li>
+        <li class="current">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</li>
       
     
   </ol>
@@ -279,7 +279,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
@@ -325,7 +329,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/" class="active">コストパフォーマンスの良いファイル共有ストレージ構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/" class="active">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
@@ -374,9 +378,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="コストパフォーマンスの良いファイル共有ストレージ構築方法">
-    <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する方法があります。本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバを構築する場合どのようにブロック・ボリュームとベアメタルインスタンスを構成すればよいか、解説します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="headline" content="HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法">
+    <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢は、NFSのマネージドサービスであるファイル・ストレージを使用する方法と、高帯域のネットワークポートを持つベア・メタル・インスタンスとストレージサービスを組合せてNFSサーバを自身で構築する方法があります。本テクニカルTipsは、コストパフォーマンス、可用性、構築・運用のしやすさ等を考慮し、最適なファイル共有ストレージ構築手法を解説します。">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -387,7 +391,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-ブロックボリュームnfsサーバ構成">1. ブロック・ボリュームNFSサーバ構成</a></li><li><a href="#2-ファイルストレージとブロックボリュームnfsサーバの比較">2. ファイル・ストレージとブロック・ボリュームNFSサーバの比較</a><ul><li><a href="#20-概要">2.0 概要</a></li><li><a href="#2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</a></li><li><a href="#22-システム構築運用のしやすさによる比較">2.2 システム構築・運用のしやすさによる比較</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-ベアメタルインスタンスnfsサーバ構成">1. ベア・メタル・インスタンスNFSサーバ構成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-ブロックボリュームnfsサーバ構成">1-1. ブロック・ボリュームNFSサーバ構成</a></li><li><a href="#1-2-denceio-nfsサーバ構成">1-2. DenceIO NFSサーバ構成</a></li></ul></li><li><a href="#2-各ファイル共有ストレージ構築方法の比較">2. 各ファイル共有ストレージ構築方法の比較</a><ul><li><a href="#20-概要">2.0 概要</a></li><li><a href="#2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</a></li><li><a href="#22-可用性による比較">2.2 可用性による比較</a></li><li><a href="#23-運用性による比較">2.3 運用性による比較</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -397,15 +401,120 @@ table, th, td {
 }
 </style>
 
-<p>HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれを構築することが一般的ですが、この際の選択肢として、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> を使用する方法と、 <strong>ブロック・ボリューム</strong> とベアメタルインスタンスを組み合わせたNFSサーバ（以降” <strong>ブロック・ボリューム</strong> NFSサーバ”と呼称）を構築する方法があります。<br />
-本テクニカルTipsは、コストパフォーマンス等を考慮してどちらの方法を選択すればよいか、 <strong>ブロック・ボリューム</strong> NFSサーバを構築する場合どのように <strong>ブロック・ボリューム</strong> とベアメタルインスタンスを構成すればよいか、解説します。</p>
+<hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>HPC/GPUクラスタと共に利用するファイル共有ストレージは、その構築方法を決定する際に以下の評価項目を考慮する必要があります。</p>
+
+<ol>
+  <li>計算/GPUノードの複数ノード同時アクセス時性能</li>
+  <li>ランニングコスト</li>
+  <li>ストレージ領域に格納するデータの可用性</li>
+  <li>ファイル共有ストレージサービスの可用性</li>
+  <li>システム構築・運用のしやすさ</li>
+</ol>
+
+<p>本テクニカルTipsは、HPC/GPUクラスタ向けにNFSでサービスするファイル共有ストレージを構築することを念頭に、いくつかのファイル共有ストレージ構築手法を紹介し、上記評価基準を元にどの手法を採用すればよいか、その考慮点を解説します。</p>
+
+<p>NFSでサービスするファイル共有ストレージを構築する際の最初の考慮点は、マネージドのNFSサービスである <strong>ファイル・ストレージ</strong> を使用する方法と、自身で <strong>ベア・メタル・インスタンス</strong> からNFSサーバを構築する（以降”ベア・メタル・インスタンスNFSサーバ”と呼称）方法の、どちらを採用するかです。</p>
+
+<p>ここで <strong>ファイル・ストレージ</strong> を採用する場合は、性能要件に合わせて <strong>マウント・ターゲット</strong> に標準タイプ（以降”標準FSS”と呼称）とHigh Performanceタイプ（以降”高性能FSS”と呼称）（※1）のどちらを使用するかを考慮します。</p>
+
+<p>※1）High Performanceタイプの <strong>マウント・ターゲット</strong> は、その性能違いで3種類存在しますが、本テクニカルTipsでは読み取りスループット設定が80 Gbpsで性能が最も高い <strong>HPMT-80</strong> を前提に解説します。<br />
+High Performanceタイプの <strong>マウント・ターゲット</strong> 詳細は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/File/Tasks/managingmounttargets.htm#performance">ここ</a></strong> を参照くして下さい。</p>
+
+<p>またベア・メタル・インスタンスNFSサーバを採用する場合は、以下2種類のどちらにするかを考慮します。</p>
+
+<ol>
+  <li>ストレージ領域に <strong>ブロック・ボリューム</strong> を使用しこれをベア・メタル・インスタンスにアタッチする方法（以降”ブロック・ボリュームNFSサーバ”と呼称）</li>
+  <li><strong>ベア・メタル・インスタンス</strong> にNVMe SSDドライブを搭載するDenceIOシェイプを使用する方法（以降”DenceIO NFSサーバ”と呼称）</li>
+</ol>
+
+<p>以上より、本テクニカルTipsで解説するファイル共有ストレージは、以下4種類です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">呼称</th>
+      <th style="text-align: center">使用するサービス</th>
+      <th style="text-align: center">ヘッドノード</th>
+      <th style="text-align: center">ストレージ領域</th>
+      <th style="text-align: center">ターゲットスループット</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">標準FSS</td>
+      <td style="text-align: center"><strong>ファイル・ストレージ</strong></td>
+      <td style="text-align: center"><strong>標準マウント・ターゲット</strong></td>
+      <td style="text-align: center"><strong>ファイル・システム</strong></td>
+      <td style="text-align: center">100 MB/s</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">高性能FSS</td>
+      <td style="text-align: center"><strong>ファイル・ストレージ</strong></td>
+      <td style="text-align: center"><strong>High Performanceマウント・ターゲット</strong></td>
+      <td style="text-align: center"><strong>ファイル・システム</strong></td>
+      <td style="text-align: center">10 GB/s</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">ブロック・ボリュームNFSサーバ</td>
+      <td style="text-align: center"><strong>ベア・メタル・インスタンス</strong><br />+<br /><strong>ブロック・ボリューム</strong></td>
+      <td style="text-align: center"><strong>ベア・メタル・インスタンス</strong></td>
+      <td style="text-align: center"><strong>ブロック・ボリューム</strong></td>
+      <td style="text-align: center">5 GB/s</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">DenceIO NFSサーバ</td>
+      <td style="text-align: center">DenceIOシェイプ<br /><strong>ベア・メタル・インスタンス</strong></td>
+      <td style="text-align: center"><strong>ベア・メタル・インスタンス</strong></td>
+      <td style="text-align: center">NVMe SSDローカルディスク</td>
+      <td style="text-align: center">10 GB/s</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>以降では、これら4種類のファイル共有ストレージ構築手法について、まず初めに2種類の <strong>ベア・メタル・インスタンス</strong> NFSサーバ（ブロック・ボリュームNFSサーバとDenceIO NFSサーバ）の構成を解説し、次に前述の評価項目をもとに4種類のファイル共有ストレージ構築手法を比較します。</p>
+
+<p>なお、各ファイル共有ストレージ構築手法に沿ったファイル共有ストレージは、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-3-ファイル共有ストレージ">1-3. ファイル共有ストレージ</a></strong> カテゴリの以下チュートリアルを参照して構築することが出来ます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">呼称</th>
+      <th style="text-align: center">チュートリアル</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">標準FSS</td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">高性能FSS</td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">ブロック・ボリュームNFSサーバ</td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">DenceIO NFSサーバ</td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></strong></td>
+    </tr>
+  </tbody>
+</table>
 
 <hr />
-<h1 id="1-ブロックボリュームnfsサーバ構成">1. ブロック・ボリュームNFSサーバ構成</h1>
+<h1 id="1-ベアメタルインスタンスnfsサーバ構成">1. ベア・メタル・インスタンスNFSサーバ構成</h1>
 
-<p>本章は、 <strong>ブロック・ボリューム</strong> NFSサーバを構築する際、コストパフォーマンスを最適化するベアメタルインスタンスと <strong>ブロック・ボリューム</strong> の構成を解説します。</p>
+<h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>NFSサーバ用のベアメタルインスタンスは、Intel Ice Lakeプロセッサを搭載するベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong>  を使用します。<br />
+<p>本章は、2種類のベア・メタル・インスタンスNFSサーバ（ブロック・ボリュームNFSサーバとDenceIO NFSサーバ）の構成を解説します。</p>
+
+<h2 id="1-1-ブロックボリュームnfsサーバ構成">1-1. ブロック・ボリュームNFSサーバ構成</h2>
+
+<p>NFSサーバとなるベアメタルインスタンスは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong>  を使用します。<br />
 この理由は、このシェイプが50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の <strong>ブロック・ボリューム</strong> アクセス用途とNFSクライアントへのNFSサービス用途に割当ててこれらをNFSサービス時に同時に使用することで、NFSサービスに50 Gbpsの帯域をフルに使用することが可能となるためです。</p>
 
 <p>またデータ格納領域に使用する <strong>ブロック・ボリューム</strong> は、ボリューム・パフォーマンスにBalancedを使用します。<br />
@@ -416,140 +525,254 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
-<p>なお、本構成の <strong>ブロック・ボリューム</strong> NFSサーバは、 <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレース</a></strong> から無料で利用可能な <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を利用して自動構築する事が可能で、詳細は <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></strong> を参照ください。</p>
+<h2 id="1-2-denceio-nfsサーバ構成">1-2. DenceIO NFSサーバ構成</h2>
+
+<p>NFSサーバとなるベアメタルインスタンスは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-dense">BM.DenseIO.E5.128</a></strong> を使用します。<br />
+この理由は、このシェイプが100 GbpsのTCP/IP接続用ポートを1個搭載し、12台の6.8 TB NVMe SSDローカルディスクに構築するストレージ領域をNFSでサービスする際、100 Gbpsの帯域全てをNFSクライアントへのサービスに使用することが可能となるためです。<br />
+これにより、 <strong><a href="#1-1-ブロックボリュームnfsサーバ構成">1-1. ブロック・ボリュームNFSサーバ構成</a></strong> で解説するブロック・ボリュームNFSサーバに対して、NFSクライアントへのサービスに使用できるネットワーク帯域が2倍となり、NVMe SSDローカルディスクの持つ高いI/O性能とあいまって、計算/GPUノードからの多数同時アクセス時に高いスループットとメタデータ性能を提供するファイル共有ストレージを構築することが可能になります。</p>
+
+<p><img src="architecture_diagram_nvme.png" alt="システム構成図" /></p>
+
+<p>またデータ格納領域に使用する12台のNVMe SSDドライブは、 <strong>Linux software RAID</strong> を使用し、データ保全性とパフォーマンスを両立するRAID10構成とします。</p>
+
+<p><img src="raid_configuration.png" alt="RAID構成図" /></p>
 
 <hr />
-<h1 id="2-ファイルストレージとブロックボリュームnfsサーバの比較">2. ファイル・ストレージとブロック・ボリュームNFSサーバの比較</h1>
+<h1 id="2-各ファイル共有ストレージ構築方法の比較">2. 各ファイル共有ストレージ構築方法の比較</h1>
 
 <h2 id="20-概要">2.0 概要</h2>
 
-<p>本章は、前述の構成の <strong>ブロック・ボリューム</strong> NFSサーバと <strong>ファイル・ストレージ</strong> を、以下の観点で比較します。</p>
+<p>本章は、4種類のファイル共有ストレージ構築手法を、 <strong><a href="#0-概要">概要</a></strong> に記載の5個の評価項目を以下3グループに分類して比較します。</p>
 
 <ul>
-  <li>コストパフォーマンス</li>
-  <li>システム構築・運用のしやすさ</li>
+  <li>コストパフォーマンス<br />
+１．計算/GPUノードの複数ノード同時アクセス時性能<br />
+２．ランニングコスト</li>
+  <li>可用性<br />
+３．ストレージ領域に格納するデータの可用性<br />
+４．ファイル共有ストレージサービスの可用性</li>
+  <li>運用性<br />
+５．システム構築・運用のしやすさ</li>
 </ul>
 
-<p>詳細は以降の章で解説しますが、コストパフォーマンスは <strong>ブロック・ボリューム</strong> NFSサーバが有利で、システム構築やシステム運用のしやすさでは <strong>ファイル・ストレージ</strong> が有利となり、どちらの観点に重きを置くかで選択することになります。</p>
+<p>詳細は以降の章で解説しますが、コストパフォーマンスはベア・メタル・インスタンスNFSサーバを使用する構築手法が有利で、可用性と運用性は <strong>ファイル・ストレージ</strong> を使用する構築手法が有利となります。</p>
 
 <h2 id="2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</h2>
 
-<p>以下の表は、 <strong>ファイル・ストレージ</strong> と前述の構成の <strong>ブロック・ボリューム</strong> NFSサーバを、価格と性能の観点で比較しています。</p>
+<p>本章は、コストパフォーマンスとして以下2項目の評価指標を採用します。</p>
 
-<p>この表から、 <strong>ブロック・ボリューム</strong> NFSサーバのコストパフォーマンスが <strong>ファイル・ストレージ</strong> より圧倒的に高いことがわかります。</p>
+<ol>
+  <li>計算/GPUノードの複数ノード同時アクセス時性能</li>
+  <li>ランニングコスト</li>
+</ol>
+
+<p>ここで <strong>評価指標 1.</strong> は、 <strong><a href="https://io500.org/">IO500</a></strong> でも採用されているファイルシステムベンチマークツールである <strong>IOR</strong> と <strong>mdtest</strong> を、それぞれスループットとメタデータ性能の評価指標として採用します。</p>
+
+<p>以下の表は、 <strong>ファイル・ストレージ</strong> と前述の構成の <strong>ブロック・ボリューム</strong> NFSサーバを、価格と性能の観点で比較しています。</p>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: center"> </th>
+      <th style="text-align: center">呼称</th>
       <th style="text-align: center">構成</th>
-      <th style="text-align: right">月額定価<br />(2023年9月時点)</th>
-      <th style="text-align: right">スループット</th>
-      <th style="text-align: right">IOPS</th>
-      <th> </th>
+      <th style="text-align: right">月あたりランニングコスト<br />（2024年9月時点定価）</th>
+      <th style="text-align: center">IOR<br />write</th>
+      <th style="text-align: center">IOR<br />read</th>
+      <th style="text-align: center">mdtest<br />create</th>
+      <th style="text-align: center">mdtest<br />stat</th>
+      <th style="text-align: center">mdtest<br />delete</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center"><strong>ファイル・ストレージ</strong></td>
-      <td style="text-align: center">マウント・ターゲット x 1, ファイルシステム x 1（15 TB)<br />-</td>
-      <td style="text-align: right"><strong>630,000</strong> 円<br />(*5, 6)</td>
-      <td style="text-align: right">983 MB/s<br />(*1)</td>
-      <td style="text-align: right">25.0 k<br />(*2)</td>
-      <td> </td>
+      <td style="text-align: center">標準FSS</td>
+      <td style="text-align: center"><strong>マウント・ターゲット</strong> (Standard) <br /><strong>ファイルシステム</strong> (15 TB)<br />Total</td>
+      <td style="text-align: right">0 円<br />697,500 円<br /><strong>697,500</strong> 円</td>
+      <td style="text-align: center">125 MiB/s<br />（※1）</td>
+      <td style="text-align: center">125 MiB/s<br />（※1）</td>
+      <td style="text-align: center">-<br />（※2）</td>
+      <td style="text-align: center">-<br />（※2）</td>
+      <td style="text-align: center">-<br />（※2）</td>
     </tr>
     <tr>
-      <td style="text-align: center"><strong>ブロック・ボリューム</strong> <br />NFSサーバ</td>
-      <td style="text-align: center"><strong>ブロック・ボリューム</strong> （Balanced）1 TB x 15ボリューム<br /><strong>BM.Optimized3.36</strong> x 1インスタンス<br />Total<br />-</td>
-      <td style="text-align: right">89,250円<br />273,370円<br /><strong>362,620</strong> 円<br />(*5, 6)</td>
-      <td style="text-align: right">2,040 MB/s<br />(*3)</td>
-      <td style="text-align: right">33.3 k<br />(*4)</td>
-      <td> </td>
+      <td style="text-align: center">高性能FSS</td>
+      <td style="text-align: center"><strong>マウント・ターゲット</strong> (HPMT-80)<br /><strong>ファイルシステム</strong> (80 TB)<br />Total</td>
+      <td style="text-align: right">3,360,000 円<br /><strong>マウント・ターゲット</strong> 込み<br /><strong>3,360,000 円</strong></td>
+      <td style="text-align: center">10 GiB/s<br />（※1）</td>
+      <td style="text-align: center">10 GiB/s<br />（※1）</td>
+      <td style="text-align: center">-<br />（※2）</td>
+      <td style="text-align: center">-<br />（※2）</td>
+      <td style="text-align: center">-<br />（※2）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">ブロック・ボリューム<br />NFSサーバ</td>
+      <td style="text-align: center"><strong>ブロック・ボリューム</strong> (Balanced 15 TB)<br /><strong>BM.Optimized3.36</strong><br />Total</td>
+      <td style="text-align: right">98,813 円<br />302,659 円<br /><strong>401,472</strong> 円</td>
+      <td style="text-align: center">3,720 MiB/s<br />（※3）</td>
+      <td style="text-align: center">4,938 MiB/s<br />（※3）</td>
+      <td style="text-align: center">3,796<br />（※3）</td>
+      <td style="text-align: center">23,860<br />（※3）</td>
+      <td style="text-align: center">3,818<br />（※3）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">DenceIO<br />NFSサーバ</td>
+      <td style="text-align: center"><strong>BM.DenseIO.E5.128</strong><br />NVMe SSD 40.8 TB (RAID10)</td>
+      <td style="text-align: right"><strong>1,328,701</strong> 円</td>
+      <td style="text-align: center">8,967 MiB/s<br />（※3）</td>
+      <td style="text-align: center">7,526 MiB/s<br />（※3）</td>
+      <td style="text-align: center">83,406<br />（※3）</td>
+      <td style="text-align: center">255,682<br />（※3）</td>
+      <td style="text-align: center">70,499<br />（※3）</td>
     </tr>
   </tbody>
 </table>
 
-<p>*1) 以下URLで公開されている <strong>ファイル・ストレージ</strong> の性能情報11ページ目に記載の、<br />
-<a href="https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf">https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf</a><br />
-1マウント・ターゲット1 MiBブロックサイズreadのスループット値を使用しています。</p>
+<p>※1）<strong>IOR</strong> 測定値が無いため、 <strong>マウント・ターゲット</strong> の最大スループット値を記載しています。<br />
+※2）<strong>mdtest</strong> 測定値が無いため、記載していません。<br />
+※3）3回計測した平均値です。</p>
 
-<p>*2) 以下URLで公開されている <strong>ファイル・ストレージ</strong> の性能情報11ページ目に記載の、<br />
-<a href="https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf">https://docs.oracle.com/en-us/iaas/Content/Resources/Assets/whitepapers/file-storage-performance-guide.pdf</a><br />
-1マウント・ターゲット32 KiBブロックサイズreadのIOPS値を使用しています。</p>
+<p>この表から、以下のことがわかります。</p>
 
-<p>*3) <strong>ファイル・ストレージ</strong> と同様、 <strong>VM.Standard2.16</strong> で構築したNFSクライアントから1 MiBブロックサイズreadでfioを使用して計測したスループット値です。</p>
+<ul>
+  <li><strong>IOR</strong> スループットレンジが同程度の高性能FSSとDenceIO NFSサーバを比較すると、
+    <ul>
+      <li>DenceIO NFSサーバのランニングコストは高性能FSSの約3分の1（※4）</li>
+      <li>（高性能FSSの測定値が無い状況の中）DenceIO NFSサーバは圧倒的なメタデータ性能を示す</li>
+    </ul>
+  </li>
+  <li>パフォーマンスがエントリーレベルの標準FSSとブロック・ボリュームNFSサーバを比較すると、
+    <ul>
+      <li>ブロック・ボリュームNFSサーバのランニングコストは標準FSSの6割程度（※5）（※6）</li>
+      <li>ブロック・ボリュームNFSサーバのスループットは標準FSSの30倍以上</li>
+    </ul>
+  </li>
+</ul>
 
-<p>*4) <strong>ファイル・ストレージ</strong> と同様、 <strong>VM.Standard2.16</strong> で構築したNFSクライアントから32 KiBブロックサイズreadでfioを使用して計測したIOPS値です。</p>
-
-<p>*5) 総容量15TBの <strong>ブロック・ボリューム</strong> NFSサーバの構成は、価格の大部分を <strong>BM.Optimized3.36</strong> が占めるため、総容量がこれより大きくなると、下表のように <strong>ファイル・ストレージ</strong> に対する価格優位性が拡大します。</p>
+<p>※4）この比較は、高性能FSSの80 TBとDenceIO NFSサーバの40.8 TBの異なる総容量で比較しているため条件が異なりますが、高性能FSSの80 TBは使用するにあたっての最低容量で、DenceIO NFSサーバの40.8 TBは当該ベア・メタル・インスタンスに搭載するNVMe SSDドライブ使用から来る固定容量です。<br />
+※5）総容量15TBのブロック・ボリュームNFSサーバの構成は、価格の大部分を <strong>BM.Optimized3.36</strong> が占めるため、総容量がこれより大きくなると、下表のように標準FSSに対する価格優位性が拡大します。</p>
 
 <table>
   <thead>
     <tr>
       <th style="text-align: right">総容量（TB）</th>
-      <th style="text-align: right"><strong>ファイル・ストレージ</strong><br />月額定価</th>
+      <th style="text-align: right">標準FSS<br />月額定価</th>
       <th style="text-align: right"><strong>ブロック・ボリューム</strong> NFSサーバ<br />月額定価</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align: right">15</td>
-      <td style="text-align: right"><strong>630,000</strong> 円</td>
-      <td style="text-align: right"><strong>362,620</strong> 円</td>
+      <td style="text-align: right"><strong>697,500</strong> 円</td>
+      <td style="text-align: right"><strong>401,472</strong> 円</td>
     </tr>
     <tr>
       <td style="text-align: right">100</td>
-      <td style="text-align: right"><strong>4,200,000</strong> 円</td>
-      <td style="text-align: right"><strong>868,370</strong> 円</td>
+      <td style="text-align: right"><strong>4,650,000</strong> 円</td>
+      <td style="text-align: right"><strong>961,409</strong> 円</td>
     </tr>
     <tr>
       <td style="text-align: right">500</td>
-      <td style="text-align: right"><strong>21,000,000</strong> 円</td>
-      <td style="text-align: right"><strong>3,248,370</strong> 円</td>
+      <td style="text-align: right"><strong>23,250,000</strong> 円</td>
+      <td style="text-align: right"><strong>3,596,409</strong> 円</td>
     </tr>
     <tr>
       <td style="text-align: right">1,000</td>
-      <td style="text-align: right"><strong>42,000,000</strong> 円</td>
-      <td style="text-align: right"><strong>6,223,370</strong> 円</td>
+      <td style="text-align: right"><strong>46,500,000</strong> 円</td>
+      <td style="text-align: right"><strong>6,587,500</strong> 円</td>
     </tr>
   </tbody>
 </table>
 
-<p>*6) <strong>ファイル・ストレージ</strong> は、従量制課金のため使用量が15 TBを下回るとそれに応じて金額が安くなりますが、 <strong>ブロック・ボリューム</strong> NFSサーバは、その時点の使用量に関わらず定額課金されます。</p>
+<p>※6）標準FSSは、従量制課金のため使用量が15 TBを下回るとそれに応じて金額が安くなりますが、 <strong>ブロック・ボリューム</strong> NFSサーバはその時点の使用量に関わらず定額課金されます。</p>
 
-<h2 id="22-システム構築運用のしやすさによる比較">2.2 システム構築・運用のしやすさによる比較</h2>
+<p>以上より、性能レンジが高性能・エントリーレベル何れの場合も、コストパフォーマンスを評価指標にファイル共有ストレージを比較すると、ベア・メタル・インスタンスNFSサーバを使用する構築手法が <strong>ファイル・ストレージ</strong> を使用する構築手法より圧倒的に有利であることがわかります。</p>
 
-<p>以下の表は、 <strong>ブロック・ボリューム</strong> NFSサーバと <strong>ファイル・ストレージ</strong> の利点・欠点を、システム構築やシステム運用のしやすさという観点で比較しています。</p>
+<h2 id="22-可用性による比較">2.2 可用性による比較</h2>
 
-<p>この表から、 <strong>ファイル・ストレージ</strong> は <strong>ブロック・ボリューム</strong> NFSサーバに対して、圧倒的にシステム構築やシステム運用が容易であることがわかります。</p>
+<p>本章は、可用性として以下2項目の評価指標を採用します。</p>
+
+<ol>
+  <li>ストレージ領域に格納するデータの可用性</li>
+  <li>ファイル共有ストレージサービスの可用性</li>
+</ol>
+
+<p>ここで <strong>ファイル・ストレージ</strong> を使用する標準FSSと高性能FSSは、可用性を評価指標とした場合同じ評価となるため、これらをまとめて3種類の構築手法を比較します。</p>
+
+<p>以下の表は、これら3種類の構築手法の可用性観点での利点・欠点を比較しています。</p>
 
 <table>
   <thead>
     <tr>
-      <th> </th>
+      <th style="text-align: center"> </th>
       <th>利点</th>
       <th>欠点</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>ファイル・ストレージ</strong></td>
-      <td>・NFSサービス開始までの構築手順が簡単<br />・ <strong>ファイル・ストレージ</strong> が用意する豊富な<br />　バックアップ機能を利用可能(*7)<br />・ファイルシステムの拡張作業が不要<br />・メンテナンスフリーのマウント・ターゲット<br />・HA化されたマウント・ターゲットによる高可能性</td>
-      <td>・マウント・ターゲットあたりのNFSサーバ性能<br />　は固定</td>
+      <td style="text-align: center">標準FSS<br />高性能FSS</td>
+      <td>・HA化されたマウント・ターゲットによる高いサービス可能性<br />・ <strong>ファイル・ストレージ</strong> が用意する豊富なバックアップ機能を<br />使用することで高いデータ保全性を実現可能（※7）</td>
+      <td>-</td>
     </tr>
     <tr>
-      <td><strong>ブロック・ボリューム</strong> <br />NFSサーバ</td>
-      <td>・ボリューム・パフォーマンスとシェイプの選択<br />　によるNFSサーバ性能のVertical Scaling<br />　が可能</td>
-      <td>・NFSサービス開始までの構築手順が煩雑(*8)<br />・バックアップのための環境構築が必要(*9)<br />・ファイルシステムの拡張作業が煩雑<br />・NFSサーバのソフトウェアメンテナンスが必要<br />・NFSサーバインスタンスが単一障害点</td>
+      <td style="text-align: center">ブロック・ボリューム<br />NFSサーバ</td>
+      <td>・<strong>ブロック・ボリューム</strong> が <strong>可用性ドメイン</strong> 内に複数レプリカを<br />持つことによる高いデータ可用性</td>
+      <td>・NFSサーバインスタンスがサービス可用性に対する単一障害点<br />・データ保全性を高めるためのバックアップに環境構築が必要（※8）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">DenceIO<br />NFSサーバ</td>
+      <td>・ <strong>Linux software RAID</strong> のRAID10によるデータ可用性</td>
+      <td>・NFSサーバインスタンスがサービス可用性に対する単一障害点<br /> ・NFSサーバインスタンスがデータ可用性に対する単一障害点<br /> ・NVMe SSDドライブのRAID10による脆弱なデータ可用性<br />・データ保全性を高めるためのバックアップに環境構築が必要(*9)</td>
     </tr>
   </tbody>
 </table>
 
-<p>*7) スナップショット、クローン、及びレプリケーションが用意されています。これらサービスの詳細は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/File/home.htm">ここ</a></strong> を参照ください。</p>
+<p>※7）スナップショット、クローン、及びレプリケーションが用意されています。これらサービスの詳細は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/File/home.htm">ここ</a></strong> を参照ください。</p>
 
-<p>*8) この構築作業を自動化する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> が <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレース</a></strong> から無料で提供されています。この詳細は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></strong> を参照ください。</p>
+<p>※8）<strong>ブロック・ボリューム</strong> に格納されるファイルのバックアップは、 <strong>ブロック・ボリューム</strong> が用意するバックアップ機能を利用することが出来ず、NFSサーバ上のファイルシステムとしてアクセスしバックアップする必要があります。</p>
 
-<p>*9) <strong>ブロック・ボリューム</strong> に格納されるファイルのバックアップは、 <strong>ブロック・ボリューム</strong> が用意するバックアップ機能を利用することが出来ず、NFSサーバ上のファイルシステムとしてアクセスしバックアップする必要があります。</p>
+<p>この表から、 <strong>ファイル・ストレージ</strong> は <strong>ブロック・ボリューム</strong> NFSサーバに対して、圧倒的にシステム構築やシステム運用が容易であることがわかります。</p>
+
+<p>以上より、可用性を評価指標にファイル共有ストレージを比較すると、 <strong>ファイル・ストレージ</strong> を使用する構築手法がベア・メタル・インスタンスNFSサーバを使用する構築手法より圧倒的にデータ可用性とサービス可用性が高いことがわかります。</p>
+
+<h2 id="23-運用性による比較">2.3 運用性による比較</h2>
+
+<p>本章は、運用性としてシステム構築・運用のしやすさを評価指標に採用します。</p>
+
+<p>ここで <strong>ファイル・ストレージ</strong> を使用する標準FSSと高性能FSSは、運用性を評価指標とした場合同じ評価となるため、これらをまとめて3種類の構築手法を比較します。</p>
+
+<p>以下の表は、これら3種類の構築手法の運用性観点での利点・欠点を比較しています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th>利点</th>
+      <th>欠点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">標準FSS<br />高性能FSS</td>
+      <td>・サービス開始までの構築手順が簡単<br />・ファイルシステムの容量拡張作業が不要<br />・メンテナンスフリーのマウント・ターゲット<br />・マウント・ターゲットのアップグレードによる動的な<br />NFSサーバの性能向上が可能</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">ブロック・ボリューム<br />NFSサーバ</td>
+      <td>・ボリューム・パフォーマンスとシェイプの選択<br />　によるNFSサーバ性能のVertical Scaling<br />　が可能</td>
+      <td>・サービス開始までの構築手順が煩雑（※9）<br />・ファイルシステムの容量拡張作業が煩雑<br />・ベア・メタル・インスタンスのソフトウェアメンテナンスが必要</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">DenceIO<br />NFSサーバ</td>
+      <td>-</td>
+      <td>・サービス開始までの構築手順が煩雑<br />・ファイルシステムの容量拡張が不可能<br />・ベア・メタル・インスタンスのソフトウェアメンテナンスが必要</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※9）この構築作業を自動化する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> が <strong><a href="/ocitutorials/hpc/#5-5-マーケットプレイス">マーケットプレース</a></strong> から無料で提供されています。この詳細は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></strong> を参照ください。</p>
+
+<p>以上より、運用性を評価指標にファイル共有ストレージを比較すると、 <strong>ファイル・ストレージ</strong> を使用する構築手法がベア・メタル・インスタンスNFSサーバを使用する構築手法より圧倒的にシステム構築やシステム運用が容易であることがわかります。</p>
 
         
       </section>
@@ -561,7 +784,7 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 
@@ -570,7 +793,7 @@ HPC/GPUクラスタで使用するファイル共有ストレージは、アプ�
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=%E3%82%B3%E3%82%B9%E3%83%88%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%B9%E3%81%AE%E8%89%AF%E3%81%84%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-configure-sharedstorage%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=HPC%2FGPU%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E5%90%91%E3%81%91%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%81%AE%E6%9C%80%E9%81%A9%E3%81%AA%E6%A7%8B%E7%AF%89%E6%89%8B%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-configure-sharedstorage%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-configure-sharedstorage%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 

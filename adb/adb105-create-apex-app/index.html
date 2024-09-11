@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb105-create-apex-app/img3_2.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb105-create-apex-app/image105-8.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2024-09-03T14:22:18+09:00">
+  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb105-create-apex-app/img3_2.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb105-create-apex-app/image105-8.png');"
 >
   
     <div class="wrapper">
@@ -291,7 +291,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Data Guardを構成してみよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
         
@@ -321,7 +321,7 @@
         
           <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによるデータ連携</a></li></p>
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
         
           <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
         
@@ -358,7 +358,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="105: ADBの付属ツールで簡易アプリを作成しよう(APEX)">
     <meta itemprop="description" content="APEXコンソールの起動から簡単なアプリケーション作成までをご紹介します。">
-    <meta itemprop="datePublished" content="2024-09-03T14:22:18+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -424,7 +424,7 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 
 <p>受発注データは次のような表になっており、ORDER_KEY(注文番号)、ORDER_STATUS(注文状況)、UNITS(個数) …etc などの列から構成される、5247行の表となっています。</p>
 
-<p><img src="img1.png" alt="img1.png" /></p>
+<p><img src="image105-1_0.png" alt="image105-1_0.png" /></p>
 
 <p><br /></p>
 
@@ -437,49 +437,50 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 
 <ol>
   <li>
-    <p>ADBインスタンスの詳細画面を表示します。メニュー画面上部の <strong><code class="language-plaintext highlighter-rouge">ツール</code></strong> タブを選択し、<strong><code class="language-plaintext highlighter-rouge">APEXを開く</code></strong> をクリックします。</p>
+    <p>ADBインスタンスの詳細画面を表示します。メニュー画面上部の <strong><code class="language-plaintext highlighter-rouge">ツール構成</code></strong> タブを選択し、<strong><code class="language-plaintext highlighter-rouge">Oracle APEX</code></strong> のパブリック・アクセスURLをコピーして、ブラウザの別のタブから開きます。</p>
 
-    <p><img src="img2_1.png" alt="img2_1.png" /></p>
+    <p><img src="image105-1.png" alt="image105-1.png" /></p>
   </li>
   <li>
     <p>ログイン画面が表示されるので、下部の言語欄から <strong><code class="language-plaintext highlighter-rouge">日本語</code></strong> を選択しておきます。（初回は英語表示ですが、日本語を含めた他言語表示に変更することが可能です）</p>
 
-    <p><img src="img2_2.png" width="70%" /></p>
+    <p><img src="image105-2.png" width="70%" /></p>
   </li>
   <li>
     <p>ADBインスタンス作成時に指定したADMINユーザのパスワード（本ガイドを参考に作成した方のパスワードは「Welcome12345#」）を入力し、サインインします。</p>
-
-    <p><img src="img2_3.png" width="70%" /></p>
   </li>
   <li>
-    <p><strong><code class="language-plaintext highlighter-rouge">ワークスペースの作成</code></strong> をクリックします。</p>
+    <p>Oracle APEXの管理サービスにサインインしました。初回起動時に下記のような画面が表示されますので、<strong><code class="language-plaintext highlighter-rouge">ワークスペースの作成</code></strong> をクリックします。</p>
 
-    <p><img src="img2_4.png" alt="img2_4.png" /></p>
+    <p><img src="image105-3.png" alt="image105-3.png" /></p>
   </li>
   <li>
+    <p>新規のワークスペース作成を選択します。
+ <img src="image105-4.png" alt="image105-4.png" /></p>
+
     <p>以下の記載例を参考に各項目を入力し、最後に <strong><code class="language-plaintext highlighter-rouge">ワークスペースの作成</code></strong> をクリックします。</p>
 
     <table>
   <tr>
    <td>データベース・ユーザー</td>
-   <td>APEX_01</td>
+   <td>APEXDEV</td>
   </tr>
+  <tr>
+   <td>ワークスペース名</td>
+   <td>APEXDEV</td>
+  </tr>     
   <tr>
    <td>パスワード</td>
    <td>Welcome12345#</td>
   </tr>
-  <tr>
-   <td>ワークスペース名</td>
-   <td>APEX_01</td>
-  </tr>
  </table>
 
-    <p><img src="img2_5.png" width="90%" /></p>
+    <p><img src="image105-5.png" width="90%" /></p>
   </li>
   <li>
-    <p>ワークスペースが作成されたことを確認します。ページ上部の注意書き通り、アプリケーションの構築を開始するには、管理サービスからサインアウトしてAPEX_01にサインインする必要があります。
+    <p>ワークスペースが作成されたことを確認します。ページ上部の注意書き通り、アプリケーションの構築を開始するには、管理サービスからサインアウトしてAPEXDEVにサインインする必要があります。
 右上の <strong><code class="language-plaintext highlighter-rouge">ユーザボタン</code></strong> から <strong><code class="language-plaintext highlighter-rouge">サインアウト</code></strong> をクリックし、管理サービスからサインアウトします。
- <img src="img2_6.png" alt="img2_6.png" /></p>
+ <img src="image105-6.png" alt="image105-6.png" /></p>
   </li>
 </ol>
 
@@ -498,25 +499,25 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
     <table>
   <tr>
    <td>データベース・ユーザー</td>
-   <td>APEX_01</td>
+   <td>APEXDEV</td>
   </tr>
-  <tr>
+  &lt;t
    <td>パスワード</td>
    <td>Welcome12345#</td>
-  </tr>
+  &lt;/tr&gt;
   <tr>
    <td>ワークスペース名</td>
-   <td>APEX_01</td>
+   <td>APEXDEV</td>
   </tr>
  </table>
 
-    <p><img src="img3_1.png" width="70%" /></p>
+    <p><img src="image105-7.png" width="70%" /></p>
   </li>
   <li>
     <p>APEXコンソールが起動したことを確認します。
   ※ この画面のURLを記憶しておけば、次回よりAPEXコンソールに直接ログインできます</p>
 
-    <p><img src="img3_2.png" alt="img3_2.png" /></p>
+    <p><img src="image105-8.png" alt="image105-8.png" /></p>
   </li>
 </ol>
 
@@ -534,18 +535,21 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 
 <ol>
   <li>
-    <p>APEXコンソールから <strong><code class="language-plaintext highlighter-rouge">アプリケーション・ビルダー</code></strong> を起動します</p>
+    <p>APEXコンソールから <strong><code class="language-plaintext highlighter-rouge">アプリケーション・ビルダー</code></strong> を起動します
+ <img src="image105-9.png" alt="image105-9.png" /></p>
   </li>
   <li>
-    <p><strong><code class="language-plaintext highlighter-rouge">新規アプリケーションの作成</code></strong> をクリックします</p>
+    <p><strong><code class="language-plaintext highlighter-rouge">作成</code></strong> をクリックします
+ <img src="image105-10.png" alt="image105-10.png" /></p>
   </li>
   <li>
-    <p><strong><code class="language-plaintext highlighter-rouge">ファイルから</code></strong> をクリックします</p>
+    <p><strong><code class="language-plaintext highlighter-rouge">ファイルからのアプリケーションの作成</code></strong> をクリックします
+ <img src="image105-11.png" alt="image105-11.png" /></p>
   </li>
   <li>
     <p>事前に準備しておいた <strong><code class="language-plaintext highlighter-rouge">orders.csv</code></strong> をドラッグアンドドロップします</p>
 
-    <p><img src="img4_4.png" alt="img4_4.png" /></p>
+    <p><img src="image105-12.png" alt="image105-12.png" /></p>
   </li>
   <li>
     <p>表の名前を入力します（ここでは「ORDERS」とします）。※エラー表名は自動的に入力されます。</p>
@@ -556,13 +560,13 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
   <li>
     <p><strong><code class="language-plaintext highlighter-rouge">データのロード</code></strong> をクリックします。</p>
 
-    <p><img src="img4_7.png" alt="img4_7.png" /></p>
+    <p><img src="image105-13.png" alt="image105-13.png" /></p>
   </li>
   <li>
     <p>ロード完了のメッセージが表示されたら <strong><code class="language-plaintext highlighter-rouge">アプリケーションの作成</code></strong> をクリックします。
  ※この時点でDB上にORDERS表が作成されています</p>
 
-    <p><img src="img4_8.png" alt="img4_8.png" /></p>
+    <p><img src="image105-14.png" alt="image105-14.png" /></p>
 
     <p>次にCSVファイルから作成されたテーブルを元にしてアプリケーションを作成します。</p>
   </li>
@@ -574,11 +578,13 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 <p><a id="anchor4_10"></a></p>
 
 <ol>
-  <li><strong><code class="language-plaintext highlighter-rouge">アプリケーションの作成</code></strong> をクリックします。
-（ページの追加や外観の設定、セキュリティの設定等が実施できますが、このハンズオンでは全てデフォルトのまま進めます）</li>
-</ol>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">アプリケーションの作成</code></strong> をクリックします。
+（ページの追加や外観の設定、セキュリティの設定等が実施できますが、このハンズオンでは全てデフォルトのまま進めます）</p>
 
-<p><img src="img4_10.png" alt="img4_10.png" /></p>
+    <p><img src="image105-15.png" alt="image105-15.png" /></p>
+  </li>
+</ol>
 
 <p>以上でアプリケーションの作成が完了しました。</p>
 
@@ -591,11 +597,13 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 <p>実際にアプリケーションを起動してみます。</p>
 
 <ol>
-  <li><strong><code class="language-plaintext highlighter-rouge">アプリケーションの実行</code></strong> をクリックします。</li>
   <li>
-    <p>ログイン画面に ユーザー名・パスワード を入力し <strong><code class="language-plaintext highlighter-rouge">サインイン</code></strong> します。</p>
-
-    <p><img src="img5_2.png" alt="img5_2.png" /></p>
+    <p><strong><code class="language-plaintext highlighter-rouge">アプリケーションの実行</code></strong> をクリックします。
+ <img src="image105-16.png" alt="image105-16.png" /></p>
+  </li>
+  <li>
+    <p>ログイン画面に ユーザー名・パスワード を入力し <strong><code class="language-plaintext highlighter-rouge">サインイン</code></strong> します。
+ <img src="image105-17.png" width="70%" /></p>
   </li>
 </ol>
 
@@ -606,7 +614,7 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
   <li>
     <p>ログイン画面のURLを記憶しておくと、作成したアプリケーションを直接呼び出すことができます。直接呼び出した場合は、画面下端のメニューバーは表示されないので、このURLをアプリ利用者にお渡しいただければ、そのままアプリケーションとしてご利用いただくことができますね。</p>
 
-    <p><img src="img5_3.png" alt="img5_3.png" /></p>
+    <p><img src="image105-18_0.png" alt="image105-18_0.png" /></p>
   </li>
 </ul>
 
@@ -616,9 +624,8 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 
 <h1 id="6-実行確認">6. 実行確認</h1>
 
-<p>作成されたアプリケーションの画面イメージをみていきましょう。</p>
-
-<p><img src="img6.png" alt="img6.png" /></p>
+<p>作成されたアプリケーションの画面イメージをみていきましょう。
+    <img src="image105-18.png" alt="image105-18.png" /></p>
 
 <p>ログインするとトップ画面が表示され、デフォルトでホーム画面（トップ画面）、ダッシュボード画面、検索画面、管理画面（レポート）が表示されます。</p>
 
@@ -629,22 +636,19 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 <h2 id="--ダッシュボード">- ダッシュボード</h2>
 
 <p>はじめに、ダッシュボードをクリックします。
-ダッシュボードでは取り込んだデータをもとに、自動的にグラフとして出力されます。</p>
-
-<p><img src="img6_1.png" alt="img6_1.png" /></p>
+ダッシュボードでは取り込んだデータをもとに、自動的にグラフとして出力されます。
+    <img src="image105-19.png" alt="image105-19.png" /></p>
 
 <h2 id="--orders検索">- Orders検索</h2>
 
 <p>次に、Orders検索をクリックします。
-こちらの機能では、取り込んだデータに対して、カテゴリ別に検索ができるようになっており、行単位でデータを絞り込むことができます。</p>
-
-<p><img src="img6_2.png" alt="img6_2.png" /></p>
+こちらの機能では、取り込んだデータに対して、カテゴリ別に検索ができるようになっており、行単位でデータを絞り込むことができます。
+    <img src="image105-20.png" alt="image105-20.png" /></p>
 
 <h2 id="--ordersレポート">- Ordersレポート</h2>
 
-<p>Ordersレポートからは、データを昇順・降順に並び替えることや、特定の列を非表示にすることができます。Orders検索との違いとしては、行単位ではなく列単位で表示を変更することができます。</p>
-
-<p><img src="img6_3.png" alt="img6_3.png" /></p>
+<p>Ordersレポートからは、データを昇順・降順に並び替えることや、特定の列を非表示にすることができます。Orders検索との違いとしては、行単位ではなく列単位で表示を変更することができます。
+    <img src="image105-21.png" alt="image105-21.png" /></p>
 
 <p><br /></p>
 
@@ -678,7 +682,7 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-03T14:22:18+09:00">September 3, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
 
       </footer>
 
