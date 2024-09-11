@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-11T10:47:29+09:00">
+  <meta property="article:published_time" content="2024-09-11T12:29:48+09:00">
 
 
 
@@ -370,7 +370,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="短期保存データ用高速ファイル共有ストレージを構築する">
     <meta itemprop="description" content="短期保存データを対象とする高速ファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、NVMe SSDローカルディスクを搭載するベアメタルインスタンスBM.DenseIO.E5.128を使用する、短期保存データ用高速ファイル共有ストレージを構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-09-11T10:47:29+09:00">
+    <meta itemprop="datePublished" content="2024-09-11T12:29:48+09:00">
     
 
     <div class="page__inner-wrap">
@@ -404,8 +404,8 @@
 
 <ol>
   <li>ソフトウェアRAIDによるRAID10で最低限の可用性を確保</li>
-  <li>NVMe SSDローカルディスク上のデータを定期的に他の長期保存ストレージにバックアップ（保存するデータを短期保存データに限定）</li>
-  <li><strong>2.</strong> のアプローチでバックアップの後データを削除して空き容量を確保</li>
+  <li>NVMe SSDローカルディスク上のファイルを定期的に他の長期保存ストレージにバックアップ（対象を短期保存データに限定）</li>
+  <li><strong>2.</strong> のアプローチでバックアップの後ファイルを削除して空き容量を確保</li>
 </ol>
 
 <p>以下構成の短期保存データ用高速ファイル共有ストレージを構築します。</p>
@@ -414,7 +414,7 @@
   <li>NFSサーバ
     <ul>
       <li>シェイプ ： <strong>BM.DenseIO.E5.128</strong></li>
-      <li>OS ： <strong>Oracle Linux</strong> 8.10（Oracle-Linux-8.10-2024.07.31-0）</li>
+      <li>OS ： <strong>Oracle Linux</strong> 9.4（Oracle-Linux-9.4-2024.07.31-0 UEK）</li>
     </ul>
   </li>
   <li>ソフトウェアRAID・NFS ： OS付属のものを利用</li>
@@ -423,7 +423,7 @@
       <li>RAIDレベル ： RAID10</li>
       <li>Placement ： f2</li>
       <li>Stripe width ： 6</li>
-      <li>Chunk size / Stripe unit ： 8 MB</li>
+      <li>Chunk size / Stripe unit ： 512 KB</li>
     </ul>
   </li>
   <li>ファイルシステム容量 ： 38 TB</li>
@@ -439,7 +439,7 @@
   <li>NFSクライアント
     <ul>
       <li>シェイプ ： <strong>VM.Standard2.24</strong></li>
-      <li>OS ： <strong>Oracle Linux</strong> 8.10（Oracle-Linux-8.10-2024.07.31-0）</li>
+      <li>OS ： <strong>Oracle Linux</strong> 8.10（Oracle-Linux-8.10-2024.06.30-0 UEK）</li>
       <li>ノード数 ： 8</li>
     </ul>
   </li>
@@ -593,7 +593,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+
 
 <ul>
   <li><strong>名前</strong> ： インスタンスの名前（イニシャルホスト名）（本チュートリアルでは <strong>nfs-srv</strong>）</li>
-  <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10</li>
+  <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 9 (2024.07.31-0)</li>
   <li><strong>シェイプ</strong> ： <strong>BM.DenseIO.E5.128</strong></li>
   <li><strong>SSHキーの追加</strong> ： <strong><a href="#1-2-bastionノード作成">1-2. Bastionノード作成</a></strong> で作成したSSH鍵公開鍵</li>
 </ul>
@@ -692,7 +692,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T10:47:29+09:00">September 11, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T12:29:48+09:00">September 11, 2024</time></p>
 
       </footer>
 
