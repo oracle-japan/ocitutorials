@@ -1,0 +1,771 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>予算と割当て制限を設定してコストを適正化する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="予期せぬコスト増加を避けるために、テナンシの管理者側で予算（Budget）機能と、割当て制限（Quota）機能を使って適切にコスト管理をしていきましょう">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="予算と割当て制限を設定してコストを適正化する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/budget-quota/">
+
+
+  <meta property="og:description" content="予期せぬコスト増加を避けるために、テナンシの管理者側で予算（Budget）機能と、割当て制限（Quota）機能を使って適切にコスト管理をしていきましょう">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/budget-quota/cost.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-11T16:54:24+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/budget-quota/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/budget-quota/cost.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          予算と割当て制限を設定してコストを適正化する
+
+        
+      </h1>
+      
+        <p class="page__lead">予期せぬコスト増加を避けるために、テナンシの管理者側で予算（Budget）機能と、割当て制限（Quota）機能を使って適切にコスト管理をしていきましょう
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">予算と割当て制限を設定してコストを適正化する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/object-storage-advanced/">オブジェクト・ストレージの高度な設定</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/certificate/">プライベート認証局と証明書の発行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-2/">Email Deliveryを利用した外部へのメール送信(応用編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/budget-quota/" class="active">予算と割当て制限を設定してコストを適正化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/web-application-acceleration/">Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/vtap/">VTAPでパケットをミラーリングし、パケットキャプチャをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/mobile_app/">OCIモバイル・アプリケーションを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/">Oracle Linux Storage Applianceでファイルストレージの構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/os_management/">コンピュート・インスタンスのOSを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="予算と割当て制限を設定してコストを適正化する">
+    <meta itemprop="description" content="予期せぬコスト増加を避けるために、テナンシの管理者側で予算（Budget）機能と、割当て制限（Quota）機能を使って適切にコスト管理をしていきましょう">
+    <meta itemprop="datePublished" content="2024-09-11T16:54:24+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-コスト分析でコストの確認">1. コスト分析でコストの確認</a></li><li><a href="#2-予算の設定">2. 予算の設定</a></li><li><a href="#3-割当て制限の設定">3. 割当て制限の設定</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a>
+<br /></p>
+
+<p>必要な時に迅速にリソースを作成して利用することができるのがクラウドのメリットですが、使った分のコストは支払う必要があります。OCIの支払いの方式は、</p>
+
+<ul>
+  <li>前払い制で事前購入したサブスクリプションから使った分を消費していく方式（Universal Credit Annual Flex）　と、</li>
+  <li>後払い制で使った分があとから請求される方式（Pay as you go, PAYG）</li>
+</ul>
+
+<p>の大きく二種類がありますが、いずれの方式にしても、たとえば利用者が増えたりして利用が拡大していくと当初予定していた以上にリソースを使ってコスト消費も増えていく可能性があります。</p>
+
+<p>予期せぬコスト増を避けるためには、テナンシの管理者側で現状のコスト状況を把握し、予算（Budget）機能と、割当て制限（Quota）機能を使って適切にコスト管理をしていきましょう。</p>
+
+<p><a href="https://docs.oracle.com/ja-jp/iaas/Content/Billing/Concepts/budgetsoverview.htm">予算（Budget）</a>とは、コンパートメントごと、タグごと、テナンシごと（組織管理利用時）に予算金額の設定を行い、設定した金額を超えそうになった場合に管理者にアラートを通知できる機能です。実績値または予測値を用いて、予算金額の何%に達したらメール通知するかを決めることができます。</p>
+
+<p>アラート・メールが通知されたら、管理者側で必要に応じて不要リソースの停止や削除などのコスト低減の対策を行います。</p>
+
+<p><a href="https://docs.oracle.com/ja-jp/iaas/Content/Quotas/home.htm">割当て制限（Quota）</a>とは、コンパートメントごとにどのくらいの量のリソースを利用できるかの上限を設定できる機能です。割当て制限が設定されたコンパートメント内で利用者が割当てられた量を超えるリソースを作成しようとするとエラーになります。</p>
+
+<p>本チュートリアルでは、まず「コスト分析」で現状のコストを確認してから、「予算」と「割当て制限」の両方の機能をためしてみます。</p>
+
+<p><strong>所要時間 :</strong> 作業時間 約30分。（ただし予算は24時間ごとに評価されるため、設定してから24時間たってから予算アラートのメールが受信できているかを確認します。）</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li><a href="/ocitutorials/beginners/creating-vcn">チュートリアル入門編（その2）- クラウドに仮想ネットワーク(VCN)を作る</a>を通じてVCNの作成が完了しており、そのVCN内にデフォルトのプライベート・サブネットとパブリック・サブネットが作成されていること</li>
+  <li>コンパートメント内になんらかの有償リソースが作成されていて、課金（コスト消費）が発生している状態であること。</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次 :</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  1. [コスト分析でコストの確認](#anchor1)
+  2. [予算の設定](#anchor2)
+  2. [割当て制限の設定](#anchor3)
+</code></pre></div></div>
+
+<p><br /><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-コスト分析でコストの確認">1. コスト分析でコストの確認</h1>
+
+<p>予算を設定する前に、まずは現時点でのコスト分析を使用してコスト状況を確認していきます。</p>
+
+<ol>
+  <li>メニュー <strong><code class="language-plaintext highlighter-rouge">請求とコスト管理</code></strong> → <strong><code class="language-plaintext highlighter-rouge">コスト分析</code></strong> をクリックします。
+<img src="img01.png" alt="img01.png" /></li>
+  <li>コスト分析ページの <strong><code class="language-plaintext highlighter-rouge">フィルタ</code></strong> で <strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> を選択します。
+<img src="img02.png" alt="img02.png" /></li>
+  <li>コンパートメントの選択ウィンドウで対象となる <strong><code class="language-plaintext highlighter-rouge">コンパートメント名</code></strong> を入力して <strong><code class="language-plaintext highlighter-rouge">適用</code></strong> をクリックします。</li>
+</ol>
+
+<p><img src="img03.png" alt="img03.png" /></p>
+
+<ol>
+  <li>開始日と終了日はデフォルトの状態でその月の月初から最新までの期間が選択されていることを確認し、<strong><code class="language-plaintext highlighter-rouge">適用</code></strong>をクリックします。画面下の<strong><code class="language-plaintext highlighter-rouge">コスト詳細（JPY）</code></strong>の部分に選択したコンパートメントの金額が表示されます。当月分の <strong><code class="language-plaintext highlighter-rouge">累積コスト</code></strong> がいくらになっているかを確認します。この画像の場合は1,167円となります。
+<img src="img04.png" alt="img04.png" /></li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-予算の設定">2. 予算の設定</h1>
+
+<p>特定のコンパートメントに対しての予算と予算アラート設定して、その閾値に達した際のアラートをとばしてみます。今回は正しくアラート通知が来ることを確認するため、現時点の金額を超える閾値を設定してアラートメールが送信されるかを確認してみます。</p>
+
+<ol>
+  <li>
+    <p>メニュー <strong><code class="language-plaintext highlighter-rouge">請求とコスト管理</code></strong> → <strong><code class="language-plaintext highlighter-rouge">予算</code></strong> をクリックします。
+<img src="img05.png" alt="img05.png" /></p>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">予算の作成</code></strong>ボタンをクリックします。
+<img src="img06.png" alt="img06.png" /></p>
+  </li>
+  <li>
+    <p>予算の作成画面で以下の項目を入力して、<strong><code class="language-plaintext highlighter-rouge">作成</code></strong>ボタンをクリックします。</p>
+
+    <ul>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> ：任意の名前</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">説明</code></strong>：任意の説明</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">予算範囲</code></strong>：<strong>コンパートメント</strong>（デフォルト）を選択</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">ターゲット・コンパートメント</code></strong>：対象のコンパートメントを選択</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">スケジュール</code></strong> ：<strong>毎月</strong></p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">予算金額</code></strong> ：先ほど<strong>コスト分析で確認した累積金額の70%を超える値</strong>を入力。ここでは 1500 を入力。</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">予算処理を開始する月の日付</code></strong> ：<strong>1</strong> （デフォルト）を入力</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">予算アラート・ルール（オプション</code>）</strong></p>
+
+        <ul>
+          <li>
+            <p><strong><code class="language-plaintext highlighter-rouge">しきい値メトリック</code></strong> ： <strong>実績支出</strong> を選択</p>
+          </li>
+          <li>
+            <p><strong><code class="language-plaintext highlighter-rouge">しきい値のタイプ</code></strong> ：<strong>予算の比率</strong> を選択</p>
+          </li>
+          <li>
+            <p><strong><code class="language-plaintext highlighter-rouge">しきい値％</code></strong> ：<strong>70%</strong>を入力</p>
+          </li>
+          <li>
+            <p><strong><code class="language-plaintext highlighter-rouge">電子メール受信者</code></strong> ：アラートを受信するメールアドレスを入力</p>
+          </li>
+          <li>
+            <p><strong><code class="language-plaintext highlighter-rouge">電子メール・メッセージ</code></strong> ：任意。ここでは「これはチュートリアルの予算アラートです。」と入力。</p>
+
+            <p><img src="img07.png" alt="img07.png" />
+<img src="img08.png" alt="img08.png" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>予算が作成できました。まだ予算の評価が行われていないので、支出や期間内の%支出や予測は表示されません。予算アラートは24時間ごとに定期的に評価されるので、このまま1日置いてアラートのメールが送信されるのを待ちます。
+<img src="img09.png" alt="img09.png" /></p>
+  </li>
+  <li>
+    <p>24時間以上たってから、指定したメール・アドレスにメールが届いているかを確認します。このようなメールが受信できていれば成功です。<img src="img10.png" alt="img10.png" /></p>
+  </li>
+  <li>
+    <p>コンソールからも予算が評価されていることを確認します。メニュー <strong><code class="language-plaintext highlighter-rouge">請求とコスト管理</code></strong> → <strong><code class="language-plaintext highlighter-rouge">予算</code></strong> をクリックします。この例では、予算額を上回る126.09%の支出となっていて予算アラートの通知対象となったことがわかります。
+<img src="img11.png" alt="img11.png" /></p>
+  </li>
+</ol>
+
+<p>以上で予算の設定と確認は完了です。実際の環境の予算額に応じて適切な設定を行い、必要があれば不要なリソースを削除したり停止して無駄なコスト消費を抑えるようにしましょう。</p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-割当て制限の設定">3. 割当て制限の設定</h1>
+
+<p>次に、コンパートメントに対して特定のコンピュート・インスタンスのシェイプに対する割当て制限を作成し、設定した数より多くのリソースをコンパートメント内に作れないことを確認していきます。</p>
+
+<ol>
+  <li>
+    <p>メニュー <strong><code class="language-plaintext highlighter-rouge">ガバナンスと管理</code></strong> → <strong><code class="language-plaintext highlighter-rouge">割当て制限ポリシー</code></strong> をクリックします。
+<img src="img12.png" alt="img12.png" /></p>
+  </li>
+  <li>
+    <p>割当て制限ポリシーのページで、<strong><code class="language-plaintext highlighter-rouge">割当て制限の作成</code></strong>をクリックします。
+<img src="img13.png" alt="img13.png" /></p>
+  </li>
+  <li>
+    <p>割当て制限ポリシーの作成画面で以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">割り当て制限ポリシーの作成</code></strong> をクリックします。一つ目のポリシーで、まず<strong>全てのシェイプのコンピュートのコア数の割当てを削除</strong>してから、二つ目のポリシーで<strong>各シェイプごとの使用可能なコア数を2つまでに制限</strong>します。割当て制限ポリシーは複数のポリシー文を記載する場合上から順に評価されます。</p>
+
+    <ul>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> ：任意の名前</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">説明 </code></strong> ：任意の説明</p>
+      </li>
+      <li>
+        <p><strong><code class="language-plaintext highlighter-rouge">割当て制限ポリシー</code></strong> ：以下の2つのポリシー文を順番に入力する。</p>
+
+        <ul>
+          <li>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zero compute-core quotas in compartment &lt;コンパートメント名&gt;
+</code></pre></div>            </div>
+          </li>
+          <li>
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set compute-core quota /*-core-count*/, /*-core-ad-count*/ to 2 in compartment &lt;コンパートメント名&gt;
+</code></pre></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><img src="img14.png" alt="img14.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>割当て制限が作成できました。
+<img src="img15.png" alt="img15.png" /></p>
+  </li>
+  <li>
+    <p>メニュー <strong><code class="language-plaintext highlighter-rouge">ガバナンスと管理</code></strong> → <strong><code class="language-plaintext highlighter-rouge">制限、割当ておよび使用状況</code></strong> をクリックし、制限、割当ておよび使用状況のページを開きます。以下のフィルタを選択します。</p>
+
+    <ul>
+      <li><strong><code class="language-plaintext highlighter-rouge">サービス</code></strong> ：<code class="language-plaintext highlighter-rouge">Compute</code> を選択</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">スコープ</code></strong> ：<code class="language-plaintext highlighter-rouge">文字列:&lt;リージョン名&gt;-AD-1</code> を選択。以下の例の場合は「BUkv:AP-TOKYO-1-AD-1」</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">リソース</code></strong> ：<code class="language-plaintext highlighter-rouge">Cores for Standard.E4.Flex and BM.Standard.E4.128 instances</code> を選択</li>
+      <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> ：割当て制限で指定したコンパートメントを選択</li>
+    </ul>
+
+    <p><img src="img16.png" alt="img16.png" /></p>
+  </li>
+  <li>
+    <p>「使用可能」 の欄が <strong>2</strong> になっていることがわかります。つまり、このコンパートメントではStandard.E4のOCPU数としては 2 まで使用可能という割当て制限が設定されていることがわかります。
+<img src="img17.png" alt="img17.png" /></p>
+  </li>
+  <li>
+    <p>コンピュート・インスタンスを実際に作成してみます。メニュー <strong><code class="language-plaintext highlighter-rouge">コンピュート</code></strong> → <strong><code class="language-plaintext highlighter-rouge">インスタンス</code></strong> をクリックします。<strong><code class="language-plaintext highlighter-rouge">インスタンスの作成</code></strong> ボタンからインスタンスを作成します。コンピュート・インスタンス作成の方法は <a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">チュートリアル入門編（その3） - インスタンスを作成する</a> を参考にしてください。</p>
+
+    <ul>
+      <li>シェイプの選択で <strong><code class="language-plaintext highlighter-rouge">VM.Standard.E4.Flex</code></strong> を <strong><code class="language-plaintext highlighter-rouge">1 OCPU</code></strong>で作成してください。（そのほかの設定、イメージやVCNなどはなんでも構いません。）
+<img src="img18.png" alt="img18.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p>インスタンスのステータスが <strong><code class="language-plaintext highlighter-rouge">プロビジョニング中</code></strong> から <strong><code class="language-plaintext highlighter-rouge">実行中</code></strong> に変わり、インスタンスが正常に作成できたことを確認します。１OCPUであれば割当て制限の範囲内なので問題なく作成ができることが分かります。
+<img src="img19.png" alt="img19.png" /></p>
+  </li>
+  <li>
+    <p>続いて、先ほどと同様にもう一つインスタンスを作成してみます。今度は、<strong>2 OCPU</strong> のインスタンスを作成してみます。つまり<strong>合計 3 OCPU</strong>となるので、割当て制限で設定された値を超えることになります。</p>
+
+    <ul>
+      <li>シェイプの選択で <strong><code class="language-plaintext highlighter-rouge">VM.Standard.E4.Flex</code></strong> を <strong><code class="language-plaintext highlighter-rouge">2 OCPU</code></strong> を選択してインスタンスを作成してください。（そのほかの設定、イメージやVCNなどはなんでも構いません。）
+ <img src="img20.png" alt="img20.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタンをクリックするとこのようなエラーが表示され、コンパートメント割当てを超えるためにインスタンスが作成できないことがわかります。
+<img src="img21.png" alt="img21.png" /></p>
+  </li>
+</ol>
+
+<p>以上で、このチュートリアルは終わりです。</p>
+
+<p>これらの機能を活用して、適切にコスト管理を行っていきましょう。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#governance" class="page__taxonomy-item p-category" rel="tag">governance</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item p-category" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-11T16:54:24+09:00">September 11, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E4%BA%88%E7%AE%97%E3%81%A8%E5%89%B2%E5%BD%93%E3%81%A6%E5%88%B6%E9%99%90%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%97%E3%81%A6%E3%82%B3%E3%82%B9%E3%83%88%E3%82%92%E9%81%A9%E6%AD%A3%E5%8C%96%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fbudget-quota%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fbudget-quota%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/intermediates/budget-quota/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/using-cli/" class="pagination--pager" title="コマンドライン(CLI)でOCIを操作する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/audit-log-analytics/" class="pagination--pager" title="OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
