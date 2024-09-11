@@ -26,20 +26,20 @@ header:
 本チュートリアルは、これらの考慮点に対して以下のアプローチを取り、
 
 1. ソフトウェアRAIDによるRAID10で最低限の可用性を確保
-2. NVMe SSDローカルディスク上のデータを定期的に他の長期保存ストレージにバックアップ（保存するデータを短期保存データに限定）
-3. **2.** のアプローチでバックアップの後データを削除して空き容量を確保
+2. NVMe SSDローカルディスク上のファイルを定期的に他の長期保存ストレージにバックアップ（対象を短期保存データに限定）
+3. **2.** のアプローチでバックアップの後ファイルを削除して空き容量を確保
 
 以下構成の短期保存データ用高速ファイル共有ストレージを構築します。
 
 - NFSサーバ
    - シェイプ ： **BM.DenseIO.E5.128**
-   - OS ： **Oracle Linux** 8.10（Oracle-Linux-8.10-2024.07.31-0）
+   - OS ： **Oracle Linux** 9.4（Oracle-Linux-9.4-2024.07.31-0 UEK）
 - ソフトウェアRAID・NFS ： OS付属のものを利用
 - RAID構成
    - RAIDレベル ： RAID10
    - Placement ： f2
    - Stripe width ： 6
-   - Chunk size / Stripe unit ： 8 MB
+   - Chunk size / Stripe unit ： 512 KB
 - ファイルシステム容量 ： 38 TB
 - 起動nfsdスレッド数 ： 128
 
@@ -50,7 +50,7 @@ header:
 - ベンチマークツール ： **[IO500](https://io500.org/)** ISC20に含まれる **IOR** と **mdtest**
 - NFSクライアント
    - シェイプ ： **VM.Standard2.24**
-   - OS ： **Oracle Linux** 8.10（Oracle-Linux-8.10-2024.07.31-0）
+   - OS ： **Oracle Linux** 8.10（Oracle-Linux-8.10-2024.06.30-0 UEK）
    - ノード数 ： 8
 - **IOR** / **mdtest** 実行時MPIプロセス数 ： 128（ノード当たり16）
 
@@ -170,7 +170,7 @@ $
 NFSサーバインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順を参考に、以下属性のインスタンスを先の手順で **仮想クラウド・ネットワーク** を作成した **コンパートメント** とプライベートサブネットを指定して作成します。
 
 - **名前** ： インスタンスの名前（イニシャルホスト名）（本チュートリアルでは **nfs-srv**）
-- **イメージ** ： **Oracle Linux** 8.10
+- **イメージ** ： **Oracle Linux** 9 (2024.07.31-0)
 - **シェイプ** ： **BM.DenseIO.E5.128**
 - **SSHキーの追加** ： **[1-2. Bastionノード作成](#1-2-bastionノード作成)** で作成したSSH鍵公開鍵
 
