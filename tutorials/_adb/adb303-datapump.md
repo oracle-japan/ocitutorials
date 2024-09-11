@@ -4,8 +4,8 @@ excerpt: "まずはシンプルにData Pumpを利用した移行方法につい�
 order: "3_303"
 layout: single
 header:
-  teaser: "/adb/adb303-xxx/img00x.png"
-  overlay_image: "/adb/adb303-xxx/img00x.png"
+  teaser: "/adb/adb303-datapump/img101.png"
+  overlay_image: "/adb/adb303-datapump/img101.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -146,7 +146,7 @@ vi expdp_hr.sh
     > - dumpfile句に指定するファイル名にはワイルドカード（%u）を付けてください。複数のファイルを同時に出力することで高速化が可能です。
     > - filesize句は5GBよりも小さい値を指定してください。ブラウザ経由でオブジェクトストレージに転送できるデータは1ファイル辺り最大5GBの制限があるためです。
     > - excludeオプションを利用することで、不要なオブジェクトを除いてエクスポートすることが可能です。例えばADWを利用するような分析系のアプリの場合において、性能観点で付与した索引はExadataを利用すると不要になることが多いため、IndexをExcludeの引数に指定します。
-    > - 詳細は[「マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)」](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24){:target="_blank"}を参照ください。
+    > - 詳細は[「マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)」](https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24){:target="_blank"}を参照ください。
 
 
 ## 1-3. エクスポートを実施
@@ -210,7 +210,6 @@ chmod +x expdp_hr.sh
 （ここまでの手順にて、移行元データベースとして利用していたBaseDBインスタンスではないことにご注意ください。）
 
 ## 4-1. 仮想マシンへのアクセス
-
 1. TeraTermを起動し、仮想マシンにopcユーザーでログインします。  
   
 1. opcユーザーからoracleユーザにスイッチします。
@@ -223,7 +222,7 @@ sudo su - oracle
 1. ADBに接続するための環境変数の設定
 ```sh
 export LD_LIBRARY_PATH=/usr/lib/oracle/21/client64/lib
-export TNS_ADMIN=/home/oracle/labs/wallets
+export TNS_ADMIN=/home/oracle/labs/wallets_atp01
 ```
 
 1. ADBインスタンスにSQL*Plusでログインします。
@@ -358,7 +357,7 @@ Data Pumpを利用したAutonomous Database へのデータ移行についてご
 # 参考資料
 
 * [Autonomous Database Cloud 技術詳細](https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi){:target="_blank"}
-* [マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24){:target="_blank"}
+* [マニュアル(Autonomous DatabaseでのOracle Data Pumpを使用したデータのインポート)](https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/load-data-data-pump.html#GUID-30DB1EEA-DB45-49EA-9E97-DF49A9968E24){:target="_blank"}
 
 
 <br/>

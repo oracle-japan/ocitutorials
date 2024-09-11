@@ -225,7 +225,9 @@ select xxx
 
 ・Database ActionsのJSONウィザード、もしくはDBMS_CLOUD.COPY_COLLECTION([マニュアル](https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/autonomous-json-load-files.html))を利用しコマンドベースでロードしてください。特に大量データをロードする場合は、性能の観点から後者のDBMS_CLOUD.COPY_COLLECTIONの利用を推奨します。
 
-* Database ActionsのJSONウィザードの[参考手順(Oracle Livelabs)](https://oracle.github.io/learning-library/data-management-library/database/json/json-soda-ajd/workshops/freetier/?lab=sql-json)
+<!-- * Database ActionsのJSONウィザードの[参考手順(Oracle Livelabs)](https://oracle.github.io/learning-library/data-management-library/database/json/json-soda-ajd/workshops/freetier/?lab=sql-json)
+→リンク切れのため、一旦削除します。
+-->
 
 * DBMS_CLOUD.COPY_COLLECTIONに関する[参考手順(Qiita)](https://qiita.com/kenwatan/items/db9134e1c9bf49315a79)
 
@@ -250,7 +252,7 @@ select xxx
 
 ## その他
 
-[Autonomous JSON Database 技術概要](https://speakerdeck.com/oracle4engineer/autonomous-json-database-ji-shu-gai-yao)）
+[Autonomous JSON Database 技術概要](https://speakerdeck.com/oracle4engineer/autonomous-json-database-ji-shu-gai-yao)
 
 [Qiita: Autonomous Database でのJSONデータ操作](https://qiita.com/TakuyaAma/items/429d762f54a18b0785a5)
 * Database Actionsを利用したコレクションの作成から、JSONを扱う際のその他関数についてなど、このページでは触れていない内容が紹介されています。

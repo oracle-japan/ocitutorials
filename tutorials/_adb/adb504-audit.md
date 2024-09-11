@@ -9,10 +9,11 @@ header:
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
+
 <a id="anchor0"></a>
 
 # はじめに
-Oracle Databaseではデータベースに対する操作を記録する監査機能が提供されています。12cからは従来の監査機能（DBA監査、標準監査、ファイングレイン監査）を統合した統合監査が利用できるようになりました。
+Oracle Databaseではデータベースに対する操作を記録する監査機能が提供されています。
 
   ![Oracle Databaseの監査機能](dbaudit.png)
   ![統合監査機能](unifiedaudit.png)
@@ -43,7 +44,7 @@ Autonomous Databaseは、統合監査を利用した、いくつかの監査設�
 
 # 1. デフォルトの監査設定の確認
 統合監査では、監査対象を監査ポリシーで定義し、定義された監査ポリシーを有効化することで監査レコードが生成されます。
-Autonomous Databaseにはよく利用される監査対象用に事前定義済みの監査ポリシーがあり、そのうち4つがデフォルトで有効化されています。
+Autonomous Databaseにはよく利用される監査対象用に事前定義済みの監査ポリシーがあり、そのうち5つがデフォルトで有効化されています。
 
 ![Autonomous Databaseの監査ポリシー](adb_audit_default.png)
 
@@ -52,7 +53,7 @@ SQL*Plusを起動して以下を実行してください。
 
 ```sql
 -- ADMINで接続する
-CONNECT admin/Welcome12345##@atp01_low
+CONNECT admin/Welcome12345#@atp01_low
 -- SQL*Plusのフォーマット用コマンド
 set pages 100 
 set lines 200
@@ -65,8 +66,45 @@ SELECT * FROM AUDIT_UNIFIED_ENABLED_POLICIES;
 ```
 
 **結果 :**  
-![デフォルトのポリシーの確認 by ADMIN](checkpolicy1.png)
+```sql
+SQL> SELECT distinct policy_name FROM AUDIT_UNIFIED_POLICIES;
 
+POLICY_NAME
+------------------------------
+ADB_PARURL_ACCESS_AUDIT
+ORA_DV_AUDPOL2
+ADB_ADMIN_AUDIT
+SYS_USER_ACTIONS
+ORA_CIS_RECOMMENDATIONS
+ADB_SAAS_ADMIN_AUDIT
+COMMON_USER_LOGONS
+ORA_ACCOUNT_MGMT
+ORA_DATABASE_PARAMETER
+ADB_MANDATORY_AUDIT
+ADB_PARURL_PKG_ACCESS_AUDIT
+ORA_LOGON_FAILURES
+ORA_DV_AUDPOL
+ORA_SECURECONFIG
+ORA_RAS_SESSION_MGMT
+ORA_RAS_POLICY_MGMT
+
+16 rows selected.
+
+SQL> SELECT * FROM AUDIT_UNIFIED_ENABLED_POLICIES;
+
+POLICY_NAME                    ENABLED_OPTION  ENTITY_NAME                    ENTITY_ SUC FAI
+------------------------------ --------------- ------------------------------ ------- --- ---
+ADB_ADMIN_AUDIT                EXCEPT USER     SYS                            USER    YES NO
+ADB_ADMIN_AUDIT                EXCEPT USER     C##CLOUD$SERVICE               USER    YES NO
+ADB_PARURL_ACCESS_AUDIT        BY USER         C##CLOUD$SERVICE               USER    YES YES
+ORA_LOGON_FAILURES             BY USER         ALL USERS                      USER    NO  YES
+ADB_PARURL_PKG_ACCESS_AUDIT    BY USER         ALL USERS                      USER    YES YES
+COMMON_USER_LOGONS             BY USER         SYS                            USER    YES YES
+COMMON_USER_LOGONS             BY USER         SYSBACKUP                      USER    YES YES
+COMMON_USER_LOGONS             BY USER         PUBLIC                         USER    YES YES
+
+8 rows selected.
+```
 
 事前定義済みの監査ポリシーと有効化されている監査ポリシーの確認ができました。
 
@@ -90,7 +128,21 @@ SELECT policy_name,audit_option,audit_option_type,object_schema,object_name FROM
 WHERE policy_name='SALES_CHANNELS_POL';
 ```
 **結果 :**  
-![監査ポリシーの作成 by ADMIN](createpolicy.png)
+```sql
+SQL> CREATE AUDIT POLICY sales_channels_pol
+  2  ACTIONS SELECT ON adbuser.sales_channels,UPDATE on adbuser.sales_channels,DELETE ON adbuser.sales_channels;
+
+Audit policy created.
+
+SQL> SELECT policy_name,audit_option,audit_option_type,object_schema,object_name FROM audit_unified_policies
+  2  WHERE policy_name='SALES_CHANNELS_POL';
+
+POLICY_NAME                    AUDIT_OPTI AUDIT_OPTION_TYPE  OBJECT_SCHEMA        OBJECT_NAME
+------------------------------ ---------- ------------------ -------------------- --------------------
+SALES_CHANNELS_POL             DELETE     OBJECT ACTION      ADBUSER              SALES_CHANNELS
+SALES_CHANNELS_POL             SELECT     OBJECT ACTION      ADBUSER              SALES_CHANNELS
+SALES_CHANNELS_POL             UPDATE     OBJECT ACTION      ADBUSER              SALES_CHANNELS
+```
 
 新しい監査ポリシーを作成することができました。  
 続けて、作成した監査ポリシーを有効化します。  
@@ -103,7 +155,27 @@ AUDIT POLICY sales_channels_pol BY adbuser
 SELECT * FROM AUDIT_UNIFIED_ENABLED_POLICIES;
 ```
 **結果 :**  
-   ![有効化された監査ポリシー一覧](checkpolicy2.png)
+```sql
+SQL> AUDIT POLICY sales_channels_pol BY adbuser;
+
+Audit succeeded.
+
+SQL> SELECT * FROM AUDIT_UNIFIED_ENABLED_POLICIES;
+
+POLICY_NAME                    ENABLED_OPTION  ENTITY_NAME                    ENTITY_ SUC FAI
+------------------------------ --------------- ------------------------------ ------- --- ---
+ADB_ADMIN_AUDIT                EXCEPT USER     SYS                            USER    YES NO
+ADB_ADMIN_AUDIT                EXCEPT USER     C##CLOUD$SERVICE               USER    YES NO
+ADB_PARURL_ACCESS_AUDIT        BY USER         C##CLOUD$SERVICE               USER    YES YES
+SALES_CHANNELS_POL             BY USER         ADBUSER                        USER    YES YES ★追加されている
+ORA_LOGON_FAILURES             BY USER         ALL USERS                      USER    NO  YES
+ADB_PARURL_PKG_ACCESS_AUDIT    BY USER         ALL USERS                      USER    YES YES
+COMMON_USER_LOGONS             BY USER         SYS                            USER    YES YES
+COMMON_USER_LOGONS             BY USER         SYSBACKUP                      USER    YES YES
+COMMON_USER_LOGONS             BY USER         PUBLIC                         USER    YES YES
+
+9 rows selected.
+```
 
 作成した監査ポリシーが有効化されていることが確認できました。
 
@@ -132,7 +204,32 @@ CONNECT admin/Welcome12345##@atp01_low
 SELECT count(*) from adbuser.sales_channels;
 ```
 **結果 :**  
-![監査対象の操作を実行する](executesql.png)
+```sql
+SQL> CONNECT adbuser/test@atp01_low
+ERROR:
+ORA-01017: invalid username/password; logon denied  →1:ADBUSERでログオンエラー
+
+Warning: You are no longer connected to ORACLE.
+SQL> CONNECT adbuser/Welcome12345##@atp01_low
+Connected.
+SQL> SELECT count(*) from sales_channels;　→2:ADBUSERでsales_channels表にアクセス
+
+  COUNT(*)
+----------
+         5
+SQL> CONNECT admin/test@atp01_low
+ERROR:
+ORA-01017: invalid username/password; logon denied　→3:ADMINでログオンエラー
+
+Warning: You are no longer connected to ORACLE.
+SQL> CONNECT admin/Welcome12345##@atp01_low
+Connected.
+SQL> SELECT count(*) from adbuser.sales_channels;
+
+  COUNT(*)
+----------
+         5
+```
 
 <BR>
 
@@ -151,7 +248,16 @@ WHERE  event_timestamp > SYSDATE -1/24 order by event_timestamp desc;
 ```
 
 **結果 :**  
-![監査レコードを確認する](checkaudit.png)
+```sql
+SQL> SELECT event_timestamp,dbusername,sql_text,unified_audit_policies FROM unified_audit_trail
+  2  WHERE  event_timestamp > SYSDATE -1/24 order by event_timestamp desc;
+
+EVENT_TIMESTAMP                DBUSERNAME SQL_TEXT                                           UNIFIED_AUDIT_POLICIES
+------------------------------ ---------- -------------------------------------------------- -----------------------
+16-JUL-24 06.05.47.384801 AM   ADMIN                                                         ORA_LOGON_FAILURES 　→3: ADMINでログオン失敗
+16-JUL-24 06.02.48.181643 AM   ADBUSER    SELECT count(*) from sales_channels                SALES_CHANNELS_POL　 →2: ADBUSERで検索
+16-JUL-24 05.59.56.529327 AM   ADBUSER                                                       ORA_LOGON_FAILURES　 →1: ADBUSERでログオン失敗
+```
 
 デフォルトで有効化されている監査ポリシー「ORA_LOGON_FAILURES」は全てのユーザーに対しログオンの失敗を監査します。そのため、ADMINユーザー、ADBユーザーのログオンの失敗が記録されています。  
 一方、新しく作成したSALES_CHANNELS表の監査ポリシー「SALES_CHANNELS_POL」は、ADBUSERユーザーに対してのみ有効であるため、ADMINユーザーのSELECT文は記録されず、ADBUSERユーザーのSELECT文のみ記録されていることが確認できます。
@@ -174,7 +280,15 @@ NOAUDIT POLICY sales_channels_pol by adbuser;
 DROP AUDIT POLICY sales_channels_pol;
 ```
 **結果 :**  
-![監査構成の削除](dropaudit.png)
+```sql
+SQL> NOAUDIT POLICY sales_channels_pol by adbuser;
+
+Noaudit succeeded.
+
+SQL> DROP AUDIT POLICY sales_channels_pol;
+
+Audit Policy dropped.
+```
 
 > **Note :**  
 >+ AUDIT_UNIFIED_POLICIESビューのCOMMON列がYESである事前定義監査ポリシーはコンテナ・データベースレベルで設定する共通ポリシーであるため無効化はできません。
@@ -202,13 +316,41 @@ SELECT count(*) FROM unified_audit_trail;
 ```
 
 **結果 :**  
-![監査レコードの削除](deleteaudit.png)
+```sql
+SQL> SELECT count(*) FROM unified_audit_trail;
 
+  COUNT(*)
+----------
+        14
+SQL> BEGIN
+  2  DBMS_AUDIT_MGMT.CLEAN_AUDIT_TRAIL(
+  3    audit_trail_type => dbms_audit_mgmt.audit_trail_unified,
+  4    use_last_arch_timestamp => FALSE
+  5  );
+  6  END;
+  7  /
+
+PL/SQL procedure successfully completed.
+SQL> SELECT count(*) FROM unified_audit_trail;
+
+  COUNT(*)
+----------
+         1
+```
 
 削除が完了しました。しかし、削除後の監査レコードが1件となっています。[4. 監査レコードの確認](#4-監査レコードの確認)で使ったSQLで確認してみましょう。
 
 **結果 :**  
-![削除後の監査レコード](auditafterdel.png)
+```sql
+SQL> SELECT event_timestamp,dbusername,sql_text,unified_audit_policies FROM unified_audit_trail
+  2  WHERE  event_timestamp > SYSDATE -1/24 order by event_timestamp desc;
+
+EVENT_TIMESTAMP                DBUSERNAME SQL_TEXT                                           UNIFIED_AUDIT_POLICIES
+------------------------------ ---------- -------------------------------------------------- -----------------------
+16-JUL-24 06.17.12.088850 AM   ADMIN      BEGIN                                              ORA$MANDATORY
+                                          DBMS_AUDIT_MGMT.CLEAN_AUDIT_TRAIL(
+                                            audit_trail_type => dbms_audit_mgmt.a
+```                                            
 
 これは監査レコードの削除操作の監査レコードです。UNIFIED_AUDIT_TRAILビューの元であるAUDSYSスキーマのAUD$UNIFIED表への操作はすべて監査対象となります。そのため、監査レコードが生成されています。
 
@@ -224,7 +366,7 @@ SELECT count(*) FROM unified_audit_trail;
 このチュートリアルではAutonomous Databaseの監査設定および監査レコードの管理について紹介しました。  
 なお、Autonomous Database内の監査レコードの保持期間は14日間になりますが、Oracle Data Safeを利用すると1カ月から12カ月までの間で保持期間の指定ができ、さらに監査レポートの生成も可能です。Oracle Data Safeはグラフィカルなユーザー・インターフェースで包括的にOracle Databaseのセキュリティ管理ができるサービスです。Autonomous Databaseを含むOCI Databaseサービスの場合は、100万監査レコード/月までは無償となりますのでぜひお試しください。
 > **Note :**
->+ Oracle Data Safeの有効化については[こちら](https://qiita.com/western24/items/b772d95148b8855b8bb0)をご覧ください。
+>+ Oracle Data Safeの有効化については[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/autonomous-data-safe.html#GUID-C8A06005-1EF4-4CE7-89E6-A43E69074BAD)をご覧ください。
 >+ Oracle Data SafeはAlways Free環境のAutonomous Databaseでは利用できません。
 
 <BR>
@@ -238,4 +380,5 @@ SELECT count(*) FROM unified_audit_trail;
 以上でこの章は終了です。次の章にお進みください。
   
 <BR>
+
 [ページトップへ戻る](#anchor0)

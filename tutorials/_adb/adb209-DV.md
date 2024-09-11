@@ -26,12 +26,12 @@ Oracle Database Vaultの詳細については、[Oracle Database Vaultホーム�
 本文書では、Autonomous DatabaseでOracle Database Vaultを有効化し、特権ユーザであるADMINユーザが他のユーザのデータにアクセスできないように設定をしてみます。
 
 **目次 :**
-+ [1.テスト用の表を作成](#anchor1)
-+ [2.Oracle Database Vaultの有効化](#anchor2)
-+ [3.特権ユーザーの権限はく奪](#anchor3)
-+ [4.アクセス制御の設定](#anchor4)
-+ [5.動作確認](#anchor5)
-+ [6.Oracle Database Vaultの無効化](#anchor6)
++ [1.テスト用の表を作成](#1テスト用の表を作成)
++ [2.Oracle Database Vaultの有効化](#2-oracle-database-vaultの有効化)
++ [3.特権ユーザーの権限はく奪](#3-特権ユーザーの権限はく奪)
++ [4.アクセス制御の設定](#4-アクセス制御の設定)
++ [5.動作確認](#5-動作確認)
++ [6.Oracle Database Vaultの無効化](#6-oracle-database-vaultの無効化)
 
 **前提条件 :**
  + テスト用の表を作成するスキーマは任意のスキーマでも構いませんが、ここでは、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/) で作成したユーザADBUSERを利用しています。
@@ -43,8 +43,6 @@ Oracle Database Vaultの詳細については、[Oracle Database Vaultホーム�
 **所要時間 :** 約20分
 
 <BR>
-
-<a id="anchor1"></a>
 
 # 1.テスト用の表を作成
 
@@ -74,7 +72,6 @@ SELECT COUNT(*) FROM adbuser.dv_supplier;
 
 <BR>
 
-<a id="anchor2"></a>
 
 # 2. Oracle Database Vaultの有効化
 続けて、ADMINユーザでOracle Database Vaultを有効化するためのSQLを実行していきます。
@@ -119,7 +116,7 @@ EXEC DBMS_CLOUD_MACADM.ENABLE_DATABASE_VAULT;
 
 有効化のコマンドが完了した後ログアウトし、Autonomous Databaseを再起動します。  
 Oracle Database Vaultの有効化、無効化を反映させるためにはAutonomous Databaseの再起動が必要なためです。  
-管理コンソールで、「他のアクション」プルダウンメニューから「再起動」を選択してください。　　
+管理コンソールで、「More actions」プルダウンメニューから「再起動」を選択してください。　　
 
    ![ADBコンソール画面](adb_console.png)
 
@@ -146,7 +143,6 @@ SELECT * FROM dba_dv_status;
 
 <BR>
 
-<a id="anchor3"></a>
 
 # 3. 特権ユーザーの権限はく奪
 特権ユーザであるADMINユーザはDatabase Vault所有者のロール(DV_OWNER)もアカウント管理専用ユーザのロール(DV_ACCTMGR)もデフォルトで持っています。  
@@ -179,7 +175,6 @@ CREATE USER testuser IDENTIFIED BY  "Welcome12345#";
 
 <BR>
 
-<a id="anchor4"></a>
 
 # 4. アクセス制御の設定
 
@@ -248,7 +243,7 @@ END;
 
 <BR>
 
-<a id="anchor5"></a>
+
 
 # 5. 動作確認
 では、設定が有効かADMINユーザとADBUSERユーザでADBUSERスキーマの表に再度アクセスしてみましょう。
@@ -280,7 +275,6 @@ Oracle Database Vaultの設定を行う前はADMINユーザはADBUSERユーザ�
 
 <BR>
 
-<a id="anchor6"></a>
 
 # 6. Oracle Database Vaultの無効化
 
@@ -348,8 +342,9 @@ Oracle Database Vault で特権ユーザーであっても機密データにア�
 <BR>
 
 # 参考資料
-+ 『Using Oracle Autonomous Database on Shared Exadata Infrastructureutonomous Data Warehouse』  
- "[Oracle Database VaultとAutonomous Databaseの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-adb/adbsa/autonomous-database-vault.html)" 
++ 『Oracle Autonomous Databaseサーバーレスの使用』  
+ "[Autonomous DatabaseでのOracle Database Vaultの使用](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/autonomous-database-vault.html#GUID-70F233AF-458F-44B7-9418-F9AF70CFDD15)" 
+
 
 + Oracle Database 19c
 『[Oracle Database Vault管理者ガイド](https://docs.oracle.com/cd/F19136_01/dvadm/index.html )』

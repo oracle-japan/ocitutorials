@@ -4,8 +4,8 @@ excerpt: "Autonomous Databaseへの移行前に、現行Oracle Database環境に
 order: "3_302"
 layout: single
 header:
-  teaser: "/adb/adb302-xxx/sa00x.png"
-  overlay_image: "/adb/adb302-xxx/sa00x.png"
+  teaser: "/adb/adb302-cpat/img102.png"
+  overlay_image: "/adb/adb302-cpat/img102.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=776
 ---
@@ -15,7 +15,7 @@ header:
 
 Autonomous Databaseでは性能・可用性・セキュリティの観点から特定のデータベースオブジェクトの作成が制限されています。
 
-具体的な制限事項は[マニュアル](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/experienced-database-users.html#GUID-58EE6599-6DB4-4F8E-816D-0422377857E5){:target="_blank"}に記載がございますが、これら制限対象のオブジェクトを利用しているかなどを確認するために、オラクルはCloud Premigration Advisor Tool(CPAT)というツールを提供しています。
+具体的な制限事項は[マニュアル](https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/migration-autonomous-database.html#GUID-F2471136-3BBA-462C-9E5B-12A144AD7D56){:target="_blank"}に記載がございますが、これら制限対象のオブジェクトを利用しているかなどを確認するために、オラクルはCloud Premigration Advisor Tool(CPAT)というツールを提供しています。
 
 
    ![イメージ](img101.png)
@@ -50,7 +50,7 @@ Autonomous Databaseでは性能・可用性・セキュリティの観点から�
 # 1. Cloud Premigraiton Advisor Tool (CPAT) とは？
 Oracle DatabaseインスタンスをOracleクラウドに移行する際に、問題になる可能性があるコンテンツや移行を妨げる可能性があるその他の要因をチェックするJavaベースのツールです。移行チェックのツールとして以前提供されていたスキーマ・アドバイザの後継となります。  
 スキーマ・アドバイザはデータベースにPL/SQLパッケージのインストールが必要でしたが、CPATは読み取り専用でデータベースに対して変更を与えることはありません。
-サポート対象となるOracle Databaseのバージョンは11.2.0.4以降です（2022/3時点）。
+サポート対象となるOracle Databaseのバージョンは11.2.0.4以降です（2024/7時点）。
 また、現時点では物理移行のチェックはサポートされておらず、デフォルトでDataPumpによる移行が想定されています。
  
 
@@ -179,7 +179,7 @@ view full_advisor_premigration_advisor_report.txt
 # 参考資料
 
 * [Autonomous Database Cloud 技術詳細](https://speakerdeck.com/oracle4engineer/autonomous-database-cloud-ji-shu-xiang-xi){:target="_blank"}
-* [マニュアル(ADB-Sの各種制限事項について)](https://docs.oracle.com/cd/E83857_01/paas/autonomous-adb/adbsa/experienced-database-users.html#GUID-58EE6599-6DB4-4F8E-816D-0422377857E5){:target="_blank"}
+* [マニュアル(ADB-Sの各種制限事項について)](https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/migration-autonomous-database.html#GUID-F2471136-3BBA-462C-9E5B-12A144AD7D56){:target="_blank"}
 * [	Cloud Premigration Advisor Tool (CPAT) Analyzes Databases for Suitability of Cloud Migration (Doc ID 2758371.1)](https://support.oracle.com/knowledge/Oracle%20Cloud/2758371_1.html){:target="_blank"}
 
 

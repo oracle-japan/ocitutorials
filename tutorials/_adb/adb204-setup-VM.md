@@ -70,11 +70,7 @@ Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージ�
     <br>イメージ：**`Oracle Linux Cloud Developer`**
         <br>**`イメージの変更`** をクリックし、**`Oracle Linux Cloud Developer`**にチェックを入れます。
         <br>![img1_3.png](img1_3.png)
-      <br>シェイプ：**`VM.Standard2.1（仮想マシン）`**
-        <br>**`シェイプの変更`** から変更します。
-        * インスタンス・タイプ：**`仮想マシン`**
-        * シェイプ・シリーズ：**`Intel VM.Standard2.1`**
-        <br>![img1_5_2.png](img1_5_2.png)
+      <br>シェイプ：**`VM.Standard.E4.Flex（仮想マシン）`**
 
     * **`ネットワーキング`**
       * ネットワーク：どの仮想クラウド・ネットワーク（VCN）上に配置するかを指定します。

@@ -1,7 +1,7 @@
 ---
 title: "ブロック・ボリュームでNFSサーバを構築する"
 excerpt: "ブロック・ボリュームでNFSサーバを構築してみましょう。このチュートリアルを終了すると、OCIのブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSサーバを、OCIコンソールから簡単に構築することが出来るようになります。"
-order: "1310"
+order: "1320"
 layout: single
 header:
   teaser: "/hpc/spinup-nfs-server/architecture_diagram.png"
@@ -13,11 +13,12 @@ header:
 ***
 # 0. 概要
 
-Oracle Cloud Infrastructure（以降OCIと記載）の **ブロック・ボリューム** は、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。
+**ブロック・ボリューム** は、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。
+
 - 同一 **可用性ドメイン** 内の異なる **フォルト・ドメイン** に複数のレプリカを持ち高い可用性を実現
 - ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現
 
-また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**  は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の **ブロック・ボリューム** アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。
+また、Intel Ice Lakeプロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の **ブロック・ボリューム** アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。
 
 OCIは、NFSのマネージドサービスである **ファイル・ストレージ** も提供しており、OCIコンソールから簡単にNFSファイルサービスをデプロイすることが出来ますが、本チュートリアルのように少しだけ手間をかけて **ブロック・ボリューム** とベア・メタル・インスタンスを組み合わせたNFSファイルサービスを自身で構築することで、 **ファイル・ストレージ** よりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ます。  
 **ファイル・ストレージ** とブロック・ボリュームNFSサーバの比較詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
@@ -427,17 +428,17 @@ IORとmdtestは、複数のNFSクライアントからベンチマークを実�
 - SSHのPATH設定にOpenMPIツール群格納ディレクトリを追加
 - IO500インストール
 
-ここでは、4ノードのNFSクライアントからIORとmdtestを実行し、以下性能が出ています。
+ここでは、4ノードのNFSクライアントからIORとmdtestを実行し、以下の性能が出ています。
 
 | Test          | Result (※3)  |
 | :-----------: | -----------: |
-| IOR write     | 3,720  MiB/s |
+| IOR write     | 3,720 MiB/s |
 | IOR read      | 4,938 MiB/s  |
 | mdtest create | 3,796        |
 | mdtest stat   | 23,860       |
 | mdtest delete | 3,818        |
 
-※3）3回実行した平均値です。
+※3）3回計測した平均値です。
 
 ## 3-1. OpenMPIインストール
 

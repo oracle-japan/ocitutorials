@@ -34,12 +34,12 @@ Autonomous Databaseはデータベースの様々な管理タスクをADB自身�
 # 1. 技術概要
 Autonomous Databaseに対する監視・通知を行うツールはいくつか存在します。環境やユーザーによって、適切なツールを選択します。
 
-本記事ではOCIモニタリング、サービス・コンソール、Oracle Enterprise Manager(EM)、Oracle Cloud Observability and Management Platform（O&M）Database Managementによる監視設定をご紹介します。
+本記事ではOCIモニタリング、データベース・ダッシュボード、パフォーマンス・ハブ、Oracle Enterprise Manager(EM)、Oracle Cloud Observability and Management Platform（O&M）Database Managementによる監視設定をご紹介します。
 
 <BR>
 
 # 2. 単体インスタンスの監視
-単体のADBインスタンスに対しては、OCIモニタリングとサービス・コンソールを使ってメトリック監視/イベント監視をすることができます。
+単体のADBインスタンスに対しては、OCIモニタリングとOCI Eventsを使ってメトリック監視/イベント監視をすることができます。
 
 ## 2-1. アラームの通知先の作成
 監視設定の前に通知先を作成しておく必要があります。[こちら](https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90){:target="_blank"} を参考に、トピックの作成・サブスクリプションの作成を行います。
@@ -51,7 +51,7 @@ OCIモニタリングでは、OCI上の各種リソースの性能や状態の�
 
 今回は、ADBのCPUの閾値を超えた際に通知が来るよう設定し、その挙動を確認します。
 
-1. まずは[こちらの記事](https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90){:target="_blank"} を参考に、アラームの通知先の作成をします。
+1. まずは[こちら](https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90){:target="_blank"} を参考に、アラームの通知先の作成をします。
 
 1. 次にアラームの定義の作成をします。ハンバーガーメニューの**Observability & Management** の **[アラーム定義]** をクリックします。
 ![monitoring1イメージ](monitoring1.png)
@@ -119,28 +119,47 @@ end;
 
 <br>
 
-## 2-3. サービス・コンソールによるパフォーマンス監視
-OCIモニタリングは、事前定義されたメトリックを用いてOCIの各種リソースのモニタリングや通知ができる一方で、サービス・コンソールでは以下のようなADBのアクティビティ状況が把握できます。
+## 2-3. データベース・ダッシュボードとパフォーマンスハブによるパフォーマンス監視
+OCIモニタリングは、事前定義されたメトリックを用いてOCIの各種リソースのモニタリングや通知ができる一方で、データベース・ダッシュボードでは以下のようなADBのアクティビティ状況が把握できます。
 - ストレージ使用状況
 - CPU使用率
 - 割り当てECPU数
 - SQL実行数
 - SQLの平均レスポンスタイム
 - 接続サービス毎の負荷状況
-- DBの待機イベント
 - キューイングの状況
 
-以下のように、ADBの詳細画面から**サービス・コンソール** をクリックします。
-![service_console1イメージ](service_console1.png)
+以下のように、ADBの詳細画面から**データベース・アクション** をクリックします。
+![databaseactionsイメージ](databaseactions.png)
 
-**アクティビティ** からデータベース・アクティビティやCPU使用率が確認できます。
-![service_console2イメージ](service_console2.png)
+サインイン後、**モニタリング**をクリックし、**データベース・ダッシュボード**をクリックします。
+![databasedashboardイメージ](databasedashboard.png)
 
-**モニター対象SQL** からリアルタイムの個々のSQL監視をすることができます。
-![service_console3イメージ](service_console3.png)
+**概要**では、CPU使用率やSQLの平均レスポンスタイムが確認できます。
 
-SQLテキストを選択し、**レポートのダウンロード** をクリックすると、Enterprise ManagerのDatabase Active Reportが取得できます。
-![service_console4イメージ](service_console4.png)
+**モニター**からデータベース・アクティビティやCPU使用率が確認できます。
+![databasedashboard_monitorイメージ](databasedashboard_monitor.png)
+
+またパフォーマンスハブでは、リアルタイムSQLモニタリングが可能です。
+
+以下のように、ADBの詳細画面から**パフォーマンス・ハブ** をクリックします。
+
+![performancehub1イメージ](performancehub1.png)
+
+ASH分析やADDMやSQLモニタリングがあります。ここではSQLモニタリングをクリックします。
+
+![performancehub2イメージ](performancehub2.png)
+
+実行しているSQL IDをクリックしてみます。
+
+DB時間や待機時間、I/Oなどのより詳しい情報が確認できます。
+
+![performancehub3イメージ](performancehub3.png)
+
+**レポートの保存** をクリックすると、SQL Monitor Active Report(HTMLファイル)が取得できます。
+ここではPGAの使用量やI/Oスループットなどのメトリックを確認できます。
+
+![performancehub4イメージ](performancehub4.png)
 
 <br>
 
@@ -165,9 +184,13 @@ OCIではメトリック監視とは別に、あらかじめ指定されたイ�
   - **トピック：** 先ほど作成したトピックを選択
 
 > （補足）
-> Autonomous Databaseにおけるイベント・タイプ一覧(※2021年12月時点)
-> ![event_allイメージ](event_all.png)
-> 個別のイベント条件の詳細は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/Events/Reference/eventsproducers.htm#dbaasevents__AutoDB){:target="_blank"}
+> Autonomous Databaseにおけるイベント・タイプ一覧(※2024年8月時点)
+> 
+> イベント・タイプ: Critical - ADMINパスワードの期限切れ通知、自動フェイルオーバー開始/終了、DBダウン開始/終了、DBアクセス負荷開始/終了、ログイン失敗通知、インスタンス再配置開始/終了、ウォレット失効通知
+> 
+> イベント・タイプ: Information - AJDストレージ超過、APEXアップグレード可能/開始/終了、新規DB接続、非アクティブDB接続超過、長期バックアップ開始/終了/スケジューリング、メンテンナンス開始/終了/設定、オペレーター・アクセス、ワークロード・キャプチャ開始/終了、ワークロード・リプレイ開始/終了
+> 
+> その他のイベント条件の詳細は[こちら](https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/autonomous-database-events.html#GUID-8DBAD1C3-55BE-49F8-AB43-AB3EA708AF03){:target="_blank"}
 
 上記の手順に沿って、ADBに対してイベント・タイプCriticalのルールを作成しておくと、以下のようなメールが届くことがあります。  
 この例は、ADBがダウンした場合の通知です。
