@@ -6,8 +6,8 @@ tags:
   - intermediate
   - governance
 header:
-  teaser: "/intermediates/budget_quota/cost.png"
-  overlay_image: "/intermediates/budget_quota/cost.png"
+  teaser: "/intermediates/budget-quota/cost.png"
+  overlay_image: "/intermediates/budget-quota/cost.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: 
 ---
