@@ -67,6 +67,9 @@ toc: true
 + **[110: Oracle Analytics Desktopを使ってデータを見える化してみよう](/ocitutorials/adb/adb110-analyze-using-oad/){:target="_blank"}**  
     * Oracle Analytics Desktopを使ってADBのデータを見える化します。
 
++ **[111: SELECT AIを試してみよう](/ocitutorials/adb/adb111-select-ai/){:target="_blank"}**  
+    * SELECT AIを使ってデータベース内のデータを自然言語で問合せる方法を確認します。
+
 ## 実践編
 
 + **[201: 接続サービスの理解](/ocitutorials/adb/adb201-service-names/){:target="_blank"}**  
