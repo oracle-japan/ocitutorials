@@ -210,7 +210,7 @@ $
 
 次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスを変更、ステータスが **IDLE** となっていることを確認します。  
 ここで、計算/GPUノードのホスト名（inst-xxxxx-x9）は、自身の環境に合わせて修正します。  
-なお、この計算/GPUノードで実行可能なジョブが待機していた場合、ジョブが即座に実行を開始してステータスが **ALLOCATED** となる場合もあります。
+なお、この計算/GPUノードで実行可能なジョブが待機していた場合、ジョブが即座に実行を開始してステータスが **ALLOCATED** となる場合があります。
 
 ```sh
 $ sudo su - slurm -c "scontrol update nodename=inst-xxxxx-x9 state=idle"
@@ -247,15 +247,15 @@ HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソース
 
 ```sh
 NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
-PartitionName=nps1 Nodes=inst-aaaaa-x9bbbbb Default=YES MaxTime=INFINITE State=UP
-PartitionName=nps2 Nodes=inst-bbbbb-x9,inst-ddddd-x9 MaxTime=INFINITE State=UP
+PartitionName=nps1 Nodes=inst-aaaaa-x9,inst-bbbbb-x9 Default=YES MaxTime=INFINITE State=UP
+PartitionName=nps2 Nodes=inst-ccccc-x9,inst-ddddd-x9 MaxTime=INFINITE State=UP
 ```
 
 ## 3.2. slurm.conf修正の反映
 
 本章は、先に修正した **slurm.conf** を反映します。
 
-Slurmマネージャ、Slurmクライアント、及び計算/GPUノードノードで、先に修正した **slurm.conf** を **/opt/slurm/etc** ディレクトリにコピーします。
+Slurmマネージャ、Slurmクライアント、及び計算/GPUノードで、先に修正した **slurm.conf** を **/opt/slurm/etc** ディレクトリにコピーします。
 
 次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、修正した **slurm.conf** の内容を反映します。
 
