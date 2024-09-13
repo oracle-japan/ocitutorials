@@ -112,9 +112,11 @@ $ echo "export MANPATH=\$MANPATH:/opt/openmpi-5.0.3/man" | tee -a ~/.bashrc
 $ source ~/.bashrc
 ```
 
-次に、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。
+次に、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。（※2）
 
-次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るよう設定します。（※2）  
+※2）ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために実施しますが、 **Slurm** 環境では必要ありません。
+
+次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るよう設定します。（※3）
 
 ```sh
 $ cd ~; mkdir .ssh; chmod 700 .ssh
@@ -123,7 +125,7 @@ $ cd .ssh; cat ./id_rsa.pub >> ./authorized_keys; chmod 600 ./authorized_keys
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
 ```
 
-※2）パスフレーズ無しのSSHアクセスは、 **OpenMPI** 単独での稼働確認を行うため実施しますが、**PMIx** を使用する **Slurm** 環境ではこの必要はありません。
+※3）ここで実施するパスフレーズ無しのSSHアクセスのための手順は、 **OpenMPI** 単独で稼働確認を行うために実施しますが、 **PMIx** を使用する **Slurm** 環境では必要ありません。
 
 ***
 # 2. 稼働確認

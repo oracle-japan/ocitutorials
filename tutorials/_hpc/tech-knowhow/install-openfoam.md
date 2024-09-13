@@ -167,7 +167,7 @@ $ wget https://dl.openfoam.com/source/v2312/ThirdParty-v2312.tgz
 $ tar --no-same-owner -xvf ./OpenFOAM-v2312.tgz
 $ tar --no-same-owner -xvf ./ThirdParty-v2312.tgz
 $ cd ThirdParty-v2312/sources
-$ wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
+$ wget https://github.com/xijunke/METIS-1/raw/master/metis-5.1.0.tar.gz
 $ wget https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
 $ wget https://download.qt.io/archive/qt/5.12/5.12.11/single/qt-everywhere-src-5.12.11.tar.xz
 $ tar --no-same-owner -xvf ./metis-5.1.0.tar.gz
@@ -456,7 +456,7 @@ for mpirank in `seq $sta_mpirank $end_mpirank`
 do
   incl_opt=$incl_opt" --include=\"processor"$mpirank"/**\""
 done
-rsync_cmd="rsync -au $incl_opt --exclude=\"*\" $3 $head_node:$3"
+rsync_cmd="rsync -au -e \"ssh -o StrictHostKeyChecking=no\" $incl_opt --exclude=\"*\" $3 $head_node:$3"
 eval $rsync_cmd
 ```
 
@@ -704,14 +704,14 @@ blockMesh
 decomposePar
 
 # Concurrently sync model files on head node NVMe local disk with others
-pdsh_cmd="pdsh -w $child_node_list 'rsync -a --delete $head_node:$local_dir $local_dir'"
+pdsh_cmd="PDSH_SSH_ARGS_APPEND=\"-o StrictHostKeyChecking=no\" pdsh -w $child_node_list 'rsync -a --delete -e \"ssh -o StrictHostKeyChecking=no\" $head_node:$local_dir $local_dir'"
 eval $pdsh_cmd
 
 # Run solver in parallel
 srun --cpu-bind=verbose,cores simpleFoam -parallel
 
 # Concurrently sync model files on other node NVMe local disk with head node's
-pdsh_cmd="pdsh -w $child_node_list '$rsync_script $SLURM_JOB_NODELIST $proc_pernode $local_dir'"
+pdsh_cmd="PDSH_SSH_ARGS_APPEND=\"-o StrictHostKeyChecking=no\" pdsh -w $child_node_list '$rsync_script $SLURM_JOB_NODELIST $proc_pernode $local_dir'"
 eval $pdsh_cmd
 
 # Reconstruct decomposed partitions on head node NVMe local disk
