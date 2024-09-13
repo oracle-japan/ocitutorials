@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-12T13:12:56+09:00">
+  <meta property="article:published_time" content="2024-09-13T19:17:11+09:00">
 
 
 
@@ -380,7 +380,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム運用Tips">
     <meta itemprop="description" content="オープンソースのSlurmは、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
-    <meta itemprop="datePublished" content="2024-09-12T13:12:56+09:00">
+    <meta itemprop="datePublished" content="2024-09-13T19:17:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -587,7 +587,7 @@ Swap:         7.6Gi          0B       7.6Gi
 
 <p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスを変更、ステータスが <strong>IDLE</strong> となっていることを確認します。<br />
 ここで、計算/GPUノードのホスト名（inst-xxxxx-x9）は、自身の環境に合わせて修正します。<br />
-なお、この計算/GPUノードで実行可能なジョブが待機していた場合、ジョブが即座に実行を開始してステータスが <strong>ALLOCATED</strong> となる場合もあります。</p>
+なお、この計算/GPUノードで実行可能なジョブが待機していた場合、ジョブが即座に実行を開始してステータスが <strong>ALLOCATED</strong> となる場合があります。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol update nodename=inst-xxxxx-x9 state=idle"</span>
 <span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show node inst-xxxxx-x9"</span> | <span class="nb">grep</span> <span class="nt">-e</span> NodeName <span class="nt">-e</span> State
@@ -639,15 +639,15 @@ Swap:         7.6Gi          0B       7.6Gi
 <p>作成する <strong>slurm.conf</strong> は、 <strong>NodeName</strong> 行と <strong>PartitionName</strong> 行を以下に修正します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
-<span class="nv">PartitionName</span><span class="o">=</span>nps1 <span class="nv">Nodes</span><span class="o">=</span>inst-aaaaa-x9bbbbb <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
-<span class="nv">PartitionName</span><span class="o">=</span>nps2 <span class="nv">Nodes</span><span class="o">=</span>inst-bbbbb-x9,inst-ddddd-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+<span class="nv">PartitionName</span><span class="o">=</span>nps1 <span class="nv">Nodes</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9 <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+<span class="nv">PartitionName</span><span class="o">=</span>nps2 <span class="nv">Nodes</span><span class="o">=</span>inst-ccccc-x9,inst-ddddd-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </code></pre></div></div>
 
 <h2 id="32-slurmconf修正の反映">3.2. slurm.conf修正の反映</h2>
 
 <p>本章は、先に修正した <strong>slurm.conf</strong> を反映します。</p>
 
-<p>Slurmマネージャ、Slurmクライアント、及び計算/GPUノードノードで、先に修正した <strong>slurm.conf</strong> を <strong>/opt/slurm/etc</strong> ディレクトリにコピーします。</p>
+<p>Slurmマネージャ、Slurmクライアント、及び計算/GPUノードで、先に修正した <strong>slurm.conf</strong> を <strong>/opt/slurm/etc</strong> ディレクトリにコピーします。</p>
 
 <p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、修正した <strong>slurm.conf</strong> の内容を反映します。</p>
 
@@ -673,7 +673,7 @@ nps2         up   infinite      2   idle inst-ccccc-x9,inst-ddddd-x9
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-12T13:12:56+09:00">September 12, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-13T19:17:11+09:00">September 13, 2024</time></p>
 
       </footer>
 

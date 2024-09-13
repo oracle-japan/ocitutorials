@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-12T13:12:56+09:00">
+  <meta property="article:published_time" content="2024-09-13T19:17:11+09:00">
 
 
 
@@ -380,7 +380,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-09-12T13:12:56+09:00">
+    <meta itemprop="datePublished" content="2024-09-13T19:17:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -564,7 +564,7 @@ Error: No matching repo to modify: ol8_developer_EPEL.
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./OpenFOAM-v2312.tgz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./ThirdParty-v2312.tgz
 <span class="nv">$ </span><span class="nb">cd </span>ThirdParty-v2312/sources
-<span class="nv">$ </span>wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
+<span class="nv">$ </span>wget https://github.com/xijunke/METIS-1/raw/master/metis-5.1.0.tar.gz
 <span class="nv">$ </span>wget https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
 <span class="nv">$ </span>wget https://download.qt.io/archive/qt/5.12/5.12.11/single/qt-everywhere-src-5.12.11.tar.xz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> ./metis-5.1.0.tar.gz
@@ -838,7 +838,7 @@ done
 <span class="k">do
   </span><span class="nv">incl_opt</span><span class="o">=</span><span class="nv">$incl_opt</span><span class="s2">" --include=</span><span class="se">\"</span><span class="s2">processor"</span><span class="nv">$mpirank</span><span class="s2">"/**</span><span class="se">\"</span><span class="s2">"</span>
 <span class="k">done
-</span><span class="nv">rsync_cmd</span><span class="o">=</span><span class="s2">"rsync -au </span><span class="nv">$incl_opt</span><span class="s2"> --exclude=</span><span class="se">\"</span><span class="s2">*</span><span class="se">\"</span><span class="s2"> </span><span class="nv">$3</span><span class="s2"> </span><span class="nv">$head_node</span><span class="s2">:</span><span class="nv">$3</span><span class="s2">"</span>
+</span><span class="nv">rsync_cmd</span><span class="o">=</span><span class="s2">"rsync -au -e </span><span class="se">\"</span><span class="s2">ssh -o StrictHostKeyChecking=no</span><span class="se">\"</span><span class="s2"> </span><span class="nv">$incl_opt</span><span class="s2"> --exclude=</span><span class="se">\"</span><span class="s2">*</span><span class="se">\"</span><span class="s2"> </span><span class="nv">$3</span><span class="s2"> </span><span class="nv">$head_node</span><span class="s2">:</span><span class="nv">$3</span><span class="s2">"</span>
 <span class="nb">eval</span> <span class="nv">$rsync_cmd</span>
 </code></pre></div></div>
 
@@ -1074,14 +1074,14 @@ blockMesh
 decomposePar
 
 <span class="c"># Concurrently sync model files on head node NVMe local disk with others</span>
-<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> 'rsync -a --delete </span><span class="nv">$head_node</span><span class="s2">:</span><span class="nv">$local_dir</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
+<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"PDSH_SSH_ARGS_APPEND=</span><span class="se">\"</span><span class="s2">-o StrictHostKeyChecking=no</span><span class="se">\"</span><span class="s2"> pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> 'rsync -a --delete -e </span><span class="se">\"</span><span class="s2">ssh -o StrictHostKeyChecking=no</span><span class="se">\"</span><span class="s2"> </span><span class="nv">$head_node</span><span class="s2">:</span><span class="nv">$local_dir</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
 <span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Run solver in parallel</span>
 srun <span class="nt">--cpu-bind</span><span class="o">=</span>verbose,cores simpleFoam <span class="nt">-parallel</span>
 
 <span class="c"># Concurrently sync model files on other node NVMe local disk with head node's</span>
-<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> '</span><span class="nv">$rsync_script</span><span class="s2"> </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2"> </span><span class="nv">$proc_pernode</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
+<span class="nv">pdsh_cmd</span><span class="o">=</span><span class="s2">"PDSH_SSH_ARGS_APPEND=</span><span class="se">\"</span><span class="s2">-o StrictHostKeyChecking=no</span><span class="se">\"</span><span class="s2"> pdsh -w </span><span class="nv">$child_node_list</span><span class="s2"> '</span><span class="nv">$rsync_script</span><span class="s2"> </span><span class="nv">$SLURM_JOB_NODELIST</span><span class="s2"> </span><span class="nv">$proc_pernode</span><span class="s2"> </span><span class="nv">$local_dir</span><span class="s2">'"</span>
 <span class="nb">eval</span> <span class="nv">$pdsh_cmd</span>
 
 <span class="c"># Reconstruct decomposed partitions on head node NVMe local disk</span>
@@ -1271,7 +1271,7 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-12T13:12:56+09:00">September 12, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-13T19:17:11+09:00">September 13, 2024</time></p>
 
       </footer>
 
