@@ -6,26 +6,26 @@ layout: single
 tags:
  - intermediate
 header:
- teaser: "/id-security/waf-edge-log-analytics/edge01.png"
- overlay_image: "/id_security/waf-edge-log-analytics/edge01.png"
+ teaser: "/security/waf-v1-setup/edge1.png"
+ overlay_image: "/security/waf-v1-setup/edge1.png"
  overlay_filter: rgba(34, 66,55, 0.7)
 
 ---
 
 OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。
-本チュートリアルでは、「[OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する](/ocitutorials/id_security/waf-edge-policy)」の続編として、エッジポリシー内のログをObject Storageを経由してLogging Analyticsに転送し、ログを分析する手順を紹介します。
+本チュートリアルでは、「[OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する](/ocitutorials/security/waf-v1-setup)」の続編として、エッジポリシー内のログをObject Storageを経由してLogging Analyticsに転送し、ログを分析する手順を紹介します。
 
 
 **所要時間：** 約40分（SRによる対応を除く）
 
 **前提条件：** 
-+ [OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する](/ocitutorials/id_security/waf-edge-policy)を参考に、エッジポリシーの作成が完了していること
++ OCIチュートリアル「[OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する](/ocitutorials/security/waf-v1-setup)」を参考に、エッジポリシーの作成が完了していること
 + OCI CLIコマンドがインストール、構成されていること
 + Logging Analyticsが有効化されていること
 - OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
 ![画面キャプチャ0](nfwla5.png)
-+ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/enable-access-logging-analytics-and-its-resources.html)をご参照ください。
-+ ユーザーにObject Storageの管理権限がIAMポリシーで付与されていること。ポリシーの詳細は[オブジェクト・ストレージへのWAFログの配信](https://docs.oracle.com/ja-jp/iaas/Content/WAF/Tasks/logs.htm#DeliverWAFLogsObjectStorage)をご参照ください。
++ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIチュートリアル「[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/intermediates/audit-log-analytics/)」もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/enable-access-logging-analytics-and-its-resources.html)をご参照ください。
++ ユーザーにObject Storageの管理権限がIAMポリシーで付与されていること。ポリシーの詳細はドキュメント「[オブジェクト・ストレージへのWAFログの配信](https://docs.oracle.com/ja-jp/iaas/Content/WAF/Tasks/logs.htm#DeliverWAFLogsObjectStorage)」をご参照ください。
 
 
 **注意 :**
@@ -370,7 +370,7 @@ OCIコンソール画面左上のメニュー → 監視および管理 → ロ�
  
  ![画面ショット40](edgelog40.png)
 
-ログの分析方法についてはOCIチュートリアル「[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する - 4.ログの分析](https://oracle-japan.github.io/ocitutorials/management/audit-log-analytics/#4-%E3%83%AD%E3%82%B0%E3%81%AE%E5%88%86%E6%9E%90)」をご参照ください。
+ログの分析方法についてはOCIチュートリアル「[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する - 4.ログの分析](/ocitutorials/management/audit-log-analytics/#4-%E3%83%AD%E3%82%B0%E3%81%AE%E5%88%86%E6%9E%90)」をご参照ください。
 
 以上で、エッジポリシーのログをLogging Analyticsに転送して分析する手順は完了です。
 是非、ダッシュボードを実運用に合わせてカスタマイズしてご活用ください。

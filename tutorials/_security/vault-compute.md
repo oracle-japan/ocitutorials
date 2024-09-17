@@ -6,8 +6,8 @@ layout: single
 tags:
  - intermediate
 header:
- teaser: "/id-security/vault-compute/vault-compute06.png"
- overlay_image: "/id-security/vault-compute/vault-compute06.png"
+ teaser: "/security/vault-compute/vault-compute06.png"
+ overlay_image: "/security/vault-compute/vault-compute06.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
@@ -28,7 +28,7 @@ OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズム�
 
 **前提条件 :**
 + OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します）
-+ OCIチュートリアル[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。
++ OCIチュートリアル「[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/security/vault-setup/)」を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。
 
 **注意 :**
 + ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。
@@ -37,7 +37,7 @@ OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズム�
 
 
 # 1. Vaultの準備
-OCIチュートリアル[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/id-security/vault-preparation/)を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。
+OCIチュートリアル「[Vaultを作成し 顧客管理の鍵をインポートする](/ocitutorials/security/vault-setup/)」を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。
 
 <br>
 
@@ -59,7 +59,7 @@ OCIコンソール　→　コンピュート　→ インスタンス　→ 「
  ![画面ショット1](vault-compute01.png)
 
 
-OCIチュートリアル入門編[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/#anchor1)を参考に、コンピュートインスタンスの作成画面の各項目を入力、選択します。
+OCIチュートリアル入門編「[その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance/#anchor1)」を参考に、コンピュートインスタンスの作成画面の各項目を入力、選択します。
 
 コンピュート・インスタンスの作成画面の「ブート・ボリューム」の欄にて、「自分が管理するキーでこのボリュームを暗号化」にチェックを入れます。
  

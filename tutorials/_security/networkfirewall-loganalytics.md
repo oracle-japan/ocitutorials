@@ -6,14 +6,14 @@ layout: single
 tags:
  - intermediate
 header:
- teaser: "/id-security/networkfirewall-la/nfwla39.png"
- overlay_image: "/id-security/networkfirewall-la/nfwla39.png"
+ teaser: "/security/networkfirewall-loganalytics/nfwla39.png"
+ overlay_image: "/security/networkfirewall-loganalytics/nfwla39.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
 
 パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。
-本チュートリアルでは、[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)の続編として、Network Firewallのログを分析し、Network Firewallを通過するトラフィックの傾向、脅威の有無を確認します。
+本チュートリアルでは、「[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)」の続編として、Network Firewallのログを分析し、Network Firewallを通過するトラフィックの傾向、脅威の有無を確認します。
 
 Network Firewallのログの収集にはLoggingサービス、分析にはOCIが提供するログ分析サービス「Logging Analytics」を使用します。
 
@@ -30,11 +30,11 @@ Object Storageに格納されたログは、Logging Analyticsの「ObjectCollect
 - OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
 ![画面キャプチャ5](nfwla5.png)
 + ユーザーがLoggingサービスを使用するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/loggingpolicyreference.htm)をご参照ください。
-+ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html)をご参照ください。
++ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIチュートリアル「[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/intermediates/audit-log-analytics/)」もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/prerequisite-iam-policies.html#GUID-4CA8D8F4-2218-4C14-AF73-40111C459270)をご参照ください。
 + ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/serviceconnectorhubpolicyreference.htm)をご参照ください。
-+ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること
-+ OCIチュートリアル[OCI Network FirewallのIPS/IDS機能を検証する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall-ips/)を参考に、侵入検知（IDS）もしくは侵入防止（IPS）のセキュリティ・ルールが設定されていること
-+ OCIチュートリアル[コマンドライン(CLI)でOCIを操作する](https://oracle-japan.github.io/ocitutorials/intermediates/using-cli/)を参考に、OCI CLIコマンドのインストールと構成が終わっていること。
++ OCIチュートリアル「[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)」を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること
++ OCIチュートリアル「[OCI Network FirewallのIPS/IDS機能を検証する](/ocitutorials/security/networkfirewall-idps/)」を参考に、侵入検知（IDS）もしくは侵入防止（IPS）のセキュリティ・ルールが設定されていること
++ OCIチュートリアル「[コマンドライン(CLI)でOCIを操作する](/ocitutorials/intermediates/using-cli/)」を参考に、OCI CLIコマンドのインストールと構成が終わっていること。
 
 
 **注意 :**
@@ -51,7 +51,7 @@ Network Firewallでは、以下2種類のログを出力します。
 
 本チュートリアルでは、Traffic LogとThreat Logの両方を有効化し、分析します。
 
-OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したネットワーク・ファイアウォール詳細画面の左下の「リソース」から、「ログ」を選択します。
+OCIチュートリアル「[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)」で作成したネットワーク・ファイアウォール詳細画面の左下の「リソース」から、「ログ」を選択します。
 Threat Logの「無効」となっているボタンをクリックします。
  ![画面ショット1](nfwla1.png)
 
