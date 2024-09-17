@@ -1,0 +1,628 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/security/waf-v1-setup/">
+
+
+  <meta property="og:description" content="Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/waf-v1-setup/edge17.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-17T21:36:12+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/security/waf-v1-setup/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/security/waf-v1-setup/edge17.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する
+
+        
+      </h1>
+      
+        <p class="page__lead">Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/security" itemprop="item"><span itemprop="name">Security</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する">
+    <meta itemprop="description" content="Webサイトの脆弱性対策に苦労していませんか？そんな時はチューニング不要なOCI WAFを使って簡単にWebサーバーを保護しましょう。OCI WAFは保護ルールの適用、ボットトラフィックの制御、ログ参照など簡単にGUIから行うことができます。">
+    <meta itemprop="datePublished" content="2024-09-17T21:36:12+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-コンピュートインスタンスの作成">1. コンピュートインスタンスの作成</a></li><li><a href="#2-webサーバのインストールと起動">2. Webサーバのインストールと起動</a></li><li><a href="#3-dnsサーバの構成">3. DNSサーバの構成</a><ul><li><a href="#3-1-dnsの設定aレコードの登録">3-1. DNSの設定（Aレコードの登録）</a></li><li><a href="#3-2-ドメインの動作確認">3-2. ドメインの動作確認</a></li></ul></li><li><a href="#4-ネットワークの設定">4. ネットワークの設定</a></li><li><a href="#5-エッジポリシーの作成">5. エッジポリシーの作成</a></li><li><a href="#6-cnameレコードの登録">6. CNAMEレコードの登録</a></li><li><a href="#7-保護ルールの設定">7. 保護ルールの設定</a></li><li><a href="#8-wafの動作確認">8. WAFの動作確認</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>OCIにはエッジポリシーとWAFポリシーの2種類のWeb Application Firewallがあります。
+本チュートリアルでは、OCI世界各リージョンのエッジに設定されているWAFサーバにデプロイするタイプの「エッジポリシー」を実際に作成して、Webアプリケーションへの攻撃を検知、防御しているところを確認します。</p>
+
+<p><strong>所要時間：</strong> 約90分</p>
+
+<p><strong>前提条件：</strong></p>
+<ul>
+  <li>ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/policyreference/wafpolicyreference.htm#Details_for_the_WAF_Service">ドキュメント</a>をご参照ください。</li>
+  <li>Webアプリケーションのドメインを取得していること</li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+  <li>※本チュートリアルはOCI上でコンピュートを立ち上げてWebサーバーをインストールするところから始めます。既に手元にWebサーバがインストールされ、ドメインが構成されている環境がある場合は手順4から始めてください。</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-コンピュートインスタンスの作成">1. コンピュートインスタンスの作成</h1>
+
+<p>OCIチュートリアル入門編「<a href="/ocitutorials/beginners/creating-compute-instance/">その3-インスタンスを作成する</a>」を参考に、Webサーバ用のコンピュートインスタンスを1つ作成する。</p>
+
+<p><br /></p>
+
+<h1 id="2-webサーバのインストールと起動">2. Webサーバのインストールと起動</h1>
+
+<ol>
+  <li>sshでインスタンスにアクセスする。</li>
+</ol>
+
+<p>インスタンスへのsshでのアクセス方法が不明な場合は、「<a href="/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a>」を参考にしてください。</p>
+
+<ol>
+  <li>
+    <p>Apache HTTPサーバーをインストールする。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>yum <span class="nt">-y</span> <span class="nb">install </span>httpd
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>TCPの80番(http)および443番(https)ポートをオープンにする。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-port</span><span class="o">=</span>80/tcp
+ <span class="nb">sudo </span>firewall-cmd <span class="nt">--permanent</span> <span class="nt">--add-port</span><span class="o">=</span>443/tcp
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ファイアウォールを再ロードする。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>firewall-cmd <span class="nt">--reload</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Webサーバーを起動する。</p>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nb">sudo </span>systemctl start httpd
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ブラウザからWebサーバーにアクセスできることを確認する。</p>
+  </li>
+</ol>
+
+<p>ブラウザを開き、以下URLにアクセスしてApache Tomcatのトップページが表示されることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://&lt;WebサーバをインストールしたコンピュートインスタンスのIPアドレス&gt;
+</code></pre></div></div>
+
+<p><img src="edge1.png" alt="edge1.png" /></p>
+
+<p><br /></p>
+
+<h1 id="3-dnsサーバの構成">3. DNSサーバの構成</h1>
+
+<h2 id="3-1-dnsの設定aレコードの登録">3-1. DNSの設定（Aレコードの登録）</h2>
+
+<p>ドメインを取得したサイトでDNSの設定を開きます。
+本チュートリアルの例では、ドメインを<a href="https://www.freenom.com/ja/index.html?lang=ja">Freenom</a>で取得し、FreenomのDNSを編集します。
+例えば、freenomでは「Services」→「My Domains」→取得したドメインの「Manage Domain」→「Manage Freenom DNS」からDNSの設定をすることができます。</p>
+
+<p>DNSの設定から、WebサーバをインストールしたコンピュートインスタンスのIPアドレスをAレコードとして登録します。</p>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">Name</code></strong> - 任意 例）my</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">Type</code></strong> - A</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">Target</code></strong> - WebサーバをインストールしたコンピュートインスタンスのIPアドレス</li>
+</ul>
+
+<p><img src="edge2.png" alt="edge2.png" /></p>
+
+<h2 id="3-2-ドメインの動作確認">3-2. ドメインの動作確認</h2>
+
+<p>Aレコードを登録したドメインで、アプリケーションにアクセスできることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://&lt;Aレコードで登録したName&gt;.&lt;取得したドメイン&gt;
+</code></pre></div></div>
+
+<p><img src="edge3.png" alt="edge3.png" /></p>
+
+<p><br /></p>
+
+<h1 id="4-ネットワークの設定">4. ネットワークの設定</h1>
+<p>WAFサーバからのリクエストをWebサーバが受け付けられるように、WAFサーバのCIDRをWebサーバが配置されているVCNのサブネットのセキュリティリストにホワイトリストとして登録します。
+CIDRの一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/WAF/Concepts/gettingstarted.htm#secure">ドキュメント</a>に記載があります。</p>
+
+<p>OCIコンソール → ネットワーキング → 仮想クラウド・ネットワーク → コンピュートインスタンスを作成したVCN → セキュリティ・リスト → コンピュートインスタンスを作成したサブネットに割り当てられているセキュリティ・リストを選択します。
+セキュリティ・リストの詳細画面にて、「イングレス・ルールの追加」ボタンをクリックし、WAFサーバのCIDRを登録します。</p>
+
+<p><img src="edge4.png" alt="edge4.png" /></p>
+
+<p>※OCI CLIコマンドなどのAPIを使用することで一度に大量のCIDRを登録することも可能です。
+OCI CLIの構成方法についてはOCIチュートリアル「<a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a>」をご参照ください。
+OCI CLIによるセキュリティ・リストの編集方法については<a href="https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.25.0/oci_cli_docs/cmdref/network/subnet/update.html">OCI CLI Command Reference</a>をご参照ください。</p>
+
+<p><br /></p>
+
+<h1 id="5-エッジポリシーの作成">5. エッジポリシーの作成</h1>
+<p>OCIコンソール → アイデンティティとセキュリティ →Webアプリケーション・ファイアウォール → ポリシー → ポリシーの作成をクリックします。</p>
+
+<p><img src="edge5.png" alt="edg5.png" /></p>
+
+<p>表示されたWAFポリシーの作成画面の下に表示されている「非OCI Webアプリケーションを保護する必要がある場合は、ここでレガシー・ワークフローを使用します。」の青文字の”ここ”をクリックします。</p>
+
+<p><img src="edge6.png" alt="edge6.png" /></p>
+
+<p>エッジポリシーの作成画面にて、以下情報を入力し、「エッジポリシーの作成」ボタンをクリックします。</p>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">プライマリ・ドメイン</code></strong> - WAFで保護したいドメインを入力</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">オリジン名</code></strong> - 任意</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">URI</code></strong> - WebサーバをインストールしたコンピュートインスタンスのIPアドレス</li>
+</ul>
+
+<p><img src="edge7.png" alt="edge7.png" /></p>
+
+<p>ポリシーの作成が完了すると、アクティブになります。</p>
+
+<h1 id="6-cnameレコードの登録">6. CNAMEレコードの登録</h1>
+
+<p>手順5で作成したエッジポリシーがアクティブになると、CNAMEが自動生成されます。
+OCIコンソール → アイデンティティとセキュリティ → Web アプリケーション・ファイアウォール→ ポリシー→作成したポリシーをクリックします。
+画面最上部に表示されているCNAMEレコードをメモします。</p>
+
+<p><img src="edge8.png" alt="edge8.png" /></p>
+
+<p>ドメインのDNSの設定に戻り、DNSにCNAMEレコード名と値を追加します。</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">Name</code></strong> - エッジポリシー作成時に登録したドメインのレコード名 例）www</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">Type</code></strong> - CNAME</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">Target</code></strong> - エッジポリシー作成時に生成されたCNAMEレコード</li>
+</ul>
+
+<p><img src="edge9.png" alt="edge9.png" /></p>
+
+<p><br /></p>
+
+<h1 id="7-保護ルールの設定">7. 保護ルールの設定</h1>
+
+<p>本チュートリアルでは、シェルショックという脆弱性をつく攻撃手法を使用して、実際にWebアプリケーションを攻撃します。
+本手順では、シェルショックの脆弱性への攻撃から保護する保護ルールを有効化します。</p>
+
+<p>OCIコンソール → アイデンティティとセキュリティ → Web アプリケーション・ファイアウォール→ ポリシー→作成したポリシーをクリックします。
+エッジポリシーの詳細画面から、「保護ルール」のタブを選択します。</p>
+
+<p><img src="edge10.png" alt="edge10.png" /></p>
+
+<p>画面左の「フィルタ」から、ルールID1000000を検索します。
+表示された保護ルールのアクションを「ブロック」に変更します。</p>
+
+<p><img src="edge11.png" alt="edge11.png" /></p>
+
+<p>続いて、保護ルールの「設定」のタブから「ルール設定の編集」を開きます。</p>
+
+<p><img src="edge12.png" alt="edge12.png" /></p>
+
+<p>ルール設定の編集画面にて、ブロック・アクションを「エラー・ページの表示」に変更します。</p>
+
+<p><img src="edge13.png" alt="edge13.png" /></p>
+
+<p>エッジポリシーの詳細画面の最上部に表示されるバナーの「すべて公開」をクリックし、エッジポリシーの変更内容を公開します。
+ <img src="edge14.png" alt="edge14.png" /></p>
+
+<p>ポリシーは約30分程で再びアクティブになります。</p>
+
+<h1 id="8-wafの動作確認">8. WAFの動作確認</h1>
+<p>クライアントPCでターミナルを開き、以下コマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl &lt;アプリケーションのURI&gt;
+</code></pre></div></div>
+
+<p>curlでWebサーバにアクセスできることを確認します。</p>
+
+<p><img src="edge15.png" alt="edge15.png" /></p>
+
+<p>続いて、攻撃コマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl –A “()  { :;};echo Content-type text/plain;echo:/bin/cat/etc/passwd” &lt;アプリケーションのURI&gt;
+</code></pre></div></div>
+
+<p>コマンドを実行した結果、保護ルールで設定したエラー・メッセージが表示されることを確認します。</p>
+
+<p><img src="edge16.png" alt="edge16.png" /></p>
+
+<p>エッジポリシー詳細画面の「ログ」のタブから、攻撃がブロックされていることを確認します。</p>
+
+<p><img src="edge17.png" alt="edge17.png" /></p>
+
+<p>ログの詳細から、アクセス元のクライアントIPアドレス、国や地域、使用していたブラウザエージェントなどの詳細情報を確認することも可能です。</p>
+
+<p>以上で、エッジポリシーの作成と動作確認は終了です。</p>
+
+<p>エッジポリシーでは保護ルールの他にも、悪意のあるボットからのアクセスをブロックするボット管理の機能や、特定の国や地域からのアクセスをブロックするアクセス制御の機能などを提供しています。
+是非他の保護機能も実際に触ってみてください。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#security" class="page__taxonomy-item p-category" rel="tag">security</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-17T21:36:12+09:00">September 17, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Web+Application+Firewall%E3%81%AE%E3%82%A8%E3%83%83%E3%82%B8%E3%83%9D%E3%83%AA%E3%82%B7%E3%83%BC%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6Web%E3%82%B5%E3%83%BC%E3%83%90%E3%82%92%E4%BF%9D%E8%AD%B7%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fwaf-v1-setup%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fwaf-v1-setup%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/security/waf-v1-setup/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/security/networkfirewall-setup/" class="pagination--pager" title="OCI Network Firewallを構築する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/security/networkfirewall-idps/" class="pagination--pager" title="OCI Network FirewallのIDS/IPS機能を検証する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

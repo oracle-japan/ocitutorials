@@ -1,0 +1,484 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証基盤です。Identity DomainsはOCIへのユーザーの認証・認可だけではなく、OracleのSaaSや他社クラウドのSaaSなどへの認証基盤としてご利用いただくことも可能です。利用用途に合わせてIdentity Domainを新しく追加したり、ドメインのライセンスタイプを変更していただくことができます。本チュートリアルではIdentity Domainsのドメインを新規作成する手順と、ドメインのライセンスタイプの変更手順を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/">
+
+
+  <meta property="og:description" content="OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証基盤です。Identity DomainsはOCIへのユーザーの認証・認可だけではなく、OracleのSaaSや他社クラウドのSaaSなどへの認証基盤としてご利用いただくことも可能です。利用用途に合わせてIdentity Domainを新しく追加したり、ドメインのライセンスタイプを変更していただくことができます。本チュートリアルではIdentity Domainsのドメインを新規作成する手順と、ドメインのライセンスタイプの変更手順を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/identitydomains1.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-17T21:36:12+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/identitydomains1.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証基盤です。Identity DomainsはOCIへのユーザーの認証・認可だけではなく、OracleのSaaSや他社クラウドのSaaSなどへの認証基盤としてご利用いただくことも可能です。利用用途に合わせてIdentity Domainを新しく追加したり、ドメインのライセンスタイプを変更していただくことができます。本チュートリアルではIdentity Domainsのドメインを新規作成する手順と、ドメインのライセンスタイプの変更手順を紹介します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/identity" itemprop="item"><span itemprop="name">Identity</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する">
+    <meta itemprop="description" content="OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証基盤です。Identity DomainsはOCIへのユーザーの認証・認可だけではなく、OracleのSaaSや他社クラウドのSaaSなどへの認証基盤としてご利用いただくことも可能です。利用用途に合わせてIdentity Domainを新しく追加したり、ドメインのライセンスタイプを変更していただくことができます。本チュートリアルではIdentity Domainsのドメインを新規作成する手順と、ドメインのライセンスタイプの変更手順を紹介します。">
+    <meta itemprop="datePublished" content="2024-09-17T21:36:12+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-default-domainにログイン">1. Default Domainにログイン</a></li><li><a href="#2-ドメインの作成">2. ドメインの作成</a></li><li><a href="#3-ドメインの確認">3. ドメインの確認</a></li><li><a href="#4-アイデンティティドメインのタイプ変更">4. アイデンティティ・ドメインのタイプ変更</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。
+OCIの環境にはデフォルトで「Default Domain」と呼ばれるドメインが作成されます。Default Domainは主にOCIへのユーザーの認証、認可にお役立ていただくことが可能です。また、Identity Domainsの用途に応じて、新しくドメインを作成したり、ライセンスタイプを変更することも可能です。
+本チュートリアルでは、新しいドメインの追加方法と、ライセンスタイプの変更方法をご紹介します。
+Identity Domainsのライセンスタイプの一覧と、各ライセンスタイプの機能制限などについては<a href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/sku/overview.htm">ドキュメント</a>をご参照ください。</p>
+
+<p><strong>所要時間 :</strong> 約20分</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>新しいドメインを作成するには、OCIテナントの管理者権限を持つユーザーが操作を実行する必要があります。操作を実行するユーザーがOCIテナントの管理者ではない場合は、ユーザーにOCIテナントの管理者権限を付与してください。</li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+</ul>
+
+<h1 id="1-default-domainにログイン">1. Default Domainにログイン</h1>
+<p><a href="https://www.oracle.com/cloud/sign-in.html">OCIのログイン画面</a>でクラウド・アカウント名を入力します。</p>
+
+<p><img src="identitydomains2.png" alt="画面ショット1" /></p>
+
+<p>Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。</p>
+
+<p><img src="identitydomains3.png" alt="画面ショット2" /></p>
+
+<p>ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。</p>
+
+<p><img src="identitydomains4.png" alt="画面ショット3" /></p>
+
+<h1 id="2-ドメインの作成">2. ドメインの作成</h1>
+
+<p>OCIコンソール画面左上のメニューより、「アイデンティティとセキュリティ」→「アイデンティティ」→「ドメイン」を選択します。「ドメインの作成」ボタンをクリックします。</p>
+
+<p><img src="identitydomains5.png" alt="画面ショット4" /></p>
+
+<p>ドメイン作成画面にて、以下情報を記載し「ドメインの作成」ボタンをクリックします。</p>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">表示名</code></strong> - 任意（ログイン画面に表示されるアイデンティティ・ドメイン名になります）</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">説明</code></strong> - 任意</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ドメインタイプ</code></strong> - Free/Oracle Apps Premium/Premium/外部ユーザーのいずれかを選択 （※各ドメインタイプの価格はOCIの価格表をご参照ください。）</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ドメイン管理者(姓・名・ユーザー名・メールアドレス)</code></strong> - 作成するアイデンティティ・ドメインの管理者の情報を入力</li>
+</ul>
+
+<p><img src="identitydomains6.png" alt="画面ショット5" /></p>
+
+<h1 id="3-ドメインの確認">3. ドメインの確認</h1>
+<p>アイデンティティ・ドメインの作成が完了すると、ステータスがアクティブになります。</p>
+
+<p><img src="identitydomains7.png" alt="画面ショット6" /></p>
+
+<p>アイデンティティ・ドメイン名をクリックすると、詳細情報を確認することができます。</p>
+
+<p><img src="identitydomains8.png" alt="画面ショット7" /></p>
+
+<h1 id="4-アイデンティティドメインのタイプ変更">4. アイデンティティ・ドメインのタイプ変更</h1>
+
+<p>アイデンティティ・ドメインの詳細画面の、「ドメインの編集」ボタンをクリックします。
+ドメインの編集画面にて、「ドメイン・タイプの変更」ボタンをクリックします。
+（※Defaultのアイデンティティ・ドメインを「外部ユーザー」のドメインタイプに変更することはできません。）</p>
+
+<p><img src="identitydomains9.png" alt="画面ショット8" /></p>
+
+<p>ドメイン・タイプの変更画面にて、変更するドメイン・タイプを選択し、「ドメイン・タイプの変更」→「保存」ボタンをクリックします。</p>
+
+<p><img src="identitydomains10.png" alt="画面ショット9" /></p>
+
+<p>アイデンティティ・ドメインのドメイン・タイプが変更されました。</p>
+
+<p><img src="identitydomains11.png" alt="画面ショット10" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#identity" class="page__taxonomy-item p-category" rel="tag">identity</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-17T21:36:12+09:00">September 17, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+IAM+Identity+Domains%E3%81%AE%E3%83%89%E3%83%A1%E3%82%A4%E3%83%B3%E3%81%AE%E8%BF%BD%E5%8A%A0%E3%81%A8%E3%83%A9%E3%82%A4%E3%82%BB%E3%83%B3%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%97%E3%82%92%E5%A4%89%E6%9B%B4%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fidentity%2Fidentitydomain-createdomain-alterdomaintype%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fidentity%2Fidentitydomain-createdomain-alterdomaintype%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/identity/identitydomain-azuread/" class="pagination--pager" title="OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/identity/identitydomain-setup-users/" class="pagination--pager" title="OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

@@ -1,0 +1,567 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/identity/identitydomain-azuread/">
+
+
+  <meta property="og:description" content="OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/ocitutorials/identity/identitydomain-createdomain-changedomaintype/identitydomains1.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-17T21:36:12+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/identity/identitydomain-azuread/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/ocitutorials/identity/identitydomain-createdomain-changedomaintype/identitydomains1.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/identity" itemprop="item"><span itemprop="name">Identity</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する">
+    <meta itemprop="description" content="OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。">
+    <meta itemprop="datePublished" content="2024-09-17T21:36:12+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-oci-iam-identity-domainsのsamlメタデータダウンロード">1. OCI IAM Identity DomainsのSAMLメタデータダウンロード</a></li><li><a href="#2azure-ad側でのサービスプロバイダの登録">2.Azure AD側でのサービス・プロバイダの登録</a></li><li><a href="#3oci-iam-identity-domains-側でのアイデンティティプロバイダの登録">3.OCI IAM Identity Domains 側でのアイデンティティ・プロバイダの登録</a></li><li><a href="#4oci-iam-identity-domains側でのアイデンティティプロバイダのアクティブ化">4.OCI IAM Identity Domains側でのアイデンティティ・プロバイダのアクティブ化</a></li><li><a href="#5動作確認">5.動作確認</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携の機能を提供しています。
+本チュートリアルではSAMLによるOCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。Azure ADはMicrosoft社が提供するクラウドベースのIDおよびアクセス管理サービスです。本チュートリアルを完了することでAzure ADにサインオンするだけでOCIにもサインオンが可能になります。</p>
+
+<p><strong>所要時間 :</strong> 60分</p>
+
+<p><strong>前提条件 :</strong> 対象 Azure AD は構築済みとします。</p>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+</ul>
+
+<h1 id="1-oci-iam-identity-domainsのsamlメタデータダウンロード">1. OCI IAM Identity DomainsのSAMLメタデータダウンロード</h1>
+<p>OCI IAM Identity DomainsにてSMALメタデータをダウンロードします。
+<a href="https://www.oracle.com/cloud/sign-in.html">OCIのログイン画面</a>でクラウド・アカウント名を入力します。<br />
+<img src="Azure1.PNG" alt="画面ショット1" /><br />
+Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。<br />
+<img src="Azure2.PNG" alt="画面ショット2" /><br />
+ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。<br />
+<img src="Azure3.PNG" alt="画面ショット3" /></p>
+
+<p>OCI コンソール画面左上のメニューより「アイデンティティとセキュリティ」→「アイデンティティ」を選択します。 <br />
+<img src="Azure31.PNG" alt="画面ショット31" /><br />
+アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。（今回は「Tutorial」ドメインを選択します。）<br />
+※自身で作成したIdentity Domain（ドメイン）に設定する場合にはその該当ドメインを選択します。
+<img src="Azure4.PNG" alt="画面ショット4" />
+ドメインURLをコピーし控えておきます。（※このURLは後続の手順で利用します。）
+<img src="Azure5.PNG" alt="画面ショット5" />
+アイデンティティ・ドメイン画面にて左のメニューから「設定」を選択します。設定画面にて、署名証明書へのアクセス部分の「クライアント・アクセスの構成」をチェックし、「変更の保存」 を選択します。
+<img src="Azure6.PNG" alt="画面ショット6" />
+ブラウザにて下記のURLにアクセスし、SAMLメタデータをダウンロードし、適当な場所に保存します。
+(https://{Identity DomainのURL（先ほど控えたURL）}/fed/v1/metadata)</p>
+
+<h1 id="2azure-ad側でのサービスプロバイダの登録">2.Azure AD側でのサービス・プロバイダの登録</h1>
+<p>Azure AD側でのサービス・プロバイダの登録をします。
+Azure ポータル（ https://portal.azure.com ）にアクセスします。
+マイクロソフト サインイン画面にて、Azure AD 管理者のIDとパスワードを入力し、「サインイン」を選択し、Azureポータルにログインします。
+ <img src="Azure7.PNG" alt="画面ショット7" />
+Azure ポータル画面で Azure Active Directory を選択します。
+画面に Azure Active Directory が表示されていない場合は左メニューもしくは、検索し、Azure Active Directory を指定します。
+ <img src="Azure8.PNG" alt="画面ショット8" />
+Azure Active Directory 概要画面にて、左メニューから「エンタープライズアプリケーション」を選択します。
+ <img src="Azure9.PNG" alt="画面ショット9" />
+エンタープライズアプリケーション画面にて、「新しいアプリケーション」 を選択します。
+ <img src="Azure10.PNG" alt="画面ショット10" />
+Azure AD ギャラリーの参照にて、「独自のアプリケーションの作成」を選択します。
+ <img src="Azure11.PNG" alt="画面ショット11" />
+独自のアプリケーションの作成画面にて、「お使いのアプリの名前は何ですか？」に適当な名前（今回はOracle IAM）を設定し、「作成」を選択します。 
+ <img src="Azure12.PNG" alt="画面ショット12" />
+作成された エンタープライズアプリ画面の Getting Started から 「2.シングルサインオンの設定」 を選択します。
+ <img src="Azure13.PNG" alt="画面ショット13" />
+シングルサインオン画面にて、「SAML」を選択します。
+ <img src="Azure14.PNG" alt="画面ショット14" />
+SAMLベースのサインオン画面にて、「メタデータファイルをアップロードする」を選択します。
+ <img src="Azure15.PNG" alt="画面ショット15" />
+ファイル選択部分にて先ほどダウンロードした OCI IAM のSAML メタデータファイルを指定し「追加」を選択します。
+ <img src="Azure16.PNG" alt="画面ショット16" />
+基本的な SAML 構成 画面が開きます。
+基本的な SAML 構成 画面にて、「保存」を選択し、「×」を選択し画面を閉じます。
+ <img src="Azure17.PNG" alt="画面ショット17" />
+属性とクレームの「編集」を選択します。
+ <img src="Azure18.PNG" alt="画面ショット18" />
+属性とクレーム画面にて、クレーム名「一意のユーザー識別子（名前 ID）」を選択します。
+ <img src="Azure19.PNG" alt="画面ショット19" />
+要求の管理画面にて、名前識別子の形式を「永続的」に変更します。
+ソース属性が「user.userprincipalname」になっていることを確認し「保存」を選択し、この画面を閉じます。
+ <img src="Azure20.PNG" alt="画面ショット20" />
+SAMLベースのサインオン画面にて、フェデレーションメタデータXMLの「ダウンロード」を選択し、メタデータをダウンロードし、適当な場所に保存します。※このメタデータは後続の手順で利用します。
+<img src="Azure21.PNG" alt="画面ショット21" />
+認証に使用するユーザーを作成します。AzureポータルのAzure Active Directory概要画面にて「ユーザー」を選択します。
+ <img src="Azure22.PNG" alt="画面ショット22" />
+「新しいユーザー」を選択します。
+ <img src="Azure23.PNG" alt="画面ショット23" />
+ユーザーの作成画面にて、以下の情報を記載し、「作成」を選択します。</p>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">ユーザー名</code></strong> - 任意</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意
+<img src="Azure24.PNG" alt="画面ショット24" />
+作成したユーザーを、作成したアプリケーションに割り当てます。Azure Active Directory概要画面にて、左メニューから「エンタープライズアプリケーション」 を選択します。
+ <img src="Azure25.PNG" alt="画面ショット25" />
+すべてのアプリケーション画面にて、作成した アプリケーションを選択します。 
+<img src="Azure26.PNG" alt="画面ショット26" />
+作成したアプリケーショーンの画面の左メニューから「ユーザーとグループ」を選択し、「ユーザーまたはグループの追加」を選択します。
+ <img src="Azure27.PNG" alt="画面ショット27" />
+割り当ての追加画面にて、ユーザー部分の「選択されていません」を選択し、右側ペインより作成したユーザーを選択し「選択」を選択します。
+ <img src="Azure28.PNG" alt="画面ショット28" />
+割り当ての追加画面にて、「割り当て」を選択します。
+ <img src="Azure29.PNG" alt="画面ショット29" />
+    <h1 id="3oci-iam-identity-domains-側でのアイデンティティプロバイダの登録">3.OCI IAM Identity Domains 側でのアイデンティティ・プロバイダの登録</h1>
+    <p>OCI コンソール画面にて、左メニューより 「アイデンティティとセキュリティ」→「アイデンティティ」 を選択します。
+ <img src="Azure32.PNG" alt="画面ショット32" />
+アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。
+（今回は「Tutorial」ドメインを選択します。）※自身で作成したIdentity Domain（ドメイン）に設定する場合にはその該当ドメインを選択します。
+ <img src="Azure30.PNG" alt="画面ショット30" />
+アイデンティティ・ドメイン画面にて、左メニューより、「セキュリティ」を選択します。
+ <img src="Azure33.PNG" alt="画面ショット33" />
+セキュリティ画面にて、左メニューより、「アイデンティティ・プロバイダ」を選択し、IdPの追加より「SAML IdPの追加」を選択します。
+ <img src="Azure34.PNG" alt="画面ショット34" />
+SAMLアイデンティティ・プロバイダの追加画面にて、名前、説明に適当な値を入力し、「次」を選択します。
+ <img src="Azure35.PNG" alt="画面ショット35" />
+IdPの構成にて、Azure AD側でのサービス・プロバイダの登録にてダウンロードしたメタデータをアップロードし、「次」を選択します。
+ <img src="Azure36.PNG" alt="画面ショット36" />
+マップ属性にて、各項目に下記内容を指定し「IdPの作成」を選択します。</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">リクエストされた 名前IDフォーマット</code></strong> - 永続</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">アイデンティティ・プロバイダ・ユーザー属性：</code></strong> - SAMLアサーション名ID</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">アイデンティティ・ドメイン・ユーザー属性</code></strong> - ユーザー名
+ <img src="Azure37.PNG" alt="画面ショット37" /></li>
+</ul>
+
+<h1 id="4oci-iam-identity-domains側でのアイデンティティプロバイダのアクティブ化">4.OCI IAM Identity Domains側でのアイデンティティ・プロバイダのアクティブ化</h1>
+<p>OCI IAM Identity Domains側でのアイデンティティ・プロバイダのアクティブ化をします。
+Azure AD側でのサービス・プロバイダの登録にてAzure AD上で作成したユーザーと同一のユーザーをOCI IAM Identity Domains側で作成します。
+アイデンティティ・ドメイン画面にて、左メニューから「ユーザー」を選択し、「ユーザーの作成」を選択します。
+ <img src="Azure38.PNG" alt="画面ショット38" />
+ユーザー名が Azure AD属性のユーザープリンシパル名と同一になるように値を入力し、「作成」を選択します。
+ユーザー作成画面にてAzure AD 属性：ユーザープリンシパル名とOCI IAM 属性：ユーザー名が同じ値になるようにします。
+ <img src="Azure39.PNG" alt="画面ショット39" />
+アイデンティティ・ドメイン画面の左メニューから「セキュリティ」を選択します。
+ <img src="Azure40.PNG" alt="画面ショット40" />
+セキュリティ画面にてアイデンティティ・プロバイダを選択し、作成したアイデンティティプロバイダの右のマークを選択し、「IdPのアクティブ化」を選択します。
+ <img src="Azure41.PNG" alt="画面ショット41" />
+アイデンティティ・プロバイダのアクティブ化の確認にて「IdP のアクティブ化」を選択します。
+ <img src="Azure42.PNG" alt="画面ショット42" />
+OCIコンソールにログインする際、作成したアイデンティティプロバイダ（ Azure AD ）をIdPとして利用できるようにするためIdP ポリシーの定義を行います。
+セキュリティ画面の左メニューから「IdP ポリシー」を選択し、「Default Identity Provider Policy」を選択します。
+ <img src="Azure43.PNG" alt="画面ショット43" />
+Default Identity Provider Policy画面にて、「IdP ルールの追加」を選択します。
+ <img src="Azure44.PNG" alt="画面ショット44" />
+アイデンティティ・プロバイダ・ルールの追加画面にて、ルール名に適当な値を指定し、アイデンティティ・プロバイダの割当て部分にて今回、作成したアイデンティティプロバイダ（Azure AD）と「Username-Password」を選択し、「IdP ルールの追加」を選択します。
+ <img src="Azure45.PNG" alt="画面ショット45" />
+作成したルールを適用するために優先度を変更します。
+優先度を変更するには「優先度の編集」を選択します。
+ <img src="Azure46.PNG" alt="画面ショット46" />
+IdP ルール優先度の編集画面にて、左側の優先度列にある上下矢印を選択します。
+ <img src="Azure47.PNG" alt="画面ショット47" />
+作成したアイデンティティプロバイダ（Azure AD）の優先度を「1」に設定し、「変更の保存」を選択します。
+ <img src="Azure48.PNG" alt="画面ショット48" /></p>
+
+<h1 id="5動作確認">5.動作確認</h1>
+<p>OCIコンソールにAzure ADによるサインオンが可能になったか動作確認をおこないます。
+OCIコンソール（ https://www.oracle.com/jp/cloud/sign-in.html）にアクセスします。
+テナント名（クラウド・アカウント名）を入力し、「次に進む」を選択します。
+ <img src="Azure49.PNG" alt="画面ショット49" />
+アイデンティティ・ドメインの選択画面が表示される場合には、対象ドメイン（今回は「Tutorial」）を選択します。※ドメイン選択画面が表示されない環境はDefaultドメインのみ存在する環境になり、自動的に“ Default ドメイン”にログインすることになります。
+ <img src="Azure50.PNG" alt="画面ショット50" />
+アイデンティティ・ドメインのログイン画面の下部に今回作成した、アイデンティティ・プロバイダ（Azure AD）が表示され選択ができることを確認し、「アイデンティティ・プロバイダ（Azure AD）」を選択します。
+ <img src="Azure51.PNG" alt="画面ショット51" />
+マイクロソフトのサインイン画面にて、Azure AD側でのサービス・プロバイダの登録にてAzure AD上で作成したユーザー ID/ パスワードを入力し、「サインイン」を選択します。
+ <img src="Azure52.PNG" alt="画面ショット52" />
+ <img src="Azure53.PNG" alt="画面ショット53" />
+OCI コンソールに接続できれば成功です。
+ <img src="Azure54.PNG" alt="画面ショット54" /></p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#identity" class="page__taxonomy-item p-category" rel="tag">identity</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-17T21:36:12+09:00">September 17, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+IAM+Identity+Domains%E3%81%A8Azure+AD%E3%81%A8%E3%81%AE%E8%AA%8D%E8%A8%BC%E9%80%A3%E6%90%BA%EF%BC%88%E5%A4%96%E9%83%A8IDP%E9%80%A3%E6%90%BA%EF%BC%89%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fidentity%2Fidentitydomain-azuread%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fidentity%2Fidentitydomain-azuread%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/identity/identitydomain-azuread/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">前へ</a>
+    
+    
+      <a href="/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/" class="pagination--pager" title="OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

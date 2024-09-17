@@ -1343,131 +1343,35 @@ var store = [{
         "url": "/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/",
         "teaser": "/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/connection_type.png"
       },{
-        "title": "エッジポリシーのWeb Application Firewallのログを分析する",
-        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、「OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する」の続編として、エッジポリシー内のログをObject Storageを経由してLogging Analyticsに転送し、ログを分析する手順を紹介します。 所要時間： 約40分（SRによる対応を除く） 前提条件： OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護するを参考に、エッジポリシーの作成が完了していること OCI CLIコマンドがインストール、構成されていること Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIのLogging AnalyticsでOCIの監査ログを可視化・分析するもしくは、ドキュメントをご参照ください。 ユーザーにObject Storageの管理権限がIAMポリシーで付与されていること。ポリシーの詳細はオブジェクト・ストレージへのWAFログの配信をご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Object Storageバケットの作成 エッジポリシー内のログの転送先となるObject Storageを作成します。 エッジポリシーのログは、SRをあげることで指定したObject Storageに転送することが可能です。 OCIコンソール画面左上のメニュー → ストレージ　→ オブジェクト・ストレージとアーカイブ・ストレージ　→ バケット　→　「バケットの作成」ボタンをクリックします。 表示された「バケットの作成」画面にて、任意のバケット名を入力し、「作成」ボタンをクリックします。 ※その他の項目はデフォルトのままで構いません。 バケットを作成したら、バケットの可視性をプライベートからパブリックに変更します。 作成したバケットの詳細画面を開き、画面左上の「可視性の編集」ボタンをクリックします。 「可視性の編集」画面にて「パブリック」を選択し、「変更の保存」ボタンをクリックします。 バケットの作成、可視性の編集が完了したら、この後の手順でSRを作成する際にバケットの情報が必要になるため、バケット名とネームスペースをメモします。...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/waf-edge-log-analytics/",
-        "teaser": "/ocitutorials/id-security/waf-edge-log-analytics/edge01.png"
-      },{
-        "title": "OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する",
-        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。 所要時間 : 約20分 前提条件 : OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築するを参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIのLogging AnalyticsでOCIの監査ログを可視化・分析するもしくは、ドキュメントをご参照ください。 ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細はドキュメントをご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. ログ・グループの作成 WAFポリシーのログの転送先となるLogging Analyticsの「ログ・グループ」を作成します。 Logging Analyticsではログを「ログ・グループ」単位で管理することができます。 OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理 → ログ・グループ → 「ログ・グループの作成」ボタンをクリックします。 表示された「ログ・グループの作成」画面にて、任意のログ・グループ名を入力し、「作成」ボタンをクリックします。...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/waf-v2-log/",
-        "teaser": "/ocitutorials/id-security/web-application-firewall-v2/wafv2-19.png"
-      },{
-        "title": "OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する",
-        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、OCIのLoad Balancerに直接デプロイする”WAFポリシー”を作成し、実際のWAFの動作を確認します。 所要時間 : 約1時間 前提条件 : 応用編 - ロードバランサーでWebサーバーを負荷分散するを参考に、WebサーバーおよびOCIのロードバランサ―が構成されていること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Web Application Firewallを使用するためには、操作を実行するユーザーに以下のポリシーが付与されている必要があります。 allow group &lt;IAMグループ名&gt; to manage waas-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage web-app-firewall in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage waf-policy in tenancy/compartment &lt;コンパートメント名&gt;...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/web-application-firewall-v2/",
-        "teaser": "/ocitutorials/id-security/web-application-firewall-v2/wafv2-19.png"
-      },{
-        "title": "OCI Network Firewallを構築する",
-        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。 所要時間 : 約70分 (Network Firewallインスタンスの作成に40分ほどかかります) 前提条件 : ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントを参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 はじめに : 以下が本チュートリアルで作成するNetwork Firewallの構成図です。 0. Network Firewallについて Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。 Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。 Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。 パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御 アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止 各サブネットとルート表について インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。その後Network Firewallによって検査されたトラフィックはPublic Subnet内のインスタンスへ転送されます。 Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork...","categories": [],
-        "tags": ["id-security"],
-        "url": "/ocitutorials/id-security/networkfirewall/",
-        "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
-      },{
-        "title": "OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する",
-        "excerpt":"OCIにはエッジポリシーとWAFポリシーの2種類のWeb Application Firewallがあります。 本チュートリアルでは、OCI世界各リージョンのエッジに設定されているWAFサーバにデプロイするタイプの「エッジポリシー」を実際に作成して、Webアプリケーションへの攻撃を検知、防御しているところを確認します。 所要時間： 約90分 前提条件： ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントをご参照ください。 Webアプリケーションのドメインを取得していること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 ※本チュートリアルはOCI上でコンピュートを立ち上げてWebサーバーをインストールするところから始めます。既に手元にWebサーバがインストールされ、ドメインが構成されている環境がある場合は手順4から始めてください。 1. コンピュートインスタンスの作成 OCIチュートリアル入門編その3-インスタンスを作成するを参考に、Webサーバ用のコンピュートインスタンスを1つ作成する。 2. Webサーバのインストールと起動 sshでインスタンスにアクセスする。 インスタンスへのsshでのアクセス方法が不明な場合は、 その3 - インスタンスを作成する を参考にしてください。 Apache HTTPサーバーをインストールする。 sudo yum -y install httpd TCPの80番(http)および443番(https)ポートをオープンにする。 sudo firewall-cmd --permanent --add-port=80/tcp sudo firewall-cmd --permanent --add-port=443/tcp ファイアウォールを再ロードする。 sudo firewall-cmd --reload Webサーバーを起動する。 sudo systemctl start...","categories": [],
-        "tags": ["id-security"],
-        "url": "/ocitutorials/id-security/waf-edge-policy/",
-        "teaser": "/ocitutorials/id-security/waf-edge-policy/edge1.png"
-      },{
-        "title": "OCI Network FirewallのIDS/IPS機能を検証する",
-        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルはOCI Network Firewallを構築するの続編として、IDS/IPSの設定および動作を確認します。 IDS/IPSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。 Kali Linuxでは、Network Firewallインスタンスに保護されたWindowsのコンピュートインスタンスに侵入テストを実施します。 Eicarファイルを使用する際は、Network Firewallインスタンスに保護されたLinuxのコンピュートインスタンスにWebサーバーを構築し、Webサーバーを使用して動作を検証します。 所要時間 : 約60分 前提条件 : OCIチュートリアルOCI Network Firewallを構築するを参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること Kali Linuxを使用した動作検証を実施する場合、Windowsのコンピュートインスタンスに対して侵入テストを実施します。OCIチュートリアルOCI Network Firewallを構築するの手順6-2Windowsインスタンスの作成に沿って、Windowsのコンピュートインスタンスが作成されていることを確認してください。 Kali Linuxを使用した動作検証を実施する場合、Kali LinuxをOCIにデプロイするを参考に、OCI Network Firewallで保護されたコンピュートインスタンスに対して通信を行える環境に、Kali Linuxの構築が終わっていること。 Eicarファイルを使用した動作検証を実施する場合、LinuxのコンピュートインスタンスにWebサーバーをインストールして動作を検証します。OCIチュートリアルOCI Network Firewallを構築するの手順6-1Linuxのコンピュート・インスタンスの作成に沿って、Linuxのコンピュートインスタンスが作成されていることを確認してください。 重要： OCIの環境へツールなどを用いた侵入テストを実行する際は、メールにてOracleに事前に侵入テストの実施を通知する必要があります。本チュートリアルの内容を実施する際は、クラウド・セキュリティ・テスト通知の送信を参考に、事前にOracleへ告知メールを送信してください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 ※本チュートリアルでは、OCI Network Firewallの機能検証を目的にKali LinuxおよびEicarファイルを使用します。ご自身の管理下にないサーバーや、本番環境に対しては使用しないでください。また、ツールを使用したことによりトラブルや損失が発生した場合についても責任を負いかねます。 1. ネットワーク・ファイアウォール・ポリシーの編集...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/networkfirewall-ips/",
-        "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
-      },{
-        "title": "OCI Network Firewallのログを分析する",
-        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルでは、OCI Network Firewallを構築するの続編として、Network Firewallのログを分析し、Network Firewallを通過するトラフィックの傾向、脅威の有無を確認します。 Network Firewallのログの収集にはLoggingサービス、分析にはOCIが提供するログ分析サービス「Logging Analytics」を使用します。 Logging Analyticsでは、様々なOCIサービスのログ、Oracle製品のログに対応したログの解析文が用意されていますが、Network Firewallのログにはまだ対応していないので、本チュートリアルではNetwork Firewallのログに対応した解析文をカスタムで作成します。 通常はLoggingサービスで収集したログは「Service Connector Hub」と呼ばれるサービスを使用して、直接Logging Analyticsに連携することも可能です。しかし、今回はLoggingサービスから直接Logging Analyticsにログを転送してしまうと、カスタムで作成したログの解析文でログを読み取ることが出来なくなってしまうため、Loggingサービスのログを一度Object Storageに転送します。 Object Storageに格納されたログは、Logging Analyticsの「ObjectCollectionRule」と呼ばれるルールを作成することで、Logging Analyticsに転送されます。 所要時間 : 約60分 前提条件 : Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 ユーザーがLoggingサービスを使用するためのポリシーが作成されていること。ポリシーの詳細はドキュメントをご参照ください。 ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIのLogging AnalyticsでOCIの監査ログを可視化・分析するもしくは、ドキュメントをご参照ください。 ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細はドキュメントをご参照ください。 OCIチュートリアルOCI Network Firewallを構築するを参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること OCIチュートリアルOCI Network FirewallのIPS/IDS機能を検証するを参考に、侵入検知（IDS）もしくは侵入防止（IPS）のセキュリティ・ルールが設定されていること OCIチュートリアルコマンドライン(CLI)でOCIを操作するを参考に、OCI...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/networkfirewall-la/",
-        "teaser": "/ocitutorials/id-security/networkfirewall-la/nfwla39.png"
-      },{
-        "title": "Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する",
-        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCIのオブジェクト・ストレージやブート・ボリュームなどのストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してBase Databaseを暗号化する手順を紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） OCIチュートリアルVaultを作成し 顧客管理の鍵をインポートするを参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの準備 OCIチュートリアルVaultを作成し 顧客管理の鍵をインポートするを参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。 2. Base Databaseインスタンスの作成 OCIコンソール　→ Oracle Database → Oracleベース・データベース・サービス　→　「DBシステムの作成」ボタンをクリックします。 　 OCIチュートリアルOracle Database編101:Oracle Cloud上でOracle Databaseを使おうを参考に、DBシステムの作成画面の各項目を入力、選択します。 DBシステムの作成画面の「データベース情報」画面の一番下の「拡張オプションの表示」を選択します。 暗号化のタブを開き、「顧客管理キーの使用」をチェックします。 顧客管理キーの使用について、確認画面が表示されるので「はい、顧客管理キーを有効化します」を選択します。...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/vault-basedatabase/",
-        "teaser": "/ocitutorials/id-security/vault-basedatabase/vault-basedatabase01.png"
-      },{
-        "title": "Vaultサービスを使ってコンピュート・インスタンスのブート・ボリュームをユーザー管理の暗号鍵で暗号化する",
-        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCIのオブジェクト・ストレージやブート・ボリュームなどのストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してコンピュート・インスタンスのブート・ボリュームを暗号化する手順を紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） OCIチュートリアルVaultを作成し 顧客管理の鍵をインポートするを参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの準備 OCIチュートリアルVaultを作成し 顧客管理の鍵をインポートするを参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。 2. IAMポリシーの作成 Vaultサービスに格納された暗号鍵を指定してブート・ボリュームを作成するには、ブート・ボリュームがVaultサービスにアクセスする権限が必要です。 コンピュート・インスタンスを作成するコンパートメントにて、以下IAMポリシーを作成します。 allow service blockstorage to use keys in compartment &lt;コンパートメント名&gt; 3. コンピュート・インスタンスの作成 OCIコンソール　→　コンピュート　→ インスタンス　→...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/vault-compute/",
-        "teaser": "/ocitutorials/id-security/vault-compute/vault-compute06.png"
-      },{
-        "title": "Vaultサービスを使ってObject Storageをユーザー管理の暗号鍵で暗号化する",
-        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCI上のストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してObject Storageを作成する手順について紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） OCIチュートリアルVaultを作成し 顧客管理の鍵をインポートするを参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの準備 OCIチュートリアルVaultを作成し 顧客管理の鍵をインポートするを参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。 2. IAMポリシーの作成 Vaultサービスに格納された暗号鍵を指定してObject Storageを作成するには、Object StorageがVaultサービスにアクセスする権限が必要です。 Object Storageを作成するコンパートメントにて、以下IAMポリシーを作成します。 allow service objectstorage-&lt;リージョン名&gt; to use keys in compartment &lt;コンパートメント名&gt;...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/vault-objectstorage/",
-        "teaser": "/ocitutorials/id-security/vault-objectstorage/vault-oss09.png"
-      },{
-        "title": "Vaultを作成し 顧客管理の鍵をインポートする",
-        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCI上のストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、ユーザー管理の暗号鍵を作成し、Vaultサービスへインポートする手順について紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの作成 OCIコンソール → アイデンティティとセキュリティ → ボールト → 「ボールトの作成」ボタンをクリックします。 Vaultの作成画面で任意の名前を入力し、「ボールトの作成」ボタンをクリックします。 1~2分でボールトの作成が完了し、ステータスがアクティブになります。 2. 暗号鍵の作成とインポート 作成したボールトの詳細画面の「キーの作成」ボタンをクリックします。 「キーの作成」画面にて任意の名前を入力し、「外部キーのインポート」にチェックを入れます。 ※キーのシェイプ、アルゴリズムはデフォルトのAES, 256ビットのまま進めます。 ラッピング・キー情報が表示されるので、「公開ラッピング・キー」をコピーします。 Cloud Shellなど、OpenSSLがインストールされている環境で公開ラッピング・キーをpemファイルとして保存します。 $ vi publickey.pem...","categories": [],
-        "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/vault-preparation/",
-        "teaser": "/ocitutorials/id-security/vault-preparation/vault-prepare02.png"
-      },{
-        "title": "Web Application Firewall(WAF)を使ってWebサーバを保護する",
-        "excerpt":" ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/id-security/protecting-web-servers-with-waf/",
-        "teaser": null
-      },{
         "title": "OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する",
-        "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携の機能を提供しています。 本チュートリアルではSAMLによるOCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。Azure ADはMicrosoft社が提供するクラウドベースのIDおよびアクセス管理サービスです。本チュートリアルを完了することでAzure ADにサインオンするだけでOCIにもサインオンが可能になります。 所要時間 : 60分 前提条件 : 対象 Azure AD は構築済みとします。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. OCI IAM Identity DomainsのSAMLメタデータダウンロード OCI IAM Identity DomainsにてSMALメタデータをダウンロードします。 OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 OCI コンソール画面左上のメニューより「アイデンティティとセキュリティ」→「アイデンティティ」を選択します。 アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。（今回は「Tutorial」ドメインを選択します。）※自身で作成したIdentity Domain（ドメイン）に設定する場合にはその該当ドメインを選択します。...","categories": [],
-        "tags": ["id-security"],
-        "url": "/ocitutorials/id-security/identitydomains-AzureAD/",
-        "teaser": "/ocitutorials/id-security/identitydomains-add-domains-license/identitydomains1.png"
+        "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携の機能を提供しています。 本チュートリアルではSAMLによるOCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。Azure ADはMicrosoft社が提供するクラウドベースのIDおよびアクセス管理サービスです。本チュートリアルを完了することでAzure ADにサインオンするだけでOCIにもサインオンが可能になります。 所要時間 : 60分 前提条件 : 対象 Azure AD は構築済みとします。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. OCI IAM Identity DomainsのSAMLメタデータダウンロード OCI IAM Identity DomainsにてSMALメタデータをダウンロードします。 OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 OCI コンソール画面左上のメニューより「アイデンティティとセキュリティ」→「アイデンティティ」を選択します。 アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。（今回は「Tutorial」ドメインを選択します。） ※自身で作成したIdentity...","categories": [],
+        "tags": ["identity"],
+        "url": "/ocitutorials/identity/identitydomain-azuread/",
+        "teaser": "/ocitutorials/ocitutorials/identity/identitydomain-createdomain-changedomaintypeidentitydomains1.png"
       },{
         "title": "OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する",
         "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。 OCIの環境にはデフォルトで「Default Domain」と呼ばれるドメインが作成されます。Default Domainは主にOCIへのユーザーの認証、認可にお役立ていただくことが可能です。また、Identity Domainsの用途に応じて、新しくドメインを作成したり、ライセンスタイプを変更することも可能です。 本チュートリアルでは、新しいドメインの追加方法と、ライセンスタイプの変更方法をご紹介します。 Identity Domainsのライセンスタイプの一覧と、各ライセンスタイプの機能制限などについてはドキュメントをご参照ください。 所要時間 : 約20分 前提条件 : 新しいドメインを作成するには、OCIテナントの管理者権限を持つユーザーが操作を実行する必要があります。操作を実行するユーザーがOCIテナントの管理者ではない場合は、ユーザーにOCIテナントの管理者権限を付与してください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Default Domainにログイン OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 2. ドメインの作成 OCIコンソール画面左上のメニューより、「アイデンティティとセキュリティ」→「アイデンティティ」→「ドメイン」を選択します。「ドメインの作成」ボタンをクリックします。 ドメイン作成画面にて、以下情報を記載し「ドメインの作成」ボタンをクリックします。 表示名 - 任意（ログイン画面に表示されるアイデンティティ・ドメイン名になります） 説明 - 任意 ドメインタイプ - Free/Oracle...","categories": [],
-        "tags": ["id-security"],
-        "url": "/ocitutorials/id-security/identitydomains-add-domains-license/",
-        "teaser": "/ocitutorials/id-security/identitydomains-add-domains-license/identitydomains1.png"
+        "tags": ["identity"],
+        "url": "/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/",
+        "teaser": "/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/identitydomains1.png"
       },{
         "title": "OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する",
         "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携、認証強化の機能を提供しています。 本チュートリアルでは、OCIテナントのアクティベーション後に2人目移行のテナント管理者ユーザーを作成する手順と、OCIテナントの一般ユーザーの作成手順を紹介します。 所要時間 : 約15分 前提条件 : OCIテナントで2人目以降のテナント管理者ユーザーを作成するには、OCIテナントをアクティベートしたテナント管理者が操作を実行する必要があります。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Default Domainにログイン OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 2. 管理者ユーザーの作成 OCIコンソール画面左上のメニューより、「アイデンティティとセキュリティ」→「アイデンティティ」→「ドメイン」→ドメイン「Default」を選択します。 ※Defaultドメインはルートコンパートメントにあります。 ドメイン詳細画面の左側のメニューから「ユーザー」を選択し、「ユーザーの作成」ボタンをクリックします。 ユーザーの作成画面にて、ユーザーの名・姓・電子メールアドレスを入力します。 ※デフォルトでは、電子メールアドレスがIdentity Domainログイン時のユーザー名になります。電子メールアドレス以外のユーザー名を指定したい場合は、「ユーザー名として電子メール・アドレスを使用」のチェックを外し、別途ユーザー名を指定してください。 グループオプションにて、「Administrators」にチェックをいれ、「作成」ボタンをクリックします。 ※Defaultドメインの「Administrators」グループに所属するユーザーがテナント管理者になります。 3. テナント管理者ユーザーのアクティベート ユーザーが作成されると、ユーザー作成時に入力した電子メールアドレスに、Welcomeメールが届きます。 メール本文の「Activate Your Account」ボタンをクリックします。 表示された初期パスワードのリセット画面にてパスワードを指定し、「パスワードのリセット」ボタンをクリックします。 以上の手順で、OCIテナント管理者ユーザーの作成と、アカウントのアクティベートが完了しました。 再度OCIテナントのログイン画面から、作成した管理者ユーザーのID/パスワードでOCIにログインできることを確認してください。...","categories": [],
-        "tags": ["id-security"],
-        "url": "/ocitutorials/id-security/identitydomains-admin-users/",
-        "teaser": "/ocitutorials/id-security/identitydomains-admin-users/users7.png"
-      },{
-        "title": "Cloud Guardを使ってみる",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/id-security/cloud-guard/",
-        "teaser": null
-      },{
-        "title": "Oracle Data Safe チュートリアルまとめ",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。   1.Oracle Data Safeを有効化する  2.Oracle Data Safeのデータ・マスキングを試してみる  3.Oracle Data Safeのアクティビティ監査で操作ログを記録する  4.Oracle Data Safeにフェデレーッド・ユーザーでアクセスする  5.プライベートIPアドレスでData SafeにDBを登録する  6.Oracle Data SafeでオンプレミスのOracle DBを管理する  ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/id-security/data-safe-tutorials/",
-        "teaser": null
+        "tags": ["identity"],
+        "url": "/ocitutorials/identity/identitydomain-setup-users/",
+        "teaser": "/ocitutorials/identity/identitydomains-admin-users/users7.png"
       },{
         "title": "OCI IAM Identity DomainでAPEXで作成したアプリケーションに認証と認可をする",
-        "excerpt":"Identity Domainでは、SAMLやOAuthなどの技術を使用することで、様々なアプリケーションとシングル・サインオンを実装することができます。 本チュートリアルでは、Oracle Application Express（APEX）で作成したアプリケーションとIdentity Domainの認証連携、およびIdentity Domainのグループに基づくアクセス制限（認可）の実装手順を紹介します。 本チュートリアルを完了すると、Identity DomainのユーザーはIdentity Domainのユーザー名とパスワードでAPEXアプリケーションにアクセスすることができるようになります。 また、Identity Domainのユーザーが属しているグループに基づいて、APEXアプリケーション内でアクセスできるページを制御することができるようになります。 所要時間 : 約1時間 前提条件 : Oracle Database編 - ADBの付属ツールで簡易アプリを作成しよう（APEX）を参考に、APEXのワークスペースを作成していること アイデンティティとセキュリティ編 - OCI IAM Identity Domains テナント管理者・一般ユーザーを作成するを参考に、APEXアプリケーションにアクセスするユーザーが複数名分作成されていること。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. APEXアプリケーションの作成（任意） 本手順では、APEXアプリケーション内のアクセス制限を実装するため、APEXのサンプルアプリケーションをインストールします。 既存のアプリケーションがある場合は、本手順は実施しなくても問題ありません。 任意のAPEXワークスペースにログインします。 ワークスペースにログインしたら、「アプリケーション・ビルダー」を選択します。 「作成」ボタンをクリックします。 「ファイルから」を選択します。 「コピー・アンド・ペースト」のタブを開き、「販売」のサンプル・データ・セットを選択し、「次」ボタンをクリックします。 データのロード画面にて、任意の表名を入力し、「データのロード」ボタンをクリックします。 データがロードされ、表が作成されたら「アプリケーションの作成」ボタンをクリックします。 アプリケーションの作成画面にて、任意のアプリケーション名を入力します。 機能のセクションで「すべてをチャック」を選択し、「アプリケーションの作成」ボタンをクリックします。 「アプリケーションの実行」を選択します。 新しいタブが開き、アプリケーションのログイン画面が表示されます。 ワークスペースにログインしたユーザーのユーザー名とパスワードを入力し、アプリケーションにアクセスできることを確認します。 以上でサンプルのAPEXアプリケーションの作成は終了です。...","categories": [],
+        "excerpt":"Identity Domainでは、SAMLやOAuthなどの技術を使用することで、様々なアプリケーションとシングル・サインオンを実装することができます。 本チュートリアルでは、Oracle Application Express（APEX）で作成したアプリケーションとIdentity Domainの認証連携、およびIdentity Domainのグループに基づくアクセス制限（認可）の実装手順を紹介します。 本チュートリアルを完了すると、Identity DomainのユーザーはIdentity Domainのユーザー名とパスワードでAPEXアプリケーションにアクセスすることができるようになります。 また、Identity Domainのユーザーが属しているグループに基づいて、APEXアプリケーション内でアクセスできるページを制御することができるようになります。 所要時間 : 約1時間 前提条件 : OCIチュートリアルOracle Database編 - ADBの付属ツールで簡易アプリを作成しよう（APEX）を参考に、APEXのワークスペースを作成していること OCIチュートリアルOCI IAM Identity Domains テナント管理者・一般ユーザーを作成するを参考に、APEXアプリケーションにアクセスするユーザーが複数名分作成されていること。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. APEXアプリケーションの作成（任意） 本手順では、APEXアプリケーション内のアクセス制限を実装するため、APEXのサンプルアプリケーションをインストールします。 既存のアプリケーションがある場合は、本手順は実施しなくても問題ありません。 任意のAPEXワークスペースにログインします。 ワークスペースにログインしたら、「アプリケーション・ビルダー」を選択します。 「作成」ボタンをクリックします。 「ファイルから」を選択します。 「コピー・アンド・ペースト」のタブを開き、「販売」のサンプル・データ・セットを選択し、「次」ボタンをクリックします。 データのロード画面にて、任意の表名を入力し、「データのロード」ボタンをクリックします。 データがロードされ、表が作成されたら「アプリケーションの作成」ボタンをクリックします。 アプリケーションの作成画面にて、任意のアプリケーション名を入力します。 機能のセクションで「すべてをチャック」を選択し、「アプリケーションの作成」ボタンをクリックします。 「アプリケーションの実行」を選択します。 新しいタブが開き、アプリケーションのログイン画面が表示されます。 ワークスペースにログインしたユーザーのユーザー名とパスワードを入力し、アプリケーションにアクセスできることを確認します。 以上でサンプルのAPEXアプリケーションの作成は終了です。 2. 機密アプリケーションの登録...","categories": [],
         "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/identitydomain-apex-sso/",
-        "teaser": "/ocitutorials/id-security/identitydomain-apex-sso/apex-10.png"
+        "url": "/ocitutorials/identity/identitydomain-apex-sso/",
+        "teaser": "/ocitutorials/identity/identitydomain-apex-sso/apex-10.png"
       },{
         "title": "OCI IAM Identity DomainでユーザーのMFAを有効化する",
-        "excerpt":"Identity DomainではSMSやメール、モバイルアプリケーションのワンタイム・パスコードなどを使用してユーザーに二要素認証を要求することができます。 また、全ユーザーに二要素認証を要求するのではなく、特定のグループに属しているユーザーや、特定のネットワークからログインしたユーザーなど、条件を指定して二要素認証を要求できます。 本チュートリアルでは、Identity Domainの特定のグループに属しているユーザーに二要素認証を要求するための設定手順を紹介します。 所要時間 : 約20分 前提条件 : アイデンティティとセキュリティ編 - OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成するを参考に、MFAを有効化したいユーザーを作成していること Identity Domainの管理者が本チュートリアル記載の設定作業をすること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. グループの作成 本チュートリアルでは、特定のグループに属しているユーザーがIdentity Domainにログインする際に、二要素認証を要求するように設定をします。 最初に、二要素認証を要求するグループを作成し、ユーザーをグループに追加します。 OCIコンソール左上のメニュー → アイデンティティとセキュリティ → アイデンティティ → ドメイン → 対象のドメインを選択します。 ドメインの詳細画面で、「グループ」のタブを開き、「グループの作成」ボタンをクリックします。 グループの作成画面で、グループ名とグループの説明を入力し、グループに追加するユーザーを選択します。 「作成」ボタンをクリックし、グループを作成します。 以上の手順で、二要素認証を要求するグループを作成しました。 2. MFAの有効化 Identity Domain内で有効化する二要素認証の”ファクタ”を選択します。 ドメインの詳細画面 → セキュリティ...","categories": [],
+        "excerpt":"Identity DomainではSMSやメール、モバイルアプリケーションのワンタイム・パスコードなどを使用してユーザーに二要素認証を要求することができます。 また、全ユーザーに二要素認証を要求するのではなく、特定のグループに属しているユーザーや、特定のネットワークからログインしたユーザーなど、条件を指定して二要素認証を要求できます。 本チュートリアルでは、Identity Domainの特定のグループに属しているユーザーに二要素認証を要求するための設定手順を紹介します。 所要時間 : 約20分 前提条件 : OCIチュートリアル「OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する」を参考に、MFAを有効化したいユーザーを作成していること Identity Domainの管理者が本チュートリアル記載の設定作業をすること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. グループの作成 本チュートリアルでは、特定のグループに属しているユーザーがIdentity Domainにログインする際に、二要素認証を要求するように設定をします。 最初に、二要素認証を要求するグループを作成し、ユーザーをグループに追加します。 OCIコンソール左上のメニュー → アイデンティティとセキュリティ → アイデンティティ → ドメイン → 対象のドメインを選択します。 ドメインの詳細画面で、「グループ」のタブを開き、「グループの作成」ボタンをクリックします。 グループの作成画面で、グループ名とグループの説明を入力し、グループに追加するユーザーを選択します。 「作成」ボタンをクリックし、グループを作成します。 以上の手順で、二要素認証を要求するグループを作成しました。 2. MFAの有効化 Identity Domain内で有効化する二要素認証の”ファクタ”を選択します。 ドメインの詳細画面 → セキュリティ → MFAのタブを開き、任意のファクタにチェックを入れます。...","categories": [],
         "tags": ["intermediate"],
-        "url": "/ocitutorials/id-security/identitydomain-mfa/",
-        "teaser": "/ocitutorials/id-security/identitydomain-mfa/mfa-10.png"
-      },{
-        "title": "Security Zoneを有効化する",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/id-security/security-zone/",
-        "teaser": "/ocitutorials/id-security/security-zone/securityzone01.png"
-      },{
-        "title": "Vulnerability Scanning Serviceを設定する",
-        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/id-security/vulnerability-scanning/",
-        "teaser": "/ocitutorials/id-security/vulnerability-scanning/vss-01.png"
+        "url": "/ocitutorials/identity/identitydomain-mfa/",
+        "teaser": "/ocitutorials/identity/identitydomain-mfa/mfa-10.png"
       },{
         "title": "OIC インスタンスを作成する",
         "excerpt":"Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。このハンズオンでは OIC インスタンスの作成方法を ステップ・バイ・ステップで紹介します。 アイデンティティ・ドメインを使用した手順はこちらをご確認ください。 OIC インスタンスの作成前に確認すること OIC インスタンスを作成する前の確認事項について説明します。 1. Oracle Cloud アカウントの準備 Oracle Cloud のアカウントを準備します。無料のトライアル環境（フリートライアル）と有料のクラウド・アカウントのご利用が可能です。 無料のトライアル環境の取得には認証用のSMSを受け取ることができる携帯電話と、有効なクレジットカードの登録が必要です。詳細は下記URLのページをご確認ください。 Oracle Cloud 無料トライアルを申し込む トライアル環境のサインアップ手順はこちらをご確認ください。 Oracle Cloud 無料トライアル・サインアップガイド(PDF) Oracle Cloud 無料トライアルに関するよくある質問(FAQ) 2. 作成可能なリージョンの確認 OIC インスタンスを作成可能なリージョンを確認します。詳細はこちらのマニュアルをご確認ください。 3. 制限事項の確認 クラウド・アカウントの発行時期により、作成可能な OIC インスタンスの種類が異なります。こちらのマニュアルに、OCI コンソールから作成する OIC Generation 2 インスタンスの作成条件が記載されています。 4. エディションの確認 (Standard or Enterprise) OIC...","categories": [],
@@ -1669,9 +1573,9 @@ var store = [{
       },{
         "title": "OCI Network Firewallを構築する",
         "excerpt":" ","categories": [],
-        "tags": ["id-security"],
+        "tags": ["security"],
         "url": "/ocitutorials/intermediates/networkfirewall/",
-        "teaser": "/ocitutorials/id-security/networkfirewall/nfw1.png"
+        "teaser": "/ocitutorials/ocitutorials/security/networkfirewall-setup/nfw1.png"
       },{
         "title": "OCI Valut (OCI Key Management) でBYOKをする",
         "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
@@ -1705,15 +1609,15 @@ var store = [{
       },{
         "title": "OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する",
         "excerpt":" ","categories": [],
-        "tags": ["id-security"],
+        "tags": ["identity"],
         "url": "/ocitutorials/intermediates/identitydomains-add-domains-license/",
-        "teaser": "/ocitutorials/id-security/identitydomains-add-domains-license/identitydomains1.png"
+        "teaser": "/ocitutorials/ocitutorials/identity/identitydomain-createdomain-alterdomaintype/identitydomains1.png"
       },{
         "title": "OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する",
         "excerpt":" ","categories": [],
-        "tags": ["id-security"],
+        "tags": ["identity"],
         "url": "/ocitutorials/intermediates/identitydomains-admin-users/",
-        "teaser": "/ocitutorials/id-security/identitydomains-admin-users/users7.png"
+        "teaser": "/ocitutorials/ocitutorials/identity/identitydomain-setup-users/users7.png"
       },{
         "title": "Logging AnalyticsでAutonomous Databaseのログを収集する",
         "excerpt":" ","categories": [],
@@ -1741,7 +1645,7 @@ var store = [{
       },{
         "title": "Cloud Guardを使ってみる",
         "excerpt":" ","categories": [],
-        "tags": [],
+        "tags": ["security"],
         "url": "/ocitutorials/intermediates/cloud-guard/",
         "teaser": null
       },{
@@ -1924,6 +1828,90 @@ var store = [{
         "tags": ["opensearch"],
         "url": "/ocitutorials/opensearch/search-application-for-beginners/",
         "teaser": null
+      },{
+        "title": "エッジポリシーのWeb Application Firewallのログを分析する",
+        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、「OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する」の続編として、エッジポリシー内のログをObject Storageを経由してLogging Analyticsに転送し、ログを分析する手順を紹介します。 所要時間： 約40分（SRによる対応を除く） 前提条件： OCIチュートリアル「OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する」を参考に、エッジポリシーの作成が完了していること OCI CLIコマンドがインストール、構成されていること Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIチュートリアル「OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する」もしくは、ドキュメントをご参照ください。 ユーザーにObject Storageの管理権限がIAMポリシーで付与されていること。ポリシーの詳細はドキュメント「オブジェクト・ストレージへのWAFログの配信」をご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Object Storageバケットの作成 エッジポリシー内のログの転送先となるObject Storageを作成します。 エッジポリシーのログは、SRをあげることで指定したObject Storageに転送することが可能です。 OCIコンソール画面左上のメニュー → ストレージ　→ オブジェクト・ストレージとアーカイブ・ストレージ　→ バケット　→　「バケットの作成」ボタンをクリックします。 表示された「バケットの作成」画面にて、任意のバケット名を入力し、「作成」ボタンをクリックします。 ※その他の項目はデフォルトのままで構いません。 バケットを作成したら、バケットの可視性をプライベートからパブリックに変更します。 作成したバケットの詳細画面を開き、画面左上の「可視性の編集」ボタンをクリックします。 「可視性の編集」画面にて「パブリック」を選択し、「変更の保存」ボタンをクリックします。 バケットの作成、可視性の編集が完了したら、この後の手順でSRを作成する際にバケットの情報が必要になるため、バケット名とネームスペースをメモします。...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/waf-v1-loganalytics/",
+        "teaser": "/ocitutorials/security/waf-v1-setup/edge1.png"
+      },{
+        "title": "OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallのログを分析する",
+        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、「OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。 所要時間 : 約20分 前提条件 : 「OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築する」を参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIチュートリアル「OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する」もしくは、ドキュメントをご参照ください。 ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細はドキュメントをご参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. ログ・グループの作成 WAFポリシーのログの転送先となるLogging Analyticsの「ログ・グループ」を作成します。 Logging Analyticsではログを「ログ・グループ」単位で管理することができます。 OCIコンソール画面左上のメニュー → 監視および管理 → ログ・アナリティクス → 管理 → ログ・グループ → 「ログ・グループの作成」ボタンをクリックします。 表示された「ログ・グループの作成」画面にて、任意のログ・グループ名を入力し、「作成」ボタンをクリックします。...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/waf-v2-loganalytics/",
+        "teaser": "/ocitutorials/security/waf-v2-setup/wafv2-19.png"
+      },{
+        "title": "OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する",
+        "excerpt":"OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。 本チュートリアルでは、OCIのLoad Balancerに直接デプロイする”WAFポリシー”を作成し、実際のWAFの動作を確認します。 所要時間 : 約1時間 前提条件 : 「応用編 - ロードバランサーでWebサーバーを負荷分散する」を参考に、WebサーバーおよびOCIのロードバランサ―が構成されていること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. IAMポリシーの作成 Web Application Firewallを使用するためには、操作を実行するユーザーに以下のポリシーが付与されている必要があります。 allow group &lt;IAMグループ名&gt; to manage waas-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage web-app-firewall in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to manage waf-policy in tenancy/compartment &lt;コンパートメント名&gt;...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/waf-v2-setup/",
+        "teaser": "/ocitutorials/security/waf-v2-setup/wafv2-19.png"
+      },{
+        "title": "OCI Network Firewallを構築する",
+        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。 所要時間 : 約70分 (Network Firewallインスタンスの作成に40分ほどかかります) 前提条件 : ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントを参照ください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 はじめに : 以下が本チュートリアルで作成するNetwork Firewallの構成図です。 0. Network Firewallについて Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。 Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。 Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。 パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御 アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止 各サブネットとルート表について インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。その後Network Firewallによって検査されたトラフィックはPublic Subnet内のインスタンスへ転送されます。 Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork...","categories": [],
+        "tags": ["security"],
+        "url": "/ocitutorials/security/networkfirewall-setup/",
+        "teaser": "/ocitutorials/security/networkfirewall-setup/nfw1.png"
+      },{
+        "title": "OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する",
+        "excerpt":"OCIにはエッジポリシーとWAFポリシーの2種類のWeb Application Firewallがあります。 本チュートリアルでは、OCI世界各リージョンのエッジに設定されているWAFサーバにデプロイするタイプの「エッジポリシー」を実際に作成して、Webアプリケーションへの攻撃を検知、防御しているところを確認します。 所要時間： 約90分 前提条件： ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細はドキュメントをご参照ください。 Webアプリケーションのドメインを取得していること 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 ※本チュートリアルはOCI上でコンピュートを立ち上げてWebサーバーをインストールするところから始めます。既に手元にWebサーバがインストールされ、ドメインが構成されている環境がある場合は手順4から始めてください。 1. コンピュートインスタンスの作成 OCIチュートリアル入門編「その3-インスタンスを作成する」を参考に、Webサーバ用のコンピュートインスタンスを1つ作成する。 2. Webサーバのインストールと起動 sshでインスタンスにアクセスする。 インスタンスへのsshでのアクセス方法が不明な場合は、「その3 - インスタンスを作成する」を参考にしてください。 Apache HTTPサーバーをインストールする。 sudo yum -y install httpd TCPの80番(http)および443番(https)ポートをオープンにする。 sudo firewall-cmd --permanent --add-port=80/tcp sudo firewall-cmd --permanent --add-port=443/tcp ファイアウォールを再ロードする。 sudo firewall-cmd --reload Webサーバーを起動する。 sudo systemctl start httpd ブラウザからWebサーバーにアクセスできることを確認する。...","categories": [],
+        "tags": ["security"],
+        "url": "/ocitutorials/security/waf-v1-setup/",
+        "teaser": "/ocitutorials/security/waf-v1-setup/edge1.png"
+      },{
+        "title": "OCI Network FirewallのIDS/IPS機能を検証する",
+        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルは「OCI Network Firewallを構築する」の続編として、IDS/IPSの設定および動作を確認します。 IDS/IPSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。 Kali Linuxでは、Network Firewallインスタンスに保護されたWindowsのコンピュートインスタンスに侵入テストを実施します。 Eicarファイルを使用する際は、Network Firewallインスタンスに保護されたLinuxのコンピュートインスタンスにWebサーバーを構築し、Webサーバーを使用して動作を検証します。 所要時間 : 約60分 前提条件 : OCIチュートリアル「OCI Network Firewallを構築する」を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること Kali Linuxを使用した動作検証を実施する場合、Windowsのコンピュートインスタンスに対して侵入テストを実施します。OCIチュートリアル「OCI Network Firewallを構築する」の手順6-2 Windowsインスタンスの作成に沿って、Windowsのコンピュートインスタンスが作成されていることを確認してください。 Kali Linuxを使用した動作検証を実施する場合、Kali LinuxをOCIにデプロイするを参考に、OCI Network Firewallで保護されたコンピュートインスタンスに対して通信を行える環境に、Kali Linuxの構築が終わっていること。 Eicarファイルを使用した動作検証を実施する場合、LinuxのコンピュートインスタンスにWebサーバーをインストールして動作を検証します。OCIチュートリアル「OCI Network Firewallを構築する」の手順6-1Linuxのコンピュート・インスタンスの作成に沿って、Linuxのコンピュートインスタンスが作成されていることを確認してください。 重要： OCIの環境へツールなどを用いた侵入テストを実行する際は、メールにてOracleに事前に侵入テストの実施を通知する必要があります。本チュートリアルの内容を実施する際は、クラウド・セキュリティ・テスト通知の送信を参考に、事前にOracleへ告知メールを送信してください。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 ※本チュートリアルでは、OCI Network Firewallの機能検証を目的にKali LinuxおよびEicarファイルを使用します。ご自身の管理下にないサーバーや、本番環境に対しては使用しないでください。また、ツールを使用したことによりトラブルや損失が発生した場合についても責任を負いかねます。 1....","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/networkfirewall-idps/",
+        "teaser": "/ocitutorials/security/networkfirewall-idps/nfwips7.png"
+      },{
+        "title": "OCI Network Firewallのログを分析する",
+        "excerpt":"パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。 本チュートリアルでは、「OCI Network Firewallを構築する」の続編として、Network Firewallのログを分析し、Network Firewallを通過するトラフィックの傾向、脅威の有無を確認します。 Network Firewallのログの収集にはLoggingサービス、分析にはOCIが提供するログ分析サービス「Logging Analytics」を使用します。 Logging Analyticsでは、様々なOCIサービスのログ、Oracle製品のログに対応したログの解析文が用意されていますが、Network Firewallのログにはまだ対応していないので、本チュートリアルではNetwork Firewallのログに対応した解析文をカスタムで作成します。 通常はLoggingサービスで収集したログは「Service Connector Hub」と呼ばれるサービスを使用して、直接Logging Analyticsに連携することも可能です。しかし、今回はLoggingサービスから直接Logging Analyticsにログを転送してしまうと、カスタムで作成したログの解析文でログを読み取ることが出来なくなってしまうため、Loggingサービスのログを一度Object Storageに転送します。 Object Storageに格納されたログは、Logging Analyticsの「ObjectCollectionRule」と呼ばれるルールを作成することで、Logging Analyticsに転送されます。 所要時間 : 約60分 前提条件 : Logging Analyticsが有効化されていること OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。 ユーザーがLoggingサービスを使用するためのポリシーが作成されていること。ポリシーの詳細はドキュメントをご参照ください。 ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIチュートリアル「OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する」もしくは、ドキュメントをご参照ください。 ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細はドキュメントをご参照ください。 OCIチュートリアル「OCI Network Firewallを構築する」を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること OCIチュートリアル「OCI Network FirewallのIPS/IDS機能を検証する」を参考に、侵入検知（IDS）もしくは侵入防止（IPS）のセキュリティ・ルールが設定されていること OCIチュートリアル「コマンドライン(CLI)でOCIを操作する」を参考に、OCI...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/networkfirewall-loganalytics/",
+        "teaser": "/ocitutorials/security/networkfirewall-loganalytics/nfwla39.png"
+      },{
+        "title": "Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する",
+        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCIのオブジェクト・ストレージやブート・ボリュームなどのストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してBase Databaseを暗号化する手順を紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） OCIチュートリアル「Vaultを作成し 顧客管理の鍵をインポートする」を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの準備 OCIチュートリアル「Vaultを作成し 顧客管理の鍵をインポートする」を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。 2. Base Databaseインスタンスの作成 OCIコンソール　→ Oracle Database → Oracleベース・データベース・サービス　→　「DBシステムの作成」ボタンをクリックします。 　 OCIチュートリアルOracle Database編「101:Oracle Cloud上でOracle Databaseを使おう」を参考に、DBシステムの作成画面の各項目を入力、選択します。 DBシステムの作成画面の「データベース情報」画面の一番下の「拡張オプションの表示」を選択します。 暗号化のタブを開き、「顧客管理キーの使用」をチェックします。 顧客管理キーの使用について、確認画面が表示されるので「はい、顧客管理キーを有効化します」を選択します。...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/vault-basedatabase/",
+        "teaser": "/ocitutorials/security/vault-basedatabase/vault-basedatabase01.png"
+      },{
+        "title": "Vaultサービスを使ってコンピュート・インスタンスのブート・ボリュームをユーザー管理の暗号鍵で暗号化する",
+        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCIのオブジェクト・ストレージやブート・ボリュームなどのストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してコンピュート・インスタンスのブート・ボリュームを暗号化する手順を紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） OCIチュートリアル「Vaultを作成し 顧客管理の鍵をインポートする」を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの準備 OCIチュートリアル「Vaultを作成し 顧客管理の鍵をインポートする」を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。 2. IAMポリシーの作成 Vaultサービスに格納された暗号鍵を指定してブート・ボリュームを作成するには、ブート・ボリュームがVaultサービスにアクセスする権限が必要です。 コンピュート・インスタンスを作成するコンパートメントにて、以下IAMポリシーを作成します。 allow service blockstorage to use keys in compartment &lt;コンパートメント名&gt; 3. コンピュート・インスタンスの作成 OCIコンソール　→　コンピュート　→ インスタンス　→...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/vault-compute/",
+        "teaser": "/ocitutorials/security/vault-compute/vault-compute06.png"
+      },{
+        "title": "Vaultサービスを使ってObject Storageをユーザー管理の暗号鍵で暗号化する",
+        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCI上のストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してObject Storageを作成する手順について紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） OCIチュートリアル「Vaultを作成し 顧客管理の鍵をインポートする」を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの準備 OCIチュートリアル「Vaultを作成し 顧客管理の鍵をインポートする」を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。 2. IAMポリシーの作成 Vaultサービスに格納された暗号鍵を指定してObject Storageを作成するには、Object StorageがVaultサービスにアクセスする権限が必要です。 Object Storageを作成するコンパートメントにて、以下IAMポリシーを作成します。 allow service objectstorage-&lt;リージョン名&gt; to use keys in compartment &lt;コンパートメント名&gt;...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/vault-objectstorage/",
+        "teaser": "/ocitutorials/security/vault-objectstorage/vault-oss09.png"
+      },{
+        "title": "Vaultを作成し 顧客管理の鍵をインポートする",
+        "excerpt":"OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。 通常、OCI上のストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。 OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。 また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。 OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細はドキュメントをご参照ください。 本チュートリアルでは、ユーザー管理の暗号鍵を作成し、Vaultサービスへインポートする手順について紹介します。 所要時間 : 約20分 前提条件 : OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します） 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. Vaultの作成 OCIコンソール → アイデンティティとセキュリティ → ボールト → 「ボールトの作成」ボタンをクリックします。 Vaultの作成画面で任意の名前を入力し、「ボールトの作成」ボタンをクリックします。 1~2分でボールトの作成が完了し、ステータスがアクティブになります。 2. 暗号鍵の作成とインポート 作成したボールトの詳細画面の「キーの作成」ボタンをクリックします。 「キーの作成」画面にて任意の名前を入力し、「外部キーのインポート」にチェックを入れます。 ※キーのシェイプ、アルゴリズムはデフォルトのAES, 256ビットのまま進めます。 ラッピング・キー情報が表示されるので、「公開ラッピング・キー」をコピーします。 Cloud Shellなど、OpenSSLがインストールされている環境で公開ラッピング・キーをpemファイルとして保存します。 $ vi publickey.pem...","categories": [],
+        "tags": ["intermediate"],
+        "url": "/ocitutorials/security/vault-setup/",
+        "teaser": "/ocitutorials/security/vault-setup/vault-setup02.png"
+      },{
+        "title": "Cloud Guardを使ってみる",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/security/cloudguard-setup/",
+        "teaser": null
+      },{
+        "title": "Oracle Data Safe チュートリアルまとめ",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。   1.Oracle Data Safeを有効化する   2.Oracle Data Safeのデータ・マスキングを試してみる   3.Oracle Data Safeのアクティビティ監査で操作ログを記録する   4.Oracle Data Safeにフェデレーッド・ユーザーでアクセスする   5.プライベートIPアドレスでData SafeにDBを登録する   6.Oracle Data SafeでオンプレミスのOracle DBを管理する   ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/security/datasafe-tutorial/",
+        "teaser": null
+      },{
+        "title": "Security Zoneを有効化する",
+        "excerpt":"このチュートリアルは外部のページで紹介しています。リンク先のページをご覧ください。  ","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/security/securityzone-setup/",
+        "teaser": "/ocitutorials/ocitutorials/security/securityzone-setup/securityzone01.png"
       },{
         "title": "トラブル解決に向けた技術サポート(SR)活用のコツ",
         "excerpt":"本資料の目的 : この文書は、お客様がトラブル解決のために技術サポート（Support RequestまたはService Request、以下SRと略します）を効果的に活用するためのポイント、記載すべき項目、伝える際の注意事項をまとめたものです。サポート側は、個々の問い合わせに誠実に取り組み、解決に向けて最善の努力を尽くします。サポート側とお客様が協力し合うことは、トラブルの早期解決に寄与します。これらはすべて任意の内容ですので、必ずしも全てを実施しなければならないわけではありません。なにをどこまで参考にするかはそれぞれのご判断で取り入れていただけますようお願いします 前提条件 : OCIを利用するお客様・パートナー様のエンジニア向け。ただし技術サポートツールの「操作方法」については本文書には含みませんので、下記各種ガイドをご参照ください (製品別サポート窓口／ご利用ガイド) (My Oracle Support サービス・リクエスト作成ガイド) (Oracle Cloud Supportご利用ガイド) 目次 1. トラブル解決に向けた全体像と技術サポート(SR)の位置付け 1.1 トラブル解決とは 1.2 トラブル解決までの流れ 1.3 関係者の役割分担と相互協力 2. SRを用いたトラブル解決のコツ 2.1 やりとりの回数を減らすために 2.2 待ち時間を短くするために 3. SR起票のコツ 3.1 落ち着いて状況を整理する(テンプレートの利用) 3.2 確定／送信前にチェックする(起票時のチェックリスト)　 所要時間： 約10分 1. トラブル解決に向けた全体像と技術サポート(SR)の位置付け 1.1 トラブル解決とは 目の前で発生している「問題事象」を解決するためには、まず当然ながら、その「被疑箇所」を特定し、発生原因を明らかにします。その後、暫定的な回避策を適用し、同時に恒久的な対策が有効であることを確認・実施して、トラブルを解決できたと言えます 1.2 トラブル解決までの流れ 「問題事象の切り分け」や「ログ取得」などの各工程は、解決後に振り返ると一本道の活動のように見えるかもしれません。実際には、解決の過程において、ログを読み込み・分析し、さまざまな可能性を推定しながら疑義箇所を絞り込み・判断するなど、原因が特定できるまでは、追加調査や再調査が必要で、反復的な工程が含まれることがあります 1.3 関係者の役割分担と相互協力 トラブル解決のための技術サポート体制は、有料アカウントをお持ちのすべてのお客様に自動付帯される...","categories": [],
