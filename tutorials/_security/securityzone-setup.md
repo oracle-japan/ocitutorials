@@ -4,8 +4,8 @@ excerpt: "Security Zoneを使用することで、特定のコンパートメン
 order: "160"
 tags:
 header:
- teaser: "/id-security/security-zone/securityzone01.png"
- overlay_image: "/id-security/security-zone/securityzone01.png"
+ teaser: "/ocitutorials/security/securityzone-setup/securityzone01.png"
+ overlay_image: "/security/securityzone-setup/securityzone01.png"
  overlay_filter: rgba(34, 66,55, 0.7)
 link: https://speakerdeck.com/oracle4engineer/scurity-zonesshe-ding-cao-zuo-gaido
 ---

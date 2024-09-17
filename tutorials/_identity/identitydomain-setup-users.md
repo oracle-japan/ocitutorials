@@ -4,10 +4,10 @@ excerpt: "OCI IAM Identity Domainsは2021年に登場したOCIの新しい認証
 order: "150"
 layout: single
 tags:
- - id-security
+ - identity
 header:
- teaser: "/id-security/identitydomains-admin-users/users7.png"
- overlay_image: "/id-security/identitydomains-admin-users/users7.png"
+ teaser: "/identity/identitydomains-admin-users/users7.png"
+ overlay_image: "/identity/identitydomains-admin-users/users7.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---

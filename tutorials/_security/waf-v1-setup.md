@@ -4,10 +4,10 @@ excerpt: "Webサイトの脆弱性対策に苦労していませんか？そん�
 order: "110"
 layout: single
 tags:
- - id-security
+ - security
 header:
- teaser: "/id-security/waf-edge-policy/edge1.png"
- overlay_image: "/id-security/waf-edge-policy/edge17.png"
+ teaser: "/security/waf-v1-setup/edge1.png"
+ overlay_image: "/security/waf-v1-setup/edge17.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
@@ -31,7 +31,7 @@ OCIにはエッジポリシーとWAFポリシーの2種類のWeb Application Fir
 
 # 1. コンピュートインスタンスの作成
 
-OCIチュートリアル入門編[その3-インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/)を参考に、Webサーバ用のコンピュートインスタンスを1つ作成する。
+OCIチュートリアル入門編「[その3-インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance/)」を参考に、Webサーバ用のコンピュートインスタンスを1つ作成する。
 
 <br>
 
@@ -39,7 +39,7 @@ OCIチュートリアル入門編[その3-インスタンスを作成する](htt
 
 1. sshでインスタンスにアクセスする。
 
-インスタンスへのsshでのアクセス方法が不明な場合は、 [その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance) を参考にしてください。
+インスタンスへのsshでのアクセス方法が不明な場合は、「[その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance)」を参考にしてください。
 
 
 2. Apache HTTPサーバーをインストールする。
@@ -121,7 +121,7 @@ OCIコンソール → ネットワーキング → 仮想クラウド・ネッ�
 
 
 ※OCI CLIコマンドなどのAPIを使用することで一度に大量のCIDRを登録することも可能です。
-OCI CLIの構成方法についてはOCIチュートリアル「[コマンドライン(CLI)でOCIを操作する](https://oracle-japan.github.io/ocitutorials/intermediates/using-cli/)」をご参照ください。
+OCI CLIの構成方法についてはOCIチュートリアル「[コマンドライン(CLI)でOCIを操作する](/ocitutorials/intermediates/using-cli/)」をご参照ください。
 OCI CLIによるセキュリティ・リストの編集方法については[OCI CLI Command Reference](https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.25.0/oci_cli_docs/cmdref/network/subnet/update.html)をご参照ください。
 
 

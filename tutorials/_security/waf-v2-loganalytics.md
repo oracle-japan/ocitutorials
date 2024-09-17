@@ -6,23 +6,23 @@ layout: single
 tags:
  - intermediate
 header:
- teaser: "/id-security/web-application-firewall-v2/wafv2-19.png"
- overlay_image: "/id-security/web-application-firewall-v2/wafv2-19.png"
+ teaser: "/security/waf-v2-setup/wafv2-19.png"
+ overlay_image: "/security/waf-v2-setup/wafv2-19.png"
  overlay_filter: rgba(34, 66,55, 0.7)
 
 ---
 
 OCIでは、OCI Load Balancerに直接デプロイするWAF、”WAFポリシー”と、お客様のアプリケーションのドメインに構築するWAF、”エッジポリシー”の2種類のWAFを提供しています。
-本チュートリアルでは、「[OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/id-security/web-application-firewall-v2)」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。
+本チュートリアルでは、「[OCIのLoad BalancerにアタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/security/waf-v2-setup)」の続編として、有効化したログをOCIのログ分析サービス「Logging Analytics」に転送し、ログを可視化、分析する手順を紹介します。
 
 **所要時間 :** 約20分
 
 **前提条件 :**
-+ [OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/id-security/web-application-firewall-v2)を参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること
++ 「[OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構築する](/ocitutorials/security/waf-v2-setup)」を参考に、WAFポリシーの作成およびログの有効化（手順3）が完了していること
 + Logging Analyticsが有効化されていること
 - OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
 ![画面キャプチャ0](nfwla5.png)
-+ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html)をご参照ください。
++ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIチュートリアル「[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)」もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/wafpolicyreference_topic-Details_for_WAF_Policies.htm#waf_policy_details)をご参照ください。
 + ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/serviceconnectorhubpolicyreference.htm)をご参照ください。
 
 

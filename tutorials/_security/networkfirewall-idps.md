@@ -6,14 +6,17 @@ layout: single
 tags:
  - intermediate
 header:
- teaser: "/id-security/networkfirewall/nfw1.png"
- overlay_image: "/id-security/networkfirewall/nfw1.png"
+ teaser: "/security/networkfirewall-idps/nfwips7.png"
+ overlay_image: "/security/networkfirewall-idps/nfwips7.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
+<!-- リンク定義 -->
+[OCI Network Firewallを構築する]: /ocitutorials/security/networkfirewall-setup/
+<!-- --------- -->
 
 パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。
-本チュートリアルは[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)の続編として、IDS/IPSの設定および動作を確認します。
+本チュートリアルは「[OCI Network Firewallを構築する]」の続編として、IDS/IPSの設定および動作を確認します。
 
 IDS/IPSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。
 Kali Linuxでは、Network Firewallインスタンスに保護されたWindowsのコンピュートインスタンスに侵入テストを実施します。
@@ -23,10 +26,10 @@ Eicarファイルを使用する際は、Network Firewallインスタンスに�
 **所要時間 :** 約60分
 
 **前提条件 :**
-+ OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること
-+ Kali Linuxを使用した動作検証を実施する場合、Windowsのコンピュートインスタンスに対して侵入テストを実施します。OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall/)の手順6-2[Windowsインスタンスの作成](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall/#6-2-windows%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90)に沿って、Windowsのコンピュートインスタンスが作成されていることを確認してください。
++ OCIチュートリアル「[OCI Network Firewallを構築する]」を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること
++ Kali Linuxを使用した動作検証を実施する場合、Windowsのコンピュートインスタンスに対して侵入テストを実施します。OCIチュートリアル「[OCI Network Firewallを構築する]」の手順6-2 [Windowsインスタンスの作成](/ocitutorials/security/networkfirewall-setup/#6-2-windowsのインスタンスの作成)に沿って、Windowsのコンピュートインスタンスが作成されていることを確認してください。
 + Kali Linuxを使用した動作検証を実施する場合、[Kali LinuxをOCIにデプロイする](https://qiita.com/western24/items/9830d158247fd2dca60b)を参考に、OCI Network Firewallで保護されたコンピュートインスタンスに対して通信を行える環境に、Kali Linuxの構築が終わっていること。
-+ Eicarファイルを使用した動作検証を実施する場合、LinuxのコンピュートインスタンスにWebサーバーをインストールして動作を検証します。OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall/)の手順6-1[Linuxのコンピュート・インスタンスの作成](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall/#6-2-windows%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90)に沿って、Linuxのコンピュートインスタンスが作成されていることを確認してください。
++ Eicarファイルを使用した動作検証を実施する場合、LinuxのコンピュートインスタンスにWebサーバーをインストールして動作を検証します。OCIチュートリアル「[OCI Network Firewallを構築する]」の手順6-1[Linuxのコンピュート・インスタンスの作成](https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup/#6-2-windows%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90)に沿って、Linuxのコンピュートインスタンスが作成されていることを確認してください。
 + **`重要`**： OCIの環境へツールなどを用いた侵入テストを実行する際は、メールにてOracleに事前に侵入テストの実施を通知する必要があります。本チュートリアルの内容を実施する際は、[クラウド・セキュリティ・テスト通知の送信](https://docs.oracle.com/ja-jp/iaas/Content/Security/Concepts/security_testing-policy_notification.htm)を参考に、事前にOracleへ告知メールを送信してください。
 
 
@@ -34,17 +37,17 @@ Eicarファイルを使用する際は、Network Firewallインスタンスに�
 + ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。
 + ※本チュートリアルでは、OCI Network Firewallの機能検証を目的にKali LinuxおよびEicarファイルを使用します。ご自身の管理下にないサーバーや、本番環境に対しては使用しないでください。また、ツールを使用したことによりトラブルや損失が発生した場合についても責任を負いかねます。
 
-
+<br>
 
 
 # 1. ネットワーク・ファイアウォール・ポリシーの編集
 
-今回のチュートリアルでは、[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したネットワーク・ファイアウォール・ポリシーを編集し、既存のネットワーク・ファイアウォール・ポリシーで許可しているアクセス以外は全て侵入検知するセキュリティ・ルールを追加します。
+今回のチュートリアルでは、「[OCI Network Firewallを構築する]」で作成したネットワーク・ファイアウォール・ポリシーを編集し、既存のネットワーク・ファイアウォール・ポリシーで許可しているアクセス以外は全て侵入検知するセキュリティ・ルールを追加します。
 
 
 ## 1-1. ネットワーク・ファイアウォール・ポリシーのクローニング
 
-OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したネットワーク・ファイアウォール・ポリシーの詳細画面の「ポリシーのクローニング」をクリックします。
+OCIチュートリアル「[OCI Network Firewallを構築する]」で作成したネットワーク・ファイアウォール・ポリシーの詳細画面の「ポリシーのクローニング」をクリックします。
  ![画面ショット1](nfwips1.png)
 
 
@@ -173,7 +176,7 @@ URLは「任意のURL」を選択します。
 
 # 2. Network Firewallインスタンスに割り当てられているNetwork Firewallポリシーの変更
 
-OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したNetwork Firewallインスタンスの詳細画面の「編集」ボタンをクリックします。
+OCIチュートリアル「[OCI Network Firewallを構築する]」で作成したNetwork Firewallインスタンスの詳細画面の「編集」ボタンをクリックします。
  
  ![画面ショット8](nfwips8.png)
 
@@ -196,8 +199,9 @@ Network Firewallが再び「アクティブ」になるのを待つ間に、次�
 
 
 本手順では、Eicarファイルを使用した動作検証を実施する場合、必要になるWebサーバーをインストールします。
-OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/intermediates/networkfirewall/)で作成したコンピュートインスタンス（Linux）にSSHでアクセスします。
+OCIチュートリアル「[OCI Network Firewallを構築する]」で作成したコンピュートインスタンス（Linux）にSSHでアクセスします。
 ターミナルで以下コマンドを実行し、Apache HTTPサーバをインストールします。
+
 1. Apache HTTPサーバーをインストールします
 
     ```sh
@@ -361,7 +365,7 @@ $ sudo cp rs_exploit1.exe /var/www/html
  ![画面ショット33](nfwips33.png)
 
 
-続いて、OCIチュートリアル[OCI Network Firewallを構築する](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall/)の手順6-2[Windowsインスタンスの作成](https://oracle-japan.github.io/ocitutorials/id-security/networkfirewall/#6-2-windows%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90)で作成したWindowsのコンピュートインスタンスにリモートデスクトップ接続をします。
+続いて、OCIチュートリアル「OCI Network Firewallを構築する」の手順6-2[Windowsインスタンスの作成](/ocitutorials/security/networkfirewall-setup/#6-2-windowsのインスタンスの作成)で作成したWindowsのコンピュートインスタンスにリモートデスクトップ接続をします。
 デスクトップのメニューからServer Managerを開きます。
  ![画面ショット34](nfwips34.png)
 

@@ -6,8 +6,8 @@ layout: single
 tags:
  - intermediate
 header:
- teaser: "/id-security/identitydomain-mfa/mfa-10.png"
- overlay_image: "/id_security/identitydomain-mfa/mfa-10.png"
+ teaser: "/identity/identitydomain-mfa/mfa-10.png"
+ overlay_image: "/identity/identitydomain-mfa/mfa-10.png"
  overlay_filter: rgba(34, 66,55, 0.7)
 
 ---
@@ -21,7 +21,7 @@ Identity DomainではSMSやメール、モバイルアプリケーションの�
 
 
 **前提条件 :**
-+ [アイデンティティとセキュリティ編 - OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する](/ocitutorials/id-security/identitydomains-admin-users/)を参考に、MFAを有効化したいユーザーを作成していること
++ OCIチュートリアル「[OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する](/ocitutorials/identity/identitydomain-setup-users/)」を参考に、MFAを有効化したいユーザーを作成していること
 + Identity Domainの管理者が本チュートリアル記載の設定作業をすること
 
 

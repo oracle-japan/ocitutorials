@@ -4,10 +4,10 @@ excerpt: "OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連�
 order: "150"
 layout: single
 tags:
- - id-security
+ - identity
 header:
- teaser: "/id-security/identitydomains-add-domains-license/identitydomains1.png"
- overlay_image: "/id-security/identitydomains-add-domains-license/identitydomains1.png"
+ teaser: "/ocitutorials/identity/identitydomain-createdomain-changedomaintypeidentitydomains1.png"
+ overlay_image: "/ocitutorials/identity/identitydomain-createdomain-changedomaintype/identitydomains1.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
@@ -27,16 +27,17 @@ header:
 
 # 1. OCI IAM Identity DomainsのSAMLメタデータダウンロード
 OCI IAM Identity DomainsにてSMALメタデータをダウンロードします。
-[OCIのログイン画面](https://www.oracle.com/cloud/sign-in.html)でクラウド・アカウント名を入力します。
-  ![画面ショット1](Azure1.PNG)
-Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。
-  ![画面ショット2](Azure2.PNG)
-ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。
-  ![画面ショット3](Azure3.PNG)
+[OCIのログイン画面](https://www.oracle.com/cloud/sign-in.html)でクラウド・アカウント名を入力します。  
+![画面ショット1](Azure1.PNG)  
+Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。  
+![画面ショット2](Azure2.PNG)  
+ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。  
+![画面ショット3](Azure3.PNG)
 
-OCI コンソール画面左上のメニューより「アイデンティティとセキュリティ」→「アイデンティティ」を選択します。
- ![画面ショット31](Azure31.png)
-アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。（今回は「Tutorial」ドメインを選択します。）※自身で作成したIdentity Domain（ドメイン）に設定する場合にはその該当ドメインを選択します。
+OCI コンソール画面左上のメニューより「アイデンティティとセキュリティ」→「アイデンティティ」を選択します。   
+![画面ショット31](Azure31.PNG)  
+アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。（今回は「Tutorial」ドメインを選択します。）  
+※自身で作成したIdentity Domain（ドメイン）に設定する場合にはその該当ドメインを選択します。
 ![画面ショット4](Azure4.PNG)
 ドメインURLをコピーし控えておきます。（※このURLは後続の手順で利用します。）
 ![画面ショット5](Azure5.PNG)
@@ -45,7 +46,7 @@ OCI コンソール画面左上のメニューより「アイデンティティ�
 ブラウザにて下記のURLにアクセスし、SAMLメタデータをダウンロードし、適当な場所に保存します。
 (https://{Identity DomainのURL（先ほど控えたURL）}/fed/v1/metadata)
 
-# 3.Azure AD側でのサービス・プロバイダの登録
+# 2.Azure AD側でのサービス・プロバイダの登録
 Azure AD側でのサービス・プロバイダの登録をします。
 Azure ポータル（ https://portal.azure.com ）にアクセスします。
 マイクロソフト サインイン画面にて、Azure AD 管理者のIDとパスワードを入力し、「サインイン」を選択し、Azureポータルにログインします。
@@ -99,7 +100,7 @@ SAMLベースのサインオン画面にて、フェデレーションメタデ�
  ![画面ショット28](Azure28.PNG)
 割り当ての追加画面にて、「割り当て」を選択します。
  ![画面ショット29](Azure29.PNG)
-# 4.OCI IAM Identity Domains 側でのアイデンティティ・プロバイダの登録
+# 3.OCI IAM Identity Domains 側でのアイデンティティ・プロバイダの登録
 OCI コンソール画面にて、左メニューより 「アイデンティティとセキュリティ」→「アイデンティティ」 を選択します。
  ![画面ショット32](Azure32.PNG)
 アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。
@@ -119,7 +120,7 @@ IdPの構成にて、Azure AD側でのサービス・プロバイダの登録に
 + **`アイデンティティ・ドメイン・ユーザー属性`** - ユーザー名
  ![画面ショット37](Azure37.PNG)
 
-# 5.OCI IAM Identity Domains側でのアイデンティティ・プロバイダのアクティブ化
+# 4.OCI IAM Identity Domains側でのアイデンティティ・プロバイダのアクティブ化
 OCI IAM Identity Domains側でのアイデンティティ・プロバイダのアクティブ化をします。
 Azure AD側でのサービス・プロバイダの登録にてAzure AD上で作成したユーザーと同一のユーザーをOCI IAM Identity Domains側で作成します。
 アイデンティティ・ドメイン画面にて、左メニューから「ユーザー」を選択し、「ユーザーの作成」を選択します。
@@ -148,7 +149,7 @@ IdP ルール優先度の編集画面にて、左側の優先度列にある上�
 作成したアイデンティティプロバイダ（Azure AD）の優先度を「1」に設定し、「変更の保存」を選択します。
  ![画面ショット48](Azure48.PNG)
  
-# 6.動作確認
+# 5.動作確認
 OCIコンソールにAzure ADによるサインオンが可能になったか動作確認をおこないます。
 OCIコンソール（ https://www.oracle.com/jp/cloud/sign-in.html）にアクセスします。
 テナント名（クラウド・アカウント名）を入力し、「次に進む」を選択します。
