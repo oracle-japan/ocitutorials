@@ -1,0 +1,965 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>111: SELECT AIを試してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。 初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="111: SELECT AIを試してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb111-select-ai/">
+
+
+  <meta property="og:description" content="Oracle Cloud Infrastrucute (OCI) を使っていこうという方のためのチュートリアル集です。 初心者の方でも進められるように、画面ショットを交えながら OCI について学習できるようになっています。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb111-select-ai/23.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-18T10:32:05+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb111-select-ai/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb111-select-ai/23.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          111: SELECT AIを試してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">111: SELECT AIを試してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb111-select-ai/" class="active">111: SELECT AIを試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="111: SELECT AIを試してみよう">
+    <meta itemprop="description" content="">
+    <meta itemprop="datePublished" content="2024-09-18T10:32:05+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-oci生成aiサービスのapiキー取得">1. OCI生成AIサービスのAPIキー取得</a></li><li><a href="#2-環境設定">2. 環境設定</a><ul><li><a href="#2-1-ユーザーの作成と権限の付与">2-1. ユーザーの作成と権限の付与</a></li><li><a href="#2-2-データセットの準備">2-2. データセットの準備</a></li><li><a href="#2-3-sql-developerの設定とビューの作成">2-3. SQL Developerの設定とビューの作成</a></li><li><a href="#2-4-クレデンシャルの作成">2-4. クレデンシャルの作成</a></li><li><a href="#2-4-プロファイルの作成">2-4. プロファイルの作成</a></li></ul></li><li><a href="#3-select-aiを試してみる">3. SELECT AIを試してみる</a><ul><li><a href="#3-1-コメント無しの場合">3-1. コメント無しの場合</a></li><li><a href="#3-2-コメント有りの場合">3-2. コメント有りの場合</a></li><li><a href="#3-3-パラメータ">3-3. パラメータ</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>Autonomous Databaseで使用することの出来る機能、<strong>Select AI</strong>を使えば自然言語を使用してデータを問い合せることが出来ます。</p>
+
+<p>Select AIで大規模言語モデル(LLM)を使用することで、ユーザーが入力したテキスト（自然言語）をSQLに変換し、データベース内のデータを問合せることが出来ます。ユーザーは、<strong>自然言語</strong>を使ってデータベース内のデータと<strong>会話</strong>をすることが出来ます。</p>
+
+<p><br />
+<strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. OCI生成AIサービスのAPIキー取得</a></li>
+  <li><a href="#anchor2">2. 環境設定</a></li>
+  <li><a href="#anchor3">3. SELECT AIを試してみる</a></li>
+</ul>
+
+<p><br />
+<strong>前提条件</strong></p>
+
+<ul>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a>を参考に、ADBインスタンスが作成済みであること</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a>を参考に、SQL Developerを使ってADBに接続出来ること</li>
+  <li>OCI生成AIサービスを使用可能な、Chicagoリージョン、Frankfurtリージョン、Londonリージョン、Sao Pauloリージョンのいずれかをホーム・リージョン、若しくはサブスクライブしてあること。詳しくは、<a href="https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm#">Pretrained Foundational Models in Generative AI</a>をご確認ください。</li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約40分</p>
+
+<p><a id="anchor1"></a>
+<br /></p>
+
+<h1 id="1-oci生成aiサービスのapiキー取得">1. OCI生成AIサービスのAPIキー取得</h1>
+<p>Select AIでは、2024年9月現在、OpenAI、Cohere、Azure OpenAI Service、OCI Generative AI Service、およびGoogle GeminiをAIプロバイダーとして使用することが出来ます。</p>
+
+<p>本記事では、OCI生成AIサービスをAIプロバイダーとして使用したいと思います。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールにアクセスして、右上のプロファイルからユーザー設定を選択します。
+<img src="1.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>左下のリソースからAPIキーを選択し、APIキーの追加をクリックします。
+<img src="2.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>APIキー・ペアの生成（デフォルト）を選択し、秘密キーのダウンロードをした上で作成します。秘密キーは後程使用するので大切に保管しておきます。
+<img src="3.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>構成ファイルのプレビューも後程使用しますので、コピーしメモを取っておきます。
+<img src="4.png" alt="image.png" /></p>
+  </li>
+</ol>
+
+<p><a id="anchor2"></a></p>
+<h1 id="2-環境設定">2. 環境設定</h1>
+<p>Select AIはADBの機能なので、使用にはADBインスタンスが必要です。ADBのインスタンスが未作成の場合は<a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a>を参考に、ADBインスタンスを作成します。</p>
+
+<h2 id="2-1-ユーザーの作成と権限の付与">2-1. ユーザーの作成と権限の付与</h2>
+<p>先ずはチュートリアルを行うユーザーの作成と、権限の付与を行います。</p>
+
+<ol>
+  <li>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a>の<a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/#3-3-%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3">3-3. データベース・ユーザーを作成してみよう（コマンドライン)</a>を参考に、Database ActionsのSQLワークシートから、チュートリアルを行うユーザーを作成し、必要なロールを付与します。</p>
+
+    <p>以下のSQLを実行し、</p>
+    <ul>
+      <li>SELECT_AI_USERというユーザーを作成、必要なロールを付与</li>
+      <li>SELECT AI機能の利用に必要なDBMS_CLOUD_AIパッケージの実行権限を付与</li>
+      <li>Database ActionsにSELECT_AI_USERとしてサインインするため、RESTを有効化</li>
+    </ul>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">GRANT</span> <span class="n">DWROLE</span><span class="p">,</span> <span class="n">UNLIMITED</span> <span class="n">TABLESPACE</span> <span class="k">TO</span> <span class="n">select_ai_user</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="n">Welcome12345</span><span class="o">#</span><span class="p">;</span>
+ <span class="k">GRANT</span> <span class="k">EXECUTE</span> <span class="k">ON</span> <span class="n">DBMS_CLOUD_AI</span> <span class="k">TO</span> <span class="n">select_ai_user</span><span class="p">;</span>
+    
+ <span class="c1">-- REST ENABLE</span>
+ <span class="k">BEGIN</span>
+     <span class="n">ORDS_ADMIN</span><span class="p">.</span><span class="n">ENABLE_SCHEMA</span><span class="p">(</span>
+         <span class="n">p_enabled</span> <span class="o">=&gt;</span> <span class="k">TRUE</span><span class="p">,</span>
+         <span class="n">p_schema</span> <span class="o">=&gt;</span> <span class="s1">'SELECT_AI_USER'</span><span class="p">,</span>
+         <span class="n">p_url_mapping_type</span> <span class="o">=&gt;</span> <span class="s1">'BASE_PATH'</span><span class="p">,</span>
+         <span class="n">p_url_mapping_pattern</span> <span class="o">=&gt;</span> <span class="s1">'select_ai_user'</span><span class="p">,</span>
+         <span class="n">p_auto_rest_auth</span><span class="o">=&gt;</span> <span class="k">TRUE</span>
+     <span class="p">);</span>
+     <span class="k">commit</span><span class="p">;</span>
+ <span class="k">END</span><span class="p">;</span>
+ <span class="o">/</span>
+</code></pre></div>    </div>
+    <p>これでユーザーの作成と、権限の付与が終わりました。</p>
+  </li>
+</ol>
+
+<h2 id="2-2-データセットの準備">2-2. データセットの準備</h2>
+<p>次に、使用するデータセットをADB上にロードします。</p>
+
+<ol>
+  <li>
+    <p>Database Actionsから一度サインアウトします。
+<img src="5.png" alt="image.png" /></p>
+  </li>
+  <li>先程作成したSELECT_AI_USERユーザーとしてサインインします。以下の様に入力します。
+    <ul>
+      <li>ユーザー名：select_ai_user</li>
+      <li>パスワード：Welcome12345#
+<img src="6.png" alt="image.png" /></li>
+    </ul>
+  </li>
+  <li>
+    <p>Data Studioタブのデータ・ロードをクリックします。
+<img src="7.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>今回はExcelファイルをADB上にロードしたいので、データのロードを選択します。
+<img src="8.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/marina-fujimoto/oci-tutorial">こちら</a>からHIGHSCHOOLS.xlsxをダウンロードし、ダウンロードしたExcelファイルをアップロードします。
+<img src="9.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>アップロードしたファイルのデータ・ロードの設定を編集します。ペンのアイコンをクリックし、編集画面を開きます。
+<img src="10.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>表の名前をHIGHSCHOOLSに変更し、閉じるボタンをクリックします。
+<img src="11.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>表の名前がHIGHSCHOOLSと変更されている事を確認し、開始ボタンをクリックします。
+<img src="12.png" alt="image.png" /></p>
+  </li>
+  <li>HIGHSCHOOLS.xlsx内のデータがロードされ、HIGHSCHOOLS表が作成されました。
+<img src="13.png" alt="image.png" /></li>
+</ol>
+
+<p>これでデータ・セットの準備が出来ました。</p>
+
+<h2 id="2-3-sql-developerの設定とビューの作成">2-3. SQL Developerの設定とビューの作成</h2>
+
+<p>先程まで使用していたDatabase Actions内のSQLやAPEXではSELECT AI文を直接実行することをサポートしていないため、<a href="https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/dbms-cloud-ai-package.html#GUID-7B438E87-0E9A-4318-BA01-3BE1A5851229">DBMS_CLOUD_AIパッケージのGENERATEファンクション</a>を使用する必要があります。
+そのため本チュートリアルでは、SQL Developerを使用して、データベースに接続したいと思います。</p>
+
+<ol>
+  <li>
+    <p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a>を参考に、作成したADBにSQL Developerから接続します。</p>
+  </li>
+  <li>
+    <p>接続が完了したら、SQL Developer上で以下のクエリを実行し、HIGHSCHOOLS表とその中身を確認します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">-- HIGHSCHOOLS表の列一覧を表示</span>
+ <span class="k">SELECT</span> <span class="k">COLUMN_NAME</span><span class="p">,</span> <span class="n">DATA_TYPE</span><span class="p">,</span> <span class="n">DATA_LENGTH</span><span class="p">,</span> <span class="k">NULLABLE</span><span class="p">,</span> <span class="n">DATA_DEFAULT</span>
+ <span class="k">FROM</span> <span class="n">USER_TAB_COLUMNS</span>
+ <span class="k">WHERE</span> <span class="k">TABLE_NAME</span> <span class="o">=</span> <span class="s1">'HIGHSCHOOLS'</span>
+ <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">COLUMN_ID</span><span class="p">;</span>
+
+ <span class="c1">-- HIGHSCHOOLS表に格納されているデータ一覧を表示</span>
+ <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">HIGHSCHOOLS</span><span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>HIGHSCHOOLS表にある列とその中のデータを確認する事が出来ました。</p>
+  </li>
+  <li>
+    <p>HIGHSCHOOLS表内には列が多く、今回は使用しない列もあるため、ビューを作成し使用する列を制限します。 今回はhighschools_viewという名前のビューを作成し、使用します。</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">CREATE</span> <span class="k">VIEW</span> <span class="n">highschools_view</span> <span class="k">AS</span>
+ <span class="k">SELECT</span> 
+     <span class="n">BOROUGH</span><span class="p">,</span>
+     <span class="n">SCHOOL_NAME</span><span class="p">,</span>
+     <span class="n">INTEREST</span><span class="p">,</span>
+     <span class="n">TOTAL_STUDENTS</span><span class="p">,</span>
+     <span class="n">GRADUATION_RATE</span><span class="p">,</span>
+     <span class="n">COLLEGE_CAREER_RATE</span><span class="p">,</span>
+     <span class="n">SAFE</span><span class="p">,</span>
+     <span class="n">SEATS</span><span class="p">,</span>
+     <span class="n">APPLICANTS</span><span class="p">,</span>
+     <span class="n">LATITUDE</span><span class="p">,</span>
+     <span class="n">LONGITUDE</span><span class="p">,</span>
+     <span class="n">LANGUAGE_CLASSES</span><span class="p">,</span>
+     <span class="n">ADVANCED_PLACEMENT_COURSES</span><span class="p">,</span>
+     <span class="n">SCHOOL_SPORTS</span><span class="p">,</span>
+     <span class="n">OVERVIEW_PARAGRAPH</span><span class="p">,</span>
+     <span class="n">ACADEMIC_OPPORTUNITIES</span><span class="p">,</span>
+     <span class="n">ADVANCEDPLACEMENT_COURSES</span><span class="p">,</span>
+     <span class="n">EXTRACURRICULAR_ACTIVITIES</span><span class="p">,</span>
+     <span class="n">PSAL_SPORTS_BOYS</span><span class="p">,</span>
+     <span class="n">PSAL_SPORTS_GIRLS</span><span class="p">,</span>
+     <span class="n">ADDTL_INFO1</span>
+ <span class="k">FROM</span> 
+     <span class="n">HIGHSCHOOLS</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<blockquote>
+  <p>補足</p>
+  <ul>
+    <li>LLMに渡すメタデータの中に、似たような・若しくは同じデータが格納されている列がある場合はLLMが混乱してしまうので、不要な列は含めないようにする事が必要です。</li>
+    <li>表や列を多く含めるとそれだけLLMがトークンを消費してしまう為、ビューを作成する等して必要な列のみをメタデータとしてLLMに渡す事が推奨されます。</li>
+  </ul>
+</blockquote>
+
+<h2 id="2-4-クレデンシャルの作成">2-4. クレデンシャルの作成</h2>
+<p>DBMS_CLOUD.CREATE_CREDENTIALプロシージャを使用して、OCI生成AIサービスに接続するためのクレデンシャルを作成します。
+以下の通りにOCID等を置き換え、プロシージャを実行します。</p>
+
+<p>OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設定します：</p>
+<ul>
+  <li><strong>credential_name</strong>：任意（本チュートリアルではOCI_GENAI_CREDとしています）</li>
+  <li><strong>user_ocid</strong>：先ほどメモを取った構成ファイルを参照し、ユーザーのOCIDを入力</li>
+  <li><strong>tenancy_ocid</strong>：先ほどメモを取った構成ファイルを参照し、使用しているテナンシーのOCIDを入力</li>
+  <li><strong>private_key</strong>：先程取得した秘密キーの内容をコピー&amp;ペースト</li>
+  <li><strong>fingerprint</strong>：先ほどメモを取った構成ファイルを参照し、フィンガープリントを入力</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span><span class="p">(</span>
+        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_GENAI_CRED'</span><span class="p">,</span>
+        <span class="n">user_ocid</span>       <span class="o">=&gt;</span> <span class="s1">'ocid1.user.oc1..axxxxxxxxxxxxxxxxq'</span><span class="p">,</span>
+        <span class="n">tenancy_ocid</span>    <span class="o">=&gt;</span> <span class="s1">'ocid1.tenancy.oc1..aaxxxxxxxxxxxxa'</span><span class="p">,</span>
+        <span class="n">private_key</span>     <span class="o">=&gt;</span> <span class="s1">'-----BEGIN PRIVATE KEY-----
+        MIIEvAIBADANBgkqhkiGQEFA＜中略＞1D3iheu1ct50SB0aIQz9Ow==
+        -----END PRIVATE KEY-----'</span><span class="p">,</span>
+        <span class="n">fingerprint</span>     <span class="o">=&gt;</span> <span class="s1">'xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx'</span>
+    <span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+<p>これでクレデンシャルを作成する事が出来ました。このクレデンシャルは、この後プロファイルを作成する際に繰り返し使用しますので、credential_nameをメモしておきます。</p>
+
+<h2 id="2-4-プロファイルの作成">2-4. プロファイルの作成</h2>
+
+<p>DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、AIプロファイルを作成します。</p>
+<ul>
+  <li><strong>プロファイル名</strong>：GENAI_COHERE_COMMAND_R（任意）</li>
+  <li><strong>provider</strong>：oci（本チュートリアルではOCI生成AIサービスをAIプロバイダーとして使用）</li>
+  <li><strong>credential_name</strong>：OCI_GENAI_CRED（先ほど作成したクレデンシャル名を指定）</li>
+  <li><strong>model</strong>：cohere.command-r-16K（プロバイダーをOCIとし、モデルを指定しない場合は、llama-3が使用されます）</li>
+  <li><strong>oci_apiformat</strong>：COHERE（OCIチャットモデルを使用し、Cohereのモデルを指定する場合はoci_apiformatとしてCOHEREと指定）</li>
+  <li><strong>object_list</strong>：このプロファイルで使用するスキーマ・オブジェクトの所有者（本チュートリアルではselect_ai_user）とオブジェクト名（本チュートリアルではhighschools_view）を指定</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">DBMS_CLOUD_AI</span><span class="p">.</span><span class="n">CREATE_PROFILE</span><span class="p">(</span>
+        <span class="s1">'GENAI_COHERE_COMMAND_R'</span><span class="p">,</span>
+        <span class="s1">'{
+            "provider": "oci",
+            "credential_name": "OCI_GENAI_CRED",
+            "model":"cohere.command-r-16K",
+            "oci_apiformat":"COHERE",
+            "object_list": [
+                    {"owner": "select_ai_user", "name": "highschools_view"}
+            ]
+        }'</span>
+    <span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p>これでAIプロファイルが作成できました。</p>
+
+<p><a id="anchor3"></a></p>
+<h1 id="3-select-aiを試してみる">3. SELECT AIを試してみる</h1>
+
+<h2 id="3-1-コメント無しの場合">3-1. コメント無しの場合</h2>
+
+<p>1．DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとして、先程作成したGENAI_COHERE_COMMAND_Rを指定します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">EXEC</span> <span class="n">DBMS_CLOUD_AI</span><span class="p">.</span><span class="n">SET_PROFILE</span><span class="p">(</span><span class="s1">'GENAI_COHERE_COMMAND_R'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>2.　先ずは、高校は全部で何校あるか聞いてみます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="err">高校は全部で何校ありますか</span><span class="p">;</span>
+</code></pre></div></div>
+<p>結果は427と返ってきました。</p>
+
+<p><img src="14.png" alt="alt text" /></p>
+
+<p>3.　highschools_view内に何校分データが格納されているのか確認してみます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">highschools_view</span><span class="p">;</span>
+</code></pre></div></div>
+<p>highschools_view内には427校分データが格納されているので、正しい結果が返ってきたことが分かります。</p>
+
+<p><img src="15.png" alt="alt text" /></p>
+
+<p>4.　次に、マンハッタン市内にある高校の総数を聞いてみます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="err">マンハッタン市内に高校は全部で何校ありますか</span><span class="p">;</span>
+</code></pre></div></div>
+<p>マンハッタン市内には少なくとも1校以上高校があるはずなので、期待される結果は返ってきませんでした。</p>
+
+<p><img src="16.png" alt="alt text" /></p>
+
+<p>5.　showsqlオプションを使用して、どの様なSQLが生成されているのか確認します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="n">showsql</span> <span class="err">マンハッタン市内に高校は全部で何校ありますか</span><span class="p">;</span>
+</code></pre></div></div>
+<p><img src="17.png" alt="alt text" /></p>
+
+<p>以下のようなSQLが返ってきました。
+WHERE句でBOROUGHを’Manhattan’と指定していますが、HIGHSCHOOLS表の中はカタカナで’マンハッタン’と記載がある為、WHERE句が上手く機能していないようです。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">AS</span> <span class="n">MANHATTAN_HIGH_SCHOOLS</span>
+<span class="k">FROM</span> <span class="nv">"SELECT_AI_USER"</span><span class="p">.</span><span class="nv">"highschools_view"</span> <span class="n">H</span>
+<span class="k">WHERE</span> <span class="n">H</span><span class="p">.</span><span class="n">BOROUGH</span> <span class="o">=</span> <span class="s1">'Manhattan'</span>
+</code></pre></div></div>
+
+<p>表、列、ビューにコメントを追加することで、LLMに追加の情報を与えることが出来ます。BOROUGH列にコメントを追加し、カタカナで’マンハッタン’と指定しても正しくSQLが生成されるように調整を行います。</p>
+
+<h2 id="3-2-コメント有りの場合">3-2. コメント有りの場合</h2>
+<p>先程作成したビューの列にコメントを追加し、LLMが日本語でWHERE句の条件を指定してくれるようにメタデータを補足します。</p>
+
+<p>1.　学校名やスポーツ名、言語名などの名詞は「日本語で格納されています。」等コメントで補足をします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>COMMENT ON COLUMN highschools_view.BOROUGH IS '高校が所在する地区。カタカナで地区名が格納されています。';
+COMMENT ON COLUMN highschools_view.SCHOOL_NAME IS '高校の名称。日本語で学校名が格納されています。';
+COMMENT ON COLUMN highschools_view.INTEREST IS '学校の特色';
+COMMENT ON COLUMN highschools_view.TOTAL_STUDENTS IS '総生徒数';
+COMMENT ON COLUMN highschools_view.GRADUATION_RATE IS '卒業率';
+COMMENT ON COLUMN highschools_view.COLLEGE_CAREER_RATE IS '大学への進学率';
+COMMENT ON COLUMN highschools_view.SAFE IS '学校の安全性評価';
+COMMENT ON COLUMN highschools_view.SEATS IS '提供されている座席数';
+COMMENT ON COLUMN highschools_view.APPLICANTS IS '入学希望者数';
+COMMENT ON COLUMN highschools_view.LATITUDE IS '学校の緯度';
+COMMENT ON COLUMN highschools_view.LONGITUDE IS '学校の経度';
+COMMENT ON COLUMN highschools_view.LANGUAGE_CLASSES IS '提供される言語クラス。日本語で学校名が格納されています。';
+COMMENT ON COLUMN highschools_view.ADVANCED_PLACEMENT_COURSES IS '提供される上級コース。日本語で学校名が格納されています。';
+COMMENT ON COLUMN highschools_view.SCHOOL_SPORTS IS '学校で提供されるスポーツ。カタカナでスポーツ名が格納されています。';
+COMMENT ON COLUMN highschools_view.OVERVIEW_PARAGRAPH IS '学校の概要';
+COMMENT ON COLUMN highschools_view.ACADEMIC_OPPORTUNITIES IS '学問的な機会';
+COMMENT ON COLUMN highschools_view.ADVANCEDPLACEMENT_COURSES IS '提供されるAdvanced Placementコース';
+COMMENT ON COLUMN highschools_view.EXTRACURRICULAR_ACTIVITIES IS '課外活動';
+COMMENT ON COLUMN highschools_view.PSAL_SPORTS_BOYS IS '男子PSALスポーツ。カタカナでスポーツ名が格納されています。';
+COMMENT ON COLUMN highschools_view.PSAL_SPORTS_GIRLS IS '女子PSALスポーツ。カタカナでスポーツ名が格納されています。';
+COMMENT ON COLUMN highschools_view.ADDTL_INFO1 IS '追加情報';
+</code></pre></div></div>
+<blockquote>
+  <p>補足</p>
+  <ul>
+    <li>使用する表の名前は明確で分かりやすいものである必要がありますが、表名を変えることができない場合は、コメントやアノテーション（23aiから使用可能）で補足する事もできます。また、ビューを作成し分かりやすい名前に変更する事も有効です。</li>
+  </ul>
+</blockquote>
+
+<p>2．コメントを追加したので、新たにプロファイルを作成します。</p>
+
+<p>プロファイル名をGENAI_COHERE_COMMAND_R_COMMENTSとし、LLMに送信するメタデータにコメントを含めるために”comments”:”true”を追加します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">DBMS_CLOUD_AI</span><span class="p">.</span><span class="n">CREATE_PROFILE</span><span class="p">(</span>
+        <span class="s1">'GENAI_COHERE_COMMAND_R_COMMENTS'</span><span class="p">,</span>
+        <span class="s1">'{
+            "provider": "oci",
+            "credential_name": "OCI_GENAI_CRED",
+            "model":"cohere.command-r-16K",
+            "oci_apiformat":"COHERE",
+            "comments":"true", 
+            "object_list": [
+                    {"owner": "select_ai_user", "name": "highschools_view"}
+            ]
+        }'</span>
+    <span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p>3．DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとしてGENAI_COHERE_COMMAND_Rを指定します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>EXEC DBMS_CLOUD_AI.SET_PROFILE('GENAI_COHERE_COMMAND_R_COMMENTS');
+</code></pre></div></div>
+
+<p>4.　再度、マンハッタン市内にある高校の総数を聞いてみます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT AI マンハッタン市内に高校は全部で何校ありますか;
+</code></pre></div></div>
+
+<p>結果が返ってきました。生成されたSQLも確認してみます。</p>
+
+<p><img src="18.png" alt="alt text" /></p>
+
+<p>5.　showsqlオプションを使用して、どの様なsqlクエリが生成されているのか確認します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="n">showsql</span> <span class="err">マンハッタン市内に高校は全部で何校ありますか</span><span class="p">;</span>
+</code></pre></div></div>
+<p><img src="19.png" alt="alt text" /></p>
+
+<p>以下のようなSQLが返ってきました。WHERE句の条件がカタカナで’マンハッタン’と正しく指定されています。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">AS</span> <span class="n">manhattan_highschools_count</span>
+<span class="k">FROM</span> <span class="nv">"SELECT_AI_USER"</span><span class="p">.</span><span class="nv">"HIGHSCHOOLS_VIEW"</span>
+<span class="k">WHERE</span> <span class="n">BOROUGH</span> <span class="o">=</span> <span class="s1">'マンハッタン'</span>
+</code></pre></div></div>
+
+<p>6.　他にも質問をしてみます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="err">中国語の授業がある高校一覧</span><span class="p">;</span>
+</code></pre></div></div>
+<p>高校名と言語クラスの列が表示されました。
+全ての高校で中国語の言語クラスがあることが分かります。</p>
+
+<p><img src="20.png" alt="alt text" /></p>
+
+<p>コメントを付けてLLMに送信するメタデータを補足すると、結果の精度が向上することが分かりました。</p>
+
+<h2 id="3-3-パラメータ">3-3. パラメータ</h2>
+<p>SELECT AIでは使用出来るactionパラメータがいくつかあります。以下が使用可能なパラメータです。</p>
+
+<ul>
+  <li><strong>runsql</strong> - 結果セットを返す（指定しない時のデフォルト）</li>
+  <li><strong>showsql</strong> - 生成されたSQLを返す</li>
+  <li><strong>narrate</strong> - 会話形式で結果を返す</li>
+  <li><strong>chat</strong> - 一般的なAIチャット（データベースへの問合せは行わず、LLMから直接レスポンスを生成する）</li>
+  <li><strong>explainsql</strong> - 生成されたSQLを自然言語で説明</li>
+</ul>
+
+<p>いくつかのパラメータを実際に試してみます。</p>
+
+<p>1.　先ずはrunsqlパラメータを試してみます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="n">runsql</span> <span class="err">大学進学率が</span><span class="mi">90</span><span class="err">％以上の高校</span><span class="p">;</span>
+
+<span class="c1">-- runsqlはデフォルトのパラメータなので、以下のクエリと結果が同じになります</span>
+<span class="c1">-- SELECT AI 大学進学率が90％以上の高校;</span>
+</code></pre></div></div>
+<p>大学進学率が90％以上の高校一覧が表示されました。</p>
+
+<p><img src="21.png" alt="alt text" /></p>
+
+<p>2.　次はnarrateを試してみます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="n">narrate</span> <span class="err">大学進学率が</span><span class="mi">90</span><span class="err">％以上の高校</span><span class="p">;</span>
+</code></pre></div></div>
+<p>runsqlを指定した時と同じ結果ですが、それが自然言語で表示されました。
+生成されたSQLの実行結果がAIプロバイダに送信され、自然言語でのサマリーが生成されます。</p>
+
+<p><img src="22.png" alt="alt text" /></p>
+
+<p>3.　次はchatを試してみます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">AI</span> <span class="n">chat</span> <span class="err">大学進学率が</span><span class="mi">90</span><span class="err">％以上の高校</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>これまではデータベース上のデータをもとにしたレスポンスが返って来ましたが、今回はインターネット上の情報をもとにLLMが生成したレスポンスが返ってきました。
+日本語で質問をしているので、日本の高校の内大学進学率が90％以上の高校を自然言語で回答してくれました。</p>
+
+<p><img src="23.png" alt="alt text" /></p>
+
+<p>これでチュートリアルは以上になります。
+他にも色々と試してみて下さい。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-18T10:32:05+09:00">September 18, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=111%3A+SELECT+AI%E3%82%92%E8%A9%A6%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb111-select-ai%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb111-select-ai%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/adb/adb111-select-ai/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb110-analyze-using-oad/" class="pagination--pager" title="110: Oracle Analytics Desktopを使ってデータを見える化してみよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb201-service-names/" class="pagination--pager" title="201: 接続サービスの理解
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
